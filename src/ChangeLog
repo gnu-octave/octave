@@ -1,3 +1,7 @@
+2010-02-02  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* DLD-FUNCTIONS/filter.cc: New tests.
+
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Assume we have atexit.

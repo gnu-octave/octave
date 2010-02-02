@@ -735,6 +735,9 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArrayN<FloatComplex>&, in
 %!  y0 = zeros(4,4,2); y0(1:2,1:4,1) = +1; y0(1:2,1:4,2) = -1;
 %!  y = filter(b, [1], x);
 %!  assert(all(all(all(y==y0))))
+%!
+%!assert(filter(1,ones(10,1)/10,[]), [])
+%!assert(filter(1,ones(10,1)/10,zeros(0,10)), zeros(0,10))
 
 %%  Should put some tests of the "DIM" parameter in here.
 

@@ -1,3 +1,8 @@
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
+	* lo-utils.h, lo-cutils.c (oct_strptime): Delete.
+	* oct-time.cc (octave_strptime::init): Call strptime, not oct_strptime.
+
 2010-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::determinant): Treat matrices marked as singular

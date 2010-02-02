@@ -55,12 +55,6 @@ octave_qsort (void *base, size_t n, size_t size,
   qsort (base, n, size, cmp);
 }
 
-OCTAVE_API char *
-oct_strptime (const char *buf, const char *format, struct tm *tm)
-{
-  return (char *) strptime (buf, format, tm);
-}
-
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #include <winsock.h>

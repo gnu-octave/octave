@@ -272,7 +272,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   char *p = strsave (str.c_str ());
 
-  char *q = oct_strptime (p, fmt.c_str (), &t);
+  char *q = strptime (p, fmt.c_str (), &t);
 
   // Fill in wday and yday, but only if mday is valid and the mon and year
   // are filled in, avoiding issues with mktime and invalid dates.

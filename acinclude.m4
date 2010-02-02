@@ -106,33 +106,6 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
-dnl Check for broken strptime
-dnl
-AC_DEFUN([OCTAVE_STRPTIME_BROKEN],
-[AC_CACHE_CHECK([whether strptime is broken],
-octave_cv_strptime_broken,
-[AC_LANG_PUSH(C)
-AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-#define _XOPEN_SOURCE
-#if defined (HAVE_SYS_TYPES_H)
-#include <sys/types.h>
-#if defined (HAVE_UNISTD_H)
-#include <unistd.h>
-#endif
-#endif
-#include <stdio.h>
-#include <time.h>
-]], [[
-struct tm t;
-char *q = strptime ("09/13", "%m/%d/%y", &t);
-return q ? 1 : 0;
-]])], [octave_cv_strptime_broken=no], [octave_cv_strptime_broken=yes])])
-if test $octave_cv_strptime_broken = yes; then
-AC_DEFINE(OCTAVE_HAVE_BROKEN_STRPTIME, 1, [Define if strptime is broken on your system])
-fi
-AC_LANG_POP(C)
-])
-dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

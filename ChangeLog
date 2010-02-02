@@ -1,3 +1,8 @@
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
+	* acinclue.m4 (OCTAVE_STRPTIME_BROKEN): Delete.
+	* configure.ac: Don't call it.
+
 2010-02-01  John W. Eaton  <jwe@octave.org>
 
 	* acinclude.m4 (OCTAVE_PROG_MAKEINFO): Delete macro.

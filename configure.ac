@@ -1554,7 +1554,6 @@ case "$canonical_host_type" in
 esac
 
 OCTAVE_HAVE_C99_VSNPRINTF
-OCTAVE_STRPTIME_BROKEN
 OCTAVE_SMART_PUTENV
 
 case "$canonical_host_type" in

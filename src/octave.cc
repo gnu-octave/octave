@@ -77,11 +77,6 @@ F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&
 
 extern void install_builtins (void);
 
-#if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
-extern "C" int on_exit ();
-#define atexit on_exit
-#endif
-
 // The command-line options.
 static string_vector octave_argv;
 
@@ -764,13 +759,11 @@ octave_main (int argc, char **argv, int embedded)
 	}
     }
 
-#if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
   // Make sure we clean up when we exit.  Also allow users to register
   // functions.  If we don't have atexit or on_exit, we're going to
   // leave some junk files around if we exit abnormally.
 
   atexit (do_octave_atexit);
-#endif
 
   // Is input coming from a terminal?  If so, we are probably
   // interactive.

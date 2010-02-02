@@ -1,3 +1,7 @@
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): Assume we have atexit.
+
 2010-02-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-path.cc (load_path::add_to_fcn_map): Warn when core library or

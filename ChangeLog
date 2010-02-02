@@ -1,5 +1,9 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't check for atexit or on_exit.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't check for bcopy, bzero, or memmove.
 
 2010-02-02  John W. Eaton  <jwe@octave.org>

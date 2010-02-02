@@ -1,5 +1,10 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/filter.cc (filter (MArray<T>&, MArray<T>&,
+	MArrayN<T>&, MArrayN<T>&, int)): Return early if X is empty.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* cutils.c: Include <sys/times.h>, not "systime.h".
 	* data.cc (Fcputime): Assume we have times.
 

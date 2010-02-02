@@ -1457,7 +1457,7 @@ AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS(curses.h direct.h dlfcn.h fcntl.h \
   floatingpoint.h grp.h ieeefp.h inttypes.h locale.h memory.h nan.h \
-  ncurses.h poll.h pthread.h pwd.h stdint.h sunmath.h sys/ioctl.h \
+  ncurses.h poll.h pthread.h pwd.h sunmath.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h \
   sys/utsname.h termcap.h)
 
@@ -2020,52 +2020,7 @@ typedef int sig_atomic_t;
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
-#if defined (HAVE_STDINT_H)
 #include <stdint.h>
-#elif defined (HAVE_INTTYPES_H)
-#include <inttypes.h>
-#else
-
-#if defined (HAVE_LIMITS_H)
-#include <limits.h>
-#endif
-
-#if CHAR_BIT == 8
-typedef signed char int8_t;
-typedef unsigned char uint8_t;
-#else
-#error "CHAR_BIT is not 8!"
-#endif
-
-#if SIZEOF_SHORT == 2
-typedef short int16_t;
-typedef unsigned short uint16_t;
-#elif SIZEOF_INT == 2
-typedef long int16_t;
-typedef unsigned long uint16_t;
-#else
-#error "No 2 byte integer type found!"
-#endif
-
-#if SIZEOF_INT == 4
-typedef int int32_t;
-typedef unsigned int uint32_t;
-#elif SIZEOF_LONG == 4
-typedef long int32_t;
-typedef unsigned long uint32_t;
-#else
-#error "No 4 byte integer type found!"
-#endif
-
-#if SIZEOF_LONG == 8
-typedef long int64_t;
-typedef unsigned long uint64_t;
-#elif SIZEOF_LONG_LONG == 8
-typedef long long int64_t;
-typedef unsigned long long uint64_t;
-#endif
-
-#endif
 ])
 
 ### Do the substitutions in all the Makefiles.

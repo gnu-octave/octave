@@ -1,5 +1,12 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't check for stdint.h.
+	(AH_BOTTOM): Unconditionally include stdint.h.
+	Delete fallback integer type definitions.
+	* bootstrap.conf (gnulib_modules): Include stdint in the list.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't check for atexit or on_exit.
 
 2010-02-02  John W. Eaton  <jwe@octave.org>

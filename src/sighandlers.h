@@ -45,11 +45,8 @@ Free Software Foundation, Inc.
 #include "base-list.h"
 
 // Signal handler return type.
-#ifndef RETSIGTYPE
-#define RETSIGTYPE void
-#endif
 #ifndef BADSIG
-#define BADSIG (RETSIGTYPE (*)(int))-1
+#define BADSIG (void (*)(int))-1
 #endif
 
 #define BLOCK_SIGNAL(sig, nvar, ovar) \
@@ -66,15 +63,10 @@ Free Software Foundation, Inc.
 #define SIGCHLD SIGCLD
 #endif
 
-#if defined (HAVE_POSIX_SIGNALS)
 #define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
 #define UNBLOCK_CHILD(ovar) sigprocmask (SIG_SETMASK, &ovar, 0)
-#else
-#define BLOCK_CHILD(nvar, ovar) ovar = sigblock (sigmask (SIGCHLD))
-#define UNBLOCK_CHILD(ovar) sigsetmask (ovar)
-#endif
 
-typedef RETSIGTYPE sig_handler (int);
+typedef void sig_handler (int);
 
 // FIXME -- the data should probably be private...
 

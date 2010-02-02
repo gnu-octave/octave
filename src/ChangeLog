@@ -1,6 +1,10 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Assume we have atexit.
+	* sighandlers.h, sighandlers.cc: Delete conditional definition
+	of RETSIGTYPE.  Replace all uses of RETSIGTYPE with void.
+	(MAYBE_REINSTALL_SIGHANDLER, SIGHANDLER_RETURN):
+	Delete macros and all uses.
 
 2010-02-01  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -1429,7 +1429,6 @@ AC_CHECK_SIZEOF(long long)
 ### Does the C compiler handle alloca() and const correctly?
 
 AC_FUNC_ALLOCA
-AC_C_CONST
 
 ### See if we should use placement delete.
 
@@ -1449,7 +1448,6 @@ AC_CHECK_SIZEOF(long double)
 
 ### Checks for header files.
 
-AC_HEADER_STDC
 AC_HEADER_DIRENT
 AC_HEADER_SYS_WAIT
 
@@ -1691,7 +1689,6 @@ AC_CHECK_FUNCS(hypotf _hypotf)
 
 AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
 
-AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
 
@@ -1724,7 +1721,6 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
 
 ### Signal stuff.
 
-AC_TYPE_SIGNAL
 AC_CHECK_DECLS([sys_siglist], [], [],
 [#include <signal.h>
 /* NetBSD declares sys_siglist in unistd.h.  */
@@ -1732,11 +1728,6 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 # include <unistd.h>
 #endif
 ])
-OCTAVE_SIGNAL_CHECK
-OCTAVE_REINSTALL_SIGHANDLERS
-if test "$ac_cv_type_signal" = "void"; then
-  AC_DEFINE(RETSIGTYPE_IS_VOID, 1, [Define if this if RETSIGTYPE is defined to be void.  Needed because preprocessor comparisons to void fail on some systems.])
-fi
 
 ### A system dependent kluge or two.
 

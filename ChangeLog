@@ -1,5 +1,17 @@
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't call OCTAVE_SIGNAL_CHECK,
+	OCTAVE_REINSTALL_SIGHANDLERS, AC_C_CONST, AC_HEADER_STDC, or
+	AC_STRUCT_TM, AC_TYPE_SIGNAL.
+	Don't define RETSIGTYPE_IS_VOID.
+	* acinclude.m4 (OCTAVE_SIGNAL_CHECK, OCTAVE_REINSTALL_SIGHANDLERS):
+	Don't call AC_TYPE_SIGNAL.  Assume sighandler return type is void.
+	(OCTAVE_SIGNAL_CHECK, OCTAVE_REINSTALL_SIGHANDLERS): Delete macros.
+	* bootstrap.conf (gnulib_modules): Include sigaction, signal,
+	and sigprocmask in the list.
+
+2010-02-02  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't check for stdint.h.
 	(AH_BOTTOM): Unconditionally include stdint.h.
 	Delete fallback integer type definitions.

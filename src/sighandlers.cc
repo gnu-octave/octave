@@ -71,21 +71,6 @@ static bool Vsighup_dumps_octave_core = true;
 // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
 static bool Vsigterm_dumps_octave_core = true;
 
-#if defined (RETSIGTYPE_IS_VOID)
-#define SIGHANDLER_RETURN(status) return
-#else
-#define SIGHANDLER_RETURN(status) return status
-#endif
-
-#if defined (MUST_REINSTALL_SIGHANDLERS)
-#define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
-  octave_set_signal_handler (sig, handler)
-#define REINSTALL_USES_SIG 1
-#else
-#define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
-  do { } while (0)
-#endif
-
 #if defined (__EMX__)
 #define MAYBE_ACK_SIGNAL(sig) \
   octave_set_signal_handler (sig, SIG_ACK)
@@ -188,7 +173,6 @@ sig_handler *
 octave_set_signal_handler (int sig, sig_handler *handler,
 			   bool restart_syscalls)
 {
-#if defined (HAVE_POSIX_SIGNALS)
   struct sigaction act, oact;
 
   act.sa_handler = handler;
@@ -212,23 +196,18 @@ octave_set_signal_handler (int sig, sig_handler *handler,
   sigaction (sig, &act, &oact);
 
   return oact.sa_handler;
-#else
-  return signal (sig, handler);
-#endif
 }
 
-static RETSIGTYPE
+static void
 generic_sig_handler (int sig)
 {
   my_friendly_exit (strsignal (sig), sig);
-
-  SIGHANDLER_RETURN (0);
 }
 
 // Handle SIGCHLD.
 
 #ifdef SIGCHLD
-static RETSIGTYPE
+static void
 sigchld_handler (int /* sig */)
 {
   volatile octave_interrupt_handler saved_interrupt_handler
@@ -265,21 +244,15 @@ sigchld_handler (int /* sig */)
 #endif
 
   MAYBE_ACK_SIGNAL (SIGCHLD);
-
-  MAYBE_REINSTALL_SIGHANDLER (SIGCHLD, sigchld_handler);
-
-  SIGHANDLER_RETURN (0);
 }
 #endif /* defined(SIGCHLD) */
 
 #ifdef SIGFPE
 #if defined (__alpha__)
-static RETSIGTYPE
+static void
 sigfpe_handler (int /* sig */)
 {
   MAYBE_ACK_SIGNAL (SIGFPE);
-
-  MAYBE_REINSTALL_SIGHANDLER (SIGFPE, sigfpe_handler);
 
   if (can_interrupt && octave_interrupt_state >= 0)
     {
@@ -289,19 +262,15 @@ sigfpe_handler (int /* sig */)
 
       octave_interrupt_state++;
     }
-
-  SIGHANDLER_RETURN (0);
 }
 #endif /* defined(__alpha__) */
 #endif /* defined(SIGFPE) */
 
 #if defined (SIGHUP) || defined (SIGTERM)
-static RETSIGTYPE
+static void
 sig_hup_or_term_handler (int sig)
 {
   MAYBE_ACK_SIGNAL (sig);
-
-  MAYBE_REINSTALL_SIGHANDLER (sig, sig_hup_or_term_handler);
 
   switch (sig)
     {
@@ -328,23 +297,17 @@ sig_hup_or_term_handler (int sig)
     }
 
   clean_up_and_exit (0);
-
-  SIGHANDLER_RETURN (0);
 }
 #endif
 
 #if 0
 #if defined (SIGWINCH)
-static RETSIGTYPE
+static void
 sigwinch_handler (int /* sig */)
 {
   MAYBE_ACK_SIGNAL (SIGWINCH);
 
-  MAYBE_REINSTALL_SIGHANDLER (SIGWINCH, sigwinch_handler);
-
   command_editor::resize_terminal ();
-
-  SIGHANDLER_RETURN (0);
 }
 #endif
 #endif
@@ -411,12 +374,10 @@ user_abort (const char *sig_name, int sig_number)
 
 }
 
-static RETSIGTYPE
+static void
 sigint_handler (int sig)
 {
   MAYBE_ACK_SIGNAL (sig);
-
-  MAYBE_REINSTALL_SIGHANDLER (sig, sigint_handler);
 
 #ifdef USE_W32_SIGINT
   if (w32_in_main_thread ())
@@ -426,17 +387,13 @@ sigint_handler (int sig)
 #else
   user_abort (strsignal (sig), sig);
 #endif
-
-  SIGHANDLER_RETURN (0);
 }
 
 #ifdef SIGPIPE
-static RETSIGTYPE
+static void
 sigpipe_handler (int /* sig */)
 {
   MAYBE_ACK_SIGNAL (SIGPIPE);
-
-  MAYBE_REINSTALL_SIGHANDLER (SIGPIPE, sigpipe_handler);
 
   octave_signal_caught = 1;
 
@@ -446,8 +403,6 @@ sigpipe_handler (int /* sig */)
 
   if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
-
-  SIGHANDLER_RETURN (0);
 }
 #endif /* defined(SIGPIPE) */
 

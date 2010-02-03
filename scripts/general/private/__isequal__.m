@@ -141,6 +141,11 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       endfor
       t = all (strcmp (reshape (x, 1, []), strings));
 
+    elseif (isa (x, "function_handle"))
+
+      ## The == operator is overloaded for handles.
+      t = all (cellfun (@eq, {x}, varargin));
+
     else
       ## Check the numeric types.
 

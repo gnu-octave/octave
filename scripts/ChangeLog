@@ -1,3 +1,7 @@
+2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/private/__isequal__.m: Handle function handles.
+
 2010-02-01  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m (get_old_gnuplot_color): Remove as

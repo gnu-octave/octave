@@ -53,6 +53,7 @@ OPERATORS_SRC = \
   OPERATORS/op-fcm-fm.cc \
   OPERATORS/op-fcm-fs.cc \
   OPERATORS/op-fcm-pm.cc \
+  OPERATORS/op-fcn.cc \
   OPERATORS/op-fcs-fcm.cc \
   OPERATORS/op-fcs-fcs.cc \
   OPERATORS/op-fcs-fm.cc \

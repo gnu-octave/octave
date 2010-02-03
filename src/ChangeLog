@@ -1,3 +1,8 @@
+2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* OPERATORS/op-fcn.cc: New source.
+	* OPERATORS/module.mk: Include it.
+
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc: Assume we have fcntl.h and sys/stat.h.

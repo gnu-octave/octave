@@ -1493,7 +1493,7 @@ AC_CHECK_FUNCS(basename canonicalize_file_name \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
-  mkstemp pipe poll putenv raise \
+  mkstemp pipe putenv raise \
   realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf siglongjmp \
   snprintf strdup strerror strsignal tempnam tgammaf trunc umask \

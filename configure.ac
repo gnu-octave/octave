@@ -1489,7 +1489,7 @@ fi
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(basename canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork getcwd \
+  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \

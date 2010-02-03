@@ -43,10 +43,11 @@ public:
 
   static std::string base_pathname (const std::string& s);
 
-  static std::string make_absolute (const std::string& s,
-				    const std::string& dot_path);
+  static std::string
+  make_absolute (const std::string& s,
+                 const std::string& dot_path = get_current_directory ());
 
-  static std::string getcwd (void);
+  static std::string get_current_directory (void);
 
   static std::string get_home_directory (void);
 

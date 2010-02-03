@@ -403,8 +403,7 @@ extern int errno;
   // relative names into absolute ones, so prepend the working
   // directory if the path is not absolute.
 
-  std::string absolute_name
-    = octave_env::make_absolute (name, octave_env::getcwd ());
+  std::string absolute_name = octave_env::make_absolute (name);
 
   size_t resolved_size = absolute_name.length ();
 

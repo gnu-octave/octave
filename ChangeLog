@@ -1,3 +1,8 @@
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Don't check for getcwd.
+	* bootstrap.conf (gnulib_modules): Include getcwd in the list.
+
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Assume signal.h provides sigset_t and sig_atomic_t.

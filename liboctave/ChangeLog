@@ -1,3 +1,16 @@
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
+	* file-ops.cc (canonicalize_file_name):
+	Don't pass current directory to octave_env::make_absolute.
+	* cmd-edit.cc (do_decode_prompt_string): Likewise.
+
+	* oct-env.h (octave_env::get_current_directory):
+	Rename from octave_env::getcwd.
+	(octave_env::make_absolute): Provide default value for second arg.
+
+	* lo-sysdep.cc (octave_getcwd): Assume we are using gnulib
+	getcwd module.
+
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* oct-time.h: Include <ctime>, not "systime.h".

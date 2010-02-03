@@ -236,8 +236,7 @@ search_path_for_file (const std::string& path, const string_vector& names)
 {
   dir_path p (path);
 
-  return octave_env::make_absolute (p.find_first_of (names),
-				    octave_env::getcwd ());
+  return octave_env::make_absolute (p.find_first_of (names));
 }
 
 // Find all locations of the given file in the path.
@@ -252,7 +251,7 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
   octave_idx_type len = sv.length ();
 
   for (octave_idx_type i = 0; i < len; i++)
-    sv[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+    sv[i] = octave_env::make_absolute (sv[i]);
 
   return sv;
 }
@@ -265,7 +264,7 @@ make_absolute (const string_vector& sv)
   string_vector retval (len);
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+    retval[i] = octave_env::make_absolute (sv[i]);
  
   return retval;
 }
@@ -301,8 +300,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	{
 	  if (nargin == 1)
 	    {
-	      std::string fname = octave_env::make_absolute
-		(load_path::find_first_of (names), octave_env::getcwd ());
+	      std::string fname
+                = octave_env::make_absolute (load_path::find_first_of (names));
 
 	      if (fname.empty ())
 		retval = Matrix ();
@@ -314,7 +313,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	      std::string opt = args(1).string_value ();
 
 	      if (! error_state && opt == "all")
-		retval = Cell (make_absolute (load_path::find_all_first_of (names)));
+		retval = Cell (make_absolute
+                               (load_path::find_all_first_of (names)));
 	      else
 		error ("file_in_loadpath: invalid option");
 	    }
@@ -382,7 +382,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
 		  std::string opt = args(2).string_value ();
 
 		  if (! error_state && opt == "all")
-		    retval = Cell (make_absolute (search_path_for_all_files (path, names)));
+		    retval = Cell (make_absolute
+                                   (search_path_for_all_files (path, names)));
 		  else
 		    error ("file_in_path: invalid option");
 		}
@@ -407,8 +408,7 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return octave_env::make_absolute
-    (load_path::find_file (nm), octave_env::getcwd ());
+  return octave_env::make_absolute (load_path::find_file (nm));
 }
 
 // See if there is an function file in the path.  If so, return the
@@ -462,7 +462,7 @@ contents_file_in_path (const std::string& dir)
       file_stat fs (tcontents);
 
       if (fs.exists ())
-	retval = octave_env::make_absolute (tcontents, octave_env::getcwd ());
+	retval = octave_env::make_absolute (tcontents);
     }
 
   return retval;
@@ -786,7 +786,7 @@ Return the full name of @var{file}, relative to the current directory.\n\
       std::string nm = args(0).string_value ();
 
       if (! error_state)
-	retval = octave_env::make_absolute (nm, octave_env::getcwd ());
+	retval = octave_env::make_absolute (nm);
       else
 	error ("make_absolute_filename: expecting argument to be a file name");
     }      

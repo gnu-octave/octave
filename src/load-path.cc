@@ -60,8 +60,7 @@ load_path::dir_info::update (void)
 	{
 	  try
 	    {
-	      std::string abs_name
-		= octave_env::make_absolute (dir_name, octave_env::getcwd ());
+	      std::string abs_name = octave_env::make_absolute (dir_name);
 
 	      abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
@@ -124,8 +123,7 @@ load_path::dir_info::initialize (void)
 
       try
 	{
-	  std::string abs_name
-	    = octave_env::make_absolute (dir_name, octave_env::getcwd ());
+	  std::string abs_name = octave_env::make_absolute (dir_name);
 
 	  // FIXME -- nothing is ever removed from this cache of
 	  // directory information, so there could be some resource
@@ -1170,8 +1168,7 @@ load_path::do_find_dir (const std::string& dir) const
 	   p != dir_info_list.end ();
 	   p++)
 	{
-	  std::string dname
-	    = octave_env::make_absolute (p->dir_name, octave_env::getcwd ());
+	  std::string dname = octave_env::make_absolute (p->dir_name);
 
 	  size_t dname_len = dname.length ();
 
@@ -1218,8 +1215,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 	   p != dir_info_list.end ();
 	   p++)
 	{
-	  std::string dname
-	    = octave_env::make_absolute (p->dir_name, octave_env::getcwd ());
+	  std::string dname = octave_env::make_absolute (p->dir_name);
 
 	  size_t dname_len = dname.length ();
 

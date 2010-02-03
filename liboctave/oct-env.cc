@@ -129,7 +129,7 @@ octave_env::make_absolute (const std::string& s, const std::string& dot_path)
 }
 
 std::string
-octave_env::getcwd ()
+octave_env::get_current_directory ()
 {
   return (instance_ok ())
     ? instance->do_getcwd () : std::string ();

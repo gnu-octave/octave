@@ -3702,7 +3702,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
   fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
 
-  file = octave_env::make_absolute (file, octave_env::getcwd ());
+  file = octave_env::make_absolute (file);
 
   int len = file.length ();
 
@@ -3822,7 +3822,7 @@ With no arguments, return a structure containing the current autoload map.\n\
 
 		  if (! fname.empty ())
 		    {
-		      fname = octave_env::make_absolute (fname, octave_env::getcwd ());
+		      fname = octave_env::make_absolute (fname);
 		      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
 
 		      file_stat fs (fname + nm);

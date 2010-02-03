@@ -1,3 +1,24 @@
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
+	* dirfns.cc (Fpwd): Call octave_env::get_current_directory, not
+	octave_env::getcwd.
+
+	* utils.cc (search_path_for_file, search_path_for_all_files,
+	make_absolute, Ffile_in_loadpath, Ffile_in_path, file_in_path,
+	contents_file_in_path, Fmake_absolute_filename):
+	Don't pass current directory to octave_env::make_absolute.
+	* ov-fcn-handle.cc (octave_fcn_handle::set_fcn): Likewise.
+	* octave.cc (execute_startup_files): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+	* load-save.cc (find_file_to_load): Likewise.
+	* load-path.cc (load_path::dir_info::update, 
+	load_path::dir_info::initialize, load_path::do_find_dir,
+	load_path::do_find_matching_dirs): Likewise.
+	* file-io.cc (do_stream_open): Likewise.
+	* oct-parse.yy (load_fcn_from_file, Fautoload): Likewise.
+	* DLD-FUNCTIONS/md5sum.cc (Fmd5sum): Likewise.
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite): Likewise.
+
 2010-02-02  John W. Eaton  <jwe@octave.org>
 
 	* syscalls.cc (Fcanonicalize_file_name): Use DEFUNX instead of DEFUN.

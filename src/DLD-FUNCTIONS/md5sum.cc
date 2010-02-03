@@ -68,8 +68,8 @@ string @var{str}.\n\
 
               if (! fs.exists ())
                 {
-                  std::string tmp = octave_env::make_absolute
-                    (load_path::find_file (str), octave_env::getcwd ());
+                  std::string tmp
+                    = octave_env::make_absolute (load_path::find_file (str));
 
                   if (! tmp.empty ())
                     {

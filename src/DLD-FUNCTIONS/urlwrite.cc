@@ -825,7 +825,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         {
           retval(2) = std::string ();
           retval(1) = true;
-          retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
+          retval(0) = octave_env::make_absolute (filename);
         }
       else
         {

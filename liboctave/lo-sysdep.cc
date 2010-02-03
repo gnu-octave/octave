@@ -55,20 +55,17 @@ octave_getcwd (void)
 {
   std::string retval;
 
-  char buf[MAXPATHLEN];
+  // Using the gnulib getcwd module ensures that we have a getcwd that
+  // will allocate a buffer as large as necessary if buf and size are
+  // both 0.
 
-  char *tmp = 0;
-
-#if defined (__EMX__)
-  tmp = _getcwd2 (buf, MAXPATHLEN);
-#elif defined (HAVE_GETCWD)
-  tmp = getcwd (buf, MAXPATHLEN);
-#elif defined (HAVE_GETWD)
-  tmp = getwd (buf);
-#endif
+  char *tmp = getcwd (0, 0);
 
   if (tmp)
-    retval = tmp;
+    {
+      retval = tmp;
+      free (tmp);
+    }
   else
     (*current_liboctave_error_handler) ("unable to find current directory");
 

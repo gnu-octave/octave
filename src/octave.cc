@@ -335,9 +335,7 @@ execute_startup_files (void)
 	      // We want to check for curr_dir after executing home_rc
 	      // because doing that may change the working directory.
 
-	      std::string curr_dir = octave_env::getcwd ();
-
-	      local_rc = octave_env::make_absolute (initfile, curr_dir);
+	      local_rc = octave_env::make_absolute (initfile);
 
 	      home_rc_already_executed = same_file (home_rc, local_rc);
 	    }
@@ -346,11 +344,7 @@ execute_startup_files (void)
       if (! home_rc_already_executed)
 	{
 	  if (local_rc.empty ())
-	    {
-	      std::string curr_dir = octave_env::getcwd ();
-
-	      local_rc = octave_env::make_absolute (initfile, curr_dir);
-	    }
+            local_rc = octave_env::make_absolute (initfile);
 
 	  source_file (local_rc, context, verbose, require_file);
 	}

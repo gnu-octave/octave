@@ -489,8 +489,8 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 
       if (! (fs.exists () && fs.is_reg ()))
 	{
-	  std::string tmp = octave_env::make_absolute
-	    (load_path::find_file (fname), octave_env::getcwd ());
+	  std::string tmp
+            = octave_env::make_absolute (load_path::find_file (fname));
 
 	  if (! tmp.empty ())
 	    {

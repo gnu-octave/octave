@@ -1386,7 +1386,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 	    case 'w':
 	    case 'W':
 	      {
-		temp = octave_env::getcwd ();
+		temp = octave_env::get_current_directory ();
 
 		std::string home_dir = octave_env::get_home_directory ();
 

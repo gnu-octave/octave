@@ -150,7 +150,7 @@ Return the current working directory.\n\
 @seealso{dir, ls}\n\
 @end deftypefn")
 {
-  return octave_value (octave_env::getcwd ());
+  return octave_value (octave_env::get_current_directory ());
 }
 
 DEFUN (readdir, args, ,

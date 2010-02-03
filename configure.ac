@@ -1495,7 +1495,7 @@ AC_CHECK_FUNCS(basename canonicalize_file_name \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
   mkstemp pipe poll putenv raise \
   realpath resolvepath rindex roundl select setgrent setlocale \
-  setpwent setvbuf sigaction siglongjmp sigpending sigprocmask sigsuspend \
+  setpwent setvbuf siglongjmp \
   snprintf strdup strerror strsignal tempnam tgammaf trunc umask \
   uname usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)

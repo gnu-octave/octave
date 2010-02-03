@@ -33,8 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 
 static dim_vector 
-get_dim_vector (const octave_value& val,
-                const char *name)
+get_dim_vector (const octave_value& val, const char *name)
 {
   RowVector dimsv = val.row_vector_value (false, true);
   dim_vector dv;
@@ -44,11 +43,11 @@ get_dim_vector (const octave_value& val,
     error ("%s: dimension vector must not be empty", name);
   else
     {
-      dv.resize (std::max (n, 2));
+      dv.resize (std::max (n, static_cast<octave_idx_type> (2)));
       dv(1) = 1;
       for (octave_idx_type i = 0; i < n; i++)
         {
-          octave_idx_type ii = static_cast<int> (dimsv(i));
+          octave_idx_type ii = dimsv(i);
           if (ii == dimsv(i) && ii >= 0)
             dv(i) = ii;
           else

@@ -132,7 +132,8 @@ qs_search (const Array<char>& needle,
     }
 
   octave_idx_type nmatch = accum.size ();
-  Array<octave_idx_type> result (dim_vector (std::min (1, nmatch), nmatch));
+  octave_idx_type one = 1;
+  Array<octave_idx_type> result (dim_vector (std::min (one, nmatch), nmatch));
   octave_idx_type k = 0;
   for (std::deque<octave_idx_type>::const_iterator iter = accum.begin (); 
        iter != accum.end (); iter++)

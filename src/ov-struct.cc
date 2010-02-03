@@ -1336,7 +1336,7 @@ octave_struct::load_ascii (std::istream& is)
     {
       if (kw == keywords[0])
         {
-          int mdims = std::max (len, 2);
+          int mdims = std::max (static_cast<int> (len), 2);
           dv.resize (mdims);
           for (int i = 0; i < mdims; i++)
             is >> dv(i);

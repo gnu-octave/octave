@@ -144,16 +144,18 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
         {
           for (octave_idx_type i = 0; i < nval; i++)
             {
+              octave_idx_type one = 1;
               octave_idx_type j = idx.xelem (i);
-              ridx.xelem (i) = std::min (std::max (1, j), n-1);
+              ridx.xelem (i) = std::min (std::max (one, j), n-1);
             }
         }
       else if (left_inf)
         {
+          octave_idx_type one = 1;
           for (octave_idx_type i = 0; i < nval; i++)
             {
               octave_idx_type j = idx.xelem (i);
-              ridx.xelem (i) = std::max (1, j);
+              ridx.xelem (i) = std::max (one, j);
             }
         }
       else if (right_inf)

@@ -93,9 +93,10 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
 
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_range_rep);
 
-idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
+idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
+                                          octave_idx_type _limit,
                                           octave_idx_type _step)
- : start(_start), len (_step ? std::max((_limit - _start) / _step, 0) : -1), step (_step)
+  : start(_start), len (_step ? std::max((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
 {
   if (len < 0)
     {

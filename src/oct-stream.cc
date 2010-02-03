@@ -246,7 +246,7 @@ scanf_format_list::~scanf_format_list (void)
 
 void
 scanf_format_list::add_elt_to_list (int width, bool discard, char type,
-				    char modifier, int& num_elts,
+				    char modifier, octave_idx_type& num_elts,
 				    const std::string& char_class)
 {
   if (buf)

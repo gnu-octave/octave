@@ -2095,8 +2095,6 @@ gripe_betainc_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_
      r1, c1, r2, c2, r3, c3);
 }
 
-static dim_vector null_dims (0);
-
 static void
 gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
 			     const dim_vector& d3)
@@ -2217,7 +2215,7 @@ betainc (double x, const NDArray& a, const NDArray& b)
 	retval (i) = betainc (x, a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dim_vector (0), dv, b.dims ());
+    gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
   
   return retval;
 }
@@ -2346,7 +2344,7 @@ betainc (const NDArray& x, double a, const NDArray& b)
 	retval (i) = betainc (x(i), a, b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, dim_vector (0), b.dims ());
+    gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
   
   return retval;
 }
@@ -2367,7 +2365,7 @@ betainc (const NDArray& x, const NDArray& a, double b)
 	retval (i) = betainc (x(i), a(i), b);
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0));
+    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
   
   return retval;
 }
@@ -2500,7 +2498,7 @@ betainc (float x, const FloatNDArray& a, const FloatNDArray& b)
 	retval (i) = betainc (x, a(i), b(i));
     }
   else
-    gripe_betainc_nonconformant (dim_vector (0), dv, b.dims ());
+    gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
   
   return retval;
 }
@@ -2629,7 +2627,7 @@ betainc (const FloatNDArray& x, float a, const FloatNDArray& b)
 	retval (i) = betainc (x(i), a, b(i));
     }
   else
-    gripe_betainc_nonconformant (dv, dim_vector (0), b.dims ());
+    gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
   
   return retval;
 }
@@ -2650,7 +2648,7 @@ betainc (const FloatNDArray& x, const FloatNDArray& a, float b)
 	retval (i) = betainc (x(i), a(i), b);
     }
   else
-    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0));
+    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
   
   return retval;
 }

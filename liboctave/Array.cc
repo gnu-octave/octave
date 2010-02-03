@@ -2389,8 +2389,9 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
       else
         {
           octave_idx_type nnan = ns - ku;
-          lsort.nth_element (buf, ku, std::max (lo - nnan, 0),
-                             std::max (up - nnan, 0));
+          octave_idx_type zero = 0;
+          lsort.nth_element (buf, ku, std::max (lo - nnan, zero),
+                             std::max (up - nnan, zero));
           std::rotate (buf, buf + ku, buf + ns);
         }
 

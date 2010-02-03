@@ -137,7 +137,8 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type)
 
   Array<float> work (1);
 
-  octave_idx_type m1 = std::max (m, 1), nrow_vt1 = std::max (nrow_vt, 1);
+  octave_idx_type one = 1;
+  octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
 
   F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
 			     F77_CONST_CHAR_ARG2 (&jobv, 1),

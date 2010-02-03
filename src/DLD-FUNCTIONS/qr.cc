@@ -1003,6 +1003,8 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                 MArray<octave_idx_type> j
                   = argj.octave_idx_type_vector_value ();
 
+                octave_idx_type one = 1;
+
                 if (argq.is_real_type () 
                     && argr.is_real_type () 
                     && argx.is_real_type ())
@@ -1019,9 +1021,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         FloatQR fact (Q, R);
 
                         if (col) 
-                          fact.insert_col (x, j-1);
+                          fact.insert_col (x, j-one);
                         else 
-                          fact.insert_row (x.row (0), j(0)-1);
+                          fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1036,9 +1038,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         QR fact (Q, R);
 
                         if (col) 
-                          fact.insert_col (x, j-1);
+                          fact.insert_col (x, j-one);
                         else 
-                          fact.insert_row (x.row (0), j(0)-1);
+                          fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1059,9 +1061,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         FloatComplexQR fact (Q, R);
 
                         if (col) 
-                          fact.insert_col (x, j-1);
+                          fact.insert_col (x, j-one);
                         else 
-                          fact.insert_row (x.row (0), j(0)-1);
+                          fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1075,9 +1077,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         ComplexQR fact (Q, R);
 
                         if (col) 
-                          fact.insert_col (x, j-1);
+                          fact.insert_col (x, j-one);
                         else 
-                          fact.insert_row (x.row (0), j(0)-1);
+                          fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1217,6 +1219,8 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                 MArray<octave_idx_type> j
                   = argj.octave_idx_type_vector_value ();
 
+                octave_idx_type one = 1;
+
                 if (argq.is_real_type ()
                     && argr.is_real_type ())
                   {
@@ -1230,9 +1234,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         FloatQR fact (Q, R);
 
                         if (col) 
-                          fact.delete_col (j-1);
+                          fact.delete_col (j-one);
                         else 
-                          fact.delete_row (j(0)-1);
+                          fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1245,9 +1249,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         QR fact (Q, R);
 
                         if (col) 
-                          fact.delete_col (j-1);
+                          fact.delete_col (j-one);
                         else 
-                          fact.delete_row (j(0)-1);
+                          fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1265,9 +1269,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         FloatComplexQR fact (Q, R);
 
                         if (col) 
-                          fact.delete_col (j-1);
+                          fact.delete_col (j-one);
                         else 
-                          fact.delete_row (j(0)-1);
+                          fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();
@@ -1280,9 +1284,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                         ComplexQR fact (Q, R);
 
                         if (col) 
-                          fact.delete_col (j-1);
+                          fact.delete_col (j-one);
                         else 
-                          fact.delete_row (j(0)-1);
+                          fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
                         retval(0) = fact.Q ();

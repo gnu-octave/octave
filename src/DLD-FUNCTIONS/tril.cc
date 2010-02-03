@@ -42,17 +42,18 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows (), nc = a.columns ();
   const T *avec = a.fortran_vec ();
+  octave_idx_type zero = 0;
 
   if (pack)
     {
-      octave_idx_type j1 = std::min (std::max (0, k), nc); 
-      octave_idx_type j2 = std::min (std::max (0, nr + k), nc);
+      octave_idx_type j1 = std::min (std::max (zero, k), nc); 
+      octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
       octave_idx_type n = j1 * nr + ((j2 - j1) * (nr-(j1-k) + nr-(j2-1-k))) / 2;
       Array<T> r (n);
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          octave_idx_type ii = std::min (std::max (0, j - k), nr);
+          octave_idx_type ii = std::min (std::max (zero, j - k), nr);
           rvec = std::copy (avec + ii, avec + nr, rvec);
           avec += nr;
         }
@@ -65,7 +66,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          octave_idx_type ii = std::min (std::max (0, j - k), nr);
+          octave_idx_type ii = std::min (std::max (zero, j - k), nr);
           std::fill (rvec, rvec + ii, T());
           std::copy (avec + ii, avec + nr, rvec + ii);
           avec += nr;
@@ -82,17 +83,18 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows (), nc = a.columns ();
   const T *avec = a.fortran_vec ();
+  octave_idx_type zero = 0;
 
   if (pack)
     {
-      octave_idx_type j1 = std::min (std::max (0, k), nc); 
-      octave_idx_type j2 = std::min (std::max (0, nr + k), nc);
+      octave_idx_type j1 = std::min (std::max (zero, k), nc); 
+      octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
       octave_idx_type n = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
       Array<T> r (n);
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          octave_idx_type ii = std::min (std::max (0, j + 1 - k), nr);
+          octave_idx_type ii = std::min (std::max (zero, j + 1 - k), nr);
           rvec = std::copy (avec, avec + ii, rvec);
           avec += nr;
         }
@@ -105,7 +107,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          octave_idx_type ii = std::min (std::max (0, j + 1 - k), nr);
+          octave_idx_type ii = std::min (std::max (zero, j + 1 - k), nr);
           std::copy (avec, avec + ii, rvec);
           std::fill (rvec + ii, rvec + nr, T());
           avec += nr;

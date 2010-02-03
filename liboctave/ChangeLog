@@ -1,5 +1,17 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* dbleSVD.cc (SVD::init): Ensure args to std::max are the same type.
+	* CmplxSVD.cc (ComplexSVD::init): Likewise.
+	* floatSVD.cc (FloatSVD::init): Likewise.
+	* fCmplxSVD.cc (FloatComplexSVD::init): Likewise.
+	* idx-vector.cc (idx_range_rep): Likewise.
+	* Array.cc (Array<T>::nth_element): Likewise.
+
+	* lo-specfun.cc (null_dims): Delete unused static variable.
+	(betainc): Call dim_vector (0, 0), not dim_vector (0).
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* file-ops.h (octave_canonicalize_file_name): Rename from
 	file_ops::canonicalize_file_name.
 

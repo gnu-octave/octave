@@ -1,5 +1,23 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/sub2ind.cc (get_dim_vector):
+	Eliminate unnecessary cast.
+
+	* DLD-FUNCTIONS/qr.cc (Fqrinsert, Fqrdelete):
+	Avoid type mismatch errors with octave_idx_type.
+
+	* oct-stream.cc (scanf_format_list::add_elt_to_list):
+	NUM_ELTS arg is octave_idx_type, not int.
+
+	* ov-struct.cc (octave_struct::load_ascii): Ensure args to
+	std::max are the same type.
+	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): Likewise.
+	* DLD-FUNCTIONS/sub2ind.cc (get_dim_vector): Likewise.
+	* DLD-FUNCTIONS/strfind.cc (qs_search): Likewise, for std::min.
+	* DLD-FUNCTIONS/tril.cc (do_tril, do_triu): Likewise.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* utils.cc (octave_vsnprintf): Assume we have vsnprintf with
 	semantics that match the version provided by gnulib.
 

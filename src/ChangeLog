@@ -1,5 +1,10 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* cutils.c (octave_usleep): Implement using nanosleep.
+	(octave_sleep): Assume sleep exists.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* syscalls.cc (Fcanonicalize_file_name):
 	Call octave_canonicalize_file_name instead of
 	file_ops::canonicalize_file_name.

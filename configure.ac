@@ -1497,7 +1497,7 @@ AC_CHECK_FUNCS(basename canonicalize_file_name \
   realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf siglongjmp \
   snprintf strdup strerror strsignal tempnam tgammaf trunc umask \
-  uname usleep utime vfprintf vsprintf vsnprintf waitpid \
+  uname utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)
 
 AC_LANG_PUSH(C++)

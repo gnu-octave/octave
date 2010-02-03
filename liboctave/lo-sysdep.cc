@@ -31,9 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #include <windows.h>

@@ -40,9 +40,6 @@ octave_syscalls
   static int execvp (const std::string&, const string_vector&);
   static int execvp (const std::string&, const string_vector&, std::string&);
 
-  static int fcntl (int, int, long);
-  static int fcntl (int, int, long, std::string&);
-
   static pid_t fork (std::string&);
   static pid_t vfork (std::string&);
 
@@ -72,3 +69,6 @@ octave_syscalls
 };
 
 #endif
+
+extern OCTAVE_API int octave_fcntl (int, int, long);
+extern OCTAVE_API int octave_fcntl (int, int, long, std::string&);

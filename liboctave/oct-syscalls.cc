@@ -33,9 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 
 // We can't use csignal as kill is not in the std namespace, and picky
 // compiler runtimes will also exclude it from global scope as well.
@@ -108,35 +106,6 @@ octave_syscalls::execvp (const std::string& file, const string_vector& args,
     }
 #else
   msg = NOT_SUPPORTED ("execvp");
-#endif
-
-  return status;
-}
-
-int
-octave_syscalls::fcntl (int fd, int cmd, long arg)
-{
-  std::string msg;
-  return fcntl (fd, cmd, arg, msg);
-}
-
-int
-octave_syscalls::fcntl (int fd, int cmd, long arg, std::string& msg)
-{
-  msg = std::string ();
-
-  int status = -1;
-
-#if defined (HAVE_FCNTL)
-  status = ::fcntl (fd, cmd, arg);
-
-  if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
-#else
-  msg = NOT_SUPPORTED ("fcntl");
 #endif
 
   return status;
@@ -422,7 +391,7 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
               ::close (child_stdin[0]);
               ::close (child_stdout[1]);
 #if defined (F_SETFL) && defined (O_NONBLOCK)
-              if (! sync_mode && fcntl (child_stdout[0], F_SETFL, O_NONBLOCK, msg) < 0)
+              if (! sync_mode && octave_fcntl (child_stdout[0], F_SETFL, O_NONBLOCK, msg) < 0)
                 msg = "popen2: error setting file mode -- " + msg;
               else
 #endif
@@ -445,4 +414,29 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
 
   return -1;
 #endif
+}
+
+int
+octave_fcntl (int fd, int cmd, long arg)
+{
+  std::string msg;
+  return octave_fcntl (fd, cmd, arg, msg);
+}
+
+int
+octave_fcntl (int fd, int cmd, long arg, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+  status = ::fcntl (fd, cmd, arg);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+
+  return status;
 }

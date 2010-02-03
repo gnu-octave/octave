@@ -1,5 +1,13 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc: Assume we have fcntl.h and sys/stat.h.
+
+	* syscalls.cc: Assume we have fcntl.h and fcntl.
+	(Ffcntl): Use DEFUNX, not DEFUN.  Call octave_fcntl, not
+	octave_syscalls::fcntl.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/sub2ind.cc (get_dim_vector):
 	Eliminate unnecessary cast.
 

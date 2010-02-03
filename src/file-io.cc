@@ -1953,12 +1953,8 @@ extern "C" int mkstemps (char *pattern, int suffix_len);
 #endif
 
 #if ! defined (HAVE_MKSTEMP) && ! defined (HAVE_MKSTEMPS) && defined (_MSC_VER)
-# if defined (HAVE_FCNTL_H)
-#  include <fcntl.h>
-# endif
-# if defined (HAVE_SYS_STAT_H)
-#  include <sys/stat.h>
-# endif
+#include <fcntl.h>
+#include <sys/stat.h>
 int mkstemp (char *tmpl)
 {
   int ret=-1;

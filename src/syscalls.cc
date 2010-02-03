@@ -36,9 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 
 #include "file-ops.h"
 #include "file-stat.h"
@@ -390,7 +388,7 @@ exit status, it will linger until Octave exits.\n\
 
 */
 
-DEFUN (fcntl, args, ,
+DEFUNX ("fcntl", Ffcntl, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})\n\
 Change the properties of the open file @var{fid}.  The following values\n\
@@ -474,7 +472,7 @@ system-dependent error message.\n\
 		{
 		  std::string msg;
 
-		  int status = octave_syscalls::fcntl (fid, req, arg, msg);
+		  int status = octave_fcntl (fid, req, arg, msg);
 
 		  retval(0) = status;
 		  retval(1) = msg;

@@ -42,12 +42,10 @@ command_history *command_history::instance = 0;
 
 #include <cstdlib>
 
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>
-#endif
-
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <fcntl.h>
 
 #include "oct-rl-hist.h"
 

@@ -1,5 +1,13 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* oct-syscalls.h, oct-syscalls.cc (octave_fcntl): Assume fcntl exists.
+	Rename from octave_syscalls::fcntl.
+	(octave_syscalls::popen2): Call octave_fcntl, not fcntl.
+	* cmd-hist.cc, lo-sysdep.cc, oct-syscalls.cc:
+	Include <fcntl.h> unconditionally.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* dbleSVD.cc (SVD::init): Ensure args to std::max are the same type.
 	* CmplxSVD.cc (ComplexSVD::init): Likewise.
 	* floatSVD.cc (FloatSVD::init): Likewise.

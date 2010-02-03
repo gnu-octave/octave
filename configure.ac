@@ -1448,7 +1448,7 @@ AC_HEADER_SYS_WAIT
 
 ### C headers
 
-AC_CHECK_HEADERS(curses.h direct.h dlfcn.h fcntl.h \
+AC_CHECK_HEADERS(curses.h direct.h dlfcn.h \
   floatingpoint.h grp.h ieeefp.h inttypes.h locale.h memory.h nan.h \
   ncurses.h poll.h pthread.h pwd.h sunmath.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h \
@@ -1489,7 +1489,7 @@ fi
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(basename canonicalize_file_name \
-  chmod dup2 endgrent endpwent execvp expm1 expm1f fcntl fork \
+  chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
   getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \

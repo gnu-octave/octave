@@ -1,5 +1,10 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't check for fcntl.h or fcntl.
+	* bootstrap.conf (gnulib_modules): Include fcntl in the list.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* acinclude.m4 (OCTAVE_HAVE_C99_VSNPRINTF): Delete.
 	* configure.ac: Don't call OCTAVE_HAVE_C99_VSNPRINTF.
 	Don't check for snprintf, vfprintf, vsprintf, vsnprintf, or _snprintf.

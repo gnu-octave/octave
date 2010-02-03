@@ -1360,44 +1360,6 @@ AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
     [$5]
   fi
 ])
-dnl
-dnl Do we have a working c99 vsnprintf function?
-dnl
-dnl OCTAVE_HAVE_C99_VSNPRINTF
-AC_DEFUN([OCTAVE_HAVE_C99_VSNPRINTF], [
-  AC_CACHE_CHECK([for c99 vsnprintf], [oct_cv_c99_vsnprintf],
-    [AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-
-int
-doit(char * s, ...)
-{
-  char buffer[32];
-  va_list args;
-  int r;
-
-  va_start(args, s);
-  r = vsnprintf(buffer, 5, s, args);
-  va_end(args);
-
-  if (r != 7)
-    exit(1);
-
-  exit(0);
-}
-  ]],[
-doit("1234567");])],
-  [oct_cv_c99_vsnprintf=yes],
-  [oct_cv_c99_vsnprintf=no],
-  [oct_cv_c99_vsnprintf="guessing no"])])
-
-case $oct_cv_c99_vsnprintf in
-yes)
-    AC_DEFINE([HAVE_C99_VSNPRINTF], [1], [Define if you have a c99 vsnprintf])
-  ;;
-esac
-])
 
 ##############################################################################
 ##############################################################################

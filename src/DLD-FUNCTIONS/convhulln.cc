@@ -41,18 +41,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "parse.h"
 
-#ifdef HAVE_QHULL
-#if defined(HAVE__SNPRINTF) && !defined(HAVE_SNPRINTF)
-#define snprintf _snprintf
-#endif
-
 extern "C" {
 #include <qhull/qhull_a.h>
 }
 
-#ifdef NEED_QHULL_VERSION
+#if defined (HAVE_QHULL) && defined (NEED_QHULL_VERSION)
 char qh_version[] = "convhulln.oct 2007-07-24";
-#endif
 #endif
 
 DEFUN_DLD (convhulln, args, nargout,
@@ -122,11 +116,20 @@ calculated.\n\n\
 
   boolT ismalloc = False;
 
-  OCTAVE_LOCAL_BUFFER (char, flags, 250);
+  std::ostringstream buf;
 
-  // hmm, lots of options for qhull here
-  // QJ guarantees that the output will be triangles
-  snprintf (flags, 250, "qhull QJ %s", options.c_str ());
+  buf << "qhull QJ " << options;
+
+  std::string buf_string = buf.str ();
+
+  // FIXME -- we can't just pass buf_string.c_str () to qh_new_qhull
+  // because the argument is not declared const.  Ugh.  Unless
+  // qh_new_qhull really needs to modify this argument, someone should
+  // fix QHULL.
+
+  OCTAVE_LOCAL_BUFFER (char, flags, buf_string.length () + 1);
+
+  strcpy (flags, buf_string.c_str ());
 
   if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, 0, stderr)) 
     {

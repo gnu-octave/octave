@@ -1,5 +1,13 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* utils.cc (octave_vsnprintf): Assume we have vsnprintf with
+	semantics that match the version provided by gnulib.
+
+	* DLD-FUNCTIONS/convhulln.cc (Fconvhulln):
+	Use std::sstream instead of fixed-length buffer and snprintf.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* cutils.c (octave_usleep): Implement using nanosleep.
 	(octave_sleep): Assume sleep exists.
 

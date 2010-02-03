@@ -1225,54 +1225,13 @@ octave_vsnprintf (const char *fmt, va_list args)
 
   static char *buf = 0;
 
-#if defined (HAVE_C99_VSNPRINTF)
-  size_t nchars = 0;
-#else
   int nchars = 0;
-#endif
 
   if (! buf)
     buf = new char [size];
 
   if (! buf)
     return 0;
-
-#if defined (HAVE_C99_VSNPRINTF)
-
-  // Note that the caller is responsible for calling va_end on args.
-  // We will do it for saved_args.
-
-  va_list saved_args;
-
-  SAVE_ARGS (saved_args, args);
-
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
-
-  nchars = octave_raw_vsnprintf (buf, size, fmt, args);
-
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-  if (nchars >= size)
-    {
-      size = nchars + 1;
-
-      delete [] buf;
-
-      buf = new char [size];
-
-      if (buf)
-	{
-	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
-
-	  octave_raw_vsnprintf (buf, size, fmt, saved_args);
-
-	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	}
-    }
-
-  va_end (saved_args);
-
-#else
 
   while (1)
     {
@@ -1288,22 +1247,20 @@ octave_vsnprintf (const char *fmt, va_list args)
 
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      if (nchars > -1 && nchars < size-1)
-       return buf;
+      if (nchars > -1 && nchars < size)
+        break;
       else
-       {
-	 delete [] buf;
+        {
+          delete [] buf;
 
-         size *= 2;
+          size = nchars + 1;;
 
-	 buf = new char [size];
+          buf = new char [size];
 
-         if (! buf)
-           return 0;
-       }
+          if (! buf)
+            return 0;
+        }
     }
-
-#endif
 
   return buf;
 }

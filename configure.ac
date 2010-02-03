@@ -1496,9 +1496,9 @@ AC_CHECK_FUNCS(basename canonicalize_file_name \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf siglongjmp \
-  snprintf strsignal tempnam tgammaf trunc umask \
-  uname utime vfprintf vsprintf vsnprintf waitpid \
-  _chmod _snprintf x_utime _utime32)
+  strsignal tempnam tgammaf trunc umask \
+  uname utime waitpid \
+  _chmod x_utime _utime32)
 
 AC_LANG_PUSH(C++)
 AC_CHECK_DECLS([exp2, round, tgamma], [], [], [[#include <cmath>]])
@@ -1544,7 +1544,6 @@ case "$canonical_host_type" in
    ;;
 esac
 
-OCTAVE_HAVE_C99_VSNPRINTF
 OCTAVE_SMART_PUTENV
 
 case "$canonical_host_type" in

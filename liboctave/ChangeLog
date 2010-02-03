@@ -1,5 +1,10 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.h (octave_canonicalize_file_name): Rename from
+	file_ops::canonicalize_file_name.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* file-ops.cc (canonicalize_file_name):
 	Don't pass current directory to octave_env::make_absolute.
 	* cmd-edit.cc (do_decode_prompt_string): Likewise.

@@ -1,5 +1,11 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* syscalls.cc (Fcanonicalize_file_name):
+	Call octave_canonicalize_file_name instead of
+	file_ops::canonicalize_file_name.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* dirfns.cc (Fpwd): Call octave_env::get_current_directory, not
 	octave_env::getcwd.
 

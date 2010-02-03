@@ -1614,7 +1614,7 @@ Return the canonical name of file @var{name}.\n\
 	{
 	  std::string msg;
 
-	  std::string result = file_ops::canonicalize_file_name (name, msg);
+	  std::string result = octave_canonicalize_file_name (name, msg);
 
 	  retval(2) = msg;
 	  retval(1) = msg.empty () ? 0 : -1;

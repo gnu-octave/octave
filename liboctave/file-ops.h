@@ -95,10 +95,6 @@ public:
     return path.substr (ipos);
   }
 
-  static std::string canonicalize_file_name (const std::string&);
-
-  static std::string canonicalize_file_name (const std::string&, std::string&);
-
 private:
 
   static file_ops *instance;
@@ -182,5 +178,11 @@ octave_tempnam (const std::string&, const std::string&);
 
 extern OCTAVE_API std::string
 octave_tempnam (const std::string&, const std::string&, std::string&);
+
+extern OCTAVE_API std::string
+octave_canonicalize_file_name (const std::string&);
+
+extern OCTAVE_API std::string
+octave_canonicalize_file_name (const std::string&, std::string&);
 
 #endif

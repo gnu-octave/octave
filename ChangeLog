@@ -1,5 +1,9 @@
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Don't check for raise or strdup.
+
+2010-02-03  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Don't check for poll or usleep.
 	* bootstrap.conf (gnulib_modules): Include nanosleep and sleep
 	in the list.

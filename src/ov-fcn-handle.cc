@@ -68,13 +68,15 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
 				     "function_handle");
 
+const std::string octave_fcn_handle::anonymous ("@<anonymous>");
+
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 				      const std::string& n)
   : fcn (f), nm (n)
 {
   octave_user_function *uf = fcn.user_function_value (true);
 
-  if (uf)
+  if (uf && nm != anonymous)
     symbol_table::cache_name (uf->scope (), nm);
 }
 
@@ -284,7 +286,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 bool
 octave_fcn_handle::save_ascii (std::ostream& os)
 {
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
       os << nm << "\n";
 
@@ -349,7 +351,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
   is >> nm;
 
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
       skip_preceeding_newline (is);
 
@@ -447,7 +449,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 bool
 octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
       std::ostringstream nmbuf;
 
@@ -526,15 +528,17 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
   if (! is)
     return false;
 
-  if (nm.length() >= 12 && nm.substr (0, 12) == "@<anonymous>")
+  size_t anl = anonymous.length ();
+
+  if (nm.length() >= anl && nm.substr (0, anl) == anonymous)
     {
       octave_idx_type len = 0;
 
-      if (nm.length() > 12)
+      if (nm.length() > anl)
 	{
-	  std::istringstream nm_is (nm.substr(12));
+	  std::istringstream nm_is (nm.substr (anl));
 	  nm_is >> len;
-	  nm = nm.substr(0,12);
+	  nm = nm.substr (0, anl);
 	}
 
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
@@ -679,7 +683,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
     }
   H5Dclose (data_hid);
 
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
       std::ostringstream buf;
       print_raw (buf, true);
@@ -934,7 +938,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
   H5Dclose (data_hid);
   nm = nm_tmp;
 
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
 #if HAVE_HDF5_18
       data_hid = H5Dopen (group_hid, "fcn", H5P_DEFAULT);
@@ -1264,7 +1268,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   bool printed = false;
 
-  if (nm == "@<anonymous>")
+  if (nm == anonymous)
     {
       tree_print_code tpc (os);
 
@@ -1319,7 +1323,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
     }
 
   if (! printed)
-    octave_print_internal (os, nm, pr_as_read_syntax,
+    octave_print_internal (os, "@" + nm, pr_as_read_syntax,
 			   current_print_indent_level ());
 }
 
@@ -1563,7 +1567,7 @@ Return a struct containing information about the function handle\n\
 
 	      std::string fh_nm = fh->fcn_name ();
 
-	      if (fh_nm == "@<anonymous>")
+	      if (fh_nm == octave_fcn_handle::anonymous)
 		{
 		  std::ostringstream buf;
 		  fh->print_raw (buf);
@@ -1593,7 +1597,7 @@ Return a struct containing information about the function handle\n\
 
 	      std::string nm = fcn->fcn_file_name ();
 
-	      if (fh_nm == "@<anonymous>")
+	      if (fh_nm == octave_fcn_handle::anonymous)
 		{
 		  m.assign ("file", nm);
 
@@ -1655,7 +1659,7 @@ the function handle @var{fcn_handle}.\n\
 	{
 	  std::string fh_nm = fh->fcn_name ();
 
-	  if (fh_nm == "@<anonymous>")
+	  if (fh_nm == octave_fcn_handle::anonymous)
 	    {
 	      std::ostringstream buf;
 

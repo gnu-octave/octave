@@ -49,13 +49,16 @@ private:
     : fcn (f), nm (n), disp (sdisp) { }
 
 public:
+
+  static const std::string anonymous;
+
   octave_fcn_handle (void)
     : fcn (), nm () { }
 
   octave_fcn_handle (const std::string& n)
     : fcn (), nm (n) { }
 
-  octave_fcn_handle (const octave_value& f,  const std::string& n);
+  octave_fcn_handle (const octave_value& f,  const std::string& n = anonymous);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm)

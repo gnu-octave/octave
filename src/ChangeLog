@@ -1,5 +1,15 @@
 2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-fcn-handle.h (octave_fcn_handle::anonymous): New static field.
+	* ov-fcn-handle.cc (octave_fcn_handle::anonymous): Initialize it.
+	Use everywhere instead of hardwired string.
+	(octave_fcn_handle::print_raw): Print named function handle with
+	starting @.
+	* pt-fcn-handle.cc: Use octave_fcn_handle::anonymous rather than
+	hardcoded string.
+
+2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* OPERATORS/op-fcn.cc: New source.
 	* OPERATORS/module.mk: Include it.
 

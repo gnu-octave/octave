@@ -1,3 +1,7 @@
+2010-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* miscellaneous/dir.m: Fix month passed to datenum.
+
 2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/private/__isequal__.m: Handle function handles.

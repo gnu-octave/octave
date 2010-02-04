@@ -117,7 +117,7 @@ function retval = dir (file)
 	  info(i,1).date = strftime ("%d-%b-%Y %T", lt);
 	  info(i,1).bytes = st.size;
 	  info(i,1).isdir = S_ISDIR (st.mode);
-	  info(i,1).datenum = datenum (lt.year + 1900, lt.mon, lt.mday,
+	  info(i,1).datenum = datenum (lt.year + 1900, lt.mon + 1, lt.mday,
 				       lt.hour, lt.min, lt.sec);
 	  info(i,1).statinfo = st;
 	endif

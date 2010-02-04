@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_charNDArray_h)
 #define octave_charNDArray_h 1
 
-#include "MArrayN.h"
+#include "Array.h"
 #include "chMatrix.h"
 
 #include "mx-defs.h"
@@ -32,35 +32,35 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-charNDArray : public MArrayN<char>
+charNDArray : public Array<char>
 {
 public:
 
   typedef charMatrix matrix_type;
 
-  charNDArray (void) : MArrayN<char> () { }
+  charNDArray (void) : Array<char> () { }
 
-  charNDArray (const dim_vector& dv) : MArrayN<char> (dv) { }
+  charNDArray (const dim_vector& dv) : Array<char> (dv) { }
 
-  charNDArray (const dim_vector& dv, char val) : MArrayN<char> (dv, val) { }
+  charNDArray (const dim_vector& dv, char val) : Array<char> (dv, val) { }
   
-  charNDArray (const charNDArray& a) : MArrayN<char> (a) { }
+  charNDArray (const charNDArray& a) : Array<char> (a) { }
 
-  charNDArray (const charMatrix& a) : MArrayN<char> (a) { }
+  charNDArray (const charMatrix& a) : Array<char> (a) { }
 
-  charNDArray (char c) : MArrayN<char> (charMatrix (c)) { }
+  charNDArray (char c) : Array<char> (charMatrix (c)) { }
 
-  charNDArray (const char *s) : MArrayN<char> (charMatrix (s)) { }
+  charNDArray (const char *s) : Array<char> (charMatrix (s)) { }
 
-  charNDArray (const std::string& s) : MArrayN<char> (charMatrix (s)) { }
+  charNDArray (const std::string& s) : Array<char> (charMatrix (s)) { }
 
-  charNDArray (const string_vector& s) : MArrayN<char> (charMatrix (s)) { }
+  charNDArray (const string_vector& s) : Array<char> (charMatrix (s)) { }
 
-  charNDArray (const Array<char>& a) : MArrayN<char> (a) { }
+  charNDArray (const Array<char>& a) : Array<char> (a) { }
 
   charNDArray& operator = (const charNDArray& a)
     {
-      MArrayN<char>::operator = (a);
+      Array<char>::operator = (a);
       return *this;
     }
 
@@ -98,7 +98,7 @@ public:
 
 private:
 
-  charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }
+  charNDArray (char *d, dim_vector& dv) : Array<char> (d, dv) { }
 };
 
 NDS_CMP_OP_DECLS (charNDArray, char, OCTAVE_API)
@@ -109,8 +109,6 @@ SND_BOOL_OP_DECLS (char, charNDArray, OCTAVE_API)
 
 NDND_CMP_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
 NDND_BOOL_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
-
-MARRAY_FORWARD_DEFS (MArrayN, charNDArray, char)
 
 BSXFUN_STDREL_DECLS (charNDArray, OCTAVE_API)
 

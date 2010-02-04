@@ -296,7 +296,6 @@ TI_SRC = \
   Array-str.cc \
   Array-voidp.cc \
   MArray-C.cc \
-  MArray-ch.cc \
   MArray-d.cc \
   MArray-f.cc \
   MArray-fC.cc \

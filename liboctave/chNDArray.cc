@@ -151,7 +151,7 @@ charNDArray::compute_index (Array<octave_idx_type>& ra_idx,
 charNDArray
 charNDArray::diag (octave_idx_type k) const
 {
-  return MArrayN<char>::diag (k);
+  return Array<char>::diag (k);
 }
 
 NDS_CMP_OPS (charNDArray, char)

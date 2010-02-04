@@ -1,3 +1,12 @@
+2010-02-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* chMatrix.h (charMatrix): Rebase directly on Array<char>.
+	* chNDArray.h (charNDArray): Ditto.
+	* chMatrix.cc: Update.
+	* chNDArray.cc: Update.
+	* MArray-ch.cc: Remove.
+	* Makefile.am: Update.
+
 2010-02-04  John W. Eaton  <jwe@octave.org>
 
 	* lo-cutils.c (gethostname): Delete function.

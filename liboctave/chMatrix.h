@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "MArray2.h"
+#include "Array2.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -34,19 +34,19 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-charMatrix : public MArray2<char>
+charMatrix : public Array2<char>
 {
 friend class ComplexMatrix;
 
 public:
 
-  charMatrix (void) : MArray2<char> () { }
-  charMatrix (octave_idx_type r, octave_idx_type c) : MArray2<char> (r, c) { }
-  charMatrix (octave_idx_type r, octave_idx_type c, char val) : MArray2<char> (r, c, val) { }
-  charMatrix (const dim_vector& dv) : MArray2<char> (dv) { }
-  charMatrix (const dim_vector& dv, char val) : MArray2<char> (dv, val) { }
-  charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
-  charMatrix (const charMatrix& a) : MArray2<char> (a) { }
+  charMatrix (void) : Array2<char> () { }
+  charMatrix (octave_idx_type r, octave_idx_type c) : Array2<char> (r, c) { }
+  charMatrix (octave_idx_type r, octave_idx_type c, char val) : Array2<char> (r, c, val) { }
+  charMatrix (const dim_vector& dv) : Array2<char> (dv) { }
+  charMatrix (const dim_vector& dv, char val) : Array2<char> (dv, val) { }
+  charMatrix (const Array2<char>& a) : Array2<char> (a) { }
+  charMatrix (const charMatrix& a) : Array2<char> (a) { }
   charMatrix (char c);
   charMatrix (const char *s);
   charMatrix (const std::string& s);
@@ -54,14 +54,14 @@ public:
 
   charMatrix& operator = (const charMatrix& a)
     {
-      MArray2<char>::operator = (a);
+      Array2<char>::operator = (a);
       return *this;
     }
 
   bool operator == (const charMatrix& a) const;
   bool operator != (const charMatrix& a) const;
 
-  charMatrix transpose (void) const { return MArray2<char>::transpose (); }
+  charMatrix transpose (void) const { return Array2<char>::transpose (); }
 
   // destructive insert/delete/reorder operations
 
@@ -90,7 +90,7 @@ public:
 
 private:
 
-  charMatrix (char *ch, octave_idx_type r, octave_idx_type c) : MArray2<char> (ch, r, c) { }
+  charMatrix (char *ch, octave_idx_type r, octave_idx_type c) : Array2<char> (ch, r, c) { }
 };
 
 MS_CMP_OP_DECLS (charMatrix, char, OCTAVE_API)
@@ -101,7 +101,5 @@ SM_BOOL_OP_DECLS (char, charMatrix, OCTAVE_API)
 
 MM_CMP_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
 MM_BOOL_OP_DECLS (charMatrix, charMatrix, OCTAVE_API)
-
-MARRAY_FORWARD_DEFS (MArray2, charMatrix, char)
 
 #endif

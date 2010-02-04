@@ -1,3 +1,8 @@
+2010-02-04  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (OCTAVE_LIBS): Include all liboctave library
+	dependencies here.
+
 2010-02-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-fcn-handle.h (octave_fcn_handle::anonymous): New static field.

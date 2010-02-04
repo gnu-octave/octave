@@ -487,15 +487,20 @@ if AMCOND_ENABLE_DYNAMIC_LINKING
     ../liboctave/liboctave.la \
     ../libcruft/libcruft.la \
     ../libgnu/libgnu.la \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
     $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
+    $(ARPACK_LDFLAGS) $(ARPACK_LIBS) \
+    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
+    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
+    $(LAPACK_LIBS) $(BLAS_LIBS) \
     $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
     $(FT2_LDFLAGS) $(FT2_LIBS) \
     $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
     $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBGLOB) \
+    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
     $(LAPACK_LIBS) $(BLAS_LIBS) \
+    $(DL_LIBS) $(PTHREAD_LIBS) \
     $(LIBS) \
     $(FLIBS)
 else
@@ -523,6 +528,7 @@ else
     $(READLINE_LIBS) $(TERM_LIBS) \
     $(LIBGLOB) \
     $(LAPACK_LIBS) $(BLAS_LIBS) \
+    $(DL_LIBS) $(PTHREAD_LIBS) \
     $(LIBS) \
     $(FLIBS)
 endif

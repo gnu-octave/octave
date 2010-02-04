@@ -3871,6 +3871,12 @@ public:
     return instance_ok () ? instance->do_lookup (val) : graphics_handle ();
   }
 
+  static graphics_handle lookup (const octave_value& val)
+  {
+    return val.is_real_scalar ()
+      ? lookup (val.double_value ()) : graphics_handle ();
+  }
+
   static graphics_object get_object (const graphics_handle& h)
   {
     return instance_ok () ? instance->do_get_object (h) : graphics_object ();

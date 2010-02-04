@@ -2664,7 +2664,28 @@ axes::properties::set_text_child (handle_property& hp,
 				  const std::string& who,
 				  const octave_value& v)
 {
-  graphics_handle val = ::reparent (v, "set", who, __myhandle__, false);
+  graphics_handle val;
+
+  if (v.is_string ())
+    {
+      val = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+
+      xset (val, "string", v);
+    }
+  else
+    {
+      graphics_object go = gh_manager::get_object (gh_manager::lookup (v));
+
+      if (go.isa ("text"))
+        val = ::reparent (v, "set", who, __myhandle__, false);
+      else
+        {
+          std::string cname = v.class_name ();
+
+          error ("set: expecting text graphics object or character string for %s property, found %s",
+                 who.c_str (), cname.c_str ());
+        }
+    }
 
   if (! error_state)
     {

@@ -32,10 +32,6 @@ extern std::string octave_getcwd (void);
 
 extern int octave_chdir (const std::string&);
 
-#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-extern int gethostname (char *, int);
-#endif
-
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 extern pid_t octave_popen2 (const std::string&, const string_vector&,
     bool, int *, std::string&);

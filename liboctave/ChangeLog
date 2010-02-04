@@ -1,3 +1,8 @@
+2010-02-04  John W. Eaton  <jwe@octave.org>
+
+	* lo-cutils.c (gethostname): Delete function.
+	* lo-sysdep.h (gethostname): Delete declaration.
+
 2010-02-03  John W. Eaton  <jwe@octave.org>
 
 	* oct-syscalls.h, oct-syscalls.cc (octave_fcntl): Assume fcntl exists.

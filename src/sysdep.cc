@@ -61,10 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ieeefp.h>
 #endif
 
-#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-#include <sys/utsname.h>
-#endif
-
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "lo-mappers.h"

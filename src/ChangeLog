@@ -1,5 +1,9 @@
 2010-02-04  John W. Eaton  <jwe@octave.org>
 
+	* sysdep.cc: Don't include <sys/utsname.h>.
+
+2010-02-04  John W. Eaton  <jwe@octave.org>
+
 	* graphics.h.in (gh_manager::lookup (const octave_value&)):
 	New function.
 	* graphics.cc (axes::properties::set_text_child): Validate value.

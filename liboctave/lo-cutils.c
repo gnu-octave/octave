@@ -55,32 +55,6 @@ octave_qsort (void *base, size_t n, size_t size,
   qsort (base, n, size, cmp);
 }
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-
-#include <winsock.h>
-
-#elif ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-
-#include <sys/utsname.h>
-
-int
-gethostname (char *name, int namelen)
-{
-  int i;
-  struct utsname ut;
-
-  --namelen;
-
-  uname (&ut);
-  i = strlen (ut.nodename) + 1;
-  strncpy (name, ut.nodename, i < namelen ? i : namelen);
-  name[namelen] = '\0';
-
-  return 0;
-}
-
-#endif
-
 OCTAVE_API int
 octave_strcasecmp (const char *s1, const char *s2)
 {

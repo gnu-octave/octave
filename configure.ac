@@ -1370,18 +1370,13 @@ AC_SUBST(ldpreloadsep)
 AC_SUBST(SCRIPTS_EXE_SUFFIX)
 
 ### special checks for odd OS specific things.
-###
-### I am told that on some SCO systems, the only place to find some
-### functions like gethostname and gettimeofday is in libsocket.
 
-AC_CHECK_FUNCS(gethostname, [], [AC_CHECK_LIB(socket, gethostname)])
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 NO_UNDEFINED_LDFLAG=
 case "$canonical_host_type" in
   *-*-cygwin*)
-   AC_CHECK_LIB(wsock32, gethostname)
-   LIBS="$LIBS -lwsock32"
+    LIBS="$LIBS -lwsock32"
   ;;
   *-*-mingw*)
     if test "$have_msvc" = "yes"; then

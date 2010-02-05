@@ -87,6 +87,52 @@ MArrayN<T>::idx_add (const idx_vector& idx, const MArrayN<T>& vals)
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
 }
 
+template <class T, T op (typename ref_param<T>::type, typename ref_param<T>::type)>
+struct _idxbinop_helper
+{
+  T *array;
+  const T *vals;
+  _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
+  void operator () (octave_idx_type i)
+    { array[i] = op (array[i], *vals++); }
+};
+
+template <class T>
+void
+MArrayN<T>::idx_min (const idx_vector& idx, const MArrayN<T>& vals)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize (ext);
+      n = ext;
+    }
+
+  octave_quit ();
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (), vals.data ()));
+}
+
+template <class T>
+void
+MArrayN<T>::idx_max (const idx_vector& idx, const MArrayN<T>& vals)
+{
+  octave_idx_type n = this->length ();
+  octave_idx_type ext = idx.extent (n);
+  if (ext > n)
+    {
+      this->resize (ext);
+      n = ext;
+    }
+
+  octave_quit ();
+
+  octave_idx_type len = std::min (idx.length (n), vals.length ());
+  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (), vals.data ()));
+}
+
 // N-dimensional array with math ops.
 template <class T>
 void

@@ -93,6 +93,10 @@ public:
 
   void idx_add (const idx_vector& idx, const MArrayN<T>& vals);
 
+  void idx_min (const idx_vector& idx, const MArrayN<T>& vals);
+
+  void idx_max (const idx_vector& idx, const MArrayN<T>& vals);
+
   void changesign (void);
 };
 

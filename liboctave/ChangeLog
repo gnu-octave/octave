@@ -1,3 +1,9 @@
+2010-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MArrayN.cc (MArrayN::idx_min, MArrayN::idx_max): New methods.
+	* MArrayN.h: Declare them.
+	* lo-mappers.h (xmin, xmax): Define for general arguments.
+
 2010-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* chMatrix.h (charMatrix): Rebase directly on Array<char>.

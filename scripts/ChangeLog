@@ -1,3 +1,9 @@
+2010-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/accumarray.m: Rewrite. Split sparse and dense case. Treat
+	cell-valued subs efficiently. Optimize dense case for @sum, @max and
+	@min. Optimize the @(x){x} reduction. Add tests.
+
 2010-02-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* miscellaneous/dir.m: Fix month passed to datenum.

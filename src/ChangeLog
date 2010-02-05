@@ -1,3 +1,9 @@
+2010-02-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (F__accumarray_sum__): Allow bool and char inputs.
+	(do_accumarray_minmax, do_accumarray_minmax_fun): New helper funcs.
+	(F__accumarray_min__, F__accumarray_max__): New defuns.
+
 2010-02-04  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc: Don't include <sys/utsname.h>.

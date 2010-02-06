@@ -6347,7 +6347,7 @@ Undocumented internal function.\n\
               else
                 retval = do_accumarray_sum (idx, vals.float_array_value (), n);
             }
-          else if (vals.is_numeric_type () || vals.is_bool_type () || vals.is_string ())
+          else if (vals.is_numeric_type () || vals.is_bool_type ())
             {
               if (vals.is_complex_type ())
                 retval = do_accumarray_sum (idx, vals.complex_array_value (), n);

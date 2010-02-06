@@ -148,6 +148,8 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
         subs = num2cell (subs, 1);
       endif
       subs = sub2ind (sz, subs{:});
+    elseif (length (sz) < 2)
+      error ("accumarray: needs at least 2 dimensions");
     endif
 
 
@@ -174,6 +176,8 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
 
       if (isinteger (val))
         zero = intmin (class (val));
+      elseif (islogical (val))
+        zero = false;
       elseif (fillval == 0 && all (val(:) >= 0))
         ## This is a common case - fillval is zero, all numbers nonegative.
         zero = 0;
@@ -198,6 +202,8 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
 
       if (isinteger (val))
         zero = intmax (class (val));
+      elseif (islogical (val))
+        zero = true;
       else
         zero = NaN; # Neutral value.
       endif

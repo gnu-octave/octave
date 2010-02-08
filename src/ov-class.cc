@@ -1721,18 +1721,18 @@ derived.\n\
     retval = args(0).class_name ();
   else
     {
-      Octave_map m = args(0).map_value ();
+      octave_function *fcn = octave_call_stack::caller ();
 
-      if (! error_state)
-	{
-	  std::string id = args(1).string_value ();
+      if (fcn && fcn->is_class_constructor ())
+        {
+          Octave_map m = args(0).map_value ();
 
-	  if (! error_state)
-	    {
-	      octave_function *fcn = octave_call_stack::caller ();
+          if (! error_state)
+            {
+              std::string id = args(1).string_value ();
 
-	      if (fcn && fcn->is_class_constructor ())
-		{
+              if (! error_state)
+                {
 		  if (nargin == 2)
 		    retval = octave_value (new octave_class (m, id));
 		  else
@@ -1753,15 +1753,15 @@ derived.\n\
 		      else if (! it->second.compare (retval))
 			error ("class: object of class `%s' does not match previously constructed objects", id.c_str ());
 		    }
-		}
+                }
 	      else
-		error ("class: invalid call from outside class constructor");
+                error ("class: expecting character string as second argument");
 	    }
 	  else
-	    error ("class: expecting character string as second argument");
+            error ("class: expecting structure as first argument");
 	}
       else
-	error ("class: expecting structure as first argument");
+        error ("class: invalid call from outside class constructor");
     }
 
   return retval;

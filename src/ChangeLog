@@ -1,3 +1,9 @@
+2010-02-08  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (Fclass): If more than 1 argument, check that
+	call is inside class constructor first, then check for valid
+	arguments.
+
 2010-02-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (F__accumarray_sum__): Allow bool and char inputs.

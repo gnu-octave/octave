@@ -469,8 +469,6 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
           checked[perm_elt] = true;
           identity = identity && perm_elt == i;
         }
-
-      dv_new(i) = dv(perm_elt);
     }
 
   if (identity)
@@ -481,6 +479,9 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
       for (int i = 0; i < perm_vec_len; i++)
         perm_vec(perm_vec_arg(i)) = i;
     }
+
+  for (int i = 0; i < perm_vec_len; i++)
+    dv_new(i) = dv(perm_vec(i));
 
   retval = Array<T> (dv_new);
 

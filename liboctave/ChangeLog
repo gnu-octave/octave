@@ -1,3 +1,7 @@
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::permute): Fix result dimensions when inv=true.
+
 2010-02-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MArrayN.cc (MArrayN::idx_min, MArrayN::idx_max): New methods.

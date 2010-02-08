@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <strftime.h>
+#include "strftime.h"
 
 #include "lo-error.h"
 #include "lo-math.h"

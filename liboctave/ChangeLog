@@ -1,5 +1,10 @@
 2010-02-08  John W. Eaton  <jwe@octave.org>
 
+	* oct-time.cc: Include "strftime.h", not <strftime.h>.
+	* file-ops.cc: Include "pathmax.h", not <pathmax.h>.
+
+2010-02-08  John W. Eaton  <jwe@octave.org>
+
 	* oct-env.cc (octave_env::prog_invocation_name): Rename from
 	program_invocation_name.  Change all uses.
 	(octave_env::prog_name): Rename from program_name.  Change all uses.

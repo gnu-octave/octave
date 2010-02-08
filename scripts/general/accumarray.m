@@ -52,6 +52,14 @@
 ##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
 ## @end group
 ## @end example
+##
+## The complexity in the non-sparse case is generally O(M+N), where N is the number of
+## subscripts and M is the maximum subscript (linearized in multidimensional case).
+## If @var{func} is one of @code{@@sum} (default), @code{@@max}, @code{@@min}
+## or @code{@@(x) @{x@}}, an optimized code path is used. 
+## Note that for general reduction function the interpreter overhead can play a
+## major part and it may be more efficient to do multiple accumarray calls and
+## compute the results in a vectorized manner.
 ## @end deftypefn
 
 function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [])  

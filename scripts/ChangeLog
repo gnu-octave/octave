@@ -1,5 +1,9 @@
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/accumarray.m: Document complexity.
+
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/accumarray.m: Add new test that also forces index cache
 	generation for faster sorting.
 

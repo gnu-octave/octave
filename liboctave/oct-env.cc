@@ -50,6 +50,8 @@ Free Software Foundation, Inc.
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "progname.h"
+
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
@@ -60,7 +62,7 @@ Free Software Foundation, Inc.
 
 octave_env::octave_env (void)
   : follow_symbolic_links (true), verbatim_pwd (true),
-    current_directory (), program_name (), program_invocation_name (),
+    current_directory (), prog_name (), prog_invocation_name (),
     user_name (), host_name ()
 {
   // Get a real value for the current directory.
@@ -146,14 +148,14 @@ std::string
 octave_env::get_program_name (void)
 {
   return (instance_ok ())
-    ? instance->program_name : std::string ();
+    ? instance->prog_name : std::string ();
 }
 
 std::string
 octave_env::get_program_invocation_name (void)
 {
   return (instance_ok ())
-    ? instance->program_invocation_name : std::string ();
+    ? instance->prog_invocation_name : std::string ();
 }
 
 void
@@ -212,13 +214,18 @@ octave_env::chdir (const std::string& newdir)
 void
 octave_env::do_set_program_name (const std::string& s) const
 {
-  program_invocation_name = s;
+  // For gnulib.
+  ::set_program_name (s.c_str ());
+
+  // Let gnulib strip off things like the "lt-" prefix from libtool.
+  prog_invocation_name = program_name;
 
   size_t pos
-    = program_invocation_name.find_last_of (file_ops::dir_sep_chars ());
+    = prog_invocation_name.find_last_of (file_ops::dir_sep_chars ());
 
-  program_name = (pos == std::string::npos)
-    ? program_invocation_name : program_invocation_name.substr (pos+1);
+  // Also keep a shortened version of the program name.
+  prog_name = (pos == std::string::npos)
+    ? prog_invocation_name : prog_invocation_name.substr (pos+1);
 }
 
 // Return a pretty pathname.  If the first part of the pathname is the

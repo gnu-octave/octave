@@ -1,3 +1,7 @@
+2010-02-08  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Include progname in the list.
+
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

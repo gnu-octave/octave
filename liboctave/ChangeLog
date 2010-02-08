@@ -1,3 +1,11 @@
+2010-02-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-env.cc (octave_env::prog_invocation_name): Rename from
+	program_invocation_name.  Change all uses.
+	(octave_env::prog_name): Rename from program_name.  Change all uses.
+	(octave_env::do_set_program_name): Call ::set_program_name
+	function from gnulib.
+
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.h (idx_vector::idx_base_rep::sort_idx): New pure virtual

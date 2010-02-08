@@ -127,9 +127,9 @@ private:
   mutable std::string current_directory;
 
   // Etc.
-  mutable std::string program_name;
+  mutable std::string prog_name;
 
-  mutable std::string program_invocation_name;
+  mutable std::string prog_invocation_name;
 
   mutable std::string user_name;
 

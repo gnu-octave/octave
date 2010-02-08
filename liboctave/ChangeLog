@@ -1,5 +1,20 @@
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* idx-vector.h (idx_vector::idx_base_rep::sort_idx): New pure virtual
+	function.
+	(idx_vector::idx_colon_rep::sort_idx,
+	idx_vector::idx_range_rep::sort_idx,
+	idx_vector::idx_scalar_rep::sort_idx,
+	idx_vector::idx_vector_rep::sort_idx,
+	idx_vector::idx_mask_rep::sort_idx): New override decls.
+	idx_vector::sort (Array<octave_idx_type>&): New method.
+	* idx-vector.cc (idx_vector::idx_range_rep::sort_idx,
+	idx_vector::idx_vector_rep::sort_idx): New methods.
+	(idx_vector::idx_vector_rep::sort_uniq_clone): Rewrite
+	to use bucket sort under plausible circumstances.
+
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::permute): Fix result dimensions when inv=true.
 
 2010-02-05  Jaroslav Hajek  <highegg@gmail.com>

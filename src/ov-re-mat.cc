@@ -271,6 +271,34 @@ octave_matrix::diag (octave_idx_type k) const
   return retval;
 }
 
+octave_value 
+octave_matrix::sort (octave_idx_type dim, sortmode mode) const
+{
+  // If this matrix is known to be a valid index, and we're doing a vector sort,
+  // sort via idx_vector which may be more efficient occassionally.
+  if (idx_cache && mode == ASCENDING && ndims () == 2
+      && ((dim == 0 && matrix.columns () == 1) || (dim == 1 && matrix.rows () == 1)))
+    {
+      return index_vector ().sorted ();
+    }
+  else
+    return octave_base_matrix<NDArray>::sort (dim, mode);
+}
+
+octave_value 
+octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+                     sortmode mode) const
+{
+  // If this matrix is known to be a valid index, and we're doing a vector sort,
+  // sort via idx_vector which may be more efficient occassionally.
+  if (idx_cache && mode == ASCENDING && ndims () == 2
+      && ((dim == 0 && matrix.columns () == 1) || (dim == 1 && matrix.rows () == 1)))
+    {
+      return index_vector ().sorted (sidx);
+    }
+  else
+    return octave_base_matrix<NDArray>::sort (sidx, dim, mode);
+}
 octave_value
 octave_matrix::convert_to_str_internal (bool, bool, char type) const
 {

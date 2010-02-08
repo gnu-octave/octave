@@ -89,6 +89,8 @@ private:
 
     // Sorts, maybe uniqifies, and returns a clone object pointer.
     virtual idx_base_rep *sort_uniq_clone (bool uniq = false) = 0;
+    // Sorts, and returns a sorting permutation (aka Array::sort).
+    virtual idx_base_rep *sort_idx (Array<octave_idx_type>&) = 0;
 
     // Checks whether the index is colon or a range equivalent to colon.
     virtual bool is_colon_equiv (octave_idx_type) const
@@ -134,6 +136,8 @@ private:
 
     idx_base_rep *sort_uniq_clone (bool = false) 
       { count++; return this; }
+
+    idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type) const
       { return true; }
@@ -182,6 +186,8 @@ private:
     idx_class_type idx_class (void) const { return class_range; }
 
     idx_base_rep *sort_uniq_clone (bool uniq = false);
+
+    idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type n) const
       { return start == 0 && step == 1 && len == n; }
@@ -239,6 +245,8 @@ private:
 
     idx_base_rep *sort_uniq_clone (bool = false)
       { count++; return this; }
+
+    idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     bool is_colon_equiv (octave_idx_type n) const
       { return n == 1 && data == 0; }
@@ -305,6 +313,8 @@ private:
 
     idx_base_rep *sort_uniq_clone (bool uniq = false);
 
+    idx_base_rep *sort_idx (Array<octave_idx_type>&);
+
     dim_vector orig_dimensions (void) const
       { return orig_dims; }
 
@@ -368,6 +378,8 @@ private:
 
     idx_base_rep *sort_uniq_clone (bool = false) 
       { count++; return this; }
+
+    idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
     dim_vector orig_dimensions (void) const
       { return orig_dims; }
@@ -559,6 +571,9 @@ public:
 
   idx_vector sorted (bool uniq = false) const
     { return idx_vector (rep->sort_uniq_clone (uniq)); }
+
+  idx_vector sorted (Array<octave_idx_type>& sidx) const
+    { return idx_vector (rep->sort_idx (sidx)); }
 
   dim_vector orig_dimensions (void) const { return rep->orig_dimensions (); }
 

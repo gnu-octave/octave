@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstdlib>
+#include <memory>
 
 #include <iostream>
 
@@ -83,6 +84,16 @@ idx_vector::idx_colon_rep::checkelem (octave_idx_type i) const
     }
   else
     return i;
+}
+
+idx_vector::idx_base_rep *
+idx_vector::idx_colon_rep::sort_idx (Array<octave_idx_type>&)
+{
+  (*current_liboctave_error_handler)
+    ("internal error: idx_colon_rep::sort_idx");
+
+  count++;
+  return this;
 }
 
 std::ostream& 
@@ -162,6 +173,26 @@ idx_vector::idx_range_rep::sort_uniq_clone (bool)
     }
 }
 
+idx_vector::idx_base_rep *
+idx_vector::idx_range_rep::sort_idx (Array<octave_idx_type>& idx)
+{
+  if (step < 0 && len > 0)
+    {
+      idx.clear (1, len);
+      for (octave_idx_type i = 0; i < len; i++)
+        idx.xelem (i) = len - 1 - i;
+      return new idx_range_rep (start + (len - 1)*step, len, -step, DIRECT);
+    }
+  else
+    {
+      idx.clear (1, len);
+      for (octave_idx_type i = 0; i < len; i++)
+        idx.xelem (i) = i;
+      count++;
+      return this;
+    }
+}
+
 std::ostream& 
 idx_vector::idx_range_rep::print (std::ostream& os) const
 {
@@ -236,6 +267,15 @@ idx_vector::idx_scalar_rep::checkelem (octave_idx_type i) const
 {
   if (i != 0) gripe_index_out_of_range ();
   return data;
+}
+
+idx_vector::idx_base_rep *
+idx_vector::idx_scalar_rep::sort_idx (Array<octave_idx_type>& idx)
+{
+  idx.clear (1, 1);
+  idx.fill (0);
+  count++;
+  return this;
 }
 
 std::ostream& idx_vector::idx_scalar_rep::print (std::ostream& os) const
@@ -385,16 +425,134 @@ idx_vector::idx_vector_rep::checkelem (octave_idx_type n) const
 idx_vector::idx_base_rep *
 idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
 {
-  octave_idx_type *new_data = new octave_idx_type[len];
-  std::copy (data, data + len, new_data);
-  std::sort (new_data, new_data + len);
-  octave_idx_type new_len;
-  if (uniq)
-    new_len = std::unique (new_data, new_data + len) - new_data;
-  else 
-    new_len = len;
+  if (len == 0)
+    {
+      count++;
+      return this;
+    }
 
-  return new idx_vector_rep (new_data, new_len, ext, orig_dims, DIRECT);
+  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
+  std::auto_ptr<idx_vector_rep> new_rep ( 
+    new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
+
+  if (ext > len*xlog2 (1.0 + len))
+    {
+      // Use standard sort via octave_sort.
+      octave_idx_type *new_data = new octave_idx_type[len];
+      new_rep->data = new_data;
+
+      std::copy (data, data + len, new_data);
+      octave_sort<octave_idx_type> lsort;
+      lsort.set_compare (ASCENDING);
+      lsort.sort (new_data, len);
+
+      if (uniq)
+        {
+          octave_idx_type new_len = std::unique (new_data, new_data + len) - new_data;
+          new_rep->len = new_len;
+          if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+            new_rep->orig_dims = dim_vector (1, new_len);
+          else
+            new_rep->orig_dims = dim_vector (new_len, 1);
+        }
+    }
+  else if (uniq)
+    {
+      // Use two-pass bucket sort (only a mask array needed).
+      OCTAVE_LOCAL_BUFFER_INIT (bool, has, ext, false);
+      for (octave_idx_type i = 0; i < len; i++)
+        has[data[i]] = true;
+
+      octave_idx_type new_len = 0;
+      for (octave_idx_type i = 0; i < ext; i++)
+        new_len += has[i];
+
+      new_rep->len = new_len;
+      if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
+        new_rep->orig_dims = dim_vector (1, new_len);
+      else
+        new_rep->orig_dims = dim_vector (new_len, 1);
+
+      octave_idx_type *new_data = new octave_idx_type[new_len];
+      new_rep->data = new_data;
+
+      for (octave_idx_type i = 0, j = 0; i < ext; i++)
+        if (has[i])
+          new_data[j++] = i;
+    }
+  else
+    {
+      // Use two-pass bucket sort.
+      OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, cnt, ext, 0);
+      for (octave_idx_type i = 0; i < len; i++)
+        cnt[data[i]]++;
+
+      octave_idx_type *new_data = new octave_idx_type[len];
+      new_rep->data = new_data;
+
+      for (octave_idx_type i = 0, j = 0; i < ext; i++)
+        {
+          for (octave_idx_type k = 0; k < cnt[i]; k++)
+            new_data[j++] = i;
+        }
+    }
+
+  return new_rep.release ();
+}
+
+idx_vector::idx_base_rep *
+idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
+{
+  // This is wrapped in auto_ptr so that we don't leak on out-of-memory.
+  std::auto_ptr<idx_vector_rep> new_rep (
+    new idx_vector_rep (0, len, ext, orig_dims, DIRECT));
+
+  if (ext > len*xlog2 (1.0 + len))
+    {
+      // Use standard sort via octave_sort.
+      idx.clear (orig_dims);
+      octave_idx_type *idx_data = idx.fortran_vec ();
+      for (octave_idx_type i = 0; i < len; i++)
+        idx_data[i] = i;
+
+      octave_idx_type *new_data = new octave_idx_type [len];
+      new_rep->data = new_data;
+      std::copy (data, data + len, new_data);
+
+      octave_sort<octave_idx_type> lsort;
+      lsort.set_compare (ASCENDING);
+      lsort.sort (new_data, idx_data, len);
+    }
+  else
+    {
+      // Use two-pass bucket sort.
+      OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, cnt, ext, 0);
+
+      for (octave_idx_type i = 0; i < len; i++)
+        cnt[data[i]]++;
+
+      idx.clear (orig_dims);
+      octave_idx_type *idx_data = idx.fortran_vec ();
+
+      octave_idx_type *new_data = new octave_idx_type [len];
+      new_rep->data = new_data;
+
+      for (octave_idx_type i = 0, k = 0; i < ext; i++)
+        {
+          octave_idx_type j = cnt[i];
+          cnt[i] = k;
+          k += j;
+        }
+
+      for (octave_idx_type i = 0; i < len; i++)
+        {
+          octave_idx_type j = data[i], k = cnt[j]++;
+          new_data[k] = j;
+          idx_data[k] = i;
+        }
+    }
+
+  return new_rep.release ();
 }
 
 std::ostream& 
@@ -516,6 +674,17 @@ idx_vector::idx_mask_rep::unconvert (void) const
         retval.xelem (i) = data[i];
       return retval;
     }
+}
+
+idx_vector::idx_base_rep *
+idx_vector::idx_mask_rep::sort_idx (Array<octave_idx_type>& idx)
+{
+  idx.clear (len, 1);
+  for (octave_idx_type i = 0; i < len; i++)
+    idx.xelem (i) = i;
+
+  count++;
+  return this;
 }
 
 const idx_vector idx_vector::colon (new idx_vector::idx_colon_rep ());

@@ -1,3 +1,8 @@
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-re-mat.cc (octave_matrix::sort): Special-case sorting a known
+	index vector.
+
 2010-02-08  John W. Eaton  <jwe@octave.org>
 
 	* ov-class.cc (Fclass): If more than 1 argument, check that

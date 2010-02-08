@@ -148,7 +148,7 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
         subs = num2cell (subs, 1);
       endif
       subs = sub2ind (sz, subs{:});
-    elseif (length (sz) < 2)
+    elseif (! isempty (sz) && length (sz) < 2)
       error ("accumarray: needs at least 2 dimensions");
     endif
 

@@ -1,3 +1,7 @@
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/accumarray.m: 1 more small fix.
+
 2010-02-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/accumarray.m: Small fixes.

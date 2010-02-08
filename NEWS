@@ -214,7 +214,9 @@ Summary of important user-visible changes for version 3.3:
     is now supported. For more details, consult the manual.
 
  ** The list datatype, deprecated since the introduction of cells, has been removed.
-    
+
+ ** The accumarray function has been optimized and is now significantly faster 
+    in certain important cases.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

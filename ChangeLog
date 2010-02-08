@@ -1,3 +1,7 @@
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-02-04  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Don't check for gethostname.

@@ -147,9 +147,11 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       if (ismatrix (subs))
         subs = num2cell (subs, 1);
       endif
-      subs = sub2ind (sz, subs{:});
+      subs = sub2ind (sz, subs{:}); # creates index cache
     elseif (! isempty (sz) && length (sz) < 2)
       error ("accumarray: needs at least 2 dimensions");
+    elseif (! isindex (subs)) # creates index cache
+      error ("accumarray: indices must be positive integers");
     endif
 
 

@@ -1,5 +1,10 @@
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/accumarray.m: Add new test that also forces index cache
+	generation for faster sorting.
+
+2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/accumarray.m: 1 more small fix.
 
 2010-02-06  Jaroslav Hajek  <highegg@gmail.com>

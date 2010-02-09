@@ -63,7 +63,7 @@ function num = menu (t, varargin)
       endfor
       printf ("\n");
       s = input ("pick a number, any number: ", "s");
-      eval (sprintf ("num = %s;", s), "num = [];");
+      num = sscanf (s, "%d");
       if (! isscalar (num) || num < 1 || num > nopt)
         printf ("\nerror: input invalid or out of range\n\n");
       else

@@ -145,7 +145,7 @@ colamd, symamd, and other related orderings.\n\
   int nargin = args.length ();
   int spumoni = 0;
  
-  if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 3)
+  if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
   else
     {
@@ -400,7 +400,7 @@ colamd, symamd, and other related orderings.\n\
   int nargin = args.length ();
   int spumoni = 0;
  
-  if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 3)
+  if (nargout > 2 || nargin < 1 || nargin > 3)
     usage ("ccolamd: incorrect number of input and/or output arguments");
   else
     {

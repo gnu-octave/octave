@@ -283,7 +283,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
   int nargin = args.length ();
   int spumoni = 0;
  
-  if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
+  if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
   else
     {
@@ -519,7 +519,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
   int nargin = args.length ();
   int spumoni = 0;
  
-  if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
+  if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
   else
     {
@@ -664,7 +664,7 @@ permutations on the tree.\n\
 
   int nargin = args.length ();
 
-  if (nargout < 0 || nargout > 2 || nargin < 0 || nargin > 2)
+  if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
   else
     {

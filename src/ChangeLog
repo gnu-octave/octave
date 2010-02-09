@@ -1,3 +1,9 @@
+2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/colamd.cc (Fcolamd, Fsymamd, Fetree): Fix improper arg
+	checks.
+	* DLD-FUNCTIONS/ccolamd.cc (Fccolamd, Fcsymamd): Likewise.
+
 2010-02-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (octave_matrix::sort): Special-case sorting a known

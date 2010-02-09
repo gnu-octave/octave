@@ -308,8 +308,8 @@ octave_dynamic_loader::instance_ok (void)
   return retval;
 }
 
-static
-void do_clear_function (const std::string& fcn_name)
+static void
+do_clear_function (const std::string& fcn_name)
 {
   warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
@@ -320,11 +320,15 @@ static void
 clear (octave_shlib& oct_file)
 {
   if (oct_file.number_of_functions_loaded () > 1)
-    warning_with_id ("Octave:reload-forces-clear",
-		     "reloading %s clears the following functions:",
-		     oct_file.file_name().c_str ());
+    {
+      warning_with_id ("Octave:reload-forces-clear",
+                       "reloading %s clears the following functions:",
+                       oct_file.file_name().c_str ());
 
-  octave_shlib_list::remove (oct_file, do_clear_function);
+      octave_shlib_list::remove (oct_file, do_clear_function);
+    }
+  else
+    octave_shlib_list::remove (oct_file, symbol_table::clear_dld_function);
 }
 
 octave_function *

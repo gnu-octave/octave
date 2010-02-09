@@ -70,11 +70,13 @@ function h = imshow (im, varargin)
     colormap (map);
   endif
 
-  if (! (isnumeric (im) && (ndims (im) == 2 || ndims (im) == 3)))
+  nd = ndims (im);
+
+  if (! ((isnumeric (im) || islogical (im)) && (nd == 2 || nd == 3)))
     error ("imshow: first argument must be an image or the filename of an image");
   endif
 
-  if (ndims (im) == 2)
+  if (nd == 2)
     if (! indexed)
       colormap (gray ());
     endif

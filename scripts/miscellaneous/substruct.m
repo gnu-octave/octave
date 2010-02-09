@@ -1,4 +1,5 @@
 ## Copyright (C) 2006, 2007 John W. Eaton
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -50,33 +51,22 @@ function retval = substruct (varargin)
   nargs = nargin;
 
   if (nargs > 1 && mod (nargs, 2) == 0)
-    narg_pairs = nargs / 2;
-    typ = cell (1, narg_pairs);
-    sub = cell (1, narg_pairs);
-    k = 1;
-    for i = 1:2:nargs
-      t = varargin{i};
-      dot = false;
-      switch (t)
-	case { "()", "{}" }
-	case "."
-	  dot = true;
-	otherwise
-	  error ("substruct: expecting type to be one of \"()\", \"{}\", or \".\"");
-      endswitch
-      s = varargin{i+1};
-      if (dot)
-	if (! ischar (s))
-	  error ("substruct: for type == %s, subs must be a character string", t);
-	endif
-      elseif (! (iscell (s) || (ischar (s) && strcmp (s, ":"))))
-	error ("substruct: for type == %s, subs must be a cell array or \":\"",
-	       t);
+    typ = varargin(1:2:nargs);
+    sub = varargin(2:2:nargs);
+    braces = strcmp (typ, "()") | strcmp (typ, "{}");
+    dots = strcmp (typ, ".");
+    if (all (braces | dots))
+      cells = cellfun ("isclass", sub, "cell");
+      chars = cellfun ("isclass", sub, "char");
+      if (any (braces &! cells))
+	error ("substruct: for type == () or {}, subs must be a cell array");
+      elseif (any (dots &! chars))
+        error ("substruct: for type == ., subs must be a character string");
       endif
-      typ{k} = t;
-      sub{k} = s;
-      k++;
-    endfor
+    else
+      error ("substruct: expecting type to be one of \"()\", \"{}\", or \".\"");
+    endif
+
     retval = struct ("type", typ, "subs", sub);
   else
     print_usage ();
@@ -89,9 +79,9 @@ endfunction
 %! x(1,2).type = "{}";
 %! x(1,3).type = ".";
 %! x(1,1).subs = {1,2,3};
-%! x(1,2).subs = ":";
+%! x(1,2).subs = {":"};
 %! x(1,3).subs = "foo";
-%! y = substruct ("()", {1,2,3}, "{}", ":", ".", "foo");
+%! y = substruct ("()", {1,2,3}, "{}", {":"}, ".", "foo");
 %! assert(x,y);
 %!error assert(substruct);
 %!error assert(substruct (1, 2, 3));

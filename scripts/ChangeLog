@@ -1,5 +1,10 @@
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/accumarray.m: Use != instead of diff to compare indices in
+	dense case. Set explicit mode in sparse case to aid optimization.
+
+2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* miscellaneous/menu.m: Use sscanf rather than eval.
 
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>

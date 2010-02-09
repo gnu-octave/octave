@@ -126,13 +126,16 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
 
       val = cellfun (func, mat2cell (val(:)(idx), diff ([0; jdx])));
       subs = subs(jdx, :);
+      mode = "unique";
+    else
+      mode = "sum";
     endif
 
     ## Form the sparse matrix.
     if (isempty (sz))
-      A = sparse (subs(:,1), subs(:,2), val);
+      A = sparse (subs(:,1), subs(:,2), val, mode);
     elseif (length (sz) == 2)
-      A = sparse (subs(:,1), subs(:,2), val, sz(1), sz(2));
+      A = sparse (subs(:,1), subs(:,2), val, sz(1), sz(2), mode);
     else
       error ("accumarray: dimensions mismatch")
     endif
@@ -243,7 +246,7 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       ## Sort indices.
       [subs, idx] = sort (subs);
       ## Identify runs.
-      jdx = find (diff (subs, 1, 1));
+      jdx = find (subs(1:n-1) != subs(2:n));
       jdx = [jdx; n];
       val = mat2cell (val(idx), diff ([0; jdx]));
       ## Optimize the case when function is @(x) {x}, i.e. we just want to

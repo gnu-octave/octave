@@ -287,6 +287,9 @@ private:
     // Zero-based constructor.
     idx_vector_rep (const Array<octave_idx_type>& inda);
 
+    idx_vector_rep (const Array<octave_idx_type>& inda,
+                    octave_idx_type _ext, direct);
+
     template <class T>
     idx_vector_rep (const Array<T>&);
 
@@ -472,6 +475,11 @@ public:
   idx_vector (const Array<octave_idx_type>& inda) 
     : rep (new idx_vector_rep (inda))
     { chkerr (); }
+
+  // Directly pass extent, no checking.
+  idx_vector (const Array<octave_idx_type>& inda, octave_idx_type ext) 
+    : rep (new idx_vector_rep (inda, ext, DIRECT))
+    { }
 
   // Colon is best constructed by simply copying (or referencing) this member.
   static const idx_vector colon;

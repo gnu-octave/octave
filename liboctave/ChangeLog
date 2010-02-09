@@ -1,3 +1,11 @@
+2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const
+	Array<octave_idx_type>&, octave_idx_type, direct)): New constructor.
+	* idx-vector.h: Declare it.
+	(idx_vector::idx_vector (const Array<octave_idx_type>&,
+	octave_idx_type)): New constructor.
+
 2010-02-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-time.cc: Include "strftime.h", not <strftime.h>.

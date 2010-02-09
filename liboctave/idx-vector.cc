@@ -330,6 +330,23 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
     }
 }
 
+idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda,
+                                            octave_idx_type _ext, direct)
+  : data (inda.data ()), len (inda.numel ()), ext (_ext), 
+  aowner (new Array<octave_idx_type> (inda)), orig_dims (inda.dims ())
+{
+  // No checking.
+  if (ext < 0)
+    {
+      octave_idx_type max = -1;
+      for (octave_idx_type i = 0; i < len; i++)
+        if (data[i] > max)
+          max = data[i];
+
+      ext = max + 1;
+    }
+}
+
 idx_vector::idx_vector_rep::idx_vector_rep (bool b)
   : data (0), len (b ? 1 : 0), ext (0), aowner (0), orig_dims (len, len)
 {

@@ -49,6 +49,9 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
   else
     idx = nda.find ();
 
+  // The maximum element is always at the end.
+  octave_idx_type iext = idx.is_empty () ? 0 : idx.xelem (idx.numel () - 1) + 1;
+
   switch (nargout)
     {
     default:
@@ -65,13 +68,14 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
             jdx.xelem (i) = idx.xelem (i) / nr;
             idx.xelem (i) %= nr;
           }
-        retval(1) = octave_value (jdx, true, true);
+        iext = -1;
+        retval(1) = idx_vector (jdx, -1);
       }
       // Fall through!
 
     case 1:
     case 0:
-      retval(0) = octave_value (idx, true, true);
+      retval(0) = idx_vector (idx, iext);
       break;
     }
 

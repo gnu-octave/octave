@@ -1,5 +1,11 @@
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx (const Array<T>&, ...)): 
+	Optimize creation of result indices.
+	* data.cc (Fsort): Ditto.
+
+2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/colamd.cc (Fcolamd, Fsymamd, Fetree): Fix improper arg
 	checks.
 	* DLD-FUNCTIONS/ccolamd.cc (Fccolamd, Fcsymamd): Likewise.

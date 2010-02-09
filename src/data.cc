@@ -5810,21 +5810,11 @@ ordered lists.\n\
 	}
     }
 
-  dim_vector dv = arg.dims ();
-  if (error_state)
-    {
-      gripe_wrong_type_arg ("sort", arg);
-      return retval;
-    }
+  const dim_vector dv = arg.dims ();
   if (nargin == 1 || args(1).is_string ())
     {
       // Find first non singleton dimension
-      for (int i = 0; i < dv.length (); i++)
-	if (dv(i) > 1)
-	  {
-	    dim = i;
-	    break;
-	  }
+      dim = dv.first_non_singleton ();
     }
   else
     {
@@ -5840,7 +5830,7 @@ ordered lists.\n\
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);
-      retval (1) = octave_value (sidx, true, true);
+      retval (1) = idx_vector (sidx, dv(dim)); // No checking, the extent is known.
     }
   else
     retval(0) = arg.sort (dim, smode);

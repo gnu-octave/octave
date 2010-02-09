@@ -1,3 +1,7 @@
+2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/tips.txi: More tips.
+
 2010-01-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/expr.txi (Assignment): Document return value of

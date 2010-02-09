@@ -221,7 +221,7 @@ endwhile
 @item
 Use @code{cellfun} intelligently.  The @code{cellfun} function is a useful tool
 for avoiding loops.  @xref{Processing Data in Cell Arrays}.
-@code{cellfun} is often use with anonymous function handles; however, calling
+@code{cellfun} is often used with anonymous function handles; however, calling
 an anonymous function involves an overhead quite comparable to the overhead
 of an m-file function.  Passing a handle to a built-in function is faster,
 because the interpreter is not involved in the internal loop.  For example:
@@ -233,6 +233,11 @@ v = cellfun (@@(x) det(x), a); # compute determinants
 v = cellfun (@@det, a); # faster
 @end group
 @end example
+
+@item
+Octave includes a number of other functions that can replace common types of loops,
+including @code{bsxfun}, @code{arrayfun}, @code{structfun}, @code{accumarray}.
+These functions can take an arbitrary function as a handle.
 
 @item
 Avoid calling @code{eval} or @code{feval} excessively, because

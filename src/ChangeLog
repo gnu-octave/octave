@@ -1,5 +1,8 @@
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (base_properties::set_children): Ensure that new
+	children are stored as a column vector.
+
 	* syscalls.cc (Fdup2, Fexec, Fpopen2, Ffork, Fgetpgrp, Fgetpid,
 	Fgetppid, Fgetegid, Fgetgid, Fgeteuid, Fkill, Ffstat, Flstat,
 	Fpipe, Fstat, Fwaitpid): Use DEFUNX instead of DEFUN.

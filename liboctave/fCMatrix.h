@@ -64,6 +64,9 @@ public:
   template <class U>
   FloatComplexMatrix (const Array2<U>& a) : MArray2<FloatComplex> (a) { }
 
+  template <class U>
+  FloatComplexMatrix (const Array<U>& a) : MArray2<FloatComplex> (a) { }
+
   explicit FloatComplexMatrix (const FloatMatrix& a);
 
   explicit FloatComplexMatrix (const FloatRowVector& rv);

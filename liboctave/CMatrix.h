@@ -64,6 +64,9 @@ public:
   template <class U>
   ComplexMatrix (const Array2<U>& a) : MArray2<Complex> (a) { }
 
+  template <class U>
+  ComplexMatrix (const Array<U>& a) : MArray2<Complex> (a) { }
+
   ComplexMatrix (const Matrix& re, const Matrix& im);
 
   explicit ComplexMatrix (const Matrix& a);

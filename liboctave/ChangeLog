@@ -1,3 +1,14 @@
+2010-02-10  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.h (template <class U> Matrix (const Array<U>&)):
+	New constructor.
+	* CMatrix.h (template <class U> ComplexMatrix (const Array<U>&)):
+	New constructor.
+	* fMatrix.h (template <class U> FloatMatrix (const Array<U>&)):
+	New constructor.
+	* fCMatrix.h (template <class U> FloatComplexMatrix (const Array<U>&)):
+	New constructor.
+
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::idx_vector_rep::idx_vector_rep (const

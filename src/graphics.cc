@@ -2015,6 +2015,10 @@ base_properties::set_children (const octave_value& val)
 {
   const Matrix new_kids = val.matrix_value ();
 
+  octave_idx_type nel = new_kids.numel ();
+
+  const Matrix new_kids_column = new_kids.reshape (dim_vector (nel, 1));
+
   bool ok = true;
 
   if (! error_state)
@@ -2024,7 +2028,7 @@ base_properties::set_children (const octave_value& val)
       if (visible_kids.numel () == new_kids.numel ())
 	{
 	  Matrix t1 = visible_kids.sort ();
-	  Matrix t2 = new_kids.sort ();
+	  Matrix t2 = new_kids_column.sort ();
 
 	  if (t1 != t2)
 	    ok = false;
@@ -2042,7 +2046,7 @@ base_properties::set_children (const octave_value& val)
     }
 
   if (ok)
-    children = new_kids.stack (get_hidden_children ());
+    children = new_kids_column.stack (get_hidden_children ());
 }
 
 void

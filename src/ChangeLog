@@ -1,5 +1,10 @@
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
+	* data.cc: Ensure that CLOCKS_PER_SEC is defined instead of HZ.
+	(Fcputime): Use CLOCKS_PER_SEC instead of HZ.
+
+2010-02-10  John W. Eaton  <jwe@octave.org>
+
 	* data.cc: Include <sys/times.h>.  Define HZ if it is not defined.
 
 2010-02-10  John W. Eaton  <jwe@octave.org>

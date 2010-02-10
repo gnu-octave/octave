@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
+#include <ctime>
 
 #include <string>
 
@@ -65,11 +66,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "xnorm.h"
 
-#if ! defined (HZ)
+#if ! defined (CLOCKS_PER_SEC)
 #if defined (CLK_TCK)
-#define HZ CLK_TCK
+#define CLOCKS_PER_SEC CLK_TCK
 #else
-#define HZ 60
+#error "no definition for CLOCKS_PER_SEC!"
 #endif
 #endif
 
@@ -5675,18 +5676,18 @@ CPU time used is nonzero.\n\
   unsigned long fraction;
 
   ticks = t.tms_utime + t.tms_cutime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
+  fraction = ticks % CLOCKS_PER_SEC;
+  seconds = ticks / CLOCKS_PER_SEC;
 
   usr = static_cast<double> (seconds) + static_cast<double>(fraction) /
-    static_cast<double>(HZ);
+    static_cast<double>(CLOCKS_PER_SEC);
 
   ticks = t.tms_stime + t.tms_cstime;
-  fraction = ticks % HZ;
-  seconds = ticks / HZ;
+  fraction = ticks % CLOCKS_PER_SEC;
+  seconds = ticks / CLOCKS_PER_SEC;
 
   sys = static_cast<double> (seconds) + static_cast<double>(fraction) /
-    static_cast<double>(HZ);
+    static_cast<double>(CLOCKS_PER_SEC);
 
 #endif
 

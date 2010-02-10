@@ -1,5 +1,13 @@
 2010-02-09  John W. Eaton  <jwe@octave.org>
 
+	* c-file-ptr-stream.h (c_file_ptr_buf::buf_close): Rename from close.
+	(c_file_ptr_buf::file_close): Rename from fclose.
+	(c_file_ptr_stream::stream_close): Rename from close.
+	(c_zfile_ptr_buf:buf_close): Rename from close.
+	Change all callers.
+
+2010-02-09  John W. Eaton  <jwe@octave.org>
+
 	* dynamic-ld.cc (clear): Only warn if reloading a dynamically
 	linked file that defines multiple functions.
 

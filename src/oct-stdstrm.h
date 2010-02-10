@@ -37,7 +37,7 @@ public:
 		       std::ios::openmode m = std::ios::in|std::ios::out,
 		       oct_mach_info::float_format ff
 		         = oct_mach_info::native_float_format (),
-		       typename BUF_T::close_fcn cf = BUF_T::fclose)
+		       typename BUF_T::close_fcn cf = BUF_T::file_close)
     : octave_base_stream (m, ff), nm (n), md (m),
       s (f ? new STREAM_T (f, cf) : 0)
   { }
@@ -47,7 +47,7 @@ public:
 	  std::ios::openmode m = std::ios::in|std::ios::out,
 	  oct_mach_info::float_format ff
 	    = oct_mach_info::native_float_format (),
-	  typename BUF_T::close_fcn cf = BUF_T::fclose)
+	  typename BUF_T::close_fcn cf = BUF_T::file_close)
   {
     return octave_stream (new octave_tstdiostream (n, f, m, ff, cf));
   }
@@ -81,7 +81,7 @@ public:
 
   void clear (void) { if (s) s->clear (); }
 
-  void do_close (void) { if (s) s->close (); }
+  void do_close (void) { if (s) s->stream_close (); }
 
 protected:
 

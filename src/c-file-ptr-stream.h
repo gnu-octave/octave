@@ -43,7 +43,7 @@ public:
 
   FILE* stdiofile (void) { return f; }
 
-  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = fclose)
+  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
     { }
 
@@ -71,7 +71,7 @@ public:
 
   int flush (void);
 
-  int close (void);
+  int buf_close (void);
 
   int file_number () const { return f ? fileno (f) : -1; }
 
@@ -82,7 +82,7 @@ public:
 
   void clear (void) { if (f) clearerr (f); }
 
-  static int fclose (FILE *f) { return ::fclose (f); }
+  static int file_close (FILE *f) { return ::fclose (f); }
 
 protected:
 
@@ -104,14 +104,14 @@ c_file_ptr_stream : public STREAM_T
 {
 public:
 
-  c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::fclose)
+  c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::file_close)
     : STREAM_T (0), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
 
   ~c_file_ptr_stream (void) { delete buf; buf = 0; }
 
   BUF_T *rdbuf (void) { return buf; }
 
-  void close (void) { if (buf) buf->close (); }
+  void stream_close (void) { if (buf) buf->buf_close (); }
 
   int seek (long offset, int origin)
     { return buf ? buf->seek (offset, origin) : -1; }
@@ -150,7 +150,7 @@ public:
 
   gzFile stdiofile (void) { return f; }
 
-  c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = fclose)
+  c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
     { }
 
@@ -178,7 +178,7 @@ public:
 
   int flush (void);
 
-  int close (void);
+  int buf_close (void);
 
   int file_number () const { return -1; }
 
@@ -189,7 +189,7 @@ public:
 
   void clear (void) { if (f) gzclearerr (f); }
 
-  static int fclose (gzFile f) { return ::gzclose (f); }
+  static int file_close (gzFile f) { return ::gzclose (f); }
 
 protected:
 

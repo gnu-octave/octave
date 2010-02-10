@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 c_file_ptr_buf::~c_file_ptr_buf (void)
 {
-  close ();
+  buf_close ();
 }
 
 // FIXME -- I'm sure there is room for improvement here...
@@ -178,7 +178,7 @@ c_file_ptr_buf::flush (void)
 }
 
 int
-c_file_ptr_buf::close (void)
+c_file_ptr_buf::buf_close (void)
 {
   int retval = -1;
 
@@ -197,7 +197,7 @@ c_file_ptr_buf::close (void)
 
 c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
 {
-  close ();
+  buf_close ();
 }
 
 // FIXME -- I'm sure there is room for improvement here...
@@ -327,7 +327,7 @@ c_zfile_ptr_buf::flush (void)
 }
 
 int
-c_zfile_ptr_buf::close (void)
+c_zfile_ptr_buf::buf_close (void)
 {
   int retval = -1;
 

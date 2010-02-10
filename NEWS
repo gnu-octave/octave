@@ -61,10 +61,11 @@ Summary of important user-visible changes for version 3.3:
  ** The behavior of library functions `ismatrix', `issquare', and
     `issymmetric' has been changed for better consistency.
     
-    * The `ismatrix' function now returns true for all numeric and
-      logical 2d or Nd matrices.  Previously, `ismatrix' returned false
-      if the first or second dimension was zero.  Hence, `ismatrix ([])'
-      was false, while `ismatrix (zeros (1,2,0))' was true.
+    * The `ismatrix' function now returns true for all numeric,
+      logical and character 2d or Nd matrices.  Previously, `ismatrix' 
+      returned false if the first or second dimension was zero.
+      Hence, `ismatrix ([])' was false, 
+      while `ismatrix (zeros (1,2,0))' was true.
 
     * The `issquare' function now returns a logical scalar, and is
       equivalent to the expression
@@ -217,6 +218,9 @@ Summary of important user-visible changes for version 3.3:
 
  ** The accumarray function has been optimized and is now significantly faster 
     in certain important cases.
+
+ ** The behavior of isreal and isnumeric functions was changed to be more
+    Matlab-compatible.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

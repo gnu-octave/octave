@@ -1,5 +1,11 @@
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fminbnd.m: New function.
+	* optimization/module.mk: Add it here.
+	* optimization/fzero.m: Make default TolX consistent with fminbnd.
+
+2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/private/__isequal__.m: Remove list-related stub.
 
 2010-02-09  John W. Eaton  <jwe@octave.org>

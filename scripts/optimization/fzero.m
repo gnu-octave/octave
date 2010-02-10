@@ -65,7 +65,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 0, \
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8, \
     "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
@@ -82,7 +82,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
-  tolx = optimget (options, "TolX", 0);
+  tolx = optimget (options, "TolX", 1e-8);
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
 
@@ -99,6 +99,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   nfev = 0;
 
   x = fval = a = fa = b = fb = NaN;
+  eps = eps (class (x0));
 
   ## Prepare...
   a = x0(1);
@@ -257,7 +258,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
     ## If there's an output function, use it now.
     if (outfcn)
-      optv.funccount = niter + 2;
+      optv.funccount = nfev;
       optv.fval = fval;
       optv.iteration = niter;
       if (outfcn (x, optv, "iter"))
@@ -286,7 +287,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endwhile
 
   output.iterations = niter;
-  output.funcCount = niter + 2;
+  output.funcCount = nfev;
   output.bracket = [a, b];
   output.bracketf = [fa, fb];
 
@@ -304,5 +305,7 @@ function fx = guarded_eval (fun, x)
   endif
 endfunction
 
-%!assert(fzero(@cos, [0, 3]), pi/2, 10*eps)
-%!assert(fzero(@(x) x^(1/3) - 1e-8, [0,1]), 1e-24, 1e-22*eps)
+%!shared opt0
+%! opt0 = optimset ("tolx", 0);
+%!assert(fzero(@cos, [0, 3], opt0), pi/2, 10*eps)
+%!assert(fzero(@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)

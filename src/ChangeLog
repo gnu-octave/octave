@@ -1,5 +1,10 @@
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/bsxfun.cc (Fbsxfun): Remove redundant test. Add
+	explanation.
+
+2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base.h (octave_base_value::is_list): Remove.
 	* ov.h (octave_value::is_list): Remove.
 	* data.cc (Fislist): Remove.

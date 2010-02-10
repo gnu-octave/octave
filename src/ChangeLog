@@ -1,5 +1,14 @@
 2010-02-09  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc, graphics.h.in
+	(base_properties::get_hidden_children): New function.
+	(base_properties::get_children_internal): New function.
+	(base_properties::get_children): Call get_children_internal to
+	do the work.
+	(base_properties::set_children): Incorporate maybe_set_children
+	function here.  Account for hidden children.
+	(maybe_set_children): Delete.
+
 	* c-file-ptr-stream.h (c_file_ptr_buf::buf_close): Rename from close.
 	(c_file_ptr_buf::file_close): Rename from fclose.
 	(c_file_ptr_stream::stream_close): Rename from close.

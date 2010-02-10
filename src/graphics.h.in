@@ -1859,6 +1859,8 @@ public:
 
   Matrix get_all_children (void) const { return children; }
 
+  Matrix get_hidden_children (void) const;
+
   void set_children (const octave_value& val);
 
   void set_modified (const octave_value& val) { set___modified__ (val); }
@@ -1961,6 +1963,9 @@ protected:
     { insert_property (name, property (&p, true)); }
   
   virtual void init (void) { }
+
+private:
+  Matrix get_children_internal (bool return_hidden) const;
 };
 
 class OCTINTERP_API base_graphics_object

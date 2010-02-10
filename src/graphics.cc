@@ -1850,41 +1850,6 @@ base_graphics_backend::object_destroyed (const graphics_handle& h)
 }
 // ---------------------------------------------------------------------
 
-static Matrix
-maybe_set_children (const Matrix& kids, const octave_value& val)
-{
-  const Matrix new_kids = val.matrix_value ();
-
-  bool ok = true;
-
-  if (! error_state)
-    {
-      if (kids.numel () == new_kids.numel ())
-	{
-	  Matrix t1 = kids;
-	  Matrix t2 = new_kids;
-
-	  t1 = t1.sort ();
-	  t2 = t2.sort ();
-
-	  if (t1 != t2)
-	    ok = false;
-	}
-      else
-	ok = false;
-
-      if (! ok)
-	error ("set: new children must be a permutation of existing children");
-    }
-  else
-    {
-      ok = false;
-      error ("set: expecting children to be array of graphics handles");
-    }
-
-  return ok ? new_kids : kids;
-}
-
 void
 base_properties::set_from_list (base_graphics_object& obj,
 				property_list& defaults)
@@ -2048,7 +2013,36 @@ base_properties::set_parent (const octave_value& val)
 void
 base_properties::set_children (const octave_value& val)
 {
-  children = maybe_set_children (children, val);
+  const Matrix new_kids = val.matrix_value ();
+
+  bool ok = true;
+
+  if (! error_state)
+    {
+      const Matrix visible_kids = get_children ();
+
+      if (visible_kids.numel () == new_kids.numel ())
+	{
+	  Matrix t1 = visible_kids.sort ();
+	  Matrix t2 = new_kids.sort ();
+
+	  if (t1 != t2)
+	    ok = false;
+	}
+      else
+	ok = false;
+
+      if (! ok)
+	error ("set: new children must be a permutation of existing children");
+    }
+  else
+    {
+      ok = false;
+      error ("set: expecting children to be array of graphics handles");
+    }
+
+  if (ok)
+    children = new_kids.stack (get_hidden_children ());
 }
 
 void
@@ -2920,7 +2914,7 @@ axes::properties::remove_child (const graphics_handle& h)
 }
 
 Matrix
-base_properties::get_children (void) const
+base_properties::get_children_internal (bool return_hidden) const
 {
   Matrix retval = children;
   
@@ -2938,13 +2932,33 @@ base_properties::get_children (void) const
 	  graphics_handle kid = children (i);
 
 	  if (gh_manager::is_handle_visible (kid))
-	    retval(k++) = children(i);
+            {
+              if (! return_hidden)
+                retval(k++) = children(i);
+            }
+          else
+            {
+              if (return_hidden)
+                retval(k++) = children(i);
+            }
 	}
 
       retval.resize (k, 1);
     }
 
-  return retval;;
+  return retval;
+}
+
+Matrix
+base_properties::get_children (void) const
+{
+  return get_children_internal (false);
+}
+
+Matrix
+base_properties::get_hidden_children (void) const
+{
+  return get_children_internal (true);
 }
 
 inline Matrix

@@ -3310,7 +3310,9 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
-Return nonzero if @var{x} is a numeric object.\n\
+Return nonzero if @var{x} is a numeric object, i.e. an integer, real or complex array.\n\
+Logical and character arrays are not considered to be numeric.\n\
+@seealso{ischar, islogical, isinteger}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3342,7 +3344,8 @@ Return nonzero if @var{x} is a list.\n\
 DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
-Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
+Return 1 if @var{a} is a numeric, logical or character matrix or scalar.\n\
+Otherwise, return 0.\n\
 @end deftypefn")
 {
   octave_value retval = false;

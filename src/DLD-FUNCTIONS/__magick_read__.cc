@@ -222,8 +222,7 @@ read_images (const std::vector<Magick::Image>& imvec,
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-            P *rbuf;
-            rbuf = vec;
+            P *rbuf = vec;
             for (int y = 0; y < rows; y++)
               {
                 for (int x = 0; x < columns; x++)
@@ -252,9 +251,8 @@ read_images (const std::vector<Magick::Image>& imvec,
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-            P *rbuf, *obuf;
-            rbuf = vec;
-            obuf = vec + rows * columns;
+            P *rbuf = vec;
+            P *obuf = vec + rows * columns;
             for (int y = 0; y < rows; y++)
               {
                 for (int x = 0; x < columns; x++)
@@ -287,10 +285,9 @@ read_images (const std::vector<Magick::Image>& imvec,
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-            P *rbuf, *gbuf, *bbuf;
-            rbuf = vec;
-            gbuf = vec + rows * columns;
-            bbuf = vec + rows * columns * 2;
+            P *rbuf = vec;
+            P *gbuf = vec + rows * columns;
+            P *bbuf = vec + rows * columns * 2;
             for (int y = 0; y < rows; y++)
               {
                 for (int x = 0; x < columns; x++)
@@ -327,11 +324,10 @@ read_images (const std::vector<Magick::Image>& imvec,
             const Magick::PixelPacket *pix
               = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-            P *rbuf, *gbuf, *bbuf, *obuf;
-            rbuf = vec;
-            gbuf = vec + rows * columns;
-            bbuf = vec + rows * columns * 2;
-            obuf = vec + rows * columns * 3;
+            P *rbuf = vec;
+            P *gbuf = vec + rows * columns;
+            P *bbuf = vec + rows * columns * 2;
+            P *obuf = vec + rows * columns * 3;
             for (int y = 0; y < rows; y++)
               {
                 for (int x = 0; x < columns; x++)

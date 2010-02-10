@@ -1,5 +1,11 @@
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fminbnd.m: Undocument impossible info values.
+	* optimization/fzero.m: Ditto.
+
+	* optimization/fzero.m: Make default TolX consistent with fminbnd.
+2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fminbnd.m: New function.
 	* optimization/module.mk: Add it here.
 	* optimization/fzero.m: Make default TolX consistent with fminbnd.

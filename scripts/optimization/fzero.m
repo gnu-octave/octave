@@ -30,6 +30,7 @@
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.
 ## @var{info} is an exit flag that can have these values:
+##
 ## @itemize
 ## @item 1
 ## The algorithm converged to a solution.
@@ -37,12 +38,6 @@
 ## Maximum number of iterations or function evaluations has been exhausted.
 ## @item -1
 ## The algorithm has been terminated from user output function.
-## @item -2 
-## A general unexpected error.
-## @item -3
-## A non-real value encountered.
-## @item -4
-## A NaN value encountered.
 ## @end itemize
 ## @seealso{optimset, fsolve} 
 ## @end deftypefn

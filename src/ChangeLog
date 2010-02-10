@@ -1,5 +1,9 @@
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
+	* data.cc: Include <sys/times.h>.  Define HZ if it is not defined.
+
+2010-02-10  John W. Eaton  <jwe@octave.org>
+
 	* graphics.cc (base_properties::set_children): Ensure that new
 	children are stored as a column vector.
 

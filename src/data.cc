@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <sys/types.h>
+#include <sys/times.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
@@ -63,6 +64,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "pager.h"
 #include "xnorm.h"
+
+#if ! defined (HZ)
+#if defined (CLK_TCK)
+#define HZ CLK_TCK
+#else
+#define HZ 60
+#endif
+#endif
 
 #if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
 #define hypotf _hypotf

@@ -56,12 +56,6 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
   ## Generic tests.
 
-  ## Give an error for a list (that will make the code simpler and lists
-  ## are deprecated anyway.
-  if (islist (x))
-    error ("__isequal__: list objects are deprecated and cannot be tested for equality here; use cell arrays instead");
-  endif
-
   ## All arguments must either be of the same class or they must be
   ## numeric values.
   t = (all (strcmp (class(x),

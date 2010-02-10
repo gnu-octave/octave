@@ -3327,22 +3327,6 @@ Logical and character arrays are not considered to be numeric.\n\
   return retval;
 }
 
-DEFUN (islist, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} islist (@var{x})\n\
-Return nonzero if @var{x} is a list.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_list ();
-  else
-    print_usage ();
-
-  return retval;
-}
-
 DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\

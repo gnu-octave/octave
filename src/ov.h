@@ -276,7 +276,7 @@ public:
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
   octave_value (const Octave_map& m, const std::string& id);
-  octave_value (const octave_value_list& m, bool is_cs_list = false);
+  octave_value (const octave_value_list& m, bool = false);
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep, bool borrow = false);
@@ -536,9 +536,6 @@ public:
 
   bool is_cs_list (void) const
     { return rep->is_cs_list (); }
-
-  bool is_list (void) const
-    { return rep->is_list (); }
 
   bool is_magic_colon (void) const
     { return rep->is_magic_colon (); }

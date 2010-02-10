@@ -2387,8 +2387,7 @@ public:
       {
 	octave_value val = values(i);
 
-	if (val.is_map () || val.is_cell () || val.is_object ()
-	    || val.is_list ())
+	if (val.is_map () || val.is_cell () || val.is_object ())
 	  {
 	    gripe_wrong_type_arg (who, val);
 	    break;

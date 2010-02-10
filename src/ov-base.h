@@ -352,8 +352,6 @@ public:
 
   virtual bool is_cs_list (void) const { return false; }
 
-  virtual bool is_list (void) const { return false; }
-
   virtual bool is_magic_colon (void) const { return false; }
 
   virtual bool is_all_va_args (void) const { return false; }

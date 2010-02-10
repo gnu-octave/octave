@@ -2,6 +2,7 @@
 
 Copyright (C) 2002, 2009 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
+Copyright (C) 2010 David Grundberg
 
 This file is part of Octave.
 
@@ -34,13 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_MAGICK
 
 #include <Magick++.h>
-
-unsigned int
-scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)
-{
-  return (static_cast<unsigned int> (static_cast<double> (quantum)
-                                     / MaxRGB * ((1 << depth) - 1)));
-}
 
 octave_value_list
 read_indexed_images (std::vector<Magick::Image>& imvec,
@@ -195,6 +189,8 @@ octave_value_list
 read_images (const std::vector<Magick::Image>& imvec,
              const Array<int>& frameidx, unsigned int depth)
 {
+  typedef typename T::element_type P;
+
   octave_value_list retval (3, Matrix ());
 
   T im;
@@ -210,123 +206,155 @@ read_images (const std::vector<Magick::Image>& imvec,
   idim(2) = 1;
   idim(3) = nframes;
 
-  Array<int> idx (dim_vector (4));
-
   Magick::ImageType type = imvec[0].type ();
+  const int divisor = (((1 << QuantumDepth) - 1) / ((1 << depth) - 1));
 
   switch (type)
     {
     case Magick::BilevelType:
     case Magick::GrayscaleType:
-      im = T (idim);
-      for (int frame = 0; frame < nframes; frame++)
-        {
-          const Magick::PixelPacket *pix
-            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+      {
+        im = T (idim);
+        P *vec = im.fortran_vec ();
 
-          int i = 0;
-          idx(2) = 0;
-          idx(3) = frame;
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-          for (int y = 0; y < rows; y++)
-            {
-              idx(0) = y;
-              for (int x = 0; x < columns; x++)
-                {
-                  idx(1) = x;
-                  im(idx) = scale_quantum_to_depth (pix[i++].red, depth);
-                }
-            }
+            P *rbuf;
+            rbuf = vec;
+            for (int y = 0; y < rows; y++)
+              {
+                for (int x = 0; x < columns; x++)
+                  {
+                    *rbuf = pix->red / divisor;
+                    pix++;
+                    rbuf += rows;
+                  }
+                rbuf -= rows * columns - 1;
+              }
+
+            // Next frame.
+            vec += rows * columns * idim(2);
+          }
         }
       break;
 
     case Magick::GrayscaleMatteType:
-      idim(2) = 2;
-      im = T (idim);
-      for (int frame = 0; frame < nframes; frame++)
-        {
-          const Magick::PixelPacket *pix
-            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+      {
+        idim(2) = 2;
+        im = T (idim);
+        P *vec = im.fortran_vec ();
 
-          int i = 0;
-          idx(3) = frame;
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-          for (int y = 0; y < rows; y++)
-            {
-              idx(0) = y;
-              for (int x = 0; x < columns; x++)
-                {
-                  idx(1) = x;
-                  idx(2) = 0;
-                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-                  idx(2) = 1;
-                  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
-                  i++;
-                }
-            }
+            P *rbuf, *obuf;
+            rbuf = vec;
+            obuf = vec + rows * columns;
+            for (int y = 0; y < rows; y++)
+              {
+                for (int x = 0; x < columns; x++)
+                  {
+                    *rbuf = pix->red / divisor;
+                    *obuf = pix->opacity / divisor;
+                    pix++;
+                    rbuf += rows;
+                    obuf += rows;
+                  }
+                rbuf -= rows * columns - 1;
+                obuf -= rows * columns - 1;
+              }
+
+            // Next frame.
+            vec += rows * columns * idim(2);
+          }
         }
       break;
 
     case Magick::PaletteType:
     case Magick::TrueColorType:
-      idim(2) = 3;
-      im = T (idim);
-      for (int frame = 0; frame < nframes; frame++)
-        {
-          const Magick::PixelPacket *pix
-            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+      {
+        idim(2) = 3;
+        im = T (idim);
+        P *vec = im.fortran_vec ();
 
-          int i = 0;
-          idx(3) = frame;
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-          for (int y = 0; y < rows; y++)
-            {
-              idx(0) = y;
-              for (int x = 0; x < columns; x++)
-                {
-                  idx(1) = x;
-                  idx(2) = 0;
-                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-                  idx(2) = 1;
-                  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
-                  idx(2) = 2;
-                  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
-                  i++;
-                }
-            }
+            P *rbuf, *gbuf, *bbuf;
+            rbuf = vec;
+            gbuf = vec + rows * columns;
+            bbuf = vec + rows * columns * 2;
+            for (int y = 0; y < rows; y++)
+              {
+                for (int x = 0; x < columns; x++)
+                  {
+                    *rbuf = pix->red / divisor;
+                    *gbuf = pix->green / divisor;
+                    *bbuf = pix->blue / divisor;
+                    pix++;
+                    rbuf += rows;
+                    gbuf += rows;
+                    bbuf += rows;
+                  }
+                rbuf -= rows * columns - 1;
+                gbuf -= rows * columns - 1;
+                bbuf -= rows * columns - 1;
+              }
+
+            // Next frame.
+            vec += rows * columns * idim(2);
+          }
         }
       break;
 
     case Magick::PaletteMatteType:
     case Magick::TrueColorMatteType:
     case Magick::ColorSeparationType:
-      idim(2) = 4;
-      im = T (idim);
-      for (int frame = 0; frame < nframes; frame++)
-        {
-          const Magick::PixelPacket *pix
-            = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+      {
+        idim(2) = 4;
+        im = T (idim);
+        P *vec = im.fortran_vec ();
 
-          int i = 0;
-          idx(3) = frame;
+        for (int frame = 0; frame < nframes; frame++)
+          {
+            const Magick::PixelPacket *pix
+              = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
 
-          for (int y = 0; y < rows; y++)
-            {
-              idx(0) = y;
-              for (int x = 0; x < columns; x++)
-                {
-                  idx(1) = x;
-                  idx(2) = 0;
-                  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
-                  idx(2) = 1;
-                  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
-                  idx(2) = 2;
-                  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
-                  idx(2) = 3;
-                  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
-                  i++;
-                }
-            }
+            P *rbuf, *gbuf, *bbuf, *obuf;
+            rbuf = vec;
+            gbuf = vec + rows * columns;
+            bbuf = vec + rows * columns * 2;
+            obuf = vec + rows * columns * 3;
+            for (int y = 0; y < rows; y++)
+              {
+                for (int x = 0; x < columns; x++)
+                  {
+                    *rbuf = pix->red / divisor;
+                    *gbuf = pix->green / divisor;
+                    *bbuf = pix->blue / divisor;
+                    *obuf = pix->opacity / divisor;
+                    pix++;
+                    rbuf += rows;
+                    gbuf += rows;
+                    bbuf += rows;
+                    obuf += rows;
+                  }
+                rbuf -= rows * columns - 1;
+                gbuf -= rows * columns - 1;
+                bbuf -= rows * columns - 1;
+                obuf -= rows * columns - 1;
+              }
+
+            // Next frame.
+            vec += rows * columns * idim(2);
+          }
         }
       break;
 

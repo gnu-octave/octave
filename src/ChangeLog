@@ -1,3 +1,11 @@
+2010-02-10  David Grundberg  <davidg@cs.umu.se>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (read_images): Reimplement
+	copying with direct fortran_vec manipulation, avoiding indexing
+	operations.  Replace scale_quantum_to_depth calls with simple
+	arithmetics.
+	(scale_quantum_to_depth): Remove function.
+
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/bsxfun.cc (Fbsxfun): Remove redundant test. Add

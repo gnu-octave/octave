@@ -1,3 +1,10 @@
+2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-perm.h (octave_perm_matrix::builtin_type): New function.
+	* symtab.cc (build_sup_table): Build the matrix with extra column
+	and row to avoid segfault when undefined value leaks in.
+	(get_dispatch_type): Update. Gripe if invalid result is detected.
+
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
 	* data.cc: Ensure that CLOCKS_PER_SEC is defined instead of HZ.

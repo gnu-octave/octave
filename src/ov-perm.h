@@ -100,6 +100,8 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
     { return to_dense ().is_sorted_rows (mode); }
 
+  builtin_type_t builtin_type (void) const { return btyp_double; }
+
   bool is_perm_matrix (void) const { return true; }
 
   bool is_matrix_type (void) const { return true; }

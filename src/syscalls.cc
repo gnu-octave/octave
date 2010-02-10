@@ -85,7 +85,7 @@ mk_stat_map (const base_file_stat& fs)
   return m;
 }
 
-DEFUN (dup2, args, ,
+DEFUNX ("dup2", Fdup2, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})\n\
 Duplicate a file descriptor.\n\
@@ -137,7 +137,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (exec, args, ,
+DEFUNX ("exec", Fexec, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})\n\
 Replace current process with a new process.  Calling @code{exec} without\n\
@@ -215,7 +215,7 @@ error message.\n\
   return retval;
 }
 
-DEFUN (popen2, args, ,
+DEFUNX ("popen2", Fpopen2, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})\n\
 Start a subprocess with two-way communication.  The name of the process\n\
@@ -488,7 +488,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (fork, args, ,
+DEFUNX ("fork", Ffork, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} fork ()\n\
 Create a copy of the current process.\n\
@@ -533,7 +533,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
   return retval;
 }
 
-DEFUN (getpgrp, args, ,
+DEFUNX ("getpgrp", Fgetpgrp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pgid =} getpgrp ()\n\
 Return the process group id of the current process.\n\
@@ -559,7 +559,7 @@ Return the process group id of the current process.\n\
   return retval;
 }
 
-DEFUN (getpid, args, ,
+DEFUNX ("getpid", Fgetpid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pid =} getpid ()\n\
 Return the process id of the current process.\n\
@@ -577,7 +577,7 @@ Return the process id of the current process.\n\
   return retval;
 }
 
-DEFUN (getppid, args, ,
+DEFUNX ("getppid", Fgetppid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pid =} getppid ()\n\
 Return the process id of the parent process.\n\
@@ -595,7 +595,7 @@ Return the process id of the parent process.\n\
   return retval;
 }
 
-DEFUN (getegid, args, ,
+DEFUNX ("getegid", Fgetegid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {egid =} getegid ()\n\
 Return the effective group id of the current process.\n\
@@ -613,7 +613,7 @@ Return the effective group id of the current process.\n\
   return retval;
 }
 
-DEFUN (getgid, args, ,
+DEFUNX ("getgid", Fgetgid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {gid =} getgid ()\n\
 Return the real group id of the current process.\n\
@@ -631,7 +631,7 @@ Return the real group id of the current process.\n\
   return retval;
 }
 
-DEFUN (geteuid, args, ,
+DEFUNX ("geteuid", Fgeteuid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {euid =} geteuid ()\n\
 Return the effective user id of the current process.\n\
@@ -649,7 +649,7 @@ Return the effective user id of the current process.\n\
   return retval;
 }
 
-DEFUN (getuid, args, ,
+DEFUNX ("getuid", Fgetuid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {uid =} getuid ()\n\
 Return the real user id of the current process.\n\
@@ -667,7 +667,7 @@ Return the real user id of the current process.\n\
   return retval;
 }
 
-DEFUN (kill, args, ,
+DEFUNX ("kill", Fkill, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})\n\
 Send signal @var{sig} to process @var{pid}.\n\
@@ -719,7 +719,7 @@ Return 0 if successful, otherwise return -1.\n\
   return retval;
 }
 
-DEFUN (fstat, args, ,
+DEFUNX ("fstat", Ffstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} fstat (@var{fid})\n\
 Return information about the open file @var{fid}.  See @code{stat}\n\
@@ -756,7 +756,7 @@ for a description of the contents of @var{info}.\n\
   return retval;
 }
 
-DEFUN (lstat, args, ,
+DEFUNX ("lstat", Flstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
 See stat.\n\
@@ -847,7 +847,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (pipe, args, ,
+DEFUNX ("pipe", Fpipe, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{read_fd}, @var{write_fd}, @var{err}, @var{msg}] =} pipe ()\n\
 Create a pipe and return the reading and writing ends of the pipe\n\
@@ -902,7 +902,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (stat, args, ,
+DEFUNX ("stat", Fstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
@@ -1284,7 +1284,7 @@ system-dependent error message.\n\
   return retval;
 }
 
-DEFUN (waitpid, args, ,
+DEFUNX ("waitpid", Fwaitpid, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{pid}, @var{status}, @var{msg}] =} waitpid (@var{pid}, @var{options})\n\
 Wait for process @var{pid} to terminate.  The @var{pid} argument can be:\n\

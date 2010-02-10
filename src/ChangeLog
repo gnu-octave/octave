@@ -1,3 +1,9 @@
+2010-02-10  John W. Eaton  <jwe@octave.org>
+
+	* syscalls.cc (Fdup2, Fexec, Fpopen2, Ffork, Fgetpgrp, Fgetpid,
+	Fgetppid, Fgetegid, Fgetgid, Fgeteuid, Fkill, Ffstat, Flstat,
+	Fpipe, Fstat, Fwaitpid): Use DEFUNX instead of DEFUN.
+
 2010-02-10  David Grundberg  <davidg@cs.umu.se>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (read_images): Reimplement

@@ -777,8 +777,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 %% First input argument can be the special string "isreal",
 %% "isempty", "islogical", "length", "ndims" or "prodofsize"
 %!test
-%!  A = cellfun ("isreal", {true, 0.1, false, i*2, [], "abc"});
-%!  assert (A, [true, true, true, false, true, false]);
+%!  A = cellfun ("isreal", {true, 0.1, {}, i*2, [], "abc"});
+%!  assert (A, [true, true, false, false, true, true]);
 %!test
 %!  A = cellfun ("isempty", {true, 0.1, false, i*2, [], "abc"});
 %!  assert (A, [false, false, false, false, true, false]);

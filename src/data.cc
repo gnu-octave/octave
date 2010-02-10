@@ -3277,7 +3277,9 @@ complex ([1, 2], [3, 4])\n\
 DEFUN (isreal, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isreal (@var{x})\n\
-Return true if @var{x} is a real-valued numeric object.\n\
+Return true if @var{x} is a non-complex matrix or scalar.\n\
+For compatibility with Matlab, this includes logical and character\n\
+matrices.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -1,5 +1,11 @@
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-str-mat.h (octave_char_matrix_str::is_real_type): Delete
+	overload.
+	* data.cc (Fisreal): Improve docs.
+
+2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (Fisnumeric): Improve documentation.
 	(Fismatrix): Ditto.
 

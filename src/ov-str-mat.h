@@ -107,8 +107,6 @@ public:
 
   bool is_string (void) const { return true; }
 
-  bool is_real_type (void) const { return false; }
-
   bool is_numeric_type (void) const { return false; }
 
   double double_value (bool = false) const;

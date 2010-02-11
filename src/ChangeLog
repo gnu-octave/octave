@@ -1,5 +1,10 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* strfns.cc (Fstrcmpi, Fstrncmpi): Use DEFUNX instead of DEFUN.
+	(Fstrncmpi): Report strncmpi in error message, not strncmp.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* Cell.cc, bitfcns.cc, c-file-ptr-stream.cc, comment-list.cc,
 	data.cc, debug.cc, defaults.cc, defun.cc, dirfns.cc, display.cc,
 	dynamic-ld.cc, error.cc, file-io.cc, gl-render.cc,

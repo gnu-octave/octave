@@ -729,7 +729,7 @@ strcmpi_str_op (const std::string& s1, const std::string& s2,
                          icmp_char_eq ()));
 }
 
-DEFUN (strcmpi, args, ,
+DEFUNX ("strcmpi", Fstrcmpi, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
 Returns 1 if the character strings @var{s1} and @var{s2} are the same,\n\
@@ -786,7 +786,7 @@ strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n
                          icmp_char_eq ()));
 }
 
-DEFUN (strncmpi, args, ,
+DEFUN (strncmpi, Fstrncmpi, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
 Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the same,\n\
@@ -820,7 +820,7 @@ This is just the opposite of the corresponding C library function.\n\
                                       strncmpi_array_op, strncmpi_str_op);
             }
           else
-            error ("strncmp: N must be greater than 0");
+            error ("strncmpi: N must be greater than 0");
         }
     }
   else

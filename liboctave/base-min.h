@@ -41,7 +41,7 @@ public:
   base_minimizer& operator = (const base_minimizer& a)
     {
       if (this != &a)
-	x = a.x;
+        x = a.x;
 
       return *this;
     }
@@ -50,7 +50,7 @@ public:
   // minimization.
 
   virtual ColumnVector do_minimize (double& objf, octave_idx_type& inform,
-				    ColumnVector& lambda) = 0;
+                                    ColumnVector& lambda) = 0;
 
   // Lots of ways to call the single function and optionally set and
   // get additional information.
@@ -77,7 +77,7 @@ public:
     }
 
   virtual ColumnVector minimize (double& objf, octave_idx_type& inform,
-				 ColumnVector& lambda)
+                                 ColumnVector& lambda)
     {
       return do_minimize (objf, inform, lambda);
     }
@@ -100,7 +100,7 @@ public:
     }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
-				 octave_idx_type& inform)
+                                 octave_idx_type& inform)
     {
       x = x0;
       ColumnVector lambda;
@@ -108,7 +108,7 @@ public:
     }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
-				 octave_idx_type& inform, ColumnVector& lambda)
+                                 octave_idx_type& inform, ColumnVector& lambda)
     {
       x = x0;
       return do_minimize (objf, inform, lambda);

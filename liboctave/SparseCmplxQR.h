@@ -89,19 +89,19 @@ public:
   ~SparseComplexQR (void)
     {
       if (--rep->count <= 0)
-	delete rep;
+        delete rep;
     }
 
   SparseComplexQR& operator = (const SparseComplexQR& a)
     {
       if (this != &a)
-	{
-	  if (--rep->count <= 0)
-	    delete rep;
+        {
+          if (--rep->count <= 0)
+            delete rep;
 
-	  rep = a.rep;
-	  rep->count++;
-	}
+          rep = a.rep;
+          rep->count++;
+        }
       return *this;
     }
 
@@ -121,19 +121,19 @@ public:
   ComplexMatrix Q (void) const { return rep->Q(); }
 
   friend ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
-				octave_idx_type &info);
+                                octave_idx_type &info);
 
   friend SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-				      const SparseMatrix &b,
-				      octave_idx_type &info);
+                                      const SparseMatrix &b,
+                                      octave_idx_type &info);
 
   friend ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-				const ComplexMatrix &b,
-				octave_idx_type &info);
+                                const ComplexMatrix &b,
+                                octave_idx_type &info);
 
   friend SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-				      const SparseComplexMatrix &b,
-				      octave_idx_type &info);
+                                      const SparseComplexMatrix &b,
+                                      octave_idx_type &info);
 
 protected:
 #ifdef HAVE_CXSPARSE
@@ -147,25 +147,25 @@ protected:
 // Publish externally used friend functions.
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
-			      octave_idx_type &info);
+                              octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-			      const MArray2<double> &b, 
-			      octave_idx_type &info);
+                              const MArray2<double> &b, 
+                              octave_idx_type &info);
 
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-				    const SparseMatrix &b,
-				    octave_idx_type &info);
+                                    const SparseMatrix &b,
+                                    octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-			      const ComplexMatrix &b,
-			      octave_idx_type &info);
+                              const ComplexMatrix &b,
+                              octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-			      const MArray2<Complex> &b, 
-			      octave_idx_type &info);
+                              const MArray2<Complex> &b, 
+                              octave_idx_type &info);
 
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
-				    const SparseComplexMatrix &b,
-				    octave_idx_type &info);
+                                    const SparseComplexMatrix &b,
+                                    octave_idx_type &info);
 #endif

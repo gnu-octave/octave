@@ -49,7 +49,7 @@ public:
   FloatComplexLU& operator = (const FloatComplexLU& a)
     {
       if (this != &a)
-	base_lu <FloatComplexMatrix> :: operator = (a);
+        base_lu <FloatComplexMatrix> :: operator = (a);
 
       return *this;
     }

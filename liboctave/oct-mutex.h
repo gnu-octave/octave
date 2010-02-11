@@ -66,11 +66,11 @@ public:
   {
     if (rep != m.rep)
       {
-	if (--rep->count == 0)
-	  delete rep;
+        if (--rep->count == 0)
+          delete rep;
 
-	rep = m.rep;
-	rep->count++;
+        rep = m.rep;
+        rep->count++;
       }
 
     return *this;

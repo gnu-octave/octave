@@ -46,10 +46,10 @@ public:
   ComplexHESS& operator = (const ComplexHESS& a)
     {
       if (this != &a)
-	{
-	  hess_mat = a.hess_mat;
-	  unitary_hess_mat = a.unitary_hess_mat;
-	}
+        {
+          hess_mat = a.hess_mat;
+          unitary_hess_mat = a.unitary_hess_mat;
+        }
       return *this;
     }
 

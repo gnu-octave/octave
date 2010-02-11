@@ -45,10 +45,10 @@ public:
   ComplexQRP& operator = (const ComplexQRP& a)
     {
       if (this != &a)
-	{
-	  ComplexQR::operator = (a);
-	  p = a.p;
-	}
+        {
+          ComplexQR::operator = (a);
+          p = a.p;
+        }
       return *this;
     }
 

@@ -52,7 +52,7 @@ public:
       Alpha (a), Beta (b), initialized (0) { }
 
   CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il, octave_idx_type ir,
-		      double ll, double rr)  
+                      double ll, double rr)  
     : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
 
@@ -65,18 +65,18 @@ public:
   CollocWt& operator = (const CollocWt& a)
     {
       if (this != &a)
-	{
-	  n = a.n;
-	  inc_left = a.inc_left;
-	  inc_right = a.inc_right;
-	  lb = a.lb;
-	  rb = a.rb;
-	  r = a.r;
-	  q = a.q;
-	  A = a.A;
-	  B = a.B;
-	  initialized = a.initialized;
-	}
+        {
+          n = a.n;
+          inc_left = a.inc_left;
+          inc_right = a.inc_right;
+          lb = a.lb;
+          rb = a.rb;
+          r = a.r;
+          q = a.q;
+          A = a.A;
+          B = a.B;
+          initialized = a.initialized;
+        }
       return *this;
     }
 

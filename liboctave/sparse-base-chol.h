@@ -37,14 +37,14 @@ protected:
   {
   public:
     sparse_base_chol_rep (void) : count (1), Lsparse (0), 
-				  is_pd (false), minor_p (0) { }
+                                  is_pd (false), minor_p (0) { }
 
     sparse_base_chol_rep (const chol_type& a, 
-			  const bool natural) : count (1)
+                          const bool natural) : count (1)
       { init (a, natural); }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info, 
-			  const bool natural) : count (1)
+                          const bool natural) : count (1)
       { info = init (a, natural); }
 
     ~sparse_base_chol_rep (void)
@@ -54,7 +54,7 @@ protected:
 
     octave_idx_type P (void) const 
       { return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ? 
-		0 : minor_p + 1); }
+                0 : minor_p + 1); }
 
     ColumnVector perm (void) const { return perms + 1; }
 
@@ -93,11 +93,11 @@ protected:
     sparse_base_chol_rep (void) : count (1), is_pd (false), minor_p (0) { }
 
     sparse_base_chol_rep (const chol_type& a, 
-			  const bool natural) : count (1)
+                          const bool natural) : count (1)
       { init (a, natural); }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info, 
-			  const bool natural) : count (1)
+                          const bool natural) : count (1)
       { info = init (a, natural); }
 
     ~sparse_base_chol_rep (void) { }
@@ -140,11 +140,11 @@ public:
 
   sparse_base_chol (const chol_type& a, const bool n) : rep (new typename 
     sparse_base_chol<chol_type, chol_elt, p_type>::
-	sparse_base_chol_rep (a, n)) { }
+        sparse_base_chol_rep (a, n)) { }
 
   sparse_base_chol (const chol_type& a, octave_idx_type& info, const bool n) :
     rep (new typename sparse_base_chol<chol_type, chol_elt, p_type>::
-	sparse_base_chol_rep (a, info, n)) { }
+        sparse_base_chol_rep (a, info, n)) { }
 
   sparse_base_chol (const sparse_base_chol<chol_type, chol_elt, p_type>& a) : 
     rep (a.rep) { rep->count++; }
@@ -152,19 +152,19 @@ public:
   ~sparse_base_chol (void) 
     {
       if (--rep->count <= 0)
-	delete rep;
+        delete rep;
     }
 
   sparse_base_chol& operator = (const sparse_base_chol& a)
     {
       if (this != &a)
-	{
-	  if (--rep->count <= 0)
-	    delete rep;
+        {
+          if (--rep->count <= 0)
+            delete rep;
 
-	  rep = a.rep;
-	  rep->count++;
-	}
+          rep = a.rep;
+          rep->count++;
+        }
 
       return *this;
     }

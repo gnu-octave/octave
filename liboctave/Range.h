@@ -73,7 +73,7 @@ Range
   Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
-	      sortmode mode = ASCENDING) const;
+              sortmode mode = ASCENDING) const;
 
   sortmode is_sorted (sortmode mode = ASCENDING) const;
 
@@ -96,8 +96,8 @@ Range
   {
     if (rng_base != b)
       {
-	rng_base = b;
-	clear_cache ();
+        rng_base = b;
+        clear_cache ();
       }
   }
 
@@ -105,8 +105,8 @@ Range
   {
     if (rng_limit != l)
       {
-	rng_limit = l;
-	clear_cache ();
+        rng_limit = l;
+        clear_cache ();
       }
   }
 
@@ -114,8 +114,8 @@ Range
   {
     if (rng_inc != i)
       {
-	rng_inc = i;
-	clear_cache ();
+        rng_inc = i;
+        clear_cache ();
       }
   }
 

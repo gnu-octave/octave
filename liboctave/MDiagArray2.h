@@ -86,10 +86,10 @@ public:
       octave_idx_type nel = this->length ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  if (d[i] != T ())
-	    retval++;
-	}
+        {
+          if (d[i] != T ())
+            retval++;
+        }
 
       return retval;
     }

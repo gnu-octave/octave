@@ -109,7 +109,7 @@ public:
     : Array<T> (std::min (dv(0), dv(1))), d1 (dv(0)), d2 (dv(0))
     {
       if (dv.length () != 2)
-	(*current_liboctave_error_handler) ("too many dimensions");
+        (*current_liboctave_error_handler) ("too many dimensions");
     }
 
   DiagArray2 (const Array<T>& a) 

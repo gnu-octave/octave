@@ -63,7 +63,7 @@ public:
   Array3<T>& operator = (const Array3<T>& a)
     {
       if (this != &a)
-	Array<T>::operator = (a);
+        Array<T>::operator = (a);
 
       return *this;
     }
@@ -81,7 +81,7 @@ public:
     }
 
   Array3<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = ASCENDING) const
+                 sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());

@@ -54,22 +54,22 @@ public:
   {
     if (this != &fs)
       {
-	initialized = fs.initialized;
-	fail = fs.fail;
-	errmsg = fs.errmsg;
-	fs_mode = fs.fs_mode;
-	fs_ino = fs.fs_ino;
-	fs_dev = fs.fs_dev;
-	fs_nlink = fs.fs_nlink;
-	fs_uid = fs.fs_uid;
-	fs_gid = fs.fs_gid;
-	fs_size = fs.fs_size;
-	fs_atime = fs.fs_atime;
-	fs_mtime = fs.fs_mtime;
-	fs_ctime = fs.fs_ctime;
-	fs_rdev = fs.fs_rdev;
-	fs_blksize = fs.fs_blksize;
-	fs_blocks = fs.fs_blocks;
+        initialized = fs.initialized;
+        fail = fs.fail;
+        errmsg = fs.errmsg;
+        fs_mode = fs.fs_mode;
+        fs_ino = fs.fs_ino;
+        fs_dev = fs.fs_dev;
+        fs_nlink = fs.fs_nlink;
+        fs_uid = fs.fs_uid;
+        fs_gid = fs.fs_gid;
+        fs_size = fs.fs_size;
+        fs_atime = fs.fs_atime;
+        fs_mtime = fs.fs_mtime;
+        fs_ctime = fs.fs_ctime;
+        fs_rdev = fs.fs_rdev;
+        fs_blksize = fs.fs_blksize;
+        fs_blocks = fs.fs_blocks;
       }
 
     return *this;
@@ -217,10 +217,10 @@ public:
   {
     if (this != &fs)
       {
-	base_file_stat::operator = (fs);
+        base_file_stat::operator = (fs);
 
-	file_name = fs.file_name;
-	follow_links = fs.follow_links;
+        file_name = fs.file_name;
+        follow_links = fs.follow_links;
       }
 
     return *this;
@@ -238,11 +238,11 @@ public:
   {
     if (n != file_name || ! initialized  || force)
       {
-	initialized = false;
+        initialized = false;
 
-	file_name = n;
+        file_name = n;
 
-	update_internal (force);
+        update_internal (force);
       }
   }
 
@@ -276,9 +276,9 @@ public:
   {
     if (this != &fs)
       {
-	base_file_stat::operator = (fs);
+        base_file_stat::operator = (fs);
 
-	fid = fs.fid;
+        fid = fs.fid;
       }
 
     return *this;
@@ -296,11 +296,11 @@ public:
   {
     if (n != fid || ! initialized  || force)
       {
-	initialized = false;
+        initialized = false;
 
-	fid = n;
+        fid = n;
 
-	update_internal (force);
+        update_internal (force);
       }
   }
 

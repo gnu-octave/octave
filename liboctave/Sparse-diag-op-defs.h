@@ -48,7 +48,7 @@ RT do_mul_dm_sm (const DM& d, const SM& a)
      for (octave_idx_type j = 0; j < a_nc; j++)
        {
          r.xcidx (j) = l;
-	 const octave_idx_type colend = a.cidx (j+1);
+         const octave_idx_type colend = a.cidx (j+1);
          for (octave_idx_type k = a.cidx (j); k < colend; k++)
            {
              const octave_idx_type i = a.ridx (k);
@@ -88,14 +88,14 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
 
      for (octave_idx_type j = 0; j < mnc; ++j)
        {
-	 const typename DM::element_type s = d.dgelem (j);
-	 const octave_idx_type colend = a.cidx (j+1);
-	 r.xcidx (j) = a.cidx (j);
-	 for (octave_idx_type k = a.cidx (j); k < colend; ++k)
-	   {
-	     r.xdata (k) = s * a.data (k);
-	     r.xridx (k) = a.ridx (k);
-	   }
+         const typename DM::element_type s = d.dgelem (j);
+         const octave_idx_type colend = a.cidx (j+1);
+         r.xcidx (j) = a.cidx (j);
+         for (octave_idx_type k = a.cidx (j); k < colend; ++k)
+           {
+             r.xdata (k) = s * a.data (k);
+             r.xridx (k) = a.ridx (k);
+           }
        }
      for (octave_idx_type j = mnc; j <= nc; ++j)
        r.xcidx (j) = a.cidx (mnc);
@@ -178,8 +178,8 @@ RT do_commutative_add_dm_sm (const DM& d, const SM& a)
 {
   // Extra function to ensure this is only emitted once.
   return inner_do_add_sm_dm<RT> (a, d,
-				 identity_val<typename SM::element_type> (),
-				 identity_val<typename DM::element_type> ());
+                                 identity_val<typename SM::element_type> (),
+                                 identity_val<typename DM::element_type> ());
 }
 
 template <typename RT, typename DM, typename SM>
@@ -204,7 +204,7 @@ RT do_sub_dm_sm (const DM& d, const SM& a)
     }
   else
     return inner_do_add_sm_dm<RT> (a, d, std::negate<typename SM::element_type> (),
-				   identity_val<typename DM::element_type> ());
+                                   identity_val<typename DM::element_type> ());
 }
 
 template <typename RT, typename SM, typename DM>
@@ -229,8 +229,8 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
     }
   else
     return inner_do_add_sm_dm<RT> (a, d,
-				   identity_val<typename SM::element_type> (),
-				   std::negate<typename DM::element_type> ());
+                                   identity_val<typename SM::element_type> (),
+                                   std::negate<typename DM::element_type> ());
 }
 
 #endif // octave_sparse_diag_op_defs_h

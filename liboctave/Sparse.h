@@ -69,41 +69,41 @@ protected:
     int count;
 
     SparseRep (void) : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
-		       ncols (0), count (1) { c[0] = 0; }
+                       ncols (0), count (1) { c[0] = 0; }
 
     SparseRep (octave_idx_type n) : d (0), r (0), c (new octave_idx_type [n+1]), nzmx (0), nrows (n),
       ncols (n), count (1)
       { 
-	for (octave_idx_type i = 0; i < n + 1; i++)
-	  c[i] = 0;
+        for (octave_idx_type i = 0; i < n + 1; i++)
+          c[i] = 0;
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nzmx (0), 
       nrows (nr), ncols (nc), count (1)
       { 
-	for (octave_idx_type i = 0; i < nc + 1; i++)
-	  c[i] = 0;
+        for (octave_idx_type i = 0; i < nc + 1; i++)
+          c[i] = 0;
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz) : d (new T [nz]), 
       r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr), 
       ncols (nc), count (1)
       { 
-	for (octave_idx_type i = 0; i < nc + 1; i++)
-	  c[i] = 0;
+        for (octave_idx_type i = 0; i < nc + 1; i++)
+          c[i] = 0;
       }
 
     SparseRep (const SparseRep& a)
       : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
       nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
       {
-	for (octave_idx_type i = 0; i < nzmx; i++)
-	  {
-	    d[i] = a.d[i];
-	    r[i] = a.r[i];
-	  }
-	for (octave_idx_type i = 0; i < ncols + 1; i++)
-	  c[i] = a.c[i];
+        for (octave_idx_type i = 0; i < nzmx; i++)
+          {
+            d[i] = a.d[i];
+            r[i] = a.r[i];
+          }
+        for (octave_idx_type i = 0; i < ncols + 1; i++)
+          c[i] = a.c[i];
       }
  
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
@@ -146,10 +146,10 @@ protected:
   void make_unique (void)
     {
       if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = new SparseRep (*rep);
-	}
+        {
+          --rep->count;
+          rep = new SparseRep (*rep);
+        }
     }
 
 public:
@@ -170,7 +170,7 @@ private:
   typename Sparse<T>::SparseRep *nil_rep (void) const
     {
       static typename Sparse<T>::SparseRep *nr
-	= new typename Sparse<T>::SparseRep ();
+        = new typename Sparse<T>::SparseRep ();
 
       nr->count++;
 
@@ -218,10 +218,10 @@ public:
   Sparse (const Sparse<T>& a, const dim_vector& dv);
 
   Sparse (const Array<T>& a, const Array<octave_idx_type>& r, const Array<octave_idx_type>& c,
-	  octave_idx_type nr, octave_idx_type nc, bool sum_terms);
+          octave_idx_type nr, octave_idx_type nc, bool sum_terms);
 
   Sparse (const Array<T>& a, const Array<double>& r, const Array<double>& c,
-	  octave_idx_type nr, octave_idx_type nc, bool sum_terms);
+          octave_idx_type nr, octave_idx_type nc, bool sum_terms);
 
   // Sparsify a normal matrix
   Sparse (const Array2<T>& a);
@@ -313,23 +313,23 @@ public:
   T& checkelem (octave_idx_type n)
     {
       if (n < 0 || n >= numel ())
-	return range_error ("T& Sparse<T>::checkelem", n);
+        return range_error ("T& Sparse<T>::checkelem", n);
       else
-	{
-	  make_unique ();
-	  return xelem (n);
-	}
+        {
+          make_unique ();
+          return xelem (n);
+        }
     }
 
   T& checkelem (octave_idx_type i, octave_idx_type j)
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-	return range_error ("T& Sparse<T>::checkelem", i, j);
+        return range_error ("T& Sparse<T>::checkelem", i, j);
       else
-	{
-	  make_unique ();
-	  return xelem (i, j);
-	}
+        {
+          make_unique ();
+          return xelem (i, j);
+        }
     }
 
   T& checkelem (const Array<octave_idx_type>& ra_idx)
@@ -337,9 +337,9 @@ public:
       octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("T& Sparse<T>::checkelem", ra_idx);
+        return range_error ("T& Sparse<T>::checkelem", ra_idx);
       else
-	return elem (i);
+        return elem (i);
     }
 
   T& elem (octave_idx_type n)
@@ -370,17 +370,17 @@ public:
   T checkelem (octave_idx_type n) const
     {
       if (n < 0 || n >= numel ())
-	return range_error ("T Sparse<T>::checkelem", n);
+        return range_error ("T Sparse<T>::checkelem", n);
       else
-	return xelem (n);
+        return xelem (n);
     }
 
   T checkelem (octave_idx_type i, octave_idx_type j) const
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-	return range_error ("T Sparse<T>::checkelem", i, j);
+        return range_error ("T Sparse<T>::checkelem", i, j);
       else
-	return xelem (i, j);
+        return xelem (i, j);
     }
 
   T checkelem (const Array<octave_idx_type>& ra_idx) const
@@ -388,9 +388,9 @@ public:
       octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("T Sparse<T>::checkelem", ra_idx);
+        return range_error ("T Sparse<T>::checkelem", ra_idx);
       else
-	return Sparse<T>::elem (i);
+        return Sparse<T>::elem (i);
     }
 
   T elem (octave_idx_type n) const { return xelem (n); }
@@ -510,7 +510,7 @@ public:
 
   Sparse<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   Sparse<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = ASCENDING) const;
+                 sortmode mode = ASCENDING) const;
 
   Sparse<T> diag (octave_idx_type k = 0) const;
 
@@ -523,47 +523,47 @@ public:
 
     if (f_zero != 0.)
       {
-	octave_idx_type nr = rows ();
-	octave_idx_type nc = cols ();
+        octave_idx_type nr = rows ();
+        octave_idx_type nc = cols ();
       
-	result = Sparse<U> (nr, nc, f_zero);
+        result = Sparse<U> (nr, nc, f_zero);
 
-	for (octave_idx_type j = 0; j < nc; j++)
-	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	    {
-	      octave_quit ();
-	      /* Use data instead of elem for better performance.  */
-	      result.data (ridx (i) + j * nr) = fcn (data(i));
-	    }
+        for (octave_idx_type j = 0; j < nc; j++)
+          for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+            {
+              octave_quit ();
+              /* Use data instead of elem for better performance.  */
+              result.data (ridx (i) + j * nr) = fcn (data(i));
+            }
 
-	result.maybe_compress (true);
+        result.maybe_compress (true);
       }
     else
       {
-	octave_idx_type nz = nnz ();
-	octave_idx_type nr = rows ();
-	octave_idx_type nc = cols ();
+        octave_idx_type nz = nnz ();
+        octave_idx_type nr = rows ();
+        octave_idx_type nc = cols ();
 
-	result = Sparse<U> (nr, nc, nz);
-	octave_idx_type ii = 0;
-	result.cidx (ii) = 0;
+        result = Sparse<U> (nr, nc, nz);
+        octave_idx_type ii = 0;
+        result.cidx (ii) = 0;
 
-	for (octave_idx_type j = 0; j < nc; j++)
-	  {
-	    for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	      {
-		U val = fcn (data (i));
-		if (val != 0.0)
-		  {
-		    result.data (ii) = val;
-		    result.ridx (ii++) = ridx (i);
-		  }
-		octave_quit ();
-	      }
-	    result.cidx (j+1) = ii;
-	  }
+        for (octave_idx_type j = 0; j < nc; j++)
+          {
+            for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+              {
+                U val = fcn (data (i));
+                if (val != 0.0)
+                  {
+                    result.data (ii) = val;
+                    result.ridx (ii++) = ridx (i);
+                  }
+                octave_quit ();
+              }
+            result.cidx (j+1) = ii;
+          }
 
-	result.maybe_compress (false);
+        result.maybe_compress (false);
       }
 
     return result;
@@ -598,7 +598,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
 template<typename T>
 std::istream&
 read_sparse_matrix (std::istream& is, Sparse<T>& a,
-		    T (*read_fcn) (std::istream&))
+                    T (*read_fcn) (std::istream&))
 {
   octave_idx_type nr = a.rows ();
   octave_idx_type nc = a.cols ();
@@ -615,68 +615,68 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
        
       a.cidx (0) = 0;
       for (octave_idx_type i = 0; i < nz; i++)
-	{
+        {
           itmp = 0; jtmp = 0;
-	  is >> itmp;
-	  itmp--;
+          is >> itmp;
+          itmp--;
 
-	  is >> jtmp;
-	  jtmp--;
+          is >> jtmp;
+          jtmp--;
 
-	  if (itmp < 0 || itmp >= nr)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: row index = %d out of range",
-		 itmp + 1);
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
+          if (itmp < 0 || itmp >= nr)
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: row index = %d out of range",
+                 itmp + 1);
+              is.setstate (std::ios::failbit);
+              goto done;
+            }
 
-	  if (jtmp < 0 || jtmp >= nc)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: column index = %d out of range",
-		 jtmp + 1);
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
+          if (jtmp < 0 || jtmp >= nc)
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: column index = %d out of range",
+                 jtmp + 1);
+              is.setstate (std::ios::failbit);
+              goto done;
+            }
 
-	  if (jtmp < jold)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: column indices must appear in ascending order");
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
+          if (jtmp < jold)
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: column indices must appear in ascending order");
+              is.setstate (std::ios::failbit);
+              goto done;
+            }
           else if (jtmp > jold)
             {
               for (octave_idx_type j = jold; j < jtmp; j++)
                 a.cidx(j+1) = ii;
             }
           else if (itmp < iold)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: row indices must appear in ascending order in each column");
-	      is.setstate (std::ios::failbit);
-	      goto done;
-	    }
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: row indices must appear in ascending order in each column");
+              is.setstate (std::ios::failbit);
+              goto done;
+            }
 
-	  iold = itmp;
+          iold = itmp;
           jold = jtmp;
 
-	  tmp = read_fcn (is);
-	  
-	  if (is)
-	    {
-	      a.data (ii) = tmp;
-	      a.ridx (ii++) = itmp;
-	    }
-	  else
-	    goto done;
-	}
+          tmp = read_fcn (is);
+          
+          if (is)
+            {
+              a.data (ii) = tmp;
+              a.ridx (ii++) = itmp;
+            }
+          else
+            goto done;
+        }
 
       for (octave_idx_type j = jold; j < nc; j++)
-	a.cidx(j+1) = ii;
+        a.cidx(j+1) = ii;
     }
   
  done:

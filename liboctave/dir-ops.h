@@ -44,7 +44,7 @@ public:
   dir_entry& operator = (const dir_entry& d)
     {
       if (this != &d)
-	copy (d);
+        copy (d);
 
       return *this;
     }

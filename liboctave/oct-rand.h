@@ -66,7 +66,7 @@ public:
 
   // Set the current state/
   static void state (const ColumnVector &s,
-		     const std::string& d = std::string ())
+                     const std::string& d = std::string ())
   {
     if (instance_ok ())
       instance->do_state (s, d);

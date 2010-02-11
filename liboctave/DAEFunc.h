@@ -33,16 +33,16 @@ DAEFunc
 public:
 
   typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
-				      const ColumnVector& xdot,
-				      double t, octave_idx_type& ires);
+                                      const ColumnVector& xdot,
+                                      double t, octave_idx_type& ires);
 
   // This is really the form used by DASSL:
   //
   //   PD = DG/DY + CJ * DG/DYPRIME
 
   typedef Matrix (*DAEJacFunc) (const ColumnVector& x,
-				const ColumnVector& xdot,
-				double t, double cj);
+                                const ColumnVector& xdot,
+                                double t, double cj);
 
   DAEFunc (void)
     : fun (0), jac (0), reset (true) { }
@@ -59,11 +59,11 @@ public:
   DAEFunc& operator = (const DAEFunc& a)
     {
       if (this != &a)
-	{
-	  fun = a.fun;
-	  jac = a.jac;
-	  reset = a.reset;
-	}
+        {
+          fun = a.fun;
+          jac = a.jac;
+          reset = a.reset;
+        }
       return *this;
     }
 

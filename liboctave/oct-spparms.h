@@ -58,8 +58,8 @@ public:
   {
     if (&a != this)
       {
-	params = a.params;
-	keys = a.keys;
+        params = a.params;
+        keys = a.keys;
       }
     
     return *this;

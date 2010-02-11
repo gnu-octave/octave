@@ -57,15 +57,15 @@ public:
   Array2 (const dim_vector& dv) : Array<T> (dv) 
     { 
       if (dv.length () != 2)
-	(*current_liboctave_error_handler) ("too many dimensions");
+        (*current_liboctave_error_handler) ("too many dimensions");
     }
 
   Array2 (const dim_vector& dv, const T& val) : Array<T> (dv) 
     { 
       if (dv.length () != 2)
-	(*current_liboctave_error_handler) ("too many dimensions");
+        (*current_liboctave_error_handler) ("too many dimensions");
       else
-	Array<T>::fill (val); 
+        Array<T>::fill (val); 
     }
 
   Array2 (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
@@ -85,7 +85,7 @@ public:
   Array2<T>& operator = (const Array2<T>& a)
     {
       if (this != &a)
-	Array<T>::operator = (a);
+        Array<T>::operator = (a);
 
       return *this;
     }
@@ -115,14 +115,14 @@ public:
     }
 
   Array2<T> index (const idx_vector& i, bool resize_ok = false,
-		   const T& rfv = Array<T>::resize_fill_value ()) const
+                   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
   Array2<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok = false,
-		   const T& rfv = Array<T>::resize_fill_value ()) const
+                   const T& rfv = Array<T>::resize_fill_value ()) const
     {
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
@@ -135,7 +135,7 @@ public:
     }
 
   Array2<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = ASCENDING) const
+                 sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());

@@ -114,7 +114,7 @@ public:
   typedef typename ref_param<T>::type crefT;
 
   typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
-				    typename ref_param<T>::type);
+                                    typename ref_param<T>::type);
 
 protected:
 
@@ -164,7 +164,7 @@ private:
   typename Array<T>::ArrayRep *nil_rep (void) const
     {
       static typename Array<T>::ArrayRep *nr
-	= new typename Array<T>::ArrayRep ();
+        = new typename Array<T>::ArrayRep ();
 
       return nr;
     }
@@ -340,28 +340,28 @@ public:
   T& checkelem (octave_idx_type n)
     {
       if (n < 0 || n >= slice_len)
-	return range_error ("T& Array<T>::checkelem", n);
+        return range_error ("T& Array<T>::checkelem", n);
       else
-	{
-	  make_unique ();
-	  return xelem (n);
-	}
+        {
+          make_unique ();
+          return xelem (n);
+        }
     }
 
   T& checkelem (octave_idx_type i, octave_idx_type j)
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-	return range_error ("T& Array<T>::checkelem", i, j);
+        return range_error ("T& Array<T>::checkelem", i, j);
       else
-	return elem (dim1()*j+i);
+        return elem (dim1()*j+i);
     }
 
   T& checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
     {
       if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
-	return range_error ("T& Array<T>::checkelem", i, j, k);
+        return range_error ("T& Array<T>::checkelem", i, j, k);
       else
-	return elem (i, dim2()*k+j);
+        return elem (i, dim2()*k+j);
     }
 
   T& checkelem (const Array<octave_idx_type>& ra_idx)
@@ -369,9 +369,9 @@ public:
       octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("T& Array<T>::checkelem", ra_idx);
+        return range_error ("T& Array<T>::checkelem", ra_idx);
       else
-	return elem (i);
+        return elem (i);
     }
 
   T& elem (octave_idx_type n)
@@ -402,25 +402,25 @@ public:
   crefT checkelem (octave_idx_type n) const
     {
       if (n < 0 || n >= slice_len)
-	return range_error ("T Array<T>::checkelem", n);
+        return range_error ("T Array<T>::checkelem", n);
       else
-	return xelem (n);
+        return xelem (n);
     }
 
   crefT checkelem (octave_idx_type i, octave_idx_type j) const
     {
       if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
-	return range_error ("T Array<T>::checkelem", i, j);
+        return range_error ("T Array<T>::checkelem", i, j);
       else
-	return elem (dim1()*j+i);
+        return elem (dim1()*j+i);
     }
 
   crefT checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
     {
       if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
-	return range_error ("T Array<T>::checkelem", i, j, k);
+        return range_error ("T Array<T>::checkelem", i, j, k);
       else
-	return Array<T>::elem (i, Array<T>::dim1()*k+j);
+        return Array<T>::elem (i, Array<T>::dim1()*k+j);
     }
 
   crefT checkelem (const Array<octave_idx_type>& ra_idx) const
@@ -428,9 +428,9 @@ public:
       octave_idx_type i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("T Array<T>::checkelem", ra_idx);
+        return range_error ("T Array<T>::checkelem", ra_idx);
       else
-	return Array<T>::elem (i);
+        return Array<T>::elem (i);
     }
 
   crefT elem (octave_idx_type n) const { return xelem (n); }
@@ -613,7 +613,7 @@ public:
 
   Array<T> sort (int dim = 0, sortmode mode = ASCENDING) const;
   Array<T> sort (Array<octave_idx_type> &sidx, int dim = 0,
-		 sortmode mode = ASCENDING) const;
+                 sortmode mode = ASCENDING) const;
 
   // Ordering is auto-detected or can be specified.
   sortmode is_sorted (sortmode mode = UNSORTED) const;
@@ -659,7 +659,7 @@ public:
     octave_idx_type i;
     for (i = 0; i < len - 3; i += 4)
       {
-	octave_quit ();
+        octave_quit ();
 
         p[i] = fcn (m[i]);
         p[i+1] = fcn (m[i+1]);

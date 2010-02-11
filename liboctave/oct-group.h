@@ -48,11 +48,11 @@ public:
   {
     if (this != &gr)
       {
-	gr_name  = gr.gr_name;
-	gr_passwd = gr.gr_passwd;
-	gr_gid = gr.gr_gid;
-	gr_mem = gr.gr_mem;
-	valid = gr.valid;
+        gr_name  = gr.gr_name;
+        gr_passwd = gr.gr_passwd;
+        gr_gid = gr.gr_gid;
+        gr_mem = gr.gr_mem;
+        valid = gr.valid;
       }
 
     return *this;

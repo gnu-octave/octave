@@ -709,7 +709,7 @@ public:
           // FIXME -- this is a workaround due to MSVC's absence of
           // std::abs (int64_t).  The call to octave_int_abs can't
           // overflow, but std::abs (x) can!
-	  T w = octave_int_abs (x % y);
+          T w = octave_int_abs (x % y);
 
           if (w >= y - w) 
             z += 1 - (signbit (x) << 1);
@@ -955,7 +955,7 @@ OCTAVE_INT_BITCMP_OP (^)
 template <class T>
 octave_int<T>
 bitshift (const octave_int<T>& a, int n,
-	  const octave_int<T>& mask = std::numeric_limits<T>::max ())
+          const octave_int<T>& mask = std::numeric_limits<T>::max ())
 {
   if (n > 0)
     return (a << n) & mask;

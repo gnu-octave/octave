@@ -35,11 +35,11 @@ dir_path
 public:
 
   dir_path (const std::string& s = std::string (),
-	    const std::string& d = std::string ())
+            const std::string& d = std::string ())
     : p_orig (s), p_default (d), initialized (false)
     {
       if (! p_orig.empty ())
-	init ();
+        init ();
     }
 
   dir_path (const dir_path& dp)
@@ -139,10 +139,10 @@ private:
     static void path_sep_char (char c)
     {
       if (instance_ok ())
-	{
-	  instance->xpath_sep_char = c;
-	  instance->xpath_sep_str = std::string (1, c);
-	}
+        {
+          instance->xpath_sep_char = c;
+          instance->xpath_sep_str = std::string (1, c);
+        }
     }
 
     static std::string path_sep_str (void)

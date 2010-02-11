@@ -48,10 +48,10 @@ public:
   FloatCHOL& operator = (const FloatCHOL& a)
     {
       if (this != &a)
-	{
-	  chol_mat = a.chol_mat;
-	  xrcond = a.xrcond;
-	}
+        {
+          chol_mat = a.chol_mat;
+          xrcond = a.xrcond;
+        }
       return *this;
     }
 

@@ -523,19 +523,19 @@ public:
   ~idx_vector (void)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
     }
 
   idx_vector& operator = (const idx_vector& a)
     {
       if (this != &a)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-	  rep = a.rep;
-	  rep->count++;
-	}
+          rep = a.rep;
+          rep->count++;
+        }
       return *this;
     }
 

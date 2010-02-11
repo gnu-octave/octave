@@ -39,14 +39,14 @@ public:
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> () { }
 
   SparseComplexLU (const SparseComplexMatrix& a, 
-		   const Matrix& piv_thres = Matrix (),
-		   bool scale = false);
+                   const Matrix& piv_thres = Matrix (),
+                   bool scale = false);
 
   SparseComplexLU (const SparseComplexMatrix& a, const ColumnVector& Qinit,
-		   const Matrix& piv_thres = Matrix (), 
-		   bool scale = false, bool FixedQ = false,
-		   double droptol = -1., bool milu = false,
-		   bool udiag = false);
+                   const Matrix& piv_thres = Matrix (), 
+                   bool scale = false, bool FixedQ = false,
+                   double droptol = -1., bool milu = false,
+                   bool udiag = false);
 
   SparseComplexLU (const SparseComplexLU& a) 
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a) { }
@@ -54,8 +54,8 @@ public:
   SparseComplexLU& operator = (const SparseComplexLU& a)
     {
       if (this != &a)
-	sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> 
-	  :: operator = (a);
+        sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> 
+          :: operator = (a);
 
       return *this;
     }

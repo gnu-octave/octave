@@ -50,11 +50,11 @@ public:
   ODEFunc& operator = (const ODEFunc& a)
     {
       if (this != &a)
-	{
-	  fun = a.fun;
-	  jac = a.jac;
-	  reset = a.reset;
-	}
+        {
+          fun = a.fun;
+          jac = a.jac;
+          reset = a.reset;
+        }
       return *this;
     }
 

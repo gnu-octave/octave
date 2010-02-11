@@ -45,10 +45,10 @@ public:
   QRP& operator = (const QRP& a)
     {
       if (this != &a)
-	{
-	  QR::operator = (a);
-	  p = a.p;
-	}
+        {
+          QR::operator = (a);
+          p = a.p;
+        }
 
       return *this;
     }

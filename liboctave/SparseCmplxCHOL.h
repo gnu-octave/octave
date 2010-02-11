@@ -43,7 +43,7 @@ public:
   (a, natural) { }
 
   SparseComplexCHOL (const SparseComplexMatrix& a, octave_idx_type& info, 
-		     bool natural = true) :
+                     bool natural = true) :
     sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> 
   (a, info, natural) { }
 
@@ -55,8 +55,8 @@ public:
   SparseComplexCHOL& operator = (const SparseComplexCHOL& a)
     {
       if (this != &a)
-	sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix> ::
-	  operator = (a);
+        sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix> ::
+          operator = (a);
 
       return *this;
     }
@@ -65,11 +65,11 @@ public:
 
   SparseComplexMatrix L (void) const 
     { return sparse_base_chol<SparseComplexMatrix, Complex, 
-	SparseMatrix>:: L (); }
+        SparseMatrix>:: L (); }
 
   SparseComplexMatrix R (void) const 
     { return sparse_base_chol<SparseComplexMatrix, Complex,
-	SparseMatrix>:: R (); }
+        SparseMatrix>:: R (); }
 
   octave_idx_type P (void) const 
    { return sparse_base_chol<SparseComplexMatrix, Complex, 
@@ -77,20 +77,20 @@ public:
 
   ColumnVector perm (void) const 
     { return sparse_base_chol<SparseComplexMatrix, Complex, 
-	SparseMatrix>:: perm (); }
+        SparseMatrix>:: perm (); }
 
   SparseMatrix Q (void) const 
     { return sparse_base_chol<SparseComplexMatrix, Complex, 
-	SparseMatrix>:: Q (); }
+        SparseMatrix>:: Q (); }
 
   double rcond (void) const
     { return sparse_base_chol<SparseComplexMatrix, Complex, 
-	SparseMatrix>:: rcond (); }
+        SparseMatrix>:: rcond (); }
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   SparseComplexMatrix inverse (void) const
     { return sparse_base_chol<SparseComplexMatrix, Complex, 
-	SparseMatrix>:: inverse (); }
+        SparseMatrix>:: inverse (); }
 };
 
 SparseComplexMatrix OCTAVE_API chol2inv (const SparseComplexMatrix& r);

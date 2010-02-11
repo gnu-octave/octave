@@ -47,7 +47,7 @@ public:
   FloatLU& operator = (const FloatLU& a)
     {
       if (this != &a)
-	base_lu <FloatMatrix> :: operator = (a);
+        base_lu <FloatMatrix> :: operator = (a);
 
       return *this;
     }

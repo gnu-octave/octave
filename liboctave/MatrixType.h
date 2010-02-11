@@ -72,10 +72,10 @@ public:
   MatrixType (const matrix_type t, bool _full = false);
 
   MatrixType (const matrix_type t, const octave_idx_type np,
-	      const octave_idx_type *p, bool _full = false);
+              const octave_idx_type *p, bool _full = false);
 
   MatrixType (const matrix_type t, const octave_idx_type ku, 
-	      const octave_idx_type kl, bool _full = false);
+              const octave_idx_type kl, bool _full = false);
 
   ~MatrixType (void);
 
@@ -120,7 +120,7 @@ public:
   
   bool is_hermitian (void) const
     { return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian ||
-	      typ == Hermitian); }
+              typ == Hermitian); }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }
 

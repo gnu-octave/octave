@@ -52,7 +52,7 @@ public:
   NDArray (const Matrix& a) : MArrayN<double> (a) { }
 
   NDArray (const Array<octave_idx_type>& a, bool zero_based = false, 
-	   bool negative_to_nan = false);
+           bool negative_to_nan = false);
 
   template <class U>
   NDArray (const MArrayN<U>& a) : MArrayN<double> (a) { }
@@ -139,11 +139,11 @@ public:
   NDArray squeeze (void) const { return MArrayN<double>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
-			       const dim_vector& dimensions,
-			       int start_dimension = 0);
+                               const dim_vector& dimensions,
+                               int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-			    const dim_vector& dimensions);
+                            const dim_vector& dimensions);
 
   // i/o
 

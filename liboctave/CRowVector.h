@@ -91,10 +91,10 @@ public:
   // row vector by matrix -> row vector
 
   friend ComplexRowVector operator * (const ComplexRowVector& a,
-				      const ComplexMatrix& b);
+                                      const ComplexMatrix& b);
 
   friend ComplexRowVector operator * (const RowVector& a,
-				      const ComplexMatrix& b);
+                                      const ComplexMatrix& b);
 
   // other operations
 

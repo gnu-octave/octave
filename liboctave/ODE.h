@@ -44,10 +44,10 @@ public:
   ODE& operator = (const ODE& a)
     {
       if (this != &a)
-	{
-	  base_diff_eqn::operator = (a);
-	  ODEFunc::operator = (a);
-	}
+        {
+          base_diff_eqn::operator = (a);
+          ODEFunc::operator = (a);
+        }
       return *this;
     }
 
@@ -65,7 +65,7 @@ public:
   virtual Matrix do_integrate (const ColumnVector& tt) = 0;
 
   virtual Matrix do_integrate (const ColumnVector& tt,
-			       const ColumnVector& ttcrit) = 0;
+                               const ColumnVector& ttcrit) = 0;
 
   // Lots of ways to call the single function and optionally set and
   // get additional information.
@@ -89,7 +89,7 @@ public:
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
-			    const ColumnVector& tt)
+                            const ColumnVector& tt)
     {
       initialize (x0, t0);
       return do_integrate (tt);
@@ -98,14 +98,14 @@ public:
   // Integrate from current point and return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& tt,
-			    const ColumnVector& ttcrit)
+                            const ColumnVector& ttcrit)
     { return do_integrate (tt, ttcrit); }
 
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
-			    const ColumnVector& tt,
-			    const ColumnVector& ttcrit)
+                            const ColumnVector& tt,
+                            const ColumnVector& ttcrit)
     {
       initialize (x0, t0);
       return do_integrate (tt, ttcrit);

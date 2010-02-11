@@ -41,7 +41,7 @@ public:
     : DAE (s, tm, f), DASSL_options (), initialized (false) { }
 
   DASSL (const ColumnVector& s, const ColumnVector& deriv,
-	 double tm, DAEFunc& f)
+         double tm, DAEFunc& f)
     : DAE (s, deriv, tm, f), DASSL_options (), initialized (false) { }
 
   ~DASSL (void) { }
@@ -55,7 +55,7 @@ public:
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out);
 
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
-		    const ColumnVector& tcrit); 
+                    const ColumnVector& tcrit); 
 
   std::string error_message (void) const;
 

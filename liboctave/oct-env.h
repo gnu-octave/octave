@@ -82,7 +82,7 @@ private:
   std::string do_base_pathname (const std::string& s) const;
 
   std::string do_make_absolute (const std::string& s,
-				const std::string& dot_path) const;
+                                const std::string& dot_path) const;
 
   std::string do_getcwd (void) const;
 

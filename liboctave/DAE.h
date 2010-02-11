@@ -49,10 +49,10 @@ public:
   DAE& operator = (const DAE& a)
     {
       if (this != &a)
-	{
-	  base_diff_alg_eqn::operator = (a);
-	  DAEFunc::operator = (a);
-	}
+        {
+          base_diff_alg_eqn::operator = (a);
+          DAEFunc::operator = (a);
+        }
       return *this;
     }
 

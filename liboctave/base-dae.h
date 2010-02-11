@@ -37,7 +37,7 @@ public:
     : base_diff_eqn (xx, tt), xdot (xx.length (), 0.0) { }
 
   base_diff_alg_eqn (const ColumnVector& xx, const ColumnVector& xxdot,
-		     double tt)
+                     double tt)
     : base_diff_eqn (xx, tt), xdot (xxdot) { }
 
   base_diff_alg_eqn (const base_diff_alg_eqn& a)
@@ -48,10 +48,10 @@ public:
   base_diff_alg_eqn& operator = (const base_diff_alg_eqn& a)
     {
       if (this != &a)
-	{
-	  base_diff_eqn::operator = (a);
-	  xdot = a.xdot;
-	}
+        {
+          base_diff_eqn::operator = (a);
+          xdot = a.xdot;
+        }
       return *this;
     }
 
@@ -62,7 +62,7 @@ public:
     }
 
   void initialize (const ColumnVector& x0, const ColumnVector& xdot0,
-		   double t0)
+                   double t0)
     {
       base_diff_eqn::initialize (x0, t0);
       xdot = xdot0;

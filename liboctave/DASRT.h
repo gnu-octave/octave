@@ -44,11 +44,11 @@ public:
   DASRT_result& operator = (const DASRT_result& r)
     {
       if (this != &r)
-	{
-	  x = r.x;
-	  xdot = r.xdot;
+        {
+          x = r.x;
+          xdot = r.xdot;
           t = r.t;
-	}
+        }
       return *this;
     }
 
@@ -77,7 +77,7 @@ public:
     : DAERT (s, tm, f), DASRT_options (), initialized (false) { }
 
   DASRT (const ColumnVector& s, const ColumnVector& deriv,
-	 double tm, DAERTFunc& f)
+         double tm, DAERTFunc& f)
     : DAERT (s, deriv, tm, f), DASRT_options (), initialized (false) { }
 
   ~DASRT (void) { }
@@ -85,7 +85,7 @@ public:
   DASRT_result integrate (const ColumnVector& tout);
 
   DASRT_result integrate (const ColumnVector& tout,
-			  const ColumnVector& tcrit); 
+                          const ColumnVector& tcrit); 
 
   std::string error_message (void) const;
 

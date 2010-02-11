@@ -49,15 +49,15 @@ public:
 
     if (us >= 0)
       {
-	rem = us % 1000000;
-	extra = (us - rem) / 1000000;
+        rem = us % 1000000;
+        extra = (us - rem) / 1000000;
       }
     else
       {
-	us = -us;
-	rem = us % 1000000;
-	extra = - (1 + (us - rem) / 1000000);
-	rem = 1000000 - us % 1000000;
+        us = -us;
+        rem = us % 1000000;
+        extra = - (1 + (us - rem) / 1000000);
+        rem = 1000000 - us % 1000000;
       }
 
     ot_usec = rem;
@@ -80,8 +80,8 @@ public:
   {
     if (this != &ot)
       {
-	ot_unix_time = ot.ot_unix_time;
-	ot_usec = ot.ot_usec;
+        ot_unix_time = ot.ot_unix_time;
+        ot_usec = ot.ot_usec;
       }
 
     return *this;
@@ -162,7 +162,7 @@ inline octave_time
 operator + (const octave_time& t1, const octave_time& t2)
 {
   return octave_time (t1.unix_time () + t2.unix_time (),
-		      t1.usec () + t2.usec ());
+                      t1.usec () + t2.usec ());
 }
 
 class
@@ -188,17 +188,17 @@ public:
   {
     if (this != &tm)
       {
-	tm_usec = tm.tm_usec;
-	tm_sec = tm.tm_sec;
-	tm_min = tm.tm_min;
-	tm_hour = tm.tm_hour;
-	tm_mday = tm.tm_mday;
-	tm_mon = tm.tm_mon;
-	tm_year = tm.tm_year;
-	tm_wday = tm.tm_wday;
-	tm_yday = tm.tm_yday;
-	tm_isdst = tm.tm_isdst;
-	tm_zone = tm.tm_zone;
+        tm_usec = tm.tm_usec;
+        tm_sec = tm.tm_sec;
+        tm_min = tm.tm_min;
+        tm_hour = tm.tm_hour;
+        tm_mday = tm.tm_mday;
+        tm_mon = tm.tm_mon;
+        tm_year = tm.tm_year;
+        tm_wday = tm.tm_wday;
+        tm_yday = tm.tm_yday;
+        tm_isdst = tm.tm_isdst;
+        tm_zone = tm.tm_zone;
       }
 
     return *this;

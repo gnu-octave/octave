@@ -52,10 +52,10 @@ public:
   base_qr& operator = (const base_qr& a)
     {
       if (this != &a)
-	{
-	  q = a.q;
-	  r = a.r;
-	}
+        {
+          q = a.q;
+          r = a.r;
+        }
       return *this;
     }
 

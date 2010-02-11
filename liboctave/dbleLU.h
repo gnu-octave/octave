@@ -45,7 +45,7 @@ public:
   LU& operator = (const LU& a)
     {
       if (this != &a)
-	base_lu <Matrix> :: operator = (a);
+        base_lu <Matrix> :: operator = (a);
 
       return *this;
     }

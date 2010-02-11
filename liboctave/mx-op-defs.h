@@ -388,14 +388,14 @@ OP (const M& m, const DM& dm) \
       r.resize (m_nr, m_nc); \
  \
       if (m_nr > 0 && m_nc > 0) \
-	{ \
-	  r = R (m); \
+        { \
+          r = R (m); \
  \
-	  octave_idx_type len = dm.length (); \
+          octave_idx_type len = dm.length (); \
  \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    r.elem(i, i) OPEQ dm.elem(i, i); \
-	} \
+          for (octave_idx_type i = 0; i < len; i++) \
+            r.elem(i, i) OPEQ dm.elem(i, i); \
+        } \
     } \
  \
   return r; \
@@ -458,16 +458,16 @@ OP (const DM& dm, const M& m) \
   else \
     { \
       if (m_nr > 0 && m_nc > 0) \
-	{ \
-	  r = R (PREOP m); \
+        { \
+          r = R (PREOP m); \
  \
-	  octave_idx_type len = dm.length (); \
+          octave_idx_type len = dm.length (); \
  \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    r.elem(i, i) OPEQ dm.elem(i, i); \
-	} \
+          for (octave_idx_type i = 0; i < len; i++) \
+            r.elem(i, i) OPEQ dm.elem(i, i); \
+        } \
       else \
-	r.resize (m_nr, m_nc); \
+        r.resize (m_nr, m_nc); \
     } \
  \
   return r; \
@@ -530,10 +530,10 @@ operator * (const DM& dm, const M& m) \
       gripe_nonconformant (#OP, dm1_nr, dm1_nc, dm2_nr, dm2_nc); \
     else \
       { \
-	r.resize (dm1_nr, dm1_nc); \
+        r.resize (dm1_nr, dm1_nc); \
  \
-	if (dm1_nr > 0 && dm1_nc > 0) \
-	  F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ()); \
+        if (dm1_nr > 0 && dm1_nc > 0) \
+          F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ()); \
       } \
  \
     return r; \

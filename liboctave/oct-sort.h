@@ -108,7 +108,7 @@ octave_sort
 public:
 
   typedef bool (*compare_fcn_type) (typename ref_param<T>::type,
-				    typename ref_param<T>::type);
+                                    typename ref_param<T>::type);
 
   octave_sort (void);
 
@@ -159,10 +159,10 @@ public:
                     octave_idx_type lo, octave_idx_type up = -1);
 
   static bool ascending_compare (typename ref_param<T>::type,
-				 typename ref_param<T>::type);
+                                 typename ref_param<T>::type);
 
   static bool descending_compare (typename ref_param<T>::type,
-				  typename ref_param<T>::type);
+                                  typename ref_param<T>::type);
 
 private:
 

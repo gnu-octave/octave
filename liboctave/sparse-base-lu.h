@@ -42,13 +42,13 @@ public:
   sparse_base_lu& operator = (const sparse_base_lu& a)
     {
       if (this != &a)
-	{
-	  Lfact = a.Lfact;
-	  Ufact = a.Ufact;
-	  cond = a.cond;
-	  P = a.P;
-	  Q = a.Q;
-	}
+        {
+          Lfact = a.Lfact;
+          Ufact = a.Ufact;
+          cond = a.cond;
+          P = a.P;
+          Q = a.Q;
+        }
       return *this;
     }
 

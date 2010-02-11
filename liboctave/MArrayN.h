@@ -74,7 +74,7 @@ public:
     { return Array<T>::reshape (new_dims); }
 
   MArrayN<T> permute (const Array<octave_idx_type>& vec, 
-		      bool inv = false) const
+                      bool inv = false) const
     { return Array<T>::permute (vec, inv); }
 
   MArrayN<T> ipermute (const Array<octave_idx_type>& vec) const

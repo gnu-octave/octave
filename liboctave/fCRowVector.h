@@ -91,10 +91,10 @@ public:
   // row vector by matrix -> row vector
 
   friend FloatComplexRowVector operator * (const FloatComplexRowVector& a,
-				      const FloatComplexMatrix& b);
+                                      const FloatComplexMatrix& b);
 
   friend FloatComplexRowVector operator * (const FloatRowVector& a,
-				      const FloatComplexMatrix& b);
+                                      const FloatComplexMatrix& b);
 
   // other operations
 

@@ -45,10 +45,10 @@ public:
   FloatComplexQRP& operator = (const FloatComplexQRP& a)
     {
       if (this != &a)
-	{
-	  FloatComplexQR::operator = (a);
-	  p = a.p;
-	}
+        {
+          FloatComplexQR::operator = (a);
+          p = a.p;
+        }
       return *this;
     }
 

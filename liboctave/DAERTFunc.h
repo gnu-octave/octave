@@ -53,11 +53,11 @@ public:
   DAERTFunc& operator = (const DAERTFunc& a)
     {
       if (this != &a)
-	{
-	  DAEFunc::operator = (a);
-	  constr = a.constr;
-	  reset = a.reset;
-	}
+        {
+          DAEFunc::operator = (a);
+          constr = a.constr;
+          reset = a.reset;
+        }
       return *this;
     }
 

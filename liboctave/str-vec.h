@@ -74,10 +74,10 @@ public:
 
     for (octave_idx_type i = 0; i < n; i++)
       {
-	octave_idx_type tmp = elem(i).length ();
+        octave_idx_type tmp = elem(i).length ();
 
-	if (tmp > longest)
-	  longest = tmp;
+        if (tmp > longest)
+          longest = tmp;
       }
 
     return longest;

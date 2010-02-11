@@ -133,7 +133,7 @@ DefQuad : public Quad
     : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul,
-	   const ColumnVector& sing)
+           const ColumnVector& sing)
     : Quad (fcn), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 
@@ -195,7 +195,7 @@ FloatDefQuad : public Quad
     : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
 
   FloatDefQuad (float_integrand_fcn fcn, float ll, float ul,
-	   const FloatColumnVector& sing)
+           const FloatColumnVector& sing)
     : Quad (fcn), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 

@@ -33,7 +33,7 @@ extern OCTAVE_API int SparseCholPrint (const char *fmt, ...);
 
 extern OCTAVE_API bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
-		   octave_idx_type nrows, octave_idx_type ncols,
-		   octave_idx_type nnz);
+                   octave_idx_type nrows, octave_idx_type ncols,
+                   octave_idx_type nnz);
 
 #endif

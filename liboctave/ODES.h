@@ -38,7 +38,7 @@ public:
     : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0), theta () { }
 
   ODES (const ColumnVector& s, const ColumnVector& xtheta, double tm,
-	ODESFunc& f)
+        ODESFunc& f)
     : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0),
       theta (xtheta) { }
 
@@ -48,13 +48,13 @@ public:
   ODES& operator = (const ODES& a)
     {
       if (this != &a)
-	{
-	  base_diff_eqn::operator = (a);
-	  ODESFunc::operator = (a);
+        {
+          base_diff_eqn::operator = (a);
+          ODESFunc::operator = (a);
 
-	  xdot = a.xdot;
-	  theta = a.theta;
-	}
+          xdot = a.xdot;
+          theta = a.theta;
+        }
       return *this;
     }
 
@@ -65,7 +65,7 @@ public:
   void initialize (const ColumnVector& x, double t);
 
   void initialize (const ColumnVector& x, double t,
-		   const ColumnVector& theta);
+                   const ColumnVector& theta);
 
 protected:
 

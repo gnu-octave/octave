@@ -50,15 +50,15 @@ public:
   base_diff_eqn& operator = (const base_diff_eqn& a)
     {
       if (this != &a)
-	{
-	  x = a.x;
-	  t = a.t;
-	  stop_time = a.stop_time;
-	  stop_time_set = a.stop_time_set;
-	  restart = a.restart;
-	  integration_error = a.integration_error;
-	  istate = a.istate;
-	}
+        {
+          x = a.x;
+          t = a.t;
+          stop_time = a.stop_time;
+          stop_time_set = a.stop_time_set;
+          restart = a.restart;
+          integration_error = a.integration_error;
+          istate = a.istate;
+        }
 
       return *this;
     }

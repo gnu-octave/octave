@@ -36,7 +36,7 @@ public:
 };
 
 bool octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,
-			       octave_sparse_sort_idxl* j);
+                               octave_sparse_sort_idxl* j);
 
 class
 octave_idx_vector_sort
@@ -47,6 +47,6 @@ public:
 };
 
 bool octave_idx_vector_comp (octave_idx_vector_sort* i,
-			     octave_idx_vector_sort* j);
+                             octave_idx_vector_sort* j);
 
 #endif

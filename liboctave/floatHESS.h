@@ -46,10 +46,10 @@ public:
   FloatHESS& operator = (const FloatHESS& a)
     {
       if (this != &a)
-	{
-	  hess_mat = a.hess_mat;
-	  unitary_hess_mat = a.unitary_hess_mat;
-	}
+        {
+          hess_mat = a.hess_mat;
+          unitary_hess_mat = a.unitary_hess_mat;
+        }
       return *this;
     }
 

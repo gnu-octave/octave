@@ -42,7 +42,7 @@ public:
     : schur_mat (), unitary_mat () { init (a, ord, calc_unitary); }
 
   FloatSCHUR (const FloatMatrix& a, const std::string& ord, int& info, 
-	 bool calc_unitary = true)
+         bool calc_unitary = true)
     : schur_mat (), unitary_mat () { info = init (a, ord, calc_unitary); }
 
   FloatSCHUR (const FloatSCHUR& a)
@@ -51,10 +51,10 @@ public:
   FloatSCHUR& operator = (const FloatSCHUR& a)
     {
       if (this != &a)
-	{
-	  schur_mat = a.schur_mat;
-	  unitary_mat = a.unitary_mat;
-	}
+        {
+          schur_mat = a.schur_mat;
+          unitary_mat = a.unitary_mat;
+        }
       return *this;
     }
 

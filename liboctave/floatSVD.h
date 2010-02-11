@@ -52,12 +52,12 @@ public:
   FloatSVD& operator = (const FloatSVD& a)
     {
       if (this != &a)
-	{
-	  type_computed = a.type_computed;
-	  sigma = a.sigma;
-	  left_sm = a.left_sm;
-	  right_sm = a.right_sm;
-	}
+        {
+          type_computed = a.type_computed;
+          sigma = a.sigma;
+          left_sm = a.left_sm;
+          right_sm = a.right_sm;
+        }
 
       return *this;
     }

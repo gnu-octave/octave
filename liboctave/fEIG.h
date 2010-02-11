@@ -72,10 +72,10 @@ public:
   FloatEIG& operator = (const FloatEIG& a)
     {
       if (this != &a)
-	{
-	  lambda = a.lambda;
-	  v = a.v;
-	}
+        {
+          lambda = a.lambda;
+          v = a.v;
+        }
       return *this;
     }
 

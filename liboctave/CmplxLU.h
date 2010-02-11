@@ -49,7 +49,7 @@ public:
   ComplexLU& operator = (const ComplexLU& a)
     {
       if (this != &a)
-	base_lu <ComplexMatrix> :: operator = (a);
+        base_lu <ComplexMatrix> :: operator = (a);
 
       return *this;
     }

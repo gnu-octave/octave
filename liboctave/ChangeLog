@@ -1,3 +1,31 @@
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
+	* Array-util.h, Array.h, Array2.h, Array3.h, CColVector.h,
+	CMatrix.h, CNDArray.h, CRowVector.h, CSparse.h, CmplxCHOL.h,
+	CmplxGEPBAL.h, CmplxHESS.h, CmplxLU.h, CmplxQRP.h, CmplxSCHUR.h,
+	CmplxSVD.h, CollocWt.h, DAE.h, DAEFunc.h, DAERT.h, DAERTFunc.h,
+	DASPK.h, DASRT.h, DASSL.h, DiagArray2.h, EIG.h, MArrayN.h,
+	MDiagArray2.h, MSparse-defs.h, MSparse.h, MatrixType.h, ODE.h,
+	ODEFunc.h, ODES.h, ODESFunc.h, Quad.h, Range.h,
+	Sparse-diag-op-defs.h, Sparse-op-defs.h, Sparse-perm-op-defs.h,
+	Sparse.h, SparseCmplxCHOL.h, SparseCmplxLU.h, SparseCmplxQR.h,
+	SparseQR.h, SparsedbleCHOL.h, SparsedbleLU.h, base-dae.h,
+	base-de.h, base-lu.h, base-min.h, base-qr.h, boolNDArray.h,
+	boolSparse.h, chNDArray.h, cmd-hist.h, dMatrix.h, dNDArray.h,
+	dSparse.h, data-conv.h, dbleCHOL.h, dbleGEPBAL.h, dbleHESS.h,
+	dbleLU.h, dbleQRP.h, dbleSCHUR.h, dbleSVD.h, dir-ops.h,
+	fCColVector.h, fCMatrix.h, fCNDArray.h, fCRowVector.h,
+	fCmplxCHOL.h, fCmplxGEPBAL.h, fCmplxHESS.h, fCmplxLU.h,
+	fCmplxQRP.h, fCmplxSCHUR.h, fCmplxSVD.h, fEIG.h, fMatrix.h,
+	fNDArray.h, file-stat.h, floatCHOL.h, floatGEPBAL.h,
+	floatHESS.h, floatLU.h, floatQRP.h, floatSCHUR.h, floatSVD.h,
+	glob-match.h, idx-vector.h, intNDArray.h, lo-ieee.h,
+	lo-specfun.h, mx-op-decl.h, mx-op-defs.h, oct-env.h, oct-fftw.h,
+	oct-group.h, oct-inttypes.h, oct-mutex.h, oct-passwd.h,
+	oct-rand.h, oct-shlib.h, oct-sort.h, oct-spparms.h, oct-time.h,
+	oct-uname.h, pathsearch.h, sparse-base-chol.h, sparse-base-lu.h,
+	sparse-sort.h, sparse-util.h, statdefs.h, str-vec.h: Untabify.
+
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.h (template <class U> Matrix (const Array<U>&)):

@@ -51,14 +51,14 @@ public:
   {
     if (this != &unm)
       {
-	utsname_sysname = unm.utsname_sysname;
-	utsname_nodename = unm.utsname_nodename;
-	utsname_release = unm.utsname_release;
-	utsname_version = unm.utsname_version;
-	utsname_machine = unm.utsname_machine;
+        utsname_sysname = unm.utsname_sysname;
+        utsname_nodename = unm.utsname_nodename;
+        utsname_release = unm.utsname_release;
+        utsname_version = unm.utsname_version;
+        utsname_machine = unm.utsname_machine;
 
-	msg = unm.msg;
-	err = unm.err;
+        msg = unm.msg;
+        err = unm.err;
       }
 
     return *this;

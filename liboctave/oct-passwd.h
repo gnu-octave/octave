@@ -48,14 +48,14 @@ public:
   {
     if (this != &pw)
       {
-	pw_name = pw.pw_name;
-	pw_passwd = pw.pw_passwd;
-	pw_uid = pw.pw_uid;
-	pw_gid = pw.pw_gid;
-	pw_gecos = pw.pw_gecos;
-	pw_dir = pw.pw_dir;
-	pw_shell = pw.pw_shell;
-	valid = pw.valid;
+        pw_name = pw.pw_name;
+        pw_passwd = pw.pw_passwd;
+        pw_uid = pw.pw_uid;
+        pw_gid = pw.pw_gid;
+        pw_gecos = pw.pw_gecos;
+        pw_dir = pw.pw_dir;
+        pw_shell = pw.pw_shell;
+        valid = pw.valid;
       }
 
     return *this;

@@ -39,7 +39,7 @@ public:
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, natural) { }
 
   SparseCHOL (const SparseMatrix& a, octave_idx_type& info, 
-	      bool natural = true) : 
+              bool natural = true) : 
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, info, natural) { }
 
   SparseCHOL (const SparseCHOL& a) : 
@@ -50,7 +50,7 @@ public:
   SparseCHOL& operator = (const SparseCHOL& a)
     {
       if (this != &a)
-	sparse_base_chol <SparseMatrix, double, SparseMatrix> :: operator = (a);
+        sparse_base_chol <SparseMatrix, double, SparseMatrix> :: operator = (a);
 
       return *this;
     }

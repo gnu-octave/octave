@@ -44,7 +44,7 @@ public:
     }
 
   FloatComplexSVD (const FloatComplexMatrix& a, octave_idx_type& info,
-	      SVD::type svd_type = SVD::std)
+              SVD::type svd_type = SVD::std)
     {
       info = init (a, svd_type);
     }
@@ -56,12 +56,12 @@ public:
   FloatComplexSVD& operator = (const FloatComplexSVD& a)
     {
       if (this != &a)
-	{
-	  type_computed = a.type_computed;
-	  sigma = a.sigma;
-	  left_sm = a.left_sm;
-	  right_sm = a.right_sm;
-	}
+        {
+          type_computed = a.type_computed;
+          sigma = a.sigma;
+          left_sm = a.left_sm;
+          right_sm = a.right_sm;
+        }
       return *this;
     }
 

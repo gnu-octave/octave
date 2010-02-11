@@ -63,7 +63,7 @@ SM octinternal_do_mul_pm_sm (const PermMatrix& p, const SM& a)
       const octave_idx_type *prow = p.pvec ().data ();
       OCTAVE_LOCAL_BUFFER(octave_idx_type, pcol, nr);
       for (octave_idx_type i = 0; i < nr; ++i)
-	pcol[prow[i]] = i;
+        pcol[prow[i]] = i;
       return octinternal_do_mul_colpm_sm (pcol, a);
     }
   else
@@ -98,10 +98,10 @@ SM octinternal_do_mul_sm_rowpm (const SM& a, const octave_idx_type *prow)
       const octave_idx_type j = prow[j_src];
       const octave_idx_type kend_src = a.cidx (j_src + 1);
       for (k = r.xcidx (j); k_src < kend_src; ++k, ++k_src)
-	{
-	  r.xridx (k) = a.ridx (k_src);
-	  r.xdata (k) = a.data (k_src);
-	}
+        {
+          r.xridx (k) = a.ridx (k_src);
+          r.xdata (k) = a.data (k_src);
+        }
     }
   assert (k_src == nent);
 
@@ -134,10 +134,10 @@ SM octinternal_do_mul_sm_colpm (const SM& a, const octave_idx_type *pcol)
       octave_idx_type k_src;
       const octave_idx_type kend_src = a.cidx (j_src + 1);
       for (k_src = a.cidx (j_src); k_src < kend_src; ++k_src, ++k)
-	{
-	  r.xridx (k) = a.ridx (k_src);
-	  r.xdata (k) = a.data (k_src);
-	}
+        {
+          r.xridx (k) = a.ridx (k_src);
+          r.xdata (k) = a.data (k_src);
+        }
     }
   assert (k == nent);
 

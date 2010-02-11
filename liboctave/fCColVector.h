@@ -93,26 +93,26 @@ public:
   // matrix by column vector -> column vector operations
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
-					 const FloatColumnVector& b);
+                                         const FloatColumnVector& b);
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexMatrix& a,
-					 const FloatComplexColumnVector& b);
+                                         const FloatComplexColumnVector& b);
 
   // matrix by column vector -> column vector operations
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatMatrix& a,
-					 const FloatComplexColumnVector& b);
+                                         const FloatComplexColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatDiagMatrix& a,
-					 const FloatComplexColumnVector& b);
+                                         const FloatComplexColumnVector& b);
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
-					 const ColumnVector& b);
+                                         const ColumnVector& b);
 
   friend OCTAVE_API FloatComplexColumnVector operator * (const FloatComplexDiagMatrix& a,
-					 const FloatComplexColumnVector& b);
+                                         const FloatComplexColumnVector& b);
 
   // other operations
 

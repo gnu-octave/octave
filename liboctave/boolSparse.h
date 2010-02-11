@@ -56,13 +56,13 @@ public:
   explicit SparseBoolMatrix (const boolNDArray& a) : Sparse<bool> (a) { }
 
   explicit SparseBoolMatrix (const Array<bool> a, const Array<octave_idx_type>& r, 
-			     const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
-			     octave_idx_type nc = -1, bool sum_terms = true)
+                             const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
+                             octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
 
   explicit SparseBoolMatrix (const Array<bool> a, const Array<double>& r, 
-			     const Array<double>& c, octave_idx_type nr = -1, 
-			     octave_idx_type nc = -1, bool sum_terms = true)
+                             const Array<double>& c, octave_idx_type nr = -1, 
+                             octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
 
   SparseBoolMatrix (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) : Sparse<bool> (r, c, num_nz) { }
@@ -86,7 +86,7 @@ public:
   SparseBoolMatrix& insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx);
 
   SparseBoolMatrix concat (const SparseBoolMatrix& rb, 
-			   const Array<octave_idx_type>& ra_idx);
+                           const Array<octave_idx_type>& ra_idx);
 
   SparseBoolMatrix diag (octave_idx_type k = 0) const;
 

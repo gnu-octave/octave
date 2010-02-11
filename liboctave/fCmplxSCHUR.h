@@ -39,11 +39,11 @@ public:
     : schur_mat (), unitary_mat () { }
 
   FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord,
-		bool calc_unitary = true)
+                bool calc_unitary = true)
     : schur_mat (), unitary_mat () { init (a, ord, calc_unitary); }
 
   FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord, octave_idx_type& info,
-		bool calc_unitary = true)
+                bool calc_unitary = true)
     : schur_mat (), unitary_mat () { info = init (a, ord, calc_unitary); }
 
   FloatComplexSCHUR (const FloatComplexSCHUR& a)
@@ -52,10 +52,10 @@ public:
   FloatComplexSCHUR& operator = (const FloatComplexSCHUR& a)
     {
       if (this != &a)
-	{
-	  schur_mat = a.schur_mat;
-	  unitary_mat = a.unitary_mat;
-	}
+        {
+          schur_mat = a.schur_mat;
+          unitary_mat = a.unitary_mat;
+        }
       return *this;
     }
 

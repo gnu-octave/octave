@@ -287,11 +287,11 @@ class boolNDArray;
   extern OCTAVE_API T ## NDArray min (octave_ ## T d, const T ## NDArray& m); \
   extern OCTAVE_API T ## NDArray min (const T ## NDArray& m, octave_ ## T d); \
   extern OCTAVE_API T ## NDArray min (const T ## NDArray& a,  \
-				       const T ## NDArray& b); \
+                                       const T ## NDArray& b); \
   extern OCTAVE_API T ## NDArray max (octave_ ## T d, const T ## NDArray& m); \
   extern OCTAVE_API T ## NDArray max (const T ## NDArray& m, octave_ ## T d); \
   extern OCTAVE_API T ## NDArray max (const T ## NDArray& a, \
-				       const T ## NDArray& b);
+                                       const T ## NDArray& b);
 
 // permutation matrix by matrix ops and vice versa
 

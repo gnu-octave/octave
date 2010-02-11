@@ -129,13 +129,13 @@ public:
   octave_shlib& operator = (const octave_shlib& sl)
     {
       if (rep != sl.rep)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-	  rep = sl.rep;
-	  rep->count++;
-	}
+          rep = sl.rep;
+          rep->count++;
+        }
 
       return *this;
     }

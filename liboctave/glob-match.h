@@ -42,11 +42,11 @@ public:
   };
 
   glob_match (const std::string& p,
-	      unsigned int xopts = pathname|noescape|period)
+              unsigned int xopts = pathname|noescape|period)
     : pat (p), fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
 
   glob_match (const string_vector& p = string_vector (),
-	      unsigned int xopts = pathname|noescape|period)
+              unsigned int xopts = pathname|noescape|period)
     : pat (p), fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
 
   glob_match (const glob_match& gm)

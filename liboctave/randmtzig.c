@@ -213,29 +213,29 @@ oct_init_by_array (uint32_t *init_key, int key_length)
   for (; k; k--)
     {
       state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1664525UL))
-	+ init_key[j] + j; /* non linear */
+        + init_key[j] + j; /* non linear */
       state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       j++;
       if (i >= MT_N)
-	{
-	  state[0] = state[MT_N-1];
-	  i = 1;
-	}
+        {
+          state[0] = state[MT_N-1];
+          i = 1;
+        }
       if (j >= key_length)
-	j = 0;
+        j = 0;
     }
   for (k = MT_N - 1; k; k--)
     {
       state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1566083941UL))
-	- i; /* non linear */
+        - i; /* non linear */
       state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       if (i >= MT_N)
-	{
-	  state[0] = state[MT_N-1];
-	  i = 1;
-	}
+        {
+          state[0] = state[MT_N-1];
+          i = 1;
+        }
     }
 
   state[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
@@ -253,14 +253,14 @@ oct_init_by_entropy (void)
     FILE* urandom =fopen("/dev/urandom", "rb");
     if (urandom) 
       {
-	while (n < MT_N) 
-	  {
-	    unsigned char word[4];
-	    if (fread(word, 4, 1, urandom) != 1) 
-	      break;
-	    entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(word[3]<<24);
-	  }
-	fclose(urandom);
+        while (n < MT_N) 
+          {
+            unsigned char word[4];
+            if (fread(word, 4, 1, urandom) != 1) 
+              break;
+            entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(word[3]<<24);
+          }
+        fclose(urandom);
       }
 
     /* If there isn't enough entropy, gather some from various sources */
@@ -271,9 +271,9 @@ oct_init_by_entropy (void)
 #ifdef HAVE_GETTIMEOFDAY
     if (n < MT_N) 
       {
-	struct timeval tv;
-	if (gettimeofday(&tv, NULL) != -1)
-	  entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
+        struct timeval tv;
+        if (gettimeofday(&tv, NULL) != -1)
+          entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
       }
 #endif
     /* Send all the entropy into the initial state vector */
@@ -623,30 +623,30 @@ oct_randn (void)
       const double x = ((int32_t)r) * wi[idx];
       if (rabs < ki[idx])
 #endif /* ALLBITS */
-	return x;        /* 99.3% of the time we return here 1st try */
+        return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
-	{
-	  /* As stated in Marsaglia and Tsang
-	   * 
-	   * For the normal tail, the method of Marsaglia[5] provides:
-	   * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
-	   * then return r+x. Except that r+x is always in the positive 
-	   * tail!!!! Any thing random might be used to determine the
-	   * sign, but as we already have r we might as well use it
-	   *
-	   * [PAK] but not the bottom 8 bits, since they are all 0 here!
-	   */
-	  double xx, yy;
-	  do
-	    {
-	      xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
-	      yy = - log (RANDU);
-	    } 
-	  while ( yy+yy <= xx*xx);
-	  return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
-	}
+        {
+          /* As stated in Marsaglia and Tsang
+           * 
+           * For the normal tail, the method of Marsaglia[5] provides:
+           * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
+           * then return r+x. Except that r+x is always in the positive 
+           * tail!!!! Any thing random might be used to determine the
+           * sign, but as we already have r we might as well use it
+           *
+           * [PAK] but not the bottom 8 bits, since they are all 0 here!
+           */
+          double xx, yy;
+          do
+            {
+              xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
+              yy = - log (RANDU);
+            } 
+          while ( yy+yy <= xx*xx);
+          return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+        }
       else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp(-0.5*x*x))
-	return x;
+        return x;
     }
 }
 
@@ -662,18 +662,18 @@ oct_rande (void)
       const int idx = (int)(ri & 0xFF);
       const double x = ri * we[idx];
       if (ri < ke[idx])
-	return x;		// 98.9% of the time we return here 1st try
+        return x;               // 98.9% of the time we return here 1st try
       else if (idx == 0)
-	{
-	  /* As stated in Marsaglia and Tsang
-	   * 
-	   * For the exponential tail, the method of Marsaglia[5] provides:
+        {
+          /* As stated in Marsaglia and Tsang
+           * 
+           * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
-	   */
-	  return ZIGGURAT_EXP_R - log(RANDU);
-	}
+           */
+          return ZIGGURAT_EXP_R - log(RANDU);
+        }
       else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp(-x))
-	return x;
+        return x;
     }
 }
 

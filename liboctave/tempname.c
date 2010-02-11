@@ -67,10 +67,10 @@ exists (const char *file)
   else
     {
       /* We report that the file exists if stat failed for a reason other
-	 than nonexistence.  In this case, it may or may not exist, and we
-	 don't know; but reporting that it does exist will never cause any
-	 trouble, while reporting that it doesn't exist when it does would
-	 violate the interface of __stdio_gen_tempname.  */
+         than nonexistence.  In this case, it may or may not exist, and we
+         don't know; but reporting that it does exist will never cause any
+         trouble, while reporting that it doesn't exist when it does would
+         violate the interface of __stdio_gen_tempname.  */
       int exists = errno != ENOENT;
       errno = save;
       return exists;
@@ -98,8 +98,8 @@ static const char letters[] =
    (12345ZZZ), NULL is returned.  */
 char *
 __stdio_gen_tempname (const char *dir, const char *pfx,
-		      int dir_search, size_t *lenptr,
-		      FILE **streamptr)
+                      int dir_search, size_t *lenptr,
+                      FILE **streamptr)
 {
   int saverrno = errno;
   static const char tmpdir[] = P_tmpdir;
@@ -114,18 +114,18 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
     {
       register const char *d = getenv("TMPDIR");
       if (d != NULL && !diraccess(d))
-	d = NULL;
+        d = NULL;
       if (d == NULL && dir != NULL && diraccess(dir))
-	d = dir;
+        d = dir;
       if (d == NULL && diraccess(tmpdir))
-	d = tmpdir;
+        d = tmpdir;
       if (d == NULL && diraccess("/tmp"))
-	d = "/tmp";
+        d = "/tmp";
       if (d == NULL)
-	{
-	  errno = ENOENT;
-	  return NULL;
-	}
+        {
+          errno = ENOENT;
+          return NULL;
+        }
       dir = d;
     }
   else
@@ -141,7 +141,7 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
     {
       plen = strlen(pfx);
       if (plen > 5)
-	plen = 5;
+        plen = 5;
     }
   else
     plen = 0;
@@ -158,49 +158,49 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
 
   len = dlen + 1 + plen + 5 + 3;
   for (; *idx < ((sizeof (letters) - 1) * (sizeof (letters) - 1) *
-		 (sizeof (letters) - 1));
+                 (sizeof (letters) - 1));
        ++*idx)
     {
       /* Construct a file name and see if it already exists.
 
-	 We use a single counter in *IDX to cycle each of three
-	 character positions through each of 62 possible letters.  */
+         We use a single counter in *IDX to cycle each of three
+         character positions through each of 62 possible letters.  */
 
       if (sizeof (buf) < len)
-	return NULL;
+        return NULL;
 
       sprintf (buf, "%.*s/%.*s%.5d%c%c%c",
-	       (int) dlen, dir, (int) plen,
-	       pfx, pid % 100000,
-	       letters[*idx
-		       % (sizeof (letters) - 1)],
-	       letters[(*idx / (sizeof (letters) - 1))
-		       % (sizeof (letters) - 1)],
-	       letters[(*idx / ((sizeof (letters) - 1) *
-				(sizeof (letters) - 1)))
-		       % (sizeof (letters) - 1)]
-	       );
+               (int) dlen, dir, (int) plen,
+               pfx, pid % 100000,
+               letters[*idx
+                       % (sizeof (letters) - 1)],
+               letters[(*idx / (sizeof (letters) - 1))
+                       % (sizeof (letters) - 1)],
+               letters[(*idx / ((sizeof (letters) - 1) *
+                                (sizeof (letters) - 1)))
+                       % (sizeof (letters) - 1)]
+               );
 
       if (! buf || strlen (buf) != (int) len)
-	return NULL;
+        return NULL;
   
       if (streamptr != NULL)
-	abort ();
+        abort ();
       else if (exists (buf))
-	continue;
+        continue;
 
       /* If the file already existed we have continued the loop above,
-	 so we only get here when we have a winning name to return.  */
+         so we only get here when we have a winning name to return.  */
 
       errno = saverrno;
 
       if (lenptr != NULL)
-	*lenptr = len + 1;
+        *lenptr = len + 1;
       return buf;
     }
 
   /* We got out of the loop because we ran out of combinations to try.  */
-  errno = EEXIST;		/* ? */
+  errno = EEXIST;               /* ? */
   return NULL;
 }
 

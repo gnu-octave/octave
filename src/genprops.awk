@@ -307,7 +307,7 @@ function emit_declarations ()
       else if (type[i] == "double_radio_property")
         emit_get_double_radio(i);
       else if (type[i] == "array_property" \
-	       || type[i] == "row_vector_property")
+               || type[i] == "row_vector_property")
         emit_get_array(i);
       else if (type[i] == "bool_property")
         emit_get_bool(i);
@@ -341,10 +341,10 @@ function emit_declarations ()
 
       if (emit_set[i] == "definition")
       {
-	if (updaters[i] || limits[i] || mode[i])
-	  has_builtin_listeners = 1;
-	else
-	  has_builtin_listeners = 0;
+        if (updaters[i] || limits[i] || mode[i])
+          has_builtin_listeners = 1;
+        else
+          has_builtin_listeners = 0;
 
         printf ("\n  {\n    if (! error_state)\n      {\n        if (%s.set (val, %s))\n          {\n",
           name[i], (has_builtin_listeners ? "false" : "true"));
@@ -354,12 +354,12 @@ function emit_declarations ()
           printf ("            update_%s ();\n", name[i]);
         if (limits[i])
           printf ("            update_axis_limits (\"%s\");\n", name[i]);
-	if (has_builtin_listeners)
-	  printf ("            %s.run_listeners (POSTSET);\n", name[i]);
+        if (has_builtin_listeners)
+          printf ("            %s.run_listeners (POSTSET);\n", name[i]);
         printf ("            mark_modified ();\n");
-	printf ("          }\n");
-	if (mode[i])
-	  printf ("        else\n          set_%smode (\"manual\");\n", name[i]);
+        printf ("          }\n");
+        if (mode[i])
+          printf ("        else\n          set_%smode (\"manual\");\n", name[i]);
         printf ("      }\n  }\n\n");
       }
       else
@@ -560,15 +560,15 @@ function emit_source ()
       {
         dval = defval[i];
         if (type[i] == "radio_property" || type[i] == "color_property")
-      	{
-      	  k = index (dval, "{");
-	  dval = substr (dval, k+1);
-	  l = index (dval, "}");
-      	  if (k > 0 && l > 0)
-	    dval = "\"" substr (dval, 1, l-1) "\"";
-	  else
-	    dval = "octave_value ()";
-      	}
+        {
+          k = index (dval, "{");
+          dval = substr (dval, k+1);
+          l = index (dval, "}");
+          if (k > 0 && l > 0)
+            dval = "\"" substr (dval, 1, l-1) "\"";
+          else
+            dval = "octave_value ()";
+        }
 
         printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
                 (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
@@ -604,7 +604,7 @@ function emit_source ()
 
     printf ("std::set<std::string>\n");
     if (base)
-	printf ("base_properties");
+        printf ("base_properties");
     else
       printf ("%s::properties", class_name);
     printf ("::all_property_names (void) const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
@@ -736,25 +736,25 @@ BEGIN {
         if (index (quals, "S"))
           emit_set[idx] = "declaration";
         
-	## The property is hidden
-	if (index (quals, "h"))
-	  hidden[idx] = 1;
+        ## The property is hidden
+        if (index (quals, "h"))
+          hidden[idx] = 1;
 
-	## The property is read-only
-	if (index (quals, "r"))
-	  readonly[idx] = 1;
+        ## The property is read-only
+        if (index (quals, "r"))
+          readonly[idx] = 1;
 
         ## There is an inline updater method that should be called
         ## from the set method
         if (index (quals, "u"))
           updater[idx] = "inline";
         
-	## There is an extern updater method that should be called
+        ## There is an extern updater method that should be called
         ## from the set method
         if (index (quals, "U"))
           updater[idx] = "extern";
 
-	## There is not factory default value
+        ## There is not factory default value
         if (index (quals, "f"))
           factory[idx] = 0;
 

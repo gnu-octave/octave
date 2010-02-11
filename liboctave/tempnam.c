@@ -28,8 +28,8 @@ Fifth Floor, Boston, MA  02110-1301, USA.  */
 #include <string.h>
 
 extern char *__stdio_gen_tempname (const char *dir, const char *pfx,
-				   int dir_search, size_t *lenptr,
-				   FILE **streamptr);
+                                   int dir_search, size_t *lenptr,
+                                   FILE **streamptr);
 
 /* Generate a unique temporary filename using up to five characters of PFX
    if it is not NULL.  The directory to put this file in is searched for

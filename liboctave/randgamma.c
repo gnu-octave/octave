@@ -107,7 +107,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
   if (a <= 0 || INFINITE(a)) 
     {
       for (i=0; i < n; i++) 
-	r[i] = NAN;
+        r[i] = NAN;
       return;
     }
 
@@ -119,18 +119,18 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
       v = (1+c*x);
       v *= v*v;
       if (v <= 0) 
-	goto restart; /* rare, so don't bother moving up */
+        goto restart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
       if (u >= 1.-0.0331*xsq*xsq && log(u) >= 0.5*xsq + d*(1-v+log(v)))
-	goto restart;
+        goto restart;
       r[i] = d*v;
     }
   if (a < 1) 
     { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
       for (i = 0; i < n; i++) 
-	r[i] *= exp(-REXP/a);
+        r[i] *= exp(-REXP/a);
     }
 }
 

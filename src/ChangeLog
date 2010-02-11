@@ -1,5 +1,11 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/config-module.awk, genprops.awk, graphics.h.in,
+	mkgendoc, mk-pkg-add, mxarray.h.in, zfstream.cc, zfstream.h:
+	Untabify.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* strfns.cc (Fstrcmpi, Fstrncmpi): Use DEFUNX instead of DEFUN.
 	(Fstrncmpi): Report strncmpi in error message, not strncmp.
 

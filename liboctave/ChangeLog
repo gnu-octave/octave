@@ -1,5 +1,11 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* sparse-mk-ops.awk, mk-ops.awk, filemode.c, lo-cieee.c,
+	oct-rl-hist.c, randgamma.c, randmtzig.c, randpoisson.c,
+	tempnam.c, tempname.c: Untabify.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* Array-C.cc, Array-fC.cc, Array-util.cc, Array.cc,
 	CColVector.cc, CDiagMatrix.cc, CMatrix.cc, CNDArray.cc,
 	CRowVector.cc, CSparse.cc, CmplxAEPBAL.cc, CmplxCHOL.cc,

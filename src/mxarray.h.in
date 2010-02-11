@@ -134,7 +134,7 @@ public:
   mxArray (const octave_value& ov);
 
   mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
-	   mxComplexity flag = mxREAL);
+           mxComplexity flag = mxREAL);
 
   mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag = mxREAL);
 
@@ -149,7 +149,7 @@ public:
   mxArray (mwSize m, const char **str);
 
   mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
-	   mxComplexity flag = mxREAL);
+           mxComplexity flag = mxREAL);
 
   mxArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys);
 
@@ -304,9 +304,9 @@ public:
 
     if (str)
       {
-	mwSize sz =  sizeof (mxChar) * (strlen (str) + 1);
-	retval = static_cast<char *> (mxArray::malloc (sz));
-	strcpy (retval, str);
+        mwSize sz =  sizeof (mxChar) * (strlen (str) + 1);
+        retval = static_cast<char *> (mxArray::malloc (sz));
+        strcpy (retval, str);
       }
 
     return retval;

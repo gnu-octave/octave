@@ -99,36 +99,36 @@ static void setst ();
    10 characters are stored in STR; no terminating null is added.
    The characters stored in STR are:
 
-   0	File type.  'd' for directory, 'c' for character
-	special, 'b' for block special, 'm' for multiplex,
-	'l' for symbolic link, 's' for socket, 'p' for fifo,
-	'-' for regular, '?' for any other file type
+   0    File type.  'd' for directory, 'c' for character
+        special, 'b' for block special, 'm' for multiplex,
+        'l' for symbolic link, 's' for socket, 'p' for fifo,
+        '-' for regular, '?' for any other file type
 
-   1	'r' if the owner may read, '-' otherwise.
+   1    'r' if the owner may read, '-' otherwise.
 
-   2	'w' if the owner may write, '-' otherwise.
+   2    'w' if the owner may write, '-' otherwise.
 
-   3	'x' if the owner may execute, 's' if the file is
-	set-user-id, '-' otherwise.
-	'S' if the file is set-user-id, but the execute
-	bit isn't set.
+   3    'x' if the owner may execute, 's' if the file is
+        set-user-id, '-' otherwise.
+        'S' if the file is set-user-id, but the execute
+        bit isn't set.
 
-   4	'r' if group members may read, '-' otherwise.
+   4    'r' if group members may read, '-' otherwise.
 
-   5	'w' if group members may write, '-' otherwise.
+   5    'w' if group members may write, '-' otherwise.
 
-   6	'x' if group members may execute, 's' if the file is
-	set-group-id, '-' otherwise.
-	'S' if it is set-group-id but not executable.
+   6    'x' if group members may execute, 's' if the file is
+        set-group-id, '-' otherwise.
+        'S' if it is set-group-id but not executable.
 
-   7	'r' if any user may read, '-' otherwise.
+   7    'r' if any user may read, '-' otherwise.
 
-   8	'w' if any user may write, '-' otherwise.
+   8    'w' if any user may write, '-' otherwise.
 
-   9	'x' if any user may execute, 't' if the file is "sticky"
-	(will be retained in swap space after execution), '-'
-	otherwise.
-	'T' if the file is sticky but not executable.  */
+   9    'x' if any user may execute, 't' if the file is "sticky"
+        (will be retained in swap space after execution), '-'
+        otherwise.
+        'T' if the file is sticky but not executable.  */
 
 void
 filemodestring (statp, str)
@@ -227,30 +227,30 @@ setst (bits, chars)
   if (bits & S_ISUID)
     {
       if (chars[3] != 'x')
-	/* Set-uid, but not executable by owner.  */
-	chars[3] = 'S';
+        /* Set-uid, but not executable by owner.  */
+        chars[3] = 'S';
       else
-	chars[3] = 's';
+        chars[3] = 's';
     }
 #endif
 #ifdef S_ISGID
   if (bits & S_ISGID)
     {
       if (chars[6] != 'x')
-	/* Set-gid, but not executable by group.  */
-	chars[6] = 'S';
+        /* Set-gid, but not executable by group.  */
+        chars[6] = 'S';
       else
-	chars[6] = 's';
+        chars[6] = 's';
     }
 #endif
 #ifdef S_ISVTX
   if (bits & S_ISVTX)
     {
       if (chars[9] != 'x')
-	/* Sticky, but not executable by others.  */
-	chars[9] = 'T';
+        /* Sticky, but not executable by others.  */
+        chars[9] = 'T';
       else
-	chars[9] = 't';
+        chars[9] = 't';
     }
 #endif
 }

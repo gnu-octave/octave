@@ -224,7 +224,7 @@ gzfilebuf::pbackfail (gzfilebuf::int_type c)
   if (this->is_open())
     {
       if (gzseek (file, this->gptr() - this->egptr() - 1, SEEK_CUR) < 0)
-	return traits_type::eof();
+        return traits_type::eof();
   
       // Invalidates contents of the buffer
       enable_buffer ();
@@ -234,11 +234,11 @@ gzfilebuf::pbackfail (gzfilebuf::int_type c)
       int bytes_read = gzread(file, buffer, buffer_size);
       // Indicates error or EOF
       if (bytes_read <= 0)
-	{
-	  // Reset get area
-	  this->setg(buffer, buffer, buffer);
-	  return traits_type::eof();
-	}
+        {
+          // Reset get area
+          this->setg(buffer, buffer, buffer);
+          return traits_type::eof();
+        }
 
       // Make all bytes read from file available as get area
       this->setg(buffer, buffer, buffer + bytes_read);
@@ -247,9 +247,9 @@ gzfilebuf::pbackfail (gzfilebuf::int_type c)
       // flag a failure
       gzfilebuf::int_type ret = traits_type::to_int_type(*(this->gptr()));
       if (ret != c)
-	return traits_type::eof();
+        return traits_type::eof();
       else
-	return ret;
+        return ret;
     }
   else
     return traits_type::eof();
@@ -276,8 +276,8 @@ gzfilebuf::underflow()
       char_type *ptr1 = buffer;
       char_type *ptr2 = this->egptr() - STASHED_CHARACTERS + 1;
       if (ptr2 > this->eback())
-	while (stash++ <= STASHED_CHARACTERS)
-	  *ptr1++ = *ptr2++;
+        while (stash++ <= STASHED_CHARACTERS)
+          *ptr1++ = *ptr2++;
     }
 
   // Attempt to fill internal buffer from gzipped file
@@ -462,7 +462,7 @@ gzfilebuf::disable_buffer()
 // Seek functions
 gzfilebuf::pos_type
 gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way, 
-		   std::ios_base::openmode)
+                   std::ios_base::openmode)
 {
   pos_type ret = pos_type (off_type (-1));
 
@@ -471,22 +471,22 @@ gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way,
       off_type computed_off = off;
 
       if ((io_mode & std::ios_base::in) && way == std::ios_base::cur)
-	computed_off += this->gptr() - this->egptr();
+        computed_off += this->gptr() - this->egptr();
 
       if (way == std::ios_base::beg)
-	ret = pos_type (gzseek (file, computed_off, SEEK_SET));
+        ret = pos_type (gzseek (file, computed_off, SEEK_SET));
       else if (way == std::ios_base::cur)
-	ret = pos_type (gzseek (file, computed_off, SEEK_CUR));
+        ret = pos_type (gzseek (file, computed_off, SEEK_CUR));
       else
-	// Can't seek from end of a gzipped file, so this will give -1
-	ret = pos_type (gzseek (file, computed_off, SEEK_END));
+        // Can't seek from end of a gzipped file, so this will give -1
+        ret = pos_type (gzseek (file, computed_off, SEEK_END));
   
       if (io_mode & std::ios_base::in)
-	// Invalidates contents of the buffer
-	enable_buffer ();
+        // Invalidates contents of the buffer
+        enable_buffer ();
       else
-	// flush contents of buffer to file
-	overflow ();
+        // flush contents of buffer to file
+        overflow ();
     }
 
   return ret;
@@ -502,11 +502,11 @@ gzfilebuf::seekpos(pos_type sp, std::ios_base::openmode)
       ret = pos_type (gzseek (file, sp, SEEK_SET));
 
       if (io_mode & std::ios_base::in)
-	// Invalidates contents of the buffer
-	enable_buffer ();
+        // Invalidates contents of the buffer
+        enable_buffer ();
       else
-	// flush contents of buffer to file
-	overflow ();
+        // flush contents of buffer to file
+        overflow ();
     }
 
   return ret;

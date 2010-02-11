@@ -130,7 +130,7 @@ octave_remove_history (int n)
   if (discard)
     {
       if (discard->line)
-	free (discard->line);
+        free (discard->line);
 
       free (discard);
     }
@@ -148,7 +148,7 @@ octave_history_goto_mark (int n)
       h = current_history ();
 
       if (h)
-	retval = h->line;
+        retval = h->line;
     }
 
   return retval;
@@ -179,7 +179,7 @@ octave_history_list (int limit, int number_lines)
       char **p = retval;
 
       while (*p)
-	free (*p++);
+        free (*p++);
 
       free (retval);
 
@@ -195,7 +195,7 @@ octave_history_list (int limit, int number_lines)
       int beg = 0;
       int end = 0;
       while (hlist[end])
-	end++;
+        end++;
 
       beg = (limit < 0 || end < limit) ? 0 : (end - limit);
 
@@ -203,21 +203,21 @@ octave_history_list (int limit, int number_lines)
 
       k = 0;
       for (i = beg; i < end; i++)
-	{
-	  char *line = hlist[i]->line;
-	  int len = line ? strlen (line) : 0;
-	  char *tmp = malloc (len + 64);
+        {
+          char *line = hlist[i]->line;
+          int len = line ? strlen (line) : 0;
+          char *tmp = malloc (len + 64);
 
-	  if (number_lines)
-	    sprintf (tmp, "%5d%c%s", i + history_base,
-		     hlist[i]->data ? '*' : ' ',
-		     line ? line : "");
-	  else
-	    sprintf (tmp, "%c%s", hlist[i]->data ? '*' : ' ',
-		     line ? line : "");
+          if (number_lines)
+            sprintf (tmp, "%5d%c%s", i + history_base,
+                     hlist[i]->data ? '*' : ' ',
+                     line ? line : "");
+          else
+            sprintf (tmp, "%c%s", hlist[i]->data ? '*' : ' ',
+                     line ? line : "");
 
-	  retval[k++] = tmp;
-	}
+          retval[k++] = tmp;
+        }
 
       retval[k] = 0;
     }
@@ -233,7 +233,7 @@ octave_replace_history_entry (int which, const char *line)
   if (discard)
     {
       if (discard->line)
-	free (discard->line);
+        free (discard->line);
 
       free (discard);
     }

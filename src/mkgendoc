@@ -71,7 +71,7 @@ cat << \EOF
 
 static void
 print_doc_string (const std::string& name, const std::string& file_name,
-		  const std::string& doc)
+                  const std::string& doc)
 {
   std::cout << "";
 
@@ -83,7 +83,7 @@ print_doc_string (const std::string& name, const std::string& file_name,
     std::cout << name << "\n";
 
   std::cout << "@c " << file_name << "\n"
-	    << doc << "\n";
+            << doc << "\n";
 }
 
 EOF

@@ -212,80 +212,80 @@ pprsc (double my)
       /* generate uniform number U -- U(0, p6)                           */
       /* case distinction corresponding to U                             */
       if ((U = RUNI * p6) < p2)
-	{                                            /* centre left      */
-	  
-	  /* immediate acceptance region 
-	     R2 = [k2, m) *[0, f2),  X = k2, ... m -1 */
-	  if ((V = U - p1) < 0.0)  return(k2 + floor(U/f2));
-	  /* immediate acceptance region 
-	     R1 = [k1, k2)*[0, f1),  X = k1, ... k2-1 */
-	  if ((W = V / dl) < f1 )  return(k1 + floor(V/f1));
-	  
-	  /* computation of candidate X < k2, and its counterpart Y > k2 */
-	  /* either squeeze-acceptance of X or acceptance-rejection of Y */
-	  Dk = floor(dl * RUNI) + 1.0;
-	  if (W <= f2 - Dk * (f2 - f2/r2))
-	    {                                        /* quick accept of  */
-	      return(k2 - Dk);                       /* X = k2 - Dk      */
-	    }
-	  if ((V = f2 + f2 - W) < 1.0)
-	    {                                        /* quick reject of Y*/
-	      Y = k2 + Dk;
-	      if (V <= f2 + Dk * (1.0 - f2)/(dl + 1.0))
-		{                                    /* quick accept of  */
-		  return(Y);                         /* Y = k2 + Dk      */
-		}
-	      if (V <= f(Y, l_my, c_pm))  return(Y); /* final accept of Y*/
-	    }
-	  X = k2 - Dk;
-	}
+        {                                            /* centre left      */
+          
+          /* immediate acceptance region 
+             R2 = [k2, m) *[0, f2),  X = k2, ... m -1 */
+          if ((V = U - p1) < 0.0)  return(k2 + floor(U/f2));
+          /* immediate acceptance region 
+             R1 = [k1, k2)*[0, f1),  X = k1, ... k2-1 */
+          if ((W = V / dl) < f1 )  return(k1 + floor(V/f1));
+          
+          /* computation of candidate X < k2, and its counterpart Y > k2 */
+          /* either squeeze-acceptance of X or acceptance-rejection of Y */
+          Dk = floor(dl * RUNI) + 1.0;
+          if (W <= f2 - Dk * (f2 - f2/r2))
+            {                                        /* quick accept of  */
+              return(k2 - Dk);                       /* X = k2 - Dk      */
+            }
+          if ((V = f2 + f2 - W) < 1.0)
+            {                                        /* quick reject of Y*/
+              Y = k2 + Dk;
+              if (V <= f2 + Dk * (1.0 - f2)/(dl + 1.0))
+                {                                    /* quick accept of  */
+                  return(Y);                         /* Y = k2 + Dk      */
+                }
+              if (V <= f(Y, l_my, c_pm))  return(Y); /* final accept of Y*/
+            }
+          X = k2 - Dk;
+        }
       else if (U < p4)
-	{                                            /* centre right     */
-	  /*  immediate acceptance region 
-	      R3 = [m, k4+1)*[0, f4), X = m, ... k4    */
-	  if ((V = U - p3) < 0.0)  return(k4 - floor((U - p2)/f4));
-	  /* immediate acceptance region 
-	     R4 = [k4+1, k5+1)*[0, f5)                */
-	  if ((W = V / dr) < f5 )  return(k5 - floor(V/f5));
-	  
-	  /* computation of candidate X > k4, and its counterpart Y < k4 */
-	  /* either squeeze-acceptance of X or acceptance-rejection of Y */
-	  Dk = floor(dr * RUNI) + 1.0;
-	  if (W <= f4 - Dk * (f4 - f4*r4))
-	    {                                        /* quick accept of  */
-	      return(k4 + Dk);                       /* X = k4 + Dk      */
-	    }
-	  if ((V = f4 + f4 - W) < 1.0)
-	    {                                        /* quick reject of Y*/
-	      Y = k4 - Dk;
-	      if (V <= f4 + Dk * (1.0 - f4)/ dr)
-		{                                    /* quick accept of  */
-		  return(Y);                         /* Y = k4 - Dk      */
-		}
-	      if (V <= f(Y, l_my, c_pm))  return(Y); /* final accept of Y*/
-	    }
-	  X = k4 + Dk;
-	}
+        {                                            /* centre right     */
+          /*  immediate acceptance region 
+              R3 = [m, k4+1)*[0, f4), X = m, ... k4    */
+          if ((V = U - p3) < 0.0)  return(k4 - floor((U - p2)/f4));
+          /* immediate acceptance region 
+             R4 = [k4+1, k5+1)*[0, f5)                */
+          if ((W = V / dr) < f5 )  return(k5 - floor(V/f5));
+          
+          /* computation of candidate X > k4, and its counterpart Y < k4 */
+          /* either squeeze-acceptance of X or acceptance-rejection of Y */
+          Dk = floor(dr * RUNI) + 1.0;
+          if (W <= f4 - Dk * (f4 - f4*r4))
+            {                                        /* quick accept of  */
+              return(k4 + Dk);                       /* X = k4 + Dk      */
+            }
+          if ((V = f4 + f4 - W) < 1.0)
+            {                                        /* quick reject of Y*/
+              Y = k4 - Dk;
+              if (V <= f4 + Dk * (1.0 - f4)/ dr)
+                {                                    /* quick accept of  */
+                  return(Y);                         /* Y = k4 - Dk      */
+                }
+              if (V <= f(Y, l_my, c_pm))  return(Y); /* final accept of Y*/
+            }
+          X = k4 + Dk;
+        }
       else
-	{
-	  W = RUNI;
-	  if (U < p5)
-	    {                                        /* expon. tail left */
-	      Dk = floor(1.0 - log(W)/ll);
-	      if ((X = k1 - Dk) < 0L)  continue;     /* 0 <= X <= k1 - 1 */
-	      W *= (U - p4) * ll;                    /* W -- U(0, h(x))  */
-	      if (W <= f1 - Dk * (f1 - f1/r1))  
-		return(X);                           /* quick accept of X*/
-	    }
-	  else
-	    {                                        /* expon. tail right*/
-	      Dk = floor(1.0 - log(W)/lr);
-	      X  = k5 + Dk;                          /* X >= k5 + 1      */
-	      W *= (U - p5) * lr;                    /* W -- U(0, h(x))  */
-	      if (W <= f5 - Dk * (f5 - f5*r5))  
-		return(X);                           /* quick accept of X*/
-	    }
-	}
+        {
+          W = RUNI;
+          if (U < p5)
+            {                                        /* expon. tail left */
+              Dk = floor(1.0 - log(W)/ll);
+              if ((X = k1 - Dk) < 0L)  continue;     /* 0 <= X <= k1 - 1 */
+              W *= (U - p4) * ll;                    /* W -- U(0, h(x))  */
+              if (W <= f1 - Dk * (f1 - f1/r1))  
+                return(X);                           /* quick accept of X*/
+            }
+          else
+            {                                        /* expon. tail right*/
+              Dk = floor(1.0 - log(W)/lr);
+              X  = k5 + Dk;                          /* X >= k5 + 1      */
+              W *= (U - p5) * lr;                    /* W -- U(0, h(x))  */
+              if (W <= f5 - Dk * (f5 - f5*r5))  
+                return(X);                           /* quick accept of X*/
+            }
+        }
       
       /* acceptance-rejection test of candidate X from the original area */
       /* test, whether  W <= f(k),    with  W = U*h(x)  and  U -- U(0, 1)*/
@@ -381,12 +381,12 @@ poisson_rejection (double lambda, double *p, size_t n)
     {
       double y, em, t;
       do {
-	do {
-	  y = tan(M_PI*RUNI);
-	  em = sq * y + lambda;
-	} while (em < 0.0);
-	em = floor(em);
-	t = 0.9*(1.0+y*y)*exp(em*alxm-flogfak(em)-g);
+        do {
+          y = tan(M_PI*RUNI);
+          em = sq * y + lambda;
+        } while (em < 0.0);
+        em = floor(em);
+        t = 0.9*(1.0+y*y)*exp(em*alxm-flogfak(em)-g);
       } while (RUNI > t);
       p[i] = em;
     }
@@ -409,7 +409,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
   if (L < 0.0 || INFINITE(L)) 
     {
       for (i=0; i<n; i++) 
-	p[i] = NAN;
+        p[i] = NAN;
     } 
   else if (L <= 10.0) 
     {
@@ -418,18 +418,18 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
   else if (L <= 1e8) 
     {
       for (i=0; i<n; i++) 
-	p[i] = pprsc(L);
+        p[i] = pprsc(L);
     } 
   else 
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
       const double sqrtL = sqrt(L);
       for (i = 0; i < n; i++) 
-	{
-	  p[i] = floor(RNOR*sqrtL + L + 0.5);
-	  if (p[i] < 0.0) 
-	    p[i] = 0.0; /* will probably never happen */
-	}
+        {
+          p[i] = floor(RNOR*sqrtL + L + 0.5);
+          if (p[i] < 0.0) 
+            p[i] = 0.0; /* will probably never happen */
+        }
     }
 }
 

@@ -64,7 +64,7 @@ public:
   Matrix get_boundingbox (void) const { return bbox; }
 
   uint8NDArray render (text_element* elt, Matrix& box,
-		       int rotation = ROTATION_0);
+                       int rotation = ROTATION_0);
 
   void set_font (const base_properties& props);
 

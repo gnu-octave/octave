@@ -90,7 +90,7 @@ extern int pipe_handler_error_count;
 extern OCTINTERP_API bool can_interrupt;
 
 extern OCTINTERP_API sig_handler *octave_set_signal_handler (int, sig_handler *,
-					       bool restart_syscalls = true);
+                                               bool restart_syscalls = true);
 
 extern OCTINTERP_API void install_signal_handlers (void);
 
@@ -102,7 +102,7 @@ extern OCTINTERP_API octave_interrupt_handler octave_ignore_interrupts (void);
 
 extern OCTINTERP_API octave_interrupt_handler
 octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
-			      bool restart_syscalls = true);
+                              bool restart_syscalls = true);
 
 // extern void ignore_sigchld (void);
 
@@ -132,12 +132,12 @@ public:
   octave_child& operator = (const octave_child& oc)
     {
       if (&oc != this)
-	{
-	  pid = oc.pid;
-	  handler = oc.handler;
-	  have_status = oc.have_status;
-	  status = oc.status;
-	}
+        {
+          pid = oc.pid;
+          handler = oc.handler;
+          have_status = oc.have_status;
+          status = oc.status;
+        }
       return *this;
     }
 

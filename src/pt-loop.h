@@ -49,16 +49,16 @@ public:
       trail_comm (0) { }
 
   tree_while_command (tree_expression *e,
-		      octave_comment_list *lc = 0,
-		      octave_comment_list *tc = 0,
-		      int l = -1, int c = -1)
+                      octave_comment_list *lc = 0,
+                      octave_comment_list *tc = 0,
+                      int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (0), lead_comm (lc),
       trail_comm (tc) { }
 
   tree_while_command (tree_expression *e, tree_statement_list *lst,
-		      octave_comment_list *lc = 0,
-		      octave_comment_list *tc = 0,
-		      int l = -1, int c = -1)
+                      octave_comment_list *lc = 0,
+                      octave_comment_list *tc = 0,
+                      int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc) { }
 
@@ -73,7 +73,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -111,21 +111,21 @@ public:
     : tree_while_command (l, c) { }
 
   tree_do_until_command (tree_expression *e,
-			 octave_comment_list *lc = 0,
-			 octave_comment_list *tc = 0,
-			 int l = -1, int c = -1)
+                         octave_comment_list *lc = 0,
+                         octave_comment_list *tc = 0,
+                         int l = -1, int c = -1)
     : tree_while_command (e, lc, tc, l, c) { }
 
   tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-			 octave_comment_list *lc = 0,
-			 octave_comment_list *tc = 0,
-			 int l = -1, int c = -1)
+                         octave_comment_list *lc = 0,
+                         octave_comment_list *tc = 0,
+                         int l = -1, int c = -1)
     : tree_while_command (e, lst, lc, tc, l, c) { }
 
   ~tree_do_until_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -150,10 +150,10 @@ public:
       trail_comm (0) { }
 
   tree_simple_for_command (tree_expression *le, tree_expression *re,
-			   tree_statement_list *lst,
-			   octave_comment_list *lc = 0,
-			   octave_comment_list *tc = 0,
-			   int l = -1, int c = -1)
+                           tree_statement_list *lst,
+                           octave_comment_list *lc = 0,
+                           octave_comment_list *tc = 0,
+                           int l = -1, int c = -1)
     : tree_command (l, c), lhs (le), expr (re), list (lst),
       lead_comm (lc), trail_comm (tc) { }
 
@@ -170,7 +170,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -208,10 +208,10 @@ public:
       trail_comm (0) { }
 
   tree_complex_for_command (tree_argument_list *le, tree_expression *re,
-			    tree_statement_list *lst,
-			    octave_comment_list *lc = 0,
-			    octave_comment_list *tc = 0,
-			    int l = -1, int c = -1)
+                            tree_statement_list *lst,
+                            octave_comment_list *lc = 0,
+                            octave_comment_list *tc = 0,
+                            int l = -1, int c = -1)
     : tree_command (l, c), lhs (le), expr (re), list (lst),
       lead_comm (lc), trail_comm (tc) { }
 
@@ -228,7 +228,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

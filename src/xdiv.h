@@ -30,11 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 
 extern Matrix xdiv (const Matrix& a, const Matrix& b, MatrixType &typ);
 extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const Matrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexMatrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 
 extern Matrix x_el_div (double a, const Matrix& b);
 extern ComplexMatrix x_el_div (double a, const ComplexMatrix& b);
@@ -49,19 +49,19 @@ extern ComplexNDArray x_el_div (const Complex a, const ComplexNDArray& b);
 extern Matrix xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ,
                         blas_trans_type transt = blas_no_trans);
 extern ComplexMatrix xleftdiv (const Matrix& a, const ComplexMatrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const Matrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 
 extern FloatMatrix xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ);
 extern FloatComplexMatrix xdiv (const FloatMatrix& a, const FloatComplexMatrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, const FloatMatrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-			   MatrixType &typ);
+                           MatrixType &typ);
 
 extern FloatMatrix x_el_div (float a, const FloatMatrix& b);
 extern FloatComplexMatrix x_el_div (float a, const FloatComplexMatrix& b);
@@ -76,11 +76,11 @@ extern FloatComplexNDArray x_el_div (const FloatComplex a, const FloatComplexNDA
 extern FloatMatrix xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ, 
                              blas_trans_type transt = blas_no_trans);
 extern FloatComplexMatrix xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-			       MatrixType &typ, blas_trans_type transt = blas_no_trans);
+                               MatrixType &typ, blas_trans_type transt = blas_no_trans);
 
 
 extern Matrix xdiv (const Matrix& a, const DiagMatrix& b);

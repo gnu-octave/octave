@@ -71,7 +71,7 @@ extern std::string current_class_name;
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-		    std::string& file);
+                    std::string& file);
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found);
@@ -84,16 +84,16 @@ extern OCTINTERP_API string_vector reverse_lookup_autoload (const std::string& n
 
 extern OCTINTERP_API octave_function *
 load_fcn_from_file (const std::string& file_name,
-		    const std::string& dir_name = std::string (),
-		    const std::string& dispatch_type = std::string (),
-		    const std::string& fcn_name = std::string (),
-		    bool autoload = false);
+                    const std::string& dir_name = std::string (),
+                    const std::string& dispatch_type = std::string (),
+                    const std::string& fcn_name = std::string (),
+                    bool autoload = false);
 
 extern OCTINTERP_API void
 source_file (const std::string& file_name,
-	     const std::string& context = std::string (),
-	     bool verbose = false, bool require_file = true,
-	     const std::string& warn_for = std::string ());
+             const std::string& context = std::string (),
+             bool verbose = false, bool require_file = true,
+             const std::string& warn_for = std::string ());
 
 extern OCTINTERP_API octave_value_list
 feval (const std::string& name,

@@ -66,25 +66,25 @@ public:
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list tmp = subsref (type, idx, 1);
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string&,
-			     const std::list<octave_value_list>&, int);
+                             const std::list<octave_value_list>&, int);
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx,
+                        const std::list<octave_value_list>& idx,
                         bool auto_add);
 
   static octave_value numeric_conv (const octave_value& val,
-				    const std::string& type);
+                                    const std::string& type);
 
   octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   octave_value squeeze (void) const { return map.squeeze (); }
 
@@ -92,7 +92,7 @@ public:
     { return map.permute (vec, inv); }
 
   octave_value do_index_op (const octave_value_list& idx,
-			    bool resize_ok = false);
+                            bool resize_ok = false);
 
   dim_vector dims (void) const { return map.dims (); }
 
@@ -139,7 +139,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);

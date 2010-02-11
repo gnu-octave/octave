@@ -69,7 +69,7 @@ public:
   type_conv_info numeric_conversion_function (void) const;
 
   octave_value do_index_op (const octave_value_list& idx,
-			    bool resize_ok = false);
+                            bool resize_ok = false);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
@@ -192,7 +192,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
@@ -201,11 +201,11 @@ public:
 #endif
 
   int write (octave_stream& os, int block_size,
-	     oct_data_conv::data_type output_type, int skip,
-	     oct_mach_info::float_format flt_fmt) const
+             oct_data_conv::data_type output_type, int skip,
+             oct_mach_info::float_format flt_fmt) const
     {
       return os.write (bool_array_value (), block_size, output_type,
-		       skip, flt_fmt);
+                       skip, flt_fmt);
     }
 
   mxArray *as_mxArray (void) const;

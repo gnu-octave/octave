@@ -88,15 +88,15 @@ public:
   }
 
   static std::string find_method (const std::string& class_name,
-				  const std::string& meth,
-				  std::string& dir_name)
+                                  const std::string& meth,
+                                  std::string& dir_name)
   {
     return instance_ok ()
       ? instance->do_find_method (class_name, meth, dir_name) : std::string ();
   }
 
   static std::string find_method (const std::string& class_name,
-				  const std::string& meth)
+                                  const std::string& meth)
   {
     std::string dir_name;
     return find_method (class_name, meth, dir_name);
@@ -127,7 +127,7 @@ public:
   }
 
   static std::string find_private_fcn (const std::string& dir,
-				       const std::string& fcn)
+                                       const std::string& fcn)
   {
     return instance_ok ()
       ? instance->do_find_private_fcn (dir, fcn) : std::string ();
@@ -279,29 +279,29 @@ private:
 
     dir_info (const dir_info& di)
       : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
-	is_relative (di.is_relative),
-	dir_mtime (di.dir_mtime),
-	dir_time_last_checked (di.dir_time_last_checked), 
-	all_files (di.all_files), fcn_files (di.fcn_files),
-	private_file_map (di.private_file_map),
-	method_file_map (di.method_file_map) { }
+        is_relative (di.is_relative),
+        dir_mtime (di.dir_mtime),
+        dir_time_last_checked (di.dir_time_last_checked), 
+        all_files (di.all_files), fcn_files (di.fcn_files),
+        private_file_map (di.private_file_map),
+        method_file_map (di.method_file_map) { }
 
     ~dir_info (void) { }
 
     dir_info& operator = (const dir_info& di)
     {
       if (&di != this)
-	{
-	  dir_name = di.dir_name;
-	  abs_dir_name = di.abs_dir_name;
-	  is_relative = di.is_relative;
-	  dir_mtime = di.dir_mtime;
-	  dir_time_last_checked = di.dir_time_last_checked;
-	  all_files = di.all_files;
-	  fcn_files = di.fcn_files;
-	  private_file_map = di.private_file_map;
-	  method_file_map = di.method_file_map;
-	}
+        {
+          dir_name = di.dir_name;
+          abs_dir_name = di.abs_dir_name;
+          is_relative = di.is_relative;
+          dir_mtime = di.dir_mtime;
+          dir_time_last_checked = di.dir_time_last_checked;
+          all_files = di.all_files;
+          fcn_files = di.fcn_files;
+          private_file_map = di.private_file_map;
+          method_file_map = di.method_file_map;
+        }
 
       return *this;
     }
@@ -327,7 +327,7 @@ private:
     void get_private_file_map (const std::string& d);
 
     void get_method_file_map (const std::string& d,
-			      const std::string& class_name);
+                              const std::string& class_name);
 
     friend fcn_file_map_type get_fcn_files (const std::string& d);
   };
@@ -346,10 +346,10 @@ private:
     file_info& operator = (const file_info& fi)
     {
       if (&fi != this)
-	{
-	  dir_name = fi.dir_name;
-	  types = fi.types;
-	}
+        {
+          dir_name = fi.dir_name;
+          types = fi.types;
+        }
 
       return *this;
     }
@@ -432,7 +432,7 @@ private:
   bool contains (const std::string& dir) const;
 
   void move_fcn_map (const std::string& dir,
-		     const string_vector& fcn_files, bool at_end);
+                     const string_vector& fcn_files, bool at_end);
 
   void move_method_map (const std::string& dir, bool at_end);
 
@@ -462,20 +462,20 @@ private:
 
   static bool
   check_file_type (std::string& fname, int type, int possible_types,
-		   const std::string& fcn, const char *who);
+                   const std::string& fcn, const char *who);
 
   std::string do_find_fcn (const std::string& fcn,
-			   std::string& dir_name,
-			   int type = M_FILE | OCT_FILE | MEX_FILE) const;
+                           std::string& dir_name,
+                           int type = M_FILE | OCT_FILE | MEX_FILE) const;
 
   std::string do_find_private_fcn (const std::string& dir,
-				   const std::string& fcn,
-				   int type = M_FILE | OCT_FILE | MEX_FILE) const;
+                                   const std::string& fcn,
+                                   int type = M_FILE | OCT_FILE | MEX_FILE) const;
 
   std::string do_find_method (const std::string& class_name,
-			      const std::string& meth,
-			      std::string& dir_name,
-			      int type = M_FILE | OCT_FILE | MEX_FILE) const;
+                              const std::string& meth,
+                              std::string& dir_name,
+                              int type = M_FILE | OCT_FILE | MEX_FILE) const;
 
   std::list<std::string> do_methods (const std::string& class_name) const;
 

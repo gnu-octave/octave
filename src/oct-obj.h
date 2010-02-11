@@ -90,10 +90,10 @@ public:
   octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
-	{
-	  data = obj.data;
-	  names = obj.names;
-	}
+        {
+          data = obj.data;
+          names = obj.names;
+        }
 
       return *this;
     }
@@ -131,7 +131,7 @@ public:
 
   octave_value_list
   splice (octave_idx_type offset, octave_idx_type len,
-	  const octave_value_list& lst = octave_value_list ()) const;
+          const octave_value_list& lst = octave_value_list ()) const;
 
   bool all_strings_p (void) const;
 
@@ -172,7 +172,7 @@ private:
   octave_value& elem (octave_idx_type n)
     {
       if (n >= length ())
-	resize (n + 1);
+        resize (n + 1);
 
       return data(n);
     }

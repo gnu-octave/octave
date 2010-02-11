@@ -44,14 +44,14 @@ tree_binary_expression : public tree_expression
 public:
 
   tree_binary_expression (int l = -1, int c = -1,
-			  octave_value::binary_op t
-			    = octave_value::unknown_binary_op)
+                          octave_value::binary_op t
+                            = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
-			  int l = -1, int c = -1,
-			  octave_value::binary_op t
-			    = octave_value::unknown_binary_op)
+                          int l = -1, int c = -1,
+                          octave_value::binary_op t
+                            = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t) { }
 
   ~tree_binary_expression (void)
@@ -63,7 +63,7 @@ public:
   bool has_magic_end (void) const
     {
       return ((op_lhs && op_lhs->has_magic_end ())
-	      || (op_rhs && op_rhs->has_magic_end ()));
+              || (op_rhs && op_rhs->has_magic_end ()));
     }
 
   bool is_binary_expression (void) const { return true; }
@@ -82,7 +82,7 @@ public:
   tree_expression *rhs (void) { return op_rhs; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -122,7 +122,7 @@ public:
     : tree_binary_expression (l, c), etype (t) { }
 
   tree_boolean_expression (tree_expression *a, tree_expression *b,
-			   int l = -1, int c = -1, type t = unknown)
+                           int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (a, b, l, c), etype (t) { }
 
   ~tree_boolean_expression (void) { }
@@ -140,7 +140,7 @@ public:
   type op_type (void) const { return etype; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
 private:
 

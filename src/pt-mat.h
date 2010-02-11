@@ -41,7 +41,7 @@ class tree_walker;
 
 class
 tree_matrix : public tree_expression,
-	      public octave_base_list<tree_argument_list *>
+              public octave_base_list<tree_argument_list *>
 {
 public:
 
@@ -65,7 +65,7 @@ public:
   octave_value_list rvalue (int nargout);
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \
-	 __FILE__, __LINE__)
+         __FILE__, __LINE__)
 
 extern OCTINTERP_API void reset_error_handler (void);
 

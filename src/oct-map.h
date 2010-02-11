@@ -47,7 +47,7 @@ Octave_map
   // Warning!  You should always use at least two dimensions.
 
   Octave_map (const dim_vector& dv = dim_vector (0, 0),
-	      const Cell& key_vals = Cell ());
+              const Cell& key_vals = Cell ());
 
   Octave_map (const std::string& k, const octave_value& value)
     : map (), key_list (), dimensions (1, 1)
@@ -61,9 +61,9 @@ Octave_map
   {
     for (octave_idx_type i = 0; i < sv.length (); i++)
       {
-	std::string k = sv[i];
-	map[k] = Cell ();
-	key_list.push_back (k);
+        std::string k = sv[i];
+        map[k] = Cell ();
+        key_list.push_back (k);
       }
   }
 
@@ -87,11 +87,11 @@ Octave_map
   Octave_map& operator = (const Octave_map& m)
     {
       if (this != &m)
-	{
-	  map = m.map;
-	  key_list = m.key_list;
-	  dimensions = m.dimensions;
-	}
+        {
+          map = m.map;
+          key_list = m.key_list;
+          dimensions = m.dimensions;
+        }
 
       return *this;
     }
@@ -110,16 +110,16 @@ Octave_map
       iterator p = map.find (k);
 
       if (p != map.end ())
-	{
-	  map.erase (p);
+        {
+          map.erase (p);
 
-	  key_list_iterator q
-	    = std::find (key_list.begin (), key_list.end (), k);
+          key_list_iterator q
+            = std::find (key_list.begin (), key_list.end (), k);
 
-	  assert (q != key_list.end ());
+          assert (q != key_list.end ());
 
-	  key_list.erase (q);
-	}
+          key_list.erase (q);
+        }
     }
 
   iterator begin (void) { return iterator (map.begin ()); }
@@ -142,7 +142,7 @@ Octave_map
   int intfield (const std::string& k, int def_val = 0) const;
 
   std::string stringfield (const std::string& k,
-			   const std::string& def_val = std::string ()) const;
+                           const std::string& def_val = std::string ()) const;
 
   iterator seek (const std::string& k) { return map.find (k); }
   const_iterator seek (const std::string& k) const { return map.find (k); }
@@ -181,14 +181,14 @@ Octave_map
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
   Octave_map& assign (const octave_value_list& idx, const std::string& k,
-		      const Cell& rhs);
+                      const Cell& rhs);
 
   Octave_map& assign (const std::string& k, const octave_value& rhs);
 
   Octave_map& assign (const std::string& k, const Cell& rhs);
 
   Octave_map index (const octave_value_list& idx, 
-		    bool resize_ok = false) const;
+                    bool resize_ok = false) const;
 
 private:
 
@@ -205,7 +205,7 @@ private:
   void maybe_add_to_key_list (const std::string& k)
     {
       if (! contains (k))
-	key_list.push_back (k);
+        key_list.push_back (k);
     }
 };
 

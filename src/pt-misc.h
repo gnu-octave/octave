@@ -71,7 +71,7 @@ public:
   bool varargs_only (void) { return (marked_for_varargs < 0); }
 
   void initialize_undefined_elements (const std::string& warnfor,
-				      int nargout, const octave_value& val);
+                                      int nargout, const octave_value& val);
 
   void define_from_arg_vector (const octave_value_list& args);
 
@@ -82,7 +82,7 @@ public:
   octave_value_list convert_to_const_vector (int nargout, const Cell& varargout);
 
   tree_parameter_list *dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context) const;
+                            symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -116,7 +116,7 @@ public:
   ~tree_return_list (void);
 
   tree_return_list *dup (symbol_table::scope_id scope,
-			 symbol_table::context_id context) const;
+                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

@@ -34,20 +34,20 @@ octave_tstdiostream : public octave_base_stream
 public:
 
   octave_tstdiostream (const std::string& n, FILE_T f = 0,
-		       std::ios::openmode m = std::ios::in|std::ios::out,
-		       oct_mach_info::float_format ff
-		         = oct_mach_info::native_float_format (),
-		       typename BUF_T::close_fcn cf = BUF_T::file_close)
+                       std::ios::openmode m = std::ios::in|std::ios::out,
+                       oct_mach_info::float_format ff
+                         = oct_mach_info::native_float_format (),
+                       typename BUF_T::close_fcn cf = BUF_T::file_close)
     : octave_base_stream (m, ff), nm (n), md (m),
       s (f ? new STREAM_T (f, cf) : 0)
   { }
 
   static octave_stream
   create (const std::string& n, FILE_T f = 0,
-	  std::ios::openmode m = std::ios::in|std::ios::out,
-	  oct_mach_info::float_format ff
-	    = oct_mach_info::native_float_format (),
-	  typename BUF_T::close_fcn cf = BUF_T::file_close)
+          std::ios::openmode m = std::ios::in|std::ios::out,
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format (),
+          typename BUF_T::close_fcn cf = BUF_T::file_close)
   {
     return octave_stream (new octave_tstdiostream (n, f, m, ff, cf));
   }

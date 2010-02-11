@@ -46,7 +46,7 @@ public:
   virtual ~tree_command (void) { }
 
   virtual tree_command *dup (symbol_table::scope_id,
-			     symbol_table::context_id context) const = 0;
+                             symbol_table::context_id context) const = 0;
 
 private:
 
@@ -71,7 +71,7 @@ public:
   ~tree_no_op_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -105,7 +105,7 @@ public:
   ~tree_function_def (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

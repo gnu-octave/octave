@@ -51,14 +51,14 @@ public:
       op_increment (0), save_base (false) { }
 
   tree_colon_expression (tree_expression *bas, tree_expression *lim,
-			 tree_expression *inc, int l = -1, int c = -1)
+                         tree_expression *inc, int l = -1, int c = -1)
     : tree_expression (l, c), op_base (bas), op_limit (lim),
       op_increment (inc), save_base (false) { }
 
   ~tree_colon_expression (void)
     {
       if (! save_base)
-	delete op_base;
+        delete op_base;
 
       delete op_limit;
       delete op_increment;
@@ -67,8 +67,8 @@ public:
   bool has_magic_end (void) const
     {
       return ((op_base && op_base->has_magic_end ())
-	      || (op_limit && op_limit->has_magic_end ())
-	      || (op_increment && op_increment->has_magic_end ()));
+              || (op_limit && op_limit->has_magic_end ())
+              || (op_increment && op_increment->has_magic_end ()));
     }
 
   void preserve_base (void) { save_base = true; }
@@ -93,7 +93,7 @@ public:
   int column (void) const;
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -108,12 +108,12 @@ private:
 
   octave_value
   make_range (const Matrix& m_base, const Matrix& m_limit,
-	      const Matrix& m_increment, bool result_is_str,
-	      bool dq_str) const;
+              const Matrix& m_increment, bool result_is_str,
+              bool dq_str) const;
 
   octave_value
   make_range (const octave_value& ov_base, const octave_value& ov_limit,
-	      const octave_value& ov_increment) const;
+              const octave_value& ov_increment) const;
 
   // No copying!
 

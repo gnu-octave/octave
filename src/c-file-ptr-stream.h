@@ -62,10 +62,10 @@ public:
   std::streamsize xsgetn (char *, std::streamsize);
 
   std::streampos seekoff (std::streamoff, std::ios::seekdir,
-			  std::ios::openmode = std::ios::in | std::ios::out);
+                          std::ios::openmode = std::ios::in | std::ios::out);
   
   std::streampos seekpos (std::streampos,
-			  std::ios::openmode = std::ios::in | std::ios::out);
+                          std::ios::openmode = std::ios::in | std::ios::out);
 
   int sync (void);
 
@@ -169,10 +169,10 @@ public:
   std::streamsize xsgetn (char *, std::streamsize);
 
   std::streampos seekoff (std::streamoff, std::ios::seekdir,
-			  std::ios::openmode = std::ios::in | std::ios::out);
+                          std::ios::openmode = std::ios::in | std::ios::out);
   
   std::streampos seekpos (std::streampos,
-			  std::ios::openmode = std::ios::in | std::ios::out);
+                          std::ios::openmode = std::ios::in | std::ios::out);
 
   int sync (void);
 

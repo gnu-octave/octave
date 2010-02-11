@@ -88,7 +88,7 @@ public:
   tree_expression *expression (void) { return expr; }
 
   tree_decl_elt *dup (symbol_table::scope_id scope,
-		      symbol_table::context_id context) const;
+                      symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -119,15 +119,15 @@ public:
   ~tree_decl_init_list (void)
     {
       while (! empty ())
-	{
-	  iterator p = begin ();
-	  delete *p;
-	  erase (p);
-	}
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
     }
 
   tree_decl_init_list *dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context) const;
+                            symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -151,7 +151,7 @@ public:
     : tree_command (l, c), cmd_name (n), init_list (0) { }
 
   tree_decl_command (const std::string& n, tree_decl_init_list *t,
-		     int l = -1, int c = -1)
+                     int l = -1, int c = -1)
     : tree_command (l, c), cmd_name (n), init_list (t) { }
 
   ~tree_decl_command (void);
@@ -193,7 +193,7 @@ public:
   ~tree_global_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -224,7 +224,7 @@ public:
   ~tree_static_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

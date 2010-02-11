@@ -82,11 +82,11 @@ public:
   ~text_element_list (void)
     {
       while (! empty ())
-	{
-	  iterator it = begin ();
-	  delete (*it);
-	  erase (it);
-	}
+        {
+          iterator it = begin ();
+          delete (*it);
+          erase (it);
+        }
     }
 
   void accept (text_processor& p);
@@ -128,10 +128,10 @@ public:
   virtual void visit (text_element_list& e)
     {
       for (text_element_list::iterator it = e.begin ();
-	   it != e.end (); ++it)
-	{
-	  (*it)->accept (*this);
-	}
+           it != e.end (); ++it)
+        {
+          (*it)->accept (*this);
+        }
     }
   
   virtual void visit (text_subscript_element& e)

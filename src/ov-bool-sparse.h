@@ -60,7 +60,7 @@ public:
     : octave_base_sparse<SparseBoolMatrix> (bnda) { }
 
   octave_sparse_bool_matrix (const SparseBoolMatrix& bnda,
-			     const MatrixType& t)
+                             const MatrixType& t)
     : octave_base_sparse<SparseBoolMatrix> (bnda, t) { }
 
   octave_sparse_bool_matrix (const boolNDArray& m)
@@ -129,7 +129,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);

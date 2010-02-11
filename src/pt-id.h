@@ -50,8 +50,8 @@ public:
     : tree_expression (l, c), sym (), scope (-1) { }
 
   tree_identifier (const symbol_table::symbol_record& s,
-		   int l = -1, int c = -1,
-		   symbol_table::scope_id sc = symbol_table::current_scope ())
+                   int l = -1, int c = -1,
+                   symbol_table::scope_id sc = symbol_table::current_scope ())
     : tree_expression (l, c), sym (s), scope (sc) { }
 
   ~tree_identifier (void) { }
@@ -111,7 +111,7 @@ public:
   void eval_undefined_error (void);
 
   tree_identifier *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -131,8 +131,8 @@ private:
 
     if (scope != curr_scope)
       {
-	scope = curr_scope;
-	sym = symbol_table::insert (sym.name ());
+        scope = curr_scope;
+        sym = symbol_table::insert (sym.name ());
       }
 
     return sym;

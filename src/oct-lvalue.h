@@ -49,12 +49,12 @@ public:
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
       if (this != &vr)
-	{
-	  val = vr.val;
-	  type = vr.type;
-	  idx = vr.idx;
-	  nel = vr.nel;
-	}
+        {
+          val = vr.val;
+          type = vr.type;
+          idx = vr.idx;
+          nel = vr.nel;
+        }
 
       return *this;
     }

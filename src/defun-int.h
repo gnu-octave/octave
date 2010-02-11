@@ -40,17 +40,17 @@ extern OCTINTERP_API void check_version (const std::string& version, const std::
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc,
-			  bool can_hide_function = true);
+                          const std::string& doc,
+                          bool can_hide_function = true);
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-		      const octave_shlib& shl, const std::string& doc, 
-		      bool relative = false);
+                      const octave_shlib& shl, const std::string& doc, 
+                      bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool relative = false);
+                      const octave_shlib& shl, bool relative = false);
 
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
@@ -101,7 +101,7 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
  \
     if (! error_state) \
       { \
-	octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
+        octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
  \
         if (relative) \
           fcn->mark_relative (); \

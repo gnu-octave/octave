@@ -65,12 +65,12 @@ public:
       int len = hlist.length ();
 
       for (int i = len-1; i >= 0; i--)
-	{
-	  graphics_handle h = gh_manager::lookup (hlist(i));
+        {
+          graphics_handle h = gh_manager::lookup (hlist(i));
 
-	  if (h.ok ())
-	    draw (h);
-	}
+          if (h.ok ())
+            draw (h);
+        }
     }
 
   virtual void set_viewport (int w, int h);
@@ -90,27 +90,27 @@ protected:
   virtual void set_linewidth (float w);
   virtual void set_linestyle (const std::string& s, bool stipple = false);
   virtual void set_clipbox (double x1, double x2, double y1, double y2,
-			    double z1, double z2);
+                            double z1, double z2);
   virtual void set_clipping (bool on);
   virtual void set_font (const base_properties& props);
 
   virtual void init_marker (const std::string& m, double size, float width);
   virtual void end_marker (void);
   virtual void draw_marker (double x, double y, double z,
-			    const Matrix& lc, const Matrix& fc);
+                            const Matrix& lc, const Matrix& fc);
 
   virtual void text_to_pixels (const std::string& txt,
-			       double rotation,
-			       uint8NDArray& pixels,
-			       Matrix& bbox,
-			       int& rot_mode);
+                               double rotation,
+                               uint8NDArray& pixels,
+                               Matrix& bbox,
+                               int& rot_mode);
 
   virtual Matrix render_text (const std::string& txt,
-			      double x, double y, double z,
-			      int halign, int valign, double rotation = 0.0);
+                              double x, double y, double z,
+                              int halign, int valign, double rotation = 0.0);
 
   virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
-			    GLenum type, const GLvoid *data);
+                            GLenum type, const GLvoid *data);
 
 private:
   opengl_renderer (const opengl_renderer&) { }
@@ -121,22 +121,22 @@ private:
   bool is_nan_or_inf (double x, double y, double z) const
     {
       return (xisnan (x) || xisnan (y) || xisnan (z)
-	      || xisinf (x) || xisinf (y) || xisinf (z));
+              || xisinf (x) || xisinf (y) || xisinf (z));
     }
 
   octave_uint8 clip_code (double x, double y, double z) const
     {
       return ((x < xmin ? 1 : 0)
-	      | (x > xmax ? 1 : 0) << 1
-	      | (y < ymin ? 1 : 0) << 2
-	      | (y > ymax ? 1 : 0) << 3
-	      | (z < zmin ? 1 : 0) << 4
-	      | (z > zmax ? 1 : 0) << 5
-	      | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
+              | (x > xmax ? 1 : 0) << 1
+              | (y < ymin ? 1 : 0) << 2
+              | (y > ymax ? 1 : 0) << 3
+              | (z < zmin ? 1 : 0) << 4
+              | (z > zmax ? 1 : 0) << 5
+              | (is_nan_or_inf (x, y, z) ? 0 : 1) << 6);
     }
 
   unsigned int make_marker_list (const std::string& m, double size,
-				 bool filled) const;
+                                 bool filled) const;
 
 private:
   // the backend associated with the figure being rendered

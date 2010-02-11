@@ -156,12 +156,12 @@ public:
 private:
 
   void do_decl_init_list (decl_elt_init_fcn fcn,
-			  tree_decl_init_list *init_list);
+                          tree_decl_init_list *init_list);
 
   void do_breakpoint (tree_statement& stmt) const;
 
   void do_breakpoint (bool is_breakpoint,
-		      bool is_end_of_fcn_or_script = false) const;
+                      bool is_end_of_fcn_or_script = false) const;
 
   virtual octave_value
   do_keyboard (const octave_value_list& args = octave_value_list ()) const;

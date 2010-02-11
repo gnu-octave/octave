@@ -44,17 +44,17 @@ extern OCTINTERP_API bool
 same_file (const std::string& f, const std::string& g);
 
 extern OCTINTERP_API int almost_match (const std::string& std,
-				       const std::string& s,
-				       int min_match_len = 1,
-				       int case_sens = 1);
+                                       const std::string& s,
+                                       int min_match_len = 1,
+                                       int case_sens = 1);
 
 extern OCTINTERP_API int
 keyword_almost_match (const char * const *std, int *min_len,
-		      const std::string& s, int min_toks_to_match,
-		      int max_toks);
+                      const std::string& s, int min_toks_to_match,
+                      int max_toks);
 
 extern OCTINTERP_API int empty_arg (const char *name, octave_idx_type nr,
-				    octave_idx_type nc);
+                                    octave_idx_type nc);
 
 extern OCTINTERP_API std::string
 search_path_for_file (const std::string&, const string_vector&);
@@ -86,20 +86,20 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 extern OCTINTERP_API void
 get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, octave_idx_type& nr,
-		octave_idx_type& nc);
+                const char *warn_for, octave_idx_type& nr,
+                octave_idx_type& nc);
 
 extern OCTINTERP_API void
 get_dimensions (const octave_value& a,const char *warn_for,
-		octave_idx_type& nr, octave_idx_type& nc);
+                octave_idx_type& nr, octave_idx_type& nc);
 
 extern OCTINTERP_API octave_idx_type
 dims_to_numel (const dim_vector& dims, const octave_value_list& idx);
 
 extern OCTINTERP_API void
 decode_subscripts (const char* name, const octave_value& arg,
-		   std::string& type_string,
-		   std::list<octave_value_list>& idx);
+                   std::string& type_string,
+                   std::list<octave_value_list>& idx);
 
 extern OCTINTERP_API Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc);

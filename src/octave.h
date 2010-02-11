@@ -23,13 +23,13 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_h)
 #define octave_octave_h 1
 
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 extern "C" {
 #endif
 
 extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 }
 #endif
 

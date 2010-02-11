@@ -87,12 +87,12 @@ private:
   struct call_stack_elt
   {
     call_stack_elt (octave_function *f, symbol_table::scope_id s,
-		    symbol_table::context_id c, size_t p = 0)
+                    symbol_table::context_id c, size_t p = 0)
       : fcn (f), stmt (0), scope (s), context (c), prev (p) { }
 
     call_stack_elt (const call_stack_elt& elt)
       : fcn (elt.fcn), stmt (elt.stmt), scope (elt.scope),
-	context (elt.context), prev (elt.prev) { }
+        context (elt.context), prev (elt.prev) { }
 
     octave_function *fcn;
     tree_statement *stmt;
@@ -119,16 +119,16 @@ public:
 
     if (! instance)
       {
-	instance = new octave_call_stack ();
+        instance = new octave_call_stack ();
 
-	if (instance)
-	  instance->do_push (0, symbol_table::top_scope (), 0);
-	else
-	  {
-	    ::error ("unable to create call stack object!");
+        if (instance)
+          instance->do_push (0, symbol_table::top_scope (), 0);
+        else
+          {
+            ::error ("unable to create call stack object!");
 
-	    retval = false;
-	  }
+            retval = false;
+          }
       }
 
     return retval;
@@ -217,8 +217,8 @@ public:
 
   static void
   push (octave_function *f,
-	symbol_table::scope_id scope = symbol_table::current_scope (),
-	symbol_table::context_id context = symbol_table::current_context ())
+        symbol_table::scope_id scope = symbol_table::current_scope (),
+        symbol_table::context_id context = symbol_table::current_context ())
   {
     if (instance_ok ())
       instance->do_push (f, scope, context);
@@ -226,7 +226,7 @@ public:
 
   static void
   push (symbol_table::scope_id scope = symbol_table::current_scope (),
-	symbol_table::context_id context = symbol_table::current_context ())
+        symbol_table::context_id context = symbol_table::current_context ())
   {
     if (instance_ok ())
       instance->do_push (0, scope, context);
@@ -336,8 +336,8 @@ private:
 
     if (cs.size () > n)
       {
-	call_stack_elt& elt = cs[n];
-	retval = elt.fcn;
+        call_stack_elt& elt = cs[n];
+        retval = elt.fcn;
       }
 
     return retval;
@@ -346,7 +346,7 @@ private:
   octave_user_code *do_caller_user_code (size_t nskip) const; 
 
   void do_push (octave_function *f, symbol_table::scope_id scope,
-		symbol_table::context_id context)
+                symbol_table::context_id context)
   {
     size_t prev_frame = curr_frame;
     curr_frame = cs.size ();
@@ -360,8 +360,8 @@ private:
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs[curr_frame];
-	retval = elt.fcn;
+        const call_stack_elt& elt = cs[curr_frame];
+        retval = elt.fcn;
       }
 
     return retval;
@@ -373,8 +373,8 @@ private:
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs[curr_frame];
-	retval = elt.stmt;
+        const call_stack_elt& elt = cs[curr_frame];
+        retval = elt.stmt;
       }
 
     return retval;
@@ -384,13 +384,13 @@ private:
   {
     if (! cs.empty ())
       {
-	call_stack_elt& elt = cs.back ();
-	elt.stmt = s;
+        call_stack_elt& elt = cs.back ();
+        elt.stmt = s;
       }
   }
 
   Octave_map do_backtrace (size_t nskip,
-			   octave_idx_type& curr_user_frame) const;
+                           octave_idx_type& curr_user_frame) const;
 
   bool do_goto_frame (size_t n, bool verbose);
 
@@ -404,11 +404,11 @@ private:
   {
     if (cs.size () > 1)
       {
-	const call_stack_elt& elt = cs.back ();
-	curr_frame = elt.prev;
-	cs.pop_back ();
-	const call_stack_elt& new_elt = cs[curr_frame];
-	symbol_table::set_scope_and_context (new_elt.scope, new_elt.context);
+        const call_stack_elt& elt = cs.back ();
+        curr_frame = elt.prev;
+        cs.pop_back ();
+        const call_stack_elt& new_elt = cs[curr_frame];
+        symbol_table::set_scope_and_context (new_elt.scope, new_elt.context);
       }
   }
 

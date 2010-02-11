@@ -1,5 +1,32 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* Cell.h, base-list.h, c-file-ptr-stream.h, comment-list.h,
+	debug.h, defun-int.h, dynamic-ld.h, error.h, gl-render.h,
+	gl2ps-renderer.h, gripes.h, load-path.h, load-save.h, ls-hdf5.h,
+	ls-mat-ascii.h, ls-mat4.h, ls-mat5.h, ls-oct-ascii.h,
+	ls-oct-binary.h, oct-fstrm.h, oct-iostrm.h, oct-lvalue.h,
+	oct-map.h, oct-obj.h, oct-prcstrm.h, oct-stdstrm.h,
+	oct-stream.h, oct-strstrm.h, octave.h, ops.h, ov-base-diag.h,
+	ov-base-int.h, ov-base-mat.h, ov-base-scalar.h,
+	ov-base-sparse.h, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
+	ov-bool.h, ov-builtin.h, ov-cell.h, ov-class.h, ov-complex.h,
+	ov-cx-diag.h, ov-cx-mat.h, ov-cx-sparse.h, ov-dld-fcn.h,
+	ov-fcn-handle.h, ov-fcn-inline.h, ov-fcn.h, ov-float.h,
+	ov-flt-complex.h, ov-flt-cx-diag.h, ov-flt-cx-mat.h,
+	ov-flt-re-diag.h, ov-flt-re-mat.h, ov-intx.h, ov-mex-fcn.h,
+	ov-perm.h, ov-range.h, ov-re-diag.h, ov-re-mat.h,
+	ov-re-sparse.h, ov-scalar.h, ov-str-mat.h, ov-struct.h,
+	ov-type-conv.h, ov-typeinfo.h, ov-usr-fcn.h, ov.h, parse.h,
+	pr-output.h, pt-arg-list.h, pt-assign.h, pt-binop.h, pt-cell.h,
+	pt-cmd.h, pt-colon.h, pt-const.h, pt-decl.h, pt-eval.h,
+	pt-except.h, pt-exp.h, pt-fcn-handle.h, pt-id.h, pt-idx.h,
+	pt-jump.h, pt-loop.h, pt-mat.h, pt-misc.h, pt-pr-code.h,
+	pt-select.h, pt-stmt.h, pt-unop.h, sighandlers.h, sparse-xdiv.h,
+	sparse-xpow.h, symtab.h, token.h, toplev.h, txt-eng-ft.h,
+	txt-eng.h, utils.h, variables.h, xdiv.h: Untabify.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/qz.cc: Untabify.
 	(Fqz): Declare complex_case volatile to avoid GCC warning.
 

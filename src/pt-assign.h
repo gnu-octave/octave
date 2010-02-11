@@ -46,13 +46,13 @@ tree_simple_assignment : public tree_expression
 public:
 
   tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
-			  octave_value::assign_op t = octave_value::op_asn_eq)
+                          octave_value::assign_op t = octave_value::op_asn_eq)
     : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), etype (t),
       first_execution (true) { }
 
   tree_simple_assignment (tree_expression *le, tree_expression *re,
-			  bool plhs = false, int l = -1, int c = -1,
-			  octave_value::assign_op t = octave_value::op_asn_eq);
+                          bool plhs = false, int l = -1, int c = -1,
+                          octave_value::assign_op t = octave_value::op_asn_eq);
 
   ~tree_simple_assignment (void);
 
@@ -73,7 +73,7 @@ public:
   tree_expression *right_hand_side (void) { return rhs; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -82,7 +82,7 @@ public:
 private:
 
   void do_assign (octave_lvalue& ult, const octave_value_list& args,
-		  const octave_value& rhs_val);
+                  const octave_value& rhs_val);
 
   void do_assign (octave_lvalue& ult, const octave_value& rhs_val);
 
@@ -123,7 +123,7 @@ public:
       first_execution (true) { }
 
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
-			 bool plhs = false, int l = -1, int c = -1);
+                         bool plhs = false, int l = -1, int c = -1);
 
   ~tree_multi_assignment (void);
 
@@ -144,7 +144,7 @@ public:
   tree_expression *right_hand_side (void) { return rhs; }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
   

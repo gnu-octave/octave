@@ -48,7 +48,7 @@ public:
   Cell (const octave_value_list& ovl);
 
   Cell (octave_idx_type n, octave_idx_type m,
-	const octave_value& val = resize_fill_value ())
+        const octave_value& val = resize_fill_value ())
     : Array<octave_value> (dim_vector (n, m), val) { }
 
   Cell (const dim_vector& dv, const octave_value& val = resize_fill_value ())
@@ -78,7 +78,7 @@ public:
   Cell& delete_elements (const octave_value_list& idx);
 
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
-		const octave_value& fill_val = resize_fill_value ());
+                const octave_value& fill_val = resize_fill_value ());
 
   Cell reshape (const dim_vector& new_dims) const
     { return Array<octave_value>::reshape (new_dims); }

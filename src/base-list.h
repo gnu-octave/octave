@@ -55,11 +55,11 @@ public:
     iterator e = lst.end ();
     while (b != e)
       {
-	iterator n = b;
-	n++;
-	if (pred (*b))
-	  lst.erase (b);
-	b = n;
+        iterator n = b;
+        n++;
+        if (pred (*b))
+          lst.erase (b);
+        b = n;
       }
   }
 

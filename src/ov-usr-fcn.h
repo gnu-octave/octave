@@ -59,7 +59,7 @@ public:
 protected:
 
   octave_user_code (const std::string& nm,
-		    const std::string& ds = std::string ())
+                    const std::string& ds = std::string ())
     : octave_function (nm, ds) { }
 
 private:
@@ -81,11 +81,11 @@ public:
   octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-		      tree_statement_list *cmds,
-		      const std::string& ds = std::string ());
+                      tree_statement_list *cmds,
+                      const std::string& ds = std::string ());
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-		      const std::string& ds = std::string ());
+                      const std::string& ds = std::string ());
 
   ~octave_user_script (void);
 
@@ -117,15 +117,15 @@ public:
   octave_time time_checked (void) const { return t_checked; }
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list tmp = subsref (type, idx, 1);
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout);
+                             const std::list<octave_value_list>& idx,
+                             int nargout);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -171,9 +171,9 @@ octave_user_function : public octave_user_code
 public:
 
   octave_user_function (symbol_table::scope_id sid = -1,
-			tree_parameter_list *pl = 0,
-			tree_parameter_list *rl = 0,
-			tree_statement_list *cl = 0);
+                        tree_parameter_list *pl = 0,
+                        tree_parameter_list *rl = 0,
+                        tree_statement_list *cl = 0);
 
   ~octave_user_function (void);
 
@@ -257,15 +257,15 @@ public:
   bool is_class_method (void) const { return class_method; }
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list tmp = subsref (type, idx, 1);
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout);
+                             const std::list<octave_value_list>& idx,
+                             int nargout);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -366,7 +366,7 @@ private:
   void print_code_function_trailer (void);
 
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
-			    int nargout, const octave_value_list& va_args);
+                            int nargout, const octave_value_list& va_args);
 
   // No copying!
 

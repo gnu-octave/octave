@@ -69,7 +69,7 @@ public:
   token (int l = -1, int c = -1);
   token (const std::string& s, int l = -1, int c = -1);
   token (double d, const std::string& s = std::string (),
-	 int l = -1, int c = -1);
+         int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_table::symbol_record *s, int l = -1, int c = -1);

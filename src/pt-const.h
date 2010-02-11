@@ -49,7 +49,7 @@ public:
     : tree_expression (l, c), val (v), orig_text () { }
 
   tree_constant (const octave_value& v, const std::string& ot,
-		 int l = -1, int c = -1)
+                 int l = -1, int c = -1)
     : tree_expression (l, c), val (v), orig_text (ot) { }
 
   ~tree_constant (void) { }
@@ -67,10 +67,10 @@ public:
   void maybe_mutate (void) { val.maybe_mutate (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false,
-	      bool pr_orig_txt = true);
+              bool pr_orig_txt = true);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
-		  bool pr_orig_txt = true);
+                  bool pr_orig_txt = true);
 
   bool rvalue_ok (void) const { return true; }
 
@@ -79,7 +79,7 @@ public:
   octave_value_list rvalue (int nargout);
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

@@ -56,10 +56,10 @@ public:
   bool has_magic_end (void) const { return false; }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false,
-	      bool pr_orig_txt = true);
+              bool pr_orig_txt = true);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
-		  bool pr_orig_txt = true);
+                  bool pr_orig_txt = true);
 
   std::string name (void) const { return nm; }
 
@@ -70,7 +70,7 @@ public:
   octave_value_list rvalue (int nargout);
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -95,8 +95,8 @@ public:
     : tree_expression (l, c), fcn (0) { }
 
   tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
-			tree_statement_list *cl, symbol_table::scope_id sid,
-			int l = -1, int c = -1)
+                        tree_statement_list *cl, symbol_table::scope_id sid,
+                        int l = -1, int c = -1)
     : tree_expression (l, c),
       fcn (new octave_user_function (sid, pl, rl, cl)) { }
 
@@ -131,7 +131,7 @@ public:
   }
 
   tree_expression *dup (symbol_table::scope_id scope,
-			symbol_table::context_id context) const;
+                        symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

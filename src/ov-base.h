@@ -167,8 +167,8 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
   void t::register_type (void) \
     { \
       t_id = octave_value_typeinfo::register_type (t::t_name, \
-						   t::c_name, \
-						   octave_value (new t ())); \
+                                                   t::c_name, \
+                                                   octave_value (new t ())); \
     }
 
 // A base value type, so that derived types only have to redefine what
@@ -245,16 +245,16 @@ public:
 
   virtual octave_value
   subsref (const std::string& type,
-	   const std::list<octave_value_list>& idx);
+           const std::list<octave_value_list>& idx);
 
   virtual octave_value_list
   subsref (const std::string& type,
-	   const std::list<octave_value_list>& idx,
-	   int nargout);
+           const std::list<octave_value_list>& idx,
+           int nargout);
 
   virtual octave_value
   subsref (const std::string& type,
-	   const std::list<octave_value_list>& idx,
+           const std::list<octave_value_list>& idx,
            bool auto_add);
 
   virtual octave_value
@@ -267,8 +267,8 @@ public:
 
   virtual octave_value
   subsasgn (const std::string& type,
-	    const std::list<octave_value_list>& idx,
-	    const octave_value& rhs);
+            const std::list<octave_value_list>& idx,
+            const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const;
 
@@ -571,7 +571,7 @@ public:
   virtual octave_value_list list_value (void) const;
 
   virtual octave_value convert_to_str (bool pad = false, bool force = false,
-				       char type = '\'') const;
+                                       char type = '\'') const;
   virtual octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -589,7 +589,7 @@ public:
 
   virtual void
   print_with_name (std::ostream& output_buf, const std::string& name, 
-		   bool print_padding = true);
+                   bool print_padding = true);
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -600,7 +600,7 @@ public:
   virtual bool save_binary (std::ostream& os, bool& save_as_floats);
 
   virtual bool load_binary (std::istream& is, bool swap, 
-			    oct_mach_info::float_format fmt);
+                            oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   virtual bool
@@ -612,8 +612,8 @@ public:
 
   virtual int
   write (octave_stream& os, int block_size,
-	 oct_data_conv::data_type output_type, int skip,
-	 oct_mach_info::float_format flt_fmt) const;
+         oct_data_conv::data_type output_type, int skip,
+         oct_mach_info::float_format flt_fmt) const;
 
   virtual void *mex_get_data (void) const { return 0; }
 
@@ -626,10 +626,10 @@ public:
   virtual octave_value diag (octave_idx_type k = 0) const;
 
   virtual octave_value sort (octave_idx_type dim = 0, 
-			     sortmode mode = ASCENDING) const;
+                             sortmode mode = ASCENDING) const;
   virtual octave_value sort (Array<octave_idx_type> &sidx, 
-			     octave_idx_type dim = 0,
-			     sortmode mode = ASCENDING) const;
+                             octave_idx_type dim = 0,
+                             sortmode mode = ASCENDING) const;
 
   virtual sortmode is_sorted (sortmode mode = UNSORTED) const;
 
@@ -715,8 +715,8 @@ protected:
   // This should only be called for derived types.
 
   octave_value numeric_assign (const std::string& type,
-			       const std::list<octave_value_list>& idx,
-			       const octave_value& rhs);
+                               const std::list<octave_value_list>& idx,
+                               const octave_value& rhs);
 
   void reset_indent_level (void) const
     { curr_print_indent_level = 0; }

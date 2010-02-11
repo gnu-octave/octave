@@ -41,14 +41,14 @@ public:
 protected:
 
   virtual Matrix render_text (const std::string& txt,
-			      double x, double y, double z,
-			      int halign, int valign, double rotation = 0.0);
+                              double x, double y, double z,
+                              int halign, int valign, double rotation = 0.0);
 
 
   virtual void set_font (const base_properties& props);
 
   virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
-			    GLenum type, const GLvoid *data);
+                            GLenum type, const GLvoid *data);
 
   virtual void set_linestyle (const std::string& s, bool use_stipple)
   {

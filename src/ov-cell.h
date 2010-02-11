@@ -73,22 +73,22 @@ public:
 #endif
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list tmp = subsref (type, idx, 1);
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx, int);
+                             const std::list<octave_value_list>& idx, int);
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx,
+                        const std::list<octave_value_list>& idx,
                         bool auto_add);
 
   octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   void assign (const octave_value_list& idx, const Cell& rhs);
 
@@ -101,7 +101,7 @@ public:
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		     sortmode mode = ASCENDING) const;
+                     sortmode mode = ASCENDING) const;
 
   sortmode is_sorted (sortmode mode = UNSORTED) const;
 
@@ -150,7 +150,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);

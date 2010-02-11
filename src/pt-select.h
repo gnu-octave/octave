@@ -45,12 +45,12 @@ public:
     : tree (l, c), expr (0), list (0), lead_comm (0) { }
 
   tree_if_clause (tree_statement_list *sl, octave_comment_list *lc = 0,
-		  int l = -1, int c = -1)
+                  int l = -1, int c = -1)
     : tree (l, c), expr (0), list (sl), lead_comm (lc) { }
 
   tree_if_clause (tree_expression *e, tree_statement_list *sl,
-		  octave_comment_list *lc = 0,
-		  int l = -1, int c = -1)
+                  octave_comment_list *lc = 0,
+                  int l = -1, int c = -1)
     : tree (l, c), expr (e), list (sl), lead_comm (lc) { }
 
   ~tree_if_clause (void);
@@ -64,7 +64,7 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   tree_if_clause *dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context) const;
+                       symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -98,15 +98,15 @@ public:
   ~tree_if_command_list (void)
     {
       while (! empty ())
-	{
-	  iterator p = begin ();
-	  delete *p;
-	  erase (p);
-	}
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
     }
 
   tree_if_command_list *dup (symbol_table::scope_id scope,
-			     symbol_table::context_id context) const;
+                             symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -128,7 +128,7 @@ public:
     : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
 
   tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
-		   octave_comment_list *tc, int l = -1, int c = -1)
+                   octave_comment_list *tc, int l = -1, int c = -1)
     : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
 
   ~tree_if_command (void);
@@ -144,7 +144,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -177,12 +177,12 @@ public:
     : tree (l, c), label (0), list (0), lead_comm (0) { }
 
   tree_switch_case (tree_statement_list *sl, octave_comment_list *lc = 0,
-		    int l = -1, int c = -1)
+                    int l = -1, int c = -1)
     : tree (l, c), label (0), list (sl), lead_comm (lc) { }
 
   tree_switch_case (tree_expression *e, tree_statement_list *sl,
-		    octave_comment_list *lc = 0,
-		    int l = -1, int c = -1)
+                    octave_comment_list *lc = 0,
+                    int l = -1, int c = -1)
     : tree (l, c), label (e), list (sl), lead_comm (lc) { }
 
   ~tree_switch_case (void);
@@ -198,7 +198,7 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   tree_switch_case *dup (symbol_table::scope_id scope,
-			 symbol_table::context_id context) const;
+                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -232,15 +232,15 @@ public:
   ~tree_switch_case_list (void)
     {
       while (! empty ())
-	{
-	  iterator p = begin ();
-	  delete *p;
-	  erase (p);
-	}
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
     }
 
   tree_switch_case_list *dup (symbol_table::scope_id scope,
-			      symbol_table::context_id context) const;
+                              symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -263,8 +263,8 @@ public:
       trail_comm (0) { }
 
   tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
-		       octave_comment_list *lc, octave_comment_list *tc, 
-		       int l = -1, int c = -1)
+                       octave_comment_list *lc, octave_comment_list *tc, 
+                       int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc) { }
 
@@ -283,7 +283,7 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   tree_command *dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const;
+                     symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

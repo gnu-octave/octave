@@ -74,7 +74,7 @@ public:
   bool save_binary (std::ostream& os, bool& );
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format );
+                    oct_mach_info::float_format );
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool);
@@ -117,7 +117,7 @@ public:
   bool save_binary (std::ostream& os, bool& );
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format );
+                    oct_mach_info::float_format );
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool );

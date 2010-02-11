@@ -65,15 +65,15 @@ public:
   octave_value full_value (void) const { return scalar; }
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx);
+                        const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx, int)
+                             const std::list<octave_value_list>& idx, int)
     { return subsref (type, idx); }
 
   octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   bool is_constant (void) const { return true; }
 
@@ -101,7 +101,7 @@ public:
   octave_value sort (octave_idx_type, sortmode) const
     { return octave_value (scalar); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type,
-		     sortmode) const
+                     sortmode) const
     { 
       sidx.resize (dim_vector (1, 1)); 
       sidx(0) = 0; 

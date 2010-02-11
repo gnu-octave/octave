@@ -73,7 +73,7 @@ public:
 
   // Add a breakpoint at the nearest executable line.
   static intmap add_breakpoint (const std::string& fname = "", 
-				const intmap& lines = intmap ())
+                                const intmap& lines = intmap ())
   {
     return instance_ok ()
       ? instance->do_add_breakpoint (fname, lines) : intmap ();
@@ -81,7 +81,7 @@ public:
 
   // Remove a breakpoint from a line in file.
   static int remove_breakpoint (const std::string& fname = "", 
-				const intmap& lines = intmap ())
+                                const intmap& lines = intmap ())
   {
     return instance_ok ()
       ? instance->do_remove_breakpoint (fname, lines) : 0;
@@ -89,7 +89,7 @@ public:
 
   // Remove all the breakpoints in a specified file.
   static intmap remove_all_breakpoints_in_file (const std::string& fname,
-						bool silent = false)
+                                                bool silent = false)
   {
     return instance_ok ()
       ? instance->do_remove_all_breakpoints_in_file (fname, silent) : intmap ();
@@ -132,7 +132,7 @@ private:
   int do_remove_breakpoint (const std::string&, const intmap& lines);
 
   intmap do_remove_all_breakpoints_in_file (const std::string& fname, 
-					    bool silent);
+                                            bool silent);
 
   void do_remove_all_breakpoints (void);
 

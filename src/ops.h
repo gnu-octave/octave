@@ -78,7 +78,7 @@ extern void install_ops (void);
   t v = dynamic_cast<t> (a)
 
 #define CAST_BINOP_ARGS(t1, t2) \
-  t1 v1 = dynamic_cast<t1> (a1);		\
+  t1 v1 = dynamic_cast<t1> (a1);                \
   t2 v2 = dynamic_cast<t2> (a2)
 
 #define CAST_CONV_ARG(t) \
@@ -87,20 +87,20 @@ extern void install_ops (void);
 #define ASSIGNOPDECL(name) \
   static octave_value \
   CONCAT2(oct_assignop_, name) (octave_base_value& a1, \
-			 const octave_value_list& idx, \
-			 const octave_base_value& a2)
+                         const octave_value_list& idx, \
+                         const octave_base_value& a2)
 
 #define NULLASSIGNOPDECL(name) \
   static octave_value \
   CONCAT2(oct_assignop_, name) (octave_base_value& a, \
-			 const octave_value_list& idx, \
-			 const octave_base_value&)
+                         const octave_value_list& idx, \
+                         const octave_base_value&)
 
 #define ASSIGNANYOPDECL(name) \
   static octave_value \
   CONCAT2(oct_assignop_, name) (octave_base_value& a1, \
-			 const octave_value_list& idx, \
-			 const octave_value& a2)
+                         const octave_value_list& idx, \
+                         const octave_value& a2)
 
 #define DEFASSIGNOP(name, t1, t2) \
   ASSIGNOPDECL (name)
@@ -344,19 +344,19 @@ extern void install_ops (void);
 
 #define BINOP_NONCONFORMANT(msg) \
   gripe_nonconformant (msg, \
-		       a1.rows (), a1.columns (), \
-		       a2.rows (), a2.columns ()); \
+                       a1.rows (), a1.columns (), \
+                       a2.rows (), a2.columns ()); \
   return octave_value ()
 
-#define CATOPDECL(name, a1, a2)	\
+#define CATOPDECL(name, a1, a2) \
   static octave_value \
   CONCAT2(oct_catop_, name) (octave_base_value& a1, const octave_base_value& a2, \
-		      const Array<octave_idx_type>& ra_idx)
+                      const Array<octave_idx_type>& ra_idx)
 
-#define DEFCATOPX(name, t1, t2)	\
+#define DEFCATOPX(name, t1, t2) \
   CATOPDECL (name, , )
 
-#define DEFCATOP(name, t1, t2)	\
+#define DEFCATOP(name, t1, t2)  \
   CATOPDECL (name, a1, a2)
 
 // FIXME -- in some cases, the constructor isn't necessary.
@@ -381,8 +381,8 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
  \
     return octave_value (v1.char_array_value () . f (v2.char_array_value (), ra_idx), \
-			 ((a1.is_sq_string () || a2.is_sq_string ()) \
-			  ? '\'' : '"')); \
+                         ((a1.is_sq_string () || a2.is_sq_string ()) \
+                          ? '\'' : '"')); \
   }
 
 // For compatibility, the second arg is always converted to the type
@@ -397,8 +397,8 @@ extern void install_ops (void);
 
 #define CATOP_NONCONFORMANT(msg) \
   gripe_nonconformant (msg, \
-		       a1.rows (), a1.columns (), \
-		       a2.rows (), a2.columns ()); \
+                       a1.rows (), a1.columns (), \
+                       a2.rows (), a2.columns ()); \
   return octave_value ()
 
 #endif

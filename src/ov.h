@@ -156,7 +156,7 @@ public:
   static std::string assign_op_as_string (assign_op);
 
   static octave_value empty_conv (const std::string& type,
-				  const octave_value& rhs = octave_value ());
+                                  const octave_value& rhs = octave_value ());
 
   enum magic_colon { magic_colon_t };
 
@@ -227,22 +227,22 @@ public:
   octave_value (const char *s, char type = '\'');
   octave_value (const std::string& s, char type = '\'');
   octave_value (const string_vector& s, char type = '\'');
-  octave_value (const charMatrix& chm, 	char type = '\'');
+  octave_value (const charMatrix& chm,  char type = '\'');
   octave_value (const charNDArray& chnda, char type = '\'');
   octave_value (const Array<char>& chnda, char type = '\'');
   octave_value (const charMatrix& chm, bool is_string,
-		char type = '\'') GCC_ATTR_DEPRECATED;
+                char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const charNDArray& chnda, bool is_string,
-		char type = '\'') GCC_ATTR_DEPRECATED;
+                char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const Array<char>& chnda, bool is_string,
-		char type = '\'') GCC_ATTR_DEPRECATED;
+                char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m, 
-		const MatrixType& t = MatrixType ());
+                const MatrixType& t = MatrixType ());
   octave_value (const Sparse<Complex>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseBoolMatrix& bm, 
-		const MatrixType& t = MatrixType ());
+                const MatrixType& t = MatrixType ());
   octave_value (const Sparse<bool>& m, const MatrixType& t = MatrixType ());
   octave_value (const octave_int8& i);
   octave_value (const octave_int16& i);
@@ -309,10 +309,10 @@ public:
   void make_unique (void)
     {
       if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = rep->unique_clone ();
-	}
+        {
+          --rep->count;
+          rep = rep->unique_clone ();
+        }
     }
 
   // This uniquifies the value if it is referenced by more than a certain
@@ -321,10 +321,10 @@ public:
   void make_unique (int obsolete_copies)
     {
       if (rep->count > obsolete_copies + 1)
-	{
-	  --rep->count;
-	  rep = rep->unique_clone ();
-	}
+        {
+          --rep->count;
+          rep = rep->unique_clone ();
+        }
     }
 
   // Simple assignment.
@@ -332,13 +332,13 @@ public:
   octave_value& operator = (const octave_value& a)
     {
       if (rep != a.rep)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-	  rep = a.rep;
-	  rep->count++;
-	}
+          rep = a.rep;
+          rep->count++;
+        }
 
       return *this;
     }
@@ -371,7 +371,7 @@ public:
     { return rep->numel (idx); }
 
   octave_value single_subsref (const std::string& type,
-			       const octave_value_list& idx);
+                               const octave_value_list& idx);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -387,32 +387,32 @@ public:
                              int nargout);
 
   octave_value next_subsref (const std::string& type, const
-			     std::list<octave_value_list>& idx,
-			     size_t skip = 1);
+                             std::list<octave_value_list>& idx,
+                             size_t skip = 1);
 
   octave_value_list next_subsref (int nargout,
-				  const std::string& type, const
-				  std::list<octave_value_list>& idx,
-				  size_t skip = 1);
+                                  const std::string& type, const
+                                  std::list<octave_value_list>& idx,
+                                  size_t skip = 1);
 
   octave_value next_subsref (bool auto_add, const std::string& type, const
-			     std::list<octave_value_list>& idx,
-			     size_t skip = 1);
+                             std::list<octave_value_list>& idx,
+                             size_t skip = 1);
 
   octave_value do_index_op (const octave_value_list& idx,
-			    bool resize_ok = false)
+                            bool resize_ok = false)
     { return rep->do_index_op (idx, resize_ok); }
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
   octave_value subsasgn (const std::string& type,
-				 const std::list<octave_value_list>& idx,
-				 const octave_value& rhs);
+                                 const std::list<octave_value_list>& idx,
+                                 const octave_value& rhs);
 
   octave_value assign (assign_op op, const std::string& type,
-		       const std::list<octave_value_list>& idx,
-		       const octave_value& rhs);
+                       const std::list<octave_value_list>& idx,
+                       const octave_value& rhs);
 
   const octave_value& assign (assign_op, const octave_value& rhs);
 
@@ -872,57 +872,57 @@ public:
   octave_value_list list_value (void) const;
 
   ColumnVector column_vector_value (bool frc_str_conv = false,
-			     bool frc_vec_conv = false) const;
+                             bool frc_vec_conv = false) const;
 
   ComplexColumnVector
   complex_column_vector_value (bool frc_str_conv = false,
-			bool frc_vec_conv = false) const;
+                        bool frc_vec_conv = false) const;
 
   RowVector row_vector_value (bool frc_str_conv = false,
-			      bool frc_vec_conv = false) const;
+                              bool frc_vec_conv = false) const;
 
   ComplexRowVector
   complex_row_vector_value (bool frc_str_conv = false,
-			    bool frc_vec_conv = false) const;
+                            bool frc_vec_conv = false) const;
 
 
   FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
-			     bool frc_vec_conv = false) const;
+                             bool frc_vec_conv = false) const;
 
   FloatComplexColumnVector
   float_complex_column_vector_value (bool frc_str_conv = false,
-			bool frc_vec_conv = false) const;
+                        bool frc_vec_conv = false) const;
 
   FloatRowVector float_row_vector_value (bool frc_str_conv = false,
-			      bool frc_vec_conv = false) const;
+                              bool frc_vec_conv = false) const;
 
   FloatComplexRowVector
   float_complex_row_vector_value (bool frc_str_conv = false,
-			    bool frc_vec_conv = false) const;
+                            bool frc_vec_conv = false) const;
 
 
 
 
   Array<int> int_vector_value (bool req_int = false,
-			       bool frc_str_conv = false,
-			       bool frc_vec_conv = false) const;
+                               bool frc_str_conv = false,
+                               bool frc_vec_conv = false) const;
 
   Array<octave_idx_type>
   octave_idx_type_vector_value (bool req_int = false,
-				bool frc_str_conv = false,
-				bool frc_vec_conv = false) const;
+                                bool frc_str_conv = false,
+                                bool frc_vec_conv = false) const;
 
   Array<double> vector_value (bool frc_str_conv = false,
-			      bool frc_vec_conv = false) const;
+                              bool frc_vec_conv = false) const;
 
   Array<Complex> complex_vector_value (bool frc_str_conv = false,
-				       bool frc_vec_conv = false) const;
+                                       bool frc_vec_conv = false) const;
 
   Array<float> float_vector_value (bool frc_str_conv = false,
-			      bool frc_vec_conv = false) const;
+                              bool frc_vec_conv = false) const;
 
   Array<FloatComplex> float_complex_vector_value (bool frc_str_conv = false,
-				       bool frc_vec_conv = false) const;
+                                       bool frc_vec_conv = false) const;
 
   // Possibly economize a lazy-indexed value.
 
@@ -945,7 +945,7 @@ public:
   // it, and we should convert it if possible.
 
   octave_value convert_to_str (bool pad = false, bool force = false,
-			       char type = '\'') const
+                               char type = '\'') const
     { return rep->convert_to_str (pad, force, type); }
 
   octave_value
@@ -962,14 +962,14 @@ public:
     { rep->print (os, pr_as_read_syntax); }
 
   void print_raw (std::ostream& os,
-			  bool pr_as_read_syntax = false) const
+                          bool pr_as_read_syntax = false) const
     { rep->print_raw (os, pr_as_read_syntax); }
 
   bool print_name_tag (std::ostream& os, const std::string& name) const
     { return rep->print_name_tag (os, name); }
 
   void print_with_name (std::ostream& os, const std::string& name,
-			bool print_padding = true) const
+                        bool print_padding = true) const
     { rep->print_with_name (os, name, print_padding); }
 
   int type_id (void) const { return rep->type_id (); }
@@ -981,33 +981,33 @@ public:
   // Unary and binary operations.
 
   friend OCTINTERP_API octave_value do_unary_op (unary_op op,
-				   const octave_value& a);
+                                   const octave_value& a);
 
   const octave_value& do_non_const_unary_op (unary_op op);
 
   void do_non_const_unary_op (unary_op op, const octave_value_list& idx);
 
   octave_value do_non_const_unary_op (unary_op op, const std::string& type,
-				      const std::list<octave_value_list>& idx);
+                                      const std::list<octave_value_list>& idx);
 
   friend OCTINTERP_API octave_value do_binary_op (binary_op op,
-				    const octave_value& a,
-				    const octave_value& b);
+                                    const octave_value& a,
+                                    const octave_value& b);
 
   friend OCTINTERP_API octave_value do_binary_op (compound_binary_op op,
                                                   const octave_value& a,
                                                   const octave_value& b);
 
   friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
-				 const octave_value& b,
-				 const Array<octave_idx_type>& ra_idx);
+                                 const octave_value& b,
+                                 const Array<octave_idx_type>& ra_idx);
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
-			   const std::string& prefix = std::string ()) const;
+                           const std::string& prefix = std::string ()) const;
 
   bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 
@@ -1017,7 +1017,7 @@ public:
     { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,
-			    oct_mach_info::float_format fmt)
+                            oct_mach_info::float_format fmt)
     { return rep->load_binary (is, swap, fmt); }
 
 #if defined (HAVE_HDF5)
@@ -1029,8 +1029,8 @@ public:
 #endif
 
   int write (octave_stream& os, int block_size,
-		     oct_data_conv::data_type output_type, int skip,
-		     oct_mach_info::float_format flt_fmt) const;
+                     oct_data_conv::data_type output_type, int skip,
+                     oct_mach_info::float_format flt_fmt) const;
 
   octave_base_value *internal_rep (void) const { return rep; }
 
@@ -1050,7 +1050,7 @@ public:
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return rep->sort (dim, mode); } 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = ASCENDING) const
+                 sortmode mode = ASCENDING) const
     { return rep->sort (sidx, dim, mode); } 
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
@@ -1163,7 +1163,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& a);
 
 extern OCTINTERP_API octave_value
 do_binary_op (octave_value::binary_op op,
-	      const octave_value& a, const octave_value& b);
+              const octave_value& a, const octave_value& b);
 
 extern OCTINTERP_API octave_value
 do_binary_op (octave_value::compound_binary_op op,

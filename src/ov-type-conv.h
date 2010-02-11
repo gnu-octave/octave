@@ -104,6 +104,6 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
 
 #define OCTAVE_TYPE_CONV_BODY(NAME) \
   OCTAVE_TYPE_CONV_BODY3 (NAME, octave_ ## NAME ## _matrix, \
-			  octave_ ## NAME ## _scalar)
+                          octave_ ## NAME ## _scalar)
 
 #endif

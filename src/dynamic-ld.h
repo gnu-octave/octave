@@ -43,13 +43,13 @@ public:
 
   static octave_function *
   load_oct (const std::string& fcn_name,
-	     const std::string& file_name = std::string (),
-	     bool relative = false);
+             const std::string& file_name = std::string (),
+             bool relative = false);
 
   static octave_function *
   load_mex (const std::string& fcn_name,
-	     const std::string& file_name = std::string (),
-	     bool relative = false);
+             const std::string& file_name = std::string (),
+             bool relative = false);
 
   static bool remove_oct (const std::string& fcn_name, octave_shlib& shl);
 
@@ -69,13 +69,13 @@ private:
 
   octave_function *
   do_load_oct (const std::string& fcn_name,
-		const std::string& file_name = std::string (),
-		bool relative = false);
+                const std::string& file_name = std::string (),
+                bool relative = false);
 
   octave_function *
   do_load_mex (const std::string& fcn_name,
-		const std::string& file_name = std::string (),
-		bool relative = false);
+                const std::string& file_name = std::string (),
+                bool relative = false);
 
   bool do_remove_oct (const std::string& fcn_name, octave_shlib& shl);
 

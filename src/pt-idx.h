@@ -48,13 +48,13 @@ tree_index_expression : public tree_expression
 public:
 
   tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
-			 int l = -1, int c = -1, char t = '(');
+                         int l = -1, int c = -1, char t = '(');
 
   tree_index_expression (tree_expression *e, const std::string& n,
-			 int l = -1, int c = -1);
+                         int l = -1, int c = -1);
 
   tree_index_expression (tree_expression *e, tree_expression* df,
-			 int l = -1, int c = -1);
+                         int l = -1, int c = -1);
 
   ~tree_index_expression (void);
 
@@ -89,7 +89,7 @@ public:
   octave_lvalue lvalue (void);
 
   tree_index_expression *dup (symbol_table::scope_id scope,
-			      symbol_table::context_id context) const;
+                              symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

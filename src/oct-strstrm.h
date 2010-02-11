@@ -35,8 +35,8 @@ octave_base_strstream : public octave_base_stream
 public:
 
   octave_base_strstream (std::ios::openmode m = std::ios::out,
-			 oct_mach_info::float_format ff
-			   = oct_mach_info::native_float_format ())
+                         oct_mach_info::float_format ff
+                           = oct_mach_info::native_float_format ())
     : octave_base_stream (m, ff) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
@@ -76,26 +76,26 @@ octave_istrstream : public octave_base_strstream
 public:
 
   octave_istrstream (const char *data,
-		     std::ios::openmode arg_md = std::ios::out,
-		     oct_mach_info::float_format ff
-		       = oct_mach_info::native_float_format ())
+                     std::ios::openmode arg_md = std::ios::out,
+                     oct_mach_info::float_format ff
+                       = oct_mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), is (data) { }
 
   octave_istrstream (const std::string& data,
-		     std::ios::openmode arg_md = std::ios::out,
-		     oct_mach_info::float_format ff
-		       = oct_mach_info::native_float_format ())
+                     std::ios::openmode arg_md = std::ios::out,
+                     oct_mach_info::float_format ff
+                       = oct_mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff), is (data.c_str ()) { }
 
   static octave_stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
-	  oct_mach_info::float_format ff
-	    = oct_mach_info::native_float_format ());
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& data, std::ios::openmode arg_md = std::ios::out,
-	  oct_mach_info::float_format ff
-	    = oct_mach_info::native_float_format ());
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format ());
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -134,14 +134,14 @@ octave_ostrstream : public octave_base_strstream
 public:
 
   octave_ostrstream (std::ios::openmode arg_md = std::ios::out,
-		     oct_mach_info::float_format ff
-		       = oct_mach_info::native_float_format ())
+                     oct_mach_info::float_format ff
+                       = oct_mach_info::native_float_format ())
     : octave_base_strstream (arg_md, ff) { }
 
   static octave_stream
   create (std::ios::openmode arg_md = std::ios::out,
-	  oct_mach_info::float_format ff
-	    = oct_mach_info::native_float_format ());
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format ());
 
   // Return non-zero if EOF has been reached on this stream.
 

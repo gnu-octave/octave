@@ -54,14 +54,14 @@ octave_base_sparse : public octave_base_value
   octave_base_sparse (void) : octave_base_value (), typ (MatrixType ()) { }
 
   octave_base_sparse (const T& a) : octave_base_value (), matrix (a),
-				    typ (MatrixType ())
+                                    typ (MatrixType ())
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
   octave_base_sparse (const T& a, const MatrixType& t) : octave_base_value (), 
-				matrix (a), typ (t)
+                                matrix (a), typ (t)
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
@@ -87,15 +87,15 @@ octave_base_sparse : public octave_base_value
   octave_value full_value (void) const { return matrix.matrix_value (); }
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx);
+                        const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx, int)
+                             const std::list<octave_value_list>& idx, int)
     { return subsref (type, idx); }
 
   octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   void assign (const octave_value_list& idx, const T& rhs);
 
@@ -104,7 +104,7 @@ octave_base_sparse : public octave_base_value
   dim_vector dims (void) const { return matrix.dims (); }
 
   octave_value do_index_op (const octave_value_list& idx,
-			    bool resize_ok = false);
+                            bool resize_ok = false);
 
   octave_value reshape (const dim_vector& new_dims) const
     { return T (matrix.reshape (new_dims)); }
@@ -123,7 +123,7 @@ octave_base_sparse : public octave_base_value
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (dim, mode)); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		     sortmode mode = ASCENDING) const
+                     sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const

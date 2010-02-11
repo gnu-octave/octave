@@ -46,23 +46,23 @@ extern OCTINTERP_API void clear_mex_functions (void);
 
 extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = std::string (),
-		   bool warn = false); 
+                   bool warn = false); 
 
 extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = std::string (),
-		   bool warn = false); 
+                   bool warn = false); 
 
 extern OCTINTERP_API octave_function *
 extract_function (const octave_value& arg, const std::string& warn_for,
-		  const std::string& fname, const std::string& header,
-		  const std::string& trailer);
+                  const std::string& fname, const std::string& header,
+                  const std::string& trailer);
 
 extern OCTINTERP_API string_vector
 get_struct_elts (const std::string& text);
 
 extern OCTINTERP_API string_vector
 generate_struct_completions (const std::string& text, std::string& prefix,
-			     std::string& hint);
+                             std::string& hint);
 
 extern OCTINTERP_API bool
 looks_like_struct (const std::string& text);
@@ -89,25 +89,25 @@ set_top_level_value (const std::string& nm, const octave_value& val);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (bool& var, const octave_value_list& args,
-		       int nargout, const char *nm);
+                       int nargout, const char *nm);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (char& var, const octave_value_list& args,
-		       int nargout, const char *nm);
+                       int nargout, const char *nm);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
-		       int nargout, const char *nm,
-		       int minval = INT_MIN, int maxval = INT_MAX);
+                       int nargout, const char *nm,
+                       int minval = INT_MIN, int maxval = INT_MAX);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (double& var, const octave_value_list& args,
-		       int nargout, const char *nm,
-		       double minval = DBL_MIN, double maxval = DBL_MAX);
+                       int nargout, const char *nm,
+                       double minval = DBL_MIN, double maxval = DBL_MAX);
 
 extern OCTINTERP_API octave_value
 set_internal_variable (std::string& var, const octave_value_list& args,
-		       int nargout, const char *nm, bool empty_ok = true);
+                       int nargout, const char *nm, bool empty_ok = true);
 
 #define SET_INTERNAL_VARIABLE(NM) \
   set_internal_variable (V ## NM, args, nargout, #NM)

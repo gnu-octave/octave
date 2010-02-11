@@ -25,37 +25,37 @@ along with Octave; see the file COPYING.  If not, see
 
 enum mat5_data_type
   {
-    miINT8 = 1,			// 8 bit signed
-    miUINT8,			// 8 bit unsigned
-    miINT16,			// 16 bit signed
-    miUINT16,			// 16 bit unsigned
-    miINT32,			// 32 bit signed
-    miUINT32,			// 32 bit unsigned
-    miSINGLE,			// IEEE 754 single precision float
+    miINT8 = 1,                 // 8 bit signed
+    miUINT8,                    // 8 bit unsigned
+    miINT16,                    // 16 bit signed
+    miUINT16,                   // 16 bit unsigned
+    miINT32,                    // 32 bit signed
+    miUINT32,                   // 32 bit unsigned
+    miSINGLE,                   // IEEE 754 single precision float
     miRESERVE1,
-    miDOUBLE,			// IEEE 754 double precision float
+    miDOUBLE,                   // IEEE 754 double precision float
     miRESERVE2,
     miRESERVE3,
-    miINT64,			// 64 bit signed
-    miUINT64,			// 64 bit unsigned
-    miMATRIX,			// MATLAB array
-    miCOMPRESSED,		// Compressed data
-    miUTF8,			// Unicode UTF-8 Encoded Character Data
-    miUTF16,			// Unicode UTF-16 Encoded Character Data
-    miUTF32			// Unicode UTF-32 Encoded Character Data
+    miINT64,                    // 64 bit signed
+    miUINT64,                   // 64 bit unsigned
+    miMATRIX,                   // MATLAB array
+    miCOMPRESSED,               // Compressed data
+    miUTF8,                     // Unicode UTF-8 Encoded Character Data
+    miUTF16,                    // Unicode UTF-16 Encoded Character Data
+    miUTF32                     // Unicode UTF-32 Encoded Character Data
   };
 
 extern int
 read_mat5_binary_file_header (std::istream& is, bool& swap,
-			      bool quiet = false,
-			      const std::string& filename = std::string());
+                              bool quiet = false,
+                              const std::string& filename = std::string());
 extern std::string
 read_mat5_binary_element (std::istream& is, const std::string& filename,
-			  bool swap, bool& global, octave_value& tc);
+                          bool swap, bool& global, octave_value& tc);
 extern bool
 save_mat5_binary_element (std::ostream& os,
-			  const octave_value& tc, const std::string& name,
-			  bool mark_as_global, bool mat7_format,
-			  bool save_as_floats, bool compressing = false);
+                          const octave_value& tc, const std::string& name,
+                          bool mark_as_global, bool mat7_format,
+                          bool save_as_floats, bool compressing = false);
 
 #endif

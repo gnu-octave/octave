@@ -147,7 +147,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
@@ -156,12 +156,12 @@ public:
 #endif
 
   int write (octave_stream& os, int block_size,
-	     oct_data_conv::data_type output_type, int skip,
-	     oct_mach_info::float_format flt_fmt) const
+             oct_data_conv::data_type output_type, int skip,
+             oct_mach_info::float_format flt_fmt) const
     {
       // Yes, for compatibility, we drop the imaginary part here.
       return os.write (matrix_value (true), block_size, output_type,
-		       skip, flt_fmt);
+                       skip, flt_fmt);
     }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

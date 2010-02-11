@@ -79,25 +79,25 @@ public:
   octave_idx_type numel (const octave_value_list&); 
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list tmp = subsref (type, idx, 1);
       return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout);
+                             const std::list<octave_value_list>& idx,
+                             int nargout);
 
   static octave_value numeric_conv (const Cell& val,
-				    const std::string& type);
+                                    const std::string& type);
 
   void assign(const std::string& k, const octave_value& rhs)
   { map.assign (k, rhs); };
 
   octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   idx_vector index_vector (void) const;
 
@@ -150,7 +150,7 @@ public:
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
   void print_with_name (std::ostream& os, const std::string& name, 
-			bool print_padding = true);
+                        bool print_padding = true);
 
   bool reconstruct_exemplar (void);
 
@@ -165,7 +165,7 @@ public:
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+                    oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
@@ -215,15 +215,15 @@ public:
 
     exemplar_info (const exemplar_info& x)
       : field_names (x.field_names),
-	parent_class_names (x.parent_class_names) { }
+        parent_class_names (x.parent_class_names) { }
 
     exemplar_info& operator = (const exemplar_info& x)
     {
       if (&x != this)
-	{
-	  field_names = x.field_names;
-	  parent_class_names = x.parent_class_names;
-	}
+        {
+          field_names = x.field_names;
+          parent_class_names = x.parent_class_names;
+        }
       return *this;
     }
 

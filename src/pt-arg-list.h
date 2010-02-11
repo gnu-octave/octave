@@ -84,7 +84,7 @@ public:
   string_vector get_arg_names (void) const;
 
   tree_argument_list *dup (symbol_table::scope_id scope,
-			   symbol_table::context_id context) const;
+                           symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

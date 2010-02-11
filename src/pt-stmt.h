@@ -94,7 +94,7 @@ public:
   void set_expression (tree_expression *e) { expr = e; }
 
   tree_statement *dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context) const;
+                       symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 
@@ -135,11 +135,11 @@ public:
   ~tree_statement_list (void)
     {
       while (! empty ())
-	{
-	  iterator p = begin ();
-	  delete *p;
-	  erase (p);
-	}
+        {
+          iterator p = begin ();
+          delete *p;
+          erase (p);
+        }
     }
 
   void mark_as_function_body (void) { function_body = true; }
@@ -161,7 +161,7 @@ public:
   octave_value_list list_breakpoints (void);
 
   tree_statement_list *dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context) const;
+                            symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
 

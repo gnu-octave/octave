@@ -40,18 +40,18 @@ extern octave_value elem_xpow (const SparseMatrix& a, double b);
 extern octave_value elem_xpow (const SparseMatrix& a, const SparseMatrix& b);
 extern octave_value elem_xpow (const SparseMatrix& a, const Complex& b);
 extern octave_value elem_xpow (const SparseMatrix& a, 
-			       const SparseComplexMatrix& b);
+                               const SparseComplexMatrix& b);
 
 extern octave_value elem_xpow (const Complex& a, const SparseMatrix& b);
 extern octave_value elem_xpow (const Complex& a, 
-			       const SparseComplexMatrix& b);
+                               const SparseComplexMatrix& b);
 
 extern octave_value elem_xpow (const SparseComplexMatrix& a, double b);
 extern octave_value elem_xpow (const SparseComplexMatrix& a, 
-			       const SparseMatrix& b);
+                               const SparseMatrix& b);
 extern octave_value elem_xpow (const SparseComplexMatrix& a, 
-			       const Complex& b);
+                               const Complex& b);
 extern octave_value elem_xpow (const SparseComplexMatrix& a, 
-			       const SparseComplexMatrix& b);
+                               const SparseComplexMatrix& b);
 
 #endif

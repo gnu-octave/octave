@@ -78,19 +78,19 @@ gripe_data_conversion (const char *from, const char *to);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg (const char *name, const char *s,
-		      bool is_error = true);
+                      bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg (const char *name, const std::string& s,
-		      bool is_error = true);
+                      bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg (const char *name, const octave_value& tc,
-		      bool is_error = true);
+                      bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
-		      bool is_error = true);
+                      bool is_error = true);
 
 extern OCTINTERP_API void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op);
@@ -103,7 +103,7 @@ gripe_implicit_conversion (const char *id, const char *from, const char *to);
 
 extern OCTINTERP_API void
 gripe_implicit_conversion (const std::string& id, const std::string& from,
-			   const std::string& to);
+                           const std::string& to);
 
 extern OCTINTERP_API void
 gripe_truncated_conversion (const char *srctype, const char *desttype);

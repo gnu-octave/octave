@@ -122,10 +122,10 @@ tree_statement::is_end_of_fcn_or_script (void) const
   if (cmd)
     {
       tree_no_op_command *no_op_cmd
-	= dynamic_cast<tree_no_op_command *> (cmd);
+        = dynamic_cast<tree_no_op_command *> (cmd);
 
       if (no_op_cmd)
-	retval = no_op_cmd->is_end_of_fcn_or_script ();
+        retval = no_op_cmd->is_end_of_fcn_or_script ();
     }
 
   return retval;
@@ -133,7 +133,7 @@ tree_statement::is_end_of_fcn_or_script (void) const
 
 tree_statement *
 tree_statement::dup (symbol_table::scope_id scope,
-		     symbol_table::context_id context) const
+                     symbol_table::context_id context) const
 {
   tree_statement *new_stmt = new tree_statement ();
 
@@ -171,10 +171,10 @@ tree_statement_list::delete_breakpoint (int line)
       int len = bp_lst.length ();
 
       for (int i = 0; i < len; i++)
-	{
-	  tree_breakpoint tbp (i, tree_breakpoint::clear);
-	  accept (tbp);
-	}
+        {
+          tree_breakpoint tbp (i, tree_breakpoint::clear);
+          accept (tbp);
+        }
     }
   else
     {
@@ -194,7 +194,7 @@ tree_statement_list::list_breakpoints (void)
 
 tree_statement_list *
 tree_statement_list::dup (symbol_table::scope_id scope,
-			  symbol_table::context_id context) const
+                          symbol_table::context_id context) const
 {
   tree_statement_list *new_list = new tree_statement_list ();
 

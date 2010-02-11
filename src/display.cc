@@ -49,81 +49,81 @@ display_info::init (bool query)
       HDC hdc = GetDC (0);
 
       if (hdc)
-	{
-	  dp = GetDeviceCaps (hdc, BITSPIXEL);
+        {
+          dp = GetDeviceCaps (hdc, BITSPIXEL);
 
-	  ht = GetDeviceCaps (hdc, VERTRES);
-	  wd = GetDeviceCaps (hdc, HORZRES);
+          ht = GetDeviceCaps (hdc, VERTRES);
+          wd = GetDeviceCaps (hdc, HORZRES);
 
-	  double ht_mm = GetDeviceCaps (hdc, VERTSIZE);
-	  double wd_mm = GetDeviceCaps (hdc, HORZSIZE);
+          double ht_mm = GetDeviceCaps (hdc, VERTSIZE);
+          double wd_mm = GetDeviceCaps (hdc, HORZSIZE);
 
-	  rx = wd * 25.4 / wd_mm;
-	  ry = ht * 25.4 / ht_mm;
-	}
+          rx = wd * 25.4 / wd_mm;
+          ry = ht * 25.4 / ht_mm;
+        }
       else
-	warning ("no graphical display found");
+        warning ("no graphical display found");
 
 #elif defined (HAVE_FRAMEWORK_CARBON)
 
       CGDirectDisplayID display = CGMainDisplayID ();
 
       if (display)
-	{
-	  dp = CGDisplayBitsPerPixel (display);
+        {
+          dp = CGDisplayBitsPerPixel (display);
 
-	  ht = CGDisplayPixelsHigh (display);
-	  wd = CGDisplayPixelsWide (display);
+          ht = CGDisplayPixelsHigh (display);
+          wd = CGDisplayPixelsWide (display);
 
-	  CGSize sz_mm = CGDisplayScreenSize (display);
+          CGSize sz_mm = CGDisplayScreenSize (display);
 
-	  // On modern Mac systems (>= 10.5) CGSize is a struct keeping 2
-	  // CGFloat values, but the CGFloat typedef is not present on
-	  // older systems, so use double instead.
-	  double ht_mm = sz_mm.height;
-	  double wd_mm = sz_mm.width;
+          // On modern Mac systems (>= 10.5) CGSize is a struct keeping 2
+          // CGFloat values, but the CGFloat typedef is not present on
+          // older systems, so use double instead.
+          double ht_mm = sz_mm.height;
+          double wd_mm = sz_mm.width;
 
-	  rx = wd * 25.4 / wd_mm;
-	  ry = ht * 25.4 / ht_mm;
-	}
+          rx = wd * 25.4 / wd_mm;
+          ry = ht * 25.4 / ht_mm;
+        }
       else
-	warning ("no graphical display found");
+        warning ("no graphical display found");
 
 #elif defined (HAVE_X_WINDOWS)
 
       const char *display_name = getenv ("DISPLAY");
 
       if (display_name && *display_name)
-	{
-	  Display *display = XOpenDisplay (display_name);
+        {
+          Display *display = XOpenDisplay (display_name);
 
-	  if (display)
-	    {
-	      Screen *screen = DefaultScreenOfDisplay (display);
+          if (display)
+            {
+              Screen *screen = DefaultScreenOfDisplay (display);
 
-	      if (screen)
-		{
-		  dp = DefaultDepthOfScreen (screen);
+              if (screen)
+                {
+                  dp = DefaultDepthOfScreen (screen);
 
-		  ht = HeightOfScreen (screen);
-		  wd = WidthOfScreen (screen);
+                  ht = HeightOfScreen (screen);
+                  wd = WidthOfScreen (screen);
 
-		  int screen_number = XScreenNumberOfScreen (screen);
+                  int screen_number = XScreenNumberOfScreen (screen);
 
-		  double ht_mm = DisplayHeightMM (display, screen_number);
-		  double wd_mm = DisplayWidthMM (display, screen_number);
+                  double ht_mm = DisplayHeightMM (display, screen_number);
+                  double wd_mm = DisplayWidthMM (display, screen_number);
 
-		  rx = wd * 25.4 / wd_mm;
-		  ry = ht * 25.4 / ht_mm;
-		}
-	      else
-		warning ("X11 display has no default screen");
-	    }
-	  else
-	    warning ("unable to open X11 DISPLAY");
-	}
+                  rx = wd * 25.4 / wd_mm;
+                  ry = ht * 25.4 / ht_mm;
+                }
+              else
+                warning ("X11 display has no default screen");
+            }
+          else
+            warning ("unable to open X11 DISPLAY");
+        }
       else
-	warning ("X11 DISPLAY environment variable not set");
+        warning ("X11 DISPLAY environment variable not set");
 #else
 
       warning ("no graphical display found");

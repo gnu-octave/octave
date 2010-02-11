@@ -1,5 +1,39 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* Cell.cc, bitfcns.cc, c-file-ptr-stream.cc, comment-list.cc,
+	data.cc, debug.cc, defaults.cc, defun.cc, dirfns.cc, display.cc,
+	dynamic-ld.cc, error.cc, file-io.cc, gl-render.cc,
+	gl2ps-renderer.cc, graphics.cc, gripes.cc, help.cc, input.cc,
+	load-path.cc, load-save.cc, ls-ascii-helper.cc, ls-hdf5.cc,
+	ls-mat-ascii.cc, ls-mat4.cc, ls-mat5.cc, ls-oct-ascii.cc,
+	ls-oct-binary.cc, mex.cc, oct-fstrm.cc, oct-hist.cc,
+	oct-lvalue.cc, oct-map.cc, oct-obj.cc, oct-prcstrm.cc,
+	oct-procbuf.cc, oct-stream.cc, oct-strstrm.cc, octave.cc,
+	ov-base-diag.cc, ov-base-int.cc, ov-base-mat.cc,
+	ov-base-scalar.cc, ov-base-sparse.cc, ov-base.cc,
+	ov-bool-mat.cc, ov-bool-sparse.cc, ov-bool.cc, ov-builtin.cc,
+	ov-cell.cc, ov-ch-mat.cc, ov-class.cc, ov-colon.cc,
+	ov-complex.cc, ov-cx-diag.cc, ov-cx-mat.cc, ov-cx-sparse.cc,
+	ov-dld-fcn.cc, ov-fcn-handle.cc, ov-fcn-inline.cc, ov-float.cc,
+	ov-flt-complex.cc, ov-flt-cx-diag.cc, ov-flt-cx-mat.cc,
+	ov-flt-re-diag.cc, ov-flt-re-mat.cc, ov-int16.cc, ov-int32.cc,
+	ov-int64.cc, ov-int8.cc, ov-mex-fcn.cc, ov-perm.cc, ov-range.cc,
+	ov-re-diag.cc, ov-re-mat.cc, ov-re-sparse.cc, ov-scalar.cc,
+	ov-str-mat.cc, ov-struct.cc, ov-typeinfo.cc, ov-uint16.cc,
+	ov-uint32.cc, ov-uint64.cc, ov-uint8.cc, ov-usr-fcn.cc, ov.cc,
+	pager.cc, pr-output.cc, procstream.cc, pt-arg-list.cc,
+	pt-assign.cc, pt-binop.cc, pt-bp.cc, pt-cbinop.cc, pt-cell.cc,
+	pt-check.cc, pt-cmd.cc, pt-colon.cc, pt-const.cc, pt-decl.cc,
+	pt-eval.cc, pt-except.cc, pt-exp.cc, pt-fcn-handle.cc, pt-id.cc,
+	pt-idx.cc, pt-jump.cc, pt-loop.cc, pt-mat.cc, pt-misc.cc,
+	pt-pr-code.cc, pt-select.cc, pt-stmt.cc, pt-unop.cc,
+	sighandlers.cc, sparse-xdiv.cc, sparse-xpow.cc, strfns.cc,
+	symtab.cc, syscalls.cc, sysdep.cc, toplev.cc, txt-eng-ft.cc,
+	utils.cc, variables.cc, xdiv.cc, xpow.cc, oct-parse.yy, lex.ll:
+	Untabify.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* Cell.h, base-list.h, c-file-ptr-stream.h, comment-list.h,
 	debug.h, defun-int.h, dynamic-ld.h, error.h, gl-render.h,
 	gl2ps-renderer.h, gripes.h, load-path.h, load-save.h, ls-hdf5.h,

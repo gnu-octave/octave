@@ -84,7 +84,7 @@ default_history_file (void)
 
   if (file.empty ())
     file = file_ops::concat (octave_env::get_home_directory (),
-			     ".octave_hist");
+                             ".octave_hist");
 
   return file;
 }
@@ -104,7 +104,7 @@ default_history_size (void)
       int val;
 
       if (sscanf (env_size.c_str (), "%d", &val) == 1)
-	size = val > 0 ? val : 0;
+        size = val > 0 ? val : 0;
     }
 
   return size;
@@ -149,41 +149,41 @@ do_history (int argc, const string_vector& argv)
       std::string option = argv[i];
 
       if (option == "-r" || option == "-w" || option == "-a"
-	  || option == "-n")
-	{
-	  if (i < argc - 1)
-	    command_history::set_file (argv[i+1]);
+          || option == "-n")
+        {
+          if (i < argc - 1)
+            command_history::set_file (argv[i+1]);
 
-	  if (option == "-a")
-	    // Append `new' lines to file.
-	    command_history::append ();
+          if (option == "-a")
+            // Append `new' lines to file.
+            command_history::append ();
 
-	  else if (option == "-w")
-	    // Write entire history.
-	    command_history::write ();
+          else if (option == "-w")
+            // Write entire history.
+            command_history::write ();
 
-	  else if (option == "-r")
-	    // Read entire file.
-	    command_history::read ();
+          else if (option == "-r")
+            // Read entire file.
+            command_history::read ();
 
-	  else if (option == "-n")
-	    // Read `new' history from file.
-	    command_history::read_range ();
+          else if (option == "-n")
+            // Read `new' history from file.
+            command_history::read_range ();
 
-	  else
-	    panic_impossible ();
+          else
+            panic_impossible ();
 
-	  return;
-	}
+          return;
+        }
       else if (argv[i] == "-q")
-	numbered_output = 0;
+        numbered_output = 0;
       else if (argv[i] == "--")
-	{
-	  i++;
-	  break;
-	}
+        {
+          i++;
+          break;
+        }
       else
-	break;
+        break;
     }
 
   int limit = -1;
@@ -192,16 +192,16 @@ do_history (int argc, const string_vector& argv)
     {
       if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
         {
-	  if (argv[i][0] == '-')
-	    error ("history: unrecognized option `%s'", argv[i].c_str ());
-	  else
-	    error ("history: bad non-numeric arg `%s'", argv[i].c_str ());
+          if (argv[i][0] == '-')
+            error ("history: unrecognized option `%s'", argv[i].c_str ());
+          else
+            error ("history: bad non-numeric arg `%s'", argv[i].c_str ());
 
-	  return;
+          return;
         }
 
       if (limit < 0)
-	limit = -limit;
+        limit = -limit;
     }
 
   string_vector hlist = command_history::list (limit, numbered_output);
@@ -228,21 +228,21 @@ edit_history_readline (std::fstream& stream)
   while (stream.get (c))
     {
       if (lindex + 2 >= line_len)
-	{
-	  char *tmp_line = new char [line_len += 128];
-	  strcpy (tmp_line, line);
-	  delete [] line;
-	  line = tmp_line;
-	}
+        {
+          char *tmp_line = new char [line_len += 128];
+          strcpy (tmp_line, line);
+          delete [] line;
+          line = tmp_line;
+        }
 
       if (c == '\n')
-	{
-	  line[lindex++] = '\n';
-	  line[lindex++] = '\0';
-	  return line;
-	}
+        {
+          line[lindex++] = '\n';
+          line[lindex++] = '\0';
+          return line;
+        }
       else
-	line[lindex++] = c;
+        line[lindex++] = c;
     }
 
   if (! lindex)
@@ -282,24 +282,24 @@ edit_history_repl_hist (const std::string& command)
       int len = hlist.length ();
 
       if (len > 0)
-	{
-	  int i = len - 1;
+        {
+          int i = len - 1;
 
-	  std::string histent = command_history::get_entry (i);
+          std::string histent = command_history::get_entry (i);
 
-	  if (! histent.empty ())
-	    {
-	      std::string cmd = command;
+          if (! histent.empty ())
+            {
+              std::string cmd = command;
 
-	      int cmd_len = cmd.length ();
+              int cmd_len = cmd.length ();
 
-	      if (cmd[cmd_len - 1] == '\n')
-		cmd.resize (cmd_len - 1);
+              if (cmd[cmd_len - 1] == '\n')
+                cmd.resize (cmd_len - 1);
 
-	      if (! cmd.empty ())
-		command_history::replace_entry (i, cmd);
-	    }
-	}
+              if (! cmd.empty ())
+                command_history::replace_entry (i, cmd);
+            }
+        }
     }
 }
 
@@ -311,18 +311,18 @@ edit_history_add_hist (const std::string& line)
       std::string tmp = line;
 
       int len = tmp.length ();
-	
+        
       if (len > 0 && tmp[len-1] == '\n')
-	tmp.resize (len - 1);
+        tmp.resize (len - 1);
 
       if (! tmp.empty ())
-	command_history::add (tmp);
+        command_history::add (tmp);
     }
 }
 
 static std::string
 mk_tmp_hist_file (int argc, const string_vector& argv,
-		  int insert_curr, const char *warn_for) 
+                  int insert_curr, const char *warn_for) 
 {
   std::string retval;
 
@@ -353,23 +353,23 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
   if (argc == 3)
     {
       if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1
-	  || sscanf (argv[2].c_str (), "%d", &hist_end) != 1)
-	usage_error = 1;
+          || sscanf (argv[2].c_str (), "%d", &hist_end) != 1)
+        usage_error = 1;
       else
-	{
-	  hist_beg--;
-	  hist_end--;
-	}
+        {
+          hist_beg--;
+          hist_end--;
+        }
     }
   else if (argc == 2)
     {
       if (sscanf (argv[1].c_str (), "%d", &hist_beg) != 1)
-	usage_error = 1;
+        usage_error = 1;
       else
-	{
-	  hist_beg--;
-	  hist_end = hist_beg;
-	}
+        {
+          hist_beg--;
+          hist_end = hist_beg;
+        }
     }
 
   if (hist_beg < 0 || hist_end < 0 || hist_beg > hist_count
@@ -400,19 +400,19 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
   if (! file)
     {
       error ("%s: couldn't open temporary file `%s'", warn_for,
-	     name.c_str ());
+             name.c_str ());
       return retval;
     }
 
   if (reverse)
     {
       for (int i = hist_end; i >= hist_beg; i--)
-	file << hlist[i] << "\n";
+        file << hlist[i] << "\n";
     }
   else
     {
       for (int i = hist_beg; i <= hist_end; i++)
-	file << hlist[i] << "\n";
+        file << hlist[i] << "\n";
     }
 
   file.close ();
@@ -462,18 +462,18 @@ do_edit_history (int argc, const string_vector& argv)
       // Skip blank lines.
 
       if (line[0] == '\n')
-	{
-	  delete [] line;
-	  continue;
-	}
+        {
+          delete [] line;
+          continue;
+        }
 
       if (first)
-	{
-	  first = 0;
-	  edit_history_repl_hist (line);
-	}
+        {
+          first = 0;
+          edit_history_repl_hist (line);
+        }
       else
-	edit_history_add_hist (line);
+        edit_history_add_hist (line);
     }
 
   file.close ();

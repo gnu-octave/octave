@@ -626,7 +626,7 @@ looks_like_texinfo (const std::string& msg, size_t& p1)
 
 static bool
 raw_help_from_symbol_table (const std::string& nm, std::string& h, 
-			    std::string& w, bool& symbol_found)
+                            std::string& w, bool& symbol_found)
 {
   bool retval = false;
 
@@ -637,19 +637,19 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
       octave_function *fcn = val.function_value ();
 
       if (fcn)
-	{
-	  symbol_found = true;
+        {
+          symbol_found = true;
 
-	  h = fcn->doc_string ();
+          h = fcn->doc_string ();
 
           retval = true;
 
-	  w = fcn->fcn_file_name ();
+          w = fcn->fcn_file_name ();
 
-	  if (w.empty ())
+          if (w.empty ())
             w = fcn->is_user_function ()
               ? "command-line function" : "built-in function";
-	}
+        }
     }
 
   return retval;
@@ -657,7 +657,7 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 
 static bool
 raw_help_from_file (const std::string& nm, std::string& h, 
-		    std::string& file, bool& symbol_found)
+                    std::string& file, bool& symbol_found)
 {
   bool retval = false;
 
@@ -676,7 +676,7 @@ raw_help_from_file (const std::string& nm, std::string& h,
 
 static bool
 raw_help_from_map (const std::string& nm, std::string& h, 
-		   const map_type& map, bool& symbol_found)
+                   const map_type& map, bool& symbol_found)
 {
   map_iter idx = map.find (nm);
   symbol_found = (idx != map.end ());
@@ -701,7 +701,7 @@ raw_help (const std::string& nm, bool& symbol_found)
 
 static void
 do_get_help_text (const std::string& name, std::string& text,
-		  std::string& format)
+                  std::string& format)
 {
   bool symbol_found = false;
   text = raw_help (name, symbol_found);
@@ -751,17 +751,17 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
       const std::string name = args (0).string_value ();
 
       if (! error_state)
-	{
-	  std::string text;
-	  std::string format;
+        {
+          std::string text;
+          std::string format;
 
-	  do_get_help_text (name, text, format);
+          do_get_help_text (name, text, format);
   
-	  retval(1) = format;
-	  retval(0) = text;
-	}
+          retval(1) = format;
+          retval(0) = text;
+        }
       else
-	error ("get_help_text: invalid input");
+        error ("get_help_text: invalid input");
     }
   else
     print_usage ();
@@ -771,7 +771,7 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
 
 static void
 do_get_help_text_from_file (const std::string& fname, std::string& text,
-			    std::string& format)
+                            std::string& format)
 {
   bool symbol_found = false;
 
@@ -825,17 +825,17 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
       const std::string fname = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string text;
-	  std::string format;
+        {
+          std::string text;
+          std::string format;
 
-	  do_get_help_text_from_file (fname, text, format);
+          do_get_help_text_from_file (fname, text, format);
   
-	  retval(1) = format;
-	  retval(0) = text;
-	}
+          retval(1) = format;
+          retval(0) = text;
+        }
       else
-	error ("get_help_text_from_file: invalid input");
+        error ("get_help_text_from_file: invalid input");
     }
   else
     print_usage ();
@@ -961,34 +961,34 @@ Undocumented internal function.\n\
       int argc = argv.length ();
 
       if (argc > 1)
-	{
-	  Octave_map m (dim_vector (1, argc-1));
+        {
+          Octave_map m (dim_vector (1, argc-1));
 
-	  Cell names (1, argc-1);
-	  Cell files (1, argc-1);
-	  Cell types (1, argc-1);
+          Cell names (1, argc-1);
+          Cell files (1, argc-1);
+          Cell types (1, argc-1);
 
-	  for (int i = 1; i < argc; i++)
-	    {
-	      std::string name = argv[i];
+          for (int i = 1; i < argc; i++)
+            {
+              std::string name = argv[i];
 
-	      std::string type;
+              std::string type;
 
-	      std::string file = do_which (name, type);
+              std::string file = do_which (name, type);
 
-	      names(i-1) = name;
-	      files(i-1) = file;
-	      types(i-1) = type;
-	    }
+              names(i-1) = name;
+              files(i-1) = file;
+              types(i-1) = type;
+            }
 
-	  m.assign ("name", names);
-	  m.assign ("file", files);
-	  m.assign ("type", types);
+          m.assign ("name", names);
+          m.assign ("file", files);
+          m.assign ("type", types);
 
-	  retval = m;
-	}
+          retval = m;
+        }
       else
-	print_usage ();
+        print_usage ();
     }
 
   return retval;
@@ -1039,19 +1039,19 @@ Undocumented internal function.\n\
       std::string dir = args (0).string_value ();
 
       if (! error_state)
-	{
-	  string_vector fl = load_path::files (dir, true);
+        {
+          string_vector fl = load_path::files (dir, true);
 
-	  if (! error_state)
-	    {
-	      // Return a sorted list with unique entries (in case of
-	      // .m and .oct versions of the same function in a given
-	      // directory, for example).
-	      fl.sort (true);
+          if (! error_state)
+            {
+              // Return a sorted list with unique entries (in case of
+              // .m and .oct versions of the same function in a given
+              // directory, for example).
+              fl.sort (true);
 
-	      retval = Cell (fl);
-	    }
-	}
+              retval = Cell (fl);
+            }
+        }
       else
         error ("__list_functions__: input must be a string");
     }  

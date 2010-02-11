@@ -115,15 +115,15 @@ w32_set_octave_home (void)
       int status = GetModuleFileName (hMod, &bin_dir[0], n);
 
       if (status < n)
-	{
-	  bin_dir.resize (status);
-	  break;
-	}
+        {
+          bin_dir.resize (status);
+          break;
+        }
       else
-	{
-	  n *= 2;
-	  bin_dir.resize (n);
-	}
+        {
+          n *= 2;
+          bin_dir.resize (n);
+        }
     }
 
   if (! bin_dir.empty ())
@@ -131,7 +131,7 @@ w32_set_octave_home (void)
       size_t pos = bin_dir.rfind ("\\bin\\");
 
       if (pos != std::string::npos)
-	octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+        octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
     }
 }
 
@@ -194,27 +194,27 @@ same_file_internal (const std::string& file1, const std::string& file2)
   // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
 
   HANDLE hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
-			      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
+                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
 
   if (hfile1 != INVALID_HANDLE_VALUE)
     {
       HANDLE hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
-				  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+                                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
       if (hfile2 != INVALID_HANDLE_VALUE)
-	{  
-	  BY_HANDLE_FILE_INFORMATION hfi1;
-	  BY_HANDLE_FILE_INFORMATION hfi2;
+        {  
+          BY_HANDLE_FILE_INFORMATION hfi1;
+          BY_HANDLE_FILE_INFORMATION hfi2;
   
-	  if (GetFileInformationByHandle (hfile1, &hfi1)
-	      && GetFileInformationByHandle (hfile2, &hfi2))
+          if (GetFileInformationByHandle (hfile1, &hfi1)
+              && GetFileInformationByHandle (hfile2, &hfi2))
   
-	    retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
-		      && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-		      && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+            retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+                      && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+                      && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
 
-	  CloseHandle (hfile2);
-	}
+          CloseHandle (hfile2);
+        }
 
       CloseHandle (hfile1);
     }
@@ -229,8 +229,8 @@ same_file_internal (const std::string& file1, const std::string& file2)
   file_stat fs_file2 (file2);
 
   return (fs_file1 && fs_file2
-	  && fs_file1.ino () == fs_file2.ino ()
-	  && fs_file1.dev () == fs_file2.dev ());
+          && fs_file1.ino () == fs_file2.ino ()
+          && fs_file1.dev () == fs_file2.dev ());
 
 #endif
 }
@@ -274,7 +274,7 @@ NeXT_init (void)
 OS2_init (void)
 {
   _control87 ((EM_INVALID | EM_DENORMAL | EM_ZERODIVIDE | EM_OVERFLOW
-	       | EM_UNDERFLOW | EM_INEXACT), MCW_EM);
+               | EM_UNDERFLOW | EM_INEXACT), MCW_EM);
 }
 #endif
 
@@ -319,12 +319,12 @@ sysdep_cleanup (void)
 //
 // Change terminal to "raw mode", or restore to "normal" mode.
 // "Raw mode" means 
-//	1. An outstanding read will complete on receipt of a single keystroke.
-//	2. Input is not echoed.  
-//	3. On output, \n is mapped to \r\n.
-//	4. \t is NOT expanded into spaces.
-//	5. Signal-causing characters such as ctrl-C (interrupt),
-//	   etc. are NOT disabled.
+//      1. An outstanding read will complete on receipt of a single keystroke.
+//      2. Input is not echoed.  
+//      3. On output, \n is mapped to \r\n.
+//      4. \t is NOT expanded into spaces.
+//      5. Signal-causing characters such as ctrl-C (interrupt),
+//         etc. are NOT disabled.
 // It doesn't matter whether an input \n is mapped to \r, or vice versa.
 
 void
@@ -336,7 +336,7 @@ raw_mode (bool on, bool wait)
   if (! isatty (tty_fd))
     {
       if (interactive)
-	error ("stdin is not a tty!");
+        error ("stdin is not a tty!");
       return;
     }
 
@@ -350,38 +350,38 @@ raw_mode (bool on, bool wait)
 
     if (on)
       {
-	// Get terminal modes.
+        // Get terminal modes.
 
-	tcgetattr (tty_fd, &s);
+        tcgetattr (tty_fd, &s);
 
-	// Save modes and set certain variables dependent on modes.
+        // Save modes and set certain variables dependent on modes.
 
-	save_term = s;
-//	ospeed = s.c_cflag & CBAUD;
-//	erase_char = s.c_cc[VERASE];
-//	kill_char = s.c_cc[VKILL];
+        save_term = s;
+//      ospeed = s.c_cflag & CBAUD;
+//      erase_char = s.c_cc[VERASE];
+//      kill_char = s.c_cc[VKILL];
 
-	// Set the modes to the way we want them.
+        // Set the modes to the way we want them.
 
-	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-	s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
+        s.c_oflag |=  (OPOST|ONLCR);
 #if defined (OCRNL)
-	s.c_oflag &= ~(OCRNL);
+        s.c_oflag &= ~(OCRNL);
 #endif
 #if defined (ONOCR)
-	s.c_oflag &= ~(ONOCR);
+        s.c_oflag &= ~(ONOCR);
 #endif
 #if defined (ONLRET)
-	s.c_oflag &= ~(ONLRET);
+        s.c_oflag &= ~(ONLRET);
 #endif
-	s.c_cc[VMIN] = wait ? 1 : 0;
-	s.c_cc[VTIME] = 0;
+        s.c_cc[VMIN] = wait ? 1 : 0;
+        s.c_cc[VTIME] = 0;
       }      
     else
       {
-	// Restore saved modes.
+        // Restore saved modes.
 
-	s = save_term;
+        s = save_term;
       }
 
     tcsetattr (tty_fd, wait ? TCSAFLUSH : TCSADRAIN, &s);
@@ -393,37 +393,37 @@ raw_mode (bool on, bool wait)
 
     if (on)
       {
-	// Get terminal modes.
+        // Get terminal modes.
 
-	ioctl (tty_fd, TCGETA, &s);
+        ioctl (tty_fd, TCGETA, &s);
 
-	// Save modes and set certain variables dependent on modes.
+        // Save modes and set certain variables dependent on modes.
 
-	save_term = s;
-//	ospeed = s.c_cflag & CBAUD;
-//	erase_char = s.c_cc[VERASE];
-//	kill_char = s.c_cc[VKILL];
+        save_term = s;
+//      ospeed = s.c_cflag & CBAUD;
+//      erase_char = s.c_cc[VERASE];
+//      kill_char = s.c_cc[VKILL];
 
-	// Set the modes to the way we want them.
+        // Set the modes to the way we want them.
 
-	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-	s.c_oflag |=  (OPOST|ONLCR);
+        s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
+        s.c_oflag |=  (OPOST|ONLCR);
 #if defined (OCRNL)
-	s.c_oflag &= ~(OCRNL);
+        s.c_oflag &= ~(OCRNL);
 #endif
 #if defined (ONOCR)
-	s.c_oflag &= ~(ONOCR);
+        s.c_oflag &= ~(ONOCR);
 #endif
 #if defined (ONLRET)
-	s.c_oflag &= ~(ONLRET);
+        s.c_oflag &= ~(ONLRET);
 #endif
-	s.c_cc[VMIN] = wait ? 1 : 0;
+        s.c_cc[VMIN] = wait ? 1 : 0;
       }      
     else
       {
-	// Restore saved modes.
+        // Restore saved modes.
 
-	s = save_term;
+        s = save_term;
       }
 
     ioctl (tty_fd, TCSETAW, &s);
@@ -435,27 +435,27 @@ raw_mode (bool on, bool wait)
 
     if (on)
       {
-	// Get terminal modes.
+        // Get terminal modes.
 
-	ioctl (tty_fd, TIOCGETP, &s);
+        ioctl (tty_fd, TIOCGETP, &s);
 
-	// Save modes and set certain variables dependent on modes.
+        // Save modes and set certain variables dependent on modes.
 
-	save_term = s;
-//	ospeed = s.sg_ospeed;
-//	erase_char = s.sg_erase;
-//	kill_char = s.sg_kill;
+        save_term = s;
+//      ospeed = s.sg_ospeed;
+//      erase_char = s.sg_erase;
+//      kill_char = s.sg_kill;
 
-	// Set the modes to the way we want them.
+        // Set the modes to the way we want them.
 
-	s.sg_flags |= CBREAK;
-	s.sg_flags &= ~(ECHO);
+        s.sg_flags |= CBREAK;
+        s.sg_flags &= ~(ECHO);
       } 
     else
       {
-	// Restore saved modes.
+        // Restore saved modes.
 
-	s = save_term;
+        s = save_term;
       }
 
     ioctl (tty_fd, TIOCSETN, &s);
@@ -569,7 +569,7 @@ returns a string containing the value of your path.\n\
       std::string name = args(0).string_value ();
 
       if (! error_state)
-	retval = octave_env::getenv (name);
+        retval = octave_env::getenv (name);
     }
   else
     print_usage ();
@@ -593,17 +593,17 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
       std::string var = args(0).string_value (); 
 
       if (! error_state)
-	{
-	  std::string val = (nargin == 2
-			     ? args(1).string_value () : std::string ()); 
+        {
+          std::string val = (nargin == 2
+                             ? args(1).string_value () : std::string ()); 
 
-	  if (! error_state)
-	    octave_env::putenv (var, val);
-	  else
-	    error ("putenv: second argument should be a string");
-	}
+          if (! error_state)
+            octave_env::putenv (var, val);
+          else
+            error ("putenv: second argument should be a string");
+        }
       else
-	error ("putenv: first argument should be a string");
+        error ("putenv: first argument should be a string");
     }
   else
     print_usage ();
@@ -648,7 +648,7 @@ returning the empty string if no key is available.\n\
       int c = octave_kbhit (args.length () == 0);
 
       if (c == -1)
-	c = 0;
+        c = 0;
 
       char *s = new char [2];
       s[0] = c;
@@ -692,22 +692,22 @@ clc;\n\
       double dval = args(0).double_value ();
 
       if (! error_state)
-	{
-	  if (! xisnan (dval))
-	    {
-	      feval ("drawnow");
+        {
+          if (! xisnan (dval))
+            {
+              feval ("drawnow");
 
-	      if (xisinf (dval))
-		{
-		  flush_octave_stdout ();
-		  octave_kbhit ();
-		}
-	      else
-		octave_sleep (dval);
-	    }
-	  else
-	    warning ("pause: NaN is an invalid delay");
-	}
+              if (xisinf (dval))
+                {
+                  flush_octave_stdout ();
+                  octave_kbhit ();
+                }
+              else
+                octave_sleep (dval);
+            }
+          else
+            warning ("pause: NaN is an invalid delay");
+        }
     }
   else
     {
@@ -732,15 +732,15 @@ Suspend the execution of the program for the given number of seconds.\n\
       double dval = args(0).double_value ();
 
       if (! error_state)
-	{
-	  if (xisnan (dval))
-	    warning ("sleep: NaN is an invalid delay");
-	  else
-	    {
-	      feval ("drawnow");
-	      octave_sleep (dval);
-	    }
-	}
+        {
+          if (xisnan (dval))
+            warning ("sleep: NaN is an invalid delay");
+          else
+            {
+              feval ("drawnow");
+              octave_sleep (dval);
+            }
+        }
     }
   else
     print_usage ();
@@ -764,19 +764,19 @@ of time less than one second, @code{usleep} will pause the execution for\n\
       double dval = args(0).double_value ();
 
       if (! error_state)
-	{
-	  if (xisnan (dval))
-	    warning ("usleep: NaN is an invalid delay");
-	  else
-	    {
-	      feval ("drawnow");
+        {
+          if (xisnan (dval))
+            warning ("usleep: NaN is an invalid delay");
+          else
+            {
+              feval ("drawnow");
 
-	      int delay = NINT (dval);
+              int delay = NINT (dval);
 
-	      if (delay > 0)
-		octave_usleep (delay);
-	    }
-	}
+              if (delay > 0)
+                octave_usleep (delay);
+            }
+        }
     }
   else
     print_usage ();
@@ -797,7 +797,7 @@ floating point calculations.\n\
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
 
   return octave_value (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
-		       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+                       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 }
 
 DEFUN (native_float_format, , ,
@@ -843,16 +843,16 @@ tilde_expand (\"~/bin\")\n\
       string_vector sv = arg.all_strings ();
 
       if (! error_state)
-	{
-	  sv = file_ops::tilde_expand (sv);
+        {
+          sv = file_ops::tilde_expand (sv);
 
-	  if (arg.is_cellstr ())
-	    retval = Cell (arg.dims (), sv);
-	  else
-	    retval = sv;
-	}
+          if (arg.is_cellstr ())
+            retval = Cell (arg.dims (), sv);
+          else
+            retval = sv;
+        }
       else
-	error ("tilde_expand: expecting argument to be char or cellstr object");
+        error ("tilde_expand: expecting argument to be char or cellstr object");
     }
   else
     print_usage ();

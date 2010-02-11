@@ -105,31 +105,31 @@ system-dependent error message.\n\
   if (nargin == 2)
     {
       octave_stream old_stream
-	= octave_stream_list::lookup (args(0), "dup2");
+        = octave_stream_list::lookup (args(0), "dup2");
 
       if (! error_state)
-	{
-	  octave_stream new_stream
-	    = octave_stream_list::lookup (args(1), "dup2");
+        {
+          octave_stream new_stream
+            = octave_stream_list::lookup (args(1), "dup2");
 
-	  if (! error_state)
-	    {
-	      int i_old = old_stream.file_number ();
-	      int i_new = new_stream.file_number ();
+          if (! error_state)
+            {
+              int i_old = old_stream.file_number ();
+              int i_new = new_stream.file_number ();
 
-	      if (i_old >= 0 && i_new >= 0)
-		{
-		  std::string msg;
+              if (i_old >= 0 && i_new >= 0)
+                {
+                  std::string msg;
 
-		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
+                  int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-		  retval(0) = status;
-		  retval(1) = msg;
-		}
-	    }
-	}
+                  retval(0) = status;
+                  retval(1) = msg;
+                }
+            }
+        }
       else
-	error ("dup2: invalid stream");
+        error ("dup2: invalid stream");
     }
   else
     print_usage ();
@@ -168,46 +168,46 @@ error message.\n\
       std::string exec_file = args(0).string_value ();
 
       if (! error_state)
-	{
-	  string_vector exec_args;
+        {
+          string_vector exec_args;
 
-	  if (nargin == 2)
-	    {
-	      string_vector tmp = args(1).all_strings ();
+          if (nargin == 2)
+            {
+              string_vector tmp = args(1).all_strings ();
 
-	      if (! error_state)
-		{
-		  int len = tmp.length ();
+              if (! error_state)
+                {
+                  int len = tmp.length ();
 
-		  exec_args.resize (len + 1);
+                  exec_args.resize (len + 1);
 
-		  exec_args[0] = exec_file;
+                  exec_args[0] = exec_file;
 
-		  for (int i = 0; i < len; i++)
-		    exec_args[i+1] = tmp[i];
-		}
-	      else
-		error ("exec: arguments must be character strings");
-	    }
-	  else
-	    {
-	      exec_args.resize (1);
+                  for (int i = 0; i < len; i++)
+                    exec_args[i+1] = tmp[i];
+                }
+              else
+                error ("exec: arguments must be character strings");
+            }
+          else
+            {
+              exec_args.resize (1);
 
-	      exec_args[0] = exec_file;
-	    }
+              exec_args[0] = exec_file;
+            }
 
-	  if (! error_state)
-	    {
-	      std::string msg;
+          if (! error_state)
+            {
+              std::string msg;
 
-	      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
+              int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-	      retval(0) = status;
-	      retval(1) = msg;
-	    }
-	}
+              retval(0) = status;
+              retval(1) = msg;
+            }
+        }
       else
-	error ("exec: first argument must be a string");
+        error ("exec: first argument must be a string");
     }
   else
     print_usage ();
@@ -272,32 +272,32 @@ exit status, it will linger until Octave exits.\n\
 
       if (! error_state)
         {
-	  string_vector arg_list;
+          string_vector arg_list;
 
-	  if (nargin >= 2)
-	    {
-	      string_vector tmp = args(1).all_strings ();
+          if (nargin >= 2)
+            {
+              string_vector tmp = args(1).all_strings ();
 
-	      if (! error_state)
-		{
-		  int len = tmp.length ();
+              if (! error_state)
+                {
+                  int len = tmp.length ();
 
-		  arg_list.resize (len + 1);
+                  arg_list.resize (len + 1);
 
-		  arg_list[0] = exec_file;
+                  arg_list[0] = exec_file;
 
-		  for (int i = 0; i < len; i++)
-		    arg_list[i+1] = tmp[i];
-		}
-	      else
-		error ("popen2: arguments must be character strings");
-	    }
-	  else
-	    {
-	      arg_list.resize (1);
+                  for (int i = 0; i < len; i++)
+                    arg_list[i+1] = tmp[i];
+                }
+              else
+                error ("popen2: arguments must be character strings");
+            }
+          else
+            {
+              arg_list.resize (1);
 
-	      arg_list[0] = exec_file;
-	    }
+              arg_list[0] = exec_file;
+            }
 
           if (! error_state)
             {
@@ -327,9 +327,9 @@ exit status, it will linger until Octave exits.\n\
 
                       retval(0) = octave_stream_list::insert (os);
                       retval(1) = octave_stream_list::insert (is);
-					  retval(2) = pid;
+                                          retval(2) = pid;
                     }
-				  else
+                                  else
                     error (msg.c_str ());
                 }
             }
@@ -457,30 +457,30 @@ system-dependent error message.\n\
       octave_stream strm = octave_stream_list::lookup (args (0), "fcntl");
 
       if (! error_state)
-	{
-	  int fid = strm.file_number ();
+        {
+          int fid = strm.file_number ();
 
-	  int req = args(1).int_value (true);
-	  int arg = args(2).int_value (true);
+          int req = args(1).int_value (true);
+          int arg = args(2).int_value (true);
 
-	  if (! error_state)
-	    {
-	      // FIXME -- Need better checking here?
-	      if (fid < 0)
-		error ("fcntl: invalid file id");
-	      else
-		{
-		  std::string msg;
+          if (! error_state)
+            {
+              // FIXME -- Need better checking here?
+              if (fid < 0)
+                error ("fcntl: invalid file id");
+              else
+                {
+                  std::string msg;
 
-		  int status = octave_fcntl (fid, req, arg, msg);
+                  int status = octave_fcntl (fid, req, arg, msg);
 
-		  retval(0) = status;
-		  retval(1) = msg;
-		}
-	    }
-	}
+                  retval(0) = status;
+                  retval(1) = msg;
+                }
+            }
+        }
       else
-	error ("fcntl: file id, request, and argument must be integers");
+        error ("fcntl: file id, request, and argument must be integers");
     }
   else
     print_usage ();
@@ -699,19 +699,19 @@ Return 0 if successful, otherwise return -1.\n\
       pid_t pid = args(0).int_value (true);
 
       if (! error_state)
-	{
-	  int sig = args(1).int_value (true);
+        {
+          int sig = args(1).int_value (true);
 
-	  if (! error_state)
-	    {
-	      std::string msg;
+          if (! error_state)
+            {
+              std::string msg;
 
-	      int status = octave_syscalls::kill (pid, sig, msg);
+              int status = octave_syscalls::kill (pid, sig, msg);
 
-	      retval(1) = msg;
-	      retval(0) = status;
-	    }
-	}
+              retval(1) = msg;
+              retval(0) = status;
+            }
+        }
     }
   else
     print_usage ();
@@ -733,22 +733,22 @@ for a description of the contents of @var{info}.\n\
       int fid = octave_stream_list::get_file_number (args(0));
 
       if (! error_state)
-	{
-	  file_fstat fs (fid);
+        {
+          file_fstat fs (fid);
 
-	  if (fs)
-	    {
-	      retval(2) = std::string ();
-	      retval(1) = 0;
-	      retval(0) = octave_value (mk_stat_map (fs));
-	    }
-	  else
-	    {
-	      retval(2) = fs.error ();
-	      retval(1) = -1;
-	      retval(0) = Matrix ();
-	    }
-	}
+          if (fs)
+            {
+              retval(2) = std::string ();
+              retval(1) = 0;
+              retval(0) = octave_value (mk_stat_map (fs));
+            }
+          else
+            {
+              retval(2) = fs.error ();
+              retval(1) = -1;
+              retval(0) = Matrix ();
+            }
+        }
     }
   else
     print_usage ();
@@ -769,22 +769,22 @@ See stat.\n\
       std::string fname = args(0).string_value ();
 
       if (! error_state)
-	{
-	  file_stat fs (fname, false);
+        {
+          file_stat fs (fname, false);
 
-	  if (fs)
-	    {
-	      retval(2) = std::string ();
-	      retval(1) = 0;
-	      retval(0) = mk_stat_map (fs);
-	    }
-	  else
-	    {
-	      retval(2) = fs.error ();
-	      retval(1) = -1;
-	      retval(0) = Matrix ();
-	    }
-	}
+          if (fs)
+            {
+              retval(2) = std::string ();
+              retval(1) = 0;
+              retval(0) = mk_stat_map (fs);
+            }
+          else
+            {
+              retval(2) = fs.error ();
+              retval(1) = -1;
+              retval(0) = Matrix ();
+            }
+        }
     }
   else
     print_usage ();
@@ -814,32 +814,32 @@ system-dependent error message.\n\
   if (nargin == 2)
     {
       if (args(0).is_string ())
-	{
-	  std::string name = args(0).string_value ();
+        {
+          std::string name = args(0).string_value ();
 
-	  if (args(1).is_scalar_type ())
-	    {
-	      long mode = args(1).long_value ();
+          if (args(1).is_scalar_type ())
+            {
+              long mode = args(1).long_value ();
 
-	      if (! error_state)
-		{
-		  std::string msg;
+              if (! error_state)
+                {
+                  std::string msg;
 
-		  int status = octave_mkfifo (name, mode, msg);
+                  int status = octave_mkfifo (name, mode, msg);
 
-		  retval(0) = status;
+                  retval(0) = status;
 
-		  if (status < 0)
-		    retval(1) = msg;
-		}
-	      else
-		error ("mkfifo: invalid MODE");
-	    }
-	  else
-	    error ("mkfifo: MODE must be an integer");
-	}
+                  if (status < 0)
+                    retval(1) = msg;
+                }
+              else
+                error ("mkfifo: invalid MODE");
+            }
+          else
+            error ("mkfifo: MODE must be an integer");
+        }
       else
-	error ("mkfifo: file name must be a string");
+        error ("mkfifo: file name must be a string");
     }
   else
     print_usage ();
@@ -876,25 +876,25 @@ system-dependent error message.\n\
       int status = octave_syscalls::pipe (fid, msg);
 
       if (status < 0)
-	retval(3) = msg;
+        retval(3) = msg;
       else
-	{
-	  FILE *ifile = fdopen (fid[0], "r");
-	  FILE *ofile = fdopen (fid[1], "w");
+        {
+          FILE *ifile = fdopen (fid[0], "r");
+          FILE *ofile = fdopen (fid[1], "w");
 
-	  std::string nm;
+          std::string nm;
 
-	  octave_stream is = octave_stdiostream::create (nm, ifile,
-							 std::ios::in);
+          octave_stream is = octave_stdiostream::create (nm, ifile,
+                                                         std::ios::in);
 
-	  octave_stream os = octave_stdiostream::create (nm, ofile,
-							 std::ios::out);
+          octave_stream os = octave_stdiostream::create (nm, ofile,
+                                                         std::ios::out);
 
-	  retval(1) = octave_stream_list::insert (os);
-	  retval(0) = octave_stream_list::insert (is);
+          retval(1) = octave_stream_list::insert (os);
+          retval(0) = octave_stream_list::insert (is);
 
-	  retval(2) = status;
-	}
+          retval(2) = status;
+        }
     }
   else
     print_usage ();
@@ -1002,22 +1002,22 @@ For example,\n\
       std::string fname = args(0).string_value ();
 
       if (! error_state)
-	{
-	  file_stat fs (fname);
+        {
+          file_stat fs (fname);
 
-	  if (fs)
-	    {
-	      retval(2) = std::string ();
-	      retval(1) = 0;
-	      retval(0) = octave_value (mk_stat_map (fs));
-	    }
-	  else
-	    {
-	      retval(2) = fs.error ();
-	      retval(1) = -1;
-	      retval(0) = Matrix ();
-	    }
-	}
+          if (fs)
+            {
+              retval(2) = std::string ();
+              retval(1) = 0;
+              retval(0) = octave_value (mk_stat_map (fs));
+            }
+          else
+            {
+              retval(2) = fs.error ();
+              retval(1) = -1;
+              retval(0) = Matrix ();
+            }
+        }
     }
   else
     print_usage ();
@@ -1040,9 +1040,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_reg (static_cast<mode_t> (mode));
+        retval = file_stat::is_reg (static_cast<mode_t> (mode));
       else
-	error ("S_ISREG: invalid mode value");
+        error ("S_ISREG: invalid mode value");
     }
   else
     print_usage ();
@@ -1065,9 +1065,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_dir (static_cast<mode_t> (mode));
+        retval = file_stat::is_dir (static_cast<mode_t> (mode));
       else
-	error ("S_ISDIR: invalid mode value");
+        error ("S_ISDIR: invalid mode value");
     }
   else
     print_usage ();
@@ -1090,9 +1090,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_chr (static_cast<mode_t> (mode));
+        retval = file_stat::is_chr (static_cast<mode_t> (mode));
       else
-	error ("S_ISCHR: invalid mode value");
+        error ("S_ISCHR: invalid mode value");
     }
   else
     print_usage ();
@@ -1115,9 +1115,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_blk (static_cast<mode_t> (mode));
+        retval = file_stat::is_blk (static_cast<mode_t> (mode));
       else
-	error ("S_ISBLK: invalid mode value");
+        error ("S_ISBLK: invalid mode value");
     }
   else
     print_usage ();
@@ -1140,9 +1140,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_fifo (static_cast<mode_t> (mode));
+        retval = file_stat::is_fifo (static_cast<mode_t> (mode));
       else
-	error ("S_ISFIFO: invalid mode value");
+        error ("S_ISFIFO: invalid mode value");
     }
   else
     print_usage ();
@@ -1165,9 +1165,9 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_lnk (static_cast<mode_t> (mode));
+        retval = file_stat::is_lnk (static_cast<mode_t> (mode));
       else
-	error ("S_ISLNK: invalid mode value");
+        error ("S_ISLNK: invalid mode value");
     }
   else
     print_usage ();
@@ -1188,9 +1188,9 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
       double mode = args(0).double_value ();
 
       if (! error_state)
-	retval = file_stat::is_sock (static_cast<mode_t> (mode));
+        retval = file_stat::is_sock (static_cast<mode_t> (mode));
       else
-	error ("S_ISSOCK: invalid mode value");
+        error ("S_ISSOCK: invalid mode value");
     }
   else
     print_usage ();
@@ -1265,18 +1265,18 @@ system-dependent error message.\n\
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	{
-	  std::string name = args(0).string_value ();
+        {
+          std::string name = args(0).string_value ();
 
-	  std::string msg;
+          std::string msg;
 
-	  int status = octave_unlink (name, msg);
+          int status = octave_unlink (name, msg);
 
-	  retval(0) = status;
-	  retval(1) = msg;	    
-	}
+          retval(0) = status;
+          retval(1) = msg;          
+        }
       else
-	error ("unlink: file name must be a string");
+        error ("unlink: file name must be a string");
     }
   else
     print_usage ();
@@ -1342,29 +1342,29 @@ information about the subprocess that exited.\n\
       pid_t pid = args(0).int_value (true);
   
       if (! error_state)
-	{
-	  int options = 0;
+        {
+          int options = 0;
 
-	  if (args.length () == 2)
-	    options = args(1).int_value (true);
+          if (args.length () == 2)
+            options = args(1).int_value (true);
 
-	  if (! error_state)
-	    {
-	      std::string msg;
+          if (! error_state)
+            {
+              std::string msg;
 
-	      int status = 0;
+              int status = 0;
 
-	      pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
+              pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
 
-	      retval(0) = result;
-	      retval(1) = status;
-	      retval(2) = msg;
-	    }
-	  else
-	    error ("waitpid: OPTIONS must be an integer");
-	}
+              retval(0) = result;
+              retval(1) = status;
+              retval(2) = msg;
+            }
+          else
+            error ("waitpid: OPTIONS must be an integer");
+        }
       else
-	error ("waitpid: PID must be an integer value");
+        error ("waitpid: PID must be an integer value");
     }
   else
     print_usage ();
@@ -1388,9 +1388,9 @@ child terminated normally.\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WIFEXITED (status);
+        retval = WIFEXITED (status);
       else
-	error ("WIFEXITED: expecting integer argument");
+        error ("WIFEXITED: expecting integer argument");
     }
 #else
   warning ("WIFEXITED always returns false in this version of Octave")
@@ -1416,9 +1416,9 @@ status of the child.  This function should only be employed if\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WEXITSTATUS (status);
+        retval = WEXITSTATUS (status);
       else
-	error ("WEXITSTATUS: expecting integer argument");
+        error ("WEXITSTATUS: expecting integer argument");
     }
 #else
   warning ("WEXITSTATUS always returns false in this version of Octave")
@@ -1443,9 +1443,9 @@ child process was terminated by a signal.\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WIFSIGNALED (status);
+        retval = WIFSIGNALED (status);
       else
-	error ("WIFSIGNALED: expecting integer argument");
+        error ("WIFSIGNALED: expecting integer argument");
     }
 #else
   warning ("WIFSIGNALED always returns false in this version of Octave");
@@ -1471,9 +1471,9 @@ should only be employed if @code{WIFSIGNALED} returned true.\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WTERMSIG (status);
+        retval = WTERMSIG (status);
       else
-	error ("WTERMSIG: expecting integer argument");
+        error ("WTERMSIG: expecting integer argument");
     }
 #else
   warning ("WTERMSIG always returns false in this version of Octave");
@@ -1501,9 +1501,9 @@ Unix implementations (e.g., AIX, SunOS).\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WCOREDUMP (status);
+        retval = WCOREDUMP (status);
       else
-	error ("WCOREDUMP: expecting integer argument");
+        error ("WCOREDUMP: expecting integer argument");
     }
 #else
   warning ("WCOREDUMP always returns false in this version of Octave");
@@ -1530,9 +1530,9 @@ is being traced (see ptrace(2)).\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WIFSTOPPED (status);
+        retval = WIFSTOPPED (status);
       else
-	error ("WIFSTOPPED: expecting integer argument");
+        error ("WIFSTOPPED: expecting integer argument");
     }
 #else
   warning ("WIFSTOPPED always returns false in this version of Octave");
@@ -1558,9 +1558,9 @@ be employed if @code{WIFSTOPPED} returned true.\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WSTOPSIG (status);
+        retval = WSTOPSIG (status);
       else
-	error ("WSTOPSIG: expecting integer argument");
+        error ("WSTOPSIG: expecting integer argument");
     }
 #else
   warning ("WSTOPSIG always returns false in this version of Octave");
@@ -1585,9 +1585,9 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
       int status = args(0).int_value ();
 
       if (! error_state)
-	retval = WIFCONTINUED (status);
+        retval = WIFCONTINUED (status);
       else
-	error ("WIFCONTINUED: expecting integer argument");
+        error ("WIFCONTINUED: expecting integer argument");
     }
 #else
   warning ("WIFCONTINUED always returns false in this version of Octave");
@@ -1609,17 +1609,17 @@ Return the canonical name of file @var{name}.\n\
       std::string name = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string msg;
+        {
+          std::string msg;
 
-	  std::string result = octave_canonicalize_file_name (name, msg);
+          std::string result = octave_canonicalize_file_name (name, msg);
 
-	  retval(2) = msg;
-	  retval(1) = msg.empty () ? 0 : -1;
-	  retval(0) = result;
-	}
+          retval(2) = msg;
+          retval(1) = msg.empty () ? 0 : -1;
+          retval(0) = result;
+        }
       else
-	error ("canonicalize_file_name: argument must be a character string");
+        error ("canonicalize_file_name: argument must be a character string");
     }
   else
     print_usage ();

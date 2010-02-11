@@ -119,10 +119,10 @@ along with Octave; see the file COPYING.  If not, see
         display_token (tok_val); \
       if (lexer_debug_flag) \
         { \
-	  std::cerr << "R: "; \
+          std::cerr << "R: "; \
           display_token (tok_val); \
-	  std::cerr << std::endl;  \
-	} \
+          std::cerr << std::endl;  \
+        } \
       return tok_val; \
     } \
   while (0)
@@ -149,7 +149,7 @@ along with Octave; see the file COPYING.  If not, see
   do \
     { \
       yylval.tok_val = new token (name, input_line_number, \
-				  current_input_column); \
+                                  current_input_column); \
       token_stack.push (yylval.tok_val); \
       TOK_RETURN (tok); \
     } \
@@ -232,7 +232,7 @@ public:
 
   bool is_bracket_or_brace (void)
     { return (! context.empty ()
-	      && (context.top () == BRACKET || context.top () == BRACE)); }
+              && (context.top () == BRACKET || context.top () == BRACE)); }
 
   bool none (void) { return context.empty (); }
 
@@ -307,23 +307,23 @@ static void lexer_debug (const char *pattern, const char *text);
 
 %}
 
-D	[0-9]
-S	[ \t]
-NL	((\n)|(\r)|(\r\n))
-SNL	({S}|{NL})
-EL	(\.\.\.)
-BS	(\\)
-CONT	({EL}|{BS})
-Im	[iIjJ]
-CCHAR	[#%]
-COMMENT	({CCHAR}.*{NL})
-SNLCMT	({SNL}|{COMMENT})
-NOT	((\~)|(\!))
+D       [0-9]
+S       [ \t]
+NL      ((\n)|(\r)|(\r\n))
+SNL     ({S}|{NL})
+EL      (\.\.\.)
+BS      (\\)
+CONT    ({EL}|{BS})
+Im      [iIjJ]
+CCHAR   [#%]
+COMMENT ({CCHAR}.*{NL})
+SNLCMT  ({SNL}|{COMMENT})
+NOT     ((\~)|(\!))
 POW     ((\*\*)|(\^))
 EPOW    (\.{POW})
-IDENT	([_$a-zA-Z][_$a-zA-Z0-9]*)
-EXPON	([DdEe][+-]?{D}+)
-NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
+IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
+EXPON   ([DdEe][+-]?{D}+)
+NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
 %{
@@ -484,12 +484,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (! lexer_flags.looking_at_object_index.front ())
       {
-	if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
-	  {
-	    maybe_warn_separator_insert (';');
+        if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+          {
+            maybe_warn_separator_insert (';');
 
-	    xunput (';', yytext);
-	  }
+            xunput (';', yytext);
+          }
       }
 
     COUNT_TOK_AND_RETURN (',');
@@ -513,28 +513,28 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (! lexer_flags.looking_at_object_index.front ())
       {
-	bool bin_op = next_token_is_bin_op (true);
-	bool postfix_un_op = next_token_is_postfix_unary_op (true);
-	bool sep_op = next_token_is_sep_op ();
+        bool bin_op = next_token_is_bin_op (true);
+        bool postfix_un_op = next_token_is_postfix_unary_op (true);
+        bool sep_op = next_token_is_sep_op ();
 
-	if (! (postfix_un_op || bin_op || sep_op)
-	    && nesting_level.is_bracket_or_brace ()
-	    && lexer_flags.convert_spaces_to_comma)
-	  {
-	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
-	      {
-		maybe_warn_separator_insert (';');
+        if (! (postfix_un_op || bin_op || sep_op)
+            && nesting_level.is_bracket_or_brace ()
+            && lexer_flags.convert_spaces_to_comma)
+          {
+            if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+              {
+                maybe_warn_separator_insert (';');
 
-		xunput (';', yytext);
-	      }
+                xunput (';', yytext);
+              }
 
-	    lexer_flags.quote_is_transpose = false;
-	    lexer_flags.convert_spaces_to_comma = true;
+            lexer_flags.quote_is_transpose = false;
+            lexer_flags.convert_spaces_to_comma = true;
 
-	    maybe_warn_separator_insert (',');
+            maybe_warn_separator_insert (',');
 
-	    COUNT_TOK_AND_RETURN (',');
-	  }
+            COUNT_TOK_AND_RETURN (',');
+          }
       }
   }
 
@@ -585,11 +585,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       return LEXICAL_ERROR;
 
     if (! lexer_flags.looking_at_object_index.front ()
-	&& nesting_level.is_bracket_or_brace ())
+        && nesting_level.is_bracket_or_brace ())
       {
-	maybe_warn_separator_insert (';');
+        maybe_warn_separator_insert (';');
 
-	COUNT_TOK_AND_RETURN (';');
+        COUNT_TOK_AND_RETURN (';');
       }
   }
 
@@ -689,12 +689,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (block_comment_nesting_level != 0)
       {
-	warning ("block comment open at end of input");
+        warning ("block comment open at end of input");
 
-	if ((reading_fcn_file || reading_script_file || reading_classdef_file)
-	    && ! curr_fcn_file_name.empty ())
-	  warning ("near line %d of file `%s.m'",
-		   input_line_number, curr_fcn_file_name.c_str ());
+        if ((reading_fcn_file || reading_script_file || reading_classdef_file)
+            && ! curr_fcn_file_name.empty ())
+          warning ("near line %d of file `%s.m'",
+                   input_line_number, curr_fcn_file_name.c_str ());
       }
 
     TOK_RETURN (END_OF_INPUT);
@@ -786,13 +786,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (nesting_level.none ())
       {
-	lexer_flags.at_beginning_of_statement = true;
-	COUNT_TOK_AND_RETURN ('\n');
+        lexer_flags.at_beginning_of_statement = true;
+        COUNT_TOK_AND_RETURN ('\n');
       }
     else if (nesting_level.is_paren ())
       {
-	lexer_flags.at_beginning_of_statement = false;
-	gripe_matlab_incompatible ("bare newline inside parentheses");
+        lexer_flags.at_beginning_of_statement = false;
+        gripe_matlab_incompatible ("bare newline inside parentheses");
       }
     else if (nesting_level.is_bracket_or_brace ())
       return LEXICAL_ERROR;
@@ -811,13 +811,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (lexer_flags.quote_is_transpose)
       {
-	do_comma_insert_check ();
-	COUNT_TOK_AND_RETURN (QUOTE);
+        do_comma_insert_check ();
+        COUNT_TOK_AND_RETURN (QUOTE);
       }
     else
       {
-	int tok = handle_string ('\'');
-	COUNT_TOK_AND_RETURN (tok);
+        int tok = handle_string ('\'');
+        COUNT_TOK_AND_RETURN (tok);
       }
   }
 
@@ -878,39 +878,39 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 ":"     { LEXER_DEBUG (":"); BIN_OP_RETURN (':', false, false); }
 
-".+"	{ LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false, false); }
-".-"	{ LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false, false); }
-".*"	{ LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false, false); }
-"./"	{ LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false, false); }
-".\\"	{ LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false, false); }
-".^"	{ LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
-".**"	{ LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
-".'"	{ LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
-"++"	{ LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true, false); }
-"--"	{ LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true, false); }
-"<="	{ LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
-"=="	{ LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
-"~="	{ LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }
-"!="	{ LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false, false); }
-">="	{ LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false, false); }
-"&"	{ LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false, false); }
-"|"	{ LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false, false); }
-"<"	{ LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false, false); }
-">"	{ LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false, false); }
+".+"    { LEXER_DEBUG (".+"); XBIN_OP_RETURN (EPLUS, false, false); }
+".-"    { LEXER_DEBUG (".-"); XBIN_OP_RETURN (EMINUS, false, false); }
+".*"    { LEXER_DEBUG (".*"); BIN_OP_RETURN (EMUL, false, false); }
+"./"    { LEXER_DEBUG ("./"); BIN_OP_RETURN (EDIV, false, false); }
+".\\"   { LEXER_DEBUG (".\\"); BIN_OP_RETURN (ELEFTDIV, false, false); }
+".^"    { LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
+".**"   { LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
+".'"    { LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
+"++"    { LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true, false); }
+"--"    { LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true, false); }
+"<="    { LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
+"=="    { LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
+"~="    { LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }
+"!="    { LEXER_DEBUG ("!="); XBIN_OP_RETURN (EXPR_NE, false, false); }
+">="    { LEXER_DEBUG (">="); BIN_OP_RETURN (EXPR_GE, false, false); }
+"&"     { LEXER_DEBUG ("&"); BIN_OP_RETURN (EXPR_AND, false, false); }
+"|"     { LEXER_DEBUG ("|"); BIN_OP_RETURN (EXPR_OR, false, false); }
+"<"     { LEXER_DEBUG ("<"); BIN_OP_RETURN (EXPR_LT, false, false); }
+">"     { LEXER_DEBUG (">"); BIN_OP_RETURN (EXPR_GT, false, false); }
 "+"     { LEXER_DEBUG ("+"); BIN_OP_RETURN ('+', false, false); }
 "-"     { LEXER_DEBUG ("-"); BIN_OP_RETURN ('-', false, false); }
-"*"	{ LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false, false); }
-"/"	{ LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false, false); }
-"\\"	{ LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false, false); }
+"*"     { LEXER_DEBUG ("*"); BIN_OP_RETURN ('*', false, false); }
+"/"     { LEXER_DEBUG ("/"); BIN_OP_RETURN ('/', false, false); }
+"\\"    { LEXER_DEBUG ("\\"); BIN_OP_RETURN (LEFTDIV, false, false); }
 ";"     { LEXER_DEBUG (";"); BIN_OP_RETURN (';', true, true); }
 ","     { LEXER_DEBUG (","); BIN_OP_RETURN (',', true, ! lexer_flags.looking_at_object_index.front ()); }
-"^"	{ LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false, false); }
-"**"	{ LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false, false); }
-"="	{ LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true, false); }
-"&&"	{ LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false, false); }
-"||"	{ LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false, false); }
-"<<"	{ LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false, false); }
-">>"	{ LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false, false); }
+"^"     { LEXER_DEBUG ("^"); BIN_OP_RETURN (POW, false, false); }
+"**"    { LEXER_DEBUG ("**"); XBIN_OP_RETURN (POW, false, false); }
+"="     { LEXER_DEBUG ("="); BIN_OP_RETURN ('=', true, false); }
+"&&"    { LEXER_DEBUG ("&&"); BIN_OP_RETURN (EXPR_AND_AND, false, false); }
+"||"    { LEXER_DEBUG ("||"); BIN_OP_RETURN (EXPR_OR_OR, false, false); }
+"<<"    { LEXER_DEBUG ("<<"); XBIN_OP_RETURN (LSHIFT, false, false); }
+">>"    { LEXER_DEBUG (">>"); XBIN_OP_RETURN (RSHIFT, false, false); }
 
 {NOT} {
     LEXER_DEBUG ("{NOT}");
@@ -969,22 +969,22 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     TOK_RETURN ('.');
   }
 
-"+="	{ LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
-"-="	{ LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
-"*="	{ LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false, false); }
-"/="	{ LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false, false); }
-"\\="	{ LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false, false); }
-".+="	{ LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
-".-="	{ LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
-".*="	{ LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false, false); }
-"./="	{ LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false, false); }
-".\\="	{ LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false, false); }
+"+="    { LEXER_DEBUG ("+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
+"-="    { LEXER_DEBUG ("-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
+"*="    { LEXER_DEBUG ("*="); XBIN_OP_RETURN (MUL_EQ, false, false); }
+"/="    { LEXER_DEBUG ("/="); XBIN_OP_RETURN (DIV_EQ, false, false); }
+"\\="   { LEXER_DEBUG ("\\="); XBIN_OP_RETURN (LEFTDIV_EQ, false, false); }
+".+="   { LEXER_DEBUG (".+="); XBIN_OP_RETURN (ADD_EQ, false, false); }
+".-="   { LEXER_DEBUG (".-="); XBIN_OP_RETURN (SUB_EQ, false, false); }
+".*="   { LEXER_DEBUG (".*="); XBIN_OP_RETURN (EMUL_EQ, false, false); }
+"./="   { LEXER_DEBUG ("./="); XBIN_OP_RETURN (EDIV_EQ, false, false); }
+".\\="  { LEXER_DEBUG (".\\="); XBIN_OP_RETURN (ELEFTDIV_EQ, false, false); }
 {POW}=  { LEXER_DEBUG ("{POW}="); XBIN_OP_RETURN (POW_EQ, false, false); }
 {EPOW}= { LEXER_DEBUG ("{EPOW}="); XBIN_OP_RETURN (EPOW_EQ, false, false); }
-"&="	{ LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false, false); }
-"|="	{ LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false, false); }
-"<<="	{ LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false, false); }
-">>="	{ LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false, false); }
+"&="    { LEXER_DEBUG ("&="); XBIN_OP_RETURN (AND_EQ, false, false); }
+"|="    { LEXER_DEBUG ("|="); XBIN_OP_RETURN (OR_EQ, false, false); }
+"<<="   { LEXER_DEBUG ("<<="); XBIN_OP_RETURN (LSHIFT_EQ, false, false); }
+">>="   { LEXER_DEBUG (">>="); XBIN_OP_RETURN (RSHIFT_EQ, false, false); }
 
 \{{S}* {
     LEXER_DEBUG ("\\{{S}*");
@@ -1034,13 +1034,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (c != EOF)
       {
-	current_input_column++;
+        current_input_column++;
 
-	error ("invalid character `%s' (ASCII %d) near line %d, column %d",
-	       undo_string_escape (static_cast<char> (c)), c,
-	       input_line_number, current_input_column);
+        error ("invalid character `%s' (ASCII %d) near line %d, column %d",
+               undo_string_escape (static_cast<char> (c)), c,
+               input_line_number, current_input_column);
 
-	return LEXICAL_ERROR;
+        return LEXICAL_ERROR;
       }
     else
       TOK_RETURN (END_OF_INPUT);
@@ -1066,7 +1066,7 @@ do_comma_insert_check (void)
     xunput (' ', yytext);
 
   lexer_flags.do_comma_insert = (! lexer_flags.looking_at_object_index.front ()
-				 && lexer_flags.bracketflag && c == '[');
+                                 && lexer_flags.bracketflag && c == '[');
 }
 
 // Fix things up for errors or interrupts.  The parser is never called
@@ -1113,9 +1113,9 @@ reset_parser (void)
   if ((interactive || forced_interactive)
       && ! (reading_fcn_file
         || reading_classdef_file
-	    || reading_script_file
-	    || get_input_from_eval_string
-	    || input_from_startup_file))
+            || reading_script_file
+            || get_input_from_eval_string
+            || input_from_startup_file))
     yyrestart (stdin);
 
   // Clear the buffer for help text.
@@ -1135,140 +1135,140 @@ display_character (char c)
     switch (c)
       {
       case 0:
-	std::cerr << "NUL";
-	break;
+        std::cerr << "NUL";
+        break;
 
       case 1:
-	std::cerr << "SOH";
-	break;
+        std::cerr << "SOH";
+        break;
 
       case 2:
-	std::cerr << "STX";
-	break;
+        std::cerr << "STX";
+        break;
 
       case 3:
-	std::cerr << "ETX";
-	break;
+        std::cerr << "ETX";
+        break;
 
       case 4:
-	std::cerr << "EOT";
-	break;
+        std::cerr << "EOT";
+        break;
 
       case 5:
-	std::cerr << "ENQ";
-	break;
+        std::cerr << "ENQ";
+        break;
 
       case 6:
-	std::cerr << "ACK";
-	break;
+        std::cerr << "ACK";
+        break;
 
       case 7:
-	std::cerr << "\\a";
-	break;
+        std::cerr << "\\a";
+        break;
 
       case 8:
-	std::cerr << "\\b";
-	break;
+        std::cerr << "\\b";
+        break;
 
       case 9:
-	std::cerr << "\\t";
-	break;
+        std::cerr << "\\t";
+        break;
 
       case 10:
-	std::cerr << "\\n";
-	break;
+        std::cerr << "\\n";
+        break;
 
       case 11:
-	std::cerr << "\\v";
-	break;
+        std::cerr << "\\v";
+        break;
 
       case 12:
-	std::cerr << "\\f";
-	break;
+        std::cerr << "\\f";
+        break;
 
       case 13:
-	std::cerr << "\\r";
-	break;
+        std::cerr << "\\r";
+        break;
 
       case 14:
-	std::cerr << "SO";
-	break;
+        std::cerr << "SO";
+        break;
 
       case 15:
-	std::cerr << "SI";
-	break;
+        std::cerr << "SI";
+        break;
 
       case 16:
-	std::cerr << "DLE";
-	break;
+        std::cerr << "DLE";
+        break;
 
       case 17:
-	std::cerr << "DC1";
-	break;
+        std::cerr << "DC1";
+        break;
 
       case 18:
-	std::cerr << "DC2";
-	break;
+        std::cerr << "DC2";
+        break;
 
       case 19:
-	std::cerr << "DC3";
-	break;
+        std::cerr << "DC3";
+        break;
 
       case 20:
-	std::cerr << "DC4";
-	break;
+        std::cerr << "DC4";
+        break;
 
       case 21:
-	std::cerr << "NAK";
-	break;
+        std::cerr << "NAK";
+        break;
 
       case 22:
-	std::cerr << "SYN";
-	break;
+        std::cerr << "SYN";
+        break;
 
       case 23:
-	std::cerr << "ETB";
-	break;
+        std::cerr << "ETB";
+        break;
 
       case 24:
-	std::cerr << "CAN";
-	break;
+        std::cerr << "CAN";
+        break;
 
       case 25:
-	std::cerr << "EM";
-	break;
+        std::cerr << "EM";
+        break;
 
       case 26:
-	std::cerr << "SUB";
-	break;
+        std::cerr << "SUB";
+        break;
 
       case 27:
-	std::cerr << "ESC";
-	break;
+        std::cerr << "ESC";
+        break;
 
       case 28:
-	std::cerr << "FS";
-	break;
+        std::cerr << "FS";
+        break;
 
       case 29:
-	std::cerr << "GS";
-	break;
+        std::cerr << "GS";
+        break;
 
       case 30:
-	std::cerr << "RS";
-	break;
+        std::cerr << "RS";
+        break;
 
       case 31:
-	std::cerr << "US";
-	break;
+        std::cerr << "US";
+        break;
 
       case 32:
-	std::cerr << "SPACE";
-	break;
+        std::cerr << "SPACE";
+        break;
 
       case 127:
-	std::cerr << "DEL";
-	break;
+        std::cerr << "DEL";
+        break;
       }
 }
 
@@ -1291,17 +1291,17 @@ text_yyinput (void)
       c = yyinput ();
 
       if (lexer_debug_flag)
-	{
-	  std::cerr << "I: ";
-	  display_character (c);
-	  std::cerr << std::endl;
-	}
+        {
+          std::cerr << "I: ";
+          display_character (c);
+          std::cerr << std::endl;
+        }
 
       if (c != '\n')
-	{
-	  xunput (c, yytext);
-	  c = '\n';
-	}
+        {
+          xunput (c, yytext);
+          c = '\n';
+        }
     }
 
   if (c == '\n')
@@ -1341,7 +1341,7 @@ fixup_column_count (char *s)
           current_input_column = 1;
         }
       else
-	current_input_column++;
+        current_input_column++;
     }
 }
 
@@ -1410,10 +1410,10 @@ inside_any_object_index (void)
        i != lexer_flags.looking_at_object_index.end (); i++)
     {
       if (*i)
-	{
-	  retval = true;
-	  break;
-	}
+        {
+          retval = true;
+          break;
+        }
     }
 
   return retval;
@@ -1436,168 +1436,168 @@ is_keyword_token (const std::string& s)
       yylval.tok_val = 0;
 
       switch (kw->kw_id)
-	{
-	case break_kw:
-	case catch_kw:
-	case continue_kw:
-	case else_kw:
-	case otherwise_kw:
-	case return_kw:
-	case unwind_protect_cleanup_kw:
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        {
+        case break_kw:
+        case catch_kw:
+        case continue_kw:
+        case else_kw:
+        case otherwise_kw:
+        case return_kw:
+        case unwind_protect_cleanup_kw:
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case case_kw:
-	case elseif_kw:
-	case global_kw:
-	case static_kw:
-	case until_kw:
-	  break;
+        case case_kw:
+        case elseif_kw:
+        case global_kw:
+        case static_kw:
+        case until_kw:
+          break;
 
-	case end_kw:
-	  if (! reading_classdef_file
-	      && (inside_any_object_index ()
-		  || (lexer_flags.defining_func
-		      && ! (lexer_flags.looking_at_return_list
-			    || lexer_flags.parsed_function_name))))
-	    return 0;
+        case end_kw:
+          if (! reading_classdef_file
+              && (inside_any_object_index ()
+                  || (lexer_flags.defining_func
+                      && ! (lexer_flags.looking_at_return_list
+                            || lexer_flags.parsed_function_name))))
+            return 0;
 
-	  yylval.tok_val = new token (token::simple_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+          yylval.tok_val = new token (token::simple_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case end_try_catch_kw:
-	  yylval.tok_val = new token (token::try_catch_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case end_try_catch_kw:
+          yylval.tok_val = new token (token::try_catch_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case end_unwind_protect_kw:
-	  yylval.tok_val = new token (token::unwind_protect_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case end_unwind_protect_kw:
+          yylval.tok_val = new token (token::unwind_protect_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case endfor_kw:
-	  yylval.tok_val = new token (token::for_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case endfor_kw:
+          yylval.tok_val = new token (token::for_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case endfunction_kw:
-	  yylval.tok_val = new token (token::function_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case endfunction_kw:
+          yylval.tok_val = new token (token::function_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case endif_kw:
-	  yylval.tok_val = new token (token::if_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case endif_kw:
+          yylval.tok_val = new token (token::if_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case endswitch_kw:
-	  yylval.tok_val = new token (token::switch_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case endswitch_kw:
+          yylval.tok_val = new token (token::switch_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case endwhile_kw:
-	  yylval.tok_val = new token (token::while_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
-	  
-	case endclassdef_kw:
-	  yylval.tok_val = new token (token::classdef_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
-	  
-	case endevents_kw:
-	  yylval.tok_val = new token (token::events_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
-	  
-	case endmethods_kw:
-	  yylval.tok_val = new token (token::methods_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
-	  
-	case endproperties_kw:
-	  yylval.tok_val = new token (token::properties_end, l, c);
-	  lexer_flags.at_beginning_of_statement = true;
-	  break;
+        case endwhile_kw:
+          yylval.tok_val = new token (token::while_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+          
+        case endclassdef_kw:
+          yylval.tok_val = new token (token::classdef_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+          
+        case endevents_kw:
+          yylval.tok_val = new token (token::events_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+          
+        case endmethods_kw:
+          yylval.tok_val = new token (token::methods_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+          
+        case endproperties_kw:
+          yylval.tok_val = new token (token::properties_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
 
-	case for_kw:
-	case while_kw:
-	  promptflag--;
-	  lexer_flags.looping++;
-	  break;
+        case for_kw:
+        case while_kw:
+          promptflag--;
+          lexer_flags.looping++;
+          break;
 
-	case do_kw:
-	  lexer_flags.at_beginning_of_statement = true;
-	  promptflag--;
-	  lexer_flags.looping++;
-	  break;
+        case do_kw:
+          lexer_flags.at_beginning_of_statement = true;
+          promptflag--;
+          lexer_flags.looping++;
+          break;
 
-	case try_kw:
-	case unwind_protect_kw:
-	  lexer_flags.at_beginning_of_statement = true;
-	  promptflag--;
-	  break;
+        case try_kw:
+        case unwind_protect_kw:
+          lexer_flags.at_beginning_of_statement = true;
+          promptflag--;
+          break;
 
-	case if_kw:
-	case switch_kw:
-	  promptflag--;
-	  break;
+        case if_kw:
+        case switch_kw:
+          promptflag--;
+          break;
 
-	case get_kw:
-	case set_kw:  
-	  // 'get' and 'set' are keywords in classdef method
-	  // declarations.
-	  if (! lexer_flags.maybe_classdef_get_set_method)
-	    return 0;
-	  break;
+        case get_kw:
+        case set_kw:  
+          // 'get' and 'set' are keywords in classdef method
+          // declarations.
+          if (! lexer_flags.maybe_classdef_get_set_method)
+            return 0;
+          break;
 
-	case properties_kw:
-	case methods_kw:
-	case events_kw:
-	  // 'properties', 'methods' and 'events' are keywords for
-	  // classdef blocks.
-	  if (! lexer_flags.parsing_classdef)
-	    return 0;
-	  // fall through ...
+        case properties_kw:
+        case methods_kw:
+        case events_kw:
+          // 'properties', 'methods' and 'events' are keywords for
+          // classdef blocks.
+          if (! lexer_flags.parsing_classdef)
+            return 0;
+          // fall through ...
 
-	case classdef_kw:
-	  // 'classdef' is always a keyword.
-	  promptflag--;
-	  break;	  
+        case classdef_kw:
+          // 'classdef' is always a keyword.
+          promptflag--;
+          break;          
 
-	case function_kw:
-	  promptflag--;
+        case function_kw:
+          promptflag--;
 
-	  lexer_flags.defining_func = true;
-	  lexer_flags.parsed_function_name = false;
+          lexer_flags.defining_func = true;
+          lexer_flags.parsed_function_name = false;
 
-	  if (! (reading_fcn_file || reading_script_file
-		 || reading_classdef_file))
-	    input_line_number = 1;
-	  break;
+          if (! (reading_fcn_file || reading_script_file
+                 || reading_classdef_file))
+            input_line_number = 1;
+          break;
 
         case magic_file_kw:
-	  {
-	    if ((reading_fcn_file || reading_script_file
-		 || reading_classdef_file)
-		&& ! curr_fcn_file_full_name.empty ())
-	      yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
-	    else
-	      yylval.tok_val = new token ("stdin", l, c);
-	  }
-	  break;
+          {
+            if ((reading_fcn_file || reading_script_file
+                 || reading_classdef_file)
+                && ! curr_fcn_file_full_name.empty ())
+              yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
+            else
+              yylval.tok_val = new token ("stdin", l, c);
+          }
+          break;
 
         case magic_line_kw:
-	  yylval.tok_val = new token (static_cast<double> (l), "", l, c);
-	  break;
+          yylval.tok_val = new token (static_cast<double> (l), "", l, c);
+          break;
 
-	default:
-	  panic_impossible ();
-	}
+        default:
+          panic_impossible ();
+        }
 
       if (! yylval.tok_val)
-	yylval.tok_val = new token (l, c);
+        yylval.tok_val = new token (l, c);
 
       token_stack.push (yylval.tok_val);
 
@@ -1611,8 +1611,8 @@ static bool
 is_variable (const std::string& name)
 {
   return (symbol_table::is_variable (name)
-	  || (lexer_flags.pending_local_variables.find (name)
-	      != lexer_flags.pending_local_variables.end ()));
+          || (lexer_flags.pending_local_variables.find (name)
+              != lexer_flags.pending_local_variables.end ()));
 }
 
 static std::string
@@ -1632,87 +1632,87 @@ grab_block_comment (stream_reader& reader, bool& eof)
       current_input_column++;
 
       if (look_for_marker)
-	{
-	  at_bol = false;
-	  look_for_marker = false;
+        {
+          at_bol = false;
+          look_for_marker = false;
 
-	  if (c == '{' || c == '}')
-	    {
-	      std::string tmp_buf (1, static_cast<char> (c));
+          if (c == '{' || c == '}')
+            {
+              std::string tmp_buf (1, static_cast<char> (c));
 
-	      int type = c;
+              int type = c;
 
-	      bool done = false;
+              bool done = false;
 
-	      while ((c = reader.getc ()) != EOF && ! done)
-		{
-		  current_input_column++;
+              while ((c = reader.getc ()) != EOF && ! done)
+                {
+                  current_input_column++;
 
-		  switch (c)
-		    {
-		    case ' ':
-		    case '\t':
-		      tmp_buf += static_cast<char> (c);
-		      break;
+                  switch (c)
+                    {
+                    case ' ':
+                    case '\t':
+                      tmp_buf += static_cast<char> (c);
+                      break;
 
-		    case '\n':
-		      {
-			current_input_column = 0;
-			at_bol = true;
-			done = true;
+                    case '\n':
+                      {
+                        current_input_column = 0;
+                        at_bol = true;
+                        done = true;
 
-			if (type == '{')
-			  {
-			    block_comment_nesting_level++;
-			    promptflag--;
-			  }
-			else
-			  {
-			    block_comment_nesting_level--;
-			    promptflag++;
+                        if (type == '{')
+                          {
+                            block_comment_nesting_level++;
+                            promptflag--;
+                          }
+                        else
+                          {
+                            block_comment_nesting_level--;
+                            promptflag++;
 
-			    if (block_comment_nesting_level == 0)
-			      {
-				buf += grab_comment_block (reader, true, eof);
+                            if (block_comment_nesting_level == 0)
+                              {
+                                buf += grab_comment_block (reader, true, eof);
 
-				return buf;
-			      }
-			  }
-		      }
-		      break;
+                                return buf;
+                              }
+                          }
+                      }
+                      break;
 
-		    default:
-		      at_bol = false;
-		      tmp_buf += static_cast<char> (c);
-		      buf += tmp_buf;
-		      done = true;
-		      break;
-		    }
-		}
-	    }
-	}
+                    default:
+                      at_bol = false;
+                      tmp_buf += static_cast<char> (c);
+                      buf += tmp_buf;
+                      done = true;
+                      break;
+                    }
+                }
+            }
+        }
 
       if (at_bol && (c == '%' || c == '#'))
         {
           if (c == '#' && ! warned_incompatible)
-	    {
-	      warned_incompatible = true;
-	      maybe_gripe_matlab_incompatible_comment (c);
-	    }
+            {
+              warned_incompatible = true;
+              maybe_gripe_matlab_incompatible_comment (c);
+            }
 
-	  at_bol = false;
-	  look_for_marker = true;
-	}
+          at_bol = false;
+          look_for_marker = true;
+        }
       else
-	{
-	  buf += static_cast<char> (c);
+        {
+          buf += static_cast<char> (c);
 
-	  if (c == '\n')
-	    {
-	      current_input_column = 0;
-	      at_bol = true;
-	    }
-	}
+          if (c == '\n')
+            {
+              current_input_column = 0;
+              at_bol = true;
+            }
+        }
     }
 
   if (c == EOF)
@@ -1723,7 +1723,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 
 std::string
 grab_comment_block (stream_reader& reader, bool at_bol,
-		    bool& eof)
+                    bool& eof)
 {
   std::string buf;
 
@@ -1742,115 +1742,115 @@ grab_comment_block (stream_reader& reader, bool at_bol,
       current_input_column++;
 
       if (begin_comment)
-	{
-	  if (c == '%' || c == '#')
-	    {
-	      at_bol = false;
-	      continue;
-	    }
-	  else if (at_bol && c == '{')
-	    {
-	      std::string tmp_buf (1, static_cast<char> (c));
+        {
+          if (c == '%' || c == '#')
+            {
+              at_bol = false;
+              continue;
+            }
+          else if (at_bol && c == '{')
+            {
+              std::string tmp_buf (1, static_cast<char> (c));
 
-	      bool done = false;
+              bool done = false;
 
-	      while ((c = reader.getc ()) != EOF && ! done)
-		{
-		  current_input_column++;
+              while ((c = reader.getc ()) != EOF && ! done)
+                {
+                  current_input_column++;
 
-		  switch (c)
-		    {
-		    case ' ':
-		    case '\t':
-		      tmp_buf += static_cast<char> (c);
-		      break;
+                  switch (c)
+                    {
+                    case ' ':
+                    case '\t':
+                      tmp_buf += static_cast<char> (c);
+                      break;
 
-		    case '\n':
-		      {
-			current_input_column = 0;
-			at_bol = true;
-			done = true;
+                    case '\n':
+                      {
+                        current_input_column = 0;
+                        at_bol = true;
+                        done = true;
 
-			block_comment_nesting_level++;
-			promptflag--;
+                        block_comment_nesting_level++;
+                        promptflag--;
 
-			buf += grab_block_comment (reader, eof);
+                        buf += grab_block_comment (reader, eof);
 
-			in_comment = false;
+                        in_comment = false;
 
-			if (eof)
-			  goto done;
-		      }
-		      break;
+                        if (eof)
+                          goto done;
+                      }
+                      break;
 
-		    default:
-		      at_bol = false;
-		      tmp_buf += static_cast<char> (c);
-		      buf += tmp_buf;
-		      done = true;
-		      break;
-		    }
-		}
-	    }
-	  else
-	    {
-	      at_bol = false;
-	      begin_comment = false;
-	    }
-	}	
+                    default:
+                      at_bol = false;
+                      tmp_buf += static_cast<char> (c);
+                      buf += tmp_buf;
+                      done = true;
+                      break;
+                    }
+                }
+            }
+          else
+            {
+              at_bol = false;
+              begin_comment = false;
+            }
+        }       
 
       if (in_comment)
-	{
-	  buf += static_cast<char> (c);
+        {
+          buf += static_cast<char> (c);
 
-	  if (c == '\n')
-	    {
-	      at_bol = true;
-	      current_input_column = 0;
-	      in_comment = false;
+          if (c == '\n')
+            {
+              at_bol = true;
+              current_input_column = 0;
+              in_comment = false;
 
-	      // FIXME -- bailing out here prevents things like
-	      //
-	      //    octave> # comment
-	      //    octave> x = 1
-	      //
-	      // from failing at the command line, while still
-	      // allowing blocks of comments to be grabbed properly
-	      // for function doc strings.  But only the first line of
-	      // a mult-line doc string will be picked up for
-	      // functions defined on the command line.  We need a
-	      // better way of collecting these comments...
-	      if (! (reading_fcn_file || reading_script_file))
-		goto done;
-	    }
-	}
+              // FIXME -- bailing out here prevents things like
+              //
+              //    octave> # comment
+              //    octave> x = 1
+              //
+              // from failing at the command line, while still
+              // allowing blocks of comments to be grabbed properly
+              // for function doc strings.  But only the first line of
+              // a mult-line doc string will be picked up for
+              // functions defined on the command line.  We need a
+              // better way of collecting these comments...
+              if (! (reading_fcn_file || reading_script_file))
+                goto done;
+            }
+        }
       else
-	{
-	  switch (c)
-	    {
-	    case ' ':
-	    case '\t':
-	      break;
+        {
+          switch (c)
+            {
+            case ' ':
+            case '\t':
+              break;
 
-	    case '#':
-	      if (! warned_incompatible)
-		{
-		  warned_incompatible = true;
-		  maybe_gripe_matlab_incompatible_comment (c);
-		}
-	      // fall through...
+            case '#':
+              if (! warned_incompatible)
+                {
+                  warned_incompatible = true;
+                  maybe_gripe_matlab_incompatible_comment (c);
+                }
+              // fall through...
 
-	    case '%':
-	      in_comment = true;
-	      begin_comment = true;
-	      break;
+            case '%':
+              in_comment = true;
+              begin_comment = true;
+              break;
 
-	    default:
-	      current_input_column--;
-	      reader.ungetc (c);
-	      goto done;
-	    }
-	}
+            default:
+              current_input_column--;
+              reader.ungetc (c);
+              goto done;
+            }
+        }
     }
 
  done:
@@ -1899,7 +1899,7 @@ process_comment (bool start_in_block, bool& eof)
   if (help_txt.empty () && nesting_level.none ())
     {
       if (! help_buf.empty ())
-	help_buf.pop ();
+        help_buf.pop ();
 
       help_buf.push (txt);
     }
@@ -1932,7 +1932,7 @@ match_any (char c, const char *s)
   while ((tmp = *s++) != '\0')
     {
       if (c == tmp)
-	return true;
+        return true;
     }
   return false;
 }
@@ -2032,27 +2032,27 @@ next_token_is_bin_op (bool spc_prev)
     case '+':
     case '-':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	switch (c1)
-	  {
-	  case '+':
-	  case '-':
-	    // Unary ops, spacing doesn't matter.
-	    break;
+        switch (c1)
+          {
+          case '+':
+          case '-':
+            // Unary ops, spacing doesn't matter.
+            break;
 
-	  case '=':
-	    // Binary ops, spacing doesn't matter.
-	    bin_op = true;
-	    break;
+          case '=':
+            // Binary ops, spacing doesn't matter.
+            bin_op = true;
+            break;
 
-	  default:
-	    // Could be either, spacing matters.
-	    bin_op = looks_like_bin_op (spc_prev, c1);
-	    break;
-	  }
+          default:
+            // Could be either, spacing matters.
+            bin_op = looks_like_bin_op (spc_prev, c1);
+            break;
+          }
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2067,16 +2067,16 @@ next_token_is_bin_op (bool spc_prev)
     // .+ .- ./ .\ .^ .* .**
     case '.':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (match_any (c1, "+-/\\^*"))
-	  // Always a binary op (may also include .+=, .-=, ./=, ...).
-	  bin_op = true;
-	else if (! isdigit (c1) && c1 != ' ' && c1 != '\t' && c1 != '.')
-	  // A structure element reference is a binary op.
-	  bin_op = true;
+        if (match_any (c1, "+-/\\^*"))
+          // Always a binary op (may also include .+=, .-=, ./=, ...).
+          bin_op = true;
+        else if (! isdigit (c1) && c1 != ' ' && c1 != '\t' && c1 != '.')
+          // A structure element reference is a binary op.
+          bin_op = true;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2100,13 +2100,13 @@ next_token_is_bin_op (bool spc_prev)
     case '~':
     case '!':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	// ~ and ! can be unary ops, so require following =.
-	if (c1 == '=')
-	  bin_op = true;
+        // ~ and ! can be unary ops, so require following =.
+        if (c1 == '=')
+          bin_op = true;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2152,41 +2152,41 @@ scan_for_comments (const char *text)
       char c = text[i++];
 
       switch (c)
-	{
-	case '%':
-	case '#':
-	  if (in_comment)
-	    {
-	      if (! beginning_of_comment)
-		comment_buf += static_cast<char> (c);
-	    }
-	  else
-	    {
-	      maybe_gripe_matlab_incompatible_comment (c);
-	      in_comment = true;
-	      beginning_of_comment = true;
-	    }
-	  break;
+        {
+        case '%':
+        case '#':
+          if (in_comment)
+            {
+              if (! beginning_of_comment)
+                comment_buf += static_cast<char> (c);
+            }
+          else
+            {
+              maybe_gripe_matlab_incompatible_comment (c);
+              in_comment = true;
+              beginning_of_comment = true;
+            }
+          break;
 
-	case '\n':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      octave_comment_buffer::append (comment_buf);
-	      comment_buf.resize (0);
-	      in_comment = false;
-	      beginning_of_comment = false;
-	    }
-	  break;
+        case '\n':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              octave_comment_buffer::append (comment_buf);
+              comment_buf.resize (0);
+              in_comment = false;
+              beginning_of_comment = false;
+            }
+          break;
 
-	default:
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	    }
-	  break;
-	}
+        default:
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+            }
+          break;
+        }
     }
 
   if (! comment_buf.empty ())
@@ -2220,85 +2220,85 @@ eat_whitespace (void)
       current_input_column++;
 
       switch (c)
-	{
-	case ' ':
-	case '\t':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	    }
-	  retval |= ATE_SPACE_OR_TAB;
-	  break;
+        {
+        case ' ':
+        case '\t':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+            }
+          retval |= ATE_SPACE_OR_TAB;
+          break;
 
-	case '\n':
-	  retval |= ATE_NEWLINE;
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      octave_comment_buffer::append (comment_buf);
-	      comment_buf.resize (0);
-	      in_comment = false;
-	      beginning_of_comment = false;
-	    }
-	  current_input_column = 0;
-	  break;
+        case '\n':
+          retval |= ATE_NEWLINE;
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              octave_comment_buffer::append (comment_buf);
+              comment_buf.resize (0);
+              in_comment = false;
+              beginning_of_comment = false;
+            }
+          current_input_column = 0;
+          break;
 
-	case '#':
-	case '%':
-	  if (in_comment)
-	    {
-	      if (! beginning_of_comment)
-		comment_buf += static_cast<char> (c);
-	    }
-	  else
-	    {
-	      maybe_gripe_matlab_incompatible_comment (c);
-	      in_comment = true;
-	      beginning_of_comment = true;
-	    }
-	  break;
+        case '#':
+        case '%':
+          if (in_comment)
+            {
+              if (! beginning_of_comment)
+                comment_buf += static_cast<char> (c);
+            }
+          else
+            {
+              maybe_gripe_matlab_incompatible_comment (c);
+              in_comment = true;
+              beginning_of_comment = true;
+            }
+          break;
 
-	case '.':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	      break;
-	    }
-	  else
-	    {
-	      if (have_ellipsis_continuation ())
-		break;
-	      else
-		goto done;
-	    }
+        case '.':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+              break;
+            }
+          else
+            {
+              if (have_ellipsis_continuation ())
+                break;
+              else
+                goto done;
+            }
 
-	case '\\':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	      break;
-	    }
-	  else
-	    {
-	      if (have_continuation ())
-		break;
-	      else
-		goto done;
-	    }
+        case '\\':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+              break;
+            }
+          else
+            {
+              if (have_continuation ())
+                break;
+              else
+                goto done;
+            }
 
-	default:
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	      break;
-	    }
-	  else
-	    goto done;
-	}
+        default:
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+              break;
+            }
+          else
+            goto done;
+        }
     }
 
   if (! comment_buf.empty ())
@@ -2337,7 +2337,7 @@ handle_number (void)
       char *idx = strpbrk (tmp, "Dd");
 
       if (idx)
-	*idx = 'e';
+        *idx = 'e';
 
       nread = sscanf (tmp, "%lf", &value);
 
@@ -2354,7 +2354,7 @@ handle_number (void)
   lexer_flags.at_beginning_of_statement = false;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
-			      current_input_column);
+                              current_input_column);
 
   token_stack.push (yylval.tok_val);
 
@@ -2391,57 +2391,57 @@ have_continuation (bool trailing_comments_ok)
       buf << static_cast<char> (c);
 
       switch (c)
-	{
-	case ' ':
-	case '\t':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	    }
-	  break;
+        {
+        case ' ':
+        case '\t':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+            }
+          break;
 
-	case '%':
-	case '#':
-	  if (trailing_comments_ok)
-	    {
-	      if (in_comment)
-		{
-		  if (! beginning_of_comment)
-		    comment_buf += static_cast<char> (c);
-		}
-	      else
-		{
-		  maybe_gripe_matlab_incompatible_comment (c);
-		  in_comment = true;
-		  beginning_of_comment = true;
-		}
-	    }
-	  else
-	    goto cleanup;
-	  break;
+        case '%':
+        case '#':
+          if (trailing_comments_ok)
+            {
+              if (in_comment)
+                {
+                  if (! beginning_of_comment)
+                    comment_buf += static_cast<char> (c);
+                }
+              else
+                {
+                  maybe_gripe_matlab_incompatible_comment (c);
+                  in_comment = true;
+                  beginning_of_comment = true;
+                }
+            }
+          else
+            goto cleanup;
+          break;
 
-	case '\n':
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      octave_comment_buffer::append (comment_buf);
-	    }
-	  current_input_column = 0;
-	  promptflag--;
-	  gripe_matlab_incompatible_continuation ();
-	  return true;
+        case '\n':
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              octave_comment_buffer::append (comment_buf);
+            }
+          current_input_column = 0;
+          promptflag--;
+          gripe_matlab_incompatible_continuation ();
+          return true;
 
-	default:
-	  if (in_comment)
-	    {
-	      comment_buf += static_cast<char> (c);
-	      beginning_of_comment = false;
-	    }
-	  else
-	    goto cleanup;
-	  break;
-	}
+        default:
+          if (in_comment)
+            {
+              comment_buf += static_cast<char> (c);
+              beginning_of_comment = false;
+            }
+          else
+            goto cleanup;
+          break;
+        }
     }
 
   xunput (c, yytext);
@@ -2470,12 +2470,12 @@ have_ellipsis_continuation (bool trailing_comments_ok)
     {
       char c2 = text_yyinput ();
       if (c2 == '.' && have_continuation (trailing_comments_ok))
-	return true;
+        return true;
       else
-	{
-	  xunput (c2, yytext);
-	  xunput (c1, yytext);
-	}
+        {
+          xunput (c2, yytext);
+          xunput (c1, yytext);
+        }
     }
   else
     xunput (c1, yytext);
@@ -2520,77 +2520,77 @@ handle_string (char delim)
       current_input_column++;
 
       if (c == '\\')
-	{
-	  if (delim == '\'' || escape_pending)
-	    {
-	      buf << static_cast<char> (c);
-	      escape_pending = 0;
-	    }
-	  else
-	    {
-	      if (have_continuation (false))
-		escape_pending = 0;
-	      else
-		{
-		  buf << static_cast<char> (c);
-		  escape_pending = 1;
-		}
-	    }
-	  continue;
-	}
+        {
+          if (delim == '\'' || escape_pending)
+            {
+              buf << static_cast<char> (c);
+              escape_pending = 0;
+            }
+          else
+            {
+              if (have_continuation (false))
+                escape_pending = 0;
+              else
+                {
+                  buf << static_cast<char> (c);
+                  escape_pending = 1;
+                }
+            }
+          continue;
+        }
       else if (c == '.')
-	{
-	  if (delim == '\'' || ! have_ellipsis_continuation (false))
-	    buf << static_cast<char> (c);
-	}
+        {
+          if (delim == '\'' || ! have_ellipsis_continuation (false))
+            buf << static_cast<char> (c);
+        }
       else if (c == '\n')
-	{
-	  error ("unterminated string constant");
-	  break;
-	}
+        {
+          error ("unterminated string constant");
+          break;
+        }
       else if (c == delim)
-	{
-	  if (escape_pending)
-	    buf << static_cast<char> (c);
-	  else
-	    {
-	      c = text_yyinput ();
-	      if (c == delim)
-		{
-		  buf << static_cast<char> (c);		    
-		}
-	      else
-		{
-		  std::string s;  
-		  xunput (c, yytext);
+        {
+          if (escape_pending)
+            buf << static_cast<char> (c);
+          else
+            {
+              c = text_yyinput ();
+              if (c == delim)
+                {
+                  buf << static_cast<char> (c);             
+                }
+              else
+                {
+                  std::string s;  
+                  xunput (c, yytext);
 
-		  if (delim == '\'')
-		    s = buf.str ();
-		  else
-		    s = do_string_escapes (buf.str ());
+                  if (delim == '\'')
+                    s = buf.str ();
+                  else
+                    s = do_string_escapes (buf.str ());
 
-		  lexer_flags.quote_is_transpose = true;
-		  lexer_flags.convert_spaces_to_comma = true;
+                  lexer_flags.quote_is_transpose = true;
+                  lexer_flags.convert_spaces_to_comma = true;
 
-		  yylval.tok_val = new token (s, bos_line, bos_col);
-		  token_stack.push (yylval.tok_val);
+                  yylval.tok_val = new token (s, bos_line, bos_col);
+                  token_stack.push (yylval.tok_val);
 
-		  if (delim == '"')
-		    gripe_matlab_incompatible ("\" used as string delimiter");
-		  else if (delim == '\'')
-		    gripe_single_quote_string ();
+                  if (delim == '"')
+                    gripe_matlab_incompatible ("\" used as string delimiter");
+                  else if (delim == '\'')
+                    gripe_single_quote_string ();
 
                   lexer_flags.looking_for_object_index = true;
-		  lexer_flags.at_beginning_of_statement = false;
+                  lexer_flags.at_beginning_of_statement = false;
 
-		  return delim == '"' ? DQ_STRING : SQ_STRING;
-		}
-	    }
-	}
+                  return delim == '"' ? DQ_STRING : SQ_STRING;
+                }
+            }
+        }
       else
-	{
-	  buf << static_cast<char> (c);
-	}
+        {
+          buf << static_cast<char> (c);
+        }
 
       escape_pending = 0;
     }
@@ -2609,10 +2609,10 @@ next_token_is_assign_op (void)
     {
     case '=':
       {
-	int c1 = text_yyinput ();
-	xunput (c1, yytext);
-	if (c1 != '=')
-	  retval = true;
+        int c1 = text_yyinput ();
+        xunput (c1, yytext);
+        if (c1 != '=')
+          retval = true;
       }
       break;
 
@@ -2624,52 +2624,52 @@ next_token_is_assign_op (void)
     case '&':
     case '|':
       {
-	int c1 = text_yyinput ();
-	xunput (c1, yytext);
-	if (c1 == '=')
-	  retval = true;
+        int c1 = text_yyinput ();
+        xunput (c1, yytext);
+        if (c1 == '=')
+          retval = true;
       }
       break;
 
     case '.':
       {
-	int c1 = text_yyinput ();
-	if (match_any (c1, "+-*/\\"))
-	  {
-	    int c2 = text_yyinput ();
-	    xunput (c2, yytext);
-	    if (c2 == '=')
-	      retval = true;
-	  }
-	xunput (c1, yytext);
+        int c1 = text_yyinput ();
+        if (match_any (c1, "+-*/\\"))
+          {
+            int c2 = text_yyinput ();
+            xunput (c2, yytext);
+            if (c2 == '=')
+              retval = true;
+          }
+        xunput (c1, yytext);
       }
       break;
 
     case '>':
       {
-	int c1 = text_yyinput ();
-	if (c1 == '>')
-	  {
-	    int c2 = text_yyinput ();
-	    xunput (c2, yytext);
-	    if (c2 == '=')
-	      retval = true;
-	  }
-	xunput (c1, yytext);
+        int c1 = text_yyinput ();
+        if (c1 == '>')
+          {
+            int c2 = text_yyinput ();
+            xunput (c2, yytext);
+            if (c2 == '=')
+              retval = true;
+          }
+        xunput (c1, yytext);
       }
       break;
 
     case '<':
       {
-	int c1 = text_yyinput ();
-	if (c1 == '<')
-	  {
-	    int c2 = text_yyinput ();
-	    xunput (c2, yytext);
-	    if (c2 == '=')
-	      retval = true;
-	  }
-	xunput (c1, yytext);
+        int c1 = text_yyinput ();
+        if (c1 == '<')
+          {
+            int c2 = text_yyinput ();
+            xunput (c2, yytext);
+            if (c2 == '=')
+              retval = true;
+          }
+        xunput (c1, yytext);
       }
       break;
 
@@ -2700,11 +2700,11 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
       nesting_level.remove ();
 
       if (bracket_type == ']')
-	lexer_flags.bracketflag--;
+        lexer_flags.bracketflag--;
       else if (bracket_type == '}')
-	lexer_flags.braceflag--;
+        lexer_flags.braceflag--;
       else
-	panic_impossible ();
+        panic_impossible ();
     }
 
   if (lexer_flags.bracketflag == 0 && lexer_flags.braceflag == 0)
@@ -2717,10 +2717,10 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
       retval = CLOSE_BRACE;
     }
   else if ((lexer_flags.bracketflag || lexer_flags.braceflag)
-	   && lexer_flags.convert_spaces_to_comma
-	   && (nesting_level.is_bracket ()
-	       || (nesting_level.is_brace ()
-		   && ! lexer_flags.looking_at_object_index.front ())))
+           && lexer_flags.convert_spaces_to_comma
+           && (nesting_level.is_bracket ()
+               || (nesting_level.is_brace ()
+                   && ! lexer_flags.looking_at_object_index.front ())))
     {
       bool index_op = next_token_is_index_op ();
 
@@ -2733,21 +2733,21 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
       //   [x{i} {j}] or [x{i} (j)]
 
       if (spc_gobbled || ! (bracket_type == '}' && index_op))
-	{
-	  bool bin_op = next_token_is_bin_op (spc_gobbled);
+        {
+          bool bin_op = next_token_is_bin_op (spc_gobbled);
 
-	  bool postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
+          bool postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
 
-	  bool sep_op = next_token_is_sep_op ();
+          bool sep_op = next_token_is_sep_op ();
 
-	  if (! (postfix_un_op || bin_op || sep_op))
-	    {
-	      maybe_warn_separator_insert (',');
+          if (! (postfix_un_op || bin_op || sep_op))
+            {
+              maybe_warn_separator_insert (',');
 
-	      xunput (',', yytext);
-	      return retval;
-	    }
-	}
+              xunput (',', yytext);
+              return retval;
+            }
+        }
     }
 
   lexer_flags.quote_is_transpose = true;
@@ -2761,7 +2761,7 @@ maybe_unput_comma (int spc_gobbled)
 {
   if (nesting_level.is_bracket ()
       || (nesting_level.is_brace ()
-	  && ! lexer_flags.looking_at_object_index.front ()))
+          && ! lexer_flags.looking_at_object_index.front ()))
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -2776,10 +2776,10 @@ maybe_unput_comma (int spc_gobbled)
       int sep_op = next_token_is_sep_op ();
 
       int dot_op = (c1 == '.'
-		    && (isalpha (c2) || isspace (c2) || c2 == '_'));
+                    && (isalpha (c2) || isspace (c2) || c2 == '_'));
 
       if (postfix_un_op || bin_op || sep_op || dot_op)
-	return;
+        return;
 
       int index_op = (c1 == '(' || c1 == '{');
 
@@ -2787,7 +2787,7 @@ maybe_unput_comma (int spc_gobbled)
       // a comma.
 
       if (index_op && ! spc_gobbled)
-	return;
+        return;
 
       maybe_warn_separator_insert (',');
 
@@ -2810,7 +2810,7 @@ next_token_can_follow_bin_op (void)
       buf.push (c);
 
       if (match_any (c, ",;\n") || (c != ' ' && c != '\t'))
-	break;
+        break;
     }
 
   // Restore input.
@@ -2849,22 +2849,22 @@ looks_like_command_arg (void)
     // = ==
     case '=':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (c1 == '=')
-	  {
-	    int c2 = text_yyinput ();
+        if (c1 == '=')
+          {
+            int c2 = text_yyinput ();
 
-	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		&& next_token_can_follow_bin_op ())
-	      retval = false;
+            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                && next_token_can_follow_bin_op ())
+              retval = false;
 
-	    xunput (c2, yytext);
-	  }
-	else
-	  retval = false;
+            xunput (c2, yytext);
+          }
+        else
+          retval = false;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2887,39 +2887,39 @@ looks_like_command_arg (void)
     case '+':
     case '-':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	switch (c1)
-	  {
-	  case '\n':
-	    // EOL.
-	  case '+':
-	  case '-':
-	    // Unary ops, spacing doesn't matter.
-	    break;
+        switch (c1)
+          {
+          case '\n':
+            // EOL.
+          case '+':
+          case '-':
+            // Unary ops, spacing doesn't matter.
+            break;
 
-	  case '\t':
-	  case ' ':
-	    {
-	      if (next_token_can_follow_bin_op ())
-		retval = false;
-	    }
-	    break;
+          case '\t':
+          case ' ':
+            {
+              if (next_token_can_follow_bin_op ())
+                retval = false;
+            }
+            break;
 
-	  case '=':
-	    {
-	      int c2 = text_yyinput ();
+          case '=':
+            {
+              int c2 = text_yyinput ();
 
-	      if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		  && next_token_can_follow_bin_op ())
-		retval = false;
+              if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                  && next_token_can_follow_bin_op ())
+                retval = false;
 
-	      xunput (c2, yytext);
-	    }
-	    break;
-	  }
+              xunput (c2, yytext);
+            }
+            break;
+          }
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2928,51 +2928,51 @@ looks_like_command_arg (void)
     case '\\':
     case '^':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-	    && next_token_can_follow_bin_op ())
-	  retval = false;
+        if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+            && next_token_can_follow_bin_op ())
+          retval = false;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
     // .+ .- ./ .\ .^ .* .**
     case '.':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (match_any (c1, "+-/\\^*"))
-	  {
-	    int c2 = text_yyinput ();
+        if (match_any (c1, "+-/\\^*"))
+          {
+            int c2 = text_yyinput ();
 
-	    if (c2 == '=')
-	      {
-		int c3 = text_yyinput ();
+            if (c2 == '=')
+              {
+                int c3 = text_yyinput ();
 
-		if (! match_any (c3, ",;\n") && (c3 == ' ' || c3 == '\t')
-		    && next_token_can_follow_bin_op ())
-		  retval = false;
+                if (! match_any (c3, ",;\n") && (c3 == ' ' || c3 == '\t')
+                    && next_token_can_follow_bin_op ())
+                  retval = false;
 
-		xunput (c3, yytext);
-	      }
-	    else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		     && next_token_can_follow_bin_op ())
-	      retval = false;
+                xunput (c3, yytext);
+              }
+            else if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                     && next_token_can_follow_bin_op ())
+              retval = false;
 
-	    xunput (c2, yytext);
-	  }
-	else if (! match_any (c1, ",;\n")
-		 && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
-		     && c1 != '.'))
-	  {
-	    // Structure reference.  FIXME -- is this a complete check?
+            xunput (c2, yytext);
+          }
+        else if (! match_any (c1, ",;\n")
+                 && (! isdigit (c1) && c1 != ' ' && c1 != '\t'
+                     && c1 != '.'))
+          {
+            // Structure reference.  FIXME -- is this a complete check?
 
-	    retval = false;
-	  }
+            retval = false;
+          }
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -2981,23 +2981,23 @@ looks_like_command_arg (void)
     case '|':
     case '*':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (c1 == c0)
-	  {
-	    int c2 = text_yyinput ();
+        if (c1 == c0)
+          {
+            int c2 = text_yyinput ();
 
-	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		&& next_token_can_follow_bin_op ())
-	      retval = false;
+            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                && next_token_can_follow_bin_op ())
+              retval = false;
 
-	    xunput (c2, yytext);
-	  }
-	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-		 && next_token_can_follow_bin_op ())
-	  retval = false;
+            xunput (c2, yytext);
+          }
+        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+                 && next_token_can_follow_bin_op ())
+          retval = false;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -3005,23 +3005,23 @@ looks_like_command_arg (void)
     case '<':
     case '>':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	if (c1 == '=')
-	  {
-	    int c2 = text_yyinput ();
+        if (c1 == '=')
+          {
+            int c2 = text_yyinput ();
 
-	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		&& next_token_can_follow_bin_op ())
-	      retval = false;
+            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                && next_token_can_follow_bin_op ())
+              retval = false;
 
-	    xunput (c2, yytext);
-	  }
-	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-		 && next_token_can_follow_bin_op ())
-	  retval = false;
+            xunput (c2, yytext);
+          }
+        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+                 && next_token_can_follow_bin_op ())
+          retval = false;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -3029,24 +3029,24 @@ looks_like_command_arg (void)
     case '~':
     case '!':
       {
-	int c1 = text_yyinput ();
+        int c1 = text_yyinput ();
 
-	// ~ and ! can be unary ops, so require following =.
-	if (c1 == '=')
-	  {
-	    int c2 = text_yyinput ();
+        // ~ and ! can be unary ops, so require following =.
+        if (c1 == '=')
+          {
+            int c2 = text_yyinput ();
 
-	    if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
-		&& next_token_can_follow_bin_op ())
-	      retval = false;
+            if (! match_any (c2, ",;\n") && (c2 == ' ' || c2 == '\t')
+                && next_token_can_follow_bin_op ())
+              retval = false;
 
-	    xunput (c2, yytext);
-	  }
-	else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
-		 && next_token_can_follow_bin_op ())
-	  retval = false;
+            xunput (c2, yytext);
+          }
+        else if (! match_any (c1, ",;\n") && (c1 == ' ' || c1 == '\t')
+                 && next_token_can_follow_bin_op ())
+          retval = false;
 
-	xunput (c1, yytext);
+        xunput (c1, yytext);
       }
       break;
 
@@ -3072,13 +3072,13 @@ handle_superclass_identifier (void)
   
   pos = cls.find (".");
   if (pos != std::string::npos)
-    {	 
+    {    
       pkg = cls.substr (pos).substr (1);
       cls = cls.substr (0, pos - 1);
     }
     
   int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
-		  || is_keyword_token (pkg));
+                  || is_keyword_token (pkg));
   if (kw_token)
     {
       error ("method, class and package names may not be keywords");
@@ -3089,7 +3089,7 @@ handle_superclass_identifier (void)
     = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
                  cls.empty () ? 0 : &(symbol_table::insert (cls)),
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-		 input_line_number, current_input_column);				   
+                 input_line_number, current_input_column);                                 
   token_stack.push (yylval.tok_val);
   
   lexer_flags.convert_spaces_to_comma = true;
@@ -3108,7 +3108,7 @@ handle_meta_identifier (void)
   size_t pos = cls.find (".");
   
   if (pos != std::string::npos)
-    {	 
+    {    
       pkg = cls.substr (pos).substr (1);
       cls = cls.substr (0, pos - 1);
     }
@@ -3122,8 +3122,8 @@ handle_meta_identifier (void)
   
   yylval.tok_val
     = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
-		 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-		 input_line_number, current_input_column);
+                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
+                 input_line_number, current_input_column);
 
   token_stack.push (yylval.tok_val);
                    
@@ -3162,7 +3162,7 @@ handle_identifier (void)
       maybe_unput_comma (spc_gobbled);
 
       yylval.tok_val = new token (tok, input_line_number,
-				  current_input_column);
+                                  current_input_column);
 
       token_stack.push (yylval.tok_val);
 
@@ -3191,25 +3191,25 @@ handle_identifier (void)
   if (lexer_flags.looking_at_function_handle)
     {
       if (kw_token)
-	{
-	  error ("function handles may not refer to keywords");
+        {
+          error ("function handles may not refer to keywords");
 
-	  return LEXICAL_ERROR;
-	}
+          return LEXICAL_ERROR;
+        }
       else
-	{
-	  yylval.tok_val = new token (tok, input_line_number,
-				      current_input_column);
+        {
+          yylval.tok_val = new token (tok, input_line_number,
+                                      current_input_column);
 
-	  token_stack.push (yylval.tok_val);
+          token_stack.push (yylval.tok_val);
 
-	  current_input_column += yyleng;
-	  lexer_flags.quote_is_transpose = false;
-	  lexer_flags.convert_spaces_to_comma = true;
-	  lexer_flags.looking_for_object_index = true;
+          current_input_column += yyleng;
+          lexer_flags.quote_is_transpose = false;
+          lexer_flags.convert_spaces_to_comma = true;
+          lexer_flags.looking_for_object_index = true;
 
-	  return FCN_HANDLE;
-	}
+          return FCN_HANDLE;
+        }
     }
 
   // If we have a regular keyword, return it.
@@ -3218,12 +3218,12 @@ handle_identifier (void)
   if (kw_token)
     {
       if (kw_token >= 0)
-	{
-	  current_input_column += yyleng;
-	  lexer_flags.quote_is_transpose = false;
-	  lexer_flags.convert_spaces_to_comma = true;
-	  lexer_flags.looking_for_object_index = false;
-	}
+        {
+          current_input_column += yyleng;
+          lexer_flags.quote_is_transpose = false;
+          lexer_flags.convert_spaces_to_comma = true;
+          lexer_flags.looking_for_object_index = false;
+        }
 
       return kw_token;
     }
@@ -3239,7 +3239,7 @@ handle_identifier (void)
       xunput (c2, yytext);
 
       if (c2 != '=')
-	next_tok_is_eq = true;
+        next_tok_is_eq = true;
     }
 
   xunput (c1, yytext);
@@ -3258,21 +3258,21 @@ handle_identifier (void)
     {
       if (at_bos && spc_gobbled && can_be_command (tok)
           && looks_like_command_arg ())
-	{
-	  BEGIN (COMMAND_START);
-	}
+        {
+          BEGIN (COMMAND_START);
+        }
       else if (next_tok_is_eq
-	       || lexer_flags.looking_at_decl_list
-	       || lexer_flags.looking_at_return_list
-	       || (lexer_flags.looking_at_parameter_list
-		   && ! lexer_flags.looking_at_initializer_expression))
-	{
-	  symbol_table::force_variable (tok);
-	}
+               || lexer_flags.looking_at_decl_list
+               || lexer_flags.looking_at_return_list
+               || (lexer_flags.looking_at_parameter_list
+                   && ! lexer_flags.looking_at_initializer_expression))
+        {
+          symbol_table::force_variable (tok);
+        }
       else if (lexer_flags.looking_at_matrix_or_assign_lhs)
-	{
-	  lexer_flags.pending_local_variables.insert (tok);
-	}
+        {
+          lexer_flags.pending_local_variables.insert (tok);
+        }
     }
 
   // Find the token in the symbol table.  Beware the magic
@@ -3282,7 +3282,7 @@ handle_identifier (void)
     tok = "__end__";    
 
   yylval.tok_val = new token (&(symbol_table::insert (tok)),
-			      input_line_number, current_input_column);
+                              input_line_number, current_input_column);
 
   token_stack.push (yylval.tok_val);
 
@@ -3398,7 +3398,7 @@ is omitted, return a list of keywords.\n\
       string_vector lst (TOTAL_KEYWORDS);
 
       for (int i = 0; i < TOTAL_KEYWORDS; i++)
-	lst[i] = wordlist[i].name;
+        lst[i] = wordlist[i].name;
 
       retval = Cell (lst.sort ());
     }
@@ -3431,12 +3431,12 @@ maybe_warn_separator_insert (char sep)
 
   if (nm.empty ())
     warning_with_id ("Octave:separator-insert",
-		     "potential auto-insertion of `%c' near line %d",
-		     sep, input_line_number);
+                     "potential auto-insertion of `%c' near line %d",
+                     sep, input_line_number);
   else
     warning_with_id ("Octave:separator-insert",
-		     "potential auto-insertion of `%c' near line %d of file %s",
-		     sep, input_line_number, nm.c_str ());
+                     "potential auto-insertion of `%c' near line %d of file %s",
+                     sep, input_line_number, nm.c_str ());
 }
 
 static void
@@ -3446,12 +3446,12 @@ gripe_single_quote_string (void)
 
   if (nm.empty ())
     warning_with_id ("Octave:single-quote-string",
-		     "single quote delimited string near line %d",
-		     input_line_number);
+                     "single quote delimited string near line %d",
+                     input_line_number);
   else
     warning_with_id ("Octave:single-quote-string",
-		     "single quote delimited string near line %d of file %s",
-		     input_line_number, nm.c_str ());
+                     "single quote delimited string near line %d of file %s",
+                     input_line_number, nm.c_str ());
 }
 
 static void
@@ -3461,12 +3461,12 @@ gripe_matlab_incompatible (const std::string& msg)
 
   if (nm.empty ())
     warning_with_id ("Octave:matlab-incompatible",
-		     "potential Matlab compatibility problem: %s",
-		     msg.c_str ());
+                     "potential Matlab compatibility problem: %s",
+                     msg.c_str ());
   else
     warning_with_id ("Octave:matlab-incompatible",
-		     "potential Matlab compatibility problem: %s near line %d offile %s",
-		     msg.c_str (), input_line_number, nm.c_str ());
+                     "potential Matlab compatibility problem: %s near line %d offile %s",
+                     msg.c_str (), input_line_number, nm.c_str ());
 }
 
 static void
@@ -3589,9 +3589,9 @@ display_token (int tok)
     default:
       {
         if (tok < 256)
-	  std::cerr << static_cast<char> (tok) << "\n";
-	else
-	  std::cerr << "UNKNOWN(" << tok << ")\n";
+          std::cerr << static_cast<char> (tok) << "\n";
+        else
+          std::cerr << "UNKNOWN(" << tok << ")\n";
       }
       break;
     }
@@ -3669,7 +3669,7 @@ Undocumented internal function.\n\
   octave_value retval;
 
   retval = set_internal_variable (lexer_debug_flag, args, nargout,
-           			  "__lexer_debug_flag__");
+                                  "__lexer_debug_flag__");
 
   return retval;
 }

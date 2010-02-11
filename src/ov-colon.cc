@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-colon.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon,
-				     "magic-colon", "magic-colon");
+                                     "magic-colon", "magic-colon");
 
 void
 octave_magic_colon::print (std::ostream& os, bool) const

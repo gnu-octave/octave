@@ -73,11 +73,11 @@ c_file_ptr_buf::underflow_common (bool bump)
 
       if (! bump
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-	  && c != traits_type::eof ())
+          && c != traits_type::eof ())
 #else
-	  && c != EOF)
+          && c != EOF)
 #endif
-	ungetc (c, f);
+        ungetc (c, f);
 
       return c;
     }
@@ -122,15 +122,15 @@ static inline int
 seekdir_to_whence (std::ios::seekdir dir)
 {
   return ((dir == std::ios::beg) ? SEEK_SET :
-	  (dir == std::ios::cur) ? SEEK_CUR :
-	  (dir == std::ios::end) ? SEEK_END :
-	  dir);
+          (dir == std::ios::cur) ? SEEK_CUR :
+          (dir == std::ios::end) ? SEEK_END :
+          dir);
 }
 
 std::streampos
 c_file_ptr_buf::seekoff (std::streamoff /* offset */,
-			 std::ios::seekdir /* dir */,
-			 std::ios::openmode)
+                         std::ios::seekdir /* dir */,
+                         std::ios::openmode)
 {
   // FIXME
 #if 0
@@ -227,11 +227,11 @@ c_zfile_ptr_buf::underflow_common (bool bump)
 
       if (! bump
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-	  && c != traits_type::eof ())
+          && c != traits_type::eof ())
 #else
-	  && c != EOF)
+          && c != EOF)
 #endif
-	gzungetc (c, f);
+        gzungetc (c, f);
 
       return c;
     }
@@ -274,8 +274,8 @@ c_zfile_ptr_buf::xsgetn (char *s, std::streamsize n)
 
 std::streampos
 c_zfile_ptr_buf::seekoff (std::streamoff /* offset */,
-			  std::ios::seekdir /* dir */,
-			  std::ios::openmode)
+                          std::ios::seekdir /* dir */,
+                          std::ios::openmode)
 {
   // FIXME
 #if 0

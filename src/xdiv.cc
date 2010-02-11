@@ -213,8 +213,8 @@ x_el_div (double a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -231,8 +231,8 @@ x_el_div (double a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -249,8 +249,8 @@ x_el_div (const Complex a, const Matrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -267,8 +267,8 @@ x_el_div (const Complex a, const ComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -511,8 +511,8 @@ x_el_div (float a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -529,8 +529,8 @@ x_el_div (float a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -547,8 +547,8 @@ x_el_div (const FloatComplex a, const FloatMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;
@@ -565,8 +565,8 @@ x_el_div (const FloatComplex a, const FloatComplexMatrix& b)
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       {
-	octave_quit ();
-	result (i, j) = a / b (i, j);
+        octave_quit ();
+        result (i, j) = a / b (i, j);
       }
 
   return result;

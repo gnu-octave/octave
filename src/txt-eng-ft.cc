@@ -45,23 +45,23 @@ public:
       bool retval = true;
 
       if (! instance)
-	instance = new ft_manager ();
+        instance = new ft_manager ();
 
       if (! instance)
-	{
-	  ::error ("unable to create ft_manager!");
+        {
+          ::error ("unable to create ft_manager!");
 
-	  retval = false;
-	}
+          retval = false;
+        }
 
       return retval;
     }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
-			   const std::string& angle, double size)
+                           const std::string& angle, double size)
     { return (instance_ok ()
-	      ? instance->do_get_font (name, weight, angle, size)
-	      : 0); }
+              ? instance->do_get_font (name, weight, angle, size)
+              : 0); }
 
 private:
   static ft_manager *instance;
@@ -70,20 +70,20 @@ private:
   ft_manager (void)
     {
       if (FT_Init_FreeType (&library))
-	{
-	  ::error ("unable to initialize freetype library");
-	}
+        {
+          ::error ("unable to initialize freetype library");
+        }
 
 #if HAVE_FONTCONFIG
       fc_init_done = false;
       if (! FcInit ())
-	{
-	  ::error ("unable to initialize fontconfig library");
-	}
+        {
+          ::error ("unable to initialize fontconfig library");
+        }
       else
-	{
-	  fc_init_done = true;
-	}
+        {
+          fc_init_done = true;
+        }
 #endif
     }
 
@@ -96,7 +96,7 @@ private:
     }
 
   FT_Face do_get_font (const std::string& name, const std::string& weight,
-		       const std::string& angle, double size)
+                       const std::string& angle, double size)
     {
       FT_Face retval = 0;
 
@@ -104,76 +104,76 @@ private:
 
 #if HAVE_FONTCONFIG
       if (fc_init_done)
-	{
-	  int fc_weight, fc_angle;
+        {
+          int fc_weight, fc_angle;
 
-	  if (weight == "bold")
-	    fc_weight = FC_WEIGHT_BOLD;
-	  else if (weight == "light")
-	    fc_weight = FC_WEIGHT_LIGHT;
-	  else if (weight == "demi")
-	    fc_weight = FC_WEIGHT_DEMIBOLD;
-	  else
-	    fc_weight = FC_WEIGHT_NORMAL;
+          if (weight == "bold")
+            fc_weight = FC_WEIGHT_BOLD;
+          else if (weight == "light")
+            fc_weight = FC_WEIGHT_LIGHT;
+          else if (weight == "demi")
+            fc_weight = FC_WEIGHT_DEMIBOLD;
+          else
+            fc_weight = FC_WEIGHT_NORMAL;
 
-	  if (angle == "italic")
-	    fc_angle = FC_SLANT_ITALIC;
-	  else if (angle == "oblique")
-	    fc_angle = FC_SLANT_OBLIQUE;
-	  else
-	    fc_angle = FC_SLANT_ROMAN;
+          if (angle == "italic")
+            fc_angle = FC_SLANT_ITALIC;
+          else if (angle == "oblique")
+            fc_angle = FC_SLANT_OBLIQUE;
+          else
+            fc_angle = FC_SLANT_ROMAN;
 
-	  FcPattern *pat = FcPatternCreate ();
+          FcPattern *pat = FcPatternCreate ();
 
-	  FcPatternAddString (pat, FC_FAMILY,
-			      (reinterpret_cast<const FcChar8*>
-			       (name == "*" ? "sans" : name.c_str ())));
+          FcPatternAddString (pat, FC_FAMILY,
+                              (reinterpret_cast<const FcChar8*>
+                               (name == "*" ? "sans" : name.c_str ())));
 
-	  FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
-	  FcPatternAddInteger (pat, FC_SLANT, fc_angle);
-	  FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
+          FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
+          FcPatternAddInteger (pat, FC_SLANT, fc_angle);
+          FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
-	  if (FcConfigSubstitute (0, pat, FcMatchPattern))
-	    {
-	      FcResult res;
-	      FcPattern *match;
+          if (FcConfigSubstitute (0, pat, FcMatchPattern))
+            {
+              FcResult res;
+              FcPattern *match;
 
-	      FcDefaultSubstitute (pat);
-	      match = FcFontMatch (0, pat, &res);
+              FcDefaultSubstitute (pat);
+              match = FcFontMatch (0, pat, &res);
 
-	      // FIXME -- originally, this test also required that
-	      // res != FcResultNoMatch.  Is that really needed?
-	      if (match)
-		{
-		  unsigned char *tmp;
+              // FIXME -- originally, this test also required that
+              // res != FcResultNoMatch.  Is that really needed?
+              if (match)
+                {
+                  unsigned char *tmp;
 
-		  FcPatternGetString (match, FC_FILE, 0, &tmp);
-		  file = reinterpret_cast<char*> (tmp);
-		}
-	      else
-		::warning ("could not match any font: %s-%s-%s-%g",
-			 name.c_str (), weight.c_str (), angle.c_str (),
-			 size);
+                  FcPatternGetString (match, FC_FILE, 0, &tmp);
+                  file = reinterpret_cast<char*> (tmp);
+                }
+              else
+                ::warning ("could not match any font: %s-%s-%s-%g",
+                         name.c_str (), weight.c_str (), angle.c_str (),
+                         size);
 
-	      if (match)
-		FcPatternDestroy (match);
-	    }
+              if (match)
+                FcPatternDestroy (match);
+            }
 
-	  FcPatternDestroy (pat);
-	}
+          FcPatternDestroy (pat);
+        }
 #endif
 
       if (file.empty ())
-	{
+        {
 #ifdef __WIN32__
-	  file = "C:/WINDOWS/Fonts/verdana.ttf";
+          file = "C:/WINDOWS/Fonts/verdana.ttf";
 #else
-	  // FIXME: find a "standard" font for UNIX platforms
+          // FIXME: find a "standard" font for UNIX platforms
 #endif
-	}
+        }
 
       if (! file.empty () && FT_New_Face (library, file.c_str (), 0, &retval))
-	::warning ("ft_manager: unable to load font: %s", file.c_str ());
+        ::warning ("ft_manager: unable to load font: %s", file.c_str ());
       
       return retval;
     }
@@ -212,14 +212,14 @@ ft_render::set_font (const base_properties& props)
   double font_size = props.get ("fontsize").double_value ();
 
   face = ft_manager::get_font (props.get ("fontname").string_value (),
-			       props.get ("fontweight").string_value (),
-			       props.get ("fontangle").string_value (),
-			       font_size);
+                               props.get ("fontweight").string_value (),
+                               props.get ("fontangle").string_value (),
+                               font_size);
 
   if (face)
     {
       if (FT_Set_Char_Size (face, 0, font_size*64, 0, 0))
-	::warning ("ft_render: unable to set font size to %d", font_size);
+        ::warning ("ft_render: unable to set font size to %d", font_size);
     }
   else
     ::warning ("ft_render: unable to load appropriate font");
@@ -238,19 +238,19 @@ ft_render::set_mode (int m)
       break;
     case MODE_RENDER:
       if (bbox.numel () != 4)
-	{
-	  ::warning ("ft_render: invalid bounding box, cannot render");
+        {
+          ::warning ("ft_render: invalid bounding box, cannot render");
 
-	  xoffset = yoffset = 0;
-	  pixels = uint8NDArray ();
-	}
+          xoffset = yoffset = 0;
+          pixels = uint8NDArray ();
+        }
       else
-	{
-	  pixels = uint8NDArray (dim_vector (4, bbox(2), bbox(3)),
-				 static_cast<uint8_t> (0));
-	  xoffset = 0;
-	  yoffset = -bbox(1)-1;
-	}
+        {
+          pixels = uint8NDArray (dim_vector (4, bbox(2), bbox(3)),
+                                 static_cast<uint8_t> (0));
+          xoffset = 0;
+          yoffset = -bbox(1)-1;
+        }
       break;
     default:
       ::error ("ft_render: invalid mode `%d'", mode);
@@ -267,98 +267,98 @@ ft_render::visit (text_element_string& e)
       FT_UInt glyph_index, previous = 0;
 
       for (int i = 0; i < str.length (); i++)
-	{
-	  glyph_index = FT_Get_Char_Index (face, str[i]);
+        {
+          glyph_index = FT_Get_Char_Index (face, str[i]);
 
-	  if (! glyph_index
-	      || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-	    ::warning ("ft_render: skipping missing glyph for character `%c'",
-		       str[i]);
-	  else
-	    {
-	      switch (mode)
-		{
-		case MODE_RENDER:
-		  if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
-		    ::warning ("ft_render: unable to render glyph for character `%c'",
-			       str[i]);
-		  else
-		    {
-		      FT_Bitmap& bitmap = face->glyph->bitmap;
-		      int x0, y0;
+          if (! glyph_index
+              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+            ::warning ("ft_render: skipping missing glyph for character `%c'",
+                       str[i]);
+          else
+            {
+              switch (mode)
+                {
+                case MODE_RENDER:
+                  if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                    ::warning ("ft_render: unable to render glyph for character `%c'",
+                               str[i]);
+                  else
+                    {
+                      FT_Bitmap& bitmap = face->glyph->bitmap;
+                      int x0, y0;
 
-		      if (previous)
-			{
-			  FT_Vector delta;
+                      if (previous)
+                        {
+                          FT_Vector delta;
 
-			  FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-			  xoffset += (delta.x >> 6);
-			}
+                          FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+                          xoffset += (delta.x >> 6);
+                        }
 
-		      x0 = xoffset+face->glyph->bitmap_left;
-		      y0 = yoffset+face->glyph->bitmap_top;
-		      for (int r = 0; r < bitmap.rows; r++)
-			for (int c = 0; c < bitmap.width; c++)
-			  {
-			    unsigned char pix = bitmap.buffer[r*bitmap.width+c];
-			    if (x0+c < 0 || x0+c >= pixels.dim2()
-				|| y0-r < 0 || y0-r >= pixels.dim3())
-			      {
-				//::error ("out-of-bound indexing!!");
-			      }
-			    else if (pixels(3, x0+c, y0-r).value () == 0)
-			      {
-				pixels(0, x0+c, y0-r) = red;
-				pixels(1, x0+c, y0-r) = green;
-				pixels(2, x0+c, y0-r) = blue;
-				pixels(3, x0+c, y0-r) = pix;
-			      }
-			  }
+                      x0 = xoffset+face->glyph->bitmap_left;
+                      y0 = yoffset+face->glyph->bitmap_top;
+                      for (int r = 0; r < bitmap.rows; r++)
+                        for (int c = 0; c < bitmap.width; c++)
+                          {
+                            unsigned char pix = bitmap.buffer[r*bitmap.width+c];
+                            if (x0+c < 0 || x0+c >= pixels.dim2()
+                                || y0-r < 0 || y0-r >= pixels.dim3())
+                              {
+                                //::error ("out-of-bound indexing!!");
+                              }
+                            else if (pixels(3, x0+c, y0-r).value () == 0)
+                              {
+                                pixels(0, x0+c, y0-r) = red;
+                                pixels(1, x0+c, y0-r) = green;
+                                pixels(2, x0+c, y0-r) = blue;
+                                pixels(3, x0+c, y0-r) = pix;
+                              }
+                          }
 
-		      xoffset += (face->glyph->advance.x >> 6);
-		    }
-		  break;
+                      xoffset += (face->glyph->advance.x >> 6);
+                    }
+                  break;
 
-		case MODE_BBOX:
-		  // width
-		  if (previous)
-		    {
-		      FT_Vector delta;
+                case MODE_BBOX:
+                  // width
+                  if (previous)
+                    {
+                      FT_Vector delta;
 
-		      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-		      bbox(2) += (delta.x >> 6);
-		    }
-		  bbox(2) += (face->glyph->advance.x >> 6);
+                      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+                      bbox(2) += (delta.x >> 6);
+                    }
+                  bbox(2) += (face->glyph->advance.x >> 6);
 
-		  int asc, desc;
+                  int asc, desc;
 
-		  if (false /*tight*/)
-		    {
-		      desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
-		      asc = face->glyph->metrics.horiBearingY;
-		    }
-		  else
-		    {
-		      asc = face->size->metrics.ascender;
-		      desc = face->size->metrics.descender;
-		    }
+                  if (false /*tight*/)
+                    {
+                      desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
+                      asc = face->glyph->metrics.horiBearingY;
+                    }
+                  else
+                    {
+                      asc = face->size->metrics.ascender;
+                      desc = face->size->metrics.descender;
+                    }
 
-		  asc = yoffset + (asc >> 6);
-		  desc = yoffset + (desc >> 6);
+                  asc = yoffset + (asc >> 6);
+                  desc = yoffset + (desc >> 6);
 
-		  if (desc < bbox(1))
-		    {
-		      bbox(3) += (bbox(1) - desc);
-		      bbox(1) = desc;
-		    }
-		  if (asc > (bbox(3)+bbox(1)))
-		    bbox(3) = asc-bbox(1);
-		  break;
-		}
+                  if (desc < bbox(1))
+                    {
+                      bbox(3) += (bbox(1) - desc);
+                      bbox(1) = desc;
+                    }
+                  if (asc > (bbox(3)+bbox(1)))
+                    bbox(3) = asc-bbox(1);
+                  break;
+                }
 
-	      previous = glyph_index;
-	    }
-	}
+              previous = glyph_index;
+            }
+        }
     }
 }
 
@@ -395,49 +395,49 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
       elt->accept (*this);
 
       switch (rotation)
-	{
-	case ROTATION_0:
-	  break;
-	case ROTATION_90:
-	    {
-	      Array<octave_idx_type> perm (3);
-	      perm(0) = 0;
-	      perm(1) = 2;
-	      perm(2) = 1;
-	      pixels = pixels.permute (perm);
+        {
+        case ROTATION_0:
+          break;
+        case ROTATION_90:
+            {
+              Array<octave_idx_type> perm (3);
+              perm(0) = 0;
+              perm(1) = 2;
+              perm(2) = 1;
+              pixels = pixels.permute (perm);
 
-	      Array<idx_vector> idx (3);
-	      idx(0) = idx_vector (':');
-	      idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
-	      idx(2) = idx_vector (':');
-	      pixels = uint8NDArray (pixels.index (idx));
-	    }
-	  break;
-	case ROTATION_180:
-	    {
-	      Array<idx_vector> idx (3);
-	      idx(0) = idx_vector (':');
-	      idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
-	      idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
-	      pixels = uint8NDArray (pixels.index (idx));
-	    }
-	  break;
-	case ROTATION_270:
-	    {
-	      Array<octave_idx_type> perm (3);
-	      perm(0) = 0;
-	      perm(1) = 2;
-	      perm(2) = 1;
-	      pixels = pixels.permute (perm);
+              Array<idx_vector> idx (3);
+              idx(0) = idx_vector (':');
+              idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+              idx(2) = idx_vector (':');
+              pixels = uint8NDArray (pixels.index (idx));
+            }
+          break;
+        case ROTATION_180:
+            {
+              Array<idx_vector> idx (3);
+              idx(0) = idx_vector (':');
+              idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+              idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
+              pixels = uint8NDArray (pixels.index (idx));
+            }
+          break;
+        case ROTATION_270:
+            {
+              Array<octave_idx_type> perm (3);
+              perm(0) = 0;
+              perm(1) = 2;
+              perm(2) = 1;
+              pixels = pixels.permute (perm);
 
-	      Array<idx_vector> idx (3);
-	      idx(0) = idx_vector (':');
-	      idx(1) = idx_vector (':');
-	      idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
-	      pixels = uint8NDArray (pixels.index (idx));
-	    }
-	  break;
-	}
+              Array<idx_vector> idx (3);
+              idx(0) = idx_vector (':');
+              idx(1) = idx_vector (':');
+              idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
+              pixels = uint8NDArray (pixels.index (idx));
+            }
+          break;
+        }
     }
 
   return pixels;

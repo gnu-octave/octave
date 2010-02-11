@@ -111,7 +111,7 @@ octave_matrix::double_value (bool) const
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real matrix", "real scalar");
+                                 "real matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -129,7 +129,7 @@ octave_matrix::float_value (bool) const
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real matrix", "real scalar");
+                                 "real matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -163,7 +163,7 @@ octave_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real matrix", "complex scalar");
+                                 "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -183,7 +183,7 @@ octave_matrix::float_complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real matrix", "complex scalar");
+                                 "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -317,30 +317,30 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
       double d = matrix (i);
 
       if (xisnan (d))
-	{
-	  ::error ("invalid conversion from NaN to character");
-	  return retval;
-	}
+        {
+          ::error ("invalid conversion from NaN to character");
+          return retval;
+        }
       else
-	{
-	  int ival = NINT (d);
+        {
+          int ival = NINT (d);
 
-	  if (ival < 0 || ival > UCHAR_MAX)
-	    {
-	      // FIXME -- is there something
-	      // better we could do?
+          if (ival < 0 || ival > UCHAR_MAX)
+            {
+              // FIXME -- is there something
+              // better we could do?
 
-	      ival = 0;
+              ival = 0;
 
-	      if (! warned)
-		{
-		  ::warning ("range error for conversion to character value");
-		  warned = true;
-		}
-	    }
+              if (! warned)
+                {
+                  ::warning ("range error for conversion to character value");
+                  warned = true;
+                }
+            }
 
-	  chm (i) = static_cast<char> (ival);
-	}
+          chm (i) = static_cast<char> (ival);
+        }
     }
 
   retval = octave_value (chm, type);
@@ -360,7 +360,7 @@ octave_matrix::save_ascii (std::ostream& os)
       os << "# ndims: " << d.length () << "\n";
 
       for (int i=0; i < d.length (); i++)
-	os << " " << d (i);
+        os << " " << d (i);
 
       os << "\n" << tmp;
     }
@@ -369,7 +369,7 @@ octave_matrix::save_ascii (std::ostream& os)
       // Keep this case, rather than use generic code above for backward 
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
-	 << "# columns: " << columns () << "\n";
+         << "# columns: " << columns () << "\n";
 
       os << matrix_value ();
     }
@@ -393,20 +393,20 @@ octave_matrix::load_ascii (std::istream& is)
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
-	{
-	  int mdims = static_cast<int> (val);
+        {
+          int mdims = static_cast<int> (val);
 
-	  if (mdims >= 0)
-	    {
-	      dim_vector dv;
-	      dv.resize (mdims);
+          if (mdims >= 0)
+            {
+              dim_vector dv;
+              dv.resize (mdims);
 
-	      for (int i = 0; i < mdims; i++)
-		is >> dv(i);
+              for (int i = 0; i < mdims; i++)
+                is >> dv(i);
 
-	      if (is)
-		{
-		  NDArray tmp(dv);
+              if (is)
+                {
+                  NDArray tmp(dv);
 
                   is >> tmp;
 
@@ -417,51 +417,51 @@ octave_matrix::load_ascii (std::istream& is)
                       error ("load: failed to load matrix constant");
                       success = false;
                     }
-		}
-	      else
-		{
-		  error ("load: failed to read dimensions");
-		  success = false;
-		}
-	    }
-	  else
-	    {
-	      error ("load: failed to extract number of dimensions");
-	      success = false;
-	    }
-	}
+                }
+              else
+                {
+                  error ("load: failed to read dimensions");
+                  success = false;
+                }
+            }
+          else
+            {
+              error ("load: failed to extract number of dimensions");
+              success = false;
+            }
+        }
       else if (kw == "rows")
-	{
-	  octave_idx_type nr = val;
-	  octave_idx_type nc = 0;
+        {
+          octave_idx_type nr = val;
+          octave_idx_type nc = 0;
 
-	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-	    {
-	      if (nr > 0 && nc > 0)
-		{
-		  Matrix tmp (nr, nc);
-		  is >> tmp;
-		  if (is)
-		    matrix = tmp;
-		  else
-		    {
-		      error ("load: failed to load matrix constant");
-		      success = false;
-		    }
-		}
-	      else if (nr == 0 || nc == 0)
-		matrix = Matrix (nr, nc);
-	      else
-		panic_impossible ();
-	    }
-	  else 
-	    {
-	      error ("load: failed to extract number of rows and columns");
-	      success = false;
-	    }
-	}
+          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+            {
+              if (nr > 0 && nc > 0)
+                {
+                  Matrix tmp (nr, nc);
+                  is >> tmp;
+                  if (is)
+                    matrix = tmp;
+                  else
+                    {
+                      error ("load: failed to load matrix constant");
+                      success = false;
+                    }
+                }
+              else if (nr == 0 || nc == 0)
+                matrix = Matrix (nr, nc);
+              else
+                panic_impossible ();
+            }
+          else 
+            {
+              error ("load: failed to extract number of rows and columns");
+              success = false;
+            }
+        }
       else
-	panic_impossible ();
+        panic_impossible ();
     }
   else
     {
@@ -494,18 +494,18 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   if (save_as_floats)
     {
       if (m.too_large_for_float ())
-	{
-	  warning ("save: some values too large to save as floats --");
-	  warning ("save: saving as doubles instead");
-	}
+        {
+          warning ("save: some values too large to save as floats --");
+          warning ("save: saving as doubles instead");
+        }
       else
-	st = LS_FLOAT;
+        st = LS_FLOAT;
     }
   else if (d.numel () > 8192) // FIXME -- make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
-	st = get_save_type (max_val, min_val);
+        st = get_save_type (max_val, min_val);
     }
 
   const double *mtmp = m.data ();
@@ -516,7 +516,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool 
 octave_matrix::load_binary (std::istream& is, bool swap,
-				 oct_mach_info::float_format fmt)
+                                 oct_mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -532,34 +532,34 @@ octave_matrix::load_binary (std::istream& is, bool swap,
       dv.resize (mdims);
 
       for (int i = 0; i < mdims; i++)
-	{
-	  if (! is.read (reinterpret_cast<char *> (&di), 4))
-	    return false;
-	  if (swap)
-	    swap_bytes<4> (&di);
-	  dv(i) = di;
-	}
+        {
+          if (! is.read (reinterpret_cast<char *> (&di), 4))
+            return false;
+          if (swap)
+            swap_bytes<4> (&di);
+          dv(i) = di;
+        }
 
       // Convert an array with a single dimension to be a row vector.
       // Octave should never write files like this, other software
       // might.
 
       if (mdims == 1)
-	{
-	  mdims = 2;
-	  dv.resize (mdims);
-	  dv(1) = dv(0);
-	  dv(0) = 1;
-	}
+        {
+          mdims = 2;
+          dv.resize (mdims);
+          dv(1) = dv(0);
+          dv(0) = 1;
+        }
 
       if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-	return false;
+        return false;
 
       NDArray m(dv);
       double *re = m.fortran_vec ();
       read_doubles (is, re, static_cast<save_type> (tmp), dv.numel (), swap, fmt);
       if (error_state || ! is)
-	return false;
+        return false;
       matrix = m;
     }
   else
@@ -567,17 +567,17 @@ octave_matrix::load_binary (std::istream& is, bool swap,
       int32_t nr, nc;
       nr = mdims;
       if (! is.read (reinterpret_cast<char *> (&nc), 4))
-	return false;
+        return false;
       if (swap)
-	swap_bytes<4> (&nc);
+        swap_bytes<4> (&nc);
       if (! is.read (reinterpret_cast<char *> (&tmp), 1))
-	return false;
+        return false;
       Matrix m (nr, nc);
       double *re = m.fortran_vec ();
       octave_idx_type len = nr * nc;
       read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
       if (error_state || ! is)
-	return false;
+        return false;
       matrix = m;
     }
   return true;
@@ -613,12 +613,12 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   if (save_as_floats)
     {
       if (m.too_large_for_float ())
-	{
-	  warning ("save: some values too large to save as floats --");
-	  warning ("save: saving as doubles instead");
-	}
+        {
+          warning ("save: some values too large to save as floats --");
+          warning ("save: saving as doubles instead");
+        }
       else
-	save_type_hid = H5T_NATIVE_FLOAT;
+        save_type_hid = H5T_NATIVE_FLOAT;
     }
 #if HAVE_HDF5_INT2FLOAT_CONVERSIONS
   // hdf5 currently doesn't support float/integer conversions
@@ -627,17 +627,17 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       double max_val, min_val;
 
       if (m.all_integers (max_val, min_val))
-	save_type_hid
-	  = save_type_to_hdf5 (get_save_type (max_val, min_val));
+        save_type_hid
+          = save_type_to_hdf5 (get_save_type (max_val, min_val));
     }
 #endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
  
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
-			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
-			H5P_DEFAULT);
+                        H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -647,7 +647,7 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 
   double *mtmp = m.fortran_vec ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-		     H5P_DEFAULT, mtmp) >= 0;
+                     H5P_DEFAULT, mtmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -699,13 +699,13 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
     {
       dv.resize (rank);
       for (hsize_t i = 0, j = rank - 1; i < rank; i++, j--)
-	dv(j) = hdims[i];
+        dv(j) = hdims[i];
     }
 
   NDArray m (dv);
   double *re = m.fortran_vec ();
   if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, re) >= 0) 
+               H5P_DEFAULT, re) >= 0) 
     {
       retval = true;
       matrix = m;
@@ -721,10 +721,10 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
 void
 octave_matrix::print_raw (std::ostream& os,
-			  bool pr_as_read_syntax) const
+                          bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level ());
+                         current_print_indent_level ());
 }
 
 mxArray *
@@ -877,34 +877,34 @@ Convert @var{x} to double precision type.\n\
         }
       else if (args(0).is_diag_matrix ())
         {
-	  if (args(0).is_complex_type ())
-	    {
-	      OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix, octave_complex);
-	    }
-	  else
-	    {
-	      OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix, octave_scalar);
-	    }
+          if (args(0).is_complex_type ())
+            {
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix, octave_complex);
+            }
+          else
+            {
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix, octave_scalar);
+            }
         }
       else if (args(0).is_sparse_type ())
-	{
-	  if (args(0).is_complex_type ())
-	    {
-	      OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix, octave_complex);
-	    }
-	  else
-	    {
-	      OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix, octave_scalar);
-	    }
-	}
+        {
+          if (args(0).is_complex_type ())
+            {
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix, octave_complex);
+            }
+          else
+            {
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix, octave_scalar);
+            }
+        }
       else if (args(0).is_complex_type ())
-	{
-	  OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix, octave_complex);
-	}
+        {
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix, octave_complex);
+        }
       else
-	{
-	  OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
-	}
+        {
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
+        }
     }
   else
     print_usage ();

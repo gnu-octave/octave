@@ -91,14 +91,14 @@ octave_bool::resize (const dim_vector& dv, bool fill) const
     {
       boolNDArray retval (dv, false); 
       if (dv.numel()) 
-	retval(0) = scalar; 
+        retval(0) = scalar; 
       return retval; 
     }
   else
     {
       boolNDArray retval (dv); 
       if (dv.numel()) 
-	retval(0) = scalar; 
+        retval(0) = scalar; 
       return retval; 
     }
 }
@@ -149,7 +149,7 @@ octave_bool::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool 
 octave_bool::load_binary (std::istream& is, bool /* swap */,
-			  oct_mach_info::float_format /* fmt */)
+                          oct_mach_info::float_format /* fmt */)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -162,7 +162,7 @@ octave_bool::load_binary (std::istream& is, bool /* swap */,
 
 bool
 octave_bool::save_hdf5 (hid_t loc_id, const char *name,
-			bool /* save_as_floats */)
+                        bool /* save_as_floats */)
 {
   hsize_t dimens[3];
   hid_t space_hid = -1, data_hid = -1;
@@ -172,10 +172,10 @@ octave_bool::save_hdf5 (hid_t loc_id, const char *name,
   if (space_hid < 0) return false;
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid, 
-			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid, 
-			H5P_DEFAULT);
+                        H5P_DEFAULT);
 #endif
   if (data_hid < 0) 
     {
@@ -185,7 +185,7 @@ octave_bool::save_hdf5 (hid_t loc_id, const char *name,
 
   double tmp = double_value ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
-		     H5P_DEFAULT, &tmp) >= 0;
+                     H5P_DEFAULT, &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -213,7 +213,7 @@ octave_bool::load_hdf5 (hid_t loc_id, const char *name)
 
   double dtmp;
   if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, &dtmp) < 0)
+               H5P_DEFAULT, &dtmp) < 0)
     { 
       H5Dclose (data_hid);
       return false;

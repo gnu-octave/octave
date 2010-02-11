@@ -43,22 +43,22 @@ tree_colon_expression::append (tree_expression *t)
   if (op_base)
     {
       if (op_limit)
-	{
-	  if (op_increment)
-	    ::error ("invalid colon expression");
-	  else
-	    {
-	      // Stupid syntax:
-	      //
-	      // base : limit
-	      // base : increment : limit
+        {
+          if (op_increment)
+            ::error ("invalid colon expression");
+          else
+            {
+              // Stupid syntax:
+              //
+              // base : limit
+              // base : increment : limit
 
-	      op_increment = op_limit;
-	      op_limit = t;
-	    }
-	}
+              op_increment = op_limit;
+              op_limit = t;
+            }
+        }
       else
-	op_limit = t;
+        op_limit = t;
 
       retval = this;
     }
@@ -83,9 +83,9 @@ tree_colon_expression::rvalue (int nargout)
 
 octave_value
 tree_colon_expression::make_range (const Matrix& m_base,
-				   const Matrix& m_limit,
-				   const Matrix& m_increment,
-				   bool result_is_str, bool dq_str) const
+                                   const Matrix& m_limit,
+                                   const Matrix& m_increment,
+                                   bool result_is_str, bool dq_str) const
 {
   octave_value retval;
 
@@ -100,7 +100,7 @@ tree_colon_expression::make_range (const Matrix& m_base,
       retval = Range (m_base(0), m_limit(0), m_increment(0));
 
       if (result_is_str)
-	retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+        retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
     }
 
   return retval;
@@ -108,8 +108,8 @@ tree_colon_expression::make_range (const Matrix& m_base,
 
 octave_value
 tree_colon_expression::make_range (const octave_value& ov_base,
-				   const octave_value& ov_limit,
-				   const octave_value& ov_increment) const
+                                   const octave_value& ov_limit,
+                                   const octave_value& ov_increment) const
 {
   octave_value retval;
 
@@ -124,14 +124,14 @@ tree_colon_expression::make_range (const octave_value& ov_base,
       octave_value fcn = symbol_table::find_function ("colon", tmp1);
 
       if (fcn.is_defined ())
-	{
-	  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-		      
-	  if (! error_state)
-	    retval = tmp2 (0);
-	}
+        {
+          octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+                      
+          if (! error_state)
+            retval = tmp2 (0);
+        }
       else
-	::error ("can not find overloaded colon function");
+        ::error ("can not find overloaded colon function");
     }
   else
     {
@@ -141,24 +141,24 @@ tree_colon_expression::make_range (const octave_value& ov_base,
       Matrix m_base = ov_base.matrix_value (true);
 
       if (error_state)
-	eval_error ("invalid base value in colon expression");
+        eval_error ("invalid base value in colon expression");
       else
-	{
-	  Matrix m_limit = ov_limit.matrix_value (true);
+        {
+          Matrix m_limit = ov_limit.matrix_value (true);
 
-	  if (error_state)
-	    eval_error ("invalid limit value in colon expression");
-	  else
-	    {
-	      Matrix m_increment = ov_increment.matrix_value (true);
+          if (error_state)
+            eval_error ("invalid limit value in colon expression");
+          else
+            {
+              Matrix m_increment = ov_increment.matrix_value (true);
 
-	      if (error_state)
-		eval_error ("invalid increment value in colon expression");
-	      else
-		retval = make_range (m_base, m_limit, m_increment,
-				     result_is_str, dq_str);
-	    }
-	}
+              if (error_state)
+                eval_error ("invalid increment value in colon expression");
+              else
+                retval = make_range (m_base, m_limit, m_increment,
+                                     result_is_str, dq_str);
+            }
+        }
     }
 
   return retval;
@@ -181,60 +181,60 @@ tree_colon_expression::rvalue1 (int)
       octave_value ov_limit = op_limit->rvalue1 ();
 
       if (error_state || ov_limit.is_undefined ())
-	eval_error ("invalid limit value in colon expression");
+        eval_error ("invalid limit value in colon expression");
       else if (ov_base.is_object () || ov_limit.is_object ())
-	{
-	  octave_value_list tmp1;
+        {
+          octave_value_list tmp1;
 
-	  if (op_increment)
-	    {
-	      octave_value ov_increment = op_increment->rvalue1 ();
+          if (op_increment)
+            {
+              octave_value ov_increment = op_increment->rvalue1 ();
 
-	      if (error_state || ov_increment.is_undefined ())
-		eval_error ("invalid increment value in colon expression");
-	      else
-		{
-		  tmp1(2) = ov_limit;
-		  tmp1(1) = ov_increment;
-		  tmp1(0) = ov_base;
-		}
-	    }
-	  else
-	    {
-	      tmp1(1) = ov_limit;
-	      tmp1(0) = ov_base;
-	    }
+              if (error_state || ov_increment.is_undefined ())
+                eval_error ("invalid increment value in colon expression");
+              else
+                {
+                  tmp1(2) = ov_limit;
+                  tmp1(1) = ov_increment;
+                  tmp1(0) = ov_base;
+                }
+            }
+          else
+            {
+              tmp1(1) = ov_limit;
+              tmp1(0) = ov_base;
+            }
 
-	  if (!error_state)
-	    {
-	      octave_value fcn = symbol_table::find_function ("colon", tmp1);
+          if (!error_state)
+            {
+              octave_value fcn = symbol_table::find_function ("colon", tmp1);
 
-	      if (fcn.is_defined ())
-		{
-		  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-		      
-		  if (! error_state)
-		    retval = tmp2 (0);
-		}
-	      else
-		::error ("can not find overloaded colon function");
-	    }
-	}
+              if (fcn.is_defined ())
+                {
+                  octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
+                      
+                  if (! error_state)
+                    retval = tmp2 (0);
+                }
+              else
+                ::error ("can not find overloaded colon function");
+            }
+        }
       else
-	{
-	  octave_value ov_increment = 1.0;
+        {
+          octave_value ov_increment = 1.0;
 
-	  if (op_increment)
-	    {
-	      ov_increment = op_increment->rvalue1 ();
+          if (op_increment)
+            {
+              ov_increment = op_increment->rvalue1 ();
 
-	      if (error_state || ov_increment.is_undefined ())
-		eval_error ("invalid increment value in colon expression");
-	    }
+              if (error_state || ov_increment.is_undefined ())
+                eval_error ("invalid increment value in colon expression");
+            }
 
-	  if (! error_state)
-	    retval = make_range (ov_base, ov_limit, ov_increment);
-	}
+          if (! error_state)
+            retval = make_range (ov_base, ov_limit, ov_increment);
+        }
     }
 
   return retval;
@@ -250,29 +250,29 @@ int
 tree_colon_expression::line (void) const
 {
   return (op_base ? op_base->line ()
-	  : (op_increment ? op_increment->line ()
-	     : (op_limit ? op_limit->line ()
-		: -1)));
+          : (op_increment ? op_increment->line ()
+             : (op_limit ? op_limit->line ()
+                : -1)));
 }
 
 int
 tree_colon_expression::column (void) const
 {
   return (op_base ? op_base->column ()
-	  : (op_increment ? op_increment->column ()
-	     : (op_limit ? op_limit->column ()
-		: -1)));
+          : (op_increment ? op_increment->column ()
+             : (op_limit ? op_limit->column ()
+                : -1)));
 }
 
 tree_expression *
 tree_colon_expression::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context) const
+                            symbol_table::context_id context) const
 {
   tree_colon_expression *new_ce = new
     tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,
-			   op_limit ? op_limit->dup (scope, context) : 0,
-			   op_increment ? op_increment->dup (scope, context) : 0,
-			   line (), column ());
+                           op_limit ? op_limit->dup (scope, context) : 0,
+                           op_increment ? op_increment->dup (scope, context) : 0,
+                           line (), column ());
 
   new_ce->copy_base (*new_ce);
 

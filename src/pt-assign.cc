@@ -148,7 +148,7 @@ maybe_warn_former_built_in_variable (const std::string& nm)
       const char **p = former_built_in_variables;
 
       while (*p)
-	vars.insert (*p++);
+        vars.insert (*p++);
 
       initialized = true;
     }
@@ -158,8 +158,8 @@ maybe_warn_former_built_in_variable (const std::string& nm)
       const char *nm_c_str = nm.c_str ();
 
       warning_with_id ("Octave:built-in-variable-assignment",
-		       "%s is now a function instead of a built-in variable.  By assigning to %s, you have created a variable that hides the function %s.  To remove the variable and restore the function, type \"clear %s\"",
-		       nm_c_str, nm_c_str, nm_c_str, nm_c_str);
+                       "%s is now a function instead of a built-in variable.  By assigning to %s, you have created a variable that hides the function %s.  To remove the variable and restore the function, type \"clear %s\"",
+                       nm_c_str, nm_c_str, nm_c_str, nm_c_str);
     }
 }
 
@@ -206,63 +206,63 @@ tree_simple_assignment::rvalue1 (int)
       octave_value rhs_val = rhs->rvalue1 ();
 
       if (! error_state)
-	{
-	  if (rhs_val.is_undefined ())
-	    {
-	      error ("value on right hand side of assignment is undefined");
-	      return retval;
-	    }
-	  else
-	    {
-	      if (rhs_val.is_cs_list ())
-		{
-		  const octave_value_list lst = rhs_val.list_value ();
+        {
+          if (rhs_val.is_undefined ())
+            {
+              error ("value on right hand side of assignment is undefined");
+              return retval;
+            }
+          else
+            {
+              if (rhs_val.is_cs_list ())
+                {
+                  const octave_value_list lst = rhs_val.list_value ();
 
-		  if (! lst.empty ())
-		    rhs_val = lst(0);
-		  else
-		    {
-		      error ("invalid number of elements on RHS of assignment");
-		      return retval;
-		    }
-		}
+                  if (! lst.empty ())
+                    rhs_val = lst(0);
+                  else
+                    {
+                      error ("invalid number of elements on RHS of assignment");
+                      return retval;
+                    }
+                }
 
-	      octave_lvalue ult = lhs->lvalue ();
+              octave_lvalue ult = lhs->lvalue ();
 
               if (ult.numel () != 1)
                 gripe_nonbraced_cs_list_assignment ();
 
-	      if (! error_state)
-		{
-		  ult.assign (etype, rhs_val);
+              if (! error_state)
+                {
+                  ult.assign (etype, rhs_val);
 
-		  if (! error_state)
-		    {
-		      if (etype == octave_value::op_asn_eq)
-			retval = rhs_val;
-		      else
-			retval = ult.value ();
+                  if (! error_state)
+                    {
+                      if (etype == octave_value::op_asn_eq)
+                        retval = rhs_val;
+                      else
+                        retval = ult.value ();
 
-		      if (print_result ())
-			{
-			  // We clear any index here so that we can
-			  // get the new value of the referenced
-			  // object below, instead of the indexed
-			  // value (which should be the same as the
-			  // right hand side value).
+                      if (print_result ())
+                        {
+                          // We clear any index here so that we can
+                          // get the new value of the referenced
+                          // object below, instead of the indexed
+                          // value (which should be the same as the
+                          // right hand side value).
 
-			  ult.clear_index ();
+                          ult.clear_index ();
 
-			  octave_value lhs_val = ult.value ();
+                          octave_value lhs_val = ult.value ();
 
-			  if (! error_state)
-			    lhs_val.print_with_name (octave_stdout,
-						     lhs->name ());
-			}
-		    }
-		}
-	    }
-	}
+                          if (! error_state)
+                            lhs_val.print_with_name (octave_stdout,
+                                                     lhs->name ());
+                        }
+                    }
+                }
+            }
+        }
     }
 
   first_execution = false;
@@ -278,12 +278,12 @@ tree_simple_assignment::oper (void) const
 
 tree_expression *
 tree_simple_assignment::dup (symbol_table::scope_id scope,
-			     symbol_table::context_id context) const
+                             symbol_table::context_id context) const
 {
   tree_simple_assignment *new_sa
     = new tree_simple_assignment (lhs ? lhs->dup (scope, context) : 0,
-				  rhs ? rhs->dup (scope, context) : 0,
-				  preserve, etype);
+                                  rhs ? rhs->dup (scope, context) : 0,
+                                  preserve, etype);
 
   new_sa->copy_base (*this);
 
@@ -352,14 +352,14 @@ tree_multi_assignment::rvalue (int)
       std::list<octave_lvalue> lvalue_list = lhs->lvalue_list ();
 
       if (error_state)
-	return retval;
+        return retval;
 
       int n_out = 0;
 
       for (std::list<octave_lvalue>::const_iterator p = lvalue_list.begin ();
-	   p != lvalue_list.end ();
-	   p++)
-	n_out += p->numel ();
+           p != lvalue_list.end ();
+           p++)
+        n_out += p->numel ();
 
       // The following trick is used to keep rhs_val constant.
       const octave_value_list rhs_val1 = rhs->rvalue (n_out);
@@ -367,7 +367,7 @@ tree_multi_assignment::rvalue (int)
                                          ? rhs_val1(0).list_value () : rhs_val1);
 
       if (error_state)
-	return retval;
+        return retval;
 
       octave_idx_type k = 0;
 
@@ -471,12 +471,12 @@ tree_multi_assignment::oper (void) const
 
 tree_expression *
 tree_multi_assignment::dup (symbol_table::scope_id scope,
-			    symbol_table::context_id context) const
+                            symbol_table::context_id context) const
 {
   tree_multi_assignment *new_ma
     = new tree_multi_assignment (lhs ? lhs->dup (scope, context) : 0,
-				 rhs ? rhs->dup (scope, context) : 0,
-				 preserve);
+                                 rhs ? rhs->dup (scope, context) : 0,
+                                 preserve);
 
   new_ma->copy_base (*this);
 

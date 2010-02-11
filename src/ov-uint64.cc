@@ -63,7 +63,7 @@ template class octave_base_int_matrix<uint64NDArray>;
 DEFINE_OCTAVE_ALLOCATOR (octave_uint64_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_matrix,
-				     "uint64 matrix", "uint64");
+                                     "uint64 matrix", "uint64");
 
 template class octave_base_scalar<octave_uint64>;
 
@@ -72,7 +72,7 @@ template class octave_base_int_scalar<octave_uint64>;
 DEFINE_OCTAVE_ALLOCATOR (octave_uint64_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_scalar,
-				     "uint64 scalar", "uint64");
+                                     "uint64 scalar", "uint64");
 
 DEFUN (uint64, args, ,
   "-*- texinfo -*-\n\

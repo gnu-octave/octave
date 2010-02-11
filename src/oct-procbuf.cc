@@ -108,23 +108,23 @@ octave_procbuf::open (const char *command, int mode)
       ::close (parent_end);
 
       if (child_end != child_std_end)
-	{
-	  ::dup2 (child_end, child_std_end);
-	  ::close (child_end);
-	}
+        {
+          ::dup2 (child_end, child_std_end);
+          ::close (child_end);
+        }
 
       while (octave_procbuf_list)
-	{
-	  FILE *fp = octave_procbuf_list->f;
+        {
+          FILE *fp = octave_procbuf_list->f;
 
-	  if (fp)
-	    {
-	      ::fclose (fp);
-	      fp = 0;
-	    }
+          if (fp)
+            {
+              ::fclose (fp);
+              fp = 0;
+            }
 
-	  octave_procbuf_list = octave_procbuf_list->next;
-	}
+          octave_procbuf_list = octave_procbuf_list->next;
+        }
 
       execl ("/bin/sh", "sh", "-c", command, static_cast<void *> (0));
 
@@ -182,27 +182,27 @@ octave_procbuf::close (void)
       int status = -1;
 
       for (octave_procbuf **ptr = &octave_procbuf_list;
-	   *ptr != 0;
-	   ptr = &(*ptr)->next)
-	{
-	  if (*ptr == this)
-	    {
-	      *ptr = (*ptr)->next;
-	      status = 0;
-	      break;
-	    }
-	}
+           *ptr != 0;
+           ptr = &(*ptr)->next)
+        {
+          if (*ptr == this)
+            {
+              *ptr = (*ptr)->next;
+              status = 0;
+              break;
+            }
+        }
 
       if (status == 0 && ::fclose (f) == 0)
-	{
-	  using namespace std;
+        {
+          using namespace std;
 
-	  do
-	    {
-	      wait_pid = octave_syscalls::waitpid (proc_pid, &wstatus, 0);
-	    }
-	  while (wait_pid == -1 && errno == EINTR);
-	}
+          do
+            {
+              wait_pid = octave_syscalls::waitpid (proc_pid, &wstatus, 0);
+            }
+          while (wait_pid == -1 && errno == EINTR);
+        }
 
       f = 0;
     }

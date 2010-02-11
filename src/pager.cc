@@ -110,20 +110,20 @@ pager_event_handler (pid_t pid, int status)
   if (pid > 0)
     {
       if (WIFEXITED (status) || WIFSIGNALLED (status))
-	{
-	  // Avoid warning() since that will put us back in the pager,
-	  // which would be bad news.
+        {
+          // Avoid warning() since that will put us back in the pager,
+          // which would be bad news.
 
-	  std::cerr << "warning: connection to external pager lost (pid = "
-		    << pid << ")" << std::endl;
-	  std::cerr << "warning: flushing pending output (please wait)"
-		    << std::endl;
+          std::cerr << "warning: connection to external pager lost (pid = "
+                    << pid << ")" << std::endl;
+          std::cerr << "warning: flushing pending output (please wait)"
+                    << std::endl;
 
-	  // Request removal of this PID from the list of child
-	  // processes.
+          // Request removal of this PID from the list of child
+          // processes.
 
-	  retval = true;
-	}
+          retval = true;
+        }
     }
 
   return retval;
@@ -146,53 +146,53 @@ do_sync (const char *msg, int len, bool bypass_pager)
   if (msg && len > 0)
     {
       if (bypass_pager)
-	{
-	  std::cout.write (msg, len);
-	  std::cout.flush ();
-	}
+        {
+          std::cout.write (msg, len);
+          std::cout.flush ();
+        }
       else
-	{
-	  if (! external_pager)
-	    {
-	      std::string pgr = pager_command ();
+        {
+          if (! external_pager)
+            {
+              std::string pgr = pager_command ();
 
-	      if (! pgr.empty ())
-		{
-		  external_pager = new oprocstream (pgr.c_str ());
+              if (! pgr.empty ())
+                {
+                  external_pager = new oprocstream (pgr.c_str ());
 
-		  if (external_pager)
-		    octave_child_list::insert (external_pager->pid (),
-					       pager_event_handler);
-		}
-	    }
+                  if (external_pager)
+                    octave_child_list::insert (external_pager->pid (),
+                                               pager_event_handler);
+                }
+            }
 
-	  if (external_pager)
-	    {
-	      if (external_pager->good ())
-		{
-		  external_pager->write (msg, len);
+          if (external_pager)
+            {
+              if (external_pager->good ())
+                {
+                  external_pager->write (msg, len);
 
-		  external_pager->flush ();
+                  external_pager->flush ();
 
 #if defined (EPIPE)
-		  if (errno == EPIPE)
-		    external_pager->setstate (std::ios::failbit);
+                  if (errno == EPIPE)
+                    external_pager->setstate (std::ios::failbit);
 #endif
-		}
-	      else
-		{
-		  // FIXME -- omething is not right with the
-		  // pager.  If it died then we should receive a
-		  // signal for that.  If there is some other problem,
-		  // then what?
-		}
-	    }
-	  else
-	    {
-	      std::cout.write (msg, len);
-	      std::cout.flush ();
-	    }
-	}
+                }
+              else
+                {
+                  // FIXME -- omething is not right with the
+                  // pager.  If it died then we should receive a
+                  // signal for that.  If there is some other problem,
+                  // then what?
+                }
+            }
+          else
+            {
+              std::cout.write (msg, len);
+              std::cout.flush ();
+            }
+        }
     }
 }
 
@@ -212,18 +212,18 @@ more_than_a_screenful (const char *s, int len)
       int chars_this_line = 0;
 
       for (int i = 0; i < len; i++)
-	{
-	  if (*s++ == '\n')
-	    {
-	      count += chars_this_line / cols + 1;
-	      chars_this_line = 0;
-	    }
-	  else
-	    chars_this_line++;
-	}
+        {
+          if (*s++ == '\n')
+            {
+              count += chars_this_line / cols + 1;
+              chars_this_line = 0;
+            }
+          else
+            chars_this_line++;
+        }
 
       if (count > available_rows)
- 	return true;
+        return true;
     }
 
   return false;
@@ -242,20 +242,20 @@ octave_pager_buf::sync (void)
       int len = pptr () - buf;
 
       bool bypass_pager = (! interactive
-			   || ! Vpage_screen_output
-			   || (really_flush_to_pager
-			       && Vpage_screen_output
-			       && ! Vpage_output_immediately
-			       && ! more_than_a_screenful (buf, len)));
+                           || ! Vpage_screen_output
+                           || (really_flush_to_pager
+                               && Vpage_screen_output
+                               && ! Vpage_output_immediately
+                               && ! more_than_a_screenful (buf, len)));
 
       if (len > 0)
-	{
-	  do_sync (buf, len, bypass_pager);
+        {
+          do_sync (buf, len, bypass_pager);
 
-	  flush_current_contents_to_diary ();
+          flush_current_contents_to_diary ();
 
-	  seekoff (0, std::ios::beg);
-	}
+          seekoff (0, std::ios::beg);
+        }
     }
 
   return 0;
@@ -289,7 +289,7 @@ octave_diary_buf::sync (void)
       int len = pptr () - buf;
 
       if (len > 0)
-	external_diary_file.write (buf, len);
+        external_diary_file.write (buf, len);
     }
 
   seekoff (0, std::ios::beg);
@@ -459,24 +459,24 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
     case 2:
       {
-	std::string arg = argv[1];
+        std::string arg = argv[1];
 
-	if (arg == "on")
-	  {
-	    write_to_diary_file = true;
-	    open_diary_file ();
-	  }	
-	else if (arg == "off")
-	  {
-	    close_diary_file ();
-	    write_to_diary_file = false;
-	  }
-	else
-	  {
-	    diary_file = arg;
-	    write_to_diary_file = true;
-	    open_diary_file ();
-	  }
+        if (arg == "on")
+          {
+            write_to_diary_file = true;
+            open_diary_file ();
+          }     
+        else if (arg == "off")
+          {
+            close_diary_file ();
+            write_to_diary_file = false;
+          }
+        else
+          {
+            diary_file = arg;
+            write_to_diary_file = true;
+            open_diary_file ();
+          }
       }
       break;
 
@@ -512,11 +512,11 @@ The current state can be determined via @code{page_screen_output}.\n\
       std::string arg = argv[1];
 
       if (arg == "on")
-	Vpage_screen_output = true;
+        Vpage_screen_output = true;
       else if (arg == "off")
-	Vpage_screen_output = false;
+        Vpage_screen_output = false;
       else
-	error ("more: unrecognized argument `%s'", arg.c_str ());
+        error ("more: unrecognized argument `%s'", arg.c_str ());
     }
   else if (argc == 1)
     Vpage_screen_output = ! Vpage_screen_output;

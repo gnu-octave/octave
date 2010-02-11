@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class MT>
 octave_value
 octave_base_matrix<MT>::subsref (const std::string& type,
-				 const std::list<octave_value_list>& idx)
+                                 const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -51,8 +51,8 @@ octave_base_matrix<MT>::subsref (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -66,8 +66,8 @@ octave_base_matrix<MT>::subsref (const std::string& type,
 template <class MT>
 octave_value
 octave_base_matrix<MT>::subsasgn (const std::string& type,
-				  const std::list<octave_value_list>& idx,
-				  const octave_value& rhs)
+                                  const std::list<octave_value_list>& idx,
+                                  const octave_value& rhs)
 {
   octave_value retval;
 
@@ -75,47 +75,47 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
     {
     case '(':
       {
-	if (type.length () == 1)
-	  retval = numeric_assign (type, idx, rhs);
-	else if (is_empty ())
-	  {
-	    // Allow conversion of empty matrix to some other type in
-	    // cases like
-	    //
-	    //  x = []; x(i).f = rhs
+        if (type.length () == 1)
+          retval = numeric_assign (type, idx, rhs);
+        else if (is_empty ())
+          {
+            // Allow conversion of empty matrix to some other type in
+            // cases like
+            //
+            //  x = []; x(i).f = rhs
 
-	    if (type[1] == '.')
-	      {
-		octave_value tmp = octave_value::empty_conv (type, rhs);
+            if (type[1] == '.')
+              {
+                octave_value tmp = octave_value::empty_conv (type, rhs);
 
-		retval = tmp.subsasgn (type, idx, rhs);
-	      }
-	    else
-	      error ("invalid assignment expression");
-	  }
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("in indexed assignment of %s, last lhs index must be ()",
-		   nm.c_str ());
-	  }
+                retval = tmp.subsasgn (type, idx, rhs);
+              }
+            else
+              error ("invalid assignment expression");
+          }
+        else
+          {
+            std::string nm = type_name ();
+            error ("in indexed assignment of %s, last lhs index must be ()",
+                   nm.c_str ());
+          }
       }
       break;
 
     case '{':
     case '.':
       {
-	if (is_empty ())
-	  {
-	    octave_value tmp = octave_value::empty_conv (type, rhs);
+        if (is_empty ())
+          {
+            octave_value tmp = octave_value::empty_conv (type, rhs);
 
-	    retval = tmp.subsasgn (type, idx, rhs);
-	  }
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-	  }
+            retval = tmp.subsasgn (type, idx, rhs);
+          }
+        else
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
       }
       break;
 
@@ -129,7 +129,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
 template <class MT>
 octave_value
 octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
-				     bool resize_ok)
+                                     bool resize_ok)
 {
   octave_value retval;
 
@@ -145,9 +145,9 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
     case 1:
       {
-	idx_vector i = idx (0).index_vector ();
+        idx_vector i = idx (0).index_vector ();
 
-	if (! error_state)
+        if (! error_state)
           {
             // optimize single scalar index.
             if (i.is_scalar () && i(0) < matrix.numel ())
@@ -234,9 +234,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
     case 1:
       {
-	idx_vector i = idx (0).index_vector ();
+        idx_vector i = idx (0).index_vector ();
 
-	if (! error_state)
+        if (! error_state)
           matrix.assign (i, rhs);
       }
       break;
@@ -305,9 +305,9 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
     case 1:
       {
-	idx_vector i = idx (0).index_vector ();
+        idx_vector i = idx (0).index_vector ();
 
-	if (! error_state)
+        if (! error_state)
           {
             // optimize single scalar index.
             if (i.is_scalar () && i(0) < matrix.numel ())
@@ -423,13 +423,13 @@ octave_base_matrix<MT>::is_true (void) const
       MT t1 (matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
-	error ("invalid conversion from NaN to logical");
+        error ("invalid conversion from NaN to logical");
       else
-	{
-	  boolNDArray t2 = t1.all ();
+        {
+          boolNDArray t2 = t1.all ();
 
-	  retval = t2(0);
-	}
+          retval = t2(0);
+        }
     }
 
   return retval;
@@ -455,7 +455,7 @@ octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
 template <class MT>
 void
 octave_base_matrix<MT>::print_info (std::ostream& os,
-				    const std::string& prefix) const
+                                    const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
 }

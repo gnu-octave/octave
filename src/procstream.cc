@@ -62,7 +62,7 @@ procstreambase::close (void)
   if (is_open ())
     {
       if (! pb.close ())
-	std::ios::setstate (std::ios::failbit);
+        std::ios::setstate (std::ios::failbit);
 
       status = pb.wait_status ();
     }

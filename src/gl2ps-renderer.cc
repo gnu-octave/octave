@@ -50,18 +50,18 @@ glps_renderer::draw (const graphics_object& go)
       glGetIntegerv (GL_VIEWPORT, viewport);
 
       while (state == GL2PS_OVERFLOW)
-	{ 
-	  buffsize += 1024*1024;
-	  gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
-			  GL2PS_EPS, GL2PS_BSP_SORT,
-			  (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
-			   | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-			   | GL2PS_BEST_ROOT), GL_RGBA, 0, NULL, 0, 0, 0,
-			  buffsize, fp, filename.c_str () );
+        { 
+          buffsize += 1024*1024;
+          gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
+                          GL2PS_EPS, GL2PS_BSP_SORT,
+                          (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
+                           | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
+                           | GL2PS_BEST_ROOT), GL_RGBA, 0, NULL, 0, 0, 0,
+                          buffsize, fp, filename.c_str () );
 
-	  opengl_renderer::draw (go);
-	  state = gl2psEndPage ();
-	}
+          opengl_renderer::draw (go);
+          state = gl2psEndPage ();
+        }
 
       fclose (fp);
 
@@ -73,8 +73,8 @@ glps_renderer::draw (const graphics_object& go)
 
 Matrix 
 glps_renderer::render_text (const std::string& txt,
-			    double x, double y, double z,
-			    int ha, int va, double rotation)
+                            double x, double y, double z,
+                            int ha, int va, double rotation)
 {
   if (txt.empty ())
     return Matrix (1, 4, 0.0);
@@ -83,29 +83,29 @@ glps_renderer::render_text (const std::string& txt,
   if (ha == 0)
     {
       if (va == 0 || va == 3)
-	gl2psa=GL2PS_TEXT_BL;
+        gl2psa=GL2PS_TEXT_BL;
       else if (va == 2)
-	gl2psa=GL2PS_TEXT_TL;
+        gl2psa=GL2PS_TEXT_TL;
       else if (va == 1)
-	gl2psa=GL2PS_TEXT_CL;
+        gl2psa=GL2PS_TEXT_CL;
     }
   else if (ha == 2)
     {
       if (va == 0 || va == 3)
-	gl2psa=GL2PS_TEXT_BR;
+        gl2psa=GL2PS_TEXT_BR;
       else if (va == 2)
-	gl2psa=GL2PS_TEXT_TR;
+        gl2psa=GL2PS_TEXT_TR;
       else if (va == 1)
-	gl2psa=GL2PS_TEXT_CR;
+        gl2psa=GL2PS_TEXT_CR;
     }
   else if (ha == 1)
     {
       if (va == 0 || va == 3)
-	gl2psa=GL2PS_TEXT_B;
+        gl2psa=GL2PS_TEXT_B;
       else if (va == 2)
-	gl2psa=GL2PS_TEXT_T;
+        gl2psa=GL2PS_TEXT_T;
       else if (va == 1)
-	gl2psa=GL2PS_TEXT_C;
+        gl2psa=GL2PS_TEXT_C;
     }
 
   glRasterPos3d (x, y, z);

@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class T>
 octave_value
 octave_base_sparse<T>::do_index_op (const octave_value_list& idx, 
-				    bool resize_ok)
+                                    bool resize_ok)
 {
   octave_value retval;
 
@@ -61,42 +61,42 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 
     case 1:
       {
-	idx_vector i = idx (0).index_vector ();
+        idx_vector i = idx (0).index_vector ();
 
-	if (! error_state)
-	  retval = octave_value (matrix.index (i, resize_ok));
+        if (! error_state)
+          retval = octave_value (matrix.index (i, resize_ok));
       }
       break;
 
     default:
       {
-	if (n_idx == 2 && nd == 2)
-	  {
-	    idx_vector i = idx (0).index_vector ();
+        if (n_idx == 2 && nd == 2)
+          {
+            idx_vector i = idx (0).index_vector ();
 
-	    if (! error_state)
-	      {
-		idx_vector j = idx (1).index_vector ();
+            if (! error_state)
+              {
+                idx_vector j = idx (1).index_vector ();
 
-		if (! error_state)
-		  retval = octave_value (matrix.index (i, j, resize_ok));
-	      }
-	  }
-	else
-	  {
-	    Array<idx_vector> idx_vec (n_idx);
+                if (! error_state)
+                  retval = octave_value (matrix.index (i, j, resize_ok));
+              }
+          }
+        else
+          {
+            Array<idx_vector> idx_vec (n_idx);
 
-	    for (octave_idx_type i = 0; i < n_idx; i++)
-	      {
-		idx_vec(i) = idx(i).index_vector ();
+            for (octave_idx_type i = 0; i < n_idx; i++)
+              {
+                idx_vec(i) = idx(i).index_vector ();
 
-		if (error_state)
-		  break;
-	      }
+                if (error_state)
+                  break;
+              }
 
-	    if (! error_state)
-	      retval = octave_value (matrix.index (idx_vec, resize_ok));
-	  }
+            if (! error_state)
+              retval = octave_value (matrix.index (idx_vec, resize_ok));
+          }
       }
       break;
     }
@@ -107,7 +107,7 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 template <class T>
 octave_value
 octave_base_sparse<T>::subsref (const std::string& type,
-				const std::list<octave_value_list>& idx)
+                                const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -120,8 +120,8 @@ octave_base_sparse<T>::subsref (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -135,8 +135,8 @@ octave_base_sparse<T>::subsref (const std::string& type,
 template <class T>
 octave_value 
 octave_base_sparse<T>::subsasgn (const std::string& type,
-				 const std::list<octave_value_list>& idx,
-				 const octave_value& rhs)
+                                 const std::list<octave_value_list>& idx,
+                                 const octave_value& rhs)
 {
   octave_value retval;
 
@@ -144,31 +144,31 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
     {
     case '(':
       {
-	if (type.length () == 1)
-	  retval = numeric_assign (type, idx, rhs);
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("in indexed assignment of %s, last lhs index must be ()",
-		   nm.c_str ());
-	  }
+        if (type.length () == 1)
+          retval = numeric_assign (type, idx, rhs);
+        else
+          {
+            std::string nm = type_name ();
+            error ("in indexed assignment of %s, last lhs index must be ()",
+                   nm.c_str ());
+          }
       }
       break;
 
     case '{':
     case '.':
       {
-	if (is_empty ())
-	  {
-	    octave_value tmp = octave_value::empty_conv (type, rhs);
+        if (is_empty ())
+          {
+            octave_value tmp = octave_value::empty_conv (type, rhs);
 
-	    retval = tmp.subsasgn (type, idx, rhs);
-	  }
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-	  }
+            retval = tmp.subsasgn (type, idx, rhs);
+          }
+        else
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
       }
       break;
 
@@ -261,7 +261,7 @@ octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax) const
 template <class T>
 void 
 octave_base_sparse<T>::print_info (std::ostream& os, 
-				   const std::string& prefix) const
+                                   const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
 }
@@ -269,7 +269,7 @@ octave_base_sparse<T>::print_info (std::ostream& os,
 template <class T>
 void
 octave_base_sparse<T>::print_raw (std::ostream& os,
-				  bool pr_as_read_syntax) const
+                                  bool pr_as_read_syntax) const
 {
   octave_idx_type nr = matrix.rows ();
   octave_idx_type nc = matrix.cols ();
@@ -296,24 +296,24 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
   if (nz != 0)
     {
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  octave_quit ();
+        {
+          octave_quit ();
 
-	  // FIXME -- is there an easy way to get the max row
-	  // and column indices so we can set the width appropriately
-	  // and line up the columns here?  Similarly, we should look
-	  // at all the nonzero values and display them with the same
-	  // formatting rules that apply to columns of a matrix.
+          // FIXME -- is there an easy way to get the max row
+          // and column indices so we can set the width appropriately
+          // and line up the columns here?  Similarly, we should look
+          // at all the nonzero values and display them with the same
+          // formatting rules that apply to columns of a matrix.
 
-	  for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
-	    {
-	      os << "\n";
-	      os << "  (" << matrix.ridx(i)+1 <<
-		", "  << j+1 << ") -> ";
+          for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+            {
+              os << "\n";
+              os << "  (" << matrix.ridx(i)+1 <<
+                ", "  << j+1 << ") -> ";
 
-	      octave_print_internal (os, matrix.data(i), pr_as_read_syntax);
-	    }
-	}
+              octave_print_internal (os, matrix.data(i), pr_as_read_syntax);
+            }
+        }
     }
 }
 
@@ -353,10 +353,10 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
       is >> tmp;
 
       if (!is) 
-	{
-	  error ("load: failed to load matrix constant");
-	  success = false;
-	}
+        {
+          error ("load: failed to load matrix constant");
+          success = false;
+        }
 
       matrix = tmp;
     }

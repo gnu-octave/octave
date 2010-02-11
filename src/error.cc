@@ -204,7 +204,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
 static void
 verror (bool save_last_error, std::ostream& os,
-	const char *name, const char *id, const char *fmt, va_list args,
+        const char *name, const char *id, const char *fmt, va_list args,
         bool with_cfn = false)
 {
   if (discard_error_messages)
@@ -267,21 +267,21 @@ verror (bool save_last_error, std::ostream& os,
       octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
       if (fcn)
-	{
-	  octave_idx_type curr_frame = -1;
+        {
+          octave_idx_type curr_frame = -1;
 
-	  Vlast_error_stack = octave_call_stack::backtrace (0, curr_frame);
-	}
+          Vlast_error_stack = octave_call_stack::backtrace (0, curr_frame);
+        }
       else
-	Vlast_error_stack = initialize_last_error_stack ();
+        Vlast_error_stack = initialize_last_error_stack ();
     }
 
   if (buffer_error_messages)
     {
       if (error_message_buffer)
-	msg_string = "error: " + msg_string;
+        msg_string = "error: " + msg_string;
       else
-	error_message_buffer = new std::ostringstream ();
+        error_message_buffer = new std::ostringstream ();
 
       *error_message_buffer << msg_string;
     }
@@ -298,42 +298,42 @@ verror (bool save_last_error, std::ostream& os,
 
 static void
 error_1 (std::ostream& os, const char *name, const char *id,
-	 const char *fmt, va_list args, bool with_cfn = false)
+         const char *fmt, va_list args, bool with_cfn = false)
 {
   if (error_state != -2)
     {
       if (fmt)
-	{
-	  if (*fmt)
-	    {
-	      size_t len = strlen (fmt);
+        {
+          if (*fmt)
+            {
+              size_t len = strlen (fmt);
 
-	      if (len > 0)
-		{
-		  if (fmt[len - 1] == '\n')
-		    {
-		      if (len > 1)
-			{
-			  char *tmp_fmt = strsave (fmt);
-			  tmp_fmt[len - 1] = '\0';
-			  verror (true, os, name, id, tmp_fmt, args, with_cfn);
-			  delete [] tmp_fmt;
-			}
+              if (len > 0)
+                {
+                  if (fmt[len - 1] == '\n')
+                    {
+                      if (len > 1)
+                        {
+                          char *tmp_fmt = strsave (fmt);
+                          tmp_fmt[len - 1] = '\0';
+                          verror (true, os, name, id, tmp_fmt, args, with_cfn);
+                          delete [] tmp_fmt;
+                        }
 
-		      error_state = -2;
-		    }
-		  else
-		    {
-		      verror (true, os, name, id, fmt, args, with_cfn);
+                      error_state = -2;
+                    }
+                  else
+                    {
+                      verror (true, os, name, id, fmt, args, with_cfn);
 
-		      if (! error_state)
-			error_state = 1;
-		    }
-		}
-	    }
-	}
+                      if (! error_state)
+                        error_state = 1;
+                    }
+                }
+            }
+        }
       else
-	panic ("error_1: invalid format");
+        panic ("error_1: invalid format");
     }
 }
 
@@ -354,7 +354,7 @@ message (const char *name, const char *fmt, ...)
 
 void
 vmessage_with_id (const char *name, const char *id, const char *fmt,
-		  va_list args)
+                  va_list args)
 {
   verror (false, std::cerr, name, id, fmt, args);
 }
@@ -411,25 +411,25 @@ pr_where_2 (const char *fmt, va_list args)
   if (fmt)
     {
       if (*fmt)
-	{
-	  size_t len = strlen (fmt);
+        {
+          size_t len = strlen (fmt);
 
-	  if (len > 0)
-	    {
-	      if (fmt[len - 1] == '\n')
-		{
-		  if (len > 1)
-		    {
-		      char *tmp_fmt = strsave (fmt);
-		      tmp_fmt[len - 1] = '\0';
-		      verror (false, std::cerr, 0, "", tmp_fmt, args);
-		      delete [] tmp_fmt;
-		    }
-		}
-	      else
-		verror (false, std::cerr, 0, "", fmt, args);
-	    }
-	}
+          if (len > 0)
+            {
+              if (fmt[len - 1] == '\n')
+                {
+                  if (len > 1)
+                    {
+                      char *tmp_fmt = strsave (fmt);
+                      tmp_fmt[len - 1] = '\0';
+                      verror (false, std::cerr, 0, "", tmp_fmt, args);
+                      delete [] tmp_fmt;
+                    }
+                }
+              else
+                verror (false, std::cerr, 0, "", fmt, args);
+            }
+        }
     }
   else
     panic ("pr_where_2: invalid format");
@@ -462,16 +462,16 @@ pr_where (const char *who)
       Cell columns = stk.contents ("column");
 
       for (octave_idx_type i = 0; i < nframes_to_display; i++)
-	{
-	  octave_value name = names(i);
-	  octave_value line = lines(i);
-	  octave_value column = columns(i);
+        {
+          octave_value name = names(i);
+          octave_value line = lines(i);
+          octave_value column = columns(i);
 
-	  std::string nm = name.string_value ();
+          std::string nm = name.string_value ();
 
-	  pr_where_1 ("    %s at line %d column %d\n", nm.c_str (),
-		      line.int_value (), column.int_value ());
-	}
+          pr_where_1 ("    %s at line %d column %d\n", nm.c_str (),
+                      line.int_value (), column.int_value ());
+        }
     }
 }
 
@@ -598,29 +598,29 @@ warning_enabled (const std::string& id)
       bool id_found = false;
 
       for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  octave_value ov = identifier(i);
-	  std::string ovs = ov.string_value ();
+        {
+          octave_value ov = identifier(i);
+          std::string ovs = ov.string_value ();
 
-	  if (! all_found && ovs == "all")
-	    {
-	      all_state = check_state (state(i).string_value ());
+          if (! all_found && ovs == "all")
+            {
+              all_state = check_state (state(i).string_value ());
 
-	      if (all_state >= 0)
-		all_found = true;
-	    }
+              if (all_state >= 0)
+                all_found = true;
+            }
 
-	  if (! id_found && ovs == id)
-	    {
-	      id_state = check_state (state(i).string_value ());
+          if (! id_found && ovs == id)
+            {
+              id_state = check_state (state(i).string_value ());
 
-	      if (id_state >= 0)
-		id_found = true;
-	    }
+              if (id_state >= 0)
+                id_found = true;
+            }
 
-	  if (all_found && id_found)
-	    break;
-	}
+          if (all_found && id_found)
+            break;
+        }
     }
 
   if (all_state == -1)
@@ -629,21 +629,21 @@ warning_enabled (const std::string& id)
   if (all_state == 0)
     {
       if (id_state >= 0)
-	retval = id_state;
+        retval = id_state;
     }
   else if (all_state == 1)
     {
       if (id_state == 0 || id_state == 2)
-	retval = id_state;
+        retval = id_state;
       else
-	retval = all_state;
+        retval = all_state;
     }
   else if (all_state == 2)
     {
       if (id_state == 0)
-	retval= id_state;
+        retval= id_state;
       else
-	retval = all_state;
+        retval = all_state;
     }
 
   return retval;
@@ -665,23 +665,23 @@ warning_1 (const char *id, const char *fmt, va_list args)
       vwarning ("warning", id, fmt, args);
 
       if (! symbol_table::at_top_level ()
-	  && Vbacktrace_on_warning
-	  && ! warning_state
-	  && ! discard_warning_messages)
-	pr_where ("warning");
+          && Vbacktrace_on_warning
+          && ! warning_state
+          && ! discard_warning_messages)
+        pr_where ("warning");
 
       warning_state = 1;
 
       if ((interactive || forced_interactive)
-	  && Vdebug_on_warning
-	  && octave_call_stack::caller_user_code ())
-	{
+          && Vdebug_on_warning
+          && octave_call_stack::caller_user_code ())
+        {
           unwind_protect frame;
-	  frame.protect_var (Vdebug_on_warning);
-	  Vdebug_on_warning = false;
+          frame.protect_var (Vdebug_on_warning);
+          Vdebug_on_warning = false;
 
-	  do_keyboard (octave_value_list ());
-	}
+          do_keyboard (octave_value_list ());
+        }
     }
 }
 
@@ -787,7 +787,7 @@ extern octave_value_list Fsprintf (const octave_value_list&, int);
 
 static std::string
 handle_message (error_fun f, const char *id, const char *msg,
-		const octave_value_list& args)
+                const octave_value_list& args)
 {
   std::string retval;
 
@@ -800,26 +800,26 @@ handle_message (error_fun f, const char *id, const char *msg,
       octave_value arg;
 
       if (nargin > 1)
-	{
-	  octave_value_list tmp = Fsprintf (args, 1);
-	  arg = tmp(0);
-	}
+        {
+          octave_value_list tmp = Fsprintf (args, 1);
+          arg = tmp(0);
+        }
       else
-	arg = args(0);
+        arg = args(0);
 
       if (arg.is_defined ())
-	{
-	  if (arg.is_string ())
-	    {
-	      tstr = arg.string_value ();
-	      msg = tstr.c_str ();
-	      
-	      if (! msg)
-		return retval;
-	    }
-	  else if (arg.is_empty ())
-	    return retval;
-	}
+        {
+          if (arg.is_string ())
+            {
+              tstr = arg.string_value ();
+              msg = tstr.c_str ();
+              
+              if (! msg)
+                return retval;
+            }
+          else if (arg.is_empty ())
+            return retval;
+        }
     }
 
 // Ugh.
@@ -829,21 +829,21 @@ handle_message (error_fun f, const char *id, const char *msg,
   if (len > 0)
     {
       if (msg[len - 1] == '\n')
-	{
-	  if (len > 1)
-	    {
-	      char *tmp_msg = strsave (msg);
-	      tmp_msg[len - 1] = '\0';
-	      f (id, "%s\n", tmp_msg);
-	      retval = tmp_msg;
-	      delete [] tmp_msg;
-	    }
-	}
+        {
+          if (len > 1)
+            {
+              char *tmp_msg = strsave (msg);
+              tmp_msg[len - 1] = '\0';
+              f (id, "%s\n", tmp_msg);
+              retval = tmp_msg;
+              delete [] tmp_msg;
+            }
+        }
       else
-	{
-	  f (id, "%s", msg);
-	  retval = msg;
-	}
+        {
+          f (id, "%s", msg);
+          retval = msg;
+        }
     }
 
   return retval;
@@ -870,117 +870,117 @@ location of the error.  Typically @var{err} is returned from\n\
       Octave_map err = args(0).map_value ();
 
       if (! error_state)
-	{
-	  if (err.contains ("message") && err.contains ("identifier"))
-	    {
-	      std::string msg = err.contents("message")(0).string_value ();
-	      std::string id = err.contents("identifier")(0).string_value ();
-	      int len = msg.length();
+        {
+          if (err.contains ("message") && err.contains ("identifier"))
+            {
+              std::string msg = err.contents("message")(0).string_value ();
+              std::string id = err.contents("identifier")(0).string_value ();
+              int len = msg.length();
 
-	      std::string file;
-	      std::string nm;
-	      int l = -1;
-	      int c = -1;
+              std::string file;
+              std::string nm;
+              int l = -1;
+              int c = -1;
 
-	      Octave_map err_stack = initialize_last_error_stack ();
+              Octave_map err_stack = initialize_last_error_stack ();
 
-	      if (err.contains ("stack"))
-		{
-		  err_stack = err.contents("stack")(0).map_value ();
+              if (err.contains ("stack"))
+                {
+                  err_stack = err.contents("stack")(0).map_value ();
 
-		  if (err_stack.numel () > 0)
-		    {
-		      if (err_stack.contains ("file"))
-			file = err_stack.contents("file")(0).string_value ();
+                  if (err_stack.numel () > 0)
+                    {
+                      if (err_stack.contains ("file"))
+                        file = err_stack.contents("file")(0).string_value ();
 
-		      if (err_stack.contains ("name"))
-			nm = err_stack.contents("name")(0).string_value ();
+                      if (err_stack.contains ("name"))
+                        nm = err_stack.contents("name")(0).string_value ();
 
-		      if (err_stack.contains ("line"))
-			l = err_stack.contents("line")(0).nint_value ();
+                      if (err_stack.contains ("line"))
+                        l = err_stack.contents("line")(0).nint_value ();
 
-		      if (err_stack.contains ("column"))
-			c = err_stack.contents("column")(0).nint_value ();
-		    }
-		}
+                      if (err_stack.contains ("column"))
+                        c = err_stack.contents("column")(0).nint_value ();
+                    }
+                }
 
-	      // Ugh.
-	      char *tmp_msg = strsave (msg.c_str ());
-	      if (tmp_msg[len-1] == '\n')
-		{
-		  if (len > 1)
-		    {
-		      tmp_msg[len - 1] = '\0';
-		      rethrow_error (id.c_str (), "%s\n", tmp_msg);
-		    }
-		}
-	      else
-		rethrow_error (id.c_str (), "%s", tmp_msg);
-	      delete [] tmp_msg;
+              // Ugh.
+              char *tmp_msg = strsave (msg.c_str ());
+              if (tmp_msg[len-1] == '\n')
+                {
+                  if (len > 1)
+                    {
+                      tmp_msg[len - 1] = '\0';
+                      rethrow_error (id.c_str (), "%s\n", tmp_msg);
+                    }
+                }
+              else
+                rethrow_error (id.c_str (), "%s", tmp_msg);
+              delete [] tmp_msg;
 
-	      // FIXME -- is this the right thing to do for
-	      // Vlast_error_stack?  Should it be saved and restored
-	      // with unwind_protect?
+              // FIXME -- is this the right thing to do for
+              // Vlast_error_stack?  Should it be saved and restored
+              // with unwind_protect?
 
-	      Vlast_error_stack = err_stack;
+              Vlast_error_stack = err_stack;
 
-	      if (err.contains ("stack"))
-		{
-		  if (file.empty ())
-		    {
-		      if (nm.empty ())
-			{
-			  if (l > 0)
-			    {
-			      if (c > 0)
-				pr_where_1 ("error: near line %d, column %d", 
-					    l, c);
-			      else
-				pr_where_1 ("error: near line %d", l);
-			    }
-			}
-		      else
-			{
-			  if (l > 0)
-			    {
-			      if (c > 0)
-				pr_where_1 ("error: called from `%s' near line %d, column %d", 
-					    nm.c_str (), l, c);
-			      else
-				pr_where_1 ("error: called from `%d' near line %d", nm.c_str (), l);
-			    }
-			}
-		    }
-		  else
-		    {
-		      if (nm.empty ())
-			{
-			  if (l > 0)
-			    {
-			      if (c > 0)
-				pr_where_1 ("error: in file %s near line %d, column %d", 
-					    file.c_str (), l, c);
-			      else
-				pr_where_1 ("error: in file %s near line %d", file.c_str (), l);
-			    }
-			}
-		      else
-			{
-			  if (l > 0)
-			    {
-			      if (c > 0)
-				pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
-					    nm.c_str (), file.c_str (), l, c);
-			      else
-				pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
-			    }
-			}
-		    }
-		}
-	    }
-	  else
-	    error ("rethrow: structure must contain the fields 'message and 'identifier'");
-	}
+              if (err.contains ("stack"))
+                {
+                  if (file.empty ())
+                    {
+                      if (nm.empty ())
+                        {
+                          if (l > 0)
+                            {
+                              if (c > 0)
+                                pr_where_1 ("error: near line %d, column %d", 
+                                            l, c);
+                              else
+                                pr_where_1 ("error: near line %d", l);
+                            }
+                        }
+                      else
+                        {
+                          if (l > 0)
+                            {
+                              if (c > 0)
+                                pr_where_1 ("error: called from `%s' near line %d, column %d", 
+                                            nm.c_str (), l, c);
+                              else
+                                pr_where_1 ("error: called from `%d' near line %d", nm.c_str (), l);
+                            }
+                        }
+                    }
+                  else
+                    {
+                      if (nm.empty ())
+                        {
+                          if (l > 0)
+                            {
+                              if (c > 0)
+                                pr_where_1 ("error: in file %s near line %d, column %d", 
+                                            file.c_str (), l, c);
+                              else
+                                pr_where_1 ("error: in file %s near line %d", file.c_str (), l);
+                            }
+                        }
+                      else
+                        {
+                          if (l > 0)
+                            {
+                              if (c > 0)
+                                pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
+                                            nm.c_str (), file.c_str (), l, c);
+                              else
+                                pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
+                            }
+                        }
+                    }
+                }
+            }
+          else
+            error ("rethrow: structure must contain the fields 'message and 'identifier'");
+        }
     }
   return retval;
 }
@@ -1055,53 +1055,53 @@ error: nargin != 1\n\
   else
     {
       if (nargin > 1)
-	{
-	  std::string arg1 = args(0).string_value ();
+        {
+          std::string arg1 = args(0).string_value ();
 
-	  if (! error_state)
-	    {
-	      if (arg1.find ('%') == std::string::npos)
-		{
-		  id = arg1;
+          if (! error_state)
+            {
+              if (arg1.find ('%') == std::string::npos)
+                {
+                  id = arg1;
 
-		  nargs.resize (nargin-1);
+                  nargs.resize (nargin-1);
 
-		  for (int i = 1; i < nargin; i++)
-		    nargs(i-1) = args(i);
-		}
-	    }
-	  else
-	    return retval;
-	}
+                  for (int i = 1; i < nargin; i++)
+                    nargs(i-1) = args(i);
+                }
+            }
+          else
+            return retval;
+        }
       else if (nargin == 1 && args(0).is_map ())
-	{
-	  octave_value_list tmp;
+        {
+          octave_value_list tmp;
 
-	  Octave_map m = args(0).map_value ();
+          Octave_map m = args(0).map_value ();
 
-	  if (m.numel () == 1)
-	    {
-	      if (m.contains ("message"))
-		{
-		  Cell c = m.contents ("message");
+          if (m.numel () == 1)
+            {
+              if (m.contains ("message"))
+                {
+                  Cell c = m.contents ("message");
 
-		  if (! c.is_empty () && c(0).is_string ())
-		    nargs(0) = c(0).string_value ();
-		}
+                  if (! c.is_empty () && c(0).is_string ())
+                    nargs(0) = c(0).string_value ();
+                }
 
-	      if (m.contains ("identifier"))
-		{
-		  Cell c = m.contents ("identifier");
+              if (m.contains ("identifier"))
+                {
+                  Cell c = m.contents ("identifier");
 
-		  if (! c.is_empty () && c(0).is_string ())
-		    id = c(0).string_value ();
-		}
+                  if (! c.is_empty () && c(0).is_string ())
+                    id = c(0).string_value ();
+                }
 
-	      // FIXME -- also need to handle "stack" field in error
-	      // structure, but that will require some more significant
-	      // surgery on handle_message, error_with_id, etc.
-	    }
-	}
+              // FIXME -- also need to handle "stack" field in error
+              // structure, but that will require some more significant
+              // surgery on handle_message, error_with_id, etc.
+            }
+        }
 
       handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
     }
@@ -1149,230 +1149,230 @@ warning named by @var{id} is handled as if it were an error instead.\n\
       string_vector argv = args.make_argv ("warning");
 
       if (! error_state)
-	{
-	  std::string arg1 = argv(1);
-	  std::string arg2 = "all";
+        {
+          std::string arg1 = argv(1);
+          std::string arg2 = "all";
 
-	  if (argc == 3)
-	    arg2 = argv(2);
+          if (argc == 3)
+            arg2 = argv(2);
 
-	  if (arg1 == "on" || arg1 == "off" || arg1 == "error")
-	    {
-	      Octave_map old_warning_options = warning_options;
+          if (arg1 == "on" || arg1 == "off" || arg1 == "error")
+            {
+              Octave_map old_warning_options = warning_options;
 
-	      if (arg2 == "all")
-		{
-		  Octave_map tmp;
+              if (arg2 == "all")
+                {
+                  Octave_map tmp;
 
-		  Cell id (1, 1);
-		  Cell st (1, 1);
+                  Cell id (1, 1);
+                  Cell st (1, 1);
 
-		  id(0) = arg2;
-		  st(0) = arg1;
+                  id(0) = arg2;
+                  st(0) = arg1;
 
-		  // Since internal Octave functions are not
-		  // compatible, turning all warnings into errors
-		  // should leave the state of
-		  // Octave:matlab-incompatible alone.
+                  // Since internal Octave functions are not
+                  // compatible, turning all warnings into errors
+                  // should leave the state of
+                  // Octave:matlab-incompatible alone.
 
-		  if (arg1 == "error"
-		      && warning_options.contains ("identifier"))
-		    {
-		      octave_idx_type n = 1;
+                  if (arg1 == "error"
+                      && warning_options.contains ("identifier"))
+                    {
+                      octave_idx_type n = 1;
 
-		      Cell tid = warning_options.contents ("identifier");
-		      Cell tst = warning_options.contents ("state");
+                      Cell tid = warning_options.contents ("identifier");
+                      Cell tst = warning_options.contents ("state");
 
-		      for (octave_idx_type i = 0; i < tid.numel (); i++)
-			{
-			  octave_value vid = tid(i);
+                      for (octave_idx_type i = 0; i < tid.numel (); i++)
+                        {
+                          octave_value vid = tid(i);
 
-			  if (vid.is_string ())
-			    {
-			      std::string key = vid.string_value ();
+                          if (vid.is_string ())
+                            {
+                              std::string key = vid.string_value ();
 
-			      if (key == "Octave:matlab-incompatible"
-				  || key == "Octave:single-quote-string")
-				{
-				  id.resize (dim_vector (1, n+1));
-				  st.resize (dim_vector (1, n+1));
+                              if (key == "Octave:matlab-incompatible"
+                                  || key == "Octave:single-quote-string")
+                                {
+                                  id.resize (dim_vector (1, n+1));
+                                  st.resize (dim_vector (1, n+1));
 
-				  id(n) = tid(i);
-				  st(n) = tst(i);
+                                  id(n) = tid(i);
+                                  st(n) = tst(i);
 
-				  n++;
-				}
-			    }
-			}
-		    }
+                                  n++;
+                                }
+                            }
+                        }
+                    }
 
-		  tmp.assign ("identifier", id);
-		  tmp.assign ("state", st);
+                  tmp.assign ("identifier", id);
+                  tmp.assign ("state", st);
 
-		  warning_options = tmp;
+                  warning_options = tmp;
 
-		  done = true;
-		}
-	      else if (arg2 == "backtrace")
-		{
-		  if (arg1 != "error")
-		    {
-		      Vbacktrace_on_warning = (arg1 == "on");
-		      done = true;
-		    }
-		}
-	      else if (arg2 == "debug")
-		{
-		  if (arg1 != "error")
-		    {
-		      Vdebug_on_warning = (arg1 == "on");
-		      done = true;
-		    }
-		}
-	      else if (arg2 == "verbose")
-		{
-		  if (arg1 != "error")
-		    {
-		      Vverbose_warning = (arg1 == "on");
-		      done = true;
-		    }
-		}
-	      else if (arg2 == "quiet")
-		{
-		  if (arg1 != "error")
-		    {
-		      Vquiet_warning = (arg1 == "on");
-		      done = true;
-		    }
-		}
-	      else
-		{
-		  if (arg2 == "last")
-		    arg2 = Vlast_warning_id;
+                  done = true;
+                }
+              else if (arg2 == "backtrace")
+                {
+                  if (arg1 != "error")
+                    {
+                      Vbacktrace_on_warning = (arg1 == "on");
+                      done = true;
+                    }
+                }
+              else if (arg2 == "debug")
+                {
+                  if (arg1 != "error")
+                    {
+                      Vdebug_on_warning = (arg1 == "on");
+                      done = true;
+                    }
+                }
+              else if (arg2 == "verbose")
+                {
+                  if (arg1 != "error")
+                    {
+                      Vverbose_warning = (arg1 == "on");
+                      done = true;
+                    }
+                }
+              else if (arg2 == "quiet")
+                {
+                  if (arg1 != "error")
+                    {
+                      Vquiet_warning = (arg1 == "on");
+                      done = true;
+                    }
+                }
+              else
+                {
+                  if (arg2 == "last")
+                    arg2 = Vlast_warning_id;
 
-		  if (arg2 == "all")
-		    initialize_warning_options (arg1);
-		  else
-		    {
-		      Cell ident = warning_options.contents ("identifier");
-		      Cell state = warning_options.contents ("state");
+                  if (arg2 == "all")
+                    initialize_warning_options (arg1);
+                  else
+                    {
+                      Cell ident = warning_options.contents ("identifier");
+                      Cell state = warning_options.contents ("state");
 
-		      octave_idx_type nel = ident.numel ();
+                      octave_idx_type nel = ident.numel ();
 
-		      bool found = false;
+                      bool found = false;
 
-		      for (octave_idx_type i = 0; i < nel; i++)
-			{
-			  if (ident(i).string_value () == arg2)
-			    {
-			      // FIXME -- if state for "all" is
-			      // same as arg1, we can simply remove the
-			      // item from the list.
+                      for (octave_idx_type i = 0; i < nel; i++)
+                        {
+                          if (ident(i).string_value () == arg2)
+                            {
+                              // FIXME -- if state for "all" is
+                              // same as arg1, we can simply remove the
+                              // item from the list.
 
-			      state(i) = arg1;
-			      warning_options.assign ("state", state);
-			      found = true;
-			      break;
-			    }
-			}
+                              state(i) = arg1;
+                              warning_options.assign ("state", state);
+                              found = true;
+                              break;
+                            }
+                        }
 
-		      if (! found)
-			{
-			  // FIXME -- if state for "all" is
-			  // same as arg1, we don't need to do anything.
+                      if (! found)
+                        {
+                          // FIXME -- if state for "all" is
+                          // same as arg1, we don't need to do anything.
 
-			  ident.resize (dim_vector (1, nel+1));
-			  state.resize (dim_vector (1, nel+1));
+                          ident.resize (dim_vector (1, nel+1));
+                          state.resize (dim_vector (1, nel+1));
 
-			  ident(nel) = arg2;
-			  state(nel) = arg1;
+                          ident(nel) = arg2;
+                          state(nel) = arg1;
 
-			  warning_options.clear ();
+                          warning_options.clear ();
 
-			  warning_options.assign ("identifier", ident);
-			  warning_options.assign ("state", state);
-			}
-		    }
+                          warning_options.assign ("identifier", ident);
+                          warning_options.assign ("state", state);
+                        }
+                    }
 
-		  done = true;
-		}
+                  done = true;
+                }
 
-	      if (done && nargout > 0)
-		retval = old_warning_options;
-	    }
-	  else if (arg1 == "query")
-	    {
-	      if (arg2 == "all")
-		retval = warning_options;
-	      else if (arg2 == "backtrace" || arg2 == "debug"
-		       || arg2 == "verbose" || arg2 == "quiet")
-		{
-		  Octave_map tmp;
-		  tmp.assign ("identifier", arg2);
-		  if (arg2 == "backtrace")
-		    tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
-		  else if (arg2 == "debug")
-		    tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
-		  else if (arg2 == "verbose")
-		    tmp.assign ("state", Vverbose_warning ? "on" : "off");
-		  else
-		    tmp.assign ("state", Vquiet_warning ? "on" : "off");
+              if (done && nargout > 0)
+                retval = old_warning_options;
+            }
+          else if (arg1 == "query")
+            {
+              if (arg2 == "all")
+                retval = warning_options;
+              else if (arg2 == "backtrace" || arg2 == "debug"
+                       || arg2 == "verbose" || arg2 == "quiet")
+                {
+                  Octave_map tmp;
+                  tmp.assign ("identifier", arg2);
+                  if (arg2 == "backtrace")
+                    tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
+                  else if (arg2 == "debug")
+                    tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
+                  else if (arg2 == "verbose")
+                    tmp.assign ("state", Vverbose_warning ? "on" : "off");
+                  else
+                    tmp.assign ("state", Vquiet_warning ? "on" : "off");
 
-		  retval = tmp;
-		}
-	      else
-		{
-		  if (arg2 == "last")
-		    arg2 = Vlast_warning_id;
+                  retval = tmp;
+                }
+              else
+                {
+                  if (arg2 == "last")
+                    arg2 = Vlast_warning_id;
 
-		  Cell ident = warning_options.contents ("identifier");
-		  Cell state = warning_options.contents ("state");
+                  Cell ident = warning_options.contents ("identifier");
+                  Cell state = warning_options.contents ("state");
 
-		  octave_idx_type nel = ident.numel ();
+                  octave_idx_type nel = ident.numel ();
 
-		  bool found = false;
-		  
-		  std::string val;
+                  bool found = false;
+                  
+                  std::string val;
 
-		  for (octave_idx_type i = 0; i < nel; i++)
-		    {
-		      if (ident(i).string_value () == arg2)
-			{
-			  val = state(i).string_value ();
-			  found = true;
-			  break;
-			}
-		    }
+                  for (octave_idx_type i = 0; i < nel; i++)
+                    {
+                      if (ident(i).string_value () == arg2)
+                        {
+                          val = state(i).string_value ();
+                          found = true;
+                          break;
+                        }
+                    }
 
-		  if (! found)
-		    {
-		      for (octave_idx_type i = 0; i < nel; i++)
-			{
-			  if (ident(i).string_value () == "all")
-			    {
-			      val = state(i).string_value ();
-			      found = true;
-			      break;
-			    }
-			}
-		    }
+                  if (! found)
+                    {
+                      for (octave_idx_type i = 0; i < nel; i++)
+                        {
+                          if (ident(i).string_value () == "all")
+                            {
+                              val = state(i).string_value ();
+                              found = true;
+                              break;
+                            }
+                        }
+                    }
 
-		  if (found)
-		    {
-		      Octave_map tmp;
+                  if (found)
+                    {
+                      Octave_map tmp;
 
-		      tmp.assign ("identifier", arg2);
-		      tmp.assign ("state", val);
+                      tmp.assign ("identifier", arg2);
+                      tmp.assign ("state", val);
 
-		      retval = tmp;
-		    }
-		  else
-		    error ("warning: unable to find default warning state!");
-		}
+                      retval = tmp;
+                    }
+                  else
+                    error ("warning: unable to find default warning state!");
+                }
 
-	      done = true;
-	    }
-	}
+              done = true;
+            }
+        }
     }
   else if (argc == 1)
     {
@@ -1387,19 +1387,19 @@ warning named by @var{id} is handled as if it were an error instead.\n\
       Octave_map old_warning_options = warning_options;
 
       if (arg.is_map ())
-	{
-	  Octave_map m = arg.map_value ();
+        {
+          Octave_map m = arg.map_value ();
 
-	  if (m.contains ("identifier") && m.contains ("state"))
-	    warning_options = m;
-	  else
-	    error ("warning: expecting structure with fields `identifier' and `state'");
+          if (m.contains ("identifier") && m.contains ("state"))
+            warning_options = m;
+          else
+            error ("warning: expecting structure with fields `identifier' and `state'");
 
-	  done = true;
+          done = true;
 
-	  if (nargout > 0)
-	    retval = old_warning_options;
-	}
+          if (nargout > 0)
+            retval = old_warning_options;
+        }
     }
 
   if (! (error_state || done))
@@ -1409,32 +1409,32 @@ warning named by @var{id} is handled as if it were an error instead.\n\
       std::string id;
 
       if (nargin > 1)
-	{
-	  std::string arg1 = args(0).string_value ();
+        {
+          std::string arg1 = args(0).string_value ();
 
-	  if (! error_state)
-	    {
-	      if (arg1.find ('%') == std::string::npos)
-		{
-		  id = arg1;
+          if (! error_state)
+            {
+              if (arg1.find ('%') == std::string::npos)
+                {
+                  id = arg1;
 
-		  nargs.resize (nargin-1);
+                  nargs.resize (nargin-1);
 
-		  for (int i = 1; i < nargin; i++)
-		    nargs(i-1) = args(i);
-		}
-	    }
-	  else
-	    return retval;
-	}
+                  for (int i = 1; i < nargin; i++)
+                    nargs(i-1) = args(i);
+                }
+            }
+          else
+            return retval;
+        }
 
       std::string prev_msg = Vlast_warning_message;
 
       std::string curr_msg = handle_message (warning_with_id, id.c_str (),
-					     "unspecified warning", nargs);
+                                             "unspecified warning", nargs);
 
       if (nargout > 0)
-	retval = prev_msg;
+        retval = prev_msg;
     }
 
   return retval;
@@ -1537,94 +1537,94 @@ their default values.\n\
       err.assign ("stack", octave_value (Vlast_error_stack));
 
       if (nargin == 1)
-	{
-	  if (args(0).is_string())
-	    {
-	      if (args(0).string_value () == "reset")
-		{
-		  Vlast_error_message = std::string();
-		  Vlast_error_id = std::string();
+        {
+          if (args(0).is_string())
+            {
+              if (args(0).string_value () == "reset")
+                {
+                  Vlast_error_message = std::string();
+                  Vlast_error_id = std::string();
 
-		  Vlast_error_stack = initialize_last_error_stack ();
-		}
-	      else
-		error("lasterror: unrecognized string argument");
-	    }
-	  else if (args(0).is_map ())
-	    {
-	      Octave_map new_err = args(0).map_value ();
-	      std::string new_error_message;
-	      std::string new_error_id;
-	      std::string new_error_file;
-	      std::string new_error_name;
-	      int new_error_line = -1;
-	      int new_error_column = -1;
+                  Vlast_error_stack = initialize_last_error_stack ();
+                }
+              else
+                error("lasterror: unrecognized string argument");
+            }
+          else if (args(0).is_map ())
+            {
+              Octave_map new_err = args(0).map_value ();
+              std::string new_error_message;
+              std::string new_error_id;
+              std::string new_error_file;
+              std::string new_error_name;
+              int new_error_line = -1;
+              int new_error_column = -1;
 
-	      if (! error_state && new_err.contains ("message"))
-		{
-		  const std::string tmp = 
-		    new_err.contents("message")(0).string_value ();
-		  new_error_message = tmp;
-		}
+              if (! error_state && new_err.contains ("message"))
+                {
+                  const std::string tmp = 
+                    new_err.contents("message")(0).string_value ();
+                  new_error_message = tmp;
+                }
 
-	      if (! error_state && new_err.contains ("identifier"))
-		{
-		  const std::string tmp = 
-		    new_err.contents("identifier")(0).string_value ();
-		  new_error_id = tmp;
-		}
+              if (! error_state && new_err.contains ("identifier"))
+                {
+                  const std::string tmp = 
+                    new_err.contents("identifier")(0).string_value ();
+                  new_error_id = tmp;
+                }
 
-	      if (! error_state && new_err.contains ("stack"))
-		{
-		  Octave_map new_err_stack = 
-		    new_err.contents("identifier")(0).map_value ();
+              if (! error_state && new_err.contains ("stack"))
+                {
+                  Octave_map new_err_stack = 
+                    new_err.contents("identifier")(0).map_value ();
 
-		  if (! error_state && new_err_stack.contains ("file"))
-		    {
-		      const std::string tmp = 
-			new_err_stack.contents("file")(0).string_value ();
-		      new_error_file = tmp;
-		    }
+                  if (! error_state && new_err_stack.contains ("file"))
+                    {
+                      const std::string tmp = 
+                        new_err_stack.contents("file")(0).string_value ();
+                      new_error_file = tmp;
+                    }
 
-		  if (! error_state && new_err_stack.contains ("name"))
-		    {
-		      const std::string tmp = 
-			new_err_stack.contents("name")(0).string_value ();
-		      new_error_name = tmp;
-		    }
+                  if (! error_state && new_err_stack.contains ("name"))
+                    {
+                      const std::string tmp = 
+                        new_err_stack.contents("name")(0).string_value ();
+                      new_error_name = tmp;
+                    }
 
-		  if (! error_state && new_err_stack.contains ("line"))
-		    {
-		      const int tmp = 
-			new_err_stack.contents("line")(0).nint_value ();
-		      new_error_line = tmp;
-		    }
-		  
-		  if (! error_state && new_err_stack.contains ("column"))
-		    {
-		      const int tmp = 
-			new_err_stack.contents("column")(0).nint_value ();
-		      new_error_column = tmp;
-		    }
-		}
+                  if (! error_state && new_err_stack.contains ("line"))
+                    {
+                      const int tmp = 
+                        new_err_stack.contents("line")(0).nint_value ();
+                      new_error_line = tmp;
+                    }
+                  
+                  if (! error_state && new_err_stack.contains ("column"))
+                    {
+                      const int tmp = 
+                        new_err_stack.contents("column")(0).nint_value ();
+                      new_error_column = tmp;
+                    }
+                }
 
-	      if (! error_state)
-		{
-		  Vlast_error_message = new_error_message;
-		  Vlast_error_id = new_error_id;
+              if (! error_state)
+                {
+                  Vlast_error_message = new_error_message;
+                  Vlast_error_id = new_error_id;
 
-		  octave_idx_type curr_frame = -1;
+                  octave_idx_type curr_frame = -1;
 
-		  Vlast_error_stack
-		    = octave_call_stack::backtrace (0, curr_frame);
-		}
-	    }
-	  else
-	    error ("lasterror: argument must be a structure or a string");
-	}
+                  Vlast_error_stack
+                    = octave_call_stack::backtrace (0, curr_frame);
+                }
+            }
+          else
+            error ("lasterror: argument must be a structure or a string");
+        }
 
       if (! error_state)
-	retval = err;
+        retval = err;
     }
   else
     print_usage ();
@@ -1654,24 +1654,24 @@ also set the last message identifier.\n\
       string_vector argv = args.make_argv ("lasterr");
 
       if (! error_state)
-	{
-	  std::string prev_error_id = Vlast_error_id;
-	  std::string prev_error_message = Vlast_error_message;
+        {
+          std::string prev_error_id = Vlast_error_id;
+          std::string prev_error_message = Vlast_error_message;
 
-	  if (argc > 2)
-	    Vlast_error_id = argv(2);
+          if (argc > 2)
+            Vlast_error_id = argv(2);
 
-	  if (argc > 1)
-	    Vlast_error_message = argv(1);
+          if (argc > 1)
+            Vlast_error_message = argv(1);
 
-	  if (argc == 1 || nargout > 0)
-	    {
-	      retval(1) = prev_error_id;
-	      retval(0) = prev_error_message;
-	    }
-	}
+          if (argc == 1 || nargout > 0)
+            {
+              retval(1) = prev_error_id;
+              retval(0) = prev_error_message;
+            }
+        }
       else
-	error ("lasterr: expecting arguments to be character strings");
+        error ("lasterr: expecting arguments to be character strings");
     }
   else
     print_usage ();
@@ -1700,25 +1700,25 @@ also set the last message identifier.\n\
       string_vector argv = args.make_argv ("lastwarn");
 
       if (! error_state)
-	{
-	  std::string prev_warning_id = Vlast_warning_id;
-	  std::string prev_warning_message = Vlast_warning_message;
+        {
+          std::string prev_warning_id = Vlast_warning_id;
+          std::string prev_warning_message = Vlast_warning_message;
 
-	  if (argc > 2)
-	    Vlast_warning_id = argv(2);
+          if (argc > 2)
+            Vlast_warning_id = argv(2);
 
-	  if (argc > 1)
-	    Vlast_warning_message = argv(1);
+          if (argc > 1)
+            Vlast_warning_message = argv(1);
 
-	  if (argc == 1 || nargout > 0)
-	    {
-	      warning_state = 0;
-	      retval(1) = prev_warning_id;
-	      retval(0) = prev_warning_message;
-	    }
-	}
+          if (argc == 1 || nargout > 0)
+            {
+              warning_state = 0;
+              retval(1) = prev_warning_id;
+              retval(0) = prev_warning_message;
+            }
+        }
       else
-	error ("lastwarn: expecting arguments to be character strings");
+        error ("lastwarn: expecting arguments to be character strings");
     }
   else
     print_usage ();

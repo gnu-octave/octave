@@ -36,13 +36,13 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OCTAVE_ALLOCATOR (octave_builtin);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
-				     "built-in function",
-				     "built-in function");
+                                     "built-in function",
+                                     "built-in function");
 
 octave_value_list
 octave_builtin::subsref (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 int nargout)
+                         const std::list<octave_value_list>& idx,
+                         int nargout)
 {
   octave_value_list retval;
 
@@ -50,17 +50,17 @@ octave_builtin::subsref (const std::string& type,
     {
     case '(':
       {
-	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
+        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-	retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -103,8 +103,8 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
       frame.add_fcn (octave_call_stack::pop);
 
       try
-	{
-	  retval = (*f) (args, nargout);
+        {
+          retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.
           // FIXME -- perhaps true builtins should be allowed?
           retval.make_storable_values ();
@@ -116,11 +116,11 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
           // the idiom is very common, so we solve that here.
           if (retval.length () == 1 && retval.xelem (0).is_undefined ())
             retval.clear ();
-	}
+        }
       catch (octave_execution_exception)
-	{
-	  gripe_library_execution_error ();
-	}
+        {
+          gripe_library_execution_error ();
+        }
     }
 
   return retval;

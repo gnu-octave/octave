@@ -148,61 +148,61 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
       size_t pos = mode.find ('W');
 
       if (pos != std::string::npos)
-	{
-	  warning ("fopen: treating mode \"W\" as equivalent to \"w\"");
-	  mode[pos] = 'w';
-	}
+        {
+          warning ("fopen: treating mode \"W\" as equivalent to \"w\"");
+          mode[pos] = 'w';
+        }
 
       pos = mode.find ('R');
 
       if (pos != std::string::npos)
-	{
-	  warning ("fopen: treating mode \"R\" as equivalent to \"r\"");
-	  mode[pos] = 'r';
-	}
+        {
+          warning ("fopen: treating mode \"R\" as equivalent to \"r\"");
+          mode[pos] = 'r';
+        }
 
       pos = mode.find ('z');
 
       if (pos != std::string::npos)
-	{
+        {
 #if defined (HAVE_ZLIB)
-	  mode.erase (pos, 1);
+          mode.erase (pos, 1);
 #else
-	  error ("this version of Octave does not support gzipped files");
+          error ("this version of Octave does not support gzipped files");
 #endif
-	}
+        }
 
       if (! error_state)
-	{
-	  if (mode == "rt")
-	    retval = std::ios::in;
-	  else if (mode == "wt")
-	    retval = std::ios::out | std::ios::trunc;
-	  else if (mode == "at")
-	    retval = std::ios::out | std::ios::app;
-	  else if (mode == "r+t" || mode == "rt+")
-	    retval = std::ios::in | std::ios::out;
-	  else if (mode == "w+t" || mode == "wt+")
-	    retval = std::ios::in | std::ios::out | std::ios::trunc;
-	  else if (mode == "a+t" || mode == "at+")
-	    retval = std::ios::in | std::ios::out | std::ios::app;
-	  else if (mode == "rb" || mode == "r")
-	    retval = std::ios::in | std::ios::binary;
-	  else if (mode == "wb" || mode == "w")
-	    retval = std::ios::out | std::ios::trunc | std::ios::binary;
-	  else if (mode == "ab" || mode == "a")
-	    retval = std::ios::out | std::ios::app | std::ios::binary;
-	  else if (mode == "r+b" || mode == "rb+" || mode == "r+")
-	    retval = std::ios::in | std::ios::out | std::ios::binary;
-	  else if (mode == "w+b" || mode == "wb+" || mode == "w+")
-	    retval = (std::ios::in | std::ios::out | std::ios::trunc
-		      | std::ios::binary);
-	  else if (mode == "a+b" || mode == "ab+" || mode == "a+")
-	    retval = (std::ios::in | std::ios::out | std::ios::app
-		      | std::ios::binary);
-	  else
-	    ::error ("invalid mode specified");
-	}
+        {
+          if (mode == "rt")
+            retval = std::ios::in;
+          else if (mode == "wt")
+            retval = std::ios::out | std::ios::trunc;
+          else if (mode == "at")
+            retval = std::ios::out | std::ios::app;
+          else if (mode == "r+t" || mode == "rt+")
+            retval = std::ios::in | std::ios::out;
+          else if (mode == "w+t" || mode == "wt+")
+            retval = std::ios::in | std::ios::out | std::ios::trunc;
+          else if (mode == "a+t" || mode == "at+")
+            retval = std::ios::in | std::ios::out | std::ios::app;
+          else if (mode == "rb" || mode == "r")
+            retval = std::ios::in | std::ios::binary;
+          else if (mode == "wb" || mode == "w")
+            retval = std::ios::out | std::ios::trunc | std::ios::binary;
+          else if (mode == "ab" || mode == "a")
+            retval = std::ios::out | std::ios::app | std::ios::binary;
+          else if (mode == "r+b" || mode == "rb+" || mode == "r+")
+            retval = std::ios::in | std::ios::out | std::ios::binary;
+          else if (mode == "w+b" || mode == "wb+" || mode == "w+")
+            retval = (std::ios::in | std::ios::out | std::ios::trunc
+                      | std::ios::binary);
+          else if (mode == "a+b" || mode == "ab+" || mode == "a+")
+            retval = (std::ios::in | std::ios::out | std::ios::app
+                      | std::ios::binary);
+          else
+            ::error ("invalid mode specified");
+        }
     }
 
   return retval;
@@ -245,7 +245,7 @@ Clear the stream state for the specified file.\n\
       octave_stream os = octave_stream_list::lookup (fid, "fclear");
 
       if (! error_state)
-	os.clearerr ();
+        os.clearerr ();
     }
   else
     print_usage ();
@@ -277,18 +277,18 @@ stream before calling @code{input}.\n\
       int fid = octave_stream_list::get_file_number (args (0));
 
       if (fid == 1)
-	{
-	  flush_octave_stdout ();
+        {
+          flush_octave_stdout ();
 
-	  retval = 0;
-	}
+          retval = 0;
+        }
       else
-	{
-	  octave_stream os = octave_stream_list::lookup (fid, "fflush");
+        {
+          octave_stream os = octave_stream_list::lookup (fid, "fflush");
 
-	  if (! error_state)
-	    retval = os.flush ();
-	}
+          if (! error_state)
+            retval = os.flush ();
+        }
     }
   else
     print_usage ();
@@ -324,19 +324,19 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	{
-	  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
+        {
+          octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
-	  bool err = false;
+          bool err = false;
 
-	  std::string tmp = os.getl (len_arg, err, who);
+          std::string tmp = os.getl (len_arg, err, who);
 
-	  if (! (error_state || err))
-	    {
-	      retval(1) = tmp.length ();
-	      retval(0) = tmp;
-	    }
-	}
+          if (! (error_state || err))
+            {
+              retval(1) = tmp.length ();
+              retval(0) = tmp;
+            }
+        }
     }
   else
     print_usage ();
@@ -372,19 +372,19 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	{
-	  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
+        {
+          octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
-	  bool err = false;
+          bool err = false;
 
-	  std::string tmp = os.gets (len_arg, err, who);
+          std::string tmp = os.gets (len_arg, err, who);
 
-	  if (! (error_state || err))
-	    {
-	      retval(1) = tmp.length ();
-	      retval(0) = tmp;
-	    }
-	}
+          if (! (error_state || err))
+            {
+              retval(1) = tmp.length ();
+              retval(0) = tmp;
+            }
+        }
     }
   else
     print_usage ();
@@ -415,16 +415,16 @@ This form is suitable for counting lines in a file.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	{
-	  octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
+        {
+          octave_value count_arg = (nargin == 2) ? args(1) : octave_value ();
 
-	  bool err = false;
+          bool err = false;
 
-	  long tmp = os.skipl (count_arg, err, who);
+          long tmp = os.skipl (count_arg, err, who);
 
-	  if (! (error_state || err))
+          if (! (error_state || err))
             retval = tmp;
-	}
+        }
     }
   else
     print_usage ();
@@ -435,7 +435,7 @@ This form is suitable for counting lines in a file.\n\
 
 static octave_stream
 do_stream_open (const std::string& name, const std::string& mode,
-		const std::string& arch, int& fid)
+                const std::string& arch, int& fid)
 {
   octave_stream retval;
 
@@ -446,78 +446,78 @@ do_stream_open (const std::string& name, const std::string& mode,
   if (! error_state)
     {
       oct_mach_info::float_format flt_fmt =
-	oct_mach_info::string_to_float_format (arch);
+        oct_mach_info::string_to_float_format (arch);
 
       if (! error_state)
-	{
-	  std::string fname = file_ops::tilde_expand (name);
+        {
+          std::string fname = file_ops::tilde_expand (name);
 
-	  file_stat fs (fname);
+          file_stat fs (fname);
 
-	  if (! (md & std::ios::out
-		 || octave_env::absolute_pathname (fname)
-		 || octave_env::rooted_relative_pathname (fname)))
-	    {
-	      if (! fs.exists ())
-		{
-		  std::string tmp
+          if (! (md & std::ios::out
+                 || octave_env::absolute_pathname (fname)
+                 || octave_env::rooted_relative_pathname (fname)))
+            {
+              if (! fs.exists ())
+                {
+                  std::string tmp
                     = octave_env::make_absolute (load_path::find_file (fname));
 
-		  if (! tmp.empty ())
-		    {
-		      warning_with_id ("Octave:fopen-file-in-path",
-				       "fopen: file found in load path");
-		      fname = tmp;
-		    }
-		}
-	    }
-	  
-	  if (! fs.is_dir ())
-	    {
-	      std::string tmode = mode;
+                  if (! tmp.empty ())
+                    {
+                      warning_with_id ("Octave:fopen-file-in-path",
+                                       "fopen: file found in load path");
+                      fname = tmp;
+                    }
+                }
+            }
+          
+          if (! fs.is_dir ())
+            {
+              std::string tmode = mode;
 
-	      // Use binary mode if 't' is not specified, but don't add
-	      // 'b' if it is already present.
+              // Use binary mode if 't' is not specified, but don't add
+              // 'b' if it is already present.
 
-	      size_t bpos = tmode.find ('b');
-	      size_t tpos = tmode.find ('t');
+              size_t bpos = tmode.find ('b');
+              size_t tpos = tmode.find ('t');
 
-	      if (bpos == std::string::npos && tpos == std::string::npos)
-		tmode += 'b';
+              if (bpos == std::string::npos && tpos == std::string::npos)
+                tmode += 'b';
 
 #if defined (HAVE_ZLIB)
-	      size_t pos = tmode.find ('z');
+              size_t pos = tmode.find ('z');
 
-	      if (pos != std::string::npos)
-		{
-		  tmode.erase (pos, 1);
+              if (pos != std::string::npos)
+                {
+                  tmode.erase (pos, 1);
 
-		  gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
+                  gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
 
-		  if (fptr)
-		    retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
-		  else
-		    {
-		      using namespace std;
-		      retval.error (::strerror (errno));
-		    }
-		}
-	      else
+                  if (fptr)
+                    retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
+                  else
+                    {
+                      using namespace std;
+                      retval.error (::strerror (errno));
+                    }
+                }
+              else
 #endif
-		{
-		  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                {
+                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
 
-		  retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
+                  retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 
-		  if (! fptr)
-		    {
-		      using namespace std;
-		      retval.error (::strerror (errno));
-		    }
-		}
+                  if (! fptr)
+                    {
+                      using namespace std;
+                      retval.error (::strerror (errno));
+                    }
+                }
 
-	    }
-	}
+            }
+        }
     }
 
   return retval;
@@ -525,7 +525,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 
 static octave_stream
 do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
-		const octave_value& tc_arch, const char *fcn, int& fid)
+                const octave_value& tc_arch, const char *fcn, int& fid)
 {
   octave_stream retval;
 
@@ -538,16 +538,16 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
       std::string mode = tc_mode.string_value ();
 
       if (! error_state)
-	{
-	  std::string arch = tc_arch.string_value ();
+        {
+          std::string arch = tc_arch.string_value ();
 
-	  if (! error_state)
-	    retval = do_stream_open (name, mode, arch, fid);
-	  else
-	    ::error ("%s: architecture type must be a string", fcn);
-	}
+          if (! error_state)
+            retval = do_stream_open (name, mode, arch, fid);
+          else
+            ::error ("%s: architecture type must be a string", fcn);
+        }
       else
-	::error ("%s: file mode must be a string", fcn);
+        ::error ("%s: file mode must be a string", fcn);
     }
   else
     ::error ("%s: file name must be a string", fcn);
@@ -666,54 +666,54 @@ however, conversions are currently only supported for @samp{native}\n\
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	{
-	  // If there is only one argument and it is a string but it
-	  // is not the string "all", we assume it is a file to open
-	  // with MODE = "r".  To open a file called "all", you have
-	  // to supply more than one argument.
+        {
+          // If there is only one argument and it is a string but it
+          // is not the string "all", we assume it is a file to open
+          // with MODE = "r".  To open a file called "all", you have
+          // to supply more than one argument.
 
-	  if (args(0).string_value () == "all")
-	    return octave_stream_list::open_file_numbers ();
-	}
+          if (args(0).string_value () == "all")
+            return octave_stream_list::open_file_numbers ();
+        }
       else
-	{
-	  string_vector tmp = octave_stream_list::get_info (args(0));
+        {
+          string_vector tmp = octave_stream_list::get_info (args(0));
 
-	  if (! error_state)
-	    {
-	      retval(2) = tmp(2);
-	      retval(1) = tmp(1);
-	      retval(0) = tmp(0);
-	    }
+          if (! error_state)
+            {
+              retval(2) = tmp(2);
+              retval(1) = tmp(1);
+              retval(0) = tmp(0);
+            }
 
-	  return retval;
-	}
+          return retval;
+        }
     }
 
   if (nargin > 0 && nargin < 4)
     {
       octave_value mode = (nargin == 2 || nargin == 3)
-	? args(1) : octave_value ("r");
+        ? args(1) : octave_value ("r");
 
       octave_value arch = (nargin == 3)
-	? args(2) : octave_value ("native");
+        ? args(2) : octave_value ("native");
 
       int fid = -1;
 
       octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
 
       if (os && ! error_state)
-	{
-	  retval(1) = "";
-	  retval(0) = octave_stream_list::insert (os);
-	}
+        {
+          retval(1) = "";
+          retval(0) = octave_stream_list::insert (os);
+        }
       else
-	{
-	  int error_number = 0;
+        {
+          int error_number = 0;
 
-	  retval(1) = os.error (false, error_number);
-	  retval(0) = -1.0;
-	}
+          retval(1) = os.error (false, error_number);
+          retval(0) = -1.0;
+        }
     }
   else
     print_usage ();
@@ -772,7 +772,7 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
       octave_stream os = octave_stream_list::lookup (args(0), "frewind");
 
       if (! error_state)
-	result = os.rewind ();
+        result = os.rewind ();
     }
   else
     print_usage ();
@@ -808,12 +808,12 @@ Return 0 on success and -1 on error.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "fseek");
 
       if (! error_state)
-	{
-	  octave_value origin_arg = (nargin == 3)
-	    ? args(2) : octave_value (-1.0);
+        {
+          octave_value origin_arg = (nargin == 3)
+            ? args(2) : octave_value (-1.0);
 
-	  retval = os.seek (args(1), origin_arg);
-	}
+          retval = os.seek (args(1), origin_arg);
+        }
     }
   else
     print_usage ();
@@ -838,7 +838,7 @@ from the beginning of the file @var{fid}.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "ftell");
 
       if (! error_state)
-	retval = os.tell ();
+        retval = os.tell ();
     }
   else
     print_usage ();
@@ -869,34 +869,34 @@ If @var{fid} is omitted, the output is written to @code{stdout}.\n\
       int fmt_n = 0;
 
       if (args(0).is_string ()) 
-	{
-	  os = octave_stream_list::lookup (1, who);
-	}
+        {
+          os = octave_stream_list::lookup (1, who);
+        }
       else
-	{
-	  fmt_n = 1;
-	  os = octave_stream_list::lookup (args(0), who);
-	}
+        {
+          fmt_n = 1;
+          os = octave_stream_list::lookup (args(0), who);
+        }
 
       if (! error_state)
-	{
-	  if (args(fmt_n).is_string ())
-	    {
-	      octave_value_list tmp_args;
+        {
+          if (args(fmt_n).is_string ())
+            {
+              octave_value_list tmp_args;
 
-	      if (nargin > 1 + fmt_n)
-		{
-		  tmp_args.resize (nargin-fmt_n-1, octave_value ());
+              if (nargin > 1 + fmt_n)
+                {
+                  tmp_args.resize (nargin-fmt_n-1, octave_value ());
 
-		  for (int i = fmt_n + 1; i < nargin; i++)
-		    tmp_args(i-fmt_n-1) = args(i);
-		}
+                  for (int i = fmt_n + 1; i < nargin; i++)
+                    tmp_args(i-fmt_n-1) = args(i);
+                }
 
-	      result = os.printf (args(fmt_n), tmp_args, who);
-	    }
-	  else
-	    ::error ("%s: format must be a string", who.c_str ());
-	}
+              result = os.printf (args(fmt_n), tmp_args, who);
+            }
+          else
+            ::error ("%s: format must be a string", who.c_str ());
+        }
     }
   else
     print_usage ();
@@ -932,21 +932,21 @@ complete description of the syntax of the template string.\n\
   if (nargin > 0)
     {
       if (args(0).is_string ())
-	{
-	  octave_value_list tmp_args;
+        {
+          octave_value_list tmp_args;
 
-	  if (nargin > 1)
-	    {
-	      tmp_args.resize (nargin-1, octave_value ());
+          if (nargin > 1)
+            {
+              tmp_args.resize (nargin-1, octave_value ());
 
-	      for (int i = 1; i < nargin; i++)
-		tmp_args(i-1) = args(i);
-	    }
+              for (int i = 1; i < nargin; i++)
+                tmp_args(i-1) = args(i);
+            }
 
-	  result = stdout_stream.printf (args(0), tmp_args, who);
-	}
+          result = stdout_stream.printf (args(0), tmp_args, who);
+        }
       else
-	::error ("%s: format must be a string", who.c_str ());
+        ::error ("%s: format must be a string", who.c_str ());
     }
   else
     print_usage ();
@@ -977,7 +977,7 @@ Return a non-negative number on success and EOF on error.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	retval = os.puts (args(1), who);
+        retval = os.puts (args(1), who);
     }
   else
     print_usage ();
@@ -1033,31 +1033,31 @@ converted.\n\
       octave_stream os (ostr);
 
       if (os.is_valid ())
-	{
-	  octave_value fmt_arg = args(0);
+        {
+          octave_value fmt_arg = args(0);
 
-	  if (fmt_arg.is_string ())
-	    {
-	      octave_value_list tmp_args;
+          if (fmt_arg.is_string ())
+            {
+              octave_value_list tmp_args;
 
-	      if (nargin > 1)
-		{
-		  tmp_args.resize (nargin-1, octave_value ());
+              if (nargin > 1)
+                {
+                  tmp_args.resize (nargin-1, octave_value ());
 
-		  for (int i = 1; i < nargin; i++)
-		    tmp_args(i-1) = args(i);
-		}
+                  for (int i = 1; i < nargin; i++)
+                    tmp_args(i-1) = args(i);
+                }
 
-	      retval(2) = os.printf (fmt_arg, tmp_args, who);
-	      retval(1) = os.error ();
-	      retval(0) = octave_value (ostr->str (),
-					fmt_arg.is_sq_string () ? '\'' : '"');
-	    }
-	  else
-	    ::error ("%s: format must be a string", who.c_str ());
-	}
+              retval(2) = os.printf (fmt_arg, tmp_args, who);
+              retval(1) = os.error ();
+              retval(0) = octave_value (ostr->str (),
+                                        fmt_arg.is_sq_string () ? '\'' : '"');
+            }
+          else
+            ::error ("%s: format must be a string", who.c_str ());
+        }
       else
-	::error ("%s: unable to create output buffer", who.c_str ());
+        ::error ("%s: unable to create output buffer", who.c_str ());
     }
   else
     print_usage ();
@@ -1125,12 +1125,12 @@ complete description of the syntax of the template string.\n\
       octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	{
-	  if (args(1).is_string ())
-	    retval = os.oscanf (args(1), who);
-	  else
-	    ::error ("%s: format must be a string", who.c_str ());
-	}
+        {
+          if (args(1).is_string ())
+            retval = os.oscanf (args(1), who);
+          else
+            ::error ("%s: format must be a string", who.c_str ());
+        }
     }
   else
     {
@@ -1138,36 +1138,36 @@ complete description of the syntax of the template string.\n\
       retval (0) = Matrix ();
 
       if (nargin == 2 || nargin == 3)
-	{
-	  octave_stream os = octave_stream_list::lookup (args(0), who);
+        {
+          octave_stream os = octave_stream_list::lookup (args(0), who);
 
-	  if (! error_state)
-	    {
-	      if (args(1).is_string ())
-		{
-		  octave_idx_type count = 0;
+          if (! error_state)
+            {
+              if (args(1).is_string ())
+                {
+                  octave_idx_type count = 0;
 
-		  Array<double> size = (nargin == 3)
-		    ? args(2).vector_value ()
-		    : Array<double> (1, lo_ieee_inf_value ());
+                  Array<double> size = (nargin == 3)
+                    ? args(2).vector_value ()
+                    : Array<double> (1, lo_ieee_inf_value ());
 
-		  if (! error_state)
-		    {
-		      octave_value tmp = os.scanf (args(1), size, count, who);
+                  if (! error_state)
+                    {
+                      octave_value tmp = os.scanf (args(1), size, count, who);
 
-		      if (! error_state)
-			{
-			  retval(1) = count;
-			  retval(0) = tmp;
-			}
-		    }
-		}
-	      else
-		::error ("%s: format must be a string", who.c_str ());
-	    }
-	}
+                      if (! error_state)
+                        {
+                          retval(1) = count;
+                          retval(0) = tmp;
+                        }
+                    }
+                }
+              else
+                ::error ("%s: format must be a string", who.c_str ());
+            }
+        }
       else
-	print_usage ();
+        print_usage ();
     }
 
   return retval;
@@ -1192,77 +1192,77 @@ string is treated as an end-of-file condition.\n\
   if (nargin == 3 && args(2).is_string ())
     {
       if (args(0).is_string ())
-	{
-	  std::string data = args(0).string_value ();
+        {
+          std::string data = args(0).string_value ();
 
-	  octave_stream os = octave_istrstream::create (data);
+          octave_stream os = octave_istrstream::create (data);
 
-	  if (os.is_valid ())
-	    {
-	      if (args(1).is_string ())
-		retval = os.oscanf (args(1), who);
-	      else
-		::error ("%s: format must be a string", who.c_str ());
-	    }
-	  else
-	    ::error ("%s: unable to create temporary input buffer",
-		     who.c_str ());
-	}
+          if (os.is_valid ())
+            {
+              if (args(1).is_string ())
+                retval = os.oscanf (args(1), who);
+              else
+                ::error ("%s: format must be a string", who.c_str ());
+            }
+          else
+            ::error ("%s: unable to create temporary input buffer",
+                     who.c_str ());
+        }
       else
-	::error ("%s: first argument must be a string", who.c_str ());
+        ::error ("%s: first argument must be a string", who.c_str ());
     }
   else
     {
       if (nargin == 2 || nargin == 3)
-	{
-	  retval(3) = -1.0;
-	  retval(2) = "unknown error";
-	  retval(1) = 0.0;
-	  retval(0) = Matrix ();
+        {
+          retval(3) = -1.0;
+          retval(2) = "unknown error";
+          retval(1) = 0.0;
+          retval(0) = Matrix ();
 
-	  if (args(0).is_string ())
-	    {
-	      std::string data = args(0).string_value ();
+          if (args(0).is_string ())
+            {
+              std::string data = args(0).string_value ();
 
-	      octave_stream os = octave_istrstream::create (data);
+              octave_stream os = octave_istrstream::create (data);
 
-	      if (os.is_valid ())
-		{
-		  if (args(1).is_string ())
-		    {
-		      octave_idx_type count = 0;
+              if (os.is_valid ())
+                {
+                  if (args(1).is_string ())
+                    {
+                      octave_idx_type count = 0;
 
-		      Array<double> size = (nargin == 3)
-			? args(2).vector_value ()
-			: Array<double> (1, lo_ieee_inf_value ());
+                      Array<double> size = (nargin == 3)
+                        ? args(2).vector_value ()
+                        : Array<double> (1, lo_ieee_inf_value ());
 
-		      octave_value tmp = os.scanf (args(1), size, count, who);
+                      octave_value tmp = os.scanf (args(1), size, count, who);
 
-		      if (! error_state)
-			{
-			  // FIXME -- is this the right thing to do?
-			  // Extract error message first, because getting
-			  // position will clear it.
-			  std::string errmsg = os.error ();
+                      if (! error_state)
+                        {
+                          // FIXME -- is this the right thing to do?
+                          // Extract error message first, because getting
+                          // position will clear it.
+                          std::string errmsg = os.error ();
 
-			  retval(3) = os.tell () + 1;
-			  retval(2) = errmsg;
-			  retval(1) = count;
-			  retval(0) = tmp;
-			}
-		    }
-		  else
-		    ::error ("%s: format must be a string", who.c_str ());
-		}
-	      else
-		::error ("%s: unable to create temporary input buffer",
-			 who.c_str  ());
-	    }
-	  else
-	    ::error ("%s: first argument must be a string", who.c_str ());
-	}
+                          retval(3) = os.tell () + 1;
+                          retval(2) = errmsg;
+                          retval(1) = count;
+                          retval(0) = tmp;
+                        }
+                    }
+                  else
+                    ::error ("%s: format must be a string", who.c_str ());
+                }
+              else
+                ::error ("%s: unable to create temporary input buffer",
+                         who.c_str  ());
+            }
+          else
+            ::error ("%s: first argument must be a string", who.c_str ());
+        }
       else
-	print_usage ();
+        print_usage ();
     }
 
   return retval;
@@ -1292,8 +1292,8 @@ programs.\n\
 
 static octave_value
 do_fread (octave_stream& os, const octave_value& size_arg,
-	  const octave_value& prec_arg, const octave_value& skip_arg,
-	  const octave_value& arch_arg, octave_idx_type& count)
+          const octave_value& prec_arg, const octave_value& skip_arg,
+          const octave_value& arch_arg, octave_idx_type& count)
 {
   octave_value retval;
 
@@ -1306,42 +1306,42 @@ do_fread (octave_stream& os, const octave_value& size_arg,
       std::string prec = prec_arg.string_value ();
 
       if (! error_state)
-	{
-	  int block_size = 1;
-	  oct_data_conv::data_type input_type;
-	  oct_data_conv::data_type output_type;
+        {
+          int block_size = 1;
+          oct_data_conv::data_type input_type;
+          oct_data_conv::data_type output_type;
 
-	  oct_data_conv::string_to_data_type (prec, block_size,
-					      input_type, output_type);
+          oct_data_conv::string_to_data_type (prec, block_size,
+                                              input_type, output_type);
 
-	  if (! error_state)
-	    {
-	      int skip = skip_arg.int_value (true);
+          if (! error_state)
+            {
+              int skip = skip_arg.int_value (true);
 
-	      if (! error_state)
-		{
-		  std::string arch = arch_arg.string_value ();
+              if (! error_state)
+                {
+                  std::string arch = arch_arg.string_value ();
 
-		  if (! error_state)
-		    {
-		      oct_mach_info::float_format flt_fmt
-			= oct_mach_info::string_to_float_format (arch);
+                  if (! error_state)
+                    {
+                      oct_mach_info::float_format flt_fmt
+                        = oct_mach_info::string_to_float_format (arch);
 
-		      if (! error_state)
-			retval = os.read (size, block_size, input_type,
-					  output_type, skip, flt_fmt, count);
-		    }
-		  else
-		    ::error ("fread: architecture type must be a string");
-		}
-	      else
-		::error ("fread: skip must be an integer");
-	    }
-	  else
-	    ::error ("fread: invalid data type specified");
-	}
+                      if (! error_state)
+                        retval = os.read (size, block_size, input_type,
+                                          output_type, skip, flt_fmt, count);
+                    }
+                  else
+                    ::error ("fread: architecture type must be a string");
+                }
+              else
+                ::error ("fread: skip must be an integer");
+            }
+          else
+            ::error ("fread: invalid data type specified");
+        }
       else
-	::error ("fread: precision must be a string");
+        ::error ("fread: precision must be a string");
     }
   else
     ::error ("fread: invalid size specified");
@@ -1536,38 +1536,38 @@ values read is returned in @code{count}\n\
       octave_stream os = octave_stream_list::lookup (args(0), "fread");
 
       if (! error_state)
-	{
-	  octave_value size = lo_ieee_inf_value ();
-	  octave_value prec = "uchar";
-	  octave_value skip = 0;
-	  octave_value arch = "unknown";
+        {
+          octave_value size = lo_ieee_inf_value ();
+          octave_value prec = "uchar";
+          octave_value skip = 0;
+          octave_value arch = "unknown";
 
-	  int idx = 1;
+          int idx = 1;
 
-	  if (nargin > idx && ! args(idx).is_string ())
-	    size = args(idx++);
+          if (nargin > idx && ! args(idx).is_string ())
+            size = args(idx++);
 
-	  if (nargin > idx)
-	    prec = args(idx++);
+          if (nargin > idx)
+            prec = args(idx++);
 
-	  if (nargin > idx)
-	    skip = args(idx++);
+          if (nargin > idx)
+            skip = args(idx++);
 
-	  if (nargin > idx)
-	    arch = args(idx++);
-	  else if (skip.is_string ())
-	    {
-	      arch = skip;
-	      skip = 0;
-	    }
+          if (nargin > idx)
+            arch = args(idx++);
+          else if (skip.is_string ())
+            {
+              arch = skip;
+              skip = 0;
+            }
 
-	  octave_idx_type count = -1;
+          octave_idx_type count = -1;
 
-	  octave_value tmp = do_fread (os, size, prec, skip, arch, count);
+          octave_value tmp = do_fread (os, size, prec, skip, arch, count);
 
-	  retval(1) = count;
-	  retval(0) = tmp;
-	}
+          retval(1) = count;
+          retval(0) = tmp;
+        }
     }
   else
     print_usage ();
@@ -1577,8 +1577,8 @@ values read is returned in @code{count}\n\
 
 static int
 do_fwrite (octave_stream& os, const octave_value& data,
-	   const octave_value& prec_arg, const octave_value& skip_arg,
-	   const octave_value& arch_arg)
+           const octave_value& prec_arg, const octave_value& skip_arg,
+           const octave_value& arch_arg)
 {
   int retval = -1;
 
@@ -1592,30 +1592,30 @@ do_fwrite (octave_stream& os, const octave_value& data,
       oct_data_conv::string_to_data_type (prec, block_size, output_type);
 
       if (! error_state)
-	{
-	  int skip = skip_arg.int_value (true);
+        {
+          int skip = skip_arg.int_value (true);
 
-	  if (! error_state)
-	    {
-	      std::string arch = arch_arg.string_value ();
+          if (! error_state)
+            {
+              std::string arch = arch_arg.string_value ();
 
-	      if (! error_state)
-		{
-		  oct_mach_info::float_format flt_fmt
-		    = oct_mach_info::string_to_float_format (arch);
+              if (! error_state)
+                {
+                  oct_mach_info::float_format flt_fmt
+                    = oct_mach_info::string_to_float_format (arch);
 
-		  if (! error_state)
-		    retval = os.write (data, block_size, output_type,
-				       skip, flt_fmt);
-		}
-	      else
-		::error ("fwrite: architecture type must be a string");
-	    }
-	  else
-	    ::error ("fwrite: skip must be an integer");
-	}
+                  if (! error_state)
+                    retval = os.write (data, block_size, output_type,
+                                       skip, flt_fmt);
+                }
+              else
+                ::error ("fwrite: architecture type must be a string");
+            }
+          else
+            ::error ("fwrite: skip must be an integer");
+        }
       else
-	::error ("fwrite: invalid precision specified");
+        ::error ("fwrite: invalid precision specified");
     }
   else
     ::error ("fwrite: precision must be a string");
@@ -1650,33 +1650,33 @@ are too large to fit in the specified precision.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "fwrite");
 
       if (! error_state)
-	{
-	  octave_value prec = "uchar";
-	  octave_value skip = 0;
-	  octave_value arch = "unknown";
+        {
+          octave_value prec = "uchar";
+          octave_value skip = 0;
+          octave_value arch = "unknown";
 
-	  int idx = 1;
+          int idx = 1;
 
-	  octave_value data = args(idx++);
+          octave_value data = args(idx++);
 
-	  if (nargin > idx)
-	    prec = args(idx++);
+          if (nargin > idx)
+            prec = args(idx++);
 
-	  if (nargin > idx)
-	    skip = args(idx++);
+          if (nargin > idx)
+            skip = args(idx++);
 
-	  if (nargin > idx)
-	    arch = args(idx++);
-	  else if (skip.is_string ())
-	    {
-	      arch = skip;
-	      skip = 0;
-	    }
+          if (nargin > idx)
+            arch = args(idx++);
+          else if (skip.is_string ())
+            {
+              arch = skip;
+              skip = 0;
+            }
 
-	  double status = do_fwrite (os, data, prec, skip, arch);
+          double status = do_fwrite (os, data, prec, skip, arch);
 
-	  retval = status;
-	}
+          retval = status;
+        }
     }
   else
     print_usage ();
@@ -1703,7 +1703,7 @@ result in an end-of-file condition.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "feof");
 
       if (! error_state)
-	retval = os.eof () ? 1.0 : 0.0;
+        retval = os.eof () ? 1.0 : 0.0;
     }
   else
     print_usage ();
@@ -1732,26 +1732,26 @@ error condition.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "ferror");
 
       if (! error_state)
-	{
-	  bool clear = false;
+        {
+          bool clear = false;
 
-	  if (nargin == 2)
-	    {
-	      std::string opt = args(1).string_value ();
+          if (nargin == 2)
+            {
+              std::string opt = args(1).string_value ();
 
-	      if (! error_state)
-		clear = (opt == "clear");
-	      else
-		return retval;
-	    }
+              if (! error_state)
+                clear = (opt == "clear");
+              else
+                return retval;
+            }
 
-	  int error_number = 0;
+          int error_number = 0;
 
-	  std::string error_message = os.error (clear, error_number);
+          std::string error_message = os.error (clear, error_number);
 
-	  retval(1) = error_number;
-	  retval(0) = error_message;
-	}
+          retval(1) = error_number;
+          retval(0) = error_message;
+        }
     }
   else
     print_usage ();
@@ -1801,31 +1801,31 @@ endwhile\n\
       std::string name = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string mode = args(1).string_value ();
+        {
+          std::string mode = args(1).string_value ();
 
-	  if (! error_state)
-	    {
-	      if (mode == "r")
-		{
-		  octave_stream ips = octave_iprocstream::create (name);
+          if (! error_state)
+            {
+              if (mode == "r")
+                {
+                  octave_stream ips = octave_iprocstream::create (name);
 
-		  retval = octave_stream_list::insert (ips);
-		}
-	      else if (mode == "w")
-		{
-		  octave_stream ops = octave_oprocstream::create (name);
+                  retval = octave_stream_list::insert (ips);
+                }
+              else if (mode == "w")
+                {
+                  octave_stream ops = octave_oprocstream::create (name);
 
-		  retval = octave_stream_list::insert (ops);
-		}
-	      else
-		::error ("popen: invalid mode specified");
-	    }
-	  else
-	    ::error ("popen: mode must be a string");
-	}
+                  retval = octave_stream_list::insert (ops);
+                }
+              else
+                ::error ("popen: invalid mode specified");
+            }
+          else
+            ::error ("popen: mode must be a string");
+        }
       else
-	::error ("popen: name must be a string");
+        ::error ("popen: name must be a string");
     }
   else
     print_usage ();
@@ -1875,17 +1875,17 @@ that it will not be available by the time your program attempts to open it.\n\
       std::string dir = len > 0 ? args(0).string_value () : std::string ();
 
       if (! error_state)
-	{
-	  std::string pfx
-	    = len > 1 ? args(1).string_value () : std::string ("oct-");
+        {
+          std::string pfx
+            = len > 1 ? args(1).string_value () : std::string ("oct-");
 
-	  if (! error_state)
-	    retval = octave_tempnam (dir, pfx);
-	  else
-	    ::error ("expecting second argument to be a string");
-	}
+          if (! error_state)
+            retval = octave_tempnam (dir, pfx);
+          else
+            ::error ("expecting second argument to be a string");
+        }
       else
-	::error ("expecting first argument to be a string");
+        ::error ("expecting first argument to be a string");
     }
   else
     print_usage ();
@@ -1921,25 +1921,25 @@ system-dependent error message.\n\
       FILE *fid = tmpfile ();
 
       if (fid)
-	{
-	  std::string nm;
+        {
+          std::string nm;
 
-	  std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
+          std::ios::openmode md = fopen_mode_to_ios_mode ("w+b");
 
-	  octave_stream s = octave_stdiostream::create (nm, fid, md);
+          octave_stream s = octave_stdiostream::create (nm, fid, md);
 
-	  if (s)
-	    retval(0) = octave_stream_list::insert (s);
-	  else
-	    error ("tmpfile: failed to create octave_stdiostream object");
+          if (s)
+            retval(0) = octave_stream_list::insert (s);
+          else
+            error ("tmpfile: failed to create octave_stdiostream object");
 
-	}
+        }
       else
-	{
-	  using namespace std;
-	  retval(1) = ::strerror (errno);
-	  retval(0) = -1;
-	}
+        {
+          using namespace std;
+          retval(1) = ::strerror (errno);
+          retval(0) = -1;
+        }
     }
   else
     print_usage ();
@@ -1960,7 +1960,7 @@ int mkstemp (char *tmpl)
   int ret=-1;
   mktemp (tmpl);
   ret = open (tmpl, O_RDWR | O_BINARY | O_CREAT | O_EXCL | _O_SHORT_LIVED,
-	      _S_IREAD | _S_IWRITE);
+              _S_IREAD | _S_IWRITE);
   return ret;
 }
 #define HAVE_MKSTEMP 1
@@ -2003,57 +2003,57 @@ error message.\n\
       std::string tmpl8 = args(0).string_value ();
 
       if (! error_state)
-	{
-	  OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
-	  strcpy (tmp, tmpl8.c_str ());
+        {
+          OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
+          strcpy (tmp, tmpl8.c_str ());
 
 #if defined (HAVE_MKSTEMP)
-	  int fd = mkstemp (tmp);
+          int fd = mkstemp (tmp);
 #else
-	  int fd = mkstemps (tmp, 0);
+          int fd = mkstemps (tmp, 0);
 #endif
 
-	  if (fd < 0)
-	    {
-	      using namespace std;
-	      retval(2) = ::strerror (errno);
-	      retval(0) = fd;
-	    }
-	  else
-	    {
-	      const char *fopen_mode = "w+";
+          if (fd < 0)
+            {
+              using namespace std;
+              retval(2) = ::strerror (errno);
+              retval(0) = fd;
+            }
+          else
+            {
+              const char *fopen_mode = "w+";
 
-	      FILE *fid = fdopen (fd, fopen_mode);
+              FILE *fid = fdopen (fd, fopen_mode);
 
-	      if (fid)
-		{
-		  std::string nm = tmp;
+              if (fid)
+                {
+                  std::string nm = tmp;
 
-		  std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
+                  std::ios::openmode md = fopen_mode_to_ios_mode (fopen_mode);
 
-		  octave_stream s = octave_stdiostream::create (nm, fid, md);
+                  octave_stream s = octave_stdiostream::create (nm, fid, md);
 
-		  if (s)
-		    {
-		      retval(1) = nm;
-		      retval(0) = octave_stream_list::insert (s);
+                  if (s)
+                    {
+                      retval(1) = nm;
+                      retval(0) = octave_stream_list::insert (s);
 
-		      if (nargin == 2 && args(1).is_true ())
-			mark_for_deletion (nm);
-		    }
-		  else
-		    error ("mkstemp: failed to create octave_stdiostream object");
-		}
-	      else
-		{
-		  using namespace std;
-		  retval(2) = ::strerror (errno);
-		  retval(0) = -1;
-		}
-	    }
-	}
+                      if (nargin == 2 && args(1).is_true ())
+                        mark_for_deletion (nm);
+                    }
+                  else
+                    error ("mkstemp: failed to create octave_stdiostream object");
+                }
+              else
+                {
+                  using namespace std;
+                  retval(2) = ::strerror (errno);
+                  retval(0) = -1;
+                }
+            }
+        }
       else
-	error ("mkstemp: expecting string as first argument");
+        error ("mkstemp: expecting string as first argument");
     }
   else
     print_usage ();
@@ -2079,16 +2079,16 @@ convert (int x, int ibase, int obase)
       retval = tmp;
       int mult = ibase;
       while ((x = (x - tmp) / obase))
-	{
-	  tmp = x % obase;
-	  if (tmp > ibase - 1)
-	    {
-	      ::error ("umask: invalid digit");
-	      break;
-	    }
-	  retval += mult * tmp;
-	  mult *= ibase;
-	}
+        {
+          tmp = x % obase;
+          if (tmp > ibase - 1)
+            {
+              ::error ("umask: invalid digit");
+              break;
+            }
+          retval += mult * tmp;
+          mult *= ibase;
+        }
     }
 
   return retval;
@@ -2112,25 +2112,25 @@ interpreted as an octal number); otherwise an error message is printed.\n\
       int mask = args(0).int_value (true);
 
       if (! error_state)
-	{
-	  if (mask < 0)
-	    {
-	      status = -1;
-	      ::error ("umask: MASK must be a positive integer value");
-	    }
-	  else
-	    {
-	      int oct_mask = convert (mask, 8, 10);
+        {
+          if (mask < 0)
+            {
+              status = -1;
+              ::error ("umask: MASK must be a positive integer value");
+            }
+          else
+            {
+              int oct_mask = convert (mask, 8, 10);
 
-	      if (! error_state)
-		status = convert (octave_umask (oct_mask), 10, 8);
-	    }
-	}
+              if (! error_state)
+                status = convert (octave_umask (oct_mask), 10, 8);
+            }
+        }
       else
-	{
-	  status = -1;
-	  ::error ("umask: expecting integer argument");
-	}
+        {
+          status = -1;
+          ::error ("umask: expecting integer argument");
+        }
     }
   else
     print_usage ();
@@ -2224,7 +2224,7 @@ See SEEK_SET.\n\
 
 static octave_value
 const_value (const char *, const octave_value_list& args,
-	     const octave_value& val)
+             const octave_value& val)
 {
   octave_value retval;
 

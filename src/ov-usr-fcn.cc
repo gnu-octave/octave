@@ -60,8 +60,8 @@ static bool Voptimize_subsasgn_calls = true;
 DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
-				     "user-defined script",
-				     "user-defined script");
+                                     "user-defined script",
+                                     "user-defined script");
 
 octave_user_script::octave_user_script (void)
   : octave_user_code (), cmd_list (0), file_name (),
@@ -71,9 +71,9 @@ octave_user_script::octave_user_script (void)
 { }
 
 octave_user_script::octave_user_script (const std::string& fnm,
-					const std::string& nm,
-					tree_statement_list *cmds,
-					const std::string& ds)
+                                        const std::string& nm,
+                                        tree_statement_list *cmds,
+                                        const std::string& ds)
   : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
@@ -84,8 +84,8 @@ octave_user_script::octave_user_script (const std::string& fnm,
 }
 
 octave_user_script::octave_user_script (const std::string& fnm,
-					const std::string& nm,
-					const std::string& ds)
+                                        const std::string& nm,
+                                        const std::string& ds)
   : octave_user_code (nm, ds), cmd_list (0), file_name (fnm), 
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
@@ -99,7 +99,7 @@ octave_user_script::~octave_user_script (void)
 
 octave_value_list
 octave_user_script::subsref (const std::string&,
-			     const std::list<octave_value_list>&, int)
+                             const std::list<octave_value_list>&, int)
 {
   octave_value_list retval;
 
@@ -110,7 +110,7 @@ octave_user_script::subsref (const std::string&,
 
 octave_value_list
 octave_user_script::do_multi_index_op (int nargout,
-				       const octave_value_list& args)
+                                       const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -119,38 +119,38 @@ octave_user_script::do_multi_index_op (int nargout,
   if (! error_state)
     {
       if (args.length () == 0 && nargout == 0)
-	{
-	  if (cmd_list)
-	    {
-	      frame.protect_var (call_depth);
-	      call_depth++;
+        {
+          if (cmd_list)
+            {
+              frame.protect_var (call_depth);
+              call_depth++;
 
-	      if (call_depth < Vmax_recursion_depth)
-		{
-		  octave_call_stack::push (this);
+              if (call_depth < Vmax_recursion_depth)
+                {
+                  octave_call_stack::push (this);
 
                   frame.add_fcn (octave_call_stack::pop);
 
-		  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
-		  tree_evaluator::in_fcn_or_script_body = true;
+                  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
+                  tree_evaluator::in_fcn_or_script_body = true;
 
-		  cmd_list->accept (*current_evaluator);
+                  cmd_list->accept (*current_evaluator);
 
-		  if (tree_return_command::returning)
-		    tree_return_command::returning = 0;
+                  if (tree_return_command::returning)
+                    tree_return_command::returning = 0;
 
-		  if (tree_break_command::breaking)
-		    tree_break_command::breaking--;
+                  if (tree_break_command::breaking)
+                    tree_break_command::breaking--;
 
-		  if (error_state)
-		    octave_call_stack::backtrace_error_message ();
-		}
-	      else
-		::error ("max_recursion_limit exceeded");
-    	    }
-	}
+                  if (error_state)
+                    octave_call_stack::backtrace_error_message ();
+                }
+              else
+                ::error ("max_recursion_limit exceeded");
+            }
+        }
       else
-	error ("invalid call to script %s", file_name.c_str ());
+        error ("invalid call to script %s", file_name.c_str ());
     }
 
   return retval;
@@ -167,8 +167,8 @@ octave_user_script::accept (tree_walker& tw)
 DEFINE_OCTAVE_ALLOCATOR (octave_user_function);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
-				     "user-defined function",
-				     "user-defined function");
+                                     "user-defined function",
+                                     "user-defined function");
 
 // Ugh.  This really needs to be simplified (code/data?
 // extrinsic/intrinsic state?).
@@ -236,7 +236,7 @@ octave_user_function::mark_as_system_fcn_file (void)
       std::string ff_name = fcn_file_in_path (file_name);
 
       if (Vfcn_file_dir == ff_name.substr (0, Vfcn_file_dir.length ()))
-	system_fcn_file = 1;
+        system_fcn_file = 1;
     }
   else
     system_fcn_file = 0;
@@ -281,8 +281,8 @@ octave_user_function::all_va_args (const octave_value_list& args)
 
 octave_value_list
 octave_user_function::subsref (const std::string& type,
-			       const std::list<octave_value_list>& idx,
-			       int nargout)
+                               const std::list<octave_value_list>& idx,
+                               int nargout)
 {
   octave_value_list retval;
 
@@ -290,17 +290,17 @@ octave_user_function::subsref (const std::string& type,
     {
     case '(':
       {
-	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
+        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-	retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -320,7 +320,7 @@ octave_user_function::subsref (const std::string& type,
 
 octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
-					 const octave_value_list& args)
+                                         const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -554,34 +554,34 @@ function accepts a variable number of arguments.\n\
       std::string fname = args(0).string_value ();
 
       if (! error_state)
-	{
-	  octave_value fcn_val = symbol_table::find_user_function (fname);
+        {
+          octave_value fcn_val = symbol_table::find_user_function (fname);
 
-	  octave_user_function *fcn = fcn_val.user_function_value (true);
+          octave_user_function *fcn = fcn_val.user_function_value (true);
 
-	  if (fcn)
-	    {
-	      if (fcn->takes_varargs ())
-		retval = -1;
-	      else
-		{
-		  tree_parameter_list *param_list = fcn->parameter_list ();
+          if (fcn)
+            {
+              if (fcn->takes_varargs ())
+                retval = -1;
+              else
+                {
+                  tree_parameter_list *param_list = fcn->parameter_list ();
 
-		  retval = param_list ? param_list->length () : 0;
-		}
-	    }
-	  else
-	    error ("nargin: invalid function");
-	}
+                  retval = param_list ? param_list->length () : 0;
+                }
+            }
+          else
+            error ("nargin: invalid function");
+        }
       else
-	error ("nargin: expecting string as first argument");
+        error ("nargin: expecting string as first argument");
     }
   else if (nargin == 0)
     {
       retval = symbol_table::varval (".nargin.");
 
       if (retval.is_undefined ())
-	retval = 0;
+        retval = 0;
     }
   else
     print_usage ();
@@ -628,39 +628,39 @@ At the top level, @code{nargout} is undefined.\n\
       std::string fname = args(0).string_value ();
 
       if (! error_state)
-	{
-	  octave_value fcn_val = symbol_table::find_user_function (fname);
+        {
+          octave_value fcn_val = symbol_table::find_user_function (fname);
 
-	  octave_user_function *fcn = fcn_val.user_function_value (true);
+          octave_user_function *fcn = fcn_val.user_function_value (true);
 
-	  if (fcn)
-	    {
-	      if (fcn->takes_var_return ())
-		retval = -1;
-	      else
-		{
-		  tree_parameter_list *ret_list = fcn->return_list ();
+          if (fcn)
+            {
+              if (fcn->takes_var_return ())
+                retval = -1;
+              else
+                {
+                  tree_parameter_list *ret_list = fcn->return_list ();
 
-		  retval = ret_list ? ret_list->length () : 0;
-		}
-	    }
-	  else
-	    error ("nargout: invalid function");
-	}
+                  retval = ret_list ? ret_list->length () : 0;
+                }
+            }
+          else
+            error ("nargout: invalid function");
+        }
       else
-	error ("nargout: expecting string as first argument");
+        error ("nargout: expecting string as first argument");
     }
   else if (nargin == 0)
     {
       if (! symbol_table::at_top_level ())
-	{
-	  retval = symbol_table::varval (".nargout.");
+        {
+          retval = symbol_table::varval (".nargout.");
 
-	  if (retval.is_undefined ())
-	    retval = 0;
-	}
+          if (retval.is_undefined ())
+            retval = 0;
+        }
       else
-	error ("nargout: invalid call at top level");
+        error ("nargout: invalid call at top level");
     }
   else
     print_usage ();

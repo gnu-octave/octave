@@ -53,7 +53,7 @@ template class octave_base_scalar<Complex>;
 DEFINE_OCTAVE_ALLOCATOR (octave_complex);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
-				     "complex scalar", "double");
+                                     "complex scalar", "double");
 
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
@@ -108,7 +108,7 @@ octave_complex::double_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real scalar");
+                               "complex scalar", "real scalar");
 
   retval = std::real (scalar);
 
@@ -122,7 +122,7 @@ octave_complex::float_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real scalar");
+                               "complex scalar", "real scalar");
 
   retval = std::real (scalar);
 
@@ -136,7 +136,7 @@ octave_complex::matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real matrix");
+                               "complex scalar", "real matrix");
 
   retval = Matrix (1, 1, std::real (scalar));
 
@@ -150,7 +150,7 @@ octave_complex::float_matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real matrix");
+                               "complex scalar", "real matrix");
 
   retval = FloatMatrix (1, 1, std::real (scalar));
 
@@ -164,7 +164,7 @@ octave_complex::array_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real matrix");
+                               "complex scalar", "real matrix");
 
   retval = NDArray (dim_vector (1, 1), std::real (scalar));
 
@@ -178,7 +178,7 @@ octave_complex::float_array_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex scalar", "real matrix");
+                               "complex scalar", "real matrix");
 
   retval = FloatNDArray (dim_vector (1, 1), std::real (scalar));
 
@@ -229,7 +229,7 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
       ComplexNDArray retval (dv, ComplexNDArray::resize_fill_value ());
 
       if (dv.numel ())
-	retval(0) = scalar;
+        retval(0) = scalar;
 
       return retval;
     }
@@ -238,7 +238,7 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
       ComplexNDArray retval (dv);
 
       if (dv.numel ())
-	retval(0) = scalar;
+        retval(0) = scalar;
 
       return retval;
     }
@@ -284,7 +284,7 @@ octave_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool 
 octave_complex::load_binary (std::istream& is, bool swap,
-			     oct_mach_info::float_format fmt)
+                             oct_mach_info::float_format fmt)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -292,7 +292,7 @@ octave_complex::load_binary (std::istream& is, bool swap,
 
   Complex ctmp;
   read_doubles (is, reinterpret_cast<double *> (&ctmp),
-		static_cast<save_type> (tmp), 2, swap, fmt);
+                static_cast<save_type> (tmp), 2, swap, fmt);
   if (error_state || ! is)
     return false;
 
@@ -304,7 +304,7 @@ octave_complex::load_binary (std::istream& is, bool swap,
 
 bool
 octave_complex::save_hdf5 (hid_t loc_id, const char *name,
-			   bool /* save_as_floats */)
+                           bool /* save_as_floats */)
 {
   hsize_t dimens[3];
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;
@@ -322,7 +322,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
     }
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, 
-  			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
 #endif
@@ -335,7 +335,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
 
   Complex tmp = complex_value ();
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-		     &tmp) >= 0;
+                     &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -378,7 +378,7 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name)
   // complex scalar:
   Complex ctmp;
   if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-	       &ctmp) >= 0)
+               &ctmp) >= 0)
     {
       retval = true;
       scalar = ctmp;

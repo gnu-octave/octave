@@ -49,7 +49,7 @@ tree_identifier::eval_undefined_error (void)
     ::error ("`%s' undefined", name ().c_str ());
   else
     ::error ("`%s' undefined near line %d column %d",
-	     name ().c_str (), l, c);
+             name ().c_str (), l, c);
 }
 
 octave_value_list
@@ -76,18 +76,18 @@ tree_identifier::rvalue (int nargout)
       // a value.
 
       if (val.is_function () && ! is_postfix_indexed ())
-	{
-	  octave_value_list tmp_args;
+        {
+          octave_value_list tmp_args;
 
-	  retval = val.do_multi_index_op (nargout, tmp_args);
-	}
+          retval = val.do_multi_index_op (nargout, tmp_args);
+        }
       else
-	{
-	  if (print_result () && nargout == 0)
-	    val.print_with_name (octave_stdout, name ());
+        {
+          if (print_result () && nargout == 0)
+            val.print_with_name (octave_stdout, name ());
 
-	  retval = val;
-	}
+          retval = val;
+        }
     }
   else
     eval_undefined_error ();
@@ -116,7 +116,7 @@ tree_identifier::lvalue (void)
 
 tree_identifier *
 tree_identifier::dup (symbol_table::scope_id sc,
-		      symbol_table::context_id) const
+                      symbol_table::context_id) const
 {
   // The new tree_identifier object contains a symbol_record
   // entry from the duplicated scope.

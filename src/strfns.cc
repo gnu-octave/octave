@@ -82,7 +82,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
   if (nargin == 1)
     retval = args(0).convert_to_str (true, true,
-				     args(0).is_dq_string () ? '"' : '\'');
+                                     args(0).is_dq_string () ? '"' : '\'');
   else if (nargin > 1)
     {
       int n_elts = 0;
@@ -92,55 +92,55 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
       std::queue<string_vector> args_as_strings;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  string_vector s = args(i).all_strings ();
+        {
+          string_vector s = args(i).all_strings ();
 
-	  if (error_state)
-	    {
-	      error ("char: unable to convert some args to strings");
-	      return retval;
-	    }
+          if (error_state)
+            {
+              error ("char: unable to convert some args to strings");
+              return retval;
+            }
 
-	  if (s.length () > 0)
+          if (s.length () > 0)
             n_elts += s.length ();
           else
             n_elts += 1;
 
-	  int s_max_len = s.max_length ();
+          int s_max_len = s.max_length ();
 
-	  if (s_max_len > max_len)
-	    max_len = s_max_len;
+          if (s_max_len > max_len)
+            max_len = s_max_len;
 
-	  args_as_strings.push (s);
-	}
+          args_as_strings.push (s);
+        }
 
       string_vector result (n_elts);
 
       int k = 0;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  string_vector s = args_as_strings.front ();
-	  args_as_strings.pop ();
+        {
+          string_vector s = args_as_strings.front ();
+          args_as_strings.pop ();
 
-	  int n = s.length ();
+          int n = s.length ();
 
           if (n > 0)
             {
-	      for (int j = 0; j < n; j++)
-	        {
-	          std::string t = s[j];
-	          int t_len = t.length ();
+              for (int j = 0; j < n; j++)
+                {
+                  std::string t = s[j];
+                  int t_len = t.length ();
 
-	          if (max_len > t_len)
-		    t += std::string (max_len - t_len, ' ');
+                  if (max_len > t_len)
+                    t += std::string (max_len - t_len, ' ');
 
-	          result[k++] = t;
-	        }
+                  result[k++] = t;
+                }
             }
           else
-	    result[k++] = std::string (max_len, ' ');
-	}
+            result[k++] = std::string (max_len, ' ');
+        }
 
       retval = octave_value (result, '\'');
     }
@@ -211,14 +211,14 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
       std::queue<string_vector> args_as_strings;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  string_vector s = args(i).all_strings ();
+        {
+          string_vector s = args(i).all_strings ();
 
-	  if (error_state)
-	    {
-	      error ("strvcat: unable to convert some args to strings");
-	      return retval;
-	    }
+          if (error_state)
+            {
+              error ("strvcat: unable to convert some args to strings");
+              return retval;
+            }
 
           size_t n = s.length ();
 
@@ -232,30 +232,30 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
                 }
             }
 
-	  size_t s_max_len = s.max_length ();
+          size_t s_max_len = s.max_length ();
 
-	  if (s_max_len > max_len)
-	    max_len = s_max_len;
+          if (s_max_len > max_len)
+            max_len = s_max_len;
 
-	  args_as_strings.push (s);
-	}
+          args_as_strings.push (s);
+        }
 
       string_vector result (n_elts);
 
       octave_idx_type k = 0;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  string_vector s = args_as_strings.front ();
-	  args_as_strings.pop ();
+        {
+          string_vector s = args_as_strings.front ();
+          args_as_strings.pop ();
 
-	  size_t n = s.length ();
+          size_t n = s.length ();
 
           if (n > 0)
             {
-	      for (size_t j = 0; j < n; j++)
-	        {
-	          std::string t = s[j];
+              for (size_t j = 0; j < n; j++)
+                {
+                  std::string t = s[j];
                   if (t.length () > 0)
                     {
                       size_t t_len = t.length ();
@@ -265,9 +265,9 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
                       result[k++] = t;
                     }
-	        }
+                }
             }
-	}
+        }
 
       retval = octave_value (result, '\'');
     }
@@ -874,26 +874,26 @@ whos ans\n\
       string_vector s = args(0).all_strings ();
 
       if (! error_state)
-	{
-	  std::ostringstream buf;
+        {
+          std::ostringstream buf;
 
-	  if (nargin == 1)
-	    // Let list_in_columns query terminal width.
-	    s.list_in_columns (buf);
-	  else
-	    {
-	      int width = args(1).int_value ();
+          if (nargin == 1)
+            // Let list_in_columns query terminal width.
+            s.list_in_columns (buf);
+          else
+            {
+              int width = args(1).int_value ();
 
-	      if (! error_state)
-		s.list_in_columns (buf, width);
-	      else
-		error ("list_in_columns: expecting width to be an integer");
-	    }
+              if (! error_state)
+                s.list_in_columns (buf, width);
+              else
+                error ("list_in_columns: expecting width to be an integer");
+            }
 
-	  retval = buf.str ();
-	}
+          retval = buf.str ();
+        }
       else
-	error ("list_in_columns: expecting cellstr or char array");
+        error ("list_in_columns: expecting cellstr or char array");
     }
   else
     print_usage ();

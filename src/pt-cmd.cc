@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 tree_command *
 tree_no_op_command::dup (symbol_table::scope_id,
-			 symbol_table::context_id) const
+                         symbol_table::context_id) const
 {
   return new tree_no_op_command (orig_cmd, line (), column ());
 }
@@ -47,7 +47,7 @@ tree_no_op_command::accept (tree_walker& tw)
 
 tree_command *
 tree_function_def::dup (symbol_table::scope_id,
-			symbol_table::context_id) const
+                        symbol_table::context_id) const
 {
   return new tree_function_def (fcn, line (), column ());
 }

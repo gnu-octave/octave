@@ -90,7 +90,7 @@ octave_range::try_narrowing_conversion (void)
 
 octave_value
 octave_range::subsref (const std::string& type,
-		       const std::list<octave_value_list>& idx)
+                       const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -103,8 +103,8 @@ octave_range::subsref (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -152,7 +152,7 @@ octave_range::double_value (bool) const
   if (nel > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "range", "real scalar");
+                                 "range", "real scalar");
 
       retval = range.base ();
     }
@@ -172,7 +172,7 @@ octave_range::float_value (bool) const
   if (nel > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "range", "real scalar");
+                                 "range", "real scalar");
 
       retval = range.base ();
     }
@@ -254,7 +254,7 @@ octave_range::complex_value (bool) const
   if (nel > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "range", "complex scalar");
+                                 "range", "complex scalar");
 
       retval = range.base ();
     }
@@ -276,7 +276,7 @@ octave_range::float_complex_value (bool) const
   if (nel > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "range", "complex scalar");
+                                 "range", "complex scalar");
 
       retval = range.base ();
     }
@@ -315,7 +315,7 @@ void
 octave_range::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, range, pr_as_read_syntax,
-			 current_print_indent_level ());
+                         current_print_indent_level ());
 }
 
 bool
@@ -349,9 +349,9 @@ skip_comments (std::istream& is)
   while (is.get (c))
     {
       if (c == ' ' || c == '\t' || c == '\n')
-	; // Skip whitespace on way to beginning of next line.
+        ; // Skip whitespace on way to beginning of next line.
       else
-	break;
+        break;
     }
 
   skip_until_newline (is, false);
@@ -411,7 +411,7 @@ octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool 
 octave_range::load_binary (std::istream& is, bool swap,
-			   oct_mach_info::float_format /* fmt */)
+                           oct_mach_info::float_format /* fmt */)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -456,7 +456,7 @@ hdf5_make_range_type (hid_t num_type)
 
 bool
 octave_range::save_hdf5 (hid_t loc_id, const char *name,
-			 bool /* save_as_floats */)
+                         bool /* save_as_floats */)
 {
   hsize_t dimens[3];
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;
@@ -473,7 +473,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
     }
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, 
-  			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
 #endif
@@ -491,7 +491,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   range_vals[2] = r.inc ();
 
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-		     range_vals) >= 0;
+                     range_vals) >= 0;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -534,7 +534,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
 
   double rangevals[3];
   if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-	       rangevals) >= 0)
+               rangevals) >= 0)
     {
       retval = true;
       Range r (rangevals[0], rangevals[1], rangevals[2]);

@@ -89,36 +89,36 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
   while (is.get (c))
     {
       if (c == '%' || c == '#')
-	{
-	  std::ostringstream buf;
-	
-	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
-	    ; // Skip whitespace and comment characters.
+        {
+          std::ostringstream buf;
+        
+          while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
+            ; // Skip whitespace and comment characters.
 
-	  if (isalpha (c))
-	    buf << c;
+          if (isalpha (c))
+            buf << c;
 
-	  while (is.get (c) && isalpha (c))
-	    buf << c;
+          while (is.get (c) && isalpha (c))
+            buf << c;
 
-	  std::string tmp = buf.str ();
-	  bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
+          std::string tmp = buf.str ();
+          bool match = (tmp.compare (0, strlen (keyword), keyword) == 0);
 
-	  if (match)
-	    {
-	      std::ostringstream value;
-	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
-		; // Skip whitespace and the colon.
+          if (match)
+            {
+              std::ostringstream value;
+              while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
+                ; // Skip whitespace and the colon.
 
-	      is.putback(c);
-	      retval = read_until_newline (is, false);
-	      break;
-	    }
-	  else if (next_only)
-	    break;
-	  else
-	    skip_until_newline (is, false);
-	}
+              is.putback(c);
+              retval = read_until_newline (is, false);
+              break;
+            }
+          else if (next_only)
+            break;
+          else
+            skip_until_newline (is, false);
+        }
     }
 
   int len = retval.length ();
@@ -126,17 +126,17 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
   if (len > 0)
     {
       while (len)
-	{
-	  c = retval[len-1];
+        {
+          c = retval[len-1];
 
-	  if (c == ' ' || c == '\t')
-	    len--;
-	  else
-	    {
-	      retval.resize (len);
-	      break;
-	    }
-	}
+          if (c == ' ' || c == '\t')
+            len--;
+          else
+            {
+              retval.resize (len);
+              break;
+            }
+        }
     }
 
   return retval;
@@ -235,7 +235,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 
 std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,
-		 octave_value& tc, octave_idx_type count)
+                 octave_value& tc, octave_idx_type count)
 {
   // Read name for this entry or break on EOF.
 
@@ -244,17 +244,17 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
   if (name.empty ())
     {
       if (count == 0)
-	error ("load: empty name keyword or no data found in file `%s'",
-	       filename.c_str ());
+        error ("load: empty name keyword or no data found in file `%s'",
+               filename.c_str ());
 
       return std::string ();
     }
 
   if (! (name == ".nargin." || name == ".nargout."
-	 || name == CELL_ELT_TAG || valid_identifier (name)))
+         || name == CELL_ELT_TAG || valid_identifier (name)))
     {
       error ("load: bogus identifier `%s' found in file `%s'",
-	     name.c_str (), filename.c_str ());
+             name.c_str (), filename.c_str ());
       return std::string ();
     }
 
@@ -268,22 +268,22 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       size_t pos = tag.rfind (' ');
 
       if (pos != std::string::npos)
-	{
-	  global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
+        {
+          global = SUBSTRING_COMPARE_EQ (tag, 0, 6, "global");
 
-	  typ = global ? tag.substr (7) : tag;
-	}
+          typ = global ? tag.substr (7) : tag;
+        }
       else
-	typ = tag;
+        typ = tag;
 
       // Special case for backward compatiablity. A small bit of cruft
       if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
-	tc = charMatrix ();
+        tc = charMatrix ();
       else
-	tc = octave_value_typeinfo::lookup_type (typ);
+        tc = octave_value_typeinfo::lookup_type (typ);
 
       if (! tc.load_ascii (is))
-	error ("load: trouble reading ascii file `%s'", filename.c_str ());
+        error ("load: trouble reading ascii file `%s'", filename.c_str ());
     }
   else
     error ("load: failed to extract keyword specifying value type");
@@ -310,8 +310,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 
 bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
-		 const std::string& name, bool mark_as_global,
-		 int precision)
+                 const std::string& name, bool mark_as_global,
+                 int precision)
 {
   bool success = true;
 
@@ -340,7 +340,7 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 
 bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
-			      const std::string& name)
+                              const std::string& name)
 {
   return save_ascii_data (os, t, name, false, 6);
 }
@@ -362,41 +362,41 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
   if (tc.is_real_matrix ())
     {
       os << "# 3D data...\n"
-	 << "# type: matrix\n"
-	 << "# total rows: " << nr << "\n"
-	 << "# total columns: " << nc << "\n";
+         << "# type: matrix\n"
+         << "# total rows: " << nr << "\n"
+         << "# total columns: " << nc << "\n";
 
       long old_precision = os.precision ();
       os.precision (6);
 
       if (parametric)
-	{
-	  octave_idx_type extras = nc % 3;
-	  if (extras)
-	    warning ("ignoring last %d columns", extras);
+        {
+          octave_idx_type extras = nc % 3;
+          if (extras)
+            warning ("ignoring last %d columns", extras);
 
-	  Matrix tmp = tc.matrix_value ();
-	  nr = tmp.rows ();
+          Matrix tmp = tc.matrix_value ();
+          nr = tmp.rows ();
 
-	  for (octave_idx_type i = 0; i < nc-extras; i += 3)
-	    {
-	      os << tmp.extract (0, i, nr-1, i+2);
-	      if (i+3 < nc-extras)
-		os << "\n";
-	    }
-	}
+          for (octave_idx_type i = 0; i < nc-extras; i += 3)
+            {
+              os << tmp.extract (0, i, nr-1, i+2);
+              if (i+3 < nc-extras)
+                os << "\n";
+            }
+        }
       else
-	{
-	  Matrix tmp = tc.matrix_value ();
-	  nr = tmp.rows ();
+        {
+          Matrix tmp = tc.matrix_value ();
+          nr = tmp.rows ();
 
-	  for (octave_idx_type i = 0; i < nc; i++)
-	    {
-	      os << tmp.extract (0, i, nr-1, i);
-	      if (i+1 < nc)
-		os << "\n";
-	    }
-	}
+          for (octave_idx_type i = 0; i < nc; i++)
+            {
+              os << tmp.extract (0, i, nr-1, i);
+              if (i+1 < nc)
+                os << "\n";
+            }
+        }
 
       os.precision (old_precision);
     }

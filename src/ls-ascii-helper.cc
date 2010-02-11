@@ -49,34 +49,34 @@ skip_until_newline (std::istream& is, bool keep_newline)
       char c = is.peek ();
 
       if (c == '\n' || c == '\r')
-	{
-	  // Reached newline.
-	  if (! keep_newline)
-	    {
-	      // Eat the CR or LF character.
-	      char d;
-	      is.get (d);
-	      
-	      // Make sure that for binary-mode opened ascii files
-	      // containing CRLF line endings we skip the LF after CR.
-	      if (c == '\r' && is.peek () == '\n')
-		{
-		  // Yes, LF following CR, eat it.
-		  is.get (d);
-		}
-	    }
-	  
-	  // Newline was found, and read from stream if
-	  // keep_newline == true, so exit loop.
-	  break;
-	}
+        {
+          // Reached newline.
+          if (! keep_newline)
+            {
+              // Eat the CR or LF character.
+              char d;
+              is.get (d);
+              
+              // Make sure that for binary-mode opened ascii files
+              // containing CRLF line endings we skip the LF after CR.
+              if (c == '\r' && is.peek () == '\n')
+                {
+                  // Yes, LF following CR, eat it.
+                  is.get (d);
+                }
+            }
+          
+          // Newline was found, and read from stream if
+          // keep_newline == true, so exit loop.
+          break;
+        }
       else
-	{
-	  // No newline charater peeked, so read it and proceed to next
-	  // character.
-	  char d;
-	  is.get (d);
-	}
+        {
+          // No newline charater peeked, so read it and proceed to next
+          // character.
+          char d;
+          is.get (d);
+        }
     }
 }
 
@@ -98,24 +98,24 @@ skip_preceeding_newline (std::istream& is)
     {
       // Yes, at newline.
       do
-	{
-	  // Eat the CR or LF character.
-	  char d;
-	  is.get (d);
-	  
-	  // Make sure that for binary-mode opened ascii files
-	  // containing CRLF line endings we skip the LF after CR.
-	  if (c == '\r' && is.peek () == '\n')
-	    {
-	      // Yes, LF following CR, eat it.
-	      is.get (d);
-	  }
-	  
-	  // Peek into next character.
-	  c = is.peek ();
+        {
+          // Eat the CR or LF character.
+          char d;
+          is.get (d);
+          
+          // Make sure that for binary-mode opened ascii files
+          // containing CRLF line endings we skip the LF after CR.
+          if (c == '\r' && is.peek () == '\n')
+            {
+              // Yes, LF following CR, eat it.
+              is.get (d);
+          }
+          
+          // Peek into next character.
+          c = is.peek ();
 
-	  // Loop while still a newline ahead.
-	}
+          // Loop while still a newline ahead.
+        }
       while (c == '\n' || c == '\r');
     }
 }
@@ -138,37 +138,37 @@ read_until_newline (std::istream& is, bool keep_newline)
       char c = is.peek ();
 
       if (c == '\n' || c == '\r')
-	{
-	  // Reached newline.
-	  if (! keep_newline)
-	    {
-	      // Eat the CR or LF character.
-	      char d;
-	      is.get (d);
-	      
-	      // Make sure that for binary-mode opened ascii files
-	      // containing CRLF line endings we skip the LF after
-	      // CR.
+        {
+          // Reached newline.
+          if (! keep_newline)
+            {
+              // Eat the CR or LF character.
+              char d;
+              is.get (d);
+              
+              // Make sure that for binary-mode opened ascii files
+              // containing CRLF line endings we skip the LF after
+              // CR.
 
-	      if (c == '\r' && is.peek () == '\n')
-		{
-		  // Yes, LF following CR, eat it.
-		  is.get (d);
-		}
-	    }
-	  
-	  // Newline was found, and read from stream if
-	  // keep_newline == true, so exit loop.
-	  break;
-	}
+              if (c == '\r' && is.peek () == '\n')
+                {
+                  // Yes, LF following CR, eat it.
+                  is.get (d);
+                }
+            }
+          
+          // Newline was found, and read from stream if
+          // keep_newline == true, so exit loop.
+          break;
+        }
       else
-	{
-	  // No newline charater peeked, so read it, store it, and
-	  // proceed to next.
-	  char d;
-	  is.get (d);
-	  buf << d;
-	}
+        {
+          // No newline charater peeked, so read it, store it, and
+          // proceed to next.
+          char d;
+          is.get (d);
+          buf << d;
+        }
     }
   
   return buf.str ();

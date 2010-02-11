@@ -88,7 +88,7 @@ octave_char_matrix_str::numeric_conversion_function (void) const
 
 octave_value
 octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
-					      bool resize_ok, char type)
+                                              bool resize_ok, char type)
 {
   octave_value retval;
 
@@ -102,35 +102,35 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
     case 1:
       {
-	idx_vector i = idx (0).index_vector ();
+        idx_vector i = idx (0).index_vector ();
 
-	if (! error_state)
-	  retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-				 type);
+        if (! error_state)
+          retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+                                 type);
       }
       break;
 
     case 2:
       {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
+        idx_vector i = idx (0).index_vector ();
+        idx_vector j = idx (1).index_vector ();
 
-	if (! error_state)
-	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-				 type);
+        if (! error_state)
+          retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+                                 type);
       }
       break;
 
     default:
       {
-	Array<idx_vector> idx_vec (len);
+        Array<idx_vector> idx_vec (len);
 
-	for (octave_idx_type i = 0; i < len; i++)
-	  idx_vec(i) = idx(i).index_vector ();
+        for (octave_idx_type i = 0; i < len; i++)
+          idx_vec(i) = idx(i).index_vector ();
 
-	if (! error_state)
-	  retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-				 type);
+        if (! error_state)
+          retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+                                 type);
       }
       break;
     }
@@ -157,8 +157,8 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
   else \
     { \
       warning_with_id ("Octave:str-to-num", \
-		       "implicit conversion from %s to %s", \
-		       "string", TNAME); \
+                       "implicit conversion from %s to %s", \
+                       "string", TNAME); \
  \
       retval = octave_char_matrix::FCN (); \
     } \
@@ -199,7 +199,7 @@ ComplexNDArray
 octave_char_matrix_str::complex_array_value (bool force_string_conv) const
 {
   CHAR_MATRIX_CONV (ComplexNDArray, , "complex N-d array",
-		    complex_array_value);
+                    complex_array_value);
 }
 
 string_vector
@@ -216,7 +216,7 @@ octave_char_matrix_str::all_strings (bool) const
       retval.resize (n);
 
       for (octave_idx_type i = 0; i < n; i++)
-	retval[i] = chm.row_as_string (i);
+        retval[i] = chm.row_as_string (i);
     }
   else
     error ("invalid conversion of charNDArray to string_vector");
@@ -245,7 +245,7 @@ void
 octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level (), true);
+                         current_print_indent_level (), true);
 }
 
 bool 
@@ -257,7 +257,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       charNDArray tmp = char_array_value ();
       os << "# ndims: " << d.length () << "\n";
       for (int i=0; i < d.length (); i++)
-	os << " " << d (i);
+        os << " " << d (i);
       os << "\n";
       os.write (tmp.fortran_vec (), d.numel ());
       os << "\n";
@@ -270,16 +270,16 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       octave_idx_type elements = chm.rows ();
       os << "# elements: " << elements << "\n";
       for (octave_idx_type i = 0; i < elements; i++)
-	{
-	  unsigned len = chm.cols ();
-	  os << "# length: " << len << "\n";
-	  std::string tstr = chm.row_as_string (i, false, true);
-	  const char *tmp = tstr.data ();
-	  if (tstr.length () > len)
-	    panic_impossible ();
-	  os.write (tmp, len);
-	  os << "\n";
-	}
+        {
+          unsigned len = chm.cols ();
+          os << "# length: " << len << "\n";
+          std::string tstr = chm.row_as_string (i, false, true);
+          const char *tmp = tstr.data ();
+          if (tstr.length () > len)
+            panic_impossible ();
+          os.write (tmp, len);
+          os << "\n";
+        }
     }
 
   return true;
@@ -302,135 +302,135 @@ octave_char_matrix_str::load_ascii (std::istream& is)
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
-	{
-	  int mdims = val;
+        {
+          int mdims = val;
 
-	  if (mdims >= 0)
-	    {
-	      dim_vector dv;
-	      dv.resize (mdims);
+          if (mdims >= 0)
+            {
+              dim_vector dv;
+              dv.resize (mdims);
 
-	      for (int i = 0; i < mdims; i++)
-		is >> dv(i);
+              for (int i = 0; i < mdims; i++)
+                is >> dv(i);
 
-	      if (is)
-		{
-		  charNDArray tmp(dv);
+              if (is)
+                {
+                  charNDArray tmp(dv);
 
-		  if (tmp.is_empty ())
-		    matrix = tmp;
-		  else
-		    {
-		      char *ftmp = tmp.fortran_vec ();
+                  if (tmp.is_empty ())
+                    matrix = tmp;
+                  else
+                    {
+                      char *ftmp = tmp.fortran_vec ();
 
-		      skip_preceeding_newline (is);
+                      skip_preceeding_newline (is);
 
-		      if (! is.read (ftmp, dv.numel ()) || !is)
-			{
-			  error ("load: failed to load string constant");
-			  success = false;
-			}
-		      else
-			matrix = tmp;
-		    }
-		}
-	      else
-		{
-		  error ("load: failed to read dimensions");
-		  success = false;
-		}
-	    }
-	  else
-	    {
-	      error ("load: failed to extract matrix size");
-	      success = false;
-	    }
-	}
+                      if (! is.read (ftmp, dv.numel ()) || !is)
+                        {
+                          error ("load: failed to load string constant");
+                          success = false;
+                        }
+                      else
+                        matrix = tmp;
+                    }
+                }
+              else
+                {
+                  error ("load: failed to read dimensions");
+                  success = false;
+                }
+            }
+          else
+            {
+              error ("load: failed to extract matrix size");
+              success = false;
+            }
+        }
       else if (kw == "elements")
-	{
-	  int elements = val;
+        {
+          int elements = val;
 
-	  if (elements >= 0)
-	    {
-	      // FIXME -- need to be able to get max length
-	      // before doing anything.
+          if (elements >= 0)
+            {
+              // FIXME -- need to be able to get max length
+              // before doing anything.
 
-	      charMatrix chm (elements, 0);
-	      int max_len = 0;
-	      for (int i = 0; i < elements; i++)
-		{
-		  int len;
-		  if (extract_keyword (is, "length", len) && len >= 0)
-		    {
-		      // Use this instead of a C-style character
-		      // buffer so that we can properly handle
-		      // embedded NUL characters.
-		      charMatrix tmp (1, len);
-		      char *ptmp = tmp.fortran_vec ();
+              charMatrix chm (elements, 0);
+              int max_len = 0;
+              for (int i = 0; i < elements; i++)
+                {
+                  int len;
+                  if (extract_keyword (is, "length", len) && len >= 0)
+                    {
+                      // Use this instead of a C-style character
+                      // buffer so that we can properly handle
+                      // embedded NUL characters.
+                      charMatrix tmp (1, len);
+                      char *ptmp = tmp.fortran_vec ();
 
-		      if (len > 0 && ! is.read (ptmp, len))
-			{
-			  error ("load: failed to load string constant");
-			  success = false;
-			  break;
-			}
-		      else
-			{
-			  if (len > max_len)
-			    {
-			      max_len = len;
-			      chm.resize (elements, max_len, 0);
-			    }
+                      if (len > 0 && ! is.read (ptmp, len))
+                        {
+                          error ("load: failed to load string constant");
+                          success = false;
+                          break;
+                        }
+                      else
+                        {
+                          if (len > max_len)
+                            {
+                              max_len = len;
+                              chm.resize (elements, max_len, 0);
+                            }
 
-			  chm.insert (tmp, i, 0);
-			}
-		    }
-		  else
-		    {
-		      error ("load: failed to extract string length for element %d", 
-			     i+1);
-		      success = false;
-		    }
-		}
-	  
-	      if (! error_state)
-		matrix = chm;
-	    }
-	  else
-	    {
-	      error ("load: failed to extract number of string elements");
-	      success = false;
-	    }
-	}
+                          chm.insert (tmp, i, 0);
+                        }
+                    }
+                  else
+                    {
+                      error ("load: failed to extract string length for element %d", 
+                             i+1);
+                      success = false;
+                    }
+                }
+          
+              if (! error_state)
+                matrix = chm;
+            }
+          else
+            {
+              error ("load: failed to extract number of string elements");
+              success = false;
+            }
+        }
       else if (kw == "length")
-	{
-	  int len = val;
+        {
+          int len = val;
       
-	  if (len >= 0)
-	    {
-	      // This is cruft for backward compatiability, 
-	      // but relatively harmless.
+          if (len >= 0)
+            {
+              // This is cruft for backward compatiability, 
+              // but relatively harmless.
 
-	      // Use this instead of a C-style character buffer so
-	      // that we can properly handle embedded NUL characters.
-	      charMatrix tmp (1, len);
-	      char *ptmp = tmp.fortran_vec ();
+              // Use this instead of a C-style character buffer so
+              // that we can properly handle embedded NUL characters.
+              charMatrix tmp (1, len);
+              char *ptmp = tmp.fortran_vec ();
 
-	      if (len > 0 && ! is.read (ptmp, len))
-		{
-		  error ("load: failed to load string constant");
-		}
-	      else
-		{
-		  if (is)
-		    matrix = tmp;
-		  else
-		    error ("load: failed to load string constant");
-		}
-	    }
-	}
+              if (len > 0 && ! is.read (ptmp, len))
+                {
+                  error ("load: failed to load string constant");
+                }
+              else
+                {
+                  if (is)
+                    matrix = tmp;
+                  else
+                    error ("load: failed to load string constant");
+                }
+            }
+        }
       else
-	panic_impossible ();
+        panic_impossible ();
     }
   else
     {
@@ -443,7 +443,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
 bool 
 octave_char_matrix_str::save_binary (std::ostream& os,
-				     bool& /* save_as_floats */)
+                                     bool& /* save_as_floats */)
 {
   dim_vector d = dims ();
   if (d.length() < 1)
@@ -465,7 +465,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
 
 bool 
 octave_char_matrix_str::load_binary (std::istream& is, bool swap,
-				     oct_mach_info::float_format /* fmt */)
+                                     oct_mach_info::float_format /* fmt */)
 {
   int32_t elements;
   if (! is.read (reinterpret_cast<char *> (&elements), 4))
@@ -481,32 +481,32 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       dv.resize (mdims);
 
       for (int i = 0; i < mdims; i++)
-	{
-	  if (! is.read (reinterpret_cast<char *> (&di), 4))
-	    return false;
-	  if (swap)
-	    swap_bytes<4> (&di);
-	  dv(i) = di;
-	}
+        {
+          if (! is.read (reinterpret_cast<char *> (&di), 4))
+            return false;
+          if (swap)
+            swap_bytes<4> (&di);
+          dv(i) = di;
+        }
       
       // Convert an array with a single dimension to be a row vector.
       // Octave should never write files like this, other software
       // might.
 
       if (mdims == 1)
-	{
-	  mdims = 2;
-	  dv.resize (mdims);
-	  dv(1) = dv(0);
-	  dv(0) = 1;
-	}
+        {
+          mdims = 2;
+          dv.resize (mdims);
+          dv(1) = dv(0);
+          dv(0) = 1;
+        }
 
       charNDArray m(dv);
       char *tmp = m.fortran_vec ();
       is.read (tmp, dv.numel ());
       
       if (error_state || ! is)
-	return false;
+        return false;
       matrix = m;
     }
   else
@@ -514,23 +514,23 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       charMatrix chm (elements, 0);
       int max_len = 0;
       for (int i = 0; i < elements; i++)
-	{
-	  int32_t len;
-	  if (! is.read (reinterpret_cast<char *> (&len), 4))
-	    return false;
-	  if (swap)
-	    swap_bytes<4> (&len);
-	  charMatrix btmp (1, len);
-	  char *pbtmp = btmp.fortran_vec ();
-	  if (! is.read (pbtmp, len))
-	    return false;
-	  if (len > max_len)
-	    {
-	      max_len = len;
-	      chm.resize (elements, max_len, 0);
-	    }
-	  chm.insert (btmp, i, 0);
-	}
+        {
+          int32_t len;
+          if (! is.read (reinterpret_cast<char *> (&len), 4))
+            return false;
+          if (swap)
+            swap_bytes<4> (&len);
+          charMatrix btmp (1, len);
+          char *pbtmp = btmp.fortran_vec ();
+          if (! is.read (pbtmp, len))
+            return false;
+          if (len > max_len)
+            {
+              max_len = len;
+              chm.resize (elements, max_len, 0);
+            }
+          chm.insert (btmp, i, 0);
+        }
       matrix = chm;
     }
   return true;
@@ -540,7 +540,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 
 bool
 octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
-				   bool /* save_as_floats */)
+                                   bool /* save_as_floats */)
 {
   dim_vector dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
@@ -563,10 +563,10 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
     return false;
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid, 
-			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid, 
-			H5P_DEFAULT);
+                        H5P_DEFAULT);
 #endif
   if (data_hid < 0)
     {
@@ -580,7 +580,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
     s[i] = m(i);
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
-		     H5P_DEFAULT, s) >= 0;
+                     H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -613,12 +613,12 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
   if (type_class_hid == H5T_INTEGER)
     {
       if (rank < 1)
-	{
-	  H5Tclose (type_hid);
-	  H5Sclose (space_hid);
-	  H5Dclose (data_hid);
-	  return false;
-	}
+        {
+          H5Tclose (type_hid);
+          H5Sclose (space_hid);
+          H5Dclose (data_hid);
+          return false;
+        }
 
       OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
       OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
@@ -627,26 +627,26 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
 
       // Octave uses column-major, while HDF5 uses row-major ordering
       if (rank == 1)
-	{
-	  dv.resize (2);
-	  dv(0) = 1;
-	  dv(1) = hdims[0];
-	}
+        {
+          dv.resize (2);
+          dv(0) = 1;
+          dv(1) = hdims[0];
+        }
       else
-	{
-	  dv.resize (rank);
-	  for (hsize_t i = 0, j = rank - 1; i < rank; i++, j--)
-	    dv(j) = hdims[i];
-	}
+        {
+          dv.resize (rank);
+          for (hsize_t i = 0, j = rank - 1; i < rank; i++, j--)
+            dv(j) = hdims[i];
+        }
 
       charNDArray m (dv);
       char *str = m.fortran_vec ();
       if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
-		   H5P_DEFAULT, str) >= 0) 
-	{
-	  retval = true;
-	  matrix = m;
-	}
+                   H5P_DEFAULT, str) >= 0) 
+        {
+          retval = true;
+          matrix = m;
+        }
 
       H5Tclose (type_hid);
       H5Sclose (space_hid);
@@ -658,98 +658,98 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
       // This is cruft for backward compatiability and easy data
       // importation
       if (rank == 0)
-	{
-	  // a single string:
-	  int slen = H5Tget_size (type_hid);
-	  if (slen < 0)
-	    {
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return false;
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (char, s, slen);
-	      // create datatype for (null-terminated) string
-	      // to read into:
-	      hid_t st_id = H5Tcopy (H5T_C_S1);
-	      H5Tset_size (st_id, slen);
-	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
-		{
-		  H5Tclose (st_id);
-		  H5Tclose (type_hid);
-		  H5Sclose (space_hid);
-		  H5Dclose (data_hid);
-		  return false;
-		}
+        {
+          // a single string:
+          int slen = H5Tget_size (type_hid);
+          if (slen < 0)
+            {
+              H5Tclose (type_hid);
+              H5Sclose (space_hid);
+              H5Dclose (data_hid);
+              return false;
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (char, s, slen);
+              // create datatype for (null-terminated) string
+              // to read into:
+              hid_t st_id = H5Tcopy (H5T_C_S1);
+              H5Tset_size (st_id, slen);
+              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+                {
+                  H5Tclose (st_id);
+                  H5Tclose (type_hid);
+                  H5Sclose (space_hid);
+                  H5Dclose (data_hid);
+                  return false;
+                }
 
-	      matrix = charMatrix (s);
-	  
-	      H5Tclose (st_id);
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return true;
-	    }
-	}
+              matrix = charMatrix (s);
+          
+              H5Tclose (st_id);
+              H5Tclose (type_hid);
+              H5Sclose (space_hid);
+              H5Dclose (data_hid);
+              return true;
+            }
+        }
       else if (rank == 1)
-	{
-	  // string vector
-	  hsize_t elements, maxdim;
-	  H5Sget_simple_extent_dims (space_hid, &elements, &maxdim);
-	  int slen = H5Tget_size (type_hid);
-	  if (slen < 0)
-	    {
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return false;
-	    }
-	  else
-	    {
-	      // hdf5 string arrays store strings of all the
-	      // same physical length (I think), which is
-	      // slightly wasteful, but oh well.
-	  
-	      OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
+        {
+          // string vector
+          hsize_t elements, maxdim;
+          H5Sget_simple_extent_dims (space_hid, &elements, &maxdim);
+          int slen = H5Tget_size (type_hid);
+          if (slen < 0)
+            {
+              H5Tclose (type_hid);
+              H5Sclose (space_hid);
+              H5Dclose (data_hid);
+              return false;
+            }
+          else
+            {
+              // hdf5 string arrays store strings of all the
+              // same physical length (I think), which is
+              // slightly wasteful, but oh well.
+          
+              OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
 
-	      // create datatype for (null-terminated) string
-	      // to read into:
-	      hid_t st_id = H5Tcopy (H5T_C_S1);
-	      H5Tset_size (st_id, slen);
+              // create datatype for (null-terminated) string
+              // to read into:
+              hid_t st_id = H5Tcopy (H5T_C_S1);
+              H5Tset_size (st_id, slen);
 
-	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
-		{
-		  H5Tclose (st_id);
-		  H5Tclose (type_hid);
-		  H5Sclose (space_hid);
-		  H5Dclose (data_hid);
-		  return false;
-		}
+              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+                {
+                  H5Tclose (st_id);
+                  H5Tclose (type_hid);
+                  H5Sclose (space_hid);
+                  H5Dclose (data_hid);
+                  return false;
+                }
 
-	      charMatrix chm (elements, slen - 1);
-	      for (hsize_t i = 0; i < elements; ++i)
-		{
-		  chm.insert (s + i*slen, i, 0);
-		}
+              charMatrix chm (elements, slen - 1);
+              for (hsize_t i = 0; i < elements; ++i)
+                {
+                  chm.insert (s + i*slen, i, 0);
+                }
 
-	      matrix = chm;
+              matrix = chm;
 
-	      H5Tclose (st_id);
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return true;
-	    }
-	}
+              H5Tclose (st_id);
+              H5Tclose (type_hid);
+              H5Sclose (space_hid);
+              H5Dclose (data_hid);
+              return true;
+            }
+        }
       else
-	{
-	  H5Tclose (type_hid);
-	  H5Sclose (space_hid);
-	  H5Dclose (data_hid);
-	  return false;
-	}
+        {
+          H5Tclose (type_hid);
+          H5Sclose (space_hid);
+          H5Dclose (data_hid);
+          return false;
+        }
     }
 
   return retval;

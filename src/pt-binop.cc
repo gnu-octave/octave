@@ -41,7 +41,7 @@ tree_binary_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("binary operator `%s': invalid number of output arguments",
-	   oper () . c_str ());
+           oper () . c_str ());
   else
     retval = rvalue1 (nargout);
 
@@ -61,17 +61,17 @@ tree_binary_expression::rvalue1 (int)
       octave_value a = op_lhs->rvalue1 ();
 
       if (! error_state && a.is_defined () && op_rhs)
-	{
-	  octave_value b = op_rhs->rvalue1 ();
+        {
+          octave_value b = op_rhs->rvalue1 ();
 
-	  if (! error_state && b.is_defined ())
-	    {
-	      retval = ::do_binary_op (etype, a, b);
+          if (! error_state && b.is_defined ())
+            {
+              retval = ::do_binary_op (etype, a, b);
 
-	      if (error_state)
-		retval = octave_value ();
-	    }
-	}
+              if (error_state)
+                retval = octave_value ();
+            }
+        }
     }
 
   return retval;
@@ -85,12 +85,12 @@ tree_binary_expression::oper (void) const
 
 tree_expression *
 tree_binary_expression::dup (symbol_table::scope_id scope,
-			     symbol_table::context_id context) const
+                             symbol_table::context_id context) const
 {
   tree_binary_expression *new_be
     = new tree_binary_expression (op_lhs ? op_lhs->dup (scope, context) : 0,
-				  op_rhs ? op_rhs->dup (scope, context) : 0,
-				  line (), column (), etype);
+                                  op_rhs ? op_rhs->dup (scope, context) : 0,
+                                  line (), column (), etype);
 
   new_be->copy_base (*this);
 
@@ -112,7 +112,7 @@ tree_boolean_expression::rvalue (int nargout)
 
   if (nargout > 1)
     error ("binary operator `%s': invalid number of output arguments",
-	   oper () . c_str ());
+           oper () . c_str ());
   else
     retval = rvalue1 (nargout);
 
@@ -134,39 +134,39 @@ tree_boolean_expression::rvalue1 (int)
       octave_value a = op_lhs->rvalue1 ();
 
       if (! error_state)
-	{
-	  bool a_true = a.is_true ();
+        {
+          bool a_true = a.is_true ();
 
-	  if (! error_state)
-	    {
-	      if (a_true)
-		{
-		  if (etype == bool_or)
-		    {
-		      result = true;
-		      goto done;
-		    }
-		}
-	      else
-		{
-		  if (etype == bool_and)
-		    goto done;
-		}
+          if (! error_state)
+            {
+              if (a_true)
+                {
+                  if (etype == bool_or)
+                    {
+                      result = true;
+                      goto done;
+                    }
+                }
+              else
+                {
+                  if (etype == bool_and)
+                    goto done;
+                }
 
-	      if (op_rhs)
-		{
-		  octave_value b = op_rhs->rvalue1 ();
+              if (op_rhs)
+                {
+                  octave_value b = op_rhs->rvalue1 ();
 
-		  if (! error_state)
-		    result = b.is_true ();
-		}
+                  if (! error_state)
+                    result = b.is_true ();
+                }
 
-	    done:
+            done:
 
-	      if (! error_state)
-		retval = octave_value (result);
-	    }
-	}
+              if (! error_state)
+                retval = octave_value (result);
+            }
+        }
     }
 
   return retval;
@@ -196,12 +196,12 @@ tree_boolean_expression::oper (void) const
 
 tree_expression *
 tree_boolean_expression::dup (symbol_table::scope_id scope,
-			      symbol_table::context_id context) const
+                              symbol_table::context_id context) const
 {
   tree_boolean_expression *new_be
     = new tree_boolean_expression (op_lhs ? op_lhs->dup (scope, context) : 0,
-				   op_rhs ? op_rhs->dup (scope, context) : 0,
-				   line (), column (), etype);
+                                   op_rhs ? op_rhs->dup (scope, context) : 0,
+                                   line (), column (), etype);
 
   new_be->copy_base (*this);
 

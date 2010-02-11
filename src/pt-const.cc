@@ -49,7 +49,7 @@ tree_constant::print (std::ostream& os, bool pr_as_read_syntax, bool pr_orig_tex
 
 void
 tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
-			  bool pr_orig_text) 
+                          bool pr_orig_text) 
 {
   if (pr_orig_text && ! orig_text.empty ())
     os << orig_text;
@@ -72,7 +72,7 @@ tree_constant::rvalue (int nargout)
 
 tree_expression *
 tree_constant::dup (symbol_table::scope_id,
-		    symbol_table::context_id) const
+                    symbol_table::context_id) const
 {
   tree_constant *new_tc
     = new tree_constant (val, orig_text, line (), column ());

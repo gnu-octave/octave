@@ -46,10 +46,10 @@ tree_expression::is_logically_true (const char *warn_for)
   if (! error_state)
     {
       if (t1.is_defined ())
-	return t1.is_true ();
+        return t1.is_true ();
       else
-	::error ("%s: undefined value used in conditional expression",
-		 warn_for);
+        ::error ("%s: undefined value used in conditional expression",
+                 warn_for);
     }
 
   return expr_value;

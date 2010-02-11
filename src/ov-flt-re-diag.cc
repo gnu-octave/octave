@@ -116,7 +116,7 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
 
 bool 
 octave_float_diag_matrix::save_binary (std::ostream& os,
-				       bool& /* save_as_floats*/)
+                                       bool& /* save_as_floats*/)
 {
 
   int32_t r = matrix.rows (), c = matrix.cols ();
@@ -129,7 +129,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-	st = get_save_type (max_val, min_val);
+        st = get_save_type (max_val, min_val);
     }
 
   const float *mtmp = m.data ();
@@ -140,7 +140,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
 
 bool 
 octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
-				 oct_mach_info::float_format fmt)
+                                 oct_mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;

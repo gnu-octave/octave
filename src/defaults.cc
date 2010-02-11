@@ -106,12 +106,12 @@ subst_octave_home (const std::string& s)
       octave_idx_type len = prefix.length ();
 
       if (s.substr (0, len) == prefix)
-	retval.replace (0, len, Voctave_home);
+        retval.replace (0, len, Voctave_home);
     }
 
   if (file_ops::dir_sep_char () != '/')
     std::replace (retval.begin (), retval.end (), '/',
-		  file_ops::dir_sep_char ());
+                  file_ops::dir_sep_char ());
 
   return retval;
 }

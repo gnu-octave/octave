@@ -65,13 +65,13 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
-				     "function handle",
-				     "function_handle");
+                                     "function handle",
+                                     "function_handle");
 
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
-				      const std::string& n)
+                                      const std::string& n)
   : fcn (f), nm (n)
 {
   octave_user_function *uf = fcn.user_function_value (true);
@@ -82,8 +82,8 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
 
 octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
-			    const std::list<octave_value_list>& idx,
-			    int nargout)
+                            const std::list<octave_value_list>& idx,
+                            int nargout)
 {
   octave_value_list retval;
 
@@ -91,17 +91,17 @@ octave_fcn_handle::subsref (const std::string& type,
     {
     case '(':
       {
-	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
+        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-	retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
     case '{':
     case '.':
       {
-	std::string tnm = type_name ();
-	error ("%s cannot be indexed with %c", tnm.c_str (), type[0]);
+        std::string tnm = type_name ();
+        error ("%s cannot be indexed with %c", tnm.c_str (), type[0]);
       }
       break;
 
@@ -180,7 +180,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 
 bool
 octave_fcn_handle::set_fcn (const std::string &octaveroot, 
-			    const std::string& fpath)
+                            const std::string& fpath)
 {
   bool success = true;
 
@@ -191,93 +191,93 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
     {
       // First check if just replacing matlabroot is enough
       std::string str = OCTAVE_EXEC_PREFIX + 
-	fpath.substr (octaveroot.length ());		    
+        fpath.substr (octaveroot.length ());                
       file_stat fs (str);
 
       if (fs.exists ())
-	{
-	  size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+        {
+          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
 
-	  std::string dir_name = str.substr (0, xpos);
+          std::string dir_name = str.substr (0, xpos);
 
-	  octave_function *xfcn
-	    = load_fcn_from_file (str, dir_name, "", nm);
+          octave_function *xfcn
+            = load_fcn_from_file (str, dir_name, "", nm);
 
-	  if (xfcn)
-	    {
-	      octave_value tmp (xfcn);
+          if (xfcn)
+            {
+              octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
-	    }
-	  else
-	    {
-	      error ("function handle points to non-existent function");
-	      success = false;
-	    }
-	}
+              fcn = octave_value (new octave_fcn_handle (tmp, nm));
+            }
+          else
+            {
+              error ("function handle points to non-existent function");
+              success = false;
+            }
+        }
       else
-	{
-	  // Next just search for it anywhere in the system path
-	  string_vector names(3);
-	  names(0) = nm + ".oct";
-	  names(1) = nm + ".mex";
-	  names(2) = nm + ".m";
+        {
+          // Next just search for it anywhere in the system path
+          string_vector names(3);
+          names(0) = nm + ".oct";
+          names(1) = nm + ".mex";
+          names(2) = nm + ".m";
 
-	  dir_path p (load_path::system_path ());
+          dir_path p (load_path::system_path ());
 
-	  str = octave_env::make_absolute (p.find_first_of (names));
+          str = octave_env::make_absolute (p.find_first_of (names));
 
-	  size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
+          size_t xpos = str.find_last_of (file_ops::dir_sep_chars ());
 
-	  std::string dir_name = str.substr (0, xpos);
+          std::string dir_name = str.substr (0, xpos);
 
-	  octave_function *xfcn = load_fcn_from_file (str, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (str, dir_name, "", nm);
 
-	  if (xfcn)
-	    {
-	      octave_value tmp (xfcn);
+          if (xfcn)
+            {
+              octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
-	    }
-	  else
-	    {
-	      error ("function handle points to non-existent function");
-	      success = false;
-	    }
-	}
+              fcn = octave_value (new octave_fcn_handle (tmp, nm));
+            }
+          else
+            {
+              error ("function handle points to non-existent function");
+              success = false;
+            }
+        }
     }
   else
     {
       if (fpath.length () > 0)
-	{
-	  size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars ());
+        {
+          size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars ());
 
-	  std::string dir_name = fpath.substr (0, xpos);
+          std::string dir_name = fpath.substr (0, xpos);
 
-	  octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", nm);
+          octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", nm);
 
-	  if (xfcn)
-	    {
-	      octave_value tmp (xfcn);
+          if (xfcn)
+            {
+              octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
-	    }
-	  else
-	    {
-	      error ("function handle points to non-existent function");
-	      success = false;
-	    }
-	}
+              fcn = octave_value (new octave_fcn_handle (tmp, nm));
+            }
+          else
+            {
+              error ("function handle points to non-existent function");
+              success = false;
+            }
+        }
       else
-	{
-	  fcn = symbol_table::find_function (nm);
+        {
+          fcn = symbol_table::find_function (nm);
 
-	  if (! fcn.is_function ())
-	    {
-	      error ("function handle points to non-existent function");
-	      success = false;
-	    }
-	}
+          if (! fcn.is_function ())
+            {
+              error ("function handle points to non-existent function");
+              success = false;
+            }
+        }
     }
 
   return success;
@@ -294,26 +294,26 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       os << "\n";
 
       if (fcn.is_undefined ())
-	return false;
+        return false;
 
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope (), 0);
+        = symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
       if (varlen > 0)
-	{
-	  os << "# length: " << varlen << "\n";
+        {
+          os << "# length: " << varlen << "\n";
 
-	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-	       p != vars.end (); p++)
-	    {
-	      if (! save_ascii_data (os, p->varval (), p->name (), false, 0))
-		return os;
-	    }
-	}
+          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+               p != vars.end (); p++)
+            {
+              if (! save_ascii_data (os, p->varval (), p->name (), false, 0))
+                return os;
+            }
+        }
     }
   else
     {
@@ -322,7 +322,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
       if (! fnm.empty ())
-	os << "# path: " << fnm << "\n";
+        os << "# path: " << fnm << "\n";
       os << nm << "\n";
     }
 
@@ -358,13 +358,13 @@ octave_fcn_handle::load_ascii (std::istream& is)
       std::string buf;
 
       if (is)
-	{
+        {
 
-	  // Get a line of text whitespace characters included, leaving
-	  // newline in the stream.
-	  buf = read_until_newline (is, true);
+          // Get a line of text whitespace characters included, leaving
+          // newline in the stream.
+          buf = read_until_newline (is, true);
 
-	}
+        }
 
       pos = is.tellg ();
 
@@ -384,61 +384,61 @@ octave_fcn_handle::load_ascii (std::istream& is)
       octave_idx_type len = 0;
 
       if (extract_keyword (is, "length", len, true) && len >= 0)
-	{
-	  if (len > 0)
-	    {
-	      for (octave_idx_type i = 0; i < len; i++)
-		{
-		  octave_value t2;
-		  bool dummy;
+        {
+          if (len > 0)
+            {
+              for (octave_idx_type i = 0; i < len; i++)
+                {
+                  octave_value t2;
+                  bool dummy;
 
-		  std::string name
-		    = read_ascii_data (is, std::string (), dummy, t2, i);
+                  std::string name
+                    = read_ascii_data (is, std::string (), dummy, t2, i);
 
-		  if (!is)
-		    {
-		      error ("load: failed to load anonymous function handle");
-		      break;
-		    }
+                  if (!is)
+                    {
+                      error ("load: failed to load anonymous function handle");
+                      break;
+                    }
 
-		  symbol_table::varref (name, local_scope, 0) = t2;
-		}
-	    }
-	}
+                  symbol_table::varref (name, local_scope, 0) = t2;
+                }
+            }
+        }
       else
-	{
-	  is.seekg (pos);
-	  is.clear ();
-	}
+        {
+          is.seekg (pos);
+          is.clear ();
+        }
 
       if (is && success)
-	{
-	  int parse_status;
-	  octave_value anon_fcn_handle = 
-	    eval_string (buf, true, parse_status);
+        {
+          int parse_status;
+          octave_value anon_fcn_handle = 
+            eval_string (buf, true, parse_status);
 
-	  if (parse_status == 0)
-	    {
-	      octave_fcn_handle *fh = 
-		anon_fcn_handle.fcn_handle_value ();
+          if (parse_status == 0)
+            {
+              octave_fcn_handle *fh = 
+                anon_fcn_handle.fcn_handle_value ();
 
-	      if (fh)
-		{
-		  fcn = fh->fcn;
+              if (fh)
+                {
+                  fcn = fh->fcn;
 
-		  octave_user_function *uf = fcn.user_function_value (true);
+                  octave_user_function *uf = fcn.user_function_value (true);
 
-		  if (uf)
-		    symbol_table::cache_name (uf->scope (), nm);
-		}
-	      else
-		success = false;
-	    }
-	  else
-	    success = false;
-	}
+                  if (uf)
+                    symbol_table::cache_name (uf->scope (), nm);
+                }
+              else
+                success = false;
+            }
+          else
+            success = false;
+        }
       else
-	success = false;
+        success = false;
     }
   else
     success = set_fcn (octaveroot, fpath);
@@ -454,19 +454,19 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       std::ostringstream nmbuf;
 
       if (fcn.is_undefined ())
-	return false;
+        return false;
 
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope (), 0);
+        = symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
       if (varlen > 0)
-	nmbuf << nm << " " << varlen;
+        nmbuf << nm << " " << varlen;
       else
-	nmbuf << nm;
+        nmbuf << nm;
 
       std::string buf_str = nmbuf.str();
       int32_t tmp = buf_str.length ();
@@ -481,15 +481,15 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       os.write (stmp.c_str (), stmp.length ());
 
       if (varlen > 0)
-	{
-	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-	       p != vars.end (); p++)
-	    {
-	      if (! save_binary_data (os, p->varval (), p->name (),
-				      "", 0, save_as_floats))
-		return os;
-	    }
-	}
+        {
+          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+               p != vars.end (); p++)
+            {
+              if (! save_binary_data (os, p->varval (), p->name (),
+                                      "", 0, save_as_floats))
+                return os;
+            }
+        }
     }
   else
     {
@@ -511,7 +511,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_fcn_handle::load_binary (std::istream& is, bool swap,
-				oct_mach_info::float_format fmt)
+                                oct_mach_info::float_format fmt)
 {
   bool success = true;
 
@@ -535,16 +535,16 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       octave_idx_type len = 0;
 
       if (nm.length() > anl)
-	{
-	  std::istringstream nm_is (nm.substr (anl));
-	  nm_is >> len;
-	  nm = nm.substr (0, anl);
-	}
+        {
+          std::istringstream nm_is (nm.substr (anl));
+          nm_is >> len;
+          nm = nm.substr (0, anl);
+        }
 
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
-	return false;
+        return false;
       if (swap)
-	swap_bytes<4> (&tmp);
+        swap_bytes<4> (&tmp);
 
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.get (ctmp2, tmp+1, 0);
@@ -555,7 +555,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);	      
+      frame.add_fcn (symbol_table::erase_scope, local_scope);         
 
       symbol_table::set_scope (local_scope);
 
@@ -563,52 +563,52 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       frame.add_fcn (octave_call_stack::pop);
 
       if (len > 0)
-	{
-	  for (octave_idx_type i = 0; i < len; i++)
-	    {
-	      octave_value t2;
-	      bool dummy;
-	      std::string doc;
+        {
+          for (octave_idx_type i = 0; i < len; i++)
+            {
+              octave_value t2;
+              bool dummy;
+              std::string doc;
 
-	      std::string name = 
-		read_binary_data (is, swap, fmt, std::string (), 
-				  dummy, t2, doc);
+              std::string name = 
+                read_binary_data (is, swap, fmt, std::string (), 
+                                  dummy, t2, doc);
 
-	      if (!is)
-		{
-		  error ("load: failed to load anonymous function handle");
-		  break;
-		}
+              if (!is)
+                {
+                  error ("load: failed to load anonymous function handle");
+                  break;
+                }
 
-	      symbol_table::varref (name, local_scope) = t2;
-	    }
-	}
+              symbol_table::varref (name, local_scope) = t2;
+            }
+        }
 
       if (is && success)
-	{
-	  int parse_status;
-	  octave_value anon_fcn_handle = 
-	    eval_string (ctmp2, true, parse_status);
+        {
+          int parse_status;
+          octave_value anon_fcn_handle = 
+            eval_string (ctmp2, true, parse_status);
 
-	  if (parse_status == 0)
-	    {
-	      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+          if (parse_status == 0)
+            {
+              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
-	      if (fh)
-		{
-		  fcn = fh->fcn;
+              if (fh)
+                {
+                  fcn = fh->fcn;
 
-		  octave_user_function *uf = fcn.user_function_value (true);
+                  octave_user_function *uf = fcn.user_function_value (true);
 
-		  if (uf)
-		    symbol_table::cache_name (uf->scope (), nm);
-		}
-	      else
-		success = false;
-	    }
-	  else
-	    success = false;
-	}
+                  if (uf)
+                    symbol_table::cache_name (uf->scope (), nm);
+                }
+              else
+                success = false;
+            }
+          else
+            success = false;
+        }
     }
   else
     {
@@ -616,13 +616,13 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       std::string fpath;
 
       if (nm.find_first_of ("\n") != std::string::npos)
-	{
-	  size_t pos1 = nm.find_first_of ("\n");
-	  size_t pos2 = nm.find_first_of ("\n", pos1 + 1);
-	  octaveroot = nm.substr (pos1 + 1, pos2 - pos1 - 1);
-	  fpath = nm.substr (pos2 + 1);
-	  nm = nm.substr (0, pos1);
-	}
+        {
+          size_t pos1 = nm.find_first_of ("\n");
+          size_t pos2 = nm.find_first_of ("\n", pos1 + 1);
+          octaveroot = nm.substr (pos1 + 1, pos2 - pos1 - 1);
+          fpath = nm.substr (pos2 + 1);
+          nm = nm.substr (0, pos1);
+        }
 
       success = set_fcn (octaveroot, fpath);
      }
@@ -633,7 +633,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 #if defined (HAVE_HDF5)
 bool
 octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
-			      bool save_as_floats)
+                              bool save_as_floats)
 {
   bool retval = true;
 
@@ -669,12 +669,12 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
     }
 #if HAVE_HDF5_18
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, 
-  			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
 #endif
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				H5P_DEFAULT, nm.c_str ()) < 0)
+                                H5P_DEFAULT, nm.c_str ()) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -692,88 +692,88 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       // attach the type of the variable
       H5Tset_size (type_hid, stmp.length () + 1);
       if (type_hid < 0)
-	{
-	  H5Sclose (space_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
 #if HAVE_HDF5_18
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
-			    H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
-			    H5P_DEFAULT);
+                            H5P_DEFAULT);
 #endif
       if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				    H5P_DEFAULT, stmp.c_str ()) < 0)
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+                                    H5P_DEFAULT, stmp.c_str ()) < 0)
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Dclose (data_hid);
 
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope (), 0);
+        = symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
       if (varlen > 0)
-	{
-	  hid_t as_id = H5Screate (H5S_SCALAR);
+        {
+          hid_t as_id = H5Screate (H5S_SCALAR);
 
-	  if (as_id >= 0)
-	    {
+          if (as_id >= 0)
+            {
 #if HAVE_HDF5_18
-	      hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-				      H5T_NATIVE_IDX, as_id, 
-				      H5P_DEFAULT, H5P_DEFAULT);
+              hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
+                                      H5T_NATIVE_IDX, as_id, 
+                                      H5P_DEFAULT, H5P_DEFAULT);
 
 #else
-	      hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-				      H5T_NATIVE_IDX, as_id, H5P_DEFAULT);
+              hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
+                                      H5T_NATIVE_IDX, as_id, H5P_DEFAULT);
 #endif
 
-	      if (a_id >= 0)
-		{
-		  retval = (H5Awrite (a_id, H5T_NATIVE_IDX, &varlen) >= 0);
+              if (a_id >= 0)
+                {
+                  retval = (H5Awrite (a_id, H5T_NATIVE_IDX, &varlen) >= 0);
 
-		  H5Aclose (a_id);
-		}
-	      else
-		retval = false;
+                  H5Aclose (a_id);
+                }
+              else
+                retval = false;
 
-	      H5Sclose (as_id);
-	    }
-	  else
-	    retval = false;
+              H5Sclose (as_id);
+            }
+          else
+            retval = false;
 #if HAVE_HDF5_18
-	  data_hid = H5Gcreate (group_hid, "symbol table", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+          data_hid = H5Gcreate (group_hid, "symbol table", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-	  data_hid = H5Gcreate (group_hid, "symbol table", 0);
+          data_hid = H5Gcreate (group_hid, "symbol table", 0);
 #endif
-	  if (data_hid < 0) 
-	    {
-	      H5Sclose (space_hid);
-	      H5Tclose (type_hid);
-	      H5Gclose (group_hid);
-	      return false;
-	    }
+          if (data_hid < 0) 
+            {
+              H5Sclose (space_hid);
+              H5Tclose (type_hid);
+              H5Gclose (group_hid);
+              return false;
+            }
 
-	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-	       p != vars.end (); p++)
-	    {
-	      if (! add_hdf5_data (data_hid, p->varval (), p->name (),
-				   "", false, save_as_floats))
-		break;
-	    }
-	  H5Gclose (data_hid);
-	}
+          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+               p != vars.end (); p++)
+            {
+              if (! add_hdf5_data (data_hid, p->varval (), p->name (),
+                                   "", false, save_as_floats))
+                break;
+            }
+          H5Gclose (data_hid);
+        }
     }
   else
     {
@@ -787,47 +787,47 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       hdims[1] = octaveroot.length ();
       space_hid = H5Screate_simple (0 , hdims, 0);
       if (space_hid < 0)
-	{
-	  H5Tclose (type_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Tclose (type_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Tclose (type_hid);
       type_hid = H5Tcopy (H5T_C_S1);
       H5Tset_size (type_hid, octaveroot.length () + 1);
 #if HAVE_HDF5_18
       hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-			      type_hid, space_hid, H5P_DEFAULT, H5P_DEFAULT);
+                              type_hid, space_hid, H5P_DEFAULT, H5P_DEFAULT);
 #else
       hid_t a_id = H5Acreate (group_hid, "OCTAVEROOT",
-			      type_hid, space_hid, H5P_DEFAULT);
+                              type_hid, space_hid, H5P_DEFAULT);
 #endif
 
       if (a_id >= 0)
-	{
-	  retval = (H5Awrite (a_id, type_hid, octaveroot.c_str ()) >= 0);
+        {
+          retval = (H5Awrite (a_id, type_hid, octaveroot.c_str ()) >= 0);
 
-	  H5Aclose (a_id);
-	}
+          H5Aclose (a_id);
+        }
       else
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Sclose (space_hid);
       hdims[0] = 1;
       hdims[1] = fpath.length ();
       space_hid = H5Screate_simple (0 , hdims, 0);
       if (space_hid < 0)
-	{
-	  H5Tclose (type_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Tclose (type_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Tclose (type_hid);
       type_hid = H5Tcopy (H5T_C_S1);
@@ -835,19 +835,19 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 
 #if HAVE_HDF5_18
       a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, 
-      			H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT);
 #else
       a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, H5P_DEFAULT);
 #endif
 
       if (a_id >= 0)
-	{
-	  retval = (H5Awrite (a_id, type_hid, fpath.c_str ()) >= 0);
+        {
+          retval = (H5Awrite (a_id, type_hid, fpath.c_str ()) >= 0);
 
-	  H5Aclose (a_id);
-	}
+          H5Aclose (a_id);
+        }
       else
-	retval = false;
+        retval = false;
     }
 
   H5Sclose (space_hid);
@@ -947,48 +947,48 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 #endif
 
       if (data_hid < 0)
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Tclose (type_hid);
       type_hid = H5Dget_type (data_hid);
       type_class_hid = H5Tget_class (type_hid);
 
       if (type_class_hid != H5T_STRING)
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Dclose (data_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Dclose (data_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       H5Sclose (space_hid);
       space_hid = H5Dget_space (data_hid);
       rank = H5Sget_simple_extent_ndims (space_hid);
 
       if (rank != 0)
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Dclose (data_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Dclose (data_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       slen = H5Tget_size (type_hid);
       if (slen < 0)
-	{
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Dclose (data_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Dclose (data_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
 
       OCTAVE_LOCAL_BUFFER (char, fcn_tmp, slen);
 
@@ -997,14 +997,14 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       H5Tset_size (st_id, slen);
 
       if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, fcn_tmp) < 0)
-	{
-	  H5Tclose (st_id);
-	  H5Sclose (space_hid);
-	  H5Tclose (type_hid);
-	  H5Dclose (data_hid);
-	  H5Gclose (group_hid);
-	  return false;
-	}
+        {
+          H5Tclose (st_id);
+          H5Sclose (space_hid);
+          H5Tclose (type_hid);
+          H5Dclose (data_hid);
+          H5Gclose (group_hid);
+          return false;
+        }
       H5Tclose (st_id);
       H5Dclose (data_hid);
 
@@ -1030,12 +1030,12 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       hid_t attr_id = H5Aopen_name (group_hid, "SYMBOL_TABLE");
 
       if (attr_id >= 0)
-	{
-	  if (H5Aread (attr_id, H5T_NATIVE_IDX, &len) < 0)
-	    success = false;
+        {
+          if (H5Aread (attr_id, H5T_NATIVE_IDX, &len) < 0)
+            success = false;
 
-	  H5Aclose (attr_id);
-	}
+          H5Aclose (attr_id);
+        }
 
       // restore error reporting:
 #if HAVE_HDF5_18
@@ -1058,66 +1058,66 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       frame.add_fcn (octave_call_stack::pop);
 
       if (len > 0 && success)
-	{
-	  hsize_t num_obj = 0;
+        {
+          hsize_t num_obj = 0;
 #if HAVE_HDF5_18
-	  data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT); 
+          data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT); 
 #else
-	  data_hid = H5Gopen (group_hid, "symbol table"); 
+          data_hid = H5Gopen (group_hid, "symbol table"); 
 #endif
-	  H5Gget_num_objs (data_hid, &num_obj);
-	  H5Gclose (data_hid);
+          H5Gget_num_objs (data_hid, &num_obj);
+          H5Gclose (data_hid);
 
-	  if (num_obj != static_cast<hsize_t>(len))
-	    {
-	      error ("load: failed to load anonymous function handle");
-	      success = false;
-	    }
+          if (num_obj != static_cast<hsize_t>(len))
+            {
+              error ("load: failed to load anonymous function handle");
+              success = false;
+            }
 
-	  if (! error_state)
-	    {
-	      hdf5_callback_data dsub;
-	      int current_item = 0;
-	      for (octave_idx_type i = 0; i < len; i++)
-		{
-		  if (H5Giterate (group_hid, "symbol table", &current_item,
-				  hdf5_read_next_data, &dsub) <= 0)
-		    {
-		      error ("load: failed to load anonymous function handle");
-		      success = false;
-		      break;
-		    }
+          if (! error_state)
+            {
+              hdf5_callback_data dsub;
+              int current_item = 0;
+              for (octave_idx_type i = 0; i < len; i++)
+                {
+                  if (H5Giterate (group_hid, "symbol table", &current_item,
+                                  hdf5_read_next_data, &dsub) <= 0)
+                    {
+                      error ("load: failed to load anonymous function handle");
+                      success = false;
+                      break;
+                    }
 
-		  symbol_table::varref (dsub.name, local_scope) = dsub.tc;
-		}
-	    }
-	}
+                  symbol_table::varref (dsub.name, local_scope) = dsub.tc;
+                }
+            }
+        }
 
       if (success)
-	{
-	  int parse_status;
-	  octave_value anon_fcn_handle = 
-	    eval_string (fcn_tmp, true, parse_status);
+        {
+          int parse_status;
+          octave_value anon_fcn_handle = 
+            eval_string (fcn_tmp, true, parse_status);
 
-	  if (parse_status == 0)
-	    {
-	      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+          if (parse_status == 0)
+            {
+              octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
-	      if (fh)
-		{
-		  fcn = fh->fcn;
+              if (fh)
+                {
+                  fcn = fh->fcn;
 
-		  octave_user_function *uf = fcn.user_function_value (true);
+                  octave_user_function *uf = fcn.user_function_value (true);
 
-		  if (uf)
-		    symbol_table::cache_name (uf->scope (), nm);
-		}
-	      else
-		success = false;
-	    }
-	  else
-	    success = false;
-	}
+                  if (uf)
+                    symbol_table::cache_name (uf->scope (), nm);
+                }
+              else
+                success = false;
+            }
+          else
+            success = false;
+        }
 
       frame.run ();
     }
@@ -1145,60 +1145,60 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");
       if (attr_id >= 0)
-	{
-	  H5Tclose (type_hid);
-	  type_hid = H5Aget_type (attr_id);
-	  type_class_hid = H5Tget_class (type_hid);
+        {
+          H5Tclose (type_hid);
+          type_hid = H5Aget_type (attr_id);
+          type_class_hid = H5Tget_class (type_hid);
 
-	  if (type_class_hid != H5T_STRING)
-	    success = false;
-	  else
-	    {
-	      slen = H5Tget_size (type_hid);
-	      st_id = H5Tcopy (H5T_C_S1);
-	      H5Tset_size (st_id, slen);
-	      OCTAVE_LOCAL_BUFFER (char, root_tmp, slen);
+          if (type_class_hid != H5T_STRING)
+            success = false;
+          else
+            {
+              slen = H5Tget_size (type_hid);
+              st_id = H5Tcopy (H5T_C_S1);
+              H5Tset_size (st_id, slen);
+              OCTAVE_LOCAL_BUFFER (char, root_tmp, slen);
 
-	      if (H5Aread (attr_id, st_id, root_tmp) < 0)
-		success = false;
-	      else
-		octaveroot = root_tmp;
+              if (H5Aread (attr_id, st_id, root_tmp) < 0)
+                success = false;
+              else
+                octaveroot = root_tmp;
 
-	      H5Tclose (st_id);
-	    }
+              H5Tclose (st_id);
+            }
 
-	  H5Aclose (attr_id);
-	}
+          H5Aclose (attr_id);
+        }
 
       if (success)
-	{
-	  attr_id = H5Aopen_name (group_hid, "FILE");
-	  if (attr_id >= 0)
-	    {
-	      H5Tclose (type_hid);
-	      type_hid = H5Aget_type (attr_id);
-	      type_class_hid = H5Tget_class (type_hid);
+        {
+          attr_id = H5Aopen_name (group_hid, "FILE");
+          if (attr_id >= 0)
+            {
+              H5Tclose (type_hid);
+              type_hid = H5Aget_type (attr_id);
+              type_class_hid = H5Tget_class (type_hid);
 
-	      if (type_class_hid != H5T_STRING)
-		success = false;
-	      else
-		{
-		  slen = H5Tget_size (type_hid);
-		  st_id = H5Tcopy (H5T_C_S1);
-		  H5Tset_size (st_id, slen);
-		  OCTAVE_LOCAL_BUFFER (char, path_tmp, slen);
+              if (type_class_hid != H5T_STRING)
+                success = false;
+              else
+                {
+                  slen = H5Tget_size (type_hid);
+                  st_id = H5Tcopy (H5T_C_S1);
+                  H5Tset_size (st_id, slen);
+                  OCTAVE_LOCAL_BUFFER (char, path_tmp, slen);
 
-		  if (H5Aread (attr_id, st_id, path_tmp) < 0)
-		    success = false;
-		  else
-		    fpath = path_tmp;
+                  if (H5Aread (attr_id, st_id, path_tmp) < 0)
+                    success = false;
+                  else
+                    fpath = path_tmp;
 
-		  H5Tclose (st_id);
-		}
+                  H5Tclose (st_id);
+                }
 
-	      H5Aclose (attr_id);
-	    }
-	}
+              H5Aclose (attr_id);
+            }
+        }
 
       // restore error reporting:
 #if HAVE_HDF5_18
@@ -1280,51 +1280,51 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
       octave_user_function *f = ftmp.user_function_value ();
 
       if (f)
-	{
-	  tree_parameter_list *p = f->parameter_list ();
+        {
+          tree_parameter_list *p = f->parameter_list ();
 
-	  os << "@(";
+          os << "@(";
 
-	  if (p)
-	    p->accept (tpc);
+          if (p)
+            p->accept (tpc);
 
-	  os << ") ";
+          os << ") ";
 
-	  tree_statement_list *b = f->body ();
+          tree_statement_list *b = f->body ();
 
-	  if (b)
-	    {
-	      assert (b->length () == 1);
+          if (b)
+            {
+              assert (b->length () == 1);
 
-	      tree_statement *s = b->front ();
+              tree_statement *s = b->front ();
 
-	      if (s)
-		{
-		  if (s->is_expression ())
-		    {
-		      tree_expression *e = s->expression ();
+              if (s)
+                {
+                  if (s->is_expression ())
+                    {
+                      tree_expression *e = s->expression ();
 
-		      if (e)
-			e->accept (tpc);
-		    }
-		  else
-		    {
-		      tree_command *c = s->command ();
+                      if (e)
+                        e->accept (tpc);
+                    }
+                  else
+                    {
+                      tree_command *c = s->command ();
 
-		      tpc.suspend_newline ();
-		      c->accept (tpc);
-		      tpc.resume_newline ();
-		    }
-		}
-	    }
+                      tpc.suspend_newline ();
+                      c->accept (tpc);
+                      tpc.resume_newline ();
+                    }
+                }
+            }
 
-	  printed = true;
-	}
+          printed = true;
+        }
     }
 
   if (! printed)
     octave_print_internal (os, "@" + nm, pr_as_read_syntax,
-			   current_print_indent_level ());
+                           current_print_indent_level ());
 }
 
 octave_value
@@ -1348,116 +1348,116 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
   else if (len == 2)
     {
       if (nm[0] == '.')
-	{
-	  switch (nm[1])
-	    {
-	    case '\'':
-	      tnm = "transpose";
-	      break;
+        {
+          switch (nm[1])
+            {
+            case '\'':
+              tnm = "transpose";
+              break;
 
-	    case '+':
-	      tnm = "plus";
-	      break;
+            case '+':
+              tnm = "plus";
+              break;
 
-	    case '-':
-	      tnm = "minus";
-	      break;
+            case '-':
+              tnm = "minus";
+              break;
 
-	    case '*':
-	      tnm = "times";
-	      break;
+            case '*':
+              tnm = "times";
+              break;
 
-	    case '/':
-	      tnm = "rdivide";
-	      break;
+            case '/':
+              tnm = "rdivide";
+              break;
 
-	    case '^':
-	      tnm = "power";
-	      break;
+            case '^':
+              tnm = "power";
+              break;
 
-	    case '\\':
-	      tnm = "ldivide";
-	      break;
-	    }
-	}
+            case '\\':
+              tnm = "ldivide";
+              break;
+            }
+        }
       else if (nm[1] == '=')
-	{
-	  switch (nm[0])
-	    {
-	    case '<':
-	      tnm = "le";
-	      break;
+        {
+          switch (nm[0])
+            {
+            case '<':
+              tnm = "le";
+              break;
 
-	    case '=':
-	      tnm = "eq";
-	      break;
+            case '=':
+              tnm = "eq";
+              break;
 
-	    case '>':
-	      tnm = "ge";
-	      break;
+            case '>':
+              tnm = "ge";
+              break;
 
-	    case '~':
-	    case '!':
-	      tnm = "ne";
-	      break;
-	    }
-	}
+            case '~':
+            case '!':
+              tnm = "ne";
+              break;
+            }
+        }
       else if (nm == "**")
-	tnm = "mpower";
+        tnm = "mpower";
     }
   else if (len == 1)
     {
       switch (nm[0])
-	{
-	case '~':
-	case '!':
-	  tnm = "not";
-	  break;
+        {
+        case '~':
+        case '!':
+          tnm = "not";
+          break;
 
-	case '\'':
-	  tnm = "ctranspose";
-	  break;
+        case '\'':
+          tnm = "ctranspose";
+          break;
 
-	case '+':
-	  tnm = "plus";
-	  break;
+        case '+':
+          tnm = "plus";
+          break;
 
-	case '-':
-	  tnm = "minus";
-	  break;
+        case '-':
+          tnm = "minus";
+          break;
 
-	case '*':
-	  tnm = "mtimes";
-	  break;
+        case '*':
+          tnm = "mtimes";
+          break;
 
-	case '/':
-	  tnm = "mrdivide";
-	  break;
+        case '/':
+          tnm = "mrdivide";
+          break;
 
-	case '^':
-	  tnm = "mpower";
-	  break;
+        case '^':
+          tnm = "mpower";
+          break;
 
-	case '\\':
-	  tnm = "mldivide";
-	  break;
+        case '\\':
+          tnm = "mldivide";
+          break;
 
-	case '<':
-	  tnm = "lt";
-	  break;
+        case '<':
+          tnm = "lt";
+          break;
 
-	case '>':
-	  tnm = "gt";
-	  break;
+        case '>':
+          tnm = "gt";
+          break;
 
-	case '&':
-	  tnm = "and";
-	  break;
+        case '&':
+          tnm = "and";
+          break;
 
-	case '|':
-	  tnm = "or";
-	  break;
-	}
+        case '|':
+          tnm = "or";
+          break;
+        }
     }
 
   bool handle_ok = false;
@@ -1558,83 +1558,83 @@ Return a struct containing information about the function handle\n\
       octave_fcn_handle *fh = args(0).fcn_handle_value ();
 
       if (! error_state)
-	{
-	  octave_function *fcn = fh ? fh->function_value () : 0;
+        {
+          octave_function *fcn = fh ? fh->function_value () : 0;
 
-	  if (fcn)
-	    {
-	      Octave_map m;
+          if (fcn)
+            {
+              Octave_map m;
 
-	      std::string fh_nm = fh->fcn_name ();
+              std::string fh_nm = fh->fcn_name ();
 
-	      if (fh_nm == octave_fcn_handle::anonymous)
-		{
-		  std::ostringstream buf;
-		  fh->print_raw (buf);
-		  m.assign ("function", buf.str ());
+              if (fh_nm == octave_fcn_handle::anonymous)
+                {
+                  std::ostringstream buf;
+                  fh->print_raw (buf);
+                  m.assign ("function", buf.str ());
 
-		  m.assign ("type", "anonymous");
-		}
-	      else
-		{
-		  m.assign ("function", fh_nm);
+                  m.assign ("type", "anonymous");
+                }
+              else
+                {
+                  m.assign ("function", fh_nm);
 
-		  if (fcn->is_nested_function ())
-		    {
-		      m.assign ("type", "subfunction");
-		      Cell parentage (dim_vector (1, 2));
-		      parentage.elem(0) = fh_nm;
-		      parentage.elem(1) = fcn->parent_fcn_name ();
-		      m.assign ("parentage", octave_value (parentage)); 
-		    }
+                  if (fcn->is_nested_function ())
+                    {
+                      m.assign ("type", "subfunction");
+                      Cell parentage (dim_vector (1, 2));
+                      parentage.elem(0) = fh_nm;
+                      parentage.elem(1) = fcn->parent_fcn_name ();
+                      m.assign ("parentage", octave_value (parentage)); 
+                    }
                   else if (fcn->is_private_function ())
-		    m.assign ("type", "private");
+                    m.assign ("type", "private");
                   else if (fh->is_overloaded ())
-		    m.assign ("type", "overloaded");
-		  else
-		    m.assign ("type", "simple");
-		}
+                    m.assign ("type", "overloaded");
+                  else
+                    m.assign ("type", "simple");
+                }
 
-	      std::string nm = fcn->fcn_file_name ();
+              std::string nm = fcn->fcn_file_name ();
 
-	      if (fh_nm == octave_fcn_handle::anonymous)
-		{
-		  m.assign ("file", nm);
+              if (fh_nm == octave_fcn_handle::anonymous)
+                {
+                  m.assign ("file", nm);
 
-		  octave_user_function *fu = fh->user_function_value ();
+                  octave_user_function *fu = fh->user_function_value ();
 
-		  std::list<symbol_table::symbol_record> vars
-		    = symbol_table::all_variables (fu->scope (), 0);
+                  std::list<symbol_table::symbol_record> vars
+                    = symbol_table::all_variables (fu->scope (), 0);
 
-		  size_t varlen = vars.size ();
+                  size_t varlen = vars.size ();
 
-		  if (varlen > 0)
-		    {
-		      Octave_map ws;
-		      for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-			   p != vars.end (); p++)
-			{
-			  ws.assign (p->name (), p->varval (0));
-			}
+                  if (varlen > 0)
+                    {
+                      Octave_map ws;
+                      for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+                           p != vars.end (); p++)
+                        {
+                          ws.assign (p->name (), p->varval (0));
+                        }
 
-		      m.assign ("workspace", ws);
-		    }
-		}
-	      else if (fcn->is_user_function () || fcn->is_user_script ())
-		{
-		  octave_function *fu = fh->function_value ();
-		  m.assign ("file", fu->fcn_file_name ());
-		}
-	      else
-		m.assign ("file", "");
+                      m.assign ("workspace", ws);
+                    }
+                }
+              else if (fcn->is_user_function () || fcn->is_user_script ())
+                {
+                  octave_function *fu = fh->function_value ();
+                  m.assign ("file", fu->fcn_file_name ());
+                }
+              else
+                m.assign ("file", "");
 
-	      retval = m;
-	    }
-	  else
-	    error ("functions: invalid function handle object");
-	}
+              retval = m;
+            }
+          else
+            error ("functions: invalid function handle object");
+        }
       else
-	error ("functions: argument must be a function handle object");
+        error ("functions: argument must be a function handle object");
     }
   else
     print_usage ();
@@ -1656,22 +1656,22 @@ the function handle @var{fcn_handle}.\n\
       octave_fcn_handle *fh = args(0).fcn_handle_value ();
 
       if (! error_state && fh)
-	{
-	  std::string fh_nm = fh->fcn_name ();
+        {
+          std::string fh_nm = fh->fcn_name ();
 
-	  if (fh_nm == octave_fcn_handle::anonymous)
-	    {
-	      std::ostringstream buf;
+          if (fh_nm == octave_fcn_handle::anonymous)
+            {
+              std::ostringstream buf;
 
-	      fh->print_raw (buf);
+              fh->print_raw (buf);
 
-	      retval = buf.str ();
-	    }
-	  else
-	    retval = fh_nm;
-	}
+              retval = buf.str ();
+            }
+          else
+            retval = fh_nm;
+        }
       else
-	error ("func2str: expecting valid function handle as first argument");
+        error ("func2str: expecting valid function handle as first argument");
     }
   else
     print_usage ();
@@ -1696,9 +1696,9 @@ are ignored in the lookup.\n\
       std::string nm = args(0).string_value ();
 
       if (! error_state)
-	retval = make_fcn_handle (nm, nargin != 2);
+        retval = make_fcn_handle (nm, nargin != 2);
       else
-	error ("str2func: expecting string as first argument");
+        error ("str2func: expecting string as first argument");
     }
   else
     print_usage ();

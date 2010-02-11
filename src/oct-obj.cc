@@ -124,7 +124,7 @@ octave_value_list::reverse (void)
 
 octave_value_list
 octave_value_list::splice (octave_idx_type offset, octave_idx_type rep_length,
-			   const octave_value_list& lst) const
+                           const octave_value_list& lst) const
 { 
   octave_value_list retval;
 
@@ -133,10 +133,10 @@ octave_value_list::splice (octave_idx_type offset, octave_idx_type rep_length,
   if (offset < 0 || offset >= len)
     {
       if (! (rep_length == 0 && offset == len))
-	{
-	  error ("octave_value_list::splice: invalid OFFSET");
-	  return retval;
-	}
+        {
+          error ("octave_value_list::splice: invalid OFFSET");
+          return retval;
+        }
     }
 
   if (rep_length < 0 || rep_length + offset > len)
@@ -223,14 +223,14 @@ octave_value_list::make_argv (const std::string& fcn_name) const
       octave_idx_type total_nr = 0;
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  // An empty std::string ("") has zero columns and zero rows (a
-	  // change that was made for Matlab contemptibility.
+        {
+          // An empty std::string ("") has zero columns and zero rows (a
+          // change that was made for Matlab contemptibility.
 
-	  octave_idx_type n = elem(i).rows ();
+          octave_idx_type n = elem(i).rows ();
 
-	  total_nr += n ? n : 1;
-	}
+          total_nr += n ? n : 1;
+        }
 
       octave_idx_type k = 0;
       if (! fcn_name.empty ())
@@ -243,19 +243,19 @@ octave_value_list::make_argv (const std::string& fcn_name) const
         argv.resize (total_nr);
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  octave_idx_type nr = elem(i).rows ();
+        {
+          octave_idx_type nr = elem(i).rows ();
 
-	  if (nr < 2)
-	    argv[k++] = elem(i).string_value ();
-	  else
-	    {
-	      string_vector tmp = elem(i).all_strings ();
+          if (nr < 2)
+            argv[k++] = elem(i).string_value ();
+          else
+            {
+              string_vector tmp = elem(i).all_strings ();
 
-	      for (octave_idx_type j = 0; j < nr; j++)
-		argv[k++] = tmp[j];
-	    }
-	}
+              for (octave_idx_type j = 0; j < nr; j++)
+                argv[k++] = tmp[j];
+            }
+        }
     }
   else
     error ("%s: expecting all arguments to be strings", fcn_name.c_str ());

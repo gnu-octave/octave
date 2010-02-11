@@ -51,8 +51,8 @@ octave_perm_matrix::subsref (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -136,7 +136,7 @@ octave_perm_matrix::double_value (bool) const
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "real scalar");
+                                 type_name (), "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -154,7 +154,7 @@ octave_perm_matrix::float_value (bool) const
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "real scalar");
+                                 type_name (), "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -174,7 +174,7 @@ octave_perm_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "complex scalar");
+                                 type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -194,7 +194,7 @@ octave_perm_matrix::float_complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "complex scalar");
+                                 type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -281,10 +281,10 @@ octave_perm_matrix::load_ascii (std::istream& is)
       ColumnVector tmp (n);
       is >> tmp;
       if (!is) 
-	{
-	  error ("load: failed to load permutation matrix constant");
-	  success = false;
-	}
+        {
+          error ("load: failed to load permutation matrix constant");
+          success = false;
+        }
       else
         {
           Array<octave_idx_type> pvec (n);
@@ -336,21 +336,21 @@ octave_perm_matrix::load_binary (std::istream& is, bool swap,
     {
       int nel = m.numel ();
       for (int i = 0; i < nel; i++) 
-	switch (sizeof (octave_idx_type))
-	  {
-	  case 8:
-	    swap_bytes<8> (&m(i));
-	    break;
-	  case 4:
-	    swap_bytes<4> (&m(i));
-	    break;
-	  case 2:
-	    swap_bytes<2> (&m(i));
-	    break;
-	  case 1:
-	  default:
-	    break;
-	  }
+        switch (sizeof (octave_idx_type))
+          {
+          case 8:
+            swap_bytes<8> (&m(i));
+            break;
+          case 4:
+            swap_bytes<4> (&m(i));
+            break;
+          case 2:
+            swap_bytes<2> (&m(i));
+            break;
+          case 1:
+          default:
+            break;
+          }
     }
 
   matrix = PermMatrix (m, colp);
@@ -396,7 +396,7 @@ octave_perm_matrix::write (octave_stream& os, int block_size,
 
 void
 octave_perm_matrix::print_info (std::ostream& os,
-				    const std::string& prefix) const
+                                    const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
 }

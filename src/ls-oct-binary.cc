@@ -132,9 +132,9 @@ along with Octave; see the file COPYING.  If not, see
 
 std::string
 read_binary_data (std::istream& is, bool swap,
-		  oct_mach_info::float_format fmt,
-		  const std::string& filename, bool& global,
-		  octave_value& tc, std::string& doc)
+                  oct_mach_info::float_format fmt,
+                  const std::string& filename, bool& global,
+                  octave_value& tc, std::string& doc)
 {
   std::string retval;
 
@@ -205,22 +205,22 @@ read_binary_data (std::istream& is, bool swap,
 
     case 5:
       {
-	// FIXMEX
-	// This is cruft, since its for a save type that is old. Maybe
-	// this is taking backward compatability too far!!
-	int32_t len;
-	if (! is.read (reinterpret_cast<char *> (&len), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_bytes<4> (&len);
-	OCTAVE_LOCAL_BUFFER (char, s, len+1);
-	if (! is.read (reinterpret_cast<char *> (s), len))
-	  goto data_read_error;
-	s[len] = '\0';
-	tc = s;
+        // FIXMEX
+        // This is cruft, since its for a save type that is old. Maybe
+        // this is taking backward compatability too far!!
+        int32_t len;
+        if (! is.read (reinterpret_cast<char *> (&len), 4))
+          goto data_read_error;
+        if (swap)
+          swap_bytes<4> (&len);
+        OCTAVE_LOCAL_BUFFER (char, s, len+1);
+        if (! is.read (reinterpret_cast<char *> (s), len))
+          goto data_read_error;
+        s[len] = '\0';
+        tc = s;
 
-	// Early return, since don't want rest of this function
-	return retval;
+        // Early return, since don't want rest of this function
+        return retval;
       }
       break;
 
@@ -234,18 +234,18 @@ read_binary_data (std::istream& is, bool swap,
 
     case 255:
       {
-	// Read the saved variable type
-	int32_t len;
-	if (! is.read (reinterpret_cast<char *> (&len), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_bytes<4> (&len);
-	OCTAVE_LOCAL_BUFFER (char, s, len+1);
-	if (! is.read (s, len))
-	  goto data_read_error;
-	s[len] = '\0';
-	std::string typ = s;
-	tc = octave_value_typeinfo::lookup_type (typ);
+        // Read the saved variable type
+        int32_t len;
+        if (! is.read (reinterpret_cast<char *> (&len), 4))
+          goto data_read_error;
+        if (swap)
+          swap_bytes<4> (&len);
+        OCTAVE_LOCAL_BUFFER (char, s, len+1);
+        if (! is.read (s, len))
+          goto data_read_error;
+        s[len] = '\0';
+        std::string typ = s;
+        tc = octave_value_typeinfo::lookup_type (typ);
       }
       break;
     default:
@@ -268,8 +268,8 @@ read_binary_data (std::istream& is, bool swap,
 
 bool
 save_binary_data (std::ostream& os, const octave_value& tc,
-		  const std::string& name, const std::string& doc,
-		  bool mark_as_global, bool save_as_floats) 
+                  const std::string& name, const std::string& doc,
+                  bool mark_as_global, bool save_as_floats) 
 {
   int32_t name_len = name.length ();
 

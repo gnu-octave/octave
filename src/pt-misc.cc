@@ -73,8 +73,8 @@ tree_parameter_list::validate (in_or_out type)
       tree_identifier *id = elt->ident ();
 
       if (id)
-	{
-	  std::string name = id->name ();
+        {
+          std::string name = id->name ();
 
           if (id->is_black_hole ())
             {
@@ -82,15 +82,15 @@ tree_parameter_list::validate (in_or_out type)
                 error ("invalid use of ~ in output list");
             }
           else if (dict.find (name) != dict.end ())
-	    {
-	      retval = false;
-	      error ("`%s' appears more than once in parameter list",
-		     name.c_str ());
-	      break;
-	    }
-	  else
-	    dict.insert (name);
-	}
+            {
+              retval = false;
+              error ("`%s' appears more than once in parameter list",
+                     name.c_str ());
+              break;
+            }
+          else
+            dict.insert (name);
+        }
     }
 
   if (! error_state)
@@ -100,24 +100,24 @@ tree_parameter_list::validate (in_or_out type)
       size_t len = length ();
 
       if (len > 0)
-	{
-	  tree_decl_elt *elt = back ();
+        {
+          tree_decl_elt *elt = back ();
 
-	  tree_identifier *id = elt->ident ();
+          tree_identifier *id = elt->ident ();
 
-	  if (id && id->name () == va_type)
-	    {
-	      if (len == 1)
-		mark_varargs_only ();
-	      else
-		mark_varargs ();
+          if (id && id->name () == va_type)
+            {
+              if (len == 1)
+                mark_varargs_only ();
+              else
+                mark_varargs ();
 
-	      iterator p = end ();
-	      --p;
-	      delete *p;
-	      erase (p);
-	    }
-	}
+              iterator p = end ();
+              --p;
+              delete *p;
+              erase (p);
+            }
+        }
     }
 
   return retval;
@@ -125,8 +125,8 @@ tree_parameter_list::validate (in_or_out type)
 
 void
 tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
-						    int nargout,
-						    const octave_value& val)
+                                                    int nargout,
+                                                    const octave_value& val)
 {
   bool warned = false;
 
@@ -135,26 +135,26 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
   for (iterator p = begin (); p != end (); p++)
     {
       if (++count > nargout)
-	break;
+        break;
 
       tree_decl_elt *elt = *p;
 
       if (! elt->is_variable ())
-	{
-	  if (! warned)
-	    {
-	      warned = true;
+        {
+          if (! warned)
+            {
+              warned = true;
 
-	      warning_with_id
-		("Octave:undefined-return-values",
-		 "%s: some elements in list of return values are undefined",
-		 warnfor.c_str ());
-	    }
+              warning_with_id
+                ("Octave:undefined-return-values",
+                 "%s: some elements in list of return values are undefined",
+                 warnfor.c_str ());
+            }
 
-	  octave_lvalue tmp = elt->lvalue ();
+          octave_lvalue tmp = elt->lvalue ();
 
-	  tmp.assign (octave_value::op_asn_eq, val);
-	}
+          tmp.assign (octave_value::op_asn_eq, val);
+        }
     }
 }
 
@@ -174,20 +174,20 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
       octave_lvalue ref = elt->lvalue ();
 
       if (i < nargin)
-	{
-	  if (args(i).is_defined () && args(i).is_magic_colon ())
-	    {
-	      if (! elt->eval ())
-		{
-		  ::error ("no default value for argument %d\n", i+1);
-		  return;
-		}
-	    }
-	  else
-	    ref.define (args(i));
-	}
+        {
+          if (args(i).is_defined () && args(i).is_magic_colon ())
+            {
+              if (! elt->eval ())
+                {
+                  ::error ("no default value for argument %d\n", i+1);
+                  return;
+                }
+            }
+          else
+            ref.define (args(i));
+        }
       else
-	elt->eval ();
+        elt->eval ();
     }
 }
 
@@ -264,10 +264,10 @@ tree_parameter_list::is_defined (void)
       tree_decl_elt *elt = *p;
 
       if (! elt->is_variable ())
-	{
-	  status = false;
-	  break;
-	}
+        {
+          status = false;
+          break;
+        }
     }
 
   return status;
@@ -275,7 +275,7 @@ tree_parameter_list::is_defined (void)
 
 tree_parameter_list *
 tree_parameter_list::dup (symbol_table::scope_id scope,
-			  symbol_table::context_id context) const
+                          symbol_table::context_id context) const
 {
   tree_parameter_list *new_list = new tree_parameter_list ();
 
@@ -312,7 +312,7 @@ tree_return_list::~tree_return_list (void)
 
 tree_return_list *
 tree_return_list::dup (symbol_table::scope_id scope,
-		       symbol_table::context_id context) const
+                       symbol_table::context_id context) const
 {
   tree_return_list *new_list = new tree_return_list ();
 

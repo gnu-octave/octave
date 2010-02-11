@@ -69,10 +69,10 @@ check_version (const std::string& version, const std::string& fcn)
   if (version != OCTAVE_API_VERSION)
     {
       error ("API version %s found in .oct file function `%s'\n"
-	     "       does not match the running Octave (API version %s)\n"
-	     "       this can lead to incorrect results or other failures\n"
-	     "       you can fix this problem by recompiling this .oct file",
-	     version.c_str (), fcn.c_str (), OCTAVE_API_VERSION);
+             "       does not match the running Octave (API version %s)\n"
+             "       this can lead to incorrect results or other failures\n"
+             "       you can fix this problem by recompiling this .oct file",
+             version.c_str (), fcn.c_str (), OCTAVE_API_VERSION);
     }
 }
 
@@ -80,8 +80,8 @@ check_version (const std::string& version, const std::string& fcn)
 
 void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc,
-			  bool /* can_hide_function -- not yet implemented */)
+                          const std::string& doc,
+                          bool /* can_hide_function -- not yet implemented */)
 {
   octave_value fcn (new octave_builtin (f, name, doc));
 
@@ -90,8 +90,8 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-		      const octave_shlib& shl, const std::string& doc,
-		      bool relative)
+                      const octave_shlib& shl, const std::string& doc,
+                      bool relative)
 {
   octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
 
@@ -105,7 +105,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
 void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool relative)
+                      const octave_shlib& shl, bool relative)
 {
   octave_mex_function *fcn = new octave_mex_function (fptr, fmex, shl, name);
 

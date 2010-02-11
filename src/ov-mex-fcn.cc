@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OCTAVE_ALLOCATOR (octave_mex_function);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
-				     "mex function", "mex function");
+                                     "mex function", "mex function");
 
 octave_mex_function::octave_mex_function
   (void *fptr, bool fmex, const octave_shlib& shl,
@@ -78,8 +78,8 @@ octave_mex_function::time_parsed (void) const
 
 octave_value_list
 octave_mex_function::subsref (const std::string& type,
-			      const std::list<octave_value_list>& idx,
-			      int nargout)
+                              const std::list<octave_value_list>& idx,
+                              int nargout)
 {
   octave_value_list retval;
 
@@ -87,17 +87,17 @@ octave_mex_function::subsref (const std::string& type,
     {
     case '(':
       {
-	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
+        int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-	retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front ());
       }
       break;
 
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -124,11 +124,11 @@ octave_mex_function::subsref (const std::string& type,
 // FIXME -- shouldn't this declaration be a header file somewhere?
 extern octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
-	  int nargout, octave_mex_function *curr_mex_fcn);
+          int nargout, octave_mex_function *curr_mex_fcn);
 
 octave_value_list
 octave_mex_function::do_multi_index_op (int nargout,
-					const octave_value_list& args)
+                                        const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -146,13 +146,13 @@ octave_mex_function::do_multi_index_op (int nargout,
       frame.add_fcn (octave_call_stack::pop);
 
       try
-	{
-	  retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
-	}
+        {
+          retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+        }
       catch (octave_execution_exception)
-	{
-	  gripe_library_execution_error ();
-	}
+        {
+          gripe_library_execution_error ();
+        }
     }
 
   return retval;

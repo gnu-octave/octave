@@ -43,7 +43,7 @@ tree_breakpoint::visit_while_command (tree_while_command& cmd)
       tree_statement_list *lst = cmd.body ();
 
       if (lst)
-	lst->accept (*this);
+        lst->accept (*this);
     }
 }
 
@@ -55,13 +55,13 @@ tree_breakpoint::visit_do_until_command (tree_do_until_command& cmd)
       tree_statement_list *lst = cmd.body ();
 
       if (lst)
-	lst->accept (*this);
+        lst->accept (*this);
 
       if (! found)
-	{
-	  if (cmd.line () >= line)
-	    take_action (cmd);
-	}
+        {
+          if (cmd.line () >= line)
+            take_action (cmd);
+        }
     }
 }
 
@@ -139,7 +139,7 @@ tree_breakpoint::visit_simple_for_command (tree_simple_for_command& cmd)
       tree_statement_list *lst = cmd.body ();
 
       if (lst)
-	lst->accept (*this);
+        lst->accept (*this);
     }
 }
 
@@ -154,7 +154,7 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
       tree_statement_list *lst = cmd.body ();
 
       if (lst)
-	lst->accept (*this);
+        lst->accept (*this);
     }
 }
 
@@ -228,18 +228,18 @@ tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
       tree_if_clause *t = *p;
 
       if (t->line () >= line)
-	take_action (*t);
+        take_action (*t);
 
       if (! found)
-	{      
-	  tree_statement_list *stmt_lst = t->commands ();
+        {      
+          tree_statement_list *stmt_lst = t->commands ();
 
-	  if (stmt_lst)
-	    stmt_lst->accept (*this);
-	}
+          if (stmt_lst)
+            stmt_lst->accept (*this);
+        }
 
       if (found)
-	break;
+        break;
     }
 }
 
@@ -353,12 +353,12 @@ tree_breakpoint::visit_statement_list (tree_statement_list& lst)
       tree_statement *elt = *p;
 
       if (elt)
-	{
-	  elt->accept (*this);
+        {
+          elt->accept (*this);
 
-	  if (found)
-	    break;
-	}
+          if (found)
+            break;
+        }
     }
 }
 
@@ -376,18 +376,18 @@ tree_breakpoint::visit_switch_case_list (tree_switch_case_list& lst)
       tree_switch_case *t = *p;
 
       if (t->line () >= line)
-	take_action (*t);
+        take_action (*t);
 
       if (! found)
-	{
-	  tree_statement_list *stmt_lst = t->commands ();
+        {
+          tree_statement_list *stmt_lst = t->commands ();
 
-	  if (stmt_lst)
-	    stmt_lst->accept (*this);
-	}
+          if (stmt_lst)
+            stmt_lst->accept (*this);
+        }
 
       if (found)
-	break;
+        break;
     }
 }
 
@@ -402,7 +402,7 @@ tree_breakpoint::visit_switch_command (tree_switch_command& cmd)
       tree_switch_case_list *lst = cmd.case_list ();
 
       if (lst)
-	lst->accept (*this);
+        lst->accept (*this);
     }
 }
 
@@ -419,7 +419,7 @@ tree_breakpoint::visit_try_catch_command (tree_try_catch_command& cmd)
       tree_statement_list *catch_code = cmd.cleanup ();
 
       if (catch_code)
-	catch_code->accept (*this);
+        catch_code->accept (*this);
     }
 }
 
@@ -436,7 +436,7 @@ tree_breakpoint::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
       tree_statement_list *cleanup = cmd.cleanup ();
 
       if (cleanup)
-	cleanup->accept (*this);
+        cleanup->accept (*this);
     }
 }
 
@@ -457,10 +457,10 @@ tree_breakpoint::take_action (tree& tr)
   else if (act == list)
     {
       if (tr.is_breakpoint ())
-	{
-	  bp_list.append (octave_value (tr.line ()));
-	  line = tr.line () + 1;
-	}
+        {
+          bp_list.append (octave_value (tr.line ()));
+          line = tr.line () + 1;
+        }
     }
   else
     panic_impossible ();
@@ -485,10 +485,10 @@ tree_breakpoint::take_action (tree_statement& stmt)
   else if (act == list)
     {
       if (stmt.is_breakpoint ())
-	{
-	  bp_list.append (octave_value (lineno));
-	  line = lineno + 1;
-	}
+        {
+          bp_list.append (octave_value (lineno));
+          line = lineno + 1;
+        }
     }
   else
     panic_impossible ();

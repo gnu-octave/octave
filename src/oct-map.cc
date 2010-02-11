@@ -39,11 +39,11 @@ Octave_map::Octave_map (const dim_vector& dv, const Cell& key_vals)
   if (key_vals.is_cellstr ())
     {
       for (octave_idx_type i = 0; i < key_vals.numel (); i++)
-	{
-	  std::string k = key_vals(i).string_value ();
-	  map[k] = c;
-	  key_list.push_back (k);
-	}
+        {
+          std::string k = key_vals(i).string_value ();
+          map[k] = c;
+          key_list.push_back (k);
+        }
     }
   else
     error ("Octave_map: expecting keys to be cellstr");
@@ -59,7 +59,7 @@ Octave_map::squeeze (void) const
       Cell tmp = contents (pa).squeeze ();
 
       if (error_state)
-	break;
+        break;
 
       retval.assign (key (pa), tmp);
     }
@@ -87,7 +87,7 @@ Octave_map::permute (const Array<int>& vec, bool inv) const
       Cell tmp = contents (pa).permute (vec, inv);
 
       if (error_state)
-	break;
+        break;
 
       retval.assign (key (pa), tmp);
     }
@@ -136,7 +136,7 @@ Octave_map::intfield (const std::string& k, int def_val) const
 
 std::string
 Octave_map::stringfield (const std::string& k,
-			 const std::string& def_val) const
+                         const std::string& def_val) const
 {
   std::string retval = def_val;
 
@@ -196,7 +196,7 @@ Octave_map::reshape (const dim_vector& new_dims) const
   if (new_dims != dims ())
     {
       for (const_iterator p = begin (); p != end (); p++)
-	retval.assign (key(p), contents(p).reshape (new_dims));
+        retval.assign (key(p), contents(p).reshape (new_dims));
 
       retval.dimensions = new_dims;
 
@@ -222,23 +222,23 @@ Octave_map::resize (const dim_vector& dv, bool fill)
   if (dv != dims ())
     {
       if (nfields () == 0)
-	dimensions = dv;
+        dimensions = dv;
       else
-	{
-	  for (const_iterator p = begin (); p != end (); p++)
-	    {
-	      Cell tmp = contents(p);
+        {
+          for (const_iterator p = begin (); p != end (); p++)
+            {
+              Cell tmp = contents(p);
 
-	      if (fill)
-		tmp.resize (dv, Cell::resize_fill_value ());
-	      else
-		tmp.resize (dv);
+              if (fill)
+                tmp.resize (dv, Cell::resize_fill_value ());
+              else
+                tmp.resize (dv);
 
-	      dimensions = dv;
+              dimensions = dv;
 
-	      assign (key(p), tmp);
-	    }
-	}
+              assign (key(p), tmp);
+            }
+        }
     }
 }
 
@@ -250,18 +250,18 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
   if (nfields () == rb.nfields ())
     {
       for (const_iterator pa = begin (); pa != end (); pa++)
-	{
-	  const_iterator pb = rb.seek (key(pa));
+        {
+          const_iterator pb = rb.seek (key(pa));
 
-	  if (pb == rb.end ())
-	    {
-	      error ("field name mismatch in structure concatenation");
-	      break;
-	    }
-	
-	  retval.assign (key(pa),
-			 contents(pa).insert (rb.contents(pb), ra_idx));
-	}
+          if (pb == rb.end ())
+            {
+              error ("field name mismatch in structure concatenation");
+              break;
+            }
+        
+          retval.assign (key(pa),
+                         contents(pa).insert (rb.contents(pb), ra_idx));
+        }
 
       // Preserve order of keys.
       retval.key_list = key_list;
@@ -271,16 +271,16 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
       dim_vector dv = dims ();
 
       if (dv.all_zero ())
-	retval = rb;
+        retval = rb;
       else
-	{
-	  dv = rb.dims ();
+        {
+          dv = rb.dims ();
 
-	  if (dv.all_zero ())
-	    retval = *this;
-	  else
-	    error ("invalid structure concatenation");
-	}
+          if (dv.all_zero ())
+            retval = *this;
+          else
+            error ("invalid structure concatenation");
+        }
     }
 
   return retval;
@@ -315,16 +315,16 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
       octave_idx_type b_len = b_keys.length ();
 
       if (a_len == b_len)
-	{
-	  for (octave_idx_type i = 0; i < a_len; i++)
-	    {
-	      if (a_keys[i] != b_keys[i])
-		goto done;
-	    }
+        {
+          for (octave_idx_type i = 0; i < a_len; i++)
+            {
+              if (a_keys[i] != b_keys[i])
+                goto done;
+            }
 
-	  keys = a_keys;
-	  retval = true;
-	}
+          keys = a_keys;
+          retval = true;
+        }
     }
 
  done:
@@ -340,17 +340,17 @@ Octave_map::maybe_delete_elements (const octave_value_list& idx)
   if (len > 0)
     {
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string k = t_keys[i];
+        {
+          std::string k = t_keys[i];
 
-	  map[k] = contents(k).delete_elements (idx);
+          map[k] = contents(k).delete_elements (idx);
 
-	  if (error_state)
-	    break;
-	}
+          if (error_state)
+            break;
+        }
 
       if (!error_state)
-	dimensions = contents(t_keys[0]).dims();
+        dimensions = contents(t_keys[0]).dims();
     }
 
   return *this;
@@ -366,31 +366,31 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
       octave_idx_type len = t_keys.length ();
 
       if (len == 0)
-	{
-	  Cell tmp_lhs (dims ());
-	  Cell tmp_rhs (rhs.dims ());
+        {
+          Cell tmp_lhs (dims ());
+          Cell tmp_rhs (rhs.dims ());
 
-	  tmp_lhs.assign (idx, tmp_rhs, Matrix ());
+          tmp_lhs.assign (idx, tmp_rhs, Matrix ());
 
-	  if (! error_state)
-	    resize (tmp_lhs.dims ());
-	  else
-	    error ("size mismatch in structure assignment");
-	}
+          if (! error_state)
+            resize (tmp_lhs.dims ());
+          else
+            error ("size mismatch in structure assignment");
+        }
       else
-	{
-	  for (octave_idx_type i = 0; i < len; i++)
-	    {
-	      std::string k = t_keys[i];
+        {
+          for (octave_idx_type i = 0; i < len; i++)
+            {
+              std::string k = t_keys[i];
 
-	      Cell t_rhs = rhs.contents (k);
+              Cell t_rhs = rhs.contents (k);
 
-	      assign (idx, k, t_rhs);
+              assign (idx, k, t_rhs);
 
-	      if (error_state)
-		break;
-	    }
-	}
+              if (error_state)
+                break;
+            }
+        }
     }
   else
     error ("field name mismatch in structure assignment");
@@ -400,7 +400,7 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 
 Octave_map&
 Octave_map::assign (const octave_value_list& idx, const std::string& k,
-		    const Cell& rhs)
+                    const Cell& rhs)
 {
   Cell tmp;
 
@@ -416,12 +416,12 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
       dim_vector tmp_dims = tmp.dims ();
 
       if (tmp_dims != dimensions)
-	{
-	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize (tmp_dims, Cell::resize_fill_value ());
+        {
+          for (iterator p = begin (); p != end (); p++)
+            contents(p).resize (tmp_dims, Cell::resize_fill_value ());
 
           dimensions = tmp_dims;
-	}
+        }
 
       maybe_add_to_key_list (k);
 
@@ -447,13 +447,13 @@ Octave_map::assign (const std::string& k, const octave_value& rhs)
       dim_vector dv = dims ();
 
       if (dv.all_ones ())
-	{
-	  maybe_add_to_key_list (k);
+        {
+          maybe_add_to_key_list (k);
 
-	  map[k] = Cell (rhs);
-	}
+          map[k] = Cell (rhs);
+        }
       else
-	error ("invalid structure assignment");
+        error ("invalid structure assignment");
     }
 
   return *this;
@@ -473,13 +473,13 @@ Octave_map::assign (const std::string& k, const Cell& rhs)
   else
     {
       if (dims () == rhs.dims ())
-	{
-	  maybe_add_to_key_list (k);
+        {
+          maybe_add_to_key_list (k);
 
-	  map[k] = rhs;
-	}
+          map[k] = rhs;
+        }
       else
-	error ("invalid structure assignment");
+        error ("invalid structure assignment");
     }
 
   return *this;

@@ -47,9 +47,9 @@ strip_trans_herm (tree_expression *&exp)
 
       if (op == octave_value::op_transpose
           || op == octave_value::op_hermitian)
-	exp = uexp->operand ();
+        exp = uexp->operand ();
       else
-	op = octave_value::unknown_unary_op;
+        op = octave_value::unknown_unary_op;
 
       return op;
     }
@@ -68,9 +68,9 @@ strip_not (tree_expression *&exp)
       octave_value::unary_op op = uexp->op_type ();
 
       if (op == octave_value::op_not)
-	exp = uexp->operand ();
+        exp = uexp->operand ();
       else
-	op = octave_value::unknown_unary_op;
+        op = octave_value::unknown_unary_op;
 
       return op;
     }
@@ -204,17 +204,17 @@ tree_compound_binary_expression::rvalue1 (int)
       octave_value a = op_lhs->rvalue1 ();
 
       if (! error_state && a.is_defined () && op_rhs)
-	{
-	  octave_value b = op_rhs->rvalue1 ();
+        {
+          octave_value b = op_rhs->rvalue1 ();
 
-	  if (! error_state && b.is_defined ())
-	    {
-	      retval = ::do_binary_op (etype, a, b);
+          if (! error_state && b.is_defined ())
+            {
+              retval = ::do_binary_op (etype, a, b);
 
-	      if (error_state)
-		retval = octave_value ();
-	    }
-	}
+              if (error_state)
+                retval = octave_value ();
+            }
+        }
     }
 
   return retval;

@@ -65,7 +65,7 @@ void
 gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
 {
   error ("nonconformant matrices (op1 is %dx%d, op2 is %dx%d)",
-	 r1, c1, r2, c2);
+         r1, c1, r2, c2);
 }
 
 void
@@ -148,7 +148,7 @@ gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 
 void
 gripe_wrong_type_arg (const char *name, const octave_value& tc,
-		      bool is_error)
+                      bool is_error)
 {
   std::string type = tc.type_name ();
 
@@ -157,7 +157,7 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 
 void
 gripe_wrong_type_arg (const std::string& name, const octave_value& tc,
-		      bool is_error)
+                      bool is_error)
 {
   gripe_wrong_type_arg (name.c_str (), tc, is_error);
 }
@@ -184,11 +184,11 @@ gripe_implicit_conversion (const char *id, const char *from, const char *to)
 
 void
 gripe_implicit_conversion (const std::string& id,
-			   const std::string& from, const std::string& to)
+                           const std::string& from, const std::string& to)
 {
   warning_with_id (id.c_str (),
-		   "implicit conversion from %s to %s",
-		   from.c_str (), to.c_str ());
+                   "implicit conversion from %s to %s",
+                   from.c_str (), to.c_str ());
 }
 
 void
@@ -201,7 +201,7 @@ void
 gripe_logical_conversion (void)
 {
   warning_with_id ("Octave:logical-conversion",
-		   "value not equal to 1 or 0 converted to logical 1");
+                   "value not equal to 1 or 0 converted to logical 1");
 }
 
 void

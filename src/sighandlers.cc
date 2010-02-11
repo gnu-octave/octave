@@ -95,34 +95,34 @@ octave_signal_handler (void)
   for (int i = 0; i < NSIG; i++)
     {
       if (octave_signals_caught[i])
-	{
-	  octave_signals_caught[i] = false;
+        {
+          octave_signals_caught[i] = false;
 
-	  switch (i)
-	    {
+          switch (i)
+            {
 #ifdef SIGCHLD
-	    case SIGCHLD:
-	      octave_child_list::reap ();
-	      break;
+            case SIGCHLD:
+              octave_child_list::reap ();
+              break;
 #endif
 
-	    case SIGFPE:
-	      std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
-	      break;
+            case SIGFPE:
+              std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
+              break;
 
 #ifdef SIGPIPE
-	    case SIGPIPE:
-	      std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
-	      break;
+            case SIGPIPE:
+              std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
+              break;
 #endif
-	    }
-	}
+            }
+        }
     }
 }
 
 static void
 my_friendly_exit (const char *sig_name, int sig_number,
-		  bool save_vars = true)
+                  bool save_vars = true)
 {
   static bool been_there_done_that = false;
 
@@ -145,33 +145,33 @@ my_friendly_exit (const char *sig_name, int sig_number,
       std::cerr << "panic: " << sig_name << " -- stopping myself...\n";
 
       if (save_vars)
-	dump_octave_core ();
+        dump_octave_core ();
 
       if (sig_number < 0)
-	{
-	  MINGW_SIGNAL_CLEANUP ();
+        {
+          MINGW_SIGNAL_CLEANUP ();
 
-	  exit (1);
-	}
+          exit (1);
+        }
       else
-	{
-	  octave_set_signal_handler (sig_number, SIG_DFL);
+        {
+          octave_set_signal_handler (sig_number, SIG_DFL);
 
 #if defined (HAVE_RAISE)
-	  raise (sig_number);
+          raise (sig_number);
 #elif defined (HAVE_KILL)
-	  kill (getpid (), sig_number);
+          kill (getpid (), sig_number);
 #else
-	  exit (1);
+          exit (1);
 #endif
-	}
+        }
 
     }
 }
 
 sig_handler *
 octave_set_signal_handler (int sig, sig_handler *handler,
-			   bool restart_syscalls)
+                           bool restart_syscalls)
 {
   struct sigaction act, oact;
 
@@ -277,8 +277,8 @@ sig_hup_or_term_handler (int sig)
 #if defined (SIGHUP)
     case SIGHUP:
       {
-	if (Vsighup_dumps_octave_core)
-	  dump_octave_core ();
+        if (Vsighup_dumps_octave_core)
+          dump_octave_core ();
       }
       break;
 #endif
@@ -286,8 +286,8 @@ sig_hup_or_term_handler (int sig)
 #if defined (SIGTERM)
     case SIGTERM:
       {
-	if (Vsigterm_dumps_octave_core)
-	  dump_octave_core ();
+        if (Vsigterm_dumps_octave_core)
+          dump_octave_core ();
       }
       break;
 #endif
@@ -327,49 +327,49 @@ user_abort (const char *sig_name, int sig_number)
   if (can_interrupt)
     {
       if (Vdebug_on_interrupt)
-	{
-	  if (! octave_debug_on_interrupt_state)
-	    {
-	      tree_evaluator::debug_mode = true;
-	      octave_debug_on_interrupt_state = true;
+        {
+          if (! octave_debug_on_interrupt_state)
+            {
+              tree_evaluator::debug_mode = true;
+              octave_debug_on_interrupt_state = true;
 
-	      return;
-	    }
-	  else
-	    {
-	      // Clear the flag and do normal interrupt stuff.
+              return;
+            }
+          else
+            {
+              // Clear the flag and do normal interrupt stuff.
 
-	      tree_evaluator::debug_mode
+              tree_evaluator::debug_mode
                 = bp_table::have_breakpoints () || Vdebugging;
-	      octave_debug_on_interrupt_state = false;
-	    }
-	}
+              octave_debug_on_interrupt_state = false;
+            }
+        }
 
       if (octave_interrupt_immediately)
-	{
-	  if (octave_interrupt_state == 0)
-	    octave_interrupt_state = 1;
+        {
+          if (octave_interrupt_state == 0)
+            octave_interrupt_state = 1;
 
-	  octave_jump_to_enclosing_context ();
-	}
+          octave_jump_to_enclosing_context ();
+        }
       else
-	{
-	  // If we are already cleaning up from a previous interrupt,
-	  // take note of the fact that another interrupt signal has
-	  // arrived.
+        {
+          // If we are already cleaning up from a previous interrupt,
+          // take note of the fact that another interrupt signal has
+          // arrived.
 
-	  if (octave_interrupt_state < 0)
-	    octave_interrupt_state = 0;
+          if (octave_interrupt_state < 0)
+            octave_interrupt_state = 0;
 
-	  octave_signal_caught = 1;
-	  octave_interrupt_state++;
+          octave_signal_caught = 1;
+          octave_interrupt_state++;
 
-	  if (interactive && octave_interrupt_state == 2)
-	    std::cerr << "Press Control-C again to abort." << std::endl;
+          if (interactive && octave_interrupt_state == 2)
+            std::cerr << "Press Control-C again to abort." << std::endl;
 
-	  if (octave_interrupt_state >= 3)
-	    my_friendly_exit (sig_name, sig_number, true);
-	}
+          if (octave_interrupt_state >= 3)
+            my_friendly_exit (sig_name, sig_number, true);
+        }
     }
 
 }
@@ -415,30 +415,30 @@ w32_sigint_handler (DWORD sig)
   switch(sig)
     {
       case CTRL_BREAK_EVENT:   
-	sig_name = "Ctrl-Break"; 
-	break;
+        sig_name = "Ctrl-Break"; 
+        break;
       case CTRL_C_EVENT:
-	sig_name = "Ctrl-C";
-	break;
+        sig_name = "Ctrl-C";
+        break;
       case CTRL_CLOSE_EVENT:
-	sig_name = "close console";
-	break;
+        sig_name = "close console";
+        break;
       case CTRL_LOGOFF_EVENT:
-	sig_name = "logoff";
-	break;
+        sig_name = "logoff";
+        break;
       case CTRL_SHUTDOWN_EVENT:
-	sig_name = "shutdown";
-	break;
+        sig_name = "shutdown";
+        break;
       default:
-	sig_name = "unknown console event";
-	break;
+        sig_name = "unknown console event";
+        break;
     }
 
   switch(sig)
     {
       case CTRL_BREAK_EVENT:
       case CTRL_C_EVENT:
-	w32_raise (SIGINT);
+        w32_raise (SIGINT);
         break;
 
       case CTRL_CLOSE_EVENT:
@@ -448,7 +448,7 @@ w32_sigint_handler (DWORD sig)
         // We should do the following:
         //    clean_up_and_exit (0);
         // We can't because we aren't running in the normal Octave thread.
-	user_abort(sig_name, sig);
+        user_abort(sig_name, sig);
         break;
     }
 
@@ -510,18 +510,18 @@ octave_ignore_interrupts (void)
 
 octave_interrupt_handler
 octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
-			      bool restart_syscalls)
+                              bool restart_syscalls)
 {
   octave_interrupt_handler retval;
 
 #ifdef SIGINT
   retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler,
-						  restart_syscalls);
+                                                  restart_syscalls);
 #endif
 
 #ifdef SIGBREAK
   retval.brk_handler = octave_set_signal_handler (SIGBREAK, h.brk_handler,
-						  restart_syscalls);
+                                                  restart_syscalls);
 #endif
 
   return retval;
@@ -888,14 +888,14 @@ OCL_REP::reap (void)
       octave_child& oc = *p;
 
       if (oc.have_status)
-	{
-	  oc.have_status = 0;
+        {
+          oc.have_status = 0;
 
-	  octave_child::child_event_handler f = oc.handler;
+          octave_child::child_event_handler f = oc.handler;
 
-	  if (f && f (oc.pid, oc.status))
-	    oc.pid = -1;
-	}
+          if (f && f (oc.pid, oc.status))
+            oc.pid = -1;
+        }
     }
 
   remove_if (pid_equal (-1));
@@ -915,20 +915,20 @@ OCL_REP::wait (void)
       pid_t pid = oc.pid;
 
       if (pid > 0)
-	{
-	  int status;
+        {
+          int status;
 
-	  if (octave_syscalls::waitpid (pid, &status, WNOHANG) > 0)
-	    {
-	      oc.have_status = 1;
+          if (octave_syscalls::waitpid (pid, &status, WNOHANG) > 0)
+            {
+              oc.have_status = 1;
 
-	      oc.status = status;
+              oc.status = status;
 
-	      retval = true;
+              retval = true;
 
-	      break;
-	    }
-	}
+              break;
+            }
+        }
     }
 
   return retval;

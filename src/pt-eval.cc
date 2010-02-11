@@ -88,7 +88,7 @@ tree_evaluator::visit_break_command (tree_break_command& cmd)
   if (! error_state)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint ());
 
       if (tree_evaluator::in_fcn_or_script_body
           || tree_evaluator::in_loop_command)
@@ -108,7 +108,7 @@ tree_evaluator::visit_continue_command (tree_continue_command& cmd)
   if (! error_state)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint ());
 
       if (tree_evaluator::in_fcn_or_script_body
           || tree_evaluator::in_loop_command)
@@ -134,23 +134,23 @@ do_global_init (tree_decl_elt& elt)
       id->mark_global ();
 
       if (! error_state)
-	{
-	  octave_lvalue ult = id->lvalue ();
+        {
+          octave_lvalue ult = id->lvalue ();
 
-	  if (ult.is_undefined ())
-	    {
-	      tree_expression *expr = elt.expression ();
+          if (ult.is_undefined ())
+            {
+              tree_expression *expr = elt.expression ();
 
-	      octave_value init_val;
+              octave_value init_val;
 
-	      if (expr)
-		init_val = expr->rvalue1 ();
-	      else
-		init_val = Matrix ();
+              if (expr)
+                init_val = expr->rvalue1 ();
+              else
+                init_val = Matrix ();
 
-	      ult.assign (octave_value::op_asn_eq, init_val);
-	    }
-	}
+              ult.assign (octave_value::op_asn_eq, init_val);
+            }
+        }
     }
 }
 
@@ -166,37 +166,37 @@ do_static_init (tree_decl_elt& elt)
       octave_lvalue ult = id->lvalue ();
 
       if (ult.is_undefined ())
-	{
-	  tree_expression *expr = elt.expression ();
+        {
+          tree_expression *expr = elt.expression ();
 
-	  octave_value init_val;
+          octave_value init_val;
 
-	  if (expr)
-	    init_val = expr->rvalue1 ();
-	  else
-	    init_val = Matrix ();
+          if (expr)
+            init_val = expr->rvalue1 ();
+          else
+            init_val = Matrix ();
 
-	  ult.assign (octave_value::op_asn_eq, init_val);
-	}
+          ult.assign (octave_value::op_asn_eq, init_val);
+        }
     }
 }
 
 void
 tree_evaluator::do_decl_init_list (decl_elt_init_fcn fcn,
-				   tree_decl_init_list *init_list)
+                                   tree_decl_init_list *init_list)
 {
   if (init_list)
     {
       for (tree_decl_init_list::iterator p = init_list->begin ();
-	   p != init_list->end (); p++)
-	{
-	  tree_decl_elt *elt = *p;
+           p != init_list->end (); p++)
+        {
+          tree_decl_elt *elt = *p;
 
-	  fcn (*elt);
+          fcn (*elt);
 
-	  if (error_state)
-	    break;
-	}
+          if (error_state)
+            break;
+        }
     }
 }
 
@@ -266,9 +266,9 @@ quit_loop_now (void)
     tree_continue_command::continuing--;
 
   bool quit = (error_state
-	       || tree_return_command::returning
-	       || tree_break_command::breaking
-	       || tree_continue_command::continuing);
+               || tree_return_command::returning
+               || tree_break_command::breaking
+               || tree_continue_command::continuing);
 
   if (tree_break_command::breaking)
     tree_break_command::breaking--;
@@ -282,7 +282,7 @@ quit_loop_now (void)
       ult.assign (octave_value::op_asn_eq, VAL); \
  \
       if (! error_state && loop_body) \
-	loop_body->accept (*this); \
+        loop_body->accept (*this); \
  \
       quit = quit_loop_now (); \
     } \
@@ -322,37 +322,37 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
     if (rhs.is_range ())
       {
-	Range rng = rhs.range_value ();
+        Range rng = rhs.range_value ();
 
-	octave_idx_type steps = rng.nelem ();
-	double b = rng.base ();
-	double increment = rng.inc ();
-	bool quit = false;
+        octave_idx_type steps = rng.nelem ();
+        double b = rng.base ();
+        double increment = rng.inc ();
+        bool quit = false;
 
-	for (octave_idx_type i = 0; i < steps; i++)
-	  {
-	    // Use multiplication here rather than declaring a
-	    // temporary variable outside the loop and using
-	    //
-	    //   tmp_val += increment
-	    //
-	    // to avoid problems with limited precision.  Also, this
-	    // is consistent with the way Range::matrix_value is
-	    // implemented.
+        for (octave_idx_type i = 0; i < steps; i++)
+          {
+            // Use multiplication here rather than declaring a
+            // temporary variable outside the loop and using
+            //
+            //   tmp_val += increment
+            //
+            // to avoid problems with limited precision.  Also, this
+            // is consistent with the way Range::matrix_value is
+            // implemented.
 
-	    octave_value val (b + i * increment);
+            octave_value val (b + i * increment);
 
-	    DO_SIMPLE_FOR_LOOP_ONCE (val);
+            DO_SIMPLE_FOR_LOOP_ONCE (val);
 
-	    if (quit)
-	      break;
-	  }
+            if (quit)
+              break;
+          }
       }
     else if (rhs.is_scalar_type ())
       {
-	bool quit = false;
+        bool quit = false;
 
-	DO_SIMPLE_FOR_LOOP_ONCE (rhs);
+        DO_SIMPLE_FOR_LOOP_ONCE (rhs);
       }
     else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
              || rhs.is_map ())
@@ -401,8 +401,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       }
     else
       {
-	::error ("invalid type in for loop expression near line %d, column %d",
-		 cmd.line (), cmd.column ());
+        ::error ("invalid type in for loop expression near line %d, column %d",
+                 cmd.line (), cmd.column ());
       }
   }
 }
@@ -456,24 +456,24 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
       octave_idx_type nel = keys.numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  std::string key = keys[i];
+        {
+          std::string key = keys[i];
 
-	  const Cell val_lst = tmp_val.contents (key);
+          const Cell val_lst = tmp_val.contents (key);
 
-	  octave_idx_type n = val_lst.numel ();
+          octave_idx_type n = val_lst.numel ();
 
-	  octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
+          octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 
-	  val_ref.assign (octave_value::op_asn_eq, val);
-	  key_ref.assign (octave_value::op_asn_eq, key);
+          val_ref.assign (octave_value::op_asn_eq, val);
+          key_ref.assign (octave_value::op_asn_eq, key);
 
-	  if (! error_state && loop_body)
-	    loop_body->accept (*this);
+          if (! error_state && loop_body)
+            loop_body->accept (*this);
 
-	  if (quit_loop_now ())
-	    break;
-	}
+          if (quit_loop_now ())
+            break;
+        }
     }
   else
     error ("in statement `for [X, Y] = VAL', VAL must be a structure");
@@ -554,20 +554,20 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
       tree_expression *expr = tic->condition ();
 
       if (debug_mode && ! tic->is_else_clause ())
-	do_breakpoint (tic->is_breakpoint ());
+        do_breakpoint (tic->is_breakpoint ());
 
       if (tic->is_else_clause () || expr->is_logically_true ("if"))
-	{
-	  if (! error_state)
-	    {
-	      tree_statement_list *stmt_lst = tic->commands ();
+        {
+          if (! error_state)
+            {
+              tree_statement_list *stmt_lst = tic->commands ();
 
-	      if (stmt_lst)
-		stmt_lst->accept (*this);
-	    }
+              if (stmt_lst)
+                stmt_lst->accept (*this);
+            }
 
-	  break;
-	}
+          break;
+        }
     }
 }
 
@@ -638,7 +638,7 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
   if (! error_state)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint ());
 
       // Act like dbcont.
 
@@ -676,58 +676,58 @@ tree_evaluator::visit_statement (tree_statement& stmt)
   if (cmd || expr)
     {
       if (in_fcn_or_script_body)
-	{
-	  octave_call_stack::set_statement (&stmt);
+        {
+          octave_call_stack::set_statement (&stmt);
 
-	  if (Vecho_executing_commands & ECHO_FUNCTIONS)
-	    stmt.echo_code ();
-	}
+          if (Vecho_executing_commands & ECHO_FUNCTIONS)
+            stmt.echo_code ();
+        }
 
       try
-	{
-	  if (cmd)
-	    cmd->accept (*this);
-	  else
-	    {
-	      if (debug_mode)
-		do_breakpoint (expr->is_breakpoint ());
+        {
+          if (cmd)
+            cmd->accept (*this);
+          else
+            {
+              if (debug_mode)
+                do_breakpoint (expr->is_breakpoint ());
 
-	      if (in_fcn_or_script_body && Vsilent_functions)
-		expr->set_print_flag (false);
+              if (in_fcn_or_script_body && Vsilent_functions)
+                expr->set_print_flag (false);
 
-	      // FIXME -- maybe all of this should be packaged in
-	      // one virtual function that returns a flag saying whether
-	      // or not the expression will take care of binding ans and
-	      // printing the result.
+              // FIXME -- maybe all of this should be packaged in
+              // one virtual function that returns a flag saying whether
+              // or not the expression will take care of binding ans and
+              // printing the result.
 
-	      // FIXME -- it seems that we should just have to
-	      // call expr->rvalue1 () and that should take care of
-	      // everything, binding ans as necessary?
+              // FIXME -- it seems that we should just have to
+              // call expr->rvalue1 () and that should take care of
+              // everything, binding ans as necessary?
 
-	      bool do_bind_ans = false;
+              bool do_bind_ans = false;
 
-	      if (expr->is_identifier ())
-		{
-		  tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
+              if (expr->is_identifier ())
+                {
+                  tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-		  do_bind_ans = (! id->is_variable ());
-		}
-	      else
-		do_bind_ans = (! expr->is_assignment_expression ());
+                  do_bind_ans = (! id->is_variable ());
+                }
+              else
+                do_bind_ans = (! expr->is_assignment_expression ());
 
-	      octave_value tmp_result = expr->rvalue1 (0);
+              octave_value tmp_result = expr->rvalue1 (0);
 
-	      if (do_bind_ans && ! (error_state || tmp_result.is_undefined ()))
-		bind_ans (tmp_result, expr->print_result ());
+              if (do_bind_ans && ! (error_state || tmp_result.is_undefined ()))
+                bind_ans (tmp_result, expr->print_result ());
 
-	      //	      if (tmp_result.is_defined ())
-	      //		result_values(0) = tmp_result;
-	    }
-	}
+              //              if (tmp_result.is_defined ())
+              //                result_values(0) = tmp_result;
+            }
+        }
       catch (octave_execution_exception)
-	{
-	  gripe_library_execution_error ();
-	}
+        {
+          gripe_library_execution_error ();
+        }
     }
 }
 
@@ -744,48 +744,48 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
   if (p != lst.end ())
     {
       while (true)
-	{
-	  tree_statement *elt = *p++;
+        {
+          tree_statement *elt = *p++;
 
-	  if (elt)
-	    {
-	      octave_quit ();
+          if (elt)
+            {
+              octave_quit ();
 
-	      elt->accept (*this);
+              elt->accept (*this);
 
-	      if (error_state)
-		break;
+              if (error_state)
+                break;
 
-	      if (tree_break_command::breaking
-		  || tree_continue_command::continuing)
-		break;
+              if (tree_break_command::breaking
+                  || tree_continue_command::continuing)
+                break;
 
-	      if (tree_return_command::returning)
-		break;
+              if (tree_return_command::returning)
+                break;
 
-	      if (p == lst.end ())
-		break;
-	      else
-		{
-		  // Clear preivous values before next statement is
-		  // evaluated so that we aren't holding an extra
-		  // reference to a value that may be used next.  For
-		  // example, in code like this:
-		  //
-		  //   X = rand (N);  ## refcount for X should be 1
-		  //                  ## after this statement
-		  //
-		  //   X(idx) = val;  ## no extra copy of X should be
-		  //                  ## needed, but we will be faked
-		  //                  ## out if retval is not cleared
-		  //                  ## between statements here
+              if (p == lst.end ())
+                break;
+              else
+                {
+                  // Clear preivous values before next statement is
+                  // evaluated so that we aren't holding an extra
+                  // reference to a value that may be used next.  For
+                  // example, in code like this:
+                  //
+                  //   X = rand (N);  ## refcount for X should be 1
+                  //                  ## after this statement
+                  //
+                  //   X(idx) = val;  ## no extra copy of X should be
+                  //                  ## needed, but we will be faked
+                  //                  ## out if retval is not cleared
+                  //                  ## between statements here
 
-		  //		  result_values = empty_list;
-		}
-	    }
-	  else
-	    error ("invalid statement found in statement list!");
-	}
+                  //              result_values = empty_list;
+                }
+            }
+          else
+            error ("invalid statement found in statement list!");
+        }
     }
 }
 
@@ -813,33 +813,33 @@ tree_evaluator::visit_switch_command (tree_switch_command& cmd)
       tree_switch_case_list *lst = cmd.case_list ();
 
       if (! error_state && lst)
-	{
-	  for (tree_switch_case_list::iterator p = lst->begin ();
-	       p != lst->end (); p++)
-	    {
-	      tree_switch_case *t = *p;
+        {
+          for (tree_switch_case_list::iterator p = lst->begin ();
+               p != lst->end (); p++)
+            {
+              tree_switch_case *t = *p;
 
-	      if (debug_mode && ! t->is_default_case ())
-		do_breakpoint (t->is_breakpoint ());
+              if (debug_mode && ! t->is_default_case ())
+                do_breakpoint (t->is_breakpoint ());
 
-	      if (t->is_default_case () || t->label_matches (val))
-		{
-		  if (error_state)
-		    break;
+              if (t->is_default_case () || t->label_matches (val))
+                {
+                  if (error_state)
+                    break;
 
-		  tree_statement_list *stmt_lst = t->commands ();
+                  tree_statement_list *stmt_lst = t->commands ();
 
-		  if (stmt_lst)
-		    stmt_lst->accept (*this);
+                  if (stmt_lst)
+                    stmt_lst->accept (*this);
 
-		  break;
-		}
-	    }
-	}
+                  break;
+                }
+            }
+        }
     }
   else
     ::error ("missing value in switch command near line %d, column %d",
-	     cmd.line (), cmd.column ());
+             cmd.line (), cmd.column ());
 }
 
 void
@@ -1016,25 +1016,25 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   for (;;)
     {
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint ());
 
       if (expr->is_logically_true ("while"))
-	{
-	  tree_statement_list *loop_body = cmd.body ();
+        {
+          tree_statement_list *loop_body = cmd.body ();
 
-	  if (loop_body)
-	    {
-	      loop_body->accept (*this);
+          if (loop_body)
+            {
+              loop_body->accept (*this);
 
-	      if (error_state)
+              if (error_state)
                 return;
-	    }
+            }
 
-	  if (quit_loop_now ())
-	    break;
-	}
+          if (quit_loop_now ())
+            break;
+        }
       else
-	break;
+        break;
     }
 }
 
@@ -1060,21 +1060,21 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
       tree_statement_list *loop_body = cmd.body ();
 
       if (loop_body)
-	{
-	  loop_body->accept (*this);
+        {
+          loop_body->accept (*this);
 
-	  if (error_state)
+          if (error_state)
             return;
-	}
+        }
 
       if (quit_loop_now ())
-	break;
+        break;
 
       if (debug_mode)
-	do_breakpoint (cmd.is_breakpoint ());
+        do_breakpoint (cmd.is_breakpoint ());
 
       if (expr->is_logically_true ("do-until"))
-	break;
+        break;
     }
 }
 
@@ -1086,7 +1086,7 @@ tree_evaluator::do_breakpoint (tree_statement& stmt) const
 
 void
 tree_evaluator::do_breakpoint (bool is_breakpoint,
-			       bool is_end_of_fcn_or_script) const
+                               bool is_end_of_fcn_or_script) const
 {
   bool break_on_this_statement = false;
 
@@ -1096,14 +1096,14 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
   if (dbstep_flag > 1)
     {
       if (octave_call_stack::current_frame () == current_frame)
-	{
-	  // Don't allow dbstep N to step past end of current frame.
+        {
+          // Don't allow dbstep N to step past end of current frame.
 
-	  if (is_end_of_fcn_or_script)
-	    dbstep_flag = 1;
-	  else
-	    dbstep_flag--;
-	}
+          if (is_end_of_fcn_or_script)
+            dbstep_flag = 1;
+          else
+            dbstep_flag--;
+        }
     }
 
   if (octave_debug_on_interrupt_state)
@@ -1125,15 +1125,15 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
   else if (dbstep_flag == 1)
     {
       if (octave_call_stack::current_frame () == current_frame)
-	{
-	  // We get here if we are doing a "dbstep" or a "dbstep N"
-	  // and the count has reached 1 and we are in the current
-	  // debugging frame.
+        {
+          // We get here if we are doing a "dbstep" or a "dbstep N"
+          // and the count has reached 1 and we are in the current
+          // debugging frame.
 
-	  break_on_this_statement = true;
+          break_on_this_statement = true;
 
-	  dbstep_flag = 0;
-	}
+          dbstep_flag = 0;
+        }
     }
   else if (dbstep_flag == -1)
     {
@@ -1150,7 +1150,7 @@ tree_evaluator::do_breakpoint (bool is_breakpoint,
       // We get here if we are doing a "dbstep out".
 
       if (is_end_of_fcn_or_script)
-	dbstep_flag = -1;
+        dbstep_flag = -1;
     }
 
   if (break_on_this_statement)

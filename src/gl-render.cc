@@ -66,14 +66,14 @@ protected:
     texture_rep (void) : valid (false), count (1) { }
 
     texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
-	: id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
-	  tx (double(w)/tw), ty (double(h)/th), valid (true),
-	  count (1) { }
+        : id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
+          tx (double(w)/tw), ty (double(h)/th), valid (true),
+          count (1) { }
 
     ~texture_rep (void)
       {
-	if (valid)
-	  glDeleteTextures (1, &id);
+        if (valid)
+          glDeleteTextures (1, &id);
       }
 
     void bind (int mode) const
@@ -107,13 +107,13 @@ public:
   ~opengl_texture (void)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
     }
 
   opengl_texture& operator = (const opengl_texture& tx)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
 
       rep = tx.rep;
       rep->count++;
@@ -167,59 +167,59 @@ opengl_texture::create (const octave_value& data)
       glBindTexture (GL_TEXTURE_2D, id);
 
       if (data.is_double_type ())
-	{
-	  const NDArray xdata = data.array_value ();
+        {
+          const NDArray xdata = data.array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (float, a, (3*tw*th));
+          OCTAVE_LOCAL_BUFFER (float, a, (3*tw*th));
 
-	  for (int i = 0; i < h; i++)
-	    {
-	      for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
-		{
-		  a[idx]   = xdata(i,j,0);
-		  a[idx+1] = xdata(i,j,1);
-		  a[idx+2] = xdata(i,j,2);
-		}
-	    }
+          for (int i = 0; i < h; i++)
+            {
+              for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+                {
+                  a[idx]   = xdata(i,j,0);
+                  a[idx+1] = xdata(i,j,1);
+                  a[idx+2] = xdata(i,j,2);
+                }
+            }
 
-	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
-			GL_RGB, GL_FLOAT, a);
-	}
+          glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+                        GL_RGB, GL_FLOAT, a);
+        }
       else if (data.is_uint8_type ())
-	{
-	  const uint8NDArray xdata = data.uint8_array_value ();
+        {
+          const uint8NDArray xdata = data.uint8_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*tw*th));
+          OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*tw*th));
 
-	  for (int i = 0; i < h; i++)
-	    {
-	      for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
-		{
-		  a[idx]   = xdata(i,j,0);
-		  a[idx+1] = xdata(i,j,1);
-		  a[idx+2] = xdata(i,j,2);
-		}
-	    }
+          for (int i = 0; i < h; i++)
+            {
+              for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+                {
+                  a[idx]   = xdata(i,j,0);
+                  a[idx+1] = xdata(i,j,1);
+                  a[idx+2] = xdata(i,j,2);
+                }
+            }
 
-	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
-			GL_RGB, GL_UNSIGNED_BYTE, a);
-	}
+          glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+                        GL_RGB, GL_UNSIGNED_BYTE, a);
+        }
       else
-	{
-	  ok = false;
-	  warning ("opengl_texture::create: invalid texture data type (expected double or uint8)");
-	}
+        {
+          ok = false;
+          warning ("opengl_texture::create: invalid texture data type (expected double or uint8)");
+        }
 
       if (ok)
-	{
-	  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        {
+          glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	  if (glGetError () != GL_NO_ERROR)
-	    warning ("opengl_texture::create: OpenGL error while generating texture data");
-	  else
-	    retval = opengl_texture (new texture_rep (id, w, h, tw, th));
-	}
+          if (glGetError () != GL_NO_ERROR)
+            warning ("opengl_texture::create: OpenGL error while generating texture data");
+          else
+            retval = opengl_texture (new texture_rep (id, w, h, tw, th));
+        }
     }
   else
     warning ("opengl_texture::create: invalid texture data size");
@@ -247,7 +247,7 @@ public:
   void begin_polygon (bool filled = true)
     {
       gluTessProperty (glu_tess, GLU_TESS_BOUNDARY_ONLY,
-		       (filled ? GL_FALSE : GL_TRUE));
+                       (filled ? GL_FALSE : GL_TRUE));
       fill = filled;
       gluTessBeginPolygon (glu_tess, this);
     }
@@ -272,7 +272,7 @@ protected:
   virtual void vertex (void */*data*/) { }
 
   virtual void combine (GLdouble /*c*/[3], void */*data*/[4],
-			GLfloat /*w*/[4], void **/*out_data*/) { }
+                        GLfloat /*w*/[4], void **/*out_data*/) { }
 
   virtual void edge_flag (GLboolean /*flag*/) { }
 
@@ -284,17 +284,17 @@ protected:
       glu_tess = gluNewTess ();
 
       gluTessCallback (glu_tess, GLU_TESS_BEGIN_DATA,
-		       reinterpret_cast<fcn> (tess_begin));
+                       reinterpret_cast<fcn> (tess_begin));
       gluTessCallback (glu_tess, GLU_TESS_END_DATA,
-		       reinterpret_cast<fcn> (tess_end));
+                       reinterpret_cast<fcn> (tess_end));
       gluTessCallback (glu_tess, GLU_TESS_VERTEX_DATA,
-		       reinterpret_cast<fcn> (tess_vertex));
+                       reinterpret_cast<fcn> (tess_vertex));
       gluTessCallback (glu_tess, GLU_TESS_COMBINE_DATA,
-		       reinterpret_cast<fcn> (tess_combine));
+                       reinterpret_cast<fcn> (tess_combine));
       gluTessCallback (glu_tess, GLU_TESS_EDGE_FLAG_DATA,
-		       reinterpret_cast<fcn> (tess_edge_flag));
+                       reinterpret_cast<fcn> (tess_edge_flag));
       gluTessCallback (glu_tess, GLU_TESS_ERROR_DATA,
-		       reinterpret_cast<fcn> (tess_error));
+                       reinterpret_cast<fcn> (tess_error));
     }
 
   bool is_filled (void) const { return fill; }
@@ -310,7 +310,7 @@ private:
     { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
   
   static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
-				     void **out,  void *t)
+                                     void **out,  void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
   
   static void CALLBACK tess_edge_flag (GLboolean flag, void *t)
@@ -346,10 +346,10 @@ public:
     vertex_data_rep (void) : count (1) { }
 
     vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
-		     double a, float as, float ds, float ss, float se)
-	: coords (c), color (col), normal (n), alpha (a),
-	  ambient (as), diffuse (ds), specular (ss), specular_exp (se),
-	  count (1) { }
+                     double a, float as, float ds, float ss, float se)
+        : coords (c), color (col), normal (n), alpha (a),
+          ambient (as), diffuse (ds), specular (ss), specular_exp (se),
+          count (1) { }
   };
 
 private:
@@ -370,7 +370,7 @@ public:
     { rep->count++; }
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
-	       double a, float as, float ds, float ss, float se)
+               double a, float as, float ds, float ss, float se)
       : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
     { }
 
@@ -380,13 +380,13 @@ public:
   ~vertex_data (void)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
     }
 
   vertex_data& operator = (const vertex_data& v)
     {
       if (--rep->count == 0)
-	delete rep;
+        delete rep;
 
       rep = v.rep;
       rep->count++;
@@ -413,12 +413,12 @@ protected:
       first = true;
 
       if (color_mode == 2 || light_mode == 2)
-	glShadeModel (GL_SMOOTH);
+        glShadeModel (GL_SMOOTH);
       else
-	glShadeModel (GL_FLAT);
+        glShadeModel (GL_FLAT);
 
       if (is_filled ())
-	renderer->set_polygon_offset (true, 1+index);
+        renderer->set_polygon_offset (true, 1+index);
 
       glBegin (type);
     }
@@ -433,7 +433,7 @@ protected:
   void vertex (void *data)
     {
       vertex_data::vertex_data_rep *v
-	  = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
+          = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
       //printf("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
       // FIXME: why did I need to keep the first vertex of the face
@@ -442,29 +442,29 @@ protected:
       // the first one you get here might not be the first one of the face;
       // but I can't figure out the actual reason.
       if (color_mode > 0 && (first || color_mode == 2))
-	{
-	  Matrix col = v->color;
+        {
+          Matrix col = v->color;
 
-	  if (col.numel () == 3)
-	    {
-	      glColor3dv (col.data ());
-	      if (light_mode > 0)
-		{
-		  float buf[4] = { 0, 0, 0, 1 };
+          if (col.numel () == 3)
+            {
+              glColor3dv (col.data ());
+              if (light_mode > 0)
+                {
+                  float buf[4] = { 0, 0, 0, 1 };
 
-		  for (int k = 0; k < 3; k++)
-		    buf[k] = (v->ambient * col(k));
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+                  for (int k = 0; k < 3; k++)
+                    buf[k] = (v->ambient * col(k));
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
 
-		  for (int k = 0; k < 3; k++)
-		    buf[k] = (v->diffuse * col(k));
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
-		}
-	    }
-	}
+                  for (int k = 0; k < 3; k++)
+                    buf[k] = (v->diffuse * col(k));
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+                }
+            }
+        }
 
       if (light_mode > 0 && (first || light_mode == 2))
-	glNormal3dv (v->normal.data ());
+        glNormal3dv (v->normal.data ());
 
       glVertex3dv (v->coords.data ());
 
@@ -472,7 +472,7 @@ protected:
     }
 
   void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
-		void **out_data)
+                void **out_data)
     {
       //printf("patch_tesselator::combine\n");
 
@@ -480,12 +480,12 @@ protected:
       int vmax = 4;
 
       for (int i = 0; i < 4; i++)
-	{
-	  v[i] = reinterpret_cast<vertex_data::vertex_data_rep *> (data[i]);
+        {
+          v[i] = reinterpret_cast<vertex_data::vertex_data_rep *> (data[i]);
 
-	  if (vmax == 4 && ! v[i])
-	    vmax = i;
-	}
+          if (vmax == 4 && ! v[i])
+            vmax = i;
+        }
 
       Matrix vv (1, 3, 0.0);
       Matrix cc;
@@ -497,25 +497,25 @@ protected:
       vv(2) = xyz[2];
 
       if (v[0]->color.numel ())
-	{
-	  cc.resize (1, 3, 0.0);
-	  for (int ic = 0; ic < 3; ic++)
-	    for (int iv = 0; iv < vmax; iv++)
-	      cc(ic) += (w[iv] * v[iv]->color(ic));
-	}
+        {
+          cc.resize (1, 3, 0.0);
+          for (int ic = 0; ic < 3; ic++)
+            for (int iv = 0; iv < vmax; iv++)
+              cc(ic) += (w[iv] * v[iv]->color(ic));
+        }
 
       if (v[0]->normal.numel () > 0)
-	{
-	  for (int in = 0; in < 3; in++)
-	    for (int iv = 0; iv < vmax; iv++)
-	      nn(in) += (w[iv] * v[iv]->normal(in));
-	}
+        {
+          for (int in = 0; in < 3; in++)
+            for (int iv = 0; iv < vmax; iv++)
+              nn(in) += (w[iv] * v[iv]->normal(in));
+        }
 
       for (int iv = 0; iv < vmax; iv++)
-	aa += (w[iv] * v[iv]->alpha);
+        aa += (w[iv] * v[iv]->alpha);
 
       vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
-			 v[0]->specular, v[0]->specular_exp);
+                         v[0]->specular, v[0]->specular_exp);
       tmp_vdata.push_back (new_v);
 
       *out_data = new_v.get_rep ();
@@ -523,8 +523,8 @@ protected:
 
 private:
   opengl_renderer *renderer;
-  int color_mode;	// 0: uni,  1: flat, 2: interp
-  int light_mode;	// 0: none, 1: flat, 2: gouraud
+  int color_mode;       // 0: uni,  1: flat, 2: interp
+  int light_mode;       // 0: none, 1: flat, 2: gouraud
   int index;
   bool first;
   std::list<vertex_data> tmp_vdata;
@@ -556,7 +556,7 @@ opengl_renderer::draw (const graphics_object& go)
     draw_image (dynamic_cast<const image::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
-	     props.graphics_object_name ().c_str ());
+             props.graphics_object_name ().c_str ());
 }
 
 void
@@ -748,8 +748,8 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   //double tickdir = (props.tickdir_is ("in") ? -1 : 1);
   double tickdir = (props.tickdirmode_is ("auto") ?
-		    (mode2d ? -1 : 1) :
-		    (props.tickdir_is ("in") ? -1 : 1));
+                    (mode2d ? -1 : 1) :
+                    (props.tickdir_is ("in") ? -1 : 1));
   double xtickoffset = (mode2d && tickdir < 0 ? 0 : xticklen) + 5;
   double ytickoffset = (mode2d && tickdir < 0 ? 0 : yticklen) + 5;
   double ztickoffset = (mode2d && tickdir < 0 ? 0 : zticklen) + 5;
@@ -975,25 +975,25 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       // tick texts
       if (xticklabels.numel () > 0)
-	{
-	  int n = std::min (xticklabels.numel (), xticks.numel ());
-	  int halign = (xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2));
-	  int valign = (xstate == AXE_VERT_DIR
-			? 1
-		       : (zd*zv(2) <= 0 && !x2Dtop ? 2 : 0));
+        {
+          int n = std::min (xticklabels.numel (), xticks.numel ());
+          int halign = (xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2));
+          int valign = (xstate == AXE_VERT_DIR
+                        ? 1
+                       : (zd*zv(2) <= 0 && !x2Dtop ? 2 : 0));
 
-	  for (int i = 0; i < n; i++)
-	    {
-	      // FIXME: as tick text is transparent, shouldn't be
-	      //        drawn after axes object, for correct rendering?
-	      Matrix b = render_text (xticklabels(i),
-				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-				    halign, valign); 
+          for (int i = 0; i < n; i++)
+            {
+              // FIXME: as tick text is transparent, shouldn't be
+              //        drawn after axes object, for correct rendering?
+              Matrix b = render_text (xticklabels(i),
+                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                    halign, valign); 
 
-	      wmax = std::max (wmax, static_cast<int> (b(2)));
-	      hmax = std::max (hmax, static_cast<int> (b(3)));
-	    }
-	}
+              wmax = std::max (wmax, static_cast<int> (b(2)));
+              hmax = std::max (hmax, static_cast<int> (b(3)));
+            }
+        }
 
       // minor grid lines
       if (do_xminorgrid)
@@ -1015,7 +1015,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
           glEnd ();
           set_linestyle ("-", true);
         }
-			
+                        
       // minor tick marks
       if (do_xminortick)
         {
@@ -1069,7 +1069,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       if (! xlabel_props.get_string ().empty ())
         {
           xlabel_props.set_horizontalalignment (xstate > AXE_DEPTH_DIR ? "center" : (xySym ? "left" : "right"));
-	  xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
+          xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
 
           double angle = 0;
           ColumnVector p = graphics_xform::xform_vector ((x_min+x_max)/2, yPlaneN, zPlane);
@@ -1104,7 +1104,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
     }
 
   // Y grid
-		
+                
   if (ystate != AXE_DEPTH_DIR && visible)
     {
       bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
@@ -1187,23 +1187,23 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       // tick texts
       if (yticklabels.numel () > 0)
-	{
-	  int n = std::min (yticklabels.numel (), yticks.numel ());
-	  int halign = (ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2));
-	  int valign = (ystate == AXE_VERT_DIR ? 1 : (zd*zv(2) <= 0 ? 2 : 0));
+        {
+          int n = std::min (yticklabels.numel (), yticks.numel ());
+          int halign = (ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2));
+          int valign = (ystate == AXE_VERT_DIR ? 1 : (zd*zv(2) <= 0 ? 2 : 0));
 
-	  for (int i = 0; i < n; i++)
-	    {
-	      // FIXME: as tick text is transparent, shouldn't be
-	      //        drawn after axes object, for correct rendering?
-	      Matrix b = render_text (yticklabels(i),
-				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-				    halign, valign); 
+          for (int i = 0; i < n; i++)
+            {
+              // FIXME: as tick text is transparent, shouldn't be
+              //        drawn after axes object, for correct rendering?
+              Matrix b = render_text (yticklabels(i),
+                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                    halign, valign); 
 
-	      wmax = std::max (wmax, static_cast<int> (b(2)));
-	      hmax = std::max (hmax, static_cast<int> (b(3)));
-	    }
-	}
+              wmax = std::max (wmax, static_cast<int> (b(2)));
+              hmax = std::max (hmax, static_cast<int> (b(3)));
+            }
+        }
 
       // minor grid lines
       if (do_yminorgrid)
@@ -1279,7 +1279,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       if (! ylabel_props.get_string ().empty ())
         {
           ylabel_props.set_horizontalalignment (ystate > AXE_DEPTH_DIR ? "center" : (!xySym ? "left" : "right"));
-	  ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
+          ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
 
           double angle = 0;
           ColumnVector p = graphics_xform::xform_vector (xPlaneN, (y_min+y_max)/2, zPlane);
@@ -1312,7 +1312,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
     {
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
     }
-		
+                
   // Z Grid
 
   if (zstate != AXE_DEPTH_DIR && visible)
@@ -1429,23 +1429,23 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       // FIXME: tick texts
       if (zticklabels.numel () > 0)
-	{
-	  int n = std::min (zticklabels.numel (), zticks.numel ());
-	  int halign = 2;
-	  int valign = (zstate == AXE_VERT_DIR ? 1 : (zd*zv(2) < 0 ? 3 : 2));
+        {
+          int n = std::min (zticklabels.numel (), zticks.numel ());
+          int halign = 2;
+          int valign = (zstate == AXE_VERT_DIR ? 1 : (zd*zv(2) < 0 ? 3 : 2));
 
-	  for (int i = 0; i < n; i++)
-	    {
-	      // FIXME: as tick text is transparent, shouldn't be
-	      //        drawn after axes object, for correct rendering?
-	      Matrix b = render_text (zticklabels(i),
-				    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-				    halign, valign); 
+          for (int i = 0; i < n; i++)
+            {
+              // FIXME: as tick text is transparent, shouldn't be
+              //        drawn after axes object, for correct rendering?
+              Matrix b = render_text (zticklabels(i),
+                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                    halign, valign); 
 
-	      wmax = std::max (wmax, static_cast<int> (b(2)));
-	      hmax = std::max (hmax, static_cast<int> (b(3)));
-	    }
-	}
+              wmax = std::max (wmax, static_cast<int> (b(2)));
+              hmax = std::max (hmax, static_cast<int> (b(3)));
+            }
+        }
 
       // minor grid lines
       if (do_zminorgrid)
@@ -1548,7 +1548,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
           bool camAuto = props.cameraupvectormode_is ("auto");
 
           zlabel_props.set_horizontalalignment ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
-	  zlabel_props.set_verticalalignment(zstate == AXE_VERT_DIR ? "bottom" : ((zd*zv(2) < 0 || camAuto) ? "bottom" : "top"));
+          zlabel_props.set_verticalalignment(zstate == AXE_VERT_DIR ? "bottom" : ((zd*zv(2) < 0 || camAuto) ? "bottom" : "top"));
 
           double angle = 0;
           ColumnVector p;
@@ -1638,7 +1638,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       if (go.get_properties ().is_visible ())
         {
           if (go.isa ("light"))
-	    draw (go);
+            draw (go);
           else
             obj_list.push_back (go);
         }
@@ -1658,9 +1658,9 @@ opengl_renderer::draw_axes (const axes::properties& props)
           draw (go);
 
           it = obj_list.erase (it);
-	}
+        }
       else
-	it++;
+        it++;
     }
 
   // 3rd pass: draw remaining objects
@@ -1699,7 +1699,7 @@ opengl_renderer::draw_line (const line::properties& props)
       double z_mid = (zmin+zmax)/2;
 
       for (int i = 0; i < n; i++)
-	clip[i] = (clip_code (x(i), y(i), z_mid) & clip_mask);
+        clip[i] = (clip_code (x(i), y(i), z_mid) & clip_mask);
     }
 
   if (! props.linestyle_is ("none"))
@@ -1709,58 +1709,58 @@ opengl_renderer::draw_line (const line::properties& props)
       set_linewidth (props.get_linewidth ());
 
       if (has_z)
-	{
-	  bool flag = false;
+        {
+          bool flag = false;
 
-	  for (int i = 1; i < n; i++)
-	    {
-	      if ((clip[i-1] & clip[i]) == clip_ok)
-		{
-		  if (! flag)
-		    {
-		      flag = true;
-		      glBegin (GL_LINE_STRIP);
-		      glVertex3d (x(i-1), y(i-1), z(i-1));
-		    }
-		  glVertex3d (x(i), y(i), z(i));
-		}
-	      else if (flag)
-		{
-		  flag = false;
-		  glEnd ();
-		}
-	    }
+          for (int i = 1; i < n; i++)
+            {
+              if ((clip[i-1] & clip[i]) == clip_ok)
+                {
+                  if (! flag)
+                    {
+                      flag = true;
+                      glBegin (GL_LINE_STRIP);
+                      glVertex3d (x(i-1), y(i-1), z(i-1));
+                    }
+                  glVertex3d (x(i), y(i), z(i));
+                }
+              else if (flag)
+                {
+                  flag = false;
+                  glEnd ();
+                }
+            }
 
-	  if (flag)
-	    glEnd ();
-	}
+          if (flag)
+            glEnd ();
+        }
       else
-	{
-	  bool flag = false;
+        {
+          bool flag = false;
 
-	  for (int i = 1; i < n; i++)
-	    {
-	      if ((clip[i-1] & clip[i]) == clip_ok)
-		{
-		  if (! flag)
-		    {
-		      flag = true;
-		      glBegin (GL_LINE_STRIP);
-		      glVertex2d (x(i-1), y(i-1));
-		    }
-		  glVertex2d (x(i), y(i));
-		}
-	      else if (flag)
-		{
-		  flag = false;
-		  glEnd ();
-		}
-	    }
+          for (int i = 1; i < n; i++)
+            {
+              if ((clip[i-1] & clip[i]) == clip_ok)
+                {
+                  if (! flag)
+                    {
+                      flag = true;
+                      glBegin (GL_LINE_STRIP);
+                      glVertex2d (x(i-1), y(i-1));
+                    }
+                  glVertex2d (x(i), y(i));
+                }
+              else if (flag)
+                {
+                  flag = false;
+                  glEnd ();
+                }
+            }
 
-	  if (flag)
-	    glEnd ();
-	}
-	  
+          if (flag)
+            glEnd ();
+        }
+          
       set_linewidth (0.5);
       set_linestyle ("-");
     }
@@ -1769,22 +1769,22 @@ opengl_renderer::draw_line (const line::properties& props)
 
   if (! props.marker_is ("none") &&
       ! (props.markeredgecolor_is ("none")
-	 && props.markerfacecolor_is ("none")))
+         && props.markerfacecolor_is ("none")))
     {
       Matrix lc, fc;
 
       if (props.markeredgecolor_is ("auto"))
-	lc = props.get_color_rgb ();
+        lc = props.get_color_rgb ();
       else if (! props.markeredgecolor_is ("none"))
-	lc = props.get_markeredgecolor_rgb ();
+        lc = props.get_markeredgecolor_rgb ();
 
       if (props.markerfacecolor_is ("auto"))
-	fc = props.get_color_rgb ();
+        fc = props.get_color_rgb ();
       else if (! props.markerfacecolor_is ("none"))
-	fc = props.get_markerfacecolor_rgb ();
+        fc = props.get_markerfacecolor_rgb ();
 
       init_marker (props.get_marker (), props.get_markersize (),
-		   props.get_linewidth ());
+                   props.get_linewidth ());
 
       for (int i = 0; i < n; i++)
         {
@@ -1817,20 +1817,20 @@ opengl_renderer::draw_surface (const surface::properties& props)
     warning ("opengl_renderer::draw: phong light model not supported");
 
   int fc_mode = (props.facecolor_is_rgb () ? 0 :
-		 (props.facecolor_is ("flat") ? 1 :
-		  (props.facecolor_is ("interp") ? 2 :
-		   (props.facecolor_is ("texturemap") ? 3 : -1))));
+                 (props.facecolor_is ("flat") ? 1 :
+                  (props.facecolor_is ("interp") ? 2 :
+                   (props.facecolor_is ("texturemap") ? 3 : -1))));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
-		 (props.facelighting_is ("flat") ? 1 : 2));
+                 (props.facelighting_is ("flat") ? 1 : 2));
   int fa_mode = (props.facealpha_is_double () ? 0 :
-		 (props.facealpha_is ("flat") ? 1 : 2));
+                 (props.facealpha_is ("flat") ? 1 : 2));
   int ec_mode = (props.edgecolor_is_rgb () ? 0 :
-		 (props.edgecolor_is ("flat") ? 1 :
-		  (props.edgecolor_is ("interp") ? 2 : -1)));
+                 (props.edgecolor_is ("flat") ? 1 :
+                  (props.edgecolor_is ("interp") ? 2 : -1)));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
-		 (props.edgelighting_is ("flat") ? 1 : 2));
+                 (props.edgelighting_is ("flat") ? 1 : 2));
   int ea_mode = (props.edgealpha_is_double () ? 0 :
-		 (props.edgealpha_is ("flat") ? 1 : 2));
+                 (props.edgealpha_is ("flat") ? 1 : 2));
 
   Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0) : props.get_facecolor_rgb ());
   Matrix ecolor = props.get_edgecolor_rgb ();
@@ -1855,15 +1855,15 @@ opengl_renderer::draw_surface (const surface::properties& props)
   for (int i = 0; i < zr; i++)
     {
       if (x_mat)
-	i1 = i;
+        i1 = i;
 
       for (int j = 0; j < zc; j++)
-	{
-	  if (y_mat)
-	    j1 = j;
+        {
+          if (y_mat)
+            j1 = j;
 
-	  clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
-	}
+          clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
+        }
     }
 
   if ((fc_mode > 0 && fc_mode < 3) || ec_mode > 0)
@@ -1891,396 +1891,396 @@ opengl_renderer::draw_surface (const surface::properties& props)
   if (! props.facecolor_is ("none"))
     {
       if (props.get_facealpha_double () == 1)
-	{
-	  if (fc_mode == 0 || fc_mode == 3)
-	    {
-	      glColor3dv (fcolor.data ());
-	      if (fl_mode > 0)
-		{
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = as * fcolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+        {
+          if (fc_mode == 0 || fc_mode == 3)
+            {
+              glColor3dv (fcolor.data ());
+              if (fl_mode > 0)
+                {
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = as * fcolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = ds * fcolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-		}
-	    }
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ds * fcolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                }
+            }
 
-	  if (fl_mode > 0)
-	    glEnable (GL_LIGHTING);
-	  glShadeModel ((fc_mode == 2 || fl_mode == 2) ? GL_SMOOTH : GL_FLAT);
-	  set_polygon_offset (true, 1);
-	  if (fc_mode == 3)
-	    glEnable (GL_TEXTURE_2D);
+          if (fl_mode > 0)
+            glEnable (GL_LIGHTING);
+          glShadeModel ((fc_mode == 2 || fl_mode == 2) ? GL_SMOOTH : GL_FLAT);
+          set_polygon_offset (true, 1);
+          if (fc_mode == 3)
+            glEnable (GL_TEXTURE_2D);
 
-	  for (int i = 1; i < zc; i++)
-	    {
-	      if (y_mat)
-		{
-		  i1 = i-1;
-		  i2 = i;
-		}
+          for (int i = 1; i < zc; i++)
+            {
+              if (y_mat)
+                {
+                  i1 = i-1;
+                  i2 = i;
+                }
 
-	      for (int j = 1; j < zr; j++)
-		{
-		  if (clip(j-1, i-1) || clip (j, i-1)
-		      || clip (j-1, i) || clip (j, i))
-		    continue;
+              for (int j = 1; j < zr; j++)
+                {
+                  if (clip(j-1, i-1) || clip (j, i-1)
+                      || clip (j-1, i) || clip (j, i))
+                    continue;
 
-		  if (x_mat)
-		    {
-		      j1 = j-1;
-		      j2 = j;
-		    }
+                  if (x_mat)
+                    {
+                      j1 = j-1;
+                      j2 = j;
+                    }
 
-		  glBegin (GL_QUADS);
+                  glBegin (GL_QUADS);
 
-		  // Vertex 1
-		  if (fc_mode == 3)
-		    tex.tex_coord (double (i-1) / (zc-1), double (j-1) / (zr-1));
-		  else if (fc_mode > 0)
-		    {
-		      // FIXME: is there a smarter way to do this?
-		      for (int k = 0; k < 3; k++)
-			cb[k] = c(j-1, i-1, k);
-		      glColor3fv (cb);
+                  // Vertex 1
+                  if (fc_mode == 3)
+                    tex.tex_coord (double (i-1) / (zc-1), double (j-1) / (zr-1));
+                  else if (fc_mode > 0)
+                    {
+                      // FIXME: is there a smarter way to do this?
+                      for (int k = 0; k < 3; k++)
+                        cb[k] = c(j-1, i-1, k);
+                      glColor3fv (cb);
 
-		      if (fl_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] *= as;
-			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-			  
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = ds * c(j-1, i-1, k);
-			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			}
-		    }
+                      if (fl_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] *= as;
+                          glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                          
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ds * c(j-1, i-1, k);
+                          glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                        }
+                    }
                   if (fl_mode > 0)
-		    {
-		      d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
-				+ n(j-1,i-1,1) * n(j-1,i-1,1)
-				+ n(j-1,i-1,2) * n(j-1,i-1,2));
-		      glNormal3d (n(j-1,i-1,0)/d, n(j-1,i-1,1)/d, n(j-1,i-1,2)/d);
-		    }
-		  glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
+                    {
+                      d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
+                                + n(j-1,i-1,1) * n(j-1,i-1,1)
+                                + n(j-1,i-1,2) * n(j-1,i-1,2));
+                      glNormal3d (n(j-1,i-1,0)/d, n(j-1,i-1,1)/d, n(j-1,i-1,2)/d);
+                    }
+                  glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
-		  // Vertex 2
-		  if (fc_mode == 3)
-		    tex.tex_coord (double (i) / (zc-1), double (j-1) / (zr-1));
-		  else if (fc_mode == 2)
-		    {
-		      for (int k = 0; k < 3; k++)
-			cb[k] = c(j-1, i, k);
-		      glColor3fv (cb);
+                  // Vertex 2
+                  if (fc_mode == 3)
+                    tex.tex_coord (double (i) / (zc-1), double (j-1) / (zr-1));
+                  else if (fc_mode == 2)
+                    {
+                      for (int k = 0; k < 3; k++)
+                        cb[k] = c(j-1, i, k);
+                      glColor3fv (cb);
 
-		      if (fl_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] *= as;
-			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-			  
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = ds * c(j-1, i, k);
-			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			}
-		    }
+                      if (fl_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] *= as;
+                          glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                          
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ds * c(j-1, i, k);
+                          glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                        }
+                    }
 
                   if (fl_mode == 2)
-		    {
-		      d = sqrt (n(j-1,i,0) * n(j-1,i,0)
-				+ n(j-1,i,1) * n(j-1,i,1)
-				+ n(j-1,i,2) * n(j-1,i,2));
-		      glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
-		    }
+                    {
+                      d = sqrt (n(j-1,i,0) * n(j-1,i,0)
+                                + n(j-1,i,1) * n(j-1,i,1)
+                                + n(j-1,i,2) * n(j-1,i,2));
+                      glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+                    }
 
-		  glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
-		  
-		  // Vertex 3
-		  if (fc_mode == 3)
-		    tex.tex_coord (double (i) / (zc-1), double (j) / (zr-1));
-		  else if (fc_mode == 2)
-		    {
-		      for (int k = 0; k < 3; k++)
-			cb[k] = c(j, i, k);
-		      glColor3fv (cb);
+                  glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+                  
+                  // Vertex 3
+                  if (fc_mode == 3)
+                    tex.tex_coord (double (i) / (zc-1), double (j) / (zr-1));
+                  else if (fc_mode == 2)
+                    {
+                      for (int k = 0; k < 3; k++)
+                        cb[k] = c(j, i, k);
+                      glColor3fv (cb);
 
-		      if (fl_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] *= as;
-			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-			  
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = ds * c(j, i, k);
-			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			}
-		    }
-		  if (fl_mode == 2)
-		    {
-		      d = sqrt (n(j,i,0) * n(j,i,0)
-				+ n(j,i,1) * n(j,i,1)
-				+ n(j,i,2) * n(j,i,2));
-		      glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
-		    }
-		  glVertex3d (x(j2,i), y(j,i2), z(j,i));
-
-		  // Vertex 4
-		  if (fc_mode == 3)
-		    tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
-		  else if (fc_mode == 2)
-		    {
-		      for (int k = 0; k < 3; k++)
-			cb[k] = c(j, i-1, k);
-		      glColor3fv (cb);
-
-		      if (fl_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] *= as;
-			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-			  
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = ds * c(j, i-1, k);
-			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			}
-		    }
+                      if (fl_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] *= as;
+                          glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                          
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ds * c(j, i, k);
+                          glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                        }
+                    }
                   if (fl_mode == 2)
-		    {
-		      d = sqrt (n(j,i-1,0) * n(j,i-1,0)
-				+ n(j,i-1,1) * n(j,i-1,1)
-				+ n(j,i-1,2) * n(j,i-1,2));
-		      glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
-		    }
-		  glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+                    {
+                      d = sqrt (n(j,i,0) * n(j,i,0)
+                                + n(j,i,1) * n(j,i,1)
+                                + n(j,i,2) * n(j,i,2));
+                      glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                    }
+                  glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
-		  glEnd ();
-		}
-	    }
+                  // Vertex 4
+                  if (fc_mode == 3)
+                    tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
+                  else if (fc_mode == 2)
+                    {
+                      for (int k = 0; k < 3; k++)
+                        cb[k] = c(j, i-1, k);
+                      glColor3fv (cb);
 
-	  set_polygon_offset (false);
-	  if (fc_mode == 3)
-	    glDisable (GL_TEXTURE_2D);
+                      if (fl_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] *= as;
+                          glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                          
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = ds * c(j, i-1, k);
+                          glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                        }
+                    }
+                  if (fl_mode == 2)
+                    {
+                      d = sqrt (n(j,i-1,0) * n(j,i-1,0)
+                                + n(j,i-1,1) * n(j,i-1,1)
+                                + n(j,i-1,2) * n(j,i-1,2));
+                      glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+                    }
+                  glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
-	  if (fl_mode > 0)
-	    glDisable (GL_LIGHTING);
-	}
+                  glEnd ();
+                }
+            }
+
+          set_polygon_offset (false);
+          if (fc_mode == 3)
+            glDisable (GL_TEXTURE_2D);
+
+          if (fl_mode > 0)
+            glDisable (GL_LIGHTING);
+        }
       else
-	{
-	  // FIXME: implement transparency
-	}
+        {
+          // FIXME: implement transparency
+        }
     }
 
   if (! props.edgecolor_is ("none"))
     {
       if (props.get_edgealpha_double () == 1)
-	{
-	  if (ec_mode == 0)
-	    {
-	      glColor3dv (ecolor.data ());
-	      if (fl_mode > 0)
-		{
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = as * ecolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+        {
+          if (ec_mode == 0)
+            {
+              glColor3dv (ecolor.data ());
+              if (fl_mode > 0)
+                {
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = as * ecolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = ds * ecolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-		}
-	    }
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ds * ecolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                }
+            }
 
-	  if (el_mode > 0)
-	    glEnable (GL_LIGHTING);
-	  glShadeModel ((ec_mode == 2 || el_mode == 2) ? GL_SMOOTH : GL_FLAT);
+          if (el_mode > 0)
+            glEnable (GL_LIGHTING);
+          glShadeModel ((ec_mode == 2 || el_mode == 2) ? GL_SMOOTH : GL_FLAT);
 
-	  set_linestyle (props.get_linestyle (), false);
-	  set_linewidth (props.get_linewidth ());
+          set_linestyle (props.get_linestyle (), false);
+          set_linewidth (props.get_linewidth ());
 
-	  // Mesh along Y-axis
+          // Mesh along Y-axis
 
-	  if (props.meshstyle_is ("both") || props.meshstyle_is ("column"))
-	    {
-	      for (int i = 0; i < zc; i++)
-		{
-		  if (y_mat)
-		    {
-		      i1 = i-1;
-		      i2 = i;
-		    }
+          if (props.meshstyle_is ("both") || props.meshstyle_is ("column"))
+            {
+              for (int i = 0; i < zc; i++)
+                {
+                  if (y_mat)
+                    {
+                      i1 = i-1;
+                      i2 = i;
+                    }
 
-		  for (int j = 1; j < zr; j++)
-		    {
-		      if (clip(j-1,i) || clip(j,i))
-			continue;
+                  for (int j = 1; j < zr; j++)
+                    {
+                      if (clip(j-1,i) || clip(j,i))
+                        continue;
 
-		      if (x_mat)
-			{
-			  j1 = j-1;
-			  j2 = j;
-			}
-
-		      glBegin (GL_LINES);
-
-		      // Vertex 1
-		      if (ec_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = c(j-1, i, k);
-			  glColor3fv (cb);
-
-			  if (fl_mode > 0)
-			    {
-			      for (int k = 0; k < 3; k++)
-				cb[k] *= as;
-			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-			      for (int k = 0; k < 3; k++)
-				cb[k] = ds * c(j-1, i, k);
-			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			    }
-			}
-		      if (el_mode > 0)
-			{
-			  d = sqrt (n(j-1,i,0) * n(j-1,i,0)
-				    + n(j-1,i,1) * n(j-1,i,1)
-				    + n(j-1,i,2) * n(j-1,i,2));
-			  glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
-			}
-		      glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
-
-		      // Vertex 2
-		      if (ec_mode == 2)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = c(j, i, k);
-			  glColor3fv (cb);
-
-			  if (fl_mode > 0)
-			    {
-			      for (int k = 0; k < 3; k++)
-				cb[k] *= as;
-			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-			      for (int k = 0; k < 3; k++)
-				cb[k] = ds * c(j, i, k);
-			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			    }
-			}
-		      if (el_mode == 2)
-		        {
-			  d = sqrt (n(j,i,0) * n(j,i,0)
-				    + n(j,i,1) * n(j,i,1)
-				    + n(j,i,2) * n(j,i,2));
-			  glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
-			}
-		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
-
-		      glEnd ();
-		    }
-		}
-	    }
-
-	  // Mesh along X-axis
-
-	  if (props.meshstyle_is ("both") || props.meshstyle_is ("row"))
-	    {
-	      for (int j = 0; j < zr; j++)
-		{
-		  if (x_mat)
-		    {
-		      j1 = j-1;
-		      j2 = j;
-		    }
-
-		  for (int i = 1; i < zc; i++)
-		    {
-		      if (clip(j,i-1) || clip(j,i))
-			continue;
-
-		      if (y_mat)
-			{
-			  i1 = i-1;
-			  i2 = i;
-			}
-
-		      glBegin (GL_LINES);
-
-		      // Vertex 1
-		      if (ec_mode > 0)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = c(j, i-1, k);
-			  glColor3fv (cb);
-
-			  if (fl_mode > 0)
-			    {
-			      for (int k = 0; k < 3; k++)
-				cb[k] *= as;
-			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-			      for (int k = 0; k < 3; k++)
-				cb[k] = ds * c(j, i-1, k);
-			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			    }
-			}
-		      if (el_mode > 0)
+                      if (x_mat)
                         {
-			  d = sqrt (n(j,i-1,0) * n(j,i-1,0)
-				    + n(j,i-1,1) * n(j,i-1,1)
-				    + n(j,i-1,2) * n(j,i-1,2));
-			  glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
-			}
-		      glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
-		      
-		      // Vertex 2
-		      if (ec_mode == 2)
-			{
-			  for (int k = 0; k < 3; k++)
-			    cb[k] = c(j, i, k);
-			  glColor3fv (cb);
+                          j1 = j-1;
+                          j2 = j;
+                        }
 
-			  if (fl_mode > 0)
-			    {
-			      for (int k = 0; k < 3; k++)
-				cb[k] *= as;
-			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                      glBegin (GL_LINES);
 
-			      for (int k = 0; k < 3; k++)
-				cb[k] = ds * c(j, i, k);
-			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-			    }
-			}
-		      if (el_mode == 2)
-		        {
-			  d = sqrt (n(j,i,0) * n(j,i,0)
-				    + n(j,i,1) * n(j,i,1)
-				    + n(j,i,2) * n(j,i,2));
-			  glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
-			}
-		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
-		      
-		      glEnd ();
-		    }
-		}
-	    }
+                      // Vertex 1
+                      if (ec_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = c(j-1, i, k);
+                          glColor3fv (cb);
 
-	  set_linestyle ("-");
-	  set_linewidth (0.5);
+                          if (fl_mode > 0)
+                            {
+                              for (int k = 0; k < 3; k++)
+                                cb[k] *= as;
+                              glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
-	  if (el_mode > 0)
-	    glDisable (GL_LIGHTING);
-	}
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ds * c(j-1, i, k);
+                              glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            }
+                        }
+                      if (el_mode > 0)
+                        {
+                          d = sqrt (n(j-1,i,0) * n(j-1,i,0)
+                                    + n(j-1,i,1) * n(j-1,i,1)
+                                    + n(j-1,i,2) * n(j-1,i,2));
+                          glNormal3d (n(j-1,i,0)/d, n(j-1,i,1)/d, n(j-1,i,2)/d);
+                        }
+                      glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+
+                      // Vertex 2
+                      if (ec_mode == 2)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = c(j, i, k);
+                          glColor3fv (cb);
+
+                          if (fl_mode > 0)
+                            {
+                              for (int k = 0; k < 3; k++)
+                                cb[k] *= as;
+                              glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ds * c(j, i, k);
+                              glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            }
+                        }
+                      if (el_mode == 2)
+                        {
+                          d = sqrt (n(j,i,0) * n(j,i,0)
+                                    + n(j,i,1) * n(j,i,1)
+                                    + n(j,i,2) * n(j,i,2));
+                          glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                        }
+                      glVertex3d (x(j2,i), y(j,i2), z(j,i));
+
+                      glEnd ();
+                    }
+                }
+            }
+
+          // Mesh along X-axis
+
+          if (props.meshstyle_is ("both") || props.meshstyle_is ("row"))
+            {
+              for (int j = 0; j < zr; j++)
+                {
+                  if (x_mat)
+                    {
+                      j1 = j-1;
+                      j2 = j;
+                    }
+
+                  for (int i = 1; i < zc; i++)
+                    {
+                      if (clip(j,i-1) || clip(j,i))
+                        continue;
+
+                      if (y_mat)
+                        {
+                          i1 = i-1;
+                          i2 = i;
+                        }
+
+                      glBegin (GL_LINES);
+
+                      // Vertex 1
+                      if (ec_mode > 0)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = c(j, i-1, k);
+                          glColor3fv (cb);
+
+                          if (fl_mode > 0)
+                            {
+                              for (int k = 0; k < 3; k++)
+                                cb[k] *= as;
+                              glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ds * c(j, i-1, k);
+                              glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            }
+                        }
+                      if (el_mode > 0)
+                        {
+                          d = sqrt (n(j,i-1,0) * n(j,i-1,0)
+                                    + n(j,i-1,1) * n(j,i-1,1)
+                                    + n(j,i-1,2) * n(j,i-1,2));
+                          glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
+                        }
+                      glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+                      
+                      // Vertex 2
+                      if (ec_mode == 2)
+                        {
+                          for (int k = 0; k < 3; k++)
+                            cb[k] = c(j, i, k);
+                          glColor3fv (cb);
+
+                          if (fl_mode > 0)
+                            {
+                              for (int k = 0; k < 3; k++)
+                                cb[k] *= as;
+                              glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = ds * c(j, i, k);
+                              glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            }
+                        }
+                      if (el_mode == 2)
+                        {
+                          d = sqrt (n(j,i,0) * n(j,i,0)
+                                    + n(j,i,1) * n(j,i,1)
+                                    + n(j,i,2) * n(j,i,2));
+                          glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
+                        }
+                      glVertex3d (x(j2,i), y(j,i2), z(j,i));
+                      
+                      glEnd ();
+                    }
+                }
+            }
+
+          set_linestyle ("-");
+          set_linewidth (0.5);
+
+          if (el_mode > 0)
+            glDisable (GL_LIGHTING);
+        }
       else
-	{
-	  // FIXME: implement transparency
-	}
+        {
+          // FIXME: implement transparency
+        }
     }
 
   if (! props.marker_is ("none") &&
       ! (props.markeredgecolor_is ("none")
-	 && props.markerfacecolor_is ("none")))
+         && props.markerfacecolor_is ("none")))
     {
       // FIXME: check how transparency should be handled in markers
       // FIXME: check what to do with marker facecolor set to auto
@@ -2294,50 +2294,50 @@ opengl_renderer::draw_surface (const surface::properties& props)
       Matrix cc (1, 3, 0.0);
 
       if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
-	{
-	  mecolor = props.get_edgecolor_rgb ();
-	  do_edge = ! props.edgecolor_is ("none");
-	}
+        {
+          mecolor = props.get_edgecolor_rgb ();
+          do_edge = ! props.edgecolor_is ("none");
+        }
 
       if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
-	{
-	  mfcolor = props.get_facecolor_rgb ();
-	  do_face = ! props.facecolor_is ("none");
-	}
+        {
+          mfcolor = props.get_facecolor_rgb ();
+          do_face = ! props.facecolor_is ("none");
+        }
 
       if ((mecolor.numel () == 0 || mfcolor.numel () == 0)
-	  && c.numel () == 0)
-	c = props.get_color_data ().array_value ();
+          && c.numel () == 0)
+        c = props.get_color_data ().array_value ();
 
       init_marker (props.get_marker (), props.get_markersize (),
-		   props.get_linewidth ());
+                   props.get_linewidth ());
 
       for (int i = 0; i < zc; i++)
-	{
-	  if (y_mat)
-	    i1 = i;
-	  
-	  for (int j = 0; j < zr; j++)
-	    {
-	      if (clip(j,i))
-		continue;
+        {
+          if (y_mat)
+            i1 = i;
+          
+          for (int j = 0; j < zr; j++)
+            {
+              if (clip(j,i))
+                continue;
 
-	      if (x_mat)
-		j1 = j;
+              if (x_mat)
+                j1 = j;
 
-	      if ((do_edge && mecolor.numel () == 0)
-		  || (do_face && mfcolor.numel () == 0))
-		{
-		  for (int k = 0; k < 3; k++)
-		    cc(k) = c(j,i,k);
-		}
+              if ((do_edge && mecolor.numel () == 0)
+                  || (do_face && mfcolor.numel () == 0))
+                {
+                  for (int k = 0; k < 3; k++)
+                    cc(k) = c(j,i,k);
+                }
 
-	      Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor) : Matrix ());
-	      Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor) : Matrix ());
+              Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor) : Matrix ());
+              Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor) : Matrix ());
 
-	      draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
-	    }
-	}
+              draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
+            }
+        }
 
       end_marker ();
     }
@@ -2364,17 +2364,17 @@ opengl_renderer::draw_patch (const patch::properties &props)
   bool has_facealpha = false;
 
   int fc_mode = (props.facecolor_is_rgb () ? 0 :
-		 (props.facecolor_is("flat") ? 1 : 2));
+                 (props.facecolor_is("flat") ? 1 : 2));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
-		 (props.facelighting_is ("flat") ? 1 : 2));
+                 (props.facelighting_is ("flat") ? 1 : 2));
   int fa_mode = (props.facealpha_is_double () ? 0 :
-		 (props.facealpha_is ("flat") ? 1 : 2));
+                 (props.facealpha_is ("flat") ? 1 : 2));
   int ec_mode = (props.edgecolor_is_rgb () ? 0 :
-		 (props.edgecolor_is("flat") ? 1 : 2));
+                 (props.edgecolor_is("flat") ? 1 : 2));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
-		 (props.edgelighting_is ("flat") ? 1 : 2));
+                 (props.edgelighting_is ("flat") ? 1 : 2));
   int ea_mode = (props.edgealpha_is_double () ? 0 :
-		 (props.edgealpha_is ("flat") ? 1 : 2));
+                 (props.edgealpha_is ("flat") ? 1 : 2));
 
   Matrix fcolor = props.get_facecolor_rgb ();
   Matrix ecolor = props.get_edgecolor_rgb ();
@@ -2402,7 +2402,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       int count = 0;
 
       for (int j = 0; j < fcmax && ! xisnan (f(i,j)); j++, count++)
-	fclip = (fclip || clip(int (f(i,j) - 1)));
+        fclip = (fclip || clip(int (f(i,j) - 1)));
 
       clip_f(i) = fclip;
       count_f(i) = count;
@@ -2413,25 +2413,25 @@ opengl_renderer::draw_patch (const patch::properties &props)
       c = props.get_color_data ().matrix_value ();
 
       if (c.rows () == 1)
-	{
-	  // Single color specifications, we can simplify a little bit
-	  
-	  if (fc_mode > 0)
-	    {
-	      fcolor = c;
-	      fc_mode = 0;
-	    }
+        {
+          // Single color specifications, we can simplify a little bit
+          
+          if (fc_mode > 0)
+            {
+              fcolor = c;
+              fc_mode = 0;
+            }
 
-	  if (ec_mode > 0)
-	    {
-	      ecolor = c;
-	      ec_mode = 0;
-	    }
+          if (ec_mode > 0)
+            {
+              ecolor = c;
+              ec_mode = 0;
+            }
 
-	  c = Matrix ();
-	}
+          c = Matrix ();
+        }
       else
-	has_facecolor = ((c.numel () > 0) && (c.rows () == f.rows ()));
+        has_facecolor = ((c.numel () > 0) && (c.rows () == f.rows ()));
     }
 
   if (fa_mode > 0 || ea_mode > 0)
@@ -2447,36 +2447,36 @@ opengl_renderer::draw_patch (const patch::properties &props)
   for (int i = 0; i < nf; i++)
     for (int j = 0; j < count_f(i); j++)
       {
-	int idx = int (f(i,j) - 1);
+        int idx = int (f(i,j) - 1);
 
-	Matrix vv (1, 3, 0.0);
-	Matrix cc;
-	Matrix nn(1, 3, 0.0);
-	double aa = 1.0;
+        Matrix vv (1, 3, 0.0);
+        Matrix cc;
+        Matrix nn(1, 3, 0.0);
+        double aa = 1.0;
 
-	vv(0) = v(idx,0); vv(1) = v(idx,1);
-	if (has_z)
-	  vv(2) = v(idx,2);
-	// FIXME: uncomment when patch object has normal computation
-	//nn(0) = n(idx,0); nn(1) = n(idx,1); nn(2) = n(idx,2);
-	if (c.numel () > 0)
-	  {
-	    cc.resize (1, 3);
-	    if (has_facecolor)
-	      cc(0) = c(i,0), cc(1) = c(i,1), cc(2) = c(i,2);
-	    else
-	      cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
-	  }
-	if (a.numel () > 0)
-	  {
-	    if (has_facealpha)
-	      aa = a(i);
-	    else
-	      aa = a(idx);
-	  }
+        vv(0) = v(idx,0); vv(1) = v(idx,1);
+        if (has_z)
+          vv(2) = v(idx,2);
+        // FIXME: uncomment when patch object has normal computation
+        //nn(0) = n(idx,0); nn(1) = n(idx,1); nn(2) = n(idx,2);
+        if (c.numel () > 0)
+          {
+            cc.resize (1, 3);
+            if (has_facecolor)
+              cc(0) = c(i,0), cc(1) = c(i,1), cc(2) = c(i,2);
+            else
+              cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
+          }
+        if (a.numel () > 0)
+          {
+            if (has_facealpha)
+              aa = a(i);
+            else
+              aa = a(idx);
+          }
 
-	vdata[i+j*fr] =
-	    vertex_data (vv, cc, nn, aa, as, ds, ss, se);
+        vdata[i+j*fr] =
+            vertex_data (vv, cc, nn, aa, as, ds, ss, se);
       }
 
   if (fl_mode > 0 || el_mode > 0)
@@ -2491,119 +2491,119 @@ opengl_renderer::draw_patch (const patch::properties &props)
     {
       // FIXME: adapt to double-radio property
       if (props.get_facealpha_double () == 1)
-	{
-	  if (fc_mode == 0)
-	    {
-	      glColor3dv (fcolor.data ());
-	      if (fl_mode > 0)
-		{
-		  float cb[4] = { 0, 0, 0, 1 };
+        {
+          if (fc_mode == 0)
+            {
+              glColor3dv (fcolor.data ());
+              if (fl_mode > 0)
+                {
+                  float cb[4] = { 0, 0, 0, 1 };
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = (as * fcolor(i));
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = (as * fcolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = ds * fcolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-		}
-	    }
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ds * fcolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                }
+            }
 
-	  if (fl_mode > 0)
-	    glEnable (GL_LIGHTING);
+          if (fl_mode > 0)
+            glEnable (GL_LIGHTING);
 
-	  // FIXME: use __index__ property from patch object
-	  patch_tesselator tess (this, fc_mode, fl_mode, 0);
+          // FIXME: use __index__ property from patch object
+          patch_tesselator tess (this, fc_mode, fl_mode, 0);
 
-	  for (int i = 0; i < nf; i++)
-	    {
-	      if (clip_f(i))
-		continue;
+          for (int i = 0; i < nf; i++)
+            {
+              if (clip_f(i))
+                continue;
 
-	      tess.begin_polygon (true);
-	      tess.begin_contour ();
+              tess.begin_polygon (true);
+              tess.begin_contour ();
 
-	      for (int j = 0; j < count_f(i); j++)
-		{
-		  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-	
-		  tess.add_vertex (vv->coords.fortran_vec (), vv);
-		}
+              for (int j = 0; j < count_f(i); j++)
+                {
+                  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+        
+                  tess.add_vertex (vv->coords.fortran_vec (), vv);
+                }
 
-	      tess.end_contour ();
-	      tess.end_polygon ();
-	    }
+              tess.end_contour ();
+              tess.end_polygon ();
+            }
 
-	  if (fl_mode > 0)
-	    glDisable (GL_LIGHTING);
-	}
+          if (fl_mode > 0)
+            glDisable (GL_LIGHTING);
+        }
       else
-	{
-	  // FIXME: implement transparency
-	}
+        {
+          // FIXME: implement transparency
+        }
     }
 
   if (! props.edgecolor_is ("none"))
     {
       // FIXME: adapt to double-radio property
       if (props.get_edgealpha_double () == 1)
-	{
-	  if (ec_mode == 0)
-	    {
-	      glColor3dv (ecolor.data ());
-	      if (el_mode > 0)
-		{
-		  float cb[4] = { 0, 0, 0, 1 };
+        {
+          if (ec_mode == 0)
+            {
+              glColor3dv (ecolor.data ());
+              if (el_mode > 0)
+                {
+                  float cb[4] = { 0, 0, 0, 1 };
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = (as * ecolor(i));
-		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = (as * ecolor(i));
+                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
-		  for (int i = 0; i < 3; i++)
-		    cb[i] = ds * ecolor(i);
-		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-		}
-	    }
+                  for (int i = 0; i < 3; i++)
+                    cb[i] = ds * ecolor(i);
+                  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                }
+            }
 
-	  if (el_mode > 0)
-	    glEnable (GL_LIGHTING);
+          if (el_mode > 0)
+            glEnable (GL_LIGHTING);
 
-	  set_linestyle (props.get_linestyle (), false);
-	  set_linewidth (props.get_linewidth ());
+          set_linestyle (props.get_linestyle (), false);
+          set_linewidth (props.get_linewidth ());
 
-	  // FIXME: use __index__ property from patch object; should we
-	  // offset patch contour as well?
-	  patch_tesselator tess (this, ec_mode, el_mode);
+          // FIXME: use __index__ property from patch object; should we
+          // offset patch contour as well?
+          patch_tesselator tess (this, ec_mode, el_mode);
 
-	  for (int i = 0; i < nf; i++)
-	    {
-	      if (clip_f(i))
-		continue;
+          for (int i = 0; i < nf; i++)
+            {
+              if (clip_f(i))
+                continue;
 
-	      tess.begin_polygon (false);
-	      tess.begin_contour ();
+              tess.begin_polygon (false);
+              tess.begin_contour ();
 
-	      for (int j = 0; j < count_f(i); j++)
-		{
-		  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-	
-		  tess.add_vertex (vv->coords.fortran_vec (), vv);
-		}
+              for (int j = 0; j < count_f(i); j++)
+                {
+                  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+        
+                  tess.add_vertex (vv->coords.fortran_vec (), vv);
+                }
 
-	      tess.end_contour ();
-	      tess.end_polygon ();
-	    }
+              tess.end_contour ();
+              tess.end_polygon ();
+            }
 
-	  set_linestyle ("-");
-	  set_linewidth (0.5);
+          set_linestyle ("-");
+          set_linewidth (0.5);
 
-	  if (el_mode > 0)
-	    glDisable (GL_LIGHTING);
-	}
+          if (el_mode > 0)
+            glDisable (GL_LIGHTING);
+        }
       else
-	{
-	  // FIXME: implement transparency
-	}
+        {
+          // FIXME: implement transparency
+        }
     }
 
   if (! props.marker_is ("none") &&
@@ -2617,37 +2617,37 @@ opengl_renderer::draw_patch (const patch::properties &props)
       Matrix cc (1, 3, 0.0);
 
       if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
-	{
-	  mecolor = props.get_edgecolor_rgb ();
-	  do_edge = ! props.edgecolor_is ("none");
-	}
+        {
+          mecolor = props.get_edgecolor_rgb ();
+          do_edge = ! props.edgecolor_is ("none");
+        }
 
       if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
-	{
-	  mfcolor = props.get_facecolor_rgb ();
-	  do_face = ! props.facecolor_is ("none");
-	}
+        {
+          mfcolor = props.get_facecolor_rgb ();
+          do_face = ! props.facecolor_is ("none");
+        }
 
       init_marker (props.get_marker (), props.get_markersize (),
-		   props.get_linewidth ());
+                   props.get_linewidth ());
 
       for (int i = 0; i < nf; i++)
-	for (int j = 0; j < count_f(i); j++)
-	  {
-	    int idx = int (f(i,j) - 1);
+        for (int j = 0; j < count_f(i); j++)
+          {
+            int idx = int (f(i,j) - 1);
 
-	    if (clip(idx))
-	      continue;
+            if (clip(idx))
+              continue;
 
-	    Matrix lc = (do_edge ? (mecolor.numel () == 0 ?
-				    vdata[i+j*fr].get_rep ()->color : mecolor)
-			 : Matrix ());
-	    Matrix fc = (do_face ? (mfcolor.numel () == 0 ?
-				    vdata[i+j*fr].get_rep ()->color : mfcolor)
-			 : Matrix ());
+            Matrix lc = (do_edge ? (mecolor.numel () == 0 ?
+                                    vdata[i+j*fr].get_rep ()->color : mecolor)
+                         : Matrix ());
+            Matrix fc = (do_face ? (mfcolor.numel () == 0 ?
+                                    vdata[i+j*fr].get_rep ()->color : mfcolor)
+                         : Matrix ());
 
-	    draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
-	  }
+            draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
+          }
 
       end_marker ();
     }
@@ -2687,8 +2687,8 @@ opengl_renderer::draw_text (const text::properties& props)
   // FIXME: handle margin and surrounding box
 
   render_text (props.get_string (),
-	     pos(0), pos(1), pos(2),
-	     halign, valign, props.get_rotation ());
+             pos(0), pos(1), pos(2),
+             halign, valign, props.get_rotation ());
 }
 
 void
@@ -2748,14 +2748,14 @@ opengl_renderer::draw_image (const image::properties& props)
   if (props.is_clipping ()) // clip to axes
     {
       if (im_xmin < xmin)
-	j0 += (xmin - im_xmin)/nor_dx + 1;
+        j0 += (xmin - im_xmin)/nor_dx + 1;
       if (im_xmax > xmax)
-	j1 -= (im_xmax - xmax)/nor_dx ;
+        j1 -= (im_xmax - xmax)/nor_dx ;
 
       if (im_ymin < ymin)
-	i0 += (ymin - im_ymin)/nor_dy + 1;
+        i0 += (ymin - im_ymin)/nor_dy + 1;
       if (im_ymax > ymax)
-	i1 -= (im_ymax - ymax)/nor_dy;
+        i1 -= (im_ymax - ymax)/nor_dy;
     }
   else // clip to viewport
     {
@@ -2778,66 +2778,66 @@ opengl_renderer::draw_image (const image::properties& props)
   if (dv.length () == 3 && dv(2) == 3)
     {
       if (cdata.is_double_type ())
-	{
-	  const NDArray xcdata = cdata.array_value ();
+        {
+          const NDArray xcdata = cdata.array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+          OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = i0; i < i1; i++)
-	    {
-	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-		{
-		  a[idx]   = xcdata(i,j,0);
-		  a[idx+1] = xcdata(i,j,1);
-		  a[idx+2] = xcdata(i,j,2);
-		}
-	    }
+          for (int i = i0; i < i1; i++)
+            {
+              for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                {
+                  a[idx]   = xcdata(i,j,0);
+                  a[idx+1] = xcdata(i,j,1);
+                  a[idx+2] = xcdata(i,j,2);
+                }
+            }
 
-	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
+          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
 
-	}
+        }
       else if (cdata.is_uint16_type ())
-	{
-	  const uint16NDArray xcdata = cdata.uint16_array_value ();
+        {
+          const uint16NDArray xcdata = cdata.uint16_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+          OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = i0; i < i1; i++)
-	    {
-	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-		{
-		  a[idx]   = xcdata(i,j,0);
-		  a[idx+1] = xcdata(i,j,1);
-		  a[idx+2] = xcdata(i,j,2);
-		}
-	    }
+          for (int i = i0; i < i1; i++)
+            {
+              for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                {
+                  a[idx]   = xcdata(i,j,0);
+                  a[idx+1] = xcdata(i,j,1);
+                  a[idx+2] = xcdata(i,j,2);
+                }
+            }
 
-	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
+          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
 
-	}
+        }
       else if (cdata.is_uint8_type ())
-	{
-	  const uint8NDArray xcdata = cdata.uint8_array_value ();
+        {
+          const uint8NDArray xcdata = cdata.uint8_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
+          OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
 
-	  for (int i = i0; i < i1; i++)
-	    {
-	      for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-		{
-		  a[idx]   = xcdata(i,j,0);
-		  a[idx+1] = xcdata(i,j,1);
-		  a[idx+2] = xcdata(i,j,2);
-		}
-	    }
+          for (int i = i0; i < i1; i++)
+            {
+              for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                {
+                  a[idx]   = xcdata(i,j,0);
+                  a[idx+1] = xcdata(i,j,1);
+                  a[idx+2] = xcdata(i,j,2);
+                }
+            }
 
-	  draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
-	}
+          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
+        }
       else
-	{
-	  ok = false;
-	  warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
-	}
+        {
+          ok = false;
+          warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
+        }
     }
   else 
     {
@@ -2926,7 +2926,7 @@ opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
 
 void
 opengl_renderer::set_clipbox (double x1, double x2, double y1, double y2,
-			      double z1, double z2)
+                              double z1, double z2)
 {
   double dx = (x2-x1);
   double dy = (y2-y1);
@@ -3012,7 +3012,7 @@ opengl_renderer::end_marker (void)
 
 void
 opengl_renderer::draw_marker (double x, double y, double z,
-			      const Matrix& lc, const Matrix& fc)
+                              const Matrix& lc, const Matrix& fc)
 {
   ColumnVector tmp = xform.transform (x, y, z, false);
   
@@ -3025,14 +3025,14 @@ opengl_renderer::draw_marker (double x, double y, double z,
       set_polygon_offset (true, -1.0);
       glCallList (filled_marker_id);
       if (lc.numel () > 0)
-	{
-	  glColor3dv (lc.data ());
-	  glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-	  glEdgeFlag (GL_TRUE);
-	  set_polygon_offset (true, -2.0);
-	  glCallList (filled_marker_id);
-	  glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-	}
+        {
+          glColor3dv (lc.data ());
+          glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+          glEdgeFlag (GL_TRUE);
+          set_polygon_offset (true, -2.0);
+          glCallList (filled_marker_id);
+          glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+        }
       set_polygon_offset (false);
     }
   else if (marker_id > 0 && lc.numel () > 0)
@@ -3044,7 +3044,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
 
 unsigned int
 opengl_renderer::make_marker_list (const std::string& marker, double size,
-				   bool filled) const
+                                   bool filled) const
 {
   char c = marker[0];
 
@@ -3108,12 +3108,12 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case 'o':
       {
-	double ang_step = M_PI / 5;
+        double ang_step = M_PI / 5;
 
-	glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-	for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-	  glVertex2d (sz*cos(ang)/2, sz*sin(ang)/2);
-	glEnd ();
+        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+        for (double ang = 0; ang < (2*M_PI); ang += ang_step)
+          glVertex2d (sz*cos(ang)/2, sz*sin(ang)/2);
+        glEnd ();
       }
       break;
     case 'd':
@@ -3154,7 +3154,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     default:
       warning ("opengl_renderer: unsupported marker `%s'",
-	       marker.c_str ());
+               marker.c_str ());
       break;
     }
 
@@ -3165,10 +3165,10 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
 void
 opengl_renderer::text_to_pixels (const std::string& txt,
-				 double rotation,
-				 uint8NDArray& pixels,
-				 Matrix& bbox,
-				 int& rot_mode)
+                                 double rotation,
+                                 uint8NDArray& pixels,
+                                 Matrix& bbox,
+                                 int& rot_mode)
 {
   // FIXME: clip "rotation" between 0 and 360
 
@@ -3188,8 +3188,8 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 
 Matrix
 opengl_renderer::render_text (const std::string& txt,
-			    double x, double y, double z,
-			    int halign, int valign, double rotation)
+                            double x, double y, double z,
+                            int halign, int valign, double rotation)
 {
 #if HAVE_FREETYPE
   if (txt.empty ())
@@ -3248,7 +3248,7 @@ opengl_renderer::render_text (const std::string& txt,
   glRasterPos3d (x, y, z);
   glBitmap(0, 0, 0, 0, x0, y0, 0);
   glDrawPixels (w, h,
-		GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
+                GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
   glDisable (GL_ALPHA_TEST);
   if (! blend)
     glDisable (GL_BLEND);

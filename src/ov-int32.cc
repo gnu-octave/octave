@@ -63,7 +63,7 @@ template class octave_base_int_matrix<int32NDArray>;
 DEFINE_OCTAVE_ALLOCATOR (octave_int32_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_matrix,
-				     "int32 matrix", "int32");
+                                     "int32 matrix", "int32");
 
 template class octave_base_scalar<octave_int32>;
 
@@ -72,7 +72,7 @@ template class octave_base_int_scalar<octave_int32>;
 DEFINE_OCTAVE_ALLOCATOR (octave_int32_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int32_scalar,
-				     "int32 scalar", "int32");
+                                     "int32 scalar", "int32");
 
 DEFUN (int32, args, ,
   "-*- texinfo -*-\n\

@@ -73,7 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 // Kluge.
 extern "C" F77_RET_T
 F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CHAR_ARG_LEN_DECL);
 
 extern void install_builtins (void);
 
@@ -196,7 +196,7 @@ intern_argv (int argc, char **argv)
       // Skip program name in argv.
       int i = argc;
       while (--i > 0)
-	octave_argv[i-1] = *(argv+i);
+        octave_argv[i-1] = *(argv+i);
     }
 }
 
@@ -233,25 +233,25 @@ Undocumented internal function.\n\
   if (nargin == 4)
     {
       if (vinfo.nfields () == 0)
-	{
-	  vinfo.assign ("Name", args (0));
-	  vinfo.assign ("Version", args (1));
-	  vinfo.assign ("Release", args (2));
-	  vinfo.assign ("Date", args (3));
-	}
+        {
+          vinfo.assign ("Name", args (0));
+          vinfo.assign ("Version", args (1));
+          vinfo.assign ("Release", args (2));
+          vinfo.assign ("Date", args (3));
+        }
       else
-	{
-	  octave_idx_type n = vinfo.numel () + 1;
+        {
+          octave_idx_type n = vinfo.numel () + 1;
 
-	  vinfo.resize (dim_vector (n, 1));
+          vinfo.resize (dim_vector (n, 1));
 
-	  octave_value idx (n);
+          octave_value idx (n);
 
-	  vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
-	  vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
-	  vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
-	  vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
-	}
+          vinfo.assign (idx, "Name", Cell (octave_value (args (0))));
+          vinfo.assign (idx, "Version", Cell (octave_value (args (1))));
+          vinfo.assign (idx, "Release", Cell (octave_value (args (2))));
+          vinfo.assign (idx, "Date", Cell (octave_value (args (3))));
+        }
     }
   else if (nargin == 0)
     retval = vinfo;
@@ -314,7 +314,7 @@ execute_startup_files (void)
       std::string initfile = octave_env::getenv ("OCTAVE_INITFILE");
 
       if (initfile.empty ())
-	initfile = ".octaverc";
+        initfile = ".octaverc";
 
       std::string home_dir = octave_env::get_home_directory ();
 
@@ -323,31 +323,31 @@ execute_startup_files (void)
       std::string local_rc;
 
       if (! home_rc.empty ())
-	{
-	  source_file (home_rc, context, verbose, require_file);
+        {
+          source_file (home_rc, context, verbose, require_file);
 
-	  // Names alone are not enough.
+          // Names alone are not enough.
 
-	  file_stat fs_home_rc (home_rc);
+          file_stat fs_home_rc (home_rc);
 
-	  if (fs_home_rc)
-	    {
-	      // We want to check for curr_dir after executing home_rc
-	      // because doing that may change the working directory.
+          if (fs_home_rc)
+            {
+              // We want to check for curr_dir after executing home_rc
+              // because doing that may change the working directory.
 
-	      local_rc = octave_env::make_absolute (initfile);
+              local_rc = octave_env::make_absolute (initfile);
 
-	      home_rc_already_executed = same_file (home_rc, local_rc);
-	    }
-	}
+              home_rc_already_executed = same_file (home_rc, local_rc);
+            }
+        }
 
       if (! home_rc_already_executed)
-	{
-	  if (local_rc.empty ())
+        {
+          if (local_rc.empty ())
             local_rc = octave_env::make_absolute (initfile);
 
-	  source_file (local_rc, context, verbose, require_file);
-	}
+          source_file (local_rc, context, verbose, require_file);
+        }
     }
 }
 
@@ -388,7 +388,7 @@ execute_eval_option_code (const std::string& code)
   catch (std::bad_alloc)
     {
       std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- eval failed"
-		<< std::endl;
+                << std::endl;
     }
 
   return parse_status;
@@ -455,7 +455,7 @@ execute_command_line_file (const std::string& fname)
   catch (std::bad_alloc)
     {
       std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- execution of "
-		<< fname << " failed" << std::endl;
+                << fname << " failed" << std::endl;
     }
 }
 
@@ -557,7 +557,7 @@ maximum_braindamage (void)
   bind_internal_variable ("default_save_options", "-mat-binary");
   bind_internal_variable ("fixed_point_format", true);
   bind_internal_variable ("history_timestamp_format_string",
-			 "%%-- %D %I:%M %p --%%");
+                         "%%-- %D %I:%M %p --%%");
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
 
@@ -631,126 +631,126 @@ octave_main (int argc, char **argv, int embedded)
         break;
 
       switch (optc)
-	{
-	case 'H':
-	  read_history_file = false;
-	  bind_internal_variable ("saving_history", false);
-	  break;
+        {
+        case 'H':
+          read_history_file = false;
+          bind_internal_variable ("saving_history", false);
+          break;
 
-	case 'V':
-	  verbose_flag = true;
-	  break;
+        case 'V':
+          verbose_flag = true;
+          break;
 
-	case 'd':
-	  // This is the same as yydebug in parse.y.
-	  octave_debug++;
-	  break;
+        case 'd':
+          // This is the same as yydebug in parse.y.
+          octave_debug++;
+          break;
 
-	case 'f':
-	  read_init_files = false;
-	  read_site_files = false;
-	  break;
+        case 'f':
+          read_init_files = false;
+          read_site_files = false;
+          break;
 
-	case 'h':
-	case '?':
-	  verbose_usage ();
-	  break;
+        case 'h':
+        case '?':
+          verbose_usage ();
+          break;
 
-	case 'i':
-	  forced_interactive = true;
-	  break;
+        case 'i':
+          forced_interactive = true;
+          break;
 
-	case 'p':
-	  if (optarg)
-	    load_path::set_command_line_path (optarg);
-	  break;
+        case 'p':
+          if (optarg)
+            load_path::set_command_line_path (optarg);
+          break;
 
-	case 'q':
-	  inhibit_startup_message = true;
-	  break;
+        case 'q':
+          inhibit_startup_message = true;
+          break;
 
-	case 'x':
-	  {
-	    double tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
-	    bind_internal_variable ("echo_executing_commands", tmp);
-	  }
-	  break;
+        case 'x':
+          {
+            double tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+            bind_internal_variable ("echo_executing_commands", tmp);
+          }
+          break;
 
-	case 'v':
-	  print_version_and_exit ();
-	  break;
+        case 'v':
+          print_version_and_exit ();
+          break;
 
-	case DOC_CACHE_FILE_OPTION:
-	  if (optarg)
-	    bind_internal_variable ("doc_cache_file", optarg);
-	  break;
+        case DOC_CACHE_FILE_OPTION:
+          if (optarg)
+            bind_internal_variable ("doc_cache_file", optarg);
+          break;
 
-	case EVAL_OPTION:
-	  if (optarg)
-	    {
-	      if (code_to_eval.empty ())
-		code_to_eval = optarg;
-	      else
-		code_to_eval += std::string (" ") + optarg;
-	    }
-	  break;
+        case EVAL_OPTION:
+          if (optarg)
+            {
+              if (code_to_eval.empty ())
+                code_to_eval = optarg;
+              else
+                code_to_eval += std::string (" ") + optarg;
+            }
+          break;
 
-	case EXEC_PATH_OPTION:
-	  if (optarg)
-	    set_exec_path (optarg);
-	  break;
+        case EXEC_PATH_OPTION:
+          if (optarg)
+            set_exec_path (optarg);
+          break;
 
-	case IMAGE_PATH_OPTION:
-	  if (optarg)
-	    set_image_path (optarg);
-	  break;
+        case IMAGE_PATH_OPTION:
+          if (optarg)
+            set_image_path (optarg);
+          break;
 
-	case INFO_FILE_OPTION:
-	  if (optarg)
-	    bind_internal_variable ("info_file", optarg);
-	  break;
+        case INFO_FILE_OPTION:
+          if (optarg)
+            bind_internal_variable ("info_file", optarg);
+          break;
 
-	case INFO_PROG_OPTION:
-	  if (optarg)
-	    bind_internal_variable ("info_program", optarg);
-	  break;
+        case INFO_PROG_OPTION:
+          if (optarg)
+            bind_internal_variable ("info_program", optarg);
+          break;
 
-	case LINE_EDITING_OPTION:
-	  forced_line_editing = true;
-	  break;
+        case LINE_EDITING_OPTION:
+          forced_line_editing = true;
+          break;
 
-	case NO_INIT_FILE_OPTION:
-	  read_init_files = false;
-	  break;
+        case NO_INIT_FILE_OPTION:
+          read_init_files = false;
+          break;
 
-	case NO_INIT_PATH_OPTION:
-	  set_initial_path = false;
-	  break;
+        case NO_INIT_PATH_OPTION:
+          set_initial_path = false;
+          break;
 
-	case NO_LINE_EDITING_OPTION:
-	  line_editing = false;
-	  break;
+        case NO_LINE_EDITING_OPTION:
+          line_editing = false;
+          break;
 
-	case NO_SITE_FILE_OPTION:
-	  read_site_files = 0;
-	  break;
+        case NO_SITE_FILE_OPTION:
+          read_site_files = 0;
+          break;
 
-	case NO_WINDOW_SYSTEM_OPTION:
-	  display_info::no_window_system ();
-	  break;
+        case NO_WINDOW_SYSTEM_OPTION:
+          display_info::no_window_system ();
+          break;
 
-	case PERSIST_OPTION:
-	  persist = true;
-	  break;
+        case PERSIST_OPTION:
+          persist = true;
+          break;
 
-	case TRADITIONAL_OPTION:
-	  traditional = true;
-	  break;
+        case TRADITIONAL_OPTION:
+          traditional = true;
+          break;
 
-	default:
-	  usage ();
-	  break;
-	}
+        default:
+          usage ();
+          break;
+        }
     }
 
   // Make sure we clean up when we exit.  Also allow users to register
@@ -818,7 +818,7 @@ octave_main (int argc, char **argv, int embedded)
       int parse_status = execute_eval_option_code (code_to_eval);
 
       if (! (persist || remaining_args > 0))
-	clean_up_and_exit (parse_status || error_state ? 1 : 0);
+        clean_up_and_exit (parse_status || error_state ? 1 : 0);
     }
 
   if (remaining_args > 0)
@@ -831,7 +831,7 @@ octave_main (int argc, char **argv, int embedded)
       execute_command_line_file (argv[last_arg_idx]);
 
       if (! persist)
-	clean_up_and_exit (error_state ? 1 : 0);
+        clean_up_and_exit (error_state ? 1 : 0);
     }
 
   // Avoid counting commands executed from startup files.

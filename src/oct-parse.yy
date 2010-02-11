@@ -186,12 +186,12 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
 // Build a binary expression.
 static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
-		tree_expression *op2);
+                tree_expression *op2);
 
 // Build a boolean expression.
 static tree_expression *
 make_boolean_op (int op, tree_expression *op1, token *tok_val,
-		 tree_expression *op2);
+                 tree_expression *op2);
 
 // Build a prefix expression.
 static tree_expression *
@@ -204,31 +204,31 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val);
 // Build an unwind-protect command.
 static tree_command *
 make_unwind_command (token *unwind_tok, tree_statement_list *body,
-		     tree_statement_list *cleanup, token *end_tok,
-		     octave_comment_list *lc, octave_comment_list *mc);
+                     tree_statement_list *cleanup, token *end_tok,
+                     octave_comment_list *lc, octave_comment_list *mc);
 
 // Build a try-catch command.
 static tree_command *
 make_try_command (token *try_tok, tree_statement_list *body,
-		  tree_statement_list *cleanup, token *end_tok,
-		  octave_comment_list *lc, octave_comment_list *mc);
+                  tree_statement_list *cleanup, token *end_tok,
+                  octave_comment_list *lc, octave_comment_list *mc);
 
 // Build a while command.
 static tree_command *
 make_while_command (token *while_tok, tree_expression *expr,
-		    tree_statement_list *body, token *end_tok,
-		    octave_comment_list *lc);
+                    tree_statement_list *body, token *end_tok,
+                    octave_comment_list *lc);
 
 // Build a do-until command.
 static tree_command *
 make_do_until_command (token *until_tok, tree_statement_list *body,
-		       tree_expression *expr, octave_comment_list *lc);
+                       tree_expression *expr, octave_comment_list *lc);
 
 // Build a for command.
 static tree_command *
 make_for_command (token *for_tok, tree_argument_list *lhs,
-		  tree_expression *expr, tree_statement_list *body,
-		  token *end_tok, octave_comment_list *lc);
+                  tree_expression *expr, tree_statement_list *body,
+                  token *end_tok, octave_comment_list *lc);
 
 // Build a break command.
 static tree_command *
@@ -249,28 +249,28 @@ start_if_command (tree_expression *expr, tree_statement_list *list);
 // Finish an if command.
 static tree_if_command *
 finish_if_command (token *if_tok, tree_if_command_list *list,
-		   token *end_tok, octave_comment_list *lc);
+                   token *end_tok, octave_comment_list *lc);
 
 // Build an elseif clause.
 static tree_if_clause *
 make_elseif_clause (token *elseif_tok, tree_expression *expr,
-		    tree_statement_list *list, octave_comment_list *lc);
+                    tree_statement_list *list, octave_comment_list *lc);
 
 // Finish a switch command.
 static tree_switch_command *
 finish_switch_command (token *switch_tok, tree_expression *expr,
-		       tree_switch_case_list *list, token *end_tok,
-		       octave_comment_list *lc);
+                       tree_switch_case_list *list, token *end_tok,
+                       octave_comment_list *lc);
 
 // Build a switch case.
 static tree_switch_case *
 make_switch_case (token *case_tok, tree_expression *expr,
-		  tree_statement_list *list, octave_comment_list *lc);
+                  tree_statement_list *list, octave_comment_list *lc);
 
 // Build an assignment to a variable.
 static tree_expression *
 make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
-		tree_expression *rhs);
+                tree_expression *rhs);
 
 // Define a script.
 static void
@@ -279,7 +279,7 @@ make_script (tree_statement_list *cmds, tree_statement *end_script);
 // Begin defining a function.
 static octave_user_function *
 start_function (tree_parameter_list *param_list, tree_statement_list *body,
-		tree_statement *end_function);
+                tree_statement *end_function);
 
 // Create a no-op statement for end_function.
 static tree_statement *
@@ -292,7 +292,7 @@ frob_function (const std::string& fname, octave_user_function *fcn);
 // Finish defining a function.
 static tree_function_def *
 finish_function (tree_parameter_list *ret_list,
-		 octave_user_function *fcn, octave_comment_list *lc);
+                 octave_user_function *fcn, octave_comment_list *lc);
 
 // Reset state after parsing function.
 static void
@@ -301,7 +301,7 @@ recover_from_parsing_function (void);
 // Make an index expression.
 static tree_index_expression *
 make_index_expression (tree_expression *expr,
-		       tree_argument_list *args, char type);
+                       tree_argument_list *args, char type);
 
 // Make an indirect reference expression.
 static tree_index_expression *
@@ -341,7 +341,7 @@ static tree_statement_list *make_statement_list (tree_statement *stmt);
 // Append a statement to an existing statement list.
 static tree_statement_list *
 append_statement_list (tree_statement_list *list, char sep,
-		       tree_statement *stmt, bool warn_missing_semi);
+                       tree_statement *stmt, bool warn_missing_semi);
 
 // Finish building a statement.
 template <class T>
@@ -360,13 +360,13 @@ make_statement (T *arg)
       yyerrok; \
       if (! symtab_context.empty ()) \
         { \
-	  symbol_table::set_scope (symtab_context.top ()); \
-	  symtab_context.pop (); \
+          symbol_table::set_scope (symtab_context.top ()); \
+          symtab_context.pop (); \
         } \
       if (interactive || forced_interactive) \
-	YYACCEPT; \
+        YYACCEPT; \
       else \
-	YYABORT; \
+        YYABORT; \
     } \
   while (0)
 
@@ -532,70 +532,70 @@ make_statement (T *arg)
 // Statements and statement lists
 // ==============================
 
-input		: input1
-		  {
-		    global_command = $1;
-		    promptflag = 1;
-		    YYACCEPT;
-		  }
-		| function_file
-		  {
-		    YYACCEPT;
-		  }
-		| simple_list parse_error
-		  { ABORT_PARSE; }
-		| parse_error
-		  { ABORT_PARSE; }
-		;
+input           : input1
+                  {
+                    global_command = $1;
+                    promptflag = 1;
+                    YYACCEPT;
+                  }
+                | function_file
+                  {
+                    YYACCEPT;
+                  }
+                | simple_list parse_error
+                  { ABORT_PARSE; }
+                | parse_error
+                  { ABORT_PARSE; }
+                ;
 
-input1		: '\n'
-		  { $$ = 0; }
-		| END_OF_INPUT
-		  {
-		    parser_end_of_input = 1;
-		    $$ = 0;
-		  }
-		| simple_list
-		  { $$ = $1; }
-		| simple_list '\n'
-		  { $$ = $1; }
-		| simple_list END_OF_INPUT
-		  { $$ = $1; }
-		;
+input1          : '\n'
+                  { $$ = 0; }
+                | END_OF_INPUT
+                  {
+                    parser_end_of_input = 1;
+                    $$ = 0;
+                  }
+                | simple_list
+                  { $$ = $1; }
+                | simple_list '\n'
+                  { $$ = $1; }
+                | simple_list END_OF_INPUT
+                  { $$ = $1; }
+                ;
 
-simple_list	: simple_list1 opt_sep_no_nl
-		  { $$ = set_stmt_print_flag ($1, $2, false); }
-		;
+simple_list     : simple_list1 opt_sep_no_nl
+                  { $$ = set_stmt_print_flag ($1, $2, false); }
+                ;
 
-simple_list1	: statement
-		  { $$ = make_statement_list ($1); }
-		| simple_list1 sep_no_nl statement
-		  { $$ = append_statement_list ($1, $2, $3, false); }
-		;
+simple_list1    : statement
+                  { $$ = make_statement_list ($1); }
+                | simple_list1 sep_no_nl statement
+                  { $$ = append_statement_list ($1, $2, $3, false); }
+                ;
 
-opt_list	: // empty
-		  { $$ = new tree_statement_list (); }
-		| list
-		  { $$ = $1; }
-		;
+opt_list        : // empty
+                  { $$ = new tree_statement_list (); }
+                | list
+                  { $$ = $1; }
+                ;
 
-list		: list1 opt_sep
-		  { $$ = set_stmt_print_flag ($1, $2, true); }
-		;
+list            : list1 opt_sep
+                  { $$ = set_stmt_print_flag ($1, $2, true); }
+                ;
 
-list1		: statement
-		  { $$ = make_statement_list ($1); }
-		| list1 sep statement
-		  { $$ = append_statement_list ($1, $2, $3, true); }
-		;
+list1           : statement
+                  { $$ = make_statement_list ($1); }
+                | list1 sep statement
+                  { $$ = append_statement_list ($1, $2, $3, true); }
+                ;
 
-statement	: expression
-		  { $$ = make_statement ($1); }
-		| command
-		  { $$ = make_statement ($1); }
-		| word_list_cmd
-		  { $$ = make_statement ($1); }
-		;
+statement       : expression
+                  { $$ = make_statement ($1); }
+                | command
+                  { $$ = make_statement ($1); }
+                | word_list_cmd
+                  { $$ = make_statement ($1); }
+                ;
 
 // =================
 // Word-list command
@@ -605,1022 +605,1022 @@ statement	: expression
 // the RHS of an assignment.  But they are also not like commands (IF,
 // WHILE, etc.
 
-word_list_cmd	: identifier word_list
-		  { $$ = make_index_expression ($1, $2, '('); }
-		;
+word_list_cmd   : identifier word_list
+                  { $$ = make_index_expression ($1, $2, '('); }
+                ;
 
-word_list	: string
-		  { $$ = new tree_argument_list ($1); }
-		| word_list string
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
+word_list       : string
+                  { $$ = new tree_argument_list ($1); }
+                | word_list string
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }
+                ;
 
 // ===========
 // Expressions
 // ===========
 
-identifier	: NAME
-		  {
-		    symbol_table::symbol_record *sr = $1->sym_rec ();
-		    $$ = new tree_identifier (*sr, $1->line (), $1->column ());
-		  }
-		;
+identifier      : NAME
+                  {
+                    symbol_table::symbol_record *sr = $1->sym_rec ();
+                    $$ = new tree_identifier (*sr, $1->line (), $1->column ());
+                  }
+                ;
 
 superclass_identifier
-		: SUPERCLASSREF
-		  { $$ = new tree_identifier ($1->line (), $1->column ()); }
-		;
-	    
-meta_identifier	: METAQUERY
-		  { $$ = new tree_identifier ($1->line (), $1->column ()); }
-		;	    
+                : SUPERCLASSREF
+                  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+                ;
+            
+meta_identifier : METAQUERY
+                  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+                ;           
 
-string		: DQ_STRING
-		  { $$ = make_constant (DQ_STRING, $1); }
-		| SQ_STRING
-		  { $$ = make_constant (SQ_STRING, $1); }
-		;
+string          : DQ_STRING
+                  { $$ = make_constant (DQ_STRING, $1); }
+                | SQ_STRING
+                  { $$ = make_constant (SQ_STRING, $1); }
+                ;
 
-constant	: NUM
-		  { $$ = make_constant (NUM, $1); }
-		| IMAG_NUM
-		  { $$ = make_constant (IMAG_NUM, $1); }
-		| string
-		  { $$ = $1; }
-		;
+constant        : NUM
+                  { $$ = make_constant (NUM, $1); }
+                | IMAG_NUM
+                  { $$ = make_constant (IMAG_NUM, $1); }
+                | string
+                  { $$ = $1; }
+                ;
 
-matrix		: '[' ']'
-		  {
-		    $$ = new tree_constant (octave_null_matrix::instance);
-		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-		    lexer_flags.pending_local_variables.clear ();
-		  }
-		| '[' ';' ']'
-		  {
-		    $$ = new tree_constant (octave_null_matrix::instance);
-		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-		    lexer_flags.pending_local_variables.clear ();
-		  }
-		| '[' ',' ']'
-		  {
-		    $$ = new tree_constant (octave_null_matrix::instance);
-		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-		    lexer_flags.pending_local_variables.clear ();
-		  }
-		| '[' matrix_rows ']'
-		  {
-		    $$ = finish_matrix ($2);
-		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-		    lexer_flags.pending_local_variables.clear ();
-		  }
-		;
+matrix          : '[' ']'
+                  {
+                    $$ = new tree_constant (octave_null_matrix::instance);
+                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+                    lexer_flags.pending_local_variables.clear ();
+                  }
+                | '[' ';' ']'
+                  {
+                    $$ = new tree_constant (octave_null_matrix::instance);
+                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+                    lexer_flags.pending_local_variables.clear ();
+                  }
+                | '[' ',' ']'
+                  {
+                    $$ = new tree_constant (octave_null_matrix::instance);
+                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+                    lexer_flags.pending_local_variables.clear ();
+                  }
+                | '[' matrix_rows ']'
+                  {
+                    $$ = finish_matrix ($2);
+                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+                    lexer_flags.pending_local_variables.clear ();
+                  }
+                ;
 
-matrix_rows	: matrix_rows1
-		  { $$ = $1; }
-		| matrix_rows1 ';'	// Ignore trailing semicolon.
-		  { $$ = $1; }
-		;
+matrix_rows     : matrix_rows1
+                  { $$ = $1; }
+                | matrix_rows1 ';'      // Ignore trailing semicolon.
+                  { $$ = $1; }
+                ;
 
-matrix_rows1	: cell_or_matrix_row
-		  { $$ = new tree_matrix ($1); }
-		| matrix_rows1 ';' cell_or_matrix_row
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
+matrix_rows1    : cell_or_matrix_row
+                  { $$ = new tree_matrix ($1); }
+                | matrix_rows1 ';' cell_or_matrix_row
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                ;
 
-cell		: '{' '}'
-		  { $$ = new tree_constant (octave_value (Cell ())); }
-		| '{' ';' '}'
-		  { $$ = new tree_constant (octave_value (Cell ())); }
-		| '{' cell_rows '}'
-		  { $$ = finish_cell ($2); }
-		;
+cell            : '{' '}'
+                  { $$ = new tree_constant (octave_value (Cell ())); }
+                | '{' ';' '}'
+                  { $$ = new tree_constant (octave_value (Cell ())); }
+                | '{' cell_rows '}'
+                  { $$ = finish_cell ($2); }
+                ;
 
-cell_rows	: cell_rows1
-		  { $$ = $1; }
-		| cell_rows1 ';'	// Ignore trailing semicolon.
-		  { $$ = $1; }
-		;
+cell_rows       : cell_rows1
+                  { $$ = $1; }
+                | cell_rows1 ';'        // Ignore trailing semicolon.
+                  { $$ = $1; }
+                ;
 
-cell_rows1	: cell_or_matrix_row
-		  { $$ = new tree_cell ($1); }
-		| cell_rows1 ';' cell_or_matrix_row
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
+cell_rows1      : cell_or_matrix_row
+                  { $$ = new tree_cell ($1); }
+                | cell_rows1 ';' cell_or_matrix_row
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                ;
 
 cell_or_matrix_row
-		: arg_list
-		  { $$ = validate_matrix_row ($1); }
-		| arg_list ','	// Ignore trailing comma.
-		  { $$ = validate_matrix_row ($1); }
-		;
+                : arg_list
+                  { $$ = validate_matrix_row ($1); }
+                | arg_list ','  // Ignore trailing comma.
+                  { $$ = validate_matrix_row ($1); }
+                ;
 
-fcn_handle	: '@' FCN_HANDLE
-		  {
-		    $$ = make_fcn_handle ($2);
-		    lexer_flags.looking_at_function_handle--;
-		  }
-		;
+fcn_handle      : '@' FCN_HANDLE
+                  {
+                    $$ = make_fcn_handle ($2);
+                    lexer_flags.looking_at_function_handle--;
+                  }
+                ;
 
-anon_fcn_handle	: '@' param_list statement
-		  { $$ = make_anon_fcn_handle ($2, $3); }
-		;
-	
-primary_expr	: identifier
-		  { $$ = $1; }
-		| constant
-		  { $$ = $1; }
-		| fcn_handle
-		  { $$ = $1; }
-		| matrix
-		  { $$ = $1; }
-		| cell
-		  { $$ = $1; }
-		| meta_identifier
-		  { $$ = $1; }
-		| superclass_identifier
-		  { $$ = $1; }
-		| '(' expression ')'
-		  { $$ = $2->mark_in_parens (); }
-		;
+anon_fcn_handle : '@' param_list statement
+                  { $$ = make_anon_fcn_handle ($2, $3); }
+                ;
+        
+primary_expr    : identifier
+                  { $$ = $1; }
+                | constant
+                  { $$ = $1; }
+                | fcn_handle
+                  { $$ = $1; }
+                | matrix
+                  { $$ = $1; }
+                | cell
+                  { $$ = $1; }
+                | meta_identifier
+                  { $$ = $1; }
+                | superclass_identifier
+                  { $$ = $1; }
+                | '(' expression ')'
+                  { $$ = $2->mark_in_parens (); }
+                ;
 
-magic_colon	: ':'
-		  {
-		    octave_value tmp (octave_value::magic_colon_t);
-		    $$ = new tree_constant (tmp);
-		  }
-		;
+magic_colon     : ':'
+                  {
+                    octave_value tmp (octave_value::magic_colon_t);
+                    $$ = new tree_constant (tmp);
+                  }
+                ;
 
-magic_tilde	: EXPR_NOT
-		  {
-		    $$ = new tree_black_hole ();
-		  }
-		;
+magic_tilde     : EXPR_NOT
+                  {
+                    $$ = new tree_black_hole ();
+                  }
+                ;
 
-arg_list	: expression
-		  { $$ = new tree_argument_list ($1); }
-		| magic_colon
-		  { $$ = new tree_argument_list ($1); }
-		| magic_tilde
-		  { $$ = new tree_argument_list ($1); }
-		| arg_list ',' magic_colon
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| arg_list ',' magic_tilde
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| arg_list ',' expression
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
+arg_list        : expression
+                  { $$ = new tree_argument_list ($1); }
+                | magic_colon
+                  { $$ = new tree_argument_list ($1); }
+                | magic_tilde
+                  { $$ = new tree_argument_list ($1); }
+                | arg_list ',' magic_colon
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                | arg_list ',' magic_tilde
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                | arg_list ',' expression
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                ;
 
-indirect_ref_op	: '.'
-		  { lexer_flags.looking_at_indirect_ref = true; }
-		;
+indirect_ref_op : '.'
+                  { lexer_flags.looking_at_indirect_ref = true; }
+                ;
 
-postfix_expr	: primary_expr
-		  { $$ = $1; }
-		| postfix_expr '(' ')'
-		  { $$ = make_index_expression ($1, 0, '('); }
-		| postfix_expr '(' arg_list ')'
-		  { $$ = make_index_expression ($1, $3, '('); }
-		| postfix_expr '{' '}'
-		  { $$ = make_index_expression ($1, 0, '{'); }
-		| postfix_expr '{' arg_list '}'
-		  { $$ = make_index_expression ($1, $3, '{'); }
-		| postfix_expr PLUS_PLUS
-		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
-		| postfix_expr MINUS_MINUS
-		  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
-		| postfix_expr QUOTE
-		  { $$ = make_postfix_op (QUOTE, $1, $2); }
-		| postfix_expr TRANSPOSE
-		  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
-		| postfix_expr indirect_ref_op STRUCT_ELT
-		  { $$ = make_indirect_ref ($1, $3->text ()); }
-		| postfix_expr indirect_ref_op '(' expression ')'
-		  { $$ = make_indirect_ref ($1, $4); }
-		;
+postfix_expr    : primary_expr
+                  { $$ = $1; }
+                | postfix_expr '(' ')'
+                  { $$ = make_index_expression ($1, 0, '('); }
+                | postfix_expr '(' arg_list ')'
+                  { $$ = make_index_expression ($1, $3, '('); }
+                | postfix_expr '{' '}'
+                  { $$ = make_index_expression ($1, 0, '{'); }
+                | postfix_expr '{' arg_list '}'
+                  { $$ = make_index_expression ($1, $3, '{'); }
+                | postfix_expr PLUS_PLUS
+                  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
+                | postfix_expr MINUS_MINUS
+                  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
+                | postfix_expr QUOTE
+                  { $$ = make_postfix_op (QUOTE, $1, $2); }
+                | postfix_expr TRANSPOSE
+                  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
+                | postfix_expr indirect_ref_op STRUCT_ELT
+                  { $$ = make_indirect_ref ($1, $3->text ()); }
+                | postfix_expr indirect_ref_op '(' expression ')'
+                  { $$ = make_indirect_ref ($1, $4); }
+                ;
 
-prefix_expr	: postfix_expr
-		  { $$ = $1; }
-		| binary_expr
-		  { $$ = $1; }
-		| PLUS_PLUS prefix_expr %prec UNARY
-		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-		| MINUS_MINUS prefix_expr %prec UNARY
-		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-		| EXPR_NOT prefix_expr %prec UNARY
-		  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
-		| '+' prefix_expr %prec UNARY
-		  { $$ = make_prefix_op ('+', $2, $1); }
-		| '-' prefix_expr %prec UNARY
-		  { $$ = make_prefix_op ('-', $2, $1); }
-		;
+prefix_expr     : postfix_expr
+                  { $$ = $1; }
+                | binary_expr
+                  { $$ = $1; }
+                | PLUS_PLUS prefix_expr %prec UNARY
+                  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
+                | MINUS_MINUS prefix_expr %prec UNARY
+                  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
+                | EXPR_NOT prefix_expr %prec UNARY
+                  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
+                | '+' prefix_expr %prec UNARY
+                  { $$ = make_prefix_op ('+', $2, $1); }
+                | '-' prefix_expr %prec UNARY
+                  { $$ = make_prefix_op ('-', $2, $1); }
+                ;
 
-binary_expr	: prefix_expr POW prefix_expr
-		  { $$ = make_binary_op (POW, $1, $2, $3); }
-		| prefix_expr EPOW prefix_expr
-		  { $$ = make_binary_op (EPOW, $1, $2, $3); }
-		| prefix_expr '+' prefix_expr
-		  { $$ = make_binary_op ('+', $1, $2, $3); }
-		| prefix_expr '-' prefix_expr
-		  { $$ = make_binary_op ('-', $1, $2, $3); }
-		| prefix_expr '*' prefix_expr
-		  { $$ = make_binary_op ('*', $1, $2, $3); }
-		| prefix_expr '/' prefix_expr
-		  { $$ = make_binary_op ('/', $1, $2, $3); }
-		| prefix_expr EPLUS prefix_expr
-		  { $$ = make_binary_op ('+', $1, $2, $3); }
-		| prefix_expr EMINUS prefix_expr
-		  { $$ = make_binary_op ('-', $1, $2, $3); }
-		| prefix_expr EMUL prefix_expr
-		  { $$ = make_binary_op (EMUL, $1, $2, $3); }
-		| prefix_expr EDIV prefix_expr
-		  { $$ = make_binary_op (EDIV, $1, $2, $3); }
-		| prefix_expr LEFTDIV prefix_expr
-		  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
-		| prefix_expr ELEFTDIV prefix_expr
-		  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
-		;
+binary_expr     : prefix_expr POW prefix_expr
+                  { $$ = make_binary_op (POW, $1, $2, $3); }
+                | prefix_expr EPOW prefix_expr
+                  { $$ = make_binary_op (EPOW, $1, $2, $3); }
+                | prefix_expr '+' prefix_expr
+                  { $$ = make_binary_op ('+', $1, $2, $3); }
+                | prefix_expr '-' prefix_expr
+                  { $$ = make_binary_op ('-', $1, $2, $3); }
+                | prefix_expr '*' prefix_expr
+                  { $$ = make_binary_op ('*', $1, $2, $3); }
+                | prefix_expr '/' prefix_expr
+                  { $$ = make_binary_op ('/', $1, $2, $3); }
+                | prefix_expr EPLUS prefix_expr
+                  { $$ = make_binary_op ('+', $1, $2, $3); }
+                | prefix_expr EMINUS prefix_expr
+                  { $$ = make_binary_op ('-', $1, $2, $3); }
+                | prefix_expr EMUL prefix_expr
+                  { $$ = make_binary_op (EMUL, $1, $2, $3); }
+                | prefix_expr EDIV prefix_expr
+                  { $$ = make_binary_op (EDIV, $1, $2, $3); }
+                | prefix_expr LEFTDIV prefix_expr
+                  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
+                | prefix_expr ELEFTDIV prefix_expr
+                  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
+                ;
 
-colon_expr	: colon_expr1
-		  { $$ = finish_colon_expression ($1); }
-		;
+colon_expr      : colon_expr1
+                  { $$ = finish_colon_expression ($1); }
+                ;
 
-colon_expr1	: prefix_expr
-		  { $$ = new tree_colon_expression ($1); }
-		| colon_expr1 ':' prefix_expr
-		  {
-		    if (! ($$ = $1->append ($3)))
-		      ABORT_PARSE;
-		  }
-		;
+colon_expr1     : prefix_expr
+                  { $$ = new tree_colon_expression ($1); }
+                | colon_expr1 ':' prefix_expr
+                  {
+                    if (! ($$ = $1->append ($3)))
+                      ABORT_PARSE;
+                  }
+                ;
 
-simple_expr	: colon_expr
-		  { $$ = $1; }
-		| simple_expr LSHIFT simple_expr
-		  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
-		| simple_expr RSHIFT simple_expr
-		  { $$ = make_binary_op (RSHIFT, $1, $2, $3); }
-		| simple_expr EXPR_LT simple_expr
-		  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
-		| simple_expr EXPR_LE simple_expr
-		  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
-		| simple_expr EXPR_EQ simple_expr
-		  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
-		| simple_expr EXPR_GE simple_expr
-		  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
-		| simple_expr EXPR_GT simple_expr
-		  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
-		| simple_expr EXPR_NE simple_expr
-		  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
-		| simple_expr EXPR_AND simple_expr
-		  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
-		| simple_expr EXPR_OR simple_expr
-		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
-		| simple_expr EXPR_AND_AND simple_expr
-		  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
-		| simple_expr EXPR_OR_OR simple_expr
-		  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
-		;
+simple_expr     : colon_expr
+                  { $$ = $1; }
+                | simple_expr LSHIFT simple_expr
+                  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
+                | simple_expr RSHIFT simple_expr
+                  { $$ = make_binary_op (RSHIFT, $1, $2, $3); }
+                | simple_expr EXPR_LT simple_expr
+                  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
+                | simple_expr EXPR_LE simple_expr
+                  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
+                | simple_expr EXPR_EQ simple_expr
+                  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
+                | simple_expr EXPR_GE simple_expr
+                  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
+                | simple_expr EXPR_GT simple_expr
+                  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
+                | simple_expr EXPR_NE simple_expr
+                  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
+                | simple_expr EXPR_AND simple_expr
+                  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
+                | simple_expr EXPR_OR simple_expr
+                  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
+                | simple_expr EXPR_AND_AND simple_expr
+                  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+                | simple_expr EXPR_OR_OR simple_expr
+                  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+                ;
 
 // Arrange for the lexer to return CLOSE_BRACE for `]' by looking ahead
 // one token for an assignment op.
 
-assign_lhs	: simple_expr
-		  {
-		    $$ = new tree_argument_list ($1);
-		    $$->mark_as_simple_assign_lhs ();
-		  }
-		| '[' arg_list CLOSE_BRACE
-		  {
-		    $$ = $2;
-		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
-		    for (std::set<std::string>::const_iterator p = lexer_flags.pending_local_variables.begin ();
-			 p != lexer_flags.pending_local_variables.end ();
-			 p++)
-		      {
-			symbol_table::force_variable (*p);
-		      }
-		    lexer_flags.pending_local_variables.clear ();
-		  }
-		;
+assign_lhs      : simple_expr
+                  {
+                    $$ = new tree_argument_list ($1);
+                    $$->mark_as_simple_assign_lhs ();
+                  }
+                | '[' arg_list CLOSE_BRACE
+                  {
+                    $$ = $2;
+                    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+                    for (std::set<std::string>::const_iterator p = lexer_flags.pending_local_variables.begin ();
+                         p != lexer_flags.pending_local_variables.end ();
+                         p++)
+                      {
+                        symbol_table::force_variable (*p);
+                      }
+                    lexer_flags.pending_local_variables.clear ();
+                  }
+                ;
 
-assign_expr	: assign_lhs '=' expression
-		  { $$ = make_assign_op ('=', $1, $2, $3); }
-		| assign_lhs ADD_EQ expression
-		  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
-		| assign_lhs SUB_EQ expression
-		  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
-		| assign_lhs MUL_EQ expression
-		  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
-		| assign_lhs DIV_EQ expression
-		  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
-		| assign_lhs LEFTDIV_EQ expression
-		  { $$ = make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
-		| assign_lhs POW_EQ expression
-		  { $$ = make_assign_op (POW_EQ, $1, $2, $3); }
-		| assign_lhs LSHIFT_EQ expression
-		  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
-		| assign_lhs RSHIFT_EQ expression
-		  { $$ = make_assign_op (RSHIFT_EQ, $1, $2, $3); }
-		| assign_lhs EMUL_EQ expression
-		  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
-		| assign_lhs EDIV_EQ expression
-		  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
-		| assign_lhs ELEFTDIV_EQ expression
-		  { $$ = make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
-		| assign_lhs EPOW_EQ expression
-		  { $$ = make_assign_op (EPOW_EQ, $1, $2, $3); }
-		| assign_lhs AND_EQ expression
-		  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
-		| assign_lhs OR_EQ expression
-		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
-		;
+assign_expr     : assign_lhs '=' expression
+                  { $$ = make_assign_op ('=', $1, $2, $3); }
+                | assign_lhs ADD_EQ expression
+                  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
+                | assign_lhs SUB_EQ expression
+                  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
+                | assign_lhs MUL_EQ expression
+                  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
+                | assign_lhs DIV_EQ expression
+                  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
+                | assign_lhs LEFTDIV_EQ expression
+                  { $$ = make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
+                | assign_lhs POW_EQ expression
+                  { $$ = make_assign_op (POW_EQ, $1, $2, $3); }
+                | assign_lhs LSHIFT_EQ expression
+                  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
+                | assign_lhs RSHIFT_EQ expression
+                  { $$ = make_assign_op (RSHIFT_EQ, $1, $2, $3); }
+                | assign_lhs EMUL_EQ expression
+                  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
+                | assign_lhs EDIV_EQ expression
+                  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
+                | assign_lhs ELEFTDIV_EQ expression
+                  { $$ = make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
+                | assign_lhs EPOW_EQ expression
+                  { $$ = make_assign_op (EPOW_EQ, $1, $2, $3); }
+                | assign_lhs AND_EQ expression
+                  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
+                | assign_lhs OR_EQ expression
+                  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
+                ;
 
-expression	: simple_expr
-		  { $$ = $1; }
-		| assign_expr
-		  { $$ = $1; }
-		| anon_fcn_handle
-		  { $$ = $1; }
-		;
+expression      : simple_expr
+                  { $$ = $1; }
+                | assign_expr
+                  { $$ = $1; }
+                | anon_fcn_handle
+                  { $$ = $1; }
+                ;
 
 // ================================================
 // Commands, declarations, and function definitions
 // ================================================
 
-command		: declaration
-		  { $$ = $1; }
-		| select_command
-		  { $$ = $1; }
-		| loop_command
-		  { $$ = $1; }
-		| jump_command
-		  { $$ = $1; }
-		| except_command
-		  { $$ = $1; }
-		| function
-		  { $$ = $1; }
-		| script_file
-		  { $$ = $1; }
-		| classdef
-		  { $$ = $1; }
-		;
+command         : declaration
+                  { $$ = $1; }
+                | select_command
+                  { $$ = $1; }
+                | loop_command
+                  { $$ = $1; }
+                | jump_command
+                  { $$ = $1; }
+                | except_command
+                  { $$ = $1; }
+                | function
+                  { $$ = $1; }
+                | script_file
+                  { $$ = $1; }
+                | classdef
+                  { $$ = $1; }
+                ;
 
 // =====================
 // Declaration statemnts
 // =====================
 
 parsing_decl_list
-		: // empty
-		  { lexer_flags.looking_at_decl_list = true; }
+                : // empty
+                  { lexer_flags.looking_at_decl_list = true; }
 
-declaration	: GLOBAL parsing_decl_list decl1
-		  {
-		    $$ = make_decl_command (GLOBAL, $1, $3);
-		    lexer_flags.looking_at_decl_list = false;
-		  }
-		| STATIC parsing_decl_list decl1
-		  {
-		    $$ = make_decl_command (STATIC, $1, $3);
-		    lexer_flags.looking_at_decl_list = false;
-		  }
-		;
+declaration     : GLOBAL parsing_decl_list decl1
+                  {
+                    $$ = make_decl_command (GLOBAL, $1, $3);
+                    lexer_flags.looking_at_decl_list = false;
+                  }
+                | STATIC parsing_decl_list decl1
+                  {
+                    $$ = make_decl_command (STATIC, $1, $3);
+                    lexer_flags.looking_at_decl_list = false;
+                  }
+                ;
 
-decl1		: decl2
-		  { $$ = new tree_decl_init_list ($1); }
-		| decl1 decl2
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
+decl1           : decl2
+                  { $$ = new tree_decl_init_list ($1); }
+                | decl1 decl2
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }
+                ;
 
 decl_param_init : // empty
-		{ lexer_flags.looking_at_initializer_expression = true; }
+                { lexer_flags.looking_at_initializer_expression = true; }
 
-decl2		: identifier
-		  { $$ = new tree_decl_elt ($1); }
-		| identifier '=' decl_param_init expression
-		  {
-		    lexer_flags.looking_at_initializer_expression = false;
-		    $$ = new tree_decl_elt ($1, $4);
-		  }
+decl2           : identifier
+                  { $$ = new tree_decl_elt ($1); }
+                | identifier '=' decl_param_init expression
+                  {
+                    lexer_flags.looking_at_initializer_expression = false;
+                    $$ = new tree_decl_elt ($1, $4);
+                  }
                 | magic_tilde
                   {
                     $$ = new tree_decl_elt ($1);
                   }
-		;
+                ;
 
 // ====================
 // Selection statements
 // ====================
 
-select_command	: if_command
-		  { $$ = $1; }
-		| switch_command
-		  { $$ = $1; }
-		;
+select_command  : if_command
+                  { $$ = $1; }
+                | switch_command
+                  { $$ = $1; }
+                ;
 
 // ============
 // If statement
 // ============
 
-if_command	: IF stash_comment if_cmd_list END
-		  {
-		    if (! ($$ = finish_if_command ($1, $3, $4, $2)))
-		      ABORT_PARSE;
-		  }
-		;
+if_command      : IF stash_comment if_cmd_list END
+                  {
+                    if (! ($$ = finish_if_command ($1, $3, $4, $2)))
+                      ABORT_PARSE;
+                  }
+                ;
 
-if_cmd_list	: if_cmd_list1
-		  { $$ = $1; }
-		| if_cmd_list1 else_clause
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
+if_cmd_list     : if_cmd_list1
+                  { $$ = $1; }
+                | if_cmd_list1 else_clause
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }
+                ;
 
-if_cmd_list1	: expression opt_sep opt_list
-		  { $$ = start_if_command ($1, $3); }
-		| if_cmd_list1 elseif_clause
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
+if_cmd_list1    : expression opt_sep opt_list
+                  { $$ = start_if_command ($1, $3); }
+                | if_cmd_list1 elseif_clause
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }
+                ;
 
-elseif_clause	: ELSEIF stash_comment opt_sep expression opt_sep opt_list
-		  { $$ = make_elseif_clause ($1, $4, $6, $2); }
-		;
+elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
+                  { $$ = make_elseif_clause ($1, $4, $6, $2); }
+                ;
 
-else_clause	: ELSE stash_comment opt_sep opt_list
-		  { $$ = new tree_if_clause ($4, $2); }
-		;
+else_clause     : ELSE stash_comment opt_sep opt_list
+                  { $$ = new tree_if_clause ($4, $2); }
+                ;
 
 // ================
 // Switch statement
 // ================
 
-switch_command	: SWITCH stash_comment expression opt_sep case_list END
-		  {
-		    if (! ($$ = finish_switch_command ($1, $3, $5, $6, $2)))
-		      ABORT_PARSE;
-		  }
-		;
+switch_command  : SWITCH stash_comment expression opt_sep case_list END
+                  {
+                    if (! ($$ = finish_switch_command ($1, $3, $5, $6, $2)))
+                      ABORT_PARSE;
+                  }
+                ;
 
-case_list	: // empty
-		  { $$ = new tree_switch_case_list (); }
-		| case_list1
-		  { $$ = $1; }
-		| case_list1 default_case
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }		
-		;
+case_list       : // empty
+                  { $$ = new tree_switch_case_list (); }
+                | case_list1
+                  { $$ = $1; }
+                | case_list1 default_case
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }             
+                ;
 
-case_list1	: switch_case
-		  { $$ = new tree_switch_case_list ($1); }
-		| case_list1 switch_case
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
+case_list1      : switch_case
+                  { $$ = new tree_switch_case_list ($1); }
+                | case_list1 switch_case
+                  {
+                    $1->append ($2);
+                    $$ = $1;
+                  }
+                ;
 
-switch_case	: CASE stash_comment opt_sep expression opt_sep opt_list
-		  { $$ = make_switch_case ($1, $4, $6, $2); }
-		;
+switch_case     : CASE stash_comment opt_sep expression opt_sep opt_list
+                  { $$ = make_switch_case ($1, $4, $6, $2); }
+                ;
 
-default_case	: OTHERWISE stash_comment opt_sep opt_list
-		  {
-		    $$ = new tree_switch_case ($4, $2);
-		  }
-		;
+default_case    : OTHERWISE stash_comment opt_sep opt_list
+                  {
+                    $$ = new tree_switch_case ($4, $2);
+                  }
+                ;
 
 // =======
 // Looping
 // =======
 
-loop_command	: WHILE stash_comment expression opt_sep opt_list END
-		  {
-		    if (! ($$ = make_while_command ($1, $3, $5, $6, $2)))
-		      ABORT_PARSE;
-		  }
-		| DO stash_comment opt_sep opt_list UNTIL expression
-		  {
-		    if (! ($$ = make_do_until_command ($5, $4, $6, $2)))
-		      ABORT_PARSE;
-		  }
-		| FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
-		  {
-		    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
-		      ABORT_PARSE;
-		  }
-		| FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
-		  {
-		    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
-		      ABORT_PARSE;
-		  }
-		;
+loop_command    : WHILE stash_comment expression opt_sep opt_list END
+                  {
+                    if (! ($$ = make_while_command ($1, $3, $5, $6, $2)))
+                      ABORT_PARSE;
+                  }
+                | DO stash_comment opt_sep opt_list UNTIL expression
+                  {
+                    if (! ($$ = make_do_until_command ($5, $4, $6, $2)))
+                      ABORT_PARSE;
+                  }
+                | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
+                      ABORT_PARSE;
+                  }
+                | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
+                      ABORT_PARSE;
+                  }
+                ;
 
 // =======
 // Jumping
 // =======
 
-jump_command	: BREAK
-		  {
-		    if (! ($$ = make_break_command ($1)))
-		      ABORT_PARSE;
-		  }
-		| CONTINUE
-		  {
-		    if (! ($$ = make_continue_command ($1)))
-		      ABORT_PARSE;
-		  }
-		| FUNC_RET
-		  {
-		    if (! ($$ = make_return_command ($1)))
-		      ABORT_PARSE;
-		  }
-		;
+jump_command    : BREAK
+                  {
+                    if (! ($$ = make_break_command ($1)))
+                      ABORT_PARSE;
+                  }
+                | CONTINUE
+                  {
+                    if (! ($$ = make_continue_command ($1)))
+                      ABORT_PARSE;
+                  }
+                | FUNC_RET
+                  {
+                    if (! ($$ = make_return_command ($1)))
+                      ABORT_PARSE;
+                  }
+                ;
 
 // ==========
 // Exceptions
 // ==========
 
-except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
-		  stash_comment opt_sep opt_list END
-		  {
-		    if (! ($$ = make_unwind_command ($1, $4, $8, $9, $2, $6)))
-		      ABORT_PARSE;
-		  }
-		| TRY stash_comment opt_sep opt_list CATCH
-		  stash_comment opt_sep opt_list END
-		  {
-		    if (! ($$ = make_try_command ($1, $4, $8, $9, $2, $6)))
-		      ABORT_PARSE;
-		  }
-		| TRY stash_comment opt_sep opt_list END
-		  {
-		    if (! ($$ = make_try_command ($1, $4, 0, $5, $2, 0)))
-		      ABORT_PARSE;
-		  }
-		;
+except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
+                  stash_comment opt_sep opt_list END
+                  {
+                    if (! ($$ = make_unwind_command ($1, $4, $8, $9, $2, $6)))
+                      ABORT_PARSE;
+                  }
+                | TRY stash_comment opt_sep opt_list CATCH
+                  stash_comment opt_sep opt_list END
+                  {
+                    if (! ($$ = make_try_command ($1, $4, $8, $9, $2, $6)))
+                      ABORT_PARSE;
+                  }
+                | TRY stash_comment opt_sep opt_list END
+                  {
+                    if (! ($$ = make_try_command ($1, $4, 0, $5, $2, 0)))
+                      ABORT_PARSE;
+                  }
+                ;
 
 // ===========================================
 // Some `subroutines' for function definitions
 // ===========================================
 
-push_fcn_symtab	: // empty
-		  {
-		    current_function_depth++;
+push_fcn_symtab : // empty
+                  {
+                    current_function_depth++;
 
-		    if (max_function_depth < current_function_depth)
-		      max_function_depth = current_function_depth;
+                    if (max_function_depth < current_function_depth)
+                      max_function_depth = current_function_depth;
 
-		    symtab_context.push (symbol_table::current_scope ());
-		    symbol_table::set_scope (symbol_table::alloc_scope ());
+                    symtab_context.push (symbol_table::current_scope ());
+                    symbol_table::set_scope (symbol_table::alloc_scope ());
 
-		    if (! reading_script_file && current_function_depth == 1
-			&& ! parsing_subfunctions)
-		      primary_fcn_scope = symbol_table::current_scope ();
+                    if (! reading_script_file && current_function_depth == 1
+                        && ! parsing_subfunctions)
+                      primary_fcn_scope = symbol_table::current_scope ();
 
-		    if (reading_script_file && current_function_depth > 1)
-		      yyerror ("nested functions not implemented in this context");
-		  }
-		;
+                    if (reading_script_file && current_function_depth > 1)
+                      yyerror ("nested functions not implemented in this context");
+                  }
+                ;
 
 // ===========================
 // List of function parameters
 // ===========================
 
-param_list_beg	: '('
-		  {
-		    lexer_flags.looking_at_parameter_list = true;
+param_list_beg  : '('
+                  {
+                    lexer_flags.looking_at_parameter_list = true;
 
-		    if (lexer_flags.looking_at_function_handle)
-		      {
-		        symtab_context.push (symbol_table::current_scope ());
-			symbol_table::set_scope (symbol_table::alloc_scope ());
-			lexer_flags.looking_at_function_handle--;
-		      }
-		  }
-		;
+                    if (lexer_flags.looking_at_function_handle)
+                      {
+                        symtab_context.push (symbol_table::current_scope ());
+                        symbol_table::set_scope (symbol_table::alloc_scope ());
+                        lexer_flags.looking_at_function_handle--;
+                      }
+                  }
+                ;
 
-param_list_end	: ')'
-		  {
-		    lexer_flags.looking_at_parameter_list = false;
-		    lexer_flags.looking_for_object_index = false;
-		  }
-		;
+param_list_end  : ')'
+                  {
+                    lexer_flags.looking_at_parameter_list = false;
+                    lexer_flags.looking_for_object_index = false;
+                  }
+                ;
 
-param_list	: param_list_beg param_list1 param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $$ = $2;
-		  }
-		| param_list_beg error
-		  {
-		    yyerror ("invalid parameter list");
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
-		;
+param_list      : param_list_beg param_list1 param_list_end
+                  {
+                    lexer_flags.quote_is_transpose = false;
+                    $$ = $2;
+                  }
+                | param_list_beg error
+                  {
+                    yyerror ("invalid parameter list");
+                    $$ = 0;
+                    ABORT_PARSE;
+                  }
+                ;
 
-param_list1	: // empty
-		  { $$ = 0; }
-		| param_list2
-		  {
-		    $1->mark_as_formal_parameters ();
-		    if ($1->validate (tree_parameter_list::in))
-		      $$ = $1;
-		    else
-		      ABORT_PARSE;
-		  }
-		;
+param_list1     : // empty
+                  { $$ = 0; }
+                | param_list2
+                  {
+                    $1->mark_as_formal_parameters ();
+                    if ($1->validate (tree_parameter_list::in))
+                      $$ = $1;
+                    else
+                      ABORT_PARSE;
+                  }
+                ;
 
-param_list2	: decl2
-		  { $$ = new tree_parameter_list ($1); }
-		| param_list2 ',' decl2
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
+param_list2     : decl2
+                  { $$ = new tree_parameter_list ($1); }
+                | param_list2 ',' decl2
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                ;
 
 // ===================================
 // List of function return value names
 // ===================================
 
-return_list	: '[' ']'
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    $$ = new tree_parameter_list ();
-		  }
-		| return_list1
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    if ($1->validate (tree_parameter_list::out))
-		      $$ = $1;
-		    else
-		      ABORT_PARSE;
-		  }
-		| '[' return_list1 ']'
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    if ($2->validate (tree_parameter_list::out))
-		      $$ = $2;
-		    else
-		      ABORT_PARSE;
-		  }
-		;
+return_list     : '[' ']'
+                  {
+                    lexer_flags.looking_at_return_list = false;
+                    $$ = new tree_parameter_list ();
+                  }
+                | return_list1
+                  {
+                    lexer_flags.looking_at_return_list = false;
+                    if ($1->validate (tree_parameter_list::out))
+                      $$ = $1;
+                    else
+                      ABORT_PARSE;
+                  }
+                | '[' return_list1 ']'
+                  {
+                    lexer_flags.looking_at_return_list = false;
+                    if ($2->validate (tree_parameter_list::out))
+                      $$ = $2;
+                    else
+                      ABORT_PARSE;
+                  }
+                ;
 
-return_list1	: identifier
-		  { $$ = new tree_parameter_list (new tree_decl_elt ($1)); }
-		| return_list1 ',' identifier
-		  {
-		    $1->append (new tree_decl_elt ($3));
-		    $$ = $1;
-		  }
-		;
+return_list1    : identifier
+                  { $$ = new tree_parameter_list (new tree_decl_elt ($1)); }
+                | return_list1 ',' identifier
+                  {
+                    $1->append (new tree_decl_elt ($3));
+                    $$ = $1;
+                  }
+                ;
 
 // ===========
 // Script file
 // ===========
 
-script_file	: SCRIPT_FILE opt_list END_OF_INPUT
-		  {
-		    tree_statement *end_of_script
-		      = make_end ("endscript", input_line_number,
-				  current_input_column);
+script_file     : SCRIPT_FILE opt_list END_OF_INPUT
+                  {
+                    tree_statement *end_of_script
+                      = make_end ("endscript", input_line_number,
+                                  current_input_column);
 
-		    make_script ($2, end_of_script);
+                    make_script ($2, end_of_script);
 
-		    $$ = 0;
-		  }
-		;
+                    $$ = 0;
+                  }
+                ;
 
 // =============
 // Function file
 // =============
 
 function_file   : FUNCTION_FILE function_list opt_sep END_OF_INPUT
-		  { $$ = 0; }
-		;
+                  { $$ = 0; }
+                ;
 
 function_list   : function
-		| function_list sep function
-		;
+                | function_list sep function
+                ;
 
 // ===================
 // Function definition
 // ===================
 
-function_beg	: push_fcn_symtab FCN stash_comment
-		  {
-		    $$ = $3;
+function_beg    : push_fcn_symtab FCN stash_comment
+                  {
+                    $$ = $3;
 
-		    if (reading_classdef_file || lexer_flags.parsing_classdef) 
-		      lexer_flags.maybe_classdef_get_set_method = true; 
-		  }
-		;
+                    if (reading_classdef_file || lexer_flags.parsing_classdef) 
+                      lexer_flags.maybe_classdef_get_set_method = true; 
+                  }
+                ;
 
-function	: function_beg function1
-		  {
-		    $$ = finish_function (0, $2, $1);
-		    recover_from_parsing_function ();
-		  }
-		| function_beg return_list '=' function1
-		  {
-		    $$ = finish_function ($2, $4, $1);
-		    recover_from_parsing_function ();
-		  }
-		;
+function        : function_beg function1
+                  {
+                    $$ = finish_function (0, $2, $1);
+                    recover_from_parsing_function ();
+                  }
+                | function_beg return_list '=' function1
+                  {
+                    $$ = finish_function ($2, $4, $1);
+                    recover_from_parsing_function ();
+                  }
+                ;
 
-fcn_name	: identifier
-		  {
-		    std::string id_name = $1->name ();
+fcn_name        : identifier
+                  {
+                    std::string id_name = $1->name ();
 
-		    lexer_flags.parsed_function_name = true;
-		    lexer_flags.defining_func = false;
-		    lexer_flags.maybe_classdef_get_set_method = false;
+                    lexer_flags.parsed_function_name = true;
+                    lexer_flags.defining_func = false;
+                    lexer_flags.maybe_classdef_get_set_method = false;
             
-		    $$ = $1;
-		  }
-		| GET '.' identifier
-		  {
-		    lexer_flags.maybe_classdef_get_set_method = false;
-		    $$ = $3;
-		  }
-		| SET '.' identifier
-		  {
-		    lexer_flags.maybe_classdef_get_set_method = false;
-		    $$ = $3;
-		  }
-		;
+                    $$ = $1;
+                  }
+                | GET '.' identifier
+                  {
+                    lexer_flags.maybe_classdef_get_set_method = false;
+                    $$ = $3;
+                  }
+                | SET '.' identifier
+                  {
+                    lexer_flags.maybe_classdef_get_set_method = false;
+                    $$ = $3;
+                  }
+                ;
 
-function1	: fcn_name function2
-		  {
-		    std::string fname = $1->name ();
+function1       : fcn_name function2
+                  {
+                    std::string fname = $1->name ();
 
-		    delete $1;
+                    delete $1;
 
-		    if (! ($$ = frob_function (fname, $2)))
-		      ABORT_PARSE;
-		  }
-		;
+                    if (! ($$ = frob_function (fname, $2)))
+                      ABORT_PARSE;
+                  }
+                ;
 
-function2	: param_list opt_sep opt_list function_end
-		  { $$ = start_function ($1, $3, $4); }
-		| opt_sep opt_list function_end
-		  { $$ = start_function (0, $2, $3); }
-		;
+function2       : param_list opt_sep opt_list function_end
+                  { $$ = start_function ($1, $3, $4); }
+                | opt_sep opt_list function_end
+                  { $$ = start_function (0, $2, $3); }
+                ;
 
-function_end	: END
-		  {
-		    endfunction_found = true;
-		    if (end_token_ok ($1, token::function_end))
-		      $$ = make_end ("endfunction", $1->line (), $1->column ());
-		    else
-		      ABORT_PARSE;
-		  }
-		| END_OF_INPUT
-		  {
+function_end    : END
+                  {
+                    endfunction_found = true;
+                    if (end_token_ok ($1, token::function_end))
+                      $$ = make_end ("endfunction", $1->line (), $1->column ());
+                    else
+                      ABORT_PARSE;
+                  }
+                | END_OF_INPUT
+                  {
 // A lot of tests are based on the assumption that this is OK
-// 		    if (reading_script_file)
-// 		      {
-// 			yyerror ("function body open at end of script");
-// 			YYABORT;
-// 		      }
+//                  if (reading_script_file)
+//                    {
+//                      yyerror ("function body open at end of script");
+//                      YYABORT;
+//                    }
 
-		    if (endfunction_found)
-		      {
-			yyerror ("inconsistent function endings -- "
-				 "if one function is explicitly ended, "
-				 "so must all the others");
-			YYABORT;
-		      }
+                    if (endfunction_found)
+                      {
+                        yyerror ("inconsistent function endings -- "
+                                 "if one function is explicitly ended, "
+                                 "so must all the others");
+                        YYABORT;
+                      }
 
-		    if (! (reading_fcn_file || reading_script_file
+                    if (! (reading_fcn_file || reading_script_file
                            || get_input_from_eval_string))
-		      {
-			yyerror ("function body open at end of input");
-			YYABORT;
-		      }
+                      {
+                        yyerror ("function body open at end of input");
+                        YYABORT;
+                      }
 
-		    if (reading_classdef_file)
-		      {
-		        yyerror ("classdef body open at end of input");
-		        YYABORT;
-		      }
+                    if (reading_classdef_file)
+                      {
+                        yyerror ("classdef body open at end of input");
+                        YYABORT;
+                      }
 
-		    $$ = make_end ("endfunction", input_line_number,
-				   current_input_column);
-		  }
-		;
+                    $$ = make_end ("endfunction", input_line_number,
+                                   current_input_column);
+                  }
+                ;
 
 // ========
 // Classdef
 // ========
 
-classdef_beg	: CLASSDEF stash_comment
-		  {
-		    $$ = 0;
-		    lexer_flags.parsing_classdef = true;
-		  }
-		;
+classdef_beg    : CLASSDEF stash_comment
+                  {
+                    $$ = 0;
+                    lexer_flags.parsing_classdef = true;
+                  }
+                ;
 
-classdef_end	: END
-		  {
-		    lexer_flags.parsing_classdef = false;
+classdef_end    : END
+                  {
+                    lexer_flags.parsing_classdef = false;
 
-		    if (end_token_ok ($1, token::classdef_end))
-		      $$ = make_end ("endclassdef", $1->line (), $1->column ());
-		    else
-		      ABORT_PARSE;
-		  }
-		;
+                    if (end_token_ok ($1, token::classdef_end))
+                      $$ = make_end ("endclassdef", $1->line (), $1->column ());
+                    else
+                      ABORT_PARSE;
+                  }
+                ;
 
-classdef1	: classdef_beg opt_attr_list identifier opt_superclasses
-		  { $$ = 0; }
-		;
+classdef1       : classdef_beg opt_attr_list identifier opt_superclasses
+                  { $$ = 0; }
+                ;
 
-classdef	: classdef1 '\n' class_body '\n' stash_comment classdef_end
-		  { $$ = 0; }
-		;
+classdef        : classdef1 '\n' class_body '\n' stash_comment classdef_end
+                  { $$ = 0; }
+                ;
 
-opt_attr_list	: // empty
-		  { $$ = 0; }
-		| '(' attr_list ')'
-		  { $$ = 0; }
-		;
+opt_attr_list   : // empty
+                  { $$ = 0; }
+                | '(' attr_list ')'
+                  { $$ = 0; }
+                ;
 
-attr_list	: attr
-		  { $$ = 0; }
-		| attr_list ',' attr
-		  { $$ = 0; }
-		;
+attr_list       : attr
+                  { $$ = 0; }
+                | attr_list ',' attr
+                  { $$ = 0; }
+                ;
 
-attr		: identifier
-		  { $$ = 0; }
-		| identifier '=' decl_param_init expression
-		  { $$ = 0; }
-		| EXPR_NOT identifier
-		  { $$ = 0; }
-		;
+attr            : identifier
+                  { $$ = 0; }
+                | identifier '=' decl_param_init expression
+                  { $$ = 0; }
+                | EXPR_NOT identifier
+                  { $$ = 0; }
+                ;
 
 opt_superclasses
-		: // empty
-		  { $$ = 0; }
-		| superclasses
-		  { $$ = 0; }
-		;
+                : // empty
+                  { $$ = 0; }
+                | superclasses
+                  { $$ = 0; }
+                ;
 
-superclasses	: EXPR_LT identifier '.' identifier
-		  { $$ = 0; }
-		| EXPR_LT identifier
-		  { $$ = 0; }
-		| superclasses EXPR_AND identifier '.' identifier
-		  { $$ = 0; }
-		| superclasses EXPR_AND identifier
-		  { $$ = 0; }
-		;
+superclasses    : EXPR_LT identifier '.' identifier
+                  { $$ = 0; }
+                | EXPR_LT identifier
+                  { $$ = 0; }
+                | superclasses EXPR_AND identifier '.' identifier
+                  { $$ = 0; }
+                | superclasses EXPR_AND identifier
+                  { $$ = 0; }
+                ;
 
-class_body	: properties_block
-		  { $$ = 0; }
-		| methods_block
-		  { $$ = 0; }
-		| events_block
-		  { $$ = 0; }
-		| class_body '\n' properties_block
-		  { $$ = 0; }
-		| class_body '\n' methods_block
-		  { $$ = 0; }
-		| class_body '\n' events_block
-		  { $$ = 0; }
-		;
+class_body      : properties_block
+                  { $$ = 0; }
+                | methods_block
+                  { $$ = 0; }
+                | events_block
+                  { $$ = 0; }
+                | class_body '\n' properties_block
+                  { $$ = 0; }
+                | class_body '\n' methods_block
+                  { $$ = 0; }
+                | class_body '\n' events_block
+                  { $$ = 0; }
+                ;
 
-properties_beg	: PROPERTIES stash_comment
-		  { $$ = 0; }
-		;
+properties_beg  : PROPERTIES stash_comment
+                  { $$ = 0; }
+                ;
 
 properties_block
-		: properties_beg opt_attr_list '\n' properties_list '\n' END
-		  { $$ = 0; }
-		;
+                : properties_beg opt_attr_list '\n' properties_list '\n' END
+                  { $$ = 0; }
+                ;
 
 properties_list
-		: class_property
-		  { $$ = 0; }
-		| properties_list '\n' class_property
-		  { $$ = 0; }
-		;
+                : class_property
+                  { $$ = 0; }
+                | properties_list '\n' class_property
+                  { $$ = 0; }
+                ;
 
-class_property	: identifier
-		  { $$ = 0; }
-		| identifier '=' decl_param_init expression ';'
-		  { $$ = 0; }
-		;
+class_property  : identifier
+                  { $$ = 0; }
+                | identifier '=' decl_param_init expression ';'
+                  { $$ = 0; }
+                ;
 
-methods_beg	: METHODS stash_comment
-		  { $$ = 0; }
-		;
+methods_beg     : METHODS stash_comment
+                  { $$ = 0; }
+                ;
 
-methods_block	: methods_beg opt_attr_list '\n' methods_list '\n' END
-		  { $$ = 0; }
-		;
+methods_block   : methods_beg opt_attr_list '\n' methods_list '\n' END
+                  { $$ = 0; }
+                ;
 
-methods_list	: function
-		  { $$ = 0; }
-		| methods_list '\n' function
-		  { $$ = 0; }
-		;
+methods_list    : function
+                  { $$ = 0; }
+                | methods_list '\n' function
+                  { $$ = 0; }
+                ;
 
-events_beg	: EVENTS stash_comment
-		  { $$ = 0; }
-		;
+events_beg      : EVENTS stash_comment
+                  { $$ = 0; }
+                ;
 
-events_block	: events_beg opt_attr_list '\n' events_list '\n' END
-		  { $$ = 0; }
-		;
+events_block    : events_beg opt_attr_list '\n' events_list '\n' END
+                  { $$ = 0; }
+                ;
 
-events_list	: class_event
-		  { $$ = 0; }
-		| events_list '\n' class_event
-		  { $$ = 0; }
-		;
+events_list     : class_event
+                  { $$ = 0; }
+                | events_list '\n' class_event
+                  { $$ = 0; }
+                ;
 
-class_event	: identifier
-		  { $$ = 0; }
-		;
+class_event     : identifier
+                  { $$ = 0; }
+                ;
  
 // =============
 // Miscellaneous
 // =============
 
-stash_comment	: // empty
-		  { $$ = octave_comment_buffer::get_comment (); }
-		;
+stash_comment   : // empty
+                  { $$ = octave_comment_buffer::get_comment (); }
+                ;
 
-parse_error	: LEXICAL_ERROR
-		  { yyerror ("parse error"); }
-		| error
-		;
+parse_error     : LEXICAL_ERROR
+                  { yyerror ("parse error"); }
+                | error
+                ;
 
-sep_no_nl	: ','
-		  { $$ = ','; }
-		| ';'
-		  { $$ = ';'; }
-		| sep_no_nl ','
-		  { $$ = $1; }
-		| sep_no_nl ';'
-		  { $$ = $1; }
-		;
+sep_no_nl       : ','
+                  { $$ = ','; }
+                | ';'
+                  { $$ = ';'; }
+                | sep_no_nl ','
+                  { $$ = $1; }
+                | sep_no_nl ';'
+                  { $$ = $1; }
+                ;
 
-opt_sep_no_nl	: // empty
-		  { $$ = 0; }
-		| sep_no_nl
-		  { $$ = $1; }
-		;
+opt_sep_no_nl   : // empty
+                  { $$ = 0; }
+                | sep_no_nl
+                  { $$ = $1; }
+                ;
 
-sep		: ','
-		  { $$ = ','; }
-		| ';'
-		  { $$ = ';'; }
-		| '\n'
-		  { $$ = '\n'; }
-		| sep ','
-		  { $$ = $1; }
-		| sep ';'
-		  { $$ = $1; }
-		| sep '\n'
-		  { $$ = $1; }
-		;
+sep             : ','
+                  { $$ = ','; }
+                | ';'
+                  { $$ = ';'; }
+                | '\n'
+                  { $$ = '\n'; }
+                | sep ','
+                  { $$ = $1; }
+                | sep ';'
+                  { $$ = $1; }
+                | sep '\n'
+                  { $$ = $1; }
+                ;
 
-opt_sep		: // empty
-		  { $$ = 0; }
-		| sep
-		  { $$ = $1; }
-		;
+opt_sep         : // empty
+                  { $$ = 0; }
+                | sep
+                  { $$ = $1; }
+                ;
 
 %%
 
@@ -1635,7 +1635,7 @@ yyerror (const char *s)
 
   if (reading_fcn_file || reading_script_file || reading_classdef_file)
     output_buf << "parse error near line " << input_line_number
-	       << " of file " << curr_fcn_file_full_name;
+               << " of file " << curr_fcn_file_full_name;
   else
     output_buf << "parse error:";
 
@@ -1656,10 +1656,10 @@ yyerror (const char *s)
       output_buf << ">>> " << current_input_line << "\n";
 
       if (err_col == 0)
-	err_col = len;
+        err_col = len;
 
       for (int i = 0; i < err_col + 3; i++)
-	output_buf << " ";
+        output_buf << " ";
 
       output_buf << "^";
     }
@@ -1742,43 +1742,43 @@ end_token_ok (token *tok, token::end_tok_type expected)
       int c = tok->column ();
 
       switch (expected)
-	{
-	case token::classdef_end:
-	  end_error ("classdef", ettype, l, c);
-	  break;
+        {
+        case token::classdef_end:
+          end_error ("classdef", ettype, l, c);
+          break;
 
-	case token::for_end:
-	  end_error ("for", ettype, l, c);
-	  break;
+        case token::for_end:
+          end_error ("for", ettype, l, c);
+          break;
 
-	case token::function_end:
-	  end_error ("function", ettype, l, c);
-	  break;
+        case token::function_end:
+          end_error ("function", ettype, l, c);
+          break;
 
-	case token::if_end:
-	  end_error ("if", ettype, l, c);
-	  break;
+        case token::if_end:
+          end_error ("if", ettype, l, c);
+          break;
 
-	case token::try_catch_end:
-	  end_error ("try", ettype, l, c);
-	  break;
+        case token::try_catch_end:
+          end_error ("try", ettype, l, c);
+          break;
 
-	case token::switch_end:
-	  end_error ("switch", ettype, l, c);
-	  break;
+        case token::switch_end:
+          end_error ("switch", ettype, l, c);
+          break;
 
-	case token::unwind_protect_end:
-	  end_error ("unwind_protect", ettype, l, c);
-	  break;
+        case token::unwind_protect_end:
+          end_error ("unwind_protect", ettype, l, c);
+          break;
 
-	case token::while_end:
-	  end_error ("while", ettype, l, c);
-	  break;
+        case token::while_end:
+          end_error ("while", ettype, l, c);
+          break;
 
-	default:
-	  panic_impossible ();
-	  break;
-	}
+        default:
+          panic_impossible ();
+          break;
+        }
     }
 
   return retval;
@@ -1794,14 +1794,14 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
       && expr->paren_count () < 2)
     {
       if (curr_fcn_file_full_name.empty ())
-	warning_with_id
-	  ("Octave:assign-as-truth-value",
-	   "suggest parenthesis around assignment used as truth value");
+        warning_with_id
+          ("Octave:assign-as-truth-value",
+           "suggest parenthesis around assignment used as truth value");
       else
-	warning_with_id
-	  ("Octave:assign-as-truth-value",
-	   "suggest parenthesis around assignment used as truth value near line %d, column %d in file `%s'",
-	   expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+        warning_with_id
+          ("Octave:assign-as-truth-value",
+           "suggest parenthesis around assignment used as truth value near line %d, column %d in file `%s'",
+           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
     }
 }
 
@@ -1813,13 +1813,13 @@ maybe_warn_variable_switch_label (tree_expression *expr)
   if (! expr->is_constant ())
     {
       if (curr_fcn_file_full_name.empty ())
-	warning_with_id ("Octave:variable-switch-label",
-			 "variable switch label");
+        warning_with_id ("Octave:variable-switch-label",
+                         "variable switch label");
       else
-	warning_with_id
-	  ("Octave:variable-switch-label",
-	   "variable switch label near line %d, column %d in file `%s'",
-	   expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
+        warning_with_id
+          ("Octave:variable-switch-label",
+           "variable switch label near line %d, column %d in file `%s'",
+           expr->line (), expr->column (), curr_fcn_file_full_name.c_str ());
     }
 }
 
@@ -1846,29 +1846,29 @@ fold (tree_binary_expression *e)
 
   if (op1->is_constant () && op2->is_constant ()
       && (! ((warning_enabled ("Octave:associativity-change")
-	      && (op_type == POW || op_type == EPOW))
-	     || (warning_enabled ("Octave:precedence-change")
-		 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
+              && (op_type == POW || op_type == EPOW))
+             || (warning_enabled ("Octave:precedence-change")
+                 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
     {
       octave_value tmp = e->rvalue1 ();
 
       if (! (error_state || warning_state))
-	{
-	  tree_constant *tc_retval
-	    = new tree_constant (tmp, op1->line (), op1->column ());
+        {
+          tree_constant *tc_retval
+            = new tree_constant (tmp, op1->line (), op1->column ());
 
-	  std::ostringstream buf;
+          std::ostringstream buf;
 
-	  tree_print_code tpc (buf);
+          tree_print_code tpc (buf);
 
-	  e->accept (tpc);
+          e->accept (tpc);
 
-	  tc_retval->stash_original_text (buf.str ());
+          tc_retval->stash_original_text (buf.str ());
 
-	  delete e;
+          delete e;
 
-	  retval = tc_retval;
-	}
+          retval = tc_retval;
+        }
     }
 
   return retval;
@@ -1897,22 +1897,22 @@ fold (tree_unary_expression *e)
       octave_value tmp = e->rvalue1 ();
 
       if (! (error_state || warning_state))
-	{
-	  tree_constant *tc_retval
-	    = new tree_constant (tmp, op->line (), op->column ());
+        {
+          tree_constant *tc_retval
+            = new tree_constant (tmp, op->line (), op->column ());
 
-	  std::ostringstream buf;
+          std::ostringstream buf;
 
-	  tree_print_code tpc (buf);
+          tree_print_code tpc (buf);
 
-	  e->accept (tpc);
+          e->accept (tpc);
 
-	  tc_retval->stash_original_text (buf.str ());
+          tc_retval->stash_original_text (buf.str ());
 
-	  delete e;
+          delete e;
 
-	  retval = tc_retval;
-	}
+          retval = tc_retval;
+        }
     }
 
   return retval;
@@ -1943,40 +1943,40 @@ finish_colon_expression (tree_colon_expression *e)
   if (base)
     {
       if (limit)
-	{
-	  if (base->is_constant () && limit->is_constant ()
-	      && (! incr || (incr && incr->is_constant ())))
-	    {
-	      octave_value tmp = e->rvalue1 ();
+        {
+          if (base->is_constant () && limit->is_constant ()
+              && (! incr || (incr && incr->is_constant ())))
+            {
+              octave_value tmp = e->rvalue1 ();
 
-	      if (! (error_state || warning_state))
-		{
-		  tree_constant *tc_retval
-		    = new tree_constant (tmp, base->line (), base->column ());
+              if (! (error_state || warning_state))
+                {
+                  tree_constant *tc_retval
+                    = new tree_constant (tmp, base->line (), base->column ());
 
-		  std::ostringstream buf;
+                  std::ostringstream buf;
 
-		  tree_print_code tpc (buf);
+                  tree_print_code tpc (buf);
 
-		  e->accept (tpc);
+                  e->accept (tpc);
 
-		  tc_retval->stash_original_text (buf.str ());
+                  tc_retval->stash_original_text (buf.str ());
 
-		  delete e;
+                  delete e;
 
-		  retval = tc_retval;
-		}
-	    }
-	}
+                  retval = tc_retval;
+                }
+            }
+        }
       else
-	{
-	  e->preserve_base ();
-	  delete e;
+        {
+          e->preserve_base ();
+          delete e;
 
-	  // FIXME -- need to attempt constant folding here
-	  // too (we need a generic way to do that).
-	  retval = base;
-	}
+          // FIXME -- need to attempt constant folding here
+          // too (we need a generic way to do that).
+          retval = base;
+        }
     }
 
   return retval;
@@ -1996,24 +1996,24 @@ make_constant (int op, token *tok_val)
     {
     case NUM:
       {
-	octave_value tmp (tok_val->number ());
-	retval = new tree_constant (tmp, l, c);
-	retval->stash_original_text (tok_val->text_rep ());
+        octave_value tmp (tok_val->number ());
+        retval = new tree_constant (tmp, l, c);
+        retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case IMAG_NUM:
       {
-	octave_value tmp (Complex (0.0, tok_val->number ()));
-	retval = new tree_constant (tmp, l, c);
-	retval->stash_original_text (tok_val->text_rep ());
+        octave_value tmp (Complex (0.0, tok_val->number ()));
+        retval = new tree_constant (tmp, l, c);
+        retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case DQ_STRING:
     case SQ_STRING:
       {
-	std::string txt = tok_val->text ();
+        std::string txt = tok_val->text ();
 
         char delim = op == DQ_STRING ? '"' : '\'';
         octave_value tmp (txt, delim);
@@ -2026,14 +2026,14 @@ make_constant (int op, token *tok_val)
               tmp = octave_null_sq_str::instance;
           }
 
-	retval = new tree_constant (tmp, l, c);
+        retval = new tree_constant (tmp, l, c);
 
-	if (op == DQ_STRING)
-	  txt = undo_string_escapes (txt);
+        if (op == DQ_STRING)
+          txt = undo_string_escapes (txt);
 
-	// FIXME -- maybe this should also be handled by
-	// tok_val->text_rep () for character strings?
-	retval->stash_original_text (delim + txt + delim);
+        // FIXME -- maybe this should also be handled by
+        // tok_val->text_rep () for character strings?
+        retval->stash_original_text (delim + txt + delim);
       }
       break;
 
@@ -2097,27 +2097,27 @@ maybe_warn_associativity_change (tree_expression *op)
   if (op->paren_count () == 0 && op->is_binary_expression ())
     {
       tree_binary_expression *e
-	= dynamic_cast<tree_binary_expression *> (op);
+        = dynamic_cast<tree_binary_expression *> (op);
 
       octave_value::binary_op op_type = e->op_type ();
 
       if (op_type == octave_value::op_pow
-	  || op_type == octave_value::op_el_pow)
-	{
-	  std::string op_str = octave_value::binary_op_as_string (op_type);
+          || op_type == octave_value::op_el_pow)
+        {
+          std::string op_str = octave_value::binary_op_as_string (op_type);
 
-	  if (curr_fcn_file_full_name.empty ())
-	    warning_with_id
-	      ("Octave:associativity-change",
-	       "meaning may have changed due to change in associativity for %s operator",
-	       op_str.c_str ());
-	  else
-	    warning_with_id
-	      ("Octave:associativity-change",
-	       "meaning may have changed due to change in associativity for %s operator near line %d, column %d in file `%s'",
-	       op_str.c_str (), op->line (), op->column (),
-	       curr_fcn_file_full_name.c_str ());
-	}
+          if (curr_fcn_file_full_name.empty ())
+            warning_with_id
+              ("Octave:associativity-change",
+               "meaning may have changed due to change in associativity for %s operator",
+               op_str.c_str ());
+          else
+            warning_with_id
+              ("Octave:associativity-change",
+               "meaning may have changed due to change in associativity for %s operator near line %d, column %d in file `%s'",
+               op_str.c_str (), op->line (), op->column (),
+               curr_fcn_file_full_name.c_str ());
+        }
     }
 }
 
@@ -2125,7 +2125,7 @@ maybe_warn_associativity_change (tree_expression *op)
 
 static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
-		tree_expression *op2)
+                tree_expression *op2)
 {
   octave_value::binary_op t = octave_value::unknown_binary_op;
 
@@ -2213,22 +2213,22 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
       t = octave_value::op_el_or;
       if (op2->paren_count () == 0 && op2->is_binary_expression ())
         {
-	  tree_binary_expression *e
-	    = dynamic_cast<tree_binary_expression *> (op2);
+          tree_binary_expression *e
+            = dynamic_cast<tree_binary_expression *> (op2);
 
-	  if (e->op_type () == octave_value::op_el_and)
-	    {
-	      if (curr_fcn_file_full_name.empty ())
-		warning_with_id
-		  ("Octave:precedence-change",
-		   "meaning may have changed due to change in precedence for & and | operators");
-	      else
-		warning_with_id
-		  ("Octave:precedence-change",
-		   "meaning may have changed due to change in precedence for & and | operators near line %d, column %d in file `%s'",
-		   op2->line (), op2->column (),
-		   curr_fcn_file_full_name.c_str ());
-	    }
+          if (e->op_type () == octave_value::op_el_and)
+            {
+              if (curr_fcn_file_full_name.empty ())
+                warning_with_id
+                  ("Octave:precedence-change",
+                   "meaning may have changed due to change in precedence for & and | operators");
+              else
+                warning_with_id
+                  ("Octave:precedence-change",
+                   "meaning may have changed due to change in precedence for & and | operators near line %d, column %d in file `%s'",
+                   op2->line (), op2->column (),
+                   curr_fcn_file_full_name.c_str ());
+            }
         }
       break;
 
@@ -2250,7 +2250,7 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
 static tree_expression *
 make_boolean_op (int op, tree_expression *op1, token *tok_val,
-		 tree_expression *op2)
+                 tree_expression *op2)
 {
   tree_boolean_expression::type t;
 
@@ -2264,13 +2264,13 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
       t = tree_boolean_expression::bool_or;
       if (op2->paren_count () == 0 && op2->is_boolean_expression ())
         {
-	  tree_boolean_expression *e
-	    = dynamic_cast<tree_boolean_expression *> (op2);
+          tree_boolean_expression *e
+            = dynamic_cast<tree_boolean_expression *> (op2);
 
-	  if (e->op_type () == tree_boolean_expression::bool_and)
-	    warning_with_id
-	      ("Octave:precedence-change",
-	       "meaning may have changed due to change in precedence for && and || operators");
+          if (e->op_type () == tree_boolean_expression::bool_and)
+            warning_with_id
+              ("Octave:precedence-change",
+               "meaning may have changed due to change in precedence for && and || operators");
         }
       break;
 
@@ -2374,8 +2374,8 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
 static tree_command *
 make_unwind_command (token *unwind_tok, tree_statement_list *body,
-		     tree_statement_list *cleanup, token *end_tok,
-		     octave_comment_list *lc, octave_comment_list *mc)
+                     tree_statement_list *cleanup, token *end_tok,
+                     octave_comment_list *lc, octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
@@ -2387,7 +2387,7 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
       int c = unwind_tok->column ();
 
       retval = new tree_unwind_protect_command (body, cleanup,
-						lc, mc, tc, l, c);
+                                                lc, mc, tc, l, c);
     }
 
   return retval;
@@ -2397,8 +2397,8 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
 
 static tree_command *
 make_try_command (token *try_tok, tree_statement_list *body,
-		  tree_statement_list *cleanup, token *end_tok,
-		  octave_comment_list *lc, octave_comment_list *mc)
+                  tree_statement_list *cleanup, token *end_tok,
+                  octave_comment_list *lc, octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
@@ -2410,7 +2410,7 @@ make_try_command (token *try_tok, tree_statement_list *body,
       int c = try_tok->column ();
 
       retval = new tree_try_catch_command (body, cleanup,
-					   lc, mc, tc, l, c);
+                                           lc, mc, tc, l, c);
     }
 
   return retval;
@@ -2420,8 +2420,8 @@ make_try_command (token *try_tok, tree_statement_list *body,
 
 static tree_command *
 make_while_command (token *while_tok, tree_expression *expr,
-		    tree_statement_list *body, token *end_tok,
-		    octave_comment_list *lc)
+                    tree_statement_list *body, token *end_tok,
+                    octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2446,7 +2446,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 
 static tree_command *
 make_do_until_command (token *until_tok, tree_statement_list *body,
-		       tree_expression *expr, octave_comment_list *lc)
+                       tree_expression *expr, octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2468,8 +2468,8 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
 static tree_command *
 make_for_command (token *for_tok, tree_argument_list *lhs,
-		  tree_expression *expr, tree_statement_list *body,
-		  token *end_tok, octave_comment_list *lc)
+                  tree_expression *expr, tree_statement_list *body,
+                  token *end_tok, octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2483,17 +2483,17 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
       int c = for_tok->column ();
 
       if (lhs->length () == 1)
-	{
-	  tree_expression *tmp = lhs->remove_front ();
+        {
+          tree_expression *tmp = lhs->remove_front ();
 
-	  retval = new tree_simple_for_command (tmp, expr, body,
-						lc, tc, l, c);
+          retval = new tree_simple_for_command (tmp, expr, body,
+                                                lc, tc, l, c);
 
-	  delete lhs;
-	}
+          delete lhs;
+        }
       else
-	retval = new tree_complex_for_command (lhs, expr, body,
-					       lc, tc, l, c);
+        retval = new tree_complex_for_command (lhs, expr, body,
+                                               lc, tc, l, c);
     }
 
   return retval;
@@ -2560,7 +2560,7 @@ start_if_command (tree_expression *expr, tree_statement_list *list)
 
 static tree_if_command *
 finish_if_command (token *if_tok, tree_if_command_list *list,
-		   token *end_tok, octave_comment_list *lc)
+                   token *end_tok, octave_comment_list *lc)
 {
   tree_if_command *retval = 0;
 
@@ -2572,15 +2572,15 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
       int c = if_tok->column ();
 
       if (list && ! list->empty ())
-	{
-	  tree_if_clause *elt = list->front ();
+        {
+          tree_if_clause *elt = list->front ();
 
-	  if (elt)
-	    {
-	      elt->line (l);
-	      elt->column (c);
-	    }
-	}
+          if (elt)
+            {
+              elt->line (l);
+              elt->column (c);
+            }
+        }
 
       retval = new tree_if_command (list, lc, tc, l, c);
     }
@@ -2592,7 +2592,7 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 
 static tree_if_clause *
 make_elseif_clause (token *elseif_tok, tree_expression *expr,
-		    tree_statement_list *list, octave_comment_list *lc)
+                    tree_statement_list *list, octave_comment_list *lc)
 {
   maybe_warn_assign_as_truth_value (expr);
 
@@ -2606,8 +2606,8 @@ make_elseif_clause (token *elseif_tok, tree_expression *expr,
 
 static tree_switch_command *
 finish_switch_command (token *switch_tok, tree_expression *expr,
-		       tree_switch_case_list *list, token *end_tok,
-		       octave_comment_list *lc)
+                       tree_switch_case_list *list, token *end_tok,
+                       octave_comment_list *lc)
 {
   tree_switch_command *retval = 0;
 
@@ -2619,15 +2619,15 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
       int c = switch_tok->column ();
 
       if (list && ! list->empty ())
-	{
-	  tree_switch_case *elt = list->front ();
+        {
+          tree_switch_case *elt = list->front ();
 
-	  if (elt)
-	    {
-	      elt->line (l);
-	      elt->column (c);
-	    }
-	}
+          if (elt)
+            {
+              elt->line (l);
+              elt->column (c);
+            }
+        }
 
       retval = new tree_switch_command (expr, list, lc, tc, l, c);
     }
@@ -2639,7 +2639,7 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 
 static tree_switch_case *
 make_switch_case (token *case_tok, tree_expression *expr,
-		  tree_statement_list *list, octave_comment_list *lc)
+                  tree_statement_list *list, octave_comment_list *lc)
 {
   maybe_warn_variable_switch_label (expr);
 
@@ -2653,7 +2653,7 @@ make_switch_case (token *case_tok, tree_expression *expr,
 
 static tree_expression *
 make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
-		tree_expression *rhs)
+                tree_expression *rhs)
 {
   tree_expression *retval = 0;
 
@@ -2765,7 +2765,7 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
 
   octave_user_script *script
     = new octave_user_script (curr_fcn_file_full_name, curr_fcn_file_name,
-			      cmds, doc_string);
+                              cmds, doc_string);
 
   octave_time now;
 
@@ -2783,7 +2783,7 @@ make_script (tree_statement_list *cmds, tree_statement *end_script)
 
 static octave_user_function *
 start_function (tree_parameter_list *param_list, tree_statement_list *body,
-		tree_statement *end_fcn_stmt)
+                tree_statement *end_fcn_stmt)
 {
   // We'll fill in the return list later.
 
@@ -2794,7 +2794,7 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body,
 
   octave_user_function *fcn
     = new octave_user_function (symbol_table::current_scope (),
-				param_list, 0, body);
+                                param_list, 0, body);
 
   if (fcn)
     {
@@ -2825,7 +2825,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   // name).
   if (! autoloading && reading_fcn_file
       && (current_function_depth == 1
-	  && ! (parsing_subfunctions || lexer_flags.parsing_class_method)))
+          && ! (parsing_subfunctions || lexer_flags.parsing_class_method)))
   {
     // FIXME -- should curr_fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a
@@ -2840,12 +2840,12 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
     if (nm != id_name)
       {
-	warning_with_id
-	  ("Octave:function-name-clash",
-	   "function name `%s' does not agree with function file name `%s'",
-	   id_name.c_str (), curr_fcn_file_full_name.c_str ());
+        warning_with_id
+          ("Octave:function-name-clash",
+           "function name `%s' does not agree with function file name `%s'",
+           id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
-	id_name = nm;
+        id_name = nm;
       }
   }
 
@@ -2858,23 +2858,23 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       fcn->mark_as_system_fcn_file ();
 
       if (fcn_file_from_relative_lookup)
-	fcn->mark_relative ();
+        fcn->mark_relative ();
 
       if (current_function_depth > 1 || parsing_subfunctions)
         {
-	  fcn->stash_parent_fcn_name (curr_fcn_file_name);
-	  fcn->stash_parent_fcn_scope (primary_fcn_scope);
+          fcn->stash_parent_fcn_name (curr_fcn_file_name);
+          fcn->stash_parent_fcn_scope (primary_fcn_scope);
         }
 
       if (lexer_flags.parsing_class_method)
-	{
-	  if (current_class_name == id_name)
-	    fcn->mark_as_class_constructor ();
-	  else
-	    fcn->mark_as_class_method ();
+        {
+          if (current_class_name == id_name)
+            fcn->mark_as_class_constructor ();
+          else
+            fcn->mark_as_class_method ();
 
-	  fcn->stash_dispatch_class (current_class_name);
-	}
+          fcn->stash_dispatch_class (current_class_name);
+        }
 
       std::string nm = fcn->fcn_file_name ();
 
@@ -2882,14 +2882,14 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
       if (fs && fs.is_newer (now))
         warning_with_id ("Octave:future-time-stamp",
-			 "time stamp for `%s' is in the future", nm.c_str ());
+                         "time stamp for `%s' is in the future", nm.c_str ());
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
-	   && reading_script_file
-	   && curr_fcn_file_name == id_name)
+           && reading_script_file
+           && curr_fcn_file_name == id_name)
     {
       warning ("function `%s' defined within script file `%s'",
-	       id_name.c_str (), curr_fcn_file_full_name.c_str ());
+               id_name.c_str (), curr_fcn_file_full_name.c_str ());
     }
 
   fcn->stash_function_name (id_name);
@@ -2911,7 +2911,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
 static tree_function_def *
 finish_function (tree_parameter_list *ret_list,
-		 octave_user_function *fcn, octave_comment_list *lc)
+                 octave_user_function *fcn, octave_comment_list *lc)
 {
   tree_function_def *retval = 0;
 
@@ -2925,12 +2925,12 @@ finish_function (tree_parameter_list *ret_list,
 
       std::string tmp = nm;
       if (! file.empty ())
-	tmp += ": " + file;
+        tmp += ": " + file;
 
       symbol_table::cache_name (fcn->scope (), tmp);
 
       if (lc)
-	fcn->stash_leading_comment (lc);
+        fcn->stash_leading_comment (lc);
 
       fcn->define_ret_list (ret_list);
 
@@ -2938,25 +2938,25 @@ finish_function (tree_parameter_list *ret_list,
         {
           // FIXME -- is this flag used to determine if the function is a
           // _subfunction_ somewhere?
-	  fcn->mark_as_nested_function ();
+          fcn->mark_as_nested_function ();
 
-	  symbol_table::install_subfunction (nm, octave_value (fcn),
-					     primary_fcn_scope);
-	}
+          symbol_table::install_subfunction (nm, octave_value (fcn),
+                                             primary_fcn_scope);
+        }
 
       if (! reading_fcn_file)
-	{
-	  // We are either reading a script file or defining a function
-	  // at the command line, so this definition creates a
-	  // tree_function object that is placed in the parse tree.
-	  // Otherwise, it is just inserted in the symbol table,
-	  // either as a subfunction (see above), or as the primary
-	  // function for the file, via primary_fcn_ptr (see also
-	  // load_fcn_from_file,, parse_fcn_file, and
-	  // symbol_table::fcn_info::fcn_info_rep::find_user_function).
+        {
+          // We are either reading a script file or defining a function
+          // at the command line, so this definition creates a
+          // tree_function object that is placed in the parse tree.
+          // Otherwise, it is just inserted in the symbol table,
+          // either as a subfunction (see above), or as the primary
+          // function for the file, via primary_fcn_ptr (see also
+          // load_fcn_from_file,, parse_fcn_file, and
+          // symbol_table::fcn_info::fcn_info_rep::find_user_function).
 
           retval = new tree_function_def (fcn);
-	}
+        }
 
       // Unmark any symbols that may have been tagged as local
       // variables while parsing (for example, by force_local_variable
@@ -2992,7 +2992,7 @@ recover_from_parsing_function (void)
 
 static tree_index_expression *
 make_index_expression (tree_expression *expr, tree_argument_list *args,
-		       char type)
+                       char type)
 {
   tree_index_expression *retval = 0;
   
@@ -3091,15 +3091,15 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
 
     case STATIC:
       if (current_function_depth > 0)
-	retval = new tree_static_command (lst, l, c);
+        retval = new tree_static_command (lst, l, c);
       else
-	{
-	  if (reading_script_file)
-	    warning ("ignoring persistent declaration near line %d of file `%s'",
-		     l, curr_fcn_file_full_name.c_str ());
-	  else
-	    warning ("ignoring persistent declaration near line %d", l);
-	}
+        {
+          if (reading_script_file)
+            warning ("ignoring persistent declaration near line %d of file `%s'",
+                     l, curr_fcn_file_full_name.c_str ());
+          else
+            warning ("ignoring persistent declaration near line %d", l);
+        }
       break;
 
     default:
@@ -3141,22 +3141,22 @@ finish_matrix (tree_matrix *m)
       octave_value tmp = m->rvalue1 ();
 
       if (! (error_state || warning_state))
-	{
-	  tree_constant *tc_retval
-	    = new tree_constant (tmp, m->line (), m->column ());
+        {
+          tree_constant *tc_retval
+            = new tree_constant (tmp, m->line (), m->column ());
 
-	  std::ostringstream buf;
+          std::ostringstream buf;
 
-	  tree_print_code tpc (buf);
+          tree_print_code tpc (buf);
 
-	  m->accept (tpc);
+          m->accept (tpc);
 
-	  tc_retval->stash_original_text (buf.str ());
+          tc_retval->stash_original_text (buf.str ());
 
-	  delete m;
+          delete m;
 
-	  retval = tc_retval;
-	}
+          retval = tc_retval;
+        }
     }
 
   return retval;
@@ -3178,16 +3178,16 @@ maybe_warn_missing_semi (tree_statement_list *t)
       tree_statement *tmp = t->back();
 
       if (tmp->is_expression ())
-	warning_with_id
-	  ("Octave:missing-semicolon",
-	   "missing semicolon near line %d, column %d in file `%s'",
-	    tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
+        warning_with_id
+          ("Octave:missing-semicolon",
+           "missing semicolon near line %d, column %d in file `%s'",
+            tmp->line (), tmp->column (), curr_fcn_file_full_name.c_str ());
     }
 }
 
 static tree_statement_list *
 set_stmt_print_flag (tree_statement_list *list, char sep,
-		     bool warn_missing_semi)
+                     bool warn_missing_semi)
 {
   tree_statement *tmp = list->back ();
 
@@ -3202,7 +3202,7 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     case '\n':
       tmp->set_print_flag (true);
       if (warn_missing_semi)
-	maybe_warn_missing_semi (list);
+        maybe_warn_missing_semi (list);
       break;
 
     default:
@@ -3230,7 +3230,7 @@ make_statement_list (tree_statement *stmt)
 
 static tree_statement_list *
 append_statement_list (tree_statement_list *list, char sep,
-		       tree_statement *stmt, bool warn_missing_semi)
+                       tree_statement *stmt, bool warn_missing_semi)
 {
   set_stmt_print_flag (list, sep, warn_missing_semi);
 
@@ -3282,10 +3282,10 @@ text_getc (FILE *f)
       c = getc (f);
 
       if (c != '\n')
-	{
-	  ungetc (c, f);
-	  c = '\n';
-	}
+        {
+          ungetc (c, f);
+          c = '\n';
+        }
     }
 
   if (c == '\n')
@@ -3321,21 +3321,21 @@ skip_white_space (stream_reader& reader)
   while ((c = reader.getc ()) != EOF)
     {
       switch (c)
-	{
-	case ' ':
-	case '\t':
-	  current_input_column++;
-	  break;
+        {
+        case ' ':
+        case '\t':
+          current_input_column++;
+          break;
 
-	case '\n':
-	  current_input_column = 0;
-	  break;
+        case '\n':
+          current_input_column = 0;
+          break;
 
-	default:
-	  current_input_column--;
-	  reader.ungetc (c);
-	  goto done;
-	}
+        default:
+          current_input_column--;
+          reader.ungetc (c);
+          goto done;
+        }
     }
 
  done:
@@ -3381,23 +3381,23 @@ gobble_leading_white_space (FILE *ffile, bool& eof)
       eof = skip_white_space (stdio_reader);
 
       if (eof)
-	break;
+        break;
 
       txt = grab_comment_block (stdio_reader, true, eof);
 
       if (txt.empty ())
-	break;
+        break;
 
       if (! (have_help_text || looks_like_copyright (txt)))
-	{
-	  help_txt = txt;
-	  have_help_text = true;
-	}
+        {
+          help_txt = txt;
+          have_help_text = true;
+        }
 
       octave_comment_buffer::append (txt);
 
       if (eof)
-	break;
+        break;
     }
 
   return help_txt;
@@ -3424,8 +3424,8 @@ looking_at_function_keyword (FILE *ffile)
 
 static octave_function *
 parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
-		bool force_script = false, bool require_file = true,
-		const std::string& warn_for = std::string ())
+                bool force_script = false, bool require_file = true,
+                const std::string& warn_for = std::string ())
 {
   unwind_protect frame;
 
@@ -3482,93 +3482,93 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
       if (! eof)
-	{
-	  std::string file_type;
+        {
+          std::string file_type;
 
-	  frame.protect_var (get_input_from_eval_string);
-	  frame.protect_var (parser_end_of_input);
-	  frame.protect_var (reading_fcn_file);
-	  frame.protect_var (reading_script_file);
-	  frame.protect_var (reading_classdef_file);
-	  frame.protect_var (Vecho_executing_commands);
+          frame.protect_var (get_input_from_eval_string);
+          frame.protect_var (parser_end_of_input);
+          frame.protect_var (reading_fcn_file);
+          frame.protect_var (reading_script_file);
+          frame.protect_var (reading_classdef_file);
+          frame.protect_var (Vecho_executing_commands);
 
 
-	  get_input_from_eval_string = false;
-	  parser_end_of_input = false;
+          get_input_from_eval_string = false;
+          parser_end_of_input = false;
 
-	  if (! force_script && looking_at_function_keyword (ffile))
-	    {
-	      file_type = "function";
+          if (! force_script && looking_at_function_keyword (ffile))
+            {
+              file_type = "function";
 
-	      Vecho_executing_commands = ECHO_OFF;
+              Vecho_executing_commands = ECHO_OFF;
 
-	      reading_classdef_file = false;
-	      reading_fcn_file = true;
-	      reading_script_file = false;
-	    }
-	  else if (! force_script && looking_at_classdef_keyword (ffile))
-	    {
-	      file_type = "classdef";
+              reading_classdef_file = false;
+              reading_fcn_file = true;
+              reading_script_file = false;
+            }
+          else if (! force_script && looking_at_classdef_keyword (ffile))
+            {
+              file_type = "classdef";
 
-	      Vecho_executing_commands = ECHO_OFF;
+              Vecho_executing_commands = ECHO_OFF;
 
-	      reading_classdef_file = true;
-	      reading_fcn_file = false;
-	      reading_script_file = false;
-	    }
-	  else
-	    {
-	      file_type = "script";
+              reading_classdef_file = true;
+              reading_fcn_file = false;
+              reading_script_file = false;
+            }
+          else
+            {
+              file_type = "script";
 
-	      Vecho_executing_commands = ECHO_OFF;
+              Vecho_executing_commands = ECHO_OFF;
 
-	      reading_classdef_file = false;
-	      reading_fcn_file = false;
-	      reading_script_file = true;
-	    }
+              reading_classdef_file = false;
+              reading_fcn_file = false;
+              reading_script_file = true;
+            }
 
-	  YY_BUFFER_STATE old_buf = current_buffer ();
-	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+          YY_BUFFER_STATE old_buf = current_buffer ();
+          YY_BUFFER_STATE new_buf = create_buffer (ffile);
 
-	  frame.add_fcn (switch_to_buffer, old_buf);
-	  frame.add_fcn (delete_buffer, new_buf);
+          frame.add_fcn (switch_to_buffer, old_buf);
+          frame.add_fcn (delete_buffer, new_buf);
 
-	  switch_to_buffer (new_buf);
+          switch_to_buffer (new_buf);
 
-	  frame.protect_var (primary_fcn_ptr);
-	  primary_fcn_ptr = 0;
+          frame.protect_var (primary_fcn_ptr);
+          primary_fcn_ptr = 0;
 
-	  reset_parser ();
+          reset_parser ();
 
-	  // Do this with an unwind-protect cleanup function so that
-	  // the forced variables will be unmarked in the event of an
-	  // interrupt. 
-	  symbol_table::scope_id scope = symbol_table::top_scope ();
-	  frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+          // Do this with an unwind-protect cleanup function so that
+          // the forced variables will be unmarked in the event of an
+          // interrupt. 
+          symbol_table::scope_id scope = symbol_table::top_scope ();
+          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-	  if (! help_txt.empty ())
-	    help_buf.push (help_txt);
+          if (! help_txt.empty ())
+            help_buf.push (help_txt);
 
-	  if (reading_script_file)
-	    prep_lexer_for_script_file ();
-	  else
-	    prep_lexer_for_function_file ();
+          if (reading_script_file)
+            prep_lexer_for_script_file ();
+          else
+            prep_lexer_for_function_file ();
 
-	  lexer_flags.parsing_class_method = ! dispatch_type.empty ();
+          lexer_flags.parsing_class_method = ! dispatch_type.empty ();
 
-	  int status = yyparse ();
+          int status = yyparse ();
 
-	  fcn_ptr = primary_fcn_ptr;
+          fcn_ptr = primary_fcn_ptr;
 
-	  if (reading_fcn_file && endfunction_found && max_function_depth > 1)
-	    warning_with_id ("Octave:nested-functions-coerced",
-			     "nested functions are coerced into subfunctions "
-			     "in file %s", ff.c_str ());
+          if (reading_fcn_file && endfunction_found && max_function_depth > 1)
+            warning_with_id ("Octave:nested-functions-coerced",
+                             "nested functions are coerced into subfunctions "
+                             "in file %s", ff.c_str ());
 
-	  if (status != 0)
-	    error ("parse error while reading %s file %s",
-		   file_type.c_str(), ff.c_str ());
-	}
+          if (status != 0)
+            error ("parse error while reading %s file %s",
+                   file_type.c_str(), ff.c_str ());
+        }
     }
   else if (require_file)
     error ("no such file, `%s'", ff.c_str ());
@@ -3580,7 +3580,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
 std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-		    std::string& file)
+                    std::string& file)
 {
   std::string retval;
 
@@ -3593,25 +3593,25 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
       FILE *fptr = fopen (file.c_str (), "r");
 
       if (fptr)
-	{
-	  unwind_protect frame;
-	  frame.add_fcn (safe_fclose, fptr);
+        {
+          unwind_protect frame;
+          frame.add_fcn (safe_fclose, fptr);
 
-	  bool eof;
-	  retval = gobble_leading_white_space (fptr, eof);
+          bool eof;
+          retval = gobble_leading_white_space (fptr, eof);
 
-	  if (retval.empty ())
-	    {
-	      octave_function *fcn = parse_fcn_file (file, "");
+          if (retval.empty ())
+            {
+              octave_function *fcn = parse_fcn_file (file, "");
 
-	      if (fcn)
-		{
-		  retval = fcn->doc_string ();
+              if (fcn)
+                {
+                  retval = fcn->doc_string ();
 
-		  delete fcn;
-		}
-	    }
-	}
+                  delete fcn;
+                }
+            }
+        }
     }
 
   return retval;
@@ -3667,8 +3667,8 @@ reverse_lookup_autoload (const std::string& nm)
 
 octave_function *
 load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
-		    const std::string& dispatch_type,
-		    const std::string& fcn_name, bool autoload)
+                    const std::string& dispatch_type,
+                    const std::string& fcn_name, bool autoload)
 {
   octave_function *retval = 0;
 
@@ -3709,7 +3709,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
   if (len > 4 && file.substr (len-4, len-1) == ".oct")
     {
       if (autoload && ! fcn_name.empty ())
-	nm = fcn_name;
+        nm = fcn_name;
 
       retval = octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup);
     }
@@ -3733,11 +3733,11 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       retval->stash_dir_name (dir_name);
 
       if (retval->is_user_function ())
-	{
-	  symbol_table::scope_id id = retval->scope ();
+        {
+          symbol_table::scope_id id = retval->scope ();
 
-	  symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
-	}
+          symbol_table::stash_dir_name_for_subfunctions (id, dir_name);
+        }
     }
 
   return retval;
@@ -3788,12 +3788,12 @@ With no arguments, return a structure containing the current autoload map.\n\
       octave_idx_type i = 0;
       typedef std::map<std::string, std::string>::const_iterator am_iter;
       for (am_iter p = autoload_map.begin (); p != autoload_map.end (); p++)
-	{
-	  func_names(i) = p->first;
-	  file_names(i) = p->second;
+        {
+          func_names(i) = p->first;
+          file_names(i) = p->second;
 
-	  i++;
-	}
+          i++;
+        }
 
       Octave_map m;
 
@@ -3808,39 +3808,39 @@ With no arguments, return a structure containing the current autoload map.\n\
 
       if (! error_state)
         {
-	  std::string nm = argv[2];
+          std::string nm = argv[2];
 
-	  if (! octave_env::absolute_pathname (nm))
-	    {
-	      octave_user_code *fcn = octave_call_stack::caller_user_code ();
+          if (! octave_env::absolute_pathname (nm))
+            {
+              octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
-	      bool found = false;
+              bool found = false;
 
-	      if (fcn)
-		{
-		  std::string fname = fcn->fcn_file_name ();
+              if (fcn)
+                {
+                  std::string fname = fcn->fcn_file_name ();
 
-		  if (! fname.empty ())
-		    {
-		      fname = octave_env::make_absolute (fname);
-		      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
+                  if (! fname.empty ())
+                    {
+                      fname = octave_env::make_absolute (fname);
+                      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str ()) + 1);
 
-		      file_stat fs (fname + nm);
+                      file_stat fs (fname + nm);
 
-		      if (fs.exists ())
-			{
-			  nm = fname + nm;
-			  found = true;
-			}
-		    }
-		}
-	      if (! found)
-		warning_with_id ("Octave:autoload-relative-file-name",
-				 "autoload: `%s' is not an absolute file name",
-				 nm.c_str ());
-	    }
-	  autoload_map[argv[1]] = nm;
-	}
+                      if (fs.exists ())
+                        {
+                          nm = fname + nm;
+                          found = true;
+                        }
+                    }
+                }
+              if (! found)
+                warning_with_id ("Octave:autoload-relative-file-name",
+                                 "autoload: `%s' is not an absolute file name",
+                                 nm.c_str ());
+            }
+          autoload_map[argv[1]] = nm;
+        }
     }
   else
     print_usage ();
@@ -3850,7 +3850,7 @@ With no arguments, return a structure containing the current autoload map.\n\
 
 void
 source_file (const std::string& file_name, const std::string& context,
-	     bool verbose, bool require_file, const std::string& warn_for)
+             bool verbose, bool require_file, const std::string& warn_for)
 {
   std::string file_full_name = file_ops::tilde_expand (file_name);
 
@@ -3865,45 +3865,45 @@ source_file (const std::string& file_name, const std::string& context,
   if (! context.empty ())
     {
       if (context == "caller")
-	octave_call_stack::goto_caller_frame ();
+        octave_call_stack::goto_caller_frame ();
       else if (context == "base")
-	octave_call_stack::goto_base_frame ();
+        octave_call_stack::goto_base_frame ();
       else
-	error ("source: context must be \"caller\" or \"base\"");
+        error ("source: context must be \"caller\" or \"base\"");
 
       if (! error_state)
-	frame.add_fcn (octave_call_stack::pop);
+        frame.add_fcn (octave_call_stack::pop);
     }      
 
   if (! error_state)
     {
       octave_function *fcn = parse_fcn_file (file_full_name, "", true,
-					     require_file, warn_for);
+                                             require_file, warn_for);
 
       if (! error_state)
-	{
-	  if (fcn && fcn->is_user_script ())
-	    {
-	      octave_value_list args;
+        {
+          if (fcn && fcn->is_user_script ())
+            {
+              octave_value_list args;
 
-	      if (verbose)
-		{
-		  std::cout << "executing commands from " << file_full_name << " ... ";
-		  reading_startup_message_printed = true;
-		  std::cout.flush ();
-		}
+              if (verbose)
+                {
+                  std::cout << "executing commands from " << file_full_name << " ... ";
+                  reading_startup_message_printed = true;
+                  std::cout.flush ();
+                }
 
-	      fcn->do_multi_index_op (0, args);
+              fcn->do_multi_index_op (0, args);
 
-	      if (verbose)
-		std::cout << "done." << std::endl;
+              if (verbose)
+                std::cout << "done." << std::endl;
 
-	      delete fcn;
-	    }
-	}
+              delete fcn;
+            }
+        }
       else
-	error ("source: error sourcing file `%s'",
-	       file_full_name.c_str ());
+        error ("source: error sourcing file `%s'",
+               file_full_name.c_str ());
     }
 }
 
@@ -3936,10 +3936,10 @@ of the file name and the extension.\n\
       arg = args(0).string_value ();
 
       if (error_state)
-	{
-	  error ("mfilename: expecting argument to be a character string");
-	  return retval;
-	}
+        {
+          error ("mfilename: expecting argument to be a character string");
+          return retval;
+        }
     }
 
   std::string fname;
@@ -3967,7 +3967,7 @@ of the file name and the extension.\n\
       fname = (epos != std::string::npos) ? fname.substr (0, epos) : fname;
 
       if (arg == "fullpath")
-	retval = fname;
+        retval = fname;
       else
         retval = (dpos != std::string::npos) ? fname.substr (dpos+1) : fname;
     }
@@ -3993,19 +3993,19 @@ be named @file{@var{file}.m}.\n\
       std::string file_name = args(0).string_value ();
 
       if (! error_state)
-	{
-	  std::string context;
+        {
+          std::string context;
 
-	  if (nargin == 2)
-	    context = args(1).string_value ();
+          if (nargin == 2)
+            context = args(1).string_value ();
 
-	  if (! error_state)
-	    source_file (file_name, context);
-	  else
-	    error ("source: expecting context to be character string");
-	}
+          if (! error_state)
+            source_file (file_name, context);
+          else
+            error ("source: expecting context to be character string");
+        }
       else
-	error ("source: expecting file name as argument");
+        error ("source: expecting file name as argument");
     }
   else
     print_usage ();
@@ -4068,7 +4068,7 @@ get_feval_args (const octave_value_list& args)
       string_vector tmp_arg_names (len);
 
       for (int i = 0; i < len; i++)
-	tmp_arg_names(i) = arg_names(i+1);
+        tmp_arg_names(i) = arg_names(i+1);
 
       retval.stash_name_tags (tmp_arg_names);
     }
@@ -4096,26 +4096,26 @@ feval (const octave_value_list& args, int nargout)
 
       if (f_arg.is_string ())
         {
-	  std::string name = f_arg.string_value ();
+          std::string name = f_arg.string_value ();
 
-	  if (! error_state)
-	    {
-	      octave_value_list tmp_args = get_feval_args (args);
+          if (! error_state)
+            {
+              octave_value_list tmp_args = get_feval_args (args);
 
-	      retval = feval (name, tmp_args, nargout);
-	    }
-	}
+              retval = feval (name, tmp_args, nargout);
+            }
+        }
       else
-	{
-	  octave_function *fcn = f_arg.function_value ();
+        {
+          octave_function *fcn = f_arg.function_value ();
 
-	  if (fcn)
-	    {
-	      octave_value_list tmp_args = get_feval_args (args);
+          if (fcn)
+            {
+              octave_value_list tmp_args = get_feval_args (args);
 
-	      retval = feval (fcn, tmp_args, nargout);
-	    }
-	}
+              retval = feval (fcn, tmp_args, nargout);
+            }
+        }
     }
 
   return retval;
@@ -4223,56 +4223,56 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       if (parse_status == 0)
         {
-	  if (command_list)
-	    {
-	      tree_statement *stmt = 0;
+          if (command_list)
+            {
+              tree_statement *stmt = 0;
 
-	      if (command_list->length () == 1
-		  && (stmt = command_list->front ())
-		  && stmt->is_expression ())
-		{
-		  tree_expression *expr = stmt->expression ();
+              if (command_list->length () == 1
+                  && (stmt = command_list->front ())
+                  && stmt->is_expression ())
+                {
+                  tree_expression *expr = stmt->expression ();
 
-		  if (silent)
-		    expr->set_print_flag (false);
+                  if (silent)
+                    expr->set_print_flag (false);
 
-		  bool do_bind_ans = false;
+                  bool do_bind_ans = false;
 
-		  if (expr->is_identifier ())
-		    {
-		      tree_identifier *id
-			= dynamic_cast<tree_identifier *> (expr);
+                  if (expr->is_identifier ())
+                    {
+                      tree_identifier *id
+                        = dynamic_cast<tree_identifier *> (expr);
 
-		      do_bind_ans = (! id->is_variable ());
-		    }
-		  else
-		    do_bind_ans = (! expr->is_assignment_expression ());
+                      do_bind_ans = (! id->is_variable ());
+                    }
+                  else
+                    do_bind_ans = (! expr->is_assignment_expression ());
 
-		  retval = expr->rvalue (nargout);
+                  retval = expr->rvalue (nargout);
 
-		  if (do_bind_ans && ! (error_state || retval.empty ()))
-		    bind_ans (retval(0), expr->print_result ());
+                  if (do_bind_ans && ! (error_state || retval.empty ()))
+                    bind_ans (retval(0), expr->print_result ());
 
-		  if (nargout == 0)
-		    retval = octave_value_list ();
-		}
-	      else if (nargout == 0)
-		command_list->accept (*current_evaluator);
-	      else
-		error ("eval: invalid use of statement list");
+                  if (nargout == 0)
+                    retval = octave_value_list ();
+                }
+              else if (nargout == 0)
+                command_list->accept (*current_evaluator);
+              else
+                error ("eval: invalid use of statement list");
 
-	      delete command_list;
+              delete command_list;
 
-	      command_list = 0;
+              command_list = 0;
 
-	      if (error_state
-		  || tree_return_command::returning
-		  || tree_break_command::breaking
-		  || tree_continue_command::continuing)
-		break;
-	    }
-	  else if (parser_end_of_input)
-	    break;
+              if (error_state
+                  || tree_return_command::returning
+                  || tree_break_command::breaking
+                  || tree_continue_command::continuing)
+                break;
+            }
+          else if (parser_end_of_input)
+            break;
         }
     }
   while (parse_status == 0);
@@ -4295,7 +4295,7 @@ eval_string (const std::string& s, bool silent, int& parse_status)
 
 static octave_value_list
 eval_string (const octave_value& arg, bool silent, int& parse_status,
-	     int nargout)
+             int nargout)
 {
   std::string s = arg.string_value ();
 
@@ -4343,32 +4343,32 @@ eval ('error (\"This is a bad example\");',\n\
       unwind_protect frame;
 
       if (nargin > 1)
-	{
-	  frame.protect_var (buffer_error_messages);
-	  buffer_error_messages++;
-	}
+        {
+          frame.protect_var (buffer_error_messages);
+          buffer_error_messages++;
+        }
 
       int parse_status = 0;
 
       octave_value_list tmp = eval_string (args(0), nargout > 0,
-					   parse_status, nargout);
+                                           parse_status, nargout);
 
       if (nargin > 1 && (parse_status != 0 || error_state))
-	{
-	  error_state = 0;
+        {
+          error_state = 0;
 
-	  // Set up for letting the user print any messages from
-	  // errors that occurred in the first part of this eval().
+          // Set up for letting the user print any messages from
+          // errors that occurred in the first part of this eval().
 
-	  buffer_error_messages--;
+          buffer_error_messages--;
 
-	  tmp = eval_string (args(1), nargout > 0, parse_status, nargout);
+          tmp = eval_string (args(1), nargout > 0, parse_status, nargout);
 
-	  if (nargout > 0)
-	    retval = tmp;
-	}
+          if (nargout > 0)
+            retval = tmp;
+        }
       else if (nargout > 0)
-	retval = tmp;
+        retval = tmp;
     }
   else
     print_usage ();
@@ -4476,32 +4476,32 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
       if (! error_state)
         {
-	  unwind_protect frame;
+          unwind_protect frame;
 
-	  if (context == "caller")
-	    octave_call_stack::goto_caller_frame ();
-	  else if (context == "base")
-	    octave_call_stack::goto_base_frame ();
-	  else
-	    error ("assignin: context must be \"caller\" or \"base\"");
+          if (context == "caller")
+            octave_call_stack::goto_caller_frame ();
+          else if (context == "base")
+            octave_call_stack::goto_base_frame ();
+          else
+            error ("assignin: context must be \"caller\" or \"base\"");
 
-	  if (! error_state)
-	    {
-	      frame.add_fcn (octave_call_stack::pop);
+          if (! error_state)
+            {
+              frame.add_fcn (octave_call_stack::pop);
 
-	      std::string nm = args(1).string_value ();
+              std::string nm = args(1).string_value ();
 
-	      if (! error_state)
-		{
-		  if (valid_identifier (nm))
-		    symbol_table::varref (nm) = args(2);
-		  else
-		    error ("assignin: invalid variable name");
-		}
-	      else
-		error ("assignin: expecting variable name as second argument");
-	    }
-	}
+              if (! error_state)
+                {
+                  if (valid_identifier (nm))
+                    symbol_table::varref (nm) = args(2);
+                  else
+                    error ("assignin: invalid variable name");
+                }
+              else
+                error ("assignin: expecting variable name as second argument");
+            }
+        }
       else
         error ("assignin: expecting string as first argument");
     }
@@ -4529,49 +4529,49 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 
       if (! error_state)
         {
-	  unwind_protect frame;
+          unwind_protect frame;
 
-	  if (context == "caller")
-	    octave_call_stack::goto_caller_frame ();
-	  else if (context == "base")
-	    octave_call_stack::goto_base_frame ();
-	  else
-	    error ("evalin: context must be \"caller\" or \"base\"");
+          if (context == "caller")
+            octave_call_stack::goto_caller_frame ();
+          else if (context == "base")
+            octave_call_stack::goto_base_frame ();
+          else
+            error ("evalin: context must be \"caller\" or \"base\"");
 
-	  if (! error_state)
-	    {
-	      frame.add_fcn (octave_call_stack::pop);
+          if (! error_state)
+            {
+              frame.add_fcn (octave_call_stack::pop);
 
-	      if (nargin > 2)
-	        {
-		  frame.protect_var (buffer_error_messages);
-		  buffer_error_messages++;
-		}
+              if (nargin > 2)
+                {
+                  frame.protect_var (buffer_error_messages);
+                  buffer_error_messages++;
+                }
 
-	      int parse_status = 0;
+              int parse_status = 0;
 
-	      octave_value_list tmp = eval_string (args(1), nargout > 0,
-						   parse_status, nargout);
+              octave_value_list tmp = eval_string (args(1), nargout > 0,
+                                                   parse_status, nargout);
 
-	      if (nargout > 0)
-		retval = tmp;
+              if (nargout > 0)
+                retval = tmp;
 
-	      if (nargin > 2 && (parse_status != 0 || error_state))
-		{
-		  error_state = 0;
+              if (nargin > 2 && (parse_status != 0 || error_state))
+                {
+                  error_state = 0;
 
-		  // Set up for letting the user print any messages from
-		  // errors that occurred in the first part of this eval().
+                  // Set up for letting the user print any messages from
+                  // errors that occurred in the first part of this eval().
 
-		  buffer_error_messages--;
+                  buffer_error_messages--;
 
-		  tmp = eval_string (args(2), nargout > 0,
-				     parse_status, nargout);
+                  tmp = eval_string (args(2), nargout > 0,
+                                     parse_status, nargout);
 
-		  retval = (nargout > 0) ? tmp : octave_value_list ();
-		}
-	    }
-	}
+                  retval = (nargout > 0) ? tmp : octave_value_list ();
+                }
+            }
+        }
       else
         error ("evalin: expecting string as first argument");
     }
@@ -4592,7 +4592,7 @@ Undocumented internal function.\n\
   bool debug_flag = octave_debug;
 
   retval = set_internal_variable (debug_flag, args, nargout,
-           			  "__parser_debug_flag__");
+                                  "__parser_debug_flag__");
 
   octave_debug = debug_flag;
 

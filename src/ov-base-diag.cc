@@ -55,8 +55,8 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
     case '{':
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -118,7 +118,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
     {
     case '(':
       {
-	if (type.length () == 1)
+        if (type.length () == 1)
           {
             octave_value_list jdx = idx.front ();
             // Check for a simple element assignment. That means, if D is a diagonal matrix,
@@ -142,29 +142,29 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
             if (! error_state && ! retval.is_defined ())
               retval = numeric_assign (type, idx, rhs);
           }
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("in indexed assignment of %s, last lhs index must be ()",
-		   nm.c_str ());
-	  }
+        else
+          {
+            std::string nm = type_name ();
+            error ("in indexed assignment of %s, last lhs index must be ()",
+                   nm.c_str ());
+          }
       }
       break;
 
     case '{':
     case '.':
       {
-	if (is_empty ())
-	  {
-	    octave_value tmp = octave_value::empty_conv (type, rhs);
+        if (is_empty ())
+          {
+            octave_value tmp = octave_value::empty_conv (type, rhs);
 
-	    retval = tmp.subsasgn (type, idx, rhs);
-	  }
-	else
-	  {
-	    std::string nm = type_name ();
-	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-	  }
+            retval = tmp.subsasgn (type, idx, rhs);
+          }
+        else
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
       }
       break;
 
@@ -214,12 +214,12 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex matrix", "real scalar");
+                               "complex matrix", "real scalar");
 
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "real scalar");
+                                 type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
     }
@@ -238,12 +238,12 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
 
   if (helper_iscomplex (el_type ()) && ! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       "complex matrix", "real scalar");
+                               "complex matrix", "real scalar");
 
   if (numel () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "real scalar");
+                                 type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
     }
@@ -264,7 +264,7 @@ octave_base_diag<DMT, MT>::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "complex scalar");
+                                 type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -285,7 +285,7 @@ octave_base_diag<DMT, MT>::float_complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 type_name (), "complex scalar");
+                                 type_name (), "complex scalar");
 
       retval = matrix (0, 0);
     }
@@ -420,10 +420,10 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
       is >> tmp;
 
       if (!is) 
-	{
-	  error ("load: failed to load diagonal matrix constant");
-	  success = false;
-	}
+        {
+          error ("load: failed to load diagonal matrix constant");
+          success = false;
+        }
       else
         {
           // This is a little tricky, as we have the Matrix type, but

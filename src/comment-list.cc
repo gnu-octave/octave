@@ -66,7 +66,7 @@ octave_comment_buffer::instance_ok (void)
 
 void
 octave_comment_buffer::append (const std::string& s,
-			       octave_comment_elt::comment_type t)
+                               octave_comment_elt::comment_type t)
 {
   if (instance_ok ())
     instance->do_append (s, t);
@@ -80,7 +80,7 @@ octave_comment_buffer::get_comment (void)
 
 void
 octave_comment_buffer::do_append (const std::string& s,
-				  octave_comment_elt::comment_type t)
+                                  octave_comment_elt::comment_type t)
 {
   comment_list->append(s, t);
 }

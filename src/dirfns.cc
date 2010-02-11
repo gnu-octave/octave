@@ -125,17 +125,17 @@ directory is not changed.\n\
       std::string dirname = argv[1];
 
       if (dirname.length () > 0
-	  && ! octave_change_to_directory (dirname))
-	{
-	  return retval;
-	}
+          && ! octave_change_to_directory (dirname))
+        {
+          return retval;
+        }
     }
   else
     {
       std::string home_dir = octave_env::get_home_directory ();
 
       if (home_dir.empty () || ! octave_change_to_directory (home_dir))
-	return retval;
+        return retval;
     }
 
   return retval;
@@ -176,22 +176,22 @@ system-dependent error message.\n\
       std::string dirname = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("readdir", args(0));
+        gripe_wrong_type_arg ("readdir", args(0));
       else
-	{
-	  dir_entry dir (dirname);
+        {
+          dir_entry dir (dirname);
 
-	  if (dir)
-	    {
-	      string_vector dirlist = dir.read ();
-	      retval(0) = Cell (dirlist.sort ());
-	      retval(1) = 0.0;
-	    }
-	  else
-	    {
-	      retval(2) = dir.error ();
-	    }
-	}
+          if (dir)
+            {
+              string_vector dirlist = dir.read ();
+              retval(0) = Cell (dirlist.sort ());
+              retval(1) = 0.0;
+            }
+          else
+            {
+              retval(2) = dir.error ();
+            }
+        }
     }
   else
     print_usage ();
@@ -231,22 +231,22 @@ message identifier.\n\
       std::string dir = args(1).string_value ();
 
       if (error_state)
-	{
-	  gripe_wrong_type_arg ("mkdir", args(0));
-	  return retval;
-	}
+        {
+          gripe_wrong_type_arg ("mkdir", args(0));
+          return retval;
+        }
       else
-	dirname = file_ops::concat (parent, dir);
+        dirname = file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
     {
       dirname = args(0).string_value ();
 
       if (error_state)
-	{
-	  gripe_wrong_type_arg ("mkdir", args(0));
-	  return retval;
-	}
+        {
+          gripe_wrong_type_arg ("mkdir", args(0));
+          return retval;
+        }
     }
 
   if (nargin == 1 || nargin == 2)
@@ -258,26 +258,26 @@ message identifier.\n\
       file_stat fs (dirname);
 
       if (fs && fs.is_dir ())
-	{
-	  // For compatibility with Matlab, we return true when the
-	  // directory already exists.
+        {
+          // For compatibility with Matlab, we return true when the
+          // directory already exists.
 
-	  retval(2) = "mkdir";
-	  retval(1) = "directory exists";
-	  retval(0) = true;
-	}
+          retval(2) = "mkdir";
+          retval(1) = "directory exists";
+          retval(0) = true;
+        }
       else
-	{
-	  int status = octave_mkdir (dirname, 0777, msg);
+        {
+          int status = octave_mkdir (dirname, 0777, msg);
 
-	  if (status < 0)
-	    {
-	      retval(2) = "mkdir";
-	      retval(1) = msg;
-	    }
-	  else
-	    retval(0) = true;
-	}
+          if (status < 0)
+            {
+              retval(2) = "mkdir";
+              retval(1) = msg;
+            }
+          else
+            retval(0) = true;
+        }
     }
   else
     print_usage ();
@@ -314,44 +314,44 @@ recursively remove all subdirectories as well.\n\
       std::string dirname = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("rmdir", args(0));
+        gripe_wrong_type_arg ("rmdir", args(0));
       else
-	{
-	  std::string fulldir = file_ops::tilde_expand (dirname);
-	  int status = -1;
-	  std::string msg;
+        {
+          std::string fulldir = file_ops::tilde_expand (dirname);
+          int status = -1;
+          std::string msg;
 
-	  if (nargin == 2)
-	    {
-	      if (args(1).string_value () == "s")
-		{
-		  bool doit = true;
+          if (nargin == 2)
+            {
+              if (args(1).string_value () == "s")
+                {
+                  bool doit = true;
 
-		  if (interactive && Vconfirm_recursive_rmdir)
-		    {
-		      std::string prompt
-			= "remove entire contents of " + fulldir + "? ";
+                  if (interactive && Vconfirm_recursive_rmdir)
+                    {
+                      std::string prompt
+                        = "remove entire contents of " + fulldir + "? ";
 
-		      doit = octave_yes_or_no (prompt);
-		    }
+                      doit = octave_yes_or_no (prompt);
+                    }
 
-		  if (doit)
-		    status = octave_recursive_rmdir (fulldir, msg);
-		}
-	      else
-		error ("rmdir: expecting second argument to be \"s\"");
-	    }
-	  else
-	    status = octave_rmdir (fulldir, msg);
+                  if (doit)
+                    status = octave_recursive_rmdir (fulldir, msg);
+                }
+              else
+                error ("rmdir: expecting second argument to be \"s\"");
+            }
+          else
+            status = octave_rmdir (fulldir, msg);
 
-	  if (status < 0)
-	    {
-	      retval(2) = "rmdir";
-	      retval(1) = msg;
-	    }
-	  else
-	    retval(0) = true;
-	}
+          if (status < 0)
+            {
+              retval(2) = "rmdir";
+              retval(1) = msg;
+            }
+          else
+            retval(0) = true;
+        }
     }
   else
     print_usage ();
@@ -380,25 +380,25 @@ system-dependent error message.\n\
       std::string from = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("link", args(0));
+        gripe_wrong_type_arg ("link", args(0));
       else
-	{
-	  std::string to = args(1).string_value ();
+        {
+          std::string to = args(1).string_value ();
 
-	  if (error_state)
-	    gripe_wrong_type_arg ("link", args(1));
-	  else
-	    {
-	      std::string msg;
+          if (error_state)
+            gripe_wrong_type_arg ("link", args(1));
+          else
+            {
+              std::string msg;
 
-	      int status = octave_link (from, to, msg);
+              int status = octave_link (from, to, msg);
 
-	      retval(0) = status;
+              retval(0) = status;
 
-	      if (status < 0)
-		retval(1) = msg;
-	    }
-	}
+              if (status < 0)
+                retval(1) = msg;
+            }
+        }
     }
   else
     print_usage ();
@@ -427,25 +427,25 @@ system-dependent error message.\n\
       std::string from = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("symlink", args(0));
+        gripe_wrong_type_arg ("symlink", args(0));
       else
-	{
-	  std::string to = args(1).string_value ();
+        {
+          std::string to = args(1).string_value ();
 
-	  if (error_state)
-	    gripe_wrong_type_arg ("symlink", args(1));
-	  else
-	    {
-	      std::string msg;
+          if (error_state)
+            gripe_wrong_type_arg ("symlink", args(1));
+          else
+            {
+              std::string msg;
 
-	      int status = octave_symlink (from, to, msg);
+              int status = octave_symlink (from, to, msg);
 
-	      retval(0) = status;
+              retval(0) = status;
 
-	      if (status < 0)
-		retval(1) = msg;
-	    }
-	}
+              if (status < 0)
+                retval(1) = msg;
+            }
+        }
     }
   else
     print_usage ();
@@ -476,21 +476,21 @@ system-dependent error message.\n\
       std::string symlink = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("readlink", args(0));
+        gripe_wrong_type_arg ("readlink", args(0));
       else
-	{
-	  std::string result;
-	  std::string msg;
+        {
+          std::string result;
+          std::string msg;
 
-	  int status = octave_readlink (symlink, result, msg);
+          int status = octave_readlink (symlink, result, msg);
 
-	  retval(0) = result;
+          retval(0) = result;
 
-	  retval(1) = status;
+          retval(1) = status;
 
-	  if (status < 0)
-	    retval(2) = msg;
-	}
+          if (status < 0)
+            retval(2) = msg;
+        }
     }
   else
     print_usage ();
@@ -519,25 +519,25 @@ system-dependent error message.\n\
       std::string from = args(0).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("rename", args(0));
+        gripe_wrong_type_arg ("rename", args(0));
       else
-	{
-	  std::string to = args(1).string_value ();
+        {
+          std::string to = args(1).string_value ();
 
-	  if (error_state)
-	    gripe_wrong_type_arg ("rename", args(1));
-	  else
-	    {
-	      std::string msg;
+          if (error_state)
+            gripe_wrong_type_arg ("rename", args(1));
+          else
+            {
+              std::string msg;
 
-	      int status = octave_rename (from, to, msg);
+              int status = octave_rename (from, to, msg);
 
-	      retval(0) = status;
+              retval(0) = status;
 
-	      if (status < 0)
-		retval(1) = msg;
-	    }
-	}
+              if (status < 0)
+                retval(1) = msg;
+            }
+        }
     }
   else
     print_usage ();
@@ -570,13 +570,13 @@ glob (\"/vm*\")\n\
       string_vector pat = args(0).all_strings ();
 
       if (error_state)
-	gripe_wrong_type_arg ("glob", args(0));
+        gripe_wrong_type_arg ("glob", args(0));
       else
-	{
-	  glob_match pattern (file_ops::tilde_expand (pat));
+        {
+          glob_match pattern (file_ops::tilde_expand (pat));
 
-	  retval = Cell (pattern.glob ());
-	}
+          retval = Cell (pattern.glob ());
+        }
     }
   else
     print_usage ();
@@ -607,13 +607,13 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
       string_vector str = args(1).all_strings ();
 
       if (error_state)
-	gripe_wrong_type_arg ("fnmatch", args(0));
+        gripe_wrong_type_arg ("fnmatch", args(0));
       else
-	{
-	  glob_match pattern (file_ops::tilde_expand (pat));
+        {
+          glob_match pattern (file_ops::tilde_expand (pat));
 
-	  retval = pattern.match (str);
-	}
+          retval = pattern.match (str);
+        }
     }
   else
     print_usage ();
@@ -643,14 +643,14 @@ backward slashes) under Windows.\n\
       std::string s = args(0).string_value ();
 
       if (! error_state)
-	{
-	  if (s == "all")
-	    retval = file_ops::dir_sep_chars ();
-	  else
-	    gripe_wrong_type_arg ("filesep", args(0));
-	}
+        {
+          if (s == "all")
+            retval = file_ops::dir_sep_chars ();
+          else
+            gripe_wrong_type_arg ("filesep", args(0));
+        }
       else
-	gripe_wrong_type_arg ("filesep", args(0));
+        gripe_wrong_type_arg ("filesep", args(0));
     }
   else
     print_usage ();
@@ -679,24 +679,24 @@ a path.\n\
       std::string sval = args(0).string_value ();
 
       if (! error_state)
-	{
-	  switch (sval.length ())
-	    {
-	    case 1:
-	      dir_path::path_sep_char (sval[0]);
-	      break;
+        {
+          switch (sval.length ())
+            {
+            case 1:
+              dir_path::path_sep_char (sval[0]);
+              break;
 
-	    case 0:
-	      dir_path::path_sep_char ('\0');
-	      break;
+            case 0:
+              dir_path::path_sep_char ('\0');
+              break;
 
-	    default:
-	      error ("pathsep: argument must be a single character");
-	      break;
-	    }
-	}
+            default:
+              error ("pathsep: argument must be a single character");
+              break;
+            }
+        }
       else
-	error ("pathsep: argument must be a single character");
+        error ("pathsep: argument must be a single character");
     }
   else if (nargin > 1)
     print_usage ();

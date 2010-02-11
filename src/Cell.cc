@@ -47,18 +47,18 @@ Cell::Cell (const string_vector& sv, bool trim)
       resize (dim_vector (n, 1));
 
       for (octave_idx_type i = 0; i < n; i++)
-	{
-	  std::string s = sv[i];
+        {
+          std::string s = sv[i];
 
-	  if (trim)
-	    {
-	      size_t pos = s.find_last_not_of (' ');
+          if (trim)
+            {
+              size_t pos = s.find_last_not_of (' ');
 
-	      s = (pos == std::string::npos) ? "" : s.substr (0, pos+1);
-	    }
+              s = (pos == std::string::npos) ? "" : s.substr (0, pos+1);
+            }
 
-	  elem(i,0) = s;
-	}
+          elem(i,0) = s;
+        }
     }
 }
 
@@ -89,18 +89,18 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
       octave_idx_type len = n > m ? m : n;
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string s = sv[i];
+        {
+          std::string s = sv[i];
 
-	  if (trim)
-	    {
-	      size_t pos = s.find_last_not_of (' ');
+          if (trim)
+            {
+              size_t pos = s.find_last_not_of (' ');
 
-	      s = (pos == std::string::npos) ? "" : s.substr (0, pos+1);
-	    }
+              s = (pos == std::string::npos) ? "" : s.substr (0, pos+1);
+            }
 
-	  elem(i) = s;
-	}
+          elem(i) = s;
+        }
     }
 }
 
@@ -114,10 +114,10 @@ Cell::is_cellstr (void) const
   for (octave_idx_type i = 0; i < n; i++)
     {
       if (! elem(i).is_string ())
-	{
-	  retval = false;
-	  break;
-	}
+        {
+          retval = false;
+          break;
+        }
     }
 
   return retval;
@@ -151,42 +151,42 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
     case 1:
       {
-	idx_vector i = idx_arg(0).index_vector ();
+        idx_vector i = idx_arg(0).index_vector ();
 
-	if (! error_state)
-	  retval = Array<octave_value>::index (i, resize_ok, resize_fill_value ());
+        if (! error_state)
+          retval = Array<octave_value>::index (i, resize_ok, resize_fill_value ());
       }
       break;
 
     case 2:
       {
-	idx_vector i = idx_arg(0).index_vector ();
+        idx_vector i = idx_arg(0).index_vector ();
 
-	if (! error_state)
-	  {
-	    idx_vector j = idx_arg(1).index_vector ();
+        if (! error_state)
+          {
+            idx_vector j = idx_arg(1).index_vector ();
 
-	    if (! error_state)
-	      retval = Array<octave_value>::index (i, j, resize_ok,
+            if (! error_state)
+              retval = Array<octave_value>::index (i, j, resize_ok,
                                                     resize_fill_value ());
-	  }
+          }
       }
       break;
 
     default:
       {
-	Array<idx_vector> iv (n);
+        Array<idx_vector> iv (n);
 
-	for (octave_idx_type i = 0; i < n; i++)
-	  {
-	    iv(i) = idx_arg(i).index_vector ();
+        for (octave_idx_type i = 0; i < n; i++)
+          {
+            iv(i) = idx_arg(i).index_vector ();
 
-	    if (error_state)
-	      break;
-	  }
+            if (error_state)
+              break;
+          }
 
-	if (!error_state)
-	  retval = Array<octave_value>::index (iv, resize_ok,
+        if (!error_state)
+          retval = Array<octave_value>::index (iv, resize_ok,
                                                 resize_fill_value ());
       }
       break;
@@ -197,7 +197,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
 Cell&
 Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
-	      const octave_value& fill_val)
+              const octave_value& fill_val)
 
 {
   octave_idx_type len = idx_arg.length ();
@@ -243,16 +243,16 @@ Cell::column (octave_idx_type i) const
   if (ndims () < 3)
     {
       if (i < 0 || i >= cols ())
-	error ("invalid column selection");
+        error ("invalid column selection");
       else
-	{
-	  octave_idx_type nr = rows ();
+        {
+          octave_idx_type nr = rows ();
 
-	  retval.resize (dim_vector (nr, 1));
+          retval.resize (dim_vector (nr, 1));
 
-	  for (octave_idx_type j = 0; j < nr; j++)
-	    retval.xelem (j) = elem (j, i);
-	}
+          for (octave_idx_type j = 0; j < nr; j++)
+            retval.xelem (j) = elem (j, i);
+        }
     }
   else
     error ("Cell::column: requires 2-d cell array");

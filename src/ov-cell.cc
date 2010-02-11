@@ -106,8 +106,8 @@ gripe_failed_assignment (void)
 
 octave_value_list
 octave_cell::subsref (const std::string& type,
-		      const std::list<octave_value_list>& idx,
-		      int nargout)
+                      const std::list<octave_value_list>& idx,
+                      int nargout)
 {
   octave_value_list retval;
 
@@ -119,24 +119,24 @@ octave_cell::subsref (const std::string& type,
 
     case '{':
       {
-	octave_value tmp = do_index_op (idx.front ());
+        octave_value tmp = do_index_op (idx.front ());
 
-	if (! error_state)
-	  {
-	    Cell tcell = tmp.cell_value ();
+        if (! error_state)
+          {
+            Cell tcell = tmp.cell_value ();
 
-	    if (tcell.length () == 1)
-	      retval(0) = tcell(0,0);
-	    else
+            if (tcell.length () == 1)
+              retval(0) = tcell(0,0);
+            else
               retval = octave_value (octave_value_list (tcell), true);
-	  }
+          }
       }
       break;
 
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -156,8 +156,8 @@ octave_cell::subsref (const std::string& type,
 
 octave_value
 octave_cell::subsref (const std::string& type,
-		      const std::list<octave_value_list>& idx,
-		      bool auto_add)
+                      const std::list<octave_value_list>& idx,
+                      bool auto_add)
 {
   octave_value retval;
 
@@ -169,24 +169,24 @@ octave_cell::subsref (const std::string& type,
 
     case '{':
       {
-	octave_value tmp = do_index_op (idx.front (), auto_add);
+        octave_value tmp = do_index_op (idx.front (), auto_add);
 
-	if (! error_state)
-	  {
-	    const Cell tcell = tmp.cell_value ();
+        if (! error_state)
+          {
+            const Cell tcell = tmp.cell_value ();
 
-	    if (tcell.length () == 1)
-	      retval = tcell(0,0);
-	    else
+            if (tcell.length () == 1)
+              retval = tcell(0,0);
+            else
               retval = octave_value (octave_value_list (tcell), true);
-	  }
+          }
       }
       break;
 
     case '.':
       {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
       }
       break;
 
@@ -206,8 +206,8 @@ octave_cell::subsref (const std::string& type,
 
 octave_value
 octave_cell::subsasgn (const std::string& type,
-		       const std::list<octave_value_list>& idx,
-		       const octave_value& rhs)
+                       const std::list<octave_value_list>& idx,
+                       const octave_value& rhs)
 {
   octave_value retval;
 
@@ -226,48 +226,48 @@ octave_cell::subsasgn (const std::string& type,
   if (n > 1)
     {
       switch (type[0])
-	{
-	case '(':
-	  {
-	    if (is_empty () && type[1] == '.')
-	      {
-		// Allow conversion of empty cell array to some other
-		// type in cases like
-		//
-		//  x = []; x(i).f = rhs
+        {
+        case '(':
+          {
+            if (is_empty () && type[1] == '.')
+              {
+                // Allow conversion of empty cell array to some other
+                // type in cases like
+                //
+                //  x = []; x(i).f = rhs
 
-		octave_value tmp = octave_value::empty_conv (type, rhs);
+                octave_value tmp = octave_value::empty_conv (type, rhs);
 
-		return tmp.subsasgn (type, idx, rhs);
-	      }
-	    else
-	      {
-		octave_value tmp = do_index_op (idx.front (), true);
+                return tmp.subsasgn (type, idx, rhs);
+              }
+            else
+              {
+                octave_value tmp = do_index_op (idx.front (), true);
 
-		if (! tmp.is_defined ())
-		  tmp = octave_value::empty_conv (type.substr (1), rhs);
+                if (! tmp.is_defined ())
+                  tmp = octave_value::empty_conv (type.substr (1), rhs);
 
-		if (! error_state)
-		  {
-		    std::list<octave_value_list> next_idx (idx);
+                if (! error_state)
+                  {
+                    std::list<octave_value_list> next_idx (idx);
 
-		    next_idx.erase (next_idx.begin ());
+                    next_idx.erase (next_idx.begin ());
 
-		    tmp.make_unique ();
+                    tmp.make_unique ();
 
-		    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
-		  }
-	      }
-	  }
-	  break;
+                    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+                  }
+              }
+          }
+          break;
 
-	case '{':
-	  {
+        case '{':
+          {
             matrix.make_unique ();
-	    Cell tmpc = matrix.index (idx.front (), true);
+            Cell tmpc = matrix.index (idx.front (), true);
 
-	    if (! error_state)
-	      {
+            if (! error_state)
+              {
                 std::list<octave_value_list> next_idx (idx);
 
                 next_idx.erase (next_idx.begin ());
@@ -275,11 +275,11 @@ octave_cell::subsasgn (const std::string& type,
                 std::string next_type = type.substr (1);
 
                 if (tmpc.numel () == 1)
-		  {
-		    octave_value tmp = tmpc(0);
+                  {
+                    octave_value tmp = tmpc(0);
                     tmpc = Cell ();
 
-		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
+                    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
                       {
                         tmp = octave_value::empty_conv (type.substr (1), rhs);
                         tmp.make_unique (); // probably a no-op.
@@ -288,60 +288,60 @@ octave_cell::subsasgn (const std::string& type,
                       // optimization: ignore the copy still stored inside our array. 
                       tmp.make_unique (1);
 
-		    if (! error_state)
-		      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
-		  }
+                    if (! error_state)
+                      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                  }
                 else
                   gripe_indexed_cs_list ();
-	      }
-	  }
-	  break;
+              }
+          }
+          break;
 
-	case '.':
-	  {
-	    std::string nm = type_name ();
-	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-	  }
-	  break;
+        case '.':
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
+          break;
 
-	default:
-	  panic_impossible ();
-	}
+        default:
+          panic_impossible ();
+        }
     }
 
   if (! error_state)
     {
       switch (type[0])
-	{
-	case '(':
-	  {
-	    octave_value_list i = idx.front ();
+        {
+        case '(':
+          {
+            octave_value_list i = idx.front ();
 
-	    if (t_rhs.is_cell ())
-	      octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
-	    else
-	      if (t_rhs.is_null_value ())
-		octave_base_matrix<Cell>::delete_elements (i);
-	      else
-		octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+            if (t_rhs.is_cell ())
+              octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
+            else
+              if (t_rhs.is_null_value ())
+                octave_base_matrix<Cell>::delete_elements (i);
+              else
+                octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	    if (! error_state)
-	      {
-		count++;
-		retval = octave_value (this);
-	      }
-	    else
-	      gripe_failed_assignment ();
-	  }
-	  break;
+            if (! error_state)
+              {
+                count++;
+                retval = octave_value (this);
+              }
+            else
+              gripe_failed_assignment ();
+          }
+          break;
 
-	case '{':
-	  {
-	    octave_value_list idxf = idx.front ();
+        case '{':
+          {
+            octave_value_list idxf = idx.front ();
 
-	    if (t_rhs.is_cs_list ())
-	      {
-		Cell tmp_cell = Cell (t_rhs.list_value ());
+            if (t_rhs.is_cs_list ())
+              {
+                Cell tmp_cell = Cell (t_rhs.list_value ());
 
                 // Inquire the proper shape of the RHS.
 
@@ -353,34 +353,34 @@ octave_cell::subsasgn (const std::string& type,
                   tmp_cell = tmp_cell.reshape (didx);
 
 
-		octave_base_matrix<Cell>::assign (idxf, tmp_cell);
-	      }
-	    else if (idxf.all_scalars () || do_index_op (idxf, true).numel () == 1)
+                octave_base_matrix<Cell>::assign (idxf, tmp_cell);
+              }
+            else if (idxf.all_scalars () || do_index_op (idxf, true).numel () == 1)
               // Regularize a null matrix if stored into a cell.
               octave_base_matrix<Cell>::assign (idxf, Cell (t_rhs.storable_value ()));
             else if (! error_state)
               gripe_nonbraced_cs_list_assignment ();
 
-	    if (! error_state)
-	      {
-		count++;
-		retval = octave_value (this);
-	      }
-	    else
-	      gripe_failed_assignment ();
-	  }
-	  break;
+            if (! error_state)
+              {
+                count++;
+                retval = octave_value (this);
+              }
+            else
+              gripe_failed_assignment ();
+          }
+          break;
 
-	case '.':
-	  {
-	    std::string nm = type_name ();
-	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-	  }
-	  break;
+        case '.':
+          {
+            std::string nm = type_name ();
+            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+          }
+          break;
 
-	default:
-	  panic_impossible ();
-	}
+        default:
+          panic_impossible ();
+        }
     }
 
   return retval;
@@ -458,7 +458,7 @@ octave_cell::sort (octave_idx_type dim, sortmode mode) const
 
 octave_value
 octave_cell::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
-		   sortmode mode) const
+                   sortmode mode) const
 {
   octave_value retval;
 
@@ -560,7 +560,7 @@ octave_cell::all_strings (bool pad) const
       string_vector s = matrix(i).all_strings ();
 
       if (error_state)
-	return retval;
+        return retval;
 
       octave_idx_type s_len = s.length ();
 
@@ -569,7 +569,7 @@ octave_cell::all_strings (bool pad) const
       octave_idx_type s_max_len = s.max_length ();
 
       if (s_max_len > max_len)
-	max_len = s_max_len;
+        max_len = s_max_len;
 
       strvec_queue.push (s);
     }
@@ -586,22 +586,22 @@ octave_cell::all_strings (bool pad) const
       octave_idx_type s_len = s.length ();
 
       if (s_len)
-	{
-	  for (octave_idx_type j = 0; j < s_len; j++)
-	    {
-	      std::string t = s[j];
-	      int t_len = t.length ();
+        {
+          for (octave_idx_type j = 0; j < s_len; j++)
+            {
+              std::string t = s[j];
+              int t_len = t.length ();
 
-	      if (pad && max_len > t_len)
-		t += std::string (max_len - t_len, ' ');
+              if (pad && max_len > t_len)
+                t += std::string (max_len - t_len, ' ');
 
-	      retval[k++] = t;
-	    }
-	}
+              retval[k++] = t;
+            }
+        }
       else if (pad)
-	retval[k++] = std::string (max_len, ' ');
+        retval[k++] = std::string (max_len, ' ');
       else
-	retval[k++] = std::string ();
+        retval[k++] = std::string ();
     }
 
   return retval;
@@ -648,42 +648,42 @@ octave_cell::print_raw (std::ostream& os, bool) const
       octave_idx_type nc = columns ();
 
       if (nr > 0 && nc > 0)
-	{
-	  indent (os);
-	  os << "{";
-	  newline (os);
-
-	  increment_indent_level ();
-
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    {
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  octave_quit ();
-
-		  std::ostringstream buf;
-		  buf << "[" << i+1 << "," << j+1 << "]";
-
-		  octave_value val = matrix(i,j);
-
-		  val.print_with_name (os, buf.str ());
-		}
-	    }
-
-	  decrement_indent_level ();
-
-	  indent (os);
-	  os << "}";
-	  newline (os);
-	}
-      else
-	{
+        {
           indent (os);
-	  os << "{}";
-	  if (Vprint_empty_dimensions)
-	    os << "(" << nr << "x" << nc << ")";
+          os << "{";
           newline (os);
-	}
+
+          increment_indent_level ();
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  octave_quit ();
+
+                  std::ostringstream buf;
+                  buf << "[" << i+1 << "," << j+1 << "]";
+
+                  octave_value val = matrix(i,j);
+
+                  val.print_with_name (os, buf.str ());
+                }
+            }
+
+          decrement_indent_level ();
+
+          indent (os);
+          os << "}";
+          newline (os);
+        }
+      else
+        {
+          indent (os);
+          os << "{}";
+          if (Vprint_empty_dimensions)
+            os << "(" << nr << "x" << nc << ")";
+          newline (os);
+        }
     }
   else
     {
@@ -705,46 +705,46 @@ octave_cell::save_ascii (std::ostream& os)
       os << "# ndims: " << d.length () << "\n";
       
       for (int i = 0; i < d.length (); i++)
-	os << " " << d (i);
+        os << " " << d (i);
       os << "\n";
 
       Cell tmp = cell_value ();
       
       for (octave_idx_type i = 0; i < d.numel (); i++)
-	{
-	  octave_value o_val = tmp.elem (i);
+        {
+          octave_value o_val = tmp.elem (i);
 
-	  // Recurse to print sub-value.
-	  bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
-	      
-	  if (! b)
-	    return os;
-	}
+          // Recurse to print sub-value.
+          bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
+              
+          if (! b)
+            return os;
+        }
     }
   else
     {
       // Keep this case, rather than use generic code above for backward 
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
-	 << "# columns: " << columns () << "\n";
+         << "# columns: " << columns () << "\n";
 
       Cell tmp = cell_value ();
       
       for (octave_idx_type j = 0; j < tmp.cols (); j++)
-	{
-	  for (octave_idx_type i = 0; i < tmp.rows (); i++)
-	    {
-	      octave_value o_val = tmp.elem (i, j);
+        {
+          for (octave_idx_type i = 0; i < tmp.rows (); i++)
+            {
+              octave_value o_val = tmp.elem (i, j);
 
-	      // Recurse to print sub-value.
-	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
-	      
-	      if (! b)
-		return os;
-	    }
-	  
-	  os << "\n";
-	}
+              // Recurse to print sub-value.
+              bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
+              
+              if (! b)
+                return os;
+            }
+          
+          os << "\n";
+        }
     }
 
   return true;
@@ -768,114 +768,114 @@ octave_cell::load_ascii (std::istream& is)
   if (extract_keyword (is, keywords, kw, val, true))
     {
       if (kw == "ndims")
-	{
-	  int mdims = static_cast<int> (val);
+        {
+          int mdims = static_cast<int> (val);
 
-	  if (mdims >= 0)
-	    {
-	      dim_vector dv;
-	      dv.resize (mdims);
+          if (mdims >= 0)
+            {
+              dim_vector dv;
+              dv.resize (mdims);
 
-	      for (int i = 0; i < mdims; i++)
-		is >> dv(i);
+              for (int i = 0; i < mdims; i++)
+                is >> dv(i);
 
-	      Cell tmp(dv);
+              Cell tmp(dv);
 
-	      for (octave_idx_type i = 0; i < dv.numel (); i++)
-		{
-		  octave_value t2;
-		  bool dummy;
+              for (octave_idx_type i = 0; i < dv.numel (); i++)
+                {
+                  octave_value t2;
+                  bool dummy;
 
-		  // recurse to read cell elements
-		  std::string nm = read_ascii_data (is, std::string (), 
-						    dummy, t2, i);
+                  // recurse to read cell elements
+                  std::string nm = read_ascii_data (is, std::string (), 
+                                                    dummy, t2, i);
 
-		  if (nm == CELL_ELT_TAG)
-		    {
-		      if (is)
-			tmp.elem (i) = t2;
-		    }
-		  else
-		    {
-		      error ("load: cell array element had unexpected name");
-		      success = false;
-		      break;
-		    }
-		}
+                  if (nm == CELL_ELT_TAG)
+                    {
+                      if (is)
+                        tmp.elem (i) = t2;
+                    }
+                  else
+                    {
+                      error ("load: cell array element had unexpected name");
+                      success = false;
+                      break;
+                    }
+                }
 
-	      if (is)
-		matrix = tmp;
-	      else
-		{
-		  error ("load: failed to load matrix constant");
-		  success = false;
-		}
-	    }
-	  else
-	    {
-	      error ("load: failed to extract number of rows and columns");
-	      success = false;
-	    }
-	}
+              if (is)
+                matrix = tmp;
+              else
+                {
+                  error ("load: failed to load matrix constant");
+                  success = false;
+                }
+            }
+          else
+            {
+              error ("load: failed to extract number of rows and columns");
+              success = false;
+            }
+        }
       else if (kw == "rows")
-	{
-	  octave_idx_type nr = val;
-	  octave_idx_type nc = 0;
+        {
+          octave_idx_type nr = val;
+          octave_idx_type nc = 0;
 
-	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
-	    {
-	      if (nr > 0 && nc > 0)
-		{
-		  Cell tmp (nr, nc);
+          if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+            {
+              if (nr > 0 && nc > 0)
+                {
+                  Cell tmp (nr, nc);
 
-		  for (octave_idx_type j = 0; j < nc; j++)
-		    {
-		      for (octave_idx_type i = 0; i < nr; i++)
-			{
-			  octave_value t2;
-			  bool dummy;
+                  for (octave_idx_type j = 0; j < nc; j++)
+                    {
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        {
+                          octave_value t2;
+                          bool dummy;
 
-			  // recurse to read cell elements
-			  std::string nm = read_ascii_data (is, std::string (),
-							    dummy, t2, i);
+                          // recurse to read cell elements
+                          std::string nm = read_ascii_data (is, std::string (),
+                                                            dummy, t2, i);
 
-			  if (nm == CELL_ELT_TAG)
-			    {
-			      if (is)
-				tmp.elem (i, j) = t2;
-			    }
-			  else
-			    {
-			      error ("load: cell array element had unexpected name");
-			      success = false;
-			      goto cell_read_error;
-			    }
-			}
-		    }
-	      
-		cell_read_error:
+                          if (nm == CELL_ELT_TAG)
+                            {
+                              if (is)
+                                tmp.elem (i, j) = t2;
+                            }
+                          else
+                            {
+                              error ("load: cell array element had unexpected name");
+                              success = false;
+                              goto cell_read_error;
+                            }
+                        }
+                    }
+              
+                cell_read_error:
 
-		  if (is)
-		    matrix = tmp;
-		  else
-		    {
-		      error ("load: failed to load cell element");
-		      success = false;
-		    }
-		}
-	      else if (nr == 0 || nc == 0)
-		matrix = Cell (nr, nc);
-	      else
-		panic_impossible ();
-	    }
-	  else
-	    {
-	      error ("load: failed to extract number of rows and columns for cell array");
-	      success = false;
-	    }
-	}
+                  if (is)
+                    matrix = tmp;
+                  else
+                    {
+                      error ("load: failed to load cell element");
+                      success = false;
+                    }
+                }
+              else if (nr == 0 || nc == 0)
+                matrix = Cell (nr, nc);
+              else
+                panic_impossible ();
+            }
+          else
+            {
+              error ("load: failed to extract number of rows and columns for cell array");
+              success = false;
+            }
+        }
       else
-	panic_impossible ();
+        panic_impossible ();
     }
   else
     {
@@ -910,10 +910,10 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
 
       // Recurse to print sub-value.
       bool b = save_binary_data (os, o_val, CELL_ELT_TAG, "", 0, 
-				 save_as_floats);
-	      
+                                 save_as_floats);
+              
       if (! b)
-	return false;
+        return false;
     }
   
   return true;
@@ -942,9 +942,9 @@ octave_cell::load_binary (std::istream& is, bool swap,
   for (int i = 0; i < mdims; i++)
     {
       if (! is.read (reinterpret_cast<char *> (&di), 4))
-	return false;
+        return false;
       if (swap)
-	swap_bytes<4> (&di);
+        swap_bytes<4> (&di);
       dv(i) = di;
     }
   
@@ -971,19 +971,19 @@ octave_cell::load_binary (std::istream& is, bool swap,
 
       // recurse to read cell elements
       std::string nm = read_binary_data (is, swap, fmt, std::string (), 
-					 dummy, t2, doc);
+                                         dummy, t2, doc);
 
       if (nm == CELL_ELT_TAG)
-	{
-	  if (is)
-	    tmp.elem (i) = t2;
-	}
+        {
+          if (is)
+            tmp.elem (i) = t2;
+        }
       else
-	{
-	  error ("load: cell array element had unexpected name");
-	  success = false;
-	  break;
-	}
+        {
+          error ("load: cell array element had unexpected name");
+          success = false;
+          break;
+        }
     }
 
   if (is)
@@ -1045,10 +1045,10 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 
 #if HAVE_HDF5_18
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid, 
-			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_IDX, space_hid, 
-			H5P_DEFAULT);
+                        H5P_DEFAULT);
 #endif
   if (size_hid < 0) 
     {
@@ -1058,7 +1058,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     }
 
   if (H5Dwrite (size_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-		H5P_DEFAULT, hdims) < 0)
+                H5P_DEFAULT, hdims) < 0)
     {
       H5Dclose (size_hid);
       H5Sclose (space_hid);
@@ -1083,11 +1083,11 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       std::string s = buf.str ();
 
       if (! add_hdf5_data (data_hid, tmp.elem (i), s.c_str (), "", false,
-			   save_as_floats))
-	{
-	  H5Gclose (data_hid);
-	  return false;
-	}
+                           save_as_floats))
+        {
+          H5Gclose (data_hid);
+          return false;
+        }
     }
 
   H5Gclose (data_hid);
@@ -1144,7 +1144,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
   OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, hdims[0]);
   
   if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, tmp) < 0)
+               H5P_DEFAULT, tmp) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_id);
@@ -1178,13 +1178,13 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
     {
 
       if (current_item >= static_cast<int> (num_obj))
-	retval2 = -1;
+        retval2 = -1;
       else
-	retval2 = H5Giterate (loc_id, name, &current_item,
-			      hdf5_read_next_data, &dsub);
+        retval2 = H5Giterate (loc_id, name, &current_item,
+                              hdf5_read_next_data, &dsub);
       
       if (retval2 <= 0)
-	break;
+        break;
 
       octave_value ov = dsub.tc;
       m.elem (i) = ov;
@@ -1249,18 +1249,18 @@ rows and columns, respectively.\n\
 
     default:
       {
-	dims.resize (nargin);
+        dims.resize (nargin);
 
-	for (int i = 0; i < nargin; i++)
-	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
+        for (int i = 0; i < nargin; i++)
+          {
+            dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
 
-	    if (error_state)
-	      {
-		error ("cell: expecting scalar arguments");
-		break;
-	      }
-	  }
+            if (error_state)
+              {
+                error ("cell: expecting scalar arguments");
+                break;
+              }
+          }
       }
       break;
     }
@@ -1314,18 +1314,18 @@ array @var{string}.\n\
       octave_value_list tmp = Fiscellstr (args, 1);
 
       if (tmp(0).is_true ())
-	retval = args(0);
+        retval = args(0);
       else
-	{
-	  string_vector s = args(0).all_strings ();
+        {
+          string_vector s = args(0).all_strings ();
 
-	  if (! error_state)
-	    retval = (s.is_empty ()
+          if (! error_state)
+            retval = (s.is_empty ()
                       ? Cell (octave_value (std::string ()))
                       : Cell (s, true));
-	  else
-	    error ("cellstr: expecting argument to be a 2-d character array");
-	}
+          else
+            error ("cellstr: expecting argument to be a 2-d character array");
+        }
     }
   else
     print_usage ();
@@ -1375,49 +1375,49 @@ cell array will have a dimension vector corresponding to\n\
       Octave_map m = args(0).map_value ();
 
       if (! error_state)
-	{
-	  dim_vector m_dv = m.dims ();
+        {
+          dim_vector m_dv = m.dims ();
 
-	  string_vector keys = m.keys ();
+          string_vector keys = m.keys ();
 
-	  octave_idx_type num_fields = keys.length ();
+          octave_idx_type num_fields = keys.length ();
 
-	  // The resulting dim_vector should have dimensions:
-	  // [numel(fields) size(struct)]
-	  // except if the struct is a column vector.
+          // The resulting dim_vector should have dimensions:
+          // [numel(fields) size(struct)]
+          // except if the struct is a column vector.
 
-	  dim_vector result_dv;
-	  if (m_dv (m_dv.length () - 1) == 1)
-	      result_dv.resize (m_dv.length ());
-	  else
-	      result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
+          dim_vector result_dv;
+          if (m_dv (m_dv.length () - 1) == 1)
+              result_dv.resize (m_dv.length ());
+          else
+              result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
 
-	  result_dv(0) = num_fields;
+          result_dv(0) = num_fields;
 
-	  for (int i = 1; i < result_dv.length (); i++)
-	    result_dv(i) = m_dv(i-1);
+          for (int i = 1; i < result_dv.length (); i++)
+            result_dv(i) = m_dv(i-1);
 
-	  Cell c (result_dv);
+          Cell c (result_dv);
 
-	  octave_idx_type n_elts = m.numel ();
+          octave_idx_type n_elts = m.numel ();
 
-	  for (octave_idx_type j = 0; j < num_fields; j++)
-	    {
-	      octave_idx_type k = j;
+          for (octave_idx_type j = 0; j < num_fields; j++)
+            {
+              octave_idx_type k = j;
 
-	      const Cell vals = m.contents (keys(j));
+              const Cell vals = m.contents (keys(j));
 
-	      for (octave_idx_type i = 0; i < n_elts; i++)
-		{
-		  c(k) = vals(i);
-		  k += num_fields;
-		}
-	    }
+              for (octave_idx_type i = 0; i < n_elts; i++)
+                {
+                  c(k) = vals(i);
+                  k += num_fields;
+                }
+            }
 
-	  retval = c;
-	}
+          retval = c;
+        }
       else
-	error ("struct2cell: expecting argument to be a cell array");
+        error ("struct2cell: expecting argument to be a cell array");
     }
   else
     print_usage ();

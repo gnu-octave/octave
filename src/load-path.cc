@@ -57,46 +57,46 @@ load_path::dir_info::update (void)
   if (fs)
     {
       if (is_relative)
-	{
-	  try
-	    {
-	      std::string abs_name = octave_env::make_absolute (dir_name);
+        {
+          try
+            {
+              std::string abs_name = octave_env::make_absolute (dir_name);
 
-	      abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
+              abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
-	      if (p != abs_dir_cache.end ())
-		{
-		  // The directory is in the cache of all directories
-		  // we have visited (indexed by its absolute name).
-		  // If it is out of date, initialize it.  Otherwise,
-		  // copy the info from the cache.  By doing that, we
-		  // avoid unnecessary calls to stat that can slow
-		  // things down tremendously for large directories.
+              if (p != abs_dir_cache.end ())
+                {
+                  // The directory is in the cache of all directories
+                  // we have visited (indexed by its absolute name).
+                  // If it is out of date, initialize it.  Otherwise,
+                  // copy the info from the cache.  By doing that, we
+                  // avoid unnecessary calls to stat that can slow
+                  // things down tremendously for large directories.
 
-		  const dir_info& di = p->second;
+                  const dir_info& di = p->second;
 
-		  if (fs.mtime () + fs.time_resolution () > di.dir_time_last_checked)
-		    initialize ();
-		  else
-		    *this = di;
-		}
-	      else
-		{
-		  // We haven't seen this directory before.
+                  if (fs.mtime () + fs.time_resolution () > di.dir_time_last_checked)
+                    initialize ();
+                  else
+                    *this = di;
+                }
+              else
+                {
+                  // We haven't seen this directory before.
 
-		  initialize ();
-		}
-	    }
-	  catch (octave_execution_exception)
-	    {
-	      // Skip updating if we don't know where we are, but
-	      // don't treat it as an error.
+                  initialize ();
+                }
+            }
+          catch (octave_execution_exception)
+            {
+              // Skip updating if we don't know where we are, but
+              // don't treat it as an error.
 
-	      error_state = 0;
-	    }
-	}
+              error_state = 0;
+            }
+        }
       else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
-	initialize ();
+        initialize ();
     }
   else
     {
@@ -122,19 +122,19 @@ load_path::dir_info::initialize (void)
       get_file_list (dir_name);
 
       try
-	{
-	  std::string abs_name = octave_env::make_absolute (dir_name);
+        {
+          std::string abs_name = octave_env::make_absolute (dir_name);
 
-	  // FIXME -- nothing is ever removed from this cache of
-	  // directory information, so there could be some resource
-	  // problems.  Perhaps it should be pruned from time to time.
+          // FIXME -- nothing is ever removed from this cache of
+          // directory information, so there could be some resource
+          // problems.  Perhaps it should be pruned from time to time.
 
-	  abs_dir_cache[abs_name] = *this;
-	}
+          abs_dir_cache[abs_name] = *this;
+        }
       catch (octave_execution_exception)
-	{
-	  // Skip updating if we don't know where we are.
-	}
+        {
+          // Skip updating if we don't know where we are.
+        }
     }
   else
     {
@@ -161,43 +161,43 @@ load_path::dir_info::get_file_list (const std::string& d)
       octave_idx_type fcn_files_count = 0;
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string fname = flist[i];
+        {
+          std::string fname = flist[i];
 
-	  std::string full_name = file_ops::concat (d, fname);
+          std::string full_name = file_ops::concat (d, fname);
 
-	  file_stat fs (full_name);
+          file_stat fs (full_name);
 
-	  if (fs)
-	    {
-	      if (fs.is_dir ())
-		{
-		  if (fname == "private")
-		    get_private_file_map (full_name);
-		  else if (fname[0] == '@')
-		    get_method_file_map (full_name, fname.substr (1));
-		}
-	      else
-		{
-		  all_files[all_files_count++] = fname;
+          if (fs)
+            {
+              if (fs.is_dir ())
+                {
+                  if (fname == "private")
+                    get_private_file_map (full_name);
+                  else if (fname[0] == '@')
+                    get_method_file_map (full_name, fname.substr (1));
+                }
+              else
+                {
+                  all_files[all_files_count++] = fname;
 
-		  size_t pos = fname.rfind ('.');
+                  size_t pos = fname.rfind ('.');
 
-		  if (pos != std::string::npos)
-		    {
-		      std::string ext = fname.substr (pos);
+                  if (pos != std::string::npos)
+                    {
+                      std::string ext = fname.substr (pos);
 
-		      if (ext == ".m" || ext == ".oct" || ext == ".mex")
-			{
-			  std::string base = fname.substr (0, pos);
+                      if (ext == ".m" || ext == ".oct" || ext == ".mex")
+                        {
+                          std::string base = fname.substr (0, pos);
 
-			  if (valid_identifier (base))
-			    fcn_files[fcn_files_count++] = fname;
-			}
-		    }
-		}
-	    }
-	}
+                          if (valid_identifier (base))
+                            fcn_files[fcn_files_count++] = fname;
+                        }
+                    }
+                }
+            }
+        }
 
       all_files.resize (all_files_count);
       fcn_files.resize (fcn_files_count);
@@ -223,34 +223,34 @@ get_fcn_files (const std::string& d)
       octave_idx_type len = flist.length ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string fname = flist[i];
+        {
+          std::string fname = flist[i];
 
-	  std::string ext;
-	  std::string base = fname;
+          std::string ext;
+          std::string base = fname;
 
-	  size_t pos = fname.rfind ('.');
+          size_t pos = fname.rfind ('.');
 
-	  if (pos != std::string::npos)
-	    {
-	      base = fname.substr (0, pos);
-	      ext = fname.substr (pos);
+          if (pos != std::string::npos)
+            {
+              base = fname.substr (0, pos);
+              ext = fname.substr (pos);
 
-	      if (valid_identifier (base))
-		{
-		  int t = 0;
+              if (valid_identifier (base))
+                {
+                  int t = 0;
 
-		  if (ext == ".m")
-		    t = load_path::M_FILE;
-		  else if (ext == ".oct")
-		    t = load_path::OCT_FILE;
-		  else if (ext == ".mex")
-		    t = load_path::MEX_FILE;
+                  if (ext == ".m")
+                    t = load_path::M_FILE;
+                  else if (ext == ".oct")
+                    t = load_path::OCT_FILE;
+                  else if (ext == ".mex")
+                    t = load_path::MEX_FILE;
 
-		  retval[base] |= t;
-		}
-	    }
-	}
+                  retval[base] |= t;
+                }
+            }
+        }
     }
   else
     {
@@ -269,7 +269,7 @@ load_path::dir_info::get_private_file_map (const std::string& d)
 
 void
 load_path::dir_info::get_method_file_map (const std::string& d,
-					  const std::string& class_name)
+                                          const std::string& class_name)
 {
   method_file_map[class_name].method_file_map = get_fcn_files (d);
 
@@ -312,7 +312,7 @@ load_path::find_dir_info (const std::string& dir_arg) const
   while (retval != dir_info_list.end ())
     {
       if (retval->dir_name == dir)
-	break;
+        break;
 
       retval++;
     }
@@ -330,7 +330,7 @@ load_path::find_dir_info (const std::string& dir_arg)
   while (retval != dir_info_list.end ())
     {
       if (retval->dir_name == dir)
-	break;
+        break;
 
       retval++;
     }
@@ -346,7 +346,7 @@ load_path::contains (const std::string& dir) const
 
 void
 load_path::move_fcn_map (const std::string& dir_name,
-			 const string_vector& fcn_files, bool at_end)
+                         const string_vector& fcn_files, bool at_end)
 {
   octave_idx_type len = fcn_files.length ();
 
@@ -360,36 +360,36 @@ load_path::move_fcn_map (const std::string& dir_name,
       size_t pos = fname.rfind ('.');
 
       if (pos != std::string::npos)
-	{
-	  base = fname.substr (0, pos);
-	  ext = fname.substr (pos);
-	}
+        {
+          base = fname.substr (0, pos);
+          ext = fname.substr (pos);
+        }
 
       file_info_list_type& file_info_list = fcn_map[base];
 
       if (file_info_list.size () == 1)
-	continue;
+        continue;
       else
-	{
-	  for (file_info_list_iterator p = file_info_list.begin ();
-	       p != file_info_list.end ();
-	       p++)
-	    {
-	      if (p->dir_name == dir_name)
-		{
-		  file_info fi = *p;
+        {
+          for (file_info_list_iterator p = file_info_list.begin ();
+               p != file_info_list.end ();
+               p++)
+            {
+              if (p->dir_name == dir_name)
+                {
+                  file_info fi = *p;
 
-		  file_info_list.erase (p);
+                  file_info_list.erase (p);
 
-		  if (at_end)
-		    file_info_list.push_back (fi);
-		  else
-		    file_info_list.push_front (fi);
+                  if (at_end)
+                    file_info_list.push_back (fi);
+                  else
+                    file_info_list.push_front (fi);
 
-		  break;
-		}
-	    }
-	}
+                  break;
+                }
+            }
+        }
     }
 }
 
@@ -405,36 +405,36 @@ load_path::move_method_map (const std::string& dir_name, bool at_end)
       fcn_map_type& fm = i->second;
 
       std::string full_dir_name
-	= file_ops::concat (dir_name, "@" + class_name);
+        = file_ops::concat (dir_name, "@" + class_name);
 
       for (fcn_map_iterator q = fm.begin (); q != fm.end (); q++)
-	{
-	  file_info_list_type& file_info_list = q->second;
+        {
+          file_info_list_type& file_info_list = q->second;
 
-	  if (file_info_list.size () == 1)
-	    continue;
-	  else
-	    {
-	      for (file_info_list_iterator p = file_info_list.begin ();
-	       p != file_info_list.end ();
-	       p++)
-		{
-		  if (p->dir_name == full_dir_name)
-		    {
-		      file_info fi = *p;
+          if (file_info_list.size () == 1)
+            continue;
+          else
+            {
+              for (file_info_list_iterator p = file_info_list.begin ();
+               p != file_info_list.end ();
+               p++)
+                {
+                  if (p->dir_name == full_dir_name)
+                    {
+                      file_info fi = *p;
 
-		      file_info_list.erase (p);
+                      file_info_list.erase (p);
 
-		      if (at_end)
-			file_info_list.push_back (fi);
-		      else
-			file_info_list.push_front (fi);
+                      if (at_end)
+                        file_info_list.push_back (fi);
+                      else
+                        file_info_list.push_front (fi);
 
-		      break;
-		    }
-		}
-	    }
-	}
+                      break;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -448,9 +448,9 @@ load_path::move (dir_info_list_iterator i, bool at_end)
       dir_info_list.erase (i);
 
       if (at_end)
-	dir_info_list.push_back (di);
+        dir_info_list.push_back (di);
       else
-	dir_info_list.push_front (di);
+        dir_info_list.push_front (di);
 
       std::string dir_name = di.dir_name;
 
@@ -470,9 +470,9 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
   if (! tpath.empty ())
     {
       if (path.empty ())
-	path = tpath;
+        path = tpath;
       else
-	path += dir_path::path_sep_str () + tpath;
+        path += dir_path::path_sep_str () + tpath;
     }
 }
 
@@ -537,12 +537,12 @@ split_path (const std::string& p)
       std::string elt = p.substr (beg, end-beg);
 
       if (! elt.empty ())
-	retval.push_back (elt);
+        retval.push_back (elt);
 
       beg = end + 1;
 
       if (beg == len)
-	break;
+        break;
 
       end = p.find (dir_path::path_sep_char (), beg);
     }
@@ -582,7 +582,7 @@ load_path::do_set (const std::string& p, bool warn)
        i++)
     {
       if (add_hook)
-	add_hook (i->dir_name);
+        add_hook (i->dir_name);
     }
 
   // Always prepend current directory.
@@ -610,7 +610,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 
   if (len > 1 && dir_arg.substr (len-2) == "//")
     warning_with_id ("Octave:recursive-path-search",
-		     "trailing `//' is no longer special in search path elements");
+                     "trailing `//' is no longer special in search path elements");
 
   std::string dir = file_ops::tilde_expand (dir_arg);
 
@@ -623,36 +623,36 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
       file_stat fs (dir);
 
       if (fs)
-	{
-	  if (fs.is_dir ())
-	    {
-	      dir_info di (dir);
+        {
+          if (fs.is_dir ())
+            {
+              dir_info di (dir);
 
-	      if (! error_state)
-		{
-		  if (at_end)
-		    dir_info_list.push_back (di);
-		  else
-		    dir_info_list.push_front (di);
+              if (! error_state)
+                {
+                  if (at_end)
+                    dir_info_list.push_back (di);
+                  else
+                    dir_info_list.push_front (di);
 
-		  add_to_fcn_map (di, at_end);
+                  add_to_fcn_map (di, at_end);
 
-		  add_to_private_fcn_map (di);
+                  add_to_private_fcn_map (di);
 
-		  add_to_method_map (di, at_end);
+                  add_to_method_map (di, at_end);
 
-		  if (add_hook)
-		    add_hook (dir);
-		}
-	    }
-	  else if (warn)
-	    warning ("addpath: %s: not a directory", dir_arg.c_str ());
-	}
+                  if (add_hook)
+                    add_hook (dir);
+                }
+            }
+          else if (warn)
+            warning ("addpath: %s: not a directory", dir_arg.c_str ());
+        }
       else if (warn)
-	{
-	  std::string msg = fs.error ();
-	  warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
-	}
+        {
+          std::string msg = fs.error ();
+          warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
+        }
     }
 
   // FIXME -- is there a better way to do this?
@@ -665,7 +665,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 
 void
 load_path::remove_fcn_map (const std::string& dir,
-			   const string_vector& fcn_files)
+                           const string_vector& fcn_files)
 {
   octave_idx_type len = fcn_files.length ();
 
@@ -679,27 +679,27 @@ load_path::remove_fcn_map (const std::string& dir,
       size_t pos = fname.rfind ('.');
 
       if (pos != std::string::npos)
-	{
-	  base = fname.substr (0, pos);
-	  ext = fname.substr (pos);
-	}
+        {
+          base = fname.substr (0, pos);
+          ext = fname.substr (pos);
+        }
 
       file_info_list_type& file_info_list = fcn_map[base];
 
       for (file_info_list_iterator p = file_info_list.begin ();
-	   p != file_info_list.end ();
-	   p++)
-	{
-	  if (p->dir_name == dir)
-	    {
-	      file_info_list.erase (p);
+           p != file_info_list.end ();
+           p++)
+        {
+          if (p->dir_name == dir)
+            {
+              file_info_list.erase (p);
 
-	      if (file_info_list.empty ())
-		fcn_map.erase (fname);
+              if (file_info_list.empty ())
+                fcn_map.erase (fname);
 
-	      break;
-	    }
-	}
+              break;
+            }
+        }
     }
 }
 
@@ -726,30 +726,30 @@ load_path::remove_method_map (const std::string& dir)
       std::string full_dir_name = file_ops::concat (dir, "@" + class_name);
 
       for (fcn_map_iterator q = fm.begin (); q != fm.end (); q++)
-	{
-	  file_info_list_type& file_info_list = q->second;
+        {
+          file_info_list_type& file_info_list = q->second;
 
-	  if (file_info_list.size () == 1)
-	    continue;
-	  else
-	    {
-	      for (file_info_list_iterator p = file_info_list.begin ();
-	       p != file_info_list.end ();
-	       p++)
-		{
-		  if (p->dir_name == full_dir_name)
-		    {
-		      file_info_list.erase (p);
+          if (file_info_list.size () == 1)
+            continue;
+          else
+            {
+              for (file_info_list_iterator p = file_info_list.begin ();
+               p != file_info_list.end ();
+               p++)
+                {
+                  if (p->dir_name == full_dir_name)
+                    {
+                      file_info_list.erase (p);
 
-		      // FIXME -- if there are no other elements, we
-		      // should remove this element of fm but calling
-		      // erase here would invalidate the iterator q.
+                      // FIXME -- if there are no other elements, we
+                      // should remove this element of fm but calling
+                      // erase here would invalidate the iterator q.
 
-		      break;
-		    }
-		}
-	    }
-	}
+                      break;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -761,36 +761,36 @@ load_path::do_remove (const std::string& dir_arg)
   if (! dir_arg.empty ())
     {
       if (dir_arg == ".")
-	{
-	  warning ("rmpath: can't remove \".\" from path");
+        {
+          warning ("rmpath: can't remove \".\" from path");
 
-	  // Avoid additional warnings.
-	  retval = true;
-	}
+          // Avoid additional warnings.
+          retval = true;
+        }
       else
-	{
-	  std::string dir = file_ops::tilde_expand (dir_arg);
+        {
+          std::string dir = file_ops::tilde_expand (dir_arg);
 
-	  dir_info_list_iterator i = find_dir_info (dir);
+          dir_info_list_iterator i = find_dir_info (dir);
 
-	  if (i != dir_info_list.end ())
-	    {
-	      retval = true;
+          if (i != dir_info_list.end ())
+            {
+              retval = true;
 
-	      if (remove_hook)
-		remove_hook (dir);
+              if (remove_hook)
+                remove_hook (dir);
 
-	      string_vector fcn_files = i->fcn_files;
+              string_vector fcn_files = i->fcn_files;
 
-	      dir_info_list.erase (i);
+              dir_info_list.erase (i);
 
-	      remove_fcn_map (dir, fcn_files);
+              remove_fcn_map (dir, fcn_files);
 
-	      remove_private_fcn_map (dir);
+              remove_private_fcn_map (dir);
 
-	      remove_method_map (dir);
-	    }
-	}
+              remove_method_map (dir);
+            }
+        }
     }
 
   return retval;
@@ -827,91 +827,91 @@ load_path::do_update (void) const
 
 bool
 load_path::check_file_type (std::string& fname, int type, int possible_types,
-			    const std::string& fcn, const char *who)
+                            const std::string& fcn, const char *who)
 {
   bool retval = false;
 
   if (type == load_path::OCT_FILE)
     {
       if ((type & possible_types) == load_path::OCT_FILE)
-	{
-	  fname += ".oct";
-	  retval = true;
-	}
+        {
+          fname += ".oct";
+          retval = true;
+        }
     }
   else if (type == load_path::M_FILE)
     {
       if ((type & possible_types) == load_path::M_FILE)
-	{
-	  fname += ".m";
-	  retval = true;
-	}
+        {
+          fname += ".m";
+          retval = true;
+        }
     }
   else if (type == load_path::MEX_FILE)
     {
       if ((type & possible_types) == load_path::MEX_FILE)
-	{
-	  fname += ".mex";
-	  retval = true;
-	}
+        {
+          fname += ".mex";
+          retval = true;
+        }
     }
   else if (type == (load_path::M_FILE | load_path::OCT_FILE))
     {
       if (possible_types & load_path::OCT_FILE)
-	{
-	  fname += ".oct";
-	  retval = true;
-	}
+        {
+          fname += ".oct";
+          retval = true;
+        }
       else if (possible_types & load_path::M_FILE)
-	{
-	  fname += ".m";
-	  retval = true;
-	}
+        {
+          fname += ".m";
+          retval = true;
+        }
     }
   else if (type == (load_path::M_FILE | load_path::MEX_FILE))
     {
       if (possible_types & load_path::MEX_FILE)
-	{
-	  fname += ".mex";
-	  retval = true;
-	}
+        {
+          fname += ".mex";
+          retval = true;
+        }
       else if (possible_types & load_path::M_FILE)
-	{
-	  fname += ".m";
-	  retval = true;
-	}
+        {
+          fname += ".m";
+          retval = true;
+        }
     }
   else if (type == (load_path::OCT_FILE | load_path::MEX_FILE))
     {
       if (possible_types & load_path::OCT_FILE)
-	{
-	  fname += ".oct";
-	  retval = true;
-	}
+        {
+          fname += ".oct";
+          retval = true;
+        }
       else if (possible_types & load_path::MEX_FILE)
-	{
-	  fname += ".mex";
-	  retval = true;
-	}
+        {
+          fname += ".mex";
+          retval = true;
+        }
     }
   else if (type == (load_path::M_FILE | load_path::OCT_FILE
-		    | load_path::MEX_FILE))
+                    | load_path::MEX_FILE))
     {
       if (possible_types & load_path::OCT_FILE)
-	{
-	  fname += ".oct";
-	  retval = true;
-	}
+        {
+          fname += ".oct";
+          retval = true;
+        }
       else if (possible_types & load_path::MEX_FILE)
-	{
-	  fname += ".mex";
-	  retval = true;
-	}
+        {
+          fname += ".mex";
+          retval = true;
+        }
       else if (possible_types & load_path::M_FILE)
-	{
-	  fname += ".m";
-	  retval = true;
-	}
+        {
+          fname += ".m";
+          retval = true;
+        }
     }
   else
     error ("%s: %s: invalid type code = %d", who, fcn.c_str (), type);
@@ -921,7 +921,7 @@ load_path::check_file_type (std::string& fname, int type, int possible_types,
 
 std::string
 load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
-			int type) const
+                        int type) const
 {
   std::string retval;
   
@@ -932,14 +932,14 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
       size_t pos = fcn.find ('/');
 
       if (pos != std::string::npos)
-	{
-	  std::string class_name = fcn.substr (1, pos-1);
-	  std::string meth = fcn.substr (pos+1);
+        {
+          std::string class_name = fcn.substr (1, pos-1);
+          std::string meth = fcn.substr (pos+1);
 
-	  retval = do_find_method (class_name, meth, dir_name);
-	}
+          retval = do_find_method (class_name, meth, dir_name);
+        }
       else
-	retval = std::string ();
+        retval = std::string ();
     }
   else
     {
@@ -948,27 +948,27 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
       const_fcn_map_iterator p = fcn_map.find (fcn);
 
       if (p != fcn_map.end ())
-	{
-	  const file_info_list_type& file_info_list = p->second;
+        {
+          const file_info_list_type& file_info_list = p->second;
 
-	  for (const_file_info_list_iterator i = file_info_list.begin ();
-	       i != file_info_list.end ();
-	       i++)
-	    {
-	      const file_info& fi = *i;
+          for (const_file_info_list_iterator i = file_info_list.begin ();
+               i != file_info_list.end ();
+               i++)
+            {
+              const file_info& fi = *i;
 
-	      retval = file_ops::concat (fi.dir_name, fcn);
+              retval = file_ops::concat (fi.dir_name, fcn);
 
-	      if (check_file_type (retval, type, fi.types,
-				   fcn, "load_path::do_find_fcn"))
-		{
-		  dir_name = fi.dir_name;
-		  break;
-		}
-	      else
-		retval = std::string ();
-	    }
-	}
+              if (check_file_type (retval, type, fi.types,
+                                   fcn, "load_path::do_find_fcn"))
+                {
+                  dir_name = fi.dir_name;
+                  break;
+                }
+              else
+                retval = std::string ();
+            }
+        }
     }
 
   return retval;
@@ -976,7 +976,7 @@ load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
 
 std::string
 load_path::do_find_private_fcn (const std::string& dir,
-				const std::string& fcn, int type) const
+                                const std::string& fcn, int type) const
 {
   std::string retval;
 
@@ -991,14 +991,14 @@ load_path::do_find_private_fcn (const std::string& dir,
       dir_info::const_fcn_file_map_iterator p = m.find (fcn);
 
       if (p != m.end ())
-	{
-	  std::string fname
-	    = file_ops::concat (file_ops::concat (dir, "private"), fcn);
+        {
+          std::string fname
+            = file_ops::concat (file_ops::concat (dir, "private"), fcn);
 
-	  if (check_file_type (fname, type, p->second, fcn,
-			       "load_path::find_private_fcn"))
-	    retval = fname;
-	}
+          if (check_file_type (fname, type, p->second, fcn,
+                               "load_path::find_private_fcn"))
+            retval = fname;
+        }
     }
 
   return retval;
@@ -1006,8 +1006,8 @@ load_path::do_find_private_fcn (const std::string& dir,
 
 std::string
 load_path::do_find_method (const std::string& class_name,
-			   const std::string& meth,
-			   std::string& dir_name, int type) const
+                           const std::string& meth,
+                           std::string& dir_name, int type) const
 {
   std::string retval;
 
@@ -1024,29 +1024,29 @@ load_path::do_find_method (const std::string& class_name,
       const_fcn_map_iterator p = m.find (meth);
 
       if (p != m.end ())
-	{
-	  const file_info_list_type& file_info_list = p->second;
+        {
+          const file_info_list_type& file_info_list = p->second;
 
-	  for (const_file_info_list_iterator i = file_info_list.begin ();
-	       i != file_info_list.end ();
-	       i++)
-	    {
-	      const file_info& fi = *i;
+          for (const_file_info_list_iterator i = file_info_list.begin ();
+               i != file_info_list.end ();
+               i++)
+            {
+              const file_info& fi = *i;
 
-	      retval = file_ops::concat (fi.dir_name, meth);
+              retval = file_ops::concat (fi.dir_name, meth);
 
-	      bool found = check_file_type (retval, type, fi.types,
-					    meth, "load_path::do_find_method");
+              bool found = check_file_type (retval, type, fi.types,
+                                            meth, "load_path::do_find_method");
 
-	      if (found)
-		{
-		  dir_name = fi.dir_name;
-		  break;
-		}
-	      else
-		retval = std::string ();
-	    }
-	}
+              if (found)
+                {
+                  dir_name = fi.dir_name;
+                  break;
+                }
+              else
+                retval = std::string ();
+            }
+        }
     }
 
   return retval;
@@ -1066,7 +1066,7 @@ load_path::do_methods (const std::string& class_name) const
       const fcn_map_type& m = q->second;
 
       for (const_fcn_map_iterator p = m.begin (); p != m.end (); p++)
-	retval.push_back (p->first);
+        retval.push_back (p->first);
     }
 
   if (! retval.empty ())
@@ -1105,44 +1105,44 @@ load_path::do_find_file (const std::string& file) const
   if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
     {
       if (octave_env::absolute_pathname (file)
-	  || octave_env::rooted_relative_pathname (file))
-	{
-	  file_stat fs (file);
+          || octave_env::rooted_relative_pathname (file))
+        {
+          file_stat fs (file);
 
-	  if (fs.exists ())
-	    return file;
-	}
+          if (fs.exists ())
+            return file;
+        }
       else
-	{
-	  for (const_dir_info_list_iterator p = dir_info_list.begin ();
-	       p != dir_info_list.end ();
-	       p++)
-	    {
-	      std::string tfile = file_ops::concat (p->dir_name, file);
+        {
+          for (const_dir_info_list_iterator p = dir_info_list.begin ();
+               p != dir_info_list.end ();
+               p++)
+            {
+              std::string tfile = file_ops::concat (p->dir_name, file);
 
-	      file_stat fs (tfile);
+              file_stat fs (tfile);
 
-	      if (fs.exists ())
-		return tfile;
-	    }
-	}
+              if (fs.exists ())
+                return tfile;
+            }
+        }
     }
   else
     {
       for (const_dir_info_list_iterator p = dir_info_list.begin ();
-	   p != dir_info_list.end ();
-	   p++)
-	{
-	  string_vector all_files = p->all_files;
+           p != dir_info_list.end ();
+           p++)
+        {
+          string_vector all_files = p->all_files;
 
-	  octave_idx_type len = all_files.length ();
+          octave_idx_type len = all_files.length ();
 
-	  for (octave_idx_type i = 0; i < len; i++)
-	    {
-	      if (all_files[i] == file)
-		return file_ops::concat (p->dir_name, file);
-	    }
-	}
+          for (octave_idx_type i = 0; i < len; i++)
+            {
+              if (all_files[i] == file)
+                return file_ops::concat (p->dir_name, file);
+            }
+        }
     }
 
   return retval;
@@ -1155,41 +1155,41 @@ load_path::do_find_dir (const std::string& dir) const
 
   if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
       && (octave_env::absolute_pathname (dir)
-	  || octave_env::rooted_relative_pathname (dir)))
+          || octave_env::rooted_relative_pathname (dir)))
     {
       file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
-	return dir;
+        return dir;
     }
   else
     {
       for (const_dir_info_list_iterator p = dir_info_list.begin ();
-	   p != dir_info_list.end ();
-	   p++)
-	{
-	  std::string dname = octave_env::make_absolute (p->dir_name);
+           p != dir_info_list.end ();
+           p++)
+        {
+          std::string dname = octave_env::make_absolute (p->dir_name);
 
-	  size_t dname_len = dname.length ();
+          size_t dname_len = dname.length ();
 
-	  if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
-	    {
-	      dname = dname.substr (0, dname_len - 1);
-	      dname_len--;
-	    }
+          if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
+            {
+              dname = dname.substr (0, dname_len - 1);
+              dname_len--;
+            }
 
-	  size_t dir_len = dir.length ();
+          size_t dir_len = dir.length ();
 
-	  if (dname_len >= dir_len
-	      && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-	      && dir.compare (dname.substr (dname_len - dir_len)) == 0)
-	    {
-	      file_stat fs (p->dir_name);
+          if (dname_len >= dir_len
+              && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+            {
+              file_stat fs (p->dir_name);
 
-	      if (fs.exists () && fs.is_dir ())
-		return p->dir_name;
-	    }
-	}
+              if (fs.exists () && fs.is_dir ())
+                return p->dir_name;
+            }
+        }
     }
 
   return retval;
@@ -1202,41 +1202,41 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 
   if (dir.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos
       && (octave_env::absolute_pathname (dir)
-	  || octave_env::rooted_relative_pathname (dir)))
+          || octave_env::rooted_relative_pathname (dir)))
     {
       file_stat fs (dir);
 
       if (fs.exists () && fs.is_dir ())
-	retlist.push_back (dir);
+        retlist.push_back (dir);
     }
   else
     {
       for (const_dir_info_list_iterator p = dir_info_list.begin ();
-	   p != dir_info_list.end ();
-	   p++)
-	{
-	  std::string dname = octave_env::make_absolute (p->dir_name);
+           p != dir_info_list.end ();
+           p++)
+        {
+          std::string dname = octave_env::make_absolute (p->dir_name);
 
-	  size_t dname_len = dname.length ();
+          size_t dname_len = dname.length ();
 
-	  if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
-	    {
-	      dname = dname.substr (0, dname_len - 1);
-	      dname_len--;
-	    }
+          if (dname.substr (dname_len - 1) == file_ops::dir_sep_str ())
+            {
+              dname = dname.substr (0, dname_len - 1);
+              dname_len--;
+            }
 
-	  size_t dir_len = dir.length ();
+          size_t dir_len = dir.length ();
 
-	  if (dname_len >= dir_len
-	      && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-	      && dir.compare (dname.substr (dname_len - dir_len)) == 0)
-	    {
-	      file_stat fs (p->dir_name);
+          if (dname_len >= dir_len
+              && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
+              && dir.compare (dname.substr (dname_len - dir_len)) == 0)
+            {
+              file_stat fs (p->dir_name);
 
-	      if (fs.exists () && fs.is_dir ())
-		retlist.push_back (p->dir_name);
-	    }
-	}
+              if (fs.exists () && fs.is_dir ())
+                retlist.push_back (p->dir_name);
+            }
+        }
     }
 
   return retlist;
@@ -1258,14 +1258,14 @@ load_path::do_find_first_of (const string_vector& flist) const
   for (octave_idx_type i = 0; i < flen; i++)
     {
       if (octave_env::absolute_pathname (flist[i]))
-	{
-	  file_stat fs (flist[i]);
+        {
+          file_stat fs (flist[i]);
 
-	  if (fs.exists ())
-	    return flist[i];
-	}
+          if (fs.exists ())
+            return flist[i];
+        }
       else
-	rel_flist[rel_flen++] = flist[i];
+        rel_flist[rel_flen++] = flist[i];
     }
 
   rel_flist.resize (rel_flen);
@@ -1279,18 +1279,18 @@ load_path::do_find_first_of (const string_vector& flist) const
       octave_idx_type len = all_files.length ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  for (octave_idx_type j = 0; j < rel_flen; j++)
-	    {
-	      if (all_files[i] == rel_flist[j])
-		{
-		  dir_name = p->dir_name;
-		  file_name = rel_flist[j];
+        {
+          for (octave_idx_type j = 0; j < rel_flen; j++)
+            {
+              if (all_files[i] == rel_flist[j])
+                {
+                  dir_name = p->dir_name;
+                  file_name = rel_flist[j];
 
-		  goto done;
-		}
-	    }
-	}
+                  goto done;
+                }
+            }
+        }
     }
 
  done:
@@ -1317,14 +1317,14 @@ load_path::do_find_all_first_of (const string_vector& flist) const
   for (octave_idx_type i = 0; i < flen; i++)
     {
       if (octave_env::absolute_pathname (flist[i]))
-	{
-	  file_stat fs (flist[i]);
+        {
+          file_stat fs (flist[i]);
 
-	  if (fs.exists ())
-	    retlist.push_back (flist[i]);
-	}
+          if (fs.exists ())
+            retlist.push_back (flist[i]);
+        }
       else
-	rel_flist[rel_flen++] = flist[i];
+        rel_flist[rel_flen++] = flist[i];
     }
 
   rel_flist.resize (rel_flen);
@@ -1338,14 +1338,14 @@ load_path::do_find_all_first_of (const string_vector& flist) const
       octave_idx_type len = all_files.length ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  for (octave_idx_type j = 0; j < rel_flen; j++)
-	    {
-	      if (all_files[i] == rel_flist[j])
-		retlist.push_back
-		  (file_ops::concat (p->dir_name, rel_flist[j]));
-	    }
-	}
+        {
+          for (octave_idx_type j = 0; j < rel_flen; j++)
+            {
+              if (all_files[i] == rel_flist[j])
+                retlist.push_back
+                  (file_ops::concat (p->dir_name, rel_flist[j]));
+            }
+        }
     }
 
   return retlist;
@@ -1396,14 +1396,14 @@ load_path::do_files (const std::string& dir, bool omit_exts) const
       octave_idx_type len = retval.length ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string fname = retval[i];
+        {
+          std::string fname = retval[i];
 
-	  size_t pos = fname.rfind ('.');
+          size_t pos = fname.rfind ('.');
 
-	  if (pos != std::string::npos)
-	    retval[i] = fname.substr (0, pos);
-	}
+          if (pos != std::string::npos)
+            retval[i] = fname.substr (0, pos);
+        }
     }
 
   return retval;
@@ -1458,7 +1458,7 @@ print_types (std::ostream& os, int types)
   if (types & load_path::MEX_FILE)
     {
       if (printed_type)
-	os << "|";
+        os << "|";
       os << "mex";
       printed_type = true;
     }
@@ -1466,7 +1466,7 @@ print_types (std::ostream& os, int types)
   if (types & load_path::M_FILE)
     {
       if (printed_type)
-	os << "|";
+        os << "|";
       os << "m";
       printed_type = true;
     }
@@ -1474,7 +1474,7 @@ print_types (std::ostream& os, int types)
 
 void
 print_fcn_list (std::ostream& os,
-		const load_path::dir_info::fcn_file_map_type& lst)
+                const load_path::dir_info::fcn_file_map_type& lst)
 {
   for (load_path::dir_info::const_fcn_file_map_iterator p = lst.begin ();
        p != lst.end ();
@@ -1506,11 +1506,11 @@ get_file_list (const load_path::dir_info::fcn_file_map_type& lst)
       int types = p->second;
 
       if (types & load_path::OCT_FILE)
-	nm += ".oct";
+        nm += ".oct";
       else if (types & load_path::MEX_FILE)
-	nm += ".mex";
+        nm += ".mex";
       else
-	nm += ".m";
+        nm += ".m";
 
       retval[count++] = nm;
     }
@@ -1528,38 +1528,38 @@ load_path::do_display (std::ostream& os) const
       string_vector fcn_files = i->fcn_files;
 
       if (! fcn_files.empty ())
-	{
-	  os << "\n*** function files in " << i->dir_name << ":\n\n";
+        {
+          os << "\n*** function files in " << i->dir_name << ":\n\n";
 
-	  fcn_files.list_in_columns (os);
-	}
+          fcn_files.list_in_columns (os);
+        }
 
       const dir_info::method_file_map_type& method_file_map
-	= i->method_file_map;
+        = i->method_file_map;
 
       if (! method_file_map.empty ())
-	{
-	  for (dir_info::const_method_file_map_iterator p = method_file_map.begin ();
-	       p != method_file_map.end ();
-	       p++)
-	    {
-	      os << "\n*** methods in " << i->dir_name
-		 << "/@" << p->first << ":\n\n";
+        {
+          for (dir_info::const_method_file_map_iterator p = method_file_map.begin ();
+               p != method_file_map.end ();
+               p++)
+            {
+              os << "\n*** methods in " << i->dir_name
+                 << "/@" << p->first << ":\n\n";
 
-	      const dir_info::class_info& ci = p->second;
+              const dir_info::class_info& ci = p->second;
 
-	      string_vector method_files = get_file_list (ci.method_file_map);
+              string_vector method_files = get_file_list (ci.method_file_map);
 
-	      method_files.list_in_columns (os);
-	    }
-	}
+              method_files.list_in_columns (os);
+            }
+        }
     }
 
   for (const_private_fcn_map_iterator i = private_fcn_map.begin ();
        i != private_fcn_map.end (); i++)
     {
       os << "\n*** private functions in "
-	 << file_ops::concat (i->first, "private") << ":\n\n";
+         << file_ops::concat (i->first, "private") << ":\n\n";
 
       print_fcn_list (os, i->second);
     }
@@ -1575,15 +1575,15 @@ load_path::do_display (std::ostream& os) const
       const file_info_list_type& file_info_list = i->second;
 
       for (const_file_info_list_iterator p = file_info_list.begin ();
-	   p != file_info_list.end ();
-	   p++)
-	{
-	  os << "  " << p->dir_name << " (";
+           p != file_info_list.end ();
+           p++)
+        {
+          os << "  " << p->dir_name << " (";
 
-	  print_types (os, p->types);
+          print_types (os, p->types);
 
-	  os << ")\n";
-	}
+          os << ")\n";
+        }
     }
 
   for (const_method_map_iterator i = method_map.begin ();
@@ -1595,24 +1595,24 @@ load_path::do_display (std::ostream& os) const
       const fcn_map_type& fm = i->second;
 
       for (const_fcn_map_iterator q = fm.begin ();
-	   q != fm.end ();
-	   q++)
-	{
-	  os << "  " << q->first << ":\n";
+           q != fm.end ();
+           q++)
+        {
+          os << "  " << q->first << ":\n";
 
-	  const file_info_list_type& file_info_list = q->second;
+          const file_info_list_type& file_info_list = q->second;
 
-	  for (const_file_info_list_iterator p = file_info_list.begin ();
-	       p != file_info_list.end ();
-	       p++)
-	    {
-	      os << "  " << p->dir_name << " (";
+          for (const_file_info_list_iterator p = file_info_list.begin ();
+               p != file_info_list.end ();
+               p++)
+            {
+              os << "  " << p->dir_name << " (";
 
-	      print_types (os, p->types);
+              print_types (os, p->types);
 
-	      os << ")\n";
-	    }
-	}
+              os << ")\n";
+            }
+        }
     }
 
   os << "\n";
@@ -1639,38 +1639,38 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
       size_t pos = fname.rfind ('.');
 
       if (pos != std::string::npos)
-	{
-	  base = fname.substr (0, pos);
-	  ext = fname.substr (pos);
-	}
+        {
+          base = fname.substr (0, pos);
+          ext = fname.substr (pos);
+        }
 
       file_info_list_type& file_info_list = fcn_map[base];
 
       file_info_list_iterator p = file_info_list.begin ();
 
       while (p != file_info_list.end ())
-	{
-	  if (p->dir_name == dir_name)
-	    break;
+        {
+          if (p->dir_name == dir_name)
+            break;
 
-	  p++;
-	}
+          p++;
+        }
 
       int t = 0;
       if (ext == ".m")
-	t = load_path::M_FILE;
+        t = load_path::M_FILE;
       else if (ext == ".oct")
-	t = load_path::OCT_FILE;
+        t = load_path::OCT_FILE;
       else if (ext == ".mex")
-	t = load_path::MEX_FILE;
+        t = load_path::MEX_FILE;
 
       if (p == file_info_list.end ())
-	{
-	  file_info fi (dir_name, t);
+        {
+          file_info fi (dir_name, t);
 
-	  if (at_end)
-	    file_info_list.push_back (fi);
-	  else
+          if (at_end)
+            file_info_list.push_back (fi);
+          else
             {
               // Warn if a built-in or library function is being shadowed.
               if (! file_info_list.empty ())
@@ -1694,13 +1694,13 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 
               file_info_list.push_front (fi);
             }
-	}
+        }
       else
-	{
-	  file_info& fi = *p;
+        {
+          file_info& fi = *p;
 
-	  fi.types |= t;
-	}
+          fi.types |= t;
+        }
     }
 }
 
@@ -1730,7 +1730,7 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
       fcn_map_type& fm = method_map[class_name];
 
       std::string full_dir_name
-	= file_ops::concat (dir_name, "@" + class_name);
+        = file_ops::concat (dir_name, "@" + class_name);
 
       const dir_info::class_info& ci = q->second;
 
@@ -1738,49 +1738,49 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
       const dir_info::fcn_file_map_type& m = ci.method_file_map;
 
       for (dir_info::const_fcn_file_map_iterator p = m.begin ();
-	   p != m.end ();
-	   p++)
-	{
-	  std::string base = p->first;
+           p != m.end ();
+           p++)
+        {
+          std::string base = p->first;
 
-	  int types = p->second;
+          int types = p->second;
 
-	  file_info_list_type& file_info_list = fm[base];
+          file_info_list_type& file_info_list = fm[base];
 
-	  file_info_list_iterator p2 = file_info_list.begin ();
+          file_info_list_iterator p2 = file_info_list.begin ();
 
-	  while (p2 != file_info_list.end ())
-	    {
-	      if (p2->dir_name == full_dir_name)
-		break;
+          while (p2 != file_info_list.end ())
+            {
+              if (p2->dir_name == full_dir_name)
+                break;
 
-	      p2++;
-	    }
+              p2++;
+            }
 
-	  if (p2 == file_info_list.end ())
-	    {
-	      file_info fi (full_dir_name, types);
+          if (p2 == file_info_list.end ())
+            {
+              file_info fi (full_dir_name, types);
 
-	      if (at_end)
-		file_info_list.push_back (fi);
-	      else
-		file_info_list.push_front (fi);
-	    }
-	  else
-	    {
-	      // FIXME -- is this possible?
+              if (at_end)
+                file_info_list.push_back (fi);
+              else
+                file_info_list.push_front (fi);
+            }
+          else
+            {
+              // FIXME -- is this possible?
 
-	      file_info& fi = *p2;
+              file_info& fi = *p2;
 
-	      fi.types = types;
-	    }
-	}
+              fi.types = types;
+            }
+        }
 
       // <FCN_NAME, TYPES>
       dir_info::fcn_file_map_type private_file_map = ci.private_file_map;
 
       if (! private_file_map.empty ())
-	private_fcn_map[full_dir_name] = private_file_map;
+        private_fcn_map[full_dir_name] = private_file_map;
     }
 }
 
@@ -1800,35 +1800,35 @@ genpath (const std::string& dirname, const string_vector& skip)
       octave_idx_type len = dirlist.length ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	{
-	  std::string elt = dirlist[i];
+        {
+          std::string elt = dirlist[i];
 
-	  // FIXME -- the caller should be able to specify the list of
-	  // directories to skip in addition to ".", "..", and
-	  // directories beginning with "@".
+          // FIXME -- the caller should be able to specify the list of
+          // directories to skip in addition to ".", "..", and
+          // directories beginning with "@".
 
-	  bool skip_p = (elt == "." || elt == ".." || elt[0] == '@');
+          bool skip_p = (elt == "." || elt == ".." || elt[0] == '@');
 
-	  if (! skip_p)
-	    {
-	      for (octave_idx_type j = 0; j < skip.length (); j++)
-		{
-		  skip_p = (elt == skip[j]);
-		  if (skip_p)
-		    break;
-		}
+          if (! skip_p)
+            {
+              for (octave_idx_type j = 0; j < skip.length (); j++)
+                {
+                  skip_p = (elt == skip[j]);
+                  if (skip_p)
+                    break;
+                }
 
-	      if (! skip_p)
-		{
-		  std::string nm = file_ops::concat (dirname, elt);
+              if (! skip_p)
+                {
+                  std::string nm = file_ops::concat (dirname, elt);
 
-		  file_stat fs (nm);
+                  file_stat fs (nm);
 
-		  if (fs && fs.is_dir ())
-		    retval += dir_path::path_sep_str () + genpath (nm);
-		}
-	    }
-	}
+                  if (fs && fs.is_dir ())
+                    retval += dir_path::path_sep_str () + genpath (nm);
+                }
+            }
+        }
     }
 
   return retval;
@@ -1836,7 +1836,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
 static void
 execute_pkg_add_or_del (const std::string& dir,
-			const std::string& script_file)
+                        const std::string& script_file)
 {
   if (! octave_interpreter_ready)
     return;
@@ -1880,9 +1880,9 @@ Return a path constructed from @var{dir} and all its subdirectories.\n\
       std::string dirname = args(0).string_value ();
 
       if (! error_state)
-	retval = genpath (dirname);
+        retval = genpath (dirname);
       else
-	error ("genpath: expecting argument to be a character string");
+        error ("genpath: expecting argument to be a character string");
     }
   else
     print_usage ();
@@ -1981,29 +1981,29 @@ No checks are made for duplicate elements.\n\
   if (! error_state)
     {
       if (argc > 1)
-	{
-	  std::string path = argv[1];
+        {
+          std::string path = argv[1];
 
-	  for (int i = 2; i < argc; i++)
-	    path += dir_path::path_sep_str () + argv[i];
+          for (int i = 2; i < argc; i++)
+            path += dir_path::path_sep_str () + argv[i];
 
-	  load_path::set (path, true);
+          load_path::set (path, true);
 
-	  rehash_internal ();
-	}
+          rehash_internal ();
+        }
 
       if (nargout > 0)
-	retval = load_path::path ();
+        retval = load_path::path ();
       else if (argc == 1 && nargout == 0)
-	{
-	  octave_stdout << "\nOctave's search path contains the following directories:\n\n";
+        {
+          octave_stdout << "\nOctave's search path contains the following directories:\n\n";
 
-	  string_vector dirs = load_path::dirs ();
+          string_vector dirs = load_path::dirs ();
 
-	  dirs.list_in_columns (octave_stdout);
+          dirs.list_in_columns (octave_stdout);
 
-	  octave_stdout << "\n";
-	}
+          octave_stdout << "\n";
+        }
     }
 
   return retval;
@@ -2038,76 +2038,76 @@ Directories added to the path must exist.\n\
       octave_value option_arg = args(nargin-1);
 
       if (option_arg.is_string ())
-	{
-	  std::string option = option_arg.string_value ();
+        {
+          std::string option = option_arg.string_value ();
 
-	  if (option == "-end")
-	    {
-	      append = true;
-	      nargin--;
-	    }
-	  else if (option == "-begin")
-	    nargin--;
-	}
+          if (option == "-end")
+            {
+              append = true;
+              nargin--;
+            }
+          else if (option == "-begin")
+            nargin--;
+        }
       else if (option_arg.is_numeric_type ())
-	{
-	  int val = option_arg.int_value ();
+        {
+          int val = option_arg.int_value ();
 
-	  if (! error_state)
-	    {
-	      if (val == 0)
-		append = false;
-	      else if (val == 1)
-		append = true;
-	      else
-		{
-		  error ("addpath: expecting final argument to be 1 or 0");
-		  return retval;
-		}
-	    }
-	  else
-	    {
-	      error ("addpath: expecting final argument to be 1 or 0");
-	      return retval;
-	    }
-	}
+          if (! error_state)
+            {
+              if (val == 0)
+                append = false;
+              else if (val == 1)
+                append = true;
+              else
+                {
+                  error ("addpath: expecting final argument to be 1 or 0");
+                  return retval;
+                }
+            }
+          else
+            {
+              error ("addpath: expecting final argument to be 1 or 0");
+              return retval;
+            }
+        }
 
       bool need_to_update = false;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  std::string arg = args(i).string_value ();
+        {
+          std::string arg = args(i).string_value ();
 
-	  if (! error_state)
-	    {
-	      std::list<std::string> dir_elts = split_path (arg);
+          if (! error_state)
+            {
+              std::list<std::string> dir_elts = split_path (arg);
 
-	      if (! append)
-		std::reverse (dir_elts.begin (), dir_elts.end ());
+              if (! append)
+                std::reverse (dir_elts.begin (), dir_elts.end ());
 
-	      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-		   p != dir_elts.end ();
-		   p++)
-		{
-		  std::string dir = *p;
+              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+                   p != dir_elts.end ();
+                   p++)
+                {
+                  std::string dir = *p;
 
-		  //dir = regexprep (dir_elts{j}, "//+", "/");
-		  //dir = regexprep (dir, "/$", "");
+                  //dir = regexprep (dir_elts{j}, "//+", "/");
+                  //dir = regexprep (dir, "/$", "");
 
-		  if (append)
-		    load_path::append (dir, true);
-		  else
-		    load_path::prepend (dir, true);
+                  if (append)
+                    load_path::append (dir, true);
+                  else
+                    load_path::prepend (dir, true);
 
-		  need_to_update = true;
-		}
-	    }
-	  else
-	    error ("addpath: expecting all args to be character strings");
-	}
+                  need_to_update = true;
+                }
+            }
+          else
+            error ("addpath: expecting all args to be character strings");
+        }
 
       if (need_to_update)
-	rehash_internal ();
+        rehash_internal ();
     }
   else
     print_usage ();
@@ -2138,34 +2138,34 @@ Remove @var{dir1}, @dots{} from the current function search path.\n\
       bool need_to_update = false;
 
       for (int i = 0; i < nargin; i++)
-	{
-	  std::string arg = args(i).string_value ();
+        {
+          std::string arg = args(i).string_value ();
 
-	  if (! error_state)
-	    {
-	      std::list<std::string> dir_elts = split_path (arg);
+          if (! error_state)
+            {
+              std::list<std::string> dir_elts = split_path (arg);
 
-	      for (std::list<std::string>::const_iterator p = dir_elts.begin ();
-		   p != dir_elts.end ();
-		   p++)
-		{
-		  std::string dir = *p;
+              for (std::list<std::string>::const_iterator p = dir_elts.begin ();
+                   p != dir_elts.end ();
+                   p++)
+                {
+                  std::string dir = *p;
 
-		  //dir = regexprep (dir_elts{j}, "//+", "/");
-		  //dir = regexprep (dir, "/$", "");
+                  //dir = regexprep (dir_elts{j}, "//+", "/");
+                  //dir = regexprep (dir, "/$", "");
 
-		  if (! load_path::remove (dir))
-		    warning ("rmpath: %s: not found", dir.c_str ());
-		  else
-		    need_to_update = true;
-		}
-	    }
-	  else
-	    error ("addpath: expecting all args to be character strings");
-	}
+                  if (! load_path::remove (dir))
+                    warning ("rmpath: %s: not found", dir.c_str ());
+                  else
+                    need_to_update = true;
+                }
+            }
+          else
+            error ("addpath: expecting all args to be character strings");
+        }
 
       if (need_to_update)
-	rehash_internal ();
+        rehash_internal ();
     }
   else
     print_usage ();

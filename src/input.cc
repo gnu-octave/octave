@@ -172,22 +172,22 @@ do_input_echo (const std::string& input_string)
   if (do_echo)
     {
       if (forced_interactive)
-	{
-	  if (promptflag > 0)
-	    octave_stdout << command_editor::decode_prompt_string (VPS1);
-	  else
-	    octave_stdout << command_editor::decode_prompt_string (VPS2);
-	}
+        {
+          if (promptflag > 0)
+            octave_stdout << command_editor::decode_prompt_string (VPS1);
+          else
+            octave_stdout << command_editor::decode_prompt_string (VPS2);
+        }
       else
-	octave_stdout << command_editor::decode_prompt_string (VPS4);
+        octave_stdout << command_editor::decode_prompt_string (VPS4);
 
       if (! input_string.empty ())
-	{
-	  octave_stdout << input_string;
+        {
+          octave_stdout << input_string;
 
-	  if (input_string[input_string.length () - 1] != '\n')
-	    octave_stdout << "\n";
-	}
+          if (input_string[input_string.length () - 1] != '\n')
+            octave_stdout << "\n";
+        }
     }
 }
 
@@ -205,22 +205,22 @@ gnu_readline (const std::string& s, bool force_readline)
       retval = command_editor::readline (s, eof);
 
       if (! eof && retval.empty ())
-	retval = "\n";
+        retval = "\n";
     }
   else
     {
       if (! s.empty () && (interactive || forced_interactive))
-	{
-	  FILE *stream = command_editor::get_output_stream ();
+        {
+          FILE *stream = command_editor::get_output_stream ();
 
-	  fputs (s.c_str (), stream);
-	  fflush (stream);
-	}
+          fputs (s.c_str (), stream);
+          fflush (stream);
+        }
 
       FILE *curr_stream = command_editor::get_input_stream ();
 
       if (reading_fcn_file || reading_script_file || reading_classdef_file)
-	curr_stream = ff_instream;
+        curr_stream = ff_instream;
 
       retval = octave_fgets (curr_stream);
     }
@@ -245,7 +245,7 @@ interactive_input (const std::string& s, bool force_readline = false)
       Vdrawnow_requested = false;
 
       if (error_state)
-	return "\n";
+        return "\n";
     }
 
   return gnu_readline (s, force_readline);
@@ -262,11 +262,11 @@ octave_gets (void)
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file
-	     || reading_classdef_file
-	     || reading_script_file
-	     || get_input_from_eval_string
-	     || input_from_startup_file
-	     || input_from_command_line_file)))
+             || reading_classdef_file
+             || reading_script_file
+             || get_input_from_eval_string
+             || input_from_startup_file
+             || input_from_command_line_file)))
     {
       std::string ps = (promptflag > 0) ? VPS1 : VPS2;
 
@@ -283,20 +283,20 @@ octave_gets (void)
       // There is no need to update the load_path cache if there is no
       // user input.
       if (! retval.empty ()
-	  && retval.find_first_not_of (" \t\n\r") != std::string::npos)
-	{
-	  load_path::update ();
+          && retval.find_first_not_of (" \t\n\r") != std::string::npos)
+        {
+          load_path::update ();
 
-	  if (Vdebugging)
-	    last_debugging_command = retval;
-	  else
-	    last_debugging_command = std::string ();
-	}
+          if (Vdebugging)
+            last_debugging_command = retval;
+          else
+            last_debugging_command = std::string ();
+        }
       else if (Vdebugging)
-	{
-	  retval = last_debugging_command;
-	  history_skip_auto_repeated_debugging_command = true;
-	}
+        {
+          retval = last_debugging_command;
+          history_skip_auto_repeated_debugging_command = true;
+        }
     }
   else
     retval = gnu_readline ("");
@@ -306,16 +306,16 @@ octave_gets (void)
   if (! current_input_line.empty ())
     {
       if (! (input_from_startup_file || input_from_command_line_file
-	     || history_skip_auto_repeated_debugging_command))
-	command_history::add (current_input_line);
+             || history_skip_auto_repeated_debugging_command))
+        command_history::add (current_input_line);
 
       if (! (reading_fcn_file || reading_script_file || reading_classdef_file))
-	{
-	  octave_diary << current_input_line;
+        {
+          octave_diary << current_input_line;
 
-	  if (current_input_line[current_input_line.length () - 1] != '\n')
-	    octave_diary << "\n";
-	}
+          if (current_input_line[current_input_line.length () - 1] != '\n')
+            octave_diary << "\n";
+        }
 
       do_input_echo (current_input_line);
     }
@@ -337,16 +337,16 @@ get_user_input (void)
   if (get_input_from_eval_string)
     {
       if (input_from_eval_string_pending)
-	{
-	  input_from_eval_string_pending = false;
+        {
+          input_from_eval_string_pending = false;
 
-	  retval = current_eval_string;
+          retval = current_eval_string;
 
-	  size_t len = retval.length ();
+          size_t len = retval.length ();
 
-	  if (len > 0 && retval[len-1] != '\n')
-	    retval.append ("\n");
-	}
+          if (len > 0 && retval[len-1] != '\n')
+            retval.append ("\n");
+        }
     }
   else
     retval = octave_gets ();
@@ -390,22 +390,22 @@ octave_read (char *buf, unsigned max_size)
 
       // Make sure input ends with a new line character.
       if (chars_left == 0 && buf[len-1] != '\n')
-	{
-	  if (len < max_size)
-	    {
-	      // There is enough room to plug the newline character in
-	      // the buffer.
-	      buf[len++] = '\n';
-	    }
-	  else
-	    {
-	      // There isn't enough room to plug the newline character
-	      // in the buffer so make sure it is returned on the next
-	      // octave_read call.
-	      pos = eol;
-	      chars_left = 1;
-	    }
-	}
+        {
+          if (len < max_size)
+            {
+              // There is enough room to plug the newline character in
+              // the buffer.
+              buf[len++] = '\n';
+            }
+          else
+            {
+              // There isn't enough room to plug the newline character
+              // in the buffer so make sure it is returned on the next
+              // octave_read call.
+              pos = eol;
+              chars_left = 1;
+            }
+        }
 
       status = len;
 
@@ -457,7 +457,7 @@ get_input_from_stdin (void)
 
 static string_vector
 generate_possible_completions (const std::string& text, std::string& prefix,
-			       std::string& hint)
+                               std::string& hint)
 {
   string_vector names;
 
@@ -490,10 +490,10 @@ is_completing_dirfns (void)
       int index = line.find (dirfns_commands[i] + " ");
 
       if (index == 0)
-	{
-	  retval = true;
-	  break;
-	}
+        {
+          retval = true;
+          break;
+        }
     }
 
   return retval;
@@ -529,7 +529,7 @@ generate_completion (const std::string& text, int state)
       // file/directory operation.
 
       if (is_completing_dirfns ())
-	name_list = string_vector ();
+        name_list = string_vector ();
       else
         name_list = generate_possible_completions (text, prefix, hint);
 
@@ -546,42 +546,42 @@ generate_completion (const std::string& text, int state)
       matches = 0;
 
       for (int i = 0; i < name_list_len; i++)
-	if (hint == name_list[i].substr (0, hint_len))
-	  matches++;
+        if (hint == name_list[i].substr (0, hint_len))
+          matches++;
     }
 
   if (name_list_total_len > 0 && matches > 0)
     {
       while (list_index < name_list_total_len)
-	{
-	  std::string name = name_list[list_index];
+        {
+          std::string name = name_list[list_index];
 
-	  list_index++;
+          list_index++;
 
-	  if (hint == name.substr (0, hint_len))
-	    {
-	      if (list_index <= name_list_len && ! prefix.empty ())
-		retval = prefix + "." + name;
-	      else
-		retval = name;
+          if (hint == name.substr (0, hint_len))
+            {
+              if (list_index <= name_list_len && ! prefix.empty ())
+                retval = prefix + "." + name;
+              else
+                retval = name;
 
-	      // FIXME -- looks_like_struct is broken for now,
-	      // so it always returns false.
+              // FIXME -- looks_like_struct is broken for now,
+              // so it always returns false.
 
-	      if (matches == 1 && looks_like_struct (retval))
- 		{
- 		  // Don't append anything, since we don't know
- 		  // whether it should be '(' or '.'.
+              if (matches == 1 && looks_like_struct (retval))
+                {
+                  // Don't append anything, since we don't know
+                  // whether it should be '(' or '.'.
 
- 		  command_editor::set_completion_append_character ('\0');
- 		}
- 	      else
- 		command_editor::set_completion_append_character
- 		  (Vcompletion_append_char);
+                  command_editor::set_completion_append_character ('\0');
+                }
+              else
+                command_editor::set_completion_append_character
+                  (Vcompletion_append_char);
 
-	      break;
-	    }
-	}
+              break;
+            }
+        }
     }
 
   return retval;
@@ -638,9 +638,9 @@ get_debug_input (const std::string& prompt)
       nm = caller->fcn_file_name ();
 
       if (nm.empty ())
-	nm = caller->name ();
+        nm = caller->name ();
       else
-	have_file = true;
+        have_file = true;
     }
   else
     curr_debug_line = -1;
@@ -650,31 +650,31 @@ get_debug_input (const std::string& prompt)
   if (! nm.empty ())
     {
       if (Vgud_mode)
-	{
-	  static char ctrl_z = 'Z' & 0x1f;
+        {
+          static char ctrl_z = 'Z' & 0x1f;
 
-	  buf << ctrl_z << ctrl_z << nm << ":" << curr_debug_line;
-	}
+          buf << ctrl_z << ctrl_z << nm << ":" << curr_debug_line;
+        }
       else
-	{
-	  // FIXME -- we should come up with a clean way to detect
-	  // that we are stopped on the no-op command that marks the
-	  // end of a function or script.
+        {
+          // FIXME -- we should come up with a clean way to detect
+          // that we are stopped on the no-op command that marks the
+          // end of a function or script.
 
-	  buf << "stopped in " << nm;
+          buf << "stopped in " << nm;
 
-	  if (curr_debug_line > 0)
-	    buf << " at line " << curr_debug_line;
+          if (curr_debug_line > 0)
+            buf << " at line " << curr_debug_line;
 
-	  if (have_file)
-	    {
-	      std::string line_buf
-		= get_file_line (nm, curr_debug_line);
+          if (have_file)
+            {
+              std::string line_buf
+                = get_file_line (nm, curr_debug_line);
 
-	      if (! line_buf.empty ())
-		buf << "\n" << curr_debug_line << ": " << line_buf;
-	    }
-	}
+              if (! line_buf.empty ())
+                buf << "\n" << curr_debug_line << ": " << line_buf;
+            }
+        }
     }
 
   std::string msg = buf.str ();
@@ -805,35 +805,35 @@ get_user_input (const octave_value_list& args, int nargout)
   if (! (error_state || input_buf.empty ()))
     {
       if (! input_from_startup_file)
-	command_history::add (input_buf);
+        command_history::add (input_buf);
 
       size_t len = input_buf.length ();
 
       octave_diary << input_buf;
 
       if (input_buf[len - 1] != '\n')
-	octave_diary << "\n";
+        octave_diary << "\n";
 
       if (len < 1)
-	return read_as_string ? octave_value ("") : octave_value (Matrix ());
+        return read_as_string ? octave_value ("") : octave_value (Matrix ());
 
       if (read_as_string)
-	{
-	  // FIXME -- fix gnu_readline and octave_gets instead!
-	  if (input_buf.length () == 1 && input_buf[0] == '\n')
-	    retval(0) = "";
-	  else
-	    retval(0) = input_buf;
-	}
+        {
+          // FIXME -- fix gnu_readline and octave_gets instead!
+          if (input_buf.length () == 1 && input_buf[0] == '\n')
+            retval(0) = "";
+          else
+            retval(0) = input_buf;
+        }
       else
-	{
-	  int parse_status = 0;
+        {
+          int parse_status = 0;
 
-	  retval = eval_string (input_buf, true, parse_status, nargout);
+          retval = eval_string (input_buf, true, parse_status, nargout);
 
-	  if (! Vdebugging && retval.length () == 0)
-	    retval(0) = Matrix ();
-	}
+          if (! Vdebugging && retval.length () == 0)
+            retval(0) = Matrix ();
+        }
     }
   else
     error ("input: reading user-input failed!");
@@ -899,11 +899,11 @@ octave_yes_or_no (const std::string& prompt)
       std::string input_buf = interactive_input (prompt_string, true);
 
       if (input_buf == "yes")
-	return true;
+        return true;
       else if (input_buf == "no")
-	return false;
+        return false;
       else
-	message (0, "Please answer yes or no.");
+        message (0, "Please answer yes or no.");
     }
 }
 
@@ -926,15 +926,15 @@ RET and can edit it until it has been confirmed.\n\
       std::string prompt;
 
       if (nargin == 1)
-	{
-	  prompt = args(0).string_value ();
+        {
+          prompt = args(0).string_value ();
 
-	  if (error_state)
-	    {
-	      error ("yes_or_no: expecting argument to be character string");
-	      return retval;
-	    }
-	}
+          if (error_state)
+            {
+              error ("yes_or_no: expecting argument to be character string");
+              return retval;
+            }
+        }
 
       retval = octave_yes_or_no (prompt);
     }
@@ -1069,40 +1069,40 @@ With no arguments, @code{echo} toggles the current echo state.\n\
     {
     case 1:
       {
-	if ((Vecho_executing_commands & ECHO_SCRIPTS)
-	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
-	  Vecho_executing_commands = ECHO_OFF;
-	else
-	  Vecho_executing_commands = ECHO_SCRIPTS;
+        if ((Vecho_executing_commands & ECHO_SCRIPTS)
+            || (Vecho_executing_commands & ECHO_FUNCTIONS))
+          Vecho_executing_commands = ECHO_OFF;
+        else
+          Vecho_executing_commands = ECHO_SCRIPTS;
       }
       break;
 
     case 2:
       {
-	std::string arg = argv[1];
+        std::string arg = argv[1];
 
-	if (arg == "on")
-	  Vecho_executing_commands = ECHO_SCRIPTS;
-	else if (arg == "off")
-	  Vecho_executing_commands = ECHO_OFF;
-	else
-	  print_usage ();
+        if (arg == "on")
+          Vecho_executing_commands = ECHO_SCRIPTS;
+        else if (arg == "off")
+          Vecho_executing_commands = ECHO_OFF;
+        else
+          print_usage ();
       }
       break;
 
     case 3:
       {
-	std::string arg = argv[1];
+        std::string arg = argv[1];
 
-	if (arg == "on" && argv[2] == "all")
-	  {
-	    int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
-	    Vecho_executing_commands = tmp;
-	  }
-	else if (arg == "off" && argv[2] == "all")
-	  Vecho_executing_commands = ECHO_OFF;
-	else
-	  print_usage ();
+        if (arg == "on" && argv[2] == "all")
+          {
+            int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
+            Vecho_executing_commands = tmp;
+          }
+        else if (arg == "off" && argv[2] == "all")
+          Vecho_executing_commands = ECHO_OFF;
+        else
+          print_usage ();
       }
       break;
 
@@ -1134,55 +1134,55 @@ a feature, not a bug.\n\
       std::string hint = args(0).string_value ();
 
       if (! error_state)
-	{
-	  int n = 32;
+        {
+          int n = 32;
 
-	  string_vector list (n);
+          string_vector list (n);
 
-	  int k = 0;
+          int k = 0;
 
-	  for (;;)
-	    {
-	      std::string cmd = generate_completion (hint, k);
+          for (;;)
+            {
+              std::string cmd = generate_completion (hint, k);
 
-	      if (! cmd.empty ())
-		{
-		  if (k == n)
-		    {
-		      n *= 2;
-		      list.resize (n);
-		    }
+              if (! cmd.empty ())
+                {
+                  if (k == n)
+                    {
+                      n *= 2;
+                      list.resize (n);
+                    }
 
-		  list[k++] = cmd;
-		}
-	      else
-		{
-		  list.resize (k);
-		  break;
-		}
-	    }
+                  list[k++] = cmd;
+                }
+              else
+                {
+                  list.resize (k);
+                  break;
+                }
+            }
 
-	  if (nargout > 0)
-	    {
-	      if (! list.empty ())
-		retval = list;
-	      else
-		retval = "";
-	    }
-	  else
-	    {
-	      // We don't use string_vector::list_in_columns here
-	      // because it will be easier for Emacs if the names
-	      // appear in a single column.
+          if (nargout > 0)
+            {
+              if (! list.empty ())
+                retval = list;
+              else
+                retval = "";
+            }
+          else
+            {
+              // We don't use string_vector::list_in_columns here
+              // because it will be easier for Emacs if the names
+              // appear in a single column.
 
-	      int len = list.length ();
+              int len = list.length ();
 
-	      for (int i = 0; i < len; i++)
-		octave_stdout << list[i] << "\n";
-	    }
+              for (int i = 0; i < len; i++)
+                octave_stdout << list[i] << "\n";
+            }
 
-	  octave_completion_matches_called = true;
-	}
+          octave_completion_matches_called = true;
+        }
     }
   else
     print_usage ();
@@ -1212,7 +1212,7 @@ for details.\n\
       std::string file = args(0).string_value ();
 
       if (! error_state)
-	command_editor::read_init_file (file);
+        command_editor::read_init_file (file);
     }
   else
     print_usage ();
@@ -1255,14 +1255,14 @@ input_event_hook (void)
       p++;
 
       if (is_valid_function (hook_fcn))
-	{
-	  if (user_data.is_defined ())
-	    feval (hook_fcn, user_data, 0);
-	  else
-	    feval (hook_fcn, octave_value_list (), 0);
-	}
+        {
+          if (user_data.is_defined ())
+            feval (hook_fcn, user_data, 0);
+          else
+            feval (hook_fcn, octave_value_list (), 0);
+        }
       else
-	hook_fcn_map.erase (p);
+        hook_fcn_map.erase (p);
     }
 
   if (hook_fcn_map.empty ())
@@ -1295,19 +1295,19 @@ arguments.\n\
       octave_value user_data;
 
       if (nargin == 2)
-	user_data = args(1);
+        user_data = args(1);
 
       std::string hook_fcn = args(0).string_value ();
 
       if (! error_state)
-	{
-	  if (hook_fcn_map.empty ())
-	    command_editor::add_event_hook (input_event_hook);
+        {
+          if (hook_fcn_map.empty ())
+            command_editor::add_event_hook (input_event_hook);
 
-	  hook_fcn_map[hook_fcn] = user_data;
-	}
+          hook_fcn_map[hook_fcn] = user_data;
+        }
       else
-	error ("add_input_event_hook: expecting string as first arg");
+        error ("add_input_event_hook: expecting string as first arg");
     }
   else
     print_usage ();
@@ -1332,20 +1332,20 @@ periodically when Octave is waiting for input.\n\
       std::string hook_fcn = args(0).string_value ();
 
       if (! error_state)
-	{
-	  hook_fcn_map_type::iterator p = hook_fcn_map.find (hook_fcn);
+        {
+          hook_fcn_map_type::iterator p = hook_fcn_map.find (hook_fcn);
 
-	  if (p != hook_fcn_map.end ())
-	    hook_fcn_map.erase (p);
-	  else
-	    error ("remove_input_event_hook: %s not found in list",
-		   hook_fcn.c_str ());
+          if (p != hook_fcn_map.end ())
+            hook_fcn_map.erase (p);
+          else
+            error ("remove_input_event_hook: %s not found in list",
+                   hook_fcn.c_str ());
 
-	  if (hook_fcn_map.empty ())
-	    command_editor::remove_event_hook (input_event_hook);
-	}
+          if (hook_fcn_map.empty ())
+            command_editor::remove_event_hook (input_event_hook);
+        }
       else
-	error ("remove_input_event_hook: expecting string as first arg");
+        error ("remove_input_event_hook: expecting string as first arg");
     }
   else
     print_usage ();

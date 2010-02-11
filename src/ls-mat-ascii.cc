@@ -78,28 +78,28 @@ get_mat_data_input_line (std::istream& is)
 
       char c;
       while (is.get (c))
-	{
-	  if (c == '\n' || c == '\r')
-	    {
-	      is.putback (c);
-	      skip_preceeding_newline (is);
-	      break;
-	    }
+        {
+          if (c == '\n' || c == '\r')
+            {
+              is.putback (c);
+              skip_preceeding_newline (is);
+              break;
+            }
 
-	  if (c == '%' || c == '#')
-	    {
-	      skip_until_newline (is, false);
-	      break;
-	    }
+          if (c == '%' || c == '#')
+            {
+              skip_until_newline (is, false);
+              break;
+            }
 
-	  if (! is.eof ())
-	    {
-	      if (! have_data && c != ' ' && c != '\t')
-		have_data = true;
+          if (! is.eof ())
+            {
+              if (! have_data && c != ' ' && c != '\t')
+                have_data = true;
 
-	      retval += c;
-	    }
-	}
+              retval += c;
+            }
+        }
     }
   while (! (have_data || is.eof ()));
 
@@ -131,50 +131,50 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
       // will not be considered as whitespace.
 
       if (beg != std::string::npos && buf[beg] == '\r' && beg == buf.length () - 1)
-	{
-	  // We had a blank line ending with a CRLF.  Handle it the
-	  // same as an empty line.
-	  beg = std::string::npos;
-	}
+        {
+          // We had a blank line ending with a CRLF.  Handle it the
+          // same as an empty line.
+          beg = std::string::npos;
+        }
 
       octave_idx_type tmp_nc = 0;
 
       while (beg != std::string::npos)
-	{
-	  tmp_nc++;
+        {
+          tmp_nc++;
 
-	  size_t end = buf.find_first_of (", \t", beg);
+          size_t end = buf.find_first_of (", \t", beg);
 
-	  if (end != std::string::npos)
-	    {
-	      beg = buf.find_first_not_of (", \t", end);
+          if (end != std::string::npos)
+            {
+              beg = buf.find_first_not_of (", \t", end);
 
-	      if (beg == std::string::npos || (buf[beg] == '\r' && 
-				  beg == buf.length () - 1))
-		{
-		  // We had a line with trailing spaces and
-		  // ending with a CRLF, so this should look like EOL,
-		  // not a new colum.
-		  break;
-		}
-	    }
-	  else
-	    break;
-	}
+              if (beg == std::string::npos || (buf[beg] == '\r' && 
+                                  beg == buf.length () - 1))
+                {
+                  // We had a line with trailing spaces and
+                  // ending with a CRLF, so this should look like EOL,
+                  // not a new colum.
+                  break;
+                }
+            }
+          else
+            break;
+        }
 
       if (tmp_nc > 0)
-	{
-	  if (nc == 0)
-	    {
-	      nc = tmp_nc;
-	      nr++;
-	    }
-	  else if (nc == tmp_nc)
-	    nr++;
-	  else
-	    error ("load: %s: inconsistent number of columns near line %d",
-		   filename.c_str (), file_line_number);
-	}
+        {
+          if (nc == 0)
+            {
+              nc = tmp_nc;
+              nr++;
+            }
+          else if (nc == tmp_nc)
+            nr++;
+          else
+            error ("load: %s: inconsistent number of columns near line %d",
+                   filename.c_str (), file_line_number);
+        }
     }
 
   if (nr == 0 || nc == 0)
@@ -197,7 +197,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
 
 std::string
 read_mat_ascii_data (std::istream& is, const std::string& filename,
-		     octave_value& tc)
+                     octave_value& tc)
 {
   std::string retval;
 
@@ -220,7 +220,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
     {
       char c = varname[i];
       if (! (isalnum (c) || c == '_'))
-	varname[i] = '_';
+        varname[i] = '_';
     }
 
   if (is_keyword (varname) || ! isalpha (varname[0]))
@@ -238,98 +238,98 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
       octave_quit ();
 
       if (! error_state && nr > 0 && nc > 0)
-	{
-	  Matrix tmp (nr, nc);
+        {
+          Matrix tmp (nr, nc);
 
-	  if (nr < 1 || nc < 1)
-	    is.clear (std::ios::badbit);
-	  else
-	    {
-	      double d;
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  std::string buf = get_mat_data_input_line (is);
+          if (nr < 1 || nc < 1)
+            is.clear (std::ios::badbit);
+          else
+            {
+              double d;
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  std::string buf = get_mat_data_input_line (is);
 
-		  std::istringstream tmp_stream (buf);
+                  std::istringstream tmp_stream (buf);
 
-		  for (octave_idx_type j = 0; j < nc; j++)
-		    {
-		      octave_quit ();
+                  for (octave_idx_type j = 0; j < nc; j++)
+                    {
+                      octave_quit ();
 
-		      d = octave_read_value<double> (tmp_stream);
+                      d = octave_read_value<double> (tmp_stream);
 
-		      if (tmp_stream || tmp_stream.eof ())
-			{
-			  tmp.elem (i, j) = d;
-			  total_count++;
+                      if (tmp_stream || tmp_stream.eof ())
+                        {
+                          tmp.elem (i, j) = d;
+                          total_count++;
 
-			  // Skip whitespace and commas.
-			  char c;
-			  while (1)
-			    {
-			      tmp_stream >> c;
+                          // Skip whitespace and commas.
+                          char c;
+                          while (1)
+                            {
+                              tmp_stream >> c;
 
-			      if (! tmp_stream)
-				break;
+                              if (! tmp_stream)
+                                break;
 
-			      if (! (c == ' ' || c == '\t' || c == ','))
-				{
-				  tmp_stream.putback (c);
-				  break;
-				}
-			    }
+                              if (! (c == ' ' || c == '\t' || c == ','))
+                                {
+                                  tmp_stream.putback (c);
+                                  break;
+                                }
+                            }
 
-			  if (tmp_stream.eof ())
-			    break;
-			}
-		      else
-			{
-			  error ("load: failed to read matrix from file `%s'",
-				 filename.c_str ());
+                          if (tmp_stream.eof ())
+                            break;
+                        }
+                      else
+                        {
+                          error ("load: failed to read matrix from file `%s'",
+                                 filename.c_str ());
 
-			  return retval;
-			}
+                          return retval;
+                        }
 
-		    }
-		}
-	    }
+                    }
+                }
+            }
 
-	  if (is || is.eof ())
-	    {
-	      // FIXME -- not sure this is best, but it works.
+          if (is || is.eof ())
+            {
+              // FIXME -- not sure this is best, but it works.
 
-	      if (is.eof ())
-		is.clear ();
+              if (is.eof ())
+                is.clear ();
 
-	      octave_idx_type expected = nr * nc;
+              octave_idx_type expected = nr * nc;
 
-	      if (expected == total_count)
-		{
-		  tc = tmp;
-		  retval = varname;
-		}
-	      else
-		error ("load: expected %d elements, found %d",
-		       expected, total_count);
-	    }
-	  else
-	    error ("load: failed to read matrix from file `%s'",
-		   filename.c_str ());
-	}
+              if (expected == total_count)
+                {
+                  tc = tmp;
+                  retval = varname;
+                }
+              else
+                error ("load: expected %d elements, found %d",
+                       expected, total_count);
+            }
+          else
+            error ("load: failed to read matrix from file `%s'",
+                   filename.c_str ());
+        }
       else
-	error ("load: unable to extract matrix size from file `%s'",
-	       filename.c_str ());
+        error ("load: unable to extract matrix size from file `%s'",
+               filename.c_str ());
     }
   else
     error ("load: unable to convert filename `%s' to valid identifier",
-	   filename.c_str ());
+           filename.c_str ());
 
   return retval;
 }
 
 bool
 save_mat_ascii_data (std::ostream& os, const octave_value& val,
-		     int precision, bool tabs)
+                     int precision, bool tabs)
 {
   bool success = true;
 
@@ -351,7 +351,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
       os.precision (precision);
 
       std::ios::fmtflags oflags
-	= os.flags (static_cast<std::ios::fmtflags> (std::ios::scientific));
+        = os.flags (static_cast<std::ios::fmtflags> (std::ios::scientific));
 
       if (tabs)
         {

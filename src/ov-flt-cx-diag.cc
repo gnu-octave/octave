@@ -86,7 +86,7 @@ octave_float_complex_diag_matrix::diag_matrix_value (bool force_conversion) cons
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       type_name (), "real matrix");
+                               type_name (), "real matrix");
 
   retval = ::real (matrix);
 
@@ -100,7 +100,7 @@ octave_float_complex_diag_matrix::float_diag_matrix_value (bool force_conversion
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-			       type_name (), "real matrix");
+                               type_name (), "real matrix");
 
   retval = ::real (matrix);
 
@@ -160,7 +160,7 @@ octave_float_complex_diag_matrix::save_binary (std::ostream& os,
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
-	st = get_save_type (max_val, min_val);
+        st = get_save_type (max_val, min_val);
     }
 
   const FloatComplex *mtmp = m.data ();
@@ -171,7 +171,7 @@ octave_float_complex_diag_matrix::save_binary (std::ostream& os,
 
 bool 
 octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
-				 oct_mach_info::float_format fmt)
+                                 oct_mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;

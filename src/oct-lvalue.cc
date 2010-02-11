@@ -46,7 +46,7 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 
 void
 octave_lvalue::set_index (const std::string& t,
-			  const std::list<octave_value_list>& i)
+                          const std::list<octave_value_list>& i)
 {
   if (idx.empty ())
     {
@@ -90,7 +90,7 @@ octave_lvalue::value (void)
             {
               octave_value_list t = val->subsref (type, idx, 1);
               if (t.length () > 0)
-                retval = t(0);	      
+                retval = t(0);        
             }
         }
     }

@@ -119,23 +119,23 @@ same_file (const std::string& f, const std::string& g)
 
 int
 almost_match (const std::string& std, const std::string& s, int min_match_len,
-	      int case_sens)
+              int case_sens)
 {
   int stdlen = std.length ();
   int slen = s.length ();
 
   return (slen <= stdlen
-	  && slen >= min_match_len
-	  && (case_sens
-	      ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
-	      : (octave_strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
+          && slen >= min_match_len
+          && (case_sens
+              ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
+              : (octave_strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
 }
 
 // Ugh.
 
 int
 keyword_almost_match (const char * const *std, int *min_len, const std::string& s,
-		      int min_toks_to_match, int max_toks)
+                      int min_toks_to_match, int max_toks)
 {
   int status = 0;
   int tok_count = 0;
@@ -150,7 +150,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
   while (*t != '\0')
     {
       if (*t == '\t')
-	*t = ' ';
+        *t = ' ';
       t++;
     }
 
@@ -177,14 +177,14 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
       beg = end + 1;
 
       while (*beg == ' ')
-	beg++;
+        beg++;
 
       if (*beg == '\0')
-	break;
+        break;
 
       tok_count++;
       if (tok_count >= max_toks)
-	goto done;
+        goto done;
 
       s2[tok_count] = beg;
     }
@@ -195,7 +195,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
   for (;;)
     {
       if (! almost_match (*s1, *s2, min_len[toks_matched], 0))
-	goto done;
+        goto done;
 
       toks_matched++;
 
@@ -203,13 +203,13 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
       s2++;
 
       if (! *s2)
-	{
-	  status = (toks_matched >= min_toks_to_match);
-	  goto done;
-	}
+        {
+          status = (toks_matched >= min_toks_to_match);
+          goto done;
+        }
 
       if (! *s1)
-	goto done;
+        goto done;
     }
 
  done:
@@ -297,30 +297,30 @@ name in the path.  If no files are found, return an empty cell array.\n\
       string_vector names = args(0).all_strings ();
 
       if (! error_state && names.length () > 0)
-	{
-	  if (nargin == 1)
-	    {
-	      std::string fname
+        {
+          if (nargin == 1)
+            {
+              std::string fname
                 = octave_env::make_absolute (load_path::find_first_of (names));
 
-	      if (fname.empty ())
-		retval = Matrix ();
-	      else
-		retval = fname;
-	    }
-	  else if (nargin == 2)
-	    {
-	      std::string opt = args(1).string_value ();
+              if (fname.empty ())
+                retval = Matrix ();
+              else
+                retval = fname;
+            }
+          else if (nargin == 2)
+            {
+              std::string opt = args(1).string_value ();
 
-	      if (! error_state && opt == "all")
-		retval = Cell (make_absolute
+              if (! error_state && opt == "all")
+                retval = Cell (make_absolute
                                (load_path::find_all_first_of (names)));
-	      else
-		error ("file_in_loadpath: invalid option");
-	    }
-	}
+              else
+                error ("file_in_loadpath: invalid option");
+            }
+        }
       else
-	error ("file_in_loadpath: expecting string as first argument");
+        error ("file_in_loadpath: expecting string as first argument");
     }
   else
     print_usage ();
@@ -363,36 +363,36 @@ name in the path.  If no files are found, return an empty cell array.\n\
       std::string path = args(0).string_value ();
 
       if (! error_state)
-	{
-	  string_vector names = args(1).all_strings ();
+        {
+          string_vector names = args(1).all_strings ();
 
-	  if (! error_state && names.length () > 0)
-	    {
-	      if (nargin == 2)
-		{
-		  std::string fname = search_path_for_file (path, names);
+          if (! error_state && names.length () > 0)
+            {
+              if (nargin == 2)
+                {
+                  std::string fname = search_path_for_file (path, names);
 
-		  if (fname.empty ())
-		    retval = Matrix ();
-		  else
-		    retval = fname;
-		}
-	      else if (nargin == 3)
-		{
-		  std::string opt = args(2).string_value ();
+                  if (fname.empty ())
+                    retval = Matrix ();
+                  else
+                    retval = fname;
+                }
+              else if (nargin == 3)
+                {
+                  std::string opt = args(2).string_value ();
 
-		  if (! error_state && opt == "all")
-		    retval = Cell (make_absolute
+                  if (! error_state && opt == "all")
+                    retval = Cell (make_absolute
                                    (search_path_for_all_files (path, names)));
-		  else
-		    error ("file_in_path: invalid option");
-		}
-	    }
-	  else
-	    error ("file_in_path: expecting string as second argument");
-	}
+                  else
+                    error ("file_in_path: invalid option");
+                }
+            }
+          else
+            error ("file_in_path: expecting string as second argument");
+        }
       else
-	error ("file_in_path: expecting string as first argument");
+        error ("file_in_path: expecting string as first argument");
     }
   else
     print_usage ();
@@ -424,23 +424,23 @@ fcn_file_in_path (const std::string& name)
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
-	{
-	  file_stat fs (name);
+        {
+          file_stat fs (name);
 
-	  if (fs.exists ())
-	    retval = name;
-	}
+          if (fs.exists ())
+            retval = name;
+        }
       else if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
-	retval = load_path::find_fcn_file (name.substr (0, len-2));
+        retval = load_path::find_fcn_file (name.substr (0, len-2));
       else
-	{
-	  std::string fname = name;
-	  size_t pos = name.find_first_of (Vfilemarker);
-	  if (pos != std::string::npos)
-	    fname = name.substr (0, pos);
+        {
+          std::string fname = name;
+          size_t pos = name.find_first_of (Vfilemarker);
+          if (pos != std::string::npos)
+            fname = name.substr (0, pos);
 
-	  retval = load_path::find_fcn_file (fname);
-	}
+          retval = load_path::find_fcn_file (fname);
+        }
     }
 
   return retval;
@@ -457,12 +457,12 @@ contents_file_in_path (const std::string& dir)
   if (dir.length () > 0)
     {
       std::string tcontents = file_ops::concat (load_path::find_dir (dir), 
-						std::string ("Contents.m"));
+                                                std::string ("Contents.m"));
 
       file_stat fs (tcontents);
 
       if (fs.exists ())
-	retval = octave_env::make_absolute (tcontents);
+        retval = octave_env::make_absolute (tcontents);
     }
 
   return retval;
@@ -481,17 +481,17 @@ oct_file_in_path (const std::string& name)
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
-	{
-	  file_stat fs (name);
+        {
+          file_stat fs (name);
 
-	  if (fs.exists ())
-	    retval = name;
-	}
+          if (fs.exists ())
+            retval = name;
+        }
       else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'o'
-	       && name [len - 2] == 'c' && name [len - 1] == 't')
-	retval = load_path::find_oct_file (name.substr (0, len-4));
+               && name [len - 2] == 'c' && name [len - 1] == 't')
+        retval = load_path::find_oct_file (name.substr (0, len-4));
       else
-	retval = load_path::find_oct_file (name);
+        retval = load_path::find_oct_file (name);
     }
 
   return retval;
@@ -510,17 +510,17 @@ mex_file_in_path (const std::string& name)
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
-	{
-	  file_stat fs (name);
+        {
+          file_stat fs (name);
 
-	  if (fs.exists ())
-	    retval = name;
-	}
+          if (fs.exists ())
+            retval = name;
+        }
       else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'm'
-	       && name [len - 2] == 'e' && name [len - 1] == 'x')
-	retval = load_path::find_mex_file (name.substr (0, len-4));
+               && name [len - 2] == 'e' && name [len - 1] == 'x')
+        retval = load_path::find_mex_file (name.substr (0, len-4));
       else
-	retval = load_path::find_mex_file (name);
+        retval = load_path::find_mex_file (name);
     }
 
   return retval;
@@ -542,64 +542,64 @@ do_string_escapes (const std::string& s)
   while (j < len)
     {
       if (s[j] == '\\' && j+1 < len)
-	{
-	  switch (s[++j])
-	    {
-	    case '0':
-	      retval[i] = '\0';
-	      break;
+        {
+          switch (s[++j])
+            {
+            case '0':
+              retval[i] = '\0';
+              break;
 
-	    case 'a':
-	      retval[i] = '\a';
-	      break;
+            case 'a':
+              retval[i] = '\a';
+              break;
 
-	    case 'b': // backspace
-	      retval[i] = '\b';
-	      break;
+            case 'b': // backspace
+              retval[i] = '\b';
+              break;
 
-	    case 'f': // formfeed
-	      retval[i] = '\f';
-	      break;
+            case 'f': // formfeed
+              retval[i] = '\f';
+              break;
 
-	    case 'n': // newline
-	      retval[i] = '\n';
-	      break;
+            case 'n': // newline
+              retval[i] = '\n';
+              break;
 
-	    case 'r': // carriage return
-	      retval[i] = '\r';
-	      break;
+            case 'r': // carriage return
+              retval[i] = '\r';
+              break;
 
-	    case 't': // horizontal tab
-	      retval[i] = '\t';
-	      break;
+            case 't': // horizontal tab
+              retval[i] = '\t';
+              break;
 
-	    case 'v': // vertical tab
-	      retval[i] = '\v';
-	      break;
+            case 'v': // vertical tab
+              retval[i] = '\v';
+              break;
 
-	    case '\\': // backslash
-	      retval[i] = '\\';
-	      break;
+            case '\\': // backslash
+              retval[i] = '\\';
+              break;
 
-	    case '\'': // quote
-	      retval[i] = '\'';
-	      break;
+            case '\'': // quote
+              retval[i] = '\'';
+              break;
 
-	    case '"': // double quote
-	      retval[i] = '"';
-	      break;
+            case '"': // double quote
+              retval[i] = '"';
+              break;
 
-	    default:
-	      warning ("unrecognized escape sequence `\\%c' --\
+            default:
+              warning ("unrecognized escape sequence `\\%c' --\
  converting to `%c'", s[j], s[j]);
-	      retval[i] = s[j];
-	      break;
-	    }
-	}
+              retval[i] = s[j];
+              break;
+            }
+        }
       else
-	{
-	  retval[i] = s[j];
-	}
+        {
+          retval[i] = s[j];
+        }
 
       i++;
       j++;
@@ -623,9 +623,9 @@ Convert special characters in @var{string} to their escaped forms.\n\
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	retval = do_string_escapes (args(0).string_value ());
+        retval = do_string_escapes (args(0).string_value ());
       else
-	error ("do_string_escapes: argument must be a string");
+        error ("do_string_escapes: argument must be a string");
     }
   else
     print_usage ();
@@ -673,10 +673,10 @@ undo_string_escape (char c)
 
     default:
       {
-	static char retval[2];
-	retval[0] = c;
-	retval[1] = '\0';
-	return retval;
+        static char retval[2];
+        retval[0] = c;
+        retval[1] = '\0';
+        return retval;
       }
     }
 }
@@ -729,9 +729,9 @@ representation.\n\
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	retval = undo_string_escapes (args(0).string_value ());
+        retval = undo_string_escapes (args(0).string_value ());
       else
-	error ("undo_string_escapes: argument must be a string");
+        error ("undo_string_escapes: argument must be a string");
     }
   else
     print_usage ();
@@ -749,7 +749,7 @@ Return true if @var{file} is an absolute filename.\n\
 
   if (args.length () == 1)
     retval = (args(0).is_string ()
-	      && octave_env::absolute_pathname (args(0).string_value ()));
+              && octave_env::absolute_pathname (args(0).string_value ()));
   else
     print_usage ();
 
@@ -766,7 +766,7 @@ Return true if @var{file} is a rooted-relative filename.\n\
 
   if (args.length () == 1)
     retval = (args(0).is_string ()
-	      && octave_env::rooted_relative_pathname (args(0).string_value ()));
+              && octave_env::rooted_relative_pathname (args(0).string_value ()));
   else
     print_usage ();
 
@@ -786,9 +786,9 @@ Return the full name of @var{file}, relative to the current directory.\n\
       std::string nm = args(0).string_value ();
 
       if (! error_state)
-	retval = octave_env::make_absolute (nm);
+        retval = octave_env::make_absolute (nm);
       else
-	error ("make_absolute_filename: expecting argument to be a file name");
+        error ("make_absolute_filename: expecting argument to be a file name");
     }      
   else
     print_usage ();
@@ -820,14 +820,14 @@ containing all the directory names that match.\n\
       dir = args(0).string_value ();
 
       if (! error_state)
-	{
-	  if (nargin == 1)
-	    retval = load_path::find_dir (dir);
-	  else if (nargin == 2)
-	    retval = Cell (load_path::find_matching_dirs (dir));
-	}
+        {
+          if (nargin == 1)
+            retval = load_path::find_dir (dir);
+          else if (nargin == 2)
+            retval = Cell (load_path::find_matching_dirs (dir));
+        }
       else
-	error ("find_dir_in_path: expecting argument to be a directory name");
+        error ("find_dir_in_path: expecting argument to be a directory name");
     }
   else
     print_usage ();
@@ -853,23 +853,23 @@ if @var{name} is not found.\n\
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	{
-	  std::string nm = args(0).string_value ();
+        {
+          std::string nm = args(0).string_value ();
 
-	  if (! error_state)
-	    retval = octave_errno::lookup (nm);
-	  else
-	    error ("errno: expecting character string argument");
-	}
+          if (! error_state)
+            retval = octave_errno::lookup (nm);
+          else
+            error ("errno: expecting character string argument");
+        }
       else
-	{
-	  int val = args(0).int_value ();
+        {
+          int val = args(0).int_value ();
 
-	  if (! error_state)
-	    retval = octave_errno::set (val);
-	  else
-	    error ("errno: expecting integer argument");
-	}
+          if (! error_state)
+            retval = octave_errno::set (val);
+          else
+            error ("errno: expecting integer argument");
+        }
     }
   else if (nargin == 0)
     retval = octave_errno::get ();
@@ -901,7 +901,7 @@ check_dimensions (octave_idx_type& nr, octave_idx_type& nc, const char *warnfor)
   if (nr < 0 || nc < 0)
     {
       warning_with_id ("Octave:neg-dim-as-zero",
-		       "%s: converting negative dimension to zero", warnfor);
+                       "%s: converting negative dimension to zero", warnfor);
 
       nr = (nr < 0) ? 0 : nr;
       nc = (nc < 0) ? 0 : nc;
@@ -924,7 +924,7 @@ check_dimensions (dim_vector& dim, const char *warnfor)
 
   if (neg)
     warning_with_id ("Octave:neg-dim-as-zero",
-		     "%s: converting negative dimension to zero", warnfor);
+                     "%s: converting negative dimension to zero", warnfor);
 }
 
 
@@ -966,7 +966,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 void
 get_dimensions (const octave_value& a, const char *warn_for,
-		octave_idx_type& nr, octave_idx_type& nc)
+                octave_idx_type& nr, octave_idx_type& nc)
 {
   if (a.is_scalar_type ())
     {
@@ -978,17 +978,17 @@ get_dimensions (const octave_value& a, const char *warn_for,
       nc = a.columns ();
 
       if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
-	{
-	  Array<double> v = a.vector_value ();
+        {
+          Array<double> v = a.vector_value ();
 
-	  if (error_state)
-	    return;
+          if (error_state)
+            return;
 
-	  nr = static_cast<octave_idx_type> (fix (v (0)));
-	  nc = static_cast<octave_idx_type> (fix (v (1)));
-	}
+          nr = static_cast<octave_idx_type> (fix (v (0)));
+          nc = static_cast<octave_idx_type> (fix (v (1)));
+        }
       else
-	error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
+        error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
   if (! error_state)
@@ -997,7 +997,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 void
 get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
+                const char *warn_for, octave_idx_type& nr, octave_idx_type& nc)
 {
   nr = a.is_empty () ? 0 : a.int_value ();
   nc = b.is_empty () ? 0 : b.int_value ();
@@ -1043,8 +1043,8 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
 
 void
 decode_subscripts (const char* name, const octave_value& arg,
-		   std::string& type_string,
-		   std::list<octave_value_list>& idx)
+                   std::string& type_string,
+                   std::list<octave_value_list>& idx)
 {
   Octave_map m = arg.map_value ();
 
@@ -1057,56 +1057,56 @@ decode_subscripts (const char* name, const octave_value& arg,
       type_string = std::string (type.length(), '\0');
 
       for (int k = 0; k < type.length (); k++)
-	{
-	  std::string item = type(k).string_value ();
+        {
+          std::string item = type(k).string_value ();
 
-	  if (! error_state)
-	    {
-	      if (item == "{}")
-		type_string[k] = '{';
-	      else if (item == "()")
-		type_string[k] = '(';
-	      else if (item == ".")
-		type_string[k] = '.';
-	      else
-		{
-		  error("%s: invalid indexing type `%s'", name, item.c_str ());
-		  return;
-		}
-	    }
-	  else
-	    {
-	      error ("%s: expecting type(%d) to be a character string",
-		     name, k+1);
-	      return;
-	    }
+          if (! error_state)
+            {
+              if (item == "{}")
+                type_string[k] = '{';
+              else if (item == "()")
+                type_string[k] = '(';
+              else if (item == ".")
+                type_string[k] = '.';
+              else
+                {
+                  error("%s: invalid indexing type `%s'", name, item.c_str ());
+                  return;
+                }
+            }
+          else
+            {
+              error ("%s: expecting type(%d) to be a character string",
+                     name, k+1);
+              return;
+            }
 
-	  octave_value_list idx_item;
+          octave_value_list idx_item;
 
-	  if (subs(k).is_string ())
-	    idx_item(0) = subs(k);
-	  else if (subs(k).is_cell ())
-	    {
-	      Cell subs_cell = subs(k).cell_value ();
+          if (subs(k).is_string ())
+            idx_item(0) = subs(k);
+          else if (subs(k).is_cell ())
+            {
+              Cell subs_cell = subs(k).cell_value ();
 
-	      for (int n = 0; n < subs_cell.length (); n++)
-		{
-		  if (subs_cell(n).is_string ()
-		      && subs_cell(n).string_value () == ":")
-		    idx_item(n) = octave_value(octave_value::magic_colon_t);
-		  else
-		    idx_item(n) = subs_cell(n);
-		}
-	    }
-	  else
-	    {
-	      error ("%s: expecting subs(%d) to be a character string or cell array",
-		     name, k+1);
-	      return;
-	    }
+              for (int n = 0; n < subs_cell.length (); n++)
+                {
+                  if (subs_cell(n).is_string ()
+                      && subs_cell(n).string_value () == ":")
+                    idx_item(n) = octave_value(octave_value::magic_colon_t);
+                  else
+                    idx_item(n) = subs_cell(n);
+                }
+            }
+          else
+            {
+              error ("%s: expecting subs(%d) to be a character string or cell array",
+                     name, k+1);
+              return;
+            }
 
-	  idx.push_back (idx_item);
-	}
+          idx.push_back (idx_item);
+        }
     }
   else
     error ("%s: second argument must be a structure with fields `type' and `subs'", name);
@@ -1122,7 +1122,7 @@ identity_matrix (octave_idx_type nr, octave_idx_type nc)
       octave_idx_type n = std::min (nr, nc);
 
       for (octave_idx_type i = 0; i < n; i++)
-	m (i, i) = 1.0;
+        m (i, i) = 1.0;
     }
 
   return m;
@@ -1138,7 +1138,7 @@ float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
       octave_idx_type n = std::min (nr, nc);
 
       for (octave_idx_type i = 0; i < n; i++)
-	m (i, i) = 1.0;
+        m (i, i) = 1.0;
     }
 
   return m;
@@ -1288,10 +1288,10 @@ octave_sleep (double seconds)
       double t;
 
       unsigned int usec
-	= static_cast<unsigned int> (modf (seconds, &t) * 1000000);
+        = static_cast<unsigned int> (modf (seconds, &t) * 1000000);
 
       unsigned int sec
-	= (t > UINT_MAX) ? UINT_MAX : static_cast<unsigned int> (t);
+        = (t > UINT_MAX) ? UINT_MAX : static_cast<unsigned int> (t);
 
       // Versions of these functions that accept unsigned int args are
       // defined in cutils.c.

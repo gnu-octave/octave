@@ -58,7 +58,7 @@ octave_char_matrix::double_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "character matrix", "real scalar");
+                                 "character matrix", "real scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
@@ -76,7 +76,7 @@ octave_char_matrix::float_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "character matrix", "real scalar");
+                                 "character matrix", "real scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
@@ -96,7 +96,7 @@ octave_char_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "character matrix", "complex scalar");
+                                 "character matrix", "complex scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
@@ -116,7 +116,7 @@ octave_char_matrix::float_complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "character matrix", "complex scalar");
+                                 "character matrix", "complex scalar");
 
       retval = static_cast<unsigned char> (matrix (0, 0));
     }
@@ -128,10 +128,10 @@ octave_char_matrix::float_complex_value (bool) const
 
 void
 octave_char_matrix::print_raw (std::ostream& os,
-			       bool pr_as_read_syntax) const
+                               bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level ());
+                         current_print_indent_level ());
 }
 
 mxArray *

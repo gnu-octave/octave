@@ -62,24 +62,24 @@ tree_cell::rvalue1 (int)
         // Optimize the single row case.
         val = row.cell_value ();
       else if (nc < 0)
-	{
-	  nc = row.length ();
+        {
+          nc = row.length ();
 
-	  val = Cell (nr, nc);
-	}
+          val = Cell (nr, nc);
+        }
       else
-	{
-	  octave_idx_type this_nc = row.length ();
+        {
+          octave_idx_type this_nc = row.length ();
 
-	  if (nc != this_nc)
-	    {
-	      ::error ("number of columns must match");
-	      return retval;
-	    }
-	}
+          if (nc != this_nc)
+            {
+              ::error ("number of columns must match");
+              return retval;
+            }
+        }
 
       for (octave_idx_type j = 0; j < nc; j++)
-	val(i,j) = row(j);
+        val(i,j) = row(j);
 
       i++;
     }
@@ -104,7 +104,7 @@ tree_cell::rvalue (int nargout)
 
 tree_expression *
 tree_cell::dup (symbol_table::scope_id scope,
-		symbol_table::context_id context) const
+                symbol_table::context_id context) const
 {
   tree_cell *new_cell = new tree_cell (0, line (), column ());
 

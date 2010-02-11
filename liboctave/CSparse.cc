@@ -67,57 +67,57 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgbtrf, ZGBTRF) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+                             const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zgbtrs, ZGBTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-			     const Complex*, const octave_idx_type&,
-			     const octave_idx_type*, Complex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
+                             const Complex*, const octave_idx_type&,
+                             const octave_idx_type*, Complex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgbcon, ZGBCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-			     const octave_idx_type&, const octave_idx_type&, Complex*, 
-			     const octave_idx_type&, const octave_idx_type*, const double&, 
-			     double&, Complex*, double*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, const octave_idx_type&, Complex*, 
+                             const octave_idx_type&, const octave_idx_type*, const double&, 
+                             double&, Complex*, double*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbtrf, ZPBTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbtrs, ZPBTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-			     const octave_idx_type&, const octave_idx_type&, Complex*, const octave_idx_type&, 
-			     Complex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, const octave_idx_type&, Complex*, const octave_idx_type&, 
+                             Complex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpbcon, ZPBCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-			     const octave_idx_type&, Complex*, const octave_idx_type&, 
-			     const double&, double&, Complex*, double*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, Complex*, const octave_idx_type&, 
+                             const double&, double&, Complex*, double*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgttrf, ZGTTRF) (const octave_idx_type&, Complex*, Complex*, Complex*,
-			     Complex*, octave_idx_type*, octave_idx_type&);
+                             Complex*, octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zgttrs, ZGTTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     const octave_idx_type&, const Complex*, const Complex*,
-			     const Complex*, const Complex*, const octave_idx_type*,
-			     Complex *, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, const Complex*, const Complex*,
+                             const Complex*, const Complex*, const octave_idx_type*,
+                             Complex *, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zptsv, ZPTSV) (const octave_idx_type&, const octave_idx_type&, double*, Complex*,
-			   Complex*, const octave_idx_type&, octave_idx_type&);
+                           Complex*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zgtsv, ZGTSV) (const octave_idx_type&, const octave_idx_type&, Complex*, Complex*,
-			   Complex*, Complex*, const octave_idx_type&, octave_idx_type&);
+                           Complex*, Complex*, const octave_idx_type&, octave_idx_type&);
 }
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseMatrix& a)
@@ -184,7 +184,7 @@ SparseComplexMatrix::operator == (const SparseComplexMatrix& a) const
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     if (cidx(i) != a.cidx(i))
-	return false;
+        return false;
 
   for (octave_idx_type i = 0; i < nz; i++)
     if (data(i) != a.data(i) || ridx(i) != a.ridx(i))
@@ -208,30 +208,30 @@ SparseComplexMatrix::is_hermitian (void) const
   if (nr == nc && nr > 0)
     {
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      octave_idx_type ri = ridx(i);
+        {
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              octave_idx_type ri = ridx(i);
 
-	      if (ri != j)
-		{
-		  bool found = false;
+              if (ri != j)
+                {
+                  bool found = false;
 
-		  for (octave_idx_type k = cidx(ri); k < cidx(ri+1); k++)
-		    {
-		      if (ridx(k) == j)
-			{
-			  if (data(i) == conj(data(k)))
-			    found = true;
-			  break;
-			}
-		    }
+                  for (octave_idx_type k = cidx(ri); k < cidx(ri+1); k++)
+                    {
+                      if (ridx(k) == j)
+                        {
+                          if (data(i) == conj(data(k)))
+                            found = true;
+                          break;
+                        }
+                    }
 
-		  if (! found)
-		    return false;
-		}
-	    }
-	}
+                  if (! found)
+                    return false;
+                }
+            }
+        }
 
       return true;
     }
@@ -268,105 +268,105 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
       idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  Complex tmp_max;
-	  double abs_max = octave_NaN;
-	  octave_idx_type idx_j = 0;
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      if (ridx(i) != idx_j)
-		break;
-	      else
-		idx_j++;
-	    }
+        {
+          Complex tmp_max;
+          double abs_max = octave_NaN;
+          octave_idx_type idx_j = 0;
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              if (ridx(i) != idx_j)
+                break;
+              else
+                idx_j++;
+            }
 
-	  if (idx_j != nr)
-	    {
-	      tmp_max = 0.;
-	      abs_max = 0.;
-	    }
+          if (idx_j != nr)
+            {
+              tmp_max = 0.;
+              abs_max = 0.;
+            }
 
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      Complex tmp = data (i);
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              Complex tmp = data (i);
 
-	      if (xisnan (tmp))
-		continue;
+              if (xisnan (tmp))
+                continue;
 
-	      double abs_tmp = std::abs (tmp);
+              double abs_tmp = std::abs (tmp);
 
-	      if (xisnan (abs_max) || abs_tmp > abs_max)
-		{
-		  idx_j = ridx (i);
-		  tmp_max = tmp;
-		  abs_max = abs_tmp;
-		}
-	    }
+              if (xisnan (abs_max) || abs_tmp > abs_max)
+                {
+                  idx_j = ridx (i);
+                  tmp_max = tmp;
+                  abs_max = abs_tmp;
+                }
+            }
 
- 	  idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_j;
-	  if (abs_max != 0.)
-	    nel++;
-	}
+          idx_arg.elem (j) = xisnan (tmp_max) ? 0 : idx_j;
+          if (abs_max != 0.)
+            nel++;
+        }
 
       result = SparseComplexMatrix (1, nc, nel);
 
       octave_idx_type ii = 0;
       result.xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  Complex tmp = elem (idx_arg(j), j);
-	  if (tmp != 0.)
-	    {
-	      result.xdata (ii) = tmp;
-	      result.xridx (ii++) = 0;
-	    }
-	  result.xcidx (j+1) = ii;
-	}
+        {
+          Complex tmp = elem (idx_arg(j), j);
+          if (tmp != 0.)
+            {
+              result.xdata (ii) = tmp;
+              result.xridx (ii++) = 0;
+            }
+          result.xcidx (j+1) = ii;
+        }
     }
   else
     {
       idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
-	idx_arg.elem(ridx(i)) = -1;
+        idx_arg.elem(ridx(i)) = -1;
 
       for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    if (idx_arg.elem(i) != -1)
-	      continue;
-	    bool found = false;
-	    for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
-	      if (ridx(k) == i)
-		{
-		  found = true;
-		  break;
-		}
-	    
-	    if (!found)
-	      idx_arg.elem(i) = j;
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            if (idx_arg.elem(i) != -1)
+              continue;
+            bool found = false;
+            for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
+              if (ridx(k) == i)
+                {
+                  found = true;
+                  break;
+                }
+            
+            if (!found)
+              idx_arg.elem(i) = j;
 
-	  }
+          }
 
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      octave_idx_type ir = ridx (i);
-	      octave_idx_type ix = idx_arg.elem (ir);
-	      Complex tmp = data (i);
+        {
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              octave_idx_type ir = ridx (i);
+              octave_idx_type ix = idx_arg.elem (ir);
+              Complex tmp = data (i);
 
-	      if (xisnan (tmp))
-		continue;
-	      else if (ix == -1 || std::abs(tmp) > std::abs(elem (ir, ix)))
-		idx_arg.elem (ir) = j;
-	    }
-	}
+              if (xisnan (tmp))
+                continue;
+              else if (ix == -1 || std::abs(tmp) > std::abs(elem (ir, ix)))
+                idx_arg.elem (ir) = j;
+            }
+        }
 
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nr; j++)
-	if (idx_arg.elem(j) == -1 || elem (j, idx_arg.elem (j)) != 0.)
-	  nel++;
+        if (idx_arg.elem(j) == -1 || elem (j, idx_arg.elem (j)) != 0.)
+          nel++;
 
       result = SparseComplexMatrix (nr, 1, nel);
 
@@ -374,23 +374,23 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
       result.xcidx (0) = 0;
       result.xcidx (1) = nel;
       for (octave_idx_type j = 0; j < nr; j++)
-	{
-	  if (idx_arg(j) == -1)
-	    {
-	      idx_arg(j) = 0;
-	      result.xdata (ii) = Complex_NaN_result;
-	      result.xridx (ii++) = j;
-	    }
-	  else
-	    {
-	      Complex tmp = elem (j, idx_arg(j));
-	      if (tmp != 0.)
-		{
-		  result.xdata (ii) = tmp;
-		  result.xridx (ii++) = j;
-		}
-	    }
-	}
+        {
+          if (idx_arg(j) == -1)
+            {
+              idx_arg(j) = 0;
+              result.xdata (ii) = Complex_NaN_result;
+              result.xridx (ii++) = j;
+            }
+          else
+            {
+              Complex tmp = elem (j, idx_arg(j));
+              if (tmp != 0.)
+                {
+                  result.xdata (ii) = tmp;
+                  result.xridx (ii++) = j;
+                }
+            }
+        }
     }
 
   return result;
@@ -423,105 +423,105 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
       idx_arg.clear (1, nc);
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  Complex tmp_min;
-	  double abs_min = octave_NaN;
-	  octave_idx_type idx_j = 0;
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      if (ridx(i) != idx_j)
-		break;
-	      else
-		idx_j++;
-	    }
+        {
+          Complex tmp_min;
+          double abs_min = octave_NaN;
+          octave_idx_type idx_j = 0;
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              if (ridx(i) != idx_j)
+                break;
+              else
+                idx_j++;
+            }
 
-	  if (idx_j != nr)
-	    {
-	      tmp_min = 0.;
-	      abs_min = 0.;
-	    }
+          if (idx_j != nr)
+            {
+              tmp_min = 0.;
+              abs_min = 0.;
+            }
 
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      Complex tmp = data (i);
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              Complex tmp = data (i);
 
-	      if (xisnan (tmp))
-		continue;
+              if (xisnan (tmp))
+                continue;
 
-	      double abs_tmp = std::abs (tmp);
+              double abs_tmp = std::abs (tmp);
 
-	      if (xisnan (abs_min) || abs_tmp < abs_min)
-		{
-		  idx_j = ridx (i);
-		  tmp_min = tmp;
-		  abs_min = abs_tmp;
-		}
-	    }
+              if (xisnan (abs_min) || abs_tmp < abs_min)
+                {
+                  idx_j = ridx (i);
+                  tmp_min = tmp;
+                  abs_min = abs_tmp;
+                }
+            }
 
- 	  idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_j;
-	  if (abs_min != 0.)
-	    nel++;
-	}
+          idx_arg.elem (j) = xisnan (tmp_min) ? 0 : idx_j;
+          if (abs_min != 0.)
+            nel++;
+        }
 
       result = SparseComplexMatrix (1, nc, nel);
 
       octave_idx_type ii = 0;
       result.xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  Complex tmp = elem (idx_arg(j), j);
-	  if (tmp != 0.)
-	    {
-	      result.xdata (ii) = tmp;
-	      result.xridx (ii++) = 0;
-	    }
-	  result.xcidx (j+1) = ii;
-	}
+        {
+          Complex tmp = elem (idx_arg(j), j);
+          if (tmp != 0.)
+            {
+              result.xdata (ii) = tmp;
+              result.xridx (ii++) = 0;
+            }
+          result.xcidx (j+1) = ii;
+        }
     }
   else
     {
       idx_arg.resize_fill (nr, 1, 0);
 
       for (octave_idx_type i = cidx(0); i < cidx(1); i++)
-	idx_arg.elem(ridx(i)) = -1;
+        idx_arg.elem(ridx(i)) = -1;
 
       for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    if (idx_arg.elem(i) != -1)
-	      continue;
-	    bool found = false;
-	    for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
-	      if (ridx(k) == i)
-		{
-		  found = true;
-		  break;
-		}
-	    
-	    if (!found)
-	      idx_arg.elem(i) = j;
+        for (octave_idx_type i = 0; i < nr; i++)
+          {
+            if (idx_arg.elem(i) != -1)
+              continue;
+            bool found = false;
+            for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
+              if (ridx(k) == i)
+                {
+                  found = true;
+                  break;
+                }
+            
+            if (!found)
+              idx_arg.elem(i) = j;
 
-	  }
+          }
 
       for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	    {
-	      octave_idx_type ir = ridx (i);
-	      octave_idx_type ix = idx_arg.elem (ir);
-	      Complex tmp = data (i);
+        {
+          for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+            {
+              octave_idx_type ir = ridx (i);
+              octave_idx_type ix = idx_arg.elem (ir);
+              Complex tmp = data (i);
 
-	      if (xisnan (tmp))
-		continue;
-	      else if (ix == -1 || std::abs(tmp) < std::abs(elem (ir, ix)))
-		idx_arg.elem (ir) = j;
-	    }
-	}
+              if (xisnan (tmp))
+                continue;
+              else if (ix == -1 || std::abs(tmp) < std::abs(elem (ir, ix)))
+                idx_arg.elem (ir) = j;
+            }
+        }
 
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nr; j++)
-	if (idx_arg.elem(j) == -1 || elem (j, idx_arg.elem (j)) != 0.)
-	  nel++;
+        if (idx_arg.elem(j) == -1 || elem (j, idx_arg.elem (j)) != 0.)
+          nel++;
 
       result = SparseComplexMatrix (nr, 1, nel);
 
@@ -529,23 +529,23 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
       result.xcidx (0) = 0;
       result.xcidx (1) = nel;
       for (octave_idx_type j = 0; j < nr; j++)
-	{
-	  if (idx_arg(j) == -1)
-	    {
-	      idx_arg(j) = 0;
-	      result.xdata (ii) = Complex_NaN_result;
-	      result.xridx (ii++) = j;
-	    }
-	  else
-	    {
-	      Complex tmp = elem (j, idx_arg(j));
-	      if (tmp != 0.)
-		{
-		  result.xdata (ii) = tmp;
-		  result.xridx (ii++) = j;
-		}
-	    }
-	}
+        {
+          if (idx_arg(j) == -1)
+            {
+              idx_arg(j) = 0;
+              result.xdata (ii) = Complex_NaN_result;
+              result.xridx (ii++) = j;
+            }
+          else
+            {
+              Complex tmp = elem (j, idx_arg(j));
+              if (tmp != 0.)
+                {
+                  result.xdata (ii) = tmp;
+                  result.xridx (ii++) = j;
+                }
+            }
+        }
     }
 
   return result;
@@ -614,7 +614,7 @@ SparseComplexMatrix::insert (const SparseComplexMatrix& a, const Array<octave_id
 
 SparseComplexMatrix
 SparseComplexMatrix::concat (const SparseComplexMatrix& rb, 
-			     const Array<octave_idx_type>& ra_idx)
+                             const Array<octave_idx_type>& ra_idx)
 {
   // Don't use numel to avoid all possiblity of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
@@ -668,9 +668,9 @@ SparseComplexMatrix::hermitian (void) const
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
       {
-	octave_idx_type q = retval.xcidx (ridx (k) + 1)++;
-	retval.xridx (q) = j;
-	retval.xdata (q) = conj (data (k));
+        octave_idx_type q = retval.xcidx (ridx (k) + 1)++;
+        retval.xridx (q) = j;
+        retval.xdata (q) = conj (data (k));
       }
   assert (nnz () == retval.xcidx (nr));
   // retval.xcidx[1:nr] holds row entry *end* offsets for rows 0:(nr-1)
@@ -725,8 +725,8 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 
 SparseComplexMatrix 
 SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info, 
-			double& rcond, const bool,
-			const bool calccond) const
+                        double& rcond, const bool,
+                        const bool calccond) const
 {
   SparseComplexMatrix retval;
 
@@ -743,35 +743,35 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
       mattyp.info ();
 
       if (typ == MatrixType::Diagonal ||
-	  typ == MatrixType::Permuted_Diagonal)
-	{
-	  if (typ == MatrixType::Permuted_Diagonal)
-	    retval = transpose();
-	  else
-	    retval = *this;
-	      
-	  // Force make_unique to be called
-	  Complex *v = retval.data();
+          typ == MatrixType::Permuted_Diagonal)
+        {
+          if (typ == MatrixType::Permuted_Diagonal)
+            retval = transpose();
+          else
+            retval = *this;
+              
+          // Force make_unique to be called
+          Complex *v = retval.data();
 
-	  if (calccond)
-	    {
-	      double dmax = 0., dmin = octave_Inf; 
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  double tmp = std::abs(v[i]);
-		  if (tmp > dmax)
-		    dmax = tmp;
-		  if (tmp < dmin)
-		    dmin = tmp;
-		}
-	      rcond = dmin / dmax;
-	    }
+          if (calccond)
+            {
+              double dmax = 0., dmin = octave_Inf; 
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  double tmp = std::abs(v[i]);
+                  if (tmp > dmax)
+                    dmax = tmp;
+                  if (tmp < dmin)
+                    dmin = tmp;
+                }
+              rcond = dmin / dmax;
+            }
 
-	  for (octave_idx_type i = 0; i < nr; i++)
-	    v[i] = 1.0 / v[i];
-	}
+          for (octave_idx_type i = 0; i < nr; i++)
+            v[i] = 1.0 / v[i];
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -779,8 +779,8 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 
 SparseComplexMatrix 
 SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info, 
-			       double& rcond, const bool,
-			       const bool calccond) const
+                               double& rcond, const bool,
+                               const bool calccond) const
 {
   SparseComplexMatrix retval;
 
@@ -797,256 +797,256 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
       mattyp.info ();
 
       if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper ||
-	  typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
+          typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
 
-	  if (calccond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calccond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
-	    {
-	      octave_idx_type nz = nnz ();
-	      octave_idx_type cx = 0;
-	      octave_idx_type nz2 = nz;
-	      retval = SparseComplexMatrix (nr, nc, nz2);
+          if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+            {
+              octave_idx_type nz = nnz ();
+              octave_idx_type cx = 0;
+              octave_idx_type nz2 = nz;
+              retval = SparseComplexMatrix (nr, nc, nz2);
 
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  octave_quit ();
-		  // place the 1 in the identity position
-		  octave_idx_type cx_colstart = cx;
-	  
-		  if (cx == nz2)
-		    {
-		      nz2 *= 2;
-		      retval.change_capacity (nz2);
-		    }
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  octave_quit ();
+                  // place the 1 in the identity position
+                  octave_idx_type cx_colstart = cx;
+          
+                  if (cx == nz2)
+                    {
+                      nz2 *= 2;
+                      retval.change_capacity (nz2);
+                    }
 
-		  retval.xcidx(i) = cx;
-		  retval.xridx(cx) = i;
-		  retval.xdata(cx) = 1.0;
-		  cx++;
+                  retval.xcidx(i) = cx;
+                  retval.xridx(cx) = i;
+                  retval.xdata(cx) = 1.0;
+                  cx++;
 
-		  // iterate accross columns of input matrix
-		  for (octave_idx_type j = i+1; j < nr; j++) 
-		    {
-		      Complex v = 0.;
-		      // iterate to calculate sum
-		      octave_idx_type colXp = retval.xcidx(i);
-		      octave_idx_type colUp = cidx(j);
-		      octave_idx_type rpX, rpU;
+                  // iterate accross columns of input matrix
+                  for (octave_idx_type j = i+1; j < nr; j++) 
+                    {
+                      Complex v = 0.;
+                      // iterate to calculate sum
+                      octave_idx_type colXp = retval.xcidx(i);
+                      octave_idx_type colUp = cidx(j);
+                      octave_idx_type rpX, rpU;
 
-		      if (cidx(j) == cidx(j+1))
-			{
-			  (*current_liboctave_error_handler) 
-			    ("division by zero");
-			  goto inverse_singular;
-			}
+                      if (cidx(j) == cidx(j+1))
+                        {
+                          (*current_liboctave_error_handler) 
+                            ("division by zero");
+                          goto inverse_singular;
+                        }
 
-		      do
-			{
-			  octave_quit ();
-			  rpX = retval.xridx(colXp);
-			  rpU = ridx(colUp);
+                      do
+                        {
+                          octave_quit ();
+                          rpX = retval.xridx(colXp);
+                          rpU = ridx(colUp);
 
-			  if (rpX < rpU) 
-			    colXp++;
-			  else if (rpX > rpU) 
-			    colUp++;
-			  else 
-			    {
-			      v -= retval.xdata(colXp) * data(colUp);
-			      colXp++;
-			      colUp++;
-			    }
-			} while ((rpX<j) && (rpU<j) && 
-				 (colXp<cx) && (colUp<nz));
+                          if (rpX < rpU) 
+                            colXp++;
+                          else if (rpX > rpU) 
+                            colUp++;
+                          else 
+                            {
+                              v -= retval.xdata(colXp) * data(colUp);
+                              colXp++;
+                              colUp++;
+                            }
+                        } while ((rpX<j) && (rpU<j) && 
+                                 (colXp<cx) && (colUp<nz));
 
 
-		      // get A(m,m)
-		      if (typ == MatrixType::Upper)
-			colUp = cidx(j+1) - 1;
-		      else
-			colUp = cidx(j);
-		      Complex pivot = data(colUp);
-		      if (pivot == 0. || ridx(colUp) != j) 
-			{
-			  (*current_liboctave_error_handler) 
-			    ("division by zero");
-			  goto inverse_singular;
-			}
+                      // get A(m,m)
+                      if (typ == MatrixType::Upper)
+                        colUp = cidx(j+1) - 1;
+                      else
+                        colUp = cidx(j);
+                      Complex pivot = data(colUp);
+                      if (pivot == 0. || ridx(colUp) != j) 
+                        {
+                          (*current_liboctave_error_handler) 
+                            ("division by zero");
+                          goto inverse_singular;
+                        }
 
-		      if (v != 0.)
-			{
-			  if (cx == nz2)
-			    {
-			      nz2 *= 2;
-			      retval.change_capacity (nz2);
-			    }
+                      if (v != 0.)
+                        {
+                          if (cx == nz2)
+                            {
+                              nz2 *= 2;
+                              retval.change_capacity (nz2);
+                            }
 
-			  retval.xridx(cx) = j;
-			  retval.xdata(cx) = v / pivot;
-			  cx++;
-			}
-		    }
+                          retval.xridx(cx) = j;
+                          retval.xdata(cx) = v / pivot;
+                          cx++;
+                        }
+                    }
 
-		  // get A(m,m)
-		  octave_idx_type colUp;
-		  if (typ == MatrixType::Upper)
-		    colUp = cidx(i+1) - 1;
-		  else
-		    colUp = cidx(i);
-		  Complex pivot = data(colUp);
-		  if (pivot == 0. || ridx(colUp) != i) 
-		    {
-		      (*current_liboctave_error_handler) ("division by zero");
-		      goto inverse_singular;
-		    }
+                  // get A(m,m)
+                  octave_idx_type colUp;
+                  if (typ == MatrixType::Upper)
+                    colUp = cidx(i+1) - 1;
+                  else
+                    colUp = cidx(i);
+                  Complex pivot = data(colUp);
+                  if (pivot == 0. || ridx(colUp) != i) 
+                    {
+                      (*current_liboctave_error_handler) ("division by zero");
+                      goto inverse_singular;
+                    }
 
-		  if (pivot != 1.0)
-		    for (octave_idx_type j = cx_colstart; j < cx; j++)
-		      retval.xdata(j) /= pivot;
-		}
-	      retval.xcidx(nr) = cx;
-	      retval.maybe_compress ();
-	    }
-	  else
-	    {
-	      octave_idx_type nz = nnz ();
-	      octave_idx_type cx = 0;
-	      octave_idx_type nz2 = nz;
-	      retval = SparseComplexMatrix (nr, nc, nz2);
+                  if (pivot != 1.0)
+                    for (octave_idx_type j = cx_colstart; j < cx; j++)
+                      retval.xdata(j) /= pivot;
+                }
+              retval.xcidx(nr) = cx;
+              retval.maybe_compress ();
+            }
+          else
+            {
+              octave_idx_type nz = nnz ();
+              octave_idx_type cx = 0;
+              octave_idx_type nz2 = nz;
+              retval = SparseComplexMatrix (nr, nc, nz2);
 
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
+              OCTAVE_LOCAL_BUFFER (Complex, work, nr);
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
-	      octave_idx_type *perm = mattyp.triangular_perm();
-	      if (typ == MatrixType::Permuted_Upper)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    rperm[perm[i]] = i;
-		}
-	      else
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    rperm[i] = perm[i];
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    perm[rperm[i]] = i;
-		}
+              octave_idx_type *perm = mattyp.triangular_perm();
+              if (typ == MatrixType::Permuted_Upper)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    rperm[perm[i]] = i;
+                }
+              else
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    rperm[i] = perm[i];
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    perm[rperm[i]] = i;
+                }
 
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  octave_quit ();
-		  octave_idx_type iidx = rperm[i];
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  octave_quit ();
+                  octave_idx_type iidx = rperm[i];
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    work[j] = 0.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    work[j] = 0.;
 
-		  // place the 1 in the identity position
-		  work[iidx] = 1.0;
+                  // place the 1 in the identity position
+                  work[iidx] = 1.0;
 
-		  // iterate accross columns of input matrix
-		  for (octave_idx_type j = iidx+1; j < nr; j++) 
-		    {
-		      Complex v = 0.;
-		      octave_idx_type jidx = perm[j];
-		      // iterate to calculate sum
-		      for (octave_idx_type k = cidx(jidx); 
-			   k < cidx(jidx+1); k++)
-			{
-			  octave_quit ();
-			  v -= work[ridx(k)] * data(k);
-			}
+                  // iterate accross columns of input matrix
+                  for (octave_idx_type j = iidx+1; j < nr; j++) 
+                    {
+                      Complex v = 0.;
+                      octave_idx_type jidx = perm[j];
+                      // iterate to calculate sum
+                      for (octave_idx_type k = cidx(jidx); 
+                           k < cidx(jidx+1); k++)
+                        {
+                          octave_quit ();
+                          v -= work[ridx(k)] * data(k);
+                        }
 
-		      // get A(m,m)
-		      Complex pivot;
-		      if (typ == MatrixType::Permuted_Upper)
-			pivot = data(cidx(jidx+1) - 1);
-		      else
-			pivot = data(cidx(jidx));
-		      if (pivot == 0.) 
-			{
-			  (*current_liboctave_error_handler) 
-			    ("division by zero");
-			  goto inverse_singular;
-			}
+                      // get A(m,m)
+                      Complex pivot;
+                      if (typ == MatrixType::Permuted_Upper)
+                        pivot = data(cidx(jidx+1) - 1);
+                      else
+                        pivot = data(cidx(jidx));
+                      if (pivot == 0.) 
+                        {
+                          (*current_liboctave_error_handler) 
+                            ("division by zero");
+                          goto inverse_singular;
+                        }
 
-		      work[j] = v / pivot;
-		    }
+                      work[j] = v / pivot;
+                    }
 
-		  // get A(m,m)
-		  octave_idx_type colUp;
-		  if (typ == MatrixType::Permuted_Upper)
-		    colUp = cidx(perm[iidx]+1) - 1;
-		  else
-		    colUp = cidx(perm[iidx]);		  
+                  // get A(m,m)
+                  octave_idx_type colUp;
+                  if (typ == MatrixType::Permuted_Upper)
+                    colUp = cidx(perm[iidx]+1) - 1;
+                  else
+                    colUp = cidx(perm[iidx]);             
 
-  		  Complex pivot = data(colUp);
-		  if (pivot == 0.)
-		    {
-		      (*current_liboctave_error_handler) 
-			("division by zero");
-		      goto inverse_singular;
-		    }
+                  Complex pivot = data(colUp);
+                  if (pivot == 0.)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("division by zero");
+                      goto inverse_singular;
+                    }
 
-		  octave_idx_type new_cx = cx;
-		  for (octave_idx_type j = iidx; j < nr; j++)
-		    if (work[j] != 0.0)
-		      {
-			new_cx++;
-			if (pivot != 1.0)
-			  work[j] /= pivot;
-		      }
+                  octave_idx_type new_cx = cx;
+                  for (octave_idx_type j = iidx; j < nr; j++)
+                    if (work[j] != 0.0)
+                      {
+                        new_cx++;
+                        if (pivot != 1.0)
+                          work[j] /= pivot;
+                      }
 
-		  if (cx < new_cx)
-		    {
-		      nz2 = (2*nz2 < new_cx ? new_cx : 2*nz2);
-		      retval.change_capacity (nz2);
-		    }
+                  if (cx < new_cx)
+                    {
+                      nz2 = (2*nz2 < new_cx ? new_cx : 2*nz2);
+                      retval.change_capacity (nz2);
+                    }
 
-		  retval.xcidx(i) = cx;
-		  for (octave_idx_type j = iidx; j < nr; j++)
-		    if (work[j] != 0.)
-		      {
-			retval.xridx(cx) = j;
-			retval.xdata(cx++) = work[j];
-		      }
-		}
+                  retval.xcidx(i) = cx;
+                  for (octave_idx_type j = iidx; j < nr; j++)
+                    if (work[j] != 0.)
+                      {
+                        retval.xridx(cx) = j;
+                        retval.xdata(cx++) = work[j];
+                      }
+                }
 
-	      retval.xcidx(nr) = cx;
-	      retval.maybe_compress ();
-	    }
+              retval.xcidx(nr) = cx;
+              retval.maybe_compress ();
+            }
 
-	  if (calccond)
-	    {
-	      // Calculate the 1-norm of inverse matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = retval.cidx(j); 
-		       i < retval.cidx(j+1); i++)
-		    atmp += std::abs(retval.data(i));
-		  if (atmp > ainvnorm)
-		    ainvnorm = atmp;
-		}
+          if (calccond)
+            {
+              // Calculate the 1-norm of inverse matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = retval.cidx(j); 
+                       i < retval.cidx(j+1); i++)
+                    atmp += std::abs(retval.data(i));
+                  if (atmp > ainvnorm)
+                    ainvnorm = atmp;
+                }
 
-	      rcond = 1. / ainvnorm / anorm;     
-	    }
-	}
+              rcond = 1. / ainvnorm / anorm;     
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1057,7 +1057,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 
 SparseComplexMatrix
 SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info, 
-			      double& rcond, int, int calc_cond) const
+                              double& rcond, int, int calc_cond) const
 {
   int typ = mattype.type (false);
   SparseComplexMatrix ret;
@@ -1077,43 +1077,43 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   else
     {
       if (mattype.is_hermitian())
-	{
-	  MatrixType tmp_typ (MatrixType::Upper);
-	  SparseComplexCHOL fact (*this, info, false);
-	  rcond = fact.rcond();
-	  if (info == 0)
-	    {
-	      double rcond2;
-	      SparseMatrix Q = fact.Q();
-	      SparseComplexMatrix InvL = fact.L().transpose().
-		tinverse(tmp_typ, info, rcond2, true, false);
-	      ret = Q * InvL.hermitian() * InvL * Q.transpose();
-	    }
-	  else
-	    {
-	      // Matrix is either singular or not positive definite
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Full;
-	    }
-	}
+        {
+          MatrixType tmp_typ (MatrixType::Upper);
+          SparseComplexCHOL fact (*this, info, false);
+          rcond = fact.rcond();
+          if (info == 0)
+            {
+              double rcond2;
+              SparseMatrix Q = fact.Q();
+              SparseComplexMatrix InvL = fact.L().transpose().
+                tinverse(tmp_typ, info, rcond2, true, false);
+              ret = Q * InvL.hermitian() * InvL * Q.transpose();
+            }
+          else
+            {
+              // Matrix is either singular or not positive definite
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+        }
 
       if (!mattype.is_hermitian())
-	{
-	  octave_idx_type n = rows();
-	  ColumnVector Qinit(n);
-	  for (octave_idx_type i = 0; i < n; i++)
-	    Qinit(i) = i;
+        {
+          octave_idx_type n = rows();
+          ColumnVector Qinit(n);
+          for (octave_idx_type i = 0; i < n; i++)
+            Qinit(i) = i;
 
-	  MatrixType tmp_typ (MatrixType::Upper);
-	  SparseComplexLU fact (*this, Qinit, Matrix (), false, false);
-	  rcond = fact.rcond();
-	  double rcond2;
-	  SparseComplexMatrix InvL = fact.L().transpose().
-	    tinverse(tmp_typ, info, rcond2, true, false);
-	  SparseComplexMatrix InvU = fact.U().
-	    tinverse(tmp_typ, info, rcond2, true, false).transpose();
-	  ret = fact.Pc().transpose() * InvU * InvL * fact.Pr();
-	}
+          MatrixType tmp_typ (MatrixType::Upper);
+          SparseComplexLU fact (*this, Qinit, Matrix (), false, false);
+          rcond = fact.rcond();
+          double rcond2;
+          SparseComplexMatrix InvL = fact.L().transpose().
+            tinverse(tmp_typ, info, rcond2, true, false);
+          SparseComplexMatrix InvU = fact.U().
+            tinverse(tmp_typ, info, rcond2, true, false).transpose();
+          ret = fact.Pc().transpose() * InvU * InvL * fact.Pr();
+        }
     }
 
   return ret;
@@ -1158,19 +1158,19 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 
       double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
-	Control (UMFPACK_PRL) = tmp;
+        Control (UMFPACK_PRL) = tmp;
 
       tmp = octave_sparse_params::get_key ("piv_tol");
       if (!xisnan (tmp))
-	{
-	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
-	  Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
-	}
+        {
+          Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
+          Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+        }
 
       // Set whether we are allowed to modify Q or not
       tmp = octave_sparse_params::get_key ("autoamd");
       if (!xisnan (tmp))
-	Control (UMFPACK_FIXQ) = tmp;
+        Control (UMFPACK_FIXQ) = tmp;
 
       // Turn-off UMFPACK scaling for LU 
       Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
@@ -1182,72 +1182,72 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
       const Complex *Ax = data ();
 
       UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai, 
-				     reinterpret_cast<const double *> (Ax), 
-				     0, 1, control);
+                                     reinterpret_cast<const double *> (Ax), 
+                                     0, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
       int status = UMFPACK_ZNAME (qsymbolic) 
-	(nr, nc, Ap, Ai, reinterpret_cast<const double *> (Ax), 0, 
-	 0, &Symbolic, control, info);
+        (nr, nc, Ap, Ai, reinterpret_cast<const double *> (Ax), 0, 
+         0, &Symbolic, control, info);
 
       if (status < 0)
-	{
-	  (*current_liboctave_error_handler) 
-	    ("SparseComplexMatrix::determinant symbolic factorization failed");
+        {
+          (*current_liboctave_error_handler) 
+            ("SparseComplexMatrix::determinant symbolic factorization failed");
 
-	  UMFPACK_ZNAME (report_status) (control, status);
-	  UMFPACK_ZNAME (report_info) (control, info);
+          UMFPACK_ZNAME (report_status) (control, status);
+          UMFPACK_ZNAME (report_info) (control, info);
 
-	  UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
-	}
+          UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
+        }
       else
-	{
-	  UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
+        {
+          UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
 
-	  void *Numeric;
-	  status
-	    = UMFPACK_ZNAME (numeric) (Ap, Ai,
-				       reinterpret_cast<const double *> (Ax),
-				       0, Symbolic, &Numeric, control, info) ;
-	  UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
+          void *Numeric;
+          status
+            = UMFPACK_ZNAME (numeric) (Ap, Ai,
+                                       reinterpret_cast<const double *> (Ax),
+                                       0, Symbolic, &Numeric, control, info) ;
+          UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
-	  rcond = Info (UMFPACK_RCOND);
+          rcond = Info (UMFPACK_RCOND);
 
-	  if (status < 0)
-	    {
-	      (*current_liboctave_error_handler) 
-		("SparseComplexMatrix::determinant numeric factorization failed");
+          if (status < 0)
+            {
+              (*current_liboctave_error_handler) 
+                ("SparseComplexMatrix::determinant numeric factorization failed");
 
-	      UMFPACK_ZNAME (report_status) (control, status);
-	      UMFPACK_ZNAME (report_info) (control, info);
+              UMFPACK_ZNAME (report_status) (control, status);
+              UMFPACK_ZNAME (report_info) (control, info);
 
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	  else
-	    {
-	      UMFPACK_ZNAME (report_numeric) (Numeric, control);
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+          else
+            {
+              UMFPACK_ZNAME (report_numeric) (Numeric, control);
 
-	      double c10[2], e10;
+              double c10[2], e10;
 
               status = UMFPACK_ZNAME (get_determinant) (c10, 0, &e10,
                                                         Numeric, info);
 
-	      if (status < 0)
-		{
-		  (*current_liboctave_error_handler) 
-		    ("SparseComplexMatrix::determinant error calculating determinant");
-		  
-		  UMFPACK_ZNAME (report_status) (control, status);
-		  UMFPACK_ZNAME (report_info) (control, info);
-		}
-	      else
-		retval = ComplexDET (Complex (c10[0], c10[1]), e10, 10);
-		  
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	}
+              if (status < 0)
+                {
+                  (*current_liboctave_error_handler) 
+                    ("SparseComplexMatrix::determinant error calculating determinant");
+                  
+                  UMFPACK_ZNAME (report_status) (control, status);
+                  UMFPACK_ZNAME (report_info) (control, info);
+                }
+              else
+                retval = ComplexDET (Complex (c10[0], c10[1]), e10, 10);
+                  
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+        }
     }
 #else
   (*current_liboctave_error_handler) ("UMFPACK not installed");
@@ -1258,8 +1258,8 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 
 ComplexMatrix
 SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler, bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler, bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1280,37 +1280,37 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Diagonal ||
-	  typ == MatrixType::Permuted_Diagonal)
-	{
-	  retval.resize (nc, b.cols(), Complex(0.,0.));
-	  if (typ == MatrixType::Diagonal)
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-		for (octave_idx_type i = 0; i < nm; i++)
-		  retval(i,j) = b(i,j) / data (i);
-	  else
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      for (octave_idx_type k = 0; k < nc; k++)
-		for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-		  retval(k,j) = b(ridx(i),j) / data (i);
-	    
-	  if (calc_cond)
-	    {
-	      double dmax = 0., dmin = octave_Inf; 
-	      for (octave_idx_type i = 0; i < nm; i++)
-		{
-		  double tmp = std::abs(data(i));
-		  if (tmp > dmax)
-		    dmax = tmp;
-		  if (tmp < dmin)
-		    dmin = tmp;
-		}
-	      rcond = dmin / dmax;
-	    }
-	  else
-	    rcond = 1.0;
-	}
+          typ == MatrixType::Permuted_Diagonal)
+        {
+          retval.resize (nc, b.cols(), Complex(0.,0.));
+          if (typ == MatrixType::Diagonal)
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+                for (octave_idx_type i = 0; i < nm; i++)
+                  retval(i,j) = b(i,j) / data (i);
+          else
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              for (octave_idx_type k = 0; k < nc; k++)
+                for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                  retval(k,j) = b(ridx(i),j) / data (i);
+            
+          if (calc_cond)
+            {
+              double dmax = 0., dmin = octave_Inf; 
+              for (octave_idx_type i = 0; i < nm; i++)
+                {
+                  double tmp = std::abs(data(i));
+                  if (tmp > dmax)
+                    dmax = tmp;
+                  if (tmp < dmin)
+                    dmin = tmp;
+                }
+              rcond = dmin / dmax;
+            }
+          else
+            rcond = 1.0;
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1318,9 +1318,9 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -1341,67 +1341,67 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Diagonal ||
-	  typ == MatrixType::Permuted_Diagonal)
-	{
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          typ == MatrixType::Permuted_Diagonal)
+        {
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
 
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  if (typ == MatrixType::Diagonal)
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      {
-		for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		  {
-		    if (b.ridx(i) >= nm)
-		      break;
-		    retval.xridx (ii) = b.ridx(i);
-		    retval.xdata (ii++) = b.data(i) / data (b.ridx (i));
-		  }
-		retval.xcidx(j+1) = ii;
-	      }
-	  else
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      {
-		for (octave_idx_type l = 0; l < nc; l++)
-		  for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
-		    {
-		      bool found = false;
-		      octave_idx_type k;
-		      for (k = b.cidx(j); k < b.cidx(j+1); k++)
-			if (ridx(i) == b.ridx(k))
-			  {
-			    found = true;
-			    break;
-			  }
-		      if (found)
-			{
-			  retval.xridx (ii) = l;
-			  retval.xdata (ii++) = b.data(k) / data (i);
-			}
-		    }
-		retval.xcidx(j+1) = ii;
-	      }
-	    
-	  if (calc_cond)
-	    {
-	      double dmax = 0., dmin = octave_Inf; 
-	      for (octave_idx_type i = 0; i < nm; i++)
-		{
-		  double tmp = std::abs(data(i));
-		  if (tmp > dmax)
-		    dmax = tmp;
-		  if (tmp < dmin)
-		    dmin = tmp;
-		}
-	      rcond = dmin / dmax;
-	    }
-	  else
-	    rcond = 1.0;
-	}
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          if (typ == MatrixType::Diagonal)
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              {
+                for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                  {
+                    if (b.ridx(i) >= nm)
+                      break;
+                    retval.xridx (ii) = b.ridx(i);
+                    retval.xdata (ii++) = b.data(i) / data (b.ridx (i));
+                  }
+                retval.xcidx(j+1) = ii;
+              }
+          else
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              {
+                for (octave_idx_type l = 0; l < nc; l++)
+                  for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
+                    {
+                      bool found = false;
+                      octave_idx_type k;
+                      for (k = b.cidx(j); k < b.cidx(j+1); k++)
+                        if (ridx(i) == b.ridx(k))
+                          {
+                            found = true;
+                            break;
+                          }
+                      if (found)
+                        {
+                          retval.xridx (ii) = l;
+                          retval.xdata (ii++) = b.data(k) / data (i);
+                        }
+                    }
+                retval.xcidx(j+1) = ii;
+              }
+            
+          if (calc_cond)
+            {
+              double dmax = 0., dmin = octave_Inf; 
+              for (octave_idx_type i = 0; i < nm; i++)
+                {
+                  double tmp = std::abs(data(i));
+                  if (tmp > dmax)
+                    dmax = tmp;
+                  if (tmp < dmin)
+                    dmin = tmp;
+                }
+              rcond = dmin / dmax;
+            }
+          else
+            rcond = 1.0;
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1409,9 +1409,9 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler,
+                             bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1432,37 +1432,37 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Diagonal ||
-	  typ == MatrixType::Permuted_Diagonal)
-	{
-	  retval.resize (nc, b.cols(), Complex(0.,0.));
-	  if (typ == MatrixType::Diagonal)
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      for (octave_idx_type i = 0; i < nm; i++)
-		retval(i,j) = b(i,j) / data (i);
-	  else
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      for (octave_idx_type k = 0; k < nc; k++)
-		for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-		  retval(k,j) = b(ridx(i),j) / data (i);
-	    
-	  if (calc_cond)
-	    {
-	      double dmax = 0., dmin = octave_Inf; 
-	      for (octave_idx_type i = 0; i < nr; i++)
-		{
-		  double tmp = std::abs(data(i));
-		  if (tmp > dmax)
-		    dmax = tmp;
-		  if (tmp < dmin)
-		    dmin = tmp;
-		}
-	      rcond = dmin / dmax;
-	    }
-	  else
-	    rcond = 1.0;
-	}
+          typ == MatrixType::Permuted_Diagonal)
+        {
+          retval.resize (nc, b.cols(), Complex(0.,0.));
+          if (typ == MatrixType::Diagonal)
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              for (octave_idx_type i = 0; i < nm; i++)
+                retval(i,j) = b(i,j) / data (i);
+          else
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              for (octave_idx_type k = 0; k < nc; k++)
+                for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                  retval(k,j) = b(ridx(i),j) / data (i);
+            
+          if (calc_cond)
+            {
+              double dmax = 0., dmin = octave_Inf; 
+              for (octave_idx_type i = 0; i < nr; i++)
+                {
+                  double tmp = std::abs(data(i));
+                  if (tmp > dmax)
+                    dmax = tmp;
+                  if (tmp < dmin)
+                    dmin = tmp;
+                }
+              rcond = dmin / dmax;
+            }
+          else
+            rcond = 1.0;
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1470,9 +1470,9 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -1493,67 +1493,67 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Diagonal ||
-	  typ == MatrixType::Permuted_Diagonal)
-	{
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          typ == MatrixType::Permuted_Diagonal)
+        {
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
 
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  if (typ == MatrixType::Diagonal)
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      {
-		for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		  {
-		    if (b.ridx(i) >= nm)
-		      break;
-		    retval.xridx (ii) = b.ridx(i);
-		    retval.xdata (ii++) = b.data(i) / data (b.ridx (i));
-		  }
-		retval.xcidx(j+1) = ii;
-	      }
-	  else
-	    for (octave_idx_type j = 0; j < b.cols(); j++)
-	      {
-		for (octave_idx_type l = 0; l < nc; l++)
-		  for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
-		    {
-		      bool found = false;
-		      octave_idx_type k;
-		      for (k = b.cidx(j); k < b.cidx(j+1); k++)
-			if (ridx(i) == b.ridx(k))
-			  {
-			    found = true;
-			    break;
-			  }
-		      if (found)
-			{
-			  retval.xridx (ii) = l;
-			  retval.xdata (ii++) = b.data(k) / data (i);
-			}
-		    }
-		retval.xcidx(j+1) = ii;
-	      }
-	    
-	  if (calc_cond)
-	    {
-	      double dmax = 0., dmin = octave_Inf; 
-	      for (octave_idx_type i = 0; i < nm; i++)
-		{
-		  double tmp = std::abs(data(i));
-		  if (tmp > dmax)
-		    dmax = tmp;
-		  if (tmp < dmin)
-		    dmin = tmp;
-		}
-	      rcond = dmin / dmax;
-	    }
-	  else
-	    rcond = 1.0;
-	}
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          if (typ == MatrixType::Diagonal)
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              {
+                for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                  {
+                    if (b.ridx(i) >= nm)
+                      break;
+                    retval.xridx (ii) = b.ridx(i);
+                    retval.xdata (ii++) = b.data(i) / data (b.ridx (i));
+                  }
+                retval.xcidx(j+1) = ii;
+              }
+          else
+            for (octave_idx_type j = 0; j < b.cols(); j++)
+              {
+                for (octave_idx_type l = 0; l < nc; l++)
+                  for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
+                    {
+                      bool found = false;
+                      octave_idx_type k;
+                      for (k = b.cidx(j); k < b.cidx(j+1); k++)
+                        if (ridx(i) == b.ridx(k))
+                          {
+                            found = true;
+                            break;
+                          }
+                      if (found)
+                        {
+                          retval.xridx (ii) = l;
+                          retval.xdata (ii++) = b.data(k) / data (i);
+                        }
+                    }
+                retval.xcidx(j+1) = ii;
+              }
+            
+          if (calc_cond)
+            {
+              double dmax = 0., dmin = octave_Inf; 
+              for (octave_idx_type i = 0; i < nm; i++)
+                {
+                  double tmp = std::abs(data(i));
+                  if (tmp > dmax)
+                    dmax = tmp;
+                  if (tmp < dmin)
+                    dmin = tmp;
+                }
+              rcond = dmin / dmax;
+            }
+          else
+            rcond = 1.0;
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1561,9 +1561,9 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
-			      octave_idx_type& err, double& rcond,
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1584,212 +1584,212 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Permuted_Upper ||
-	  typ == MatrixType::Upper)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+          typ == MatrixType::Upper)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          octave_idx_type b_nc = b.cols ();
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  if (typ == MatrixType::Permuted_Upper)
-	    {
-	      retval.resize (nc, b_nc);
-	      octave_idx_type *perm = mattype.triangular_perm ();
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+          if (typ == MatrixType::Permuted_Upper)
+            {
+              retval.resize (nc, b_nc);
+              octave_idx_type *perm = mattype.triangular_perm ();
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      octave_idx_type kidx = perm[k];
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      octave_idx_type kidx = perm[k];
 
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(kidx+1)-1) != k ||
-			      data(cidx(kidx+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(kidx+1)-1) != k ||
+                              data(cidx(kidx+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(kidx+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(kidx); 
-			       i < cidx(kidx+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(kidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(kidx); 
+                               i < cidx(kidx+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval (perm[i], j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval (perm[i], j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  octave_idx_type iidx = perm[k];
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          octave_idx_type iidx = perm[k];
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(iidx+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(iidx); 
-				   i < cidx(iidx+1)-1; i++)
-				{
-				  octave_idx_type idx2 = ridx(i);
-				  work[idx2] = work[idx2] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      retval.resize (nc, b_nc);
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(iidx+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(iidx); 
+                                   i < cidx(iidx+1)-1; i++)
+                                {
+                                  octave_idx_type idx2 = ridx(i);
+                                  work[idx2] = work[idx2] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              retval.resize (nc, b_nc);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k+1)-1) != k ||
-			      data(cidx(k+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k+1)-1) != k ||
+                              data(cidx(k+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval.xelem (i, j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval.xelem (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1)-1; i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1)-1; i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -1797,9 +1797,9 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -1820,273 +1820,273 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Permuted_Upper ||
-	  typ == MatrixType::Upper)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  rcond = 1.;
+          typ == MatrixType::Upper)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  octave_idx_type x_nz = b_nz;
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          octave_idx_type x_nz = b_nz;
 
-	  if (typ == MatrixType::Permuted_Upper)
-	    {
-	      octave_idx_type *perm = mattype.triangular_perm ();
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+          if (typ == MatrixType::Permuted_Upper)
+            {
+              octave_idx_type *perm = mattype.triangular_perm ();
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
-	      for (octave_idx_type i = 0; i < nc; i++)
-		rperm[perm[i]] = i;
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
+              for (octave_idx_type i = 0; i < nc; i++)
+                rperm[perm[i]] = i;
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      octave_idx_type kidx = perm[k];
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      octave_idx_type kidx = perm[k];
 
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(kidx+1)-1) != k ||
-			      data(cidx(kidx+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(kidx+1)-1) != k ||
+                              data(cidx(kidx+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(kidx+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(kidx); 
-			       i < cidx(kidx+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(kidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(kidx); 
+                               i < cidx(kidx+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[rperm[i]] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[rperm[i]];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[rperm[i]] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[rperm[i]];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  octave_idx_type iidx = perm[k];
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          octave_idx_type iidx = perm[k];
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(iidx+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(iidx); 
-				   i < cidx(iidx+1)-1; i++)
-				{
-				  octave_idx_type idx2 = ridx(i);
-				  work[idx2] = work[idx2] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(iidx+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(iidx); 
+                                   i < cidx(iidx+1)-1; i++)
+                                {
+                                  octave_idx_type idx2 = ridx(i);
+                                  work[idx2] = work[idx2] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k+1)-1) != k ||
-			      data(cidx(k+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k+1)-1) != k ||
+                              data(cidx(k+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1)-1; i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1)-1; i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   return retval;
 }
 
 ComplexMatrix
 SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -2107,212 +2107,212 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Upper ||
-	  typ == MatrixType::Upper)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+          typ == MatrixType::Upper)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          octave_idx_type b_nc = b.cols ();
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  if (typ == MatrixType::Permuted_Upper)
-	    {
-	      retval.resize (nc, b_nc);
-	      octave_idx_type *perm = mattype.triangular_perm ();
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+          if (typ == MatrixType::Permuted_Upper)
+            {
+              retval.resize (nc, b_nc);
+              octave_idx_type *perm = mattype.triangular_perm ();
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      octave_idx_type kidx = perm[k];
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      octave_idx_type kidx = perm[k];
 
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(kidx+1)-1) != k ||
-			      data(cidx(kidx+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(kidx+1)-1) != k ||
+                              data(cidx(kidx+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(kidx+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(kidx); 
-			       i < cidx(kidx+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(kidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(kidx); 
+                               i < cidx(kidx+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval (perm[i], j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval (perm[i], j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  octave_idx_type iidx = perm[k];
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          octave_idx_type iidx = perm[k];
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(iidx+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(iidx); 
-				   i < cidx(iidx+1)-1; i++)
-				{
-				  octave_idx_type idx2 = ridx(i);
-				  work[idx2] = work[idx2] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      retval.resize (nc, b_nc);
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(iidx+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(iidx); 
+                                   i < cidx(iidx+1)-1; i++)
+                                {
+                                  octave_idx_type idx2 = ridx(i);
+                                  work[idx2] = work[idx2] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              retval.resize (nc, b_nc);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k+1)-1) != k ||
-			      data(cidx(k+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k+1)-1) != k ||
+                              data(cidx(k+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval.xelem (i, j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval.xelem (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1)-1; i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1)-1; i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -2320,9 +2320,9 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -2343,264 +2343,264 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Upper ||
-	  typ == MatrixType::Upper)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  rcond = 1.;
+          typ == MatrixType::Upper)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  octave_idx_type x_nz = b_nz;
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          octave_idx_type x_nz = b_nz;
 
-	  if (typ == MatrixType::Permuted_Upper)
-	    {
-	      octave_idx_type *perm = mattype.triangular_perm ();
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+          if (typ == MatrixType::Permuted_Upper)
+            {
+              octave_idx_type *perm = mattype.triangular_perm ();
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
-	      for (octave_idx_type i = 0; i < nc; i++)
-		rperm[perm[i]] = i;
+              OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nc);
+              for (octave_idx_type i = 0; i < nc; i++)
+                rperm[perm[i]] = i;
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = nc-1; k >= 0; k--)
-		    {
-		      octave_idx_type kidx = perm[k];
+                  for (octave_idx_type k = nc-1; k >= 0; k--)
+                    {
+                      octave_idx_type kidx = perm[k];
 
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(kidx+1)-1) != k ||
-			      data(cidx(kidx+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(kidx+1)-1) != k ||
+                              data(cidx(kidx+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(kidx+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(kidx); 
-			       i < cidx(kidx+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(kidx+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(kidx); 
+                               i < cidx(kidx+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[rperm[i]] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[rperm[i]];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[rperm[i]] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[rperm[i]];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  octave_idx_type iidx = perm[k];
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          octave_idx_type iidx = perm[k];
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(iidx+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(iidx); 
-				   i < cidx(iidx+1)-1; i++)
-				{
-				  octave_idx_type idx2 = ridx(i);
-				  work[idx2] = work[idx2] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(iidx+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(iidx); 
+                                   i < cidx(iidx+1)-1; i++)
+                                {
+                                  octave_idx_type idx2 = ridx(i);
+                                  work[idx2] = work[idx2] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = nr-1; k >= 0; k--)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k+1)-1) != k ||
-			      data(cidx(k+1)-1) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = nr-1; k >= 0; k--)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k+1)-1) != k ||
+                              data(cidx(k+1)-1) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k+1)-1);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k+1)-1);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1)-1; i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k >= 0; k--)
-			{
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k+1)-1);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1)-1; i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = 0; i < j+1; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                      for (octave_idx_type k = j; k >= 0; k--)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k+1)-1);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1)-1; i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = 0; i < j+1; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -2608,9 +2608,9 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b, 
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -2631,232 +2631,232 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Lower ||
-	  typ == MatrixType::Lower)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+          typ == MatrixType::Lower)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          octave_idx_type b_nc = b.cols ();
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  if (typ == MatrixType::Permuted_Lower)
-	    {
-	      retval.resize (nc, b_nc);
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      octave_idx_type *perm = mattype.triangular_perm ();
+          if (typ == MatrixType::Permuted_Lower)
+            {
+              retval.resize (nc, b_nc);
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              octave_idx_type *perm = mattype.triangular_perm ();
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[perm[i]] = b(i,j);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[perm[i]] = b(i,j);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  octave_idx_type minr = nr;
-			  octave_idx_type mini = 0;
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          octave_idx_type minr = nr;
+                          octave_idx_type mini = 0;
 
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    if (perm[ridx(i)] < minr)
-			      {
-				minr = perm[ridx(i)];
-				mini = i;
-			      }
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            if (perm[ridx(i)] < minr)
+                              {
+                                minr = perm[ridx(i)];
+                                mini = i;
+                              }
 
-			  if (minr != k || data (mini) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                          if (minr != k || data (mini) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(mini);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    {
-			      if (i == mini)
-				continue;
+                          Complex tmp = work[k] / data(mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            {
+                              if (i == mini)
+                                continue;
 
-			      octave_idx_type iidx = perm[ridx(i)];
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                              octave_idx_type iidx = perm[ridx(i)];
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval (i, j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = 0; k < nc; k++)
-			{
-			  if (work[k] != 0.)
-			    {
-			      octave_idx_type minr = nr;
-			      octave_idx_type mini = 0;
+                      for (octave_idx_type k = 0; k < nc; k++)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              octave_idx_type minr = nr;
+                              octave_idx_type mini = 0;
 
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				if (perm[ridx(i)] < minr)
-				  {
-				    minr = perm[ridx(i)];
-				    mini = i;
-				  }
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                if (perm[ridx(i)] < minr)
+                                  {
+                                    minr = perm[ridx(i)];
+                                    mini = i;
+                                  }
 
-			      Complex tmp = work[k] / data(mini);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				{
-				  if (i == mini)
-				    continue;
+                              Complex tmp = work[k] / data(mini);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                {
+                                  if (i == mini)
+                                    continue;
 
-				  octave_idx_type iidx = perm[ridx(i)];
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
+                                  octave_idx_type iidx = perm[ridx(i)];
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
 
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      retval.resize (nc, b_nc, 0.);
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              retval.resize (nc, b_nc, 0.);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k)) != k ||
-			      data(cidx(k)) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k)) != k ||
+                              data(cidx(k)) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k));
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval.xelem (i, j) = work[i];
-		}
+                          Complex tmp = work[k] / data(cidx(k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval.xelem (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k < nc; k++)
-			{
+                      for (octave_idx_type k = j; k < nc; k++)
+                        {
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k));
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k)+1; 
-				   i < cidx(k+1); i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k));
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k)+1; 
+                                   i < cidx(k+1); i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -2864,9 +2864,9 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b, 
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -2888,283 +2888,283 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Lower ||
-	  typ == MatrixType::Lower)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  rcond = 1.;
+          typ == MatrixType::Lower)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  octave_idx_type x_nz = b_nz;
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          octave_idx_type x_nz = b_nz;
 
-	  if (typ == MatrixType::Permuted_Lower)
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      octave_idx_type *perm = mattype.triangular_perm ();
+          if (typ == MatrixType::Permuted_Lower)
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              octave_idx_type *perm = mattype.triangular_perm ();
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[perm[b.ridx(i)]] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[perm[b.ridx(i)]] = b.data(i);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  octave_idx_type minr = nr;
-			  octave_idx_type mini = 0;
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          octave_idx_type minr = nr;
+                          octave_idx_type mini = 0;
 
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    if (perm[ridx(i)] < minr)
-			      {
-				minr = perm[ridx(i)];
-				mini = i;
-			      }
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            if (perm[ridx(i)] < minr)
+                              {
+                                minr = perm[ridx(i)];
+                                mini = i;
+                              }
 
-			  if (minr != k || data (mini) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                          if (minr != k || data (mini) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(mini);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    {
-			      if (i == mini)
-				continue;
+                          Complex tmp = work[k] / data(mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            {
+                              if (i == mini)
+                                continue;
 
-			      octave_idx_type iidx = perm[ridx(i)];
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                              octave_idx_type iidx = perm[ridx(i)];
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = 0; k < nc; k++)
-			{
-			  if (work[k] != 0.)
-			    {
-			      octave_idx_type minr = nr;
-			      octave_idx_type mini = 0;
+                      for (octave_idx_type k = 0; k < nc; k++)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              octave_idx_type minr = nr;
+                              octave_idx_type mini = 0;
 
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				if (perm[ridx(i)] < minr)
-				  {
-				    minr = perm[ridx(i)];
-				    mini = i;
-				  }
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                if (perm[ridx(i)] < minr)
+                                  {
+                                    minr = perm[ridx(i)];
+                                    mini = i;
+                                  }
 
-			      Complex tmp = work[k] / data(mini);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				{
-				  if (i == mini)
-				    continue;
+                              Complex tmp = work[k] / data(mini);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                {
+                                  if (i == mini)
+                                    continue;
 
-				  octave_idx_type iidx = perm[ridx(i)];
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
+                                  octave_idx_type iidx = perm[ridx(i)];
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
 
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k)) != k ||
-			      data(cidx(k)) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k)) != k ||
+                              data(cidx(k)) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k));
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k < nc; k++)
-			{
+                      for (octave_idx_type k = j; k < nc; k++)
+                        {
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k));
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k)+1; 
-				   i < cidx(k+1); i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k));
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k)+1; 
+                                   i < cidx(k+1); i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -3172,9 +3172,9 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
-			      octave_idx_type& err, double& rcond,
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -3195,236 +3195,236 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Lower ||
-	  typ == MatrixType::Lower)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+          typ == MatrixType::Lower)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          octave_idx_type b_nc = b.cols ();
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  if (typ == MatrixType::Permuted_Lower)
-	    {
-	      retval.resize (nc, b_nc);
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      octave_idx_type *perm = mattype.triangular_perm ();
+          if (typ == MatrixType::Permuted_Lower)
+            {
+              retval.resize (nc, b_nc);
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              octave_idx_type *perm = mattype.triangular_perm ();
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[perm[i]] = b(i,j);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[perm[i]] = b(i,j);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  octave_idx_type minr = nr;
-			  octave_idx_type mini = 0;
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          octave_idx_type minr = nr;
+                          octave_idx_type mini = 0;
 
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    if (perm[ridx(i)] < minr)
-			      {
-				minr = perm[ridx(i)];
-				mini = i;
-			      }
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            if (perm[ridx(i)] < minr)
+                              {
+                                minr = perm[ridx(i)];
+                                mini = i;
+                              }
 
-			  if (minr != k || data (mini) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                          if (minr != k || data (mini) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(mini);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    {
-			      if (i == mini)
-				continue;
+                          Complex tmp = work[k] / data(mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            {
+                              if (i == mini)
+                                continue;
 
-			      octave_idx_type iidx = perm[ridx(i)];
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                              octave_idx_type iidx = perm[ridx(i)];
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval (i, j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = 0; k < nc; k++)
-			{
-			  if (work[k] != 0.)
-			    {
-			      octave_idx_type minr = nr;
-			      octave_idx_type mini = 0;
+                      for (octave_idx_type k = 0; k < nc; k++)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              octave_idx_type minr = nr;
+                              octave_idx_type mini = 0;
 
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				if (perm[ridx(i)] < minr)
-				  {
-				    minr = perm[ridx(i)];
-				    mini = i;
-				  }
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                if (perm[ridx(i)] < minr)
+                                  {
+                                    minr = perm[ridx(i)];
+                                    mini = i;
+                                  }
 
-			      Complex tmp = work[k] / data(mini);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				{
-				  if (i == mini)
-				    continue;
+                              Complex tmp = work[k] / data(mini);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                {
+                                  if (i == mini)
+                                    continue;
 
-				  octave_idx_type iidx = perm[ridx(i)];
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
+                                  octave_idx_type iidx = perm[ridx(i)];
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
 
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      retval.resize (nc, b_nc, 0.);
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              retval.resize (nc, b_nc, 0.);
 
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = b(i,j);
-		  for (octave_idx_type i = nr; i < nc; i++)
-		    work[i] = 0.;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = b(i,j);
+                  for (octave_idx_type i = nr; i < nc; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k)) != k ||
-			      data(cidx(k)) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k)) != k ||
+                              data(cidx(k)) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k));
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    retval.xelem (i, j) = work[i];
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    retval.xelem (i, j) = work[i];
+                }
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k < nc; k++)
-			{
+                      for (octave_idx_type k = j; k < nc; k++)
+                        {
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k));
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k)+1; 
-				   i < cidx(k+1); i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k));
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k)+1; 
+                                   i < cidx(k+1); i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -3432,9 +3432,9 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
-			      octave_idx_type& err, double& rcond, 
-			      solve_singularity_handler sing_handler,
-			      bool calc_cond) const
+                              octave_idx_type& err, double& rcond, 
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -3455,283 +3455,283 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Permuted_Lower ||
-	  typ == MatrixType::Lower)
-	{
-	  double anorm = 0.;
-	  double ainvnorm = 0.;
-	  rcond = 1.;
+          typ == MatrixType::Lower)
+        {
+          double anorm = 0.;
+          double ainvnorm = 0.;
+          rcond = 1.;
 
-	  if (calc_cond)
-	    {
-	      // Calculate the 1-norm of matrix for rcond calculation
-	      for (octave_idx_type j = 0; j < nc; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          if (calc_cond)
+            {
+              // Calculate the 1-norm of matrix for rcond calculation
+              for (octave_idx_type j = 0; j < nc; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  octave_idx_type b_nc = b.cols ();
-	  octave_idx_type b_nz = b.nnz ();
-	  retval = SparseComplexMatrix (nc, b_nc, b_nz);
-	  retval.xcidx(0) = 0;
-	  octave_idx_type ii = 0;
-	  octave_idx_type x_nz = b_nz;
+          octave_idx_type b_nc = b.cols ();
+          octave_idx_type b_nz = b.nnz ();
+          retval = SparseComplexMatrix (nc, b_nc, b_nz);
+          retval.xcidx(0) = 0;
+          octave_idx_type ii = 0;
+          octave_idx_type x_nz = b_nz;
 
-	  if (typ == MatrixType::Permuted_Lower)
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
-	      octave_idx_type *perm = mattype.triangular_perm ();
+          if (typ == MatrixType::Permuted_Lower)
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+              octave_idx_type *perm = mattype.triangular_perm ();
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[perm[b.ridx(i)]] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[perm[b.ridx(i)]] = b.data(i);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  octave_idx_type minr = nr;
-			  octave_idx_type mini = 0;
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          octave_idx_type minr = nr;
+                          octave_idx_type mini = 0;
 
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    if (perm[ridx(i)] < minr)
-			      {
-				minr = perm[ridx(i)];
-				mini = i;
-			      }
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            if (perm[ridx(i)] < minr)
+                              {
+                                minr = perm[ridx(i)];
+                                mini = i;
+                              }
 
-			  if (minr != k || data (mini) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                          if (minr != k || data (mini) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(mini);
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
-			    {
-			      if (i == mini)
-				continue;
+                          Complex tmp = work[k] / data(mini);
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
+                            {
+                              if (i == mini)
+                                continue;
 
-			      octave_idx_type iidx = perm[ridx(i)];
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                              octave_idx_type iidx = perm[ridx(i)];
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = 0; k < nc; k++)
-			{
-			  if (work[k] != 0.)
-			    {
-			      octave_idx_type minr = nr;
-			      octave_idx_type mini = 0;
+                      for (octave_idx_type k = 0; k < nc; k++)
+                        {
+                          if (work[k] != 0.)
+                            {
+                              octave_idx_type minr = nr;
+                              octave_idx_type mini = 0;
 
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				if (perm[ridx(i)] < minr)
-				  {
-				    minr = perm[ridx(i)];
-				    mini = i;
-				  }
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                if (perm[ridx(i)] < minr)
+                                  {
+                                    minr = perm[ridx(i)];
+                                    mini = i;
+                                  }
 
-			      Complex tmp = work[k] / data(mini);
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k); 
-				   i < cidx(k+1); i++)
-				{
-				  if (i == mini)
-				    continue;
+                              Complex tmp = work[k] / data(mini);
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k); 
+                                   i < cidx(k+1); i++)
+                                {
+                                  if (i == mini)
+                                    continue;
 
-				  octave_idx_type iidx = perm[ridx(i)];
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
+                                  octave_idx_type iidx = perm[ridx(i)];
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
 
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
-	  else
-	    {
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nm);
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
+          else
+            {
+              OCTAVE_LOCAL_BUFFER (Complex, work, nm);
 
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  for (octave_idx_type k = 0; k < nc; k++)
-		    {
-		      if (work[k] != 0.)
-			{
-			  if (ridx(cidx(k)) != k ||
-			      data(cidx(k)) == 0.)
-			    {
-			      err = -2;
-			      goto triangular_error;
-			    }			    
+                  for (octave_idx_type k = 0; k < nc; k++)
+                    {
+                      if (work[k] != 0.)
+                        {
+                          if (ridx(cidx(k)) != k ||
+                              data(cidx(k)) == 0.)
+                            {
+                              err = -2;
+                              goto triangular_error;
+                            }                       
 
-			  Complex tmp = work[k] / data(cidx(k));
-			  work[k] = tmp;
-			  for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
-			    {
-			      octave_idx_type iidx = ridx(i);
-			      work[iidx] = work[iidx] - tmp * data(i);
-			    }
-			}
-		    }
+                          Complex tmp = work[k] / data(cidx(k));
+                          work[k] = tmp;
+                          for (octave_idx_type i = cidx(k)+1; i < cidx(k+1); i++)
+                            {
+                              octave_idx_type iidx = ridx(i);
+                              work[iidx] = work[iidx] - tmp * data(i);
+                            }
+                        }
+                    }
 
-		  // Count non-zeros in work vector and adjust space in
-		  // retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust space in
+                  // retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nc; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nc; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      if (calc_cond)
-		{
-		  // Calculation of 1-norm of inv(*this)
-		  for (octave_idx_type i = 0; i < nm; i++)
-		    work[i] = 0.;
+              if (calc_cond)
+                {
+                  // Calculation of 1-norm of inv(*this)
+                  for (octave_idx_type i = 0; i < nm; i++)
+                    work[i] = 0.;
 
-		  for (octave_idx_type j = 0; j < nr; j++)
-		    {
-		      work[j] = 1.;
+                  for (octave_idx_type j = 0; j < nr; j++)
+                    {
+                      work[j] = 1.;
 
-		      for (octave_idx_type k = j; k < nc; k++)
-			{
+                      for (octave_idx_type k = j; k < nc; k++)
+                        {
 
-			  if (work[k] != 0.)
-			    {
-			      Complex tmp = work[k] / data(cidx(k));
-			      work[k] = tmp;
-			      for (octave_idx_type i = cidx(k)+1; 
-				   i < cidx(k+1); i++)
-				{
-				  octave_idx_type iidx = ridx(i);
-				  work[iidx] = work[iidx] - tmp * data(i);
-				}
-			    }
-			}
-		      double atmp = 0;
-		      for (octave_idx_type i = j; i < nc; i++)
-			{
-			  atmp += std::abs(work[i]);
-			  work[i] = 0.;
-			}
-		      if (atmp > ainvnorm)
-			ainvnorm = atmp;
-		    }
-		  rcond = 1. / ainvnorm / anorm;
-		}
-	    }
+                          if (work[k] != 0.)
+                            {
+                              Complex tmp = work[k] / data(cidx(k));
+                              work[k] = tmp;
+                              for (octave_idx_type i = cidx(k)+1; 
+                                   i < cidx(k+1); i++)
+                                {
+                                  octave_idx_type iidx = ridx(i);
+                                  work[iidx] = work[iidx] - tmp * data(i);
+                                }
+                            }
+                        }
+                      double atmp = 0;
+                      for (octave_idx_type i = j; i < nc; i++)
+                        {
+                          atmp += std::abs(work[i]);
+                          work[i] = 0.;
+                        }
+                      if (atmp > ainvnorm)
+                        ainvnorm = atmp;
+                    }
+                  rcond = 1. / ainvnorm / anorm;
+                }
+            }
 
-	triangular_error:
-	  if (err != 0)
-	    {
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
+        triangular_error:
+          if (err != 0)
+            {
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
 
-	  volatile double rcond_plus_one = rcond + 1.0;
+          volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
-	      err = -2;
+          if (rcond_plus_one == 1.0 || xisnan (rcond))
+            {
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	}
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision, rcond = %g",
+                   rcond);
+            }
+        }
       else
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -3739,9 +3739,9 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
-			       octave_idx_type& err, double& rcond,
-			       solve_singularity_handler sing_handler,
-			       bool calc_cond) const
+                               octave_idx_type& err, double& rcond,
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -3764,125 +3764,125 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Tridiagonal_Hermitian)
-	{
-	  OCTAVE_LOCAL_BUFFER (double, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+        {
+          OCTAVE_LOCAL_BUFFER (double, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = std::real(data(ii++));
-		  DL[j] = data(ii);
-		  ii += 2;
-		}
-	      D[nc-1] = std::real(data(ii));
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = std::real(data(ii++));
+                  DL[j] = data(ii);
+                  ii += 2;
+                }
+              D[nc-1] = std::real(data(ii));
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = std::real(data(i));
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		  }
-	    }
-	      
-	  octave_idx_type b_nc = b.cols();
-	  retval = ComplexMatrix (b);
-	  Complex *result = retval.fortran_vec ();
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = std::real(data(i));
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                  }
+            }
+              
+          octave_idx_type b_nc = b.cols();
+          retval = ComplexMatrix (b);
+          Complex *result = retval.fortran_vec ();
 
-	  F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
-				   b.rows(), err));
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
+                                   b.rows(), err));
 
-	  if (err != 0)
-	    {
-	      err = 0;
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Tridiagonal;
-	    }
-	  else 
-	    rcond = 1.;
-	}
+          if (err != 0)
+            {
+              err = 0;
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Tridiagonal;
+            }
+          else 
+            rcond = 1.;
+        }
 
       if (typ == MatrixType::Tridiagonal)
-	{
-	  OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
-	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
+          OCTAVE_LOCAL_BUFFER (Complex, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = data(ii++);
-		  DL[j] = data(ii++);
-		  DU[j] = data(ii++);
-		}
-	      D[nc-1] = data(ii);
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		  DU[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = data(ii++);
+                  DL[j] = data(ii++);
+                  DU[j] = data(ii++);
+                }
+              D[nc-1] = data(ii);
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                  DU[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = data(i);
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		    else if (ridx(i) == j - 1)
-		      DU[j-1] = data(i);
-		  }
-	    }
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = data(i);
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                    else if (ridx(i) == j - 1)
+                      DU[j-1] = data(i);
+                  }
+            }
 
-	  octave_idx_type b_nc = b.cols();
-	  retval = ComplexMatrix (b);
-	  Complex *result = retval.fortran_vec ();
+          octave_idx_type b_nc = b.cols();
+          retval = ComplexMatrix (b);
+          Complex *result = retval.fortran_vec ();
 
-	  F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
-				   b.rows(), err));
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
+                                   b.rows(), err));
 
-	  if (err != 0)
-	    {
-	      rcond = 0.;
-	      err = -2;
+          if (err != 0)
+            {
+              rcond = 0.;
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
 
-	    } 
-	  else 
-	    rcond = 1.;
-	}
+            } 
+          else 
+            rcond = 1.;
+        }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
-	       (*current_liboctave_error_handler) ("incorrect matrix type");
+               (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -3890,9 +3890,9 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
-			       octave_idx_type& err, double& rcond, 
-			       solve_singularity_handler sing_handler,
-			       bool calc_cond) const
+                               octave_idx_type& err, double& rcond, 
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -3916,120 +3916,120 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
       
       // Note can't treat symmetric case as there is no dpttrf function
       if (typ == MatrixType::Tridiagonal ||
-	  typ == MatrixType::Tridiagonal_Hermitian)
-	{
-	  OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
-	  OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
-	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          typ == MatrixType::Tridiagonal_Hermitian)
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
+          OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
+          OCTAVE_LOCAL_BUFFER (Complex, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = data(ii++);
-		  DL[j] = data(ii++);
-		  DU[j] = data(ii++);
-		}
-	      D[nc-1] = data(ii);
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		  DU[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = data(ii++);
+                  DL[j] = data(ii++);
+                  DU[j] = data(ii++);
+                }
+              D[nc-1] = data(ii);
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                  DU[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = data(i);
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		    else if (ridx(i) == j - 1)
-		      DU[j-1] = data(i);
-		  }
-	    }
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = data(i);
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                    else if (ridx(i) == j - 1)
+                      DU[j-1] = data(i);
+                  }
+            }
 
-	  F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
+          F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
 
-	  if (err != 0) 
-	    {
-	      err = -2;
-	      rcond = 0.0;
+          if (err != 0) 
+            {
+              err = -2;
+              rcond = 0.0;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
 
-	    } 
-	  else 
-	    {
-	      char job = 'N';
-	      volatile octave_idx_type x_nz = b.nnz ();
-	      octave_idx_type b_nc = b.cols ();
-	      retval = SparseComplexMatrix (nr, b_nc, x_nz);
-	      retval.xcidx(0) = 0;
-	      volatile octave_idx_type ii = 0;
-	      rcond = 1.0;
+            } 
+          else 
+            {
+              char job = 'N';
+              volatile octave_idx_type x_nz = b.nnz ();
+              octave_idx_type b_nc = b.cols ();
+              retval = SparseComplexMatrix (nr, b_nc, x_nz);
+              retval.xcidx(0) = 0;
+              volatile octave_idx_type ii = 0;
+              rcond = 1.0;
 
-	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
+              OCTAVE_LOCAL_BUFFER (Complex, work, nr);
 
-	      for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    work[i] = 0.;
-		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-		    work[b.ridx(i)] = b.data(i);
+              for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    work[i] = 0.;
+                  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+                    work[b.ridx(i)] = b.data(i);
 
-		  F77_XFCN (zgttrs, ZGTTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, 1, DL, D, DU, DU2, pipvt, 
-			     work, b.rows (), err
-			     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgttrs, ZGTTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, 1, DL, D, DU, DU2, pipvt, 
+                             work, b.rows (), err
+                             F77_CHAR_ARG_LEN (1)));
 
-		  // Count non-zeros in work vector and adjust 
-		  // space in retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust 
+                  // space in retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    if (work[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (work[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = work[i];
-		      }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    if (work[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = work[i];
+                      }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
-	    }
-	}
+              retval.maybe_compress ();
+            }
+        }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -4037,9 +4037,9 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
-			       octave_idx_type& err, double& rcond, 
-			       solve_singularity_handler sing_handler,
-			       bool calc_cond) const
+                               octave_idx_type& err, double& rcond, 
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -4062,126 +4062,126 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
       
       if (typ == MatrixType::Tridiagonal_Hermitian)
-	{
-	  OCTAVE_LOCAL_BUFFER (double, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+        {
+          OCTAVE_LOCAL_BUFFER (double, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = std::real(data(ii++));
-		  DL[j] = data(ii);
-		  ii += 2;
-		}
-	      D[nc-1] = std::real(data(ii));
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = std::real(data(ii++));
+                  DL[j] = data(ii);
+                  ii += 2;
+                }
+              D[nc-1] = std::real(data(ii));
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = std::real (data(i));
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		  }
-	    }
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = std::real (data(i));
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                  }
+            }
 
-	  octave_idx_type b_nr = b.rows ();
-	  octave_idx_type b_nc = b.cols();
-	  rcond = 1.;
+          octave_idx_type b_nr = b.rows ();
+          octave_idx_type b_nc = b.cols();
+          rcond = 1.;
 
-	  retval = ComplexMatrix (b);
-	  Complex *result = retval.fortran_vec ();
-		  
-	  F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
-				   b_nr, err));
+          retval = ComplexMatrix (b);
+          Complex *result = retval.fortran_vec ();
+                  
+          F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
+                                   b_nr, err));
 
-	  if (err != 0)
-	    {
-	      err = 0;
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Tridiagonal;
-	    }
-	}
+          if (err != 0)
+            {
+              err = 0;
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Tridiagonal;
+            }
+        }
 
       if (typ == MatrixType::Tridiagonal)
-	{
-	  OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
-	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
+          OCTAVE_LOCAL_BUFFER (Complex, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = data(ii++);
-		  DL[j] = data(ii++);
-		  DU[j] = data(ii++);
-		}
-	      D[nc-1] = data(ii);
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		  DU[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = data(ii++);
+                  DL[j] = data(ii++);
+                  DU[j] = data(ii++);
+                }
+              D[nc-1] = data(ii);
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                  DU[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = data(i);
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		    else if (ridx(i) == j - 1)
-		      DU[j-1] = data(i);
-		  }
-	    }
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = data(i);
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                    else if (ridx(i) == j - 1)
+                      DU[j-1] = data(i);
+                  }
+            }
 
-	  octave_idx_type b_nr = b.rows();
-	  octave_idx_type b_nc = b.cols();
-	  rcond = 1.;
+          octave_idx_type b_nr = b.rows();
+          octave_idx_type b_nc = b.cols();
+          rcond = 1.;
 
-	  retval = ComplexMatrix (b);
-	  Complex *result = retval.fortran_vec ();
-	      
-	  F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
-				   b_nr, err));
+          retval = ComplexMatrix (b);
+          Complex *result = retval.fortran_vec ();
+              
+          F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
+                                   b_nr, err));
 
-	  if (err != 0)
-	    {
-	      rcond = 0.;
-	      err = -2;
-		      
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-	    }
-	}
+          if (err != 0)
+            {
+              rcond = 0.;
+              err = -2;
+                      
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
+            }
+        }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -4189,10 +4189,10 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::trisolve (MatrixType &mattype, 
-			       const SparseComplexMatrix& b, 
-			       octave_idx_type& err, double& rcond, 
-			       solve_singularity_handler sing_handler,
-			       bool calc_cond) const
+                               const SparseComplexMatrix& b, 
+                               octave_idx_type& err, double& rcond, 
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -4216,131 +4216,131 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
       
       // Note can't treat symmetric case as there is no dpttrf function
       if (typ == MatrixType::Tridiagonal ||
-	  typ == MatrixType::Tridiagonal_Hermitian)
-	{
-	  OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
-	  OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
-	  OCTAVE_LOCAL_BUFFER (Complex, D, nr);
-	  OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          typ == MatrixType::Tridiagonal_Hermitian)
+        {
+          OCTAVE_LOCAL_BUFFER (Complex, DU2, nr - 2);
+          OCTAVE_LOCAL_BUFFER (Complex, DU, nr - 1);
+          OCTAVE_LOCAL_BUFFER (Complex, D, nr);
+          OCTAVE_LOCAL_BUFFER (Complex, DL, nr - 1);
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  if (mattype.is_dense ())
-	    {
-	      octave_idx_type ii = 0;
+          if (mattype.is_dense ())
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < nc-1; j++)
-		{
-		  D[j] = data(ii++);
-		  DL[j] = data(ii++);
-		  DU[j] = data(ii++);
-		}
-	      D[nc-1] = data(ii);
-	    }
-	  else
-	    {
-	      D[0] = 0.;
-	      for (octave_idx_type i = 0; i < nr - 1; i++)
-		{
-		  D[i+1] = 0.;
-		  DL[i] = 0.;
-		  DU[i] = 0.;
-		}
+              for (octave_idx_type j = 0; j < nc-1; j++)
+                {
+                  D[j] = data(ii++);
+                  DL[j] = data(ii++);
+                  DU[j] = data(ii++);
+                }
+              D[nc-1] = data(ii);
+            }
+          else
+            {
+              D[0] = 0.;
+              for (octave_idx_type i = 0; i < nr - 1; i++)
+                {
+                  D[i+1] = 0.;
+                  DL[i] = 0.;
+                  DU[i] = 0.;
+                }
 
-	      for (octave_idx_type j = 0; j < nc; j++)
-		for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		  {
-		    if (ridx(i) == j)
-		      D[j] = data(i);
-		    else if (ridx(i) == j + 1)
-		      DL[j] = data(i);
-		    else if (ridx(i) == j - 1)
-		      DU[j-1] = data(i);
-		  }
-	    }
+              for (octave_idx_type j = 0; j < nc; j++)
+                for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  {
+                    if (ridx(i) == j)
+                      D[j] = data(i);
+                    else if (ridx(i) == j + 1)
+                      DL[j] = data(i);
+                    else if (ridx(i) == j - 1)
+                      DU[j-1] = data(i);
+                  }
+            }
 
-	  F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
+          F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
 
-	  if (err != 0) 
-	    {
-	      rcond = 0.0;
-	      err = -2;
+          if (err != 0) 
+            {
+              rcond = 0.0;
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-	    } 
-	  else 
-	    {	
-	      rcond = 1.;
-	      char job = 'N';
-	      octave_idx_type b_nr = b.rows ();
-	      octave_idx_type b_nc = b.cols ();
-	      OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
+            } 
+          else 
+            {   
+              rcond = 1.;
+              char job = 'N';
+              octave_idx_type b_nr = b.rows ();
+              octave_idx_type b_nc = b.cols ();
+              OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-	      // Take a first guess that the number of non-zero terms
-	      // will be as many as in b
-	      volatile octave_idx_type x_nz = b.nnz ();
-	      volatile octave_idx_type ii = 0;
-	      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
+              // Take a first guess that the number of non-zero terms
+              // will be as many as in b
+              volatile octave_idx_type x_nz = b.nnz ();
+              volatile octave_idx_type ii = 0;
+              retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-	      retval.xcidx(0) = 0;
-	      for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		{
+              retval.xcidx(0) = 0;
+              for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                {
 
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    Bx[i] = b (i,j);
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    Bx[i] = b (i,j);
 
-		  F77_XFCN (zgttrs, ZGTTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, 1, DL, D, DU, DU2, pipvt, 
-			     Bx, b_nr, err
-			     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgttrs, ZGTTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, 1, DL, D, DU, DU2, pipvt, 
+                             Bx, b_nr, err
+                             F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0)
-		    {
-		      (*current_liboctave_error_handler)
-			("SparseComplexMatrix::solve solve failed");
+                  if (err != 0)
+                    {
+                      (*current_liboctave_error_handler)
+                        ("SparseComplexMatrix::solve solve failed");
 
-		      err = -1;
-		      break;
-		    }
+                      err = -1;
+                      break;
+                    }
 
-		  // Count non-zeros in work vector and adjust 
-		  // space in retval if needed
-		  octave_idx_type new_nnz = 0;
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (Bx[i] != 0.)
-		      new_nnz++;
+                  // Count non-zeros in work vector and adjust 
+                  // space in retval if needed
+                  octave_idx_type new_nnz = 0;
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    if (Bx[i] != 0.)
+                      new_nnz++;
 
-		  if (ii + new_nnz > x_nz)
-		    {
-		      // Resize the sparse matrix
-		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-		      retval.change_capacity (sz);
-		      x_nz = sz;
-		    }
+                  if (ii + new_nnz > x_nz)
+                    {
+                      // Resize the sparse matrix
+                      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                      retval.change_capacity (sz);
+                      x_nz = sz;
+                    }
 
-		  for (octave_idx_type i = 0; i < nr; i++)
-		    if (Bx[i] != 0.)
-		      {
-			retval.xridx(ii) = i;
-			retval.xdata(ii++) = Bx[i];
-		      }
+                  for (octave_idx_type i = 0; i < nr; i++)
+                    if (Bx[i] != 0.)
+                      {
+                        retval.xridx(ii) = i;
+                        retval.xdata(ii++) = Bx[i];
+                      }
 
-		  retval.xcidx(j+1) = ii;
-		}
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
-	    }
-	}
+              retval.maybe_compress ();
+            }
+        }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -4348,9 +4348,9 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
 
 ComplexMatrix
 SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
-			     octave_idx_type& err, double& rcond,
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond,
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -4370,225 +4370,225 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
-	{
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_lower + 1;
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+        {
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_lower + 1;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      {
-		octave_idx_type ri = ridx (i);
-		if (ri >= j)
-		  m_band(ri - j, j) = data(i);
-	      }
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              {
+                octave_idx_type ri = ridx (i);
+                if (ri >= j)
+                  m_band(ri - j, j) = data(i);
+              }
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    anorm = m_band.abs().sum().row(0).max();
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            anorm = m_band.abs().sum().row(0).max();
 
-	  char job = 'L';
-	  F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, tmp_data, ldm, err
-				     F77_CHAR_ARG_LEN (1)));
-	    
-	  if (err != 0) 
-	    {
-	      rcond = 0.0;
-	      // Matrix is not positive definite!! Fall through to
-	      // unsymmetric banded solver.
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Banded;
-	      err = 0;
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+          char job = 'L';
+          F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nr, n_lower, tmp_data, ldm, err
+                                     F77_CHAR_ARG_LEN (1)));
+            
+          if (err != 0) 
+            {
+              rcond = 0.0;
+              // Matrix is not positive definite!! Fall through to
+              // unsymmetric banded solver.
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Banded;
+              err = 0;
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zpbcon, ZPBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nr, n_lower, tmp_data, ldm,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbcon, ZPBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nr, n_lower, tmp_data, ldm,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0) 
-		    err = -2;
+                  if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.0;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.0;
 
-	      if (err == 0)
-		{
-		  retval = ComplexMatrix (b);
-		  Complex *result = retval.fortran_vec ();
+              if (err == 0)
+                {
+                  retval = ComplexMatrix (b);
+                  Complex *result = retval.fortran_vec ();
 
-		  octave_idx_type b_nc = b.cols ();
+                  octave_idx_type b_nc = b.cols ();
 
-		  F77_XFCN (zpbtrs, ZPBTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, n_lower, b_nc, tmp_data,
-			     ldm, result, b.rows(), err
-			     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbtrs, ZPBTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, n_lower, b_nc, tmp_data,
+                             ldm, result, b.rows(), err
+                             F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseMatrix::solve solve failed");
-		      err = -1;
-		    }
-		}
-	    }
-	}
+                  if (err != 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseMatrix::solve solve failed");
+                      err = -1;
+                    }
+                }
+            }
+        }
 
       if (typ == MatrixType::Banded)
-	{
-	  // Create the storage for the banded form of the sparse matrix
-	  octave_idx_type n_upper = mattype.nupper ();
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+        {
+          // Create the storage for the banded form of the sparse matrix
+          octave_idx_type n_upper = mattype.nupper ();
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    {
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            {
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nc, n_lower, n_upper, tmp_data, 
-				     ldm, pipvt, err));
-	    
-	  // Throw-away extra info LAPACK gives so as to not 
-	  // change output.
-	  if (err != 0) 
-	    {
-	      rcond = 0.0;
-	      err = -2;
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nc, n_lower, n_upper, tmp_data, 
+                                     ldm, pipvt, err));
+            
+          // Throw-away extra info LAPACK gives so as to not 
+          // change output.
+          if (err != 0) 
+            {
+              rcond = 0.0;
+              err = -2;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  char job = '1';
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  char job = '1';
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zgbcon, ZGBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgbcon, ZGBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		   if (err != 0) 
-		    err = -2;
+                   if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.;
 
-	      if (err == 0)
-		{
-		  retval = ComplexMatrix (b);
-		  Complex *result = retval.fortran_vec ();
+              if (err == 0)
+                {
+                  retval = ComplexMatrix (b);
+                  Complex *result = retval.fortran_vec ();
 
-		  octave_idx_type b_nc = b.cols ();
+                  octave_idx_type b_nc = b.cols ();
 
-		  char job = 'N';
-		  F77_XFCN (zgbtrs, ZGBTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, n_lower, n_upper, b_nc, tmp_data,
-			     ldm, pipvt, result, b.rows(), err
-			     F77_CHAR_ARG_LEN (1)));
-		}
-	    }
-	}
+                  char job = 'N';
+                  F77_XFCN (zgbtrs, ZGBTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, n_lower, n_upper, b_nc, tmp_data,
+                             ldm, pipvt, result, b.rows(), err
+                             F77_CHAR_ARG_LEN (1)));
+                }
+            }
+        }
       else if (typ != MatrixType::Banded_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -4596,9 +4596,9 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -4618,295 +4618,295 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
-	{
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_lower + 1;
+        {
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      {
-		octave_idx_type ri = ridx (i);
-		if (ri >= j)
-		  m_band(ri - j, j) = data(i);
-	      }
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              {
+                octave_idx_type ri = ridx (i);
+                if (ri >= j)
+                  m_band(ri - j, j) = data(i);
+              }
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    anorm = m_band.abs().sum().row(0).max();
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            anorm = m_band.abs().sum().row(0).max();
 
-	  char job = 'L';
-	  F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, tmp_data, ldm, err
-				     F77_CHAR_ARG_LEN (1)));
-	    
-	  if (err != 0) 
-	    {
-	      rcond = 0.0;
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Banded;
-	      err = 0;
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+          char job = 'L';
+          F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nr, n_lower, tmp_data, ldm, err
+                                     F77_CHAR_ARG_LEN (1)));
+            
+          if (err != 0) 
+            {
+              rcond = 0.0;
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Banded;
+              err = 0;
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zpbcon, ZPBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nr, n_lower, tmp_data, ldm,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbcon, ZPBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nr, n_lower, tmp_data, ldm,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0) 
-		    err = -2;
+                  if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.0;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.0;
 
-	      if (err == 0)
-		{
-		  octave_idx_type b_nr = b.rows ();
-		  octave_idx_type b_nc = b.cols ();
-		  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
+              if (err == 0)
+                {
+                  octave_idx_type b_nr = b.rows ();
+                  octave_idx_type b_nc = b.cols ();
+                  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-		  // Take a first guess that the number of non-zero terms
-		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  volatile octave_idx_type ii = 0;
-		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
+                  // Take a first guess that the number of non-zero terms
+                  // will be as many as in b
+                  volatile octave_idx_type x_nz = b.nnz ();
+                  volatile octave_idx_type ii = 0;
+                  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-		  retval.xcidx(0) = 0;
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
-		      for (octave_idx_type i = 0; i < b_nr; i++)
-			Bx[i] = b.elem (i, j);
+                  retval.xcidx(0) = 0;
+                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                    {
+                      for (octave_idx_type i = 0; i < b_nr; i++)
+                        Bx[i] = b.elem (i, j);
 
-		      F77_XFCN (zpbtrs, ZPBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, 1, tmp_data,
-				 ldm, Bx, b_nr, err
-				 F77_CHAR_ARG_LEN (1)));
+                      F77_XFCN (zpbtrs, ZPBTRS, 
+                                (F77_CONST_CHAR_ARG2 (&job, 1),
+                                 nr, n_lower, 1, tmp_data,
+                                 ldm, Bx, b_nr, err
+                                 F77_CHAR_ARG_LEN (1)));
 
-		      if (err != 0)
-			{
-			  (*current_liboctave_error_handler) 
-			    ("SparseComplexMatrix::solve solve failed");
-			  err = -1;
-			  break;
-			}
+                      if (err != 0)
+                        {
+                          (*current_liboctave_error_handler) 
+                            ("SparseComplexMatrix::solve solve failed");
+                          err = -1;
+                          break;
+                        }
 
-		      for (octave_idx_type i = 0; i < b_nr; i++)
-			{
-			  Complex tmp = Bx[i];
-			  if (tmp != 0.0)
-			    {
-			      if (ii == x_nz)
-				{
-				  // Resize the sparse matrix
-				  octave_idx_type sz = x_nz * 
-				    (b_nc - j) / b_nc;
-				  sz = (sz > 10 ? sz : 10) + x_nz;
-				  retval.change_capacity (sz);
-				  x_nz = sz;
-				}
-			      retval.xdata(ii) = tmp;
-			      retval.xridx(ii++) = i;
-			    }
-			}
-		      retval.xcidx(j+1) = ii;
-		    }
+                      for (octave_idx_type i = 0; i < b_nr; i++)
+                        {
+                          Complex tmp = Bx[i];
+                          if (tmp != 0.0)
+                            {
+                              if (ii == x_nz)
+                                {
+                                  // Resize the sparse matrix
+                                  octave_idx_type sz = x_nz * 
+                                    (b_nc - j) / b_nc;
+                                  sz = (sz > 10 ? sz : 10) + x_nz;
+                                  retval.change_capacity (sz);
+                                  x_nz = sz;
+                                }
+                              retval.xdata(ii) = tmp;
+                              retval.xridx(ii++) = i;
+                            }
+                        }
+                      retval.xcidx(j+1) = ii;
+                    }
 
-		  retval.maybe_compress ();
-		}
-	    }
-	}
+                  retval.maybe_compress ();
+                }
+            }
+        }
 
       if (typ == MatrixType::Banded)
-	{
-	  // Create the storage for the banded form of the sparse matrix
-	  octave_idx_type n_upper = mattype.nupper ();
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+        {
+          // Create the storage for the banded form of the sparse matrix
+          octave_idx_type n_upper = mattype.nupper ();
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    {
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            {
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
-				     ldm, pipvt, err));
-	    
-	  if (err != 0) 
-	    {
-	      rcond = 0.0;
-	      err = -2;
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
+                                     ldm, pipvt, err));
+            
+          if (err != 0) 
+            {
+              rcond = 0.0;
+              err = -2;
 
-	      if (sing_handler)
-		{
-		sing_handler (rcond);
-		mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
+              if (sing_handler)
+                {
+                sing_handler (rcond);
+                mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
 
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  char job = '1';
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  char job = '1';
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zgbcon, ZGBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgbcon, ZGBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		   if (err != 0) 
-		    err = -2;
+                   if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.;
 
-	      if (err == 0)
-		{
-		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  octave_idx_type b_nc = b.cols ();
-		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
-		  retval.xcidx(0) = 0;
-		  volatile octave_idx_type ii = 0;
+              if (err == 0)
+                {
+                  char job = 'N';
+                  volatile octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type b_nc = b.cols ();
+                  retval = SparseComplexMatrix (nr, b_nc, x_nz);
+                  retval.xcidx(0) = 0;
+                  volatile octave_idx_type ii = 0;
 
-		  OCTAVE_LOCAL_BUFFER (Complex, work, nr);
+                  OCTAVE_LOCAL_BUFFER (Complex, work, nr);
 
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
-		      for (octave_idx_type i = 0; i < nr; i++)
-			work[i] = 0.;
-		      for (octave_idx_type i = b.cidx(j); 
-			   i < b.cidx(j+1); i++)
-			work[b.ridx(i)] = b.data(i);
+                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                    {
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        work[i] = 0.;
+                      for (octave_idx_type i = b.cidx(j); 
+                           i < b.cidx(j+1); i++)
+                        work[b.ridx(i)] = b.data(i);
 
-		      F77_XFCN (zgbtrs, ZGBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, n_upper, 1, tmp_data,
-				 ldm, pipvt, work, b.rows (), err
-				 F77_CHAR_ARG_LEN (1)));
+                      F77_XFCN (zgbtrs, ZGBTRS, 
+                                (F77_CONST_CHAR_ARG2 (&job, 1),
+                                 nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, work, b.rows (), err
+                                 F77_CHAR_ARG_LEN (1)));
 
-		      // Count non-zeros in work vector and adjust 
-		      // space in retval if needed
-		      octave_idx_type new_nnz = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (work[i] != 0.)
-			  new_nnz++;
+                      // Count non-zeros in work vector and adjust 
+                      // space in retval if needed
+                      octave_idx_type new_nnz = 0;
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (work[i] != 0.)
+                          new_nnz++;
 
-		      if (ii + new_nnz > x_nz)
-			{
-			  // Resize the sparse matrix
-			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			  retval.change_capacity (sz);
-			  x_nz = sz;
-			}
+                      if (ii + new_nnz > x_nz)
+                        {
+                          // Resize the sparse matrix
+                          octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                          retval.change_capacity (sz);
+                          x_nz = sz;
+                        }
 
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (work[i] != 0.)
-			  {
-			    retval.xridx(ii) = i;
-			    retval.xdata(ii++) = work[i];
-			  }
-		      retval.xcidx(j+1) = ii;
-		    }
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (work[i] != 0.)
+                          {
+                            retval.xridx(ii) = i;
+                            retval.xdata(ii++) = work[i];
+                          }
+                      retval.xcidx(j+1) = ii;
+                    }
 
-		  retval.maybe_compress ();
-		}
-	    }
-	}
+                  retval.maybe_compress ();
+                }
+            }
+        }
       else if (typ != MatrixType::Banded_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -4914,9 +4914,9 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b, 
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -4936,223 +4936,223 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
-	{
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_lower + 1;
+        {
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      {
-		octave_idx_type ri = ridx (i);
-		if (ri >= j)
-		  m_band(ri - j, j) = data(i);
-	      }
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              {
+                octave_idx_type ri = ridx (i);
+                if (ri >= j)
+                  m_band(ri - j, j) = data(i);
+              }
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    anorm = m_band.abs().sum().row(0).max();
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            anorm = m_band.abs().sum().row(0).max();
 
-	  char job = 'L';
-	  F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, tmp_data, ldm, err
-				     F77_CHAR_ARG_LEN (1)));
-	    
-	  if (err != 0) 
-	    {
-	      // Matrix is not positive definite!! Fall through to
-	      // unsymmetric banded solver.
-	      rcond = 0.0;
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Banded;
-	      err = 0;
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+          char job = 'L';
+          F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nr, n_lower, tmp_data, ldm, err
+                                     F77_CHAR_ARG_LEN (1)));
+            
+          if (err != 0) 
+            {
+              // Matrix is not positive definite!! Fall through to
+              // unsymmetric banded solver.
+              rcond = 0.0;
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Banded;
+              err = 0;
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zpbcon, ZPBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nr, n_lower, tmp_data, ldm,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbcon, ZPBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nr, n_lower, tmp_data, ldm,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0) 
-		    err = -2;
+                  if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.0;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.0;
 
-	      if (err == 0)
-		{
-		  octave_idx_type b_nr = b.rows ();
-		  octave_idx_type b_nc = b.cols ();
-		  retval = ComplexMatrix (b);
-		  Complex *result = retval.fortran_vec ();
+              if (err == 0)
+                {
+                  octave_idx_type b_nr = b.rows ();
+                  octave_idx_type b_nc = b.cols ();
+                  retval = ComplexMatrix (b);
+                  Complex *result = retval.fortran_vec ();
 
-		  F77_XFCN (zpbtrs, ZPBTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, n_lower, b_nc, tmp_data,
-			     ldm, result, b_nr, err
-			     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbtrs, ZPBTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, n_lower, b_nc, tmp_data,
+                             ldm, result, b_nr, err
+                             F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseComplexMatrix::solve solve failed");
-		      err = -1;
-		    }
-		}
-	    }
-	}
+                  if (err != 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseComplexMatrix::solve solve failed");
+                      err = -1;
+                    }
+                }
+            }
+        }
 
       if (typ == MatrixType::Banded)
-	{
-	  // Create the storage for the banded form of the sparse matrix
-	  octave_idx_type n_upper = mattype.nupper ();
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+        {
+          // Create the storage for the banded form of the sparse matrix
+          octave_idx_type n_upper = mattype.nupper ();
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    {
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            {
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
-				     ldm, pipvt, err));
-	    
-	  if (err != 0) 
-	    {
-	      err = -2;
-	      rcond = 0.0;
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
+                                     ldm, pipvt, err));
+            
+          if (err != 0) 
+            {
+              err = -2;
+              rcond = 0.0;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  char job = '1';
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  char job = '1';
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zgbcon, ZGBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgbcon, ZGBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		   if (err != 0) 
-		    err = -2;
+                   if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.;
 
-	      if (err == 0)
-		{
-		  char job = 'N';
-		  octave_idx_type b_nc = b.cols ();
-		  retval = ComplexMatrix (b);
-		  Complex *result = retval.fortran_vec ();
+              if (err == 0)
+                {
+                  char job = 'N';
+                  octave_idx_type b_nc = b.cols ();
+                  retval = ComplexMatrix (b);
+                  Complex *result = retval.fortran_vec ();
 
-		  F77_XFCN (zgbtrs, ZGBTRS, 
-			    (F77_CONST_CHAR_ARG2 (&job, 1),
-			     nr, n_lower, n_upper, b_nc, tmp_data,
-			     ldm, pipvt, result, b.rows (), err
-			     F77_CHAR_ARG_LEN (1)));
-		}
-	    }
-	}
+                  F77_XFCN (zgbtrs, ZGBTRS, 
+                            (F77_CONST_CHAR_ARG2 (&job, 1),
+                             nr, n_lower, n_upper, b_nc, tmp_data,
+                             ldm, pipvt, result, b.rows (), err
+                             F77_CHAR_ARG_LEN (1)));
+                }
+            }
+        }
       else if (typ != MatrixType::Banded_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
 
   return retval;
@@ -5160,9 +5160,9 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
-			     octave_idx_type& err, double& rcond, 
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond, 
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -5182,304 +5182,304 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
-	{
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_lower + 1;
+        {
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      {
-		octave_idx_type ri = ridx (i);
-		if (ri >= j)
-		  m_band(ri - j, j) = data(i);
-	      }
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              {
+                octave_idx_type ri = ridx (i);
+                if (ri >= j)
+                  m_band(ri - j, j) = data(i);
+              }
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    anorm = m_band.abs().sum().row(0).max();
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            anorm = m_band.abs().sum().row(0).max();
 
-	  char job = 'L';
-	  F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, tmp_data, ldm, err
-				     F77_CHAR_ARG_LEN (1)));
-	    
-	  if (err != 0) 
-	    {
-	      // Matrix is not positive definite!! Fall through to
-	      // unsymmetric banded solver.
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Banded;
+          char job = 'L';
+          F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                     nr, n_lower, tmp_data, ldm, err
+                                     F77_CHAR_ARG_LEN (1)));
+            
+          if (err != 0) 
+            {
+              // Matrix is not positive definite!! Fall through to
+              // unsymmetric banded solver.
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Banded;
 
-	      rcond = 0.0;
-	      err = 0;
-	    } 
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+              rcond = 0.0;
+              err = 0;
+            } 
+          else 
+            {
+              if (calc_cond)
+                {
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zpbcon, ZPBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nr, n_lower, tmp_data, ldm,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zpbcon, ZPBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nr, n_lower, tmp_data, ldm,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		  if (err != 0) 
-		    err = -2;
+                  if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.0;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.0;
 
-	      if (err == 0)
-		{
-		  octave_idx_type b_nr = b.rows ();
-		  octave_idx_type b_nc = b.cols ();
-		  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
+              if (err == 0)
+                {
+                  octave_idx_type b_nr = b.rows ();
+                  octave_idx_type b_nc = b.cols ();
+                  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-		  // Take a first guess that the number of non-zero terms
-		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  volatile octave_idx_type ii = 0;
-		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
+                  // Take a first guess that the number of non-zero terms
+                  // will be as many as in b
+                  volatile octave_idx_type x_nz = b.nnz ();
+                  volatile octave_idx_type ii = 0;
+                  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-		  retval.xcidx(0) = 0;
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
+                  retval.xcidx(0) = 0;
+                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                    {
 
-		      for (octave_idx_type i = 0; i < b_nr; i++)
-			Bx[i] = b (i,j);
+                      for (octave_idx_type i = 0; i < b_nr; i++)
+                        Bx[i] = b (i,j);
 
-		      F77_XFCN (zpbtrs, ZPBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, 1, tmp_data,
-				 ldm, Bx, b_nr, err
-				 F77_CHAR_ARG_LEN (1)));
+                      F77_XFCN (zpbtrs, ZPBTRS, 
+                                (F77_CONST_CHAR_ARG2 (&job, 1),
+                                 nr, n_lower, 1, tmp_data,
+                                 ldm, Bx, b_nr, err
+                                 F77_CHAR_ARG_LEN (1)));
 
-		      if (err != 0)
-			{
-			  (*current_liboctave_error_handler) 
-			    ("SparseMatrix::solve solve failed");
-			  err = -1;
-			  break;
-			}
+                      if (err != 0)
+                        {
+                          (*current_liboctave_error_handler) 
+                            ("SparseMatrix::solve solve failed");
+                          err = -1;
+                          break;
+                        }
 
-		      // Count non-zeros in work vector and adjust 
-		      // space in retval if needed
-		      octave_idx_type new_nnz = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  new_nnz++;
+                      // Count non-zeros in work vector and adjust 
+                      // space in retval if needed
+                      octave_idx_type new_nnz = 0;
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (Bx[i] != 0.)
+                          new_nnz++;
 
-		      if (ii + new_nnz > x_nz)
-			{
-			  // Resize the sparse matrix
-			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			  retval.change_capacity (sz);
-			  x_nz = sz;
-			}
+                      if (ii + new_nnz > x_nz)
+                        {
+                          // Resize the sparse matrix
+                          octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                          retval.change_capacity (sz);
+                          x_nz = sz;
+                        }
 
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  {
-			    retval.xridx(ii) = i;
-			    retval.xdata(ii++) = Bx[i];
-			  }
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (Bx[i] != 0.)
+                          {
+                            retval.xridx(ii) = i;
+                            retval.xdata(ii++) = Bx[i];
+                          }
 
-		      retval.xcidx(j+1) = ii;
-		    }
+                      retval.xcidx(j+1) = ii;
+                    }
 
-		  retval.maybe_compress ();
-		}
-	    }
-	}
+                  retval.maybe_compress ();
+                }
+            }
+        }
 
       if (typ == MatrixType::Banded)
-	{
-	  // Create the storage for the banded form of the sparse matrix
-	  octave_idx_type n_upper = mattype.nupper ();
-	  octave_idx_type n_lower = mattype.nlower ();
-	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
+        {
+          // Create the storage for the banded form of the sparse matrix
+          octave_idx_type n_upper = mattype.nupper ();
+          octave_idx_type n_lower = mattype.nlower ();
+          octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
-	  ComplexMatrix m_band (ldm, nc);
-	  Complex *tmp_data = m_band.fortran_vec ();
-	      
-	  if (! mattype.is_dense ()) 
-	    {
-	      octave_idx_type ii = 0;
+          ComplexMatrix m_band (ldm, nc);
+          Complex *tmp_data = m_band.fortran_vec ();
+              
+          if (! mattype.is_dense ()) 
+            {
+              octave_idx_type ii = 0;
 
-	      for (octave_idx_type j = 0; j < ldm; j++)
-		for (octave_idx_type i = 0; i < nc; i++)
-		  tmp_data[ii++] = 0.;
-	    }
+              for (octave_idx_type j = 0; j < ldm; j++)
+                for (octave_idx_type i = 0; i < nc; i++)
+                  tmp_data[ii++] = 0.;
+            }
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-	      m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
+          for (octave_idx_type j = 0; j < nc; j++)
+            for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              m_band(ridx(i) - j + n_lower + n_upper, j) = data(i);
 
-	  // Calculate the norm of the matrix, for later use.
-	  double anorm;
-	  if (calc_cond)
-	    {
-	      for (octave_idx_type j = 0; j < nr; j++)
-		{
-		  double atmp = 0.;
-		  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-		    atmp += std::abs(data(i));
-		  if (atmp > anorm)
-		    anorm = atmp;
-		}
-	    }
+          // Calculate the norm of the matrix, for later use.
+          double anorm;
+          if (calc_cond)
+            {
+              for (octave_idx_type j = 0; j < nr; j++)
+                {
+                  double atmp = 0.;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    atmp += std::abs(data(i));
+                  if (atmp > anorm)
+                    anorm = atmp;
+                }
+            }
 
-	  Array<octave_idx_type> ipvt (nr);
-	  octave_idx_type *pipvt = ipvt.fortran_vec ();
+          Array<octave_idx_type> ipvt (nr);
+          octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
-				     ldm, pipvt, err));
-	    
-	  if (err != 0) 
-	    {
-	      err = -2;
-	      rcond = 0.0;
+          F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
+                                     ldm, pipvt, err));
+            
+          if (err != 0) 
+            {
+              err = -2;
+              rcond = 0.0;
 
-	      if (sing_handler)
-		{
-		  sing_handler (rcond);
-		  mattype.mark_as_rectangular ();
-		}
-	      else
-		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision");
+              if (sing_handler)
+                {
+                  sing_handler (rcond);
+                  mattype.mark_as_rectangular ();
+                }
+              else
+                (*current_liboctave_error_handler)
+                  ("matrix singular to machine precision");
 
-	    }
-	  else 
-	    {
-	      if (calc_cond)
-		{
-		  char job = '1';
-		  Array<Complex> z (2 * nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> iz (nr);
-		  double *piz = iz.fortran_vec ();
+            }
+          else 
+            {
+              if (calc_cond)
+                {
+                  char job = '1';
+                  Array<Complex> z (2 * nr);
+                  Complex *pz = z.fortran_vec ();
+                  Array<double> iz (nr);
+                  double *piz = iz.fortran_vec ();
 
-		  F77_XFCN (zgbcon, ZGBCON, 
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		     anorm, rcond, pz, piz, err
-		     F77_CHAR_ARG_LEN (1)));
+                  F77_XFCN (zgbcon, ZGBCON, 
+                    (F77_CONST_CHAR_ARG2 (&job, 1),
+                     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+                     anorm, rcond, pz, piz, err
+                     F77_CHAR_ARG_LEN (1)));
 
-		   if (err != 0) 
-		    err = -2;
+                   if (err != 0) 
+                    err = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+                  volatile double rcond_plus_one = rcond + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
-		    {
-		      err = -2;
+                  if (rcond_plus_one == 1.0 || xisnan (rcond))
+                    {
+                      err = -2;
 
-		      if (sing_handler)
-			{
-			  sing_handler (rcond);
-			  mattype.mark_as_rectangular ();
-			}
-		      else
-			(*current_liboctave_error_handler)
-			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
-		    }
-		}
-	      else
-		rcond = 1.;
+                      if (sing_handler)
+                        {
+                          sing_handler (rcond);
+                          mattype.mark_as_rectangular ();
+                        }
+                      else
+                        (*current_liboctave_error_handler)
+                          ("matrix singular to machine precision, rcond = %g",
+                           rcond);
+                    }
+                }
+              else
+                rcond = 1.;
 
-	      if (err == 0)
-		{
-		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  octave_idx_type b_nc = b.cols ();
-		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
-		  retval.xcidx(0) = 0;
-		  volatile octave_idx_type ii = 0;
+              if (err == 0)
+                {
+                  char job = 'N';
+                  volatile octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type b_nc = b.cols ();
+                  retval = SparseComplexMatrix (nr, b_nc, x_nz);
+                  retval.xcidx(0) = 0;
+                  volatile octave_idx_type ii = 0;
 
-		  OCTAVE_LOCAL_BUFFER (Complex, Bx, nr);
+                  OCTAVE_LOCAL_BUFFER (Complex, Bx, nr);
 
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
-		      for (octave_idx_type i = 0; i < nr; i++)
-			Bx[i] = 0.;
+                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                    {
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        Bx[i] = 0.;
 
-		      for (octave_idx_type i = b.cidx(j); 
-			   i < b.cidx(j+1); i++)
-			Bx[b.ridx(i)] = b.data(i);
+                      for (octave_idx_type i = b.cidx(j); 
+                           i < b.cidx(j+1); i++)
+                        Bx[b.ridx(i)] = b.data(i);
 
-		      F77_XFCN (zgbtrs, ZGBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, n_upper, 1, tmp_data,
-				 ldm, pipvt, Bx, b.rows (), err
-				 F77_CHAR_ARG_LEN (1)));
+                      F77_XFCN (zgbtrs, ZGBTRS, 
+                                (F77_CONST_CHAR_ARG2 (&job, 1),
+                                 nr, n_lower, n_upper, 1, tmp_data,
+                                 ldm, pipvt, Bx, b.rows (), err
+                                 F77_CHAR_ARG_LEN (1)));
 
-		      // Count non-zeros in work vector and adjust 
-		      // space in retval if needed
-		      octave_idx_type new_nnz = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  new_nnz++;
+                      // Count non-zeros in work vector and adjust 
+                      // space in retval if needed
+                      octave_idx_type new_nnz = 0;
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (Bx[i] != 0.)
+                          new_nnz++;
 
-		      if (ii + new_nnz > x_nz)
-			{
-			  // Resize the sparse matrix
-			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			  retval.change_capacity (sz);
-			  x_nz = sz;
-			}
+                      if (ii + new_nnz > x_nz)
+                        {
+                          // Resize the sparse matrix
+                          octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+                          retval.change_capacity (sz);
+                          x_nz = sz;
+                        }
 
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  {
-			    retval.xridx(ii) = i;
-			    retval.xdata(ii++) = Bx[i]; 
-			  }
-		      retval.xcidx(j+1) = ii;
-		    }
+                      for (octave_idx_type i = 0; i < nr; i++)
+                        if (Bx[i] != 0.)
+                          {
+                            retval.xridx(ii) = i;
+                            retval.xdata(ii++) = Bx[i]; 
+                          }
+                      retval.xcidx(j+1) = ii;
+                    }
 
-		  retval.maybe_compress ();
-		}
-	    }
-	}
+                  retval.maybe_compress ();
+                }
+            }
+        }
       else if (typ != MatrixType::Banded_Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
   return retval;
@@ -5487,9 +5487,9 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
 void *
 SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
-				Matrix &Control, Matrix &Info,
-				solve_singularity_handler sing_handler,
-				bool calc_cond) const
+                                Matrix &Control, Matrix &Info,
+                                solve_singularity_handler sing_handler,
+                                bool calc_cond) const
 {
   // The return values
   void *Numeric = 0;
@@ -5525,20 +5525,20 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   octave_idx_type nc = cols ();
 
   UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
-				 reinterpret_cast<const double *> (Ax),
-				 0, 1, control);
+                                 reinterpret_cast<const double *> (Ax),
+                                 0, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
   int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
-				     reinterpret_cast<const double *> (Ax), 
-				     0, 0, &Symbolic, control, info);
+                                     reinterpret_cast<const double *> (Ax), 
+                                     0, 0, &Symbolic, control, info);
 
   if (status < 0)
     {
       (*current_liboctave_error_handler) 
-	("SparseComplexMatrix::solve symbolic factorization failed");
+        ("SparseComplexMatrix::solve symbolic factorization failed");
       err = -1;
 
       UMFPACK_ZNAME (report_status) (control, status);
@@ -5551,45 +5551,45 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
       UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
 
       status = UMFPACK_ZNAME (numeric) (Ap, Ai,
-				   reinterpret_cast<const double *> (Ax), 0, 
-				   Symbolic, &Numeric, control, info) ;
+                                   reinterpret_cast<const double *> (Ax), 0, 
+                                   Symbolic, &Numeric, control, info) ;
       UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
       if (calc_cond)
-	rcond = Info (UMFPACK_RCOND);
+        rcond = Info (UMFPACK_RCOND);
       else
-	rcond = 1.;
+        rcond = 1.;
       volatile double rcond_plus_one = rcond + 1.0;
 
       if (status == UMFPACK_WARNING_singular_matrix || 
-	  rcond_plus_one == 1.0 || xisnan (rcond))
-	{
-	  UMFPACK_ZNAME (report_numeric) (Numeric, control);
+          rcond_plus_one == 1.0 || xisnan (rcond))
+        {
+          UMFPACK_ZNAME (report_numeric) (Numeric, control);
 
-	  err = -2;
+          err = -2;
 
-	  if (sing_handler)
-	    sing_handler (rcond);
-	  else
-	    (*current_liboctave_error_handler)
-	      ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-	       rcond);
+          if (sing_handler)
+            sing_handler (rcond);
+          else
+            (*current_liboctave_error_handler)
+              ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+               rcond);
 
-	}
+        }
       else if (status < 0)
-	  {
-	    (*current_liboctave_error_handler) 
-	      ("SparseComplexMatrix::solve numeric factorization failed");
+          {
+            (*current_liboctave_error_handler) 
+              ("SparseComplexMatrix::solve numeric factorization failed");
 
-	    UMFPACK_ZNAME (report_status) (control, status);
-	    UMFPACK_ZNAME (report_info) (control, info);
-	      
-	    err = -1;
-	  }
-	else
-	  {
-	    UMFPACK_ZNAME (report_numeric) (Numeric, control);
-	  }
+            UMFPACK_ZNAME (report_status) (control, status);
+            UMFPACK_ZNAME (report_info) (control, info);
+              
+            err = -1;
+          }
+        else
+          {
+            UMFPACK_ZNAME (report_numeric) (Numeric, control);
+          }
     }
 
   if (err != 0)
@@ -5603,9 +5603,9 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
 
 ComplexMatrix
 SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
-			     octave_idx_type& err, double& rcond,
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond,
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -5625,220 +5625,220 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
-	{
+        {
 #ifdef HAVE_CHOLMOD
-	  cholmod_common Common;
-	  cholmod_common *cm = &Common;
+          cholmod_common Common;
+          cholmod_common *cm = &Common;
 
-	  // Setup initial parameters
-	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = false;
+          // Setup initial parameters
+          CHOLMOD_NAME(start) (cm);
+          cm->prefer_zomplex = false;
 
-	  double spu = octave_sparse_params::get_key ("spumoni");
-	  if (spu == 0.)
-	    {
-	      cm->print = -1;
-	      cm->print_function = 0;
-	    }
-	  else
-	    {
-	      cm->print = static_cast<int> (spu) + 2;
-	      cm->print_function =&SparseCholPrint;
-	    }
+          double spu = octave_sparse_params::get_key ("spumoni");
+          if (spu == 0.)
+            {
+              cm->print = -1;
+              cm->print_function = 0;
+            }
+          else
+            {
+              cm->print = static_cast<int> (spu) + 2;
+              cm->print_function =&SparseCholPrint;
+            }
 
-	  cm->error_handler = &SparseCholError;
-	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+          cm->error_handler = &SparseCholError;
+          cm->complex_divide = CHOLMOD_NAME(divcomplex);
+          cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-	  cm->final_ll = true;
+          cm->final_ll = true;
 
-	  cholmod_sparse Astore;
-	  cholmod_sparse *A = &Astore;
-	  double dummy;
-	  A->nrow = nr;
-	  A->ncol = nc;
+          cholmod_sparse Astore;
+          cholmod_sparse *A = &Astore;
+          double dummy;
+          A->nrow = nr;
+          A->ncol = nc;
 
-	  A->p = cidx();
-	  A->i = ridx();
-	  A->nzmax = nnz();
-	  A->packed = true;
-	  A->sorted = true;
-	  A->nz = 0;
+          A->p = cidx();
+          A->i = ridx();
+          A->nzmax = nnz();
+          A->packed = true;
+          A->sorted = true;
+          A->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  A->itype = CHOLMOD_LONG;
+          A->itype = CHOLMOD_LONG;
 #else
-	  A->itype = CHOLMOD_INT;
+          A->itype = CHOLMOD_INT;
 #endif
-	  A->dtype = CHOLMOD_DOUBLE;
-	  A->stype = 1;
-	  A->xtype = CHOLMOD_COMPLEX;
+          A->dtype = CHOLMOD_DOUBLE;
+          A->stype = 1;
+          A->xtype = CHOLMOD_COMPLEX;
 
-	  if (nr < 1)
-	    A->x = &dummy;
-	  else
-	    A->x = data();
+          if (nr < 1)
+            A->x = &dummy;
+          else
+            A->x = data();
 
-	  cholmod_dense Bstore;
-	  cholmod_dense *B = &Bstore;
-	  B->nrow = b.rows();
-	  B->ncol = b.cols();
-	  B->d = B->nrow;
-	  B->nzmax = B->nrow * B->ncol;
-	  B->dtype = CHOLMOD_DOUBLE;
-	  B->xtype = CHOLMOD_REAL;
-	  if (nc < 1 || b.cols() < 1)
-	    B->x = &dummy;
-	  else
-	    // We won't alter it, honest :-)
-	    B->x = const_cast<double *>(b.fortran_vec());
+          cholmod_dense Bstore;
+          cholmod_dense *B = &Bstore;
+          B->nrow = b.rows();
+          B->ncol = b.cols();
+          B->d = B->nrow;
+          B->nzmax = B->nrow * B->ncol;
+          B->dtype = CHOLMOD_DOUBLE;
+          B->xtype = CHOLMOD_REAL;
+          if (nc < 1 || b.cols() < 1)
+            B->x = &dummy;
+          else
+            // We won't alter it, honest :-)
+            B->x = const_cast<double *>(b.fortran_vec());
 
-	  cholmod_factor *L;
-	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	  L = CHOLMOD_NAME(analyze) (A, cm);
-	  CHOLMOD_NAME(factorize) (A, L, cm);
-	  if (calc_cond)
-	    rcond = CHOLMOD_NAME(rcond)(L, cm);
-	  else
-	    rcond = 1.;
-	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          cholmod_factor *L;
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          L = CHOLMOD_NAME(analyze) (A, cm);
+          CHOLMOD_NAME(factorize) (A, L, cm);
+          if (calc_cond)
+            rcond = CHOLMOD_NAME(rcond)(L, cm);
+          else
+            rcond = 1.;
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	  if (rcond == 0.0)
-	    {
-	      // Either its indefinite or singular. Try UMFPACK
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Full;
-	    }
-	  else
-	    {
-	      volatile double rcond_plus_one = rcond + 1.0;
+          if (rcond == 0.0)
+            {
+              // Either its indefinite or singular. Try UMFPACK
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+          else
+            {
+              volatile double rcond_plus_one = rcond + 1.0;
 
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
+              if (rcond_plus_one == 1.0 || xisnan (rcond))
+                {
+                  err = -2;
 
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-	      
-		  return retval;
-		}
+                  if (sing_handler)
+                    {
+                      sing_handler (rcond);
+                      mattype.mark_as_rectangular ();
+                    }
+                  else
+                    (*current_liboctave_error_handler)
+                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+                       rcond);
+              
+                  return retval;
+                }
 
-	      cholmod_dense *X;
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X;
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	      retval.resize (b.rows (), b.cols());
-	      for (octave_idx_type j = 0; j < b.cols(); j++)
-		{
-		  octave_idx_type jr = j * b.rows();
-		  for (octave_idx_type i = 0; i < b.rows(); i++)
-		    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
-		}
+              retval.resize (b.rows (), b.cols());
+              for (octave_idx_type j = 0; j < b.cols(); j++)
+                {
+                  octave_idx_type jr = j * b.rows();
+                  for (octave_idx_type i = 0; i < b.rows(); i++)
+                    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
+                }
 
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      CHOLMOD_NAME(free_dense) (&X, cm);
-	      CHOLMOD_NAME(free_factor) (&L, cm);
-	      CHOLMOD_NAME(finish) (cm);
-	      static char tmp[] = " ";
-	      CHOLMOD_NAME(print_common) (tmp, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	    }
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              CHOLMOD_NAME(free_dense) (&X, cm);
+              CHOLMOD_NAME(free_factor) (&L, cm);
+              CHOLMOD_NAME(finish) (cm);
+              static char tmp[] = " ";
+              CHOLMOD_NAME(print_common) (tmp, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+            }
 #else
-	  (*current_liboctave_warning_handler)
-	    ("CHOLMOD not installed");
+          (*current_liboctave_warning_handler)
+            ("CHOLMOD not installed");
 
-	  mattype.mark_as_unsymmetric ();
-	  typ = MatrixType::Full;
+          mattype.mark_as_unsymmetric ();
+          typ = MatrixType::Full;
 #endif
-	}
+        }
 
       if (typ == MatrixType::Full)
-	{
+        {
 #ifdef HAVE_UMFPACK
-	  Matrix Control, Info;
-	  void *Numeric = factorize (err, rcond, Control, Info, 
-				     sing_handler, calc_cond);
+          Matrix Control, Info;
+          void *Numeric = factorize (err, rcond, Control, Info, 
+                                     sing_handler, calc_cond);
 
-	  if (err == 0)
-	    {
-	      octave_idx_type b_nr = b.rows ();
-	      octave_idx_type b_nc = b.cols ();
-	      int status = 0;
-	      double *control = Control.fortran_vec ();
-	      double *info = Info.fortran_vec ();
-	      const octave_idx_type *Ap = cidx ();
-	      const octave_idx_type *Ai = ridx ();
-	      const Complex *Ax = data ();
+          if (err == 0)
+            {
+              octave_idx_type b_nr = b.rows ();
+              octave_idx_type b_nc = b.cols ();
+              int status = 0;
+              double *control = Control.fortran_vec ();
+              double *info = Info.fortran_vec ();
+              const octave_idx_type *Ap = cidx ();
+              const octave_idx_type *Ai = ridx ();
+              const Complex *Ax = data ();
 #ifdef UMFPACK_SEPARATE_SPLIT
-	      const double *Bx = b.fortran_vec ();
-	      OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
-	      for (octave_idx_type i = 0; i < b_nr; i++)
-		Bz[i] = 0.;
+              const double *Bx = b.fortran_vec ();
+              OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
+              for (octave_idx_type i = 0; i < b_nr; i++)
+                Bz[i] = 0.;
 #else
-	      OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
+              OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
 #endif
-	      retval.resize (b_nr, b_nc);
-	      Complex *Xx = retval.fortran_vec ();
+              retval.resize (b_nr, b_nc);
+              Complex *Xx = retval.fortran_vec ();
 
-	      for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
-		{
+              for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
+                {
 #ifdef UMFPACK_SEPARATE_SPLIT
-		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-					     Ai,
-					     reinterpret_cast<const double *> (Ax), 
-					     0,
-					     reinterpret_cast<double *> (&Xx[iidx]), 
-					     0,
-					     &Bx[iidx], Bz, Numeric, 
-					     control, info);
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
+                                             Ai,
+                                             reinterpret_cast<const double *> (Ax), 
+                                             0,
+                                             reinterpret_cast<double *> (&Xx[iidx]), 
+                                             0,
+                                             &Bx[iidx], Bz, Numeric, 
+                                             control, info);
 #else
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    Bz[i] = b.elem (i, j);
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    Bz[i] = b.elem (i, j);
 
-		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-					     Ai,
-					     reinterpret_cast<const double *> (Ax), 
-					     0,
-					     reinterpret_cast<double *> (&Xx[iidx]), 
-					     0,
-					     reinterpret_cast<const double *> (Bz),
-					     0, Numeric, 
-					     control, info);
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
+                                             Ai,
+                                             reinterpret_cast<const double *> (Ax), 
+                                             0,
+                                             reinterpret_cast<double *> (&Xx[iidx]), 
+                                             0,
+                                             reinterpret_cast<const double *> (Bz),
+                                             0, Numeric, 
+                                             control, info);
 #endif
 
-		  if (status < 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseComplexMatrix::solve solve failed");
+                  if (status < 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseComplexMatrix::solve solve failed");
 
-		      UMFPACK_ZNAME (report_status) (control, status);
-		      
-		      err = -1;
+                      UMFPACK_ZNAME (report_status) (control, status);
+                      
+                      err = -1;
 
-		      break;
-		    }
-		}
+                      break;
+                    }
+                }
 
-	      UMFPACK_ZNAME (report_info) (control, info);
+              UMFPACK_ZNAME (report_info) (control, info);
 
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	  else
-	    mattype.mark_as_rectangular ();
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+          else
+            mattype.mark_as_rectangular ();
 
 #else
-	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
-	}
+        }
       else if (typ != MatrixType::Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
   return retval;
@@ -5846,9 +5846,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b, 
-			     octave_idx_type& err, double& rcond,
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond,
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -5868,268 +5868,268 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
-	{
+        {
 #ifdef HAVE_CHOLMOD
-	  cholmod_common Common;
-	  cholmod_common *cm = &Common;
+          cholmod_common Common;
+          cholmod_common *cm = &Common;
 
-	  // Setup initial parameters
-	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = false;
+          // Setup initial parameters
+          CHOLMOD_NAME(start) (cm);
+          cm->prefer_zomplex = false;
 
-	  double spu = octave_sparse_params::get_key ("spumoni");
-	  if (spu == 0.)
-	    {
-	      cm->print = -1;
-	      cm->print_function = 0;
-	    }
-	  else
-	    {
-	      cm->print = static_cast<int> (spu) + 2;
-	      cm->print_function =&SparseCholPrint;
-	    }
+          double spu = octave_sparse_params::get_key ("spumoni");
+          if (spu == 0.)
+            {
+              cm->print = -1;
+              cm->print_function = 0;
+            }
+          else
+            {
+              cm->print = static_cast<int> (spu) + 2;
+              cm->print_function =&SparseCholPrint;
+            }
 
-	  cm->error_handler = &SparseCholError;
-	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+          cm->error_handler = &SparseCholError;
+          cm->complex_divide = CHOLMOD_NAME(divcomplex);
+          cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-	  cm->final_ll = true;
+          cm->final_ll = true;
 
-	  cholmod_sparse Astore;
-	  cholmod_sparse *A = &Astore;
-	  double dummy;
-	  A->nrow = nr;
-	  A->ncol = nc;
+          cholmod_sparse Astore;
+          cholmod_sparse *A = &Astore;
+          double dummy;
+          A->nrow = nr;
+          A->ncol = nc;
 
-	  A->p = cidx();
-	  A->i = ridx();
-	  A->nzmax = nnz();
-	  A->packed = true;
-	  A->sorted = true;
-	  A->nz = 0;
+          A->p = cidx();
+          A->i = ridx();
+          A->nzmax = nnz();
+          A->packed = true;
+          A->sorted = true;
+          A->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  A->itype = CHOLMOD_LONG;
+          A->itype = CHOLMOD_LONG;
 #else
-	  A->itype = CHOLMOD_INT;
+          A->itype = CHOLMOD_INT;
 #endif
-	  A->dtype = CHOLMOD_DOUBLE;
-	  A->stype = 1;
-	  A->xtype = CHOLMOD_COMPLEX;
+          A->dtype = CHOLMOD_DOUBLE;
+          A->stype = 1;
+          A->xtype = CHOLMOD_COMPLEX;
 
-	  if (nr < 1)
-	    A->x = &dummy;
-	  else
-	    A->x = data();
+          if (nr < 1)
+            A->x = &dummy;
+          else
+            A->x = data();
 
-	  cholmod_sparse Bstore;
-	  cholmod_sparse *B = &Bstore;
-	  B->nrow = b.rows();
-	  B->ncol = b.cols();
-	  B->p = b.cidx();
-	  B->i = b.ridx();
-	  B->nzmax = b.nnz();
-	  B->packed = true;
-	  B->sorted = true;
-	  B->nz = 0;
+          cholmod_sparse Bstore;
+          cholmod_sparse *B = &Bstore;
+          B->nrow = b.rows();
+          B->ncol = b.cols();
+          B->p = b.cidx();
+          B->i = b.ridx();
+          B->nzmax = b.nnz();
+          B->packed = true;
+          B->sorted = true;
+          B->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  B->itype = CHOLMOD_LONG;
+          B->itype = CHOLMOD_LONG;
 #else
-	  B->itype = CHOLMOD_INT;
+          B->itype = CHOLMOD_INT;
 #endif
-	  B->dtype = CHOLMOD_DOUBLE;
-	  B->stype = 0;
-	  B->xtype = CHOLMOD_REAL;
+          B->dtype = CHOLMOD_DOUBLE;
+          B->stype = 0;
+          B->xtype = CHOLMOD_REAL;
 
-	  if (b.rows() < 1 || b.cols() < 1)
-	    B->x = &dummy;
-	  else
-	    B->x = b.data();
+          if (b.rows() < 1 || b.cols() < 1)
+            B->x = &dummy;
+          else
+            B->x = b.data();
 
-	  cholmod_factor *L;
-	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	  L = CHOLMOD_NAME(analyze) (A, cm);
-	  CHOLMOD_NAME(factorize) (A, L, cm);
-	  if (calc_cond)
-	    rcond = CHOLMOD_NAME(rcond)(L, cm);
-	  else
-	    rcond = 1.;
-	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          cholmod_factor *L;
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          L = CHOLMOD_NAME(analyze) (A, cm);
+          CHOLMOD_NAME(factorize) (A, L, cm);
+          if (calc_cond)
+            rcond = CHOLMOD_NAME(rcond)(L, cm);
+          else
+            rcond = 1.;
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	  if (rcond == 0.0)
-	    {
-	      // Either its indefinite or singular. Try UMFPACK
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Full;
-	    }
-	  else
-	    {
-	      volatile double rcond_plus_one = rcond + 1.0;
+          if (rcond == 0.0)
+            {
+              // Either its indefinite or singular. Try UMFPACK
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+          else
+            {
+              volatile double rcond_plus_one = rcond + 1.0;
 
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
+              if (rcond_plus_one == 1.0 || xisnan (rcond))
+                {
+                  err = -2;
 
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-	      
-		  return retval;
-		}
+                  if (sing_handler)
+                    {
+                      sing_handler (rcond);
+                      mattype.mark_as_rectangular ();
+                    }
+                  else
+                    (*current_liboctave_error_handler)
+                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+                       rcond);
+              
+                  return retval;
+                }
 
-	      cholmod_sparse *X;
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X;
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	      retval = SparseComplexMatrix 
-		(static_cast<octave_idx_type>(X->nrow), 
-		 static_cast<octave_idx_type>(X->ncol),
-		 static_cast<octave_idx_type>(X->nzmax));
-	      for (octave_idx_type j = 0; 
-		   j <= static_cast<octave_idx_type>(X->ncol); j++)
-		retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
-	      for (octave_idx_type j = 0; 
-		   j < static_cast<octave_idx_type>(X->nzmax); j++)
-		{
-		  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
-		  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
-		}
+              retval = SparseComplexMatrix 
+                (static_cast<octave_idx_type>(X->nrow), 
+                 static_cast<octave_idx_type>(X->ncol),
+                 static_cast<octave_idx_type>(X->nzmax));
+              for (octave_idx_type j = 0; 
+                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
+              for (octave_idx_type j = 0; 
+                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                {
+                  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
+                  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
+                }
 
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      CHOLMOD_NAME(free_sparse) (&X, cm);
-	      CHOLMOD_NAME(free_factor) (&L, cm);
-	      CHOLMOD_NAME(finish) (cm);
-	      static char tmp[] = " ";
-	      CHOLMOD_NAME(print_common) (tmp, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	    }
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              CHOLMOD_NAME(free_sparse) (&X, cm);
+              CHOLMOD_NAME(free_factor) (&L, cm);
+              CHOLMOD_NAME(finish) (cm);
+              static char tmp[] = " ";
+              CHOLMOD_NAME(print_common) (tmp, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+            }
 #else
-	  (*current_liboctave_warning_handler)
-	    ("CHOLMOD not installed");
+          (*current_liboctave_warning_handler)
+            ("CHOLMOD not installed");
 
-	  mattype.mark_as_unsymmetric ();
-	  typ = MatrixType::Full;
+          mattype.mark_as_unsymmetric ();
+          typ = MatrixType::Full;
 #endif
-	}
+        }
 
       if (typ == MatrixType::Full)
-	{
+        {
 #ifdef HAVE_UMFPACK
-	  Matrix Control, Info;
-	  void *Numeric = factorize (err, rcond, Control, Info, 
-				     sing_handler, calc_cond);
+          Matrix Control, Info;
+          void *Numeric = factorize (err, rcond, Control, Info, 
+                                     sing_handler, calc_cond);
 
-	  if (err == 0)
-	    {
-	      octave_idx_type b_nr = b.rows ();
-	      octave_idx_type b_nc = b.cols ();
-	      int status = 0;
-	      double *control = Control.fortran_vec ();
-	      double *info = Info.fortran_vec ();
-	      const octave_idx_type *Ap = cidx ();
-	      const octave_idx_type *Ai = ridx ();
-	      const Complex *Ax = data ();
-
-#ifdef UMFPACK_SEPARATE_SPLIT
-	      OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
-	      OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
-	      for (octave_idx_type i = 0; i < b_nr; i++)
-		Bz[i] = 0.;
-#else
-	      OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
-#endif
-
-	      // Take a first guess that the number of non-zero terms
-	      // will be as many as in b
-	      octave_idx_type x_nz = b.nnz ();
-	      octave_idx_type ii = 0;
-	      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
-
-	      OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
-	      
-	      retval.xcidx(0) = 0;
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
+          if (err == 0)
+            {
+              octave_idx_type b_nr = b.rows ();
+              octave_idx_type b_nc = b.cols ();
+              int status = 0;
+              double *control = Control.fortran_vec ();
+              double *info = Info.fortran_vec ();
+              const octave_idx_type *Ap = cidx ();
+              const octave_idx_type *Ai = ridx ();
+              const Complex *Ax = data ();
 
 #ifdef UMFPACK_SEPARATE_SPLIT
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    Bx[i] = b.elem (i, j);
-
-		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-					     Ai,
-					     reinterpret_cast<const double *> (Ax),
-					     0,
-					     reinterpret_cast<double *> (Xx),
-					     0, 
-					     Bx, Bz, Numeric, control, 
-					     info);
+              OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
+              OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
+              for (octave_idx_type i = 0; i < b_nr; i++)
+                Bz[i] = 0.;
 #else
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    Bz[i] = b.elem (i, j);
-
-		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
-					     reinterpret_cast<const double *> (Ax),
-					     0,
-					     reinterpret_cast<double *> (Xx),
-					     0,
-					     reinterpret_cast<double *> (Bz),
-					     0,
-					     Numeric, control, 
-					     info);
+              OCTAVE_LOCAL_BUFFER (Complex, Bz, b_nr);
 #endif
-		  if (status < 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseComplexMatrix::solve solve failed");
 
-		      UMFPACK_ZNAME (report_status) (control, status);
-		      
-		      err = -1;
+              // Take a first guess that the number of non-zero terms
+              // will be as many as in b
+              octave_idx_type x_nz = b.nnz ();
+              octave_idx_type ii = 0;
+              retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-		      break;
-		    }
+              OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
+              
+              retval.xcidx(0) = 0;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
 
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    {
-		      Complex tmp = Xx[i];
-		      if (tmp != 0.0)
-			{
-			  if (ii == x_nz)
-			    {
-			      // Resize the sparse matrix
-			      octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
-			      sz = (sz > 10 ? sz : 10) + x_nz;
-			      retval.change_capacity (sz);
-			      x_nz = sz;
-			    }
-			  retval.xdata(ii) = tmp;
-			  retval.xridx(ii++) = i;
-			}
-		    }
-		  retval.xcidx(j+1) = ii;
-		}
+#ifdef UMFPACK_SEPARATE_SPLIT
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    Bx[i] = b.elem (i, j);
 
-	      retval.maybe_compress ();
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
+                                             Ai,
+                                             reinterpret_cast<const double *> (Ax),
+                                             0,
+                                             reinterpret_cast<double *> (Xx),
+                                             0, 
+                                             Bx, Bz, Numeric, control, 
+                                             info);
+#else
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    Bz[i] = b.elem (i, j);
 
-	      UMFPACK_ZNAME (report_info) (control, info);
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
+                                             reinterpret_cast<const double *> (Ax),
+                                             0,
+                                             reinterpret_cast<double *> (Xx),
+                                             0,
+                                             reinterpret_cast<double *> (Bz),
+                                             0,
+                                             Numeric, control, 
+                                             info);
+#endif
+                  if (status < 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseComplexMatrix::solve solve failed");
 
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	  else
-	    mattype.mark_as_rectangular ();
+                      UMFPACK_ZNAME (report_status) (control, status);
+                      
+                      err = -1;
+
+                      break;
+                    }
+
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    {
+                      Complex tmp = Xx[i];
+                      if (tmp != 0.0)
+                        {
+                          if (ii == x_nz)
+                            {
+                              // Resize the sparse matrix
+                              octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
+                              sz = (sz > 10 ? sz : 10) + x_nz;
+                              retval.change_capacity (sz);
+                              x_nz = sz;
+                            }
+                          retval.xdata(ii) = tmp;
+                          retval.xridx(ii++) = i;
+                        }
+                    }
+                  retval.xcidx(j+1) = ii;
+                }
+
+              retval.maybe_compress ();
+
+              UMFPACK_ZNAME (report_info) (control, info);
+
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+          else
+            mattype.mark_as_rectangular ();
 
 #else
-	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
-	}
+        }
       else if (typ != MatrixType::Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
   return retval;
@@ -6137,9 +6137,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b, 
-			     octave_idx_type& err, double& rcond,
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond,
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -6159,199 +6159,199 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
-	{
+        {
 #ifdef HAVE_CHOLMOD
-	  cholmod_common Common;
-	  cholmod_common *cm = &Common;
+          cholmod_common Common;
+          cholmod_common *cm = &Common;
 
-	  // Setup initial parameters
-	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = false;
+          // Setup initial parameters
+          CHOLMOD_NAME(start) (cm);
+          cm->prefer_zomplex = false;
 
-	  double spu = octave_sparse_params::get_key ("spumoni");
-	  if (spu == 0.)
-	    {
-	      cm->print = -1;
-	      cm->print_function = 0;
-	    }
-	  else
-	    {
-	      cm->print = static_cast<int> (spu) + 2;
-	      cm->print_function =&SparseCholPrint;
-	    }
+          double spu = octave_sparse_params::get_key ("spumoni");
+          if (spu == 0.)
+            {
+              cm->print = -1;
+              cm->print_function = 0;
+            }
+          else
+            {
+              cm->print = static_cast<int> (spu) + 2;
+              cm->print_function =&SparseCholPrint;
+            }
 
-	  cm->error_handler = &SparseCholError;
-	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+          cm->error_handler = &SparseCholError;
+          cm->complex_divide = CHOLMOD_NAME(divcomplex);
+          cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-	  cm->final_ll = true;
+          cm->final_ll = true;
 
-	  cholmod_sparse Astore;
-	  cholmod_sparse *A = &Astore;
-	  double dummy;
-	  A->nrow = nr;
-	  A->ncol = nc;
+          cholmod_sparse Astore;
+          cholmod_sparse *A = &Astore;
+          double dummy;
+          A->nrow = nr;
+          A->ncol = nc;
 
-	  A->p = cidx();
-	  A->i = ridx();
-	  A->nzmax = nnz();
-	  A->packed = true;
-	  A->sorted = true;
-	  A->nz = 0;
+          A->p = cidx();
+          A->i = ridx();
+          A->nzmax = nnz();
+          A->packed = true;
+          A->sorted = true;
+          A->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  A->itype = CHOLMOD_LONG;
+          A->itype = CHOLMOD_LONG;
 #else
-	  A->itype = CHOLMOD_INT;
+          A->itype = CHOLMOD_INT;
 #endif
-	  A->dtype = CHOLMOD_DOUBLE;
-	  A->stype = 1;
-	  A->xtype = CHOLMOD_COMPLEX;
+          A->dtype = CHOLMOD_DOUBLE;
+          A->stype = 1;
+          A->xtype = CHOLMOD_COMPLEX;
 
-	  if (nr < 1)
-	    A->x = &dummy;
-	  else
-	    A->x = data();
+          if (nr < 1)
+            A->x = &dummy;
+          else
+            A->x = data();
 
-	  cholmod_dense Bstore;
-	  cholmod_dense *B = &Bstore;
-	  B->nrow = b.rows();
-	  B->ncol = b.cols();
-	  B->d = B->nrow;
-	  B->nzmax = B->nrow * B->ncol;
-	  B->dtype = CHOLMOD_DOUBLE;
-	  B->xtype = CHOLMOD_COMPLEX;
-	  if (nc < 1 || b.cols() < 1)
-	    B->x = &dummy;
-	  else
-	    // We won't alter it, honest :-)
-	    B->x = const_cast<Complex *>(b.fortran_vec());
+          cholmod_dense Bstore;
+          cholmod_dense *B = &Bstore;
+          B->nrow = b.rows();
+          B->ncol = b.cols();
+          B->d = B->nrow;
+          B->nzmax = B->nrow * B->ncol;
+          B->dtype = CHOLMOD_DOUBLE;
+          B->xtype = CHOLMOD_COMPLEX;
+          if (nc < 1 || b.cols() < 1)
+            B->x = &dummy;
+          else
+            // We won't alter it, honest :-)
+            B->x = const_cast<Complex *>(b.fortran_vec());
 
-	  cholmod_factor *L;
-	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	  L = CHOLMOD_NAME(analyze) (A, cm);
-	  CHOLMOD_NAME(factorize) (A, L, cm);
-	  if (calc_cond)
-	    rcond = CHOLMOD_NAME(rcond)(L, cm);
-	  else
-	    rcond = 1.;
-	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          cholmod_factor *L;
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          L = CHOLMOD_NAME(analyze) (A, cm);
+          CHOLMOD_NAME(factorize) (A, L, cm);
+          if (calc_cond)
+            rcond = CHOLMOD_NAME(rcond)(L, cm);
+          else
+            rcond = 1.;
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	  if (rcond == 0.0)
-	    {
-	      // Either its indefinite or singular. Try UMFPACK
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Full;
-	    }
-	  else
-	    {
-	      volatile double rcond_plus_one = rcond + 1.0;
+          if (rcond == 0.0)
+            {
+              // Either its indefinite or singular. Try UMFPACK
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+          else
+            {
+              volatile double rcond_plus_one = rcond + 1.0;
 
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
+              if (rcond_plus_one == 1.0 || xisnan (rcond))
+                {
+                  err = -2;
 
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-	      
-		  return retval;
-		}
+                  if (sing_handler)
+                    {
+                      sing_handler (rcond);
+                      mattype.mark_as_rectangular ();
+                    }
+                  else
+                    (*current_liboctave_error_handler)
+                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+                       rcond);
+              
+                  return retval;
+                }
 
-	      cholmod_dense *X;
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_dense *X;
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	      retval.resize (b.rows (), b.cols());
-	      for (octave_idx_type j = 0; j < b.cols(); j++)
-		{
-		  octave_idx_type jr = j * b.rows();
-		  for (octave_idx_type i = 0; i < b.rows(); i++)
-		    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
-		}
+              retval.resize (b.rows (), b.cols());
+              for (octave_idx_type j = 0; j < b.cols(); j++)
+                {
+                  octave_idx_type jr = j * b.rows();
+                  for (octave_idx_type i = 0; i < b.rows(); i++)
+                    retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
+                }
 
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      CHOLMOD_NAME(free_dense) (&X, cm);
-	      CHOLMOD_NAME(free_factor) (&L, cm);
-	      CHOLMOD_NAME(finish) (cm);
-	      static char tmp[] = " ";
-	      CHOLMOD_NAME(print_common) (tmp, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	    }
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              CHOLMOD_NAME(free_dense) (&X, cm);
+              CHOLMOD_NAME(free_factor) (&L, cm);
+              CHOLMOD_NAME(finish) (cm);
+              static char tmp[] = " ";
+              CHOLMOD_NAME(print_common) (tmp, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+            }
 #else
-	  (*current_liboctave_warning_handler)
-	    ("CHOLMOD not installed");
+          (*current_liboctave_warning_handler)
+            ("CHOLMOD not installed");
 
-	  mattype.mark_as_unsymmetric ();
-	  typ = MatrixType::Full;
+          mattype.mark_as_unsymmetric ();
+          typ = MatrixType::Full;
 #endif
-	}
+        }
 
       if (typ == MatrixType::Full)
-	{
+        {
 #ifdef HAVE_UMFPACK
-	  Matrix Control, Info;
-	  void *Numeric = factorize (err, rcond, Control, Info,
-				     sing_handler, calc_cond);
+          Matrix Control, Info;
+          void *Numeric = factorize (err, rcond, Control, Info,
+                                     sing_handler, calc_cond);
 
-	  if (err == 0)
-	    {
-	      octave_idx_type b_nr = b.rows ();
-	      octave_idx_type b_nc = b.cols ();
-	      int status = 0;
-	      double *control = Control.fortran_vec ();
-	      double *info = Info.fortran_vec ();
-	      const octave_idx_type *Ap = cidx ();
-	      const octave_idx_type *Ai = ridx ();
-	      const Complex *Ax = data ();
-	      const Complex *Bx = b.fortran_vec ();
+          if (err == 0)
+            {
+              octave_idx_type b_nr = b.rows ();
+              octave_idx_type b_nc = b.cols ();
+              int status = 0;
+              double *control = Control.fortran_vec ();
+              double *info = Info.fortran_vec ();
+              const octave_idx_type *Ap = cidx ();
+              const octave_idx_type *Ai = ridx ();
+              const Complex *Ax = data ();
+              const Complex *Bx = b.fortran_vec ();
 
-	      retval.resize (b_nr, b_nc);
-	      Complex *Xx = retval.fortran_vec ();
-	      
-	      for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
-		{
-		  status = 
-		    UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
-				      reinterpret_cast<const double *> (Ax), 
-				      0,
-				      reinterpret_cast<double *> (&Xx[iidx]), 
-				      0,
-				      reinterpret_cast<const double *> (&Bx[iidx]), 
-				      0, Numeric, control, info);
-		  
-		  if (status < 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseComplexMatrix::solve solve failed");
+              retval.resize (b_nr, b_nc);
+              Complex *Xx = retval.fortran_vec ();
+              
+              for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
+                {
+                  status = 
+                    UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
+                                      reinterpret_cast<const double *> (Ax), 
+                                      0,
+                                      reinterpret_cast<double *> (&Xx[iidx]), 
+                                      0,
+                                      reinterpret_cast<const double *> (&Bx[iidx]), 
+                                      0, Numeric, control, info);
+                  
+                  if (status < 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseComplexMatrix::solve solve failed");
 
-		      UMFPACK_ZNAME (report_status) (control, status);
-		      
-		      err = -1;
+                      UMFPACK_ZNAME (report_status) (control, status);
+                      
+                      err = -1;
 
-		      break;
-		    }
-		}
+                      break;
+                    }
+                }
 
-	      UMFPACK_ZNAME (report_info) (control, info);
+              UMFPACK_ZNAME (report_info) (control, info);
 
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	  else
-	    mattype.mark_as_rectangular ();
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+          else
+            mattype.mark_as_rectangular ();
 
 #else
-	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
-	}
+        }
       else if (typ != MatrixType::Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
   return retval;
@@ -6359,9 +6359,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
-			     octave_idx_type& err, double& rcond,
-			     solve_singularity_handler sing_handler,
-			     bool calc_cond) const
+                             octave_idx_type& err, double& rcond,
+                             solve_singularity_handler sing_handler,
+                             bool calc_cond) const
 {
   SparseComplexMatrix retval;
 
@@ -6381,263 +6381,263 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
-	{
+        {
 #ifdef HAVE_CHOLMOD
-	  cholmod_common Common;
-	  cholmod_common *cm = &Common;
+          cholmod_common Common;
+          cholmod_common *cm = &Common;
 
-	  // Setup initial parameters
-	  CHOLMOD_NAME(start) (cm);
-	  cm->prefer_zomplex = false;
+          // Setup initial parameters
+          CHOLMOD_NAME(start) (cm);
+          cm->prefer_zomplex = false;
 
-	  double spu = octave_sparse_params::get_key ("spumoni");
-	  if (spu == 0.)
-	    {
-	      cm->print = -1;
-	      cm->print_function = 0;
-	    }
-	  else
-	    {
-	      cm->print = static_cast<int> (spu) + 2;
-	      cm->print_function =&SparseCholPrint;
-	    }
+          double spu = octave_sparse_params::get_key ("spumoni");
+          if (spu == 0.)
+            {
+              cm->print = -1;
+              cm->print_function = 0;
+            }
+          else
+            {
+              cm->print = static_cast<int> (spu) + 2;
+              cm->print_function =&SparseCholPrint;
+            }
 
-	  cm->error_handler = &SparseCholError;
-	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-	  cm->hypotenuse = CHOLMOD_NAME(hypot);
+          cm->error_handler = &SparseCholError;
+          cm->complex_divide = CHOLMOD_NAME(divcomplex);
+          cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-	  cm->final_ll = true;
+          cm->final_ll = true;
 
-	  cholmod_sparse Astore;
-	  cholmod_sparse *A = &Astore;
-	  double dummy;
-	  A->nrow = nr;
-	  A->ncol = nc;
+          cholmod_sparse Astore;
+          cholmod_sparse *A = &Astore;
+          double dummy;
+          A->nrow = nr;
+          A->ncol = nc;
 
-	  A->p = cidx();
-	  A->i = ridx();
-	  A->nzmax = nnz();
-	  A->packed = true;
-	  A->sorted = true;
-	  A->nz = 0;
+          A->p = cidx();
+          A->i = ridx();
+          A->nzmax = nnz();
+          A->packed = true;
+          A->sorted = true;
+          A->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  A->itype = CHOLMOD_LONG;
+          A->itype = CHOLMOD_LONG;
 #else
-	  A->itype = CHOLMOD_INT;
+          A->itype = CHOLMOD_INT;
 #endif
-	  A->dtype = CHOLMOD_DOUBLE;
-	  A->stype = 1;
-	  A->xtype = CHOLMOD_COMPLEX;
+          A->dtype = CHOLMOD_DOUBLE;
+          A->stype = 1;
+          A->xtype = CHOLMOD_COMPLEX;
 
-	  if (nr < 1)
-	    A->x = &dummy;
-	  else
-	    A->x = data();
+          if (nr < 1)
+            A->x = &dummy;
+          else
+            A->x = data();
 
-	  cholmod_sparse Bstore;
-	  cholmod_sparse *B = &Bstore;
-	  B->nrow = b.rows();
-	  B->ncol = b.cols();
-	  B->p = b.cidx();
-	  B->i = b.ridx();
-	  B->nzmax = b.nnz();
-	  B->packed = true;
-	  B->sorted = true;
-	  B->nz = 0;
+          cholmod_sparse Bstore;
+          cholmod_sparse *B = &Bstore;
+          B->nrow = b.rows();
+          B->ncol = b.cols();
+          B->p = b.cidx();
+          B->i = b.ridx();
+          B->nzmax = b.nnz();
+          B->packed = true;
+          B->sorted = true;
+          B->nz = 0;
 #ifdef IDX_TYPE_LONG
-	  B->itype = CHOLMOD_LONG;
+          B->itype = CHOLMOD_LONG;
 #else
-	  B->itype = CHOLMOD_INT;
+          B->itype = CHOLMOD_INT;
 #endif
-	  B->dtype = CHOLMOD_DOUBLE;
-	  B->stype = 0;
-	  B->xtype = CHOLMOD_COMPLEX;
+          B->dtype = CHOLMOD_DOUBLE;
+          B->stype = 0;
+          B->xtype = CHOLMOD_COMPLEX;
 
-	  if (b.rows() < 1 || b.cols() < 1)
-	    B->x = &dummy;
-	  else
-	    B->x = b.data();
+          if (b.rows() < 1 || b.cols() < 1)
+            B->x = &dummy;
+          else
+            B->x = b.data();
 
-	  cholmod_factor *L;
-	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	  L = CHOLMOD_NAME(analyze) (A, cm);
-	  CHOLMOD_NAME(factorize) (A, L, cm);
-	  if (calc_cond)
-	    rcond = CHOLMOD_NAME(rcond)(L, cm);
-	  else
-	    rcond = 1.;
-	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          cholmod_factor *L;
+          BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+          L = CHOLMOD_NAME(analyze) (A, cm);
+          CHOLMOD_NAME(factorize) (A, L, cm);
+          if (calc_cond)
+            rcond = CHOLMOD_NAME(rcond)(L, cm);
+          else
+            rcond = 1.;
+          END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	  if (rcond == 0.0)
-	    {
-	      // Either its indefinite or singular. Try UMFPACK
-	      mattype.mark_as_unsymmetric ();
-	      typ = MatrixType::Full;
-	    }
-	  else
-	    {
-	      volatile double rcond_plus_one = rcond + 1.0;
+          if (rcond == 0.0)
+            {
+              // Either its indefinite or singular. Try UMFPACK
+              mattype.mark_as_unsymmetric ();
+              typ = MatrixType::Full;
+            }
+          else
+            {
+              volatile double rcond_plus_one = rcond + 1.0;
 
-	      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
+              if (rcond_plus_one == 1.0 || xisnan (rcond))
+                {
+                  err = -2;
 
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
-	      
-		  return retval;
-		}
+                  if (sing_handler)
+                    {
+                      sing_handler (rcond);
+                      mattype.mark_as_rectangular ();
+                    }
+                  else
+                    (*current_liboctave_error_handler)
+                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
+                       rcond);
+              
+                  return retval;
+                }
 
-	      cholmod_sparse *X;
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              cholmod_sparse *X;
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-	      retval = SparseComplexMatrix 
-		(static_cast<octave_idx_type>(X->nrow), 
-		 static_cast<octave_idx_type>(X->ncol),
-		 static_cast<octave_idx_type>(X->nzmax));
-	      for (octave_idx_type j = 0; 
-		   j <= static_cast<octave_idx_type>(X->ncol); j++)
-		retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
-	      for (octave_idx_type j = 0; 
-		   j < static_cast<octave_idx_type>(X->nzmax); j++)
-		{
-		  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
-		  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
-		}
+              retval = SparseComplexMatrix 
+                (static_cast<octave_idx_type>(X->nrow), 
+                 static_cast<octave_idx_type>(X->ncol),
+                 static_cast<octave_idx_type>(X->nzmax));
+              for (octave_idx_type j = 0; 
+                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                retval.xcidx(j) = static_cast<octave_idx_type *>(X->p)[j];
+              for (octave_idx_type j = 0; 
+                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                {
+                  retval.xridx(j) = static_cast<octave_idx_type *>(X->i)[j];
+                  retval.xdata(j) = static_cast<Complex *>(X->x)[j];
+                }
 
-	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	      CHOLMOD_NAME(free_sparse) (&X, cm);
-	      CHOLMOD_NAME(free_factor) (&L, cm);
-	      CHOLMOD_NAME(finish) (cm);
-	      static char tmp[] = " ";
-	      CHOLMOD_NAME(print_common) (tmp, cm);
-	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-	    }
+              BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+              CHOLMOD_NAME(free_sparse) (&X, cm);
+              CHOLMOD_NAME(free_factor) (&L, cm);
+              CHOLMOD_NAME(finish) (cm);
+              static char tmp[] = " ";
+              CHOLMOD_NAME(print_common) (tmp, cm);
+              END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+            }
 #else
-	  (*current_liboctave_warning_handler)
-	    ("CHOLMOD not installed");
+          (*current_liboctave_warning_handler)
+            ("CHOLMOD not installed");
 
-	  mattype.mark_as_unsymmetric ();
-	  typ = MatrixType::Full;
+          mattype.mark_as_unsymmetric ();
+          typ = MatrixType::Full;
 #endif
-	}
+        }
 
       if (typ == MatrixType::Full)
-	{
+        {
 #ifdef HAVE_UMFPACK
-	  Matrix Control, Info;
-	  void *Numeric = factorize (err, rcond, Control, Info,
-				     sing_handler, calc_cond);
+          Matrix Control, Info;
+          void *Numeric = factorize (err, rcond, Control, Info,
+                                     sing_handler, calc_cond);
 
-	  if (err == 0)
-	    {
-	      octave_idx_type b_nr = b.rows ();
-	      octave_idx_type b_nc = b.cols ();
-	      int status = 0;
-	      double *control = Control.fortran_vec ();
-	      double *info = Info.fortran_vec ();
-	      const octave_idx_type *Ap = cidx ();
-	      const octave_idx_type *Ai = ridx ();
-	      const Complex *Ax = data ();
+          if (err == 0)
+            {
+              octave_idx_type b_nr = b.rows ();
+              octave_idx_type b_nc = b.cols ();
+              int status = 0;
+              double *control = Control.fortran_vec ();
+              double *info = Info.fortran_vec ();
+              const octave_idx_type *Ap = cidx ();
+              const octave_idx_type *Ai = ridx ();
+              const Complex *Ax = data ();
 
-	      OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
+              OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-	      // Take a first guess that the number of non-zero terms
-	      // will be as many as in b
-	      octave_idx_type x_nz = b.nnz ();
-	      octave_idx_type ii = 0;
-	      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
+              // Take a first guess that the number of non-zero terms
+              // will be as many as in b
+              octave_idx_type x_nz = b.nnz ();
+              octave_idx_type ii = 0;
+              retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-	      OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
-	      
-	      retval.xcidx(0) = 0;
-	      for (octave_idx_type j = 0; j < b_nc; j++)
-		{
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    Bx[i] = b (i,j);
+              OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
+              
+              retval.xcidx(0) = 0;
+              for (octave_idx_type j = 0; j < b_nc; j++)
+                {
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    Bx[i] = b (i,j);
 
-		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
-					     Ai,
-					     reinterpret_cast<const double *> (Ax),
-					     0,
-					     reinterpret_cast<double *> (Xx),
-					     0,
-					     reinterpret_cast<double *> (Bx),
-					     0, Numeric, control, info);
-		  
-		  if (status < 0)
-		    {
-		      (*current_liboctave_error_handler) 
-			("SparseComplexMatrix::solve solve failed");
+                  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
+                                             Ai,
+                                             reinterpret_cast<const double *> (Ax),
+                                             0,
+                                             reinterpret_cast<double *> (Xx),
+                                             0,
+                                             reinterpret_cast<double *> (Bx),
+                                             0, Numeric, control, info);
+                  
+                  if (status < 0)
+                    {
+                      (*current_liboctave_error_handler) 
+                        ("SparseComplexMatrix::solve solve failed");
 
-		      UMFPACK_ZNAME (report_status) (control, status);
-		  
-		      err = -1;
+                      UMFPACK_ZNAME (report_status) (control, status);
+                  
+                      err = -1;
 
-		      break;
-		    }
+                      break;
+                    }
 
-		  for (octave_idx_type i = 0; i < b_nr; i++)
-		    {
-		      Complex tmp = Xx[i];
-		      if (tmp != 0.0)
-			{
-			  if (ii == x_nz)
-			    {
-			      // Resize the sparse matrix
-			      octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
-			      sz = (sz > 10 ? sz : 10) + x_nz;
-			      retval.change_capacity (sz);
-			      x_nz = sz;
-			    }
-			  retval.xdata(ii) = tmp;
-			  retval.xridx(ii++) = i;
-			}
-		    }
-		  retval.xcidx(j+1) = ii;
-		}
+                  for (octave_idx_type i = 0; i < b_nr; i++)
+                    {
+                      Complex tmp = Xx[i];
+                      if (tmp != 0.0)
+                        {
+                          if (ii == x_nz)
+                            {
+                              // Resize the sparse matrix
+                              octave_idx_type sz = x_nz * (b_nc - j) / b_nc;
+                              sz = (sz > 10 ? sz : 10) + x_nz;
+                              retval.change_capacity (sz);
+                              x_nz = sz;
+                            }
+                          retval.xdata(ii) = tmp;
+                          retval.xridx(ii++) = i;
+                        }
+                    }
+                  retval.xcidx(j+1) = ii;
+                }
 
-	      retval.maybe_compress ();
+              retval.maybe_compress ();
 
-	      rcond = Info (UMFPACK_RCOND);
-	      volatile double rcond_plus_one = rcond + 1.0;
+              rcond = Info (UMFPACK_RCOND);
+              volatile double rcond_plus_one = rcond + 1.0;
 
-	      if (status == UMFPACK_WARNING_singular_matrix || 
-		  rcond_plus_one == 1.0 || xisnan (rcond))
-		{
-		  err = -2;
+              if (status == UMFPACK_WARNING_singular_matrix || 
+                  rcond_plus_one == 1.0 || xisnan (rcond))
+                {
+                  err = -2;
 
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-		       rcond);
+                  if (sing_handler)
+                    sing_handler (rcond);
+                  else
+                    (*current_liboctave_error_handler)
+                      ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
+                       rcond);
 
-		}
+                }
 
-	      UMFPACK_ZNAME (report_info) (control, info);
+              UMFPACK_ZNAME (report_info) (control, info);
 
-	      UMFPACK_ZNAME (free_numeric) (&Numeric);
-	    }
-	  else
-	    mattype.mark_as_rectangular ();
+              UMFPACK_ZNAME (free_numeric) (&Numeric);
+            }
+          else
+            mattype.mark_as_rectangular ();
 
 #else
-	  (*current_liboctave_error_handler) ("UMFPACK not installed");
+          (*current_liboctave_error_handler) ("UMFPACK not installed");
 #endif
-	}
+        }
       else if (typ != MatrixType::Hermitian)
-	(*current_liboctave_error_handler) ("incorrect matrix type");
+        (*current_liboctave_error_handler) ("incorrect matrix type");
     }
   
   return retval;
@@ -6653,7 +6653,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b) const
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b, 
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6661,16 +6661,16 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
-			    octave_idx_type& info, double& rcond) const
+                            octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
-			    octave_idx_type& err, double& rcond, 
-			    solve_singularity_handler sing_handler,
-			    bool singular_fallback) const
+                            octave_idx_type& err, double& rcond, 
+                            solve_singularity_handler sing_handler,
+                            bool singular_fallback) const
 {
   ComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6687,7 +6687,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Tridiagonal || 
-	   typ == MatrixType::Tridiagonal_Hermitian)
+           typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6704,7 +6704,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const Matrix& b,
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix,
-	Matrix> (*this, b, err);
+        Matrix> (*this, b, err);
 #endif
     }
 
@@ -6721,7 +6721,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b) const
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b, 
-		     octave_idx_type& info) const
+                     octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6729,16 +6729,16 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
-		     octave_idx_type& info, double& rcond) const
+                     octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b, 
-			    octave_idx_type& err, double& rcond,
-			    solve_singularity_handler sing_handler,
-			    bool singular_fallback) const
+                            octave_idx_type& err, double& rcond,
+                            solve_singularity_handler sing_handler,
+                            bool singular_fallback) const
 {
   SparseComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6755,7 +6755,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Tridiagonal || 
-	   typ == MatrixType::Tridiagonal_Hermitian)
+           typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6772,7 +6772,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseMatrix& b,
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix,
-	SparseMatrix> (*this, b, err);
+        SparseMatrix> (*this, b, err);
 #endif
     }
 
@@ -6789,7 +6789,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b) const
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6797,16 +6797,16 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
-			    octave_idx_type& info, double& rcond) const
+                            octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
-			    octave_idx_type& err, double& rcond, 
-			    solve_singularity_handler sing_handler,
-			    bool singular_fallback) const
+                            octave_idx_type& err, double& rcond, 
+                            solve_singularity_handler sing_handler,
+                            bool singular_fallback) const
 {
   ComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6823,7 +6823,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Tridiagonal || 
-	   typ == MatrixType::Tridiagonal_Hermitian)
+           typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6840,7 +6840,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix,
-	ComplexMatrix> (*this, b, err);
+        ComplexMatrix> (*this, b, err);
 #endif
     }
 
@@ -6849,7 +6849,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, 
-			    const SparseComplexMatrix& b) const
+                            const SparseComplexMatrix& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6858,7 +6858,7 @@ SparseComplexMatrix::solve (MatrixType &mattype,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b, 
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6866,16 +6866,16 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
-			    octave_idx_type& info, double& rcond) const
+                            octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b, 
-			    octave_idx_type& err, double& rcond,
-			    solve_singularity_handler sing_handler,
-			    bool singular_fallback) const
+                            octave_idx_type& err, double& rcond,
+                            solve_singularity_handler sing_handler,
+                            bool singular_fallback) const
 {
   SparseComplexMatrix retval;
   int typ = mattype.type (false);
@@ -6892,7 +6892,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
   else if (typ == MatrixType::Banded || typ == MatrixType::Banded_Hermitian)
     retval = bsolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Tridiagonal || 
-	   typ == MatrixType::Tridiagonal_Hermitian)
+           typ == MatrixType::Tridiagonal_Hermitian)
     retval = trisolve (mattype, b, err, rcond, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, err, rcond, sing_handler, true);
@@ -6909,7 +6909,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const SparseComplexMatrix& b,
       retval = qrsolve (*this, b, err);
 #else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix,
-	SparseComplexMatrix> (*this, b, err);
+        SparseComplexMatrix> (*this, b, err);
 #endif
     }
 
@@ -6925,7 +6925,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b) const
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b, 
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond);
@@ -6933,15 +6933,15 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b, 
-			    octave_idx_type& info, double& rcond) const
+                            octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b, 
-			    octave_idx_type& info, double& rcond,
-			    solve_singularity_handler sing_handler) const
+                            octave_idx_type& info, double& rcond,
+                            solve_singularity_handler sing_handler) const
 {
   Matrix tmp (b);
   return solve (mattype, tmp, info, rcond, sing_handler).column (static_cast<octave_idx_type> (0));
@@ -6949,7 +6949,7 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ColumnVector& b,
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, 
-			    const ComplexColumnVector& b) const
+                            const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   double rcond;
@@ -6958,7 +6958,7 @@ SparseComplexMatrix::solve (MatrixType &mattype,
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (mattype, b, info, rcond, 0);
@@ -6966,15 +6966,15 @@ SparseComplexMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
-			    octave_idx_type& info, double& rcond) const
+                            octave_idx_type& info, double& rcond) const
 {
   return solve (mattype, b, info, rcond, 0);
 }
 
 ComplexColumnVector
 SparseComplexMatrix::solve (MatrixType &mattype, const ComplexColumnVector& b,
-			    octave_idx_type& info, double& rcond,
-			    solve_singularity_handler sing_handler) const
+                            octave_idx_type& info, double& rcond,
+                            solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (b);
   return solve (mattype, tmp, info, rcond, sing_handler).column (static_cast<octave_idx_type> (0));
@@ -6997,15 +6997,15 @@ SparseComplexMatrix::solve (const Matrix& b, octave_idx_type& info) const
 
 ComplexMatrix
 SparseComplexMatrix::solve (const Matrix& b, octave_idx_type& info, 
-		     double& rcond) const
+                     double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 ComplexMatrix
 SparseComplexMatrix::solve (const Matrix& b, octave_idx_type& err, 
-			    double& rcond, 
-			    solve_singularity_handler sing_handler) const
+                            double& rcond, 
+                            solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
@@ -7021,7 +7021,7 @@ SparseComplexMatrix::solve (const SparseMatrix& b) const
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseMatrix& b, 
-		     octave_idx_type& info) const
+                     octave_idx_type& info) const
 {
   double rcond;
   return solve (b, info, rcond, 0);
@@ -7029,15 +7029,15 @@ SparseComplexMatrix::solve (const SparseMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseMatrix& b,
-		     octave_idx_type& info, double& rcond) const
+                     octave_idx_type& info, double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseMatrix& b, 
-		     octave_idx_type& err, double& rcond,
-		     solve_singularity_handler sing_handler) const
+                     octave_idx_type& err, double& rcond,
+                     solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
@@ -7045,7 +7045,7 @@ SparseComplexMatrix::solve (const SparseMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::solve (const ComplexMatrix& b, 
-			    octave_idx_type& info) const
+                            octave_idx_type& info) const
 {
   double rcond;
   return solve (b, info, rcond, 0);
@@ -7053,15 +7053,15 @@ SparseComplexMatrix::solve (const ComplexMatrix& b,
 
 ComplexMatrix
 SparseComplexMatrix::solve (const ComplexMatrix& b, 
-		     octave_idx_type& info, double& rcond) const
+                     octave_idx_type& info, double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 ComplexMatrix
 SparseComplexMatrix::solve (const ComplexMatrix& b, 
-		     octave_idx_type& err, double& rcond, 
-		     solve_singularity_handler sing_handler) const
+                     octave_idx_type& err, double& rcond, 
+                     solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
@@ -7077,7 +7077,7 @@ SparseComplexMatrix::solve (const SparseComplexMatrix& b) const
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseComplexMatrix& b, 
-		     octave_idx_type& info) const
+                     octave_idx_type& info) const
 {
   double rcond;
   return solve (b, info, rcond, 0);
@@ -7085,15 +7085,15 @@ SparseComplexMatrix::solve (const SparseComplexMatrix& b,
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseComplexMatrix& b,
-		     octave_idx_type& info, double& rcond) const
+                     octave_idx_type& info, double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::solve (const SparseComplexMatrix& b, 
-		     octave_idx_type& err, double& rcond,
-		     solve_singularity_handler sing_handler) const
+                     octave_idx_type& err, double& rcond,
+                     solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, err, rcond, sing_handler);
@@ -7115,14 +7115,14 @@ SparseComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info) const
 
 ComplexColumnVector
 SparseComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info, 
-			    double& rcond) const
+                            double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 ComplexColumnVector
 SparseComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcond,
-			    solve_singularity_handler sing_handler) const
+                            solve_singularity_handler sing_handler) const
 {
   Matrix tmp (b);
   return solve (tmp, info, rcond, sing_handler).column (static_cast<octave_idx_type> (0));
@@ -7145,15 +7145,15 @@ SparseComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info)
 
 ComplexColumnVector
 SparseComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info, 
-		     double& rcond) const
+                     double& rcond) const
 {
   return solve (b, info, rcond, 0);
 }
 
 ComplexColumnVector
 SparseComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info, 
-			    double& rcond,
-			    solve_singularity_handler sing_handler) const
+                            double& rcond,
+                            solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (b);
   return solve (tmp, info, rcond, sing_handler).column (static_cast<octave_idx_type> (0));
@@ -7176,15 +7176,15 @@ SparseComplexMatrix::operator ! (void) const
   for (octave_idx_type i = 0; i < nc; i++)
     {
       for (octave_idx_type j = 0; j < nr; j++)
-	{
-	  if (jj < cidx(i+1) && ridx(jj) == j)
-	    jj++;
-	  else
-	    {
-	      r.data(ii) = true;
-	      r.ridx(ii++) = j;
-	    }
-	}
+        {
+          if (jj < cidx(i+1) && ridx(jj) == j)
+            jj++;
+          else
+            {
+              r.data(ii) = true;
+              r.ridx(ii++) = j;
+            }
+        }
       r.cidx (i+1) = ii;
     }
 
@@ -7243,7 +7243,7 @@ SparseComplexMatrix::any_element_is_nan (void) const
     {
       Complex val = data (i);
       if (xisnan (val))
-	return true;
+        return true;
     }
 
   return false;
@@ -7258,7 +7258,7 @@ SparseComplexMatrix::any_element_is_inf_or_nan (void) const
     {
       Complex val = data (i);
       if (xisinf (val) || xisnan (val))
-	return true;
+        return true;
     }
 
   return false;
@@ -7289,25 +7289,25 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-	Complex val = data (i);
+        Complex val = data (i);
 
-	double r_val = std::real (val);
-	double i_val = std::imag (val);
+        double r_val = std::real (val);
+        double i_val = std::imag (val);
 
-	if (r_val > max_val)
-	  max_val = r_val;
+        if (r_val > max_val)
+          max_val = r_val;
 
-	if (i_val > max_val)
-	  max_val = i_val;
+        if (i_val > max_val)
+          max_val = i_val;
 
-	if (r_val < min_val)
-	  min_val = r_val;
+        if (r_val < min_val)
+          min_val = r_val;
 
-	if (i_val < min_val)
-	  min_val = i_val;
+        if (i_val < min_val)
+          min_val = i_val;
 
-	if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-	  return false;
+        if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+          return false;
     }
 
   return true;
@@ -7320,16 +7320,16 @@ SparseComplexMatrix::too_large_for_float (void) const
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-	Complex val = data (i);
+        Complex val = data (i);
 
-	double r_val = std::real (val);
-	double i_val = std::imag (val);
+        double r_val = std::real (val);
+        double i_val = std::imag (val);
 
-	if (r_val > FLT_MAX
-	    || i_val > FLT_MAX
-	    || r_val < FLT_MIN
-	    || i_val < FLT_MIN)
-	  return true;
+        if (r_val > FLT_MAX
+            || i_val > FLT_MAX
+            || r_val < FLT_MIN
+            || i_val < FLT_MIN)
+          return true;
     }
 
   return false;
@@ -7370,7 +7370,7 @@ SparseComplexMatrix::prod (int dim) const
   else
     {
       SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, *=, 
-			   (cidx(j+1) - cidx(j) < nr ? 0.0 : 1.0), 1.0);
+                           (cidx(j+1) - cidx(j) < nr ? 0.0 : 1.0), 1.0);
     }
 }
 
@@ -7392,7 +7392,7 @@ SparseComplexMatrix::sumsq (int dim) const
   tmp [j] += d * conj (d)
 
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR, 
-			    COL_EXPR, 0.0, 0.0);
+                            COL_EXPR, 0.0, 0.0);
 
 #undef ROW_EXPR
 #undef COL_EXPR
@@ -7433,9 +7433,9 @@ operator << (std::ostream& os, const SparseComplexMatrix& a)
    for (octave_idx_type j = 0; j < nc; j++)  {
       octave_quit ();
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) {
-	os << a.ridx(i) + 1 << " "  << j + 1 << " ";
-	octave_write_complex (os, a.data(i));
-	os << "\n";
+        os << a.ridx(i) + 1 << " "  << j + 1 << " ";
+        octave_write_complex (os, a.data(i));
+        os << "\n";
       }
    }
 
@@ -7662,8 +7662,8 @@ min (const Complex& c, const SparseComplexMatrix& m)
       result = SparseComplexMatrix (m);
 
       for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-	  result.data(i) = xmin(c, m.data(i));
+        for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
+          result.data(i) = xmin(c, m.data(i));
     }
   
   return result;
@@ -7689,75 +7689,75 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       octave_idx_type b_nc = b.cols ();
 
       if (a_nr == 0 || b_nc == 0 || a.nnz () == 0 || b.nnz () == 0)
-	return SparseComplexMatrix (a_nr, a_nc);
+        return SparseComplexMatrix (a_nr, a_nc);
 
       if (a_nr != b_nr || a_nc != b_nc)
-	gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
       else
-	{
-	  r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+        {
+          r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
-	  octave_idx_type jx = 0;
-	  r.cidx (0) = 0;
-	  for (octave_idx_type i = 0 ; i < a_nc ; i++)
-	    {
-	      octave_idx_type  ja = a.cidx(i);
-	      octave_idx_type  ja_max = a.cidx(i+1);
-	      bool ja_lt_max= ja < ja_max;
+          octave_idx_type jx = 0;
+          r.cidx (0) = 0;
+          for (octave_idx_type i = 0 ; i < a_nc ; i++)
+            {
+              octave_idx_type  ja = a.cidx(i);
+              octave_idx_type  ja_max = a.cidx(i+1);
+              bool ja_lt_max= ja < ja_max;
            
-	      octave_idx_type  jb = b.cidx(i);
-	      octave_idx_type  jb_max = b.cidx(i+1);
-	      bool jb_lt_max = jb < jb_max;
+              octave_idx_type  jb = b.cidx(i);
+              octave_idx_type  jb_max = b.cidx(i+1);
+              bool jb_lt_max = jb < jb_max;
            
-	      while (ja_lt_max || jb_lt_max )
-		{
-		  octave_quit ();
-		  if ((! jb_lt_max) ||
+              while (ja_lt_max || jb_lt_max )
+                {
+                  octave_quit ();
+                  if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
-		    {
-		      Complex tmp = xmin (a.data(ja), 0.);
-		      if (tmp != 0.)
-			{
-			  r.ridx(jx) = a.ridx(ja);
-			  r.data(jx) = tmp;
-			  jx++;
-			}
-		      ja++;
-		      ja_lt_max= ja < ja_max;
-		    }
-		  else if (( !ja_lt_max ) ||
-			   (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
-		    {
-		      Complex tmp = xmin (0., b.data(jb));
-		      if (tmp != 0.)
-			{
-			  r.ridx(jx) = b.ridx(jb);
-			  r.data(jx) = tmp;
-			  jx++;
-			}
-		      jb++;
-		      jb_lt_max= jb < jb_max;
-		    }
-		  else
-		    {
-		      Complex tmp = xmin (a.data(ja), b.data(jb));
-		      if (tmp != 0.)
-			{
+                    {
+                      Complex tmp = xmin (a.data(ja), 0.);
+                      if (tmp != 0.)
+                        {
+                          r.ridx(jx) = a.ridx(ja);
+                          r.data(jx) = tmp;
+                          jx++;
+                        }
+                      ja++;
+                      ja_lt_max= ja < ja_max;
+                    }
+                  else if (( !ja_lt_max ) ||
+                           (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
+                    {
+                      Complex tmp = xmin (0., b.data(jb));
+                      if (tmp != 0.)
+                        {
+                          r.ridx(jx) = b.ridx(jb);
+                          r.data(jx) = tmp;
+                          jx++;
+                        }
+                      jb++;
+                      jb_lt_max= jb < jb_max;
+                    }
+                  else
+                    {
+                      Complex tmp = xmin (a.data(ja), b.data(jb));
+                      if (tmp != 0.)
+                        {
                           r.data(jx) = tmp;
                           r.ridx(jx) = a.ridx(ja);
                           jx++;
-			}
-		      ja++;
-		      ja_lt_max= ja < ja_max;
-		      jb++;
-		      jb_lt_max= jb < jb_max;
-		    }
-		}
-	      r.cidx(i+1) = jx;
-	    }
-	  
-	  r.maybe_compress ();
-	}
+                        }
+                      ja++;
+                      ja_lt_max= ja < ja_max;
+                      jb++;
+                      jb_lt_max= jb < jb_max;
+                    }
+                }
+              r.cidx(i+1) = jx;
+            }
+          
+          r.maybe_compress ();
+        }
     }
   else
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -7780,8 +7780,8 @@ max (const Complex& c, const SparseComplexMatrix& m)
     {
       result = SparseComplexMatrix (nr, nc, c);
       for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-	  result.xdata(m.ridx(i) + j * nr) = xmax (c, m.data(i));
+        for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
+          result.xdata(m.ridx(i) + j * nr) = xmax (c, m.data(i));
     }
   else
     result = SparseComplexMatrix (m);
@@ -7809,79 +7809,79 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       octave_idx_type b_nc = b.cols ();
 
       if (a_nr == 0 || b_nc == 0)
-	return SparseComplexMatrix (a_nr, a_nc);
+        return SparseComplexMatrix (a_nr, a_nc);
       if (a.nnz () == 0)
-	return SparseComplexMatrix (b);
+        return SparseComplexMatrix (b);
       if (b.nnz () == 0)
-	return SparseComplexMatrix (a);
+        return SparseComplexMatrix (a);
 
       if (a_nr != b_nr || a_nc != b_nc)
-	gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+        gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
       else
-	{
-	  r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+        {
+          r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
        
-	  octave_idx_type jx = 0;
-	  r.cidx (0) = 0;
-	  for (octave_idx_type i = 0 ; i < a_nc ; i++)
-	    {
-	      octave_idx_type  ja = a.cidx(i);
-	      octave_idx_type  ja_max = a.cidx(i+1);
-	      bool ja_lt_max= ja < ja_max;
+          octave_idx_type jx = 0;
+          r.cidx (0) = 0;
+          for (octave_idx_type i = 0 ; i < a_nc ; i++)
+            {
+              octave_idx_type  ja = a.cidx(i);
+              octave_idx_type  ja_max = a.cidx(i+1);
+              bool ja_lt_max= ja < ja_max;
            
-	      octave_idx_type  jb = b.cidx(i);
-	      octave_idx_type  jb_max = b.cidx(i+1);
-	      bool jb_lt_max = jb < jb_max;
+              octave_idx_type  jb = b.cidx(i);
+              octave_idx_type  jb_max = b.cidx(i+1);
+              bool jb_lt_max = jb < jb_max;
            
-	      while (ja_lt_max || jb_lt_max )
-		{
-		  octave_quit ();
-		  if ((! jb_lt_max) ||
+              while (ja_lt_max || jb_lt_max )
+                {
+                  octave_quit ();
+                  if ((! jb_lt_max) ||
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb))))
-		    {
-		      Complex tmp = xmax (a.data(ja), 0.);
-		      if (tmp != 0.)
-			{
-			  r.ridx(jx) = a.ridx(ja);
-			  r.data(jx) = tmp;
-			  jx++;
-			}
-		      ja++;
-		      ja_lt_max= ja < ja_max;
-		    }
-		  else if (( !ja_lt_max ) ||
-			   (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
-		    {
-		      Complex tmp = xmax (0., b.data(jb));
-		      if (tmp != 0.)
-			{
-			  r.ridx(jx) = b.ridx(jb);
-			  r.data(jx) = tmp;
-			  jx++;
-			}
-		      jb++;
-		      jb_lt_max= jb < jb_max;
-		    }
-		  else
-		    {
-		      Complex tmp = xmax (a.data(ja), b.data(jb));
-		      if (tmp != 0.)
-			{
+                    {
+                      Complex tmp = xmax (a.data(ja), 0.);
+                      if (tmp != 0.)
+                        {
+                          r.ridx(jx) = a.ridx(ja);
+                          r.data(jx) = tmp;
+                          jx++;
+                        }
+                      ja++;
+                      ja_lt_max= ja < ja_max;
+                    }
+                  else if (( !ja_lt_max ) ||
+                           (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
+                    {
+                      Complex tmp = xmax (0., b.data(jb));
+                      if (tmp != 0.)
+                        {
+                          r.ridx(jx) = b.ridx(jb);
+                          r.data(jx) = tmp;
+                          jx++;
+                        }
+                      jb++;
+                      jb_lt_max= jb < jb_max;
+                    }
+                  else
+                    {
+                      Complex tmp = xmax (a.data(ja), b.data(jb));
+                      if (tmp != 0.)
+                        {
                           r.data(jx) = tmp;
                           r.ridx(jx) = a.ridx(ja);
                           jx++;
-			}
-		      ja++;
-		      ja_lt_max= ja < ja_max;
-		      jb++;
-		      jb_lt_max= jb < jb_max;
-		    }
-		}
-	      r.cidx(i+1) = jx;
-	    }
-	  
-	  r.maybe_compress ();
-	}
+                        }
+                      ja++;
+                      ja_lt_max= ja < ja_max;
+                      jb++;
+                      jb_lt_max= jb < jb_max;
+                    }
+                }
+              r.cidx(i+1) = jx;
+            }
+          
+          r.maybe_compress ();
+        }
     }
   else
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -7890,13 +7890,13 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 }
 
 SPARSE_SMS_CMP_OPS (SparseComplexMatrix, 0.0, real, Complex, 
-		   0.0, real)
+                   0.0, real)
 SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex, 0.0)
 
 SPARSE_SSM_CMP_OPS (Complex, 0.0, real, SparseComplexMatrix, 
-		   0.0, real)
+                   0.0, real)
 SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix, 0.0)
 
 SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, real, SparseComplexMatrix, 
-		     0.0, real)
+                     0.0, real)
 SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix, 0.0)

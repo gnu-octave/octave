@@ -42,11 +42,11 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgeqrf, SGEQRF) (const octave_idx_type&, const octave_idx_type&, float*, const octave_idx_type&,
-			     float*, float*, const octave_idx_type&, octave_idx_type&); 
+                             float*, float*, const octave_idx_type&, octave_idx_type&); 
 
   F77_RET_T
   F77_FUNC (sorgqr, SORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
-			     const octave_idx_type&, float*, float*, const octave_idx_type&, octave_idx_type&);
+                             const octave_idx_type&, float*, float*, const octave_idx_type&, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE
 
@@ -129,11 +129,11 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
   if (qr_type == qr_type_raw)
     {
       for (octave_idx_type j = 0; j < min_mn; j++)
-	{
-	  octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
-	  for (octave_idx_type i = limit + 1; i < m; i++)
-	    afact.elem (i, j) *= tau[j];
-	}
+        {
+          octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+          for (octave_idx_type i = limit + 1; i < m; i++)
+            afact.elem (i, j) *= tau[j];
+        }
 
       r = afact;
     }
@@ -180,7 +180,7 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
 
           // allocate buffer and do the job.
           octave_idx_type lwork = rlwork;
-	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (float, work, lwork);
           F77_XFCN (sorgqr, SORGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));
@@ -296,7 +296,7 @@ FloatQR::insert_col (const FloatMatrix& u, const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (float, w, kmax);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           FloatColumnVector utmp = u.column (jsi(i));
           F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii), 
                                      q.fortran_vec (), q.rows (),
@@ -319,7 +319,7 @@ FloatQR::delete_col (octave_idx_type j)
     {
       OCTAVE_LOCAL_BUFFER (float, w, k);
       F77_XFCN (sqrdec, SQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1, w));
+                                 r.fortran_vec (), r.rows (), j + 1, w));
 
       if (k < m)
         {
@@ -356,7 +356,7 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (float, w, k);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii, 
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, w));
@@ -392,7 +392,7 @@ FloatQR::insert_row (const FloatRowVector& u, octave_idx_type j)
       FloatRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, w, k);
       F77_XFCN (sqrinr, SQRINR, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), 
+                                 r.fortran_vec (), r.rows (), 
                                  j + 1, utmp.fortran_vec (), w));
 
     }
@@ -412,7 +412,7 @@ FloatQR::delete_row (octave_idx_type j)
     {
       OCTAVE_LOCAL_BUFFER (float, w, 2*m);
       F77_XFCN (sqrder, SQRDER, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1,
+                                 r.fortran_vec (), r.rows (), j + 1,
                                  w));
 
       q.resize (m - 1, m - 1);

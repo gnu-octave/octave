@@ -86,7 +86,7 @@ octave_syscalls::execvp (const std::string& file, const string_vector& argv)
 
 int
 octave_syscalls::execvp (const std::string& file, const string_vector& args,
-			 std::string& msg)
+                         std::string& msg)
 {
   msg = std::string ();
 
@@ -273,7 +273,7 @@ octave_syscalls::waitpid (pid_t pid, int *status, int options)
 
 pid_t
 octave_syscalls::waitpid (pid_t pid, int *status, int options,
-			  std::string& msg)
+                          std::string& msg)
 {
   pid_t retval = -1;
   msg = std::string ();
@@ -358,9 +358,9 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
             msg = "popen2: process creation failed -- " + msg;
           else if (pid == 0)
             {
-	      std::string child_msg;
+              std::string child_msg;
 
-	      interactive = false;
+              interactive = false;
 
               // Child process
               ::close (child_stdin[1]);
@@ -380,10 +380,10 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
                 }
               else
                 child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
-	      
-	      (*current_liboctave_error_handler)(child_msg.c_str());
-	      
-	      exit(0);
+              
+              (*current_liboctave_error_handler)(child_msg.c_str());
+              
+              exit(0);
             }
           else
             {

@@ -155,7 +155,7 @@ real (const ComplexDiagMatrix& a)
   octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = DiagMatrix (mx_inline_real_dup (a.data (), a_len), a.rows (),
-			 a.cols ());
+                         a.cols ());
   return retval;
 }
 
@@ -166,7 +166,7 @@ imag (const ComplexDiagMatrix& a)
   octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = DiagMatrix (mx_inline_imag_dup (a.data (), a_len), a.rows (),
-			 a.cols ());
+                         a.cols ());
   return retval;
 }
 
@@ -293,12 +293,12 @@ DiagMatrix::inverse (octave_idx_type &info) const
   for (octave_idx_type i = 0; i < len; i++)
     {
       if (elem (i, i) == 0.0)
-	{
-	  info = -1;
-	  return *this;
-	}
+        {
+          info = -1;
+          return *this;
+        }
       else
-	retval.elem (i, i) = 1.0 / elem (i, i);
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;
@@ -389,12 +389,12 @@ operator << (std::ostream& os, const DiagMatrix& a)
   for (octave_idx_type i = 0; i < a.rows (); i++)
     {
       for (octave_idx_type j = 0; j < a.cols (); j++)
-	{
-	  if (i == j)
-	    os << " " /* setw (field_width) */ << a.elem (i, i);
-	  else
-	    os << " " /* setw (field_width) */ << 0.0;
-	}
+        {
+          if (i == j)
+            os << " " /* setw (field_width) */ << a.elem (i, i);
+          else
+            os << " " /* setw (field_width) */ << 0.0;
+        }
       os << "\n";
     }
   return os;

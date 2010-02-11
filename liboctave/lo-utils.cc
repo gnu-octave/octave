@@ -171,45 +171,45 @@ octave_fgets (FILE *f, bool& eof)
   do
     {
       if (fgets (bufptr, grow_size, f))
-	{
-	  len = strlen (bufptr);
+        {
+          len = strlen (bufptr);
 
-	  if (len == grow_size - 1)
-	    {
-	      int tmp = bufptr - buf + grow_size - 1;
-	      grow_size *= 2;
-	      max_size += grow_size;
-	      buf = static_cast<char *> (realloc (buf, max_size));
-	      bufptr = buf + tmp;
+          if (len == grow_size - 1)
+            {
+              int tmp = bufptr - buf + grow_size - 1;
+              grow_size *= 2;
+              max_size += grow_size;
+              buf = static_cast<char *> (realloc (buf, max_size));
+              bufptr = buf + tmp;
 
-	      if (*(bufptr-1) == '\n')
-		{
-		  *bufptr = '\0';
-		  retval = buf;
-		}
-	    }
-	  else if (bufptr[len-1] != '\n')
-	    {
-	      bufptr[len++] = '\n';
-	      bufptr[len] = '\0';
-	      retval = buf;
-	    }
-	  else
-	    retval = buf;
-	}
+              if (*(bufptr-1) == '\n')
+                {
+                  *bufptr = '\0';
+                  retval = buf;
+                }
+            }
+          else if (bufptr[len-1] != '\n')
+            {
+              bufptr[len++] = '\n';
+              bufptr[len] = '\0';
+              retval = buf;
+            }
+          else
+            retval = buf;
+        }
       else
-	{
-	  if (len == 0)
-	    {
-	      eof = true;
+        {
+          if (len == 0)
+            {
+              eof = true;
 
-	      free (buf);
+              free (buf);
 
-	      buf = 0;
-	    }
+              buf = 0;
+            }
 
-	  break;
-	}
+          break;
+        }
     }
   while (retval.empty ());
 
@@ -250,36 +250,36 @@ read_inf_nan_na (std::istream& is, char c, char sign = '+')
     {
     case 'i': case 'I':
       {
-	c = is.get ();
-	if (c == 'n' || c == 'N')
-	  {
-	    c = is.get ();
-	    if (c == 'f' || c == 'F')
-	      d = sign == '-' ? -octave_Inf : octave_Inf;
-	    else
-	      is.putback (c);
-	  }
-	else
-	  is.putback (c);
+        c = is.get ();
+        if (c == 'n' || c == 'N')
+          {
+            c = is.get ();
+            if (c == 'f' || c == 'F')
+              d = sign == '-' ? -octave_Inf : octave_Inf;
+            else
+              is.putback (c);
+          }
+        else
+          is.putback (c);
       }
       break;
 
     case 'n': case 'N':
       {
-	c = is.get ();
-	if (c == 'a' || c == 'A')
-	  {
-	    c = is.get ();
-	    if (c == 'n' || c == 'N')
-	      d = octave_NaN;
-	    else
-	      {
-		is.putback (c);
-		d = octave_NA;
-	      }
-	  }
-	else
-	  is.putback (c);
+        c = is.get ();
+        if (c == 'a' || c == 'A')
+          {
+            c = is.get ();
+            if (c == 'n' || c == 'N')
+              d = octave_NaN;
+            else
+              {
+                is.putback (c);
+                d = octave_NA;
+              }
+          }
+        else
+          is.putback (c);
       }
       break;
 
@@ -305,31 +305,31 @@ octave_read_value (std::istream& is)
     {
     case '-':
       {
-	char c2 = 0;
-	c2 = is.get ();
-	if (c2 == 'i' || c2 == 'I')
-	  d = read_inf_nan_na (is, c2, c1);
-	else
-	  {
-	    is.putback (c2);
-	    is.putback (c1);
-	    is >> d;
-	  }
+        char c2 = 0;
+        c2 = is.get ();
+        if (c2 == 'i' || c2 == 'I')
+          d = read_inf_nan_na (is, c2, c1);
+        else
+          {
+            is.putback (c2);
+            is.putback (c1);
+            is >> d;
+          }
       }
       break;
 
     case '+':
       {
-	char c2 = 0;
-	c2 = is.get ();
-	if (c2 == 'i' || c2 == 'I')
-	  d = read_inf_nan_na (is, c2, c1);
-	else
-	  {
-	    is.putback (c2);
-	    is.putback (c1);
-	    is >> d;
-	  }
+        char c2 = 0;
+        c2 = is.get ();
+        if (c2 == 'i' || c2 == 'I')
+          d = read_inf_nan_na (is, c2, c1);
+        else
+          {
+            is.putback (c2);
+            is.putback (c1);
+            is >> d;
+          }
       }
       break;
 
@@ -365,19 +365,19 @@ octave_read_value (std::istream& is)
       ch = is.get ();
 
       if (ch == ',')
-	{
-	  im = octave_read_value<double> (is);
-	  ch = is.get ();
+        {
+          im = octave_read_value<double> (is);
+          ch = is.get ();
 
-	  if (ch == ')')
-	    cx = Complex (re, im);
-	  else
-	    is.setstate (std::ios::failbit);
-	}
+          if (ch == ')')
+            cx = Complex (re, im);
+          else
+            is.setstate (std::ios::failbit);
+        }
       else if (ch == ')')
-	cx = re;
+        cx = re;
       else
-	is.setstate (std::ios::failbit);
+        is.setstate (std::ios::failbit);
     }
   else
     {
@@ -398,36 +398,36 @@ read_float_inf_nan_na (std::istream& is, char c, char sign = '+')
     {
     case 'i': case 'I':
       {
-	c = is.get ();
-	if (c == 'n' || c == 'N')
-	  {
-	    c = is.get ();
-	    if (c == 'f' || c == 'F')
-	      d = sign == '-' ? -octave_Inf : octave_Inf;
-	    else
-	      is.putback (c);
-	  }
-	else
-	  is.putback (c);
+        c = is.get ();
+        if (c == 'n' || c == 'N')
+          {
+            c = is.get ();
+            if (c == 'f' || c == 'F')
+              d = sign == '-' ? -octave_Inf : octave_Inf;
+            else
+              is.putback (c);
+          }
+        else
+          is.putback (c);
       }
       break;
 
     case 'n': case 'N':
       {
-	c = is.get ();
-	if (c == 'a' || c == 'A')
-	  {
-	    c = is.get ();
-	    if (c == 'n' || c == 'N')
-	      d = octave_NaN;
-	    else
-	      {
-		is.putback (c);
-		d = octave_NA;
-	      }
-	  }
-	else
-	  is.putback (c);
+        c = is.get ();
+        if (c == 'a' || c == 'A')
+          {
+            c = is.get ();
+            if (c == 'n' || c == 'N')
+              d = octave_NaN;
+            else
+              {
+                is.putback (c);
+                d = octave_NA;
+              }
+          }
+        else
+          is.putback (c);
       }
       break;
 
@@ -453,31 +453,31 @@ octave_read_value (std::istream& is)
     {
     case '-':
       {
-	char c2 = 0;
-	c2 = is.get ();
-	if (c2 == 'i' || c2 == 'I')
-	  d = read_float_inf_nan_na (is, c2, c1);
-	else
-	  {
-	    is.putback (c2);
-	    is.putback (c1);
-	    is >> d;
-	  }
+        char c2 = 0;
+        c2 = is.get ();
+        if (c2 == 'i' || c2 == 'I')
+          d = read_float_inf_nan_na (is, c2, c1);
+        else
+          {
+            is.putback (c2);
+            is.putback (c1);
+            is >> d;
+          }
       }
       break;
 
     case '+':
       {
-	char c2 = 0;
-	c2 = is.get ();
-	if (c2 == 'i' || c2 == 'I')
-	  d = read_float_inf_nan_na (is, c2, c1);
-	else
-	  {
-	    is.putback (c2);
-	    is.putback (c1);
-	    is >> d;
-	  }
+        char c2 = 0;
+        c2 = is.get ();
+        if (c2 == 'i' || c2 == 'I')
+          d = read_float_inf_nan_na (is, c2, c1);
+        else
+          {
+            is.putback (c2);
+            is.putback (c1);
+            is >> d;
+          }
       }
       break;
 
@@ -513,19 +513,19 @@ octave_read_value (std::istream& is)
       ch = is.get ();
 
       if (ch == ',')
-	{
-	  im = octave_read_value<float> (is);
-	  ch = is.get ();
+        {
+          im = octave_read_value<float> (is);
+          ch = is.get ();
 
-	  if (ch == ')')
-	    cx = FloatComplex (re, im);
-	  else
-	    is.setstate (std::ios::failbit);
-	}
+          if (ch == ')')
+            cx = FloatComplex (re, im);
+          else
+            is.setstate (std::ios::failbit);
+        }
       else if (ch == ')')
-	cx = re;
+        cx = re;
       else
-	is.setstate (std::ios::failbit);
+        is.setstate (std::ios::failbit);
     }
   else
     {

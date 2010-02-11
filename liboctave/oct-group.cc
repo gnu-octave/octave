@@ -197,17 +197,17 @@ octave_group::octave_group (void *p, std::string& msg)
 
       int k = 0;
       while (*tmp++)
-	k++;
+        k++;
 
       if (k > 0)
-	{
-	  tmp = gr->gr_mem;
+        {
+          tmp = gr->gr_mem;
 
-	  gr_mem.resize (k);
+          gr_mem.resize (k);
 
-	  for (int i = 0; i < k; i++)
-	    gr_mem[i] = tmp[i];
-	}
+          for (int i = 0; i < k; i++)
+            gr_mem[i] = tmp[i];
+        }
 
       valid = true;
     }

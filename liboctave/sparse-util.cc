@@ -41,7 +41,7 @@ void
 SparseCholError (int status, const char *file, int line, const char *message)
 {
   (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
-				     status, line, file);
+                                     status, line, file);
 
   (*current_liboctave_warning_handler)(message);
 }
@@ -60,59 +60,59 @@ SparseCholPrint (const char *fmt, ...)
 
 bool
 sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
-		   octave_idx_type nrows, octave_idx_type ncols,
-		   octave_idx_type nnz)
+                   octave_idx_type nrows, octave_idx_type ncols,
+                   octave_idx_type nnz)
 {
   if (nnz > 0)
     {
       if (c[0] != 0)
-	{
-	  (*current_liboctave_error_handler)
-	    ("invalid sparse matrix: cidx[0] must be zero");
-	  return false;
-	}
+        {
+          (*current_liboctave_error_handler)
+            ("invalid sparse matrix: cidx[0] must be zero");
+          return false;
+        }
 
       octave_idx_type jold = 0;
 
       for (octave_idx_type j = 1; j < ncols+1; j++)
-	{
-	  if (c[j] < c[j-1])
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: cidx elements must appear in ascending order");
-	      return false;
-	    }
+        {
+          if (c[j] < c[j-1])
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: cidx elements must appear in ascending order");
+              return false;
+            }
 
-	  if (c[j] > nnz)
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements", j, c[j]+1);
-	      return false;
-	    }
+          if (c[j] > nnz)
+            {
+              (*current_liboctave_error_handler)
+                ("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements", j, c[j]+1);
+              return false;
+            }
 
-	  if (c[j] != jold)
-	    {
-	      for (octave_idx_type i = jold+1; i < c[j]; i++)
-		{
-		  if (r[i] < r[i-1])
-		    {
-		      (*current_liboctave_error_handler)
-			("invalid sparse matrix: ridx elements must appear in ascending order for each column");
-		      return false;
-		    }
+          if (c[j] != jold)
+            {
+              for (octave_idx_type i = jold+1; i < c[j]; i++)
+                {
+                  if (r[i] < r[i-1])
+                    {
+                      (*current_liboctave_error_handler)
+                        ("invalid sparse matrix: ridx elements must appear in ascending order for each column");
+                      return false;
+                    }
 
-		  if (r[i] >= nrows)
-		    {
-		      (*current_liboctave_error_handler)
-			("invalid sparse matrix: ridx[%d] = %d out of range",
-			 i, r[i]+1);
-		      return false;
-		    }
-		}
+                  if (r[i] >= nrows)
+                    {
+                      (*current_liboctave_error_handler)
+                        ("invalid sparse matrix: ridx[%d] = %d out of range",
+                         i, r[i]+1);
+                      return false;
+                    }
+                }
 
-	      jold = c[j];
-	    }
-	}
+              jold = c[j];
+            }
+        }
     }
 
   return true;

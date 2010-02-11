@@ -42,13 +42,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const float&,
-			   const float*, const octave_idx_type&, const float*,
-			   const octave_idx_type&, const float&, float*, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const float&,
+                           const float*, const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float&, float*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (xsdot, XSDOT) (const octave_idx_type&, const float*, const octave_idx_type&,
-			   const float*, const octave_idx_type&, float&);
+                           const float*, const octave_idx_type&, float&);
 }
 
 // Row Vector class.
@@ -84,7 +84,7 @@ FloatRowVector::insert (const FloatRowVector& a, octave_idx_type c)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (c+i) = a.elem (i);
+        xelem (c+i) = a.elem (i);
     }
 
   return *this;
@@ -100,7 +100,7 @@ FloatRowVector::fill (float val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -124,7 +124,7 @@ FloatRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
       make_unique ();
 
       for (octave_idx_type i = c1; i <= c2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -210,21 +210,21 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
   else
     {
       if (len == 0)
-	retval.resize (a_nc, 0.0);
+        retval.resize (a_nc, 0.0);
       else
-	{
-	  // Transpose A to form A'*x == (x'*A)'
+        {
+          // Transpose A to form A'*x == (x'*A)'
 
-	  octave_idx_type ld = a_nr;
+          octave_idx_type ld = a_nr;
 
-	  retval.resize (a_nc);
-	  float *y = retval.fortran_vec ();
+          retval.resize (a_nc);
+          float *y = retval.fortran_vec ();
 
-	  F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-				   a_nr, a_nc, 1.0, a.data (),
-				   ld, v.data (), 1, 0.0, y, 1
-				   F77_CHAR_ARG_LEN (1)));
-	}
+          F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+                                   a_nr, a_nc, 1.0, a.data (),
+                                   ld, v.data (), 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
     }
 
   return retval;

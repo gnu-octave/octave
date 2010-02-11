@@ -217,18 +217,18 @@ gnu_readline::gnu_readline ()
   // Bind operate-and-get-next.
 
   octave_rl_add_defun ("operate-and-get-next",
-		       gnu_readline::operate_and_get_next,
-		       octave_rl_ctrl ('O'));
+                       gnu_readline::operate_and_get_next,
+                       octave_rl_ctrl ('O'));
 
   // And the history search functions.
 
   octave_rl_add_defun ("history-search-backward",
-		       gnu_readline::history_search_backward,
-		       octave_rl_meta ('P'));
+                       gnu_readline::history_search_backward,
+                       octave_rl_meta ('P'));
 
   octave_rl_add_defun ("history-search-forward",
-		       gnu_readline::history_search_forward,
-		       octave_rl_meta ('N'));
+                       gnu_readline::history_search_forward,
+                       octave_rl_meta ('N'));
 }
 
 void
@@ -429,10 +429,10 @@ gnu_readline::do_set_user_accept_line_function (user_accept_line_fcn f)
 
   if (f)
     octave_rl_add_defun ("accept-line", gnu_readline::command_accept_line, 
-			 ::octave_rl_ctrl ('M'));
+                         ::octave_rl_ctrl ('M'));
   else
     octave_rl_add_defun ("accept-line", ::octave_rl_newline,
-			 ::octave_rl_ctrl ('M'));
+                         ::octave_rl_ctrl ('M'));
 }
 
 gnu_readline::completion_fcn
@@ -480,23 +480,23 @@ gnu_readline::do_generate_filename_completions (const std::string& text)
       fn = ::octave_rl_filename_completion_function (text.c_str (), count);
 
       if (fn)
-	{
-	  if (count == n)
-	    {
-	      // Famous last words:  Most large directories will not
-	      // have more than a few hundred files, so we should not
-	      // resize too many times even if the growth is linear...
+        {
+          if (count == n)
+            {
+              // Famous last words:  Most large directories will not
+              // have more than a few hundred files, so we should not
+              // resize too many times even if the growth is linear...
 
-	      n += 100;
-	      retval.resize (n);
-	    }
+              n += 100;
+              retval.resize (n);
+            }
 
-	  retval[count++] = fn;
+          retval[count++] = fn;
 
-	  free (fn);
-	}
+          free (fn);
+        }
       else
-	break;
+        break;
     }
 
   retval.resize (count);
@@ -831,7 +831,7 @@ command_editor::instance_ok (void)
   if (! instance)
     {
       current_liboctave_error_handler
-	("unable to create command history object!");
+        ("unable to create command history object!");
 
       retval = false;
     }
@@ -865,7 +865,7 @@ command_editor::startup_handler (void)
       startup_hook_fcn f = *p;
 
       if (f)
-	f ();
+        f ();
     }
 
   return 0;
@@ -886,7 +886,7 @@ command_editor::event_handler (void)
       event_hook_fcn f = *p;
 
       if (f)
-	f ();
+        f ();
     }
 
   return 0;
@@ -1184,10 +1184,10 @@ command_editor::remove_startup_hook (startup_hook_fcn f)
       startup_hook_set_iterator p = startup_hook_set.find (f);
 
       if (p != startup_hook_set.end ())
-	startup_hook_set.erase (p);
+        startup_hook_set.erase (p);
 
       if (startup_hook_set.empty ())
-	instance->restore_startup_hook ();
+        instance->restore_startup_hook ();
     }
 }
 
@@ -1214,10 +1214,10 @@ command_editor::remove_event_hook (event_hook_fcn f)
       event_hook_set_iterator p = event_hook_set.find (f);
 
       if (p != event_hook_set.end ())
-	event_hook_set.erase (p);
+        event_hook_set.erase (p);
 
       if (event_hook_set.empty ())
-	instance->restore_event_hook ();
+        instance->restore_event_hook ();
     }
 }
 
@@ -1256,28 +1256,28 @@ command_editor::filename_quoting_desired (bool arg)
 // Return a string which will be printed as a prompt.  The string may
 // contain special characters which are decoded as follows: 
 //   
-//	\a	bell (ascii 07)
-//	\d	the date
-//	\e	escape (ascii 033)
-//	\h	the hostname up to the first `.'
-//	\H	the hostname
-//	\n	CRLF
-//	\r	CR
-//	\s	the name of the shell (program)
-//	\t	the time
-//	\T	the time in 12-hour hh:mm:ss format
-//	\@	the time in 12-hour hh:mm am/pm format
-//	\A	the time in 24-hour hh:mm format
-//	\u	your username
-//	\w	the current working directory
-//	\W	the last element of PWD
-//	\!	the history number of this command
-//	\#	the command number of this command
-//	\$	a $ or a # if you are root
-//	\nnn    character code nnn in octal
-//	\\	a backslash
-//	\[	begin a sequence of non-printing chars
-//	\]	end a sequence of non-printing chars
+//      \a      bell (ascii 07)
+//      \d      the date
+//      \e      escape (ascii 033)
+//      \h      the hostname up to the first `.'
+//      \H      the hostname
+//      \n      CRLF
+//      \r      CR
+//      \s      the name of the shell (program)
+//      \t      the time
+//      \T      the time in 12-hour hh:mm:ss format
+//      \@      the time in 12-hour hh:mm am/pm format
+//      \A      the time in 24-hour hh:mm format
+//      \u      your username
+//      \w      the current working directory
+//      \W      the last element of PWD
+//      \!      the history number of this command
+//      \#      the command number of this command
+//      \$      a $ or a # if you are root
+//      \nnn    character code nnn in octal
+//      \\      a backslash
+//      \[      begin a sequence of non-printing chars
+//      \]      end a sequence of non-printing chars
 
 std::string
 command_editor::do_decode_prompt_string (const std::string& s)
@@ -1295,218 +1295,218 @@ command_editor::do_decode_prompt_string (const std::string& s)
       i++;
 
       if (c == '\\')
-	{
-	  c = s[i];
+        {
+          c = s[i];
 
-	  switch (c)
-	    {
-	    case '0':
-	    case '1':
-	    case '2':
-	    case '3':
-	    case '4':
-	    case '5':
-	    case '6':
-	    case '7':
-	      // Maybe convert an octal number.
-	      {
-		int n = read_octal (s.substr (i, 3));
+          switch (c)
+            {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+              // Maybe convert an octal number.
+              {
+                int n = read_octal (s.substr (i, 3));
 
-		temp = "\\";
+                temp = "\\";
 
-		if (n != -1)
-		  {
-		    i += 3;
-		    temp[0] = n;
-		  }
+                if (n != -1)
+                  {
+                    i += 3;
+                    temp[0] = n;
+                  }
 
-		c = 0;
-		goto add_string;
-	      }
+                c = 0;
+                goto add_string;
+              }
 
-	    case 'a':
-	      {
-		temp = '\a';
+            case 'a':
+              {
+                temp = '\a';
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'e':
-	      {
-		temp = '\033';
+            case 'e':
+              {
+                temp = '\033';
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'r':
-	      {
-		temp = '\r';
+            case 'r':
+              {
+                temp = '\r';
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'd':
-	    case 't':
-	    case 'T':
-	    case '@':
-	    case 'A':
-	      // Make the current time/date into a string.
-	      {
-		octave_localtime now;
+            case 'd':
+            case 't':
+            case 'T':
+            case '@':
+            case 'A':
+              // Make the current time/date into a string.
+              {
+                octave_localtime now;
 
-		if (c == 'd')
-		  temp = now.strftime ("%a %b %d");
-		else if (c == 't')
-		  temp = now.strftime ("%H:%M:%S");
-		else if (c == 'T')
-		  temp = now.strftime ("%I:%M:%S");
-		else if (c == '@')
-		  temp = now.strftime ("%I:%M %p");
-		else if (c == 'A')
-		  temp = now.strftime ("%H:%M");
+                if (c == 'd')
+                  temp = now.strftime ("%a %b %d");
+                else if (c == 't')
+                  temp = now.strftime ("%H:%M:%S");
+                else if (c == 'T')
+                  temp = now.strftime ("%I:%M:%S");
+                else if (c == '@')
+                  temp = now.strftime ("%I:%M %p");
+                else if (c == 'A')
+                  temp = now.strftime ("%H:%M");
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'n':
-	      {
-		temp = newline_chars ();
+            case 'n':
+              {
+                temp = newline_chars ();
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 's':
-	      {
-		temp = octave_env::get_program_name ();
-		temp = octave_env::base_pathname (temp);
+            case 's':
+              {
+                temp = octave_env::get_program_name ();
+                temp = octave_env::base_pathname (temp);
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'w':
-	    case 'W':
-	      {
-		temp = octave_env::get_current_directory ();
+            case 'w':
+            case 'W':
+              {
+                temp = octave_env::get_current_directory ();
 
-		std::string home_dir = octave_env::get_home_directory ();
+                std::string home_dir = octave_env::get_home_directory ();
 
-		if (c == 'W' && (home_dir.empty () || temp != home_dir))
-		  {
-		    if (temp != "/" && temp != "//")
-		      {
-			size_t pos = temp.rfind ('/');
+                if (c == 'W' && (home_dir.empty () || temp != home_dir))
+                  {
+                    if (temp != "/" && temp != "//")
+                      {
+                        size_t pos = temp.rfind ('/');
 
-			if (pos != std::string::npos && pos != 0)
-			  temp = temp.substr (pos + 1);
-		      }
-		  }
-		else
-		  temp = octave_env::polite_directory_format (temp);
+                        if (pos != std::string::npos && pos != 0)
+                          temp = temp.substr (pos + 1);
+                      }
+                  }
+                else
+                  temp = octave_env::polite_directory_format (temp);
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'u':
-	      {
-		temp = octave_env::get_user_name ();
+            case 'u':
+              {
+                temp = octave_env::get_user_name ();
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'H':
-	      {
-		temp = octave_env::get_host_name ();
+            case 'H':
+              {
+                temp = octave_env::get_host_name ();
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case 'h':
-	      {
-		temp = octave_env::get_host_name ();
+            case 'h':
+              {
+                temp = octave_env::get_host_name ();
 
-		size_t pos = temp.find ('.');
+                size_t pos = temp.find ('.');
 
-		if (pos != std::string::npos)
-		  temp.resize (pos);
-		
-		goto add_string;
-	      }
+                if (pos != std::string::npos)
+                  temp.resize (pos);
+                
+                goto add_string;
+              }
 
-	    case '#':
-	      {
-		char number_buffer[128];
-		sprintf (number_buffer, "%d", command_number);
-		temp = number_buffer;
+            case '#':
+              {
+                char number_buffer[128];
+                sprintf (number_buffer, "%d", command_number);
+                temp = number_buffer;
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case '!':
-	      {
-		char number_buffer[128];
-		int num = command_history::current_number ();
-		if (num > 0)
+            case '!':
+              {
+                char number_buffer[128];
+                int num = command_history::current_number ();
+                if (num > 0)
                   sprintf (number_buffer, "%d", num);
-		else
-		  strcpy (number_buffer, "!");
-		temp = number_buffer;
+                else
+                  strcpy (number_buffer, "!");
+                temp = number_buffer;
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    case '$':
-	      {
+            case '$':
+              {
 #if defined (HAVE_GETEUID)
-		temp = (::geteuid () == 0 ? "#" : "$");
+                temp = (::geteuid () == 0 ? "#" : "$");
 #else
-		temp = "$";
+                temp = "$";
 #endif
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
 #if defined (USE_READLINE)
-	    case '[':
-	    case ']':
-	      {
-		temp.resize (1);
+            case '[':
+            case ']':
+              {
+                temp.resize (1);
 
-		temp[0] = ((c == '[')
-			   ? ::octave_rl_prompt_start_ignore ()
-			   : ::octave_rl_prompt_end_ignore ());
+                temp[0] = ((c == '[')
+                           ? ::octave_rl_prompt_start_ignore ()
+                           : ::octave_rl_prompt_end_ignore ());
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 #endif
 
-	    case '\\':
-	      {
-		temp = "\\";
+            case '\\':
+              {
+                temp = "\\";
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    default:
-	      {
-		temp = "\\ ";
-		temp[1] = c;
+            default:
+              {
+                temp = "\\ ";
+                temp[1] = c;
 
-		goto add_string;
-	      }
+                goto add_string;
+              }
 
-	    add_string:
-	      {
-		if (c)
-		  i++;
+            add_string:
+              {
+                if (c)
+                  i++;
 
-		result.append (temp);
+                result.append (temp);
 
-		break;
-	      }
-	    }
-	}
+                break;
+              }
+            }
+        }
       else
-	result += c;
+        result += c;
     }
 
   return result;

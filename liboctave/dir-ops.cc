@@ -56,12 +56,12 @@ dir_entry::open (const std::string& n)
       dir = static_cast<void *> (opendir (fullname.c_str ()));
 
       if (dir)
-	fail = false;
+        fail = false;
       else
-	{
-	  using namespace std;
-	  errmsg = strerror (errno);
-	}
+        {
+          using namespace std;
+          errmsg = strerror (errno);
+        }
     }
   else
     errmsg = "dir_entry::open: empty file name";
@@ -81,12 +81,12 @@ dir_entry::read (void)
       struct dirent *dir_ent;
 
       while ((dir_ent = readdir (static_cast<DIR *> (dir))))
-	{
-	  if (dir_ent)
-	    dirlist.push_back (dir_ent->d_name);
-	  else
-	    break;
-	}
+        {
+          if (dir_ent)
+            dirlist.push_back (dir_ent->d_name);
+          else
+            break;
+        }
 
       retval = string_vector (dirlist);
     }

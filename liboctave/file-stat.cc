@@ -191,7 +191,7 @@ file_stat::update_internal (bool force)
 #if defined (__WIN32__)
       // Remove trailing slash.
       if (file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
-	  && full_file_name.length () != 1
+          && full_file_name.length () != 1
           && ! (full_file_name.length() == 3 && full_file_name[1] == ':'))
         full_file_name.resize (full_file_name.length () - 1);
 #endif
@@ -203,37 +203,37 @@ file_stat::update_internal (bool force)
       int status = follow_links ? stat (cname, &buf) : lstat (cname, &buf);
 
       if (status < 0)
-	{
-	  using namespace std;
+        {
+          using namespace std;
 
-	  fail = true;
-	  errmsg = strerror (errno);
-	}
+          fail = true;
+          errmsg = strerror (errno);
+        }
       else
-	{
-	  fs_mode = buf.st_mode;
-	  fs_ino = buf.st_ino;
-	  fs_dev = buf.st_dev;
-	  fs_nlink = buf.st_nlink;
-	  fs_uid = buf.st_uid;
-	  fs_gid = buf.st_gid;
-	  fs_size = buf.st_size;
-	  fs_atime = buf.st_atime;
-	  fs_mtime = buf.st_mtime;
-	  fs_ctime = buf.st_ctime;
+        {
+          fs_mode = buf.st_mode;
+          fs_ino = buf.st_ino;
+          fs_dev = buf.st_dev;
+          fs_nlink = buf.st_nlink;
+          fs_uid = buf.st_uid;
+          fs_gid = buf.st_gid;
+          fs_size = buf.st_size;
+          fs_atime = buf.st_atime;
+          fs_mtime = buf.st_mtime;
+          fs_ctime = buf.st_ctime;
 
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
-	  fs_rdev = buf.st_rdev;
+          fs_rdev = buf.st_rdev;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-	  fs_blksize = buf.st_blksize;
+          fs_blksize = buf.st_blksize;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-	  fs_blocks = buf.st_blocks;
+          fs_blocks = buf.st_blocks;
 #endif
-	}
+        }
 
       initialized = true;
     }
@@ -252,37 +252,37 @@ file_fstat::update_internal (bool force)
       int status = fstat (fid, &buf);
 
       if (status < 0)
-	{
-	  using namespace std;
+        {
+          using namespace std;
 
-	  fail = true;
-	  errmsg = strerror (errno);
-	}
+          fail = true;
+          errmsg = strerror (errno);
+        }
       else
-	{
-	  fs_mode = buf.st_mode;
-	  fs_ino = buf.st_ino;
-	  fs_dev = buf.st_dev;
-	  fs_nlink = buf.st_nlink;
-	  fs_uid = buf.st_uid;
-	  fs_gid = buf.st_gid;
-	  fs_size = buf.st_size;
-	  fs_atime = buf.st_atime;
-	  fs_mtime = buf.st_mtime;
-	  fs_ctime = buf.st_ctime;
+        {
+          fs_mode = buf.st_mode;
+          fs_ino = buf.st_ino;
+          fs_dev = buf.st_dev;
+          fs_nlink = buf.st_nlink;
+          fs_uid = buf.st_uid;
+          fs_gid = buf.st_gid;
+          fs_size = buf.st_size;
+          fs_atime = buf.st_atime;
+          fs_mtime = buf.st_mtime;
+          fs_ctime = buf.st_ctime;
 
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
-	  fs_rdev = buf.st_rdev;
+          fs_rdev = buf.st_rdev;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-	  fs_blksize = buf.st_blksize;
+          fs_blksize = buf.st_blksize;
 #endif
 
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-	  fs_blocks = buf.st_blocks;
+          fs_blocks = buf.st_blocks;
 #endif
-	}
+        }
 
       initialized = true;
     }

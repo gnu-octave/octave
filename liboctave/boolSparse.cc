@@ -52,7 +52,7 @@ SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     if (cidx(i) != a.cidx(i))
-	return false;
+        return false;
 
   for (octave_idx_type i = 0; i < nz; i++)
     if (data(i) != a.data(i) || ridx(i) != a.ridx(i))
@@ -108,15 +108,15 @@ SparseBoolMatrix::operator ! (void) const
   for (octave_idx_type i = 0; i < nc; i++)
     {
       for (octave_idx_type j = 0; j < nr; j++)
-	{
-	  if (jj < cidx(i+1) && ridx(jj) == j)
-	    jj++;
-	  else
-	    {
-	      r.data(ii) = true;
-	      r.ridx(ii++) = j;
-	    }
-	}
+        {
+          if (jj < cidx(i+1) && ridx(jj) == j)
+            jj++;
+          else
+            {
+              r.data(ii) = true;
+              r.ridx(ii++) = j;
+            }
+        }
       r.cidx (i+1) = ii;
     }
 
@@ -171,7 +171,7 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
      {
        octave_quit ();
        for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-	 os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
+         os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
      }
    
   return os;

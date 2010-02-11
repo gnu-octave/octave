@@ -42,10 +42,10 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgemv, CGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const FloatComplex&,
-			   const FloatComplex*, const octave_idx_type&, const FloatComplex*,
-			   const octave_idx_type&, const FloatComplex&, FloatComplex*, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const FloatComplex&,
+                           const FloatComplex*, const octave_idx_type&, const FloatComplex*,
+                           const octave_idx_type&, const FloatComplex&, FloatComplex*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
 }
 
 // FloatComplex Column Vector class
@@ -90,7 +90,7 @@ FloatComplexColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (r+i) = a.elem (i);
+        xelem (r+i) = a.elem (i);
     }
 
   return *this;
@@ -112,7 +112,7 @@ FloatComplexColumnVector::insert (const FloatComplexColumnVector& a, octave_idx_
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (r+i) = a.elem (i);
+        xelem (r+i) = a.elem (i);
     }
 
   return *this;
@@ -128,7 +128,7 @@ FloatComplexColumnVector::fill (float val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -144,7 +144,7 @@ FloatComplexColumnVector::fill (const FloatComplex& val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
 
@@ -169,7 +169,7 @@ FloatComplexColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r
       make_unique ();
 
       for (octave_idx_type i = r1; i <= r2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -193,7 +193,7 @@ FloatComplexColumnVector::fill (const FloatComplex& val, octave_idx_type r1, oct
       make_unique ();
 
       for (octave_idx_type i = r1; i <= r2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -466,8 +466,8 @@ FloatComplexColumnVector::min (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) < absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;
@@ -486,8 +486,8 @@ FloatComplexColumnVector::max (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) > absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;

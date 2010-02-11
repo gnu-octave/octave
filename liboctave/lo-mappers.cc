@@ -80,7 +80,7 @@ xround (double x)
       double y = floor (x);
 
       if ((x - y) >= 0.5)
-	y += 1.0;
+        y += 1.0;
 
       return y;
     }
@@ -89,7 +89,7 @@ xround (double x)
       double y = ceil (x);
 
       if ((y - x) >= 0.5)
-	y -= 1.0;
+        y -= 1.0;
 
       return y;
     }
@@ -384,7 +384,7 @@ xround (float x)
       float y = floor (x);
 
       if ((x - y) >= 0.5)
-	y += 1.0;
+        y += 1.0;
 
       return y;
     }
@@ -393,7 +393,7 @@ xround (float x)
       float y = ceil (x);
 
       if ((y - x) >= 0.5)
-	y -= 1.0;
+        y -= 1.0;
 
       return y;
     }

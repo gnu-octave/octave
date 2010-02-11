@@ -43,18 +43,18 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cpotrf, CPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             FloatComplex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (cpotri, CPOTRI) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             FloatComplex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (cpocon, CPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, const float&,
-			     float&, FloatComplex*, float*, 
-			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+                             FloatComplex*, const octave_idx_type&, const float&,
+                             float&, FloatComplex*, float*, 
+                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
@@ -90,7 +90,7 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
-	("FloatComplexCHOL requires square matrix");
+        ("FloatComplexCHOL requires square matrix");
       return -1;
     }
 
@@ -113,7 +113,7 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
     anorm = xnorm (a, 1);
 
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CHAR_ARG_LEN (1)));
 
   xrcond = 0.0;
   if (info > 0)
@@ -128,11 +128,11 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
       Array<float> rz (n);
       float *prz = rz.fortran_vec ();
       F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-				 n, anorm, xrcond, pz, prz, cpocon_info
-				 F77_CHAR_ARG_LEN (1)));
+                                 n, anorm, xrcond, pz, prz, cpocon_info
+                                 F77_CHAR_ARG_LEN (1)));
 
       if (cpocon_info != 0) 
-	info = -1;
+        info = -1;
     }
 
   return info;
@@ -154,16 +154,16 @@ chol2inv_internal (const FloatComplexMatrix& r)
       FloatComplexMatrix tmp = r;
 
       F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-				 tmp.fortran_vec (), n, info
-				 F77_CHAR_ARG_LEN (1)));
+                                 tmp.fortran_vec (), n, info
+                                 F77_CHAR_ARG_LEN (1)));
 
       // If someone thinks of a more graceful way of doing this (or
       // faster for that matter :-)), please let me know!
 
       if (n > 1)
-	for (octave_idx_type j = 0; j < r_nc; j++)
-	  for (octave_idx_type i = j+1; i < r_nr; i++)
-	    tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
+        for (octave_idx_type j = 0; j < r_nc; j++)
+          for (octave_idx_type i = j+1; i < r_nr; i++)
+            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
 
       retval = tmp;
     }

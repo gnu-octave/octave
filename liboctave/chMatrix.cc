@@ -84,7 +84,7 @@ charMatrix::charMatrix (const string_vector& s)
       const std::string si = s(i);
       octave_idx_type nc = si.length ();
       for (octave_idx_type j = 0; j < nc; j++)
-	elem (i, j) = si[j];
+        elem (i, j) = si[j];
     }
 }
 
@@ -111,13 +111,13 @@ charMatrix::insert (const char *s, octave_idx_type r, octave_idx_type c)
       octave_idx_type s_len = strlen (s);
 
       if (r < 0 || r >= rows () || c < 0 || c + s_len - 1 > cols ())
-	{
-	  (*current_liboctave_error_handler) ("range error for insert");
-	  return *this;
-	}
+        {
+          (*current_liboctave_error_handler) ("range error for insert");
+          return *this;
+        }
 
       for (octave_idx_type i = 0; i < s_len; i++)
-	elem (r, c+i) = s[i];
+        elem (r, c+i) = s[i];
     }
   return *this;
 }
@@ -154,20 +154,20 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws, bool raw) const
   if (! raw)
     {
       if (strip_ws)
-	{
-	  while (--nc >= 0)
-	    {
-	      char c = retval[nc];
-	      if (c && c != ' ')
-		break;
-	    }
-	}
+        {
+          while (--nc >= 0)
+            {
+              char c = retval[nc];
+              if (c && c != ' ')
+                break;
+            }
+        }
       else
-	{
-	  while (--nc >= 0)
-	    if (retval[nc])
-	      break;
-	}
+        {
+          while (--nc >= 0)
+            if (retval[nc])
+              break;
+        }
 
       retval.resize (nc+1);
     }

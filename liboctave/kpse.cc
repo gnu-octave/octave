@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #if defined (DOSISH)
-#define MONOCASE_FILENAMES	/* case-insensitive filename comparisons */
+#define MONOCASE_FILENAMES      /* case-insensitive filename comparisons */
 #endif
 
 extern "C" {
@@ -56,9 +56,9 @@ extern "C" {
 #endif /* not WIN32 */
 
 #ifdef __DJGPP__
-#include <fcntl.h>	/* for long filenames' stuff */
-#include <dir.h>	/* for `getdisk' */
-#include <io.h>		/* for `setmode' */
+#include <fcntl.h>      /* for long filenames' stuff */
+#include <dir.h>        /* for `getdisk' */
+#include <io.h>         /* for `setmode' */
 #endif
 }
 
@@ -173,28 +173,28 @@ extern "C" {
 /* Test if a bit is on.  */
 #define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
 
-#define KPSE_DEBUG_STAT 0		/* stat calls */
-#define KPSE_DEBUG_HASH 1		/* hash lookups */
-#define KPSE_DEBUG_FOPEN 2		/* fopen/fclose calls */
-#define KPSE_DEBUG_PATHS 3		/* search path initializations */
-#define KPSE_DEBUG_EXPAND 4		/* path element expansion */
-#define KPSE_DEBUG_SEARCH 5		/* searches */
-#define KPSE_DEBUG_VARS 6		/* variable values */
+#define KPSE_DEBUG_STAT 0               /* stat calls */
+#define KPSE_DEBUG_HASH 1               /* hash lookups */
+#define KPSE_DEBUG_FOPEN 2              /* fopen/fclose calls */
+#define KPSE_DEBUG_PATHS 3              /* search path initializations */
+#define KPSE_DEBUG_EXPAND 4             /* path element expansion */
+#define KPSE_DEBUG_SEARCH 5             /* searches */
+#define KPSE_DEBUG_VARS 6               /* variable values */
 #define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
 
 /* A printf for the debugging.  */
 #define DEBUGF_START() do { fputs ("kdebug:", stderr)
 #define DEBUGF_END()        fflush (stderr); } while (0)
 
-#define DEBUGF(str)							\
+#define DEBUGF(str)                                                     \
   DEBUGF_START (); fputs (str, stderr); DEBUGF_END ()
-#define DEBUGF1(str, e1)						\
+#define DEBUGF1(str, e1)                                                \
   DEBUGF_START (); fprintf (stderr, str, e1); DEBUGF_END ()
-#define DEBUGF2(str, e1, e2)						\
+#define DEBUGF2(str, e1, e2)                                            \
   DEBUGF_START (); fprintf (stderr, str, e1, e2); DEBUGF_END ()
-#define DEBUGF3(str, e1, e2, e3)					\
+#define DEBUGF3(str, e1, e2, e3)                                        \
   DEBUGF_START (); fprintf (stderr, str, e1, e2, e3); DEBUGF_END ()
-#define DEBUGF4(str, e1, e2, e3, e4)					\
+#define DEBUGF4(str, e1, e2, e3, e4)                                    \
   DEBUGF_START (); fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
 
 #undef fopen
@@ -307,10 +307,10 @@ static str_llist_type *kpse_element_dirs (const std::string& elt);
 static std::string kpse_expand (const std::string& s);
 
 static std::string kpse_expand_default (const std::string& path,
-					const std::string& dflt);
+                                        const std::string& dflt);
 
 static string_vector kpse_db_search (const std::string& name,
-				     const std::string& path_elt, bool all);
+                                     const std::string& path_elt, bool all);
 
 #include <ctime> /* for `time' */
 
@@ -392,11 +392,11 @@ hash_lookup (hash_table_type table, const std::string& key)
         fputs (" (nil)\n", stderr);
       else
         {
-	  int len = ret.length ();
-	  for (int i = 0; i < len; i++)
+          int len = ret.length ();
+          for (int i = 0; i < len; i++)
             {
               putc (' ', stderr);
-	      fputs (ret[i].c_str (), stderr);
+              fputs (ret[i].c_str (), stderr);
             }
           putc ('\n', stderr);
         }
@@ -443,18 +443,18 @@ private:
       e = b + 1;
 
       if (e == len)
-	; /* OK, we have found the last element.  */
+        ; /* OK, we have found the last element.  */
       else if (e > len)
-	b = e = std::string::npos;
+        b = e = std::string::npos;
       else
-	{
-	  /* Find the next colon not enclosed by braces (or the end of
-	     the path).  */
+        {
+          /* Find the next colon not enclosed by braces (or the end of
+             the path).  */
 
-	  int brace_level = 0;
-	  while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
-	    e++;
-	}
+          int brace_level = 0;
+          while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
+            e++;
+        }
     }
 
   void next (void)
@@ -463,12 +463,12 @@ private:
 
       /* Skip any consecutive colons.  */
       while (b < len && kpse_is_env_sep (path[b]))
-	b++;
+        b++;
 
       if (b >= len)
-	b = e = std::string::npos;
+        b = e = std::string::npos;
       else
-	set_end ();
+        set_end ();
     }
 
   // No assignment.
@@ -490,7 +490,7 @@ kpse_var_value (const std::string& var)
 #ifdef KPSE_DEBUG
   if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
     DEBUGF2 ("variable: %s = %s\n", var.c_str (),
-	     tmp.empty () ? "(nil)" :  tmp.c_str ());
+             tmp.empty () ? "(nil)" :  tmp.c_str ());
 #endif
 
   return ret;
@@ -513,12 +513,12 @@ kpse_truncate_filename (const std::string& name)
     {
       if (IS_DIR_SEP (name[i]) || IS_DEVICE_SEP (name[i]))
         {
-	  /* At a directory delimiter, reset component length.  */
+          /* At a directory delimiter, reset component length.  */
           c_len = 0;
         }
       else if (c_len > NAME_MAX)
         {
-	  /* If past the max for a component, ignore this character.  */
+          /* If past the max for a component, ignore this character.  */
           continue;
         }
 
@@ -543,7 +543,7 @@ READABLE (const std::string& fn, struct stat&)
 {
   const char *t = fn.c_str ();
   return (GetFileAttributes (t) != 0xFFFFFFFF
-	  && ! (GetFileAttributes (t) & FILE_ATTRIBUTE_DIRECTORY));
+          && ! (GetFileAttributes (t) & FILE_ATTRIBUTE_DIRECTORY));
 }
 #else
 static inline bool
@@ -551,7 +551,7 @@ READABLE (const std::string& fn, struct stat& st)
 {
   const char *t = fn.c_str ();
   return (access (t, R_OK) == 0
-	  && stat (t, &(st)) == 0 && ! S_ISDIR (st.st_mode));
+          && stat (t, &(st)) == 0 && ! S_ISDIR (st.st_mode));
 }
 #endif
 
@@ -578,13 +578,13 @@ kpse_readable_file (const std::string& name)
       ret = kpse_truncate_filename (name);
 
       /* Perhaps some other error will occur with the truncated name,
-	 so let's call access again.  */
+         so let's call access again.  */
 
       if (! READABLE (ret, st))
-	{
-	  /* Failed.  */
-	  ret = std::string ();
-	}
+        {
+          /* Failed.  */
+          ret = std::string ();
+        }
 #endif /* ENAMETOOLONG */
 
     }
@@ -592,10 +592,10 @@ kpse_readable_file (const std::string& name)
     {
       /* Some other error.  */
       if (errno == EACCES)
-	{
-	  /* Maybe warn them if permissions are bad.  */
-	  perror (name.c_str ());
-	}
+        {
+          /* Maybe warn them if permissions are bad.  */
+          perror (name.c_str ());
+        }
 
       ret = std::string ();
     }
@@ -625,9 +625,9 @@ kpse_absolute_p (const std::string& filename, int relative_ok)
   int explicit_relative
     = relative_ok
       && (len > 1
-	  && filename[0] == '.'
-	  && (IS_DIR_SEP (filename[1])
-	      || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
+          && filename[0] == '.'
+          && (IS_DIR_SEP (filename[1])
+              || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
 
   return absolute || explicit_relative;
 }
@@ -658,33 +658,33 @@ log_search (const string_vector& filenames)
       std::string log_name = kpse_var_value ("TEXMFLOG");
 
       if (! log_name.empty ())
-	{
-	  log_file = xfopen (log_name.c_str (), "a");
+        {
+          log_file = xfopen (log_name.c_str (), "a");
 
-	  if (! log_file)
-	    perror (log_name.c_str ());
-	}
+          if (! log_file)
+            perror (log_name.c_str ());
+        }
     }
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file)
     {
       /* FILENAMES should never be null, but safety doesn't hurt.  */
       for (int e = 0; e < filenames.length () && ! filenames[e].empty (); e++)
-	{
-	  std::string filename = filenames[e];
+        {
+          std::string filename = filenames[e];
 
-	  /* Only record absolute filenames, for privacy.  */
-	  if (log_file && kpse_absolute_p (filename.c_str (), false))
-	    fprintf (log_file, "%lu %s\n",
-		     static_cast<unsigned long> (time (0)),
-		     filename.c_str ());
+          /* Only record absolute filenames, for privacy.  */
+          if (log_file && kpse_absolute_p (filename.c_str (), false))
+            fprintf (log_file, "%lu %s\n",
+                     static_cast<unsigned long> (time (0)),
+                     filename.c_str ());
 
-	  /* And show them online, if debugging.  We've already started
-	     the debugging line in `search', where this is called, so
-	     just print the filename here, don't use DEBUGF.  */
-	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	    fputs (filename.c_str (), stderr);
-	}
+          /* And show them online, if debugging.  We've already started
+             the debugging line in `search', where this is called, so
+             just print the filename here, don't use DEBUGF.  */
+          if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+            fputs (filename.c_str (), stderr);
+        }
     }
 }
 
@@ -700,7 +700,7 @@ log_search (const string_vector& filenames)
 
 static string_vector
 dir_list_search (str_llist_type *dirs, const std::string& name,
-		 bool search_all)
+                 bool search_all)
 {
   str_llist_elt_type *elt;
   string_vector ret;
@@ -749,7 +749,7 @@ absolute_search (const std::string& name)
 
 static string_vector
 path_search (const std::string& path, const std::string& name,
-	     bool /* must_exist */, bool all)
+             bool /* must_exist */, bool all)
 {
   string_vector ret_list;
   bool done = false;
@@ -762,65 +762,65 @@ path_search (const std::string& path, const std::string& name,
       bool allow_disk_search = true;
 
       if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-	{
-	  /* Those magic leading chars in a path element means don't
-	     search the disk for this elt.  And move past the magic to
-	     get to the name.  */
-	  allow_disk_search = false;
-	  elt = elt.substr (2);
-	}
+        {
+          /* Those magic leading chars in a path element means don't
+             search the disk for this elt.  And move past the magic to
+             get to the name.  */
+          allow_disk_search = false;
+          elt = elt.substr (2);
+        }
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
-	{
-	  while (elt.length () > 3
-		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
-	    {
-	      elt[2] = elt[1];
-	      elt[1] = elt[0];
-	      elt = elt.substr (1);
-	    }
-	}
+        {
+          while (elt.length () > 3
+                 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
+            {
+              elt[2] = elt[1];
+              elt[1] = elt[0];
+              elt = elt.substr (1);
+            }
+        }
       else
-	{
-	  /* We never want to search the whole disk.  */
-	  while (elt.length () > 1
-		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
-	    elt = elt.substr (1);
-	}
+        {
+          /* We never want to search the whole disk.  */
+          while (elt.length () > 1
+                 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+            elt = elt.substr (1);
+        }
 
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
-	 (search), also tests first_search, and does the resetting.  */
+         (search), also tests first_search, and does the resetting.  */
       found = first_search
-	? string_vector () : kpse_db_search (name, elt, all);
+        ? string_vector () : kpse_db_search (name, elt, all);
 
       /* Search the filesystem if (1) the path spec allows it, and either
          (2a) we are searching for texmf.cnf ; or
          (2b) no db exists; or
          (2c) no db's are relevant to this elt; or
          (3) MUST_EXIST && NAME was not in the db.
-	 In (2*), `found' will be NULL.
-	 In (3),  `found' will be an empty list. */
+         In (2*), `found' will be NULL.
+         In (3),  `found' will be an empty list. */
 
       if (allow_disk_search && found.empty ())
-	{
-	  str_llist_type *dirs = kpse_element_dirs (elt);
+        {
+          str_llist_type *dirs = kpse_element_dirs (elt);
 
-	  if (dirs && *dirs)
-	    found = dir_list_search (dirs, name, all);
-	}
+          if (dirs && *dirs)
+            found = dir_list_search (dirs, name, all);
+        }
 
       /* Did we find anything anywhere?  */
       if (! found.empty ())
-	{
-	  if (all)
-	    ret_list.append (found);
-	  else
-	    {
-	      ret_list.append (found[0]);
-	      done = true;
-	    }
-	}
+        {
+          if (all)
+            ret_list.append (found);
+          else
+            {
+              ret_list.append (found[0]);
+              done = true;
+            }
+        }
     }
 
   return ret_list;
@@ -836,7 +836,7 @@ path_search (const std::string& path, const std::string& name,
 
 static string_vector
 search (const std::string& path, const std::string& original_name,
-	bool must_exist, bool all)
+        bool must_exist, bool all)
 {
   string_vector ret_list;
   bool absolute_p;
@@ -865,15 +865,15 @@ search (const std::string& path, const std::string& original_name,
   else
     {
       /* Record the filenames we found, if desired.  And wrap them in a
-	 debugging line if we're doing that.  */
+         debugging line if we're doing that.  */
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	DEBUGF1 ("search (%s) =>", original_name.c_str ());
+        DEBUGF1 ("search (%s) =>", original_name.c_str ());
 
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	putc ('\n', stderr);
+        putc ('\n', stderr);
     }
 
   return ret_list;
@@ -901,7 +901,7 @@ search (const std::string& path, const std::string& original_name,
 
 static std::string
 kpse_path_search (const std::string& path, const std::string& name,
-		  bool must_exist)
+                  bool must_exist)
 {
   string_vector ret_list = search (path, name, must_exist, false);
 
@@ -926,7 +926,7 @@ kpse_all_path_search (const std::string& path, const std::string& name)
 
 static string_vector
 path_find_first_of (const std::string& path, const string_vector& names,
-		    bool /* must_exist */, bool all)
+                    bool /* must_exist */, bool all)
 {
   string_vector ret_list;
   bool done = false;
@@ -941,92 +941,92 @@ path_find_first_of (const std::string& path, const string_vector& names,
       bool allow_disk_search = true;
 
       if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-	{
-	  /* Those magic leading chars in a path element means don't
-	     search the disk for this elt.  And move past the magic to
-	     get to the name.  */
+        {
+          /* Those magic leading chars in a path element means don't
+             search the disk for this elt.  And move past the magic to
+             get to the name.  */
 
-	  allow_disk_search = false;
-	  elt = elt.substr (2);
-	}
+          allow_disk_search = false;
+          elt = elt.substr (2);
+        }
 
       /* Do not touch the device if present */
 
       if (NAME_BEGINS_WITH_DEVICE (elt))
-	{
-	  while (elt.length () > 3
-		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
-	    {
-	      elt[2] = elt[1];
-	      elt[1] = elt[0];
-	      elt = elt.substr (1);
-	    }
-	}
+        {
+          while (elt.length () > 3
+                 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
+            {
+              elt[2] = elt[1];
+              elt[1] = elt[0];
+              elt = elt.substr (1);
+            }
+        }
       else
-	{
-	  /* We never want to search the whole disk.  */
-	  while (elt.length () > 1
-		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
-	    elt = elt.substr (1);
-	}
+        {
+          /* We never want to search the whole disk.  */
+          while (elt.length () > 1
+                 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+            elt = elt.substr (1);
+        }
 
       /* We have to search one directory at a time.  */
       dirs = kpse_element_dirs (elt);
       for (dirs_elt = *dirs; dirs_elt; dirs_elt = STR_LLIST_NEXT (*dirs_elt))
-	{
-	  const std::string dir = STR_LLIST (*dirs_elt);
+        {
+          const std::string dir = STR_LLIST (*dirs_elt);
 
-	  int len = names.length ();
-	  for (int i = 0; i < len && !done; i++)
-	    {
-	      std::string name = names[i];
+          int len = names.length ();
+          for (int i = 0; i < len && !done; i++)
+            {
+              std::string name = names[i];
 
-	      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
-		 (find_first_of), also tests first_search, and does the
-		 resetting.  */
-	      found = first_search
-		? string_vector () : kpse_db_search (name, dir.c_str (), all);
+              /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
+                 (find_first_of), also tests first_search, and does the
+                 resetting.  */
+              found = first_search
+                ? string_vector () : kpse_db_search (name, dir.c_str (), all);
 
-	      /* Search the filesystem if (1) the path spec allows it,
-		 and either
+              /* Search the filesystem if (1) the path spec allows it,
+                 and either
 
-		   (2a) we are searching for texmf.cnf ; or
-		   (2b) no db exists; or
-		   (2c) no db's are relevant to this elt; or
-		   (3) MUST_EXIST && NAME was not in the db.
+                   (2a) we are searching for texmf.cnf ; or
+                   (2b) no db exists; or
+                   (2c) no db's are relevant to this elt; or
+                   (3) MUST_EXIST && NAME was not in the db.
 
-		 In (2*), `found' will be NULL.
-		 In (3),  `found' will be an empty list. */
+                 In (2*), `found' will be NULL.
+                 In (3),  `found' will be an empty list. */
 
-	      if (allow_disk_search && found.empty ())
-		{
-		  static str_llist_type *tmp = 0;
+              if (allow_disk_search && found.empty ())
+                {
+                  static str_llist_type *tmp = 0;
 
-		  if (! tmp)
-		    {
-		      tmp = new str_llist_type;
-		      *tmp = 0;
-		      str_llist_add (tmp, "");
-		    }
+                  if (! tmp)
+                    {
+                      tmp = new str_llist_type;
+                      *tmp = 0;
+                      str_llist_add (tmp, "");
+                    }
 
-		  STR_LLIST (*(*tmp)) = dir;
+                  STR_LLIST (*(*tmp)) = dir;
 
-		  found = dir_list_search (tmp, name, all);
-		}
+                  found = dir_list_search (tmp, name, all);
+                }
 
-	      /* Did we find anything anywhere?  */
-	      if (! found.empty ())
-		{
-		  if (all)
-		    ret_list.append (found);
-		  else
-		    {
-		      ret_list.append (found[0]);
-		      done = true;
-		    }
-		}
-	    }
-	}
+              /* Did we find anything anywhere?  */
+              if (! found.empty ())
+                {
+                  if (all)
+                    ret_list.append (found);
+                  else
+                    {
+                      ret_list.append (found[0]);
+                      done = true;
+                    }
+                }
+            }
+        }
     }
 
   return ret_list;
@@ -1034,7 +1034,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
 
 static string_vector
 find_first_of (const std::string& path, const string_vector& names,
-	       bool must_exist, bool all)
+               bool must_exist, bool all)
 {
   string_vector ret_list;
 
@@ -1045,15 +1045,15 @@ find_first_of (const std::string& path, const string_vector& names,
       int len = names.length ();
 
       for (int i = 0; i < len; i++)
-	{
-	  if (i == 0)
-	    fputs (names[i].c_str (), stderr);
-	  else
-	    fprintf (stderr, ", %s", names[i].c_str ());
-	}
+        {
+          if (i == 0)
+            fputs (names[i].c_str (), stderr);
+          else
+            fprintf (stderr, ", %s", names[i].c_str ());
+        }
 
       fprintf (stderr, "), path=%s, must_exist=%d).\n",
-	       path.c_str (), must_exist);
+               path.c_str (), must_exist);
     }
 
   for (int i = 0; i < names.length (); i++)
@@ -1061,16 +1061,16 @@ find_first_of (const std::string& path, const string_vector& names,
       std::string name = names[i];
 
       if (kpse_absolute_p (name, true))
-	{
-	  /* If the name is absolute or explicitly relative, no need
-	     to consider PATH at all.  If we find something, then we
-	     are done.  */
+        {
+          /* If the name is absolute or explicitly relative, no need
+             to consider PATH at all.  If we find something, then we
+             are done.  */
 
-	  ret_list = absolute_search (name);
+          ret_list = absolute_search (name);
 
-	  if (! ret_list.empty ())
-	    return ret_list;
-	}
+          if (! ret_list.empty ())
+            return ret_list;
+        }
     }
 
   /* Find the file. */
@@ -1085,28 +1085,28 @@ find_first_of (const std::string& path, const string_vector& names,
   else
     {
       /* Record the filenames we found, if desired.  And wrap them in a
-	 debugging line if we're doing that.  */
+         debugging line if we're doing that.  */
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	{
-	  fputs ("find_first_of (", stderr);
+        {
+          fputs ("find_first_of (", stderr);
 
-	  int len = names.length ();
+          int len = names.length ();
 
-	  for (int i = 0; i < len; i++)
-	    {
-	      if (i == 0)
-		fputs (names[i].c_str (), stderr);
-	      else
-		fprintf (stderr, ", %s", names[i].c_str ());
-	    }
-	  fputs (") =>", stderr);
-	}
+          for (int i = 0; i < len; i++)
+            {
+              if (i == 0)
+                fputs (names[i].c_str (), stderr);
+              else
+                fprintf (stderr, ", %s", names[i].c_str ());
+            }
+          fputs (") =>", stderr);
+        }
 
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	putc ('\n', stderr);
+        putc ('\n', stderr);
     }
 
   return ret_list;
@@ -1120,7 +1120,7 @@ find_first_of (const std::string& path, const string_vector& names,
 
 static std::string
 kpse_path_find_first_of (const std::string& path, const string_vector& names,
-			 bool must_exist)
+                         bool must_exist)
 {
   string_vector ret_list = find_first_of (path, names, must_exist, false);
 
@@ -1136,7 +1136,7 @@ kpse_path_find_first_of (const std::string& path, const string_vector& names,
 
 static string_vector
 kpse_all_path_find_first_of (const std::string& path,
-			     const string_vector& names)
+                             const string_vector& names)
 {
   return find_first_of (path, names, true, true);
 }
@@ -1161,18 +1161,18 @@ kpse_tilde_expand (const std::string& name)
       expansion = name;
 
       /* If a bare tilde, return the home directory or `.'.  (Very
-	 unlikely that the directory name will do anyone any good, but
-	 ...  */
+         unlikely that the directory name will do anyone any good, but
+         ...  */
     }
   else if (name.length () == 1)
     {
       expansion = octave_env::getenv ("HOME");
 
       if (expansion.empty ())
-	expansion = ".";
+        expansion = ".";
 
       /* If `~/', remove any trailing / or replace leading // in $HOME.
-	 Should really check for doubled intermediate slashes, too.  */
+         Should really check for doubled intermediate slashes, too.  */
     }
   else if (IS_DIR_SEP (name[1]))
     {
@@ -1180,22 +1180,22 @@ kpse_tilde_expand (const std::string& name)
       std::string home = octave_env::getenv ("HOME");
 
       if (home.empty ())
-	home = ".";
+        home = ".";
 
       size_t home_len = home.length ();
 
       /* handle leading // */
       if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
-	home = home.substr (1);
+        home = home.substr (1);
 
       /* omit / after ~ */
       if (IS_DIR_SEP (home[home_len - 1]))
-	c++;
+        c++;
 
       expansion = home + name.substr (c);
 
       /* If `~user' or `~user/', look up user in the passwd database (but
-	 OS/2 doesn't have this concept.  */
+         OS/2 doesn't have this concept.  */
     }
   else
 #ifdef HAVE_PWD_H
@@ -1216,7 +1216,7 @@ kpse_tilde_expand (const std::string& name)
       std::string home = p ? p.dir () : std::string (".");
 
       if (home.empty ())
-	home = ".";
+        home = ".";
 
       /* handle leading // */
       if (home.length () > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
@@ -1268,19 +1268,19 @@ kpse_expand_kpse_dot (const std::string& path)
       std::string elt = *pi;
 
       /* We assume that the !! magic is only used on absolute components.
-	 Single "." get special treatment, as does "./" or its  equivalent.  */
+         Single "." get special treatment, as does "./" or its  equivalent.  */
 
       size_t elt_len = elt.length ();
 
       if (kpse_absolute_p (elt, false)
-	  || (elt_len > 1 && elt[0] == '!' && elt[1] == '!'))
-	ret += elt + ENV_SEP_STRING;
+          || (elt_len > 1 && elt[0] == '!' && elt[1] == '!'))
+        ret += elt + ENV_SEP_STRING;
       else if (elt_len == 1 && elt[0] == '.')
-	ret += kpse_dot + ENV_SEP_STRING;
+        ret += kpse_dot + ENV_SEP_STRING;
       else if (elt_len > 1 && elt[0] == '.' && IS_DIR_SEP (elt[1]))
-	ret += kpse_dot + elt.substr (1) + ENV_SEP_STRING;
+        ret += kpse_dot + elt.substr (1) + ENV_SEP_STRING;
       else
-	ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
+        ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
 
   int len = ret.length ();
@@ -1308,13 +1308,13 @@ kpse_brace_expand_element (const std::string& elt)
       std::string x = kpse_expand (expansions[i]);
 
       if (x != expansions[i])
-	{
-	  /* If we did any expansions, do brace expansion again.  Since
-	     recursive variable definitions are not allowed, this recursion
-	     must terminate.  (In practice, it's unlikely there will ever be
-	     more than one level of recursion.)  */
-	  x = kpse_brace_expand_element (x);
-	}
+        {
+          /* If we did any expansions, do brace expansion again.  Since
+             recursive variable definitions are not allowed, this recursion
+             must terminate.  (In practice, it's unlikely there will ever be
+             more than one level of recursion.)  */
+          x = kpse_brace_expand_element (x);
+        }
 
       ret += x + ENV_SEP_STRING;
     }
@@ -1387,55 +1387,55 @@ kpse_path_expand (const std::string& path)
 
       /* Skip and ignore magic leading chars.  */
       if (elt.length () > 1 && elt[0] == '!' && elt[1] == '!')
-	elt = elt.substr (2);
+        elt = elt.substr (2);
 
       /* Do not touch the device if present */
       if (NAME_BEGINS_WITH_DEVICE (elt))
-	{
-	  while (elt.length () > 3
-		 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
-	    {
-	      elt[2] = elt[1];
-	      elt[1] = elt[0];
-	      elt = elt.substr (1);
-	    }
-	}
+        {
+          while (elt.length () > 3
+                 && IS_DIR_SEP (elt[2]) && IS_DIR_SEP (elt[3]))
+            {
+              elt[2] = elt[1];
+              elt[1] = elt[0];
+              elt = elt.substr (1);
+            }
+        }
       else
-	{
-	  /* We never want to search the whole disk.  */
-	  while (elt.length () > 1
-		 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
-	    elt = elt.substr (1);
-	}
+        {
+          /* We never want to search the whole disk.  */
+          while (elt.length () > 1
+                 && IS_DIR_SEP (elt[0]) && IS_DIR_SEP (elt[1]))
+            elt = elt.substr (1);
+        }
 
       /* Search the disk for all dirs in the component specified.
-	 Be faster to check the database, but this is more reliable.  */
+         Be faster to check the database, but this is more reliable.  */
       dirs = kpse_element_dirs (elt);
 
       if (dirs && *dirs)
-	{
-	  str_llist_elt_type *dir;
+        {
+          str_llist_elt_type *dir;
 
-	  for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
-	    {
-	      const std::string thedir = STR_LLIST (*dir);
-	      unsigned dirlen = thedir.length ();
+          for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
+            {
+              const std::string thedir = STR_LLIST (*dir);
+              unsigned dirlen = thedir.length ();
 
-	      ret += thedir;
-	      len += dirlen;
+              ret += thedir;
+              len += dirlen;
 
-	      /* Retain trailing slash if that's the root directory.  */
-	      if (dirlen == 1
-		  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
-		      && IS_DIR_SEP (thedir[2])))
-		{
-		  ret += ENV_SEP_STRING;
-		  len++;
-		}
+              /* Retain trailing slash if that's the root directory.  */
+              if (dirlen == 1
+                  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
+                      && IS_DIR_SEP (thedir[2])))
+                {
+                  ret += ENV_SEP_STRING;
+                  len++;
+                }
 
-	      ret[len-1] = ENV_SEP;
-	    }
-	}
+              ret[len-1] = ENV_SEP;
+            }
+        }
     }
 
   if (len > 0)
@@ -1498,8 +1498,8 @@ array_concat (const string_vector& arr1, const string_vector& arr2)
 
       int k = 0;
       for (int i = 0; i < len2; i++)
-	for (int j = 0; j < len1; j++)
-	  result[k++] = arr1[j] + arr2[i];
+        for (int j = 0; j < len1; j++)
+          result[k++] = arr1[j] + arr2[i];
     }
 
   return result;
@@ -1528,20 +1528,20 @@ brace_expand (const std::string& text)
 
       /* What if there isn't a matching close brace? */
       if (! c)
-	{
-	  (*current_liboctave_warning_handler)
-	    ("%s: Unmatched {", text.c_str ());
+        {
+          (*current_liboctave_warning_handler)
+            ("%s: Unmatched {", text.c_str ());
 
-	  result = string_vector (text);
-	}
+          result = string_vector (text);
+        }
       else
-	{
-	  std::string amble = text.substr (start, i-start);
-	  result = array_concat (result, expand_amble (amble));
+        {
+          std::string amble = text.substr (start, i-start);
+          result = array_concat (result, expand_amble (amble));
 
-	  std::string postamble = text.substr (i+1);
-	  result = array_concat (result, brace_expand (postamble));
-	}
+          std::string postamble = text.substr (i+1);
+          result = array_concat (result, brace_expand (postamble));
+        }
     }
 
   return result;
@@ -1577,9 +1577,9 @@ expand_amble (const std::string& text)
       string_vector partial = brace_expand (tem);
 
       if (result.empty ())
-	result = partial;
+        result = partial;
       else
-	result.append (partial);
+        result.append (partial);
     }
 
   return result;
@@ -1603,13 +1603,13 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
       c = text[i];
 
       if (pass_next)
-	{
-	  pass_next = 0;
-	  continue;
-	}
+        {
+          pass_next = 0;
+          continue;
+        }
 
       /* A backslash escapes the next character.  This allows backslash to
-	 escape the quote character in a double-quoted string. */
+         escape the quote character in a double-quoted string. */
       if (c == '\\' && (quoted == 0 || quoted == '"' || quoted == '`'))
         {
           pass_next = 1;
@@ -1617,38 +1617,38 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
         }
 
       if (quoted)
-	{
-	  if (c == quoted)
-	    quoted = 0;
-	  continue;
-	}
+        {
+          if (c == quoted)
+            quoted = 0;
+          continue;
+        }
 
       if (c == '"' || c == '\'' || c == '`')
-	{
-	  quoted = c;
-	  continue;
-	}
+        {
+          quoted = c;
+          continue;
+        }
 
       if (c == satisfy && !level && !quoted)
-	{
-	  /* We ignore an open brace surrounded by whitespace, and also
-	     an open brace followed immediately by a close brace, that
-	     was preceded with whitespace.  */
-	  if (c == '{' &&
-	      ((i == 0 || brace_whitespace (text[i-1])) &&
-	       (i+1 < text_len &&
-		(brace_whitespace (text[i+1]) || text[i+1] == '}'))))
-	    continue;
-	  /* If this is being compiled as part of bash, ignore the `{'
-	     in a `${}' construct */
-	  if ((c != '{') || i == 0 || (text[i-1] != '$'))
-	    break;
-	}
+        {
+          /* We ignore an open brace surrounded by whitespace, and also
+             an open brace followed immediately by a close brace, that
+             was preceded with whitespace.  */
+          if (c == '{' &&
+              ((i == 0 || brace_whitespace (text[i-1])) &&
+               (i+1 < text_len &&
+                (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
+            continue;
+          /* If this is being compiled as part of bash, ignore the `{'
+             in a `${}' construct */
+          if ((c != '{') || i == 0 || (text[i-1] != '$'))
+            break;
+        }
 
       if (c == '{')
-	level++;
+        level++;
       else if (c == '}' && level)
-	level--;
+        level--;
     }
 
   indx = i;
@@ -1664,15 +1664,15 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
 
 struct kpse_format_info_type
 {
-  std::string type;	     /* Human-readable description.  */
-  std::string path;	     /* The search path to use.  */
-  std::string raw_path;	     /* Pre-$~ (but post-default) expansion.  */
+  std::string type;          /* Human-readable description.  */
+  std::string path;          /* The search path to use.  */
+  std::string raw_path;      /* Pre-$~ (but post-default) expansion.  */
   std::string path_source;   /* Where the path started from.  */
   std::string override_path; /* From client environment variable.  */
   std::string client_path;   /* E.g., from dvips's config.ps.  */
-  std::string cnf_path;	     /* From texmf.cnf.  */
+  std::string cnf_path;      /* From texmf.cnf.  */
   std::string default_path;  /* If all else fails.  */
-  string_vector suffix;	     /* For kpse_find_file to check for/append.  */
+  string_vector suffix;      /* For kpse_find_file to check for/append.  */
 };
 
 /* The sole variable of that type, indexed by `kpse_file_format_type'.
@@ -1686,9 +1686,9 @@ static kpse_format_info_type kpse_format_info;
     { \
       if (! try_path.empty ()) \
         { \
-          info.raw_path = try_path;	\
+          info.raw_path = try_path;     \
           info.path = kpse_expand_default (try_path, info.path); \
-          info.path_source = source_string;	\
+          info.path_source = source_string;     \
         } \
     } \
   while (0)
@@ -1715,39 +1715,39 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
   for (; *filename && *path_elt; filename++, path_elt++)
     {
       if (*filename == *path_elt) /* normal character match */
-	;
+        ;
 
       else if (IS_DIR_SEP (*path_elt)  /* at // */
-	       && original_filename < filename && IS_DIR_SEP (path_elt[-1]))
-	{
-	  while (IS_DIR_SEP (*path_elt))
-	    path_elt++; /* get past second and any subsequent /'s */
+               && original_filename < filename && IS_DIR_SEP (path_elt[-1]))
+        {
+          while (IS_DIR_SEP (*path_elt))
+            path_elt++; /* get past second and any subsequent /'s */
 
-	  if (*path_elt == 0)
-	    {
-	      /* Trailing //, matches anything. We could make this
-		 part of the other case, but it seems pointless to do
-		 the extra work.  */
-	      matched = true;
-	      break;
-	    }
-	  else
-	    {
-	      /* Intermediate //, have to match rest of PATH_ELT.  */
-	      for (; !matched && *filename; filename++)
-		{
-		  /* Try matching at each possible character.  */
-		  if (IS_DIR_SEP (filename[-1]) && *filename == *path_elt)
-		    matched = match (filename, path_elt);
-		}
+          if (*path_elt == 0)
+            {
+              /* Trailing //, matches anything. We could make this
+                 part of the other case, but it seems pointless to do
+                 the extra work.  */
+              matched = true;
+              break;
+            }
+          else
+            {
+              /* Intermediate //, have to match rest of PATH_ELT.  */
+              for (; !matched && *filename; filename++)
+                {
+                  /* Try matching at each possible character.  */
+                  if (IS_DIR_SEP (filename[-1]) && *filename == *path_elt)
+                    matched = match (filename, path_elt);
+                }
 
-	      /* Prevent filename++ when *filename='\0'. */
-	      break;
-	    }
-	}
+              /* Prevent filename++ when *filename='\0'. */
+              break;
+            }
+        }
       else
-	/* normal character nonmatch, quit */
-	break;
+        /* normal character nonmatch, quit */
+        break;
     }
 
   /* If we've reached the end of PATH_ELT, check that we're at the last
@@ -1755,18 +1755,18 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
   if (! matched && *path_elt == 0)
     {
       /* Probably PATH_ELT ended with `vf' or some such, and FILENAME
-	 ends with `vf/ptmr.vf'.  In that case, we'll be at a
-	 directory separator.  On the other hand, if PATH_ELT ended
-	 with a / (as in `vf/'), FILENAME being the same `vf/ptmr.vf',
-	 we'll be at the `p'.  Upshot: if we're at a dir separator in
-	 FILENAME, skip it.  But if not, that's ok, as long as there
-	 are no more dir separators.  */
+         ends with `vf/ptmr.vf'.  In that case, we'll be at a
+         directory separator.  On the other hand, if PATH_ELT ended
+         with a / (as in `vf/'), FILENAME being the same `vf/ptmr.vf',
+         we'll be at the `p'.  Upshot: if we're at a dir separator in
+         FILENAME, skip it.  But if not, that's ok, as long as there
+         are no more dir separators.  */
 
       if (IS_DIR_SEP (*filename))
-	filename++;
+        filename++;
 
       while (*filename && !IS_DIR_SEP (*filename))
-	filename++;
+        filename++;
 
       matched = *filename == 0;
     }
@@ -1799,12 +1799,12 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
       i++;
       /* If we've matched the entire db directory, it's good.  */
       if (i == db_dir_len)
-	found = true;
+        found = true;
 
     /* If we've reached the end of PATH_ELT, but not the end of the db
        directory, it's no good.  */
       else if (i == path_elt_len)
-	break;
+        break;
     }
 
   return found;
@@ -1820,7 +1820,7 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
 
 static string_vector
 kpse_db_search (const std::string& name_arg,
-		const std::string& orig_path_elt, bool all)
+                const std::string& orig_path_elt, bool all)
 {
   bool done;
   string_vector ret;
@@ -1882,59 +1882,59 @@ kpse_db_search (const std::string& name_arg,
       string_vector db_dirs = hash_lookup (db, atry);
 
       /* For each filename found, see if it matches the path element.  For
-	 example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
-	 and the path looks like .../cx, we don't want the ricoh file.  */
+         example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
+         and the path looks like .../cx, we don't want the ricoh file.  */
 
       int db_dirs_len = db_dirs.length ();
       for (int j = 0; j < db_dirs_len && !done; j++)
-	{
-	  std::string db_file = db_dirs[j] + atry;
-	  bool matched = match (db_file, path_elt);
+        {
+          std::string db_file = db_dirs[j] + atry;
+          bool matched = match (db_file, path_elt);
 
 #ifdef KPSE_DEBUG
-	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	    DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt.c_str (), matched);
+          if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+            DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt.c_str (), matched);
 #endif
 
-	  /* We got a hit in the database.  Now see if the file actually
-	     exists, possibly under an alias.  */
-	  if (matched)
-	    {
-	      std::string found;
-	      std::string tmp = kpse_readable_file (db_file);
-	      if (! tmp.empty ())
-		found = db_file;
-	      else
-		{
-		  /* The hit in the DB doesn't exist in disk.  Now try
-		     all its aliases.  For example, suppose we have a
-		     hierarchy on CD, thus `mf.bas', but ls-R contains
-		     `mf.base'.  Find it anyway.  Could probably work
-		     around this with aliases, but this is pretty easy
-		     and shouldn't hurt.  The upshot is that if one of
-		     the aliases actually exists, we use that.  */
+          /* We got a hit in the database.  Now see if the file actually
+             exists, possibly under an alias.  */
+          if (matched)
+            {
+              std::string found;
+              std::string tmp = kpse_readable_file (db_file);
+              if (! tmp.empty ())
+                found = db_file;
+              else
+                {
+                  /* The hit in the DB doesn't exist in disk.  Now try
+                     all its aliases.  For example, suppose we have a
+                     hierarchy on CD, thus `mf.bas', but ls-R contains
+                     `mf.base'.  Find it anyway.  Could probably work
+                     around this with aliases, but this is pretty easy
+                     and shouldn't hurt.  The upshot is that if one of
+                     the aliases actually exists, we use that.  */
 
-		  int aliases_len = aliases.length ();
+                  int aliases_len = aliases.length ();
 
-		  for (int k = 1; k < aliases_len && found.empty (); k++)
-		    {
-		      std::string aatry = db_dirs[j] + aliases[k];
-		      tmp = kpse_readable_file (aatry);
-		      if (! tmp.empty ())
-			found = aatry;
-		    }
-		}
+                  for (int k = 1; k < aliases_len && found.empty (); k++)
+                    {
+                      std::string aatry = db_dirs[j] + aliases[k];
+                      tmp = kpse_readable_file (aatry);
+                      if (! tmp.empty ())
+                        found = aatry;
+                    }
+                }
 
-	      /* If we have a real file, add it to the list, maybe done.  */
-	      if (! found.empty ())
-		{
-		  ret.append (found);
+              /* If we have a real file, add it to the list, maybe done.  */
+              if (! found.empty ())
+                {
+                  ret.append (found);
 
-		  if (! (all || found.empty ()))
-		    done = true;
-		}
-	    }
-	}
+                  if (! (all || found.empty ()))
+                    done = true;
+                }
+            }
+        }
     }
 
   return ret;
@@ -1982,15 +1982,15 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
       for (size_t i = 0; i < path_len; i++)
         {
           if (i + 1 < path_len
-	      && IS_ENV_SEP (path[i]) && IS_ENV_SEP (path[i+1]))
+              && IS_ENV_SEP (path[i]) && IS_ENV_SEP (path[i+1]))
             {
-	      /* We have a doubled colon.  */
+              /* We have a doubled colon.  */
 
               /* Copy stuff up to and including the first colon.  */
               /* Copy in FALLBACK, and then the rest of PATH.  */
-	      expansion = path.substr (0, i+1) + fallback + path.substr (i+1);
+              expansion = path.substr (0, i+1) + fallback + path.substr (i+1);
 
-	      break;
+              break;
             }
         }
     }
@@ -2137,7 +2137,7 @@ dir_links (const std::string& fn)
       struct stat stats;
 
       ret = stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode)
-	? stats.st_nlink : static_cast<unsigned> (-1);
+        ? stats.st_nlink : static_cast<unsigned> (-1);
 
       link_table[fn] = ret;
 
@@ -2154,7 +2154,7 @@ dir_links (const std::string& fn)
 
 static void
 do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
-	   unsigned elt_length, const std::string& post)
+           unsigned elt_length, const std::string& post)
 {
 #ifdef WIN32
   WIN32_FIND_DATA find_file_data;
@@ -2185,8 +2185,8 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
   else
     {
       /* If we do have something to match, see if it exists.  For
-	 example, POST might be `pk/ljfour', and they might have a
-	 directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+         example, POST might be `pk/ljfour', and they might have a
+         directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
       expand_elt (str_list_ptr, name, elt_length);
       name.resize (elt_length);
@@ -2197,20 +2197,20 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
   while (proceed)
     {
       if (find_file_data.cFileName[0] != '.')
-	{
-	  /* Construct the potential subdirectory name.  */
-	  name += find_file_data.cFileName;
+        {
+          /* Construct the potential subdirectory name.  */
+          name += find_file_data.cFileName;
 
-	  if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	    {
-	      /* It's a directory, so append the separator.  */
-	      name += DIR_SEP_STRING;
-	      unsigned potential_len = name.length ();
+          if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+              /* It's a directory, so append the separator.  */
+              name += DIR_SEP_STRING;
+              unsigned potential_len = name.length ();
 
-	      do_subdir (str_list_ptr, name, potential_len, post);
-	    }
-	  name.resize (elt_length);
-	}
+              do_subdir (str_list_ptr, name, potential_len, post);
+            }
+          name.resize (elt_length);
+        }
 
       proceed = FindNextFile (hnd, &find_file_data);
     }
@@ -2298,7 +2298,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 
 static void
 expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
-	    unsigned /* start */)
+            unsigned /* start */)
 {
 #if 0
   // We don't want magic constructs.
@@ -2315,21 +2315,21 @@ expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
           /* If two or more consecutive /'s, find subdirectories.  */
           if (++dir < elt_len && IS_DIR_SEP (elt[dir]))
             {
-	      size_t i = dir;
-	      while (i < elt_len && IS_DIR_SEP (elt[i]))
-		i++;
+              size_t i = dir;
+              while (i < elt_len && IS_DIR_SEP (elt[i]))
+                i++;
 
-	      std::string post = elt.substr (i);
+              std::string post = elt.substr (i);
 
               do_subdir (str_list_ptr, elt, dir, post);
 
-	      return;
+              return;
             }
 
           /* No special stuff at this slash.  Keep going.  */
         }
       else
-	dir++;
+        dir++;
     }
 #endif
 
@@ -2421,7 +2421,7 @@ fopen (const char *filename, const char *mode)
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
     DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename, mode,
-	     reinterpret_cast<unsigned long> (ret));
+             reinterpret_cast<unsigned long> (ret));
 
   return ret;
 }
@@ -2537,8 +2537,8 @@ expand (std::string &expansion, const std::string& var)
   if (expanding_p (var))
     {
       (*current_liboctave_warning_handler)
-	("kpathsea: variable `%s' references itself (eventually)",
-	 var.c_str ());
+        ("kpathsea: variable `%s' references itself (eventually)",
+         var.c_str ());
     }
   else
     {
@@ -2546,12 +2546,12 @@ expand (std::string &expansion, const std::string& var)
       std::string value = octave_env::getenv (var);
 
       if (! value.empty ())
-	{
-	  expanding (var, true);
-	  std::string tmp = kpse_var_expand (value);
-	  expanding (var, false);
-	  expansion += tmp;
-	}
+        {
+          expanding (var, true);
+          std::string tmp = kpse_var_expand (value);
+          expanding (var, false);
+          expansion += tmp;
+        }
     }
 }
 
@@ -2584,58 +2584,58 @@ kpse_var_expand (const std::string& src)
   for (size_t i = 0; i < src_len; i++)
     {
       if (IS_VAR_START (src[i]))
-	{
-	  i++;
+        {
+          i++;
 
-	  /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
-	  if (IS_VAR_CHAR (src[i]))
-	    {
-	      /* $V: collect name constituents, then expand.  */
-	      size_t var_end = i;
+          /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
+          if (IS_VAR_CHAR (src[i]))
+            {
+              /* $V: collect name constituents, then expand.  */
+              size_t var_end = i;
 
-	      do
-		{
-		  var_end++;
-		}
-	      while (IS_VAR_CHAR (src[var_end]));
+              do
+                {
+                  var_end++;
+                }
+              while (IS_VAR_CHAR (src[var_end]));
 
-	      var_end--; /* had to go one past */
-	      expand (expansion, src.substr (i, var_end - i + 1));
-	      i = var_end;
+              var_end--; /* had to go one past */
+              expand (expansion, src.substr (i, var_end - i + 1));
+              i = var_end;
 
-	    }
-	  else if (IS_VAR_BEGIN_DELIMITER (src[i]))
-	    {
-	      /* ${: scan ahead for matching delimiter, then expand.  */
-	      size_t var_end = ++i;
+            }
+          else if (IS_VAR_BEGIN_DELIMITER (src[i]))
+            {
+              /* ${: scan ahead for matching delimiter, then expand.  */
+              size_t var_end = ++i;
 
-	      while (var_end < src_len && !IS_VAR_END_DELIMITER (src[var_end]))
-		var_end++;
+              while (var_end < src_len && !IS_VAR_END_DELIMITER (src[var_end]))
+                var_end++;
 
-	      if (var_end == src_len)
-		{
-		  (*current_liboctave_warning_handler)
-		    ("%s: No matching } for ${", src.c_str ());
-		  i = var_end - 1; /* will incr to eos at top of loop */
-		}
-	      else
-		{
-		  expand (expansion, src.substr (i, var_end - i));
-		  i = var_end; /* will incr past } at top of loop*/
-		}
-	    }
-	  else
-	    {
-	      /* $<something-else>: error.  */
-	      (*current_liboctave_warning_handler)
-		("%s: Unrecognized variable construct `$%c'",
-		 src.c_str (), src[i]);
+              if (var_end == src_len)
+                {
+                  (*current_liboctave_warning_handler)
+                    ("%s: No matching } for ${", src.c_str ());
+                  i = var_end - 1; /* will incr to eos at top of loop */
+                }
+              else
+                {
+                  expand (expansion, src.substr (i, var_end - i));
+                  i = var_end; /* will incr past } at top of loop*/
+                }
+            }
+          else
+            {
+              /* $<something-else>: error.  */
+              (*current_liboctave_warning_handler)
+                ("%s: Unrecognized variable construct `$%c'",
+                 src.c_str (), src[i]);
 
-	      /* Just ignore those chars and keep going.  */
-	    }
-	}
+              /* Just ignore those chars and keep going.  */
+            }
+        }
       else
-	expansion += src[i];
+        expansion += src[i];
     }
 
   return expansion;

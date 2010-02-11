@@ -123,12 +123,12 @@ boolNDArray::matrix_value (void) const
 
     case 2:
       retval = boolMatrix (Array2<bool> (*this, dimensions(0),
-					 dimensions(1)));
+                                         dimensions(1)));
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("invalid conversion of boolNDArray to boolMatrix");
+        ("invalid conversion of boolNDArray to boolMatrix");
       break;
     }
 
@@ -137,15 +137,15 @@ boolNDArray::matrix_value (void) const
 
 void
 boolNDArray::increment_index (Array<octave_idx_type>& ra_idx,
-			      const dim_vector& dimensions,
-			      int start_dimension)
+                              const dim_vector& dimensions,
+                              int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 octave_idx_type
 boolNDArray::compute_index (Array<octave_idx_type>& ra_idx,
-			    const dim_vector& dimensions)
+                            const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
 }

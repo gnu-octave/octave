@@ -552,15 +552,15 @@ pow (const octave_int<T>& a, const octave_int<T>& b)
       b_val -= 1;
 
       while (b_val != 0)
-	{
-	  if (b_val & 1)
-	    retval = retval * a_val;
+        {
+          if (b_val & 1)
+            retval = retval * a_val;
 
-	  b_val = b_val >> 1;
+          b_val = b_val >> 1;
 
-	  if (b_val)
-	    a_val = a_val * a_val;
-	}
+          if (b_val)
+            a_val = a_val * a_val;
+        }
     }
 
   return retval;

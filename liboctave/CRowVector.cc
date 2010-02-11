@@ -42,14 +42,14 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const Complex&,
-			   const Complex*, const octave_idx_type&, const Complex*,
-			   const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const Complex&,
+                           const Complex*, const octave_idx_type&, const Complex*,
+                           const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (xzdotu, XZDOTU) (const octave_idx_type&, const Complex*, const octave_idx_type&,
-			     const Complex*, const octave_idx_type&, Complex&);
+                             const Complex*, const octave_idx_type&, Complex&);
 }
 
 // Complex Row Vector class
@@ -94,7 +94,7 @@ ComplexRowVector::insert (const RowVector& a, octave_idx_type c)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (c+i) = a.elem (i);
+        xelem (c+i) = a.elem (i);
     }
 
   return *this;
@@ -116,7 +116,7 @@ ComplexRowVector::insert (const ComplexRowVector& a, octave_idx_type c)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (c+i) = a.elem (i);
+        xelem (c+i) = a.elem (i);
     }
 
   return *this;
@@ -132,7 +132,7 @@ ComplexRowVector::fill (double val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -148,7 +148,7 @@ ComplexRowVector::fill (const Complex& val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -172,7 +172,7 @@ ComplexRowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
       make_unique ();
 
       for (octave_idx_type i = c1; i <= c2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -196,7 +196,7 @@ ComplexRowVector::fill (const Complex& val, octave_idx_type c1, octave_idx_type 
       make_unique ();
 
       for (octave_idx_type i = c1; i <= c2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -337,21 +337,21 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
   else
     {
       if (len == 0)
-	retval.resize (a_nc, 0.0);
+        retval.resize (a_nc, 0.0);
       else
-	{
-	  // Transpose A to form A'*x == (x'*A)'
+        {
+          // Transpose A to form A'*x == (x'*A)'
 
-	  octave_idx_type ld = a_nr;
+          octave_idx_type ld = a_nr;
 
-	  retval.resize (a_nc);
-	  Complex *y = retval.fortran_vec ();
+          retval.resize (a_nc);
+          Complex *y = retval.fortran_vec ();
 
-	  F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-				   a_nr, a_nc, 1.0, a.data (),
-				   ld, v.data (), 1, 0.0, y, 1
-				   F77_CHAR_ARG_LEN (1)));
-	}
+          F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+                                   a_nr, a_nc, 1.0, a.data (),
+                                   ld, v.data (), 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
     }
 
   return retval;
@@ -379,8 +379,8 @@ ComplexRowVector::min (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) < absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;
@@ -399,8 +399,8 @@ ComplexRowVector::max (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) > absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;

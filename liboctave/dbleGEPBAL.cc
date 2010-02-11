@@ -37,27 +37,27 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-			     double* A, const octave_idx_type& LDA, double* B,
-			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
-			     double* LSCALE, double* RSCALE,
-			     double* WORK, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL);
+                             double* A, const octave_idx_type& LDA, double* B,
+                             const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
+                             double* LSCALE, double* RSCALE,
+                             double* WORK, octave_idx_type& INFO
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type& N, const octave_idx_type& ILO,
-			     const octave_idx_type& IHI, const double* LSCALE,
-			     const double* RSCALE, octave_idx_type& M, double* V,
-			     const octave_idx_type& LDV, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type& N, const octave_idx_type& ILO,
+                             const octave_idx_type& IHI, const double* LSCALE,
+                             const double* RSCALE, octave_idx_type& M, double* V,
+                             const octave_idx_type& LDV, octave_idx_type& INFO
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
 }
 
 octave_idx_type
 GEPBALANCE::init (const Matrix& a, const Matrix& b, 
-		  const std::string& balance_job)
+                  const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
 
@@ -89,9 +89,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
   char job = balance_job[0];
 
   F77_XFCN (dggbal, DGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     n, p_balanced_mat, n, p_balanced_mat2,
-			     n, ilo, ihi, plscale, prscale, pwork, info
-			     F77_CHAR_ARG_LEN  (1)));
+                             n, p_balanced_mat, n, p_balanced_mat2,
+                             n, ilo, ihi, plscale, prscale, pwork, info
+                             F77_CHAR_ARG_LEN  (1)));
 
   balancing_mat = Matrix (n, n, 0.0);
   balancing_mat2 = Matrix (n, n, 0.0);
@@ -107,19 +107,19 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b,
 
   // first left
   F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 ("L", 1),
-			     n, ilo, ihi, plscale, prscale,
-			     n, p_balancing_mat, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
       
   // then right
   F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 ("R", 1),
-			     n, ilo, ihi, plscale, prscale,
-			     n, p_balancing_mat2, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

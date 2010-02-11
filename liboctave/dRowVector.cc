@@ -42,13 +42,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const double&,
-			   const double*, const octave_idx_type&, const double*,
-			   const octave_idx_type&, const double&, double*, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const double&,
+                           const double*, const octave_idx_type&, const double*,
+                           const octave_idx_type&, const double&, double*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (xddot, XDDOT) (const octave_idx_type&, const double*, const octave_idx_type&,
-			   const double*, const octave_idx_type&, double&);
+                           const double*, const octave_idx_type&, double&);
 }
 
 // Row Vector class.
@@ -84,7 +84,7 @@ RowVector::insert (const RowVector& a, octave_idx_type c)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (c+i) = a.elem (i);
+        xelem (c+i) = a.elem (i);
     }
 
   return *this;
@@ -100,7 +100,7 @@ RowVector::fill (double val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -124,7 +124,7 @@ RowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
       make_unique ();
 
       for (octave_idx_type i = c1; i <= c2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -210,21 +210,21 @@ operator * (const RowVector& v, const Matrix& a)
   else
     {
       if (len == 0)
-	retval.resize (a_nc, 0.0);
+        retval.resize (a_nc, 0.0);
       else
-	{
-	  // Transpose A to form A'*x == (x'*A)'
+        {
+          // Transpose A to form A'*x == (x'*A)'
 
-	  octave_idx_type ld = a_nr;
+          octave_idx_type ld = a_nr;
 
-	  retval.resize (a_nc);
-	  double *y = retval.fortran_vec ();
+          retval.resize (a_nc);
+          double *y = retval.fortran_vec ();
 
-	  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
-				   a_nr, a_nc, 1.0, a.data (),
-				   ld, v.data (), 1, 0.0, y, 1
-				   F77_CHAR_ARG_LEN (1)));
-	}
+          F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+                                   a_nr, a_nc, 1.0, a.data (),
+                                   ld, v.data (), 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1)));
+        }
     }
 
   return retval;

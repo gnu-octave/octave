@@ -34,99 +34,99 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgeev, DGEEV) (F77_CONST_CHAR_ARG_DECL,
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, double*, const octave_idx_type&, double*,
-			   double*, double*, const octave_idx_type&, double*,
-			   const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, double*, const octave_idx_type&, double*,
+                           double*, double*, const octave_idx_type&, double*,
+                           const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgeev, ZGEEV) (F77_CONST_CHAR_ARG_DECL,
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, Complex*, const octave_idx_type&, Complex*,
-			   Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-			   Complex*, const octave_idx_type&, double*, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, Complex*, const octave_idx_type&, Complex*,
+                           Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+                           Complex*, const octave_idx_type&, double*, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dsyev, DSYEV) (F77_CONST_CHAR_ARG_DECL,
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, double*, const octave_idx_type&, double*,
-			   double*, const octave_idx_type&, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, double*, const octave_idx_type&, double*,
+                           double*, const octave_idx_type&, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zheev, ZHEEV) (F77_CONST_CHAR_ARG_DECL,
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, Complex*, const octave_idx_type&, double*,
-			   Complex*, const octave_idx_type&, double*, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, Complex*, const octave_idx_type&, double*,
+                           Complex*, const octave_idx_type&, double*, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL, 
-			   const octave_idx_type&, 
-			   double*, const octave_idx_type&,
-			   octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, 
+                           double*, const octave_idx_type&,
+                           octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL, 
-			   const octave_idx_type&, 
-			   Complex*, const octave_idx_type&,
-			   octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, 
+                           Complex*, const octave_idx_type&,
+                           octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggev, DGGEV) (F77_CONST_CHAR_ARG_DECL, 
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, 
-			   double*, const octave_idx_type&,
-			   double*, const octave_idx_type&,
-			   double*, double*, double *,
-			   double*, const octave_idx_type&, double*, const octave_idx_type&,
-			   double*, const octave_idx_type&, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, 
+                           double*, const octave_idx_type&,
+                           double*, const octave_idx_type&,
+                           double*, double*, double *,
+                           double*, const octave_idx_type&, double*, const octave_idx_type&,
+                           double*, const octave_idx_type&, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dsygv, DSYGV) (const octave_idx_type&,
-			   F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, 
-			   double*, const octave_idx_type&,
-			   double*, const octave_idx_type&,
-			   double*, double*, const octave_idx_type&, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, 
+                           double*, const octave_idx_type&,
+                           double*, const octave_idx_type&,
+                           double*, double*, const octave_idx_type&, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zggev, ZGGEV) (F77_CONST_CHAR_ARG_DECL, 
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, 
-			   Complex*, const octave_idx_type&,
-			   Complex*, const octave_idx_type&,
-			   Complex*, Complex*,
-			   Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-			   Complex*, const octave_idx_type&, double*, octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, 
+                           Complex*, const octave_idx_type&,
+                           Complex*, const octave_idx_type&,
+                           Complex*, Complex*,
+                           Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+                           Complex*, const octave_idx_type&, double*, octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zhegv, ZHEGV) (const octave_idx_type&,
-			   F77_CONST_CHAR_ARG_DECL, 
-			   F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, 
-			   Complex*, const octave_idx_type&,
-			   Complex*, const octave_idx_type&,
-			   double*, Complex*, const octave_idx_type&, double*, 
-			   octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL
-			   F77_CHAR_ARG_LEN_DECL);
+                           F77_CONST_CHAR_ARG_DECL, 
+                           F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, 
+                           Complex*, const octave_idx_type&,
+                           Complex*, const octave_idx_type&,
+                           double*, Complex*, const octave_idx_type&, double*, 
+                           octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL
+                           F77_CHAR_ARG_LEN_DECL);
 }
 
 octave_idx_type
@@ -135,7 +135,7 @@ EIG::init (const Matrix& a, bool calc_ev)
   if (a.any_element_is_inf_or_nan ())
     {
       (*current_liboctave_error_handler)
-	("EIG: matrix contains Inf or NaN values");
+        ("EIG: matrix contains Inf or NaN values");
       return -1;
     }
 
@@ -172,11 +172,11 @@ EIG::init (const Matrix& a, bool calc_ev)
   octave_idx_type idummy = 1;
 
   F77_XFCN (dgeev, DGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   n, tmp_data, n, pwr, pwi, dummy,
-			   idummy, pvr, n, &dummy_work, lwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                           n, tmp_data, n, pwr, pwi, dummy,
+                           idummy, pvr, n, &dummy_work, lwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -185,57 +185,57 @@ EIG::init (const Matrix& a, bool calc_ev)
       double *pwork = work.fortran_vec ();
 
       F77_XFCN (dgeev, DGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			       F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       n, tmp_data, n, pwr, pwi, dummy,
-			       idummy, pvr, n, pwork, lwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                               n, tmp_data, n, pwr, pwi, dummy,
+                               idummy, pvr, n, pwork, lwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in dgeev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in dgeev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("dgeev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("dgeev failed to converge");
+          return info;
+        }
 
       lambda.resize (n);
       octave_idx_type nvr = calc_ev ? n : 0;
       v.resize (nvr, nvr);
 
       for (octave_idx_type j = 0; j < n; j++)
-	{
-	  if (wi.elem (j) == 0.0)
-	    {
-	      lambda.elem (j) = Complex (wr.elem (j));
-	      for (octave_idx_type i = 0; i < nvr; i++)
-		v.elem (i, j) = vr.elem (i, j);
-	    }
-	  else
-	    {
-	      if (j+1 >= n)
-		{
-		  (*current_liboctave_error_handler) ("EIG: internal error");
-		  return -1;
-		}
+        {
+          if (wi.elem (j) == 0.0)
+            {
+              lambda.elem (j) = Complex (wr.elem (j));
+              for (octave_idx_type i = 0; i < nvr; i++)
+                v.elem (i, j) = vr.elem (i, j);
+            }
+          else
+            {
+              if (j+1 >= n)
+                {
+                  (*current_liboctave_error_handler) ("EIG: internal error");
+                  return -1;
+                }
 
-	      lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
-	      lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
+              lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
+              lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
 
-	      for (octave_idx_type i = 0; i < nvr; i++)
-		{
-		  double real_part = vr.elem (i, j);
-		  double imag_part = vr.elem (i, j+1);
-		  v.elem (i, j) = Complex (real_part, imag_part);
-		  v.elem (i, j+1) = Complex (real_part, -imag_part);
-		}
-	      j++;
-	    }
-	}
+              for (octave_idx_type i = 0; i < nvr; i++)
+                {
+                  double real_part = vr.elem (i, j);
+                  double imag_part = vr.elem (i, j+1);
+                  v.elem (i, j) = Complex (real_part, imag_part);
+                  v.elem (i, j+1) = Complex (real_part, -imag_part);
+                }
+              j++;
+            }
+        }
     }
   else
     (*current_liboctave_error_handler) ("dgeev workspace query failed");
@@ -266,10 +266,10 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
   double dummy_work;
 
   F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   F77_CONST_CHAR_ARG2 ("U", 1),
-			   n, tmp_data, n, pwr, &dummy_work, lwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 ("U", 1),
+                           n, tmp_data, n, pwr, &dummy_work, lwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -278,22 +278,22 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
       double *pwork = work.fortran_vec ();
 
       F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       F77_CONST_CHAR_ARG2 ("U", 1),
-			       n, tmp_data, n, pwr, pwork, lwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 ("U", 1),
+                               n, tmp_data, n, pwr, pwork, lwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in dsyev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in dsyev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("dsyev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("dsyev failed to converge");
+          return info;
+        }
 
       lambda = ComplexColumnVector (wr);
       v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();
@@ -310,7 +310,7 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
   if (a.any_element_is_inf_or_nan ())
     {
       (*current_liboctave_error_handler)
-	("EIG: matrix contains Inf or NaN values");
+        ("EIG: matrix contains Inf or NaN values");
       return -1;
     }
 
@@ -348,11 +348,11 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
   octave_idx_type idummy = 1;
 
   F77_XFCN (zgeev, ZGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   n, tmp_data, n, pw, dummy, idummy,
-			   pv, n, &dummy_work, lwork, prwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                           n, tmp_data, n, pw, dummy, idummy,
+                           pv, n, &dummy_work, lwork, prwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -361,23 +361,23 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
       Complex *pwork = work.fortran_vec ();
 
       F77_XFCN (zgeev, ZGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			       F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       n, tmp_data, n, pw, dummy, idummy,
-			       pv, n, pwork, lwork, prwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                               n, tmp_data, n, pw, dummy, idummy,
+                               pv, n, pwork, lwork, prwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in zgeev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in zgeev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("zgeev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("zgeev failed to converge");
+          return info;
+        }
 
       lambda = w;
       v = vtmp;
@@ -415,11 +415,11 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
   double *prwork = rwork.fortran_vec ();
 
   F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   F77_CONST_CHAR_ARG2 ("U", 1),
-			   n, tmp_data, n, pwr, &dummy_work, lwork,
-			   prwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 ("U", 1),
+                           n, tmp_data, n, pwr, &dummy_work, lwork,
+                           prwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -428,22 +428,22 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
       Complex *pwork = work.fortran_vec ();
 
       F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       F77_CONST_CHAR_ARG2 ("U", 1),
-			       n, tmp_data, n, pwr, pwork, lwork, prwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 ("U", 1),
+                               n, tmp_data, n, pwr, pwork, lwork, prwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in zheev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in zheev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("zheev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("zheev failed to converge");
+          return info;
+        }
 
       lambda = ComplexColumnVector (wr);
       v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();
@@ -460,7 +460,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   if (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ())
     {
       (*current_liboctave_error_handler)
-	("EIG: matrix contains Inf or NaN values");
+        ("EIG: matrix contains Inf or NaN values");
       return -1;
     }
 
@@ -485,10 +485,10 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   double *tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-			     n, tmp_data, n, 
-			     info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             n, tmp_data, n, 
+                             info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   if (a.is_symmetric () && b.is_symmetric () && info == 0)
     return symmetric_init (a, b, calc_ev);
@@ -519,13 +519,13 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   octave_idx_type idummy = 1;
 
   F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   n, atmp_data, n, btmp_data, n, 
-			   par, pai, pbeta,
-			   dummy, idummy, pvr, n,
-			   &dummy_work, lwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                           n, atmp_data, n, btmp_data, n, 
+                           par, pai, pbeta,
+                           dummy, idummy, pvr, n,
+                           &dummy_work, lwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -534,61 +534,61 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
       double *pwork = work.fortran_vec ();
 
       F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			       F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       n, atmp_data, n, btmp_data, n, 
-			       par, pai, pbeta,
-			       dummy, idummy, pvr, n,
-			       pwork, lwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                               n, atmp_data, n, btmp_data, n, 
+                               par, pai, pbeta,
+                               dummy, idummy, pvr, n,
+                               pwork, lwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in dggev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in dggev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("dggev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("dggev failed to converge");
+          return info;
+        }
 
       lambda.resize (n);
       octave_idx_type nvr = calc_ev ? n : 0;
       v.resize (nvr, nvr);
 
       for (octave_idx_type j = 0; j < n; j++)
-	{
-	  if (ai.elem (j) == 0.0)
-	    {
-	      lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j));
-	      for (octave_idx_type i = 0; i < nvr; i++)
-		v.elem (i, j) = vr.elem (i, j);
-	    }
-	  else
-	    {
-	      if (j+1 >= n)
-		{
-		  (*current_liboctave_error_handler) ("EIG: internal error");
-		  return -1;
-		}
+        {
+          if (ai.elem (j) == 0.0)
+            {
+              lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j));
+              for (octave_idx_type i = 0; i < nvr; i++)
+                v.elem (i, j) = vr.elem (i, j);
+            }
+          else
+            {
+              if (j+1 >= n)
+                {
+                  (*current_liboctave_error_handler) ("EIG: internal error");
+                  return -1;
+                }
 
-	      lambda.elem(j) = Complex (ar.elem(j) / beta.elem (j), 
-	                                ai.elem(j) / beta.elem (j));
-	      lambda.elem(j+1) = Complex (ar.elem(j+1) / beta.elem (j+1), 
-	                                  ai.elem(j+1) / beta.elem (j+1));
+              lambda.elem(j) = Complex (ar.elem(j) / beta.elem (j), 
+                                        ai.elem(j) / beta.elem (j));
+              lambda.elem(j+1) = Complex (ar.elem(j+1) / beta.elem (j+1), 
+                                          ai.elem(j+1) / beta.elem (j+1));
 
-	      for (octave_idx_type i = 0; i < nvr; i++)
-		{
-		  double real_part = vr.elem (i, j);
-		  double imag_part = vr.elem (i, j+1);
-		  v.elem (i, j) = Complex (real_part, imag_part);
-		  v.elem (i, j+1) = Complex (real_part, -imag_part);
-		}
-	      j++;
-	    }
-	}
+              for (octave_idx_type i = 0; i < nvr; i++)
+                {
+                  double real_part = vr.elem (i, j);
+                  double imag_part = vr.elem (i, j+1);
+                  v.elem (i, j) = Complex (real_part, imag_part);
+                  v.elem (i, j+1) = Complex (real_part, -imag_part);
+                }
+              j++;
+            }
+        }
     }
   else
     (*current_liboctave_error_handler) ("dggev workspace query failed");
@@ -629,12 +629,12 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_ev)
   double dummy_work;
 
   F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   F77_CONST_CHAR_ARG2 ("U", 1),
-			   n, atmp_data, n, 
-			   btmp_data, n, 
-			   pwr, &dummy_work, lwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 ("U", 1),
+                           n, atmp_data, n, 
+                           btmp_data, n, 
+                           pwr, &dummy_work, lwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -643,24 +643,24 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_ev)
       double *pwork = work.fortran_vec ();
 
       F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       F77_CONST_CHAR_ARG2 ("U", 1),
-			       n, atmp_data, n, 
-			       btmp_data, n, 
-			       pwr, pwork, lwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 ("U", 1),
+                               n, atmp_data, n, 
+                               btmp_data, n, 
+                               pwr, pwork, lwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in dsygv");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in dsygv");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("dsygv failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("dsygv failed to converge");
+          return info;
+        }
 
       lambda = ComplexColumnVector (wr);
       v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();
@@ -677,7 +677,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   if (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ())
     {
       (*current_liboctave_error_handler)
-	("EIG: matrix contains Inf or NaN values");
+        ("EIG: matrix contains Inf or NaN values");
       return -1;
     }
 
@@ -702,10 +702,10 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   Complex*tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-			     n, tmp_data, n, 
-			     info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             n, tmp_data, n, 
+                             info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   if (a.is_hermitian () && b.is_hermitian () && info == 0)
     return hermitian_init (a, calc_ev);
@@ -737,12 +737,12 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   octave_idx_type idummy = 1;
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   n, atmp_data, n, btmp_data, n, 
-			   palpha, pbeta, dummy, idummy,
-			   pv, n, &dummy_work, lwork, prwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                           n, atmp_data, n, btmp_data, n, 
+                           palpha, pbeta, dummy, idummy,
+                           pv, n, &dummy_work, lwork, prwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -751,24 +751,24 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
       Complex *pwork = work.fortran_vec ();
 
       F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			       F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       n, atmp_data, n, btmp_data, n, 
-			       palpha, pbeta, dummy, idummy,
-			       pv, n, pwork, lwork, prwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
+                               n, atmp_data, n, btmp_data, n, 
+                               palpha, pbeta, dummy, idummy,
+                               pv, n, pwork, lwork, prwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
       
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in zggev");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in zggev");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("zggev failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("zggev failed to converge");
+          return info;
+        }
 
       lambda.resize (n);
 
@@ -820,13 +820,13 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_e
   double *prwork = rwork.fortran_vec ();
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			   F77_CONST_CHAR_ARG2 ("U", 1),
-			   n, atmp_data, n, 
-			   btmp_data, n,
-			   pwr, &dummy_work, lwork,
-			   prwork, info
-			   F77_CHAR_ARG_LEN (1)
-			   F77_CHAR_ARG_LEN (1)));
+                           F77_CONST_CHAR_ARG2 ("U", 1),
+                           n, atmp_data, n, 
+                           btmp_data, n,
+                           pwr, &dummy_work, lwork,
+                           prwork, info
+                           F77_CHAR_ARG_LEN (1)
+                           F77_CHAR_ARG_LEN (1)));
 
   if (info == 0)
     {
@@ -835,24 +835,24 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_e
       Complex *pwork = work.fortran_vec ();
 
       F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-			       F77_CONST_CHAR_ARG2 ("U", 1),
-			       n, atmp_data, n, 
-			       btmp_data, n, 
-			       pwr, pwork, lwork, prwork, info
-			       F77_CHAR_ARG_LEN (1)
-			       F77_CHAR_ARG_LEN (1)));
+                               F77_CONST_CHAR_ARG2 ("U", 1),
+                               n, atmp_data, n, 
+                               btmp_data, n, 
+                               pwr, pwork, lwork, prwork, info
+                               F77_CHAR_ARG_LEN (1)
+                               F77_CHAR_ARG_LEN (1)));
 
       if (info < 0)
-	{
-	  (*current_liboctave_error_handler) ("unrecoverable error in zhegv");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("unrecoverable error in zhegv");
+          return info;
+        }
 
       if (info > 0)
-	{
-	  (*current_liboctave_error_handler) ("zhegv failed to converge");
-	  return info;
-	}
+        {
+          (*current_liboctave_error_handler) ("zhegv failed to converge");
+          return info;
+        }
 
       lambda = ComplexColumnVector (wr);
       v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();

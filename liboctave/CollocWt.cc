@@ -35,13 +35,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (jcobi, JCOBI) (octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, double&,
-			   double&, double*, double*, double*,
-			   double*);
+                           double&, double*, double*, double*,
+                           double*);
 
   F77_RET_T
   F77_FUNC (dfopr, DFOPR) (octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&, octave_idx_type&,
-			   double*, double*, double*, double*,
-			   double*);
+                           double*, double*, double*, double*,
+                           double*);
 }
 
 // Error handling.
@@ -124,7 +124,7 @@ CollocWt::init (void)
   // Compute roots.
 
   F77_FUNC (jcobi, JCOBI) (nt, n, inc_left, inc_right, Alpha, Beta,
-			  pdif1, pdif2, pdif3, pr);
+                          pdif1, pdif2, pdif3, pr);
 
   octave_idx_type id;
 
@@ -134,10 +134,10 @@ CollocWt::init (void)
   for (octave_idx_type i = 1; i <= nt; i++)
     {
       F77_FUNC (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
-			      pdif2, pdif3, pr, pvect); 
+                              pdif2, pdif3, pr, pvect); 
 
       for (octave_idx_type j = 0; j < nt; j++)
-	A (i-1, j) = vect.elem (j);
+        A (i-1, j) = vect.elem (j);
     }
 
   // Second derivative weights.
@@ -146,10 +146,10 @@ CollocWt::init (void)
   for (octave_idx_type i = 1; i <= nt; i++)
     {
       F77_FUNC (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
-			      pdif2, pdif3, pr, pvect); 
+                              pdif2, pdif3, pr, pvect); 
 
       for (octave_idx_type j = 0; j < nt; j++)
-	B (i-1, j) = vect.elem (j);
+        B (i-1, j) = vect.elem (j);
     }
 
   // Gaussian quadrature weights.
@@ -157,7 +157,7 @@ CollocWt::init (void)
   id = 3;
   double *pq = q.fortran_vec ();
   F77_FUNC (dfopr, DFOPR) (nt, n, inc_left, inc_right, id, id, pdif1,
-			  pdif2, pdif3, pr, pq);
+                          pdif2, pdif3, pr, pq);
 
   initialized = 1;
 }

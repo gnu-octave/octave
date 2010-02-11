@@ -84,34 +84,34 @@ oct_mach_info::init_float_format (void) const
   float_params fp[5];
 
   INIT_FLT_PAR (fp[0], oct_mach_info::flt_fmt_ieee_big_endian,
-		   1048576,  0,
-		2146435071, -1,
-		1017118720,  0,
-		1018167296,  0);
+                   1048576,  0,
+                2146435071, -1,
+                1017118720,  0,
+                1018167296,  0);
 
   INIT_FLT_PAR (fp[1], oct_mach_info::flt_fmt_ieee_little_endian,
-		 0,    1048576,
-		-1, 2146435071,
-		 0, 1017118720,
-		 0, 1018167296);
+                 0,    1048576,
+                -1, 2146435071,
+                 0, 1017118720,
+                 0, 1018167296);
 
   INIT_FLT_PAR (fp[2], oct_mach_info::flt_fmt_vax_d,
-		   128,  0,
-		-32769, -1,
-		  9344,  0,
-		  9344,  0);
+                   128,  0,
+                -32769, -1,
+                  9344,  0,
+                  9344,  0);
 
   INIT_FLT_PAR (fp[3], oct_mach_info::flt_fmt_vax_g,
-		    16,  0,
-		-32769, -1,
-		 15552,  0,
-		 15552,  0);
+                    16,  0,
+                -32769, -1,
+                 15552,  0,
+                 15552,  0);
 
   INIT_FLT_PAR (fp[4], oct_mach_info::flt_fmt_unknown,
-		0, 0,
-		0, 0,
-		0, 0,
-		0, 0);
+                0, 0,
+                0, 0,
+                0, 0,
+                0, 0);
 
   equiv mach_fp_par[4];
 
@@ -124,10 +124,10 @@ oct_mach_info::init_float_format (void) const
   do
     {
       if (equiv_compare (fp[i].fp_par, mach_fp_par, 4))
-	{
-	  native_float_fmt = fp[i].fp_fmt;
-	  break;
-	}
+        {
+          native_float_fmt = fp[i].fp_fmt;
+          break;
+        }
     }
   while (fp[++i].fp_fmt != oct_mach_info::flt_fmt_unknown);
 
@@ -167,7 +167,7 @@ oct_mach_info::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create command history object!");
+        ("unable to create command history object!");
 
       retval = false;
     }

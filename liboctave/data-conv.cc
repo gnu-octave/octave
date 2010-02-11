@@ -47,15 +47,15 @@ template void swap_bytes<8> (volatile void *, int);
     { \
       int sz = BITS / CHAR_BIT; \
       if (sizeof (TQ char) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## char; \
+        VAL = oct_data_conv::dt_ ## Q ## char; \
       else if (sizeof (TQ short) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## short; \
+        VAL = oct_data_conv::dt_ ## Q ## short; \
       else if (sizeof (TQ int) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## int; \
+        VAL = oct_data_conv::dt_ ## Q ## int; \
       else if (sizeof (TQ long) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## long; \
+        VAL = oct_data_conv::dt_ ## Q ## long; \
       else if (sizeof (TQ long long) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## longlong; \
+        VAL = oct_data_conv::dt_ ## Q ## longlong; \
       else \
         VAL = oct_data_conv::dt_unknown; \
     } \
@@ -66,13 +66,13 @@ template void swap_bytes<8> (volatile void *, int);
     { \
       int sz = BITS / CHAR_BIT; \
       if (sizeof (TQ char) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## char; \
+        VAL = oct_data_conv::dt_ ## Q ## char; \
       else if (sizeof (TQ short) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## short; \
+        VAL = oct_data_conv::dt_ ## Q ## short; \
       else if (sizeof (TQ int) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## int; \
+        VAL = oct_data_conv::dt_ ## Q ## int; \
       else if (sizeof (TQ long) == sz) \
-	VAL = oct_data_conv::dt_ ## Q ## long; \
+        VAL = oct_data_conv::dt_ ## Q ## long; \
       else \
         VAL = oct_data_conv::dt_unknown; \
     } \
@@ -84,9 +84,9 @@ template void swap_bytes<8> (volatile void *, int);
     { \
       int sz = BITS / CHAR_BIT; \
       if (sizeof (float) == sz) \
-	VAL = oct_data_conv::dt_float; \
+        VAL = oct_data_conv::dt_float; \
       else if (sizeof (double) == sz) \
-	VAL = oct_data_conv::dt_double; \
+        VAL = oct_data_conv::dt_double; \
       else \
         VAL = oct_data_conv::dt_unknown; \
     } \
@@ -153,27 +153,27 @@ strip_spaces (const std::string& str)
   do \
     { \
       switch (sizeof (T)) \
-	{ \
-	case 1: \
-	  retval = dt_ ## U ## int8; \
-	  break; \
+        { \
+        case 1: \
+          retval = dt_ ## U ## int8; \
+          break; \
  \
-	case 2: \
-	  retval = dt_ ## U ## int16; \
-	  break; \
+        case 2: \
+          retval = dt_ ## U ## int16; \
+          break; \
  \
-	case 4: \
-	  retval = dt_ ## U ## int32; \
-	  break; \
+        case 4: \
+          retval = dt_ ## U ## int32; \
+          break; \
  \
-	case 8: \
-	  retval = dt_ ## U ## int64; \
-	  break; \
+        case 8: \
+          retval = dt_ ## U ## int64; \
+          break; \
  \
-	default: \
-	  retval = dt_unknown; \
-	  break; \
-	} \
+        default: \
+          retval = dt_unknown; \
+          break; \
+        } \
     } \
   while (0)
 
@@ -240,9 +240,9 @@ oct_data_conv::string_to_data_type (const std::string& str)
   else if (s == "float")
     {
       if (sizeof (float) == sizeof (double))
-	retval = dt_double;
+        retval = dt_double;
       else
-	retval = dt_single;
+        retval = dt_single;
     }
   else if (s == "logical")
     retval = dt_logical;
@@ -279,23 +279,23 @@ oct_data_conv::string_to_data_type
       size_t len = s.length ();
 
       while (pos < len && isdigit (s[pos]))
-	pos++;
+        pos++;
 
       if (pos > 0)
-	{
-	  if (s[pos] == '*')
-	    {
-	      block_size = atoi (s.c_str ());
-	      s = s.substr (pos+1);
-	    }
-	  else
-	    {
-	      (*current_liboctave_error_handler)
-		("invalid repeat count in `%s'", str.c_str ());
+        {
+          if (s[pos] == '*')
+            {
+              block_size = atoi (s.c_str ());
+              s = s.substr (pos+1);
+            }
+          else
+            {
+              (*current_liboctave_error_handler)
+                ("invalid repeat count in `%s'", str.c_str ());
 
-	      return;
-	    }
-	}
+              return;
+            }
+        }
     }
 
   pos = s.find ('=');
@@ -303,37 +303,37 @@ oct_data_conv::string_to_data_type
   if (pos != std::string::npos)
     {
       if (s[pos+1] == '>')
-	{
-	  std::string s1;
+        {
+          std::string s1;
 
-	  if (input_is_output)
-	    {
-	      input_is_output = false;
+          if (input_is_output)
+            {
+              input_is_output = false;
 
-	      s1 = s.substr (1, pos-1);
+              s1 = s.substr (1, pos-1);
 
-	      (*current_liboctave_warning_handler)
-		("warning: ignoring leading * in fread precision");
-	    }
-	  else
-	    s1 = s.substr (0, pos);
+              (*current_liboctave_warning_handler)
+                ("warning: ignoring leading * in fread precision");
+            }
+          else
+            s1 = s.substr (0, pos);
 
-	  input_type = string_to_data_type (s1);
-	  output_type = string_to_data_type (s.substr (pos+2));
-	}
+          input_type = string_to_data_type (s1);
+          output_type = string_to_data_type (s.substr (pos+2));
+        }
       else
-	(*current_liboctave_error_handler)
-	  ("fread: invalid precision specified");
+        (*current_liboctave_error_handler)
+          ("fread: invalid precision specified");
     }
   else
     {
       if (input_is_output)
-	s = s.substr (1);
+        s = s.substr (1);
 
       input_type = string_to_data_type (s);
 
       if (input_is_output)
-	output_type = input_type;
+        output_type = input_type;
     }
 }
 
@@ -357,17 +357,17 @@ oct_data_conv::string_to_data_type
   if (pos > 0)
     {
       if (s[pos] == '*')
-	{
-	  block_size = atoi (s.c_str ());
-	  s = s.substr (pos+1);
-	}
+        {
+          block_size = atoi (s.c_str ());
+          s = s.substr (pos+1);
+        }
       else
-	{
-	  (*current_liboctave_error_handler)
-	    ("invalid repeat count in `%s'", str.c_str ());
+        {
+          (*current_liboctave_error_handler)
+            ("invalid repeat count in `%s'", str.c_str ());
 
-	  return;
-	}
+          return;
+        }
     }
 
   output_type = string_to_data_type (s);
@@ -485,14 +485,14 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
   do \
     { \
       if (len > 0) \
-	{ \
-	  OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-	  stream.read (reinterpret_cast<char *>  (ptr), size * len); \
-	  if (swap) \
-	    swap_bytes< size > (ptr, len); \
-	  for (int i = 0; i < len; i++) \
-	    data[i] = ptr[i]; \
-	} \
+        { \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+          stream.read (reinterpret_cast<char *>  (ptr), size * len); \
+          if (swap) \
+            swap_bytes< size > (ptr, len); \
+          for (int i = 0; i < len; i++) \
+            data[i] = ptr[i]; \
+        } \
     } \
   while (0)
 
@@ -503,14 +503,14 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
   do \
     { \
       if (len > 0) \
-	{ \
-	  char tmp_type = type; \
-	  stream.write (&tmp_type, 1); \
-	  OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-	  for (int i = 0; i < len; i++) \
-	    ptr[i] = static_cast <TYPE> (data[i]);	   \
-	  stream.write (reinterpret_cast<char *> (ptr), size * len); \
-	} \
+        { \
+          char tmp_type = type; \
+          stream.write (&tmp_type, 1); \
+          OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
+          for (int i = 0; i < len; i++) \
+            ptr[i] = static_cast <TYPE> (data[i]);         \
+          stream.write (reinterpret_cast<char *> (ptr), size * len); \
+        } \
     } \
   while (0)
 
@@ -733,262 +733,262 @@ Cray_to_VAX_G_float (void * /* d */, int /* len */)
 
 void
 do_double_format_conversion (void *data, int len,
-			     oct_mach_info::float_format from_fmt,
-			     oct_mach_info::float_format to_fmt)
+                             oct_mach_info::float_format from_fmt,
+                             oct_mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
     case oct_mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_double_to_IEEE_little_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_double_to_IEEE_little_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_double_to_IEEE_little_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_double_to_IEEE_little_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_double_to_IEEE_little_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_double_to_IEEE_little_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_IEEE_little_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_IEEE_little_double (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_double_to_IEEE_big_double (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_double_to_IEEE_big_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_double_to_IEEE_big_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_double_to_IEEE_big_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_double_to_IEEE_big_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_double_to_IEEE_big_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_IEEE_big_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_IEEE_big_double (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_vax_d:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_double_to_VAX_D_double (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_double_to_VAX_D_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_double_to_VAX_D_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_double_to_VAX_D_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_double_to_VAX_D_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_double_to_VAX_D_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_VAX_D_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_VAX_D_double (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_vax_g:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_double_to_VAX_G_double (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_double_to_VAX_G_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_double_to_VAX_G_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_double_to_VAX_G_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_double_to_VAX_G_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_double_to_VAX_G_double (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_VAX_G_double (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_VAX_G_double (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("impossible state reached in file `%s' at line %d",
-	 __FILE__, __LINE__);
+        ("impossible state reached in file `%s' at line %d",
+         __FILE__, __LINE__);
       break;
     }
 }
 
 void
 do_float_format_conversion (void *data, int len,
-			    oct_mach_info::float_format from_fmt,
-			    oct_mach_info::float_format to_fmt)
+                            oct_mach_info::float_format from_fmt,
+                            oct_mach_info::float_format to_fmt)
 {
   switch (to_fmt)
     {
     case oct_mach_info::flt_fmt_ieee_little_endian:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_float_to_IEEE_little_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_float_to_IEEE_little_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_float_to_IEEE_little_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_float_to_IEEE_little_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_float_to_IEEE_little_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_float_to_IEEE_little_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_IEEE_little_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_IEEE_little_float (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_ieee_big_endian:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_float_to_IEEE_big_float (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_float_to_IEEE_big_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_float_to_IEEE_big_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_float_to_IEEE_big_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_float_to_IEEE_big_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_float_to_IEEE_big_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_IEEE_big_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_IEEE_big_float (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_vax_d:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_float_to_VAX_D_float (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_float_to_VAX_D_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_float_to_VAX_D_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_float_to_VAX_D_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  VAX_G_float_to_VAX_D_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          VAX_G_float_to_VAX_D_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_VAX_D_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_VAX_D_float (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     case oct_mach_info::flt_fmt_vax_g:
       switch (from_fmt)
-	{
-	case oct_mach_info::flt_fmt_ieee_little_endian:
-	  IEEE_little_float_to_VAX_G_float (data, len);
-	  break;
+        {
+        case oct_mach_info::flt_fmt_ieee_little_endian:
+          IEEE_little_float_to_VAX_G_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_ieee_big_endian:
-	  IEEE_big_float_to_VAX_G_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_ieee_big_endian:
+          IEEE_big_float_to_VAX_G_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_d:
-	  VAX_D_float_to_VAX_G_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_vax_d:
+          VAX_D_float_to_VAX_G_float (data, len);
+          break;
 
-	case oct_mach_info::flt_fmt_vax_g:
-	  break;
+        case oct_mach_info::flt_fmt_vax_g:
+          break;
 
-	case oct_mach_info::flt_fmt_cray:
-	  Cray_to_VAX_G_float (data, len);
-	  break;
+        case oct_mach_info::flt_fmt_cray:
+          Cray_to_VAX_G_float (data, len);
+          break;
 
-	default:
-	  gripe_unrecognized_float_fmt ();
-	  break;
-	}
+        default:
+          gripe_unrecognized_float_fmt ();
+          break;
+        }
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("impossible state reached in file `%s' at line %d",
-	 __FILE__, __LINE__);
+        ("impossible state reached in file `%s' at line %d",
+         __FILE__, __LINE__);
       break;
     }
 }
 
 void
 do_float_format_conversion (void *data, size_t sz, int len,
-			    oct_mach_info::float_format from_fmt,
-			    oct_mach_info::float_format to_fmt)
+                            oct_mach_info::float_format from_fmt,
+                            oct_mach_info::float_format to_fmt)
 {
   switch (sz)
     {
@@ -1002,8 +1002,8 @@ do_float_format_conversion (void *data, size_t sz, int len,
 
     default:
       (*current_liboctave_error_handler)
-	("impossible state reached in file `%s' at line %d",
-	 __FILE__, __LINE__);
+        ("impossible state reached in file `%s' at line %d",
+         __FILE__, __LINE__);
       break;
     }
 }
@@ -1011,7 +1011,7 @@ do_float_format_conversion (void *data, size_t sz, int len,
 
 void
 read_doubles (std::istream& is, double *data, save_type type, int len,
-	      bool swap, oct_mach_info::float_format fmt)
+              bool swap, oct_mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -1041,21 +1041,21 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
 
     case LS_FLOAT:
       {
-	OCTAVE_LOCAL_BUFFER (float, ptr, len);
-	is.read (reinterpret_cast<char *> (ptr), 4 * len);
-	do_float_format_conversion (ptr, len, fmt);
-	for (int i = 0; i < len; i++)
-	  data[i] = ptr[i];
+        OCTAVE_LOCAL_BUFFER (float, ptr, len);
+        is.read (reinterpret_cast<char *> (ptr), 4 * len);
+        do_float_format_conversion (ptr, len, fmt);
+        for (int i = 0; i < len; i++)
+          data[i] = ptr[i];
       }
       break;
 
     case LS_DOUBLE: // No conversion necessary.
       {
-	is.read (reinterpret_cast<char *> (data), 8 * len);
-	do_double_format_conversion (data, len, fmt);
+        is.read (reinterpret_cast<char *> (data), 8 * len);
+        do_double_format_conversion (data, len, fmt);
 
-	for (int i = 0; i < len; i++)
-	  data[i] = __lo_ieee_replace_old_NA (data[i]);
+        for (int i = 0; i < len; i++)
+          data[i] = __lo_ieee_replace_old_NA (data[i]);
       }
       break;
 
@@ -1067,7 +1067,7 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
 
 void
 read_floats (std::istream& is, float *data, save_type type, int len,
-	      bool swap, oct_mach_info::float_format fmt)
+              bool swap, oct_mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -1102,11 +1102,11 @@ read_floats (std::istream& is, float *data, save_type type, int len,
 
     case LS_DOUBLE:
       {
-	OCTAVE_LOCAL_BUFFER (double, ptr, len);
-	is.read (reinterpret_cast<char *> (ptr), 8 * len);
-	do_double_format_conversion (ptr, len, fmt);
-	for (int i = 0; i < len; i++)
-	  data[i] = ptr[i];
+        OCTAVE_LOCAL_BUFFER (double, ptr, len);
+        is.read (reinterpret_cast<char *> (ptr), 8 * len);
+        do_double_format_conversion (ptr, len, fmt);
+        for (int i = 0; i < len; i++)
+          data[i] = ptr[i];
       }
       break;
 
@@ -1151,15 +1151,15 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
 
     case LS_DOUBLE: // No conversion necessary.
       {
-	char tmp_type = static_cast<char> (type);
-	os.write (&tmp_type, 1);
-	os.write (reinterpret_cast <const char *> (data), 8 * len);
+        char tmp_type = static_cast<char> (type);
+        os.write (&tmp_type, 1);
+        os.write (reinterpret_cast <const char *> (data), 8 * len);
       }
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("unrecognized data format requested");
+        ("unrecognized data format requested");
       break;
     }
 }
@@ -1195,9 +1195,9 @@ write_floats (std::ostream& os, const float *data, save_type type, int len)
 
     case LS_FLOAT: // No conversion necessary.
       {
-	char tmp_type = static_cast<char> (type);
-	os.write (&tmp_type, 1);
-	os.write (reinterpret_cast <const char *> (data), 4 * len);
+        char tmp_type = static_cast<char> (type);
+        os.write (&tmp_type, 1);
+        os.write (reinterpret_cast <const char *> (data), 4 * len);
       }
       break;
 
@@ -1207,7 +1207,7 @@ write_floats (std::ostream& os, const float *data, save_type type, int len)
 
     default:
       (*current_liboctave_error_handler)
-	("unrecognized data format requested");
+        ("unrecognized data format requested");
       break;
     }
 }

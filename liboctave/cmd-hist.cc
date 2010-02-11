@@ -114,8 +114,8 @@ gnu_history::do_add (const std::string& s)
   if (! do_ignoring_entries ())
     {
       if (s.empty ()
-	  || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
-	return;
+          || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
+        return;
 
       ::octave_add_history (s.c_str ());
 
@@ -191,11 +191,11 @@ gnu_history::do_goto_mark (void)
       char *line = ::octave_history_goto_mark (mark);
 
       if (line)
-	{
-	  command_editor::insert_text (line);
+        {
+          command_editor::insert_text (line);
 
-	  command_editor::clear_undo_list ();
-	}
+          command_editor::clear_undo_list ();
+        }
     }
 
   mark = 0;
@@ -214,13 +214,13 @@ gnu_history::do_read (const std::string& f, bool must_exist)
       int status = ::octave_read_history (f.c_str ());
 
       if (status != 0 && must_exist)
-	error (status);
+        error (status);
       else
-	{
-	  lines_in_file = do_where ();
+        {
+          lines_in_file = do_where ();
 
-	  ::octave_using_history ();
-	}
+          ::octave_using_history ();
+        }
     }
   else
     error ("gnu_history::read: missing file name");
@@ -228,7 +228,7 @@ gnu_history::do_read (const std::string& f, bool must_exist)
 
 void
 gnu_history::do_read_range (const std::string& f, int from, int to,
-			    bool must_exist)
+                            bool must_exist)
 {
   if (from < 0)
     from = lines_in_file;
@@ -238,13 +238,13 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
       int status = ::octave_read_history_range (f.c_str (), from, to);
 
       if (status != 0 && must_exist)
-	error (status);
+        error (status);
       else
-	{
-	  lines_in_file = do_where ();
+        {
+          lines_in_file = do_where ();
 
-	  ::octave_using_history ();
-	}
+          ::octave_using_history ();
+        }
     }
   else
     error ("gnu_history::read_range: missing file name");
@@ -263,7 +263,7 @@ gnu_history::do_write (const std::string& f_arg)
       int status = ::octave_write_history (f.c_str ());
 
       if (status != 0)
-	error (status);
+        error (status);
     }
   else
     error ("gnu_history::write: missing file name");
@@ -275,39 +275,39 @@ gnu_history::do_append (const std::string& f_arg)
   if (lines_this_session)
     {
       if (lines_this_session < do_where ())
-	{
-	  // Create file if it doesn't already exist.
+        {
+          // Create file if it doesn't already exist.
 
-	  std::string f = f_arg;
+          std::string f = f_arg;
 
-	  if (f.empty ())
-	    f = xfile;
+          if (f.empty ())
+            f = xfile;
 
-	  if (! f.empty ())
-	    {
-	      file_stat fs (f);
+          if (! f.empty ())
+            {
+              file_stat fs (f);
 
-	      if (! fs)
-		{
-		  int tem;
+              if (! fs)
+                {
+                  int tem;
 
-		  tem = open (f.c_str (), O_CREAT, 0666);
-		  close (tem);
-		}
+                  tem = open (f.c_str (), O_CREAT, 0666);
+                  close (tem);
+                }
 
-	      int status
-		= ::octave_append_history (lines_this_session, f.c_str ());
+              int status
+                = ::octave_append_history (lines_this_session, f.c_str ());
 
-	      if (status != 0)
-		error (status);
-	      else
-		lines_in_file += lines_this_session;
+              if (status != 0)
+                error (status);
+              else
+                lines_in_file += lines_this_session;
 
-	      lines_this_session = 0;
-	    }
-	  else
-	    error ("gnu_history::append: missing file name");
-	}
+              lines_this_session = 0;
+            }
+          else
+            error ("gnu_history::append: missing file name");
+        }
     }
 }
 
@@ -366,7 +366,7 @@ gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
   if (! f.empty ())
     {
       if (n < 0)
-	n = xsize;
+        n = xsize;
 
       stifle (n);
 
@@ -389,7 +389,7 @@ command_history::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create command history object!");
+        ("unable to create command history object!");
 
       retval = false;
     }
@@ -558,7 +558,7 @@ command_history::read_range (int from, int to, bool must_exist)
 
 void
 command_history::read_range (const std::string& f, int from, int to,
-			     bool must_exist) 
+                             bool must_exist) 
 {
   if (instance_ok ())
     instance->do_read_range (f, from, to, must_exist);
@@ -749,17 +749,17 @@ command_history::do_append (const std::string& f_arg)
   if (lines_this_session)
     {
       if (lines_this_session < do_where ())
-	{
-	  // Create file if it doesn't already exist.
+        {
+          // Create file if it doesn't already exist.
 
-	  std::string f = f_arg;
+          std::string f = f_arg;
 
-	  if (f.empty ())
-	    f = xfile;
+          if (f.empty ())
+            f = xfile;
 
-	  if (f.empty ())
-	    error ("command_history::append: missing file name");
-	}
+          if (f.empty ())
+            error ("command_history::append: missing file name");
+        }
     }
 }
 

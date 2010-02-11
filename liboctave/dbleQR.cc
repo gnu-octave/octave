@@ -42,11 +42,11 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgeqrf, DGEQRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
-			     double*, double*, const octave_idx_type&, octave_idx_type&); 
+                             double*, double*, const octave_idx_type&, octave_idx_type&); 
 
   F77_RET_T
   F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
-			     const octave_idx_type&, double*, double*, const octave_idx_type&, octave_idx_type&);
+                             const octave_idx_type&, double*, double*, const octave_idx_type&, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE
 
@@ -131,11 +131,11 @@ void QR::form (octave_idx_type n, Matrix& afact,
   if (qr_type == qr_type_raw)
     {
       for (octave_idx_type j = 0; j < min_mn; j++)
-	{
-	  octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
-	  for (octave_idx_type i = limit + 1; i < m; i++)
-	    afact.elem (i, j) *= tau[j];
-	}
+        {
+          octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+          for (octave_idx_type i = limit + 1; i < m; i++)
+            afact.elem (i, j) *= tau[j];
+        }
 
       r = afact;
     }
@@ -182,7 +182,7 @@ void QR::form (octave_idx_type n, Matrix& afact,
 
           // allocate buffer and do the job.
           octave_idx_type lwork = rlwork;
-	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (double, work, lwork);
           F77_XFCN (dorgqr, DORGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));
@@ -298,7 +298,7 @@ QR::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (double, w, kmax);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           ColumnVector utmp = u.column (jsi(i));
           F77_XFCN (dqrinc, DQRINC, (m, n + ii, std::min (kmax, k + ii), 
                                      q.fortran_vec (), q.rows (),
@@ -321,7 +321,7 @@ QR::delete_col (octave_idx_type j)
     {
       OCTAVE_LOCAL_BUFFER (double, w, k);
       F77_XFCN (dqrdec, DQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1, w));
+                                 r.fortran_vec (), r.rows (), j + 1, w));
 
       if (k < m)
         {
@@ -358,7 +358,7 @@ QR::delete_col (const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (double, w, k);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           F77_XFCN (dqrdec, DQRDEC, (m, n - ii, k == m ? k : k - ii, 
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, w));
@@ -394,7 +394,7 @@ QR::insert_row (const RowVector& u, octave_idx_type j)
       RowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, w, k);
       F77_XFCN (dqrinr, DQRINR, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), 
+                                 r.fortran_vec (), r.rows (), 
                                  j + 1, utmp.fortran_vec (), w));
 
     }
@@ -414,7 +414,7 @@ QR::delete_row (octave_idx_type j)
     {
       OCTAVE_LOCAL_BUFFER (double, w, 2*m);
       F77_XFCN (dqrder, DQRDER, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1,
+                                 r.fortran_vec (), r.rows (), j + 1,
                                  w));
 
       q.resize (m - 1, m - 1);

@@ -81,7 +81,7 @@ FloatComplexNDArray::fourier (int dim) const
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
     octave_fftw::fft (in + k * stride * n, out + k * stride * n, 
-		      n, howmany, stride, dist);
+                      n, howmany, stride, dist);
 
   return retval;
 }
@@ -112,7 +112,7 @@ FloatComplexNDArray::ifourier (int dim) const
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
     octave_fftw::ifft (in + k * stride * n, out + k * stride * n, 
-		      n, howmany, stride, dist);
+                      n, howmany, stride, dist);
 
   return retval;
 }
@@ -232,17 +232,17 @@ FloatComplexNDArray::fourier (int dim) const
   for (octave_idx_type k = 0; k < nloop; k++)
     {
       for (octave_idx_type j = 0; j < howmany; j++)
-	{
-	  octave_quit ();
+        {
+          octave_quit ();
 
-	  for (octave_idx_type i = 0; i < npts; i++)
-	    tmp[i] = elem((i + k*npts)*stride + j*dist);
+          for (octave_idx_type i = 0; i < npts; i++)
+            tmp[i] = elem((i + k*npts)*stride + j*dist);
 
-	  F77_FUNC (cfftf, CFFTF) (npts, tmp, pwsave);
+          F77_FUNC (cfftf, CFFTF) (npts, tmp, pwsave);
 
-	  for (octave_idx_type i = 0; i < npts; i++)
-	    retval ((i + k*npts)*stride + j*dist) = tmp[i];
-	}
+          for (octave_idx_type i = 0; i < npts; i++)
+            retval ((i + k*npts)*stride + j*dist) = tmp[i];
+        }
     }
 
   return retval;
@@ -279,18 +279,18 @@ FloatComplexNDArray::ifourier (int dim) const
   for (octave_idx_type k = 0; k < nloop; k++)
     {
       for (octave_idx_type j = 0; j < howmany; j++)
-	{
-	  octave_quit ();
+        {
+          octave_quit ();
 
-	  for (octave_idx_type i = 0; i < npts; i++)
-	    tmp[i] = elem((i + k*npts)*stride + j*dist);
+          for (octave_idx_type i = 0; i < npts; i++)
+            tmp[i] = elem((i + k*npts)*stride + j*dist);
 
-	  F77_FUNC (cfftb, CFFTB) (npts, tmp, pwsave);
+          F77_FUNC (cfftb, CFFTB) (npts, tmp, pwsave);
 
-	  for (octave_idx_type i = 0; i < npts; i++)
-	    retval ((i + k*npts)*stride + j*dist) = tmp[i] /
-	      static_cast<float> (npts);
-	}
+          for (octave_idx_type i = 0; i < npts; i++)
+            retval ((i + k*npts)*stride + j*dist) = tmp[i] /
+              static_cast<float> (npts);
+        }
     }
 
   return retval;
@@ -316,27 +316,27 @@ FloatComplexNDArray::fourier2d (void) const
 
       octave_idx_type howmany = numel () / npts;
       howmany = (stride == 1 ? howmany : 
-		 (howmany > stride ? stride : howmany));
+                 (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
       F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
       for (octave_idx_type k = 0; k < nloop; k++)
-	{
-	  for (octave_idx_type j = 0; j < howmany; j++)
-	    {
-	      octave_quit ();
+        {
+          for (octave_idx_type j = 0; j < howmany; j++)
+            {
+              octave_quit ();
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		prow[l] = retval ((l + k*npts)*stride + j*dist);
+              for (octave_idx_type l = 0; l < npts; l++)
+                prow[l] = retval ((l + k*npts)*stride + j*dist);
 
-	      F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+              F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		retval ((l + k*npts)*stride + j*dist) = prow[l];
-	    }
-	}
+              for (octave_idx_type l = 0; l < npts; l++)
+                retval ((l + k*npts)*stride + j*dist) = prow[l];
+            }
+        }
 
       stride *= dv2(i);
     }
@@ -364,28 +364,28 @@ FloatComplexNDArray::ifourier2d (void) const
 
       octave_idx_type howmany = numel () / npts;
       howmany = (stride == 1 ? howmany : 
-		 (howmany > stride ? stride : howmany));
+                 (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
       F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
       for (octave_idx_type k = 0; k < nloop; k++)
-	{
-	  for (octave_idx_type j = 0; j < howmany; j++)
-	    {
-	      octave_quit ();
+        {
+          for (octave_idx_type j = 0; j < howmany; j++)
+            {
+              octave_quit ();
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		prow[l] = retval ((l + k*npts)*stride + j*dist);
+              for (octave_idx_type l = 0; l < npts; l++)
+                prow[l] = retval ((l + k*npts)*stride + j*dist);
 
-	      F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+              F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		retval ((l + k*npts)*stride + j*dist) = prow[l] /
-		  static_cast<float> (npts);
-	    }
-	}
+              for (octave_idx_type l = 0; l < npts; l++)
+                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                  static_cast<float> (npts);
+            }
+        }
 
       stride *= dv2(i);
     }
@@ -412,27 +412,27 @@ FloatComplexNDArray::fourierNd (void) const
 
       octave_idx_type howmany = numel () / npts;
       howmany = (stride == 1 ? howmany : 
-		 (howmany > stride ? stride : howmany));
+                 (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
       F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
       for (octave_idx_type k = 0; k < nloop; k++)
-	{
-	  for (octave_idx_type j = 0; j < howmany; j++)
-	    {
-	      octave_quit ();
+        {
+          for (octave_idx_type j = 0; j < howmany; j++)
+            {
+              octave_quit ();
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		prow[l] = retval ((l + k*npts)*stride + j*dist);
+              for (octave_idx_type l = 0; l < npts; l++)
+                prow[l] = retval ((l + k*npts)*stride + j*dist);
 
-	      F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+              F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		retval ((l + k*npts)*stride + j*dist) = prow[l];
-	    }
-	}
+              for (octave_idx_type l = 0; l < npts; l++)
+                retval ((l + k*npts)*stride + j*dist) = prow[l];
+            }
+        }
 
       stride *= dv(i);
     }
@@ -459,28 +459,28 @@ FloatComplexNDArray::ifourierNd (void) const
 
       octave_idx_type howmany = numel () / npts;
       howmany = (stride == 1 ? howmany : 
-		 (howmany > stride ? stride : howmany));
+                 (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
 
       F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
       for (octave_idx_type k = 0; k < nloop; k++)
-	{
-	  for (octave_idx_type j = 0; j < howmany; j++)
-	    {
-	      octave_quit ();
+        {
+          for (octave_idx_type j = 0; j < howmany; j++)
+            {
+              octave_quit ();
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		prow[l] = retval ((l + k*npts)*stride + j*dist);
+              for (octave_idx_type l = 0; l < npts; l++)
+                prow[l] = retval ((l + k*npts)*stride + j*dist);
 
-	      F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+              F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
-	      for (octave_idx_type l = 0; l < npts; l++)
-		retval ((l + k*npts)*stride + j*dist) = prow[l] /
-		  static_cast<float> (npts);
-	    }
-	}
+              for (octave_idx_type l = 0; l < npts; l++)
+                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                  static_cast<float> (npts);
+            }
+        }
 
       stride *= dv(i);
     }
@@ -509,7 +509,7 @@ FloatComplexNDArray::any_element_is_nan (void) const
     {
       FloatComplex val = elem (i);
       if (xisnan (val))
-	return true;
+        return true;
     }
   return false;
 }
@@ -523,7 +523,7 @@ FloatComplexNDArray::any_element_is_inf_or_nan (void) const
     {
       FloatComplex val = elem (i);
       if (xisinf (val) || xisnan (val))
-	return true;
+        return true;
     }
   return false;
 }
@@ -556,10 +556,10 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
       min_val = r_val;
 
       if (i_val > max_val)
-	max_val = i_val;
+        max_val = i_val;
 
       if (i_val < max_val)
-	min_val = i_val;
+        min_val = i_val;
     }
   else
     return false;
@@ -572,19 +572,19 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
       float i_val = std::imag (val);
 
       if (r_val > max_val)
-	max_val = r_val;
+        max_val = r_val;
 
       if (i_val > max_val)
-	max_val = i_val;
+        max_val = i_val;
 
       if (r_val < min_val)
-	min_val = r_val;
+        min_val = r_val;
 
       if (i_val < min_val)
-	min_val = i_val;
+        min_val = i_val;
 
       if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-	return false;
+        return false;
     }
 
   return true;
@@ -603,10 +603,10 @@ FloatComplexNDArray::too_large_for_float (void) const
       float i_val = std::imag (val);
 
       if ((! (xisnan (r_val) || xisinf (r_val))
-	   && fabs (r_val) > FLT_MAX)
-	  || (! (xisnan (i_val) || xisinf (i_val))
-	      && fabs (i_val) > FLT_MAX))
-	return true;
+           && fabs (r_val) > FLT_MAX)
+          || (! (xisnan (i_val) || xisinf (i_val))
+              && fabs (i_val) > FLT_MAX))
+        return true;
     }
 
   return false;
@@ -787,14 +787,14 @@ FloatComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_typ
       a_ra_idx.elem (1) = c;
       
       for (int i = 0; i < n; i++)
-	{
-	  if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
-	    {
-	      (*current_liboctave_error_handler)
-		("Array<T>::insert: range error for insert");
-	      return *this;
-	    }
-	}
+        {
+          if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
+            {
+              (*current_liboctave_error_handler)
+                ("Array<T>::insert: range error for insert");
+              return *this;
+            }
+        }
       
       a_ra_idx.elem (0) = 0;
       a_ra_idx.elem (1) = 0;
@@ -804,16 +804,16 @@ FloatComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_typ
       // IS make_unique () NECCESSARY HERE??
 
       for (octave_idx_type i = 0; i < n_elt; i++)
-	{
-	  Array<octave_idx_type> ra_idx = a_ra_idx;
-	  
-	  ra_idx.elem (0) = a_ra_idx (0) + r;
-	  ra_idx.elem (1) = a_ra_idx (1) + c;
-	  
-	  elem (ra_idx) = a.elem (a_ra_idx);
+        {
+          Array<octave_idx_type> ra_idx = a_ra_idx;
+          
+          ra_idx.elem (0) = a_ra_idx (0) + r;
+          ra_idx.elem (1) = a_ra_idx (1) + c;
+          
+          elem (ra_idx) = a.elem (a_ra_idx);
 
-	  increment_index (a_ra_idx, a_dv);
-	}
+          increment_index (a_ra_idx, a_dv);
+        }
     }
   else
     (*current_liboctave_error_handler)
@@ -852,15 +852,15 @@ FloatComplexNDArray::matrix_value (void) const
 
 void
 FloatComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
-				 const dim_vector& dimensions,
-				 int start_dimension)
+                                 const dim_vector& dimensions,
+                                 int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 octave_idx_type 
 FloatComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
-			       const dim_vector& dimensions)
+                               const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
 }
@@ -895,13 +895,13 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
     {
       FloatComplex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
-	  {
-	    tmp = octave_read_value<FloatComplex> (is);
-	    if (is)
-	      a.elem (i) = tmp;
-	    else
-	      goto done;
-	  }
+          {
+            tmp = octave_read_value<FloatComplex> (is);
+            if (is)
+              a.elem (i) = tmp;
+            else
+              goto done;
+          }
     }
 
  done:

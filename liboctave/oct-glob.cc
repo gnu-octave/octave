@@ -75,35 +75,35 @@ octave_glob (const string_vector& pat)
       std::string xpat = pat(i);
 
       if (! xpat.empty ())
-	{
-	  glob_t glob_info;
+        {
+          glob_t glob_info;
 
-	  int err = ::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
+          int err = ::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
 
-	  if (! err)
-	    {
-	      int n = glob_info.gl_pathc;
+          if (! err)
+            {
+              int n = glob_info.gl_pathc;
 
-	      const char * const *matches = glob_info.gl_pathv;
+              const char * const *matches = glob_info.gl_pathv;
 
-	      // FIXME -- we shouldn't have to check to see if
-	      // a single match exists, but it seems that glob() won't
-	      // check for us unless the pattern contains globbing
-	      // characters.  Hmm.
+              // FIXME -- we shouldn't have to check to see if
+              // a single match exists, but it seems that glob() won't
+              // check for us unless the pattern contains globbing
+              // characters.  Hmm.
 
-	      if (n > 1
-		  || (n == 1
-		      && single_match_exists (std::string (matches[0]))))
-		{
-		  retval.resize (k+n);
+              if (n > 1
+                  || (n == 1
+                      && single_match_exists (std::string (matches[0]))))
+                {
+                  retval.resize (k+n);
 
-		  for (int j = 0; j < n; j++)
-		    retval[k++] = matches[j];
-		}
+                  for (int j = 0; j < n; j++)
+                    retval[k++] = matches[j];
+                }
 
-	      globfree (&glob_info);
-	    }
-	}
+              globfree (&glob_info);
+            }
+        }
     }
 
   return retval.sort ();

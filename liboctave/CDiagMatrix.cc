@@ -250,7 +250,7 @@ conj (const ComplexDiagMatrix& a)
   octave_idx_type a_len = a.length ();
   if (a_len > 0)
     retval = ComplexDiagMatrix (mx_inline_conj_dup (a.data (), a_len),
-				a.rows (), a.cols ());
+                                a.rows (), a.cols ());
   return retval;
 }
 
@@ -378,12 +378,12 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
   for (octave_idx_type i = 0; i < length (); i++)
     {
       if (elem (i, i) == 0.0)
-	{
-	  info = -1;
-	  return *this;
-	}
+        {
+          info = -1;
+          return *this;
+        }
       else
-	retval.elem (i, i) = 1.0 / elem (i, i);
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;
@@ -570,12 +570,12 @@ operator << (std::ostream& os, const ComplexDiagMatrix& a)
   for (octave_idx_type i = 0; i < a.rows (); i++)
     {
       for (octave_idx_type j = 0; j < a.cols (); j++)
-	{
-	  if (i == j)
-	    os << " " /* setw (field_width) */ << a.elem (i, i);
-	  else
-	    os << " " /* setw (field_width) */ << ZERO;
-	}
+        {
+          if (i == j)
+            os << " " /* setw (field_width) */ << a.elem (i, i);
+          else
+            os << " " /* setw (field_width) */ << ZERO;
+        }
       os << "\n";
     }
   return os;

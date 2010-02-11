@@ -81,16 +81,16 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
                 else if (( !ja_lt_max ) ||
                      (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
                   {
-		    r.ridx(jx) = b.ridx(jb);
-		    r.data(jx) = 0. + b.data(jb);
-		    jx++;
+                    r.ridx(jx) = b.ridx(jb);
+                    r.data(jx) = 0. + b.data(jb);
+                    jx++;
                     jb++;
                     jb_lt_max= jb < jb_max;
                   }
                 else
                   {
-		     if ((a.data(ja) + b.data(jb)) != 0.)
-	               {
+                     if ((a.data(ja) + b.data(jb)) != 0.)
+                       {
                           r.data(jx) = a.data(ja) + b.data(jb);
                           r.ridx(jx) = a.ridx(ja);
                           jx++;
@@ -104,7 +104,7 @@ operator += (MSparse<T>& a, const MSparse<T>& b)
             r.cidx(i+1) = jx;
           }
        
-	a = r.maybe_compress ();
+        a = r.maybe_compress ();
       }
 
     return a;
@@ -154,16 +154,16 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
                 else if (( !ja_lt_max ) ||
                      (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) )
                   {
-		    r.ridx(jx) = b.ridx(jb);
-		    r.data(jx) = 0. - b.data(jb);
-		    jx++;
+                    r.ridx(jx) = b.ridx(jb);
+                    r.data(jx) = 0. - b.data(jb);
+                    jx++;
                     jb++;
                     jb_lt_max= jb < jb_max;
                   }
                 else
                   {
-		     if ((a.data(ja) - b.data(jb)) != 0.)
-	               {
+                     if ((a.data(ja) - b.data(jb)) != 0.)
+                       {
                           r.data(jx) = a.data(ja) - b.data(jb);
                           r.ridx(jx) = a.ridx(ja);
                           jx++;
@@ -177,7 +177,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
             r.cidx(i+1) = jx;
           }
        
-	a = r.maybe_compress ();
+        a = r.maybe_compress ();
       }
 
     return a;
@@ -193,11 +193,11 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray2<T> r (nr, nc, (0.0 OP s));	\
+    MArray2<T> r (nr, nc, (0.0 OP s));  \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)	\
-        r.elem (a.ridx (i), j) = a.data (i) OP s;	\
+      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \
+        r.elem (a.ridx (i), j) = a.data (i) OP s;       \
     return r; \
   }
 
@@ -214,8 +214,8 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
  \
     for (octave_idx_type i = 0; i < nz; i++) \
       { \
-	r.data(i) = a.data(i) OP s; \
-	r.ridx(i) = a.ridx(i); \
+        r.data(i) = a.data(i) OP s; \
+        r.ridx(i) = a.ridx(i); \
       } \
     for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = a.cidx(i); \
@@ -239,11 +239,11 @@ SPARSE_A2S_OP_2 (/)
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray2<T> r (nr, nc, (s OP 0.0));	\
+    MArray2<T> r (nr, nc, (s OP 0.0));  \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)	\
-        r.elem (a.ridx (i), j) = s OP a.data (i);	\
+      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \
+        r.elem (a.ridx (i), j) = s OP a.data (i);       \
     return r; \
   }
 
@@ -260,8 +260,8 @@ SPARSE_A2S_OP_2 (/)
  \
     for (octave_idx_type i = 0; i < nz; i++) \
       { \
-	r.data(i) = s OP a.data(i); \
-	r.ridx(i) = a.ridx(i); \
+        r.data(i) = s OP a.data(i); \
+        r.ridx(i) = a.ridx(i); \
       } \
     for (octave_idx_type i = 0; i < nc + 1; i++) \
       r.cidx(i) = a.cidx(i); \
@@ -295,7 +295,7 @@ SPARSE_SA2_OP_2 (/)
           r =  OP MSparse<T> (b); \
         else \
           { \
-	    r = MSparse<T> (b_nr, b_nc, a.data(0) OP 0.); \
+            r = MSparse<T> (b_nr, b_nc, a.data(0) OP 0.); \
             \
             for (octave_idx_type j = 0 ; j < b_nc ; j++) \
               { \
@@ -305,7 +305,7 @@ SPARSE_SA2_OP_2 (/)
                   { \
                    octave_quit (); \
                    r.data(idxj + b.ridx(i)) = a.data(0) OP b.data(i); \
-		  } \
+                  } \
               } \
             r.maybe_compress (); \
           } \
@@ -316,7 +316,7 @@ SPARSE_SA2_OP_2 (/)
           r = MSparse<T> (a); \
         else \
           { \
-	    r = MSparse<T> (a_nr, a_nc, 0. OP b.data(0)); \
+            r = MSparse<T> (a_nr, a_nc, 0. OP b.data(0)); \
             \
             for (octave_idx_type j = 0 ; j < a_nc ; j++) \
               { \
@@ -326,7 +326,7 @@ SPARSE_SA2_OP_2 (/)
                   { \
                     octave_quit (); \
                     r.data(idxj + a.ridx(i)) = a.data(i) OP b.data(0); \
-		  } \
+                  } \
               } \
             r.maybe_compress (); \
           } \
@@ -338,7 +338,7 @@ SPARSE_SA2_OP_2 (/)
         r = MSparse<T> (a_nr, a_nc, (a.nnz () + b.nnz ())); \
         \
         octave_idx_type jx = 0; \
-	r.cidx (0) = 0; \
+        r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < a_nc ; i++) \
           { \
             octave_idx_type  ja = a.cidx(i); \
@@ -364,16 +364,16 @@ SPARSE_SA2_OP_2 (/)
                 else if (( !ja_lt_max ) || \
                      (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) ) \
                   { \
-		    r.ridx(jx) = b.ridx(jb); \
-		    r.data(jx) = 0. OP b.data(jb); \
-		    jx++; \
+                    r.ridx(jx) = b.ridx(jb); \
+                    r.data(jx) = 0. OP b.data(jb); \
+                    jx++; \
                     jb++; \
                     jb_lt_max= jb < jb_max; \
                   } \
                 else \
                   { \
-		     if ((a.data(ja) OP b.data(jb)) != 0.) \
-	               { \
+                     if ((a.data(ja) OP b.data(jb)) != 0.) \
+                       { \
                           r.data(jx) = a.data(ja) OP b.data(jb); \
                           r.ridx(jx) = a.ridx(ja); \
                           jx++; \
@@ -387,13 +387,13 @@ SPARSE_SA2_OP_2 (/)
             r.cidx(i+1) = jx; \
           } \
         \
-	r.maybe_compress (); \
+        r.maybe_compress (); \
       } \
  \
     return r; \
   }
 
-#define SPARSE_A2A2_FCN_1(FCN, OP)	\
+#define SPARSE_A2A2_FCN_1(FCN, OP)      \
   template <class T> \
   MSparse<T> \
   FCN (const MSparse<T>& a, const MSparse<T>& b) \
@@ -412,7 +412,7 @@ SPARSE_SA2_OP_2 (/)
           r = MSparse<T> (b_nr, b_nc); \
         else \
           { \
-	    r = MSparse<T> (b); \
+            r = MSparse<T> (b); \
             octave_idx_type b_nnz = b.nnz(); \
             \
             for (octave_idx_type i = 0 ; i < b_nnz ; i++) \
@@ -429,7 +429,7 @@ SPARSE_SA2_OP_2 (/)
           r = MSparse<T> (a_nr, a_nc); \
         else \
           { \
-	    r = MSparse<T> (a); \
+            r = MSparse<T> (a); \
             octave_idx_type a_nnz = a.nnz(); \
             \
             for (octave_idx_type i = 0 ; i < a_nnz ; i++) \
@@ -447,7 +447,7 @@ SPARSE_SA2_OP_2 (/)
         r = MSparse<T> (a_nr, a_nc, (a.nnz () > b.nnz () ? a.nnz () : b.nnz ())); \
         \
         octave_idx_type jx = 0; \
-	r.cidx (0) = 0; \
+        r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < a_nc ; i++) \
           { \
             octave_idx_type  ja = a.cidx(i); \
@@ -473,8 +473,8 @@ SPARSE_SA2_OP_2 (/)
                   } \
                 else \
                   { \
-		     if ((a.data(ja) OP b.data(jb)) != 0.) \
-	               { \
+                     if ((a.data(ja) OP b.data(jb)) != 0.) \
+                       { \
                           r.data(jx) = a.data(ja) OP b.data(jb); \
                           r.ridx(jx) = a.ridx(ja); \
                           jx++; \
@@ -486,13 +486,13 @@ SPARSE_SA2_OP_2 (/)
             r.cidx(i+1) = jx; \
           } \
         \
-	r.maybe_compress (); \
+        r.maybe_compress (); \
       } \
  \
     return r; \
   }
 
-#define SPARSE_A2A2_FCN_2(FCN, OP)	\
+#define SPARSE_A2A2_FCN_2(FCN, OP)      \
   template <class T> \
   MSparse<T> \
   FCN (const MSparse<T>& a, const MSparse<T>& b) \
@@ -529,7 +529,7 @@ SPARSE_SA2_OP_2 (/)
                   { \
                     octave_quit (); \
                     r.data(idxj + b.ridx(i)) = val OP b.data(i); \
-		  } \
+                  } \
               } \
             r.maybe_compress (); \
           } \
@@ -557,7 +557,7 @@ SPARSE_SA2_OP_2 (/)
                   { \
                     octave_quit (); \
                     r.data(idxj + a.ridx(i)) = a.data(i) OP val; \
-		  } \
+                  } \
               } \
             r.maybe_compress (); \
           } \
@@ -584,13 +584,13 @@ SPARSE_SA2_OP_2 (/)
                 if ((! jb_lt_max) || \
                       (ja_lt_max && (a.ridx(ja) < b.ridx(jb)))) \
                   { \
-		     r.elem (a.ridx(ja),i) = a.data(ja) OP Zero; \
+                     r.elem (a.ridx(ja),i) = a.data(ja) OP Zero; \
                      ja++; ja_lt_max= ja < ja_max; \
                   } \
                 else if (( !ja_lt_max ) || \
                      (jb_lt_max && (b.ridx(jb) < a.ridx(ja)) ) ) \
                   { \
-		     r.elem (b.ridx(jb),i) = Zero OP b.data(jb);	\
+                     r.elem (b.ridx(jb),i) = Zero OP b.data(jb);        \
                      jb++; jb_lt_max= jb < jb_max; \
                   } \
                 else \
@@ -602,7 +602,7 @@ SPARSE_SA2_OP_2 (/)
               } \
           } \
         \
-	r.maybe_compress (true); \
+        r.maybe_compress (true); \
       } \
  \
     return r; \

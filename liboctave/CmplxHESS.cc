@@ -33,27 +33,27 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, Complex*, const octave_idx_type&,
-			     octave_idx_type&, octave_idx_type&, double*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, Complex*, const octave_idx_type&,
+                             octave_idx_type&, octave_idx_type&, double*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
   F77_FUNC (zgehrd, ZGEHRD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-			     Complex*, const octave_idx_type&, Complex*,
-			     Complex*, const octave_idx_type&, octave_idx_type&);
+                             Complex*, const octave_idx_type&, Complex*,
+                             Complex*, const octave_idx_type&, octave_idx_type&);
  
   F77_RET_T
   F77_FUNC (zunghr, ZUNGHR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-			     Complex*, const octave_idx_type&, Complex*,
-			     Complex*, const octave_idx_type&, octave_idx_type&);
+                             Complex*, const octave_idx_type&, Complex*,
+                             Complex*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
-			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
+                             const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 octave_idx_type
@@ -65,7 +65,7 @@ ComplexHESS::init (const ComplexMatrix& a)
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
-	("ComplexHESS requires square matrix");
+        ("ComplexHESS requires square matrix");
       return -1;
     }
 
@@ -85,8 +85,8 @@ ComplexHESS::init (const ComplexMatrix& a)
   double *pscale = scale.fortran_vec ();
 
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     n, h, n, ilo, ihi, pscale, info
-			     F77_CHAR_ARG_LEN (1)));
+                             n, h, n, ilo, ihi, pscale, info
+                             F77_CHAR_ARG_LEN (1)));
 
   Array<Complex> tau (n-1);
   Complex *ptau = tau.fortran_vec ();
@@ -100,13 +100,13 @@ ComplexHESS::init (const ComplexMatrix& a)
   Complex *z = unitary_hess_mat.fortran_vec ();
 
   F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
-			     lwork, info));
+                             lwork, info));
 
   F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 (&side, 1),
-			     n, ilo, ihi, pscale, n, z, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&side, 1),
+                             n, ilo, ihi, pscale, n, z, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   // If someone thinks of a more graceful way of
   // doing this (or faster for that matter :-)),
@@ -115,7 +115,7 @@ ComplexHESS::init (const ComplexMatrix& a)
   if (n > 2)
     for (octave_idx_type j = 0; j < a_nc; j++)
       for (octave_idx_type i = j+2; i < a_nr; i++)
-	hess_mat.elem (i, j) = 0;
+        hess_mat.elem (i, j) = 0;
 
   return info;
 }

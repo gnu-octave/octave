@@ -87,7 +87,7 @@ octave_env::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create current working directory object!");
+        ("unable to create current working directory object!");
 
       retval = false;
     }
@@ -266,7 +266,7 @@ octave_env::do_absolute_pathname (const std::string& s) const
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
   if ((len == 2 && isalpha (s[0]) && s[1] == ':')
       || (len > 2 && isalpha (s[0]) && s[1] == ':'
-	  && file_ops::is_dir_sep (s[2])))
+          && file_ops::is_dir_sep (s[2])))
     return true;
 #endif
 
@@ -319,7 +319,7 @@ octave_env::do_base_pathname (const std::string& s) const
 
 std::string
 octave_env::do_make_absolute (const std::string& s,
-			      const std::string& dot_path) const
+                              const std::string& dot_path) const
 {
 #if defined (__EMX__)
   if (s.length () > 1 && s[1] == ':')
@@ -347,42 +347,42 @@ octave_env::do_make_absolute (const std::string& s,
   while (i < slen)
     {
       if (s[i] == '.')
-	{
-	  if (i + 1 == slen)
-	    return current_dir;
+        {
+          if (i + 1 == slen)
+            return current_dir;
 
-	  if (file_ops::is_dir_sep (s[i+1]))
-	    {
-	      i += 2;
-	      continue;
-	    }
+          if (file_ops::is_dir_sep (s[i+1]))
+            {
+              i += 2;
+              continue;
+            }
 
-	  if (s[i+1] == '.'
-	      && (i + 2 == slen || file_ops::is_dir_sep (s[i+2])))
-	    {
-	      i += 2;
+          if (s[i+1] == '.'
+              && (i + 2 == slen || file_ops::is_dir_sep (s[i+2])))
+            {
+              i += 2;
 
-	      if (i != slen)
-		i++;
+              if (i != slen)
+                i++;
 
-	      pathname_backup (current_dir, 1);
+              pathname_backup (current_dir, 1);
 
-	      continue;
-	    }
-	}
+              continue;
+            }
+        }
 
       size_t tmp = s.find_first_of (file_ops::dir_sep_chars (), i);
 
       if (tmp == std::string::npos)
-	{
-	  current_dir.append (s, i, tmp-i);
-	  break;
-	}
+        {
+          current_dir.append (s, i, tmp-i);
+          break;
+        }
       else
-	{
-	  current_dir.append (s, i, tmp-i+1);
-	  i = tmp + 1;
-	}
+        {
+          current_dir.append (s, i, tmp-i+1);
+          i = tmp + 1;
+        }
     }
 
   return current_dir;
@@ -416,9 +416,9 @@ octave_env::do_get_home_directory (void) const
     {
       std::string drv = do_getenv ("HOMEDRIVE");
       if (drv.empty ())
-	hd = do_getenv ("HOMEPATH");
+        hd = do_getenv ("HOMEPATH");
       else
-	hd = drv + do_getenv ("HOMEPATH");
+        hd = drv + do_getenv ("HOMEPATH");
     }
 #endif
 
@@ -481,28 +481,28 @@ octave_env::do_chdir (const std::string& newdir)
   if (follow_symbolic_links)
     {
       if (current_directory.empty ())
-	do_getcwd ();
+        do_getcwd ();
 
       if (current_directory.empty ())
-	tmp = newdir;
+        tmp = newdir;
       else
-	tmp = do_make_absolute (newdir, current_directory);
+        tmp = do_make_absolute (newdir, current_directory);
 
       // Get rid of trailing directory separator.
 
       size_t len = tmp.length ();
 
       if (len > 1)
-	{
-	  if (file_ops::is_dir_sep (tmp[--len]))
-	    tmp.resize (len);
-	}
+        {
+          if (file_ops::is_dir_sep (tmp[--len]))
+            tmp.resize (len);
+        }
 
       if (! ::octave_chdir (tmp))
-	{
-	  current_directory = tmp;
-	  retval = true;
-	}
+        {
+          current_directory = tmp;
+          retval = true;
+        }
     }
   else
     retval = (! ::octave_chdir (newdir));
@@ -523,10 +523,10 @@ octave_env::pathname_backup (std::string& path, int n) const
   while (n--)
     {
       while (file_ops::is_dir_sep (path[i]) && i > 0)
-	i--;
+        i--;
 
       while (! file_ops::is_dir_sep (path[i]) && i > 0)
-	i--;
+        i--;
 
       i++;
     }

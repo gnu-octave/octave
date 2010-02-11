@@ -380,7 +380,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 
       octave_idx_type k = 0;
       for (octave_idx_type i = 0; i < ntot; i++)
-	if (bnda.xelem (i)) d[k++] = i;
+        if (bnda.xelem (i)) d[k++] = i;
 
       data = d;
 
@@ -397,7 +397,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
   dim_vector dv = bnda.dims ();
 
   orig_dims = ((dv.length () == 2 && dv(0) == 1)
-	       ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+               ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
 
   if (len != 0)
     {
@@ -870,7 +870,7 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
 
 bool
 idx_vector::is_cont_range (octave_idx_type n,
-			   octave_idx_type& l, octave_idx_type& u) const
+                           octave_idx_type& l, octave_idx_type& u) const
 {
   bool res = false;
   switch (rep->idx_class ())

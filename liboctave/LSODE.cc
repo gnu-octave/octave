@@ -36,19 +36,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 typedef octave_idx_type (*lsode_fcn_ptr) (const octave_idx_type&, const double&, double*,
-			      double*, octave_idx_type&);
+                              double*, octave_idx_type&);
 
 typedef octave_idx_type (*lsode_jac_ptr) (const octave_idx_type&, const double&, double*,
-			      const octave_idx_type&, const octave_idx_type&, double*, const
-			      octave_idx_type&);
+                              const octave_idx_type&, const octave_idx_type&, double*, const
+                              octave_idx_type&);
 
 extern "C"
 {
   F77_RET_T
   F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, octave_idx_type&, double*, double&,
-			     double&, octave_idx_type&, double&, const double*, octave_idx_type&,
-			     octave_idx_type&, octave_idx_type&, double*, octave_idx_type&, octave_idx_type*, octave_idx_type&,
-			     lsode_jac_ptr, octave_idx_type&);
+                             double&, octave_idx_type&, double&, const double*, octave_idx_type&,
+                             octave_idx_type&, octave_idx_type&, double*, octave_idx_type&, octave_idx_type*, octave_idx_type&,
+                             lsode_jac_ptr, octave_idx_type&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
@@ -57,7 +57,7 @@ static ColumnVector *tmp_x;
 
 static octave_idx_type
 lsode_f (const octave_idx_type& neq, const double& time, double *,
-	 double *deriv, octave_idx_type& ierr) 
+         double *deriv, octave_idx_type& ierr) 
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -74,7 +74,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
   else
     {
       for (octave_idx_type i = 0; i < neq; i++)
-	deriv [i] = tmp_deriv.elem (i);
+        deriv [i] = tmp_deriv.elem (i);
     }
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -84,7 +84,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
 static octave_idx_type
 lsode_j (const octave_idx_type& neq, const double& time, double *,
-	 const octave_idx_type&, const octave_idx_type&, double *pd, const octave_idx_type& nrowpd)
+         const octave_idx_type&, const octave_idx_type&, double *pd, const octave_idx_type& nrowpd)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -127,65 +127,65 @@ LSODE::do_integrate (double tout)
       octave_idx_type max_maxord = 0;
 
       if (integration_method () == "stiff")
-	{
-	  max_maxord = 5;
+        {
+          max_maxord = 5;
 
-	  if (jac)
-	    method_flag = 21;
-	  else
-	    method_flag = 22;
+          if (jac)
+            method_flag = 21;
+          else
+            method_flag = 22;
 
-	  liw = 20 + n;
-	  lrw = 22 + n * (9 + n);
-	}
+          liw = 20 + n;
+          lrw = 22 + n * (9 + n);
+        }
       else
-	{
-	  max_maxord = 12;
+        {
+          max_maxord = 12;
 
-	  method_flag = 10;
+          method_flag = 10;
 
-	  liw = 20;
-	  lrw = 22 + 16 * n;
-	}
+          liw = 20;
+          lrw = 22 + 16 * n;
+        }
 
       maxord = maximum_order ();
 
       iwork.resize (liw);
 
       for (octave_idx_type i = 4; i < 9; i++)
-	iwork(i) = 0;
+        iwork(i) = 0;
 
       rwork.resize (lrw);
 
       for (octave_idx_type i = 4; i < 9; i++)
-	rwork(i) = 0;
+        rwork(i) = 0;
 
       if (maxord >= 0)
-	{
-	  if (maxord > 0 && maxord <= max_maxord)
-	    {
-	      iwork(4) = maxord;
-	      iopt = 1;
-	    }	  
-	  else
-	    {
-	      (*current_liboctave_error_handler)
-		("lsode: invalid value for maximum order");
-	      integration_error = true;
-	      return retval;
-	    }
-	}
+        {
+          if (maxord > 0 && maxord <= max_maxord)
+            {
+              iwork(4) = maxord;
+              iopt = 1;
+            }     
+          else
+            {
+              (*current_liboctave_error_handler)
+                ("lsode: invalid value for maximum order");
+              integration_error = true;
+              return retval;
+            }
+        }
 
       if (stop_time_set)
-	{
-	  itask = 4;
-	  rwork(0) = stop_time;
-	  iopt = 1;
-	}
+        {
+          itask = 4;
+          rwork(0) = stop_time;
+          iopt = 1;
+        }
       else
-	{
-	  itask = 1;
-	}
+        {
+          itask = 1;
+        }
 
       px = x.fortran_vec ();
 
@@ -208,13 +208,13 @@ LSODE::do_integrate (double tout)
       ColumnVector xdot = (*user_fun) (x, t);
 
       if (x.length () != xdot.length ())
-	{
-	  (*current_liboctave_error_handler)
-	    ("lsode: inconsistent sizes for state and derivative vectors");
+        {
+          (*current_liboctave_error_handler)
+            ("lsode: inconsistent sizes for state and derivative vectors");
 
-	  integration_error = true;
-	  return retval;
-	}
+          integration_error = true;
+          return retval;
+        }
 
       ODEFunc::reset = false;
 
@@ -226,45 +226,45 @@ LSODE::do_integrate (double tout)
       octave_idx_type abs_tol_len = abs_tol.length ();
 
       if (abs_tol_len == 1)
-	itol = 1;
+        itol = 1;
       else if (abs_tol_len == n)
-	itol = 2;
+        itol = 2;
       else
-	{
-	  (*current_liboctave_error_handler)
-	    ("lsode: inconsistent sizes for state and absolute tolerance vectors");
+        {
+          (*current_liboctave_error_handler)
+            ("lsode: inconsistent sizes for state and absolute tolerance vectors");
 
-	  integration_error = true;
-	  return retval;
-	}
+          integration_error = true;
+          return retval;
+        }
 
       double iss = initial_step_size ();
       if (iss >= 0.0)
-	{
-	  rwork(4) = iss;
-	  iopt = 1;
-	}
+        {
+          rwork(4) = iss;
+          iopt = 1;
+        }
 
       double maxss = maximum_step_size ();
       if (maxss >= 0.0)
-	{
-	  rwork(5) = maxss;
-	  iopt = 1;
-	}
+        {
+          rwork(5) = maxss;
+          iopt = 1;
+        }
 
       double minss = minimum_step_size ();
       if (minss >= 0.0)
-	{
-	  rwork(6) = minss;
-	  iopt = 1;
-	}
+        {
+          rwork(6) = minss;
+          iopt = 1;
+        }
 
       octave_idx_type sl = step_limit ();
       if (sl > 0)
-	{
-	  iwork(5) = sl;
-	  iopt = 1;
-	}
+        {
+          iwork(5) = sl;
+          iopt = 1;
+        }
 
       pabs_tol = abs_tol.fortran_vec ();
 
@@ -272,8 +272,8 @@ LSODE::do_integrate (double tout)
     }
 
   F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
-			     pabs_tol, itask, istate, iopt, prwork, lrw,
-			     piwork, liw, lsode_j, method_flag));
+                             pabs_tol, itask, istate, iopt, prwork, lrw,
+                             piwork, liw, lsode_j, method_flag));
 
   switch (istate)
     {
@@ -288,9 +288,9 @@ LSODE::do_integrate (double tout)
     case -3:  // invalid input detected (see printed message).
     case -4:  // repeated error test failures (check all inputs).
     case -5:  // repeated convergence failures (perhaps bad jacobian
-	      // supplied or wrong choice of mf or tolerances).
+              // supplied or wrong choice of mf or tolerances).
     case -6:  // error weight became zero during problem. (solution
-	      // component i vanished, and atol or atol(i) = 0.)
+              // component i vanished, and atol or atol(i) = 0.)
     case -13: // return requested in user-supplied function.
       integration_error = true;
       break;
@@ -298,8 +298,8 @@ LSODE::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-	("unrecognized value of istate (= %d) returned from lsode",
-	 istate);
+        ("unrecognized value of istate (= %d) returned from lsode",
+         istate);
       break;
     }
 
@@ -324,14 +324,14 @@ LSODE::error_message (void) const
     case 2:
       retval = "successful exit";
       break;
-	  
+          
     case 3:
       retval = "prior to continuation call with modified parameters";
       break;
-	  
+          
     case -1:
       retval = std::string ("excess work on this call (t = ")
-	+ t_curr + "; perhaps wrong integration method)";
+        + t_curr + "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -344,24 +344,24 @@ LSODE::error_message (void) const
 
     case -4:
       retval = std::string ("repeated error test failures (t = ")
-	+ t_curr + "check all inputs)";
+        + t_curr + "check all inputs)";
       break;
 
     case -5:
       retval = std::string ("repeated convergence failures (t = ")
-	+ t_curr
-	+ "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
+        + t_curr
+        + "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
       retval = std::string ("error weight became zero during problem. (t = ")
-	+ t_curr
-	+ "; solution component i vanished, and atol or atol(i) == 0)";
+        + t_curr
+        + "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
       retval = "return requested in user-supplied function (t = "
-	+ t_curr + ")";
+        + t_curr + ")";
       break;
 
     default:
@@ -385,18 +385,18 @@ LSODE::do_integrate (const ColumnVector& tout)
       retval.resize (n_out, n);
 
       for (octave_idx_type i = 0; i < n; i++)
-	retval.elem (0, i) = x.elem (i);
+        retval.elem (0, i) = x.elem (i);
 
       for (octave_idx_type j = 1; j < n_out; j++)
-	{
-	  ColumnVector x_next = do_integrate (tout.elem (j));
+        {
+          ColumnVector x_next = do_integrate (tout.elem (j));
 
-	  if (integration_error)
-	    return retval;
+          if (integration_error)
+            return retval;
 
-	  for (octave_idx_type i = 0; i < n; i++)
-	    retval.elem (j, i) = x_next.elem (i);
-	}
+          for (octave_idx_type i = 0; i < n; i++)
+            retval.elem (j, i) = x_next.elem (i);
+        }
     }
 
   return retval;
@@ -415,84 +415,84 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
       retval.resize (n_out, n);
 
       for (octave_idx_type i = 0; i < n; i++)
-	retval.elem (0, i) = x.elem (i);
+        retval.elem (0, i) = x.elem (i);
 
       octave_idx_type n_crit = tcrit.capacity ();
 
       if (n_crit > 0)
-	{
-	  octave_idx_type i_crit = 0;
-	  octave_idx_type i_out = 1;
-	  double next_crit = tcrit.elem (0);
-	  double next_out;
-	  while (i_out < n_out)
-	    {
-	      bool do_restart = false;
+        {
+          octave_idx_type i_crit = 0;
+          octave_idx_type i_out = 1;
+          double next_crit = tcrit.elem (0);
+          double next_out;
+          while (i_out < n_out)
+            {
+              bool do_restart = false;
 
-	      next_out = tout.elem (i_out);
-	      if (i_crit < n_crit)
-		next_crit = tcrit.elem (i_crit);
+              next_out = tout.elem (i_out);
+              if (i_crit < n_crit)
+                next_crit = tcrit.elem (i_crit);
 
-	      octave_idx_type save_output;
-	      double t_out;
+              octave_idx_type save_output;
+              double t_out;
 
-	      if (next_crit == next_out)
-		{
-		  set_stop_time (next_crit);
-		  t_out = next_out;
-		  save_output = 1;
-		  i_out++;
-		  i_crit++;
-		  do_restart = true;
-		}
-	      else if (next_crit < next_out)
-		{
-		  if (i_crit < n_crit)
-		    {
-		      set_stop_time (next_crit);
-		      t_out = next_crit;
-		      save_output = 0;
-		      i_crit++;
-		      do_restart = true;
-		    }
-		  else
-		    {
-		      clear_stop_time ();
-		      t_out = next_out;
-		      save_output = 1;
-		      i_out++;
-		    }
-		}
-	      else
-		{
-		  set_stop_time (next_crit);
-		  t_out = next_out;
-		  save_output = 1;
-		  i_out++;
-		}
+              if (next_crit == next_out)
+                {
+                  set_stop_time (next_crit);
+                  t_out = next_out;
+                  save_output = 1;
+                  i_out++;
+                  i_crit++;
+                  do_restart = true;
+                }
+              else if (next_crit < next_out)
+                {
+                  if (i_crit < n_crit)
+                    {
+                      set_stop_time (next_crit);
+                      t_out = next_crit;
+                      save_output = 0;
+                      i_crit++;
+                      do_restart = true;
+                    }
+                  else
+                    {
+                      clear_stop_time ();
+                      t_out = next_out;
+                      save_output = 1;
+                      i_out++;
+                    }
+                }
+              else
+                {
+                  set_stop_time (next_crit);
+                  t_out = next_out;
+                  save_output = 1;
+                  i_out++;
+                }
 
-	      ColumnVector x_next = do_integrate (t_out);
+              ColumnVector x_next = do_integrate (t_out);
 
-	      if (integration_error)
-		return retval;
+              if (integration_error)
+                return retval;
 
-	      if (save_output)
-		{
-		  for (octave_idx_type i = 0; i < n; i++)
-		    retval.elem (i_out-1, i) = x_next.elem (i);
-		}
+              if (save_output)
+                {
+                  for (octave_idx_type i = 0; i < n; i++)
+                    retval.elem (i_out-1, i) = x_next.elem (i);
+                }
 
-	      if (do_restart)
-		force_restart ();
-	    }
-	}
+              if (do_restart)
+                force_restart ();
+            }
+        }
       else
-	{
-	  retval = do_integrate (tout);
+        {
+          retval = do_integrate (tout);
 
-	  if (integration_error)
-	    return retval;
-	}
+          if (integration_error)
+            return retval;
+        }
     }
 
   return retval;

@@ -35,16 +35,16 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgeesx, SGEESX) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     FloatSCHUR::select_function,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, float*, const octave_idx_type&, octave_idx_type&,
-			     float*, float*, float*, const octave_idx_type&,
-			     float&, float&, float*, const octave_idx_type&,
-			     octave_idx_type*, const octave_idx_type&, octave_idx_type*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             FloatSCHUR::select_function,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*, const octave_idx_type&, octave_idx_type&,
+                             float*, float*, float*, const octave_idx_type&,
+                             float&, float&, float*, const octave_idx_type&,
+                             octave_idx_type*, const octave_idx_type&, octave_idx_type*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 static octave_idx_type
@@ -128,14 +128,14 @@ FloatSCHUR::init (const FloatMatrix& a, const std::string& ord, bool calc_unitar
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   F77_XFCN (sgeesx, SGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
-			     F77_CONST_CHAR_ARG2 (&sort, 1),
-			     selector,
-			     F77_CONST_CHAR_ARG2 (&sense, 1),
-			     n, s, n, sdim, pwr, pwi, q, n, rconde, rcondv,
-			     pwork, lwork, piwork, liwork, pbwork, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&sort, 1),
+                             selector,
+                             F77_CONST_CHAR_ARG2 (&sense, 1),
+                             n, s, n, sdim, pwr, pwi, q, n, rconde, rcondv,
+                             pwork, lwork, piwork, liwork, pbwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

@@ -53,7 +53,7 @@ oct_md5 (const std::string str)
 
   return oct_md5_result_to_str (buf);
 }
-	  
+          
 std::string
 oct_md5_file (const std::string file)
 {

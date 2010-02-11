@@ -33,13 +33,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgesvd, ZGESVD) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&, Complex*,
-			     const octave_idx_type&, double*, Complex*, const octave_idx_type&,
-			     Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-			     double*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, Complex*,
+                             const octave_idx_type&, double*, Complex*, const octave_idx_type&,
+                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+                             double*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 ComplexMatrix
@@ -48,7 +48,7 @@ ComplexSVD::left_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("ComplexSVD: U not computed because type == SVD::sigma_only");
+        ("ComplexSVD: U not computed because type == SVD::sigma_only");
       return ComplexMatrix ();
     }
   else
@@ -61,7 +61,7 @@ ComplexSVD::right_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("ComplexSVD: V not computed because type == SVD::sigma_only");
+        ("ComplexSVD: V not computed because type == SVD::sigma_only");
       return ComplexMatrix ();
     }
   else
@@ -145,23 +145,23 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
 
   F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m1, s_vec, u, m1, vt,
-			     nrow_vt1, work.fortran_vec (), lwork,
-			     rwork.fortran_vec (), info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             m, n, tmp_data, m1, s_vec, u, m1, vt,
+                             nrow_vt1, work.fortran_vec (), lwork,
+                             rwork.fortran_vec (), info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   lwork = static_cast<octave_idx_type> (work(0).real ());
   work.resize (lwork);
 
   F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m1, s_vec, u, m1, vt,
-			     nrow_vt1, work.fortran_vec (), lwork,
-			     rwork.fortran_vec (), info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             m, n, tmp_data, m1, s_vec, u, m1, vt,
+                             nrow_vt1, work.fortran_vec (), lwork,
+                             rwork.fortran_vec (), info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm = right_sm.hermitian ();

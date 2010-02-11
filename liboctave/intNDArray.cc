@@ -56,7 +56,7 @@ intNDArray<T>::any_element_not_one_or_zero (void) const
       T val = this->elem (i);
 
       if (val != 0.0 && val != 1.0)
-	return true;
+        return true;
     }
 
   return false;
@@ -88,8 +88,8 @@ intNDArray<T>::any (int dim) const
 template <class T>
 void
 intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
-			       const dim_vector& dimensions,
-			       int start_dimension)
+                               const dim_vector& dimensions,
+                               int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
@@ -97,7 +97,7 @@ intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
 template <class T>
 octave_idx_type 
 intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
-			      const dim_vector& dimensions)
+                              const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
 }
@@ -152,14 +152,14 @@ operator >> (std::istream& is, intNDArray<T>& a)
       T tmp;
 
       for (octave_idx_type i = 0; i < nel; i++)
-	{
-	  is >> tmp;
+        {
+          is >> tmp;
 
-	  if (is)
-	    a.elem (i) = tmp;
-	  else
-	    goto done;
-	}
+          if (is)
+            a.elem (i) = tmp;
+          else
+            goto done;
+        }
     }
 
  done:

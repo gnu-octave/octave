@@ -42,11 +42,11 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const float&,
-			   const float*, const octave_idx_type&, const float*,
-			   const octave_idx_type&, const float&, float*,
-			   const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const float&,
+                           const float*, const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float&, float*,
+                           const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
 }
 
 // Column Vector class.
@@ -82,7 +82,7 @@ FloatColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (r+i) = a.elem (i);
+        xelem (r+i) = a.elem (i);
     }
 
   return *this;
@@ -98,7 +98,7 @@ FloatColumnVector::fill (float val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -122,7 +122,7 @@ FloatColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r2)
       make_unique ();
 
       for (octave_idx_type i = r1; i <= r2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -242,17 +242,17 @@ operator * (const FloatDiagMatrix& m, const FloatColumnVector& a)
   else
     {
       if (nr == 0 || nc == 0)
-	retval.resize (nr, 0.0);
+        retval.resize (nr, 0.0);
       else
-	{
-	  retval.resize (nr);
+        {
+          retval.resize (nr);
 
-	  for (octave_idx_type i = 0; i < a_len; i++)
-	    retval.elem (i) = a.elem (i) * m.elem (i, i);
+          for (octave_idx_type i = 0; i < a_len; i++)
+            retval.elem (i) = a.elem (i) * m.elem (i, i);
 
-	  for (octave_idx_type i = a_len; i < nr; i++)
-	    retval.elem (i) = 0.0;
-	}
+          for (octave_idx_type i = a_len; i < nr; i++)
+            retval.elem (i) = 0.0;
+        }
     }
 
   return retval;

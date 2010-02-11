@@ -45,18 +45,18 @@ static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {
   return (xisnan (y)
-	  ? ! xisnan (x)
-	  : ((std::abs (x) < std::abs (x))
-	     || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
+          ? ! xisnan (x)
+          : ((std::abs (x) < std::abs (x))
+             || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
 }
 
 static bool
 nan_descending_compare (const Complex& x, const Complex& y)
 {
   return (xisnan (x)
-	  ? ! xisnan (y)
-	  : ((std::abs (x) > std::abs (x))
-	     || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
+          ? ! xisnan (y)
+          : ((std::abs (x) > std::abs (x))
+             || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
 }
 
 Array<Complex>::compare_fcn_type

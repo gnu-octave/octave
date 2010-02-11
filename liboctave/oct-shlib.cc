@@ -217,7 +217,7 @@ octave_dlopen_shlib::~octave_dlopen_shlib (void)
 
 void *
 octave_dlopen_shlib::search (const std::string& name,
-			     octave_shlib::name_mangler mangler)
+                             octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
@@ -226,7 +226,7 @@ octave_dlopen_shlib::search (const std::string& name,
       std::string sym_name = name;
 
       if (mangler)
-	sym_name = mangler (name);
+        sym_name = mangler (name);
 
       function = dlsym (library, sym_name.c_str ());
     }
@@ -285,7 +285,7 @@ octave_shl_load_shlib::~octave_shl_load_shlib (void)
 
 void *
 octave_shl_load_shlib::search (const std::string& name,
-			       octave_shlib::name_mangler mangler)
+                               octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
@@ -294,10 +294,10 @@ octave_shl_load_shlib::search (const std::string& name,
       std::string sym_name = name;
 
       if (mangler)
-	sym_name = mangler (name);
-	
+        sym_name = mangler (name);
+        
       int status = shl_findsym (&library, sym_name.c_str (),
-				TYPE_UNDEFINED, &function);
+                                TYPE_UNDEFINED, &function);
     }
   else
     (*current_liboctave_error_handler)
@@ -378,7 +378,7 @@ extern "C"
 
 void *
 octave_w32_shlib::search (const std::string& name,
-			  octave_shlib::name_mangler mangler)
+                          octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
@@ -387,7 +387,7 @@ octave_w32_shlib::search (const std::string& name,
       std::string sym_name = name;
 
       if (mangler)
-	sym_name = mangler (name);
+        sym_name = mangler (name);
 
       function = octave_w32_library_search (handle, sym_name.c_str ());
     }
@@ -452,7 +452,7 @@ octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
             errstr = "unspecified error";
 
           (*current_liboctave_error_handler)
-            ("%s: %s", file.c_str (), errstr);	
+            ("%s: %s", file.c_str (), errstr);  
         }
     }
   else
@@ -475,7 +475,7 @@ octave_dyld_shlib::~octave_dyld_shlib (void)
 
 void *
 octave_dyld_shlib::search (const std::string& name,
-			   octave_shlib::name_mangler mangler)
+                           octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
@@ -484,14 +484,14 @@ octave_dyld_shlib::search (const std::string& name,
       std::string sym_name = name;
 
       if (mangler)
-	sym_name = mangler (name);
+        sym_name = mangler (name);
 
       NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
 
       if (symbol)
-	{
-	  function = NSAddressOfSymbol (symbol);
-	}
+        {
+          function = NSAddressOfSymbol (symbol);
+        }
     }
   else
     (*current_liboctave_error_handler)

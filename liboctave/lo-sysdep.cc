@@ -85,7 +85,7 @@ octave_chdir (const std::string& path_arg)
       char *upper_case_dir_name = strupr (tmp_path);
       _chdrive (upper_case_dir_name[0]);
       if (_getdrive () == upper_case_dir_name[0])
-	retval = _chdir2 ("/");
+        retval = _chdir2 ("/");
     }
   else
     retval = _chdir2 (tmp_path);
@@ -224,7 +224,7 @@ readdir (DIR *d)
   if (! d->dirty)
     {
       if (! FindNextFile(d->hnd, &(d->fd)))
-	return 0;
+        return 0;
     }
   d->d.d_name = d->fd.cFileName;
   d->dirty = 0;

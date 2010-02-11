@@ -69,89 +69,89 @@ octave_ieee_init (void)
     case oct_mach_info::flt_fmt_ieee_big_endian:
     case oct_mach_info::flt_fmt_ieee_little_endian:
       {
-	// Don't optimize away tmp_inf / tmp_inf to generate octave_NaN.
+        // Don't optimize away tmp_inf / tmp_inf to generate octave_NaN.
 
-	volatile double tmp_inf;
+        volatile double tmp_inf;
 
 #if defined (SCO)
-	volatile double tmp = 1.0;
-	tmp_inf = 1.0 / (tmp - tmp);
+        volatile double tmp = 1.0;
+        tmp_inf = 1.0 / (tmp - tmp);
 #elif defined (__alpha__) && defined (__osf__)
-	extern unsigned int DINFINITY[2];
-	tmp_inf =  (*(X_CAST(double *, DINFINITY)));
+        extern unsigned int DINFINITY[2];
+        tmp_inf =  (*(X_CAST(double *, DINFINITY)));
 #else
-	double tmp = 1e+10;
-	tmp_inf = tmp;
-	for (;;)
-	  {
-	    tmp_inf *= 1e+10;
-	    if (tmp_inf == tmp)
-	      break;
-	    tmp = tmp_inf;
-	  }
+        double tmp = 1e+10;
+        tmp_inf = tmp;
+        for (;;)
+          {
+            tmp_inf *= 1e+10;
+            if (tmp_inf == tmp)
+              break;
+            tmp = tmp_inf;
+          }
 #endif
 
 #if defined (__alpha__) && defined (__osf__)
-	extern unsigned int DQNAN[2];
-	octave_NaN = (*(X_CAST(double *, DQNAN)));
+        extern unsigned int DQNAN[2];
+        octave_NaN = (*(X_CAST(double *, DQNAN)));
 #elif defined (__NetBSD__)
-	octave_NaN = nan ("");
+        octave_NaN = nan ("");
 #else
-	octave_NaN = tmp_inf / tmp_inf;
+        octave_NaN = tmp_inf / tmp_inf;
         // try to ensure that lo_ieee_sign gives false for a NaN.
         if (lo_ieee_signbit (octave_NaN))
           octave_NaN = -octave_NaN;
 
 #endif
 
-	octave_Inf = tmp_inf;
+        octave_Inf = tmp_inf;
 
-	// This is patterned after code in R.
+        // This is patterned after code in R.
 
-	if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
-	  {
-	    lo_ieee_hw = 0;
-	    lo_ieee_lw = 1;
-	  }
-	else
-	  {
-	    lo_ieee_hw = 1;
-	    lo_ieee_lw = 0;
-	  }
+        if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
+          {
+            lo_ieee_hw = 0;
+            lo_ieee_lw = 1;
+          }
+        else
+          {
+            lo_ieee_hw = 1;
+            lo_ieee_lw = 0;
+          }
 
-	lo_ieee_double t;
-	t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
-	t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
+        lo_ieee_double t;
+        t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
+        t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
 
-	octave_NA = t.value;
+        octave_NA = t.value;
 
-	volatile float float_tmp_inf;
+        volatile float float_tmp_inf;
 
 #if defined (SCO)
-	volatile float float_tmp = 1.0;
-	float_tmp_inf = 1.0 / (float_tmp - float_tmp);
+        volatile float float_tmp = 1.0;
+        float_tmp_inf = 1.0 / (float_tmp - float_tmp);
 #else
-	float float_tmp = 1e+10;
-	float_tmp_inf = float_tmp;
-	for (;;)
-	  {
-	    float_tmp_inf *= 1e+10;
-	    if (float_tmp_inf == float_tmp)
-	      break;
-	    float_tmp = float_tmp_inf;
-	  }
+        float float_tmp = 1e+10;
+        float_tmp_inf = float_tmp;
+        for (;;)
+          {
+            float_tmp_inf *= 1e+10;
+            if (float_tmp_inf == float_tmp)
+              break;
+            float_tmp = float_tmp_inf;
+          }
 #endif
 
 #if defined (__NetBSD__)
-	octave_Float_NaN = nanf ("");
+        octave_Float_NaN = nanf ("");
 #else
-	octave_Float_NaN = float_tmp_inf / float_tmp_inf;
+        octave_Float_NaN = float_tmp_inf / float_tmp_inf;
 #endif
-	octave_Float_Inf = float_tmp_inf;
+        octave_Float_Inf = float_tmp_inf;
 
-	lo_ieee_float tf;
-	tf.word = LO_IEEE_NA_FLOAT;
-	octave_Float_NA = tf.value;
+        lo_ieee_float tf;
+        tf.word = LO_IEEE_NA_FLOAT;
+        octave_Float_NA = tf.value;
       }
       break;
 
@@ -165,7 +165,7 @@ octave_ieee_init (void)
       // floating point should be capable of removing this check and
       // the configure test.
       (*current_liboctave_error_handler)
-	("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
+        ("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");
       abort ();
     }
 }

@@ -45,7 +45,7 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgetrf, ZGETRF) (const octave_idx_type&, const octave_idx_type&, Complex*,
-			     const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+                             const octave_idx_type&, octave_idx_type*, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE_LUU
   F77_RET_T

@@ -1,5 +1,38 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* Array-C.cc, Array-fC.cc, Array-util.cc, Array.cc,
+	CColVector.cc, CDiagMatrix.cc, CMatrix.cc, CNDArray.cc,
+	CRowVector.cc, CSparse.cc, CmplxAEPBAL.cc, CmplxCHOL.cc,
+	CmplxGEPBAL.cc, CmplxHESS.cc, CmplxLU.cc, CmplxQR.cc,
+	CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc, CollocWt.cc, DASPK.cc,
+	DASRT.cc, DASSL.cc, EIG.cc, LSODE.cc, MSparse.cc, MatrixType.cc,
+	ODES.cc, Quad.cc, Range.cc, Sparse-C.cc, Sparse.cc,
+	SparseCmplxCHOL.cc, SparseCmplxLU.cc, SparseCmplxQR.cc,
+	SparseQR.cc, SparsedbleCHOL.cc, SparsedbleLU.cc, boolNDArray.cc,
+	boolSparse.cc, chMatrix.cc, chNDArray.cc, cmd-edit.cc,
+	cmd-hist.cc, dColVector.cc, dDiagMatrix.cc, dMatrix.cc,
+	dNDArray.cc, dRowVector.cc, dSparse.cc, data-conv.cc,
+	dbleAEPBAL.cc, dbleCHOL.cc, dbleGEPBAL.cc, dbleHESS.cc,
+	dbleLU.cc, dbleQR.cc, dbleQRP.cc, dbleSCHUR.cc, dbleSVD.cc,
+	dir-ops.cc, eigs-base.cc, fCColVector.cc, fCDiagMatrix.cc,
+	fCMatrix.cc, fCNDArray.cc, fCRowVector.cc, fCmplxAEPBAL.cc,
+	fCmplxCHOL.cc, fCmplxGEPBAL.cc, fCmplxHESS.cc, fCmplxLU.cc,
+	fCmplxQR.cc, fCmplxQRP.cc, fCmplxSCHUR.cc, fCmplxSVD.cc,
+	fColVector.cc, fDiagMatrix.cc, fEIG.cc, fMatrix.cc, fNDArray.cc,
+	fRowVector.cc, file-stat.cc, floatAEPBAL.cc, floatCHOL.cc,
+	floatGEPBAL.cc, floatHESS.cc, floatLU.cc, floatQR.cc,
+	floatQRP.cc, floatSCHUR.cc, floatSVD.cc, idx-vector.cc,
+	intNDArray.cc, kpse.cc, lo-ieee.cc, lo-mappers.cc,
+	lo-specfun.cc, lo-sysdep.cc, lo-utils.cc, mach-info.cc,
+	mx-inlines.cc, oct-alloc.cc, oct-env.cc, oct-fftw.cc,
+	oct-glob.cc, oct-group.cc, oct-inttypes.cc, oct-md5.cc,
+	oct-rand.cc, oct-shlib.cc, oct-sort.cc, oct-spparms.cc,
+	oct-syscalls.cc, oct-time.cc, pathsearch.cc, regex-match.cc,
+	sparse-base-chol.cc, sparse-base-lu.cc, sparse-dmsolve.cc,
+	sparse-sort.cc, sparse-util.cc, str-vec.cc: Untabify.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* Array-util.h, Array.h, Array2.h, Array3.h, CColVector.h,
 	CMatrix.h, CNDArray.h, CRowVector.h, CSparse.h, CmplxCHOL.h,
 	CmplxGEPBAL.h, CmplxHESS.h, CmplxLU.h, CmplxQRP.h, CmplxSCHUR.h,

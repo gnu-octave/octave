@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 bool
 index_in_bounds (const Array<octave_idx_type>& ra_idx,
-		 const dim_vector& dimensions)
+                 const dim_vector& dimensions)
 {
   bool retval = true;
 
@@ -41,13 +41,13 @@ index_in_bounds (const Array<octave_idx_type>& ra_idx,
   if (n == dimensions.length ())
     {
       for (int i = 0; i < n; i++)
-	{
-	  if (ra_idx(i) < 0 || ra_idx(i) >= dimensions(i))
-	    {
-	      retval = false;
-	      break;
-	    }
-	}
+        {
+          if (ra_idx(i) < 0 || ra_idx(i) >= dimensions(i))
+            {
+              retval = false;
+              break;
+            }
+        }
     }
   else
     retval = false;
@@ -57,7 +57,7 @@ index_in_bounds (const Array<octave_idx_type>& ra_idx,
 
 void
 increment_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions,
-		 int start_dimension)
+                 int start_dimension)
 {
   ra_idx(start_dimension)++;
 
@@ -67,12 +67,12 @@ increment_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions,
   for (int i = start_dimension; i < n; i++)
     {
       if (ra_idx(i) < (i < nda ? dimensions(i) : 1))
- 	break;
+        break;
       else
- 	{
- 	  ra_idx(i) = 0;
- 	  ra_idx(i+1)++;
- 	}
+        {
+          ra_idx(i) = 0;
+          ra_idx(i+1)++;
+        }
     }
 }
 
@@ -88,11 +88,11 @@ get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims)
       retval = idx(--n);
 
       while (--n >= 0)
-	{      		
-	  retval *= dims (n);
-	
-	  retval += idx(n);
-	}
+        {               
+          retval *= dims (n);
+        
+          retval += idx(n);
+        }
     }
   return retval;
 }
@@ -105,7 +105,7 @@ num_ones (const Array<octave_idx_type>& ra_idx)
   for (octave_idx_type i = 0; i < ra_idx.length (); i++)
     {
       if (ra_idx (i) == 1)
-	retval++;
+        retval++;
     }
 
   return retval;
@@ -125,14 +125,14 @@ is_scalar (const dim_vector& dim)
   else
     {
       for (int i = 0; i < n; i ++)
-	{
-	  if (dim (i) != 1)
-	    {
-	      retval = false;
-	
-	      break;
-	    }
-	}
+        {
+          if (dim (i) != 1)
+            {
+              retval = false;
+        
+              break;
+            }
+        }
     }
   return retval;
 }
@@ -148,10 +148,10 @@ is_vector (const dim_vector& dim)
   else
     {
       for (int i = 0; i < n; i ++)
-	if (dim (i) > 1)
-	  m++;
-	else if (dim(i) < 1)
-	  m += 2;
+        if (dim (i) > 1)
+          m++;
+        else if (dim(i) < 1)
+          m += 2;
     }
 
   return (m < 2);
@@ -165,11 +165,11 @@ any_ones (const Array<octave_idx_type>& arr)
   for (octave_idx_type i = 0; i < arr.length (); i++)
     {
       if (arr (i) == 1)
-	{
-	  retval = true;
-	
-	  break;
-	}
+        {
+          retval = true;
+        
+          break;
+        }
     }
   return retval;
 }
@@ -186,11 +186,11 @@ compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
       retval = ra_idx(--n);
 
       while (--n >= 0)
-	{
-	  retval *= dims(n);
-	
-	  retval += ra_idx(n);
-	}
+        {
+          retval *= dims(n);
+        
+          retval += ra_idx(n);
+        }
     }
   else
     (*current_liboctave_error_handler)
@@ -236,7 +236,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 
   for (int i = 0; i < n; i++)
     retval(i) = ra_idx(i).freeze (dimensions(i), tag[i < 2 ? i : 3],
-				  resize_ok);
+                                  resize_ok);
 
   return retval;
 }
@@ -252,11 +252,11 @@ vector_equivalent (const dim_vector& dv)
     {
       if (dv(i) != 1)
         {
-	  if (! found_first)
-	    found_first = true;
-	  else
-	    return false;
-	}
+          if (! found_first)
+            found_first = true;
+          else
+            return false;
+        }
     }
 
   return true;
@@ -272,10 +272,10 @@ all_ok (const Array<idx_vector>& ra_idx)
   for (octave_idx_type i = 0; i < n; i++)
     {
       if (! ra_idx(i))
-	{
-	  retval = false;
-	  break;
-	}
+        {
+          retval = false;
+          break;
+        }
     }
 
   return retval;
@@ -291,10 +291,10 @@ any_orig_empty (const Array<idx_vector>& ra_idx)
   for (octave_idx_type i = 0; i < n; i++)
     {
       if (ra_idx(i).orig_empty ())
-	{
-	  retval = true;
-	  break;
-	}
+        {
+          retval = true;
+          break;
+        }
     }
 
   return retval;
@@ -302,7 +302,7 @@ any_orig_empty (const Array<idx_vector>& ra_idx)
 
 bool
 all_colon_equiv (const Array<idx_vector>& ra_idx,
-		 const dim_vector& frozen_lengths)
+                 const dim_vector& frozen_lengths)
 {
   bool retval = true;
 
@@ -315,10 +315,10 @@ all_colon_equiv (const Array<idx_vector>& ra_idx,
   for (octave_idx_type i = 0; i < n; i++)
     {
       if (! ra_idx(i).is_colon_equiv (frozen_lengths(i)))
-	{
-	  retval = false;
-	  break;
-	}
+        {
+          retval = false;
+          break;
+        }
     }
 
   return retval;
@@ -332,10 +332,10 @@ all_ones (const Array<octave_idx_type>& arr)
   for (octave_idx_type i = 0; i < arr.length (); i++)
     {
       if (arr(i) != 1)
-	{
-	  retval = false;
-	  break;
-	}
+        {
+          retval = false;
+          break;
+        }
     }
 
   return retval;
@@ -343,7 +343,7 @@ all_ones (const Array<octave_idx_type>& arr)
 
 Array<octave_idx_type>
 get_elt_idx (const Array<idx_vector>& ra_idx,
-	     const Array<octave_idx_type>& result_idx)
+             const Array<octave_idx_type>& result_idx)
 {
   octave_idx_type n = ra_idx.length ();
 
@@ -380,7 +380,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   for (int i = 0; i < n_dims; i++)
     {
       std::cout << "idx: " << idx << ", var: " << var
-		<< ", dims(" << i << "): " << dims(i) <<"\n";
+                << ", dims(" << i << "): " << dims(i) <<"\n";
       retval(i) = ((int)floor(((idx) / (double)var))) % dims(i);
       idx -= var * retval(i);
       var = dims(i);
@@ -447,7 +447,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 
 dim_vector
 zero_dims_inquire (const idx_vector& i, const idx_vector& j,
-		   const dim_vector& rhdv)
+                   const dim_vector& rhdv)
 {
   bool icol = i.is_colon (), jcol = j.is_colon ();
   dim_vector rdv;
@@ -633,7 +633,7 @@ gripe_nonconformant (const char *op, int op1_len, int op2_len)
 
 void
 gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
-		     int op2_nr, int op2_nc)
+                     int op2_nr, int op2_nc)
 {
   (*current_liboctave_error_handler)
     ("%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
@@ -642,7 +642,7 @@ gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
 
 void
 gripe_nonconformant (const char *op, dim_vector& op1_dims,
-		     dim_vector& op2_dims)
+                     dim_vector& op2_dims)
 {
   std::string op1_dims_str = op1_dims.str ();
   std::string op2_dims_str = op2_dims.str ();

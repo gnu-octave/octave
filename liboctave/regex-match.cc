@@ -39,7 +39,7 @@ regex_match::operator = (const regex_match& gm)
     {
 #if HAVE_REGEX
       for (int i = 0; i < pat.length (); i++)
-	regfree (compiled +i);
+        regfree (compiled +i);
       delete [] compiled;
 #endif
       pat = gm.pat;
@@ -96,10 +96,10 @@ regex_match::init (void)
   for (i = 0; i < npat; i++)
     {
       err = regcomp (compiled + i, pat(i).c_str (), 
-		     (REG_NOSUB | REG_EXTENDED |
-		      (case_insen ? REG_ICASE : 0)));
+                     (REG_NOSUB | REG_EXTENDED |
+                      (case_insen ? REG_ICASE : 0)));
       if (err)
-	break;
+        break;
     }
   
   if (err)
@@ -108,10 +108,10 @@ regex_match::init (void)
       OCTAVE_LOCAL_BUFFER (char, errmsg, len);
       regerror(err, compiled + i, errmsg, len);
       (*current_liboctave_error_handler) ("%s in pattern (%s)", errmsg, 
-					  pat(i).c_str());
+                                          pat(i).c_str());
 
       for (int j = 0; j < i + 1; j++)
-	regfree (compiled + j);
+        regfree (compiled + j);
     }
 #else
   (*current_liboctave_error_handler) 

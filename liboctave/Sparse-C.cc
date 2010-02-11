@@ -46,7 +46,7 @@ bool
 sparse_ascending_compare<Complex> (const Complex& a, const Complex& b)
 {
   return (xisnan (b) || (xabs (a) < xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
+          || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
@@ -54,7 +54,7 @@ bool
 sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 {
   return (xisnan (a) || (xabs (a) > xabs (b))
-	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+          || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
 INSTANTIATE_SPARSE_AND_ASSIGN (Complex, OCTAVE_API);

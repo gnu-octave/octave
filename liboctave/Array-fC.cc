@@ -45,23 +45,23 @@ static bool
 nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
 {
   return (xisnan (y)
-	  ? ! xisnan (x)
-	  : ((std::abs (x) < std::abs (x))
-	     || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
+          ? ! xisnan (x)
+          : ((std::abs (x) < std::abs (x))
+             || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
 }
 
 static bool
 nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 {
   return (xisnan (x)
-	  ? ! xisnan (y)
-	  : ((std::abs (x) > std::abs (x))
-	     || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
+          ? ! xisnan (y)
+          : ((std::abs (x) > std::abs (x))
+             || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
 }
 
 Array<FloatComplex>::compare_fcn_type
 safe_comparator (sortmode mode, const Array<FloatComplex>& a,
-		     bool allow_chk)
+                     bool allow_chk)
 {
   Array<FloatComplex>::compare_fcn_type result = 0;
 

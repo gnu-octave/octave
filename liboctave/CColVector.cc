@@ -42,10 +42,10 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
-			   const octave_idx_type&, const octave_idx_type&, const Complex&,
-			   const Complex*, const octave_idx_type&, const Complex*,
-			   const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
-			   F77_CHAR_ARG_LEN_DECL);
+                           const octave_idx_type&, const octave_idx_type&, const Complex&,
+                           const Complex*, const octave_idx_type&, const Complex*,
+                           const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
 }
 
 // Complex Column Vector class
@@ -90,7 +90,7 @@ ComplexColumnVector::insert (const ColumnVector& a, octave_idx_type r)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (r+i) = a.elem (i);
+        xelem (r+i) = a.elem (i);
     }
 
   return *this;
@@ -112,7 +112,7 @@ ComplexColumnVector::insert (const ComplexColumnVector& a, octave_idx_type r)
       make_unique ();
 
       for (octave_idx_type i = 0; i < a_len; i++)
-	xelem (r+i) = a.elem (i);
+        xelem (r+i) = a.elem (i);
     }
 
   return *this;
@@ -128,7 +128,7 @@ ComplexColumnVector::fill (double val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -144,7 +144,7 @@ ComplexColumnVector::fill (const Complex& val)
       make_unique ();
 
       for (octave_idx_type i = 0; i < len; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
 
@@ -169,7 +169,7 @@ ComplexColumnVector::fill (double val, octave_idx_type r1, octave_idx_type r2)
       make_unique ();
 
       for (octave_idx_type i = r1; i <= r2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -193,7 +193,7 @@ ComplexColumnVector::fill (const Complex& val, octave_idx_type r1, octave_idx_ty
       make_unique ();
 
       for (octave_idx_type i = r1; i <= r2; i++)
-	xelem (i) = val;
+        xelem (i) = val;
     }
 
   return *this;
@@ -466,8 +466,8 @@ ComplexColumnVector::min (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) < absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;
@@ -486,8 +486,8 @@ ComplexColumnVector::max (void) const
   for (octave_idx_type i = 1; i < len; i++)
     if (std::abs (elem (i)) > absres)
       {
-	res = elem (i);
-	absres = std::abs (res);
+        res = elem (i);
+        absres = std::abs (res);
       }
 
   return res;

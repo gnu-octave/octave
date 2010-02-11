@@ -164,21 +164,21 @@ octave_sort<T>::binarysort (T *data, octave_idx_type nel,
        * The second is vacuously true at the start.
        */
       do 
-	{
-	  octave_idx_type p = l + ((r - l) >> 1);
-	  if (comp (pivot, data[p]))
-	    r = p;
-	  else
-	    l = p+1;
-	} 
+        {
+          octave_idx_type p = l + ((r - l) >> 1);
+          if (comp (pivot, data[p]))
+            r = p;
+          else
+            l = p+1;
+        } 
       while (l < r);
       /* The invariants still hold, so pivot >= all in [lo, l) and
-	 pivot < all in [l, start), so pivot belongs at l.  Note
-	 that if there are elements equal to pivot, l points to the
-	 first slot after them -- that's why this sort is stable.
-	 Slide over to make room.
-	 Caution: using memmove is much slower under MSVC 5;
-	 we're not usually moving many slots. */
+         pivot < all in [l, start), so pivot belongs at l.  Note
+         that if there are elements equal to pivot, l points to the
+         first slot after them -- that's why this sort is stable.
+         Slide over to make room.
+         Caution: using memmove is much slower under MSVC 5;
+         we're not usually moving many slots. */
       // NOTE: using swap and going upwards appears to be faster.
       for (octave_idx_type p = l; p < start; p++)
         std::swap (pivot, data[p]);
@@ -208,21 +208,21 @@ octave_sort<T>::binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
        * The second is vacuously true at the start.
        */
       do 
-	{
-	  octave_idx_type p = l + ((r - l) >> 1);
-	  if (comp (pivot, data[p]))
-	    r = p;
-	  else
-	    l = p+1;
-	} 
+        {
+          octave_idx_type p = l + ((r - l) >> 1);
+          if (comp (pivot, data[p]))
+            r = p;
+          else
+            l = p+1;
+        } 
       while (l < r);
       /* The invariants still hold, so pivot >= all in [lo, l) and
-	 pivot < all in [l, start), so pivot belongs at l.  Note
-	 that if there are elements equal to pivot, l points to the
-	 first slot after them -- that's why this sort is stable.
-	 Slide over to make room.
-	 Caution: using memmove is much slower under MSVC 5;
-	 we're not usually moving many slots. */
+         pivot < all in [l, start), so pivot belongs at l.  Note
+         that if there are elements equal to pivot, l points to the
+         first slot after them -- that's why this sort is stable.
+         Slide over to make room.
+         Caution: using memmove is much slower under MSVC 5;
+         we're not usually moving many slots. */
       // NOTE: using swap and going upwards appears to be faster.
       for (octave_idx_type p = l; p < start; p++)
         std::swap (pivot, data[p]);
@@ -273,20 +273,20 @@ octave_sort<T>::count_run (T *lo, octave_idx_type nel, bool& descending, Comp co
     {
       descending = true;
       for (lo = lo+1; lo < hi; ++lo, ++n) 
-	{
-	  if (comp (*lo, *(lo-1)))
-	    ;
-	  else
-	    break;
-	}
+        {
+          if (comp (*lo, *(lo-1)))
+            ;
+          else
+            break;
+        }
     }
   else 
     {
       for (lo = lo+1; lo < hi; ++lo, ++n) 
-	{
-	  if (comp (*lo, *(lo-1)))
-	    break;
-	}
+        {
+          if (comp (*lo, *(lo-1)))
+            break;
+        }
     }
 
   return n;
@@ -331,21 +331,21 @@ octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hin
       /* a[hint] < key -- gallop right, until
        * a[hint + lastofs] < key <= a[hint + ofs]
        */
-      const octave_idx_type maxofs = n - hint;	/* &a[n-1] is highest */
+      const octave_idx_type maxofs = n - hint;  /* &a[n-1] is highest */
       while (ofs < maxofs) 
-	{
-	  if (comp (a[ofs], key))
-	    {
-	      lastofs = ofs;
-	      ofs = (ofs << 1) + 1;
-	      if (ofs <= 0)	/* int overflow */
-		ofs = maxofs;
-	    }
-	  else	/* key <= a[hint + ofs] */
-	    break;
-	}
+        {
+          if (comp (a[ofs], key))
+            {
+              lastofs = ofs;
+              ofs = (ofs << 1) + 1;
+              if (ofs <= 0)     /* int overflow */
+                ofs = maxofs;
+            }
+          else  /* key <= a[hint + ofs] */
+            break;
+        }
       if (ofs > maxofs)
-	ofs = maxofs;
+        ofs = maxofs;
       /* Translate back to offsets relative to &a[0]. */
       lastofs += hint;
       ofs += hint;
@@ -355,19 +355,19 @@ octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hin
       /* key <= a[hint] -- gallop left, until
        * a[hint - ofs] < key <= a[hint - lastofs]
        */
-      const octave_idx_type maxofs = hint + 1;	/* &a[0] is lowest */
+      const octave_idx_type maxofs = hint + 1;  /* &a[0] is lowest */
       while (ofs < maxofs) 
-	{
-	  if (comp (*(a-ofs), key))
-	    break;
-	  /* key <= a[hint - ofs] */
-	  lastofs = ofs;
-	  ofs = (ofs << 1) + 1;
-	  if (ofs <= 0)	/* int overflow */
-	    ofs = maxofs;
-	}
+        {
+          if (comp (*(a-ofs), key))
+            break;
+          /* key <= a[hint - ofs] */
+          lastofs = ofs;
+          ofs = (ofs << 1) + 1;
+          if (ofs <= 0) /* int overflow */
+            ofs = maxofs;
+        }
       if (ofs > maxofs)
-	ofs = maxofs;
+        ofs = maxofs;
       /* Translate back to positive offsets relative to &a[0]. */
       k = lastofs;
       lastofs = hint - ofs;
@@ -385,9 +385,9 @@ octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hin
       octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
 
       if (comp (a[m], key))
-	lastofs = m+1;	/* a[m] < key */
+        lastofs = m+1;  /* a[m] < key */
       else
-	ofs = m;	/* key <= a[m] */
+        ofs = m;        /* key <= a[m] */
     }
 
   return ofs;
@@ -425,21 +425,21 @@ octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hi
       /* key < a[hint] -- gallop left, until
        * a[hint - ofs] <= key < a[hint - lastofs]
        */
-      const octave_idx_type maxofs = hint + 1;	/* &a[0] is lowest */
+      const octave_idx_type maxofs = hint + 1;  /* &a[0] is lowest */
       while (ofs < maxofs) 
-	{
-	  if (comp (key, *(a-ofs)))
-	    {
-	      lastofs = ofs;
-	      ofs = (ofs << 1) + 1;
-	      if (ofs <= 0)	/* int overflow */
-		ofs = maxofs;
-	    }
-	  else	/* a[hint - ofs] <= key */
-	    break;
-	}
+        {
+          if (comp (key, *(a-ofs)))
+            {
+              lastofs = ofs;
+              ofs = (ofs << 1) + 1;
+              if (ofs <= 0)     /* int overflow */
+                ofs = maxofs;
+            }
+          else  /* a[hint - ofs] <= key */
+            break;
+        }
       if (ofs > maxofs)
-	ofs = maxofs;
+        ofs = maxofs;
       /* Translate back to positive offsets relative to &a[0]. */
       k = lastofs;
       lastofs = hint - ofs;
@@ -450,19 +450,19 @@ octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hi
       /* a[hint] <= key -- gallop right, until
        * a[hint + lastofs] <= key < a[hint + ofs]
        */
-      const octave_idx_type maxofs = n - hint;	/* &a[n-1] is highest */
+      const octave_idx_type maxofs = n - hint;  /* &a[n-1] is highest */
       while (ofs < maxofs) 
-	{
-	  if (comp (key, a[ofs]))
-	    break;
-	  /* a[hint + ofs] <= key */
-	  lastofs = ofs;
-	  ofs = (ofs << 1) + 1;
-	  if (ofs <= 0)	/* int overflow */
-	    ofs = maxofs;
-	}
+        {
+          if (comp (key, a[ofs]))
+            break;
+          /* a[hint + ofs] <= key */
+          lastofs = ofs;
+          ofs = (ofs << 1) + 1;
+          if (ofs <= 0) /* int overflow */
+            ofs = maxofs;
+        }
       if (ofs > maxofs)
-	ofs = maxofs;
+        ofs = maxofs;
       /* Translate back to offsets relative to &a[0]. */
       lastofs += hint;
       ofs += hint;
@@ -479,9 +479,9 @@ octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hi
       octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
 
       if (comp (key, a[m]))
-	ofs = m;	/* key < a[m] */
+        ofs = m;        /* key < a[m] */
       else
-	lastofs = m+1;	/* a[m] <= key */
+        lastofs = m+1;  /* a[m] <= key */
     }
 
   return ofs;
@@ -579,7 +579,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
 {
   octave_idx_type k;
   T *dest;
-  int result = -1;	/* guilty until proved innocent */
+  int result = -1;      /* guilty until proved innocent */
   octave_idx_type min_gallop = ms->min_gallop;
 
   ms->getmem (na);
@@ -597,41 +597,41 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
 
   for (;;)
     {
-      octave_idx_type acount = 0;	/* # of times A won in a row */
-      octave_idx_type bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;       /* # of times A won in a row */
+      octave_idx_type bcount = 0;       /* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
        */
       for (;;)
-	{
+        {
 
           // FIXME: these loops are candidates for further optimizations.
           // Rather than testing everything in each cycle, it may be more
           // efficient to do it in hunks. 
-	  if (comp (*pb, *pa))
-	    {
-	      *dest++ = *pb++;
-	      ++bcount;
-	      acount = 0;
-	      --nb;
-	      if (nb == 0)
-		goto Succeed;
-	      if (bcount >= min_gallop)
-		break;
-	    }
-	  else
-	    {
-	      *dest++ = *pa++;
-	      ++acount;
-	      bcount = 0;
-	      --na;
-	      if (na == 1)
-		goto CopyB;
-	      if (acount >= min_gallop)
-		break;
-	    }
-	}
+          if (comp (*pb, *pa))
+            {
+              *dest++ = *pb++;
+              ++bcount;
+              acount = 0;
+              --nb;
+              if (nb == 0)
+                goto Succeed;
+              if (bcount >= min_gallop)
+                break;
+            }
+          else
+            {
+              *dest++ = *pa++;
+              ++acount;
+              bcount = 0;
+              --na;
+              if (na == 1)
+                goto CopyB;
+              if (acount >= min_gallop)
+                break;
+            }
+        }
 
       /* One run is winning so consistently that galloping may
        * be a huge win.  So try that, and continue galloping until
@@ -640,52 +640,52 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
        */
       ++min_gallop;
       do
-	{
-	  min_gallop -= min_gallop > 1;
-	  ms->min_gallop = min_gallop;
-	  k = gallop_right (*pb, pa, na, 0, comp);
-	  acount = k;
-	  if (k)
-	    {
-	      if (k < 0)
-		goto Fail;
+        {
+          min_gallop -= min_gallop > 1;
+          ms->min_gallop = min_gallop;
+          k = gallop_right (*pb, pa, na, 0, comp);
+          acount = k;
+          if (k)
+            {
+              if (k < 0)
+                goto Fail;
               dest = std::copy (pa, pa + k, dest);
-	      pa += k;
-	      na -= k;
-	      if (na == 1)
-		goto CopyB;
-	      /* na==0 is impossible now if the comparison
-	       * function is consistent, but we can't assume
-	       * that it is.
-	       */
-	      if (na == 0)
-		goto Succeed;
-	    }
-	  *dest++ = *pb++;
-	  --nb;
-	  if (nb == 0)
-	    goto Succeed;
+              pa += k;
+              na -= k;
+              if (na == 1)
+                goto CopyB;
+              /* na==0 is impossible now if the comparison
+               * function is consistent, but we can't assume
+               * that it is.
+               */
+              if (na == 0)
+                goto Succeed;
+            }
+          *dest++ = *pb++;
+          --nb;
+          if (nb == 0)
+            goto Succeed;
 
-	  k = gallop_left (*pa, pb, nb, 0, comp);
-	  bcount = k;
-	  if (k)
-	    {
-	      if (k < 0)
-		goto Fail;
+          k = gallop_left (*pa, pb, nb, 0, comp);
+          bcount = k;
+          if (k)
+            {
+              if (k < 0)
+                goto Fail;
               dest = std::copy (pb, pb + k, dest);
-	      pb += k;
-	      nb -= k;
-	      if (nb == 0)
-		goto Succeed;
-	    }
-	  *dest++ = *pa++;
-	  --na;
-	  if (na == 1)
-	    goto CopyB;
-	}
+              pb += k;
+              nb -= k;
+              if (nb == 0)
+                goto Succeed;
+            }
+          *dest++ = *pa++;
+          --na;
+          if (na == 1)
+            goto CopyB;
+        }
       while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
 
-      ++min_gallop;	/* penalize it for leaving galloping mode */
+      ++min_gallop;     /* penalize it for leaving galloping mode */
       ms->min_gallop = min_gallop;
     }
 
@@ -715,7 +715,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
   octave_idx_type k;
   T *dest;
   octave_idx_type *idest;
-  int result = -1;	/* guilty until proved innocent */
+  int result = -1;      /* guilty until proved innocent */
   octave_idx_type min_gallop = ms->min_gallop;
 
   ms->getmemi (na);
@@ -734,38 +734,38 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
 
   for (;;)
     {
-      octave_idx_type acount = 0;	/* # of times A won in a row */
-      octave_idx_type bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;       /* # of times A won in a row */
+      octave_idx_type bcount = 0;       /* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
        */
       for (;;)
-	{
+        {
 
-	  if (comp (*pb, *pa))
-	    {
-	      *dest++ = *pb++; *idest++ = *ipb++;
-	      ++bcount;
-	      acount = 0;
-	      --nb;
-	      if (nb == 0)
-		goto Succeed;
-	      if (bcount >= min_gallop)
-		break;
-	    }
-	  else
-	    {
-	      *dest++ = *pa++; *idest++ = *ipa++;
-	      ++acount;
-	      bcount = 0;
-	      --na;
-	      if (na == 1)
-		goto CopyB;
-	      if (acount >= min_gallop)
-		break;
-	    }
-	}
+          if (comp (*pb, *pa))
+            {
+              *dest++ = *pb++; *idest++ = *ipb++;
+              ++bcount;
+              acount = 0;
+              --nb;
+              if (nb == 0)
+                goto Succeed;
+              if (bcount >= min_gallop)
+                break;
+            }
+          else
+            {
+              *dest++ = *pa++; *idest++ = *ipa++;
+              ++acount;
+              bcount = 0;
+              --na;
+              if (na == 1)
+                goto CopyB;
+              if (acount >= min_gallop)
+                break;
+            }
+        }
 
       /* One run is winning so consistently that galloping may
        * be a huge win.  So try that, and continue galloping until
@@ -774,54 +774,54 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
        */
       ++min_gallop;
       do
-	{
-	  min_gallop -= min_gallop > 1;
-	  ms->min_gallop = min_gallop;
-	  k = gallop_right (*pb, pa, na, 0, comp);
-	  acount = k;
-	  if (k)
-	    {
-	      if (k < 0)
-		goto Fail;
+        {
+          min_gallop -= min_gallop > 1;
+          ms->min_gallop = min_gallop;
+          k = gallop_right (*pb, pa, na, 0, comp);
+          acount = k;
+          if (k)
+            {
+              if (k < 0)
+                goto Fail;
               dest = std::copy (pa, pa + k, dest);
               idest = std::copy (ipa, ipa + k, idest);
-	      pa += k; ipa += k;
-	      na -= k;
-	      if (na == 1)
-		goto CopyB;
-	      /* na==0 is impossible now if the comparison
-	       * function is consistent, but we can't assume
-	       * that it is.
-	       */
-	      if (na == 0)
-		goto Succeed;
-	    }
-	  *dest++ = *pb++; *idest++ = *ipb++;
-	  --nb;
-	  if (nb == 0)
-	    goto Succeed;
+              pa += k; ipa += k;
+              na -= k;
+              if (na == 1)
+                goto CopyB;
+              /* na==0 is impossible now if the comparison
+               * function is consistent, but we can't assume
+               * that it is.
+               */
+              if (na == 0)
+                goto Succeed;
+            }
+          *dest++ = *pb++; *idest++ = *ipb++;
+          --nb;
+          if (nb == 0)
+            goto Succeed;
 
-	  k = gallop_left (*pa, pb, nb, 0, comp);
-	  bcount = k;
-	  if (k)
-	    {
-	      if (k < 0)
-		goto Fail;
+          k = gallop_left (*pa, pb, nb, 0, comp);
+          bcount = k;
+          if (k)
+            {
+              if (k < 0)
+                goto Fail;
               dest = std::copy (pb, pb + k, dest);
               idest = std::copy (ipb, ipb + k, idest);
-	      pb += k; ipb += k;
-	      nb -= k;
-	      if (nb == 0)
-		goto Succeed;
-	    }
-	  *dest++ = *pa++; *idest++ = *ipa++;
-	  --na;
-	  if (na == 1)
-	    goto CopyB;
-	}
+              pb += k; ipb += k;
+              nb -= k;
+              if (nb == 0)
+                goto Succeed;
+            }
+          *dest++ = *pa++; *idest++ = *ipa++;
+          --na;
+          if (na == 1)
+            goto CopyB;
+        }
       while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
 
-      ++min_gallop;	/* penalize it for leaving galloping mode */
+      ++min_gallop;     /* penalize it for leaving galloping mode */
       ms->min_gallop = min_gallop;
     }
 
@@ -861,7 +861,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
 {
   octave_idx_type k;
   T *dest;
-  int result = -1;	/* guilty until proved innocent */
+  int result = -1;      /* guilty until proved innocent */
   T *basea, *baseb;
   octave_idx_type min_gallop = ms->min_gallop;
 
@@ -883,37 +883,37 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
 
   for (;;) 
     {
-      octave_idx_type acount = 0;	/* # of times A won in a row */
-      octave_idx_type bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;       /* # of times A won in a row */
+      octave_idx_type bcount = 0;       /* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
        */
       for (;;) 
-	{
-	  if (comp (*pb, *pa))
-	    {
-	      *dest-- = *pa--;
-	      ++acount;
-	      bcount = 0;
-	      --na;
-	      if (na == 0)
-		goto Succeed;
-	      if (acount >= min_gallop)
-		break;
-	    }
-	  else 
-	    {
-	      *dest-- = *pb--;
-	      ++bcount;
-	      acount = 0;
-	      --nb;
-	      if (nb == 1)
-		goto CopyA;
-	      if (bcount >= min_gallop)
-		break;
-	    }
-	}
+        {
+          if (comp (*pb, *pa))
+            {
+              *dest-- = *pa--;
+              ++acount;
+              bcount = 0;
+              --na;
+              if (na == 0)
+                goto Succeed;
+              if (acount >= min_gallop)
+                break;
+            }
+          else 
+            {
+              *dest-- = *pb--;
+              ++bcount;
+              acount = 0;
+              --nb;
+              if (nb == 1)
+                goto CopyA;
+              if (bcount >= min_gallop)
+                break;
+            }
+        }
 
       /* One run is winning so consistently that galloping may
        * be a huge win.  So try that, and continue galloping until
@@ -922,53 +922,53 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
        */
       ++min_gallop;
       do 
-	{
-	  min_gallop -= min_gallop > 1;
-	  ms->min_gallop = min_gallop;
-	  k = gallop_right (*pb, basea, na, na-1, comp);
-	  if (k < 0)
-	    goto Fail;
-	  k = na - k;
-	  acount = k;
-	  if (k) 
-	    {
+        {
+          min_gallop -= min_gallop > 1;
+          ms->min_gallop = min_gallop;
+          k = gallop_right (*pb, basea, na, na-1, comp);
+          if (k < 0)
+            goto Fail;
+          k = na - k;
+          acount = k;
+          if (k) 
+            {
               dest = std::copy_backward (pa+1 - k, pa+1, dest+1) - 1;
-	      pa -= k;
-	      na -= k;
-	      if (na == 0)
-		goto Succeed;
-	    }
-	  *dest-- = *pb--;
-	  --nb;
-	  if (nb == 1)
-	    goto CopyA;
+              pa -= k;
+              na -= k;
+              if (na == 0)
+                goto Succeed;
+            }
+          *dest-- = *pb--;
+          --nb;
+          if (nb == 1)
+            goto CopyA;
 
-	  k = gallop_left (*pa, baseb, nb, nb-1, comp);
-	  if (k < 0)
-	    goto Fail;
-	  k = nb - k;
-	  bcount = k;
-	  if (k) 
-	    {
-	      dest -= k;
-	      pb -= k;
+          k = gallop_left (*pa, baseb, nb, nb-1, comp);
+          if (k < 0)
+            goto Fail;
+          k = nb - k;
+          bcount = k;
+          if (k) 
+            {
+              dest -= k;
+              pb -= k;
               std::copy (pb+1, pb+1 + k, dest+1);
-	      nb -= k;
-	      if (nb == 1)
-		goto CopyA;
-	      /* nb==0 is impossible now if the comparison
-	       * function is consistent, but we can't assume
-	       * that it is.
-	       */
-	      if (nb == 0)
-		goto Succeed;
-	    }
-	  *dest-- = *pa--;
-	  --na;
-	  if (na == 0)
-	    goto Succeed;
-	} while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-      ++min_gallop;	/* penalize it for leaving galloping mode */
+              nb -= k;
+              if (nb == 1)
+                goto CopyA;
+              /* nb==0 is impossible now if the comparison
+               * function is consistent, but we can't assume
+               * that it is.
+               */
+              if (nb == 0)
+                goto Succeed;
+            }
+          *dest-- = *pa--;
+          --na;
+          if (na == 0)
+            goto Succeed;
+        } while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
+      ++min_gallop;     /* penalize it for leaving galloping mode */
       ms->min_gallop = min_gallop;
     }
 
@@ -999,7 +999,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
   octave_idx_type k;
   T *dest;
   octave_idx_type *idest;
-  int result = -1;	/* guilty until proved innocent */
+  int result = -1;      /* guilty until proved innocent */
   T *basea, *baseb;
   octave_idx_type *ibasea, *ibaseb;
   octave_idx_type min_gallop = ms->min_gallop;
@@ -1024,37 +1024,37 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
 
   for (;;) 
     {
-      octave_idx_type acount = 0;	/* # of times A won in a row */
-      octave_idx_type bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;       /* # of times A won in a row */
+      octave_idx_type bcount = 0;       /* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
        */
       for (;;) 
-	{
-	  if (comp (*pb, *pa))
-	    {
-	      *dest-- = *pa--; *idest-- = *ipa--;
-	      ++acount;
-	      bcount = 0;
-	      --na;
-	      if (na == 0)
-		goto Succeed;
-	      if (acount >= min_gallop)
-		break;
-	    }
-	  else 
-	    {
-	      *dest-- = *pb--; *idest-- = *ipb--;
-	      ++bcount;
-	      acount = 0;
-	      --nb;
-	      if (nb == 1)
-		goto CopyA;
-	      if (bcount >= min_gallop)
-		break;
-	    }
-	}
+        {
+          if (comp (*pb, *pa))
+            {
+              *dest-- = *pa--; *idest-- = *ipa--;
+              ++acount;
+              bcount = 0;
+              --na;
+              if (na == 0)
+                goto Succeed;
+              if (acount >= min_gallop)
+                break;
+            }
+          else 
+            {
+              *dest-- = *pb--; *idest-- = *ipb--;
+              ++bcount;
+              acount = 0;
+              --nb;
+              if (nb == 1)
+                goto CopyA;
+              if (bcount >= min_gallop)
+                break;
+            }
+        }
 
       /* One run is winning so consistently that galloping may
        * be a huge win.  So try that, and continue galloping until
@@ -1063,55 +1063,55 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
        */
       ++min_gallop;
       do 
-	{
-	  min_gallop -= min_gallop > 1;
-	  ms->min_gallop = min_gallop;
-	  k = gallop_right (*pb, basea, na, na-1, comp);
-	  if (k < 0)
-	    goto Fail;
-	  k = na - k;
-	  acount = k;
-	  if (k) 
-	    {
+        {
+          min_gallop -= min_gallop > 1;
+          ms->min_gallop = min_gallop;
+          k = gallop_right (*pb, basea, na, na-1, comp);
+          if (k < 0)
+            goto Fail;
+          k = na - k;
+          acount = k;
+          if (k) 
+            {
               dest = std::copy_backward (pa+1 - k, pa+1, dest+1) - 1;
               idest = std::copy_backward (ipa+1 - k, ipa+1, idest+1) - 1;
-	      pa -= k; ipa -= k;
-	      na -= k;
-	      if (na == 0)
-		goto Succeed;
-	    }
-	  *dest-- = *pb--; *idest-- = *ipb--;
-	  --nb;
-	  if (nb == 1)
-	    goto CopyA;
+              pa -= k; ipa -= k;
+              na -= k;
+              if (na == 0)
+                goto Succeed;
+            }
+          *dest-- = *pb--; *idest-- = *ipb--;
+          --nb;
+          if (nb == 1)
+            goto CopyA;
 
-	  k = gallop_left (*pa, baseb, nb, nb-1, comp);
-	  if (k < 0)
-	    goto Fail;
-	  k = nb - k;
-	  bcount = k;
-	  if (k) 
-	    {
-	      dest -= k; idest -= k;
-	      pb -= k; ipb -= k;
+          k = gallop_left (*pa, baseb, nb, nb-1, comp);
+          if (k < 0)
+            goto Fail;
+          k = nb - k;
+          bcount = k;
+          if (k) 
+            {
+              dest -= k; idest -= k;
+              pb -= k; ipb -= k;
               std::copy (pb+1, pb+1 + k, dest+1);
               std::copy (ipb+1, ipb+1 + k, idest+1);
-	      nb -= k;
-	      if (nb == 1)
-		goto CopyA;
-	      /* nb==0 is impossible now if the comparison
-	       * function is consistent, but we can't assume
-	       * that it is.
-	       */
-	      if (nb == 0)
-		goto Succeed;
-	    }
-	  *dest-- = *pa--; *idest-- = *ipa--;
-	  --na;
-	  if (na == 0)
-	    goto Succeed;
-	} while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-      ++min_gallop;	/* penalize it for leaving galloping mode */
+              nb -= k;
+              if (nb == 1)
+                goto CopyA;
+              /* nb==0 is impossible now if the comparison
+               * function is consistent, but we can't assume
+               * that it is.
+               */
+              if (nb == 0)
+                goto Succeed;
+            }
+          *dest-- = *pa--; *idest-- = *ipa--;
+          --na;
+          if (na == 0)
+            goto Succeed;
+        } while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
+      ++min_gallop;     /* penalize it for leaving galloping mode */
       ms->min_gallop = min_gallop;
     }
 
@@ -1265,19 +1265,19 @@ octave_sort<T>::merge_collapse (T *data, Comp comp)
     {
       octave_idx_type n = ms->n - 2;
       if (n > 0 && p[n-1].len <= p[n].len + p[n+1].len) 
-	{
-	  if (p[n-1].len < p[n+1].len)
-	    --n;
-	  if (merge_at (n, data, comp) < 0)
-	    return -1;
-	}
+        {
+          if (p[n-1].len < p[n+1].len)
+            --n;
+          if (merge_at (n, data, comp) < 0)
+            return -1;
+        }
       else if (p[n].len <= p[n+1].len) 
-	{
-	  if (merge_at (n, data, comp) < 0)
-	    return -1;
-	}
+        {
+          if (merge_at (n, data, comp) < 0)
+            return -1;
+        }
       else
-	break;
+        break;
     }
 
   return 0;
@@ -1294,19 +1294,19 @@ octave_sort<T>::merge_collapse (T *data, octave_idx_type *idx, Comp comp)
     {
       octave_idx_type n = ms->n - 2;
       if (n > 0 && p[n-1].len <= p[n].len + p[n+1].len) 
-	{
-	  if (p[n-1].len < p[n+1].len)
-	    --n;
-	  if (merge_at (n, data, idx, comp) < 0)
-	    return -1;
-	}
+        {
+          if (p[n-1].len < p[n+1].len)
+            --n;
+          if (merge_at (n, data, idx, comp) < 0)
+            return -1;
+        }
       else if (p[n].len <= p[n+1].len) 
-	{
-	  if (merge_at (n, data, idx, comp) < 0)
-	    return -1;
-	}
+        {
+          if (merge_at (n, data, idx, comp) < 0)
+            return -1;
+        }
       else
-	break;
+        break;
     }
 
   return 0;
@@ -1328,9 +1328,9 @@ octave_sort<T>::merge_force_collapse (T *data, Comp comp)
     {
       octave_idx_type n = ms->n - 2;
       if (n > 0 && p[n-1].len < p[n+1].len)
-	--n;
+        --n;
       if (merge_at (n, data, comp) < 0)
-	return -1;
+        return -1;
     }
 
   return 0;
@@ -1347,9 +1347,9 @@ octave_sort<T>::merge_force_collapse (T *data, octave_idx_type *idx, Comp comp)
     {
       octave_idx_type n = ms->n - 2;
       if (n > 0 && p[n-1].len < p[n+1].len)
-	--n;
+        --n;
       if (merge_at (n, data, idx, comp) < 0)
-	return -1;
+        return -1;
     }
 
   return 0;
@@ -1369,7 +1369,7 @@ template <class T>
 octave_idx_type
 octave_sort<T>::merge_compute_minrun (octave_idx_type n)
 {
-  octave_idx_type r = 0;	/* becomes 1 if any 1 bits are shifted off */
+  octave_idx_type r = 0;        /* becomes 1 if any 1 bits are shifted off */
 
   while (n >= 64)
     {
@@ -1401,34 +1401,34 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
        */
       octave_idx_type minrun = merge_compute_minrun (nremaining);
       do 
-	{
-	  bool descending;
-	  octave_idx_type n;
+        {
+          bool descending;
+          octave_idx_type n;
 
-	  /* Identify next run. */
-	  n = count_run (data + lo, nremaining, descending, comp);
-	  if (n < 0)
-	    goto fail;
-	  if (descending)
+          /* Identify next run. */
+          n = count_run (data + lo, nremaining, descending, comp);
+          if (n < 0)
+            goto fail;
+          if (descending)
             std::reverse (data + lo, data + lo + n);
-	  /* If short, extend to min(minrun, nremaining). */
-	  if (n < minrun) 
-	    {
-	      const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
-	      binarysort (data + lo, force, n, comp);
-	      n = force;
-	    }
-	  /* Push run onto pending-runs stack, and maybe merge. */
-	  assert (ms->n < MAX_MERGE_PENDING);
-	  ms->pending[ms->n].base = lo;
-	  ms->pending[ms->n].len = n;
-	  ms->n++;
-	  if (merge_collapse (data, comp) < 0)
-	    goto fail;
-	  /* Advance to find next run. */
-	  lo += n;
-	  nremaining -= n;
-	}
+          /* If short, extend to min(minrun, nremaining). */
+          if (n < minrun) 
+            {
+              const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
+              binarysort (data + lo, force, n, comp);
+              n = force;
+            }
+          /* Push run onto pending-runs stack, and maybe merge. */
+          assert (ms->n < MAX_MERGE_PENDING);
+          ms->pending[ms->n].base = lo;
+          ms->pending[ms->n].len = n;
+          ms->n++;
+          if (merge_collapse (data, comp) < 0)
+            goto fail;
+          /* Advance to find next run. */
+          lo += n;
+          nremaining -= n;
+        }
       while (nremaining);
 
       merge_force_collapse (data, comp);
@@ -1460,37 +1460,37 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
        */
       octave_idx_type minrun = merge_compute_minrun (nremaining);
       do 
-	{
-	  bool descending;
-	  octave_idx_type n;
+        {
+          bool descending;
+          octave_idx_type n;
 
-	  /* Identify next run. */
-	  n = count_run (data + lo, nremaining, descending, comp);
-	  if (n < 0)
-	    goto fail;
-	  if (descending)
+          /* Identify next run. */
+          n = count_run (data + lo, nremaining, descending, comp);
+          if (n < 0)
+            goto fail;
+          if (descending)
             {
               std::reverse (data + lo, data + lo + n);
               std::reverse (idx + lo, idx + lo + n);
             }
-	  /* If short, extend to min(minrun, nremaining). */
-	  if (n < minrun) 
-	    {
-	      const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
-	      binarysort (data + lo, idx + lo, force, n, comp);
-	      n = force;
-	    }
-	  /* Push run onto pending-runs stack, and maybe merge. */
-	  assert (ms->n < MAX_MERGE_PENDING);
-	  ms->pending[ms->n].base = lo;
-	  ms->pending[ms->n].len = n;
-	  ms->n++;
-	  if (merge_collapse (data, idx, comp) < 0)
-	    goto fail;
-	  /* Advance to find next run. */
-	  lo += n;
-	  nremaining -= n;
-	}
+          /* If short, extend to min(minrun, nremaining). */
+          if (n < minrun) 
+            {
+              const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
+              binarysort (data + lo, idx + lo, force, n, comp);
+              n = force;
+            }
+          /* Push run onto pending-runs stack, and maybe merge. */
+          assert (ms->n < MAX_MERGE_PENDING);
+          ms->pending[ms->n].base = lo;
+          ms->pending[ms->n].len = n;
+          ms->n++;
+          if (merge_collapse (data, idx, comp) < 0)
+            goto fail;
+          /* Advance to find next run. */
+          lo += n;
+          nremaining -= n;
+        }
       while (nremaining);
 
       merge_force_collapse (data, idx, comp);
@@ -1941,7 +1941,7 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
 template <class T>
 bool 
 octave_sort<T>::ascending_compare (typename ref_param<T>::type x,
-				   typename ref_param<T>::type y)
+                                   typename ref_param<T>::type y)
 {
   return x < y;
 }
@@ -1949,7 +1949,7 @@ octave_sort<T>::ascending_compare (typename ref_param<T>::type x,
 template <class T>
 bool 
 octave_sort<T>::descending_compare (typename ref_param<T>::type x,
-				    typename ref_param<T>::type y)
+                                    typename ref_param<T>::type y)
 {
   return x > y;
 }

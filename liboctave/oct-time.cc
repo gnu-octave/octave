@@ -91,7 +91,7 @@ octave_time::stamp (void)
 //
 //     <snip>
 //
-//     If structure members are outside  their	legal interval, they
+//     If structure members are outside  their  legal interval, they
 //     will be normalized (so that, e.g., 40 October is changed into
 //     9 November).
 //
@@ -104,7 +104,7 @@ octave_time::stamp (void)
   { \
     if (v < lo || v > hi) \
       (*current_liboctave_error_handler) \
-	("invalid value specified for " #f); \
+        ("invalid value specified for " #f); \
  \
     tm_ ## f = v; \
  \
@@ -174,15 +174,15 @@ octave_base_tm::strftime (const std::string& fmt) const
       size_t chars_written = 0;
 
       while (chars_written == 0)
-	{
-	  delete [] buf;
-	  buf = new char[bufsize];
-	  buf[0] = '\0';
+        {
+          delete [] buf;
+          buf = new char[bufsize];
+          buf[0] = '\0';
 
-	  chars_written = nstrftime (buf, bufsize, fmt_str, &t, 0, 0);
+          chars_written = nstrftime (buf, bufsize, fmt_str, &t, 0, 0);
 
-	  bufsize *= 2;
-	}
+          bufsize *= 2;
+        }
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;

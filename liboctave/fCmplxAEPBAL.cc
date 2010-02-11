@@ -36,17 +36,17 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgebal, CGEBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&,
-			     octave_idx_type&, octave_idx_type&, float*,
-			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+                             FloatComplex*, const octave_idx_type&,
+                             octave_idx_type&, octave_idx_type&, float*,
+                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
   F77_FUNC (cgebak, CGEBAK) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&,
-			     const octave_idx_type&, const float*,
-			     const octave_idx_type&, FloatComplex*,
-			     const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL  F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const float*,
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL  F77_CHAR_ARG_LEN_DECL);
 }
 
 FloatComplexAEPBALANCE::FloatComplexAEPBALANCE (const FloatComplexMatrix& a, 
@@ -72,9 +72,9 @@ FloatComplexAEPBALANCE::FloatComplexAEPBALANCE (const FloatComplexMatrix& a,
   job = noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     n, p_balanced_mat, n, ilo, ihi,
-			     pscale, info
-			     F77_CHAR_ARG_LEN (1)));
+                             n, p_balanced_mat, n, ilo, ihi,
+                             pscale, info
+                             F77_CHAR_ARG_LEN (1)));
 }
 
 FloatComplexMatrix
@@ -93,11 +93,11 @@ FloatComplexAEPBALANCE::balancing_matrix (void) const
   char side = 'R';
 
   F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 (&side, 1),
-			     n, ilo, ihi, pscale, n,
-			     p_balancing_mat, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&side, 1),
+                             n, ilo, ihi, pscale, n,
+                             p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   return balancing_mat;
 }

@@ -70,22 +70,22 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
       double d = rb.elem (i);
 
       if (xisnan (d))
-	{
-	  (*current_liboctave_error_handler)
-	    ("invalid conversion from NaN to character");
-	  return *this;
-	}
+        {
+          (*current_liboctave_error_handler)
+            ("invalid conversion from NaN to character");
+          return *this;
+        }
       else
-	{
-	  octave_idx_type ival = NINTbig (d);
+        {
+          octave_idx_type ival = NINTbig (d);
 
-	  if (ival < 0 || ival > UCHAR_MAX)
-	    // FIXME -- is there something
-	    // better we could do? Should we warn the user?
-	    ival = 0;
+          if (ival < 0 || ival > UCHAR_MAX)
+            // FIXME -- is there something
+            // better we could do? Should we warn the user?
+            ival = 0;
 
-	  tmp.elem (i) = static_cast<char>(ival);
-	}
+          tmp.elem (i) = static_cast<char>(ival);
+        }
     }
 
   insert (tmp, ra_idx);
@@ -121,12 +121,12 @@ charNDArray::matrix_value (void) const
 
     case 2:
       retval = charMatrix (Array2<char> (*this, dimensions(0),
-					       dimensions(1)));
+                                               dimensions(1)));
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("invalid conversion of charNDArray to charMatrix");
+        ("invalid conversion of charNDArray to charMatrix");
       break;
     }
 
@@ -135,15 +135,15 @@ charNDArray::matrix_value (void) const
 
 void
 charNDArray::increment_index (Array<octave_idx_type>& ra_idx,
-			      const dim_vector& dimensions,
-			      int start_dimension)
+                              const dim_vector& dimensions,
+                              int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 octave_idx_type 
 charNDArray::compute_index (Array<octave_idx_type>& ra_idx,
-			    const dim_vector& dimensions)
+                            const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
 }

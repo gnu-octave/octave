@@ -37,27 +37,27 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cggbal, CGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-			     FloatComplex* A, const octave_idx_type& LDA, FloatComplex* B,
-			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
-			     float* LSCALE, float* RSCALE,
-			     float* WORK, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL);
+                             FloatComplex* A, const octave_idx_type& LDA, FloatComplex* B,
+                             const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
+                             float* LSCALE, float* RSCALE,
+                             float* WORK, octave_idx_type& INFO
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sggbak, SGGBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type& N, const octave_idx_type& ILO,
-			     const octave_idx_type& IHI, const float* LSCALE,
-			     const float* RSCALE, octave_idx_type& M, float* V,
-			     const octave_idx_type& LDV, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type& N, const octave_idx_type& ILO,
+                             const octave_idx_type& IHI, const float* LSCALE,
+                             const float* RSCALE, octave_idx_type& M, float* V,
+                             const octave_idx_type& LDV, octave_idx_type& INFO
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
 }
 
 octave_idx_type
 FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, 
-		  const std::string& balance_job)
+                  const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
 
@@ -89,9 +89,9 @@ FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMat
   char job = balance_job[0];
 
   F77_XFCN (cggbal, CGGBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     n, p_balanced_mat, n, p_balanced_mat2,
-			     n, ilo, ihi, plscale,prscale, pwork, info
-			     F77_CHAR_ARG_LEN (1)));
+                             n, p_balanced_mat, n, p_balanced_mat2,
+                             n, ilo, ihi, plscale,prscale, pwork, info
+                             F77_CHAR_ARG_LEN (1)));
 
   balancing_mat = FloatMatrix (n, n, 0.0);
   balancing_mat2 = FloatMatrix (n, n, 0.0);
@@ -107,19 +107,19 @@ FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMat
 
   // first left
   F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 ("L", 1),
-			     n, ilo, ihi, plscale, prscale,
-			     n, p_balancing_mat, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 ("L", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
       
   // then right
   F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 ("R", 1),
-			     n, ilo, ihi, plscale, prscale,
-			     n, p_balancing_mat2, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 ("R", 1),
+                             n, ilo, ihi, plscale, prscale,
+                             n, p_balancing_mat2, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

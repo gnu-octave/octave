@@ -42,19 +42,19 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     float*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             float*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     float*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             float*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-			     float*, const octave_idx_type&, const float&,
-			     float&, float*, octave_idx_type*, 
-			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+                             float*, const octave_idx_type&, const float&,
+                             float&, float*, octave_idx_type*, 
+                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
@@ -112,8 +112,8 @@ FloatCHOL::init (const FloatMatrix& a, bool calc_cond)
     anorm = xnorm (a, 1);
 
   F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
-			     n, h, n, info
-			     F77_CHAR_ARG_LEN (1)));
+                             n, h, n, info
+                             F77_CHAR_ARG_LEN (1)));
 
   xrcond = 0.0;
   if (info > 0)
@@ -128,11 +128,11 @@ FloatCHOL::init (const FloatMatrix& a, bool calc_cond)
       Array<octave_idx_type> iz (n);
       octave_idx_type *piz = iz.fortran_vec ();
       F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-				 n, anorm, xrcond, pz, piz, spocon_info
-				 F77_CHAR_ARG_LEN (1)));
+                                 n, anorm, xrcond, pz, piz, spocon_info
+                                 F77_CHAR_ARG_LEN (1)));
 
       if (spocon_info != 0) 
-	info = -1;
+        info = -1;
     }
 
   return info;
@@ -155,21 +155,21 @@ chol2inv_internal (const FloatMatrix& r)
       float *v = tmp.fortran_vec();
 
       if (info == 0)
-	{
-	  F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-				     v, n, info
-				     F77_CHAR_ARG_LEN (1)));
+        {
+          F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                     v, n, info
+                                     F77_CHAR_ARG_LEN (1)));
 
-	  // If someone thinks of a more graceful way of doing this (or
-	  // faster for that matter :-)), please let me know!
+          // If someone thinks of a more graceful way of doing this (or
+          // faster for that matter :-)), please let me know!
 
-	  if (n > 1)
-	    for (octave_idx_type j = 0; j < r_nc; j++)
-	      for (octave_idx_type i = j+1; i < r_nr; i++)
-		tmp.xelem (i, j) = tmp.xelem (j, i);
+          if (n > 1)
+            for (octave_idx_type j = 0; j < r_nc; j++)
+              for (octave_idx_type i = j+1; i < r_nr; i++)
+                tmp.xelem (i, j) = tmp.xelem (j, i);
 
-	  retval = tmp;
-	}
+          retval = tmp;
+        }
     }
   else
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");

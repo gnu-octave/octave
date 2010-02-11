@@ -36,8 +36,8 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgeqp3, CGEQP3) (const octave_idx_type&, const octave_idx_type&, FloatComplex*,
-			     const octave_idx_type&, octave_idx_type*, FloatComplex*, FloatComplex*,
-			     const octave_idx_type&, float*, octave_idx_type&);
+                             const octave_idx_type&, octave_idx_type*, FloatComplex*, FloatComplex*,
+                             const octave_idx_type&, float*, octave_idx_type&);
 }
 
 // It would be best to share some of this code with FloatComplexQR class...

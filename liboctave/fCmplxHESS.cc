@@ -33,27 +33,27 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgebal, CGEBAL) (F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, FloatComplex*, const octave_idx_type&,
-			     octave_idx_type&, octave_idx_type&, float*, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL);
+                             const octave_idx_type&, FloatComplex*, const octave_idx_type&,
+                             octave_idx_type&, octave_idx_type&, float*, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
   F77_FUNC (cgehrd, CGEHRD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, FloatComplex*,
-			     FloatComplex*, const octave_idx_type&, octave_idx_type&);
+                             FloatComplex*, const octave_idx_type&, FloatComplex*,
+                             FloatComplex*, const octave_idx_type&, octave_idx_type&);
  
   F77_RET_T
   F77_FUNC (cunghr, CUNGHR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, FloatComplex*,
-			     FloatComplex*, const octave_idx_type&, octave_idx_type&);
+                             FloatComplex*, const octave_idx_type&, FloatComplex*,
+                             FloatComplex*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (cgebak, CGEBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
-			     const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
+                             const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 octave_idx_type
@@ -65,7 +65,7 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
-	("FloatComplexHESS requires square matrix");
+        ("FloatComplexHESS requires square matrix");
       return -1;
     }
 
@@ -85,8 +85,8 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
   float *pscale = scale.fortran_vec ();
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     n, h, n, ilo, ihi, pscale, info
-			     F77_CHAR_ARG_LEN (1)));
+                             n, h, n, ilo, ihi, pscale, info
+                             F77_CHAR_ARG_LEN (1)));
 
   Array<FloatComplex> tau (n-1);
   FloatComplex *ptau = tau.fortran_vec ();
@@ -100,13 +100,13 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
   FloatComplex *z = unitary_hess_mat.fortran_vec ();
 
   F77_XFCN (cunghr, CUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
-			     lwork, info));
+                             lwork, info));
 
   F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-			     F77_CONST_CHAR_ARG2 (&side, 1),
-			     n, ilo, ihi, pscale, n, z, n, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&side, 1),
+                             n, ilo, ihi, pscale, n, z, n, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   // If someone thinks of a more graceful way of
   // doing this (or faster for that matter :-)),
@@ -115,7 +115,7 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
   if (n > 2)
     for (octave_idx_type j = 0; j < a_nc; j++)
       for (octave_idx_type i = j+2; i < a_nr; i++)
-	hess_mat.elem (i, j) = 0;
+        hess_mat.elem (i, j) = 0;
 
   return info;
 }

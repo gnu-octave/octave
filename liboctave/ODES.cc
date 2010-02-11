@@ -36,7 +36,7 @@ ODES::initialize (const ColumnVector& xx, double tt)
 
 void
 ODES::initialize (const ColumnVector& xx, double tt,
-		  const ColumnVector& xtheta)
+                  const ColumnVector& xtheta)
 {
   base_diff_eqn::initialize (xx, tt);
   xdot = ColumnVector (xx.length (), 0.0);

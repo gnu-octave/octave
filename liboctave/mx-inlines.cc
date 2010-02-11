@@ -421,9 +421,9 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y)
     R *r = 0; \
     if (n > 0) \
       { \
-	r = new R [n]; \
-	for (size_t i = 0; i < n; i++) \
-	  r[i] = OP (x[i]); \
+        r = new R [n]; \
+        for (size_t i = 0; i < n; i++) \
+          r[i] = OP (x[i]); \
       } \
     return r; \
   }
@@ -1055,8 +1055,8 @@ void mx_inline_diff (const T *v, T *r, octave_idx_type n,
       break;
     case 2:
       if (n > 1)
-	{
-	  T lst = v[1] - v[0];
+        {
+          T lst = v[1] - v[0];
           for (octave_idx_type i = 0; i < n-2; i++)
             {
               T dif = v[i+2] - v[i+1];

@@ -33,16 +33,16 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgeesx, CGEESX) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     FloatComplexSCHUR::select_function,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&,
-			     FloatComplex*, FloatComplex*, const octave_idx_type&, float&,
-			     float&, FloatComplex*, const octave_idx_type&, float*, octave_idx_type*,
-			     octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             FloatComplexSCHUR::select_function,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&,
+                             FloatComplex*, FloatComplex*, const octave_idx_type&, float&,
+                             float&, FloatComplex*, const octave_idx_type&, float*, octave_idx_type*,
+                             octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 static octave_idx_type
@@ -59,7 +59,7 @@ select_dig (const FloatComplex& a)
 
 octave_idx_type
 FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord, 
-		    bool calc_unitary)
+                    bool calc_unitary)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -67,7 +67,7 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
-	("FloatComplexSCHUR requires square matrix");
+        ("FloatComplexSCHUR requires square matrix");
       return -1;
     }
 
@@ -123,14 +123,14 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
   octave_idx_type *pbwork = bwork.fortran_vec ();
 
   F77_XFCN (cgeesx, CGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
-			     F77_CONST_CHAR_ARG2 (&sort, 1),
-			     selector,
-			     F77_CONST_CHAR_ARG2 (&sense, 1),
-			     n, s, n, sdim, pw, q, n, rconde, rcondv,
-			     pwork, lwork, prwork, pbwork, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&sort, 1),
+                             selector,
+                             F77_CONST_CHAR_ARG2 (&sense, 1),
+                             n, s, n, sdim, pw, q, n, rconde, rcondv,
+                             pwork, lwork, prwork, pbwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

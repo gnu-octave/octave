@@ -34,13 +34,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgesvd, DGESVD) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&, double*,
-			     const octave_idx_type&, double*, double*,
-			     const octave_idx_type&, double*, const octave_idx_type&,
-			     double*, const octave_idx_type&, octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, double*,
+                             const octave_idx_type&, double*, double*,
+                             const octave_idx_type&, double*, const octave_idx_type&,
+                             double*, const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 }
 
 Matrix
@@ -49,7 +49,7 @@ SVD::left_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("SVD: U not computed because type == SVD::sigma_only");
+        ("SVD: U not computed because type == SVD::sigma_only");
       return Matrix ();
     }
   else
@@ -62,7 +62,7 @@ SVD::right_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("SVD: V not computed because type == SVD::sigma_only");
+        ("SVD: V not computed because type == SVD::sigma_only");
       return Matrix ();
     }
   else
@@ -141,21 +141,21 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
 
   F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m1, s_vec, u, m1, vt,
-			     nrow_vt1, work.fortran_vec (), lwork, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             m, n, tmp_data, m1, s_vec, u, m1, vt,
+                             nrow_vt1, work.fortran_vec (), lwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   lwork = static_cast<octave_idx_type> (work(0));
   work.resize (lwork);
 
   F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     m, n, tmp_data, m1, s_vec, u, m1, vt,
-			     nrow_vt1, work.fortran_vec (), lwork, info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             m, n, tmp_data, m1, s_vec, u, m1, vt,
+                             nrow_vt1, work.fortran_vec (), lwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm = right_sm.transpose ();

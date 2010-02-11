@@ -42,13 +42,13 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgeqrf, CGEQRF) (const octave_idx_type&, const octave_idx_type&, FloatComplex*,
-			     const octave_idx_type&, FloatComplex*, FloatComplex*,
-			     const octave_idx_type&, octave_idx_type&); 
+                             const octave_idx_type&, FloatComplex*, FloatComplex*,
+                             const octave_idx_type&, octave_idx_type&); 
 
   F77_RET_T
   F77_FUNC (cungqr, CUNGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-			     FloatComplex*, const octave_idx_type&, FloatComplex*,
-			     FloatComplex*, const octave_idx_type&, octave_idx_type&);
+                             FloatComplex*, const octave_idx_type&, FloatComplex*,
+                             FloatComplex*, const octave_idx_type&, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE
 
@@ -131,11 +131,11 @@ void FloatComplexQR::form (octave_idx_type n, FloatComplexMatrix& afact,
   if (qr_type == qr_type_raw)
     {
       for (octave_idx_type j = 0; j < min_mn; j++)
-	{
-	  octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
-	  for (octave_idx_type i = limit + 1; i < m; i++)
-	    afact.elem (i, j) *= tau[j];
-	}
+        {
+          octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+          for (octave_idx_type i = limit + 1; i < m; i++)
+            afact.elem (i, j) *= tau[j];
+        }
 
       r = afact;
     }
@@ -182,7 +182,7 @@ void FloatComplexQR::form (octave_idx_type n, FloatComplexMatrix& afact,
 
           // allocate buffer and do the job.
           octave_idx_type lwork = clwork.real ();
-	  lwork = std::max (lwork, static_cast<octave_idx_type> (1));
+          lwork = std::max (lwork, static_cast<octave_idx_type> (1));
           OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
           F77_XFCN (cungqr, CUNGQR, (m, k, min_mn, q.fortran_vec (), m, tau,
                                      work, lwork, info));
@@ -300,7 +300,7 @@ FloatComplexQR::insert_col (const FloatComplexMatrix& u, const Array<octave_idx_
       OCTAVE_LOCAL_BUFFER (float, rw, kmax);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           F77_XFCN (cqrinc, CQRINC, (m, n + ii, std::min (kmax, k + ii), 
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, 
@@ -322,7 +322,7 @@ FloatComplexQR::delete_col (octave_idx_type j)
     {
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       F77_XFCN (cqrdec, CQRDEC, (m, n, k, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1, rw));
+                                 r.fortran_vec (), r.rows (), j + 1, rw));
 
       if (k < m)
         {
@@ -359,7 +359,7 @@ FloatComplexQR::delete_col (const Array<octave_idx_type>& j)
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
-	  octave_idx_type ii = i;
+          octave_idx_type ii = i;
           F77_XFCN (cqrdec, CQRDEC, (m, n - ii, k == m ? k : k - ii, 
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, rw));
@@ -395,7 +395,7 @@ FloatComplexQR::insert_row (const FloatComplexRowVector& u, octave_idx_type j)
       FloatComplexRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       F77_XFCN (cqrinr, CQRINR, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), 
+                                 r.fortran_vec (), r.rows (), 
                                  j + 1, utmp.fortran_vec (), rw));
 
     }
@@ -416,7 +416,7 @@ FloatComplexQR::delete_row (octave_idx_type j)
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
       OCTAVE_LOCAL_BUFFER (float, rw, m);
       F77_XFCN (cqrder, CQRDER, (m, n, q.fortran_vec (), q.rows (),
-				 r.fortran_vec (), r.rows (), j + 1,
+                                 r.fortran_vec (), r.rows (), j + 1,
                                  w, rw));
 
       q.resize (m - 1, m - 1);

@@ -92,7 +92,7 @@ octave_rand::instance_ok (void)
   if (! instance)
     {
       (*current_liboctave_error_handler)
-	("unable to create octave_rand object!");
+        ("unable to create octave_rand object!");
 
       retval = false;
     }
@@ -220,7 +220,7 @@ octave_rand::do_distribution (void)
 
     default:
       (*current_liboctave_error_handler)
-	("rand: invalid distribution ID = %d", current_distribution);
+        ("rand: invalid distribution ID = %d", current_distribution);
       break;
     }
 
@@ -256,7 +256,7 @@ octave_rand::do_distribution (const std::string& d)
 
     default:
       (*current_liboctave_error_handler)
-	("rand: invalid distribution ID = %d", id);
+        ("rand: invalid distribution ID = %d", id);
       break;
     }
 }
@@ -310,72 +310,72 @@ octave_rand::do_scalar (double a)
   if (use_old_generators)
     {
       switch (current_distribution)
-	{
-	case uniform_dist:
-	  F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, retval);
-	  break;
+        {
+        case uniform_dist:
+          F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, retval);
+          break;
 
-	case normal_dist:
-	  F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, retval);
-	  break;
+        case normal_dist:
+          F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, retval);
+          break;
 
-	case expon_dist:
-	  F77_FUNC (dgenexp, DGENEXP) (1.0, retval);
-	  break;
+        case expon_dist:
+          F77_FUNC (dgenexp, DGENEXP) (1.0, retval);
+          break;
 
-	case poisson_dist:
-	  if (a < 0.0 || xisnan(a) || xisinf(a))
-	    retval = octave_NaN;
-	  else
-	    {
-	      // workaround bug in ignpoi, by calling with different Mu
-	      F77_FUNC (dignpoi, DIGNPOI) (a + 1, retval);
-	      F77_FUNC (dignpoi, DIGNPOI) (a, retval);
-	    }
-	  break;
+        case poisson_dist:
+          if (a < 0.0 || xisnan(a) || xisinf(a))
+            retval = octave_NaN;
+          else
+            {
+              // workaround bug in ignpoi, by calling with different Mu
+              F77_FUNC (dignpoi, DIGNPOI) (a + 1, retval);
+              F77_FUNC (dignpoi, DIGNPOI) (a, retval);
+            }
+          break;
 
-	case gamma_dist:
-	  if (a <= 0.0 || xisnan(a) || xisinf(a))
-	    retval = octave_NaN;
-	  else
-	    F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
-	  break;
+        case gamma_dist:
+          if (a <= 0.0 || xisnan(a) || xisinf(a))
+            retval = octave_NaN;
+          else
+            F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
+          break;
 
-	default:
-	  (*current_liboctave_error_handler) 
-	    ("rand: invalid distribution ID = %d", current_distribution);
-	  break;
-	}
+        default:
+          (*current_liboctave_error_handler) 
+            ("rand: invalid distribution ID = %d", current_distribution);
+          break;
+        }
     }
   else
     {
       switch (current_distribution)
-	{
-	case uniform_dist:
-	  retval = oct_randu ();
-	  break;
+        {
+        case uniform_dist:
+          retval = oct_randu ();
+          break;
 
-	case normal_dist:
-	  retval = oct_randn ();
-	  break;
+        case normal_dist:
+          retval = oct_randn ();
+          break;
 
-	case expon_dist:
-	  retval = oct_rande ();
-	  break;
+        case expon_dist:
+          retval = oct_rande ();
+          break;
 
-	case poisson_dist:
-	  retval = oct_randp (a);
-	  break;
+        case poisson_dist:
+          retval = oct_randp (a);
+          break;
 
-	case gamma_dist:
-	  retval = oct_randg (a);
-	  break;
+        case gamma_dist:
+          retval = oct_randg (a);
+          break;
 
-	default:
-	  (*current_liboctave_error_handler)
-	    ("rand: invalid distribution ID = %d", current_distribution);
-	  break;
-	}
+        default:
+          (*current_liboctave_error_handler)
+            ("rand: invalid distribution ID = %d", current_distribution);
+          break;
+        }
 
       save_state ();
     }
@@ -393,7 +393,7 @@ octave_rand::do_matrix (octave_idx_type n, octave_idx_type m, double a)
       retval.clear (n, m);
 
       if (n > 0 && m > 0)
-	fill (retval.capacity(), retval.fortran_vec(), a);
+        fill (retval.capacity(), retval.fortran_vec(), a);
     }
   else
     (*current_liboctave_error_handler) ("rand: invalid negative argument");
@@ -561,11 +561,11 @@ octave_rand::switch_to_generator (int dist)
     { \
       double val; \
       for (volatile octave_idx_type i = 0; i < len; i++) \
-	{ \
-	  octave_quit (); \
-	  RAND_FUNC (val); \
-	  v[i] = val; \
-	} \
+        { \
+          octave_quit (); \
+          RAND_FUNC (val); \
+          v[i] = val; \
+        } \
     } \
   while (0)
 
@@ -579,77 +579,77 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
     {
     case uniform_dist:
       if (use_old_generators)
-	{
+        {
 #define RAND_FUNC(x) F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x)
-	  MAKE_RAND (len);
+          MAKE_RAND (len);
 #undef RAND_FUNC
-	}
+        }
       else
-	oct_fill_randu (len, v);
+        oct_fill_randu (len, v);
       break;
 
     case normal_dist:
       if (use_old_generators)
-	{
+        {
 #define RAND_FUNC(x) F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x)
-	  MAKE_RAND (len);
+          MAKE_RAND (len);
 #undef RAND_FUNC
-	}
+        }
       else
-	oct_fill_randn (len, v);
+        oct_fill_randn (len, v);
       break;
 
     case expon_dist:
       if (use_old_generators)
-	{
+        {
 #define RAND_FUNC(x) F77_FUNC (dgenexp, DGENEXP) (1.0, x)
-	  MAKE_RAND (len);
+          MAKE_RAND (len);
 #undef RAND_FUNC
-	}
+        }
       else
-	oct_fill_rande (len, v);
+        oct_fill_rande (len, v);
       break;
 
     case poisson_dist:
       if (use_old_generators)
-	{
-	  if (a < 0.0 || xisnan(a) || xisinf(a))
+        {
+          if (a < 0.0 || xisnan(a) || xisinf(a))
 #define RAND_FUNC(x) x = octave_NaN;
-	    MAKE_RAND (len);
+            MAKE_RAND (len);
 #undef RAND_FUNC
-	  else
-	    {
-	      // workaround bug in ignpoi, by calling with different Mu
-	      double tmp;
-	      F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
+          else
+            {
+              // workaround bug in ignpoi, by calling with different Mu
+              double tmp;
+              F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
 #define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (a, x)
-		MAKE_RAND (len);
+                MAKE_RAND (len);
 #undef RAND_FUNC
-	    }
-	}
+            }
+        }
       else
-	oct_fill_randp (a, len, v);
+        oct_fill_randp (a, len, v);
       break;
 
     case gamma_dist:
       if (use_old_generators)
-	{
-	  if (a <= 0.0 || xisnan(a) || xisinf(a))
+        {
+          if (a <= 0.0 || xisnan(a) || xisinf(a))
 #define RAND_FUNC(x) x = octave_NaN;
-	    MAKE_RAND (len);
+            MAKE_RAND (len);
 #undef RAND_FUNC
-	  else
+          else
 #define RAND_FUNC(x) F77_FUNC (dgengam, DGENGAM) (1.0, a, x)
-	    MAKE_RAND (len);
+            MAKE_RAND (len);
 #undef RAND_FUNC
-	}
+        }
       else
-	oct_fill_randg (a, len, v);
+        oct_fill_randg (a, len, v);
       break;
 
     default:
       (*current_liboctave_error_handler)
-	("rand: invalid distribution ID = %d", current_distribution);
+        ("rand: invalid distribution ID = %d", current_distribution);
       break;
     }
 

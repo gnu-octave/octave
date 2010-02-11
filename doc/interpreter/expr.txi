@@ -826,6 +826,11 @@ would result in an error if @code{f} were called with one or two
 arguments because Octave would be forced to try to evaluate both of the
 operands for the operator @samp{&}.
 
+The ternary operator (?:) is not supported in Octave. If short-circuiting is
+not important, it can be replaced by the @code{ifelse} function.
+
+@DOCSTRING(ifelse)
+
 @node Assignment Ops
 @section Assignment Expressions
 @cindex assignment expressions

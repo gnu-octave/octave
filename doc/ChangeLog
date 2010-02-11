@@ -1,3 +1,8 @@
+2010-02-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/expr.txi: Mention no ternary operator and the ifelse
+	fucntion as a possible replacement.
+
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/tips.txi: More tips.

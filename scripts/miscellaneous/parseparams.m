@@ -1,4 +1,5 @@
 ## Copyright (C) 2006, 2007 Alexander Barth
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -18,6 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
+## @deftypefnx {Function File} {[@var{reg}, @var{var1}, @dots{}] =} parseparams (@var{params}, @var{name1}, @var{default1}, @dots{})
 ## Return in @var{reg} the cell elements of @var{param} up to the first
 ## string element and in @var{prop} all remaining elements beginning
 ## with the first string element.  For example 
@@ -41,24 +43,65 @@
 ## The parseparams function may be used to separate 'regular'
 ## arguments and additional arguments given as property/value pairs of
 ## the @var{varargin} cell array.
+##
+## In the second form of the call, available options are specified directly
+## with their default values given as name-value pairs.
+## If @var{params} do not form name-value pairs, or if an option occurs
+## that does not match any of the available options, an error occurs.
+## When called from a m-file function, the error is prefixed with the
+## name of the caller function.
+## The matching of options is case-insensitive.
+##
 ## @seealso{varargin}
 ## @end deftypefn
 
 ## Author: Alexander Barth <abarth93@users.sourceforge.net>
 ## Author: Aida Alvera Azcarate <aida@netecho.info>
 
-function [reg, prop] = parseparams (params)
+function [reg, varargout] = parseparams (params, varargin)
 
-  i = 1;
+  strs = cellfun ("isclass", params, "char");
+  i = find (strs, 1);
+  if (i)
+    reg = params(1:i-1);
+    prop = params(i:end);
+  else
+    reg = params;
+    prop = {};
+  endif
 
-  while (i <= numel (params))
-    if (ischar (params{i}))
-      break;
+  if (nargin == 1)
+    varargout = {prop};
+  else
+    names = varargin(1:2:end);
+    defaults = varargin(2:2:end);
+    if (! size_equal (names, defaults))
+      error ("parseparams: needs odd number of arguments");
     endif
-    i++;
-  endwhile
+    [names, sidx] = sort (names);
 
-  reg = params(1:i-1);
-  prop = params(i:end);
+    varargout = defaults;
+    if (i)
+      ## Let's parse the properties.
+      pnames = prop(1:2:end);
+      values = prop(2:2:end);
+      if (! size_equal (pnames, values) || ! all (strs(i:2:end)))
+        error_as_caller ("options must be given as name-value pairs");
+      endif
+      idx = lookup (names, pnames, "mi");
+      if (! all (idx))
+        error_as_caller ("unrecognized option: %s", pnames{find (idx == 0, 1)});
+      else
+        varargout(sidx(idx)) = values;
+      endif
+    endif
+  endif
 
 endfunction
+
+function error_as_caller (msg, varargin)
+  stack = dbstack (1); # omit me
+  fname = stack(min (2, end)).name;
+  error ([fname, ": ", msg], varargin{:});
+endfunction
+

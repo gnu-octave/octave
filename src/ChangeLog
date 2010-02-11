@@ -4,10 +4,9 @@
 	#undefs before including zfstream.h.
 
 2010-01-30  Jyh-Miin Lin <jyhmiin@gmail.com>
-	* DLD-FUNCTIONS/qz.cc (Fqz):
-	  Add support for complex case (no reordering yet).
-	  Place dggbak and zggbak later.
-	  Change Q to Q' to meet MATLAB's results.
+
+	* DLD-FUNCTIONS/qz.cc (Fqz): Handle complex case without reordering.
+	Return Q' for Matlab compatibility.
 
 2010-02-11  Jaroslav Hajek  <highegg@gmail.com>
 

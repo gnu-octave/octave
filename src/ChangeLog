@@ -1,3 +1,8 @@
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc: If gnulib defines open, undefine it.  Move
+	#undefs before including zfstream.h.
+
 2010-01-30  Jyh-Miin Lin <jyhmiin@gmail.com>
 	* DLD-FUNCTIONS/qz.cc (Fqz):
 	  Add support for complex case (no reordering yet).

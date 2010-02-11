@@ -80,13 +80,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-ascii.h"
 #include "ls-oct-binary.h"
 
-#ifdef HAVE_ZLIB
-#include "zfstream.h"
-#endif
-
-// Remove gnulib definition, if any.
+// Remove gnulib definitions, if any.
 #ifdef close
 #undef close
+#endif
+#ifdef open
+#undef open
+#endif
+
+#ifdef HAVE_ZLIB
+#include "zfstream.h"
 #endif
 
 // Write octave-core file if Octave crashes or is killed by a signal.

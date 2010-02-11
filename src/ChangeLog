@@ -1,3 +1,7 @@
+2010-02-10  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc: If gnulib defines close, undefine it.
+
 2010-02-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-perm.h (octave_perm_matrix::builtin_type): New function.

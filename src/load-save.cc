@@ -84,6 +84,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "zfstream.h"
 #endif
 
+// Remove gnulib definition, if any.
+#ifdef close
+#undef close
+#endif
+
 // Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core = true;
 

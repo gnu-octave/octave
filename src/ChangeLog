@@ -1,9 +1,18 @@
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/qz.cc: Untabify.
+	(Fqz): Declare complex_case volatile to avoid GCC warning.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/qz.cc: Style fixes.
+
+2010-02-11  John W. Eaton  <jwe@octave.org>
+
 	* load-save.cc: If gnulib defines open, undefine it.  Move
 	#undefs before including zfstream.h.
 
-2010-01-30  Jyh-Miin Lin <jyhmiin@gmail.com>
+2010-01-30  Jyh-Miin Lin  <jyhmiin@gmail.com>
 
 	* DLD-FUNCTIONS/qz.cc (Fqz): Handle complex case without reordering.
 	Return Q' for Matlab compatibility.

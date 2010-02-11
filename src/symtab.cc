@@ -452,10 +452,9 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
 // to btyp_num_types (static constant). Only the leftmost dimension can be
 // variable in C/C++. Typedefs are boring.
 
-// For safety, we include btyp_unknown in the table
-static builtin_type_t (*build_sup_table (void))[btyp_num_types + 1]
+static builtin_type_t (*build_sup_table (void))[btyp_num_types]
 {
-  static builtin_type_t sup_table[btyp_num_types + 1][btyp_num_types + 1];
+  static builtin_type_t sup_table[btyp_num_types][btyp_num_types];
   for (int i = 0; i < btyp_num_types; i++)
     for (int j = 0; j < btyp_num_types; j++)
       {
@@ -473,12 +472,6 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types + 1]
         sup_table[i][j] = use_j ? jtyp : ityp;
       }
 
-  for (int i = 0; i <= btyp_num_types; i++)
-    {
-      sup_table[btyp_unknown][i] = btyp_unknown;
-      sup_table[i][btyp_unknown] = btyp_unknown;
-    }
-
   return sup_table;
 }
 
@@ -486,7 +479,7 @@ std::string
 get_dispatch_type (const octave_value_list& args, 
                    bool& builtin_class)
 {
-  static builtin_type_t (*sup_table)[btyp_num_types+1] = build_sup_table ();
+  static builtin_type_t (*sup_table)[btyp_num_types] = build_sup_table ();
   std::string dispatch_type;
 
   int n = args.length ();
@@ -530,20 +523,24 @@ get_dispatch_type (const octave_value_list& args,
           // Use the builtin_type mechanism to do this by one method call per
           // element. 
 
+          int i = 0;
           builtin_type_t btyp = args(0).builtin_type ();
-          for (int i = 1; i < n; i++)
-            btyp = sup_table[btyp][args(i).builtin_type ()];
-
           if (btyp != btyp_unknown)
-            dispatch_type = btyp_class_name[btyp];
-          else
             {
-              // Basically, this should never happen if all values are defined.
-              // If not, that's an internal inconsistency.
-              builtin_class = false;
-              error ("internal error: undefined or invalid value in argument list");
+              for (i = 1; i < n; i++)
+                {
+                  builtin_type_t bti = args(i).builtin_type ();
+                  if (bti == btyp_unknown)
+                    break;
+                  btyp = sup_table[btyp][bti];
+                }
             }
 
+          // If there was an unknown type, we just take the class name of that value.
+          if (i == n)
+            dispatch_type = btyp_class_name[btyp];
+          else
+            dispatch_type = args(i).class_name ();
         }
     }
 

@@ -1,3 +1,9 @@
+2010-02-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc: Reverse the effect of 2ceae0b40515.
+	(get_dispatch_type): If btyp_unknown occurs, read the class dispatch
+	type.
+
 2010-02-10  John W. Eaton  <jwe@octave.org>
 
 	* load-save.cc: If gnulib defines close, undefine it.

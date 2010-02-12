@@ -1,5 +1,9 @@
 2010-02-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/interp2: Remove debug stub.
+
+2010-02-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/optimget.m: Simplify.
 
 2010-02-11  Jaroslav Hajek  <highegg@gmail.com>

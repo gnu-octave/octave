@@ -207,11 +207,6 @@ function ZI = interp2 (varargin)
     xidx = lookup (X, XI, "lr");
     yidx = lookup (Y, YI, "lr");
 
-    if (min (xidx) <= 0)
-      save bad_data X XI
-    endif
-
-
     if (strcmp (method, "linear"))
       ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
       ##

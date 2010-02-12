@@ -33,9 +33,9 @@ function retval = optimget (options, parname, default)
   endif
 
   opts = __all_opts__ ();
-  idx = lookup (opts, parname, "i");
+  idx = lookup (opts, parname, "im");
 
-  if (idx > 0 && strcmpi (parname, opts{idx}))
+  if (idx)
     parname = opts{idx};
   else
     warning ("unrecognized option: %s", parname);

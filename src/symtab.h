@@ -2373,6 +2373,6 @@ extern bool out_of_date_check (octave_value& function,
 extern OCTINTERP_API std::string
 get_dispatch_type (const octave_value_list& args);
 extern OCTINTERP_API std::string
-get_dispatch_type (const octave_value_list& args, bool& builtin_class);
+get_dispatch_type (const octave_value_list& args, builtin_type_t& builtin_type);
 
 #endif

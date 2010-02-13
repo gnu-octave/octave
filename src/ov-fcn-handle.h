@@ -44,27 +44,26 @@ private:
 
   typedef std::map<std::string, octave_value> str_ov_map;
 
-  octave_fcn_handle (const octave_value& f, const std::string& n,
-                     str_ov_map *sdisp)
-    : fcn (f), nm (n), disp (sdisp) { }
-
 public:
 
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : fcn (), nm () { }
+    : fcn (), nm (), has_overloads (false) { }
 
   octave_fcn_handle (const std::string& n)
-    : fcn (), nm (n) { }
+    : fcn (), nm (n), has_overloads (false) { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n = anonymous);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
-    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm)
-   { 
-     if (fh.disp.get ())
-       disp.reset (new str_ov_map (*fh.disp));
+    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm),
+    has_overloads (fh.has_overloads)
+   {
+     for (int i = 0; i < btyp_num_types; i++)
+       builtin_overloads[i] = fh.builtin_overloads[i];
+
+     overloads = fh.overloads;
    }
 
   ~octave_fcn_handle (void) { }
@@ -92,7 +91,7 @@ public:
 
   builtin_type_t builtin_type (void) const { return btyp_func_handle; }
 
-  bool is_overloaded (void) const { return disp.get () && ! disp->empty (); }
+  bool is_overloaded (void) const { return has_overloads; }
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
@@ -107,6 +106,22 @@ public:
   octave_value fcn_val (void) const { return fcn; }
 
   std::string fcn_name (void) const { return nm; }
+
+  void set_overload (builtin_type_t btyp, const octave_value& ov_fcn)
+    {
+      if (btyp != btyp_unknown)
+        {
+          has_overloads = true;
+          builtin_overloads[btyp] = ov_fcn;
+        }
+
+    }
+
+  void set_overload (const std::string& dispatch_type, const octave_value& ov_fcn)
+    {
+      has_overloads = true;
+      overloads[dispatch_type] = ov_fcn;
+    }
 
   bool save_ascii (std::ostream& os);
 
@@ -143,9 +158,14 @@ protected:
   // The name of the handle, including the "@".
   std::string nm;
 
-  // A pointer to statical dispatch to standard classes. If null, we don't want
-  // to dispatch at all.
-  std::auto_ptr<str_ov_map> disp;
+  // Whether the function is overloaded at all.
+  bool has_overloads;
+
+  // Overloads for builtin types. We use array to make lookup faster.
+  octave_value builtin_overloads[btyp_num_types];
+
+  // Overloads for other classes.
+  str_ov_map overloads;
 
   friend octave_value make_fcn_handle (const std::string &, bool);
 };

@@ -72,7 +72,7 @@ const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
-  : fcn (f), nm (n)
+  : fcn (f), nm (n), has_overloads (false)
 {
   octave_user_function *uf = fcn.user_function_value (true);
 
@@ -125,46 +125,39 @@ octave_fcn_handle::do_multi_index_op (int nargout,
 {
   octave_value_list retval;
 
-  if (fcn.is_defined ())
-    out_of_date_check (fcn, std::string (), false);
+  out_of_date_check (fcn, std::string (), false);
 
-  if (disp.get () && ! args.empty ())
+  if (has_overloads)
     {
       // Possibly overloaded function.
-      octave_value ovfcn = fcn;
+      octave_value ov_fcn;
 
-      // No need to compute built-in class dispatch if we don't have builtin class overloads.
-      bool builtin_class = ! disp->empty ();
-      // Get dynamic (class) dispatch type.
-      std::string dt = get_dispatch_type (args, builtin_class);
+      // Compute dispatch type.
+      builtin_type_t btyp;
+      std::string dispatch_type = get_dispatch_type (args, btyp);
 
-      if (! dt.empty ())
+      // Retrieve overload.
+      if (btyp != btyp_unknown)
         {
-          str_ov_map::iterator pos = disp->find (dt);
-          if (pos != disp->end ())
-            {
-              out_of_date_check (pos->second, dt, false);
-              ovfcn = pos->second;
-            }
-          else if (! builtin_class)
-            {
-              octave_value method = symbol_table::find_method (nm, dt);
-              if (method.is_defined ())
-                (*disp)[dt] = ovfcn = method;
-            }
-        }
-
-      if (ovfcn.is_defined ())
-        retval = ovfcn.do_multi_index_op (nargout, args);
-      else if (fcn.is_undefined ())
-        {
-          if (dt.empty ())
-            dt = args(0).class_name ();
-
-          error ("no %s method to handle class %s", nm.c_str (), dt.c_str ());
+          out_of_date_check (builtin_overloads[btyp], dispatch_type, false);
+          ov_fcn = builtin_overloads[btyp];
         }
       else
-        error ("invalid function handle");
+        {
+          str_ov_map::iterator it = overloads.find (dispatch_type);
+          if (it != overloads.end ())
+            {
+              out_of_date_check (it->second, dispatch_type, false);
+              ov_fcn = it->second;
+            }
+        }
+
+      if (ov_fcn.is_defined ())
+        retval = ov_fcn.do_multi_index_op (nargout, args);
+      else if (fcn.is_defined ())
+        retval = fcn.do_multi_index_op (nargout, args);
+      else
+        error ("%s: no method for class %s", nm.c_str (), dispatch_type.c_str ());
     }
   else
     {
@@ -172,7 +165,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
       if (fcn.is_defined ())
         retval = fcn.do_multi_index_op (nargout, args);
       else
-        error ("invalid function handle");
+        error ("%s: no longer valid function handle", nm.c_str ());
     }
 
   return retval;
@@ -1463,49 +1456,57 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
   bool handle_ok = false;
   octave_value f = symbol_table::find_function (tnm, octave_value_list (),
                                                 local_funcs);
+  octave_function *fptr = f.function_value (true);
 
-  if (f.is_undefined ())
-    {
-      if (load_path::any_class_method (tnm))
-        handle_ok = true;
-      else
-        {
-          load_path::update ();
-          if (load_path::any_class_method (tnm))
-            handle_ok = true;
-        }
-    }
-  else
-    handle_ok = true;
-
-  octave_function *fptr = f.is_defined () ? f.function_value () : 0;
-
-
-  if (handle_ok)
-    {
-      // If it's a subfunction, private function, or class constructor,
-      // we want no dispatch.
-      if (fptr && (fptr->is_nested_function () || fptr->is_private_function ()
+  if (local_funcs && fptr 
+      && (fptr->is_nested_function () || fptr->is_private_function ()
           || fptr->is_class_constructor ()))
-        retval = octave_value (new octave_fcn_handle (f, tnm));
-      else
-        {
-          typedef octave_fcn_handle::str_ov_map str_ov_map;
-          std::auto_ptr<str_ov_map> disp (new str_ov_map);
-          const string_vector cnames = get_builtin_classes ();
-          for (octave_idx_type i = 0; i < cnames.length (); i++)
-            {
-              std::string cnam = cnames(i);
-              octave_value method = symbol_table::find_method (tnm, cnam);
-              if (method.is_defined ())
-                (*disp)[cnam] = method;
-            }
-
-          retval = octave_value (new octave_fcn_handle (f, tnm, disp.release ()));
-        }
+    {
+      // Locally visible function.
+      retval = octave_value (new octave_fcn_handle (f, tnm));
     }
   else
-    error ("error creating function handle \"@%s\"", nm.c_str ());
+    {
+      // Globally visible (or no match yet). Query overloads.
+      std::list<std::string> classes = load_path::overloads (tnm);
+      bool any_match = fptr != 0 || classes.size () > 0;
+      if (! any_match)
+        {
+          // No match found, try updating load_path and query classes again.
+          load_path::update ();
+          classes = load_path::overloads (tnm);
+          any_match = classes.size () > 0;
+        }
+
+      if (any_match)
+        {
+          octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
+          retval = fh;
+
+          for (std::list<std::string>::iterator iter = classes.begin ();
+               iter != classes.end (); iter++)
+            {
+              std::string class_name = *iter;
+              octave_value fmeth = symbol_table::find_method (tnm, class_name);
+
+              bool is_builtin = false;
+              for (int i = 0; i < btyp_num_types; i++)
+                {
+                  // FIXME: Too slow? Maybe binary lookup?
+                  if (class_name == btyp_class_name[i])
+                    {
+                      is_builtin = true;
+                      fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
+                    }
+                }
+
+              if (! is_builtin)
+                fh->set_overload (class_name, fmeth);
+            }
+        }
+      else
+        error ("@%s: no function and no method found", tnm.c_str ());
+    }
 
   return retval;
 }

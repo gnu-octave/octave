@@ -1,3 +1,16 @@
+2010-02-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* load-path.cc (load_path::do_any_class_method): Rename to
+	do_overloads. Return a list of classes.
+	* load-path.h (load_path::any_class_method): Likewise.
+	* symtab.cc (get_dispatch_type): Rewrite.
+	* symtab.h (get_dispatch_type): Update decl.
+	* ov-fcn-handle.h (octave_fcn_handle): Partially rewrite.
+	(octave_fcn_handle::builtin_overloads, octave_fcn_handle::overloads,
+	octave_fcn_handle::has_overloads): New members.
+	* ov-fcn-handle.cc (octave_fcn_handle::do_multi_index_op): Rewrite.
+	(make_fcn_handle): Partially rewrite.
+
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/config-module.awk, genprops.awk, graphics.h.in,

@@ -108,10 +108,10 @@ public:
       ? instance->do_methods (class_name) : std::list<std::string> ();
   }
 
-  static bool any_class_method (const std::string& meth)
+  static std::list<std::string> overloads (const std::string& meth)
   {
     return instance_ok ()
-      ? instance->do_any_class_method (meth) : false;
+      ? instance->do_overloads (meth) : std::list<std::string> ();
   }
 
   static std::string find_fcn (const std::string& fcn, std::string& dir_name)
@@ -479,7 +479,7 @@ private:
 
   std::list<std::string> do_methods (const std::string& class_name) const;
 
-  bool do_any_class_method (const std::string& meth) const;
+  std::list<std::string> do_overloads (const std::string& meth) const;
 
   std::string do_find_file (const std::string& file) const;
 

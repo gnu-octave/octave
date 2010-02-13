@@ -1075,10 +1075,10 @@ load_path::do_methods (const std::string& class_name) const
   return retval;
 }
 
-bool
-load_path::do_any_class_method (const std::string& meth) const
+std::list<std::string>
+load_path::do_overloads (const std::string& meth) const
 {
-  bool retval = false;
+  std::list<std::string> retval;
 
   //  update ();
 
@@ -1088,10 +1088,7 @@ load_path::do_any_class_method (const std::string& meth) const
       const fcn_map_type& m = q->second;
 
       if (m.find (meth) != m.end ())
-        {
-          retval = true;
-          break;
-        }
+        retval.push_back (q->first);
     }
 
   return retval;

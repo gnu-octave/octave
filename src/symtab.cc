@@ -477,7 +477,7 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
 
 std::string
 get_dispatch_type (const octave_value_list& args, 
-                   bool& builtin_class)
+                   builtin_type_t& builtin_type)
 {
   static builtin_type_t (*sup_table)[btyp_num_types] = build_sup_table ();
   std::string dispatch_type;
@@ -486,63 +486,49 @@ get_dispatch_type (const octave_value_list& args,
 
   if (n > 0)
     {
-      // Find first object, if any.
-
-      for (int i = 0; i < n; i++)
+      int i = 0;
+      builtin_type = args(0).builtin_type ();
+      if (builtin_type != btyp_unknown)
         {
-          octave_value arg = args(i);
-
-          if (arg.is_object ())
+          for (i = 1; i < n; i++)
             {
-              dispatch_type = arg.class_name ();
-              for (int j = i+1; j < n; j++)
+              builtin_type_t bti = args(i).builtin_type ();
+              if (bti != btyp_unknown)
+                builtin_type = sup_table[builtin_type][bti];
+              else
                 {
-                  octave_value arg1 = args(j);
-
-                  if (arg1.is_object ())
-                    {
-                      std::string cname = arg1.class_name ();
-
-                      // Only switch to type of ARG if it is marked superior
-                      // to the current DISPATCH_TYPE.
-                      if (! symbol_table::is_superiorto (dispatch_type, cname)
-                          && symbol_table::is_superiorto (cname, dispatch_type))
-                        dispatch_type = cname;
-                    }
+                  builtin_type = btyp_unknown;
+                  break;
                 }
-
-              builtin_class = false;
-              break;
             }
         }
 
-      // No object.
-
-      if (builtin_class)
+      if (builtin_type == btyp_unknown)
         {
-          // Use the builtin_type mechanism to do this by one method call per
-          // element. 
+          // There's a non-builtin class in the argument list.
+          dispatch_type = args(i).class_name ();
 
-          int i = 0;
-          builtin_type_t btyp = args(0).builtin_type ();
-          if (btyp != btyp_unknown)
+          for (int j = i+1; j < n; j++)
             {
-              for (i = 1; i < n; i++)
+              octave_value arg = args(j);
+
+              if (arg.builtin_type () == btyp_unknown)
                 {
-                  builtin_type_t bti = args(i).builtin_type ();
-                  if (bti == btyp_unknown)
-                    break;
-                  btyp = sup_table[btyp][bti];
+                  std::string cname = arg.class_name ();
+
+                  // Only switch to type of ARG if it is marked superior
+                  // to the current DISPATCH_TYPE.
+                  if (! symbol_table::is_superiorto (dispatch_type, cname)
+                      && symbol_table::is_superiorto (cname, dispatch_type))
+                    dispatch_type = cname;
                 }
             }
-
-          // If there was an unknown type, we just take the class name of that value.
-          if (i == n)
-            dispatch_type = btyp_class_name[btyp];
-          else
-            dispatch_type = args(i).class_name ();
         }
+      else
+        dispatch_type = btyp_class_name[builtin_type];
     }
+  else
+    builtin_type = btyp_unknown;
 
   return dispatch_type;
 }
@@ -550,8 +536,8 @@ get_dispatch_type (const octave_value_list& args,
 std::string
 get_dispatch_type (const octave_value_list& args)
 {
-  bool builtin_class = true;
-  return get_dispatch_type (args, builtin_class);
+  builtin_type_t builtin_type;
+  return get_dispatch_type (args, builtin_type);
 }
 
 // Find the definition of NAME according to the following precedence

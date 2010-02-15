@@ -88,6 +88,9 @@ Summary of important user-visible changes for version 3.3:
  ** Overloading functions for built-in classes (double, int8, cell,
     etc.) is now compatible with Matlab.
 
+ ** Function handles can now be compared with the == and != operators,
+    as well as the `isequal' function.
+
  ** Performance of concatenation (using []) and the functions `cat',
     `horzcat', and `vertcat' has been improved for multidimensional
     arrays.

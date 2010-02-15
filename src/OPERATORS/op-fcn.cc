@@ -36,19 +36,19 @@ DEFBINOP (eq, fcn_handle, fcn_handle)
 {
   CAST_BINOP_ARGS (const octave_fcn_handle&, const octave_fcn_handle&);
 
-  // FIXME: this may not be entirely correct in case the handles were created
-  // in different directories. Needs checking what recent Matlab does, and also
-  // discussion whether we want to copy its behavior. Or to what extent.
-  // Meanwhile, this catches all the "normal" usages, i.e.
-  //   h == @sin
-  // should yield true only if h is a handle to the global "sin", not a local one.
+  return v1.is_equal_to (v2);
+}
 
-  return (v1.fcn_name () == v2.fcn_name () 
-          && v1.fcn_val ().is_copy_of (v2.fcn_val ()));
+DEFBINOP (ne, fcn_handle, fcn_handle)
+{
+  CAST_BINOP_ARGS (const octave_fcn_handle&, const octave_fcn_handle&);
+
+  return ! v1.is_equal_to (v2);
 }
 
 void
 install_fcn_ops (void)
 {
   INSTALL_BINOP (op_eq, octave_fcn_handle, octave_fcn_handle, eq);
+  INSTALL_BINOP (op_ne, octave_fcn_handle, octave_fcn_handle, ne);
 }

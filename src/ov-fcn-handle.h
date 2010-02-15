@@ -123,6 +123,8 @@ public:
       overloads[dispatch_type] = ov_fcn;
     }
 
+  bool is_equal_to (const octave_fcn_handle&) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

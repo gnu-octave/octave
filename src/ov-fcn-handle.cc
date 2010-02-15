@@ -171,6 +171,25 @@ octave_fcn_handle::do_multi_index_op (int nargout,
   return retval;
 }
 
+bool 
+octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
+{
+  bool retval = fcn.is_copy_of (h.fcn) && (has_overloads == h.has_overloads);
+  retval = retval && (overloads.size () == h.overloads.size ());
+
+  if (retval && has_overloads)
+    {
+      for (int i = 0; i < btyp_num_types && retval; i++)
+        retval = builtin_overloads[i].is_copy_of (h.builtin_overloads[i]);
+
+      str_ov_map::const_iterator iter = overloads.begin (), hiter = h.overloads.begin ();
+      for (; iter != overloads.end () && retval; iter++, hiter++)
+        retval = (iter->first == hiter->first) && (iter->second.is_copy_of (hiter->second));
+    }
+
+  return retval;
+}
+
 bool
 octave_fcn_handle::set_fcn (const std::string &octaveroot, 
                             const std::string& fpath)
@@ -1453,7 +1472,6 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
         }
     }
 
-  bool handle_ok = false;
   octave_value f = symbol_table::find_function (tnm, octave_value_list (),
                                                 local_funcs);
   octave_function *fptr = f.function_value (true);

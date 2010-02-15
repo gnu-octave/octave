@@ -144,6 +144,9 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  // Simple function handles are printed without a newline.
+  bool print_as_scalar (void) const { return nm != anonymous; }
+
 private:
 
   bool set_fcn (const std::string &octaveroot, const std::string& fpath);

@@ -1,5 +1,10 @@
 2010-02-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-fcn-handle.h (octave_fcn_handle::print_as_scalar): New method
+	override.
+
+2010-02-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-fcn-handle.cc (octave_fcn_handle::is_equal_to): New method.
 	* ov-fcn-handle.h: Declare it.
 	* OPERATORS/op-fcn.cc (eq, ne): Call it here. Register new handler.

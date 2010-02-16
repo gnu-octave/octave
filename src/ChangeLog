@@ -1,3 +1,13 @@
+2010-02-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-lazy-idx.h: New source.
+	* ov-lazy-idx.cc: New source.
+	* ov.cc (install_types): Register lazy_index here.
+	(octave_value::octave_value (const idx_vector&)): Use lazy
+	construction if possible, under control of an optional flag.
+	(octave_value::clone): Implement.
+	* ls-hdf5.cc (save_hdf5): Avoid saving lazy indices.
+
 2010-02-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-fcn-handle.h (octave_fcn_handle::print_as_scalar): New method

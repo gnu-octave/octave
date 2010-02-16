@@ -74,6 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-inline.h"
 #include "ov-typeinfo.h"
 #include "ov-null-mat.h"
+#include "ov-lazy-idx.h"
 
 #include "defun.h"
 #include "error.h"
@@ -1044,7 +1045,7 @@ octave_value::octave_value (const Array<octave_idx_type>& inda, bool zero_based,
   maybe_mutate ();
 }
 
-octave_value::octave_value (const idx_vector& idx)
+octave_value::octave_value (const idx_vector& idx, bool lazy)
   : rep ()
 {
   double scalar;
@@ -1052,6 +1053,21 @@ octave_value::octave_value (const idx_vector& idx)
   NDArray array;
   boolNDArray mask;
   idx_vector::idx_class_type idx_class;
+
+  if (lazy)
+    {
+      // Only make lazy indices out of ranges and index vectors.
+      switch (idx.idx_class ())
+        {
+        case idx_vector::class_range:
+        case idx_vector::class_vector:
+          rep = new octave_lazy_index (idx);
+          maybe_mutate ();
+          return;
+        default:
+          break;
+        }
+    }
 
   idx.unconvert (idx_class, scalar, range, array, mask);
 
@@ -1135,8 +1151,7 @@ octave_value::octave_value (octave_base_value *new_rep, int xcount)
 octave_base_value *
 octave_value::clone (void) const
 {
-  panic_impossible ();
-  return 0;
+  return rep->clone ();
 }
 
 void
@@ -2653,6 +2668,7 @@ install_types (void)
   octave_null_matrix::register_type ();
   octave_null_str::register_type ();
   octave_null_sq_str::register_type ();
+  octave_lazy_index::register_type ();
 }
 
 #if 0

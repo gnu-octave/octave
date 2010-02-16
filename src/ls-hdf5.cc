@@ -67,6 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 #include "dMatrix.h"
+#include "ov-lazy-idx.h"
 
 #include "ls-utils.h"
 #include "ls-hdf5.h"
@@ -753,7 +754,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   // FIXME: diagonal & permutation matrices currently don't know how to save
   // themselves, so we convert them first to normal matrices using A = A(:,:).
   // This is a temporary hack.
-  if (val.is_diag_matrix () || val.is_perm_matrix ())
+  if (val.is_diag_matrix () || val.is_perm_matrix () 
+      || val.type_id () == octave_lazy_index::static_type_id ())
     val = val.full_value ();
 
   std::string t = val.type_name();

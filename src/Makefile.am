@@ -165,6 +165,7 @@ OV_INCLUDES = \
   ov-flt-cx-mat.h \
   ov-flt-re-diag.h \
   ov-flt-re-mat.h \
+  ov-lazy-idx.h \
   ov-mex-fcn.h \
   ov-null-mat.h \
   ov-perm.h \
@@ -337,6 +338,7 @@ OV_SRC = \
   ov-flt-cx-mat.cc \
   ov-flt-re-diag.cc \
   ov-flt-re-mat.cc \
+  ov-lazy-idx.cc \
   ov-mex-fcn.cc \
   ov-null-mat.cc \
   ov-perm.cc \

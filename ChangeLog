@@ -1,6 +1,9 @@
 2010-02-17  John W. Eaton  <jwe@octave.org>
 
-	* configure.ac: 
+	* configure.ac: Add $COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS,
+	and $AMD_LIBS to LIBS when checking for cholmod library.
+
+2010-02-17  John W. Eaton  <jwe@octave.org>
 
 	* acinclude.m4 (OCTAVE_CHECK_FORTRAN_INTEGER_SIZE): Save and
 	restore FFLAGS.  Temporarily add F77_INTEGER_8_FLAG to FFLAGS.

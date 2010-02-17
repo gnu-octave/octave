@@ -984,7 +984,7 @@ OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
 # then you will need to configure with --with-cholmod="-lcholmod -lcblas".
 
 save_LIBS="$LIBS"
-LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
+LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],

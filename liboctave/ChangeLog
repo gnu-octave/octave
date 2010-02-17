@@ -1,3 +1,22 @@
+2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-op-defs.h (MINMAX_FCNS): Generalize.
+	* mx-op-decl.h (MINMAX_DECLS): Likewise.
+
+	* int16NDArray.h, int32NDArray.h, int64NDArray.h, int8NDArray.h,
+	uint16NDArray.h, uint32NDArray.h, uint64NDArray.h, uint8NDArray.h: 
+	Update.
+	* int16NDArray.cc, int32NDArray.cc, int64NDArray.cc, int8NDArray.cc,
+	uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc, uint8NDArray.cc:
+	Update.
+
+	* CNDArray.h, dNDArray.h, fCNDArray.h, fNDArray.h: Replace explicit
+	decls.
+
+	* CNDArray.cc, dNDArray.cc, fCNDArray.cc, fNDArray.cc: Replace explicit
+	definitions.
+
+
 2010-02-11  John W. Eaton  <jwe@octave.org>
 
 	* sparse-mk-ops.awk, mk-ops.awk, filemode.c, lo-cieee.c,

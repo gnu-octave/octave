@@ -50,7 +50,7 @@ SND_BOOL_OPS (octave_int8, int8NDArray)
 NDND_CMP_OPS (int8NDArray, int8NDArray)
 NDND_BOOL_OPS (int8NDArray, int8NDArray)
 
-MINMAX_FCNS (int8)
+MINMAX_FCNS (int8NDArray, octave_int8)
 
 BSXFUN_STDOP_DEFS_MXLOOP (int8NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (int8NDArray)

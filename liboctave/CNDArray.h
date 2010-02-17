@@ -156,13 +156,7 @@ private:
 
 extern OCTAVE_API ComplexNDArray conj (const ComplexNDArray& a);
 
-extern OCTAVE_API ComplexNDArray min (const Complex& c, const ComplexNDArray& m);
-extern OCTAVE_API ComplexNDArray min (const ComplexNDArray& m, const Complex& c);
-extern OCTAVE_API ComplexNDArray min (const ComplexNDArray& a, const ComplexNDArray& b);
-
-extern OCTAVE_API ComplexNDArray max (const Complex& c, const ComplexNDArray& m);
-extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& m, const Complex& c);
-extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& a, const ComplexNDArray& b);
+MINMAX_DECLS (ComplexNDArray, Complex, OCTAVE_API)
 
 NDS_CMP_OP_DECLS (ComplexNDArray, Complex, OCTAVE_API)
 NDS_BOOL_OP_DECLS (ComplexNDArray, Complex, OCTAVE_API)

@@ -546,34 +546,34 @@ operator * (const DM& dm, const M& m) \
 
 // scalar by N-d array min/max ops
 
-#define SND_MINMAX_FCN(FCN, OP, T) \
-T ## NDArray \
-FCN (octave_ ## T d, const T ## NDArray& m) \
+#define SND_MINMAX_FCN(FCN, OP, T, S) \
+T \
+FCN (S d, const T& m) \
 { \
-  return do_sm_binary_op<T##NDArray, octave_##T, T##NDArray> (d, m, mx_inline_x##FCN); \
+  return do_sm_binary_op<T, S, T> (d, m, mx_inline_x##FCN); \
 }
 
-#define NDS_MINMAX_FCN(FCN, OP, T) \
-T ## NDArray \
-FCN (const T ## NDArray& m, octave_ ## T d) \
+#define NDS_MINMAX_FCN(FCN, OP, T, S) \
+T \
+FCN (const T& m, S d) \
 { \
-  return do_ms_binary_op<T##NDArray, T##NDArray, octave_##T> (m, d, mx_inline_x##FCN); \
+  return do_ms_binary_op<T, T, S> (m, d, mx_inline_x##FCN); \
 }
 
-#define NDND_MINMAX_FCN(FCN, OP, T) \
-T ## NDArray \
-FCN (const T ## NDArray& a, const T ## NDArray& b) \
+#define NDND_MINMAX_FCN(FCN, OP, T, S) \
+T \
+FCN (const T& a, const T& b) \
 { \
-  return do_mm_binary_op<T##NDArray, T##NDArray, T##NDArray> (a, b, mx_inline_x##FCN, #FCN); \
+  return do_mm_binary_op<T, T, T> (a, b, mx_inline_x##FCN, #FCN); \
 }
 
-#define MINMAX_FCNS(T) \
-  SND_MINMAX_FCN (min, <, T) \
-  NDS_MINMAX_FCN (min, <, T) \
-  NDND_MINMAX_FCN (min, <, T) \
-  SND_MINMAX_FCN (max, >, T) \
-  NDS_MINMAX_FCN (max, >, T) \
-  NDND_MINMAX_FCN (max, >, T)
+#define MINMAX_FCNS(T, S) \
+  SND_MINMAX_FCN (min, <, T, S) \
+  NDS_MINMAX_FCN (min, <, T, S) \
+  NDND_MINMAX_FCN (min, <, T, S) \
+  SND_MINMAX_FCN (max, >, T, S) \
+  NDS_MINMAX_FCN (max, >, T, S) \
+  NDND_MINMAX_FCN (max, >, T, S)
 
 // permutation matrix by matrix ops and vice versa
 

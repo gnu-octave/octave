@@ -50,7 +50,7 @@ SND_BOOL_OPS (octave_uint16, uint16NDArray)
 NDND_CMP_OPS (uint16NDArray, uint16NDArray)
 NDND_BOOL_OPS (uint16NDArray, uint16NDArray)
 
-MINMAX_FCNS (uint16)
+MINMAX_FCNS (uint16NDArray, octave_uint16)
 
 BSXFUN_STDOP_DEFS_MXLOOP (uint16NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (uint16NDArray)

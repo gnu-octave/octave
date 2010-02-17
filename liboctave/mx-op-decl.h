@@ -283,15 +283,13 @@ class boolNDArray;
 
 // scalar by N-d array min/max ops
 
-#define MINMAX_DECLS(T) \
-  extern OCTAVE_API T ## NDArray min (octave_ ## T d, const T ## NDArray& m); \
-  extern OCTAVE_API T ## NDArray min (const T ## NDArray& m, octave_ ## T d); \
-  extern OCTAVE_API T ## NDArray min (const T ## NDArray& a,  \
-                                       const T ## NDArray& b); \
-  extern OCTAVE_API T ## NDArray max (octave_ ## T d, const T ## NDArray& m); \
-  extern OCTAVE_API T ## NDArray max (const T ## NDArray& m, octave_ ## T d); \
-  extern OCTAVE_API T ## NDArray max (const T ## NDArray& a, \
-                                       const T ## NDArray& b);
+#define MINMAX_DECLS(T, S, API) \
+  extern API T min (S d, const T& m); \
+  extern API T min (const T& m, S d); \
+  extern API T min (const T& a, const T& b); \
+  extern API T max (S d, const T& m); \
+  extern API T max (const T& m, S d); \
+  extern API T max (const T& a, const T& b);
 
 // permutation matrix by matrix ops and vice versa
 

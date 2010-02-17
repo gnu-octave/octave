@@ -914,41 +914,7 @@ operator >> (std::istream& is, ComplexNDArray& a)
   return is;
 }
 
-ComplexNDArray
-min (const Complex& s, const ComplexNDArray& m)
-{
-  return do_sm_binary_op<ComplexNDArray> (s, m, mx_inline_xmin);
-}
-
-ComplexNDArray
-min (const ComplexNDArray& m, const Complex& s)
-{
-  return do_ms_binary_op<ComplexNDArray> (m, s, mx_inline_xmin);
-}
-
-ComplexNDArray
-min (const ComplexNDArray& a, const ComplexNDArray& b)
-{
-  return do_mm_binary_op<ComplexNDArray> (a, b, mx_inline_xmin, "min");
-}
-
-ComplexNDArray
-max (const Complex& s, const ComplexNDArray& m)
-{
-  return do_sm_binary_op<ComplexNDArray> (s, m, mx_inline_xmax);
-}
-
-ComplexNDArray
-max (const ComplexNDArray& m, const Complex& s)
-{
-  return do_ms_binary_op<ComplexNDArray> (m, s, mx_inline_xmax);
-}
-
-ComplexNDArray
-max (const ComplexNDArray& a, const ComplexNDArray& b)
-{
-  return do_mm_binary_op<ComplexNDArray> (a, b, mx_inline_xmax, "max");
-}
+MINMAX_FCNS (ComplexNDArray, Complex)
 
 NDS_CMP_OPS (ComplexNDArray, Complex)
 NDS_BOOL_OPS (ComplexNDArray, Complex)

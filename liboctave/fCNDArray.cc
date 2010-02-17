@@ -909,41 +909,7 @@ operator >> (std::istream& is, FloatComplexNDArray& a)
   return is;
 }
 
-FloatComplexNDArray
-min (const FloatComplex& s, const FloatComplexNDArray& m)
-{
-  return do_sm_binary_op<FloatComplexNDArray> (s, m, mx_inline_xmin);
-}
-
-FloatComplexNDArray
-min (const FloatComplexNDArray& m, const FloatComplex& s)
-{
-  return do_ms_binary_op<FloatComplexNDArray> (m, s, mx_inline_xmin);
-}
-
-FloatComplexNDArray
-min (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
-{
-  return do_mm_binary_op<FloatComplexNDArray> (a, b, mx_inline_xmin, "min");
-}
-
-FloatComplexNDArray
-max (const FloatComplex& s, const FloatComplexNDArray& m)
-{
-  return do_sm_binary_op<FloatComplexNDArray> (s, m, mx_inline_xmax);
-}
-
-FloatComplexNDArray
-max (const FloatComplexNDArray& m, const FloatComplex& s)
-{
-  return do_ms_binary_op<FloatComplexNDArray> (m, s, mx_inline_xmax);
-}
-
-FloatComplexNDArray
-max (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
-{
-  return do_mm_binary_op<FloatComplexNDArray> (a, b, mx_inline_xmax, "max");
-}
+MINMAX_FCNS (FloatComplexNDArray, FloatComplex)
 
 NDS_CMP_OPS (FloatComplexNDArray, FloatComplex)
 NDS_BOOL_OPS (FloatComplexNDArray, FloatComplex)

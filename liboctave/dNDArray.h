@@ -170,13 +170,7 @@ private:
 extern OCTAVE_API NDArray real (const ComplexNDArray& a);
 extern OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
-extern OCTAVE_API NDArray min (double d, const NDArray& m);
-extern OCTAVE_API NDArray min (const NDArray& m, double d);
-extern OCTAVE_API NDArray min (const NDArray& a, const NDArray& b);
-
-extern OCTAVE_API NDArray max (double d, const NDArray& m);
-extern OCTAVE_API NDArray max (const NDArray& m, double d);
-extern OCTAVE_API NDArray max (const NDArray& a, const NDArray& b);
+MINMAX_DECLS (NDArray, double, OCTAVE_API)
 
 NDS_CMP_OP_DECLS (NDArray, double, OCTAVE_API)
 NDS_BOOL_OP_DECLS (NDArray, double, OCTAVE_API)

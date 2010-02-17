@@ -939,41 +939,7 @@ operator >> (std::istream& is, FloatNDArray& a)
   return is;
 }
 
-FloatNDArray
-min (float s, const FloatNDArray& m)
-{
-  return do_sm_binary_op<FloatNDArray> (s, m, mx_inline_xmin);
-}
-
-FloatNDArray
-min (const FloatNDArray& m, float s)
-{
-  return do_ms_binary_op<FloatNDArray> (m, s, mx_inline_xmin);
-}
-
-FloatNDArray
-min (const FloatNDArray& a, const FloatNDArray& b)
-{
-  return do_mm_binary_op<FloatNDArray> (a, b, mx_inline_xmin, "min");
-}
-
-FloatNDArray
-max (float s, const FloatNDArray& m)
-{
-  return do_sm_binary_op<FloatNDArray> (s, m, mx_inline_xmax);
-}
-
-FloatNDArray
-max (const FloatNDArray& m, float s)
-{
-  return do_ms_binary_op<FloatNDArray> (m, s, mx_inline_xmax);
-}
-
-FloatNDArray
-max (const FloatNDArray& a, const FloatNDArray& b)
-{
-  return do_mm_binary_op<FloatNDArray> (a, b, mx_inline_xmax, "max");
-}
+MINMAX_FCNS (FloatNDArray, float)
 
 NDS_CMP_OPS (FloatNDArray, float)
 NDS_BOOL_OPS (FloatNDArray, float)

@@ -156,13 +156,7 @@ private:
 
 extern OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);
 
-extern OCTAVE_API FloatComplexNDArray min (const FloatComplex& c, const FloatComplexNDArray& m);
-extern OCTAVE_API FloatComplexNDArray min (const FloatComplexNDArray& m, const FloatComplex& c);
-extern OCTAVE_API FloatComplexNDArray min (const FloatComplexNDArray& a, const FloatComplexNDArray& b);
-
-extern OCTAVE_API FloatComplexNDArray max (const FloatComplex& c, const FloatComplexNDArray& m);
-extern OCTAVE_API FloatComplexNDArray max (const FloatComplexNDArray& m, const FloatComplex& c);
-extern OCTAVE_API FloatComplexNDArray max (const FloatComplexNDArray& a, const FloatComplexNDArray& b);
+MINMAX_DECLS (FloatComplexNDArray, FloatComplex, OCTAVE_API)
 
 NDS_CMP_OP_DECLS (FloatComplexNDArray, FloatComplex, OCTAVE_API)
 NDS_BOOL_OP_DECLS (FloatComplexNDArray, FloatComplex, OCTAVE_API)

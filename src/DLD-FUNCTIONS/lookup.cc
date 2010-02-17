@@ -131,43 +131,54 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
     }
   else if (match_idx || left_inf || right_inf)
     {
-      NDArray ridx (idx.dims ());
       if (match_idx)
         {
+          NDArray ridx (idx.dims ());
+
           for (octave_idx_type i = 0; i < nval; i++)
             {
               octave_idx_type j = idx.xelem (i);
               ridx.xelem (i) = (j != 0 && values(i) == array(j-1)) ? j : 0;
             }
+
+          retval = ridx; 
         }
       else if (left_inf && right_inf)
         {
+          // Results in valid indices. Optimize using lazy index.
+          octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {
-              octave_idx_type one = 1;
-              octave_idx_type j = idx.xelem (i);
-              ridx.xelem (i) = std::min (std::max (one, j), n-1);
+              octave_idx_type j = idx.xelem (i) - 1;
+              idx.xelem (i) = std::max (zero, std::min (j, n-2));
             }
+
+          retval = idx_vector (idx);
         }
       else if (left_inf)
         {
-          octave_idx_type one = 1;
+          // Results in valid indices. Optimize using lazy index.
+          octave_idx_type zero = 0;
           for (octave_idx_type i = 0; i < nval; i++)
             {
-              octave_idx_type j = idx.xelem (i);
-              ridx.xelem (i) = std::max (one, j);
+              octave_idx_type j = idx.xelem (i) - 1;
+              idx.xelem (i) = std::max (zero, j);
             }
+
+          retval = idx_vector (idx);
         }
       else if (right_inf)
         {
+          NDArray ridx (idx.dims ());
+
           for (octave_idx_type i = 0; i < nval; i++)
             {
               octave_idx_type j = idx.xelem (i);
               ridx.xelem (i) = std::min (j, n-1);
             }
-        }
 
-      retval = ridx;
+          retval = ridx;
+        }
     }
   else
     retval = idx;

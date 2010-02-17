@@ -1,3 +1,8 @@
+2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): Return an idx_vector
+	when left_inf is in effect, to enable lazy index optimization.
+
 2010-02-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-lazy-idx.h: New source.

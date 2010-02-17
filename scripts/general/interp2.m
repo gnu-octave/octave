@@ -218,11 +218,14 @@ function ZI = interp2 (varargin)
       c = Z(2:zr, 1:(zc - 1)) - a;
       d = Z(2:zr, 2:zc) - a - b - c;
 
-      idx = sub2ind (size (a), yidx, xidx);
-
       ## scale XI, YI values to a 1-spaced grid
       Xsc = (XI - X(xidx)) ./ (diff (X)(xidx));
       Ysc = (YI - Y(yidx)) ./ (diff (Y)(yidx));
+
+      ## Get 2D index.
+      idx = sub2ind (size (a), yidx, xidx);
+      ## We can dispose of the 1D indices at this point to save memory.
+      clear xidx yidx
 
       ## apply plane equation
       ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;

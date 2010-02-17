@@ -41,6 +41,10 @@ function retval = center (x, dim)
   endif
   n = size (x, dim);
 
+  if (isinteger (x))
+    x = double (x);
+  endif
+
   if (n == 0)
     retval = x;
   else

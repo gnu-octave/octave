@@ -1,5 +1,9 @@
 2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* statistics/base/center.m: Convert integer inputs to doubles.
+
+2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/interp2: Slightly optimize linear interpolation.
 
 2010-02-12  Jaroslav Hajek  <highegg@gmail.com>

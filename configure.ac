@@ -557,15 +557,24 @@ OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
 if test "x$octave_cv_fortran_integer_size" = xno; then
   if $USE_64_BIT_IDX_T; then
     case "$F77" in
-      gfortran)
-        case "$FFLAGS" in
+      *gfortran*)
+        case "$F77_INTEGER_8_FLAG" in
           *-fdefault-integer-8*)
           ;;
           *)
-            AC_MSG_NOTICE([adding -fdefault-integer-8 to FFLAGS])
-            FFLAGS="-fdefault-integer-8 $FFLAGS"
-	    ## Invalidate the cache and try again.
-            $as_unset octave_cv_fortran_integer_size
+            case "$FFLAGS" in
+              *-fdefault-integer-8*)
+                AC_MSG_NOTICE([setting -fdefault-integer-8 in F77_INTEGER_8_FLAG instead of FFLAGS])
+                FFLAGS=`echo $FFLAGS | sed 's/-fdefault-integer-8//g'`
+                F77_INTEGER_8_FLAG="-fdefault-integer-8"
+              ;;
+              *)
+                AC_MSG_NOTICE([adding -fdefault-integer-8 to F77_INTEGER_8_FLAG])
+                F77_INTEGER_8_FLAG="-fdefault-integer-8"
+	        ## Invalidate the cache and try again.
+                $as_unset octave_cv_fortran_integer_size
+              ;;
+            esac
           ;;
         esac
       ;;
@@ -574,12 +583,13 @@ if test "x$octave_cv_fortran_integer_size" = xno; then
       OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
     fi
     if test "x$octave_cv_fortran_integer_size" = xno; then
-      AC_MSG_ERROR([in order to build octave with 64-bit indexing support your Fortran compiler must have a default integer size of 8 bytes.  See the file INSTALL for more information.])
+      AC_MSG_ERROR([in order to build octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
     fi
   else
-    AC_MSG_ERROR([your Fortran compiler must have default integers that are the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
+    AC_MSG_ERROR([your Fortran compiler must have an option to make integers the same size as octave_idx_type ($OCTAVE_IDX_TYPE).  See the file INSTALL for more information.])
   fi
 fi
+AC_SUBST(F77_INTEGER_8_FLAG)
 
 FC=$F77
 AC_SUBST(FC)
@@ -2280,10 +2290,14 @@ if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
   AC_MSG_WARN([Are you sure that is what you want to do?])
   AC_MSG_WARN([])
-  AC_MSG_WARN([You must ensure that the Fortran compiler generates])
-  AC_MSG_WARN([code with 8 byte signed INTEGER values, and that your])
-  AC_MSG_WARN([BLAS and LAPACK libraries are compiled to use 8 byte])
-  AC_MSG_WARN([signed integers for array indexing.])
+  AC_MSG_WARN([Your Fortran compiler must have an option to generate])
+  AC_MSG_WARN([code with 8 byte signed INTEGER values.  This option])
+  AC_MSG_WARN([should be specified in the F77_INTEGER_8_FLAG variable])
+  AC_MSG_WARN([Make.  This should work automatically for gfortran.  If])
+  AC_MSG_WARN([you use another compiler, you will need to set this])
+  AC_MSG_WARN([variable on the configure command line.  You must also])
+  AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
+  AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
   AC_MSG_WARN([])
   warn_msg_printed=true
 fi

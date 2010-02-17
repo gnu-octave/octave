@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <vector>
 
+#include <stdint.h>
+
 #include "f77-fcn.h"
 #include "lo-ieee.h"
 #include "lo-error.h"
@@ -58,16 +60,16 @@ extern "C"
   F77_FUNC (dgengam, DGENGAM) (const double&, const double&, double&);
 
   F77_RET_T
-  F77_FUNC (setall, SETALL) (const octave_idx_type&, const octave_idx_type&);
+  F77_FUNC (setall, SETALL) (const int32_t&, const int32_t&);
 
   F77_RET_T
-  F77_FUNC (getsd, GETSD) (octave_idx_type&, octave_idx_type&);
+  F77_FUNC (getsd, GETSD) (int32_t&, int32_t&);
 
   F77_RET_T
-  F77_FUNC (setsd, SETSD) (const octave_idx_type&, const octave_idx_type&);
+  F77_FUNC (setsd, SETSD) (const int32_t&, const int32_t&);
 
   F77_RET_T
-  F77_FUNC (setcgn, SETCGN) (const octave_idx_type&);
+  F77_FUNC (setcgn, SETCGN) (const int32_t&);
 }
 
 octave_rand *octave_rand::instance = 0;
@@ -103,7 +105,7 @@ octave_rand::instance_ok (void)
 double
 octave_rand::do_seed (void)
 {
-  union d2i { double d; octave_idx_type i[2]; };
+  union d2i { double d; int32_t i[2]; };
   union d2i u;
     
   oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
@@ -121,8 +123,8 @@ octave_rand::do_seed (void)
   return u.d;
 }
 
-static octave_idx_type
-force_to_fit_range (octave_idx_type i, octave_idx_type lo, octave_idx_type hi)
+static int32_t
+force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
 {
   assert (hi > lo && lo >= 0 && hi > lo);
 
@@ -142,7 +144,7 @@ octave_rand::do_seed (double s)
   use_old_generators = true;
 
   int i0, i1;
-  union d2i { double d; octave_idx_type i[2]; };
+  union d2i { double d; int32_t i[2]; };
   union d2i u;
   u.d = s;
 
@@ -449,8 +451,8 @@ octave_rand::initialize_ranlib_generators (void)
   int minute = tm.min() + 1;
   int second = tm.sec() + 1;
 
-  octave_idx_type s0 = tm.mday() * hour * minute * second;
-  octave_idx_type s1 = hour * minute * second;
+  int32_t s0 = tm.mday() * hour * minute * second;
+  int32_t s1 = hour * minute * second;
 
   s0 = force_to_fit_range (s0, 1, 2147483563);
   s1 = force_to_fit_range (s1, 1, 2147483399);

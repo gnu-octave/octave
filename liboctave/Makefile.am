@@ -479,6 +479,7 @@ LIBOCT_PATHSEARCH_SOURCES = \
 LINK_DEPS = \
   $(RLD_FLAG) \
   ../libcruft/libcruft.la \
+  ../libcruft/libranlib.la \
   ../libgnu/libgnu.la \
   $(SPARSE_XLIBS) \
   $(ARPACK_LIBS) \

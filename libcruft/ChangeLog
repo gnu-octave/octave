@@ -1,3 +1,13 @@
+2010-02-17  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (libcruft_la_LIBADD): Include libranlib.la in the list.
+	(noinst_LTLIBRARIES, libranlib_la_SOURCES, libranlib_la_DEPENDENCIES,
+	libcruft_la_FFLAGS): New variables.
+	(ranlib.def): New target.
+	(DISTCLEANFILES): Also remove ranlib.def.
+	* ranlib/module.mk (libranlib_la_SOURCES): Rename from
+	libcruft_la_SOURCES.
+
 2010-01-20  John W. Eaton  <jwe@octave.org>
 
 	* misc/quit.cc: Untabify.

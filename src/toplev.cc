@@ -1229,6 +1229,7 @@ specified option.\n\
       { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
       { false, "F77", OCTAVE_CONF_F77 },
       { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
+      { false, "F77_INTEGER_8_FLAG", OCTAVE_CONF_F77_INTEGER_8_FLAG },
       { false, "FC", OCTAVE_CONF_FC },
       { false, "FFLAGS", OCTAVE_CONF_FFLAGS },
       { false, "FFTW3_CPPFLAGS", OCTAVE_CONF_FFTW3_CPPFLAGS },

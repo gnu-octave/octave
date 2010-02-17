@@ -29,14 +29,22 @@ octlib_LTLIBRARIES = libcruft.la
 
 libcruft_la_SOURCES =
 
+libcruft_la_FFLAGS = $(F77_INTEGER_8_FLAG)
+
 libcruft_la_CPPFLAGS = @CRUFT_DLL_DEFS@
 
 libcruft_la_LDFLAGS = \
   -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@
 
-libcruft_la_LIBADD = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+libcruft_la_LIBADD = libranlib.la $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 libcruft_la_DEPENDENCIES = cruft.def
+
+noinst_LTLIBRARIES = libranlib.la
+
+libranlib_la_SOURCES =
+
+libranlib_la_DEPENDENCIES = ranlib.def
 
 octinclude_HEADERS =
 
@@ -63,7 +71,12 @@ cruft.def: $(libcruft_la_SOURCES) mkf77def
 	./mkf77def $(srcdir) $(libcruft_la_SOURCES) > $@-t
 	mv $@-t $@
 
+ranlib.def: $(libranlib_la_SOURCES) mkf77def
+	chmod a+rx mkf77def
+	./mkf77def $(srcdir) $(libranlib_la_SOURCES) > $@-t
+	mv $@-t $@
+
 EXTRA_DIST += ChangeLog mkf77def.in
 
-DISTCLEANFILES = cruft.def
+DISTCLEANFILES = cruft.def ranlib.def
 

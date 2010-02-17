@@ -1,3 +1,14 @@
+2010-02-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: 
+
+	* acinclude.m4 (OCTAVE_CHECK_FORTRAN_INTEGER_SIZE): Save and
+	restore FFLAGS.  Temporarily add F77_INTEGER_8_FLAG to FFLAGS.
+	* common.mk (F77_INTEGER_8_FLAG): New variable.
+	(do_subst_config_vals): Substitute it.
+	* configeure.ac: Don't add -fdefault-integer-8 to FFLAGS. 
+	Substitute F77_INTEGER_8_FLAG.  Improve --enable-64 warning.
+
 2010-02-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

@@ -488,6 +488,7 @@ if AMCOND_ENABLE_DYNAMIC_LINKING
     ./liboctinterp.la \
     ../liboctave/liboctave.la \
     ../libcruft/libcruft.la \
+    ../libcruft/libranlib.la \
     ../libgnu/libgnu.la \
     $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
     $(ARPACK_LDFLAGS) $(ARPACK_LIBS) \
@@ -513,6 +514,7 @@ else
     ./liboctinterp.la \
     ../liboctave/liboctave.la \
     ../libcruft/libcruft.la \
+    ../libcruft/libranlib.la \
     ../libgnu/libgnu.la \
     $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
     $(QHULL_LDFLAGS) $(QHULL_LIBS) \
@@ -539,6 +541,7 @@ OCTINTERP_LINK_DEPS = \
   $(RLD_FLAG) \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la \
+  ../libcruft/libranlib.la \
   ../libgnu/libgnu.la \
   $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
   $(FT2_LDFLAGS) $(FT2_LIBS) \
@@ -557,6 +560,7 @@ OCT_LINK_DEPS = \
   ./liboctinterp.la \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la \
+  ../libcruft/libranlib.la \
   ../libgnu/libgnu.la
 
 bin_PROGRAMS = octave

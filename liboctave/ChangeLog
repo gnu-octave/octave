@@ -1,3 +1,13 @@
+2010-02-17  John W. Eaton  <jwe@octave.org>
+
+	* oct-rand.cc: Include <sdint.h>.  Change declarations of ranlib
+	functions to take int32_t instead of octave_idx_type values.
+	Change all uses.
+	(octave_rand::do_seed): Use int32_t in union, not octave_idx_type.
+	(force_to_fit_range): Args are now int32_t, not octave_idx_type.
+	(octave_rand::initialize_ranlib_generators): Use int32_t in seed
+	calculation.
+
 2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-op-defs.h (MINMAX_FCNS): Generalize.

@@ -1,3 +1,11 @@
+2010-02-17  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (OCTAVE_LIBS, OCTINTERP_LINK_DEPS):
+	Include ../libcruft/libranlib.la in the list.
+	* oct-conf.h.in (OCTAVE_CONF_F77_INTEGER_8_FLAG): New macro.
+	* toplev.cc (octave_config_info): Include F77_INTEGER_8_FLAG in
+	the struct.
+
 2010-02-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (do_numeric_lookup): Return an idx_vector

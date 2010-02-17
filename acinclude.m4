@@ -301,6 +301,8 @@ dnl
 dnl Check to see whether the default Fortran INTEGER is 64 bits wide.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
+  octave_fintsize_save_FFLAGS="$FFLAGS"
+  FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
   AC_LANG_PUSH(Fortran 77)
   AC_CACHE_CHECK([whether $F77 generates correct size integers],
                  [octave_cv_fortran_integer_size],
@@ -339,14 +341,14 @@ AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
   [octave_cv_fortran_integer_size=yes],
   [octave_cv_fortran_integer_size=no])
   AC_LANG_POP(C)dnl
-
-LIBS="$octave_fintsize_save_LIBS"
+  LIBS="$octave_fintsize_save_LIBS"
 rm -f conftest.$ac_objext fintsize.$ac_objext
 ], [
   rm -f conftest.$ac_objext
   AC_MSG_FAILURE([cannot compile a simple Fortran program])
   octave_cv_fortran_integer_size=no])])
   AC_LANG_POP(Fortran 77)
+  FFLAGS="$octave_fintsize_save_FFLAGS"
 ])
 dnl
 dnl

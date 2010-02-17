@@ -221,8 +221,8 @@ function ZI = interp2 (varargin)
       idx = sub2ind (size (a), yidx, xidx);
 
       ## scale XI, YI values to a 1-spaced grid
-      Xsc = (XI - X(xidx)) ./ (X(xidx + 1) - X(xidx));
-      Ysc = (YI - Y(yidx)) ./ (Y(yidx + 1) - Y(yidx));
+      Xsc = (XI - X(xidx)) ./ (diff (X)(xidx));
+      Ysc = (YI - Y(yidx)) ./ (diff (Y)(yidx));
 
       ## apply plane equation
       ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;

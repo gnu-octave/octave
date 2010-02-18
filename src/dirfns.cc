@@ -548,19 +548,49 @@ system-dependent error message.\n\
 DEFUN (glob, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
-Given an array of strings (as a char array or a cell array) in\n\
+Given an array of pattern strings (as a char array or a cell array) in\n\
 @var{pattern}, return a cell array of file names that match any of\n\
-them, or an empty cell array if no patterns match.  Tilde expansion\n\
+them, or an empty cell array if no patterns match.  The pattern strings are \n\
+interpreted as filename globbing patterns (as they are used by unix shells).\n\
+Within a pattern\n\
+@table @code\n\
+@itemx *\n\
+matches any string, including the null string,\n\
+@itemx ?\n\
+matches any single character, and\n\
+@item [...]\n\
+matches any of the enclosed characters.\n\
+@end table\n\
+\n\
+Tilde expansion\n\
 is performed on each of the patterns before looking for matching file\n\
-names.  For example,\n\
+names.  For example:\n\
 \n\
 @example\n\
 @group\n\
-glob (\"/vm*\")\n\
-     @result{} \"/vmlinuz\"\n\
+ls\n\
+     @result{}\n\
+        file1  file2  file3  myfile1 myfile1b \n\
+glob (\"*file1\")\n\
+     @result{}\n\
+        @{\n\
+          [1,1] = file1\n\
+          [2,1] = myfile1\n\
+        @}\n\
+glob (\"myfile?\")\n\
+     @result{}\n\
+        @{\n\
+          [1,1] = myfile1\n\
+        @}\n\
+glob (\"file[12]\")\n\
+     @result{}\n\
+        @{\n\
+          [1,1] = file1\n\
+          [2,1] = file2\n\
+        @}\n\
 @end group\n\
 @end example\n\
-@seealso{dir, ls, stat, readdir}\n\
+@seealso{dir, ls, stat, readdir, regexp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -583,6 +613,38 @@ glob (\"/vm*\")\n\
 
   return retval;
 }
+
+/*
+%!test
+%!  tmpdir = tmpnam;
+%!  filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
+%!  if (mkdir (tmpdir))
+%!    cwd = pwd;
+%!    cd (tmpdir);
+%!    if strcmp (pwd, tmpdir)
+%!      a = 0;
+%!      for n = 1:5
+%!        save (filename{n}, "a");
+%!      endfor
+%!    else
+%!      rmdir (tmpdir);
+%!      error ("Couldn't change to temporary dir");
+%!    endif
+%!  else
+%!    error ("Couldn't create temporary directory");
+%!  endif
+%!  result1 = glob ("*file1");
+%!  result2 = glob ("myfile?");
+%!  result3 = glob ("file[12]");
+%!  for n = 1:5
+%!    delete (filename{n});
+%!  endfor
+%!  cd (cwd);
+%!  rmdir (tmpdir);
+%!  assert (result1, {"file1"; "myfile1"});
+%!  assert (result2, {"myfile1"});
+%!  assert (result3, {"file1"; "file2"});
+*/
 
 DEFUN (fnmatch, args, ,
   "-*- texinfo -*-\n\

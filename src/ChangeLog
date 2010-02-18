@@ -1,3 +1,7 @@
+2010-02-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* dirfns.cc (Fglob): Document globbing patterns, add test.
+
 2010-02-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-path.cc (in_path_list): New helper function.

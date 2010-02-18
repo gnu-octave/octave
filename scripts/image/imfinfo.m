@@ -119,15 +119,7 @@ function info = imfinfo (filename)
 
     endif
 
-    [statinfo, err, msg] = stat (fn);
-    if (err != 0)
-      error ("imfinfo: error reading '%s': %s", fn, msg);
-    endif
-
-    time_stamp = strftime ("%e-%b-%Y %H:%M:%S", localtime (statinfo.mtime));
-  
     info = __magick_finfo__ (fn);
-    info.FileModDate = time_stamp;
 
   unwind_protect_cleanup
 

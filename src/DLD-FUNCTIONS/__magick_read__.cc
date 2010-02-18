@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cmath>
 
+#include "file-stat.h"
+#include "oct-time.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "ov-struct.h"
@@ -900,7 +903,7 @@ magick_to_octave_value (const Magick::ImageType magick)
 #define GET_PARAM(NAME, OUTNAME) \
   try \
     { \
-      st.assign (OUTNAME, magick_to_octave_value (im.NAME ())); \
+      info.contents (OUTNAME)(frame,0) = magick_to_octave_value (im.NAME ()); \
     } \
   catch (Magick::Warning& w) \
     { \
@@ -916,14 +919,14 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
 @seealso{imfinfo, imread}\n\
 @end deftypefn")
 {
-  octave_value_list output;
+  octave_value retval;
 
 #ifdef HAVE_MAGICK
 
   if (args.length () < 1 || ! args (0).is_string ())
     {
       print_usage ();
-      return output;
+      return retval;
     }
 
   const std::string filename = args (0).string_value ();
@@ -931,37 +934,97 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
   try
     {
       // Read the file.
-      Magick::Image im;
-      im.read (filename);
+      std::vector<Magick::Image> imvec;
+      Magick::readImages (&imvec, args(0).string_value ());
+      int nframes = imvec.size (); 
       
-      // Read properties.
-      Octave_map st;
-      st.assign ("Filename", filename);
+      // Create the right size for the output.
+
+      static const char *fields[] =
+        {
+          "Filename",
+          "FileModDate",
+          "FileSize",
+          "Height",
+          "Width",
+          "BitDepth",
+          "Format",
+          "LongFormat",
+          "XResolution",
+          "YResolution",
+          "TotalColors",
+          "TileName",
+          "AnimationDelay",
+          "AnimationIterations",
+          "ByteOrder",
+          "Gamma",
+          "Matte",
+          "ModulusDepth",
+          "Quality",
+          "QuantizeColors",
+          "ResolutionUnits",
+          "ColorType",
+          "View",
+          0
+        };
+
+      Octave_map info (string_vector (fields), dim_vector (nframes, 1));
+
+      file_stat fs (filename);
+
+      std::string filetime;
+
+      if (fs)
+        {
+          octave_localtime mtime = fs.mtime ();
+
+          filetime = mtime.strftime ("%e-%b-%Y %H:%M:%S");
+        }
+      else
+        {
+          std::string msg = fs.error ();
+
+          error ("imfinfo: error reading `%s': %s",
+                 filename.c_str (), msg.c_str ());
+
+          return retval;
+        }
+
+      // For each frame in the image (some images contain multiple
+      // layers, each to be treated like a separate image).
+      for (int frame = 0; frame < nframes; frame++)
+        {
+          Magick::Image im = imvec[frame];
       
-      // Annoying CamelCase naming is for Matlab compatibility.
-      GET_PARAM (fileSize, "FileSize")
-      GET_PARAM (rows, "Height")
-      GET_PARAM (columns, "Width")
-      GET_PARAM (depth, "BitDepth")
-      GET_PARAM (magick, "Format")
-      GET_PARAM (format, "LongFormat")
-      GET_PARAM (xResolution, "XResolution")
-      GET_PARAM (yResolution, "YResolution")
-      GET_PARAM (totalColors, "TotalColors")
-      GET_PARAM (tileName, "TileName")
-      GET_PARAM (animationDelay, "AnimationDelay")
-      GET_PARAM (animationIterations, "AnimationIterations")
-      GET_PARAM (endian, "ByteOrder")
-      GET_PARAM (gamma, "Gamma")
-      GET_PARAM (matte, "Matte")
-      GET_PARAM (modulusDepth, "ModulusDepth")
-      GET_PARAM (quality, "Quality")
-      GET_PARAM (quantizeColors, "QuantizeColors")
-      GET_PARAM (resolutionUnits, "ResolutionUnits")
-      GET_PARAM (type, "ColorType")
-      GET_PARAM (view, "View")
-        
-      output (0) = st;
+          // Add file name and timestamp.
+          info.contents ("Filename")(frame,0) = filename;
+          info.contents ("FileModDate")(frame,0) = filetime;
+          
+          // Annoying CamelCase naming is for Matlab compatibility.
+          GET_PARAM (fileSize, "FileSize")
+          GET_PARAM (rows, "Height")
+          GET_PARAM (columns, "Width")
+          GET_PARAM (depth, "BitDepth")
+          GET_PARAM (magick, "Format")
+          GET_PARAM (format, "LongFormat")
+          GET_PARAM (xResolution, "XResolution")
+          GET_PARAM (yResolution, "YResolution")
+          GET_PARAM (totalColors, "TotalColors")
+          GET_PARAM (tileName, "TileName")
+          GET_PARAM (animationDelay, "AnimationDelay")
+          GET_PARAM (animationIterations, "AnimationIterations")
+          GET_PARAM (endian, "ByteOrder")
+          GET_PARAM (gamma, "Gamma")
+          GET_PARAM (matte, "Matte")
+          GET_PARAM (modulusDepth, "ModulusDepth")
+          GET_PARAM (quality, "Quality")
+          GET_PARAM (quantizeColors, "QuantizeColors")
+          GET_PARAM (resolutionUnits, "ResolutionUnits")
+          GET_PARAM (type, "ColorType")
+          GET_PARAM (view, "View")
+        }
+
+      retval = octave_value (info);
     }
   catch (Magick::Warning& w)
     {
@@ -974,7 +1037,7 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());
-      return output;
+      return retval;
     }
 
 #else
@@ -983,7 +1046,7 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
 
 #endif
 
-  return output;
+  return retval;
 }
 
 #undef GET_PARAM

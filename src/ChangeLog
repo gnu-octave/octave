@@ -1,3 +1,13 @@
+2010-02-18  Søren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (__magick_finfo__):
+	Handle multiple frames in a single image file.
+
+2010-02-18  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.h (Octave_map::Octave_map): Allow dimension to also be
+	specified in string_vector constructor.
+
 2010-02-17  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (OCTAVE_LIBS, OCTINTERP_LINK_DEPS):

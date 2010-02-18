@@ -1617,6 +1617,24 @@ load_path::do_display (std::ostream& os) const
 #endif
 }
 
+// True if a path is contained in a path list separated by path_sep_char
+static bool
+in_path_list (const std::string& path_list, const std::string& path)
+{
+  size_t ps = path.size (), pls = path_list.size (), pos = path_list.find (path);
+  char psc = dir_path::path_sep_char ();
+  while (pos != std::string::npos)
+    {
+      if ((pos == 0 || path_list[pos-1] == psc)
+          && (pos + ps == pls || path_list[pos + ps] == psc))
+        return true;
+      else
+        pos = path_list.find (path, pos + 1);
+    }
+
+  return false;
+}
+
 void
 load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 {
@@ -1674,6 +1692,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
                 {
                   file_info& old = file_info_list.front ();
                   if (sys_path.find (old.dir_name) != std::string::npos)
+                  if (in_path_list (sys_path, old.dir_name))
                     {
                       std::string fcn_path = file_ops::concat (dir_name, fname);
                       warning_with_id ("Octave:shadowed-function",

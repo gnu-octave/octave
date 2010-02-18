@@ -1,3 +1,8 @@
+2010-02-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* load-path.cc (in_path_list): New helper function.
+	(add_to_fcn_map): Use it here.
+
 2010-02-18  Søren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (__magick_finfo__):

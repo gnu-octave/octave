@@ -103,6 +103,8 @@ private:
     // i/o
     virtual std::ostream& print (std::ostream& os) const = 0;
 
+    virtual Array<octave_idx_type> as_array (void);
+
     int count;
 
     bool err;
@@ -203,6 +205,8 @@ private:
 
     Range unconvert (void) const;
 
+    Array<octave_idx_type> as_array (void);
+
   private:
 
     DECLARE_OCTAVE_ALLOCATOR
@@ -259,6 +263,8 @@ private:
     std::ostream& print (std::ostream& os) const;
 
     double unconvert (void) const;
+
+    Array<octave_idx_type> as_array (void);
 
   private:
 
@@ -327,6 +333,8 @@ private:
 
     Array<double> unconvert (void) const;
 
+    Array<octave_idx_type> as_array (void);
+    
   private:
 
     DECLARE_OCTAVE_ALLOCATOR
@@ -970,6 +978,8 @@ public:
   void unconvert (idx_class_type& iclass,
                   double& scalar, Range& range, 
                   Array<double>& array, Array<bool>& mask) const;
+
+  Array<octave_idx_type> as_array (void) const;
     
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.

@@ -1,5 +1,19 @@
 2010-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-lazy-idx.cc (octave_lazy_index::reshape,
+	octave_lazy_index::squeeze, octave_lazy_index::permute,
+	octave_lazy_index::sort, octave_lazy_index::is_sorted,
+	octave_lazy_index::sort_rows_idx, octave_lazy_index::is_sorted_rows):
+	New method overrides.
+	* ov-lazy-idx.h: Declare them.
+	* ov-re-mat.cc (octave_matrix::reshape, octave_matrix::squeeze,
+	octave_matrix::sort, octave_matrix::is_sorted,
+	octave_matrix::sort_rows_idx, octave_matrix::is_sorted_rows): New
+	method overrides.
+	* ov-re-mat.h: Declare them.
+
+2010-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/find.cc (Ffind): Avoid unsafe conversion from Inf to
 	integer.
 

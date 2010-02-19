@@ -54,8 +54,7 @@ public:
 
   size_t byte_size (void) const { return numel () * sizeof (octave_idx_type); }
 
-  // FIXME: should avoid conversion.
-  octave_value squeeze (void) const { return make_value ().squeeze (); }
+  octave_value squeeze (void) const;
 
   octave_value full_value (void) const { return make_value (); }
 
@@ -95,12 +94,9 @@ public:
 
   octave_idx_type nnz (void) const { return numel (); }
 
-  // FIXME: should avoid conversion.
-  octave_value reshape (const dim_vector& new_dims) const
-    { return make_value ().reshape (new_dims); }
+  octave_value reshape (const dim_vector& new_dims) const;
 
-  octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return make_value ().permute (vec, inv); }
+  octave_value permute (const Array<int>& vec, bool inv = false) const;
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
     { return make_value ().resize (dv, fill); }
@@ -112,15 +108,16 @@ public:
   MatrixType matrix_type (const MatrixType& _typ) const
     { return make_value ().matrix_type (_typ); }
 
-  // FIXME: should avoid conversion.
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return make_value ().is_sorted (mode); }
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
-  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
-    { return make_value ().sort_rows_idx (mode); }
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+                     sortmode mode = ASCENDING) const;
 
-  sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return make_value ().is_sorted_rows (mode); }
+  sortmode is_sorted (sortmode mode = UNSORTED) const;
+
+  Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;
+
+  sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
   bool is_matrix_type (void) const { return true; }
 
@@ -195,13 +192,6 @@ public:
 
   octave_value diag (octave_idx_type k = 0) const
     { return make_value ().diag (k); }
-
-  octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return make_value ().sort (dim, mode); }
-
-  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-                     sortmode mode = ASCENDING) const
-    { return make_value ().sort (sidx, dim, mode); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const
     { return make_value ().convert_to_str_internal (pad, force, type); }

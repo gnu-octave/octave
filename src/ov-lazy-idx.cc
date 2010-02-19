@@ -70,6 +70,88 @@ octave_lazy_index::try_narrowing_conversion (void)
   return retval;
 }
 
+octave_value 
+octave_lazy_index::reshape (const dim_vector& new_dims) const
+{
+  return idx_vector (index.as_array ().reshape (new_dims),
+                     index.extent (0));
+}
+
+octave_value 
+octave_lazy_index::permute (const Array<int>& vec, bool inv) const
+{
+  // If the conversion has already been made, forward the operation.
+  if (value.is_defined ())
+    return value.permute (vec, inv);
+  else
+    return idx_vector (index.as_array ().permute (vec, inv),
+                       index.extent (0));
+}
+
+octave_value 
+octave_lazy_index::squeeze (void) const
+{
+  return idx_vector (index.as_array ().squeeze (),
+                     index.extent (0));
+}
+
+octave_value 
+octave_lazy_index::sort (octave_idx_type dim, sortmode mode) const
+{
+  const dim_vector odims = index.orig_dimensions ();
+  // index_vector can employ a more efficient sorting algorithm.
+  if (mode == ASCENDING && odims.length () == 2 
+      && (dim >= 0 && dim <= 1) && odims (1-dim) == 1)
+    return index_vector ().sorted ();
+  else
+    return idx_vector (index.as_array ().sort (dim, mode), 
+                       index.extent (0));
+}
+
+octave_value 
+octave_lazy_index::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
+                         sortmode mode) const
+{
+  const dim_vector odims = index.orig_dimensions ();
+  // index_vector can employ a more efficient sorting algorithm.
+  if (mode == ASCENDING && odims.length () == 2 
+      && (dim >= 0 && dim <= 1) && odims (1-dim) == 1)
+    return index_vector ().sorted (sidx);
+  else
+    return idx_vector (index.as_array ().sort (sidx, dim, mode), 
+                       index.extent (0));
+}
+
+sortmode 
+octave_lazy_index::is_sorted (sortmode mode) const
+{
+  if (index.is_range ())
+    {
+      // Avoid the array conversion.
+      octave_idx_type inc = index.increment ();
+      if (inc == 0)
+        return (mode == UNSORTED ? ASCENDING : mode);
+      else if (inc > 0)
+        return (mode == DESCENDING ? UNSORTED : ASCENDING);
+      else
+        return (mode == ASCENDING ? UNSORTED : DESCENDING);
+    }
+  else
+    return index.as_array ().is_sorted (mode);
+}
+
+Array<octave_idx_type> 
+octave_lazy_index::sort_rows_idx (sortmode mode) const
+{
+  return index.as_array ().sort_rows_idx (mode);
+}
+
+sortmode 
+octave_lazy_index::is_sorted_rows (sortmode mode) const
+{
+  return index.as_array ().is_sorted_rows (mode);
+}
+
 static const std::string value_save_tag ("index_value");
 
 bool octave_lazy_index::save_ascii (std::ostream& os)

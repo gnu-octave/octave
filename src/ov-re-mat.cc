@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-re-diag.h"
 #include "ov-cx-diag.h"
+#include "ov-lazy-idx.h"
 #include "ov-perm.h"
 #include "ov-type-conv.h"
 #include "pr-output.h"
@@ -271,15 +272,42 @@ octave_matrix::diag (octave_idx_type k) const
   return retval;
 }
 
+// We override these two functions to allow reshaping both
+// the matrix and the index cache.
+octave_value 
+octave_matrix::reshape (const dim_vector& new_dims) const
+{
+  if (idx_cache)
+    {
+      return new octave_matrix (matrix.reshape (new_dims),
+                                idx_vector (idx_cache->as_array ().reshape (new_dims),
+                                            idx_cache->extent (0)));
+    }
+  else
+    return octave_base_matrix<NDArray>::reshape (new_dims);
+}
+
+octave_value 
+octave_matrix::squeeze (void) const
+{
+  if (idx_cache)
+    {
+      return new octave_matrix (matrix.squeeze (),
+                                idx_vector (idx_cache->as_array ().squeeze (),
+                                            idx_cache->extent (0)));
+    }
+  else
+    return octave_base_matrix<NDArray>::squeeze ();
+}
+
 octave_value 
 octave_matrix::sort (octave_idx_type dim, sortmode mode) const
 {
-  // If this matrix is known to be a valid index, and we're doing a vector sort,
-  // sort via idx_vector which may be more efficient occassionally.
-  if (idx_cache && mode == ASCENDING && ndims () == 2
-      && ((dim == 0 && matrix.columns () == 1) || (dim == 1 && matrix.rows () == 1)))
+  if (idx_cache)
     {
-      return index_vector ().sorted ();
+      // This is a valid index matrix, so sort via integers because it's
+      // generally more efficient.
+      return octave_lazy_index (*idx_cache).sort (dim, mode);
     }
   else
     return octave_base_matrix<NDArray>::sort (dim, mode);
@@ -289,16 +317,54 @@ octave_value
 octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
                      sortmode mode) const
 {
-  // If this matrix is known to be a valid index, and we're doing a vector sort,
-  // sort via idx_vector which may be more efficient occassionally.
-  if (idx_cache && mode == ASCENDING && ndims () == 2
-      && ((dim == 0 && matrix.columns () == 1) || (dim == 1 && matrix.rows () == 1)))
+  if (idx_cache)
     {
-      return index_vector ().sorted (sidx);
+      // This is a valid index matrix, so sort via integers because it's
+      // generally more efficient.
+      return octave_lazy_index (*idx_cache).sort (sidx, dim, mode);
     }
   else
     return octave_base_matrix<NDArray>::sort (sidx, dim, mode);
 }
+
+sortmode 
+octave_matrix::is_sorted (sortmode mode) const
+{
+  if (idx_cache)
+    {
+      // This is a valid index matrix, so check via integers because it's
+      // generally more efficient.
+      return idx_cache->as_array ().is_sorted (mode);
+    }
+  else
+    return octave_base_matrix<NDArray>::is_sorted (mode);
+}
+Array<octave_idx_type> 
+octave_matrix::sort_rows_idx (sortmode mode) const
+{
+  if (idx_cache)
+    {
+      // This is a valid index matrix, so sort via integers because it's
+      // generally more efficient.
+      return octave_lazy_index (*idx_cache).sort_rows_idx (mode);
+    }
+  else
+    return octave_base_matrix<NDArray>::sort_rows_idx (mode);
+}
+
+sortmode 
+octave_matrix::is_sorted_rows (sortmode mode) const
+{
+  if (idx_cache)
+    {
+      // This is a valid index matrix, so check via integers because it's
+      // generally more efficient.
+      return idx_cache->as_array ().is_sorted_rows (mode);
+    }
+  else
+    return octave_base_matrix<NDArray>::is_sorted_rows (mode);
+}
+
 octave_value
 octave_matrix::convert_to_str_internal (bool, bool, char type) const
 {

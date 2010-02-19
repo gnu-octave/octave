@@ -62,6 +62,15 @@ gripe_index_out_of_range (void)
     ("internal error: idx_vector index out of range.");
 }
 
+Array<octave_idx_type>
+idx_vector::idx_base_rep::as_array (void)
+{
+  (*current_liboctave_error_handler)
+    ("internal error: as_array not allowed for this index class.");
+
+  return Array<octave_idx_type> ();
+}
+
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_colon_rep);
 
 idx_vector::idx_colon_rep::idx_colon_rep (char c)
@@ -207,6 +216,16 @@ idx_vector::idx_range_rep::unconvert (void) const
                 static_cast<double> (step), len);
 }
 
+Array<octave_idx_type>
+idx_vector::idx_range_rep::as_array (void)
+{
+  Array<octave_idx_type> retval (dim_vector (1, len));
+  for (octave_idx_type i = 0; i < len; i++)
+    retval.xelem (i) = start + len*step;
+
+  return retval;
+}
+
 inline octave_idx_type
 convert_index (octave_idx_type i, bool& conv_error, 
                octave_idx_type& ext)
@@ -287,6 +306,12 @@ double
 idx_vector::idx_scalar_rep::unconvert (void) const
 {
   return data + 1;
+}
+
+Array<octave_idx_type>
+idx_vector::idx_scalar_rep::as_array (void)
+{
+  return Array<octave_idx_type> (dim_vector (1, 1), data);
 }
 
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_vector_rep);
@@ -590,6 +615,23 @@ idx_vector::idx_vector_rep::unconvert (void) const
   for (octave_idx_type i = 0; i < len; i++)
     retval.xelem (i) = data[i] + 1;
   return retval;
+}
+
+Array<octave_idx_type>
+idx_vector::idx_vector_rep::as_array (void)
+{
+  if (aowner)
+    return *aowner;
+  else
+    {
+      Array<octave_idx_type> retval (orig_dims);
+      std::memcpy (retval.fortran_vec (), data, len*sizeof (octave_idx_type));
+      // Delete the old copy and share the data instead to save memory.
+      delete [] data;
+      data = retval.fortran_vec ();
+      aowner = new Array<octave_idx_type> (retval);
+      return retval;
+    }
 }
 
 DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_mask_rep);
@@ -1095,6 +1137,12 @@ void idx_vector::unconvert (idx_class_type& iclass,
     }
 }
 
+Array<octave_idx_type> 
+idx_vector::as_array (void) const
+{
+  return rep->as_array ();
+}
+    
 octave_idx_type 
 idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
 {

@@ -1,3 +1,11 @@
+2010-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::as_array,
+	idx_vector::idx_range_rep::as_array,
+	idx_vector::idx_scalar_rep::as_array,
+	idx_vector::idx_vector_rep::as_array): New methods.
+	* idx-vector.h: Declare them.
+
 2010-02-17  John W. Eaton  <jwe@octave.org>
 
 	* oct-rand.cc: Include <sdint.h>.  Change declarations of ranlib

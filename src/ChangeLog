@@ -1,3 +1,8 @@
+2010-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/find.cc (Ffind): Avoid unsafe conversion from Inf to
+	integer.
+
 2010-02-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* syscalls.cc (mk_stat_result): New helper function.

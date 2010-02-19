@@ -440,12 +440,12 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
     {
       double val = args(1).scalar_value ();
 
-      if (error_state || (! xisinf (val) && (val < 0 || val != xround (val))))
+      if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
         {
           error ("find: expecting second argument to be a nonnegative integer");
           return retval;
         }
-      else
+      else if (! xisinf (val))
         n_to_find = val;
     }
 

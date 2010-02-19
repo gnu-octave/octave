@@ -85,6 +85,27 @@ mk_stat_map (const base_file_stat& fs)
   return m;
 }
 
+static octave_value_list
+mk_stat_result (const base_file_stat& fs)
+{
+  octave_value_list retval;
+
+  if (fs)
+    {
+      retval(2) = std::string ();
+      retval(1) = 0;
+      retval(0) = octave_value (mk_stat_map (fs));
+    }
+  else
+    {
+      retval(2) = fs.error ();
+      retval(1) = -1;
+      retval(0) = Matrix ();
+    }
+
+  return retval;
+}
+
 DEFUNX ("dup2", Fdup2, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})\n\
@@ -719,43 +740,6 @@ Return 0 if successful, otherwise return -1.\n\
   return retval;
 }
 
-DEFUNX ("fstat", Ffstat, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} fstat (@var{fid})\n\
-Return information about the open file @var{fid}.  See @code{stat}\n\
-for a description of the contents of @var{info}.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  if (args.length () == 1)
-    {
-      int fid = octave_stream_list::get_file_number (args(0));
-
-      if (! error_state)
-        {
-          file_fstat fs (fid);
-
-          if (fs)
-            {
-              retval(2) = std::string ();
-              retval(1) = 0;
-              retval(0) = octave_value (mk_stat_map (fs));
-            }
-          else
-            {
-              retval(2) = fs.error ();
-              retval(1) = -1;
-              retval(0) = Matrix ();
-            }
-        }
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 DEFUNX ("lstat", Flstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
@@ -772,18 +756,7 @@ See stat.\n\
         {
           file_stat fs (fname, false);
 
-          if (fs)
-            {
-              retval(2) = std::string ();
-              retval(1) = 0;
-              retval(0) = mk_stat_map (fs);
-            }
-          else
-            {
-              retval(2) = fs.error ();
-              retval(1) = -1;
-              retval(0) = Matrix ();
-            }
+          retval = mk_stat_result (fs);
         }
     }
   else
@@ -791,8 +764,6 @@ See stat.\n\
 
   return retval;
 }
-
-
 
 DEFUNX ("mkfifo", Fmkfifo, args, ,
   "-*- texinfo -*-\n\
@@ -999,23 +970,26 @@ For example,\n\
 
   if (args.length () == 1)
     {
-      std::string fname = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_scalar_type ())
         {
-          file_stat fs (fname);
+          int fid = octave_stream_list::get_file_number (args(0));
 
-          if (fs)
+          if (! error_state)
             {
-              retval(2) = std::string ();
-              retval(1) = 0;
-              retval(0) = octave_value (mk_stat_map (fs));
+              file_fstat fs (fid);
+
+              retval = mk_stat_result (fs);
             }
-          else
+        }
+      else
+        {
+          std::string fname = args(0).string_value ();
+
+          if (! error_state)
             {
-              retval(2) = fs.error ();
-              retval(1) = -1;
-              retval(0) = Matrix ();
+              file_stat fs (fname);
+
+              retval = mk_stat_result (fs);
             }
         }
     }

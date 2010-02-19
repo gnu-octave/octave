@@ -1,3 +1,9 @@
+2010-02-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* syscalls.cc (mk_stat_result): New helper function.
+	(Flstat): Call it here.
+	(Fstat): Also here. Handle also the fstat case here.
+
 2010-02-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* dirfns.cc (Fglob): Document globbing patterns, add test.

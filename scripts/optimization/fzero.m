@@ -38,6 +38,8 @@
 ## Maximum number of iterations or function evaluations has been exhausted.
 ## @item -1
 ## The algorithm has been terminated from user output function.
+## @item -5
+## The algorithm may have converged to a singular point.
 ## @end itemize
 ## @seealso{optimset, fsolve} 
 ## @end deftypefn
@@ -132,6 +134,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   if (! (sign (fa) * sign (fb) <= 0))
     error ("fzero:bracket", "fzero: not a valid initial bracketing");
   endif
+
+  slope0 = (fb - fa) / (b - a);
 
   itype = 1;
 
@@ -280,6 +284,13 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       mba = mu * (b - a);
     endif
   endwhile
+
+  ## Check solution for a singularity by examining slope
+  if (info == 1)
+    if ((b - a) != 0 && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/tolx))
+      info = -5;
+    endif
+  endif
 
   output.iterations = niter;
   output.funcCount = nfev;

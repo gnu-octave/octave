@@ -1,3 +1,7 @@
+2010-02-19  Rik <octave@nomad.inbox5.com>
+
+	* optimization/fzero.m: Add test for discontinuity at the end.
+
 2010-02-18  John W. Eaton  <jwe@octave.org>
 
 	* image/imfinfo.m: Don't handle file time stamp here.

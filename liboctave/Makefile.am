@@ -507,6 +507,7 @@ liboctave_la_CPPFLAGS = \
   $(AM_CPPFLAGS)
 
 liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+  -bindir $(bindir) \
   $(SPARSE_XLDFLAGS) \
   $(ARPACK_LDFLAGS) \
   $(QRUPDATE_LDFLAGS) \

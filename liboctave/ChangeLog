@@ -1,3 +1,7 @@
+2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Makefile.am: Add -bindir flag to liboctave_la_LDFLAGS.
+
 2010-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::as_array,

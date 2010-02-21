@@ -581,7 +581,8 @@ nodist_liboctinterp_la_SOURCES = \
 
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
-liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG)
+liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+  -bindir $(bindir)
 
 CLEANFILES = \
   DLD-FUNCTIONS/PKG_ADD \
@@ -701,7 +702,7 @@ install-oct:
 	  fi; \
 	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
 	  if [ -n "$$lnames" ]; then \
-	    rm -f $$f $$lnames; \
+	    rm -f $$f $$lnames $$dl; \
 	  fi \
 	done
 

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <algorithm>
 #include <string>
 
 #include <fnmatch.h>
@@ -78,6 +79,13 @@ octave_glob (const string_vector& pat)
         {
           glob_t glob_info;
 
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+          && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM) 
+              std::replace_if (xpat.begin (), xpat.end (), 
+                               std::bind2nd (std::equal_to<char> (), '\\'), 
+                               '/'); 
+#endif 
+
           int err = ::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
 
           if (! err)
@@ -98,7 +106,19 @@ octave_glob (const string_vector& pat)
                   retval.resize (k+n);
 
                   for (int j = 0; j < n; j++)
-                    retval[k++] = matches[j];
+                    { 
+                      std::string tmp = matches[j]; 
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+                      && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM) 
+                          std::replace_if (tmp.begin (), tmp.end (), 
+                                           std::bind2nd (std::equal_to<char> (), 
+                                                         '/'), 
+                                           '\\'); 
+#endif 
+
+                      retval[k++] = tmp; 
+                    } 
                 }
 
               globfree (&glob_info);

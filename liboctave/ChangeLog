@@ -1,5 +1,9 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* oct-glob.cc (octave_glob): Convert backslashes to forward slashes
+	automatically before calling glob, and convert back after the call
+	(implementation from jwe).
+
 	* Makefile.am: Add -bindir flag to liboctave_la_LDFLAGS.
 
 2010-02-19  Jaroslav Hajek  <highegg@gmail.com>

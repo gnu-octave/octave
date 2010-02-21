@@ -1,5 +1,8 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* sighandlers.cc (octave_set_signal_handler): Don't use SIGALRM
+	unconditionally.
+
 	* ov-bool.h (class octave_bool): Add OCTINTERP_API.
 	* unwind-prot.h (class unwind_protect_safe): Ditto.
 

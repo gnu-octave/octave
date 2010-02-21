@@ -178,15 +178,20 @@ octave_set_signal_handler (int sig, sig_handler *handler,
   act.sa_handler = handler;
   act.sa_flags = 0;
 
+#if defined (SIGALRM)
   if (sig == SIGALRM)
     {
 #if defined (SA_INTERRUPT)
       act.sa_flags |= SA_INTERRUPT;
 #endif
     }
+#endif
 #if defined (SA_RESTART)
+#if defined (SIGALRM)
+  else
+#endif
   // FIXME -- Do we also need to explicitly disable SA_RESTART?
-  else if (restart_syscalls)
+  if (restart_syscalls)
     act.sa_flags |= SA_RESTART;
 #endif
 

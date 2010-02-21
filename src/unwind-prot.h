@@ -250,7 +250,9 @@ private:
 // an exception (or interrupt) in the cleanup actions. Not that we can do much about
 // it, but at least we won't crash.
 
-class unwind_protect_safe : public unwind_protect
+class
+OCTINTERP_API
+unwind_protect_safe : public unwind_protect
 {
   static void gripe_exception (void);
 

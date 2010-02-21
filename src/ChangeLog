@@ -1,5 +1,8 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* ov-bool.h (class octave_bool): Add OCTINTERP_API.
+	* unwind-prot.h (class unwind_protect_safe): Ditto.
+
 	* Makefile.am: Add -bindir flag to liboctinterp_la_LDFLAGS. Remove
 	temporary libtool module file after copying oct file.
 

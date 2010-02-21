@@ -49,11 +49,6 @@ To initialize:
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 
-#ifdef min
-#undef min
-#undef max
-#endif
-
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 

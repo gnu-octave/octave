@@ -1,5 +1,7 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* configure.ac: Define NOMINMAX under MSVC.
+
 	* configure.ac: Add pcre_config --cflags to XTRA_CXXFLAGS instead of
 	CPPFLAGS.
 

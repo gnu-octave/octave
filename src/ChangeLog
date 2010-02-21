@@ -1,5 +1,8 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* gl-render.h: Define WIN32_LEAN_AND_MEAN and don't #undef min/max.
+	* DLD-FUNCTIONS/fltk_backend.cc: Don't #undef min/max.
+
 	* sighandlers.cc (octave_set_signal_handler): Don't use SIGALRM
 	unconditionally.
 

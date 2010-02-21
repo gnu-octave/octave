@@ -114,13 +114,13 @@ extern OCTAVE_API void
 octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
 
 #ifdef HAVE_LOADLIBRARY_API
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 extern "C" OCTAVE_API void *
 octave_w32_library_search (HINSTANCE handle, const char *name);
-#undef min
-#undef max
-#endif
 #endif
 
 extern "C" OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options);
+
+#endif

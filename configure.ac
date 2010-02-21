@@ -430,6 +430,11 @@ esac
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
 
+## Avoid #define of min/max from windows.h header
+if test "$have_msvc" = "yes"; then
+  AC_DEFINE(NOMINMAX, 1, [Define if you want to avoid min/max macro definition in Windows headers])
+fi
+
 ### Use -static if compiling on Alpha OSF/1 1.3 systems.
 
 case "$canonical_host_type" in

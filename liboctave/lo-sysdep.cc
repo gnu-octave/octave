@@ -34,11 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <fcntl.h>
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#ifdef max
-# undef min
-# undef max
-#endif
 #endif
 
 #include "file-ops.h"

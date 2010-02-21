@@ -1,5 +1,9 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* lo-sysdep.cc, lo-utils.h, oct-shlib.h: Define WIN32_LEAN_AND_MEAN
+	and don't #undef min/max.
+	* oct-inttypes.h: Don't #undef min/max.
+
 	* oct-glob.cc (octave_glob): Convert backslashes to forward slashes
 	automatically before calling glob, and convert back after the call
 	(implementation from jwe).

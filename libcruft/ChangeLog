@@ -1,5 +1,7 @@
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* misc/quit.h: Define WIN32_LEAN_AND_MEAN and don't #undef min/max.
+
 	* Makefile.am: Add -bindir option to libcruft_la_LDFLAGS.
 
 2010-02-17  John W. Eaton  <jwe@octave.org>

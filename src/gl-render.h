@@ -24,11 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #define gl_render_h 1
 
 #ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#ifdef max
-# undef min
-# undef max
-#endif
 #endif
 
 #ifdef HAVE_GL_GL_H

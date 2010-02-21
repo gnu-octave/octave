@@ -615,10 +615,10 @@ OCTAVE_CHECK_LIBRARY(qhull, QHull,
 
 ### Check for pcre/regex library.
 
-## check for pcre-config, and if so, set CPPFLAGS appropriately
+## check for pcre-config, and if so, set XTRA_CXXFLAGS appropriately
 AC_CHECK_PROG(WITH_PCRE_CONFIG, pcre-config, yes, no)
 if test $WITH_PCRE_CONFIG = yes ; then
-  CPPFLAGS="$CPPFLAGS $(pcre-config --cflags)"
+  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $(pcre-config --cflags)"
 fi
 
 ## NB: no need to do separate check for pcre.h header -- checking macros is good enough

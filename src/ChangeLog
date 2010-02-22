@@ -1,3 +1,7 @@
+2010-02-22  Carlo de Falco <kingcrimson@tiscali.it>
+
+	* dirfns.cc (Fglob): Make glob function test more robust.
+
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* gl-render.h: Define WIN32_LEAN_AND_MEAN and don't #undef min/max.

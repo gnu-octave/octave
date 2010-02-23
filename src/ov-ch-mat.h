@@ -61,6 +61,9 @@ protected:
   octave_char_matrix (const charNDArray& chm)
     : octave_base_matrix<charNDArray> (chm) { }
 
+  octave_char_matrix (const Array<char>& chm)
+    : octave_base_matrix<charNDArray> (chm) { }
+
   octave_char_matrix (char c)
     : octave_base_matrix<charNDArray> (c) { }
 

@@ -1,5 +1,16 @@
 2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-bool-mat.h (octave_bool_matrix::octave_bool_matrix (const
+	Array<bool>&)): New ctor.
+	* ov-ch-mat.h (octave_char_matrix::octave_char_matrix (const
+	Array<char>&)): New ctor.
+	* ov-str-mat.h (octave_char_matrix_str::octave_char_matrix_str (const
+	Array<char>&)): New ctor.
+	(octave_char_matrix_sq_str::octave_char_matrix_sq_str (const
+	Array<char>&)): New ctor.
+
+2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Cell.cc: Reflect Array API changes.
 	* DLD-FUNCTIONS/__convn__.cc: Ditto.
 	* DLD-FUNCTIONS/__glpk__.cc: Ditto.

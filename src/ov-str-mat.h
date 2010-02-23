@@ -62,6 +62,9 @@ public:
   octave_char_matrix_str (const charNDArray& chm)
     : octave_char_matrix (chm) { }
 
+  octave_char_matrix_str (const Array<char>& chm)
+    : octave_char_matrix (chm) { }
+
   octave_char_matrix_str (char c)
     : octave_char_matrix (c) { }
 
@@ -182,6 +185,9 @@ public:
     : octave_char_matrix_str (chm) { }
 
   octave_char_matrix_sq_str (const charNDArray& chm)
+    : octave_char_matrix_str (chm) { }
+
+  octave_char_matrix_sq_str (const Array<char>& chm)
     : octave_char_matrix_str (chm) { }
 
   octave_char_matrix_sq_str (char c)

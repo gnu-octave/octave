@@ -1,5 +1,12 @@
 2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* chMatrix.h (charMatrix): Base on Array<char>.
+	* chMatrix.cc (charMatrix): Update.
+	* boolMatrix.h (boolMatrix): Ditto.
+	* boolMatrix.h (boolMatrix): Update.
+
+2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h (Array): Define 2D constructors. Remove conflicting 1D
 	initialized constructor. Deprecate 1D constructor. Deprecate 1D resize. 
 	Add 2D resize, resize1. Remove resize_fill. Make resize_fill_value

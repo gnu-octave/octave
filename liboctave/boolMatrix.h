@@ -24,35 +24,35 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_boolMatrix_int_h)
 #define octave_boolMatrix_int_h 1
 
-#include "Array2.h"
+#include "Array.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
 class
 OCTAVE_API
-boolMatrix : public Array2<bool>
+boolMatrix : public Array<bool>
 {
 public:
 
-  boolMatrix (void) : Array2<bool> () { }
-  boolMatrix (octave_idx_type r, octave_idx_type c) : Array2<bool> (r, c) { }
-  boolMatrix (octave_idx_type r, octave_idx_type c, bool val) : Array2<bool> (r, c, val) { }
-  boolMatrix (const dim_vector& dv) : Array2<bool> (dv) { }
-  boolMatrix (const dim_vector& dv, bool val) : Array2<bool> (dv, val) { }
-  boolMatrix (const Array2<bool>& a) : Array2<bool> (a) { }
-  boolMatrix (const boolMatrix& a) : Array2<bool> (a) { }
+  boolMatrix (void) : Array<bool> () { }
+  boolMatrix (octave_idx_type r, octave_idx_type c) : Array<bool> (r, c) { }
+  boolMatrix (octave_idx_type r, octave_idx_type c, bool val) : Array<bool> (r, c, val) { }
+  boolMatrix (const dim_vector& dv) : Array<bool> (dv) { }
+  boolMatrix (const dim_vector& dv, bool val) : Array<bool> (dv, val) { }
+  boolMatrix (const Array<bool>& a) : Array<bool> (a) { }
+  boolMatrix (const boolMatrix& a) : Array<bool> (a) { }
 
   boolMatrix& operator = (const boolMatrix& a)
     {
-      Array2<bool>::operator = (a);
+      Array<bool>::operator = (a);
       return *this;
     }
 
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;
 
-  boolMatrix transpose (void) const { return Array2<bool>::transpose (); }
+  boolMatrix transpose (void) const { return Array<bool>::transpose (); }
 
   // destructive insert/delete/reorder operations
 
@@ -80,7 +80,7 @@ public:
 
 private:
 
-  boolMatrix (bool *b, octave_idx_type r, octave_idx_type c) : Array2<bool> (b, r, c) { }
+  boolMatrix (bool *b, octave_idx_type r, octave_idx_type c) : Array<bool> (b, r, c) { }
 };
 
 MM_BOOL_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)

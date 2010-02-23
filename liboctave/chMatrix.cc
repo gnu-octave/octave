@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 // charMatrix class.
 
 charMatrix::charMatrix (char c)
-  : Array2<char> ()
+  : Array<char> ()
 {
   octave_idx_type nc = 1;
   octave_idx_type nr = 1;
@@ -51,7 +51,7 @@ charMatrix::charMatrix (char c)
 }
 
 charMatrix::charMatrix (const char *s)
-  : Array2<char> ()
+  : Array<char> ()
 {
   octave_idx_type nc = s ? strlen (s) : 0;
   octave_idx_type nr = s && nc > 0 ? 1 : 0;
@@ -63,7 +63,7 @@ charMatrix::charMatrix (const char *s)
 }
 
 charMatrix::charMatrix (const std::string& s)
-  : Array2<char> ()
+  : Array<char> ()
 {
   octave_idx_type nc = s.length ();
   octave_idx_type nr = nc > 0 ? 1 : 0;
@@ -75,7 +75,7 @@ charMatrix::charMatrix (const std::string& s)
 }
 
 charMatrix::charMatrix (const string_vector& s)
-  : Array2<char> (s.length (), s.max_length (), 0)
+  : Array<char> (s.length (), s.max_length (), 0)
 {
   octave_idx_type nr = rows ();
 
@@ -125,7 +125,7 @@ charMatrix::insert (const char *s, octave_idx_type r, octave_idx_type c)
 charMatrix&
 charMatrix::insert (const charMatrix& a, octave_idx_type r, octave_idx_type c)
 {
-  Array2<char>::insert (a, r, c);
+  Array<char>::insert (a, r, c);
   return *this;
 }
 
@@ -196,7 +196,7 @@ charMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2,
 charMatrix
 charMatrix::diag (octave_idx_type k) const
 {
-  return Array2<char>::diag (k);
+  return Array<char>::diag (k);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

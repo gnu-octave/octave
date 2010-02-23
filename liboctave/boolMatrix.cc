@@ -56,7 +56,7 @@ boolMatrix::operator != (const boolMatrix& a) const
 boolMatrix&
 boolMatrix::insert (const boolMatrix& a, octave_idx_type r, octave_idx_type c)
 {
-  Array2<bool>::insert (a, r, c);
+  Array<bool>::insert (a, r, c);
   return *this;
 }
 
@@ -82,7 +82,7 @@ boolMatrix::operator ! (void) const
 boolMatrix
 boolMatrix::diag (octave_idx_type k) const
 {
-  return Array2<bool>::diag (k);
+  return Array<bool>::diag (k);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

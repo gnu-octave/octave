@@ -159,10 +159,6 @@ INSTANTIATE_ARRAY_SORT (float);
 
 INSTANTIATE_ARRAY (float, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<float>;
-
 template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<float>&);
 
 #include "DiagArray2.h"

@@ -111,28 +111,7 @@ boolNDArray::insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx)
 boolMatrix
 boolNDArray::matrix_value (void) const
 {
-  boolMatrix retval;
-
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = boolMatrix (Array2<bool> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = boolMatrix (Array2<bool> (*this, dimensions(0),
-                                         dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-        ("invalid conversion of boolNDArray to boolMatrix");
-      break;
-    }
-
-  return retval;
+  return *this;
 }
 
 void

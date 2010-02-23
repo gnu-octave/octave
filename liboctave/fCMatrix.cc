@@ -2387,7 +2387,8 @@ FloatComplexMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
 {
 
   FloatComplexMatrix tmp (b);
-  return solve (typ, tmp, info, rcon, sing_handler, transt).column(static_cast<octave_idx_type> (0));
+  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  return tmp.column(static_cast<octave_idx_type> (0));
 }
 
 FloatComplexMatrix

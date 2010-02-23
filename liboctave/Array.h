@@ -244,6 +244,8 @@ public:
   // Reshape constructor.
   Array (const Array<T>& a, const dim_vector& dv);
 
+  Array (const Array<T>& a, octave_idx_type nr, octave_idx_type nc);
+
   // Type conversion case.
   template <class U>
   Array (const Array<U>& a)
@@ -512,6 +514,9 @@ public:
   // Extract a slice from this array as a column vector: A(:)(lo+1:up).
   // Must be 0 <= lo && up <= numel. May be up < lo.
   Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
+
+  Array<T> reshape (octave_idx_type nr, octave_idx_type nc) const
+    { return Array<T> (*this, nr, nc); }
 
   Array<T> reshape (const dim_vector& new_dims) const
     { return Array<T> (*this, new_dims); }

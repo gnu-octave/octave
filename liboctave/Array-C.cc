@@ -92,10 +92,6 @@ INSTANTIATE_ARRAY_SORT (Complex);
 
 INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<Complex>;
-
 template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<Complex>&);
 
 #include "DiagArray2.h"

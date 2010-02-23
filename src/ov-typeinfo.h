@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "Array.h"
-#include "Array2.h"
 #include "Array3.h"
 
 #include "ov.h"
@@ -222,9 +221,9 @@ private:
 
   Array<void *> unary_class_ops;
 
-  Array2<void *> unary_ops;
+  Array<void *> unary_ops;
 
-  Array2<void *> non_const_unary_ops;
+  Array<void *> non_const_unary_ops;
 
   Array<void *> binary_class_ops;
 
@@ -234,17 +233,17 @@ private:
 
   Array3<void *> compound_binary_ops;
 
-  Array2<void *> cat_ops;
+  Array<void *> cat_ops;
 
   Array3<void *> assign_ops;
 
-  Array2<void *> assignany_ops;
+  Array<void *> assignany_ops;
 
-  Array2<int> pref_assign_conv;
+  Array<int> pref_assign_conv;
 
-  Array2<void *> type_conv_ops;
+  Array<void *> type_conv_ops;
 
-  Array2<void *> widening_ops;
+  Array<void *> widening_ops;
 
   int do_register_type (const std::string&, const std::string&,
                         const octave_value&);

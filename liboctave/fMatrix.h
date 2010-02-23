@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_FloatMatrix_int_h)
 #define octave_FloatMatrix_int_h 1
 
-#include "Array2.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -58,9 +57,6 @@ public:
 
   template <class U>
   FloatMatrix (const MArray<U>& a) : MArray<float> (a.as_matrix ()) { }
-
-  template <class U>
-  FloatMatrix (const Array2<U>& a) : MArray<float> (a) { }
 
   template <class U>
   FloatMatrix (const Array<U>& a) : MArray<float> (a.as_matrix ()) { }

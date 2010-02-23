@@ -914,7 +914,7 @@ NDArray::matrix_value (void) const
   Matrix retval;
 
   if (ndims () == 2)
-      retval = Matrix (Array2<double> (*this));
+      retval = Matrix (Array<double> (*this));
   else
     (*current_liboctave_error_handler)
       ("invalid conversion of NDArray to Matrix");

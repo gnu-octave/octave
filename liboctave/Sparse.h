@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 
 #include "Array.h"
-#include "Array2.h"
 #include "dim-vector.h"
 #include "lo-error.h"
 #include "lo-utils.h"
@@ -224,7 +223,6 @@ public:
           octave_idx_type nr, octave_idx_type nc, bool sum_terms);
 
   // Sparsify a normal matrix
-  Sparse (const Array2<T>& a);
   Sparse (const Array<T>& a);
 
   virtual ~Sparse (void);

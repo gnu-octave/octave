@@ -38,10 +38,6 @@ INSTANTIATE_ARRAY_SORT (short);
 
 INSTANTIATE_ARRAY (short, OCTAVE_API);
 
-#include "Array2.h"
-
-template class Array2<short>;
-
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 

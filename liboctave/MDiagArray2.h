@@ -73,7 +73,7 @@ public:
 
   operator MArray<T> () const
     {
-      return DiagArray2<T>::operator Array2<T> ();
+      return DiagArray2<T>::operator Array<T> ();
     }
 
   octave_idx_type nnz (void) const

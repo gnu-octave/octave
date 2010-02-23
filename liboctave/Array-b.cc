@@ -108,10 +108,6 @@ INSTANTIATE_ARRAY_SORT (bool);
 
 INSTANTIATE_ARRAY (bool, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<bool>;
-
 template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<bool>&);
 
 #include "DiagArray2.h"

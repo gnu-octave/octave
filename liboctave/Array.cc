@@ -51,10 +51,31 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
   : rep (a.rep), dimensions (dv), 
     slice_data (a.slice_data), slice_len (a.slice_len)
 {
-  if (dv.numel () != a.numel ())
+  if (dimensions.safe_numel () != a.numel ())
     {
-      std::string dimensions_str = dimensions.str ();
-      std::string new_dims_str = dv.str ();
+      std::string dimensions_str = a.dimensions.str ();
+      std::string new_dims_str = dimensions.str ();
+
+      (*current_liboctave_error_handler)
+        ("reshape: can't reshape %s array to %s array",
+         dimensions_str.c_str (), new_dims_str.c_str ());
+    }
+
+  // This goes here because if an exception is thrown by the above,
+  // destructor will be never called.
+  rep->count++;
+  dimensions.chop_trailing_singletons ();
+}
+
+template <class T>
+Array<T>::Array (const Array<T>& a, octave_idx_type nr, octave_idx_type nc)
+  : rep (a.rep), dimensions (nr, nc), 
+    slice_data (a.slice_data), slice_len (a.slice_len)
+{
+  if (dimensions.safe_numel () != a.numel ())
+    {
+      std::string dimensions_str = a.dimensions.str ();
+      std::string new_dims_str = dimensions.str ();
 
       (*current_liboctave_error_handler)
         ("reshape: can't reshape %s array to %s array",

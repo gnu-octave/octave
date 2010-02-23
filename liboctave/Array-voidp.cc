@@ -35,10 +35,6 @@ NO_INSTANTIATE_ARRAY_SORT (void *);
 
 INSTANTIATE_ARRAY (void *, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<void *>;
-
 #include "Array3.h"
 
 template class OCTAVE_API Array3<void *>;

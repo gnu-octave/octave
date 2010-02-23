@@ -159,10 +159,6 @@ INSTANTIATE_ARRAY_SORT (double);
 
 INSTANTIATE_ARRAY (double, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<double>;
-
 template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<double>&);
 
 #include "DiagArray2.h"

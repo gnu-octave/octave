@@ -45,7 +45,7 @@ public:
   charMatrix (octave_idx_type r, octave_idx_type c, char val) : Array<char> (r, c, val) { }
   charMatrix (const dim_vector& dv) : Array<char> (dv) { }
   charMatrix (const dim_vector& dv, char val) : Array<char> (dv, val) { }
-  charMatrix (const Array<char>& a) : Array<char> (a) { }
+  charMatrix (const Array<char>& a) : Array<char> (a.as_matrix ()) { }
   charMatrix (const charMatrix& a) : Array<char> (a) { }
   charMatrix (char c);
   charMatrix (const char *s);

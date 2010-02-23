@@ -152,9 +152,9 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
 }
 
 template <class T>
-DiagArray2<T>::operator Array2<T> (void) const
+DiagArray2<T>::operator Array<T> (void) const
 {
-  Array2<T> result (dim1 (), dim2 ());
+  Array<T> result (dim1 (), dim2 ());
   for (octave_idx_type i = 0, len = length (); i < len; i++)
     result.xelem (i, i) = dgelem (i);
 

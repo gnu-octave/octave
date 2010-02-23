@@ -4891,46 +4891,21 @@ by an empty argument.\n\
       return retval;
     }
 
-  // Remove trailing singletons in new_size, but leave at least 2
-  // elements.
+  dim_vector new_dims = dim_vector::alloc (new_size.length ());
 
-  int n = new_size.length ();
-
-  while (n > 2)
+  for (octave_idx_type i = 0; i < new_size.length (); i++)
     {
-      if (new_size(n-1) == 1)
-        n--;
+      if (new_size(i) < 0)
+        {
+          error ("reshape: size must be nonnegative");
+          break;
+        }
       else
-        break;
+        new_dims(i) = new_size(i);
     }
 
-  if (n < 2)
-    {
-      error ("reshape: expecting size to be vector with at least 2 elements");
-      return retval;
-    }
-
-  dim_vector new_dims;
-
-  new_dims.resize (n);
-
-  for (octave_idx_type i = 0; i < n; i++)
-    new_dims(i) = new_size(i);
-
-  octave_value arg = args(0);
-
-  dim_vector dims = arg.dims ();
-
-  if (new_dims.numel () == dims.numel ())
-    retval = (new_dims == dims) ? arg : arg.reshape (new_dims);
-  else
-    {
-      std::string dims_str = dims.str ();
-      std::string new_dims_str = new_dims.str ();
-
-      error ("reshape: can't reshape %s array to %s array",
-             dims_str.c_str (), new_dims_str.c_str ());
-    }
+  if (! error_state)
+    retval = args(0).reshape (new_dims);
 
   return retval;
 }

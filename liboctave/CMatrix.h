@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ComplexMatrix_h)
 #define octave_ComplexMatrix_h 1
 
-#include "Array2.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -61,9 +60,6 @@ public:
 
   template <class U>
   ComplexMatrix (const MArray<U>& a) : MArray<Complex> (a.as_matrix ()) { }
-
-  template <class U>
-  ComplexMatrix (const Array2<U>& a) : MArray<Complex> (a) { }
 
   template <class U>
   ComplexMatrix (const Array<U>& a) : MArray<Complex> (a.as_matrix ()) { }

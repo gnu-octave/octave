@@ -1,3 +1,45 @@
+2010-02-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array::Array (const Array&, octave_idx_type,
+	octave_idx_type): New ctor.
+	(Array::reshape (octave_idx_type, octave_idx_type): New method.
+	* Array.h: Declare them.
+	* Array2.h: Deprecate Array2, make it a #define for Array.
+
+	* Array-C.cc: Remove Array2 instantiation.
+	* Array-b.cc: Ditto.
+	* Array-ch.cc: Ditto.
+	* Array-d.cc: Ditto.
+	* Array-f.cc: Ditto.
+	* Array-fC.cc: Ditto.
+	* Array-i.cc: Ditto.
+	* Array-s.cc: Ditto.
+	* Array-voidp.cc: Ditto.
+
+	* CMatrix.cc: Use Array instead of Array2 everywhere.
+	* CMatrix.h: Ditto.
+	* CNDArray.cc: Ditto.
+	* DiagArray2.cc: Ditto.
+	* DiagArray2.h: Ditto.
+	* MDiagArray2.h: Ditto.
+	* Sparse.cc: Ditto.
+	* Sparse.h: Ditto.
+	* boolMatrix.h: Ditto.
+	* boolNDArray.cc: Ditto.
+	* chMatrix.h: Ditto.
+	* chNDArray.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dMatrix.h: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCMatrix.h: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fMatrix.h: Ditto.
+	* fNDArray.cc: Ditto.
+	* lo-specfun.cc: Ditto.
+	* lo-specfun.h: Ditto.
+
 2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* chMatrix.h (charMatrix): Base on Array<char>.

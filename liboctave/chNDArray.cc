@@ -109,28 +109,7 @@ charNDArray::insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx)
 charMatrix
 charNDArray::matrix_value (void) const
 {
-  charMatrix retval;
-
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = charMatrix (Array2<char> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = charMatrix (Array2<char> (*this, dimensions(0),
-                                               dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-        ("invalid conversion of charNDArray to charMatrix");
-      break;
-    }
-
-  return retval;
+  return *this;
 }
 
 void

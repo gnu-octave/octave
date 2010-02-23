@@ -1,3 +1,13 @@
+2010-02-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* TEMPLATE-INST/Array-tc.cc: Remove Array2 instantiation.
+	* DLD-FUNCTIONS/besselj.cc: Use Array instead of Array2.
+	* DLD-FUNCTIONS/tril.cc: Ditto.
+	* data.cc: Ditto.
+	* ov-typeinfo.cc: Ditto.
+	* ov-typeinfo.h: Ditto.
+	* pr-output.cc: Ditto.
+
 2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-bool-mat.h (octave_bool_matrix::octave_bool_matrix (const

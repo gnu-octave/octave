@@ -37,7 +37,6 @@ octave_value_typeinfo *
 octave_value_typeinfo::instance (0);
 
 #include <Array.h>
-#include <Array2.h>
 #include <Array3.h>
 
 bool

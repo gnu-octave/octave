@@ -2049,7 +2049,8 @@ FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b, octave_idx_type
                float& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   FloatMatrix tmp (b);
-  return solve (typ, tmp, info, rcon, sing_handler, transt).column(static_cast<octave_idx_type> (0));
+  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  return tmp.column(static_cast<octave_idx_type> (0));
 }
 
 FloatComplexColumnVector

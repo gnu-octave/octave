@@ -30,8 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array.cc"
 
-#include "Array2.h"
-
 #include "ov.h"
 
 #include "oct-sort.cc"
@@ -39,5 +37,3 @@ along with Octave; see the file COPYING.  If not, see
 NO_INSTANTIATE_ARRAY_SORT (octave_value);
 
 INSTANTIATE_ARRAY (octave_value, OCTINTERP_API);
-
-template class OCTINTERP_API Array2<octave_value>;

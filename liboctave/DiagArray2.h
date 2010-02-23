@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include "Array.h"
-#include "Array2.h"
 #include "lo-error.h"
 
 // A two-dimensional array with diagonal elements only.
@@ -219,7 +218,7 @@ public:
   DiagArray2<T> transpose (void) const;
   DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
 
-  operator Array2<T> (void) const;
+  operator Array<T> (void) const;
 
   const T *data (void) const { return Array<T>::data (); }
 

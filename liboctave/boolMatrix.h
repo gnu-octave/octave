@@ -40,7 +40,7 @@ public:
   boolMatrix (octave_idx_type r, octave_idx_type c, bool val) : Array<bool> (r, c, val) { }
   boolMatrix (const dim_vector& dv) : Array<bool> (dv) { }
   boolMatrix (const dim_vector& dv, bool val) : Array<bool> (dv, val) { }
-  boolMatrix (const Array<bool>& a) : Array<bool> (a) { }
+  boolMatrix (const Array<bool>& a) : Array<bool> (a.as_matrix ()) { }
   boolMatrix (const boolMatrix& a) : Array<bool> (a) { }
 
   boolMatrix& operator = (const boolMatrix& a)

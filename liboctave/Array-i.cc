@@ -68,10 +68,6 @@ INSTANTIATE_ARRAY (octave_uint16, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_uint32, OCTAVE_API);
 INSTANTIATE_ARRAY (octave_uint64, OCTAVE_API);
 
-#include "Array2.h"
-
-template class OCTAVE_API Array2<int>;
-
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 

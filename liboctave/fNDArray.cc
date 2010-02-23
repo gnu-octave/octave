@@ -872,7 +872,7 @@ FloatNDArray::matrix_value (void) const
   FloatMatrix retval;
 
   if (ndims () == 2)
-      retval = FloatMatrix (Array2<float> (*this));
+      retval = FloatMatrix (Array<float> (*this));
   else
     (*current_liboctave_error_handler)
       ("invalid conversion of FloatNDArray to FloatMatrix");

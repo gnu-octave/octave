@@ -1893,7 +1893,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                 idx(k) = idx_vector (ra_idx(k)); \
  \
               octave_value page \
-                = MAT_T (Array2<ELT_T> (nda.index (idx), nr, nc)); \
+                = MAT_T (Array<ELT_T> (nda.index (idx), nr, nc)); \
  \
               page.print_with_name (os, nm); \
  \
@@ -2726,7 +2726,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array2<std::string> page (nda.index (idx), nr, nc);
+          Array<std::string> page (nda.index (idx), nr, nc);
 
           // FIXME -- need to do some more work to put these
           // in neatly aligned columns...
@@ -2993,7 +2993,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array2<T> page (nda.index (idx), nr, nc);
+          Array<T> page (nda.index (idx), nr, nc);
 
           for (octave_idx_type ii = 0; ii < nr; ii++)
             {
@@ -3098,7 +3098,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array2<T> page (nda.index (idx), nr, nc);
+          Array<T> page (nda.index (idx), nr, nc);
 
           if (free_format)
             {

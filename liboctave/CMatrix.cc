@@ -2394,7 +2394,8 @@ ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 {
 
   ComplexMatrix tmp (b);
-  return solve (typ, tmp, info, rcon, sing_handler, transt).column(static_cast<octave_idx_type> (0));
+  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  return tmp.column(static_cast<octave_idx_type> (0));
 }
 
 ComplexMatrix

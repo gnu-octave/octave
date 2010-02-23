@@ -549,36 +549,6 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
 }
 
 template <class T>
-Sparse<T>::Sparse (const Array2<T>& a)
-  : dimensions (a.dims ()), idx (0), idx_count (0)
-{
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-  octave_idx_type len = a.length ();
-  octave_idx_type new_nzmx = 0;
-
-  // First count the number of non-zero terms
-  for (octave_idx_type i = 0; i < len; i++)
-    if (a(i) != T ())
-      new_nzmx++;
-
-  rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
-
-  octave_idx_type ii = 0;
-  xcidx(0) = 0;
-  for (octave_idx_type j = 0; j < nc; j++)
-    {
-      for (octave_idx_type i = 0; i < nr; i++)
-        if (a.elem (i,j) != T ())
-          {
-            xdata(ii) = a.elem (i,j);
-            xridx(ii++) = i;
-          }
-      xcidx(j+1) = ii;
-    }
-}
-
-template <class T>
 Sparse<T>::Sparse (const Array<T>& a)
   : dimensions (a.dims ()), idx (0), idx_count (0)
 {

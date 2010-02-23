@@ -169,7 +169,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
                       if (! error_state)
                         {
-                          Array2<octave_idx_type> ierr;
+                          Array<octave_idx_type> ierr;
                           octave_value result;
 
                           DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
@@ -304,7 +304,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
                       if (! error_state)
                         {
-                          Array2<octave_idx_type> ierr;
+                          Array<octave_idx_type> ierr;
                           octave_value result;
 
                           DO_BESSEL (type, ralpha, cx, scaled, ierr, result);

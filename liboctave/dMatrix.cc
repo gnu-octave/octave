@@ -2050,7 +2050,8 @@ Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
                double& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   Matrix tmp (b);
-  return solve (typ, tmp, info, rcon, sing_handler, transt).column(static_cast<octave_idx_type> (0));
+  tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
+  return tmp.column(static_cast<octave_idx_type> (0));
 }
 
 ComplexColumnVector

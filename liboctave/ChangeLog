@@ -1,3 +1,38 @@
+2010-02-22  John W. Eaton  <jwe@octave.org>
+
+	* data-conv.cc, data-conv.h (read_floats, read_doubles,
+	do_float_format_conversion, do_double_format_conversion):
+	Declare len arg and loop counter as octave_idx_type, not int.
+	(strip_spaces): Use size_t for string dimension and index, not int.
+	(LS_DO_READ, LS_DO_WRITE): Declare loop counter as
+	octave_idx_type, not int.
+	(write_floats, write_doubles):
+	Declare len arg as octave_idx_type, not int.
+	(IEEE_big_double_to_IEEE_little_double,
+	VAX_D_double_to_IEEE_little_double,
+	VAX_G_double_to_IEEE_little_double,
+	Cray_to_IEEE_little_double,
+	IEEE_big_float_to_IEEE_little_float,
+	VAX_D_float_to_IEEE_little_float,
+	VAX_G_float_to_IEEE_little_float, Cray_to_IEEE_little_float,
+	IEEE_little_double_to_IEEE_big_double,
+	VAX_D_double_to_IEEE_big_double,
+	VAX_G_double_to_IEEE_big_double, Cray_to_IEEE_big_double,
+	IEEE_little_float_to_IEEE_big_float,
+	VAX_D_float_to_IEEE_big_float, VAX_G_float_to_IEEE_big_float,
+	Cray_to_IEEE_big_float, IEEE_little_double_to_VAX_D_double,
+	IEEE_big_double_to_VAX_D_double,
+	VAX_G_double_to_VAX_D_double, Cray_to_VAX_D_double,
+	IEEE_little_float_to_VAX_D_float,
+	IEEE_big_float_to_VAX_D_float, VAX_G_float_to_VAX_D_float,
+	Cray_to_VAX_D_float, IEEE_little_double_to_VAX_G_double,
+	IEEE_big_double_to_VAX_G_double,
+	VAX_D_double_to_VAX_G_double, Cray_to_VAX_G_double,
+	IEEE_little_float_to_VAX_G_float,
+	IEEE_big_float_to_VAX_G_float, VAX_D_float_to_VAX_G_float,
+	Cray_to_VAX_G_float, read_doubles):
+	Declare len arg as octave_idx_type, not int.
+
 2010-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* lo-sysdep.cc, lo-utils.h, oct-shlib.h: Define WIN32_LEAN_AND_MEAN

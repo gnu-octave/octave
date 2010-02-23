@@ -1,3 +1,34 @@
+2010-02-22  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc: Use numel instead of nelem consistently and where
+	appropriate in all functions.
+	(read_mat5_binary_element): Declare ridx and cidx as pointer to
+	octave_idx_type, not int.
+	(read_mat5_integer_data): Declare count as octave_idx_type, not int.
+	(READ_INTEGER_DATA): Loop counter is octave_idx_type, not int.
+	(OCTAVE_MAT5_INTEGER_READ): Declare n and loop counter as
+	octave_idx_type, not int.
+	(read_mat5_binary_element): Rows and columns of sparse matrix
+	are octave_idx_type, not int.  Declare nzmax and nnz as
+	octave_idx_type.  Read nzmax as 32-bit int, and assign.  Move
+	decls closer to first use.
+	(read_mat5_binary_data): Declare count as octave_idx_type, not int.
+	(read_mat5_binary_element, write_mat5_array):
+	Use octave_idx_type instead of int for numel and loop counters.
+	(write_mat5_array): Declare len and nel as octave_idx_type.
+	Move declarations closer to first use.
+	(write_mat5_tag): Declare bytes arg as octave_idx_type, not int.
+	(write_mat5_integer_data): Declare nel as octave_idx_type, not int.
+	(write_mat5_cell_array): Declare nel and loop counter as
+	octave_idx_type, not int.
+	(save_mat5_array_length): Declare nel nad loop counters as
+	octave_idx_type, not int.
+	(save_mat5_binary_element): Declare dims and counters as
+	octave_idx_type, not int. Delete unused streampos variables.
+	Call write_mat5_sparse_index_vector to write ridx and cidx.
+	Don't write element if dimension is too large to save.
+	(gripe_dim_too_large, write_mat5_sparse_index_vector): New functions.
+
 2010-02-22  Carlo de Falco <kingcrimson@tiscali.it>
 
 	* dirfns.cc (Fglob): Make glob function test more robust.
@@ -15,6 +46,8 @@
 
 	* Makefile.am: Add -bindir flag to liboctinterp_la_LDFLAGS. Remove
 	temporary libtool module file after copying oct file.
+
+2010-02-19  John W. Eaton  <jwe@octave.org>
 
 2010-02-19  John W. Eaton  <jwe@octave.org>
 

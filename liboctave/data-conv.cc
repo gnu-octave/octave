@@ -134,13 +134,13 @@ init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
 static std::string
 strip_spaces (const std::string& str)
 {
-  int n = str.length ();
+  size_t n = str.length ();
 
-  int k = 0;
+  size_t k = 0;
 
   std::string s (n, ' ');
 
-  for (int i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
     if (! isspace (str[i]))
       s[k++] = tolower (str[i]);
 
@@ -490,7 +490,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
           stream.read (reinterpret_cast<char *>  (ptr), size * len); \
           if (swap) \
             swap_bytes< size > (ptr, len); \
-          for (int i = 0; i < len; i++) \
+          for (octave_idx_type i = 0; i < len; i++) \
             data[i] = ptr[i]; \
         } \
     } \
@@ -507,7 +507,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
           char tmp_type = type; \
           stream.write (&tmp_type, 1); \
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          for (int i = 0; i < len; i++) \
+          for (octave_idx_type i = 0; i < len; i++) \
             ptr[i] = static_cast <TYPE> (data[i]);         \
           stream.write (reinterpret_cast<char *> (ptr), size * len); \
         } \
@@ -540,199 +540,199 @@ gripe_data_conversion (const char *from, const char *to)
 // FIXME -- assumes sizeof (float) == 4
 
 static void
-IEEE_big_double_to_IEEE_little_double (void *d, int len)
+IEEE_big_double_to_IEEE_little_double (void *d, octave_idx_type len)
 {
   swap_bytes<8> (d, len);
 }
 
 static void
-VAX_D_double_to_IEEE_little_double (void * /* d */, int /* len */)
+VAX_D_double_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
-VAX_G_double_to_IEEE_little_double (void * /* d */, int /* len */)
+VAX_G_double_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little_double (void * /* d */, int /* len */)
+Cray_to_IEEE_little_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 static void
-IEEE_big_float_to_IEEE_little_float (void *d, int len)
+IEEE_big_float_to_IEEE_little_float (void *d, octave_idx_type len)
 {
   swap_bytes<4> (d, len);
 }
 
 static void
-VAX_D_float_to_IEEE_little_float (void * /* d */, int /* len */)
+VAX_D_float_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_little_float (void * /* d */, int /* len */)
+VAX_G_float_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little_float (void * /* d */, int /* len */)
+Cray_to_IEEE_little_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 static void
-IEEE_little_double_to_IEEE_big_double (void *d, int len)
+IEEE_little_double_to_IEEE_big_double (void *d, octave_idx_type len)
 {
   swap_bytes<8> (d, len);
 }
 
 static void
-VAX_D_double_to_IEEE_big_double (void * /* d */, int /* len */)
+VAX_D_double_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_double_to_IEEE_big_double (void * /* d */, int /* len */)
+VAX_G_double_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_double (void * /* d */, int /* len */)
+Cray_to_IEEE_big_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
-IEEE_little_float_to_IEEE_big_float (void *d, int len)
+IEEE_little_float_to_IEEE_big_float (void *d, octave_idx_type len)
 {
   swap_bytes<4> (d, len);
 }
 
 static void
-VAX_D_float_to_IEEE_big_float (void * /* d */, int /* len */)
+VAX_D_float_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_big_float (void * /* d */, int /* len */)
+VAX_G_float_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_float (void * /* d */, int /* len */)
+Cray_to_IEEE_big_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
-IEEE_little_double_to_VAX_D_double (void * /* d */, int /* len */)
+IEEE_little_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_double_to_VAX_D_double (void * /* d */, int /* len */)
+IEEE_big_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_double_to_VAX_D_double (void * /* d */, int /* len */)
+VAX_G_double_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_double (void * /* d */, int /* len */)
+Cray_to_VAX_D_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_float_to_VAX_D_float (void * /* d */, int /* len */)
+IEEE_little_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_float_to_VAX_D_float (void * /* d */, int /* len */)
+IEEE_big_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_float_to_VAX_D_float (void * /* d */, int /* len */)
+VAX_G_float_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_float (void * /* d */, int /* len */)
+Cray_to_VAX_D_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_double_to_VAX_G_double (void * /* d */, int /* len */)
+IEEE_little_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_double_to_VAX_G_double (void * /* d */, int /* len */)
+IEEE_big_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_double_to_VAX_G_double (void * /* d */, int /* len */)
+VAX_D_double_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_double (void * /* d */, int /* len */)
+Cray_to_VAX_G_double (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 static void
-IEEE_little_float_to_VAX_G_float (void * /* d */, int /* len */)
+IEEE_little_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_float_to_VAX_G_float (void * /* d */, int /* len */)
+IEEE_big_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_float_to_VAX_G_float (void * /* d */, int /* len */)
+VAX_D_float_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_float (void * /* d */, int /* len */)
+Cray_to_VAX_G_float (void * /* d */, octave_idx_type /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 void
-do_double_format_conversion (void *data, int len,
+do_double_format_conversion (void *data, octave_idx_type len,
                              oct_mach_info::float_format from_fmt,
                              oct_mach_info::float_format to_fmt)
 {
@@ -859,7 +859,7 @@ do_double_format_conversion (void *data, int len,
 }
 
 void
-do_float_format_conversion (void *data, int len,
+do_float_format_conversion (void *data, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt)
 {
@@ -986,7 +986,7 @@ do_float_format_conversion (void *data, int len,
 }
 
 void
-do_float_format_conversion (void *data, size_t sz, int len,
+do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt)
 {
@@ -1010,8 +1010,9 @@ do_float_format_conversion (void *data, size_t sz, int len,
 
 
 void
-read_doubles (std::istream& is, double *data, save_type type, int len,
-              bool swap, oct_mach_info::float_format fmt)
+read_doubles (std::istream& is, double *data, save_type type,
+              octave_idx_type len, bool swap,
+              oct_mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -1044,7 +1045,7 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
         OCTAVE_LOCAL_BUFFER (float, ptr, len);
         is.read (reinterpret_cast<char *> (ptr), 4 * len);
         do_float_format_conversion (ptr, len, fmt);
-        for (int i = 0; i < len; i++)
+        for (octave_idx_type i = 0; i < len; i++)
           data[i] = ptr[i];
       }
       break;
@@ -1066,8 +1067,9 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
 }
 
 void
-read_floats (std::istream& is, float *data, save_type type, int len,
-              bool swap, oct_mach_info::float_format fmt)
+read_floats (std::istream& is, float *data, save_type type,
+             octave_idx_type len, bool swap,
+             oct_mach_info::float_format fmt)
 {
   switch (type)
     {
@@ -1105,7 +1107,7 @@ read_floats (std::istream& is, float *data, save_type type, int len,
         OCTAVE_LOCAL_BUFFER (double, ptr, len);
         is.read (reinterpret_cast<char *> (ptr), 8 * len);
         do_double_format_conversion (ptr, len, fmt);
-        for (int i = 0; i < len; i++)
+        for (octave_idx_type i = 0; i < len; i++)
           data[i] = ptr[i];
       }
       break;
@@ -1117,7 +1119,8 @@ read_floats (std::istream& is, float *data, save_type type, int len,
 }
 
 void
-write_doubles (std::ostream& os, const double *data, save_type type, int len)
+write_doubles (std::ostream& os, const double *data, save_type type,
+               octave_idx_type len)
 {
   switch (type)
     {
@@ -1165,7 +1168,8 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
 }
 
 void
-write_floats (std::ostream& os, const float *data, save_type type, int len)
+write_floats (std::ostream& os, const float *data, save_type type,
+              octave_idx_type len)
 {
   switch (type)
     {

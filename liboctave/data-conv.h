@@ -92,33 +92,37 @@ enum save_type
   };
 
 extern OCTAVE_API void
-do_double_format_conversion (void *data, int len,
+do_double_format_conversion (void *data, octave_idx_type len,
                              oct_mach_info::float_format from_fmt,
                              oct_mach_info::float_format to_fmt
                                = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
-do_float_format_conversion (void *data, int len,
+do_float_format_conversion (void *data, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt
                               = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
-do_float_format_conversion (void *data, size_t sz, int len,
+do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt
                               = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
-read_doubles (std::istream& is, double *data, save_type type, int len,
-              bool swap, oct_mach_info::float_format fmt);
-extern OCTAVE_API void
-write_doubles (std::ostream& os, const double *data, save_type type, int len);
+read_doubles (std::istream& is, double *data, save_type type,
+              octave_idx_type len, bool swap, oct_mach_info::float_format fmt);
 
 extern OCTAVE_API void
-read_floats (std::istream& is, float *data, save_type type, int len,
-              bool swap, oct_mach_info::float_format fmt);
+write_doubles (std::ostream& os, const double *data, save_type type,
+               octave_idx_type len);
+
 extern OCTAVE_API void
-write_floats (std::ostream& os, const float *data, save_type type, int len);
+read_floats (std::istream& is, float *data, save_type type,
+             octave_idx_type len, bool swap, oct_mach_info::float_format fmt);
+
+extern OCTAVE_API void
+write_floats (std::ostream& os, const float *data, save_type type,
+              octave_idx_type len);
 
 #endif

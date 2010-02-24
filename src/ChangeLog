@@ -1,3 +1,7 @@
+2010-02-19  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/qr.cc: Increase tolerance for test.
+
 2010-02-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* TEMPLATE-INST/Array-tc.cc: Remove Array2 instantiation.
@@ -103,8 +107,6 @@
 
 	* Makefile.am: Add -bindir flag to liboctinterp_la_LDFLAGS. Remove
 	temporary libtool module file after copying oct file.
-
-2010-02-19  John W. Eaton  <jwe@octave.org>
 
 2010-02-19  John W. Eaton  <jwe@octave.org>
 

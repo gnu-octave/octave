@@ -1318,7 +1318,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!
 %! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 16*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
 %! 

@@ -66,6 +66,7 @@ sparse.cc
 spparms.cc
 sqrtm.cc
 strfind.cc
+str2double.cc
 sub2ind.cc
 svd.cc
 syl.cc

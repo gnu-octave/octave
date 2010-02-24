@@ -17,7 +17,6 @@ strings_FCN_FILES = \
   strings/regexptranslate.m \
   strings/rindex.m \
   strings/strsplit.m \
-  strings/str2double.m \
   strings/str2num.m \
   strings/strcat.m \
   strings/cstrcat.m \

@@ -1,3 +1,7 @@
+2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/str2double.m: Remove.
+
 2010-02-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__contour__.m (get_lvl_eps): New function.

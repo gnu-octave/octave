@@ -1,3 +1,7 @@
+2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-mem.h (safe_size_comp): New helper func.
+	(no_ctor_new): Call it here.
 
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 

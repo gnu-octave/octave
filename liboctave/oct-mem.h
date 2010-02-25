@@ -36,6 +36,13 @@ along with Octave; see the file COPYING.  If not, see
 // but not theoretically guaranteed by the C++ standard. In the future, C++ may
 // provide a better way to accomplish these tasks.
 
+inline size_t safe_size_comp (size_t n, size_t size)
+{
+  if (n > static_cast<size_t> (-1) / size)
+    throw std::bad_alloc ();
+  return n * size;
+}
+
 // Unaliased copy. This boils down to memcpy, even for octave_int and complex types.
 
 template <class T>
@@ -117,7 +124,12 @@ DEFINE_POD_FILL (octave_int<T>)
 // Memory allocated by octave_new should be freed by octave_delete.
 template <class T>
 inline T *no_ctor_new (size_t n)
-{ return new T[n]; }
+{ 
+  // Some systems let us allocate > 2GB memory even though size_t, which is either
+  // buggy or completely cuckoo, so let's check here to stay safe.
+  safe_size_comp (n, sizeof (T));
+  return new T[n]; 
+}
 template <class T>
 inline void no_ctor_delete (T *ptr)
 { delete [] ptr; }
@@ -125,7 +137,7 @@ inline void no_ctor_delete (T *ptr)
 #define DEFINE_POD_NEW_DELETE(T) \
 template <> \
 inline T *no_ctor_new<T > (size_t n) \
-{ return reinterpret_cast<T *> (new char[n * sizeof (T)]); } \
+{ return reinterpret_cast<T *> (new char[safe_size_comp (n, sizeof (T))]); } \
 template <> \
 inline void no_ctor_delete<T > (T *ptr) \
 { delete [] reinterpret_cast<char *> (ptr); }

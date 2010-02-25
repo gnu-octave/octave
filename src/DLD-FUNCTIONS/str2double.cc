@@ -40,13 +40,47 @@ along with Octave; see the file COPYING.  If not, see
 
 static inline bool 
 is_imag_unit (int c)
-{ return c == 'i' || c == 'j' || c == 'I' || c == 'J'; }
+{ return c == 'i' || c == 'j'; }
+
+static std::istringstream&
+single_num (std::istringstream& is, double& num)
+{
+  char c = is.peek ();
+  if (c == 'I')
+    {
+      // It's infinity.
+      is.get ();
+      char c1 = is.get (), c2 = is.get ();
+      if (c1 == 'n' && c2 == 'f')
+        {
+          num = octave_Inf;
+          is.peek (); // Sets eof bit.
+        }
+      else
+        is.setstate (std::ios::failbit); // indicate that read has failed.
+    }
+  else if (c == 'N')
+    {
+      // It's NaN.
+      is.get ();
+      char c1 = is.get (), c2 = is.get ();
+      if (c1 == 'a' && c2 == 'N')
+        {
+          num = octave_NaN;
+          is.peek (); // Sets eof bit.
+        }
+      else
+        is.setstate (std::ios::failbit); // indicate that read has failed.
+    }
+  else
+    is >> num;
+
+  return is;
+}
 
 static std::istringstream&
 extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
 {
-  if (is.eof ())
-    return is;
   have_sign = imag = false;
 
   char c = is.peek ();
@@ -63,21 +97,22 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
 
   if (is_imag_unit (c))
     {
-      is.get ();
+      c = is.get ();
       // It's i*num or just i.
       imag = true;
-      if (is.peek () == '*')
+      char cn = is.peek ();
+      if (cn == '*')
         {
           // Multiplier follows, we extract it as a number.
           is.get ();
-          is >> num;
+          single_num (is, num);
         }
       else
         num = 1.0;
     }
   else
     {
-      is >> num;
+      single_num (is, num);
       if (is.good ())
         {
           c = is.peek ();
@@ -115,7 +150,9 @@ str2double1 (std::string str)
   double num;
   bool i1, i2, s1, s2;
 
-  if (! extract_num (is, num, i1, s1))
+  if (is.eof ())
+    val = octave_NaN;
+  else if (! extract_num (is, num, i1, s1))
     val = octave_NaN;
   else
     {
@@ -208,5 +245,12 @@ and an array of the same dimensions is returned.\n\
 %!assert (str2double ("1e-3 + i*.25"), 1e-3 + i*.25)
 %!assert (str2double (["2 + j";"1.25e-3";"-05"]), [2+i; 1.25e-3; -05])
 %!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -05])
+%!assert (str2double ("NaN"), NaN)
+%!assert (str2double ("Inf"), Inf)
+%!assert (str2double ("-Inf"), -Inf)
+%!assert (str2double ("i*Inf"), complex (0, Inf))
+%!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
+%!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
+%!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 
 */

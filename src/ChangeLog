@@ -1,5 +1,11 @@
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/str2double.cc (single_number): New helper func.
+	(extract_number): Call it instead of >> to get Inf's and NaN's
+	correctly.
+
+2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/str2double.cc: New source.
 
 2010-02-19  John W. Eaton  <jwe@octave.org>

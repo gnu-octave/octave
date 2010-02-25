@@ -1,3 +1,9 @@
+2010-02-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/private/__contour__.m (get_lvl_eps): New function.
+	Handle case of single level value.  Use sqrt (eps) instead of 1e-6.
+	(update_text, add_patch_children): Use it.
+
 2010-02-19  Rik <octave@nomad.inbox5.com>
 
 	* optimization/fzero.m: Add test for discontinuity at the end.

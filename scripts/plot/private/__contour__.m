@@ -229,11 +229,8 @@ function add_patch_children (hg)
   endif
 
   if (strcmpi (filled, "on"))
-    if (diff (lev) < 10*eps) 
-      lvl_eps = 1e-6;
-    else
-      lvl_eps = min (diff (lev)) / 1000.0;
-    endif
+
+    lvl_eps = get_lvl_eps (lev);
 
     ## Decode contourc output format.
     i1 = 1;
@@ -483,11 +480,7 @@ function update_text (h, d)
     elseif (strcmpi (get (h, "textstepmode"), "manual"))
       lev = get (h, "levellist");
 
-      if (diff (lev) < 10*eps) 
-	lvl_eps = 1e-6;
-      else
-	lvl_eps = min (abs (diff (lev))) / 1000.0;
-      endif
+      lvl_eps = get_lvl_eps (lev);
 
       stp = get (h, "textstep");
       t = [0, floor(cumsum(diff (lev)) / (abs(stp) - lvl_eps))];
@@ -514,4 +507,20 @@ function update_text (h, d)
   endif
 
   recursive = false;
+endfunction
+
+function lvl_eps = get_lvl_eps (lev)
+  ## FIXME -- is this the right thing to do for this tolerance?  Should
+  ## it be an absolute or relative tolerance, or switch from one to the
+  ## other depending on the value of lev?
+  if (isscalar (lev))
+    lvl_eps = abs (lev) * sqrt (eps);
+  else
+    tmp = min (abs (diff (lev)));
+    if (tmp < 10*eps) 
+      lvl_eps = sqrt (eps);
+    else
+      lvl_eps = tmp / 1000.0;
+    endif
+  endif
 endfunction

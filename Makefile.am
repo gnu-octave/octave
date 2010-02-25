@@ -52,6 +52,7 @@ EXTRA_DIST = \
   ROADMAP \
   SENDING-PATCHES \
   autogen.sh \
+  gdbinit \
   missing \
   mk-opts.pl \
   mkinstalldirs \
@@ -102,7 +103,7 @@ BUILT_SOURCES = run-octave
 
 nodist_octinclude_HEADERS = config.h
 
-all-local: $(bin_SCRIPTS) $(INFO_FILES)
+all-local: $(bin_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
@@ -153,6 +154,13 @@ mkoctfile.cc: mkoctfile.cc.in Makefile
 run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
 	chmod a+rx "$@"
+
+.gdbinit: gdbinit
+	if [ -f .gdbinit ]; then \
+	  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
+	else \
+	  cp $< $@; \
+	fi
 
 BUGS INSTALL.OCTAVE:
 	$(MAKE) -C doc ../$@

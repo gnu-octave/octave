@@ -1,3 +1,10 @@
+2010-02-25  John W. Eaton  <jwe@octave.org>
+
+	* gdbinit: New file.
+	* Makefile.am (EXTRA_DIST): Add it to the list.
+	(all-local): Depend on .gdbinit.
+	(.gdbinit): New rule.
+
 2010-02-22  John W. Eaton  <jwe@octave.org>
 
 	* boostrap: Update from gnulib/build-aux/bootstrap.

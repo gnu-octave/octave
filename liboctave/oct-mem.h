@@ -39,11 +39,11 @@ along with Octave; see the file COPYING.  If not, see
 // Unaliased copy. This boils down to memcpy, even for octave_int and complex types.
 
 template <class T>
-inline void copy_or_memcpy (octave_idx_type n, const T *src, T *dest)
+inline void copy_or_memcpy (size_t n, const T *src, T *dest)
 { std::copy (src, src + n, dest); }
 
 #define DEFINE_POD_UCOPY(T) \
-inline void copy_or_memcpy (octave_idx_type n, const T *src, T *dest) \
+inline void copy_or_memcpy (size_t n, const T *src, T *dest) \
 { std::memcpy (dest, src, n * sizeof (T)); }
 
 DEFINE_POD_UCOPY (double)
@@ -66,7 +66,7 @@ DEFINE_POD_UCOPY (octave_int<T>)
 // Fill by value, with a check for zero. This boils down to memset if value is
 // a POD zero.
 template <class T>
-inline void fill_or_memset (octave_idx_type n, const T& value, T *dest)
+inline void fill_or_memset (size_t n, const T& value, T *dest)
 { std::fill_n (dest, n, value); }
 
 template <class T>
@@ -88,7 +88,7 @@ inline bool helper_is_zero_mem (const octave_int<T>& value)
 { return value.value () == T(); }
 
 #define DEFINE_POD_FILL(T) \
-inline void fill_or_memset (octave_idx_type n, const T& value, T *dest) \
+inline void fill_or_memset (size_t n, const T& value, T *dest) \
 { \
   if (helper_is_zero_mem (value)) \
     std::memset (dest, 0, n * sizeof (T)); \
@@ -116,7 +116,7 @@ DEFINE_POD_FILL (octave_int<T>)
 // Uninitialized allocation. Will not initialize memory for complex and octave_int.
 // Memory allocated by octave_new should be freed by octave_delete.
 template <class T>
-inline T *no_ctor_new (octave_idx_type n)
+inline T *no_ctor_new (size_t n)
 { return new T[n]; }
 template <class T>
 inline void no_ctor_delete (T *ptr)
@@ -124,7 +124,7 @@ inline void no_ctor_delete (T *ptr)
 
 #define DEFINE_POD_NEW_DELETE(T) \
 template <> \
-inline T *no_ctor_new<T > (octave_idx_type n) \
+inline T *no_ctor_new<T > (size_t n) \
 { return reinterpret_cast<T *> (new char[n * sizeof (T)]); } \
 template <> \
 inline void no_ctor_delete<T > (T *ptr) \

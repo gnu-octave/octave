@@ -263,8 +263,12 @@ public:
         ret++;
       return ret;
     }
-  size_t byte_size (void) const { return (cols () + 1) * sizeof (octave_idx_type) +
-      capacity () * (sizeof (T) + sizeof (octave_idx_type)); }
+
+  size_t byte_size (void) const 
+    { 
+      return (static_cast<size_t>(cols () + 1) * sizeof (octave_idx_type)
+              + static_cast<size_t> (capacity ()) * (sizeof (T) + sizeof (octave_idx_type))); 
+    }
 
   dim_vector dims (void) const { return dimensions; }
 

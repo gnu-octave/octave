@@ -148,7 +148,7 @@ public:
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 
-  size_t byte_size (void) const { return length () * sizeof (T); }
+  size_t byte_size (void) const { return Array<T>::byte_size (); }
 
   dim_vector dims (void) const { return dim_vector (d1, d2); }
 

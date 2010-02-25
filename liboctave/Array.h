@@ -343,7 +343,7 @@ public:
   octave_idx_type columns (void) const { return dim2 (); }
   octave_idx_type pages (void) const { return dim3 (); }
 
-  size_t byte_size (void) const { return numel () * sizeof (T); }
+  size_t byte_size (void) const { return static_cast<size_t> (numel ()) * sizeof (T); }
 
   // Return a const-reference so that dims ()(i) works efficiently.
   const dim_vector& dims (void) const { return dimensions; }

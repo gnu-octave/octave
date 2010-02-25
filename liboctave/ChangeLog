@@ -1,3 +1,12 @@
+
+2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-mem.h (copy_or_memcpy, fill_or_memset, no_ctor_new): Accept
+	size_t rather than octave_idx_type.
+	* Array.h (Array<T>::byte_size): Correct calculation.
+	* DiagArray2.h (DiagArray2<T>::byte_size): Call inherited byte_size.
+	* PermMatrix.h (PermMatrix::byte_size): Ditto.
+
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* str-vec.h (string_vector::string_vector): Use (n, 1).

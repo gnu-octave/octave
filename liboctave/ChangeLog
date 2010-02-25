@@ -1,3 +1,14 @@
+2010-02-25  John W. Eaton  <jwe@octave.org>
+
+	* eigs-base.cc: Use octave_idx_type for Fortran LOGICAL values
+	in function prototypes.
+	(EigsRealSymmetricMatrix, EigsRealSymmetricMatrixShift,
+	EigsRealSymmetricFunc, EigsRealNonSymmetricMatrix,
+	EigsRealNonSymmetricMatrixShift, EigsRealNonSymmetricFunc,
+	EigsComplexNonSymmetricMatrix, EigsComplexNonSymmetricMatrixShift,
+	EigsComplexNonSymmetricFunc): Declare rvec argument as bool, not int.
+	Fix explicit instantiations to match.
+
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-mem.h (safe_size_comp): New helper func.

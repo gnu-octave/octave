@@ -63,7 +63,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dseupd, DSEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (dseupd, DSEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type*, double*, double*,
                              const octave_idx_type&, const double&,
                              F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
@@ -86,7 +86,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dneupd, DNEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type*, double*, double*,
                              double*, const octave_idx_type&, const double&,
                              const double&, double*, F77_CONST_CHAR_ARG_DECL, 
@@ -110,7 +110,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zneupd, ZNEUPD) (const int&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (zneupd, ZNEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type*, Complex*, Complex*, 
                              const octave_idx_type&, const Complex&,
                              Complex*, F77_CONST_CHAR_ARG_DECL,
@@ -752,7 +752,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
                          octave_idx_type &info, Matrix &eig_vec,
                          ColumnVector &eig_val, const M& _b,
                          ColumnVector &permB, ColumnVector &resid, 
-                         std::ostream& os, double tol, int rvec, 
+                         std::ostream& os, double tol, bool rvec, 
                          bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -1073,7 +1073,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               octave_idx_type &info, Matrix &eig_vec, 
                               ColumnVector &eig_val, const M& _b,
                               ColumnVector &permB, ColumnVector &resid, 
-                              std::ostream& os, double tol, int rvec, 
+                              std::ostream& os, double tol, bool rvec, 
                               bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -1400,7 +1400,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        octave_idx_type k, octave_idx_type p, 
                        octave_idx_type &info, Matrix &eig_vec, 
                        ColumnVector &eig_val, ColumnVector &resid, 
-                       std::ostream& os, double tol, int rvec,
+                       std::ostream& os, double tol, bool rvec,
                        bool /* cholB */, int disp, int maxit)
 {
   std::string typ (_typ);
@@ -1665,7 +1665,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                             octave_idx_type &info, ComplexMatrix &eig_vec,
                             ComplexColumnVector &eig_val, const M& _b,
                             ColumnVector &permB, ColumnVector &resid, 
-                            std::ostream& os, double tol, int rvec, 
+                            std::ostream& os, double tol, bool rvec, 
                             bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -2028,7 +2028,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  ComplexMatrix &eig_vec, 
                                  ComplexColumnVector &eig_val, const M& _b,
                                  ColumnVector &permB, ColumnVector &resid, 
-                                 std::ostream& os, double tol, int rvec, 
+                                 std::ostream& os, double tol, bool rvec, 
                                  bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -2402,7 +2402,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           octave_idx_type k, octave_idx_type p, 
                           octave_idx_type &info, ComplexMatrix &eig_vec, 
                           ComplexColumnVector &eig_val, ColumnVector &resid, 
-                          std::ostream& os, double tol, int rvec,
+                          std::ostream& os, double tol, bool rvec,
                           bool /* cholB */, int disp, int maxit)
 {
   std::string typ (_typ);
@@ -2709,7 +2709,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
                                ComplexColumnVector &eig_val, const M& _b,
                                ColumnVector &permB, 
                                ComplexColumnVector &cresid, 
-                               std::ostream& os, double tol, int rvec, 
+                               std::ostream& os, double tol, bool rvec, 
                                bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -3031,7 +3031,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     ComplexColumnVector &eig_val, const M& _b,
                                     ColumnVector &permB, 
                                     ComplexColumnVector &cresid, 
-                                    std::ostream& os, double tol, int rvec, 
+                                    std::ostream& os, double tol, bool rvec, 
                                     bool cholB, int disp, int maxit)
 {
   M b(_b);
@@ -3366,7 +3366,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              octave_idx_type &info, ComplexMatrix &eig_vec, 
                              ComplexColumnVector &eig_val, 
                              ComplexColumnVector &cresid, std::ostream& os, 
-                             double tol, int rvec, bool /* cholB */,
+                             double tol, bool rvec, bool /* cholB */,
                              int disp, int maxit)
 {
   std::string typ (_typ);
@@ -3631,7 +3631,7 @@ EigsRealSymmetricMatrix (const Matrix& m, const std::string typ,
                          ColumnVector &eig_val, const Matrix& b,
                          ColumnVector &permB, ColumnVector &resid, 
                          std::ostream &os, double tol = DBL_EPSILON,
-                         int rvec = 0, bool cholB = 0, int disp = 0,
+                         bool rvec = false, bool cholB = 0, int disp = 0,
                          int maxit = 300);
 
 extern octave_idx_type
@@ -3641,7 +3641,7 @@ EigsRealSymmetricMatrix (const SparseMatrix& m, const std::string typ,
                          ColumnVector &eig_val, const SparseMatrix& b,
                          ColumnVector &permB, ColumnVector &resid, 
                          std::ostream& os, double tol = DBL_EPSILON,
-                         int rvec = 0, bool cholB = 0, int disp = 0, 
+                         bool rvec = false, bool cholB = 0, int disp = 0, 
                          int maxit = 300);
 
 extern octave_idx_type
@@ -3651,7 +3651,7 @@ EigsRealSymmetricMatrixShift (const Matrix& m, double sigma,
                               ColumnVector &eig_val, const Matrix& b,
                               ColumnVector &permB, ColumnVector &resid, 
                               std::ostream &os, double tol = DBL_EPSILON,
-                              int rvec = 0, bool cholB = 0, int disp = 0, 
+                              bool rvec = false, bool cholB = 0, int disp = 0, 
                               int maxit = 300);
 
 extern octave_idx_type
@@ -3661,7 +3661,7 @@ EigsRealSymmetricMatrixShift (const SparseMatrix& m, double sigma,
                               ColumnVector &eig_val, const SparseMatrix& b,
                               ColumnVector &permB, ColumnVector &resid, 
                               std::ostream &os, double tol = DBL_EPSILON,
-                              int rvec = 0, bool cholB = 0, int disp = 0, 
+                              bool rvec = false, bool cholB = 0, int disp = 0, 
                               int maxit = 300);
 
 extern octave_idx_type
@@ -3671,7 +3671,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        octave_idx_type &info,
                        Matrix &eig_vec, ColumnVector &eig_val, 
                        ColumnVector &resid, std::ostream &os,
-                       double tol = DBL_EPSILON, int rvec = 0,
+                       double tol = DBL_EPSILON, bool rvec = false,
                        bool cholB = 0, int disp = 0, int maxit = 300);
 
 extern octave_idx_type
@@ -3681,7 +3681,7 @@ EigsRealNonSymmetricMatrix (const Matrix& m, const std::string typ,
                             ComplexColumnVector &eig_val, const Matrix& b,
                             ColumnVector &permB, ColumnVector &resid, 
                             std::ostream &os, double tol = DBL_EPSILON,
-                            int rvec = 0, bool cholB = 0, int disp = 0,
+                            bool rvec = false, bool cholB = 0, int disp = 0,
                             int maxit = 300);
 
 extern octave_idx_type
@@ -3692,7 +3692,7 @@ EigsRealNonSymmetricMatrix (const SparseMatrix& m, const std::string typ,
                             const SparseMatrix& b,
                             ColumnVector &permB, ColumnVector &resid, 
                             std::ostream &os, double tol = DBL_EPSILON,
-                            int rvec = 0, bool cholB = 0, int disp = 0,
+                            bool rvec = false, bool cholB = 0, int disp = 0,
                             int maxit = 300);
 
 extern octave_idx_type
@@ -3703,8 +3703,8 @@ EigsRealNonSymmetricMatrixShift (const Matrix& m, double sigma,
                                  ComplexColumnVector &eig_val, const Matrix& b,
                                  ColumnVector &permB, ColumnVector &resid, 
                                  std::ostream &os, double tol = DBL_EPSILON,
-                                 int rvec = 0, bool cholB = 0, int disp = 0, 
-                                 int maxit = 300);
+                                 bool rvec = false, bool cholB = 0,
+                                 int disp = 0, int maxit = 300);
 
 extern octave_idx_type
 EigsRealNonSymmetricMatrixShift (const SparseMatrix& m, double sigma,
@@ -3715,8 +3715,8 @@ EigsRealNonSymmetricMatrixShift (const SparseMatrix& m, double sigma,
                                  const SparseMatrix& b,
                                  ColumnVector &permB, ColumnVector &resid, 
                                  std::ostream &os, double tol = DBL_EPSILON,
-                                 int rvec = 0, bool cholB = 0, int disp = 0, 
-                                 int maxit = 300);
+                                 bool rvec = false, bool cholB = 0,
+                                 int disp = 0, int maxit = 300);
 
 extern octave_idx_type
 EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
@@ -3725,7 +3725,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           octave_idx_type &info, ComplexMatrix &eig_vec, 
                           ComplexColumnVector &eig_val, 
                           ColumnVector &resid, std::ostream& os, 
-                          double tol = DBL_EPSILON, int rvec = 0,
+                          double tol = DBL_EPSILON, bool rvec = false,
                           bool cholB = 0, int disp = 0, int maxit = 300);
 
 extern octave_idx_type
@@ -3736,7 +3736,7 @@ EigsComplexNonSymmetricMatrix (const ComplexMatrix& m, const std::string typ,
                                const ComplexMatrix& b, ColumnVector &permB, 
                                ComplexColumnVector &resid, 
                                std::ostream &os, double tol = DBL_EPSILON,
-                               int rvec = 0, bool cholB = 0, int disp = 0, 
+                               bool rvec = false, bool cholB = 0, int disp = 0, 
                                int maxit = 300);
 
 extern octave_idx_type
@@ -3749,7 +3749,7 @@ EigsComplexNonSymmetricMatrix (const SparseComplexMatrix& m,
                                ColumnVector &permB,
                                ComplexColumnVector &resid, 
                                std::ostream &os, double tol = DBL_EPSILON,
-                               int rvec = 0, bool cholB = 0, int disp = 0, 
+                               bool rvec = false, bool cholB = 0, int disp = 0, 
                                int maxit = 300);
 
 extern octave_idx_type
@@ -3762,7 +3762,7 @@ EigsComplexNonSymmetricMatrixShift (const ComplexMatrix& m, Complex sigma,
                                     ColumnVector &permB,
                                     ComplexColumnVector &resid, 
                                     std::ostream &os, double tol = DBL_EPSILON,
-                                    int rvec = 0, bool cholB = 0,
+                                    bool rvec = false, bool cholB = 0,
                                     int disp = 0, int maxit = 300);
 
 extern octave_idx_type
@@ -3776,7 +3776,7 @@ EigsComplexNonSymmetricMatrixShift (const SparseComplexMatrix& m,
                                     ColumnVector &permB,
                                     ComplexColumnVector &resid, 
                                     std::ostream &os, double tol = DBL_EPSILON,
-                                    int rvec = 0, bool cholB = 0,
+                                    bool rvec = false, bool cholB = 0,
                                     int disp = 0, int maxit = 300);
 
 extern octave_idx_type
@@ -3786,7 +3786,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              octave_idx_type &info, ComplexMatrix &eig_vec, 
                              ComplexColumnVector &eig_val, 
                              ComplexColumnVector &resid, std::ostream& os, 
-                             double tol = DBL_EPSILON, int rvec = 0,
+                             double tol = DBL_EPSILON, bool rvec = false,
                              bool cholB = 0, int disp = 0, int maxit = 300);
 #endif
 

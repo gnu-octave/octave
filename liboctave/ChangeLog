@@ -1,3 +1,9 @@
+2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* str-vec.h (string_vector::string_vector): Use (n, 1).
+	(string_vector::resize): Ditto.
+	* str-vec.cc (string_vector::string_vector): Ditto.
+
 2010-02-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array::Array (const Array&, octave_idx_type,

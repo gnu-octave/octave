@@ -95,7 +95,7 @@ string_vector::string_vector (const char * const *s)
 // nonnegative.
 
 string_vector::string_vector (const char * const *s, octave_idx_type n)
-  : Array<std::string> (1, n)
+  : Array<std::string> (n, 1)
 {
   for (octave_idx_type i = 0; i < n; i++)
     elem (i) = s[i];

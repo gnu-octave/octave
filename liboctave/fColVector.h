@@ -103,9 +103,6 @@ public:
   void clear (octave_idx_type n)
     { Array<float>::clear (n, 1); }
 
-private:
-
-  FloatColumnVector (float *d, octave_idx_type l) : MArray<float> (d, l, 1) { }
 };
 
 // Publish externally used friend functions.

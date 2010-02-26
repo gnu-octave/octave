@@ -103,9 +103,6 @@ public:
   void clear (octave_idx_type n)
     { Array<double>::clear (n, 1); }
 
-private:
-
-  ColumnVector (double *d, octave_idx_type l) : MArray<double> (d, l, 1) { }
 };
 
 // Publish externally used friend functions.

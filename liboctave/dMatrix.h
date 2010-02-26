@@ -326,9 +326,6 @@ public:
 
   static double resize_fill_value (void) { return 0; }
 
-private:
-
-  Matrix (double *d, octave_idx_type r, octave_idx_type c) : MArray<double> (d, r, c) { }
 };
 
 // Publish externally used friend functions.

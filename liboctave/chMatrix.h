@@ -88,9 +88,6 @@ public:
 
   static char resize_fill_value (void) { return '\0'; }
 
-private:
-
-  charMatrix (char *ch, octave_idx_type r, octave_idx_type c) : Array<char> (ch, r, c) { }
 };
 
 MS_CMP_OP_DECLS (charMatrix, char, OCTAVE_API)

@@ -96,9 +96,6 @@ public:
   void clear (octave_idx_type n)
     { Array<float>::clear (1, n); }
 
-private:
-
-  FloatRowVector (float *d, octave_idx_type l) : MArray<float> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

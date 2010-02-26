@@ -39,10 +39,6 @@ template <class T>
 class
 Array3 : public Array<T>
 {
-protected:
-
-  Array3 (T *d, octave_idx_type r, octave_idx_type c, octave_idx_type p) : Array<T> (d, dim_vector (r, c, p)) { }
-
 public:
 
   Array3 (void) : Array<T> (dim_vector (0, 0, 0)) { }

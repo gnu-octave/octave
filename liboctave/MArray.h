@@ -39,11 +39,6 @@ template <class T>
 class
 MArray : public Array<T>
 {
-protected:
-
-  MArray (T *d, octave_idx_type m, octave_idx_type n) : Array<T> (d, m, n) { }
-  MArray (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
-
 public:
   
   MArray (void) : Array<T> () {}

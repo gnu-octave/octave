@@ -148,10 +148,6 @@ public:
       return *this; 
     }
 
-private:
-
-  ComplexNDArray (Complex *d, const dim_vector& dv)
-    : MArray<Complex> (d, dv) { }
 };
 
 extern OCTAVE_API ComplexNDArray conj (const ComplexNDArray& a);

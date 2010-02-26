@@ -109,9 +109,6 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const DiagMatrix& a);
 
-private:
-
-  DiagMatrix (double *d, octave_idx_type nr, octave_idx_type nc) : MDiagArray2<double> (d, nr, nc) { }
 };
 
 OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);

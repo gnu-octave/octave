@@ -131,10 +131,6 @@ public:
 
   friend std::ostream& operator << (std::ostream& os, const FloatComplexDiagMatrix& a);
 
-private:
-
-  FloatComplexDiagMatrix (FloatComplex *d, octave_idx_type nr, octave_idx_type nc)
-    : MDiagArray2<FloatComplex> (d, nr, nc) { }
 };
 
 OCTAVE_API FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);

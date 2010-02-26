@@ -160,9 +160,6 @@ public:
       return *this; 
     }
 
-private:
-
-  NDArray (double *d, const dim_vector& dv) : MArray<double> (d, dv) { }
 };
 
 // Publish externally used friend functions.

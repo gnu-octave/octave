@@ -109,9 +109,6 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatDiagMatrix& a);
 
-private:
-
-  FloatDiagMatrix (float *d, octave_idx_type nr, octave_idx_type nc) : MDiagArray2<float> (d, nr, nc) { }
 };
 
 OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);

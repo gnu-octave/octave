@@ -134,9 +134,6 @@ public:
   void clear (octave_idx_type n)
     { Array<Complex>::clear (n, 1); }
 
-private:
-
-  ComplexColumnVector (Complex *d, octave_idx_type l) : MArray<Complex> (d, l, 1) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)

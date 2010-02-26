@@ -148,10 +148,6 @@ public:
       return *this; 
     }
 
-private:
-
-  FloatComplexNDArray (FloatComplex *d, const dim_vector& dv)
-    : MArray<FloatComplex> (d, dv) { }
 };
 
 extern OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);

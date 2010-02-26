@@ -61,11 +61,17 @@ protected:
     octave_idx_type len;
     int count;
 
-    ArrayRep (T *d, octave_idx_type l, bool copy = false) 
-      : data (copy ? no_ctor_new<T> (l) : d), len (l), count (1) 
+    ArrayRep (T *d, octave_idx_type l) 
+      : data (no_ctor_new<T> (l)), len (l), count (1) 
         { 
-          if (copy)
-            copy_or_memcpy (l, d, data);
+          copy_or_memcpy (l, d, data);
+        }
+
+    template <class U>
+    ArrayRep (U *d, octave_idx_type l) 
+      : data (no_ctor_new<T> (l)), len (l), count (1) 
+        { 
+          std::copy (d, d+l, data);
         }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
@@ -104,7 +110,7 @@ public:
       if (rep->count > 1)
         {
           --rep->count;
-          rep = new ArrayRep (slice_data, slice_len, true);
+          rep = new ArrayRep (slice_data, slice_len);
           slice_data = rep->data;
         }
     }
@@ -132,22 +138,6 @@ protected:
   T* slice_data;
   octave_idx_type slice_len;
 
-  Array (T *d, octave_idx_type m, octave_idx_type n)
-    : rep (new typename Array<T>::ArrayRep (d, m*n)), dimensions (m, n) 
-    { 
-      slice_data = rep->data;
-      slice_len = rep->len;
-    }
-
-  Array (T *d, const dim_vector& dv)
-    : rep (new typename Array<T>::ArrayRep (d, dv.numel ())),
-      dimensions (dv) 
-    { 
-      slice_data = rep->data;
-      slice_len = rep->len;
-      dimensions.chop_trailing_singletons ();
-    }
-
   // slice constructor
   Array (const Array<T>& a, const dim_vector& dv,
          octave_idx_type l, octave_idx_type u)
@@ -168,18 +158,6 @@ private:
 
       return nr;
     }
-
-  template <class U>
-  T *
-  coerce (const U *a, octave_idx_type len)
-  {
-    T *retval = no_ctor_new<T> (len);
-
-    for (octave_idx_type i = 0; i < len; i++)
-      retval[i] = T (a[i]);
-
-    return retval;
-  }
 
 public:
 
@@ -249,7 +227,7 @@ public:
   // Type conversion case.
   template <class U>
   Array (const Array<U>& a)
-    : rep (new typename Array<T>::ArrayRep (coerce (a.data (), a.length ()), a.length ())),
+    : rep (new typename Array<T>::ArrayRep (a.data (), a.length ())),
       dimensions (a.dims ())
     {
       slice_data = rep->data;
@@ -616,7 +594,7 @@ public:
     {
       if (rep->count == 1 && slice_len != rep->len)
         {
-          ArrayRep *new_rep = new ArrayRep (slice_data, slice_len, true);
+          ArrayRep *new_rep = new ArrayRep (slice_data, slice_len);
           delete rep;
           rep = new_rep;
           slice_data = rep->data;

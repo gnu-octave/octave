@@ -40,10 +40,6 @@ template <class T>
 class
 MDiagArray2 : public DiagArray2<T>
 {
-protected:
-
-  MDiagArray2 (T *d, octave_idx_type r, octave_idx_type c) : DiagArray2<T> (d, r, c) { }
-
 public:
   
   MDiagArray2 (void) : DiagArray2<T> () { }

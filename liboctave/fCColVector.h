@@ -134,9 +134,6 @@ public:
   void clear (octave_idx_type n)
     { Array<FloatComplex>::clear (n, 1); }
 
-private:
-
-  FloatComplexColumnVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, l, 1) { }
 };
 
 MARRAY_FORWARD_DEFS (MArray, FloatComplexColumnVector, FloatComplex)

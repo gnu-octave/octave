@@ -1,5 +1,43 @@
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.h (Array<T>::ArrayRep): Simplify copy constructor. Add
+	conversion constructor.
+	(Array<T>): Remove pointer acquiring ctors.
+	(Array<T>::maybe_economize): Update.
+	(Array<T>::make_unique): Update.
+	* Array.cc (Array<T>::fill): Update.
+
+	* MArray.h (MArray<T>::MArray<T> (T *, ...)): Remove.
+	* DiagArray2.h (DiagArray2<T>::DiagArray2<T> (T *, ...)): Remove.
+	* MDiagArray2.h (MDiagArray2<T>::MDiagArray2<T> (T *, ...)): Remove.
+	* Array3.h (Array3<T>::Array3<T> (T *, ...)): Remove.
+
+	* dColVector.h (ColumnVector::ColumnVector (T *, ...)): Remove.
+	* fColVector.h (FloatColumnVector::FloatColumnVector (T *, ...)): Remove.
+	* CColVector.h (ComplexColumnVector::ComplexColumnVector (T *, ...)): Remove.
+	* fCColVector.h (FloatComplexColumnVector::FloatComplexColumnVector (T *, ...)): Remove.
+
+	* dRowVector.h (RowVector::RowVector (T *, ...)): Remove.
+	* fRowVector.h (FloatRowVector::FloatRowVector (T *, ...)): Remove.
+	* CRowVector.h (ComplexRowVector::ComplexRowVector (T *, ...)): Remove.
+	* fCRowVector.h (FloatComplexRowVector::FloatComplexRowVector (T *, ...)): Remove.
+
+	* dMatrix.h (Matrix::Matrix (T *, ...)): Remove.
+	* fMatrix.h (FloatMatrix::FloatMatrix (T *, ...)): Remove.
+	* CMatrix.h (ComplexMatrix::ComplexMatrix (T *, ...)): Remove.
+	* fCMatrix.h (FloatComplexMatrix::FloatComplexMatrix (T *, ...)): Remove.
+	* boolMatrix.h (boolMatrix::boolMatrix (T *, ...)): Remove.
+	* chMatrix.h (charMatrix::charMatrix (T *, ...)): Remove.
+
+	* dNDArray.h (NDArray::NDArray (T *, ...)): Remove.
+	* fNDArray.h (FloatNDArray::FloatNDArray (T *, ...)): Remove.
+	* CNDArray.h (ComplexNDArray::ComplexNDArray (T *, ...)): Remove.
+	* fCNDArray.h (FloatComplexNDArray::FloatComplexNDArray (T *, ...)): Remove.
+	* boolNDArray.h (boolNDArray::boolNDArray (T *, ...)): Remove.
+	* chNDArray.h (charNDArray::charNDArray (T *, ...)): Remove.
+
+2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DiagArray2.h (DiagArray2): Clean up ctors. Remove Proxy class.
 	Remove non-const two-index elem methods.
 	* DiagArray2.cc: Update.

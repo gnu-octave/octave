@@ -115,9 +115,6 @@ public:
   void clear (octave_idx_type n)
     { Array<FloatComplex>::clear (1, n); }
 
-private:
-
-  FloatComplexRowVector (FloatComplex *d, octave_idx_type l) : MArray<FloatComplex> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

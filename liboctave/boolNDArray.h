@@ -103,9 +103,6 @@ public:
 
   boolNDArray diag (octave_idx_type k = 0) const;
 
-private:
-
-  boolNDArray (bool *d, dim_vector& dv) : Array<bool> (d, dv) { }
 };
 
 NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)

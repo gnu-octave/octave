@@ -326,9 +326,6 @@ public:
 
   static float resize_fill_value (void) { return 0; }
 
-private:
-
-  FloatMatrix (float *d, octave_idx_type r, octave_idx_type c) : MArray<float> (d, r, c) { }
 };
 
 // Publish externally used friend functions.

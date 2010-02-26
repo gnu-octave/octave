@@ -373,9 +373,6 @@ public:
 
   static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
 
-private:
-
-  ComplexMatrix (Complex *d, octave_idx_type r, octave_idx_type c) : MArray<Complex> (d, r, c) { }
 };
 
 extern OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);

@@ -41,9 +41,6 @@ DiagArray2 : protected Array<T>
 protected:
   octave_idx_type d1, d2;
 
-  DiagArray2 (T *d, octave_idx_type r, octave_idx_type c) 
-    : Array<T> (d, std::min (r, c), 1), d1 (r), d2 (c) { }
-
 public:
 
   using Array<T>::element_type;

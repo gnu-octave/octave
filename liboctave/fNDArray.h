@@ -157,9 +157,6 @@ public:
       return *this; 
     }
 
-private:
-
-  FloatNDArray (float *d, const dim_vector& dv) : MArray<float> (d, dv) { }
 };
 
 // Publish externally used friend functions.

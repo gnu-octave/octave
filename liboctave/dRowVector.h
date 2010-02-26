@@ -96,9 +96,6 @@ public:
   void clear (octave_idx_type n)
     { Array<double>::clear (1, n); }
 
-private:
-
-  RowVector (double *d, octave_idx_type l) : MArray<double> (d, 1, l) { }
 };
 
 // row vector by column vector -> scalar

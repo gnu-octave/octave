@@ -116,9 +116,6 @@ public:
 
   static T resize_fill_value (void) { return 0; }
 
-protected:
-
-  intNDArray (T *d, dim_vector& dv) : MArray<T> (d, dv) { }
 };
 
 // i/o

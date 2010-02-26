@@ -78,9 +78,6 @@ public:
 
   static bool resize_fill_value (void) { return false; }
 
-private:
-
-  boolMatrix (bool *b, octave_idx_type r, octave_idx_type c) : Array<bool> (b, r, c) { }
 };
 
 MM_BOOL_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)

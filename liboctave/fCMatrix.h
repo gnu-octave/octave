@@ -373,9 +373,6 @@ public:
 
   static FloatComplex resize_fill_value (void) { return FloatComplex (0.0, 0.0); }
 
-private:
-
-  FloatComplexMatrix (FloatComplex *d, octave_idx_type r, octave_idx_type c) : MArray<FloatComplex> (d, r, c) { }
 };
 
 extern OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);

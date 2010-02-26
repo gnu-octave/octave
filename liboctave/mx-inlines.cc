@@ -407,55 +407,6 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y)
   return true;
 }
 
-#define OP_DUP_FCN(OP, F, R, T) \
-  static inline R * \
-  F (const T *x, size_t n) \
-  { \
-    R *r = 0; \
-    if (n > 0) \
-      { \
-        r = new R [n]; \
-        for (size_t i = 0; i < n; i++) \
-          r[i] = OP (x[i]); \
-      } \
-    return r; \
-  }
-
-OP_DUP_FCN (, mx_inline_dup, double,  double)
-OP_DUP_FCN (, mx_inline_dup, Complex, Complex)
-OP_DUP_FCN (, mx_inline_dup, float, float)
-OP_DUP_FCN (, mx_inline_dup, FloatComplex, FloatComplex)
-
-// These should really return a bool *.  Also, they should probably be
-// in with a collection of other element-by-element boolean ops.
-OP_DUP_FCN (0.0 ==, mx_inline_not, double, double)
-OP_DUP_FCN (0.0 ==, mx_inline_not, double, Complex)
-
-OP_DUP_FCN (, mx_inline_make_complex, Complex, double)
-
-OP_DUP_FCN (-, mx_inline_change_sign, double,  double)
-OP_DUP_FCN (-, mx_inline_change_sign, Complex, Complex)
-
-OP_DUP_FCN (std::abs, mx_inline_fabs_dup, double,  double)
-OP_DUP_FCN (std::abs, mx_inline_cabs_dup, double,  Complex)
-OP_DUP_FCN (real, mx_inline_real_dup, double,  Complex)
-OP_DUP_FCN (imag, mx_inline_imag_dup, double,  Complex)
-OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
-
-OP_DUP_FCN (0.0 ==, mx_inline_not, float, float)
-OP_DUP_FCN (static_cast<float>(0.0) ==, mx_inline_not, float, FloatComplex)
-
-OP_DUP_FCN (, mx_inline_make_complex, FloatComplex, float)
-
-OP_DUP_FCN (-, mx_inline_change_sign, float,  float)
-OP_DUP_FCN (-, mx_inline_change_sign, FloatComplex, FloatComplex)
-
-OP_DUP_FCN (std::abs, mx_inline_fabs_dup, float,  float)
-OP_DUP_FCN (std::abs, mx_inline_cabs_dup, float,  FloatComplex)
-OP_DUP_FCN (real, mx_inline_real_dup, float,  FloatComplex)
-OP_DUP_FCN (imag, mx_inline_imag_dup, float,  FloatComplex)
-OP_DUP_FCN (conj, mx_inline_conj_dup, FloatComplex, FloatComplex)
-
 // FIXME: Due to a performance defect in g++ (<= 4.3), std::norm is slow unless
 // ffast-math is on (not by default even with -O3). The following helper function
 // gives the expected straightforward implementation of std::norm.

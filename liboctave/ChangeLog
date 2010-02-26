@@ -1,5 +1,19 @@
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mx-inlines.cc (OP_DUP_FCN): Remove.
+	(mx_inline_dup): Remove.
+	(mx_inline_not): Remove.
+	(mx_inline_make_complex): Remove.
+	(mx_inline_change_sign): Remove.
+	(mx_inline_fabs_dup): Remove.
+	(mx_inline_cabs_dup): Remove.
+	(mx_inline_imag_dup): Remove.
+	(mx_inline_real_dup): Remove.
+	(mx_inline_conj_dup): Remove.
+	(mx_inline_change_sign): Remove.
+
+2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.h (Array<T>::ArrayRep): Simplify copy constructor. Add
 	conversion constructor.
 	(Array<T>): Remove pointer acquiring ctors.

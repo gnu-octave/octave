@@ -90,6 +90,8 @@ public:
   double min (void) const;
   double max (void) const;
 
+  ColumnVector abs (void) const;
+
   // i/o
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ColumnVector& a);

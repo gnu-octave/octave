@@ -237,21 +237,13 @@ FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a, octave_idx_type be
 FloatDiagMatrix
 FloatComplexDiagMatrix::abs (void) const
 {
-  FloatDiagMatrix retval (rows (), cols ());
-  for (octave_idx_type i = 0; i < rows (); i++)
-    retval(i, i) = std::abs (elem (i, i));
-  return retval;
+  return FloatDiagMatrix (diag ().abs (), rows (), columns ());
 }
 
 FloatComplexDiagMatrix
 conj (const FloatComplexDiagMatrix& a)
 {
-  FloatComplexDiagMatrix retval;
-  octave_idx_type a_len = a.length ();
-  if (a_len > 0)
-    retval = FloatComplexDiagMatrix (mx_inline_conj_dup (a.data (), a_len),
-                                a.rows (), a.cols ());
-  return retval;
+  return FloatComplexDiagMatrix (conj (a.diag ()), a.rows (), a.columns ());
 }
 
 // resize is the destructive analog for this one

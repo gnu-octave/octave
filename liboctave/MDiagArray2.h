@@ -52,8 +52,6 @@ public:
 
   MDiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : DiagArray2<T> (r, c, val) { }
 
-  MDiagArray2 (const dim_vector& dv) : DiagArray2<T> (dv) { }
-
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
 
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
@@ -74,9 +72,9 @@ public:
       return *this;
     }
 
-  operator MArray<T> () const
+  MArray<T> array_value () const
     {
-      return DiagArray2<T>::operator Array<T> ();
+      return DiagArray2<T>::array_value ();
     }
 
   octave_idx_type nnz (void) const

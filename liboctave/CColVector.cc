@@ -231,14 +231,16 @@ ComplexColumnVector::transpose (void) const
   return MArray<Complex>::transpose ();
 }
 
+ColumnVector
+ComplexColumnVector::abs (void) const
+{
+  return do_mx_unary_map<double, Complex, std::abs> (*this);
+}
+
 ComplexColumnVector
 conj (const ComplexColumnVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  ComplexColumnVector retval;
-  if (a_len > 0)
-    retval = ComplexColumnVector (mx_inline_conj_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_map<Complex, Complex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one

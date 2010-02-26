@@ -121,6 +121,8 @@ public:
   FloatComplex min (void) const;
   FloatComplex max (void) const;
 
+  FloatColumnVector abs (void) const;
+
   // i/o
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexColumnVector& a);

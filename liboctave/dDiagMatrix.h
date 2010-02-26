@@ -54,9 +54,10 @@ public:
   template <class U>
   DiagMatrix (const DiagArray2<U>& a) : MDiagArray2<double> (a) { }
 
-  explicit DiagMatrix (const RowVector& a) : MDiagArray2<double> (a) { }
+  explicit DiagMatrix (const Array<double>& a) : MDiagArray2<double> (a) { }
 
-  explicit DiagMatrix (const ColumnVector& a) : MDiagArray2<double> (a) { }
+  DiagMatrix (const Array<double>& a, octave_idx_type r, octave_idx_type c) 
+    : MDiagArray2<double> (a, r, c) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
     {

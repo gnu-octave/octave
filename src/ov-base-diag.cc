@@ -82,8 +82,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 
       if (idx0.is_scalar () && idx1.is_scalar ())
         {
-          // FIXME: the proxy mechanism of DiagArray2 causes problems here.
-          retval = el_type (matrix.checkelem (idx0(0), idx1(0)));
+          retval = matrix.checkelem (idx0(0), idx1(0));
         }
       else
         {
@@ -131,7 +130,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                     && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
                     && chk_valid_scalar (rhs, val))
                   {
-                    matrix (i0(0), i1(0)) = val;                    
+                    matrix.dgelem (i0(0)) = val;                    
                     retval = this;
                     this->count++;
                     // invalidate cache

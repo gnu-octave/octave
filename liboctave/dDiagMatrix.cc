@@ -142,32 +142,19 @@ DiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 DiagMatrix
 DiagMatrix::abs (void) const
 {
-  DiagMatrix retval (rows (), cols ());
-  for (octave_idx_type i = 0; i < rows (); i++)
-    retval(i, i) = std::abs (elem (i, i));
-  return retval;
+  return DiagMatrix (diag ().abs (), rows (), columns ());
 }
 
 DiagMatrix
 real (const ComplexDiagMatrix& a)
 {
-  DiagMatrix retval;
-  octave_idx_type a_len = a.length ();
-  if (a_len > 0)
-    retval = DiagMatrix (mx_inline_real_dup (a.data (), a_len), a.rows (),
-                         a.cols ());
-  return retval;
+  return DiagMatrix (real (a.diag ()), a.rows (), a.cols ());
 }
 
 DiagMatrix
 imag (const ComplexDiagMatrix& a)
 {
-  DiagMatrix retval;
-  octave_idx_type a_len = a.length ();
-  if (a_len > 0)
-    retval = DiagMatrix (mx_inline_imag_dup (a.data (), a_len), a.rows (),
-                         a.cols ());
-  return retval;
+  return DiagMatrix (imag (a.diag ()), a.rows (), a.cols ());
 }
 
 Matrix

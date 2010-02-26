@@ -1,3 +1,8 @@
+2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/xpow.cc: Update.
+	* src/ov-base-diag.cc: Update.
+
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/str2double.cc (single_number): New helper func.

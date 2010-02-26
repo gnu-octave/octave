@@ -150,21 +150,13 @@ RowVector::transpose (void) const
 RowVector
 real (const ComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  RowVector retval;
-  if (a_len > 0)
-    retval = RowVector (mx_inline_real_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<double, Complex> (a, mx_inline_real);
 }
 
 RowVector
 imag (const ComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  RowVector retval;
-  if (a_len > 0)
-    retval = RowVector (mx_inline_imag_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<double, Complex> (a, mx_inline_imag);
 }
 
 RowVector

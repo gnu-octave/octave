@@ -231,14 +231,16 @@ FloatComplexColumnVector::transpose (void) const
   return MArray<FloatComplex>::transpose ();
 }
 
+FloatColumnVector
+FloatComplexColumnVector::abs (void) const
+{
+  return do_mx_unary_map<float, FloatComplex, std::abs> (*this);
+}
+
 FloatComplexColumnVector
 conj (const FloatComplexColumnVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatComplexColumnVector retval;
-  if (a_len > 0)
-    retval = FloatComplexColumnVector (mx_inline_conj_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one

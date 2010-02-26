@@ -47,17 +47,14 @@ public:
   FloatComplexDiagMatrix (octave_idx_type r, octave_idx_type c, const FloatComplex& val)
     : MDiagArray2<FloatComplex> (r, c, val) { }
 
-  explicit FloatComplexDiagMatrix (const FloatRowVector& a)
-    : MDiagArray2<FloatComplex> (FloatComplexRowVector (a)) { }
-
-  explicit FloatComplexDiagMatrix (const FloatComplexRowVector& a)
+  explicit FloatComplexDiagMatrix (const Array<FloatComplex>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  explicit FloatComplexDiagMatrix (const FloatColumnVector& a)
-    : MDiagArray2<FloatComplex> (FloatComplexColumnVector (a)) { }
+  FloatComplexDiagMatrix (const Array<FloatComplex>& a, octave_idx_type r, octave_idx_type c) 
+    : MDiagArray2<FloatComplex> (a, r, c) { }
 
-  explicit FloatComplexDiagMatrix (const FloatComplexColumnVector& a)
-    : MDiagArray2<FloatComplex> (a) { }
+  explicit FloatComplexDiagMatrix (const Array<float>& a)
+    : MDiagArray2<FloatComplex> (Array<FloatComplex> (a)) { }
 
   explicit FloatComplexDiagMatrix (const FloatDiagMatrix& a);
 

@@ -37,31 +37,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 template <class T>
-const typename DiagArray2<T>::Proxy& 
-DiagArray2<T>::Proxy::operator = (const T& val) const
+DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
+  : Array<T> (a.as_column ()), d1 (r), d2 (c)
 {
-  if (i == j)
-    {
-      if (object)
-        object->set (val, i);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("invalid assignment to off-diagonal in diagonal array");
-
-  return *this;
-}
-
-template <class T>
-DiagArray2<T>::Proxy::operator T () const
-{
-  if (object && i == j)
-    return object->get (i);
-  else
-    {
-      static T foo;
-      return foo;
-    }
+  octave_idx_type rcmin = std::min (r, c);
+  if (rcmin != a.length ())
+      Array<T>::resize (rcmin, 1);
 }
 
 template <class T>
@@ -88,22 +69,14 @@ template <class T>
 DiagArray2<T>
 DiagArray2<T>::transpose (void) const
 {
-  DiagArray2<T> retval (*this);
-  retval.d1 = d2;
-  retval.d2 = d1;
-  return retval;
+  return DiagArray2<T> (*this, d2, d1);
 }
 
 template <class T>
 DiagArray2<T>
 DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 {
-  DiagArray2<T> retval (dim2 (), dim1 ());
-  const T *p = this->data ();
-  T *q = retval.fortran_vec ();
-  for (octave_idx_type i = 0; i < this->length (); i++)
-    q [i] = fcn (p [i]);
-  return retval;
+  return DiagArray2<T> (Array<T>::template map<T> (fcn), d2, d1);
 }
 
 // A two-dimensional array with diagonal elements only.
@@ -113,24 +86,9 @@ T
 DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
 {
   if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-    {
-      (*current_liboctave_error_handler) ("range error in DiagArray2");
-      return T ();
-    }
-  return elem (r, c);
-}
+    (*current_liboctave_error_handler) ("range error in DiagArray2");
 
-template <class T>
-typename DiagArray2<T>::Proxy
-DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) 
-{
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-    {
-      (*current_liboctave_error_handler) ("range error in DiagArray2");
-      return Proxy (0, r, c);
-    }
-  else
-    return Proxy (this, r, c);
+  return elem (r, c);
 }
 
 template <class T>
@@ -152,7 +110,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
 }
 
 template <class T>
-DiagArray2<T>::operator Array<T> (void) const
+Array<T> DiagArray2<T>::array_value (void) const
 {
   Array<T> result (dim1 (), dim2 ());
   for (octave_idx_type i = 0, len = length (); i < len; i++)

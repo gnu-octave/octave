@@ -892,8 +892,7 @@ ComplexMatrix::stack (const ComplexDiagMatrix& a) const
 ComplexMatrix
 conj (const ComplexMatrix& a)
 {
-  return ComplexMatrix (mx_inline_conj_dup (a.data (), a.length ()),
-                        a.rows (), a.cols ());
+  return do_mx_unary_map<Complex, Complex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one
@@ -3243,8 +3242,7 @@ ComplexMatrix::sumsq (int dim) const
 
 Matrix ComplexMatrix::abs (void) const
 {
-  return Matrix (mx_inline_cabs_dup (data (), length ()),
-                 rows (), cols ());
+  return do_mx_unary_map<double, Complex, std::abs> (*this);
 }
 
 ComplexMatrix

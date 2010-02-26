@@ -146,23 +146,21 @@ ColumnVector::transpose (void) const
 }
 
 ColumnVector
+ColumnVector::abs (void) const
+{
+  return do_mx_unary_map<double, double, std::abs> (*this);
+}
+
+ColumnVector
 real (const ComplexColumnVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  ColumnVector retval;
-  if (a_len > 0)
-    retval = ColumnVector (mx_inline_real_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<double, Complex> (a, mx_inline_real);
 }
 
 ColumnVector
 imag (const ComplexColumnVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  ColumnVector retval;
-  if (a_len > 0)
-    retval = ColumnVector (mx_inline_imag_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<double, Complex> (a, mx_inline_imag);
 }
 
 // resize is the destructive equivalent for this one

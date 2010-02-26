@@ -1,5 +1,45 @@
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DiagArray2.h (DiagArray2): Clean up ctors. Remove Proxy class.
+	Remove non-const two-index elem methods.
+	* DiagArray2.cc: Update.
+	* MDiagArray2.h: Update.
+
+	* dDiagArray2.h: Update.
+	* dDiagArray2.cc: Update.
+	* fDiagArray2.h: Update.
+	* fDiagArray2.cc: Update.
+	* CDiagArray2.h: Update.
+	* CDiagArray2.cc: Update.
+	* fCDiagArray2.h: Update.
+	* fCDiagArray2.cc: Update.
+
+	* dMatrix.cc: Update.
+	* fMatrix.cc: Update.
+	* CMatrix.cc: Update.
+	* fCMatrix.cc: Update.
+
+	* dRowVector.cc: Update.
+	* fRowVector.cc: Update.
+	* CRowVector.cc: Update.
+	* fCRowVector.cc: Update.
+
+	* dColVector.cc: Update.
+	* fColVector.cc: Update.
+	* CColVector.cc: Update.
+	* fCColVector.cc: Update.
+
+	* dColVector.cc (ColumnVector::abs): New method.
+	* dColVector.h: Declare it.
+	* fColVector.cc (FloatColumnVector::abs): New method.
+	* fColVector.h: Declare it.
+	* CColVector.cc (ComplexColumnVector::abs): New method.
+	* CColVector.h: Declare it.
+	* fCColVector.cc (FloatComplexColumnVector::abs): New method.
+	* fCColVector.h: Declare it.
+
+2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
 	* mx-inlines.cc: Parameterize all appliers by value types rather than
 	Array types. Return & accept Array instances.
 	* mx-op-defs.h: Update references.

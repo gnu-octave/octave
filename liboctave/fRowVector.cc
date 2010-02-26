@@ -150,21 +150,13 @@ FloatRowVector::transpose (void) const
 FloatRowVector
 real (const FloatComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatRowVector retval;
-  if (a_len > 0)
-    retval = FloatRowVector (mx_inline_real_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<float, FloatComplex> (a, mx_inline_real);
 }
 
 FloatRowVector
 imag (const FloatComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatRowVector retval;
-  if (a_len > 0)
-    retval = FloatRowVector (mx_inline_imag_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_op<float, FloatComplex> (a, mx_inline_imag);
 }
 
 FloatRowVector

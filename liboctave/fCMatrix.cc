@@ -891,8 +891,7 @@ FloatComplexMatrix::stack (const FloatComplexDiagMatrix& a) const
 FloatComplexMatrix
 conj (const FloatComplexMatrix& a)
 {
-  return FloatComplexMatrix (mx_inline_conj_dup (a.data (), a.length ()),
-                             a.rows (), a.cols ());
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one
@@ -3236,8 +3235,7 @@ FloatComplexMatrix::sumsq (int dim) const
 
 FloatMatrix FloatComplexMatrix::abs (void) const
 {
-  return FloatMatrix (mx_inline_cabs_dup (data (), length ()),
-                      rows (), cols ());
+  return do_mx_unary_map<float, FloatComplex, std::abs> (*this);
 }
 
 FloatComplexMatrix

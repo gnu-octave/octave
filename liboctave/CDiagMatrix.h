@@ -47,17 +47,14 @@ public:
   ComplexDiagMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
     : MDiagArray2<Complex> (r, c, val) { }
 
-  explicit ComplexDiagMatrix (const RowVector& a)
-    : MDiagArray2<Complex> (ComplexRowVector (a)) { }
-
-  explicit ComplexDiagMatrix (const ComplexRowVector& a)
+  explicit ComplexDiagMatrix (const Array<Complex>& a)
     : MDiagArray2<Complex> (a) { }
 
-  explicit ComplexDiagMatrix (const ColumnVector& a)
-    : MDiagArray2<Complex> (ComplexColumnVector (a)) { }
+  explicit ComplexDiagMatrix (const Array<double>& a)
+    : MDiagArray2<Complex> (Array<Complex> (a)) { }
 
-  explicit ComplexDiagMatrix (const ComplexColumnVector& a)
-    : MDiagArray2<Complex> (a) { }
+  ComplexDiagMatrix (const Array<Complex>& a, octave_idx_type r, octave_idx_type c) 
+    : MDiagArray2<Complex> (a, r, c) { }
 
   explicit ComplexDiagMatrix (const DiagMatrix& a);
 

@@ -232,11 +232,7 @@ ComplexRowVector::transpose (void) const
 ComplexRowVector
 conj (const ComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  ComplexRowVector retval;
-  if (a_len > 0)
-    retval = ComplexRowVector (mx_inline_conj_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_map<Complex, Complex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one

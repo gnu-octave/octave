@@ -121,6 +121,8 @@ public:
   Complex min (void) const;
   Complex max (void) const;
 
+  ColumnVector abs (void) const;
+
   // i/o
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);

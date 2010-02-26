@@ -90,6 +90,8 @@ public:
   float min (void) const;
   float max (void) const;
 
+  FloatColumnVector abs (void) const;
+
   // i/o
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatColumnVector& a);

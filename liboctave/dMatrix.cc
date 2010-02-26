@@ -565,15 +565,13 @@ Matrix::stack (const DiagMatrix& a) const
 Matrix
 real (const ComplexMatrix& a)
 {
-  return Matrix (mx_inline_real_dup (a.data (), a.length ()),
-                 a.rows (), a.cols ());
+  return do_mx_unary_op<double, Complex> (a, mx_inline_real);
 }
 
 Matrix
 imag (const ComplexMatrix& a)
 {
-  return Matrix (mx_inline_imag_dup (a.data (), a.length ()),
-                 a.rows (), a.cols ());
+  return do_mx_unary_op<double, Complex> (a, mx_inline_imag);
 }
 
 Matrix
@@ -2822,8 +2820,7 @@ Matrix::sumsq (int dim) const
 Matrix
 Matrix::abs (void) const
 {
-  return Matrix (mx_inline_fabs_dup (data (), length ()),
-                 rows (), cols ());
+  return do_mx_unary_map<double, double, std::abs> (*this);
 }
 
 Matrix

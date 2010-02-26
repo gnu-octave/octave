@@ -232,11 +232,7 @@ FloatComplexRowVector::transpose (void) const
 FloatComplexRowVector
 conj (const FloatComplexRowVector& a)
 {
-  octave_idx_type a_len = a.length ();
-  FloatComplexRowVector retval;
-  if (a_len > 0)
-    retval = FloatComplexRowVector (mx_inline_conj_dup (a.data (), a_len), a_len);
-  return retval;
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj> (a);
 }
 
 // resize is the destructive equivalent for this one

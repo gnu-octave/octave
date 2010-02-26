@@ -564,15 +564,13 @@ FloatMatrix::stack (const FloatDiagMatrix& a) const
 FloatMatrix
 real (const FloatComplexMatrix& a)
 {
-  return FloatMatrix (mx_inline_real_dup (a.data (), a.length ()),
-                      a.rows (), a.cols ());
+  return do_mx_unary_op<float, FloatComplex> (a, mx_inline_real);
 }
 
 FloatMatrix
 imag (const FloatComplexMatrix& a)
 {
-  return FloatMatrix (mx_inline_imag_dup (a.data (), a.length ()),
-                      a.rows (), a.cols ());
+  return do_mx_unary_op<float, FloatComplex> (a, mx_inline_imag);
 }
 
 FloatMatrix
@@ -2821,8 +2819,7 @@ FloatMatrix::sumsq (int dim) const
 FloatMatrix
 FloatMatrix::abs (void) const
 {
-  return FloatMatrix (mx_inline_fabs_dup (data (), length ()),
-                      rows (), cols ());
+  return do_mx_unary_map<float, float, std::abs> (*this);
 }
 
 FloatMatrix

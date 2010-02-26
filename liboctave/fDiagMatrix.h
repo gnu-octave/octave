@@ -54,9 +54,10 @@ public:
   template <class U>
   FloatDiagMatrix (const DiagArray2<U>& a) : MDiagArray2<float> (a) { }
 
-  explicit FloatDiagMatrix (const FloatRowVector& a) : MDiagArray2<float> (a) { }
+  explicit FloatDiagMatrix (const Array<double>& a) : MDiagArray2<float> (a) { }
 
-  explicit FloatDiagMatrix (const FloatColumnVector& a) : MDiagArray2<float> (a) { }
+  FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c) 
+    : MDiagArray2<float> (a, r, c) { }
 
   FloatDiagMatrix& operator = (const FloatDiagMatrix& a)
     {

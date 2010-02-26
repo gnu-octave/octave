@@ -1,3 +1,30 @@
+2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc: Parameterize all appliers by value types rather than
+	Array types. Return & accept Array instances.
+	* mx-op-defs.h: Update references.
+	* CMatrix.cc: Ditto.
+	* CNDArray.cc: Ditto.
+	* DiagArray2.h: Ditto.
+	* MArray.cc: Ditto.
+	* boolMatrix.cc: Ditto.
+	* boolNDArray.cc: Ditto.
+	* bsxfun-defs.cc: Ditto.
+	* chMatrix.cc: Ditto.
+	* chNDArray.cc: Ditto.
+	* dMatrix.cc: Ditto.
+	* dNDArray.cc: Ditto.
+	* fCMatrix.cc: Ditto.
+	* fCNDArray.cc: Ditto.
+	* fMatrix.cc: Ditto.
+	* fNDArray.cc: Ditto.
+	* intNDArray.cc: Ditto.
+	* MDiagArray2.cc: Remove computed assignment operators, adapt 
+	operators to new mechanism.
+	* MDiagArray2.h: Declare operators as friends.
+	* MArray-decl.h (MDIAGARRAY2_OPS_FRIEND_DECLS): Don't expand
+	MARRAY_OP_ASSIGN_FRIENDS here.
+
 2010-02-25  John W. Eaton  <jwe@octave.org>
 
 	* eigs-base.cc: Use octave_idx_type for Fortran LOGICAL values

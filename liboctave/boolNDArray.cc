@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 boolNDArray
 boolNDArray::operator ! (void) const
 {
-  return do_mx_unary_op<boolNDArray> (*this, mx_inline_not);
+  return do_mx_unary_op<bool> (*this, mx_inline_not);
 }
 
 boolNDArray&
@@ -50,7 +50,7 @@ boolNDArray::invert (void)
   if (is_shared ())
     *this = ! *this;
   else
-    do_mx_inplace_op<boolNDArray> (*this, mx_inline_not2);
+    do_mx_inplace_op<bool> (*this, mx_inline_not2);
 
   return *this;
 }
@@ -60,13 +60,13 @@ boolNDArray::invert (void)
 boolNDArray
 boolNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray, bool> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 boolNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray, bool> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_any);
 }
 
 NDArray 
@@ -74,14 +74,14 @@ boolNDArray::sum (int dim) const
 {
   // NOTE: going via octave_idx_type is typically faster even though it
   // requires a conversion. 
-  return do_mx_red_op<Array<octave_idx_type> , bool> (*this, dim, mx_inline_count);
+  return do_mx_red_op<octave_idx_type, bool> (*this, dim, mx_inline_count);
 }
 
 NDArray 
 boolNDArray::cumsum (int dim) const
 {
   // In this case, it's better to sum directly to doubles.
-  return do_mx_cum_op<NDArray , bool> (*this, dim, mx_inline_cumcount);
+  return do_mx_cum_op<double , bool> (*this, dim, mx_inline_cumcount);
 }
 
 boolNDArray
@@ -150,7 +150,7 @@ mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
   if (a.is_shared ())
     a = mx_el_and (a, b);
   else
-    do_mm_inplace_op<boolNDArray, boolNDArray> (a, b, mx_inline_and2, "operator &=");
+    do_mm_inplace_op<bool, bool> (a, b, mx_inline_and2, "operator &=");
 
   return a;
 }
@@ -161,7 +161,7 @@ mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
   if (a.is_shared ())
     a = mx_el_or (a, b);
   else
-    do_mm_inplace_op<boolNDArray, boolNDArray> (a, b, mx_inline_or2, "operator |=");
+    do_mm_inplace_op<bool, bool> (a, b, mx_inline_or2, "operator |=");
 
   return a;
 }

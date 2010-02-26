@@ -114,6 +114,9 @@ public:
   DiagArray2 (const Array<T>& a) 
     : Array<T> (a.as_column ()), d1 (a.numel ()), d2 (a.numel ()) { }
 
+  DiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c) 
+    : Array<T> (a.as_column ()), d1 (r), d2 (c) { }
+
   DiagArray2 (const DiagArray2<T>& a) 
     : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
 

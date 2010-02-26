@@ -75,14 +75,14 @@ template <class T>
 boolNDArray
 intNDArray<T>::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray, T > (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, T > (*this, dim, mx_inline_all);
 }
 
 template <class T>
 boolNDArray
 intNDArray<T>::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray, T > (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, T > (*this, dim, mx_inline_any);
 }
 
 template <class T>
@@ -205,82 +205,82 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::sum (int dim) const
 {
-  return do_mx_red_op<intNDArray<T> , T > (*this, dim, mx_inline_sum);
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_sum);
 }
 
 template <class T>
 NDArray
 intNDArray<T>::dsum (int dim) const
 {
-  return do_mx_red_op<NDArray , T> (*this, dim, mx_inline_dsum);
+  return do_mx_red_op<double, T> (*this, dim, mx_inline_dsum);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cumsum (int dim) const
 {
-  return do_mx_cum_op<intNDArray<T> , T > (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<T, T> (*this, dim, mx_inline_cumsum);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::max (int dim) const
 {
-  return do_mx_minmax_op<intNDArray<T> > (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<T> (*this, dim, mx_inline_max);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_max);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::min (int dim) const
 {
-  return do_mx_minmax_op<intNDArray<T> > (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<T> (*this, dim, mx_inline_min);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<T> (*this, idx_arg, dim, mx_inline_min);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cummax (int dim) const
 {
-  return do_mx_cumminmax_op<intNDArray<T> > (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummax);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cummax (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummax);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cummin (int dim) const
 {
-  return do_mx_cumminmax_op<intNDArray<T> > (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<T> (*this, dim, mx_inline_cummin);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<intNDArray<T> > (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<T> (*this, idx_arg, dim, mx_inline_cummin);
 }
 
 template <class T>
 intNDArray<T>
 intNDArray<T>::diff (octave_idx_type order, int dim) const
 {
-  return do_mx_diff_op<intNDArray<T> > (*this, dim, order, mx_inline_diff);
+  return do_mx_diff_op<T> (*this, dim, order, mx_inline_diff);
 }

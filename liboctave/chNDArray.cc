@@ -39,13 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 boolNDArray
 charNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix, char> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, char> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 charNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix, char> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, char> (*this, dim, mx_inline_any);
 }
 
 charNDArray

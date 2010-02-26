@@ -51,29 +51,6 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
 
-template <class T>
-MDiagArray2<T>&
-operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
-{
-  if (a.is_shared ())
-    a = a + b;
-  else
-    do_mm_inplace_op<MDiagArray2<T>, MDiagArray2<T> > (a, b, mx_inline_add2, "+=");
-  return a;
-}
-
-template <class T>
-MDiagArray2<T>&
-operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
-{
-  if (a.is_shared ())
-    a = a - b;
-  else
-    do_mm_inplace_op<MDiagArray2<T>, MDiagArray2<T> > (a, b, mx_inline_sub2, "-=");
-  return a;
-}
-
-
 // Element by element MDiagArray2 by scalar ops.
 
 #define MARRAY_DAS_OP(OP, FN) \
@@ -81,7 +58,7 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   MDiagArray2<T> \
   operator OP (const MDiagArray2<T>& a, const T& s) \
   { \
-    return do_ms_binary_op<MDiagArray2<T>, MDiagArray2<T>, T> (a, s, FN); \
+    return MDiagArray2<T> (do_ms_binary_op<T, T, T> (a, s, FN), a.d1, a.d2); \
   }
 
 MARRAY_DAS_OP (*, mx_inline_mul)
@@ -93,7 +70,7 @@ template <class T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
-  return do_sm_binary_op<MDiagArray2<T>, T, MDiagArray2<T> > (s, a, mx_inline_mul);
+  return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul), a.d1, a.d2);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -103,7 +80,9 @@ operator * (const T& s, const MDiagArray2<T>& a)
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
-    return do_mm_binary_op<MDiagArray2<T>, MDiagArray2<T>, MDiagArray2<T> > (a, b, FN, #FCN); \
+    if (a.d1 != b.d1 || a.d2 != b.d2) \
+      gripe_nonconformant (#FCN, a.d1, a.d2, b.d1, b.d2); \
+    return MDiagArray2<T> (do_mm_binary_op<T, T, T> (a, b, FN, #FCN), a.d1, a.d2); \
   }
 
 MARRAY_DADA_OP (operator +, +, mx_inline_add)
@@ -123,5 +102,5 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  return do_mx_unary_op<MDiagArray2<T>, MDiagArray2<T> > (a, mx_inline_uminus); 
+  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus), a.d1, a.d2); 
 }

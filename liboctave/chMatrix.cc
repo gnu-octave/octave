@@ -205,13 +205,13 @@ charMatrix::diag (octave_idx_type k) const
 boolMatrix
 charMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix, char> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, char> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 charMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix, char> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, char> (*this, dim, mx_inline_any);
 }
 
 MS_CMP_OPS (charMatrix, char)

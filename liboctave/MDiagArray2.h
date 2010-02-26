@@ -63,6 +63,9 @@ public:
 
   explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
 
+  MDiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c) 
+    : DiagArray2<T> (a, r, c) { }
+
   ~MDiagArray2 (void) { }
 
   MDiagArray2<T>& operator = (const MDiagArray2<T>& a)
@@ -104,7 +107,7 @@ public:
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 
-  // MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2)
+  MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2, )
 
 };
 

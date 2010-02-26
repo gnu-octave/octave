@@ -500,7 +500,7 @@ ComplexNDArray::ifourierNd (void) const
 boolNDArray
 ComplexNDArray::operator ! (void) const
 {
-  return do_mx_unary_op<boolNDArray, ComplexNDArray> (*this, mx_inline_not);
+  return do_mx_unary_op<bool, Complex> (*this, mx_inline_not);
 }
 
 // FIXME -- this is not quite the right thing.
@@ -620,55 +620,55 @@ ComplexNDArray::too_large_for_float (void) const
 boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray, Complex> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray, Complex> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_any);
 }
 
 ComplexNDArray
 ComplexNDArray::cumprod (int dim) const
 {
-  return do_mx_cum_op<ComplexNDArray, Complex> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumprod);
 }
 
 ComplexNDArray
 ComplexNDArray::cumsum (int dim) const
 {
-  return do_mx_cum_op<ComplexNDArray, Complex> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumsum);
 }
 
 ComplexNDArray
 ComplexNDArray::prod (int dim) const
 {
-  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_prod);
 }
 
 ComplexNDArray
 ComplexNDArray::sum (int dim) const
 {
-  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_sum);
 }
 
 ComplexNDArray
 ComplexNDArray::xsum (int dim) const
 {
-  return do_mx_red_op<ComplexNDArray, Complex> (*this, dim, mx_inline_xsum);
+  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_xsum);
 }
 
 ComplexNDArray
 ComplexNDArray::sumsq (int dim) const
 {
-  return do_mx_red_op<NDArray, Complex> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<double, Complex> (*this, dim, mx_inline_sumsq);
 }
 
 ComplexNDArray
 ComplexNDArray::diff (octave_idx_type order, int dim) const
 {
-  return do_mx_diff_op<ComplexNDArray> (*this, dim, order, mx_inline_diff);
+  return do_mx_diff_op<Complex> (*this, dim, order, mx_inline_diff);
 }
 
 ComplexNDArray
@@ -702,79 +702,79 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 ComplexNDArray
 ComplexNDArray::max (int dim) const
 {
-  return do_mx_minmax_op<ComplexNDArray> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<Complex> (*this, dim, mx_inline_max);
 }
 
 ComplexNDArray
 ComplexNDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, mx_inline_max);
 }
 
 ComplexNDArray
 ComplexNDArray::min (int dim) const
 {
-  return do_mx_minmax_op<ComplexNDArray> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<Complex> (*this, dim, mx_inline_min);
 }
 
 ComplexNDArray
 ComplexNDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<Complex> (*this, idx_arg, dim, mx_inline_min);
 }
 
 ComplexNDArray
 ComplexNDArray::cummax (int dim) const
 {
-  return do_mx_cumminmax_op<ComplexNDArray> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<Complex> (*this, dim, mx_inline_cummax);
 }
 
 ComplexNDArray
 ComplexNDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, mx_inline_cummax);
 }
 
 ComplexNDArray
 ComplexNDArray::cummin (int dim) const
 {
-  return do_mx_cumminmax_op<ComplexNDArray> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<Complex> (*this, dim, mx_inline_cummin);
 }
 
 ComplexNDArray
 ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<ComplexNDArray> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<Complex> (*this, idx_arg, dim, mx_inline_cummin);
 }
 
 NDArray
 ComplexNDArray::abs (void) const
 {
-  return do_mx_unary_map<NDArray, ComplexNDArray, std::abs> (*this);
+  return do_mx_unary_map<double, Complex, std::abs> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isnan (void) const
 {
-  return do_mx_unary_map<boolNDArray, ComplexNDArray, xisnan> (*this);
+  return do_mx_unary_map<bool, Complex, xisnan> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isinf (void) const
 {
-  return do_mx_unary_map<boolNDArray, ComplexNDArray, xisinf> (*this);
+  return do_mx_unary_map<bool, Complex, xisinf> (*this);
 }
 
 boolNDArray
 ComplexNDArray::isfinite (void) const
 {
-  return do_mx_unary_map<boolNDArray, ComplexNDArray, xfinite> (*this);
+  return do_mx_unary_map<bool, Complex, xfinite> (*this);
 }
 
 ComplexNDArray
 conj (const ComplexNDArray& a)
 {
-  return do_mx_unary_map<ComplexNDArray, ComplexNDArray, std::conj> (a);
+  return do_mx_unary_map<Complex, Complex, std::conj> (a);
 }
 
 ComplexNDArray&
@@ -930,7 +930,7 @@ ComplexNDArray& operator *= (ComplexNDArray& a, double s)
   if (a.is_shared ())
     a = a * s;
   else
-    do_ms_inplace_op<ComplexNDArray, double> (a, s, mx_inline_mul2);
+    do_ms_inplace_op<Complex, double> (a, s, mx_inline_mul2);
   return a;
 }
 
@@ -939,7 +939,7 @@ ComplexNDArray& operator /= (ComplexNDArray& a, double s)
   if (a.is_shared ())
     return a = a / s;
   else
-    do_ms_inplace_op<ComplexNDArray, double> (a, s, mx_inline_div2);
+    do_ms_inplace_op<Complex, double> (a, s, mx_inline_div2);
   return a;
 }
 

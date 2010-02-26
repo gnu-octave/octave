@@ -2608,7 +2608,7 @@ FloatMatrix::operator -= (const FloatDiagMatrix& a)
 boolMatrix
 FloatMatrix::operator ! (void) const
 {
-  return do_mx_unary_op<boolMatrix, FloatMatrix> (*this, mx_inline_not);
+  return do_mx_unary_op<bool, float> (*this, mx_inline_not);
 }
 
 // column vector by row vector -> matrix operations
@@ -2779,43 +2779,43 @@ FloatMatrix::too_large_for_float (void) const
 boolMatrix
 FloatMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix, float> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, float> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FloatMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix, float> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, float> (*this, dim, mx_inline_any);
 }
 
 FloatMatrix
 FloatMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<FloatMatrix, float> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumprod);
 }
 
 FloatMatrix
 FloatMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<FloatMatrix, float> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumsum);
 }
 
 FloatMatrix
 FloatMatrix::prod (int dim) const
 {
-  return do_mx_red_op<FloatMatrix, float> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<float, float> (*this, dim, mx_inline_prod);
 }
 
 FloatMatrix
 FloatMatrix::sum (int dim) const
 {
-  return do_mx_red_op<FloatMatrix, float> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<float, float> (*this, dim, mx_inline_sum);
 }
 
 FloatMatrix
 FloatMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<FloatMatrix, float> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<float, float> (*this, dim, mx_inline_sumsq);
 }
 
 FloatMatrix

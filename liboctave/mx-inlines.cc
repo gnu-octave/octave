@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "oct-locbuf.h"
 #include "oct-inttypes.h"
-#include "Array-util.h"
+#include "Array.h"
 #include "Array-util.h"
 
 // Provides some commonly repeated, basic loop templates.
@@ -298,93 +298,86 @@ inline void mx_inline_map (size_t n, R *r, const X *x)
 // Appliers. Since these call the operation just once, we pass it as
 // a pointer, to allow the compiler reduce number of instances.
 
-#define AELEMT(ARRAY) typename ARRAY::element_type
-template <class RNDA, class XNDA>
-inline RNDA 
-do_mx_unary_op (const XNDA& x,
-                void (*op) (size_t, AELEMT(RNDA) *,
-                            const AELEMT(XNDA) *))
+template <class R, class X>
+inline Array<R> 
+do_mx_unary_op (const Array<X>& x,
+                void (*op) (size_t, R *, const X *))
 {
-  RNDA r (x.dims ());
-  op (r.length (), r.fortran_vec (), x.data ());
+  Array<R> r (x.dims ());
+  op (r.numel (), r.fortran_vec (), x.data ());
   return r;
 }
 
 // Shortcuts for applying mx_inline_map.
 
-template <class RNDA, class XNDA, AELEMT(RNDA) fun (AELEMT(XNDA))>
-inline RNDA 
-do_mx_unary_map (const XNDA& x)
+template <class R, class X, R fun (X)>
+inline Array<R> 
+do_mx_unary_map (const Array<X>& x)
 {
-  return do_mx_unary_op<RNDA, XNDA> (x, mx_inline_map<AELEMT(RNDA), AELEMT(XNDA), fun>);
+  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
 }
 
-template <class RNDA, class XNDA, AELEMT(RNDA) fun (const AELEMT(XNDA)&)>
-inline RNDA 
-do_mx_unary_map (const XNDA& x)
+template <class R, class X, R fun (const X&)>
+inline Array<R> 
+do_mx_unary_map (const Array<X>& x)
 {
-  return do_mx_unary_op<RNDA, XNDA> (x, mx_inline_map<AELEMT(RNDA), AELEMT(XNDA), fun>);
+  return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
 }
 
-template <class RNDA>
-inline RNDA&
-do_mx_inplace_op (RNDA& r,
-                  void (*op) (size_t, AELEMT(RNDA) *))
+template <class R>
+inline Array<R>&
+do_mx_inplace_op (Array<R>& r,
+                  void (*op) (size_t, R *))
 {
   op (r.numel (), r.fortran_vec ());
   return r;
 }
 
 
-template <class RNDA, class XNDA, class YNDA>
-inline RNDA 
-do_mm_binary_op (const XNDA& x, const YNDA& y,
-                 void (*op) (size_t, AELEMT(RNDA) *,
-                             const AELEMT(XNDA) *,
-                             const AELEMT(YNDA) *),
+template <class R, class X, class Y>
+inline Array<R> 
+do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
+                 void (*op) (size_t, R *, const X *, const Y *),
                  const char *opname)
 {
   dim_vector dx = x.dims (), dy = y.dims ();
   if (dx == dy)
     {
-      RNDA r (dx);
+      Array<R> r (dx);
       op (r.length (), r.fortran_vec (), x.data (), y.data ());
       return r;
     }
   else
     {
       gripe_nonconformant (opname, dx, dy);
-      return RNDA ();
+      return Array<R> ();
     }
 }
 
-template <class RNDA, class XNDA, class YS>
-inline RNDA 
-do_ms_binary_op (const XNDA& x, const YS& y,
-                 void (*op) (size_t, AELEMT(RNDA) *,
-                             const AELEMT(XNDA) *, YS))
+template <class R, class X, class Y>
+inline Array<R> 
+do_ms_binary_op (const Array<X>& x, const Y& y,
+                 void (*op) (size_t, R *, const X *, Y))
 {
-  RNDA r (x.dims ());
+  Array<R> r (x.dims ());
   op (r.length (), r.fortran_vec (), x.data (), y);
   return r;
 }
 
-template <class RNDA, class XS, class YNDA>
-inline RNDA 
-do_sm_binary_op (const XS& x, const YNDA& y,
-                 void (*op) (size_t, AELEMT(RNDA) *, XS,
-                             const AELEMT(YNDA) *))
+template <class R, class X, class Y>
+inline Array<R> 
+do_sm_binary_op (const X& x, const Array<Y>& y,
+                 void (*op) (size_t, R *, X, const Y *))
 {
-  RNDA r (y.dims ());
+  Array<R> r (y.dims ());
   op (r.length (), r.fortran_vec (), x, y.data ());
   return r;
 }
 
-template <class RNDA, class XNDA>
-inline RNDA& 
-do_mm_inplace_op (RNDA& r, const XNDA& x,
-                  void (*op) (size_t, AELEMT(RNDA) *,
-                              const AELEMT(XNDA) *),
+template <class R, class X>
+inline Array<R>& 
+do_mm_inplace_op (Array<R>& r, const Array<X>& x,
+                  void (*op) (size_t, R *, const X *),
                   const char *opname)
 {
   dim_vector dr = r.dims (), dx = x.dims ();
@@ -395,10 +388,10 @@ do_mm_inplace_op (RNDA& r, const XNDA& x,
   return r;
 }
 
-template <class RNDA, class XS>
-inline RNDA& 
-do_ms_inplace_op (RNDA& r, const XS& x,
-                  void (*op) (size_t, AELEMT(RNDA) *, XS))
+template <class R, class X>
+inline Array<R>& 
+do_ms_inplace_op (Array<R>& r, const X& x,
+                  void (*op) (size_t, R *, X))
 {
   op (r.length (), r.fortran_vec (), x);
   return r;
@@ -1182,11 +1175,11 @@ get_extent_triplet (const dim_vector& dims, int& dim,
 // FIXME: is this the best design? C++ gives a lot of options here...
 // maybe it can be done without an explicit parameter?
 
-template <class ArrayType, class T>
-inline ArrayType
+template <class R, class T>
+inline Array<R>
 do_mx_red_op (const Array<T>& src, int dim,
-              void (*mx_red_op) (const T *, AELEMT(ArrayType) *,
-                                 octave_idx_type, octave_idx_type, octave_idx_type))
+              void (*mx_red_op) (const T *, R *, octave_idx_type, 
+                                 octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
@@ -1200,34 +1193,34 @@ do_mx_red_op (const Array<T>& src, int dim,
   if (dim < dims.length ()) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   mx_red_op (src.data (), ret.fortran_vec (), l, n, u);
 
   return ret;
 }
 
-template <class ArrayType, class T>
-inline ArrayType
+template <class R, class T>
+inline Array<R>
 do_mx_cum_op (const Array<T>& src, int dim,
-              void (*mx_cum_op) (const T *, AELEMT(ArrayType) *,
-                                 octave_idx_type, octave_idx_type, octave_idx_type))
+              void (*mx_cum_op) (const T *, R *, octave_idx_type, 
+                                 octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
   // Cumulative operation doesn't reduce the array size.
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   mx_cum_op (src.data (), ret.fortran_vec (), l, n, u);
 
   return ret;
 }
 
-template <class ArrayType>
-inline ArrayType
-do_mx_minmax_op (const ArrayType& src, int dim,
-                 void (*mx_minmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
-                                       octave_idx_type, octave_idx_type, octave_idx_type))
+template <class R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, int dim,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type, 
+                                       octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
@@ -1237,17 +1230,16 @@ do_mx_minmax_op (const ArrayType& src, int dim,
   if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   mx_minmax_op (src.data (), ret.fortran_vec (), l, n, u);
 
   return ret;
 }
 
-template <class ArrayType>
-inline ArrayType
-do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
-                 void (*mx_minmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
-                                       octave_idx_type *,
+template <class R>
+inline Array<R>
+do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type *,
                                        octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1258,7 +1250,7 @@ do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
   if (dim < dims.length () && dims(dim) != 0) dims(dim) = 1;
   dims.chop_trailing_singletons ();
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
   mx_minmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
@@ -1267,34 +1259,33 @@ do_mx_minmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
   return ret;
 }
 
-template <class ArrayType>
-inline ArrayType
-do_mx_cumminmax_op (const ArrayType& src, int dim,
-                    void (*mx_cumminmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
-                                             octave_idx_type, octave_idx_type, octave_idx_type))
+template <class R>
+inline Array<R>
+do_mx_cumminmax_op (const Array<R>& src, int dim,
+                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type, 
+                                             octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   mx_cumminmax_op (src.data (), ret.fortran_vec (), l, n, u);
 
   return ret;
 }
 
-template <class ArrayType>
-inline ArrayType
-do_mx_cumminmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
-                    void (*mx_cumminmax_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
-                                             octave_idx_type *,
+template <class R>
+inline Array<R>
+do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
+                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type *,
                                              octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
   mx_cumminmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
@@ -1303,10 +1294,10 @@ do_mx_cumminmax_op (const ArrayType& src, Array<octave_idx_type>& idx, int dim,
   return ret;
 }
 
-template <class ArrayType>
-inline ArrayType
-do_mx_diff_op (const ArrayType& src, int dim, octave_idx_type order,
-               void (*mx_diff_op) (const AELEMT(ArrayType) *, AELEMT(ArrayType) *,
+template <class R>
+inline Array<R>
+do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
+               void (*mx_diff_op) (const R *, R *,
                                    octave_idx_type, octave_idx_type, octave_idx_type,
                                    octave_idx_type))
 {
@@ -1323,14 +1314,14 @@ do_mx_diff_op (const ArrayType& src, int dim, octave_idx_type order,
   if (dims(dim) <= order)
     {
       dims (dim) = 0;
-      return ArrayType (dims);
+      return Array<R> (dims);
     }
   else
     {
       dims(dim) -= order;
     }
 
-  ArrayType ret (dims);
+  Array<R> ret (dims);
   mx_diff_op (src.data (), ret.fortran_vec (), l, n, u, order);
 
   return ret;

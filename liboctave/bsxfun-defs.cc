@@ -33,18 +33,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-inlines.cc"
 
-template <class RNDA, class XNDA, class YNDA>
-RNDA
-do_bsxfun_op (const XNDA& x, const YNDA& y,
-              void (*op_vv) (size_t, typename RNDA::element_type *,
-                             const typename XNDA::element_type *,
-                             const typename YNDA::element_type *),
-              void (*op_sv) (size_t, typename RNDA::element_type *,
-                             typename XNDA::element_type,
-                             const typename YNDA::element_type *),
-              void (*op_vs) (size_t, typename RNDA::element_type *,
-                             const typename XNDA::element_type *,
-                             typename YNDA::element_type))
+template <class R, class X, class Y>
+Array<R>
+do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
+              void (*op_vv) (size_t, R *, const X *, const Y *),
+              void (*op_sv) (size_t, R *, X, const Y *),
+              void (*op_vs) (size_t, R *, const X *, Y))
 {
   int nd = std::max (x.ndims (), y.ndims ());
   dim_vector dvx = x.dims ().redim (nd), dvy = y.dims ().redim (nd);
@@ -68,11 +62,11 @@ do_bsxfun_op (const XNDA& x, const YNDA& y,
         }
     }
 
-  RNDA retval (dvr);
+  Array<R> retval (dvr);
 
-  const typename XNDA::element_type *xvec = x.fortran_vec ();
-  const typename YNDA::element_type *yvec = y.fortran_vec ();
-  typename RNDA::element_type *rvec = retval.fortran_vec ();
+  const X *xvec = x.fortran_vec ();
+  const Y *yvec = y.fortran_vec ();
+  R *rvec = retval.fortran_vec ();
 
   // Fold the common leading dimensions.
   int start;
@@ -151,15 +145,18 @@ boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
 
 #define BSXFUN_OP_DEF_MXLOOP(OP, ARRAY, LOOP) \
   BSXFUN_OP_DEF(OP, ARRAY) \
-  { return do_bsxfun_op<ARRAY, ARRAY, ARRAY> (x, y, LOOP, LOOP, LOOP); }
+  { return do_bsxfun_op<ARRAY::element_type, ARRAY::element_type, ARRAY::element_type> \
+    (x, y, LOOP, LOOP, LOOP); }
 
 #define BSXFUN_OP2_DEF_MXLOOP(OP, ARRAY, ARRAY1, ARRAY2, LOOP) \
   BSXFUN_OP2_DEF(OP, ARRAY, ARRAY1, ARRAY2) \
-  { return do_bsxfun_op<ARRAY, ARRAY1, ARRAY2> (x, y, LOOP, LOOP, LOOP); }
+  { return do_bsxfun_op<ARRAY::element_type, ARRAY1::element_type, ARRAY2::element_type> \
+    (x, y, LOOP, LOOP, LOOP); }
 
 #define BSXFUN_REL_DEF_MXLOOP(OP, ARRAY, LOOP) \
   BSXFUN_REL_DEF(OP, ARRAY) \
-  { return do_bsxfun_op<boolNDArray, ARRAY, ARRAY> (x, y, LOOP, LOOP, LOOP); }
+  { return do_bsxfun_op<bool, ARRAY::element_type, ARRAY::element_type> \
+    (x, y, LOOP, LOOP, LOOP); }
 
 #define BSXFUN_STDOP_DEFS_MXLOOP(ARRAY) \
   BSXFUN_OP_DEF_MXLOOP (add, ARRAY, mx_inline_add) \

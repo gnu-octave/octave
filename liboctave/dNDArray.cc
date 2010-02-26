@@ -541,7 +541,7 @@ NDArray::ifourierNd (void) const
 boolNDArray
 NDArray::operator ! (void) const
 {
-  return do_mx_unary_op<boolNDArray, NDArray> (*this, mx_inline_not);
+  return do_mx_unary_op<bool, double> (*this, mx_inline_not);
 }
 
 bool
@@ -706,103 +706,103 @@ NDArray::too_large_for_float (void) const
 boolNDArray
 NDArray::all (int dim) const
 {
-  return do_mx_red_op<boolNDArray, double> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, double> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 NDArray::any (int dim) const
 {
-  return do_mx_red_op<boolNDArray, double> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, double> (*this, dim, mx_inline_any);
 }
 
 NDArray
 NDArray::cumprod (int dim) const
 {
-  return do_mx_cum_op<NDArray, double> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumprod);
 }
 
 NDArray
 NDArray::cumsum (int dim) const
 {
-  return do_mx_cum_op<NDArray, double> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumsum);
 }
 
 NDArray
 NDArray::prod (int dim) const
 {
-  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<double, double> (*this, dim, mx_inline_prod);
 }
 
 NDArray
 NDArray::sum (int dim) const
 {
-  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<double, double> (*this, dim, mx_inline_sum);
 }
 
 NDArray
 NDArray::xsum (int dim) const
 {
-  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_xsum);
+  return do_mx_red_op<double, double> (*this, dim, mx_inline_xsum);
 }
 
 NDArray
 NDArray::sumsq (int dim) const
 {
-  return do_mx_red_op<NDArray, double> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<double, double> (*this, dim, mx_inline_sumsq);
 }
 
 NDArray
 NDArray::max (int dim) const
 {
-  return do_mx_minmax_op<NDArray> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<double> (*this, dim, mx_inline_max);
 }
 
 NDArray
 NDArray::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<NDArray> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<double> (*this, idx_arg, dim, mx_inline_max);
 }
 
 NDArray
 NDArray::min (int dim) const
 {
-  return do_mx_minmax_op<NDArray> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<double> (*this, dim, mx_inline_min);
 }
 
 NDArray
 NDArray::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_minmax_op<NDArray> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<double> (*this, idx_arg, dim, mx_inline_min);
 }
 
 NDArray
 NDArray::cummax (int dim) const
 {
-  return do_mx_cumminmax_op<NDArray> (*this, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<double> (*this, dim, mx_inline_cummax);
 }
 
 NDArray
 NDArray::cummax (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<NDArray> (*this, idx_arg, dim, mx_inline_cummax);
+  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, mx_inline_cummax);
 }
 
 NDArray
 NDArray::cummin (int dim) const
 {
-  return do_mx_cumminmax_op<NDArray> (*this, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<double> (*this, dim, mx_inline_cummin);
 }
 
 NDArray
 NDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 {
-  return do_mx_cumminmax_op<NDArray> (*this, idx_arg, dim, mx_inline_cummin);
+  return do_mx_cumminmax_op<double> (*this, idx_arg, dim, mx_inline_cummin);
 }
 
 NDArray
 NDArray::diff (octave_idx_type order, int dim) const
 {
-  return do_mx_diff_op<NDArray> (*this, dim, order, mx_inline_diff);
+  return do_mx_diff_op<double> (*this, dim, order, mx_inline_diff);
 }
 
 NDArray
@@ -861,13 +861,13 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
 NDArray
 real (const ComplexNDArray& a)
 {
-  return do_mx_unary_op<NDArray, ComplexNDArray> (a, mx_inline_real);
+  return do_mx_unary_op<double, Complex> (a, mx_inline_real);
 }
 
 NDArray
 imag (const ComplexNDArray& a)
 {
-  return do_mx_unary_op<NDArray, ComplexNDArray> (a, mx_inline_imag);
+  return do_mx_unary_op<double, Complex> (a, mx_inline_imag);
 }
 
 NDArray&
@@ -887,25 +887,25 @@ NDArray::insert (const NDArray& a, const Array<octave_idx_type>& ra_idx)
 NDArray
 NDArray::abs (void) const
 {
-  return do_mx_unary_map<NDArray, NDArray, std::abs> (*this);
+  return do_mx_unary_map<double, double, std::abs> (*this);
 }
 
 boolNDArray
 NDArray::isnan (void) const
 {
-  return do_mx_unary_map<boolNDArray, NDArray, xisnan> (*this);
+  return do_mx_unary_map<bool, double, xisnan> (*this);
 }
 
 boolNDArray
 NDArray::isinf (void) const
 {
-  return do_mx_unary_map<boolNDArray, NDArray, xisinf> (*this);
+  return do_mx_unary_map<bool, double, xisinf> (*this);
 }
 
 boolNDArray
 NDArray::isfinite (void) const
 {
-  return do_mx_unary_map<boolNDArray, NDArray, xfinite> (*this);
+  return do_mx_unary_map<bool, double, xfinite> (*this);
 }
 
 Matrix

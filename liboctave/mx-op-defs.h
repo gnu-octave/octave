@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const V& v, const S& s) \
   { \
-    return do_ms_binary_op<R, V, S> (v, s, OP); \
+    return do_ms_binary_op<R::element_type, V::element_type, S> (v, s, OP); \
   }
 
 #define VS_BIN_OPS(R, V, S) \
@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const S& s, const V& v) \
   { \
-    return do_sm_binary_op<R, S, V> (s, v, OP); \
+    return do_sm_binary_op<R::element_type, S, V::element_type> (s, v, OP); \
   }
 
 #define SV_BIN_OPS(R, S, V) \
@@ -65,7 +65,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   F (const V1& v1, const V2& v2) \
   { \
-    return do_mm_binary_op<R, V1, V2> (v1, v2, OP, #F); \
+    return do_mm_binary_op<R::element_type, V1::element_type, V2::element_type> (v1, v2, OP, #F); \
   }
 
 #define VV_BIN_OPS(R, V1, V2) \
@@ -80,7 +80,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const M& m, const S& s) \
   { \
-    return do_ms_binary_op<R, M, S> (m, s, F); \
+    return do_ms_binary_op<R::element_type, M::element_type, S> (m, s, F); \
   }
 
 #define MS_BIN_OPS(R, M, S) \
@@ -93,7 +93,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    return do_ms_binary_op<boolMatrix, M, S> (m, s, OP); \
+    return do_ms_binary_op<bool, M::element_type, S> (m, s, OP); \
   }
 
 #define MS_CMP_OPS(M, S) \
@@ -108,7 +108,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    return do_ms_binary_op<boolMatrix, M, S> (m, s, OP); \
+    return do_ms_binary_op<bool, M::element_type, S> (m, s, OP); \
   }
 
 #define MS_BOOL_OPS(M, S) \
@@ -121,7 +121,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const S& s, const M& m) \
   { \
-    return do_sm_binary_op<R, S, M> (s, m, F); \
+    return do_sm_binary_op<R::element_type, S, M::element_type> (s, m, F); \
   }
 
 #define SM_BIN_OPS(R, S, M) \
@@ -134,7 +134,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const S& s, const M& m) \
   { \
-    return do_sm_binary_op<boolMatrix, S, M> (s, m, OP); \
+    return do_sm_binary_op<bool, S, M::element_type> (s, m, OP); \
   }
 
 #define SM_CMP_OPS(S, M) \
@@ -149,7 +149,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const S& s, const M& m) \
   { \
-    return do_sm_binary_op<boolMatrix, S, M> (s, m, OP); \
+    return do_sm_binary_op<bool, S, M::element_type> (s, m, OP); \
   }
 
 #define SM_BOOL_OPS(S, M) \
@@ -162,7 +162,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const M1& m1, const M2& m2) \
   { \
-    return do_mm_binary_op<R, M1, M2> (m1, m2, F, #OP); \
+    return do_mm_binary_op<R::element_type, M1::element_type, M2::element_type> (m1, m2, F, #OP); \
   }
 
 #define MM_BIN_OPS(R, M1, M2) \
@@ -175,7 +175,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    return do_mm_binary_op<boolMatrix, M1, M2> (m1, m2, OP, #F); \
+    return do_mm_binary_op<bool, M1::element_type, M2::element_type> (m1, m2, OP, #F); \
   }
 
 #define MM_CMP_OPS(M1, M2) \
@@ -190,7 +190,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    return do_mm_binary_op<boolMatrix, M1, M2> (m1, m2, OP, #F); \
+    return do_mm_binary_op<bool, M1::element_type, M2::element_type> (m1, m2, OP, #F); \
   }
 
 #define MM_BOOL_OPS(M1, M2) \
@@ -203,7 +203,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const ND& m, const S& s) \
   { \
-    return do_ms_binary_op<R, ND, S> (m, s, F); \
+    return do_ms_binary_op<R::element_type, ND::element_type, S> (m, s, F); \
   }
 
 #define NDS_BIN_OPS(R, ND, S) \
@@ -216,7 +216,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    return do_ms_binary_op<boolNDArray, ND, S> (m, s, OP); \
+    return do_ms_binary_op<bool, ND::element_type, S> (m, s, OP); \
   }
 
 #define NDS_CMP_OPS(ND, S) \
@@ -231,7 +231,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    return do_ms_binary_op<boolNDArray, ND, S> (m, s, OP); \
+    return do_ms_binary_op<bool, ND::element_type, S> (m, s, OP); \
   }
 
 #define NDS_BOOL_OPS(ND, S) \
@@ -248,7 +248,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const S& s, const ND& m) \
   { \
-    return do_sm_binary_op<R, S, ND> (s, m, F); \
+    return do_sm_binary_op<R::element_type, S, ND::element_type> (s, m, F); \
   }
 
 #define SND_BIN_OPS(R, S, ND) \
@@ -261,7 +261,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    return do_sm_binary_op<boolNDArray, S, ND> (s, m, OP); \
+    return do_sm_binary_op<bool, S, ND::element_type> (s, m, OP); \
   }
 
 #define SND_CMP_OPS(S, ND) \
@@ -276,7 +276,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const S& s, const ND& m) \
   { \
-    return do_sm_binary_op<boolNDArray, S, ND> (s, m, OP); \
+    return do_sm_binary_op<bool, S, ND::element_type> (s, m, OP); \
   }
 
 #define SND_BOOL_OPS(S, ND) \
@@ -293,7 +293,7 @@ along with Octave; see the file COPYING.  If not, see
   R \
   OP (const ND1& m1, const ND2& m2) \
   { \
-    return do_mm_binary_op<R, ND1, ND2> (m1, m2, F, #OP); \
+    return do_mm_binary_op<R::element_type, ND1::element_type, ND2::element_type> (m1, m2, F, #OP); \
   }
 
 #define NDND_BIN_OPS(R, ND1, ND2) \
@@ -306,7 +306,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    return do_mm_binary_op<boolNDArray, ND1, ND2> (m1, m2, OP, #F); \
+    return do_mm_binary_op<bool, ND1::element_type, ND2::element_type> (m1, m2, OP, #F); \
   }
 
 #define NDND_CMP_OPS(ND1, ND2) \
@@ -321,7 +321,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    return do_mm_binary_op<boolNDArray, ND1, ND2> (m1, m2, OP, #F); \
+    return do_mm_binary_op<bool, ND1::element_type, ND2::element_type> (m1, m2, OP, #F); \
   }
 
 #define NDND_BOOL_OPS(ND1, ND2) \
@@ -550,21 +550,21 @@ operator * (const DM& dm, const M& m) \
 T \
 FCN (S d, const T& m) \
 { \
-  return do_sm_binary_op<T, S, T> (d, m, mx_inline_x##FCN); \
+  return do_sm_binary_op<T::element_type, S, T::element_type> (d, m, mx_inline_x##FCN); \
 }
 
 #define NDS_MINMAX_FCN(FCN, OP, T, S) \
 T \
 FCN (const T& m, S d) \
 { \
-  return do_ms_binary_op<T, T, S> (m, d, mx_inline_x##FCN); \
+  return do_ms_binary_op<T::element_type, T::element_type, S> (m, d, mx_inline_x##FCN); \
 }
 
 #define NDND_MINMAX_FCN(FCN, OP, T, S) \
 T \
 FCN (const T& a, const T& b) \
 { \
-  return do_mm_binary_op<T, T, T> (a, b, mx_inline_x##FCN, #FCN); \
+  return do_mm_binary_op<T::element_type, T::element_type, T::element_type> (a, b, mx_inline_x##FCN, #FCN); \
 }
 
 #define MINMAX_FCNS(T, S) \

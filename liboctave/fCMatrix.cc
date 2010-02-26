@@ -3062,7 +3062,7 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
 boolMatrix
 FloatComplexMatrix::operator ! (void) const
 {
-  return do_mx_unary_op<boolMatrix, FloatComplexMatrix> (*this, mx_inline_not);
+  return do_mx_unary_op<bool, FloatComplex> (*this, mx_inline_not);
 }
 
 // other operations
@@ -3195,43 +3195,43 @@ FloatComplexMatrix::too_large_for_float (void) const
 boolMatrix
 FloatComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix, FloatComplex> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, FloatComplex> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FloatComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix, FloatComplex> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, FloatComplex> (*this, dim, mx_inline_any);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<FloatComplexMatrix, FloatComplex> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_cumprod);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<FloatComplexMatrix, FloatComplex> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_cumsum);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<FloatComplexMatrix, FloatComplex> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_prod);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<FloatComplexMatrix, FloatComplex> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_sum);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<FloatMatrix, FloatComplex> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<float, FloatComplex> (*this, dim, mx_inline_sumsq);
 }
 
 FloatMatrix FloatComplexMatrix::abs (void) const

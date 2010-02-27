@@ -1,3 +1,8 @@
+2010-02-27  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::diag): Handle case of diag (szv) when szv
+	is a sparse vector with nnz = 0.
+
 2010-02-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-util.cc (gripe_index_out_of_range): New function.

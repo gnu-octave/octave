@@ -2344,43 +2344,59 @@ Sparse<T>::diag (octave_idx_type k) const
         {
           octave_idx_type n = nnc + std::abs (k);
           octave_idx_type nz = nzmax ();
+
           d = Sparse<T> (n, n, nz);
-          for (octave_idx_type i = 0; i < coff+1; i++)
-            d.xcidx (i) = 0;
-          for (octave_idx_type j = 0; j < nnc; j++)
+
+          if (nnz () > 0)
             {
-              for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+              for (octave_idx_type i = 0; i < coff+1; i++)
+                d.xcidx (i) = 0;
+
+              for (octave_idx_type j = 0; j < nnc; j++)
                 {
-                  d.xdata (i) = data (i);
-                  d.xridx (i) = j + roff;
+                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                    {
+                      d.xdata (i) = data (i);
+                      d.xridx (i) = j + roff;
+                    }
+                  d.xcidx (j + coff + 1) = cidx(j+1);
                 }
-              d.xcidx (j + coff + 1) = cidx(j+1);
+
+              for (octave_idx_type i = nnc + coff + 1; i < n + 1; i++)
+                d.xcidx (i) = nz;
             }
-          for (octave_idx_type i = nnc + coff + 1; i < n + 1; i++)
-            d.xcidx (i) = nz;
         } 
       else 
         {
           octave_idx_type n = nnr + std::abs (k);
           octave_idx_type nz = nzmax ();
-          octave_idx_type ii = 0;
-          octave_idx_type ir = ridx(0);
+
           d = Sparse<T> (n, n, nz);
-          for (octave_idx_type i = 0; i < coff+1; i++)
-            d.xcidx (i) = 0;
-          for (octave_idx_type i = 0; i < nnr; i++)
+
+          if (nnz () > 0)
             {
-              if (ir == i)
+              octave_idx_type ii = 0;
+              octave_idx_type ir = ridx(0);
+
+              for (octave_idx_type i = 0; i < coff+1; i++)
+                d.xcidx (i) = 0;
+
+              for (octave_idx_type i = 0; i < nnr; i++)
                 {
-                  d.xdata (ii) = data (ii);
-                  d.xridx (ii++) = ir + roff;
-                  if (ii != nz)
-                    ir = ridx (ii);
+                  if (ir == i)
+                    {
+                      d.xdata (ii) = data (ii);
+                      d.xridx (ii++) = ir + roff;
+
+                      if (ii != nz)
+                        ir = ridx (ii);
+                    }
+                  d.xcidx (i + coff + 1) = ii;
                 }
-              d.xcidx (i + coff + 1) = ii;
+
+              for (octave_idx_type i = nnr + coff + 1; i < n+1; i++)
+                d.xcidx (i) = nz;
             }
-          for (octave_idx_type i = nnr + coff + 1; i < n+1; i++)
-            d.xcidx (i) = nz;
         }
     }
 

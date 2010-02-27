@@ -85,8 +85,10 @@ template <class T>
 T
 DiagArray2<T>::checkelem (octave_idx_type r, octave_idx_type c) const
 {
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-    (*current_liboctave_error_handler) ("range error in DiagArray2");
+  if (r < 0 || r >= dim1 ())
+    gripe_index_out_of_range (2, 1, r+1, dim1 ());
+  if (c < 0 || c >= dim2 ())
+    gripe_index_out_of_range (2, 2, c+1, dim2 ());
 
   return elem (r, c);
 }

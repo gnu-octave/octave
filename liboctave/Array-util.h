@@ -99,7 +99,13 @@ extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_
                                  int op2_nr, int op2_nc);
 
 
-extern void OCTAVE_API gripe_nonconformant (const char *op, dim_vector& op1_dims,
-                                 dim_vector& op2_dims);
+extern void OCTAVE_API gripe_nonconformant (const char *op, const dim_vector& op1_dims,
+                                            const dim_vector& op2_dims);
+
+extern void OCTAVE_API gripe_index_out_of_range (int nd, int dim, 
+                                                 octave_idx_type iext, octave_idx_type ext);
+
+extern void OCTAVE_API gripe_del_index_out_of_range (bool is1d, octave_idx_type iext, 
+                                                     octave_idx_type ext);
 
 #endif

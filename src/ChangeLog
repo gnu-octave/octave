@@ -1,3 +1,8 @@
+2010-02-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-mat.cc (do_index_op): Use checkelem for scalar indices.
+	Simplify.
+
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* src/xpow.cc: Update.

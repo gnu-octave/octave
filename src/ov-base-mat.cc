@@ -136,6 +136,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   octave_idx_type n_idx = idx.length ();
 
   int nd = matrix.ndims ();
+  const MT& cmatrix = matrix;
 
   switch (n_idx)
     {
@@ -150,8 +151,8 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
         if (! error_state)
           {
             // optimize single scalar index.
-            if (i.is_scalar () && i(0) < matrix.numel ())
-              retval = const_cast<const MT&> (matrix)(i(0));
+            if (! resize_ok && i.is_scalar ())
+              retval = cmatrix.checkelem (i(0));
             else
               retval = MT (matrix.index (i, resize_ok));
           }
@@ -169,9 +170,8 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
             if (! error_state)
               {
                 // optimize two scalar indices.
-                if (i.is_scalar () && j.is_scalar () && nd == 2
-                    && i(0) < matrix.rows () && j(0) < matrix.columns ())
-                  retval = const_cast<const MT&> (matrix)(i(0), j(0));
+                if (! resize_ok && i.is_scalar () && j.is_scalar ())
+                  retval = cmatrix.checkelem (i(0), j(0));
                 else
                   retval = MT (matrix.index (i, j, resize_ok));
               }
@@ -182,7 +182,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
     default:
       {
         Array<idx_vector> idx_vec (n_idx, 1);
-        bool scalar_opt = n_idx == nd;
+        bool scalar_opt = n_idx == nd && ! resize_ok;
         const dim_vector dv = matrix.dims ();
 
         for (octave_idx_type i = 0; i < n_idx; i++)
@@ -192,24 +192,13 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
             if (error_state)
               break;
 
-            scalar_opt = (scalar_opt && idx_vec(i).is_scalar ()
-                          && idx_vec(i)(0) < dv(0));
+            scalar_opt = (scalar_opt && idx_vec(i).is_scalar ());
           }
 
         if (! error_state)
           {
             if (scalar_opt)
-              {
-                // optimize all scalar indices. Don't construct an index array,
-                // but rather calc a scalar index directly.
-                octave_idx_type k = 1, j = 0;
-                for (octave_idx_type i = 0; i < n_idx; i++)
-                  {
-                    j += idx_vec(i)(0) * k;
-                    k *= dv (i);
-                  }
-                retval = const_cast<const MT&> (matrix)(j);
-              }
+              retval = cmatrix.checkelem (conv_to_int_array (idx_vec));
             else
               retval = MT (matrix.index (idx_vec, resize_ok));
           }

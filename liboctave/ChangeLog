@@ -1,3 +1,12 @@
+2010-02-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (gripe_index_out_of_range): New function.
+	* Array.cc (Array<T>::range_error): Remove.
+	(Array<T>::checkelem): Rewrite.
+	(Array<T>::index, Array<T>::delete_elements): Simplify.
+	* DiagArray2.cc (DiagArray2::checkelem): Use gripe_index_out_of_range.
+	* Range.cc (Range::checkelem, Range::index): Ditto.
+
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (OP_DUP_FCN): Remove.

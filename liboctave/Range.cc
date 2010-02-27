@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "lo-math.h"
 #include "lo-utils.h"
+#include "Array-util.h"
 
 Range::Range (double b, double i, octave_idx_type n)
   : rng_base (b), rng_limit (b + n * i), rng_inc (i), 
@@ -85,7 +86,7 @@ double
 Range::checkelem (octave_idx_type i) const
 {
   if (i < 0 || i >= rng_nelem)
-    (*current_liboctave_error_handler) ("Range::elem (%d): range error", i);
+    gripe_index_out_of_range (1, 1, i+1, rng_nelem);
 
   return rng_base + rng_inc * i;
 }
@@ -110,13 +111,11 @@ Range::index (const idx_vector& i) const
     {
       retval = matrix_value ().reshape (dim_vector (rng_nelem, 1));
     }
-  else if (i.extent (n) != n)
-    {
-      (*current_liboctave_error_handler)
-        ("A(I): Index exceeds matrix dimension.");
-    }
   else
     {
+      if (i.extent (n) != n)
+        gripe_index_out_of_range (1, 1, i.extent (n), n); // throws
+
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);
 

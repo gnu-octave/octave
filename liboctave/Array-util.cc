@@ -641,8 +641,8 @@ gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
 }
 
 void
-gripe_nonconformant (const char *op, dim_vector& op1_dims,
-                     dim_vector& op2_dims)
+gripe_nonconformant (const char *op, const dim_vector& op1_dims,
+                     const dim_vector& op2_dims)
 {
   std::string op1_dims_str = op1_dims.str ();
   std::string op2_dims_str = op2_dims.str ();
@@ -650,4 +650,35 @@ gripe_nonconformant (const char *op, dim_vector& op1_dims,
   (*current_liboctave_error_handler)
     ("%s: nonconformant arguments (op1 is %s, op2 is %s)",
      op, op1_dims_str.c_str (), op2_dims_str.c_str ());
+}
+
+void gripe_index_out_of_range (int nd, int dim, 
+                               octave_idx_type idx, octave_idx_type ext)
+{
+  switch (nd)
+    {
+    case 1:
+      (*current_liboctave_error_handler)
+        ("A(I): index out of bounds; value %d out of bound %d",
+         idx, ext);
+      break;
+    case 2:
+      (*current_liboctave_error_handler)
+        ("A(I,J): %s index out of bounds; value %d out of bound %d",
+         (dim == 1) ? "row" : "column", idx, ext);
+      break;
+    default:
+      (*current_liboctave_error_handler)
+        ("A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
+         dim, idx, ext);
+      break;
+    }
+}
+
+void gripe_del_index_out_of_range (bool is1d, octave_idx_type idx, 
+                                   octave_idx_type ext)
+{
+  (*current_liboctave_error_handler)
+    ("A(%s) = []: index out of bounds; value %d out of bound %d",
+     is1d ? "I" : "..,I,..", idx, ext);
 }

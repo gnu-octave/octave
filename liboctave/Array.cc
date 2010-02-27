@@ -206,60 +206,102 @@ Array<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 }
 
 template <class T>
-T&
-Array<T>::range_error (const char *fcn, octave_idx_type n) const
+T& 
+Array<T>::checkelem (octave_idx_type n)
 {
-  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
-  static T foo;
-  return foo;
+  if (n < 0 || n >= slice_len)
+    gripe_index_out_of_range (1, 1, n+1, slice_len);
+
+  return elem (n);
 }
 
 template <class T>
-T&
-Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const
+T& 
+Array<T>::checkelem (octave_idx_type i, octave_idx_type j)
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d): range error", fcn, i, j);
-  static T foo;
-  return foo;
+  if (i < 0 || i >= dim1 ())
+    gripe_index_out_of_range (2, 1, i+1, dim1 ());
+  if (j < 0 || j >= dimensions.numel (1))
+    gripe_index_out_of_range (2, 2, j+1, dimensions.numel (1));
+
+  return elem (i, j);
 }
 
 template <class T>
-T&
-Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k) const
+T& 
+Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
 {
-  (*current_liboctave_error_handler)
-    ("%s (%d, %d, %d): range error", fcn, i, j, k);
-  static T foo;
-  return foo;
+  if (i < 0 || i >= dim1 ())
+    gripe_index_out_of_range (3, 1, i+1, dim1 ());
+  if (j < 0 || j >= dim2 ())
+    gripe_index_out_of_range (3, 2, j+1, dim2 ());
+  if (k < 0 || k >= dimensions.numel (2))
+    gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
+
+  return elem (i, j, k);
 }
 
 template <class T>
-T&
-Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
+T& 
+Array<T>::checkelem (const Array<octave_idx_type>& ra_idx)
 {
-  std::ostringstream buf;
+  int nd = ra_idx.length ();
+  const dim_vector dv = dimensions.redim (nd);
+  for (int d = 0; d < nd; d++)
+    if (ra_idx(d) < 0 || ra_idx(d) >= dv(d))
+      gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
 
-  buf << fcn << " (";
-
-  octave_idx_type n = ra_idx.length ();
-
-  if (n > 0)
-    buf << ra_idx(0);
-
-  for (octave_idx_type i = 1; i < n; i++)
-    buf << ", " << ra_idx(i);
-
-  buf << "): range error";
-
-  std::string buf_str = buf.str ();
-
-  (*current_liboctave_error_handler) (buf_str.c_str ());
-
-  static T foo;
-  return foo;
+  return elem (ra_idx);
 }
 
+template <class T>
+typename Array<T>::crefT
+Array<T>::checkelem (octave_idx_type n) const
+{
+  if (n < 0 || n >= slice_len)
+    gripe_index_out_of_range (1, 1, n+1, slice_len);
+
+  return elem (n);
+}
+
+template <class T>
+typename Array<T>::crefT
+Array<T>::checkelem (octave_idx_type i, octave_idx_type j) const
+{
+  if (i < 0 || i >= dim1 ())
+    gripe_index_out_of_range (2, 1, i+1, dim1 ());
+  if (j < 0 || j >= dimensions.numel (1))
+    gripe_index_out_of_range (2, 2, j+1, dimensions.numel (1));
+
+  return elem (i, j);
+}
+
+template <class T>
+typename Array<T>::crefT
+Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
+{
+  if (i < 0 || i >= dim1 ())
+    gripe_index_out_of_range (3, 1, i+1, dim1 ());
+  if (j < 0 || j >= dim2 ())
+    gripe_index_out_of_range (3, 2, j+1, dim2 ());
+  if (k < 0 || k >= dimensions.numel (2))
+    gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
+
+  return elem (i, j, k);
+}
+
+template <class T>
+typename Array<T>::crefT
+Array<T>::checkelem (const Array<octave_idx_type>& ra_idx) const
+{
+  int nd = ra_idx.length ();
+  const dim_vector dv = dimensions.redim (nd);
+  for (int d = 0; d < nd; d++)
+    if (ra_idx(d) < 0 || ra_idx(d) >= dv(d))
+      gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
+
+  return elem (ra_idx);
+}
 
 template <class T>
 Array<T>
@@ -267,8 +309,8 @@ Array<T>::column (octave_idx_type k) const
 {
   octave_idx_type r = dimensions(0);
 #ifdef BOUNDS_CHECKING
-  if (k < 0 || k * r >= numel ())
-    range_error ("column", k);
+  if (k < 0 || k > dimensions.numel (1))
+    gripe_index_out_of_range (2, 2, k+1, dimensions.numel (1));
 #endif
 
   return Array<T> (*this, dim_vector (r, 1), k*r, k*r + r);
@@ -280,8 +322,8 @@ Array<T>::page (octave_idx_type k) const
 {
   octave_idx_type r = dimensions(0), c = dimensions (1), p = r*c;
 #ifdef BOUNDS_CHECKING
-  if (k < 0 || k * p >= numel ())
-    range_error ("page", k);
+  if (k < 0 || k > dimensions.numel (2))
+    gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
 #endif
 
   return Array<T> (*this, dim_vector (r, c), k*p, k*p + p);
@@ -300,8 +342,10 @@ Array<T>
 Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
 #ifdef BOUNDS_CHECKING
-  if (lo < 0 || up > numel ())
-    range_error ("linear_slice", lo, up);
+  if (lo < 0)
+    gripe_index_out_of_range (1, 1, lo+1, numel ());
+  if (up > numel ())
+    gripe_index_out_of_range (1, 1, up, numel ());
 #endif
   if (up < lo) up = lo;
   return Array<T> (*this, dim_vector (up - lo, 1), lo, up);
@@ -688,12 +732,6 @@ public:
 
 };
 
-static void gripe_index_out_of_range (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I): Index exceeds matrix dimension.");
-}
-
 template <class T>
 Array<T>
 Array<T>::index (const idx_vector& i) const
@@ -706,12 +744,11 @@ Array<T>::index (const idx_vector& i) const
       // A(:) produces a shallow copy as a column vector.
       retval = Array<T> (*this, dim_vector (n, 1));
     }
-  else if (i.extent (n) != n)
-    {
-      gripe_index_out_of_range ();
-    }
   else
     {
+      if (i.extent (n) != n)
+        gripe_index_out_of_range (1, 1, i.extent (n), n); // throws
+
       // FIXME -- this is the only place where orig_dimensions are used.
       dim_vector rd = i.orig_dimensions ();
       octave_idx_type il = i.length (n);
@@ -773,12 +810,13 @@ Array<T>::index (const idx_vector& i, const idx_vector& j) const
       // A(:,:) produces a shallow copy.
       retval = Array<T> (*this, dv);
     }
-  else if (i.extent (r) != r || j.extent (c) != c)
-    {
-      gripe_index_out_of_range ();
-    }
   else
     {
+      if (i.extent (r) != r)
+        gripe_index_out_of_range (2, 1, i.extent (r), r); // throws
+      if (j.extent (c) != c)
+        gripe_index_out_of_range (2, 2, i.extent (c), c); // throws
+
       octave_idx_type n = numel (), il = i.length (r), jl = j.length (c);
 
       idx_vector ii (i);
@@ -831,24 +869,17 @@ Array<T>::index (const Array<idx_vector>& ia) const
       dim_vector dv = dimensions.redim (ial);
 
       // Check for out of bounds conditions.
-      bool all_colons = true, mismatch = false;
+      bool all_colons = true;
       for (int i = 0; i < ial; i++)
         {
           if (ia(i).extent (dv(i)) != dv(i))
-            {
-              mismatch = true;
-              break;
-            }
-          else
-            all_colons = all_colons && ia(i).is_colon ();
+            gripe_index_out_of_range (ial, i+1, ia(i).extent (dv(i)), dv(i)); // throws
+
+          all_colons = all_colons && ia(i).is_colon ();
         }
 
 
-      if (mismatch)
-        {
-          gripe_index_out_of_range ();
-        }
-      else if (all_colons)
+      if (all_colons)
         {
           // A(:,:,...,:) produces a shallow copy.
           dv.chop_trailing_singletons ();
@@ -1387,12 +1418,11 @@ Array<T>::delete_elements (const idx_vector& i)
     { 
       *this = Array<T> ();
     }
-  else if (i.extent (n) != n)
-    {
-      gripe_index_out_of_range ();
-    }
   else if (i.length (n) != 0)
     {
+      if (i.extent (n) != n)
+        gripe_del_index_out_of_range (true, i.extent (n), n);
+
       octave_idx_type l, u;
       bool col_vec = ndims () == 2 && columns () == 1 && rows () != 1;
       if (i.is_scalar () && i(0) == n-1)
@@ -1435,12 +1465,11 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
     { 
       *this = Array<T> ();
     }
-  else if (i.extent (n) != n)
-    {
-      gripe_index_out_of_range ();
-    }
   else if (i.length (n) != 0)
     {
+      if (i.extent (n) != n)
+        gripe_del_index_out_of_range (false, i.extent (n), n);
+
       octave_idx_type l, u;
 
       if (i.is_cont_range (n, l, u))

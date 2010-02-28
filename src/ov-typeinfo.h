@@ -200,6 +200,8 @@ protected:
       non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz, 0),
       binary_class_ops (octave_value::num_binary_ops, 1, 0),
       binary_ops (octave_value::num_binary_ops, init_tab_sz, init_tab_sz, 0),
+      compound_binary_class_ops (octave_value::num_compound_binary_ops, 1, 0),
+      compound_binary_ops (octave_value::num_compound_binary_ops, init_tab_sz, init_tab_sz, 0),
       cat_ops (init_tab_sz, init_tab_sz, 0),
       assign_ops (octave_value::num_assign_ops, init_tab_sz, init_tab_sz, 0),
       assignany_ops (octave_value::num_assign_ops, init_tab_sz, 0),

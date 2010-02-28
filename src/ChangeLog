@@ -1,3 +1,8 @@
+2010-02-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-typeinfo.h (octave_value_typeinfo::octave_value_typeinfo):
+	Add missing initializers.
+
 2010-02-28  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/conv2.cc (conv2 (const MArray<T>&, const MArray<T>&,

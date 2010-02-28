@@ -97,7 +97,4 @@ template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<Comple
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-#ifdef _MSC_VER
-template class OCTAVE_API DiagArray2<Complex>::Proxy;
-#endif
 template class OCTAVE_API DiagArray2<Complex>;

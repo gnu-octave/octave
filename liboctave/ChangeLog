@@ -1,3 +1,11 @@
+2010-02-28  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Array-C.cc (DiagArray2<Complex>::Proxy): Remove explicit
+	instantiation under MSVC.
+	Array-d.cc (DiagArray2<double>::Proxy): Ditto.
+	Array-f.cc (DiagArray2<float>::Proxy): Ditto.
+	Array-fC.cc (DiagArray2<FloatComplex::Proxy): Ditto.
+
 2010-02-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-util.cc (gripe_index_out_of_range): Throw errors with id.

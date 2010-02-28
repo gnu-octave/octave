@@ -91,6 +91,12 @@ permute_vector
 
 extern int OCTAVE_API permute_vector_compare (const void *a, const void *b);
 
+extern OCTAVE_API const char *error_id_nonconformant_args;
+
+extern OCTAVE_API const char *error_id_index_out_of_bounds;
+
+extern OCTAVE_API const char *error_id_invalid_index;
+
 extern void OCTAVE_API gripe_nan_to_logical_conversion (void);
 
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
@@ -107,5 +113,7 @@ extern void OCTAVE_API gripe_index_out_of_range (int nd, int dim,
 
 extern void OCTAVE_API gripe_del_index_out_of_range (bool is1d, octave_idx_type iext, 
                                                      octave_idx_type ext);
+
+extern void OCTAVE_API gripe_invalid_index (void);
 
 #endif

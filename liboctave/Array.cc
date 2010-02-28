@@ -209,7 +209,9 @@ template <class T>
 T& 
 Array<T>::checkelem (octave_idx_type n)
 {
-  if (n < 0 || n >= slice_len)
+  if (n < 0)
+    gripe_invalid_index ();
+  if (n >= slice_len)
     gripe_index_out_of_range (1, 1, n+1, slice_len);
 
   return elem (n);
@@ -219,9 +221,11 @@ template <class T>
 T& 
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j)
 {
-  if (i < 0 || i >= dim1 ())
+  if (i < 0 || j < 0)
+    gripe_invalid_index ();
+  if (i >= dim1 ())
     gripe_index_out_of_range (2, 1, i+1, dim1 ());
-  if (j < 0 || j >= dimensions.numel (1))
+  if (j >= dimensions.numel (1))
     gripe_index_out_of_range (2, 2, j+1, dimensions.numel (1));
 
   return elem (i, j);
@@ -231,11 +235,13 @@ template <class T>
 T& 
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
 {
-  if (i < 0 || i >= dim1 ())
+  if (i < 0 || j < 0 || k < 0)
+    gripe_invalid_index ();
+  if (i >= dim1 ())
     gripe_index_out_of_range (3, 1, i+1, dim1 ());
-  if (j < 0 || j >= dim2 ())
+  if (j >= dim2 ())
     gripe_index_out_of_range (3, 2, j+1, dim2 ());
-  if (k < 0 || k >= dimensions.numel (2))
+  if (k >= dimensions.numel (2))
     gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
 
   return elem (i, j, k);
@@ -248,8 +254,12 @@ Array<T>::checkelem (const Array<octave_idx_type>& ra_idx)
   int nd = ra_idx.length ();
   const dim_vector dv = dimensions.redim (nd);
   for (int d = 0; d < nd; d++)
-    if (ra_idx(d) < 0 || ra_idx(d) >= dv(d))
-      gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
+    {
+      if (ra_idx(d) < 0)
+        gripe_invalid_index ();
+      if (ra_idx(d) >= dv(d))
+        gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
+    }
 
   return elem (ra_idx);
 }
@@ -258,7 +268,9 @@ template <class T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type n) const
 {
-  if (n < 0 || n >= slice_len)
+  if (n < 0)
+    gripe_invalid_index ();
+  if (n >= slice_len)
     gripe_index_out_of_range (1, 1, n+1, slice_len);
 
   return elem (n);
@@ -268,9 +280,11 @@ template <class T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j) const
 {
-  if (i < 0 || i >= dim1 ())
+  if (i < 0 || j < 0)
+    gripe_invalid_index ();
+  if (i >= dim1 ())
     gripe_index_out_of_range (2, 1, i+1, dim1 ());
-  if (j < 0 || j >= dimensions.numel (1))
+  if (j >= dimensions.numel (1))
     gripe_index_out_of_range (2, 2, j+1, dimensions.numel (1));
 
   return elem (i, j);
@@ -280,11 +294,13 @@ template <class T>
 typename Array<T>::crefT
 Array<T>::checkelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
 {
-  if (i < 0 || i >= dim1 ())
+  if (i < 0 || j < 0 || k < 0)
+    gripe_invalid_index ();
+  if (i >= dim1 ())
     gripe_index_out_of_range (3, 1, i+1, dim1 ());
-  if (j < 0 || j >= dim2 ())
+  if (j >= dim2 ())
     gripe_index_out_of_range (3, 2, j+1, dim2 ());
-  if (k < 0 || k >= dimensions.numel (2))
+  if (k >= dimensions.numel (2))
     gripe_index_out_of_range (3, 3, k+1, dimensions.numel (2));
 
   return elem (i, j, k);
@@ -297,8 +313,12 @@ Array<T>::checkelem (const Array<octave_idx_type>& ra_idx) const
   int nd = ra_idx.length ();
   const dim_vector dv = dimensions.redim (nd);
   for (int d = 0; d < nd; d++)
-    if (ra_idx(d) < 0 || ra_idx(d) >= dv(d))
-      gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
+    {
+      if (ra_idx(d) < 0)
+        gripe_invalid_index ();
+      if (ra_idx(d) >= dv(d))
+        gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
+    }
 
   return elem (ra_idx);
 }

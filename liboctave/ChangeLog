@@ -1,3 +1,14 @@
+2010-02-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (gripe_index_out_of_range): Throw errors with id.
+	(gripe_nonconformant): Likewise.
+	(error_id_index_out_of_bounds, error_id_invalid_index,
+	error_id_nonconformant_args): New variables.
+	(gripe_invalid_index): New function.
+	* Array-util.h: Declare them.
+	* Array.cc (Array<T>::checkelem): Throw invalid-index when negative
+	indices are encountered.
+
 2010-02-27  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::diag): Handle case of diag (szv) when szv

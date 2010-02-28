@@ -130,7 +130,7 @@ get_current_method_class (void)
 }
 
 static void
-gripe_invalid_index (void)
+gripe_invalid_index1 (void)
 {
   error ("invalid index for class");
 }
@@ -275,7 +275,7 @@ octave_class::dotref (const octave_value_list& idx)
         error ("class has no member `%s'", nm.c_str ());
     }
   else
-    gripe_invalid_index ();
+    gripe_invalid_index1 ();
 
   return retval;
 }
@@ -469,7 +469,7 @@ octave_class::subsref (const std::string& type,
           if (type.length () == 1 && type[0] == '(')
             retval(0) = octave_value (map.index (idx.front ()), class_name ());
           else
-            gripe_invalid_index ();
+            gripe_invalid_index1 ();
         }
     }
 

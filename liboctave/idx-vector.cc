@@ -34,19 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "idx-vector.h"
 #include "Array.h"
+#include "Array-util.h"
 #include "Sparse.h"
 #include "Range.h"
 
 #include "oct-locbuf.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
-
-static void
-gripe_invalid_index (void)
-{
-  (*current_liboctave_error_handler)
-    ("subscript indices must be either positive integers or logicals.");
-}
 
 static void
 gripe_invalid_range (void)

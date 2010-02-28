@@ -535,9 +535,21 @@ lo_error_handler (const char *fmt, ...)
 }
 
 static void
+lo_error_with_id_handler (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror_with_id_cfn (id, fmt, args);
+  va_end (args);
+
+  octave_throw_execution_exception ();
+}
+
+static void
 initialize_error_handlers ()
 {
   set_liboctave_error_handler (lo_error_handler);
+  set_liboctave_error_with_id_handler (lo_error_with_id_handler);
   set_liboctave_warning_handler (warning);
   set_liboctave_warning_with_id_handler (warning_with_id);
 }

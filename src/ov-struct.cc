@@ -74,7 +74,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 
 #if 0
 static void
-gripe_invalid_index (void)
+gripe_invalid_index1 (void)
 {
   error ("invalid index for structure array");
 }

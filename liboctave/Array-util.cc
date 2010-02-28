@@ -617,6 +617,12 @@ permute_vector_compare (const void *a, const void *b)
   return pva->pidx > pvb->pidx;
 }
 
+const char *error_id_nonconformant_args = "Octave:nonconformant-args";
+
+const char *error_id_index_out_of_bounds = "Octave:index-out-of-bounds";
+
+const char *error_id_invalid_index = "Octave:invalid-index";
+
 void
 gripe_nan_to_logical_conversion (void)
 {
@@ -626,8 +632,9 @@ gripe_nan_to_logical_conversion (void)
 void
 gripe_nonconformant (const char *op, int op1_len, int op2_len)
 {
-  (*current_liboctave_error_handler)
-    ("%s: nonconformant arguments (op1 len: %d, op2 len: %d)",
+  const char *err_id = error_id_nonconformant_args;
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "%s: nonconformant arguments (op1 len: %d, op2 len: %d)",
      op, op1_len, op2_len);
 }
 
@@ -635,8 +642,9 @@ void
 gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
                      int op2_nr, int op2_nc)
 {
-  (*current_liboctave_error_handler)
-    ("%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
+  const char *err_id = error_id_nonconformant_args;
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
      op, op1_nr, op1_nc, op2_nr, op2_nc);
 }
 
@@ -644,32 +652,34 @@ void
 gripe_nonconformant (const char *op, const dim_vector& op1_dims,
                      const dim_vector& op2_dims)
 {
+  const char *err_id = error_id_nonconformant_args;
   std::string op1_dims_str = op1_dims.str ();
   std::string op2_dims_str = op2_dims.str ();
 
-  (*current_liboctave_error_handler)
-    ("%s: nonconformant arguments (op1 is %s, op2 is %s)",
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "%s: nonconformant arguments (op1 is %s, op2 is %s)",
      op, op1_dims_str.c_str (), op2_dims_str.c_str ());
 }
 
 void gripe_index_out_of_range (int nd, int dim, 
                                octave_idx_type idx, octave_idx_type ext)
 {
+  const char *err_id = error_id_index_out_of_bounds;
   switch (nd)
     {
     case 1:
-      (*current_liboctave_error_handler)
-        ("A(I): index out of bounds; value %d out of bound %d",
+      (*current_liboctave_error_with_id_handler)
+        (err_id, "A(I): index out of bounds; value %d out of bound %d",
          idx, ext);
       break;
     case 2:
-      (*current_liboctave_error_handler)
-        ("A(I,J): %s index out of bounds; value %d out of bound %d",
+      (*current_liboctave_error_with_id_handler)
+        (err_id, "A(I,J): %s index out of bounds; value %d out of bound %d",
          (dim == 1) ? "row" : "column", idx, ext);
       break;
     default:
-      (*current_liboctave_error_handler)
-        ("A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
+      (*current_liboctave_error_with_id_handler)
+        (err_id, "A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
          dim, idx, ext);
       break;
     }
@@ -678,7 +688,16 @@ void gripe_index_out_of_range (int nd, int dim,
 void gripe_del_index_out_of_range (bool is1d, octave_idx_type idx, 
                                    octave_idx_type ext)
 {
-  (*current_liboctave_error_handler)
-    ("A(%s) = []: index out of bounds; value %d out of bound %d",
+  const char *err_id = error_id_index_out_of_bounds;
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "A(%s) = []: index out of bounds; value %d out of bound %d",
      is1d ? "I" : "..,I,..", idx, ext);
 }
+
+void gripe_invalid_index (void)
+{
+  const char *err_id = error_id_invalid_index;
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "subscript indices must be either positive integers or logicals.");
+}
+

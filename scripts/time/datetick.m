@@ -55,20 +55,32 @@ endfunction
 %! xlabel ("Year");
 %! datetick ("x", "YYYY");
 
+%!demo
+%! yr =1988:2:2002;
+%! yr =datenum(yr,1,1);
+%! pr = [12.1 13.3 12.6 13.1 13.3 14.1 14.4 15.2];
+%! plot(yr,pr);
+%! xlabel('year')
+%! ylabel('average price')
+%! ax=gca;
+%! set(ax,'xtick',datenum(1990:5:2005,1,1))
+%! datetick(2,'keepticks')
+%! set(ax,'ytick',12:16)
+
 function __datetick__ (varargin)
 
   keeplimits = false;
-  keeptick = false;
+  keepticks = false;
   idx = [];
   for i = 1 : nargin
     arg = varargin {i};
     if (ischar (arg))
       if (strcmpi (arg, "keeplimits"))
-	keeplimits = true;
-	idx = [idx, i];
-      elseif (strcmpi (arg, "keeptick"))
-	keeptick = true;
-	idx = [idx, i];
+        keeplimits = true;
+        idx = [idx, i];
+      elseif (strcmpi (arg, "keepticks"))
+        keepticks = true;
+        idx = [idx, i];
       endif
     endif
   endfor
@@ -81,13 +93,13 @@ function __datetick__ (varargin)
   if (nargin != 0)
     arg = varargin{1};
     if (ischar(arg) && (strcmp (arg, "x") || strcmp (arg, "y") || 
-			strcmp (arg, "z")))
+      strcmp (arg, "z")))
       ax = arg;
       if (nargin > 1)
-	form = varargin{2};
-	varargin(1:2) = [];
+        form = varargin{2};
+        varargin(1:2) = [];
       else
-	varargin(1) = [];
+        varargin(1) = [];
       endif
     else
       form = arg;
@@ -112,7 +124,7 @@ function __datetick__ (varargin)
     endif
   endif
 
-  if (keeptick)
+  if (keepticks)
     ticks = get (gca (), strcat (ax, "tick"))
   else
     ## Need to do our own axis tick position calculation as
@@ -123,9 +135,9 @@ function __datetick__ (varargin)
     for i = 1 : length (objs)
       fld = get (objs (i));
       if (isfield (fld, strcat (ax, "data")))
-	xdata = getfield (fld, strcat (ax, "data"))(:);
-	xmin = min (xmin, min (xdata));
-	xmax = max (xmax, max (xdata));
+        xdata = getfield (fld, strcat (ax, "data"))(:);
+        xmin = min (xmin, min (xdata));
+        xmax = max (xmax, max (xdata));
       endif
     endfor
 
@@ -140,11 +152,11 @@ function __datetick__ (varargin)
     if (xmax - xmin < N)
       ## Day scale or less
       if (xmax - xmin < N / 24 / 60 / 60) 
-	scl = 1 / 24 / 60 / 60;
+        scl = 1 / 24 / 60 / 60;
       elseif (xmax - xmin < N / 24 / 6)
-	scl = 1 / 24 / 60;
+        scl = 1 / 24 / 60;
       else
-	scl = 1 / 24;
+        scl = 1 / 24;
       endif
       sep = __calc_tick_sep__ (xmin / scl , xmax / scl);
       xmin = sep * floor (xmin / scl / sep);
@@ -161,20 +173,20 @@ function __datetick__ (varargin)
       maxmonth = (ymax  - ymin) * 12 + mmax + (dmax - 1) / 30;    
 
       if (maxmonth - minmonth < N)
-	sep = __calc_tick_sep__ (xmin, xmax);
-	xmin = sep * floor (xmin / sep);
-	xmax = sep * ceil (xmax / sep);
-	nticks = (xmax - xmin) / sep + 1;
+        sep = __calc_tick_sep__ (xmin, xmax);
+        xmin = sep * floor (xmin / sep);
+        xmax = sep * ceil (xmax / sep);
+        nticks = (xmax - xmin) / sep + 1;
       elseif (maxyear - minyear < N)
-	sep = __calc_tick_sep__ (minmonth , maxmonth);
-	xmin = datenum (ymin, sep * floor (minmonth / sep), 1);
-	xmax = datenum (ymin, sep * ceil (maxmonth / sep), 1);
-	nticks = ceil (maxmonth / sep) - floor (minmonth / sep) + 1;
+        sep = __calc_tick_sep__ (minmonth , maxmonth);
+        xmin = datenum (ymin, sep * floor (minmonth / sep), 1);
+        xmax = datenum (ymin, sep * ceil (maxmonth / sep), 1);
+        nticks = ceil (maxmonth / sep) - floor (minmonth / sep) + 1;
       else
-	sep = __calc_tick_sep__ (minyear , maxyear);
-	xmin = datenum (sep * floor (minyear / sep), 1, 1);
-	xmax = datenum (sep * ceil (maxyear / sep), 1, 1);
-	nticks = ceil (maxyear / sep) - floor (minyear / sep) + 1;
+        sep = __calc_tick_sep__ (minyear , maxyear);
+        xmin = datenum (sep * floor (minyear / sep), 1, 1);
+        xmax = datenum (sep * ceil (maxyear / sep), 1, 1);
+        nticks = ceil (maxyear / sep) - floor (minyear / sep) + 1;
       endif
     endif
     ticks = xmin + [0 : nticks - 1] / (nticks - 1) * (xmax - xmin);
@@ -209,10 +221,10 @@ function __datetick__ (varargin)
     ## Careful that its not treated as a datevec
     if (! isempty (startdate))
       sticks = strvcat (datestr (ticks(1:end-1) - ticks(1) + startdate, form),
-			datestr (ticks(end) - ticks(1) + startdate, form));
+      datestr (ticks(end) - ticks(1) + startdate, form));
     else
       sticks = strvcat (datestr (ticks(1:end-1), form), 
-			datestr (ticks(end), form));
+      datestr (ticks(end), form));
     endif
   else
     if (! isempty (startdate))
@@ -224,19 +236,19 @@ function __datetick__ (varargin)
 
   sticks = mat2cell (sticks, ones (rows (sticks), 1), columns (sticks));
 
-  if (keeptick)
+  if (keepticks)
     if (keeplimits)
       set (gca(), strcat (ax, "ticklabel"), sticks);
     else
       set (gca(), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"), 
-	   [min(ticks), max(ticks)]);
+      [min(ticks), max(ticks)]);
     endif
   else
     if (keeplimits)
       set (gca(), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks);
     else
       set (gca(), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks,
-	   strcat (ax, "lim"), [min(ticks), max(ticks)]);
+      strcat (ax, "lim"), [min(ticks), max(ticks)]);
     endif
   endif
 endfunction

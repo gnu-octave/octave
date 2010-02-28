@@ -1,3 +1,7 @@
+2010-02-27  Liam Groener <liamg@mac.com>
+
+	* /time/datetick.m: Fix 'keepticks' bug, and untabify.
+
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/str2double.m: Remove.

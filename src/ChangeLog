@@ -1,3 +1,11 @@
+2010-02-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/conv2.cc (conv2 (const MArray<T>&, const MArray<T>&,
+	Shape)): Args are now const.  Move invariant expressions outside
+	of loops.  Use pointers instead of Array class indexing methods.
+	(conv2 (const MArray<T>&, const MArray<T>&, const MArray<T>&, Shape)):
+	Ditto.
+
 2010-02-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-mat.cc (do_index_op): Use checkelem for scalar indices.

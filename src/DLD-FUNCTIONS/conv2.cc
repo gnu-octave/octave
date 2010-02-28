@@ -30,30 +30,32 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern MArray<double>
-conv2 (MArray<double>&, MArray<double>&, MArray<double>&, Shape);
+conv2 (const MArray<double>&, const MArray<double>&, const MArray<double>&,
+       Shape);
 
 extern MArray<Complex>
-conv2 (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, Shape);
+conv2 (const MArray<Complex>&, const MArray<Complex>&,
+       const MArray<Complex>&, Shape);
 
 extern MArray<float>
-conv2 (MArray<float>&, MArray<float>&, MArray<float>&, Shape);
+conv2 (const MArray<float>&, const MArray<float>&, const MArray<float>&,
+       Shape);
 
 extern MArray<FloatComplex>
-conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, Shape);
+conv2 (const MArray<FloatComplex>&, const MArray<FloatComplex>&,
+       const MArray<FloatComplex>&, Shape);
 #endif
 
 template <class T>
 MArray<T>
-conv2 (MArray<T>& R, MArray<T>& C, MArray<T>& A, Shape ishape)
+conv2 (const MArray<T>& R, const MArray<T>& C, const MArray<T>& A, Shape ishape)
 {
-  octave_idx_type  Rn =  R.length ();
-  octave_idx_type  Cm =  C.length ();
+  octave_idx_type  Rn = R.length ();
+  octave_idx_type  Cm = C.length ();
   octave_idx_type  Am = A.rows ();
   octave_idx_type  An = A.columns ();
 
@@ -100,42 +102,59 @@ conv2 (MArray<T>& R, MArray<T>& C, MArray<T>& A, Shape ishape)
 
   MArray<T> O (outM, outN);
 
+  T *Od0 = O.fortran_vec ();
+
   // X accumulates the 1-D conv for each row, before calculating
-  //    the convolution in the other direction
-  // There is no efficiency advantage to doing it in either direction
-  //     first
+  // the convolution in the other direction.  There is no efficiency
+  // advantage to doing it in either direction first.
 
   MArray<T> X (An, 1);
 
+  T *Xd0 = X.fortran_vec ();
+
   for (octave_idx_type oi = 0; oi < outM; oi++)
     {
+      T *Xd = Xd0;
+
+      octave_idx_type ci0 = Cm - 1 - std::max (0, edgM-oi);
+      octave_idx_type ai0 = std::max (0, oi-edgM);
+
+      const T *Cd0 = C.data () + ci0;
+      const T *Ad0 = A.data () + ai0;
+
       for (octave_idx_type oj = 0; oj < An; oj++)
         {
           T sum = 0;
 
-          octave_idx_type ci = Cm - 1 - MAX(0, edgM-oi);
-          octave_idx_type ai = MAX(0, oi-edgM);
-          const T* Ad = A.data() + ai + Am*oj;
-          const T* Cd = C.data() + ci;
-          for ( ; ci >= 0 && ai < Am; ci--, Cd--, ai++, Ad++)
-            sum += (*Ad) * (*Cd);
+          const T* Cd = Cd0;
+          const T* Ad = Ad0 + Am*oj;
 
-          X(oj) = sum;
+          for (octave_idx_type ci = ci0, ai = ai0; ci >= 0 && ai < Am;
+               ci--, ai++)
+            sum += (*Ad++) * (*Cd--);
+
+          *Xd++ = sum;
         }
+
+      T *Od = Od0 + oi;
+
+      const T *Rd0 = R.data ();
 
       for (octave_idx_type oj = 0; oj < outN; oj++)
         {
           T sum = 0;
 
-          octave_idx_type rj = Rn - 1 - MAX(0, edgN-oj);
-          octave_idx_type aj = MAX(0, oj-edgN) ;
-          const T* Xd = X.data() + aj;
-          const T* Rd = R.data() + rj;
+          octave_idx_type rj = Rn - 1 - std::max (0, edgN-oj);
+          octave_idx_type aj = std::max (0, oj-edgN);
 
-          for ( ; rj >= 0 && aj < An; rj--, Rd--, aj++, Xd++)
-            sum += (*Xd) * (*Rd);
+          Xd = Xd0 + aj;
+          const T* Rd = Rd0 + rj;
 
-          O(oi,oj)=  sum;
+          for ( ; rj >= 0 && aj < An; rj--, aj++)
+            sum += (*Xd++) * (*Rd--);
+
+          *Od = sum;
+          Od += outM;
         }
     }
 
@@ -158,7 +177,7 @@ conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, Shape);
 
 template <class T>
 MArray<T>
-conv2 (MArray<T>&A, MArray<T>&B, Shape ishape)
+conv2 (const MArray<T>& A, const MArray<T>& B, Shape ishape)
 {
   // Convolution works fastest if we choose the A matrix to be
   // the largest.
@@ -210,29 +229,32 @@ conv2 (MArray<T>&A, MArray<T>&B, Shape ishape)
 
   MArray<T> O (outM, outN);
 
-  for (octave_idx_type oi = 0; oi < outM; oi++)
+  T *Od = O.fortran_vec ();
+
+  for (octave_idx_type oj = 0; oj < outN; oj++)
     {
-      for (octave_idx_type oj = 0; oj < outN; oj++)
+      octave_idx_type aj0 = std::max (0, oj-edgN);
+      octave_idx_type bj0 = Bn - 1 - std::max (0, edgN-oj);
+
+      for (octave_idx_type oi = 0; oi < outM; oi++)
         {
           T sum = 0;
 
-          for (octave_idx_type bj = Bn - 1 - MAX (0, edgN-oj), aj= MAX (0, oj-edgN);
-               bj >= 0 && aj < An; bj--, aj++)
-            {
-              octave_idx_type bi = Bm - 1 - MAX (0, edgM-oi);
-              octave_idx_type ai = MAX (0, oi-edgM);
-              const T* Ad = A.data () + ai + Am*aj;
-              const T* Bd = B.data () + bi + Bm*bj;
+          octave_idx_type bi0 = Bm - 1 - std::max (0, edgM-oi);
+          octave_idx_type ai0 = std::max (0, oi-edgM);
 
-              for ( ; bi >= 0 && ai < Am; bi--, Bd--, ai++, Ad++)
-                {
-                  sum += (*Ad) * (*Bd);
-                  // Comment: it seems to be 2.5 x faster than this:
-                  //        sum+= A(ai,aj) * B(bi,bj);
-                }
+          for (octave_idx_type aj = aj0, bj = bj0; bj >= 0 && aj < An;
+               bj--, aj++)
+            {
+              const T* Ad = A.data () + ai0 + Am*aj;
+              const T* Bd = B.data () + bi0 + Bm*bj;
+
+              for (octave_idx_type ai = ai0, bi = bi0; bi >= 0 && ai < Am;
+                   bi--, ai++)
+                sum += (*Ad++) * (*Bd--);
             }
 
-          O(oi,oj) = sum;
+          *Od++ = sum;
         }
     }
 
@@ -247,7 +269,11 @@ conv2 (MArray<T>&A, MArray<T>&B, Shape ishape)
 %!test
 %! b = single([0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18]);
 %! assert(conv2(single([0,1;1,2]),single([1,2,3;4,5,6;7,8,9])),b);
+
+%!assert (conv2 (1:2, 1:3, [1,2;3,4;5,6]),
+%!        [1,4,4;5,18,16;14,48,40;19,62,48;15,48,36;]);
 */
+
 
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
@@ -258,11 +284,11 @@ Returns 2D convolution of @var{a} and @var{b} where the size\n\
 of @var{c} is given by\n\
 \n\
 @table @asis\n\
-@item @var{shape}= 'full'\n\
+@item @var{shape} = 'full'\n\
 returns full 2-D convolution\n\
-@item @var{shape}= 'same'\n\
+@item @var{shape} = 'same'\n\
 same size as a. 'central' part of convolution\n\
-@item @var{shape}= 'valid'\n\
+@item @var{shape} = 'valid'\n\
 only parts which do not include zero-padded edges\n\
 @end table\n\
 \n\
@@ -274,8 +300,8 @@ in the column direction and by vector @var{v2} in the row direction\n\
   octave_value retval;
   octave_value tmp;
   int nargin = args.length ();
-  std::string shape= "full"; //default
-  bool separable= false;
+  std::string shape = "full"; //default
+  bool separable = false;
   Shape ishape;
 
   if (nargin < 2)
@@ -419,13 +445,15 @@ in the column direction and by vector @var{v2} in the row direction\n\
 }
 
 template MArray<double>
-conv2 (MArray<double>&, MArray<double>&, MArray<double>&, Shape);
+conv2 (const MArray<double>&, const MArray<double>&, const MArray<double>&,
+       Shape);
 
 template MArray<double>
-conv2 (MArray<double>&, MArray<double>&, Shape);
+conv2 (const MArray<double>&, const MArray<double>&, Shape);
 
 template MArray<Complex>
-conv2 (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&, Shape);
+conv2 (const MArray<Complex>&, const MArray<Complex>&,
+       const MArray<Complex>&, Shape);
 
 template MArray<Complex>
-conv2 (MArray<Complex>&, MArray<Complex>&, Shape);
+conv2 (const MArray<Complex>&, const MArray<Complex>&, Shape);

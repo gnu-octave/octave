@@ -74,6 +74,26 @@ function [y, i, j] = unique (x, varargin)
     optrows = 0;
   endif
 
+  ## FIXME -- the operations
+  ##
+  ##   match = (y(1:n-1) == y(2:n));
+  ##   y(idx) = [];
+  ##
+  ## are very slow on sparse matrices.  Until they are fixed to be as
+  ## fast as for full matrices, operate on the nonzero elements of the
+  ## sparse array as long as we are not operating on rows.
+
+  ## FIXME -- unique is called when PKG_ADD files are parsed, but
+  ## issparse is not yet available because it is coming from a .oct
+  ## file?!?
+
+  if (exist ("issparse"))
+    if (issparse (x) && ! optrows && nargout <= 1)
+      y = unique ([0; (full (nonzeros (x)))], varargin{:});
+      return;
+    endif
+  endif
+
   if (optrows)
     n = size (x, 1);
     dim = 1;
@@ -131,7 +151,6 @@ function [y, i, j] = unique (x, varargin)
   else
     i(idx) = [];
   endif
-
 
 endfunction
 

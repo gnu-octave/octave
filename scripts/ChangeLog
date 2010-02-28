@@ -1,5 +1,12 @@
 2010-02-28  John W. Eaton  <jwe@octave.org>
 
+	* set/unique.m: If the argument is sparse and we are not
+	operating on rows and we don't need indices, convert nonzero
+	elements to a full matrix and work on that instead, converting
+	back to sparse when done.
+
+2010-02-28  John W. Eaton  <jwe@octave.org>
+
 	* set/unique.m: Return 0x1 arrays for empty arrays with some
 	nonzero dimensions.  Return object with the same class as the
 	argument.  New tests.

@@ -1,3 +1,9 @@
+2010-02-28  John W. Eaton  <jwe@octave.org>
+
+	* set/unique.m: Return 0x1 arrays for empty arrays with some
+	nonzero dimensions.  Return object with the same class as the
+	argument.  New tests.
+
 2010-02-27  Liam Groener <liamg@mac.com>
 
 	* /time/datetick.m: Fix 'keepticks' bug, and untabify.

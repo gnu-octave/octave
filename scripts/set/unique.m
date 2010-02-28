@@ -54,7 +54,7 @@ function [y, i, j] = unique (x, varargin)
       varargin = unique (varargin);
       optfirst = strmatch ("first", varargin) > 0;
       optlast = strmatch ("last", varargin) > 0;
-      optrows = strmatch ("rows", varargin) > 0 && size (x, 2) > 1;
+      optrows = strmatch ("rows", varargin) > 0;
       if (optfirst && optlast)
         error ("unique: cannot specify both \"last\" and \"first\"");
       elseif (optfirst + optlast + optrows != nargin-1)
@@ -84,6 +84,13 @@ function [y, i, j] = unique (x, varargin)
 
   y = x;
   if (n < 1)
+    if (! optrows && isempty (x) && any (size (x)))
+      if (iscell (y))
+        y = cell (0, 1);
+      else
+        y = zeros (0, 1, class (y));
+      endif
+    endif
     i = j = [];
     return;
   elseif (n < 2)
@@ -137,7 +144,19 @@ endfunction
 %!assert(unique([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])
 %!assert(unique({'Foo','Bar','Foo'}),{'Bar','Foo'})
 %!assert(unique({'Foo','Bar','FooBar'}'),{'Bar','Foo','FooBar'}')
-
+%!assert(unique(zeros(1,0)), zeros(0,1))
+%!assert(unique(zeros(1,0), 'rows'), zeros(1,0))
+%!assert(unique(cell(1,0)), cell(0,1))
+%!assert(unique({}), {})
+%!assert(unique([1,2,2,3,2,4], 'rows'), [1,2,2,3,2,4])
+%!assert(unique([1,2,2,3,2,4]), [1,2,3,4])
+%!assert(unique([1,2,2,3,2,4]', 'rows'), [1,2,3,4]')
+%!assert(unique(single([1,2,2,3,2,4]), 'rows'), single([1,2,2,3,2,4]))
+%!assert(unique(single([1,2,2,3,2,4])), single([1,2,3,4]))
+%!assert(unique(single([1,2,2,3,2,4]'), 'rows'), single([1,2,3,4]'))
+%!assert(unique(uint8([1,2,2,3,2,4]), 'rows'), uint8([1,2,2,3,2,4]))
+%!assert(unique(uint8([1,2,2,3,2,4])), uint8([1,2,3,4]))
+%!assert(unique(uint8([1,2,2,3,2,4]'), 'rows'), uint8([1,2,3,4]'))
 %!test
 %! [a,i,j] = unique([1,1,2,3,3,3,4]);
 %! assert(a,[1,2,3,4])

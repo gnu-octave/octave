@@ -1,5 +1,10 @@
 2010-03-01  John W. Eaton  <jwe@octave.org>
 
+	* (str2double1): Pass argument as const reference and make
+	explicit copy instead of passing by value.
+
+2010-03-01  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/str2double.cc (set_component): Use autoconf
 	macros instead of checking predefined compiler macros.
 	(str2double1): Pass val to set_component, not c.

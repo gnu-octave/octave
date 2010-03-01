@@ -158,10 +158,14 @@ set_component (Complex& c, double num, bool imag)
 }
 
 static Complex
-str2double1 (std::string str)
+str2double1 (const std::string& str_arg)
 {
   Complex val (0.0, 0.0);
+
+  std::string str = str_arg;
+
   std::string::iterator se = str.end ();
+
   // Remove commas (thousand separators) and spaces.
   se = std::remove (str.begin (), se, ',');
   se = std::remove (str.begin (), se, ' ');

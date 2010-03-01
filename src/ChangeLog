@@ -1,3 +1,8 @@
+2010-03-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/str2double.cc (str2double1): Use ISO-conformant code
+	for setting the real and imaginary part.
+
 2010-02-28  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::init): Don't set

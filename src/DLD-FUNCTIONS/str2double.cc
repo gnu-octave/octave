@@ -157,9 +157,17 @@ str2double1 (std::string str)
   else
     {
       if (i1)
-        val.imag () = num;
+#ifdef __GNUC__
+        val.imag () = num; // GNU C++
+#else
+        val = Complex (val.real (), num); // ISO C++
+#endif
       else
-        val.real () = num;
+#ifdef __GNUC__
+        val.real () = num; // GNU C++
+#else
+        val = Complex (num, val.imag ()); // ISO C++
+#endif
 
       if (! is.eof ())
         {
@@ -168,9 +176,17 @@ str2double1 (std::string str)
           else
             {
               if (i2)
-                val.imag () = num;
+#ifdef __GNUC__
+                val.imag () = num; // GNU C++
+#else
+                val = Complex (val.real (), num); // ISO C++
+#endif
               else
-                val.real () = num;
+#ifdef __GNUC__
+                val.real () = num; // GNU C++
+#else
+                val = Complex (num, val.imag ()); // ISO C++
+#endif
             }
         }
     }

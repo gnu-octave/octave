@@ -563,7 +563,8 @@ private:
       std::string userpwd = user;
       if (! passwd.empty ())
         userpwd += ":" + passwd;
-      setopt (CURLOPT_USERPWD, userpwd.c_str ());
+      if (! userpwd.empty ())
+        setopt (CURLOPT_USERPWD, userpwd.c_str ());
 
       // Define our callback to get called when there's data to be written.
       setopt (CURLOPT_WRITEFUNCTION, write_data);

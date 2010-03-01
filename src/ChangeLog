@@ -1,3 +1,8 @@
+2010-02-28  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/urlwrite.cc (curl_handle::init): Don't set
+	CURLOPT_USERPWD if userpwd is empty.
+
 2010-02-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am ($(srcdir)/DLD-FUNCTIONS/module.mk): New target.

@@ -106,6 +106,38 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
+dnl See if the C++ library has functions to set real and imaginary
+dnl parts of complex numbers independently.
+dnl
+AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS],
+[AC_CACHE_CHECK([whether complex class can set components independently],
+octave_cv_cxx_complex_setters,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
+[[std::complex<double> x; x.real (1.0); x.imag (2.0);]])],
+octave_cv_cxx_complex_setters=yes, octave_cv_cxx_complex_setters=no)])
+if test $octave_cv_cxx_complex_setters = yes; then
+AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS,1,[Define if C++ complex class has void real (T) and void imag (T) methods])
+fi
+AC_LANG_POP(C++)
+])
+dnl
+dnl See if the C++ library has functions to access real and imaginary
+dnl parts of complex numbers independently via references.
+dnl
+AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS],
+[AC_CACHE_CHECK([whether complex class can reference components independently],
+octave_cv_cxx_complex_reference_accessors,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
+[[std::complex<double> x; x.real () = 1.0; x.imag () = 1.0;]])],
+octave_cv_cxx_complex_reference_accessors=yes, octave_cv_cxx_complex_reference_accessors=no)])
+if test $octave_cv_cxx_complex_reference_accessors = yes; then
+AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS,1,[Define if C++ complex class has T& real (void) and T& imag (void) methods])
+fi
+AC_LANG_POP(C++)
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

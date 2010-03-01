@@ -1,3 +1,9 @@
+2010-03-01  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/str2double.cc (set_component): Use autoconf
+	macros instead of checking predefined compiler macros.
+	(str2double1): Pass val to set_component, not c.
+
 2010-03-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/str2double.cc (set_component): New helper func.

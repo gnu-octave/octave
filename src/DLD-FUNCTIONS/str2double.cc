@@ -139,12 +139,16 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
 static inline void
 set_component (Complex& c, double num, bool imag)
 {
-  // FIXME: this is C++-0x.
-#if defined (__GNUC__) || defined (__MSVC__)
+#if defined (HAVE_CXX_COMPLEX_SETTERS)
   if (imag)
-    c.imag (r);
+    c.imag (num);
   else
-    c.real (r);
+    c.real (num);
+#elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
+  if (imag)
+    c.imag () = num;
+  else
+    c.real () = num;
 #else
   if (imag)
     c = Complex (c.real (), num);
@@ -173,14 +177,14 @@ str2double1 (std::string str)
     val = octave_NaN;
   else
     {
-      set_component (c, num, i1);
+      set_component (val, num, i1);
 
       if (! is.eof ())
         {
           if (! extract_num (is, num, i2, s2) || i1 == i2 || ! s2)
             val = octave_NaN;
           else
-            set_component (c, num, i2);
+            set_component (val, num, i2);
         }
     }
 

@@ -258,6 +258,15 @@ include vx-op-inc.mk
 include mx-op-inc.mk
 include smx-op-inc.mk
 
+$(srcdir)/vx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/vx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
+
+$(srcdir)/mx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/mx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
+
+$(srcdir)/smx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/sparse-mk-ops.awk $(srcdir)/sparse-mx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
+
 BUILT_INCS = \
   mx-ops.h \
   $(OPT_INC) \
@@ -441,6 +450,15 @@ LIBOCTAVE_CXX_SOURCES = \
 include vx-op-src.mk
 include mx-op-src.mk
 include smx-op-src.mk
+
+$(srcdir)/vx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/vx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
+
+$(srcdir)/mx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/mx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
+
+$(srcdir)/smx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/sparse-mk-ops.awk $(srcdir)/sparse-mx-ops
+	$(srcdir)/config-ops.sh $(top_srcdir)
 
 BUILT_LIBOCTAVE_CXX_SOURCES = \
   $(MX_OP_SRC) \

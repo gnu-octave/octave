@@ -1,3 +1,12 @@
+2010-02-28  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am ($(srcdir)/vx-op-inc.mk, $(srcdir)/mx-op-inc.mk,
+	$(srcdir)/smx-op-inc.mk, $(srcdir)/vx-op-src.mk,
+	$(srcdir)/mx-op-src.mk, $(srcdir)/smx-op-src.mk): New targets.
+
+	* config-ops.sh: Accept top_srcdir argument.  Work from build
+	directory too, not just source tree.
+
 2010-02-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Array-C.cc (DiagArray2<Complex>::Proxy): Remove explicit

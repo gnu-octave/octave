@@ -455,6 +455,10 @@ DIST_SRC = \
   $(PT_SRC)
 
 include DLD-FUNCTIONS/module.mk
+
+$(srcdir)/DLD-FUNCTIONS/module.mk: $(srcdir)/DLD-FUNCTIONS/config-module.sh $(srcdir)/DLD-FUNCTIONS/config-module.awk $(srcdir)/DLD-FUNCTIONS//module-files
+	$(srcdir)/DLD-FUNCTIONS/config-module.sh $(top_srcdir)
+
 include OPERATORS/module.mk
 include TEMPLATE-INST/module.mk
 

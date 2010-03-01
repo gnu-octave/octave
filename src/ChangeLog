@@ -1,3 +1,10 @@
+2010-02-28  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am ($(srcdir)/DLD-FUNCTIONS/module.mk): New target.
+
+	* DLD-FUNCTIONS/config-module.sh: Accept top_srcdir argument.
+	Work from build directory too, not just source tree.
+
 2010-02-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-typeinfo.h (octave_value_typeinfo::octave_value_typeinfo):

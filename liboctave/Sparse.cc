@@ -1109,6 +1109,9 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
 {
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
+  octave_idx_type orig_nr = nr;
+  octave_idx_type orig_nc = nc;
+  octave_idx_type orig_nnz = nnz ();
 
   if (nr == 0 && nc == 0)
     return;
@@ -1145,26 +1148,92 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
   if (num_to_delete != 0)
     {
       octave_idx_type new_n = n;
-      octave_idx_type new_nnz = nnz ();
+      octave_idx_type new_nnz = orig_nnz;
 
       octave_idx_type iidx = 0;
+      octave_idx_type kk = idx_arg.elem (iidx);
 
       const Sparse<T> tmp (*this);
 
-      for (octave_idx_type i = 0; i < n; i++)
+      if (orig_nr == 1)
         {
-          octave_quit ();
-
-          if (i == idx_arg.elem (iidx))
+          for (octave_idx_type i = 0; i < n; i++)
             {
-              iidx++;
-              new_n--;
+              octave_quit ();
 
-              if (tmp.elem (i) != T ())
-                new_nnz--;
+              if (i == kk)
+                {
+                  iidx++;
+                  kk = idx_arg.elem (iidx);
+                  new_n--;
 
-              if (iidx == num_to_delete)
-                break;
+                  if (tmp.cidx(i) != tmp.cidx(i + 1))
+                    new_nnz--;
+
+                  if (iidx == num_to_delete)
+                    break;
+                }
+            }
+        }
+      else if (orig_nc == 1)
+        {
+          octave_idx_type next_ridx = -1;
+          octave_idx_type next_ridx_val = -1;
+          if (orig_nnz > 0)
+            {
+              next_ridx = 0;
+              next_ridx_val = tmp.ridx (0);
+            }
+
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              octave_quit ();
+
+              if (i == kk)
+                {
+                  iidx++;
+                  kk = idx_arg.elem (iidx);
+                  new_n--;
+
+                  while (i > next_ridx_val)
+                    {
+                      next_ridx++;
+                      if (next_ridx >= orig_nnz)
+                        {
+                          next_ridx = -1;
+                          next_ridx_val = n;
+                          break;
+                        }
+                      else
+                        next_ridx_val = tmp.ridx (next_ridx);
+                    }
+
+                  if (i == next_ridx_val)
+                    new_nnz--;
+
+                  if (iidx == num_to_delete)
+                    break;
+                }
+            }
+        }
+      else
+        {
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              octave_quit ();
+
+              if (i == kk)
+                {
+                  iidx++;
+                  kk = idx_arg.elem (iidx);
+                  new_n--;
+
+                  if (tmp.elem (i) != T ())
+                    new_nnz--;
+
+                  if (iidx == num_to_delete)
+                    break;
+                }
             }
         }
 
@@ -1180,21 +1249,85 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
           octave_idx_type ii = 0;
           octave_idx_type jj = 0;
           iidx = 0;
-          for (octave_idx_type i = 0; i < n; i++)
-            {
-              octave_quit ();
+          kk = idx_arg.elem (iidx);
 
-              if (iidx < num_to_delete && i == idx_arg.elem (iidx))
-                iidx++;
-              else
+          if (orig_nr == 1)
+            {
+              for (octave_idx_type i = 0; i < n; i++)
                 {
-                  T el = tmp.elem (i);
-                  if (el != T ())
+                  octave_quit ();
+
+                  if (iidx < num_to_delete && i == kk)
+                    kk = idx_arg.elem (++iidx);
+                  else
                     {
-                      data(ii) = el;
-                      ridx(ii++) = jj;
+                      if (tmp.cidx(i) != tmp.cidx(i + 1))
+                        {
+                          data(ii) = tmp.data (tmp.cidx(i));
+                          ridx(ii++) = jj;
+                        }
+                      jj++;
                     }
-                  jj++;
+                }
+            }
+          else if (orig_nc == 1)
+            {
+              octave_idx_type next_ridx = -1;
+              octave_idx_type next_ridx_val = n;
+              if (orig_nnz > 0)
+                {
+                  next_ridx = 0;
+                  next_ridx_val = tmp.ridx (0);
+                }
+
+              for (octave_idx_type i = 0; i < n; i++)
+                {
+                  octave_quit ();
+
+                  if (iidx < num_to_delete && i == kk)
+                    kk = idx_arg.elem (++iidx);
+                  else
+                    {
+                      while (i > next_ridx_val)
+                        {
+                          next_ridx++;
+                          if (next_ridx >= orig_nnz)
+                            {
+                              next_ridx = -1;
+                              next_ridx_val = n;
+                              break;
+                            }
+                          else
+                            next_ridx_val = tmp.ridx (next_ridx);
+                        }
+
+                      if (i == next_ridx_val)
+                        {
+                          data(ii) = tmp.data(next_ridx);
+                          ridx(ii++) = jj;
+                        }
+                      jj++;
+                    }
+                }
+            }
+          else
+            {
+              for (octave_idx_type i = 0; i < n; i++)
+                {
+                  octave_quit ();
+
+                  if (iidx < num_to_delete && i == kk)
+                    kk = idx_arg.elem (++iidx);
+                  else
+                    {
+                      T el = tmp.elem (i);
+                      if (el != T ())
+                        {
+                          data(ii) = el;
+                          ridx(ii++) = jj;
+                        }
+                      jj++;
+                    }
                 }
             }
 
@@ -1577,7 +1710,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       // indexed object.
       octave_idx_type len = length ();
       octave_idx_type n = idx_arg.freeze (len, "sparse vector", resize_ok);
-
+      octave_idx_type l, u;
       if (n == 0)
         if (nr == 1)
           retval = Sparse<T> (dim_vector (1, 0));
@@ -1588,9 +1721,60 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
           retval = Sparse<T> ((nr == 1 ? 1 : n), (nr == 1 ? n : 1));
         else
           retval = Sparse<T> (idx_orig_dims);
+      else if (idx_arg.is_range () && idx_arg.is_cont_range (n, l, u))
+        {
+          // Special case of indexing a sparse vector by a continuous range
+          if (nr == 1)
+            {
+              octave_idx_type new_nzmx = cidx(u) - cidx(l);
+              retval = Sparse<T> (1, n, new_nzmx);
+              octave_idx_type *iidx = retval.xcidx ();
+              copy_or_memcpy (n + 1, rep->c + l, iidx);
+              octave_idx_type ii = iidx[0];
+              if (ii != 0)
+                {
+                  for (octave_idx_type i = 0; i < n + 1; i++)
+                    iidx[i] -= ii;
+                }
+              copy_or_memcpy (new_nzmx, rep->d + ii, retval.rep->d);
+              copy_or_memcpy (new_nzmx, rep->r + ii, retval.rep->r);
+            }
+          else
+            {
+              octave_idx_type j1 = -1;
+
+              octave_idx_type new_nzmx = 0;
+              for (octave_idx_type j = 0; j < nz; j++)
+                {
+                  octave_idx_type j2 = ridx (j);
+                  if (j2 >= l && j2 < u)
+                    {
+                      new_nzmx++;
+                      if (j1 < 0)
+                        j1 = j;
+                    }
+                    if (j2 >= u)
+                      break;
+                  }
+
+              retval = Sparse<T> (n, 1, new_nzmx);
+              if (new_nzmx > 0)
+                {
+                  retval.xcidx(0) = 0;
+                  retval.xcidx(1) = new_nzmx;
+                  copy_or_memcpy (new_nzmx, rep->d + j1, retval.rep->d);
+                  octave_idx_type *iidx = retval.xridx ();
+                  copy_or_memcpy (new_nzmx, rep->r + j1, iidx);
+                  if (l != 0)
+                    {
+                      for (octave_idx_type i = 0; i < new_nzmx; i++)
+                        iidx[i] -= l;
+                    }
+                }
+            }
+        }
       else
         {
-
           octave_idx_type new_nzmx = 0;
           if (nr == 1)
             for (octave_idx_type i = 0; i < n; i++)
@@ -1603,7 +1787,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
                     new_nzmx++;
               }
           else
-            for (octave_idx_type i = 0; i < n; i++)
+             for (octave_idx_type i = 0; i < n; i++)
               {
                 octave_idx_type ii = idx_arg.elem (i);
                 if (ii < len)

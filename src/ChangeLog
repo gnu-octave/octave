@@ -1,5 +1,10 @@
 2010-03-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/str2double.cc (set_component): New helper func.
+	(str2double1): Use it here.
+
+2010-03-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/str2double.cc (str2double1): Use ISO-conformant code
 	for setting the real and imaginary part.
 

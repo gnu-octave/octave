@@ -136,6 +136,23 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   return is;
 }
 
+static inline void
+set_component (Complex& c, double num, bool imag)
+{
+  // FIXME: this is C++-0x.
+#if defined (__GNUC__) || defined (__MSVC__)
+  if (imag)
+    c.imag (r);
+  else
+    c.real (r);
+#else
+  if (imag)
+    c = Complex (c.real (), num);
+  else
+    c = Complex (num, c.imag ());
+#endif
+}
+
 static Complex
 str2double1 (std::string str)
 {
@@ -156,38 +173,14 @@ str2double1 (std::string str)
     val = octave_NaN;
   else
     {
-      if (i1)
-#ifdef __GNUC__
-        val.imag () = num; // GNU C++
-#else
-        val = Complex (val.real (), num); // ISO C++
-#endif
-      else
-#ifdef __GNUC__
-        val.real () = num; // GNU C++
-#else
-        val = Complex (num, val.imag ()); // ISO C++
-#endif
+      set_component (c, num, i1);
 
       if (! is.eof ())
         {
           if (! extract_num (is, num, i2, s2) || i1 == i2 || ! s2)
             val = octave_NaN;
           else
-            {
-              if (i2)
-#ifdef __GNUC__
-                val.imag () = num; // GNU C++
-#else
-                val = Complex (val.real (), num); // ISO C++
-#endif
-              else
-#ifdef __GNUC__
-                val.real () = num; // GNU C++
-#else
-                val = Complex (num, val.imag ()); // ISO C++
-#endif
-            }
+            set_component (c, num, i2);
         }
     }
 

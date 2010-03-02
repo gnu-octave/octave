@@ -1,3 +1,8 @@
+2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/conv.cc (Fconv2): Rewrite using convn from liboctave.
+	(Fconvn): New DEFUN.
+
 2010-03-01  John W. Eaton  <jwe@octave.org>
 
 	* (str2double1): Pass argument as const reference and make

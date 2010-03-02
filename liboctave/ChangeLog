@@ -1,3 +1,8 @@
+2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-convn.h, oct-convn.cc: New sources.
+	* Makefile.am: Include them.
+
 2010-03-01  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (Sparse<T>::maybe_delete_elements (idxx_vector&)):

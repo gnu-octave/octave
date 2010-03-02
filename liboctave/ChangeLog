@@ -1,3 +1,11 @@
+2010-03-01  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (Sparse<T>::maybe_delete_elements (idxx_vector&)):
+	Special case the deletion of elements in sparse vectors.
+	(Sparse<T>::index (idx_vector&, int) const): Special case indexing
+	of sparse matrices with ranges with a step of 1.
+	* Sparse.h: Include oct-mem.h for the copy_or_memcpy declaration.
+
 2010-02-28  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am ($(srcdir)/vx-op-inc.mk, $(srcdir)/mx-op-inc.mk,

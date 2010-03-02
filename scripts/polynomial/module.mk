@@ -3,7 +3,6 @@ FCN_FILE_DIRS += polynomial
 polynomial_FCN_FILES = \
   polynomial/compan.m \
   polynomial/conv.m \
-  polynomial/convn.m \
   polynomial/deconv.m \
   polynomial/mkpp.m \
   polynomial/mpoles.m \

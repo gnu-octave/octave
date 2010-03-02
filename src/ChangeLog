@@ -1,5 +1,10 @@
 2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/__convn__.cc: Remove.
+	* DLD-FUNCTIONS/module-files: Update.
+
+2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/conv.cc (Fconv2): Rewrite using convn from liboctave.
 	(Fconvn): New DEFUN.
 

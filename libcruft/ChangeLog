@@ -1,3 +1,8 @@
+2010-03-02  John W. Eaton  <jwe@octave.org>
+
+	* misc/cquit.c (octave_restore_signal_mask): Assume we have
+	POSIX signal handling.
+
 2010-02-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* misc/lo-error.c (liboctave_fatal_with_id,

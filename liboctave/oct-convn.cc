@@ -118,9 +118,11 @@ convolve (const MArray<T>& a, const MArray<R>& b,
   for (int i = 0; i < nd; i++)
     {
       if (ct == convn_valid)
-        cdims(i) = std::max (adims(i) - bdims(i) + 1, 0);
+        cdims(i) = std::max (adims(i) - bdims(i) + 1,
+                             static_cast<octave_idx_type> (0));
       else
-        cdims(i) = std::max (adims(i) + bdims(i) - 1, 0);
+        cdims(i) = std::max (adims(i) + bdims(i) - 1,
+                             static_cast<octave_idx_type> (0));
     }
 
   MArray<T> c (cdims, T());

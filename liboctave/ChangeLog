@@ -1,3 +1,8 @@
+2010-03-03  John W. Eaton  <jwe@octave.org>
+
+	* oct-convn.cc (convolve): Cast int constant to octave_idx_type in
+	call to std::max.
+
 2010-03-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-convn.cc (convolve_2d_axpy_kernel, convolve_2d_axpy): Remove.

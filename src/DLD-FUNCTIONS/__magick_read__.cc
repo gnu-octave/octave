@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 
 #include "file-stat.h"
+#include "oct-env.h"
 #include "oct-time.h"
 
 #include "defun-dld.h"
@@ -382,6 +383,17 @@ Instead you should use @code{imread}.\n\
   octave_value_list output;
 
 #ifdef HAVE_MAGICK
+
+  static bool initialized = false;
+
+  if (! initialized)
+    {
+      std::string program_name = octave_env::get_program_invocation_name ();
+
+      Magick::InitializeMagick (program_name.c_str ());
+
+      initialized = true;
+    }
 
   if (args.length () > 2 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)

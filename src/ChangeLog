@@ -1,3 +1,8 @@
+2010-03-03  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_read__):
+	Call Magick::InitializeMagick.
+
 2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc: Remove.

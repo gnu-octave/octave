@@ -19,4 +19,10 @@ libcruft_la_SOURCES += \
   blas-xtra/xscnrm2.f \
   blas-xtra/xcdotc.f \
   blas-xtra/xcdotu.f \
-  blas-xtra/xerbla.f
+  blas-xtra/xerbla.f \
+  blas-xtra/cconv2.f \
+  blas-xtra/csconv2.f \
+  blas-xtra/dconv2.f \
+  blas-xtra/sconv2.f \
+  blas-xtra/zconv2.f \
+  blas-xtra/zdconv2.f

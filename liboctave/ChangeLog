@@ -1,3 +1,10 @@
+2010-03-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-convn.cc (convolve_2d_axpy_kernel, convolve_2d_axpy): Remove.
+	(convolve_2d): Forward to Fortran implementations, add inner flag.
+	(convolve_nd): Handle inner-convolution case.
+	(convolve): Ditto.
+
 2010-03-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-convn.h, oct-convn.cc: New sources.

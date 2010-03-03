@@ -1,3 +1,10 @@
+2010-03-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas-xtra/cconv2.f, blas-xtra/csconv2.f, blas-xtra/dconv2.f,
+	blas-xtra/sconv2.f, blas-xtra/zconv2.f, blas-xtra/zdconv2.f:
+	New sources.
+	* blas-xtra/module.mk: Add them here.
+
 2010-03-02  John W. Eaton  <jwe@octave.org>
 
 	* misc/cquit.c (octave_restore_signal_mask): Assume we have

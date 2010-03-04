@@ -585,4 +585,7 @@ extern OCTAVE_API FloatComplex rc_log1p (float);
 extern OCTAVE_API double erfinv (double x);
 extern OCTAVE_API float erfinv (float x);
 
+extern OCTAVE_API double erfcx (double x);
+extern OCTAVE_API float erfcx (float x);
+
 #endif

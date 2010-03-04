@@ -1,3 +1,12 @@
+2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (unary_mapper_t::umap_erfcx): New enum member.
+	* ov.h (octave_value::erfcx): New forwarder method.
+	* ov-scalar.cc (octave_scalar::map): Handle erfcx.
+	* ov-float.cc (octave_float_scalar::map): Ditto.
+	* ov-re-mat.cc (octave_matrix::map): Ditto.
+	* ov-flt-re-mat.cc (octave_float_matrix::map): Ditto.
+
 2010-03-03  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_read__):

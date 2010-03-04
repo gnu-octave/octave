@@ -632,6 +632,32 @@ $1 - {\\rm erf} (z)$.\n\
 
 */
 
+DEFUN (erfcx, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} erfcx (@var{z})\n\
+Computes the scaled complementary error function,\n\
+@tex\n\
+$z^2 (1 - {\\rm erf} (z))$.\n\
+@end tex\n\
+@ifnottex\n\
+@code{z^2*(1 - erf (@var{z}))}.\n\
+@end ifnottex\n\
+@seealso{erfc, erf, erfinv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).erfcx ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+*/
+
 DEFUN (exp, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\

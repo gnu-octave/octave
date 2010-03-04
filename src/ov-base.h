@@ -665,6 +665,7 @@ public:
       umap_erf,
       umap_erfinv,
       umap_erfc,
+      umap_erfcx,
       umap_exp,
       umap_expm1,
       umap_finite,

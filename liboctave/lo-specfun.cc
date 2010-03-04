@@ -2,6 +2,7 @@
 
 Copyright (C) 1996, 1998, 2002, 2003, 2004, 2005, 2006, 2007, 2008
               John W. Eaton
+Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -3169,4 +3170,104 @@ double erfinv (double x)
 float erfinv (float x)
 {
   return do_erfinv (x, false); 
+}
+
+// Implementation based on the Fortran code by W.J.Cody
+// see http://www.netlib.org/specfun/erf.
+// Templatized and simplified workflow.
+
+// FIXME: Maybe this should be globally visible.
+static inline float erfc (float x) { return erfcf (x); }
+
+template <class T>
+static T 
+erfcx_impl (T x)
+{
+  static const T c[] = 
+    { 
+      5.64188496988670089e-1,8.88314979438837594,
+      6.61191906371416295e+1,2.98635138197400131e+2,
+      8.81952221241769090e+2,1.71204761263407058e+3,
+      2.05107837782607147e+3,1.23033935479799725e+3,
+      2.15311535474403846e-8 
+    };
+
+  static const T d[] = 
+    { 
+      1.57449261107098347e+1,1.17693950891312499e+2,
+      5.37181101862009858e+2,1.62138957456669019e+3,
+      3.29079923573345963e+3,4.36261909014324716e+3,
+      3.43936767414372164e+3,1.23033935480374942e+3
+    };
+
+  static const T p[] = 
+    {
+      3.05326634961232344e-1,3.60344899949804439e-1,
+      1.25781726111229246e-1,1.60837851487422766e-2,
+      6.58749161529837803e-4,1.63153871373020978e-2
+    };
+
+  static const T q[] = 
+    {
+      2.56852019228982242,1.87295284992346047,
+      5.27905102951428412e-1,6.05183413124413191e-2,
+      2.33520497626869185e-3
+    };
+
+  static const T sqrpi = 5.6418958354775628695e-1;
+  static const T xhuge = sqrt (1.0 / std::numeric_limits<T>::epsilon ());
+  static const T xneg = -sqrt (log (std::numeric_limits<T>::max ()/2.0));
+
+  double y = fabs (x), result;
+  if (x < xneg)
+    result = octave_Inf;
+  else if (y <= 0.46875)
+    result = std::exp (x*x) * erfc (x);
+  else
+    {
+      if (y <= 4.0)
+        {
+          double xnum = c[8]*y, xden = y;
+          for (int i = 0; i < 7; i++)
+            {
+              xnum = (xnum + c[i]) * y;
+              xden = (xden + d[i]) * y;
+            }
+
+          result = (xnum + c[7]) / (xden + d[7]);
+        }
+      else if (y <= xhuge)
+        {
+          double y2 = 1/(y*y), xnum = p[5]*y2, xden = y2;
+          for (int i = 0; i < 4; i++)
+            {
+              xnum = (xnum + p[i]) * y2;
+              xden = (xden + q[i]) * y2;
+            }
+
+          result = y2 * (xnum + p[4]) / (xden + q[4]);
+          result = (sqrpi - result) / y;
+        }
+      else
+        result = sqrpi / y;
+
+      // Fix up negative argument.
+      if (x < 0)
+        {
+          double y2 = ceil (x / 16.0) * 16.0, del = (x-y2)*(x+y2);
+          result = 2*(std::exp(y2*y2) * std::exp(del)) - result;
+        }
+    }
+
+  return result;
+}
+
+double erfcx (double x)
+{
+  return erfcx_impl (x);
+}
+
+float erfcx (float x)
+{
+  return erfcx_impl (x);
 }

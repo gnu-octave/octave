@@ -1,3 +1,8 @@
+2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-specfun.cc (erfcx, erfcx_impl): New functions.
+	* lo-specfun.h: Declare erfcx.
+
 2010-03-03  John W. Eaton  <jwe@octave.org>
 
 	* oct-convn.cc (convolve): Cast int constant to octave_idx_type in

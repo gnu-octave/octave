@@ -1,5 +1,9 @@
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/accumdim.m: New function.
+
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fzero.m: Avoid division by zero.
 
 2010-03-04  Jaroslav Hajek  <highegg@gmail.com>

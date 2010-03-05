@@ -1,0 +1,137 @@
+## Copyright (C) 2010 VZLU Prague
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{sz}, @var{func}, @var{fillval})
+## Create an array by accumulating the slices of an array into the
+## positions defined by their subscripts along a specified dimension. 
+## The subscripts are defined by the index vector @var{subs}.
+## The dimension is specified by @var{dim}. If not given, it defaults
+## to the first non-singleton dimension.
+##
+## The extent of the result matrix in the working dimension will be determined 
+## by the subscripts themselves.
+## However, if @var{n} is defined it determines this extent.
+##
+## The default action of @code{accumdim} is to sum the subarrays with the
+## same subscripts.  This behavior can be modified by defining the @var{func}
+## function.  This should be a function or function handle that accepts an 
+## array and a dimension, and reduces the array along this dimension.
+## As a special exception, the built-in @code{min} and @code{max} functions
+## can be used directly, and @code{accumdim} accounts for the middle empty
+## argument that is used in their calling.
+##
+## The slices of the returned array that have no subscripts associated with
+## them are set to zero.  Defining @var{fillval} to some other value allows
+## these values to be defined.
+##
+## An example of the use of @code{accumarray} is:
+##
+## @example
+## @group
+## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2], 101:105)
+## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
+##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
+## @end group
+## @end example
+##
+## @seealso{accumarray}
+## @end deftypefn
+
+function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
+
+  if (nargin < 2 || nargin > 5)
+    print_usage ();
+  endif
+
+  if (isempty (fillval))
+    fillval = 0;
+  endif
+
+  if (isempty (func))
+    func = @sum;
+  endif
+
+  if (! isvector (subs))
+    error ("accumdim: subs must be a subscript vector");
+  elseif (! isindex (subs)) # creates index cache
+    error ("accumdim: indices must be positive integers");
+  else
+    m = max (subs);
+    if (n == 0)
+      n = m;
+    elseif (n < m)
+      error ("accumdim: index out of range")
+    endif
+  endif
+
+  ## The general case.
+  sz = size (val);
+
+  if (nargin < 3)
+    [~, dim] = max (sz != 1); # first non-singleton dim
+  elseif (! isindex (dim, ndims (val)))
+    error ("accumdim: dim must be a valid dimension");
+  endif
+  sz(dim) = n;
+ 
+  ns = length (subs);
+  ## Sort indices.
+  [subs, idx] = sort (subs(:));
+  ## Identify runs.
+  jdx = find (subs(1:ns-1) != subs(2:ns));
+  jdx = [jdx; ns];
+  ## Collect common slices.
+  szc = num2cell (sz);
+  szc{dim} = diff ([0; jdx]);
+  subsc = {':'}(ones (1, length (sz)));
+  subsc{dim} = idx;
+  val = mat2cell (val(subsc{:}), szc{:});
+  ## Apply reductions. Special case min, max.
+  if (func == @min || func == @max)
+    val = cellfun (func, val, {[]}, {dim}, "uniformoutput", false);
+  else
+    val = cellfun (func, val, {dim}, "uniformoutput", false);
+  endif
+  subs = subs(jdx);
+
+  ## Concatenate reduced slices.
+  val = cat (dim, val{:});
+
+  ## Construct matrix of fillvals.
+  if (fillval == 0)
+    A = zeros (sz, class (val));
+  else
+    A = repmat (fillval, sz);
+  endif
+
+  ## Set the reduced values.
+  subsc{dim} = subs;
+  A(subsc{:}) = val;
+
+endfunction
+
+%%test accumdim vs. accumarray
+
+%!shared a
+%! a = rand (5, 5, 5);
+
+%!assert (accumdim ([1;3;1;3;3], a)(:,2,3), accumarray ([1;3;1;3;3], a(:,2,3)))
+%!assert (accumdim ([2;3;2;2;2], a, 2, 4)(4,:,2), accumarray ([2;3;2;2;2], a(4,:,2), [1,4]))
+%!assert (accumdim ([2;3;2;1;2], a, 3, 3, @min)(1,5,:), accumarray ([2;3;2;1;2], a(1,5,:), [1,1,3], @min))
+%!assert (accumdim ([1;3;2;2;1], a, 2, 3, @median)(4,:,5), accumarray ([1;3;2;2;1], a(4,:,5), [1,3], @median))

@@ -1,3 +1,9 @@
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* test_logical-wfi-f.m: Update.
+	* test_logical-wfi-t.m: Update.
+	* test_struct.m Update.
+
 2010-01-29  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (hasfunctions): Only check for DEFUN in .cc files.

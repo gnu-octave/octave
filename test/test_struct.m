@@ -184,7 +184,7 @@
 %!  [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
 %!  a(2:3).x(2);
 
-%!error <Index exceeds matrix dimension>
+%!error id=Octave:index-out-of-bounds
 %!  a(1).x.x = 1;
 %!  a(2).x;
 
@@ -258,7 +258,7 @@
 %!  s(3).foo = 42;
 %!  assert (s(3), struct ("foo", 42));
 
-%!error <Index exceeds matrix dimension>
+%!error id=Octave:index-out-of-bounds
 %!  s = resize(struct(),3,2);
 %!  s(3).foo = 42;
 %!  s(7);

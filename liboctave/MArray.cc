@@ -135,6 +135,70 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
   idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (), vals.data ()));
 }
 
+#include <iostream>
+
+template <class T>
+void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals, int dim)
+{
+  int nd = std::max (this->ndims (), vals.ndims ());
+  if (dim < 0)
+    dim = vals.dims ().first_non_singleton ();
+  else if (dim > nd)
+    nd = dim;
+
+  // Check dimensions.
+  dim_vector ddv = Array<T>::dims ().redim (nd);
+  dim_vector sdv = vals.dims ().redim (nd);
+
+  octave_idx_type ext = idx.extent (ddv (dim));
+
+  if (ext > ddv(dim))
+    {
+      ddv(dim) = ext;
+      Array<T>::resize (ddv);
+      ext = ddv(dim);
+    }
+
+  octave_idx_type l,n,u,ns;
+  get_extent_triplet (ddv, dim, l, n, u);
+  ns = sdv(dim);
+
+  sdv(dim) = ddv(dim) = 0;
+  if (ddv != sdv)
+    (*current_liboctave_error_handler)
+      ("accumdim: dimension mismatch");
+
+  T *dst = Array<T>::fortran_vec ();
+  const T *src = vals.data ();
+  octave_idx_type len = idx.length (ns);
+
+  if (l == 1)
+    {
+      for (octave_idx_type j = 0; j < u; j++)
+        {
+          octave_quit ();
+
+          idx.loop (len, _idxadda_helper<T> (dst + j*n, src + j*ns));
+        }
+    }
+  else
+    {
+      for (octave_idx_type j = 0; j < u; j++)
+        {
+          octave_quit ();
+          for (octave_idx_type i = 0; i < len; i++)
+            {
+              octave_idx_type k = idx(i);
+
+              mx_inline_add2 (l, dst + l*k, src + l*i);
+            }
+
+          dst += l*n;
+          src += l*ns;
+        }
+    }
+}
+
 // N-dimensional array with math ops.
 template <class T>
 void

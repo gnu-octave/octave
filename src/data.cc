@@ -6439,6 +6439,78 @@ Undocumented internal function.\n\
 }
 
 template <class NDT>
+static NDT 
+do_accumdim_sum (const idx_vector& idx, const NDT& vals,
+                 int dim = -1, octave_idx_type n = -1)
+{
+  typedef typename NDT::element_type T;
+  if (n < 0)
+    n = idx.extent (0);
+  else if (idx.extent (n) > n)
+    error ("accumarray: index out of range");
+
+  dim_vector rdv = vals.dims ();
+  if (dim < 0)
+    dim = vals.dims ().first_non_singleton ();
+  else if (dim >= rdv.length ())
+    rdv.resize (dim+1, 1);
+
+  rdv(dim) = n;
+
+  NDT retval (rdv, T());
+
+  retval.idx_add_nd (idx, vals, dim);
+  return retval;
+}
+
+DEFUN (__accumdim_sum__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __accumdim_sum__ (@var{idx}, @var{vals}, @var{dim}, @var{n})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+  if (nargin >= 2 && nargin <= 4 && args(0).is_numeric_type ())
+    {
+      idx_vector idx = args(0).index_vector ();
+      int dim = -1;
+      if (nargin >= 3)
+        dim = args(2).int_value () - 1;
+
+      octave_idx_type n = -1;
+      if (nargin == 4)
+        n = args(3).idx_type_value (true);
+
+      if (! error_state)
+        {
+          octave_value vals = args(1);
+
+          if (vals.is_single_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumdim_sum (idx, vals.float_complex_array_value (), dim, n);
+              else
+                retval = do_accumdim_sum (idx, vals.float_array_value (), dim, n);
+            }
+          else if (vals.is_numeric_type () || vals.is_bool_type ())
+            {
+              if (vals.is_complex_type ())
+                retval = do_accumdim_sum (idx, vals.complex_array_value (), dim, n);
+              else
+                retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
+            }
+          else
+            gripe_wrong_type_arg ("accumdim", vals);
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;  
+}
+
+template <class NDT>
 static NDT
 do_merge (const Array<bool>& mask,
           const NDT& tval, const NDT& fval)

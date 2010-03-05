@@ -63,10 +63,6 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
     fillval = 0;
   endif
 
-  if (isempty (func))
-    func = @sum;
-  endif
-
   if (! isvector (subs))
     error ("accumdim: subs must be a subscript vector");
   elseif (! isindex (subs)) # creates index cache
@@ -80,16 +76,33 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
     endif
   endif
 
-  ## The general case.
   sz = size (val);
 
   if (nargin < 3)
     [~, dim] = max (sz != 1); # first non-singleton dim
-  elseif (! isindex (dim, ndims (val)))
+  elseif (! isindex (dim))
     error ("accumdim: dim must be a valid dimension");
+  elseif (dim > length (sz))
+    sz(end+1:dim) = 1;
   endif
   sz(dim) = n;
  
+  if (isempty (func) || func == @sum)
+    ## Fast summation case.
+    A = __accumdim_sum__ (subs, val, dim, n);
+    
+    ## Fill in nonzero fill value
+    if (fillval != 0)
+      mask = true (n, 1);
+      mask(subs) = false;
+      subsc = {':'}(ones (1, length (sz)));
+      subsc{dim} = mask;
+      A(subsc{:}) = fillval;
+    endif
+    return
+  endif
+
+  ## The general case.
   ns = length (subs);
   ## Sort indices.
   [subs, idx] = sort (subs(:));

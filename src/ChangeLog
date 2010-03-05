@@ -1,3 +1,8 @@
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (do_accumdim_sum): New helper function.
+	(F__accumdim_sum__): New DEFUN.
+
 2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (unary_mapper_t::umap_erfcx): New enum member.

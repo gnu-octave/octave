@@ -1,3 +1,8 @@
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MArray.cc (MArray<T>::idx_add_nd): New method.
+	* MArray.h: Declare it.
+
 2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-specfun.cc (erfcx, erfcx_impl): New functions.

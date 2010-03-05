@@ -96,6 +96,8 @@ public:
 
   void idx_max (const idx_vector& idx, const MArray<T>& vals);
 
+  void idx_add_nd (const idx_vector& idx, const MArray<T>& vals, int dim = -1);
+
   void changesign (void);
 };
 

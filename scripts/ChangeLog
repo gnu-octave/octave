@@ -1,5 +1,9 @@
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/accumdim.m: Optimize the summation case.
+
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/accumdim.m: New function.
 
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>

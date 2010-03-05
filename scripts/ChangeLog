@@ -1,3 +1,7 @@
+2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/fzero.m: Avoid division by zero.
+
 2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fminbnd.m: Fix tests.

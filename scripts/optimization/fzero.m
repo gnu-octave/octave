@@ -287,7 +287,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Check solution for a singularity by examining slope
   if (info == 1)
-    if ((b - a) != 0 && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/tolx))
+    if ((b - a) != 0 && abs ((fb - fa)/(b - a) / slope0) > max (1e6, 0.5/(eps+tolx)))
       info = -5;
     endif
   endif

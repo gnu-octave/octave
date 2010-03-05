@@ -40,13 +40,12 @@
 ## them are set to zero.  Defining @var{fillval} to some other value allows
 ## these values to be defined.
 ##
-## An example of the use of @code{accumarray} is:
+## An example of the use of @code{accumdim} is:
 ##
 ## @example
 ## @group
-## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2], 101:105)
-## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
-##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
+## accumdim ([1, 2, 1, 2, 1], [7,-10,4;-5,-12,8;-12,2,8;-10,9,-3;-5,-3,-13])
+## @result{} ans = [-10,-11,-1;-15,-3,5]
 ## @end group
 ## @end example
 ##

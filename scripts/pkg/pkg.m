@@ -1767,6 +1767,21 @@ function write_index (desc, dir, index_file, global_install)
     error ("couldn't read directory %s: %s", dir, msg);
   endif
 
+  ## Get classes in dir
+  class_idx = strmatch ("@", files);
+  for k = 1:length (class_idx)
+    class_name = files {class_idx (k)};
+    class_dir = fullfile (dir, class_name);
+    if (exist (class_dir, "dir"))
+      [files2, err, msg] = readdir (class_dir);
+      if (err)
+        error ("couldn't read directory %s: %s", class_dir, msg);
+      endif
+      files2 = strcat (class_name, filesep (), files2);
+      files = [files; files2];    
+    endif
+  endfor
+
   ## Check for architecture dependent files.
   tmpdir = getarchdir (desc);
   if (exist (tmpdir, "dir"))

@@ -373,7 +373,12 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     elseif (strcmp (__type, "error") || strcmp(__type, "warning"))
       __istest = 1;
       __warning = strcmp (__type, "warning");
-      [__pattern, __code] = getpattern (__code);
+      [__pattern, __id, __code] = getpattern (__code);
+      if (__id)
+        __patstr = ["id=",__id];
+      else
+        __patstr = ["<",__pattern,">"];
+      endif
       try
       	eval (sprintf ("function __test__(%s)\n%s\nendfunction",
 		       __shared, __code));
@@ -390,31 +395,43 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       	try
  	  eval (sprintf ("__test__(%s);", __shared));
           if (! __warning)
-       	    __msg = sprintf ("%sexpected <%s> but got no error\n",
- 			     __signal_fail, __pattern);
+       	    __msg = sprintf ("%sexpected %s but got no error\n",
+ 			     __signal_fail, __patstr);
 	  else
-	    __err = trimerr (lastwarn, "warning");
+            if (! isempty (__id))
+              [~, __err] = lastwarn;
+              __mismatch = ! strcmp (__err, __id);
+            else
+              __err = trimerr (lastwarn, "warning");
+              __mismatch = isempty (regexp (__err, __pattern, "once"));
+            endif
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
-              __msg = sprintf ("%sexpected <%s> but got no warning\n",
-			     __signal_fail, __pattern);
-            elseif (isempty (regexp (__err, __pattern, "once")))
-              __msg = sprintf ("%sexpected <%s> but got %s\n",
- 			       __signal_fail, __pattern, __err);
+              __msg = sprintf ("%sexpected %s but got no warning\n",
+			     __signal_fail, __patstr);
+            elseif (__mismatch)
+              __msg = sprintf ("%sexpected %s but got %s\n",
+ 			       __signal_fail, __patstr, __err);
             else
               __success = 1;
             endif
 	  endif
 
       	catch
-	  __err = trimerr (lasterr, "error");
+          if (! isempty (__id))
+            [~, __err] = lasterr;
+            __mismatch = ! strcmp (__err, __id);
+          else
+            __err = trimerr (lasterr, "error");
+            __mismatch = isempty (regexp (__err, __pattern, "once"));
+          endif
           warning (__warnstate.state, "quiet");
           if (__warning)
-            __msg = sprintf ("%sexpected warning <%s> but got error %s\n",
-			     __signal_fail, __pattern, __err);
-	  elseif (isempty (regexp (__err, __pattern, "once")))
-            __msg = sprintf ("%sexpected <%s> but got %s\n",
-			     __signal_fail, __pattern, __err);
+            __msg = sprintf ("%sexpected warning %s but got error %s\n",
+			     __signal_fail, __patstr, __err);
+	  elseif (__mismatch)
+            __msg = sprintf ("%sexpected %s but got %s\n",
+			     __signal_fail, __patstr, __err);
           else
 	    __success = 1;
           endif
@@ -576,8 +593,10 @@ function pos = function_name (def)
 endfunction
 
 ## Strip <pattern> from '<pattern> code'.
-function [pattern, rest] = getpattern (str)
+## Also handles 'id=ID code'
+function [pattern, id, rest] = getpattern (str)
   pattern = ".";
+  id = [];
   rest = str; 
   str = trimleft (str);
   if (! isempty (str) && str(1) == "<")
@@ -586,6 +605,8 @@ function [pattern, rest] = getpattern (str)
       pattern = str(2:close-1);
       rest = str(close+1:end);
     endif
+  elseif (strncmp (str, "id=", 3))
+    [id, rest] = strtok (str(4:end));
   endif
 endfunction
 

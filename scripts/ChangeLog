@@ -1,5 +1,9 @@
 2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* optimization/fminbnd.m: Fix tests.
+
+2010-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* optimization/fminbnd.m: Fix termination tolerances.
 
 2010-03-02  Jaroslav Hajek  <highegg@gmail.com>

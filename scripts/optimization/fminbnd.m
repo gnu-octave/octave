@@ -204,7 +204,7 @@ endfunction
 
 %!shared opt0
 %! opt0 = optimset ("tolx", 0);
-%!assert (fminbnd (@cos, pi/2, 3*pi/2, opt0), pi, 10*eps)
-%!assert (fminbnd (@(x) (x - 1e-3)^4, -1, 1, opt0), 1e-3, 10e-3*eps)
-%!assert (fminbnd (@(x) abs(x-1e7), 0, 1e10, opt0), 1e7, 10e7*eps)
-%!assert (fminbnd (@(x) x^2 + sin(2*pi*x), 0.4, 1, opt0), fzero (@(x) 2*x + 2*pi*cos(2*pi*x), [0.4, 1], opt0), 1e-7)
+%!assert (fminbnd (@cos, pi/2, 3*pi/2, opt0), pi, 10*sqrt(eps))
+%!assert (fminbnd (@(x) (x - 1e-3)^4, -1, 1, opt0), 1e-3, 10e-3*sqrt(eps))
+%!assert (fminbnd (@(x) abs(x-1e7), 0, 1e10, opt0), 1e7, 10e7*sqrt(eps))
+%!assert (fminbnd (@(x) x^2 + sin(2*pi*x), 0.4, 1, opt0), fzero (@(x) 2*x + 2*pi*cos(2*pi*x), [0.4, 1], opt0), sqrt(eps))

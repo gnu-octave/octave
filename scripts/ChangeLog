@@ -1,3 +1,8 @@
+2010-03-05  Soren Hauberg  <hauberg@gmail.com>
+
+	* plot/fplot.m: Ensure that 'limits' is a 2 or 4 vector, and that 'fn' is a
+	function.
+
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* testfun/test.m: Support catching warnings and errors by IDs.

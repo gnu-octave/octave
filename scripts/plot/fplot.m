@@ -46,6 +46,10 @@ function fplot (fn, limits, n, linespec)
     print_usage ();
   endif
 
+  if (!isreal (limits) || (numel (limits) != 2 && numel (limits) != 4))
+    error ("fplot: second input argument must be a real vector with 2 or 4 elements");
+  endif
+
   if (nargin < 3) 
     n = 0.002; 
   endif
@@ -68,9 +72,11 @@ function fplot (fn, limits, n, linespec)
     nam = func2str (fn);
   elseif (all (isalnum (fn)))
     nam = fn;
+  elseif (ischar (fn))
+     fn = vectorize (inline (fn));
+     nam = formula (fn);
   else
-    fn = vectorize (inline (fn));
-    nam = formula (fn);
+    error ("fplot: first input argument must be a function handle, inline function or string");
   endif
 
   if (floor(n) != n)

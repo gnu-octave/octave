@@ -50,10 +50,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "parse.h"
 #include "toplev.h"
+#include "txt-eng-ft.h"
 #include "unwind-prot.h"
 
-// forward declaration
+// forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
+static graphics_object xget_ancestor (const graphics_object& go_arg,
+                                      const std::string& type);
 
 static void
 gripe_set_invalid (const std::string& pname)
@@ -311,8 +314,9 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   const caseless_str& to_units,
                   const Matrix& parent_dim = Matrix (1, 2, 0.0))
 {
-  Matrix retval (1, 4);
+  Matrix retval (1, pos.numel ());
   double res = 0;
+  bool is_rectangle = (pos.numel () == 4);
 
   if (from_units.compare ("pixels"))
     retval = pos;
@@ -320,8 +324,13 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
     {
       retval(0) = pos(0) * parent_dim(0) + 1;
       retval(1) = pos(1) * parent_dim(1) + 1;
-      retval(2) = pos(2) * parent_dim(0);
-      retval(3) = pos(3) * parent_dim(1);
+      if (is_rectangle)
+        {
+          retval(2) = pos(2) * parent_dim(0);
+          retval(3) = pos(3) * parent_dim(1);
+        }
+      else
+        retval(2) = 0;
     }
   else if (from_units.compare ("characters"))
     {
@@ -338,8 +347,13 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
         {
           retval(0) = 0.5 * pos(0) * f;
           retval(1) = pos(1) * f;
-          retval(2) = 0.5 * pos(2) * f;
-          retval(3) = pos(3) * f;
+          if (is_rectangle)
+            {
+              retval(2) = 0.5 * pos(2) * f;
+              retval(3) = pos(3) * f;
+            }
+          else
+            retval(2) = 0;
         }
     }
   else
@@ -360,8 +374,13 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
         {
           retval(0) = pos(0) * f + 1;
           retval(1) = pos(1) * f + 1;
-          retval(2) = pos(2) * f;
-          retval(3) = pos(3) * f;
+          if (is_rectangle)
+            {
+              retval(2) = pos(2) * f;
+              retval(3) = pos(3) * f;
+            }
+          else
+            retval(2) = 0;
         }
     }
 
@@ -371,8 +390,13 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
         {
           retval(0) = (retval(0) - 1) / parent_dim(0);
           retval(1) = (retval(1) - 1) / parent_dim(1);
-          retval(2) /= parent_dim(0);
-          retval(3) /= parent_dim(1);
+          if (is_rectangle)
+            {
+              retval(2) /= parent_dim(0);
+              retval(3) /= parent_dim(1);
+            }
+          else
+            retval(2) = 0;
         }
       else if (to_units.compare ("characters"))
         {
@@ -387,8 +411,13 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
             {
               retval(0) = 2 * retval(0) / f;
               retval(1) = retval(1) / f;
-              retval(2) = 2 * retval(2) / f;
-              retval(3) = retval(3) / f;
+              if (is_rectangle)
+                {
+                  retval(2) = 2 * retval(2) / f;
+                  retval(3) = retval(3) / f;
+                }
+              else
+                retval(2) = 0;
             }
         }
       else
@@ -409,9 +438,94 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
             {
               retval(0) = (retval(0) - 1) / f;
               retval(1) = (retval(1) - 1) / f;
-              retval(2) /= f;
-              retval(3) /= f;
+              if (is_rectangle)
+                {
+                  retval(2) /= f;
+                  retval(3) /= f;
+                }
+              else
+                retval(2) = 0;
             }
+        }
+    }
+  else if (! is_rectangle)
+    retval(2) = 0;
+
+  return retval;
+}
+
+static Matrix
+convert_text_position (const Matrix& pos, const text::properties& props,
+                       const caseless_str& from_units,
+                       const caseless_str& to_units)
+{
+  graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
+  graphics_object ax = xget_ancestor (go, "axes");
+
+  Matrix retval (1, pos.numel (), 0);
+
+  if (ax.valid_object ())
+    {
+      const axes::properties& ax_props =
+          dynamic_cast<const axes::properties&> (ax.get_properties ());
+      graphics_xform ax_xform = ax_props.get_transform ();
+      bool is_rectangle = (pos.numel () == 4);
+      Matrix ax_bbox = ax_props.get_boundingbox (true),
+             ax_size = ax_bbox.extract_n (0, 2, 1, 2);
+
+      if (from_units.compare ("data"))
+        {
+          if (is_rectangle)
+            {
+              ColumnVector v1 = ax_xform.transform (pos(0), pos(1), 0),
+                           v2 = ax_xform.transform (pos(0) + pos(2),
+                                                    pos(1) + pos(3), 0);
+
+              retval(0) = v1(0) - ax_bbox(0) + 1;
+              retval(1) = ax_bbox(1) + ax_bbox(3) - v1(1) + 1;
+              retval(2) = v2(0) - v1(0);
+              retval(3) = v1(1) - v2(1);
+            }
+          else
+            {
+              ColumnVector v = ax_xform.transform (pos(0), pos(1), pos(2));
+
+              retval(0) = v(0) - ax_bbox(0) + 1;
+              retval(1) = ax_bbox(1) + ax_bbox(3) - v(1) + 1;
+              retval(2) = 0;
+            }
+        }
+      else
+        retval = convert_position (pos, from_units, "pixels", ax_size);
+
+      if (! to_units.compare ("pixels"))
+        {
+          if (to_units.compare ("data"))
+            {
+              if (is_rectangle)
+                {
+                  ColumnVector v1 = ax_xform.untransform (retval(0) + ax_bbox(0) - 1,
+                                                          ax_bbox(1) + ax_bbox(3)  - retval(1) + 1),
+                               v2 = ax_xform.untransform (retval(0) + retval(2) + ax_bbox(0) - 1,
+                                                          ax_bbox(1) + ax_bbox(3)  - (retval(1) + retval(3)) + 1);
+
+                  retval(0) = v1(0);
+                  retval(1) = v1(1);
+                  retval(2) = v2(0) - v1(0);
+                  retval(3) = v2(1) - v1(1);
+                }
+              else
+                {
+                  ColumnVector v = ax_xform.untransform (retval(0) + ax_bbox(0) - 1,
+                                                         ax_bbox(1) + ax_bbox(3)  - retval(1) + 1);
+
+                  retval(0) = v(0);
+                  retval(1) = v(1);
+                  retval(2) = v(2);
+                }
+            }
+          else
+            retval = convert_position (retval, "pixels", to_units, ax_size);
         }
     }
 
@@ -3378,6 +3492,7 @@ axes::properties::get_boundingbox (bool internal) const
 
   pos = convert_position (pos, get_units (), "pixels",
                           parent_bb.extract_n (0, 2, 1, 2));
+
   pos(0)--;
   pos(1)--;
   pos(1) = parent_bb(3) - pos(1) - pos(3);
@@ -4099,7 +4214,81 @@ line::properties::compute_ylim (void) const
 
 // ---------------------------------------------------------------------
 
-// Note: "text" code is entirely auto-generated
+Matrix
+text::properties::get_data_position (void) const
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  if (! units_is ("data"))
+    pos = convert_text_position (pos, *this, get_units (), "data");
+
+  return pos;
+}
+
+octave_value
+text::properties::get_extent (void) const
+{
+  Matrix m = extent.get ().matrix_value ();
+
+  return convert_text_position (m, *this, "pixels", get_units ());
+}
+
+void
+text::properties::update_text_extent (void)
+{
+#ifdef HAVE_FREETYPE
+
+  text_element *elt;
+  ft_render text_renderer;
+  Matrix box;
+
+  // FIXME: parsed content should be cached for efficiency
+  
+  elt = text_parser_none ().parse (get_string ());
+  text_renderer.set_font (*this);
+  box = text_renderer.get_extent (elt, get_rotation ());
+
+  Matrix extent (1, 4, 0.0);
+
+  // FIXME: also handle left and bottom components
+
+  extent(0) = extent(1) = 1;
+  extent(2) = box(0);
+  extent(3) = box(1);
+
+  set_extent (extent);
+
+#endif
+}
+
+void
+text::properties::update_units (void)
+{
+  if (! units_is ("data"))
+    {
+      set_xliminclude ("off");
+      set_yliminclude ("off");
+      set_zliminclude ("off");
+    }
+
+  Matrix pos = get_position ().matrix_value ();
+
+  pos = convert_text_position (pos, *this, cached_units, get_units ());
+  // FIXME: if the current axes view is 2D, then one should
+  // probably drop the z-component of "pos" and leave "zliminclude"
+  // to "off".
+  set_position (pos);
+
+  if (units_is ("data"))
+    {
+      set_xliminclude ("on");
+      set_yliminclude ("on");
+      // FIXME: see above
+      set_zliminclude ("off");
+    }
+
+  cached_units = get_units ();
+}
 
 // ---------------------------------------------------------------------
 

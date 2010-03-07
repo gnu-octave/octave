@@ -66,11 +66,16 @@ public:
   uint8NDArray render (text_element* elt, Matrix& box,
                        int rotation = ROTATION_0);
 
+  Matrix get_extent (text_element *elt, double rotation = 0.0);
+
   void set_font (const base_properties& props);
 
   void set_color (Matrix c);
 
   void set_mode (int m);
+
+private:
+  int rotation_to_mode (double rotation) const;
 
 private:
   FT_Face face;

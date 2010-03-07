@@ -2704,18 +2704,20 @@ class OCTINTERP_API graphics_xform
 {
 public:
   graphics_xform (void)
-      : xform (xform_eye ()), xform_inv (xform_eye ())
+      : xform (xform_eye ()), xform_inv (xform_eye ()), zlim (1, 2, 0.0)
     {
       sx = sy = sz = "linear";
+      zlim(1) = 1.0;
     }
 
   graphics_xform (const Matrix& xm, const Matrix& xim,
-                  const scaler& x, const scaler& y, const scaler& z)
-      : xform (xm), xform_inv (xim), sx (x), sy (y), sz (z) { }
+                  const scaler& x, const scaler& y, const scaler& z,
+                  const Matrix& zl)
+      : xform (xm), xform_inv (xim), sx (x), sy (y), sz (z), zlim (zl) { }
 
   graphics_xform (const graphics_xform& g)
       : xform (g.xform), xform_inv (g.xform_inv), sx (g.sx),
-        sy (g.sy), sz (g.sz) { }
+        sy (g.sy), sz (g.sz), zlim (g.zlim) { }
 
   ~graphics_xform (void) { }
 
@@ -2726,6 +2728,7 @@ public:
       sx = g.sx;
       sy = g.sy;
       sz = g.sz;
+      zlim = g.zlim;
 
       return *this;
     }
@@ -2739,6 +2742,9 @@ public:
   
   ColumnVector untransform (double x, double y, double z,
                             bool scale = true) const;
+  
+  ColumnVector untransform (double x, double y, bool scale = true) const
+    { return untransform (x, y, (zlim(0)+zlim(1))/2, scale); }
 
   Matrix xscale (const Matrix& m) const { return sx.scale (m); }
   Matrix yscale (const Matrix& m) const { return sy.scale (m); }
@@ -2771,6 +2777,7 @@ private:
   Matrix xform;
   Matrix xform_inv;
   scaler sx, sy, sz;
+  Matrix zlim;
 };
 
 class OCTINTERP_API axes : public base_graphics_object
@@ -2807,7 +2814,7 @@ public:
       }
 
     graphics_xform get_transform (void) const
-      { return graphics_xform (x_render, x_render_inv, sx, sy, sz); }
+      { return graphics_xform (x_render, x_render_inv, sx, sy, sz, x_zlim); }
 
     Matrix get_transform_matrix (void) const { return x_render; }
     Matrix get_inverse_transform_matrix (void) const { return x_render_inv; }
@@ -3233,17 +3240,17 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (text)
-      string_property string , ""
-      radio_property units , "{data}|pixels|normalized|inches|centimeters|points"
+      string_property string u , ""
+      radio_property units u , "{data}|pixels|normalized|inches|centimeters|points"
       array_property position u , Matrix (1, 3, 0.0)
-      double_property rotation , 0
+      double_property rotation u , 0
       radio_property horizontalalignment , "{left}|center|right"
       color_property color , color_values (0, 0, 0)
-      string_property fontname , OCTAVE_DEFAULT_FONTNAME
-      double_property fontsize , 10
-      radio_property fontangle , "{normal}|italic|oblique"
-      radio_property fontweight , "light|{normal}|demi|bold"
-      radio_property interpreter , "{tex}|none|latex"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
+      radio_property fontangle u , "{normal}|italic|oblique"
+      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property interpreter u , "{tex}|none|latex"
       color_property backgroundcolor , "{none}"
       string_property displayname , ""
       color_property edgecolor , "{none}"
@@ -3254,6 +3261,7 @@ public:
       double_property linewidth , 0.5
       double_property margin , 1
       radio_property verticalalignment , "top|cap|{middle}|baseline|bottom"
+      array_property extent rG , Matrix (1, 4, 0.0)
       // hidden properties for limit computation
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
@@ -3263,16 +3271,20 @@ public:
       bool_property zliminclude hl , "off"
     END_PROPERTIES
 
+    Matrix get_data_position (void) const;
+
   protected:
     void init (void)
       {
+        position.add_constraint (dim_vector (1, 2));
         position.add_constraint (dim_vector (1, 3));
+        cached_units = get_units ();
       }
 
   private:
     void update_position (void)
       {
-        Matrix pos = get_position ().matrix_value ();
+        Matrix pos = get_data_position ();
         Matrix lim;
 
         lim = Matrix (1, 3, pos(0));
@@ -3293,6 +3305,21 @@ public:
         else
           set_zliminclude ("off");
       }
+
+    void update_text_extent (void);
+
+    void update_string (void) { update_text_extent (); }
+    void update_rotation (void) { update_text_extent (); }
+    void update_fontname (void) { update_text_extent (); }
+    void update_fontsize (void) { update_text_extent (); }
+    void update_fontangle (void) { update_text_extent (); }
+    void update_fontweight (void) { update_text_extent (); }
+    void update_interpreter (void) { update_text_extent (); }
+
+    void update_units (void);
+
+  private:
+    std::string cached_units;
   };
 
 private:

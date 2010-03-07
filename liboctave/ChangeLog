@@ -1,3 +1,7 @@
+2010-03-07  Soren Hauberg  <hauberg@gmail.com>
+
+	* dim-vector.h: New constructor accepting a C array of dimensions.
+
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MArray.cc (MArray<T>::idx_add_nd): New method.

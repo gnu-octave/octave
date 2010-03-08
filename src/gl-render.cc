@@ -1665,6 +1665,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   // 3rd pass: draw remaining objects
 
+  glDisable (GL_DEPTH_TEST);
   for (it = obj_list.begin (); it != obj_list.end (); it++)
     {
       graphics_object go = (*it);
@@ -1672,6 +1673,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       set_clipping (go.get_properties ().is_clipping ());
       draw (go);
     }
+  glEnable (GL_DEPTH_TEST);
 
   set_clipping (false);
   // FIXME: finalize rendering (transparency processing)
@@ -2668,8 +2670,7 @@ opengl_renderer::draw_text (const text::properties& props)
   set_font (props);
   set_color (props.get_color_rgb ());
 
-  // FIXME: take "units" into account
-  const Matrix pos = xform.scale (props.get_position ().matrix_value ());
+  const Matrix pos = xform.scale (props.get_data_position ());
   int halign = 0, valign = 0;
 
   if (props.horizontalalignment_is ("center"))

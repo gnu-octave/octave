@@ -1,3 +1,36 @@
+2010-03-07  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* gl-render.cc (draw_figure): disable depth test on the 3rd pass.
+	(draw_text): use get_data_position to get text position.
+	* graphics.h.in (graphics_xform): New zlim field.
+	(graphics_xform::untransform(double,double,bool)): New method.
+	(axes::properties::get_transform): Provide zlim data to graphics_xform
+	constructor.
+	(text::properties::string, text::properties::units,
+	text::properties::rotation, text::properties::fontname,
+	text::properties::fontangle, text::properties::fontsize,
+	text::properties::fontweight, text::properties::interpreter): Add 'u'
+	modified.
+	(text::properties::extent): New property.
+	(text::properties::get_data_position): New method.
+	(text::properties::update_position): Use it.
+	(text::properties::update_text_extent,
+	text::properties::update_string, text::properties::update_rotation,
+	text::properties::update_fontname, text::properties::update_fontsize,
+	text::properties::update_fontangle,
+	text::properties::update_fontweight,
+	text::properties::update_interpreter, text::properties::update_units):
+	New updaters.
+	* graphics.cc (convert_position): Support single point.
+	(convert_text_position): New helper function.
+	(text::properties::get_data_position, text::properties::get_extent,
+	text::properties::update_text_extent, text::properties::update_units):
+	New methods.
+	* txt-eng-ft.h (ft_render::get_extent, ft_render::rotation_to_mode):
+	New methods.
+	* txt-eng-ft.cc (ft_render::get_extent, ft_render::rotation_to_mode):
+	Ditto.
+
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (do_accumdim_sum): New helper function.

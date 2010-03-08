@@ -443,4 +443,43 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
   return pixels;
 }
 
+Matrix
+ft_render::get_extent (text_element *elt, double rotation)
+{
+  set_mode (MODE_BBOX);
+  elt->accept (*this);
+
+  Matrix extent (1, 2, 0.0);
+
+  switch (rotation_to_mode (rotation))
+    {
+    case ROTATION_0:
+    case ROTATION_180:
+      extent(0) = bbox(2);
+      extent(1) = bbox(3);
+      break;
+    case ROTATION_90:
+    case ROTATION_270:
+      extent(0) = bbox(3);
+      extent(1) = bbox(2);
+    }
+
+  return extent;
+}
+
+int
+ft_render::rotation_to_mode (double rotation) const
+{
+  if (rotation == 0.0)
+    return ROTATION_0;
+  else if (rotation == 90.0)
+    return ROTATION_90;
+  else if (rotation == 180.0)
+    return ROTATION_180;
+  else if (rotation == 270.0)
+    return ROTATION_270;
+  else
+    return ROTATION_0;
+}
+
 #endif // HAVE_FREETYPE

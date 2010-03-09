@@ -1549,14 +1549,8 @@ convert_to_int_array (const Array<octave_int<T> >& A)
   Array<int> retval (A.dims ());
   octave_idx_type n = A.numel ();
 
-  octave_int<int>::clear_conv_flag ();
   for (octave_idx_type i = 0; i < n; i++)
     retval.xelem (i) = octave_int<int> (A.xelem (i));
-
-  if (octave_int<int>::get_trunc_flag ())
-    gripe_truncated_conversion (octave_int<T>::type_name (), "int");
-
-  octave_int<int>::clear_conv_flag ();
 
   return retval;
 }
@@ -1630,14 +1624,8 @@ convert_to_octave_idx_type_array (const Array<octave_int<T> >& A)
   Array<octave_idx_type> retval (A.dims ());
   octave_idx_type n = A.numel ();
 
-  octave_int<int>::clear_conv_flag ();
   for (octave_idx_type i = 0; i < n; i++)
     retval.xelem (i) = octave_int<octave_idx_type> (A.xelem (i));
-
-  if (octave_int<int>::get_trunc_flag ())
-    gripe_truncated_conversion (octave_int<T>::type_name (), "int");
-
-  octave_int<int>::clear_conv_flag ();
 
   return retval;
 }

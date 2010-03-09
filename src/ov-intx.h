@@ -70,47 +70,31 @@ public:
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
-private:
-
-  template <class IM>
-  IM convert_gripe () const
-    {
-      typedef typename IM::element_type dest_el_type;
-      typedef intNDArray<OCTAVE_INT_T>::element_type src_el_type;
-      dest_el_type::clear_conv_flag ();
-      IM retval (matrix);
-      if (dest_el_type::get_trunc_flag ())
-        gripe_truncated_conversion (src_el_type::type_name (),
-                                    dest_el_type::type_name ());
-      dest_el_type::clear_conv_flag ();
-      return retval;
-    }
-
 public:
 
   int8NDArray
-  int8_array_value (void) const { return convert_gripe<int8NDArray> (); }
+  int8_array_value (void) const { return int8NDArray (matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return convert_gripe<int16NDArray> (); }
+  int16_array_value (void) const { return int16NDArray (matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return convert_gripe<int32NDArray> (); }
+  int32_array_value (void) const { return int32NDArray (matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return convert_gripe<int64NDArray> (); }
+  int64_array_value (void) const { return int64NDArray (matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return convert_gripe<uint8NDArray> (); }
+  uint8_array_value (void) const { return uint8NDArray (matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return convert_gripe<uint16NDArray> (); }
+  uint16_array_value (void) const { return uint16NDArray (matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return convert_gripe<uint32NDArray> (); }
+  uint32_array_value (void) const { return uint32NDArray (matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return convert_gripe<uint64NDArray> (); }
+  uint64_array_value (void) const { return uint64NDArray (matrix); }
 
   double
   double_value (bool = false) const
@@ -305,26 +289,16 @@ public:
   void increment (void) 
    { 
      matrix_ref() += OCTAVE_INT_T (1); 
-     if (OCTAVE_INT_T::get_math_trunc_flag ())
-       gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
-
-      OCTAVE_INT_T::clear_conv_flag ();
    }
 
   void decrement (void)
    { 
      matrix_ref() -= OCTAVE_INT_T (1); 
-     if (OCTAVE_INT_T::get_math_trunc_flag ())
-       gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
-      OCTAVE_INT_T::clear_conv_flag ();
    }
 
   void changesign (void)
    { 
      matrix_ref ().changesign (); 
-     if (OCTAVE_INT_T::get_math_trunc_flag ())
-       gripe_unop_integer_math_truncated ("-", type_name (). c_str ());
-      OCTAVE_INT_T::clear_conv_flag ();
    }
 
   idx_vector index_vector (void) const 
@@ -441,48 +415,31 @@ public:
 
   builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
 
-private:
-
-  template <class IS>
-  IS convert_gripe () const
-    {
-      typedef IS dest_el_type;
-      typedef OCTAVE_INT_T src_el_type;
-      dest_el_type::clear_conv_flag ();
-      IS retval (scalar);
-
-      if (dest_el_type::get_trunc_flag ())
-        gripe_truncated_conversion (src_el_type::type_name (),
-                                    dest_el_type::type_name ());
-      dest_el_type::clear_conv_flag ();
-      return retval;
-    }
-
 public:
 
   octave_int8
-  int8_scalar_value (void) const { return convert_gripe<octave_int8> (); }
+  int8_scalar_value (void) const { return octave_int8 (scalar); }
 
   octave_int16
-  int16_scalar_value (void) const { return convert_gripe<octave_int16> (); }
+  int16_scalar_value (void) const { return octave_int16 (scalar); }
 
   octave_int32
-  int32_scalar_value (void) const { return convert_gripe<octave_int32> (); }
+  int32_scalar_value (void) const { return octave_int32 (scalar); }
 
   octave_int64
-  int64_scalar_value (void) const { return convert_gripe<octave_int64> (); }
+  int64_scalar_value (void) const { return octave_int64 (scalar); }
 
   octave_uint8
-  uint8_scalar_value (void) const { return convert_gripe<octave_uint8> (); }
+  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
 
   octave_uint16
-  uint16_scalar_value (void) const { return convert_gripe<octave_uint16> (); }
+  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
 
   octave_uint32
-  uint32_scalar_value (void) const { return convert_gripe<octave_uint32> (); }
+  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
 
   octave_uint64
-  uint64_scalar_value (void) const { return convert_gripe<octave_uint64> (); }
+  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
 
   int8NDArray
   int8_array_value (void) const
@@ -630,17 +587,11 @@ public:
   void increment (void) 
    { 
      scalar += OCTAVE_INT_T (1); 
-     if (OCTAVE_INT_T::get_math_trunc_flag ())
-       gripe_unop_integer_math_truncated ("++", type_name (). c_str ());
-      OCTAVE_INT_T::clear_conv_flag ();
    }
 
   void decrement (void)
    { 
      scalar -= OCTAVE_INT_T (1); 
-     if (OCTAVE_INT_T::get_math_trunc_flag ())
-       gripe_unop_integer_math_truncated ("--", type_name (). c_str ());
-      OCTAVE_INT_T::clear_conv_flag ();
    }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }

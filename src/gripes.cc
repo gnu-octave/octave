@@ -205,58 +205,12 @@ gripe_logical_conversion (void)
 }
 
 void
-gripe_truncated_conversion (const char *srctype, const char *desttype)
-{
-  warning_with_id ("Octave:int-convert-overflow", 
-                   "data truncated converting from %s to %s",
-                   srctype, desttype);
-}
-
-void
-gripe_binop_integer_math_truncated (const char *op, const char *type1, const char *type2)
-{
-  warning_with_id ("Octave:int-math-overflow",
-                   "data truncated for %s by %s binary operator %s",
-                   type1, type2, op);
-}
-
-void
-gripe_native_integer_math_truncated (const char *fcn, const char *type)
-{
-  warning_with_id ("Octave:int-math-overflow",
-                   "data truncated for %s native %s operation",
-                   type, fcn);
-}
-
-void
-gripe_unop_integer_math_truncated (const char* op, const char *type)
-{
-  warning_with_id ("Octave:int-math-overflow",
-                   "data truncated for the %s unary operator %s", type, op);
-}
-
-void
 gripe_library_execution_error (void)
 {
   octave_exception_state = octave_no_exception;
 
   if (! error_state)
     error ("caught execution error in library function");
-}
-
-void
-gripe_non_integer_conversion (const char *srctype, const char *desttype)
-{
-  warning_with_id ("Octave:int-convert-non-int-val", 
-                   "Conversion of non-integer value from %s to %s",
-                   srctype, desttype);
-}
-void
-gripe_nan_conversion (const char *srctype, const char *desttype)
-{
-  warning_with_id ("Octave:int-convert-nan", 
-                   "Conversion of NaN from %s to %s",
-                   srctype, desttype);
 }
 
 void

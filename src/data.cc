@@ -1293,14 +1293,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-dependent.\n\
       \
       if (! error_state) \
         { \
-          octave_ ## TYPE::clear_conv_flags (); \
           retval = tmp.FCN (DIM); \
-          if (octave_ ## TYPE::get_trunc_flag ()) \
-            { \
-              gripe_native_integer_math_truncated (#FCN, \
-                                                   octave_ ## TYPE::type_name ()); \
-              octave_ ## TYPE::clear_conv_flags (); \
-            } \
         } \
     }
 

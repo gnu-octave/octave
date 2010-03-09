@@ -1,3 +1,27 @@
+
+2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-intx.h 
+	(OCTAVE_INT_NDARRAY_T::convert_gripe): Remove method.
+	(OCTAVE_INT_NDARRAY_T): Remove all uses.
+	(OCTAVE_INT_T::convert_gripe): Remove method.
+	(OCTAVE_INT_T): Remove all uses.
+	* ov.cc (convert_to_int_array, convert_to_octave_idx_type_array): 
+	Remove int conversion warnings.
+	* data.cc (NATIVE_REDUCTION_1): Ditto.
+
+	* OPERATORS/op-intx.h: Remove integer warning stubs.
+	* OPERATORS/opt-int-conv.cc: Ditto.
+
+	* gripes.cc (gripe_truncated_conversion,
+	gripe_binop_integer_math_truncated,
+	gripe_native_integer_math_truncated,
+	gripe_unop_integer_math_truncated, gripe_non_integer_conversion,
+	gripe_nan_conversion): Remove.
+	* gripes.h: Remove decls.
+	* error.cc (initialize_default_warning_state): Don't initialize
+	removed warnings.
+
 2010-03-07  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* gl-render.cc (draw_figure): disable depth test on the 3rd pass.

@@ -28,10 +28,6 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value \
       (v1.t1 ## _value () op v2.t2 ## _value ()); \
-    if (octave_ ## t3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -41,10 +37,6 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value \
       (v1.e1 ## _value () op v2.e2 ## _value ()); \
-    if (octave_ ## t3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -53,10 +45,6 @@ along with Octave; see the file COPYING.  If not, see
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value (f (v1.t1 ## _value (), v2.t2 ## _value ())); \
-    if (octave_ ## t3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -65,10 +53,6 @@ along with Octave; see the file COPYING.  If not, see
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     octave_value retval = octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
-    if (octave_ ## t3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (#op, v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## t3 ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -176,9 +160,6 @@ along with Octave; see the file COPYING.  If not, see
   { \
     CAST_UNOP_ARG (const octave_ ## TYPE ## _scalar &); \
     octave_value retval = octave_value (- v. TYPE ## _scalar_value ()); \
-    if (octave_ ## TYPE ::get_math_trunc_flag ()) \
-      gripe_unop_integer_math_truncated ("-", v.type_name (). c_str ()); \
-    octave_ ## TYPE ::clear_conv_flag (); \
     return retval; \
   } \
   DEFUNOP_OP (s_transpose, TYPE ## _scalar, /* no-op */) \
@@ -202,10 +183,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
-    if (octave_ ## T3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated ("/", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -219,10 +196,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
-    if (octave_ ## T3 ::get_math_trunc_flag ()) \
-          gripe_binop_integer_math_truncated ("\\", v1.type_name (). c_str (), \
-                                              v2.type_name (). c_str ()); \
-    octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -236,10 +209,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
-    if (octave_ ## T3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ()); \
-    octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -253,10 +222,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
-    if (octave_ ## T3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   } \
 
@@ -360,10 +325,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.TS ## scalar_value () / v1.TS ## scalar_value ()); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated ("\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -373,10 +334,6 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TS ## scalar&, const octave_ ## TM ## matrix&); \
  \
     octave_value retval = octave_value (v1.TS ## scalar_value () / v2.TM ## array_value ()); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -390,10 +347,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -517,10 +470,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated ("/", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -546,10 +495,6 @@ along with Octave; see the file COPYING.  If not, see
       gripe_divide_by_zero (); \
  \
     octave_value retval = octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated ("./", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -560,10 +505,6 @@ along with Octave; see the file COPYING.  If not, see
     CAST_BINOP_ARGS (const octave_ ## TM ## matrix&, const octave_ ## TS ## scalar&); \
     \
     octave_value retval = v2.TS ## scalar_value () / v1.TM ## array_value (); \
-    if (octave_ ## TI ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".^", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## TI ::clear_conv_flag (); \
     return retval; \
   }
 
@@ -678,9 +619,6 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   { \
     CAST_UNOP_ARG (const octave_ ## TYPE ## _matrix &); \
     octave_value retval = octave_value (- v. TYPE ## _array_value ()); \
-    if (octave_ ## TYPE ::get_math_trunc_flag ()) \
-      gripe_unop_integer_math_truncated ("-", v.type_name (). c_str ()); \
-    octave_ ## TYPE ::clear_conv_flag (); \
     return retval; \
   } \
  \
@@ -729,10 +667,6 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     CAST_BINOP_ARGS (const octave_ ## T1 ## matrix&, const octave_ ## T2 ## matrix&); \
     \
     octave_value retval = octave_value (quotient (v2.T2 ## array_value (), v1.T1 ## array_value ())); \
-    if (octave_ ## T3 ::get_math_trunc_flag ()) \
-      gripe_binop_integer_math_truncated (".\\", v1.type_name (). c_str (), \
-                                          v2.type_name (). c_str ());   \
-    octave_ ## T3 ::clear_conv_flag (); \
     return retval; \
   }
 

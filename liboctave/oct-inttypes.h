@@ -246,12 +246,10 @@ public:
       // elimination, but that should be a piece of cake for most compilers.
       if (chk_min::op (value, static_cast<S> (min_val ())))
         {
-          ftrunc = true;
           return min_val ();
         }
       else if (chk_max::op (value, static_cast<S> (max_val ())))
         {
-          ftrunc = true;
           return max_val ();
         }
       else
@@ -284,61 +282,23 @@ public:
       static const S thmax = compute_threshold (static_cast<S> (max_val ()), max_val ());
       if (xisnan (value))
         {
-          fnan = true;
           return static_cast<T> (0);
         }
       else if (value < thmin)
         {
-          ftrunc = true;
           return min_val ();
         }
       else if (value > thmax)
         {
-          ftrunc = true;
           return max_val ();
         }
       else
         {
           S rvalue = xround (value);
-          if (rvalue != value) fnon_int = true;
           return static_cast<T> (rvalue);
         }
     }
-
-  // Exception flags rationale:
-  // There is little reason to distinguish math and conversion exceptions at
-  // octave_int level. Doing this would require special constructors for
-  // intermediate int results in math computations.
-  // 
-  // Boolean flags are used rather than a single flag, because raising a boolean
-  // flag is faster than masking an int flag (single mov versus mov, or, mov).
-  // Also, it is atomic, and thus thread-safe (but there is *one* flag for all
-  // threads).
-
-  static bool get_trunc_flag () { return ftrunc; }
-  static bool get_nan_flag () { return fnan; }
-  static bool get_non_int_flag () { return fnon_int; }
-  static void clear_conv_flags () 
-    { 
-      ftrunc = false;
-      fnan = false;
-      fnon_int = false;
-    }
-  // For compatibility.
-  static bool get_math_trunc_flag () { return ftrunc || fnan; }
-  static void clear_conv_flag () { clear_conv_flags (); }
-
-protected:
-
-  // Conversion flags.
-  static bool ftrunc;
-  static bool fnon_int;
-  static bool fnan;
 };
-
-template<class T> bool octave_int_base<T>::ftrunc = false;
-template<class T> bool octave_int_base<T>::fnon_int = false;
-template<class T> bool octave_int_base<T>::fnan = false;
 
 // Saturated (homogeneous) integer arithmetics. The signed and unsigned
 // implementations are significantly different, so we implement another layer
@@ -370,9 +330,8 @@ public:
   lshift (T x, int n) { return x << n; }
 
   static T
-  minus (T x)
+  minus (T)
     {
-      if (x != 0) octave_int_base<T>::ftrunc = true;
       return static_cast<T> (0);
     }
 
@@ -385,7 +344,6 @@ public:
       if (u < x)
         {
           u = octave_int_base<T>::max_val ();
-          octave_int_base<T>::ftrunc = true; 
         }
       return u;
     }
@@ -397,7 +355,6 @@ public:
       if (u > x)
         {
           u = 0;
-          octave_int_base<T>::ftrunc = true; 
         }
       return u;
     }
@@ -426,7 +383,6 @@ public:
         }
       else
         {
-          octave_int_base<T>::ftrunc = true; 
           return x ? octave_int_base<T>::max_val () : 0;
         }
     }
@@ -441,7 +397,6 @@ octave_int_arith_base<uint64_t, false>:: mul (uint64_t x, uint64_t y)
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
   if (p > static_cast<long double> (octave_int_base<uint64_t>::max_val ()))
     {
-      octave_int_base<uint64_t>::ftrunc = true;
       return octave_int_base<uint64_t>::max_val ();
     }
   else
@@ -504,7 +459,6 @@ public:
       if (y < 0) 
         {
           y = octave_int_base<T>::max_val ();
-          octave_int_base<T>::ftrunc = true;
         }
       return y;
 #else
@@ -517,7 +471,6 @@ public:
           && x == octave_int_base<T>::min_val ())
         {
           y = octave_int_base<T>::max_val ();
-          octave_int_base<T>::ftrunc = true;
         }
       else
         y = (x < 0) ? -x : x;
@@ -551,7 +504,6 @@ public:
       if (y == octave_int_base<T>::min_val ())
         {
           --y;
-          octave_int_base<T>::ftrunc = false;
         }
       return y;
 #else
@@ -560,7 +512,6 @@ public:
           && x == octave_int_base<T>::min_val ())
         {
           y = octave_int_base<T>::max_val ();
-          octave_int_base<T>::ftrunc = true;
         }
       else
         y = -x;
@@ -580,7 +531,6 @@ public:
       if ((ux & uy) < 0) 
         {
           u = octave_int_base<T>::max_val () + signbit (~u);
-          octave_int_base<T>::ftrunc = true;
         }
       return u;
 #else
@@ -591,7 +541,6 @@ public:
           if (x < octave_int_base<T>::min_val () - y)
             {
               u = octave_int_base<T>::min_val ();
-              octave_int_base<T>::ftrunc = true;
             }
           else
             u = x + y;
@@ -601,7 +550,6 @@ public:
           if (x > octave_int_base<T>::max_val () - y)
             {
               u = octave_int_base<T>::max_val ();
-              octave_int_base<T>::ftrunc = true;
             }
           else
             u = x + y;
@@ -624,7 +572,6 @@ public:
       if ((ux & uy) < 0) 
         {
           u = octave_int_base<T>::max_val () + signbit (~u);
-          octave_int_base<T>::ftrunc = true;
         }
       return u;
 #else
@@ -635,7 +582,6 @@ public:
           if (x > octave_int_base<T>::max_val () + y)
             {
               u = octave_int_base<T>::max_val ();
-              octave_int_base<T>::ftrunc = true;
             }
           else
             u = x - y;
@@ -645,7 +591,6 @@ public:
           if (x < octave_int_base<T>::min_val () + y)
             {
               u = octave_int_base<T>::min_val ();
-              octave_int_base<T>::ftrunc = true;
             }
           else
             u = x - y;
@@ -673,7 +618,6 @@ public:
       T z;
       if (y == 0)
         {
-          octave_int_base<T>::ftrunc = true;
           if (x < 0)
             z = octave_int_base<T>::min_val ();
           else if (x != 0)
@@ -686,7 +630,6 @@ public:
           // This is a special case that overflows as well.
           if (y == -1 && x == octave_int_base<T>::min_val ())
             {
-              octave_int_base<T>::ftrunc = true;
               z = octave_int_base<T>::max_val ();
             }
           else
@@ -725,12 +668,10 @@ octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
   // really be faster.
   if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
     {
-      octave_int_base<int64_t>::ftrunc = true;
       return octave_int_base<int64_t>::max_val ();
     }
   else if (p < static_cast<long double> (octave_int_base<int64_t>::min_val ()))
     {
-      octave_int_base<int64_t>::ftrunc = true;
       return octave_int_base<int64_t>::min_val ();
     }
   else

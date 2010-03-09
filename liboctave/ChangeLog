@@ -1,3 +1,14 @@
+2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-inttypes.h (octave_int_base::ftrunc, octave_int_base::fnon_int,
+	octave_int_base::fnan, octave_int_base::get_trunc_flag,
+	octave_int_base::get_nan_flag,
+	octave_int_base::get_non_int_flag,
+	octave_int_base::get_math_trunc_flag,
+	octave_int_base::clear_conv_flags): Remove.
+	Remove occurences of ftrunc, fnon_int and fnan eveywhere.
+	* oct-inttypes.cc: Ditto last sentence. Remove warning tests.
+
 2010-03-07  Soren Hauberg  <hauberg@gmail.com>
 
 	* dim-vector.h: New constructor accepting a C array of dimensions.

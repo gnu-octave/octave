@@ -106,24 +106,6 @@ gripe_implicit_conversion (const std::string& id, const std::string& from,
                            const std::string& to);
 
 extern OCTINTERP_API void
-gripe_truncated_conversion (const char *srctype, const char *desttype);
-
-extern OCTINTERP_API void
-gripe_binop_integer_math_truncated (const char *op, const char *type1, const char *type2);
-
-extern OCTINTERP_API void
-gripe_native_integer_math_truncated (const char *fcn, const char *type);
-
-extern OCTINTERP_API void
-gripe_unop_integer_math_truncated (const char *op, const char *type);
-
-extern OCTINTERP_API void
-gripe_non_integer_conversion (const char *srctype, const char *desttype);
-
-extern OCTINTERP_API void
-gripe_nan_conversion (const char *srctype, const char *desttype);
-
-extern OCTINTERP_API void
 gripe_divide_by_zero (void);
 
 extern OCTINTERP_API void

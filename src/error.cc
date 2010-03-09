@@ -1472,10 +1472,6 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:str-to-num");
   disable_warning ("Octave:string-concat");
   disable_warning ("Octave:variable-switch-label");
-  disable_warning ("Octave:int-convert-nan");
-  disable_warning ("Octave:int-convert-non-int-val");
-  disable_warning ("Octave:int-convert-overflow");
-  disable_warning ("Octave:int-math-overflow");
   disable_warning ("Octave:complex-cmp-ops");
 }
 

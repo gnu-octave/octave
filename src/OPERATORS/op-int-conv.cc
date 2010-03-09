@@ -51,18 +51,7 @@ along with Octave; see the file COPYING.  If not, see
   { \
     CAST_CONV_ARG (const octave_ ## tfrom&); \
  \
-    octave_ ## tto ::clear_conv_flag (); \
     octave_ ## tto ## _matrix v2 = v.tto ## _array_value (); \
-    if (octave_ ## tto ::get_trunc_flag ()) \
-      gripe_truncated_conversion (v.type_name (). c_str (), \
-                                  v2.type_name (). c_str ()); \
-    if (octave_ ## tto ::get_nan_flag ()) \
-      gripe_nan_conversion (v.type_name (). c_str (), \
-                            v2.type_name (). c_str ()); \
-    if (octave_ ## tto ::get_non_int_flag ()) \
-      gripe_non_integer_conversion (v.type_name (). c_str (), \
-                                    v2.type_name (). c_str ()); \
-    octave_ ## tto ::clear_conv_flag (); \
     return new octave_ ## tto ## _matrix (v2); \
   }
 

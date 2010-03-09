@@ -1,3 +1,7 @@
+2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-03-01  John W. Eaton  <jwe@octave.org>
 
 	* acinclude.m4 (OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS,

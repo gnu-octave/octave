@@ -225,6 +225,10 @@ Summary of important user-visible changes for version 3.3:
  ** The behavior of isreal and isnumeric functions was changed to be more
     Matlab-compatible.
 
+ ** The integer math & conversion warnings (Octave:int-convert-nan,
+    Octave:int-convert-non-int-val, Octave:int-convert-overflow,
+    Octave:int-math-overflow) have been removed. 
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

@@ -322,7 +322,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
         }
 
       Array<std::string> str_table = table.cellstr_value ();
-      Array<std::string> str_y (1);
+      Array<std::string> str_y (1, 1);
 
       if (y.is_cellstr ())
         str_y = y.cellstr_value ();

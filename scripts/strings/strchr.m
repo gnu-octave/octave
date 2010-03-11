@@ -33,11 +33,27 @@ function varargout = strchr (str, chars, varargin)
   if (nargin < 2 || ! ischar (str) || ! ischar (chars))
     print_usage ();
   endif
-  f = false (1, 256);
-  f(chars + 1) = true;
+  if (isempty (chars))
+    mask = false (size (str));
+  elseif (length (chars) <= 6)
+    ## With a few characters, it pays off to build the mask incrementally.
+    ## We do it via a for loop to save memory.
+    mask = str == chars(1);
+    for i = 2:length (chars)
+      mask |= str == chars(i);
+    endfor
+  else
+    ## Index the str into a mask of valid values. This is slower than it could be
+    ## because of the +1 issue.
+    f = false (1, 256);
+    f(chars + 1) = true;
+    si = uint32 (str); # default goes via double - unnecessarily long.
+    ++si; # in-place
+    mask = reshape (f(si), size (str));
+  endif
   varargout = cell (1, nargout);
   varargout{1} = [];
-  [varargout{:}] = find (reshape (f(str + 1), size (str)), varargin{:});
+  [varargout{:}] = find (mask, varargin{:});
 endfunction 
 
 %!assert(strchr("Octave is the best software","best"),[3, 6, 9, 11, 13, 15, 16, 17, 18, 20, 23, 27])

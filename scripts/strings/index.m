@@ -54,70 +54,28 @@ function n = index (s, t, direction)
   endif
   direction = lower (direction);
 
-  if (! (ischar (s) && ischar (t)))
-    error ("index: expecting character string arguments");
-  elseif (! strcmp (direction, {"first", "last"}))
+  f = strfind (s, t);
+  if (iscell (f))
+    f(cellfun ("isempty", f)) = {0};
+  elseif (isempty (f))
+    f = 0;
+  endif
+
+  if (strcmp (direction, "last"))
+    if (iscell (f))
+      n = cellfun (@min, f);
+    else
+      n = f(end);
+    endif
+  elseif (strcmp (direction, "first"))
+    if (iscell (f))
+      n = cellfun (@max, f);
+    else
+      n = f(1);
+    endif
+  else
     error ("index: direction must be either \"first\" or \"last\"");
   endif
-
-  l_s = length (s);
-  l_t = length (t);
-
-  n = 0;
-  if (l_s == 0 || l_s < l_t)
-    ## zero length source, or target longer than source
-    ## return 0
-    v = [];
-
-  elseif (l_t == 0)
-    ## zero length target: return first
-    v = 1;
-
-  elseif (l_t == 1)
-    ## length one target: simple find
-    v = find (s == t, 1, direction);
-
-  elseif (l_t == 2)
-    ## length two target: find first at i and second at i+1
-    v = find (s (1:l_s-1) == t(1) & s(2:l_s) == t(2), 1, direction);
-
-  else
-    ## length three or more: match the first three by find then go through
-    ## the much smaller list to determine which of them are real matches
-    limit = l_s - l_t + 1;
-    v = find (s (1:limit) == t(1)
-	      & s (2:limit+1) == t(2)
-	      & s (3:limit+2) == t(3));
-    if (strcmp (direction, "last"))
-      v = v(length(v):-1:1);
-    endif
-
-    if (l_t > 3)
-
-      ## force strings to be both row vectors or both column vectors
-      if (all (size (s) != size (t)))
-	t = t.';
-      endif
-
-      ## search index vector for a match
-      ind = 0:l_t-1;
-      ## return 0 if loop terminates without finding any match
-      for idx = 1:length(v)
-	if (s (v(idx) + ind) == t)
-	  n = v(idx);
-	  break;
-	endif
-      endfor
-      v = [];
-    endif
-
-  endif
-
-  if (n == 0 && ! isempty (v))
-    ## return the first found if n is not already set and v is not empty
-    n = v(1);
-  endif
-
 endfunction
 
 ## Test the function out

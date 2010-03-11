@@ -1,5 +1,9 @@
 2010-03-11  Jaroslav Hajek  <highegg@gmail.com>
 
+	* strings/index.m: Make it a wrapper for strfind.
+
+2010-03-11  Jaroslav Hajek  <highegg@gmail.com>
+
 	* strings/strchr.m: Optimize.
 
 2010-03-05  Soren Hauberg  <hauberg@gmail.com>

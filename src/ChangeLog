@@ -1,3 +1,7 @@
+2010-03-12  Ben Abbott <bpabbott@mac.com>
+
+	* /DLD-FUNCTIONS/chol.cc: Increase tolerance for single precision test.
+
 2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Fix deprecated array constructor.

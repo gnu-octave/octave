@@ -985,7 +985,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(A1(p,p) - single(Ac),Inf) < 1e1*eps('single'))
+%! assert(norm(A1(p,p) - single(Ac),Inf) < 2e1*eps('single'))
 %! 
 */
 

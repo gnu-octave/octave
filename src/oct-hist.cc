@@ -420,9 +420,10 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
   return name;
 }
 
-static void unlink_cleanup (const char *file)
+static void
+unlink_cleanup (const char *file)
 {
-  unlink (file);
+  gnulib::unlink (file);
 }
 
 static void

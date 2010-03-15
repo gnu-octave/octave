@@ -537,7 +537,7 @@ octave_env::pathname_backup (std::string& path, int n) const
 void
 octave_env::error (int err_num) const
 {
-  (*current_liboctave_error_handler) ("%s", strerror (err_num));
+  (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
 }
 
 void

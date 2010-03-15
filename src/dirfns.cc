@@ -83,11 +83,7 @@ octave_change_to_directory (const std::string& newdir)
       load_path::update ();
     }
   else
-    {
-      using namespace std;
-
-      error ("%s: %s", newdir.c_str (), strerror (errno));
-    }
+    error ("%s: %s", newdir.c_str (), gnulib::strerror (errno));
 
   return cd_ok;
 }

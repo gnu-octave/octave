@@ -766,7 +766,7 @@ wait_for_input (int fid)
       FD_ZERO (&set);
       FD_SET (fid, &set);
 
-      retval = select (FD_SETSIZE, &set, 0, 0, 0);
+      retval = gnulib::select (FD_SETSIZE, &set, 0, 0, 0);
     }
 #else
   retval = 1;

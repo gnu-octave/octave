@@ -63,13 +63,10 @@ octave_syscalls::dup2 (int old_fd, int new_fd, std::string& msg)
   int status = -1;
 
 #if defined (HAVE_DUP2)
-  status = ::dup2 (old_fd, new_fd);
+  status = gnulib::dup2 (old_fd, new_fd);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("dup2");
 #endif
@@ -100,10 +97,7 @@ octave_syscalls::execvp (const std::string& file, const string_vector& args,
   string_vector::delete_c_str_vec (argv);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("execvp");
 #endif
@@ -120,10 +114,7 @@ octave_syscalls::fork (std::string& msg)
   status = ::fork ();
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("fork");
 #endif
@@ -144,10 +135,7 @@ octave_syscalls::vfork (std::string& msg)
 #endif
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("vfork");
 #endif
@@ -164,10 +152,7 @@ octave_syscalls::getpgrp (std::string& msg)
   status = ::getpgrp ();
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("getpgrp");
 #endif
@@ -253,10 +238,7 @@ octave_syscalls::pipe (int *fildes, std::string& msg)
   status = ::pipe (fildes);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("pipe");
 #endif
@@ -282,10 +264,7 @@ octave_syscalls::waitpid (pid_t pid, int *status, int options,
   retval = ::octave_waitpid (pid, status, options);
 
   if (retval < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("waitpid");
 #endif
@@ -311,10 +290,7 @@ octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
   status = ::kill (pid, sig);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 #else
   msg = NOT_SUPPORTED ("kill");
 #endif
@@ -363,15 +339,15 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
               interactive = false;
 
               // Child process
-              ::close (child_stdin[1]);
-              ::close (child_stdout[0]);
+              gnulib::close (child_stdin[1]);
+              gnulib::close (child_stdout[0]);
 
               if (dup2 (child_stdin[0], STDIN_FILENO) >= 0)
                 {
-                  ::close (child_stdin[0]);
+                  gnulib::close (child_stdin[0]);
                   if (dup2 (child_stdout[1], STDOUT_FILENO) >= 0)
                     {
-                      ::close (child_stdout[1]);
+                      gnulib::close (child_stdout[1]);
                       if (execvp (cmd, args, child_msg) < 0)
                         child_msg = "popen2 (child): unable to start process -- " + child_msg;
                     }
@@ -388,8 +364,9 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
           else
             {
               // Parent process
-              ::close (child_stdin[0]);
-              ::close (child_stdout[1]);
+              gnulib::close (child_stdin[0]);
+              gnulib::close (child_stdout[1]);
+
 #if defined (F_SETFL) && defined (O_NONBLOCK)
               if (! sync_mode && octave_fcntl (child_stdout[0], F_SETFL, O_NONBLOCK, msg) < 0)
                 msg = "popen2: error setting file mode -- " + msg;
@@ -401,13 +378,14 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
                   return pid;
                 }
             }
-          ::close (child_stdout[0]);
-          ::close (child_stdout[1]);
+          gnulib::close (child_stdout[0]);
+          gnulib::close (child_stdout[1]);
         }
       else
         msg = "popen2: pipe creation failed -- " + msg;
-      ::close (child_stdin[0]);
-      ::close (child_stdin[1]);
+
+      gnulib::close (child_stdin[0]);
+      gnulib::close (child_stdin[1]);
     }
   else
     msg = "popen2: pipe creation failed -- " + msg;
@@ -430,13 +408,10 @@ octave_fcntl (int fd, int cmd, long arg, std::string& msg)
 
   int status = -1;
 
-  status = ::fcntl (fd, cmd, arg);
+  status = gnulib::fcntl (fd, cmd, arg);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }

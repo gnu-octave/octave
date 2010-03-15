@@ -136,7 +136,7 @@ octave_putenv (const std::string& name, const std::string& value)
 {
   int new_len = name.length () + value.length () + 2;
 
-  char *new_item = static_cast<char*> (malloc (new_len));
+  char *new_item = static_cast<char*> (gnulib::malloc (new_len));
 
   sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
@@ -164,7 +164,7 @@ octave_fgets (FILE *f, bool& eof)
   int grow_size = 1024;
   int max_size = grow_size;
 
-  char *buf = static_cast<char *> (malloc (max_size));
+  char *buf = static_cast<char *> (gnulib::malloc (max_size));
   char *bufptr = buf;
   int len = 0;
 
@@ -179,7 +179,7 @@ octave_fgets (FILE *f, bool& eof)
               int tmp = bufptr - buf + grow_size - 1;
               grow_size *= 2;
               max_size += grow_size;
-              buf = static_cast<char *> (realloc (buf, max_size));
+              buf = static_cast<char *> (gnulib::realloc (buf, max_size));
               bufptr = buf + tmp;
 
               if (*(bufptr-1) == '\n')

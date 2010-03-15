@@ -126,7 +126,7 @@ cleanup_tmp_files (void)
     {
       std::string filename = tmp_files.top ();
       tmp_files.pop ();
-      unlink (filename.c_str ());
+      gnulib::unlink (filename.c_str ());
     }
 }
 
@@ -497,10 +497,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                   if (fptr)
                     retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
                   else
-                    {
-                      using namespace std;
-                      retval.error (::strerror (errno));
-                    }
+                    retval.error (gnulib::strerror (errno));
                 }
               else
 #endif
@@ -510,10 +507,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                   retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 
                   if (! fptr)
-                    {
-                      using namespace std;
-                      retval.error (::strerror (errno));
-                    }
+                    retval.error (gnulib::strerror (errno));
                 }
 
             }
@@ -1936,8 +1930,7 @@ system-dependent error message.\n\
         }
       else
         {
-          using namespace std;
-          retval(1) = ::strerror (errno);
+          retval(1) = gnulib::strerror (errno);
           retval(0) = -1;
         }
     }
@@ -2015,8 +2008,7 @@ error message.\n\
 
           if (fd < 0)
             {
-              using namespace std;
-              retval(2) = ::strerror (errno);
+              retval(2) = gnulib::strerror (errno);
               retval(0) = fd;
             }
           else
@@ -2046,8 +2038,7 @@ error message.\n\
                 }
               else
                 {
-                  using namespace std;
-                  retval(2) = ::strerror (errno);
+                  retval(2) = gnulib::strerror (errno);
                   retval(0) = -1;
                 }
             }

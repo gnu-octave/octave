@@ -291,8 +291,8 @@ gnu_history::do_append (const std::string& f_arg)
                 {
                   int tem;
 
-                  tem = open (f.c_str (), O_CREAT, 0666);
-                  close (tem);
+                  tem = gnulib::open (f.c_str (), O_CREAT, 0666);
+                  gnulib::close (tem);
                 }
 
               int status
@@ -807,7 +807,7 @@ command_history::do_clean_up_and_save (const std::string& f_arg, int)
 void
 command_history::error (int err_num)
 {
-  (*current_liboctave_error_handler) ("%s", strerror (err_num));
+  (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
 }
 
 void

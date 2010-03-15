@@ -53,12 +53,12 @@ c_file_ptr_buf::overflow (int_type c)
 {
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
   if (f)
-    return (c != traits_type::eof ()) ? fputc (c, f) : flush ();
+    return (c != traits_type::eof ()) ? gnulib::fputc (c, f) : flush ();
   else
     return traits_type::not_eof (c);
 #else
   if (f)
-    return (c != EOF) ? fputc (c, f) : flush ();
+    return (c != EOF) ? gnulib::fputc (c, f) : flush ();
   else
     return EOF;
 #endif
@@ -104,7 +104,7 @@ std::streamsize
 c_file_ptr_buf::xsputn (const char* s, std::streamsize n)
 {
   if (f)
-    return fwrite (s, 1, n, f);
+    return gnulib::fwrite (s, 1, n, f);
   else
     return 0;
 }
@@ -191,6 +191,12 @@ c_file_ptr_buf::buf_close (void)
     }
 
   return retval;
+}
+
+int
+c_file_ptr_buf::file_close (FILE *f)
+{
+  return gnulib::fclose (f);
 }
 
 #ifdef HAVE_ZLIB

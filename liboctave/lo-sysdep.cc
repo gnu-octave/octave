@@ -54,7 +54,7 @@ octave_getcwd (void)
   // will allocate a buffer as large as necessary if buf and size are
   // both 0.
 
-  char *tmp = getcwd (0, 0);
+  char *tmp = gnulib::getcwd (0, 0);
 
   if (tmp)
     {

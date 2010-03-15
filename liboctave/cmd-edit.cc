@@ -637,7 +637,7 @@ gnu_readline::command_generator (const char *text, int state)
 
   if (len > 0)
     {
-      retval = static_cast<char *> (malloc (len+1));
+      retval = static_cast<char *> (gnulib::malloc (len+1));
 
       strcpy (retval, tmp.c_str ());
     }
@@ -658,7 +658,7 @@ gnu_readline::command_quoter (char *text, int matches, char *qcp)
 
   if (len > 0)
     {
-      retval = static_cast<char *> (malloc (len+1));
+      retval = static_cast<char *> (gnulib::malloc (len+1));
 
       strcpy (retval, tmp.c_str ());
     }
@@ -679,7 +679,7 @@ gnu_readline::command_dequoter (char *text, int quote)
 
   if (len > 0)
     {
-      retval = static_cast<char *> (malloc (len+1));
+      retval = static_cast<char *> (gnulib::malloc (len+1));
 
       strcpy (retval, tmp.c_str ());
     }
@@ -759,7 +759,7 @@ private:
 std::string
 default_command_editor::do_readline (const std::string& prompt, bool& eof)
 {
-  fputs (prompt.c_str (), output_stream);
+  gnulib::fputs (prompt.c_str (), output_stream);
   fflush (output_stream);
 
   return octave_fgetl (input_stream, eof);
@@ -1540,7 +1540,7 @@ command_editor::read_octal (const std::string& s)
 void
 command_editor::error (int err_num)
 {
-  current_liboctave_error_handler ("%s", strerror (err_num));
+  current_liboctave_error_handler ("%s", gnulib::strerror (err_num));
 }
 
 void

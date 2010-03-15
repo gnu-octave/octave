@@ -105,12 +105,12 @@ octave_procbuf::open (const char *command, int mode)
 
   if (proc_pid == 0)
     {
-      ::close (parent_end);
+      gnulib::close (parent_end);
 
       if (child_end != child_std_end)
         {
-          ::dup2 (child_end, child_std_end);
-          ::close (child_end);
+          gnulib::dup2 (child_end, child_std_end);
+          gnulib::close (child_end);
         }
 
       while (octave_procbuf_list)
@@ -119,7 +119,7 @@ octave_procbuf::open (const char *command, int mode)
 
           if (fp)
             {
-              ::fclose (fp);
+              gnulib::fclose (fp);
               fp = 0;
             }
 
@@ -131,11 +131,11 @@ octave_procbuf::open (const char *command, int mode)
       exit (127);
     }
 
-  ::close (child_end);
+  gnulib::close (child_end);
 
   if (proc_pid < 0)
     {
-      ::close (parent_end);
+      gnulib::close (parent_end);
       return 0;
     }
 
@@ -193,7 +193,7 @@ octave_procbuf::close (void)
             }
         }
 
-      if (status == 0 && ::fclose (f) == 0)
+      if (status == 0 && gnulib::fclose (f) == 0)
         {
           using namespace std;
 

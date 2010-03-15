@@ -52,10 +52,10 @@ Free Software Foundation, Inc.
 #define BLOCK_SIGNAL(sig, nvar, ovar) \
   do \
     { \
-      sigemptyset (&nvar); \
-      sigaddset (&nvar, sig); \
-      sigemptyset (&ovar); \
-      sigprocmask (SIG_BLOCK, &nvar, &ovar); \
+      gnulib::sigemptyset (&nvar); \
+      gnulib::sigaddset (&nvar, sig); \
+      gnulib::sigemptyset (&ovar); \
+      gnulib::sigprocmask (SIG_BLOCK, &nvar, &ovar); \
     } \
   while (0)
 
@@ -64,7 +64,7 @@ Free Software Foundation, Inc.
 #endif
 
 #define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
-#define UNBLOCK_CHILD(ovar) sigprocmask (SIG_SETMASK, &ovar, 0)
+#define UNBLOCK_CHILD(ovar) gnulib::sigprocmask (SIG_SETMASK, &ovar, 0)
 
 typedef void sig_handler (int);
 

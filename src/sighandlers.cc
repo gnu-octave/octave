@@ -195,10 +195,10 @@ octave_set_signal_handler (int sig, sig_handler *handler,
     act.sa_flags |= SA_RESTART;
 #endif
 
-  sigemptyset (&act.sa_mask);
-  sigemptyset (&oact.sa_mask);
+  gnulib::sigemptyset (&act.sa_mask);
+  gnulib::sigemptyset (&oact.sa_mask);
 
-  sigaction (sig, &act, &oact);
+  gnulib::sigaction (sig, &act, &oact);
 
   return oact.sa_handler;
 }

@@ -42,10 +42,7 @@ octave_uname::init (void)
   err = ::uname (&unm);
 
   if (err < 0)
-    {
-      using namespace std;
-      msg = ::strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
   else
     {
       utsname_sysname = unm.sysname;

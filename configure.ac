@@ -1869,6 +1869,10 @@ export F77
 ### Some things to add to the bottom of config.h.
 
 AH_BOTTOM([
+#if !defined (GNULIB_NAMESPACE)
+#define GNULIB_NAMESPACE gnulib
+#endif
+
 #if defined (__GNUC__)
 #define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
 #define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))

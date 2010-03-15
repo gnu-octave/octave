@@ -183,19 +183,19 @@ extern "C" {
 #define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
 
 /* A printf for the debugging.  */
-#define DEBUGF_START() do { fputs ("kdebug:", stderr)
+#define DEBUGF_START() do { gnulib::fputs ("kdebug:", stderr)
 #define DEBUGF_END()        fflush (stderr); } while (0)
 
 #define DEBUGF(str)                                                     \
-  DEBUGF_START (); fputs (str, stderr); DEBUGF_END ()
+  DEBUGF_START (); gnulib::fputs (str, stderr); DEBUGF_END ()
 #define DEBUGF1(str, e1)                                                \
-  DEBUGF_START (); fprintf (stderr, str, e1); DEBUGF_END ()
+  DEBUGF_START (); gnulib::fprintf (stderr, str, e1); DEBUGF_END ()
 #define DEBUGF2(str, e1, e2)                                            \
-  DEBUGF_START (); fprintf (stderr, str, e1, e2); DEBUGF_END ()
+  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2); DEBUGF_END ()
 #define DEBUGF3(str, e1, e2, e3)                                        \
-  DEBUGF_START (); fprintf (stderr, str, e1, e2, e3); DEBUGF_END ()
+  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2, e3); DEBUGF_END ()
 #define DEBUGF4(str, e1, e2, e3, e4)                                    \
-  DEBUGF_START (); fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
+  DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
 
 #undef fopen
 #define fopen kpse_fopen_trace
@@ -258,7 +258,7 @@ static unsigned int kpathsea_debug = 0;
 #define FATAL_PERROR(str) \
   do \
     { \
-      fputs ("pathsearch: ", stderr); \
+      gnulib::fputs ("pathsearch: ", stderr); \
       perror (str); exit (EXIT_FAILURE); \
     } \
   while (0)
@@ -266,9 +266,9 @@ static unsigned int kpathsea_debug = 0;
 #define FATAL(str) \
   do \
     { \
-      fputs ("pathsearch: fatal: ", stderr); \
-      fputs (str, stderr); \
-      fputs (".\n", stderr); \
+      gnulib::fputs ("pathsearch: fatal: ", stderr); \
+      gnulib::fputs (str, stderr); \
+      gnulib::fputs (".\n", stderr); \
       exit (1); \
     } \
   while (0)
@@ -389,16 +389,16 @@ hash_lookup (hash_table_type table, const std::string& key)
     {
       DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
       if (ret.empty ())
-        fputs (" (nil)\n", stderr);
+        gnulib::fputs (" (nil)\n", stderr);
       else
         {
           int len = ret.length ();
           for (int i = 0; i < len; i++)
             {
-              putc (' ', stderr);
-              fputs (ret[i].c_str (), stderr);
+              gnulib::putc (' ', stderr);
+              gnulib::fputs (ret[i].c_str (), stderr);
             }
-          putc ('\n', stderr);
+          gnulib::putc ('\n', stderr);
         }
       fflush (stderr);
     }
@@ -675,7 +675,7 @@ log_search (const string_vector& filenames)
 
           /* Only record absolute filenames, for privacy.  */
           if (log_file && kpse_absolute_p (filename.c_str (), false))
-            fprintf (log_file, "%lu %s\n",
+            gnulib::fprintf (log_file, "%lu %s\n",
                      static_cast<unsigned long> (time (0)),
                      filename.c_str ());
 
@@ -683,7 +683,7 @@ log_search (const string_vector& filenames)
              the debugging line in `search', where this is called, so
              just print the filename here, don't use DEBUGF.  */
           if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-            fputs (filename.c_str (), stderr);
+            gnulib::fputs (filename.c_str (), stderr);
         }
     }
 }
@@ -873,7 +873,7 @@ search (const std::string& path, const std::string& original_name,
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        putc ('\n', stderr);
+        gnulib::putc ('\n', stderr);
     }
 
   return ret_list;
@@ -1040,20 +1040,20 @@ find_first_of (const std::string& path, const string_vector& names,
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      fputs ("start find_first_of ((", stderr);
+      gnulib::fputs ("start find_first_of ((", stderr);
 
       int len = names.length ();
 
       for (int i = 0; i < len; i++)
         {
           if (i == 0)
-            fputs (names[i].c_str (), stderr);
+            gnulib::fputs (names[i].c_str (), stderr);
           else
-            fprintf (stderr, ", %s", names[i].c_str ());
+            gnulib::fprintf (stderr, ", %s", names[i].c_str ());
         }
 
-      fprintf (stderr, "), path=%s, must_exist=%d).\n",
-               path.c_str (), must_exist);
+      gnulib::fprintf (stderr, "), path=%s, must_exist=%d).\n",
+                       path.c_str (), must_exist);
     }
 
   for (int i = 0; i < names.length (); i++)
@@ -1089,24 +1089,25 @@ find_first_of (const std::string& path, const string_vector& names,
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
         {
-          fputs ("find_first_of (", stderr);
+          gnulib::fputs ("find_first_of (", stderr);
 
           int len = names.length ();
 
           for (int i = 0; i < len; i++)
             {
               if (i == 0)
-                fputs (names[i].c_str (), stderr);
+                gnulib::fputs (names[i].c_str (), stderr);
               else
-                fprintf (stderr, ", %s", names[i].c_str ());
+                gnulib::fprintf (stderr, ", %s", names[i].c_str ());
             }
-          fputs (") =>", stderr);
+
+          gnulib::fputs (") =>", stderr);
         }
 
       log_search (ret_list);
 
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        putc ('\n', stderr);
+        gnulib::putc ('\n', stderr);
     }
 
   return ret_list;
@@ -2220,7 +2221,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 #else /* not WIN32 */
 
   /* If we can't open it, quit.  */
-  dir = opendir (name.c_str ());
+  dir = gnulib::opendir (name.c_str ());
 
   if (! dir)
     return;
@@ -2381,9 +2382,9 @@ kpse_element_dirs (const std::string& elt)
         {
           str_llist_elt_type *e;
           for (e = *ret; e; e = STR_LLIST_NEXT (*e))
-            fprintf (stderr, " %s", (STR_LLIST (*e)).c_str ());
+            gnulib::fprintf (stderr, " %s", (STR_LLIST (*e)).c_str ());
         }
-      putc ('\n', stderr);
+      gnulib::putc ('\n', stderr);
       fflush (stderr);
     }
 #endif /* KPSE_DEBUG */
@@ -2395,14 +2396,10 @@ kpse_element_dirs (const std::string& elt)
 void
 xclosedir (DIR *d)
 {
-#ifdef CLOSEDIR_VOID
-  closedir (d);
-#else
-  int ret = closedir (d);
+  int ret = gnulib::closedir (d);
 
   if (ret != 0)
     FATAL ("closedir failed");
-#endif
 }
 #endif
 

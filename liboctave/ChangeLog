@@ -1,3 +1,79 @@
+2010-03-15  John W. Eaton  <jwe@octave.org>
+
+	* oct-glob.cc (octave_glob): Tag calls to glob and globfree with
+	gnulib::.
+
+	* kpse.cc (DEBUG_START, DEBUGF, FATAL_PERROR, FATAL, KPSE_DEBUG,
+	log_search, find_first_of): Tag calls to
+	fputs with gnulib::.
+	(DEBUGF1, DEBUGF2, DEBUGF3, DEBUGF4, log_search, find_first_of,
+	kpse_element_dirs): Tag calls to fprintf with gnulib::.
+	(hash_lookup, search, find_first_of, kpse_element_dirs):
+	Tag calls to putc with gnulib::.
+	(do_subdir): Tag call to opendir with gnulib::.
+	(xclosedir): Tag call to closedir with gnulib::.  Assume closedir
+	returns int value.
+
+	* cmd-hist.cc (gnu_history::do_append): Tag calls to open and
+	close with gnulib::.
+	(command_history::error): Tag call to strerror with gnulib::.
+
+	* cmd-edit.cc (gnu_readline::command_generator,
+	gnu_readline::command_quoter, gnu_readline::command_dequoter):
+	Tag call to malloc with gnulib::.
+	(default_command_editor::do_readline): Tag call to fputs with gnulib::.
+	(command_editor::error): Tag call to strerror with gnulib::.
+
+	* sparse-util.cc (SparseCholPrint): Tag call to vfprintf with gnulib::.
+
+	* oct-uname.cc (octave_uname::init): Tag call to strerror with gnulib::.
+
+	* oct-time.cc (octave_time::stamp): Tag call to gettimeofday
+	with gnulib::.
+	(octave_strptime::init): Tag call to strptime with gnulib::.
+
+	* oct-syscalls.cc (octave_syscalls::dup2,
+	octave_syscalls::execvp, octave_syscalls::fork,
+	octave_syscalls::vfork, octave_syscalls::getpgrp,
+	octave_syscalls::pipe, octave_syscalls::waitpid,
+	octave_syscalls::kill, octave_fcntl):
+	Tag call to strerror with gnulib::.
+	(octave_syscalls::dup2): Tag call to dup2 with gnulib::.
+	(octave_syscalls::popen2): Tag calls to close with gnulib::.
+	(octave_fcntl): Tag call to fcntl with gnulib::.
+
+	* oct-env.cc (octave_env::error): Tag call to strerror with gnulib::.
+
+	* lo-utils.cc (octave_putenv): Tag call to malloc with gnulib::.
+	(octave_fgets): Tag calls to malloc and realloc with gnulib::.
+
+	* lo-sysdep.cc (octave_getcwd): Tag call to getcwd with gnulib::.
+
+	* lo-mappers.cc (xround): Tag call to round with gnulib::.
+
+	* file-stat.cc (file_stat::update_internal): Tag calls to lstat
+	and strerror with gnulib::.
+	(file_fstat::update_internal): Tag calls to fstat and strerror
+	with gnulib::.
+
+	* file-ops.cc (octave_mkdir): Tag call to mkdir with gnulib::.
+	(octave_mkfifo): Tag call to mkfifo with gnulib::.
+	(octave_link): Tag call to link with gnulib::.
+	(octave_symlink): Tag call to symlink with gnulib::.
+	(octave_readlink): Tag call to readlink with gnulib::.
+	(octave_rename): Tag call to rename with gnulib::.
+	(octave_rmdir): Tag call to rmdir with gnulib::.
+	(octave_unlink): Tag call to unlink with gnulib::.
+	(octave_canonicalize_file_name): Tag call to
+	canonicalize_file_name with gnulib::.
+	(octave_mkdir, octave_mkfifo, octave_link, octave_symlink,
+	octave_readlink, octave_rename, octave_rmdir, octave_unlink,
+	octave_tempnam, octave_canonicalize_file_name): Tag calls to
+	strerror with gnulib::.
+
+	* dir-ops.cc (dir_entry::close): Tag closedir call with gnulib::.
+	(dir_entry::open): Tag opendir and strerror calls with gnulib::.
+
 2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int_base::ftrunc, octave_int_base::fnon_int,

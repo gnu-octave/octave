@@ -78,7 +78,7 @@ octave_time::stamp (void)
 {
   struct timeval tp;
 
-  gettimeofday (&tp, 0);
+  gnulib::gettimeofday (&tp, 0);
 
   ot_unix_time = tp.tv_sec;
   ot_usec = tp.tv_usec;
@@ -265,7 +265,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   char *p = strsave (str.c_str ());
 
-  char *q = strptime (p, fmt.c_str (), &t);
+  char *q = gnulib::strptime (p, fmt.c_str (), &t);
 
   // Fill in wday and yday, but only if mday is valid and the mon and year
   // are filled in, avoiding issues with mktime and invalid dates.

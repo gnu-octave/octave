@@ -28,6 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#if defined (GNULIB_NAMESPACE)
+#undef GNULIB_NAMESPACE
+#endif
 }
 
 %s COMMAND_START

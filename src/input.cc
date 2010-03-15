@@ -213,7 +213,7 @@ gnu_readline (const std::string& s, bool force_readline)
         {
           FILE *stream = command_editor::get_output_stream ();
 
-          fputs (s.c_str (), stream);
+          gnulib::fputs (s.c_str (), stream);
           fflush (stream);
         }
 

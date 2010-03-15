@@ -53,15 +53,12 @@ dir_entry::open (const std::string& n)
       
       std::string fullname = file_ops::tilde_expand (name);
 
-      dir = static_cast<void *> (opendir (fullname.c_str ()));
+      dir = static_cast<void *> (gnulib::opendir (fullname.c_str ()));
 
       if (dir)
         fail = false;
       else
-        {
-          using namespace std;
-          errmsg = strerror (errno);
-        }
+        errmsg = gnulib::strerror (errno);
     }
   else
     errmsg = "dir_entry::open: empty file name";
@@ -98,7 +95,7 @@ void
 dir_entry::close (void)
 {
   if (dir)
-    closedir (static_cast<DIR *> (dir));
+    gnulib::closedir (static_cast<DIR *> (dir));
 
   dir = 0;
 }

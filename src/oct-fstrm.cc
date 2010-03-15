@@ -57,11 +57,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 #endif
 
   if (! fs)
-    {
-      using namespace std;
-
-      error (strerror (errno));
-    }
+    error (gnulib::strerror (errno));
 }
 
 // Position a stream at OFFSET relative to ORIGIN.

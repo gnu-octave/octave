@@ -82,7 +82,7 @@ public:
 
   void clear (void) { if (f) clearerr (f); }
 
-  static int file_close (FILE *f) { return ::fclose (f); }
+  static int file_close (FILE *f);
 
 protected:
 

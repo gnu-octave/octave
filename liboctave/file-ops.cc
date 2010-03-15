@@ -373,13 +373,10 @@ octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
 
   int status = -1;
 
-  status = mkdir (name.c_str (), mode);
+  status = gnulib::mkdir (name.c_str (), mode);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -402,13 +399,10 @@ octave_mkfifo (const std::string& name, mode_t mode, std::string& msg)
   // don't have working mkfifo functions.  On those systems, mkfifo will
   // always return -1 and set errno.
 
-  status = mkfifo (name.c_str (), mode);
+  status = gnulib::mkfifo (name.c_str (), mode);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -428,13 +422,10 @@ octave_link (const std::string& old_name,
 
   int status = -1;
 
-  status = link (old_name.c_str (), new_name.c_str ());
+  status = gnulib::link (old_name.c_str (), new_name.c_str ());
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -454,13 +445,10 @@ octave_symlink (const std::string& old_name,
 
   int status = -1;
 
-  status = symlink (old_name.c_str (), new_name.c_str ());
+  status = gnulib::symlink (old_name.c_str (), new_name.c_str ());
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -482,13 +470,10 @@ octave_readlink (const std::string& path, std::string& result,
 
   char buf[MAXPATHLEN+1];
 
-  status = readlink (path.c_str (), buf, MAXPATHLEN);
+  status = gnulib::readlink (path.c_str (), buf, MAXPATHLEN);
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
   else
     {
       buf[status] = '\0';
@@ -514,13 +499,10 @@ octave_rename (const std::string& from, const std::string& to,
 
   msg = std::string ();
 
-  status = rename (from.c_str (), to.c_str ());
+  status = gnulib::rename (from.c_str (), to.c_str ());
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -539,13 +521,10 @@ octave_rmdir (const std::string& name, std::string& msg)
 
   int status = -1;
 
-  status = rmdir (name.c_str ());
+  status = gnulib::rmdir (name.c_str ());
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -651,13 +630,10 @@ octave_unlink (const std::string& name, std::string& msg)
 
   int status = -1;
 
-  status = unlink (name.c_str ());
+  status = gnulib::unlink (name.c_str ());
 
   if (status < 0)
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return status;
 }
@@ -690,10 +666,7 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
       free (tmp);
     }
   else
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return retval;
 }
@@ -714,7 +687,7 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
 
 #if defined (HAVE_CANONICALIZE_FILE_NAME)
 
-  char *tmp = ::canonicalize_file_name (name.c_str ());
+  char *tmp = gnulib::canonicalize_file_name (name.c_str ());
 
   if (tmp)
     {
@@ -815,10 +788,7 @@ extern int errno;
 #endif
 
   if (retval.empty ())
-    {
-      using namespace std;
-      msg = strerror (errno);
-    }
+    msg = gnulib::strerror (errno);
 
   return retval;
 }

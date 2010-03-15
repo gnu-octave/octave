@@ -86,7 +86,7 @@ octave_glob (const string_vector& pat)
                                '/'); 
 #endif 
 
-          int err = ::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
+          int err = gnulib::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
 
           if (! err)
             {
@@ -121,7 +121,7 @@ octave_glob (const string_vector& pat)
                     } 
                 }
 
-              globfree (&glob_info);
+              gnulib::globfree (&glob_info);
             }
         }
     }

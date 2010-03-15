@@ -33,6 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#if defined (GNULIB_NAMESPACE)
+#undef GNULIB_NAMESPACE
+#endif
+
 #include <cassert>
 #include <cstdio>
 

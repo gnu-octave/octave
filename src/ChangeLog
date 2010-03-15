@@ -1,3 +1,44 @@
+2010-03-15  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy, lex.ll: Undefine GNULIB_NAMESPACE immediately
+	after including <config.h>.
+
+	* toplev.cc (wait_for_input): Tag call to select with gnulib::.
+
+	* sighandlers.h (BLOCK_SIGNAL): Tag calls to sigemptyset,
+	sigaddset, and sigprocmask with gnulib::.
+	(UNBLOCK_CHILD): Tag call to sigprocmask with gnulib::.
+	* sighandlers.cc (octave_set_signal_handler): Tag calls to
+	sigemptyset with gnulib::.
+	(octave_set_signal_handler): Tag call to sigaction with gnulib::.
+
+	* oct-procbuf.cc (octave_procbuf::open): Tag calls to close, dup2,
+	and fclose with gnulib::.
+	(octave_procbuf::close): Tag call to fclose with gnulib::.
+
+	* oct-hist.cc (unlink_cleanup): Tag call to unlink with gnulib::.
+
+	* oct-fstrm.cc (octave_fstream::octave_fstream): Tag call to
+	strerror with gnulib::.
+
+	* mex.cc (mex::malloc_unmarked, mex::realloc, mxArray::malloc,
+	mxMalloc, mxRealloc): Tag call to malloc with gnulib::.
+
+	* input.cc (gnu_readline): Tag call to fputs with gnulib::.
+
+	* file-io.cc (cleanup_tmp_files): Tag call to unlink with gnulib::.
+	(do_stream_open, Ftmpfile, Fmkstemp): Tag call to strerror with
+	gnulib::.
+
+	* dirfns.cc (octave_change_to_directory): Tag call to strerror
+	with gnulib::.
+
+	* c-file-ptr-stream.cc (c_file_ptr_buf::overflow): Tag calls to
+	fputc with gnulib::.
+	(c_file_ptr_buf::xsputn): Tag call to fwrite with gnulib::.
+	(c_file_ptr_buf::file_close): Move here from
+	c-file-ptr-stream.h.  Tag call to fclose with gnulib::.
+
 2010-03-12  Ben Abbott <bpabbott@mac.com>
 
 	* /DLD-FUNCTIONS/chol.cc: Increase tolerance for single precision test.

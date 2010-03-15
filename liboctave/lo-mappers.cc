@@ -73,7 +73,7 @@ double
 xround (double x)
 {
 #if defined (HAVE_ROUND)
-  return round (x);
+  return gnulib::round (x);
 #else
   if (x >= 0)
     {
@@ -377,7 +377,7 @@ float
 xround (float x)
 {
 #if defined (HAVE_ROUND)
-  return round (x);
+  return gnulib::round (x);
 #else
   if (x >= 0)
     {

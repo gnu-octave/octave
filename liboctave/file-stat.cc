@@ -200,14 +200,13 @@ file_stat::update_internal (bool force)
 
       struct stat buf;
 
-      int status = follow_links ? stat (cname, &buf) : lstat (cname, &buf);
+      int status = follow_links
+        ? stat (cname, &buf) : gnulib::lstat (cname, &buf);
 
       if (status < 0)
         {
-          using namespace std;
-
           fail = true;
-          errmsg = strerror (errno);
+          errmsg = gnulib::strerror (errno);
         }
       else
         {
@@ -249,14 +248,12 @@ file_fstat::update_internal (bool force)
 
       struct stat buf;
 
-      int status = fstat (fid, &buf);
+      int status = gnulib::fstat (fid, &buf);
 
       if (status < 0)
         {
-          using namespace std;
-
           fail = true;
-          errmsg = strerror (errno);
+          errmsg = gnulib::strerror (errno);
         }
       else
         {

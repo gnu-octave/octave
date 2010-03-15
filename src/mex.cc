@@ -2107,7 +2107,7 @@ public:
   // Allocate memory.
   void *malloc_unmarked (size_t n)
   {
-    void *ptr = ::malloc (n);
+    void *ptr = gnulib::malloc (n);
 
     if (! ptr)
       {
@@ -2163,7 +2163,7 @@ public:
 
     if (ptr)
       {
-        v = ::realloc (ptr, n);
+        v = gnulib::realloc (ptr, n);
         
         std::set<void *>::iterator p = memlist.find (ptr);
         
@@ -2376,7 +2376,7 @@ mex *mex_context = 0;
 void *
 mxArray::malloc (size_t n)
 {
-  return mex_context ? mex_context->malloc_unmarked (n) : ::malloc (n);
+  return mex_context ? mex_context->malloc_unmarked (n) : gnulib::malloc (n);
 }
 
 void *
@@ -2478,13 +2478,13 @@ mxCalloc (size_t n, size_t size)
 void *
 mxMalloc (size_t n)
 {
-  return mex_context ? mex_context->malloc (n) : malloc (n);
+  return mex_context ? mex_context->malloc (n) : gnulib::malloc (n);
 }
 
 void *
 mxRealloc (void *ptr, size_t size)
 {
-  return mex_context ? mex_context->realloc (ptr, size) : realloc (ptr, size);
+  return mex_context ? mex_context->realloc (ptr, size) : gnulib::realloc (ptr, size);
 }
 
 void

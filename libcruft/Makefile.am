@@ -31,7 +31,9 @@ libcruft_la_SOURCES =
 
 libcruft_la_FFLAGS = $(F77_INTEGER_8_FLAG)
 
-libcruft_la_CPPFLAGS = @CRUFT_DLL_DEFS@
+libcruft_la_CPPFLAGS = \
+  @CRUFT_DLL_DEFS@ \
+  $(AM_CPPFLAGS)
 
 libcruft_la_LDFLAGS = \
   -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@ \

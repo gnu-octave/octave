@@ -1,3 +1,7 @@
+2010-03-15  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (libcruft_la_CPPFLAGS): Append $(AM_CPPFLAGS).
+
 2010-03-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* blas-xtra/cconv2.f, blas-xtra/csconv2.f, blas-xtra/dconv2.f,

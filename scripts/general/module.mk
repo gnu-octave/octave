@@ -54,7 +54,6 @@ general_FCN_FILES = \
   general/nargchk.m \
   general/nargoutchk.m \
   general/nextpow2.m \
-  general/nthroot.m \
   general/num2str.m \
   general/perror.m \
   general/pol2cart.m \

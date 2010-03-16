@@ -11,6 +11,7 @@ specfun_FCN_FILES = \
   specfun/isprime.m \
   specfun/legendre.m \
   specfun/nchoosek.m \
+  specfun/nthroot.m \
   specfun/perms.m \
   specfun/pow2.m \
   specfun/primes.m \

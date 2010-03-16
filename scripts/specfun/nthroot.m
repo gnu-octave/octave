@@ -1,4 +1,5 @@
 ## Copyright (C) 2004, 2006, 2007, 2009 Paul Kienzle
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -33,38 +34,50 @@
 ## @result{} 0.50000 - 0.86603i
 ## @end group
 ## @end example
+## 
+## @var{n} must be a scalar. If @var{n} is not an even integer and @var{X} has
+## negative entries, an error is produced.
 ##
 ## @end deftypefn
 
-function y = nthroot (x, m)
+function y = nthroot (x, n)
 
   if (nargin != 2)
     print_usage ();
   endif
-  
-  y = x.^(1./m);
 
-  if (isscalar (x))
-    x *= ones (size (m)); 
+  if (! isscalar (n))
+    error ("nthroot: n must be a nonzero scalar");
   endif
 
-  if (isscalar (m))
-    m *= ones (size (x)); 
-  endif
+  if (n == 3)
+    y = cbrt (x);
+  elseif (n == -3)
+    y = 1 ./ cbrt (x);
+  elseif (n < 0)
+    y = 1 ./ nthroot (x, -n);
+  else
+    ## Compute using power.
+    if (n == round (n) && mod (n, 2) == 1)
+      y = abs (x) .^ (1/n) .* sign (x);
+    elseif (any (x(:) < 0))
+      error ("nthroot: if x contains negative values, n must be an odd integer");
+    else
+      y = x .^ (1/n);
+    endif
 
-  idx = (mod (m, 2) == 1 & imag (x) == 0 & x < 0);
+    if (finite (n) && n > 0 && n == round (n))
+      ## Correction.
+      y = ((n-1)*y + x ./ (y.^(n-1))) / n;
+      y = merge (finite (y), y, x);
+    endif
 
-  if (any (idx(:)))
-    y(idx) = -(-x(idx)).^(1./m(idx)); 
-  endif
-
-  ## If result is all real, make sure it looks real
-  if (all (imag (y) == 0))
-    y = real (y); 
   endif
 
 endfunction
 
-%!assert(nthroot(-1,[3,-3]), [-1,-1],eps);
-%!assert(nthroot([-1,1],[3.1,-3]), [-1,1].^(1./[3.1,-3]));
-%!assert(nthroot([-1+1i,-1-1i],3), [-1+1i,-1-1i].^(1/3));
+%!assert(nthroot(-32,5), -2);
+%!assert(nthroot(81,4), 3);
+%!assert(nthroot(Inf,4), Inf);
+%!assert(nthroot(-Inf,7), -Inf);
+%!assert(nthroot(-Inf,-7), 0);

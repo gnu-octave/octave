@@ -1,5 +1,12 @@
 2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/nthroot.m: Remove.
+	* general/module.mk: Update.
+	* specfun/nthroot.m: New source.
+	* specfun/module.mk: Update.
+
+2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
+
 	* miscellaneous/intwarning.m: Deprecate.
 
 2010-03-11  Jaroslav Hajek  <highegg@gmail.com>

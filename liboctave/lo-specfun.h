@@ -101,6 +101,14 @@ extern OCTAVE_API float log1pf (float x);
 #endif
 extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
 
+#if !defined (HAVE_CBRT)
+extern OCTAVE_API double cbrt (double x);
+#endif
+
+#if !defined (HAVE_CBRTF)
+extern OCTAVE_API float cbrtf (float x);
+#endif
+
 extern OCTAVE_API double xgamma (double x);
 extern OCTAVE_API double xlgamma (double x);
 extern OCTAVE_API Complex rc_lgamma (double x);

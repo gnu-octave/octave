@@ -770,6 +770,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (erfcx, float, ::erfcx);
       ARRAY_MAPPER (gamma, float, xgamma);
       RC_ARRAY_MAPPER (lgamma, FloatComplex, rc_lgamma);
+      ARRAY_MAPPER (cbrt, float, ::cbrtf);
       ARRAY_MAPPER (ceil, float, ::ceilf);
       ARRAY_MAPPER (cos, float, ::cosf);
       ARRAY_MAPPER (cosh, float, ::coshf);

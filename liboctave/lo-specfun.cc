@@ -560,6 +560,22 @@ log1p (const Complex& x)
   return retval;
 }
 
+#if !defined (HAVE_CBRT)
+double cbrt (double x)
+{
+  static const double one_third = 0.3333333333333333333;
+  if (xfinite (x))
+    {
+      // Use pow.
+      double y = std::pow (std::abs (x), one_third) * signum (x);
+      // Correct for better accuracy.
+      return (x / (y*y) + y + y) / 3;
+    }
+  else
+    return x;
+}
+#endif
+
 #if !defined (HAVE_LOG1PF)
 float
 log1pf (float x)
@@ -602,6 +618,22 @@ log1p (const FloatComplex& x)
 
   return retval;
 }
+
+#if !defined (HAVE_CBRTF)
+float cbrtf (float x)
+{
+  static const float one_third = 0.3333333333333333333f;
+  if (xfinite (x))
+    {
+      // Use pow.
+      float y = std::pow (std::abs (x), one_third) * signum (x);
+      // Correct for better accuracy.
+      return (x / (y*y) + y + y) / 3;
+    }
+  else
+    return x;
+}
+#endif
 
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);

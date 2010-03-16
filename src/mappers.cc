@@ -351,6 +351,35 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 
 */
 
+DEFUN (cbrt, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} cbrt (@var{x})\n\
+Return the real cube root of @var{x}. Unlike @code{@var{x}^(1/3)},\n\
+the result will be negative if @var{x} is negative.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).cbrt ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!assert (cbrt (64), 4)
+%!assert (cbrt (-125), -5)
+%!assert (cbrt (0), 0)
+%!assert (cbrt (Inf), Inf)
+%!assert (cbrt (-Inf), -Inf)
+%!assert (cbrt (NaN), NaN)
+%!assert (cbrt (2^300), 2^100)
+%!assert (cbrt (125*2^300), 5*2^100)
+
+*/
+
 DEFUN (ceil, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\

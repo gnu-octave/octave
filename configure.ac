@@ -1690,7 +1690,7 @@ esac
 ### Check for nonstandard but common math functions that we need.
 
 AC_CHECK_FUNCS(acosh acoshf asinh asinhf atanh atanhf erf erff erfc erfcf exp2f log2 log2f)
-AC_CHECK_FUNCS(hypotf _hypotf)
+AC_CHECK_FUNCS(hypotf _hypotf cbrt cbrtf)
 
 ### Checks for OS specific cruft.
 

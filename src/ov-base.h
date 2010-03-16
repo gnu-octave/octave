@@ -658,6 +658,7 @@ public:
       umap_asinh,
       umap_atan,
       umap_atanh,
+      umap_cbrt,
       umap_ceil,
       umap_conj,
       umap_cos,

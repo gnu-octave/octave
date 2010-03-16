@@ -893,6 +893,7 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (erfcx, double, ::erfcx);
       ARRAY_MAPPER (gamma, double, xgamma);
       RC_ARRAY_MAPPER (lgamma, Complex, rc_lgamma);
+      ARRAY_MAPPER (cbrt, double, ::cbrt);
       ARRAY_MAPPER (ceil, double, ::ceil);
       ARRAY_MAPPER (cos, double, ::cos);
       ARRAY_MAPPER (cosh, double, ::cosh);

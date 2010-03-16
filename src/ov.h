@@ -1082,6 +1082,7 @@ public:
   MAPPER_FORWARD (asinh)
   MAPPER_FORWARD (atan)
   MAPPER_FORWARD (atanh)
+  MAPPER_FORWARD (cbrt)
   MAPPER_FORWARD (ceil)
   MAPPER_FORWARD (conj)
   MAPPER_FORWARD (cos)

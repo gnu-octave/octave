@@ -290,6 +290,7 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (erfcx, ::erfcx);
       SCALAR_MAPPER (gamma, xgamma);
       SCALAR_MAPPER (lgamma, rc_lgamma);
+      SCALAR_MAPPER (cbrt, ::cbrtf);
       SCALAR_MAPPER (ceil, ::ceilf);
       SCALAR_MAPPER (cos, ::cosf);
       SCALAR_MAPPER (cosh, ::coshf);

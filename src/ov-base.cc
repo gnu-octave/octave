@@ -1150,6 +1150,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "asinh",
       "atan",
       "atanh",
+      "cbrt",
       "ceil",
       "conj",
       "cos",

@@ -1,3 +1,13 @@
+2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (unary_mapper_t::umap_cbrt): New enum member.
+	* ov.h (octave_value::cbrt): New forwarder method.
+	* ov-scalar.cc (octave_scalar::map): Handle cbrt.
+	* ov-float.cc (octave_float_scalar::map): Ditto.
+	* ov-re-mat.cc (octave_matrix::map): Ditto.
+	* ov-flt-re-mat.cc (octave_float_matrix::map): Ditto.
+	* ov-re-sparse.cc (octave_sparse_matrix::map): Ditto.
+
 2010-03-15  John W. Eaton  <jwe@octave.org>
 
 	* oct-parse.yy, lex.ll: Undefine GNULIB_NAMESPACE immediately

@@ -333,6 +333,12 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 
   success = val.save_ascii (os);
 
+  // Insert an extra newline after data set so that multiple data
+  // elements may be handled separately by gnuplot (see the description
+  // of the index qualifier for the plot command in the gnuplot
+  // documentation).
+  os << "\n";
+
   os.precision (old_precision);
 
   return (os && success);

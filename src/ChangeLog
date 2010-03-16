@@ -1,3 +1,8 @@
+2010-03-16  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.cc (save_ascii_data): Insert extra newline after
+	data is written to file.  From Brett Stewart <btstewart@wisc.edu>.
+
 2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base.h (unary_mapper_t::umap_cbrt): New enum member.

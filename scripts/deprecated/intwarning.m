@@ -62,7 +62,18 @@
 ## @seealso{warning}
 ## @end deftypefn
 
+## Deprecated in v. 3.4
+
 function y = intwarning (x)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "intwarning is obsolete and will be removed from a future version of Octave. Integer math no longer produces warnings. Supply your own checks if you need those.");
+  endif
+
+  return;
 
   if (nargin != 1)
     print_usage ();

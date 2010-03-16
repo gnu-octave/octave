@@ -7,6 +7,7 @@ deprecated_FCN_FILES = \
   deprecated/create_set.m \
   deprecated/dmult.m \
   deprecated/fstat.m \
+  deprecated/intwarning.m \
   deprecated/iscommand.m \
   deprecated/israwcommand.m \
   deprecated/isstr.m \

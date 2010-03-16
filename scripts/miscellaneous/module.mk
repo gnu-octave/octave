@@ -29,7 +29,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/gzip.m \
   miscellaneous/info.m \
   miscellaneous/inputname.m \
-  miscellaneous/intwarning.m \
   miscellaneous/ismac.m \
   miscellaneous/ispc.m \
   miscellaneous/isunix.m \

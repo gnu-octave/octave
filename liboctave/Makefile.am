@@ -202,6 +202,7 @@ INCS = \
   idx-vector.h \
   kpse-xfns.h \
   lo-ieee.h \
+  lo-macros.h \
   lo-mappers.h \
   lo-math.h \
   lo-specfun.h \

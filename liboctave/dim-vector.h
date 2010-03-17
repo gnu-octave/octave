@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "lo-error.h"
+#include "lo-macros.h"
 
 // Rationale: This implementation is more tricky than Array, but the
 // big plus is that dim_vector requires only one allocation instead of
@@ -154,54 +155,24 @@ public:
     rep[1] = c;
     rep[2] = p;
   }
-  
-  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
-              octave_idx_type q)
-    : rep (newrep (4))
-  {
-    rep[0] = r;
-    rep[1] = c;
-    rep[2] = p;
-    rep[3] = q;
+
+#define ASSIGN_REP(i) rep[i] = d ## i;
+#define DIM_VECTOR_CTOR(N) \
+  dim_vector (OCT_MAKE_DECL_LIST(octave_idx_type, d, N)) \
+    : rep (newrep (N)) \
+  { \
+    OCT_ITERATE_MACRO(ASSIGN_REP, N) \
   }
-  
-  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
-              octave_idx_type q, octave_idx_type s)
-    : rep (newrep (5))
-  {
-    rep[0] = r;
-    rep[1] = c;
-    rep[2] = p;
-    rep[3] = q;
-    rep[4] = s;
-  }
-  
-  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
-              octave_idx_type q, octave_idx_type s, octave_idx_type t)
-    : rep (newrep (6))
-  {
-    rep[0] = r;
-    rep[1] = c;
-    rep[2] = p;
-    rep[3] = q;
-    rep[4] = s;
-    rep[5] = t;
-  }
-  
-  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
-              octave_idx_type q, octave_idx_type s, octave_idx_type t,
-              octave_idx_type u)
-    : rep (newrep (7))
-  {
-    rep[0] = r;
-    rep[1] = c;
-    rep[2] = p;
-    rep[3] = q;
-    rep[4] = s;
-    rep[5] = t;
-    rep[6] = u;
-  }
-  
+
+  // Add more if needed.
+  DIM_VECTOR_CTOR(4)
+  DIM_VECTOR_CTOR(5)
+  DIM_VECTOR_CTOR(6)
+  DIM_VECTOR_CTOR(7)
+
+#undef ASSIGN_REP
+#undef DIM_VECTOR_CTOR
+
   dim_vector (const octave_idx_type *vec, size_t vec_size)
     : rep (newrep (vec_size))
   {

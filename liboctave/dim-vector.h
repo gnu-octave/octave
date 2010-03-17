@@ -134,6 +134,20 @@ private:
 
 public:
 
+  // The constructor
+  //
+  //   dim_vector (n)
+  //
+  // creates an dimension vector with N rows and 1 column.  It is
+  // deprecated because of the potentiol for confusion that it causes.
+  // Additional constructors of the form
+  //
+  //   dim_vector (r, c)
+  //   dim_vector (r, c, p)
+  //   dim_vector (d1, d2, d3, d4, ...)
+  //
+  // are available for up to 7 dimensions.
+
   explicit dim_vector (octave_idx_type n) GCC_ATTR_DEPRECATED
     : rep (newrep (2))
   {
@@ -141,34 +155,21 @@ public:
     rep[1] = 1;
   }
 
-  dim_vector (octave_idx_type r, octave_idx_type c)
-    : rep (newrep (2))
-  {
-    rep[0] = r;
-    rep[1] = c;
-  }
-
-  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p)
-    : rep (newrep (3))
-  {
-    rep[0] = r;
-    rep[1] = c;
-    rep[2] = p;
-  }
-
 #define ASSIGN_REP(i) rep[i] = d ## i;
 #define DIM_VECTOR_CTOR(N) \
-  dim_vector (OCT_MAKE_DECL_LIST(octave_idx_type, d, N)) \
+  dim_vector (OCT_MAKE_DECL_LIST (octave_idx_type, d, N)) \
     : rep (newrep (N)) \
   { \
-    OCT_ITERATE_MACRO(ASSIGN_REP, N) \
+    OCT_ITERATE_MACRO (ASSIGN_REP, N) \
   }
 
   // Add more if needed.
-  DIM_VECTOR_CTOR(4)
-  DIM_VECTOR_CTOR(5)
-  DIM_VECTOR_CTOR(6)
-  DIM_VECTOR_CTOR(7)
+  DIM_VECTOR_CTOR (2)
+  DIM_VECTOR_CTOR (3)
+  DIM_VECTOR_CTOR (4)
+  DIM_VECTOR_CTOR (5)
+  DIM_VECTOR_CTOR (6)
+  DIM_VECTOR_CTOR (7)
 
 #undef ASSIGN_REP
 #undef DIM_VECTOR_CTOR

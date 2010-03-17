@@ -140,19 +140,66 @@ public:
     rep[1] = 1;
   }
 
-  explicit dim_vector (octave_idx_type r, octave_idx_type c)
+  dim_vector (octave_idx_type r, octave_idx_type c)
     : rep (newrep (2))
   {
     rep[0] = r;
     rep[1] = c;
   }
 
-  explicit dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p)
+  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p)
     : rep (newrep (3))
   {
     rep[0] = r;
     rep[1] = c;
     rep[2] = p;
+  }
+  
+  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
+              octave_idx_type q)
+    : rep (newrep (4))
+  {
+    rep[0] = r;
+    rep[1] = c;
+    rep[2] = p;
+    rep[3] = q;
+  }
+  
+  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
+              octave_idx_type q, octave_idx_type s)
+    : rep (newrep (5))
+  {
+    rep[0] = r;
+    rep[1] = c;
+    rep[2] = p;
+    rep[3] = q;
+    rep[4] = s;
+  }
+  
+  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
+              octave_idx_type q, octave_idx_type s, octave_idx_type t)
+    : rep (newrep (6))
+  {
+    rep[0] = r;
+    rep[1] = c;
+    rep[2] = p;
+    rep[3] = q;
+    rep[4] = s;
+    rep[5] = t;
+  }
+  
+  dim_vector (octave_idx_type r, octave_idx_type c, octave_idx_type p,
+              octave_idx_type q, octave_idx_type s, octave_idx_type t,
+              octave_idx_type u)
+    : rep (newrep (7))
+  {
+    rep[0] = r;
+    rep[1] = c;
+    rep[2] = p;
+    rep[3] = q;
+    rep[4] = s;
+    rep[5] = t;
+    rep[6] = u;
   }
   
   dim_vector (const octave_idx_type *vec, size_t vec_size)

@@ -1,3 +1,7 @@
+2010-03-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h: Provide constructors up to order 7.
+
 2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-specfun.cc: Substitute cbrt and cbrtf if needed.

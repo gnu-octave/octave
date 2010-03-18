@@ -7599,23 +7599,17 @@ SparseMatrix::squeeze (void) const
 }
 
 SparseMatrix
-SparseMatrix::index (idx_vector& i, int resize_ok) const 
+SparseMatrix::index (const idx_vector& i, bool resize_ok) const 
 { 
   return MSparse<double>::index (i, resize_ok); 
 }
 
 SparseMatrix
-SparseMatrix::index (idx_vector& i, idx_vector& j, int resize_ok) const 
+SparseMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const 
 { 
   return MSparse<double>::index (i, j, resize_ok); 
 }
   
-SparseMatrix
-SparseMatrix::index (Array<idx_vector>& ra_idx, int resize_ok) const 
-{ 
-  return MSparse<double>::index (ra_idx, resize_ok); 
-}
-
 SparseMatrix
 SparseMatrix::reshape (const dim_vector& new_dims) const
 {

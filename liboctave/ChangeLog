@@ -1,3 +1,14 @@
+2010-03-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.h (Sparse<T>::index): Use const references. Use bool for
+	resize_ok. Remove Array<idx_vector> overload.
+	* MSparse.h (MSparse<T>::index): Ditto.
+	* dSparse.h, dSparse.cc (SparseMatrix::index): Ditto.
+	* CSparse.h, CSparse.cc (SparseComplexMatrix::index): Ditto.
+	* boolSparse.h, boolSparse.cc (SparseBoolMatrix::index): Ditto.
+	* Sparse.cc (Sparse<T>::index): Ditto. Redim index to 2 dimensions.
+	Don't use non-const methods. Use gripe_index_out_of_range.
+
 2010-03-17  John W. Eaton  <jwe@octave.org>
 
 	* dim-vector.h (dim_vector): Also use DIM_VECTOR macro for 2 and

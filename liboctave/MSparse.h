@@ -93,15 +93,12 @@ public:
 
   MSparse<T> squeeze (void) const { return Sparse<T>::squeeze (); }
 
-  MSparse<T> index (idx_vector& i, int resize_ok) const 
+  MSparse<T> index (const idx_vector& i, bool resize_ok) const 
     { return Sparse<T>::index (i, resize_ok); }
 
-  MSparse<T> index (idx_vector& i, idx_vector& j, int resize_ok) const 
+  MSparse<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok) const 
     { return Sparse<T>::index (i, j, resize_ok); }
   
-  MSparse<T> index (Array<idx_vector>& ra_idx, int resize_ok) const 
-    { return Sparse<T>::index (ra_idx, resize_ok); }
-
   MSparse<T> reshape (const dim_vector& new_dims) const
     { return Sparse<T>::reshape (new_dims); }
      

@@ -495,11 +495,9 @@ public:
 
   Sparse<T> value (void);
 
-  Sparse<T> index (idx_vector& i, int resize_ok = 0) const;
+  Sparse<T> index (const idx_vector& i, bool resize_ok = false) const;
 
-  Sparse<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0) const;
-
-  Sparse<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0) const;
+  Sparse<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok = false) const;
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 

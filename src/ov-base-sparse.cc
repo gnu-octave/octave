@@ -51,8 +51,6 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
 
   octave_idx_type n_idx = idx.length ();
 
-  int nd = matrix.ndims ();
-
   switch (n_idx)
     {
     case 0:
@@ -68,37 +66,21 @@ octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
       }
       break;
 
-    default:
+    case 2:
       {
-        if (n_idx == 2 && nd == 2)
+        idx_vector i = idx (0).index_vector ();
+
+        if (! error_state)
           {
-            idx_vector i = idx (0).index_vector ();
+            idx_vector j = idx (1).index_vector ();
 
             if (! error_state)
-              {
-                idx_vector j = idx (1).index_vector ();
-
-                if (! error_state)
-                  retval = octave_value (matrix.index (i, j, resize_ok));
-              }
-          }
-        else
-          {
-            Array<idx_vector> idx_vec (n_idx, 1);
-
-            for (octave_idx_type i = 0; i < n_idx; i++)
-              {
-                idx_vec(i) = idx(i).index_vector ();
-
-                if (error_state)
-                  break;
-              }
-
-            if (! error_state)
-              retval = octave_value (matrix.index (idx_vec, resize_ok));
+              retval = octave_value (matrix.index (i, j, resize_ok));
           }
       }
       break;
+    default:
+      error ("sparse indexing needs 1 or 2 indices");
     }
 
   return retval;

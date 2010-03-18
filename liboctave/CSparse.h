@@ -400,11 +400,9 @@ public:
 
   SparseComplexMatrix squeeze (void) const;
 
-  SparseComplexMatrix index (idx_vector& i, int resize_ok) const;
+  SparseComplexMatrix index (const idx_vector& i, bool resize_ok) const;
 
-  SparseComplexMatrix index (idx_vector& i, idx_vector& j, int resize_ok) const;
-  
-  SparseComplexMatrix index (Array<idx_vector>& ra_idx, int resize_ok) const;
+  SparseComplexMatrix index (const idx_vector& i, const idx_vector& j, bool resize_ok) const;
 
   SparseComplexMatrix reshape (const dim_vector& new_dims) const;
 

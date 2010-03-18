@@ -7198,22 +7198,17 @@ SparseComplexMatrix::squeeze (void) const
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::index (idx_vector& i, int resize_ok) const 
+SparseComplexMatrix::index (const idx_vector& i, bool resize_ok) const 
 { 
   return MSparse<Complex>::index (i, resize_ok); 
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::index (idx_vector& i, idx_vector& j, int resize_ok) const 
+SparseComplexMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const 
 { 
   return MSparse<Complex>::index (i, j, resize_ok); 
 }
   
-SparseComplexMatrix
-SparseComplexMatrix::index (Array<idx_vector>& ra_idx, int resize_ok) const 
-{ 
-  return MSparse<Complex>::index (ra_idx, resize_ok); 
-}
 SparseComplexMatrix
 SparseComplexMatrix::reshape (const dim_vector& new_dims) const
 {

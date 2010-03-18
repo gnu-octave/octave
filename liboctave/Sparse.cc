@@ -1611,7 +1611,7 @@ Sparse<T>::value (void)
 
 template <class T>
 Sparse<T>
-Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
+Sparse<T>::index (const idx_vector& idx_arg, bool resize_ok) const
 {
   Sparse<T> retval;
 
@@ -1621,6 +1621,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
   octave_idx_type nc = dim2 ();
   octave_idx_type nz = nnz ();
 
+  // Use safe_numel so that we get an error if the matrix is too big to be indexed.
   octave_idx_type orig_len = nr * nc;
 
   dim_vector idx_orig_dims = idx_arg.orig_dimensions ();
@@ -1630,7 +1631,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 
   if (idx_orig_dims.length () > 2)
     (*current_liboctave_error_handler)
-      ("Sparse<T>::index: Can not index Sparse<T> with an N-D Array");
+      ("cannot index sparse matrix with an N-D Array");
   else if (idx_arg.is_colon ())
     {
       // Fast magic colon processing.
@@ -1646,6 +1647,10 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       retval.xcidx(0) = 0;
       retval.xcidx(1) = nz;
     }
+  else if (! resize_ok && idx_arg.extent (length ()) > length ())
+    {
+      gripe_index_out_of_range (1, 1, idx_arg.extent (orig_len), orig_len);
+    }
   else if (nr == 1 && nc == 1)
     {
       // You have to be pretty sick to get to this bit of code,
@@ -1653,7 +1658,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       // then want to make a dense matrix with sparse 
       // representation. Ok, we'll do it, but you deserve what 
       // you get!!
-      octave_idx_type n = idx_arg.freeze (length (), "sparse vector", resize_ok);
+      octave_idx_type n = idx_arg.length (length ());
       if (n == 0)
 
           retval = Sparse<T> (idx_orig_dims);
@@ -1709,7 +1714,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       // shape as the index.  Otherwise, it has same orientation as
       // indexed object.
       octave_idx_type len = length ();
-      octave_idx_type n = idx_arg.freeze (len, "sparse vector", resize_ok);
+      octave_idx_type n = idx_arg.length (len);
       octave_idx_type l, u;
       if (n == 0)
         if (nr == 1)
@@ -1917,74 +1922,68 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
 
-      idx_arg.freeze (nr * nc, "matrix", resize_ok);
+      octave_idx_type result_nr = idx_orig_rows;
+      octave_idx_type result_nc = idx_orig_columns;
 
-      if (idx_arg)
+      if (nz < 1)
+        retval = Sparse<T> (result_nr, result_nc);
+      else
         {
-          octave_idx_type result_nr = idx_orig_rows;
-          octave_idx_type result_nc = idx_orig_columns;
-
-          if (nz < 1)
-            retval = Sparse<T> (result_nr, result_nc);
-          else
+          // Count number of non-zero elements
+          octave_idx_type new_nzmx = 0;
+          octave_idx_type kk = 0;
+          for (octave_idx_type j = 0; j < result_nc; j++)
             {
-              // Count number of non-zero elements
-              octave_idx_type new_nzmx = 0;
-              octave_idx_type kk = 0;
-              for (octave_idx_type j = 0; j < result_nc; j++)
+              for (octave_idx_type i = 0; i < result_nr; i++)
                 {
-                  for (octave_idx_type i = 0; i < result_nr; i++)
+                  octave_quit ();
+
+                  octave_idx_type ii = idx_arg.elem (kk++);
+                  if (ii < orig_len)
                     {
-                      octave_quit ();
-                      
-                      octave_idx_type ii = idx_arg.elem (kk++);
-                      if (ii < orig_len)
+                      octave_idx_type fr = ii % nr;
+                      octave_idx_type fc = (ii - fr) / nr;
+                      for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
                         {
-                          octave_idx_type fr = ii % nr;
-                          octave_idx_type fc = (ii - fr) / nr;
-                          for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
-                            {
-                              if (ridx(k) == fr)
-                                new_nzmx++;
-                              if (ridx(k) >= fr)
-                                break;
-                            }
+                          if (ridx(k) == fr)
+                            new_nzmx++;
+                          if (ridx(k) >= fr)
+                            break;
                         }
                     }
-                }
-              
-              retval = Sparse<T> (result_nr, result_nc, new_nzmx);
-
-              kk = 0;
-              octave_idx_type jj = 0;
-              retval.xcidx(0) = 0;
-              for (octave_idx_type j = 0; j < result_nc; j++)
-                {
-                  for (octave_idx_type i = 0; i < result_nr; i++)
-                    {
-                      octave_quit ();
-
-                      octave_idx_type ii = idx_arg.elem (kk++);
-                      if (ii < orig_len)
-                        {
-                          octave_idx_type fr = ii % nr;
-                          octave_idx_type fc = (ii - fr) / nr;
-                          for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
-                            {
-                              if (ridx(k) == fr)
-                                {
-                                  retval.xdata(jj) = data(k);
-                                  retval.xridx(jj++) = i;
-                                }
-                              if (ridx(k) >= fr)
-                                break;
-                            }
-                        }
-                    }
-                  retval.xcidx(j+1) = jj;
                 }
             }
-          // idx_vector::freeze() printed an error message for us.
+
+          retval = Sparse<T> (result_nr, result_nc, new_nzmx);
+
+          kk = 0;
+          octave_idx_type jj = 0;
+          retval.xcidx(0) = 0;
+          for (octave_idx_type j = 0; j < result_nc; j++)
+            {
+              for (octave_idx_type i = 0; i < result_nr; i++)
+                {
+                  octave_quit ();
+
+                  octave_idx_type ii = idx_arg.elem (kk++);
+                  if (ii < orig_len)
+                    {
+                      octave_idx_type fr = ii % nr;
+                      octave_idx_type fc = (ii - fr) / nr;
+                      for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
+                        {
+                          if (ridx(k) == fr)
+                            {
+                              retval.xdata(jj) = data(k);
+                              retval.xridx(jj++) = i;
+                            }
+                          if (ridx(k) >= fr)
+                            break;
+                        }
+                    }
+                }
+              retval.xcidx(j+1) = jj;
+            }
         }
     }
 
@@ -2000,7 +1999,7 @@ idx_node
 
 template <class T>
 Sparse<T>
-Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
+Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_ok) const
 {
   Sparse<T> retval;
 
@@ -2009,19 +2008,23 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
 
-  octave_idx_type n = idx_i.freeze (nr, "row", resize_ok);
-  octave_idx_type m = idx_j.freeze (nc, "column", resize_ok);
+  octave_idx_type n = idx_i.length (nr);
+  octave_idx_type m = idx_j.length (nc);
 
-  if (idx_i && idx_j)
+  if (! resize_ok && idx_i.extent (nr) > nr)
+    gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr);
+  else if (! resize_ok && idx_j.extent (nc) > nc)
+    gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
+  else
     {
-      if (idx_i.orig_empty () || idx_j.orig_empty () || n == 0 || m == 0)
+      if (n == 0 || m == 0)
         {
           retval.resize_no_fill (n, m);
         }
       else 
         {
-          int idx_i_colon = idx_i.is_colon_equiv (nr);
-          int idx_j_colon = idx_j.is_colon_equiv (nc);
+          bool idx_i_colon = idx_i.is_colon_equiv (nr);
+          bool idx_j_colon = idx_j.is_colon_equiv (nc);
 
           if (idx_i_colon && idx_j_colon)
             {
@@ -2213,23 +2216,8 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
             }
         }
     }
-  // idx_vector::freeze() printed an error message for us.
 
   return retval;
-}
-
-template <class T>
-Sparse<T>
-Sparse<T>::index (Array<idx_vector>& ra_idx, int resize_ok) const
-{
-
-  if (ra_idx.length () != 2)
-    {
-      (*current_liboctave_error_handler) ("range error for index");
-      return *this;
-    }
-
-  return index (ra_idx (0), ra_idx (1), resize_ok);
 }
 
 // Can't use versions of these in Array.cc due to duplication of the 

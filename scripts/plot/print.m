@@ -217,54 +217,54 @@ function print (varargin)
       arg = varargin{i};
       if (ischar (arg))
         if (strcmp (arg, "-color"))
-	  use_color = 1;
+          use_color = 1;
         elseif (strcmp (arg, "-mono"))
-	  use_color = -1;
+          use_color = -1;
         elseif (strcmp (arg, "-solid"))
           force_solid = 1;
         elseif (strcmp (arg, "-dashed"))
           force_solid = -1;
         elseif (strcmp (arg, "-portrait"))
-	  orientation = "portrait";
+          orientation = "portrait";
         elseif (strcmp (arg, "-landscape"))
-	  orientation = "landscape";
+          orientation = "landscape";
         elseif (strcmp (arg, "-tight"))
-	  tight_flag = true;
+          tight_flag = true;
         elseif (strcmp (arg, "-textspecial"))
-	  special_flag = "textspecial";
+          special_flag = "textspecial";
         elseif (strncmp (arg, "-debug", 6))
-	  debug = true;
-	  if (length (arg) > 7)
-	    debug_file = arg(8:end);
-	  endif
+          debug = true;
+          if (length (arg) > 7)
+            debug_file = arg(8:end);
+          endif
         elseif (length (arg) > 2 && arg(1:2) == "-d")
-	  devopt = tolower(arg(3:end));
+          devopt = tolower(arg(3:end));
         elseif (length (arg) > 2 && arg(1:2) == "-P")
-	  printer = arg;
-	elseif ((length (arg) > 2) && arg(1:2) == "-G")
-	  ghostscript_binary = arg(3:end);
-	  if (exist (ghostscript_binary, "file") != 2)
-	    ghostscript_binary = file_in_path (EXEC_PATH, ghostscript_binary);
-	  endif
-	  if (isempty (ghostscript_binary))
-	    error ("print.m: Ghostscript binary ""%s"" could not be located", arg(3:end))
-	  endif
+          printer = arg;
+        elseif ((length (arg) > 2) && arg(1:2) == "-G")
+          ghostscript_binary = arg(3:end);
+          if (exist (ghostscript_binary, "file") != 2)
+            ghostscript_binary = file_in_path (EXEC_PATH, ghostscript_binary);
+          endif
+          if (isempty (ghostscript_binary))
+            error ("print.m: Ghostscript binary ""%s"" could not be located", arg(3:end))
+          endif
         elseif (length (arg) > 2 && arg(1:2) == "-F")
-	  idx = rindex (arg, ":");
-	  if (idx)
-	    font = arg(3:idx-1);
-	    fontsize = arg(idx+1:length(arg));
-	  else
-	    font = arg(3:length(arg));
-	  endif
+          idx = rindex (arg, ":");
+          if (idx)
+            font = arg(3:idx-1);
+            fontsize = arg(idx+1:length(arg));
+          else
+            font = arg(3:length(arg));
+          endif
         elseif (length (arg) > 2 && arg(1:2) == "-S")
-	  canvas_size = arg(3:length(arg));
+          canvas_size = arg(3:length(arg));
         elseif (length (arg) > 2 && arg(1:2) == "-r")
-	  resolution = arg(3:length(arg));
+          resolution = arg(3:length(arg));
         elseif (length (arg) >= 1 && arg(1) == "-")
-	  error ("print: unknown option `%s'", arg);
-	elseif (length (arg) > 0)
-	  name = arg;
+          error ("print: unknown option `%s'", arg);
+        elseif (length (arg) > 0)
+          name = arg;
         endif
       elseif (isfigure (arg))
         figure (arg);
@@ -278,13 +278,13 @@ function print (varargin)
     doprint = isempty (name);
     if (doprint)
       if (isempty (devopt))
-	if (use_color < 0)
-	  devopt = "ps";
+        if (use_color < 0)
+          devopt = "ps";
           printname = cstrcat (tmpnam, ".ps");
-	else
-	  devopt = "psc";
+        else
+          devopt = "psc";
           printname = cstrcat (tmpnam, ".psc");
-	endif
+        endif
       else
         printname = cstrcat (tmpnam, ".", devopt);
       endif
@@ -321,19 +321,19 @@ function print (varargin)
     ## Check if the specified device is one that is supported by gnuplot.
     ## If not, assume it is a device/format supported by Ghostscript.
     dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
-		"gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
-		"ps", "ps2", "psc", "psc2", "eps", "eps2", ...
-		"epsc", "epsc2", "emf", "pdf", "pslatex", ...
-		"epslatex", "epslatexstandalone", "pstex", "tikz"};
+                "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
+                "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
+                "epsc", "epsc2", "emf", "pdf", "pslatex", ...
+                "epslatex", "epslatexstandalone", "pstex", "tikz"};
     if (! any (strcmp (dev, dev_list)) && have_ghostscript)
       ghostscript_output = name;
       ghostscript_device = dev;
       if (doprint)
-	## If printing, use color postscript.
+        ## If printing, use color postscript.
         dev = "psc";
         name = cstrcat (tmpnam, ".ps");
       else
-	## If saving to a file, use color encapsulated postscript.
+        ## If saving to a file, use color encapsulated postscript.
         dev = "epsc";
         name = cstrcat (tmpnam, ".eps");
       endif
@@ -356,38 +356,38 @@ function print (varargin)
         options = "";
       elseif (strcmp (dev, "epslatexstandalone"))
         if (__gnuplot_has_feature__ ("epslatexstandalone_terminal"))
-	  termn = "epslatex";
-	  options = "standalone ";
+          termn = "epslatex";
+          options = "standalone ";
         else
-	  error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
+          error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
         endif
       else
         if (dev(1) == "e")
-	  options = "eps ";
+          options = "eps ";
         else
-	  options = "";
+          options = "";
         endif
         termn = "postscript";
       endif
 
       if (any (dev == "c") || use_color > 0
           || (! isempty (strfind (dev, "tex")) && use_color == 0))
-	use_color = 1;
+        use_color = 1;
       else
-	use_color = -1;
+        use_color = -1;
       endif
       
       if (use_color > 0)
         if (force_solid < 0)
-	  options = cstrcat (options, "color dashed ");
+          options = cstrcat (options, "color dashed ");
         else
-	  options = cstrcat (options, "color solid ");
+          options = cstrcat (options, "color solid ");
         endif
       else
         if (force_solid > 0)
-	  options = cstrcat (options, "mono solid ");
+          options = cstrcat (options, "mono solid ");
         else
-	  options = cstrcat (options, "mono dashed ");
+          options = cstrcat (options, "mono dashed ");
         endif
       endif
 
@@ -455,13 +455,13 @@ function print (varargin)
     elseif (any (strcmp (dev, bitmap_devices)))
 
       if (isempty (canvas_size) && isempty (resolution) 
-	  && any (strcmp (dev, {"pbm", "gif", "jpeg", "png"})))
-	options = "";
+          && any (strcmp (dev, {"pbm", "gif", "jpeg", "png"})))
+        options = "";
       elseif (strcmp (dev, "svg"))
-	## Referring to size, either "dynamic" or "fixed"
-	options = "fixed";
+        ## Referring to size, either "dynamic" or "fixed"
+        options = "fixed";
       else
-	options = "";
+        options = "";
       end
       if (! isempty (canvas_size))
         options = cstrcat (options, " size ", canvas_size);
@@ -500,11 +500,11 @@ function print (varargin)
       if (strcmp (termn, "pdf") 
           && any (strcmp (available_terminals, "pdfcairo")))
         termn = "pdfcairo";
-	gnuplot_supports_term = true;
+        gnuplot_supports_term = true;
       elseif (strcmp (termn, "png")
               && any (strcmp (available_terminals, "pngcairo")))
         termn = "pngcairo";
-	gnuplot_supports_term = true;
+        gnuplot_supports_term = true;
       else
         gnuplot_supports_term = any (strcmp (available_terminals, termn));
       endif
@@ -523,16 +523,16 @@ function print (varargin)
 
     if (! gnuplot_supports_term)
       if (strcmp (termn, "pdf"))
-	## If there the installed gnuplot does not support pdf, use Ghostscript.
+        ## If there the installed gnuplot does not support pdf, use Ghostscript.
         ghostscript_device = "pdfwrite";
-	if (strfind (name, ".pdf") == numel (name) - 3)
+        if (strfind (name, ".pdf") == numel (name) - 3)
           ghostscript_output = name;
-	else
-	  ghostscript_output = strcat (name, ".pdf");
-	endif
+        else
+          ghostscript_output = strcat (name, ".pdf");
+        endif
         name = cstrcat (tmpnam, ".ps");
         termn = "postscript";
-	## All "options" for pdf work for postscript as well.
+        ## All "options" for pdf work for postscript as well.
       else
         error ("print: the device, \"%s\", is not available.", dev)
       endif
@@ -553,16 +553,16 @@ function print (varargin)
     if (! strcmp (paperorientation, get (gcf, "paperorientation"))
         && warn_on_inconsistent_orientation)
        msg = {"print.m - inconsistent papersize and paperorientation properties.\n",
-	       sprintf("         papersize = %.2f, %.2f\n", p.papersize),
-	       sprintf("         paperorientation = \"%s\"\n", p.paperorientation),
-	               "         the paperorientation property has been ignored"};
+               sprintf("         papersize = %.2f, %.2f\n", p.papersize),
+               sprintf("         paperorientation = \"%s\"\n", p.paperorientation),
+                       "         the paperorientation property has been ignored"};
       warning ("%s",msg{:})
       warn_on_inconsistent_orientation = false;
     endif
 
     if (strcmp (termn, "postscript") && ! strncmp (dev, "eps", 3))
       if (isempty (orientation))
-	orientation = paperorientation;
+        orientation = paperorientation;
       endif
       ## This is done here to accommodate ghostscript conversion.
       options = cstrcat (orientation, " ", options);
@@ -598,15 +598,15 @@ function print (varargin)
       set (gcf, "units", "pixels");
       restore_properties = true;
       if ((! output_for_printer || is_eps_file) && ! doprint)
-	## If not PDF or PostScript, and the result is not being sent to a printer,
+        ## If not PDF or PostScript, and the result is not being sent to a printer,
         ## render an image the size of the paperposition box.
-	## Trigger the listener to convert all paper props to inches.
-	if (! isempty (canvas_size))
+        ## Trigger the listener to convert all paper props to inches.
+        if (! isempty (canvas_size))
           size_in_pixels = sscanf (canvas_size ,"%d, %d");
           size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
           papersize_in_inches = size_in_pixels ./ resolution;
           paperposition_in_inches = [0, 0, papersize_in_inches];
-	else
+        else
           paperposition_in_inches = get (gcf, "paperposition");
           paperposition_in_inches(1:2) = 0;
           papersize_in_inches = paperposition_in_inches(3:4);
@@ -615,25 +615,25 @@ function print (varargin)
         set (gcf, "paperposition", paperposition_in_inches);
         set (gcf, "paperpositionmode", "manual");
       else
-	if (strcmp (p.paperpositionmode, "auto"))
-	  size_in_pixels = get (gcf, "position")(3:4);
-	  paperposition_in_inches(3:4) = size_in_pixels ./ resolution;
-	  paperposition_in_inches(1:2) = (p.papersize - paperposition_in_inches(3:4))/2;
-	else
-	  paperposition_in_inches = p.paperposition;
-	endif
-	if (! isempty (orientation) && ! strcmp (orientation, paperorientation))
-	  ## When -landscape/portrait changes the orientation, flip both the
-	  ## papersize and paperposition.
-	  restore_properties = true;
-	  set (gcf, "papersize", p.papersize([2, 1]));
-	  set (gcf, "paperposition", paperposition_in_inches([2, 1, 4, 3]));
-	else
-	  set (gcf, "paperposition", paperposition_in_inches);
-	endif
+        if (strcmp (p.paperpositionmode, "auto"))
+          size_in_pixels = get (gcf, "position")(3:4);
+          paperposition_in_inches(3:4) = size_in_pixels ./ resolution;
+          paperposition_in_inches(1:2) = (p.papersize - paperposition_in_inches(3:4))/2;
+        else
+          paperposition_in_inches = p.paperposition;
+        endif
+        if (! isempty (orientation) && ! strcmp (orientation, paperorientation))
+          ## When -landscape/portrait changes the orientation, flip both the
+          ## papersize and paperposition.
+          restore_properties = true;
+          set (gcf, "papersize", p.papersize([2, 1]));
+          set (gcf, "paperposition", paperposition_in_inches([2, 1, 4, 3]));
+        else
+          set (gcf, "paperposition", paperposition_in_inches);
+        endif
       endif
       if (use_color < 0)
-	[objs_with_color, color_of_objs] = convert_color2mono (gcf);
+        [objs_with_color, color_of_objs] = convert_color2mono (gcf);
       endif
       if (debug)
         drawnow (new_terminal, name, mono, debug_file);
@@ -649,22 +649,22 @@ function print (varargin)
         endfor
       endif
       if (use_color < 0)
-	convert_mono_to_or_from_color (objs_with_color, color_of_objs, false);
+        convert_mono_to_or_from_color (objs_with_color, color_of_objs, false);
       endif
     end_unwind_protect
 
     if (! isempty (ghostscript_output))
       if (is_eps_file && tight_flag)
-	## If gnuplot's output is an eps-file then crop at the bounding box.
+        ## If gnuplot's output is an eps-file then crop at the bounding box.
         fix_eps_bbox (name, ghostscript_binary);
       endif
       ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4";
       if (is_eps_file)
-	ghostscript_options = sprintf ("%s -dEPSCrop", ghostscript_options);
+        ghostscript_options = sprintf ("%s -dEPSCrop", ghostscript_options);
       endif
       if (isempty (strfind (lower (ghostscript_device), "write")))
-	## If output is a bitmap then include the resolution
-	ghostscript_options = sprintf ("%s -r%d", ghostscript_options, resolution);
+        ## If output is a bitmap then include the resolution
+        ghostscript_options = sprintf ("%s -r%d", ghostscript_options, resolution);
       endif
       ghostscript_options = sprintf ("%s -sDEVICE=%s", ghostscript_options,
                                      ghostscript_device);
@@ -686,12 +686,12 @@ function print (varargin)
 
     if (doprint)
       if (isunix ())
-	prn_opt = "-l";
+        prn_opt = "-l";
       elseif (ispc ())
-	prn_opt = "-o l";
+        prn_opt = "-o l";
       else
-	## FIXME - besides Unix and Windows, what other OS's might be considered.
-	prn_opt = "";
+        ## FIXME - besides Unix and Windows, what other OS's might be considered.
+        prn_opt = "";
       endif
       if (isempty (printer))
         prn_cmd = sprintf ("lpr %s '%s' 2>&1", prn_opt, printname);
@@ -700,13 +700,13 @@ function print (varargin)
       endif
       [status, output] = system (prn_cmd);
       if (status != 0)
-	disp (output)
-	warning ("print.m: printing failed.")
+        disp (output)
+        warning ("print.m: printing failed.")
       endif
       [status, output] = unlink (printname);
       if (status != 0)
-	disp (output)
-	warning ("print.m: failed to delete temporay file, '%s'.", printname)
+        disp (output)
+        warning ("print.m: failed to delete temporay file, '%s'.", printname)
       endif
     endif
 
@@ -749,11 +749,11 @@ function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
           line_length = numel (current_line);
           num_spaces = line_length - numel (bbox_line);
           if (numel (current_line) < numel (bbox_line))
-	    ## If there new line is longer, continue with the current line.
+            ## If there new line is longer, continue with the current line.
             new_line = current_line;
           else
-	    new_line = bbox_line;
-	    new_line(end+1:numel(current_line)) = " ";
+            new_line = bbox_line;
+            new_line(end+1:numel(current_line)) = " ";
           endif
           ## Back up to the beginning of the line (include EOL characters).
           if (ispc ())
@@ -810,10 +810,10 @@ function convert_mono_to_or_from_color (h, c, mono)
       color = c.(f{nf}){nh};
       ## Ignore color == {"none", "flat", ...}
       if (isfloat (color))
-	if (mono)
-	  ## Same method as used by rgb2gray in the image pkg.
-	  color = rgb2ntsc (color)(:,1) * ones (1, 3);
-	endif
+        if (mono)
+          ## Same method as used by rgb2gray in the image pkg.
+          color = rgb2ntsc (color)(:,1) * ones (1, 3);
+        endif
         set (h.(f{nf})(nh), f{nf}, color);
       endif
     endfor

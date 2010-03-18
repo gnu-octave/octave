@@ -1,3 +1,7 @@
+2010-03-18  Ben Abbott <bpabbott@mac.com>
+
+	* /plot/print.m: print.m: Detabify.
+
 2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/nthroot.m: Remove.

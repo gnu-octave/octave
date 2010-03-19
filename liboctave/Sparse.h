@@ -237,13 +237,11 @@ public:
   octave_idx_type capacity (void) const { return nzmax (); }
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
-  // Paranoid number of elements test for case of dims = (-1,-1)
+  // Querying the number of elements (incl. zeros) may overflow the index type,
+  // so don't do it unless you really need it.
   octave_idx_type numel (void) const 
     { 
-      if (dim1() < 0 || dim2() < 0)
-        return 0;
-      else
-        return dimensions.numel (); 
+      return dimensions.safe_numel (); 
     }
 
   octave_idx_type nelem (void) const { return capacity (); }
@@ -418,26 +416,16 @@ public:
 
   Sparse<T> reshape (const dim_vector& new_dims) const;
 
-  // !!! WARNING !!! -- the following resize_no_fill functions are 
-  // public because template friends don't work properly with versions
-  // of gcc earlier than 3.3.  You should use these functions only in 
-  // classes that are derived from Sparse<T>.
-
-  // protected:
-
-  void resize_no_fill (octave_idx_type r, octave_idx_type c);
-
-  void resize_no_fill (const dim_vector& dv);
-
-public:
   Sparse<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const;
 
   Sparse<T> ipermute (const Array<octave_idx_type>& vec) const
     { return permute (vec, true); }
 
-  void resize (octave_idx_type r, octave_idx_type c) { resize_no_fill (r, c); }
+  void resize1 (octave_idx_type n);
 
-  void resize (const dim_vector& dv) { resize_no_fill (dv); }
+  void resize (octave_idx_type r, octave_idx_type c);
+
+  void resize (const dim_vector& dv);
 
   void change_capacity (octave_idx_type nz) { rep->change_length (nz); }
 
@@ -514,6 +502,8 @@ public:
                  sortmode mode = ASCENDING) const;
 
   Sparse<T> diag (octave_idx_type k = 0) const;
+
+  Array<T> array_value (void) const;
 
   template <class U, class F>
   Sparse<U>

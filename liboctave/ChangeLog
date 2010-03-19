@@ -1,3 +1,21 @@
+2010-03-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (gripe_invalid_resize): Move here from Array.cc.
+	* Array-util.h: Declare it.
+	* Array.cc: Use it.
+
+	* idx-vector.cc (idx_vector::idx_mask_rep::unconvert): Fix non-owned
+	case.
+	(idx_vector::idx_mask_rep::as_array): New method.
+	* idx-vector.h: Declare it.
+
+	* Sparse.cc (Sparse<T>::index (const idx_vector&, bool)): Rewrite.
+	(Sparse<T>::array_value): New method.
+	(Sparse<T>::resize1): New method.
+	(Sparse<T>::resize): Move resize_no_fill bodies in here.
+	(Sparse<T>::resize_no_fill): Remove.
+	* Sparse.h: Update decls.
+
 2010-03-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.h (Sparse<T>::index): Use const references. Use bool for

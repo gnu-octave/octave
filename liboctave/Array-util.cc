@@ -701,3 +701,16 @@ void gripe_invalid_index (void)
     (err_id, "subscript indices must be either positive integers or logicals.");
 }
 
+// FIXME -- the following is a common error message to resize,
+// regardless of whether it's called from assign or elsewhere.  It
+// seems OK to me, but eventually the gripe can be specialized.
+// Anyway, propagating various error messages into procedure is, IMHO,
+// a nonsense.  If anything, we should change error handling here (and
+// throughout liboctave) to allow custom handling of errors
+void gripe_invalid_resize (void)
+{
+  (*current_liboctave_error_with_id_handler)
+    ("Octave:invalid-resize", 
+     "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
+}
+

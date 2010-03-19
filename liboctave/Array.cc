@@ -933,18 +933,6 @@ Array<T>::index (const Array<idx_vector>& ia) const
   return retval;
 }
 
-// FIXME -- the following is a common error message to resize,
-// regardless of whether it's called from assign or elsewhere.  It
-// seems OK to me, but eventually the gripe can be specialized.
-// Anyway, propagating various error messages into procedure is, IMHO,
-// a nonsense.  If anything, we should change error handling here (and
-// throughout liboctave) to allow custom handling of errors
-static void gripe_invalid_resize (void)
-{
-  (*current_liboctave_error_handler)
-    ("resize: Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
-}
-
 // The default fill value.  Override if you want a different one.
 
 template <class T>

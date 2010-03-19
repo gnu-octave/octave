@@ -722,9 +722,25 @@ idx_vector::idx_mask_rep::unconvert (void) const
     return *aowner;
   else
     {
-      Array<bool> retval (orig_dims);
-      for (octave_idx_type i = 0; i < len; i++)
+      Array<bool> retval (ext, 1);
+      for (octave_idx_type i = 0; i < ext; i++)
         retval.xelem (i) = data[i];
+      return retval;
+    }
+}
+
+Array<octave_idx_type>
+idx_vector::idx_mask_rep::as_array (void)
+{
+  if (aowner)
+    return aowner->find ().reshape (orig_dims);
+  else
+    {
+      Array<bool> retval (orig_dims);
+      for (octave_idx_type i = 0, j = 0; i < ext; i++)
+        if (data[i])
+          retval.xelem (j++) = i;
+
       return retval;
     }
 }

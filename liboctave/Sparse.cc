@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-sort.h"
 #include "sparse-util.h"
 #include "oct-spparms.h"
+#include "mx-inlines.cc"
 
 template <class T>
 T&
@@ -819,7 +820,21 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 
 template <class T>
 void
-Sparse<T>::resize_no_fill (const dim_vector& dv)
+Sparse<T>::resize1 (octave_idx_type n)
+{
+  octave_idx_type nr = rows (), nc = cols ();
+
+  if (nr == 1 || nr == 0)
+    resize (1, n);
+  else if (nc == 1)
+    resize (n, 1);
+  else
+    gripe_invalid_resize ();
+}
+
+template <class T>
+void
+Sparse<T>::resize (const dim_vector& dv)
 {
   octave_idx_type n = dv.length ();
 
@@ -829,12 +844,12 @@ Sparse<T>::resize_no_fill (const dim_vector& dv)
       return;
     }
 
-  resize_no_fill (dv(0), dv(1));
+  resize (dv(0), dv(1));
 }
 
 template <class T>
 void
-Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
+Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
 {
   if (r < 0 || c < 0)
     {
@@ -1137,7 +1152,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_arg)
       // preserve the orientation of the vector, you have to use
       // A(idx,:) = [] (delete rows) or A(:,idx) (delete columns).
 
-      resize_no_fill (0, 0);
+      resize (0, 0);
       return;
     }
 
@@ -1381,7 +1396,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
           // A(:,:) -- We are deleting columns and rows, so the result
           // is [](0x0).
 
-          resize_no_fill (0, 0);
+          resize (0, 0);
           return;
         }
 
@@ -1391,7 +1406,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
           // If we enumerate all of them, we should have zero columns
           // with the same number of rows that we started with.
 
-          resize_no_fill (nr, 0);
+          resize (nr, 0);
           return;
         }
     }
@@ -1402,14 +1417,14 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
       // enumerate all of them, we should have zero rows with the
       // same number of columns that we started with.
 
-      resize_no_fill (0, nc);
+      resize (0, nc);
       return;
     }
 
   if (idx_i.is_colon_equiv (nr, 1))
     {
       if (idx_j.is_colon_equiv (nc, 1))
-        resize_no_fill (0, 0);
+        resize (0, 0);
       else
         {
           idx_j.sort (true);
@@ -1419,7 +1434,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
           if (num_to_delete != 0)
             {
               if (nr == 1 && num_to_delete == nc)
-                resize_no_fill (0, 0);
+                resize (0, 0);
               else
                 {
                   octave_idx_type new_nc = nc;
@@ -1484,7 +1499,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
   else if (idx_j.is_colon_equiv (nc, 1))
     {
       if (idx_i.is_colon_equiv (nr, 1))
-        resize_no_fill (0, 0);
+        resize (0, 0);
       else
         {
           idx_i.sort (true);
@@ -1494,7 +1509,7 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
           if (num_to_delete != 0)
             {
               if (nc == 1 && num_to_delete == nr)
-                resize_no_fill (0, 0);
+                resize (0, 0);
               else
                 {
                   octave_idx_type new_nr = nr;
@@ -1611,45 +1626,55 @@ Sparse<T>::value (void)
 
 template <class T>
 Sparse<T>
-Sparse<T>::index (const idx_vector& idx_arg, bool resize_ok) const
+Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 {
   Sparse<T> retval;
 
   assert (ndims () == 2);
 
+  // FIXME: please don't fix the shadowed member warning yet because
+  // Sparse<T>::idx will eventually go away.
+
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
   octave_idx_type nz = nnz ();
 
-  // Use safe_numel so that we get an error if the matrix is too big to be indexed.
-  octave_idx_type orig_len = nr * nc;
+  octave_idx_type nel = numel (); // Can throw.
 
-  dim_vector idx_orig_dims = idx_arg.orig_dimensions ();
+  const dim_vector idx_dims = idx.orig_dimensions ();
 
-  octave_idx_type idx_orig_rows = idx_arg.orig_rows ();
-  octave_idx_type idx_orig_columns = idx_arg.orig_columns ();
-
-  if (idx_orig_dims.length () > 2)
+  if (idx_dims.length () > 2)
     (*current_liboctave_error_handler)
       ("cannot index sparse matrix with an N-D Array");
-  else if (idx_arg.is_colon ())
+  else if (idx.is_colon ())
     {
       // Fast magic colon processing.
-      retval = Sparse<T> (nr * nc, 1, nz);
+      retval = Sparse<T> (nel, 1, nz);
 
       for (octave_idx_type i = 0; i < nc; i++)
-        for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
-          {
-            octave_quit ();
-            retval.xdata(j) = data(j); 
-            retval.xridx(j) = ridx(j) + i * nr;
-          }
+        {
+          for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
+            {
+              retval.xdata(j) = data(j); 
+              retval.xridx(j) = ridx(j) + i * nr;
+            }
+        }
+
       retval.xcidx(0) = 0;
       retval.xcidx(1) = nz;
     }
-  else if (! resize_ok && idx_arg.extent (length ()) > length ())
+  else if (idx.extent (nel) > nel)
     {
-      gripe_index_out_of_range (1, 1, idx_arg.extent (orig_len), orig_len);
+      // resize_ok is completely handled here.
+      if (resize_ok)
+        {
+          octave_idx_type ext = idx.extent (nel);
+          Sparse<T> tmp = *this;
+          tmp.resize1 (ext);
+          retval = tmp.index (idx);
+        }
+      else
+        gripe_index_out_of_range (1, 1, idx.extent (nel), nel);
     }
   else if (nr == 1 && nc == 1)
     {
@@ -1658,260 +1683,106 @@ Sparse<T>::index (const idx_vector& idx_arg, bool resize_ok) const
       // then want to make a dense matrix with sparse 
       // representation. Ok, we'll do it, but you deserve what 
       // you get!!
-      octave_idx_type n = idx_arg.length (length ());
-      if (n == 0)
+      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
+    }
+  else if (nc == 1)
+    {
+      // Sparse column vector.
+      octave_idx_type lb, ub;
+      octave_sort<octave_idx_type> isort;
 
-          retval = Sparse<T> (idx_orig_dims);
-      else if (nz < 1)
-        if (n >= idx_orig_dims.numel ())
-          retval = Sparse<T> (idx_orig_dims);
-        else
-          retval = Sparse<T> (dim_vector (n, 1));
-      else if (n >= idx_orig_dims.numel ())
+      if (idx.is_scalar ())
         {
-          T el = elem (0);
-          octave_idx_type new_nr = idx_orig_rows;
-          octave_idx_type new_nc = idx_orig_columns;
-          for (octave_idx_type i = 2; i < idx_orig_dims.length (); i++)
-            new_nc *= idx_orig_dims (i);
-                
-          retval = Sparse<T> (new_nr, new_nc, idx_arg.ones_count ());
-
-          octave_idx_type ic = 0;
-          for (octave_idx_type i = 0; i < n; i++)
-            {
-              if (i % new_nr == 0)
-                retval.xcidx(i / new_nr) = ic;
-
-              octave_idx_type ii = idx_arg.elem (i);
-              if (ii == 0)
-                {
-                  octave_quit ();
-                  retval.xdata(ic) = el;
-                  retval.xridx(ic++) = i % new_nr;
-                }
-            }
-          retval.xcidx (new_nc) = ic;
+          // Scalar index - just a binary lookup.
+          octave_idx_type i = isort.lookup (ridx (), nz, idx(0));
+          if (i > 0 && ridx(i-1) == idx(0))
+            retval = Sparse (1, 1, data (i-1));
+          else
+            retval = Sparse (1, 1);
+        }
+      else if (idx.is_cont_range (nel, lb, ub))
+        {
+          // Special-case a contiguous range.
+          // Look-up indices first.
+          octave_idx_type li = isort.lookup (ridx (), nz, lb);
+          octave_idx_type ui = isort.lookup (ridx (), nz, ub);
+          // Adjust to lower bounds.
+          li -= (li > 0 && ridx(li-1) == lb);
+          ui -= (ui > 0 && ridx(ui-1) == ub);
+          // Copy data and adjust indices.
+          octave_idx_type nz_new = ui - li;
+          retval = Sparse<T> (ub - lb, 1, nz_new);
+          copy_or_memcpy (nz_new, data () + li, retval.data ());
+          mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
+          retval.xcidx(1) = nz_new;
         }
       else
         {
-          T el = elem (0);
-          retval = Sparse<T> (n, 1, nz);
-         
-          for (octave_idx_type i = 0; i < nz; i++) 
+          // If indexing a sparse column vector by a vector, the result is a
+          // sparse column vector, otherwise it inherits the shape of index.
+          // Vector transpose is cheap, so do it right here.
+          const Array<octave_idx_type> idxa = (idx_dims(0) == 1 
+                                               ? idx.as_array ().transpose ()
+                                               : idx.as_array ());
+
+          octave_idx_type new_nr = idxa.rows (), new_nc = idxa.cols ();
+
+          // Lookup.
+          // FIXME: Could specialize for sorted idx?
+          NoAlias< Array<octave_idx_type> > lidx (new_nr, new_nc);
+          isort.lookup (ridx (), nz, idxa.data (), idxa.numel (), lidx.fortran_vec ());
+
+          // Count matches.
+          retval = Sparse<T> (idxa.rows (), idxa.cols ());
+          for (octave_idx_type j = 0; j < new_nc; j++)
             {
-              octave_quit ();
-              retval.xdata(i) = el;
-              retval.xridx(i) = i;
+              octave_idx_type nzj = 0;
+              for (octave_idx_type i = 0; i < new_nr; i++)
+                {
+                  octave_idx_type l = lidx(i, j);
+                  if (l > 0 && ridx(l-1) == idxa(i, j))
+                    nzj++;
+                  else
+                    lidx(i, j) = 0;
+                }
+              retval.xcidx(j+1) = retval.xcidx(j) + nzj;
             }
-          retval.xcidx(0) = 0;   
-          retval.xcidx(1) = n;   
+
+          retval.change_capacity (retval.xcidx(new_nc));
+          
+          // Copy data and set row indices.
+          octave_idx_type k = 0;
+          for (octave_idx_type j = 0; j < new_nc; j++)
+            for (octave_idx_type i = 0; i < new_nr; i++)
+              {
+                octave_idx_type l = lidx(i, j) - 1;
+                if (l >= 0)
+                  {
+                    retval.data(k) = data(l);
+                    retval.xridx(k++) = i;
+                  }
+              }
         }
     }
-  else if (nr == 1 || nc == 1)
+  else if (nr == 1)
     {
-      // If indexing a vector with a matrix, return value has same
-      // shape as the index.  Otherwise, it has same orientation as
-      // indexed object.
-      octave_idx_type len = length ();
-      octave_idx_type n = idx_arg.length (len);
-      octave_idx_type l, u;
-      if (n == 0)
-        if (nr == 1)
-          retval = Sparse<T> (dim_vector (1, 0));
-        else
-          retval = Sparse<T> (dim_vector (0, 1));
-      else if (nz < 1)
-        if (idx_orig_rows == 1 || idx_orig_columns == 1)
-          retval = Sparse<T> ((nr == 1 ? 1 : n), (nr == 1 ? n : 1));
-        else
-          retval = Sparse<T> (idx_orig_dims);
-      else if (idx_arg.is_range () && idx_arg.is_cont_range (n, l, u))
+      octave_idx_type lb, ub;
+      if (idx.is_scalar ())
+        retval = Sparse<T> (1, 1, elem (0, idx(0)));
+      else if (idx.is_cont_range (nel, lb, ub))
         {
-          // Special case of indexing a sparse vector by a continuous range
-          if (nr == 1)
-            {
-              octave_idx_type new_nzmx = cidx(u) - cidx(l);
-              retval = Sparse<T> (1, n, new_nzmx);
-              octave_idx_type *iidx = retval.xcidx ();
-              copy_or_memcpy (n + 1, rep->c + l, iidx);
-              octave_idx_type ii = iidx[0];
-              if (ii != 0)
-                {
-                  for (octave_idx_type i = 0; i < n + 1; i++)
-                    iidx[i] -= ii;
-                }
-              copy_or_memcpy (new_nzmx, rep->d + ii, retval.rep->d);
-              copy_or_memcpy (new_nzmx, rep->r + ii, retval.rep->r);
-            }
-          else
-            {
-              octave_idx_type j1 = -1;
-
-              octave_idx_type new_nzmx = 0;
-              for (octave_idx_type j = 0; j < nz; j++)
-                {
-                  octave_idx_type j2 = ridx (j);
-                  if (j2 >= l && j2 < u)
-                    {
-                      new_nzmx++;
-                      if (j1 < 0)
-                        j1 = j;
-                    }
-                    if (j2 >= u)
-                      break;
-                  }
-
-              retval = Sparse<T> (n, 1, new_nzmx);
-              if (new_nzmx > 0)
-                {
-                  retval.xcidx(0) = 0;
-                  retval.xcidx(1) = new_nzmx;
-                  copy_or_memcpy (new_nzmx, rep->d + j1, retval.rep->d);
-                  octave_idx_type *iidx = retval.xridx ();
-                  copy_or_memcpy (new_nzmx, rep->r + j1, iidx);
-                  if (l != 0)
-                    {
-                      for (octave_idx_type i = 0; i < new_nzmx; i++)
-                        iidx[i] -= l;
-                    }
-                }
-            }
+          // Special-case a contiguous range.
+          octave_idx_type lbi = cidx(lb), ubi = cidx(ub), new_nz = ubi - lbi;
+          retval = Sparse<T> (1, ub - lb, new_nz);
+          copy_or_memcpy (new_nz, data () + lbi, retval.data ());
+          fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+          mx_inline_sub (ub - lb, retval.cidx () + 1, cidx () + lb, lbi);
         }
       else
         {
-          octave_idx_type new_nzmx = 0;
-          if (nr == 1)
-            for (octave_idx_type i = 0; i < n; i++)
-              {
-                octave_quit ();
-
-                octave_idx_type ii = idx_arg.elem (i);
-                if (ii < len)
-                  if (cidx(ii) != cidx(ii+1))
-                    new_nzmx++;
-              }
-          else
-             for (octave_idx_type i = 0; i < n; i++)
-              {
-                octave_idx_type ii = idx_arg.elem (i);
-                if (ii < len)
-                  for (octave_idx_type j = 0; j < nz; j++)
-                    {
-                      octave_quit ();
-
-                      if (ridx(j) == ii)
-                        new_nzmx++;
-                      if (ridx(j) >= ii)
-                        break;
-                    }
-              }
-
-          if (idx_orig_rows == 1 || idx_orig_columns == 1)
-            {
-              if (nr == 1)
-                {
-                  retval = Sparse<T> (1, n, new_nzmx);
-                  octave_idx_type jj = 0;
-                  retval.xcidx(0) = 0;
-                  for (octave_idx_type i = 0; i < n; i++)
-                    {
-                      octave_quit ();
-
-                      octave_idx_type ii = idx_arg.elem (i);
-                      if (ii < len)
-                        if (cidx(ii) != cidx(ii+1))
-                          {
-                            retval.xdata(jj) = data(cidx(ii));
-                            retval.xridx(jj++) = 0;
-                          }
-                      retval.xcidx(i+1) = jj;
-                    }
-                }
-              else
-                {
-                  retval = Sparse<T> (n, 1, new_nzmx);
-                  retval.xcidx(0) = 0;
-                  retval.xcidx(1) = new_nzmx;
-                  octave_idx_type jj = 0;
-                  for (octave_idx_type i = 0; i < n; i++)
-                    {
-                      octave_idx_type ii = idx_arg.elem (i);
-                      if (ii < len)
-                        for (octave_idx_type j = 0; j < nz; j++)
-                          {
-                            octave_quit ();
-
-                            if (ridx(j) == ii)
-                              {
-                                retval.xdata(jj) = data(j);
-                                retval.xridx(jj++) = i;
-                              }
-                            if (ridx(j) >= ii)
-                              break;
-                          }
-                    }
-                }
-            }
-          else 
-            {
-              octave_idx_type new_nr;
-              octave_idx_type new_nc;
-              if (n >= idx_orig_dims.numel ())
-                {
-                  new_nr = idx_orig_rows;
-                  new_nc = idx_orig_columns;
-                }
-              else
-                {
-                  new_nr = n;
-                  new_nc = 1;
-                }
-
-              retval = Sparse<T> (new_nr, new_nc, new_nzmx);
-
-              if (nr == 1)
-                {
-                  octave_idx_type jj = 0;
-                  retval.xcidx(0) = 0;
-                  for (octave_idx_type i = 0; i < n; i++)
-                    {
-                      octave_quit ();
-
-                      octave_idx_type ii = idx_arg.elem (i);
-                      if (ii < len)
-                        if (cidx(ii) != cidx(ii+1))
-                          {
-                            retval.xdata(jj) = data(cidx(ii));
-                            retval.xridx(jj++) = 0;
-                          }
-                      retval.xcidx(i/new_nr+1) = jj;
-                    }
-                }
-              else
-                {
-                  octave_idx_type jj = 0;
-                  retval.xcidx(0) = 0;
-                  for (octave_idx_type i = 0; i < n; i++)
-                    {
-                      octave_idx_type ii = idx_arg.elem (i);
-                      if (ii < len)
-                        for (octave_idx_type j = 0; j < nz; j++)
-                          {
-                            octave_quit ();
-
-                            if (ridx(j) == ii)
-                              {
-                                retval.xdata(jj) = data(j);
-                                retval.xridx(jj++) = i;
-                              }
-                            if (ridx(j) >= ii)
-                              break;
-                          }
-                      retval.xcidx(i/new_nr+1) = jj;
-                    }
-                }
-            }
+          // Sparse row vectors occupy O(nr) storage anyway, so let's just
+          // convert the matrix to full, index, and sparsify the result.
+          retval = Sparse<T> (array_value ().index (idx));
         }
     }
   else
@@ -1919,71 +1790,18 @@ Sparse<T>::index (const idx_vector& idx_arg, bool resize_ok) const
       (*current_liboctave_warning_with_id_handler) 
         ("Octave:fortran-indexing", "single index used for sparse matrix");
 
-      // This code is only for indexing matrices.  The vector
-      // cases are handled above.
-
-      octave_idx_type result_nr = idx_orig_rows;
-      octave_idx_type result_nc = idx_orig_columns;
-
-      if (nz < 1)
-        retval = Sparse<T> (result_nr, result_nc);
+      if (nr != 0 && idx.is_scalar ())
+        retval = Sparse<T> (1, 1, elem (idx(0) % nr, idx(0) / nr));
       else
         {
-          // Count number of non-zero elements
-          octave_idx_type new_nzmx = 0;
-          octave_idx_type kk = 0;
-          for (octave_idx_type j = 0; j < result_nc; j++)
-            {
-              for (octave_idx_type i = 0; i < result_nr; i++)
-                {
-                  octave_quit ();
-
-                  octave_idx_type ii = idx_arg.elem (kk++);
-                  if (ii < orig_len)
-                    {
-                      octave_idx_type fr = ii % nr;
-                      octave_idx_type fc = (ii - fr) / nr;
-                      for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
-                        {
-                          if (ridx(k) == fr)
-                            new_nzmx++;
-                          if (ridx(k) >= fr)
-                            break;
-                        }
-                    }
-                }
-            }
-
-          retval = Sparse<T> (result_nr, result_nc, new_nzmx);
-
-          kk = 0;
-          octave_idx_type jj = 0;
-          retval.xcidx(0) = 0;
-          for (octave_idx_type j = 0; j < result_nc; j++)
-            {
-              for (octave_idx_type i = 0; i < result_nr; i++)
-                {
-                  octave_quit ();
-
-                  octave_idx_type ii = idx_arg.elem (kk++);
-                  if (ii < orig_len)
-                    {
-                      octave_idx_type fr = ii % nr;
-                      octave_idx_type fc = (ii - fr) / nr;
-                      for (octave_idx_type k = cidx(fc); k < cidx(fc+1); k++)
-                        {
-                          if (ridx(k) == fr)
-                            {
-                              retval.xdata(jj) = data(k);
-                              retval.xridx(jj++) = i;
-                            }
-                          if (ridx(k) >= fr)
-                            break;
-                        }
-                    }
-                }
-              retval.xcidx(j+1) = jj;
-            }
+          // Indexing a non-vector sparse matrix by linear indexing. 
+          // I suppose this is rare (and it may easily overflow), so let's take the easy way,
+          // and reshape first to column vector, which is already handled above.
+          retval = index (idx_vector::colon).index (idx);
+          // In this case we're supposed to always inherit the shape, but column(row) doesn't do
+          // it, so we'll do it instead.
+          if (idx_dims (0) == 1 && idx_dims (1) != 1)
+            retval = retval.transpose ();
         }
     }
 
@@ -2019,7 +1837,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     {
       if (n == 0 || m == 0)
         {
-          retval.resize_no_fill (n, m);
+          retval.resize (n, m);
         }
       else 
         {
@@ -2573,6 +2391,30 @@ Sparse<T>::diag (octave_idx_type k) const
     }
 
   return d;
+}
+
+template <class T>
+Array<T>
+Sparse<T>::array_value () const
+{
+  NoAlias< Array<T> > retval (dims (), T());
+  if (rows () == 1)
+    {
+      octave_idx_type i = 0;
+      for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
+        {
+          if (cidx(j+1) > i)
+            retval(j) = data (i++);
+        }
+    }
+  else
+    {
+      for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
+        for (octave_idx_type i = cidx(j), iu = cidx(j+1); i < iu; i++)
+          retval (ridx(i), j) = data (i);
+    }
+
+  return retval;
 }
 
 // FIXME

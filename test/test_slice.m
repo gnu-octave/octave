@@ -38,9 +38,9 @@
 
 ## size = [2 0]
 %!assert(set_slice([2 0], 11, []), zeros([2 0]));
-%!error <resize: Invalid.*> set_slice([2 0], 11, 1)
-%!error <resize: Invalid.*> set_slice([2 0], 11, 2)
-%!error <resize: Invalid.*> set_slice([2 0], 11, 3)
+%!error id=Octave:invalid-resize set_slice([2 0], 11, 1)
+%!error id=Octave:invalid-resize set_slice([2 0], 11, 2)
+%!error id=Octave:invalid-resize set_slice([2 0], 11, 3)
 %!assert(set_slice([2 0], 21, []), zeros([2 0]));
 %!assert(set_slice([2 0], 21, 1), zeros([2 0]));
 %!assert(set_slice([2 0], 21, 2), zeros([2 0]));
@@ -152,8 +152,8 @@
 %!assert(set_slice([2 2], 11, 2), [1 1;2 1]);
 %!assert(set_slice([2 2], 11, 3), [1 2;1 1]);
 %!assert(set_slice([2 2], 11, 4), [1 1;1 2]);
-%!error <resize: Invalid.*> set_slice([2 2], 11, 5)
-%!error <resize: Invalid.*> set_slice([2 2], 11, 6)
+%!error id=Octave:invalid-resize set_slice([2 2], 11, 5)
+%!error id=Octave:invalid-resize set_slice([2 2], 11, 6)
 %!assert(set_slice([2 2], 21, []), ones([2 2]));
 %!assert(set_slice([2 2], 21, 1), [2 2;1 1]);
 %!assert(set_slice([2 2], 21, 2), [1 1;2 2]);

@@ -404,6 +404,8 @@ private:
 
     Array<bool> unconvert (void) const;
 
+    Array<octave_idx_type> as_array (void);
+    
   private:
 
     DECLARE_OCTAVE_ALLOCATOR

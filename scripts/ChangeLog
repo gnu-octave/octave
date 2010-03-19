@@ -1,3 +1,8 @@
+2010-03-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* strings/strmatch.m (strtrimr): Rewrite for correct behavior.
+	Add test.
+
 2010-03-18  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* /plot/print.m: Add '-append' option.

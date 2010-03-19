@@ -90,9 +90,10 @@ endfunction
 
 ## Removes nuls and blanks from the end of the array
 function s = strtrimr (s)
-  i = find (s == "\0" | s == " ", 1, "last");
-  if (i)
-    s = s(1:i);
+  blnks = s == "\0" | s == " ";
+  i = find (blnks, 1, "last");
+  if (i && all (blnks(i:end)))
+    s = s(1:i-1);
   endif
 endfunction
 
@@ -105,3 +106,5 @@ endfunction
 %!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}),
 %!        [1; 2]);
 %!assert (strmatch ("apple pie", "apple"), []);
+%!assert (strmatch ("a b", {"a b", "a c", "c d"}));
+

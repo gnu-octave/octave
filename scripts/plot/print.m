@@ -110,7 +110,7 @@
 ##   If the device is omitted, it is inferred from the file extension,
 ## or if there is no filename it is sent to the printer as postscript.
 ##
-## @item -d@var{gs_device}
+## @item -d@var{ghostscript_device}
 ##   Additional devices are supported by Ghostscript.
 ## Some examples are;
 ##
@@ -138,6 +138,10 @@
 ## by the figure's "papersize" property.  When the ghostscript output 
 ## is sent to a file the size is determined by the figure's
 ## "paperposition" property.
+##
+## @itemx -append
+##   Appends the output to a pre-existing file. Presently only PDF,
+## and Postscript files are supported.
 ##
 ## @itemx -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
@@ -177,6 +181,7 @@ function print (varargin)
   persistent warn_on_inconsistent_orientation = true
   orientation = "";
   use_color = 0; # 0=default, -1=mono, +1=color
+  append_to_file = 0;
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = "";
   font = "";
@@ -218,6 +223,8 @@ function print (varargin)
       if (ischar (arg))
         if (strcmp (arg, "-color"))
           use_color = 1;
+        elseif (strcmp (arg, "-append"))
+          append_to_file = 1;
         elseif (strcmp (arg, "-mono"))
           use_color = -1;
         elseif (strcmp (arg, "-solid"))
@@ -300,6 +307,20 @@ function print (varargin)
       endif
     else
       dev = devopt;
+    endif
+
+    if (append_to_file)
+      if (any (strcmpi (dev, {"ps", "ps2", "psc", "psc2", "pdf"})))
+        if (have_ghostscript)
+          file_exists = ((numel (dir (name)) == 1) && (! isdir (name)));
+          if (! file_exists)
+            append_to_file = 0;
+          end
+        end
+      else
+        warning ("print.m: appended output is not supported for device '%s'", dev)
+        append_to_file = 0;
+      endif
     endif
 
     if (strcmp (dev, "tex"))
@@ -635,10 +656,33 @@ function print (varargin)
       if (use_color < 0)
         [objs_with_color, color_of_objs] = convert_color2mono (gcf);
       endif
+    if (append_to_file)
+         appended_file_name = name;
+         if (index(termn, "pdf"))
+           name = cstrcat (tmpnam, ".pdf");
+           temp_name = cstrcat (tmpnam, ".pdf");
+           ghostscript_device = "pdfwrite";
+         else
+           name = cstrcat (tmpnam, ".ps");
+           temp_name = cstrcat (tmpnam, ".ps");
+           ghostscript_device = "pswrite";
+         endif
+    endif
       if (debug)
         drawnow (new_terminal, name, mono, debug_file);
       else
         drawnow (new_terminal, name, mono);
+      endif
+      if (append_to_file)
+        ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE";
+        command = sprintf ("%s %s -sDEVICE=%s -sOutputFile=%s %s %s -q", ...
+                    ghostscript_binary, ghostscript_options, ghostscript_device,  ...
+                    temp_name, appended_file_name, name);
+        status1 = system (command);
+        status2 = system (sprintf ("mv %s %s", temp_name, appended_file_name));
+        if (status1 != 0 || status2 != 0)
+          error ("print.m: output failed to append to '%s'.", appended_file_name);
+        endif
       endif
     unwind_protect_cleanup
       ## FIXME - it would be nice to delete "__pixels_per_inch__" property here.

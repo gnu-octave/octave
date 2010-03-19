@@ -1,3 +1,7 @@
+2010-03-18  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* /plot/print.m: Add '-append' option.
+
 2010-03-18  Ben Abbott <bpabbott@mac.com>
 
 	* /plot/print.m: print.m: Detabify.

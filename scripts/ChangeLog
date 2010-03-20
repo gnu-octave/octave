@@ -1,3 +1,10 @@
+2010-03-20  Soren Hauberg  <hauberg@gmail.com>
+
+	* general/interp2.m: For nearest neighbour interpolation ceil (instead of
+    floor) at the center of the data intervals to be compatible with Matlab.
+    Add test.
+	* general/interpn.m: Ditto.
+
 2010-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* strings/strmatch.m (strtrimr): Rewrite for correct behavior.

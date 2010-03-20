@@ -231,8 +231,8 @@ function ZI = interp2 (varargin)
       ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
 
     elseif (strcmp (method, "nearest"))
-      ii = (XI - X(xidx) > X(xidx + 1) - XI);
-      jj = (YI - Y(yidx) > Y(yidx + 1) - YI);
+      ii = (XI - X(xidx) >= X(xidx + 1) - XI);
+      jj = (YI - Y(yidx) >= Y(yidx + 1) - YI);
       idx = sub2ind (size (Z), yidx+jj, xidx+ii);
       ZI = Z(idx);
 
@@ -580,4 +580,8 @@ endfunction
 %!  y=[2,3]';
 %!  assert(interp2(x,y,A,x,y,'linear'), A);
 %!  assert(interp2(x,y,A,x,y,'nearest'), A);
+
+%!test % for Matlab-compatible rounding for 'nearest'
+%! X = meshgrid (1:4);
+%! assert (interp2 (X, 2.5, 2.5, 'nearest'), 3);
 

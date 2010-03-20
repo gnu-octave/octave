@@ -149,7 +149,7 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}) > x{i}(yidx{i} + 1) - y{i});
+      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}) >= x{i}(yidx{i} + 1) - y{i});
     endfor
     vi = v (sub2ind (sz, idx{:}));
     idx = zeros (prod(yshape),1);
@@ -256,3 +256,8 @@ endfunction
 %! [x,y,z] = ndgrid(0:2);
 %! f = x.^2+y.^2+z.^2;
 %! assert (interpn(x,y,-z,f,1.5,1.5,-1.5), 7.5)
+
+%!test % for Matlab-compatible rounding for 'nearest'
+%! X = meshgrid (1:4);
+%! assert (interpn (X, 2.5, 2.5, 'nearest'), 3);
+

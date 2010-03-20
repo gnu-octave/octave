@@ -33,16 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (GNULIB_NAMESPACE)
-#undef GNULIB_NAMESPACE
-#endif
-
 #include <cassert>
 #include <cstdio>
-
-#ifdef YYBYACC
 #include <cstdlib>
-#endif
 
 #include <iostream>
 #include <map>
@@ -82,6 +75,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+
+#if defined (GNULIB_NAMESPACE)
+// Calls to the following functions appear in the generated output from
+// Bison without the namespace tag.  Redefine them so we will use them
+// via the gnulib namespace.
+#define fclose GNULIB_NAMESPACE::fclose
+#define fprintf GNULIB_NAMESPACE::fprintf
+#define malloc GNULIB_NAMESPACE::malloc
+#endif
 
 // The current input line number.
 int input_line_number = 1;

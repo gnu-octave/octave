@@ -1,3 +1,9 @@
+2010-03-20  John W. Eaton  <jwe@octave.org>
+
+	* lex.ll: Don't undefine GNULIB_NAMESPACE.  Define fprintf,
+	fwrite, malloc, and realloc and GNULIB_NAMESPACE::fprintf, ...
+	* oct-parse.yy: Likewise.  Always include cstdlib.
+
 2010-03-16  John W. Eaton  <jwe@octave.org>
 
 	* ls-oct-ascii.cc (save_ascii_data): Insert extra newline after

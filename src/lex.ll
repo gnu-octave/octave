@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (GNULIB_NAMESPACE)
-#undef GNULIB_NAMESPACE
-#endif
 }
 
 %s COMMAND_START
@@ -81,6 +78,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include <oct-parse.h>
 #include <oct-gperf.h>
+
+#if defined (GNULIB_NAMESPACE)
+// Calls to the following functions appear in the generated output from
+// flex without the namespace tag.  Redefine them so we will use them
+// via the gnulib namespace.
+#define fprintf GNULIB_NAMESPACE::fprintf
+#define fwrite GNULIB_NAMESPACE::fwrite
+#define malloc GNULIB_NAMESPACE::malloc
+#define realloc GNULIB_NAMESPACE::realloc
+#endif
 
 #if ! (defined (FLEX_SCANNER) \
        && defined (YY_FLEX_MAJOR_VERSION) && YY_FLEX_MAJOR_VERSION >= 2 \

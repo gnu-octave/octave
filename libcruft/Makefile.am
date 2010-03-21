@@ -39,7 +39,11 @@ libcruft_la_LDFLAGS = \
   -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir)
 
-libcruft_la_LIBADD = libranlib.la $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+libcruft_la_LIBADD = \
+  ../libgnu/libgnu.la \
+  libranlib.la \
+  $(LAPACK_LIBS) $(BLAS_LIBS) \
+  $(FLIBS)
 
 libcruft_la_DEPENDENCIES = cruft.def
 

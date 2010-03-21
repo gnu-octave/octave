@@ -1,3 +1,8 @@
+2010-03-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Fix the parsing of string
+	function arguments.
+
 2010-03-20  John W. Eaton  <jwe@octave.org>
 
 	* lex.ll: Don't undefine GNULIB_NAMESPACE.  Define fprintf,

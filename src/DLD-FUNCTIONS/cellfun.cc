@@ -518,10 +518,12 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               if (ptr_func && ! error_state)
                 func = octave_value (ptr_func, true);
             }
-
-          func = symbol_table::find_function (name);
-          if (func.is_undefined ())
-            error ("cellfun: invalid function name: %s", name.c_str ());
+          else
+            {
+              func = symbol_table::find_function (name);
+              if (func.is_undefined ())
+                error ("cellfun: invalid function name: %s", name.c_str ());
+            }
         }
     }
 

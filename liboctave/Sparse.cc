@@ -1683,7 +1683,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       // then want to make a dense matrix with sparse 
       // representation. Ok, we'll do it, but you deserve what 
       // you get!!
-      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
+      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data(0) : T ());
     }
   else if (nc == 1)
     {
@@ -1696,7 +1696,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           // Scalar index - just a binary lookup.
           octave_idx_type i = isort.lookup (ridx (), nz, idx(0));
           if (i > 0 && ridx(i-1) == idx(0))
-            retval = Sparse (1, 1, data (i-1));
+            retval = Sparse (1, 1, data(i-1));
           else
             retval = Sparse (1, 1);
         }
@@ -1768,7 +1768,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     {
       octave_idx_type lb, ub;
       if (idx.is_scalar ())
-        retval = Sparse<T> (1, 1, elem (0, idx(0)));
+        retval = Sparse<T> (1, 1, elem(0, idx(0)));
       else if (idx.is_cont_range (nel, lb, ub))
         {
           // Special-case a contiguous range.
@@ -1776,7 +1776,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           retval = Sparse<T> (1, ub - lb, new_nz);
           copy_or_memcpy (new_nz, data () + lbi, retval.data ());
           fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
-          mx_inline_sub (ub - lb, retval.cidx () + 1, cidx () + lb, lbi);
+          mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
         }
       else
         {
@@ -1800,7 +1800,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           retval = index (idx_vector::colon).index (idx);
           // In this case we're supposed to always inherit the shape, but column(row) doesn't do
           // it, so we'll do it instead.
-          if (idx_dims (0) == 1 && idx_dims (1) != 1)
+          if (idx_dims(0) == 1 && idx_dims(1) != 1)
             retval = retval.transpose ();
         }
     }
@@ -1829,10 +1829,60 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
   octave_idx_type n = idx_i.length (nr);
   octave_idx_type m = idx_j.length (nc);
 
-  if (! resize_ok && idx_i.extent (nr) > nr)
-    gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr);
-  else if (! resize_ok && idx_j.extent (nc) > nc)
-    gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
+  if (idx_i.extent (nr) > nr || idx_j.extent (nc) > nc)
+    {
+      // resize_ok is completely handled here.
+      if (resize_ok)
+        {
+          octave_idx_type ext_i = idx_i.extent (nr);
+          octave_idx_type ext_j = idx_j.extent (nc);
+          Sparse<T> tmp = *this;
+          tmp.resize (ext_i, ext_j);
+          retval = tmp.index (idx_i, idx_j);
+        }
+      else if (idx_i.extent (nr) > nr)
+        gripe_index_out_of_range (2, 1, idx_i.extent (nr), nr);
+      else
+        gripe_index_out_of_range (2, 2, idx_j.extent (nc), nc);
+    }
+  else if (idx_i.is_colon ())
+    {
+      octave_idx_type lb, ub;
+      // Great, we're just manipulating columns. This is going to be quite
+      // efficient, because the columns can stay compressed as they are.
+      if (idx_j.is_colon ())
+        retval = *this; // Shallow copy.
+      else if (idx_j.is_cont_range (nc, lb, ub))
+        {
+          // Special-case a contiguous range.
+          octave_idx_type lbi = cidx(lb), ubi = cidx(ub), new_nz = ubi - lbi;
+          retval = Sparse<T> (nr, ub - lb, new_nz);
+          copy_or_memcpy (new_nz, data () + lbi, retval.data ());
+          copy_or_memcpy (new_nz, ridx () + lbi, retval.ridx ());
+          mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
+        }
+      else
+        {
+          // Count new nonzero elements.
+          retval = Sparse<T> (nr, m);
+          for (octave_idx_type j = 0; j < m; j++)
+            {
+              octave_idx_type jj = idx_j(j);
+              retval.xcidx(j+1) = retval.xcidx(j) + (cidx(jj+1) - cidx(jj));
+            }
+
+          retval.change_capacity (retval.xcidx (m));
+
+          // Copy data & indices.
+          for (octave_idx_type j = 0; j < m; j++)
+            {
+              octave_idx_type ljj = cidx(idx_j(j));
+              octave_idx_type lj = retval.xcidx(j), nzj = retval.xcidx(j+1) - lj;
+              copy_or_memcpy (nzj, data () + ljj, retval.data () + lj);
+              copy_or_memcpy (nzj, ridx () + ljj, retval.ridx () + lj);
+            }
+        }
+    }
   else
     {
       if (n == 0 || m == 0)

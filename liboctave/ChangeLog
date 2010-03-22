@@ -1,5 +1,11 @@
 2010-03-22  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::index (const idx_vector&, const idx_vector&,
+	bool)): Handle resize_ok in advance. Optimize colon as the first index.
+	(Sparse<T>::index (const idx_vector&, bool)): Small fixes.
+
+2010-03-22  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dSparse.cc (SparseMatrix::matrix_value): Simplify.
 	* CSparse.cc (SparseComplexMatrix::matrix_value): Simplify.
 

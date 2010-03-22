@@ -1,3 +1,8 @@
+2010-03-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dSparse.cc (SparseMatrix::matrix_value): Simplify.
+	* CSparse.cc (SparseComplexMatrix::matrix_value): Simplify.
+
 2010-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-util.cc (gripe_invalid_resize): Move here from Array.cc.

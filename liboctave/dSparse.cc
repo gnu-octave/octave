@@ -7554,15 +7554,7 @@ SparseMatrix::diag (octave_idx_type k) const
 Matrix
 SparseMatrix::matrix_value (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  Matrix retval (nr, nc, 0.0);
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-      retval.elem (ridx(i), j) = data (i);
-
-  return retval;
+  return Sparse<double>::array_value ();
 }
 
 std::ostream&

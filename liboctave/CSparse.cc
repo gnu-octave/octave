@@ -634,15 +634,7 @@ SparseComplexMatrix::concat (const SparseMatrix& rb, const Array<octave_idx_type
 ComplexMatrix
 SparseComplexMatrix::matrix_value (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-  ComplexMatrix retval (nr, nc, Complex (0.0, 0.0));
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-      retval.elem (ridx(i), j) = data (i);
-
-  return retval;
+  return Sparse<Complex>::array_value ();
 }
 
 SparseComplexMatrix

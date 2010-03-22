@@ -77,8 +77,8 @@ function rgb_map = hsv2rgb (hsv_map)
 
   ## add s*v* hue-function to rgb map
   rgb_map = rgb_map +  f .* (6 * (hue < 1/6) .* hue
-			     + (hue >= 1/6 & hue < 1/2)
-			     + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
+                    + (hue >= 1/6 & hue < 1/2)
+                    + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
 
   ## If input was an image, convert it back into one.
   if (is_image)

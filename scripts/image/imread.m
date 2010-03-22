@@ -66,9 +66,9 @@ function varargout = imread (filename, varargin)
     try
       vars = load (fn);
       if (isstruct (vars))
-	img_field = isfield (vars, "img");
-	x_field = isfield (vars, "X");
-	map_field = isfield (vars, "map");
+        img_field = isfield (vars, "img");
+        x_field = isfield (vars, "X");
+        map_field = isfield (vars, "map");
       endif
     catch
       error ("imread: invalid image file: %s", magick_error);
@@ -77,9 +77,9 @@ function varargout = imread (filename, varargin)
     if (map_field && (img_field || x_field))
       varargout{2} = vars.map;
       if (img_field)
-	varargout{1} = vars.img;
+        varargout{1} = vars.img;
       else
-	varargout{1} = vars.X;
+        varargout{1} = vars.X;
       endif
     else
       error ("imread: invalid Octave image file format");

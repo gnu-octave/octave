@@ -116,7 +116,7 @@ function h = __img__ (x, y, img, varargin)
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
-		      "cdatamapping", "direct", varargin {:});
+                      "cdatamapping", "direct", varargin {:});
 
   ## FIXME -- how can we do this and also get the {x,y}limmode
   ## properties to remain "auto"?  I suppose this adjustment should

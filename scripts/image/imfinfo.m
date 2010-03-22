@@ -110,11 +110,11 @@ function info = imfinfo (filename)
       [fn, status, msg] = urlwrite (filename, tmp);
 
       if (! status)
-	error ("imfinfo: cannot find %s", filename);
+        error ("imfinfo: cannot find %s", filename);
       endif
 
       if (! isempty (fn))
-	delete_file = true;
+        delete_file = true;
       endif
 
     endif

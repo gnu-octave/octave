@@ -156,7 +156,7 @@ function saveimage (filename, img, img_form, map)
     time_string = ctime (time ());
     time_string = time_string (1:length (time_string)-1);
     tagline = sprintf ("# Created by Octave %s, %s",
-		       OCTAVE_VERSION, time_string);
+                       OCTAVE_VERSION, time_string);
 
     if (grey && bw)
 

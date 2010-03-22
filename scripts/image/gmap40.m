@@ -41,7 +41,7 @@ function map = gmap40 (number)
 
   if (number >= 1)
     map = repmat ([1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1],
-		  ceil (number / 6), 1) (1:number, :);
+          ceil (number / 6), 1) (1:number, :);
   else
     map = [];
   endif

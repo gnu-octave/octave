@@ -95,22 +95,22 @@ function h = imshow (im, varargin)
     arg = varargin{narg++};
     if (isnumeric (arg))
       if (numel (arg) == 2 || isempty (arg))
-	display_range = arg;
+        display_range = arg;
       elseif (columns (arg) == 3)
-	indexed = true;
-	colormap (arg);
+        indexed = true;
+        colormap (arg);
       elseif (! isempty (arg))
-	error ("imshow: argument number %d is invalid", narg+1);
+        error ("imshow: argument number %d is invalid", narg+1);
       endif
     elseif (ischar (arg))
       switch (arg)
-	case "displayrange";
-	  display_range = varargin{narg++};
-	case {"truesize", "initialmagnification"}
-	  warning ("image: zoom argument ignored -- use GUI features");
-	otherwise
-	  warning ("imshow: unrecognized property %s", arg);
-	  narg++;
+        case "displayrange";
+          display_range = varargin{narg++};
+        case {"truesize", "initialmagnification"}
+          warning ("image: zoom argument ignored -- use GUI features");
+        otherwise
+          warning ("imshow: unrecognized property %s", arg);
+          narg++;
       endswitch
     else
       error ("imshow: argument number %d is invalid", narg+1);
@@ -124,14 +124,14 @@ function h = imshow (im, varargin)
     t = class (im);
     switch (t)
       case {"double", "single", "logical"}
-	display_range = [0, 1];
+        display_range = [0, 1];
       case {"int8", "int16", "int32", "uint8", "uint16", "uint32"}
-	## For compatibility, uint8 data should not be handled as
-	## double.  Doing so is a quick fix to allow the images to be
-	## displayed correctly.
-	display_range = double ([intmin(t), intmax(t)]);
+        ## For compatibility, uint8 data should not be handled as
+        ## double.  Doing so is a quick fix to allow the images to be
+        ## displayed correctly.
+        display_range = double ([intmin(t), intmax(t)]);
       otherwise
-	error ("imshow: invalid data type for image");
+        error ("imshow: invalid data type for image");
     endswitch
   endif
 
@@ -144,7 +144,7 @@ function h = imshow (im, varargin)
   nans = isnan (im(:));
   if (any (nans))
     warning ("Octave:imshow-NaN",
-	     "imshow: pixels with NaN or NA values are set to minimum pixel value");
+             "imshow: pixels with NaN or NA values are set to minimum pixel value");
     im(nans) = display_range(1);
   endif
 

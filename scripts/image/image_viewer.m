@@ -70,7 +70,7 @@ function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)
 
   if (isempty (view_fcn))
     if (isempty (view_cmd)
-	&& compare_versions (__gnuplot_version__ (), "4.0", ">"))
+        && compare_versions (__gnuplot_version__ (), "4.0", ">"))
       view_fcn = "gnuplot_internal";
     else
       view_fcn = @__img_via_file__;
@@ -92,7 +92,7 @@ function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)
     if (nargin < 3)
       zoom = 1;
       if (nargin < 2)
-	fcn = [];
+        fcn = [];
       endif
     endif
 
@@ -102,17 +102,17 @@ function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)
 
     if (nargin > 1)
       if (isa (fcn, "function_handle"))
-	view_fcn = fcn;
+        view_fcn = fcn;
       else
-	error ("image_viewer: expecting second argument to be a function handle");
+        error ("image_viewer: expecting second argument to be a function handle");
       endif
     endif
 
     if (nargin > 2)
       if (isnumeric (zoom) && isscalar (zoom) && isreal (zoom))
-	view_zoom = zoom;
+        view_zoom = zoom;
       else
-	error ("image_viewer: expecting third argument to be a real scalar");
+        error ("image_viewer: expecting third argument to be a real scalar");
       endif
     endif
 

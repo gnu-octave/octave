@@ -31,7 +31,7 @@ function map = hot (number)
   if (nargin == 0)
     number = rows (colormap);
   elseif (nargin == 1) 
-	if (! isscalar (number))
+    if (! isscalar (number))
       error ("hot: argument must be a scalar");
     endif
   else

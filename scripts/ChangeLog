@@ -1,3 +1,9 @@
+2010-03-22  Soren Hauberg  <hauberg@gmail.com>
+
+	* image/gmap40.m, image/hot.m, image/hsv2rgb.m, image/image.m,
+	image/image_viewer.m, image/imfinfo.m, image/imread.m, image/imshow.m,
+	image/saveimage: Detabify.
+
 2010-03-21  Soren Hauberg  <hauberg@gmail.com>
 
 	* general/quadv.m: Replace 'quadl' with 'quadv' in help text.

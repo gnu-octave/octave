@@ -261,13 +261,13 @@ include mx-op-inc.mk
 include smx-op-inc.mk
 
 $(srcdir)/vx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/vx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) vx inc
 
 $(srcdir)/mx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/mx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) mx inc
 
 $(srcdir)/smx-op-inc.mk: $(srcdir)/config-ops.sh $(srcdir)/sparse-mk-ops.awk $(srcdir)/sparse-mx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) smx inc
 
 BUILT_INCS = \
   mx-ops.h \
@@ -455,13 +455,13 @@ include mx-op-src.mk
 include smx-op-src.mk
 
 $(srcdir)/vx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/vx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) vx src
 
 $(srcdir)/mx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/mk-ops.awk $(srcdir)/mx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) mx src
 
 $(srcdir)/smx-op-src.mk: $(srcdir)/config-ops.sh $(srcdir)/sparse-mk-ops.awk $(srcdir)/sparse-mx-ops
-	$(srcdir)/config-ops.sh $(top_srcdir)
+	$(srcdir)/config-ops.sh $(top_srcdir) smx src
 
 BUILT_LIBOCTAVE_CXX_SOURCES = \
   $(MX_OP_SRC) \

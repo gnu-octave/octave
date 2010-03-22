@@ -1,3 +1,10 @@
+2010-03-22  John W. Eaton  <jwe@octave.org>
+
+	* config-ops.sh: Accept additional arguments.
+	* Makefile.am ($(srcdir)/vx-op-inc.mk, $(srcdir)/mx-op-inc.mk
+	$(srcdir)/smx-op-inc.mk, $(srcdir)/vx-op-src.mk, $(srcdir)/mx-op-src.mk
+	$(srcdir)/smx-op-src.mk): Pass additional arguments to config-ops.sh.
+
 2010-03-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::index (const idx_vector&, const idx_vector&,

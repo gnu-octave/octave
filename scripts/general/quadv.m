@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
-## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol})
-## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
-## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {Function File} {[@var{q}, @var{fcnt}] =} quadl (@dots{})
+## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol})
+## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
+## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
+## @deftypefnx {Function File} {[@var{q}, @var{fcnt}] =} quadv (@dots{})
 ##
 ## Numerically evaluate integral using adaptive Simpson's rule.
 ## @code{quadv (@var{f}, @var{a}, @var{b})} approximates the integral of

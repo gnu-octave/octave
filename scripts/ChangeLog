@@ -1,3 +1,7 @@
+2010-03-21  Soren Hauberg  <hauberg@gmail.com>
+
+	* general/quadv.m: Replace 'quadl' with 'quadv' in help text.
+
 2010-03-20  Soren Hauberg  <hauberg@gmail.com>
 
 	* general/interp2.m: For nearest neighbour interpolation ceil (instead of

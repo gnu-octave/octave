@@ -229,6 +229,9 @@ Summary of important user-visible changes for version 3.3:
     Octave:int-convert-non-int-val, Octave:int-convert-overflow,
     Octave:int-math-overflow) have been removed. 
 
+ ** rem and mod are now built-in functions. They also handle integer types
+    efficiently using integer arithmetic.
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

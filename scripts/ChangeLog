@@ -1,3 +1,7 @@
+2010-03-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/refreshdata.m: Don't use cell2mat on cell array of cell arrays.
+
 2010-03-22  Soren Hauberg  <hauberg@gmail.com>
 
 	* image/gmap40.m, image/hot.m, image/hsv2rgb.m, image/image.m,

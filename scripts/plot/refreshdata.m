@@ -82,7 +82,8 @@ function refreshdata (h, ws)
     m = regexpi (fieldnames(obj), "^.+datasource$", "match");
     idx = cellfun (@(x) !isempty(x), m);
     if (any (idx))
-      props = [props; {cell2mat(m(idx))}];
+      tmp = m(idx);
+      props = [props; {vertcat(tmp{:})}];
       objs  = [objs ; h(i)];
     endif
   endfor

@@ -1,3 +1,7 @@
+2010-03-23  John W. Eaton  <jwe@octave.org>
+
+	* config-ops.sh: Work properly for "all" cases.
+
 2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-inttypes.h (octave_int_arith_base::rem, octave_int_base::mod):

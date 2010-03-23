@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "quit.h"
 #include "mx-base.h"
+#include "oct-binmap.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -194,351 +195,6 @@ any (eye (2, 4), 2)\n\
 
 // These mapping functions may also be useful in other places, eh?
 
-typedef double (*d_dd_fcn) (double, double);
-typedef float (*f_ff_fcn) (float, float);
-
-static NDArray
-map_d_m (d_dd_fcn f, double x, const NDArray& y)
-{
-  NDArray retval (y.dims ());
-  double *r_data = retval.fortran_vec ();
-
-  const double *y_data = y.data ();
-
-  octave_idx_type nel = y.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x, y_data[i]);
-    }
-
-  return retval;
-}
-
-static FloatNDArray
-map_f_fm (f_ff_fcn f, float x, const FloatNDArray& y)
-{
-  FloatNDArray retval (y.dims ());
-  float *r_data = retval.fortran_vec ();
-
-  const float *y_data = y.data ();
-
-  octave_idx_type nel = y.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x, y_data[i]);
-    }
-
-  return retval;
-}
-
-static NDArray
-map_m_d (d_dd_fcn f, const NDArray& x, double y)
-{
-  NDArray retval (x.dims ());
-  double *r_data = retval.fortran_vec ();
-
-  const double *x_data = x.data ();
-
-  octave_idx_type nel = x.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x_data[i], y);
-    }
-
-  return retval;
-}
-
-static FloatNDArray
-map_fm_f (f_ff_fcn f, const FloatNDArray& x, float y)
-{
-  FloatNDArray retval (x.dims ());
-  float *r_data = retval.fortran_vec ();
-
-  const float *x_data = x.data ();
-
-  octave_idx_type nel = x.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x_data[i], y);
-    }
-
-  return retval;
-}
-
-static NDArray
-map_m_m (d_dd_fcn f, const NDArray& x, const NDArray& y)
-{
-  assert (x.dims () == y.dims ());
-
-  NDArray retval (x.dims ());
-  double *r_data = retval.fortran_vec ();
-
-  const double *x_data = x.data ();
-  const double *y_data = y.data ();
-
-  octave_idx_type nel = x.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x_data[i], y_data[i]);
-    }
-
-  return retval;
-}
-
-static FloatNDArray
-map_fm_fm (f_ff_fcn f, const FloatNDArray& x, const FloatNDArray& y)
-{
-  assert (x.dims () == y.dims ());
-
-  FloatNDArray retval (x.dims ());
-  float *r_data = retval.fortran_vec ();
-
-  const float *x_data = x.data ();
-  const float *y_data = y.data ();
-
-  octave_idx_type nel = x.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      octave_quit ();
-      r_data[i] = f (x_data[i], y_data[i]);
-    }
-
-  return retval;
-}
-
-static SparseMatrix
-map_d_s (d_dd_fcn f, double x, const SparseMatrix& y)
-{
-  octave_idx_type nr = y.rows ();
-  octave_idx_type nc = y.columns ();
-  SparseMatrix retval;
-  double f_zero = f (x, 0.);
-
-  if (f_zero != 0)
-    {
-      retval = SparseMatrix (nr, nc, f_zero);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
-          {
-            octave_quit ();
-            retval.data (y.ridx(i) + j * nr) = f (x, y.data (i));
-          } 
-
-      retval.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = y.nnz ();
-      retval = SparseMatrix (nr, nc, nz);
-      octave_idx_type ii = 0;
-      retval.cidx (ii) = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
-            {
-              octave_quit ();
-              double val = f (x, y.data (i));
-
-              if (val != 0.0)
-                {
-                  retval.data (ii) = val;
-                  retval.ridx (ii++) = y.ridx (i);
-                }
-            } 
-          retval.cidx (j + 1) = ii;
-        }
-
-      retval.maybe_compress (false);
-    }
-
-  return retval;
-}
-
-static SparseMatrix
-map_s_d (d_dd_fcn f, const SparseMatrix& x, double y)
-{
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.columns ();
-  SparseMatrix retval;
-  double f_zero = f (0., y);
-
-  if (f_zero != 0)
-    {
-      retval = SparseMatrix (nr, nc, f_zero);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
-          {
-            octave_quit ();
-            retval.data (x.ridx(i) + j * nr) = f (x.data (i), y);
-          } 
-
-      retval.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = x.nnz ();
-      retval = SparseMatrix (nr, nc, nz);
-      octave_idx_type ii = 0;
-      retval.cidx (ii) = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
-            {
-              octave_quit ();
-              double val = f (x.data (i), y);
-
-              if (val != 0.0)
-                {
-                  retval.data (ii) = val;
-                  retval.ridx (ii++) = x.ridx (i);
-                }
-            } 
-          retval.cidx (j + 1) = ii;
-        }
-
-      retval.maybe_compress (false);
-    }
-
-  return retval;
-}
-
-static SparseMatrix
-map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
-{
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.columns ();
-
-  octave_idx_type y_nr = y.rows ();
-  octave_idx_type y_nc = y.columns ();
-
-  assert (nr == y_nr && nc == y_nc);
-
-  SparseMatrix retval;
-  double f_zero = f (0., 0.);
-
-  if (f_zero != 0)
-    {
-      retval = SparseMatrix (nr, nc, f_zero);
-      octave_idx_type k1 = 0, k2 = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
-            {
-              octave_quit ();
-              if (k1 >= x.cidx(j+1))
-                {
-                  retval.data (y.ridx(k2) + j * nr) = f (0.0, y.data (k2));
-                  k2++;
-                }
-              else if (k2 >= y.cidx(j+1))
-                {
-                  retval.data (x.ridx(k1) + j * nr) = f (x.data (k1), 0.0);
-                  k1++;
-                }
-              else
-                {
-                  octave_idx_type rx = x.ridx(k1);
-                  octave_idx_type ry = y.ridx(k2);
-
-                  if (rx < ry)
-                    {
-                      retval.data (rx + j * nr) = f (x.data (k1), 0.0);
-                      k1++;
-                    }
-                  else if (rx > ry)
-                    {
-                      retval.data (ry + j * nr) = f (0.0, y.data (k2));
-                      k2++;
-                    }
-                  else
-                    {
-                      retval.data (ry + j * nr) = f (x.data (k1), y.data (k2));
-                      k1++;
-                      k2++;
-                    }
-                }
-            }
-        }
-
-      retval.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = x.nnz () + y.nnz ();
-      retval = SparseMatrix (nr, nc, nz);
-      octave_idx_type ii = 0;
-      retval.cidx (ii) = 0;
-      octave_idx_type k1 = 0, k2 = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
-            {
-              octave_quit ();
-              double val;
-              octave_idx_type r;
-              if (k1 >= x.cidx(j+1))
-                {
-                  r = y.ridx (k2);
-                  val = f (0.0, y.data (k2++));
-                }
-              else if (k2 >= y.cidx(j+1))
-                {
-                  r = x.ridx (k1);
-                  val = f (x.data (k1++), 0.0);
-                }
-              else
-                {
-                  octave_idx_type rx = x.ridx(k1);
-                  octave_idx_type ry = y.ridx(k2);
-
-                  if (rx < ry)
-                    {
-                      r = x.ridx (k1);
-                      val = f (x.data (k1++), 0.0);
-                    }
-                  else if (rx > ry)
-                    {
-                      r = y.ridx (k2);
-                      val = f (0.0, y.data (k2++));
-                    }
-                  else
-                    {
-                      r = y.ridx (k2);
-                      val = f (x.data (k1++), y.data (k2++));
-                    }
-                }
-              if (val != 0.0)
-                {
-                  retval.data (ii) = val;
-                  retval.ridx (ii++) = r;
-                }
-            }
-          retval.cidx (j + 1) = ii;
-        }
-
-      retval.maybe_compress (false);
-    }
-
-  return retval;
-}
-
 DEFUN (atan2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
@@ -551,160 +207,44 @@ and orientation.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+  if (nargin == 2)
     {
-      if (args(0).is_integer_type () || args(1).is_integer_type ())
-        error ("atan2: not defined for integer types");
+      if (! args(0).is_numeric_type ())
+        gripe_wrong_type_arg ("atan2", args(0));
+      else if (! args(1).is_numeric_type ())
+        gripe_wrong_type_arg ("atan2", args(1));
+      else if (args(0).is_complex_type () || args(1).is_complex_type ())
+        error ("atan2: not defined for complex numbers");
+      else if (args(0).is_single_type () || args(1).is_single_type ())
+        {
+          if (args(0).is_scalar_type () && args(1).is_scalar_type ())
+            retval = atan2f (args(0).float_value (), args(1).float_value ());
+          else
+            {
+              FloatNDArray a0 = args(0).float_array_value ();
+              FloatNDArray a1 = args(1).float_array_value ();
+              retval = binmap<float> (a0, a1, ::atan2f, "atan2");
+            }
+        }
       else
         {
-          octave_value arg_y = args(0);
-          octave_value arg_x = args(1);
-
-          dim_vector y_dims = arg_y.dims ();
-          dim_vector x_dims = arg_x.dims ();
-
-          bool y_is_scalar = y_dims.all_ones ();
-          bool x_is_scalar = x_dims.all_ones ();
-
-          bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
-
-          if (y_is_scalar && x_is_scalar)
+          bool a0_scalar = args(0).is_scalar_type ();
+          bool a1_scalar = args(1).is_scalar_type ();
+          if (a0_scalar && a1_scalar)
+            retval = atan2 (args(0).scalar_value (), args(1).scalar_value ());
+          else if ((a0_scalar || args(0).is_sparse_type ()) 
+                   && (a1_scalar || args(1).is_sparse_type ()))
             {
-              if (is_float)
-                {
-                  float y = arg_y.float_value ();
-
-                  if (! error_state)
-                    {
-                      float x = arg_x.float_value ();
-
-                      if (! error_state)
-                        retval = atan2f (y, x);
-                    }
-                }
-              else
-                {
-                  double y = arg_y.double_value ();
-
-                  if (! error_state)
-                    {
-                      double x = arg_x.double_value ();
-
-                      if (! error_state)
-                        retval = atan2 (y, x);
-                    }
-                }
-            }
-          else if (y_is_scalar)
-            {
-              if (is_float)
-                {
-                  float y = arg_y.float_value ();
-
-                  if (! error_state)
-                    {
-                      // Even if x is sparse return a full matrix here
-                      FloatNDArray x = arg_x.float_array_value ();
-
-                      if (! error_state)
-                        retval = map_f_fm (atan2f, y, x);
-                    }
-                }
-              else
-                {
-                  double y = arg_y.double_value ();
-
-                  if (! error_state)
-                    {
-                      // Even if x is sparse return a full matrix here
-                      NDArray x = arg_x.array_value ();
-
-                      if (! error_state)
-                        retval = map_d_m (atan2, y, x);
-                    }
-                }
-            }
-          else if (x_is_scalar)
-            {
-              if (arg_y.is_sparse_type ())
-                {
-                  SparseMatrix y = arg_y.sparse_matrix_value ();
-
-                  if (! error_state)
-                    {
-                      double x = arg_x.double_value ();
-                      
-                      if (! error_state)
-                        retval = map_s_d (atan2, y, x);
-                    }
-                }
-              else if (is_float)
-                {
-                  FloatNDArray y = arg_y.float_array_value ();
-                  
-                  if (! error_state)
-                    {
-                      float x = arg_x.float_value ();
-
-                      if (! error_state)
-                        retval = map_fm_f (atan2f, y, x);
-                    }
-                }
-              else
-                {
-                  NDArray y = arg_y.array_value ();
-
-                  if (! error_state)
-                    {
-                      double x = arg_x.double_value ();
-
-                      if (! error_state)
-                        retval = map_m_d (atan2, y, x);
-                    }
-                }
-            }
-          else if (y_dims == x_dims)
-            {
-              // Even if y is sparse return a full matrix here
-              if (arg_x.is_sparse_type ())
-                {
-                  SparseMatrix y = arg_y.sparse_matrix_value ();
-
-                  if (! error_state)
-                    {
-                      SparseMatrix x = arg_x.sparse_matrix_value ();
-
-                      if (! error_state)
-                        retval = map_s_s (atan2, y, x);
-                    }
-                }
-              else if (is_float)
-                {
-                  FloatNDArray y = arg_y.array_value ();
-
-                  if (! error_state)
-                    {
-                      FloatNDArray x = arg_x.array_value ();
-
-                      if (! error_state)
-                        retval = map_fm_fm (atan2f, y, x);
-                    }
-                }
-              else
-                {
-                  NDArray y = arg_y.array_value ();
-
-                  if (! error_state)
-                    {
-                      NDArray x = arg_x.array_value ();
-
-                      if (! error_state)
-                        retval = map_m_m (atan2, y, x);
-                    }
-                }
+              SparseMatrix m0 = args(0).sparse_matrix_value ();
+              SparseMatrix m1 = args(1).sparse_matrix_value ();
+              retval = binmap<double> (m0, m1, ::atan2, "atan2");
             }
           else
-            error ("atan2: nonconformant matrices");
+            {
+              NDArray a0 = args(0).array_value ();
+              NDArray a1 = args(1).array_value ();
+              retval = binmap<double> (a0, a1, ::atan2, "atan2");
+            }
         }
     }
   else
@@ -756,217 +296,51 @@ avoids overflows for large values of @var{x} or @var{y}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+  if (nargin == 2)
     {
-      if (args(0).is_integer_type () || args(1).is_integer_type ())
-        error ("hypot: not defined for integer types");
+      octave_value arg0 = args(0), arg1 = args(1);
+      if (! arg0.is_numeric_type ())
+        gripe_wrong_type_arg ("hypot", arg0);
+      else if (! arg1.is_numeric_type ())
+        gripe_wrong_type_arg ("hypot", arg1);
       else
         {
-          octave_value arg_x = args(0);
-          octave_value arg_y = args(1);
+          if (arg0.is_complex_type ())
+            arg0 = arg0.abs ();
+          if (arg1.is_complex_type ())
+            arg1 = arg1.abs ();
 
-          dim_vector x_dims = arg_x.dims ();
-          dim_vector y_dims = arg_y.dims ();
-
-          bool x_is_scalar = x_dims.all_ones ();
-          bool y_is_scalar = y_dims.all_ones ();
-
-          bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
-
-          if (y_is_scalar && x_is_scalar)
+          if (arg0.is_single_type () || arg1.is_single_type ())
             {
-              if (is_float)
-                {
-                  float x;
-                  if (arg_x.is_complex_type ())
-                    x = abs (arg_x.float_complex_value ());
-                  else
-                    x = arg_x.float_value ();
-
-                  if (! error_state)
-                    {
-                      float y;
-                      if (arg_y.is_complex_type ())
-                        y = abs (arg_y.float_complex_value ());
-                      else
-                        y = arg_y.float_value ();
-
-                      if (! error_state)
-                        retval = hypotf (x, y);
-                    }
-                }
+              if (arg0.is_scalar_type () && arg1.is_scalar_type ())
+                retval = hypotf (arg0.float_value (), arg1.float_value ());
               else
                 {
-                  double x;
-                  if (arg_x.is_complex_type ())
-                    x = abs (arg_x.complex_value ());
-                  else
-                    x = arg_x.double_value ();
-
-                  if (! error_state)
-                    {
-                      double y;
-                      if (arg_y.is_complex_type ())
-                        y = abs (arg_y.complex_value ());
-                      else
-                        y = arg_y.double_value ();
-
-                      if (! error_state)
-                        retval = hypot (x, y);
-                    }
-                }
-            }
-          else if (y_is_scalar)
-            {
-              if (is_float)
-                {
-                  FloatNDArray x;
-                  if (arg_x.is_complex_type ())
-                    x = arg_x.float_complex_array_value ().abs ();
-                  else
-                    x = arg_x.float_array_value ();
-
-                  if (! error_state)
-                    {
-                      float y;
-                      if (arg_y.is_complex_type ())
-                        y = abs (arg_y.float_complex_value ());
-                      else
-                        y = arg_y.float_value ();
-
-                      if (! error_state)
-                        retval = map_fm_f (hypotf, x, y);
-                    }
-                }
-              else
-                {
-                  NDArray x;
-                  if (arg_x.is_complex_type ())
-                    x = arg_x.complex_array_value ().abs ();
-                  else
-                    x = arg_x.array_value ();
-
-                  if (! error_state)
-                    {
-                      double y;
-                      if (arg_y.is_complex_type ())
-                        y = abs (arg_y.complex_value ());
-                      else
-                        y = arg_y.double_value ();
-
-                      if (! error_state)
-                        retval = map_m_d (hypot, x, y);
-                    }
-                }
-            }
-          else if (x_is_scalar)
-            {
-              if (is_float)
-                {
-                  float x;
-                  if (arg_x.is_complex_type ())
-                    x = abs (arg_x.float_complex_value ());
-                  else
-                    x = arg_x.float_value ();
-
-                  if (! error_state)
-                    {
-                      FloatNDArray y;
-                      if (arg_y.is_complex_type ())
-                        y = arg_y.float_complex_array_value ().abs ();
-                      else
-                        y = arg_y.float_array_value ();
-
-                      if (! error_state)
-                        retval = map_f_fm (hypotf, x, y);
-                    }
-                }
-              else
-                {
-                  double x;
-                  if (arg_x.is_complex_type ())
-                    x = abs (arg_x.complex_value ());
-                  else
-                    x = arg_x.double_value ();
-
-                  if (! error_state)
-                    {
-                      NDArray y;
-                      if (arg_y.is_complex_type ())
-                        y = arg_y.complex_array_value ().abs ();
-                      else
-                        y = arg_y.array_value ();
-
-                      if (! error_state)
-                        retval = map_d_m (hypot, x, y);
-                    }
-                }
-            }
-          else if (y_dims == x_dims)
-            {
-              if (arg_x.is_sparse_type () && arg_y.is_sparse_type ())
-                {
-                  SparseMatrix x;
-                  if (arg_x.is_complex_type ())
-                    x = arg_x.sparse_complex_matrix_value ().abs ();
-                  else
-                    x = arg_x.sparse_matrix_value ();
-
-                  if (! error_state)
-                    {
-                      SparseMatrix y;
-                      if (arg_y.is_complex_type ())
-                        y = arg_y.sparse_complex_matrix_value ().abs ();
-                      else
-                        y = arg_y.sparse_matrix_value ();
-
-                      if (! error_state)
-                        retval = map_s_s (hypot, x, y);
-                    }
-                }
-              else if (is_float)
-                {
-                  FloatNDArray x;
-                  if (arg_x.is_complex_type ())
-                    x = arg_x.float_complex_array_value ().abs ();
-                  else
-                    x = arg_x.float_array_value ();
-
-                  if (! error_state)
-                    {
-                      FloatNDArray y;
-                      if (arg_y.is_complex_type ())
-                        y = arg_y.float_complex_array_value ().abs ();
-                      else
-                        y = arg_y.float_array_value ();
-
-                      if (! error_state)
-                        retval = map_fm_fm (hypotf, x, y);
-                    }
-                }
-              else
-                {
-                  NDArray x;
-                  if (arg_x.is_complex_type ())
-                    x = arg_x.complex_array_value ().abs ();
-                  else
-                    x = arg_x.array_value ();
-
-                  if (! error_state)
-                    {
-                      NDArray y;
-                      if (arg_y.is_complex_type ())
-                        y = arg_y.complex_array_value ().abs ();
-                      else
-                        y = arg_y.array_value ();
-
-                      if (! error_state)
-                        retval = map_m_m (hypot, x, y);
-                    }
+                  FloatNDArray a0 = arg0.float_array_value ();
+                  FloatNDArray a1 = arg1.float_array_value ();
+                  retval = binmap<float> (a0, a1, ::hypotf, "hypot");
                 }
             }
           else
-            error ("hypot: nonconformant matrices");
+            {
+              bool a0_scalar = arg0.is_scalar_type ();
+              bool a1_scalar = arg1.is_scalar_type ();
+              if (a0_scalar && a1_scalar)
+                retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
+              else if ((a0_scalar || arg0.is_sparse_type ()) 
+                       && (a1_scalar || arg1.is_sparse_type ()))
+                {
+                  SparseMatrix m0 = arg0.sparse_matrix_value ();
+                  SparseMatrix m1 = arg1.sparse_matrix_value ();
+                  retval = binmap<double> (m0, m1, ::hypot, "hypot");
+                }
+              else
+                {
+                  NDArray a0 = arg0.array_value ();
+                  NDArray a1 = arg1.array_value ();
+                  retval = binmap<double> (a0, a1, ::hypot, "hypot");
+                }
+            }
         }
     }
   else
@@ -1112,163 +486,45 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-dependent.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+  if (nargin == 2)
     {
-      octave_value arg_x = args(0);
-      octave_value arg_y = args(1);
-
-      dim_vector y_dims = arg_y.dims ();
-      dim_vector x_dims = arg_x.dims ();
-
-      bool y_is_scalar = y_dims.all_ones ();
-      bool x_is_scalar = x_dims.all_ones ();
-
-      bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
-
-      if (y_is_scalar && x_is_scalar)
+      if (! args(0).is_numeric_type ())
+        gripe_wrong_type_arg ("fmod", args(0));
+      else if (! args(1).is_numeric_type ())
+        gripe_wrong_type_arg ("fmod", args(1));
+      else if (args(0).is_complex_type () || args(1).is_complex_type ())
+        error ("fmod: not defined for complex numbers");
+      else if (args(0).is_single_type () || args(1).is_single_type ())
         {
-          if (is_float)
-            {
-              float y = arg_y.float_value ();
-
-              if (! error_state)
-                {
-                  float x = arg_x.float_value ();
-
-                  if (! error_state)
-                    retval = fmod (x, y);
-                }
-            }
+          if (args(0).is_scalar_type () && args(1).is_scalar_type ())
+            retval = fmodf (args(0).float_value (), args(1).float_value ());
           else
             {
-              double y = arg_y.double_value ();
-
-              if (! error_state)
-                {
-                  double x = arg_x.double_value ();
-
-                  if (! error_state)
-                    retval = fmod (x, y);
-                }
-            }
-        }
-      else if (y_is_scalar)
-        {
-          if (is_float)
-            {
-              float y = arg_y.float_value ();
-
-              if (! error_state)
-                {
-                  FloatNDArray x = arg_x.float_array_value ();
-
-                  if (! error_state)
-                    retval = map_fm_f (fmodf, x, y);
-                }
-            }
-          else
-            {
-              double y = arg_y.double_value ();
-
-              if (! error_state)
-                {
-                  if (arg_x.is_sparse_type ())
-                    {
-                      SparseMatrix x = arg_x.sparse_matrix_value ();
-
-                      if (! error_state)
-                        retval = map_s_d (fmod, x, y);
-                    }
-                  else
-                    {
-                      NDArray x = arg_x.array_value ();
-
-                      if (! error_state)
-                        retval = map_m_d (fmod, x, y);
-                    }
-                }
-            }
-        }
-      else if (x_is_scalar)
-        {
-          if (arg_y.is_sparse_type ())
-            {
-              SparseMatrix y = arg_y.sparse_matrix_value ();
-
-              if (! error_state)
-                {
-                  double x = arg_x.double_value ();
-
-                  if (! error_state)
-                    retval = map_d_s (fmod, x, y);
-                }
-            }
-          else if (is_float)
-            {
-              FloatNDArray y = arg_y.float_array_value ();
-
-              if (! error_state)
-                {
-                  float x = arg_x.float_value ();
-
-                  if (! error_state)
-                    retval = map_f_fm (fmodf, x, y);
-                }
-            }
-          else
-            {
-              NDArray y = arg_y.array_value ();
-
-              if (! error_state)
-                {
-                  double x = arg_x.double_value ();
-
-                  if (! error_state)
-                    retval = map_d_m (fmod, x, y);
-                }
-            }
-        }
-      else if (y_dims == x_dims)
-        {
-          if (arg_y.is_sparse_type () || arg_x.is_sparse_type ())
-            {
-              SparseMatrix y = arg_y.sparse_matrix_value ();
-
-              if (! error_state)
-                {
-                  SparseMatrix x = arg_x.sparse_matrix_value ();
-
-                  if (! error_state)
-                    retval = map_s_s (fmod, x, y);
-                }
-            }
-          else if (is_float)
-            {
-              FloatNDArray y = arg_y.float_array_value ();
-
-              if (! error_state)
-                {
-                  FloatNDArray x = arg_x.float_array_value ();
-
-                  if (! error_state)
-                    retval = map_fm_fm (fmodf, x, y);
-                }
-            }
-          else
-            {
-              NDArray y = arg_y.array_value ();
-
-              if (! error_state)
-                {
-                  NDArray x = arg_x.array_value ();
-
-                  if (! error_state)
-                    retval = map_m_m (fmod, x, y);
-                }
+              FloatNDArray a0 = args(0).float_array_value ();
+              FloatNDArray a1 = args(1).float_array_value ();
+              retval = binmap<float> (a0, a1, ::fmodf, "fmod");
             }
         }
       else
-        error ("fmod: nonconformant matrices");
+        {
+          bool a0_scalar = args(0).is_scalar_type ();
+          bool a1_scalar = args(1).is_scalar_type ();
+          if (a0_scalar && a1_scalar)
+            retval = fmod (args(0).scalar_value (), args(1).scalar_value ());
+          else if ((a0_scalar || args(0).is_sparse_type ()) 
+                   && (a1_scalar || args(1).is_sparse_type ()))
+            {
+              SparseMatrix m0 = args(0).sparse_matrix_value ();
+              SparseMatrix m1 = args(1).sparse_matrix_value ();
+              retval = binmap<double> (m0, m1, ::fmod, "fmod");
+            }
+          else
+            {
+              NDArray a0 = args(0).array_value ();
+              NDArray a1 = args(1).array_value ();
+              retval = binmap<double> (a0, a1, ::fmod, "fmod");
+            }
+        }
     }
   else
     print_usage ();

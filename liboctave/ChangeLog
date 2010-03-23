@@ -1,3 +1,8 @@
+2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-binmap.h: New source.
+	* Makefile.am: Include it here.
+
 2010-03-22  John W. Eaton  <jwe@octave.org>
 
 	* config-ops.sh: Accept additional arguments.

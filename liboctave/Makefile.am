@@ -211,6 +211,7 @@ INCS = \
   lo-utils.h \
   mach-info.h \
   oct-alloc.h \
+  oct-binmap.h \
   oct-cmplx.h \
   oct-convn.h \
   oct-env.h \

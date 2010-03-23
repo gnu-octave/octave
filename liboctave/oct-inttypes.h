@@ -386,6 +386,20 @@ public:
           return x ? octave_int_base<T>::max_val () : 0;
         }
     }
+
+  // Remainder.
+  static T
+  rem (T x, T y)
+    {
+      return y != 0 ? x % y : 0;
+    }
+
+  // Modulus. Note the weird y = 0 case for Matlab compatibility.
+  static T
+  mod (T x, T y)
+    {
+      return y != 0 ? x % y : x;
+    }
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
@@ -654,6 +668,25 @@ public:
       return z;
     }
 
+  // Remainder.
+  static T
+  rem (T x, T y)
+    {
+      return y != 0 ? x % y : 0;
+    }
+
+  // Modulus. Note the weird y = 0 case for Matlab compatibility.
+  static T
+  mod (T x, T y)
+    {
+      if (y != 0)
+        {
+          T r = x % y;
+          return ((r < 0) != (y < 0)) ? r + y : r;
+        }
+      else
+        return x;
+    }
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
@@ -781,6 +814,7 @@ public:
   OCTAVE_INT_BIN_OP(-, sub, octave_int<T>)
   OCTAVE_INT_BIN_OP(*, mul, octave_int<T>)
   OCTAVE_INT_BIN_OP(/, div, octave_int<T>)
+  OCTAVE_INT_BIN_OP(%, rem, octave_int<T>)
   OCTAVE_INT_BIN_OP(<<, lshift, int)
   OCTAVE_INT_BIN_OP(>>, rshift, int)
 
@@ -806,6 +840,16 @@ private:
 
   T ival;
 };
+
+template <class T>
+inline octave_int<T>
+rem (const octave_int<T>& x, const octave_int<T>& y)
+{ return octave_int_arith<T>::rem (x.value (), y.value ()); }
+
+template <class T>
+inline octave_int<T>
+mod (const octave_int<T>& x, const octave_int<T>& y)
+{ return octave_int_arith<T>::mod (x.value (), y.value ()); }
 
 // No mixed integer binary operations!
 

@@ -50,7 +50,6 @@ general_FCN_FILES = \
   general/isvector.m \
   general/loadobj.m \
   general/logspace.m \
-  general/mod.m \
   general/nargchk.m \
   general/nargoutchk.m \
   general/nextpow2.m \
@@ -64,7 +63,6 @@ general_FCN_FILES = \
   general/quadl.m \
   general/quadv.m \
   general/rat.m \
-  general/rem.m \
   general/repmat.m \
   general/rot90.m \
   general/rotdim.m \

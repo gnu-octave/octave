@@ -1,5 +1,10 @@
 2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* data.cc (Frem, Fmod): New DEFUNs.
+	(Ffmod): Remove. Make an alias of Frem.
+
+2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (map_d_m, map_m_d, map_m_m, map_f_fm, map_fm_f, map_fm_fm,
 	map_d_s, map_s_d, map_s_s): Remove.
 	(Fatan2, Fhypot, Ffmod): Rewrite using binmap.

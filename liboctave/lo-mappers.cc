@@ -131,6 +131,16 @@ signum (double x)
 }
 
 double
+mod (double x, double y)
+{
+  if (y == 0)
+    return x;
+
+  double r = fmod (x, y);
+  return ((r < 0) != (y < 0)) ? y+r : r;
+}
+
+double
 xlog2 (double x)
 {
 #if defined (HAVE_LOG2)
@@ -432,6 +442,16 @@ signum (float x)
     tmp = 1.0;
 
   return xisnan (x) ? octave_Float_NaN : tmp;
+}
+
+float
+mod (float x, float y)
+{
+  if (y == 0)
+    return x;
+
+  float r = fmodf (x, y);
+  return ((r < 0) != (y < 0)) ? y+r : r;
 }
 
 float

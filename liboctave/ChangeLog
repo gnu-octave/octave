@@ -1,5 +1,13 @@
 2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-inttypes.h (octave_int_arith_base::rem, octave_int_base::mod):
+	New methods.
+	(rem, mod): New template functions.
+	* lo-mappers.cc (rem, mod): New overloaded functions.
+	* lo-mappers.h: Declare them.
+
+2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-binmap.h: New source.
 	* Makefile.am: Include it here.
 

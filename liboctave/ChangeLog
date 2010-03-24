@@ -1,3 +1,10 @@
+2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (lblookup): New helper func.
+	(Sparse<T>::index (const idx_vector&, bool)): Use it here for lookups.
+	(Sparse<T>::index (const idx_vector&, const idx_vector&, bool)):
+	Specialize for scalar row index.
+
 2010-03-23  John W. Eaton  <jwe@octave.org>
 
 	* config-ops.sh: Work properly for "all" cases.

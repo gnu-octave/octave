@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 #include <climits>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -1624,6 +1625,25 @@ Sparse<T>::value (void)
   return retval;
 }
 
+// Lower bound lookup. Could also use octave_sort, but that has upper bound
+// semantics, so requires some manipulation to set right. Uses a plain loop for
+// small columns.
+static octave_idx_type
+lblookup (const octave_idx_type *ridx, octave_idx_type nr,
+          octave_idx_type ri)
+{
+  if (nr <= 8)
+    {
+      octave_idx_type l;
+      for (l = 0; l < nr; l++)
+        if (ridx[l] >= ri)
+          break;
+      return l;
+    }
+  else
+    return std::lower_bound (ridx, ridx + nr, ri) - ridx;
+}
+
 template <class T>
 Sparse<T>
 Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
@@ -1689,14 +1709,13 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     {
       // Sparse column vector.
       octave_idx_type lb, ub;
-      octave_sort<octave_idx_type> isort;
 
       if (idx.is_scalar ())
         {
           // Scalar index - just a binary lookup.
-          octave_idx_type i = isort.lookup (ridx (), nz, idx(0));
-          if (i > 0 && ridx(i-1) == idx(0))
-            retval = Sparse (1, 1, data(i-1));
+          octave_idx_type i = lblookup (ridx (), nz, idx(0));
+          if (i < nz && ridx(i) == idx(0))
+            retval = Sparse (1, 1, data(i));
           else
             retval = Sparse (1, 1);
         }
@@ -1704,11 +1723,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
         {
           // Special-case a contiguous range.
           // Look-up indices first.
-          octave_idx_type li = isort.lookup (ridx (), nz, lb);
-          octave_idx_type ui = isort.lookup (ridx (), nz, ub);
-          // Adjust to lower bounds.
-          li -= (li > 0 && ridx(li-1) == lb);
-          ui -= (ui > 0 && ridx(ui-1) == ub);
+          octave_idx_type li = lblookup (ridx (), nz, lb);
+          octave_idx_type ui = lblookup (ridx (), nz, ub);
           // Copy data and adjust indices.
           octave_idx_type nz_new = ui - li;
           retval = Sparse<T> (ub - lb, 1, nz_new);
@@ -1730,7 +1746,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           // Lookup.
           // FIXME: Could specialize for sorted idx?
           NoAlias< Array<octave_idx_type> > lidx (new_nr, new_nc);
-          isort.lookup (ridx (), nz, idxa.data (), idxa.numel (), lidx.fortran_vec ());
+          for (octave_idx_type i = 0; i < new_nr*new_nc; i++)
+            lidx(i) = lblookup (ridx (), nz, idxa(i));
 
           // Count matches.
           retval = Sparse<T> (idxa.rows (), idxa.cols ());
@@ -1740,10 +1757,10 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
               for (octave_idx_type i = 0; i < new_nr; i++)
                 {
                   octave_idx_type l = lidx(i, j);
-                  if (l > 0 && ridx(l-1) == idxa(i, j))
+                  if (l < nz && ridx(l) == idxa(i, j))
                     nzj++;
                   else
-                    lidx(i, j) = 0;
+                    lidx(i, j) = nz;
                 }
               retval.xcidx(j+1) = retval.xcidx(j) + nzj;
             }
@@ -1755,8 +1772,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           for (octave_idx_type j = 0; j < new_nc; j++)
             for (octave_idx_type i = 0; i < new_nr; i++)
               {
-                octave_idx_type l = lidx(i, j) - 1;
-                if (l >= 0)
+                octave_idx_type l = lidx(i, j);
+                if (l < nz)
                   {
                     retval.data(k) = data(l);
                     retval.xridx(k++) = i;
@@ -1829,6 +1846,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
   octave_idx_type n = idx_i.length (nr);
   octave_idx_type m = idx_j.length (nc);
 
+  octave_idx_type lb, ub;
+
   if (idx_i.extent (nr) > nr || idx_j.extent (nc) > nc)
     {
       // resize_ok is completely handled here.
@@ -1847,7 +1866,6 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     }
   else if (idx_i.is_colon ())
     {
-      octave_idx_type lb, ub;
       // Great, we're just manipulating columns. This is going to be quite
       // efficient, because the columns can stay compressed as they are.
       if (idx_j.is_colon ())
@@ -1880,6 +1898,38 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
               octave_idx_type lj = retval.xcidx(j), nzj = retval.xcidx(j+1) - lj;
               copy_or_memcpy (nzj, data () + ljj, retval.data () + lj);
               copy_or_memcpy (nzj, ridx () + ljj, retval.ridx () + lj);
+            }
+        }
+    }
+  else if (idx_i.is_scalar ())
+    {
+      octave_idx_type ii = idx_i(0);
+      retval = Sparse<T> (1, m);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, ij, m);
+      for (octave_idx_type j = 0; j < m; j++)
+        {
+          octave_quit ();
+          octave_idx_type jj = idx_j(j), lj = cidx(jj), nzj = cidx(jj+1) - cidx(jj);
+          // Scalar index - just a binary lookup.
+          octave_idx_type i = lblookup (ridx () + lj, nzj, ii);
+          if (i < nzj && ridx(i+lj) == ii)
+            {
+              ij[j] = i + lj;
+              retval.xcidx(j+1) = retval.xcidx(j) + 1;
+            }
+          else
+            retval.xcidx(j+1) = retval.xcidx(j);
+        }
+
+      retval.change_capacity (retval.xcidx(m));
+
+      for (octave_idx_type j = 0; j < m; j++)
+        {
+          octave_idx_type i = retval.xcidx(j);
+          if (retval.xcidx(j+1) > i)
+            {
+              retval.xridx(i) = 0;
+              retval.xdata(i) = data(ij[j]);
             }
         }
     }

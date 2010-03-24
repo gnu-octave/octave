@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {@var{m} =} cell2mat (@var{c})
 ## Convert the cell array @var{c} into a matrix by concatenating all
 ## elements of @var{c} into a hyperrectangle.  Elements of @var{c} must
-## be numeric, logical or char, and @code{cat} must be able to
-## concatenate them together.
+## be numeric, logical or char matrices, or cell arrays, and @code{cat} 
+## must be able to concatenate them together.
 ## @seealso{mat2cell, num2cell}
 ## @end deftypefn
 
@@ -41,9 +41,10 @@ function m = cell2mat (c)
   valid = cellfun (@isnumeric, c);
   valid |= cellfun (@islogical, c);
   valid |= cellfun (@ischar, c);
+  validc = cellfun (@iscell, c);
 
-  if (! all (valid))
-    error ("cell2mat: elements must be numeric, char or logical");
+  if (! all (valid(:)) && ! all (validc(:)))
+    error ("cell2mat: wrong type elements or mixed cells and matrices");
   endif
 
   if (nb == 0)

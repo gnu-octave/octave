@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include <cstring>
+#include "string.h"
 
 #include <sys/types.h>
 #include <unistd.h>

@@ -1,3 +1,13 @@
+2010-03-24  David Grundberg  <davidg@cs.umu.se>
+
+	* oct-parse.yy: Include gnulib stdlib.h/stdio.h instead of C++
+	headers.
+	* oct-fstrm.cc: Include gnulib stdlib.h/string.h instead of C++
+	headers.
+	* mex.cc: Include gnulib stdlib.h instead of C++ headers.
+	* input.cc: Include gnulib stdio.h instead of C++ headers.
+	* c-file-ptr-stream.cc: Include gnulib stdio.h.
+
 2010-03-24  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::add_to_fcn_map): Style fixes.

@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 #include <csetjmp>
 #include <cstdarg>
-#include <cstdlib>
+#include "stdlib.h"
 #include <cstring>
 #include <cctype>
 

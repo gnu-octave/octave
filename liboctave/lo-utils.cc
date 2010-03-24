@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <cstdlib>
+#include "stdlib.h"
 #include <cstdio>
 #include <cstring>
 

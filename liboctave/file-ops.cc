@@ -26,9 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 
 #include <iostream>
 #include <vector>

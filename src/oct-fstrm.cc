@@ -26,7 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include <cstring>
+#include "string.h"
+#include "stdlib.h"
 
 #include "error.h"
 #include "oct-fstrm.h"

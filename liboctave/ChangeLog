@@ -1,3 +1,18 @@
+2010-03-24  David Grundberg  <davidg@cs.umu.se>
+
+	* cmd-edit.cc: Include gnulib stdlib.h/string.h instead of C++
+	headers.
+	* file-ops.cc: Include gnulib stdlib.h/stdio.h/string.h instead of
+	C++ headers.
+	* lo-math.h: Include gnulib math.h instead of C++ headers.
+	* lo-utils.cc: Include gnulib stdlib.h instead of C++ headers.
+	* oct-env.cc, dir-ops.cc, file-stat.cc, cmd-hist.cc: Include
+	gnulib string.h instead of C++ headers.
+	* oct-time.cc: Include gnulib time.h instead of C++ headers.
+	* oct-time.h (octave_time): Use default namespace ::modf instead
+	of std::modf.
+	* oct-uname.cc: Include gnulib string.h instead of C++ headers.
+
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (lblookup): New helper func.

@@ -149,7 +149,7 @@ Summary of important user-visible changes for version 3.3:
  ** Octave now allows user-defined `subsasgn' methods to optimize out
     redundant copies.  For more information, see the manual.
 
- ** More efficient matrix division handling. Octave is now able to
+ ** More efficient matrix division handling.  Octave is now able to
     handle the expressions
     
        M' \ V
@@ -159,7 +159,7 @@ Summary of important user-visible changes for version 3.3:
     (M is a matrix and V is a vector) more efficiently in certain cases.
     In particular, if M is triangular, all three expressions will be
     handled by a single call to xTRTRS (from LAPACK), with appropriate
-    flags. Previously, all three expressions required a physical
+    flags.  Previously, all three expressions required a physical
     transpose of M.
 
  ** More efficient handling of certain mixed real-complex matrix
@@ -176,10 +176,10 @@ Summary of important user-visible changes for version 3.3:
 
       complex (RM) * CM,
 
-    depending on the dimensions.  The first form requires more temporaries
-    and copying, but halves the FLOP count, which normally brings better
-    performance if RM has enough rows.  Previously, the second form was
-    always used.
+    depending on the dimensions.  The first form requires more
+    temporaries and copying, but halves the FLOP count, which normally
+    brings better performance if RM has enough rows.  Previously, the
+    second form was always used.
 
     Matrix division is similarly affected. 
 
@@ -214,13 +214,14 @@ Summary of important user-visible changes for version 3.3:
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
  
- ** Matlab-style ignoring input and output function arguments using tilde (~)
-    is now supported. For more details, consult the manual.
+ ** Matlab-style ignoring input and output function arguments using
+    tilde (~) is now supported.  For more details, consult the manual.
 
- ** The list datatype, deprecated since the introduction of cells, has been removed.
+ ** The list datatype, deprecated since the introduction of cells, has
+    been removed.
 
- ** The accumarray function has been optimized and is now significantly faster 
-    in certain important cases.
+ ** The accumarray function has been optimized and is now significantly
+    faster in certain important cases.
 
  ** The behavior of isreal and isnumeric functions was changed to be more
     Matlab-compatible.
@@ -229,8 +230,8 @@ Summary of important user-visible changes for version 3.3:
     Octave:int-convert-non-int-val, Octave:int-convert-overflow,
     Octave:int-math-overflow) have been removed. 
 
- ** rem and mod are now built-in functions. They also handle integer types
-    efficiently using integer arithmetic.
+ ** rem and mod are now built-in functions.  They also handle integer
+    types efficiently using integer arithmetic.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
@@ -443,23 +444,25 @@ Summary of important user-visible changes for version 3.2:
  ** Sorting and searching.
     
     The performance of sort has been improved, especially when sorting
-    indices are requested. An efficient built-in issorted implementation
-    was added. sortrows now uses a more efficient algorithm, especially
-    in the homegeneous case. lookup is now a built-in function performing
-    a binary search, optimized for long runs of close elements. Lookup
-    also works with cell arrays of strings.
+    indices are requested.  An efficient built-in issorted
+    implementation was added.  The sortrows function now uses a more
+    efficient algorithm, especially in the homegeneous case.  The lookup
+    function is now a built-in function performing a binary search,
+    optimized for long runs of close elements.  Lookup also works with
+    cell arrays of strings.
 
  ** Range arithmetics
 
-    For some operations on ranges, Octave will attempt to keep the result as a
-    range.  These include negation, adding a scalar, subtracting a scalar, and
-    multiplying by a scalar. Ranges with zero increment are allowed and can be
-    constructed using the built-in function `ones'.
+    For some operations on ranges, Octave will attempt to keep the
+    result as a range.  These include negation, adding a scalar,
+    subtracting a scalar, and multiplying by a scalar. Ranges with zero
+    increment are allowed and can be constructed using the built-in
+    function `ones'.
 
  ** Various performance improvements.
 
-    Performance of a number of other built-in operations and functions was
-    improved, including:
+    Performance of a number of other built-in operations and functions
+    was improved, including:
 
     * logical operations
     * comparison operators

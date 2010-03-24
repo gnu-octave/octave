@@ -281,25 +281,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 
     do_tics (axis_obj, plot_stream, ymirror, mono, gnuplot_term);
 
+    fputs (plot_stream, "unset logscale;\n");
     xlogscale = strcmpi (axis_obj.xscale, "log");
+    ylogscale = strcmpi (axis_obj.yscale, "log");
+    zlogscale = strcmpi (axis_obj.zscale, "log");
     if (xlogscale)
       fprintf (plot_stream, "set logscale %s;\n", xaxisloc);
-    else
-      fprintf (plot_stream, "unset logscale %s;\n", xaxisloc);
     endif
-
-    ylogscale = strcmpi (axis_obj.yscale, "log");
     if (ylogscale)
       fprintf (plot_stream, "set logscale %s;\n", yaxisloc);
-    else
-      fprintf (plot_stream, "unset logscale %s;\n", yaxisloc);
     endif
-
-    zlogscale = strcmpi (axis_obj.zscale, "log");
     if (zlogscale)
       fputs (plot_stream, "set logscale z;\n");
-    else
-      fputs (plot_stream, "unset logscale z;\n");
     endif
 
     xautoscale = strcmpi (axis_obj.xlimmode, "auto");

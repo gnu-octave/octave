@@ -1,5 +1,9 @@
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* help/help.m: Maybe warn about unimplemented Matlab functions.
+
+2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* miscellaneous/unimplemented.m: New function.
 
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>

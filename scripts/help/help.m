@@ -119,6 +119,8 @@ function do_contents (name)
 
   if (found)
     puts (__additional_help_message__ ());
+  else
+    feval (missing_function_hook, name);
   endif
 
 endfunction

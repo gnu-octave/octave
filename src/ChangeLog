@@ -1,5 +1,10 @@
 2010-03-24  John W. Eaton  <jwe@octave.org>
 
+	* version.h.in (OCTAVE_BUGS_STATEMENT): Point to
+	http://www.octave.org/bugs.html, not the mailing list.
+
+2010-03-24  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/config-module.awk: Emit additions to EXTRA_DIST.
 
 2010-03-24  John W. Eaton  <jwe@octave.org>

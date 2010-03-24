@@ -62,8 +62,7 @@ FITNESS FOR A PARTICULAR PURPOSE." ARG
 For more information, visit http://www.octave.org/help-wanted.html"
 
 #define OCTAVE_BUGS_STATEMENT \
-  "Report bugs to <bug@octave.org> (but first, please read\n\
-http://www.octave.org/bugs.html to learn how to write a helpful report)."
+  "Read http://www.octave.org/bugs.html to learn how to submit bug reports."
 
 #define OCTAVE_NAME_VERSION_AND_COPYRIGHT \
   OCTAVE_NAME_AND_VERSION "\n" \

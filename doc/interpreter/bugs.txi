@@ -108,20 +108,9 @@ better.  Bug reports are your contribution to the maintenance of Octave.
 In order for a bug report to serve its purpose, you must include the
 information that makes it possible to fix the bug.
 
-@findex bug_report
-
-If you have Octave working at all, the easiest way to prepare a complete
-bug report is to use the Octave function @code{bug_report}.  When you
-execute this function, Octave will prompt you for a subject and then
-invoke the editor on a file that already contains all the configuration
-information.  When you exit the editor, Octave will mail the bug report
-for you.
-
-@DOCSTRING(bug_report)
-
 @menu
 * Bug Criteria::                
-* Where: Bug Lists.             Where to send your bug report.
+* Where: Bug Tracker.           Where to submit your bug report.
 * Reporting: Bug Reporting.     How to report a bug effectively.
 * Patches: Sending Patches.     How to send a patch for Octave.
 @end menu
@@ -178,34 +167,24 @@ If you are an experienced user of programs like Octave, your suggestions
 for improvement are welcome in any case.
 @end itemize
 
-@node Bug Lists
+@node Bug Tracker
 @appendixsec Where to Report Bugs
-@cindex bug report mailing lists
+@cindex bug tracker
 @cindex reporting bugs
 @cindex bugs, reporting
 
-@findex bug_report
-
-If you have Octave working at all, the easiest way to prepare a complete
-bug report is to use the Octave function @code{bug_report}.  When you
-execute this function, Octave will prompt you for a subject and then
-invoke the editor on a file that already contains all the configuration
-information.  When you exit the editor, Octave will mail the bug report
-for you.
-
-If for some reason you cannot use Octave's @code{bug_report} function,
-send bug reports for Octave to @email{bug@@octave.org}.
+To report a bug in Octave, submit a bug report to the Octave bug tracker
+@url{http://bugs.octave.org}.
 
 @strong{Do not send bug reports to @samp{help-octave}}.  Most users of
-Octave do not want to receive bug reports.  Those that do have asked to
-be on the mailing list.
+Octave do not want to receive bug reports.
 
 @node Bug Reporting
 @appendixsec How to Report Bugs
 @cindex bugs, reporting
 
-Send bug reports for Octave to one of the addresses listed in
-@ref{Bug Lists}.
+Submit bug reports for Octave to the Octave bug tracker
+@url{http://bugs.octave.org}.
 
 The fundamental principle of reporting bugs usefully is this:
 @strong{report all the facts}.  If you are not sure whether to state a
@@ -418,7 +397,9 @@ the discussion, please send a short note to
 @strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.
 
-If you think you have found a bug in the installation procedure,
-however, you should send a complete bug report for the problem to
-@email{bug@@octave.org}.  @xref{Bug Reporting}, for
-information that will help you to submit a useful report.
+If you think you have found a bug in Octave or in the installation
+procedure, however, you should submit a complete bug report to
+the Octave bug tracker at @url{http://bugs.octave.org}.
+But before you submit a bug report, please read
+@url{http://www.octave.org/bugs.html} to learn how to submit a useful
+bug report.

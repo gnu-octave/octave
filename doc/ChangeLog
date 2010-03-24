@@ -1,3 +1,7 @@
+2010-03-24  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/bugs.txi: Update for bug tracker.
+
 2010-02-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/expr.txi: Mention no ternary operator and the ifelse

@@ -1,5 +1,9 @@
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* miscellaneous/unimplemented.m: New function.
+
+2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/cell2mat.m: Support cells of cells.
 
 2010-03-23  John W. Eaton  <jwe@octave.org>

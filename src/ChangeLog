@@ -1,3 +1,12 @@
+2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* variables.cc (Fmissing_function_hook): New pseudo-variable.
+	(Vmissing_function_hook): New static var.
+	(maybe_missing_function_hook): New function.
+	* variables.h: Declare it.
+	* pt-id.cc (tree_identifier::eval_undefined_error): Call it here.
+	* oct-parse.yy (feval (const std::string&, ...)): Also here.
+
 2010-03-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Frem, Fmod): New DEFUNs.

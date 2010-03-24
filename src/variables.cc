@@ -2376,3 +2376,22 @@ The default format is\n\
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);
 }
+
+static std::string Vmissing_function_hook = "unimplemented";
+
+DEFUN (missing_function_hook, args, nargout,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} missing_function_hook ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
+Query or set the internal variable that allows setting a custom hook function\n\
+called when an uknown identifier is requested.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (missing_function_hook);
+}
+
+void maybe_missing_function_hook (const std::string& name)
+{
+  if (! Vmissing_function_hook.empty ())
+    feval (Vmissing_function_hook, octave_value (name));
+}

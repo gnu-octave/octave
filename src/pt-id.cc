@@ -45,6 +45,10 @@ tree_identifier::eval_undefined_error (void)
   int l = line ();
   int c = column ();
 
+  maybe_missing_function_hook (name ());
+  if (error_state)
+    return;
+
   if (l == -1 && c == -1)
     ::error ("`%s' undefined", name ().c_str ());
   else

@@ -1,5 +1,11 @@
 BEGIN {
   print "## DO NOT EDIT -- generated from module-files by config-module.awk";
+  print ""
+  print "EXTRA_DIST += \\"
+  print "  DLD-FUNCTIONS/config-module.sh \\"
+  print "  DLD-FUNCTIONS/config-module.awk \\"
+  print "  DLD-FUNCTIONS/module-files"
+  print ""
   nfiles = 0;
 } {
   files[++nfiles] = $1;
@@ -14,6 +20,7 @@ BEGIN {
     printf ("  DLD-FUNCTIONS/%s.la%s", basename, sep);
   }
   print "octlib_LTLIBRARIES += $(DLD_FUNCTIONS_LIBS)";
+  print ""
   print "if AMCOND_ENABLE_DYNAMIC_LINKING";
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];

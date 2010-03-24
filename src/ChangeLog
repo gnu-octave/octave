@@ -1,5 +1,9 @@
 2010-03-24  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/config-module.awk: Emit additions to EXTRA_DIST.
+
+2010-03-24  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am ($(srcdir)/DLD-FUNCTIONS/module.mk):
 	Remove doubled // from file name in rule.
 

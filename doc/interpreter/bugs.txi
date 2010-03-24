@@ -54,7 +54,7 @@ where people's opinions differ as to what is best.
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::              
 * Bug Criteria::                
-* Bug Lists::                   
+* Bug Tracker::                   
 * Bug Reporting::               
 * Sending Patches::             
 * Service::                     

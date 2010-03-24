@@ -1,3 +1,7 @@
+2010-03-24  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::add_to_fcn_map): Style fixes.
+
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* variables.cc (maybe_missing_function_hook): Don't call hook if

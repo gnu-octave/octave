@@ -1688,13 +1688,20 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
           else
             {
               // Warn if a built-in or library function is being shadowed.
+
               if (! file_info_list.empty ())
                 {
                   file_info& old = file_info_list.front ();
-                  if (sys_path.find (old.dir_name) != std::string::npos)
-                  if (in_path_list (sys_path, old.dir_name))
+
+                  // FIXME -- do we need to be more careful about the
+                  // way we look for old.dir_name in sys_path to avoid
+                  // partial matches?
+
+                  if (sys_path.find (old.dir_name) != std::string::npos
+                      && in_path_list (sys_path, old.dir_name))
                     {
                       std::string fcn_path = file_ops::concat (dir_name, fname);
+
                       warning_with_id ("Octave:shadowed-function",
                                        "function %s shadows a core library function", 
                                        fcn_path.c_str ());

@@ -58,7 +58,7 @@ function unimplemented (fcn)
     endif
   endswitch
 
-  txt = [txt, "\nPlease read @url{http://www.octave.org/missing.html}",...
+  txt = [txt, "\nPlease read @url{http://www.octave.org/missing.html} ",...
   "to find out how you can help with contributing missing functionality."];
 
   warning ("Octave:missing-function",["\n", __makeinfo__(txt)]);

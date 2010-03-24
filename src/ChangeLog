@@ -1,5 +1,10 @@
 2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
 
+	* variables.cc (maybe_missing_function_hook): Don't call hook if
+	errors are being handled.
+
+2010-03-24  Jaroslav Hajek  <highegg@gmail.com>
+
 	* variables.cc (Fmissing_function_hook): New pseudo-variable.
 	(Vmissing_function_hook): New static var.
 	(maybe_missing_function_hook): New function.

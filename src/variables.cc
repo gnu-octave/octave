@@ -2392,6 +2392,7 @@ called when an uknown identifier is requested.\n\
 
 void maybe_missing_function_hook (const std::string& name)
 {
-  if (! Vmissing_function_hook.empty ())
+  // Don't do this if we're handling errors.
+  if (buffer_error_messages == 0 && ! Vmissing_function_hook.empty ())
     feval (Vmissing_function_hook, octave_value (name));
 }

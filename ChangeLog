@@ -1,3 +1,7 @@
+2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* bootstrap.conf: Include roundf, trunc, truncf.
+
 2010-03-24  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_INIT): Version is now 3.3.51.

@@ -54,7 +54,7 @@ conj (double x)
 double
 fix (double x)
 {
-  return x > 0 ? floor (x) : ceil (x);
+  return gnulib::trunc (x);
 }
 
 double
@@ -72,38 +72,13 @@ real (double x)
 double
 xround (double x)
 {
-#if defined (HAVE_ROUND)
   return gnulib::round (x);
-#else
-  if (x >= 0)
-    {
-      double y = floor (x);
-
-      if ((x - y) >= 0.5)
-        y += 1.0;
-
-      return y;
-    }
-  else
-    {
-      double y = ceil (x);
-
-      if ((y - x) >= 0.5)
-        y -= 1.0;
-
-      return y;
-    }
-#endif
 }
 
 double
 xtrunc (double x)
 {
-#if defined (HAVE_TRUNC)
-  return trunc (x);
-#else
-  return x > 0 ? floor (x) : ceil (x);
-#endif
+  return gnulib::trunc (x);
 }
 
 double 
@@ -368,7 +343,7 @@ conj (float x)
 float
 fix (float x)
 {
-  return x > 0 ? floor (x) : ceil (x);
+  return gnulib::truncf (x);
 }
 
 float
@@ -386,38 +361,13 @@ real (float x)
 float
 xround (float x)
 {
-#if defined (HAVE_ROUND)
   return gnulib::round (x);
-#else
-  if (x >= 0)
-    {
-      float y = floor (x);
-
-      if ((x - y) >= 0.5)
-        y += 1.0;
-
-      return y;
-    }
-  else
-    {
-      float y = ceil (x);
-
-      if ((y - x) >= 0.5)
-        y -= 1.0;
-
-      return y;
-    }
-#endif
 }
 
 float
 xtrunc (float x)
 {
-#if defined (HAVE_TRUNC)
-  return trunc (x);
-#else
-  return x > 0 ? floor (x) : ceil (x);
-#endif
+  return gnulib::truncf (x);
 }
 
 float 

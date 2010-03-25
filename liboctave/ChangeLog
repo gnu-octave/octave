@@ -1,3 +1,13 @@
+2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-mappers.cc 
+	(fix (double)): Forward to gnulib::trunc.
+	(fix (float)): Forward to gnulib::truncf.
+	(xround (double)): Forward to gnulib::round.
+	(xround (float)): Forward to gnulib::roundf.
+	(xtrunc (double)): Forward to gnulib::trunc.
+	(xtrunc (float)): Forward to gnulib::truncf.
+
 2010-03-25  David Grundberg  <davidg@cs.umu.se>
 
 	* oct-time.h (octave_time): Revert ::modf to std::modf again now

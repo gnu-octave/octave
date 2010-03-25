@@ -98,6 +98,9 @@ endfunction
 %! m = int8 (256*rand (4, 5, 6, 7, 8));
 %! c = mat2cell (m, [1 2 1], [1 2 2], [3 1 1 1], [4 1 2], [3 1 4]);
 %! assert (cell2mat (c), m)
+%!test
+%! m = {1, 2, 3};
+%! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
 ## Demos
 %!demo
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};

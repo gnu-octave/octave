@@ -1,3 +1,7 @@
+2010-03-25  Ben Abbott <bpabbot@mac.com>
+
+	* /general/cell2mat.m: Add test for cells of cells.
+
 2010-03-24  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* plot/__go_draw_axes__.m: Unset logscale also for unused gnuplot

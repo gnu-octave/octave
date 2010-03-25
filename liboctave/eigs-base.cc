@@ -3554,7 +3554,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p);
+  Array<octave_idx_type> s (p, 1);
   octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);

@@ -1,3 +1,7 @@
+2010-03-25  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Sort the list.
+
 2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* bootstrap.conf: Include roundf, trunc, truncf.

@@ -1,3 +1,8 @@
+2010-03-25  David Grundberg  <davidg@cs.umu.se>
+
+	* oct-time.h (octave_time): Revert ::modf to std::modf again now
+	that cmath is included again.
+
 2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-math.h: Include both "math.h" and "cmath".

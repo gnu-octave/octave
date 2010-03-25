@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iostream>
-#include "stdio.h"
 
 #include "c-file-ptr-stream.h"
 

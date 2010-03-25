@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <list>
 #include <string>
-#include "string.h"
 
 #include "sysdir.h"
 

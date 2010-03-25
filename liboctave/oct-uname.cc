@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cerrno>
-#include "string.h"
+#include <cstring>
 
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>

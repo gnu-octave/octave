@@ -1,3 +1,8 @@
+2010-03-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy, oct-fstrm.cc, mex.cc, input.cc,
+	c-file-ptr-stream.cc: Revert changes from 2010-03-24.
+
 2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* kron.cc (Fkron): Completely rewrite.

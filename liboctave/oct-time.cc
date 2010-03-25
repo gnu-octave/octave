@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <climits>
-#include "time.h"
+#include <ctime>
 
 #include <sys/time.h>
 #include <sys/types.h>

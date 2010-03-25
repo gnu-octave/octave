@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
-#include "stdio.h"
-#include "stdlib.h"
+#include <cstdio>
+#include <cstdlib>
 
 #include <iostream>
 #include <map>

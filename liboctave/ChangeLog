@@ -1,3 +1,9 @@
+2010-03-25  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc, file-ops.cc, lo-math.h, lo-utils.cc, oct-env.cc,
+	dir-ops.cc, file-stat.cc, cmd-hist.cc, oct-time.cc, oct-time.h,
+	oct-uname.cc: Revert changes from 2010-03-24 and 2010-03-25.
+
 2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lo-mappers.cc 

@@ -43,7 +43,7 @@ Free Software Foundation, Inc.
 
 #include <cctype>
 #include <cstdlib>
-#include "string.h"
+#include <cstring>
 
 #include <string>
 

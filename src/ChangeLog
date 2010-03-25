@@ -1,3 +1,7 @@
+2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* kron.cc (Fkron): Completely rewrite.
+
 2010-03-24  John W. Eaton  <jwe@octave.org>
 
 	* version.h.in (OCTAVE_BUGS_STATEMENT): Point to

@@ -63,7 +63,7 @@ glps_renderer::draw (const graphics_object& go)
           state = gl2psEndPage ();
         }
 
-      fclose (fp);
+      gnulib::fclose (fp);
 
       in_draw = 0;
     }

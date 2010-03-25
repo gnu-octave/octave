@@ -1,3 +1,7 @@
+2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-math.h: Include both "math.h" and "cmath".
+
 2010-03-24  David Grundberg  <davidg@cs.umu.se>
 
 	* cmd-edit.cc: Include gnulib stdlib.h/string.h instead of C++

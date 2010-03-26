@@ -1,3 +1,8 @@
+2010-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* variables.cc (maybe_missing_function_hook): Temporarily clear before
+	executing the hook to avoid recursive calls.
+
 2010-03-25  John W. Eaton  <jwe@octave.org>
 
 	* gl2ps-renderer.cc (glps_renderer::draw): Tag call to fclose

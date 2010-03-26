@@ -1,3 +1,9 @@
+2010-03-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (Sparse<T>::index (const idx_vector&, const idx_vector&, bool)):
+	Specialize for contiguous row range, row permutation, and implement
+	general case through double index-transpose.
+
 2010-03-25  John W. Eaton  <jwe@octave.org>
 
 	* eigs-base.cc (EigsComplexNonSymmetricFunc): Avoid warning

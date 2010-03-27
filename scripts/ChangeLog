@@ -1,3 +1,7 @@
+2010-03-27  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Provide default suffixes & validate hardcopy format.
+
 2010-03-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/fzero.m: Handle the breakdown if initial bracketing

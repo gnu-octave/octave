@@ -24,7 +24,9 @@
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a graph, or save it to a file
 ##
-## @var{filename} defines the file name of the output file.  If no
+## @var{filename} defines the file name of the output file.  If the
+## file name has no suffix, one is inferred from the specified
+## device and appended to the file name.  If no
 ## filename is specified, the output is sent to the printer.
 ##
 ## @var{h} specifies the figure handle.  If no handle is specified
@@ -298,8 +300,8 @@ function print (varargin)
       name = printname;
     endif
 
+    dot = rindex (name, ".");
     if (isempty (devopt))
-      dot = rindex (name, ".");
       if (dot == 0)
         error ("print: no format specified");
       else
@@ -307,6 +309,21 @@ function print (varargin)
       endif
     else
       dev = devopt;
+    endif
+
+    dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
+                "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
+                "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
+                "epsc", "epsc2", "emf", "pdf", "pslatex", ...
+                "epslatex", "epslatexstandalone", "pstex", "tikz"};
+    suffixes = {"ai", "cdr", "fig", "png", "jpeg", ...
+                "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
+                "ps", "ps", "ps", "ps", "eps", "eps", ...
+                "eps", "eps", "emf", "pdf", "tex", ...
+                "tex", "tex", "tex", "tikz"};
+    if (dot == 0)
+      name = strcat (name, ".", suffixes {strcmpi (dev_list, dev)});
+      dot = rindex (name, ".");
     endif
 
     if (append_to_file)
@@ -325,10 +342,6 @@ function print (varargin)
 
     if (strcmp (dev, "tex"))
       dev = "epslatex";
-      ## gnuplot 4.0 wants ".eps" in the output name    
-      if (! __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
-        name = cstrcat (name(1:dot), "eps");
-      endif
     elseif (strcmp (dev, "ill"))
       dev = "aifm";
     elseif (strcmp (dev, "cdr"))
@@ -339,13 +352,15 @@ function print (varargin)
       dev = "jpeg";
     endif
 
+    if (strcmp (dev, "epslatex"))
+      ## gnuplot 4.0 wants ".eps" in the output name    
+      if (! __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
+        name = cstrcat (name(1:dot), "eps");
+      endif
+    endif
+
     ## Check if the specified device is one that is supported by gnuplot.
     ## If not, assume it is a device/format supported by Ghostscript.
-    dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
-                "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
-                "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
-                "epsc", "epsc2", "emf", "pdf", "pslatex", ...
-                "epslatex", "epslatexstandalone", "pstex", "tikz"};
     if (! any (strcmp (dev, dev_list)) && have_ghostscript)
       ghostscript_output = name;
       ghostscript_device = dev;
@@ -358,6 +373,11 @@ function print (varargin)
         dev = "epsc";
         name = cstrcat (tmpnam, ".eps");
       endif
+    elseif (doprint && all (! strcmpi (suffixes {strcmpi (dev_list, dev)}, 
+                                       {"ps", "eps", "hpgl"})))
+      ## When not using Ghostscript, verify the format is compatible with
+      ## hard copy output.
+      error ("print: missing file name, or invalid print format.");
     else
       ghostscript_output = "";
     endif

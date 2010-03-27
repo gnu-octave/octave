@@ -427,6 +427,26 @@ case "$canonical_host_type" in
   ;;
 esac
 
+## Test whether the compiler supports OpenMP. Experimental so disable by 
+## default. Enable it with the flag --enable-openmp
+USE_OPENMP=false
+AC_ARG_ENABLE(openmp,
+  [AS_HELP_STRING([--enable-openmp],
+     [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
+  [if test "$enableval" = yes; then USE_OPENMP=true; fi], [])
+if $USE_OPENMP; then
+  case "$canonical_host_type" in
+    *-*-mingw* | *-*-cygwin* | *-*-gnu*)
+    OCTAVE_CHECK_OPENMP(-fopenmp)
+    ;;
+    *-*-msdosmsvc)
+    ## FIXME is this the right flag for MSVC?
+    OCTAVE_CHECK_OPENMP(-openmp)
+    ;;
+    ## Add other compilers supporting OpenMP here
+  esac
+fi
+
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
 
@@ -2310,6 +2330,19 @@ if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([variable on the configure command line.  You must also])
   AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
   AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
+  AC_MSG_WARN([])
+  warn_msg_printed=true
+fi
+
+if $USE_OPENMP; then
+  AC_MSG_WARN([])
+  AC_MSG_WARN([You used the EXPERIMENTAL --enable-openmp option.])
+  AC_MSG_WARN([Are you sure that is what you want to do?])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([This option enables experimental SMP multithreding])
+  AC_MSG_WARN([code that has had very little testing. There is no])
+  AC_MSG_WARN([certainity that the results returned by Octave with])
+  AC_MSG_WARN([this option enabled will be correct.])
   AC_MSG_WARN([])
   warn_msg_printed=true
 fi

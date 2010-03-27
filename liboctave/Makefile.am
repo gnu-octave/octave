@@ -223,6 +223,7 @@ INCS = \
   oct-mem.h \
   oct-mutex.h \
   oct-norm.h \
+  oct-openmp.h \
   oct-passwd.h \
   oct-rand.h \
   oct-rl-edit.h \

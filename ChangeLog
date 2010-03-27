@@ -1,3 +1,8 @@
+2010-03-27  David Bateman  <dbateman@free.fr>
+
+	* acinclude.m4 (OCTAVE_CHECK_OPENMP): Macro to check for OpenMP support
+	* configure.ac: Use it here. Disable OpenMP support by default
+
 2010-03-25  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Sort the list.

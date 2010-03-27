@@ -1065,6 +1065,35 @@ if test $octave_cv_glutesscallback_threedots = "yes"; then
 fi
 ])
 dnl
+dnl Check for support of OpenMP with a given compiler flag. If
+dnl found define HAVE_OPENMP and add the compile flag to CFLAGS
+dnl and CXXFLAGS.
+dnl
+AC_DEFUN([OCTAVE_CHECK_OPENMP],
+[AC_MSG_CHECKING([for support of OpenMP])
+XCFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $1"
+AC_CACHE_VAL(octave_cv_check_openmp,[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <omp.h>
+#include <stdio.h>
+]], [[
+int main(int argc, char* argv[])
+{
+  _Pragma("omp parallel")  
+  printf("Hello, world.\n");
+  return 0;
+}
+]])],octave_cv_openmp=yes, octave_cv_openmmp=no, octave_cv_openmp=no)])
+AC_MSG_RESULT($octave_cv_openmp)
+if test "$octave_cv_openmp" = yes; then
+  AC_DEFINE(HAVE_OPENMP,1,[Define if compiler supports OpenMP])
+  CXXFLAGS="$CXXFLAGS $1"
+else
+  CFLAGS="$XCFLAGS"
+fi
+])
+dnl
 dnl Configure paths for FreeType2
 dnl Marcelo Magallon 2001-10-26, based on gtk.m4 by Owen Taylor
 dnl

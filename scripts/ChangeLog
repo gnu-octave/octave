@@ -1,5 +1,6 @@
-2010-03-27  Ben Abbott <bpabbott@mac.com>
+2010-03-27  Ben Abbott <bpabbot@mac.com>
 
+	* plot/__go_draw_figure__.m: Untabify.
 	* plot/print.m: Provide default suffixes & validate hardcopy format.
 
 2010-03-27  Jaroslav Hajek  <highegg@gmail.com>

@@ -39,25 +39,25 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
       ## When printing, set paperunits to inches and rely on a listener to convert
       ## the values for papersize and paperposition.
       if (output_to_paper)
-	orig_paper_units = get (h, "paperunits");
-	gpval_term = __gnuplot_get_var__ (h, "GPVAL_TERM");
-	gpval_termoptions = __gnuplot_get_var__ (h, "GPVAL_TERMOPTIONS");
-	unwind_protect
-	  set (h, "paperunits", "inches");
+        orig_paper_units = get (h, "paperunits");
+        gpval_term = __gnuplot_get_var__ (h, "GPVAL_TERM");
+        gpval_termoptions = __gnuplot_get_var__ (h, "GPVAL_TERMOPTIONS");
+        unwind_protect
+          set (h, "paperunits", "inches");
           paper_size = get (h, "papersize");
           paper_position = get (h, "paperposition");
           paper_position = paper_position ./ paper_size([1, 2, 1, 2]);
-	  implicit_margin = implicit_margin ./ paper_size;
-	unwind_protect_cleanup
-	  set (h, "paperunits", orig_paper_units);
-	end_unwind_protect
-	if (strcmp (gpval_term, "postscript")
-	    && ! isempty (strfind (gpval_termoptions, "landscape")))
-	  ## This needed to obtain the expected result.
-	  implicit_margin(2) = -implicit_margin(2);
-	endif
+          implicit_margin = implicit_margin ./ paper_size;
+        unwind_protect_cleanup
+          set (h, "paperunits", orig_paper_units);
+        end_unwind_protect
+        if (strcmp (gpval_term, "postscript")
+            && ! isempty (strfind (gpval_termoptions, "landscape")))
+          ## This needed to obtain the expected result.
+          implicit_margin(2) = -implicit_margin(2);
+        endif
       else
-	implicit_margin = implicit_margin * [1 1];
+        implicit_margin = implicit_margin * [1 1];
       endif
 
       ## Get complete list of children.
@@ -65,10 +65,10 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
       nkids = length (kids);
 
       if (nkids > 0)
-	fputs (plot_stream, "\nreset;\n");
-	fputs (plot_stream, "set autoscale keepfix;\n");
-	fputs (plot_stream, "set origin 0, 0\n");
-	fputs (plot_stream, "set size 1, 1\n");
+        fputs (plot_stream, "\nreset;\n");
+        fputs (plot_stream, "set autoscale keepfix;\n");
+        fputs (plot_stream, "set origin 0, 0\n");
+        fputs (plot_stream, "set size 1, 1\n");
         bg = get (h, "color");
         if (isnumeric (bg))
           fprintf (plot_stream, "set obj 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * bg);
@@ -76,15 +76,15 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
         else
           bg_is_set = false;
         endif
-	for i = nkids:-1:1
-	  type = get (kids(i), "type");
-	  switch (type)
-	    case "axes"
-	      ## Rely upon listener to convert axes position to "normalized" units.
-	      orig_axes_units = get (kids(i), "units");
-	      orig_axes_position = get (kids(i), "position");
-	      unwind_protect
-		set (kids(i), "units", "normalized");
+        for i = nkids:-1:1
+          type = get (kids(i), "type");
+          switch (type)
+            case "axes"
+              ## Rely upon listener to convert axes position to "normalized" units.
+              orig_axes_units = get (kids(i), "units");
+              orig_axes_position = get (kids(i), "position");
+              unwind_protect
+                set (kids(i), "units", "normalized");
                 fg = get (kids(i), "color");
                 if (isnumeric (fg))
                   fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
@@ -92,18 +92,18 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
                 else
                   fg_is_set = false;
                 endif
-		if (output_to_paper)
-		  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
-		  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
-		  set (kids(i), "position", axes_position_on_page);
-		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
-		else
-		  ## Return axes "units" and "position" back to their original values.
-		  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
-		endif
-		unwind_protect_cleanup
-		set (kids(i), "units", orig_axes_units);
-		set (kids(i), "position", orig_axes_position);
+                if (output_to_paper)
+                  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
+                  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
+                  set (kids(i), "position", axes_position_on_page);
+                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+                else
+                  ## Return axes "units" and "position" back to their original values.
+                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+                endif
+                unwind_protect_cleanup
+                set (kids(i), "units", orig_axes_units);
+                set (kids(i), "position", orig_axes_position);
                 if (fg_is_set)
                   fputs (plot_stream, "unset obj 2\n");
                 endif
@@ -111,19 +111,19 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
                   fputs (plot_stream, "unset obj 1\n");
                   bg_is_set = false;
                 endif
-	      end_unwind_protect
-	    otherwise
-	      error ("__go_draw_figure__: unknown object class, %s", type);
-	  endswitch
-	endfor
-	fputs (plot_stream, "\nunset multiplot;\n");
+              end_unwind_protect
+            otherwise
+              error ("__go_draw_figure__: unknown object class, %s", type);
+          endswitch
+        endfor
+        fputs (plot_stream, "\nunset multiplot;\n");
       else
-	fputs (plot_stream, "\nreset; clear;\n");
-	fflush (plot_stream);
+        fputs (plot_stream, "\nreset; clear;\n");
+        fflush (plot_stream);
       endif
     else
       error ("__go_draw_figure__: expecting figure object, found `%s'",
-	     htype);
+             htype);
     endif
   else
     print_usage ();

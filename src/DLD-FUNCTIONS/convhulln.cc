@@ -41,13 +41,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "parse.h"
 
+#ifdef HAVE_QHULL
 extern "C" {
 #include <qhull/qhull_a.h>
 }
 
-#if defined (HAVE_QHULL) && defined (NEED_QHULL_VERSION)
+# ifdef NEED_QHULL_VERSION
 char qh_version[] = "convhulln.oct 2007-07-24";
-#endif
+# endif
+#endif /* HAVE_QHULL */
 
 DEFUN_DLD (convhulln, args, nargout,
   "-*- texinfo -*-\n\
@@ -232,11 +234,11 @@ calculated.\n\n\
 }
 
 /*
-%!test
+%!testif HAVE_QHULL
 %! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];
 %! [h, v] = convhulln(cube,'Pp');
 %! assert (v, 1.0, 1e6*eps);
-%!test
+%!testif HAVE_QHULL
 %! tetrahedron = [1 1 1;-1 -1 1;-1 1 -1;1 -1 -1];
 %! [h, v] = convhulln(tetrahedron,'Pp');
 %! assert (v, 8/3, 1e6*eps);

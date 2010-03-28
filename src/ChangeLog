@@ -1,3 +1,8 @@
+2010-03-28  David Grundberg  <davidg@cs.umu.se>
+
+	* DLD-FUNCTIONS/convhulln.cc [HAVE_QHULL]: Neither include
+	qhull/qhull_a.h nor run tests if unless we HAVE_QHULL.
+
 2010-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* variables.cc (maybe_missing_function_hook): Temporarily clear before

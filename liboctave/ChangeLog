@@ -1,3 +1,8 @@
+2010-03-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::raw): New method.
+	* idx-vector.h: Declare it.
+
 2010-03-27  David Bateman  <dbateman@free.fr>
 
 	* oct-openmp.h: New file.

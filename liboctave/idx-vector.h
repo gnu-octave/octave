@@ -982,6 +982,10 @@ public:
                   Array<double>& array, Array<bool>& mask) const;
 
   Array<octave_idx_type> as_array (void) const;
+
+  // Raw pointer to index array.  This is non-const because it may be necessary
+  // to mutate the index.
+  const octave_idx_type *raw (void);
     
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.

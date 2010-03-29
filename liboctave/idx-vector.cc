@@ -990,6 +990,17 @@ idx_vector::increment (void) const
   return retval;
 }
 
+const octave_idx_type *
+idx_vector::raw (void)
+{
+  if (rep->idx_class () != class_vector)
+    *this = as_array ();
+
+  idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
+  assert (r != 0);
+  return r->get_data ();
+}
+
 void
 idx_vector::copy_data (octave_idx_type *data) const
 {

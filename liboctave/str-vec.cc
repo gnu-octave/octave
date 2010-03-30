@@ -80,10 +80,13 @@ string_vector::string_vector (const char * const *s)
 {
   octave_idx_type n = 0;
 
-  const char * const *t = s;
+  if (s)
+    {
+      const char * const *t = s;
 
-  while (*t++)
-    n++;
+      while (*t++)
+        n++;
+    }
 
   resize (n);
 

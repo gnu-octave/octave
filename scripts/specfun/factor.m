@@ -62,8 +62,7 @@ function [x, m] = factor (n)
   p = primes (sqrt (n));
   while (n > 1)
     ## Find prime factors in remaining n.
-    q = n ./ p;
-    p = p (q == fix (q));
+    p = p (rem (n, p) == 0);
     if (isempty (p))
       ## Can't be reduced further, so n must itself be a prime.
       p = n;

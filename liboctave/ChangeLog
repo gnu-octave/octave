@@ -2,6 +2,7 @@
 
 	* str-vec.cc (string_vector::string_vector (const char * const *)): 
 	Create empty string_vector object if arg is NULL.
+	Fixes bug #29386.
 
 2010-03-29  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -89,6 +89,11 @@ public:
                                 octave_idx_type nc = -1, bool sum_terms = true)
     : MSparse<Complex> (a, r, c, nr, nc, sum_terms) { }
 
+  SparseComplexMatrix (const Array<Complex>& a, const idx_vector& r, 
+                       const idx_vector& c, octave_idx_type nr = -1, 
+                       octave_idx_type nc = -1, bool sum_terms = true)
+    : MSparse<Complex> (a, r, c, nr, nc, sum_terms) { }
+
   explicit SparseComplexMatrix (const SparseMatrix& a);
 
   explicit SparseComplexMatrix (const SparseBoolMatrix& a);

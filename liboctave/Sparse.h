@@ -223,6 +223,9 @@ public:
   Sparse (const Array<T>& a, const Array<double>& r, const Array<double>& c,
           octave_idx_type nr, octave_idx_type nc, bool sum_terms);
 
+  Sparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
+          octave_idx_type nr = -1, octave_idx_type nc = -1, bool sum_terms = true);
+
   // Sparsify a normal matrix
   Sparse (const Array<T>& a);
 

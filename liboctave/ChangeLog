@@ -1,3 +1,11 @@
+2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::idx_range_rep::as_array): Fix typo.
+	(idx_vector::raw): Use unchecked constructor.
+	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&, const idx_vector&,
+	const idx_vector&, ...)): New ctor.
+	* Sparse.h: Declare it.
+
 2010-03-30  John W. Eaton  <jwe@octave.org>
 
 	* str-vec.cc (string_vector::string_vector (const char * const *)): 

@@ -215,7 +215,7 @@ idx_vector::idx_range_rep::as_array (void)
 {
   Array<octave_idx_type> retval (dim_vector (1, len));
   for (octave_idx_type i = 0; i < len; i++)
-    retval.xelem (i) = start + len*step;
+    retval.xelem (i) = start + i*step;
 
   return retval;
 }
@@ -994,7 +994,7 @@ const octave_idx_type *
 idx_vector::raw (void)
 {
   if (rep->idx_class () != class_vector)
-    *this = as_array ();
+    *this = idx_vector (as_array (), extent (0));
 
   idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
   assert (r != 0);

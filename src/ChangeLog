@@ -1,3 +1,7 @@
+2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sparse.cc (Fsparse): Rewrite.
+
 2010-03-28  David Grundberg  <davidg@cs.umu.se>
 
 	* DLD-FUNCTIONS/convhulln.cc [HAVE_QHULL]: Neither include

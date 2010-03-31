@@ -55,16 +55,6 @@ public:
 
   explicit SparseBoolMatrix (const boolNDArray& a) : Sparse<bool> (a) { }
 
-  explicit SparseBoolMatrix (const Array<bool> a, const Array<octave_idx_type>& r, 
-                             const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
-                             octave_idx_type nc = -1, bool sum_terms = true)
-    : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
-
-  explicit SparseBoolMatrix (const Array<bool> a, const Array<double>& r, 
-                             const Array<double>& c, octave_idx_type nr = -1, 
-                             octave_idx_type nc = -1, bool sum_terms = true)
-    : Sparse<bool> (a, r, c, nr, nc, sum_terms) { }
-
   SparseBoolMatrix (const Array<bool>& a, const idx_vector& r, 
                     const idx_vector& c, octave_idx_type nr = -1, 
                     octave_idx_type nc = -1, bool sum_terms = true)

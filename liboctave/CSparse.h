@@ -78,17 +78,6 @@ public:
   explicit SparseComplexMatrix (const ComplexNDArray& a) 
     : MSparse<Complex> (a) { }
 
-  explicit SparseComplexMatrix (const Array<Complex> a, const Array<octave_idx_type>& r, 
-                         const Array<octave_idx_type>& c, octave_idx_type nr = -1, 
-                         octave_idx_type nc = -1, bool sum_terms = true)
-    : MSparse<Complex> (a, r, c, nr, nc, sum_terms) { }
-
-  explicit SparseComplexMatrix (const Array<Complex> a, 
-                                const Array<double>& r, 
-                                const Array<double>& c, octave_idx_type nr = -1, 
-                                octave_idx_type nc = -1, bool sum_terms = true)
-    : MSparse<Complex> (a, r, c, nr, nc, sum_terms) { }
-
   SparseComplexMatrix (const Array<Complex>& a, const idx_vector& r, 
                        const idx_vector& c, octave_idx_type nr = -1, 
                        octave_idx_type nc = -1, bool sum_terms = true)

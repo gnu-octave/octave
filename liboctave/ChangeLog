@@ -1,5 +1,17 @@
 2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&,
+	const Array<octave_idx_type>&, ...), Sparse<T>::Sparse (const Array<T>&,
+	const Array<double>&, ...)):
+	Remove old constructors.
+	* Sparse.h: Ditto.
+	* MSparse.h: Ditto.
+	* dSparse.h: Ditto.
+	* CSparse.h: Ditto.
+	* boolSparse.h: Ditto.
+
+2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
+
 	* idx-vector.cc (idx_vector::idx_range_rep::as_array): Fix typo.
 	(idx_vector::raw): Use unchecked constructor.
 	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&, const idx_vector&,

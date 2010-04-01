@@ -1,3 +1,13 @@
+2010-04-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc: Declare all loops as throw (). Ditto for
+	corresponding applier arguments.
+	(do_mx_check): New applier.
+	(logical_value): Do not throw exceptions.
+	* mx-op-defs.h (SNANCHK, MNANCHK): New helper macros.
+	(MS_BOOL_OP, SM_BOOL_OP, MM_BOOL_OP, NDS_BOOL_OP, SND_BOOL_OP,
+	NDND_BOOL_OP): Use them here.
+
 2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&,

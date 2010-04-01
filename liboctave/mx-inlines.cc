@@ -41,26 +41,26 @@ along with Octave; see the file COPYING.  If not, see
 // Provides some commonly repeated, basic loop templates.
 
 template <class R, class S>
-inline void mx_inline_fill (size_t n, R *r, S s)
+inline void mx_inline_fill (size_t n, R *r, S s) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = s; }
 
 #define DEFMXUNOP(F, OP) \
 template <class R, class X> \
-inline void F (size_t n, R *r, const X *x) \
+inline void F (size_t n, R *r, const X *x) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = OP x[i]; }
 
 DEFMXUNOP (mx_inline_uminus, -)
 
 #define DEFMXUNOPEQ(F, OP) \
 template <class R> \
-inline void F (size_t n, R *r) \
+inline void F (size_t n, R *r) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = OP r[i]; }
 
 DEFMXUNOPEQ (mx_inline_uminus2, -)
 
 #define DEFMXUNBOOLOP(F, OP) \
 template <class X> \
-inline void F (size_t n, bool *r, const X *x) \
+inline void F (size_t n, bool *r, const X *x) throw () \
 { const X zero = X(); for (size_t i = 0; i < n; i++) r[i] = x[i] OP zero; }
 
 DEFMXUNBOOLOP (mx_inline_iszero, ==)
@@ -68,13 +68,13 @@ DEFMXUNBOOLOP (mx_inline_notzero, !=)
 
 #define DEFMXBINOP(F, OP) \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, const X *x, const Y *y) \
+inline void F (size_t n, R *r, const X *x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x[i] OP y[i]; } \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, const X *x, Y y) \
+inline void F (size_t n, R *r, const X *x, Y y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x[i] OP y; } \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, X x, const Y *y) \
+inline void F (size_t n, R *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x OP y[i]; }
 
 DEFMXBINOP (mx_inline_add, +)
@@ -84,10 +84,10 @@ DEFMXBINOP (mx_inline_div, /)
 
 #define DEFMXBINOPEQ(F, OP) \
 template <class R, class X> \
-inline void F (size_t n, R *r, const X *x) \
+inline void F (size_t n, R *r, const X *x) throw () \
 { for (size_t i = 0; i < n; i++) r[i] OP x[i]; } \
 template <class R, class X> \
-inline void F (size_t n, R *r, X x) \
+inline void F (size_t n, R *r, X x) throw () \
 { for (size_t i = 0; i < n; i++) r[i] OP x; }
 
 DEFMXBINOPEQ (mx_inline_add2, +=)
@@ -97,13 +97,13 @@ DEFMXBINOPEQ (mx_inline_div2, /=)
 
 #define DEFMXCMPOP(F, OP) \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, const X *x, const Y *y) \
+inline void F (size_t n, bool *r, const X *x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x[i] OP y[i]; } \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, const X *x, Y y) \
+inline void F (size_t n, bool *r, const X *x, Y y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x[i] OP y; } \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, X x, const Y *y) \
+inline void F (size_t n, bool *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = x OP y[i]; }
 
 DEFMXCMPOP (mx_inline_lt, <)
@@ -115,48 +115,39 @@ DEFMXCMPOP (mx_inline_ne, !=)
 
 // Convert to logical value, for logical op purposes.
 template <class T> inline bool logical_value (T x) { return x; }
+template <class T> inline bool logical_value (const std::complex<T>& x) 
+{ return x.real () != 0 && x.imag () != 0; }
 template <class T> inline bool logical_value (const octave_int<T>& x) 
 { return x.value (); }
 
-// NaNs in real data should generate an error. Doing it on-the-fly is faster.
-
-#define DEFLOGCHKNAN(ARG, ZERO) \
-inline bool logical_value (ARG x) \
-{ if (xisnan (x)) gripe_nan_to_logical_conversion (); return x != ZERO; }
-
-DEFLOGCHKNAN (double, 0.0)
-DEFLOGCHKNAN (const Complex&, 0.0)
-DEFLOGCHKNAN (float, 0.0f)
-DEFLOGCHKNAN (const FloatComplex&, 0.0f)
-
 template <class X>
-void mx_inline_not (size_t n, bool *r, const X* x)
+void mx_inline_not (size_t n, bool *r, const X* x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
 }
 
-inline void mx_inline_not2 (size_t n, bool *r)
+inline void mx_inline_not2 (size_t n, bool *r) throw ()
 {
   for (size_t i = 0; i < n; i++) r[i] = ! r[i];
 }
 
 #define DEFMXBOOLOP(F, NOT1, OP, NOT2) \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, const X *x, const Y *y) \
+inline void F (size_t n, bool *r, const X *x, const Y *y) throw () \
 { \
   for (size_t i = 0; i < n; i++) \
     r[i] = (NOT1 logical_value (x[i])) OP (NOT2 logical_value (y[i])); \
 } \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, const X *x, Y y) \
+inline void F (size_t n, bool *r, const X *x, Y y) throw () \
 { \
   const bool yy = (NOT2 logical_value (y)); \
   for (size_t i = 0; i < n; i++) \
     r[i] = (NOT1 logical_value (x[i])) OP yy; \
 } \
 template <class X, class Y> \
-inline void F (size_t n, bool *r, X x, const Y *y) \
+inline void F (size_t n, bool *r, X x, const Y *y) throw () \
 { \
   const bool xx = (NOT1 logical_value (x)); \
   for (size_t i = 0; i < n; i++) \
@@ -172,7 +163,7 @@ DEFMXBOOLOP (mx_inline_or_not, , |, !)
 
 #define DEFMXBOOLOPEQ(F, OP) \
 template <class X> \
-inline void F (size_t n, bool *r, const X *x) \
+inline void F (size_t n, bool *r, const X *x) throw () \
 { \
   for (size_t i = 0; i < n; i++) \
     r[i] OP logical_value (x[i]); \
@@ -183,7 +174,7 @@ DEFMXBOOLOPEQ (mx_inline_or2, |=)
 
 template <class T> 
 inline bool 
-mx_inline_any_nan (size_t n, const T* x) 
+mx_inline_any_nan (size_t n, const T* x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -196,7 +187,7 @@ mx_inline_any_nan (size_t n, const T* x)
 
 template <class T> 
 inline bool 
-mx_inline_any_negative (size_t n, const T* x) 
+mx_inline_any_negative (size_t n, const T* x) throw () 
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -209,7 +200,7 @@ mx_inline_any_negative (size_t n, const T* x)
 
 template<class T>
 inline bool 
-mx_inline_all_real (size_t n, const std::complex<T>* x)
+mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -222,26 +213,26 @@ mx_inline_all_real (size_t n, const std::complex<T>* x)
 
 #define DEFMXMAPPER(F, FUN) \
 template <class T> \
-inline void F (size_t n, T *r, const T *x) \
+inline void F (size_t n, T *r, const T *x) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i]); }
 
 template<class T>
-inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x)
+inline void mx_inline_real (size_t n, T *r, const std::complex<T>* x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = x[i].real (); }
 template<class T>
-inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x)
+inline void mx_inline_imag (size_t n, T *r, const std::complex<T>* x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = x[i].imag (); }
 
 // Pairwise minimums/maximums
 #define DEFMXMAPPER2(F, FUN) \
 template <class T> \
-inline void F (size_t n, T *r, const T *x, const T *y) \
+inline void F (size_t n, T *r, const T *x, const T *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
 template <class T> \
-inline void F (size_t n, T *r, const T *x, T y) \
+inline void F (size_t n, T *r, const T *x, T y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
 template <class T> \
-inline void F (size_t n, T *r, T x, const T *y) \
+inline void F (size_t n, T *r, T x, const T *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
 DEFMXMAPPER2 (mx_inline_xmin, xmin)
@@ -250,7 +241,7 @@ DEFMXMAPPER2 (mx_inline_xmax, xmax)
 // Specialize array-scalar max/min
 #define DEFMINMAXSPEC(T, F, OP) \
 template <> \
-inline void F<T> (size_t n, T *r, const T *x, T y) \
+inline void F<T> (size_t n, T *r, const T *x, T y) throw () \
 { \
   if (xisnan (y)) \
     std::memcpy (r, x, n * sizeof (T)); \
@@ -258,7 +249,7 @@ inline void F<T> (size_t n, T *r, const T *x, T y) \
     for (size_t i = 0; i < n; i++) r[i] = (x[i] OP y) ? x[i] : y; \
 } \
 template <> \
-inline void F<T> (size_t n, T *r, T x, const T *y) \
+inline void F<T> (size_t n, T *r, T x, const T *y) throw () \
 { \
   if (xisnan (x)) \
     std::memcpy (r, y, n * sizeof (T)); \
@@ -274,13 +265,13 @@ DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 // Pairwise power
 #define DEFMXMAPPER2X(F, FUN) \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, const X *x, const Y *y) \
+inline void F (size_t n, R *r, const X *x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y[i]); } \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, const X *x, Y y) \
+inline void F (size_t n, R *r, const X *x, Y y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x[i], y); } \
 template <class R, class X, class Y> \
-inline void F (size_t n, R *r, X x, const Y *y) \
+inline void F (size_t n, R *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
 DEFMXMAPPER2X (mx_inline_pow, std::pow)
@@ -288,11 +279,11 @@ DEFMXMAPPER2X (mx_inline_pow, std::pow)
 // Arbitrary function appliers. The function is a template parameter to enable
 // inlining.
 template <class R, class X, R fun (X x)>
-inline void mx_inline_map (size_t n, R *r, const X *x)
+inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
 
 template <class R, class X, R fun (const X& x)>
-inline void mx_inline_map (size_t n, R *r, const X *x)
+inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 { for (size_t i = 0; i < n; i++) r[i] = fun (x[i]); }
 
 // Appliers. Since these call the operation just once, we pass it as
@@ -301,7 +292,7 @@ inline void mx_inline_map (size_t n, R *r, const X *x)
 template <class R, class X>
 inline Array<R> 
 do_mx_unary_op (const Array<X>& x,
-                void (*op) (size_t, R *, const X *))
+                void (*op) (size_t, R *, const X *) throw ())
 {
   Array<R> r (x.dims ());
   op (r.numel (), r.fortran_vec (), x.data ());
@@ -327,7 +318,7 @@ do_mx_unary_map (const Array<X>& x)
 template <class R>
 inline Array<R>&
 do_mx_inplace_op (Array<R>& r,
-                  void (*op) (size_t, R *))
+                  void (*op) (size_t, R *) throw ())
 {
   op (r.numel (), r.fortran_vec ());
   return r;
@@ -337,7 +328,7 @@ do_mx_inplace_op (Array<R>& r,
 template <class R, class X, class Y>
 inline Array<R> 
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, const X *, const Y *),
+                 void (*op) (size_t, R *, const X *, const Y *) throw (),
                  const char *opname)
 {
   dim_vector dx = x.dims (), dy = y.dims ();
@@ -357,7 +348,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
 template <class R, class X, class Y>
 inline Array<R> 
 do_ms_binary_op (const Array<X>& x, const Y& y,
-                 void (*op) (size_t, R *, const X *, Y))
+                 void (*op) (size_t, R *, const X *, Y) throw ())
 {
   Array<R> r (x.dims ());
   op (r.length (), r.fortran_vec (), x.data (), y);
@@ -367,7 +358,7 @@ do_ms_binary_op (const Array<X>& x, const Y& y,
 template <class R, class X, class Y>
 inline Array<R> 
 do_sm_binary_op (const X& x, const Array<Y>& y,
-                 void (*op) (size_t, R *, X, const Y *))
+                 void (*op) (size_t, R *, X, const Y *) throw ())
 {
   Array<R> r (y.dims ());
   op (r.length (), r.fortran_vec (), x, y.data ());
@@ -377,7 +368,7 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 template <class R, class X>
 inline Array<R>& 
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
-                  void (*op) (size_t, R *, const X *),
+                  void (*op) (size_t, R *, const X *) throw (),
                   const char *opname)
 {
   dim_vector dr = r.dims (), dx = x.dims ();
@@ -391,7 +382,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
 template <class R, class X>
 inline Array<R>& 
 do_ms_inplace_op (Array<R>& r, const X& x,
-                  void (*op) (size_t, R *, X))
+                  void (*op) (size_t, R *, X) throw ())
 {
   op (r.length (), r.fortran_vec (), x);
   return r;
@@ -399,7 +390,7 @@ do_ms_inplace_op (Array<R>& r, const X& x,
 
 template <class T1, class T2>
 inline bool
-mx_inline_equal (size_t n, const T1 *x, const T2 *y)
+mx_inline_equal (size_t n, const T1 *x, const T2 *y) throw ()
 {
   for (size_t i = 0; i < n; i++)
     if (x[i] != y[i])
@@ -407,9 +398,16 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y)
   return true;
 }
 
-// FIXME: Due to a performance defect in g++ (<= 4.3), std::norm is slow unless
-// ffast-math is on (not by default even with -O3). The following helper function
-// gives the expected straightforward implementation of std::norm.
+template <class T>
+inline bool
+do_mx_check (const Array<T>& a, 
+             bool (*op) (size_t, const T *) throw ())
+{
+  return op (a.numel (), a.data ());
+}
+
+// NOTE: we don't use std::norm because it typically does some heavyweight
+// magic to avoid underflows, which we don't need here.
 template <class T>
 inline T cabsq (const std::complex<T>& c) 
 { return c.real () * c.real () + c.imag () * c.imag (); }

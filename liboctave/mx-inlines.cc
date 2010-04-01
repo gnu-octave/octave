@@ -116,7 +116,7 @@ DEFMXCMPOP (mx_inline_ne, !=)
 // Convert to logical value, for logical op purposes.
 template <class T> inline bool logical_value (T x) { return x; }
 template <class T> inline bool logical_value (const std::complex<T>& x) 
-{ return x.real () != 0 && x.imag () != 0; }
+{ return x.real () != 0 || x.imag () != 0; }
 template <class T> inline bool logical_value (const octave_int<T>& x) 
 { return x.value (); }
 

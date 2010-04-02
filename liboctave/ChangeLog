@@ -1,3 +1,11 @@
+2010-04-02  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.cc (idx_vector::idx_vector (const Range&)):
+	Move here from idx-vector.h.  Allow non-integer values in ranges,
+	but warn by default (for Matlab compatibility).
+	* Array-util.h, Array-util.cc (gripe_invalid_index): New arg, ERR.
+	If ERR is false, generate warning instead of error.
+
 2010-04-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::maybe_delete_elements): Rewrite. Optimize for

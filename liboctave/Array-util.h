@@ -114,7 +114,7 @@ extern void OCTAVE_API gripe_index_out_of_range (int nd, int dim,
 extern void OCTAVE_API gripe_del_index_out_of_range (bool is1d, octave_idx_type iext, 
                                                      octave_idx_type ext);
 
-extern void OCTAVE_API gripe_invalid_index (void);
+extern void OCTAVE_API gripe_invalid_index (bool err = true);
 
 extern void OCTAVE_API gripe_invalid_resize (void);
 

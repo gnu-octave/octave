@@ -521,9 +521,7 @@ public:
 
   idx_vector (const Array<bool>& nda);
 
-  idx_vector (const Range& r) 
-    : rep (new idx_range_rep (r))
-    { chkerr (); }
+  idx_vector (const Range& r);
 
   idx_vector (const Sparse<bool>& nda) : rep (new idx_vector_rep (nda))
     { chkerr (); }

@@ -770,6 +770,23 @@ idx_vector::idx_vector (const Array<bool>& bnda)
     rep = new idx_mask_rep (bnda, nnz);
 }
 
+idx_vector::idx_vector (const Range& r)
+  : rep (0)
+{
+  if (r.nelem () > 0 && ! r.all_elements_are_ints ())
+    {
+      gripe_invalid_index (false);
+
+      Matrix m = r.matrix_value ();
+
+      rep = new idx_vector_rep (m.map (xround));
+    }
+  else
+    rep = new idx_range_rep (r);
+
+  chkerr ();
+}
+
 bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
                                octave_idx_type nj)
 {

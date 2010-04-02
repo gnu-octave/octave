@@ -1,3 +1,7 @@
+2010-04-02  Marc Vinyals  <mrc_timer@users.sourceforge.net>
+
+	* signal/arma_rnd.m: fix typo in test.
+
 2010-03-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* specfun/factor.m: Use rem to check divisibility.

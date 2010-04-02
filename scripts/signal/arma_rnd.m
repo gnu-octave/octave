@@ -47,7 +47,7 @@ function x = arma_rnd (a, b, v, t, n)
   if (nargin == 4)
     n = 100;
   elseif (nargin == 5)
-    if (!isscalar (t))
+    if (!isscalar (n))
       error ("arma_rnd: n must be a scalar");
     endif
   else

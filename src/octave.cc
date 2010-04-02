@@ -189,7 +189,7 @@ intern_argv (int argc, char **argv)
 
   symbol_table::mark_hidden (".nargin.");
 
-  if (argc > 1)
+  if (argc > 0)
     {
       octave_argv.resize (argc - 1);
 

@@ -1,3 +1,8 @@
+2010-04-02  Judd Storrs  <jstorrs@gmail.com>
+
+	* octave.cc (intern_argv): Truncate argv when script files are
+	run without command line parameters. Resolves bug #29423.
+
 2010-03-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sparse.cc (Fsparse): Rewrite.

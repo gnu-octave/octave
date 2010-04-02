@@ -93,12 +93,10 @@ private:
     virtual idx_base_rep *sort_idx (Array<octave_idx_type>&) = 0;
 
     // Checks whether the index is colon or a range equivalent to colon.
-    virtual bool is_colon_equiv (octave_idx_type) const
-      { return false; }
+    virtual bool is_colon_equiv (octave_idx_type) const { return false; }
 
     // The original dimensions of this object (used when subscribing by matrices).
-    virtual dim_vector orig_dimensions (void) const
-      { return dim_vector (); }
+    virtual dim_vector orig_dimensions (void) const { return dim_vector (); }
 
     // i/o
     virtual std::ostream& print (std::ostream& os) const = 0;
@@ -123,26 +121,22 @@ private:
 
     idx_colon_rep (char c);
 
-    octave_idx_type xelem (octave_idx_type i) const
-      { return i; }
+    octave_idx_type xelem (octave_idx_type i) const { return i; }
 
     octave_idx_type checkelem (octave_idx_type i) const;
 
-    octave_idx_type length (octave_idx_type n) const
-      { return n; }
+    octave_idx_type length (octave_idx_type n) const { return n; }
 
-    octave_idx_type extent (octave_idx_type n) const
-      { return n; }
+    octave_idx_type extent (octave_idx_type n) const { return n; }
 
     idx_class_type idx_class (void) const { return class_colon; }
 
-    idx_base_rep *sort_uniq_clone (bool = false) 
+    idx_base_rep *sort_uniq_clone (bool = false)
       { count++; return this; }
 
     idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
-    bool is_colon_equiv (octave_idx_type) const
-      { return true; }
+    bool is_colon_equiv (octave_idx_type) const { return true; }
 
     std::ostream& print (std::ostream& os) const;
 
@@ -179,8 +173,7 @@ private:
 
     octave_idx_type checkelem (octave_idx_type i) const;
 
-    octave_idx_type length (octave_idx_type) const
-      { return len; }
+    octave_idx_type length (octave_idx_type) const { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
       { return len ? std::max (n, (start + 1 + (step < 0 ? 0 : step * (len - 1)))) : n; }
@@ -234,13 +227,11 @@ private:
     template <class T>
     idx_scalar_rep (T x);
 
-    octave_idx_type xelem (octave_idx_type) const
-      { return data; }
+    octave_idx_type xelem (octave_idx_type) const { return data; }
 
     octave_idx_type checkelem (octave_idx_type i) const;
 
-    octave_idx_type length (octave_idx_type) const
-      { return 1; }
+    octave_idx_type length (octave_idx_type) const { return 1; }
 
     octave_idx_type extent (octave_idx_type n) const
       { return std::max (n, data + 1); }
@@ -255,8 +246,7 @@ private:
     bool is_colon_equiv (octave_idx_type n) const
       { return n == 1 && data == 0; }
 
-    dim_vector orig_dimensions (void) const
-      { return dim_vector (1, 1); }
+    dim_vector orig_dimensions (void) const { return dim_vector (1, 1); }
 
     octave_idx_type get_data (void) const { return data; }
 
@@ -307,13 +297,11 @@ private:
 
     ~idx_vector_rep (void);
 
-    octave_idx_type xelem (octave_idx_type i) const
-      { return data[i]; }
+    octave_idx_type xelem (octave_idx_type i) const { return data[i]; }
 
     octave_idx_type checkelem (octave_idx_type i) const;
 
-    octave_idx_type length (octave_idx_type) const
-      { return len; }
+    octave_idx_type length (octave_idx_type) const { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
       { return std::max (n, ext); }
@@ -324,8 +312,7 @@ private:
 
     idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
-    dim_vector orig_dimensions (void) const
-      { return orig_dims; }
+    dim_vector orig_dimensions (void) const { return orig_dims; }
 
     const octave_idx_type *get_data (void) const { return data; }
 
@@ -345,11 +332,12 @@ private:
     const octave_idx_type *data;
     octave_idx_type len, ext;
 
-    // This is a trick to allow user-given zero-based arrays to be used as indices
-    // without copying. If the following pointer is nonzero, we do not own the data,
-    // but rather have an Array<octave_idx_type> object that provides us the data.
-    // Note that we need a pointer because we deferred the Array<T> declaration and
-    // we do not want it yet to be defined.
+    // This is a trick to allow user-given zero-based arrays to be used
+    // as indices without copying.  If the following pointer is nonzero,
+    // we do not own the data, but rather have an Array<octave_idx_type>
+    // object that provides us the data.  Note that we need a pointer
+    // because we deferred the Array<T> declaration and we do not want
+    // it yet to be defined.
     
     Array<octave_idx_type> *aowner;
 
@@ -379,8 +367,7 @@ private:
 
     octave_idx_type checkelem (octave_idx_type i) const;
 
-    octave_idx_type length (octave_idx_type) const
-      { return len; }
+    octave_idx_type length (octave_idx_type) const { return len; }
 
     octave_idx_type extent (octave_idx_type n) const
       { return std::max (n, ext); }
@@ -392,8 +379,7 @@ private:
 
     idx_base_rep *sort_idx (Array<octave_idx_type>&);
 
-    dim_vector orig_dimensions (void) const
-      { return orig_dims; }
+    dim_vector orig_dimensions (void) const { return orig_dims; }
 
     bool is_colon_equiv (octave_idx_type n) const
       { return len == n && ext == n; }
@@ -416,15 +402,16 @@ private:
     const bool *data;
     octave_idx_type len, ext;
 
-    // FIXME: I'm not sure if this is a good design. Maybe it would be better to
-    // employ some sort of generalized iteration scheme.
+    // FIXME: I'm not sure if this is a good design. Maybe it would be
+    // better to employ some sort of generalized iteration scheme.
     mutable octave_idx_type lsti, lste;
 
-    // This is a trick to allow user-given mask arrays to be used as indices
-    // without copying. If the following pointer is nonzero, we do not own the data,
-    // but rather have an Array<bool> object that provides us the data.
-    // Note that we need a pointer because we deferred the Array<T> declaration and
-    // we do not want it yet to be defined.
+    // This is a trick to allow user-given mask arrays to be used as
+    // indices without copying.  If the following pointer is nonzero, we
+    // do not own the data, but rather have an Array<bool> object that
+    // provides us the data.  Note that we need a pointer because we
+    // deferred the Array<T> declaration and we do not want it yet to be
+    // defined.
     
     Array<bool> *aowner;
 
@@ -433,7 +420,8 @@ private:
 
   idx_vector (idx_base_rep *r) : rep (r) { }
 
-  // The shared empty vector representation (for fast default constructor)
+  // The shared empty vector representation (for fast default
+  // constructor).
   static idx_vector_rep *nil_rep (void)
     {
       static idx_vector_rep ivr;
@@ -448,8 +436,8 @@ private:
       return &ivr;
     }
 
-  // If there was an error in constructing the rep, replace it with empty vector
-  // for safety.
+  // If there was an error in constructing the rep, replace it with
+  // empty vector for safety.
   void chkerr (void)
     {
       if (rep->err)
@@ -622,11 +610,13 @@ public:
   index (const T *src, octave_idx_type n, T *dest) const
     {
       octave_idx_type len = rep->length (n);
+
       switch (rep->idx_class ())
         {
         case class_colon:
           copy_or_memcpy (len, src, dest);
           break;
+
         case class_range:
           {
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
@@ -645,12 +635,14 @@ public:
               }
           }
           break;
+
         case class_scalar:
           {
             idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
             dest[0] = src[r->get_data ()];
           }
           break;
+
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
@@ -659,6 +651,7 @@ public:
               dest[i] = src[data[i]];
           }
           break;
+
         case class_mask:
           {
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
@@ -668,6 +661,7 @@ public:
               if (data[i]) *dest++ = src[i];
           }
           break;
+
         default:
           assert (false);
           break;
@@ -689,11 +683,13 @@ public:
   assign (const T *src, octave_idx_type n, T *dest) const
     {
       octave_idx_type len = rep->length (n);
+
       switch (rep->idx_class ())
         {
         case class_colon:
           copy_or_memcpy (len, src, dest);
           break;
+
         case class_range:
           {
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
@@ -710,12 +706,14 @@ public:
               }
           }
           break;
+
         case class_scalar:
           {
             idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
             dest[r->get_data ()] = src[0];
           }
           break;
+
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
@@ -724,6 +722,7 @@ public:
               dest[data[i]] = src[i];
           }
           break;
+
         case class_mask:
           {
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
@@ -733,6 +732,7 @@ public:
               if (data[i]) dest[i] = *src++;
           }
           break;
+
         default:
           assert (false);
           break;
@@ -754,11 +754,13 @@ public:
   fill (const T& val, octave_idx_type n, T *dest) const
     {
       octave_idx_type len = rep->length (n);
+
       switch (rep->idx_class ())
         {
         case class_colon:
           std::fill (dest, dest + len, val);
           break;
+
         case class_range:
           {
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
@@ -775,12 +777,14 @@ public:
               }
           }
           break;
+
         case class_scalar:
           {
             idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
             dest[r->get_data ()] = val;
           }
           break;
+
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
@@ -789,6 +793,7 @@ public:
               dest[data[i]] = val;
           }
           break;
+
         case class_mask:
           {
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
@@ -798,6 +803,7 @@ public:
               if (data[i]) dest[i] = val;
           }
           break;
+
         default:
           assert (false);
           break;
@@ -806,24 +812,24 @@ public:
       return len;
     }
 
-  // Generic non-breakable indexed loop. The loop body should be encapsulated in a
-  // single functor body. 
-  // This is equivalent to the following loop (but faster, at least for simple
-  // inlined bodies):
+  // Generic non-breakable indexed loop. The loop body should be
+  // encapsulated in a single functor body.  This is equivalent to the
+  // following loop (but faster, at least for simple inlined bodies):
   //
   // for (octave_idx_type i = 0; i < idx->length (n); i++) body (idx(i));
-  // 
 
   template <class Functor>
   void
   loop (octave_idx_type n, Functor body) const
     {
       octave_idx_type len = rep->length (n);
+
       switch (rep->idx_class ())
         {
         case class_colon:
           for (octave_idx_type i = 0; i < len; i++) body (i);
           break;
+
         case class_range:
           {
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
@@ -837,12 +843,14 @@ public:
               for (i = 0, j = start; i < len; i++, j += step) body (j);
           }
           break;
+
         case class_scalar:
           {
             idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
             body (r->get_data ());
           }
           break;
+
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
@@ -850,6 +858,7 @@ public:
             for (octave_idx_type i = 0; i < len; i++) body (data[i]);
           }
           break;
+
         case class_mask:
           {
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
@@ -859,6 +868,7 @@ public:
               if (data[i]) body (i);
           }
           break;
+
         default:
           assert (false);
           break;
@@ -866,10 +876,9 @@ public:
 
     }
 
-  // Generic breakable indexed loop. The loop body should be encapsulated in a
-  // single functor body. 
-  // This is equivalent to the following loop (but faster, at least for simple
-  // inlined bodies):
+  // Generic breakable indexed loop. The loop body should be
+  // encapsulated in a single functor body.  This is equivalent to the
+  // following loop (but faster, at least for simple inlined bodies):
   //
   // for (octave_idx_type i = 0; i < idx->length (n); i++)
   //   if (body (idx(i))) break;
@@ -881,6 +890,7 @@ public:
   bloop (octave_idx_type n, Functor body) const
     {
       octave_idx_type len = rep->length (n), ret;
+
       switch (rep->idx_class ())
         {
         case class_colon:
@@ -890,6 +900,7 @@ public:
             ret = i;
           }
           break;
+
         case class_range:
           {
             idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
@@ -904,12 +915,14 @@ public:
             ret = i;
           }
           break;
+
         case class_scalar:
           {
             idx_scalar_rep * r = dynamic_cast<idx_scalar_rep *> (rep);
             ret = body (r->get_data ()) ? 1 : 0;
           }
           break;
+
         case class_vector:
           {
             idx_vector_rep * r = dynamic_cast<idx_vector_rep *> (rep);
@@ -919,6 +932,7 @@ public:
             ret = i;
           }
           break;
+
         case class_mask:
           {
             idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
@@ -938,6 +952,7 @@ public:
             ret = j;
           }
           break;
+
         default:
           assert (false);
           break;
@@ -948,9 +963,9 @@ public:
 
   // Rationale: 
   // This method is the key to "smart indexing". When indexing cartesian
-  // arrays, sometimes consecutive index vectors can be reduced into a single
-  // index. If rows (A) = k and i.maybe_reduce (j) gives k, then A(i,j)(:) is
-  // equal to A(k)(:).
+  // arrays, sometimes consecutive index vectors can be reduced into a
+  // single index.  If rows (A) = k and i.maybe_reduce (j) gives k, then
+  // A(i,j)(:) is equal to A(k)(:).
 
   // If the next index can be reduced, returns true and updates this.
   bool maybe_reduce (octave_idx_type n, const idx_vector& j,
@@ -981,8 +996,8 @@ public:
 
   Array<octave_idx_type> as_array (void) const;
 
-  // Raw pointer to index array.  This is non-const because it may be necessary
-  // to mutate the index.
+  // Raw pointer to index array.  This is non-const because it may be
+  // necessary to mutate the index.
   const octave_idx_type *raw (void);
     
   // FIXME -- these are here for compatibility.  They should be removed

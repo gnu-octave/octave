@@ -1,5 +1,9 @@
 2010-04-02  John W. Eaton  <jwe@octave.org>
 
+	* Array-util.cc, idx-vector.cc, idx-vector.h: Style fixes.
+
+2010-04-02  John W. Eaton  <jwe@octave.org>
+
 	* idx-vector.cc (idx_vector::idx_vector (const Range&)):
 	Move here from idx-vector.h.  Allow non-integer values in ranges,
 	but warn by default (for Matlab compatibility).

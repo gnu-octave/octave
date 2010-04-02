@@ -486,12 +486,15 @@ zero_dims_inquire (const idx_vector& i, const idx_vector& j,
 struct sub2ind_helper
 {
   octave_idx_type *ind, n;
+
   sub2ind_helper (octave_idx_type *_ind, octave_idx_type _n)
     : ind(_ind), n(_n) { }
+
   void operator ()(octave_idx_type k) { (*ind++ *= n) += k; }
 };
 
-idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
+idx_vector
+sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
 {
   idx_vector retval;
   octave_idx_type len = idxa.length ();
@@ -561,7 +564,8 @@ idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa)
   return retval;
 }
 
-Array<idx_vector> ind2sub (const dim_vector& dv, const idx_vector& idx)
+Array<idx_vector>
+ind2sub (const dim_vector& dv, const idx_vector& idx)
 {
   octave_idx_type len = idx.length (0), n = dv.length ();
   Array<idx_vector> retval(n, 1);
@@ -633,6 +637,7 @@ void
 gripe_nonconformant (const char *op, int op1_len, int op2_len)
 {
   const char *err_id = error_id_nonconformant_args;
+
   (*current_liboctave_error_with_id_handler)
     (err_id, "%s: nonconformant arguments (op1 len: %d, op2 len: %d)",
      op, op1_len, op2_len);
@@ -643,6 +648,7 @@ gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
                      int op2_nr, int op2_nc)
 {
   const char *err_id = error_id_nonconformant_args;
+
   (*current_liboctave_error_with_id_handler)
     (err_id, "%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
      op, op1_nr, op1_nc, op2_nr, op2_nc);
@@ -653,6 +659,7 @@ gripe_nonconformant (const char *op, const dim_vector& op1_dims,
                      const dim_vector& op2_dims)
 {
   const char *err_id = error_id_nonconformant_args;
+
   std::string op1_dims_str = op1_dims.str ();
   std::string op2_dims_str = op2_dims.str ();
 
@@ -661,10 +668,12 @@ gripe_nonconformant (const char *op, const dim_vector& op1_dims,
      op, op1_dims_str.c_str (), op2_dims_str.c_str ());
 }
 
-void gripe_index_out_of_range (int nd, int dim, 
-                               octave_idx_type idx, octave_idx_type ext)
+void
+gripe_index_out_of_range (int nd, int dim, octave_idx_type idx,
+                          octave_idx_type ext)
 {
   const char *err_id = error_id_index_out_of_bounds;
+
   switch (nd)
     {
     case 1:
@@ -672,11 +681,13 @@ void gripe_index_out_of_range (int nd, int dim,
         (err_id, "A(I): index out of bounds; value %d out of bound %d",
          idx, ext);
       break;
+
     case 2:
       (*current_liboctave_error_with_id_handler)
         (err_id, "A(I,J): %s index out of bounds; value %d out of bound %d",
          (dim == 1) ? "row" : "column", idx, ext);
       break;
+
     default:
       (*current_liboctave_error_with_id_handler)
         (err_id, "A(I,J,...): index to dimension %d out of bounds; value %d out of bound %d",
@@ -685,16 +696,19 @@ void gripe_index_out_of_range (int nd, int dim,
     }
 }
 
-void gripe_del_index_out_of_range (bool is1d, octave_idx_type idx, 
-                                   octave_idx_type ext)
+void
+gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
+                              octave_idx_type ext)
 {
   const char *err_id = error_id_index_out_of_bounds;
+
   (*current_liboctave_error_with_id_handler)
     (err_id, "A(%s) = []: index out of bounds; value %d out of bound %d",
      is1d ? "I" : "..,I,..", idx, ext);
 }
 
-void gripe_invalid_index (bool err)
+void
+gripe_invalid_index (bool err)
 {
   const char *err_id = error_id_invalid_index;
 
@@ -712,7 +726,9 @@ void gripe_invalid_index (bool err)
 // Anyway, propagating various error messages into procedure is, IMHO,
 // a nonsense.  If anything, we should change error handling here (and
 // throughout liboctave) to allow custom handling of errors
-void gripe_invalid_resize (void)
+
+void
+gripe_invalid_resize (void)
 {
   (*current_liboctave_error_with_id_handler)
     ("Octave:invalid-resize", 

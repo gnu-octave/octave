@@ -53,12 +53,12 @@ function group = cut (X, BREAKS)
     error ("cut: BREAKS must be a scalar or vector");
   endif
 
-  group = NaN * ones (size (X));
+  group = NaN (size (X));
   m = length (BREAKS);
-  if any (k = find ((X >= min (BREAKS)) & (X <= max (BREAKS))))
+  if any (k = find ((X >= min (BREAKS)) & (X < max (BREAKS))))
     n = length (k);
     group(k) = sum ((ones (m, 1) * reshape (X(k), 1, n))
-                    > (reshape (BREAKS, m, 1) * ones (1, n)));
+                    >= (reshape (BREAKS, m, 1) * ones (1, n)));
   endif
 
 endfunction

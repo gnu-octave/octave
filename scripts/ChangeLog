@@ -1,3 +1,12 @@
+2010-02-19  Rik <octave@nomad.inbox5.com>
+
+	* statistics/cut.m: Modify cut to use the same decision criteria as histc
+   when deciding whether a data point is inside or outside interval
+
+2010-04-02  Marc Vinyals  <mrc_timer@users.sourceforge.net>
+
+	* signal/arma_rnd.m: fix typo in test.
+
 2010-04-02  Marc Vinyals  <mrc_timer@users.sourceforge.net>
 
 	* signal/arma_rnd.m: fix typo in test.

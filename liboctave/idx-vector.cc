@@ -1096,29 +1096,32 @@ idx_vector::copy_data (octave_idx_type *data) const
 idx_vector
 idx_vector::complement (octave_idx_type n) const
 {
-  OCTAVE_LOCAL_BUFFER_INIT (bool, left, n, true);
+  idx_vector retval;
+  if (extent (n) > n)
+    (*current_liboctave_error_handler)
+      ("internal error: out of range complement index requested");
 
-  octave_idx_type cnt = n;
-
-  for (octave_idx_type i = 0, len = length (); i < len; i++)
-    { 
-      octave_idx_type k = xelem (i);
-      if (k < n && left[k])
-        {
-          left[k] = false;
-          cnt--;
-        }
+  if (idx_class () == class_mask)
+    {
+      idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+      octave_idx_type nz = r->length (0), ext = r->extent (0);
+      Array<bool> mask (n, 1);
+      const bool *data = r->get_data ();
+      bool *ndata = mask.fortran_vec ();
+      for (octave_idx_type i = 0; i < ext; i++)
+        ndata[i] = ! data[i];
+      for (octave_idx_type i = ext; i < n; i++)
+        ndata[i] = true;
+      retval = new idx_mask_rep (mask, n - nz);
+    }
+  else
+    {
+      Array<bool> mask (n, 1, true);
+      fill (false, length (n), mask.fortran_vec ());
+      retval = idx_vector (mask);
     }
 
-  octave_idx_type len = cnt, *data = new octave_idx_type[len];
-
-  for (octave_idx_type i = 0, j = 0; i < n; i++)
-    if (left[i])
-      data[j++] = i;
-
-  return new idx_vector_rep (data, len, 
-                             len ? data[len-1]+1 : 0, 
-                             dim_vector (1, len), DIRECT);
+  return retval;
 }
 
 bool

@@ -1,5 +1,9 @@
 2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* idx-vector.cc (idx_vector::complement): Rewrite.
+
+2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Sparse.cc (Sparse<T>::maybe_delete_elements): Rename to
 	delete_elements. Use const reference arguments.
 	(Sparse<T>::delete_elements (const idx_vector&, const idx_vector&)):

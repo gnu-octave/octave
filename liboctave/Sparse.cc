@@ -1219,7 +1219,7 @@ Sparse<T>::set_index (const idx_vector& idx_arg)
 
 template <class T>
 void
-Sparse<T>::maybe_delete_elements (idx_vector& idx)
+Sparse<T>::delete_elements (const idx_vector& idx)
 {
   Sparse<T> retval;
 
@@ -1305,226 +1305,98 @@ Sparse<T>::maybe_delete_elements (idx_vector& idx)
   else
     {
       *this = index (idx_vector::colon);
-      maybe_delete_elements (idx);
+      delete_elements (idx);
       *this = transpose (); // We want a row vector.
     }
 }
 
 template <class T>
 void
-Sparse<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
+Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
 {
   assert (ndims () == 2);
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
-
-  if (nr == 0 && nc == 0)
-    return;
+  octave_idx_type nz = nnz ();
 
   if (idx_i.is_colon ())
     {
-      if (idx_j.is_colon ())
+      // Deleting columns.
+      octave_idx_type lb, ub;
+      if (idx_j.extent (nc) > nc)
+        gripe_del_index_out_of_range (false, idx_j.extent (nc), nc);
+      else if (idx_j.is_cont_range (nc, lb, ub))
         {
-          // A(:,:) -- We are deleting columns and rows, so the result
-          // is [](0x0).
-
-          resize (0, 0);
-          return;
+          const Sparse<T> tmp = *this;
+          octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub), new_nz = nz - (ubi - lbi);
+          *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
+          copy_or_memcpy (lbi, tmp.data (), data ());
+          copy_or_memcpy (lbi, tmp.ridx (), ridx ());
+          copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
+          copy_or_memcpy (nz - ubi, tmp.ridx () + ubi, xridx () + lbi);
+          copy_or_memcpy (lb, tmp.cidx () + 1, cidx () + 1);
+          mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1, ubi - lbi);
         }
-
-      if (idx_j.is_colon_equiv (nc, 1))
-        {
-          // A(:,j) -- We are deleting columns by enumerating them,
-          // If we enumerate all of them, we should have zero columns
-          // with the same number of rows that we started with.
-
-          resize (nr, 0);
-          return;
-        }
-    }
-
-  if (idx_j.is_colon () && idx_i.is_colon_equiv (nr, 1))
-    {
-      // A(i,:) -- We are deleting rows by enumerating them.  If we
-      // enumerate all of them, we should have zero rows with the
-      // same number of columns that we started with.
-
-      resize (0, nc);
-      return;
-    }
-
-  if (idx_i.is_colon_equiv (nr, 1))
-    {
-      if (idx_j.is_colon_equiv (nc, 1))
-        resize (0, 0);
       else
+        *this = index (idx_i, idx_j.complement (nc));
+    }
+  else if (idx_j.is_colon ())
+    {
+      // Deleting rows.
+      octave_idx_type lb, ub;
+      if (idx_i.extent (nr) > nr)
+        gripe_del_index_out_of_range (false, idx_i.extent (nr), nr);
+      else if (idx_i.is_cont_range (nr, lb, ub))
         {
-          idx_j.sort (true);
-
-          octave_idx_type num_to_delete = idx_j.length (nc);
-
-          if (num_to_delete != 0)
+          // This is more memory-efficient than the approach below.
+          const Sparse<T> tmpl = index (idx_vector (0, lb), idx_j);
+          const Sparse<T> tmpu = index (idx_vector (ub, nr), idx_j);
+          *this = Sparse<T> (nr - (ub - lb), nc, tmpl.nnz () + tmpu.nnz ());
+          for (octave_idx_type j = 0, k = 0; j < nc; j++)
             {
-              if (nr == 1 && num_to_delete == nc)
-                resize (0, 0);
-              else
+              for (octave_idx_type i = tmpl.cidx(j); i < tmpl.cidx(j+1); i++)
                 {
-                  octave_idx_type new_nc = nc;
-                  octave_idx_type new_nnz = nnz ();
-
-                  octave_idx_type iidx = 0;
-
-                  for (octave_idx_type j = 0; j < nc; j++)
-                    {
-                      octave_quit ();
-
-                      if (j == idx_j.elem (iidx))
-                        {
-                          iidx++;
-                          new_nc--;
-                          
-                          new_nnz -= cidx(j+1) - cidx(j);
-
-                          if (iidx == num_to_delete)
-                            break;
-                        }
-                    }
-
-                  if (new_nc > 0)
-                    {
-                      const Sparse<T> tmp (*this);
-                      --rep->count;
-                      rep = new typename Sparse<T>::SparseRep (nr, new_nc, 
-                                                               new_nnz);
-                      octave_idx_type ii = 0;
-                      octave_idx_type jj = 0;
-                      iidx = 0;
-                      cidx(0) = 0;
-                      for (octave_idx_type j = 0; j < nc; j++)
-                        {
-                          octave_quit ();
-
-                          if (iidx < num_to_delete && j == idx_j.elem (iidx))
-                            iidx++;
-                          else
-                            {
-                              for (octave_idx_type i = tmp.cidx(j); 
-                                   i < tmp.cidx(j+1); i++)
-                                {
-                                  data(jj) = tmp.data(i);
-                                  ridx(jj++) = tmp.ridx(i);
-                                }
-                              cidx(++ii) = jj;
-                            }
-                        }
-
-                      dimensions.resize (2);
-                      dimensions(1) = new_nc;
-                    }
-                  else
-                    (*current_liboctave_error_handler)
-                      ("A(idx) = []: index out of range");
+                  xdata(k) = tmpl.data(i);
+                  xridx(k++) = tmpl.ridx(i);
                 }
+              for (octave_idx_type i = tmpu.cidx(j); i < tmpu.cidx(j+1); i++)
+                {
+                  xdata(k) = tmpu.data(i);
+                  xridx(k++) = tmpu.ridx(i) + lb;
+                }
+
+              xcidx(j+1) = k;
             }
         }
-    }
-  else if (idx_j.is_colon_equiv (nc, 1))
-    {
-      if (idx_i.is_colon_equiv (nr, 1))
-        resize (0, 0);
       else
         {
-          idx_i.sort (true);
-
-          octave_idx_type num_to_delete = idx_i.length (nr);
-
-          if (num_to_delete != 0)
-            {
-              if (nc == 1 && num_to_delete == nr)
-                resize (0, 0);
-              else
-                {
-                  octave_idx_type new_nr = nr;
-                  octave_idx_type new_nnz = nnz ();
-
-                  octave_idx_type iidx = 0;
-
-                  for (octave_idx_type i = 0; i < nr; i++)
-                    {
-                      octave_quit ();
-
-                      if (i == idx_i.elem (iidx))
-                        {
-                          iidx++;
-                          new_nr--;
-                          
-                          for (octave_idx_type j = 0; j < nnz (); j++)
-                            if (ridx(j) == i)
-                              new_nnz--;
-
-                          if (iidx == num_to_delete)
-                            break;
-                        }
-                    }
-
-                  if (new_nr > 0)
-                    {
-                      const Sparse<T> tmp (*this);
-                      --rep->count;
-                      rep = new typename Sparse<T>::SparseRep (new_nr, nc, 
-                                                               new_nnz);
-
-                      octave_idx_type jj = 0;
-                      cidx(0) = 0;
-                      for (octave_idx_type i = 0; i < nc; i++)
-                        {
-                          iidx = 0;
-                          for (octave_idx_type j = tmp.cidx(i); j < tmp.cidx(i+1); j++)
-                            {
-                              octave_quit ();
-
-                              octave_idx_type ri = tmp.ridx(j);
-
-                              while (iidx < num_to_delete && 
-                                     ri > idx_i.elem (iidx))
-                                {
-                                  iidx++;
-                                }
-
-                              if (iidx == num_to_delete ||
-                                  ri != idx_i.elem(iidx))
-                                {
-                                  data(jj) = tmp.data(j);
-                                  ridx(jj++) = ri - iidx;
-                                }
-                            }
-                          cidx(i+1) = jj;
-                        }
-
-                      dimensions.resize (2);
-                      dimensions(0) = new_nr;
-                    }
-                  else
-                    (*current_liboctave_error_handler)
-                      ("A(idx) = []: index out of range");
-                }
-            }
+          // This is done by transposing, deleting columns, then transposing
+          // again.
+          Sparse<T> tmp = transpose ();
+          tmp.delete_elements (idx_j, idx_i);
+          *this = tmp.transpose ();
         }
     }
+  else
+    (*current_liboctave_error_handler)
+      ("A null assignment can only have one non-colon index.");
 }
 
 template <class T>
 void
-Sparse<T>::maybe_delete_elements (Array<idx_vector>& ra_idx)
+Sparse<T>::delete_elements (int dim, const idx_vector& idx)
 {
-  if (ra_idx.length () == 1)
-    maybe_delete_elements (ra_idx(0));
-  else if (ra_idx.length () == 2)
-    maybe_delete_elements (ra_idx(0), ra_idx(1));
+  if (dim == 0)
+    delete_elements (idx, idx_vector::colon);
+  else if (dim == 1)
+    delete_elements (idx_vector::colon, idx);
   else
-    (*current_liboctave_error_handler) 
-      ("range error for maybe_delete_elements");
+    {
+      (*current_liboctave_error_handler)
+        ("invalid dimension in delete_elements");
+      return;
+    }
 }
 
 template <class T>

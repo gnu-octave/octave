@@ -472,11 +472,11 @@ public:
 
   idx_vector *get_idx (void) const { return idx; }
 
-  void maybe_delete_elements (idx_vector& i);
+  void delete_elements (const idx_vector& i);
 
-  void maybe_delete_elements (idx_vector& i, idx_vector& j);
+  void delete_elements (int dim, const idx_vector& i);
 
-  void maybe_delete_elements (Array<idx_vector>& ra_idx);
+  void delete_elements (const idx_vector& i, const idx_vector& j);
 
   Sparse<T> value (void);
 

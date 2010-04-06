@@ -1,3 +1,7 @@
+2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base-sparse.cc (octave_base_sparse::delete_elements): Rewrite.
+
 2010-04-02  Judd Storrs  <jstorrs@gmail.com>
 
 	* octave.cc (intern_argv): Truncate argv when script files are

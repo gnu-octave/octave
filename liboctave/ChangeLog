@@ -1,5 +1,16 @@
 2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::maybe_delete_elements): Rename to
+	delete_elements. Use const reference arguments.
+	(Sparse<T>::delete_elements (const idx_vector&, const idx_vector&)):
+	Rewrite.
+	(Sparse<T>::maybe_delete_elements (int dim, const idx_vector&)): New
+	overload.
+	(Sparse<T>::maybe_delete_elements (Array<idx_vector>&)): Remove
+	overload.
+
+2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* idx-vector.cc, Array-util.h, Array-util.cc: Reverse effects of
 	4e64fbbd5c58.
 

@@ -182,12 +182,36 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type len = idx.length ();
 
-  Array<idx_vector> ra_idx (len, 1);
+  switch (len)
+    {
+    case 1:
+      {
+        idx_vector i = idx (0).index_vector ();
 
-  for (octave_idx_type i = 0; i < len; i++)
-    ra_idx(i) = idx(i).index_vector ();
+        if (! error_state)
+          matrix.delete_elements (i);
 
-  matrix.maybe_delete_elements (ra_idx);
+        break;
+      }
+
+    case 2:
+      {
+        idx_vector i = idx (0).index_vector ();
+
+        if (! error_state)
+          {
+            idx_vector j = idx (1).index_vector ();
+
+            if (! error_state)
+              matrix.delete_elements (i, j);
+          }
+
+        break;
+      }
+
+    default:
+      error ("sparse indexing needs 1 or 2 indices");
+    }
 
   // Invalidate the matrix type
   typ.invalidate_type ();

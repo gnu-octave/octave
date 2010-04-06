@@ -1,3 +1,8 @@
+2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc, Array-util.h, Array-util.cc: Reverse effects of
+	4e64fbbd5c58.
+
 2010-04-02  John W. Eaton  <jwe@octave.org>
 
 	* Array-util.cc, idx-vector.cc, idx-vector.h: Style fixes.

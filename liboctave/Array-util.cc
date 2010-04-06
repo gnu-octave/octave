@@ -708,16 +708,12 @@ gripe_del_index_out_of_range (bool is1d, octave_idx_type idx,
 }
 
 void
-gripe_invalid_index (bool err)
+gripe_invalid_index (void)
 {
   const char *err_id = error_id_invalid_index;
 
-  if (err)
-    (*current_liboctave_error_with_id_handler)
-      (err_id, "subscript indices must be either positive integers or logicals");
-  else
-    (*current_liboctave_warning_with_id_handler)
-      (err_id, "non-integer subscripts in index expression");
+  (*current_liboctave_error_with_id_handler)
+    (err_id, "subscript indices must be either positive integers or logicals.");
 }
 
 // FIXME -- the following is a common error message to resize,

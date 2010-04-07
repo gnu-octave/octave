@@ -1,5 +1,10 @@
 2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::index (const idx_vector&, bool)): Use shallow
+	copy when column is indexed by colon.
+
+2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Sparse.cc (lblookup): Move in front of Sparse<T>::delete_elements.
 
 2010-04-07  Jaroslav Hajek  <highegg@gmail.com>

@@ -1472,20 +1472,25 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       ("cannot index sparse matrix with an N-D Array");
   else if (idx.is_colon ())
     {
-      // Fast magic colon processing.
-      retval = Sparse<T> (nel, 1, nz);
-
-      for (octave_idx_type i = 0; i < nc; i++)
+      if (nc == 1)
+        retval = *this;
+      else
         {
-          for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
-            {
-              retval.xdata(j) = data(j); 
-              retval.xridx(j) = ridx(j) + i * nr;
-            }
-        }
+          // Fast magic colon processing.
+          retval = Sparse<T> (nel, 1, nz);
 
-      retval.xcidx(0) = 0;
-      retval.xcidx(1) = nz;
+          for (octave_idx_type i = 0; i < nc; i++)
+            {
+              for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
+                {
+                  retval.xdata(j) = data(j); 
+                  retval.xridx(j) = ridx(j) + i * nr;
+                }
+            }
+
+          retval.xcidx(0) = 0;
+          retval.xcidx(1) = nz;
+        }
     }
   else if (idx.extent (nel) > nel)
     {

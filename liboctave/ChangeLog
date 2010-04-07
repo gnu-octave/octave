@@ -1,3 +1,8 @@
+2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* str-vec.h (string_vector::string_vector (const Array<std::string>)):
+	New constructor.
+
 2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.cc (idx_vector::complement): Rewrite.

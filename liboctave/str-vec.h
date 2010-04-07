@@ -51,6 +51,9 @@ public:
 
   string_vector (const std::set<std::string>& lst);
 
+  string_vector (const Array<std::string>& s)
+    : Array<std::string> (s.as_column ()) { }
+
   string_vector (const char * const *s);
 
   string_vector (const char * const *s, octave_idx_type n);

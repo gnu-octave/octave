@@ -1,3 +1,8 @@
+2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-parse.yy (feval): Use do_multi_index_op on handles.
+	(get_feval_args): Use array slicing functions rather than loops.
+
 2010-04-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-sparse.cc (octave_base_sparse::delete_elements): Rewrite.

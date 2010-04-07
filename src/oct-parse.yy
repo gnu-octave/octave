@@ -4057,28 +4057,13 @@ feval (octave_function *fcn, const octave_value_list& args, int nargout)
 static octave_value_list
 get_feval_args (const octave_value_list& args)
 {
-  int tmp_nargin = args.length () - 1;
-
-  octave_value_list retval (tmp_nargin, octave_value ());
-
-  for (int i = 0; i < tmp_nargin; i++)
-    retval(i) = args(i+1);
+  octave_value_list retval = args.slice (1, args.length () - 1);
 
   string_vector arg_names = args.name_tags ();
 
-  if (! arg_names.empty ())
+  if (arg_names.length () > 1)
     {
-      // tmp_nargin and arg_names.length () - 1 may differ if
-      // we are passed all_va_args.
-
-      int n = arg_names.length () - 1;
-
-      int len = n > tmp_nargin ? tmp_nargin : n;
-
-      string_vector tmp_arg_names (len);
-
-      for (int i = 0; i < len; i++)
-        tmp_arg_names(i) = arg_names(i+1);
+      string_vector tmp_arg_names = arg_names.linear_slice (1, args.length () - 1);
 
       retval.stash_name_tags (tmp_arg_names);
     }
@@ -4115,17 +4100,14 @@ feval (const octave_value_list& args, int nargout)
               retval = feval (name, tmp_args, nargout);
             }
         }
-      else
+      else if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         {
-          octave_function *fcn = f_arg.function_value ();
+          const octave_value_list tmp_args = get_feval_args (args);
 
-          if (fcn)
-            {
-              octave_value_list tmp_args = get_feval_args (args);
-
-              retval = feval (fcn, tmp_args, nargout);
-            }
+          retval = f_arg.do_multi_index_op (nargout, tmp_args);
         }
+      else
+        error ("feval: first argument must be a string, inline function or a function handle");
     }
 
   return retval;

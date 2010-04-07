@@ -1,3 +1,8 @@
+2010-04-07  John W. Eaton  <jwe@octave.org>
+
+	* README.ftp, README.devel:
+	Update from Judd Storrs <jstorrs@gmail.com>.
+
 2010-03-27  David Bateman  <dbateman@free.fr>
 
 	* acinclude.m4 (OCTAVE_CHECK_OPENMP): Macro to check for OpenMP support

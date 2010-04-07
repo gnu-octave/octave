@@ -1,26 +1,30 @@
-This directory contains development snapshots of Octave.
+This directory contains development releases of Octave.
 
 If you want a stable, well-tested version of Octave, you should be
-looking at ftp://ftp.che.wisc.edu/pub/octave.
+looking at ftp://ftp.gnu.org/gnu/octave.
 
-Development snapshots are provided for people who want to help test,
+Development releases are provided for people who want to help test,
 debug, and improve Octave.  Very little testing is done before making
-the development snapshots and they may even be made when Octave is in
-an inconsistent state.  It is possible that you will encounter a very
-obvious bug, such as failure to compile on *any* machine.  It is
-likely that such bugs will be fixed by the next development snapshot,
+the development releases and they may even be made when Octave is in
+an inconsistent state.  It is possible that you will encounter a
+very obvious bug, such as failure to compile on *any* machine.  It is
+likely that such bugs will be fixed by the next development release,
 so it really isn't necessary to report them unless they persist over
-more than one snapshot.
+more than one release.
 
-Please DO report other bugs in the development snapshots as soon as you
-find them by sending a message to maintainers@octave.org.
+Please DO report other bugs in the development releases as soon as you
+find them by sending a message to octave-maintainers@octave.org (but
+first read the bug reporting guidelines provided at
+http://www.gnu.org/software/octave/bugs.html).
 
 If you have a fix for a bug, or an enhancement to submit, send your
-patch to maintainers@octave.org.  Here are some simple
+patch to octave-maintainers@octave.org.  Here are some simple
 guidelines for submitting patches:
 
-  o Use "context diffs" for patches.  A typical command for
-    generating context diffs is "diff -rc octave-old octave-new".
+  o Use "context diffs" for patches.  A typical command for generating
+    context diffs is "diff -rc octave-old octave-new".  If you are
+    using the Mercurial sources a patch generated with "hg export" is
+    preferred.
 
   o Use the "minimalist approach" for patches.  That is, each patch
     should address only one particular bug, new feature, etc.  Do not
@@ -33,10 +37,9 @@ guidelines for submitting patches:
     existing Octave ChangeLog for examples of what a ChangeLog entry
     should look like.
 
+If you would like to be on the very sharpest part of the bleeding
+edge, you can now use Mercurial to access Octave's current development
+sources.  Instructions for checking out a copy are available on the
+web at http://www.gnu.org/software/octave/download.html.
 
-Thanks,
-
-John W. Eaton
-jwe@octave.org
-
-Last updated: Wed, 31 Oct 2007 16:33:55 EDT
+Last updated: Wed, 07 Apr 2010 15:14:50 EDT

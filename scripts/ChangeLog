@@ -1,3 +1,8 @@
+2010-04-07  John W. Eaton  <jwe@octave.org>
+
+	* testfun/runtests.m: New function.
+	* testfun/module.mk (testfun_FCN_FILES): Add it to the list.
+
 2010-02-19  Rik <octave@nomad.inbox5.com>
 
 	* statistics/cut.m: Modify cut to use the same decision criteria as histc

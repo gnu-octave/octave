@@ -305,6 +305,8 @@ them in plain files with no extension rather than in script files.
 
 @DOCSTRING(rundemos)
 
+@DOCSTRING(runtests)
+
 @DOCSTRING(example)
 
 @DOCSTRING(speed)

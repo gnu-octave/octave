@@ -6,6 +6,7 @@ testfun_FCN_FILES = \
   testfun/example.m \
   testfun/fail.m \
   testfun/rundemos.m \
+  testfun/runtests.m \
   testfun/speed.m \
   testfun/test.m
 

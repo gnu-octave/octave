@@ -1217,6 +1217,25 @@ Sparse<T>::set_index (const idx_vector& idx_arg)
     }
 }
 
+// Lower bound lookup. Could also use octave_sort, but that has upper bound
+// semantics, so requires some manipulation to set right. Uses a plain loop for
+// small columns.
+static octave_idx_type
+lblookup (const octave_idx_type *ridx, octave_idx_type nr,
+          octave_idx_type ri)
+{
+  if (nr <= 8)
+    {
+      octave_idx_type l;
+      for (l = 0; l < nr; l++)
+        if (ridx[l] >= ri)
+          break;
+      return l;
+    }
+  else
+    return std::lower_bound (ridx, ridx + nr, ri) - ridx;
+}
+
 template <class T>
 void
 Sparse<T>::delete_elements (const idx_vector& idx)
@@ -1427,25 +1446,6 @@ Sparse<T>::value (void)
   clear_index ();
 
   return retval;
-}
-
-// Lower bound lookup. Could also use octave_sort, but that has upper bound
-// semantics, so requires some manipulation to set right. Uses a plain loop for
-// small columns.
-static octave_idx_type
-lblookup (const octave_idx_type *ridx, octave_idx_type nr,
-          octave_idx_type ri)
-{
-  if (nr <= 8)
-    {
-      octave_idx_type l;
-      for (l = 0; l < nr; l++)
-        if (ridx[l] >= ri)
-          break;
-      return l;
-    }
-  else
-    return std::lower_bound (ridx, ridx + nr, ri) - ridx;
 }
 
 template <class T>

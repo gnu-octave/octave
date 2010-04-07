@@ -1,5 +1,9 @@
 2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (lblookup): Move in front of Sparse<T>::delete_elements.
+
+2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
+
 	* str-vec.h (string_vector::string_vector (const Array<std::string>)):
 	New constructor.
 

@@ -547,17 +547,7 @@ make_name_list (void)
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.length ();
 
-  // FIXME -- is this really necessary here?
-  const string_vector glb = symbol_table::global_variable_names ();
-  const int glb_len = glb.length ();
-
-  // FIXME -- is this really necessary here?
-  const string_vector top = symbol_table::top_level_variable_names ();
-  const int top_len = top.length ();
-
-  string_vector lcl;
-  if (! symbol_table::at_top_level ())
-    lcl = symbol_table::variable_names ();
+  const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.length ();
 
   const string_vector ffl = load_path::fcn_names ();
@@ -566,8 +556,7 @@ make_name_list (void)
   const string_vector afl = autoloaded_functions ();
   const int afl_len = afl.length ();
 
-  const int total_len = key_len + bif_len + glb_len + top_len + lcl_len
-    + ffl_len + afl_len;
+  const int total_len = key_len + bif_len + lcl_len + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -580,12 +569,6 @@ make_name_list (void)
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
-
-  for (i = 0; i < glb_len; i++)
-    list[j++] = glb[i];
-
-  for (i = 0; i < top_len; i++)
-    list[j++] = top[i];
 
   for (i = 0; i < lcl_len; i++)
     list[j++] = lcl[i];

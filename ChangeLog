@@ -1,3 +1,8 @@
+2010-04-08  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* Makefile.am (make-version-links, remove-version-links):
+	Use SCRIPTS_EXE_SUFFIX for scripts, not EXEEXT.
+
 2010-04-07  John W. Eaton  <jwe@octave.org>
 
 	* README.ftp, README.devel:

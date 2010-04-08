@@ -191,14 +191,14 @@ uninstall-local: remove-version-links
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
 	for f in $(basename $(bin_SCRIPTS)); do \
-	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
-	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
+	  mv $$f$(SCRIPTS_EXE_SUFFIX) $$f-$(version)$(SCRIPTS_EXE_SUFFIX) && \
+	    $(LN_S) $$f-$(version)$(SCRIPTS_EXE_SUFFIX) $$f$(SCRIPTS_EXE_SUFFIX); \
 	done
 .PHONY: make-version-links
 
 remove-version-links:
 	for f in $(basename $(bin_SCRIPTS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(SCRIPTS_EXE_SUFFIX); \
 	done
 .PHONY: remove-version-links
 

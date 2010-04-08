@@ -409,7 +409,13 @@ public:
 #endif
 
   Sparse<T> maybe_compress (bool remove_zeros = false) 
-  { rep->maybe_compress (remove_zeros); return (*this); }
+    { 
+      if (remove_zeros)
+        make_unique (); // Needs to unshare because elements are removed.
+
+      rep->maybe_compress (remove_zeros); 
+      return (*this); 
+    }
 
   Sparse<T> reshape (const dim_vector& new_dims) const;
 
@@ -424,7 +430,12 @@ public:
 
   void resize (const dim_vector& dv);
 
-  void change_capacity (octave_idx_type nz) { rep->change_length (nz); }
+  void change_capacity (octave_idx_type nz) 
+    { 
+      if (nz < nnz ())
+        make_unique (); // Unshare now because elements will be truncated.
+      rep->change_length (nz); 
+    }
 
   Sparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c);
   Sparse<T>& insert (const Sparse<T>& a, const Array<octave_idx_type>& idx);

@@ -113,90 +113,51 @@ template <class T>
 void
 Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
 {
-  octave_idx_type ndel = nzmx - c[ncols];
-  octave_idx_type nzero = 0;
-
   if (remove_zeros)
-    for (octave_idx_type i = 0; i < nzmx - ndel; i++)
-      if (d[i] == T ())
-        nzero++;
-
-  if (!ndel && !nzero)
-    return;
-
-  if (!nzero)
     {
-      octave_idx_type new_nzmx = nzmx - ndel;
-
-      T *new_data = new T [new_nzmx];
-      for (octave_idx_type i = 0; i < new_nzmx; i++)
-        new_data[i] = d[i];
-      delete [] d;
-      d = new_data;
-
-      octave_idx_type *new_ridx = new octave_idx_type [new_nzmx];
-      for (octave_idx_type i = 0; i < new_nzmx; i++)
-        new_ridx[i] = r[i];
-      delete [] r;
-      r = new_ridx;
-    }
-  else
-    {
-      octave_idx_type new_nzmx = nzmx - ndel - nzero;
-
-      T *new_data = new T [new_nzmx];
-      octave_idx_type *new_ridx = new octave_idx_type [new_nzmx];
-
-      octave_idx_type ii = 0;
-      octave_idx_type ic = 0;
-      for (octave_idx_type j = 0; j < ncols; j++)
+      octave_idx_type i = 0, k = 0;
+      for (octave_idx_type j = 1; j <= ncols; j++)
         {
-          for (octave_idx_type k = ic; k < c[j+1]; k++)
-            if (d[k] != T ())
+          octave_idx_type u = c[j];
+          for (i = i; i < u; i++)
+            if (d[i] != T())
               {
-                new_data [ii] = d[k];
-                new_ridx [ii++] = r[k];
+                d[k] = d[i];
+                r[k++] = r[i];
               }
-          ic = c[j+1];
-          c[j+1] = ii;
+          c[j] = k;
         }
-
-      delete [] d;
-      d = new_data;
-
-      delete [] r;
-      r = new_ridx;
     }
 
-  nzmx -= ndel + nzero;
+  change_length (c[ncols]);
 }
 
 template <class T>
 void
 Sparse<T>::SparseRep::change_length (octave_idx_type nz)
 {
-  if (nz != nzmx)
+  for (octave_idx_type j = ncols; j > 0 && c[j] > nz; j--)
+    c[j] = nz;
+
+  // We shall skip reallocation if we have less than 1/frac extra elements to
+  // discard.
+  static const int frac = 5;
+  if (nz > nzmx || nz < nzmx - nzmx/frac)
     {
-      octave_idx_type min_nzmx = (nz < nzmx ? nz : nzmx);
+      // Reallocate.
+      octave_idx_type min_nzmx = std::min (nz, nzmx);
 
       octave_idx_type * new_ridx = new octave_idx_type [nz];
-      for (octave_idx_type i = 0; i < min_nzmx; i++)
-        new_ridx[i] = r[i];
+      copy_or_memcpy (min_nzmx, r, new_ridx);
 
       delete [] r;
       r = new_ridx;
 
       T * new_data = new T [nz];
-      for (octave_idx_type i = 0; i < min_nzmx; i++)
-        new_data[i] = d[i];
+      copy_or_memcpy (min_nzmx, d, new_data);
 
       delete [] d;
       d = new_data;
-
-      if (nz < nzmx)
-        for (octave_idx_type i = 0; i <= ncols; i++)
-          if (c[i] > nz)
-            c[i] = nz;
 
       nzmx = nz;
     }

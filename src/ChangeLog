@@ -1,3 +1,11 @@
+2010-04-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (SINGLE_TYPE_CONCAT, DO_SINGLE_TYPE_CONCAT): Replace by
+	templates.
+	(single_type_concat, do_single_type_concat): New static template
+	funcs. Correctly skip 0x0 matrices.
+	(Fcat): Call them here. Add tests.
+
 2010-04-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-parse.yy (feval): Use do_multi_index_op on handles.

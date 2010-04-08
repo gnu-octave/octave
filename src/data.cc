@@ -1345,50 +1345,49 @@ omitted, it defaults to the first non-singleton dimension.\n\
 
  */
 
-#define SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      int dv_len = dv.length (); \
-      Array<octave_idx_type> ra_idx (dv_len > 1 ? dv_len : 2, 1, 0); \
-      \
-      for (int j = 1; j < n_args; j++) \
-        { \
-          octave_quit (); \
-          \
-          TYPE ra = args(j).EXTRACTOR ();       \
-          \
-          if (! error_state) \
-            { \
-              result.insert (ra, ra_idx); \
-              \
-              if (error_state) \
-                return retval; \
-              \
-              dim_vector dv_tmp = args (j).dims (); \
-              \
-              if (dim >= dv_len) \
-                { \
-                  if (j > 1) \
-                    error ("%s: indexing error", fname.c_str ()); \
-                  break; \
-                } \
-              else \
-                ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1); \
-            } \
-        } \
-    } \
- while (0)
+template<class TYPE>
+static void 
+single_type_concat (TYPE& result,
+                    const octave_value_list& args,
+                    int dim)
+{
+  int dv_len = result.ndims (), n_args = args.length ();
+  Array<octave_idx_type> ra_idx (dv_len, 1, 0);
 
-#define DO_SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR) \
-  do \
-    { \
-      TYPE result (dv); \
-      \
-      SINGLE_TYPE_CONCAT(TYPE, EXTRACTOR); \
-      \
-      retval = result; \
-    } \
- while (0)
+  for (int j = 1; j < n_args; j++)
+    {
+      octave_quit ();
+
+      TYPE ra = octave_value_extract<TYPE> (args(j));
+      dim_vector dvra = ra.dims ();
+      if (error_state)
+        break;
+
+      if (dvra.zero_by_zero ())
+        continue;
+
+      result.insert (ra, ra_idx);
+
+      if (error_state)
+        break;
+
+      ra_idx (dim) += (dim < dvra.length () ? dvra(dim) : 1);
+    }
+}
+
+template<class TYPE>
+static octave_value 
+do_single_type_concat (const dim_vector& dv,
+                       const octave_value_list& args,
+                       int dim)
+{
+  TYPE result (dv);
+
+  single_type_concat (result, args, dim);
+
+  return result;
+}
+
 
 static octave_value
 do_cat (const octave_value_list& args, std::string fname)
@@ -1452,25 +1451,24 @@ do_cat (const octave_value_list& args, std::string fname)
               if (any_sparse_p)
                 {           
                   if (all_real_p)
-                    DO_SINGLE_TYPE_CONCAT (SparseMatrix, sparse_matrix_value);
+                    retval = do_single_type_concat<SparseMatrix> (dv, args, dim);
                   else
-                    DO_SINGLE_TYPE_CONCAT (SparseComplexMatrix, sparse_complex_matrix_value);
+                    retval = do_single_type_concat<SparseComplexMatrix> (dv, args, dim);
                 }
               else
                 {
                   if (all_real_p)
-                    DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
+                    retval = do_single_type_concat<NDArray> (dv, args, dim);
                   else
-                    DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+                    retval = do_single_type_concat<ComplexNDArray> (dv, args, dim);
                 }
             }
           else if (result_type == "single")
             {
               if (all_real_p)
-                DO_SINGLE_TYPE_CONCAT (FloatNDArray, float_array_value);
+                retval = do_single_type_concat<FloatNDArray> (dv, args, dim);
               else
-                DO_SINGLE_TYPE_CONCAT (FloatComplexNDArray, 
-                                       float_complex_array_value);
+                retval = do_single_type_concat<FloatComplexNDArray> (dv, args, dim);
             }
           else if (result_type == "char")
             {
@@ -1480,33 +1478,33 @@ do_cat (const octave_value_list& args, std::string fname)
 
               charNDArray result (dv, Vstring_fill_char);
 
-              SINGLE_TYPE_CONCAT (charNDArray, char_array_value);
+              single_type_concat<charNDArray> (result, args, dim);
 
               retval = octave_value (result, type);
             }
           else if (result_type == "logical")
             {
               if (any_sparse_p)
-                DO_SINGLE_TYPE_CONCAT (SparseBoolMatrix, sparse_bool_matrix_value);
+                retval = do_single_type_concat<SparseBoolMatrix> (dv, args, dim);
               else
-                DO_SINGLE_TYPE_CONCAT (boolNDArray, bool_array_value);
+                retval = do_single_type_concat<boolNDArray> (dv, args, dim);
             }
           else if (result_type == "int8")
-            DO_SINGLE_TYPE_CONCAT (int8NDArray, int8_array_value);
+            retval = do_single_type_concat<int8NDArray> (dv, args, dim);
           else if (result_type == "int16")
-            DO_SINGLE_TYPE_CONCAT (int16NDArray, int16_array_value);
+            retval = do_single_type_concat<int16NDArray> (dv, args, dim);
           else if (result_type == "int32")
-            DO_SINGLE_TYPE_CONCAT (int32NDArray, int32_array_value);
+            retval = do_single_type_concat<int32NDArray> (dv, args, dim);
           else if (result_type == "int64")
-            DO_SINGLE_TYPE_CONCAT (int64NDArray, int64_array_value);
+            retval = do_single_type_concat<int64NDArray> (dv, args, dim);
           else if (result_type == "uint8")
-            DO_SINGLE_TYPE_CONCAT (uint8NDArray, uint8_array_value);
+            retval = do_single_type_concat<uint8NDArray> (dv, args, dim);
           else if (result_type == "uint16")
-            DO_SINGLE_TYPE_CONCAT (uint16NDArray, uint16_array_value);
+            retval = do_single_type_concat<uint16NDArray> (dv, args, dim);
           else if (result_type == "uint32")
-            DO_SINGLE_TYPE_CONCAT (uint32NDArray, uint32_array_value);
+            retval = do_single_type_concat<uint32NDArray> (dv, args, dim);
           else if (result_type == "uint64")
-            DO_SINGLE_TYPE_CONCAT (uint64NDArray, uint64_array_value);
+            retval = do_single_type_concat<uint64NDArray> (dv, args, dim);
           else
             {
               // The lines below might seem crazy, since we take a copy
@@ -1555,13 +1553,6 @@ do_cat (const octave_value_list& args, std::string fname)
                                      dv_tmp (dim) : 1);
                 }
               retval = tmp;
-            }
-
-          if (! error_state)
-            {
-              // Reshape, chopping trailing singleton dimensions
-              dv.chop_trailing_singletons ();
-              retval = retval.reshape (dv);
             }
         }
       else
@@ -1788,6 +1779,11 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!assert (testcat('single', 'uint64', 'uint64', false));
 %!assert (testcat('uint64', 'single', 'uint64', false));
 %!assert (testcat('uint64', 'uint64', 'uint64', false));
+
+%! assert (cat (3, [], [1,2;3,4]), [1,2;3,4]);
+%! assert (cat (3, [1,2;3,4], []), [1,2;3,4]);
+%! assert (cat (3, [], [1,2;3,4], []), [1,2;3,4]);
+%! assert (cat (3, [], [], []), []);
 
 */
 

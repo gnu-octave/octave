@@ -473,14 +473,14 @@ public:
 
   bool concat (const dim_vector& dvb, int dim = 0)
   {
-    if (all_zero ())
+    if (dvb.zero_by_zero ())
+      return true;
+
+    if (zero_by_zero ())
       {
         *this = dvb;
         return true;
       }
-
-    if (dvb.all_zero ())
-      return true;
 
     int na = length ();
     int nb = dvb.length ();

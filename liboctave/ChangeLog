@@ -1,5 +1,10 @@
 2010-04-08  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::resize (octave_idx_type, octave_idx_type)):
+	Rewrite. Be smarter esp. when resizing to more columns.
+
+2010-04-08  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dim-vector.h (dim_vector::concat): Ignore zero_by_zero, but not
 	all_zero arrays in concatenation (like Matlab).
 

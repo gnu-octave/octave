@@ -918,92 +918,45 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
       return;
     }
 
-  if (ndims () == 0)
-    dimensions = dim_vector (0, 0);
-
   if (r == dim1 () && c == dim2 ())
     return;
 
-  typename Sparse<T>::SparseRep *old_rep = rep;
+  // This wouldn't be necessary for r >= rows () if nrows wasn't part of the
+  // Sparse rep. It is not good for anything in there.
+  make_unique ();
 
-  octave_idx_type nc = cols ();
-  octave_idx_type nr = rows ();
-
-  if (nnz () == 0 || r == 0 || c == 0)
-    // Special case of redimensioning to/from a sparse matrix with 
-    // no elements
-    rep = new typename Sparse<T>::SparseRep (r, c);
-  else
+  if (r < rows ())
     {
-      octave_idx_type n = 0;
-      Sparse<T> tmpval;
-      if (r >= nr)
+      octave_idx_type i = 0, k = 0;
+      for (octave_idx_type j = 1; j <= rep->ncols; j++)
         {
-          if (c > nc)
-            n = xcidx(nc);
-          else
-            n = xcidx(c);
-
-          tmpval = Sparse<T> (r, c, n);
-
-          if (c > nc)
-            {
-              for (octave_idx_type i = 0; i < nc + 1; i++)
-                tmpval.cidx(i) = xcidx(i);
-              for (octave_idx_type i = nc + 1; i < c + 1; i++)
-                tmpval.cidx(i) = tmpval.cidx(i-1);
-            }
-          else if (c <= nc)
-            for (octave_idx_type i = 0; i < c + 1; i++)
-              tmpval.cidx(i) = xcidx(i);
-          
-          for (octave_idx_type i = 0; i < n; i++)
-            {
-              tmpval.data(i) = xdata(i);
-              tmpval.ridx(i) = xridx(i);
-            }
+          octave_idx_type u = xcidx(j);
+          for (i = i; i < u; i++)
+            if (xridx(i) < r)
+              {
+                xdata(k) = xdata(i);
+                xridx(k++) = xridx(i);
+              }
+          xcidx(j) = k;
         }
-      else
-        {
-          // Count how many non zero terms before we do anything
-          octave_idx_type min_nc = (c < nc ? c : nc);
-          for (octave_idx_type i = 0; i < min_nc; i++)
-            for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
-              if (xridx(j) < r)
-                n++;
-
-          if (n)
-            {
-              // Now that we know the size we can do something
-              tmpval = Sparse<T> (r, c, n);
-
-              tmpval.cidx(0);
-              for (octave_idx_type i = 0, ii = 0; i < min_nc; i++)
-                {
-                  for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
-                    if (xridx(j) < r)
-                      {
-                        tmpval.data(ii) = xdata(j);
-                        tmpval.ridx(ii++) = xridx(j);
-                      }
-                  tmpval.cidx(i+1) = ii;
-                }
-              if (c > min_nc)
-                for (octave_idx_type i = nc; i < c; i++)
-                  tmpval.cidx(i+1) = tmpval.cidx(i);
-            }
-          else
-            tmpval = Sparse<T> (r, c);
-        }
-
-      rep = tmpval.rep;
-      rep->count++;
     }
 
-  dimensions = dim_vector (r, c);
+  rep->nrows = dimensions(0) = r;
 
-  if (--old_rep->count <= 0)
-    delete old_rep;
+  if (c != rep->ncols)
+    {
+      octave_idx_type *new_cidx = new octave_idx_type [c+1];
+      copy_or_memcpy (std::min (c, rep->ncols)+1, rep->c, new_cidx);
+      delete [] rep->c;
+      rep->c = new_cidx;
+
+      if (c > rep->ncols)
+        fill_or_memset (c - rep->ncols, rep->c[rep->ncols], rep->c + rep->ncols + 1);
+    }
+
+  rep->ncols = dimensions(1) = c;
+
+  rep->change_length (rep->nnz ());
 }
 
 template <class T>

@@ -144,6 +144,10 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  // Unsafe.  This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+
   mxArray *as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const;

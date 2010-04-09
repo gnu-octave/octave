@@ -1,3 +1,8 @@
+2010-04-09  John W. Eaton  <jwe@octave.org>
+
+	* ov-ch-mat.h (octave_char_matrix::mex_get_data): New function.
+	Addresses bug #29475.
+
 2010-04-09  Judd Storrs  <jstorrs@gmail.com>
 
 	* utils.cc (isvarname): Keywords are not valid variable names.

@@ -1,3 +1,7 @@
+2010-04-09  Judd Storrs  <jstorrs@gmail.com>
+
+	* utils.cc (isvarname): Keywords are not valid variable names.
+
 2010-04-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* help.cc (make_name_list): Don't insert global and top-level scope

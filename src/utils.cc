@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
+#include "lex.h"
 #include "load-path.h"
 #include "oct-errno.h"
 #include "oct-hist.h"
@@ -102,7 +103,7 @@ Return true if @var{name} is a valid variable name\n\
     return retval;
 
   if (argc == 2)
-    retval = valid_identifier (argv[1]);
+    retval = valid_identifier (argv[1]) && ! is_keyword (argv[1]);
   else
     print_usage ();
 

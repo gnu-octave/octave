@@ -462,14 +462,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
               string_vector named_tokens(nnames);
               if (namecount > 0)
-                for (int i = 1; i < matches; i++)
-                  {
-                    if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)        
-                      {
-                        named_tokens(named_idx(i-1)) = 
-                          std::string(*(listptr+nidx[i-1]));
-                      }
-                  }
+                for (int i = 0; i < pos_match; i++)
+                  named_tokens(named_idx(i)) = std::string(*(listptr+nidx[i]));
 
               pcre_free_substring_list(listptr);
 

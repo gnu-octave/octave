@@ -1,3 +1,8 @@
+2010-04-09  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Properly ignore
+	zero-length matches in named tokens.
+
 2010-04-09  John W. Eaton  <jwe@octave.org>
 
 	* ov-ch-mat.h (octave_char_matrix::mex_get_data): New function.

@@ -33,7 +33,7 @@ SparseQR::SparseQR_rep::SparseQR_rep (const SparseMatrix& a, int order)
 {
 #ifdef HAVE_CXSPARSE
   CXSPARSE_DNAME () A;
-  A.nzmax = a.nzmax ();
+  A.nzmax = a.nnz ();
   A.m = a.rows ();
   A.n = a.cols ();
   nrows = A.m;
@@ -392,9 +392,9 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
       SparseQR q (a, 3);
       if (! q.ok ()) 
         return SparseMatrix();
-      x = SparseMatrix (nc, b_nc, b.nzmax());
+      x = SparseMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
       OCTAVE_LOCAL_BUFFER (double, buf, q.S()->m2);
@@ -455,9 +455,9 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
       SparseQR q (at, 3);
       if (! q.ok ())
         return SparseMatrix();
-      x = SparseMatrix (nc, b_nc, b.nzmax());
+      x = SparseMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
       OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
@@ -710,9 +710,9 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
       SparseQR q (a, 3);
       if (! q.ok ()) 
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
       OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
@@ -802,9 +802,9 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
       SparseQR q (at, 3);
       if (! q.ok ())
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
       OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));

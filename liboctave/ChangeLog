@@ -1,3 +1,11 @@
+2010-04-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (Sparse<T>::diag): Change nzmax to nnz where appropriate.
+	* MatrixType.cc (MatrixType::MatrixType): Ditto.
+	* SparseQR.cc: Ditto.
+	* SparseCmplxQR.cc: Ditto.
+	* boolSparse.cc: Ditto.
+
 2010-04-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::resize (octave_idx_type, octave_idx_type)):

@@ -42,10 +42,10 @@ SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz = nzmax ();
+  octave_idx_type nz = nnz ();
   octave_idx_type nr_a = a.rows ();
   octave_idx_type nc_a = a.cols ();
-  octave_idx_type nz_a = a.nzmax ();
+  octave_idx_type nz_a = a.nnz ();
 
   if (nr != nr_a || nc != nc_a || nz != nz_a)
     return false;
@@ -97,7 +97,7 @@ SparseBoolMatrix::operator ! (void) const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
-  octave_idx_type nz1 = nzmax ();
+  octave_idx_type nz1 = nnz ();
   octave_idx_type nz2 = nr*nc - nz1;
    
   SparseBoolMatrix r (nr, nc, nz2);

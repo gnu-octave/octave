@@ -212,7 +212,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
-  octave_idx_type nnz = a.nzmax ();
+  octave_idx_type nnz = a.nnz ();
 
   if (octave_sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
@@ -533,7 +533,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
-  octave_idx_type nnz = a.nzmax ();
+  octave_idx_type nnz = a.nnz ();
 
   if (octave_sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 

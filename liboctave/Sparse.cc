@@ -2050,7 +2050,7 @@ Sparse<T>::diag (octave_idx_type k) const
       if (nnr == 1) 
         {
           octave_idx_type n = nnc + std::abs (k);
-          octave_idx_type nz = nzmax ();
+          octave_idx_type nz = nnz ();
 
           d = Sparse<T> (n, n, nz);
 
@@ -2076,7 +2076,7 @@ Sparse<T>::diag (octave_idx_type k) const
       else 
         {
           octave_idx_type n = nnr + std::abs (k);
-          octave_idx_type nz = nzmax ();
+          octave_idx_type nz = nnz ();
 
           d = Sparse<T> (n, n, nz);
 

@@ -435,9 +435,9 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
       SparseComplexQR q (a, 2);
       if (! q.ok ())
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
       OCTAVE_C99_COMPLEX (buf, q.S()->m2);
@@ -502,9 +502,9 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
       SparseComplexQR q (at, 2);
       if (! q.ok ())
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
@@ -730,9 +730,9 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
       SparseComplexQR q (a, 2);
       if (! q.ok ())
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));
       OCTAVE_C99_COMPLEX (buf, q.S()->m2);
@@ -797,9 +797,9 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
       SparseComplexQR q (at, 2);
       if (! q.ok ())
         return SparseComplexMatrix();
-      x = SparseComplexMatrix (nc, b_nc, b.nzmax());
+      x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
-      x_nz = b.nzmax();
+      x_nz = b.nnz();
       ii = 0;
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
       OCTAVE_LOCAL_BUFFER (Complex, Xx, (b_nr > nc ? b_nr : nc));

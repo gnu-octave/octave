@@ -1,3 +1,9 @@
+2010-04-10  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.h.in: Fix nextplot property values. Add "new" to 
+	list for axes nextplot values. Change "replace_children" to
+	"replacechildren" for both axes and figures.
+
 2010-04-09  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Properly ignore

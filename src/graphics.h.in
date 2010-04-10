@@ -2563,7 +2563,7 @@ public:
     BEGIN_PROPERTIES (figure)
       any_property __plot_stream__ h , Matrix ()
       bool_property __enhanced__ h , "on"
-      radio_property nextplot , "new|{add}|replace_children|replace"
+      radio_property nextplot , "new|{add}|replacechildren|replace"
       callback_property closerequestfcn , "closereq"
       handle_property currentaxes S , graphics_handle ()
       array_property colormap , jet_colormap ()
@@ -2913,7 +2913,7 @@ public:
       radio_property yaxislocation , "{left}|right|zero"
       radio_property xaxislocation , "{bottom}|top|zero"
       array_property view u , Matrix ()
-      radio_property nextplot , "add|replace_children|{replace}"
+      radio_property nextplot , "new|add|replacechildren|{replace}"
       array_property outerposition u , default_axes_outerposition ()
       radio_property activepositionproperty , "{outerposition}|position"
       color_property ambientlightcolor , color_values (1, 1, 1)

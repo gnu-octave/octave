@@ -1,3 +1,7 @@
+2010-04-10  Ben Abbott <bpabbot@mac.com>
+
+	* plot/__go_draw_figure__.m: Don't set background for non-visible axes.
+
 2010-04-07  John W. Eaton  <jwe@octave.org>
 
 	* testfun/runtests.m: New function.

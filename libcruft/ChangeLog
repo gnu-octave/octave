@@ -1,3 +1,9 @@
+2010-04-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas-xtra/cmatm3.f, blas-xtra/zmatm3.f,
+	blas-xtra/dmatm3.f, blas-xtra/xsdot.f: Fix typos. Add missing
+	decls.
+
 2010-03-21  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (libcruft_la_LIBADD): Include ../libgnu/libgnu.la

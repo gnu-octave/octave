@@ -35,9 +35,10 @@ c c (out)       a double prec. output array, size (m,n,np)
       double precision a(m*k,np),b(k*n,np)
       double precision c(m*n,np)
 
-      double precision sdot,one,zero
+      double precision ddot,one,zero
       parameter (one = 1d0, zero = 0d0)
       external ddot,dgemv,dgemm
+      integer i
 
 c quick return if possible.
       if (np <= 0) return

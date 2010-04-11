@@ -35,9 +35,10 @@ c c (out)       a complex output array, size (m,n,np)
       complex a(m*k,np),b(k*n,np)
       complex c(m*n,np)
 
-      complex cdot,one,zero
+      complex cdotu,one,zero
       parameter (one = 1e0, zero = 0e0)
       external cdotu,cgemv,cgemm
+      integer i
 
 c quick return if possible.
       if (np <= 0) return

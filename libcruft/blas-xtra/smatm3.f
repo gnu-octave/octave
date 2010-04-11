@@ -38,6 +38,7 @@ c c (out)       a real output array, size (m,n,np)
       real sdot,one,zero
       parameter (one = 1e0, zero = 0e0)
       external sdot,sgemv,sgemm
+      integer i
 
 c quick return if possible.
       if (np <= 0) return

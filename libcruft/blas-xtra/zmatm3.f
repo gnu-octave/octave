@@ -35,9 +35,10 @@ c c (out)       a double complex output array, size (m,n,np)
       double complex a(m*k,np),b(k*n,np)
       double complex c(m*n,np)
 
-      double complex cdot,one,zero
+      double complex zdotu,one,zero
       parameter (one = 1d0, zero = 0d0)
       external zdotu,zgemv,zgemm
+      integer i
 
 c quick return if possible.
       if (np <= 0) return

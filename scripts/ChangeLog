@@ -1,3 +1,9 @@
+2010-04-12  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__plt_get_axis_arg__.m, plot/newplot.m: Respect the nextplot
+	property value of 'new' for axes and 'replacechildren' for axes and
+	figures.
+
 2010-04-10  Ben Abbott <bpabbot@mac.com>
 
 	* plot/__go_draw_figure__.m: Don't set background for non-visible axes.

@@ -68,6 +68,10 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     endif
   endif
 
+  if (ishandle (h) && strcmp (get (h, "nextplot"), "new"))
+    h = axes ();
+  endif
+
   narg = length (varargin);
 
 endfunction

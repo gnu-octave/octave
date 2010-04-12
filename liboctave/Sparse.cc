@@ -329,7 +329,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     {
       // This is completely specialized, because the sorts can be simplified.
       T a0 = a(0);
-      if (cl == 1)
+      if (a0 == T())
+        {
+          // Do nothing, it's an empty matrix.
+        }
+      else if (cl == 1)
         {
           // Sparse column vector. Sort row indices.
           idx_vector rs = r.sorted ();
@@ -516,6 +520,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
               rrd[k] = a(rdi[i]);
             }
         }
+
+      maybe_compress (true);
     }
   else
     {
@@ -606,6 +612,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                 }
             }
         }
+
+      maybe_compress (true);
     }
 }
 

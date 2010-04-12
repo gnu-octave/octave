@@ -1,3 +1,8 @@
+2010-04-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&, const idx_vector&,
+	const idx_vector&, ...)): Call maybe_compress after matrix is created.
+
 2010-04-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::diag): Change nzmax to nnz where appropriate.

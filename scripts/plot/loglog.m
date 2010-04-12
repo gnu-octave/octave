@@ -37,6 +37,9 @@ function retval = loglog (varargin)
     newplot ();
 
     set (h, "xscale", "log", "yscale", "log");
+    if (any( strcmp (get (gca, "nextplot"), {"new", "replace"})))
+      set (h, "xminortick", "on", "yminortick", "on");
+    endif
 
     tmp = __plt__ ("loglog", h, varargin{:});
 
@@ -48,3 +51,4 @@ function retval = loglog (varargin)
   end_unwind_protect
 
 endfunction
+

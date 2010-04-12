@@ -1,5 +1,6 @@
-2010-04-12  Ben Abbott <bpabbott@mac.com>
+2010-04-12  Ben Abbott <bpabbot@mac.com>
 
+	* plot/loglog.m: Minor ticks on by default for loglog plots.
 	* plot/__plt_get_axis_arg__.m, plot/newplot.m: Respect the nextplot
 	property value of 'new' for axes and 'replacechildren' for axes and
 	figures.

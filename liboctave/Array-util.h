@@ -118,4 +118,8 @@ extern void OCTAVE_API gripe_invalid_index (void);
 
 extern void OCTAVE_API gripe_invalid_resize (void);
 
+extern void OCTAVE_API gripe_invalid_assignment_size (void);
+
+extern void OCTAVE_API gripe_assignment_dimension_mismatch (void);
+
 #endif

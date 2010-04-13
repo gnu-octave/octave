@@ -161,10 +161,6 @@ public:
 
   dim_vector dimensions;
 
-protected:
-  idx_vector *idx;
-  octave_idx_type idx_count;
-
 private:
 
   typename Sparse<T>::SparseRep *nil_rep (void) const
@@ -180,33 +176,32 @@ private:
 public:
 
   Sparse (void)
-    : rep (nil_rep ()), dimensions (dim_vector(0,0)),
-      idx (0), idx_count (0) { }
+    : rep (nil_rep ()), dimensions (dim_vector(0,0)) { }
 
   explicit Sparse (octave_idx_type n)
     : rep (new typename Sparse<T>::SparseRep (n)), 
-      dimensions (dim_vector (n, n)), idx (0), idx_count (0) { }
+      dimensions (dim_vector (n, n)) { }
 
   explicit Sparse (octave_idx_type nr, octave_idx_type nc)
     : rep (new typename Sparse<T>::SparseRep (nr, nc)), 
-      dimensions (dim_vector (nr, nc)), idx (0), idx_count (0) { }
+      dimensions (dim_vector (nr, nc)) { }
 
   explicit Sparse (octave_idx_type nr, octave_idx_type nc, T val);
 
   Sparse (const dim_vector& dv, octave_idx_type nz)
     : rep (new typename Sparse<T>::SparseRep (dv(0), dv(1), nz)),
-    dimensions (dv), idx (0), idx_count (0) { }
+    dimensions (dv) { }
 
   Sparse (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz)
     : rep (new typename Sparse<T>::SparseRep (nr, nc, nz)),
-      dimensions (dim_vector (nr, nc)), idx (0), idx_count (0) { }
+      dimensions (dim_vector (nr, nc)) { }
 
   // Type conversion case.
   template <class U> Sparse (const Sparse<U>& a);
 
   // No type conversion case.
   Sparse (const Sparse<T>& a)
-    : rep (a.rep), dimensions (a.dimensions), idx (0), idx_count (0)
+    : rep (a.rep), dimensions (a.dimensions)
     {
       rep->count++;
     }
@@ -475,25 +470,19 @@ public:
 
   octave_idx_type ndims (void) const { return dimensions.length (); }
 
-  void clear_index (void);
-
-  void set_index (const idx_vector& i);
-
-  octave_idx_type index_count (void) const { return idx_count; }
-
-  idx_vector *get_idx (void) const { return idx; }
-
   void delete_elements (const idx_vector& i);
 
   void delete_elements (int dim, const idx_vector& i);
 
   void delete_elements (const idx_vector& i, const idx_vector& j);
 
-  Sparse<T> value (void);
-
   Sparse<T> index (const idx_vector& i, bool resize_ok = false) const;
 
   Sparse<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok = false) const;
+
+  void assign (const idx_vector& i, const Sparse<T>& rhs);
+
+  void assign (const idx_vector& i, const idx_vector& j, const Sparse<T>& rhs);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -682,16 +671,5 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
 
   return is;
 }
-
-#define INSTANTIATE_SPARSE_ASSIGN(LT, RT, API) \
-  template API int assign (Sparse<LT>&, const Sparse<RT>&); \
-  template API int assign1 (Sparse<LT>&, const Sparse<RT>&);
-
-#define INSTANTIATE_SPARSE(T, API) \
-  template class API Sparse<T>;
-
-#define INSTANTIATE_SPARSE_AND_ASSIGN(T, API) \
-  INSTANTIATE_SPARSE (T, API); \
-  INSTANTIATE_SPARSE_ASSIGN (T, T, API)
 
 #endif

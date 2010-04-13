@@ -93,10 +93,6 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const SparseComplexMatrix& rhs);
-
-  void assign (const octave_value_list& idx, const SparseMatrix& rhs);
-
   builtin_type_t builtin_type (void) const { return btyp_complex; }
 
   bool is_complex_matrix (void) const { return true; }

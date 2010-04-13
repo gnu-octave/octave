@@ -165,12 +165,40 @@ template <class T>
 void 
 octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 {
+
   octave_idx_type len = idx.length ();
 
-  for (octave_idx_type i = 0; i < len; i++)
-    matrix.set_index (idx(i).index_vector ());
+  switch (len)
+    {
+    case 1:
+      {
+        idx_vector i = idx (0).index_vector ();
 
-  ::assign (matrix, rhs);
+        if (! error_state)
+          matrix.assign (i, rhs);
+
+        break;
+      }
+
+    case 2:
+      {
+        idx_vector i = idx (0).index_vector ();
+
+        if (! error_state)
+          {
+            idx_vector j = idx (1).index_vector ();
+
+            if (! error_state)
+              matrix.assign (i, j, rhs);
+          }
+
+        break;
+      }
+
+    default:
+      error ("sparse indexing needs 1 or 2 indices");
+    }
+
 
   // Invalidate matrix type.
   typ.invalidate_type ();

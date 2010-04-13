@@ -1154,6 +1154,40 @@ idx_vector::is_permutation (octave_idx_type n) const
 }
 
 idx_vector
+idx_vector::inverse_permutation (octave_idx_type n) const
+{
+  assert (n == length (n));
+
+  idx_vector retval;
+
+  switch (idx_class ())
+    {
+    case class_range:
+      {
+        if (increment () == -1)
+          retval = sorted ();
+        else
+          retval = *this;
+        break;
+      }
+    case class_vector:
+      {
+        idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (rep);
+        const octave_idx_type *ri = r->get_data ();
+        Array<octave_idx_type> idx (orig_dimensions ());
+        for (octave_idx_type i = 0; i < n; i++)
+          idx.xelem(ri[i]) = i;
+        retval = new idx_vector_rep (idx, r->extent (0), DIRECT);
+      }
+    default:
+      retval = *this;
+      break;
+    }
+
+  return retval;
+}
+
+idx_vector
 idx_vector::unmask (void) const
 {
   if (idx_class () == class_mask)

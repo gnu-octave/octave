@@ -101,25 +101,6 @@ octave_sparse_complex_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-void
-octave_sparse_complex_matrix::assign (const octave_value_list& idx,
-                                      const SparseComplexMatrix& rhs)
-{
-  octave_base_sparse<SparseComplexMatrix>::assign (idx, rhs);
-}
-
-void
-octave_sparse_complex_matrix::assign (const octave_value_list& idx,
-                                      const SparseMatrix& rhs)
-{
-  int len = idx.length ();
-
-  for (int i = 0; i < len; i++)
-    matrix.set_index (idx(i).index_vector ());
-
-  ::assign (matrix, rhs);
-}
-
 double
 octave_sparse_complex_matrix::double_value (bool force_conversion) const
 {

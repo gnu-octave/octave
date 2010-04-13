@@ -731,3 +731,17 @@ gripe_invalid_resize (void)
      "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
 }
 
+void 
+gripe_invalid_assignment_size (void)
+{
+  (*current_liboctave_error_handler)
+    ("A(I) = X: X must have the same size as I");
+}
+
+void
+gripe_assignment_dimension_mismatch (void)
+{
+  (*current_liboctave_error_handler)
+    ("A(I,J,...) = X: dimensions mismatch");
+}
+

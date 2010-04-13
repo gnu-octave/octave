@@ -57,9 +57,7 @@ sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
           || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
-INSTANTIATE_SPARSE_AND_ASSIGN (Complex, OCTAVE_API);
-
-INSTANTIATE_SPARSE_ASSIGN (Complex, double, OCTAVE_API);
+INSTANTIATE_SPARSE (Complex, OCTAVE_API);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<Complex>&);

@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse.h"
 #include "Sparse.cc"
 
-INSTANTIATE_SPARSE_AND_ASSIGN (bool, OCTAVE_API);
+INSTANTIATE_SPARSE (bool, OCTAVE_API);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<bool>&);

@@ -1,3 +1,31 @@
+2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-util.cc (gripe_invalid_assignment_size,
+	gripe_assignment_dimension_mismatch): Move funcs here from Array.cc
+	* Array-util.h: Declare them.
+	* Array.cc: Remove them.
+
+	* Sparse.cc (Sparse<T>::assign): New overloaded method.
+	(Sparse<T>::operator =): Update.
+	(Sparse<T>::resize1): Rewrite to match sparse assignment specifics.
+	(Sparse<T>::set_index, Sparse<T>::clear_index, Sparse<T>::index_count,
+	Sparse<T>::value): Remove methods.
+	(::assign1, ::assign): Remove funcs.
+
+	(INSTANTIATE_SPARSE): Move here from Sparse.h.
+
+	* Sparse.h (Sparse<T>::idx, Sparse<T>::idx_count): Remove member
+	fields. Remove initializations from all ctors.
+	(Sparse<T>::get_idx): Remove.
+	(Sparse<T>::assign): Add decls.
+	(INSTANTIATE_SPARSE_ASSIGN, INSTANTIATE_SPARSE_AND_ASSIGN): Remove.
+	(INSTANTIATE_SPARSE): Move to Sparse.cc
+
+	* Sparse-C.cc, Sparse-d.cc, Sparse-b.cc: Only call INSTANTIATE_SPARSE.
+
+	* idx-vector.cc (idx_vector::inverse_permutation): New method.
+	* idx-vector.h: Declare it.
+
 2010-04-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::Sparse (const Array<T>&, const idx_vector&,

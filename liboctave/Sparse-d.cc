@@ -45,7 +45,7 @@ sparse_descending_compare<double> (double a, double b)
   return (xisnan (a) || (a > b));
 }
 
-INSTANTIATE_SPARSE_AND_ASSIGN (double, OCTAVE_API);
+INSTANTIATE_SPARSE (double, OCTAVE_API);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<double>&);

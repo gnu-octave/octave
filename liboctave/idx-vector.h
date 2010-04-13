@@ -985,6 +985,10 @@ public:
 
   bool is_permutation (octave_idx_type n) const;
 
+  // Returns the inverse permutation. If this is not a permutation on 1:n, the
+  // result is undefined (but no error unless extent () != n).
+  idx_vector inverse_permutation (octave_idx_type n) const;
+
   // Copies all the indices to a given array. Not allowed for colons.
   void copy_data (octave_idx_type *data) const;
 

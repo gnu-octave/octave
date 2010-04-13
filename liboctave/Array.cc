@@ -1164,20 +1164,6 @@ Array<T>::index (const Array<idx_vector>& ia,
 }
 
 
-static void 
-gripe_invalid_assignment_size (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I) = X: X must have the same size as I");
-}
-
-static void
-gripe_assignment_dimension_mismatch (void)
-{
-  (*current_liboctave_error_handler)
-    ("A(I,J,...) = X: dimensions mismatch");
-}
-
 template <class T>
 void
 Array<T>::assign (const idx_vector& i, const Array<T>& rhs, const T& rfv)

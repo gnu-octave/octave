@@ -55,6 +55,9 @@ public:
 
   MSparse (const Sparse<T>& a) : Sparse<T> (a) { }
 
+  template <class U>
+  MSparse (const Sparse<U>& a) : Sparse<T> (a) { }
+
   MSparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
            octave_idx_type nr = -1, octave_idx_type nc = -1, bool sum_terms = true)
     : Sparse<T> (a, r, c, nr, nc, sum_terms) { }

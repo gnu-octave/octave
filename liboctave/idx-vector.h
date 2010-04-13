@@ -1005,6 +1005,8 @@ public:
   // Raw pointer to index array.  This is non-const because it may be
   // necessary to mutate the index.
   const octave_idx_type *raw (void);
+
+  bool is_vector (void) const;
     
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.

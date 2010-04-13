@@ -1,5 +1,14 @@
 2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Sparse.cc (Sparse<T>::index): If S is a sparse column vector,
+	forward S(I,1) and S(I,:) to 1D indexing. Handle permutation indexing
+	in the 1D case.
+	(Sparse<T>::assign): If S is a sparse column vector,
+	forward S(I,1) = X and S(I,:) =X to 1D indexed assignment.
+	* idx-vector.cc (idx_vector::inverse_permutation): Add missing break.
+
+2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array-util.cc (gripe_invalid_assignment_size,
 	gripe_assignment_dimension_mismatch): Move funcs here from Array.cc
 	* Array-util.h: Declare them.

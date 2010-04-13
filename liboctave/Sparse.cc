@@ -171,29 +171,6 @@ Sparse<T>::SparseRep::indices_ok (void) const
 }
 
 template <class T>
-template <class U>
-Sparse<T>::Sparse (const Sparse<U>& a)
-  : dimensions (a.dimensions)
-{
-  if (a.nnz () == 0)
-    rep = new typename Sparse<T>::SparseRep (rows (), cols());
-  else
-    {
-      rep = new typename Sparse<T>::SparseRep (rows (), cols (), a.nnz ());
-      
-      octave_idx_type nz = a.nnz ();
-      octave_idx_type nc = cols ();
-      for (octave_idx_type i = 0; i < nz; i++)
-        {
-          xdata (i) = T (a.data (i));
-          xridx (i) = a.ridx (i);
-        }
-      for (octave_idx_type i = 0; i < nc + 1; i++)
-        xcidx (i) = a.cidx (i);
-    }
-}
-
-template <class T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : dimensions (dim_vector (nr, nc))
 { 
@@ -1395,6 +1372,21 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
           retval.xcidx(1) = nz_new;
         }
+      else if (idx.is_permutation (nel) && idx.is_vector ())
+        {
+          if (idx.is_range () && idx.increment () == -1)
+            {
+              retval = Sparse<T> (nr, 1, nz);
+              std::reverse_copy (ridx (), ridx () + nz, retval.ridx ());
+              std::reverse_copy (data (), data () + nz, retval.data ());
+            }
+          else
+            {
+              Array<T> tmp = array_value ();
+              tmp = tmp.index (idx);
+              retval = Sparse<T> (tmp);
+            }
+        }
       else
         {
           // If indexing a sparse column vector by a vector, the result is a
@@ -1557,6 +1549,11 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
             }
         }
     }
+  else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+    {
+      // It's actually vector indexing. The 1D index is specialized for that.
+      retval = index (idx_i);
+    }
   else if (idx_i.is_scalar ())
     {
       octave_idx_type ii = idx_i(0);
@@ -1652,10 +1649,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       else
         {
           // Get inverse permutation.
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, iinv, nr);
-          const Array<octave_idx_type> ia = idx_i.as_array ();
-          for (octave_idx_type i = 0; i < nr; i++)
-            iinv[ia(i)] = i;
+          idx_vector idx_iinv = idx_i.inverse_permutation (nr);
+          const octave_idx_type *iinv = idx_iinv.raw ();
 
           // Scatter buffer.
           OCTAVE_LOCAL_BUFFER (T, scb, nr);
@@ -1682,14 +1677,20 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
         }
 
     }
+  else if (idx_j.is_colon ())
+    {
+      // This requires  uncompressing columns, which is generally costly,
+      // so we rely on the efficient transpose to handle this.
+      // It may still make sense to optimize some cases here.
+      retval = transpose ();
+      retval = retval.index (idx_vector::colon, idx_i);
+      retval = retval.transpose ();
+    }
   else
     {
-      // This is the most general case, where all optimizations failed.
-      // I suppose this is a relatively rare case, so it will be done
-      // as s(i,j) = ((s(:,j).')(:,i)).'
-      // Note that if j is :, the first indexing expr. is a shallow copy.
-      retval = index (idx_vector::colon, idx_j).transpose ();
-      retval = retval.index (idx_vector::colon, idx_i).transpose ();
+      // A(I, J) is decomposed into A(:, J)(I, :).
+      retval = index (idx_vector::colon, idx_j);
+      retval = retval.index (idx_i, idx_vector::colon);
     }
 
   return retval;
@@ -1987,6 +1988,11 @@ Sparse<T>::assign (const idx_vector& idx_i,
                 }
 
             }
+        }
+      else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
+        {
+          // It's actually vector indexing. The 1D assign is specialized for that.
+          assign (idx_i, rhs);
         }
       else if (idx_j.is_colon ())
         {

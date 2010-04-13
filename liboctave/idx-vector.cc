@@ -1178,6 +1178,7 @@ idx_vector::inverse_permutation (octave_idx_type n) const
         for (octave_idx_type i = 0; i < n; i++)
           idx.xelem(ri[i]) = i;
         retval = new idx_vector_rep (idx, r->extent (0), DIRECT);
+        break;
       }
     default:
       retval = *this;
@@ -1258,6 +1259,12 @@ Array<octave_idx_type>
 idx_vector::as_array (void) const
 {
   return rep->as_array ();
+}
+
+bool
+idx_vector::is_vector (void) const
+{
+  return idx_class () != class_vector || orig_dimensions ().is_vector ();
 }
     
 octave_idx_type 

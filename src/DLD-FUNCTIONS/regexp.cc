@@ -429,13 +429,16 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               int pos_match = 0;
               Matrix te(matches-1,2);
               for (int i = 1; i < matches; i++)
-                {
-                  if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                  if (i == 1 || ovector[2*i] != ovector[2*i-2]
+                      || ovector[2*i-1] != ovector[2*i+1])
                     {
-                      te(pos_match,0) = double (ovector[2*i]+1);
-                      te(pos_match++,1) = double (ovector[2*i+1]);
+                      if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                        {
+                          te(pos_match,0) = double (ovector[2*i]+1);
+                          te(pos_match++,1) = double (ovector[2*i+1]);
+                        }
                     }
-                }
               te.resize(pos_match,2);
               s = double (ovector[0]+1);
               e = double (ovector[1]);
@@ -452,18 +455,25 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               }
 
               Cell cell_t (dim_vector(1,pos_match));
+              string_vector named_tokens(nnames);
+              int pos_offset = 0;
               pos_match = 0;
               for (int i = 1; i < matches; i++)
                 if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
-                  cell_t(pos_match++) = std::string(*(listptr+i));
+                  if (i == 1 || ovector[2*i] != ovector[2*i-2]
+                      || ovector[2*i-1] != ovector[2*i+1])
+                    {
+                      if (namecount > 0)
+                        named_tokens(named_idx(i-pos_offset-1)) = 
+                          std::string(*(listptr+nidx[i-pos_offset-1]));    
+                      cell_t(pos_match++) = 
+                        std::string(*(listptr+i));
+                    }
+                  else
+                    pos_offset++;
 
               m =  std::string(*listptr);
               t = cell_t;
-
-              string_vector named_tokens(nnames);
-              if (namecount > 0)
-                for (int i = 0; i < pos_match; i++)
-                  named_tokens(named_idx(i)) = std::string(*(listptr+nidx[i]));
 
               pcre_free_substring_list(listptr);
 
@@ -1130,6 +1140,10 @@ The pattern is taken literally.\n\
 %! assert (nm.first{2},'James');
 %! assert (nm.last{1},'Davis');
 %! assert (nm.last{2},'Rogers');
+
+%!testif HAVE_PCRE
+%! # Parenthesis in named token (ie (int)) causes a problem
+%! assert (regexp('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
 %!assert(regexp("abc\nabc",'.'),[1:7])
 %!assert(regexp("abc\nabc",'.','dotall'),[1:7])

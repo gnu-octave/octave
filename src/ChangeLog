@@ -1,3 +1,8 @@
+2010-04-13  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Handle repeated matches
+	in the list of matches returned by pcre.
+
 2010-04-13  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::set_currentpoint,

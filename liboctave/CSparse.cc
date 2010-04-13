@@ -121,19 +121,8 @@ extern "C"
 }
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseMatrix& a)
-  : MSparse<Complex> (a.rows (), a.cols (), a.nnz ())
+  : MSparse<Complex> (a)
 {
-  octave_idx_type nc = cols ();
-  octave_idx_type nz = a.nnz ();
-
-  for (octave_idx_type i = 0; i < nc + 1; i++)
-    cidx (i) = a.cidx (i);
-
-  for (octave_idx_type i = 0; i < nz; i++)
-    {
-      data (i) = Complex (a.data (i));
-      ridx (i) = a.ridx (i);
-    }
 }
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseBoolMatrix& a)

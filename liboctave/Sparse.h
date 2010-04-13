@@ -104,17 +104,6 @@ protected:
         copy_or_memcpy (ncols + 1, a.c, c);
       }
  
-    template <class U>
-    SparseRep (const Sparse<U>::SparseRep& a)
-      : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
-      nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
-      {
-        octave_idx_type nz = a.nnz ();
-        std::copy (a.d, a.d + nz, d);
-        copy_or_memcpy (nz, a.r, r);
-        copy_or_memcpy (ncols + 1, a.c, c);
-      }
- 
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
 
     octave_idx_type length (void) const { return nzmx; }
@@ -206,9 +195,16 @@ public:
       dimensions (dim_vector (nr, nc)) { }
 
   // Type conversion case. Preserves capacity ().
-  template <class U> Sparse (const Sparse<U>& a)
-    : rep (new typename Sparse<T>::SparseRep (a.rep)),
-    dimensions (a.dimensions) { }
+  template <class U> 
+  Sparse (const Sparse<U>& a)
+    : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols, a.rep->nzmx)),
+    dimensions (a.dimensions) 
+    { 
+      octave_idx_type nz = a.nnz ();
+      std::copy (a.rep->d, a.rep->d + nz, rep->d);
+      copy_or_memcpy (nz, a.rep->r, rep->r);
+      copy_or_memcpy (rep->ncols + 1, a.rep->c, rep->c);
+    }
 
   // No type conversion case.
   Sparse (const Sparse<T>& a)

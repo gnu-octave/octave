@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 
 #include <iosfwd>
+#include <algorithm>
 
 #include "Array.h"
 #include "dim-vector.h"
@@ -97,13 +98,21 @@ protected:
       : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
       nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
       {
-        for (octave_idx_type i = 0; i < nzmx; i++)
-          {
-            d[i] = a.d[i];
-            r[i] = a.r[i];
-          }
-        for (octave_idx_type i = 0; i < ncols + 1; i++)
-          c[i] = a.c[i];
+        octave_idx_type nz = a.nnz ();
+        copy_or_memcpy (nz, a.d, d);
+        copy_or_memcpy (nz, a.r, r);
+        copy_or_memcpy (ncols + 1, a.c, c);
+      }
+ 
+    template <class U>
+    SparseRep (const Sparse<U>::SparseRep& a)
+      : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
+      nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
+      {
+        octave_idx_type nz = a.nnz ();
+        std::copy (a.d, a.d + nz, d);
+        copy_or_memcpy (nz, a.r, r);
+        copy_or_memcpy (ncols + 1, a.c, c);
       }
  
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
@@ -196,8 +205,10 @@ public:
     : rep (new typename Sparse<T>::SparseRep (nr, nc, nz)),
       dimensions (dim_vector (nr, nc)) { }
 
-  // Type conversion case.
-  template <class U> Sparse (const Sparse<U>& a);
+  // Type conversion case. Preserves capacity ().
+  template <class U> Sparse (const Sparse<U>& a)
+    : rep (new typename Sparse<T>::SparseRep (a.rep)),
+    dimensions (a.dimensions) { }
 
   // No type conversion case.
   Sparse (const Sparse<T>& a)

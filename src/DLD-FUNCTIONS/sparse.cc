@@ -196,3 +196,57 @@ to have a common size.\n\
 
    return retval;
 }
+
+DEFUN_DLD (spalloc, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
+Creates a @var{m}-by-@var{n} sparse matrix with preallocated space for at most\n\
+@var{nz} nonzero elements. This is useful for building the matrix incrementally\n\
+by a sequence of indexed assignments. Subsequent indexed assignments will reuse\n\
+the pre-allocated memory, provided they are of one of the simple forms\n\
+\n\
+@itemize\n\
+@item @code{@var{s}(I:J) = @var{x}}\n\
+@item @code{@var{s}(:,I:J) = @var{x}}\n\
+@item @code{@var{s}(K:L,I:J) = @var{x}}\n\
+@end itemize\n\
+\n\
+@b{and} that the following conditions are met:\n\
+\n\
+@itemize\n\
+@item the assignment does not decrease nnz(@var{S}).\n\
+@item after the assignment, nnz(@var{S}) does not exceed @var{nz}.\n\
+@item no index is out of bounds.\n\
+@end itemize\n\
+\n\
+Partial movement of data may still occur, but in general the assignment will be more\n\
+memory and time-efficient under these circumstances. In particular, it is possible\n\
+to efficiently build a pre-allocated sparse matrix from contiguous block of columns.\n\
+\n\
+The amount of preallocated memory for a given matrix may be queried using the function\n\
+@code{nzmax}.\n\
+@seealso{nzmax, sparse}\n\
+@end deftypefn")
+{
+   octave_value retval;
+   int nargin = args.length ();
+
+   if (nargin == 2 || nargin == 3)
+     {
+       octave_idx_type m = args(0).idx_type_value ();
+       octave_idx_type n = args(1).idx_type_value ();
+       octave_idx_type nz = 0;
+       if (nargin == 3)
+         nz = args(2).idx_type_value ();
+       if (error_state)
+         ;
+       else if (m >= 0 && n >= 0 && nz >= 0)
+         retval = SparseMatrix (dim_vector (m, n), nz);
+       else
+         error ("spalloc: m,n,nz must be non-negative");
+     }
+   else
+     print_usage ();
+
+   return retval;
+}

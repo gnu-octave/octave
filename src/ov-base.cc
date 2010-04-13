@@ -299,8 +299,7 @@ octave_base_value::nnz (void) const
 octave_idx_type
 octave_base_value::nzmax (void) const
 {
-  gripe_wrong_type_arg ("octave_base_value::nzmax ()", type_name ());
-  return -1;
+  return numel ();
 }
 
 octave_idx_type

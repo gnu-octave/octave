@@ -261,7 +261,7 @@ octave_base_sparse<T>::is_true (void) const
   bool retval = false;
   dim_vector dv = matrix.dims ();
   octave_idx_type nel = dv.numel ();
-  octave_idx_type nz = nzmax ();
+  octave_idx_type nz = nnz ();
 
   if (nz == nel && nel > 0)
     {

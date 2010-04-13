@@ -1,3 +1,8 @@
+2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* sparse/spalloc.m: Remove.
+	* sparse/module.mk: Update.
+
 2010-04-12  Ben Abbott <bpabbot@mac.com>
 
 	* plot/loglog.m: Minor ticks on by default for loglog plots.

@@ -1382,6 +1382,11 @@ public:
 
   OCTINTERP_API void execute (const octave_value& data = octave_value ()) const;
 
+  bool is_defined (void) const
+    { 
+      return (callback.is_defined () && ! callback.is_empty ());
+    }
+
   callback_property& operator = (const octave_value& val)
     {
       set (val);
@@ -2572,7 +2577,7 @@ public:
       array_property alphamap , Matrix (64, 1, 1)
       string_property currentcharacter r , ""
       handle_property currentobject r , graphics_handle ()
-      array_property current_point r , Matrix (2, 1, 0)
+      array_property currentpoint r , Matrix (2, 1, 0)
       bool_property dockcontrols , "off"
       bool_property doublebuffer , "on"
       string_property filename r , ""

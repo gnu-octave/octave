@@ -218,7 +218,7 @@ class plot_window : public Fl_Window
 {
 public:
   plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp)
-    : Fl_Window (_x, _y, _w, _h, "octave"), fp (_fp)
+    : Fl_Window (_x, _y, _w, _h, "octave"), fp (_fp), shift (0)
   {
     callback (window_close, static_cast<void*> (this));
 
@@ -322,6 +322,9 @@ private:
   // window name -- this must exists for the duration of the window's
   // life
   std::string window_label;
+
+  // Mod keys status
+  int shift;
 
   // Figure properties.
   figure::properties& fp;
@@ -449,6 +452,73 @@ private:
     status->redraw ();
   }
 
+  void set_currentpoint (int px, int py)
+  {
+    Matrix pos (1,2,0);
+    pos(0) = px;
+    pos(1) = h () - status_h - py;
+    fp.set_currentpoint (pos);
+  }
+
+  void set_axes_currentpoint (graphics_object ax, int px, int py)
+  {
+    axes::properties& ap = 
+      dynamic_cast<axes::properties&> (ax.get_properties ());
+    
+    double x, y;
+    pixel2pos (ax, px, py, x, y);
+
+    Matrix pos (2,3,0);
+    pos(0,0) = x;
+    pos(1,0) = y;
+    pos(0,1) = x;
+    pos(1,1) = y;
+
+    ap.set_currentpoint (pos);
+  }
+
+  int key2shift (int key)
+  {
+    if (key == FL_Shift_L || key == FL_Shift_R)
+      return FL_SHIFT;
+
+    if (key == FL_Control_L || key == FL_Control_R)
+      return FL_CTRL;
+
+    if (key == FL_Alt_L || key == FL_Alt_R)
+      return FL_ALT;
+
+    if (key == FL_Meta_L || key == FL_Meta_R)
+      return FL_META;
+
+    return 0;
+  }
+
+  int key2ascii (int key)
+  {
+    if (key < 256) return key;
+    if (key == FL_Tab) return '\t';
+    if (key == FL_Enter) return 0x0a;
+    if (key == FL_BackSpace) return 0x08;
+    if (key == FL_Escape) return 0x1b;
+
+    return 0;
+  }
+
+  Cell modifier2cell ()
+  {
+    string_vector mod;
+    
+    if (shift & FL_SHIFT)
+      mod.append (std::string ("shift"));
+    if (shift & FL_CTRL)
+      mod.append (std::string ("control"));
+    if (shift & FL_ALT || shift & FL_META)
+      mod.append (std::string ("alt"));
+
+    return Cell (mod);
+  }
+
   void resize (int _x,int _y,int _w,int _h)
   {
     Fl_Window::resize (_x, _y, _w, _h);
@@ -475,7 +545,6 @@ private:
     static int px0,py0;
     static graphics_object ax0;
 
-
     int retval = Fl_Window::handle (event);
 
     // We only handle events which are in the canvas area.
@@ -485,18 +554,49 @@ private:
     switch (event)
       {
       case FL_KEYDOWN:
-        switch(Fl::event_key ())
-          {
-          case 'a':
-          case 'A':
-            axis_auto ();
+        {
+          int key = Fl::event_key ();
+
+          shift |= key2shift (key);
+          int key_a = key2ascii (key);
+          if (key_a && fp.get_keypressfcn ().is_defined ()) 
+            {
+              Octave_map evt;
+              evt.assign ("Character", octave_value (key_a));
+              evt.assign ("Key", octave_value (std::tolower (key_a)));
+              evt.assign ("Modifier", octave_value (modifier2cell ()));
+              fp.execute_keypressfcn (evt);
+            }
+          switch (key)
+            {
+            case 'a':
+            case 'A':
+              axis_auto ();
             break;
 
-          case 'g':
-          case 'G':
-            toggle_grid ();
+            case 'g':
+            case 'G':
+              toggle_grid ();
             break;
-          }
+            }
+        }
+        break;
+
+      case FL_KEYUP:
+        {
+          int key = Fl::event_key ();
+
+          shift &= (~key2shift (key));
+          int key_a = key2ascii (key);
+          if (key_a && fp.get_keyreleasefcn ().is_defined ())
+            {
+              Octave_map evt;
+              evt.assign ("Character", octave_value (key_a));
+              evt.assign ("Key", octave_value (std::tolower (key_a)));
+              evt.assign ("Modifier", octave_value (modifier2cell ()));
+              fp.execute_keyreleasefcn (evt);
+            }
+        }
         break;
 
       case FL_MOVE:
@@ -505,17 +605,27 @@ private:
         break;
 
       case FL_PUSH:
+        px0 = Fl::event_x ();
+        py0 = Fl::event_y ();
+        ax0 = gh_manager::get_object (pixel2axes_or_ca (px0, py0));
+
+        set_currentpoint (Fl::event_x (), Fl::event_y ());
+        set_axes_currentpoint (ax0, px0, py0);
+        fp.execute_windowbuttondownfcn ();
+        
+
         if (Fl::event_button () == 1 || Fl::event_button () == 3)
-          {
-            px0 = Fl::event_x ();
-            py0 = Fl::event_y ();
-            ax0 = gh_manager::get_object (pixel2axes_or_ca (px0, py0));
-            return 1;
-          }
+          return 1;
         break;
 
       case FL_DRAG:
         pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+        if (fp.get_windowbuttonmotionfcn ().is_defined ())
+          {
+            set_currentpoint (Fl::event_x (), Fl::event_y ());
+            fp.execute_windowbuttonmotionfcn ();
+          }
+        
         if (Fl::event_button () == 1)
           {
             if (ax0 && ax0.isa ("axes"))
@@ -573,6 +683,12 @@ private:
       return 1;
 
       case FL_RELEASE:
+        if (fp.get_windowbuttonupfcn ().is_defined ())
+          {
+            set_currentpoint (Fl::event_x (), Fl::event_y ());
+            fp.execute_windowbuttonupfcn ();
+          }
+       
         if (Fl::event_button () == 1)
           {
             if ( Fl::event_clicks () == 1)

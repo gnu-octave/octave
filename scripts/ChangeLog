@@ -1,3 +1,7 @@
+2010-04-13  David Bateman  <dbateman@free.fr>
+
+	* statistics/discrete_cdf.m: Reimplement using lookup.
+
 2010-04-13  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* plot/__fltk_ginput__.m: New functions, implement ginput for

@@ -1,5 +1,4 @@
-## Copyright (C) 1996, 1997, 1998, 2000, 2001, 2002, 2004, 2005, 2006,
-##               2007 Kurt Hornik
+## Copyright (C) 2010 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,9 +22,6 @@
 ## function (CDF) at @var{x} of a univariate discrete distribution which
 ## assumes the values in @var{v} with probabilities @var{p}.
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: CDF of a discrete distribution
 
 function cdf = discrete_cdf (x, v, p)
 
@@ -57,7 +53,8 @@ function cdf = discrete_cdf (x, v, p)
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
-    cdf (k) = ((x(k) * ones (1, m)) >= (ones (n, 1) * v)) * p;
+    [vs, vi] = sort (v);
+    cdf = [0 ; cumsum(p(vi))](lookup (vs, x(k)) + 1);
   endif
 
 endfunction

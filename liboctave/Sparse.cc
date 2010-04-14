@@ -3,6 +3,7 @@
 
 Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 David Bateman
 Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Andy Adler
+Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 
@@ -2451,7 +2452,7 @@ Sparse<T>::array_value () const
 
 ## size = [0 2]
 %!test test_sparse_slice([0 2], 11, []);
-%!assert(set_slice(sparse(ones([0 2])), 11, 1), sparse(1,2));  # sparse different from full
+%!assert(set_slice(sparse(ones([0 2])), 11, 1), sparse([2 0]));  # sparse different from full
 %!test test_sparse_slice([0 2], 11, 2);
 %!test test_sparse_slice([0 2], 11, 3);
 %!test test_sparse_slice([0 2], 11, 4);

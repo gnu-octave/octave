@@ -3,6 +3,7 @@
 
 Copyright (C) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005, 2007,
               2008, 2009 John W. Eaton
+Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
 

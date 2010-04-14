@@ -939,7 +939,7 @@ closerequestfcn        keyreleasefcn          renderermode           wvisual
 color                  menubar                resize                 wvisualmode
 colormap               mincolormap            resizefcn              xdisplay
 createfcn              name                   selected               xvisual
-current_point          nextplot               selectionhighlight     xvisualmode
+currentpoint          nextplot               selectionhighlight     xvisualmode
 currentaxes            numbertitle            selectiontype
 currentcharacter       paperorientation       tag
 @end verbatim
@@ -1238,7 +1238,11 @@ An N-by-3 matrix containing the color map for the current axes.
 Handle to graphics object of current axes.
 @item currentcharacter
 @item currentobject
-@item current_point
+@item currentpoint
+Holds the coordinates of the point over which the mouse pointer was when
+the mouse button was pressed. If a mouse callback function is defined,
+@code{"currentpoint"} holds the coordinates of the point over which the
+mouse pointer is when the function gets called.
 @item deletefcn
 @item dockcontrols 
 --- Values: "on," "off"
@@ -1253,7 +1257,23 @@ Handle to graphics object of current axes.
 --- Values: "on," "off"
 @item inverthardcopy
 @item keypressfcn
+see @code{"keypressfcn"}
 @item keyreleasefcn
+With @code{"keypressfcn"}, The keyboard callback functions. These
+callback functions get called when a key is pressed/released
+respectively. The functions are called with two input arguments. The
+first argument holds the handle of the calling figure. The second
+argument holds the event structure which has the following members:
+@table @code
+@item Character
+The ASCII value of the key
+@item Key
+lowercase value of the key
+@item Modifier
+A cell array containing strings representing the modifiers pressed with
+the key. Possible values are @code{"shift"}, @code{"alt"}, and
+@code{"control"}.
+@end table
 @item menubar
 @item mincolormap
 @item name
@@ -1294,8 +1314,15 @@ Indicates the orientation for printing.  Either @code{"landscape"} or
 @item visible
 Either @code{"on"} or @code{"off"} to toggle display of the figure.
 @item windowbuttondownfcn
+See @code{"windowbuttonupfcn"}
 @item windowbuttonmotionfcn
+See @code{"windowbuttonupfcn"}
 @item windowbuttonupfcn
+With @code{"windowbuttondownfcn"} and @code{"windowbuttonmotionfcn"},
+The mouse callback functions. These callback functions get called when
+the mouse button is pressed, dragged, and released respectively. When
+these callback functions are called, the @code{"currentpoint"} property
+holds the current coordinates of the cursor.
 @item windowbuttonwheelfcn
 @item windowstyle
 @item wvisual
@@ -1344,6 +1371,10 @@ Either @code{"manual"} or @code{"auto"}.
 @item colororder
 @item createfcn
 @item currentpoint
+Holds the coordinates of the point over which the mouse pointer was when
+the mouse button was pressed. If a mouse callback function is defined,
+@code{"currentpoint"} holds the coordinates of the point over which the
+mouse pointer is when the function gets called.
 @item dataaspectratio
 A two-element vector specifying the relative height and width of the
 data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,

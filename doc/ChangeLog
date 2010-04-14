@@ -1,3 +1,8 @@
+2010-04-14  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* interpreter/plot.txi: Document keypress and mouse callback
+	properties
+
 2010-04-07  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/testfun.txi: Document runtests.

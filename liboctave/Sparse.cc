@@ -866,8 +866,7 @@ Sparse<T>::resize1 (octave_idx_type n)
   if (nr == 0)
     resize (1, std::max (nc, n));
   else if (nc == 0)
-    // FIXME: Due to Matlab 2007a, but some existing tests fail on this.
-    resize (nr, (n + nr - 1) / nr);
+    resize (nr, (n + nr - 1) / nr); // Ain't it wicked?
   else if (nr == 1)
     resize (1, n);
   else if (nc == 1)
@@ -1105,9 +1104,6 @@ Sparse<T>::delete_elements (const idx_vector& idx)
 
   assert (ndims () == 2);
 
-  // FIXME: please don't fix the shadowed member warning yet because
-  // Sparse<T>::idx will eventually go away.
-
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
   octave_idx_type nz = nnz ();
@@ -1286,9 +1282,6 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
   Sparse<T> retval;
 
   assert (ndims () == 2);
-
-  // FIXME: please don't fix the shadowed member warning yet because
-  // Sparse<T>::idx will eventually go away.
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
@@ -1704,9 +1697,6 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
 
   assert (ndims () == 2);
 
-  // FIXME: please don't fix the shadowed member warning yet because
-  // Sparse<T>::idx will eventually go away.
-
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
   octave_idx_type nz = nnz ();
@@ -1852,9 +1842,6 @@ Sparse<T>::assign (const idx_vector& idx_i,
   Sparse<T> retval;
 
   assert (ndims () == 2);
-
-  // FIXME: please don't fix the shadowed member warning yet because
-  // Sparse<T>::idx will eventually go away.
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
@@ -2459,8 +2446,8 @@ Sparse<T>::array_value () const
 %!test test_sparse_slice([2 0], 11, []);
 %!assert(set_slice(sparse(ones([2 0])), 11, 1), sparse([2 0]'));  # sparse different from full
 %!assert(set_slice(sparse(ones([2 0])), 11, 2), sparse([0 2]'));  # sparse different from full
-%!assert(set_slice(sparse(ones([2 0])), 11, 3), sparse([0 0 2]'));  # sparse different from full
-%!assert(set_slice(sparse(ones([2 0])), 11, 4), sparse([0 0 0 2]'));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 11, 3), sparse([0 0; 2 0]'));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 11, 4), sparse([0 0; 0 2]'));  # sparse different from full
 
 ## size = [0 2]
 %!test test_sparse_slice([0 2], 11, []);

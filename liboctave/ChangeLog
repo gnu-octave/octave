@@ -1,3 +1,7 @@
+2010-04-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc: Update failing tests.
+
 2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::index): If S is a sparse column vector,

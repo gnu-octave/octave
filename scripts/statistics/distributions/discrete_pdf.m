@@ -49,15 +49,11 @@ function pdf = discrete_pdf (x, v, p)
   v = reshape (v, 1, m);
   p = reshape (p / sum (p), m, 1);
 
-  pdf = zeros (sz);
-  k = find (isnan (x));
-  if (any (k))
-    pdf (k) = NaN;
-  endif
+  pdf = NaN (sz);
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
-    pdf (k) = ((x(k) * ones (1, m)) == (ones (n, 1) * v)) * p;
+    pdf (k) = p (lookup (v, x(k), 'm'));
   endif
 
 endfunction

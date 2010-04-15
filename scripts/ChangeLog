@@ -1,3 +1,9 @@
+2010-04-13  David Bateman  <dbateman@free.fr>
+
+	* statistics/discrete_pdf.m: Reimplement using lookup.
+	* statistics/discrete_inv.m: Reimplement using lookup.
+	* statistics/discrete_cdf.m: typo in last patch.
+
 2010-04-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/distributions/stdnormal_cdf.m: Calculate using erfc.

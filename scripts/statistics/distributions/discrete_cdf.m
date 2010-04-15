@@ -45,16 +45,12 @@ function cdf = discrete_cdf (x, v, p)
   v = reshape (v, 1, m);
   p = reshape (p / sum (p), m, 1);
 
-  cdf = zeros (sz);
-  k = find (isnan (x));
-  if (any (k))
-    cdf (k) = NaN;
-  endif
+  cdf = NaN (sz);
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
     [vs, vi] = sort (v);
-    cdf = [0 ; cumsum(p(vi))](lookup (vs, x(k)) + 1);
+    cdf(k) = [0 ; cumsum(p(vi))](lookup (vs, x(k)) + 1);
   endif
 
 endfunction

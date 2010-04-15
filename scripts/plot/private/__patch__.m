@@ -306,7 +306,7 @@ function update_handle (h, isfv)
   if (! recursive)
     recursive = true;
     f = get (h);
-    if (isfvc)
+    if (isfv)
       set (h, setvertexdata ([fieldnames(f), struct2cell(f)].'(:)){:});
     else
       set (h, setdata ([fieldnames(f), struct2cell(f)].'(:)){:});

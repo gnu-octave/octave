@@ -185,6 +185,8 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   addlistener (ax(2), "view", {@update_position, ax(1)});
   addlistener (ax(1), "plotboxaspectratio", {@update_position, ax(2)});
   addlistener (ax(2), "plotboxaspectratio", {@update_position, ax(1)});
+  addlistener (ax(1), "plotboxaspectratiomode", {@update_position, ax(2)});
+  addlistener (ax(2), "plotboxaspectratiomode", {@update_position, ax(1)});
 
   ## Tag the plotyy axes, so we can use that information
   ## not to mirror the y axis tick marks

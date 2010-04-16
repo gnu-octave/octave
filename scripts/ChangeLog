@@ -31,6 +31,10 @@
 	* sparse/spalloc.m: Remove.
 	* sparse/module.mk: Update.
 
+2010-04-16  Ben Abbott <bpabbott@mac.com>
+
+	* /plot/plotyy.m: Add listener for dataaspectratiomode.
+
 2010-04-12  Ben Abbott <bpabbot@mac.com>
 
 	* plot/loglog.m: Minor ticks on by default for loglog plots.

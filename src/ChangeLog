@@ -1,5 +1,10 @@
 2010-04-13  David Bateman  <dbateman@free.fr>
 
+	* graphics.cc (void text::properties::update_text_extent (void)):
+	Don't call text_renderer.set_font if HAVE_FONTCONFIG is not set.
+
+2010-04-13  David Bateman  <dbateman@free.fr>
+
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Handle repeated matches
 	in the list of matches returned by pcre.
 

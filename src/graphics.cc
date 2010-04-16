@@ -4245,7 +4245,9 @@ text::properties::update_text_extent (void)
   // FIXME: parsed content should be cached for efficiency
   
   elt = text_parser_none ().parse (get_string ());
+#ifdef HAVE_FONTCONFIG
   text_renderer.set_font (*this);
+#endif
   box = text_renderer.get_extent (elt, get_rotation ());
 
   Matrix extent (1, 4, 0.0);

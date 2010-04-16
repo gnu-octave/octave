@@ -91,7 +91,7 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
     print_usage ();
   else
     {
-      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type n_row, n_col;
       const octave_idx_type *ridx, *cidx;
       SparseMatrix sm;
       SparseComplexMatrix scm;
@@ -103,7 +103,6 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
               scm = args(0).sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nzmax ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -112,7 +111,6 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
               sm = args(0).sparse_matrix_value ();
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nzmax ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }
@@ -126,7 +124,6 @@ University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n
           
           n_row = sm.rows ();
           n_col = sm.cols ();
-          nnz = sm.nzmax ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }

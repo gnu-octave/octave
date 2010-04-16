@@ -257,7 +257,8 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
 template <class T>
 Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r, 
                    const idx_vector& c, octave_idx_type nr,
-                   octave_idx_type nc, bool sum_terms)
+                   octave_idx_type nc, bool sum_terms,
+                   octave_idx_type nzm)
   : rep (nil_rep ()), dimensions ()
 {
   if (nr < 0)
@@ -296,7 +297,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     {
       if (n == 1 && a(0) != T ())
         {
-          change_capacity (1);
+          change_capacity (nzm > 1 ? nzm : 1);
           xridx(0) = r(0);
           xdata(0) = a(0);
           for (octave_idx_type j = 0; j < nc; j++)
@@ -324,7 +325,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           for (octave_idx_type i = 1; i < n; i++)
             new_nz += rd[i-1] != rd[i];
           // Allocate result.
-          change_capacity (new_nz);
+          change_capacity (nzm > new_nz ? nzm : new_nz);
           xcidx (1) = new_nz;
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
@@ -407,7 +408,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
               xcidx(j+1) = xcidx(j) + nzj;
             }
 
-          change_capacity (xcidx (nc));
+          change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
 
@@ -463,7 +464,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       for (octave_idx_type i = 1; i < n; i++)
         new_nz += rd[i-1] != rd[i];
       // Allocate result.
-      change_capacity (new_nz);
+      change_capacity (nzm > new_nz ? nzm : new_nz);
       xcidx(1) = new_nz;
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
@@ -550,7 +551,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           xcidx(j+1) = xcidx(j) + nzj;
         }
 
-      change_capacity (xcidx (nc));
+      change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 

@@ -61,41 +61,21 @@ Sparse Matrices:
   * Improve QR factorization functions, using idea based on CSPARSE
     cs_dmsol.m 
 
+  * Improve QR fqctorization by replace CXSPARSE code with SPQR code, and make
+    the linear solve return 2-norm solutions for ill-conditioned matrices
+    based on this new code
+
   * Implement fourth argument to the sprand and sprandn, and addition
     arguments to sprandsym that the leading brand implements.
 
   * Sparse logical indexing in idx_vector class so that something like
-    "a=sprandn(1e6,1e6,1e-6); a(a<1) = 0" won't cause a memory overflow.
-
-  * Make spalloc (r, c, n) actually create an empty sparse with n
-    non-zero elements?  This allows something like
-
-    sm = spalloc (r, c, n)
-    for j=1:c
-      for i=1:r
-        tmp = foo (i,j);
-        if (tmp != 0.)
-          sm (i,j) = tmp;
-        endif
-      endfor
-    endfor
-
-    actually make sense.  Otherwise the above will cause massive amounts
-    of memory reallocation.
-
-    The fact is that this doesn't make sense in any case as the assign
-    function makes another copy of the sparse matrix.  So although spalloc
-    might easily be made to have the correct behavior, the first assign
-    will cause the matrix to be resized!  There seems to be no simple
-    way to treat this but a complete rewrite of the sparse assignment
-    functions...
+    'a=sprandn(1e6,1e6,1e-6); a(a<1) = 0' won't cause a memory overflow.
 
   * Other missing Functions
       - symmmd      Superseded by symamd
       - colmmd      Superseded by colamd
       - cholinc
       - bicg        Can this be taken from octave-forge?
-      - cgs
       - gmres
       - lsqr
       - minres

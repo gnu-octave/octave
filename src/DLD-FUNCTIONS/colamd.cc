@@ -347,7 +347,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               scm = args(0). sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nzmax ();
+              nnz = scm.nnz ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -357,7 +357,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nzmax ();
+              nnz = sm.nnz ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }
@@ -371,7 +371,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
           n_row = sm.rows ();
           n_col = sm.cols ();
-          nnz = sm.nzmax ();
+          nnz = sm.nnz ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
@@ -556,7 +556,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               scm = args(0).sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nzmax ();
+              nnz = scm.nnz ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -565,7 +565,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               sm = args(0).sparse_matrix_value ();
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nzmax ();
+              nnz = sm.nnz ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }
@@ -579,7 +579,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
           
           n_row = sm.rows ();
           n_col = sm.cols ();
-          nnz = sm.nzmax ();
+          nnz = sm.nnz ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
@@ -681,7 +681,7 @@ permutations on the tree.\n\
               scm = args(0).sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nzmax ();
+              nnz = scm.nnz ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -690,7 +690,7 @@ permutations on the tree.\n\
               sm = args(0).sparse_matrix_value ();
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nzmax ();
+              nnz = sm.nnz ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }

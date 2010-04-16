@@ -1,3 +1,17 @@
+2010-04-16  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (template <class T> Sparse<T>::Sparse (const Array<T>&,
+	const idx_vector&, const idx_vector&, octave_idx_type,
+        octave_idx_type, bool, octave_idx_type)): Add argument defining the
+	minimum storage to allocate for the sparse matrix.
+	* Sparse.h (template <class T> Sparse (const Array<T>&,
+	const idx_vector&, const idx_vector&, octave_idx_type,
+        octave_idx_type, bool, octave_idx_type)): ditto.
+	* MSparse.h : ditto
+	* CSparse.h : ditto
+	* dSparse.h : ditto
+	* boolSparse.h : ditto
+
 2010-04-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc: Update failing tests.

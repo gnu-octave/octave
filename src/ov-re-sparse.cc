@@ -269,7 +269,7 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
 
   int nr = d(0);
   int nc = d(1);
-  int nz = nzmax ();
+  int nz = nnz ();
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
@@ -296,7 +296,7 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.nzmax () > 8192) // FIXME -- make this configurable.
+  else if (matrix.nnz () > 8192) // FIXME -- make this configurable.
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
@@ -493,7 +493,7 @@ octave_sparse_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
   
-  tmp = m.nzmax ();
+  tmp = m.nnz ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                      &tmp) >= 0;
   H5Dclose (data_hid);
@@ -544,7 +544,7 @@ octave_sparse_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Sclose (space_hid);
 
-  hdims[0] = m.nzmax ();
+  hdims[0] = m.nnz ();
   hdims[1] = 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);

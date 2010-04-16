@@ -361,7 +361,7 @@ octave_base_sparse<T>::save_ascii (std::ostream& os)
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  os << "# nnz: "      << nzmax () << "\n";
+  os << "# nnz: "      << nnz () << "\n";
   os << "# rows: "     << dv (0) << "\n";
   os << "# columns: "  << dv (1) << "\n";
 

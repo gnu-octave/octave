@@ -100,7 +100,7 @@ kron (const MSparse<T>& A, const MSparse<T>& B)
 {
   octave_idx_type idx = 0;
   MSparse<T> C (A.rows () * B.rows (), A.columns () * B.columns (), 
-                A.nzmax () * B.nzmax ());
+                A.nnz () * B.nnz ());
 
   C.cidx (0) = 0;
 

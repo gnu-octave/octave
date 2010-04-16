@@ -156,7 +156,13 @@ to have a common size.\n\
 
        if (! error_state)
          {
-           octave_idx_type m = -1, n = -1;
+           octave_idx_type m = -1, n = -1, nzmax = -1;
+           if (nargin == 6)
+             {
+               nzmax = args(5).idx_type_value ();
+               nargin --;
+             }
+
            if (nargin == 5)
              {
                if (args(3).is_scalar_type () && args(4).is_scalar_type ())
@@ -181,13 +187,13 @@ to have a common size.\n\
 
                if (args(2).is_bool_type ())
                  retval = SparseBoolMatrix (args(2).bool_array_value (), i, j,
-                                            m, n, summation);
+                                            m, n, summation, nzmax);
                else if (args(2).is_complex_type ())
-                 retval = SparseComplexMatrix (args(2).complex_array_value (), i, j,
-                                               m, n, summation);
+                 retval = SparseComplexMatrix (args(2).complex_array_value (),
+                                               i, j, m, n, summation, nzmax);
                else if (args(2).is_numeric_type ())
                  retval = SparseMatrix (args(2).array_value (), i, j,
-                                        m, n, summation);
+                                        m, n, summation, nzmax);
                else
                  gripe_wrong_type_arg ("sparse", args(2));
              }

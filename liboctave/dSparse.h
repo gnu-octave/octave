@@ -74,8 +74,9 @@ SparseMatrix : public MSparse<double>
 
   SparseMatrix (const Array<double>& a, const idx_vector& r, 
                 const idx_vector& c, octave_idx_type nr = -1, 
-                octave_idx_type nc = -1, bool sum_terms = true)
-    : MSparse<double> (a, r, c, nr, nc, sum_terms) { }
+                octave_idx_type nc = -1, bool sum_terms = true,
+                octave_idx_type nzm = -1)
+    : MSparse<double> (a, r, c, nr, nc, sum_terms, nzm) { }
 
   explicit SparseMatrix (const DiagMatrix& a);
 

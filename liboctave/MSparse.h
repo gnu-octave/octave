@@ -59,8 +59,9 @@ public:
   MSparse (const Sparse<U>& a) : Sparse<T> (a) { }
 
   MSparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
-           octave_idx_type nr = -1, octave_idx_type nc = -1, bool sum_terms = true)
-    : Sparse<T> (a, r, c, nr, nc, sum_terms) { }
+           octave_idx_type nr = -1, octave_idx_type nc = -1, 
+           bool sum_terms = true, octave_idx_type nzm = -1)
+    : Sparse<T> (a, r, c, nr, nc, sum_terms, nzm) { }
 
   explicit MSparse (octave_idx_type r, octave_idx_type c, T val) : Sparse<T> (r, c, val) { }
 

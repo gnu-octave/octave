@@ -217,7 +217,7 @@ octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 
   int nr = d(0);
   int nc = d(1);
-  int nz = nzmax ();
+  int nz = nnz ();
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
@@ -427,7 +427,7 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
       return false;
     }
   
-  tmp = m.nzmax ();
+  tmp = m.nnz ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
@@ -478,7 +478,7 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
 
   H5Sclose (space_hid);
 
-  hdims[0] = m.nzmax ();
+  hdims[0] = m.nnz ();
   hdims[1] = 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);
@@ -528,8 +528,8 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, m.nzmax ());  
-  for (int i = 0; i < m.nzmax (); i++)
+  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, m.nnz ());  
+  for (int i = 0; i < m.nnz (); i++)
     htmp[i] = m.xdata(i);
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,

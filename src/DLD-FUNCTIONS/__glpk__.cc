@@ -519,7 +519,7 @@ Undocumented internal function.\n\
 
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
-      octave_idx_type Anz = A.nzmax ();
+      octave_idx_type Anz = A.nnz ();
       rn.resize (Anz+1, 1);
       cn.resize (Anz+1, 1);
       a.resize (Anz+1, 0.0);

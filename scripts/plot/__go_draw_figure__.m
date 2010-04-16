@@ -97,20 +97,17 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
                     axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
                     axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
                     set (kids(i), "position", axes_position_on_page);
-                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
                   else
                     ## Return axes "units" and "position" back to their original values.
-                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin);
+                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
                   endif
                   unwind_protect_cleanup
                   set (kids(i), "units", orig_axes_units);
                   set (kids(i), "position", orig_axes_position);
+                  bg_is_set = false;
                   if (fg_is_set)
                     fputs (plot_stream, "unset obj 2\n");
-                  endif
-                  if (bg_is_set)
-                    fputs (plot_stream, "unset obj 1\n");
-                    bg_is_set = false;
                   endif
                 end_unwind_protect
               otherwise

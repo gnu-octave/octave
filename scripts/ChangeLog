@@ -1,5 +1,9 @@
 2010-04-16  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_figure__.m: Pass bg_is_set to __go_draw_axes__. Don't
+	unset the background figure color.
+	* plot/__go_draw_axes__.m: Unset the background figure color here.
+
 	* statistics/distributions/*: Replace constructs like "NaN * one()"
 	with "NaN()" and  "Inf * ones ()" with "Inf()".
 

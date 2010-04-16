@@ -23,9 +23,9 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_is_set)
 
-  if (nargin >= 4 && nargin <= 5)
+  if (nargin >= 4 && nargin <= 6)
 
     showhiddenhandles = get (0, "showhiddenhandles");
     unwind_protect
@@ -1551,10 +1551,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
 	elseif (is_image_data (i))
 	  if (! is_image_data (i-1))
 	    fputs (plot_stream, "; ");
+            if (bg_is_set)      
+              fputs (plot_stream, "unset obj 1; \\\n");
+              bg_is_set = false;
+            endif
 	  endif
           fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 		   usingclause{i}, titlespec{i}, withclause{i});
 	elseif (is_image_data (i-1))
+          if (bg_is_set)      
+            fputs (plot_stream, "unset obj 1; \\\n");
+              bg_is_set = false;
+            endif
 	  fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
 		   usingclause{i}, titlespec{i}, withclause{i});
 	else
@@ -1592,6 +1600,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin)
     ## Needed to allow mouse rotation with pcolor.
     if (view_map)
       fputs (plot_stream, "unset view;\n");
+    endif
+    
+    if (bg_is_set)      
+      fputs (plot_stream, "unset obj 1;\n");
+      bg_is_set = false;
     endif
 
     fflush (plot_stream);

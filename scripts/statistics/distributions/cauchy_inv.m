@@ -47,7 +47,7 @@ function inv = cauchy_inv (x, location, scale)
   endif
 
   sz = size (x);
-  inv = NaN * ones (sz);
+  inv = NaN (sz);
 
   ok = ((location > -Inf) & (location < Inf) &
        (scale > 0) & (scale < Inf));

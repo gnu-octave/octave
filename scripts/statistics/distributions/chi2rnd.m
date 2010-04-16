@@ -66,7 +66,7 @@ function rnd = chi2rnd (n, r, c)
 
   if (isscalar (n))
      if (find (!(n > 0) | !(n < Inf)))
-       rnd = NaN * ones (sz);
+       rnd = NaN (sz);
      else
        rnd = 2 * randg(n/2, sz);
      endif

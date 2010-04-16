@@ -53,7 +53,7 @@ function pdf = hygepdf (x, t, m, n)
   k = find (i1);
   if (any (k))
     if (isscalar (t) && isscalar (m) && isscalar (n))
-      pdf = NaN * ones (size (x));
+      pdf = NaN (size (x));
     else
       pdf (k) = NaN;
     endif

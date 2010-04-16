@@ -59,7 +59,7 @@ function pdf = wblpdf (x, scale, shape)
     endif
   endif
 
-  pdf = NaN * ones (size (x));
+  pdf = NaN (size (x));
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x > -Inf) & (x <= 0) & ok);

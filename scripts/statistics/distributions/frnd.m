@@ -90,7 +90,7 @@ function rnd = frnd (m, n, r, c)
     elseif ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
       rnd = n ./ m .* randg (m / 2, sz) ./ randg (n / 2, sz);
     else
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     endif
   else
     rnd = zeros (sz);

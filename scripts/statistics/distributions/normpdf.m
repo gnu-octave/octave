@@ -51,7 +51,7 @@ function pdf = normpdf (x, m, s)
 
   if (isscalar (m) && isscalar (s))
     if (find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf)))
-      pdf = NaN * ones (sz);
+      pdf = NaN (sz);
     else
       pdf = stdnormal_pdf ((x - m) ./ s) ./ s;
     endif

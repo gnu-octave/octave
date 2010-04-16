@@ -47,7 +47,7 @@ function inv = wblinv (x, scale, shape)
     endif
   endif
 
-  inv = NaN * ones (size (x));
+  inv = NaN (size (x));
 
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 

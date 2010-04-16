@@ -80,7 +80,7 @@ function rnd = wblrnd (scale, shape, r, c)
     if ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf))
       rnd = scale .* rande(sz) .^ (1./shape);
     else
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     endif
   else
     rnd = scale .* rande(sz) .^ (1./shape);

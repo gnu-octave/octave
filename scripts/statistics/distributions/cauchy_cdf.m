@@ -47,7 +47,7 @@ function cdf = cauchy_cdf (x, location, scale)
   endif
 
   sz = size (x);
-  cdf = NaN * ones (sz);
+  cdf = NaN (sz);
 
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));

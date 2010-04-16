@@ -79,7 +79,7 @@ function rnd = gamrnd (a, b, r, c)
 
   if (isscalar (a) && isscalar(b))
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       rnd = b .* randg(a, sz);
     endif

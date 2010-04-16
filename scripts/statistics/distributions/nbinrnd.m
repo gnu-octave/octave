@@ -77,7 +77,7 @@ function rnd = nbinrnd (n, p, r, c)
 
   if (isscalar (n) && isscalar (p))
     if ((n < 1) || (n == Inf) || (n != round (n)) || (p <= 0) || (p > 1));
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     elseif ((n > 0) && (n < Inf) && (n == round (n)) && 
 	    (p > 0) && (p <= 1))
       rnd = randp ((1 - p) ./ p .* randg (n, sz));

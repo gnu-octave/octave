@@ -75,7 +75,7 @@ function rnd = unifrnd (a, b, r, c)
 
   if (isscalar(a) && isscalar(b))
     if (find (!(-Inf < a) | !(a < b) | !(b < Inf)))
-      rnd = NaN * ones(sz);
+      rnd = NaN(sz);
     else
       rnd =  a + (b - a) .* rand (sz);
     endif

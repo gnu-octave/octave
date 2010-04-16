@@ -47,7 +47,7 @@ function pdf = cauchy_pdf (x, location, scale)
   endif
 
   sz = size (x);
-  pdf = NaN * ones (sz);
+  pdf = NaN (sz);
 
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));

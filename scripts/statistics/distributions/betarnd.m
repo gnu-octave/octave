@@ -76,7 +76,7 @@ function rnd = betarnd (a, b, r, c)
 
   if (isscalar(a) && isscalar(b))
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       r1 = randg(a,sz); 
       rnd = r1 ./ (r1 + randg(b,sz));
@@ -86,7 +86,7 @@ function rnd = betarnd (a, b, r, c)
 
     k = find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf));
     if (any (k))
-      rnd(k) = NaN * ones (size (k));
+      rnd(k) = NaN (size (k));
     endif
 
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));

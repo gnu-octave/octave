@@ -32,7 +32,7 @@ function inv = laplace_inv (x)
     print_usage ();
   endif
 
-  inv = (-Inf) * ones (size (x));
+  inv = -Inf (size (x));
 
   k = find (isnan (x) | (x < 0) | (x > 1));
   if (any (k))

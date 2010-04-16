@@ -76,7 +76,7 @@ function rnd = normrnd (m, s, r, c)
 
   if (isscalar (m) && isscalar (s))
     if (find (isnan (m) | isinf (m) | !(s > 0) | !(s < Inf)))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       rnd =  m + s .* randn (sz);
     endif

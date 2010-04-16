@@ -66,7 +66,7 @@ function rnd = poissrnd (l, r, c)
   if (isscalar (l))
 
     if (!(l >= 0) | !(l < Inf))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     elseif ((l > 0) & (l < Inf))
       rnd = randp(l, sz);
     else

@@ -76,12 +76,12 @@ function rnd = cauchy_rnd (l, scale, r, c)
 
   if (isscalar (l) && isscalar (scale)) 
     if (find (!(l > -Inf) | !(l < Inf) | !(scale > 0) | !(scale < Inf)))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       rnd = l - cot (pi * rand (sz)) .* scale;
     endif
   else
-    rnd = NaN * ones (sz);
+    rnd = NaN (sz);
     k = find ((l > -Inf) & (l < Inf) & (scale > 0) & (scale < Inf));
     if (any (k))
       rnd(k) = l(k)(:) - cot (pi * rand (size (k))) .* scale(k)(:);

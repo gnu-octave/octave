@@ -70,7 +70,7 @@ function rnd = exprnd (l, r, c)
     if ((l > 0) && (l < Inf))
       rnd = rande(sz) * l;
     else
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     endif
   else
     rnd = zeros (sz);

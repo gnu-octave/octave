@@ -51,7 +51,7 @@ function inv = norminv (x, m, s)
 
   if (isscalar (m) && isscalar (s))
     if (find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf)))
-      inv = NaN * ones (sz);
+      inv = NaN (sz);
     else
       inv =  m + s .* stdnormal_inv (x);
     endif

@@ -77,7 +77,7 @@ function rnd = binornd (n, p, r, c)
   if (isscalar (n) && isscalar (p))
     if (find (!(n >= 0) | !(n < Inf) | !(n == round (n)) |
               !(p >= 0) | !(p <= 1)))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     elseif (n == 0)
       rnd = zeros (sz);
     else

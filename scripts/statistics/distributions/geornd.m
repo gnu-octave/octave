@@ -68,9 +68,9 @@ function rnd = geornd (p, r, c)
 
   if (isscalar (p))
     if (!(p >= 0) || !(p <= 1))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     elseif (p == 0)
-      rnd = Inf * ones (sz);
+      rnd = Inf (sz);
     elseif ((p > 0) & (p < 1));
       rnd = floor (- rande(sz) ./ log (1 - p));
     else
@@ -81,12 +81,12 @@ function rnd = geornd (p, r, c)
 
     k = find (!(p >= 0) | !(p <= 1));
     if (any (k))
-      rnd(k) = NaN * ones (1, length (k));
+      rnd(k) = NaN (1, length (k));
     endif
 
     k = find (p == 0);
     if (any (k))
-      rnd(k) = Inf * ones (1, length (k));
+      rnd(k) = Inf (1, length (k));
     endif
   endif
 

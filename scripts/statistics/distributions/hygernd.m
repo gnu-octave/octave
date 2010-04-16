@@ -86,7 +86,7 @@ function rnd = hygernd (t, m, n, r, c)
     endfor
   else
     if (ne)
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       v = 0:n;
       p = hygepdf (v, t, m, n);

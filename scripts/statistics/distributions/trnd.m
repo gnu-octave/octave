@@ -67,7 +67,7 @@ function rnd = trnd (n, r, c)
 
   if (isscalar (n))
     if (!(n > 0) || !(n < Inf))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     elseif ((n > 0) && (n < Inf))
       rnd = randn(sz) ./ sqrt(2*randg(n/2,sz)./n); 
     else

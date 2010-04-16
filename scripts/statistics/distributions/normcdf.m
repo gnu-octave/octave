@@ -51,7 +51,7 @@ function cdf = normcdf (x, m, s)
 
   if (isscalar (m) && isscalar(s))
     if (find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf)))
-      cdf = NaN * ones (sz);
+      cdf = NaN (sz);
     else
       cdf =  stdnormal_cdf ((x - m) ./ s);
     endif

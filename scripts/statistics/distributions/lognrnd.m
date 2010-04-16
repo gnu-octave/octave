@@ -77,7 +77,7 @@ function rnd = lognrnd (mu, sigma, r, c)
 
   if (isscalar (mu) && isscalar (sigma))
     if  (!(sigma > 0) || !(sigma < Inf))
-      rnd = NaN * ones (sz);
+      rnd = NaN (sz);
     else
       rnd = exp(mu + sigma .* randn (sz)); 
     endif

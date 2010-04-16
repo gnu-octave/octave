@@ -1,8 +1,13 @@
-2010-04-13  David Bateman  <dbateman@free.fr>
+2010-04-16  David Bateman  <dbateman@free.fr>
 
-	* statistics/discrete_pdf.m: Reimplement using lookup.
-	* statistics/discrete_inv.m: Reimplement using lookup.
-	* statistics/discrete_cdf.m: typo in last patch.
+	* statistics/distributions/*: Replace constructs like "NaN * one()"
+	with "NaN()" and  "Inf * ones ()" with "Inf()".
+
+2010-04-15  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/discrete_pdf.m: Reimplement using lookup.
+	* statistics/distributions/discrete_inv.m: Reimplement using lookup.
+	* statistics/distributions/discrete_cdf.m: typo in last patch.
 
 2010-04-15  Jaroslav Hajek  <highegg@gmail.com>
 

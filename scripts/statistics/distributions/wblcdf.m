@@ -58,7 +58,7 @@ function cdf = wblcdf (x, scale, shape)
     endif
   endif
 
-  cdf = NaN * ones (size (x));
+  cdf = NaN (size (x));
 
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 

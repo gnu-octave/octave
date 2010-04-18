@@ -1,3 +1,8 @@
+2010-04-17  Ben Abbott <bpabbott@mac.com>
+
+	* plot/private/__actual_axis_position__.m: Fix bug when restoring
+	figure position property to its original value.
+
 2010-04-16  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_figure__.m: Pass bg_is_set to __go_draw_axes__. Don't

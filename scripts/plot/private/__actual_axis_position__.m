@@ -40,7 +40,7 @@ function pos = __actual_axis_position__ (axis_obj)
     aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
   endif
   orig_fig_units = get (axis_obj.parent, "units");
-  orig_fig_position = get (axis_obj.parent, "units");
+  orig_fig_position = get (axis_obj.parent, "position");
   unwind_protect
     set (axis_obj.parent, "units", "pixels")
     fig_position = get (axis_obj.parent, "position");
@@ -58,7 +58,7 @@ function pos = __actual_axis_position__ (axis_obj)
     pos = pos_in_pixels ./ fig_position([3, 4, 3, 4]);
   unwind_protect_cleanup
     set (axis_obj.parent, "units", orig_fig_units)
-    set (axis_obj.parent, "units", orig_fig_position)
+    set (axis_obj.parent, "position", orig_fig_position)
   end_unwind_protect
 
 endfunction

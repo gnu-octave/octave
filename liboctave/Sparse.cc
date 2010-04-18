@@ -2377,6 +2377,73 @@ Sparse<T>::diag (octave_idx_type k) const
 }
 
 template <class T>
+Sparse<T>
+Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
+{
+  dim_vector dv;
+  octave_idx_type total_nz = 0;
+  if (dim == 0 || dim == 1)
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        {
+          if (! dv.concat (sparse_list[i].dims (), dim))
+            (*current_liboctave_error_handler)
+              ("cat: dimension mismatch");
+          total_nz += sparse_list[i].nnz ();
+        }
+    }
+
+  Sparse<T> retval (dv, total_nz);
+
+  switch (dim)
+    {
+    case 0:
+      {
+        // sparse vertcat. This is not efficiently handled by assignment, so
+        // we'll do it directly.
+        octave_idx_type l = 0;
+        for (octave_idx_type j = 0; j < n; j++)
+          {
+            octave_idx_type rcum = 0;
+            for (octave_idx_type i = 0; i < n; i++)
+              {
+                const Sparse<T>& spi = sparse_list[i];
+                octave_idx_type kl = spi.cidx(j), ku = spi.cidx(j+1);
+                for (octave_idx_type k = kl; k < ku; k++, l++)
+                  {
+                    retval.xridx(l) = spi.ridx(k) + rcum;
+                    retval.xdata(l) = spi.data(k);
+                  }
+
+                rcum += spi.rows ();
+              }
+
+            retval.xcidx(j+1) = l;
+          }
+
+        break;
+      }
+    case 1:
+      {
+        octave_idx_type ccum = 0;
+        for (octave_idx_type i = 0; i < n; i++)
+          {
+            octave_idx_type l = ccum, u = ccum + sparse_list[i].columns ();
+            retval.assign (idx_vector::colon, idx_vector (l, u), sparse_list[i]);
+            ccum = u;
+          }
+
+        break;
+      }
+    default:
+      (*current_liboctave_error_handler)
+        ("cat: invalid dimension for sparse concatenation");
+    }
+
+  return retval;
+}
+
+template <class T>
 Array<T>
 Sparse<T>::array_value () const
 {

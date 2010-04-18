@@ -2595,6 +2595,40 @@ Array<T>::diag (octave_idx_type k) const
 }
 
 template <class T>
+Array<T>
+Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
+{
+  if (dim < 0)
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension");
+
+  dim_vector dv;
+  for (octave_idx_type i = 0; i < n; i++)
+    if (! dv.concat (array_list[i].dims (), dim))
+      (*current_liboctave_error_handler)
+        ("cat: dimension mismatch");
+
+  Array<T> retval (dv);
+  Array<idx_vector> idxa (dv.length (), 1, idx_vector::colon);
+  octave_idx_type l = 0;
+
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      octave_idx_type u;
+      if (dim < array_list[i].ndims ())
+        u = l + array_list[i].dims ()(dim);
+      else
+        u = l + 1;
+
+      idxa(dim) = idx_vector (l, u);
+
+      retval.assign (idxa, array_list[i]);
+    }
+
+  return retval;
+}
+
+template <class T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {

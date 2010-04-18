@@ -1,3 +1,10 @@
+2010-04-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::cat): New method.
+	* Array.h: Declare it.
+	* Sparse.cc (Sparse<T>::cat): New method.
+	* Sparse.h: Declare it.
+
 2010-04-16  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (template <class T> Sparse<T>::Sparse (const Array<T>&,

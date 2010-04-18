@@ -578,6 +578,9 @@ public:
 
   Array<T> diag (octave_idx_type k = 0) const;
 
+  static Array<T>
+  cat (int dim, octave_idx_type n, const Array<T> *array_list);
+
   template <class U, class F>
   Array<U>
   map (F fcn) const

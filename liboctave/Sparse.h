@@ -509,6 +509,9 @@ public:
 
   Sparse<T> diag (octave_idx_type k = 0) const;
 
+  static Sparse<T>
+  cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list);
+
   Array<T> array_value (void) const;
 
   template <class U, class F>

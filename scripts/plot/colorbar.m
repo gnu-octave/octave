@@ -108,7 +108,7 @@ function h = colorbar (varargin)
 
     orig_pos = obj.position;
     orig_opos = obj.outerposition;
-    [pos, cpos, vertical, mirror, aspect] =  ...
+    [pos, cpos, vertical, mirror] =  ...
 	__position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "activepositionproperty", "position", "position", pos);
 
@@ -145,10 +145,6 @@ function h = colorbar (varargin)
       endif
     endif
 
-    if (! isnan (aspect))
-      set (cax, "plotboxaspectratio", aspect);
-    endif
-
     ctext = text (0, 0, "", "tag", "colorbar","visible", "off", 
 		  "handlevisibility", "off", "xliminclude", "off",  
 		  "yliminclude", "off", "zliminclude", "off",
@@ -158,6 +154,7 @@ function h = colorbar (varargin)
 
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical})
     addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax})
+    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax})
     addlistener (ax, "position", {@update_colorbar_axis, cax})
 
   endif
@@ -214,7 +211,7 @@ function update_colorbar_axis (h, d, cax)
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);
-    [pos, cpos, vertical, mirror, aspect] =  ...
+    [pos, cpos, vertical, mirror] =  ...
 	__position_colorbox__ (loc, obj, ancestor (h, "figure"));
 
     if (vertical)
@@ -235,13 +232,10 @@ function update_colorbar_axis (h, d, cax)
       endif
     endif
 
-    if (! isnan (aspect))
-      set (cax, "plotboxaspectratio", aspect);
-    endif
   endif
 endfunction
 
-function [pos, cpos, vertical, mirr, aspect] = __position_colorbox__ (cbox, obj, cf)
+function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
 
   pos = obj.position;
   sz = pos(3:4);
@@ -325,33 +319,22 @@ function [pos, cpos, vertical, mirr, aspect] = __position_colorbox__ (cbox, obj,
   cpos = [origin, sz];
 
   if (strcmpi (obj.plotboxaspectratiomode, "manual"))
-    if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-      obj.position = pos;
-      actual_pos = __actual_axis_position__ (obj);
-      if (strfind (cbox, "outside"))
-	scale = 1.0;
-      else
-	scale = 0.9;
-      endif
-      if (sz(1) > sz(2))
-	dx = (1-scale)*actual_pos(3);
-	cpos(1) = actual_pos(1) + dx/2;
-	cpos(3) = actual_pos(3) - dx;
-      else
-	dy = (1-scale)*actual_pos(4);
-	cpos(2) = actual_pos(2) + dy/2;
-	cpos(4) = actual_pos(4) - dy;
-      endif
-      aspect = NaN;
+    obj.position = pos;
+    actual_pos = __actual_axis_position__ (obj);
+    if (strfind (cbox, "outside"))
+      scale = 1.0;
     else
-      if (vertical)
-	aspect = [1, 0.21, 1];
-      else
-	aspect = [0.21, 1, 1];
-      endif
+      scale = 0.9;
     endif
-  else
-    aspect = NaN;
+    if (sz(1) > sz(2))
+      dx = (1-scale)*actual_pos(3);
+      cpos(1) = actual_pos(1) + dx/2;
+      cpos(3) = actual_pos(3) - dx;
+    else
+      dy = (1-scale)*actual_pos(4);
+      cpos(2) = actual_pos(2) + dy/2;
+      cpos(4) = actual_pos(4) - dy;
+    endif
   endif
 
 endfunction

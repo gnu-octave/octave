@@ -164,21 +164,11 @@ function curr_axis = __axis__ (ca, ax, varargin)
       __axis__ (ca, "equal")
       __do_tight_option__ (ca);
     elseif (strcmpi (ax, "square"))
-      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-        set (ca, "plotboxaspectratio", [1, 1, 1]);
-      else
-        x = xlim;
-        y = ylim;
-        set (ca, "plotboxaspectratio", [(y(2)-y(1)), (x(2)-x(1)), 1]);
-      endif
+      set (ca, "plotboxaspectratio", [1, 1, 1]);
     elseif  (strcmp (ax, "equal"))
-      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-        x = xlim;
-        y = ylim;
-        set (ca, "plotboxaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
-      else
-        set (ca, "plotboxaspectratio", [1, 1, 1]);
-      endif
+      x = xlim;
+      y = ylim;
+      set (ca, "plotboxaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
     elseif (strcmpi (ax, "normal"))
       set (ca, "plotboxaspectratiomode", "auto");
 

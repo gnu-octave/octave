@@ -46,12 +46,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     endif
 
     nd = __calc_dimensions__ (axis_obj);
-    pos = axis_obj.position;
-    pos = pos - implicit_margin([1, 2, 1, 2]).*[1, 1, -0.5, -0.5];
+    if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
+      pos = __actual_axis_position__ (axis_obj);
+    else
+      pos = axis_obj.position;
+      pos = pos - implicit_margin([1, 2, 1, 2]).*[1, 1, -0.5, -0.5];
+    endif
     if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-      if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
-	pos = __actual_axis_position__ (axis_obj);
-      endif
       if (nd == 2)
 	x = [1, 1];
       else
@@ -72,8 +73,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
       fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
 
-      if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
-        r = axis_obj.plotboxaspectratio;
+      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+        r = axis_obj.dataaspectratio;
         fprintf (plot_stream, "set size ratio %.15g;\n", -r(2)/r(1));
       else
         fputs (plot_stream, "set size noratio;\n");

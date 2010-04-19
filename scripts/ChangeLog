@@ -1,3 +1,10 @@
+2010-04-19  Ben Abbott <bpabbott@mac.com>
+
+	* /plot/colorbar.m: Consistent treatment of plotboxaspectratio, and
+	add listener for plotboxaspectratiomode.
+	* /plot/axis.m: Consistent treatment of plotboxaspectratio.
+	* /plot/__go_draw_axes__.m: Consistently determine axes position.
+
 2010-04-17  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__actual_axis_position__.m: Fix bug when restoring

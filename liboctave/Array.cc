@@ -2609,11 +2609,17 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
         ("cat: dimension mismatch");
 
   Array<T> retval (dv);
-  Array<idx_vector> idxa (dv.length (), 1, idx_vector::colon);
+  int nidx = std::max (dv.length (), dim + 1);
+  Array<idx_vector> idxa (nidx, 1, idx_vector::colon);
   octave_idx_type l = 0;
 
   for (octave_idx_type i = 0; i < n; i++)
     {
+      if (array_list[i].dims ().zero_by_zero ())
+        continue;
+
+      octave_quit ();
+
       octave_idx_type u;
       if (dim < array_list[i].ndims ())
         u = l + array_list[i].dims ()(dim);
@@ -2623,6 +2629,8 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
       idxa(dim) = idx_vector (l, u);
 
       retval.assign (idxa, array_list[i]);
+
+      l = u;
     }
 
   return retval;

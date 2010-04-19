@@ -1,3 +1,10 @@
+2010-04-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (single_type_concat, do_single_type_concat): Rewrite using
+	new liboctave facilities.
+	(do_cat): Don't compute result dims if the case can be forwarded to
+	liboctave.
+
 2010-04-13  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (void text::properties::update_text_extent (void)):

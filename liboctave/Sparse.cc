@@ -2402,12 +2402,17 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
         // sparse vertcat. This is not efficiently handled by assignment, so
         // we'll do it directly.
         octave_idx_type l = 0;
-        for (octave_idx_type j = 0; j < n; j++)
+        for (octave_idx_type j = 0; j < dv(1); j++)
           {
+            octave_quit ();
+
             octave_idx_type rcum = 0;
             for (octave_idx_type i = 0; i < n; i++)
               {
                 const Sparse<T>& spi = sparse_list[i];
+                if (spi.dims ().zero_by_zero ())
+                  continue;
+
                 octave_idx_type kl = spi.cidx(j), ku = spi.cidx(j+1);
                 for (octave_idx_type k = kl; k < ku; k++, l++)
                   {
@@ -2425,12 +2430,14 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
       }
     case 1:
       {
-        octave_idx_type ccum = 0;
+        octave_idx_type l = 0;
         for (octave_idx_type i = 0; i < n; i++)
           {
-            octave_idx_type l = ccum, u = ccum + sparse_list[i].columns ();
+            octave_quit ();
+
+            octave_idx_type u = l + sparse_list[i].columns ();
             retval.assign (idx_vector::colon, idx_vector (l, u), sparse_list[i]);
-            ccum = u;
+            l = u;
           }
 
         break;

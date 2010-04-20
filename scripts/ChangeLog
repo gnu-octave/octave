@@ -1,5 +1,6 @@
 2010-04-19  Ben Abbott <bpabbott@mac.com>
 
+	* /plot/colorbar.m: Allow 'peer' option to be specified.
 	* /plot/colorbar.m: Consistent treatment of plotboxaspectratio, and
 	add listener for plotboxaspectratiomode.
 	* /plot/axis.m: Consistent treatment of plotboxaspectratio.

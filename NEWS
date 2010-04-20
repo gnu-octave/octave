@@ -239,6 +239,26 @@ Summary of important user-visible changes for version 3.3:
  ** rem and mod are now built-in functions.  They also handle integer
     types efficiently using integer arithmetic.
 
+ ** Sparse indexing and indexed assignment has been mostly rewritten.
+    Since Octave uses compressed column storage for sparse matrices,
+    major attention is devoted to operations manipulating whole columns.
+    Such operations are now significantly faster, as well as some other
+    important cases.
+
+    Further, it is now possible to pre-allocate a sparse matrix and
+    subsequently fill it by assignments, provided they meet certain
+    conditions.  For more information, consult the `spalloc' function,
+    which is no longer a mere dummy.  Consequently, nzmax and nnz are no
+    longer always equal in Octave. Octave may also produce a matrix with
+    nnz < nzmax as a result of other operations, so you should
+    consistently use nnz unless you really want to use nzmax 
+    (i.e. the space allocated for nonzero elements).
+
+    Sparse concatenation is also affected, and concatenating sparse 
+    matrices, especially larger collections, is now significantly more 
+    efficient. This applies to both the [] operator and the 
+    cat/vertcat/horzcat functions.
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

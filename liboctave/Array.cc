@@ -2602,6 +2602,9 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
     (*current_liboctave_error_handler)
       ("cat: invalid dimension");
 
+  if (n == 1)
+    return array_list[0];
+
   dim_vector dv;
   for (octave_idx_type i = 0; i < n; i++)
     if (! dv.concat (array_list[i].dims (), dim))

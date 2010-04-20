@@ -2384,6 +2384,9 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
   octave_idx_type total_nz = 0;
   if (dim == 0 || dim == 1)
     {
+      if (n == 1)
+        return sparse_list[0];
+
       for (octave_idx_type i = 0; i < n; i++)
         {
           if (! dv.concat (sparse_list[i].dims (), dim))
@@ -2392,6 +2395,9 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
           total_nz += sparse_list[i].nnz ();
         }
     }
+  else
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension for sparse concatenation");
 
   Sparse<T> retval (dv, total_nz);
 
@@ -2443,8 +2449,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
         break;
       }
     default:
-      (*current_liboctave_error_handler)
-        ("cat: invalid dimension for sparse concatenation");
+      assert (false);
     }
 
   return retval;

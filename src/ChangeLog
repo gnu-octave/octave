@@ -1,3 +1,11 @@
+2010-04-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (single_type_concat): New overloads. Make TYPE an explicit
+	template parameter. Try to forward some cases to Array<T>::cat and
+	Sparse<T>::cat.
+	(do_single_type_concat, do_single_type_concat_no_mutate): Don't
+	allocate the array here, let single_type_concat do it.
+
 2010-04-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (single_type_concat, do_single_type_concat): Rewrite using

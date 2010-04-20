@@ -1,5 +1,10 @@
 2010-04-19  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::cat): Fast return for single array case.
+	* Sparse.cc (Sparse<T>::cat): Ditto.
+
+2010-04-19  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::cat): Miscellaneous fixes.
 	* Sparse.cc (Sparse<T>::cat): Ditto.
 

@@ -724,9 +724,9 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
                      "concatenation of different character string types may have unintended consequences");
 }
 
-template<class TYPE>
+template<class TYPE, class T>
 static void 
-single_type_concat (TYPE& result,
+single_type_concat (Array<T>& result,
                     tm_const& tmp)
 {
   octave_idx_type r = 0, c = 0;
@@ -761,14 +761,79 @@ single_type_concat (TYPE& result,
     }
 }
 
+template<class TYPE, class T>
+static void 
+single_type_concat (Array<T>& result,
+                    const dim_vector& dv,
+                    tm_const& tmp)
+{
+  if (tmp.length () == 1)
+    {
+      // If possible, forward the operation to liboctave.
+      // Single row.
+      tm_row_const& row = tmp.front ();
+      octave_idx_type ncols = row.length (), i = 0;
+      OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
+
+      for (tm_row_const::iterator q = row.begin ();
+           q != row.end () && ! error_state;
+           q++)
+        {
+          octave_quit ();
+
+          array_list[i++] = octave_value_extract<TYPE> (*q);
+        }
+
+      if (! error_state)
+        result = Array<T>::cat (1, ncols, array_list);
+    }
+  else
+    {
+      result = Array<T> (dv);
+      single_type_concat<TYPE> (result, tmp);
+    }
+}
+
+template<class TYPE, class T>
+static void 
+single_type_concat (Sparse<T>& result,
+                    const dim_vector&,
+                    tm_const& tmp)
+{
+  // Sparse matrices require preallocation for efficient indexing; besides,
+  // only horizontal concatenation can be efficiently handled by indexing.
+  // So we just cat all rows through liboctave, then cat the final column.
+  octave_idx_type nrows = tmp.length (), j = 0;
+  OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_row_list, nrows);
+  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+    {
+      tm_row_const row = *p;
+      octave_idx_type ncols = row.length (), i = 0;
+      OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
+
+      for (tm_row_const::iterator q = row.begin ();
+           q != row.end () && ! error_state;
+           q++)
+        {
+          octave_quit ();
+
+          sparse_list[i++] = octave_value_extract<TYPE> (*q);
+        }
+
+      sparse_row_list[j++] = Sparse<T>::cat (1, ncols, sparse_list);
+    }
+
+  result = Sparse<T>::cat (0, nrows, sparse_row_list);
+}
+
 template<class TYPE>
 static octave_value 
 do_single_type_concat (const dim_vector& dv,
                        tm_const& tmp)
 {
-  TYPE result (dv);
+  TYPE result;
 
-  single_type_concat (result, tmp);
+  single_type_concat<TYPE> (result, dv, tmp);
 
   return result;
 }
@@ -778,9 +843,9 @@ static octave_value
 do_single_type_concat_no_mutate (const dim_vector& dv,
                                  tm_const& tmp)
 {
-  TYPE result (dv);
+  TYPE result;
 
-  single_type_concat (result, tmp);
+  single_type_concat<TYPE> (result, dv, tmp);
 
   return new OV_TYPE (result);
 }
@@ -915,7 +980,7 @@ tree_matrix::rvalue1 (int)
 
           charNDArray result (dv, Vstring_fill_char);
 
-          single_type_concat (result, tmp);
+          single_type_concat<charNDArray> (result, tmp);
 
           retval = octave_value (result, type);
         }

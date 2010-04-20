@@ -1,3 +1,7 @@
+2010-04-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.h (::assign, ::assign1): Remove declarations.
+
 2010-04-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::cat): Fast return for single array case.

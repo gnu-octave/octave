@@ -583,18 +583,6 @@ public:
   bool indices_ok (void) const { return rep->indices_ok (); }
 };
 
-// NOTE: these functions should be friends of the Sparse<T> class and
-// Sparse<T>::dimensions should be protected, not public, but we can't
-// do that because of bugs in gcc prior to 3.3.
-
-template <class LT, class RT>
-/* friend */ int
-assign (Sparse<LT>& lhs, const Sparse<RT>& rhs);
-
-template <class LT, class RT>
-/* friend */ int
-assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
-
 template<typename T>
 std::istream&
 read_sparse_matrix (std::istream& is, Sparse<T>& a,

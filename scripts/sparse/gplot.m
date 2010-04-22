@@ -43,8 +43,8 @@ function [x, y] = gplot (a, xy, line_style)
   endif
 
   [i, j] = find (a);
-  xcoord = [xy(i,1), xy(j,1), NaN * ones(length(i),1)]'(:);
-  ycoord = [xy(i,2), xy(j,2), NaN * ones(length(i),1)]'(:);
+  xcoord = [xy(i,1), xy(j,1), NaN (length(i),1) ]'(:);
+  ycoord = [xy(i,2), xy(j,2), NaN (length(i),1) ]'(:);
 
   if (nargout == 0)
     plot (xcoord, ycoord, line_style); 

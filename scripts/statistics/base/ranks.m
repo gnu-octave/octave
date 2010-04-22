@@ -67,7 +67,7 @@ function y = ranks (x, dim)
       x = permute (x, perm);
     endif
     sz = size (x);
-    infvec = -Inf * ones ([1, sz(2 : end)]);
+    infvec = -Inf ([1, sz(2 : end)]);
     [xs, xi] = sort (x);
     eq_el = find (diff ([xs; infvec]) == 0);
     if (isempty (eq_el))

@@ -72,7 +72,7 @@ function retval = run_count (x, n, dim)
   endfor
   c = sz(1); 
   tmp = zeros ([c + 1, sz(2 : end)]);
-  infvec = Inf * ones ([1, sz(2 : end)]);
+  infvec = Inf ([1, sz(2 : end)]);
 
   ind = find (diff ([infvec; x; -infvec]) < 0);
   tmp(ind(2:end) - 1) = diff(ind);

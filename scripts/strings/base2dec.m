@@ -75,7 +75,7 @@ function out = base2dec (d, base)
 
   ## Lookup value of symbols in symbol table, with invalid symbols
   ## evaluating to NaN and space evaluating to 0.
-  table = NaN * ones (256, 1);
+  table = NaN (256, 1);
   table (toascii (symbols (1 : base))) = 0 : base-1;
   table (toascii (" ")) = 0;
   d = reshape (table (toascii (d)), size (d));

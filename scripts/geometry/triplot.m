@@ -37,11 +37,11 @@ function h = triplot (tri, x, y, varargin)
   idx = tri(:, [1, 2, 3, 1]).';
   nt = size (tri, 1);
   if (nargout > 0)
-    h = plot ([x(idx); NaN*ones(1, nt)](:),
-	      [y(idx); NaN*ones(1, nt)](:), varargin{:});
+    h = plot ([x(idx); NaN(1, nt)](:),
+	      [y(idx); NaN(1, nt)](:), varargin{:});
   else
-    plot ([x(idx); NaN*ones(1, nt)](:),
-	  [y(idx); NaN*ones(1, nt)](:), varargin{:});
+    plot ([x(idx); NaN(1, nt)](:),
+	  [y(idx); NaN(1, nt)](:), varargin{:});
   endif
 endfunction
 

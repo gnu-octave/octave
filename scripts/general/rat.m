@@ -71,7 +71,7 @@ function [n,d] = rat(x,tol)
     idx = find(abs (y-n./d) >= tol);
     if (isempty(idx))
       if (isempty (steps))
-	steps = NaN .* ones (nsz, 1);
+	steps = NaN (nsz, 1);
       endif
       break;
     endif
@@ -82,7 +82,7 @@ function [n,d] = rat(x,tol)
     step = round(flip);
 
     if (nargout < 2)
-      tsteps = NaN .* ones (nsz, 1);
+      tsteps = NaN (nsz, 1);
       tsteps (idx) = step;
       steps = [steps, tsteps];
     endif

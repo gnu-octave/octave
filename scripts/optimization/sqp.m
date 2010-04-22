@@ -412,7 +412,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       C(idx,:) = [];
 
       [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
-				      Inf * ones (size (d)));
+				      Inf (size (d)));
 
       info = INFO.info;
 

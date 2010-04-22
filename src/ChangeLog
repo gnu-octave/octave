@@ -1,3 +1,9 @@
+2010-04-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (do_hypot): New helper function. Move bulk code from Fhypot
+	here.
+	(Fhypot): Account for >2 args by folding do_hypot several times.
+
 2010-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-mat.cc (single_type_concat): New overloads. Make TYPE an explicit

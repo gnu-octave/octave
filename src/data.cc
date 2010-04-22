@@ -282,14 +282,73 @@ and orientation.\n\
 */
 
 
+static octave_value
+do_hypot (const octave_value& x, const octave_value& y)
+{
+  octave_value retval;
+
+  octave_value arg0 = x, arg1 = y;
+  if (! arg0.is_numeric_type ())
+    gripe_wrong_type_arg ("hypot", arg0);
+  else if (! arg1.is_numeric_type ())
+    gripe_wrong_type_arg ("hypot", arg1);
+  else
+    {
+      if (arg0.is_complex_type ())
+        arg0 = arg0.abs ();
+      if (arg1.is_complex_type ())
+        arg1 = arg1.abs ();
+
+      if (arg0.is_single_type () || arg1.is_single_type ())
+        {
+          if (arg0.is_scalar_type () && arg1.is_scalar_type ())
+            retval = hypotf (arg0.float_value (), arg1.float_value ());
+          else
+            {
+              FloatNDArray a0 = arg0.float_array_value ();
+              FloatNDArray a1 = arg1.float_array_value ();
+              retval = binmap<float> (a0, a1, ::hypotf, "hypot");
+            }
+        }
+      else
+        {
+          bool a0_scalar = arg0.is_scalar_type ();
+          bool a1_scalar = arg1.is_scalar_type ();
+          if (a0_scalar && a1_scalar)
+            retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
+          else if ((a0_scalar || arg0.is_sparse_type ()) 
+                   && (a1_scalar || arg1.is_sparse_type ()))
+            {
+              SparseMatrix m0 = arg0.sparse_matrix_value ();
+              SparseMatrix m1 = arg1.sparse_matrix_value ();
+              retval = binmap<double> (m0, m1, ::hypot, "hypot");
+            }
+          else
+            {
+              NDArray a0 = arg0.array_value ();
+              NDArray a1 = arg1.array_value ();
+              retval = binmap<double> (a0, a1, ::hypot, "hypot");
+            }
+        }
+    }
+
+  return retval;
+}
 
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} hypot (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, ...)\n\
 Compute the element-by-element square root of the sum of the squares of\n\
 @var{x} and @var{y}.  This is equivalent to\n\
 @code{sqrt (@var{x}.^2 + @var{y}.^2)}, but calculated in a manner that\n\
 avoids overflows for large values of @var{x} or @var{y}.\n\
+@code{hypot} can also be called with more than 2 arguments; in this case,\n\
+the arguments are accumulated from left to right:\n\
+@example\n\
+  hypot (hypot (@var{x}, @var{y}), @var{z})\n\
+  hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}) etc.\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -298,50 +357,13 @@ avoids overflows for large values of @var{x} or @var{y}.\n\
 
   if (nargin == 2)
     {
-      octave_value arg0 = args(0), arg1 = args(1);
-      if (! arg0.is_numeric_type ())
-        gripe_wrong_type_arg ("hypot", arg0);
-      else if (! arg1.is_numeric_type ())
-        gripe_wrong_type_arg ("hypot", arg1);
-      else
-        {
-          if (arg0.is_complex_type ())
-            arg0 = arg0.abs ();
-          if (arg1.is_complex_type ())
-            arg1 = arg1.abs ();
-
-          if (arg0.is_single_type () || arg1.is_single_type ())
-            {
-              if (arg0.is_scalar_type () && arg1.is_scalar_type ())
-                retval = hypotf (arg0.float_value (), arg1.float_value ());
-              else
-                {
-                  FloatNDArray a0 = arg0.float_array_value ();
-                  FloatNDArray a1 = arg1.float_array_value ();
-                  retval = binmap<float> (a0, a1, ::hypotf, "hypot");
-                }
-            }
-          else
-            {
-              bool a0_scalar = arg0.is_scalar_type ();
-              bool a1_scalar = arg1.is_scalar_type ();
-              if (a0_scalar && a1_scalar)
-                retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-              else if ((a0_scalar || arg0.is_sparse_type ()) 
-                       && (a1_scalar || arg1.is_sparse_type ()))
-                {
-                  SparseMatrix m0 = arg0.sparse_matrix_value ();
-                  SparseMatrix m1 = arg1.sparse_matrix_value ();
-                  retval = binmap<double> (m0, m1, ::hypot, "hypot");
-                }
-              else
-                {
-                  NDArray a0 = arg0.array_value ();
-                  NDArray a1 = arg1.array_value ();
-                  retval = binmap<double> (a0, a1, ::hypot, "hypot");
-                }
-            }
-        }
+      retval = do_hypot (args(0), args(1));
+    }
+  else if (nargin >= 3)
+    {
+      retval = args(0);
+      for (int i = 1; i < nargin && ! error_state; i++)
+        retval = do_hypot (retval, args(i));
     }
   else
     print_usage ();

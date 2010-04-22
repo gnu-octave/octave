@@ -1,5 +1,9 @@
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
+	* optimization/glpk.m: Eliminate repmat (Inf, x , y) and just use Inf (x,y)
+
+2010-04-22  Rik <octave@nomad.inbox5.com>
+
 	* general/rat.m, sparse/gplot.m, strings/base2dec.m, geometry/triplot.m
      optimization/sqp.m, optimization/qp.m, statistics/base/run_count.m,
      statistics/base/ranks.m: Eliminate NaN*ones and Inf*ones constructs

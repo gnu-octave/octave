@@ -475,13 +475,13 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
 
   if (nargin > 4)
     if (isempty (ub))
-      ub = repmat (Inf, nx, 1);
+      ub = Inf (nx, 1);
     elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx)
       error ("UB must be a real valued %d by 1 column vector", nx);
       return;
     endif
   else
-    ub = repmat (Inf, nx, 1);
+    ub = Inf (nx, 1);
   endif
 
   ## 6) Sense of each constraint

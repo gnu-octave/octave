@@ -99,8 +99,13 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
             {
               FloatHESS result (tmp);
 
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              if (nargout <= 1)
+                retval(0) = result.hess_matrix ();
+              else
+                {
+                  retval(1) = result.hess_matrix ();
+                  retval(0) = result.unitary_hess_matrix ();
+                }
             }
         }
       else if (arg.is_complex_type ())
@@ -111,8 +116,13 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
             {
               FloatComplexHESS result (ctmp);
 
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              if (nargout <= 1)
+                retval(0) = result.hess_matrix ();
+              else
+                {
+                  retval(1) = result.hess_matrix ();
+                  retval(0) = result.unitary_hess_matrix ();
+                }
             }
         }
     }
@@ -126,8 +136,13 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
             {
               HESS result (tmp);
 
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              if (nargout <= 1)
+                retval(0) = result.hess_matrix ();
+              else
+                {
+                  retval(1) = result.hess_matrix ();
+                  retval(0) = result.unitary_hess_matrix ();
+                }
             }
         }
       else if (arg.is_complex_type ())
@@ -138,8 +153,13 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
             {
               ComplexHESS result (ctmp);
 
-              retval(1) = result.hess_matrix ();
-              retval(0) = result.unitary_hess_matrix ();
+              if (nargout <= 1)
+                retval(0) = result.hess_matrix ();
+              else
+                {
+                  retval(1) = result.hess_matrix ();
+                  retval(0) = result.unitary_hess_matrix ();
+                }
             }
         }
       else

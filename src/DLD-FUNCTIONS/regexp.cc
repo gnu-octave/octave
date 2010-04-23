@@ -668,11 +668,12 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
         }
       else
         {
-      NDArray s (dim_vector(1, sz));
-      i = 0;
-      for (const_iterator p = lst.begin(); p != lst.end(); p++)
-        s(i++) = p->s;
-      retval(0) = s;
+          NDArray s (dim_vector(1, sz));
+
+          i = 0;
+          for (const_iterator p = lst.begin(); p != lst.end(); p++)
+            s(i++) = p->s;
+          retval(0) = s;
         }
 
       // Alter the order of the output arguments

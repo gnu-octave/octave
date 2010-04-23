@@ -52,9 +52,9 @@ function retval = orth (A, tol)
 
     if (nargin == 1)
       if (isa (A, "single"))
-	tol = max (size (A)) * s (1) * eps ("single");
+        tol = max (size (A)) * s (1) * eps ("single");
       else
-	tol = max (size (A)) * s (1) * eps;
+        tol = max (size (A)) * s (1) * eps;
       endif
     endif
 

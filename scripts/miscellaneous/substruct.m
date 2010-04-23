@@ -59,7 +59,7 @@ function retval = substruct (varargin)
       cells = cellfun ("isclass", sub, "cell");
       chars = cellfun ("isclass", sub, "char");
       if (any (braces &! cells))
-	error ("substruct: for type == () or {}, subs must be a cell array");
+        error ("substruct: for type == () or {}, subs must be a cell array");
       elseif (any (dots &! chars))
         error ("substruct: for type == ., subs must be a character string");
       endif

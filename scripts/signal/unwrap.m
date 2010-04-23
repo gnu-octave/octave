@@ -40,7 +40,7 @@ function retval = unwrap (a, tol, dim)
 
   if (nargin == 3)
     if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+        dim < (nd + 1))
       error ("unwrap: dim must be an integer and valid dimension");
     endif
   else

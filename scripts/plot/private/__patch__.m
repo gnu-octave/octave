@@ -39,9 +39,9 @@ function [h, failed] = __patch__ (p, varargin)
       args{4} = getfield(varargin{1}, "vertices");
       args{5} = "facevertexcdata";
       if (isfield (varargin{1}, "facevertexcdata"))
-	args{6} = getfield(varargin{1}, "facevertexcdata");
+        args{6} = getfield(varargin{1}, "facevertexcdata");
       else
-	args{6} = [];
+        args{6} = [];
       endif
       args = [args; varargin(2:end)];
       args = setdata (args);
@@ -57,17 +57,17 @@ function [h, failed] = __patch__ (p, varargin)
       iarg = 3;
 
       if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
-	  && size_equal(x, varargin{3}) && !ischar(varargin{3}))
-	z = varargin{3};
-	iarg++;
+          && size_equal(x, varargin{3}) && !ischar(varargin{3}))
+        z = varargin{3};
+        iarg++;
       else
-	z = [];
+        z = [];
       endif
 
       if (isvector (x))
-	x = x(:);
-	y = y(:);
-	z = z(:);
+        x = x(:);
+        y = y(:);
+        z = z(:);
       endif
       args{1} = "xdata";
       args{2} = x;
@@ -77,56 +77,56 @@ function [h, failed] = __patch__ (p, varargin)
       args{6} = z;
 
       if (isnumeric (varargin{iarg}))
-	c = varargin{iarg};
-	iarg++;
+        c = varargin{iarg};
+        iarg++;
 
-	if (ndims (c) == 3 && size (c, 2) == 1)
-	  c = permute (c, [1, 3, 2]);
-	endif
+        if (ndims (c) == 3 && size (c, 2) == 1)
+          c = permute (c, [1, 3, 2]);
+        endif
 
-	if (isvector (c) && numel (c) == columns (x))
-	  if (isnan (c))
-	    args{7} = "facecolor";
-	    args{8} = [1, 1, 1];
-	    args{9} = "cdata";
-	    args{10} = c;
-	  elseif (isnumeric (c))
-	    args{7} = "facecolor";
-	    args{8} = "flat";
-	    args{9} = "cdata";
-	    args{10} = c;
-	  else
-	    error ("patch: color value not valid");
-	  endif
-	elseif (size (c, ndims (c)) == 3)
-	  args{7} = "facecolor";
-	  args{8} = "flat";
-	  args{9} = "cdata";
-	  args{10} = c;
-	else
-	  ## Color Vectors
-	  if (rows (c) != rows (x) || rows (c) != length (y))
-	    error ("patch: size of x, y, and c must be equal")
-	  else
-	    args{7} = "facecolor";
-	    args{8} = "interp";
-	    args{9} = "cdata";
-	    args{10} = [];
-	  endif
-	endif
+        if (isvector (c) && numel (c) == columns (x))
+          if (isnan (c))
+            args{7} = "facecolor";
+            args{8} = [1, 1, 1];
+            args{9} = "cdata";
+            args{10} = c;
+          elseif (isnumeric (c))
+            args{7} = "facecolor";
+            args{8} = "flat";
+            args{9} = "cdata";
+            args{10} = c;
+          else
+            error ("patch: color value not valid");
+          endif
+        elseif (size (c, ndims (c)) == 3)
+          args{7} = "facecolor";
+          args{8} = "flat";
+          args{9} = "cdata";
+          args{10} = c;
+        else
+          ## Color Vectors
+          if (rows (c) != rows (x) || rows (c) != length (y))
+            error ("patch: size of x, y, and c must be equal")
+          else
+            args{7} = "facecolor";
+            args{8} = "interp";
+            args{9} = "cdata";
+            args{10} = [];
+          endif
+        endif
       elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
-	## Assume that any additional argument over an even number is
-	## color string.
-	args{7} = "facecolor";
-	args{8} =  tolower (varargin{iarg});
-	args{9} = "cdata";
-	args{10} = [];
-	iarg++;
+        ## Assume that any additional argument over an even number is
+        ## color string.
+        args{7} = "facecolor";
+        args{8} =  tolower (varargin{iarg});
+        args{9} = "cdata";
+        args{10} = [];
+        iarg++;
       else
-	args{7} = "facecolor";
-	args{8} = [0, 1, 0];
-	args{9} = "cdata";
-	args{10} = [];
+        args{7} = "facecolor";
+        args{8} = [0, 1, 0];
+        args{9} = "cdata";
+        args{10} = [];
       endif
 
       args = [args, varargin(iarg:end)];
@@ -202,8 +202,8 @@ function args = setdata (args)
   if (any (t1(:)))
     t2 = find (t1 != t1([2:end,end],:));
     idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
-		mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)), 
-					   "UniformOutput", false))));
+                mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)), 
+                                           "UniformOutput", false))));
   endif
   x = reshape (vert(:,1)(idx), size (idx));
   y = reshape (vert(:,2)(idx), size (idx));
@@ -218,11 +218,11 @@ function args = setdata (args)
       c = reshape (fvc, [1, size(fvc)]);
     else
       if (size(fvc, 2) == 3)
-	c = cat(3, reshape (fvc(idx, 1), size(idx)),
-		reshape (fvc(idx, 2), size(idx)),
-		reshape (fvc(idx, 3), size(idx)));
+        c = cat(3, reshape (fvc(idx, 1), size(idx)),
+                reshape (fvc(idx, 2), size(idx)),
+                reshape (fvc(idx, 3), size(idx)));
       else
-	c = reshape (fvc(idx), size(idx));
+        c = reshape (fvc(idx), size(idx));
       endif
     endif
   else

@@ -76,7 +76,7 @@ function h = ribbon (x, y, width)
 
   if (! ishold ())
     set (ax, "view", [-37.5, 30], "box", "off", "xgrid", "on",
-	 "ygrid", "on", "zgrid", "on");
+         "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

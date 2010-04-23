@@ -31,7 +31,7 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
-	
+        
   if (nargin < 7)
     print_usage ();
   endif

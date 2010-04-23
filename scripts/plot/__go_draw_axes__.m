@@ -54,10 +54,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     endif
     if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
       if (nd == 2)
-	x = [1, 1];
+        x = [1, 1];
       else
-	## 3D plots need to be sized down to fit in the window.
-	x = 1.0 ./ sqrt([2, 2.5]);
+        ## 3D plots need to be sized down to fit in the window.
+        x = 1.0 ./ sqrt([2, 2.5]);
       endif
       fprintf (plot_stream, "set tmargin screen %.15g;\n", pos(2)+pos(4)/2+x(2)*pos(4)/2);
       fprintf (plot_stream, "set bmargin screen %.15g;\n", pos(2)+pos(4)/2-x(2)*pos(4)/2);
@@ -94,18 +94,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     if (! isempty (axis_obj.title))
       t = get (axis_obj.title);
       if (isempty (t.string))
-	fputs (plot_stream, "unset title;\n");
+        fputs (plot_stream, "unset title;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, gnuplot_term);
-	fprintf (plot_stream, "set title \"%s\" %s %s",
-		 undo_string_escapes (tt), fontspec,
-		 __do_enhanced_option__ (enhanced, t));
-	if (nd == 3 && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-	  fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
-	else
-	  fprintf (plot_stream, ";\n");
-	endif
+        [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+        fontspec = create_fontspec (f, s, gnuplot_term);
+        fprintf (plot_stream, "set title \"%s\" %s %s",
+                 undo_string_escapes (tt), fontspec,
+                 __do_enhanced_option__ (enhanced, t));
+        if (nd == 3 && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+          fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
+        else
+          fprintf (plot_stream, ";\n");
+        endif
       endif
     endif
 
@@ -114,26 +114,26 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       angle = t.rotation;
       colorspec = get_text_colorspec (axis_obj.xcolor, mono);
       if (isempty (t.string))
-	fprintf (plot_stream, "unset xlabel;\n");
-	fprintf (plot_stream, "unset x2label;\n");
+        fprintf (plot_stream, "unset xlabel;\n");
+        fprintf (plot_stream, "unset x2label;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, gnuplot_term);
-	if (strcmpi (axis_obj.xaxislocation, "top"))
-	  fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec,
-		   __do_enhanced_option__ (enhanced, t));
-	else
-	  fprintf (plot_stream, "set xlabel \"%s\" %s %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec,
-		   __do_enhanced_option__ (enhanced, t));
-	endif
-	fprintf (plot_stream, " rotate by %f;\n", angle);
-	if (strcmpi (axis_obj.xaxislocation, "top"))
-	  fprintf (plot_stream, "unset xlabel;\n");
-	else
-	  fprintf (plot_stream, "unset x2label;\n");
-	endif
+        [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+        fontspec = create_fontspec (f, s, gnuplot_term);
+        if (strcmpi (axis_obj.xaxislocation, "top"))
+          fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
+                   undo_string_escapes (tt), colorspec, fontspec,
+                   __do_enhanced_option__ (enhanced, t));
+        else
+          fprintf (plot_stream, "set xlabel \"%s\" %s %s %s",
+                   undo_string_escapes (tt), colorspec, fontspec,
+                   __do_enhanced_option__ (enhanced, t));
+        endif
+        fprintf (plot_stream, " rotate by %f;\n", angle);
+        if (strcmpi (axis_obj.xaxislocation, "top"))
+          fprintf (plot_stream, "unset xlabel;\n");
+        else
+          fprintf (plot_stream, "unset x2label;\n");
+        endif
       endif
     endif
 
@@ -142,26 +142,26 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       angle = t.rotation;
       colorspec = get_text_colorspec (axis_obj.ycolor, mono);
       if (isempty (t.string))
-	fprintf (plot_stream, "unset ylabel;\n");
-	fprintf (plot_stream, "unset y2label;\n");
+        fprintf (plot_stream, "unset ylabel;\n");
+        fprintf (plot_stream, "unset y2label;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, gnuplot_term);
-	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec,
-		   __do_enhanced_option__ (enhanced, t));
-	else
-	  fprintf (plot_stream, "set ylabel \"%s\" %s %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec,
-		   __do_enhanced_option__ (enhanced, t));
-	endif
-	fprintf (plot_stream, " rotate by %f;\n", angle);
-	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fprintf (plot_stream, "unset ylabel;\n");
-	else
-	  fprintf (plot_stream, "unset y2label;\n");
-	endif
+        [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+        fontspec = create_fontspec (f, s, gnuplot_term);
+        if (strcmpi (axis_obj.yaxislocation, "right"))
+          fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
+                   undo_string_escapes (tt), colorspec, fontspec,
+                   __do_enhanced_option__ (enhanced, t));
+        else
+          fprintf (plot_stream, "set ylabel \"%s\" %s %s %s",
+                   undo_string_escapes (tt), colorspec, fontspec,
+                   __do_enhanced_option__ (enhanced, t));
+        endif
+        fprintf (plot_stream, " rotate by %f;\n", angle);
+        if (strcmpi (axis_obj.yaxislocation, "right"))
+          fprintf (plot_stream, "unset ylabel;\n");
+        else
+          fprintf (plot_stream, "unset y2label;\n");
+        endif
       endif
     endif
 
@@ -170,14 +170,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       angle = t.rotation;
       colorspec = get_text_colorspec (axis_obj.zcolor, mono);
       if (isempty (t.string))
-	fputs (plot_stream, "unset zlabel;\n");
+        fputs (plot_stream, "unset zlabel;\n");
       else
-	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
-	fontspec = create_fontspec (f, s, gnuplot_term);
-	fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
-		 undo_string_escapes (tt), colorspec, fontspec,
-		 __do_enhanced_option__ (enhanced, t));
-	fprintf (plot_stream, " rotate by %f;\n", angle);
+        [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
+        fontspec = create_fontspec (f, s, gnuplot_term);
+        fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
+                 undo_string_escapes (tt), colorspec, fontspec,
+                 __do_enhanced_option__ (enhanced, t));
+        fprintf (plot_stream, " rotate by %f;\n", angle);
       endif
     endif
 
@@ -188,7 +188,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       xaxisloc = "x";
       xaxisloc_using = "x1";
       if (strcmpi (axis_obj.xaxislocation, "zero"))
-	fputs (plot_stream, "set xzeroaxis;\n");
+        fputs (plot_stream, "set xzeroaxis;\n");
       endif
     endif
     if (strcmpi (axis_obj.yaxislocation, "right"))
@@ -198,7 +198,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       yaxisloc = "y";
       yaxisloc_using = "y1";
       if (strcmpi (axis_obj.yaxislocation, "zero"))
-	fputs (plot_stream, "set yzeroaxis;\n");
+        fputs (plot_stream, "set yzeroaxis;\n");
       endif
     endif
 
@@ -228,9 +228,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     if (strcmpi (axis_obj.xminorgrid, "on"))
       have_grid = true;
       if (strcmp (axis_obj.xscale, "log"))
-	m = 10;
+        m = 10;
       else
-	m = 5;
+        m = 5;
       endif
       fprintf (plot_stream, "set m%stics %d;\n", xaxisloc, m);
       fprintf (plot_stream, "set grid m%stics;\n", xaxisloc);
@@ -241,9 +241,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     if (strcmpi (axis_obj.yminorgrid, "on"))
       have_grid = true;
       if (strcmp (axis_obj.yscale, "log"))
-	m = 10;
+        m = 10;
       else
-	m = 5;
+        m = 5;
       endif
       fprintf (plot_stream, "set m%stics %d;\n", yaxisloc, m);
       fprintf (plot_stream, "set grid m%stics;\n", yaxisloc);
@@ -254,9 +254,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     if (strcmpi (axis_obj.zminorgrid, "on"))
       have_grid = true;
       if (strcmp (axis_obj.zscale, "log"))
-	m = 10;
+        m = 10;
       else
-	m = 5;
+        m = 5;
       endif
       fprintf (plot_stream, "set mztics %d;\n", m);
       fputs (plot_stream, "set grid mztics;\n");
@@ -337,7 +337,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
-			      && strcmpi (view_fcn, "gnuplot_internal"));
+                              && strcmpi (view_fcn, "gnuplot_internal"));
 
     ximg_data = {};
     ximg_data_idx = 0;
@@ -348,7 +348,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       kids = kids(1:(end-1));
 
       if (strcmpi (obj.visible, "off"))
-	continue;
+        continue;
       endif
 
       ## Check for facecolor interpolation for surfaces.
@@ -356,366 +356,366 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
          isfield (obj, "facecolor") && strncmp (obj.facecolor, "interp", 6);
 
       switch (obj.type)
-	case "image"
-	  img_data = obj.cdata;
-	  img_xdata = obj.xdata;
-	  img_ydata = obj.ydata;
+        case "image"
+          img_data = obj.cdata;
+          img_xdata = obj.xdata;
+          img_ydata = obj.ydata;
 
-	  if (use_gnuplot_for_images)
+          if (use_gnuplot_for_images)
 
-	    if (ndims (img_data) == 3)
-	      truecolor = true;
-	    elseif (strcmpi (obj.cdatamapping, "direct"))
-	      cdatadirect = true;
-	    endif
-	    data_idx++;
-	    is_image_data(data_idx) = true;
-	    parametric(data_idx) = false;
-	    have_cdata(data_idx) = false;
-	    have_3d_patch(data_idx) = false;
+            if (ndims (img_data) == 3)
+              truecolor = true;
+            elseif (strcmpi (obj.cdatamapping, "direct"))
+              cdatadirect = true;
+            endif
+            data_idx++;
+            is_image_data(data_idx) = true;
+            parametric(data_idx) = false;
+            have_cdata(data_idx) = false;
+            have_3d_patch(data_idx) = false;
 
-	    [y_dim, x_dim] = size (img_data(:,:,1));
-	    if (x_dim > 1)
-	      dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
-	    else
-	      x_dim = 2;
-	      img_data = [img_data, img_data];
-	      dx = abs (img_xdata(2)-img_xdata(1));
-	    endif
-	    if (y_dim > 1)
-	      dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
-	    else
-	      y_dim = 2;
-	      img_data = [img_data; img_data];
-	      dy = abs (img_ydata(2)-img_ydata(1));
-	    endif
-	    x_origin = min (img_xdata);
-	    y_origin = min (img_ydata);
+            [y_dim, x_dim] = size (img_data(:,:,1));
+            if (x_dim > 1)
+              dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
+            else
+              x_dim = 2;
+              img_data = [img_data, img_data];
+              dx = abs (img_xdata(2)-img_xdata(1));
+            endif
+            if (y_dim > 1)
+              dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
+            else
+              y_dim = 2;
+              img_data = [img_data; img_data];
+              dy = abs (img_ydata(2)-img_ydata(1));
+            endif
+            x_origin = min (img_xdata);
+            y_origin = min (img_ydata);
 
-	    if (ndims (img_data) == 3)
-	      data{data_idx} = permute (img_data, [3, 1, 2])(:);
-	      format = "1:2:3";
-	      imagetype = "rgbimage";
-	    else
-	      data{data_idx} = img_data(:);
-	      format = "1";
-	      imagetype = "image";
-	    endif
+            if (ndims (img_data) == 3)
+              data{data_idx} = permute (img_data, [3, 1, 2])(:);
+              format = "1:2:3";
+              imagetype = "rgbimage";
+            else
+              data{data_idx} = img_data(:);
+              format = "1";
+              imagetype = "image";
+            endif
 
-	    titlespec{data_idx} = "title \"\"";
-	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
-		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
-	    withclause{data_idx} = sprintf ("with %s;", imagetype);
+            titlespec{data_idx} = "title \"\"";
+            usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
+                x_dim, y_dim, x_origin, y_origin, dx, dy, format);
+            withclause{data_idx} = sprintf ("with %s;", imagetype);
 
-	  else
-	    ximg_data{++ximg_data_idx} = img_data;
-	  endif
+          else
+            ximg_data{++ximg_data_idx} = img_data;
+          endif
 
-	case "line"
-	  if (strncmp (obj.linestyle, "none", 4)
-	      && (! isfield (obj, "marker")
-		  || (isfield (obj, "marker")
-		      && strncmp (obj.marker, "none", 4))))
-	    continue;
-	  endif
-	  data_idx++;
-	  is_image_data(data_idx) = false;
-	  parametric(data_idx) = true;
-	  have_cdata(data_idx) = false;
-	  have_3d_patch(data_idx) = false;
+        case "line"
+          if (strncmp (obj.linestyle, "none", 4)
+              && (! isfield (obj, "marker")
+                  || (isfield (obj, "marker")
+                      && strncmp (obj.marker, "none", 4))))
+            continue;
+          endif
+          data_idx++;
+          is_image_data(data_idx) = false;
+          parametric(data_idx) = true;
+          have_cdata(data_idx) = false;
+          have_3d_patch(data_idx) = false;
 
-	  if (isempty (obj.keylabel))
-	    titlespec{data_idx} = "title \"\"";
-	  else
-	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
-	    titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
-	  endif
-	  usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
-	  errbars = "";
-	  if (nd == 3)
-	    xdat = obj.xdata(:);
-	    ydat = obj.ydata(:);
-	    if (! isempty (obj.zdata))
-	      zdat = obj.zdata(:);
-	    else
-	      zdat = zeros (size (xdat));
-	    endif
-	    data{data_idx} = [xdat, ydat, zdat]';
-	    usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", numel (xdat));
-	    ## fputs (plot_stream, "set parametric;\n");
-	  else
-	    xdat = obj.xdata(:);
-	    ydat = obj.ydata(:);
-	    ldat = obj.ldata;
-	    yerr = xerr = false;
-	    if (! isempty (ldat))
-	      yerr = true;
-	      ldat = ldat(:);
-	    endif
-	    udat = obj.udata;
-	    if (! isempty (udat))
-	      udat = udat(:);
-	    endif
-	    xldat = obj.xldata;
-	    if (! isempty (xldat))
-	      xerr = true;
-	      xldat = xldat(:);
-	    endif
-	    xudat = obj.xudata;
-	    if (! isempty (xudat))
-	      xudat = xudat(:);
-	    endif
-	    if (yerr)
-	      if (isempty (ldat))
-		ylo = ydat;
-	      else
-		ylo = ydat-ldat;
-	      endif
-	      if (isempty (udat))
-		yhi = ydat;
-	      else
-		yhi = ydat+udat;
-	      endif
-	      if (xerr)
-		if (isempty (xldat))
-		  xlo = xdat;
-		else
-		  xlo = xdat-xldat;
-		endif
-		if (isempty (xudat))
-		  xhi = xdat;
-		else
-		  xhi = xdat+xudat;
-		endif
-		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
-		usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4):($5):($6)", numel (xdat));
-		errbars = "xyerrorbars";
-	      else
-		data{data_idx} = [xdat, ydat, ylo, yhi]';
-		usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
-		errbars = "yerrorbars";
-	      endif
-	    elseif (xerr)
-	      if (isempty (xldat))
-		xlo = xdat;
-	      else
-		xlo = xdat-xldat;
-	      endif
-	      if (isempty (xudat))
-		xhi = xdat;
-	      else
-		xhi = xdat+xudat;
-	      endif
-	      data{data_idx} = [xdat, ydat, xlo, xhi]';
-	      usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
-	      errbars = "xerrorbars";
-	    else
-	      data{data_idx} = [xdat, ydat]';
-	      usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
-					      rows(xdat), xaxisloc_using, yaxisloc_using);
-	    endif
-	  endif
+          if (isempty (obj.keylabel))
+            titlespec{data_idx} = "title \"\"";
+          else
+            tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+            titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
+          endif
+          usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
+          errbars = "";
+          if (nd == 3)
+            xdat = obj.xdata(:);
+            ydat = obj.ydata(:);
+            if (! isempty (obj.zdata))
+              zdat = obj.zdata(:);
+            else
+              zdat = zeros (size (xdat));
+            endif
+            data{data_idx} = [xdat, ydat, zdat]';
+            usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", numel (xdat));
+            ## fputs (plot_stream, "set parametric;\n");
+          else
+            xdat = obj.xdata(:);
+            ydat = obj.ydata(:);
+            ldat = obj.ldata;
+            yerr = xerr = false;
+            if (! isempty (ldat))
+              yerr = true;
+              ldat = ldat(:);
+            endif
+            udat = obj.udata;
+            if (! isempty (udat))
+              udat = udat(:);
+            endif
+            xldat = obj.xldata;
+            if (! isempty (xldat))
+              xerr = true;
+              xldat = xldat(:);
+            endif
+            xudat = obj.xudata;
+            if (! isempty (xudat))
+              xudat = xudat(:);
+            endif
+            if (yerr)
+              if (isempty (ldat))
+                ylo = ydat;
+              else
+                ylo = ydat-ldat;
+              endif
+              if (isempty (udat))
+                yhi = ydat;
+              else
+                yhi = ydat+udat;
+              endif
+              if (xerr)
+                if (isempty (xldat))
+                  xlo = xdat;
+                else
+                  xlo = xdat-xldat;
+                endif
+                if (isempty (xudat))
+                  xhi = xdat;
+                else
+                  xhi = xdat+xudat;
+                endif
+                data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4):($5):($6)", numel (xdat));
+                errbars = "xyerrorbars";
+              else
+                data{data_idx} = [xdat, ydat, ylo, yhi]';
+                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
+                errbars = "yerrorbars";
+              endif
+            elseif (xerr)
+              if (isempty (xldat))
+                xlo = xdat;
+              else
+                xlo = xdat-xldat;
+              endif
+              if (isempty (xudat))
+                xhi = xdat;
+              else
+                xhi = xdat+xudat;
+              endif
+              data{data_idx} = [xdat, ydat, xlo, xhi]';
+              usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
+              errbars = "xerrorbars";
+            else
+              data{data_idx} = [xdat, ydat]';
+              usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
+                                              rows(xdat), xaxisloc_using, yaxisloc_using);
+            endif
+          endif
 
-	  style = do_linestyle_command (obj, obj.color, data_idx, mono, 
-					plot_stream, errbars);
+          style = do_linestyle_command (obj, obj.color, data_idx, mono, 
+                                        plot_stream, errbars);
 
           withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style{1}, data_idx);
+                                          style{1}, data_idx);
 
-	  if (length (style) > 1)
-	    data_idx++;
-	    is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	    parametric(data_idx) = parametric(data_idx - 1);
-	    have_cdata(data_idx) = have_cdata(data_idx - 1);
-	    have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	    titlespec{data_idx} = "title \"\"";
-	    usingclause{data_idx} = usingclause{data_idx - 1};
-	    data{data_idx} = data{data_idx - 1};
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style{2}, data_idx);
-	  endif
-	  if (length (style) > 2)
-	    data_idx++;
-	    is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	    parametric(data_idx) = parametric(data_idx - 1);
-	    have_cdata(data_idx) = have_cdata(data_idx - 1);
-	    have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	    titlespec{data_idx} = "title \"\"";
-	    usingclause{data_idx} = usingclause{data_idx - 1};
-	    data{data_idx} = data{data_idx - 1};
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style{3}, data_idx);
-	  endif
+          if (length (style) > 1)
+            data_idx++;
+            is_image_data(data_idx) = is_image_data(data_idx - 1); 
+            parametric(data_idx) = parametric(data_idx - 1);
+            have_cdata(data_idx) = have_cdata(data_idx - 1);
+            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+            titlespec{data_idx} = "title \"\"";
+            usingclause{data_idx} = usingclause{data_idx - 1};
+            data{data_idx} = data{data_idx - 1};
+            withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                          style{2}, data_idx);
+          endif
+          if (length (style) > 2)
+            data_idx++;
+            is_image_data(data_idx) = is_image_data(data_idx - 1); 
+            parametric(data_idx) = parametric(data_idx - 1);
+            have_cdata(data_idx) = have_cdata(data_idx - 1);
+            have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+            titlespec{data_idx} = "title \"\"";
+            usingclause{data_idx} = usingclause{data_idx - 1};
+            data{data_idx} = data{data_idx - 1};
+            withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                          style{3}, data_idx);
+          endif
 
        case "patch"
          cmap = parent_figure_obj.colormap;
-	 [nr, nc] = size (obj.xdata);
+         [nr, nc] = size (obj.xdata);
 
-	 if (! isempty (obj.cdata))
-	   cdat = obj.cdata;
-	   if (strcmpi (obj.cdatamapping, "direct"))
-	     cdatadirect = true;
-	   endif
-	 else
-	   cdat = [];
-	 endif
+         if (! isempty (obj.cdata))
+           cdat = obj.cdata;
+           if (strcmpi (obj.cdatamapping, "direct"))
+             cdatadirect = true;
+           endif
+         else
+           cdat = [];
+         endif
 
-	 data_3d_idx = NaN;
-	 for i = 1:nc
-	   xcol = obj.xdata(:,i);
-	   ycol = obj.ydata(:,i);
-	   if (nd == 3)
-	     if (! isempty (obj.zdata))
-	       zcol = obj.zdata(:,i);
-	     else
-	       zcol = zeros (size (xcol));
-	     endif
-	   endif
+         data_3d_idx = NaN;
+         for i = 1:nc
+           xcol = obj.xdata(:,i);
+           ycol = obj.ydata(:,i);
+           if (nd == 3)
+             if (! isempty (obj.zdata))
+               zcol = obj.zdata(:,i);
+             else
+               zcol = zeros (size (xcol));
+             endif
+           endif
 
-	   if (! isnan (xcol) && ! isnan (ycol))
-	     ## Is the patch closed or not
-	     if (strncmp (obj.facecolor, "none", 4)) 
-	       hidden_removal = false;
-	     else
+           if (! isnan (xcol) && ! isnan (ycol))
+             ## Is the patch closed or not
+             if (strncmp (obj.facecolor, "none", 4)) 
+               hidden_removal = false;
+             else
 
-	       if (isnan (hidden_removal))
-		 hidden_removal = true;
-	       endif
-	       if (nd == 3)
-		 if (numel (xcol) > 3)
-		   error ("gnuplot (as of v4.2) only supports 3D filled triangular patches");
-		 else
-		   if (isnan (data_3d_idx))
-		     data_idx++;
-		     data_3d_idx = data_idx; 
-		     is_image_data(data_idx) = false;
-		     parametric(data_idx) = false;
-		     have_cdata(data_idx) = true;
-		     have_3d_patch(data_idx) = true;
-		     withclause{data_3d_idx} = sprintf ("with pm3d");
-		     usingclause{data_3d_idx} =  "using 1:2:3:4";
-		     data{data_3d_idx} = [];
-		   endif
-		   local_idx = data_3d_idx;
-		   ccdat = NaN;
-		 endif
-	       else
-		 data_idx++;
-		 local_idx = data_idx;
-		 is_image_data(data_idx) = false;
-		 parametric(data_idx) = false;
-		 have_cdata(data_idx) = false;
-		 have_3d_patch(data_idx) = false;
-	       endif
-
-	       if (i > 1 || isempty (obj.keylabel))
-		 titlespec{local_idx} = "title \"\"";
-	       else
-		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
-		 titlespec{local_idx} = cstrcat ("title \"", tmp, "\"");
-	       endif
-               if (isfield (obj, "facecolor"))
-		 if ((strncmp (obj.facecolor, "flat", 4)
-		     || strncmp (obj.facecolor, "interp", 6))
-		     && isfield (obj, "cdata"))
-		   if (ndims (obj.cdata) == 2
-		       && (size (obj.cdata, 2) == nc
-			   && (size (obj.cdata, 1) == 1
-			       || size (obj.cdata, 1) == 3)))
-		     ccol = cdat (:, i);
-		   elseif (ndims (obj.cdata) == 2
-		       && (size (obj.cdata, 1) == nc
-			   && (size (obj.cdata, 2) == 1
-			       || size (obj.cdata, 2) == 3)))
-		     ccol = cdat (i, :);
-		   elseif (ndims (obj.cdata) == 3)
-		     ccol = permute (cdat (:, i, :), [1, 3, 2]);
-		   else
-		     ccol = cdat;
-		   endif
-		   if (strncmp (obj.facecolor, "flat", 4))
-		     if (numel(ccol) == 3)
-		       color = ccol;
-		     elseif (nd == 3 && numel (xcol) == 3)
-		       ccdat = ccol * ones (3,1);
-		     else
-		       r = 1 + round ((size (cmap, 1) - 1)
-				      * (ccol - clim(1))/(clim(2) - clim(1)));
-		       r = max (1, min (r, size (cmap, 1)));
-		       color = cmap(r, :);
-		     endif
-		   elseif (strncmp (obj.facecolor, "interp", 6))
-		     if (nd == 3 && numel (xcol) == 3)
-		       ccdat = ccol;
-		       if (! isvector (ccdat))
-			 tmp = rows(cmap) + rows(addedcmap) + ... 
-			      [1 : rows(ccdat)];
-			 addedcmap = [addedcmap; ccdat];
-			 ccdat = tmp(:);
-		       else
-			 ccdat = ccdat(:);
-		       endif
-		     else
-		       warning ("\"interp\" not supported, using 1st entry of cdata");
-		       r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
-		       r = max (1, min (r, size (cmap, 1)));
-		       color = cmap(r,:);
-		     endif
-		   endif
-		 elseif (isnumeric (obj.facecolor))
-		   color = obj.facecolor;
-		 else
-		   color = [0, 1, 0];
-		 endif
+               if (isnan (hidden_removal))
+                 hidden_removal = true;
+               endif
+               if (nd == 3)
+                 if (numel (xcol) > 3)
+                   error ("gnuplot (as of v4.2) only supports 3D filled triangular patches");
+                 else
+                   if (isnan (data_3d_idx))
+                     data_idx++;
+                     data_3d_idx = data_idx; 
+                     is_image_data(data_idx) = false;
+                     parametric(data_idx) = false;
+                     have_cdata(data_idx) = true;
+                     have_3d_patch(data_idx) = true;
+                     withclause{data_3d_idx} = sprintf ("with pm3d");
+                     usingclause{data_3d_idx} =  "using 1:2:3:4";
+                     data{data_3d_idx} = [];
+                   endif
+                   local_idx = data_3d_idx;
+                   ccdat = NaN;
+                 endif
                else
-		 color = [0, 1, 0];
+                 data_idx++;
+                 local_idx = data_idx;
+                 is_image_data(data_idx) = false;
+                 parametric(data_idx) = false;
+                 have_cdata(data_idx) = false;
+                 have_3d_patch(data_idx) = false;
                endif
 
-	       if (nd == 3 && numel (xcol) == 3)
-		 if (isnan (ccdat))
-		   ccdat = (rows (cmap) + rows(addedcmap) + 1) * ones(3, 1);
-		   addedcmap = [addedcmap; reshape(color, 1, 3)];
-		 endif
-		 data{data_3d_idx} = [data{data_3d_idx}, ...
-				      [[xcol; xcol(end)], [ycol; ycol(end)], ...
-				      [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
-	       else
-		 if (mono)
-		   colorspec = "";
-		 elseif (__gnuplot_has_feature__ ("transparent_patches")
-			 && isscalar (obj.facealpha))
-                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
-				      round (255*color), obj.facealpha);
-		 else
-		   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-					round (255*color));
-		 endif
+               if (i > 1 || isempty (obj.keylabel))
+                 titlespec{local_idx} = "title \"\"";
+               else
+                 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+                 titlespec{local_idx} = cstrcat ("title \"", tmp, "\"");
+               endif
+               if (isfield (obj, "facecolor"))
+                 if ((strncmp (obj.facecolor, "flat", 4)
+                     || strncmp (obj.facecolor, "interp", 6))
+                     && isfield (obj, "cdata"))
+                   if (ndims (obj.cdata) == 2
+                       && (size (obj.cdata, 2) == nc
+                           && (size (obj.cdata, 1) == 1
+                               || size (obj.cdata, 1) == 3)))
+                     ccol = cdat (:, i);
+                   elseif (ndims (obj.cdata) == 2
+                       && (size (obj.cdata, 1) == nc
+                           && (size (obj.cdata, 2) == 1
+                               || size (obj.cdata, 2) == 3)))
+                     ccol = cdat (i, :);
+                   elseif (ndims (obj.cdata) == 3)
+                     ccol = permute (cdat (:, i, :), [1, 3, 2]);
+                   else
+                     ccol = cdat;
+                   endif
+                   if (strncmp (obj.facecolor, "flat", 4))
+                     if (numel(ccol) == 3)
+                       color = ccol;
+                     elseif (nd == 3 && numel (xcol) == 3)
+                       ccdat = ccol * ones (3,1);
+                     else
+                       r = 1 + round ((size (cmap, 1) - 1)
+                                      * (ccol - clim(1))/(clim(2) - clim(1)));
+                       r = max (1, min (r, size (cmap, 1)));
+                       color = cmap(r, :);
+                     endif
+                   elseif (strncmp (obj.facecolor, "interp", 6))
+                     if (nd == 3 && numel (xcol) == 3)
+                       ccdat = ccol;
+                       if (! isvector (ccdat))
+                         tmp = rows(cmap) + rows(addedcmap) + ... 
+                              [1 : rows(ccdat)];
+                         addedcmap = [addedcmap; ccdat];
+                         ccdat = tmp(:);
+                       else
+                         ccdat = ccdat(:);
+                       endif
+                     else
+                       warning ("\"interp\" not supported, using 1st entry of cdata");
+                       r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
+                       r = max (1, min (r, size (cmap, 1)));
+                       color = cmap(r,:);
+                     endif
+                   endif
+                 elseif (isnumeric (obj.facecolor))
+                   color = obj.facecolor;
+                 else
+                   color = [0, 1, 0];
+                 endif
+               else
+                 color = [0, 1, 0];
+               endif
 
-		 withclause{data_idx} = sprintf ("with filledcurve %s",
-					       colorspec);
-		 data{data_idx} = [xcol, ycol]';
-		 usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
-						  numel (xcol));
-	       endif
-	     endif
-	   endif
+               if (nd == 3 && numel (xcol) == 3)
+                 if (isnan (ccdat))
+                   ccdat = (rows (cmap) + rows(addedcmap) + 1) * ones(3, 1);
+                   addedcmap = [addedcmap; reshape(color, 1, 3)];
+                 endif
+                 data{data_3d_idx} = [data{data_3d_idx}, ...
+                                      [[xcol; xcol(end)], [ycol; ycol(end)], ...
+                                      [zcol; zcol(end)], [ccdat; ccdat(end)]]'];
+               else
+                 if (mono)
+                   colorspec = "";
+                 elseif (__gnuplot_has_feature__ ("transparent_patches")
+                         && isscalar (obj.facealpha))
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
+                                      round (255*color), obj.facealpha);
+                 else
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                        round (255*color));
+                 endif
+
+                 withclause{data_idx} = sprintf ("with filledcurve %s",
+                                               colorspec);
+                 data{data_idx} = [xcol, ycol]';
+                 usingclause{data_idx} = sprintf ("record=%d using ($1):($2)",
+                                                  numel (xcol));
+               endif
+             endif
+           endif
 
            ## patch outline
-	   if (!(strncmp (obj.edgecolor, "none", 4)
+           if (!(strncmp (obj.edgecolor, "none", 4)
                   && strncmp (obj.markeredgecolor, "none", 4)
                   && strncmp (obj.markerfacecolor, "none", 4)))
 
-	     data_idx++;
+             data_idx++;
              is_image_data(data_idx) = false;
              parametric(data_idx) = false;
-	     have_cdata(data_idx) = false;
-	     have_3d_patch(data_idx) = false;
+             have_cdata(data_idx) = false;
+             have_3d_patch(data_idx) = false;
              titlespec{data_idx} = "title \"\"";
-	     usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
+             usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
 
-	     if (isfield (obj, "markersize"))
-	       mdat = obj.markersize / 3;
-	     endif
+             if (isfield (obj, "markersize"))
+               mdat = obj.markersize / 3;
+             endif
 
              if (isfield (obj, "edgecolor"))
                ## FIXME
@@ -724,7 +724,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                ## treat them seperately. However, the below allow the scatter
                ## functions to work as expected, where only one of these values
                ## is set
-	       if (strncmp (obj.edgecolor, "none", 4))
+               if (strncmp (obj.edgecolor, "none", 4))
                  if (strncmp (obj.markeredgecolor, "none", 4))
                    ec = obj.markerfacecolor;
                  else
@@ -734,139 +734,139 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                  ec = obj.edgecolor;
                endif
 
-	       if ((strncmp (ec, "flat", 4)
-		    || strncmp (ec, "interp", 6))
-		   && isfield (obj, "cdata"))
-		 if (ndims (obj.cdata) == 2
-		     && (size (obj.cdata, 2) == nc
-			 && (size (obj.cdata, 1) == 1
-			     || size (obj.cdata, 1) == 3)))
-		   ccol = cdat (:, i);
-		 elseif (ndims (obj.cdata) == 2
-			 && (size (obj.cdata, 1) == nc
-			     && (size (obj.cdata, 2) == 1
-				 || size (obj.cdata, 2) == 3)))
-		   ccol = cdat (i, :);
-		 elseif (ndims (obj.cdata) == 3)
-		   ccol = permute (cdat (:, i, :), [1, 3, 2]);
-		 else
-		   ccol = cdat;
-		 endif
-		 if (strncmp (ec, "flat", 4))
-		   if (numel(ccol) == 3)
-		     color = ccol;
-		   else
+               if ((strncmp (ec, "flat", 4)
+                    || strncmp (ec, "interp", 6))
+                   && isfield (obj, "cdata"))
+                 if (ndims (obj.cdata) == 2
+                     && (size (obj.cdata, 2) == nc
+                         && (size (obj.cdata, 1) == 1
+                             || size (obj.cdata, 1) == 3)))
+                   ccol = cdat (:, i);
+                 elseif (ndims (obj.cdata) == 2
+                         && (size (obj.cdata, 1) == nc
+                             && (size (obj.cdata, 2) == 1
+                                 || size (obj.cdata, 2) == 3)))
+                   ccol = cdat (i, :);
+                 elseif (ndims (obj.cdata) == 3)
+                   ccol = permute (cdat (:, i, :), [1, 3, 2]);
+                 else
+                   ccol = cdat;
+                 endif
+                 if (strncmp (ec, "flat", 4))
+                   if (numel(ccol) == 3)
+                     color = ccol;
+                   else
                      if (isscalar (ccol))
                        ccol = repmat(ccol, numel (xcol), 1);
                      endif
                      color = "flat";
-	             have_cdata(data_idx) = true;
-		   endif
-		 elseif (strncmp (ec, "interp", 6))
-		   if (numel(ccol) == 3)
-		     warning ("\"interp\" not supported, using 1st entry of cdata");
-		     color = ccol(1,:);
-		   else
+                     have_cdata(data_idx) = true;
+                   endif
+                 elseif (strncmp (ec, "interp", 6))
+                   if (numel(ccol) == 3)
+                     warning ("\"interp\" not supported, using 1st entry of cdata");
+                     color = ccol(1,:);
+                   else
                      if (isscalar (ccol))
                        ccol = repmat(ccol, numel (xcol), 1);
                      endif
                      color = "interp";
-	             have_cdata(data_idx) = true;
+                     have_cdata(data_idx) = true;
                    endif
-		 endif
-	       elseif (isnumeric (ec))
-		 color = ec;
-	       else
-		 color = [0, 0, 0];
-	       endif
+                 endif
+               elseif (isnumeric (ec))
+                 color = ec;
+               else
+                 color = [0, 0, 0];
+               endif
              else
-	       color = [0, 0, 0];
+               color = [0, 0, 0];
              endif
 
-	     if (isfield (obj, "linestyle"))
-	       switch (obj.linestyle)
-		 case "-"
-		   lt = "lt 1";
-		 case "--"
-		   lt = "lt 2";
-		 case ":"
-		   lt = "lt 3";
-		 case "-."
-		   lt = "lt 6";
-		 case "none"
-		   lt = "";
-		 otherwise
-		   lt = "";
-	       endswitch
-	     else
-	       lt = "";
-	     endif
+             if (isfield (obj, "linestyle"))
+               switch (obj.linestyle)
+                 case "-"
+                   lt = "lt 1";
+                 case "--"
+                   lt = "lt 2";
+                 case ":"
+                   lt = "lt 3";
+                 case "-."
+                   lt = "lt 6";
+                 case "none"
+                   lt = "";
+                 otherwise
+                   lt = "";
+               endswitch
+             else
+               lt = "";
+             endif
 
-	     if (isfield (obj, "linewidth"))
-	       lw = sprintf("linewidth %f", obj.linewidth);
-	     else
-	       lw  = "";
-	     endif
+             if (isfield (obj, "linewidth"))
+               lw = sprintf("linewidth %f", obj.linewidth);
+             else
+               lw  = "";
+             endif
 
-	     if (isfield (obj, "marker"))
-	       if (isfield (obj, "marker"))
-		 switch (obj.marker)
-		   case "+"
-		     pt = pt2 = "pt 1";
-		   case "o"
-		     pt = "pt 6";
+             if (isfield (obj, "marker"))
+               if (isfield (obj, "marker"))
+                 switch (obj.marker)
+                   case "+"
+                     pt = pt2 = "pt 1";
+                   case "o"
+                     pt = "pt 6";
                      pt2 = "pt 7";
-		   case "*"
-		     pt = pt2 = "pt 3";
-		   case "."
-		     pt = pt2 = "pt 0";
-		   case "x"
-		     pt = pt2 = "pt 2";
-		   case {"square", "s"}
-		     pt = "pt 4";
-		     pt2 = "pt 5";
-		   case {"diamond", "d"}
-		     pt = "pt 13";
-		     pt2 = "pt 14";
-		   case "^"
-		     pt = "pt 8";
-		     pt2 = "pt 9";
-		   case "v"
-		     pt = "pt 10";
-		     pt2 = "pt 11";
-		   case ">"
-	             ## FIXME missing point type 
-		     pt = "pt 8";
-		     pt2 = "pt 9";
-		   case "<"
-	             ## FIXME missing point type 
-		     pt = "pt 10";
-		     pt2 = "pt 11";
-		   case {"pentagram", "p"}
-	             ## FIXME missing point type 
-		     pt = pt2 = "pt 3";
-		   case {"hexagram", "h"}
-		     pt = pt2 = "pt 3";
-		   case "none"
-		     pt = pt2 = "";
-		   otherwise
-		     pt = pt2 = "";
-		 endswitch
-	       endif
-	     else
-	       pt = pt2 = "";
-	     endif
+                   case "*"
+                     pt = pt2 = "pt 3";
+                   case "."
+                     pt = pt2 = "pt 0";
+                   case "x"
+                     pt = pt2 = "pt 2";
+                   case {"square", "s"}
+                     pt = "pt 4";
+                     pt2 = "pt 5";
+                   case {"diamond", "d"}
+                     pt = "pt 13";
+                     pt2 = "pt 14";
+                   case "^"
+                     pt = "pt 8";
+                     pt2 = "pt 9";
+                   case "v"
+                     pt = "pt 10";
+                     pt2 = "pt 11";
+                   case ">"
+                     ## FIXME missing point type 
+                     pt = "pt 8";
+                     pt2 = "pt 9";
+                   case "<"
+                     ## FIXME missing point type 
+                     pt = "pt 10";
+                     pt2 = "pt 11";
+                   case {"pentagram", "p"}
+                     ## FIXME missing point type 
+                     pt = pt2 = "pt 3";
+                   case {"hexagram", "h"}
+                     pt = pt2 = "pt 3";
+                   case "none"
+                     pt = pt2 = "";
+                   otherwise
+                     pt = pt2 = "";
+                 endswitch
+               endif
+             else
+               pt = pt2 = "";
+             endif
 
-	     if (mono)
-	       colorspec = "";
-	     else
+             if (mono)
+               colorspec = "";
+             else
                if (ischar (color))
                  colorspec = "palette";
                else
-	         colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				      round (255*color));
+                 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                      round (255*color));
                endif
-	     endif
+             endif
 
              sidx = 1;
              if (isempty (lt))
@@ -878,114 +878,114 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
              facesame = true;
              if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
-	         && !strncmp (obj.markerfacecolor, "none", 4))
+                 && !strncmp (obj.markerfacecolor, "none", 4))
                if (strncmp (obj.markerfacecolor, "auto", 4)
-	           || ! isnumeric (obj.markerfacecolor) 
-	           || (isnumeric (obj.markerfacecolor) 
-	               && isequal (color, obj.markerfacecolor)))
-	         style = strcat (style, "points");
-	         if (isfield (obj, "markersize"))
-	           if (length (mdat) == nc)
-		     m = mdat(i);
-	           else
-		     m = mdat;
-	           endif
-		   ps = sprintf("pointsize %f", m / 3);
+                   || ! isnumeric (obj.markerfacecolor) 
+                   || (isnumeric (obj.markerfacecolor) 
+                       && isequal (color, obj.markerfacecolor)))
+                 style = strcat (style, "points");
+                 if (isfield (obj, "markersize"))
+                   if (length (mdat) == nc)
+                     m = mdat(i);
+                   else
+                     m = mdat;
+                   endif
+                   ps = sprintf("pointsize %f", m / 3);
                  else
                    ps = "";
-	         endif
+                 endif
 
-	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-					  style, lw, pt2, lt, ps, 
-					  colorspec);
+                 tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                          style, lw, pt2, lt, ps, 
+                                          colorspec);
                else
-	         facesame = false;
-	         if (! isempty (style))	
-	           tmpwith{sidx} = sprintf ("with %s %s %s %s",
-					    style, lw, lt, 
-					    colorspec);
-	           sidx ++;
-	         endif
-	         if (isnumeric (obj.markerfacecolor) && ! mono)
-	           colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				        round (255*obj.markerfacecolor));
-	         endif
-	         style = "points";
-	         if (isfield (obj, "markersize"))
-	           if (length (mdat) == nc)
-		     m = mdat(i);
-	           else
-		     m = mdat;
-	           endif
-		   ps = sprintf("pointsize %f", m / 3);
+                 facesame = false;
+                 if (! isempty (style)) 
+                   tmpwith{sidx} = sprintf ("with %s %s %s %s",
+                                            style, lw, lt, 
+                                            colorspec);
+                   sidx ++;
+                 endif
+                 if (isnumeric (obj.markerfacecolor) && ! mono)
+                   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                        round (255*obj.markerfacecolor));
+                 endif
+                 style = "points";
+                 if (isfield (obj, "markersize"))
+                   if (length (mdat) == nc)
+                     m = mdat(i);
+                   else
+                     m = mdat;
+                   endif
+                   ps = sprintf("pointsize %f", m / 3);
                  else
                    ps = "";
-	         endif
-	         tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-					  style, lw, pt2, lt, ps, 
-					  colorspec);
+                 endif
+                 tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                          style, lw, pt2, lt, ps, 
+                                          colorspec);
                endif
              endif
 
              if (isfield (obj, "markeredgecolor") 
-	         && !strncmp (obj.markeredgecolor, "none", 4))
+                 && !strncmp (obj.markeredgecolor, "none", 4))
                if (facesame && !isempty (pt) 
                    && (strncmp (obj.markeredgecolor, "auto", 4)
-		       || ! isnumeric (obj.markeredgecolor) 
-		       || (isnumeric (obj.markeredgecolor) 
-			   && isequal (color, obj.markeredgecolor))))
-	         if (sidx == 1 && ((length (style) == 5 
-	                  && strncmp (style, "lines", 5)) 
+                       || ! isnumeric (obj.markeredgecolor) 
+                       || (isnumeric (obj.markeredgecolor) 
+                           && isequal (color, obj.markeredgecolor))))
+                 if (sidx == 1 && ((length (style) == 5 
+                          && strncmp (style, "lines", 5)) 
                          || isempty (style)))
-	           style = strcat (style, "points");
-	           if (isfield (obj, "markersize"))
-	             if (length (mdat) == nc)
-		       m = mdat(i);
-	             else
-		       m = mdat;
-	             endif
-		     ps = sprintf("pointsize %f", m / 3);
+                   style = strcat (style, "points");
+                   if (isfield (obj, "markersize"))
+                     if (length (mdat) == nc)
+                       m = mdat(i);
+                     else
+                       m = mdat;
+                     endif
+                     ps = sprintf("pointsize %f", m / 3);
                    else
                      ps = "";
-	           endif
-	           tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-					    style, lw, pt, lt, ps, 
-					    colorspec);
-	         endif
-               else
-	         if (!isempty (style))	
-                   if (length(tmpwith) < sidx || isempty (tmpwith{sidx}))
-	             tmpwith{sidx} = sprintf ("with %s %s %s %s",
-					      style, lw, lt, 
-					      colorspec);
                    endif
-	           sidx ++;
-	         endif
+                   tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                            style, lw, pt, lt, ps, 
+                                            colorspec);
+                 endif
+               else
+                 if (!isempty (style))  
+                   if (length(tmpwith) < sidx || isempty (tmpwith{sidx}))
+                     tmpwith{sidx} = sprintf ("with %s %s %s %s",
+                                              style, lw, lt, 
+                                              colorspec);
+                   endif
+                   sidx ++;
+                 endif
 
                  if (!isempty (pt)) 
-	           if (! mono)
-	             if (strncmp (obj.markeredgecolor, "auto", 4))
-	               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				            round (255*color));
-	             elseif (isnumeric (obj.markeredgecolor) && ! mono)
-	               colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
-				            round (255*obj.markeredgecolor));
-	             endif
-	           endif
-	           style = "points";
-	           if (isfield (obj, "markersize"))
-	             if (length (mdat) == nc)
-		       m = mdat(i);
-	             else
-		       m = mdat;
-	             endif
-		     ps = sprintf("pointsize %f", m / 3);
+                   if (! mono)
+                     if (strncmp (obj.markeredgecolor, "auto", 4))
+                       colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                            round (255*color));
+                     elseif (isnumeric (obj.markeredgecolor) && ! mono)
+                       colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+                                            round (255*obj.markeredgecolor));
+                     endif
+                   endif
+                   style = "points";
+                   if (isfield (obj, "markersize"))
+                     if (length (mdat) == nc)
+                       m = mdat(i);
+                     else
+                       m = mdat;
+                     endif
+                     ps = sprintf("pointsize %f", m / 3);
                    else
                      ps = "";
-	           endif
-	           tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-					    style, lw, pt, lt, ps, 
-					    colorspec);
+                   endif
+                   tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
+                                            style, lw, pt, lt, ps, 
+                                            colorspec);
                  endif
                endif
              endif
@@ -995,183 +995,183 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                                                style, lw, pt, lt, 
                                                colorspec);
              else
-	       withclause{data_idx} = tmpwith{1};
+               withclause{data_idx} = tmpwith{1};
              endif
-	     if (nd == 3)
+             if (nd == 3)
                if (ischar (color))
-	         if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
-		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-				     [zcol; zcol(1)], [ccol; ccol(1)]]';
-	         else
-		   data{data_idx} = [xcol, ycol, zcol, ccol]';
-	         endif
-	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", columns (data{data_idx}));
+                 if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+                   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                     [zcol; zcol(1)], [ccol; ccol(1)]]';
+                 else
+                   data{data_idx} = [xcol, ycol, zcol, ccol]';
+                 endif
+                 usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", columns (data{data_idx}));
                else
-	         if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
-		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
-				     [zcol; zcol(1)]]';
-	         else
-		   data{data_idx} = [xcol, ycol, zcol]';
-	         endif
-	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+                 if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+                   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                                     [zcol; zcol(1)]]';
+                 else
+                   data{data_idx} = [xcol, ycol, zcol]';
+                 endif
+                 usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
                endif
-	     else
+             else
                if (ischar (color))
-	         if (! isnan (xcol) && ! isnan (ycol))
-		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+                 if (! isnan (xcol) && ! isnan (ycol))
+                   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
                                      [ccol; ccol(1)]]';
-	         else
-		   data{data_idx} = [xcol, ycol, ccol]';
-	         endif
-	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
+                 else
+                   data{data_idx} = [xcol, ycol, ccol]';
+                 endif
+                 usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", columns (data{data_idx}));
                else
-	         if (! isnan (xcol) && ! isnan (ycol))
-		   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
-	         else
-		   data{data_idx} = [xcol, ycol]';
-	         endif
-	         usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
+                 if (! isnan (xcol) && ! isnan (ycol))
+                   data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
+                 else
+                   data{data_idx} = [xcol, ycol]';
+                 endif
+                 usingclause{data_idx} = sprintf ("record=%d using ($1):($2)", columns (data{data_idx}));
                endif
-	     endif
+             endif
 
-	     if (length (tmpwith) > 1)
-	       data_idx++;
-	       is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	       parametric(data_idx) = parametric(data_idx - 1);
-	       have_cdata(data_idx) = have_cdata(data_idx - 1);
-	       have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	       titlespec{data_idx} = "title \"\"";
-	       usingclause{data_idx} = usingclause{data_idx - 1};
-	       data{data_idx} = data{data_idx - 1};
-	       withclause{data_idx} = tmpwith{2};
-	     endif
-	     if (length (tmpwith) > 2)
-	       data_idx++;
-	       is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	       parametric(data_idx) = parametric(data_idx - 1);
-	       have_cdata(data_idx) = have_cdata(data_idx - 1);
-	       have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	       titlespec{data_idx} = "title \"\"";
-	       usingclause{data_idx} = usingclause{data_idx - 1};
-	       data{data_idx} = data{data_idx - 1};
-	       withclause{data_idx} = tmpwith{3};
-	     endif
-	   endif
-	 endfor
+             if (length (tmpwith) > 1)
+               data_idx++;
+               is_image_data(data_idx) = is_image_data(data_idx - 1); 
+               parametric(data_idx) = parametric(data_idx - 1);
+               have_cdata(data_idx) = have_cdata(data_idx - 1);
+               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+               titlespec{data_idx} = "title \"\"";
+               usingclause{data_idx} = usingclause{data_idx - 1};
+               data{data_idx} = data{data_idx - 1};
+               withclause{data_idx} = tmpwith{2};
+             endif
+             if (length (tmpwith) > 2)
+               data_idx++;
+               is_image_data(data_idx) = is_image_data(data_idx - 1); 
+               parametric(data_idx) = parametric(data_idx - 1);
+               have_cdata(data_idx) = have_cdata(data_idx - 1);
+               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+               titlespec{data_idx} = "title \"\"";
+               usingclause{data_idx} = usingclause{data_idx - 1};
+               data{data_idx} = data{data_idx - 1};
+               withclause{data_idx} = tmpwith{3};
+             endif
+           endif
+         endfor
 
-	case "surface"
-	  view_map = true;
+        case "surface"
+          view_map = true;
           if (! (strncmp (obj.edgecolor, "none", 4)
-		 && strncmp (obj.facecolor, "none", 4)))
-	    data_idx++;
-	    is_image_data(data_idx) = false;
-	    parametric(data_idx) = false;
-	    have_cdata(data_idx) = true;
-	    have_3d_patch(data_idx) = false;
-	    style = do_linestyle_command (obj, obj.edgecolor,
-					  data_idx, mono, 
-					  plot_stream);
-	    if (isempty (obj.keylabel))
-	      titlespec{data_idx} = "title \"\"";
-	    else
-	      tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
-	      titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
-	    endif
-	    withclause{data_idx} = sprintf ("with pm3d linestyle %d",
-		           		    data_idx);
-	    withpm3d = true;
-	    pm3didx = data_idx;
+                 && strncmp (obj.facecolor, "none", 4)))
+            data_idx++;
+            is_image_data(data_idx) = false;
+            parametric(data_idx) = false;
+            have_cdata(data_idx) = true;
+            have_3d_patch(data_idx) = false;
+            style = do_linestyle_command (obj, obj.edgecolor,
+                                          data_idx, mono, 
+                                          plot_stream);
+            if (isempty (obj.keylabel))
+              titlespec{data_idx} = "title \"\"";
+            else
+              tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+              titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
+            endif
+            withclause{data_idx} = sprintf ("with pm3d linestyle %d",
+                                            data_idx);
+            withpm3d = true;
+            pm3didx = data_idx;
 
-	    xdat = obj.xdata;
-	    ydat = obj.ydata;
-	    zdat = obj.zdata;
-	    cdat = obj.cdata;
+            xdat = obj.xdata;
+            ydat = obj.ydata;
+            zdat = obj.zdata;
+            cdat = obj.cdata;
 
-  	    err = false;
+            err = false;
             if (! size_equal(zdat, cdat))
               err = true;
             endif
-	    if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
-	      if (rows (zdat) == length (ydat)
-		  && columns (zdat) == length (xdat))
+            if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
+              if (rows (zdat) == length (ydat)
+                  && columns (zdat) == length (xdat))
                 [xdat, ydat] = meshgrid (xdat, ydat);
-	      else
+              else
                 err = true;
-	      endif
-	    elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
-	      if (! size_equal (xdat, ydat, zdat))
+              endif
+            elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
+              if (! size_equal (xdat, ydat, zdat))
                 err = true;
-	      endif
-	    else
-	      err = true;
-	    endif
-	    if (err)
-	      error ("__go_draw_axes__: invalid grid data");
-	    endif
-	    xlen = columns (zdat);
-	    ylen = rows (zdat);
-	    if (xlen == columns (xdat) && xlen == columns (ydat)
-	        && ylen == rows (xdat) && ylen == rows (ydat))
-	      len = 4 * xlen;
-	      zz = zeros (ylen, len);
-	      k = 1;
-	      for kk = 1:4:len
-	        zz(:,kk)   = xdat(:,k);
-	        zz(:,kk+1) = ydat(:,k);
-	        zz(:,kk+2) = zdat(:,k);
-	        zz(:,kk+3) = cdat(:,k);
-	        k++;
-	      endfor
-	      data{data_idx} = zz.';
-	    endif
-
-	    if (doing_interp_color)
-	      interp_str = "interpolate 0, 0";
-	    else
-	      ## No interpolation of facecolors.
-	      interp_str = "";
-	    endif
-	    usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", ylen, xlen);
-
-            flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
-				|| strncmp (obj.facecolor, "interp", 6));
-            flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
-				|| strncmp (obj.edgecolor, "interp", 6));
-
-	    facecolor_none_or_white = (strncmp (obj.facecolor, "none", 4)
-				       || (isnumeric (obj.facecolor)
-					   && all (obj.facecolor == 1)));
-	    hidden_removal = false;
-            fputs (plot_stream, "set style increment default;\n");
-            if (flat_interp_edge && facecolor_none_or_white)
-	      withpm3d = false;
-	      withclause{data_idx} = sprintf ("with %s palette", style {1});
-	      fputs (plot_stream, "unset pm3d\n");
-	      if (all (obj.facecolor == 1))
-                hidden_removal = true;
               endif
-	    elseif (facecolor_none_or_white)
-	      if (all (obj.facecolor == 1))
-                hidden_removal = true;
-              endif
-	      fputs(plot_stream,"unset pm3d;\n");
-	      fputs(plot_stream,"set style increment user;\n");
-	      withpm3d = false;
-	      withclause{data_idx} = sprintf("with %s linestyle %d", 
-					     style{1}, data_idx);
-	      fputs (plot_stream, "unset pm3d\n");
+            else
+              err = true;
+            endif
+            if (err)
+              error ("__go_draw_axes__: invalid grid data");
+            endif
+            xlen = columns (zdat);
+            ylen = rows (zdat);
+            if (xlen == columns (xdat) && xlen == columns (ydat)
+                && ylen == rows (xdat) && ylen == rows (ydat))
+              len = 4 * xlen;
+              zz = zeros (ylen, len);
+              k = 1;
+              for kk = 1:4:len
+                zz(:,kk)   = xdat(:,k);
+                zz(:,kk+1) = ydat(:,k);
+                zz(:,kk+2) = zdat(:,k);
+                zz(:,kk+3) = cdat(:,k);
+                k++;
+              endfor
+              data{data_idx} = zz.';
             endif
 
-	    if (doing_interp_color)
-	      ## "depthorder" interferes with interpolation of colors.
-	      dord = "scansautomatic";
-	    else
-	      dord = "depthorder";
-	    endif
+            if (doing_interp_color)
+              interp_str = "interpolate 0, 0";
+            else
+              ## No interpolation of facecolors.
+              interp_str = "";
+            endif
+            usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3):($4)", ylen, xlen);
 
-	    if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
+            flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
+                                || strncmp (obj.facecolor, "interp", 6));
+            flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
+                                || strncmp (obj.edgecolor, "interp", 6));
+
+            facecolor_none_or_white = (strncmp (obj.facecolor, "none", 4)
+                                       || (isnumeric (obj.facecolor)
+                                           && all (obj.facecolor == 1)));
+            hidden_removal = false;
+            fputs (plot_stream, "set style increment default;\n");
+            if (flat_interp_edge && facecolor_none_or_white)
+              withpm3d = false;
+              withclause{data_idx} = sprintf ("with %s palette", style {1});
+              fputs (plot_stream, "unset pm3d\n");
+              if (all (obj.facecolor == 1))
+                hidden_removal = true;
+              endif
+            elseif (facecolor_none_or_white)
+              if (all (obj.facecolor == 1))
+                hidden_removal = true;
+              endif
+              fputs(plot_stream,"unset pm3d;\n");
+              fputs(plot_stream,"set style increment user;\n");
+              withpm3d = false;
+              withclause{data_idx} = sprintf("with %s linestyle %d", 
+                                             style{1}, data_idx);
+              fputs (plot_stream, "unset pm3d\n");
+            endif
+
+            if (doing_interp_color)
+              ## "depthorder" interferes with interpolation of colors.
+              dord = "scansautomatic";
+            else
+              dord = "depthorder";
+            endif
+
+            if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
               fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n", 
-		       interp_str, dord);
+                       interp_str, dord);
             elseif (!facecolor_none_or_white)
               if (strncmp (obj.edgecolor, "none", 4))
                 if (__gnuplot_has_feature__ ("transparent_surface") 
@@ -1181,10 +1181,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                            obj.facealpha);
                 endif
                 fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n", 
-			 interp_str, dord);
+                         interp_str, dord);
               else
                 fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n", 
-			 data_idx, interp_str, dord);
+                         data_idx, interp_str, dord);
 
                 if (__gnuplot_has_feature__ ("transparent_surface") 
                     && isscalar (obj.facealpha))
@@ -1194,113 +1194,113 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                 endif
               endif
             endif
-	    
-	    zz = [];
-	    if (length (style) > 1)
-	      len = 3 * xlen;
-	      zz = zeros (ylen, len);
-	      k = 1;
-	      for kk = 1:3:len
-	        zz(:,kk)   = xdat(:,k);
-	        zz(:,kk+1) = ydat(:,k);
-	        zz(:,kk+2) = zdat(:,k);
-	        k++;
-	      endfor
-	      zz = zz.';
+            
+            zz = [];
+            if (length (style) > 1)
+              len = 3 * xlen;
+              zz = zeros (ylen, len);
+              k = 1;
+              for kk = 1:3:len
+                zz(:,kk)   = xdat(:,k);
+                zz(:,kk+1) = ydat(:,k);
+                zz(:,kk+2) = zdat(:,k);
+                k++;
+              endfor
+              zz = zz.';
 
-	      data_idx++;
-	      is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	      parametric(data_idx) = parametric(data_idx - 1);
-	      have_cdata(data_idx) = false;
-	      have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	      titlespec{data_idx} = "title \"\"";
-	      usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
-	      data{data_idx} = zz;
-	      withclause{data_idx} = sprintf ("with %s linestyle %d",
-					      style{2}, data_idx);
+              data_idx++;
+              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              parametric(data_idx) = parametric(data_idx - 1);
+              have_cdata(data_idx) = false;
+              have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+              titlespec{data_idx} = "title \"\"";
+              usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
+              data{data_idx} = zz;
+              withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                              style{2}, data_idx);
 
-	    endif
-	    if (length (style) > 2)
-	      data_idx++;
-	      is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	      parametric(data_idx) = parametric(data_idx - 1);
-	      have_cdata(data_idx) = false;
-	      have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	      titlespec{data_idx} = "title \"\"";
-	      usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
-	      data{data_idx} = zz;
-	      withclause{data_idx} = sprintf ("with %s linestyle %d",
-					      style{3}, data_idx);
-	    endif
-	    if (withpm3d && strncmp (style {1}, "linespoints", 11))
-	      if (isempty(zz))
-		len = 3 * xlen;
-		zz = zeros (ylen, len);
-		k = 1;
-		for kk = 1:3:len
-	          zz(:,kk)   = xdat(:,k);
-	          zz(:,kk+1) = ydat(:,k);
-	          zz(:,kk+2) = zdat(:,k);
-	          k++;
-		endfor
-		zz = zz.';
-	      endif
-	      data_idx++;
-	      is_image_data(data_idx) = is_image_data(data_idx - 1); 
-	      parametric(data_idx) = parametric(data_idx - 1);
-	      have_cdata(data_idx) = false;
-	      have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
-	      titlespec{data_idx} = "title \"\"";
-	      usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
-	      data{data_idx} = zz;
-	      withclause{data_idx} = sprintf ("with points linestyle %d",
-					      pm3didx);
-	    endif
-	  endif
+            endif
+            if (length (style) > 2)
+              data_idx++;
+              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              parametric(data_idx) = parametric(data_idx - 1);
+              have_cdata(data_idx) = false;
+              have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+              titlespec{data_idx} = "title \"\"";
+              usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
+              data{data_idx} = zz;
+              withclause{data_idx} = sprintf ("with %s linestyle %d",
+                                              style{3}, data_idx);
+            endif
+            if (withpm3d && strncmp (style {1}, "linespoints", 11))
+              if (isempty(zz))
+                len = 3 * xlen;
+                zz = zeros (ylen, len);
+                k = 1;
+                for kk = 1:3:len
+                  zz(:,kk)   = xdat(:,k);
+                  zz(:,kk+1) = ydat(:,k);
+                  zz(:,kk+2) = zdat(:,k);
+                  k++;
+                endfor
+                zz = zz.';
+              endif
+              data_idx++;
+              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              parametric(data_idx) = parametric(data_idx - 1);
+              have_cdata(data_idx) = false;
+              have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
+              titlespec{data_idx} = "title \"\"";
+              usingclause{data_idx} = sprintf ("record=%dx%d using ($1):($2):($3)", ylen, xlen);
+              data{data_idx} = zz;
+              withclause{data_idx} = sprintf ("with points linestyle %d",
+                                              pm3didx);
+            endif
+          endif
 
-	case "text"
-	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
-	  fontspec = create_fontspec (f, s, gnuplot_term);
-	  lpos = obj.position;
-	  halign = obj.horizontalalignment;
-	  angle = obj.rotation;
+        case "text"
+          [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string");
+          fontspec = create_fontspec (f, s, gnuplot_term);
+          lpos = obj.position;
+          halign = obj.horizontalalignment;
+          angle = obj.rotation;
           units = obj.units;
-	  color = obj.color;
+          color = obj.color;
           if (strcmpi (units, "normalized"))
             units = "graph";
           else
             units = "";
           endif
-	  
-	  if (isnumeric (color))
-	    colorspec = get_text_colorspec (color, mono);
-	  endif
+          
+          if (isnumeric (color))
+            colorspec = get_text_colorspec (color, mono);
+          endif
 
-	  if (nd == 3)
-	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s %s front %s;\n",
-		     undo_string_escapes (label), units, lpos(1),
-		     lpos(2), lpos(3), halign, angle, fontspec,
-		     __do_enhanced_option__ (enhanced, obj), colorspec);
-	  else
- 	    fprintf (plot_stream,
- 		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s %s front %s;\n",
- 		     undo_string_escapes (label), units,
- 		     lpos(1), lpos(2), halign, angle, fontspec,
-		     __do_enhanced_option__ (enhanced, obj), colorspec);
-	  endif
+          if (nd == 3)
+            fprintf (plot_stream,
+                     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s %s front %s;\n",
+                     undo_string_escapes (label), units, lpos(1),
+                     lpos(2), lpos(3), halign, angle, fontspec,
+                     __do_enhanced_option__ (enhanced, obj), colorspec);
+          else
+            fprintf (plot_stream,
+                     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s %s front %s;\n",
+                     undo_string_escapes (label), units,
+                     lpos(1), lpos(2), halign, angle, fontspec,
+                     __do_enhanced_option__ (enhanced, obj), colorspec);
+          endif
 
         case "hggroup"
-	  ## Push group children into the kid list.
-	  if (isempty (kids))
-	    kids = obj.children;
-	  elseif (! isempty (obj.children))
-	    kids = [kids; obj.children];
-	  endif
+          ## Push group children into the kid list.
+          if (isempty (kids))
+            kids = obj.children;
+          elseif (! isempty (obj.children))
+            kids = [kids; obj.children];
+          endif
 
-	otherwise
-	  error ("__go_draw_axes__: unknown object class, %s",
-		 obj.type);
+        otherwise
+          error ("__go_draw_axes__: unknown object class, %s",
+                 obj.type);
       endswitch
 
     endwhile
@@ -1351,12 +1351,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
     if (nd == 3)
       if (isempty (zlim))
-	return;
+        return;
       endif
       if (strcmpi (axis_obj.zdir, "reverse"))
-	zdir = "reverse";
+        zdir = "reverse";
       else
-	zdir = "noreverse";
+        zdir = "noreverse";
       endif
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
@@ -1365,58 +1365,58 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     cmap_sz = rows(cmap);
     if (! any (isinf (clim)))
       if (truecolor || ! cdatadirect)
-	if (rows(addedcmap) > 0)
-	  for i = 1:data_idx
-	    if (have_3d_patch(i))
-	      data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
-	     endif
-	  endfor
-	  fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) * 
-		   (cmap_sz + rows(addedcmap)) / cmap_sz);
-	else
-	  fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
-	endif
+        if (rows(addedcmap) > 0)
+          for i = 1:data_idx
+            if (have_3d_patch(i))
+              data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
+             endif
+          endfor
+          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) * 
+                   (cmap_sz + rows(addedcmap)) / cmap_sz);
+        else
+          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
+        endif
       else
-	fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz + 
-		 rows (addedcmap));
+        fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz + 
+                 rows (addedcmap));
       endif
     endif
 
     if (strcmpi (axis_obj.box, "on"))
       if (nd == 3)
-	fputs (plot_stream, "set border 4095;\n");
+        fputs (plot_stream, "set border 4095;\n");
       else
-	fputs (plot_stream, "set border 431;\n");
+        fputs (plot_stream, "set border 431;\n");
       endif
     else
       if (nd == 3)
-	fputs (plot_stream, "set border 895;\n");
+        fputs (plot_stream, "set border 895;\n");
       else
-	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
-		   axis_obj.tickdir);
-	  if (strcmpi (axis_obj.xaxislocation, "top"))
-	    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-		     axis_obj.tickdir);
-	    fputs (plot_stream, "set border 12;\n");
-	  else
-	    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-		     axis_obj.tickdir);
-	    fputs (plot_stream, "set border 9;\n");
-	  endif
-	else
-	  fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-		   axis_obj.tickdir);
-	  if (strcmpi (axis_obj.xaxislocation, "top"))
-	    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-		     axis_obj.tickdir);
-	    fputs (plot_stream, "set border 6;\n");
-	  else
-	    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-		     axis_obj.tickdir);
-	    fputs (plot_stream, "set border 3;\n");
-	  endif
-	endif
+        if (strcmpi (axis_obj.yaxislocation, "right"))
+          fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
+                   axis_obj.tickdir);
+          if (strcmpi (axis_obj.xaxislocation, "top"))
+            fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+                     axis_obj.tickdir);
+            fputs (plot_stream, "set border 12;\n");
+          else
+            fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+                     axis_obj.tickdir);
+            fputs (plot_stream, "set border 9;\n");
+          endif
+        else
+          fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
+                   axis_obj.tickdir);
+          if (strcmpi (axis_obj.xaxislocation, "top"))
+            fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+                     axis_obj.tickdir);
+            fputs (plot_stream, "set border 6;\n");
+          else
+            fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+                     axis_obj.tickdir);
+            fputs (plot_stream, "set border 3;\n");
+          endif
+        endif
       endif
     endif
 
@@ -1428,65 +1428,65 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
     if (strcmpi (axis_obj.key, "on"))
       if (strcmpi (axis_obj.keybox, "on"))
-	box = "box";
+        box = "box";
       else
-	box = "nobox";
+        box = "nobox";
       endif
       if (strcmpi (axis_obj.keyreverse, "on"))
-	reverse = "reverse";
+        reverse = "reverse";
       else
-	reverse = "noreverse";
+        reverse = "noreverse";
       endif
       inout = "inside";
       keypos = axis_obj.keypos;
       if (ischar (keypos))
-	keypos = lower (keypos);
-	keyout = findstr (keypos, "outside");
-	if (! isempty (keyout))
-	  inout = "outside";
-	  keypos = keypos(1:keyout-1);
-	endif
+        keypos = lower (keypos);
+        keyout = findstr (keypos, "outside");
+        if (! isempty (keyout))
+          inout = "outside";
+          keypos = keypos(1:keyout-1);
+        endif
       endif
       switch (keypos)
-	case -1
-	  pos = "right top";
-	  inout = "outside";
-	case 1
-	  pos = "right top";
-	case 2
-	  pos = "left top";
-	case 3
-	  pos = "left bottom";
-	case {4, 0}
-	  pos = "right bottom";
-	case "north"
-	  pos = "center top";
-	case "south"
-	  pos = "center bottom";
-	case "east"
-	  pos = "right center";
-	case "west"
-	  pos = "left center";
-	case "northeast"
-	  pos = "right top";
-	case "northwest"
-	  pos = "left top";
-	case "southeast"
-	  pos = "right bottom";
-	case "southwest"
-	  pos = "left bottom";
-	case "best" 
-	  pos = "";
-	  warning ("legend: 'Best' not yet implemented for location specifier.\n");
-	  ## Least conflict with data in plot.
-	  ## Least unused space outside plot.
-	otherwise
-	  pos = "";
+        case -1
+          pos = "right top";
+          inout = "outside";
+        case 1
+          pos = "right top";
+        case 2
+          pos = "left top";
+        case 3
+          pos = "left bottom";
+        case {4, 0}
+          pos = "right bottom";
+        case "north"
+          pos = "center top";
+        case "south"
+          pos = "center bottom";
+        case "east"
+          pos = "right center";
+        case "west"
+          pos = "left center";
+        case "northeast"
+          pos = "right top";
+        case "northwest"
+          pos = "left top";
+        case "southeast"
+          pos = "right bottom";
+        case "southwest"
+          pos = "left bottom";
+        case "best" 
+          pos = "";
+          warning ("legend: 'Best' not yet implemented for location specifier.\n");
+          ## Least conflict with data in plot.
+          ## Least unused space outside plot.
+        otherwise
+          pos = "";
       endswitch
       if (__gnuplot_has_feature__ ("key_has_font_properties"))
         fontspec = create_fontspec (axis_obj.fontname, axis_obj.fontsize, gnuplot_term);
       else
-	fontspec = "";
+        fontspec = "";
       endif
       fprintf (plot_stream, "set key %s %s %s %s %s;\n", inout, pos, box,
                reverse, fontspec);
@@ -1498,7 +1498,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
     if (! use_gnuplot_for_images)
       for i = 1:ximg_data_idx
-	view_fcn (xlim, ylim, ximg_data{i}, view_zoom, view_cmd);
+        view_fcn (xlim, ylim, ximg_data{i}, view_zoom, view_cmd);
       endfor
     endif
 
@@ -1506,11 +1506,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     cmap_sz = cmap_sz + rows(addedcmap);
     if (length(cmap) > 0)
       fprintf (plot_stream,
-	       "set palette positive color model RGB maxcolors %i;\n",
-	       cmap_sz);
+               "set palette positive color model RGB maxcolors %i;\n",
+               cmap_sz);
       fprintf (plot_stream,
-	       "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-	       cmap_sz);
+               "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+               cmap_sz);
       fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
       fwrite (plot_stream, "\n");
     endif
@@ -1519,80 +1519,80 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
 
     if (have_data)
       if (nd == 2)
-	plot_cmd = "plot";
+        plot_cmd = "plot";
       else
-	plot_cmd = "splot";
-	rot_x = 90 - axis_obj.view(2);
-	rot_z = axis_obj.view(1);
-	while (rot_z < 0)
-	  rot_z += 360;
-	endwhile
- 	fputs (plot_stream, "set ticslevel 0;\n");
-	if (view_map && rot_x == 0 && rot_z == 0)
-	  fputs (plot_stream, "set view map;\n");
-	else
-	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
-	endif
+        plot_cmd = "splot";
+        rot_x = 90 - axis_obj.view(2);
+        rot_z = axis_obj.view(1);
+        while (rot_z < 0)
+          rot_z += 360;
+        endwhile
+        fputs (plot_stream, "set ticslevel 0;\n");
+        if (view_map && rot_x == 0 && rot_z == 0)
+          fputs (plot_stream, "set view map;\n");
+        else
+          fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
+        endif
       endif
       if (have_3d_patch (1))
-	fputs (plot_stream, "set pm3d depthorder\n");
-	fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-		 usingclause{1}, titlespec{1}, withclause{1});
+        fputs (plot_stream, "set pm3d depthorder\n");
+        fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+                 usingclause{1}, titlespec{1}, withclause{1});
       elseif (is_image_data (1))
-	fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-		 usingclause{1}, titlespec{1}, withclause{1});
+        fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+                 usingclause{1}, titlespec{1}, withclause{1});
       else
-	fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-		 usingclause{1}, titlespec{1}, withclause{1});
+        fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
+                 usingclause{1}, titlespec{1}, withclause{1});
       endif
       for i = 2:data_idx
-	if (have_3d_patch (i))
-	  fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
-		   usingclause{i}, titlespec{i}, withclause{i});
-	elseif (is_image_data (i))
-	  if (! is_image_data (i-1))
-	    fputs (plot_stream, "; ");
+        if (have_3d_patch (i))
+          fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
+                   usingclause{i}, titlespec{i}, withclause{i});
+        elseif (is_image_data (i))
+          if (! is_image_data (i-1))
+            fputs (plot_stream, "; ");
             if (bg_is_set)      
               fputs (plot_stream, "unset obj 1; \\\n");
               bg_is_set = false;
             endif
-	  endif
+          endif
           fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-		   usingclause{i}, titlespec{i}, withclause{i});
-	elseif (is_image_data (i-1))
+                   usingclause{i}, titlespec{i}, withclause{i});
+        elseif (is_image_data (i-1))
           if (bg_is_set)      
             fputs (plot_stream, "unset obj 1; \\\n");
               bg_is_set = false;
             endif
-	  fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-		   usingclause{i}, titlespec{i}, withclause{i});
-	else
-	  fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
-		   usingclause{i}, titlespec{i}, withclause{i});
-	endif
+          fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
+                   usingclause{i}, titlespec{i}, withclause{i});
+        else
+          fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
+                   usingclause{i}, titlespec{i}, withclause{i});
+        endif
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx
-	if (have_3d_patch (i))
-	  ## Can't write 3d patch data as binary as can't plot more than 
-	  ## a single patch at a time and have to plot all patches together
-	  ## so that the gnuplot depth ordering is done correctly
-	  for j = 1 : 4 : columns(data{i})
-	    if (j != 1)
-	      fputs (plot_stream, "\n\n");
-	    endif
-	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
-	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
-	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
-	    fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
-	  endfor
-	  fputs (plot_stream, "e\n");
-	elseif (is_image_data(i))
-	  fwrite (plot_stream, data{i}, "float32");
-	else
-	  __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i), 
-				  have_cdata(i));
-	endif
+        if (have_3d_patch (i))
+          ## Can't write 3d patch data as binary as can't plot more than 
+          ## a single patch at a time and have to plot all patches together
+          ## so that the gnuplot depth ordering is done correctly
+          for j = 1 : 4 : columns(data{i})
+            if (j != 1)
+              fputs (plot_stream, "\n\n");
+            endif
+            fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
+            fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
+            fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
+            fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
+          endfor
+          fputs (plot_stream, "e\n");
+        elseif (is_image_data(i))
+          fwrite (plot_stream, data{i}, "float32");
+        else
+          __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i), 
+                                  have_cdata(i));
+        endif
       endfor
     else
       fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
@@ -1625,7 +1625,7 @@ function fontspec = create_fontspec (f, s, gp_term)
 endfunction
 
 function style = do_linestyle_command (obj, linecolor, idx, mono,
-				       plot_stream, errbars = "")
+                                       plot_stream, errbars = "")
   style = {};
 
   fprintf (plot_stream, "set style line %d default;\n", idx);
@@ -1636,7 +1636,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     color = linecolor;
     if (! mono)
       fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-	       round (255*color));
+               round (255*color));
     endif
   else
     color = [0, 0, 0];
@@ -1645,17 +1645,17 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
   if (isfield (obj, "linestyle"))
     switch (obj.linestyle)
       case "-"
-	lt = "1";
+        lt = "1";
       case "--"
-	lt = "2";
+        lt = "2";
       case ":"
-	lt = "3";
+        lt = "3";
       case "-."
-	lt = "6";
+        lt = "6";
       case "none"
-	lt = "";
+        lt = "";
       otherwise
-	lt = "";
+        lt = "";
     endswitch
 
     ## FIXME -- linetype is currently broken, since it disables the
@@ -1686,45 +1686,45 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
   if (isfield (obj, "marker"))
     switch (obj.marker)
       case "+"
-	pt = pt2 = "1";
+        pt = pt2 = "1";
       case "o"
-	pt = "6";
-	pt2 = "7";
+        pt = "6";
+        pt2 = "7";
       case "*"
-	pt = pt2 = "3";
+        pt = pt2 = "3";
       case "."
-	pt = pt2 = "0";
+        pt = pt2 = "0";
       case "x"
-	pt = pt2 = "2";
+        pt = pt2 = "2";
       case {"square", "s"}
-	pt = "4";
-	pt2 = "5";
+        pt = "4";
+        pt2 = "5";
       case {"diamond", "d"}
-	pt = "13";
-	pt2 = "14";
+        pt = "13";
+        pt2 = "14";
       case "^"
-	pt = "8";
-	pt2 = "9";
+        pt = "8";
+        pt2 = "9";
       case "v"
-	pt = "10";
-	pt2 = "11";
+        pt = "10";
+        pt2 = "11";
       case ">"
-	## FIXME missing point type 
-	pt = "8";
-	pt2 = "9";
+        ## FIXME missing point type 
+        pt = "8";
+        pt2 = "9";
       case "<"
-	## FIXME missing point type 
-	pt = "10";
-	pt2 = "11";
+        ## FIXME missing point type 
+        pt = "10";
+        pt2 = "11";
       case {"pentagram", "p"}
-	## FIXME missing point type 
-	pt = pt2 = "3";
+        ## FIXME missing point type 
+        pt = pt2 = "3";
       case {"hexagram", "h"}
-	pt = pt2 = "3";
+        pt = pt2 = "3";
       case "none"
-	pt = pt2 = "";
+        pt = pt2 = "";
       otherwise
-	pt = pt2 = "";
+        pt = pt2 = "";
     endswitch
   else
     pt = pt2 = "";
@@ -1744,91 +1744,91 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
-	&& !strncmp (obj.markerfacecolor, "none", 4))
+        && !strncmp (obj.markerfacecolor, "none", 4))
       if (strncmp (obj.markerfacecolor, "auto", 4)
-	  || ! isnumeric (obj.markerfacecolor) 
-	  || (isnumeric (obj.markerfacecolor) 
-	      && isequal (color, obj.markerfacecolor)))
-	if (! isempty (pt2))
-	  fprintf (plot_stream, " pointtype %s", pt2);
-	  style {sidx} = strcat (style{sidx}, "points");
-	endif
-	if (isfield (obj, "markersize"))
-	  fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-	endif
+          || ! isnumeric (obj.markerfacecolor) 
+          || (isnumeric (obj.markerfacecolor) 
+              && isequal (color, obj.markerfacecolor)))
+        if (! isempty (pt2))
+          fprintf (plot_stream, " pointtype %s", pt2);
+          style {sidx} = strcat (style{sidx}, "points");
+        endif
+        if (isfield (obj, "markersize"))
+          fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+        endif
       else
-	facesame = false;
-	if (! found_style)
-	  fputs (plot_stream, " default");
-	endif
-	fputs (plot_stream, ";\n");
-	if (! isempty (style {sidx}))	
-	  sidx ++;
-	  idx ++;
-	else
-	  fputs (plot_stream, ";\n");
-	endif
-	fprintf (plot_stream, "set style line %d default;\n", idx);
-	fprintf (plot_stream, "set style line %d", idx);
-	if (isnumeric (obj.markerfacecolor) && ! mono)
-	  fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-		   round (255*obj.markerfacecolor));
-	endif
-	if (! isempty (pt2))
-	  style {sidx} = "points";
-	  fprintf (plot_stream, " pointtype %s", pt2);
-	endif
-	if (isfield (obj, "markersize"))
-	  fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-	endif
+        facesame = false;
+        if (! found_style)
+          fputs (plot_stream, " default");
+        endif
+        fputs (plot_stream, ";\n");
+        if (! isempty (style {sidx}))   
+          sidx ++;
+          idx ++;
+        else
+          fputs (plot_stream, ";\n");
+        endif
+        fprintf (plot_stream, "set style line %d default;\n", idx);
+        fprintf (plot_stream, "set style line %d", idx);
+        if (isnumeric (obj.markerfacecolor) && ! mono)
+          fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                   round (255*obj.markerfacecolor));
+        endif
+        if (! isempty (pt2))
+          style {sidx} = "points";
+          fprintf (plot_stream, " pointtype %s", pt2);
+        endif
+        if (isfield (obj, "markersize"))
+          fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+        endif
       endif
     endif
     if (isfield (obj, "markeredgecolor") 
-	&& !strncmp (obj.markeredgecolor, "none", 4))
+        && !strncmp (obj.markeredgecolor, "none", 4))
       if (facesame && !isempty (pt)
           && (strncmp (obj.markeredgecolor, "auto", 4)
-	      || ! isnumeric (obj.markeredgecolor) 
-	      || (isnumeric (obj.markeredgecolor) 
-		  && isequal (color, obj.markeredgecolor))))
-	if (sidx == 1 && ((length (style {sidx}) == 5 
-	    && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
-	  if (! isempty (pt))
-	    style {sidx} = strcat (style{sidx}, "points");
-	    fprintf (plot_stream, " pointtype %s", pt);
-	  endif
-	  if (isfield (obj, "markersize"))
-	    fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-	  endif
-	endif
+              || ! isnumeric (obj.markeredgecolor) 
+              || (isnumeric (obj.markeredgecolor) 
+                  && isequal (color, obj.markeredgecolor))))
+        if (sidx == 1 && ((length (style {sidx}) == 5 
+            && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
+          if (! isempty (pt))
+            style {sidx} = strcat (style{sidx}, "points");
+            fprintf (plot_stream, " pointtype %s", pt);
+          endif
+          if (isfield (obj, "markersize"))
+            fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+          endif
+        endif
       else
-	if (! found_style)
-	  fputs (plot_stream, " default");
-	endif
-	fputs (plot_stream, ";\n");
-	if (!isempty (style {sidx}))	
-	  sidx ++;
-	  idx ++;
-	else
-	  fputs (plot_stream, ";\n");
-	endif
-	fprintf (plot_stream, "set style line %d default;\n", idx);
-	fprintf (plot_stream, "set style line %d", idx);
-	if (! mono)
-	  if (strncmp (obj.markeredgecolor, "auto", 4))
-	    fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-		     round (255*color));
-	  elseif (isnumeric (obj.markeredgecolor) && ! mono)
-	    fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-		     round (255*obj.markeredgecolor));
-	  endif
-	endif
-	if (! isempty (pt))
-	  style {sidx} = "points";
-	  fprintf (plot_stream, " pointtype %s", pt);
-	endif
-	if (isfield (obj, "markersize"))
-	  fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
-	endif
+        if (! found_style)
+          fputs (plot_stream, " default");
+        endif
+        fputs (plot_stream, ";\n");
+        if (!isempty (style {sidx}))    
+          sidx ++;
+          idx ++;
+        else
+          fputs (plot_stream, ";\n");
+        endif
+        fprintf (plot_stream, "set style line %d default;\n", idx);
+        fprintf (plot_stream, "set style line %d", idx);
+        if (! mono)
+          if (strncmp (obj.markeredgecolor, "auto", 4))
+            fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                     round (255*color));
+          elseif (isnumeric (obj.markeredgecolor) && ! mono)
+            fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+                     round (255*obj.markeredgecolor));
+          endif
+        endif
+        if (! isempty (pt))
+          style {sidx} = "points";
+          fprintf (plot_stream, " pointtype %s", pt);
+        endif
+        if (isfield (obj, "markersize"))
+          fprintf (plot_stream, " pointsize %f", obj.markersize / 3);
+        endif
       endif
     endif
   else
@@ -1850,13 +1850,13 @@ function nd = __calc_dimensions__ (obj)
     obj = get (kids(i));
     switch (obj.type)
       case {"image", "text"}
-	## ignore as they 
+        ## ignore as they 
       case {"line", "patch"}
-	if (! isempty (obj.zdata))
-	  nd = 3;
-	endif
+        if (! isempty (obj.zdata))
+          nd = 3;
+        endif
       case "surface"
-	nd = 3;
+        nd = 3;
       case "hggroup"
         obj_nd = __calc_dimensions__ (obj);
         if (obj_nd == 3)
@@ -1887,13 +1887,13 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
     else
       nr = rows (data);
       if (cdata)
-	for j = 1:4:nr
-	  fwrite (plot_stream, data(j:j+3,:), "float64");
-	endfor
+        for j = 1:4:nr
+          fwrite (plot_stream, data(j:j+3,:), "float64");
+        endfor
       else
-	for j = 1:3:nr
-	  fwrite (plot_stream, data(j:j+2,:), "float64");
-	endfor
+        for j = 1:3:nr
+          fwrite (plot_stream, data(j:j+2,:), "float64");
+        endfor
       endif
     endif
   endif
@@ -1924,63 +1924,63 @@ function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
 
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-	       obj.xticklabel, obj.xcolor, "x2", plot_stream, true, mono,
-	       "border", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.xscale);
+               obj.xticklabel, obj.xcolor, "x2", plot_stream, true, mono,
+               "border", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.xscale);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream, true, mono, "border",
-	       "", "", fontname, fontspec, obj.interpreter, obj.xscale);
+               obj.xcolor, "x", plot_stream, true, mono, "border",
+               "", "", fontname, fontspec, obj.interpreter, obj.xscale);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-	       obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
-	       "axis", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.xscale);
+               obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
+               "axis", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.xscale);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true, mono, "axis",
-	       "", "", fontname, fontspec, obj.interpreter, obj.xscale);
+               obj.xcolor, "x2", plot_stream, true, mono, "axis",
+               "", "", fontname, fontspec, obj.interpreter, obj.xscale);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
-	       obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
-	       "border", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.xscale);
+               obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
+               "border", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.xscale);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true, mono, "border",
-	       "", "", fontname, fontspec, obj.interpreter, obj.xscale);
+               obj.xcolor, "x2", plot_stream, true, mono, "border",
+               "", "", fontname, fontspec, obj.interpreter, obj.xscale);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-	       obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror, mono,
-	       "border", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.yscale);
+               obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror, mono,
+               "border", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.yscale);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream, ymirror, mono, "border",
-	       "", "", fontname, fontspec, obj.interpreter, obj.yscale);
+               obj.ycolor, "y", plot_stream, ymirror, mono, "border",
+               "", "", fontname, fontspec, obj.interpreter, obj.yscale);
   elseif (strcmpi (obj.yaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-	       obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
-	       "axis", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.yscale);
+               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
+               "axis", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.yscale);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
-	       "", "", fontname, fontspec, obj.interpreter, obj.yscale);
+               obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
+               "", "", fontname, fontspec, obj.interpreter, obj.yscale);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
-	       obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
-	       "border", obj.tickdir, ticklength, fontname, fontspec,
-	       obj.interpreter, obj.yscale);
+               obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
+               "border", obj.tickdir, ticklength, fontname, fontspec,
+               obj.interpreter, obj.yscale);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
-	       "", "", fontname, fontspec, obj.interpreter, obj.yscale);
+               obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
+               "", "", fontname, fontspec, obj.interpreter, obj.yscale);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zminortick, obj.zticklabelmode,
-	     obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
-	     "border", obj.tickdir, ticklength, fontname, fontspec,
-	     obj.interpreter, obj.yscale);
+             obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
+             "border", obj.tickdir, ticklength, fontname, fontspec,
+             obj.interpreter, obj.yscale);
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
-		    plot_stream, mirror, mono, axispos, tickdir, ticklength,
-		    fontname, fontspec, interpreter, scale)
+                    plot_stream, mirror, mono, axispos, tickdir, ticklength,
+                    fontname, fontspec, interpreter, scale)
   persistent warned_latex = false;
   if (strcmpi (interpreter, "tex"))
     for n = 1 : numel(labels)
@@ -2005,71 +2005,71 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
     elseif (strcmpi (labelmode, "manual"))
       if (ischar (labels))
-	labels = cellstr (labels);
+        labels = cellstr (labels);
       endif
       if (isnumeric (labels))
-	labels = num2str (real (labels(:)));
+        labels = num2str (real (labels(:)));
       endif
       if (ischar (labels))
-	labels = permute (cellstr (labels), [2, 1]);
+        labels = permute (cellstr (labels), [2, 1]);
       endif
       if (iscellstr (labels))
-	k = 1;
-	ntics = numel (tics);
-	nlabels = numel (labels);
-	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
-	if (mirror)
-	  fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, 
-		   tickdir, ticklength, axispos);
-	else
-	  fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax,
-		   tickdir, ticklength, axispos);
-	endif
+        k = 1;
+        ntics = numel (tics);
+        nlabels = numel (labels);
+        fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
+        if (mirror)
+          fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, 
+                   tickdir, ticklength, axispos);
+        else
+          fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax,
+                   tickdir, ticklength, axispos);
+        endif
  
-	labels = regexprep(labels, "%", "%%");
-	for i = 1:ntics
-	  fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
-	  if (i < ntics)
-	    fputs (plot_stream, ", ");
-	  endif
-	  if (k > nlabels)
-	    k = 1;
-	  endif
-	endfor
-	fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
- 	if (strcmp (mtics, "on"))
-	  fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
-	else
-	  fprintf (plot_stream, "unset m%stics;\n", ax);
-	endif
+        labels = regexprep(labels, "%", "%%");
+        for i = 1:ntics
+          fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
+          if (i < ntics)
+            fputs (plot_stream, ", ");
+          endif
+          if (k > nlabels)
+            k = 1;
+          endif
+        endfor
+        fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
+        if (strcmp (mtics, "on"))
+          fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
+        else
+          fprintf (plot_stream, "unset m%stics;\n", ax);
+        endif
      else
-	error ("unsupported type of ticklabel");
+        error ("unsupported type of ticklabel");
       endif
     else
       fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
       if (mirror)
-	fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, tickdir,
-		 ticklength, axispos);
+        fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, tickdir,
+                 ticklength, axispos);
       else
-	fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax, tickdir,
-		 ticklength, axispos);
+        fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax, tickdir,
+                 ticklength, axispos);
       endif
       fprintf (plot_stream, " %.15g,", tics(1:end-1));
       fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
       if (strcmp (mtics, "on"))
         fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
       else
-	fprintf (plot_stream, "unset m%stics;\n", ax);
+        fprintf (plot_stream, "unset m%stics;\n", ax);
       endif
     endif
   else
     fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
     if (mirror)
       fprintf (plot_stream, "set %stics %s %s %s mirror %s %s;\n", ax, 
-	       axispos, tickdir, ticklength, colorspec, fontspec);
+               axispos, tickdir, ticklength, colorspec, fontspec);
     else
       fprintf (plot_stream, "set %stics %s %s %s nomirror %s %s;\n", ax, 
-	       tickdir, ticklength, axispos, colorspec, fontspec);
+               tickdir, ticklength, axispos, colorspec, fontspec);
     endif
     if (strcmp (mtics, "on"))
       fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);
@@ -2103,7 +2103,7 @@ function colorspec = get_text_colorspec (color, mono)
     colorspec = "";
   else
     colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
-			 round (255*color));
+                         round (255*color));
   endif
 endfunction
 
@@ -2118,8 +2118,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   bld = false;
   if (! isempty (t.fontweight) && strcmpi (t.fontweight, "bold"))
     if (! isempty(t.fontangle)
-	&& (strcmpi (t.fontangle, "italic")
-	    || strcmpi (t.fontangle, "oblique")))
+        && (strcmpi (t.fontangle, "italic")
+            || strcmpi (t.fontangle, "oblique")))
       f = cstrcat (f, "-bolditalic");
       it = true;
       bld = true;
@@ -2128,8 +2128,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
       bld = true;
     endif
   elseif (! isempty(t.fontangle)
-	  && (strcmpi (t.fontangle, "italic")
-	      || strcmpi (t.fontangle, "oblique")))
+          && (strcmpi (t.fontangle, "italic")
+              || strcmpi (t.fontangle, "oblique")))
     f = cstrcat (f, "-italic");
     it = true;
   endif
@@ -2160,8 +2160,8 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       str = __tex2enhanced__ (str, fnt, it, bld);
     elseif (strcmpi (obj.interpreter, "latex"))
       if (! warned_latex)
-	warning ("latex markup not supported for text objects");
-	warned_latex = true;
+        warning ("latex markup not supported for text objects");
+        warned_latex = true;
       endif
     endif
   endif
@@ -2180,89 +2180,89 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
     else
       f = m{i}(2:end);
       if (isfield (sym, f))
-	g = getfield(sym, f);
-	## FIXME The symbol font doesn't seem to support bold or italic
-	##if (bld)
-	##  if (it)
-	##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
-	##  else
-	##    g = regexprep (g, '/Symbol', '/Symbol-bold');
-	##  endif
-	##elseif (it)
-	##  g = regexprep (g, '/Symbol', '/Symbol-italic');
-	##endif
+        g = getfield(sym, f);
+        ## FIXME The symbol font doesn't seem to support bold or italic
+        ##if (bld)
+        ##  if (it)
+        ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+        ##  else
+        ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+        ##  endif
+        ##elseif (it)
+        ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+        ##endif
         str = cstrcat (str(1:s(i) - 1), g, str(e(i) + 1:end));
       elseif (strncmp (f, "rm", 2))
-	bld = false;
-	it = false;
+        bld = false;
+        it = false;
         str = cstrcat (str(1:s(i) - 1), '/', fnt, ' ', str(s(i) + 3:end));
       elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
-	it = true;
-	if (bld)
+        it = true;
+        if (bld)
           str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
-			str(s(i) + 3:end));
+                        str(s(i) + 3:end));
         else
           str = cstrcat (str(1:s(i) - 1), '/', fnt, '-italic ', 
-			str(s(i) + 3:end));
+                        str(s(i) + 3:end));
         endif
       elseif (strncmp (f, "bf", 2))
-	bld = true;
-	if (it)
+        bld = true;
+        if (it)
           str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
-			str(2(i) + 3:end));
+                        str(2(i) + 3:end));
         else
           str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bold ', 
-			str(s(i) + 3:end));
+                        str(s(i) + 3:end));
         endif
       elseif (strcmpi (f, "color"))
-	## FIXME Ignore \color but remove trailing {} block as well
-	d = strfind(str(e(i) + 1:end),'}');
+        ## FIXME Ignore \color but remove trailing {} block as well
+        d = strfind(str(e(i) + 1:end),'}');
         if (isempty (d))
-	  warning ('syntax error in \color argument');
-	else
-	  str = cstrcat (str(1:s(i) - 1), str(e(i) + d + 1:end));
+          warning ('syntax error in \color argument');
+        else
+          str = cstrcat (str(1:s(i) - 1), str(e(i) + d + 1:end));
         endif
       elseif(strcmpi (f, "fontname"))
-	b1 = strfind(str(e(i) + 1:end),'{');
-	b2 = strfind(str(e(i) + 1:end),'}');
+        b1 = strfind(str(e(i) + 1:end),'{');
+        b2 = strfind(str(e(i) + 1:end),'}');
         if (isempty(b1) || isempty(b2))
-	  warning ('syntax error in \fontname argument');
-	else
+          warning ('syntax error in \fontname argument');
+        else
           str = cstrcat (str(1:s(i) - 1), '/', 
-			str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
-			str(e(i) + b2(1) + 1:end));
+                        str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
+                        str(e(i) + b2(1) + 1:end));
         endif
       elseif(strcmpi (f, "fontsize"))
-	b1 = strfind(str(e(i) + 1:end),'{');
-	b2 = strfind(str(e(i) + 1:end),'}');
+        b1 = strfind(str(e(i) + 1:end),'{');
+        b2 = strfind(str(e(i) + 1:end),'}');
         if (isempty(b1) || isempty(b2))
-	  warning ('syntax error in \fontname argument');
-	else
+          warning ('syntax error in \fontname argument');
+        else
           str = cstrcat (str(1:s(i) - 1), '/=', 
-			str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
-			str(e(i) + b2(1) + 1:end));
+                        str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
+                        str(e(i) + b2(1) + 1:end));
         endif
       else
-	## Last desperate attempt to treat the symbol. Look for things
-	## like \pix, that should be translated to the symbol Pi and x
-	for j = 1 : length (flds)
-	  if (strncmp (flds{j}, f, length (flds{j})))
-	    g = getfield(sym, flds{j});
-	    ## FIXME The symbol font doesn't seem to support bold or italic
-	    ##if (bld)
-	    ##  if (it)
-	    ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
-	    ##  else
-	    ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
-	    ##  endif
-	    ##elseif (it)
-	    ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
-	    ##endif
+        ## Last desperate attempt to treat the symbol. Look for things
+        ## like \pix, that should be translated to the symbol Pi and x
+        for j = 1 : length (flds)
+          if (strncmp (flds{j}, f, length (flds{j})))
+            g = getfield(sym, flds{j});
+            ## FIXME The symbol font doesn't seem to support bold or italic
+            ##if (bld)
+            ##  if (it)
+            ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+            ##  else
+            ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+            ##  endif
+            ##elseif (it)
+            ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+            ##endif
             str = cstrcat (str(1:s(i) - 1), g, 
-	    		  str(s(i) + length (flds{j}) + 1:end));
-	    break;
-	  endif
-	endfor
+                          str(s(i) + length (flds{j}) + 1:end));
+            break;
+          endif
+        endfor
       endif
     endif
   endfor
@@ -2281,66 +2281,66 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   while (i < length (s))
     if (i < length(s))
       if (str(s(i) + p + 1) == "{")
-	s1 = strfind(str(s(i) + p + 2:end),'{');
-	si = 1;
-	l1 = strfind(str(s(i) + p + 1:end),'}');
+        s1 = strfind(str(s(i) + p + 2:end),'{');
+        si = 1;
+        l1 = strfind(str(s(i) + p + 1:end),'}');
         li = 1;
-	while (li <= length (l1) && si <= length (s1))
+        while (li <= length (l1) && si <= length (s1))
           if (l1(li) < s1(si))
-	    if (li == si)
-	      break;
-	    endif
-	    li++;
-	  else
-	    si++;
-	  endif
-	endwhile
-	l1 = l1 (min (length(l1), si));
+            if (li == si)
+              break;
+            endif
+            li++;
+          else
+            si++;
+          endif
+        endwhile
+        l1 = l1 (min (length(l1), si));
         if (s(i) + l1 + 1 == s(i+1))
-	  if (str(s(i + 1) + p + 1) == "{")
-	    s2 = strfind(str(s(i + 1) + p + 2:end),'{');
-	    si = 1;
-	    l2 = strfind(str(s(i + 1) + p + 1:end),'}');
+          if (str(s(i + 1) + p + 1) == "{")
+            s2 = strfind(str(s(i + 1) + p + 2:end),'{');
+            si = 1;
+            l2 = strfind(str(s(i + 1) + p + 1:end),'}');
             li = 1;
-	    while (li <= length (l2) && si <= length (s2))
+            while (li <= length (l2) && si <= length (s2))
               if (l2(li) < s2(si))
-		if (li == si)
-		  break;
-		endif
-		li++;
-	      else
-		si++;
-	      endif
-	    endwhile
-	    l2 = l2 (min (length(l2), si));
-	    if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
-		length_string(str(s(i+1)+p+2:s(i+1)+p+l2-1)))
-	      ## Shortest already first!
-	      str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
-	    else
-	      ## Have to swap sub/super-script to get shortest first.
-	      str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2),
-			    str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end));
-	    endif
-	  else
-	    ## Have to swap sub/super-script to get shortest first.
-	    str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1),
-			  str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end));
-	  endif
+                if (li == si)
+                  break;
+                endif
+                li++;
+              else
+                si++;
+              endif
+            endwhile
+            l2 = l2 (min (length(l2), si));
+            if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
+                length_string(str(s(i+1)+p+2:s(i+1)+p+l2-1)))
+              ## Shortest already first!
+              str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+            else
+              ## Have to swap sub/super-script to get shortest first.
+              str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2),
+                            str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end));
+            endif
+          else
+            ## Have to swap sub/super-script to get shortest first.
+            str = cstrcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1),
+                          str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end));
+          endif
           i += 2;
-	  p ++;
-	else
-	  i++;
-	endif
+          p ++;
+        else
+          i++;
+        endif
       else
-	if (s(i+1) == s(i) + 2)
-	  ## Shortest already first!
-	  str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
-	  p ++;
+        if (s(i+1) == s(i) + 2)
+          ## Shortest already first!
+          str = cstrcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+          p ++;
           i += 2;
-	else
-	  i ++;
-	endif
+        else
+          i ++;
+        endif
       endif
     else
       i ++;

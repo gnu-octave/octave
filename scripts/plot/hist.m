@@ -80,7 +80,7 @@ function [nn, xx] = hist (y, varargin)
       x = x * (max_val - min_val) + ones (size (x)) * min_val;
     elseif (isreal (x))
       if (isvector (x))
-	x = x(:);
+        x = x(:);
       endif
       tmp = sort (x);
       if (any (tmp != x))
@@ -114,8 +114,8 @@ function [nn, xx] = hist (y, varargin)
     len = rows (y);
     chist = cumsum (idx <= len);
     chist = [(zeros (1, y_nc));
-	     (reshape (chist(idx > len), rows (cutoff), y_nc));
-	     (chist(end,:) - sum (isnan (y)))];
+             (reshape (chist(idx > len), rows (cutoff), y_nc));
+             (chist(end,:) - sum (isnan (y)))];
   endif
 
   freq = diff (chist);

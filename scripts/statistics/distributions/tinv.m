@@ -66,12 +66,12 @@ function inv = tinv (x, n)
   if (any (k))
     if (isscalar (n))
       inv(k) = (sign (x(k) - 1/2)
-		.* sqrt (n .* (1 ./ betainv (2*min (x(k), 1 - x(k)),
-						 n/2, 1/2) - 1)));
+                .* sqrt (n .* (1 ./ betainv (2*min (x(k), 1 - x(k)),
+                                                 n/2, 1/2) - 1)));
     else
       inv(k) = (sign (x(k) - 1/2)
-		.* sqrt (n(k) .* (1 ./ betainv (2*min (x(k), 1 - x(k)),
-						 n(k)/2, 1/2) - 1)));
+                .* sqrt (n(k) .* (1 ./ betainv (2*min (x(k), 1 - x(k)),
+                                                 n(k)/2, 1/2) - 1)));
     endif
   endif
 

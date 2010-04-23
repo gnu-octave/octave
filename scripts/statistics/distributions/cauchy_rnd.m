@@ -37,7 +37,7 @@ function rnd = cauchy_rnd (l, scale, r, c)
     if (!isscalar (l) || !isscalar (scale)) 
       [retval, l, scale] = common_size (l, scale);
       if (retval > 0)
-	error ("cauchy_rnd: lambda and sigma must be of common size or scalar");
+        error ("cauchy_rnd: lambda and sigma must be of common size or scalar");
       endif
     endif
   endif
@@ -52,7 +52,7 @@ function rnd = cauchy_rnd (l, scale, r, c)
     sz = [r, c];
 
     if (any (size (l) != 1)
-	&& (length (size (l)) != length (sz) || any (size (l) != sz)))
+        && (length (size (l)) != length (sz) || any (size (l) != sz)))
       error ("cauchy_rnd: lambda and sigma must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -65,7 +65,7 @@ function rnd = cauchy_rnd (l, scale, r, c)
     endif
 
     if (any (size (l) != 1)
-	&& (length (size (l)) != length (sz) ||	any (size (l) != sz)))
+        && (length (size (l)) != length (sz) || any (size (l) != sz)))
       error ("cauchy_rnd: lambda and sigma must be scalar or of size sz");
     endif
   elseif (nargin == 2)

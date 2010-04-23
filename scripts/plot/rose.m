@@ -51,7 +51,7 @@
 function [thout, rout] = rose (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 1), "rose", 
-						varargin{:});
+                                                varargin{:});
 
   if (nargin < 1)
     print_usage ();

@@ -58,14 +58,14 @@ function [tok, rem] = strtok (str, delim)
     len = length (str);
     while (start <= len)
       if (all (str(start) != delim))
-	break; 
+        break; 
       endif
       start++;
     endwhile
     stop = start;
     while (stop <= len)
       if (any (str(stop) == delim))
-	break; 
+        break; 
       endif
       stop++;
     endwhile
@@ -86,11 +86,11 @@ function [tok, rem] = strtok (str, delim)
       ## Find first non-leading delimiter.
       skip = find (idx(:)' != 1:length(idx));
       if (isempty (skip))
-      	tok = str(idx(length(idx))+1:length(str));
-      	rem = "";
+        tok = str(idx(length(idx))+1:length(str));
+        rem = "";
       else
-      	tok = str(skip(1):idx(skip(1))-1);
-      	rem = str(idx(skip(1)):length(str));
+        tok = str(skip(1):idx(skip(1))-1);
+        rem = str(idx(skip(1)):length(str));
       endif
     endif
   endif

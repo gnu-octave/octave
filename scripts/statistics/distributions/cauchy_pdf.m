@@ -54,10 +54,10 @@ function pdf = cauchy_pdf (x, location, scale)
   if (any (k))
     if (isscalar (location) && isscalar (scale)) 
       pdf(k) = ((1 ./ (1 + ((x(k) - location) ./ scale) .^ 2))
-		/ pi ./ scale);
+                / pi ./ scale);
     else
       pdf(k) = ((1 ./ (1 + ((x(k) - location(k)) ./ scale(k)) .^ 2))
-		/ pi ./ scale(k));
+                / pi ./ scale(k));
     endif
   endif
 

@@ -58,12 +58,12 @@ function y = regexptranslate (op, x)
     op = tolower (op);
     if (strcmp ("wildcard", op))
       y = regexprep (regexprep (regexprep (x, "\\.", "\\."), "\\*",
-				".*"), "\\?", ".");
+                                ".*"), "\\?", ".");
     elseif (strcmp ("escape", op))
       ch = {'\$', '\.', '\?', '\[', '\]'};
       y = x;
       for i = 1 : length (ch)
-	y = regexprep (y, ch{i}, ch{i});
+        y = regexprep (y, ch{i}, ch{i});
       endfor
     else
       error ("regexptranslate: unexpected operation");

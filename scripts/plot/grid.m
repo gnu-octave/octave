@@ -57,28 +57,28 @@ function grid (varargin)
     x = varargin{1};
     if (ischar (x))
       if (strcmpi (x, "off"))
-	grid_on = false;
+        grid_on = false;
       elseif (strcmpi (x, "on"))
-	grid_on = true;
+        grid_on = true;
       elseif (strcmpi (x, "minor"))
         if (nargs == 2)
-	  x2 = varargin{2};
-	  if (strcmpi (x2, "on"))
-	    minor_on = true;
-	    grid_on = true;
-	  elseif (strcmpi (x2, "off"))
-	    minor_on = false;
-	  else
-	    print_usage ();
-	  endif
-	else
-	   minor_on = ! minor_on;
-	   if (minor_on)
-	     grid_on = true;
-	   endif
-	endif
+          x2 = varargin{2};
+          if (strcmpi (x2, "on"))
+            minor_on = true;
+            grid_on = true;
+          elseif (strcmpi (x2, "off"))
+            minor_on = false;
+          else
+            print_usage ();
+          endif
+        else
+           minor_on = ! minor_on;
+           if (minor_on)
+             grid_on = true;
+           endif
+        endif
       else
-	print_usage ();
+        print_usage ();
       endif
     else
       error ("grid: argument must be a string");

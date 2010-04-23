@@ -384,15 +384,15 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       ## tolf ~ eps we demand as much accuracy as we can expect.
       if (fn <= tolf*n*xn)
         info = 1;
-	## The following tests done only after successful step.
+        ## The following tests done only after successful step.
       elseif (ratio >= 1e-4)
         ## This one is classic. Note that we use scaled variables again,
-	## but compare to scaled step, so nothing bad.
+        ## but compare to scaled step, so nothing bad.
         if (sn <= tolx*xn)
           info = 2;
           ## Again a classic one. It seems weird to use the same tolf
-	  ## for two different tests, but that's what M*b manual appears
-	  ## to say.
+          ## for two different tests, but that's what M*b manual appears
+          ## to say.
         elseif (actred < tolf)
           info = 3;
         endif
@@ -581,7 +581,7 @@ function x = __dogleg__ (r, b, d, delta)
       tn = norm (r*s);
       snm = (sn / tn) / tn;
       if (snm < delta)
-	## Get the dogleg path minimizer.
+        ## Get the dogleg path minimizer.
         bn = norm (b);
         dxn = delta/xn; snmd = snm/delta;
         t = (bn/sn) * (bn/xn) * snmd;

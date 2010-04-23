@@ -35,8 +35,8 @@ function cla (varargin)
     print_usage ();
   elseif (nargin > 1)
     if (ishandle (varargin{1})
-	&& strcmp (get (varargin{1}, "type"), "axes")
-	&& ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
+        && strcmp (get (varargin{1}, "type"), "axes")
+        && ischar (varargin{2}) && strcmpi (varargin{2}, "reset"))
       oldhax = gca;
       hax = varargin{1};
       do_reset = true;
@@ -45,7 +45,7 @@ function cla (varargin)
     endif
   elseif (nargin == 1)
     if (ishandle (varargin{1})
-	&& strcmp (get (varargin{1}, "type"), "axes"))
+        && strcmp (get (varargin{1}, "type"), "axes"))
       oldhax = gca;
       hax = varargin{1};
       do_reset = false;

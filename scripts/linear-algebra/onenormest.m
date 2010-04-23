@@ -210,14 +210,14 @@ function [est, v, w, iter] = onenormest (varargin)
     if (t > 1)
       firstind = ind(1:t);
       if (all (been_there(firstind)))
-	## Visited all these before, so stop.
-	break;
+        ## Visited all these before, so stop.
+        break;
       endif
       ind = ind (!been_there (ind));
       if (length (ind) < t)
-	## There aren't enough new vectors, so we're practically
-	## in a cycle. Stop.
-	break;
+        ## There aren't enough new vectors, so we're practically
+        ## in a cycle. Stop.
+        break;
       endif
     endif
 

@@ -38,7 +38,7 @@ function rnd = gamrnd (a, b, r, c)
     if (!isscalar(a) || !isscalar(b)) 
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
-	error ("gamrnd: a and b must be of common size or scalar");
+        error ("gamrnd: a and b must be of common size or scalar");
       endif
     endif
   endif
@@ -53,7 +53,7 @@ function rnd = gamrnd (a, b, r, c)
     sz = [r, c];
 
     if (any (size (a) != 1)
-	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
+        && (length (size (a)) != length (sz) || any (size (a) != sz)))
       error ("gamrnd: a and b must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -66,7 +66,7 @@ function rnd = gamrnd (a, b, r, c)
     endif
 
     if (any (size (a) != 1)
-	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
+        && (length (size (a)) != length (sz) || any (size (a) != sz)))
       error ("gamrnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)

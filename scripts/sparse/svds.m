@@ -142,10 +142,10 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
       ## this can also be an issue. However, we'd like to avoid double
       ## k for all scalar value of sigma...
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)], 
-			   2 * k, b_sigma, b_opts);
+                           2 * k, b_sigma, b_opts);
     else
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
-			   k, b_sigma, b_opts);
+                           k, b_sigma, b_opts);
     endif
     s = diag (s);
 
@@ -184,7 +184,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     if (length (s) < k)
       warning ("returning fewer singular values than requested");
       if (!ischar (sigma))
-	warning ("try increasing the value of sigma");
+        warning ("try increasing the value of sigma");
       endif
     endif
 

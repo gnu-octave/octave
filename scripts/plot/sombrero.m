@@ -46,11 +46,11 @@ function [x, y, z] = sombrero (n)
       tz = sin (r) ./ r;
       if (nargout == 0)
         surf (tx, ty, tz);
-	box ("off");
+        box ("off");
       else
-	x = tx;
-	y = ty;
-	z = tz;
+        x = tx;
+        y = ty;
+        z = tz;
       endif
     else
       error ("sombrero: number of grid lines must be greater than 1");

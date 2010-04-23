@@ -45,12 +45,12 @@ function y = swapbytes (x)
     elseif (strcmp (clx, "int32") || strcmp (clx, "uint32"))
       nb = 4;
     elseif (strcmp (clx, "int64") || strcmp (clx, "uint64") ||
-	    strcmp (clx, "double"))
+            strcmp (clx, "double"))
       nb = 8;
     else
       error ("swapbytes: invalid class of object");
     endif
     y = reshape (typecast (reshape (typecast (x(:), "uint8"), nb, numel (x))
-			   ([nb : -1 : 1], :) (:), clx), size(x));
+                           ([nb : -1 : 1], :) (:), clx), size(x));
   endif
 endfunction

@@ -28,7 +28,7 @@ function retval = spcumprod (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spcumprod is obsolete and will be removed from a future version of Octave; please use cumprod instead");
+             "spcumprod is obsolete and will be removed from a future version of Octave; please use cumprod instead");
   endif
 
   retval = cumprod (varargin{:});

@@ -51,21 +51,21 @@ function retval = __errcomm__ (caller, p, varargin)
     while (k <= nargs)
       a = varargin{k++};
       if (ischar (a) || iscellstr (a))
-	retval(idx++) = __errplot__ (a, p, data{1:ndata});
-	break;
+        retval(idx++) = __errplot__ (a, p, data{1:ndata});
+        break;
       elseif (isvector (a))
-	a = a(:);
+        a = a(:);
       elseif (ismatrix (a))
-	;
+        ;
       else
-	error ("wrong argument types");
+        error ("wrong argument types");
       endif
       if (size (a) != sz)
-	error ("argument sizes do not match");
+        error ("argument sizes do not match");
       endif
       data{++ndata} = a;
       if (ndata > 6)
-	error ("too many arguments to a plot");
+        error ("too many arguments to a plot");
       endif
     endwhile
   endwhile

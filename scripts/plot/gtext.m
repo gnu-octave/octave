@@ -32,15 +32,15 @@ function gtext (s, varargin)
   if (nargin > 0)
     if (iscellstr (s))
       if (isempty (s))
-	s = "";
+        s = "";
       else
-	s = sprintf ("%s\n", s{:});
+        s = sprintf ("%s\n", s{:});
       endif
     endif
     if (ischar (s))
       if (! isempty (s))
-	[x, y] = ginput (1);
-	text (x, y, s, varargin{:});
+        [x, y] = ginput (1);
+        text (x, y, s, varargin{:});
       endif
     else
       error ("gtext: expecting a string or cell array of strings");

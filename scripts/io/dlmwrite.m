@@ -111,11 +111,11 @@ function dlmwrite (file, a, varargin)
       i = i + 1;
       newline = varargin{i};
       if (strcmpi (newline, "unix"))
-	newline = "\n";
+        newline = "\n";
       elseif (strcmpi (newline, "pc"))
-	newline = "\r\n";
+        newline = "\r\n";
       elseif (strcmpi (newline, "mac"))
-	newline = "\r";
+        newline = "\r";
       endif
     elseif (strcmpi (varargin{i}, "roffset"))
       i = i + 1;
@@ -127,28 +127,28 @@ function dlmwrite (file, a, varargin)
       i = i + 1;
       precision = varargin{i};
       if (! strcmpi (class (precision), "char"))
-	precision = sprintf ("%.%gg", precision);
+        precision = sprintf ("%.%gg", precision);
       endif
     elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";
     elseif (strcmpi (varargin{i}, "append"))
       i = i + 1;
       if (strcmpi (varargin{i}, "on"))
-	opentype = "at";
+        opentype = "at";
       elseif (strcmpi (varargin{i}, "off"))
-	opentype = "wt";
+        opentype = "wt";
       else
-	error ("dlmwrite: append must be \"on\" or \"off\".");
+        error ("dlmwrite: append must be \"on\" or \"off\".");
       endif
     else
       if (i == 1)
-	delim = varargin{i};
+        delim = varargin{i};
       elseif (i == 2)
-	r = varargin{i};
+        r = varargin{i};
       elseif (i == 3)
-	c = varargin{i};
+        c = varargin{i};
       else
-	print_usage();
+        print_usage();
       endif
     endif
   endwhile
@@ -159,16 +159,16 @@ function dlmwrite (file, a, varargin)
   else
     if (r > 0)
       fprintf (fid, "%s",
-	       repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
+               repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
     endif
     if (iscomplex (a))
       cprecision = regexprep (precision, '^%([-\d.])','%+$1');
       template = [precision, cprecision, "i", ...
-		  repmat([delim, precision, cprecision, "i"], 1, ...
-		  columns(a) - 1), newline ];
+                  repmat([delim, precision, cprecision, "i"], 1, ...
+                  columns(a) - 1), newline ];
     else
       template = [precision, repmat([delim, precision], 1, columns(a)-1),...
-		  newline];
+                  newline];
     endif
     if (c > 0)
       template = [repmat(delim, 1, c), template];

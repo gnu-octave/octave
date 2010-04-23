@@ -80,19 +80,19 @@ function b = bincoeff (n, k)
 
   ind = ((k > 0) & ((n == real (round (n))) & (n < 0)));
   b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind))
-				  - gammaln (k(ind) + 1)
-				  - gammaln (abs (n(ind))));
+                                  - gammaln (k(ind) + 1)
+                                  - gammaln (abs (n(ind))));
 
   ind = ((k > 0) & (n >= k));
   b(ind) = exp (gammaln (n(ind) + 1)
-		- gammaln (k(ind) + 1)
-		- gammaln (n(ind) - k(ind) + 1));
+                - gammaln (k(ind) + 1)
+                - gammaln (n(ind) - k(ind) + 1));
 
   ind = ((k > 0) & ((n != real (round (n))) & (n < k)));
   b(ind) = (1/pi) * exp (gammaln (n(ind) + 1)
-			 - gammaln (k(ind) + 1)
-			 + gammaln (k(ind) - n(ind))
-			 + log (sin (pi * (n(ind) - k(ind) + 1))));
+                         - gammaln (k(ind) + 1)
+                         + gammaln (k(ind) - n(ind))
+                         + log (sin (pi * (n(ind) - k(ind) + 1))));
 
   ## Clean up rounding errors.
   ind = (n == round (n));

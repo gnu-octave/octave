@@ -59,7 +59,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     hg = hggroup ("parent", p);
     h = [h; hg];
     args = __add_datasource__ ("__errplot__", hg, 
-			       {"x", "y", "l", "u", "xl", "xu"});
+                               {"x", "y", "l", "u", "xl", "xu"});
 
     if (isempty (fmt.color))
       hl = __line__ (hg, "color", __next_line_color__ ());
@@ -77,42 +77,42 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
 
     switch (nargin - 2)
       case 1
-	error ("error plot requires 2, 3, 4 or 6 columns");
+        error ("error plot requires 2, 3, 4 or 6 columns");
       case 2
-	set (hl, "xdata", (1:len)');
-	set (hl, "ydata", a1(:,i));
-	set (hl, "ldata", a2(:,i));
-	set (hl, "udata", a2(:,i));
+        set (hl, "xdata", (1:len)');
+        set (hl, "ydata", a1(:,i));
+        set (hl, "ldata", a2(:,i));
+        set (hl, "udata", a2(:,i));
       case 3
-	set (hl, "xdata", a1(:,i));
-	set (hl, "ydata", a2(:,i));
-	set (hl, "ldata", a3(:,i));
-	set (hl, "udata", a3(:,i));
+        set (hl, "xdata", a1(:,i));
+        set (hl, "ydata", a2(:,i));
+        set (hl, "ldata", a3(:,i));
+        set (hl, "udata", a3(:,i));
       case 4
-	set (hl, "xdata", a1(:,i));
-	set (hl, "ydata", a2(:,i));
+        set (hl, "xdata", a1(:,i));
+        set (hl, "ydata", a2(:,i));
 
-	if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
-	  set (hl, "xldata", a3(:,i));
-	  set (hl, "xudata", a3(:,i));
-	  set (hl, "ldata", a4(:,i));
-	  set (hl, "udata", a4(:,i));
-	elseif (index (ifmt, "xerr"))
-	  set (hl, "xldata", a3(:,i));
-	  set (hl, "xudata", a4(:,i));
-	else
-	  set (hl, "ldata", a3(:,i));
-	  set (hl, "udata", a4(:,i));
-	endif
+        if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+          set (hl, "xldata", a3(:,i));
+          set (hl, "xudata", a3(:,i));
+          set (hl, "ldata", a4(:,i));
+          set (hl, "udata", a4(:,i));
+        elseif (index (ifmt, "xerr"))
+          set (hl, "xldata", a3(:,i));
+          set (hl, "xudata", a4(:,i));
+        else
+          set (hl, "ldata", a3(:,i));
+          set (hl, "udata", a4(:,i));
+        endif
       case 5
-	error ("error plot requires 2, 3, 4 or 6 columns");
+        error ("error plot requires 2, 3, 4 or 6 columns");
       case 6
-	set (hl, "xdata", a1(:,i));
-	set (hl, "ydata", a2(:,i));
-	set (hl, "xldata", a3(:,i));
-	set (hl, "xudata", a4(:,i));
-	set (hl, "ldata", a5(:,i));
-	set (hl, "udata", a6(:,i));
+        set (hl, "xdata", a1(:,i));
+        set (hl, "ydata", a2(:,i));
+        set (hl, "xldata", a3(:,i));
+        set (hl, "xudata", a4(:,i));
+        set (hl, "ldata", a5(:,i));
+        set (hl, "udata", a6(:,i));
     endswitch
 
     addproperty ("color", hg, "linecolor", get (hl, "color"));
@@ -120,11 +120,11 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     addproperty ("linestyle", hg, "linelinestyle", get (hl, "linestyle"));
     addproperty ("marker", hg, "linemarker", get (hl, "marker"));
     addproperty ("markerfacecolor", hg, "linemarkerfacecolor", 
-		 get (hl, "markerfacecolor"));
+                 get (hl, "markerfacecolor"));
     addproperty ("markeredgecolor", hg, "linemarkerfacecolor", 
-		 get (hl, "markeredgecolor"));
+                 get (hl, "markeredgecolor"));
     addproperty ("markersize", hg, "linemarkersize", 
-		 get (hl, "markersize"));
+                 get (hl, "markersize"));
 
     addlistener (hg, "color", @update_props);
     addlistener (hg, "linewidth", @update_props); 
@@ -148,11 +148,11 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     addlistener (hg, "xudata", @update_data);
 
     __line__ (hg, "xdata", get (hl, "xdata"), 
-	      "ydata", get (hl, "ydata"), 
-	      "color", get (hl, "color"),
-	      "linewidth", get (hl, "linewidth"),
-	      "linestyle", get (hl, "linestyle"), 
-	      "marker", "none", "parent", hg);
+              "ydata", get (hl, "ydata"), 
+              "color", get (hl, "color"),
+              "linewidth", get (hl, "linewidth"),
+              "linestyle", get (hl, "linestyle"), 
+              "marker", "none", "parent", hg);
   endfor
 
 endfunction

@@ -61,9 +61,9 @@ function [c, ia, ib] = intersect (a, b, varargin)
       c = [a(:); b(:)];
       [c, ic] = sort (c);               ## [a(:);b(:)](ic) == c
       if (iscellstr (c))
-	ii = find (strcmp (c(1:end-1), c(2:end)));
+        ii = find (strcmp (c(1:end-1), c(2:end)));
       else
-	ii = find (c(1:end-1) == c(2:end));
+        ii = find (c(1:end-1) == c(2:end));
       endif
       c = c(ii);
     endif

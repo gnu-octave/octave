@@ -42,7 +42,7 @@
 ## Adapted-By: jwe
 
 function z = cross (x, y, dim)
-	
+        
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif

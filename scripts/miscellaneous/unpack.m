@@ -48,34 +48,34 @@ function filelist = unpack (file, directory, filetype)
   if (ischar (file))
     if (isdir (file))
       if (isempty (filetype))
-	error ("unpack: filetype must be given for a directory");
+        error ("unpack: filetype must be given for a directory");
       elseif (! any (strcmpi (filetype, "gunzip")))
-	error ("unpack: filetype must be gunzip for a directory");
+        error ("unpack: filetype must be gunzip for a directory");
       endif
     else
       [pathstr, name, ext] = fileparts (file);
 
       ## Check to see if it's .tar.gz, .tar.Z, etc.
       if (any (strcmpi ({".gz" ".Z" ".bz2" ".bz"}, ext)))
-	[tmppathstr, tmpname, tmpext] = fileparts (name);
-	if (strcmpi (tmpext, ".tar"))
-	  name = tmpname;
-	  ext = cstrcat (tmpext, ext);
-	endif
+        [tmppathstr, tmpname, tmpext] = fileparts (name);
+        if (strcmpi (tmpext, ".tar"))
+          name = tmpname;
+          ext = cstrcat (tmpext, ext);
+        endif
       endif
 
       ## If the file is a url, download it and then work with that
       ## file.
       if (! isempty (strfind (file, "://")))
-	## FIXME -- the above is not a perfect test for a url
-	urlfile = file;
-	## FIXME -- should we name the file that we download with the
-	## same file name as the url requests?
-	tmpfile = cstrcat (tmpnam (), ext);
-	[file, success, msg] = urlwrite (urlfile, tmpfile);
-	if (! success)
-	  error ("unpack: could not get \"%s\": %s", urlfile, msg);
-	endif
+        ## FIXME -- the above is not a perfect test for a url
+        urlfile = file;
+        ## FIXME -- should we name the file that we download with the
+        ## same file name as the url requests?
+        tmpfile = cstrcat (tmpnam (), ext);
+        [file, success, msg] = urlwrite (urlfile, tmpfile);
+        if (! success)
+          error ("unpack: could not get \"%s\": %s", urlfile, msg);
+        endif
       endif
 
     endif
@@ -120,29 +120,29 @@ function filelist = unpack (file, directory, filetype)
   persistent commandlist;
   if (isempty (commandlist))
     commandlist.gz = {"gzip -d -v -r \"%s\"", ...
-		      "gzip -d -r \"%s\"", ...
-		      @__parse_gzip__, true};
+                      "gzip -d -r \"%s\"", ...
+                      @__parse_gzip__, true};
     commandlist.z = commandlist.gz;
     commandlist.bz2 = {"bzip2 -d -v \"%s\"", ...
-		       "bzip2 -d \"%s\"", ...
-		       @__parse_bzip2__, true};
+                       "bzip2 -d \"%s\"", ...
+                       @__parse_bzip2__, true};
     commandlist.bz = commandlist.bz2;
     commandlist.tar = {"tar xvf \"%s\"", ...
-		       "tar xf \"%s\"", ...
-		       @__parse_tar__, false};
+                       "tar xf \"%s\"", ...
+                       @__parse_tar__, false};
     commandlist.targz = {"gzip -d -c \"%s\" | tar xvf -", ...
-			 "gzip -d -c \"%s\" | tar xf -", ...
-			 @__parse_tar__, false};
+                         "gzip -d -c \"%s\" | tar xf -", ...
+                         @__parse_tar__, false};
     commandlist.tgz = commandlist.targz;
     commandlist.tarbz2 = {"bzip2 -d -c \"%s\" | tar xvf -", ...
-			  "bzip2 -d -c \"%s\" | tar xf -", ...
-			  @__parse_tar__, false};
+                          "bzip2 -d -c \"%s\" | tar xf -", ...
+                          @__parse_tar__, false};
     commandlist.tarbz = commandlist.tarbz2;
     commandlist.tbz2 = commandlist.tarbz2;
     commandlist.tbz = commandlist.tarbz2;
     commandlist.zip = {"unzip \"%s\"", ...
-		       "unzip -q \"%s\"", ...
-		       @__parse_zip__, false};
+                       "unzip -q \"%s\"", ...
+                       @__parse_zip__, false};
   endif
 
   nodotext = ext(! ismember (ext, "."));
@@ -185,7 +185,7 @@ function filelist = unpack (file, directory, filetype)
 
   if (status)
     error ("unpack: unarchiving program exited with status: %d\n%s",
-	   status, output);
+           status, output);
   endif
 
   if (nargout > 0 || needmove)
@@ -200,13 +200,13 @@ function filelist = unpack (file, directory, filetype)
     if (needmove)
       [st, msg, msgid] = movefile (files, directory);
       if (! st)
-	error ("unpack: unable to move files to \"%s\": %s",
-	       directory, msg);
+        error ("unpack: unable to move files to \"%s\": %s",
+               directory, msg);
       endif
 
       ## Fix the names for the files since they were moved.
       for i = 1:numel (files)
-	files{i} = strrep (files{i}, cstartdir, cenddir);
+        files{i} = strrep (files{i}, cstartdir, cenddir);
       endfor
     endif
 
@@ -241,16 +241,16 @@ function files = __parse_gzip__ (output)
     colons = strfind (output{i}, ":");
     if (isempty (colons))
       warning ("unpack:parsing",
-	       "Unable to parse line (gzip missing colon):\n%s", output{i});
+               "Unable to parse line (gzip missing colon):\n%s", output{i});
     else
       midcolon = colons(ceil (length (colons)/2));
       thisstr = output{i}(midcolon+2:length(output{i}));
       idx = index (thisstr, "with") + 5;
       if (isempty (idx))
-	warning ("unpack:parsing",
-		 "Unable to parse line (gzip missing with):\n%s", output{i});
+        warning ("unpack:parsing",
+                 "Unable to parse line (gzip missing with):\n%s", output{i});
       else
-	files{i} = thisstr(idx:length (thisstr));
+        files{i} = thisstr(idx:length (thisstr));
       endif
     endif
   endfor

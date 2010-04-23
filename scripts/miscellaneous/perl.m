@@ -34,9 +34,9 @@ function [output, status] = perl (script = "-e ''", varargin)
 
   if (ischar (script)
       && ((nargin != 1 && iscellstr (varargin))
-	  || (nargin == 1 && ! isempty (script))))
+          || (nargin == 1 && ! isempty (script))))
     [status, output] = system (cstrcat ("perl ", script,
-					sprintf (" %s", varargin{:})));
+                                        sprintf (" %s", varargin{:})));
   else
     error ("perl: invalid arguments");
   endif

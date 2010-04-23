@@ -65,7 +65,7 @@ function [Ax, H1, H2] = plotyy (varargin)
       ax = [obj1, obj2];
       varargin(1) = [];
       if (isempty (varargin))
-	varargin = {};
+        varargin = {};
       endif
     else
       error ("plotyy: expecting first argument to be axes handle");
@@ -170,11 +170,11 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   ## Add invisible text objects that when destroyed, 
   ## also remove the other axis
   t1 = text (0, 0, "", "parent", ax(1), "tag", "plotyy", 
-	     "handlevisibility", "off", "visible", "off",
-	     "xliminclude", "off", "yliminclude", "off");
+             "handlevisibility", "off", "visible", "off",
+             "xliminclude", "off", "yliminclude", "off");
   t2 = text (0, 0, "", "parent", ax(2), "tag", "plotyy", 
-	     "handlevisibility", "off", "visible", "off",
-	     "xliminclude", "off", "yliminclude", "off");
+             "handlevisibility", "off", "visible", "off",
+             "xliminclude", "off", "yliminclude", "off");
 
   set (t1, "deletefcn", {@deleteplotyy, ax(2), t2});
   set (t2, "deletefcn", {@deleteplotyy, ax(1), t1});
@@ -246,12 +246,12 @@ function update_position (h, d, ax2)
       oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
       oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
       if (! (isequal (position, oldposition) && isequal (view, oldview)))
-	set (ax2, "position", position, "view", view)
+        set (ax2, "position", position, "view", view)
       endif
       if (! (isequal (plotboxaspectratio, oldplotboxaspectratio) 
-	     && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
-	set (ax2, "plotboxaspectratio", plotboxaspectratio);
-	set (ax2, "plotboxaspectratiomode", plotboxaspectratiomode);
+             && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
+        set (ax2, "plotboxaspectratio", plotboxaspectratio);
+        set (ax2, "plotboxaspectratiomode", plotboxaspectratiomode);
       endif
     unwind_protect_cleanup
       recursion = false;

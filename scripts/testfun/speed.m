@@ -224,12 +224,12 @@ function [__order, __test_n, __tnew, __torig] ...
     if (! isempty (__f2))
       eval (cstrcat ("__t = time();", __f2, "; __v2=ans; __t = time()-__t;"));
       if (__t < 0.25)
-      	eval (cstrcat ("__t2 = time();", __f2, "; __t2 = time()-__t2;"));
-      	eval (cstrcat ("__t3 = time();", __f2, "; __t3 = time()-__t3;"));
+        eval (cstrcat ("__t2 = time();", __f2, "; __t2 = time()-__t2;"));
+        eval (cstrcat ("__t3 = time();", __f2, "; __t3 = time()-__t3;"));
       endif
       __torig(k) = __t;
       if (! isinf(__tol))
-      	assert (__v1, __v2, __tol);
+        assert (__v1, __v2, __tol);
       endif
     endif
   endfor
@@ -264,20 +264,20 @@ function [__order, __test_n, __tnew, __torig] ...
   if (doplot && ! isempty (__f2))
     subplot (1, 2, 1);
     semilogx (__test_n, __torig./__tnew, 
-	      cstrcat ("-*r;", strrep (__f1, ";", "."), "/",
-		      strrep (__f2, ";", "."), ";"),
-	       __test_n, __tnew./__torig,
-	      cstrcat ("-*g;", strrep (__f2, ";", "."), "/",
-		      strrep (__f1, ";", "."), ";"));
+              cstrcat ("-*r;", strrep (__f1, ";", "."), "/",
+                      strrep (__f2, ";", "."), ";"),
+               __test_n, __tnew./__torig,
+              cstrcat ("-*g;", strrep (__f2, ";", "."), "/",
+                      strrep (__f1, ";", "."), ";"));
     xlabel ("test length");
     title (__f1);
     ylabel ("speedup ratio");
 
     subplot (1, 2, 2);
     loglog (__test_n, __tnew*1000,
-	    cstrcat ("*-g;", strrep (__f1, ";", "."), ";"), 
-	    __test_n, __torig*1000,
-	    cstrcat ("*-r;", strrep (__f2,";","."), ";"));
+            cstrcat ("*-g;", strrep (__f1, ";", "."), ";"), 
+            __test_n, __torig*1000,
+            cstrcat ("*-r;", strrep (__f2,";","."), ";"));
   
     xlabel ("test length");
     ylabel ("best execution time (ms)");

@@ -198,7 +198,7 @@ function retval = datestr (date, f, p)
       maxdatevec = [Inf, 12, 31, 23, 59, 60];
       for i = 1:numel (maxdatevec)
         if (any (date(:,i) > maxdatevec(i)) || 
-	    (i != 6 && any (floor (date(:, i)) != date (:, i))))
+            (i != 6 && any (floor (date(:, i)) != date (:, i))))
           v = datevec (date, p);
           break;
         endif
@@ -214,7 +214,7 @@ function retval = datestr (date, f, p)
     if (isempty (f) || f == -1)
       if (v(i,4:6) == 0)
         f = 1;
-	## elseif (v(i,1:3) == [0, 1, 1])
+        ## elseif (v(i,1:3) == [0, 1, 1])
       elseif (v(i,1:3) == [-1, 12, 31])
         f = 16;
       else

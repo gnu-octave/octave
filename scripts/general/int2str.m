@@ -58,7 +58,7 @@ function retval = int2str (x)
     if (nc > 1)
       idx = cell ();
       for i = 1:nd
-	idx{i} = 1:sz(i);
+        idx{i} = 1:sz(i);
       endfor
       idx(2) = 1;
       ifmt = get_fmt (x(idx{:}), 0);
@@ -89,9 +89,9 @@ function fmt = get_fmt (x, sep)
     nan_inf = isinf (t) | isnan (t);
     if (any (nan_inf))
       if (any (t(nan_inf) < 0))
-	min_fw = 4 + sep;
+        min_fw = 4 + sep;
       else
-	min_fw = 3 + sep;
+        min_fw = 3 + sep;
       endif
     else
       min_fw = 1 + sep;
@@ -105,7 +105,7 @@ function fmt = get_fmt (x, sep)
       tfw = floor (log10 (double (abs (t)))) + 1 + sep;
       fw = max (tfw);
       if (any (t(tfw == fw) < 0))
-	fw++;
+        fw++;
       endif
       fmt = sprintf ("%%%dd", max (fw, min_fw));
     endif

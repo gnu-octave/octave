@@ -135,7 +135,7 @@ function h = slice (varargin)
     if (length(sz) > 0)
       for i = 1:length(sz)
         [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
-				 squeeze (y(:,1,1)), sz(i));
+                                 squeeze (y(:,1,1)), sz(i));
         vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
         tmp(sidx++) = surface (xi, yi, sz(i) * ones (size (yi)), vz);
       endfor
@@ -143,11 +143,11 @@ function h = slice (varargin)
 
     if (length (sy) > 0)
       for i = length(sy):-1:1
-	[xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
+        [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
         vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
         tmp(sidx++) = surface (squeeze (xi),
-			       squeeze (sy(i) * ones (size (zi))),
-			       squeeze (zi), vy);
+                               squeeze (sy(i) * ones (size (zi))),
+                               squeeze (zi), vy);
       endfor
     endif
 
@@ -156,7 +156,7 @@ function h = slice (varargin)
         [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
         vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
         tmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),
-			       squeeze (yi), squeeze(zi), vx);
+                               squeeze (yi), squeeze(zi), vx);
       endfor
     endif
   else
@@ -166,7 +166,7 @@ function h = slice (varargin)
 
   if (! ishold ())
     set (ax, "view", [-37.5, 30.0], "box", "off", "xgrid", "on",
-	 "ygrid", "on", "zgrid", "on");
+         "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

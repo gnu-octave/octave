@@ -50,8 +50,8 @@ function y = iqr (x, dim)
     endif
   else
     if (! (isscalar (dim) && dim == round (dim))
-	&& dim > 0
-	&& dim < (nd + 1))
+        && dim > 0
+        && dim < (nd + 1))
       error ("iqr: dim must be an integer and valid dimension");
     endif
   endif

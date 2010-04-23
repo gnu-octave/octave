@@ -52,13 +52,13 @@ function pdf = fpdf (x, m, n)
     if (isscalar (m) && isscalar (n))
       tmp = m / n * x(k);
       pdf(k) = (exp ((m / 2 - 1) .* log (tmp)
-		     - ((m + n) / 2) .* log (1 + tmp))
-		.* (m / n) ./ beta (m / 2, n / 2));
+                     - ((m + n) / 2) .* log (1 + tmp))
+                .* (m / n) ./ beta (m / 2, n / 2));
     else
       tmp = m(k) .* x(k) ./ n(k);
       pdf(k) = (exp ((m(k) / 2 - 1) .* log (tmp)
-		     - ((m(k) + n(k)) / 2) .* log (1 + tmp))
-		.* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
+                     - ((m(k) + n(k)) / 2) .* log (1 + tmp))
+                .* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
     endif
   endif
 

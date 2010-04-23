@@ -38,14 +38,14 @@ function retval = fill (varargin)
 
     for i = 1 : length (iargs)
       if (i == length (iargs))
-	args = varargin (iargs(i):end);
+        args = varargin (iargs(i):end);
       else
         args = varargin (iargs(i):iargs(i+1)-1);
       endif
       newplot ();
       [tmp, fail] = __patch__ (h, args{:});
       if (fail)
-	print_usage();
+        print_usage();
       endif
       htmp (end + 1) = tmp;
     endfor
@@ -65,8 +65,8 @@ function iargs = __find_patches__ (varargin)
   while (i < nargin)
     iargs (end + 1) = i;
     if (ischar (varargin{i})
-	&& (strcmpi (varargin{i}, "faces")
-	    || strcmpi (varargin{i}, "vertices")))
+        && (strcmpi (varargin{i}, "faces")
+            || strcmpi (varargin{i}, "vertices")))
       i += 4;
     elseif (isnumeric (varargin{i}))
       i += 2;
@@ -74,34 +74,34 @@ function iargs = __find_patches__ (varargin)
 
     if (i <= nargin)
       while (true);
-	if (ischar (varargin{i}) && 
-	    (strcmpi (varargin{i}, "faces")
-	     || strcmpi (varargin{i}, "vertices")))
-	  break;
-	elseif (isnumeric (varargin{i}))
-	  ## Assume its the colorspec
-	  i++;
-	  break;
-	elseif (ischar (varargin{i}))
-	  colspec = tolower (varargin{i});
-	  collen = length (colspec);
+        if (ischar (varargin{i}) && 
+            (strcmpi (varargin{i}, "faces")
+             || strcmpi (varargin{i}, "vertices")))
+          break;
+        elseif (isnumeric (varargin{i}))
+          ## Assume its the colorspec
+          i++;
+          break;
+        elseif (ischar (varargin{i}))
+          colspec = tolower (varargin{i});
+          collen = length (colspec);
 
-	  if (strncmp (colspec, "blue", collen)
-	      || strncmp (colspec, "black", collen)
-	      || strncmp (colspec, "k", collen)
-	      || strncmp (colspec, "black", collen)
-	      || strncmp (colspec, "red", collen)
-	      || strncmp (colspec, "green", collen)
-	      || strncmp (colspec, "yellow", collen)
-	      || strncmp (colspec, "magenta", collen)
-	      || strncmp (colspec, "cyan", collen)
-	      || strncmp (colspec, "white", collen))
-	    i++;
-	    break;
-	  endif
-	else
-	  i += 2;
-	endif
+          if (strncmp (colspec, "blue", collen)
+              || strncmp (colspec, "black", collen)
+              || strncmp (colspec, "k", collen)
+              || strncmp (colspec, "black", collen)
+              || strncmp (colspec, "red", collen)
+              || strncmp (colspec, "green", collen)
+              || strncmp (colspec, "yellow", collen)
+              || strncmp (colspec, "magenta", collen)
+              || strncmp (colspec, "cyan", collen)
+              || strncmp (colspec, "white", collen))
+            i++;
+            break;
+          endif
+        else
+          i += 2;
+        endif
       endwhile
     endif
   endwhile

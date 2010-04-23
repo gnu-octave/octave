@@ -63,11 +63,11 @@ function hold (varargin)
     state = varargin{1};
     if (ischar (state))
       if (strcmpi (state, "off"))
-	turn_hold_off = true;
+        turn_hold_off = true;
       elseif (strcmpi (state, "on"))
-	turn_hold_off = false;
+        turn_hold_off = false;
       else
-	error ("hold: invalid hold state");
+        error ("hold: invalid hold state");
       endif
     endif
   else

@@ -71,12 +71,12 @@ function pdf = wblpdf (x, scale, shape)
   if (any (k))
     if (isscalar (shape) && isscalar (scale))
       pdf(k) = (shape .* (scale .^ -shape)
-		.* (x(k) .^ (shape - 1))
-		.* exp(- (x(k) / scale) .^ shape));
+                .* (x(k) .^ (shape - 1))
+                .* exp(- (x(k) / scale) .^ shape));
     else
       pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
-		.* (x(k) .^ (shape(k) - 1))
-		.* exp(- (x(k) ./ scale(k)) .^ shape(k)));
+                .* (x(k) .^ (shape(k) - 1))
+                .* exp(- (x(k) ./ scale(k)) .^ shape(k)));
     endif
   endif
 

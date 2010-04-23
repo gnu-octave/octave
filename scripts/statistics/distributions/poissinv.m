@@ -62,11 +62,11 @@ function inv = poissinv (x, l)
       m = find (cdf < x(k));
       if (any (m))
         inv(k(m)) = inv(k(m)) + 1;
-	if (isscalar (l))
+        if (isscalar (l))
           cdf(m) = cdf(m) + poisspdf (inv(k(m)), l);
-	else
+        else
           cdf(m) = cdf(m) + poisspdf (inv(k(m)), l(k(m)));
-	endif
+        endif
       else
         break;
       endif

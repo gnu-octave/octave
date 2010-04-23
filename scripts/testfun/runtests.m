@@ -32,9 +32,9 @@ function runtests (directory)
     else
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
-	dirs = {fullname};
+        dirs = {fullname};
       else
-	error ("runtests: expecting argument to be a directory name");
+        error ("runtests: expecting argument to be a directory name");
       endif
     endif
   else

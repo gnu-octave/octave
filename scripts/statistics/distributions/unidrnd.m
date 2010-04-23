@@ -44,7 +44,7 @@ function retval = unidrnd (n, varargin)
   elseif (nargin > 2)
     for i = 1:nargin-1
       if (! isscalar (varargin{i}))
-	error ("unidrnd: expecting scalar dimensions");
+        error ("unidrnd: expecting scalar dimensions");
       endif
     endfor
     dims = [varargin{:}];

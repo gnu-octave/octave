@@ -50,8 +50,8 @@ function S = statistics (X, dim)
     endif
   else
     if (! (isscalar (dim) && dim == round (dim))
-	&& dim > 0
-	&& dim < (nd + 1))
+        && dim > 0
+        && dim < (nd + 1))
       error ("statistics: dim must be an integer and valid dimension");
     endif
   endif
@@ -63,7 +63,7 @@ function S = statistics (X, dim)
   emp_inv = quantile (X, [0.25; 0.5; 0.75], dim, 7);
 
   S = cat (dim, min (X, [], dim), emp_inv, max (X, [], dim), mean (X, dim),
-	   std (X, [], dim), skewness (X, dim), kurtosis (X, dim));
+           std (X, [], dim), skewness (X, dim), kurtosis (X, dim));
 
 endfunction
 

@@ -38,10 +38,10 @@ function h = triplot (tri, x, y, varargin)
   nt = size (tri, 1);
   if (nargout > 0)
     h = plot ([x(idx); NaN(1, nt)](:),
-	      [y(idx); NaN(1, nt)](:), varargin{:});
+              [y(idx); NaN(1, nt)](:), varargin{:});
   else
     plot ([x(idx); NaN(1, nt)](:),
-	  [y(idx); NaN(1, nt)](:), varargin{:});
+          [y(idx); NaN(1, nt)](:), varargin{:});
   endif
 endfunction
 

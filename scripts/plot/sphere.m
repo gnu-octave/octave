@@ -33,7 +33,7 @@
 function [xx, yy, zz] = sphere (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "sphere", 
-						varargin{:});
+                                                varargin{:});
   if (nargin > 1)
     print_usage ();
   elseif (nargin == 1)

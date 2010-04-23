@@ -88,20 +88,20 @@ function [idxvec,errmsg]  = cellidx (listvar, strlist)
     signame = strlist{idx};
     for jdx = 1:nsigs
       if (strcmp (signame, listvar{jdx}))
-	if (idxvec(idx) != 0)
-	  warning ("Duplicate signal name %s (%d,%d)\n",
-		   listvar{jdx}, jdx, idxvec(idx));
-	else
-	  idxvec(idx) = jdx;
-	endif
+        if (idxvec(idx) != 0)
+          warning ("Duplicate signal name %s (%d,%d)\n",
+                   listvar{jdx}, jdx, idxvec(idx));
+        else
+          idxvec(idx) = jdx;
+        endif
       endif
     endfor
     if (idxvec(idx) == 0)
       errmsg = sprintf ("Did not find %s", signame);
       if (nargout == 1)
-	error (errmsg);
+        error (errmsg);
       else
-	break;
+        break;
       endif
     endif
   endfor

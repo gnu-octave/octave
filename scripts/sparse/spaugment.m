@@ -78,9 +78,9 @@ function s = spaugment (a, c)
       c = max (max (abs (a))) / 1000;
     else
       if (ndims (a) != 2)
-	error ("spaugment: expecting 2-dimenisional matrix")
+        error ("spaugment: expecting 2-dimenisional matrix")
       else
-	c = max (abs (a(:))) / 1000;
+        c = max (abs (a(:))) / 1000;
       endif
     endif
   elseif (!isscalar (c))

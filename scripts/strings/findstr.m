@@ -82,8 +82,8 @@ function v = findstr (s, t, overlap)
     ## the much smaller list to determine which of them are real matches
     limit = l_s - l_t + 1;
     v = find (s(1:limit) == t(1)
-	      & s(2:limit+1) == t(2)
-	      & s (3:limit+2) == t(3));
+              & s(2:limit+1) == t(2)
+              & s (3:limit+2) == t(3));
   endif
 
   ## Need to search the index vector if our find was too short
@@ -103,19 +103,19 @@ function v = findstr (s, t, overlap)
     ind = 0:l_t-1;
     if (overlap)
       for idx = 1:length (v)
-	keep(idx) = all (s(v(idx) + ind) == t);
+        keep(idx) = all (s(v(idx) + ind) == t);
       endfor
     else
       ## First possible position for next non-overlapping match.
       next = 1;
       for idx = 1:length (v)
-	if (v(idx) >= next && s(v(idx) + ind) == t)
-	  keep(idx) = 1;
-	  ## Skip to the next possible match position.
-	  next = v(idx) + l_t;
-	else
-	  keep(idx) = 0;
-	endif
+        if (v(idx) >= next && s(v(idx) + ind) == t)
+          keep(idx) = 1;
+          ## Skip to the next possible match position.
+          next = v(idx) + l_t;
+        else
+          keep(idx) = 0;
+        endif
       endfor
     endif
     if (! isempty (v))

@@ -81,66 +81,66 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       ## or Alt-F4. Further, this abrupt close also requires the leading
       ## "\n" on the next line.
       if (use_mkfifo)
-	fprintf (ostream, "set print \"%s\";\n", gpin_name);
-	fflush (ostream);
-	[gpin, err] = fopen (gpin_name, "r");
-	if (err != 0)
-	  error ("ginput: Can not open fifo (%s)", msg);
-	endif
-	fputs (ostream, "pause mouse any;\n\n");
-	fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+        fprintf (ostream, "set print \"%s\";\n", gpin_name);
+        fflush (ostream);
+        [gpin, err] = fopen (gpin_name, "r");
+        if (err != 0)
+          error ("ginput: Can not open fifo (%s)", msg);
+        endif
+        fputs (ostream, "pause mouse any;\n\n");
+        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
 
-	## Close output file, to force it to be flushed
-	fputs (ostream, "set print;\n");
-	fflush (ostream);
+        ## Close output file, to force it to be flushed
+        fputs (ostream, "set print;\n");
+        fflush (ostream);
 
-	## Now read from fifo.
-	[x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
-	fclose (gpin);
+        ## Now read from fifo.
+        [x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
+        fclose (gpin);
       else
-	fprintf (ostream, "set print \"-\";\n");
-	fflush (ostream);
-	fputs (ostream, "pause mouse any;\n\n");
-	fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print \"OCTAVE: \", MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+        fprintf (ostream, "set print \"-\";\n");
+        fflush (ostream);
+        fputs (ostream, "pause mouse any;\n\n");
+        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print \"OCTAVE: \", MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
 
-	## Close output file, to force it to be flushed
-	fputs (ostream, "set print;\n");
-	fflush (ostream);
+        ## Close output file, to force it to be flushed
+        fputs (ostream, "set print;\n");
+        fflush (ostream);
 
-	str = {};
-	while (isempty (str))
-	  str = char (fread (istream)');
-	  if (isempty (str))
-	    sleep (0.05);
-	  else
-	    str = regexp (str, 'OCTAVE:\s+[\d.\+-]+\s+[\d.\+-]+\s+\d*', 'match');
-	  endif
-	  fclear (istream);
-	endwhile
+        str = {};
+        while (isempty (str))
+          str = char (fread (istream)');
+          if (isempty (str))
+            sleep (0.05);
+          else
+            str = regexp (str, 'OCTAVE:\s+[\d.\+-]+\s+[\d.\+-]+\s+\d*', 'match');
+          endif
+          fclear (istream);
+        endwhile
         [x(k), y(k), button(k), count] = sscanf (str{end}(8:end), "%f %f %d", "C");
       endif
 
       if ([x(k), y(k), button(k)] == [0, 0, -1])
-	## Mousing not active (no plot yet).
-	break;
+        ## Mousing not active (no plot yet).
+        break;
       endif
 
       if (nargin > 1)
-	## Input argument n was given => stop when k == n.
-	if (k == n) 
-	  break; 
-	endif
+        ## Input argument n was given => stop when k == n.
+        if (k == n) 
+          break; 
+        endif
       else
-	## Input argument n not given => stop when hitting a return key.
-	## if (button(k) == 0x0D || button(k) == 0x0A) 
-	##   ## hit Return or Enter
-	if (button(k) == 0x0D)
-	  ## hit Return
-	  x(k:end) = [];
-	  y(k:end) = [];
-	  button(k:end) = [];
-	  break;
-	endif
+        ## Input argument n not given => stop when hitting a return key.
+        ## if (button(k) == 0x0D || button(k) == 0x0A) 
+        ##   ## hit Return or Enter
+        if (button(k) == 0x0D)
+          ## hit Return
+          x(k:end) = [];
+          y(k:end) = [];
+          button(k:end) = [];
+          break;
+        endif
       endif
     endwhile
 

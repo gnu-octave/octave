@@ -120,29 +120,29 @@ function h = subplot (rows, columns, index)
       if (strcmp (get (child, "type"), "axes"))
         ## Skip legend and colorbar objects.
         if (strcmp (get (child, "tag"), "legend") || 
-	    strcmp (get (child, "tag"), "colorbar"))
+            strcmp (get (child, "tag"), "colorbar"))
           continue;
         endif
         objpos = get (child, "position");
         if (all (objpos == pos))
-	  ## If the new axes are in exactly the same position as an
-	  ## existing axes object, use the existing axes.
-	  found = true;
-	  tmp = child;
+          ## If the new axes are in exactly the same position as an
+          ## existing axes object, use the existing axes.
+          found = true;
+          tmp = child;
         else
-	  ## If the new axes overlap an old axes object, delete the old
-	  ## axes.
-	  x0 = pos(1);
-	  x1 = x0 + pos(3);
-	  y0 = pos(2);
-	  y1 = y0 + pos(4);	
-	  objx0 = objpos(1);
-	  objx1 = objx0 + objpos(3);
-	  objy0 = objpos(2);
-	  objy1 = objy0 + objpos(4);
-	  if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
-	    delete (child);
-	  endif
+          ## If the new axes overlap an old axes object, delete the old
+          ## axes.
+          x0 = pos(1);
+          x1 = x0 + pos(3);
+          y0 = pos(2);
+          y1 = y0 + pos(4);     
+          objx0 = objpos(1);
+          objx1 = objx0 + objpos(3);
+          objy0 = objpos(2);
+          objy1 = objy0 + objpos(4);
+          if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+            delete (child);
+          endif
         endif
       endif
     endfor

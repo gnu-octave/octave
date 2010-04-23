@@ -184,10 +184,10 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     else
       [n_eq, n1] = size (A);
       if (n1 != n)
-	error ("qp: equality constraint matrix has incorrect column dimension");
+        error ("qp: equality constraint matrix has incorrect column dimension");
       endif
       if (numel (b) != n_eq)
-	error ("qp: equality constraint matrix and vector have inconsistent dimension");
+        error ("qp: equality constraint matrix and vector have inconsistent dimension");
       endif
     endif
 
@@ -197,41 +197,41 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     n_in = 0;
     if (nargs > 5)
       if (! isempty (lb))
-	if (numel (lb) != n)
-	  error ("qp: lower bound has incorrect length");
-	elseif (isempty (ub))
-	  Ain = [Ain; eye(n)];
-	  bin = [bin; lb];
-	endif
+        if (numel (lb) != n)
+          error ("qp: lower bound has incorrect length");
+        elseif (isempty (ub))
+          Ain = [Ain; eye(n)];
+          bin = [bin; lb];
+        endif
       endif
 
       if (! isempty (ub))
-	if (numel (ub) != n)
-	  error ("qp: upper bound has incorrect length");
-	elseif (isempty (lb))
-	  Ain = [Ain; -eye(n)];
-	  bin = [bin; -ub];
-	endif
+        if (numel (ub) != n)
+          error ("qp: upper bound has incorrect length");
+        elseif (isempty (lb))
+          Ain = [Ain; -eye(n)];
+          bin = [bin; -ub];
+        endif
       endif
       
       if (! isempty (lb) && ! isempty (ub))
-	rtol = sqrt (eps);
-	for i = 1:n
-	  if (abs(lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
+        rtol = sqrt (eps);
+        for i = 1:n
+          if (abs(lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
             ## These are actually an equality constraint
-	    tmprow = zeros(1,n);
-	    tmprow(i) = 1;
+            tmprow = zeros(1,n);
+            tmprow(i) = 1;
             A = [A;tmprow];
             b = [b; 0.5*(lb(i) + ub(i))];
-	    n_eq = n_eq + 1;
-	  else
-	    tmprow = zeros(1,n);
-	    tmprow(i) = 1;
-	    Ain = [Ain; tmprow; -tmprow];
-	    bin = [bin; lb(i); -ub(i)];
-	    n_in = n_in + 2;
-	  endif
-	endfor
+            n_eq = n_eq + 1;
+          else
+            tmprow = zeros(1,n);
+            tmprow(i) = 1;
+            Ain = [Ain; tmprow; -tmprow];
+            bin = [bin; lb(i); -ub(i)];
+            n_in = n_in + 2;
+          endif
+        endfor
       endif
     endif
 
@@ -239,42 +239,42 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     if (nargs > 7)
       [dimA_in, n1] = size (A_in);
       if (n1 != n)
-	error ("qp: inequality constraint matrix has incorrect column dimension");
+        error ("qp: inequality constraint matrix has incorrect column dimension");
       else
-	if (! isempty (A_lb))
-	  if (numel (A_lb) != dimA_in)
-	    error ("qp: inequality constraint matrix and lower bound vector inconsistent");
-	  elseif (isempty (A_ub))
-	    Ain = [Ain; A_in];
-	    bin = [bin; A_lb];
-	  endif
-	endif
-	if (! isempty (A_ub))
-	  if (numel (A_ub) != dimA_in)
-	    error ("qp: inequality constraint matrix and upper bound vector inconsistent");
-	  elseif (isempty (A_lb))
-	    Ain = [Ain; -A_in];
-	    bin = [bin; -A_ub];
-	  endif
-	endif
-	
-	if (! isempty (A_lb) && ! isempty (A_ub))
-	  rtol = sqrt (eps);
-	  for i = 1:dimA_in
-	    if (abs (A_lb(i) - A_ub(i)) < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
+        if (! isempty (A_lb))
+          if (numel (A_lb) != dimA_in)
+            error ("qp: inequality constraint matrix and lower bound vector inconsistent");
+          elseif (isempty (A_ub))
+            Ain = [Ain; A_in];
+            bin = [bin; A_lb];
+          endif
+        endif
+        if (! isempty (A_ub))
+          if (numel (A_ub) != dimA_in)
+            error ("qp: inequality constraint matrix and upper bound vector inconsistent");
+          elseif (isempty (A_lb))
+            Ain = [Ain; -A_in];
+            bin = [bin; -A_ub];
+          endif
+        endif
+        
+        if (! isempty (A_lb) && ! isempty (A_ub))
+          rtol = sqrt (eps);
+          for i = 1:dimA_in
+            if (abs (A_lb(i) - A_ub(i)) < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
               ## These are actually an equality constraint
-	      tmprow = A_in(i,:);
+              tmprow = A_in(i,:);
               A = [A;tmprow];
               b = [b; 0.5*(A_lb(i) + A_ub(i))];
-	      n_eq = n_eq + 1;
-	    else
-	      tmprow = A_in(i,:);
-	      Ain = [Ain; tmprow; -tmprow];
-	      bin = [bin; A_lb(i); -A_ub(i)];
-	      n_in = n_in + 2;
-	    endif
-	  endfor
-	endif
+              n_eq = n_eq + 1;
+            else
+              tmprow = A_in(i,:);
+              Ain = [Ain; tmprow; -tmprow];
+              bin = [bin; A_lb(i); -A_ub(i)];
+              n_in = n_in + 2;
+            endif
+          endfor
+        endif
       endif
     endif
 
@@ -295,7 +295,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
     ## Check if the initial guess is feasible.
     if (isa (x0, "single") || isa (H, "single") || isa (q, "single") || isa (A, "single")
-	|| isa (b, "single"))
+        || isa (b, "single"))
       rtol = sqrt (eps ("single"));
     else
       rtol = sqrt (eps);
@@ -310,69 +310,69 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       ## First define xbar that is feasible with respect to the equality
       ## constraints.
       if (eq_infeasible)
-	if (rank (A) < n_eq)
-	  error ("qp: equality constraint matrix must be full row rank")
-	endif
-	xbar = pinv (A) * b;
+        if (rank (A) < n_eq)
+          error ("qp: equality constraint matrix must be full row rank")
+        endif
+        xbar = pinv (A) * b;
       else
-	xbar = x0;
+        xbar = x0;
       endif
 
       ## Check if xbar is feasible with respect to the inequality
       ## constraints also.
       if (n_in > 0)
-	res = Ain * xbar - bin;
-	if (any (res < -rtol * (1 + abs (bin))))
-	  ## xbar is not feasible with respect to the inequality
-	  ## constraints.  Compute a step in the null space of the
-	  ## equality constraints, by solving a QP.  If the slack is
-	  ## small, we have a feasible initial guess.  Otherwise, the
-	  ## problem is infeasible.
-	  if (n_eq > 0)
-	    Z = null (A);
-	    if (isempty (Z))
-	      ## The problem is infeasible because A is square and full
-	      ## rank, but xbar is not feasible.
-	      info = 6;
-	    endif
-	  endif
+        res = Ain * xbar - bin;
+        if (any (res < -rtol * (1 + abs (bin))))
+          ## xbar is not feasible with respect to the inequality
+          ## constraints.  Compute a step in the null space of the
+          ## equality constraints, by solving a QP.  If the slack is
+          ## small, we have a feasible initial guess.  Otherwise, the
+          ## problem is infeasible.
+          if (n_eq > 0)
+            Z = null (A);
+            if (isempty (Z))
+              ## The problem is infeasible because A is square and full
+              ## rank, but xbar is not feasible.
+              info = 6;
+            endif
+          endif
 
-	  if (info != 6)
+          if (info != 6)
             ## Solve an LP with additional slack variables to find
-	    ## a feasible starting point.
-	    gamma = eye (n_in);
-	    if (n_eq > 0)
-	      Atmp = [Ain*Z, gamma];
-	      btmp = -res;
-	    else
-	      Atmp = [Ain, gamma];
-	      btmp = bin;
-	    endif
-	    ctmp = [zeros(n-n_eq, 1); ones(n_in, 1)];
-	    lb = [-Inf(n-n_eq,1); zeros(n_in,1)];
-	    ub = [];
-	    ctype = repmat ("L", n_in, 1);
-	    [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
-	    if ((status == 180 || status == 181 || status == 151)
-		&& all (abs (P(n-n_eq+1:end)) < rtol * (1 + norm (btmp))))
-	      ## We found a feasible starting point
-	      if (n_eq > 0)
-		x0 = xbar + Z*P(1:n-n_eq);
-	      else
-		x0 = P(1:n);
+            ## a feasible starting point.
+            gamma = eye (n_in);
+            if (n_eq > 0)
+              Atmp = [Ain*Z, gamma];
+              btmp = -res;
+            else
+              Atmp = [Ain, gamma];
+              btmp = bin;
+            endif
+            ctmp = [zeros(n-n_eq, 1); ones(n_in, 1)];
+            lb = [-Inf(n-n_eq,1); zeros(n_in,1)];
+            ub = [];
+            ctype = repmat ("L", n_in, 1);
+            [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
+            if ((status == 180 || status == 181 || status == 151)
+                && all (abs (P(n-n_eq+1:end)) < rtol * (1 + norm (btmp))))
+              ## We found a feasible starting point
+              if (n_eq > 0)
+                x0 = xbar + Z*P(1:n-n_eq);
+              else
+                x0 = P(1:n);
               endif
-	    else
-	      ## The problem is infeasible
-	      info = 6;
-	    endif
-	  endif
-	else
-	  ## xbar is feasible.  We use it a starting point.
-	  x0 = xbar;
-	endif
+            else
+              ## The problem is infeasible
+              info = 6;
+            endif
+          endif
+        else
+          ## xbar is feasible.  We use it a starting point.
+          x0 = xbar;
+        endif
       else
-	## xbar is feasible.  We use it a starting point.
-	x0 = xbar;
+        ## xbar is feasible.  We use it a starting point.
+        x0 = xbar;
       endif
     endif
 

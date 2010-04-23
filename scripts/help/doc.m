@@ -45,9 +45,9 @@ function retval = doc (fname)
       ## FIXME -- maybe we should have a better way of doing this.
 
       if (ischar (fname))
-	ftype = exist (fname);
+        ftype = exist (fname);
       else
-	error ("doc: expecting argument to be a character string");
+        error ("doc: expecting argument to be a character string");
       endif
     else
       fname = "";
@@ -81,7 +81,7 @@ function retval = doc (fname)
     ## the third and fourth arguments.  Someone should fix that.
 
     cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
-		   info_program (), info_file_name, info_dir);
+                   info_program (), info_file_name, info_dir);
 
     have_fname = ! isempty (fname);
 
@@ -92,7 +92,7 @@ function retval = doc (fname)
     if (! (have_fname && status == 0))
       status = system (cmd);
       if (status == 127)
-	warning ("unable to find info program `%s'", info_program ());
+        warning ("unable to find info program `%s'", info_program ());
       endif
     endif
 

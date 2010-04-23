@@ -55,13 +55,13 @@ function m = cell2mat (c)
     if (nc > nr)
       c1 = cell (nr, 1);
       for i = 1 : nr
-	c1{i} = [c{i,:}];
+        c1{i} = [c{i,:}];
       endfor
       m = vertcat (c1 {:});
     else
       c1 = cell (nc, 1);
       for i = 1 : nc
-	c1{i} = vertcat (c{:,i});
+        c1{i} = vertcat (c{:,i});
       endfor
       m = [c1{:}];
     endif

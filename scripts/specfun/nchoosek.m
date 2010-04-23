@@ -112,8 +112,8 @@ function A = nchoosek (v, k)
     p{1} = n*s;
     for j = n-1:-1:1
       for i = k:-1:2
-	q = p{i-1};
-	p{i} = [[repmat(s*j, rows (p{i-1}), 1), p{i-1}]; p{i}];
+        q = p{i-1};
+        p{i} = [[repmat(s*j, rows (p{i-1}), 1), p{i-1}]; p{i}];
       endfor
       p{1} = [j;p{1}];
     endfor

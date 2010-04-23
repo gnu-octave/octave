@@ -65,9 +65,9 @@ function i = sort_rows_idx_generic (default_mode, other_mode, m, c)
   else
     for ii = 1:length (c);
       if (c(ii) < 0)
-	mode{ii} = other_mode;
+        mode{ii} = other_mode;
       else
-	mode{ii} = default_mode;
+        mode{ii} = default_mode;
       endif
     endfor
     indices = abs(c(:));

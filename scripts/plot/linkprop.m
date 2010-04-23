@@ -69,12 +69,12 @@ function update_prop (h, d, hlist, prop)
       recursion = true;
       val = get (h, prop);
       for hh = hlist(:)'
-	if (hh != h)
-	  oldval = get (hh, prop);
-	  if (! isequal (val, oldval))
-	    set (hh, prop, val);
-	  endif
-	endif
+        if (hh != h)
+          oldval = get (hh, prop);
+          if (! isequal (val, oldval))
+            set (hh, prop, val);
+          endif
+        endif
       endfor
     unwind_protect_cleanup
       recursion = false;

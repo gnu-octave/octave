@@ -120,11 +120,11 @@ function retval = __area__ (ax, x, y, bv, varargin)
 
     if (i == 1)
       h = patch (ax, [x1(1), x1, fliplr(x1)], [bv, y1, bv*ones(1, length(y1))],
-		 __next_line_color__ (), "parent", hg);
+                 __next_line_color__ (), "parent", hg);
     else
       y1 = y0 + y1;
       h = patch (ax, [x1(1), x1, fliplr(x1)], [y0(1), y1, fliplr(y0)],
-		 __next_line_color__ (), "parent", hg);
+                 __next_line_color__ (), "parent", hg);
     endif
 
     y0 = y1;
@@ -171,12 +171,12 @@ function move_baseline (h, d)
       b0 = get (h, "basevalue");
 
       for hh = hlist(:)'
-	if (hh != h)
-	  b1 = get (hh, "basevalue");
-	  if (b1 != b0)
-	    set (hh, "basevalue", b0);
-	  endif
-	endif
+        if (hh != h)
+          b1 = get (hh, "basevalue");
+          if (b1 != b0)
+            set (hh, "basevalue", b0);
+          endif
+        endif
       endfor
       update_data (h, d);
     unwind_protect_cleanup

@@ -28,7 +28,7 @@ function retval = spatan2 (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spatan2 is obsolete and will be removed from a future version of Octave; please use atan2 instead");
+             "spatan2 is obsolete and will be removed from a future version of Octave; please use atan2 instead");
   endif
 
   retval = atan2 (varargin{:});

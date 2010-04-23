@@ -61,7 +61,7 @@ function [d, s] = weekday (d, form)
   if (nargout > 1)
     if (strcmpi (form, "long"))
       names = {"Sunday" "Monday" "Tuesday" "Wednesday" "Thursday"
-	       "Friday" "Saturday"};
+               "Friday" "Saturday"};
     else
       names = {"Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"};
     endif

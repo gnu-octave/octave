@@ -30,13 +30,13 @@
 ## @seealso{cumtrapz}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author:      Kai Habel <kai.habel@gmx.de>
 ##
 ## also: June 2000 - Paul Kienzle (fixes,suggestions) 
 ## 2006-05-12 David Bateman - Modified for NDArrays
 
 function z = trapz (x, y, dim)
-	
+        
 
   if (nargin < 1) || (nargin > 3)
     print_usage ();
@@ -83,7 +83,7 @@ function z = trapz (x, y, dim)
     idx1{i} = 1:sz(i);
   endfor
   idx2 = idx1;
-  idx1{dim} = 2 : n;	
+  idx1{dim} = 2 : n;    
   idx2{dim} = 1 : (n - 1);
 
   if (! have_x)
@@ -93,7 +93,7 @@ function z = trapz (x, y, dim)
       error ("trapz: x and y must have same shape");
     endif
     z = 0.5 * sum ((x(idx1{:}) - x(idx2{:})) .* 
-		   (y(idx1{:}) + y(idx2{:})), dim);
+                   (y(idx1{:}) + y(idx2{:})), dim);
   endif
 endfunction
 

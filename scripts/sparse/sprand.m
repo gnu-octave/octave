@@ -40,8 +40,8 @@
 ## Changelog:
 ##
 ## Piotr Krzyzanowski <przykry2004@users.sf.net>
-## 	2004-09-27	use Paul's hint to allow larger random matrices
-##			at the price of sometimes lower density than desired
+##      2004-09-27      use Paul's hint to allow larger random matrices
+##                      at the price of sometimes lower density than desired
 ## David Bateman 
 ##      2004-10-20      Texinfo help and copyright message 
 

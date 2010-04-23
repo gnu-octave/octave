@@ -34,7 +34,7 @@
 ## Author: Bill Denney <bill@denney.ws>
 
 function area = rectint (a, b)
-	
+        
   if (nargin != 2)
     print_usage ();
   elseif (ndims (a) != 2 || ndims (b) != 2)

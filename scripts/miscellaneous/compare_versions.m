@@ -113,7 +113,7 @@ function out = compare_versions (v1, v2, operator)
   v2n = str2num (char (strsplit (v2nochar, ".")));
   if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty(v2c)))
     error ("compare_versions: given version strings are not valid: %s %s",
-	   v1, v2);
+           v1, v2);
   endif
 
   ## Assume that any additional elements would be 0 if one is longer

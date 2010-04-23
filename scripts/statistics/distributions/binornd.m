@@ -37,7 +37,7 @@ function rnd = binornd (n, p, r, c)
     if (!isscalar(n) || !isscalar(p)) 
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
-	error ("binornd: n and p must be of common size or scalar");
+        error ("binornd: n and p must be of common size or scalar");
       endif
     endif
   endif
@@ -52,7 +52,7 @@ function rnd = binornd (n, p, r, c)
     sz = [r, c];
 
     if (any (size (n) != 1)
-	&& (length (size (n)) != length (sz) ||	any (size (n) != sz)))
+        && (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("binornd: n and must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -65,7 +65,7 @@ function rnd = binornd (n, p, r, c)
     endif
 
     if (any (size (n) != 1)
-	&& (length (size (n)) != length (sz) || any (size (n) != sz)))
+        && (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("binornd: n and must be scalar or of size sz");
     endif
   elseif (nargin == 2)

@@ -48,13 +48,13 @@ function varargout = __bar__ (vertical, func, varargin)
     if (size (x, 1) != size (y, 1))
       y = varargin{1};
       if (isvector (y))
-	y = y(:);
+        y = y(:);
       endif
       x = [1:size(y,1)]';
       idx = 2;
     else
       if (! isvector (x))
-	error ("%s: x must be a vector", func);
+        error ("%s: x must be a vector", func);
       endif
       idx = 3;
     endif
@@ -78,27 +78,27 @@ function varargout = __bar__ (vertical, func, varargin)
       idx++;
     else
       if ((ischar (varargin{idx}) || iscell (varargin{idx}))
-	  && ! have_line_spec)
-	[linespec, valid] = __pltopt__ (func, varargin{idx}, false);
-	if (valid)
-	  have_line_spec = true;
-	  newargs = [{linespec.color}, newargs];
-	  idx++;
-	  continue;
-	endif
+          && ! have_line_spec)
+        [linespec, valid] = __pltopt__ (func, varargin{idx}, false);
+        if (valid)
+          have_line_spec = true;
+          newargs = [{linespec.color}, newargs];
+          idx++;
+          continue;
+        endif
       endif
       if (isscalar(varargin{idx}))
-	width = varargin{idx++};
+        width = varargin{idx++};
       elseif (idx == nargin - 2)
-	newargs = [newargs,varargin(idx++)];
+        newargs = [newargs,varargin(idx++)];
       elseif (ischar (varargin{idx})
-	      && strcmpi (varargin{idx}, "basevalue")
-	      && isscalar (varargin{idx+1}))
+              && strcmpi (varargin{idx}, "basevalue")
+              && isscalar (varargin{idx+1}))
         bv = varargin{idx+1};
         idx += 2;
       else
-	newargs = [newargs,varargin(idx:idx+1)];
-	idx += 2;
+        newargs = [newargs,varargin(idx:idx+1)];
+        idx += 2;
       endif
     endif
   endwhile
@@ -153,9 +153,9 @@ function varargout = __bar__ (vertical, func, varargin)
       newplot ();
 
       tmp = bars (h, vertical, x, y, xb, yb, width, group,
-		  have_line_spec, bv, newargs{:});
+                  have_line_spec, bv, newargs{:});
       if (nargout == 1)
-	varargout{1} = tmp;
+        varargout{1} = tmp;
       endif
     unwind_protect_cleanup
       axes (oldh);
@@ -185,27 +185,27 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     
     if (vertical)
       if (! have_color_spec)
-	if (ycols == 1)
-	  lev = clim(1);
-	else
-	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
-	endif
-	h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg);
+        if (ycols == 1)
+          lev = clim(1);
+        else
+          lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
+        endif
+        h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
+                  "cdata", lev, "parent", hg);
       else
-	h = patch(xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch(xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
-	if (ycols == 1)
-	  lev = clim(1)
-	else
-	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
-	endif
-	h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
-		  "cdata", lev, "parent", hg);
+        if (ycols == 1)
+          lev = clim(1)
+        else
+          lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
+        endif
+        h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
+                  "cdata", lev, "parent", hg);
       else
-	h = patch(yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch(yb(:,:,i), xb(:,:,i), "parent", hg);
       endif
     endif
 
@@ -284,7 +284,7 @@ function update_xlim (h, d)
     obj = get (kids (i));
     if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline"))
       if (any (get (obj.baseline, "xdata") != xlim))
-	set (obj.baseline, "xdata", xlim);
+        set (obj.baseline, "xdata", xlim);
       endif
     endif
   endfor
@@ -298,13 +298,13 @@ function update_baseline (h, d)
   for i = 1 : length (kids)
     obj = get (kids (i));
     if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
-	&& obj.baseline == h)
+        && obj.baseline == h)
       ## Only alter if changed to avoid recursion of the listener functions
       if (! strcmpi (get (kids(i), "showbaseline"), visible))
-	set (kids (i), "showbaseline", visible);
+        set (kids (i), "showbaseline", visible);
       endif
       if (! strcmpi (get (kids(i), "basevalue"), visible))
-	set (kids (i), "basevalue", ydata);
+        set (kids (i), "basevalue", ydata);
       endif
     endif
   endfor
@@ -320,9 +320,9 @@ function show_baseline (h, d)
       hlist = get (h, "bargroup");
       showbaseline = get (h, "showbaseline");
       for hh = hlist(:)'
-	if (hh != h)
-	  set (hh, "showbaseline", showbaseline);
-	endif
+        if (hh != h)
+          set (hh, "showbaseline", showbaseline);
+        endif
       endfor
       set (get (h, "baseline"), "visible", showbaseline);
     unwind_protect_cleanup
@@ -362,26 +362,26 @@ function update_data (h, d)
       hlist = get (h, "bargroup");
       x = get (h, "xdata");
       if (!isvector (x))
-	x = x(:);
+        x = x(:);
       endif
       y = [];
       for hh = hlist(:)'
-	ytmp = get (hh, "ydata");
-	y = [y ytmp(:)];
+        ytmp = get (hh, "ydata");
+        y = [y ytmp(:)];
       endfor
 
       [xb, yb] = bar (x, y, get (h, "barwidth"), get (h, "barlayout"),
-		      "basevalue", get (h, "basevalue"));
+                      "basevalue", get (h, "basevalue"));
       ny = columns (y);
       vert = strcmpi (get (h, "horizontal"), "off");
 
       for i = 1:ny
-	hp = get (hlist(i), "children");
-	if (vert)
-	  set (hp, "xdata", xb(:,:,i), "ydata", yb(:,:,i));
-	else
-	  set (hp, "xdata", yb(:,:,i), "ydata", xb(:,:,i));
-	endif
+        hp = get (hlist(i), "children");
+        if (vert)
+          set (hp, "xdata", xb(:,:,i), "ydata", yb(:,:,i));
+        else
+          set (hp, "xdata", yb(:,:,i), "ydata", xb(:,:,i));
+        endif
       endfor
     unwind_protect_cleanup
       recursion = false;
@@ -403,17 +403,17 @@ function update_group (h, d)
 
       ## To prevent recursion, only change if modified
       for hh = hlist(:)'
-	if (hh != h)
-	  if (get (hh, "barwidth") != barwidth)
-	    set (hh, "barwidth", barwidth);
-	  endif
-	  if (! strcmpi (get (hh, "barlayout"), barlayout))
-	    set (hh, "barlayout", barlayout);
-	  endif
-	  if (! strcmpi (get (hh, "horizontal"), horizontal))
-	    set (hh, "horizontal", horizontal);
-	  endif
-	endif
+        if (hh != h)
+          if (get (hh, "barwidth") != barwidth)
+            set (hh, "barwidth", barwidth);
+          endif
+          if (! strcmpi (get (hh, "barlayout"), barlayout))
+            set (hh, "barlayout", barlayout);
+          endif
+          if (! strcmpi (get (hh, "horizontal"), horizontal))
+            set (hh, "horizontal", horizontal);
+          endif
+        endif
       endfor
       update_data (h, d);
     unwind_protect_cleanup

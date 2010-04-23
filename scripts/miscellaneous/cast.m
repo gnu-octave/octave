@@ -29,11 +29,11 @@ function retval = cast (val, typ)
   if (nargin == 2)
     if (ischar (typ))
       if (any (strcmp (typ, {"int8"; "uint8"; "int16"; "uint16";
-			     "int32"; "uint32"; "int64"; "uint64";
-			     "double"; "single"; "logical"; "char"})))
-	retval = feval (typ, val);
+                             "int32"; "uint32"; "int64"; "uint64";
+                             "double"; "single"; "logical"; "char"})))
+        retval = feval (typ, val);
       else
-	error ("cast: type name `%s' is not a built-in type", typ);
+        error ("cast: type name `%s' is not a built-in type", typ);
       endif
     else
       error ("cast: expecting type name as second argument");

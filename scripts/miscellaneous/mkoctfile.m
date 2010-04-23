@@ -134,7 +134,7 @@ function mkoctfile (varargin)
 
   if (status == 127)
     warning ("unable to find mkoctfile in expected location: `%s'",
-	     shell_script);
+             shell_script);
 
     warning ("mkoctfile exited with failure status");
   endif

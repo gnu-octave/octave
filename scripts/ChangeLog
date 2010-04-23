@@ -1,5 +1,9 @@
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
+   * scripts/*.m: Untabify scripts
+
+2010-04-23  Rik <octave@nomad.inbox5.com>
+
    * scripts/geometry/griddata.m, scripts/geometry/griddatan.m, 
      scripts/geometry/tsearchn.m: Replace nan with NaN for nice visual cue
 

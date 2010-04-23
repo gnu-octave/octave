@@ -32,9 +32,9 @@ function rundemos (directory)
     else
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
-	dirs = {fullname};
+        dirs = {fullname};
       else
-	error ("rundemos: expecting argument to be a directory name");
+        error ("rundemos: expecting argument to be a directory name");
       endif
     endif
   else
@@ -56,10 +56,10 @@ function run_all_demos (directory)
     if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
       f = fullfile (directory, f);
       if (has_demos (f))
-	demo (f);
-	if (i != numel (flist))
-	  input ("Press <enter> to continue: ", "s");
-	endif
+        demo (f);
+        if (i != numel (flist))
+          input ("Press <enter> to continue: ", "s");
+        endif
       endif
     endif
   endfor

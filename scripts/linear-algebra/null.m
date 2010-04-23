@@ -53,9 +53,9 @@ function retval = null (A, tol)
 
     if (nargin == 1)
       if (isa (A, "single"))
-	tol = max (size (A)) * s (1) * eps ("single");
+        tol = max (size (A)) * s (1) * eps ("single");
       else
-	tol = max (size (A)) * s (1) * eps;
+        tol = max (size (A)) * s (1) * eps;
       endif
     elseif (nargin != 2)
       print_usage ();
@@ -66,9 +66,9 @@ function retval = null (A, tol)
     if (rank < cols)
       retval = V (:, rank+1:cols);
       if (isa (A, "single"))
-	retval(abs (retval) < eps ("single")) = 0;
+        retval(abs (retval) < eps ("single")) = 0;
       else
-	retval(abs (retval) < eps) = 0;
+        retval(abs (retval) < eps) = 0;
       endif
     else
       retval = zeros (cols, 0);

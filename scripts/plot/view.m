@@ -34,13 +34,13 @@ function [azimuth, elevation] = view (x, y, z)
       el = tmp(2);
     elseif (nargin == 1)
       if (x == 2)
-	az = 0;
-	el = 90;
+        az = 0;
+        el = 90;
       elseif (x == 3)
-	az = -37.5;
-	el = 30;
+        az = -37.5;
+        el = 30;
       else
-	error ("view: expecting single argument to be 2 or 3");
+        error ("view: expecting single argument to be 2 or 3");
       endif
     elseif (nargin == 2)
       az = x;

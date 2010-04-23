@@ -33,8 +33,8 @@ function retval = isa (x, cname)
   persistent float_classes = {"double", "single"};
 
   persistent fnum_classes = {"double", "single", ...
-			     "uint8", "uint16", "uint32", "uint64", ...
-			     "int8", "int16", "int32", "int64"};
+                             "uint8", "uint16", "uint32", "uint64", ...
+                             "int8", "int16", "int32", "int64"};
 
   if (strcmp (cname, "float"))
     retval = any (strcmp (class (x), float_classes));

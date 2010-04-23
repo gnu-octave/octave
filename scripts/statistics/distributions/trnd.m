@@ -43,7 +43,7 @@ function rnd = trnd (n, r, c)
     sz = [r, c];
 
     if (any (size (n) != 1) && 
-	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 2)
@@ -56,7 +56,7 @@ function rnd = trnd (n, r, c)
     endif
 
     if (any (size (n) != 1) && 
-	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)

@@ -66,13 +66,13 @@ function retval = var (x, opt, dim)
     else
       sz(dim) = 1;
       if (n == 0)
-	if (prod (sz) == 0)
-	  retval = zeros (sz);
-	else
-	  retval = NaN (sz);
-	endif
+        if (prod (sz) == 0)
+          retval = zeros (sz);
+        else
+          retval = NaN (sz);
+        endif
       else
-	retval = zeros (sz);
+        retval = zeros (sz);
       endif
     endif
   elseif (n == 1)

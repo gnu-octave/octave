@@ -67,10 +67,10 @@ function retval = clabel (c, varargin)
   else
     arg = varargin{1};
     if (isscalar (arg) && ishandle(arg) && 
-	strcmp (get (arg, "type"), "hggroup"))
+        strcmp (get (arg, "type"), "hggroup"))
       obj = get (arg);
       if (! isfield (obj, "contourmatrix"))
-	error ("clabel: expecting the handle to be a contour group");
+        error ("clabel: expecting the handle to be a contour group");
       endif
       hg = arg;
       have_hg = true;
@@ -107,16 +107,16 @@ function retval = clabel (c, varargin)
   if (have_hg)
     if (! isempty (v))
       if (have_labelspacing)
-	set (hg, "textlistmode", "manual", "textlist", v, 
-	     "labelspacing", label_spacing, "showtext", "on");
+        set (hg, "textlistmode", "manual", "textlist", v, 
+             "labelspacing", label_spacing, "showtext", "on");
       else
-	set (hg, "textlistmode", "manual", "textlist", v, "showtext", "on");
+        set (hg, "textlistmode", "manual", "textlist", v, "showtext", "on");
       endif
     else
       if (have_labelspacing)
-	set (hg,"showtext", "on", "labelspacing", label_spacing);
+        set (hg,"showtext", "on", "labelspacing", label_spacing);
       else
-	set (hg,"showtext", "on");
+        set (hg,"showtext", "on");
       endif
     endif
     retval = findobj (hg, "type", "text");

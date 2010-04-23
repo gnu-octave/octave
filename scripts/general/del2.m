@@ -80,13 +80,13 @@ function D = del2 (M, varargin)
     endif
     for i = 1 : nd
       if (isscalar (h))
-	dx{i} = h * ones (sz (i), 1);
+        dx{i} = h * ones (sz (i), 1);
       else
-	if (length (h) == sz (i))
-	  dx{i} = diff (h)(:);
-	else
-	  error ("dimensionality mismatch in %d-th spacing vector", i);
-	endif
+        if (length (h) == sz (i))
+          dx{i} = diff (h)(:);
+        else
+          error ("dimensionality mismatch in %d-th spacing vector", i);
+        endif
       endif
     endfor
   elseif (nargin - 1 == nd)
@@ -97,13 +97,13 @@ function D = del2 (M, varargin)
 
     for i = 1 : nd
       if (isscalar (varargin{i}))
-	dx{i} = varargin{i} * ones (sz (i), 1);
+        dx{i} = varargin{i} * ones (sz (i), 1);
       else
-	if (length (varargin{i}) == sz (i))
-	  dx{i} = diff (varargin{i})(:);
-	else
-	  error ("dimensionality mismatch in %d-th spacing vector", i);
-	endif
+        if (length (varargin{i}) == sz (i))
+          dx{i} = diff (varargin{i})(:);
+        else
+          error ("dimensionality mismatch in %d-th spacing vector", i);
+        endif
       endif
     endfor
   else
@@ -131,24 +131,24 @@ function D = del2 (M, varargin)
       h1 = repmat (shiftdim (dx{i}(1 : sz(i) - 2), 1 - i), szi);
       h2 = repmat (shiftdim (dx{i}(2 : sz(i) - 1), 1 - i), szi);
       DD(idx2{:}) = ((M(idx1{:}) - M(idx2{:})) ./ h1 + ...
-		     (M(idx3{:}) - M(idx2{:})) ./ h2) ./ (h1 + h2);
+                     (M(idx3{:}) - M(idx2{:})) ./ h2) ./ (h1 + h2);
 
       ## left and right boundary
       if (sz(i) == 3)
-	DD(idx1{:}) = DD(idx3{:}) = DD(idx2{:});
+        DD(idx1{:}) = DD(idx3{:}) = DD(idx2{:});
       else
-	idx1{i} = 1;
-	idx2{i} = 2;
-	idx3{i} = 3;
-	DD(idx1{:}) = (dx{i}(1) + dx{i}(2)) / dx{i}(2) * DD (idx2{:}) - ...
-	    dx{i}(1) / dx{i}(2) * DD (idx3{:});
+        idx1{i} = 1;
+        idx2{i} = 2;
+        idx3{i} = 3;
+        DD(idx1{:}) = (dx{i}(1) + dx{i}(2)) / dx{i}(2) * DD (idx2{:}) - ...
+            dx{i}(1) / dx{i}(2) * DD (idx3{:});
 
-	idx1{i} = sz(i);
-	idx2{i} = sz(i) - 1;
-	idx3{i} = sz(i) - 2;
-	DD(idx1{:}) =  (dx{i}(sz(i) - 1) + dx{i}(sz(i) - 2)) / ...
-	    dx{i}(sz(i) - 2) * DD (idx2{:}) - ...
-	    dx{i}(sz(i) - 1) / dx{i}(sz(i) - 2) * DD (idx3{:});
+        idx1{i} = sz(i);
+        idx2{i} = sz(i) - 1;
+        idx3{i} = sz(i) - 2;
+        DD(idx1{:}) =  (dx{i}(sz(i) - 1) + dx{i}(sz(i) - 2)) / ...
+            dx{i}(sz(i) - 2) * DD (idx2{:}) - ...
+            dx{i}(sz(i) - 1) / dx{i}(sz(i) - 2) * DD (idx3{:});
       endif
 
       D += DD;

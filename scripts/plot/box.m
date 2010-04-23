@@ -45,11 +45,11 @@ function box (varargin)
     state = varargin{1};
     if (ischar (state))
       if (strcmpi (state, "off"))
-	box_state = "off";
+        box_state = "off";
       elseif (strcmpi (state, "on"))
-	box_state = "on";
+        box_state = "on";
       else
-	print_usage ();
+        print_usage ();
       endif
     endif
   else

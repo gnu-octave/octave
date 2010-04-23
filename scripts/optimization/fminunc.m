@@ -390,7 +390,7 @@ function x = __doglegm__ (r, g, d, delta)
       tn = norm (r*s);
       snm = (sn / tn) / tn;
       if (snm < delta)
-	## Get the dogleg path minimizer.
+        ## Get the dogleg path minimizer.
         bn = norm (b);
         dxn = delta/xn; snmd = snm/delta;
         t = (bn/sn) * (bn/xn) * snmd;

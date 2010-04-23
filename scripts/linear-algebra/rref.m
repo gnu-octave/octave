@@ -78,7 +78,7 @@ function [A, k] = rref (A, tolerance)
 
       ## Check if done
       if (r++ == rows)
-	break;
+        break;
       endif
     endif
   endfor

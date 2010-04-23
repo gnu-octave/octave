@@ -70,9 +70,9 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
         if (numel (plot_stream) > 1)
           pclose (plot_stream(2));
         endif
-	if (numel (plot_stream) > 2)
-	  waitpid (plot_stream(3));
-	endif
+        if (numel (plot_stream) > 2)
+          waitpid (plot_stream(3));
+        endif
       endif
       if (! isempty (fid))
         fclose (fid);
@@ -109,8 +109,8 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
       fclose (fid);
       if (count>0)
         if (a(1)==12)
-       	  ## avoid ^L at the beginning
-	  a = a(2:end);
+          ## avoid ^L at the beginning
+          a = a(2:end);
         end
         puts (a);
       end
@@ -190,43 +190,43 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
         title_str = "";
       endif
       if (! (any (strfind (opts_str, " size ") > 0) 
-	  || any (strfind (opts_str, "size ") == 1)))
+          || any (strfind (opts_str, "size ") == 1)))
         ## Convert position to units used by gnuplot.
         if (output_to_screen (term))
           ## Get figure size in pixels.  Rely on listener
-	  ## to handle coversion of position property.
-	  units = get (h, "units");
-	  unwind_protect
-	    set (h, "units", "pixels");
-	    position_in_pixesl = get (h, "position");
-	  unwind_protect_cleanup
-	    set (h, "units", units);
-	  end_unwind_protect
-	  gnuplot_pos = position_in_pixesl(1:2);
-	  gnuplot_size = position_in_pixesl(3:4);
+          ## to handle coversion of position property.
+          units = get (h, "units");
+          unwind_protect
+            set (h, "units", "pixels");
+            position_in_pixesl = get (h, "position");
+          unwind_protect_cleanup
+            set (h, "units", units);
+          end_unwind_protect
+          gnuplot_pos = position_in_pixesl(1:2);
+          gnuplot_size = position_in_pixesl(3:4);
         else
           ## Get size of the printed plot in inches. Rely on listener
-	  ## to handle coversion of papersize property.
-	  paperunits = get (h, "paperunits");
-	  unwind_protect
-	    set (h, "paperunits", "inches");
+          ## to handle coversion of papersize property.
+          paperunits = get (h, "paperunits");
+          unwind_protect
+            set (h, "paperunits", "inches");
             gnuplot_size = get (h, "papersize");
-	  unwind_protect_cleanup
-	    set (h, "paperunits", paperunits);
-	  end_unwind_protect
+          unwind_protect_cleanup
+            set (h, "paperunits", paperunits);
+          end_unwind_protect
           if (term_units_are_pixels (term))
-	    ## Convert to inches using the property set by print().
-	    gnuplot_size = gnuplot_size * get (h, "__pixels_per_inch__");
-	  else
-	    ## Implicit margins are in units of "inches"
-	    gnuplot_size = gnuplot_size - implicit_margin;
+            ## Convert to inches using the property set by print().
+            gnuplot_size = gnuplot_size * get (h, "__pixels_per_inch__");
+          else
+            ## Implicit margins are in units of "inches"
+            gnuplot_size = gnuplot_size - implicit_margin;
           endif
         endif
-	[begin_match, end_match, te, match] = regexp (opts_str, "(\\s-r\\d+)|(^-r\\d+)");
-	if (! isempty (begin_match))
-	  error ("gnuplot_drawnow.m: specifying resultion, '%s', not supported for terminal '%s'",
-	         strtrim (match{1}), term)
-	endif
+        [begin_match, end_match, te, match] = regexp (opts_str, "(\\s-r\\d+)|(^-r\\d+)");
+        if (! isempty (begin_match))
+          error ("gnuplot_drawnow.m: specifying resultion, '%s', not supported for terminal '%s'",
+                 strtrim (match{1}), term)
+        endif
         if (all (gnuplot_size > 0))
           ## Set terminal size.
           terminals_with_size = {"emf", "gif", "jpeg", "latex", "pbm", ...
@@ -239,22 +239,22 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
             terminals_with_size{end+1} = "wxt";
           endif
           if (any (strncmpi (term, terminals_with_size, 3)))
-	    if (term_units_are_pixels (term))
+            if (term_units_are_pixels (term))
               size_str = sprintf ("size %d,%d", gnuplot_size);
-	    elseif (strcmp (term, "tikz"))
+            elseif (strcmp (term, "tikz"))
               size_str = sprintf ("size %.15gin,%.15gin", gnuplot_size);
-	    else
+            else
               size_str = sprintf ("size %.15g,%.15g", gnuplot_size);
-	    endif
+            endif
             if (strncmpi (term, "X11", 3) && __gnuplot_has_feature__ ("x11_figure_position"))
-	      ## X11 allows the window to be positioned as well.
-	      units = get (0, "units");
-	      unwind_protect
-	        set (0, "units", "pixels");
-	        screen_size = get (0, "screensize")(3:4);
-	      unwind_protect_cleanup
-	        set (0, "units", units);
-	      end_unwind_protect
+              ## X11 allows the window to be positioned as well.
+              units = get (0, "units");
+              unwind_protect
+                set (0, "units", "pixels");
+                screen_size = get (0, "screensize")(3:4);
+              unwind_protect_cleanup
+                set (0, "units", units);
+              end_unwind_protect
               if (all (screen_size > 0))
                 ## For X11, set the figure positon as well as the size
                 ## gnuplot position is UL, Octave's is LL (same for screen/window)
@@ -275,7 +275,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
               ## n = the number of times \n appears in PS1
               size_str = ["size ", getenv("COLUMNS"), ",", getenv("LINES"), n];
             else
-	      ## Use the gnuplot default.
+              ## Use the gnuplot default.
               size_str = "";
             end
           elseif (strncmpi (term, "fig", 3))
@@ -292,7 +292,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
           endif
         else
           size_str = "";
-	  warning ("gnuplot_set_term: size is zero")
+          warning ("gnuplot_set_term: size is zero")
         endif
       else
         ## A specified size take priority over the figure properies.

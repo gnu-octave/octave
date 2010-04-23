@@ -62,7 +62,7 @@ function retval = dir (file)
 
   ## Prep the retval.
   info = struct (zeros (0, 1),
-		 {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
+                 {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
 
   if (ischar (file))
     if (strcmp (file, "*"))
@@ -82,45 +82,45 @@ function retval = dir (file)
       fn = flst{1};
       [st, err, msg] = stat (fn);
       if (err < 0)
-	warning ("dir: `stat (%s)' failed: %s", fn, msg);
-	nf = 0;
+        warning ("dir: `stat (%s)' failed: %s", fn, msg);
+        nf = 0;
       elseif (S_ISDIR (st.mode))
-	flst = readdir (flst{1});
-	nf = length (flst);
-	for i = 1:nf
-	  flst{i} = fullfile (fn, flst{i});
-	endfor
+        flst = readdir (flst{1});
+        nf = length (flst);
+        for i = 1:nf
+          flst{i} = fullfile (fn, flst{i});
+        endfor
       endif
     endif
 
     if (length (flst) > 0)
       ## Collect results.
       for i = nf:-1:1
-	fn = flst{i};
-	[st, err, msg] = lstat (fn);
-	if (err < 0)
-	  warning ("dir: `lstat (%s)' failed: %s", fn, msg);
-	else
-	  ## If we are looking at a link that points to something,
-	  ## return info about the target of the link, otherwise, return
-	  ## info about the link itself.
-	  if (S_ISLNK (st.mode))
-	    [xst, err, msg] = stat (fn);
-	    if (! err)
-	      st = xst;
-	    endif
-	  endif
-	  [dummy, fn, ext] = fileparts (fn);
-	  fn = cstrcat (fn, ext);
-	  info(i,1).name = fn;
-	  lt = localtime (st.mtime);
-	  info(i,1).date = strftime ("%d-%b-%Y %T", lt);
-	  info(i,1).bytes = st.size;
-	  info(i,1).isdir = S_ISDIR (st.mode);
-	  info(i,1).datenum = datenum (lt.year + 1900, lt.mon + 1, lt.mday,
-				       lt.hour, lt.min, lt.sec);
-	  info(i,1).statinfo = st;
-	endif
+        fn = flst{i};
+        [st, err, msg] = lstat (fn);
+        if (err < 0)
+          warning ("dir: `lstat (%s)' failed: %s", fn, msg);
+        else
+          ## If we are looking at a link that points to something,
+          ## return info about the target of the link, otherwise, return
+          ## info about the link itself.
+          if (S_ISLNK (st.mode))
+            [xst, err, msg] = stat (fn);
+            if (! err)
+              st = xst;
+            endif
+          endif
+          [dummy, fn, ext] = fileparts (fn);
+          fn = cstrcat (fn, ext);
+          info(i,1).name = fn;
+          lt = localtime (st.mtime);
+          info(i,1).date = strftime ("%d-%b-%Y %T", lt);
+          info(i,1).bytes = st.size;
+          info(i,1).isdir = S_ISDIR (st.mode);
+          info(i,1).datenum = datenum (lt.year + 1900, lt.mon + 1, lt.mday,
+                                       lt.hour, lt.min, lt.sec);
+          info(i,1).statinfo = st;
+        endif
       endfor
     endif
 

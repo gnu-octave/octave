@@ -59,9 +59,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## All arguments must either be of the same class or they must be
   ## numeric values.
   t = (all (strcmp (class(x),
-		   cellfun (@class, varargin, "UniformOutput", false)))
+                   cellfun (@class, varargin, "UniformOutput", false)))
        || ((isnumeric (x) || islogical (x))
-	   && all ((cellfun (@isnumeric, varargin) | cellfun (@islogical, varargin)))));
+           && all ((cellfun (@isnumeric, varargin) | cellfun (@islogical, varargin)))));
 
   if (t)
     ## Test that everything has the same number of dimensions.
@@ -95,21 +95,21 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       s_fn_x = sort (fn_x);
       while (t && idx < l_v)
-	idx++;
-	## We'll allow the fieldnames to be in a different order.
-	t = all (strcmp (s_fn_x, sort (fn_v{idx})));
+        idx++;
+        ## We'll allow the fieldnames to be in a different order.
+        t = all (strcmp (s_fn_x, sort (fn_v{idx})));
       endwhile
 
       idx = 0;
       while (t && idx < l_fn_x)
-	## Test that all field values are equal.
-	idx++;
-	args = {nans_compare_equal, {x.(fn_x{idx})}};
-	for argn = 1:l_v
-	  args{argn+2} = {varargin{argn}.(fn_x{idx})};
-	endfor
-	## Minimize function calls by calling for all the arguments at
-	## once.
+        ## Test that all field values are equal.
+        idx++;
+        args = {nans_compare_equal, {x.(fn_x{idx})}};
+        for argn = 1:l_v
+          args{argn+2} = {varargin{argn}.(fn_x{idx})};
+        endfor
+        ## Minimize function calls by calling for all the arguments at
+        ## once.
         t = __isequal__ (args{:});
       endwhile
 
@@ -118,11 +118,11 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       l_x = numel (x);
       idx = 0;
       while (t && idx < l_x)
-	idx++;
-	args = {nans_compare_equal, x{idx}};
-	for p = 1:l_v
-	  args{p+2} = varargin{p}{idx};
-	endfor
+        idx++;
+        args = {nans_compare_equal, x{idx}};
+        for p = 1:l_v
+          args{p+2} = varargin{p}{idx};
+        endfor
         t = __isequal__ (args{:});
       endwhile
 
@@ -131,7 +131,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       ## Sizes are equal already, so we can just make everything into a
       ## row and test the rows.
       for i = 1:l_v
-	strings{i} = reshape (varargin{i}, 1, []);
+        strings{i} = reshape (varargin{i}, 1, []);
       endfor
       t = all (strcmp (reshape (x, 1, []), strings));
 
@@ -144,36 +144,36 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       ## Check the numeric types.
 
       if (issparse (x))
-	f_x = spfind (x);
+        f_x = spfind (x);
       else
-	f_x = find (x);
+        f_x = find (x);
       endif
       l_f_x = length (f_x);
       x = x(f_x);
       for argn = 1:l_v
-	y = varargin{argn};
-	if (issparse (y))
+        y = varargin{argn};
+        if (issparse (y))
           f_y = spfind (y);
-	else
+        else
           f_y = find (y);
-	endif
+        endif
 
-	t = (l_f_x == length (f_y)) && all (f_x == f_y);
-	if (!t)
+        t = (l_f_x == length (f_y)) && all (f_x == f_y);
+        if (!t)
           return;
-	endif
+        endif
 
-	y = y(f_y);
-	m = (x == y);
-	t = all (m);
+        y = y(f_y);
+        m = (x == y);
+        t = all (m);
 
-	if (!t)
+        if (!t)
           if (nans_compare_equal)
             t = isnan (x(!m)) && isnan (y(!m));
           else
             return;
           endif
-	endif
+        endif
       endfor
 
     endif

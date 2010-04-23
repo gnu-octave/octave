@@ -36,7 +36,7 @@ function [linestyle, marker] = __next_line_style__ (reset)
         if (isempty (style_rotation))
           error ("__next_line_style__: style_rotation not initialized");
         elseif (++style_index > num_styles)
-	  style_index = 1;
+          style_index = 1;
         endif
       elseif (reset)
         style_rotation = strsplit (get (gca (), "linestyleorder"), "|");

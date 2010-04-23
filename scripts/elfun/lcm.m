@@ -61,7 +61,7 @@ function l = lcm (varargin)
       a = abs (a);
       l = a (1);
       for k = 1:(length (a) - 1)
-	l = l * a(k+1) / gcd (l, a(k+1));
+        l = l * a(k+1) / gcd (l, a(k+1));
       endfor
     endif
   else
@@ -74,16 +74,16 @@ function l = lcm (varargin)
       a = varargin{i};
 
       if (size (a) != sz)
-	if (nel == 1)
-	  sz = size (a);
-	  nel = numel (a);
-	elseif (numel (a) != 1)
-	  error ("lcm: all arguments must be the same size or scalar");
-	endif
+        if (nel == 1)
+          sz = size (a);
+          nel = numel (a);
+        elseif (numel (a) != 1)
+          error ("lcm: all arguments must be the same size or scalar");
+        endif
       endif
 
       if (round (a) != a)
-	error ("lcm: all arguments must be integer");
+        error ("lcm: all arguments must be integer");
       endif
 
       idx = find (l == 0 || a == 0);

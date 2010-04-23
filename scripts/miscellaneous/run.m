@@ -37,13 +37,13 @@ function run (s)
     if (exist (d, "dir"))
       wd = pwd ();
       unwind_protect
-	cd (d);
-	if (! exist (f, "file") || ! strcmp (ext, ".m"))
-	  error ("run: file must exist and be a valid Octave script file");
-	endif
-	evalin ("caller", [f, ";"], "rethrow (lasterror ())");
+        cd (d);
+        if (! exist (f, "file") || ! strcmp (ext, ".m"))
+          error ("run: file must exist and be a valid Octave script file");
+        endif
+        evalin ("caller", [f, ";"], "rethrow (lasterror ())");
       unwind_protect_cleanup
-	cd (wd);
+        cd (wd);
       end_unwind_protect
     else
       error ("run: the path %s doesn't exist", d);

@@ -61,11 +61,11 @@ function retval = meshz (varargin)
     y = [y(1); y(:); y(end)];
   else
     x = [x(1, 1), x(1, :), x(1, end);
-	 x(:, 1), x, x(:, end);
-	 x(end, 1), x(end, :), x(end, end)]; 
+         x(:, 1), x, x(:, end);
+         x(end, 1), x(end, :), x(end, end)]; 
     y = [y(1, 1), y(1, :), y(1, end);
-	 y(:, 1), y, y(:, end);
-	 y(end, 1), y(end, :), y(end, end)]; 
+         y(:, 1), y, y(:, end);
+         y(end, 1), y(end, :), y(end, end)]; 
   endif
 
   zref = min(z(isfinite(z)));

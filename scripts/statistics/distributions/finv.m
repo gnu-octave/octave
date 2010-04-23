@@ -58,7 +58,7 @@ function inv = finv (x, m, n)
       inv(k) = ((1 ./ betainv (1 - x(k), n / 2, m / 2) - 1) .* n ./ m);
     else
       inv(k) = ((1 ./ betainv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
-		.* n(k) ./ m(k));
+                .* n(k) ./ m(k));
     endif
   endif
 

@@ -85,10 +85,10 @@ function legend (varargin)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
       if (pos >= -1 && pos <= 4)
-	set (ca, "keypos", pos);
-	nargs--;
+        set (ca, "keypos", pos);
+        nargs--;
       else
-	error ("legend: invalid position specified");
+        error ("legend: invalid position specified");
       endif
     endif
   endif
@@ -111,39 +111,39 @@ function legend (varargin)
     arg = varargin{1};
     if (ischar (arg))
       if (rows (arg) == 1)
-	str = tolower (deblank (arg));
-	switch (str)
-	  case {"off", "hide"}
-	    set (ca, "key", "off");
-	    nargs--;
-	  case "show"
-	    set (ca, "key", "on");
-	    nargs--;
-	  case "toggle"
-	    val = get (ca, "key");
-	    if (strcmpi (val, "on"))
-	      set (ca, "key", "off");
-	    else
-	      set (ca, "key", "on");
-	    endif
-	    nargs--;
-	  case "boxon"
-	    set (ca, "key", "on", "keybox", "on");
-	    nargs--;
-	  case "boxoff"
-	    set (ca, "keybox", "off");
-	    nargs--;
-	  case "left"
-	    set (ca, "keyreverse", "off")
-	    nargs--;
-	  case "right"
-	    set (ca, "keyreverse", "on")
-	    nargs--;
-	  otherwise
-	endswitch
+        str = tolower (deblank (arg));
+        switch (str)
+          case {"off", "hide"}
+            set (ca, "key", "off");
+            nargs--;
+          case "show"
+            set (ca, "key", "on");
+            nargs--;
+          case "toggle"
+            val = get (ca, "key");
+            if (strcmpi (val, "on"))
+              set (ca, "key", "off");
+            else
+              set (ca, "key", "on");
+            endif
+            nargs--;
+          case "boxon"
+            set (ca, "key", "on", "keybox", "on");
+            nargs--;
+          case "boxoff"
+            set (ca, "keybox", "off");
+            nargs--;
+          case "left"
+            set (ca, "keyreverse", "off")
+            nargs--;
+          case "right"
+            set (ca, "keyreverse", "on")
+            nargs--;
+          otherwise
+        endswitch
       else
-	varargin = cellstr (arg);
-	nargs = numel (varargin);
+        varargin = cellstr (arg);
+        nargs = numel (varargin);
       endif
     elseif (iscellstr (arg))
       varargin = arg;
@@ -158,9 +158,9 @@ function legend (varargin)
     for k = 1:nkids
       typ = get (kids(k), "type");
       if (strcmp (typ, "line") || strcmp (typ, "surface")
-	  || strcmp (typ, "patch") || strcmp (typ, "hggroup"))
-	have_data = true;
-	break;
+          || strcmp (typ, "patch") || strcmp (typ, "hggroup"))
+        have_data = true;
+        break;
       endif
     endfor
     if (! have_data)
@@ -175,30 +175,30 @@ function legend (varargin)
     if (ischar (arg))
       typ = get (kids(k), "type");
       while (k > 1
-	     && ! (strcmp (typ, "line") || strcmp (typ, "surface")
-		   || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
-	typ = get (kids(--k), "type");
+             && ! (strcmp (typ, "line") || strcmp (typ, "surface")
+                   || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
+        typ = get (kids(--k), "type");
       endwhile
       if (k > 0)
-	if (strcmp (get (kids(k), "type"), "hggroup"))
-	  hgkids = get (kids(k), "children");
-	  for j = 1 : length (hgkids)
-	    hgobj = get (hgkids (j));
-	    if (isfield (hgobj, "keylabel"))
-	      set (hgkids(j), "keylabel", arg);
-	      break;
-	    endif
-	  endfor
-	else
-	  set (kids(k), "keylabel", arg);
-	endif
-	turn_on_legend = true;
-	if (--k == 0)
-	  break;
-	endif
+        if (strcmp (get (kids(k), "type"), "hggroup"))
+          hgkids = get (kids(k), "children");
+          for j = 1 : length (hgkids)
+            hgobj = get (hgkids (j));
+            if (isfield (hgobj, "keylabel"))
+              set (hgkids(j), "keylabel", arg);
+              break;
+            endif
+          endfor
+        else
+          set (kids(k), "keylabel", arg);
+        endif
+        turn_on_legend = true;
+        if (--k == 0)
+          break;
+        endif
       elseif (! warned)
-	warned = true;
-	warning ("legend: ignoring extra labels");
+        warned = true;
+        warning ("legend: ignoring extra labels");
       endif
     else
       error ("legend: expecting argument to be a character string");

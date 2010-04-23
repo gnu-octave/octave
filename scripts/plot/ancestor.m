@@ -58,7 +58,7 @@ function p = ancestor (h, type, toplevel)
             break;
           endif
         endif
-		h = get (h, "Parent");
+                h = get (h, "Parent");
       endwhile
     else
       error ("ancestor: second argument must be a string or cell array of strings");

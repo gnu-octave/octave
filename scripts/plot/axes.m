@@ -44,7 +44,7 @@ function h = axes (varargin)
     ## figure.
     tmp = varargin{1};
     if (length(tmp) == 1 && ishandle (tmp)
-	&& strcmp (get (tmp, "type"), "axes"))
+        && strcmp (get (tmp, "type"), "axes"))
       parent = ancestor (tmp, "figure");
       set (0, "currentfigure", parent);
       set (parent, "currentaxes", tmp);

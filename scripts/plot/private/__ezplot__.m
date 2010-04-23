@@ -76,9 +76,9 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     if (isplot)
       xarg = argnames(fun){1};
       if (nargs == 2)
-	yarg = argnames(fun){2};
+        yarg = argnames(fun){2};
       else
-	yarg = "";
+        yarg = "";
       endif
     elseif (isplot3)
       xarg = "x";
@@ -101,9 +101,9 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     if (isplot)
       xarg = argnames(fun){1};
       if (nargs == 2)
-	yarg = argnames(fun){2};
+        yarg = argnames(fun){2};
       else
-	yarg = "";
+        yarg = "";
       endif
     elseif (isplot3)
       xarg = "x";
@@ -119,7 +119,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     fstr = func2str (fun);
     if (length (findstr (fstr, ")")) != 0)
       args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3), 
-		     '(\w[\w\d]*)', 'tokens');
+                     '(\w[\w\d]*)', 'tokens');
     fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
     else
       args = {{"x"}};
@@ -132,9 +132,9 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     if (isplot)
       xarg = args{1}{1};
       if (nargs == 2)
-	yarg = args{2}{1};
+        yarg = args{2}{1};
       else
-	yarg = "";
+        yarg = "";
       endif
     elseif (isplot3)
       xarg = "x";
@@ -157,18 +157,18 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     if (ischar (funy) && ! strcmp (funy, "circ") && ! strcmp (funy, "animate"))
       parametric = true;
       if (exist (funy, "file") || exist (funy, "builtin"))
-	funy = vectorize (inline (cstrcat (funy, "(t)")));
+        funy = vectorize (inline (cstrcat (funy, "(t)")));
       else
-	funy = vectorize (inline (funy));
+        funy = vectorize (inline (funy));
       endif
       if (length (argnames (funy)) != nargs)
-	error ("%s: excepting a function of %d arguments", func, nargs);
+        error ("%s: excepting a function of %d arguments", func, nargs);
       endif
       fstry = formula (funy);
     elseif (strcmp (typeinfo (funy), "inline function"))
       parametric = true;
       if (length (argnames (funy)) != nargs)
-	error ("%s: excepting a function of %d arguments", func, nargs);
+        error ("%s: excepting a function of %d arguments", func, nargs);
       endif
       funy = vectorize (funy);
       fstry = formula (funy);
@@ -176,14 +176,14 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       parametric = true;
       fstry = func2str (funy);
       if (length (findstr (fstry, ")")) != 0)
-	args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
-		       '(\w[\w\d]*)', 'tokens');
-	fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
+        args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
+                       '(\w[\w\d]*)', 'tokens');
+        fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
       else
-	args = {{"y"}};
+        args = {{"y"}};
       endif
       if (length (args) != nargs)
-	error ("%s: excepting a function of %d arguments", func, nargs);
+        error ("%s: excepting a function of %d arguments", func, nargs);
       endif
     endif
 
@@ -191,39 +191,39 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       xarg = "x";
       yarg = "y";
       if (nargs == 2)
-	error ("%s: can not define a parametric function in this manner");
+        error ("%s: can not define a parametric function in this manner");
       endif
     endif
 
     if (!isplot && parametric)
       funz = varargin {3};
       if (ischar (funz) && ! strcmp (funz, "circ") && 
-	  ! strcmp (funz, "animate"))
-	if (exist (funz, "file") || exist (funz, "builtin"))
-	  funz = vectorize (inline (cstrcat (funz, "(t)")));
-	else
-	  funz = vectorize (inline (funz));
-	endif
-	if (length (argnames (funz)) != nargs)
-	  error ("%s: excepting a function of %d arguments", func, nargs);
-	endif
-	fstrz = formula (funz);
+          ! strcmp (funz, "animate"))
+        if (exist (funz, "file") || exist (funz, "builtin"))
+          funz = vectorize (inline (cstrcat (funz, "(t)")));
+        else
+          funz = vectorize (inline (funz));
+        endif
+        if (length (argnames (funz)) != nargs)
+          error ("%s: excepting a function of %d arguments", func, nargs);
+        endif
+        fstrz = formula (funz);
       elseif (strcmp (typeinfo (funz), "inline function"))
-	if (length (argnames (funz)) != nargs)
-	  error ("%s: excepting a function of %d arguments", func, nargs);
-	endif
-	funz = vectorize (funz);
-	fstrz = formula (funz);
+        if (length (argnames (funz)) != nargs)
+          error ("%s: excepting a function of %d arguments", func, nargs);
+        endif
+        funz = vectorize (funz);
+        fstrz = formula (funz);
       elseif (isa (funz, "function_handle"))
-	fstrz = func2str (funz);
-	args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3), 
-		       '(\w[\w\d]*)', 'tokens');
-	if (length (args) != nargs)
-	  error ("%s: excepting a function of %d arguments", func, nargs);
-	endif
-	fstrz = substr (fstrz, findstr (fstrz, ")")(1) + 1);
+        fstrz = func2str (funz);
+        args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3), 
+                       '(\w[\w\d]*)', 'tokens');
+        if (length (args) != nargs)
+          error ("%s: excepting a function of %d arguments", func, nargs);
+        endif
+        fstrz = substr (fstrz, findstr (fstrz, ")")(1) + 1);
       else
-	error ("%s: parametric plots expect 3 functions", func);
+        error ("%s: parametric plots expect 3 functions", func);
       endif
     endif
   endif
@@ -277,13 +277,13 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
     if (parametric)
       error ("%s: can not have both circular domain and parametric function", 
-	     func);
+             func);
     endif
     cent = [domain(1) + domain(2), domain(3) + domain(4)] / 2;
     funx = @(r,t) r .* cos (t) + cent (1);
     funy = @(r,t) r .* sin (t) + cent (2);
     domain = [0, sqrt((domain(2) - cent(1))^2 + (domain(4) - cent(2))^2), ...
-	      -pi, pi];
+              -pi, pi];
     funz = fun;
     parametric = true;
   endif
@@ -331,14 +331,14 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
 
     fstrx = regexprep (regexprep (regexprep (fstrx,'\.\^\s*','^'), 
-		      '\./', '/'), '[\.]*\*', '');
+                      '\./', '/'), '[\.]*\*', '');
     fstry = regexprep (regexprep (regexprep (fstry,'\.\^\s*','^'), 
-		      '\./', '/'), '[\.]*\*', '');
+                      '\./', '/'), '[\.]*\*', '');
     if (isplot)
       fstr = cstrcat ("x = ",fstrx,", y = ",fstry);
     else
       fstrz = regexprep (regexprep (regexprep (fstrz,'\.\^\s*','^'), 
-				    '\./', '/'), '[\.]*\*', '');
+                                    '\./', '/'), '[\.]*\*', '');
       fstr = cstrcat ("x = ",fstrx,",y = ",fstry,", z = ",fstrz);
     endif
   else
@@ -348,13 +348,13 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
 
     fstr = regexprep (regexprep (regexprep (fstr,'\.\^\s*','^'), '\./', '/'), 
-		      '[\.]*\*', '');
+                      '[\.]*\*', '');
     if (isplot && nargs == 2)
       if (strcmp (typeinfo (fun), "inline function") && 
-	  !isempty (strfind (formula (fun) , "=")))
-	fun = inline (cstrcat (strrep (formula (fun), "=", "- ("), ")"));
+          !isempty (strfind (formula (fun) , "=")))
+        fun = inline (cstrcat (strrep (formula (fun), "=", "- ("), ")"));
       else
-	fstr = cstrcat (fstr, " = 0");
+        fstr = cstrcat (fstr, " = 0");
       endif
 
       Z = feval (fun, X, Y);
@@ -369,40 +369,40 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       XX = {};
       YY = {};
       while (i1 < length (c))
-	clev = c(1,i1);
-	clen = c(2,i1);
-	XX = [XX, {c(1, i1+1:i1+clen)}];
-	YY = [YY, {c(2, i1+1:i1+clen)}];
-	i1 += clen+1;
+        clev = c(1,i1);
+        clen = c(2,i1);
+        XX = [XX, {c(1, i1+1:i1+clen)}];
+        YY = [YY, {c(2, i1+1:i1+clen)}];
+        i1 += clen+1;
       endwhile
     else  
       if (ispolar)
-	Z = feval (fun, X);
+        Z = feval (fun, X);
       elseif (isplot)
-	Z = real (feval (fun, X));
+        Z = real (feval (fun, X));
 
-	## Eliminate the singularities. This seems to be what matlab
-	## does, but can't be sure.
-	XX = sort (Z (isfinite (Z)));
-	if (length (X) > 4)
-	  d = XX(fix (7 * length (XX) / 8)) - XX(fix (length (XX) / 8));
-	  yrange = [max(XX(1) - d/8, XX(fix (length (XX) / 8)) - d), ...
-		    min(XX(end) + d/8, XX(fix (7 * length (XX) / 8)) + d)];
-	else
-	  yrange = [XX(1), XX(end)];
+        ## Eliminate the singularities. This seems to be what matlab
+        ## does, but can't be sure.
+        XX = sort (Z (isfinite (Z)));
+        if (length (X) > 4)
+          d = XX(fix (7 * length (XX) / 8)) - XX(fix (length (XX) / 8));
+          yrange = [max(XX(1) - d/8, XX(fix (length (XX) / 8)) - d), ...
+                    min(XX(end) + d/8, XX(fix (7 * length (XX) / 8)) + d)];
+        else
+          yrange = [XX(1), XX(end)];
         endif
 
-	idx = 2 : length(Z);
-	idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
-		 ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange (2) / 2)));
-	if (any(idx))
-	  Z(idx) = NaN; 
-	endif
+        idx = 2 : length(Z);
+        idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
+                 ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange (2) / 2)));
+        if (any(idx))
+          Z(idx) = NaN; 
+        endif
       else
-	Z = feval (fun, X, Y);
+        Z = feval (fun, X, Y);
 
-	## Eliminate the singularities
-	Z = __eliminate_sing__ (Z);
+        ## Eliminate the singularities
+        Z = __eliminate_sing__ (Z);
       endif
     endif
   endif
@@ -416,16 +416,16 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       h = [];
       hold_state = get (ax, "nextplot");
       for i = 1 : length (XX)
-	h = [h; plot(XX{i}, YY{i})];
-	if (i == 1)
-	  set (ax, "nextplot", "add")
-	endif
+        h = [h; plot(XX{i}, YY{i})];
+        if (i == 1)
+          set (ax, "nextplot", "add")
+        endif
       endfor
       set (ax, "nextplot", hold_state)
     elseif (ispolar || isplot)
       h = feval (pfunc, X, Z);
       if (isplot && !parametric)
-	axis ([X(1), X(end), yrange]);
+        axis ([X(1), X(end), yrange]);
       endif
     else
       h = feval (pfunc, X, Y, Z);

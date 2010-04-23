@@ -119,9 +119,9 @@ function [vvx, vvy] = voronoi (varargin)
   scale = 2;
 
   xbox = [xmin - scale * xdelta; xmin - scale * xdelta; ...
-	  xmax + scale * xdelta; xmax + scale * xdelta];
+          xmax + scale * xdelta; xmax + scale * xdelta];
   ybox = [xmin - scale * xdelta; xmax + scale * xdelta; ...
-	  xmax + scale * xdelta; xmin - scale * xdelta];
+          xmax + scale * xdelta; xmin - scale * xdelta];
 
   [p, c, infi] = __voronoi__ ([[x(:) ; xbox(:)], [y(:); ybox(:)]], opts{:});
 
@@ -130,12 +130,12 @@ function [vvx, vvy] = voronoi (varargin)
   c = c(idx).';
   k = sum (cellfun ('length', c));
   edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c, 
-			    "UniformOutput", false));
+                            "UniformOutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
   edges = edges (:, [(edges(1, 1: end - 1) != edges(1, 2 : end) | ...
-		      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
+                      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
 
   ## Eliminate the edges of the diagram representing the box
   poutside = (1 : rows(p)) ...
@@ -153,7 +153,7 @@ function [vvx, vvy] = voronoi (varargin)
     lim = [xmin, xmax, ymin, ymax];
     h = plot (handl, vx, vy, linespec{:}, x, y, '+');
     axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...
-		       [-1, 1] * (lim (4) - lim (3))]);
+                       [-1, 1] * (lim (4) - lim (3))]);
     if (nargout == 1)
       vxx = h;
     endif

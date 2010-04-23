@@ -43,7 +43,7 @@ function rnd = geornd (p, r, c)
     sz = [r, c];
 
     if (any (size (p) != 1) && ((length (size (p)) != length (sz)) ||
-				any (size (p) != sz)))
+                                any (size (p) != sz)))
       error ("geornd: p must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -56,7 +56,7 @@ function rnd = geornd (p, r, c)
     endif
 
     if (any (size (p) != 1) && ((length (size (p)) != length (sz)) ||
-				any (size (p) != sz)))
+                                any (size (p) != sz)))
       error ("geornd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)

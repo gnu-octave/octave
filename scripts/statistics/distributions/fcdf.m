@@ -58,7 +58,7 @@ function cdf = fcdf (x, m, n)
       cdf(k) = 1 - betainc (1 ./ (1 + m .* x(k) ./ n), n / 2, m / 2);
     else
       cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2, 
-			    m(k) / 2);
+                            m(k) / 2);
     endif
   endif
 

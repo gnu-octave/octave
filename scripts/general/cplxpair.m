@@ -119,16 +119,16 @@ function y = cplxpair (z, tol, dim)
     p = n - nr(j);
     for i = 1:2:p
       if (i+1 > p)
-	error ("cplxpair could not pair all complex numbers");
+        error ("cplxpair could not pair all complex numbers");
       endif
       [v, idx] = min (abs (z(i+1:p) - conj (z(i))));
       if (v > tol)
-	error ("cplxpair could not pair all complex numbers");
+        error ("cplxpair could not pair all complex numbers");
       endif
       if (imag (z(i)) < 0)
-	y([i, i+1]) = z([i, idx+i]);
+        y([i, i+1]) = z([i, idx+i]);
       else
-	y([i, i+1]) = z([idx+i, i]);
+        y([i, i+1]) = z([idx+i, i]);
       endif
       z(idx+i) = z(i+1);
     endfor
@@ -146,9 +146,9 @@ endfunction
 %!assert (cplxpair(1), 1)
 %!assert (cplxpair([1+1i, 1-1i]), [1-1i, 1+1i])
 %!assert (cplxpair([1+1i, 1+1i, 1, 1-1i, 1-1i, 2]), \
-%!	  [1-1i, 1+1i, 1-1i, 1+1i, 1, 2])
+%!        [1-1i, 1+1i, 1-1i, 1+1i, 1, 2])
 %!assert (cplxpair([1+1i; 1+1i; 1; 1-1i; 1-1i; 2]), \
-%!	  [1-1i; 1+1i; 1-1i; 1+1i; 1; 2]) 
+%!        [1-1i; 1+1i; 1-1i; 1+1i; 1; 2]) 
 %!assert (cplxpair([0, 1, 2]), [0, 1, 2]);
 
 %!shared z

@@ -84,15 +84,15 @@ function h = findobj (varargin)
     endif
     if (n1 <= nargin)
       if (ischar (varargin{n1}))
-	if (strcmpi (varargin{n1}, "flat"))
-	  depth = 0;
-	  n1 = n1 + 1;
-	elseif (strcmpi (varargin{n1}, "-depth"))
-	  depth = varargin{n1+1};
-	  n1 = n1 + 2;
-	endif
+        if (strcmpi (varargin{n1}, "flat"))
+          depth = 0;
+          n1 = n1 + 1;
+        elseif (strcmpi (varargin{n1}, "-depth"))
+          depth = varargin{n1+1};
+          n1 = n1 + 2;
+        endif
       else
-	error ("findobj: properties and options must be strings");
+        error ("findobj: properties and options must be strings");
       endif
     endif
   endif
@@ -117,67 +117,67 @@ function h = findobj (varargin)
     logicaloperator{np} = "and";
     if (ischar (args{na}))
       if (strcmpi (args{na}, "-regexp"))
-	if (na + 2 <= numel (args))
-	  regularexpression(np) = 1;
-	  na = na + 1;
-	  pname{np} = args{na};
-	  na = na + 1;
-	  pvalue{np} = args{na};
-	  na = na + 1;
-	  np = np + 1;
-	else
-	  error ("findobj: inconsistent number of arguments");
-	endif
+        if (na + 2 <= numel (args))
+          regularexpression(np) = 1;
+          na = na + 1;
+          pname{np} = args{na};
+          na = na + 1;
+          pvalue{np} = args{na};
+          na = na + 1;
+          np = np + 1;
+        else
+          error ("findobj: inconsistent number of arguments");
+        endif
       elseif (strcmpi (args{na}, "-property"))
-	if (na + 1 <= numel (args))
-	  na = na + 1;
-	  property(np) = 1;
-	  pname{np} = args{na};
-	  na = na + 1;
-	  pvalue{np} = [];
-	  np = np + 1;
-	else
-	  error ("findobj: inconsistent number of arguments");
-	endif
+        if (na + 1 <= numel (args))
+          na = na + 1;
+          property(np) = 1;
+          pname{np} = args{na};
+          na = na + 1;
+          pvalue{np} = [];
+          np = np + 1;
+        else
+          error ("findobj: inconsistent number of arguments");
+        endif
       elseif (! strcmp (args{na}(1), "-"))
-	## Parameter/value pairs.
-	if (na + 1 <= numel (args))
-	  pname{np} = args{na};
-	  na = na + 1;
-	  pvalue{np} = args{na};
-	  na = na + 1;
-	  if (na <= numel(args))
-	    if (ischar (args{na}))
-	      if strcmpi(args{na}, "-and")
-		logicaloperator{np} = "and";
-		na = na+1;
-	      elseif strcmpi(args{na}, "-or")
-		logicaloperator{np} = "or";
-		na = na+1;
-	      elseif strcmpi(args{na}, "-xor")
-		logicaloperator{np} = "xor";
-		na = na+1;
-	      elseif strcmpi(args{na}, "-not")
-		logicaloperator{np} = "not";
-		na = na+1;
-	      endif
-	    else
-	      error ("findobj: properties and options must be strings");
-	    endif
-	  else
-	    logicaloperator{np} = "and";
-	  endif
-	  np = np + 1;
-	else
-	  error ("findobj: inconsistent number of arguments");
-	endif
+        ## Parameter/value pairs.
+        if (na + 1 <= numel (args))
+          pname{np} = args{na};
+          na = na + 1;
+          pvalue{np} = args{na};
+          na = na + 1;
+          if (na <= numel(args))
+            if (ischar (args{na}))
+              if strcmpi(args{na}, "-and")
+                logicaloperator{np} = "and";
+                na = na+1;
+              elseif strcmpi(args{na}, "-or")
+                logicaloperator{np} = "or";
+                na = na+1;
+              elseif strcmpi(args{na}, "-xor")
+                logicaloperator{np} = "xor";
+                na = na+1;
+              elseif strcmpi(args{na}, "-not")
+                logicaloperator{np} = "not";
+                na = na+1;
+              endif
+            else
+              error ("findobj: properties and options must be strings");
+            endif
+          else
+            logicaloperator{np} = "and";
+          endif
+          np = np + 1;
+        else
+          error ("findobj: inconsistent number of arguments");
+        endif
       else
-	## This is sloppy ... but works like Matlab.
-	if strcmpi(args{na}, "-not")
-	  h = [];
-	  return
-	endif
-	na = na + 1;
+        ## This is sloppy ... but works like Matlab.
+        if strcmpi(args{na}, "-not")
+          h = [];
+          return
+        endif
+        na = na + 1;
       endif
     else
       error ("findobj: properties and options must be strings");
@@ -204,26 +204,26 @@ function h = findobj (varargin)
     for nh = 1 : numel(h)
       p = get (h (nh));
       for np = 1 : numpairs
-	fields = fieldnames (p);
-	fieldindex = find (strcmpi (fields, pname{np}), 1);
-	if (numel (fieldindex))
+        fields = fieldnames (p);
+        fieldindex = find (strcmpi (fields, pname{np}), 1);
+        if (numel (fieldindex))
           pname{np} = fields{fieldindex};
           if (property(np))
             match = 1;
           else
             if (regularexpression(np))
-	      match = regexp (p.(pname{np}), pvalue{np});
+              match = regexp (p.(pname{np}), pvalue{np});
               if isempty (match)
                 match = 0;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
-	      if (ischar (pvalue{np}))
-		match = strcmpi (pvalue{np}, p.(pname{np}));
-	      else
-		match = (pvalue{np} == p.(pname{np}));
-	      endif
+              if (ischar (pvalue{np}))
+                match = strcmpi (pvalue{np}, p.(pname{np}));
+              else
+                match = (pvalue{np} == p.(pname{np}));
+              endif
             else
-	      match = 0;
+              match = 0;
             endif
             match = all (match);
           endif
@@ -232,9 +232,9 @@ function h = findobj (varargin)
           else
             keepers(nh) = feval (logicaloperator{np}, keepers(nh), match);
           endif
-	else
-	  keepers(nh) = 0;
-	endif
+        else
+          keepers(nh) = 0;
+        endif
       endfor
     endfor
   endif

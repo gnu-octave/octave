@@ -41,7 +41,7 @@ function retval = surf (varargin)
 
     if (! ishold ())
       set (h, "view", [-37.5, 30],
-	   "xgrid", "on", "ygrid", "on", "zgrid", "on");
+           "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   unwind_protect_cleanup
     axes (oldh);

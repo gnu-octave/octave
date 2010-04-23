@@ -36,15 +36,15 @@ function retval = __axes_limits__ (fcn, varargin)
 
     if (ischar (arg))
       if (strcmpi (arg, "mode"))
-	retval = get (h, fcnmode);
+        retval = get (h, fcnmode);
       elseif (strcmpi (arg, "auto") ||  strcmpi (arg, "manual"))
-	set (h, fcnmode, arg);
+        set (h, fcnmode, arg);
       endif
     else
       if (!isnumeric (arg) && any (size(arg(:)) != [2, 1]))
-	error ("%s: argument must be a 2 element vector", fcn);
+        error ("%s: argument must be a 2 element vector", fcn);
       else
-	set (h, fcn, arg(:));
+        set (h, fcn, arg(:));
       endif
     endif
   endif

@@ -28,7 +28,7 @@ function varargout = spinv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spinv is obsolete and will be removed from a future version of Octave; please use inv instead");
+             "spinv is obsolete and will be removed from a future version of Octave; please use inv instead");
   endif
 
   varargout = cell (nargout, 1);

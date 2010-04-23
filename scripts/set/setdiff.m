@@ -58,7 +58,7 @@ function [c, i] = setdiff (a, b, varargin)
       dups = find (all (dummy(1:end-1,:) == dummy(2:end,:), 2));
       c(idx(dups),:) = [];
       if (nargout > 1)
-	i(idx(dups),:) = [];
+        i(idx(dups),:) = [];
       endif
     endif
   else
@@ -75,15 +75,15 @@ function [c, i] = setdiff (a, b, varargin)
       if (iscellstr (dummy))
         dups = find (strcmp (dummy(1:end-1), dummy(2:end)));
       else
-	dups = find (dummy(1:end-1) == dummy(2:end));
+        dups = find (dummy(1:end-1) == dummy(2:end));
       endif
       c(idx(dups)) = [];
       if (nargout > 1)
-	i(idx(dups)) = [];
+        i(idx(dups)) = [];
       endif
       ## Reshape if necessary.
       if (size (c, 1) != 1 && size (b, 1) == 1)
-	c = c.';
+        c = c.';
       endif
     endif
   endif

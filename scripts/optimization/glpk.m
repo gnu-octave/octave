@@ -165,7 +165,7 @@
 ## Geometric mean scaling, then equilibration scaling.
 ## @end table
 ## 
-## @item dual	 (@w{@code{LPX_K_DUAL}}, default: 0)
+## @item dual    (@w{@code{LPX_K_DUAL}}, default: 0)
 ## Dual simplex option:
 ## @table @asis
 ## @item 0
@@ -174,7 +174,7 @@
 ## If initial basic solution is dual feasible, use the dual simplex.
 ## @end table
 ## 
-## @item price	 (@w{@code{LPX_K_PRICE}}, default: 1)
+## @item price   (@w{@code{LPX_K_PRICE}}, default: 1)
 ## Pricing option (for both primal and dual simplex):
 ## @table @asis
 ## @item 0
@@ -183,7 +183,7 @@
 ## Steepest edge pricing.
 ## @end table
 ##   
-## @item round	 (@w{@code{LPX_K_ROUND}}, default: 0)
+## @item round   (@w{@code{LPX_K_ROUND}}, default: 0)
 ## Solution rounding option:
 ## @table @asis
 ## @item 0
@@ -192,7 +192,7 @@
 ## Replace tiny primal and dual values by exact zero.
 ## @end table
 ## 
-## @item itlim	 (@w{@code{LPX_K_ITLIM}}, default: -1)
+## @item itlim   (@w{@code{LPX_K_ITLIM}}, default: -1)
 ## Simplex iterations limit.  If this value is positive, it is decreased by
 ## one each time when one simplex iteration has been performed, and
 ## reaching zero value signals the solver to stop the search.  Negative
@@ -493,7 +493,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
       error ("CTYPE must be a char valued vector of length %d", nc);
       return;
     elseif (! all (ctype == "F" | ctype == "U" | ctype == "S"
-		   | ctype == "L" | ctype == "D"))
+                   | ctype == "L" | ctype == "D"))
       error ("CTYPE must contain only F, U, S, L, or D");
       return;
     endif
@@ -507,7 +507,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     if (isempty (vartype))
       vartype = repmat ("C", nx, 1);
     elseif (! ischar (vartype) || all (size (vartype) > 1)
-	    || length (vartype) != nx)
+            || length (vartype) != nx)
       error ("VARTYPE must be a char valued vector of length %d", nx);
       return;
     elseif (! all (vartype == "C" | vartype == "I"))

@@ -71,7 +71,7 @@ function [n,d] = rat(x,tol)
     idx = find(abs (y-n./d) >= tol);
     if (isempty(idx))
       if (isempty (steps))
-	steps = NaN (nsz, 1);
+        steps = NaN (nsz, 1);
       endif
       break;
     endif
@@ -122,28 +122,28 @@ function [n,d] = rat(x,tol)
       j = 1;
 
       while (true)
-	step = steps(i, j++);
-	if (isnan (step))
-	  break;
-	endif
-	if (j > nsteps || isnan (steps(i, j)))
-	  if (step < 0)
-	    s = [s(1:end-1), " + 1/(", int2str(step), ")"];
-	  else
-	    s = [s(1:end-1), " + 1/", int2str(step)];
-	  endif
-	  break;
-	else
-	  s = [s(1:end-1), " + 1/(", int2str(step), ")"];
+        step = steps(i, j++);
+        if (isnan (step))
+          break;
+        endif
+        if (j > nsteps || isnan (steps(i, j)))
+          if (step < 0)
+            s = [s(1:end-1), " + 1/(", int2str(step), ")"];
+          else
+            s = [s(1:end-1), " + 1/", int2str(step)];
+          endif
+          break;
+        else
+          s = [s(1:end-1), " + 1/(", int2str(step), ")"];
         endif
       endwhile
       s = [s, repmat(")", 1, j-2)];
       n_nc = columns (n);
       s_nc = columns (s);
       if (n_nc > s_nc)
-	s(:,s_nc+1:n_nc) = " "
+        s(:,s_nc+1:n_nc) = " "
       elseif (s_nc > n_nc)
-	n(:,n_nc+1:s_nc) = " ";
+        n(:,n_nc+1:s_nc) = " ";
       endif
       n = cat (1, n, s);
     endfor

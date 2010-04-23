@@ -65,7 +65,7 @@ function hg = __scatter__ (varargin)
     c = varargin{istart + 1};
     if (isvector (c))
       if (columns (c) != 3)
-	c = c(:);
+        c = c(:);
       endif
     endif
   elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
@@ -87,20 +87,20 @@ function hg = __scatter__ (varargin)
     elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ (fcn, arg, false);
       if (valid)
-	have_marker = true;
-	marker = linespec.marker;
-	if (strncmp (marker, "none", 4))
-	  marker = "o";
+        have_marker = true;
+        marker = linespec.marker;
+        if (strncmp (marker, "none", 4))
+          marker = "o";
         elseif (isempty (marker))
           [dummy, marker] = __next_line_style__ ();
-	endif
+        endif
       else
-	error ("%s: invalid linespec", fcn);
+        error ("%s: invalid linespec", fcn);
       endif
     else
       newargs{end+1} = arg;
       if (iarg <= nargin)
-	newargs{end+1} = varagin{iarg++};
+        newargs{end+1} = varagin{iarg++};
       endif
     endif
   endwhile
@@ -111,7 +111,7 @@ function hg = __scatter__ (varargin)
 
   hg = hggroup ();
   newargs = __add_datasource__ (fcn, hg, {"x", "y", "z", "c", "size"}, 
-			     newargs{:});
+                             newargs{:});
 
   addproperty ("xdata", hg, "data", x);
   addproperty ("ydata", hg, "data", y);
@@ -326,7 +326,7 @@ function update_props (h, d)
 
   for i = 1 : numel (kids)
     set (kids (i), "linewidth", lw, "marker", m, "markerfacecolor", fc, 
-	 "edgecolor", ec)
+         "edgecolor", ec)
   endfor
 endfunction
 
@@ -346,25 +346,25 @@ function update_data (h, d)
   if (ischar (c1))
     if (isempty (z1))
       for i = 1 : length (hlist)
-	set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", c1,
-	     "markersize", size1(i));
+        set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", c1,
+             "markersize", size1(i));
       endfor
     else
       for i = 1 : length (hlist)
-	set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", c1,
-	     "markersize", size1(i));
+        set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", c1,
+             "markersize", size1(i));
       endfor
     endif
   else
     if (isempty (z1))
       for i = 1 : length (hlist)
-	set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", 
-	     reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
+        set (hlist(i), "vertices", [x1(i), y1(i)], "cdata", 
+             reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
       endfor
     else
       for i = 1 : length (hlist)
-	set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", 
-	     reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
+        set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata", 
+             reshape(c1(i,:),[1, size(c1)(2:end)]), "markersize", size1(i));
       endfor
     endif
   endif

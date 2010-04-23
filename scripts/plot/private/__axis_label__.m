@@ -37,7 +37,7 @@ function retval = __axis_label__ (caller, txt, varargin)
          "fontunits", get (ca, "fontunits"),
          "fontweight", get (ca, "fontweight"),
          "string", txt,
-	 varargin{:});
+         varargin{:});
 
     if (nargout > 0)
       retval = h;

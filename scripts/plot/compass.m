@@ -70,11 +70,11 @@ function retval = compass (varargin)
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("compass", arg, false);
       if (valid)
-	line_spec = arg;
-	have_line_spec = true;
-	break;
+        line_spec = arg;
+        have_line_spec = true;
+        break;
       else
-	error ("compass: invalid linespec");
+        error ("compass: invalid linespec");
       endif
     else
       error ("compass: unrecognized argument");

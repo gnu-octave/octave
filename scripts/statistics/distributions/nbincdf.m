@@ -45,19 +45,19 @@ function cdf = nbincdf (x, n, p)
   cdf = zeros (size (x));
 
   k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n))
-	    | (p < 0) | (p > 1));
+            | (p < 0) | (p > 1));
   if (any (k))
     cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n))
-	    & (p >= 0) & (p <= 1));
+            & (p >= 0) & (p <= 1));
   if (any (k))
     cdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0)
-	    & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
+            & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
   if (any (k))
     ## Does anyone know a better way to do the summation?
     m = zeros (size (k));
@@ -65,25 +65,25 @@ function cdf = nbincdf (x, n, p)
     y = cdf(k);
     if (isscalar (n) && isscalar (p))
       while (1)
-	l = find (m <= x);
-	if (any (l))
+        l = find (m <= x);
+        if (any (l))
           y(l) = y(l) + nbinpdf (m(l), n, p);
           m(l) = m(l) + 1;
-	else
+        else
           break;
-	endif
+        endif
       endwhile
     else
       n = n(k);
       p = p(k);
       while (1)
-	l = find (m <= x);
-	if (any (l))
+        l = find (m <= x);
+        if (any (l))
           y(l) = y(l) + nbinpdf (m(l), n(l), p(l));
           m(l) = m(l) + 1;
-	else
+        else
           break;
-	endif
+        endif
       endwhile
     endif
     cdf(k) = y;

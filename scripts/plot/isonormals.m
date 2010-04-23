@@ -61,25 +61,25 @@
 ## subplot (2, 2, 1); view (-38, 20);
 ## [f, v, cdat] = isosurface (x, y, z, c, iso, y);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
-## 	   "FaceColor", "interp", "EdgeColor", "none");
+##         "FaceColor", "interp", "EdgeColor", "none");
 ## isofinish (p); ## Call user function isofinish
 ##
 ## subplot (2, 2, 2); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
-## 	   "FaceColor", "interp", "EdgeColor", "none");
+##         "FaceColor", "interp", "EdgeColor", "none");
 ## isonormals (x, y, z, c, p); ## Directly modify patch
 ## isofinish (p);
 ##
 ## subplot (2, 2, 3); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
-## 	   "FaceColor", "interp", "EdgeColor", "none");
+##         "FaceColor", "interp", "EdgeColor", "none");
 ## n = isonormals (x, y, z, c, v); ## Compute normals of isosurface
 ## set (p, "VertexNormals", n);    ## Manually set vertex normals
 ## isofinish (p);
 ##
 ## subplot (2, 2, 4); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
-## 	   "FaceColor", "interp", "EdgeColor", "none");
+##         "FaceColor", "interp", "EdgeColor", "none");
 ## isonormals (x, y, z, c, v, "negate"); ## Use reverse directly
 ## isofinish (p);
 ## @end example

@@ -44,7 +44,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       h = ancestor (tmp, "axes");
       varargin(1) = [];
       if (isempty (varargin))
-	varargin = {};
+        varargin = {};
       endif
     else
       error ("%s: expecting first argument to be axes handle", caller);
@@ -58,9 +58,9 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     endif
     if (isempty (h))
       if (nogca)
-	h = NaN;
+        h = NaN;
       else
-	h = gca ();
+        h = gca ();
       endif
     endif
     if (nargin < 2)

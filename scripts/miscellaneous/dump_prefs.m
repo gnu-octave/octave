@@ -87,7 +87,7 @@ function dump_prefs (file)
     try
       val = feval (sym);
       if (isnumeric (val))
-	val = sprintf ("%g", val);
+        val = sprintf ("%g", val);
       endif
       fprintf (file, "  %s = %s\n", sym, val);
     catch

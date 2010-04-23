@@ -28,7 +28,7 @@ function varargout = spdet (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spdet is obsolete and will be removed from a future version of Octave; please use det instead");
+             "spdet is obsolete and will be removed from a future version of Octave; please use det instead");
   endif
 
   varargout = cell (nargout, 1);

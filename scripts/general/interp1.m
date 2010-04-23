@@ -113,21 +113,21 @@ function yi = interp1 (x, y, varargin)
     for i = 1:length (varargin)
       arg = varargin{i};
       if (ischar (arg))
-	arg = tolower (arg);
-	if (strcmp ("extrap", arg))
-	  extrap = "extrap";
-	elseif (strcmp ("pp", arg))
-	  pp = true;
-	else
-	  method = arg;
-	endif
+        arg = tolower (arg);
+        if (strcmp ("extrap", arg))
+          extrap = "extrap";
+        elseif (strcmp ("pp", arg))
+          pp = true;
+        else
+          method = arg;
+        endif
       else
-	if (firstnumeric)
-	  xi = arg;
-	  firstnumeric = false;
-	else
-	  extrap = arg;
-	endif
+        if (firstnumeric)
+          xi = arg;
+          firstnumeric = false;
+        else
+          extrap = arg;
+        endif
       endif
     endfor
   endif
@@ -411,14 +411,14 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!        interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
 %!test style=['*',style];
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
@@ -428,11 +428,11 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
 %!test style='linear';
@@ -445,14 +445,14 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!        interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
 %!test style=['*',style];
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
@@ -462,11 +462,11 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
 %!test style='cubic';
@@ -479,14 +479,14 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),100*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),100*eps);
 %!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!        interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
 %!test style=['*',style];
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
@@ -496,11 +496,11 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),100*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),100*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
 %!test style='pchip';
@@ -513,14 +513,14 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!        interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
 %!test style=['*',style];
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
@@ -530,11 +530,11 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
 %!test style='spline';
@@ -547,14 +547,14 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!        interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
 %!test style=['*',style];
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
@@ -564,11 +564,11 @@ endfunction
 %!assert (isempty(interp1(xp',yp',[],style)));
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
 %!assert (interp1(xp,yp,xi,style),...
-%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!        interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
 %!assert (ppval(interp1(xp,yp,style,"pp"),xi),
-%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
 ## ENDBLOCKTEST

@@ -28,7 +28,7 @@ function retval = spcumsum (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spcumsum is obsolete and will be removed from a future version of Octave; please use cumsum instead");
+             "spcumsum is obsolete and will be removed from a future version of Octave; please use cumsum instead");
   endif
 
   retval = cumsum (varargin{:});

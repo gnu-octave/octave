@@ -85,31 +85,31 @@ function retval = isstrprop (str, pred)
   if (nargin == 2)
     switch (pred)
       case "alpha"
-	retval = isalpha (str);
+        retval = isalpha (str);
       case {"alnum", "alphanum"}
-	retval = isalnum (str);
+        retval = isalnum (str);
       case "ascii"
-	retval = isascii (str);
+        retval = isascii (str);
       case "cntrl"
-	retval = iscntrl (str);
+        retval = iscntrl (str);
       case "digit"
-	retval = isdigit (str);
+        retval = isdigit (str);
       case {"graph", "graphic"}
-	retval = isgraph (str);
+        retval = isgraph (str);
       case "lower"
-	retval = islower (str);
+        retval = islower (str);
       case "print"
-	retval = isprint (str);
+        retval = isprint (str);
       case "punct"
-	retval = ispunct (str);
+        retval = ispunct (str);
       case {"space", "wspace"}
-	retval = isspace (str);
+        retval = isspace (str);
       case "upper"
-	retval = isupper (str);
+        retval = isupper (str);
       case "xdigit"
-	retval = isxdigit (str);
+        retval = isxdigit (str);
       otherwise
-	error ("isstrprop: invalid predicate");
+        error ("isstrprop: invalid predicate");
     endswitch
   else
     print_usage ();

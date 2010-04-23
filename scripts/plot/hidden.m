@@ -33,7 +33,7 @@ function retval = hidden (mode)
     if (ischar (mode))
       mode = tolower (mode);
       if (! strcmp (mode, "on") && ! strcmp (mode, "off"))
-	error ("hidden: mode expected to be 'on' or 'off'");
+        error ("hidden: mode expected to be 'on' or 'off'");
       endif
     else
       error ("hidden: expecting mode to be a string");
@@ -47,7 +47,7 @@ function retval = hidden (mode)
     if (strcmp (htype, "surface"))
       fc = get (h, "facecolor");
       if ((! ischar (fc) && is_white (fc))
-	  || (ischar (fc) && strcmpi (fc, "none")))
+          || (ischar (fc) && strcmpi (fc, "none")))
         switch (mode)
         case "on"
           set (h, "facecolor", "w");
@@ -56,10 +56,10 @@ function retval = hidden (mode)
         case "swap"
           if (ischar (fc))
             set (h, "facecolor", "w");
-	    mode = "on";
+            mode = "on";
           else
             set (h, "facecolor", "none");
-	    mode = "off";
+            mode = "off";
           endif
         endswitch
       endif

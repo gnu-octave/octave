@@ -43,9 +43,9 @@ function retval = rank (A, tol)
       tolerance = 0;
     else
       if (isa (A, "single"))
-	tolerance = max (size (A)) * sigma (1) * eps ("single");
+        tolerance = max (size (A)) * sigma (1) * eps ("single");
       else
-	tolerance = max (size (A)) * sigma (1) * eps;
+        tolerance = max (size (A)) * sigma (1) * eps;
       endif
     endif
   elseif (nargin == 2)

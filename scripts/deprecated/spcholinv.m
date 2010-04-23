@@ -28,7 +28,7 @@ function retval = spcholinv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spcholinv is obsolete and will be removed from a future version of Octave; please use cholinv instead");
+             "spcholinv is obsolete and will be removed from a future version of Octave; please use cholinv instead");
   endif
   retval = cholinv (varargin{:});
 

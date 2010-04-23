@@ -44,25 +44,25 @@ function entries = zip (zipfile, files, rootdir)
     if (ischar (zipfile) && iscellstr (files))
 
       cmd = sprintf ("cd %s; zip -r %s/%s %s", rootdir, pwd (), zipfile,
-		     sprintf (" %s", files{:}));
+                     sprintf (" %s", files{:}));
 
       [status, output] = system (cmd);
 
       if (status == 0)
-	if (nargout > 0)
-	  cmd = sprintf ("unzip -Z -1 %s", zipfile);
-	  [status, entries] = system (cmd);
-	  if (status == 0)
-	    if (entries(end) == "\n")
-	      entries(end) = [];
-	    endif
+        if (nargout > 0)
+          cmd = sprintf ("unzip -Z -1 %s", zipfile);
+          [status, entries] = system (cmd);
+          if (status == 0)
+            if (entries(end) == "\n")
+              entries(end) = [];
+            endif
             entries = strsplit (entries, "\n");
-	  else
-	    error ("zip: zipinfo failed with exit status = %d", status);
-	  endif
-	endif
+          else
+            error ("zip: zipinfo failed with exit status = %d", status);
+          endif
+        endif
       else
-	error ("zip: zip failed with exit status = %d", status);
+        error ("zip: zip failed with exit status = %d", status);
       endif
     
     else

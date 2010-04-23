@@ -30,13 +30,13 @@
 ## @seealso{delaunay}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author:      Kai Habel <kai.habel@gmx.de>
 ## Adapted-by:  Alexander Barth <barth.alexander@gmail.com>
 ##              xi and yi are not "meshgridded" if both are vectors 
 ##              of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
-	
+        
   if (nargin == 5)
     method = "linear";
   endif

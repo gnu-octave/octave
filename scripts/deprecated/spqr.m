@@ -31,7 +31,7 @@ function varargout = spqr (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spqr is obsolete and will be removed from a future version of Octave; please use qr instead");
+             "spqr is obsolete and will be removed from a future version of Octave; please use qr instead");
   endif
 
   varargout = cell (nargout, 1);

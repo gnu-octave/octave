@@ -32,7 +32,7 @@
 function [xx, yy, zz] = ellipsoid (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "ellipsoid", 
-						varargin{:});
+                                                varargin{:});
 
   if (nargin != 6 && nargin != 7)
     print_usage ();

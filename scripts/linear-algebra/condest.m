@@ -125,18 +125,18 @@ function [est, v] = condest (varargin)
 
     if (nargin > 1)
       if (isscalar (varargin{2}))
-	t = varargin{2};
-	have_t = true;
+        t = varargin{2};
+        have_t = true;
       elseif (nargin > 2)
-	solve = varargin{2};
-	solve_t = varargin{3};
-	have_solve = true;
-	if (nargin > 3)
-	  t = varargin{4};
-	  have_t = true;
-	endif
+        solve = varargin{2};
+        solve_t = varargin{3};
+        have_solve = true;
+        if (nargin > 3)
+          t = varargin{4};
+          have_t = true;
+        endif
       else
-	error ("condest: must supply both solve and solve_t");
+        error ("condest: must supply both solve and solve_t");
       endif
     endif
   elseif (nargin > 4)

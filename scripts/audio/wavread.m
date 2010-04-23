@@ -132,13 +132,13 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       case 16 
         format = "int16";
       case 24
-	format = "uint8";
+        format = "uint8";
       case 32 
         format = "int32";
       otherwise
         fclose (fid);
         error ("wavread: %d bits sample resolution is not supported with PCM",
-	       bits_per_sample);
+               bits_per_sample);
     endswitch
   else
     switch (bits_per_sample)
@@ -149,7 +149,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       otherwise
         fclose (fid);
         error ("wavread: %d bits sample resolution is not supported with IEEE float",
-	       bits_per_sample);
+               bits_per_sample);
     endswitch
   endif
   
@@ -187,7 +187,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   ## Check data.
   if (mod (numel (yi), channels) != 0)
     error ("wavread: data in %s doesn't match the number of channels",
-	   filename);
+           filename);
   endif
 
   if (bits_per_sample == 24)
@@ -204,7 +204,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       case 16
         yi /= 32767;
       case 24
-		yi /= 8388607;
+                yi /= 8388607;
       case 32
         yi /= 2147483647;
     endswitch

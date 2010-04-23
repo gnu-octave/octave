@@ -44,7 +44,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
     ## Checking vector of predecessors.
     for i = 1 : num_nodes
       if (tree(i) < i)
-	## This part of graph was checked before.
+        ## This part of graph was checked before.
         continue;
       endif
 
@@ -54,7 +54,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
       hare = tree(tortoise);
 
       while (tortoise != hare)
-	## End after finding a cicle or reaching a checked part of graph.
+        ## End after finding a cicle or reaching a checked part of graph.
 
         if (hare < i)
           ## This part of graph was checked before.
@@ -62,14 +62,14 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
         endif
 
         tortoise = tree(tortoise);
-	## Hare will move faster than tortoise so in cicle hare must
-	## reach tortoise.
+        ## Hare will move faster than tortoise so in cicle hare must
+        ## reach tortoise.
         hare = tree(tree(hare));
 
       endwhile
 
       if (tortoise == hare)
-	## If hare reach tortoise we found circle.
+        ## If hare reach tortoise we found circle.
         error ("treelayout: vector of predecessors has bad format");
       endif
 
@@ -151,9 +151,9 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
        x_coordinate_r(par_number) = left_most;           
        max_ht = min (max_ht, level);
        if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
-	   && stk(end,2) != stk(end-1,2))
-	  ## Return to the nearest branching the position to return
-	  ## position is the position on the stack, where should be
+           && stk(end,2) != stk(end-1,2))
+          ## Return to the nearest branching the position to return
+          ## position is the position on the stack, where should be
           ## started further search (there are two nodes which has the
           ## same parent node).
 
@@ -165,22 +165,22 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 
           level += length (par_number_vec);
 
-	  ## The level have to be decreased.
+          ## The level have to be decreased.
 
           x_coordinate_r(par_number_vec) = left_most;
           stk(position:end,:) = [];
-        endif	
+        endif   
 
         ## Remove the next node from "searched branch".
 
         stk(end,:) = [];
-	## Choose new "parent node".
+        ## Choose new "parent node".
         par_number = stk(end,1);
-	## If there is another branch start to search it.
-	if (par_number != -1)
-          y_coordinate(par_number) = level;	
+        ## If there is another branch start to search it.
+        if (par_number != -1)
+          y_coordinate(par_number) = level;     
           x_coordinate_l(par_number) = left_most + 1;
-	endif
+        endif
       else
 
         ## There were descendants of "parent nod" choose the last of

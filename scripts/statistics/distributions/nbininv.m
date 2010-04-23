@@ -46,45 +46,45 @@ function inv = nbininv (x, n, p)
   inv = zeros (size (x));
 
   k = find (isnan (x) | (x < 0) | (x > 1) | (n < 1) | (n == Inf)
-	    | (n != round (n)) | (p < 0) | (p > 1));
+            | (n != round (n)) | (p < 0) | (p > 1));
   if (any (k))
     inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (n > 0) & (n < Inf) & (n == round (n))
-	    & (p >= 0) & (p <= 1));
+            & (p >= 0) & (p <= 1));
   if (any (k))
     inv(k) = Inf;
   endif
 
   k = find ((x >= 0) & (x < 1) & (n > 0) & (n < Inf)
-	    & (n == round (n)) & (p > 0) & (p <= 1));
+            & (n == round (n)) & (p > 0) & (p <= 1));
   if (any (k))
     m = zeros (size (k));
     x = x(k);
     if (isscalar (n) && isscalar (p))
       s = p ^ n * ones (size(k));
       while (1)
-	l = find (s < x);
-	if (any (l))
+        l = find (s < x);
+        if (any (l))
           m(l) = m(l) + 1;
           s(l) = s(l) + nbinpdf (m(l), n, p);
-	else
+        else
           break;
-	endif
+        endif
       endwhile
     else
       n = n(k);
       p = p(k);
       s = p .^ n;
       while (1)
-	l = find (s < x);
-	if (any (l))
+        l = find (s < x);
+        if (any (l))
           m(l) = m(l) + 1;
           s(l) = s(l) + nbinpdf (m(l), n(l), p(l));
-	else
+        else
           break;
-	endif
+        endif
       endwhile
     endif
     inv(k) = m;

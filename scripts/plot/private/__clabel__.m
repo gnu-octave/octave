@@ -29,7 +29,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   yspacing = 72 * 3 / abs(lims(3) - lims(4));
 
   if (isscalar (hparent) && ishandle(hparent) && 
-	strcmp (get (hparent, "type"), "hggroup"))
+        strcmp (get (hparent, "type"), "hggroup"))
     x = get (hparent, "xdata");
     xmin = min (x(:));
     xmax = max (x(:));
@@ -85,29 +85,29 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
       tagpos = pos(i);
       
       while (j1 < clen && cumd(j1) < tagpos)
-	j1++;
+        j1++;
       endwhile
       tpos = sum(c(:,i1+j1-1:i1+j1), 2) ./ 2;
 
       if (tpos(1) != xmin &&  tpos(1) != xmax && 
-	  tpos(2) != ymin &&  tpos(2) != ymax)
-	trot = 180 / pi * atan2 (diff (c(2,i1+j1-1:i1+j1)),
-				 diff (c(1,i1+j1-1:i1+j1)));
+          tpos(2) != ymin &&  tpos(2) != ymax)
+        trot = 180 / pi * atan2 (diff (c(2,i1+j1-1:i1+j1)),
+                                 diff (c(1,i1+j1-1:i1+j1)));
 
-	if (ischar (z))
-	  ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot, 
-		     "parent", hparent, "horizontalalignment", "center",
-		     "userdata", clev, varargin{:});
-	elseif (!isempty (z))
-	  ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot, 
-		     "parent", hparent, "horizontalalignment", "center",
-		     "userdata", clev, varargin{:});
-	else
-	  ht = text (tpos(1), tpos(2), tlabel, "rotation", trot,
-		     "parent", hparent, "horizontalalignment", "center",
-		     "userdata", clev, varargin{:});
-	endif
-	h = [h; ht];
+        if (ischar (z))
+          ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot, 
+                     "parent", hparent, "horizontalalignment", "center",
+                     "userdata", clev, varargin{:});
+        elseif (!isempty (z))
+          ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot, 
+                     "parent", hparent, "horizontalalignment", "center",
+                     "userdata", clev, varargin{:});
+        else
+          ht = text (tpos(1), tpos(2), tlabel, "rotation", trot,
+                     "parent", hparent, "horizontalalignment", "center",
+                     "userdata", clev, varargin{:});
+        endif
+        h = [h; ht];
       endif
     endfor
     i1 += clen+1;

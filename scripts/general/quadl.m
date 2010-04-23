@@ -98,17 +98,17 @@ function Q = quadl (f, a, b, tol, trace, varargin)
   i2 = (h/6)*(y(1) + y(13) + 5*(y(5)+y(9)));
 
   i1 = (h/1470)*(77*(y(1)+y(13))
-		 + 432*(y(3)+y(11))
-		 + 625*(y(5)+y(9))
-		 + 672*y(7));
+                 + 432*(y(3)+y(11))
+                 + 625*(y(5)+y(9))
+                 + 672*y(7));
 
   is = h*(.0158271919734802*(y(1)+y(13))
-	  +.0942738402188500*(y(2)+y(12))
-	  + .155071987336585*(y(3)+y(11))
-	  + .188821573960182*(y(4)+y(10))
-	  + .199773405226859*(y(5)+y(9))
-	  + .224926465333340*(y(6)+y(8))
-	  + .242611071901408*y(7));
+          +.0942738402188500*(y(2)+y(12))
+          + .155071987336585*(y(3)+y(11))
+          + .188821573960182*(y(4)+y(10))
+          + .199773405226859*(y(5)+y(9))
+          + .224926465333340*(y(6)+y(8))
+          + .242611071901408*y(7));
 
   s = sign(is); 
 
@@ -171,11 +171,11 @@ function Q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
     endif
   else
     Q = (adaptlobstp (f, a, mll, fa, fmll, is, trace, varargin{:})
-	 + adaptlobstp (f, mll, ml, fmll, fml, is, trace, varargin{:})
-	 + adaptlobstp (f, ml, m, fml, fm, is, trace, varargin{:})
-	 + adaptlobstp (f, m, mr, fm, fmr, is, trace, varargin{:})
-	 + adaptlobstp (f, mr, mrr, fmr, fmrr, is, trace, varargin{:})
-	 + adaptlobstp (f, mrr, b, fmrr, fb, is, trace, varargin{:}));
+         + adaptlobstp (f, mll, ml, fmll, fml, is, trace, varargin{:})
+         + adaptlobstp (f, ml, m, fml, fm, is, trace, varargin{:})
+         + adaptlobstp (f, m, mr, fm, fmr, is, trace, varargin{:})
+         + adaptlobstp (f, mr, mrr, fmr, fmrr, is, trace, varargin{:})
+         + adaptlobstp (f, mrr, b, fmrr, fb, is, trace, varargin{:}));
   endif
 endfunction
 

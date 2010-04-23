@@ -114,7 +114,7 @@ endfunction
 %! l.name1 = "Smith";
 %! l.name2 = "Jones";
 %! o = structfun (@(x) regexp (x, '(\w+)$', "matches"){1}, s, 
-%!		  "UniformOutput", false);
+%!                "UniformOutput", false);
 %! assert (o, l);
 
 %!function [a, b] = twoouts (x)

@@ -80,7 +80,7 @@ function z = idivide (x, y, op)
     else
       typ = class (x);
       if (!strcmp (class (x), class (y)))
-	error ("idivide: incompatible types");
+        error ("idivide: incompatible types");
       endif
     endif
 

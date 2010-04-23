@@ -50,8 +50,8 @@ function y = ranks (x, dim)
     endif
   else
     if (! (isscalar (dim) && dim == round (dim))
-	&& dim > 0
-	&& dim < (nd + 1))
+        && dim > 0
+        && dim < (nd + 1))
       error ("ranks: dim must be an integer and valid dimension");
     endif
   endif
@@ -77,8 +77,8 @@ function y = ranks (x, dim)
       len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
       [eq_el, y] = sort (xi);
       for i = 1 : length(runs)
-	y (xi (runs (i) + [0:(len(i)-1)]) + floor (runs (i) ./ sz(1)) 
-	   * sz(1)) = eq_el(runs(i)) + (len(i) - 1) / 2;
+        y (xi (runs (i) + [0:(len(i)-1)]) + floor (runs (i) ./ sz(1)) 
+           * sz(1)) = eq_el(runs(i)) + (len(i) - 1) / 2;
       endfor
     endif  
     if (dim != 1)

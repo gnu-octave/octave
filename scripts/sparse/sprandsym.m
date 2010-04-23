@@ -68,7 +68,7 @@ function S = sprandsym (n, d)
     else
       S1 = sparse (i1, j1+1, randn (k1, 1), m1, n1);
       S = [tril(S1), sparse(m1,m1); ...
-	   sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
+           sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
       S = S + tril (S, -1)';
     endif
   else

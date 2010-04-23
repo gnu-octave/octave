@@ -50,10 +50,10 @@ function pdf = betapdf (x, a, b)
   if (any (k))
     if (isscalar(a) && isscalar(b))
       pdf(k) = exp ((a - 1) .* log (x(k))
-		    + (b - 1) .* log (1 - x(k))) ./ beta (a, b);
+                    + (b - 1) .* log (1 - x(k))) ./ beta (a, b);
     else
       pdf(k) = exp ((a(k) - 1) .* log (x(k))
-		    + (b(k) - 1) .* log (1 - x(k))) ./ beta (a(k), b(k));
+                    + (b(k) - 1) .* log (1 - x(k))) ./ beta (a(k), b(k));
     endif
   endif
 

@@ -37,7 +37,7 @@ function rnd = lognrnd (mu, sigma, r, c)
     if (!isscalar(mu) || !isscalar(sigma)) 
       [retval, mu, sigma] = common_size (mu, sigma);
       if (retval > 0)
-	error ("lognrnd: mu and sigma must be of common size or scalar");
+        error ("lognrnd: mu and sigma must be of common size or scalar");
       endif
     endif
   endif
@@ -52,7 +52,7 @@ function rnd = lognrnd (mu, sigma, r, c)
     sz = [r, c];
 
     if (any (size (mu) != 1) && 
-	((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+        ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
       error ("lognrnd: mu and sigma must be scalar or of size [r, c]");
     endif
 
@@ -66,7 +66,7 @@ function rnd = lognrnd (mu, sigma, r, c)
     endif
 
     if (any (size (mu) != 1) && 
-	((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+        ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
       error ("lognrnd: mu and sigma must be scalar or of size sz");
     endif
   elseif (nargin == 2)

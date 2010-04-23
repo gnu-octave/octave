@@ -47,7 +47,7 @@ function inv = laplace_inv (x)
   k = find ((x > 0) & (x < 1));
   if (any (k))
     inv(k) = ((x(k) < 1/2) .* log (2 * x(k))
-	      - (x(k) > 1/2) .* log (2 * (1 - x(k))));
+              - (x(k) > 1/2) .* log (2 * (1 - x(k))));
   endif
 
 endfunction

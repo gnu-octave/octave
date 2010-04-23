@@ -92,7 +92,7 @@ function fplot (fn, limits, n, linespec)
       y00 = interp1 (x0, y0, x, "linear");
       err = 0.5 * max (abs ((y00 - y) ./ (y00 + y))(:));
       if (err == err0 || 0.5 * max (abs ((y00 - y) ./ (y00 + y))(:)) < tol)
-	break;
+        break;
       endif
       x0 = x;
       y0 = y;

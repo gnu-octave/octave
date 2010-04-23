@@ -42,19 +42,19 @@ function cdf = binocdf (x, n, p)
   cdf = zeros (sz);
 
   k = find (isnan (x) | !(n >= 0) | (n != round (n))
-	    | !(p >= 0) | !(p <= 1));
+            | !(p >= 0) | !(p <= 1));
   if (any (k))
     cdf(k) = NaN;
   endif
 
   k = find ((x >= n) & (n >= 0) & (n == round (n))
-	    & (p >= 0) & (p <= 1));
+            & (p >= 0) & (p <= 1));
   if (any (k))
     cdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < n) & (n == round (n))
-	    & (p >= 0) & (p <= 1));
+            & (p >= 0) & (p <= 1));
   if (any (k))
     tmp = floor (x(k));
     if (isscalar (n) && isscalar (p))

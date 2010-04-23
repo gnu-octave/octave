@@ -105,7 +105,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     if (ischar (__fid))
       __fid = fopen (__fid, "wt");
       if (__fid < 0)
-	error ("could not open log file");
+        error ("could not open log file");
       endif
       __close_fid = 1;
     endif
@@ -176,7 +176,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       fprintf (__fid, "%s%s does not exist in path\n", __signal_empty, __name);
       fflush (__fid);
       if (nargout > 0)
-	__ret1 = __ret2 = 0;
+        __ret1 = __ret2 = 0;
       endif
     endif
     if (__close_fid)
@@ -196,7 +196,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       fprintf (__fid, "%s%s has no tests available\n", __signal_empty, __file);
       fflush (__fid);
       if (nargout > 0)
-	__ret1 = __ret2 = 0;
+        __ret1 = __ret2 = 0;
       endif
     endif
     if (__close_fid)
@@ -266,25 +266,25 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       __istest = 0;
 
       if (__grabdemo && __isdemo)
-	if (isempty(__demo_code))
-	  __demo_code = __code;
-	  __demo_idx = [1, length(__demo_code)+1];
-	else
-	  __demo_code = cstrcat(__demo_code, __code);
-	  __demo_idx = [__demo_idx, length(__demo_code)+1];
-	endif
+        if (isempty(__demo_code))
+          __demo_code = __code;
+          __demo_idx = [1, length(__demo_code)+1];
+        else
+          __demo_code = cstrcat(__demo_code, __code);
+          __demo_idx = [__demo_idx, length(__demo_code)+1];
+        endif
 
       elseif (__rundemo && __isdemo)
-      	try
-	  ## process the code in an environment without variables
-      	  eval (sprintf ("function __test__()\n%s\nendfunction", __code));
-	  __test__;
-	  input ("Press <enter> to continue: ", "s");
-      	catch
-	  __success = 0;
-	  __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, __error_text__);
-      	end_try_catch
-      	clear __test__;
+        try
+          ## process the code in an environment without variables
+          eval (sprintf ("function __test__()\n%s\nendfunction", __code));
+          __test__;
+          input ("Press <enter> to continue: ", "s");
+        catch
+          __success = 0;
+          __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, __error_text__);
+        end_try_catch
+        clear __test__;
 
       endif
       ## Code already processed.
@@ -298,36 +298,36 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       ## Separate initialization code from variables.
       __idx = find (__code == "\n");
       if (isempty (__idx))
-	__vars = __code;
-	__code = "";
+        __vars = __code;
+        __code = "";
       else
-      	__vars = __code (1:__idx(1)-1);
-      	__code = __code (__idx(1):length(__code));
+        __vars = __code (1:__idx(1)-1);
+        __code = __code (__idx(1):length(__code));
       endif
       
       ## Strip comments off the variables.
       __idx = find (__vars == "%" | __vars == "#");
       if (! isempty (__idx))
-	__vars = __vars(1:__idx(1)-1);
+        __vars = __vars(1:__idx(1)-1);
       endif
       
       ## Assign default values to variables.
       try
-	__vars = deblank (__vars);
-	if (! isempty (__vars))
-	  eval (cstrcat (strrep (__vars, ",", "=[];"), "=[];"));
-	  __shared = __vars;
-	  __shared_r = cstrcat ("[ ", __vars, "] = ");
-      	else
-	  __shared = " ";
-	  __shared_r = " ";
-      	endif
+        __vars = deblank (__vars);
+        if (! isempty (__vars))
+          eval (cstrcat (strrep (__vars, ",", "=[];"), "=[];"));
+          __shared = __vars;
+          __shared_r = cstrcat ("[ ", __vars, "] = ");
+        else
+          __shared = " ";
+          __shared_r = " ";
+        endif
       catch
-	## Couldn't declare, so don't initialize.
-	__code = "";
-	__success = 0;
-	__msg = sprintf ("%sshared variable initialization failed\n",
-		         __signal_fail);
+        ## Couldn't declare, so don't initialize.
+        __code = "";
+        __success = 0;
+        __msg = sprintf ("%sshared variable initialization failed\n",
+                         __signal_fail);
       end_try_catch
 
       ## Clear shared function definitions.
@@ -345,7 +345,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       if (isempty (__name_position))
         __success = 0;
         __msg = sprintf ("%stest failed: missing function name\n",
-			 __signal_fail);
+                         __signal_fail);
       else
         __name = __block(__name_position(1):__name_position(2));
         __code = __block;
@@ -355,7 +355,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         catch
           __success = 0;
           __msg = sprintf ("%stest failed: syntax error\n%s",
-			   __signal_fail, __error_text__);
+                           __signal_fail, __error_text__);
         end_try_catch
       endif
       __code = "";
@@ -380,24 +380,24 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __patstr = ["<",__pattern,">"];
       endif
       try
-      	eval (sprintf ("function __test__(%s)\n%s\nendfunction",
-		       __shared, __code));
+        eval (sprintf ("function __test__(%s)\n%s\nendfunction",
+                       __shared, __code));
       catch
-      	__success = 0;
-      	__msg = sprintf ("%stest failed: syntax error\n%s",
-			 __signal_fail, __error_text__);
+        __success = 0;
+        __msg = sprintf ("%stest failed: syntax error\n%s",
+                         __signal_fail, __error_text__);
       end_try_catch
       
       if (__success)
         __success = 0;
-	__warnstate = warning ("query", "quiet");
-	warning ("on", "quiet");
-      	try
- 	  eval (sprintf ("__test__(%s);", __shared));
+        __warnstate = warning ("query", "quiet");
+        warning ("on", "quiet");
+        try
+          eval (sprintf ("__test__(%s);", __shared));
           if (! __warning)
-       	    __msg = sprintf ("%sexpected %s but got no error\n",
- 			     __signal_fail, __patstr);
-	  else
+            __msg = sprintf ("%sexpected %s but got no error\n",
+                             __signal_fail, __patstr);
+          else
             if (! isempty (__id))
               [~, __err] = lastwarn;
               __mismatch = ! strcmp (__err, __id);
@@ -408,16 +408,16 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
               __msg = sprintf ("%sexpected %s but got no warning\n",
-			     __signal_fail, __patstr);
+                             __signal_fail, __patstr);
             elseif (__mismatch)
               __msg = sprintf ("%sexpected %s but got %s\n",
- 			       __signal_fail, __patstr, __err);
+                               __signal_fail, __patstr, __err);
             else
               __success = 1;
             endif
-	  endif
+          endif
 
-      	catch
+        catch
           if (! isempty (__id))
             [~, __err] = lasterr;
             __mismatch = ! strcmp (__err, __id);
@@ -428,15 +428,15 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           warning (__warnstate.state, "quiet");
           if (__warning)
             __msg = sprintf ("%sexpected warning %s but got error %s\n",
-			     __signal_fail, __patstr, __err);
-	  elseif (__mismatch)
+                             __signal_fail, __patstr, __err);
+          elseif (__mismatch)
             __msg = sprintf ("%sexpected %s but got %s\n",
-			     __signal_fail, __patstr, __err);
+                             __signal_fail, __patstr, __err);
           else
-	    __success = 1;
+            __success = 1;
           endif
-      	end_try_catch
-      	clear __test__;
+        end_try_catch
+        clear __test__;
       endif
       ## Code already processed.
       __code = "";
@@ -447,14 +447,14 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       [__e, __feat] = regexp (__code, '^\s*([^\s]+)', 'end', 'tokens');
       if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
         __xskip++;
-	__success = 0;
-	__istest = 0;
-	## Skip the code.
-	__code = "";
-	__msg = sprintf ("%sskipped test\n", __signal_skip);
+        __success = 0;
+        __istest = 0;
+        ## Skip the code.
+        __code = "";
+        __msg = sprintf ("%sskipped test\n", __signal_skip);
       else
         __istest = 1;
-	__code = __code(__e + 1 : end);
+        __code = __code(__e + 1 : end);
       endif
 
 ### TEST
@@ -481,20 +481,20 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     ## evaluate code for test, shared, and assert.
     if (! isempty(__code))
       try
-      	eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
-		       __shared_r,__shared, __code));
-	eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
+        eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
+                       __shared_r,__shared, __code));
+        eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
       catch
         if (strcmp (__type, "xtest"))
            __msg = sprintf ("%sknown failure\n%s", __signal_fail, __error_text__);
-	   __xfail++;
+           __xfail++;
         else
            __msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
-	   __success = 0;
+           __success = 0;
         endif
-	if (isempty (__error_text__))
-	  error ("empty error text, probably Ctrl-C --- aborting"); 
-	endif
+        if (isempty (__error_text__))
+          error ("empty error text, probably Ctrl-C --- aborting"); 
+        endif
       end_try_catch
       clear __test__;
     endif
@@ -503,31 +503,31 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     if (! isempty (__msg))
       ## Make sure the user knows what caused the error.
       if (! __verbose)
-      	fprintf (__fid, "%s%s\n", __signal_block, __block);
-	fflush (__fid);
+        fprintf (__fid, "%s%s\n", __signal_block, __block);
+        fflush (__fid);
       endif
       fputs (__fid, __msg);
       fputs (__fid, "\n");
       fflush (__fid);
       ## Show the variable context.
       if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
-	  && ! all (__shared == " "))
-	fputs (__fid, "shared variables ");
-	eval (sprintf ("fdisp(__fid,bundle(%s));", __shared)); 
-	fflush (__fid);
+          && ! all (__shared == " "))
+        fputs (__fid, "shared variables ");
+        eval (sprintf ("fdisp(__fid,bundle(%s));", __shared)); 
+        fflush (__fid);
       endif
     endif
     if (__success == 0)
       __all_success = 0;
       ## Stop after one error if not in batch mode.
       if (! __batch)
-    	if (nargout > 0)
-	  __ret1 = __ret2 = 0;
-	endif
-	if (__close_fid)
-	  fclose(__fid);
-	endif
-      	return;
+        if (nargout > 0)
+          __ret1 = __ret2 = 0;
+        endif
+        if (__close_fid)
+          fclose(__fid);
+        endif
+        return;
       endif
     endif
     __tests += __istest;
@@ -538,13 +538,13 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   if (nargout == 0)
     if (__tests || __xfail || __xskip)
       if (__xfail)
-	printf ("PASSES %d out of %d tests (%d expected failures)\n",
-		__successes, __tests, __xfail);
+        printf ("PASSES %d out of %d tests (%d expected failures)\n",
+                __successes, __tests, __xfail);
       else
-	printf ("PASSES %d out of %d tests\n", __successes, __tests);
+        printf ("PASSES %d out of %d tests\n", __successes, __tests);
       endif
       if (__xskip)
-	printf ("Skipped %d tests due to missing features\n", __xskip);
+        printf ("Skipped %d tests due to missing features\n", __xskip);
       endif
     else
       printf ("%s%s has no tests available\n", __signal_empty, __file);
@@ -582,7 +582,7 @@ function pos = function_name (def)
 
   ## Find the beginning of the name.
   left = max ([find(def(1:right)==" ", 1, "last"), ...
-	       find(def(1:right)=="=", 1, "last")]);
+               find(def(1:right)=="=", 1, "last")]);
   if (isempty (left))
     return;
   endif

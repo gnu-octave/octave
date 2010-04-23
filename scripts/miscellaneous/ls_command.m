@@ -45,9 +45,9 @@ function old_cmd = ls_command (cmd)
 
     if (nargin == 1)
       if (ischar (cmd))
-	__ls_command__ = cmd;
+        __ls_command__ = cmd;
       else
-	error ("ls_command: expecting argument to be a character string");
+        error ("ls_command: expecting argument to be a character string");
       endif
     endif
 

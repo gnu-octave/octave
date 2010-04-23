@@ -45,11 +45,11 @@ function [code_r, idx_r] = example (name, n)
   if (nargout > 0)
     if (n > 0)
       if (n <= length (idx))
-      	code_r = code(idx(n):idx(n+1)-1);
-      	idx_r = [1, length(code_r)+1];
+        code_r = code(idx(n):idx(n+1)-1);
+        idx_r = [1, length(code_r)+1];
       else
-	code_r = "";
-	idx_r = [];
+        code_r = "";
+        idx_r = [];
       endif
     else
       code_r = code;
@@ -87,7 +87,7 @@ endfunction
 %!test
 %! [code, idx] = example('example');
 %! assert (code, ... 
-%!	   "\n example('example');\n t=0:0.01:2*pi; x=sin(t);\n plot(t,x)")
+%!         "\n example('example');\n t=0:0.01:2*pi; x=sin(t);\n plot(t,x)")
 %! assert (idx, [1, 22, 59]);
 
 %!error example;

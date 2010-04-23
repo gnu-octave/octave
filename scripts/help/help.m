@@ -66,7 +66,7 @@ function help (name)
         error ("help: `%s' is not documented\n", name);
       case "not found"
         do_contents (name);
-	return;
+        return;
       otherwise
         error ("help: internal error: unsupported help text format: '%s'\n", format);
     endswitch
@@ -99,18 +99,18 @@ function do_contents (name)
     ## Take action depending on help text format
     switch (lower (format))
       case "plain text"
-	status = 0;
+        status = 0;
       case "texinfo"
-	[text, status] = __makeinfo__ (text, "plain text");
+        [text, status] = __makeinfo__ (text, "plain text");
       case "html"
-	[text, status] = strip_html_tags (text);
+        [text, status] = strip_html_tags (text);
     endswitch
 
     if (! isempty (text))
       found = true;
       ## Print text.
       if (status != 0)
-	warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
+        warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
       endif
       printf ("%s:\n\n%s\n", fname, text);
     endif

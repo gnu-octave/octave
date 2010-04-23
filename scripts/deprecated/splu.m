@@ -32,7 +32,7 @@ function varargout = splu (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "splu is obsolete and will be removed from a future version of Octave; please use lu instead");
+             "splu is obsolete and will be removed from a future version of Octave; please use lu instead");
   endif
 
   for i = 2 : nargin

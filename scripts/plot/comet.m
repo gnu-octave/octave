@@ -39,7 +39,7 @@ function comet (varargin)
   if (nargin == 0)
     print_usage ();
   elseif (numel (varargin{1}) == 1 && ishandle (varargin{1})
-	  && strcmpi (get (varargin{1}, "type"), "axes"))
+          && strcmpi (get (varargin{1}, "type"), "axes"))
     axes (varargin{1});
     varargin = varargin(2:end);
     numargin = nargin - 1;

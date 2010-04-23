@@ -42,42 +42,42 @@ function [q, r] = polyderiv (p, a)
     endif
     if (nargin == 2)
       if (! isvector (a))
-	error ("polyderiv: argument must be a vector");
+        error ("polyderiv: argument must be a vector");
       endif
       if (nargout == 1) 
-	## derivative of p*a returns a single polynomial
-	q = polyderiv (conv (p, a));
+        ## derivative of p*a returns a single polynomial
+        q = polyderiv (conv (p, a));
       else
-	## derivative of p/a returns numerator and denominator
-	r = conv (a, a);
-	if (numel (p) == 1)
-	  q = -p * polyderiv (a);
-	elseif (numel (a) == 1)
-	  q = a * polyderiv (p);
-	else
-	  q = conv (polyderiv (p), a) - conv (p, polyderiv (a));
-	  q = polyreduce (q);
-	endif
+        ## derivative of p/a returns numerator and denominator
+        r = conv (a, a);
+        if (numel (p) == 1)
+          q = -p * polyderiv (a);
+        elseif (numel (a) == 1)
+          q = a * polyderiv (p);
+        else
+          q = conv (polyderiv (p), a) - conv (p, polyderiv (a));
+          q = polyreduce (q);
+        endif
 
-	## remove common factors from numerator and denominator
-	x = polygcd (q, r);
-	if (length(x) != 1)
-	  q = deconv (q, x);
-	  r = deconv (r, x);
-	endif
+        ## remove common factors from numerator and denominator
+        x = polygcd (q, r);
+        if (length(x) != 1)
+          q = deconv (q, x);
+          r = deconv (r, x);
+        endif
 
-	## move all the gain into the numerator
-	q = q/r(1);
-	r = r/r(1);
+        ## move all the gain into the numerator
+        q = q/r(1);
+        r = r/r(1);
       endif
     else
       lp = numel (p);
       if (lp == 1)
-	q = 0;
-	return;
+        q = 0;
+        return;
       elseif (lp == 0)
-	q = [];
-	return;
+        q = [];
+        return;
       endif
 
       ## Force P to be a row vector.

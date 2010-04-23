@@ -74,10 +74,10 @@ function y = rotdim (x, k, plane)
     while (dim < nd)
       dim = dim + 1;
       if (sz (dim) != 1)
-	plane = [plane, dim];
-	if (length (plane) == 2)
-	  break;
-	endif
+        plane = [plane, dim];
+        if (length (plane) == 2)
+          break;
+        endif
       endif
     endwhile
     if (length (plane) < 1)
@@ -87,8 +87,8 @@ function y = rotdim (x, k, plane)
     endif
   else
     if (! (isvector (plane) && length (plane) == 2
-	   && all (plane == round (plane)) && all (plane > 0)
-	   && all (plane < (nd + 1)) && plane(1) != plane(2)))
+           && all (plane == round (plane)) && all (plane > 0)
+           && all (plane < (nd + 1)) && plane(1) != plane(2)))
       error ("rotdim: plane must be a 2 element integer vector defining a valid plane");
     endif
   endif

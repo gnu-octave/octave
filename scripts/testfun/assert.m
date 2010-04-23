@@ -67,10 +67,10 @@ function assert (cond, varargin)
   if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
     if ((! isnumeric (cond) && ! islogical (cond)) || ! all (cond(:)))
       if (nargin == 1)
-	## Say which elements failed?
-	error ("assert %s failed", in);
+        ## Say which elements failed?
+        error ("assert %s failed", in);
       else
-	error (varargin{:});
+        error (varargin{:});
       endif
     endif  
   else
@@ -98,46 +98,46 @@ function assert (cond, varargin)
 
     elseif (iscell (expected))
       if (! iscell (cond) || any (size (cond) != size (expected)))
-	iserror = 1;
+        iserror = 1;
       else
-	try
-	  for i = 1:length (expected(:))
-	    assert (cond{i}, expected{i}, tol);
-	  endfor
-	catch
-	  iserror = 1;
-	end_try_catch
+        try
+          for i = 1:length (expected(:))
+            assert (cond{i}, expected{i}, tol);
+          endfor
+        catch
+          iserror = 1;
+        end_try_catch
       endif
 
     elseif (isstruct (expected))
       if (! isstruct (cond) || any (size (cond) != size (expected))
-	  || rows (fieldnames (cond)) != rows (fieldnames (expected)))
-	iserror = 1;
+          || rows (fieldnames (cond)) != rows (fieldnames (expected)))
+        iserror = 1;
       else
-	try
-	  empty = numel (cond) == 0;
-	  normal = numel (cond) == 1;
-	  for [v, k] = cond
-	    if (! isfield (expected, k))
-	      error ();
-	    endif
-	    if (empty)
-	      v = cell (1, 0);
-	    endif
-	    if (normal)
-	      v = {v};
-	    else
-	      v = v(:)';
-	    endif
-	    assert (v, {expected.(k)}, tol);
-	  endfor
-	catch
-	  iserror = 1;
-	end_try_catch
+        try
+          empty = numel (cond) == 0;
+          normal = numel (cond) == 1;
+          for [v, k] = cond
+            if (! isfield (expected, k))
+              error ();
+            endif
+            if (empty)
+              v = cell (1, 0);
+            endif
+            if (normal)
+              v = {v};
+            else
+              v = v(:)';
+            endif
+            assert (v, {expected.(k)}, tol);
+          endfor
+        catch
+          iserror = 1;
+        end_try_catch
       endif
 
     elseif (ndims (cond) != ndims (expected)
-	    || any (size (cond) != size (expected)))
+            || any (size (cond) != size (expected)))
       iserror = 1;
       coda = "Dimensions don't match";
 

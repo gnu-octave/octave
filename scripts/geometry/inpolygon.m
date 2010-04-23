@@ -44,10 +44,10 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
   endif
 
   if (! (isreal (X) && isreal (Y) && ismatrix (Y) && ismatrix (Y)
-	 && size_equal (X, Y)))
+         && size_equal (X, Y)))
     error ("inpolygon: first two arguments must be real matrices of same size");
   elseif (! (isreal (xv) && isreal (yv) && isvector (xv) && isvector (yv)
-	     && size_equal (xv, yv)))
+             && size_equal (xv, yv)))
     error ("inpolygon: last two arguments must be real vectors of same size");
   endif
 
@@ -69,14 +69,14 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
     ## is Y between the y-values of edge i,j
     ##        AND (X,Y) on the left of the edge ?
     idx1 = (((yv(i) <= Y & Y < yv(j)) | (yv(j) <= Y & Y < yv(i)))
-	    & 0 < distance.*delta_yv);
+            & 0 < distance.*delta_yv);
     IN (idx1) = !IN (idx1);
 
     ## Check if (X,Y) are actually ON the boundary of the polygon.
     if (do_boundary)
        idx2 = (((yv(i) <= Y & Y <= yv(j)) | (yv(j) <= Y & Y <= yv(i)))
-	       & ((xv(i) <= X & X <= xv(j)) | (xv(j) <= X & X <= xv(i)))
-	       & (0 == distance | !delta_xv));
+               & ((xv(i) <= X & X <= xv(j)) | (xv(j) <= X & X <= xv(i)))
+               & (0 == distance | !delta_xv));
        ON (idx2) = true;
     endif
     j = i;

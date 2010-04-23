@@ -37,7 +37,7 @@ function clf (varargin)
     print_usage ();
   elseif (nargin > 1)
     if (isfigure (varargin{1}) && ischar (varargin{2})
-	&& strcmpi (varargin{2}, "reset"))
+        && strcmpi (varargin{2}, "reset"))
       oldfig = gcf;
       hfig = varargin{1};
       do_reset = true;

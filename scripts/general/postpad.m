@@ -53,7 +53,7 @@ function y = postpad (x, l, c, dim)
     endif
   else
     if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+        dim < (nd + 1))
       error ("postpad: dim must be an integer and valid dimension");
     endif
   endif

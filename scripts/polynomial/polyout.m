@@ -62,8 +62,8 @@ function y = polyout (c, x)
     tmp = coeff (c(1));
     for ii = 2:n
       if (real (c(ii)) < 0)
-	ns = " - ";
-	c(ii) = -c(ii);
+        ns = " - ";
+        c(ii) = -c(ii);
       else
         ns = " + ";
       endif

@@ -65,9 +65,9 @@ function refreshdata (h, ws)
       ws = "base";
     else
       if (!ischar (ws) || !(strcmpi (ws, "base") || strcmpi (ws, "caller")))
-	error ("refreshdata: expecting workspace to be \"base\" or ""caller\"");
+        error ("refreshdata: expecting workspace to be \"base\" or ""caller\"");
       else
-	ws = tolower (ws);
+        ws = tolower (ws);
       endif
     endif
   endif
@@ -92,10 +92,10 @@ function refreshdata (h, ws)
     for j = 1 : length (props {i})
       expr = get (objs(i), props{i}{j});
       if (!isempty (expr))
-	val = evalin (ws, expr);
-	prop =  props{i}{j}(1:end-6);
+        val = evalin (ws, expr);
+        prop =  props{i}{j}(1:end-6);
         if (! isequal (get (objs(i), prop), val))
-	  set (objs(i), props{i}{j}(1:end-6), val);
+          set (objs(i), props{i}{j}(1:end-6), val);
         endif
       endif
     endfor

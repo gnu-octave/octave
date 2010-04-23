@@ -30,7 +30,7 @@ function varargout = spchol (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spchol is obsolete and will be removed from a future version of Octave; please use chol instead");
+             "spchol is obsolete and will be removed from a future version of Octave; please use chol instead");
   endif
 
   varargout = cell (nargout, 1);

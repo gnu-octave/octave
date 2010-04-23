@@ -84,7 +84,7 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   q = (b - a) / 6 * (fa + 4 * fc + fb);
  
   [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (b - a), 
-				tol, trace, varargin{:});
+                                tol, trace, varargin{:});
 
   if (fcnt > 10000)
     warning ("maximum iteration count reached");
@@ -96,7 +96,7 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
 endfunction
 
 function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, 
-				       fcnt, hmin, tol, trace, varargin)
+                                       fcnt, hmin, tol, trace, varargin)
   if (fcnt > 10000)
     q = q0;
   else
@@ -120,9 +120,9 @@ function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
     ## Force at least one adpative step.
     if (fcnt == 5 || abs (q - q0) > tol)
       [q1, fcnt, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, fcnt, hmin,
-				    tol, trace, varargin{:});
+                                    tol, trace, varargin{:});
       [q2, fcnt, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, fcnt, hmin,
-				     tol, trace, varargin{:});
+                                     tol, trace, varargin{:});
       q = q1 + q2;
     endif
   endif

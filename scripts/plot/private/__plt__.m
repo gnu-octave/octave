@@ -44,66 +44,66 @@ function retval = __plt__ (caller, h, varargin)
     while (nargs > 0 || x_set)
 
       if (nargs == 0)
-	## Force the last plot when input variables run out.
-	next_cell = {};
-	next_arg = {""};
+        ## Force the last plot when input variables run out.
+        next_cell = {};
+        next_arg = {""};
       else
-	next_cell = varargin(k);
-	next_arg = varargin{k++};
+        next_cell = varargin(k);
+        next_arg = varargin{k++};
       endif
 
       nargs--;
 
       if (ischar (next_arg) || iscellstr (next_arg))
-	if (x_set)
-	  [options, valid] = __pltopt__ (caller, next_arg, false);
-	  if (! valid)
-	    if (nargs == 0)
-	      error ("%s: properties must appear followed by a value", caller);
-	    endif
-	    properties = [properties, [next_cell, varargin(k++)]];
-	    nargs--;
-	    continue;
-	  else
-	    while (nargs > 0 && ischar (varargin{k}))
-	      if (nargs < 2)
-		error ("%s: properties must appear followed by a value",
-		       caller);
-	      endif
-	      properties = [properties, varargin(k:k+1)];
-	      k += 2;
-	      nargs -= 2;
-	    endwhile
-	  endif
-	  if (y_set)
-	    tmp = __plt2__ (h, x, y, options, properties);
-	    properties = {};
-	    retval = [retval; tmp];
-	  else
-	    tmp = __plt1__ (h, x, options, properties);
-	    properties = {};
-	    retval = [retval; tmp];
-	  endif
-	  x_set = false;
-	  y_set = false;
-	else
-	  error ("plot: no data to plot");
-	endif
+        if (x_set)
+          [options, valid] = __pltopt__ (caller, next_arg, false);
+          if (! valid)
+            if (nargs == 0)
+              error ("%s: properties must appear followed by a value", caller);
+            endif
+            properties = [properties, [next_cell, varargin(k++)]];
+            nargs--;
+            continue;
+          else
+            while (nargs > 0 && ischar (varargin{k}))
+              if (nargs < 2)
+                error ("%s: properties must appear followed by a value",
+                       caller);
+              endif
+              properties = [properties, varargin(k:k+1)];
+              k += 2;
+              nargs -= 2;
+            endwhile
+          endif
+          if (y_set)
+            tmp = __plt2__ (h, x, y, options, properties);
+            properties = {};
+            retval = [retval; tmp];
+          else
+            tmp = __plt1__ (h, x, options, properties);
+            properties = {};
+            retval = [retval; tmp];
+          endif
+          x_set = false;
+          y_set = false;
+        else
+          error ("plot: no data to plot");
+        endif
       elseif (x_set)
-	if (y_set)
-	  options = __pltopt__ (caller, {""});
-	  tmp = __plt2__ (h, x, y, options, properties);
-	  retval = [retval; tmp];
-	  x = next_arg;
-	  y_set = false;
-	  properties = {};
-	else
-	  y = next_arg;
-	  y_set = true;
-	endif
+        if (y_set)
+          options = __pltopt__ (caller, {""});
+          tmp = __plt2__ (h, x, y, options, properties);
+          retval = [retval; tmp];
+          x = next_arg;
+          y_set = false;
+          properties = {};
+        else
+          y = next_arg;
+          y_set = true;
+        endif
       else
-	x = next_arg;
-	x_set = true;
+        x = next_arg;
+        x_set = true;
       endif
 
     endwhile
@@ -238,27 +238,27 @@ function retval = __plt2mm__ (h, x, y, options, properties)
   if (x_nr == y_nr && x_nc == y_nc)
     if (x_nc > 0)
       if (numel (options) == 1)
-	options = repmat (options(:), x_nc, 1);
+        options = repmat (options(:), x_nc, 1);
       endif
       retval = zeros (x_nc, 1);
       for i = 1:x_nc
-	tkey = options(i).key;
-	if (! isempty (tkey))
-	  set (h, "key", "on");
-	endif
+        tkey = options(i).key;
+        if (! isempty (tkey))
+          set (h, "key", "on");
+        endif
         linestyle = options(i).linestyle;
         marker = options(i).marker;
-	if (isempty (marker) && isempty (linestyle))
-	   [linestyle, marker] = __next_line_style__ ();
-	endif
-	color = options(i).color;
-	if (isempty (color))
-	  color = __next_line_color__ ();
-	endif
+        if (isempty (marker) && isempty (linestyle))
+           [linestyle, marker] = __next_line_style__ ();
+        endif
+        color = options(i).color;
+        if (isempty (color))
+          color = __next_line_color__ ();
+        endif
 
-	retval(i) = line (x(:,i), y(:,i), "keylabel", tkey, "color", color,
-			  "linestyle", linestyle,
-			  "marker", marker, properties{:});
+        retval(i) = line (x(:,i), y(:,i), "keylabel", tkey, "color", color,
+                          "linestyle", linestyle,
+                          "marker", marker, properties{:});
       endfor
     else
       error ("__plt2mm__: arguments must be a matrices");
@@ -312,21 +312,21 @@ function retval = __plt2mv__ (h, x, y, options, properties)
     for i = 1:x_nc
       tkey = options(i).key;
       if (! isempty (tkey))
-	set (h, "key", "on");
+        set (h, "key", "on");
       endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
       if (isempty (marker) && isempty (linestyle))
-	[linestyle, marker] = __next_line_style__ ();
+        [linestyle, marker] = __next_line_style__ ();
       endif
       color = options(i).color;
       if (isempty (color))
-	color = __next_line_color__ ();
+        color = __next_line_color__ ();
       endif
 
       retval(i) = line (x(:,i), y, "keylabel", tkey, "color", color,
-			"linestyle", linestyle,
-			"marker", marker, properties{:});
+                        "linestyle", linestyle,
+                        "marker", marker, properties{:});
     endfor
   else
     error ("__plt2mv__: arguments must be a matrices");
@@ -371,8 +371,8 @@ function retval = __plt2ss__ (h, x, y, options, properties)
     endif
 
     retval = line (x, y, "keylabel", key, "color", color,
-		   "linestyle", linestyle,
-		   "marker", marker, properties{:});
+                   "linestyle", linestyle,
+                   "marker", marker, properties{:});
   else
     error ("__plt2ss__: arguments must be scalars");
   endif
@@ -402,7 +402,7 @@ function retval = __plt2sv__ (h, x, y, options, properties)
     for i = 1:len
       tkey = options(i).key;
       if (! isempty (tkey))
-	set (h, "key", "on");
+        set (h, "key", "on");
       endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
@@ -411,12 +411,12 @@ function retval = __plt2sv__ (h, x, y, options, properties)
       endif
       color = options(i).color;
       if (isempty (color))
-	color = __next_line_color__ ();
+        color = __next_line_color__ ();
       endif
 
       retval(i) = line (x, y(i), "keylabel", tkey, "color", color,
-			"linestyle", linestyle,
-			"marker", marker, properties{:});
+                        "linestyle", linestyle,
+                        "marker", marker, properties{:});
     endfor
   else
     error ("__plt2sv__: first arg must be scalar, second arg must be vector");
@@ -467,7 +467,7 @@ function retval = __plt2vm__ (h, x, y, options, properties)
     for i = 1:y_nc
       tkey = options(i).key;
       if (! isempty (tkey))
-	set (h, "key", "on");
+        set (h, "key", "on");
       endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
@@ -476,12 +476,12 @@ function retval = __plt2vm__ (h, x, y, options, properties)
       endif
       color = options(i).color;
       if (isempty (color))
-	color = __next_line_color__ ();
+        color = __next_line_color__ ();
       endif
 
       retval(i) = line (x, y(:,i), "keylabel", tkey, "color", color,
-			"linestyle", linestyle,
-			"marker", marker, properties{:});
+                        "linestyle", linestyle,
+                        "marker", marker, properties{:});
     endfor
   else
     error ("__plt2vm__: arguments must be a matrices");
@@ -512,7 +512,7 @@ function retval = __plt2vs__ (h, x, y, options, properties)
     for i = 1:len
       tkey = options(i).key;
       if (! isempty (tkey))
-	set (h, "key", "on");
+        set (h, "key", "on");
       endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
@@ -521,12 +521,12 @@ function retval = __plt2vs__ (h, x, y, options, properties)
       endif
       color = options(i).color;
       if (isempty (color))
-	color = __next_line_color__ ();
+        color = __next_line_color__ ();
       endif
 
       retval(i) = line (x(i), y, "keylabel", tkey, "color", color,
-			"linestyle", linestyle,
-			"marker", marker, properties{:});
+                        "linestyle", linestyle,
+                        "marker", marker, properties{:});
     endfor
   else
     error ("__plt2vs__: first arg must be vector, second arg must be scalar");
@@ -585,8 +585,8 @@ function retval = __plt2vv__ (h, x, y, options, properties)
     endif
 
     retval = line (x, y, "keylabel", key, "color", color,
-	      "linestyle", linestyle,
-	      "marker", marker, properties{:});
+              "linestyle", linestyle,
+              "marker", marker, properties{:});
   else
     error ("__plt2vv__: vector lengths must match");
   endif

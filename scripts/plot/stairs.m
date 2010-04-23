@@ -65,11 +65,11 @@ function [xs, ys] = stairs (varargin)
     else
       oldax = gca ();
       unwind_protect
-	axes (ax);
-	newplot ();
-	[h, xxs, yys] = __stairs__ (true, varargin{:});
+        axes (ax);
+        newplot ();
+        [h, xxs, yys] = __stairs__ (true, varargin{:});
       unwind_protect_cleanup
-	axes (oldax);
+        axes (oldax);
       end_unwind_protect
     endif
     if (nargout == 1)
@@ -85,7 +85,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     varargin(1) = [];
     if (ismatrix (y))
       if (isvector (y))
-	y = y(:);
+        y = y(:);
       endif
       x = 1:rows (y);
     endif
@@ -116,7 +116,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     else
       [x_nr, x_nc] = size (x);
       if (x_nr != nr || x_nc != nc)
-	error ("stairs: argument size mismatch");
+        error ("stairs: argument size mismatch");
       endif
     endif
   endif
@@ -143,9 +143,9 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("stairs", arg, false);
       if (valid)
-	have_line_spec = true;
-	varargin(i) = [];
-	break;
+        have_line_spec = true;
+        varargin(i) = [];
+        break;
       endif
     endif
   endfor 
@@ -155,47 +155,47 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     unwind_protect
       hold_state = get (gca (), "nextplot");
       for i = 1 : size(y, 2)
-	hg = hggroup ();
-	h = [h; hg];
-	args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
+        hg = hggroup ();
+        h = [h; hg];
+        args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});
 
-	addproperty ("xdata", hg, "data", x(:,i).');
-	addproperty ("ydata", hg, "data", y(:,i).');
+        addproperty ("xdata", hg, "data", x(:,i).');
+        addproperty ("ydata", hg, "data", y(:,i).');
 
-	addlistener (hg, "xdata", @update_data);
-	addlistener (hg, "ydata", @update_data);
+        addlistener (hg, "xdata", @update_data);
+        addlistener (hg, "ydata", @update_data);
 
-	if (have_line_spec)
-	  tmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
-		      "parent", hg);
-	else
-	  tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
-		      "parent", hg);
-	endif
+        if (have_line_spec)
+          tmp = line (xs(:,i).', ys(:,i).', "color", linespec.color,
+                      "parent", hg);
+        else
+          tmp = line (xs(:,i).', ys(:,i).', "color", __next_line_color__ (),
+                      "parent", hg);
+        endif
 
         addproperty ("color", hg, "linecolor", get (tmp, "color"));
-	addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));
-	addproperty ("linestyle", hg, "linelinestyle", get (tmp, "linestyle"));
+        addproperty ("linewidth", hg, "linelinewidth", get (tmp, "linewidth"));
+        addproperty ("linestyle", hg, "linelinestyle", get (tmp, "linestyle"));
 
-	addproperty ("marker", hg, "linemarker", get (tmp, "marker"));
-	addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
-		     get (tmp, "markerfacecolor"));
-	addproperty ("markeredgecolor", hg, "linemarkeredgecolor",
-		     get (tmp, "markeredgecolor"));
-	addproperty ("markersize", hg, "linemarkersize",
-		     get (tmp, "markersize"));
+        addproperty ("marker", hg, "linemarker", get (tmp, "marker"));
+        addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
+                     get (tmp, "markerfacecolor"));
+        addproperty ("markeredgecolor", hg, "linemarkeredgecolor",
+                     get (tmp, "markeredgecolor"));
+        addproperty ("markersize", hg, "linemarkersize",
+                     get (tmp, "markersize"));
 
-	addlistener (hg, "color", @update_props);
-	addlistener (hg, "linewidth", @update_props); 
-	addlistener (hg, "linestyle", @update_props); 
-	addlistener (hg, "marker", @update_props); 
-	addlistener (hg, "markerfacecolor", @update_props); 
-	addlistener (hg, "markeredgecolor", @update_props); 
-	addlistener (hg, "markersize", @update_props); 
+        addlistener (hg, "color", @update_props);
+        addlistener (hg, "linewidth", @update_props); 
+        addlistener (hg, "linestyle", @update_props); 
+        addlistener (hg, "marker", @update_props); 
+        addlistener (hg, "markerfacecolor", @update_props); 
+        addlistener (hg, "markeredgecolor", @update_props); 
+        addlistener (hg, "markersize", @update_props); 
 
-	if (! isempty (args))
-	  set (hg, args{:});
-	endif
+        if (! isempty (args))
+          set (hg, args{:});
+        endif
       endfor
     unwind_protect_cleanup
       set (gca (), "nextplot", hold_state);

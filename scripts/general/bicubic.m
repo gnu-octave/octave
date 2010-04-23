@@ -79,7 +79,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     [rz, cz] = size (Z) ; 
     if (isvector (X) && isvector (Y))
       if (rz != length (Y) || cz != length (X))
-	error ("length of X and Y must match the size of Z");
+        error ("length of X and Y must match the size of Z");
       endif
     elseif (size_equal (X, Y) && size_equal (X, Z))
       X = X(1,:);
@@ -184,8 +184,8 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     it = indt(i);
     int = [it, it+1, it+2, it+3];
     F(i,:) = ([ct0(i),ct1(i),ct2(i),ct3(i)]
-	      * (p(int,inds) .* cs0 + p(int,inds+1) .* cs1
-		 + p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3));
+              * (p(int,inds) .* cs0 + p(int,inds+1) .* cs1
+                 + p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3));
   endfor
 
   ## Set points outside the table to extrapval.

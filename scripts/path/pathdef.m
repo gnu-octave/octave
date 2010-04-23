@@ -95,26 +95,26 @@ function specifiedpath = __extractpath__ (savefile)
     unwind_protect
       linenum = 0;
       while (linenum >= 0)
-	result = fgetl (fid);
-	if (isnumeric (result))
-	  ## End at the end of file.
-	  linenum = -1;
-	else
-	  linenum++;
-	  filelines{linenum} = result;
-	  ## Find the first and last lines if they exist in the file.
-	  if (strcmp (result, beginstring))
-	    startline = linenum + 1;
-	  elseif (strcmp (result, endstring))
-	    endline = linenum - 1;
-	  endif
-	endif
+        result = fgetl (fid);
+        if (isnumeric (result))
+          ## End at the end of file.
+          linenum = -1;
+        else
+          linenum++;
+          filelines{linenum} = result;
+          ## Find the first and last lines if they exist in the file.
+          if (strcmp (result, beginstring))
+            startline = linenum + 1;
+          elseif (strcmp (result, endstring))
+            endline = linenum - 1;
+          endif
+        endif
       endwhile
     unwind_protect_cleanup
       closeread = fclose (fid);
       if (closeread < 0)
-	error ("savepath: could not close savefile after reading, %s",
-	       savefile);
+        error ("savepath: could not close savefile after reading, %s",
+               savefile);
       endif
     end_unwind_protect
   endif
@@ -125,8 +125,8 @@ function specifiedpath = __extractpath__ (savefile)
   elseif (startline > 0)
     ## Undo doubling of single quote characters performed by savepath.
     specifiedpath = strrep (regexprep (cstrcat (filelines(startline:endline){:}),
-				       " *path *\\('(.*)'\\); *", "$1"),
-			    "''", "'");
+                                       " *path *\\('(.*)'\\); *", "$1"),
+                            "''", "'");
   else
     specifiedpath = "";
   endif

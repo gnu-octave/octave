@@ -76,7 +76,7 @@ function retval = surfl (varargin)
       lstr = varargin{end};
       if (strncmp (tolower (lstr), "light", 5))
         warning ("light method not supported (yet), using cdata method instead");
-	## This can be implemented when light objects are supported.
+        ## This can be implemented when light objects are supported.
         use_cdata = false;
       elseif (strncmp (tolower (lstr), "cdata", 5))
         use_cdata = true;
@@ -119,7 +119,7 @@ function retval = surfl (varargin)
     tmp = surface (varargin{:});
     if (! ishold ())
       set (h, "view", [-37.5, 30],
-	   "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
+           "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
     endif
 
     ## Get view vector (vv).

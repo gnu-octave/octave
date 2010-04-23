@@ -39,38 +39,38 @@ function retval = polar (varargin)
 
     if (nargs == 3)
       if (! ischar (varargin{3}))
-	error ("polar: third argument must be a string");
+        error ("polar: third argument must be a string");
       endif
       tmp = __plr2__ (h, varargin{:});
       maxr = max (varargin {2} (:));
     elseif (nargs == 2)
       if (ischar (varargin{2}))
-	tmp = __plr1__ (h, varargin{:});
-	if (iscomplex(varargin{1}))
-	  maxr = max (imag(varargin{1})(:));
-	else
-	  maxr = max (varargin{1}(:));
-	endif
+        tmp = __plr1__ (h, varargin{:});
+        if (iscomplex(varargin{1}))
+          maxr = max (imag(varargin{1})(:));
+        else
+          maxr = max (varargin{1}(:));
+        endif
       else
-	fmt = "";
-	tmp = __plr2__ (h, varargin{:}, fmt);
-	maxr = max (varargin {2} (:));
+        fmt = "";
+        tmp = __plr2__ (h, varargin{:}, fmt);
+        maxr = max (varargin {2} (:));
       endif
     elseif (nargs == 1)
       fmt = "";
       tmp = __plr1__ (h, varargin{:}, fmt);
       if (iscomplex(varargin{1}))
-	maxr = max (imag(varargin{1})(:));
+        maxr = max (imag(varargin{1})(:));
       else
-	maxr = max (varargin{1}(:));
+        maxr = max (varargin{1}(:));
       endif
     else
       print_usage ();
     endif
 
     set (h, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
-	 "xaxislocation", "zero", "yaxislocation", "zero",
-	 "plotboxaspectratio", [1, 1, 1]); 
+         "xaxislocation", "zero", "yaxislocation", "zero",
+         "plotboxaspectratio", [1, 1, 1]); 
 
     if (nargout > 0)
       retval = tmp;

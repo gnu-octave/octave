@@ -86,40 +86,40 @@ function y = intwarning (x)
     endif
     if (ischar (x))
       if (strcmpi (x, "query"))
-	if (nargout == 0)
-	  __print_int_warn_state__ ("Octave:int-convert-nan");
-	  __print_int_warn_state__ ("Octave:int-convert-non-int-val");
-	  __print_int_warn_state__ ("Octave:int-convert-overflow");
-	  __print_int_warn_state__ ("Octave:int-math-overflow");
-	  printf("\n");
-	endif
+        if (nargout == 0)
+          __print_int_warn_state__ ("Octave:int-convert-nan");
+          __print_int_warn_state__ ("Octave:int-convert-non-int-val");
+          __print_int_warn_state__ ("Octave:int-convert-overflow");
+          __print_int_warn_state__ ("Octave:int-math-overflow");
+          printf("\n");
+        endif
       elseif (strcmpi (x, "on"))
-	warning ("on", "Octave:int-convert-nan");
-	warning ("on", "Octave:int-convert-non-int-val");
-	warning ("on", "Octave:int-convert-overflow");
-	warning ("on", "Octave:int-math-overflow");
+        warning ("on", "Octave:int-convert-nan");
+        warning ("on", "Octave:int-convert-non-int-val");
+        warning ("on", "Octave:int-convert-overflow");
+        warning ("on", "Octave:int-math-overflow");
       elseif (strcmpi (x, "off"))
-	warning ("off", "Octave:int-convert-nan");
-	warning ("off", "Octave:int-convert-non-int-val");
-	warning ("off", "Octave:int-convert-overflow");    
-	warning ("off", "Octave:int-math-overflow");    
+        warning ("off", "Octave:int-convert-nan");
+        warning ("off", "Octave:int-convert-non-int-val");
+        warning ("off", "Octave:int-convert-overflow");    
+        warning ("off", "Octave:int-math-overflow");    
       else
-	error ("intwarning: unrecognized argument");
+        error ("intwarning: unrecognized argument");
       endif
     elseif (isstruct(x))
       for fld = fieldnames (x)
-	if (strcmp ("Octave:int-convert-nan") || 
-	    strcmp ("Octave:int-convert-non-int-val") || 
-	    strcmp ("Octave:int-convert-overflow") ||
-	    strcmp ("Octave:int-cmath-overflow"))
-	  s = getfield (x, fld);
-	  if (! ischar (s) || !(strcmpi("s","on") || strcmpi("s","off")))
-	    error ("intwarning: unexpected warning state");
-	  endif
-	  warning (s, fld);
-	else
-	  error ("intwarning: unrecognized integer warning %s", fld);
-	endif
+        if (strcmp ("Octave:int-convert-nan") || 
+            strcmp ("Octave:int-convert-non-int-val") || 
+            strcmp ("Octave:int-convert-overflow") ||
+            strcmp ("Octave:int-cmath-overflow"))
+          s = getfield (x, fld);
+          if (! ischar (s) || !(strcmpi("s","on") || strcmpi("s","off")))
+            error ("intwarning: unexpected warning state");
+          endif
+          warning (s, fld);
+        else
+          error ("intwarning: unrecognized integer warning %s", fld);
+        endif
       endfor
     else
       error ("intwarning: unexpected input");
@@ -129,5 +129,5 @@ endfunction
 
 function __print_int_warn_state__ (s)
   fprintf ("The state of warning \"%s\" is \"%s\"\n", 
-	   s, warning ("query", s).state);
+           s, warning ("query", s).state);
 endfunction

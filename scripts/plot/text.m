@@ -50,7 +50,7 @@ function h = text (varargin)
     if (ischar (label) || iscellstr (label))
       varargin(1:offset) = [];
       if (ischar (label))
-	label = cellstr (label);
+        label = cellstr (label);
       endif
       n = numel (label);
       nx = numel (x);
@@ -73,22 +73,22 @@ function h = text (varargin)
       ca = gca ();
       tmp = zeros (n, 1);
       if (n == 1)
-	label = label{1};
-	for i = 1:nx
-	  tmp(i) = __go_text__ (ca, "string", label,
-				"position", pos(i,:),
-				varargin{:});
-	endfor
-	__request_drawnow__ ();
+        label = label{1};
+        for i = 1:nx
+          tmp(i) = __go_text__ (ca, "string", label,
+                                "position", pos(i,:),
+                                varargin{:});
+        endfor
+        __request_drawnow__ ();
       elseif (n == nx)
-	for i = 1:nx
-	  tmp(i) = __go_text__ (ca, "string", label{i},
-				"position", pos(i,:),
-				varargin{:});
-	endfor
-	__request_drawnow__ ();
+        for i = 1:nx
+          tmp(i) = __go_text__ (ca, "string", label{i},
+                                "position", pos(i,:),
+                                varargin{:});
+        endfor
+        __request_drawnow__ ();
       else
-	error ("text: dimension mismatch for coordinates and label");
+        error ("text: dimension mismatch for coordinates and label");
       endif
     else
       error ("text: dimension mismatch for coordinates");

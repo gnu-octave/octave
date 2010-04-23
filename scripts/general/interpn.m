@@ -89,7 +89,7 @@ function vi = interpn (varargin)
     if (nargs == 2)
       m = varargin{2};
       if (! isnumeric (m) || ! isscalar (m) || floor (m) != m)
-	error ("m is expected to be a integer scalar");
+        error ("m is expected to be a integer scalar");
       endif
     endif
     sz = size (v);
@@ -110,7 +110,7 @@ function vi = interpn (varargin)
       x{i} = 1 : sz(i);
     endfor
   elseif (rem (nargs, 2) == 1 && nargs ==  
-	  (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
+          (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     nv = ceil (nargs / 2);
     v = varargin{nv};
     sz = size (v);
@@ -124,7 +124,7 @@ function vi = interpn (varargin)
   if (any (! cellfun (@isvector, x)))
     for i = 2 : nd
       if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
-	error ("dimensional mismatch");
+        error ("dimensional mismatch");
       endif
       idx (1 : nd) = {1};
       idx (i) = ":";
@@ -161,12 +161,12 @@ function vi = interpn (varargin)
   elseif (strcmp (method, "spline"))
     if (any (! cellfun (@isvector, y)))
       for i = 2 : nd
-	if (! size_equal (y{1}, y{i}))
-	  error ("dimensional mismatch");
-	endif
-	idx (1 : nd) = {1};
-	idx (i) = ":";
-	y{i} = y{i}(idx{:});
+        if (! size_equal (y{1}, y{i}))
+          error ("dimensional mismatch");
+        endif
+        idx (1 : nd) = {1};
+        idx (i) = ":";
+        y{i} = y{i}(idx{:});
       endfor
       idx (1 : nd) = {1};
       idx (1) = ":";
@@ -180,8 +180,8 @@ function vi = interpn (varargin)
       idx = cell (1, ly);
       q = cell (1, nd);
       for i = 1 : ly
- 	q(:) = i;
- 	idx {i} = q;
+        q(:) = i;
+        idx {i} = q;
       endfor
       vi = vi (cellfun (@(x) sub2ind (size(vi), x{:}), idx));
       vi = reshape (vi, size(y{1}));

@@ -55,7 +55,7 @@ function wavwrite (y, varargin)
     if (nargin > 2)
       samples_per_sec = varargin{2};
       if (nargin > 3)
-	bits_per_sample = varargin{3};
+        bits_per_sample = varargin{3};
       endif
     endif
   else
@@ -63,7 +63,7 @@ function wavwrite (y, varargin)
     if (nargin > 2)
       samples_per_sec = varargin{1};
       if (nargin > 3)
-	bits_per_sample = varargin{2};
+        bits_per_sample = varargin{2};
       endif
     endif
   endif

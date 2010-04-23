@@ -41,17 +41,17 @@ function h = trimesh (tri, x, y, z, varargin)
     newplot ();
     if (nargout > 0)
       h = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri, 
-		 "FaceColor", "none", "EdgeColor", __next_line_color__(), 
-		 varargin{:});
+                 "FaceColor", "none", "EdgeColor", __next_line_color__(), 
+                 varargin{:});
     else
       patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri, 
-	     "FaceColor", "none", "EdgeColor", __next_line_color__(), 
-	     varargin{:});
+             "FaceColor", "none", "EdgeColor", __next_line_color__(), 
+             varargin{:});
     endif
 
     if (! ishold ())
       set (gca(), "view", [-37.5, 30],
-	   "xgrid", "on", "ygrid", "on", "zgrid", "on");
+           "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif
 endfunction

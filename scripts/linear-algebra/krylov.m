@@ -89,7 +89,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   [m, kb] = size (V);
   if (m != na)
     error("A(%d x %d), V(%d x %d): argument dimensions do not match",
-	  na, na, m, kb)
+          na, na, m, kb)
   endif
 
   if (! isscalar (k))
@@ -130,18 +130,18 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
       short_q = q(short_pv);
 
       if (norm (short_q) < eps1)
-	## Insignificant column; delete.
+        ## Insignificant column; delete.
         nv = columns (V);
         if (jj != nv)
           [V(:,jj), V(:,nv)] = swap (V(:,jj), V(:,nv));
-	  ## FIXME -- H columns should be swapped too.  Not done
-	  ## since Block Hessenberg structure is lost anyway.
+          ## FIXME -- H columns should be swapped too.  Not done
+          ## since Block Hessenberg structure is lost anyway.
         endif
         V = V(:,1:(nv-1));
-	## One less reflection.
+        ## One less reflection.
         nu--;
       else
-	## New householder reflection.
+        ## New householder reflection.
         if (pflg)
           ## Locate max magnitude element in short_q.
           asq = abs (short_q);
@@ -149,15 +149,15 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
           maxidx = find (asq == maxv, 1);
           pivot_idx = short_pv(maxidx);
 
-	  ## See if need to change the pivot list.
+          ## See if need to change the pivot list.
           if (pivot_idx != pivot_vec(nu))
             swapidx = maxidx + (nu-1);
             [pivot_vec(nu), pivot_vec(swapidx)] = ...
-		swap (pivot_vec(nu), pivot_vec(swapidx));
+                swap (pivot_vec(nu), pivot_vec(swapidx));
           endif
         endif
 
-	## Isolate portion of vector for reflection.
+        ## Isolate portion of vector for reflection.
         idx = pivot_vec(nu:na);
         jdx = pivot_vec(1:nu);
 
@@ -168,7 +168,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         ## Reduce V per the reflection.
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
         if(iter > 1)
-	  ## FIXME -- not done correctly for block case.
+          ## FIXME -- not done correctly for block case.
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif
 
@@ -233,7 +233,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   Uret = U;
   if (max (max (abs (Uret(zidx,:)))) > 0)
     warning ("krylov: trivial null space corrupted; set pflg = 1 or eps1 > %e",
-	     eps1);
+             eps1);
   endif
 
 endfunction

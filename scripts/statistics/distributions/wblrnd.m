@@ -37,7 +37,7 @@ function rnd = wblrnd (scale, shape, r, c)
     if (!isscalar(shape) || !isscalar(scale)) 
       [retval, shape, scale] = common_size (shape, scale);
       if (retval > 0)
-	error ("wblrnd: shape and scale must be of common size or scalar");
+        error ("wblrnd: shape and scale must be of common size or scalar");
       endif
     endif
   endif
@@ -52,8 +52,8 @@ function rnd = wblrnd (scale, shape, r, c)
     sz = [r, c];
 
     if (any (size (scale) != 1) && 
-	((length (size (scale)) != length (sz))
-	 || any (size (scale) != sz)))
+        ((length (size (scale)) != length (sz))
+         || any (size (scale) != sz)))
       error ("wblrnd: shape and scale must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -66,8 +66,8 @@ function rnd = wblrnd (scale, shape, r, c)
     endif
 
     if (any (size (scale) != 1) && 
-	((length (size (scale)) != length (sz))
-	 || any (size (scale) != sz)))
+        ((length (size (scale)) != length (sz))
+         || any (size (scale) != sz)))
       error ("wblrnd: shape and scale must be scalar or of size sz");
     endif
   elseif (nargin == 2)

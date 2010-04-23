@@ -62,10 +62,10 @@ function pdf = hygepdf (x, t, m, n)
   if (any (k))
     if (isscalar (t) && isscalar (m) && isscalar (n))
       pdf (k) = (bincoeff (m, x(k)) .* bincoeff (t-m, n-x(k))
-		 / bincoeff (t, n));
+                 / bincoeff (t, n));
     else
       pdf (k) = (bincoeff (m(k), x(k)) .* bincoeff (t(k)-m(k), n(k)-x(k))
-		 ./ bincoeff (t(k), n(k)));
+                 ./ bincoeff (t(k), n(k)));
     endif
   endif
 

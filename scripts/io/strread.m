@@ -115,16 +115,16 @@ function varargout = strread (str, formatstr = "%f", varargin)
             warning ("strread: unknown comment style '%s'", val);
         endswitch
       case "delimiter"
-	delimiter_str = varargin {n+1};
+        delimiter_str = varargin {n+1};
       case "emptyvalue"
-	numeric_fill_value = varargin {n+1};
+        numeric_fill_value = varargin {n+1};
       case "bufsize"
         ## XXX: We could synthesize this, but that just seems weird...
-	warning ("strread: property \"bufsize\"  is not implemented");
+        warning ("strread: property \"bufsize\"  is not implemented");
       case "whitespace"
-	white_spaces = varargin {n+1}; 
+        white_spaces = varargin {n+1}; 
       case "expchars"
-	warning ("strread: property \"expchars\"  is not implemented");
+        warning ("strread: property \"expchars\"  is not implemented");
       otherwise
         warning ("strread: unknown property \"%s\"", varargin {n});
     endswitch

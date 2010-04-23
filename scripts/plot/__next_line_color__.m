@@ -39,7 +39,7 @@ function rgb = __next_line_color__ (reset)
     elseif (! isempty (color_rotation))
       rgb = color_rotation(color_index,:);
       if (++color_index > num_colors)
-	color_index = 1;
+        color_index = 1;
         __next_line_style__ ("incr");
       endif
     else

@@ -58,24 +58,24 @@ function h = colorbar (varargin)
 
     if (ischar(arg))
       if (strcmpi (arg, "peer"))
-	if (i > nargin)
-	  error ("colorbar: missing axes handle after \"peer\"");
-	else
-	  ax = varargin{i++};
-	  if (!isscalar (ax) || ! ishandle (ax)
-	      || ! strcmp (get (ax, "type"), "axes"))
-	    error ("colorbar: expecting an axes handle following \"peer\"");
-	  endif
-	endif
+        if (i > nargin)
+          error ("colorbar: missing axes handle after \"peer\"");
+        else
+          ax = varargin{i++};
+          if (!isscalar (ax) || ! ishandle (ax)
+              || ! strcmp (get (ax, "type"), "axes"))
+            error ("colorbar: expecting an axes handle following \"peer\"");
+          endif
+        endif
       elseif (strcmpi (arg, "north") || strcmpi (arg, "south")
-	      || strcmpi (arg, "east") || strcmpi (arg, "west")
-	      || strcmpi (arg, "northoutside") || strcmpi (arg, "southoutside")
-	      || strcmpi (arg, "eastoutside") || strcmpi (arg, "westoutside"))
-	loc = tolower (arg);
+              || strcmpi (arg, "east") || strcmpi (arg, "west")
+              || strcmpi (arg, "northoutside") || strcmpi (arg, "southoutside")
+              || strcmpi (arg, "eastoutside") || strcmpi (arg, "westoutside"))
+        loc = tolower (arg);
       elseif (strcmpi (arg, "off") || strcmpi (arg, "none"))
-	deleting = true;
+        deleting = true;
       else
-	args{end+1} = arg;
+        args{end+1} = arg;
       endif
     else
       args{end+1} = arg;
@@ -109,46 +109,46 @@ function h = colorbar (varargin)
     orig_pos = obj.position;
     orig_opos = obj.outerposition;
     [pos, cpos, vertical, mirror] =  ...
-	__position_colorbox__ (loc, obj, ancestor (ax, "figure"));
+        __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "activepositionproperty", "position", "position", pos);
 
     cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar", 
-    		       "handlevisibility", "on", 
-		       "activepositionproperty", "position", 
-		       "position", cpos);
+                       "handlevisibility", "on", 
+                       "activepositionproperty", "position", 
+                       "position", cpos);
     addproperty ("location", cax, "radio",
-		 "eastoutside|east|westoutside|west|northoutside|north|southoutside|south",
-		 loc);
+                 "eastoutside|east|westoutside|west|northoutside|north|southoutside|south",
+                 loc);
     addproperty ("axes", cax, "handle", ax);
 
     if (vertical)
       hi = image (cax, [0,1], [cmin, cmax], [1 : clen]');
       if (mirror)
-	set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-	     "ylim", cext, "ylimmode", "manual",
-	     "yaxislocation", "right", args{:});
+        set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
+             "ylim", cext, "ylimmode", "manual",
+             "yaxislocation", "right", args{:});
       else
-	set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-	     "ylim", cext, "ylimmode", "manual",
-	     "yaxislocation", "left", args{:});
+        set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
+             "ylim", cext, "ylimmode", "manual",
+             "yaxislocation", "left", args{:});
       endif
     else
       hi = image (cax, [cmin, cmax], [0,1], [1 : clen]);
       if (mirror)
-	set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-	     "xlim", cext, "xlimmode", "manual",
-	     "xaxislocation", "top", args{:});
+        set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
+             "xlim", cext, "xlimmode", "manual",
+             "xaxislocation", "top", args{:});
       else
-	set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-	     "xlim", cext, "xlimmode", "manual",
-	     "xaxislocation", "bottom", args{:});
+        set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
+             "xlim", cext, "xlimmode", "manual",
+             "xaxislocation", "bottom", args{:});
       endif
     endif
 
     ctext = text (0, 0, "", "tag", "colorbar","visible", "off", 
-		  "handlevisibility", "off", "xliminclude", "off",  
-		  "yliminclude", "off", "zliminclude", "off",
-		  "deletefcn", {@deletecolorbar, cax, orig_pos, orig_opos});
+                  "handlevisibility", "off", "xliminclude", "off",  
+                  "yliminclude", "off", "zliminclude", "off",
+                  "deletefcn", {@deletecolorbar, cax, orig_pos, orig_opos});
 
     set (cax, "deletefcn", {@resetaxis, orig_pos, orig_opos});
 
@@ -173,7 +173,7 @@ function deletecolorbar (h, d, hc, pos, opos)
       delete (hc);
     endif
     if (!isempty (ancestor (h, "axes")) &&
-	strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
+        strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
       set (ancestor (h, "axes"), "position", pos, "outerposition", opos);
     endif
   endif
@@ -212,23 +212,23 @@ function update_colorbar_axis (h, d, cax)
     loc = get (cax, "location");
     obj = get (h);
     [pos, cpos, vertical, mirror] =  ...
-	__position_colorbox__ (loc, obj, ancestor (h, "figure"));
+        __position_colorbox__ (loc, obj, ancestor (h, "figure"));
 
     if (vertical)
       if (mirror)
-	set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-	     "yaxislocation", "right", "position", cpos);
+        set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
+             "yaxislocation", "right", "position", cpos);
       else
-	set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
-	     "yaxislocation", "left", "position", cpos);
+        set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
+             "yaxislocation", "left", "position", cpos);
       endif
     else
       if (mirror)
-	set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-	     "xaxislocation", "top", "position", cpos);
+        set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
+             "xaxislocation", "top", "position", cpos);
       else
-	set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
-	     "xaxislocation", "bottom", "position", cpos);
+        set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
+             "xaxislocation", "bottom", "position", cpos);
       endif
     endif
 
@@ -245,23 +245,23 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
     r = obj.plotboxaspectratio;
     if (pos(3) > pos(4))
       switch (cbox)
-	case {"east", "eastoutside", "west", "westoutside"}
-	  off = [(pos(3) - pos(4)) ./ (r(2) / r(1)), 0];	  
+        case {"east", "eastoutside", "west", "westoutside"}
+          off = [(pos(3) - pos(4)) ./ (r(2) / r(1)), 0];          
       endswitch
     else
       switch (cbox)
-	case {"north", "northoutside", "south", "southoutside"}
-	  off = [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
-	  ## This shouldn't be here except that gnuplot doesn't have a
-	  ## square window and so a square aspect ratio is not square.
-	  ## The corrections are empirical.
-	  if (strcmp (get (cf, "__backend__"), "gnuplot"))
-	    if (length (cbox) > 7 && strcmp (cbox(end-6:end),"outside"))
-	      off = off / 2;
-	    else
-	      off = off / 1.7;
-	    endif
-	  endif
+        case {"north", "northoutside", "south", "southoutside"}
+          off = [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
+          ## This shouldn't be here except that gnuplot doesn't have a
+          ## square window and so a square aspect ratio is not square.
+          ## The corrections are empirical.
+          if (strcmp (get (cf, "__backend__"), "gnuplot"))
+            if (length (cbox) > 7 && strcmp (cbox(end-6:end),"outside"))
+              off = off / 2;
+            else
+              off = off / 1.7;
+            endif
+          endif
       endswitch
     endif
     off = off / 2;

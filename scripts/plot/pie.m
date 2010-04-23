@@ -86,13 +86,13 @@ function hlist = __pie__ (varargin)
       labels = arg;
       have_labels = true;
       if (numel (x) != numel (labels))
-	error ("pie: mismatch in number of labels and data");
+        error ("pie: mismatch in number of labels and data");
       endif
     elseif (isnumeric (arg))
       explode = arg;
       have_explode = true;
       if (! size_equal (x, explode))
-	error ("pie: mismatch in number of elements in explode and data");
+        error ("pie: mismatch in number of elements in explode and data");
       endif
     endif
   endwhile
@@ -140,7 +140,7 @@ function hlist = __pie__ (varargin)
     endif
 
     hlist = [hlist; patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], i);
-    	     text(xt, yt, labels{i}, "horizontalalignment", align)];
+             text(xt, yt, labels{i}, "horizontalalignment", align)];
   endfor
 
   if (len == 1)

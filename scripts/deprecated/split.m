@@ -71,25 +71,25 @@ function m = split (s, t, n)
       l_t = length (t);
 
       if (l_s == 0)
-	m = "";
-	return;
+        m = "";
+        return;
       elseif (l_t == 0)
-	m = s';
-	return;
+        m = s';
+        return;
       elseif (l_s < l_t)
-	error ("split: s must not be shorter than t");
+        error ("split: s must not be shorter than t");
       endif
 
       if (min (size (s)) != 1 || min (size (t)) != 1)
-	error("split: multi-line strings are not supported");
+        error("split: multi-line strings are not supported");
       endif
 
       ind = findstr (s, t, 0);
       if (length (ind) == 0)
-	m = s;
-	return;
+        m = s;
+        return;
       elseif (n - 1 < length(ind))
-	ind = ind(1:n-1);
+        ind = ind(1:n-1);
       endif
       ind2 = [1, ind+l_t];
       ind  = [ind, l_s+1];
@@ -103,8 +103,8 @@ function m = split (s, t, n)
 
       ## Copy the strings to the matrix.
       for i = 1:length (ind)
-	tmp = ind2(i):(ind(i)-1);
-	m(i,1:length(tmp)) = s(tmp);
+        tmp = ind2(i):(ind(i)-1);
+        m(i,1:length(tmp)) = s(tmp);
       endfor
     else
       error ("split: both s and t must be strings");

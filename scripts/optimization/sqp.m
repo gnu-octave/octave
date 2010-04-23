@@ -224,16 +224,16 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     have_hess = 0;
     if (iscell (objf))
       if (length (objf) > 0)
-	__sqp_obj_fun__ = obj_fun = objf{1};
-	if (length (objf) > 1)
-	  obj_grd = objf{2};
-	  if (length (objf) > 2)
-	    obj_hess = objf{3};
-	    have_hess = 1;
-	  endif
-	endif
+        __sqp_obj_fun__ = obj_fun = objf{1};
+        if (length (objf) > 1)
+          obj_grd = objf{2};
+          if (length (objf) > 2)
+            obj_hess = objf{3};
+            have_hess = 1;
+          endif
+        endif
       else
-	error ("sqp: invalid objective function");
+        error ("sqp: invalid objective function");
       endif
     else
       __sqp_obj_fun__ = obj_fun = objf;
@@ -244,82 +244,82 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     if (nargin > 2)
       ce_grd = @fd_ce_jac;
       if (iscell (cef))
-	if (length (cef) > 0)
-	  __sqp_ce_fun__ = ce_fun = cef{1};
-	  if (length (cef) > 1)
-	    ce_grd = cef{2};
-	  endif
-	else
-	  error ("sqp: invalid equality constraint function");
-	endif
+        if (length (cef) > 0)
+          __sqp_ce_fun__ = ce_fun = cef{1};
+          if (length (cef) > 1)
+            ce_grd = cef{2};
+          endif
+        else
+          error ("sqp: invalid equality constraint function");
+        endif
       elseif (! isempty (cef))
-	ce_fun = cef;
+        ce_fun = cef;
       endif
     endif
     __sqp_ce_fun__ = ce_fun;
 
     ci_fun = @empty_cf;
     ci_grd = @empty_jac;
-	
+        
     if (nargin > 3)
       ## constraint function given by user with possibly gradient
       __sqp_cif__ = cif;
       ## constraint function given by user without gradient
       __sqp_cifcn__ = @empty_cf;
       if (iscell (__sqp_cif__))
-	if (length (__sqp_cif__) > 0)
-	  __sqp_cifcn__ = __sqp_cif__{1};
-	endif
+        if (length (__sqp_cif__) > 0)
+          __sqp_cifcn__ = __sqp_cif__{1};
+        endif
       elseif (! isempty (__sqp_cif__))
-	__sqp_cifcn__ = __sqp_cif__;
+        __sqp_cifcn__ = __sqp_cif__;
       endif
 
       if (nargin < 5)
-      	ci_grd = @fd_ci_jac;
-      	if (iscell (cif))
-	  if (length (cif) > 0)
-	    __sqp_ci_fun__ = ci_fun = cif{1};
-	    if (length (cif) > 1)
-	      ci_grd = cif{2};
-	    endif
-	  else
-	    error ("sqp: invalid equality constraint function");
-	  endif
-      	elseif (! isempty (cif))
-	  ci_fun = cif;
-      	endif
+        ci_grd = @fd_ci_jac;
+        if (iscell (cif))
+          if (length (cif) > 0)
+            __sqp_ci_fun__ = ci_fun = cif{1};
+            if (length (cif) > 1)
+              ci_grd = cif{2};
+            endif
+          else
+            error ("sqp: invalid equality constraint function");
+          endif
+        elseif (! isempty (cif))
+          ci_fun = cif;
+        endif
       else
-	global __sqp_lb__;
-	if (isvector (lb))
-	  __sqp_lb__ = lb;
-	elseif (isempty (lb))
-	  if (isa (x, "single"))
-	    __sqp_lb__ = -realmax ("single");
-	  else
-	    __sqp_lb__ = -realmax;
-	  endif
-	else
-	  error ("sqp: invalid lower bound");
-	endif
+        global __sqp_lb__;
+        if (isvector (lb))
+          __sqp_lb__ = lb;
+        elseif (isempty (lb))
+          if (isa (x, "single"))
+            __sqp_lb__ = -realmax ("single");
+          else
+            __sqp_lb__ = -realmax;
+          endif
+        else
+          error ("sqp: invalid lower bound");
+        endif
 
-	global __sqp_ub__;
-	if (isvector (ub))
-	  __sqp_ub__ = ub;
-	elseif (isempty (lb))
-	  if (isa (x, "single"))
-	    __sqp_ub__ = realmax ("single");
-	  else
-	    __sqp_ub__ = realmax;
-	  endif
-	else
-	  error ("sqp: invalid upper bound");
-	endif
+        global __sqp_ub__;
+        if (isvector (ub))
+          __sqp_ub__ = ub;
+        elseif (isempty (lb))
+          if (isa (x, "single"))
+            __sqp_ub__ = realmax ("single");
+          else
+            __sqp_ub__ = realmax;
+          endif
+        else
+          error ("sqp: invalid upper bound");
+        endif
 
-	if (lb > ub)
-	  error ("sqp: upper bound smaller than lower bound");
-	endif
-       	__sqp_ci_fun__ = ci_fun = @cf_ub_lb;
-       	ci_grd = @cigrad_ub_lb;
+        if (lb > ub)
+          error ("sqp: upper bound smaller than lower bound");
+        endif
+        __sqp_ci_fun__ = ci_fun = @cf_ub_lb;
+        ci_grd = @cigrad_ub_lb;
       endif
       __sqp_ci_fun__ = ci_fun;
     endif
@@ -327,18 +327,18 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     iter_max = 100;
     if (nargin > 6 && ! isempty (maxiter))
       if (isscalar (maxiter) && maxiter > 0 && round (maxiter) == maxiter)
-	iter_max = maxiter;
+        iter_max = maxiter;
       else
-	error ("sqp: invalid number of maximum iterations");
+        error ("sqp: invalid number of maximum iterations");
       endif
     endif
 
     tol = sqrt (eps);
     if (nargin > 7 && ! isempty (tolerance))
       if (isscalar (tolerance) && tolerance > 0)
-	tol = tolerance;
+        tol = tolerance;
       else
-	error ("sqp: invalid value for tolerance");
+        error ("sqp: invalid value for tolerance");
       endif
     endif
 
@@ -398,7 +398,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
       if (t2 && t3 && max ([t0; t1; t4]) < tol)
         info = 101;
-	break;
+        break;
       endif
 
       ## Compute search direction p by solving QP.
@@ -413,7 +413,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       C(idx,:) = [];
 
       [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
-				      Inf (size (d)));
+                                      Inf (size (d)));
 
       info = INFO.info;
 
@@ -423,7 +423,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       ## merit function phi.
 
       [x_new, alpha, obj_new] = linesearch_L1 (x, p, obj_fun, obj_grd,
-					       ce_fun, ci_fun, lambda, obj);
+                                               ce_fun, ci_fun, lambda, obj);
 
       ## Evaluate objective function, constraints, and gradients at
       ## x_new.
@@ -446,51 +446,51 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       y = c_new - c;
 
       if (! isempty (A))
-	t = ((A_new - A)'*lambda);
-	y -= t;
+        t = ((A_new - A)'*lambda);
+        y -= t;
       endif
 
       delx = x_new - x;
 
       if (norm (delx) < tol * norm (x))
-	info = 101;
-	break;
+        info = 101;
+        break;
       endif
 
       if (have_hess)
 
-	B = feval (obj_hess, x);
+        B = feval (obj_hess, x);
 
       else
 
-	## Update B using a quasi-Newton formula.
+        ## Update B using a quasi-Newton formula.
 
-	delxt = delx';
+        delxt = delx';
 
-	## Damped BFGS.  Or maybe we would actually want to use the Hessian
-	## of the Lagrangian, computed directly.
+        ## Damped BFGS.  Or maybe we would actually want to use the Hessian
+        ## of the Lagrangian, computed directly.
 
-	d1 = delxt*B*delx;
+        d1 = delxt*B*delx;
 
-	t1 = 0.2 * d1;
-	t2 = delxt*y;
+        t1 = 0.2 * d1;
+        t2 = delxt*y;
 
-	if (t2 < t1)
-	  theta = 0.8*d1/(d1 - t2);
-	else
-	  theta = 1;
-	endif
+        if (t2 < t1)
+          theta = 0.8*d1/(d1 - t2);
+        else
+          theta = 1;
+        endif
 
-	r = theta*y + (1-theta)*B*delx;
+        r = theta*y + (1-theta)*B*delx;
 
-	d2 = delxt*r;
+        d2 = delxt*r;
 
-	if (d1 == 0 || d2 == 0)
-	  info = 102;
-	  break;
-	endif
+        if (d1 == 0 || d2 == 0)
+          info = 102;
+          break;
+        endif
 
-	B = B - B*delx*delxt*B/d1 + r*r'/d2;
+        B = B - B*delx*delxt*B/d1 + r*r'/d2;
 
       endif
 
@@ -554,7 +554,7 @@ endfunction
 
 
 function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
-					      ce_fun, ci_fun, lambda, obj)
+                                              ce_fun, ci_fun, lambda, obj)
 
   ## Choose parameters
   ##
@@ -727,7 +727,7 @@ function res = cigrad_ub_lb (x)
   if (iscell (__sqp_cif__) && length (__sqp_cif__) > 1)
     cigradfcn = __sqp_cif__{2};
   endif
-	
+        
   if (! isempty (cigradfcn))
     res = [feval(cigradfcn,x); eye(numel(x)); -eye(numel(x))];
   endif

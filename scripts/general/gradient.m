@@ -135,7 +135,7 @@ function varargout = matrix_gradient (m, varargin)
     mr = rows (m);
     mc = numel (m) / mr;
     Y = zeros (size (m), class (m));
-	
+        
     if (mr > 1)
       ## Top and bottom boundary.
       Y(1,:) = diff (m(1:2, :)) / d{i}(1);

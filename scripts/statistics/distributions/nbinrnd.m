@@ -37,7 +37,7 @@ function rnd = nbinrnd (n, p, r, c)
     if (!isscalar(n) || !isscalar(p)) 
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
-	error ("nbinrnd: n and p must be of common size or scalar");
+        error ("nbinrnd: n and p must be of common size or scalar");
       endif
     endif
   endif
@@ -52,7 +52,7 @@ function rnd = nbinrnd (n, p, r, c)
     sz = [r, c];
 
     if (any (size (n) != 1) && 
-	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("nbinrnd: n and p must be scalar or of size [r, c]");
     endif
 
@@ -66,7 +66,7 @@ function rnd = nbinrnd (n, p, r, c)
     endif
 
     if (any (size (n) != 1) && 
-	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("nbinrnd: n and p must be scalar or of size sz");
     endif
   elseif (nargin == 2)
@@ -79,7 +79,7 @@ function rnd = nbinrnd (n, p, r, c)
     if ((n < 1) || (n == Inf) || (n != round (n)) || (p <= 0) || (p > 1));
       rnd = NaN (sz);
     elseif ((n > 0) && (n < Inf) && (n == round (n)) && 
-	    (p > 0) && (p <= 1))
+            (p > 0) && (p <= 1))
       rnd = randp ((1 - p) ./ p .* randg (n, sz));
     else
       rnd = zeros (sz);
@@ -88,7 +88,7 @@ function rnd = nbinrnd (n, p, r, c)
     rnd = zeros (sz);
 
     k = find ((n < 1) || (n == Inf) || (n != round (n)) || 
-	      (p <= 0) || (p > 1));
+              (p <= 0) || (p > 1));
     if (any (k))
       rnd(k) = NaN;
     endif

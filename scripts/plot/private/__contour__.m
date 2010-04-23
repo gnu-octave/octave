@@ -34,15 +34,15 @@ function [c, hg] = __contour__ (varargin)
     if ((ischar (arg) || iscell (arg)))
       [linespec, valid] = __pltopt__ ("__contour__", arg, false);
       if (isempty (linespec.color))
-	linespec.color = "auto";
+        linespec.color = "auto";
       endif
       if (isempty (linespec.linestyle))
-	linespec.linestyle = "-";
+        linespec.linestyle = "-";
       endif
       if (valid)
-	have_line_spec = true;
-	varargin(i) = [];
-	break;
+        have_line_spec = true;
+        varargin(i) = [];
+        break;
       endif
     endif
   endfor
@@ -52,24 +52,24 @@ function [c, hg] = __contour__ (varargin)
   while (i < length (varargin))
     if (ischar (varargin {i}))
       if (strcmpi (varargin{i}, "fill"))
-	filled = varargin {i + 1};
-	varargin(i:i+1) = [];
+        filled = varargin {i + 1};
+        varargin(i:i+1) = [];
       elseif (strcmpi (varargin{i}, "linecolor"))
-	linespec.color = varargin {i + 1};
-	edgecolor = linespec.color;
-	if (ischar (edgecolor) && strcmpi (edgecolor, "auto"))
-	  edgecolor = "flat";
-	endif
-	varargin(i:i+1) = [];
+        linespec.color = varargin {i + 1};
+        edgecolor = linespec.color;
+        if (ischar (edgecolor) && strcmpi (edgecolor, "auto"))
+          edgecolor = "flat";
+        endif
+        varargin(i:i+1) = [];
       elseif (strcmpi (varargin{i}, "edgecolor"))
-	linespec.color = varargin {i + 1};
-	edgecolor = linespec.color;
-	if (ischar (edgecolor) && strcmpi (edgecolor, "flat"))
-	  linespec.color = "auto";
-	endif
-	varargin(i:i+1) = [];
+        linespec.color = varargin {i + 1};
+        edgecolor = linespec.color;
+        if (ischar (edgecolor) && strcmpi (edgecolor, "flat"))
+          linespec.color = "auto";
+        endif
+        varargin(i:i+1) = [];
       else
-	opts{end+1} = varargin{i};
+        opts{end+1} = varargin{i};
         varargin(i) = [];
         opts{end+1} = varargin{i};
         varargin(i) = [];
@@ -98,7 +98,7 @@ function [c, hg] = __contour__ (varargin)
 
   if (isscalar (vn))
     lvl = linspace (min (z1(!isinf(z1))), max (z1(!isinf(z1))), 
-		    vn + 2)(1:end-1);
+                    vn + 2)(1:end-1);
   else
     lvl = vn;
   endif
@@ -256,40 +256,40 @@ function add_patch_children (hg)
       lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
       len = numel (lvl_idx);
       if (len > 1)
-	## mark = logical(zeros(size(lvl_idx)));
-	mark = false (size (lvl_idx));
-	a = 1;
-	while (a < len)
-	  ## take 1st patch
+        ## mark = logical(zeros(size(lvl_idx)));
+        mark = false (size (lvl_idx));
+        a = 1;
+        while (a < len)
+          ## take 1st patch
           b = a + 1;
           pa_idx = lvl_idx(a);
           ## get pointer to contour start, and contour length
           curr_ct_idx = cont_idx(pa_idx);
           curr_ct_len = cont_len(pa_idx);
-	  ## get contour
+          ## get contour
           curr_ct = c(:, curr_ct_idx:curr_ct_idx+curr_ct_len-1);
           b_vec = (a+1):len;
           next_ct_pt_vec = c(:, cont_idx(lvl_idx(b_vec)));
           in = inpolygon (next_ct_pt_vec(1,:), next_ct_pt_vec(2,:),
-			  curr_ct(1, :), curr_ct(2, :));
+                          curr_ct(1, :), curr_ct(2, :));
           mark(b_vec(in)) = !mark(b_vec(in));
           a++;
-	endwhile
-	if (numel (mark) > 0)
-	  ## All marked contours describe a hole in a larger contour of
-	  ## the same level and must be filled with colour of level below.
+        endwhile
+        if (numel (mark) > 0)
+          ## All marked contours describe a hole in a larger contour of
+          ## the same level and must be filled with colour of level below.
           ma_idx = lvl_idx(mark);
           if (k > 1)
-	    ## Find color of level below.
+            ## Find color of level below.
             tmp = find(abs(cont_lev - lev(k - 1)) < lvl_eps);
             lvl_bel_idx = tmp(1);
-	    ## Set color of patches found.
-	    cont_lev(ma_idx) = cont_lev(lvl_bel_idx);
+            ## Set color of patches found.
+            cont_lev(ma_idx) = cont_lev(lvl_bel_idx);
           else
-	    ## Set lowest level contour to NaN.
-	    cont_lev(ma_idx) = NaN;
+            ## Set lowest level contour to NaN.
+            cont_lev(ma_idx) = NaN;
           endif
-	endif
+        endif
       endif
     endfor
 
@@ -315,10 +315,10 @@ function add_patch_children (hg)
       if (all (ctmp(:,1) == ctmp(:,end)))
         ctmp(:, end) = [];
       else
-	## Special case unclosed contours
+        ## Special case unclosed contours
       endif
       h = [h; patch(ctmp(1, :), ctmp(2, :), cont_lev(idx), "edgecolor", lc, 
-		    "linestyle", ls, "linewidth", lw, "parent", hg)];
+                    "linestyle", ls, "linewidth", lw, "parent", hg)];
     endfor
 
     if (min (lev) == max (lev))
@@ -337,26 +337,26 @@ function add_patch_children (hg)
       clen = c(2,i1);
 
       if (all (c(:,i1+1) == c(:,i1+clen)))
-	p = c(:, i1+1:i1+clen-1);
+        p = c(:, i1+1:i1+clen-1);
       else
-	p = [c(:, i1+1:i1+clen), NaN(2, 1)];
+        p = [c(:, i1+1:i1+clen), NaN(2, 1)];
       endif
 
       switch (zmode)
-	case "none"
-	  h = [h; patch(p(1,:), p(2,:), "facecolor", "none", 
-			"edgecolor", lc, "linestyle", ls, "linewidth", lw,
-			"cdata", clev, "parent", hg)]; 
-	case "auto"
-	  h = [h; patch(p(1,:), p(2,:), clev * ones (1, columns (p)),
-			"facecolor", "none", "edgecolor", lc, 
-			"linestyle", ls, "linewidth", lw, "cdata", clev, 
-			"parent", hg)];
-	otherwise
-	  h = [h; patch(p(1,:), p(2,:), z * ones (1, columns (p)),
-			"facecolor", "none", "edgecolor", lc,
-			"linestyle", ls, "linewidth", lw, "cdata", clev,
-			"parent", hg)];
+        case "none"
+          h = [h; patch(p(1,:), p(2,:), "facecolor", "none", 
+                        "edgecolor", lc, "linestyle", ls, "linewidth", lw,
+                        "cdata", clev, "parent", hg)]; 
+        case "auto"
+          h = [h; patch(p(1,:), p(2,:), clev * ones (1, columns (p)),
+                        "facecolor", "none", "edgecolor", lc, 
+                        "linestyle", ls, "linewidth", lw, "cdata", clev, 
+                        "parent", hg)];
+        otherwise
+          h = [h; patch(p(1,:), p(2,:), z * ones (1, columns (p)),
+                        "facecolor", "none", "edgecolor", lc,
+                        "linestyle", ls, "linewidth", lw, "cdata", clev,
+                        "parent", hg)];
       endswitch
       i1 += clen+1;
     endwhile
@@ -374,12 +374,12 @@ function update_zlevel (h, d)
       set (kids, "zdata", []);
     case "auto"
       for i = 1 : length (kids)
-	set (kids(i), "zdata", get (kids (i), "cdata") .* 
-	     ones (size (get (kids (i), "xdata"))));
+        set (kids(i), "zdata", get (kids (i), "cdata") .* 
+             ones (size (get (kids (i), "xdata"))));
       endfor
     otherwise
       for i = 1 : length (kids)
-	set (kids(i), "zdata", z .* ones (size (get (kids (i), "xdata"))));
+        set (kids(i), "zdata", z .* ones (size (get (kids (i), "xdata"))));
       endfor
   endswitch
 endfunction
@@ -431,7 +431,7 @@ function update_data (h, d)
       Y = get (h, "ydata");
       Z = get (h, "zdata");
       if (isvector (X) || isvector (Y))
-	[X, Y] = meshgrid (X, Y);
+        [X, Y] = meshgrid (X, Y);
       endif
       [nr, nc] = size (Z);
       X0 = prepad(X, nc+1, 2 * X(1, 1) - X(1, 2), 2);
@@ -445,7 +445,7 @@ function update_data (h, d)
       [c, lev] = contourc (X0, Y0, Z0, lvl);
     else
       [c, lev] = contourc (get (h, "xdata"), get (h, "ydata"), 
-			   get (h, "zdata"), lvl); 
+                           get (h, "zdata"), lvl); 
     endif
     set (h, "contourmatrix", c);
 
@@ -493,15 +493,15 @@ function update_text (h, d)
 
     if (strcmpi (get (h, "showtext"), "on"))
       switch (get (h, "zlevelmode"))
-	case "manual"
-	  __clabel__ (get (h, "contourmatrix"), lvl, h, 
-		      get (h, "labelspacing"), get (h, "zlevel"));
-	case "auto"
-	  __clabel__ (get (h, "contourmatrix"), lvl, h,
-		      get (h, "labelspacing"), "auto");
-	otherwise
-	  __clabel__ (get (h, "contourmatrix"), lvl, h,
-		      get (h, "labelspacing"), []);
+        case "manual"
+          __clabel__ (get (h, "contourmatrix"), lvl, h, 
+                      get (h, "labelspacing"), get (h, "zlevel"));
+        case "auto"
+          __clabel__ (get (h, "contourmatrix"), lvl, h,
+                      get (h, "labelspacing"), "auto");
+        otherwise
+          __clabel__ (get (h, "contourmatrix"), lvl, h,
+                      get (h, "labelspacing"), []);
       endswitch
     endif
   endif

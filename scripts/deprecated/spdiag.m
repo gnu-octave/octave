@@ -28,7 +28,7 @@ function retval = spdiag (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spdiag is obsolete and will be removed from a future version of Octave; please use sparse (diag (...)) instead");
+             "spdiag is obsolete and will be removed from a future version of Octave; please use sparse (diag (...)) instead");
   endif
 
   retval = sparse (diag (varargin{:}));

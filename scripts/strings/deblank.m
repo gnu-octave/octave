@@ -40,16 +40,16 @@ function s = deblank (s)
 
     if (! isempty (s))
       if (char_arg)
-	k = find (! isspace (s) & s != "\0");
+        k = find (! isspace (s) & s != "\0");
       else
-	warning ("deblank: expecting character string argument")
-	k = find (s != 0);
+        warning ("deblank: expecting character string argument")
+        k = find (s != 0);
       endif
 
       if (isempty (k))
-	s = resize (s, 0, 0);
+        s = resize (s, 0, 0);
       else
-	s = s(:,1:ceil (max (k) / rows (s)));
+        s = s(:,1:ceil (max (k) / rows (s)));
       endif
     endif
 

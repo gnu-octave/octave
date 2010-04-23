@@ -159,15 +159,15 @@ function varargout = isosurface(varargin)
       newplot ();
       if (calc_colors)
         pa = patch ("Faces", fvc.faces, "Vertices", fvc.vertices,
-		    "FaceVertexCData", fvc.facevertexcdata, 
-		    "FaceColor", "flat", "EdgeColor", "none");
+                    "FaceVertexCData", fvc.facevertexcdata, 
+                    "FaceColor", "flat", "EdgeColor", "none");
       else
         pa = patch ("Faces", fvc.faces, "Vertices", fvc.vertices, 
-		    "FaceColor", "g", "EdgeColor", "k");
+                    "FaceColor", "g", "EdgeColor", "k");
       endif
       if (! ishold ())
-	set (gca(), "view", [-37.5, 30],
-	     "xgrid", "on", "ygrid", "on", "zgrid", "on");
+        set (gca(), "view", [-37.5, 30],
+             "xgrid", "on", "ygrid", "on", "zgrid", "on");
       endif
     case 1
       varargout = {fvc};

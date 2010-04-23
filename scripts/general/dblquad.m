@@ -50,7 +50,7 @@ function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin)
   endif
 
   q = feval (quadf, @(y) inner (y, f, xa, xb, tol, quadf,
-				varargin{:}), ya, yb, tol);
+                                varargin{:}), ya, yb, tol);
 endfunction
 
 function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)

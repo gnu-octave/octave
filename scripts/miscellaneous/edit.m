@@ -143,12 +143,12 @@ function ret = edit (file, state)
   ## Pick up globals or default them.
 
   persistent FUNCTION = struct ("EDITOR", cstrcat (EDITOR (), " %s"),
-  				"HOME", fullfile (default_home, "octave"),
-  				"AUTHOR", default_user(1),
-  				"EMAIL",  [],
-  				"LICENSE",  "GPL",
-  				"MODE", "sync",
-  				"EDITINPLACE", false);
+                                "HOME", fullfile (default_home, "octave"),
+                                "AUTHOR", default_user(1),
+                                "EMAIL",  [],
+                                "LICENSE",  "GPL",
+                                "MODE", "sync",
+                                "EDITINPLACE", false);
 
   ## Make sure the state variables survive "clear functions".
   mlock;
@@ -159,7 +159,7 @@ function ret = edit (file, state)
       FUNCTION.EDITOR = state;
     case "HOME"
       if (! isempty (state) && state(1) == "~")
-	state = [ default_home, state(2:end) ];
+        state = [ default_home, state(2:end) ];
       endif
       FUNCTION.HOME = state;
     case "AUTHOR"
@@ -172,7 +172,7 @@ function ret = edit (file, state)
       if (strcmp (state, "sync") || strcmp (state, "async"))
         FUNCTION.MODE = state;
       else
-    	error('expected "edit MODE sync|async"');
+        error('expected "edit MODE sync|async"');
       endif
     case "EDITINPLACE"
       if (ischar (state))
@@ -201,8 +201,8 @@ function ret = edit (file, state)
   if (nargin < 1)
     if (exist (FUNCTION.HOME, "dir") == 7 && (isunix () || ! ispc ()))
       system (cstrcat ("cd \"", FUNCTION.HOME, "\" ; ",
-		      sprintf (FUNCTION.EDITOR, "")),
-	      [], FUNCTION.MODE);
+                      sprintf (FUNCTION.EDITOR, "")),
+              [], FUNCTION.MODE);
     else
       system (sprintf (FUNCTION.EDITOR,""), [], FUNCTION.MODE);
     endif
@@ -308,7 +308,7 @@ function ret = edit (file, state)
       0;
     otherwise
       system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-	      [], FUNCTION.MODE);
+              [], FUNCTION.MODE);
       return;
   endswitch
 
@@ -325,7 +325,7 @@ function ret = edit (file, state)
       [status, host] = system ("uname -n");
       ## trim newline from end of hostname
       if (! isempty (host))
-	host = host(1:end-1);
+        host = host(1:end-1);
       endif
     endif
     if (isempty (host))
@@ -395,12 +395,12 @@ SUCH DAMAGE.\
     case "PD"
       head = "";
       tail = cstrcat (author, "\n", revs, "\n\n",
-		     "This program is granted to the public domain.");
+                     "This program is granted to the public domain.");
 
     otherwise
       head = "";
       tail = cstrcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
-		     author, "\n", revs);
+                     author, "\n", revs);
   endswitch
 
   ## Generate the function template.
@@ -408,39 +408,39 @@ SUCH DAMAGE.\
   switch (ext)
     case {"cc", "C", "cpp"}
       if (isempty (head))
-	comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
+        comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
       else
-	comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
+        comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
       endif
       ## If we are shadowing an m-file, paste the code for the m-file.
       if (any (exists == [2, 103]))
-	code = cstrcat ("\\ ", strrep (type (name), "\n", "\n// "));
+        code = cstrcat ("\\ ", strrep (type (name), "\n", "\n// "));
       else
-	code = " ";
+        code = " ";
       endif
       body = cstrcat ("#include <octave/oct.h>\n\n",
                      "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
-		     name, "\\n\\\n\")\n{\n",
-		     "  octave_value_list retval;\n",
-		     "  int nargin = args.length();\n\n",
-		     code, "\n  return retval;\n}\n");
+                     name, "\\n\\\n\")\n{\n",
+                     "  octave_value_list retval;\n",
+                     "  int nargin = args.length();\n\n",
+                     code, "\n  return retval;\n}\n");
 
       text = cstrcat (comment, body);
     case "m"
       ## If we are editing a function defined on the fly, paste the
       ## code.
       if (any (exists == [2, 103]))
-	body = type (name);
+        body = type (name);
       else
-	body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
+        body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
       endif
       if (isempty (head))
-	comment = cstrcat ("## ", name, "\n\n",
-			  "## ", strrep (tail, "\n", "\n## "), "\n\n");
+        comment = cstrcat ("## ", name, "\n\n",
+                          "## ", strrep (tail, "\n", "\n## "), "\n\n");
       else
-	comment = cstrcat ("## ", strrep(head,"\n","\n## "), "\n\n", ...
-			  "## ", name, "\n\n", ...
-			  "## ", strrep (tail, "\n", "\n## "), "\n\n");
+        comment = cstrcat ("## ", strrep(head,"\n","\n## "), "\n\n", ...
+                          "## ", name, "\n\n", ...
+                          "## ", strrep (tail, "\n", "\n## "), "\n\n");
       endif
       text = cstrcat (comment, body);
   endswitch
@@ -455,7 +455,7 @@ SUCH DAMAGE.\
 
   ## Finally we are ready to edit it!
   system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
-	  [], FUNCTION.MODE);
+          [], FUNCTION.MODE);
 
 endfunction
 

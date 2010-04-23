@@ -48,19 +48,19 @@ function h = trisurf (tri, x, y, z, varargin)
     newplot ();
     if (nargout > 0)
       h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
-	     "FaceVertexCData", reshape (c, numel (c), 1), 
-	     "FaceColor", "flat", "EdgeColor", "none",
-	     varargin{:});
+             "FaceVertexCData", reshape (c, numel (c), 1), 
+             "FaceColor", "flat", "EdgeColor", "none",
+             varargin{:});
     else
       patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
-	     "FaceVertexCData", reshape (c, numel (c), 1), 
-	     "FaceColor", "flat", "EdgeColor", "none",
-	     varargin{:});
+             "FaceVertexCData", reshape (c, numel (c), 1), 
+             "FaceColor", "flat", "EdgeColor", "none",
+             varargin{:});
     endif
 
     if (! ishold ())
       set (gca(), "view", [-37.5, 30],
-	   "xgrid", "on", "ygrid", "on", "zgrid", "on");
+           "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif
 endfunction

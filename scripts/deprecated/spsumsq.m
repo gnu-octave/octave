@@ -28,7 +28,7 @@ function retval = spsumsq (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     "spsumsq is obsolete and will be removed from a future version of Octave; please use sumsq instead");
+             "spsumsq is obsolete and will be removed from a future version of Octave; please use sumsq instead");
   endif
   retval = sumsq (varargin{:});
 

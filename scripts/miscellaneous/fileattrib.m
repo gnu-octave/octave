@@ -86,48 +86,48 @@ function [status, msg, msgid] = fileattrib (file)
   if (nargin == 0 || nargin == 1)
 
     r_n = r_a = r_s = r_h = r_d ...
-	= r_u_r = r_u_w = r_u_x ...
-	= r_g_r = r_g_w = r_g_x ...
-	= r_o_r = r_o_w = r_o_x = cell (nfiles, 1);
+        = r_u_r = r_u_w = r_u_x ...
+        = r_g_r = r_g_w = r_g_x ...
+        = r_o_r = r_o_w = r_o_x = cell (nfiles, 1);
 
     curr_dir = pwd ();
 
     for i = 1:nfiles
       [info, err, msg] = stat (files{i});
       if (! err)
-	r_n{i} = canonicalize_file_name (files{i});
-	r_a{i} = NaN;
-	r_s{i} = NaN;
-	r_h{i} = NaN;
-	r_d{i} = S_ISDIR (info.mode);
-	## FIXME -- maybe we should have S_IRUSR etc. masks?
-	modestr = info.modestr;
-	r_u_r{i} = modestr(2) == "r";
-	r_u_w{i} = modestr(3) == "w";
-	r_u_x{i} = modestr(4) == "x";
-	r_g_r{i} = modestr(5) == "r";
-	r_g_w{i} = modestr(6) == "w";
-	r_g_x{i} = modestr(7) == "x";
-	r_o_r{i} = modestr(8) == "r";
-	r_o_w{i} = modestr(9) == "w";
-	r_o_x{i} = modestr(10) == "x";
+        r_n{i} = canonicalize_file_name (files{i});
+        r_a{i} = NaN;
+        r_s{i} = NaN;
+        r_h{i} = NaN;
+        r_d{i} = S_ISDIR (info.mode);
+        ## FIXME -- maybe we should have S_IRUSR etc. masks?
+        modestr = info.modestr;
+        r_u_r{i} = modestr(2) == "r";
+        r_u_w{i} = modestr(3) == "w";
+        r_u_x{i} = modestr(4) == "x";
+        r_g_r{i} = modestr(5) == "r";
+        r_g_w{i} = modestr(6) == "w";
+        r_g_x{i} = modestr(7) == "x";
+        r_o_r{i} = modestr(8) == "r";
+        r_o_w{i} = modestr(9) == "w";
+        r_o_x{i} = modestr(10) == "x";
       else
-	status = false;
-	msgid = "fileattrib";
-	break;
+        status = false;
+        msgid = "fileattrib";
+        break;
       endif
     endfor
     if (status)
       r = struct ("Name", r_n, "archive", r_a, "system", r_s,
-		  "hidden", r_s, "directory", r_d, "UserRead", r_u_r,
-		  "UserWrite", r_u_w, "UserExecute", r_u_x,
-		  "GroupRead", r_g_r, "GroupWrite", r_g_w,
-		  "GroupExecute", r_g_x, "OtherRead", r_o_r,
-		  "OtherWrite", r_o_w, "OtherExecute", r_o_x);
+                  "hidden", r_s, "directory", r_d, "UserRead", r_u_r,
+                  "UserWrite", r_u_w, "UserExecute", r_u_x,
+                  "GroupRead", r_g_r, "GroupWrite", r_g_w,
+                  "GroupExecute", r_g_x, "OtherRead", r_o_r,
+                  "OtherWrite", r_o_w, "OtherExecute", r_o_x);
       if (nargout == 0)
-	status = r;
+        status = r;
       else
-	msg = r;
+        msg = r;
       endif
     endif
   else

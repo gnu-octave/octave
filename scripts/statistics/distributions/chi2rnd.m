@@ -42,7 +42,7 @@ function rnd = chi2rnd (n, r, c)
     sz = [r, c];
 
     if (any (size (n) != 1)
-	&& (length (size (n)) != length (sz) ||	any (size (n) != sz)))
+        && (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("chi2rnd: n must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -55,7 +55,7 @@ function rnd = chi2rnd (n, r, c)
     endif
 
     if (any (size (n) != 1)
-	&& (length (size (n)) != length (sz) || any (size (n) != sz)))
+        && (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("chi2rnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)

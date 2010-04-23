@@ -40,13 +40,13 @@ function newargs = __add_datasource__ (fcn, h, data, varargin)
   while (i < numel (varargin))
     arg = varargin{++i};
     if (i != numel(varargin) && ischar (arg)
-	&& length (arg) > 9 && strcmpi (arg(end-9:end), "datasource"))
+        && length (arg) > 9 && strcmpi (arg(end-9:end), "datasource"))
       arg = tolower (arg);
       val = varargin{++i};
       if (ischar (val))
-	set (h, arg, val);
+        set (h, arg, val);
       else
-	error ("%s: expecting data source to be a string", fcn);
+        error ("%s: expecting data source to be a string", fcn);
       endif
     else
       newargs{end + 1} = arg;

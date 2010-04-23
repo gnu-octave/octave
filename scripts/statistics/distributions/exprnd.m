@@ -43,7 +43,7 @@ function rnd = exprnd (l, r, c)
     sz = [r, c];
 
     if (any (size (l) != 1) && 
-	(length (size (l)) != length (sz) || any (size (l) != sz)))
+        (length (size (l)) != length (sz) || any (size (l) != sz)))
       error ("exprnd: lambda must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -56,7 +56,7 @@ function rnd = exprnd (l, r, c)
     endif
 
     if (any (size (l) != 1) && 
-	((length (size (l)) != length (sz)) || any (size (l) != sz)))
+        ((length (size (l)) != length (sz)) || any (size (l) != sz)))
       error ("exprnd: lambda must be scalar or of size sz");
     endif
   elseif (nargin == 1)

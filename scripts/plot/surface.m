@@ -148,7 +148,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       other_args = varargin(firststring:end);
     endif
     h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c,
-			other_args{:});
+                        other_args{:});
 
     if (! ishold ())
       set (ax, "view", [0, 90], "box", "off");

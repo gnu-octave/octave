@@ -49,8 +49,8 @@ function retval = close (arg1, arg2)
       error ("close: expecting argument to be \"all\" or a figure handle");
     endif
   elseif (nargin == 2
-	  && ischar (arg1) && strcmpi (arg1, "all")
-	  && ischar (arg2) && strcmpi (arg2, "hidden"))
+          && ischar (arg1) && strcmpi (arg1, "all")
+          && ischar (arg2) && strcmpi (arg2, "hidden"))
     close_all_figures (true);
   else
     print_usage ();

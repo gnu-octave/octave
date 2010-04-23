@@ -143,10 +143,10 @@ function curr_axis = __axis__ (ca, ax, varargin)
       ylim = get (ca, "ylim");
       view = get (ca, "view");
       if (view(2) == 90)
-	curr_axis = [xlim, ylim];
+        curr_axis = [xlim, ylim];
       else
-	zlim = get (ca, "zlim");
-	curr_axis = [xlim, ylim, zlim];
+        zlim = get (ca, "zlim");
+        curr_axis = [xlim, ylim, zlim];
       endif
     endif
 
@@ -175,17 +175,17 @@ function curr_axis = __axis__ (ca, ax, varargin)
       ## axis limits
     elseif (len >= 4 && strcmpi (ax(1:4), "auto"))
       if (len > 4)
-	if (any (ax == "x"))
-	  set (ca, "xlimmode", "auto");
-	endif
-	if (any (ax == "y"))
-	  set (ca, "ylimmode", "auto");
-	endif
-	if (any (ax == "z"))
-	  set (ca, "zlimmode", "auto");
-	endif
+        if (any (ax == "x"))
+          set (ca, "xlimmode", "auto");
+        endif
+        if (any (ax == "y"))
+          set (ca, "ylimmode", "auto");
+        endif
+        if (any (ax == "z"))
+          set (ca, "zlimmode", "auto");
+        endif
       else
-	set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
+        set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
       endif
     elseif (strcmpi (ax, "manual"))
       ## fixes the axis limits, like axis(axis) should;
@@ -198,7 +198,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
       if (strcmpi (ax, "on"))
         set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
-	   "zticklabelmode", "auto");
+           "zticklabelmode", "auto");
       endif
       set (ca, "visible", "on");
     elseif (strcmpi (ax, "off"))
@@ -206,40 +206,40 @@ function curr_axis = __axis__ (ca, ax, varargin)
       set (ca, "visible", "off");
     elseif (len > 3 && strcmpi (ax(1:3), "tic"))
       if (any (ax == "x"))
-	set (ca, "xtickmode", "auto");
+        set (ca, "xtickmode", "auto");
       else
-	set (ca, "xtick", []);
+        set (ca, "xtick", []);
       endif
       if (any (ax == "y"))
-	set (ca, "ytickmode", "auto");
+        set (ca, "ytickmode", "auto");
       else
-	set (ca, "ytick", []);
+        set (ca, "ytick", []);
       endif
       if (any (ax == "z"))
-	set (ca, "ztickmode", "auto");
+        set (ca, "ztickmode", "auto");
       else
-	set (ca, "ztick", []);
+        set (ca, "ztick", []);
       endif
     elseif (strcmpi (ax, "label"))
       set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
-	   "zticklabelmode", "auto");
+           "zticklabelmode", "auto");
     elseif (strcmpi (ax, "nolabel"))
       set (ca, "xticklabel", "", "yticklabel", "", "zticklabel", "");
     elseif (len > 5 && strcmpi (ax(1:5), "label"))
       if (any (ax == "x"))
-	set (ca, "xticklabelmode", "auto");
+        set (ca, "xticklabelmode", "auto");
       else
-	set (ca, "xticklabel", "");
+        set (ca, "xticklabel", "");
       endif
       if (any (ax == "y"))
-	set (ca, "yticklabelmode", "auto");
+        set (ca, "yticklabelmode", "auto");
       else
-	set (ca, "yticklabel", "");
+        set (ca, "yticklabel", "");
       endif
       if (any (ax == "z"))
-	set (ca, "zticklabelmode", "auto");
+        set (ca, "zticklabelmode", "auto");
       else
-	set (ca, "zticklabel", "");
+        set (ca, "zticklabel", "");
       endif
 
     else
@@ -256,7 +256,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
 
     for i = 1:2:len
       if (ax(i) == ax(i+1))
-	error ("axis: limits(%d) cannot equal limits(%d)", i, i+1);
+        error ("axis: limits(%d) cannot equal limits(%d)", i, i+1);
       endif
     endfor
 

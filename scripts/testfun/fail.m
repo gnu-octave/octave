@@ -91,11 +91,11 @@ function ret = fail (code, pattern, warning_pattern)
       if (isempty (err))
         msg = sprintf ("expected warning <%s> but got none", pattern); 
       else
-	## Transform "warning: ...\n" to "...".
+        ## Transform "warning: ...\n" to "...".
         err([1:9, end]) = [];
         if (! isempty (regexp (err, pattern, "once")))
-	  return;
-	endif
+          return;
+        endif
         msg = sprintf ("expected warning <%s>\nbut got <%s>", pattern, err);
       endif
     catch
@@ -117,7 +117,7 @@ function ret = fail (code, pattern, warning_pattern)
          err([1:6, end]) = []; # transform "error: ...\n", to "..."
       endif
       if (! isempty (regexp (err, pattern, "once")))
-	return;
+        return;
       endif
       msg = sprintf ("expected error <%s>\nbut got <%s>", pattern, err);
     end_try_catch

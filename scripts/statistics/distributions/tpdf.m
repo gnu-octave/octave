@@ -50,10 +50,10 @@ function pdf = tpdf (x, n)
   if (any (k))
     if (isscalar (n))
       pdf(k) = (exp (- (n + 1) .* log (1 + x(k) .^ 2 ./ n)/2)
-		/ (sqrt (n) * beta (n/2, 1/2)));
+                / (sqrt (n) * beta (n/2, 1/2)));
     else
       pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
-		./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
+                ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
     endif
   endif
 

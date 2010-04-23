@@ -52,26 +52,26 @@ function varargout = savepath (savefile)
     unwind_protect
       linenum = 0;
       while (linenum >= 0)
-	result = fgetl (fid);
-	if (isnumeric (result))
-	  ## end at the end of file
-	  linenum = -1;
-	else
-	  linenum = linenum + 1;
-	  filelines{linenum} = result;
-	  ## find the first and last lines if they exist in the file
-	  if (strcmp (result, beginstring))
-	    startline = linenum;
-	  elseif (strcmp (result, endstring))
-	    endline = linenum;
-	  endif
-	endif
+        result = fgetl (fid);
+        if (isnumeric (result))
+          ## end at the end of file
+          linenum = -1;
+        else
+          linenum = linenum + 1;
+          filelines{linenum} = result;
+          ## find the first and last lines if they exist in the file
+          if (strcmp (result, beginstring))
+            startline = linenum;
+          elseif (strcmp (result, endstring))
+            endline = linenum;
+          endif
+        endif
       endwhile
     unwind_protect_cleanup
       closeread = fclose (fid);
       if (closeread < 0)
-	error ("savepath: could not close savefile after reading, %s",
-	       savefile);
+        error ("savepath: could not close savefile after reading, %s",
+               savefile);
       endif
     end_unwind_protect
   endif
@@ -157,7 +157,7 @@ function varargout = savepath (savefile)
       path_to_save = path_to_preserve (sort (n));
       ## Remove pwd
       path_to_save = path_to_save (! strcmpi (path_to_save,
-					      strcat (".", pathsep)));
+                                              strcat (".", pathsep)));
       n = ones (size (path_to_save));
       for m = 1:numel(path_to_save)
         n(m) = strmatch (path_to_save{m}, path_to_preserve);

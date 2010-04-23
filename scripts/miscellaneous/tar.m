@@ -47,20 +47,20 @@ function entries = tar (tarfile, files, root)
     if (ischar (tarfile) && iscellstr (files) && ischar (root))
 
       cmd = sprintf ("tar cvf %s -C %s %s", tarfile, root,
-		     sprintf (" %s", files{:}));
+                     sprintf (" %s", files{:}));
 
       [status, output] = system (cmd);
 
       if (status == 0)
-	if (nargout > 0)
-	  if (output(end) == "\n")
-	    output(end) = [];
-	  endif
+        if (nargout > 0)
+          if (output(end) == "\n")
+            output(end) = [];
+          endif
           entries = strsplit (output, "\n");
-	  entries = entries';
-	endif
+          entries = entries';
+        endif
       else
-	error ("tar: tar exited with status = %d", status);
+        error ("tar: tar exited with status = %d", status);
       endif
     
     else

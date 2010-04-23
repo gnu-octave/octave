@@ -73,7 +73,7 @@
 ## @seealso{interp1}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author:      Kai Habel <kai.habel@gmx.de>
 ## 2005-03-02 Thomas Weber <weber@num.uni-sb.de> 
 ##     * Add test cases
 ## 2005-03-02 Paul Kienzle <pkienzle@users.sf.net>
@@ -99,32 +99,32 @@ function ZI = interp2 (varargin)
       Z = varargin{1};
     case 2
       if (ischar (varargin{2}))
-	[Z, method] = deal (varargin{:});
+        [Z, method] = deal (varargin{:});
       else
-	[Z, n] = deal (varargin{:});
+        [Z, n] = deal (varargin{:});
       endif
     case 3
       if (ischar (varargin{3}))
-	[Z, n, method] = deal (varargin{:});
+        [Z, n, method] = deal (varargin{:});
       else
-	[Z, XI, YI] = deal (varargin{:});
+        [Z, XI, YI] = deal (varargin{:});
       endif
     case 4
       if (ischar (varargin{4}))
-	[Z, XI, YI, method] = deal (varargin{:});
+        [Z, XI, YI, method] = deal (varargin{:});
       else
-	[Z, n, method, extrapval] = deal (varargin{:});
+        [Z, n, method, extrapval] = deal (varargin{:});
       endif
     case 5
       if (ischar (varargin{4}))
-	[Z, XI, YI, method, extrapval] = deal (varargin{:});
+        [Z, XI, YI, method, extrapval] = deal (varargin{:});
       else
-	[X, Y, Z, XI, YI] = deal (varargin{:});
+        [X, Y, Z, XI, YI] = deal (varargin{:});
       endif
     case 6 
-	[X, Y, Z, XI, YI, method] = deal (varargin{:});
+        [X, Y, Z, XI, YI, method] = deal (varargin{:});
     case 7
-	[X, Y, Z, XI, YI, method, extrapval] = deal (varargin{:});
+        [X, Y, Z, XI, YI, method, extrapval] = deal (varargin{:});
     otherwise
       print_usage ();
   endswitch
@@ -181,7 +181,7 @@ function ZI = interp2 (varargin)
 
     ## If Xi and Yi are vectors of different orientation build a grid
     if ((rows (XI) == 1 && columns (YI) == 1)
-	|| (columns (XI) == 1 && rows (YI) == 1))
+        || (columns (XI) == 1 && rows (YI) == 1))
       [XI, YI] = meshgrid (XI, YI);
     elseif (! size_equal (XI, YI))
       error ("XI and YI must be matrices of same size");
@@ -239,7 +239,7 @@ function ZI = interp2 (varargin)
     elseif (strcmp (method, "pchip"))
 
       if (length (X) < 2 || length (Y) < 2)
-	error ("interp2: pchip2 requires at least 2 points in each dimension")
+        error ("interp2: pchip2 requires at least 2 points in each dimension")
       endif
 
       ## first order derivatives
@@ -284,13 +284,13 @@ function ZI = interp2 (varargin)
 
       ZI = zeros (size (XI));
       for i = 1:2
-	for j = 1:2
-	  zidx = sub2ind (size (Z), yidx+(j-1), xidx+(i-1));
-	  ZI += xb{1,i} .* yb{1,j} .*   Z(zidx);
-	  ZI += xb{2,i} .* yb{1,j} .*  DX(zidx);
-	  ZI += xb{1,i} .* yb{2,j} .*  DY(zidx);
-	  ZI += xb{2,i} .* yb{2,j} .* DXY(zidx);
-	endfor
+        for j = 1:2
+          zidx = sub2ind (size (Z), yidx+(j-1), xidx+(i-1));
+          ZI += xb{1,i} .* yb{1,j} .*   Z(zidx);
+          ZI += xb{2,i} .* yb{1,j} .*  DX(zidx);
+          ZI += xb{1,i} .* yb{2,j} .*  DY(zidx);
+          ZI += xb{2,i} .* yb{2,j} .* DXY(zidx);
+        endfor
       endfor
 
     endif
@@ -298,21 +298,21 @@ function ZI = interp2 (varargin)
     if (! isempty (extrapval))
       ## set points outside the table to 'extrapval'
       if (X (1) < X (end))
-	if (Y (1) < Y (end))
-	  ZI (XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
-		  extrapval;
-	else
-	  ZI (XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
-		  extrapval;
-	endif
+        if (Y (1) < Y (end))
+          ZI (XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
+                  extrapval;
+        else
+          ZI (XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
+                  extrapval;
+        endif
       else
-	if (Y (1) < Y (end))
-	  ZI (XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
-		  extrapval;
-	else
-	  ZI (XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
-		  extrapval;
-	endif
+        if (Y (1) < Y (end))
+          ZI (XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
+                  extrapval;
+        else
+          ZI (XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
+                  extrapval;
+        endif
       endif
     endif
 
@@ -323,18 +323,18 @@ function ZI = interp2 (varargin)
       X = X(:).';
       Y = Y(:);
       if (!isequal ([length(X), length(Y)], size(Z)))
-	error ("X and Y size must match Z dimensions");
+        error ("X and Y size must match Z dimensions");
       endif
     elseif (!size_equal (X, Y))
       error ("X and Y must be matrices of same size");
       if (! size_equal (X, Z))
-	error ("X and Y size must match Z dimensions");
+        error ("X and Y size must match Z dimensions");
       endif
     endif
 
     ## If Xi and Yi are vectors of different orientation build a grid
     if ((rows (XI) == 1 && columns (YI) == 1)
-	|| (columns (XI) == 1 && rows (YI) == 1))
+        || (columns (XI) == 1 && rows (YI) == 1))
       ## Do nothing
     elseif (! size_equal (XI, YI))
       error ("XI and YI must be matrices of same size");
@@ -396,7 +396,7 @@ function ZI = interp2 (varargin)
     elseif (strcmp (method, "spline"))
       if (isgriddata (XI) && isgriddata (YI'))
         ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval, 
-			"spline");
+                        "spline");
       else
         error ("interp2: input data must have `meshgrid' format");
       endif

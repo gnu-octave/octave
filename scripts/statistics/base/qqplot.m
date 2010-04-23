@@ -78,7 +78,7 @@ function [q, s] = qqplot (x, dist, varargin)
       tmp = "";
     endif
     q_label = sprintf ("%s with parameter(s) %g%s", func2str (f),
-		       varargin{1}, tmp);
+                       varargin{1}, tmp);
   endif
 
   if (nargout == 0)

@@ -119,9 +119,9 @@ function retval = license (varargin)
 
       pw = getpwuid (getuid ());
       if (isstruct (pw))
-	username = pw.name;
+        username = pw.name;
       else
-	username = "octave_user";
+        username = "octave_user";
       endif
 
       retval(1:nr_licenses) = struct ("feature", "", "user", "");

@@ -50,11 +50,11 @@ function st = cstrcat (varargin)
     if (iscellstr (varargin))
       ## All arguments are character strings.
       unwind_protect
-	tmp = warning ("query", "Octave:empty-list-elements");
-	warning ("off", "Octave:empty-list-elements");
-	st = [varargin{:}];
+        tmp = warning ("query", "Octave:empty-list-elements");
+        warning ("off", "Octave:empty-list-elements");
+        st = [varargin{:}];
       unwind_protect_cleanup
-	warning (tmp.state, "Octave:empty-list-elements");
+        warning (tmp.state, "Octave:empty-list-elements");
       end_unwind_protect
     else
       error ("cstrcat: expecting arguments to character strings");

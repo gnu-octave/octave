@@ -70,11 +70,11 @@ function retval = feather (varargin)
     if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("feather", arg, false);
       if (valid)
-	line_spec = arg;
-	have_line_spec = false;
-	break;
+        line_spec = arg;
+        have_line_spec = false;
+        break;
       else
-	error ("feather: invalid linespec");
+        error ("feather: invalid linespec");
       endif
     else
       error ("feather: unrecognized argument");

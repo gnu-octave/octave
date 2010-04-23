@@ -38,7 +38,7 @@ function rnd = frnd (m, n, r, c)
     if (!isscalar(m) || !isscalar(n)) 
       [retval, m, n] = common_size (m, n);
       if (retval > 0)
-	error ("frnd: m and n must be of common size or scalar");
+        error ("frnd: m and n must be of common size or scalar");
       endif
     endif
   endif
@@ -54,7 +54,7 @@ function rnd = frnd (m, n, r, c)
     sz = [r, c];
 
     if (any (size (m) != 1) && 
-	((length (size (m)) != length (sz)) || any (size (m) != sz)))
+        ((length (size (m)) != length (sz)) || any (size (m) != sz)))
       error ("frnd: m and n must be scalar or of size [r,c]");
     endif
   elseif (nargin == 3)
@@ -67,7 +67,7 @@ function rnd = frnd (m, n, r, c)
     endif
 
     if (any (size (m) != 1) && 
-	((length (size (m)) != length (sz)) || any (size (m) != sz)))
+        ((length (size (m)) != length (sz)) || any (size (m) != sz)))
       error ("frnd: m and n must be scalar or of size sz");
     endif
   elseif (nargin == 2)
@@ -80,12 +80,12 @@ function rnd = frnd (m, n, r, c)
   if (isscalar (m) && isscalar (n))
     if (isinf (m) || isinf (n))
       if (isinf (m))
-	rnd = ones (sz);
+        rnd = ones (sz);
       else
-	rnd = 2 ./ m .* randg(m / 2, sz);
+        rnd = 2 ./ m .* randg(m / 2, sz);
       endif
       if (! isinf (n))
-	rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz); 
+        rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz); 
       endif
     elseif ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
       rnd = n ./ m .* randg (m / 2, sz) ./ randg (n / 2, sz);

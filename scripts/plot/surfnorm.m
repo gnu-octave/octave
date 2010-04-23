@@ -54,7 +54,7 @@
 function [Nx, Ny, Nz] = surfnorm (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout != 0), "surfnorm", 
-						varargin{:});
+                                                varargin{:});
 
   if (nargin != 1 && nargin != 3)
     print_usage ();
@@ -98,11 +98,11 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
   ## Create normal vectors as mesh vectices from normals at mesh centers
   nx = (w.x(1:end-1,1:end-1) + w.x(1:end-1,2:end) +
-	w.x(2:end,1:end-1) + w.x(2:end,2:end)) ./ 4; 
+        w.x(2:end,1:end-1) + w.x(2:end,2:end)) ./ 4; 
   ny = (w.y(1:end-1,1:end-1) + w.y(1:end-1,2:end) +
-	w.y(2:end,1:end-1) + w.y(2:end,2:end)) ./ 4; 
+        w.y(2:end,1:end-1) + w.y(2:end,2:end)) ./ 4; 
   nz = (w.z(1:end-1,1:end-1) + w.z(1:end-1,2:end) +
-	w.z(2:end,1:end-1) + w.z(2:end,2:end)) ./ 4; 
+        w.z(2:end,1:end-1) + w.z(2:end,2:end)) ./ 4; 
 
   ## Normalize the normal vectors
   len = sqrt (nx.^2 + ny.^2 + nz.^2);
@@ -118,13 +118,13 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
       surf (x, y, z, varargin{ioff:end});
       old_hold_state = get (h, "nextplot");
       unwind_protect
-	set (h, "nextplot", "add");
-	plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-	       [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-	       [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
-	       varargin{ioff:end});
+        set (h, "nextplot", "add");
+        plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+               [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+               [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
+               varargin{ioff:end});
       unwind_protect_cleanup
-	set (h, "nextplot", old_hold_state);
+        set (h, "nextplot", old_hold_state);
       end_unwind_protect
     unwind_protect_cleanup
       axes (oldh);

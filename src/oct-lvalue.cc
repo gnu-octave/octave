@@ -35,12 +35,10 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 {
   if (val)
     {
-      octave_value tmp (idx.empty ()
-                        ? val->assign (op, rhs)
-                        : val->assign (op, type, idx, rhs));
-
-      if (! error_state)
-        *val = tmp;
+      if (idx.empty ())
+        val->assign (op, rhs);
+      else
+        val->assign (op, type, idx, rhs);
     }
 }
 

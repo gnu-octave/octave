@@ -72,7 +72,7 @@ public:
   // We return an octave_matrix here instead of an octave_float_scalar so
   // that in expressions like A(2,2,2) = 2 (for A previously
   // undefined), A will be empty instead of a 1x1 object.
-  octave_base_value *empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value *empty_clone (void) const { return new octave_float_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);

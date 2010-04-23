@@ -115,6 +115,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 // is memory to be saved
 bool Vsparse_auto_mutate = false;
 
+octave_base_value *
+octave_base_value::empty_clone (void) const
+{
+  return resize (dim_vector ()).clone ();
+}
+
 octave_value
 octave_base_value::squeeze (void) const
 {

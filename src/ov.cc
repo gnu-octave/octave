@@ -1271,7 +1271,7 @@ octave_value::subsasgn (const std::string& type,
   return rep->subsasgn (type, idx, rhs);
 }
 
-octave_value
+octave_value&
 octave_value::assign (assign_op op, const std::string& type,
                       const std::list<octave_value_list>& idx,
                       const octave_value& rhs)
@@ -1284,15 +1284,20 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (op != op_asn_eq)
     {
-      octave_value t = subsref (type, idx);
-
-      if (! error_state)
+      if (is_defined ())
         {
-          binary_op binop = op_eq_to_binary_op (op);
+          octave_value t = subsref (type, idx);
 
           if (! error_state)
-            t_rhs = do_binary_op (binop, t, rhs);
+            {
+              binary_op binop = op_eq_to_binary_op (op);
+
+              if (! error_state)
+                t_rhs = do_binary_op (binop, t, rhs);
+            }
         }
+      else
+        error ("in computed assignment A(index) OP= X, A must be defined first");
     }
 
   if (! error_state)
@@ -1300,26 +1305,26 @@ octave_value::assign (assign_op op, const std::string& type,
       if (type[0] == '.' && ! (is_map () || is_object ()))
         {
           octave_value tmp = Octave_map ();
-          retval = tmp.subsasgn (type, idx, t_rhs);
+          *this = tmp.subsasgn (type, idx, t_rhs);
         }
       else
-        retval = subsasgn (type, idx, t_rhs);
+        *this = subsasgn (type, idx, t_rhs);
 
       if (error_state)
         gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
                                           type_name (), rhs.type_name ());
     }
 
-  return retval;
+  return *this;
 }
 
-const octave_value&
+octave_value&
 octave_value::assign (assign_op op, const octave_value& rhs)
 {
   if (op == op_asn_eq)
     // Regularize a null matrix if stored into a variable.
     operator = (rhs.storable_value ());
-  else
+  else if (is_defined ())
     {
       octave_value_typeinfo::assign_op_fcn f = 0;
       
@@ -1358,6 +1363,8 @@ octave_value::assign (assign_op op, const octave_value& rhs)
             }
         }
     }
+  else
+    error ("in computed assignment A OP= X, A must be defined first");
 
   return *this;
 }

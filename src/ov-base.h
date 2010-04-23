@@ -216,7 +216,7 @@ public:
 
   // Empty clone.
   virtual octave_base_value *
-  empty_clone (void) const { return new octave_base_value (); }
+  empty_clone (void) const;
 
   // Unique clone. Usually clones, but may be overriden to fake the
   // cloning when sharing copies is to be controlled from within an

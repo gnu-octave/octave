@@ -70,9 +70,6 @@ public:
 
   ~octave_base_matrix (void) { clear_cached_info (); }
 
-  octave_base_value *clone (void) const { return new octave_base_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_base_matrix (); }
-
   size_t byte_size (void) const { return matrix.byte_size (); }
 
   octave_value squeeze (void) const { return MT (matrix.squeeze ()); }

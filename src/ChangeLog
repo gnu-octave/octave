@@ -1,3 +1,23 @@
+2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-bool.h (octave_bool::empty_clone): Correctly return an empty
+	matrix.
+	* ov-float.h (octave_float::empty_clone): Ditto.
+	* ov-base-mat.h (octave_base_matrix::clone,
+	octave_base_matrix::empty_clone): Remove.
+	* ov-base-scalar.h (octave_base_scalar::clone,
+	octave_base_scalar::empty_clone): Remove.
+	* ov-base-sparse.h (octave_base_sparse::clone,
+	octave_base_sparse::empty_clone): Remove.
+	* ov-base.h (octave_base_value::empty_clone): Remove implementation.
+	* ov-base.cc (octave_base_value::empty_clone): Implement here.
+	Fall back to resize() for empty_clone().
+	* ov.cc (octave_value::assign): Correct behavior in the indexed OP= case.
+	Use better error messages. Always return non-const reference, like any
+	assignment.
+	* ov.h: Update decls.
+	* oct-lvalue.cc (octave_lvalue::assign): Simplify.
+
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/hess.cc.: return correct Hessenberg matrix when called 

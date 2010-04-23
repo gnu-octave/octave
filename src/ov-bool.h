@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-typeinfo.h"
 
@@ -65,7 +66,7 @@ public:
   ~octave_bool (void) { }
 
   octave_base_value *clone (void) const { return new octave_bool (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_bool (); }
+  octave_base_value *empty_clone (void) const { return new octave_bool_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 

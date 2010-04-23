@@ -411,11 +411,11 @@ public:
                                  const std::list<octave_value_list>& idx,
                                  const octave_value& rhs);
 
-  octave_value assign (assign_op op, const std::string& type,
+  octave_value& assign (assign_op op, const std::string& type,
                        const std::list<octave_value_list>& idx,
                        const octave_value& rhs);
 
-  const octave_value& assign (assign_op, const octave_value& rhs);
+  octave_value& assign (assign_op, const octave_value& rhs);
 
   idx_vector index_vector (void) const
     { return rep->index_vector (); }

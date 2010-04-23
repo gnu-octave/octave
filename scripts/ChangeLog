@@ -1,5 +1,9 @@
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
+	* optimization/sqp.m: Return correct value (101) on succes.  Fixes bug #29577
+
+2010-04-22  Rik <octave@nomad.inbox5.com>
+
 	* optimization/glpk.m: Eliminate repmat (Inf, x , y) and just use Inf (x,y)
 
 2010-04-22  Rik <octave@nomad.inbox5.com>

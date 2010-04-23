@@ -397,6 +397,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       t4 = norm (lambda .* con);
 
       if (t2 && t3 && max ([t0; t1; t4]) < tol)
+        info = 101;
 	break;
       endif
 

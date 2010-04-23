@@ -1771,8 +1771,8 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   mx_inline_add (rnz, ridx () + li, rhs.ridx (), lb);
 
                   // ...tail
-                  copy_or_memcpy (nz - ui, data () + ui, data () + li + rnz);
-                  copy_or_memcpy (nz - ui, ridx () + ui, ridx () + li + rnz);
+                  copy_or_memcpy (nz - ui, tmp.data () + ui, data () + li + rnz);
+                  copy_or_memcpy (nz - ui, tmp.ridx () + ui, ridx () + li + rnz);
                 }
 
               cidx(1) = new_nz;

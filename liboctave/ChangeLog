@@ -1,3 +1,7 @@
+2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Sparse.cc (Sparse<T>::assign): Fix typos.
+
 2010-04-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.h (::assign, ::assign1): Remove declarations.

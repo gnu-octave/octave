@@ -83,8 +83,8 @@ class OpenGL_fltk : public Fl_Gl_Window
 {
 public:
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
-    : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), in_zoom (false),
-      print_filename ("")
+    : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), renderer (),
+      in_zoom (false), zoom_box (),  print_filename ()
   {
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE);
@@ -116,11 +116,11 @@ private:
 
   std::string print_filename;
 
-  void setup_viewport (int _w, int _h)
+  void setup_viewport (int ww, int hh)
   {
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    glViewport (0, 0, _w, _h);
+    glViewport (0, 0, ww, hh);
   }
 
   void draw (void)
@@ -147,10 +147,10 @@ private:
       }
   }
 
-  void resize (int _x, int _y, int _w, int _h)
+  void resize (int xx, int yy, int ww, int hh)
   {
-    Fl_Gl_Window::resize (_x, _y, _w, _h);
-    setup_viewport (_w, _h);
+    Fl_Gl_Window::resize (xx, yy, ww, hh);
+    setup_viewport (ww, hh);
     redraw ();
   }
 
@@ -217,9 +217,9 @@ static double wheel_zoom_speed = 0.05;
 class plot_window : public Fl_Window
 {
 public:
-  plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp)
-    : Fl_Window (_x, _y, _w, _h, "octave"), window_label (), shift (0),
-      fp (_fp), canvas (0), autoscale (0), togglegrid (0), help (0),
+  plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
+    : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
+      fp (xfp), canvas (0), autoscale (0), togglegrid (0), help (0),
       status (0)
   {
     callback (window_close, static_cast<void*> (this));
@@ -227,11 +227,11 @@ public:
     begin ();
     {
       canvas = new
-        OpenGL_fltk (0, 0, _w , _h - status_h, number ());
+        OpenGL_fltk (0, 0, ww , hh - status_h, number ());
 
       autoscale = new
         Fl_Button (0,
-                   _h - status_h,
+                   hh - status_h,
                    status_h,
                    status_h,
                    "A");
@@ -239,7 +239,7 @@ public:
 
       togglegrid = new
         Fl_Button (status_h,
-                   _h - status_h,
+                   hh - status_h,
                    status_h,
                    status_h,
                    "G");
@@ -247,7 +247,7 @@ public:
 
       help = new
         Fl_Button (2*status_h,
-                   _h - status_h,
+                   hh - status_h,
                    status_h,
                    status_h,
                    "?");
@@ -255,8 +255,8 @@ public:
 
       status = new
         Fl_Output (3*status_h,
-                   _h - status_h,
-                   _w > 2*status_h ? _w - status_h : 0,
+                   hh - status_h,
+                   ww > 2*status_h ? ww - status_h : 0,
                    status_h, "");
 
       status->textcolor (FL_BLACK);
@@ -521,15 +521,15 @@ private:
     return Cell (mod);
   }
 
-  void resize (int _x,int _y,int _w,int _h)
+  void resize (int xx,int yy,int ww,int hh)
   {
-    Fl_Window::resize (_x, _y, _w, _h);
+    Fl_Window::resize (xx, yy, ww, hh);
 
     Matrix pos (1,4,0);
-    pos(0) = _x;
-    pos(1) = _y;
-    pos(2) = _w;
-    pos(3) = _h - status_h;
+    pos(0) = xx;
+    pos(1) = yy;
+    pos(2) = ww;
+    pos(3) = hh - status_h;
 
     fp.set_position (pos);
   }

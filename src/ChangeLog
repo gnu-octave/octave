@@ -1,4 +1,9 @@
-n2010-04-23  John W. Eaton  <jwe@octave.org>
+2010-04-23  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fltk_backend.cc	(OpenGL_fltk::OpenGL_fltk):
+	Explicitly initizlize all data members in the order they are declared.
+
+2010-04-23  John W. Eaton  <jwe@octave.org>
 
 	* txt-eng-ft.cc (ft_render::visit): Declare loop counter size_t,
 	not int.

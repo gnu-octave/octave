@@ -1,3 +1,8 @@
+2010-04-23  Rik <octave@nomad.inbox5.com>
+
+	* optimization/gplot.m: Eliminate parsing error for NaN inside of matrix 
+   declaration.
+
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
 	* optimization/sqp.m: Return correct value (101) on succes.  Fixes bug #29577

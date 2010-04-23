@@ -80,11 +80,9 @@ public:
 
   octave_idx_type nnz (void) const { return (scalar != ST ()) ? 1 : 0; }
 
-  octave_value permute (const Array<int>&, bool = false) const
-    { return scalar; }
+  octave_value permute (const Array<int>&, bool = false) const;
 
-  octave_value reshape (const dim_vector& new_dims) const
-    { return array_value ().reshape (new_dims); }
+  octave_value reshape (const dim_vector& new_dims) const;
 
   size_t byte_size (void) const { return sizeof (ST); }
 

@@ -101,6 +101,20 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
 }
 
 template <class ST>
+octave_value
+octave_base_scalar<ST>::permute (const Array<int>& vec, bool inv) const
+{
+  return Array<ST> (1, 1, scalar).permute (vec, inv);
+}
+
+template <class ST>
+octave_value
+octave_base_scalar<ST>::reshape (const dim_vector& new_dims) const
+{
+  return Array<ST> (1, 1, scalar).reshape (new_dims);
+}
+
+template <class ST>
 bool
 octave_base_scalar<ST>::is_true (void) const
 {

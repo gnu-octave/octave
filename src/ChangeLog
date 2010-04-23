@@ -1,5 +1,12 @@
 2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base-scalar.h (octave_base_scalar::reshape,
+	octave_base_scalar::permute): Remove implementations.
+	* ov-base-scalar.cc (octave_base_scalar::reshape,
+	octave_base_scalar::permute): Provide correct implementations here.
+
+2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-bool.h (octave_bool::empty_clone): Correctly return an empty
 	matrix.
 	* ov-float.h (octave_float::empty_clone): Ditto.

@@ -1,5 +1,10 @@
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
+   * scripts/geometry/griddata.m, scripts/geometry/griddatan.m, 
+     scripts/geometry/tsearchn.m: Replace nan with NaN for nice visual cue
+
+2010-04-23  Rik <octave@nomad.inbox5.com>
+
 	* optimization/gplot.m: Eliminate parsing error for NaN inside of matrix 
    declaration.
 

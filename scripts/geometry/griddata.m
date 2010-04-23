@@ -68,7 +68,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
 
   ## Triangulate data.
   tri = delaunay (x, y);
-  zi = nan (size (xi));
+  zi = NaN (size (xi));
   
   if (strcmp (method, "cubic"))
     error ("griddata: cubic interpolation not yet implemented");

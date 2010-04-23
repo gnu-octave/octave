@@ -34,8 +34,8 @@ function [idx, p] = tsearchn (x, t, xi)
   nt = size (t, 1);
   [m, n] = size (x);
   mi = size (xi, 1);
-  idx = nan (mi, 1);
-  p = nan (mi, n + 1);
+  idx = NaN (mi, 1);
+  p = NaN (mi, n + 1);
 
   ni = [1:mi].';
   for i = 1 : nt

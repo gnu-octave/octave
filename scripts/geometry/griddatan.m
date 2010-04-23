@@ -54,7 +54,7 @@ function yi = griddatan (x, y, xi, method, varargin)
   ## tri = delaunayn(x, varargin{:});
   tri = delaunayn (x);
 
-  yi = nan (mi, 1);
+  yi = NaN (mi, 1);
   
   if (strcmp (method, "nearest"))
     ## search index of nearest point

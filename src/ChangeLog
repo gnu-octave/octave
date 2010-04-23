@@ -14,7 +14,7 @@
 	Avoid GCC shadow variable warning.
 
 	* DLD-FUNCTIONS (plot_window::plot_window): Explicitly
-	initialize all data members in the order they are declared..
+	initialize all data members in the order they are declared.
 
 2010-04-23  John W. Eaton  <jwe@octave.org>
 
@@ -28,7 +28,7 @@
 
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/regexp.cc.: eliminate compile warning 
+	* DLD-FUNCTIONS/regexp.cc.: Eliminate compile warning.
 	warning: suggest explicit braces to avoid ambiguous 'else'.
 
 2010-04-23  Jaroslav Hajek  <highegg@gmail.com>

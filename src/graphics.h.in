@@ -2743,13 +2743,13 @@ public:
   static Matrix xform_eye (void);
 
   ColumnVector transform (double x, double y, double z,
-                          bool scale = true) const;
+                          bool use_scale = true) const;
   
   ColumnVector untransform (double x, double y, double z,
-                            bool scale = true) const;
+                            bool use_scale = true) const;
   
-  ColumnVector untransform (double x, double y, bool scale = true) const
-    { return untransform (x, y, (zlim(0)+zlim(1))/2, scale); }
+  ColumnVector untransform (double x, double y, bool use_scale = true) const
+    { return untransform (x, y, (zlim(0)+zlim(1))/2, use_scale); }
 
   Matrix xscale (const Matrix& m) const { return sx.scale (m); }
   Matrix yscale (const Matrix& m) const { return sy.scale (m); }

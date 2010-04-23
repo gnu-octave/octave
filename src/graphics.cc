@@ -4250,15 +4250,15 @@ text::properties::update_text_extent (void)
 #endif
   box = text_renderer.get_extent (elt, get_rotation ());
 
-  Matrix extent (1, 4, 0.0);
+  Matrix ext (1, 4, 0.0);
 
   // FIXME: also handle left and bottom components
 
-  extent(0) = extent(1) = 1;
-  extent(2) = box(0);
-  extent(3) = box(1);
+  ext(0) = ext(1) = 1;
+  ext(2) = box(0);
+  ext(3) = box(1);
 
-  set_extent (extent);
+  set_extent (ext);
 
 #endif
 }

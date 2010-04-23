@@ -73,7 +73,7 @@ extract_help_text (void)
           if (! have_help_text)
             {
               first_comments_seen = true;
-              help_txt += (char) c;
+              help_txt += static_cast<char> (c);
             }
 
           if (c == '\n')

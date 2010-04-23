@@ -1,5 +1,18 @@
 2010-04-23  John W. Eaton  <jwe@octave.org>
 
+	* txt-eng-ft.cc (ft_render::visit): Declare loop counter size_t,
+	not int.
+
+	* graphics.h.in (graphics_xform::untransform):  Likewise.
+	* graphics.cc (text::properties::update_text_extent): Likewise.
+	* DLD-FUNCTIONS/fltk_backend.cc	(plot_window::set_axes_currentpoint):
+	Avoid GCC shadow variable warning.
+
+	* DLD-FUNCTIONS (plot_window::plot_window): Explicitly
+	initialize all data members in the order they are declared..
+
+2010-04-23  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/gcd.cc (Fgcd): Use two-argument dim_vector constructor.
 
 	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):

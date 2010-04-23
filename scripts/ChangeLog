@@ -1,3 +1,8 @@
+2010-04-23  John W. Eaton  <jwe@octave.org>
+
+	* gethelp.cc (extract_help_text): Use C++ static_cast instead of
+	C-style cast.
+
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
    * scripts/*.m: Untabify scripts

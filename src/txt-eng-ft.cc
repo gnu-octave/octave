@@ -266,7 +266,7 @@ ft_render::visit (text_element_string& e)
       std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
 
-      for (int i = 0; i < str.length (); i++)
+      for (size_t i = 0; i < str.length (); i++)
         {
           glyph_index = FT_Get_Char_Index (face, str[i]);
 

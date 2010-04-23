@@ -218,7 +218,9 @@ class plot_window : public Fl_Window
 {
 public:
   plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp)
-    : Fl_Window (_x, _y, _w, _h, "octave"), fp (_fp), shift (0)
+    : Fl_Window (_x, _y, _w, _h, "octave"), window_label (), shift (0),
+      fp (_fp), canvas (0), autoscale (0), togglegrid (0), help (0),
+      status (0)
   {
     callback (window_close, static_cast<void*> (this));
 
@@ -465,14 +467,14 @@ private:
     axes::properties& ap = 
       dynamic_cast<axes::properties&> (ax.get_properties ());
     
-    double x, y;
-    pixel2pos (ax, px, py, x, y);
+    double xx, yy;
+    pixel2pos (ax, px, py, xx, yy);
 
     Matrix pos (2,3,0);
-    pos(0,0) = x;
-    pos(1,0) = y;
-    pos(0,1) = x;
-    pos(1,1) = y;
+    pos(0,0) = xx;
+    pos(1,0) = yy;
+    pos(0,1) = xx;
+    pos(1,1) = yy;
 
     ap.set_currentpoint (pos);
   }

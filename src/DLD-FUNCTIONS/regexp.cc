@@ -459,7 +459,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               int pos_offset = 0;
               pos_match = 0;
               for (int i = 1; i < matches; i++)
-                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0) {
                   if (i == 1 || ovector[2*i] != ovector[2*i-2]
                       || ovector[2*i-1] != ovector[2*i+1])
                     {
@@ -471,6 +471,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                     }
                   else
                     pos_offset++;
+                }
 
               m =  std::string(*listptr);
               t = cell_t;

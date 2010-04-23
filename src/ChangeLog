@@ -1,3 +1,8 @@
+2010-04-23  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/regexp.cc.: eliminate compile warning 
+   warning: suggest explicit braces to avoid ambiguous 'else'
+
 2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-scalar.h (octave_base_scalar::reshape,

@@ -108,7 +108,7 @@ all of the values of @var{v1}, @dots{} is acceptable.\n\
   bool all_args_scalar = true;
   bool any_single = false;
 
-  dim_vector dv(1);
+  dim_vector dv (1, 1);
 
   for (int i = 0; i < nargin; i++)
     {

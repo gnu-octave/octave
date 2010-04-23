@@ -1,3 +1,13 @@
+2010-04-23  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gcd.cc (Fgcd): Use two-argument dim_vector constructor.
+
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op_internal):
+	Explicitly create idx_vec with column orientation.
+
+	* oct-obj.cc (octave_value_list::octave_value_list):
+	Explicitly resize data to be row vector.
+
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/regexp.cc.: eliminate compile warning 

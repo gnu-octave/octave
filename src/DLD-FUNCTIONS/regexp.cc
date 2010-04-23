@@ -351,11 +351,12 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                          (freespacing ? PCRE_EXTENDED : 0),
                          &err, &erroffset, 0);
     
-      if (re == 0) {
-        error("%s: %s at position %d of expression", nm.c_str(), 
-              err, erroffset);
-        return 0;
-      }
+      if (re == 0)
+        {
+          error("%s: %s at position %d of expression", nm.c_str(), 
+                err, erroffset);
+          return 0;
+        }
 
       int subpatterns;
       int namecount;
@@ -447,30 +448,32 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               int status = pcre_get_substring_list(buffer.c_str(), ovector, 
                                                    matches, &listptr);
 
-              if (status == PCRE_ERROR_NOMEMORY) {
-                error("%s: cannot allocate memory in pcre_get_substring_list",
-                      nm.c_str());
-                pcre_free(re);
-                return 0;
-              }
+              if (status == PCRE_ERROR_NOMEMORY)
+                {
+                  error("%s: cannot allocate memory in pcre_get_substring_list",
+                        nm.c_str());
+                  pcre_free(re);
+                  return 0;
+                }
 
               Cell cell_t (dim_vector(1,pos_match));
               string_vector named_tokens(nnames);
               int pos_offset = 0;
               pos_match = 0;
               for (int i = 1; i < matches; i++)
-                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0) {
-                  if (i == 1 || ovector[2*i] != ovector[2*i-2]
-                      || ovector[2*i-1] != ovector[2*i+1])
-                    {
-                      if (namecount > 0)
-                        named_tokens(named_idx(i-pos_offset-1)) = 
-                          std::string(*(listptr+nidx[i-pos_offset-1]));    
-                      cell_t(pos_match++) = 
-                        std::string(*(listptr+i));
-                    }
-                  else
-                    pos_offset++;
+                if (ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                  {
+                    if (i == 1 || ovector[2*i] != ovector[2*i-2]
+                        || ovector[2*i-1] != ovector[2*i+1])
+                      {
+                        if (namecount > 0)
+                          named_tokens(named_idx(i-pos_offset-1)) = 
+                            std::string(*(listptr+nidx[i-pos_offset-1]));    
+                        cell_t(pos_match++) = 
+                          std::string(*(listptr+i));
+                      }
+                    else
+                      pos_offset++;
                 }
 
               m =  std::string(*listptr);

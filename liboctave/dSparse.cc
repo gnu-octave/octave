@@ -7565,14 +7565,16 @@ operator << (std::ostream& os, const SparseMatrix& a)
 
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
-   for (octave_idx_type j = 0; j < nc; j++)  {
-      octave_quit ();
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) {
-        os << a.ridx(i) + 1 << " "  << j + 1 << " ";
-        octave_write_double (os, a.data(i));
-        os << "\n";
-      }
-   }
+   for (octave_idx_type j = 0; j < nc; j++)
+     {
+       octave_quit ();
+       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+         {
+           os << a.ridx(i) + 1 << " "  << j + 1 << " ";
+           octave_write_double (os, a.data(i));
+           os << "\n";
+         }
+     }
 
   return os;
 }

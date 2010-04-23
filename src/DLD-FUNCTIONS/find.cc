@@ -545,12 +545,13 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
       else 
         gripe_wrong_type_arg ("find", arg);
     }
-  else if (arg.is_perm_matrix ()) {
-    PermMatrix P = arg.perm_matrix_value ();
+  else if (arg.is_perm_matrix ())
+    {
+      PermMatrix P = arg.perm_matrix_value ();
 
-    if (! error_state)
-      retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
-  }
+      if (! error_state)
+        retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
+    }
   else
     {
       if (arg.is_single_type ())

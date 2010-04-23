@@ -5,32 +5,153 @@
 
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
-   * scripts/*.m: Untabify scripts
+	* audio/loadaudio.m, audio/mu2lin.m, audio/playaudio.m,
+	audio/saveaudio.m, audio/wavread.m, audio/wavwrite.m,
+	deprecated/cellidx.m, deprecated/intwarning.m,
+	deprecated/lchol.m, deprecated/spatan2.m, deprecated/spchol.m,
+	deprecated/spchol2inv.m, deprecated/spcholinv.m,
+	deprecated/spcumprod.m, deprecated/spcumsum.m,
+	deprecated/spdet.m, deprecated/spdiag.m, deprecated/spfind.m,
+	deprecated/spinv.m, deprecated/spkron.m, deprecated/splchol.m,
+	deprecated/split.m, deprecated/splu.m, deprecated/spmax.m,
+	deprecated/spmin.m, deprecated/spprod.m, deprecated/spqr.m,
+	deprecated/spsum.m, deprecated/spsumsq.m, elfun/lcm.m,
+	general/bicubic.m, general/cell2mat.m, general/circshift.m,
+	general/cplxpair.m, general/cumtrapz.m, general/dblquad.m,
+	general/del2.m, general/gradient.m, general/idivide.m,
+	general/int2str.m, general/interp1.m, general/interp2.m,
+	general/interp3.m, general/interpn.m, general/isa.m,
+	general/num2str.m, general/postpad.m, general/prepad.m,
+	general/private/__isequal__.m, general/quadgk.m,
+	general/quadl.m, general/quadv.m, general/rat.m,
+	general/rotdim.m, general/shift.m, general/sortrows.m,
+	general/structfun.m, general/trapz.m, geometry/griddata.m,
+	geometry/griddata3.m, geometry/inpolygon.m, geometry/rectint.m,
+	geometry/trimesh.m, geometry/triplot.m, geometry/trisurf.m,
+	geometry/voronoi.m, help/doc.m, help/help.m, help/which.m,
+	io/dlmwrite.m, io/strread.m, linear-algebra/condest.m,
+	linear-algebra/cross.m, linear-algebra/krylov.m,
+	linear-algebra/null.m, linear-algebra/onenormest.m,
+	linear-algebra/orth.m, linear-algebra/rank.m,
+	linear-algebra/rref.m, miscellaneous/bincoeff.m,
+	miscellaneous/cast.m, miscellaneous/compare_versions.m,
+	miscellaneous/copyfile.m, miscellaneous/dir.m,
+	miscellaneous/dump_prefs.m, miscellaneous/edit.m,
+	miscellaneous/fileattrib.m, miscellaneous/fileparts.m,
+	miscellaneous/fullfile.m, miscellaneous/license.m,
+	miscellaneous/ls.m, miscellaneous/ls_command.m,
+	miscellaneous/mkoctfile.m, miscellaneous/movefile.m,
+	miscellaneous/orderfields.m, miscellaneous/perl.m,
+	miscellaneous/run.m, miscellaneous/substruct.m,
+	miscellaneous/swapbytes.m, miscellaneous/tar.m,
+	miscellaneous/unpack.m, miscellaneous/what.m,
+	miscellaneous/zip.m, optimization/fminunc.m,
+	optimization/fsolve.m, optimization/glpk.m, optimization/qp.m,
+	optimization/sqp.m, path/pathdef.m, path/savepath.m, pkg/pkg.m,
+	plot/__gnuplot_get_var__.m, plot/__gnuplot_ginput__.m,
+	plot/__go_draw_axes__.m, plot/__next_line_color__.m,
+	plot/__next_line_style__.m, plot/__plt_get_axis_arg__.m,
+	plot/ancestor.m, plot/area.m, plot/axes.m, plot/axis.m,
+	plot/box.m, plot/cla.m, plot/clabel.m, plot/clf.m, plot/close.m,
+	plot/colorbar.m, plot/comet.m, plot/compass.m, plot/contourf.m,
+	plot/cylinder.m, plot/ellipsoid.m, plot/feather.m, plot/fill.m,
+	plot/findobj.m, plot/fplot.m, plot/gnuplot_drawnow.m,
+	plot/grid.m, plot/gtext.m, plot/hidden.m, plot/hist.m,
+	plot/hold.m, plot/ishold.m, plot/isonormals.m,
+	plot/isosurface.m, plot/legend.m, plot/linkprop.m, plot/meshz.m,
+	plot/newplot.m, plot/pareto.m, plot/pie.m, plot/plot3.m,
+	plot/plotmatrix.m, plot/plotyy.m, plot/polar.m,
+	plot/private/__actual_axis_position__.m,
+	plot/private/__add_datasource__.m,
+	plot/private/__axes_limits__.m, plot/private/__axis_label__.m,
+	plot/private/__bar__.m, plot/private/__clabel__.m,
+	plot/private/__contour__.m, plot/private/__errcomm__.m,
+	plot/private/__errplot__.m, plot/private/__ezplot__.m,
+	plot/private/__patch__.m, plot/private/__plt__.m,
+	plot/private/__pltopt__.m, plot/private/__quiver__.m,
+	plot/private/__scatter__.m, plot/private/__stem__.m,
+	plot/refreshdata.m, plot/ribbon.m, plot/rose.m, plot/slice.m,
+	plot/sombrero.m, plot/sphere.m, plot/stairs.m, plot/subplot.m,
+	plot/surf.m, plot/surface.m, plot/surfl.m, plot/surfnorm.m,
+	plot/text.m, plot/view.m, polynomial/polyderiv.m,
+	polynomial/polygcd.m, polynomial/polyout.m, polynomial/spline.m,
+	set/intersect.m, set/setdiff.m, set/setxor.m, signal/unwrap.m,
+	sparse/pcg.m, sparse/pcr.m, sparse/spaugment.m,
+	sparse/spconvert.m, sparse/sprand.m, sparse/sprandsym.m,
+	sparse/svds.m, sparse/treelayout.m, sparse/treeplot.m,
+	specfun/nchoosek.m, specfun/primes.m, special-matrix/toeplitz.m,
+	statistics/base/iqr.m, statistics/base/kurtosis.m,
+	statistics/base/qqplot.m, statistics/base/quantile.m,
+	statistics/base/ranks.m, statistics/base/run_count.m,
+	statistics/base/skewness.m, statistics/base/statistics.m,
+	statistics/base/studentize.m, statistics/base/var.m,
+	statistics/distributions/betapdf.m,
+	statistics/distributions/betarnd.m,
+	statistics/distributions/binocdf.m,
+	statistics/distributions/binoinv.m,
+	statistics/distributions/binornd.m,
+	statistics/distributions/cauchy_pdf.m,
+	statistics/distributions/cauchy_rnd.m,
+	statistics/distributions/chi2rnd.m,
+	statistics/distributions/discrete_rnd.m,
+	statistics/distributions/exprnd.m,
+	statistics/distributions/fcdf.m,
+	statistics/distributions/finv.m,
+	statistics/distributions/fpdf.m,
+	statistics/distributions/frnd.m,
+	statistics/distributions/gampdf.m,
+	statistics/distributions/gamrnd.m,
+	statistics/distributions/geornd.m,
+	statistics/distributions/hygepdf.m,
+	statistics/distributions/laplace_inv.m,
+	statistics/distributions/lognrnd.m,
+	statistics/distributions/nbincdf.m,
+	statistics/distributions/nbininv.m,
+	statistics/distributions/nbinpdf.m,
+	statistics/distributions/nbinrnd.m,
+	statistics/distributions/normrnd.m,
+	statistics/distributions/poissinv.m,
+	statistics/distributions/poissrnd.m,
+	statistics/distributions/tinv.m,
+	statistics/distributions/tpdf.m,
+	statistics/distributions/trnd.m,
+	statistics/distributions/unidrnd.m,
+	statistics/distributions/unifrnd.m,
+	statistics/distributions/wblpdf.m,
+	statistics/distributions/wblrnd.m, strings/cstrcat.m,
+	strings/deblank.m, strings/findstr.m, strings/isstrprop.m,
+	strings/regexptranslate.m, strings/strtok.m, testfun/assert.m,
+	testfun/example.m, testfun/fail.m, testfun/rundemos.m,
+	testfun/runtests.m, testfun/speed.m, testfun/test.m,
+	time/datestr.m, time/weekday.m: Untabify.
 
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
-   * scripts/geometry/griddata.m, scripts/geometry/griddatan.m, 
-     scripts/geometry/tsearchn.m: Replace nan with NaN for nice visual cue
+	* geometry/griddata.m, geometry/griddatan.m, geometry/tsearchn.m:
+	Replace nan with NaN for nice visual cue.
 
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
-	* optimization/gplot.m: Eliminate parsing error for NaN inside of matrix 
-   declaration.
+	* optimization/gplot.m: Eliminate parsing error for NaN inside
+	of matrix declaration.
 
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
-	* optimization/sqp.m: Return correct value (101) on succes.  Fixes bug #29577
+	* optimization/sqp.m: Return correct value (101) on succes.
+	Fixes bug #29577.
 
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
-	* optimization/glpk.m: Eliminate repmat (Inf, x , y) and just use Inf (x,y)
+	* optimization/glpk.m: Eliminate repmat (Inf, x , y) and just
+	use Inf (x,y).
 
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
-	* general/rat.m, sparse/gplot.m, strings/base2dec.m, geometry/triplot.m
-     optimization/sqp.m, optimization/qp.m, statistics/base/run_count.m,
-     statistics/base/ranks.m: Eliminate NaN*ones and Inf*ones constructs
-     and just use Nan() and Inf()
+	* general/rat.m, sparse/gplot.m, strings/base2dec.m,
+	geometry/triplot.m, optimization/sqp.m, optimization/qp.m,
+	statistics/base/run_count.m, statistics/base/ranks.m:
+	Eliminate NaN*ones and Inf*ones constructs and just use Nan()
+	and Inf().
 
 2010-04-19  Ben Abbott <bpabbott@mac.com>
 
@@ -100,8 +221,9 @@
 
 2010-02-19  Rik <octave@nomad.inbox5.com>
 
-	* statistics/cut.m: Modify cut to use the same decision criteria as histc
-   when deciding whether a data point is inside or outside interval
+	* statistics/cut.m: Modify cut to use the same decision criteria
+	as histc when deciding whether a data point is inside or outside
+	interval.
 
 2010-04-02  Marc Vinyals  <mrc_timer@users.sourceforge.net>
 
@@ -205,12 +327,13 @@
 
 2010-03-05  Soren Hauberg  <hauberg@gmail.com>
 
-	* pkg/pkg.m (write_index): include classes in autogenerated INDEX files.
+	* pkg/pkg.m (write_index): include classes in autogenerated
+	INDEX files.
 
 2010-03-05  Soren Hauberg  <hauberg@gmail.com>
 
-	* plot/fplot.m: Ensure that 'limits' is a 2 or 4 vector, and that 'fn' is a
-	function.
+	* plot/fplot.m: Ensure that 'limits' is a 2 or 4 vector, and
+	that 'fn' is a function.
 
 2010-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -751,7 +874,8 @@
 
 2009-12-09  Rik <octave@nomad.inbox5.com>
 
-	* polynomial/module.mk: Correct typo and distribute newly created ppder.m
+	* polynomial/module.mk: Correct typo and distribute newly
+	created ppder.m.
 
 2009-12-13  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -799,8 +923,9 @@
 
 2009-12-07  Jaroslav Hajek  <highegg@gmail.com>
 
-	* general/interp1.m: Allow discontinuities (jumps) for the "nearest" and
-	"linear" methods. Document the feature and add a few tests.
+	* general/interp1.m: Allow discontinuities (jumps) for the
+	"nearest" and "linear" methods.  Document the feature and add a
+	few tests.
 
 2009-12-06  Rik <rik@nomad.inbox5.com>
 
@@ -1038,7 +1163,7 @@
 
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
-	* scripts/strings/dec2base.m: Fix division.
+	* strings/dec2base.m: Fix division.
 
 2009-11-20  Lukas Reichlin <lukas.reichlin@swissonline.ch>
 
@@ -1610,10 +1735,11 @@
 
 2009-05-28  Ben Abbott  <bpabbott@mac.com>
 
-	* plot/__go_draw_axes__.m: Set x2range when xaxislocation=='top' and set
-	y2range when yaxislocation=='right'. Simplified support for ticklabel
-	separator '|'.
-	* plot/__go_draw_figure__.m: Change 'autoscale fix' to 'autoscale keepfix'.
+	* plot/__go_draw_axes__.m: Set x2range when xaxislocation=='top'
+	and set y2range when yaxislocation=='right'. Simplify support
+	for ticklabel separator '|'.
+	* plot/__go_draw_figure__.m: Change 'autoscale fix' to
+	'autoscale keepfix'.
 	* plot/colorbar.m: Add demos.
 
 2009-05-28  Ben Abbott  <bpabbott@mac.com>
@@ -1628,19 +1754,22 @@
 2009-05-28  Radek Salac  <salac.r@gmail.com>
 
 	* sparse/bicgstab.m: New output when calling without arguments.
-	Time optimization - remove certain checks linked to preconditioner which
-	are unacceptably slow.
+	Time optimization - remove certain checks linked to
+	preconditioner which are unacceptably slow.
 	* sparse/cgs.m: New output when calling without arguments.
-	Time optimization - remove certain checks linked to preconditioner which
-	are unacceptably slow. Rename internal variable to match bicgstab.
+	Time optimization - remove certain checks linked to
+	preconditioner which are unacceptably slow.  Rename internal
+	variable to match bicgstab.
 
 2009-05-27  Rik Wehbring  <rdrider0-list@yahoo.com>
 
-	* plot/axis.m: Update documentation to reflect addition of "tight" option.
+	* plot/axis.m: Update documentation to reflect addition of
+	"tight" option.
 
 2009-05-27  Rik Wehbring  <rdrider0-list@yahoo.com>
 
-	* ismember.m: Update examples to remove incorrect reference to residue function
+	* ismember.m: Update examples to remove incorrect reference to
+	residue function.
 
 2009-05-27  John W. Eaton  <jwe@octave.org>
 
@@ -1653,7 +1782,7 @@
 2009-05-26  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix rendering of overlaping images and
-	line objects. Add demos as well.
+	line objects.  Add demos as well.
 
 2009-05-27 S�ren Hauberg  <hauberg@gmail.com>
 
@@ -1722,7 +1851,7 @@
 
 2009-05-15  John W. Eaton  <jwe@octave.org>
 
-	* general/nargchk.m: Don't generate error if output is struct.
+v	* general/nargchk.m: Don't generate error if output is struct.
 	Uncomment some additional tests.
 	From Alois Schloegl <alois.schloegl@tugraz.at>
 
@@ -2124,8 +2253,8 @@
 	aspect ratio.
 	* plot/__gnuplot_has_feature__.m: Add new feature
 	"screen_coordinates_for_{lrtb}margin".
-	* plot/__go_draw_axes__.m, plot/colorbar.m: Enable axes to be positioned
-	using {lrtb}margins.
+	* plot/__go_draw_axes__.m, plot/colorbar.m: Enable axes to be
+	positioned using {lrtb}margins.
 	* plot/colorbar.m: Add to, and modify, demos.
 
 	* plot/print.m: Remove non-functional/commented code.
@@ -2351,7 +2480,7 @@
 	testfun/rundemos.m, testfun/test.m:
 	Delete "PKG_ADD: mark_as_command" directive.
 
-	* scripts/edit.m: Avoid command-style function call syntax when
+	* edit.m: Avoid command-style function call syntax when
 	assigning results in tests.
 
 	* deprecated/mark_as_rawcommand.m, deprecated/unmark_rawcommand.m,
@@ -2851,9 +2980,9 @@
 	strings/strrep.m, strings/strtok.m, strings/strtrim.m,
 	strings/strtrunc.m, strings/strvcat.m, strings/substr.m:
 	Fix documentation strings, add examples, references and tests.
-	* scripts/general/int2str.m: Add missing semicolon.
-	* scripts/strings/regexptranslate.m: add nargin check.
-	* scripts/strings/str2double.m: fix nargin check.
+	* general/int2str.m: Add missing semicolon.
+	* strings/regexptranslate.m: add nargin check.
+	* strings/str2double.m: fix nargin check.
 
 2008-12-29  David Bateman  <dbateman@free.fr>
 
@@ -2939,14 +3068,14 @@
 
 2008-12-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-	* strings/lower.m: Remove
-	* strings/upper.m: Remove
-	* strings/Makefile.in: Remove lower.m, upper.m
+	* strings/lower.m: Remove.
+	* strings/upper.m: Remove.
+	* strings/Makefile.in: Remove lower.m, upper.m.
 
 2008-12-02  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* strings/str2mat.m: Make it a simple wrapper around
-	char() and move it to scripts/deprecated/str2mat.m, remove
+	char() and move it to deprecated/str2mat.m, remove
 	obsolete tests, move remaining test to src/strfns.cc (Fchar).
 	* strings/Makefile.in: Remove str2mat.m.
 	* deprecated/Makefile.in: Add str2mat.m.

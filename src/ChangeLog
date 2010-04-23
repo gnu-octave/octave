@@ -1,4 +1,4 @@
-2010-04-23  John W. Eaton  <jwe@octave.org>
+n2010-04-23  John W. Eaton  <jwe@octave.org>
 
 	* txt-eng-ft.cc (ft_render::visit): Declare loop counter size_t,
 	not int.
@@ -47,16 +47,16 @@
 	* ov-base.h (octave_base_value::empty_clone): Remove implementation.
 	* ov-base.cc (octave_base_value::empty_clone): Implement here.
 	Fall back to resize() for empty_clone().
-	* ov.cc (octave_value::assign): Correct behavior in the indexed OP= case.
-	Use better error messages. Always return non-const reference, like any
-	assignment.
+	* ov.cc (octave_value::assign): Correct behavior in the indexed
+	OP= case.  Use better error messages. Always return non-const
+	reference, like any assignment.
 	* ov.h: Update decls.
 	* oct-lvalue.cc (octave_lvalue::assign): Simplify.
 
 2010-04-22  Rik <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/hess.cc.: return correct Hessenberg matrix when called 
-   with only one output argument.
+	* DLD-FUNCTIONS/hess.cc.: return correct Hessenberg matrix when
+	called with only one output argument.
 
 2010-04-22  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -93,12 +93,12 @@
 
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::set_currentpoint,
 	(plot_window::set_axes_currentpoint, plot_window::key2shift,
-	(plot_window::key2ascii, plot_window::modifier2cell): new helper
+	(plot_window::key2ascii, plot_window::modifier2cell): New helper
 	functions for keypress and mousebutton callbacks.
 	(plot_window::handle): implement keypress and mousebutton callbacks.
 
-	* graphics.h.in (callback_property::is_defined): New conveniance function.
-	rename figure.current_point to figure.currentpoint.
+	* graphics.h.in (callback_property::is_defined): New conveniance
+	function.  Rename figure.current_point to figure.currentpoint.
 
 2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -108,13 +108,13 @@
 2010-04-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-sparse.cc (octave_base_sparse::assign): Rewrite.
-	* ov-cx-sparse.cc (octave_sparse_complex_matrix::assign 
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::assign
 	(const octave_value_list& idx, const SparseMatrix& rhs)): Remove.
 	* ov-cx-sparse.h: Remove decl.
 
 2010-04-10  Ben Abbott <bpabbott@mac.com>
 
-	* graphics.h.in: Fix nextplot property values. Add "new" to 
+	* graphics.h.in: Fix nextplot property values. Add "new" to
 	list for axes nextplot values. Change "replace_children" to
 	"replacechildren" for both axes and figures.
 
@@ -141,7 +141,7 @@
 
 	* data.cc (SINGLE_TYPE_CONCAT, DO_SINGLE_TYPE_CONCAT): Replace by
 	templates.
-	(single_type_concat, do_single_type_concat): New static template
+	(single_type_concat, do_single_type_concat): New static temvplate
 	funcs. Correctly skip 0x0 matrices.
 	(Fcat): Call them here. Add tests.
 
@@ -853,7 +853,7 @@
 
 2010-02-09  Jaroslav Hajek  <highegg@gmail.com>
 
-	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx (const Array<T>&, ...)): 
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx (const Array<T>&, ...)):
 	Optimize creation of result indices.
 	* data.cc (Fsort): Ditto.
 
@@ -969,7 +969,7 @@
 	* octave.cc (execute_startup_files): Likewise.
 	* ls-mat5.cc (read_mat5_binary_element): Likewise.
 	* load-save.cc (find_file_to_load): Likewise.
-	* load-path.cc (load_path::dir_info::update, 
+	* load-path.cc (load_path::dir_info::update,
 	load_path::dir_info::initialize, load_path::do_find_dir,
 	load_path::do_find_matching_dirs): Likewise.
 	* file-io.cc (do_stream_open): Likewise.
@@ -996,7 +996,7 @@
 2010-02-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-path.cc (load_path::add_to_fcn_map): Warn when core library or
-	built-in functions are being shadowed. 
+	built-in functions are being shadowed.
 	(load_path::do_add): Pass at_end to add_to_fcn_map, add_to_method_map.
 	Don't abort when "." not yet included.
 	(load_path::do_clear): Don't append "." here.
@@ -1550,8 +1550,8 @@
 
 2010-01-11  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am: Update DOCSTRINGS rules to avoid simple_move_if_change_rule
-	and allow Make to update timestamps.
+	* Makefile.am: Update DOCSTRINGS rules to avoid
+	simple_move_if_change_rule and allow Make to update timestamps.
 
 2010-01-11  John W. Eaton  <jwe@octave.org>
 
@@ -1944,7 +1944,8 @@
 
 2009-12-09  Jaroslav Hajek  <highegg@gmail.com>
 
-	* symtab.h (symbol_table::fcn_info::clear_autoload_function): New method.
+	* symtab.h (symbol_table::fcn_info::clear_autoload_function):
+	New method.
 	(symbol_table::clear_dld_function): New method.
 	* dynamic-ld.cc (octave_shlib_list::do_remove): Switch order of stmts.
 	(octave_mex_file_list::do_remove): Likewise.
@@ -2147,8 +2148,8 @@
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
-	* version.h.in (OCTAVE_API_VERSION_NUMBER): New macro.  *
-	Makefile.am (version.h): Substitute OCTAVE_API_VERSION_NUMBER.
+	* version.h.in (OCTAVE_API_VERSION_NUMBER): New macro.
+	* Makefile.am (version.h): Substitute OCTAVE_API_VERSION_NUMBER.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
@@ -2206,12 +2207,12 @@
 2009-12-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-bool-mat.h (octave_bool_matrix::octave_bool_matrix (const
-	boolNDArray&, const idx_vector&)): New constructor.  *
-	ov-re-mat.h (octave_bool_matrix::octave_bool_matrix (const
-	NDArray&, const idx_vector&)): Simplify.  * ov.cc
-	(octave_value::octave_value (const idx_vector&)): Allow the mask
-	case.  * DLD-FUNCTIONS/find.cc (Ffind): Explicitly call unmask
-	().
+	boolNDArray&, const idx_vector&)): New constructor.
+	* ov-re-mat.h (octave_bool_matrix::octave_bool_matrix (const
+	NDArray&, const idx_vector&)): Simplify.
+	* ov.cc (octave_value::octave_value (const idx_vector&)): Allow
+	the mask case.
+	* DLD-FUNCTIONS/find.cc (Ffind): Explicitly call unmask.
 
 2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
 
@@ -2300,8 +2301,8 @@
 	(octave_char_matrix_str::load_hdf5), ov-struct.cc
 	(octave_struct::load_hdf5), ov-struct.h
 	(octave_struct::load_hdf5), ov.h (octave_value::load_hdf5):
-	Remove have_hg5iterate_bug from the call to load_hdf5.  *
-	ov-cell.cc (octave_bool::load_hdf5), ov-class.cc
+	Remove have_hg5iterate_bug from the call to load_hdf5.
+	* ov-cell.cc (octave_bool::load_hdf5), ov-class.cc
 	(octave_class::load_hdf5), ov-fcn-handle.cc
 	(octave_fcn_handle::load_hdf5), ov-list.cc
 	(octave_list::load_hdf5), ov-struct.cc
@@ -2328,8 +2329,8 @@
 
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
-	* DLD-FUNCTIONS/dot.cc: New source.  *
-	DLD-FUNCTIONS/module-files: Include it.
+	* DLD-FUNCTIONS/dot.cc: New source.
+	* DLD-FUNCTIONS/module-files: Include it.
 
 2009-11-26  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2358,13 +2359,14 @@
 2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-complex.h (octave_complex::bool_value,
-	octave_complex::bool_array_value): New methods.  *
-	ov-flt-complex.h (octave_float_complex::bool_value,
-	octave_float_complex::bool_array_value): New methods.  *
-	ov-cx-mat.cc (octave_complex_matrix::bool_array_value): New
-	method.  * ov-cx-mat.h: Declare it.  * ov-flt-cx-mat.cc
-	(octave_float_complex_matrix::bool_array_value): New method.  *
-	ov-flt-cx-mat.h: Declare it.
+	octave_complex::bool_array_value): New methods.
+	* ov-flt-complex.h (octave_float_complex::bool_value,
+	octave_float_complex::bool_array_value): New methods.
+	* ov-cx-mat.cc (octave_complex_matrix::bool_array_value): New
+	method.  * ov-cx-mat.h: Declare it.
+	* ov-flt-cx-mat.cc (octave_float_complex_matrix::bool_array_value):
+	New method.
+	* ov-flt-cx-mat.h: Declare it.
 
 2009-11-23  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2383,30 +2385,29 @@
 
 2009-11-20  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-bool.h (octave_bool::is_numeric_type): New overload.  *
-	ov-bool-mat.h (octave_bool-matrix::is_numeric_type): New
-	overload.
+	* ov-bool.h (octave_bool::is_numeric_type): New overload.
+	* ov-bool-mat.h (octave_bool-matrix::is_numeric_type): New overload.
 
 2009-11-19  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base.h (unary_mapper_t): New member: umap_erfinv.  *
-	ov-base.c (octave_base_value::get_umap_name): Add "erfinv" here.
-	* ov.h (octave_value::erfinv): New method.  * ov-scalar.cc
-	(octave_scalar::map): Handle umap_erfinv.  * ov-float.cc
-	(octave_float::map): Ditto.  * ov-re-mat.cc
-	(octave_matrix::map): Ditto.  * ov-flt-re-mat.cc
-	(octave_float_matrix::map): Ditto.  * ov-re-sparse.cc
-	(octave_sparse_matrix::map): Ditto.  * mappers.cc (Ferfinv): New
-	DEFUN.
+	* ov-base.h (unary_mapper_t): New member: umap_erfinv.
+	* ov-base.c (octave_base_value::get_umap_name): Add "erfinv" here.
+	* ov.h (octave_value::erfinv): New method.
+	* ov-scalar.cc (octave_scalar::map): Handle umap_erfinv.
+	* ov-float.cc (octave_float::map): Ditto.
+	* ov-re-mat.cc (octave_matrix::map): Ditto.
+	* ov-flt-re-mat.cc (octave_float_matrix::map): Ditto.
+	* ov-re-sparse.cc (octave_sparse_matrix::map): Ditto.
+	* mappers.cc (Ferfinv): New DEFUN.
 
 2009-11-14  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl-render.cc (opengl_renderer::text_to_pixels): New function
 	from code in render_text to produce the pixels and compute
 	bounding box.  (opengl_renderer::render_text): Call
-	text_to_pixels to compute rotation mode and bounding box.  *
-	gl-renger.h (opengl_renderer::text_to_pixels): Provide decl.  *
-	gl2ps-renderer.cc (glps_renderer::render_text): Call
+	text_to_pixels to compute rotation mode and bounding box.
+	* gl-renger.h (opengl_renderer::text_to_pixels): Provide decl.
+	* gl2ps-renderer.cc (glps_renderer::render_text): Call
 	text_to_pixels to compute bounding box.
 	(glps_renderer::set_font): Call opengl_renderer::set_font.
 
@@ -2424,18 +2425,20 @@
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-complex.cc (octave_complex::try_narrowing_conversion):
-	Don't check signbit.  * ov-flt-complex.cc
-	(octave_float_complex::try_narrowing_conversion): Ditto.  *
-	ov-cx-mat.cc (octave_complex_matrix::try_narrowing_conversion):
-	Simplify. Don't check signbit.  * ov-flt-cx-mat.cc
+	Don't check signbit.
+	* ov-flt-complex.cc
+	(octave_float_complex::try_narrowing_conversion): Ditto.
+	* ov-cx-mat.cc (octave_complex_matrix::try_narrowing_conversion):
+	Simplify.  Don't check signbit.
+	* ov-flt-cx-mat.cc
 	(octave_float_complex_matrix::try_narrowing_conversion): Ditto.
 
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-re-mat.cc (do_rc_map): New static function.
-	(octave_matrix::map): Use it here.  * ov-flt-re-mat.cc
-	(do_rc_map): New static function.  (octave_float_matrix::map):
-	Use it here.
+	(octave_matrix::map): Use it here.
+	* ov-flt-re-mat.cc (do_rc_map): New static function.
+	(octave_float_matrix::map): Use it here.
 
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2452,99 +2455,91 @@
 
 2009-11-13  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base.h (unary_mapper_t): Move to octave_base_value.  *
-	ov.h: Partially revert to c657c056240d.  (FORWARD_MAPPER):
-	Update to use octave_base_value::map.  (octave_value::map):
-	Ditto.  * mappers.cc: Revert to c657c056240d.  * data.cc: Ditto.
-	* Cell.h, Cell.cc: Ditto.  * ov-cell.cc (octave_cell::map):
-	Rewrite.  * ov-base-sparse.cc (octave_base_sparse::map): New
-	method.  * ov-base-sparse.h: Declare it.  * ov-re-sparse.cc
-	(octave_sparse_matrix::map): Use it as a fallback.  *
-	ov-cx-sparse.cc (octave_sparse_complexmatrix::map): Ditto.
+	* ov-base.h (unary_mapper_t): Move to octave_base_value.
+	* ov.h: Partially revert to c657c056240d.
+	(FORWARD_MAPPER): Update to use octave_base_value::map.
+	(octave_value::map): Ditto.
+	* mappers.cc: Revert to c657c056240d.
+	* data.cc: Ditto.
+	* Cell.h, Cell.cc: Ditto.
+	* ov-cell.cc (octave_cell::map): Rewrite.
+	* ov-base-sparse.cc (octave_base_sparse::map): New method.
+	* ov-base-sparse.h: Declare it.
+	* ov-re-sparse.cc (octave_sparse_matrix::map): Use it as a fallback.
+	* ov-cx-sparse.cc (octave_sparse_complexmatrix::map): Ditto.
 
 2009-11-12  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base.h (unary_mapper_t): New enum.  (octave_base_value::map
-	(unary_mapper_t)): New method.  (octave_base_value::abs):
-	Remove.  (octave_base_value::acos): Remove.
-	(octave_base_value::acosh): Remove.  (octave_base_value::angle):
-	Remove.  (octave_base_value::arg): Remove.
-	(octave_base_value::asin): Remove.  (octave_base_value::asinh):
-	Remove.  (octave_base_value::atan): Remove.
-	(octave_base_value::atanh): Remove.  (octave_base_value::ceil):
-	Remove.  (octave_base_value::conj): Remove.
-	(octave_base_value::cos): Remove.  (octave_base_value::cosh):
-	Remove.  (octave_base_value::erf): Remove.
-	(octave_base_value::erfc): Remove.  (octave_base_value::exp):
-	Remove.  (octave_base_value::expm1): Remove.
-	(octave_base_value::finite): Remove.  (octave_base_value::fix):
-	Remove.  (octave_base_value::floor): Remove.
-	(octave_base_value::gamma): Remove.  (octave_base_value::imag):
-	Remove.  (octave_base_value::isinf): Remove.
-	(octave_base_value::isna): Remove.  (octave_base_value::isnan):
-	Remove.  (octave_base_value::lgamma): Remove.
-	(octave_base_value::log): Remove.  (octave_base_value::log2):
-	Remove.  (octave_base_value::log10): Remove.
-	(octave_base_value::log1p): Remove.  (octave_base_value::real):
-	Remove.  (octave_base_value::round): Remove.
-	(octave_base_value::roundb): Remove.
-	(octave_base_value::signum): Remove.  (octave_base_value::sin):
-	Remove.  (octave_base_value::sinh): Remove.
-	(octave_base_value::sqrt): Remove.  (octave_base_value::tan):
-	Remove.  (octave_base_value::tanh): Remove.
+	* ov-base.h (unary_mapper_t): New enum.
+	(octave_base_value::map (unary_mapper_t)): New method.
+	(octave_base_value::abs, octave_base_value::acos,
+	octave_base_value::acosh, octave_base_value::angle,
+	octave_base_value::arg, octave_base_value::asin,
+	octave_base_value::asinh, octave_base_value::atan,
+	octave_base_value::atanh, octave_base_value::ceil,
+	octave_base_value::conj, octave_base_value::cos,
+	octave_base_value::cosh, octave_base_value::erf,
+	octave_base_value::erfc, octave_base_value::exp,
+	octave_base_value::expm1, octave_base_value::finite,
+	octave_base_value::fix, octave_base_value::floor,
+	octave_base_value::gamma, octave_base_value::imag,
+	octave_base_value::isinf, octave_base_value::isna,
+	octave_base_value::isnan, octave_base_value::lgamma,
+	octave_base_value::log, octave_base_value::log2,
+	octave_base_value::log10, octave_base_value::log1p,
+	octave_base_value::real, octave_base_value::round,
+	octave_base_value::roundb, octave_base_value::signum,
+	octave_base_value::sin, octave_base_value::sinh,
+	octave_base_value::sqrt, octave_base_value::tan,
+	octave_base_value::tanh): Remove.
 
 	* ov.h (octave_value::map (unary_mapper_t)): New method.
-	(octave_value::abs): Remove.  (octave_value::acos): Remove.
-	(octave_value::acosh): Remove.  (octave_value::angle): Remove.
-	(octave_value::arg): Remove.  (octave_value::asin): Remove.
-	(octave_value::asinh): Remove.  (octave_value::atan): Remove.
-	(octave_value::atanh): Remove.  (octave_value::ceil): Remove.
-	(octave_value::conj): Remove.  (octave_value::cos): Remove.
-	(octave_value::cosh): Remove.  (octave_value::erf): Remove.
-	(octave_value::erfc): Remove.  (octave_value::exp): Remove.
-	(octave_value::expm1): Remove.  (octave_value::finite): Remove.
-	(octave_value::fix): Remove.  (octave_value::floor): Remove.
-	(octave_value::gamma): Remove.  (octave_value::imag): Remove.
-	(octave_value::isinf): Remove.  (octave_value::isna): Remove.
-	(octave_value::isnan): Remove.  (octave_value::lgamma): Remove.
-	(octave_value::log): Remove.  (octave_value::log2): Remove.
-	(octave_value::log10): Remove.  (octave_value::log1p): Remove.
-	(octave_value::real): Remove.  (octave_value::round): Remove.
-	(octave_value::roundb): Remove.  (octave_value::signum): Remove.
-	(octave_value::sin): Remove.  (octave_value::sinh): Remove.
-	(octave_value::sqrt): Remove.  (octave_value::tan): Remove.
-	(octave_value::tanh): Remove.
+	(octave_value::abs, octave_value::acos, octave_value::acosh,
+	octave_value::angle, octave_value::arg, octave_value::asin,
+	octave_value::asinh, octave_value::atan, octave_value::atanh,
+	octave_value::ceil, octave_value::conj, octave_value::cos,
+	octave_value::cosh, octave_value::erf, octave_value::erfc,
+	octave_value::exp, octave_value::expm1, octave_value::finite,
+	octave_value::fix, octave_value::floor, octave_value::gamma,
+	octave_value::imag, octave_value::isinf, octave_value::isna,
+	octave_value::isnan, octave_value::lgamma, octave_value::log,
+	octave_value::log2, octave_value::log10, octave_value::log1p,
+	octave_value::real, octave_value::round, octave_value::roundb,
+	octave_value::signum, octave_value::sin, octave_value::sinh,
+	octave_value::sqrt, octave_value::tan, octave_value::tanh): Remove.
 
-	* ov-scalar.h, ov-scalar.cc (octave_scalar): Update.  *
-	ov-float.h, ov-float.cc (octave_float): Update.
+	* ov-scalar.h, ov-scalar.cc (octave_scalar): Update.
+	* ov-float.h, ov-float.cc (octave_float): Update.
 
-	* ov-complex.h, ov-complex.cc (octave_complex): Update.  *
-	ov-flt-complex.h, ov-flt-complex.cc (octave_float_complex):
+	* ov-complex.h, ov-complex.cc (octave_complex): Update.
+	* ov-flt-complex.h, ov-flt-complex.cc (octave_float_complex):
 	Update.
 
-	* ov-re-matrix.h ov-re-matrix.cc (octave_matrix): Update.  *
-	ov-flt-re-matrix.h ov-flt-re-matrix.cc (octave_float_matrix):
-	Update.  * ov-cx-matrix.h ov-cx-matrix.cc
-	(octave_complex_matrix): Update.  * ov-flt-cx-matrix.h
-	ov-flt-cx-matrix.cc (octave_float_complex_matrix): Update.
+	* ov-re-matrix.h, ov-re-matrix.cc (octave_matrix): Update.
+	* ov-flt-re-matrix.h, ov-flt-re-matrix.cc (octave_float_matrix): Update.
+	* ov-cx-matrix.h, ov-cx-matrix.cc (octave_complex_matrix): Update.
+	* ov-flt-cx-matrix.h, ov-flt-cx-matrix.cc
+	(octave_float_complex_matrix): Update.
 
-	* ov-re-sparse.h ov-re-sparse.cc (octave_sparse_matrix): Update.
-	* ov-cx-sparse.h ov-cx-sparse.cc (octave_sparse_complex_matrix):
+	* ov-re-sparse.h, ov-re-sparse.cc (octave_sparse_matrix): Update.
+	* ov-cx-sparse.h, ov-cx-sparse.cc (octave_sparse_complex_matrix):
 	Update.
 
-	* ov-re-diag.h ov-re-diag.cc (octave_diag_matrix): Update.  *
-	ov-flt-re-diag.h ov-flt-re-diag.cc (octave_float_diag_matrix):
-	Update.  * ov-cx-diag.h ov-cx-diag.cc
-	(octave_complex_diag_matrix): Update.  * ov-flt-cx-diag.h
-	ov-flt-cx-diag.cc (octave_float_complex_diag_matrix): Update.
+	* ov-re-diag.h, ov-re-diag.cc (octave_diag_matrix): Update.
+	* ov-flt-re-diag.h, ov-flt-re-diag.cc (octave_float_diag_matrix):
+	Update.
+	* ov-cx-diag.h ov-cx-diag.cc (octave_complex_diag_matrix): Update.
+	* ov-flt-cx-diag.h, ov-flt-cx-diag.cc
+	(octave_float_complex_diag_matrix): Update.
 
-	* ov-range.h (octave_range): Update.  * ov-intx.h
-	(OCTAVE_VALUE_INT_MATRIX_T): Update.
+	* ov-range.h (octave_range): Update.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T): Update.
 	(OCTAVE_VALUE_INT_SCALAR_T): Update.
 
-	* ov-perm.h (octave_perm_matrix): Update.  * ov-bool.h
-	(octave_bool): Update.  * ov-bool-mat.h (octave_bool_matrix):
-	Update.  * ov-ch-mat.h (octave_char_matrix): Update.
+	* ov-perm.h (octave_perm_matrix): Update.
+	* ov-bool.h (octave_bool): Update.
+	* ov-bool-mat.h (octave_bool_matrix): Update.
+	* ov-ch-mat.h (octave_char_matrix): Update.
 
 	* mappers.cc (Fabs, Facos, Facosh, Fangle, Farg, Fasin, Fasinh,
 	Fatan, Fatanh, Fceil, Fconj, Fcos, Fcosh, Ferf, Ferfc, Fexp,
@@ -2563,42 +2558,44 @@
 2009-11-11  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (do_get_help_text_from_file,
-	Fget_help_text_from_file): New functions.  (do_get_help_text):
-	Pass NAME by const reference.  * utils.cc (find_dir_in_path):
-	New optional argument "all".  * load-path.cc
-	(load_path::do_find_matching_dirs): New function.
+	Fget_help_text_from_file): New functions.
+	(do_get_help_text): Pass NAME by const reference.
+	* utils.cc (find_dir_in_path): New optional argument "all".
+	* load-path.cc (load_path::do_find_matching_dirs): New function.
 	(load_path::do_find_dir): Perform match on absolute directory
 	names, but return name as it appears in dir_info_list.  Adjust
-	dname_len after stripping directory separator.  * load-path.h
-	(load_path::do_find_matching_dirs): Provide decl.
+	dname_len after stripping directory separator.
+	* load-path.h (load_path::do_find_matching_dirs): Provide decl.
 	(load_path::find_matching_dirs): New function.
 
 2009-11-11  Shai Ayal  <shaiay@users.sourceforge.net>
 
-	* DLD-FUNCTIONS/fltk_backend.cc (Fl_Gl_Window::draw): If
-	zooming, call overlay.  (Fl_Gl_Window::overlay): Rename from
-	draw_overlay.  Don't return early if zooming.  Don't call valid
-	and conditionally call setup_veiwport.  Set overlay color and
-	draw line around zoom box.  (Fl_Gl_Window::zoom_box_vertex): New
-	function.  (Fl_Gl_Window::pixel2status): Call canvas->redraw,
-	not canvas->redraw_overlay.
+	* DLD-FUNCTIONS/fltk_backend.cc (Fl_Gl_Window::draw):
+	If zooming, call overlay.
+	(Fl_Gl_Window::overlay): Rename from draw_overlay.  Don't return
+	early if zooming.  Don't call valid and conditionally call
+	setup_veiwport.  Set overlay color and draw line around zoom box.
+	(Fl_Gl_Window::zoom_box_vertex): New function.
+	(Fl_Gl_Window::pixel2status): Call canvas->redraw, not
+	canvas->redraw_overlay.
 
 2009-11-10  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl2ps-renderer.cc, gl2ps-renderer.h, gl2ps.c, gl2ps.h: New
 	files.  PostScript backend based on opengl_renderer and gl2ps.
 	* Makefile.am (octinclude_HEADERS): Add gl2ps.h to the list.
-	(DIST_SRC): Add gl2ps.c to the list.  * gl-render.cc
-	(opengl_renderer::render_text): Rename from
-	opengl_renderer::draw_text.  (opengl_renderer::draw_figure,
-	opengl_renderer::draw_axes, opengl_renderer::draw_line,
-	opengl_renderer::draw_surface, opengl_renderer::draw_patch,
-	opengl_renderer::draw_hggroup, opengl_renderer::draw_text,
-	opengl_renderer::draw_image): Rename from overloaded
-	opengl_renderer::draw.  * gl-render.h: Fix decls.
+	(DIST_SRC): Add gl2ps.c to the list.
+	* gl-render.cc (opengl_renderer::render_text): Rename from
+	opengl_renderer::draw_text.
+	(opengl_renderer::draw_figure, opengl_renderer::draw_axes,
+	opengl_renderer::draw_line, opengl_renderer::draw_surface,
+	opengl_renderer::draw_patch, opengl_renderer::draw_hggroup,
+	opengl_renderer::draw_text, opengl_renderer::draw_image):
+	Rename from overloaded opengl_renderer::draw.
+	* gl-render.h: Fix decls.
 
-	* DLD-FUNCTIONS/fltk_backend.cc (OpenGL_fltk::print): New
-	function.  (OpenGL_fltk::print_filename): New data member.
+	* DLD-FUNCTIONS/fltk_backend.cc (OpenGL_fltk::print): New function.
+	(OpenGL_fltk::print_filename): New data member.
 	(OpenGL_fltk::draw): Add support for printing.
 	(fltk_backend::print_figure): Call figure_manager::print.
 
@@ -2616,20 +2613,22 @@
 	* Makefile.am, OPERATORS/module.mk, TEMPLATE-INST/module.mk,
 	find-defun-files.sh, version.h.in,
 	DLD-FUNCTIONS/config-module.awk, DLD-FUNCTIONS/config-module.sh,
-	DLD-FUNCTIONS/module-files: New files.  * Makefile.in,
-	version.h: Delete.  * lex.ll: Rename from lex.l.  Include
-	oct-parse.h instead of y.tab.h.  * parse.yy: Rename from parse.y
+	DLD-FUNCTIONS/module-files: New files.
+	* Makefile.in, version.h: Delete.
+	* lex.ll: Rename from lex.l.  Include oct-parse.h instead of y.tab.h.
+	* parse.yy: Rename from parse.y
 	* mkbuiltins, mkgendoc: Don't require filenames to start with a
 	"." at beginning of line.
 
-	* oct-conf.h.in (OCTAVE_CONF_LAPACK_LIBS): Delete macro.  *
-	toplev.cc (octave_config_info): Don't include LAPACK_LIBS in the
+	* oct-conf.h.in (OCTAVE_CONF_LAPACK_LIBS): Delete macro.
+	* toplev.cc (octave_config_info): Don't include LAPACK_LIBS in the
 	struct.
 
 2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::numel): Use base version if called
-	from built-in assignment.  (octave_class::size): Ditto.
+	from built-in assignment.
+	(octave_class::size): Ditto.
 
 2009-11-10  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2638,14 +2637,15 @@
 
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base.cc (btyp_mixed_numeric): New function.  * ov-base.h:
-	Declare it.  (btyp_isnumeric): New inline function.  *
-	DLD_FUNCTIONS/max.cc (do_minmax_red_op, do_minmax_bin_op,
+	* ov-base.cc (btyp_mixed_numeric): New function.
+	* ov-base.h: Declare it.
+	(btyp_isnumeric): New inline function.
+	* DLD_FUNCTIONS/max.cc (do_minmax_red_op, do_minmax_bin_op,
 	do_minmax_body, do_cumminmax_red_op): New functions.
 	(MINMAX_DOUBLE_SBODY, MINMAX_DOUBLE_BODY, MINMAX_SINGLE_SBODY,
 	MINMAX_SINGLE_BODY, MINMAX_SPARSE_BODY, MINMAX_INT_SBODY,
-	MINMAX_INT_BODY, MINMAX_BODY, CUMMINMAX_BODY): Remove.  (Fmin,
-	Fmax, Fcummin, Fcummax): Update.
+	MINMAX_INT_BODY, MINMAX_BODY, CUMMINMAX_BODY): Remove.
+	(Fmin, Fmax, Fcummin, Fcummax): Update.
 
 2009-11-09  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2696,13 +2696,13 @@
 2009-11-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::unique_parent_class): New method.
-	(octave_class::subsasgn): Use it here.  * ov-class.h: Declare
-	it.
+	(octave_class::subsasgn): Use it here.
+	* ov-class.h: Declare it.
 
 2009-11-01  John W. Eaton  <jwe@octave.org>
 
-	* data.cc (get_sort_mode_option): New function.  (Fissorted):
-	Handle ascending or descending option.
+	* data.cc (get_sort_mode_option): New function.
+	(Fissorted): Handle ascending or descending option.
 
 2009-11-01  John W. Eaton  <jwe@octave.org>
 
@@ -2722,39 +2722,43 @@
 
 	* error.cc (verror (bool, std::ostream&, ..., bool)): Add
 	optional with_cfn flag. If specified, prepend current function
-	name (unless already there).  (error_1): Accept with_cfn flag
-	and pass it on.  (error_2): Ditto.  (verror_with_cfn,
-	error_with_cfn, error_with_id_cfn, verror_with_id_cfn): New
-	functions.  * error.h: Declare them.  * octave.cc
-	(lo_error_handler): Call verror_with_cfn.  * ov-base.cc
-	(INT_CONV_METHOD): Call error_with_cfn.  * ov.cc
-	(octave_value::int_vector_value, octave_idx_type_vector_value):
+	name (unless already there).
+	(error_1): Accept with_cfn flag and pass it on.
+	(error_2): Ditto.
+	(verror_with_cfn, error_with_cfn, error_with_id_cfn,
+	verror_with_id_cfn): New functions.
+	* error.h: Declare them.
+	* octave.cc (lo_error_handler): Call verror_with_cfn.
+	* ov-base.cc (INT_CONV_METHOD): Call error_with_cfn.
+	* ov.cc (octave_value::int_vector_value, octave_idx_type_vector_value):
 	Call error_with_cfn.
 
 2009-10-21  Rik <octave@nomad.inbox5.com>
 
-	* variables.cc: Correct use of deftypefnx for who and whos
+	* variables.cc: Correct use of deftypefnx for who and whos.
 
 2009-10-21  John W. Eaton  <jwe@octave.org>
 
 	* load-path.h (load_path::dir_path::dir_time_last_checked): New
 	field.  (load_path::dir_path::dir_path,
 	load_path::dir_path::operator=): Initialize and copy
-	dir_time_last_checked.  * load-path.cc
-	(load_path::dir_info::initialize): Store time of last update.
+	dir_time_last_checked.
+	* load-path.cc (load_path::dir_info::initialize): Store time of
+	last update.
 	(load_path::dir_info::update): Check directory modification time
 	against time of last update, within resolution of filesystem
 	time stamps.  Suggested by Judd Storrs <storrsjm@email.uc.edu>.
 
 2009-10-20  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-base.h (builtin_type_t): Declare also btyp_num_types.  *
-	DLD-FUNCTIONS/bsxfun.cc (bsxfun_builtin_op): New enum.
-	(bsxfun_handler): New typedef.  (bsxfun_builtin_names,
-	bsxfun_handler_table): New variables.  (bsxfun_builtin_lookup,
-	maybe_fill_table, maybe_optimized_builtin): New static funcs.
-	(bsxfun_forward_op, bsxfun_forward_rel): New static template
-	funcs.  (Fbsxfun): Try to optimize some built-in operations.
+	* ov-base.h (builtin_type_t): Declare also btyp_num_types.
+	* DLD-FUNCTIONS/bsxfun.cc (bsxfun_builtin_op): New enum.
+	(bsxfun_handler): New typedef.
+	(bsxfun_builtin_names, bsxfun_handler_table): New variables.
+	(bsxfun_builtin_lookup, maybe_fill_table, maybe_optimized_builtin):
+	New static funcs.
+	(bsxfun_forward_op, bsxfun_forward_rel): New static template funcs.
+	(Fbsxfun): Try to optimize some built-in operations.
 
 2009-10-19  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2767,16 +2771,13 @@
 
 2009-10-16  Jaroslav Hajek  <highegg@gmail.com>
 
-	* Cell.cc: Remove traces of ArrayN.  * Cell.h: Ditto.  *
-	DLD-FUNCTIONS/besselj.cc: Ditto.  * DLD-FUNCTIONS/find.cc:
-	Ditto.  * DLD-FUNCTIONS/lookup.cc: Ditto.  *
-	DLD-FUNCTIONS/max.cc: Ditto.  * TEMPLATE-INST/Array-tc.cc:
-	Ditto.  * data.cc: Ditto.  * oct-map.cc: Ditto.  * ov-cx-mat.h:
-	Ditto.  * ov-flt-cx-mat.cc: Ditto.  * ov-flt-cx-mat.h: Ditto.  *
-	ov-flt-re-mat.cc: Ditto.  * ov-flt-re-mat.h: Ditto.  *
-	ov-intx.h: Ditto.  * ov-re-mat.h: Ditto.  * ov.cc: Ditto.  *
-	ov.h: Ditto.  * pr-output.cc: Ditto.  * pr-output.h: Ditto.  *
-	variables.cc: Ditto.
+	* Cell.cc, Cell.h, DLD-FUNCTIONS/besselj.cc,
+	DLD-FUNCTIONS/find.cc, DLD-FUNCTIONS/lookup.cc,
+	DLD-FUNCTIONS/max.cc, TEMPLATE-INST/Array-tc.cc, data.cc,
+	oct-map.cc, ov-cx-mat.h, ov-flt-cx-mat.cc, ov-flt-cx-mat.h,
+	ov-flt-re-mat.cc, ov-flt-re-mat.h, ov-intx.h, ov-re-mat.h,
+	ov.cc, ov.h, pr-output.cc, pr-output.h, variables.cc:
+	Remove traces of ArrayN.
 
 	* OPERATORS/op-dm-scm.cc: Avoid using dm + s, dm - s operators.
 	* OPERATORS/op-dm-sm.cc: Ditto.
@@ -2792,9 +2793,11 @@
 
 2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov.h (octave_value::octave_value (octave_base_value *, bool)) : New constructor.
+	* ov.h (octave_value::octave_value (octave_base_value *, bool)):
+	New constructor.
 	(octave_value::octave_value (octave_base_value *, int)): Deprecate.
-	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Allow the obsolete func body syntax.
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Allow the obsolete func
+	body syntax.
 
 2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2851,7 +2854,8 @@
 	* data.cc (Flength): Simplify.
 	(Fndims): Simplify.
 	(Fsize): Rewrite, use dim_vector::redim to simplify.
-	(Fsize_equal): Don't chop trailing singletons (should be already chopped).
+	(Fsize_equal): Don't chop trailing singletons (should be already
+	chopped).
 
 2009-10-08  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -3015,7 +3019,8 @@
 	* ov-re-mat.h (octave_matrix::builtin_type): New method.
 	* ov-flt-re-mat.h (octave_float_matrix::builtin_type): New method.
 	* ov-cx-mat.h (octave_complex_matrix::builtin_type): New method.
-	* ov-flt-cx-mat.h (octave_float_complex_matrix::builtin_type): New method.
+	* ov-flt-cx-mat.h (octave_float_complex_matrix::builtin_type):
+	New method.
 	* ov-bool-mat.h (octave_bool_matrix::builtin_type): New method.
 	* ov-ch-mat.h (octave_char_matrix::builtin_type): New method.
 	* ov-scalar.h (octave_scalar::builtin_type): New method.
@@ -3026,11 +3031,16 @@
 	* ov-re-diag.h (octave_diag_matrix::builtin_type): New method.
 	* ov-flt-re-diag.h (octave_float_diag_matrix::builtin_type): New method.
 	* ov-cx-diag.h (octave_complex_diag_matrix::builtin_type): New method.
-	* ov-flt-cx-diag.h (octave_float_complex_diag_matrix::builtin_type): New method.
+	* ov-flt-cx-diag.h
+	(octave_float_complex_diag_matrix::builtin_type):
+	New method.
 	* ov-re-sparse.h (octave_sparse_matrix::builtin_type): New method.
-	* ov-cx-sparse.h (octave_sparse_complex_matrix::builtin_type): New method.
-	* ov-bool-sparse.h (octave_sparse_bool_matrix::builtin_type): New method.
-	* ov-intx.h (octave_int_matrix::builtin_type, octave_int_scalar::builtin_type): New methods.
+	* ov-cx-sparse.h (octave_sparse_complex_matrix::builtin_type):
+	New method.
+	* ov-bool-sparse.h (octave_sparse_bool_matrix::builtin_type):
+	New method.
+	* ov-intx.h (octave_int_matrix::builtin_type,
+	octave_int_scalar::builtin_type): New methods.
 	* ov-int8.h: Define OCTAVE_INT_BTYP.
 	* ov-int16.h: Define OCTAVE_INT_BTYP.
 	* ov-int32.h: Define OCTAVE_INT_BTYP.
@@ -3093,8 +3103,10 @@
 
 	* OPERATORS/op-m-m.cc (trans_mul, mul_trans): Update.
 	* OPERATORS/op-fm-fm.cc (trans_mul, mul_trans): Update.
-	* OPERATORS/op-cm-cm.cc (trans_mul, mul_trans, herm_mul, mul_herm): Update.
-	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm): Update.
+	* OPERATORS/op-cm-cm.cc (trans_mul, mul_trans, herm_mul, mul_herm):
+	Update.
+	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm):
+	Update.
 	* OPERATORS/op-m-cm.cc (trans_mul): Update.
 	* OPERATORS/op-cm-m.cc (mul_trans): Update.
 	* OPERATORS/op-fm-fcm.cc (trans_mul): Update.

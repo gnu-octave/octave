@@ -1,3 +1,9 @@
+2010-04-24  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (void axes::properties::set_defaults
+	(base_graphics_object&, const std::string&)): Make the default
+	axes color "none".
+
 2010-04-24  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* Makefile.am: change GRAPHICS_CPPFLAGS to GRAPHICS_CFLAGS since

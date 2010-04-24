@@ -1,3 +1,8 @@
+2010-04-24  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.h.in: Have figure color property support a radio value,
+	'none'.
+
 2010-04-24  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (void axes::properties::set_defaults

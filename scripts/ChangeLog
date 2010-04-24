@@ -1,3 +1,7 @@
+2010-04-23  Ben Abbott <bpabbott@mac.com>
+
+	* plot/axis.m: For 'axis normal' restore plotboxaspectratio.
+
 2010-04-23  John W. Eaton  <jwe@octave.org>
 
 	* gethelp.cc (extract_help_text): Use C++ static_cast instead of

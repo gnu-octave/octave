@@ -170,6 +170,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
       y = ylim;
       set (ca, "plotboxaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
     elseif (strcmpi (ax, "normal"))
+      set (ca, "plotboxaspectratio", [1, 1, 1])
       set (ca, "plotboxaspectratiomode", "auto");
 
       ## axis limits

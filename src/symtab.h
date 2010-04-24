@@ -1280,6 +1280,8 @@ public:
   static void clear_all (void)
   {
     clear_variables ();
+    
+    clear_global_pattern ("*");
 
     clear_functions ();
   }

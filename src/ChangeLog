@@ -1,3 +1,8 @@
+2010-04-24  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* Makefile.am: change GRAPHICS_CPPFLAGS to GRAPHICS_CFLAGS since
+	the former does not exist and the latter serves the same purpose
+
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Clarify compilation note about defaults.h

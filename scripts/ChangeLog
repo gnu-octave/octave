@@ -1,3 +1,7 @@
+2010-04-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Set figure color property to 'none' when printing.
+
 2010-04-24  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Correct fill of diamond markers

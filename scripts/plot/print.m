@@ -586,6 +586,7 @@ function print (varargin)
     p.paperposition = get (gcf, "paperposition");
     p.paperpositionmode = get (gcf, "paperpositionmode");
     p.paperorientation = get (gcf, "paperorientation");
+    p.color = get (gcf, "color");
     if (p.papersize(1) > p.papersize(2))
       paperorientation = "landscape";
     else
@@ -637,6 +638,7 @@ function print (varargin)
     unwind_protect
       set (gcf, "paperunits", "inches");
       set (gcf, "units", "pixels");
+      set (gcf, "color", "none");
       restore_properties = true;
       if ((! output_for_printer || is_eps_file) && ! doprint)
         ## If not PDF or PostScript, and the result is not being sent to a printer,

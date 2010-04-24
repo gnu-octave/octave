@@ -50,8 +50,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
       pos = __actual_axis_position__ (axis_obj);
     else
       pos = axis_obj.position;
-      pos = pos - implicit_margin([1, 2, 1, 2]).*[1, 1, -0.5, -0.5];
     endif
+    pos(1:2) = pos(1:2) - implicit_margin .* [0.75, 0.5];
     if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
       if (nd == 2)
         x = [1, 1];

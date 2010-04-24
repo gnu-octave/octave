@@ -1,3 +1,8 @@
+2010-04-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Consistent placement of axes for ps vs
+	other gnuplot terminals.
+
 2010-04-23  Ben Abbott <bpabbott@mac.com>
 
 	* plot/colorbar.m: Fix colorbar() bugs for manual plotboxaspectratio.

@@ -826,8 +826,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                      pt = "pt 4";
                      pt2 = "pt 5";
                    case {"diamond", "d"}
-                     pt = "pt 13";
-                     pt2 = "pt 14";
+                     pt = "pt 12";
+                     pt2 = "pt 13";
                    case "^"
                      pt = "pt 8";
                      pt2 = "pt 9";
@@ -1700,8 +1700,8 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         pt = "4";
         pt2 = "5";
       case {"diamond", "d"}
-        pt = "13";
-        pt2 = "14";
+        pt = "12";
+        pt2 = "13";
       case "^"
         pt = "8";
         pt2 = "9";

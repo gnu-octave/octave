@@ -1,5 +1,9 @@
 2010-04-23  Rik <octave@nomad.inbox5.com>
 
+	* Makefile.am: Clarify compilation note about defaults.h
+
+2010-04-23  Rik <octave@nomad.inbox5.com>
+
 	* symtab.h: Clear global variables when 'clear -all' called
 
 2010-04-23  John W. Eaton  <jwe@octave.org>

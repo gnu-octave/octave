@@ -737,11 +737,9 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(@D) $@
 
-## We want to force an update of defaults.h and oct-conf.h every
-## time make is run because some values may come from the command
-## line or the environment.  The substitution rules use move-if-change,
-## so this should not cause trouble if the file already exists and the
-## newly generated file is not different.
+## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
+## may change default/config values.  However, calling configure will also
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
 
 defaults.h: defaults.h.in Makefile
 	$(do_subst_default_vals)

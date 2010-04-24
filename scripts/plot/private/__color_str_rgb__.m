@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{rgb} =} __scatter__ (@var{str})
+## @deftypefn {Function File} {@var{rgb} =} __color_str_rgb__ (@var{str})
 ## Undocumented internal function.
 ## @end deftypefn
 

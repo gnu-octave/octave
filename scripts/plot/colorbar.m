@@ -106,8 +106,6 @@ function h = colorbar (varargin)
     cmin = cext(1) + cdiff;
     cmax = cext(2) - cdiff;
 
-    orig_pos = obj.position;
-    orig_opos = obj.outerposition;
     [pos, cpos, vertical, mirror] =  ...
         __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "activepositionproperty", "position", "position", pos);
@@ -148,14 +146,14 @@ function h = colorbar (varargin)
     ctext = text (0, 0, "", "tag", "colorbar","visible", "off", 
                   "handlevisibility", "off", "xliminclude", "off",  
                   "yliminclude", "off", "zliminclude", "off",
-                  "deletefcn", {@deletecolorbar, cax, orig_pos, orig_opos});
+                  "deletefcn", {@deletecolorbar, cax, obj});
 
-    set (cax, "deletefcn", {@resetaxis, orig_pos, orig_opos});
+    set (cax, "deletefcn", {@resetaxis, obj});
 
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical})
-    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax})
-    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax})
-    addlistener (ax, "position", {@update_colorbar_axis, cax})
+    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj})
+    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj})
+    addlistener (ax, "position", {@update_colorbar_axis, cax, obj})
 
   endif
 
@@ -164,7 +162,7 @@ function h = colorbar (varargin)
   endif
 endfunction
 
-function deletecolorbar (h, d, hc, pos, opos)
+function deletecolorbar (h, d, hc, orig_props)
   ## Don't delete the colorbar and reset the axis size if the
   ## parent figure is being deleted.
   if (ishandle (hc) && strcmp (get (hc, "type"), "axes") && 
@@ -174,16 +172,18 @@ function deletecolorbar (h, d, hc, pos, opos)
     endif
     if (!isempty (ancestor (h, "axes")) &&
         strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
-      set (ancestor (h, "axes"), "position", pos, "outerposition", opos);
+      set (ancestor (h, "axes"), "position", orig_props.position, ...
+                                 "outerposition", orig_props.outerposition);
     endif
   endif
 endfunction
 
-function resetaxis (h, d, pos, opos)
+function resetaxis (h, d, orig_props)
   if (ishandle (h) && strcmp (get (h, "type"), "axes") && 
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
       ishandle (get (h, "axes")))
-     set (get (h, "axes"), "position", pos, "outerposition", opos);
+     set (get (h, "axes"), "position", orig_props.position, ...
+                           "outerposition", orig_props.outerposition);
   endif
 endfunction
 
@@ -206,11 +206,14 @@ function update_colorbar_clim (h, d, hi, vert)
   endif
 endfunction
 
-function update_colorbar_axis (h, d, cax)
+function update_colorbar_axis (h, d, cax, orig_props)
+
   if (ishandle (cax) && strcmp (get (cax, "type"), "axes") && 
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);
+    obj.position = orig_props.position;
+    obj.outerposition = orig_props.outerposition;
     [pos, cpos, vertical, mirror] =  ...
         __position_colorbox__ (loc, obj, ancestor (h, "figure"));
 
@@ -237,34 +240,25 @@ endfunction
 
 function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
 
+  ## This will always represent the position prior to adding the colorbar.
   pos = obj.position;
   sz = pos(3:4);
 
-  off = 0;
   if (strcmpi (obj.plotboxaspectratiomode, "manual"))
-    r = obj.plotboxaspectratio;
-    if (pos(3) > pos(4))
-      switch (cbox)
-        case {"east", "eastoutside", "west", "westoutside"}
-          off = [(pos(3) - pos(4)) ./ (r(2) / r(1)), 0];          
-      endswitch
+    if (isempty (strfind (cbox, "outside")))
+      scale = 1.0;
     else
-      switch (cbox)
-        case {"north", "northoutside", "south", "southoutside"}
-          off = [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
-          ## This shouldn't be here except that gnuplot doesn't have a
-          ## square window and so a square aspect ratio is not square.
-          ## The corrections are empirical.
-          if (strcmp (get (cf, "__backend__"), "gnuplot"))
-            if (length (cbox) > 7 && strcmp (cbox(end-6:end),"outside"))
-              off = off / 2;
-            else
-              off = off / 1.7;
-            endif
-          endif
-      endswitch
+      scale = 0.8;
     endif
-    off = off / 2;
+    if (isempty (strfind (cbox, "east")) && isempty (strfind (cbox, "west")))
+      scale = [1, scale];
+    else
+      scale = [scale, 1];
+    endif
+    obj.position = obj.position .* [1, 1, scale];
+    off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
+  else
+    off = 0.0;
   endif
 
   switch (cbox)
@@ -327,10 +321,12 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
       scale = 0.9;
     endif
     if (sz(1) > sz(2))
+      ## Ensure north or south colorbars are the proper length
       dx = (1-scale)*actual_pos(3);
       cpos(1) = actual_pos(1) + dx/2;
       cpos(3) = actual_pos(3) - dx;
     else
+      ## Ensure east or west colorbars are the proper height
       dy = (1-scale)*actual_pos(4);
       cpos(2) = actual_pos(2) + dy/2;
       cpos(4) = actual_pos(4) - dy;

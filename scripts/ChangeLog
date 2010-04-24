@@ -1,5 +1,6 @@
 2010-04-23  Ben Abbott <bpabbott@mac.com>
 
+	* plot/colorbar.m: Fix colorbar() bugs for manual plotboxaspectratio.
 	* plot/axis.m: For 'axis normal' restore plotboxaspectratio.
 
 2010-04-23  John W. Eaton  <jwe@octave.org>

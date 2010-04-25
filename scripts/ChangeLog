@@ -1,3 +1,8 @@
+2010-04-24  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__patch__.m: Correct order of calling setdata and
+	setvertexdata.
+
 2010-04-25  Ben Abbott <bpabbot@mac.com>
 
 	* plot/__go_draw_figure__.m: Hidden axes may have visible children.

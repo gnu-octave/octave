@@ -158,12 +158,18 @@ endfunction
 
 function args = delfields(args, flds)
   idx = cellfun (@(x) any (strcmpi (x, flds)), args);
-  idx = idx | [false, idx(1:end-1)];
+  if (rows (idx) == 1)
+    idx = idx | [false, idx(1:end-1)];
+  else
+    idx = idx | [false; idx(1:end-1)];
+  endif
   args (idx) = [];
 endfunction
 
 function args = setdata (args)
   args = delfields (args, {"xdata", "ydata", "zdata", "cdata"});
+  ## Remove the readonly fields as well
+  args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
   idx = find (cellfun (@(x) strcmpi (x, "faces"), args)) + 1;
   if (idx > nargs)
@@ -233,6 +239,8 @@ endfunction
 
 function args = setvertexdata (args)
   args = delfields (args, {"vertices", "faces", "facevertexcdata"});
+  ## Remove the readonly fields as well
+  args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
   idx = find (cellfun (@(x) strcmpi (x, "xdata"), args)) + 1;
   if (idx > nargs)
@@ -307,9 +315,9 @@ function update_handle (h, isfv)
     recursive = true;
     f = get (h);
     if (isfv)
-      set (h, setvertexdata ([fieldnames(f), struct2cell(f)].'(:)){:});
-    else
       set (h, setdata ([fieldnames(f), struct2cell(f)].'(:)){:});
+    else
+      set (h, setvertexdata ([fieldnames(f), struct2cell(f)].'(:)){:});
     endif
     recursive = false;
   endif

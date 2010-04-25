@@ -1,3 +1,7 @@
+2010-04-25  Ben Abbott <bpabbot@mac.com>
+
+	* plot/__go_draw_figure__.m: Hidden axes may have visible children.
+
 2010-04-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Set figure color property to 'none' when printing.

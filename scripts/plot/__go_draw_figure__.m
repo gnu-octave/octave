@@ -77,43 +77,41 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
           bg_is_set = false;
         endif
         for i = nkids:-1:1
-          if (strcmp (get (kids(i), "visible"), "on"))
-            type = get (kids(i), "type");
-            switch (type)
-              case "axes"
-                ## Rely upon listener to convert axes position to "normalized" units.
-                orig_axes_units = get (kids(i), "units");
-                orig_axes_position = get (kids(i), "position");
-                unwind_protect
-                  set (kids(i), "units", "normalized");
-                  fg = get (kids(i), "color");
-                  if (isnumeric (fg))
-                    fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
-                    fg_is_set = true;
-                  else
-                    fg_is_set = false;
-                  endif
-                  if (output_to_paper)
-                    axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
-                    axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
-                    set (kids(i), "position", axes_position_on_page);
-                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
-                  else
-                    ## Return axes "units" and "position" back to their original values.
-                    __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
-                  endif
-                  unwind_protect_cleanup
-                  set (kids(i), "units", orig_axes_units);
-                  set (kids(i), "position", orig_axes_position);
-                  bg_is_set = false;
-                  if (fg_is_set)
-                    fputs (plot_stream, "unset obj 2\n");
-                  endif
-                end_unwind_protect
-              otherwise
-                error ("__go_draw_figure__: unknown object class, %s", type);
-            endswitch
-          endif
+          type = get (kids(i), "type");
+          switch (type)
+            case "axes"
+              ## Rely upon listener to convert axes position to "normalized" units.
+              orig_axes_units = get (kids(i), "units");
+              orig_axes_position = get (kids(i), "position");
+              unwind_protect
+                set (kids(i), "units", "normalized");
+                fg = get (kids(i), "color");
+                if (isnumeric (fg) && strcmp (get (kids(i), "visible"), "on"))
+                  fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
+                  fg_is_set = true;
+                else
+                  fg_is_set = false;
+                endif
+                if (output_to_paper)
+                  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
+                  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
+                  set (kids(i), "position", axes_position_on_page);
+                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
+                else
+                  ## Return axes "units" and "position" back to their original values.
+                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
+                endif
+                unwind_protect_cleanup
+                set (kids(i), "units", orig_axes_units);
+                set (kids(i), "position", orig_axes_position);
+                bg_is_set = false;
+                if (fg_is_set)
+                  fputs (plot_stream, "unset obj 2\n");
+                endif
+              end_unwind_protect
+            otherwise
+              error ("__go_draw_figure__: unknown object class, %s", type);
+          endswitch
         endfor
         fputs (plot_stream, "\nunset multiplot;\n");
       else

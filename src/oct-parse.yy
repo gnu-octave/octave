@@ -3721,7 +3721,25 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       retval = octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup);
     }
   else if (len > 4 && file.substr (len-4, len-1) == ".mex")
-    retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
+    {
+      // Temporarily load m-file version of mex-file, if it exists,
+      // to get the help-string to use.
+      frame.protect_var (curr_fcn_file_name);
+      frame.protect_var (curr_fcn_file_full_name);
+
+      curr_fcn_file_name = nm;
+      curr_fcn_file_full_name = file.substr (0, len - 2);
+
+      octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2), 
+                                                dispatch_type, autoloading, 
+                                                false);
+
+      retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
+
+      if (tmpfcn)
+        retval->document (tmpfcn->doc_string ());
+      delete tmpfcn;
+    }
   else if (len > 2)
     {
       // These are needed by yyparse.

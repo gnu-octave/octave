@@ -53,7 +53,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     elseif (strcmp (fmt.linestyle, "#~>"))
       ifmt = "boxxy";
     else
-      print_usage ();
+      ifmt = "matlab";
     endif
 
     hg = hggroup ("parent", p);
@@ -65,6 +65,13 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       hl = __line__ (hg, "color", __next_line_color__ ());
     else
       hl = __line__ (hg, "color", fmt.color);
+    endif
+
+    if (index (ifmt, "matlab"))
+      ifmt = "yerr";
+      if (! strcmp (fmt.linestyle, "none"))
+        set (hl, "linestyle", fmt.linestyle);
+      endif
     endif
 
     ## FIXME -- note the code below adds the errorbar data directly as

@@ -154,6 +154,8 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
     elseif (strncmp (opt, "~", 1) || strncmp (opt, ">", 1) 
             || strncmp (opt, "#", 1))
       n = 1;
+    else
+      n = 0;
     endif
     options.linestyle = opt(1:n);
     opt(1:n) = [];

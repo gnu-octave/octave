@@ -820,6 +820,9 @@ AC_SUBST(MAGICK_LIBS)
 warn_freetype=""
 
 OCTAVE_OPENGL
+GRAPHICS_LIBS=
+GRAPHICS_CFLAGS=
+
 if test -n "$OPENGL_LIBS"; then
   AC_DEFINE(HAVE_OPENGL, 1, [Define if OpenGL is available])
 
@@ -828,81 +831,80 @@ if test -n "$OPENGL_LIBS"; then
   AC_CHECK_FT2([9.0.3], [AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
     [warn_freetype="FreeType library not found.  Native renderer will not have on-screen text"])
-fi
 
-## fontconfig library
+  ## fontconfig library
 
-warn_fontconfig=""
-if test -z "$warn_freetype"; then
-  PKG_CHECK_MODULES(FONTCONFIG, [fontconfig], [
-    have_fontconfig=yes
-    OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
-    XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
-    AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])], [
-    have_fontconfig=no
-    warn_fontconfig="Fontconfig not found.  Native text rendering will use hard-coded font instead."])
-fi
-
-GRAPHICS_LIBS=
-GRAPHICS_CFLAGS=
-
-## fltk (www.fltk.org)
-AC_ARG_WITH(fltk-prefix,
-        [  --with-fltk-prefix=PFX   Prefix where FLTK is installed (optional)],
-        fltk_prefix="$withval",
-        fltk_prefix="")
-AC_ARG_WITH(fltk-exec-prefix,
-        [  --with-fltk-exec-prefix=PFX Exec prefix where FLTK is installed (optional)],
-        fltk_exec_prefix="$withval", 
-        fltk_exec_prefix="")
-
-if test -n "$fltk_exec_prefix"; then
-  fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
-  if test "x${FLTK_CONFIG+set}" != xset ; then
-    FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
+  warn_fontconfig=""
+  if test -z "$warn_freetype"; then
+    PKG_CHECK_MODULES(FONTCONFIG, [fontconfig], [
+      have_fontconfig=yes
+      OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
+      AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])], [
+      have_fontconfig=no
+      warn_fontconfig="Fontconfig not found.  Native text rendering will use hard-coded font instead."])
   fi
-fi
 
-if test -n "$fltk_prefix"; then
-  fltk_args="$fltk_args --prefix=$fltk_prefix"
-  if test x${FLTK_CONFIG+set} != xset ; then
-    FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
+  ## fltk (www.fltk.org)
+  AC_ARG_WITH(fltk-prefix,
+          [  --with-fltk-prefix=PFX   Prefix where FLTK is installed (optional)],
+          fltk_prefix="$withval",
+          fltk_prefix="")
+  AC_ARG_WITH(fltk-exec-prefix,
+          [  --with-fltk-exec-prefix=PFX Exec prefix where FLTK is installed (optional)],
+          fltk_exec_prefix="$withval", 
+          fltk_exec_prefix="")
+
+  if test -n "$fltk_exec_prefix"; then
+    fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
+    if test "x${FLTK_CONFIG+set}" != xset ; then
+      FLTK_CONFIG="$fltk_exec_prefix/bin/fltk-config"
+    fi
   fi
-fi
 
-AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
+  if test -n "$fltk_prefix"; then
+    fltk_args="$fltk_args --prefix=$fltk_prefix"
+    if test x${FLTK_CONFIG+set} != xset ; then
+      FLTK_CONFIG="$fltk_prefix/bin/fltk-config"
+    fi
+  fi
 
-warn_fltk_config=""
-warn_fltk_opengl=""
+  AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
 
-if test "$FLTK_CONFIG" = "no" ; then
-  warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
-else
-  FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
-  FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
-  
-  case "$canonical_host_type" in
-    *-*-mingw*)
-      FLTK_LDFLAGS="`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`"
-    ;;
-  esac
+  warn_fltk_config=""
+  warn_fltk_opengl=""
 
-  AC_MSG_CHECKING([for OpenGL support in FLTK])
-  cat > conftest.cc <<EOF
-  #include <FL/gl.h>
-  int nothing=0;
-EOF
-  $CXX $CXXFLAGS $FLTK_CFLAGS -c conftest.cc || \
-    warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
-
-  if test -z "$warn_fltk_opengl"; then
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_FLTK, 1, [Define if FLTK is available])
-    GRAPHICS_CFLAGS="$FLTK_CFLAGS"
-    GRAPHICS_LIBS="$FLTK_LDFLAGS"
+  if test "$FLTK_CONFIG" = "no" ; then
+    warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
   else
-    AC_MSG_RESULT(no)
+    FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
+    FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
+
+    case "$canonical_host_type" in
+      *-*-mingw*)
+        FLTK_LDFLAGS="`echo $FLTK_LDFLAGS | sed -e 's/-mwindows//g'`"
+      ;;
+    esac
+
+    AC_MSG_CHECKING([for OpenGL support in FLTK])
+    cat > conftest.cc <<EOF
+    #include <FL/gl.h>
+    int nothing=0;
+  EOF
+    $CXX $CXXFLAGS $FLTK_CFLAGS -c conftest.cc || \
+      warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
+
+    if test -z "$warn_fltk_opengl"; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_FLTK, 1, [Define if FLTK is available])
+      GRAPHICS_CFLAGS="$FLTK_CFLAGS"
+      GRAPHICS_LIBS="$FLTK_LDFLAGS"
+    else
+      AC_MSG_RESULT(no)
+    fi
   fi
+else
+  warn_fltk_opengl="OpenGL libs (GL and GLU) not found. Native graphics will be disabled."
 fi
 
 AC_SUBST(GRAPHICS_CFLAGS)

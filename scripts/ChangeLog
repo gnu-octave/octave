@@ -3,6 +3,9 @@
 	* plot/bar.m: Document the use of the colormap for the color of
 	the bars.
 
+	* plot/private/__errplot__.m: Allow x, box and xy errorbars with
+	different syntax.
+
 2010-04-24  David Bateman  <dbateman@free.fr>
 
 	* plot/private/__patch__.m: Correct order of calling setdata and

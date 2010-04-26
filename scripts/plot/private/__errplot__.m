@@ -79,40 +79,46 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       case 1
         error ("error plot requires 2, 3, 4 or 6 columns");
       case 2
-        set (hl, "xdata", (1:len)');
-        set (hl, "ydata", a1(:,i));
-        set (hl, "ldata", a2(:,i));
-        set (hl, "udata", a2(:,i));
-      case 3
-        set (hl, "xdata", a1(:,i));
-        set (hl, "ydata", a2(:,i));
-        set (hl, "ldata", a3(:,i));
-        set (hl, "udata", a3(:,i));
-      case 4
-        set (hl, "xdata", a1(:,i));
-        set (hl, "ydata", a2(:,i));
-
-        if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
-          set (hl, "xldata", a3(:,i));
-          set (hl, "xudata", a3(:,i));
-          set (hl, "ldata", a4(:,i));
-          set (hl, "udata", a4(:,i));
-        elseif (index (ifmt, "xerr"))
-          set (hl, "xldata", a3(:,i));
-          set (hl, "xudata", a4(:,i));
+        if (index (ifmt, "xerr"))
+          set (hl, "xdata", (1:len)', "ydata", a1(:,i), "xldata", a2(:,i),
+               "xudata", a2(:,i));
+        elseif (index (ifmt, "yerr"))
+          set (hl, "xdata", (1:len)', "ydata", a1(:,i), "ldata", a2(:,i),
+               "udata", a2(:,i));
         else
-          set (hl, "ldata", a3(:,i));
-          set (hl, "udata", a4(:,i));
+          error ("2 column errorplot is only valid or xerr or yerr");
+        endif
+      case 3
+        if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+          set (hl, "xdata", (1:len)', "ydata", a1(:,i), "xldata", a2(:,i), 
+               "xudata", a2(:,i), "ldata", a3(:,i), "udata", a3(:,i));
+        elseif (index (ifmt, "xerr"))
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "xldata", a3(:,i),
+               "xudata", a3(:,i));
+        else
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "ldata", a3(:,i),
+               "udata", a3(:,i));
+        endif
+      case 4
+        if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "xldata", a3(:,i), 
+               "xudata", a3(:,i), "ldata", a4(:,i), "udata", a4(:,i));
+        elseif (index (ifmt, "xerr"))
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "xldata", a3(:,i),
+               "xudata", a4(:,i));
+        else
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "ldata", a3(:,i),
+               "udata", a4(:,i));
         endif
       case 5
         error ("error plot requires 2, 3, 4 or 6 columns");
       case 6
-        set (hl, "xdata", a1(:,i));
-        set (hl, "ydata", a2(:,i));
-        set (hl, "xldata", a3(:,i));
-        set (hl, "xudata", a4(:,i));
-        set (hl, "ldata", a5(:,i));
-        set (hl, "udata", a6(:,i));
+        if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+          set (hl, "xdata", a1(:,i), "ydata", a2(:,i), "xldata", a3(:,i),
+               "xudata", a4(:,i), "ldata", a5(:,i), "udata", a6(:,i));
+        else
+          error ("error plot with 6 columns only valid for boxxy and xyerr");
+        endif
     endswitch
 
     addproperty ("color", hg, "linecolor", get (hl, "color"));

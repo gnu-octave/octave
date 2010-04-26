@@ -890,7 +890,7 @@ if test -n "$OPENGL_LIBS"; then
     cat > conftest.cc <<EOF
     #include <FL/gl.h>
     int nothing=0;
-  EOF
+EOF
     $CXX $CXXFLAGS $FLTK_CFLAGS -c conftest.cc || \
       warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
 

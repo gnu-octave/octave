@@ -1,3 +1,8 @@
+2010-04-26  Rik <octave@nomad.inbox5.com>
+
+	* configure.ac: fix bug with shell HERE document introduced in
+        previous change.
+
 2010-04-26  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* configure.ac: make all graphics related tests inter-dependent

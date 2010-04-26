@@ -56,20 +56,26 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       ifmt = "matlab";
     endif
 
+    if (! isempty (fmt.marker) && ! strcmp (fmt.marker, "none"))
+      mrk = fmt.marker;
+    else
+      mrk = "none";
+    endif
+
     hg = hggroup ("parent", p);
     h = [h; hg];
     args = __add_datasource__ ("__errplot__", hg, 
                                {"x", "y", "l", "u", "xl", "xu"});
 
     if (isempty (fmt.color))
-      hl = __line__ (hg, "color", __next_line_color__ ());
+      hl = __line__ (hg, "color", __next_line_color__ (), "marker", mrk);
     else
-      hl = __line__ (hg, "color", fmt.color);
+      hl = __line__ (hg, "color", fmt.color, "marker", mrk);
     endif
 
     if (index (ifmt, "matlab"))
       ifmt = "yerr";
-      if (! strcmp (fmt.linestyle, "none"))
+      if (! isempty (fmt.linestyle) && ! strcmp (fmt.linestyle, "none"))
         set (hl, "linestyle", fmt.linestyle);
       endif
     endif
@@ -165,7 +171,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
               "color", get (hl, "color"),
               "linewidth", get (hl, "linewidth"),
               "linestyle", get (hl, "linestyle"), 
-              "marker", "none", "parent", hg);
+              "marker", mrk, "parent", hg);
   endfor
 
 endfunction

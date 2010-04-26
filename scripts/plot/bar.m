@@ -57,6 +57,27 @@
 ## Properties of the patch graphics object can be changed using
 ## @var{prop}, @var{val} pairs.
 ##
+## The color of the bars is taken from the figure's colormap, such that
+##
+## @example
+## @group
+## bar (rand(10,3))
+## colormap (summer ())
+## @end group
+## @end example
+##
+## will change the colors used for the bars. If you wish to force the bars to
+## particular colors, this can be achieved like
+##
+## @example
+## @group
+## h = bar (rand(10,3))
+## set (h(1), "facecolor", "r")
+## set (h(2), "facecolor", "g")
+## set (h(3), "facecolor", "b")
+## @end group
+## @end example
+##
 ## @seealso{barh, plot} 
 ## @end deftypefn
 

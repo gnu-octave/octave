@@ -174,7 +174,7 @@ intNDArray<T>
 intNDArray<T>::abs (void) const
 {
   octave_idx_type nel = this->nelem ();
-  intNDArray<T> ret (*this);
+  intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
@@ -190,7 +190,7 @@ intNDArray<T>
 intNDArray<T>::signum (void) const
 {
   octave_idx_type nel = this->nelem ();
-  intNDArray<T> ret (*this);
+  intNDArray<T> ret (this->dims ());
 
   for (octave_idx_type i = 0; i < nel; i++)
     {

@@ -1,3 +1,8 @@
+2010-04-27  John W. Eaton  <jwe@octave.org>
+
+	* intNDArray.cc (intNDArray<T>::abs, intNDArray<T>::signum):
+	Create new vector for return values.  Fixes bug #29685.
+
 2010-04-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Sparse.cc (Sparse<T>::assign): Fix typos.

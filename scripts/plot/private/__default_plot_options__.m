@@ -29,5 +29,6 @@ function options = __default_plot_options__ ()
   options.color = [];
   options.linestyle = [];
   options.marker = [];
+  options.errorstyle = [];
 
 endfunction

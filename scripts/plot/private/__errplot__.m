@@ -40,26 +40,20 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
   for i = 1:nplots
     ## Set the plot type based on linestyle.
 
-    if (strcmp (fmt.linestyle, "~"))
+    if (strcmp (fmt.errorstyle, "~"))
       ifmt = "yerr";
-    elseif (strcmp (fmt.linestyle, ">"))
+    elseif (strcmp (fmt.errorstyle, ">"))
       ifmt = "xerr";
-    elseif (strcmp (fmt.linestyle, "~>"))
+    elseif (strcmp (fmt.errorstyle, "~>"))
       ifmt = "xyerr";
-    elseif (strcmp (fmt.linestyle, "#"))
+    elseif (strcmp (fmt.errorstyle, "#"))
       ifmt = "box";
-    elseif (strcmp (fmt.linestyle, "#~"))
+    elseif (strcmp (fmt.errorstyle, "#~"))
       ifmt = "boxy";
     elseif (strcmp (fmt.linestyle, "#~>"))
       ifmt = "boxxy";
     else
-      ifmt = "matlab";
-    endif
-
-    if (! isempty (fmt.marker) && ! strcmp (fmt.marker, "none"))
-      mrk = fmt.marker;
-    else
-      mrk = "none";
+      ifmt = "~";
     endif
 
     hg = hggroup ("parent", p);
@@ -67,16 +61,22 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     args = __add_datasource__ ("__errplot__", hg, 
                                {"x", "y", "l", "u", "xl", "xu"});
 
-    if (isempty (fmt.color))
-      hl = __line__ (hg, "color", __next_line_color__ (), "marker", mrk);
+    if (isempty (fmt.marker) && isempty (fmt.linestyle))
+      [linestyle, marker] = __next_line_style__ ();
+      if (isempty (fmt.color))
+        hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
+                       "color", __next_line_color__ ())
+      else
+        hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
+                       "color", fmt.color)
+      endif
     else
-      hl = __line__ (hg, "color", fmt.color, "marker", mrk);
-    endif
-
-    if (index (ifmt, "matlab"))
-      ifmt = "yerr";
-      if (! isempty (fmt.linestyle) && ! strcmp (fmt.linestyle, "none"))
-        set (hl, "linestyle", fmt.linestyle);
+      if (isempty (fmt.color))
+        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
+                       "color", __next_line_color__ ())
+      else
+        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
+                       "color", fmt.color)
       endif
     endif
 
@@ -171,7 +171,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
               "color", get (hl, "color"),
               "linewidth", get (hl, "linewidth"),
               "linestyle", get (hl, "linestyle"), 
-              "marker", mrk, "parent", hg);
+              "marker", get (hl, "marker"), "parent", hg);
   endfor
 
 endfunction

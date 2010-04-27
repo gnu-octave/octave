@@ -1,3 +1,12 @@
+2010-04-27  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__default_plot_options_.m: New option errorstyle.
+	* plot/private/__pltopt__.m: Use errorstyle here seperately from
+	the linestyle so that both can be set.
+	* plot/private/__errcomm__.m: Allow for the fact that matrices
+	to __errplot__ with return a vector of handles.
+	* plot/private/__errplot__.m: Allow for default linestyles.
+
 2010-04-26  David Bateman  <dbateman@free.fr>
 
 	* plot/bar.m: Document the use of the colormap for the color of

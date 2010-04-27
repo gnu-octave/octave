@@ -157,9 +157,10 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
     else
       n = 0;
     endif
-    options.linestyle = opt(1:n);
+    options.errorstyle = opt(1:n);
     opt(1:n) = [];
-    have_linestyle = true;
+  else
+    options.errorstyle = "~";
   endif
 
   while (! isempty (opt))

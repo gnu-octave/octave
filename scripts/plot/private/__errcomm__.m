@@ -32,9 +32,8 @@ function retval = __errcomm__ (caller, p, varargin)
   endif
 
   nargs = length (varargin);
-
+  retval = [];
   k = 1;
-  idx = 1;
   data = cell(6,1);
   while (k <= nargs)
     a = varargin{k++};
@@ -51,7 +50,7 @@ function retval = __errcomm__ (caller, p, varargin)
     while (k <= nargs)
       a = varargin{k++};
       if (ischar (a) || iscellstr (a))
-        retval(idx++) = __errplot__ (a, p, data{1:ndata});
+        retval = [retval; __errplot__(a, p, data{1:ndata})];
         break;
       elseif (isvector (a))
         a = a(:);
@@ -71,7 +70,7 @@ function retval = __errcomm__ (caller, p, varargin)
   endwhile
 
   if (! (ischar (a) || iscellstr (a)))
-    retval(idx++) = __errplot__ ("~", p, data{1:ndata});
+    retval = [retval; __errplot__("~", p, data{1:ndata})];
   endif
 
   drawnow ();

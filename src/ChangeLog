@@ -1,3 +1,15 @@
+2010-04-27  John W. Eaton  <jwe@octave.org>
+
+	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op):
+	Correct spelling of max_recursion_depth in error message.
+	(octave_usr_fcn::do_multi_index_op): Ditto.
+	* pt-eval.h, pt-eval.cc (Vmax_recursion_depth): Move definition
+	here from ov-usr-fcn.cc.  Now extern.
+	(Fmax_recursion_depth): Move definition here from ov-usr-fcn.cc.
+	* oct-parse.yy (source_file): Limit recursive calls on a
+	per-file basis.
+	Addresses bug #29491.
+
 2010-04-25  David Bateman  <dbateman@free.fr>
 
 	* oct-parse.yy (octave_function * load_fcn_from_file

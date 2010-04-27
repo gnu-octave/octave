@@ -49,9 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "variables.h"
 
-// Maximum nesting level for functions called recursively.
-static int Vmax_recursion_depth = 256;
-
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
 
@@ -146,7 +143,7 @@ octave_user_script::do_multi_index_op (int nargout,
                     octave_call_stack::backtrace_error_message ();
                 }
               else
-                ::error ("max_recursion_limit exceeded");
+                ::error ("max_recursion_depth exceeded");
             }
         }
       else
@@ -339,7 +336,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (call_depth >= Vmax_recursion_depth)
     {
-      ::error ("max_recursion_limit exceeded");
+      ::error ("max_recursion_depth exceeded");
       return retval;
     }
 
@@ -666,18 +663,6 @@ At the top level, @code{nargout} is undefined.\n\
     print_usage ();
 
   return retval;
-}
-
-DEFUN (max_recursion_depth, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
-Query or set the internal limit on the number of times a function may\n\
-be called recursively.  If the limit is exceeded, an error message is\n\
-printed and control returns to the top level.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
 
 DEFUN (optimize_subsasgn_calls, args, nargout,

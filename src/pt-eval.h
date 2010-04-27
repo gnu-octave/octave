@@ -175,4 +175,8 @@ private:
 
 extern tree_evaluator *current_evaluator;
 
+// Maximum nesting level for functions, scripts, or sourced files called
+// recursively.
+extern int Vmax_recursion_depth;
+
 #endif

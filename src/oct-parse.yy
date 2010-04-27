@@ -3877,7 +3877,44 @@ void
 source_file (const std::string& file_name, const std::string& context,
              bool verbose, bool require_file, const std::string& warn_for)
 {
+  // Map from absolute name of script file to recursion level.  We
+  // use a map instead of simply placing a limit on recursion in the
+  // source_file function so that two mutually recursive scripts
+  // written as
+  //
+  //   foo1.m:
+  //   ------
+  //   foo2
+  //
+  //   foo2.m:
+  //   ------
+  //   foo1
+  //
+  // and called with
+  //
+  //   foo1
+  //
+  // (for example) will behave the same if they are written as
+  //
+  //   foo1.m:
+  //   ------
+  //   source ("foo2.m")
+  //
+  //   foo2.m:
+  //   ------
+  //   source ("foo1.m")
+  //
+  // and called with
+  //
+  //   source ("foo1.m")
+  //
+  // (for example).
+
+  static std::map<std::string, int> source_call_depth;
+
   std::string file_full_name = file_ops::tilde_expand (file_name);
+
+  file_full_name = octave_env::make_absolute (file_full_name);
 
   unwind_protect frame;
 
@@ -3886,6 +3923,19 @@ source_file (const std::string& file_name, const std::string& context,
 
   curr_fcn_file_name = file_name;
   curr_fcn_file_full_name = file_full_name;
+
+  if (source_call_depth.find (file_full_name) == source_call_depth.end ())
+    source_call_depth[file_full_name] = -1;
+
+  frame.protect_var (source_call_depth[file_full_name]);
+
+  source_call_depth[file_full_name]++;
+
+  if (source_call_depth[file_full_name] >= Vmax_recursion_depth)
+    {
+      error ("max_recursion_depth exceeded");
+      return;
+    }
 
   if (! context.empty ())
     {

@@ -58,6 +58,10 @@ bool tree_evaluator::in_fcn_or_script_body = false;
 
 bool tree_evaluator::in_loop_command = false;
 
+// Maximum nesting level for functions, scripts, or sourced files called
+// recursively.
+int Vmax_recursion_depth = 256;
+
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
 static bool Vsilent_functions = false;
@@ -1166,6 +1170,18 @@ octave_value
 tree_evaluator::do_keyboard (const octave_value_list& args) const
 {
   return ::do_keyboard (args);
+}
+
+DEFUN (max_recursion_depth, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
+Query or set the internal limit on the number of times a function may\n\
+be called recursively.  If the limit is exceeded, an error message is\n\
+printed and control returns to the top level.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
 
 DEFUN (silent_functions, args, nargout,

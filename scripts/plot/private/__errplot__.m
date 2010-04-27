@@ -65,18 +65,18 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       [linestyle, marker] = __next_line_style__ ();
       if (isempty (fmt.color))
         hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
-                       "color", __next_line_color__ ())
+                       "color", __next_line_color__ ());
       else
         hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
-                       "color", fmt.color)
+                       "color", fmt.color);
       endif
     else
       if (isempty (fmt.color))
         hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
-                       "color", __next_line_color__ ())
+                       "color", __next_line_color__ ());
       else
         hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
-                       "color", fmt.color)
+                       "color", fmt.color);
       endif
     endif
 

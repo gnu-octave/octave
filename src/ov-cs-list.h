@@ -72,6 +72,12 @@ public:
 
   octave_value_list list_value (void) const { return lst; }
 
+  octave_value subsref (const std::string& type,
+                        const std::list<octave_value_list>& idx);
+
+  octave_value_list subsref (const std::string& type,
+                             const std::list<octave_value_list>& idx, int);
+
 private:
 
   // The list of Octave values.

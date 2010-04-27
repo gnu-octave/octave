@@ -1,3 +1,8 @@
+2010-04-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cs-list.cc (octave_cs_list::subsref): New methods. Just gripe.
+	* ov-cs-list.h: Declare them.
+
 2010-04-27  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (octave_user_script::do_multi_index_op):

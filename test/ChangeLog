@@ -1,3 +1,7 @@
+2010-04-28  John W. Eaton  <jwe@octave.org>
+
+	* test_struct.m: Update expected error message text.
+
 2010-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* test_slice.m: Use ID check rather than message for invalid resizing.

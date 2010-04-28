@@ -180,7 +180,7 @@
 %!  [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
 %!  [a(2:3).x(2)] = deal (10, 11);
 
-%!error <can't perform indexing operations for cs-list type>
+%!error <a cs-list cannot be further indexed>
 %!  [a(1:3).x] = deal ([1, 5], [3, 7], [8, 9]);
 %!  a(2:3).x(2);
 

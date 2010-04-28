@@ -64,20 +64,21 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     if (isempty (fmt.marker) && isempty (fmt.linestyle))
       [linestyle, marker] = __next_line_style__ ();
       if (isempty (fmt.color))
-        hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
+        hl = __line__ (hg, "linestyle", linestyle, "marker", "none",
                        "color", __next_line_color__ ());
       else
-        hl = __line__ (hg, "linestyle", linestyle, "marker", marker,
+        hl = __line__ (hg, "linestyle", linestyle, "marker", "none",
                        "color", fmt.color);
       endif
     else
       if (isempty (fmt.color))
-        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
+        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", "none",
                        "color", __next_line_color__ ());
       else
-        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", fmt.marker,
+        hl = __line__ (hg, "linestyle", fmt.linestyle, "marker", "none",
                        "color", fmt.color);
       endif
+      marker = fmt.marker;
     endif
 
     ## FIXME -- note the code below adds the errorbar data directly as
@@ -171,7 +172,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
               "color", get (hl, "color"),
               "linewidth", get (hl, "linewidth"),
               "linestyle", get (hl, "linestyle"), 
-              "marker", get (hl, "marker"), "parent", hg);
+              "marker", marker, "parent", hg);
   endfor
 
 endfunction

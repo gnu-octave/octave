@@ -2,6 +2,7 @@
 
 	* plot/private/__errplot__.m: Add missing semicolon line terminations.
 
+
 2010-04-27  David Bateman  <dbateman@free.fr>
 
 	* plot/private/__default_plot_options_.m: New option errorstyle.

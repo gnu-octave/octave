@@ -1833,6 +1833,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     endif
   else
     style{1} = errbars;
+    fputs (plot_stream, " pointtype 0");
   endif
 
   if (! found_style && isempty (style {1}))

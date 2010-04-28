@@ -135,23 +135,30 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
         endif
     endswitch
 
+    hl2 = __line__ (hg, "xdata", get (hl, "xdata"), 
+                    "ydata", get (hl, "ydata"), 
+                    "color", get (hl, "color"),
+                    "linewidth", get (hl, "linewidth"),
+                    "linestyle", get (hl, "linestyle"), 
+                    "marker", marker, "parent", hg);
+
     addproperty ("color", hg, "linecolor", get (hl, "color"));
     addproperty ("linewidth", hg, "linelinewidth", get (hl, "linewidth"));
     addproperty ("linestyle", hg, "linelinestyle", get (hl, "linestyle"));
-    addproperty ("marker", hg, "linemarker", get (hl, "marker"));
+    addproperty ("marker", hg, "linemarker", get (hl2, "marker"));
     addproperty ("markerfacecolor", hg, "linemarkerfacecolor", 
-                 get (hl, "markerfacecolor"));
+                 get (hl2, "markerfacecolor"));
     addproperty ("markeredgecolor", hg, "linemarkerfacecolor", 
-                 get (hl, "markeredgecolor"));
+                 get (hl2, "markeredgecolor"));
     addproperty ("markersize", hg, "linemarkersize", 
-                 get (hl, "markersize"));
+                 get (hl2, "markersize"));
 
     addlistener (hg, "color", @update_props);
     addlistener (hg, "linewidth", @update_props); 
     addlistener (hg, "linestyle", @update_props); 
-    addlistener (hg, "marker", @update_props); 
-    addlistener (hg, "markerfacecolor", @update_props); 
-    addlistener (hg, "markersize", @update_props);
+    addlistener (hg, "marker", @update_marker); 
+    addlistener (hg, "markerfacecolor", @update_marker); 
+    addlistener (hg, "markersize", @update_marker);
 
     addproperty ("xdata", hg, "data", get (hl, "xdata"));
     addproperty ("ydata", hg, "data", get (hl, "ydata"));
@@ -167,22 +174,22 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
     addlistener (hg, "xldata", @update_data);
     addlistener (hg, "xudata", @update_data);
 
-    __line__ (hg, "xdata", get (hl, "xdata"), 
-              "ydata", get (hl, "ydata"), 
-              "color", get (hl, "color"),
-              "linewidth", get (hl, "linewidth"),
-              "linestyle", get (hl, "linestyle"), 
-              "marker", marker, "parent", hg);
   endfor
 
 endfunction
 
 function update_props (h, d)
   set (get (h, "children"), "color", get (h, "color"), 
-       "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"), 
-       "marker", get (h, "marker"), "markersize", get (h, "markersize"),
-       "markerfacecolor", get (h, "markerfacecolor"),
-       "markeredgecolor", get (h, "markeredgecolor"));
+       "linewidth", get (h, "linewidth"), "linestyle", get (h, "linestyle"));
+endfunction
+
+function update_marker (h, d)
+  kids = get (h, "children");
+  kids (! cellfun (@isempty, get (kids, "ldata"))
+        & ! cellfun (@isempty, get (kids, "xldata"))) = [];
+  set (kids, "marker", get (h, "marker"), "markersize", get (h, "markersize"),
+       "markerfacecolor", get (h, "markerfacecolor"), "markeredgecolor", 
+       get (h, "markeredgecolor"));
 endfunction
 
 function update_data (h, d)

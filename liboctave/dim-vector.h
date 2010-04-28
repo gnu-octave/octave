@@ -174,13 +174,6 @@ public:
 #undef ASSIGN_REP
 #undef DIM_VECTOR_CTOR
 
-  dim_vector (const octave_idx_type *vec, size_t vec_size)
-    : rep (newrep (vec_size))
-  {
-    for (size_t k = 0; k < vec_size; k++)
-      rep[k] = vec[k];
-  }
-
   octave_idx_type& elem (int i)
   {
 #ifdef BOUNDS_CHECKING

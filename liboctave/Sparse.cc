@@ -1813,7 +1813,9 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
               idx.copy_data (new_ri.fortran_vec () + nz);
               new_data.assign (idx_vector (nz, new_nz), rhs.array_value ());
               // ... reassembly.
-              *this = Sparse<T> (new_data, new_ri, 0, nr, nc, false);
+              *this = Sparse<T> (new_data, new_ri,
+                                 static_cast<octave_idx_type> (0),
+                                 nr, nc, false);
             }
         }
       else

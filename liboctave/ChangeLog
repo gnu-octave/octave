@@ -1,3 +1,10 @@
+2010-04-28  John W. Eaton  <jwe@octave.org>
+
+	* dim-vector.h (dim_vector (const octave_idx_type *, size_t)): Delete.
+	* Sparse.cc (Sparse<T>::assign): Cast 0 to octave_idx_type in
+	call to Sparse<T> constructor.
+	Addresses bug #29692.
+
 2010-04-27  John W. Eaton  <jwe@octave.org>
 
 	* intNDArray.cc (intNDArray<T>::abs, intNDArray<T>::signum):

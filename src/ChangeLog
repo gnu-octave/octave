@@ -1,3 +1,12 @@
+2010-04-27  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (string_array_property::string_array_property):
+	Index string_vector with [], not ().
+	(string_array_property::string_value): Likewise.
+	(string_array_property::do_set): Likewise.
+	Avoid indexing past last element of string_vector object.
+	Fixes bug #29695.
+
 2010-04-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cs-list.cc (octave_cs_list::subsref): New methods. Just gripe.

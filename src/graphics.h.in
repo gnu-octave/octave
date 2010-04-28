@@ -552,7 +552,7 @@ public:
           string_vector strings (c.numel ());
 
           for (octave_idx_type i = 0; i < c.numel (); i++)
-            strings (i) = c(i).string_value ();
+            strings[i] = c(i).string_value ();
 
           str = strings;
         }
@@ -575,16 +575,16 @@ public:
 
   std::string string_value (void) const 
     { 
-      std::string _str;
+      std::string s;
 
       for (octave_idx_type i = 0; i < str.length (); i++)
         {
-          _str += str(i);
-          if (i != str.length() - 1)
-            _str += separator;
+          s += str[i];
+          if (i != str.length () - 1)
+            s += separator;
         }
 
-      return _str;
+      return s;
     }
 
   Cell cell_value (void) const {return Cell (str);}
@@ -625,7 +625,7 @@ protected:
           if (str.numel () == strings.numel ())
             {
               for (octave_idx_type i = 0; i < str.numel (); i++)
-                if (strings (i) != str(i))
+                if (strings[i] != str[i])
                   {
                     replace = true;
                     break;
@@ -645,13 +645,22 @@ protected:
           bool replace = false;
           Cell new_cell = val.cell_value ();
 
-          string_vector strings (new_cell.numel ());
+          string_vector strings = new_cell.cellstr_value ();
 
-          for (octave_idx_type i = 0; i < new_cell.numel (); i++)
+          octave_idx_type nel = strings.length ();
+
+          if (nel != str.length ())
+            replace = true;
+          else
             {
-              strings (i) = new_cell(i).string_value ();
-              if (strings (i) != str (i))
-                replace = true;
+              for (octave_idx_type i = 0; i < nel; i++)
+                {
+                  if (strings[i] != str[i])
+                    {
+                      replace = true;
+                      break;
+                    }
+                }
             }
 
           if (replace)

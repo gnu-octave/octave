@@ -1,7 +1,11 @@
+2010-04-27  Rik <octave@nomad.inbox5.com>
+
+	* plot/private/__go_draw_axes__.m: Use "." for marker when plotting
+	with errorbars.  (bug #29057)
+
 2010-04-27  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__errplot__.m: Add missing semicolon line terminations.
-
 
 2010-04-27  David Bateman  <dbateman@free.fr>
 

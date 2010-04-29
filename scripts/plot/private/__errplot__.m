@@ -50,7 +50,7 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
       ifmt = "box";
     elseif (strcmp (fmt.errorstyle, "#~"))
       ifmt = "boxy";
-    elseif (strcmp (fmt.linestyle, "#~>"))
+    elseif (strcmp (fmt.errorstyle, "#~>"))
       ifmt = "boxxy";
     else
       ifmt = "~";

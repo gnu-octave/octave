@@ -1,3 +1,7 @@
+2010-04-29  Ben Abbott <bpabbott@mac.com>
+
+	* plot/errorbar.m: Add demoss.
+
 2010-04-27  David Bateman  <dbateman@free.fr>
 
 	* plot/private/__errplot__.m: Update the marker in a seperate

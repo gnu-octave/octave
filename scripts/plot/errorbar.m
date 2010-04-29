@@ -138,3 +138,26 @@ endfunction
 
 %!demo
 %! errorbar(0:10,rand(1,11),rand(1,11), ">")
+
+%!demo
+%! x = 0:0.5:2*pi; 
+%! err = x/100; 
+%! y1 = sin (x); 
+%! y2 = cos (x); 
+%! hg = errorbar (x, y1, err, "~", x, y2, err, ">");
+
+%!demo
+%! x = 0:0.5:2*pi; 
+%! err = x/100; 
+%! y1 = sin (x); 
+%! y2 = cos (x); 
+%! hg = errorbar (x, y1, err, err, "#", x, y2, err, err, "#~");
+
+%!demo
+%! x = 0:0.5:2*pi; 
+%! err = x/100; 
+%! y1 = sin (x); 
+%! y2 = cos (x); 
+%! hg = errorbar (x, y1, err, err, err, err, "~>", ...
+%!                x, y2, err, err, err, err, "#~>");
+

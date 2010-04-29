@@ -160,4 +160,5 @@ endfunction
 %! y2 = cos (x); 
 %! hg = errorbar (x, y1, err, err, err, err, "~>", ...
 %!                x, y2, err, err, err, err, "#~>");
+%! set (hg(2), "marker", "*")
 

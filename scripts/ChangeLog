@@ -1,5 +1,6 @@
 2010-04-29  Ben Abbott <bpabbott@mac.com>
 
+	* plot/errorbar.m: Modify demo.
 	* plot/private/__errplot__.m: Fix bug for boxxy errorbar.
 	* plot/errorbar.m: Add demos.
 

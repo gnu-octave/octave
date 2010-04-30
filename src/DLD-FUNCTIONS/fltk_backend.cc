@@ -464,19 +464,22 @@ private:
 
   void set_axes_currentpoint (graphics_object ax, int px, int py)
   {
-    axes::properties& ap = 
-      dynamic_cast<axes::properties&> (ax.get_properties ());
+    if (ax)
+      {
+        axes::properties& ap = 
+          dynamic_cast<axes::properties&> (ax.get_properties ());
     
-    double xx, yy;
-    pixel2pos (ax, px, py, xx, yy);
+        double xx, yy;
+        pixel2pos (ax, px, py, xx, yy);
 
-    Matrix pos (2,3,0);
-    pos(0,0) = xx;
-    pos(1,0) = yy;
-    pos(0,1) = xx;
-    pos(1,1) = yy;
+        Matrix pos (2,3,0);
+        pos(0,0) = xx;
+        pos(1,0) = yy;
+        pos(0,1) = xx;
+        pos(1,1) = yy;
 
-    ap.set_currentpoint (pos);
+        ap.set_currentpoint (pos);
+      }
   }
 
   int key2shift (int key)

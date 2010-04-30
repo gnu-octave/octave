@@ -1,3 +1,8 @@
+2010-04-30  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::set_axes_currentpoint):
+	check for valid object before manipulating it
+
 2010-04-27  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (string_array_property::string_array_property):

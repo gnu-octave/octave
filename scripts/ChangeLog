@@ -1,5 +1,7 @@
 2010-04-30  Ben Abbott <bpabbott@mac.com>
 
+	* plot/loglogerr.m, plot/semilogxerr.m, plot/semilogyerr.m:
+	Add demos.
 	* plot/private/__errplot__.m: Fix bug parsing errorbar style.
 	* plot/private/__errplot__.m: Implement errorbars in the Matlab style.
 

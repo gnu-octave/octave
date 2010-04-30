@@ -59,3 +59,12 @@ function retval = semilogyerr (varargin)
   end_unwind_protect
 
 endfunction
+
+%!demo
+%! x = 0.25:0.25:10;
+%! y = wblpdf (x, 4, 2);
+%! eyu = rand (size (y));
+%! eyl = 1.0 - 1./(1+eyu);
+%! semilogyerr (x, y, eyl.*y, eyu.*y, "~-d")
+%! xlim ([0 10])
+

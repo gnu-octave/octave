@@ -76,12 +76,12 @@ function h = __errplot__ (fstr, p, varargin)
       case 2
         ydata = varargin{1}(:,i);
         xdata = 1:numel(ydata);
-        if (strcmp (ifmt, "xerr") || index (ifmt, "box"))
+        if (strcmp (ifmt, "xerr") || strcmp (ifmt, "box"))
           xldata = varargin{2}(:,i);
           xudata = ldata;
           ldata = [];
           udata = [];
-        elseif (strcmp (ifmt, "yerr") || index (ifmt, "boxy"))
+        elseif (strcmp (ifmt, "yerr") || strcmp (ifmt, "boxy"))
           ldata = varargin{2}(:,i);
           udata = ldata;
           xldata = [];
@@ -90,14 +90,14 @@ function h = __errplot__ (fstr, p, varargin)
           error ("2 column errorplot is only valid or xerr or yerr");
         endif
       case 3
-        if (strcmp (ifmt, "boxxy") || index (ifmt, "xyerr"))
+        if (strcmp (ifmt, "boxxy") || strcmp (ifmt, "xyerr"))
           ydata = varargin{1}(:,i);
           xdata = 1:numel(ydata);
           xldata = varargin{2}(:,i);
           xudata = xldata;
           ldata = varargin{3}(:,i);
           udata = ldata;
-        elseif (strcmp (ifmt, "xerr") || index (ifmt, "box"))
+        elseif (strcmp (ifmt, "xerr") || strcmp (ifmt, "box"))
           xdata = varargin{1}(:,i);
           ydata = varargin{2}(:,i);
           xldata = varargin{3}(:,i);
@@ -113,7 +113,7 @@ function h = __errplot__ (fstr, p, varargin)
           xudata = [];
         endif
       case 4
-        if (strcmp (ifmt, "boxxy") || index (ifmt, "xyerr"))
+        if (strcmp (ifmt, "boxxy") || strcmp (ifmt, "xyerr"))
           xdata = varargin{1}(:,i);
           ydata = varargin{2}(:,i);
           xldata = varargin{3}(:,i);
@@ -136,7 +136,7 @@ function h = __errplot__ (fstr, p, varargin)
           xudata = [];
         endif
       case 6 # boxxy, xyerr
-        if (strcmp (ifmt, "boxxy") || index (ifmt, "xyerr"))
+        if (strcmp (ifmt, "boxxy") || strcmp (ifmt, "xyerr"))
           xdata = varargin{1}(:,i);
           ydata = varargin{2}(:,i);
           xldata = varargin{3}(:,i);

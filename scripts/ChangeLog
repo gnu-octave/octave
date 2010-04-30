@@ -1,5 +1,6 @@
 2010-04-30  Ben Abbott <bpabbott@mac.com>
 
+	* plot/private/__errplot__.m: Fix bug parsing errorbar style.
 	* plot/private/__errplot__.m: Implement errorbars in the Matlab style.
 
 2010-04-29  Ben Abbott <bpabbott@mac.com>

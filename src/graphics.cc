@@ -3917,7 +3917,6 @@ axes::update_axis_limits (const std::string& axis_type)
   Matrix limits;
 
   if (axis_type == "xdata" || axis_type == "xscale"
-      || axis_type == "xldata" || axis_type == "xudata"
       || axis_type == "xlimmode" || axis_type == "xliminclude"
       || axis_type == "xlim")
     {
@@ -3932,7 +3931,6 @@ axes::update_axis_limits (const std::string& axis_type)
         }
     }
   else if (axis_type == "ydata" || axis_type == "yscale"
-           || axis_type == "ldata" || axis_type == "udata"
            || axis_type == "ylimmode" || axis_type == "yliminclude"
            || axis_type == "ylim")
     {
@@ -4193,9 +4191,9 @@ line::properties::compute_xlim (void) const
 {
   Matrix m (1, 3);
 
-  m(0) = xmin (xdata.min_val (), xmin (xldata.min_val (), xudata.min_val ()));
-  m(1) = xmax (xdata.max_val (), xmax (xldata.max_val (), xudata.max_val ()));
-  m(2) = xmin (xdata.min_pos (), xmin (xldata.min_pos (), xudata.min_pos ()));
+  m(0) = xdata.min_val ();
+  m(1) = xdata.max_val ();
+  m(2) = xdata.min_pos ();
 
   return m;
 }
@@ -4205,9 +4203,9 @@ line::properties::compute_ylim (void) const
 {
   Matrix m (1, 3);
 
-  m(0) = xmin (ydata.min_val (), xmin (ldata.min_val (), udata.min_val ()));
-  m(1) = xmax (ydata.max_val (), xmax (ldata.max_val (), udata.max_val ()));
-  m(2) = xmin (ydata.min_pos (), xmin (ldata.min_pos (), udata.min_pos ()));
+  m(0) = ydata.min_val ();
+  m(1) = ydata.max_val ();
+  m(2) = ydata.min_pos ();
 
   return m;
 }

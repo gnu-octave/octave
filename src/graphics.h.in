@@ -3170,17 +3170,12 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // properties which are not in matlab:
-    // ldata, udata, xldata, xudata, keylabel, interpreter
+    // properties which are not in matlab: keylabel, interpreter
 
     BEGIN_PROPERTIES (line)
       row_vector_property xdata u , default_data ()
       row_vector_property ydata u , default_data ()
       row_vector_property zdata u , Matrix ()
-      row_vector_property ldata u , Matrix ()
-      row_vector_property udata u , Matrix ()
-      row_vector_property xldata u , Matrix ()
-      row_vector_property xudata u , Matrix ()
       string_property xdatasource , ""
       string_property ydatasource , ""
       string_property zdatasource , ""
@@ -3209,12 +3204,8 @@ public:
     Matrix compute_ylim (void) const;
 
     void update_xdata (void) { set_xlim (compute_xlim ()); }
-    void update_xldata (void) { set_xlim (compute_xlim ()); }
-    void update_xudata (void) { set_xlim (compute_xlim ()); }
     
     void update_ydata (void) { set_ylim (compute_ylim ()); }
-    void update_ldata (void) { set_ylim (compute_ylim ()); }
-    void update_udata (void) { set_ylim (compute_ylim ()); }
 
     void update_zdata (void)
       {

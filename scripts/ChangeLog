@@ -1,3 +1,7 @@
+2010-05-01  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Remove gnuplot errorbar code.
+
 2010-04-30  Ben Abbott <bpabbott@mac.com>
 
 	* plot/loglogerr.m, plot/semilogxerr.m, plot/semilogyerr.m:

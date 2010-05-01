@@ -446,74 +446,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
           else
             xdat = obj.xdata(:);
             ydat = obj.ydata(:);
-            ldat = obj.ldata;
-            yerr = xerr = false;
-            if (! isempty (ldat))
-              yerr = true;
-              ldat = ldat(:);
-            endif
-            udat = obj.udata;
-            if (! isempty (udat))
-              udat = udat(:);
-            endif
-            xldat = obj.xldata;
-            if (! isempty (xldat))
-              xerr = true;
-              xldat = xldat(:);
-            endif
-            xudat = obj.xudata;
-            if (! isempty (xudat))
-              xudat = xudat(:);
-            endif
-            if (yerr)
-              if (isempty (ldat))
-                ylo = ydat;
-              else
-                ylo = ydat-ldat;
-              endif
-              if (isempty (udat))
-                yhi = ydat;
-              else
-                yhi = ydat+udat;
-              endif
-              if (xerr)
-                if (isempty (xldat))
-                  xlo = xdat;
-                else
-                  xlo = xdat-xldat;
-                endif
-                if (isempty (xudat))
-                  xhi = xdat;
-                else
-                  xhi = xdat+xudat;
-                endif
-                data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
-                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4):($5):($6)", numel (xdat));
-                errbars = "xyerrorbars";
-              else
-                data{data_idx} = [xdat, ydat, ylo, yhi]';
-                usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
-                errbars = "yerrorbars";
-              endif
-            elseif (xerr)
-              if (isempty (xldat))
-                xlo = xdat;
-              else
-                xlo = xdat-xldat;
-              endif
-              if (isempty (xudat))
-                xhi = xdat;
-              else
-                xhi = xdat+xudat;
-              endif
-              data{data_idx} = [xdat, ydat, xlo, xhi]';
-              usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3):($4)", numel (xdat));
-              errbars = "xerrorbars";
-            else
-              data{data_idx} = [xdat, ydat]';
-              usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
-                                              rows(xdat), xaxisloc_using, yaxisloc_using);
-            endif
+            data{data_idx} = [xdat, ydat]';
+            usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
+                                            rows(xdat), xaxisloc_using, yaxisloc_using);
           endif
 
           style = do_linestyle_command (obj, obj.color, data_idx, mono, 

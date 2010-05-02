@@ -1,3 +1,7 @@
+2010-05-02  Peter van den Biggelaar <peter@biglr.net>
+
+	* plot/close.m: No error on "close([])".
+
 2010-05-01  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Remove gnuplot errorbar code.

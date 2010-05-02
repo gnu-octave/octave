@@ -28,6 +28,7 @@
 ## @end deftypefn
 
 ## Author: jwe
+## 2010-05-02   PBig    allow empty argument
 
 function retval = close (arg1, arg2)
 
@@ -45,6 +46,8 @@ function retval = close (arg1, arg2)
       close_all_figures (false);
     elseif (isfigure (arg1))
       figs = arg1;
+    elseif (isempty(arg1))
+      figs = [];
     else
       error ("close: expecting argument to be \"all\" or a figure handle");
     endif

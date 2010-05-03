@@ -1344,7 +1344,8 @@ cell array will have a dimension vector corresponding to\n\
 \n\
 @example\n\
 @group\n\
-  s = struct('name', @{'Peter', 'Hannah', 'Robert'@}, 'age', @{23, 16, 3@});\n\
+  s = struct('name', @{'Peter', 'Hannah', 'Robert'@},\n\
+             'age', @{23, 16, 3@});\n\
   c = struct2cell(s)\n\
      @result{} c = @{1x1x3 Cell Array@}\n\
   c(1,1,:)(:)\n\

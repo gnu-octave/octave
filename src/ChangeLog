@@ -1,3 +1,8 @@
+2010-05-02  Rik <octave@nomad.inbox5.com>
+
+	* ov-cell.cc: Wrap documentation line to prevent overfull hbox 
+        LaTex warning
+
 2010-05-01  Ben Abbott <bpabbott@mac.com>
 
 	* graphics.cc, graphics.h.in: Remove line object properties ldata,

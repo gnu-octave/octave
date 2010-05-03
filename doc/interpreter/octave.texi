@@ -42,7 +42,8 @@
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
-* Octave: (octave).	Interactive language for numerical computations.
+* Octave: (octave).           Interactive language for numerical computations.
+
 END-INFO-DIR-ENTRY
 @end format
 @end ifinfo
@@ -781,7 +782,7 @@ Contributing Guidelines
 * General Guidelines::
 * Octave Sources (m-files)::
 * C++ Sources::
-* Other Sources::	
+* Other Sources::
 
 Trouble
 

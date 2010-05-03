@@ -1087,7 +1087,7 @@ get (0)
          currentfigure = [](0x0)
          children = [](0x0)
          visible = on
-			@dots{}
+         @dots{}
        @}
 @end group
 @end example

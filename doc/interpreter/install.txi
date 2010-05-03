@@ -400,7 +400,7 @@ of the Sun Fortran compiler.  If you get errors like
 @example
 @group
 zgemm.f:
-	zgemm:
+        zgemm:
 warning: unexpected parent of complex expression subtree
 zgemm.f, line 245: warning: unexpected parent of complex
   expression subtree

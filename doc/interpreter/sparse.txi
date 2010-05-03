@@ -108,7 +108,7 @@ C is.
   for (j = 0; j < nc; j++)
     for (i = cidx (j); i < cidx(j+1); i++)
        printf ("non-zero element (%i,%i) is %d\n", 
-	   ridx(i), j, data(i));
+           ridx(i), j, data(i));
 @end group
 @end example
 

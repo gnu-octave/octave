@@ -28,7 +28,7 @@ This chapter is dedicated to those who wish to contribute code to Octave.
 * General Guidelines::
 * Octave Sources (m-files)::
 * C++ Sources::
-* Other Sources::	
+* Other Sources::
 @end menu
 
 @node How to Contribute
@@ -229,7 +229,7 @@ so that it converts tabs to spaces.  Format function headers like this:
 @group
 static bool
 matches_patterns (const string_vector& patterns, int pat_idx,
-		  int num_pat, const std::string& name)
+                  int num_pat, const std::string& name)
 @end group
 @end example
 

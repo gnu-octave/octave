@@ -18,12 +18,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cond (@var{a},@var{p})
+## @deftypefn  {Function File} {} cond (@var{a})
+## @deftypefnx {Function File} {} cond (@var{a},@var{p})
 ## Compute the @var{p}-norm condition number of a matrix.  @code{cond (@var{a})} is
-## defined as @code{norm (@var{a}, @var{p}) * norm (inv (@var{a}), @var{p})}.
-## By default @code{@var{p}=2} is used which implies a (relatively slow)
+## defined as 
+## @tex
+## $ {\parallel a \parallel_p * \parallel a^{-1} \parallel_p .} $
+## @end tex
+## @ifnottex
+## @code{norm (@var{a}, @var{p}) * norm (inv (@var{a}), @var{p})}.
+## @end ifnottex
+##
+## By default @code{@var{p} = 2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are 
-## @code{@var{p}= 1, Inf, inf, 'Inf', 'fro'} which are generally faster.
+## @code{@var{p} = 1, Inf, "inf", "fro"} which are generally faster.  See
+## @code{norm} for a full discussion of possible @var{p} values.
 ## @seealso{condest, rcond, norm, svd}
 ## @end deftypefn
 

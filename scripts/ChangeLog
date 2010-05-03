@@ -1,3 +1,7 @@
+2010-05-02  Rik <octave@nomad.inbox5.com>
+
+	* linear-algebra/cond.m: Add TeX equation to documentation
+
 2010-05-02  Peter van den Biggelaar <peter@biglr.net>
 
 	* plot/close.m: No error on "close([])".

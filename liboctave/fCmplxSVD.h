@@ -38,15 +38,16 @@ public:
 
   FloatComplexSVD (void) { }
 
-  FloatComplexSVD (const FloatComplexMatrix& a, SVD::type svd_type = SVD::std)
+  FloatComplexSVD (const FloatComplexMatrix& a, 
+                   SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
     {
-      init (a, svd_type);
+      init (a, svd_type, svd_driver);
     }
 
   FloatComplexSVD (const FloatComplexMatrix& a, octave_idx_type& info,
-              SVD::type svd_type = SVD::std)
+                   SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
     {
-      info = init (a, svd_type);
+      info = init (a, svd_type, svd_driver);
     }
 
   FloatComplexSVD (const FloatComplexSVD& a)
@@ -83,7 +84,9 @@ private:
   FloatComplexMatrix left_sm;
   FloatComplexMatrix right_sm;
 
-  octave_idx_type init (const FloatComplexMatrix& a, SVD::type svd_type = SVD::std);
+  octave_idx_type init (const FloatComplexMatrix& a, 
+                        SVD::type svd_type = SVD::std, 
+                        SVD::driver svd_driver = SVD::GESVD);
 };
 
 #endif

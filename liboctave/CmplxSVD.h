@@ -38,15 +38,16 @@ public:
 
   ComplexSVD (void) { }
 
-  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std)
+  ComplexSVD (const ComplexMatrix& a, 
+              SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
     {
-      init (a, svd_type);
+    { init (a, svd_type, svd_driver); }
     }
 
   ComplexSVD (const ComplexMatrix& a, octave_idx_type& info,
-              SVD::type svd_type = SVD::std)
+              SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
     {
-      info = init (a, svd_type);
+      info = init (a, svd_type, svd_driver);
     }
 
   ComplexSVD (const ComplexSVD& a)
@@ -83,7 +84,9 @@ private:
   ComplexMatrix left_sm;
   ComplexMatrix right_sm;
 
-  octave_idx_type init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
+  octave_idx_type init (const ComplexMatrix& a,
+                        SVD::type svd_type = SVD::std, 
+                        SVD::driver svd_driver = SVD::GESVD);
 };
 
 #endif

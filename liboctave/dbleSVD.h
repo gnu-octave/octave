@@ -42,13 +42,22 @@ public:
       sigma_only
     };
 
+  enum driver
+    {
+      GESVD,
+      GESDD
+    };
+
   SVD (void) : sigma (), left_sm (), right_sm () { }
 
-  SVD (const Matrix& a, type svd_type = SVD::std) { init (a, svd_type); }
+  SVD (const Matrix& a, 
+       type svd_type = SVD::std, driver svd_driver = SVD::GESVD) 
+    { init (a, svd_type, svd_driver); }
 
-  SVD (const Matrix& a, octave_idx_type& info, type svd_type = SVD::std)
+  SVD (const Matrix& a, octave_idx_type& info, 
+       type svd_type = SVD::std, driver svd_driver = SVD::GESVD) 
     {
-      info = init (a, svd_type);
+      info = init (a, svd_type, svd_driver);
     }
 
   SVD (const SVD& a)
@@ -86,7 +95,8 @@ private:
   Matrix left_sm;
   Matrix right_sm;
 
-  octave_idx_type init (const Matrix& a, type svd_type = std);
+  octave_idx_type init (const Matrix& a, 
+                        type svd_type = std, driver svd_driver = GESVD);
 };
 
 #endif

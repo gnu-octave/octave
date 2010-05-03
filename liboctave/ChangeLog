@@ -1,3 +1,15 @@
+2010-05-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleSVD.h (SVD::driver): New enum.
+	(SVD::SVD, SVD::init): Add driver option.
+	* floatSVD.h (FloatSVD::FloatSVD, FloatSVD::init): Add driver option.
+	* CmplxSVD.h (ComplexSVD::ComplexSVD, ComplexSVD::init): Add driver option.
+	* fCmplxSVD.h (FloatComplexSVD::FloatComplexSVD, FloatComplexSVD::init): Add driver option.
+	* dbleSVD.cc (SVD::init): Optionally use xGESDD driver.
+	* floatSVD.cc (FloatSVD::init): Ditto.
+	* CmplxSVD.cc (ComplexSVD::init): Ditto.
+	* fCmplxSVD.cc (FloatComplexSVD::init): Ditto.
+
 2010-04-28  John W. Eaton  <jwe@octave.org>
 
 	* dim-vector.h (dim_vector (const octave_idx_type *, size_t)): Delete.

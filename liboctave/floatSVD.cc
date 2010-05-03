@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "floatSVD.h"
 #include "f77-fcn.h"
+#include "oct-locbuf.h"
 
 extern "C"
 {
@@ -40,6 +41,14 @@ extern "C"
                              const octave_idx_type&, float*, const octave_idx_type&,
                              float*, const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (sgesdd, SGESDD) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, float*,
+                             const octave_idx_type&, float*, float*,
+                             const octave_idx_type&, float*, const octave_idx_type&,
+                             float*, const octave_idx_type&, octave_idx_type *, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -70,7 +79,7 @@ FloatSVD::right_singular_matrix (void) const
 }
 
 octave_idx_type
-FloatSVD::init (const FloatMatrix& a, SVD::type svd_type)
+FloatSVD::init (const FloatMatrix& a, SVD::type svd_type, SVD::driver svd_driver)
 {
   octave_idx_type info;
 
@@ -140,22 +149,48 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type)
   octave_idx_type one = 1;
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);
 
-  F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                             F77_CONST_CHAR_ARG2 (&jobv, 1),
-                             m, n, tmp_data, m1, s_vec, u, m1, vt,
-                             nrow_vt1, work.fortran_vec (), lwork, info
-                             F77_CHAR_ARG_LEN (1)
-                             F77_CHAR_ARG_LEN (1)));
+  if (svd_driver == SVD::GESVD)
+    {
+      F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
+                                 nrow_vt1, work.fortran_vec (), lwork, info
+                                 F77_CHAR_ARG_LEN (1)
+                                 F77_CHAR_ARG_LEN (1)));
 
-  lwork = static_cast<octave_idx_type> (work(0));
-  work.resize (lwork, 1);
+      lwork = static_cast<octave_idx_type> (work(0));
+      work.resize (lwork, 1);
 
-  F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-                             F77_CONST_CHAR_ARG2 (&jobv, 1),
-                             m, n, tmp_data, m1, s_vec, u, m1, vt,
-                             nrow_vt1, work.fortran_vec (), lwork, info
-                             F77_CHAR_ARG_LEN (1)
-                             F77_CHAR_ARG_LEN (1)));
+      F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+                                 F77_CONST_CHAR_ARG2 (&jobv, 1),
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
+                                 nrow_vt1, work.fortran_vec (), lwork, info
+                                 F77_CHAR_ARG_LEN (1)
+                                 F77_CHAR_ARG_LEN (1)));
+
+    }
+  else if (svd_driver == SVD::GESDD)
+    {
+      assert (jobu == jobv);
+      char jobz = jobu;
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
+
+      F77_XFCN (sgesdd, SGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
+                                 nrow_vt1, work.fortran_vec (), lwork, iwork, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+      lwork = static_cast<octave_idx_type> (work(0));
+      work.resize (lwork, 1);
+
+      F77_XFCN (sgesdd, SGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
+                                 nrow_vt1, work.fortran_vec (), lwork, iwork, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+    }
+  else
+    assert (0); // impossible
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm = right_sm.transpose ();

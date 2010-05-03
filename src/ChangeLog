@@ -1,3 +1,9 @@
+2010-05-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/svd.cc (driver): New static var.
+	(Fsvd): Use it to select a driver.
+	(Fsvd_driver): New DEFUN.
+
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
 	* ov-cell.cc: Wrap documentation line to prevent overfull hbox 

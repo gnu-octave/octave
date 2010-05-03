@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "utils.h"
 
+static SVD::driver driver = SVD::GESVD;
+
 DEFUN_DLD (svd, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} svd (@var{a})\n\
@@ -203,7 +205,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
                       return retval;
                     }
 
-                  FloatSVD result (tmp, type);
+                  FloatSVD result (tmp, type, driver);
 
                   FloatDiagMatrix sigma = result.singular_values ();
 
@@ -231,7 +233,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
                       return retval;
                     }
 
-                  FloatComplexSVD result (ctmp, type);
+                  FloatComplexSVD result (ctmp, type, driver);
 
                   FloatDiagMatrix sigma = result.singular_values ();
 
@@ -262,7 +264,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
                       return retval;
                     }
 
-                  SVD result (tmp, type);
+                  SVD result (tmp, type, driver);
 
                   DiagMatrix sigma = result.singular_values ();
 
@@ -290,7 +292,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
                       return retval;
                     }
 
-                  ComplexSVD result (ctmp, type);
+                  ComplexSVD result (ctmp, type, driver);
 
                   DiagMatrix sigma = result.singular_values ();
 
@@ -396,3 +398,43 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 %!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
 
 */
+
+DEFUN_DLD (svd_driver, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{old} =} svd_driver (@var{new})\n\
+Sets or queries the underlying LAPACK driver used by svd.\n\
+Currently recognized are \"gesvd\" and \"gesdd\". Default is \"gesvd\".\n\
+@seealso{svd}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  if (nargin == 0 || (nargin == 1 && args(0).is_string ()))
+    {
+      if (driver == SVD::GESVD)
+        retval = "gesvd";
+      else if (driver == SVD::GESDD)
+        retval = "gesdd";
+      else
+        panic_impossible ();
+
+
+      if (nargin == 1)
+        {
+          std::string opt = args(0).xtolower ().string_value ();
+          if (opt == "gesvd")
+            driver = SVD::GESVD;
+          else if (opt == "gesdd")
+            driver = SVD::GESDD;
+          else
+            error ("svd_driver: invalid driver spec: %s", opt.c_str ());
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+

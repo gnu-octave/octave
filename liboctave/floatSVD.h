@@ -38,11 +38,14 @@ public:
 
   FloatSVD (void) : sigma (), left_sm (), right_sm () { }
 
-  FloatSVD (const FloatMatrix& a, SVD::type svd_type = SVD::std) { init (a, svd_type); }
+  FloatSVD (const FloatMatrix& a, 
+            SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
+    { init (a, svd_type, svd_driver); }
 
-  FloatSVD (const FloatMatrix& a, octave_idx_type& info, SVD::type svd_type = SVD::std)
+  FloatSVD (const FloatMatrix& a, octave_idx_type& info, 
+            SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
     {
-      info = init (a, svd_type);
+      info = init (a, svd_type, svd_driver);
     }
 
   FloatSVD (const FloatSVD& a)
@@ -80,7 +83,9 @@ private:
   FloatMatrix left_sm;
   FloatMatrix right_sm;
 
-  octave_idx_type init (const FloatMatrix& a, SVD::type svd_type = SVD::std);
+  octave_idx_type init (const FloatMatrix& a, 
+                        SVD::type svd_type = SVD::std, 
+                        SVD::driver svd_driver = SVD::GESVD);
 };
 
 #endif

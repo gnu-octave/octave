@@ -1,3 +1,13 @@
+2010-05-04  John W. Eaton  <jwe@octave.org>
+
+	* CollocWt.cc (diff, jcobi, dfopr): New functions, based on
+	Fortran functions in libcruft/villad.
+	(jcobi): Handle iteration failure at large N.
+	(CollocWt::init): Call them instead of Fortran code.
+	* CollocWt.h (CollocWt::initialized): Declare as bool, not int.
+	Change all uses.
+	Addresses bug #29473.
+
 2010-05-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleSVD.h (SVD::driver): New enum.

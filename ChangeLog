@@ -1,3 +1,7 @@
+2010-05-04  John W. Eaton  <jwe@octave.org>
+
+	* ROADMAP: Delete entry for villad.
+
 2010-04-26  Rik <octave@nomad.inbox5.com>
 
 	* configure.ac: fix bug with shell HERE document introduced in

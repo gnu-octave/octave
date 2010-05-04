@@ -1,3 +1,9 @@
+2010-05-04  John W. Eaton  <jwe@octave.org>
+
+	* villad/dfopr.f, villad/dif.f, villad/intrp.f, villad/jcobi.f,
+	villad/radau.f, villad/vilerr.f, villad/module.mk: Delete.
+	* Makefile.am: Don't include villad/module.mk.
+
 2010-04-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* blas-xtra/cmatm3.f, blas-xtra/zmatm3.f,

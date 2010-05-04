@@ -71,7 +71,6 @@ include quadpack/module.mk
 include ranlib/module.mk
 include slatec-err/module.mk
 include slatec-fn/module.mk
-include villad/module.mk
 
 cruft.def: $(libcruft_la_SOURCES) mkf77def
 	chmod a+rx mkf77def

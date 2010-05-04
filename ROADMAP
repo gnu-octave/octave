@@ -27,7 +27,6 @@ Octave's source files.
     ranlib         * random number generators
     slatec-err     * slatec error handling library
     slatec-fn      * various special function subroutines
-    villad         * subroutines for orthogonal collocation weights
 
   liboctave     -- the C++ interfaces to the numerical libraries and
                    various OS facilities

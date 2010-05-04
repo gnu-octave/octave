@@ -37,24 +37,27 @@ public:
 
   CollocWt (void)
     : n (0), inc_left (0), inc_right (0), lb (0.0), rb (1.0),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
 
   CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
 
-  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir, double l, double rr)
+  CollocWt (octave_idx_type nc, octave_idx_type il, octave_idx_type ir,
+            double l, double rr)
     : n (nc), inc_left (il), inc_right (ir), lb (l), rb (rr),
-      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (false) { }
 
-  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il, octave_idx_type ir)
+  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
+            octave_idx_type ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
-      Alpha (a), Beta (b), initialized (0) { }
+      Alpha (a), Beta (b), initialized (false) { }
 
-  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il, octave_idx_type ir,
+  CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
+            octave_idx_type ir,
                       double ll, double rr)  
     : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
-      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
+      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
 
   CollocWt (const CollocWt& a)
     : n (a.n), inc_left (a.inc_left), inc_right (a.inc_right),
@@ -85,21 +88,21 @@ public:
   CollocWt& resize (octave_idx_type nc)
     {
       n = nc;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
   CollocWt& add_left (void)
     {
       inc_left = 1;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
   CollocWt& delete_left (void)
     {
       inc_left = 0;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
@@ -108,14 +111,14 @@ public:
   CollocWt& add_right (void)
     {
       inc_right = 1;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
   CollocWt& delete_right (void)
     {
       inc_right = 0;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
@@ -124,14 +127,14 @@ public:
   CollocWt& set_alpha (double val)
     {
       Alpha = val;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
   CollocWt& set_beta (double val)
     {
       Beta = val;
-      initialized = 0;
+      initialized = false;
       return *this;
     }
 
@@ -178,7 +181,7 @@ protected:
   Matrix A;
   Matrix B;
 
-  int initialized;
+  bool initialized;
 
   void init (void);
 

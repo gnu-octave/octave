@@ -13,8 +13,10 @@
 	* dbleSVD.h (SVD::driver): New enum.
 	(SVD::SVD, SVD::init): Add driver option.
 	* floatSVD.h (FloatSVD::FloatSVD, FloatSVD::init): Add driver option.
-	* CmplxSVD.h (ComplexSVD::ComplexSVD, ComplexSVD::init): Add driver option.
-	* fCmplxSVD.h (FloatComplexSVD::FloatComplexSVD, FloatComplexSVD::init): Add driver option.
+	* CmplxSVD.h (ComplexSVD::ComplexSVD, ComplexSVD::init):
+	Add driver option.
+	* fCmplxSVD.h (FloatComplexSVD::FloatComplexSVD,
+	FloatComplexSVD::init): Add driver option.
 	* dbleSVD.cc (SVD::init): Optionally use xGESDD driver.
 	* floatSVD.cc (FloatSVD::init): Ditto.
 	* CmplxSVD.cc (ComplexSVD::init): Ditto.
@@ -218,7 +220,7 @@
 
 2010-03-30  John W. Eaton  <jwe@octave.org>
 
-	* str-vec.cc (string_vector::string_vector (const char * const *)): 
+	* str-vec.cc (string_vector::string_vector (const char * const *)):
 	Create empty string_vector object if arg is NULL.
 	Fixes bug #29386.
 
@@ -234,9 +236,9 @@
 
 2010-03-26  Jaroslav Hajek  <highegg@gmail.com>
 
-	* Sparse.cc (Sparse<T>::index (const idx_vector&, const idx_vector&, bool)):
-	Specialize for contiguous row range, row permutation, and implement
-	general case through double index-transpose.
+	* Sparse.cc (Sparse<T>::index (const idx_vector&, const	idx_vector&,
+	bool)): Specialize for contiguous row range, row permutation,
+	and implement general case through double index-transpose.
 
 2010-03-25  John W. Eaton  <jwe@octave.org>
 
@@ -251,8 +253,7 @@
 
 2010-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
-	* lo-mappers.cc 
-	(fix (double)): Forward to gnulib::trunc.
+	* lo-mappers.cc	(fix (double)): Forward to gnulib::trunc.
 	(fix (float)): Forward to gnulib::truncf.
 	(xround (double)): Forward to gnulib::round.
 	(xround (float)): Forward to gnulib::roundf.
@@ -656,7 +657,7 @@
 	* fMatrix.cc: Ditto.
 	* fNDArray.cc: Ditto.
 	* intNDArray.cc: Ditto.
-	* MDiagArray2.cc: Remove computed assignment operators, adapt 
+	* MDiagArray2.cc: Remove computed assignment operators, adapt
 	operators to new mechanism.
 	* MDiagArray2.h: Declare operators as friends.
 	* MArray-decl.h (MDIAGARRAY2_OPS_FRIEND_DECLS): Don't expand
@@ -744,10 +745,10 @@
 2010-02-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array): Define 2D constructors. Remove conflicting 1D
-	initialized constructor. Deprecate 1D constructor. Deprecate 1D resize. 
+	initialized constructor. Deprecate 1D constructor. Deprecate 1D resize.
 	Add 2D resize, resize1. Remove resize_fill. Make resize_fill_value
 	return a reference. Remove 1D clear.
-	
+
 	* MArray.h (MArray): Merge with MArrayN. Define 2D constructors, sync
 	with Array changes.
 
@@ -942,7 +943,7 @@
 	* mx-op-decl.h (MINMAX_DECLS): Likewise.
 
 	* int16NDArray.h, int32NDArray.h, int64NDArray.h, int8NDArray.h,
-	uint16NDArray.h, uint32NDArray.h, uint64NDArray.h, uint8NDArray.h: 
+	uint16NDArray.h, uint32NDArray.h, uint64NDArray.h, uint8NDArray.h:
 	Update.
 	* int16NDArray.cc, int32NDArray.cc, int64NDArray.cc, int8NDArray.cc,
 	uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc, uint8NDArray.cc:
@@ -1181,7 +1182,7 @@
 
 	* prog-args.h, prog-args.cc (prog_args::get_option,
 	prog_args::option_argument, prog_args::option_index):
-	Don't declare const. 
+	Don't declare const.
 
 2010-01-22  John W. Eaton  <jwe@octave.org>
 
@@ -1403,7 +1404,7 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_any_r, mx_inline_all_r): New helper
-	reductors. 
+	reductors.
 	(mx_inline_any, mx_inline_all): Call the here in row-wise reduction
 	with few enough columns.
 
@@ -1425,7 +1426,7 @@
 2010-01-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-op-defs.h (SND_MINMAX_FCN, NDS_MINMAX_FCN, NDND_MINMAX_FCN):
-	Simplify using mx_inlines machinery. 
+	Simplify using mx_inlines machinery.
 	* dNDArray (min, max): Simplify.
 	* fNDArray (min, max): Simplify.
 	* CNDArray (min, max): Simplify.
@@ -1567,13 +1568,13 @@
 
 2010-01-11  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am: Remove unnecessary use of simple_move_if_change_rule to allow
-	Make to update timestamps
+	* Makefile.am: Remove unnecessary use of
+	simple_move_if_change_rule to allow Make to update timestamps.
 
 2010-01-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array<T>::crefT): New helper typedef.
-	(Array<T>::elem const, Array<T>::xelem const, 
+	(Array<T>::elem const, Array<T>::xelem const,
 	Array<T>::checkelem const, Array<T>::operator () const): Return crefT.
 	(Array<T>::range_error const): Remove overloads.
 	* Array.cc (Array<T>::range_error const): Remove overloads.
@@ -1629,8 +1630,8 @@
 
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
-	variables of top_builddir and top_srcdir.
+	* Makefile.am: Eliminate TOPDIR variable in favor of built-in
+	automake variables of top_builddir and top_srcdir.
 
 2009-12-17  John W. Eaton  <jwe@octave.org>
 
@@ -1657,9 +1658,9 @@
 2009-12-13  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use DISTCLEANFILES rather than distclean-local rule.
-	Use PERL variable defined by autoconf rather than direct call.  Use
-	simple_move_if_change rule to reduce useless compiles if OPTS_INC have not
-	changed.
+	Use PERL variable defined by autoconf rather than direct call.
+	Use simple_move_if_change rule to reduce useless compiles if
+	OPTS_INC have not changed.
 
 2009-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -1704,8 +1705,8 @@
 2009-12-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-sort.cc (lookup_binary): Remove.
-	(octave_sort<T>::lookup (const T*, octave_idx_type, const T&, comp)): Move
-	code here.
+	(octave_sort<T>::lookup (const T*, octave_idx_type, const T&, comp)):
+	Move code here.
 	(octave_sort<T>::lookup (const T*, octave_idx_type, const T*,
 	octave_idx_type, octave_idx_type *, comp)): Remove offset parameter.
 	Use a simple sequence of lookups.
@@ -1830,7 +1831,8 @@
 	* fNDArray.cc (FloatNDArray::all_integers (void)): New method.
 	(FloatNDArray::any_element_is_negative): Use mx_inline_any_negative.
 	(bsxfun_pow (const FloatNDArray&, const FloatNDArray&),
-	bsxfun_pow (const FloatComplexNDArray&, const FloatNDArray&)): New functions.
+	bsxfun_pow (const FloatComplexNDArray&, const FloatNDArray&)):
+	New functions.
 	* fNDArray.h: Update.
 	* CNDArray.cc (bsxfun_pow (const ComplexNDArray&, const
 	ComplexNDArray&)): New function.
@@ -1848,7 +1850,8 @@
 	Use mx_inline_all_real.
 	* fCMatrix.cc (FloatComplexMatrix::all_elements_are_real): Ditto.
 	* CDiagMatrix.cc (ComplexDiagMatrix::all_elements_are_real): Ditto.
-	* fCDiagMatrix.cc (FloatComplexDiagMatrix::all_elements_are_real): Ditto.
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::all_elements_are_real):
+	Ditto.
 	* CSparse.cc (SparseComplexMatrix::all_elements_are_real): Ditto.
 
 2009-11-17  Jaroslav Hajek  <highegg@gmail.com>

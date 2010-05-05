@@ -106,8 +106,7 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (void) const 
-    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (range)); }
+  idx_vector index_vector (void) const;
 
   dim_vector dims (void) const
     { 

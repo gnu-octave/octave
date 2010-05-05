@@ -1440,15 +1440,27 @@ warning named by @var{id} is handled as if it were an error instead.\n\
   return retval;
 }
 
-void
-disable_warning (const std::string& id)
+octave_value_list
+set_warning_state (const std::string& id, const std::string& state)
 {
   octave_value_list args;
 
   args(1) = id;
-  args(0) = "off";
+  args(0) = state;
 
-  Fwarning (args, 0);
+  return Fwarning (args, 1);
+}
+
+octave_value_list
+set_warning_state (const octave_value_list& args)
+{
+  return Fwarning (args, 1);
+}
+
+void
+disable_warning (const std::string& id)
+{
+  set_warning_state (id, "off");
 }
 
 void
@@ -1473,6 +1485,10 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:string-concat");
   disable_warning ("Octave:variable-switch-label");
   disable_warning ("Octave:complex-cmp-ops");
+
+  // This should be an error unless we are in maximum braindamage mode.
+
+  set_warning_state ("Octave:allow-noninteger-ranges-as-indices", "error");
 }
 
 DEFUN (lasterror, args, ,

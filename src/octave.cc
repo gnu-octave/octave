@@ -573,6 +573,8 @@ maximum_braindamage (void)
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
 
+  set_warning_state ("Octave:allow-noninteger-ranges-as-indices", "on");
+
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");
   disable_warning ("Octave:function-name-clash");

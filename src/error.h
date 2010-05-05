@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <string>
 
+class octave_value_list;
+
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \
          __FILE__, __LINE__)
@@ -93,6 +95,12 @@ extern OCTINTERP_API void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 // Helper function for print_usage defined in defun.cc.
 extern OCTINTERP_API void defun_usage_message (const std::string& msg);
+
+extern OCTINTERP_API octave_value_list
+set_warning_state (const std::string& id, const std::string& state);
+
+extern OCTINTERP_API octave_value_list
+set_warning_state (const octave_value_list& args);
 
 extern OCTINTERP_API void disable_warning (const std::string& id);
 extern OCTINTERP_API void initialize_default_warning_state (void);

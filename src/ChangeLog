@@ -1,3 +1,17 @@
+2010-05-05  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (reset_warning_state): New function.
+	(Fisindex): Temporarily set warning state for
+	Octave:allow-noninteger-ranges-as-indices to "error".
+	* error.cc (set_warning_state): New function.
+	(initialize_default_warning_state): Set default warning state
+	for Octave:allow-noninteger-ranges-as-indices to "error".
+	* error.h (set_warning_state): Provide decl.
+	* octave.cc (maximum_braindamage): Set warning state for
+	Octave:allow-noninteger-ranges-as-indices to "on".
+	* ov-range.cc (octave_range::index_vector): Warn if range
+	contains non-integer values.
+
 2010-05-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/svd.cc (driver): New static var.

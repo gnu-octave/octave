@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-utils.h"
 
+#include "defun.h"
+#include "variables.h"
 #include "gripes.h"
 #include "ops.h"
 #include "oct-obj.h"
@@ -139,6 +141,25 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
       octave_value tmp (new octave_matrix (range.matrix_value ()));
 
       return tmp.do_index_op (idx, resize_ok);
+    }
+}
+
+idx_vector
+octave_range::index_vector (void) const
+{
+  if (idx_cache)
+    return *idx_cache;
+  else
+    {
+      if (range.all_elements_are_ints ())
+        return set_idx_cache (idx_vector (range));
+      else
+        {
+          warning_with_id ("Octave:allow-noninteger-ranges-as-indices",
+                           "rounding non-integer range used as index to nearest integer");
+
+          return octave_value (matrix_value ()).round ().index_vector ();
+        }
     }
 }
 

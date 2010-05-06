@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} schur (@var{a})\n\
+@deftypefnx {Loadable Function} {@var{s} =} schur (@var{a}, \"complex\")\n\
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})\n\
 @cindex Schur decomposition\n\
 The Schur decomposition is used to compute eigenvalues of a\n\
@@ -148,6 +149,8 @@ $S$.\n\
 @code{s}.\n\
 @end ifnottex\n\
 \n\
+A complex decomposition may be forced by passing \"complex\" as @var{opt}.\n\
+\n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @code{opt}.  @code{opt = \"a\"} indicates that all\n\
 eigenvalues with negative real parts should be moved to the leading\n\
@@ -229,25 +232,28 @@ $S$.\n\
         }
     }
 
-  char ord_char = ord.empty () ? 'U' : ord[0];
+  bool force_complex = false;
 
-  if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
-      && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
+  if (ord == "complex")
     {
-      warning ("schur: incorrect ordered schur argument `%c'",
-               ord.c_str ());
-      return retval;
+      force_complex = true;
+      ord = std::string ();
+    }
+  else
+    {
+      char ord_char = ord.empty () ? 'U' : ord[0];
+
+      if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
+          && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
+        {
+          warning ("schur: incorrect ordered schur argument `%c'",
+                   ord.c_str ());
+          return retval;
+        }
     }
 
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
-
-  int arg_is_empty = empty_arg ("schur", nr, nc);
-
-  if (arg_is_empty < 0)
-    return retval;
-  else if (arg_is_empty > 0)
-    return octave_value_list (2, Matrix ());
 
   if (nr != nc)
     {
@@ -255,9 +261,11 @@ $S$.\n\
       return retval;
     }
 
-  if (arg.is_single_type ())
+  if (! arg.is_numeric_type ())
+    gripe_wrong_type_arg ("schur", arg);
+  else if (arg.is_single_type ())
     {
-      if (arg.is_real_type ())
+      if (! force_complex && arg.is_real_type ())
         {
           FloatMatrix tmp = arg.float_matrix_value ();
 
@@ -276,7 +284,7 @@ $S$.\n\
                 }
             }
         }
-      else if (arg.is_complex_type ())
+      else
         {
           FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
@@ -299,7 +307,7 @@ $S$.\n\
     }
   else
     {
-      if (arg.is_real_type ())
+      if (! force_complex && arg.is_real_type ())
         {
           Matrix tmp = arg.matrix_value ();
 
@@ -318,7 +326,7 @@ $S$.\n\
                 }
             }
         }
-      else if (arg.is_complex_type ())
+      else
         {
           ComplexMatrix ctmp = arg.complex_matrix_value ();
 
@@ -337,10 +345,6 @@ $S$.\n\
                   retval(0) = result.unitary_matrix ();
                 }
             }
-        }
-      else
-        {
-          gripe_wrong_type_arg ("schur", arg);
         }
     }
  

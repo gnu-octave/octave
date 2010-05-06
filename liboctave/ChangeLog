@@ -1,3 +1,11 @@
+2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleSCHUR.cc (SCHUR::init): Handle empty matrix case.
+	Use clear rather than resize to realloc matrix.
+	* floatSCHUR.cc (FloatSCHUR::init): Ditto.
+	* CmplxSCHUR.cc (ComplexSCHUR::init): Ditto.
+	* fCmplxSCHUR.cc (FloatComplexSCHUR::init): Ditto.
+
 2010-05-04  John W. Eaton  <jwe@octave.org>
 
 	* CollocWt.cc (diff, jcobi, dfopr): New functions, based on

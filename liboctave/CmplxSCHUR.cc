@@ -70,6 +70,12 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
         ("ComplexSCHUR requires square matrix");
       return -1;
     }
+  else if (a_nr == 0)
+    {
+      schur_mat.clear ();
+      unitary_mat.clear ();
+      return 0;
+    }
 
   // Workspace requirements may need to be fixed if any of the
   // following change.
@@ -104,7 +110,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
 
   schur_mat = a;
   if (calc_unitary)
-    unitary_mat.resize (n, n);
+    unitary_mat.clear (n, n);
 
   Complex *s = schur_mat.fortran_vec ();
   Complex *q = unitary_mat.fortran_vec ();

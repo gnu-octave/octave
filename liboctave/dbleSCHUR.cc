@@ -70,6 +70,12 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
       (*current_liboctave_error_handler) ("SCHUR requires square matrix");
       return -1;
     }
+  else if (a_nr == 0)
+    {
+      schur_mat.clear ();
+      unitary_mat.clear ();
+      return 0;
+    }
 
   // Workspace requirements may need to be fixed if any of the
   // following change.
@@ -106,7 +112,7 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
   schur_mat = a;
 
   if (calc_unitary)
-    unitary_mat.resize (n, n);
+    unitary_mat.clear (n, n);
 
   double *s = schur_mat.fortran_vec ();
   double *q = unitary_mat.fortran_vec ();

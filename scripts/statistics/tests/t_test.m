@@ -58,7 +58,7 @@ function [pval, t, df] = t_test (x, m, alt)
   n   = length (x);
   df  = n - 1;
   t   = sqrt (n) * (sum (x) / n - m) / std (x);
-  cdf = t_cdf (t, df);
+  cdf = tcdf (t, df);
 
   if (nargin == 2)
     alt  = "!=";

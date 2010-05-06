@@ -44,7 +44,7 @@ function Rmap = brighten (m, beta)
     if (ishandle (m))
       h = m;
       m = get (h, "colormap");
-    elseif (! is_matrix (m) || size (m, 2) != 3)
+    elseif (! ismatrix (m) || size (m, 2) != 3)
       error ("brighten: first argument must be an Nx3 matrix or a handle");
     endif
   else

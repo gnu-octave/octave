@@ -60,7 +60,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   c    = v_x / (v_x + v_y);
   df   = 1 / (c^2 / (n_x - 1) + (1 - c)^2 / (n_y - 1));
   t    = (mu_x - mu_y) / sqrt (v_x + v_y);
-  cdf  = t_cdf (t, df);
+  cdf  = tcdf (t, df);
 
   if (nargin == 2)
     alt  = "!=";

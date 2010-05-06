@@ -78,7 +78,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
   [b, v] = ols (y, X);
   df     = T - k;
   t      = (R * b - r) / sqrt (v * R * inv (X' * X) * R');
-  cdf    = t_cdf (t, df);
+  cdf    = tcdf (t, df);
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

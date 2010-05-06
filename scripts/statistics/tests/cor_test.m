@@ -93,7 +93,7 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
     t.params = df;
     t.stat = sqrt (df) .* r / sqrt (1 - r.^2);
     t.dist = "t";
-    cdf  = t_cdf (t.stat, df);
+    cdf  = tcdf (t.stat, df);
   elseif (m == "k")
     tau = kendall (X, Y);
     t.method = "Kendall's rank correlation tau";

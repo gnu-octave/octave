@@ -1,3 +1,10 @@
+2010-05-05  Rik <octave@nomad.inbox5.com>
+
+        * statistics/tests/cor_test.m, statistics/tests/t_test.m, 
+          statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m, 
+          statistics/tests/welch_test.m: Replace deprecated function calls.
+          Patch provided by Alois Schlögl.
+
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
 	* linear-algebra/cond.m: Add TeX equation to documentation

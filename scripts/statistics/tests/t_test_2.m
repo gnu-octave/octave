@@ -59,7 +59,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   mu_y = sum (y) / n_y;
   v    = sumsq (x - mu_x) + sumsq (y - mu_y);
   t    = (mu_x - mu_y) * sqrt ((n_x * n_y * df) / (v * (n_x + n_y)));
-  cdf  = t_cdf (t, df);
+  cdf  = tcdf (t, df);
 
   if (nargin == 2)
     alt = "!=";

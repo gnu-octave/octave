@@ -156,7 +156,7 @@ octave_range::index_vector (void) const
       else
         {
           warning_with_id ("Octave:allow-noninteger-ranges-as-indices",
-                           "rounding non-integer range used as index to nearest integer");
+                           "non-integer range used as index");
 
           return octave_value (matrix_value ()).round ().index_vector ();
         }

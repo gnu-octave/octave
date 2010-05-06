@@ -1,5 +1,10 @@
 2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array::delete_elements (const idx_vector&)): Only call
+	resize1 when deleting the last element of a vector.
+
+2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-norm.h: Fix include guard.
 
 2010-05-06  Jaroslav Hajek  <highegg@gmail.com>

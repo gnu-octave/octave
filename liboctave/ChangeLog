@@ -1,5 +1,9 @@
 2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-norm.h: Fix include guard.
+
+2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dbleSCHUR.cc (SCHUR::init): Handle empty matrix case.
 	Use clear rather than resize to realloc matrix.
 	* floatSCHUR.cc (FloatSCHUR::init): Ditto.

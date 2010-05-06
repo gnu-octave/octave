@@ -1,5 +1,11 @@
 2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/sqrtm.cc (sqrtm_utri_inplace, do_sqrtm): New helper
+	functions.
+	(Fsqrtm): Rewrite.
+
+2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/schur.cc (Fschur): Recognize "complex" option for
 	Matlab compatibility. Simplify argument handling and improve error
 	messages.

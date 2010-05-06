@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_xnorm_h)
 #define octave_xnorm_h 1
 
+#include "oct-norm.h"
+
 class octave_value;
 
 extern octave_value xnorm (const octave_value& x, const octave_value& p);

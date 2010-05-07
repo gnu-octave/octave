@@ -1,3 +1,7 @@
+2010-05-07  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* ov-base.h (Vsparse_auto_mutate): Add OCTINTERP_API tag.
+
 2010-05-06  John W. Eaton  <jwe@octave.org>
 
 	* xgl2ps.c: Don't compile gl2ps.c unless we have OpenGL.

@@ -209,17 +209,17 @@ user preferences to the following values
 
 @example
 @group
-PS1                     = ">> "
-PS2                     = ""
-beep_on_error           = true
-confirm_recursive_rmdir = false
-crash_dumps_octave_core = false
-default_save_options    = "-mat-binary"
-fixed_point_format      = true
-history_timestamp_format_string
-                        = "%%-- %D %I:%M %p --%%"
-page_screen_output      = false
-print_empty_dimensions  = false
+PS1                             = ">> "
+PS2                             = ""
+allow_noninteger_range_as_index = true
+beep_on_error                   = true
+confirm_recursive_rmdir         = false
+crash_dumps_octave_core         = false
+default_save_options            = "-mat-binary"
+fixed_point_format              = true
+history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
+page_screen_output              = false
+print_empty_dimensions          = false
 @end group
 @end example
 
@@ -227,6 +227,7 @@ print_empty_dimensions  = false
 and disable the following warnings
 @example
 @group
+Octave:abbreviated-property-match
 Octave:fopen-file-in-path
 Octave:function-name-clash
 Octave:load-file-in-path

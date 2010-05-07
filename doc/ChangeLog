@@ -1,3 +1,7 @@
+2010-05-07  John W. Eaton  <jwe@octave.org>
+
+	* basics.txi: Update list of internal variables for --traditional.
+
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
         * interpreter/contrib.txi, interpreter/install.txi, 

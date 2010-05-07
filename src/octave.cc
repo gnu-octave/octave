@@ -59,12 +59,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ops.h"
+#include "ov.h"
+#include "ov-range.h"
 #include "toplev.h"
 #include "parse.h"
 #include "procstream.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "ov.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -563,6 +564,7 @@ maximum_braindamage (void)
 
   bind_internal_variable ("PS1", ">> ");
   bind_internal_variable ("PS2", "");
+  bind_internal_variable ("allow_noninteger_range_as_index", true);
   bind_internal_variable ("beep_on_error", true);
   bind_internal_variable ("confirm_recursive_rmdir", false);
   bind_internal_variable ("crash_dumps_octave_core", false);
@@ -572,8 +574,6 @@ maximum_braindamage (void)
                          "%%-- %D %I:%M %p --%%");
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
-
-  set_warning_state ("Octave:allow-noninteger-ranges-as-indices", "on");
 
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");

@@ -2,6 +2,22 @@
 
 	* ov-base.h (Vsparse_auto_mutate): Add OCTINTERP_API tag.
 
+2010-05-07  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (maximum_braindamage): Set value of internal
+	variable Vallow_noninteger_range_as_index to true instead of
+	setting Octave:allow-noninteger-ranges-as-indices warning state.
+	* ov-range.cc (Fallow_noninteger_range_as_index): New function.
+	(Vallow_noninteger_range_as_index): New variable.
+	(octave_range::index_vector): Only allow non-integer range as
+	index if Vallow_noninteger_range_as_index is true.
+	(octave_range::bool_array_value): Move definition here from ov-range.h.
+	* ov-range.h (Vallow_noninteger_range_as_index): Provide decl.
+	* utils.cc (reset_warning_state): Delete.
+	(Fisindex): Temporarily set Vallow_noninteger_range_as_index
+	instead of changing warning state for
+	Octave:allow-noninteger-ranges-as-indices to "error".
+
 2010-05-06  John W. Eaton  <jwe@octave.org>
 
 	* xgl2ps.c: Don't compile gl2ps.c unless we have OpenGL.

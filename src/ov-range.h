@@ -231,17 +231,7 @@ public:
 
   FloatComplex float_complex_value (bool = false) const;
 
-  boolNDArray bool_array_value (bool warn = false) const
-  {
-    Matrix m = range.matrix_value ();
-
-    if (m.any_element_is_nan ())
-      error ("invalid conversion from NaN to logical");
-    else if (warn && m.any_element_not_one_or_zero ())
-      gripe_logical_conversion ();
-
-    return boolNDArray (m);
-  }
+  boolNDArray bool_array_value (bool warn = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }
@@ -321,5 +311,8 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
+
+// If TRUE, allow ranges with non-integer elements as array indices.
+extern bool Vallow_noninteger_range_as_index;
 
 #endif

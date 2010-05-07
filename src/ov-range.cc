@@ -45,6 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
+// If TRUE, allow ranges with non-integer elements as array indices.
+bool Vallow_noninteger_range_as_index = false;
+
 DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
@@ -151,11 +154,12 @@ octave_range::index_vector (void) const
     return *idx_cache;
   else
     {
-      if (range.all_elements_are_ints ())
+      if (range.all_elements_are_ints ()
+          || ! Vallow_noninteger_range_as_index)
         return set_idx_cache (idx_vector (range));
       else
         {
-          warning_with_id ("Octave:allow-noninteger-ranges-as-indices",
+          warning_with_id ("Octave:noninteger-range-as-index",
                            "non-integer range used as index");
 
           return octave_value (matrix_value ()).round ().index_vector ();
@@ -307,12 +311,25 @@ octave_range::float_complex_value (bool) const
   return retval;
 }
 
+boolNDArray
+octave_range::bool_array_value (bool warn) const
+{
+  Matrix m = range.matrix_value ();
+
+  if (m.any_element_is_nan ())
+    error ("invalid conversion from NaN to logical");
+  else if (warn && m.any_element_not_one_or_zero ())
+    gripe_logical_conversion ();
+
+  return boolNDArray (m);
+}
+
 octave_value 
 octave_range::resize (const dim_vector& dv, bool fill) const
 { 
   NDArray retval = array_value (); 
   if (fill)
-    retval.resize (dv, NDArray::resize_fill_value());
+    retval.resize (dv, NDArray::resize_fill_value ());
   else
     retval.resize (dv); 
   return retval; 
@@ -588,4 +605,17 @@ octave_range::as_mxArray (void) const
     pr[i] = p[i];
 
   return retval;
+}
+
+DEFUN (allow_noninteger_range_as_index, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
+Query or set the internal variable that controls whether non-integer\n\
+ranges are allowed as indices.  This might be useful for Matlab\n\
+compatibility; however, it is still not entirely compatible because\n\
+Matlab treats the range expression differently in different contexts.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
 }

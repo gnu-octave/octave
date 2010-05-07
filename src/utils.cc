@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-errno.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
+#include "ov-range.h"
 #include "pager.h"
 #include "parse.h"
 #include "sysdep.h"
@@ -1304,17 +1305,6 @@ octave_sleep (double seconds)
     }
 }
 
-// FIXME -- is there some way to fix the declarations in unwind-prot.h
-// so that this function's argument can be declared as
-// "const octave_value_list&"?
-
-static void
-reset_warning_state (octave_value_list args)
-{
-  if (! args.empty ())
-    set_warning_state (args);
-}
-
 DEFUN (isindex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
@@ -1338,11 +1328,8 @@ subsequent indexing will not perform the checking again.\n\
     {
       unwind_protect frame;
 
-      octave_value_list current_warning_state
-        = set_warning_state ("Octave:allow-noninteger-ranges-as-indices",
-                             "error");
-
-      frame.add_fcn (reset_warning_state, current_warning_state);
+      frame.protect_var (Vallow_noninteger_range_as_index);
+      Vallow_noninteger_range_as_index = false;
 
       frame.protect_var (error_state);
 

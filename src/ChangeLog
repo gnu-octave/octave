@@ -1,3 +1,8 @@
+2010-05-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/sqrtm.cc (do_sqrtm): Mark the result as triangular
+	where applicable.
+
 2010-05-10  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test 

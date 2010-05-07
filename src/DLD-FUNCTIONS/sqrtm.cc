@@ -122,6 +122,7 @@ do_sqrtm (const octave_value& arg)
                   // Do it in real arithmetic.
                   sqrtm_utri_inplace (x);
                   retval = x;
+                  retval.matrix_type (mt);
                 }
               else
                 iscomplex = true;
@@ -135,6 +136,7 @@ do_sqrtm (const octave_value& arg)
                   x = x.transpose ();
                   sqrtm_utri_inplace (x);
                   retval = x.transpose ();
+                  retval.matrix_type (mt);
                 }
               else
                 iscomplex = true;
@@ -166,6 +168,7 @@ do_sqrtm (const octave_value& arg)
             {
               sqrtm_utri_inplace (x);
               retval = x;
+              retval.matrix_type (mt);
 
               break;
             }
@@ -174,6 +177,7 @@ do_sqrtm (const octave_value& arg)
               x = x.transpose ();
               sqrtm_utri_inplace (x);
               retval = x.transpose ();
+              retval.matrix_type (mt);
 
               break;
             }

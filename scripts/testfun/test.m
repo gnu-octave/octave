@@ -447,10 +447,8 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       [__e, __feat] = regexp (__code, '^\s*([^\s]+)', 'end', 'tokens');
       if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
         __xskip++;
-        __success = 0;
         __istest = 0;
-        ## Skip the code.
-        __code = "";
+        __code = ""; # Skip the code.
         __msg = sprintf ("%sskipped test\n", __signal_skip);
       else
         __istest = 1;

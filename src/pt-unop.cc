@@ -69,18 +69,14 @@ tree_prefix_expression::rvalue1 (int)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
-          op->rvalue1 ();
+          octave_lvalue ref = op->lvalue ();
 
           if (! error_state)
             {
-              octave_lvalue ref = op->lvalue ();
+              ref.do_unary_op (etype);
 
-              if (! error_state && ref.is_defined ())
-                {
-                  ref.do_unary_op (etype);
-
-                  retval = ref.value ();
-                }
+              if (! error_state)
+                retval = ref.value ();
             }
         }
       else
@@ -152,18 +148,13 @@ tree_postfix_expression::rvalue1 (int)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
         {
-          op->rvalue1 ();
+          octave_lvalue ref = op->lvalue ();
 
           if (! error_state)
             {
-              octave_lvalue ref = op->lvalue ();
+              retval = ref.value ();
 
-              if (! error_state && ref.is_defined ())
-                {
-                  retval = ref.value ();
-
-                  ref.do_unary_op (etype);
-                }
+              ref.do_unary_op (etype);
             }
         }
       else

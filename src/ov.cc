@@ -2328,11 +2328,22 @@ gripe_unary_op_conversion_failed (const std::string& op,
          op.c_str (), tn.c_str ());
 }
 
-const octave_value&
+octave_value&
 octave_value::do_non_const_unary_op (unary_op op)
 {
   if (op == op_incr || op == op_decr)
     {
+      // We want the gripe just here, because in the other branch this should
+      // not happen, and if it did anyway (internal error), the message would
+      // be confusing.
+      if (is_undefined ())
+        {
+          std::string op_str = unary_op_as_string (op);
+          error ("in x%s or %sx, x must be defined first", 
+                 op_str.c_str (), op_str.c_str ());
+          return *this;
+        }
+
       // Genuine.
       int t = type_id ();
 
@@ -2434,34 +2445,12 @@ octave_value::do_non_const_unary_op (unary_op op)
   return *this;
 }
 
-#if 0
-static void
-gripe_unary_op_failed_or_no_method (const std::string& on,
-                                    const std::string& tn) 
-{
-  error ("operator %s: no method, or unable to evaluate for %s operand",
-         on.c_str (), tn.c_str ());
-}
-#endif
-
-void
-octave_value::do_non_const_unary_op (unary_op, const octave_value_list&)
-{
-  abort ();
-}
-
-octave_value
+octave_value&
 octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
                                      const std::list<octave_value_list>& idx)
 {
-  octave_value retval;
-
   if (idx.empty ())
-    {
-      do_non_const_unary_op (op);
-
-      retval = *this;
-    }
+    do_non_const_unary_op (op);
   else
     {
       // FIXME -- only do the following stuff if we can't find a
@@ -2470,10 +2459,10 @@ octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
 
       assign_op assop = unary_op_to_assign_op (op);
 
-      retval = assign (assop, type, idx, 1.0);
+      assign (assop, type, idx, 1.0);
     }
 
-  return retval;
+  return *this;
 }
 
 octave_value::assign_op

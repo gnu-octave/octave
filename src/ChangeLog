@@ -1,3 +1,11 @@
+2010-05-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::do_non_const_unary_op): Always return *this as
+	octave_value&. Remove unused overload.
+	* oct-lvalue.cc (octave_lvalue::do_unary_op): Simplify.
+	* pt-unop.cc (tree_prefix_expression::rvalue1,
+	tree_postfix_expression::rvalue1): Remove dummy rvalue1 calls.
+
 2010-05-07  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ov-base.h (Vsparse_auto_mutate): Add OCTINTERP_API tag.

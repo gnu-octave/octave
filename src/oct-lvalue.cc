@@ -60,12 +60,10 @@ octave_lvalue::do_unary_op (octave_value::unary_op op)
 {
   if (val)
     {
-      octave_value tmp (idx.empty ()
-                        ? val->do_non_const_unary_op (op)
-                        : val->do_non_const_unary_op (op, type, idx));
-
-      if (! error_state)
-        *val = tmp;
+      if (idx.empty ())
+        val->do_non_const_unary_op (op);
+      else
+        val->do_non_const_unary_op (op, type, idx);
     }
   else
     error ("internal: invalid operation on ~");

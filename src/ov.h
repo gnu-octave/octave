@@ -984,11 +984,9 @@ public:
   friend OCTINTERP_API octave_value do_unary_op (unary_op op,
                                    const octave_value& a);
 
-  const octave_value& do_non_const_unary_op (unary_op op);
+  octave_value& do_non_const_unary_op (unary_op op);
 
-  void do_non_const_unary_op (unary_op op, const octave_value_list& idx);
-
-  octave_value do_non_const_unary_op (unary_op op, const std::string& type,
+  octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
                                       const std::list<octave_value_list>& idx);
 
   friend OCTINTERP_API octave_value do_binary_op (binary_op op,

@@ -1,5 +1,9 @@
 2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/schur.cc (Fschur): Mark triangular matrices on output.
+
+2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-range.cc (octave_range::index_vector): Optimize order of
 	conditions.
 

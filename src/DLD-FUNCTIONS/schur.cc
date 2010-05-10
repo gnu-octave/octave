@@ -38,6 +38,26 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+template <class Matrix>
+static octave_value
+mark_upper_triangular (const Matrix& a)
+{
+  octave_value retval = a;
+
+  octave_idx_type n = a.rows ();
+  assert (a.columns () == n);
+
+  const typename Matrix::element_type zero = typename Matrix::element_type ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    if (a(i,i) == zero)
+      return retval;
+
+  retval.matrix_type (MatrixType::Upper);
+
+  return retval;
+}
+
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} schur (@var{a})\n\
@@ -294,12 +314,12 @@ $S$.\n\
               if (nargout == 0 || nargout == 1)
                 {
                   FloatComplexSCHUR result (ctmp, ord, false);
-                  retval(0) = result.schur_matrix ();
+                  retval(0) = mark_upper_triangular (result.schur_matrix ());
                 }
               else
                 {
                   FloatComplexSCHUR result (ctmp, ord, true);
-                  retval(1) = result.schur_matrix ();
+                  retval(1) = mark_upper_triangular (result.schur_matrix ());
                   retval(0) = result.unitary_matrix ();
                 }
             }
@@ -336,12 +356,12 @@ $S$.\n\
               if (nargout == 0 || nargout == 1)
                 {
                   ComplexSCHUR result (ctmp, ord, false);
-                  retval(0) = result.schur_matrix ();
+                  retval(0) = mark_upper_triangular (result.schur_matrix ());
                 }
               else
                 {
                   ComplexSCHUR result (ctmp, ord, true);
-                  retval(1) = result.schur_matrix ();
+                  retval(1) = mark_upper_triangular (result.schur_matrix ());
                   retval(0) = result.unitary_matrix ();
                 }
             }

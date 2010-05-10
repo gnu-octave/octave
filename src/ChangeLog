@@ -1,3 +1,8 @@
+2010-05-10  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test 
+        when QRUPDATE is present and low precision when it is not.
+
 2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/schur.cc (Fschur): Mark triangular matrices on output.

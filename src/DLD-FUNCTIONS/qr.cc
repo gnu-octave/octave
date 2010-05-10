@@ -1396,6 +1396,19 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!
 %! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3,'row');
+%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1.5e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
+%!testif HAVE_QRUPDATE
+%! # Same test as above but with more precicision
+%! AA = single([0.091364  0.613038  0.027504  0.999083;
+%!              0.594638  0.425302  0.562834  0.603537;
+%!              0.383594  0.291238  0.742073  0.085574;
+%!              0.265712  0.268003  0.783553  0.238409;
+%!              0.669966  0.743851  0.457255  0.445057 ]);
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrdelete(Q,R,3,'row');
 %! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))

@@ -154,8 +154,8 @@ octave_range::index_vector (void) const
     return *idx_cache;
   else
     {
-      if (range.all_elements_are_ints ()
-          || ! Vallow_noninteger_range_as_index)
+      if (! Vallow_noninteger_range_as_index
+          || range.all_elements_are_ints ())
         return set_idx_cache (idx_vector (range));
       else
         {

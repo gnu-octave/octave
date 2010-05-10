@@ -1,3 +1,8 @@
+2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-range.cc (octave_range::index_vector): Optimize order of
+	conditions.
+
 2010-05-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::do_non_const_unary_op): Always return *this as

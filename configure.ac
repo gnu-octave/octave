@@ -1070,7 +1070,7 @@ fi
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
 OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
-  [arpack not found.  The eigs function will be disabled.],
+  [ARPACK not found.  The eigs function will be disabled.],
   [],
   [dseupd],
   [Fortran 77], [don't use the ARPACK library, disable eigs function])

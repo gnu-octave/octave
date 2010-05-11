@@ -1,3 +1,7 @@
+2010-05-11  Rik <octave@nomad.inbox5.com>
+
+	* configure.ac: Capitalize ARPACK in messages.
+
 2010-05-04  John W. Eaton  <jwe@octave.org>
 
 	* ROADMAP: Delete entry for villad.

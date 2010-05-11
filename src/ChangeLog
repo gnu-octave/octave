@@ -1,3 +1,8 @@
+2010-05-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-lazy-idx.cc (octave_lazy_index::save_binary): Fix arguments to
+	save_binary_data.
+
 2010-05-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/sqrtm.cc (do_sqrtm): Mark the result as triangular

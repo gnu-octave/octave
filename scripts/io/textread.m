@@ -39,7 +39,7 @@ function varargout = textread (filename, formatstr = "%f", varargin)
     print_usage ();
   endif
   
-  if (!ischar (filename) || !ischar (filename))
+  if (!ischar (filename) || !ischar (formatstr))
     error ("textread: first and second input arguments must be strings");
   endif
 

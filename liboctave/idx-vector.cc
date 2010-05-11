@@ -1202,7 +1202,7 @@ idx_vector::unmask (void) const
         if (data[i]) 
           idata[j++] = i;
 
-      ext = len > 0 ? idata[len - 1] : 0;
+      ext = len > 0 ? idata[len - 1] + 1 : 0;
 
       return new idx_vector_rep (idata, len, ext, r->orig_dimensions (),
                                  DIRECT);
@@ -1313,3 +1313,10 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint8)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint16)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint32)
 INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
+
+/*
+
+%!error id=Octave:index-out-of-bounds 1(find([1,1] != 0))
+%!assert ((1:3)(find([1,0,1] != 0)), [1,3])
+
+*/

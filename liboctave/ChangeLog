@@ -1,3 +1,7 @@
+2010-05-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.cc (idx_vector::unmask): Fix off-by-1 bug. Add tests.
+
 2010-05-06  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array::delete_elements (const idx_vector&)): Only call

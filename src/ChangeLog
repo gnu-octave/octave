@@ -1,3 +1,10 @@
+2010-05-11  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (save_mat5_element_length): Correct element length for
+	sparse elements with NZMAX=1 or NC=0.
+	(save_mat5_binary_element): Save the NZMAX elements of the RIDX
+	sparse index.
+
 2010-05-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-lazy-idx.cc (octave_lazy_index::save_binary): Fix arguments to

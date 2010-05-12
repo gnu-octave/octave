@@ -1788,10 +1788,13 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         {
           SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nc = m.cols ();
-          octave_idx_type nnz = m.nzmax ();
+          octave_idx_type nnz = m.nzmax (); // Yes its nzmax
 
-          ret += 16 + PAD (nnz * sizeof (int)) + PAD ((nc + 1) * sizeof (int)) +
-            save_mat5_array_length (m.data (), nnz, save_as_floats);
+          ret += 16 + save_mat5_array_length (m.data (), nnz, save_as_floats);
+          if (nnz > 1)
+            ret += PAD (nnz * sizeof (int32_t));
+          if (nc > 1)
+            ret += PAD ((nc + 1) * sizeof (int32_t));
         }
       else
         {
@@ -1799,8 +1802,11 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           octave_idx_type nc = m.cols ();
           octave_idx_type nnz = m.nzmax ();
 
-          ret += 16 + PAD (nnz * sizeof (int)) + PAD ((nc + 1) * sizeof (int)) +
-            save_mat5_array_length (m.data (), nnz, save_as_floats);
+          ret += 16 + save_mat5_array_length (m.data (), nnz, save_as_floats);
+          if (nnz > 1)
+            ret += PAD (nnz * sizeof (int32_t));
+          if (nc > 1)
+            ret += PAD ((nc + 1) * sizeof (int32_t));
         }
     }
 
@@ -1896,7 +1902,7 @@ write_mat5_sparse_index_vector (std::ostream& os,
                                 const octave_idx_type *idx,
                                 octave_idx_type nel)
 {
-  int tmp = sizeof (int);
+  int tmp = sizeof (int32_t);
 
   OCTAVE_LOCAL_BUFFER (int32_t, tmp_idx, nel);
 
@@ -2132,9 +2138,10 @@ save_mat5_binary_element (std::ostream& os,
         {
           SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nnz = m.nnz ();
+          octave_idx_type nzmax = m.nzmax ();
           octave_idx_type nc = m.cols ();
 
-          write_mat5_sparse_index_vector (os, m.ridx (), nnz);
+          write_mat5_sparse_index_vector (os, m.ridx (), nzmax);
           write_mat5_sparse_index_vector (os, m.cidx (), nc + 1);
 
           NDArray buf (dim_vector (nnz, 1));
@@ -2153,9 +2160,10 @@ save_mat5_binary_element (std::ostream& os,
         {
           SparseMatrix m = tc.sparse_matrix_value ();
           octave_idx_type nnz = m.nnz ();
+          octave_idx_type nzmax = m.nzmax ();
           octave_idx_type nc = m.cols ();
 
-          write_mat5_sparse_index_vector (os, m.ridx (), nnz);
+          write_mat5_sparse_index_vector (os, m.ridx (), nzmax);
           write_mat5_sparse_index_vector (os, m.cidx (), nc + 1);
 
           // FIXME

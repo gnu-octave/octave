@@ -1,3 +1,7 @@
+2010-05-08  David Gesswein <djg@pdp8online.com>
+
+        * io/dlmwrite.m: Correctly set output precision (#29870).
+
 2010-05-12  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
 
 	* help/help.m: Allow docstring to be returned as output, and

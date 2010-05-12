@@ -127,7 +127,7 @@ function dlmwrite (file, a, varargin)
       i = i + 1;
       precision = varargin{i};
       if (! strcmpi (class (precision), "char"))
-        precision = sprintf ("%.%gg", precision);
+        precision = sprintf ("%%.%gg", precision);
       endif
     elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";

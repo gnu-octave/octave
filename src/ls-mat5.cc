@@ -1793,7 +1793,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           ret += 16 + save_mat5_array_length (m.data (), nnz, save_as_floats);
           if (nnz > 1)
             ret += PAD (nnz * sizeof (int32_t));
-          if (nc > 1)
+          if (nc > 0)
             ret += PAD ((nc + 1) * sizeof (int32_t));
         }
       else
@@ -1805,7 +1805,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           ret += 16 + save_mat5_array_length (m.data (), nnz, save_as_floats);
           if (nnz > 1)
             ret += PAD (nnz * sizeof (int32_t));
-          if (nc > 1)
+          if (nc > 0)
             ret += PAD ((nc + 1) * sizeof (int32_t));
         }
     }

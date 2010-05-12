@@ -15,21 +15,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn {Command} help @var{name}
+## @deftypefn {Function File} {} help @var{name}
 ## Display the help text for @var{name}.
-## If invoked without any arguments, @code{help} prints a list
-## of all the available operators and functions.
+## If invoked without any arguments, @code{help} displays instructions
+## on how to access help from the command line.
 ## 
 ## For example, the command @kbd{help help} prints a short message
 ## describing the @code{help} command.
+## 
+## @deftypefnx {Function File} {@var{text} =} help (@var{name})
+## Return the help text for the function, @var{name}.
 ## 
 ## The help command can give you information about operators, but not the
 ## comma and semicolons that are used as command separators.  To get help
 ## for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 ## @seealso{doc, lookfor, which}
-## @end deffn
+## @end deftypefn
 
-function help (name)
+function varargout = help (name)
 
   if (nargin == 0)
 
@@ -76,8 +79,12 @@ function help (name)
       warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");
     endif
 
-    which (name);
-    printf ("\n%s\n%s", text, __additional_help_message__ ());
+    if (nargout == 0)
+      which (name);
+      printf ("\n%s\n%s", text, __additional_help_message__ ());
+    else
+      varargout = {text};
+    endif
 
   else
     error ("help: invalid input\n");

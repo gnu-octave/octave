@@ -1,3 +1,8 @@
+2010-05-12  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
+
+	* help/help.m: Allow docstring to be returned as output, and
+	correct docstring.
+
 2010-05-08  Rik <octave@nomad.inbox5.com>
 
         * testfun/test.m: Don't abort testing when skipping a testif block

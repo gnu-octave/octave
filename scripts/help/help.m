@@ -32,7 +32,7 @@
 ## @seealso{doc, lookfor, which}
 ## @end deftypefn
 
-function varargout = help (name)
+function retval = help (name)
 
   if (nargin == 0)
 
@@ -83,7 +83,7 @@ function varargout = help (name)
       which (name);
       printf ("\n%s\n%s", text, __additional_help_message__ ());
     else
-      varargout = {text};
+      retval = text;
     endif
 
   else

@@ -1,5 +1,9 @@
 2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* xdiv.cc (solve_singularity_warning): Use ID for the warning.
+
+2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/sqrtm.cc (sqrtm_utri_inplace): Use an ID for the
 	warning.
 

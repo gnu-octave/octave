@@ -2694,11 +2694,6 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
                                  work.fortran_vec (), lwork, 
                                  prwork, piwork, info));
 
-      if (rank < minmn)
-        (*current_liboctave_warning_handler) 
-          ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-           m, n, rank, rcon);
-
       if (s.elem (0) == 0.0)
         rcon = 0.0;
       else
@@ -2862,11 +2857,6 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type&
 
       if (rank < minmn)
         {
-          if (rank < minmn)
-            (*current_liboctave_warning_handler) 
-              ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-               m, n, rank, rcon);
-
           if (s.elem (0) == 0.0)
             rcon = 0.0;
           else

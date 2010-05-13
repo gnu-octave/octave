@@ -59,8 +59,8 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  warning ("matrix singular to machine precision, rcond = %g", rcond);
-  warning ("attempting to find minimum norm solution");
+  warning_with_id ("Octave:singular-matrix-div",
+                   "matrix singular to machine precision, rcond = %g", rcond);
 }
 
 template <class T1, class T2>

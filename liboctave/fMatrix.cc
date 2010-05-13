@@ -2349,9 +2349,6 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
                                  work.fortran_vec (), lwork, 
                                  piwork, info));
 
-      if (rank < minmn)
-        (*current_liboctave_warning_handler) 
-          ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
       if (s.elem (0) == 0.0)
         rcon = 0.0;
       else
@@ -2508,9 +2505,6 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
 
       if (rank < minmn)
         {
-          if (rank < minmn)
-            (*current_liboctave_warning_handler) 
-              ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
           if (s.elem (0) == 0.0)
             rcon = 0.0;
           else

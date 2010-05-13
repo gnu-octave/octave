@@ -1,5 +1,10 @@
 2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/sqrtm.cc (sqrtm_utri_inplace): Use an ID for the
+	warning.
+
+2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* load-save.cc (install_loaded_variable): Pre-extract symbol record
 	reference to do all operations. 
 

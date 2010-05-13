@@ -86,7 +86,8 @@ sqrtm_utri_inplace (Matrix& T)
     }
 
   if (singular)
-    warning ("sqrtm: matrix is singular, may not have a square root");
+    warning_with_id ("Octave:sqrtm:SingularMatrix",
+                     "sqrtm: matrix is singular, may not have a square root");
 }
 
 template <class Matrix, class ComplexMatrix, class ComplexSCHUR>

@@ -1,3 +1,8 @@
+2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* load-save.cc (install_loaded_variable): Pre-extract symbol record
+	reference to do all operations. 
+
 2010-05-11  David Bateman  <dbateman@free.fr>
 
 	* ls-mat5.cc (save_mat5_element_length): Correct element length for

@@ -1,3 +1,7 @@
+2010-05-13   Qianqian Fang <fangq>
+
+        * miscellaneous/tempdir.m: Add filesep to end of tempdir (bug #29864).
+
 2010-05-11  Jaroslav Hajek  <highegg@gmail.com>
 
 	* io/textread.m: Fix typo.

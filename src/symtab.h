@@ -2235,18 +2235,12 @@ private:
 
   void do_mark_hidden (const std::string& name)
   {
-    table_iterator p = table.find (name);
-
-    if (p != table.end ())
-      p->second.mark_hidden ();
+    do_insert (name).mark_hidden ();
   }
 
   void do_mark_global (const std::string& name)
   {
-    table_iterator p = table.find (name);
-
-    if (p != table.end ())
-      p->second.mark_global ();
+    do_insert (name).mark_global ();
   }
 
   std::list<symbol_record>

@@ -1,3 +1,8 @@
+2010-05-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* symtab.cc (symtab::do_mark_global, symtab::do_mark_hidden): Force
+	non-existing symbol to be created.
+
 2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xdiv.cc (solve_singularity_warning): Use ID for the warning.

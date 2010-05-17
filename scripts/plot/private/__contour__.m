@@ -88,6 +88,9 @@ function [c, hg] = __contour__ (varargin)
     y1 = varargin{4};
     z1 = varargin{5};
   endif
+  if (!ismatrix (z1) || isvector (z1) || isscalar (z1))
+    error ("__contour__: z argument must be a matrix");
+  endif
   if (length (varargin) == 4 || length (varargin) == 6)
     vn = varargin {end};
     vnauto = false;

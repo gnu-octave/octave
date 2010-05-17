@@ -71,8 +71,12 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
     ioff = 4;
   endif
 
-  if (nargout == 0)
+  if (!ismatrix (z) || isvector (z) || isscalar (z))
+    error ("surfnorm: z argument must be a matrix");
   endif
+  if (! size_equal (x, y, z))
+    error ("surfnorm: x, y, and z must have the same dimensions");
+  endif 
 
   ## Make life easier, and avoid having to do the extrapolation later, do
   ## a simpler linear extrapolation here. This is approximative, and works

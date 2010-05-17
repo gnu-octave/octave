@@ -1,3 +1,9 @@
+2010-05-16  Rik <octave@nomad.inbox5.com>
+
+        * scripts/plot/contourc.m, scripts/plot/private/__contour__.m, 
+          scripts/plot/surface.m, scripts/plot/surfnorm.m: Check input
+          arguments for size and type (bug #29861).
+
 2010-05-13  John W. Eaton  <jwe@octave.org>
 
 	* help/help.m: Avoid unnecessary use of varargout.

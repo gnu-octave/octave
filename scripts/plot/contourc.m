@@ -64,9 +64,6 @@ function [cout, lev] = contourc (varargin)
   if (nargin == 1)
     vn = 10;
     z = varargin{1};
-    [nr, nc] = size (z);
-    x = 1:nc;
-    y = 1:nr;
   elseif (nargin == 2)
     vn = varargin{2};
     z = varargin{1};
@@ -85,6 +82,10 @@ function [cout, lev] = contourc (varargin)
     z = varargin{3};
   else
     print_usage ();
+  endif
+
+  if (!ismatrix (z) || isvector (z) || isscalar (z))
+    error ("contourc: z argument must be a matrix");
   endif
 
   if (isscalar (vn))

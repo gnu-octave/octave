@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} surface (@var{x}, @var{y}, @var{z}, @var{c})
+## @deftypefn  {Function File} {} surface (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {Function File} {} surface (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} surface (@var{z}, @var{c})
 ## @deftypefnx {Function File} {} surface (@var{z})
@@ -82,7 +82,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     c = varargin{4};
 
     if (! size_equal (z, c))
-      error ("surface: z and c must have same size");
+      error ("surface: z and c must have the same size");
     endif
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
@@ -93,7 +93,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! size_equal (x, y, z))
-        error ("surface: x, y, and z must have same dimensions");
+        error ("surface: x, y, and z must have the same dimensions");
       endif
     else
       error ("surface: x and y must be vectors and z must be a matrix");
@@ -112,7 +112,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! size_equal (x, y, z))
-        error ("surface: x, y, and z must have same dimensions");
+        error ("surface: x, y, and z must have the same dimensions");
       endif
     else
       error ("surface: x and y must be vectors and z must be a matrix");
@@ -120,22 +120,22 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   elseif (firststring == 3)    
     z = varargin{1};
     c = varargin{2};
-    if (ismatrix (z))
+    if (ismatrix (z) && !isvector (z) && !isscalar (z))
       [nr, nc] = size (z);
       x = 1:nc;
       y = (1:nr)';
     else
-      error ("surface: argument must be a matrix");
+      error ("surface: z argument must be a matrix");
     endif
   elseif (firststring == 2)    
     z = varargin{1};
     c = z;
-    if (ismatrix (z))
+    if (ismatrix (z) && !isvector (z) && !isscalar (z))
       [nr, nc] = size (z);
       x = 1:nc;
       y = (1:nr)';
     else
-      error ("surface: argument must be a matrix");
+      error ("surface: z argument must be a matrix");
     endif
   else
     bad_usage = true;

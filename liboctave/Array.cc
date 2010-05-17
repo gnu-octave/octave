@@ -351,14 +351,6 @@ Array<T>::page (octave_idx_type k) const
 
 template <class T>
 Array<T>
-Array<T>::linearize (void) const
-{
-  octave_idx_type n = numel ();
-  return Array<T> (*this, dim_vector (n, 1), 0, n);
-}
-
-template <class T>
-Array<T>
 Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 {
 #ifdef BOUNDS_CHECKING

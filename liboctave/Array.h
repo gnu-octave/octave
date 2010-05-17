@@ -423,9 +423,6 @@ public:
   // Extract page: A(:,:,k+1).
   Array<T> page (octave_idx_type k) const;
 
-  // Give this array as a column vector: A(:).
-  Array<T> linearize (void) const;
-
   // Extract a slice from this array as a column vector: A(:)(lo+1:up).
   // Must be 0 <= lo && up <= numel. May be up < lo.
   Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;

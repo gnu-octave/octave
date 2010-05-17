@@ -1,3 +1,8 @@
+2010-05-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::linearize): Remove.
+	* Array.h (Array<T>::linearize): Remove decl.
+
 2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::lssolve): Remove warnings about rank.

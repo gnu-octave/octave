@@ -182,7 +182,8 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
     class_constructor (false), class_method (false),
-    parent_scope (-1), local_scope (sid)
+    parent_scope (-1), local_scope (sid),
+    curr_unwind_protect_frame (0)
 {
   if (cmd_list)
     cmd_list->mark_as_function_body ();
@@ -397,6 +398,12 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (echo_commands)
     print_code_function_header ();
+
+  // Set pointer to the current unwind_protect frame to allow
+  // certain builtins register simple cleanup in a very optimized manner.
+  // This is *not* intended as a general-purpose on-cleanup mechanism,
+  frame.protect_var (curr_unwind_protect_frame);
+  curr_unwind_protect_frame = &frame;
 
   // Evaluate the commands that make up the function.
 

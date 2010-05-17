@@ -638,6 +638,42 @@ set_top_level_value (const std::string& nm, const octave_value& val)
 
 // Variable values.
 
+static bool
+wants_local_change (const octave_value_list& args, int& nargin)
+{
+  bool retval = false;
+
+  if (nargin == 2)
+    {
+      if (args(1).is_string () && args(1).string_value () == "local")
+        {
+          nargin = 1;
+          retval = true;
+        }
+      else
+        {
+          error_with_cfn ("expecting second argument to be \"local\"");
+          nargin = 0;
+        }
+    }
+
+  return retval;
+}
+
+template <class T>
+bool try_local_protect (T& var)
+{
+  octave_user_code *curr_usr_code = octave_call_stack::caller_user_code ();
+  octave_user_function *curr_usr_fcn = 0;
+  if (curr_usr_code && curr_usr_code->is_user_function ())
+    curr_usr_fcn = dynamic_cast<octave_user_function *> (curr_usr_code);
+
+  if (curr_usr_fcn && curr_usr_fcn->local_protect (var))
+    return true;
+  else
+    return false;
+}
+
 octave_value
 set_internal_variable (bool& var, const octave_value_list& args,
                        int nargout, const char *nm)
@@ -648,6 +684,12 @@ set_internal_variable (bool& var, const octave_value_list& args,
 
   if (nargout > 0 || nargin == 0)
     retval = var;
+
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
 
   if (nargin == 1)
     {
@@ -674,6 +716,12 @@ set_internal_variable (char& var, const octave_value_list& args,
 
   if (nargout > 0 || nargin == 0)
     retval = var;
+
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
 
   if (nargin == 1)
     {
@@ -717,6 +765,12 @@ set_internal_variable (int& var, const octave_value_list& args,
   if (nargout > 0 || nargin == 0)
     retval = var;
 
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
+
   if (nargin == 1)
     {
       int ival = args(0).int_value ();
@@ -752,6 +806,12 @@ set_internal_variable (double& var, const octave_value_list& args,
   if (nargout > 0 || nargin == 0)
     retval = var;
 
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
+
   if (nargin == 1)
     {
       double dval = args(0).scalar_value ();
@@ -784,6 +844,12 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   if (nargout > 0 || nargin == 0)
     retval = var;
+
+  if (wants_local_change (args, nargin))
+    {
+      if (! try_local_protect (var))
+        warning ("\"local\" has no effect outside a function");
+    }
 
   if (nargin == 1)
     {

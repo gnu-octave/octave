@@ -1,3 +1,15 @@
+2010-05-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-usr-fcn.h (octave_user_function::curr_unwind_protect_frame): New
+	field.
+	(octave_user_function::local_protect): New template method.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Initialize it here.
+	(octave_user_function::do_multi_index_op): Set and restore it here.
+	* variables.cc (wants_local_change, try_local_protect): New helper
+	funcs.
+	(set_internal_variable): Call them in all overloads.
+
 2010-05-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* symtab.cc (symtab::do_mark_global, symtab::do_mark_hidden): Force

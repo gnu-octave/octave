@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 #include "symtab.h"
+#include "unwind-prot.h"
 
 class string_vector;
 
@@ -284,6 +285,18 @@ public:
 
   void accept (tree_walker& tw);
 
+  template <class T>
+  bool local_protect (T& variable)
+    {
+      if (curr_unwind_protect_frame)
+        {
+          curr_unwind_protect_frame->protect_var (variable);
+          return true;
+        }
+      else
+        return false;
+    }
+
 #if 0
   void print_symtab_info (std::ostream& os) const;
 #endif
@@ -346,6 +359,9 @@ private:
   symbol_table::scope_id parent_scope;
 
   symbol_table::scope_id local_scope;
+
+  // pointer to the current unwind_protect frame of this function.
+  unwind_protect *curr_unwind_protect_frame;
 
 #if 0
   // The symbol record for argn in the local symbol table.

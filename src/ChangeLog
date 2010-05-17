@@ -1,5 +1,13 @@
 2010-05-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* variables.cc (set_internal_variable (int&, ..., const char **, int)):
+	New overload.
+	* variables.h: Declare it.
+	(SET_INTERNAL_VARIABLE_CHOICES): New macro.
+	* DLD-FUNCTIONS/svd.cc (Fsvd_driver): Use it here.
+
+2010-05-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-usr-fcn.h (octave_user_function::curr_unwind_protect_frame): New
 	field.
 	(octave_user_function::local_protect): New template method.

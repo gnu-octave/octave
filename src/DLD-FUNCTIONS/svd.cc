@@ -36,8 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "pr-output.h"
 #include "utils.h"
+#include "variables.h"
 
-static SVD::driver driver = SVD::GESVD;
+static int Vsvd_driver = SVD::GESVD;
 
 DEFUN_DLD (svd, args, nargout,
   "-*- texinfo -*-\n\
@@ -147,6 +148,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
   SVD::type type = ((nargout == 0 || nargout == 1)
                     ? SVD::sigma_only
                     : (nargin == 2) ? SVD::economy : SVD::std);
+
+  SVD::driver driver = static_cast<SVD::driver> (Vsvd_driver);
+  assert (driver == SVD::GESVD || driver == SVD::GESDD);
 
   if (nr == 0 || nc == 0)
     {
@@ -399,7 +403,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
 */
 
-DEFUN_DLD (svd_driver, args, ,
+DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{old} =} svd_driver (@var{new})\n\
 Sets or queries the underlying LAPACK driver used by svd.\n\
@@ -407,34 +411,7 @@ Currently recognized are \"gesvd\" and \"gesdd\". Default is \"gesvd\".\n\
 @seealso{svd}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  int nargin = args.length ();
+  static const char *driver_names[] = { "gesvd", "gesdd" };
 
-  if (nargin == 0 || (nargin == 1 && args(0).is_string ()))
-    {
-      if (driver == SVD::GESVD)
-        retval = "gesvd";
-      else if (driver == SVD::GESDD)
-        retval = "gesdd";
-      else
-        panic_impossible ();
-
-
-      if (nargin == 1)
-        {
-          std::string opt = args(0).xtolower ().string_value ();
-          if (opt == "gesvd")
-            driver = SVD::GESVD;
-          else if (opt == "gesdd")
-            driver = SVD::GESDD;
-          else
-            error ("svd_driver: invalid driver spec: %s", opt.c_str ());
-        }
-    }
-  else
-    print_usage ();
-
-  return retval;
+  return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
 }
-
-

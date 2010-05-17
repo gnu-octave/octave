@@ -131,18 +131,18 @@ function ZI = interp2 (varargin)
 
   ## Type checking.
   if (!ismatrix (Z))
-    error ("interp2 expected matrix Z"); 
+    error ("interp2: expected matrix Z"); 
   endif
   if (!isempty (n) && !isscalar (n))
-    error ("interp2 expected scalar n"); 
+    error ("interp2: expected scalar n"); 
   endif
   if (!ischar (method))
-    error ("interp2 expected string 'method'"); 
+    error ("interp2: expected string 'method'"); 
   endif
   if (ischar (extrapval) || strcmp (extrapval, "extrap"))
     extrapval = [];
   elseif (!isscalar (extrapval))
-    error ("interp2 expected n extrapval");
+    error ("interp2: expected n extrapval");
   endif
 
   ## Define X, Y, XI, YI if needed
@@ -152,7 +152,7 @@ function ZI = interp2 (varargin)
     Y = 1:zr;
   endif
   if (! isnumeric (X) || ! isnumeric (Y))
-    error ("interp2 expected numeric X, Y"); 
+    error ("interp2: expected numeric X, Y"); 
   endif
   if (! isempty (n))
     p = 2^n; 
@@ -160,7 +160,7 @@ function ZI = interp2 (varargin)
     YI = (p:p*zr)'/p; 
   endif
   if (! isnumeric (XI) || ! isnumeric (YI))
-    error ("interp2 expected numeric XI, YI"); 
+    error ("interp2: expected numeric XI, YI"); 
   endif
 
 
@@ -173,10 +173,10 @@ function ZI = interp2 (varargin)
     elseif (size_equal (X, Y))
       X = X(1,:)'; Y = Y(:,1);
     else
-      error ("X and Y must be matrices of same size");
+      error ("interp2: X and Y must be matrices of same size");
     endif
     if (columns (Z) != length (X) || rows (Z) != length (Y))
-      error ("X and Y size must match Z dimensions");
+      error ("interp2: X and Y size must match Z dimensions");
     endif
 
     ## If Xi and Yi are vectors of different orientation build a grid
@@ -184,7 +184,7 @@ function ZI = interp2 (varargin)
         || (columns (XI) == 1 && rows (YI) == 1))
       [XI, YI] = meshgrid (XI, YI);
     elseif (! size_equal (XI, YI))
-      error ("XI and YI must be matrices of same size");
+      error ("interp2: XI and YI must be matrices of same size");
     endif
 
     ## if XI, YI are vectors, X and Y should share their orientation.
@@ -323,12 +323,12 @@ function ZI = interp2 (varargin)
       X = X(:).';
       Y = Y(:);
       if (!isequal ([length(X), length(Y)], size(Z)))
-        error ("X and Y size must match Z dimensions");
+        error ("interp2: X and Y size must match Z dimensions");
       endif
     elseif (!size_equal (X, Y))
-      error ("X and Y must be matrices of same size");
+      error ("interp2: X and Y must be matrices of same size");
       if (! size_equal (X, Z))
-        error ("X and Y size must match Z dimensions");
+        error ("interp2: X and Y size must match Z dimensions");
       endif
     endif
 
@@ -337,7 +337,7 @@ function ZI = interp2 (varargin)
         || (columns (XI) == 1 && rows (YI) == 1))
       ## Do nothing
     elseif (! size_equal (XI, YI))
-      error ("XI and YI must be matrices of same size");
+      error ("interp2: XI and YI must be matrices of same size");
     endif
 
     ## FIXME bicubic/__splinen__ don't handle arbitrary XI, YI
@@ -401,7 +401,7 @@ function ZI = interp2 (varargin)
         error ("interp2: input data must have `meshgrid' format");
       endif
     else
-      error ("interpolation method not recognized");
+      error ("interp2: interpolation method not recognized");
     endif
 
   endif

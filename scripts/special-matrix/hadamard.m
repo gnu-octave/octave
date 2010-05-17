@@ -89,7 +89,7 @@ function h = hadamard (n)
     case 7
       h = hnormalize (h28 ());
     otherwise
-      error ("n must be 2^k*p, for p = 1, 12, 20 or 28");
+      error ("hadamard: n must be 2^k*p, for p = 1, 12, 20 or 28");
   endswitch
 
   ## Build H(2^k*n) from kron(H(2^k),H(n)).

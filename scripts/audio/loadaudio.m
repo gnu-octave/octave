@@ -74,7 +74,7 @@ function X = loadaudio (name, ext, bit)
     X = mu2lin (Y, bit);
   else
     fclose (num);
-    error ("loadaudio does not support given extension");
+    error ("loadaudio: unsupported extension");
   endif
 
   fclose (num);

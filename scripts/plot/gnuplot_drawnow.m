@@ -224,7 +224,7 @@ function [enhanced, implicit_margin] = gnuplot_set_term (plot_stream, new_stream
         endif
         [begin_match, end_match, te, match] = regexp (opts_str, "(\\s-r\\d+)|(^-r\\d+)");
         if (! isempty (begin_match))
-          error ("gnuplot_drawnow.m: specifying resultion, '%s', not supported for terminal '%s'",
+          error ("gnuplot_drawnow: specifying resultion, '%s', not supported for terminal '%s'",
                  strtrim (match{1}), term)
         endif
         if (all (gnuplot_size > 0))

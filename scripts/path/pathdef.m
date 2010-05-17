@@ -113,7 +113,7 @@ function specifiedpath = __extractpath__ (savefile)
     unwind_protect_cleanup
       closeread = fclose (fid);
       if (closeread < 0)
-        error ("savepath: could not close savefile after reading, %s",
+        error ("__extractpath__: could not close savefile after reading, %s",
                savefile);
       endif
     end_unwind_protect
@@ -121,7 +121,7 @@ function specifiedpath = __extractpath__ (savefile)
 
   ## Extract the path specifiation.
   if (startline > endline || (startline > 0 && endline == 0))
-    error ("savepath: unable to parse file, %s", savefile);
+    error ("__extractpath__: unable to parse file, %s", savefile);
   elseif (startline > 0)
     ## Undo doubling of single quote characters performed by savepath.
     specifiedpath = strrep (regexprep (cstrcat (filelines(startline:endline){:}),

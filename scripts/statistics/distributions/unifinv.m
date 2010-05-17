@@ -41,7 +41,7 @@ function inv = unifinv (x, a, b)
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("uniform_cdf: x, a and b must be of common size or scalar");
+      error ("unifinv: x, a and b must be of common size or scalar");
     endif
   endif
 

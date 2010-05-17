@@ -69,7 +69,7 @@
 function [pval, lm] = arch_test (y, X, p)
 
   if (nargin != 3)
-    error ("arch_test needs 3 input arguments");
+    error ("arch_test: 3 input arguments required");
   endif
 
   if (! (isvector (y)))

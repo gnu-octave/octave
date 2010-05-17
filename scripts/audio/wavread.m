@@ -52,7 +52,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   endif
 
   if (! ischar (filename))
-    error ("wavwrite: expecting filename to be a character string");
+    error ("wavread: expecting filename to be a character string");
   endif
 
   # Open file for binary reading.

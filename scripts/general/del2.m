@@ -85,7 +85,7 @@ function D = del2 (M, varargin)
         if (length (h) == sz (i))
           dx{i} = diff (h)(:);
         else
-          error ("dimensionality mismatch in %d-th spacing vector", i);
+          error ("del2: dimensionality mismatch in %d-th spacing vector", i);
         endif
       endif
     endfor
@@ -102,7 +102,7 @@ function D = del2 (M, varargin)
         if (length (varargin{i}) == sz (i))
           dx{i} = diff (varargin{i})(:);
         else
-          error ("dimensionality mismatch in %d-th spacing vector", i);
+          error ("del2: dimensionality mismatch in %d-th spacing vector", i);
         endif
       endif
     endfor

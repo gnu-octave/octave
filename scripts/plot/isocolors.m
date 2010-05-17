@@ -137,7 +137,7 @@ function varargout = isocolors(varargin)
     pa = vp;
     v = get (pa, "Vertices");
   else
-    error("Last argument is no vertex list and no patch handle");
+    error("isocolors: last argument is not a vertex list or patch handle");
   endif
   if ( calc_rgb )
     new_col = zeros (size (v, 1), 3);

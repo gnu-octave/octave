@@ -59,7 +59,7 @@ function y = postpad (x, l, c, dim)
   endif
 
   if (! isscalar (l) || l < 0)
-    error ("second argument must be a positive scaler");
+    error ("postpad: second argument must be a positive scaler");
   endif
 
   if (dim > nd)

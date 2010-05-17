@@ -43,7 +43,7 @@ function x = bitcmp (a, n)
   endif
 
   if (nargin == 2 && (! isscalar (n) || (floor (n) != n)))
-    error ("k must be a scalar integer");
+    error ("bitcmp: k must be a scalar integer");
   endif
 
   if (isa (a, "double"))
@@ -67,7 +67,7 @@ function x = bitcmp (a, n)
     elseif (isa (a, "int64"))
       amax = 64;
     else
-      error ("invalid class %s", class (a));
+      error ("bitcmp: invalid class %s", class (a));
     endif
     bmax = intmax (class (a));
   endif
@@ -77,7 +77,7 @@ function x = bitcmp (a, n)
   else
     m = double (n);
     if (any (m < 1) || any (m > amax))
-      error ("n must be in the range [1,%d]", amax);
+      error ("bitcmp: n must be in the range [1,%d]", amax);
     endif
     mask = bitshift (bmax, n - amax);
     x = bitxor (bitand (a, mask), mask);

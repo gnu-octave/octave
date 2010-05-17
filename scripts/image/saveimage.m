@@ -91,17 +91,17 @@ function saveimage (filename, img, img_form, map)
   [map_nr, map_nc] = size (map);
 
   if (map_nc != 3)
-    error ("colormap should be an N x 3 matrix");
+    error ("saveimage: colormap should be an N x 3 matrix");
   endif
 
   if (nargin < 3)
     img_form = "img";
   elseif (! ischar (img_form))
-    error ("image format specification must be a string");
+    error ("saveimage: image format specification must be a string");
   elseif (! (strcmp (img_form, "img")
              || strcmp (img_form, "ppm")
              || strcmp (img_form, "ps")))
-    error ("unsupported image format specification");
+    error ("saveimage: unsupported image format specification");
   endif
 
   if (! ismatrix (img))
@@ -109,7 +109,7 @@ function saveimage (filename, img, img_form, map)
   endif
 
   if (! ischar (filename))
-    error ("file name must be a string");
+    error ("saveimage: file name must be a string");
   endif
 
   ## If we just want Octave image format, save and return.
@@ -224,7 +224,7 @@ function saveimage (filename, img, img_form, map)
   elseif (strcmp (img_form, "ps") == 1)
 
     if (! grey)
-      error ("must have a greyscale color map for conversion to PostScript");
+      error ("saveimage: must have a greyscale color map for conversion to PostScript");
     endif
 
     bps = 8;

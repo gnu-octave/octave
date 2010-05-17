@@ -49,7 +49,7 @@ function y = strjust (x, just)
   endif
 
   if (ndims (x) != 2)
-    error ("needs a string or character matrix");
+    error ("strjust: input must be a string or character matrix");
   endif
 
   if (isempty (x))

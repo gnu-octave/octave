@@ -96,19 +96,19 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   
   if (!ismatrix (xx) || !ismatrix (yy) || !ismatrix (zz) || !ismatrix (c) || ...
     ndims (xx) != 3 || ndims (yy) != 3 || ndims (zz) != 3 || ndims (c) != 3)
-    error ("xx, yy, zz, c have to be matrizes of dim 3");
+    error ("__marching_cube__: xx, yy, zz, c have to be matrizes of dim 3");
   endif
   
   if (!size_equal (xx, yy, zz, c))
-    error ("xx, yy, zz, c are not the same size");
+    error ("__marching_cube__: xx, yy, zz, c are not the same size");
   endif
   
   if (any (size (xx) < [2 2 2]))
-    error ("grid size has to be at least 2x2x2");
+    error ("__marching_cube__: grid size has to be at least 2x2x2");
   endif
   
   if (!isscalar (iso))
-    error ("iso needs to be scalar value");
+    error ("__marching_cube__: iso needs to be scalar value");
   endif
 
   if (nargin == 6)
@@ -209,7 +209,7 @@ function p = vertex_interp(isolevel,p1x, p1y, p1z,...
   elseif (nargin == 11)
     p = zeros (length (p1x), 4);
   else 
-    error ("Wrong number of arguments");
+    error ("__marching_cube__: wrong number of arguments");
   endif
   mu = zeros (length (p1x), 1);
   id = abs (valp1-valp2) < (10*eps) .* (abs (valp1) .+ abs (valp2));

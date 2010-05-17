@@ -518,7 +518,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
                endif
                if (nd == 3)
                  if (numel (xcol) > 3)
-                   error ("gnuplot (as of v4.2) only supports 3D filled triangular patches");
+                   error ("__go_draw_axes__: gnuplot (as of v4.2) only supports 3D filled triangular patches");
                  else
                    if (isnan (data_3d_idx))
                      data_idx++;
@@ -1979,7 +1979,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
           fprintf (plot_stream, "unset m%stics;\n", ax);
         endif
      else
-        error ("unsupported type of ticklabel");
+        error ("__go_draw_axes__: unsupported type of ticklabel");
       endif
     else
       fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);

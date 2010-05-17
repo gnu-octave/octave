@@ -42,7 +42,7 @@ function p = polyint (p, k)
   endif
 
   if (! (isvector (p) || isempty (p)))
-    error ("argument must be a vector");
+    error ("polyint: argument must be a vector");
   endif
 
   lp = length (p);

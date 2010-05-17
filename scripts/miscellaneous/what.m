@@ -38,7 +38,7 @@ function ret = what (d)
   else
     [status, msg, msgid] = fileattrib (d);
     if (status != 1)
-      error ("could not find the file or path %s", d);
+      error ("what: could not find the file or path %s", d);
     else
       d = msg.Name;
     endif

@@ -428,7 +428,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
   endif
 
   if (all (size (c) > 1) || iscomplex (c) || ischar (c))
-    error ("C must be a real vector");
+    error ("glpk:C must be a real vector");
     return;
   endif
   nx = length (c);
@@ -438,23 +438,23 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
   ## 2) Matrix constraint
 
   if (isempty (a))
-    error ("A cannot be an empty matrix");
+    error ("glpk: A cannot be an empty matrix");
     return;
   endif
   [nc, nxa] = size(a);
   if (! isreal (a) || nxa != nx)
-    error ("A must be a real valued %d by %d matrix", nc, nx);
+    error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
     return;
   endif
 
   ## 3) RHS
 
   if (isempty (b))
-    error ("B cannot be an empty vector");
+    error ("glpk: B cannot be an empty vector");
     return;
   endif
   if (! isreal (b) || length (b) != nc)
-    error ("B must be a real valued %d by 1 vector", nc);
+    error ("glpk: B must be a real valued %d by 1 vector", nc);
     return;
   endif
 
@@ -464,7 +464,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     if (isempty (lb))
       lb = zeros (nx, 1);
     elseif (! isreal (lb) || all (size (lb) > 1) || length (lb) != nx)
-      error ("LB must be a real valued %d by 1 column vector", nx);
+      error ("glpk: LB must be a real valued %d by 1 column vector", nx);
       return;
     endif
   else
@@ -477,7 +477,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     if (isempty (ub))
       ub = Inf (nx, 1);
     elseif (! isreal (ub) || all (size (ub) > 1) || length (ub) != nx)
-      error ("UB must be a real valued %d by 1 column vector", nx);
+      error ("glpk: UB must be a real valued %d by 1 column vector", nx);
       return;
     endif
   else
@@ -490,11 +490,11 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     if (isempty (ctype))
       ctype = repmat ("S", nc, 1);
     elseif (! ischar (ctype) || all (size (ctype) > 1) || length (ctype) != nc)
-      error ("CTYPE must be a char valued vector of length %d", nc);
+      error ("glpk: CTYPE must be a char valued vector of length %d", nc);
       return;
     elseif (! all (ctype == "F" | ctype == "U" | ctype == "S"
                    | ctype == "L" | ctype == "D"))
-      error ("CTYPE must contain only F, U, S, L, or D");
+      error ("glpk: CTYPE must contain only F, U, S, L, or D");
       return;
     endif
   else
@@ -508,10 +508,10 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
       vartype = repmat ("C", nx, 1);
     elseif (! ischar (vartype) || all (size (vartype) > 1)
             || length (vartype) != nx)
-      error ("VARTYPE must be a char valued vector of length %d", nx);
+      error ("glpk: VARTYPE must be a char valued vector of length %d", nx);
       return;
     elseif (! all (vartype == "C" | vartype == "I"))
-      error ("VARTYPE must contain only C or I");
+      error ("glpk: VARTYPE must contain only C or I");
       return;
     endif
   else
@@ -525,7 +525,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     if (isempty (sense))
       sense = 1;
     elseif (ischar (sense) || all (size (sense) > 1) || ! isreal (sense))
-      error ("SENSE must be an integer value");
+      error ("glpk: SENSE must be an integer value");
     elseif (sense >= 0)
       sense = 1;
     else
@@ -539,7 +539,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
 
   if (nargin > 8)
     if (! isstruct (param))
-      error ("PARAM must be a structure");
+      error ("glpk: PARAM must be a structure");
       return;
     endif
   else

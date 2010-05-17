@@ -80,7 +80,7 @@ function [days, secs] = datenum (Y, M, D, h, m, s)
     if (nargin == 1)
       nc = columns (Y);
       if (nc > 6 || nc < 3)
-        error ("expected date vector containing [Y, M, D, h, m, s]");
+        error ("datenum: expected date vector containing [Y, M, D, h, m, s]");
       endif
       s = m = h = 0;
       if (nc >= 6) s = Y(:,6); endif

@@ -31,16 +31,16 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
     y = y(:);
     z = z(:);
   else
-    error("x, y, z have wrong dimensions");
+    error("__interp_cube__: x, y, z have wrong dimensions");
   endif
   if (size (val) != [length(x), length(y), length(z)])
-    error ("val has wrong dimensions");
+    error ("__interp_cube__: val has wrong dimensions");
   endif
   if (size (v, 2) != 3)
     error ( "v has to be N*3 matrix");
   endif
   if (!ischar (req))
-   error ("Invalid request parameter use 'values', 'normals' or 'normals8'");
+   error ("__interp_cube__: Invalid request parameter use 'values', 'normals' or 'normals8'");
   endif
   if (isempty (v))
     Vxyz = idx = frac = [];
@@ -94,7 +94,7 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
       [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v);
       Vxyz = [Dx./dx, Dy./dy, Dz./dz];
    otherwise
-     error ("Invalid request type '%s', use 'values', 'normals' or 'normals8'", req);
+     error ("__interp_cube__: Invalid request type '%s', use 'values', 'normals' or 'normals8'", req);
   endswitch
 endfunction
 

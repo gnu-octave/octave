@@ -45,6 +45,6 @@ function rgb = __color_str_rgb__ (str)
       rgb = [0, 0, 0];
     endif
   else
-    error ("expecting a string argument");
+    error ("__color_str_rgb__: expecting a string argument");
   endif
 endfunction

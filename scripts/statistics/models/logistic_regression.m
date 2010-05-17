@@ -96,7 +96,7 @@ function [theta, beta, dev, dl, d2l, p] ...
   endif;
   [mx, nx] = size (x);
   if (mx != my)
-    error ("x and y must have the same number of observations");
+    error ("logistic_regression: x and y must have the same number of observations");
   endif
 
   ## initial calculations
@@ -141,7 +141,7 @@ function [theta, beta, dev, dl, d2l, p] ...
       while ((dev - devold) / (dl' * (tb - tbold)) > 0)
         epsilon = epsilon * incr;
          if (epsilon > 1e+15)
-           error ("epsilon too large");
+           error ("logistic_regression: epsilon too large");
          endif
          tb = tbold - (d2l - epsilon * eye (size (d2l))) \ dl;
          [g, g1, p, dev] = logistic_regression_likelihood (y, x, tb, z, z1);

@@ -172,7 +172,7 @@ function ret = edit (file, state)
       if (strcmp (state, "sync") || strcmp (state, "async"))
         FUNCTION.MODE = state;
       else
-        error('expected "edit MODE sync|async"');
+        error('edit: expected "edit MODE sync|async"');
       endif
     case "EDITINPLACE"
       if (ischar (state))
@@ -192,7 +192,7 @@ function ret = edit (file, state)
         ret = FUNCTION;
       endif
     otherwise
-      error ("expected \"edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE|MODE val\"");
+      error ('edit: expected "edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE|MODE val"');
     endswitch
     return
   endif
@@ -212,7 +212,7 @@ function ret = edit (file, state)
   ## Check whether the user is trying to edit a builtin of compiled function.
   switch (exist (file))
     case {3, 5}
-      error ("unable to edit a built-in or compiled function");
+      error ("edit: unable to edit a built-in or compiled function");
   endswitch
 
   ## Checks for whether the file is

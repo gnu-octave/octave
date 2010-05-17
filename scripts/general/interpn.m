@@ -76,7 +76,7 @@ function vi = interpn (varargin)
     nargs = nargs - 1;
   elseif (ischar (varargin{end - 1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
-      error ("extrapal is expected to be a numeric scalar");
+      error ("interpn: extrapal is expected to be a numeric scalar");
     endif
     method = varargin{end - 1};
     extrapval = varargin{end};
@@ -89,7 +89,7 @@ function vi = interpn (varargin)
     if (nargs == 2)
       m = varargin{2};
       if (! isnumeric (m) || ! isscalar (m) || floor (m) != m)
-        error ("m is expected to be a integer scalar");
+        error ("interpn: m is expected to be a integer scalar");
       endif
     endif
     sz = size (v);
@@ -118,13 +118,13 @@ function vi = interpn (varargin)
     x = varargin (1 : (nv - 1));
     y = varargin ((nv + 1) : nargs);
   else
-    error ("wrong number or incorrectly formatted input arguments");
+    error ("interpn: wrong number or incorrectly formatted input arguments");
   endif
 
   if (any (! cellfun (@isvector, x)))
     for i = 2 : nd
       if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
-        error ("dimensional mismatch");
+        error ("interpn: dimensional mismatch");
       endif
       idx (1 : nd) = {1};
       idx (i) = ":";
@@ -162,7 +162,7 @@ function vi = interpn (varargin)
     if (any (! cellfun (@isvector, y)))
       for i = 2 : nd
         if (! size_equal (y{1}, y{i}))
-          error ("dimensional mismatch");
+          error ("interpn: dimensional mismatch");
         endif
         idx (1 : nd) = {1};
         idx (i) = ":";
@@ -187,9 +187,9 @@ function vi = interpn (varargin)
       vi = reshape (vi, size(y{1}));
     endif
   elseif (strcmp (method, "cubic")) 
-    error ("cubic interpolation not yet implemented");
+    error ("interpn: cubic interpolation not yet implemented");
   else
-    error ("unrecognized interpolation method");
+    error ("interpn: unrecognized interpolation method");
   endif
 
 endfunction

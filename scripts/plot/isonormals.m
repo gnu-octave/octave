@@ -98,7 +98,7 @@ function varargout = isonormals(varargin)
     if (strcmp (lower (varargin{nargin}), "negate"))
       negate = true;
     else
-      error ("Unknown option '%s'", varargin{nargin});
+      error ("isonormals: Unknown option '%s'", varargin{nargin});
     endif
   endif
   switch na
@@ -124,7 +124,7 @@ function varargout = isonormals(varargin)
     pa = vp;
     v = get (pa, "Vertices");
   else
-    error ("Last argument is no vertex list and no patch handle");
+    error ("isonormals: Last argument is not a vertex list or a patch handle");
   endif
   if (negate)
     normals = -__interp_cube__ (x, y, z, c, v, "normals");

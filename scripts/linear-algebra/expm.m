@@ -92,7 +92,7 @@
 function r = expm (a)
 
   if (! ismatrix (a) || ! issquare (a))
-    error ("expm requires a square matrix");
+    error ("expm: input must be a square matrix");
   endif
 
   n = rows (a);

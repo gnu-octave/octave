@@ -87,7 +87,7 @@ function h = __errplot__ (fstr, p, varargin)
           xldata = [];
           xudata = [];
         else
-          error ("2 column errorplot is only valid or xerr or yerr");
+          error ("errorbar: 2 column errorplot is only valid or xerr or yerr");
         endif
       case 3
         if (strcmp (ifmt, "boxxy") || strcmp (ifmt, "xyerr"))
@@ -144,10 +144,10 @@ function h = __errplot__ (fstr, p, varargin)
           ldata = varargin{5}(:,i);
           udata = varargin{6}(:,i);
         else
-          error ("error plot with 6 columns only valid for boxxy and xyerr");
+          error ("errorbar: error plot with 6 columns only valid for boxxy and xyerr");
         endif        
       otherwise
-        error ("error plot requires 2, 3, 4 or 6 arguments.");
+        error ("errorbar: error plot requires 2, 3, 4 or 6 arguments.");
     endswitch
 
     addproperty ("xdata", hg, "data", xdata(:))
@@ -258,7 +258,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ydata = [y1; y2];
     return
   else
-      error ("valid error bar types are xerr, yerr, boxxy, and xyerr.")
+      error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr.")
   endif
   xdata = xdata.'(:);
   ydata = ydata.'(:);

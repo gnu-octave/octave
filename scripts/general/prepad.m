@@ -70,7 +70,7 @@ function y = prepad (x, l, c, dim)
   endif
 
   if (! isscalar (l) || l < 0)
-    error ("second argument must be a positive scaler");
+    error ("prepad: second argument must be a positive scaler");
   endif
 
   if (dim > nd)

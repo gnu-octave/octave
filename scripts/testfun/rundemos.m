@@ -68,7 +68,7 @@ endfunction
 function retval = has_demos (f)
   fid = fopen (f);
   if (f < 0)
-    error ("fopen failed: %s", f);
+    error ("rundemos: fopen failed: %s", f);
   else
     str = fscanf (fid, "%s");
     fclose (fid);

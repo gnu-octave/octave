@@ -28,7 +28,7 @@ function ppi = ppint (pp, c)
     print_usage ();
   endif
   if (! isstruct (pp))
-    error ("ppder: expects a pp structure");
+    error ("ppint: expects a pp structure");
   endif
 
   [x, p, n, k, d] = unmkpp (pp);

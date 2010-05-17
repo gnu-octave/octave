@@ -74,14 +74,14 @@ function X = bitset (A, n, value)
       Amax = 64;
       _conv = @int64;
     else
-      error ("invalid class %s", class (A));
+      error ("bitset: invalid class %s", class (A));
     endif
     Bmax = intmax (class (A));
   endif
 
   m = double (n(:));
   if (any (m < 1) || any (m > Amax))
-    error ("n must be in the range [1,%d]", Amax);
+    error ("bitset: n must be in the range [1,%d]", Amax);
   endif
 
   mask = bitshift (_conv (1), uint8 (n) - uint8 (1));

@@ -119,11 +119,11 @@ function y = cplxpair (z, tol, dim)
     p = n - nr(j);
     for i = 1:2:p
       if (i+1 > p)
-        error ("cplxpair could not pair all complex numbers");
+        error ("cplxpair: could not pair all complex numbers");
       endif
       [v, idx] = min (abs (z(i+1:p) - conj (z(i))));
       if (v > tol)
-        error ("cplxpair could not pair all complex numbers");
+        error ("cplxpair: could not pair all complex numbers");
       endif
       if (imag (z(i)) < 0)
         y([i, i+1]) = z([i, idx+i]);

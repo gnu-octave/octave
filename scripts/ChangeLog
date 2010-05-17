@@ -1,5 +1,30 @@
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
+        * audio/loadaudio.m, audio/playaudio.m, audio/saveaudio.m,
+        audio/wavread.m, general/bicubic.m, general/bitcmp.m, general/bitget.m,
+        general/bitset.m, general/cplxpair.m, general/del2.m,
+        general/gradient.m, general/interp2.m, general/interp3.m,
+        general/interpn.m, general/postpad.m, general/prepad.m,
+        general/private/__splinen__.m, image/image_viewer.m, image/imagesc.m,
+        image/saveimage.m, linear-algebra/expm.m, linear-algebra/krylov.m,
+        miscellaneous/edit.m, miscellaneous/private/__xzip__.m,
+        miscellaneous/what.m, optimization/glpk.m, optimization/optimset.m,
+        optimization/pqpnonneg.m, path/pathdef.m, plot/__go_draw_axes__.m,
+        plot/__marching_cube__.m, plot/gnuplot_drawnow.m, plot/ishold.m,
+        plot/isocolors.m, plot/isonormals.m, plot/print.m,
+        plot/private/__add_datasource__.m, plot/private/__color_str_rgb__.m,
+        plot/private/__errplot__.m, plot/private/__interp_cube__.m,
+        plot/shading.m, plot/specular.m, polynomial/deconv.m,
+        polynomial/polyint.m, polynomial/ppint.m, set/powerset.m,
+        signal/arch_fit.m, signal/arch_test.m, signal/durbinlevinson.m,
+        special-matrix/hadamard.m, statistics/distributions/unidrnd.m,
+        statistics/distributions/unifinv.m,
+        statistics/models/logistic_regression.m, strings/strjust.m,
+        testfun/rundemos.m, testfun/runtests.m, testfun/test.m, time/datenum.m:
+        Print name of function in error() string messages.
+
+2010-05-16  Rik <octave@nomad.inbox5.com>
+
         * scripts/plot/contourc.m, scripts/plot/private/__contour__.m, 
           scripts/plot/surface.m, scripts/plot/surfnorm.m: Check input
           arguments for size and type (bug #29861).

@@ -67,13 +67,13 @@ function X = bitget (A, n)
       Amax = 64;
       _conv = @int64;
     else
-      error ("invalid class %s", class (A));
+      error ("bitget: invalid class %s", class (A));
     endif
   endif
 
   m = double (n(:));
   if (any (m < 1) || any (m > Amax))
-    error ("n must be in the range [1,%d]", Amax);
+    error ("bitget: n must be in the range [1,%d]", Amax);
   endif
 
   X = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);

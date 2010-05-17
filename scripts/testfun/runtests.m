@@ -87,7 +87,7 @@ function retval = has_tests (f)
     endwhile
     fclose (fid);
   else
-    error ("fopen failed: %s", f);
+    error ("runtests: fopen failed: %s", f);
   endif
 endfunction
 

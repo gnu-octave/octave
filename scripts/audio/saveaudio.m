@@ -81,7 +81,7 @@ function saveaudio (name, X, ext, bit)
     c = fwrite (num, Y, "uchar");
   else
     fclose (num);
-    error ("saveaudio does not support given extension");
+    error ("saveaudio: unsupported extension");
   endif
 
   fclose (num);

@@ -256,7 +256,7 @@ function print (varargin)
             ghostscript_binary = file_in_path (EXEC_PATH, ghostscript_binary);
           endif
           if (isempty (ghostscript_binary))
-            error ("print.m: Ghostscript binary ""%s"" could not be located", arg(3:end))
+            error ("print: Ghostscript binary ""%s"" could not be located", arg(3:end))
           endif
         elseif (length (arg) > 2 && arg(1:2) == "-F")
           idx = rindex (arg, ":");
@@ -703,7 +703,7 @@ function print (varargin)
         status1 = system (command);
         status2 = system (sprintf ("mv %s %s", temp_name, appended_file_name));
         if (status1 != 0 || status2 != 0)
-          error ("print.m: output failed to append to '%s'.", appended_file_name);
+          error ("print: output failed to append to '%s'.", appended_file_name);
         endif
       endif
     unwind_protect_cleanup

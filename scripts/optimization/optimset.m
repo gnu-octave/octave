@@ -49,7 +49,7 @@ function retval = optimset (varargin)
     try
       retval = feval (fcn, 'defaults');
     catch
-      error ("no defaults for function `%s'", fcn);
+      error ("optimset: no defaults for function `%s'", fcn);
     end_try_catch
   elseif (nargs == 2 && isstruct (varargin{1}) && isstruct (varargin{2}))
     ## Set slots in old from nonempties in new.  Should we be checking

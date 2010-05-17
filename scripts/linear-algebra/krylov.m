@@ -82,13 +82,13 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   endif
 
   if (! issquare (A) || isempty (A))
-    error ("A(%d x %d) must be non-empty square matrix", rows (A), columns (A));
+    error ("krylov: A(%d x %d) must be a non-empty square matrix", rows (A), columns (A));
   endif
   na = rows (A);
 
   [m, kb] = size (V);
   if (m != na)
-    error("A(%d x %d), V(%d x %d): argument dimensions do not match",
+    error ("krylov: A(%d x %d), V(%d x %d): argument dimensions do not match",
           na, na, m, kb)
   endif
 
@@ -185,7 +185,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
       krylov_V = V
       krylov_na = na
       krylov_length_alpha = length (alpha)
-      error ("This case should never happen; submit a bug report");
+      error ("krylov: this case should never happen; submit a bug report");
     endif
 
     if (columns (V) > 0)

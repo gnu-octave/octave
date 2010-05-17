@@ -67,7 +67,7 @@ function playaudio (name, ext)
             || strcmp (ext, "snd") || strcmp (ext, "ul"))
       system (sprintf ("cat \"%s\" > /dev/audio", name));
     else
-      error ("playaudio does not support given extension");
+      error ("playaudio: unsupported extension");
     endif
   else
     print_usage ();

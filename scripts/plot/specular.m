@@ -58,7 +58,7 @@ function retval = specular (sx, sy, sz, lv, vv, se)
 
   ## Check for view vector (vv) argument.
   if (length (vv) < 2 || length (lv) > 3)
-    error ("view vector VV must be a 2- or 3-element vector");
+    error ("specular: view vector VV must be a 2- or 3-element vector");
   elseif (length (vv) == 2)
     [vv(1), vv(2), vv(3)] = sph2cart (vv(1) * pi / 180, vv(2) * pi / 180, 1.0);
   endif

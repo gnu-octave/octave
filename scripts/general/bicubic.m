@@ -69,7 +69,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     t = linspace (1, rz, (rz-1)*pow2(n)+1);
   elseif (nargin == 3)
     if (! isvector (X) || ! isvector (Y))
-      error ("XI and YI must be vector");
+      error ("bicubic: XI and YI must be vector");
     endif
     s = Y;
     t = Z;
@@ -79,13 +79,13 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     [rz, cz] = size (Z) ; 
     if (isvector (X) && isvector (Y))
       if (rz != length (Y) || cz != length (X))
-        error ("length of X and Y must match the size of Z");
+        error ("bicubic: length of X and Y must match the size of Z");
       endif
     elseif (size_equal (X, Y) && size_equal (X, Z))
       X = X(1,:);
       Y = Y(:,1);
     else
-      error ("X, Y and Z must be martrices of same size");
+      error ("bicubic: X, Y and Z must be equal size matrices of same size");
     endif
     
     ## Mark values outside the lookup table.
@@ -128,7 +128,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
   endif
   
   if (rz < 3 || cz < 3)
-    error ("Z at least a 3 by 3 matrices");
+    error ("bicubic: Z at least a 3 by 3 matrices");
   endif
 
   inds = floor (s);

@@ -76,7 +76,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
   m = rows (c);
   n = columns (c);
   if (m != n)
-    error ("matrix must be square");
+    error ("pqpnonneg: matrix must be square");
   endif
 
   if (isempty (x))

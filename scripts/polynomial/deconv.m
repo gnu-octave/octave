@@ -41,7 +41,7 @@ function [b, r] = deconv (y, a)
   endif
 
   if (! (isvector (y) && isvector (a)))
-    error("conv: both arguments must be vectors");
+    error("deconv: both arguments must be vectors");
   endif
 
   la = length (a);

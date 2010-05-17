@@ -31,9 +31,9 @@ function p = powerset (a, byrows_arg)
 
   if (nargin == 2)
     if (! strcmpi (byrows_arg, "rows"))
-      error ("expecting third argument to be \"rows\"");
+      error ('powerset: expecting third argument to be "rows"');
     elseif (iscell (a))
-      warning ("setdiff: \"rows\" not valid for cell arrays");
+      warning ('powerset: "rows" not valid for cell arrays');
     else
       byrows = true;
     endif

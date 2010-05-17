@@ -157,7 +157,7 @@ function __img_via_file__ (x, y, im, zoom, command)
   
   ## Did the system call fail?
   if (status != 0)
-    error ("the image viewing command failed");
+    error ("image_viewer: the image viewing command failed");
   endif
 
 endfunction

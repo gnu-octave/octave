@@ -105,7 +105,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     if (ischar (__fid))
       __fid = fopen (__fid, "wt");
       if (__fid < 0)
-        error ("could not open log file");
+        error ("test: could not open log file");
       endif
       __close_fid = 1;
     endif
@@ -149,7 +149,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     endif
     return;
   else
-    error ("test unknown flag '%s'", __flag);
+    error ("test: unknown flag '%s'", __flag);
   endif
 
   ## Locate the file to test.

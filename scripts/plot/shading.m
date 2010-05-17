@@ -67,7 +67,7 @@ function shading (varargin)
       set (h, "facecolor", "flat");
       set (h, "edgecolor", [0 0 0]);
     else
-      error ("unknown argument");
+      error ("shading: unknown argument");
     endif
   endfor
 

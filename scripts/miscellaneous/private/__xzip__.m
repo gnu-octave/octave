@@ -90,7 +90,7 @@ function entries = __xzip__ (commandname, extension,
           entries = compressed_files;
         endif
       else
-        error ("%s command failed with exit status = %d",
+        error ("__xzip__: %s command failed with exit status = %d",
                commandname, status);
       endif
     unwind_protect_cleanup

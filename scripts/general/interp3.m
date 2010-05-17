@@ -75,7 +75,7 @@ function vi = interp3 (varargin)
     nargs = nargs - 1;
   elseif (ischar (varargin{end-1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
-      error ("extrapal is expected to be a numeric scalar");
+      error ("interp3: extrapal is expected to be a numeric scalar");
     endif
     extrapval = varargin{end};
     method = varargin{end-1};
@@ -86,13 +86,13 @@ function vi = interp3 (varargin)
                     && nargs == (ndims (varargin{1}) + 1)))
     v = varargin{1};
     if (ndims (v) != 3)
-      error ("expect 3-dimensional array of values");
+      error ("interp3: expect 3-dimensional array of values");
     endif
     x = varargin (2:4);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}))
-          error ("dimensional mismatch");
+          error ("interp3: dimensional mismatch");
         endif
         x{i} = permute (x{i}, [2, 1, 3]);
       endfor
@@ -103,13 +103,13 @@ function vi = interp3 (varargin)
   elseif (nargs == 7 && nargs == (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     v = varargin{4};
     if (ndims (v) != 3)
-      error ("expect 3-dimensional array of values");
+      error ("interp3: expect 3-dimensional array of values");
     endif
     x = varargin (1:3);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
-          error ("dimensional mismatch");
+          error ("interp3: dimensional mismatch");
         endif
         x{i} = permute (x{i}, [2, 1, 3]);
       endfor
@@ -119,7 +119,7 @@ function vi = interp3 (varargin)
     if (any (! cellfun (@isvector, y)))
       for i = 2 : 3
         if (! size_equal (y{1}, y{i}))
-          error ("dimensional mismatch");
+          error ("interp3: dimensional mismatch");
         endif
         y{i} = permute (y{i}, [2, 1, 3]);
       endfor
@@ -128,7 +128,7 @@ function vi = interp3 (varargin)
     v = permute (v, [2, 1, 3]);
     vi = ipermute (interpn (x{:}, v, y{:}, method, extrapval), [2, 1, 3]);
   else
-    error ("wrong number or incorrectly formatted input arguments");
+    error ("interp3: wrong number or incorrectly formatted input arguments");
   endif
 endfunction
 

@@ -40,10 +40,10 @@ function retval = ishold (h)
         ax = h;
         fig = get (h, "parent");
       else
-        error ("hold: expecting argument to be axes or figure graphics handle");
+        error ("ishold: expecting argument to be axes or figure graphics handle");
       endif
     else
-      error ("hold: expecting argument to be axes or figure graphics handle");
+      error ("ishold: expecting argument to be axes or figure graphics handle");
     endif
   else
     print_usage ();

@@ -259,6 +259,31 @@ Summary of important user-visible changes for version 3.3:
     efficient. This applies to both the [] operator and the 
     cat/vertcat/horzcat functions.
 
+ ** It is now possible to optionally employ the xGESDD LAPACK drivers for
+    computing the singular value decomposition using svd(), instead of
+    the default xGESVD, using the configuration pseudo-variable 
+    svd_driver. The xGESDD driver can be up to 6x times faster when 
+    singular vectors are requested, but is reported to be somewhat less 
+    robust on highly ill-conditioned matrices.
+
+ ** Configuration pseudo-variables, such as page_screen_output or 
+    confirm_recursive_rmdir (or the above mentioned svd_driver), now 
+    accept a "local" option as second argument, requesting the change 
+    to be undone when current function returns:
+        
+    function [status, msg] = rm_rf (dir)
+      confirm_recursive_rmdir (false, "local");
+      [status, msg] = rmdir (dir, "s");
+      ...
+    endfunction
+    
+    Upon return, confirm_recursive_rmdir will be restored to the value 
+    it had on entry to the function, even if there were subsequent 
+    changes to the variable in function rm_rf or any of the functions
+    it calls.
+
+
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

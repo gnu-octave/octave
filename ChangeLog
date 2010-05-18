@@ -1,3 +1,7 @@
+2010-05-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-05-11  Rik <octave@nomad.inbox5.com>
 
 	* configure.ac: Capitalize ARPACK in messages.

@@ -111,8 +111,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
 extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
-                       int nargout, const char *nm, const char **choices,
-                       int nchoices);
+                       int nargout, const char *nm, const char **choices);
 
 #define SET_INTERNAL_VARIABLE(NM) \
   set_internal_variable (V ## NM, args, nargout, #NM)
@@ -123,10 +122,9 @@ set_internal_variable (int& var, const octave_value_list& args,
 #define SET_INTERNAL_VARIABLE_WITH_LIMITS(NM, MINVAL, MAXVAL) \
   set_internal_variable (V ## NM, args, nargout, #NM, MINVAL, MAXVAL)
 
-// in the following, CHOICES must be a static C string array.
+// in the following, CHOICES must be a C string array terminated by null.
 #define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES) \
-  set_internal_variable (V ## NM, args, nargout, #NM, CHOICES, \
-                         sizeof (CHOICES) / sizeof (const char *))
+  set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
 
 extern OCTINTERP_API std::string builtin_string_variable (const std::string&);
 extern OCTINTERP_API int builtin_real_scalar_variable (const std::string&, double&);

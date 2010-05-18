@@ -1,3 +1,10 @@
+2010-05-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* variables.cc (set_internal_variable (int&, ..., const char **)):
+	Drop nchoices argument. Instead determine nchoices by trailing NULL.
+	* variables.h (SET_INTERNAL_VARIABLE_CHOICES): Update.
+	* DLD-FUNCTIONS/svd.cc (Fsvd_driver): Update.
+
 2010-05-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* variables.cc (set_internal_variable (int&, ..., const char **, int)):

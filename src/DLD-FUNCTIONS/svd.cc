@@ -411,7 +411,7 @@ Currently recognized are \"gesvd\" and \"gesdd\". Default is \"gesvd\".\n\
 @seealso{svd}\n\
 @end deftypefn")
 {
-  static const char *driver_names[] = { "gesvd", "gesdd" };
+  static const char *driver_names[] = { "gesvd", "gesdd", 0 };
 
   return SET_INTERNAL_VARIABLE_CHOICES (svd_driver, driver_names);
 }

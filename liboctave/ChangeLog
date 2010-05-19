@@ -1,3 +1,7 @@
+2010-05-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_cumcount): Fix 2D version instantiation.
+
 2010-05-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::linearize): Remove.

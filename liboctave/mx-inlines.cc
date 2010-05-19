@@ -609,7 +609,7 @@ F (const TSRC *v, TRES *r, octave_idx_type m, octave_idx_type n) \
 
 OP_CUM_FCN2 (mx_inline_cumsum, T, T, +)
 OP_CUM_FCN2 (mx_inline_cumprod, T, T, *)
-OP_CUM_FCN2 (mx_inline_cumcount, bool, T, *)
+OP_CUM_FCN2 (mx_inline_cumcount, bool, T, +)
 
 #define OP_CUM_FCNN(F, TSRC, TRES) \
 template <class T> \

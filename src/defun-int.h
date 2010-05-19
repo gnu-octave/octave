@@ -65,6 +65,7 @@ get_current_shlib (void);
 
 class octave_auto_shlib : public octave_shlib
 {
+public:
   octave_auto_shlib (void)
     : octave_shlib (get_current_shlib ()) { }
   octave_auto_shlib (const octave_shlib& shl)

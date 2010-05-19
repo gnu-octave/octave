@@ -1,5 +1,11 @@
 2010-05-18  Jaroslav Hajek  <highegg@gmail.com>
 
+	* defun-int.h (octave_auto_shlib): Make members public.
+	* DLD-FUNCTIONS/onCleanup.cc: New source.
+	* DLD-FUNCTIONS/module-files: Add it here.
+
+2010-05-18  Jaroslav Hajek  <highegg@gmail.com>
+
 	* variables.cc (set_internal_variable (int&, ..., const char **)):
 	Drop nchoices argument. Instead determine nchoices by trailing NULL.
 	* variables.h (SET_INTERNAL_VARIABLE_CHOICES): Update.

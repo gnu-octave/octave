@@ -172,13 +172,13 @@ octave_oncleanup::~octave_oncleanup (void)
 Octave_map 
 octave_oncleanup::map_value (void) const
 {
-  Octave_map map;
-  map.assign ("task", fcn);
-  return map;
+  Octave_map retval;
+  retval.assign ("task", fcn);
+  return retval;
 }
 
 static void 
-warn_load_save (void)
+warn_save_load (void)
 {
   warning ("onCleanup: load and save not supported");
 }

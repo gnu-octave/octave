@@ -37,6 +37,9 @@ function retval = semilogx (varargin)
     newplot ();
 
     set (h, "xscale", "log");
+    if (any( strcmp (get (gca, "nextplot"), {"new", "replace"})))
+      set (h, "xminortick", "on");
+    endif
 
     tmp = __plt__ ("semilogx", h, varargin{:});
 

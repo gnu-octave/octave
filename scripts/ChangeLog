@@ -1,5 +1,9 @@
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
+        * plot/semilogx.m, plot/semilogy.m: Plot minor ticks for semilog plots.
+
+2010-05-16  Rik <octave@nomad.inbox5.com>
+
         * audio/loadaudio.m, audio/playaudio.m, audio/saveaudio.m,
         audio/wavread.m, general/bicubic.m, general/bitcmp.m, general/bitget.m,
         general/bitset.m, general/cplxpair.m, general/del2.m,

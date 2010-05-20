@@ -184,21 +184,21 @@ warn_save_load (void)
 }
 
 bool 
-octave_oncleanup::save_ascii (std::ostream& os)
+octave_oncleanup::save_ascii (std::ostream& /* os */)
 {
   warn_save_load ();
   return true;
 }
 
 bool 
-octave_oncleanup::load_ascii (std::istream& is)
+octave_oncleanup::load_ascii (std::istream& /* is */)
 {
   warn_save_load ();
   return true;
 }
 
 bool 
-octave_oncleanup::save_binary (std::ostream& os, bool& save_as_floats)
+octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
 {
   warn_save_load ();
   return true;
@@ -206,8 +206,8 @@ octave_oncleanup::save_binary (std::ostream& os, bool& save_as_floats)
 
 
 bool 
-octave_oncleanup::load_binary (std::istream& is, bool swap, 
-                               oct_mach_info::float_format fmt)
+octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */, 
+                               oct_mach_info::float_format /* fmt */)
 {
   warn_save_load ();
   return true;
@@ -215,14 +215,15 @@ octave_oncleanup::load_binary (std::istream& is, bool swap,
 
 #if defined (HAVE_HDF5)
 bool 
-octave_oncleanup::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+octave_oncleanup::save_hdf5 (hid_t /* loc_id */, const char * /* name */, 
+                             bool /* save_as_floats */)
 {
   warn_save_load ();
   return true;
 }
 
 bool 
-octave_oncleanup::load_hdf5 (hid_t loc_id, const char *name)
+octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
 {
   warn_save_load ();
   return true;

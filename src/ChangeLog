@@ -1,3 +1,10 @@
+2010-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/onCleanup.cc (octave_oncleanup::load_ascii,
+	octave_oncleanup::load_binary, octave_oncleanup::load_hdf5,
+	octave_oncleanup::save_ascii, octave_oncleanup::save_binary,
+	octave_oncleanup::save_hdf5): Comment out unused params.
+
 2010-05-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* defun-int.h (octave_auto_shlib): Make members public.

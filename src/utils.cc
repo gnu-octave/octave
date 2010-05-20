@@ -279,7 +279,7 @@ DEFUN (file_in_loadpath, args, ,
 \n\
 Return the absolute name of @var{file} if it can be found in\n\
 the list of directories specified by @code{path}.\n\
-If no file is found, return an empty matrix.\n\
+If no file is found, return an empty character string.\n\
 \n\
 If the first argument is a cell array of strings, search each\n\
 directory of the loadpath for element of the cell array and return\n\
@@ -302,15 +302,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
       if (! error_state && names.length () > 0)
         {
           if (nargin == 1)
-            {
-              std::string fname
-                = octave_env::make_absolute (load_path::find_first_of (names));
-
-              if (fname.empty ())
-                retval = Matrix ();
-              else
-                retval = fname;
-            }
+            retval = octave_env::make_absolute (load_path::find_first_of (names));
           else if (nargin == 2)
             {
               std::string opt = args(1).string_value ();
@@ -338,7 +330,7 @@ DEFUN (file_in_path, args, ,
 Return the absolute name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
 directories in the format described for @code{path}.  If no file\n\
-is found, return an empty matrix.  For example,\n\
+is found, return an empty character string.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -372,14 +364,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
           if (! error_state && names.length () > 0)
             {
               if (nargin == 2)
-                {
-                  std::string fname = search_path_for_file (path, names);
-
-                  if (fname.empty ())
-                    retval = Matrix ();
-                  else
-                    retval = fname;
-                }
+                retval = search_path_for_file (path, names);
               else if (nargin == 3)
                 {
                   std::string opt = args(2).string_value ();

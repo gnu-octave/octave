@@ -1,3 +1,8 @@
+2010-05-20  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (Ffile_in_path, Ffile_in_loadpath): If no file is
+	found, return empty character string instead of empty matrix.
+
 2010-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/onCleanup.cc (octave_oncleanup::load_ascii,

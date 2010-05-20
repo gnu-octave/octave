@@ -174,29 +174,60 @@ any_ones (const Array<octave_idx_type>& arr)
   return retval;
 }
 
-octave_idx_type
+octave_idx_type 
+compute_index (octave_idx_type n, const dim_vector& dims)
+{
+  if (n < 0)
+    gripe_invalid_index ();
+  if (n >= dims.numel ())
+    gripe_index_out_of_range (1, 1, n+1, dims.numel ());
+
+  return n;
+}
+
+octave_idx_type 
+compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims)
+{
+  if (i < 0 || j < 0)
+    gripe_invalid_index ();
+  if (i >= dims(0))
+    gripe_index_out_of_range (2, 1, i+1, dims(0));
+  if (j >= dims.numel (1))
+    gripe_index_out_of_range (2, 2, j+1, dims.numel (1));
+
+  return j*dims(0) + i;
+}
+
+octave_idx_type 
+compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
+               const dim_vector& dims)
+{
+  if (i < 0 || j < 0 || k < 0)
+    gripe_invalid_index ();
+  if (i >= dims(0))
+    gripe_index_out_of_range (3, 1, i+1, dims(0));
+  if (j >= dims(1))
+    gripe_index_out_of_range (3, 2, j+1, dims(1));
+  if (k >= dims.numel (2))
+    gripe_index_out_of_range (3, 3, k+1, dims.numel (2));
+
+  return (k*dims(1) + j)*dims(0) + i;
+}
+
+octave_idx_type 
 compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
 {
-  octave_idx_type retval = -1;
-
-  int n = dims.length ();
-
-  if (n > 0 && n == ra_idx.length ())
+  int nd = ra_idx.length ();
+  const dim_vector dv = dims.redim (nd);
+  for (int d = 0; d < nd; d++)
     {
-      retval = ra_idx(--n);
-
-      while (--n >= 0)
-        {
-          retval *= dims(n);
-        
-          retval += ra_idx(n);
-        }
+      if (ra_idx(d) < 0)
+        gripe_invalid_index ();
+      if (ra_idx(d) >= dv(d))
+        gripe_index_out_of_range (nd, d+1, ra_idx(d)+1, dv(d));
     }
-  else
-    (*current_liboctave_error_handler)
-      ("ArrayN<T>::compute_index: invalid ra_idxing operation");
 
-  return retval;
+  return dv.compute_index (ra_idx.data ());
 }
 
 Array<octave_idx_type>

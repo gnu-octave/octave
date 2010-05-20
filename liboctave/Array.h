@@ -336,6 +336,9 @@ public:
   octave_idx_type compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k) const;
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
+  octave_idx_type compute_index_unchecked (const Array<octave_idx_type>& ra_idx) const
+    { return dimensions.compute_index (ra_idx.data (), ra_idx.length ()); }
+
   // No checking, even for multiple references, ever.
 
   T& xelem (octave_idx_type n) { return slice_data [n]; }
@@ -350,10 +353,10 @@ public:
     { return xelem (i, dim2()*k+j); }
 
   T& xelem (const Array<octave_idx_type>& ra_idx)
-    { return xelem (compute_index (ra_idx)); }
+    { return xelem (compute_index_unchecked (ra_idx)); }
 
   crefT xelem (const Array<octave_idx_type>& ra_idx) const
-    { return xelem (compute_index (ra_idx)); }
+    { return xelem (compute_index_unchecked (ra_idx)); }
 
   // FIXME -- would be nice to fix this so that we don't
   // unnecessarily force a copy, but that is not so easy, and I see no
@@ -375,7 +378,7 @@ public:
   T& elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, dim2()*k+j); }
 
   T& elem (const Array<octave_idx_type>& ra_idx)
-    { return Array<T>::elem (compute_index (ra_idx)); }
+    { return Array<T>::elem (compute_index_unchecked (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
   T& operator () (octave_idx_type n) { return checkelem (n); }
@@ -401,7 +404,7 @@ public:
   crefT elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return xelem (i, j, k); }
 
   crefT elem (const Array<octave_idx_type>& ra_idx) const
-    { return Array<T>::xelem (compute_index (ra_idx)); }
+    { return Array<T>::xelem (compute_index_unchecked (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
   crefT operator () (octave_idx_type n) const { return checkelem (n); }

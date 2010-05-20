@@ -1,3 +1,19 @@
+2010-05-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.h (dim_vector::compute_index (const octave_idx_type *,
+	int)): New method overload.
+	(dim_vector::compute_index, dim_vector::cum_compute_index,
+	dim_vector::increment_index): Add missing const qualifiers.
+
+	* Array-util.cc (compute_index (..., const dim_vector&)): Rewrite,
+	add new overloads. Move code from Array<T>::checkelem here.
+	* Array-util.h: Update decls.
+	* Array.h (Array<T>::compute_index): Forward to the above.
+	(Array<T>::compute_index_unchecked): New method.
+	(Array<T>::elem, Array<T>::xelem): Call it here.
+
+	* Array.cc (Array<T>::checkelem): Use compute_index where suitable.
+
 2010-05-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_cumcount): Fix 2D version instantiation.

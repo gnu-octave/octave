@@ -1,3 +1,8 @@
+2010-05-23  Rik <octave@nomad.inbox5.com>
+
+        * image/imshow.m: Scale image point color according to colormap. 
+        Bug #29926.
+
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
         * plot/semilogx.m, plot/semilogy.m: Plot minor ticks for semilog plots.

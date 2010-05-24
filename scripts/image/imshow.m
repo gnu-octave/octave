@@ -64,7 +64,6 @@ function h = imshow (im, varargin)
 
   ## Get the image.
   if (ischar (im))
-    ## Eventually, this should be imread.
     [im, map] = imread (im);
     indexed = true;
     colormap (map);
@@ -165,7 +164,8 @@ function h = imshow (im, varargin)
   if (true_color || indexed)
     tmp = image ([], [], im);
   else
-    tmp = image (round ((rows (colormap ()) - 1) * im));
+    tmp = image (im);
+    set (tmp, "cdatamapping", "scaled");
   endif
   set (gca (), "visible", "off");
   axis ("image");

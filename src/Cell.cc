@@ -196,7 +196,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
   return retval;
 }
 
-Cell&
+void
 Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
               const octave_value& fill_val)
 
@@ -209,11 +209,9 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
     ra_idx(i) = idx_arg(i).index_vector ();
 
   Array<octave_value>::assign (ra_idx, rhs, fill_val);
-
-  return *this;
 }
 
-Cell&
+void
 Cell::delete_elements (const octave_value_list& idx_arg)
 
 {
@@ -225,8 +223,6 @@ Cell::delete_elements (const octave_value_list& idx_arg)
     ra_idx.xelem (i) = idx_arg(i).index_vector ();
 
   Array<octave_value>::delete_elements (ra_idx);
-
-  return *this;
 }
 
 octave_idx_type

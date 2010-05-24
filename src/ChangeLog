@@ -1,3 +1,10 @@
+2010-05-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Cell.h (Cell::index, Cell::assign, Cell::delete_elements):
+	Make signatures consistent with inherited overloads. Import inherited
+	overloads to class's scope.
+	* oct-map.cc (Octave_map::maybe_delete_elements): Simplify.
+
 2010-05-20  John W. Eaton  <jwe@octave.org>
 
 	* utils.cc (Ffile_in_path, Ffile_in_loadpath): If no file is

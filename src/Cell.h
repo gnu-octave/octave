@@ -74,12 +74,18 @@ public:
 
   Array<std::string> cellstr_value (void) const;
 
+  using Array<octave_value>::index;
+
   Cell index (const octave_value_list& idx, bool resize_ok = false) const;
 
-  Cell& delete_elements (const octave_value_list& idx);
+  using Array<octave_value>::delete_elements;
 
-  Cell& assign (const octave_value_list& idx, const Cell& rhs,
-                const octave_value& fill_val = resize_fill_value ());
+  void delete_elements (const octave_value_list& idx);
+
+  using Array<octave_value>::assign;
+
+  void assign (const octave_value_list& idx, const Cell& rhs,
+               const octave_value& fill_val = resize_fill_value ());
 
   Cell reshape (const dim_vector& new_dims) const
     { return Array<octave_value>::reshape (new_dims); }

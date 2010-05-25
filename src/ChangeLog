@@ -1,3 +1,8 @@
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-base.h (octave_base_value::rows, octave_base_value::columns):
+	Use const where appropriate, don't test for impossible condition.
+
 2010-05-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Cell.h (Cell::index, Cell::assign, Cell::delete_elements):

@@ -277,16 +277,16 @@ public:
 
   octave_idx_type rows (void) const
     {
-      dim_vector dv = dims ();
+      const dim_vector dv = dims ();
 
-      return (dv.length () > 0) ? dv(0) : -1;
+      return dv(0);
     }
 
   octave_idx_type columns (void) const
     {
-      dim_vector dv = dims ();
+      const dim_vector dv = dims ();
 
-      return (dv.length () > 1) ? dv(1) : -1;
+      return dv(1);
     }
 
   virtual int ndims (void) const;

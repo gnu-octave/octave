@@ -1,5 +1,10 @@
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* specfun/primes.m: Use logical masks rather than numeric.
+	* specfun/isprime.m: Rewrite using isprime.
+
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* miscellaneous/unimplemented.m: Don't mention onCleanup (supported).
 
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>

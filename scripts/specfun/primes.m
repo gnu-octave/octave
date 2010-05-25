@@ -58,26 +58,26 @@ function x = primes (p)
     ## p = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
     lenm = floor ((p+1)/6);       # length of the 6n-1 sieve
     lenp = floor ((p-1)/6);       # length of the 6n+1 sieve
-    sievem = ones (1, lenm);      # assume every number of form 6n-1 is prime
-    sievep = ones (1, lenp);      # assume every number of form 6n+1 is prime
+    sievem = true (1, lenm);      # assume every number of form 6n-1 is prime
+    sievep = true (1, lenp);      # assume every number of form 6n+1 is prime
 
     for i = 1:(sqrt(p)+1)/6       # check up to sqrt(p)
       if (sievem(i))              # if i is prime, eliminate multiples of i
-        sievem(7*i-1:6*i-1:lenm) = 0;
-        sievep(5*i-1:6*i-1:lenp) = 0;
+        sievem(7*i-1:6*i-1:lenm) = false;
+        sievep(5*i-1:6*i-1:lenp) = false;
       endif                       # if i is prime, eliminate multiples of i
       if (sievep(i))
-        sievep(7*i+1:6*i+1:lenp) = 0;
-        sievem(5*i+1:6*i+1:lenm) = 0;
+        sievep(7*i+1:6*i+1:lenp) = false;
+        sievem(5*i+1:6*i+1:lenm) = false;
       endif
     endfor
     x = sort([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
   elseif (p > 352)                # nothing magical about 352; must be >2
     len = floor ((p-1)/2);        # length of the sieve
-    sieve = ones (1, len);        # assume every odd number is prime
+    sieve = true (1, len);        # assume every odd number is prime
     for i = 1:(sqrt(p)-1)/2       # check up to sqrt(p)
       if (sieve(i))               # if i is prime, eliminate multiples of i
-        sieve(3*i+1:2*i+1:len) = 0; # do it
+        sieve(3*i+1:2*i+1:len) = false; # do it
       endif
     endfor
     x = [2, 1+2*find(sieve)];     # primes remaining after sieve

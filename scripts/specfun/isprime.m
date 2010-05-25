@@ -36,20 +36,18 @@
 function t = isprime (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      nel = numel (n);
-      t = zeros (size (n), "logical");
-      for i = 1:nel
-        t(i) = isprime (n(i));
-      endfor
-    elseif (n != fix (n) || n < 2)
-      t = logical (0);
-    elseif (n < 9)
-      t = all (n != [4, 6, 8]);
-    else
-      q = n./[2, 3:2:sqrt(n)];
-      t = all (q != fix (q));
-    endif
+    n = n(:);
+    idx = 1:numel (n);
+    for p = primes (sqrt (max (n(:))))
+      if (isempty (idx))
+        break;
+      endif
+      mask = rem (n, p) != 0;
+      n = n(mask);
+      idx = idx(mask);
+    endfor
+    t = false (size (n));
+    t(idx) = true;
   else
     print_usage ();
   endif

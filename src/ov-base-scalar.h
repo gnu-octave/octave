@@ -78,6 +78,10 @@ public:
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
+  octave_idx_type numel (void) const { return 1; }
+
+  int ndims (void) const { return 2; }
+
   octave_idx_type nnz (void) const { return (scalar != ST ()) ? 1 : 0; }
 
   octave_value permute (const Array<int>&, bool = false) const;

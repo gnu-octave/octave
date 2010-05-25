@@ -1,5 +1,11 @@
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base-mat.h (octave_base_matrix::ndims): New override.
+	* ov-base-scalar.h (octave_base_scalar::numel,
+	octave_base_scalar::ndims): New overrides.
+
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base.cc (octave_base_value::ndims): Remove fallback
 	implementation (makes no sense).
 	* ov-base.h (octave_base_value::ndims): Use a simplistic fallback

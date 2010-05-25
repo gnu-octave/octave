@@ -1372,18 +1372,12 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 octave_idx_type
 octave_value::length (void) const
 {
-  int retval = 0;
+  octave_idx_type retval = 0;
 
-  dim_vector dv = dims ();
+  const dim_vector dv = dims ();
 
   for (int i = 0; i < dv.length (); i++)
     {
-      if (dv(i) < 0)
-        {
-          retval = -1;
-          break;
-        }
-
       if (dv(i) == 0)
         {
           retval = 0;

@@ -1,5 +1,9 @@
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov.cc (octave_value::length): Simplify.
+
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base-mat.h (octave_base_matrix::ndims): New override.
 	* ov-base-scalar.h (octave_base_scalar::numel,
 	octave_base_scalar::ndims): New overrides.

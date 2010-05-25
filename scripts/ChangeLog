@@ -1,3 +1,7 @@
+2010-05-24  Rik <octave@nomad.inbox5.com>
+        * general/private/__isequal__.m, image/image.m, 
+        statistics/base/ranks.m: Replace calls to deprecated functions.
+
 2010-05-23  Rik <octave@nomad.inbox5.com>
 
         * image/imshow.m: Scale image point color according to colormap. 

@@ -143,20 +143,12 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     else
       ## Check the numeric types.
 
-      if (issparse (x))
-        f_x = spfind (x);
-      else
-        f_x = find (x);
-      endif
+      f_x = find (x);
       l_f_x = length (f_x);
       x = x(f_x);
       for argn = 1:l_v
         y = varargin{argn};
-        if (issparse (y))
-          f_y = spfind (y);
-        else
-          f_y = find (y);
-        endif
+        f_y = find (y);
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
         if (!t)

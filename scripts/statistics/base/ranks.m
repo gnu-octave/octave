@@ -73,7 +73,7 @@ function y = ranks (x, dim)
     if (isempty (eq_el))
       [eq_el, y] = sort (xi);
     else
-      runs = complement (eq_el+1, eq_el);
+      runs = setdiff (eq_el, eq_el+1);
       len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
       [eq_el, y] = sort (xi);
       for i = 1 : length(runs)

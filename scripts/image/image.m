@@ -52,7 +52,7 @@ function retval = image (varargin)
   endfor
 
   if (nargin == 0 || firstnonnumeric == 1)
-    img = loadimage ("default.img");
+    img = imread ("default.img");
     x = y = [];
   elseif (nargin == 1 || firstnonnumeric == 2)
     img = varargin{1};

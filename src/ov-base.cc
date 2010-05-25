@@ -203,31 +203,6 @@ octave_base_value::index_vector (void) const
   return idx_vector ();
 }
 
-int
-octave_base_value::ndims (void) const
-{
-  dim_vector dv = dims ();
-
-  int n_dims = dv.length ();
-     
-   // Remove trailing singleton dimensions.
-
-   for (int i = n_dims; i > 2; i--)
-     {
-       if (dv(i-1) == 1)
-         n_dims--;
-       else
-         break;
-     }
-   
-   // The result is always >= 2.
-
-   if (n_dims < 2)
-     n_dims = 2;
-
-   return n_dims;
-}
-
 octave_value
 octave_base_value::subsasgn (const std::string& type,
                              const std::list<octave_value_list>& idx,

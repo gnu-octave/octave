@@ -1,5 +1,12 @@
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base.cc (octave_base_value::ndims): Remove fallback
+	implementation (makes no sense).
+	* ov-base.h (octave_base_value::ndims): Use a simplistic fallback
+	here.
+
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-base.h (octave_base_value::rows, octave_base_value::columns):
 	Use const where appropriate, don't test for impossible condition.
 

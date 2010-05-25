@@ -289,7 +289,8 @@ public:
       return dv(1);
     }
 
-  virtual int ndims (void) const;
+  virtual int ndims (void) const
+    { return dims ().length (); }
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 

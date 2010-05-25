@@ -1,6 +1,6 @@
 ## Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004, 2005, 2006, 2007,
 ##               2008, 2009 John W. Eaton
-## Copyright (C) 2009 VZLU Prague
+## Copyright (C) 2009, 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -54,7 +54,7 @@ function retval = median (a, dim)
     print_usage ();
   endif
   if (nargin < 2)
-    dim = [find(size (a) != 1, 1), 1](1); # First non-singleton dim.
+    [~, dim] = max (size (a) != 1); # First non-singleton dim.
   endif
 
   if (numel (a) > 0)
@@ -65,6 +65,8 @@ function retval = median (a, dim)
     else
       retval = mean (nth_element (a, k:k+1, dim), dim);
     endif
+    ## Inject NaNs where needed, to be consistent with Matlab.
+    retval(any (isnan (a), dim)) = NaN;
   else
     error ("median: invalid matrix argument");
   endif

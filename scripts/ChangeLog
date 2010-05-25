@@ -1,3 +1,8 @@
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* statistics/base/median.m: Ensure NaNs where needed. Simplify first
+	non-singleton dimension computation.
+
 2010-05-24  Rik <octave@nomad.inbox5.com>
         * general/private/__isequal__.m, image/image.m, 
         statistics/base/ranks.m: Replace calls to deprecated functions.

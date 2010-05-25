@@ -26,10 +26,6 @@ function unimplemented (fcn)
 
   ## Some smarter cases, add more as needed.
   switch (fcn)
-  case "onCleanup"
-    txt = ["onCleanup is not implemented. Consider using unwind_protect, ",...
-    "which is more versatile. For more info, type @code{help unwind_protect}."];
-
   case "textscan"
     txt = ["textscan is not implemented. Consider using textread or sscanf."];
 
@@ -296,7 +292,6 @@ function list = missing_functions ()
   "odeget", 
   "odeset", 
   "odextend", 
-  "onCleanup", 
   "open", 
   "openfig", 
   "opengl", 

@@ -1,5 +1,9 @@
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* miscellaneous/unimplemented.m: Don't mention onCleanup (supported).
+
+2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* statistics/base/median.m: Ensure NaNs where needed. Simplify first
 	non-singleton dimension computation.
 

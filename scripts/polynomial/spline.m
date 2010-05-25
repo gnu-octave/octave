@@ -93,6 +93,12 @@ function ret = spline (x, y, xi)
   else
     a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
   endif
+  
+  for k = (1:columns (a))(any (isnan (a))) 
+    ok = ! isnan (a(:,k)); 
+    a(!ok,k) = spline (x(ok), a(ok,k), x(!ok)); 
+  endfor 
+  
   complete = false;
   if (size (a, 1) == n + 2)
     complete = true;
@@ -223,3 +229,11 @@ endfunction
 %!assert (imag(spline(x,y,x.')), imag(y).', abserr);
 %!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
 %!assert (imag(spline(x.',y,x)), imag(y), abserr);
+%!test
+%! xnan = 5;
+%! y(x==xnan) = NaN;
+%! ok = ! isnan (y);
+%! assert (spline (x, y, x(ok)), y(ok), abserr);
+%!test
+%! ok = ! isnan (y);
+%! assert (! isnan (spline (x, y, x(!ok))));

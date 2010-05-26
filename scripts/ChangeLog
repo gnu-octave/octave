@@ -1,3 +1,7 @@
+2010-05-26  Rik <octave@nomad.inbox5.com>
+        * sparse/svds.m: Initialize ARPACK starting vector in svds test code.
+        Bug #29721.
+
 2010-05-25  Ben Abbott <bpabbott@mac.com>
 
 	* polynomial/spline.m: Ignore NaNs within input vectors.

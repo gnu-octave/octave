@@ -208,26 +208,28 @@ endfunction
 %! %%a = sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! [u,s,v] = svd(full(a));
 %! s = diag(s);
-%! [dum, idx] = sort(abs(s));
+%! [~, idx] = sort(abs(s));
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
 %! randn('state',42)
+%! opts.v0 = randn (2*n,1);  % Initialize eigs ARPACK starting vector 
+%!                           % to guarantee reproducible results
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s(end:-1:end-k+1), s2, 1e-10); 
 %!testif HAVE_ARPACK
-%! [u2,s2,v2,flag] = svds(a,k,0);
+%! [u2,s2,v2,flag] = svds(a,k,0,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s(k:-1:1), s2, 1e-10); 
 %!testif HAVE_ARPACK
 %! idx = floor(n/2);
-%! % Don't put sigma right on a singular value or there are convergence 
+%! % Don't put sigma right on a singular value or there are convergence issues 
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1); 
-%! [u2,s2,v2,flag] = svds(a,k,sigma);
+%! [u2,s2,v2,flag] = svds(a,k,sigma,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s((idx+floor(k/2)):-1:(idx-floor(k/2))), s2, 1e-10); 

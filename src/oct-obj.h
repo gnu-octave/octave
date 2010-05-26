@@ -125,8 +125,14 @@ public:
   octave_value_list& reverse (void);
 
   octave_value_list
-  slice (octave_idx_type offset, octave_idx_type len) const
-    { return data.index (idx_vector (offset, offset + len)); }
+  slice (octave_idx_type offset, octave_idx_type len, bool tags = false) const
+    { 
+      octave_value_list retval (data.linear_slice (offset, offset + len));
+      if (tags && len > 0 && names.length () > 0)
+        retval.names = names.linear_slice (offset, std::min (len, names.length ()));
+
+      return retval;
+    }
 
   octave_value_list
   splice (octave_idx_type offset, octave_idx_type len,

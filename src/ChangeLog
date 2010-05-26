@@ -1,3 +1,10 @@
+2010-05-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-obj.h (octave_value_list::slice): Optionally include tags in
+	slicing.
+	* oct-parse.yy (get_feval_args): Simplify.
+	* pt-idx.cc (make_value_list): Use octave_idx_type instead of int.
+
 2010-05-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::length): Simplify.

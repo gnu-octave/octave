@@ -185,7 +185,7 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm,
 
   if (! error_state)
     {
-      int n = retval.length ();
+      octave_idx_type n = retval.length ();
 
       if (n > 0)
         retval.stash_name_tags (arg_nm);

@@ -4126,18 +4126,7 @@ feval (octave_function *fcn, const octave_value_list& args, int nargout)
 static octave_value_list
 get_feval_args (const octave_value_list& args)
 {
-  octave_value_list retval = args.slice (1, args.length () - 1);
-
-  string_vector arg_names = args.name_tags ();
-
-  if (arg_names.length () > 1)
-    {
-      string_vector tmp_arg_names = arg_names.linear_slice (1, args.length () - 1);
-
-      retval.stash_name_tags (tmp_arg_names);
-    }
-
-  return retval;
+  return args.slice (1, args.length () - 1, true);
 }
 
 

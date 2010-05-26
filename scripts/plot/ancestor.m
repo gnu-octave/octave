@@ -35,7 +35,7 @@
 function p = ancestor (h, type, toplevel)
 
   if (nargin == 2 || nargin == 3)
-    p = [];
+    p = cell (numel (h), 1);
     if (ischar (type))
       type = { type };
     endif
@@ -48,18 +48,24 @@ function p = ancestor (h, type, toplevel)
           error ("ancestor: third argument must be \"toplevel\"");
         endif
       endif
-      while (true)
-        if (isempty (h) || ! ishandle (h))
-          break;
-        endif
-        if (any (strcmpi (get (h, "type"), type)))
-          p = h;
-          if (look_first)
+      h = num2cell (h);
+      for nh = 1:numel(h)
+        while (true)
+          if (isempty (h{nh}) || ! ishandle (h{nh}))
             break;
           endif
-        endif
-                h = get (h, "Parent");
-      endwhile
+          if (any (strcmpi (get (h{nh}, "type"), type)))
+            p{nh} = h{nh};
+            if (look_first)
+              break;
+            endif
+          endif
+          h{nh} = get (h{nh}, "Parent");
+        endwhile
+      endfor
+      if (nh == 1)
+        p = p{1};
+      endif
     else
       error ("ancestor: second argument must be a string or cell array of strings");
     endif

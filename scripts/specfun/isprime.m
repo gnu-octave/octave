@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007, 2009 Paul Kienzle
+## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -20,13 +21,6 @@
 ## @deftypefn {Function File} {} isprime (@var{n})
 ## Return true if @var{n} is a prime number, false otherwise.
 ##
-## Something like the following is much faster if you need to test a lot
-## of small numbers:
-##
-## @example
-## @var{t} = ismember (@var{n}, primes (max (@var{n} (:))));
-## @end example
-##
 ## If max(n) is very large, then you should be using special purpose 
 ## factorization code.
 ##
@@ -36,18 +30,42 @@
 function t = isprime (n)
 
   if (nargin == 1)
-    n = n(:);
-    idx = 1:numel (n);
-    for p = primes (sqrt (max (n(:))))
-      if (isempty (idx))
-        break;
+    if (any ((n != floor (n) | n < 0)(:)))
+      error ("isprime: needs positive integers");
+    endif
+    maxn = max (n(:));
+    ## generate prime table of suitable length.
+    maxp = min (maxn, max (sqrt (maxn), 1e7)); # FIXME: threshold not optimized.
+    pr = primes (maxp);
+    ## quick search for table matches.
+    t = lookup (pr, n, "b");
+    ## take the rest.
+    m = n(n > maxp);
+    if (! isempty (m))
+      ## there are still possible primes. filter them out by division.
+      if (maxn <= intmax ("uint32"))
+        m = uint32 (m);
+      elseif (maxn <= intmax ("uint64"))
+        m = uint64 (m);
+      else
+        warning ("isprime: too large integers being tested");
       endif
-      mask = rem (n, p) != 0;
-      n = n(mask);
-      idx = idx(mask);
-    endfor
-    t = false (size (n));
-    t(idx) = true;
+      pr = cast (pr(pr <= sqrt (maxn)), class (m));
+      for p = pr
+        m = m(rem (m, p) != 0);
+        if (length (m) < length (pr) / 10)
+          break;
+        endif
+      endfor
+      pr = pr(pr > p);
+      mm = arrayfun (@(x) all (rem (x, pr)), m);
+      m = m(mm);
+      if (! isempty (m))
+        m = cast (sort (m), class (n));
+        t |= lookup (m, n, "b");
+      endif
+    endif
+
   else
     print_usage ();
   endif

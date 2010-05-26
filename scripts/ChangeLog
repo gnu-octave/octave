@@ -1,3 +1,7 @@
+2010-05-26  Jaroslav Hajek  <highegg@gmail.com>
+
+	* specfun/isprime.m: Fix and further optimize.
+
 2010-05-26  Rik <octave@nomad.inbox5.com>
         * sparse/svds.m: Check struct input arguments.  Overhaul documentation.
 

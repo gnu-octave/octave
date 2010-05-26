@@ -1,5 +1,6 @@
 2010-05-26  Ben Abbott <bpabbott@mac.com>
 
+	* plot/legend.m: Key labels for specified objects.
 	* plot/ancestor.m: Support vectors of handles.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>

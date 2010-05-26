@@ -24,13 +24,18 @@
 ## @deftypefnx {Function File} {} legend (@var{matstr}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{cell})
 ## @deftypefnx {Function File} {} legend (@var{cell}, "location", @var{pos})
+## @deftypefnx {Function File} {} legend (@var{hax}, @dots{})
+## @deftypefnx {Function File} {} legend (@var{hobjs}, @dots{})
+## @deftypefnx {Function File} {} legend (@var{hax}, @var{hobjs}, @dots{})
 ## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
-## Display a legend for the current axes using the specified strings
-## as labels.  Legend entries may be specified as individual character
-## string arguments, a character array, or a cell array of character
-## strings.  Legend works on line graphs, bar graphs, etc.  A plot must
-## exist before legend is called.
+## Display a legend for the axes with handle @var{hax}, or the current axes,
+## using the specified strings as labels.  Legend entries may be specified 
+## as individual character string arguments, a character array, or a cell
+## array of character strings. If the handles, @var{hobjs}, are not specified
+## the legend's strings will be associated with the axes' descendents.
+## Legend works on line graphs, bar graphs, etc.
+## A plot must exist before legend is called.
 ##
 ## The optional parameter @var{pos} specifies the location of the legend
 ## as follows:
@@ -81,6 +86,15 @@ function legend (varargin)
   [ca, varargin, nargin] = __plt_get_axis_arg__ ("legend", varargin{:});
   nargs = nargin;
 
+  if (all (ishandle (varargin{1})))
+    kids = flipud (varargin{1}(:));
+    varargin(1) = [];
+    nargs = numel (varargin);
+  else
+    kids = get (ca, "children");
+  endif
+  nkids = numel (kids);
+
   if (nargs > 0)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
@@ -102,8 +116,6 @@ function legend (varargin)
     endif
   endif
 
-  kids = get (ca, "children");
-  nkids = numel (kids);
   k = 1;
   turn_on_legend = false;
 
@@ -293,3 +305,10 @@ endfunction
 %! bar (rand (2, 3))
 %! ylim ([0 1.2])
 %! legend ("1st Bar", "2nd Bar", "3rd Bar")
+
+%!demo
+%! clf
+%! x = 0:0.1:7;
+%! h = plot (x, sin(x), x, cos(x), x, sin(x.^2/10), x, cos(x.^2/10));
+%! title ("Only the sin() objects have keylabels")
+%! legend (h([1, 3]), {"sin(x)", "sin(x^2/10)"}, "location", "southwest")

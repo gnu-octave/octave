@@ -3,6 +3,11 @@
 	* specfun/isprime.m: Fix and further optimize.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
+
+        * plot/legend.m: Improve documentation string.
+
+2010-05-26  Rik <octave@nomad.inbox5.com>
+        
         * sparse/svds.m: Check struct input arguments.  Overhaul documentation.
 
 2010-05-26  Ben Abbott <bpabbott@mac.com>
@@ -11,6 +16,7 @@
 	* plot/ancestor.m: Support vectors of handles.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
+
         * sparse/svds.m: Initialize ARPACK starting vector in svds test code.
         Bug #29721.
 

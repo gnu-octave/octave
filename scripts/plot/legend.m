@@ -18,22 +18,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} legend (@var{st1}, @var{st2}, @dots{})
-## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @dots{}, "location", @var{pos})
+## @deftypefn  {Function File} {} legend (@var{str1}, @var{str2}, @dots{})
 ## @deftypefnx {Function File} {} legend (@var{matstr})
-## @deftypefnx {Function File} {} legend (@var{matstr}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{cell})
-## @deftypefnx {Function File} {} legend (@var{cell}, "location", @var{pos})
+## @deftypefnx {Function File} {} legend (@dots{}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {} legend (@var{hobjs}, @dots{})
 ## @deftypefnx {Function File} {} legend (@var{hax}, @var{hobjs}, @dots{})
-## @deftypefnx {Function File} {} legend ('@var{func}')
+## @deftypefnx {Function File} {} legend ("@var{option}")
 ##
 ## Display a legend for the axes with handle @var{hax}, or the current axes,
 ## using the specified strings as labels.  Legend entries may be specified 
 ## as individual character string arguments, a character array, or a cell
-## array of character strings. If the handles, @var{hobjs}, are not specified
-## the legend's strings will be associated with the axes' descendents.
+## array of character strings.  If the handles, @var{hobjs}, are not specified
+## then the legend's strings will be associated with the axes' descendants.
 ## Legend works on line graphs, bar graphs, etc.
 ## A plot must exist before legend is called.
 ##
@@ -62,22 +60,22 @@
 ##   can be appended to any location string
 ## @end multitable
 ##
-## Some specific functions are directly available using @var{func}:
+## The following customizations are available using @var{option}:
 ##
 ## @table @asis
 ## @item "show"
-##   Show legends from the plot
+##   Show legend on the plot
 ## @item "hide"
 ## @itemx "off"
-##   Hide legends from the plot
+##   Hide legend on the plot
 ## @item "boxon"
-##   Draw a box around legends
+##   Show a box around legend
 ## @item "boxoff"
-##   Withdraw the box around legends
+##   Hide the box around legend
 ## @item "left"
-##   Text is to the left of the keys
+##   Place text to the left of the keys
 ## @item "right"
-##   Text is to the right of the keys
+##   Place text to the right of the keys
 ## @end table
 ## @end deftypefn
 

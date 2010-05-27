@@ -152,17 +152,17 @@ DEFUN_DLD (eigs, args, nargout,
 @deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{a}, @dots{})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})\n\
 Calculate a limited number of eigenvalues and eigenvectors of @var{a},\n\
-based on a selection criteria.  The number eigenvalues and eigenvectors to\n\
-calculate is given by @var{k} whose default value is 6.\n\
+based on a selection criteria.  The number of eigenvalues and eigenvectors to\n\
+calculate is given by @var{k} and defaults to 6.\n\
 \n\
-By default @code{eigs} solve the equation\n\
+By default, @code{eigs} solve the equation\n\
 @tex\n\
-$A \\nu = \\lambda \\nu$\n\
+$A \\nu = \\lambda \\nu$,\n\
 @end tex\n\
 @ifinfo\n\
-@code{A * v = lambda * v}\n\
+@code{A * v = lambda * v},\n\
 @end ifinfo\n\
-, where\n\
+where\n\
 @tex\n\
 $\\lambda$ is a scalar representing one of the eigenvalues, and $\\nu$\n\
 @end tex\n\
@@ -172,24 +172,23 @@ $\\lambda$ is a scalar representing one of the eigenvalues, and $\\nu$\n\
 is the corresponding eigenvector.  If given the positive definite matrix\n\
 @var{B} then @code{eigs} solves the general eigenvalue equation\n\
 @tex\n\
-$A \\nu = \\lambda B \\nu$\n\
+$A \\nu = \\lambda B \\nu$.\n\
 @end tex\n\
 @ifinfo\n\
-@code{A * v = lambda * B * v}\n\
+@code{A * v = lambda * B * v}.\n\
 @end ifinfo\n\
-.\n\
 \n\
 The argument @var{sigma} determines which eigenvalues are returned.\n\
 @var{sigma} can be either a scalar or a string.  When @var{sigma} is a scalar,\n\
 the @var{k} eigenvalues closest to @var{sigma} are returned.  If @var{sigma}\n\
-is a string, it must have one of the values\n\
+is a string, it must have one of the following values.\n\
 \n\
 @table @asis\n\
 @item 'lm'\n\
-Largest magnitude (default).\n\
+Largest Magnitude (default).\n\
 \n\
 @item 'sm'\n\
-Smallest magnitude.\n\
+Smallest Magnitude.\n\
 \n\
 @item 'la'\n\
 Largest Algebraic (valid only for real symmetric problems).\n\
@@ -198,24 +197,24 @@ Largest Algebraic (valid only for real symmetric problems).\n\
 Smallest Algebraic (valid only for real symmetric problems).\n\
 \n\
 @item 'be'\n\
-Both ends, with one more from the high-end if @var{k} is odd (valid only for\n\
+Both Ends, with one more from the high-end if @var{k} is odd (valid only for\n\
 real symmetric problems).\n\
 \n\
 @item 'lr'\n\
-Largest real part (valid only for complex or unsymmetric problems).\n\
+Largest Real part (valid only for complex or unsymmetric problems).\n\
 \n\
 @item 'sr'\n\
-Smallest real part (valid only for complex or unsymmetric problems).\n\
+Smallest Real part (valid only for complex or unsymmetric problems).\n\
 \n\
 @item 'li'\n\
-Largest imaginary part (valid only for complex or unsymmetric problems).\n\
+Largest Imaginary part (valid only for complex or unsymmetric problems).\n\
 \n\
 @item 'si'\n\
-Smallest imaginary part (valid only for complex or unsymmetric problems).\n\
+Smallest Imaginary part (valid only for complex or unsymmetric problems).\n\
 @end table\n\
 \n\
-If @var{opts} is given, it is a structure defining some of the options that\n\
-@code{eigs} should use.  The fields of the structure @var{opts} are\n\
+If @var{opts} is given, it is a structure defining possible options that\n\
+@code{eigs} should use.  The fields of the @var{opts} structure are:\n\
 \n\
 @table @code\n\
 @item issym\n\
@@ -227,25 +226,27 @@ If @var{af} is given, then flags whether the function @var{af} defines a\n\
 real problem.  It is ignored if @var{a} is given.  The default is true.\n\
 \n\
 @item tol\n\
-Defines the required convergence tolerance, given as @code{tol * norm (A)}.\n\
-The default is @code{eps}.\n\
+Defines the required convergence tolerance, calculated as\n\
+@code{tol * norm (A)}.  The default is @code{eps}.\n\
 \n\
 @item maxit\n\
 The maximum number of iterations.  The default is 300.\n\
 \n\
 @item p\n\
 The number of Lanzcos basis vectors to use.  More vectors will result in\n\
-faster convergence, but a larger amount of memory.  The optimal value of 'p'\n\
-is problem dependent and should be in the range @var{k} to @var{n}.  The\n\
-default value is @code{2 * @var{k}}.\n\
+faster convergence, but a greater use of memory.  The optimal value of\n\
+@code{p} is problem dependent and should be in the range @var{k} to @var{n}.\n\
+The default value is @code{2 * @var{k}}.\n\
 \n\
 @item v0\n\
-The starting vector for the computation.  The default is to have @sc{arpack}\n\
-randomly generate a starting vector.\n\
+The starting vector for the algorithm.  An initial vector close to the\n\
+final vector will speed up convergence.  The default is for @sc{arpack}\n\
+to randomly generate a starting vector.  If specified, @code{v0} must be\n\
+an @var{n}-by-1 vector where @code{@var{n} = rows (@var{a})}\n\
 \n\
 @item disp\n\
-The level of diagnostic printout.  If @code{disp} is 0 then there is no\n\
-printout.  The default value is 1.\n\
+The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then\n\
+diagnostics are disabled.  The default value is 0.\n\
 \n\
 @item cholB\n\
 Flag if @code{chol (@var{b})} is passed rather than @var{b}.  The default is\n\
@@ -253,53 +254,50 @@ false.\n\
 \n\
 @item permB\n\
 The permutation vector of the Cholesky factorization of @var{b} if\n\
-@code{cholB} is true.  That is @code{chol ( @var{b} (permB, permB))}.  The\n\
+@code{cholB} is true.  That is @code{chol (@var{b}(permB, permB))}.  The\n\
 default is @code{1:@var{n}}.\n\
 \n\
 @end table\n\
-\n\
 It is also possible to represent @var{a} by a function denoted @var{af}.\n\
 @var{af} must be followed by a scalar argument @var{n} defining the length\n\
-of the vector argument accepted by @var{af}.  @var{af} can be passed either\n\
-as an inline function, function handle or as a string.  In the case where\n\
-@var{af} is passed as a string, the name of the string defines the function\n\
-to use.\n\
+of the vector argument accepted by @var{af}.  @var{af} can be \n\
+a function handle, an inline function, or a string.  When @var{af} is a\n\
+string it holds the name of the function to use.\n\
 \n\
-@var{af} is a function of the form @code{function y = af (x), y = @dots{};\n\
-endfunction}, where the required return value of @var{af} is determined by\n\
-the value of @var{sigma}, and are\n\
+@var{af} is a function of the form @code{y = af (x)}\n\
+where the required return value of @var{af} is determined by\n\
+the value of @var{sigma}.  The four possible forms are\n\
 \n\
 @table @code\n\
 @item A * x\n\
-If @var{sigma} is not given or is a string other than 'sm'.\n\
+if @var{sigma} is not given or is a string other than 'sm'.\n\
 \n\
 @item A \\ x\n\
-If @var{sigma} is 'sm'.\n\
+if @var{sigma} is 0 or 'sm'.\n\
 \n\
 @item (A - sigma * I) \\ x\n\
-for standard eigenvalue problem, where @code{I} is the identity matrix of\n\
-the same size as @code{A}.  If @var{sigma} is zero, this reduces the\n\
-@code{A \\ x}.\n\
+for the standard eigenvalue problem, where @code{I} is the identity matrix of\n\
+the same size as @var{A}.\n\
 \n\
 @item (A - sigma * B) \\ x\n\
 for the general eigenvalue problem.\n\
 @end table\n\
 \n\
-The return arguments of @code{eigs} depends on the number of return\n\
-arguments.  With a single return argument, a vector @var{d} of length @var{k}\n\
-is returned, represent the @var{k} eigenvalues that have been found.  With two\n\
+The return arguments of @code{eigs} depend on the number of return arguments\n\
+requested.  With a single return argument, a vector @var{d} of length @var{k}\n\
+is returned containing the @var{k} eigenvalues that have been found.  With two\n\
 return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns are\n\
 the @var{k} eigenvectors corresponding to the returned eigenvalues.  The\n\
-eigenvalues themselves are then returned in @var{d} in the form of a\n\
+eigenvalues themselves are returned in @var{d} in the form of a\n\
 @var{n}-by-@var{k} matrix, where the elements on the diagonal are the\n\
 eigenvalues.\n\
 \n\
-Given a third return argument @var{flag}, @code{eigs} also returns the status\n\
-of the convergence.  If @var{flag} is 0, then all eigenvalues have converged,\n\
-otherwise not.\n\
+Given a third return argument @var{flag}, @code{eigs} returns the status\n\
+of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.\n\
+Any other value indicates a failure to converge.\n\
 \n\
 This function is based on the @sc{arpack} package, written by R Lehoucq,\n\
-K Maschhoff, D Sorensen and C Yang.  For more information see\n\
+K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 @url{http://www.caam.rice.edu/software/ARPACK/}.\n\
 \n\
 @seealso{eig, svds}\n\
@@ -752,8 +750,8 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A = sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),4*ones(1,n),ones(1,n-2)]);
 %! d0 = eig (A);
-%! d2 = sort(d0);
-%! [dum, idx] = sort( abs(d0));
+%! d2 = sort (d0);
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -781,8 +779,8 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (d1, d2([1:floor((k+1)/2), (end - ceil((k+1)/2) + 1):end]), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (d1(idx1), d0(idx0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs(A, speye(n), k, 'lm');
@@ -872,7 +870,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A =  sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! d0 = eig (A);
-%! [dum, idx] = sort(abs(d0));
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -888,28 +886,28 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
-%! [dum, idx] = sort (real(d0));
+%! [~, idx] = sort (real(d0));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
 %!testif HAVE_ARPACK
@@ -1001,7 +999,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A = sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[1i*ones(1,n-2),4*ones(1,n),-1i*ones(1,n-2)]);
 %! d0 = eig (A);
-%! [dum, idx] = sort(abs(d0));
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -1017,28 +1015,28 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
 %!testif HAVE_ARPACK
@@ -1134,8 +1132,8 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A = full(sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),4*ones(1,n),ones(1,n-2)]));
 %! d0 = eig (A);
-%! d2 = sort(d0);
-%! [dum, idx] = sort( abs(d0));
+%! d2 = sort (d0);
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -1163,8 +1161,8 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (d1, d2([1:floor((k+1)/2), (end - ceil((k+1)/2) + 1):end]), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (d1(idx1), d0(idx0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs(A, eye(n), k, 'lm');
@@ -1249,7 +1247,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A =  full(sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]));
 %! d0 = eig (A);
-%! [dum, idx] = sort(abs(d0));
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -1265,28 +1263,28 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
-%! [dum, idx] = sort (real(d0));
+%! [~, idx] = sort (real(d0));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
 %!testif HAVE_ARPACK
@@ -1378,7 +1376,7 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! k = 4;
 %! A = full(sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[1i*ones(1,n-2),4*ones(1,n),-1i*ones(1,n-2)]));
 %! d0 = eig (A);
-%! [dum, idx] = sort(abs(d0));
+%! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
@@ -1394,28 +1392,28 @@ K Maschhoff, D Sorensen and C Yang.  For more information see\n\
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'lr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(end:-1:(end-k+1))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'sr');
-%! [dum, idx] = sort (real(abs(d0)));
+%! [~, idx] = sort (real(abs(d0)));
 %! d2 = d0(idx);
 %! assert (real(d1), real(d2(1:k)), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'li');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(end:-1:(end-k+1)))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 'si');
-%! [dum, idx] = sort (imag(abs(d0)));
+%! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k, 4.1);
-%! [dum,idx0] = sort (abs(d0 - 4.1));
-%! [dum,idx1] = sort (abs(d1 - 4.1));
+%! [~,idx0] = sort (abs(d0 - 4.1));
+%! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
 %!testif HAVE_ARPACK

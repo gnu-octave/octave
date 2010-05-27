@@ -1,3 +1,8 @@
+2010-05-10  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/eigs.cc: Improve documentation string.
+        Use ~ notation instead of dummy variables for unused return arguments.
+
 2010-05-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-base-mat.h (octave_base_matrix::matrix_ref (void) const): New

@@ -160,6 +160,11 @@ public:
       return matrix;
     }
 
+  const MT& matrix_ref (void) const
+    {
+      return matrix;
+    }
+
 protected:
 
   MT matrix;

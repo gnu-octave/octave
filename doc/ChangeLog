@@ -1,3 +1,9 @@
+2010-05-27  Rik <octave@nomad.inbox5.com>
+
+        * interpreter/arith.txi, interpreter/diffeq.txi, interpreter/intro.txi,
+        interpreter/nonlin.txi, interpreter/poly.txi, interpreter/sparse.txi:
+        Replace @ifinfo with @ifnottex. 
+
 2010-05-07  John W. Eaton  <jwe@octave.org>
 
 	* basics.txi: Update list of internal variables for --traditional.

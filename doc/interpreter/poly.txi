@@ -28,13 +28,13 @@ $$
  p (x) = c_1 x^N + \ldots + c_N x + c_{N+1}.
 $$
 @end tex
-@ifinfo
+@ifnottex
  @var{N}
 
 @example
 p(x) = @var{c}(1) x^@var{N} + @dots{} + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @end example
-@end ifinfo
+@end ifnottex
 
 @menu
 * Evaluating Polynomials::

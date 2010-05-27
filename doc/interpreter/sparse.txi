@@ -887,33 +887,16 @@ In order to motivate this application, we consider the boundary value
 Laplace equation.  This system can model scalar potential fields, such
 as heat or electrical potential.  Given a medium 
 @tex
-$\Omega$ 
-@end tex
-@ifinfo
-Omega
-@end ifinfo
-with boundary
-@tex
-$\partial\Omega$ 
-@end tex
-@ifinfo
-dOmega
-@end ifinfo
-. At all points on the 
-@tex
-$\partial\Omega$ 
-@end tex
-@ifinfo
-dOmega
-@end ifinfo
+$\Omega$ with boundary $\partial\Omega$.  At all points on the $\partial\Omega$
 the boundary conditions are known, and we wish to calculate the potential in
-@tex
-$\Omega$ 
+$\Omega$.
 @end tex
-@ifinfo
-Omega
-@end ifinfo
-. Boundary conditions may specify the potential (Dirichlet
+@ifnottex
+Omega with boundary dOmega.  At all points on the dOmega
+the boundary conditions are known, and we wish to calculate the potential in
+Omega.
+@end ifnottex
+Boundary conditions may specify the potential (Dirichlet
 boundary condition), its normal derivative across the boundary
 (Neumann boundary condition), or a weighted sum of the potential and
 its derivative (Cauchy boundary condition).
@@ -922,9 +905,9 @@ In a thermal model, we want to calculate the temperature in
 @tex
 $\Omega$ 
 @end tex
-@ifinfo
+@ifnottex
 Omega
-@end ifinfo
+@end ifnottex
 and know the boundary temperature (Dirichlet condition)
 or heat flux (from which we can calculate the Neumann condition
 by dividing by the thermal conductivity at the boundary).  Similarly, 
@@ -932,9 +915,9 @@ in an electrical model, we want to calculate the voltage in
 @tex
 $\Omega$ 
 @end tex
-@ifinfo
+@ifnottex
 Omega
-@end ifinfo
+@end ifnottex
 and know the boundary voltage (Dirichlet) or current
 (Neumann condition after diving by the electrical conductivity).
 In an electrical model, it is common for much of the boundary
@@ -945,9 +928,9 @@ The simplest finite element models will divide
 @tex
 $\Omega$ 
 @end tex
-@ifinfo
+@ifnottex
 Omega
-@end ifinfo
+@end ifnottex
 into simplexes (triangles in 2D, pyramids in 3D).
 @ifset htmltex
 We take as an 3D example a cylindrical liquid filled tank with a small 
@@ -1008,9 +991,9 @@ distribution in
 @tex
 $\Omega$ 
 @end tex
-@ifinfo
+@ifnottex
 Omega
-@end ifinfo
+@end ifnottex
 as constant on each simplex (represented by the vector @code{conductivity}).
 Based on the finite element geometry, we first calculate a system (or
 stiffness) matrix for each simplex (represented as 3-by-3 elements on the
@@ -1052,16 +1035,16 @@ The system matrix acts like the conductivity
 @tex
 $S$ 
 @end tex
-@ifinfo
+@ifnottex
 @code{S}
-@end ifinfo
+@end ifnottex
 in Ohm's law 
 @tex
 $SV = I$. 
 @end tex
-@ifinfo
+@ifnottex
 @code{S * V = I}.
-@end ifinfo
+@end ifnottex
 Based on the Dirichlet and Neumann boundary conditions, we are able to 
 solve for the voltages at each vertex @code{V}. 
 

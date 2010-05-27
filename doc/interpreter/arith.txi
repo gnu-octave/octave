@@ -81,10 +81,10 @@ In the descriptions of the following functions,
 $z$ is the complex number $x + iy$, where $i$ is defined as
 $\sqrt{-1}$.
 @end tex
-@ifinfo
+@ifnottex
 @var{z} is the complex number @var{x} + @var{i}@var{y}, where @var{i} is
 defined as @code{sqrt (-1)}.
-@end ifinfo
+@end ifnottex
 
 @DOCSTRING(abs)
 

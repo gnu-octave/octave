@@ -535,10 +535,10 @@ error: fieldnames: wrong type argument `matrix'
 Functions, commands, and variables are described in this manual in a 
 uniform format.  The first line of a description contains the name of
 the item followed by its arguments, if any.
-@ifinfo
+@ifnottex
 The category---function, variable, or whatever---appears at the
 beginning of the line.
-@end ifinfo
+@end ifnottex
 @iftex
 The category---function, variable, or whatever---is printed next to the
 right margin.

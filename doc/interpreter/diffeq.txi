@@ -41,7 +41,7 @@ $$
  {dx\over dt} = f (x, t)
 $$
 @end tex
-@ifinfo
+@ifnottex
 
 @example
 @group
@@ -50,10 +50,10 @@ dx
 dt
 @end group
 @end example
-@end ifinfo
+@end ifnottex
 
 @noindent
-using Hindmarsh's ODE solver @sc{Lsode}.
+using Hindmarsh's ODE solver @sc{lsode}.
 
 
 

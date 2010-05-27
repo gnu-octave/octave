@@ -49,7 +49,7 @@ $$
            3x^2 - 2xy^2 + 3\cos(x) + 4 &= 0}
 $$
 @end tex
-@ifinfo
+@ifnottex
 
 @example
 @group
@@ -57,7 +57,7 @@ $$
  3x^2 - 2xy^2 + 3 cos(x) = -4
 @end group
 @end example
-@end ifinfo
+@end ifnottex
 
 @noindent
 you first need to write a function to compute the value of the given

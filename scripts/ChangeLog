@@ -1,3 +1,6 @@
+2010-05-26  Rik <octave@nomad.inbox5.com>
+        * sparse/svds.m: Check struct input arguments.  Overhaul documentation.
+
 2010-05-26  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Key labels for specified objects.

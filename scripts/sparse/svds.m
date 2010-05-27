@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} svds (@var{a})
+## @deftypefn  {Function File} {@var{s} =} svds (@var{a})
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k})
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k}, @var{sigma})
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k}, @var{sigma}, @var{opts})
@@ -27,45 +27,44 @@
 ## @group
 ## [@var{m}, @var{n}] = size(@var{a})
 ## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{a}; ...
-##                 @var{a}', sparse(@var{n}, @var{n})])
+##                             @var{a}', sparse(@var{n}, @var{n})])
 ## @end group
 ## @end example
 ##
-## The eigenvalues returned by @code{eigs} correspond to the singular
-## values of @var{a}.  The number of singular values to calculate is given
-## by @var{k}, whose default value is 6.
+## The eigenvalues returned by @code{eigs} correspond to the singular values 
+## of @var{a}.  The number of singular values to calculate is given by @var{k}
+## and defaults to 6.
 ## 
-## The argument @var{sigma} can be used to specify which singular values
-## to find.  @var{sigma} can be either the string 'L', the default, in 
-## which case the largest singular values of @var{a} are found.  Otherwise
-## @var{sigma} should be a real scalar, in which case the singular values
-## closest to @var{sigma} are found.  Note that for relatively small values
-## of @var{sigma}, there is the chance that the requested number of singular
-## values are not returned.  In that case @var{sigma} should be increased.
+## The argument @var{sigma} specifies which singular values to find.  When 
+## @var{sigma} is the string 'L', the default, the largest singular values of 
+## @var{a} are found.  Otherwise, @var{sigma} must be a real scalar and the 
+## singular values closest to @var{sigma} are found.  Note that for relatively
+## small values of @var{sigma}, there is a chance that the requested number of
+## singular values will not be found.  In that case @var{sigma} should be 
+## increased.
 ##
-## If @var{opts} is given, then it is a structure that defines options
-## that @code{svds} will pass to @var{eigs}.  The possible fields of this
-## structure are therefore determined by @code{eigs}.  By default three
-## fields of this structure are set by @code{svds}.
+## @var{opts} is a structure that defines options that @code{svds} will pass
+## to @code{eigs}.  The possible fields of this structure are documented in 
+## @code{eigs}.  By default three fields of this structure are set by 
+## @code{svds}.
 ##
 ## @table @code
 ## @item tol
-## The required convergence tolerance for the singular values.  @code{eigs}
-## is passed @var{tol} divided by @code{sqrt(2)}.  The default value is 
-## 1e-10.
+## The required convergence tolerance for the singular values.  The default 
+## value is 1e-10.  @code{eigs} is passed @var{tol} divided by @code{sqrt(2)}.
 ##
 ## @item maxit
 ## The maximum number of iterations.  The default is 300.
 ##
 ## @item disp
-## The level of diagnostic printout.  If @code{disp} is 0 then there is no
-## printout.  The default value is 0.
+## The level of diagnostic printout.  If @code{disp} is 0 then diagnostics
+## are disabled.  The default value is 0.
 ## @end table
 ##
-## If more than one output argument is given, then @code{svds} also
-## calculates the left and right singular vectors of @var{a}.  @var{flag}
-## is used to signal the convergence of @code{svds}.  If @code{svds} 
-## converges to the desired tolerance, then @var{flag} given by
+## If more than one output is requested then @code{svds} will also return the
+## left and right singular vectors of @var{a}.  @var{flag} returns 0 if the
+## algorithm has succesfully converged, and 1 otherwise.  The test for
+## convergence is
 ##
 ## @example
 ## @group
@@ -86,6 +85,10 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     print_usage ();
   endif
 
+  if (ndims(a) > 2)
+    error ("svds: 'a' must be a 2D matrix")
+  endif
+
   if (nargin < 4)
     opts.tol = 1e-10 / root2;
     opts.disp = 0;
@@ -96,6 +99,13 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     endif
     if (!isfield (opts, "tol"))
       opts.tol = 1e-10 / root2;
+    else
+      opts.tol = opts.tol / root2;
+    endif
+    if (isfield (opts, "v0"))
+      if (!isvector (opts.v0) || (length (opts.v0) != sum (size (a))))
+        error ("svds: opts.v0 must be a vector with rows(a)+columns(a) entries");
+      endif
     endif
   endif
 

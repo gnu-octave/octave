@@ -1425,6 +1425,25 @@ octave_base_value::reset (void) const
   curr_print_indent_level = 0;
 }
 
+
+octave_value
+octave_base_value::fast_elem_extract (octave_idx_type n) const
+{
+  return octave_value ();
+}
+
+bool
+octave_base_value::fast_elem_insert (octave_idx_type n, const octave_value& x)
+{
+  return false;
+}
+
+bool 
+octave_base_value::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+{
+  return false;
+}
+
 CONVDECLX (matrix_conv)
 {
   return new octave_matrix ();

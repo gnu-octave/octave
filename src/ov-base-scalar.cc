@@ -154,3 +154,18 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
   os << name << " = ";
   return false;    
 }
+
+template <class ST>
+bool
+octave_base_scalar<ST>::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+{
+
+  // Don't use builtin_type () here to avoid an extra VM call.
+  if (btyp == class_to_btyp<ST>::btyp)
+    {
+      *(reinterpret_cast<ST *>(where)) = scalar;
+      return true;
+    }
+  else
+    return false;
+}

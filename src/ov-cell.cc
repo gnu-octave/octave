@@ -93,6 +93,34 @@ octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
   matrix.delete_elements (idx);
 }
 
+// FIXME: this list of specializations is becoming so long that we should really ask
+// whether octave_cell should inherit from octave_base_matrix at all.
+
+template <>
+octave_value
+octave_base_matrix<Cell>::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    return Cell (matrix(n));
+  else
+    return octave_value ();
+}
+
+template <>
+bool
+octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n, 
+                                            const octave_value& x)
+{
+  const octave_cell *xrep = 
+    dynamic_cast<const octave_cell *> (&x.get_rep ());
+
+  bool retval = xrep && xrep->matrix.numel () == 1 && n < matrix.numel ();
+  if (retval)
+    matrix(n) = xrep->matrix(0);
+
+  return retval;
+}
+
 template class octave_base_matrix<Cell>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);

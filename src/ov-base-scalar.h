@@ -136,6 +136,12 @@ public:
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<ST *> (&scalar); }
 
+  const ST& scalar_ref (void) const { return scalar; }
+
+  ST& scalar_ref (void) { return scalar; }
+
+  bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+
 protected:
 
   // The value of this scalar.

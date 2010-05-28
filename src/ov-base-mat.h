@@ -165,6 +165,12 @@ public:
       return matrix;
     }
 
+  octave_value
+  fast_elem_extract (octave_idx_type n) const;
+
+  bool
+  fast_elem_insert (octave_idx_type n, const octave_value& x);
+
 protected:
 
   MT matrix;

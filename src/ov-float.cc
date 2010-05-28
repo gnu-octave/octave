@@ -319,3 +319,22 @@ octave_float_scalar::map (unary_mapper_t umap) const
       return octave_base_value::map (umap);
     }
 }
+
+bool
+octave_float_scalar::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+{
+
+  // Support inline real->complex conversion.
+  if (btyp == btyp_float)
+    {
+      *(reinterpret_cast<float *>(where)) = scalar;
+      return true;
+    }
+  else if (btyp == btyp_float_complex)
+    {
+      *(reinterpret_cast<FloatComplex *>(where)) = scalar;
+      return true;
+    }
+  else
+    return false;
+}

@@ -1,3 +1,28 @@
+2010-05-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.h (octave_value::fast_elem_extract,
+	octave_value::fast_elem_insert): New methods.
+	* ov-base.cc (octave_base_value::fast_elem_extract,
+	octave_base_value::fast_elem_insert,
+	octave_base_value::fast_elem_insert_self): New methods.
+	* ov-base.h: Declare them.
+	* ov-base-mat.cc (octave_base_matrix::fast_elem_extract,
+	octave_base_matrix::fast_elem_insert): New overrides.
+	* ov-base-mat.h: Declare them.
+	* ov-base-scalar.cc (octave_base_scalar::fast_elem_extract,
+	octave_base_scalar::fast_elem_insert_self): New overrides.
+	* ov-base-scalar.h: Declare them.
+	(octave_base_scalar::scalar_ref): New method.
+	* ov-scalar.cc (octave_scalar::fast_elem_insert_self): New override.
+	* ov-scalar.h: Declare it.
+	* ov-float.cc (octave_float_scalar::fast_elem_insert_self): New override.
+	* ov-float.h: Declare it.
+	* ov-cell.cc (octave_base_matrix<Cell>::fast_elem_extract,
+	octave_base_matrix<Cell>::fast_elem_insert): New specializations.
+	* DLD-FUNCTIONS/cellfun.cc (scalar_col_helper, scalar_col_helper_def,
+	scalar_col_helper_nda, make_col_helper, can_extract): Remove.
+	(Fcellfun): Use the new fast_elem_insert method.
+
 2010-05-10  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/eigs.cc: Improve documentation string.

@@ -246,6 +246,8 @@ public:
 
   octave_value map (unary_mapper_t umap) const;
 
+  bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

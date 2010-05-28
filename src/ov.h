@@ -1139,6 +1139,22 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
     { return rep->map (umap); }
 
+  // Extract the n-th element, aka val(n). Result is undefined if val is not an
+  // array type or n is out of range. Never error.
+  octave_value
+  fast_elem_extract (octave_idx_type n) const
+    { return rep->fast_elem_extract (n); }
+
+  // Assign the n-th element, aka val(n) = x. Returns false if val is not an
+  // array type, x is not a matching scalar type, or n is out of range.
+  // Never error.
+  virtual bool
+  fast_elem_insert (octave_idx_type n, const octave_value& x)
+    {
+      make_unique ();
+      return rep->fast_elem_insert (n, x);
+    }
+
 protected:
 
   // The real representation.

@@ -37,22 +37,22 @@ function y = ranks (x, dim)
     print_usage ();
   endif
 
+  if (!ismatrix(x) || ischar(x))
+    error ("ranks: X must be a numeric matrix or vector");
+  endif
+
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim  = 1;
-    while (dim < nd + 1 && sz(dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim))
-        && dim > 0
-        && dim < (nd + 1))
-      error ("ranks: dim must be an integer and valid dimension");
+    if (!(isscalar (dim) && dim == round (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("ranks: DIM must be an integer and a valid dimension");
     endif
   endif
 

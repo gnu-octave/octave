@@ -1,3 +1,11 @@
+2010-05-26  Rik <octave@nomad.inbox5.com>
+
+        * statistics/base/histc.m, statistics/base/iqr.m, 
+        statistics/base/kurtosis.m, statistics/base/mode.m, 
+        statistics/base/ranks.m, statistics/base/run_count.m, 
+        statistics/base/skewness.m, statistics/base/statistics.m, 
+        statistics/base/studentize.m: Improve validation of input arguments. 
+
 2010-05-26  Jaroslav Hajek  <highegg@gmail.com>
 
 	* specfun/isprime.m: Fix and further optimize.

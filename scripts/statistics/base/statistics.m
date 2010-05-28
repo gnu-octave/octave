@@ -18,13 +18,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} statistics (@var{x})
+## @deftypefn  {Function File} {} statistics (@var{x})
+## @deftypefnx {Function File} {} statistics (@var{x}, @var{dim})
 ## If @var{x} is a matrix, return a matrix with the minimum, first
 ## quartile, median, third quartile, maximum, mean, standard deviation,
-## skewness and kurtosis of the columns of @var{x} as its columns.
+## skewness, and kurtosis of the columns of @var{x} as its columns.
 ##
-## If @var{x} is a vector, calculate the statistics along the 
+## If @var{x} is a vector, calculate the statistics along the first 
 ## non-singleton dimension.
+##
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -36,28 +38,27 @@ function S = statistics (X, dim)
     print_usage ();
   endif
 
+  if (!ismatrix(X) || ischar(X))
+    error ("statistics: X must be a numeric matrix or vector");
+  endif
+
   nd = ndims (X);
   sz = size (X);
-  nel = numel (X);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim  = 1;
-    while (dim < nd + 1 && sz(dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim))
-        && dim > 0
-        && dim < (nd + 1))
-      error ("statistics: dim must be an integer and valid dimension");
+    if (!(isscalar (dim) && dim == round (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("statistics: DIM must be an integer and a valid dimension");
     endif
   endif
   
-  if (! ismatrix (X) || sz(dim) < 2)
-    error ("statistics: invalid argument");
+  if (sz(dim) < 2)
+    error ("statistics: dimension of X is too small (<2)");
   endif    
 
   emp_inv = quantile (X, [0.25; 0.5; 0.75], dim, 7);

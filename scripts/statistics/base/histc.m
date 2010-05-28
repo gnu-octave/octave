@@ -32,8 +32,8 @@
 ## that was equal to the last element of @var{edges}.
 ##
 ## When @var{y} is a @math{N}-dimensional array, the same operation as above is
-## repeated along dimension @var{dim}.  If this argument is given, the operation
-## is performed along the first non-singleton dimension.
+## repeated along dimension @var{dim}.  If not specified @var{dim} defaults
+## to the first non-singleton dimension.
 ##
 ## If a second output argument is requested an index matrix is also returned.
 ## The @var{idx} matrix has same size as @var{y}.  Each element of @var{idx}
@@ -45,36 +45,43 @@
 
 function [n, idx] = histc (data, edges, dim)
   ## Check input
-  if (nargin < 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  sz = size (data);
-  if (nargin < 3)
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+  if (!isreal (data))
+    error ("histc: Y argument must be real-valued, not complex");
   endif
 
-  if (!isreal (data))
-    error ("histc: first argument must be real a vector");
-  endif
-  
-  ## Make sure 'edges' is sorted
   num_edges = numel (edges);
   if (num_edges == 0)
-    error ("histc: edges must not be empty")
+    error ("histc: EDGES must not be empty")
   endif
 
-  if (isreal (edges))
+  if (!isreal (edges))
+    error ("histc: EDGES must be real-valued, not complex");
+  else
+    ## Make sure 'edges' is sorted
     edges = edges (:);
     if (! issorted (edges) || edges(1) > edges(end))
       warning ("histc: edge values not sorted on input");
       edges = sort (edges);
     endif
+  endif
+
+  nd = ndims (data);
+  sz = size (data);
+  if (nargin < 3)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
+      dim = 1;
+    endif
   else
-    error ("histc: second argument must be a vector");
+    if (!(isscalar (dim) && dim == round (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("histc: DIM must be an integer and a valid dimension");
+    endif
   endif
 
   nsz = sz;

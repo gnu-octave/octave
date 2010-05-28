@@ -21,8 +21,8 @@
 ## @deftypefn {Function File} {} run_count (@var{x}, @var{n})
 ## Count the upward runs along the first non-singleton dimension of
 ## @var{x} of length 1, 2, @dots{}, @var{n}-1 and greater than or equal 
-## to @var{n}.  If the optional argument @var{dim} is given operate
-## along this dimension
+## to @var{n}.  If the optional argument @var{dim} is given then operate
+## along this dimension.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
@@ -34,30 +34,29 @@ function retval = run_count (x, n, dim)
     print_usage ();
   endif
 
+  if (!ismatrix(x) || ischar(x))
+    error ("run_count: X must be a numeric matrix or vector");
+  endif
+
+  if (!(isscalar (n) && n == round (n)) || n < 1)
+    error ("run_count: N must be a positive integer");
+  endif
+  
   nd = ndims (x);
   sz = size (x);
   if (nargin != 3)
     ## Find the first non-singleton dimension.
-    dim  = 1;
-    while (dim < nd + 1 && sz(dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim))
-        && dim > 0
-        && dim < (nd + 1))
-      error ("run_count: dim must be an integer and valid dimension");
+    if (!(isscalar (dim) && dim == round (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("run_count: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  if (! (isscalar (n) && n == round (n)) && n > 0)
-    error ("run_count: n must be a positive integer");
-  endif
-  
-  nd = ndims (x);
   if (dim != 1)
     perm = [1 : nd];
     perm(1) = dim;

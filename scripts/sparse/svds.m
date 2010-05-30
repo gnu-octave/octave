@@ -18,6 +18,7 @@
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k})
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k}, @var{sigma})
 ## @deftypefnx {Function File} {@var{s} =} svds (@var{a}, @var{k}, @var{sigma}, @var{opts})
+## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}] =} svds (@dots{})
 ## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
 ## Find a few singular values of the matrix @var{a}.  The singular values
@@ -26,8 +27,8 @@
 ## @example
 ## @group
 ## [@var{m}, @var{n}] = size(@var{a})
-## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{a}; ...
-##                             @var{a}', sparse(@var{n}, @var{n})])
+## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{a};
+##                     @var{a}', sparse(@var{n}, @var{n})])
 ## @end group
 ## @end example
 ##
@@ -38,44 +39,51 @@
 ## The argument @var{sigma} specifies which singular values to find.  When 
 ## @var{sigma} is the string 'L', the default, the largest singular values of 
 ## @var{a} are found.  Otherwise, @var{sigma} must be a real scalar and the 
-## singular values closest to @var{sigma} are found.  Note that for relatively
-## small values of @var{sigma}, there is a chance that the requested number of
-## singular values will not be found.  In that case @var{sigma} should be 
-## increased.
+## singular values closest to @var{sigma} are found.  As a corollary, 
+## @code{@var{sigma} = 0} finds the smallest singular values.  Note that for 
+## relatively small values of @var{sigma}, there is a chance that the requested
+## number of singular values will not be found.  In that case @var{sigma} 
+## should be increased.
 ##
-## @var{opts} is a structure that defines options that @code{svds} will pass
+## @var{opts} is a structure defining options that @code{svds} will pass
 ## to @code{eigs}.  The possible fields of this structure are documented in 
-## @code{eigs}.  By default three fields of this structure are set by 
-## @code{svds}.
+## @code{eigs}.  By default, @code{svds} sets the following three fields:
 ##
 ## @table @code
 ## @item tol
 ## The required convergence tolerance for the singular values.  The default 
-## value is 1e-10.  @code{eigs} is passed @var{tol} divided by @code{sqrt(2)}.
+## value is 1e-10.  @code{eigs} is passed @code{@var{tol} / sqrt(2)}.
 ##
 ## @item maxit
 ## The maximum number of iterations.  The default is 300.
 ##
 ## @item disp
-## The level of diagnostic printout.  If @code{disp} is 0 then diagnostics
-## are disabled.  The default value is 0.
+## The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then 
+## diagnostics are disabled.  The default value is 0.
 ## @end table
 ##
-## If more than one output is requested then @code{svds} will also return the
-## left and right singular vectors of @var{a}.  @var{flag} returns 0 if the
-## algorithm has succesfully converged, and 1 otherwise.  The test for
-## convergence is
+## If more than one output is requested then @code{svds} will return an
+## approximation of the singular value decomposition of @var{a}
+##
+## @example
+## @var{a}_approx = @var{u}*@var{s}*@var{v}'
+## @end example
+##
+## where @var{a}_approx is a matrix of size @var{a} but only rank @var{k}.
+## 
+## @var{flag} returns 0 if the algorithm has succesfully converged, and 1 
+## otherwise.  The test for convergence is
 ##
 ## @example
 ## @group
-## norm (@var{a} * @var{v} - @var{u} * @var{s}, 1) <= ...
-##         @var{tol} * norm (@var{a}, 1)
+## norm (@var{a}*@var{v} - @var{u}*@var{s}, 1) <= @var{tol} * norm (@var{a}, 1)
 ## @end group
 ## @end example
 ##
-## will be zero.
+## @code{svds} is best for finding only a few singular values from a large sparse
+## matrix.  Otherwise, @code{svd (full(@var{a}))} will likely be more efficient.
 ## @end deftypefn
-## @seealso{eigs}
+## @seealso{svd, eigs}
 
 function [u, s, v, flag] = svds (a, k, sigma, opts)
 
@@ -86,7 +94,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
   endif
 
   if (ndims(a) > 2)
-    error ("svds: 'a' must be a 2D matrix")
+    error ("svds: A must be a 2D matrix")
   endif
 
   if (nargin < 4)
@@ -95,7 +103,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     opts.maxit = 300;
   else
     if (!isstruct (opts))
-      error ("svds: opts must be a structure");
+      error ("svds: OPTS must be a structure");
     endif
     if (!isfield (opts, "tol"))
       opts.tol = 1e-10 / root2;
@@ -104,7 +112,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     endif
     if (isfield (opts, "v0"))
       if (!isvector (opts.v0) || (length (opts.v0) != sum (size (a))))
-        error ("svds: opts.v0 must be a vector with rows(a)+columns(a) entries");
+        error ("svds: OPTS.v0 must be a vector with rows(A)+columns(A) entries");
       endif
     endif
   endif
@@ -115,21 +123,19 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     else
       sigma = "LR";
     endif
-  elseif (isscalar (sigma) && isreal (sigma))
+  elseif (isscalar (sigma) && isnumeric (sigma) && isreal (sigma))
     if (sigma < 0)
-      error ("svds: sigma must be a positive real value");
+      error ("svds: SIGMA must be a positive real value");
     endif
   else
-    error ("svds: sigma must be a positive real value or the string 'L'");
+    error ("svds: SIGMA must be a positive real value or the string 'L'");
   endif
 
+  [m, n] = size (a);
   max_a = max (abs (a(:)));
   if (max_a == 0)
-    u = eye (m, k);
-    s = zeros (k, k);
-    v = eye (n, k);
+    s = zeros (k, 1);  # special case of zero matrix
   else
-    [m, n] = size (a);
     if (nargin < 2)
       k = min ([6, m, n]);
     else
@@ -145,17 +151,25 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
       b_sigma = b_sigma / max_a;
     endif
 
-    if (!ischar (b_sigma) && b_sigma == 0)
-      ## The eigenvalues returns by eigs are symmetric about 0. As we 
-      ## are only interested in the positive eigenvalues, we have to
-      ## double k. If sigma is smaller than the smallest singular value
-      ## this can also be an issue. However, we'd like to avoid double
-      ## k for all scalar value of sigma...
-      [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)], 
-                           2 * k, b_sigma, b_opts);
+    if (b_sigma == 0)
+      ## Find the smallest eigenvalues
+      ## The eigenvalues returns by eigs for sigma=0 are symmetric about 0. 
+      ## As we are only interested in the positive eigenvalues, we have to
+      ## double k and then throw out the k negative eigenvalues. 
+      ## Separately, if sigma is non-zero, but smaller than the smallest 
+      ## singular value, ARPACK may not return k eigenvalues. However, as 
+      ## computation scales with k we'd like to avoid doubling k for all 
+      ## scalar values of sigma.
+      b_k = 2 * k; 
     else
+      b_k = k;  # Normal case, find just the k largest eigenvalues
+    endif
+
+    if (nargout > 1)
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
-                           k, b_sigma, b_opts);
+                           b_k, b_sigma, b_opts);
+    else
+      s = eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts);
     endif
     s = diag (s);
 
@@ -164,10 +178,6 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     else
       norma = normest (a);
     endif
-    V = root2 * V;
-    u = V(1:m,:);
-    v = V(m+1:end,:);
-
     ## We wish to exclude all eigenvalues that are less than zero as these
     ## are artifacts of the way the matrix passed to eigs is formed. There 
     ## is also the possibility that the value of sigma chosen is exactly 
@@ -175,21 +185,24 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     ## the warning from eigs. We exclude the singular values which are
     ## less than or equal to zero to within some tolerance scaled by the
     ## norm since if we don't we might end up with too many singular
-    ## values. What is appropriate for the tolerance?
+    ## values.
     tol = norma * opts.tol;
     ind = find(s > tol);
     if (length (ind) < k)
-      ## Find the zero eigenvalues of B, Ignore the eigenvalues that are 
-      ## nominally negative.
+      ## Too few eigenvalues returned.  Add in any zero eigenvalues of B, 
+      ## including the nominally negative ones.
       zind = find (abs (s) <= tol);
       p = min (length (zind), k - length (ind));
       ind = [ind; zind(1:p)];
     elseif (length (ind) > k)
-      ind = ind(1:k);
+      ## Too many eigenvalues returned.  Select according to criterium.
+      if (b_sigma == 0)
+        ind = ind(end+1-k:end); # smallest eigenvalues
+      else
+        ind = ind(1:k);         # largest eigenvalues
+      endif
     endif
-    u = u(:,ind);
     s = s(ind);
-    v = v(:,ind);
 
     if (length (s) < k)
       warning ("returning fewer singular values than requested");
@@ -204,37 +217,47 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
   if (nargout < 2)
     u = s;
   else
-    s = diag(s);
+    if (max_a == 0)
+      u = eye (m, k);
+      s = diag(s);
+      v = eye (n, k);
+    else
+      u = root2 * V(1:m,ind);
+      s = diag(s);
+      v = root2 * V(m+1:end,ind);
+    endif
+
     if (nargout > 3)
       flag = norm (a*v - u*s, 1) > root2 * opts.tol * norm (a, 1);
     endif
   endif
+
 endfunction
 
 %!shared n, k, a, u, s, v, opts
 %! n = 100;
 %! k = 7;
 %! a = sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),0.4*n*ones(1,n),ones(1,n-2)]);
-%! %%a = sparse([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),1:n,-ones(1,n-2)]);
 %! [u,s,v] = svd(full(a));
 %! s = diag(s);
 %! [~, idx] = sort(abs(s));
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
-%! randn('state',42)
-%! opts.v0 = randn (2*n,1);  % Initialize eigs ARPACK starting vector 
-%!                           % to guarantee reproducible results
+%! randn('state',42);      % Initialize to make normest function reproducible
+%! rand('state',42)
+%! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector 
+%!                         % to guarantee reproducible results
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s(end:-1:end-k+1), s2, 1e-10); 
+%! assert(s2, s(end:-1:end-k+1), 1e-10); 
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(a,k,0,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s(k:-1:1), s2, 1e-10); 
+%! assert(s2, s(k:-1:1), 1e-10); 
 %!testif HAVE_ARPACK
 %! idx = floor(n/2);
 %! % Don't put sigma right on a singular value or there are convergence issues 
@@ -242,4 +265,7 @@ endfunction
 %! [u2,s2,v2,flag] = svds(a,k,sigma,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s((idx+floor(k/2)):-1:(idx-floor(k/2))), s2, 1e-10); 
+%! assert(s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10); 
+%!testif HAVE_ARPACK
+%! [u2,s2,v2,flag] = svds(zeros (10), k);
+%! assert (isequal(u2, eye (10, k)) && isequal (s2, zeros(k)) && isequal (v2, eye(10, 7)))

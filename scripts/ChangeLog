@@ -1,4 +1,12 @@
 2010-05-26  Rik <octave@nomad.inbox5.com>
+        
+        * sparse/svds.m: Overhaul code.  
+        Return smallest singular values if sigma == 0 (Bug #29721).
+        Avoid calculating U and V matrices unless requested.
+        Correctly handle zero matrix input.
+        Improve documentation string.
+
+2010-05-26  Rik <octave@nomad.inbox5.com>
 
         * statistics/base/histc.m, statistics/base/iqr.m, 
         statistics/base/kurtosis.m, statistics/base/mode.m, 

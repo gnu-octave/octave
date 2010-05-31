@@ -117,18 +117,18 @@ function retval = legendre (n, x, normalization)
     print_usage ();
   endif
 
+  if (!isscalar (n) || n < 0 || n != fix (n))
+    error ("legendre: N must be a non-negative scalar integer");
+  endif
+
+  if (!isvector (x) || !isreal (x) || any (x < -1 | x > 1))
+    error ("legendre: X must be real-valued vector in the range -1 <= X <= 1");
+  endif
+
   if (nargin == 3)
     normalization = lower (normalization);
   else
     normalization = "unnorm";
-  endif
-
-  if (! isscalar (n) || n < 0 || n != fix (n))
-    error ("legendre: n must be a non-negative scalar integer");
-  endif
-
-  if (! isvector (x) || any (x < -1 || x > 1))
-    error ("legendre: x must be vector in range -1 <= x <= 1");
   endif
 
   switch (normalization)
@@ -139,9 +139,12 @@ function retval = legendre (n, x, normalization)
     case "unnorm"
       scale = 1;
     otherwise
-      error ("legendre: expecting normalization option to be \"norm\", \"sch\", or \"unnorm\"");
+      error ('legendre: expecting normalization option to be "norm", "sch", or "unnorm"');
   endswitch
 
+  if (rows (x) != 1)
+    x = x';
+  endif
   scale = scale * ones (1, numel (x));
 
   ## Based on the recurrence relation below
@@ -235,3 +238,15 @@ endfunction
 %!test
 %! result = legendre (0, 0:0.1:1);
 %! assert (result, full(ones(1,11)))
+
+%% Check correct invocation
+%!error legendre ();
+%!error legendre (1);
+%!error legendre (1,2,3,4);
+%!error legendre ([1, 2], [-1, 0, 1]);
+%!error legendre (-1, [-1, 0, 1]);
+%!error legendre (1.1, [-1, 0, 1]);
+%!error legendre (1, [-1+i, 0, 1]);
+%!error legendre (1, [-2, 0, 1]);
+%!error legendre (1, [-1, 0, 2]);
+%!error legendre (1, [-1, 0, 1], "badnorm");

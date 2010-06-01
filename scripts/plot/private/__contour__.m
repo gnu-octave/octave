@@ -81,8 +81,8 @@ function [c, hg] = __contour__ (varargin)
 
   if (length(varargin) < 5)
     z1 = varargin{3};
-    x1 = 1 : rows(z1);
-    y1 = 1 : columns(z1);
+    x1 = 1 : columns(z1);
+    y1 = 1 : rows(z1);
   else
     x1 = varargin{3};
     y1 = varargin{4};

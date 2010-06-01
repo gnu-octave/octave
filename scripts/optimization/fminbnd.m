@@ -72,8 +72,6 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
 
-  persistent mu = 0.5;
-
   if (funvalchk)
     ## Replace fun with a guarded version.
     fun = @(x) guarded_eval (fun, x);

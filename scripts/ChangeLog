@@ -1,8 +1,14 @@
 2010-06-01  Rik <octave@nomad.inbox5.com>
+
+	* optimization/fminbnd.m: Remove unused persistent variable.
+
+2010-06-01  Rik <octave@nomad.inbox5.com>
+
 	* plot/private/__contour__.m: Correctly size X and Y when only Z
         specified (bug #30002).
 
 2010-05-31  Rik <octave@nomad.inbox5.com>
+
 	* specfun/legendre.m: Orient row vector correctly (bug #29997).
         Add input validation for negative values and %tests to check
         validation routines.

@@ -1,3 +1,9 @@
+2010-06-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array.cc (Array<T>::maybe_delete_dims): Remove method (makes no
+	longer sense).
+	* Array.h: Update decls.
+
 2010-05-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::compute_index (const octave_idx_type *,

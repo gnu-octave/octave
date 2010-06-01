@@ -1670,35 +1670,6 @@ Array<T>::fortran_vec (void)
   return slice_data;
 }
 
-template <class T>
-void
-Array<T>::maybe_delete_dims (void)
-{
-  int nd = dimensions.length ();
-
-  dim_vector new_dims (1, 1);
-
-  bool delete_dims = true;
-
-  for (int i = nd - 1; i >= 0; i--)
-    {
-      if (delete_dims)
-        {
-          if (dimensions(i) != 1)
-            {
-              delete_dims = false;
-
-              new_dims = dim_vector (i + 1, dimensions(i));
-            }
-        }
-      else
-        new_dims(i) = dimensions(i);
-    }
-
-  if (nd != new_dims.length ())
-    dimensions = new_dims;
-}
-
 // Non-real types don't have NaNs.
 template <class T>
 inline bool

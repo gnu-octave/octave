@@ -459,8 +459,6 @@ public:
 
   int ndims (void) const { return dimensions.length (); }
 
-  void maybe_delete_dims (void);
-
   // Indexing without resizing.
 
   Array<T> index (const idx_vector& i) const;

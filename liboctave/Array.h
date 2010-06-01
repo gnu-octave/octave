@@ -622,6 +622,11 @@ public:
 
   template <class U> friend class Array;
 
+  // Returns true if this->dims () == dv, and if so, replaces this->dimensions
+  // by a shallow copy of dv. This is useful for maintaining several arrays with
+  // supposedly equal dimensions (e.g. structs in the interpreter).
+  bool optimize_dimensions (const dim_vector& dv);
+
 private:
   static void instantiation_guard ();
 };

@@ -2571,6 +2571,16 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 }
 
 template <class T>
+bool Array<T>::optimize_dimensions (const dim_vector& dv)
+{
+  bool retval = dimensions == dv;
+  if (retval)
+    dimensions = dv;
+  
+  return retval;
+}
+
+template <class T>
 void Array<T>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.

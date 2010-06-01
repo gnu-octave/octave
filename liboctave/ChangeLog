@@ -1,5 +1,10 @@
 2010-06-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array<T>::optimize_dimensions): New method.
+	* Array.h: Declare it.
+
+2010-06-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array.cc (Array<T>::maybe_delete_dims): Remove method (makes no
 	longer sense).
 	* Array.h: Update decls.

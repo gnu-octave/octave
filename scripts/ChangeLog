@@ -1,3 +1,10 @@
+2010-06-02  Rik <octave@nomad.inbox5.com>
+
+	* optimization/sqp.m: Overhaul sqp code.
+        Guarantee equivalent results if sqp called with or wihout bounds 
+        (bug #29989).  Simplify input option handling and add %tests
+        to check validation code.  Rewrite documentation string.
+
 2010-06-01  Rik <octave@nomad.inbox5.com>
 
 	* optimization/fminbnd.m: Remove unused persistent variable.

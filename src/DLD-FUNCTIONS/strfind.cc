@@ -180,6 +180,22 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 {
   octave_value retval;
   int nargin = args.length ();
+  bool overlaps = true;
+
+  if (nargin == 4 && args(2).is_string () && args(3).is_scalar_type ())
+    {
+      std::string opt = args(2).string_value ();
+      if (opt == "overlaps")
+        {
+          overlaps = args(3).bool_value ();
+          nargin = 2;
+        }
+      else
+        {
+          error ("strfind: unknown option: %s", opt.c_str ());
+          return retval;
+        }
+    }
 
   if (nargin == 2)
     {
@@ -191,7 +207,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
           qs_preprocess (needle, table);
 
           if (argstr.is_string ())
-            retval = octave_value (qs_search (needle, argstr.char_array_value (), table), 
+            retval = octave_value (qs_search (needle, argstr.char_array_value (), 
+                                              table, overlaps), 
                                    true, true);
           else if (argstr.is_cell ())
             {
@@ -203,7 +220,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
                 {
                   octave_value argse = argsc(i);
                   if (argse.is_string ())
-                    retc(i) = octave_value (qs_search (needle, argse.char_array_value (), table), 
+                    retc(i) = octave_value (qs_search (needle, argse.char_array_value (), 
+                                                       table, overlaps), 
                                             true, true);
                   else
                     {
@@ -236,6 +254,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 %!error strfind (100, "foo");
 
 %!assert (strfind ("abababa", "aba"), [1, 3, 5]);
+%!assert (strfind ("abababa", "aba", "overlaps", false), [1, 5]);
 %!assert (strfind ({"abababa", "bla", "bla"}, "a"), {[1, 3, 5, 7], 3, 3});
 %!assert (strfind ("Linux _is_ user-friendly. It just isn't ignorant-friendly or idiot-friendly.", "friendly"), [17, 50, 68]);
 
@@ -244,7 +263,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 static Array<char>
 qs_replace (const Array<char>& str, const Array<char>& pat,
             const Array<char>& rep, 
-            const octave_idx_type table[TABSIZE])
+            const octave_idx_type table[TABSIZE],
+            bool overlaps = true)
 {
   Array<char> ret = str;
 
@@ -253,13 +273,33 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
   if (psiz != 0)
     {
       // Look up matches, without overlaps.
-      const Array<octave_idx_type> idx = qs_search (pat, str, table, false);
+      const Array<octave_idx_type> idx = qs_search (pat, str, table, overlaps);
       octave_idx_type nidx = idx.numel ();
 
       if (nidx)
         {
           // Compute result size.
-          octave_idx_type retsiz = siz + nidx * (rsiz - psiz);
+          octave_idx_type retsiz;
+          if (overlaps)
+            {
+              retsiz = 0;
+              // OMG. Is this the "right answer" MW always looks for, or
+              // someone was just lazy?
+              octave_idx_type k = 0;
+              for (octave_idx_type i = 0; i < nidx; i++)
+                {
+                  octave_idx_type j = idx(i);
+                  if (j >= k)
+                    retsiz += j - k;
+                  retsiz += rsiz;
+                  k = j + psiz;
+                }
+
+              retsiz += siz - k;
+            }
+          else
+            retsiz = siz + nidx * (rsiz - psiz);
+
           ret.clear (dim_vector (1, retsiz));
           const char *src = str.data (), *reps = rep.data ();
           char *dest = ret.fortran_vec ();
@@ -268,7 +308,8 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
           for (octave_idx_type i = 0; i < nidx; i++)
             {
               octave_idx_type j = idx(i);
-              dest = std::copy (src + k, src + j, dest);
+              if (j >= k)
+                dest = std::copy (src + k, src + j, dest);
               dest = std::copy (reps, reps + rsiz, dest);
               k = j + psiz;
             }
@@ -283,6 +324,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 DEFUN_DLD (strrep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y}, \"overlaps\", @var{o})\n\
 Replace all occurrences of the substring @var{x} of the string @var{s}\n\
 with the string @var{y} and return the result.  For example,\n\
 \n\
@@ -300,6 +342,22 @@ done for each element and a cell array is returned.\n\
 {
   octave_value retval;
   int nargin = args.length ();
+  bool overlaps = true;
+
+  if (nargin == 5 && args(3).is_string () && args(4).is_scalar_type ())
+    {
+      std::string opt = args(3).string_value ();
+      if (opt == "overlaps")
+        {
+          overlaps = args(4).bool_value ();
+          nargin = 3;
+        }
+      else
+        {
+          error ("strrep: unknown option: %s", opt.c_str ());
+          return retval;
+        }
+    }
 
   if (nargin == 3)
     {
@@ -313,7 +371,7 @@ done for each element and a cell array is returned.\n\
           qs_preprocess (pat, table);
 
           if (argstr.is_string ())
-            retval = qs_replace (argstr.char_array_value (), pat, rep, table);
+            retval = qs_replace (argstr.char_array_value (), pat, rep, table, overlaps);
           else if (argstr.is_cell ())
             {
               const Cell argsc = argstr.cell_value ();
@@ -324,7 +382,7 @@ done for each element and a cell array is returned.\n\
                 {
                   octave_value argse = argsc(i);
                   if (argse.is_string ())
-                    retc(i) = qs_replace (argse.char_array_value (), pat, rep, table);
+                    retc(i) = qs_replace (argse.char_array_value (), pat, rep, table, overlaps);
                   else
                     {
                       error ("strrep: each cell element must be a string");
@@ -352,6 +410,8 @@ done for each element and a cell array is returned.\n\
 
 %!assert(strcmp (strrep ("This is a test string", "is", "&%$"),
 %! "Th&%$ &%$ a test string"));
+%!assert(strrep ("abababc", "abab", "xyz"), "xyzxyzc");
+%!assert(strrep ("abababc", "abab", "xyz", "overlaps", false), "xyzabc");
 
 %!error strrep ();
 

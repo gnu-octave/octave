@@ -111,7 +111,7 @@ function retval = __plt__ (caller, h, varargin)
   else
     msg = sprintf ("%s (y)\n", caller);
     msg = sprintf ("%s       %s (x, y, ...)\n", msg, caller);
-    msg = sprintf ("%s       %s (x, y, fmt, ...)", msg, caller);
+    msg = sprintf ("%s       %s (x, y, fmt, ...)\n", msg, caller);
     msg = sprintf ("%s       %s (x, y, property, value, ...)", msg, caller);
     usage (msg);
   endif

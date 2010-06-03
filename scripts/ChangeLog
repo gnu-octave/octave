@@ -1,3 +1,7 @@
+2010-06-03  Rik <octave@nomad.inbox5.com>
+
+	* plot/private/__plt__.m: Add newline to usage message.
+
 2010-06-02  Rik <octave@nomad.inbox5.com>
 
 	* optimization/sqp.m: Overhaul sqp code.

@@ -45,7 +45,7 @@ function [pval, chisq, df] = chisquare_test_independence (X)
   Y = sum (X')' * sum (X) / n;
   X = (X - Y) .^2 ./ Y;
   chisq = sum (sum (X));
-  pval  = 1 - chisquare_cdf (chisq, df);
+  pval  = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
     printf("  pval: %g\n", pval);

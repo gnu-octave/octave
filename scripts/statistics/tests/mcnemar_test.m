@@ -56,7 +56,7 @@ function [pval, chisq, df] = mcnemar_test (x)
   endif
 
   chisq = sum (sum (triu (num ./ (x + x'), 1)));
-  pval = 1 - chisquare_cdf (chisq, df);
+  pval = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
     printf ("  pval: %g\n", pval);

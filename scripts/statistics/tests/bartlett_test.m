@@ -59,7 +59,7 @@ function [pval, chisq, df] = bartlett_test (varargin)
   c     = 1 + (sum (1 ./ f) - 1 / f_tot) / (3 * (k - 1));
   chisq = (f_tot * log (v_tot) - sum (f .* log (v))) / c;
   df    = k;
-  pval  = 1 - chisquare_cdf (chisq, df);
+  pval  = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
     printf("  pval: %g\n", pval);

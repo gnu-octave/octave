@@ -92,6 +92,6 @@ function [pval, lm] = arch_test (y, X, p)
   f    = e.^2 / v_b - ones (T, 1);
   f    = Z' * f;
   lm   = f' * inv (Z'*Z) * f / 2;
-  pval = 1 - chisquare_cdf (lm, p);
+  pval = 1 - chi2cdf (lm, p);
 
 endfunction

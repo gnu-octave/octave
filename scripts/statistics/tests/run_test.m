@@ -50,7 +50,7 @@ function [pval, chisq] = run_test (x)
   r = run_count (x, 6) - n * b * ones (1, columns(x));
 
   chisq = diag (r' * A * r)' / n;
-  pval  = chisquare_cdf (chisq, 6);
+  pval  = chi2cdf (chisq, 6);
 
   if (nargout == 0)
     printf("pval: %g\n", pval);

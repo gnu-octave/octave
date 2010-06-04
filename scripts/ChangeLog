@@ -1,3 +1,12 @@
+2010-06-03  Alois Schlögl
+
+        * signal/arch_test.m, statistics/tests/bartlett_test.m, 
+        statistics/tests/chisquare_test_homogeneity.m, 
+        statistics/tests/chisquare_test_independence.m, 
+        statistics/tests/manova.m, statistics/tests/mcnemar_test.m, 
+        statistics/tests/run_test.m, statistics/distributions/chi2pdf.m: 
+        Replace calls to obsolete chisquare_cdf with chi2cdf.
+
 2010-06-03  Rik <octave@nomad.inbox5.com>
 
 	* plot/private/__plt__.m: Add newline to usage message.

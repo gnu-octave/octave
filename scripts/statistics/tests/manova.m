@@ -97,7 +97,7 @@ function manova (Y, g)
 
   delta = n_w + n_b - (p + n_b + 1) / 2
   df_num = p * n_b
-  W_pval_1 = 1 - chisquare_cdf (- delta * log (Lambda), df_num);
+  W_pval_1 = 1 - chi2cdf (- delta * log (Lambda), df_num);
 
   if (p < 3)
     eta = p;

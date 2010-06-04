@@ -60,7 +60,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   y     = reshape (y, l_y, 1);
   n_y   = sum(y * ones (1, df+1) < ones (l_y, 1) * c);
   chisq = l_x * l_y * sum ((n_x/l_x - n_y/l_y).^2 ./ (n_x + n_y));
-  pval  = 1 - chisquare_cdf (chisq, df);
+  pval  = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
     printf("  pval: %g\n", pval);

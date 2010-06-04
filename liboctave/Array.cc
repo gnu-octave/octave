@@ -2518,9 +2518,11 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 
   if (n == 1)
     return array_list[0];
+  else if (n == 0)
+    return Array<T> ();
 
-  dim_vector dv;
-  for (octave_idx_type i = 0; i < n; i++)
+  dim_vector dv = array_list[0].dims ();
+  for (octave_idx_type i = 1; i < n; i++)
     if (! dv.concat (array_list[i].dims (), dim))
       (*current_liboctave_error_handler)
         ("cat: dimension mismatch");

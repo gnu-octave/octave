@@ -204,24 +204,7 @@ public:
       }
   }
 
-  void chop_all_singletons (void)
-  {
-    make_unique ();
-
-    int j = 0;
-    int l = ndims();
-
-    for (int i = 0; i < l; i++)
-      {
-        if (rep[i] != 1)
-          rep[j++] = rep[i];
-      }
-
-    if (j == 1)
-      rep[1] = 1;
-
-    ndims () = j > 2 ? j : 2;
-  }
+  void chop_all_singletons (void);
 
 private:
   
@@ -286,22 +269,7 @@ public:
       }
   }
 
-  std::string str (char sep = 'x') const
-  {
-    std::ostringstream buf;
-
-    for (int i = 0; i < length (); i++)
-      {
-        buf << elem (i);
-
-        if (i < length () - 1)
-          buf << sep;
-      }
-
-    std::string retval = buf.str ();
-
-    return retval;
-  }
+  std::string str (char sep = 'x') const;
 
   bool all_zero (void) const
   {
@@ -340,16 +308,7 @@ public:
     return retval;
   }
 
-  int num_ones (void) const
-  {
-    int retval = 0;
-
-    for (int i = 0; i < length (); i++)
-      if (elem (i) == 1)
-        retval++;
-
-    return retval;
-  }
+  int num_ones (void) const;
 
   bool all_ones (void) const
   {
@@ -380,23 +339,7 @@ public:
   // function that is iterating over an array using octave_idx_type
   // indices.
 
-  octave_idx_type safe_numel (void) const
-  {
-    octave_idx_type idx_max = std::numeric_limits<octave_idx_type>::max () - 1;
-    octave_idx_type n = 1;
-    int n_dims = length ();
-
-    for (int i = 0; i < n_dims; i++)
-      {
-        n *= rep[i];
-        if (rep[i] != 0)
-          idx_max /= rep[i];
-        if (idx_max <= 0)
-          throw std::bad_alloc ();
-      }
-
-    return n;
-  }
+  octave_idx_type safe_numel (void) const;
 
   bool any_neg (void) const
   {
@@ -410,123 +353,9 @@ public:
     return i < n_dims;
   }
 
-  dim_vector squeeze (void) const
-  {
-    dim_vector new_dims = *this;
+  dim_vector squeeze (void) const;
 
-    bool dims_changed = 1;
-
-    int k = 0;
-
-    for (int i = 0; i < length (); i++)
-      {
-        if (elem (i) == 1)
-          dims_changed = true;
-        else
-          new_dims(k++) = elem (i);
-      }
-
-    if (dims_changed)
-      {
-        if (k == 0)
-          new_dims = dim_vector (1, 1);
-        else if (k == 1)
-          {
-            // There is one non-singleton dimension, so we need
-            // to decide the correct orientation.
-
-            if (elem (0) == 1)
-              {
-                // The original dimension vector had a leading
-                // singleton dimension.
-
-                octave_idx_type tmp = new_dims(0);
-        
-                new_dims.resize (2);
-
-                new_dims(0) = 1;
-                new_dims(1) = tmp;
-              }
-            else
-              {
-                // The first element of the original dimension vector
-                // was not a singleton dimension.
-
-                new_dims.resize (2);
-
-                new_dims(1) = 1;
-              }
-          }
-        else
-          new_dims.resize(k);
-      }
- 
-    return new_dims;
-  }
-
-  bool concat (const dim_vector& dvb, int dim = 0)
-  {
-    if (dvb.zero_by_zero ())
-      return true;
-
-    if (zero_by_zero ())
-      {
-        *this = dvb;
-        return true;
-      }
-
-    int na = length ();
-    int nb = dvb.length ();
-  
-    // Find the max and min value of na and nb
-    int n_max = na > nb ? na : nb;
-    int n_min = na < nb ? na : nb;
-  
-    // The elements of the dimension vectors can only differ
-    // if the dim variable differs from the actual dimension
-    // they differ.
-
-    for (int i = 0; i < n_min; i++)
-      {
-        if (elem(i) != dvb(i) && dim != i)
-            return false;
-      }
-  
-    // Ditto.
-    for (int i = n_min; i < n_max; i++)
-      {
-        if (na > n_min)
-          {
-            if (elem(i) != 1 && dim != i)
-              return false;
-          }
-        else 
-          {
-            if (dvb(i) != 1 && dim != i)
-              return false;
-          }
-      }
-    
-    // If we want to add the dimension vectors at a dimension
-    // larger than both, then we need to set n_max to this number
-    // so that we resize *this to the right dimension.
-    
-    n_max = n_max > (dim + 1) ? n_max : (dim + 1);
-    
-    // Resize *this to the appropriate dimensions.
-    
-    if (n_max > na)
-      resize (n_max, 1);
-  
-    // Larger or equal since dim has been decremented by one.
-
-    if (dim >= nb)
-      elem (dim)++;
-    else
-      elem (dim) += dvb(dim);
-
-    return true;
-  }
+  bool concat (const dim_vector& dvb, int dim = 0);
 
   // Force certain dimensionality, preserving numel ().  Missing
   // dimensions are set to 1, redundant are folded into the trailing
@@ -534,49 +363,7 @@ public:
   // (dim_vectors are always at least 2D).  If the original dimensions
   // were all zero, the padding value is zero.
 
-  dim_vector redim (int n) const
-    {
-      int n_dims = length ();
-
-      if (n_dims == n)
-        return *this;
-      else if (n_dims < n)
-        {
-          dim_vector retval = alloc (n);
-
-          int pad = 0;
-          for (int i = 0; i < n_dims; i++)
-            {
-              retval.rep[i] = rep[i];
-              if (rep[i] != 0)
-                pad = 1;
-            }
-
-          for (int i = n_dims; i < n; i++)
-            retval.rep[i] = pad;
-
-          return retval;
-        }
-      else
-        {
-          if (n < 1) n = 1;
-
-          dim_vector retval = alloc (n);
-
-          retval.rep[1] = 1;
-
-          for (int i = 0; i < n-1; i++)
-            retval.rep[i] = rep[i];
-
-          int k = rep[n-1];
-          for (int i = n; i < n_dims; i++)
-            k *= rep[i];
-
-          retval.rep[n-1] = k;
-
-          return retval;
-        }
-    }
+  dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
     {

@@ -352,6 +352,7 @@ MATRIX_SRC = \
   boolSparse.cc \
   chMatrix.cc \
   chNDArray.cc \
+  dim-vector.cc \
   dColVector.cc \
   dDiagMatrix.cc \
   dMatrix.cc \

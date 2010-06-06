@@ -1,3 +1,10 @@
+2010-06-06  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* mx-op-defs.h (MNANCHK): Add matrix element type argument and use it
+	to specify template argument for mx_inline_any_nan.
+	(MS_BOOL_OP, SM_BOOL_OP, MM_BOOL_OP, NDS_BOOL_OP, SND_BOOL_OP,
+	NDND_BOOL_OP): Specify new MNANCHK argument.
+
 2010-06-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.cc: New source.

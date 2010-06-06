@@ -541,7 +541,7 @@ agree, or if either of the arguments is complex.\n\
                     { \
                     X##NDArray a0 = args(0).X##_array_value (); \
                     X##NDArray a1 = args(1).X##_array_value (); \
-                    retval = binmap<octave_##X> (a0, a1, rem, "rem"); \
+                    retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
                     } \
                   break
                 MAKE_INT_BRANCH (int8);
@@ -673,7 +673,7 @@ either of the arguments is complex.\n\
                     { \
                     X##NDArray a0 = args(0).X##_array_value (); \
                     X##NDArray a1 = args(1).X##_array_value (); \
-                    retval = binmap<octave_##X> (a0, a1, mod, "mod"); \
+                    retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
                     } \
                   break
                 MAKE_INT_BRANCH (int8);

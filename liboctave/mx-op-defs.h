@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
   if (xisnan (s)) \
     gripe_nan_to_logical_conversion ()
 
-#define MNANCHK(m) \
-  if (do_mx_check (m, mx_inline_any_nan)) \
+#define MNANCHK(m, MT) \
+  if (do_mx_check (m, mx_inline_any_nan<MT>)) \
     gripe_nan_to_logical_conversion ()
 
 // vector by scalar operations.
@@ -116,7 +116,7 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M& m, const S& s) \
   { \
-    MNANCHK (m); \
+    MNANCHK (m, M::element_type); \
     SNANCHK (s); \
     return do_ms_binary_op<bool, M::element_type, S> (m, s, OP); \
   }
@@ -160,7 +160,7 @@ along with Octave; see the file COPYING.  If not, see
   F (const S& s, const M& m) \
   { \
     SNANCHK (s); \
-    MNANCHK (m); \
+    MNANCHK (m, M::element_type); \
     return do_sm_binary_op<bool, S, M::element_type> (s, m, OP); \
   }
 
@@ -202,8 +202,8 @@ along with Octave; see the file COPYING.  If not, see
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
-    MNANCHK (m1); \
-    MNANCHK (m2); \
+    MNANCHK (m1, M1::element_type); \
+    MNANCHK (m2, M2::element_type); \
     return do_mm_binary_op<bool, M1::element_type, M2::element_type> (m1, m2, OP, #F); \
   }
 
@@ -245,7 +245,7 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND& m, const S& s) \
   { \
-    MNANCHK (m); \
+    MNANCHK (m, ND::element_type); \
     SNANCHK (s); \
     return do_ms_binary_op<bool, ND::element_type, S> (m, s, OP); \
   }
@@ -293,7 +293,7 @@ along with Octave; see the file COPYING.  If not, see
   F (const S& s, const ND& m) \
   { \
     SNANCHK (s); \
-    MNANCHK (m); \
+    MNANCHK (m, ND::element_type); \
     return do_sm_binary_op<bool, S, ND::element_type> (s, m, OP); \
   }
 
@@ -339,8 +339,8 @@ along with Octave; see the file COPYING.  If not, see
   boolNDArray \
   F (const ND1& m1, const ND2& m2) \
   { \
-    MNANCHK (m1); \
-    MNANCHK (m2); \
+    MNANCHK (m1, ND1::element_type); \
+    MNANCHK (m2, ND2::element_type); \
     return do_mm_binary_op<bool, ND1::element_type, ND2::element_type> (m1, m2, OP, #F); \
   }
 

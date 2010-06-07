@@ -1,3 +1,10 @@
+2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pkg/get_forge_pkg.m: New function.
+	* pkg/module.mk: Add it here.
+	* pkg/pkg.m: Support -forge switch for auto-downloading OctaveForge
+	packages.
+
 2010-06-03  Alois Schlögl
 
         * signal/arch_test.m, statistics/tests/bartlett_test.m, 

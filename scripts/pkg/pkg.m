@@ -1,4 +1,5 @@
 ## Copyright (C) 2005, 2006, 2007, 2008, 2009 S�ren Hauberg
+## Copyright (C) 2010 VZLU Prague, a.s.
 ## 
 ## This file is part of Octave.
 ##
@@ -232,6 +233,7 @@ function [local_packages, global_packages] = pkg (varargin)
   auto = 0;
   action = "none";
   verbose = false;
+  octave_forge = false;
   for i = 1:length (varargin)
     switch (varargin{i})
       case "-nodeps"
@@ -242,6 +244,8 @@ function [local_packages, global_packages] = pkg (varargin)
         auto = 1;
       case "-verbose"
         verbose = true;
+      case "-forge"
+        octave_forge = true;
       case "-local"
         global_install = false;
         if (! user_prefix)
@@ -266,6 +270,10 @@ function [local_packages, global_packages] = pkg (varargin)
     endswitch
   endfor
 
+  if (octave_forge && ! strcmp (action, "install"))
+    error ("-forge can only be used with install");
+  endif
+
   ## Take action
   switch (action)
     case "list"
@@ -284,8 +292,26 @@ function [local_packages, global_packages] = pkg (varargin)
       if (length (files) == 0)
         error ("you must specify at least one filename when calling 'pkg install'");
       endif
-      install (files, deps, auto, prefix, archprefix, verbose, local_list, 
-               global_list, global_install);
+
+      local_files = {};
+      unwind_protect
+
+        if (octave_forge)
+          [urls, local_files] = cellfun (@get_forge_download, files, "uniformoutput", false);
+          [files, succ] = cellfun (@urlwrite, urls, local_files, "uniformoutput", false);
+          succ = [succ{:}];
+          if (! all (succ))
+            i = find (! succ, 1);
+            error ("could not download file %s from url %s", local_files{i}, urls{i});
+          endif
+        endif
+
+        install (files, deps, auto, prefix, archprefix, verbose, local_list, 
+                 global_list, global_install);
+
+      unwind_protect_cleanup
+        cellfun (@unlink, local_files);
+      end_unwind_protect
 
     case "uninstall"
       if (length (files) == 0)
@@ -2297,4 +2323,9 @@ function dep = is_architecture_dependent (nm)
       break;
     endif
   endfor
+endfunction
+
+function [url, local_file] = get_forge_download (name)
+  [ver, url] = get_forge_pkg (name);
+  local_file = [name, "-", ver, ".tar.gz"];
 endfunction

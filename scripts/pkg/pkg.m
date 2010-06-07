@@ -270,22 +270,30 @@ function [local_packages, global_packages] = pkg (varargin)
     endswitch
   endfor
 
-  if (octave_forge && ! strcmp (action, "install"))
-    error ("-forge can only be used with install");
+  if (octave_forge && ! any (strcmp (action, {"install", "list"})))
+    error ("-forge can only be used with install or list");
   endif
 
   ## Take action
   switch (action)
     case "list"
-      if (nargout == 0)
-        installed_packages (local_list, global_list);
-      elseif (nargout == 1)
-        local_packages = installed_packages (local_list, global_list);
-      elseif (nargout == 2)
-        [local_packages, global_packages] = installed_packages (local_list,
-                                                                global_list);
+      if (octave_forge)
+        if (nargout > 0)
+          local_packages = list_forge_packages ();
+        else
+          list_forge_packages ();
+        endif
       else
-        error ("too many output arguments requested");
+        if (nargout == 0)
+          installed_packages (local_list, global_list);
+        elseif (nargout == 1)
+          local_packages = installed_packages (local_list, global_list);
+        elseif (nargout == 2)
+          [local_packages, global_packages] = installed_packages (local_list,
+                                                                  global_list);
+        else
+          error ("too many output arguments requested");
+        endif
       endif
 
     case "install"
@@ -2328,4 +2336,25 @@ endfunction
 function [url, local_file] = get_forge_download (name)
   [ver, url] = get_forge_pkg (name);
   local_file = [name, "-", ver, ".tar.gz"];
+endfunction
+
+function list = list_forge_packages ()
+  [list, succ] = urlread ("http://octave.sourceforge.net/list_packages.php");
+  if (succ)
+    list = strsplit (list, " \n\t", true);
+  else
+    error ("pkg: could not read URL, please verify internet connection");
+  endif
+  if (nargout == 0)
+    page_screen_output (false, "local");
+    puts ("OctaveForge provides these packages:\n");
+    for i = 1:length (list)
+      try
+        ver = get_forge_pkg (list{i});
+      catch
+        ver = "unknown";
+      end_try_catch
+      printf ("  %s %s\n", list{i}, ver);
+    endfor
+  endif
 endfunction

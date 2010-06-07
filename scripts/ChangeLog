@@ -1,5 +1,9 @@
 2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pkg/pkg.m: Support pkg list -forge.
+
+2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pkg/get_forge_pkg.m: New function.
 	* pkg/module.mk: Add it here.
 	* pkg/pkg.m: Support -forge switch for auto-downloading OctaveForge

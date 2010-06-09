@@ -51,18 +51,18 @@
 ## @seealso{rot90, flipud, fliplr, flipdim}
 ## @end deftypefn
 
-function y = rotdim (x, k, plane)
+function y = rotdim (x, n, plane)
   
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (nargin > 1 && ! isempty(k))
-    if (!isscalar (k) || imag (k) != 0 || fix (k) != k)
-      error ("rotdim: k must be an scalar integer");
+  if (nargin > 1 && ! isempty(n))
+    if (!isscalar (n) || !isreal(n) || fix (n) != n)
+      error ("rotdim: N must be a scalar integer");
     endif
   else
-    k = 1;
+    n = 1;
   endif
 
   nd = ndims (x);
@@ -93,20 +93,20 @@ function y = rotdim (x, k, plane)
     endif
   endif
 
-  k = rem (k, 4);
-  if (k < 0)
-    k = k + 4;
+  n = rem (n, 4);
+  if (n < 0)
+    n = n + 4;
   endif
-  if (k == 0)
+  if (n == 0)
     y = x;
-  elseif (k == 2)
+  elseif (n == 2)
     y = flipdim (flipdim (x, plane(1)), plane(2));
-  elseif (k == 1 || k == 3)
+  elseif (n == 1 || n == 3)
     perm = 1:nd;
     perm(plane(1)) = plane(2);
     perm(plane(2)) = plane(1);
     y = permute (x, perm);
-    if (k == 1)
+    if (n == 1)
       y = flipdim (y, min (plane));
     else
       y = flipdim (y, max (plane));

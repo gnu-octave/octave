@@ -1,5 +1,10 @@
 2010-06-03  Rik <octave@nomad.inbox5.com>
 
+        * general/rotdim.m: Modify function to use same variable names
+        as documentation.
+
+2010-06-03  Rik <octave@nomad.inbox5.com>
+
         * general/cart2pol.m, general/cart2sph.m, general/pol2cart.m, 
         general/sph2cart.m: Add option to operate on column matrix of 
         coordinates.

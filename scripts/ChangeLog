@@ -1,5 +1,10 @@
 2010-06-03  Rik <octave@nomad.inbox5.com>
 
+        * general/cumtrapz.m, general/postpad.m, general/prepad.m, 
+        general/shift.m, general/trapz.m, signal/unwrap.m: Use common 
+        method to find first non-singleton dimension.
+2010-06-03  Rik <octave@nomad.inbox5.com>
+
         * general/rotdim.m: Modify function to use same variable names
         as documentation.
 

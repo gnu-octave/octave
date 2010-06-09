@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{z} =} trapz (@var{y})
+## @deftypefn {Function File}  {@var{z} =} trapz (@var{y})
 ## @deftypefnx {Function File} {@var{z} =} trapz (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} trapz (@dots{}, @var{dim})
 ## 
@@ -37,7 +37,6 @@
 
 function z = trapz (x, y, dim)
         
-
   if (nargin < 1) || (nargin > 3)
     print_usage ();
   endif
@@ -61,19 +60,15 @@ function z = trapz (x, y, dim)
   endif
 
   if (! have_dim)
-    ## Find the first singleton dimension.
-    dim = 0;
-    while (dim < nd && sz(dim+1) == 1)
-      dim++;
-    endwhile
-    dim++;
-    if (dim > nd)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
     dim = floor (dim);
     if (dim < 1 || dim > nd)
-      error ("trapz: invalid dimension along which to sort");
+      error ("trapz: invalid dimension DIM along which to sort");
     endif
   endif
  

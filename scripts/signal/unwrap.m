@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{b} =} unwrap (@var{a}, @var{tol}, @var{dim})
+## @deftypefn  {Function File} {@var{b} =} unwrap (@var{a})
+## @deftypefnx {Function File} {@var{b} =} unwrap (@var{a}, @var{tol})
+## @deftypefnx {Function File} {@var{b} =} unwrap (@var{a}, @var{tol}, @var{dim})
 ## 
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to
 ## remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
 ##
-## Unwrap will unwrap along the first non-singleton dimension of
-## @var{a}, unless the optional argument @var{dim} is given, in 
-## which case the data will be unwrapped along this dimension
+## Unwrap will work along the the dimension @var{dim}.  If @var{dim}
+## is unspecified it defaults to the first non-singleton dimension.
 ## @end deftypefn
 
 ## Author: Bill Lash <lash@tellabs.com>
@@ -35,23 +36,8 @@ function retval = unwrap (a, tol, dim)
     print_usage ();
   endif
 
-  nd = ndims (a);
-  sz = size (a);
-
-  if (nargin == 3)
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-        dim < (nd + 1))
-      error ("unwrap: dim must be an integer and valid dimension");
-    endif
-  else
-    ## Find the first non-singleton dimension
-    dim  = 1;
-    while (dim < nd + 1 && sz(dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
-      dim = 1;
-    endif
+  if (!isnumeric(a))
+    error ("unwrap: A must be a numeric matrix or vector");
   endif
 
   if (nargin < 2 || isempty (tol))
@@ -60,7 +46,22 @@ function retval = unwrap (a, tol, dim)
 
   ## Don't let anyone use a negative value for TOL.
   tol = abs (tol);
-  
+
+  nd = ndims (a);
+  sz = size (a);
+  if (nargin == 3)
+    if (!(isscalar (dim) && dim == fix (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("unwrap: DIM must be an integer and a valid dimension");
+    endif
+  else
+    ## Find the first non-singleton dimension
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
+      dim = 1;
+    endif
+  endif
+
   rng = 2*pi;
   m = sz(dim);
 

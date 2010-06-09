@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} shift (@var{x}, @var{b})
+## @deftypefn  {Function File} {} shift (@var{x}, @var{b})
 ## @deftypefnx {Function File} {} shift (@var{x}, @var{b}, @var{dim})
 ## If @var{x} is a vector, perform a circular shift of length @var{b} of
 ## the elements of @var{x}.
 ##
 ## If @var{x} is a matrix, do the same for each column of @var{x}.
 ## If the optional @var{dim} argument is given, operate along this 
-## dimension
+## dimension.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -39,30 +39,27 @@ function y = shift (x, b, dim)
   endif
 
   if (! (isscalar (b) && b == round (b)))
-    error ("shift: b must be an integer");
+    error ("shift: B must be an integer");
   endif
 
   nd = ndims (x);
   sz = size (x);
 
   if (nargin == 3)
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-        dim < (nd + 1))
-      error ("shift: dim must be an integer and valid dimension");
+    if (!(isscalar (dim) && dim == round (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("shift: DIM must be an integer and a valid dimension");
     endif
   else
-    ## Find the first non-singleton dimension
-    dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   endif
 
   if (numel (x) < 1)
-    error ("shift: x must not be empty");
+    error ("shift: X must not be empty");
   endif
 
   d = sz (dim);

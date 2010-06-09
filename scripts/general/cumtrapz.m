@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{z} =} cumtrapz (@var{y})
+## @deftypefn  {Function File} {@var{z} =} cumtrapz (@var{y})
 ## @deftypefnx {Function File} {@var{z} =} cumtrapz (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} cumtrapz (@dots{}, @var{dim})
 ## 
 ## Cumulative numerical integration using trapezoidal method.
 ## @code{cumtrapz (@var{y})} computes the cumulative integral of the 
 ## @var{y} along the first non-singleton dimension.  If the argument 
-## @var{x} is omitted a equally spaced vector is assumed.  @code{cumtrapz 
+## @var{x} is omitted an equally spaced vector is assumed.  @code{cumtrapz 
 ## (@var{x}, @var{y})} evaluates the cumulative integral with respect 
 ## to @var{x}.
 ##  
@@ -50,8 +50,7 @@ function z = cumtrapz (x, y, dim)
   if (nargin == 3)
     have_x = true;
     have_dim = true;
-  endif
-  if (nargin == 2)
+  elseif (nargin == 2)
     if (! size_equal (x, y) && isscalar (y))
       dim = y;
       have_dim = true;
@@ -61,19 +60,15 @@ function z = cumtrapz (x, y, dim)
   endif
 
   if (! have_dim)
-    ## Find the first singleton dimension.
-    dim = 0;
-    while (dim < nd && sz(dim+1) == 1)
-      dim++;
-    endwhile
-    dim++;
-    if (dim > nd)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
     dim = floor (dim);
-    if (dim < 1 || dim > nd)
-      error ("cumtrapz: invalid dimension along which to sort");
+    if (! (isscalar (dim) && 1 <= dim && dim <= nd))
+      error ("cumtrapz: invalid dimension DIM");
     endif
   endif
 
@@ -90,7 +85,7 @@ function z = cumtrapz (x, y, dim)
     z = 0.5 * cumsum (x(idx1{:}) + x(idx2{:}), dim);
   else
     if (! size_equal (x, y))
-      error ("cumtrapz: x and y must have same shape");
+      error ("cumtrapz: X and Y must have the same shape");
     endif
     z = 0.5 * cumsum ((x(idx1{:}) - x(idx2{:})) .* 
                       (y(idx1{:}) + y(idx2{:})), dim);

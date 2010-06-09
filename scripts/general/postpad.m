@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefn  {Function File} {} postpad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## @seealso{prepad, resize}
 ## @end deftypefn
@@ -43,18 +43,15 @@ function y = postpad (x, l, c, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin < 4)
-    %% Find the first non-singleton dimension
-    dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
-      dim = dim + 1;
-    endwhile
-    if (dim > nd)
+    ## Find the first non-singleton dimension
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-        dim < (nd + 1))
-      error ("postpad: dim must be an integer and valid dimension");
+    if (!(isscalar (dim) && dim == fix (dim)) || 
+        !(1 <= dim && dim <= nd))
+      error ("postpad: DIM must be an integer and a valid dimension");
     endif
   endif
 

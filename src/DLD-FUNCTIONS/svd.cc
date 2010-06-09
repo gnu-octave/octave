@@ -42,8 +42,9 @@ static int Vsvd_driver = SVD::GESVD;
 
 DEFUN_DLD (svd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{s} =} svd (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{s} =} svd (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a}, @var{econ})\n\
 @cindex singular value decomposition\n\
 Compute the singular value decomposition of @var{a}\n\
 @tex\n\
@@ -58,8 +59,8 @@ A = U*S*V'\n\
 @end example\n\
 @end ifnottex\n\
 \n\
-The function @code{svd} normally returns the vector of singular values.\n\
-If asked for three return values, it computes\n\
+The function @code{svd} normally returns only the vector of singular values.\n\
+When called with three return values, it computes\n\
 @tex\n\
 $U$, $S$, and $V$.\n\
 @end tex\n\

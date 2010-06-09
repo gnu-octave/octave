@@ -125,7 +125,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{cellfun, spfun, structfun}
+## @seealso{spfun, cellfun, structfun}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

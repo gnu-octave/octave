@@ -26,7 +26,7 @@
 ## $\bar{e} = 0$, and cov(vec($e$)) = kron ($s, I$)
 ## @end tex
 ## @ifnottex
-## @math{y = x b + e} with
+## @w{@math{y = x*b + e}} with
 ## @math{mean (e) = 0} and @math{cov (vec (e)) = kron (s, I)}.
 ## @end ifnottex
 ##  where
@@ -64,8 +64,7 @@
 ## @end example
 ##
 ## @item r
-## The matrix of OLS residuals, @code{@var{r} = @var{y} - @var{x} *
-## @var{beta}}.
+## The matrix of OLS residuals, @code{@var{r} = @var{y} - @var{x}*@var{beta}}.
 ## @end table
 ## @end deftypefn
 

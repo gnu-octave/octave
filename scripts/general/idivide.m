@@ -18,10 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} idivide (@var{x}, @var{y}, @var{op})
-## Integer division with different round rules.  The standard behavior of
-## the an integer division such as @code{@var{a} ./ @var{b}} is to round
-## the result to the nearest integer.  This is not always the desired
-## behavior and @code{idivide} permits integer element-by-element
+## Integer division with different rounding rules.  
+##
+## The standard behavior of integer division such as @code{@var{a} ./ @var{b}}
+## is to round the result to the nearest integer.  This is not always the 
+## desired behavior and @code{idivide} permits integer element-by-element
 ## division to be performed with different treatment for the fractional
 ## part of the division as determined by the @var{op} flag.  @var{op} is
 ## a string with one of the values: 
@@ -35,14 +36,14 @@
 ## towards the nearest integer.
 ## @item "floor"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
-## downwards.
+## towards negative infinity.
 ## @item "ceil"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
-## upwards.
+## towards positive infinity.
 ## @end table
 ## 
 ## @noindent
-## If @var{op} is not given it is assumed that it is @code{"fix"}.
+## If @var{op} is not given it defaults to @code{"fix"}.
 ## An example demonstrating these rounding rules is
 ##
 ## @example
@@ -51,10 +52,10 @@
 ## @result{} int8 ([0, 0])
 ## idivide (int8 ([-3, 3]), int8 (4), "round")
 ## @result{} int8 ([-1, 1])
-## idivide (int8 ([-3, 3]), int8 (4), "ceil")
-## @result{} int8 ([0, 1])
 ## idivide (int8 ([-3, 3]), int8 (4), "floor")
 ## @result{} int8 ([-1, 0])
+## idivide (int8 ([-3, 3]), int8 (4), "ceil")
+## @result{} int8 ([0, 1])
 ## @end group
 ## @end example
 ##

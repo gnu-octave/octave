@@ -50,10 +50,14 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
-Compute the determinant of @var{a} using @sc{lapack} for full and UMFPACK\n\
-for sparse matrices.  Return an estimate of the reciprocal condition number\n\
-if requested.\n\
+@deftypefn  {Loadable Function} {} det (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
+Compute the determinant of @var{a}.\n\
+\n\
+Routines from @sc{lapack} are used for full matrices and code from\n\
+@sc{umfpack} is used for sparse matrices.\n\
+\n\
+Return an estimate of the reciprocal condition number if requested.\n\
 @end deftypefn")
 {
   octave_value_list retval;

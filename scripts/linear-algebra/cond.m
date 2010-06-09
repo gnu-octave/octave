@@ -31,7 +31,7 @@
 ##
 ## By default @code{@var{p} = 2} is used which implies a (relatively slow)
 ## singular value decomposition.  Other possible selections are 
-## @code{@var{p} = 1, Inf, "inf", "fro"} which are generally faster.  See
+## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See
 ## @code{norm} for a full discussion of possible @var{p} values.
 ## @seealso{condest, rcond, norm, svd}
 ## @end deftypefn

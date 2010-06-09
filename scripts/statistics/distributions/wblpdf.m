@@ -21,16 +21,16 @@
 ## Compute the probability density function (PDF) at @var{x} of the
 ## Weibull distribution with shape parameter @var{scale} and scale
 ## parameter @var{shape} which is given by
-##
 ## @tex
 ## $$  scale \cdot shape^{-scale} x^{scale-1} \exp(-(x/shape)^{scale}) $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ##    scale * shape^(-scale) * x^(scale-1) * exp(-(x/shape)^scale)
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## for @var{x} > 0.
 ## @end deftypefn

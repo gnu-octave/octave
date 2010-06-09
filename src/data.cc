@@ -1874,7 +1874,7 @@ returns the original array @var{a}.\n\
 DEFUN (length, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} length (@var{a})\n\
-Return the `length' of the object @var{a}.  For matrix objects, the\n\
+Return the \"length\" of the object @var{a}.  For matrix objects, the\n\
 length is the number of rows or columns, whichever is greater (this\n\
 odd definition is used for compatibility with @sc{matlab}).\n\
 @end deftypefn")
@@ -1892,9 +1892,13 @@ odd definition is used for compatibility with @sc{matlab}).\n\
 DEFUN (ndims, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ndims (@var{a})\n\
-Returns the number of dimensions of array @var{a}.\n\
+Return the number of dimensions of @var{a}.\n\
 For any array, the result will always be larger than or equal to 2.\n\
 Trailing singleton dimensions are not counted.\n\
+@example\n\
+  ndims (ones (4, 1, 2, 1)\n\
+     @result{} 3\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1909,9 +1913,9 @@ Trailing singleton dimensions are not counted.\n\
 
 DEFUN (numel, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} numel (@var{a})\n\
+@deftypefn  {Built-in Function} {} numel (@var{a})\n\
 @deftypefnx {Built-in Function} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})\n\
-Returns the number of elements in the object @var{a}.\n\
+Return the number of elements in the object @var{a}.\n\
 Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
 return the number of elements that would result from the indexing\n\
 @example\n\
@@ -1941,7 +1945,8 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 
 DEFUN (size, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} size (@var{a}, @var{n})\n\
+@deftypefn  {Built-in Function} {} size (@var{a})\n\
+@deftypefnx {Built-in Function} {} size (@var{a}, @var{dim})\n\
 Return the number rows and columns of @var{a}.\n\
 \n\
 With one input argument and one output argument, the result is returned\n\
@@ -2105,7 +2110,7 @@ DEFUN (rows, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rows (@var{a})\n\
 Return the number of rows of @var{a}.\n\
-@seealso{size, numel, columns, length, isscalar, isvector, ismatrix}\n\
+@seealso{columns, size, length, numel, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2122,7 +2127,7 @@ DEFUN (columns, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} columns (@var{a})\n\
 Return the number of columns of @var{a}.\n\
-@seealso{size, numel, rows, length, isscalar, isvector, ismatrix}\n\
+@seealso{rows, size, length, numel, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3287,7 +3292,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ones (@var{x})\n\
+@deftypefn  {Built-in Function} {} ones (@var{x})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
@@ -3304,12 +3309,13 @@ use an expression like\n\
 val_matrix = val * ones (n, m)\n\
 @end example\n\
 \n\
-The optional argument @var{class}, allows @code{ones} to return an array of\n\
-the specified type, for example\n\
+The optional argument @var{class} specifies the class of the return array\n\
+and defaults to double.  For example\n\
 \n\
 @example\n\
 val = ones (n,m, \"uint8\")\n\
 @end example\n\
+@seealso{zeros}\n\
 @end deftypefn")
 {
   return fill_matrix (args, 1, "ones");
@@ -3336,19 +3342,23 @@ val = ones (n,m, \"uint8\")\n\
 
 DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} zeros (@var{x})\n\
+@deftypefn  {Built-in Function} {} zeros (@var{x})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
-The arguments are handled the same as the arguments for @code{ones}.\n\
+If invoked with a single scalar integer argument, return a square\n\
+matrix of the specified size.  If invoked with two or more scalar\n\
+integer arguments, or a vector of integer values, return an array with\n\
+given dimensions.\n\
 \n\
-The optional argument @var{class}, allows @code{zeros} to return an array of\n\
-the specified type, for example\n\
+The optional argument @var{class} specifies the class of the return array\n\
+and defaults to double.  For example\n\
 \n\
 @example\n\
 val = zeros (n,m, \"uint8\")\n\
 @end example\n\
+@seealso{ones}\n\
 @end deftypefn")
 {
   return fill_matrix (args, 0, "zeros");
@@ -3814,11 +3824,15 @@ either \"double\" or \"single\".\n\
 
 DEFUN (false, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} false (@var{x})\n\
+@deftypefn  {Built-in Function} {} false (@var{x})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 0.\n\
-The arguments are handled the same as the arguments for @code{ones}.\n\
+If invoked with a single scalar integer argument, return a square\n\
+matrix of the specified size.  If invoked with two or more scalar\n\
+integer arguments, or a vector of integer values, return an array with\n\
+given dimensions.\n\
+@seealso{true}\n\
 @end deftypefn")
 {
   return fill_matrix (args, false, "false");
@@ -3826,11 +3840,15 @@ The arguments are handled the same as the arguments for @code{ones}.\n\
 
 DEFUN (true, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} true (@var{x})\n\
+@deftypefn  {Built-in Function} {} true (@var{x})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
 Return a matrix or N-dimensional array whose elements are all logical 1.\n\
-The arguments are handled the same as the arguments for @code{ones}.\n\
+If invoked with a single scalar integer argument, return a square\n\
+matrix of the specified size.  If invoked with two or more scalar\n\
+integer arguments, or a vector of integer values, return an array with\n\
+given dimensions.\n\
+@seealso{false}\n\
 @end deftypefn")
 {
   return fill_matrix (args, true, "true");
@@ -4452,7 +4470,9 @@ DEFUN (full, args, ,
 
 DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} norm (@var{a}, @var{p}, @var{opt})\n\
+@deftypefn  {Built-in Function} {} norm (@var{a})\n\
+@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p})\n\
+@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p}, @var{opt})\n\
 Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
 missing, @code{p = 2} is assumed.\n\
 \n\
@@ -4500,9 +4520,10 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
 the p-pseudonorm defined as above.\n\
 @end table\n\
 \n\
-If @code{\"rows\"} is given as @var{opt}, the norms of all rows of the matrix @var{a} are\n\
-returned as a column vector.  Similarly, if @code{\"columns\"} or @code{\"cols\"} is passed\n\
-column norms are computed.\n\
+If @var{opt} is the value @code{\"rows\"}, treat each row as a vector and\n\
+compute its norm.  The result is returned as a column vector.\n\
+Similarly, if @var{opt} is @code{\"columns\"} or @code{\"cols\"} then compute\n\
+the norms of each column and return a row vector.\n\
 @seealso{cond, svd}\n\
 @end deftypefn")
 {

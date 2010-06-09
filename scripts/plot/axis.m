@@ -18,7 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} axis (@var{limits})
+## @deftypefn  {Function File} {} axis ()
+## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi])
+## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi, @var{y}_lo, @var{y}_hi])
+## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi, @var{y}_lo, @var{y}_hi, @var{z}_lo, @var{z}_hi])
+## @deftypefnx {Function File} {} axis (@var{option})
+## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
+## @deftypefnx  {Function File} {} axis (@var{h}, @dots{})
+## @deftypefnx  {Function File} {@var{limits} =} axis ()
 ## Set axis limits for plots.
 ##
 ## The argument @var{limits} should be a 2, 4, or 6 element vector.  The
@@ -28,7 +35,7 @@
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.  
 ##
-## With one output argument, @code{x = axis} returns the current axes 
+## With one output argument, @code{x = axis} returns the current axes.
 ##
 ## The vector argument specifying limits is optional, and additional
 ## string arguments may be used to specify various axis properties.  For

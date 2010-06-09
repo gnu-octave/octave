@@ -93,7 +93,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
 DEFUN_DLD (cellfun, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
+@deftypefn  {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
 @deftypefnx {Loadable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
 @deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c})\n\
@@ -197,7 +197,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{isempty, islogical, isreal, length, ndims, numel, size}\n\
+@seealso{arrayfun, structfun, spfun}\n\
 @end deftypefn")
 {
   octave_value_list retval;

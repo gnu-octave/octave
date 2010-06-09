@@ -1,3 +1,10 @@
+2010-06-08  Rik <octave@nomad.inbox5.com>
+
+        * DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc, 
+        DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc, 
+        DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/tril.cc, 
+        data.cc, ov.cc: Improve documentation string.
+
 2010-06-06  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* data.cc (Frem, Fmod): Specify template arguments of binmap

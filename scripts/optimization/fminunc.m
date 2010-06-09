@@ -19,15 +19,16 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx{Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
-## Solve a unconstrained optimization problem defined by the function @var{fcn}.
+## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
+## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
+## Solve an unconstrained optimization problem defined by the function @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
 ## In other words, this function attempts to determine a vector @var{x} such 
 ## that @code{@var{fcn} (@var{x})} is a local minimum.
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
-## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
+## in all calls to @var{fcn}, but otherwise is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},

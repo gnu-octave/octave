@@ -18,7 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
+## @deftypefn  {Function File} {} mean (@var{x})
+## @deftypefnx {Function File} {} mean (@var{x}, @var{dim})
+## @deftypefnx {Function File} {} mean (@var{x}, @var{opt})
+## @deftypefnx {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
 ## If @var{x} is a vector, compute the mean of the elements of @var{x}
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
@@ -32,12 +35,12 @@
 ## If @var{x} is a matrix, compute the mean for each column and return them
 ## in a row vector.
 ##
-## With the optional argument @var{opt}, the kind of mean computed can be
-## selected.  The following options are recognized:
+## The optional argument @var{opt} selects the type of mean to compute.
+## The following options are recognized:
 ##
 ## @table @code
 ## @item "a"
-## Compute the (ordinary) arithmetic mean.  This is the default.
+## Compute the (ordinary) arithmetic mean.  [default]
 ##
 ## @item "g"
 ## Compute the geometric mean.
@@ -51,6 +54,7 @@
 ##
 ## Both @var{dim} and @var{opt} are optional.  If both are supplied,
 ## either may appear first.
+## @seealso{median,mode}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

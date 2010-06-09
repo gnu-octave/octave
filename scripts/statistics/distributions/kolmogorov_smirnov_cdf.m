@@ -56,14 +56,14 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
       tol = eps;
     endif
   else
-    if (! isscalar (tol) || ! (tol > 0))
-      error ("kolmogorov_smirnov_cdf: tol has to be a positive scalar");
+    if (! (isscalar (tol) && (tol > 0)))
+      error ("kolmogorov_smirnov_cdf: tol must be a positive scalar");
     endif
   endif
 
   n = numel (x);
   if (n == 0)
-    error ("kolmogorov_smirnov_cdf: x must not be empty");
+    error ("kolmogorov_smirnov_cdf: X must not be empty");
   endif
 
   cdf = zeros (size (x));

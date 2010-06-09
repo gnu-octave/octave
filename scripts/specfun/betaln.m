@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} betaln (@var{a}, @var{b})
-## Return the log of the Beta function,
+## Return the natural logarithm of the Beta function,
 ## @tex
 ## $$
 ##  B (a, b) = \log {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.

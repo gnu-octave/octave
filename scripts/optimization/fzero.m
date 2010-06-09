@@ -19,21 +19,26 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@var{fun}, @var{x0}, @var{options})
-## Find a zero point of a univariate function.  @var{fun} should be a function
-## handle or name.  @var{x0} should be a two-element vector specifying the initial 
-## bracketing. It should hold
+## @deftypefn  {Function File} {} fzero (@var{fun}, @var{x0})
+## @deftypefnx {Function File} {} fzero (@var{fun}, @var{x0}, @var{options})
+## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
+## Find a zero of a univariate function.  
+##
+## @var{fun} should be a function handle or name.  @var{x0} should be a 
+## two-element vector specifying two points which bracket a zero.  In
+## other words, there must be a change in sign of the function between
+## @var{x0}(1) and @var{x0}(2).  More mathematically, the following must hold
 ## @example
 ## sign (@var{fun}(@var{x0}(1))) * sign (@var{fun}(@var{x0}(2))) <= 0
 ## @end example
-## If only a single scalar is given as @var{x0}, several nearby and distant
-## values are probed in an attempt to obtain a valid bracketing. If this
+## If @var{x0} is a single scalar then several nearby and distant
+## values are probed in an attempt to obtain a valid bracketing.  If this
 ## is not successful, the function fails.
 ## @var{options} is a structure specifying additional options. 
 ## Currently, @code{fzero}
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
 ## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}. 
-## For description of these options, see @ref{doc-optimset,,optimset}.
+## For a description of these options, see @ref{doc-optimset,,optimset}.
 ## 
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.
@@ -41,13 +46,27 @@
 ##
 ## @itemize
 ## @item 1
-## The algorithm converged to a solution.
+##  The algorithm converged to a solution.
 ## @item 0
-## Maximum number of iterations or function evaluations has been exhausted.
+##  Maximum number of iterations or function evaluations has been reached.
 ## @item -1
 ## The algorithm has been terminated from user output function.
 ## @item -5
 ## The algorithm may have converged to a singular point.
+## @end itemize
+## 
+## @var{output} is a structure containing runtime information about the
+## @code{fzero} algorithm.  Fields in the structure are:
+##
+## @itemize
+## @item iterations
+##  Number of iterations through loop.
+## @item nfev
+##  Number of function evaluations.
+## @item bracketx
+##  A two-element vector with the final bracketing of the zero along the x-axis.
+## @item brackety
+##  A two-element vector with the final bracketing of the zero along the y-axis.
 ## @end itemize
 ## @seealso{optimset, fsolve} 
 ## @end deftypefn
@@ -310,8 +329,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   output.iterations = niter;
   output.funcCount = nfev;
-  output.bracket = [a, b];
-  output.bracketf = [fa, fb];
+  output.bracketx = [a, b];
+  output.brackety = [fa, fb];
 
 endfunction
 

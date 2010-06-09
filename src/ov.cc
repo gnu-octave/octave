@@ -2672,7 +2672,8 @@ Convert @var{val} to the new data type @var{type}.\n\
 DEFUN (sizeof, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizeof (@var{val})\n\
-Return the size of @var{val} in bytes\n\
+Return the size of @var{val} in bytes.\n\
+@seealso{whos}\n\
 @end deftypefn")
 {
   octave_value retval;

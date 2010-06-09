@@ -18,11 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} poly (@var{a})
+## @deftypefn  {Function File} {} poly (@var{a})
+## @deftypefnx {Function File} {} poly (@var{x})
 ## If @var{a} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{a})}
 ## is the row vector of the coefficients of @code{det (z * eye (N) - a)},
-## the characteristic polynomial of @var{a}.  As an example we can use
-## this to find the eigenvalues of @var{a} as the roots of @code{poly (@var{a})}.
+## the characteristic polynomial of @var{a}.  For example, 
+## the following code finds the eigenvalues of @var{a} which are the roots of 
+## @code{poly (@var{a})}.
 ## @example
 ## @group
 ## roots(poly(eye(3)))
@@ -31,14 +33,14 @@
 ## @result{} 1.00000 + 0.00000i
 ## @end group
 ## @end example
-## In real-life examples you should, however, use the @code{eig} function
-## for computing eigenvalues.
+## For numerical performance, however, the @code{eig} function
+## should be used for computing eigenvalues.
 ##
 ## If @var{x} is a vector, @code{poly (@var{x})} is a vector of coefficients
 ## of the polynomial whose roots are the elements of @var{x}.  That is,
-## of @var{c} is a polynomial, then the elements of 
+## if @var{c} is a polynomial, then the elements of 
 ## @code{@var{d} = roots (poly (@var{c}))} are contained in @var{c}.
-## The vectors @var{c} and @var{d} are, however, not equal due to sorting
+## The vectors @var{c} and @var{d} are not identical, however, due to sorting
 ## and numerical errors.
 ## @seealso{eig, roots}
 ## @end deftypefn

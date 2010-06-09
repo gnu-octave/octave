@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} csvwrite (@var{filename}, @var{x})
-## Write the matrix @var{x} to a file.
+## @deftypefn {Function File} {} csvwrite (@var{filename}, @var{x})
+## Write the matrix @var{x} to the file @var{filename} in
+## @w{comma-separated-value} format.
 ##
 ## This function is equivalent to
 ## @example

@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} plot (@var{y})
+## @deftypefn  {Function File} {} plot (@var{y})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
 ## @deftypefnx {Function File} {} plot (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
 ## Produces two-dimensional plots.  Many different combinations of
 ## arguments are possible.  The simplest form is
 ##

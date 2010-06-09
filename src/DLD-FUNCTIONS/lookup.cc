@@ -214,17 +214,26 @@ is performed using lexicographical comparison.\n\
 If @var{opts} is specified, it shall be a string with letters indicating\n\
 additional options.\n\
 \n\
-If 'm' is specified as option, @code{table(idx(i)) == val(i)} if @code{val(i)}\n\
+@table @code\n\
+@item m\n\
+@code{table(idx(i)) == val(i)} if @code{val(i)}\n\
 occurs in table; otherwise, @code{idx(i)} is zero.\n\
-If 'b' is specified, then @code{idx(i)} is a logical 1 or 0, indicating whether\n\
+@item b\n\
+@code{idx(i)} is a logical 1 or 0, indicating whether\n\
 @code{val(i)} is contained in table or not.\n\
 \n\
-For numeric lookup, 'l' in @var{opts} indicates that\n\
+@item l\n\
+For numeric lookups\n\
 the leftmost subinterval shall be extended to infinity (i.e., all indices\n\
-at least 1), and 'r' indicates that the rightmost subinterval shall be\n\
-extended to infinity (i.e., all indices at most n-1).\n\
+at least 1)\n\
+@item r\n\
+For numeric lookups\n\
+the rightmost subinterval shall be extended to infinity (i.e., all indices\n\
+at most n-1).\n\
 \n\
-For string lookup, 'i' indicates case-insensitive comparison.\n\
+@item i\n\
+For string lookups, use case-insensitive comparison.\n\
+@end table\n\
 @end deftypefn") 
 {
   octave_value retval;

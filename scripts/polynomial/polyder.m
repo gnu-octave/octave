@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyder (@var{c})
+## @deftypefn  {Function File} {} polyder (@var{c})
 ## @deftypefnx {Function File} {[@var{q}] =} polyder (@var{b}, @var{a})
 ## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyder (@var{b}, @var{a})
 ## See polyderiv.

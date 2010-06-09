@@ -339,7 +339,11 @@ do_trilu (const std::string& name,
 
 DEFUN_DLD (tril, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} tril (@var{a}, @var{k}, @var{pack})\n\
+@deftypefn  {Function File} {} tril (@var{a})\n\
+@deftypefnx {Function File} {} tril (@var{a}, @var{k})\n\
+@deftypefnx {Function File} {} tril (@var{a}, @var{k}, @var{pack})\n\
+@deftypefnx {Function File} {} triu (@var{a})\n\
+@deftypefnx {Function File} {} triu (@var{a}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{a}, @var{k}, @var{pack})\n\
 Return a new matrix formed by extracting extract the lower (@code{tril})\n\
 or upper (@code{triu}) triangular part of the matrix @var{a}, and\n\

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} semilogx (@var{args})
-## Produce a two-dimensional plot using a log scale for the @var{x}
+## Produce a two-dimensional plot using a logarithmic scale for the @var{x}
 ## axis.  See the description of @code{plot} for a description of the
 ## arguments that @code{semilogx} will accept.
 ## @seealso{plot, semilogy, loglog}

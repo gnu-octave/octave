@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{x} =} csvread (@var{filename})
-## Read the matrix @var{x} from a file.
+## Read the comma-separated-value file @var{filename} into the matrix @var{x}.
 ##
 ## This function is equivalent to
 ## @example
-## dlmread (@var{filename}, "," , @dots{})
+## @var{x} = dlmread (@var{filename}, "," , @dots{})
 ## @end example
 ##
 ## @seealso{dlmread, dlmwrite, csvwrite}

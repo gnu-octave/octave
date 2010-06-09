@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} structfun (@var{func}, @var{s})
+## @deftypefn  {Function File} {} structfun (@var{func}, @var{s})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} structfun (@dots{})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
@@ -67,7 +67,7 @@
 ## of the element that caused the error.  For an example on how to use
 ## an error handler, @pxref{doc-cellfun, @code{cellfun}}. 
 ##
-## @seealso{cellfun, arrayfun}
+## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn
 
 function varargout = structfun (fun, s, varargin);

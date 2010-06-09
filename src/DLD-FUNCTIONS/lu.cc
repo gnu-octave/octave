@@ -64,7 +64,8 @@ get_lu_u (const base_lu<MT>& fact)
 
 DEFUN_DLD (lu, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
+@deftypefn  {Loadable Function} {[@var{l}, @var{u}] =} lu (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} lu (@var{s})\n\
 @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}, @var{r}] =} lu (@var{s})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@var{s}, @var{thres})\n\
@@ -133,7 +134,7 @@ lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.\n\
 With one output argument @var{y}, then the matrix returned by the @sc{lapack}\n\
 routines is returned.  If the input matrix is sparse then the matrix @var{l}\n\
 is embedded into @var{u} to give a return value similar to the full case.\n\
-For both full and sparse matrices, @dfn{lu} looses the permutation\n\
+For both full and sparse matrices, @dfn{lu} loses the permutation\n\
 information.\n\
 @end deftypefn")
 {

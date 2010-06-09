@@ -28,6 +28,7 @@
 ## @example
 ## max (size (@var{a})) * max (svd (@var{a})) * eps
 ## @end example
+## @seealso{orth}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

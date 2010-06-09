@@ -17,12 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdefinite (@var{x}, @var{tol})
+## @deftypefn  {Function File} {} isdefinite (@var{x})
+## @deftypefnx {Function File} {} isdefinite (@var{x}, @var{tol})
 ## Return 1 if @var{x} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
-## is omitted, use a tolerance equal to 100 times the machine precision,
-## multiplied by the Frobeniusm norm of @var{x}.
+## is omitted, use a tolerance of 
+## @code{100 * eps * norm (@var{x}, "fro")}
 ## @seealso{issymmetric}
 ## @end deftypefn
 

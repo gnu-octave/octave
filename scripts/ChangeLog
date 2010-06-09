@@ -1,3 +1,22 @@
+2010-06-03  Rik <octave@nomad.inbox5.com>
+
+        * general/arrayfun.m, general/cart2pol.m, general/cart2sph.m, 
+        general/idivide.m, general/logspace.m, general/sph2cart.m, 
+        general/structfun.m, image/imagesc.m, io/csvread.m, io/csvwrite.m, 
+        linear-algebra/cond.m, linear-algebra/condest.m, 
+        linear-algebra/isdefinite.m, linear-algebra/null.m, 
+        linear-algebra/orth.m, miscellaneous/list_primes.m, 
+        optimization/fminunc.m, optimization/fzero.m, path/matlabroot.m,
+        plot/axis.m, plot/plot.m, plot/semilogx.m, plot/semilogxerr.m,
+        plot/semilogy.m, plot/semilogyerr.m, plot/stem.m, polynomial/poly.m,
+        polynomial/polyder.m, polynomial/polyderiv.m, polynomial/polyfit.m,
+        polynomial/polyout.m, polynomial/polyval.m, set/ismember.m,
+        sparse/spfun.m, specfun/betaln.m, statistics/base/mean.m,
+        statistics/base/median.m, statistics/base/mode.m, statistics/base/ols.m,
+        statistics/base/ranks.m, 
+        statistics/distributions/kolmogorov_smirnov_cdf.m, 
+        statistics/distributions/wblpdf.m: Improve documentation strings
+
 2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pkg/pkg.m: Support pkg list -forge.

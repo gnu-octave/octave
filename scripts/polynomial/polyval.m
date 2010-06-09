@@ -18,10 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} polyval (@var{p}, @var{x})
+## @deftypefn  {Function File} {@var{y} =} polyval (@var{p}, @var{x})
 ## @deftypefnx {Function File} {@var{y} =} polyval (@var{p}, @var{x}, [], @var{mu})
-## Evaluate the polynomial at of the specified values for @var{x}.  When @var{mu}
-## is present evaluate the polynomial for (@var{x}-@var{mu}(1))/@var{mu}(2).
+## Evaluate the polynomial @var{p} at the specified values of @var{x}.  When 
+## @var{mu} is present evaluate the polynomial for 
+## (@var{x}-@var{mu}(1))/@var{mu}(2).
 ## If @var{x} is a vector or matrix, the polynomial is evaluated for each of
 ## the elements of @var{x}.
 ## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s})

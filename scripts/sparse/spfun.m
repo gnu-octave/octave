@@ -22,7 +22,8 @@
 ## Compute @code{f(@var{x})} for the non-zero values of @var{x}.
 ## This results in a sparse matrix with the same structure as 
 ## @var{x}.  The function @var{f} can be passed as a string, a
-## function handle or an inline function.
+## function handle, or an inline function.
+## @seealso{arrayfun, cellfun, structfun}
 ## @end deftypefn
 
 function t = spfun (f, s)

@@ -19,7 +19,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} median (@var{x}, @var{dim})
+## @deftypefn  {Function File} {} median (@var{x})
+## @deftypefnx {Function File} {} median (@var{x}, @var{dim})
 ## If @var{x} is a vector, compute the median value of the elements of
 ## @var{x}.  If the elements of @var{x} are sorted, the median is defined
 ## as
@@ -43,7 +44,7 @@
 ## If @var{x} is a matrix, compute the median value for each
 ## column and return them in a row vector.  If the optional @var{dim}
 ## argument is given, operate along this dimension.
-## @seealso{std, mean}
+## @seealso{mean,mode}
 ## @end deftypefn
 
 ## Author: jwe

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyderiv (@var{c})
+## @deftypefn  {Function File} {} polyderiv (@var{c})
 ## @deftypefnx {Function File} {[@var{q}] =} polyderiv (@var{b}, @var{a})
 ## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyderiv (@var{b}, @var{a})
 ## Return the coefficients of the derivative of the polynomial whose

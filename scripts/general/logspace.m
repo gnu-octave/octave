@@ -18,7 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
+## @deftypefn  {Function File} {} logspace (@var{base}, @var{limit})
+## @deftypefnx {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
 ## Similar to @code{linspace} except that the values are logarithmically
 ## spaced from
 ## @tex
@@ -51,9 +52,10 @@
 ## @end ifnottex
 ## in order to be compatible with the corresponding @sc{matlab}
 ## function.
+## If @var{n} is unspecified it defaults to 50.
 ##
-## Also for compatibility, return the second argument if fewer than two
-## values are requested.
+## Also for compatibility with @sc{matlab}, return the second argument if 
+## fewer than two values are requested.
 ## @seealso{linspace}
 ## @end deftypefn
 

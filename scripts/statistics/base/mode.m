@@ -17,16 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@var{x}, @var{dim})
-## Count the most frequently appearing value.  @code{mode} counts the 
-## frequency along the first non-singleton dimension and if two or more
-## values have the same frequency returns the smallest of the two in
-## @var{m}.  The dimension along which to count can be specified by the
-## @var{dim} parameter.
+## @deftypefn  {Function File} {} mode (@var{x})
+## @deftypefnx {Function File} {} mode (@var{x}, @var{dim})
+## @deftypefnx {Function File} {[@var{m}, @var{f}, @var{c}] =} mode (@dots{})
+## Compute the most frequently occurring value in a dataset (mode).  
+## @code{mode} determines the frequency of values along the first non-singleton
+## dimension and returns the value with the highest frequency.  If two, or 
+## more, values have the same frequency @code{mode} returns the smallest.
+## 
+## If the optional argument @var{dim} is supplied, work along dimension
+## @var{dim}.
 ##
-## The variable @var{f} counts the frequency of each of the most frequently 
-## occurring elements.  The cell array @var{c} contains all of the elements
-## with the maximum frequency .
+## The return variable @var{f} is the number of occurrences of the mode in
+## in the dataset.  The cell array @var{c} contains all of the elements
+## with the maximum frequency.
+## @seealso{mean,median}
 ## @end deftypefn
 
 function [m, f, c] = mode (x, dim)

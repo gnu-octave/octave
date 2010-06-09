@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{tf} =} ismember (@var{A}, @var{S}) 
+## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{S}) 
 ## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}) 
 ## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}, "rows")
 ## Return a matrix @var{tf} with the same shape as @var{A} which has a 1 if 

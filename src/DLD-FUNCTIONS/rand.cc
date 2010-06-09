@@ -311,7 +311,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
 DEFUN_DLD (rand, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} rand (@var{x})\n\
+@deftypefn  {Loadable Function} {} rand (@var{x})\n\
 @deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} rand (\"seed\", @var{x})\n\
@@ -471,11 +471,11 @@ reset_rand_generator (void)
 
 DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} randn (@var{x})\n\
+@deftypefn  {Loadable Function} {} randn (@var{x})\n\
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", @var{x})\n\
-Return a matrix with normally distributed pseudo-random\n\
+Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
 \n\
@@ -544,7 +544,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (rande, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} rande (@var{x})\n\
+@deftypefn  {Loadable Function} {} rande (@var{x})\n\
 @deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", @var{x})\n\
@@ -617,7 +617,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (randg, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} randg (@var{a}, @var{x})\n\
+@deftypefn  {Loadable Function} {} randg (@var{a}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randg (\"seed\", @var{x})\n\
@@ -867,11 +867,12 @@ r = r / sum (r)\n\
 
 DEFUN_DLD (randp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} randp (@var{l}, @var{x})\n\
+@deftypefn  {Loadable Function} {} randp (@var{l}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", @var{x})\n\
-Return a matrix with Poisson distributed random elements with mean value parameter given by the first argument, @var{l}.  The arguments\n\
+Return a matrix with Poisson distributed random elements with mean value\n\
+parameter given by the first argument, @var{l}.  The arguments\n\
 are handled the same as the arguments for @code{rand}, except for the\n\
 argument @var{l}.\n\
 \n\
@@ -1013,7 +1014,7 @@ D 50 p1284, 1994\n\
 
 DEFUN_DLD (randperm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} randperm (@var{n})\n\
+@deftypefn  {Loadable Function} {} randperm (@var{n})\n\
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} permutations,\n\

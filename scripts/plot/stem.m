@@ -17,8 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} stem (@var{x}, @var{y}, @var{linespec})
-## @deftypefnx {Function File} {@var{h} =} stem (@dots{}, "filled")
+## @deftypefn  {Function File} {} stem (@var{x})
+## @deftypefnx {Function File} {} stem (@var{x}, @var{y})
+## @deftypefnx {Function File} {} stem (@var{x}, @var{y}, @var{linespec})
+## @deftypefnx {Function File} {} stem (@dots{}, "filled")
+## @deftypefnx {Function File} {@var{h} =} stem (@dots{})
 ## Plot a stem graph from two vectors of x-y data.  If only one argument
 ## is given, it is taken as the y-values and the x coordinates are taken
 ## from the indices of the elements.
@@ -28,7 +31,7 @@
 ## the same length as the number of rows in @var{y}, or it can be a
 ## matrix of the same size as @var{y}.
 ##
-## The default color is @code{"r"} (red).  The default line style is
+## The default color is @code{"b"} (blue).  The default line style is
 ## @code{"-"} and the default marker is @code{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
 ## @code{plot} command.  For example
@@ -37,14 +40,14 @@
 ## @group
 ## x = 1:10;
 ## y = ones (1, length (x))*2.*x;
-## stem (x, y, "b");
+## stem (x, y, "r");
 ## @end group
 ## @end example
 ##
 ## @noindent
-## plots 10 stems with heights from 2 to 20 in blue;
+## plots 10 stems with heights from 2 to 20 in red;
 ## 
-## The return value of @code{stem} is a vector if "stem series" graphics
+## The return value of @code{stem} is a vector of "stem series" graphics
 ## handles, with one handle per column of the variable @var{y}.  This
 ## handle regroups the elements of the stem graph together as the
 ## children of the "stem series" handle, allowing them to be altered
@@ -52,7 +55,7 @@
 ##
 ## @example
 ## @group
-## x = [0 : 10].';
+## x = [0 : 10]';
 ## y = [sin(x), cos(x)]
 ## h = stem (x, y);
 ## set (h(2), "color", "g");
@@ -95,7 +98,7 @@ endfunction
 %!demo
 %! x = 1:10;
 %! y = ones (size (x))*2.*x;
-%! h = stem (x, y, "b");
+%! h = stem (x, y, "r");
 
 %!demo
 %! x = 1:10;
@@ -110,10 +113,10 @@ endfunction
 %!demo
 %! x = 1:10;
 %! y = ones (size (x))*2.*x;
-%! h = stem (x, y, "fill");
+%! h = stem (x, y, "filled");
 
 %!demo
-%! x = [0 : 10].';
+%! x = [0 : 10]';
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
 %! set (h(2), "color", "g");

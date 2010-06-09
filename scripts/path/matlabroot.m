@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{val} =} matlabroot ()
-## Return the location of Octave's home.
+## Return the location of Octave's home directory.
 ## @seealso{OCTAVE_HOME}
 ## @end deftypefn
 

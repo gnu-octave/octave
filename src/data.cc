@@ -4329,53 +4329,74 @@ by an empty argument.\n\
 
   int nargin = args.length ();
 
-  Array<int> new_size;
+  dim_vector new_dims;
 
   if (nargin == 2)
-    new_size = args(1).int_vector_value ();
+    {
+      Array<octave_idx_type> new_size = args(1).octave_idx_type_vector_value ();
+
+      new_dims = dim_vector::alloc (new_size.length ());
+
+      for (octave_idx_type i = 0; i < new_size.length (); i++)
+        {
+          if (new_size(i) < 0)
+            {
+              error ("reshape: size must be nonnegative");
+              break;
+            }
+          else
+            new_dims(i) = new_size(i);
+        }
+    }
   else if (nargin > 2)
     {
-      new_size.resize (1, nargin-1);
+      new_dims = dim_vector::alloc (nargin-1);
       int empty_dim = -1;
       
       for (int i = 1; i < nargin; i++)
         {
           if (args(i).is_empty ())
-            if (empty_dim > 0)
-              {
-                error ("reshape: only a single dimension can be unknown");
-                break;
-              }
-            else
-              {
-                empty_dim = i;
-                new_size(i-1) = 1;
-              }
+            {
+              if (empty_dim > 0)
+                {
+                  error ("reshape: only a single dimension can be unknown");
+                  break;
+                }
+              else
+                {
+                  empty_dim = i;
+                  new_dims(i-1) = 1;
+                }
+            }
           else
             {
-              new_size(i-1) = args(i).idx_type_value ();
+              new_dims(i-1) = args(i).idx_type_value ();
 
               if (error_state)
                 break;
+              else if (new_dims(i-1) < 0)
+                {
+                  error ("reshape: size must be nonnegative");
+                  break;
+                }
             }
         }
 
       if (! error_state && (empty_dim > 0))
         {
-          int nel = 1;
-          for (int i = 0; i < nargin - 1; i++)
-            nel *= new_size(i);
+          octave_idx_type nel = new_dims.numel ();
 
           if (nel == 0)
-            new_size(empty_dim-1) = 0;
+            new_dims(empty_dim-1) = 0;
           else
             {
-              int size_empty_dim = args(0).numel () / nel;
+              octave_idx_type a_nel = args(0).numel ();
+              octave_idx_type size_empty_dim = a_nel / nel;
               
-              if (args(0).numel () != size_empty_dim * nel)
-                error ("reshape: size is not divisble by the product of known dimensions (= %d)", nel);
+              if (a_nel != size_empty_dim * nel)
+                error ("reshape: size is not divisible by the product of known dimensions (= %d)", nel);
               else
-                new_size(empty_dim-1) = size_empty_dim;
+                new_dims(empty_dim-1) = size_empty_dim;
             }
         }
     }
@@ -4383,25 +4404,6 @@ by an empty argument.\n\
     {
       print_usage ();
       return retval;
-    }
-
-  if (error_state)
-    {
-      error ("reshape: invalid arguments");
-      return retval;
-    }
-
-  dim_vector new_dims = dim_vector::alloc (new_size.length ());
-
-  for (octave_idx_type i = 0; i < new_size.length (); i++)
-    {
-      if (new_size(i) < 0)
-        {
-          error ("reshape: size must be nonnegative");
-          break;
-        }
-      else
-        new_dims(i) = new_size(i);
     }
 
   if (! error_state)

@@ -896,9 +896,9 @@ argument that is not a structure.\n\
 DEFUN (isfield, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isfield (@var{expr}, @var{name})\n\
-Return true if the expression @var{expr} is a structure and it includes an\n\
-element named @var{name}.  The first argument must be a structure and\n\
-the second must be a string.\n\
+Return true if the expression @var{expr} is a structure and it\n\
+includes an element named @var{name}.  If @var{name} is a cell\n\
+array, a logical array of equal dimension is returned.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -909,16 +909,39 @@ the second must be a string.\n\
     {
       retval = false;
 
-      // FIXME -- should this work for all types that can do
-      // structure reference operations?
-
-      if (args(0).is_map () && args(1).is_string ())
+      if (args(0).is_map ())
         {
-          std::string key = args(1).string_value ();
-
           Octave_map m = args(0).map_value ();
 
-          retval = m.contains (key) != 0;
+          // FIXME -- should this work for all types that can do
+          // structure reference operations?
+
+          if (args(1).is_string ())
+            {
+              std::string key = args(1).string_value ();
+
+              retval = m.contains (key) != 0;
+            }
+          else if (args(1).is_cell ())
+            {
+              Cell c = args(1).cell_value ();
+              boolMatrix bm (c.dims ());
+              octave_idx_type n = bm.numel ();
+
+              for (octave_idx_type i = 0; i < n; i++)
+                {
+                  if (c(i).is_string ())
+                    {
+                      std::string key = c(i).string_value ();
+
+                      bm(i) = m.contains (key) != 0;
+                    }
+                  else
+                    bm(i) = false;
+                }
+
+              retval = bm;
+            }
         }
     }
   else

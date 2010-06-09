@@ -1,3 +1,7 @@
+2010-06-09  David Grundberg  <individ@acc.umu.se>
+
+	* ov-struct.cc (Fisfield): Accept cell array as name argument.
+
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
         * DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc, 

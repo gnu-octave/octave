@@ -17,13 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
+## @deftypefn  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
+## @deftypefnx  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{p})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{p})
+## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
 ## Transform polar or cylindrical to Cartesian coordinates.
-## @var{theta}, @var{r} (and @var{z}) must be the same shape, or scalar.
+##
+## @var{theta}, @var{r}, (and @var{z}) must be the same shape, or scalar.
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
-## @seealso{cart2pol, cart2sph, sph2cart}
+## If called with a single matrix argument then each row of @var{p} 
+## represents the polar/(cylindrical) coordinate (@var{x}, @var{y} (, @var{z})).
+##
+## If only a single return argument is requested then return a matrix 
+## @var{C} where each row represents one Cartesian coordinate
+## (@var{x}, @var{y} (, @var{z})).
+## @seealso{cart2pol, sph2cart, cart2sph}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -31,24 +41,41 @@
 
 function [x, y, z] = pol2cart (theta, r, z)
 
-  if (nargin < 2 || nargin > 3)
-    error ("pol2cart: number of arguments must be 2 or 3");
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
   endif
 
-  if (nargin == 2 && nargout > 2)
-    error ("pol2cart: number of output arguments must not be greater than number of input arguments");
+  if (nargin == 1)
+    if (ismatrix (theta) && (columns (theta) == 2 || columns (theta) == 3))
+      if (columns (theta) == 3)
+        z = theta(:,3);
+      else
+        z = [];
+      endif
+      r = theta(:,2);
+      theta = theta(:,1);    
+    else
+      error ("pol2car: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
+    endif
+  elseif (nargin == 2)
+    if (! ((ismatrix (theta) && ismatrix (r))
+            && (size_equal (theta, r) || isscalar (theta) || isscalar (r))))
+      error ("pol2cart: arguments must be matrices of same size, or scalar");
+    endif
+  elseif (nargin == 3)
+    if (! ((ismatrix (theta) && ismatrix (r) && ismatrix (z))
+            && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
+            && (size_equal (theta, z) || isscalar (theta) || isscalar (z))
+            && (size_equal (r, z) || isscalar (r) || isscalar (z))))
+      error ("pol2cart: arguments must be matrices of same size, or scalar");
+    endif
   endif
 
-   if ((ismatrix (theta) && ismatrix (r) && (nargin == 2 || ismatrix (z)))
-       && (size_equal (theta, r) || isscalar (theta) || isscalar (r))
-       && (nargin == 2 || size_equal (theta, z) || isscalar (theta) || isscalar (z))
-       && (nargin == 2 || size_equal (r, z) || isscalar (r) || isscalar (z)))
+  x = r .* cos (theta);
+  y = r .* sin (theta);
 
-    x = cos (theta) .* r;
-    y = sin (theta) .* r;
-
-  else
-    error ("pol2cart: arguments must be matrices of same size, or scalar");
+  if (nargout <= 1)
+    x  = [x, y, z];
   endif
 
 endfunction
@@ -102,4 +129,14 @@ endfunction
 %! assert (x, [1, 2, 3], eps);
 %! assert (y, [0, 0, 0] / sqrt(2), eps);
 %! assert (z, z2);
+
+%!test
+%! P = [0, 0; pi/4, sqrt(2); pi/4, 2*sqrt(2)];
+%! C = [0, 0; 1, 1; 2, 2];
+%! assert (pol2cart(P), C, sqrt(eps));
+
+%!test
+%! P = [0, 0, 0; pi/4, sqrt(2), 1; pi/4, 2*sqrt(2), 2];
+%! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
+%! assert (pol2cart(P), C, sqrt(eps));
 

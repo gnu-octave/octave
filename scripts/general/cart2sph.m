@@ -17,13 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {[@var{theta}, @var{phi}, @var{r}] =} cart2sph (@var{C})
+## @deftypefnx {Function File} {@var{S} =} cart2sph (@dots{})
 ## Transform Cartesian to spherical coordinates.
-## @var{x}, @var{y} and @var{z} must be the same shape, or scalar.
+##
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
-## @seealso{pol2cart, cart2pol, sph2cart}
+## @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
+## If called with a single matrix argument then each row of @var{c} 
+## represents the Cartesian coordinate (@var{x}, @var{y}, @var{z}).
+## 
+## If only a single return argument is requested then return a matrix 
+## @var{s} where each row represents one spherical coordinate 
+## (@var{theta}, @var{phi}, @var{r}).
+## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -31,21 +40,33 @@
 
 function [theta, phi, r] = cart2sph (x, y, z)
 
-  if (nargin != 3)
+  if (nargin != 1 && nargin != 3)
     print_usage ();
   endif
 
-  if ((ismatrix (x) && ismatrix (y) && ismatrix (z))
-      && (size_equal (x, y) || isscalar (x) || isscalar (y))
-      && (size_equal (x, z) || isscalar (x) || isscalar (z))
-      && (size_equal (y, z) || isscalar (y) || isscalar (z)))
+  if (nargin == 1)
+    if (ismatrix (x) && columns (x) == 3)
+      z = x(:,3);    
+      y = x(:,2);    
+      x = x(:,1);    
+    else
+      error ("cart2sph: matrix input must have 3 columns [X, Y, Z]");
+    endif
+  elseif (nargin == 3)
+    if (! ((ismatrix (x) && ismatrix (y) && ismatrix (z))
+            && (size_equal (x, y) || isscalar (x) || isscalar (y))
+            && (size_equal (x, z) || isscalar (x) || isscalar (z))
+            && (size_equal (y, z) || isscalar (y) || isscalar (z))))
+      error ("cart2sph: X, Y, Z must be matrices of the same size, or scalar");
+    endif
+  endif
 
-    theta = atan2 (y, x);
-    phi = atan2 (z, sqrt (x .^ 2 + y .^ 2));
-    r = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
+  theta = atan2 (y, x);
+  phi = atan2 (z, sqrt (x .^ 2 + y .^ 2));
+  r = sqrt (x .^ 2 + y .^ 2 + z .^ 2);
 
-  else
-    error ("cart2sph: arguments must be matrices of same size, or scalar");
+  if (nargout <= 1)
+    theta = [theta, phi, r];
   endif
 
 endfunction
@@ -86,3 +107,7 @@ endfunction
 %! assert (p, [0, 0, 0]);
 %! assert (r, [0, 1, 2] * sqrt(2));
 
+%!test
+%! C = [0, 0, 0; 1, 0, 1; 2, 0, 2];
+%! S = [0, 0, 0; 0, pi/4, sqrt(2); 0, pi/4, 2*sqrt(2)];
+%! assert (cart2sph(C), S, eps);

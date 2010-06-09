@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{sz}, @var{func}, @var{fillval})
+## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension. 
 ## The subscripts are defined by the index vector @var{subs}.
@@ -63,7 +63,7 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
   endif
 
   if (! isvector (subs))
-    error ("accumdim: subs must be a subscript vector");
+    error ("accumdim: SUBS must be a subscript vector");
   elseif (! isindex (subs)) # creates index cache
     error ("accumdim: indices must be positive integers");
   else
@@ -71,16 +71,16 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
     if (n == 0)
       n = m;
     elseif (n < m)
-      error ("accumdim: index out of range")
+      error ("accumdim: N index out of range")
     endif
   endif
 
   sz = size (val);
 
   if (nargin < 3)
-    [~, dim] = max (sz != 1); # first non-singleton dim
+    [~, dim] = max (sz > 1); # first non-singleton dim
   elseif (! isindex (dim))
-    error ("accumdim: dim must be a valid dimension");
+    error ("accumdim: DIM must be a valid dimension");
   elseif (dim > length (sz))
     sz(end+1:dim) = 1;
   endif

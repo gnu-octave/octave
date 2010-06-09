@@ -1,20 +1,26 @@
-2010-06-03  Rik <octave@nomad.inbox5.com>
+2010-06-09  Rik <octave@nomad.inbox5.com>
+
+        * general/flipdim.m, general/accumdim.m: Use > 1 test to find
+        first non-singleton dimension rather than != 1.
+
+2010-06-08  Rik <octave@nomad.inbox5.com>
 
         * general/cumtrapz.m, general/postpad.m, general/prepad.m, 
         general/shift.m, general/trapz.m, signal/unwrap.m: Use common 
         method to find first non-singleton dimension.
-2010-06-03  Rik <octave@nomad.inbox5.com>
+
+2010-06-08  Rik <octave@nomad.inbox5.com>
 
         * general/rotdim.m: Modify function to use same variable names
         as documentation.
 
-2010-06-03  Rik <octave@nomad.inbox5.com>
+2010-06-08  Rik <octave@nomad.inbox5.com>
 
         * general/cart2pol.m, general/cart2sph.m, general/pol2cart.m, 
         general/sph2cart.m: Add option to operate on column matrix of 
         coordinates.
 
-2010-06-03  Rik <octave@nomad.inbox5.com>
+2010-06-08  Rik <octave@nomad.inbox5.com>
 
         * general/arrayfun.m, general/cart2pol.m, general/cart2sph.m, 
         general/idivide.m, general/logspace.m, general/sph2cart.m, 

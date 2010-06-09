@@ -18,9 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} flipdim (@var{x}, @var{dim})
+## @deftypefn  {Function File} {} flipdim (@var{x})
+## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
-## For example
+## @var{dim} defaults to the first non-singleton dimension.
+## For example,
 ##
 ## @example
 ## @group
@@ -43,13 +45,13 @@ function y = flipdim (x, dim)
   nd = ndims (x);
   if (nargin == 1)
     ## Find the first non-singleton dimension.
-    dim = find (size (x) != 1, 1);
+    dim = find (size (x) > 1, 1);
     if (isempty (dim))
       dim = 1;
     endif
   else
     if (! (isscalar (dim) && isindex (dim, nd)))
-      error ("flipdim: dim must be an integer and valid dimension");
+      error ("flipdim: DIM must be an integer and a valid dimension");
     endif
   endif
 

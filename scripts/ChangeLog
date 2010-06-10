@@ -1,5 +1,7 @@
 2010-06-10  Ben Abbott <bpabbott@mac.com>
 
+	* plot/private/__scatter__.m, plot/scatter.m: Honor Matlab color
+	settings.
 	* general/prepad.m: Fix typo 'dimm' -> 'dim'.
 
 2010-06-10  Jaroslav Hajek  <highegg@gmail.com>

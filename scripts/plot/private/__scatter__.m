@@ -54,22 +54,24 @@ function hg = __scatter__ (varargin)
 
   if (istart <= nargin)
     s = varargin{istart};
-    if (isempty (s))
+    if (isempty (s) || ischar (s))
       s = 6;
+    else
+      istart++;
     endif
   else
     s = 6;
   endif
 
-  if (istart < nargin && firstnonnumeric > istart + 1)
-    c = varargin{istart + 1};
+  if (istart <= nargin && firstnonnumeric > istart)
+    c = varargin{istart};
     if (isvector (c))
       if (columns (c) != 3)
         c = c(:);
       endif
     endif
-  elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
-    c = varargin{istart + 1};
+  elseif (firstnonnumeric == istart && ischar (varargin{istart}))
+    c = varargin{istart};
     firstnonnumeric++;
   else
     c = [];
@@ -143,7 +145,7 @@ function hg = __scatter__ (varargin)
                             "faces", 1, "vertices", [x(i), y(i), z(i,:)], 
                             "facecolor", "none", "edgecolor", "none", 
                             "marker", marker,  "markersize", s(i), 
-                            "markeredgecolor", none, "markerfacecolor", c,
+                            "markeredgecolor", c, "markerfacecolor", c,
                             "linestyle", "none");
         else
           h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),

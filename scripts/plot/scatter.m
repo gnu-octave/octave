@@ -80,4 +80,16 @@ endfunction
 %!demo
 %! x = randn (100, 1);
 %! y = randn (100, 1);
+%! scatter (x, y, "r")
+
+%!demo
+%! x = randn (100, 1);
+%! y = randn (100, 1);
 %! scatter (x, y, [], sqrt(x.^2 + y.^2));
+
+%!demo
+%! x = rand (10, 1);
+%! y = rand (10, 1);
+%! s = 10 - 10 * log (x.^2+y.^2);
+%! h = scatter (x, y, s, s, "s", "filled");
+

@@ -61,7 +61,7 @@ function y = prepad (x, l, c, dim)
     endif
   else
     if (!(isscalar (dim) && dim == fix (dim)) ||
-        !(1 <= dimm && dim <= nd))
+        !(1 <= dim && dim <= nd))
       error ("prepad: DIM must be an integer and a valid dimension");
     endif
   endif

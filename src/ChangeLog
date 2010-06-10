@@ -1,3 +1,7 @@
+2010-06-10  Ben Abbott <bpabbott@mac.com>
+
+	* data.cc: Fix test for concatentating empty nd-arrays.
+
 2010-06-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fvec): New DEFUN.

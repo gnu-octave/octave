@@ -4433,6 +4433,39 @@ by an empty argument.\n\
 
  */
 
+DEFUN (vec, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} vec (@var{x})\n\
+Return the vector obtained by stacking the columns of the matrix @var{x}\n\
+one above the other. Equivalent to @code{@var{x}(:)}. Useful for functional\n\
+programming.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      octave_value colon (octave_value::magic_colon_t);
+      octave_value arg = args(0);
+      retval = arg.single_subsref ("(", colon);
+    }
+  else
+    print_usage ();    
+
+  return retval;
+}
+
+/*
+
+%!assert(vec ([1, 2; 3, 4]), [1; 3; 2; 4])
+%!assert(vec ([1, 3, 2, 4]) == [1; 3; 2; 4]);
+
+%!error vec ();
+
+%!error vec (1, 2);
+
+*/
+
 DEFUN (squeeze, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\

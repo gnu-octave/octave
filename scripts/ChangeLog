@@ -1,3 +1,8 @@
+2010-06-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/vec.m: Remove (make built-in).
+	* linear-algebra/module.mk: Update.
+
 2010-06-09  Rik <octave@nomad.inbox5.com>
 
         * general/flipdim.m, general/accumdim.m: Use > 1 test to find

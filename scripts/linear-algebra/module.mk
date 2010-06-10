@@ -24,7 +24,6 @@ linear_algebra_FCN_FILES = \
   linear-algebra/rref.m \
   linear-algebra/subspace.m \
   linear-algebra/trace.m \
-  linear-algebra/vec.m \
   linear-algebra/vech.m
 
 FCN_FILES += $(linear_algebra_FCN_FILES)

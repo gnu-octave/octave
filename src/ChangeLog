@@ -1,3 +1,8 @@
+2010-06-11  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/gammainc.cc: Implement complementary incomplete
+	gamma function.
+
 2010-06-10  Ben Abbott <bpabbott@mac.com>
 
 	* data.cc: Fix test for concatentating empty nd-arrays.

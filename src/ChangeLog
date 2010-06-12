@@ -1,3 +1,7 @@
+2010-06-12  Ben Abbott <bpabbott@mac.com>
+
+	* DLD-FUNCTIONS/gammainc.cc: Fix doc-string typo.
+
 2010-06-11  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/gammainc.cc: Implement complementary incomplete

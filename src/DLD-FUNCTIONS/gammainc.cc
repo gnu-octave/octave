@@ -69,7 +69,7 @@ computed. If \"upper\" is given then the complementary function integrated\n\
 for @var{x} to infinity is calculated. It should be noted that\n\
 \n\
 @example\n\
-gammainc (@var{x}, @var{a}) = 1 - gammainc (@var{x}, @vaar{a}, \"upper\")\n\
+gammainc (@var{x}, @var{a}) = 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
 @end example\n\
 @seealso{gamma, lgamma}\n\
 @end deftypefn")

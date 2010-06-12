@@ -1,3 +1,7 @@
+2010-06-12  Rik <octave@nomad.inbox5.com>
+
+        * plot/scatter.m: Add new calling forms of function to documentation.
+
 2010-06-10  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__scatter__.m, plot/scatter.m: Honor Matlab color

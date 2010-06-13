@@ -56,7 +56,8 @@ function hg = __scatter__ (varargin)
     s = varargin{istart};
     if (isempty (s) || ischar (s))
       s = 6;
-    else
+    endif
+    if (! ischar (varargin{istart}))
       istart++;
     endif
   else
@@ -94,6 +95,7 @@ function hg = __scatter__ (varargin)
         if (strncmp (marker, "none", 4))
           marker = "o";
         elseif (isempty (marker))
+          have_marker = false;
           [dummy, marker] = __next_line_style__ ();
         endif
       else
@@ -102,7 +104,7 @@ function hg = __scatter__ (varargin)
     else
       newargs{end+1} = arg;
       if (iarg <= nargin)
-        newargs{end+1} = varagin{iarg++};
+        newargs{end+1} = varargin{iarg++};
       endif
     endif
   endwhile

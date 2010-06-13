@@ -96,3 +96,15 @@ endfunction
 %! s = 10 - 10 * log (x.^2+y.^2);
 %! h = scatter (x, y, s, s, "s", "filled");
 
+%!demo
+%! x = rand (10, 1);
+%! y = rand (10, 1);
+%! s = 10 - 10 * log (x.^2+y.^2);
+%! h = scatter (x, y, [], "r", "s", "filled");
+
+%!demo
+%! x = rand (10, 1);
+%! y = rand (10, 1);
+%! s = 10 - 10 * log (x.^2+y.^2);
+%! h = scatter (x, y, [], "r", "s");
+

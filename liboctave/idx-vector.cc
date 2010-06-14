@@ -1014,13 +1014,14 @@ idx_vector::increment (void) const
     {
     case class_colon:
       retval = 1;
-      // fall through...
+      break;
 
     case class_range:
       retval = dynamic_cast<idx_range_rep *> (rep) -> get_step ();
       break;
 
     case class_vector:
+    case class_mask:
       {
         if (length (0) > 1)
           retval = elem (1) - elem (0);
@@ -1086,6 +1087,17 @@ idx_vector::copy_data (octave_idx_type *data) const
         copy_or_memcpy (len, rdata, data);
       }
       break;
+
+    case class_mask:
+      {
+        idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
+        const bool *mask = r->get_data ();
+        octave_idx_type ext = r->extent (0);
+        for (octave_idx_type i = 0, j = 0; i < ext; i++)
+          if (mask[i])
+            data[j++] = i;
+      }
+    break;
 
     default:
       assert (false);

@@ -1,3 +1,7 @@
+2010-06-14  Rik <octave@nomad.inbox5.com>
+
+        * plot/image.m: Flip data, rather than y-axis, for images.  (bug #30033)
+
 2010-06-12  Ben Abbott <bpabbott@mac.com>
 
 	* plot/scatter.m: New demo.

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} image (@var{img})
+## @deftypefn {Function File}  {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap, and the colormap will be scaled so that the
@@ -115,7 +115,8 @@ function h = __img__ (x, y, img, varargin)
 
   ca = gca ();
 
-  tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
+  tmp = __go_image__ (ca, "cdata", flipdim (img, 1), 
+                      "xdata", xdata, "ydata", ydata,
                       "cdatamapping", "direct", varargin {:});
 
   ## FIXME -- how can we do this and also get the {x,y}limmode
@@ -136,10 +137,6 @@ function h = __img__ (x, y, img, varargin)
   endif
 
   set (ca, "view", [0, 90]);
-
-  if (strcmp (get (ca, "nextplot"), "replace"))
-    set (ca, "ydir", "reverse");
-  endif
 
   if (nargout > 0)
     h = tmp;

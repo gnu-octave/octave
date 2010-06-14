@@ -1682,7 +1682,7 @@ template <class T>
 Array<T>
 Array<T>::sort (int dim, sortmode mode) const
 {
-  if (dim < 0 || dim >= ndims ())
+  if (dim < 0)
     {
       (*current_liboctave_error_handler)
         ("sort: invalid dimension");
@@ -1695,6 +1695,9 @@ Array<T>::sort (int dim, sortmode mode) const
 
   if (m.length () < 1)
     return m;
+
+  if (dim >= dv.length ())
+    dv.resize (dim+1, 1);
 
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
@@ -2228,7 +2231,7 @@ template <class T>
 Array<T>
 Array<T>::nth_element (const idx_vector& n, int dim) const
 {
-  if (dim < 0 || dim >= ndims ())
+  if (dim < 0)
     {
       (*current_liboctave_error_handler)
         ("nth_element: invalid dimension");
@@ -2236,6 +2239,9 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
     }
 
   dim_vector dv = dims ();
+  if (dim >= dv.length ())
+    dv.resize (dim+1, 1);
+
   octave_idx_type ns = dv(dim);
 
   octave_idx_type nn = n.length (ns);

@@ -1,5 +1,11 @@
 2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.cc (Array::sort, Array::nth_element): Fix behavior when
+	trailing singleton dim is specified.
+	* Sparse.cc (Sparse::sort): Ditto.
+
+2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
+
 	* idx-vector.cc (idx_vector::copy_data): Handle class_mask case.
 	(idx_vector::increment): Fix class_colon and add class_mask.
 

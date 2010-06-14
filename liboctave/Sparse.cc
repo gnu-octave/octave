@@ -2050,7 +2050,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1)
+  if (m.length () < 1 || dim > 1)
     return m;
 
   if (dim > 0)
@@ -2116,9 +2116,9 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
 
-  if (m.length () < 1)
+  if (m.length () < 1 || dim > 1)
     {
-      sidx = Array<octave_idx_type> (dim_vector (nr, nc));
+      sidx = Array<octave_idx_type> (dim_vector (nr, nc), 1);
       return m;
     }
 

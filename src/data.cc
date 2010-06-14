@@ -5328,7 +5328,7 @@ ordered lists.\n\
     }
   else
     {
-      if (dim < 0 || dim > dv.length () - 1)
+      if (dim < 0)
         {
           error ("sort: dim must be a valid dimension");
           return retval;
@@ -5740,7 +5740,7 @@ it may be better to use @code{sort}.\n\
       if (nargin == 3)
         {
           dim = args(2).int_value (true) - 1;
-          if (dim < 0 || dim >= argx.ndims ())
+          if (dim < 0)
             error ("nth_element: dim must be a valid dimension");
         }
       if (dim < 0)

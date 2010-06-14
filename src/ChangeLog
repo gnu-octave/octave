@@ -1,3 +1,8 @@
+2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fsort, Fnth_element): Fix behavior when trailing singleton
+	dim is specified.
+
 2010-06-12  Ben Abbott <bpabbott@mac.com>
 
 	* DLD-FUNCTIONS/gammainc.cc: Fix doc-string typo.

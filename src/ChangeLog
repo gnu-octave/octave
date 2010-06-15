@@ -1,3 +1,8 @@
+2010-06-14  Rik <octave@nomad.inbox5.com>
+
+	* pr-output.cc: Remove extra newlines when displaying multi-dimensional
+        arrays (bug #30029).
+
 2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fsort, Fnth_element): Fix behavior when trailing singleton

@@ -1895,14 +1895,14 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
               octave_value page \
                 = MAT_T (Array<ELT_T> (nda.index (idx), nr, nc)); \
  \
-              if (i < ndims - 2) \
+              if (i != m - 1) \
                 { \
                   page.print_with_name (os, nm); \
                 } \
               else \
                 { \
                   page.print_name_tag (os, nm); \
-                  page.print_raw(os); \
+                  page.print_raw (os); \
                 } \
               \
               if (i < m) \

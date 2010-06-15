@@ -1,3 +1,7 @@
+2010-06-15  Rik <octave@nomad.inbox5.com>
+
+	* pr-output.cc: Second try at removing extra newlines from NDArrays
+
 2010-06-14  Rik <octave@nomad.inbox5.com>
 
 	* pr-output.cc: Remove extra newlines when displaying multi-dimensional

@@ -165,6 +165,13 @@ octave_rand::do_seed (double s)
   F77_FUNC (setsd, SETSD) (i0, i1);
 }
 
+void
+octave_rand::do_reset (void)
+{
+  use_old_generators = true;
+  initialize_ranlib_generators ();
+}
+
 ColumnVector
 octave_rand::do_state (const std::string& d)
 {
@@ -187,6 +194,27 @@ octave_rand::do_state (const ColumnVector& s, const std::string& d)
 
   set_internal_state (s);
 
+  rand_states[new_dist] = get_internal_state ();
+
+  if (old_dist != new_dist)
+    rand_states[old_dist] = saved_state;
+}
+
+void
+octave_rand::do_reset (const std::string& d)
+{
+  use_old_generators = false;
+
+  int old_dist = current_distribution;
+
+  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+
+  ColumnVector saved_state;
+
+  if (old_dist != new_dist)
+    saved_state = get_internal_state ();
+
+  oct_init_by_entropy ();
   rand_states[new_dist] = get_internal_state ();
 
   if (old_dist != new_dist)

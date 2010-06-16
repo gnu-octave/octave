@@ -1,3 +1,8 @@
+2010-06-11  David Bateman  <dbateman@free.fr>
+
+	* genprops.awk : Don't special case the color_property in the
+	factory default methods.
+
 2010-06-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fsort): Fix invalid tests.

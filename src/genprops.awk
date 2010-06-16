@@ -559,7 +559,7 @@ function emit_source ()
       if (factory[i])
       {
         dval = defval[i];
-        if (type[i] == "radio_property" || type[i] == "color_property")
+        if (type[i] == "radio_property")
         {
           k = index (dval, "{");
           dval = substr (dval, k+1);

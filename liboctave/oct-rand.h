@@ -58,6 +58,13 @@ public:
       instance->do_seed (s);
   }
 
+  // Reset the seed.
+  static void reset (void)
+  {
+    if (instance_ok ())
+      instance->do_reset ();
+  }
+
   // Return the current state.
   static ColumnVector state (const std::string& d = std::string ())
   {
@@ -70,6 +77,13 @@ public:
   {
     if (instance_ok ())
       instance->do_state (s, d);
+  }
+  
+  // Reset the current state/
+  static void reset (const std::string& d)
+  {
+    if (instance_ok ())
+      instance->do_reset (d);
   }
   
   // Return the current distribution.
@@ -172,11 +186,17 @@ private:
   // Set the seed.
   void do_seed (double s);
 
+  // Reset the seed.
+  void do_reset ();
+
   // Return the current state.
   ColumnVector do_state (const std::string& d);
 
   // Set the current state/
   void do_state (const ColumnVector &s, const std::string& d);
+  
+  // Reset the current state/
+  void do_reset (const std::string& d);
   
   // Return the current distribution.
   std::string do_distribution (void);

@@ -243,16 +243,25 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                     if (! error_state)
                       octave_rand::seed (d);
                   }
+                else if (args(idx+1).is_string () 
+                         && args(idx+1).string_value() == "reset")
+                  octave_rand::reset ();
                 else
                   error ("%s: seed must be a real scalar", fcn);
               }
             else if (ts == "state" || ts == "twister")
               {
-                ColumnVector s = 
-                  ColumnVector (args(idx+1).vector_value(false, true));
+                if (args(idx+1).is_string ()
+                    && args(idx+1).string_value() == "reset")
+                  octave_rand::reset (fcn);
+                else
+                  {
+                    ColumnVector s = 
+                      ColumnVector (args(idx+1).vector_value(false, true));
 
-                if (! error_state)
-                  octave_rand::state (s, fcn);
+                    if (! error_state)
+                      octave_rand::state (s, fcn);
+                  }
               }
             else
               error ("%s: unrecognized string argument", fcn);
@@ -314,7 +323,9 @@ DEFUN_DLD (rand, args, ,
 @deftypefn  {Loadable Function} {} rand (@var{x})\n\
 @deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {} rand (\"state\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} rand (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {} rand (\"seed\", \"reset\")\n\
 Return a matrix with random elements uniformly distributed on the\n\
 interval (0, 1).  The arguments are handled the same as the arguments\n\
 for @code{eye}.\n\
@@ -376,6 +387,9 @@ However, it should be noted that querying the seed will not cause\n\
 @code{rand} to use the old generators, only setting the seed will.\n\
 To cause @code{rand} to once again use the new generators, the\n\
 keyword \"state\" should be used to reset the state of the @code{rand}.\n\
+\n\
+The state or seed of the generator can be reset to a new random value\n\
+using the \"reset\" keyword.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
@@ -474,7 +488,9 @@ DEFUN_DLD (randn, args, ,
 @deftypefn  {Loadable Function} {} randn (@var{x})\n\
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randn (\"state\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randn (\"seed\", \"reset\")\n\
 Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
@@ -547,7 +563,9 @@ DEFUN_DLD (rande, args, ,
 @deftypefn  {Loadable Function} {} rande (@var{x})\n\
 @deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {} rande (\"state\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {} rande (\"seed\", \"reset\")\n\
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
@@ -620,7 +638,9 @@ DEFUN_DLD (randg, args, ,
 @deftypefn  {Loadable Function} {} randg (@var{a}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randg (\"state\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} randg (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randg (\"seed\", \"reset\")\n\
 Return a matrix with @code{gamma(@var{a},1)} distributed random elements.\n\
 The arguments are handled the same as the arguments for @code{rand},\n\
 except for the argument @var{a}.\n\
@@ -870,7 +890,9 @@ DEFUN_DLD (randp, args, ,
 @deftypefn  {Loadable Function} {} randp (@var{l}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randp (\"state\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {} randp (\"seed\", \"reset\")\n\
 Return a matrix with Poisson distributed random elements with mean value\n\
 parameter given by the first argument, @var{l}.  The arguments\n\
 are handled the same as the arguments for @code{rand}, except for the\n\

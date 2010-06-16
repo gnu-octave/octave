@@ -1,3 +1,10 @@
+2010-06-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* CMatrix.cc (ComplexMatrix::lssolve (const ComplexMatrix&)):
+	Workaround LAPACK bug.
+	* fCMatrix.cc (FloatComplexMatrix::lssolve (const FloatComplexMatrix&)):
+	Ditto.
+
 2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array::sort, Array::nth_element): Fix behavior when

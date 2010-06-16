@@ -2639,6 +2639,8 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       if (nlvl < 0)
         nlvl = 0;
 
+      nlvl += 1; // FIXME: workaround for bug in LAPACK 3.1.1
+
       octave_idx_type lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
         + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)

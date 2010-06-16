@@ -1,5 +1,8 @@
 2010-06-11  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/rand.cc : Add "reset" flag to reset the random
+	generators from the entropy pool.
+
 	* genprops.awk : Don't special case the color_property in the
 	factory default methods.
 

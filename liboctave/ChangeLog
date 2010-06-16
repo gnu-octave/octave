@@ -1,3 +1,12 @@
+2010-06-16  David Bateman  <dbateman@free.fr>
+
+	* oct-rand.cc (void octave_rand:do_reset (void),
+	void octave_rand:do_reset (const std::string&)): New functions
+	* oct-rand.h (void octave_rand:do_reset (void),
+	void octave_rand:do_reset (const std::string&)): Declare them
+	(void octave_rand:reset (void),
+	void octave_rand:reset (const std::string&)): New functions.
+
 2010-06-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* CMatrix.cc (ComplexMatrix::lssolve (const ComplexMatrix&)):

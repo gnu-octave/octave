@@ -1,3 +1,10 @@
+2010-06-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* MatrixType.cc (matrix_real_probe): Use OCTAVE_LOCAL_BUFFER for
+	temporary array.
+	(matrix_complex_probe): Parametrize by real type. Use
+	OCTAVE_LOCAL_BUFFER for temporary array.
+
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
         * DASSL-opts.in: Periodic grammar check on documentation.

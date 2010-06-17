@@ -74,7 +74,7 @@ matrix_real_probe (const MArray<T>& a)
       bool hermitian = true;
 
       // do the checks for lower/upper/hermitian all in one pass.
-      ColumnVector diag(ncols);
+      OCTAVE_LOCAL_BUFFER(T, diag, ncols);
 
       for (octave_idx_type j = 0; 
            j < ncols && upper; j++)
@@ -83,7 +83,7 @@ matrix_real_probe (const MArray<T>& a)
           upper = upper && (d != zero);
           lower = lower && (d != zero);
           hermitian = hermitian && (d > zero);
-          diag(j) = d;
+          diag[j] = d;
         }
 
       for (octave_idx_type j = 0; 
@@ -95,7 +95,7 @@ matrix_real_probe (const MArray<T>& a)
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == aji 
-                                        && aij*aij < diag(i)*diag(j));
+                                        && aij*aij < diag[i]*diag[j]);
             }
         }
 
@@ -116,13 +116,14 @@ matrix_real_probe (const MArray<T>& a)
 
 template<class T> 
 MatrixType::matrix_type 
-matrix_complex_probe (const MArray<T>& a)
+matrix_complex_probe (const MArray<std::complex<T> >& a)
 {
   MatrixType::matrix_type typ;
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
 
-  const typename T::value_type zero = 0;
+  const T zero = 0;
+  // get the real type
 
   if (ncols == nrows)
     {
@@ -131,16 +132,16 @@ matrix_complex_probe (const MArray<T>& a)
       bool hermitian = true;
 
       // do the checks for lower/upper/hermitian all in one pass.
-      ColumnVector diag(ncols);
+      OCTAVE_LOCAL_BUFFER(T, diag, ncols);
 
       for (octave_idx_type j = 0; 
            j < ncols && upper; j++)
         {
-          T d = a.elem (j,j);
+          std::complex<T> d = a.elem (j,j);
           upper = upper && (d != zero);
           lower = lower && (d != zero);
           hermitian = hermitian && (d.real() > zero && d.imag() == zero);
-          diag (j) = d.real();
+          diag[j] = d.real();
         }
 
       for (octave_idx_type j = 0; 
@@ -148,11 +149,11 @@ matrix_complex_probe (const MArray<T>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              T aij = a.elem (i,j), aji = a.elem (j,i);
+              std::complex<T> aij = a.elem (i,j), aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == std::conj (aji)
-                                        && std::norm (aij) < diag(i)*diag(j));
+                                        && std::norm (aij) < diag[i]*diag[j]);
             }
         }
 

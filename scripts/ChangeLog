@@ -1,3 +1,7 @@
+2010-06-17  Brad Froehle <brad.froehle@gmail.com>
+
+	* sparse/spy.m: Fix typo.
+
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
         * set/union.m: Remove seealso reference to deprecated function.

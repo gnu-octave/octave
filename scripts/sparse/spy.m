@@ -35,7 +35,7 @@ function spy (x, varargin)
   endif
 
   markersize = NaN;
-  if (numel (i) < 1000)
+  if (numel (x) < 1000)
     line_spec = "*";
   else
     line_spec = ".";

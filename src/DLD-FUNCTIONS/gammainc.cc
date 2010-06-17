@@ -65,8 +65,8 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 @var{a} must agree, and @var{gammainc} is applied element-by-element.\n\
 \n\
 By default the incomplete gamma function integrated from 0 to @var{x} is\n\
-computed. If \"upper\" is given then the complementary function integrated\n\
-for @var{x} to infinity is calculated. It should be noted that\n\
+computed.  If \"upper\" is given then the complementary function integrated\n\
+for @var{x} to infinity is calculated.  It should be noted that\n\
 \n\
 @example\n\
 gammainc (@var{x}, @var{a}) = 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\

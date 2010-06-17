@@ -355,7 +355,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 DEFUN (cbrt, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cbrt (@var{x})\n\
-Return the real cube root of @var{x}. Unlike @code{@var{x}^(1/3)},\n\
+Return the real cube root of @var{x}.  Unlike @code{@var{x}^(1/3)},\n\
 the result will be negative if @var{x} is negative.\n\
 @end deftypefn")
 {
@@ -601,7 +601,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 DEFUN (erfinv, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfinv (@var{x})\n\
-Computes the inverse error function, i.e. @var{y} such that\n\
+Computes the inverse error function, i.e., @var{y} such that\n\
 @example\n\
   erf(@var{y}) == @var{x}\n\
 @end example\n\

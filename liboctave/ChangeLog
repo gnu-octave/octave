@@ -1,3 +1,7 @@
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
+        * DASSL-opts.in: Periodic grammar check on documentation.
+
 2010-06-16  David Bateman  <dbateman@free.fr>
 
 	* oct-rand.cc (void octave_rand:do_reset (void),

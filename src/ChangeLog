@@ -1,3 +1,12 @@
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
+        * DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc, 
+        DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc, 
+        DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/onCleanup.cc,
+        DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spparms.cc, DLD-FUNCTIONS/svd.cc,
+        data.cc, dirfns.cc, graphics.cc, mappers.cc, ov-cell.cc, ov-range.cc: 
+        Periodic grammar check of documentation to ensure a common format.
+
 2010-06-11  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/rand.cc : Add "reset" flag to reset the random

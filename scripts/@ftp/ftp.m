@@ -18,7 +18,7 @@
 ## @deftypefnx {Function File} {@var{f}} = ftp (@var{host}, @var{username}, ## @var{password})
 ## Connect to the FTP server @var{host} with @var{username} and @var{password}.
 ## If @var{username} and @var{password} are not specified, user "anonymous"
-## with no password is used. The returned FTP object @var{f} represents the
+## with no password is used.  The returned FTP object @var{f} represents the
 ## established FTP connection.
 ## @end deftypefn
 

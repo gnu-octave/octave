@@ -4949,9 +4949,9 @@ and a cell array @var{values} containing property values.\n\
 \n\
 In this case, the number of columns of @var{values} must match the number of\n\
 elements in @var{properties}.  The first column of @var{values} contains values\n\
-for the first entry in @var{properties} etc..  The number of rows of @var{values}\n\
-must be 1 or match the number of elements of @var{h}. In the first case, each\n\
-handle in @var{h} will be assigned the same values. In the latter case, the\n\
+for the first entry in @var{properties}, etc.  The number of rows of @var{values}\n\
+must be 1 or match the number of elements of @var{h}.  In the first case, each\n\
+handle in @var{h} will be assigned the same values.  In the latter case, the\n\
 first handle in @var{h} will be assigned the values from the first row of\n\
 @var{values} and so on.\n\
 @item as a structure array @var{pv}\n\

@@ -441,7 +441,7 @@ print_arguments (1, "two", 3);
 @section Ignoring Arguments
 
 In the formal argument list, it is possible to use the dummy placeholder @code{~}
-instead of a name. This indicates that the corresponding argument value should be ignored
+instead of a name.  This indicates that the corresponding argument value should be ignored
 and not stored to any variable.
 
 @example

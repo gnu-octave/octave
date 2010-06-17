@@ -18,7 +18,7 @@
 ## @deftypefnx {Function File} {} mget (@var{f}, @var{dir})
 ## @deftypefnx {Function File} {} mget (@dots{}, @var{target})
 ## Downloads a remote file @var{file} or directory @var{dir} to the local
-## directory on the FTP connection @var{f}. @var{f} is an FTP object
+## directory on the FTP connection @var{f}.  @var{f} is an FTP object
 ## returned by the ftp function. 
 ##
 ## The arguments @var{file} and @var{dir} can include wildcards and any

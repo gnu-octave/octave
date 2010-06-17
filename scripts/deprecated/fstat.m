@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{info}, @var{err}, @var{msg}] = } fstat (fid)
+## @deftypefn {Function File} {[@var{info}, @var{err}, @var{msg}] =} fstat (fid)
 ## This function has been deprecated.  Use stat instead.
 ## @end deftypefn
 

@@ -1240,7 +1240,7 @@ Handle to graphics object of current axes.
 @item currentobject
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
-the mouse button was pressed. If a mouse callback function is defined,
+the mouse button was pressed.  If a mouse callback function is defined,
 @code{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
 @item deletefcn
@@ -1259,10 +1259,10 @@ mouse pointer is when the function gets called.
 @item keypressfcn
 see @code{"keypressfcn"}
 @item keyreleasefcn
-With @code{"keypressfcn"}, The keyboard callback functions. These
+With @code{"keypressfcn"}, The keyboard callback functions.  These
 callback functions get called when a key is pressed/released
-respectively. The functions are called with two input arguments. The
-first argument holds the handle of the calling figure. The second
+respectively.  The functions are called with two input arguments.  The
+first argument holds the handle of the calling figure.  The second
 argument holds the event structure which has the following members:
 @table @code
 @item Character
@@ -1271,7 +1271,7 @@ The ASCII value of the key
 lowercase value of the key
 @item Modifier
 A cell array containing strings representing the modifiers pressed with
-the key. Possible values are @code{"shift"}, @code{"alt"}, and
+the key.  Possible values are @code{"shift"}, @code{"alt"}, and
 @code{"control"}.
 @end table
 @item menubar
@@ -1319,8 +1319,8 @@ See @code{"windowbuttonupfcn"}
 See @code{"windowbuttonupfcn"}
 @item windowbuttonupfcn
 With @code{"windowbuttondownfcn"} and @code{"windowbuttonmotionfcn"},
-The mouse callback functions. These callback functions get called when
-the mouse button is pressed, dragged, and released respectively. When
+The mouse callback functions.  These callback functions get called when
+the mouse button is pressed, dragged, and released respectively.  When
 these callback functions are called, the @code{"currentpoint"} property
 holds the current coordinates of the cursor.
 @item windowbuttonwheelfcn
@@ -1372,7 +1372,7 @@ Either @code{"manual"} or @code{"auto"}.
 @item createfcn
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
-the mouse button was pressed. If a mouse callback function is defined,
+the mouse button was pressed.  If a mouse callback function is defined,
 @code{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
 @item dataaspectratio
@@ -1397,12 +1397,12 @@ Either @code{"manual"} or @code{"auto"}.
 @item interpreter
 @item interruptible
 @item key
-Toggle display of the legend. --- Values: "on," "off"
+Toggle display of the legend.  --- Values: "on," "off"
 Note that this property is not compatible with @sc{matlab} and may be
 removed in a future version of Octave.
 @item keybox
 Toggle display of a box around the
-legend.   --- Values: "on," "off"
+legend.  --- Values: "on," "off"
 Note that this property is not compatible with @sc{matlab} and
 may be removed in a future version of Octave.
 @item keypos

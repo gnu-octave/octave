@@ -66,7 +66,7 @@
 ## @end group
 ## @end example
 ##
-## will change the colors used for the bars. If you wish to force the bars to
+## will change the colors used for the bars.  If you wish to force the bars to
 ## particular colors, this can be achieved like
 ##
 ## @example

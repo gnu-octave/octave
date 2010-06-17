@@ -208,8 +208,8 @@ DEFUN_DLD (spalloc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
 Creates a @var{m}-by-@var{n} sparse matrix with preallocated space for at most\n\
-@var{nz} nonzero elements. This is useful for building the matrix incrementally\n\
-by a sequence of indexed assignments. Subsequent indexed assignments will reuse\n\
+@var{nz} nonzero elements.  This is useful for building the matrix incrementally\n\
+by a sequence of indexed assignments.  Subsequent indexed assignments will reuse\n\
 the pre-allocated memory, provided they are of one of the simple forms\n\
 \n\
 @itemize\n\
@@ -227,7 +227,7 @@ the pre-allocated memory, provided they are of one of the simple forms\n\
 @end itemize\n\
 \n\
 Partial movement of data may still occur, but in general the assignment will be more\n\
-memory and time-efficient under these circumstances. In particular, it is possible\n\
+memory and time-efficient under these circumstances.  In particular, it is possible\n\
 to efficiently build a pre-allocated sparse matrix from contiguous block of columns.\n\
 \n\
 The amount of preallocated memory for a given matrix may be queried using the function\n\

@@ -21,7 +21,7 @@
 ## Create an array by accumulating the slices of an array into the
 ## positions defined by their subscripts along a specified dimension. 
 ## The subscripts are defined by the index vector @var{subs}.
-## The dimension is specified by @var{dim}. If not given, it defaults
+## The dimension is specified by @var{dim}.  If not given, it defaults
 ## to the first non-singleton dimension.
 ##
 ## The extent of the result matrix in the working dimension will be determined 

@@ -1349,7 +1349,7 @@ endfor\n\
 @end group\n\
 @end example\n\
 \n\
-The position of the index is determined by @var{dim}. If not specified, slicing\n\
+The position of the index is determined by @var{dim}.  If not specified, slicing\n\
 is done along the first non-singleton dimension.\n\
 @end deftypefn")
 {

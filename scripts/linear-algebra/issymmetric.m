@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
 ## Return true if @var{x} is a symmetric matrix within the tolerance specified
-## by @var{tol}, otherwise return false. The default tolerance is zero (uses
+## by @var{tol}, otherwise return false.  The default tolerance is zero (uses
 ## faster code).
 ## Matrix @var{x} is considered symmetric if
 ## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.

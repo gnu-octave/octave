@@ -44,8 +44,8 @@
 ## for both @code{"TolX"} and @code{"TolFun"}.
 ##
 ## If @code{"AutoScaling"} is on, the variables will be automatically scaled
-## according to the column norms of the (estimated) Jacobian. As a result,
-## TolF becomes scaling-independent. By default, this option is off, because
+## according to the column norms of the (estimated) Jacobian.  As a result,
+## TolF becomes scaling-independent.  By default, this option is off, because
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ## 
 ## If @code{"Updating"} is "on", the function will attempt to use Broyden

@@ -73,7 +73,7 @@ DEFUN_DLD (lu, args, nargout,
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, 'vector')\n\
 @cindex LU decomposition\n\
 Compute the LU decomposition of @var{a}.  If @var{a} is full subroutines from\n\
-@sc{lapack} are used and if @var{a} is sparse then UMFPACK is used.  The\n\
+@sc{lapack} are used and if @var{a} is sparse then @sc{umfpack} is used.  The\n\
 result is returned in a permuted form, according to the optional return\n\
 value @var{p}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
@@ -118,9 +118,9 @@ This typically leads to a sparser and more stable factorization.\n\
 \n\
 An additional input argument @var{thres}, that defines the pivoting\n\
 threshold can be given.  @var{thres} can be a scalar, in which case\n\
-it defines UMFPACK pivoting tolerance for both symmetric and unsymmetric\n\
+it defines @sc{umfpack} pivoting tolerance for both symmetric and unsymmetric\n\
 cases.  If @var{thres} is a two element vector, then the first element\n\
-defines the pivoting tolerance for the unsymmetric UMFPACK pivoting\n\
+defines the pivoting tolerance for the unsymmetric @sc{umfpack} pivoting\n\
 strategy and the second the symmetric strategy.  By default, the values\n\
 defined by @code{spparms} are used and are by default @code{[0.1, 0.001]}.\n\
 \n\

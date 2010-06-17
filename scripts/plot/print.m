@@ -142,7 +142,7 @@
 ## "paperposition" property.
 ##
 ## @itemx -append
-##   Appends the output to a pre-existing file. Presently only PDF,
+##   Appends the output to a pre-existing file.  Presently only PDF,
 ## and Postscript files are supported.
 ##
 ## @itemx -r@var{NUM}

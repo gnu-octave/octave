@@ -35,7 +35,7 @@
 ## @end group
 ## @end example
 ## 
-## @var{n} must be a scalar. If @var{n} is not an even integer and @var{X} has
+## @var{n} must be a scalar.  If @var{n} is not an even integer and @var{X} has
 ## negative entries, an error is produced.
 ##
 ## @end deftypefn

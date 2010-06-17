@@ -407,8 +407,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{old} =} svd_driver (@var{new})\n\
-Sets or queries the underlying LAPACK driver used by svd.\n\
-Currently recognized are \"gesvd\" and \"gesdd\". Default is \"gesvd\".\n\
+Sets or queries the underlying @sc{lapack} driver used by svd.\n\
+Currently recognized are \"gesvd\" and \"gesdd\".  Default is \"gesvd\".\n\
 @seealso{svd}\n\
 @end deftypefn")
 {

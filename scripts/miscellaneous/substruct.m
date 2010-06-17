@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} substruct (@var{type}, @var{subs}, @dots{})
 ## Create a subscript structure for use with @code{subsref} or
-## @code{subsasgn}. For example:
+## @code{subsasgn}.  For example:
 ##
 ## @example
 ## @group

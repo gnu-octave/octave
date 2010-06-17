@@ -24,7 +24,7 @@
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to
 ## remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
 ##
-## Unwrap will work along the the dimension @var{dim}.  If @var{dim}
+## Unwrap will work along the dimension @var{dim}.  If @var{dim}
 ## is unspecified it defaults to the first non-singleton dimension.
 ## @end deftypefn
 

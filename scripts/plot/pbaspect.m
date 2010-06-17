@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pbaspect (@var{plot_box_aspect_ratio})
-## Set the plot box aspect ratio of the current axes. The aspect ratio
+## Set the plot box aspect ratio of the current axes.  The aspect ratio
 ## is a normalized 3 element vector representing the rendered lengths of
 ## the x, y, and z-axes.
 ## @deftypefnx {Function File} {@var{plot_box_aspect_ratio} =} pbaspect ( )

@@ -338,7 +338,7 @@ do_hypot (const octave_value& x, const octave_value& y)
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} hypot (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, ...)\n\
+@deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})\n\
 Compute the element-by-element square root of the sum of the squares of\n\
 @var{x} and @var{y}.  This is equivalent to\n\
 @code{sqrt (@var{x}.^2 + @var{y}.^2)}, but calculated in a manner that\n\
@@ -346,8 +346,10 @@ avoids overflows for large values of @var{x} or @var{y}.\n\
 @code{hypot} can also be called with more than 2 arguments; in this case,\n\
 the arguments are accumulated from left to right:\n\
 @example\n\
+@group\n\
   hypot (hypot (@var{x}, @var{y}), @var{z})\n\
-  hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}) etc.\n\
+  hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {
@@ -1896,8 +1898,10 @@ Return the number of dimensions of @var{a}.\n\
 For any array, the result will always be larger than or equal to 2.\n\
 Trailing singleton dimensions are not counted.\n\
 @example\n\
+@group\n\
   ndims (ones (4, 1, 2, 1)\n\
      @result{} 3\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {
@@ -2775,7 +2779,7 @@ DEFUN (isreal, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isreal (@var{x})\n\
 Return true if @var{x} is a non-complex matrix or scalar.\n\
-For compatibility with Matlab, this includes logical and character\n\
+For compatibility with @sc{matlab}, this includes logical and character\n\
 matrices.\n\
 @end deftypefn")
 {
@@ -2809,7 +2813,7 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
-Return nonzero if @var{x} is a numeric object, i.e. an integer, real or complex array.\n\
+Return nonzero if @var{x} is a numeric object, i.e., an integer, real or complex array.\n\
 Logical and character arrays are not considered to be numeric.\n\
 @seealso{ischar, islogical, isinteger}\n\
 @end deftypefn")
@@ -4437,7 +4441,7 @@ DEFUN (vec, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vec (@var{x})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
-one above the other. Equivalent to @code{@var{x}(:)}. Useful for functional\n\
+one above the other.  Equivalent to @code{@var{x}(:)}.  Useful for functional\n\
 programming.\n\
 @end deftypefn")
 {

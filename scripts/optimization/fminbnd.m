@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
 ## Find a minimum point of a univariate function.  @var{fun} should be a function
-## handle or name.  @var{a}, @var{b} specify a starting interval. @var{options} is a
+## handle or name.  @var{a}, @var{b} specify a starting interval.  @var{options} is a
 ## structure specifying additional options.  Currently, @code{fminbnd}
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
 ## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}. 

@@ -240,16 +240,18 @@ When @var{X} and @var{Y} are column vectors, the result is equivalent to\n\
 DEFUN_DLD (blkmm, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} blkmm (@var{x}, @var{y})\n\
-Computes products of matrix blocks. The blocks are given as\n\
+Computes products of matrix blocks.  The blocks are given as\n\
 2-dimensional subarrays of the arrays @var{x}, @var{y}.\n\
 The size of @var{x} must have the form @code{[m,k,@dots{}]} and\n\
-size of @var{y} must be @code{[k,n,@dots{}]}. The result is\n\
+size of @var{y} must be @code{[k,n,@dots{}]}.  The result is\n\
 then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
 \n\
 @example\n\
+@group\n\
   for i = 1:prod (size (@var{x})(3:end))\n\
     @var{z}(:,:,i) = @var{x}(:,:,i) * @var{y}(:,:,i)\n\
   endfor\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {

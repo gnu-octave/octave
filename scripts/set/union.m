@@ -22,7 +22,7 @@
 ## @deftypefn {Function File} {} union (@var{a}, @var{b})
 ## @deftypefnx{Function File} {} union (@var{a}, @var{b}, "rows")
 ## Return the set of elements that are in either of the sets @var{a} and
-## @var{b}. @var{a}, @var{b} may be cell arrays of string(s).
+## @var{b}.  @var{a}, @var{b} may be cell arrays of string(s).
 ## For example,
 ##
 ## @example

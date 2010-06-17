@@ -60,7 +60,7 @@
 ## @var{y}, @var{method}, 'pp'), @var{xi}) == interp1 (@var{x}, @var{y},
 ## @var{xi}, @var{method}, 'extrap')}.
 ##
-## Duplicate points in @var{x} specify a discontinuous interpolant. There
+## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## should be at most 2 consecutive points with the same value.
 ## The discontinuous interpolant is right-continuous if @var{x} is increasing,
 ## left-continuous if it is decreasing.

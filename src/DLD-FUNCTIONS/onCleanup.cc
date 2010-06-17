@@ -252,7 +252,7 @@ DEFUN_DLD (onCleanup, args, ,
 Creates a special object that executes a given function upon destruction.\n\
 If the object is copied to multiple variables (or cell or struct array elements)\n\
 or returned from a function, @var{action} will be executed after clearing the last\n\
-copy of the object. Note that if multiple local onCleanup variables are created, the\n\
+copy of the object.  Note that if multiple local onCleanup variables are created, the\n\
 order in which they are called is unspecified.\n\
 @seealso{unwind_protect}\n\
 @end deftypefn")

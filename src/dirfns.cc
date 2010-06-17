@@ -554,7 +554,7 @@ Within a pattern\n\
 matches any string, including the null string,\n\
 @itemx ?\n\
 matches any single character, and\n\
-@item [...]\n\
+@item [@dots{}]\n\
 matches any of the enclosed characters.\n\
 @end table\n\
 \n\
@@ -563,7 +563,6 @@ is performed on each of the patterns before looking for matching file\n\
 names.  For example:\n\
 \n\
 @example\n\
-@group\n\
 ls\n\
      @result{}\n\
         file1  file2  file3  myfile1 myfile1b \n\
@@ -584,7 +583,6 @@ glob (\"file[12]\")\n\
           [1,1] = file1\n\
           [2,1] = file2\n\
         @}\n\
-@end group\n\
 @end example\n\
 @seealso{dir, ls, stat, readdir, regexp}\n\
 @end deftypefn")

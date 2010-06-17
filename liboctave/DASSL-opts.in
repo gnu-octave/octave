@@ -97,7 +97,7 @@ OPTION
   NAME = "enforce nonnegativity constraints"
   DOC_ITEM
 If you know that the solutions to your equations will always be
-nonnegative, it may help to set this parameter to a nonzero
+non-negative, it may help to set this parameter to a nonzero
 value.  However, it is probably best to try leaving this option set to
 zero first, and only setting it to a nonzero value if that doesn't
 work very well.

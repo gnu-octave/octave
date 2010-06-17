@@ -1,3 +1,9 @@
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
+        * interpreter/expr.txi, interpreter/func.txi, interpreter/install.txi, 
+        interpreter/plot.txi, interpreter/sparse.txi: Periodic grammar check
+        of documentation to ensure a common format.
+
 2010-05-27  Rik <octave@nomad.inbox5.com>
 
         * interpreter/arith.txi, interpreter/diffeq.txi, interpreter/intro.txi,
@@ -313,8 +319,8 @@
 
 2009-10-23  Rik <octave@nomad.inbox5.com>
 
-	* various: Periodic grammar check of Octave documentation files to ensure
-	a standardized format.
+	* various: Periodic grammar check of Octave documentation files to 
+        ensure a standardized format.
 
 2009-10-20  Rik <octave@nomad.inbox5.com>
 

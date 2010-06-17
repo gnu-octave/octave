@@ -123,7 +123,7 @@ functions.
 Don't use CXSPARSE, disable some sparse matrix functionality.
 
 @item --without-umfpack
-Don't use UMFPACK, disable some sparse matrix functionality.
+Don't use @sc{umfpack}, disable some sparse matrix functionality.
 
 @item --without-fftw
 Use the included @sc{fftpack} library instead of the @sc{fftw} library.

@@ -16,7 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mput (@var{f}, @var{file})
 ## Upload the local file @var{file} into the current remote directory on
-## the FTP connection @var{f}. @var{f} is an FTP object returned by the
+## the FTP connection @var{f}.  @var{f} is an FTP object returned by the
 ## ftp function. 
 ##
 ## The argument @var{file} is passed by the @dfn{glob} function and any

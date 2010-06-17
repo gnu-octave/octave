@@ -1,3 +1,14 @@
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
+        * @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m, 
+        deprecated/fstat.m, general/accumdim.m, general/interp1.m, 
+        linear-algebra/ishermitian.m, linear-algebra/issymmetric.m, 
+        miscellaneous/substruct.m, optimization/fminbnd.m, 
+        optimization/fsolve.m, plot/bar.m, plot/daspect.m, plot/pbaspect.m,
+        plot/print.m, polynomial/mkpp.m, polynomial/ppval.m, set/union.m,
+        signal/unwrap.m, specfun/nthroot.m: Periodic grammar check of 
+        documentation to ensure a common format.
+
 2010-06-14  Rik <octave@nomad.inbox5.com>
 
         * plot/image.m: Flip data, rather than y-axis, for images.  (bug #30033)

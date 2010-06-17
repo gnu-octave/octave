@@ -1368,7 +1368,7 @@ DEFUN (struct2cell, args, ,
 Create a new cell array from the objects stored in the struct object.\n\
 If @var{f} is the number of fields in the structure, the resulting\n\
 cell array will have a dimension vector corresponding to\n\
-@code{[@var{F} size(@var{S})]}. For example:\n\
+@code{[@var{F} size(@var{S})]}.  For example:\n\
 \n\
 @example\n\
 @group\n\

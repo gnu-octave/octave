@@ -1,5 +1,9 @@
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
+        * interpreter/set.txi: Remove reference to deprecated function.
+
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
         * interpreter/expr.txi, interpreter/func.txi, interpreter/install.txi, 
         interpreter/plot.txi, interpreter/sparse.txi: Periodic grammar check
         of documentation to ensure a common format.

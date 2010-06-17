@@ -49,7 +49,7 @@
 ## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and @code{b(ib)} are
 ## disjoint sets whose union is @var{c}.
 ## 
-## @seealso{intersect, complement, unique}
+## @seealso{intersect, setdiff, unique}
 ## @end deftypefn
 
 ## Author: jwe

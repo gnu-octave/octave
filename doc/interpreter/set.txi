@@ -33,7 +33,7 @@ represented as a vector of numbers.
 @section Set Operations
 
 Octave supports the basic set operations.  That is, Octave can compute
-the union, intersection, complement, and difference of two sets.
+the union, intersection, and difference of two sets.
 Octave also supports the @emph{Exclusive Or} set operation, and
 membership determination.  The functions for set operations all work in
 pretty much the same way.  As an example, assume that @code{x} and
@@ -51,8 +51,6 @@ computes the union of the two sets.
 @DOCSTRING(union)
 
 @DOCSTRING(intersect)
-
-@DOCSTRING(complement)
 
 @DOCSTRING(setdiff)
 

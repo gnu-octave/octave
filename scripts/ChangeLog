@@ -1,5 +1,9 @@
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
+        * set/union.m: Remove seealso reference to deprecated function.
+
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
         * @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m, 
         deprecated/fstat.m, general/accumdim.m, general/interp1.m, 
         linear-algebra/ishermitian.m, linear-algebra/issymmetric.m, 

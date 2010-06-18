@@ -110,9 +110,6 @@ private:
 
     tm_row_const_rep& operator = (const tm_row_const_rep&);
 
-    void eval_error (const char *msg, int l, int c,
-                     int x = -1, int y = -1) const;
-
     void eval_warning (const char *msg, int l, int c) const;
   };
 
@@ -257,79 +254,47 @@ get_concat_class (const std::string& c1, const std::string& c2)
   return retval;    
 }
 
+static void
+eval_error (const char *msg, int l, int c, 
+            const dim_vector& x, const dim_vector& y)
+{
+  if (l == -1 && c == -1)
+    {
+      ::error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
+    }
+  else
+    {
+      ::error ("%s (%s vs %s) near line %d, column %d", msg, 
+               x.str ().c_str (), y.str ().c_str (), l, c);
+    }
+}
+
 bool
 tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
                                                  const octave_value& val,
                                                  bool& first_elem)
 {
-  octave_idx_type this_elt_nr = val.rows ();
-  octave_idx_type this_elt_nc = val.columns ();
-
   std::string this_elt_class_nm = val.class_name ();
 
   dim_vector this_elt_dv = val.dims ();
 
   class_nm = get_concat_class (class_nm, this_elt_class_nm);
 
-
-  if (! this_elt_dv.all_zero ())
+  if (! this_elt_dv.zero_by_zero ())
     {
       all_mt = false;
 
       if (first_elem)
         {
           first_elem = false;
-
-          dv.resize (this_elt_dv.length ());
-          for (int i = 2; i < dv.length (); i++)
-            dv.elem (i) = this_elt_dv.elem (i);
-
-          dv.elem (0) = this_elt_nr;
-
-          dv.elem (1) = 0;
+          dv = this_elt_dv;
         }
-      else
+      else if (! dv.hvcat (this_elt_dv, 1))
         {
-          int len = (this_elt_dv.length () < dv.length ()
-                     ? this_elt_dv.length () : dv.length ());
-
-          if (this_elt_nr != dv (0))
-            {
-              eval_error ("number of rows must match",
-                          elt->line (), elt->column (), this_elt_nr, dv (0));
-              return false;
-            }
-          for (int i = 2; i < len; i++)
-            {
-              if (this_elt_dv (i) != dv (i))
-                {
-                  eval_error ("dimensions mismatch", elt->line (), elt->column (), this_elt_dv (i), dv (i));
-                  return false;
-                }
-            }
-
-          if (this_elt_dv.length () > len)
-            for (int i = len; i < this_elt_dv.length (); i++)
-              if (this_elt_dv (i) != 1)
-                {
-                  eval_error ("dimensions mismatch", elt->line (), elt->column (), this_elt_dv (i), 1);
-                  return false;
-                }
-
-          if (dv.length () > len)
-            for (int i = len; i < dv.length (); i++)
-              if (dv (i) != 1)
-                {
-                  eval_error ("dimensions mismatch", elt->line (), elt->column (), 1, dv (i));
-                  return false;
-                }
+          eval_error ("horizontal dimensions mismatch", elt->line (), elt->column (), dv, this_elt_dv);
+          return false;
         }
-      dv.elem (1) = dv.elem (1) + this_elt_nc;
-
     }
-  else
-    eval_warning ("empty matrix found in matrix list",
-                  elt->line (), elt->column ());
 
   append (val);
 
@@ -410,26 +375,6 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
  done:
 
   ok = ! error_state;
-}
-
-void
-tm_row_const::tm_row_const_rep::eval_error (const char *msg, int l,
-                                            int c, int x, int y) const
-{
-  if (l == -1 && c == -1)
-    {
-      if (x == -1 || y == -1)
-        ::error ("%s", msg);
-      else
-        ::error ("%s (%d != %d)", msg, x, y);
-    }
-  else
-    {
-      if (x == -1 || y == -1)
-        ::error ("%s near line %d, column %d", msg, l, c);
-      else
-        ::error ("%s (%d != %d) near line %d, column %d", msg, x, y, l, c);
-    }
 }
 
 void
@@ -576,85 +521,33 @@ tm_const::init (const tree_matrix& tm)
           octave_idx_type this_elt_nc = elt.cols ();
 
           std::string this_elt_class_nm = elt.class_name ();
+          class_nm = get_concat_class (class_nm, this_elt_class_nm);
 
           dim_vector this_elt_dv = elt.dims ();
 
-          if (!this_elt_dv.all_zero ())
+          all_mt = false;
+
+          if (first_elem)
             {
-              all_mt = false;
+              first_elem = false;
 
-              if (first_elem)
-                {
-                  first_elem = false;
-
-                  class_nm = this_elt_class_nm;
-
-                  dv.resize (this_elt_dv.length ());
-                  for (int i = 2; i < dv.length (); i++)
-                    dv.elem (i) = this_elt_dv.elem (i);
-
-                  dv.elem (0) = 0;
-
-                  dv.elem (1) = this_elt_nc;
-                }
-              else if (all_str)
-                {
-                  class_nm = get_concat_class (class_nm, this_elt_class_nm);
-
-                  if (this_elt_nc > cols ())
-                    dv.elem (1) = this_elt_nc;
-                }
-              else
-                {
-                  class_nm = get_concat_class (class_nm, this_elt_class_nm);
-
-                  bool get_out = false;
-                  int len = (this_elt_dv.length () < dv.length ()
-                             ? this_elt_dv.length () : dv.length ());
-
-                  for (int i = 1; i < len; i++)
-                    {
-                      if (i == 1 && this_elt_nc != dv (1))
-                        {
-                          ::error ("number of columns must match (%d != %d)",
-                                   this_elt_nc, dv (1));
-                          get_out = true;
-                          break;
-                        }
-                      else if (this_elt_dv (i) != dv (i))
-                        {
-                          ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, this_elt_dv (i), dv (i));
-                          get_out = true;
-                          break;
-                        }
-                    }
-
-                  if (this_elt_dv.length () > len)
-                    for (int i = len; i < this_elt_dv.length (); i++)
-                      if (this_elt_dv (i) != 1)
-                        {
-                          ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, this_elt_dv (i), 1);
-                          get_out = true;
-                          break;
-                        }
-
-                  if (dv.length () > len)
-                    for (int i = len; i < dv.length (); i++)
-                      if (dv (i) != 1)
-                        {
-                          ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, 1, dv(i));
-                          get_out = true;
-                          break;
-                        }
-
-                  if (get_out)
-                    break;
-                }
-              dv.elem (0) = dv.elem (0) + this_elt_nr;
+              dv = this_elt_dv;
             }
-          else
-            warning_with_id ("Octave:empty-list-elements",
-                             "empty matrix found in matrix list");
+          else if (all_str && dv.length () == 2 
+                   && this_elt_dv.length () == 2)
+            {
+              // FIXME: this is Octave's specialty. Character matrices allow
+              // rows of unequal length.
+              if (this_elt_nc > cols ())
+                dv(1) = this_elt_nc;
+              dv(0) += this_elt_nr;
+            }
+          else if (! dv.hvcat (this_elt_dv, 0))
+            {
+              eval_error ("vertical dimensions mismatch", -1, -1, 
+                          dv, this_elt_dv);
+              return;
+            }
         }
     }
 
@@ -734,6 +627,9 @@ single_type_concat (Array<T>& result,
   for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
     {
       tm_row_const row = *p;
+      // Skip empty arrays to allow looser rules.
+      if (row.dims ().any_zero ())
+        continue;
 
       for (tm_row_const::iterator q = row.begin ();
            q != row.end ();
@@ -743,14 +639,18 @@ single_type_concat (Array<T>& result,
 
           TYPE ra = octave_value_extract<TYPE> (*q);
 
+          // Skip empty arrays to allow looser rules.
           if (! error_state)
             {
-              result.insert (ra, r, c);
+              if (! ra.is_empty ())
+                {
+                  result.insert (ra, r, c);
 
-              if (! error_state)
-                c += ra.columns ();
-              else
-                return;
+                  if (! error_state)
+                    c += ra.columns ();
+                  else
+                    return;
+                }
             }
           else
             return;
@@ -767,6 +667,12 @@ single_type_concat (Array<T>& result,
                     const dim_vector& dv,
                     tm_const& tmp)
 {
+  if (dv.any_zero ())
+    {
+      result = Array<T> (dv);
+      return;
+    }
+
   if (tmp.length () == 1)
     {
       // If possible, forward the operation to liboctave.
@@ -781,7 +687,10 @@ single_type_concat (Array<T>& result,
         {
           octave_quit ();
 
-          array_list[i++] = octave_value_extract<TYPE> (*q);
+          // Use 0x0 in place of all empty arrays to allow looser rules.
+          if (! q->is_empty ())
+            array_list[i] = octave_value_extract<TYPE> (*q);
+          i++;
         }
 
       if (! error_state)
@@ -797,9 +706,15 @@ single_type_concat (Array<T>& result,
 template<class TYPE, class T>
 static void 
 single_type_concat (Sparse<T>& result,
-                    const dim_vector&,
+                    const dim_vector& dv,
                     tm_const& tmp)
 {
+  if (dv.any_zero ())
+    {
+      result = Sparse<T> (dv);
+      return;
+    }
+
   // Sparse matrices require preallocation for efficient indexing; besides,
   // only horizontal concatenation can be efficiently handled by indexing.
   // So we just cat all rows through liboctave, then cat the final column.
@@ -817,10 +732,17 @@ single_type_concat (Sparse<T>& result,
         {
           octave_quit ();
 
-          sparse_list[i++] = octave_value_extract<TYPE> (*q);
+          // Use 0x0 in place of all empty arrays to allow looser rules.
+          if (! q->is_empty ())
+            sparse_list[i] = octave_value_extract<TYPE> (*q);
+          i++;
         }
 
-      sparse_row_list[j++] = Sparse<T>::cat (1, ncols, sparse_list);
+      Sparse<T> stmp = Sparse<T>::cat (1, ncols, sparse_list);
+      // Use 0x0 in place of all empty arrays to allow looser rules.
+      if (! stmp.is_empty ())
+        sparse_row_list[j] = stmp;
+      j++;
     }
 
   result = Sparse<T>::cat (0, nrows, sparse_row_list);
@@ -1088,6 +1010,9 @@ tree_matrix::rvalue1 (int)
                       octave_quit ();
 
                       octave_value elt = *q;
+
+                      if (elt.is_empty ())
+                        continue;
 
                       ctmp = do_cat_op (ctmp, elt, ra_idx);
 

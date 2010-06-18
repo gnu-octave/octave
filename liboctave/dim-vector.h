@@ -287,6 +287,12 @@ public:
     return retval;
   }
 
+  bool empty_2d (void) const
+  {
+    return length () == 2 && (elem (0) == 0 || elem (1) == 0);
+  }
+
+
   bool zero_by_zero (void) const
   {
     return length () == 2 && elem (0) == 0 && elem (1) == 0;
@@ -355,7 +361,12 @@ public:
 
   dim_vector squeeze (void) const;
 
-  bool concat (const dim_vector& dvb, int dim = 0);
+  // This corresponds to cat().
+  bool concat (const dim_vector& dvb, int dim);
+
+  // This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1). 
+  // The rules are more relaxed here.
+  bool hvcat (const dim_vector& dvb, int dim);
 
   // Force certain dimensionality, preserving numel ().  Missing
   // dimensions are set to 1, redundant are folded into the trailing

@@ -1,3 +1,12 @@
+2010-06-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (tm_row_const::eval_error): Make a static func.
+	(tm_row_const::do_init_element): Simplify using dim_vector::hvcat.
+	(tm_const::init): Ditto.
+	(single_type_concat): Special-case empty results. Skip or use 0x0 for
+	empty arrays otherwise.
+	(tree_matrix::rvalue1): Skip empty arrays in the fallback branch.
+
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
         * DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc, 

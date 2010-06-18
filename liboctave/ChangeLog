@@ -1,5 +1,11 @@
 2010-06-17  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dim-vector.cc (dim_vector::hvcat): New method.
+	* dim-vector.h (dim_vector::hvcat, dim_vector::cat): Update decls.
+	(dim_vector::empty_2d): New method.
+
+2010-06-17  Jaroslav Hajek  <highegg@gmail.com>
+
 	* MatrixType.cc (matrix_real_probe): Use OCTAVE_LOCAL_BUFFER for
 	temporary array.
 	(matrix_complex_probe): Parametrize by real type. Use

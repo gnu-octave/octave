@@ -153,6 +153,16 @@ dim_vector::squeeze (void) const
   return new_dims;
 }
 
+// This is the rule for cat(). cat(dim, A, B) works if one
+// of the following holds, in this order:
+//
+// 1. size(A, k) == size(B, k) for all k != dim.
+// In this case, size (C, dim) = size (A, dim) + size (B, dim) and
+// other sizes remain intact.
+//
+// 2. A is 0x0, in which case B is the result
+// 3. B is 0x0, in which case A is the result
+
 bool
 dim_vector::concat (const dim_vector& dvb, int dim)
 {
@@ -203,6 +213,42 @@ dim_vector::concat (const dim_vector& dvb, int dim)
   chop_trailing_singletons ();
 
   return match;
+}
+
+// Rules for horzcat/vertcat are yet looser.
+// two arrays A, B can be concatenated 
+// horizontally (dim = 2) or vertically (dim = 1) if one of the
+// following holds, in this order:
+// 
+// 1. cat(dim, A, B) works
+// 
+// 2. A, B are 2D and one of them is an empty vector, in which
+// case the result is the other one except if both of them
+// are empty vectors, in which case the result is 0x0.
+
+bool
+dim_vector::hvcat (const dim_vector& dvb, int dim)
+{
+  if (concat (dvb, dim))
+    return true;
+  else if (length () == 2 && dvb.length () == 2)
+    {
+      bool e2dv = rep[0] + rep[1] == 1;
+      bool e2dvb = dvb(0) + dvb(1) == 1;
+      if (e2dvb)
+        {
+          if (e2dv)
+            *this = dim_vector ();
+          return true;
+        }
+      else if (e2dv)
+        {
+          *this = dvb;
+          return true;
+        }
+    }
+
+  return false;
 }
 
 dim_vector

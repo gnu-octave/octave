@@ -52,5 +52,5 @@
 %!  end_unwind_protect
 %!test
 %! global g = -1;
-%! fail("y = f (3);","number of columns must match");
+%! fail("y = f (3);","mismatch");
 

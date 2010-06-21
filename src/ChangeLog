@@ -1,3 +1,32 @@
+2010-06-21  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (std::string radio_values:values_as_string (void)
+	const, Cell radio_values:values_as_cell (void) const): New functions.
+	(void graphics_object::set (const octave_value_list&)): Throw error
+	with no arguments.
+	(std::string base_graphics_object::values_as_string (void),
+	Octave_map base_graphics_object::values_as_struct (void)): New
+	functions.
+	(Fset): Allow single handle as an argument and return the radio
+	values.
+	* graphics.h.in (virtual bool base_property::is_radio (void) const,
+	virtual std::string base_property::values_as_string (void) const,
+	virtual Cell base_property::values_as_cell (void) const):
+	New function.
+	(std::string radio_values::values_as_string (void) const,
+	Cell radio_values::values_as_cell (void) const): Declaration.
+	(octave_idx_type radio_values::nelem (void) const): New function.
+	(std::string radio_property::values_as_string (void) const,
+	Cell radio_property::values_as_cell (void) const,
+	bool radio_property::is_radio (void) const): New functions.
+	(bool property::is_radio (void) const,
+	std::string raproperty::values_as_string (void) const,
+	Cell property::values_as_cell (void) const): New functions.
+	(std::string base_graphics_object::values_as_string (void),
+	Octave_map base_graphics_object::values_as_struct (void)): Declaration.
+	(std::string graphics_object::values_as_string (void),
+	Octave_map graphics_object::values_as_struct (void)): New functions.
+
 2010-06-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (single_type_concat): Assume matrix arguments start from

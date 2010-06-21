@@ -818,6 +818,44 @@ radio_values::radio_values (const std::string& opt_string)
     }
 }
 
+std::string
+radio_values::values_as_string (void) const
+{
+  std::string retval;
+  for (std::set<caseless_str>::const_iterator it = possible_vals.begin ();
+       it != possible_vals.end (); it++)
+    {
+      if (retval == "")
+        {
+          if (*it == default_value ())
+            retval = "{" + *it + "}";
+          else
+            retval = *it;
+        }
+      else
+        {
+          if (*it == default_value ())
+            retval += " | {" + *it + "}";
+          else
+            retval += " | " + *it;
+        }
+    }
+  if (retval != "")
+    retval = "[ " + retval + " ]";
+  return retval;
+}
+
+Cell
+radio_values::values_as_cell (void) const
+{
+  octave_idx_type i = 0;
+  Cell retval (nelem (), 1);
+  for (std::set<caseless_str>::const_iterator it = possible_vals.begin ();
+       it != possible_vals.end (); it++)
+    retval(i++) = std::string (*it);
+  return retval;
+}
+
 bool
 color_values::str2rgb (std::string str)
 {
@@ -1517,7 +1555,7 @@ graphics_object::set (const octave_value_list& args)
   int nargin = args.length ();
 
   if (nargin == 0)
-    rep->defaults ();
+    error ("graphics_object::set: Nothing to set");
   else if (nargin % 2 == 0)
     {
       for (int i = 0; i < nargin; i += 2)
@@ -2414,6 +2452,70 @@ base_graphics_object::remove_all_listeners (void)
       if (! error_state && p.ok ())
         p.delete_listener ();
     }
+}
+
+std::string
+base_graphics_object::values_as_string (void)
+{
+  std::string retval;
+
+  if (valid_object ())
+    {
+      Octave_map m = get ().map_value ();
+  
+      for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+        {
+          if (pa->first != "children")
+            {
+              property p = get_properties ().get_property (pa->first);
+
+              if (p.ok () && ! p.is_hidden ())
+                {
+                  retval += "\n\t" + std::string (pa->first) + ":  "; 
+                  if (p.is_radio ())
+                    retval += p.values_as_string ();
+                }
+            }
+        }
+      if (retval != "")
+        retval += "\n";
+    }
+  else
+    error ("base_graphics_object::values_as_string: invalid graphics object");
+
+  return retval;
+}
+
+Octave_map
+base_graphics_object::values_as_struct (void)
+{
+  Octave_map retval;
+
+  if (valid_object ())
+    {
+      Octave_map m = get ().map_value ();
+  
+      for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+        {
+          if (pa->first != "children")
+            {
+              property p = get_properties ().get_property (pa->first);
+
+              if (p.ok () && ! p.is_hidden ())
+                {
+                  if (p.is_radio ())
+                    retval.assign (p.get_name (), 
+                                   octave_value (p.values_as_cell ()));
+                  else
+                    retval.assign (p.get_name (), octave_value (Cell ()));
+                }
+            }
+        }
+    }
+  else
+    error ("base_graphics_object::values_as_struct: invalid graphics object");
+
+  return retval;
 }
 
 // ---------------------------------------------------------------------
@@ -4930,7 +5032,7 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
   return retval;
 }
 
-DEFUN (set, args, ,
+DEFUN (set, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
@@ -5009,6 +5111,17 @@ the dimensions of @var{pv}.\n\
                   else if (nargin == 2 && args(1).is_map ())
                     {
                       obj.set (args(1).map_value ());
+                    }
+                  else if (nargin == 1)
+                    {
+                      if (nargout != 0)
+                        retval = obj.values_as_struct ();
+                      else
+                        {
+                          std::string s = obj.values_as_string ();
+                          if (! error_state)
+                            octave_stdout << s;
+                        }
                     }
                   else
                     {

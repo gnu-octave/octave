@@ -381,6 +381,8 @@ public:
 
   void set_hidden (bool flag) { hidden = flag; }
 
+  virtual bool is_radio (void) const { return false; }
+
   int get_id (void) const { return id; }
 
   void set_id (int d) { id = d; }
@@ -393,6 +395,19 @@ public:
     {
       error ("get: invalid property \"%s\"", name.c_str ());
       return octave_value ();
+    }
+
+
+  virtual std::string values_as_string (void) const
+    {
+      error ("values_as_string: invalid property \"%s\"", name.c_str ());
+      return std::string ();
+    }
+
+  virtual Cell values_as_cell (void) const
+    {
+      error ("values_as_cell: invalid property \"%s\"", name.c_str ());
+      return Cell ();
     }
 
   base_property& operator = (const octave_value& val)
@@ -722,6 +737,12 @@ public:
     return (possible_vals.find (val) != possible_vals.end ());
   }
 
+  std::string values_as_string (void) const;
+
+  Cell values_as_cell (void) const;
+  
+  octave_idx_type nelem (void) const { return possible_vals.size (); }
+
 private:
   // Might also want to cache
   std::string default_val;
@@ -753,8 +774,14 @@ public:
 
   const std::string& current_value (void) const { return current_val; }
 
+  std::string values_as_string (void) const { return vals.values_as_string (); }
+
+  Cell values_as_cell (void) const { return vals.values_as_cell (); }
+      
   bool is (const caseless_str& v) const
     { return v.compare (current_val); }
+
+  bool is_radio (void) const { return true; }
 
   radio_property& operator = (const octave_value& val)
     {
@@ -1469,6 +1496,9 @@ public:
   void set_hidden (bool flag)
     { rep->set_hidden (flag); }
 
+  bool is_radio (void) const
+    { return rep->is_radio (); }
+
   int get_id (void) const
     { return rep->get_id (); }
 
@@ -1480,6 +1510,12 @@ public:
 
   bool set (const octave_value& val)
     { return rep->set (val); }
+
+  std::string values_as_string (void) const
+    { return rep->values_as_string (); }
+
+  Cell values_as_cell (void) const
+    { return rep->values_as_cell (); }
 
   property& operator = (const octave_value& val)
     {
@@ -2068,6 +2104,10 @@ public:
     return octave_value ();
   }
 
+  virtual std::string values_as_string (void);
+
+  virtual Octave_map values_as_struct (void);
+
   virtual graphics_handle get_parent (void) const
   {
     if (valid_object ())
@@ -2284,6 +2324,10 @@ public:
   {
     return rep->get_factory_defaults ();
   }
+
+  std::string values_as_string (void) { return rep->values_as_string (); }
+
+  Octave_map values_as_struct (void) { return rep->values_as_struct (); }
 
   graphics_handle get_parent (void) const { return rep->get_parent (); }
 

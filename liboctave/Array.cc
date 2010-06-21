@@ -2518,7 +2518,15 @@ template <class T>
 Array<T>
 Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 {
-  if (dim < 0)
+  // Default concatenation.
+  bool (dim_vector::*concat_rule) (const dim_vector&, int) = &dim_vector::concat;
+
+  if (dim == -1 || dim == -2)
+    {
+      concat_rule = &dim_vector::hvcat;
+      dim = -dim - 1;
+    }
+  else if (dim < 0)
     (*current_liboctave_error_handler)
       ("cat: invalid dimension");
 
@@ -2528,19 +2536,30 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
     return Array<T> ();
 
   dim_vector dv = array_list[0].dims ();
+
   for (octave_idx_type i = 1; i < n; i++)
-    if (! dv.concat (array_list[i].dims (), dim))
+    if (! (dv.*concat_rule) (array_list[i].dims (), dim))
       (*current_liboctave_error_handler)
         ("cat: dimension mismatch");
 
   Array<T> retval (dv);
+
+  if (retval.is_empty ())
+    return retval;
+
   int nidx = std::max (dv.length (), dim + 1);
   Array<idx_vector> idxa (nidx, 1, idx_vector::colon);
   octave_idx_type l = 0;
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      if (array_list[i].dims ().zero_by_zero ())
+      // NOTE: This takes some thinking, but no matter what the above rules
+      // are, an empty array can always be skipped at this point, because
+      // the result dimensions are already determined, and there is no way
+      // an empty array may contribute a nonzero piece along the dimension
+      // at this point, unless an empty array can be promoted to a non-empty
+      // one (which makes no sense). I repeat, *no way*, think about it.
+      if (array_list[i].is_empty ())
         continue;
 
       octave_quit ();

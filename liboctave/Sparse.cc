@@ -2382,6 +2382,18 @@ template <class T>
 Sparse<T>
 Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 {
+  // Default concatenation.
+  bool (dim_vector::*concat_rule) (const dim_vector&, int) = &dim_vector::concat;
+
+  if (dim == -1 || dim == -2)
+    {
+      concat_rule = &dim_vector::hvcat;
+      dim = -dim - 1;
+    }
+  else if (dim < 0)
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension");
+
   dim_vector dv;
   octave_idx_type total_nz = 0;
   if (dim == 0 || dim == 1)
@@ -2391,7 +2403,7 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
 
       for (octave_idx_type i = 0; i < n; i++)
         {
-          if (! dv.concat (sparse_list[i].dims (), dim))
+          if (! (dv.*concat_rule) (sparse_list[i].dims (), dim))
             (*current_liboctave_error_handler)
               ("cat: dimension mismatch");
           total_nz += sparse_list[i].nnz ();
@@ -2402,6 +2414,9 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
       ("cat: invalid dimension for sparse concatenation");
 
   Sparse<T> retval (dv, total_nz);
+  
+  if (retval.is_empty ())
+    return retval;
 
   switch (dim)
     {
@@ -2418,7 +2433,8 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
             for (octave_idx_type i = 0; i < n; i++)
               {
                 const Sparse<T>& spi = sparse_list[i];
-                if (spi.dims ().zero_by_zero ())
+                // Skipping empty matrices. See the comment in Array.cc.
+                if (spi.is_empty ())
                   continue;
 
                 octave_idx_type kl = spi.cidx(j), ku = spi.cidx(j+1);
@@ -2442,6 +2458,10 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
         for (octave_idx_type i = 0; i < n; i++)
           {
             octave_quit ();
+
+            // Skipping empty matrices. See the comment in Array.cc.
+            if (sparse_list[i].is_empty ())
+              continue;
 
             octave_idx_type u = l + sparse_list[i].columns ();
             retval.assign (idx_vector::colon, idx_vector (l, u), sparse_list[i]);

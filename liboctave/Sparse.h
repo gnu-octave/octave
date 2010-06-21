@@ -509,6 +509,7 @@ public:
 
   Sparse<T> diag (octave_idx_type k = 0) const;
 
+  // dim = -1 and dim = -2 are special; see Array<T>::cat description.
   static Sparse<T>
   cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list);
 

@@ -1,3 +1,10 @@
+2010-06-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (single_type_concat): Assume matrix arguments start from
+	index zero.
+	(do_cat): Make dim a separate argument. Special-case support for dim =
+	-1 and dim = -2
+
 2010-06-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-mat.cc (tm_row_const::eval_error): Make a static func.

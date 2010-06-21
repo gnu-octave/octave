@@ -576,6 +576,9 @@ public:
 
   Array<T> diag (octave_idx_type k = 0) const;
 
+  // Concatenation along a specified (0-based) dimension, equivalent to cat().
+  // dim = -1 corresponds to dim = 0 and dim = -2 corresponds to dim = 1,
+  // but apply the looser matching rules of vertcat/horzcat.
   static Array<T>
   cat (int dim, octave_idx_type n, const Array<T> *array_list);
 

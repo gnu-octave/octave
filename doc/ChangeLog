@@ -1,5 +1,9 @@
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
+        * interpreter/intro.txi: Clarify wording.  (bug #30165).
+
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
         * interpreter/set.txi: Remove reference to deprecated function.
 
 2010-06-16  Rik <octave@nomad.inbox5.com>

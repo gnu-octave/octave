@@ -55,10 +55,11 @@ read_cell_spec (std::istream& is, unsigned long& row, unsigned long& col)
               char ch = is.get ();
               col *= 26;
               if (ch >= 'a')
-                col += ch - 'a';
+                col += ch - 'a' + 1;
               else
-                col += ch - 'A';
+                col += ch - 'A' + 1;
             }
+          col --;
 
           if (is)
             {
@@ -151,7 +152,7 @@ parse_range_spec (const octave_value& range_spec,
 
 DEFUN_DLD (dlmread, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
+@deftypefn  {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
@@ -163,9 +164,12 @@ Given two scalar arguments @var{r0} and @var{c0}, these define the starting\n\
 row and column of the data to be read.  These values are indexed from zero,\n\
 such that the first row corresponds to an index of zero.\n\
 \n\
-The @var{range} parameter must be a 4 element vector containing the upper\n\
-left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]} or\n\
-a spreadsheet style range such as 'A2..Q15'.  The lowest index value is zero.\n\
+The @var{range} parameter may be a 4 element vector containing the upper\n\
+left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
+where the lowest index value is zero.  Alternatively, a spreadsheet style\n\
+range such as 'A2..Q15' or 'T1:AA5' can be used.  The lowest alphabetical\n\
+index 'A' refers to the first column.  The lowest row index is 1.\n\
+@seealso{csvread,dlmwrite}\n\
 @end deftypefn")
 {
   octave_value_list retval;

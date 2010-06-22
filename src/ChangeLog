@@ -1,3 +1,8 @@
+2010-06-21  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option. 
+        (bug #30183).
+
 2010-06-21  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (std::string radio_values:values_as_string (void)

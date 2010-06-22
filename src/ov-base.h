@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class Cell;
 class Octave_map;
+class octave_map;
+class octave_scalar_map;
 class octave_value;
 class octave_value_list;
 class octave_stream;
@@ -542,7 +544,11 @@ public:
 
   virtual Range range_value (void) const;
 
-  virtual Octave_map map_value (void) const;
+  virtual octave_map map_value (void) const;
+
+  virtual octave_scalar_map scalar_map_value (void) const;
+
+  virtual Octave_map old_map_value (void) const;
 
   virtual string_vector map_keys (void) const;
 

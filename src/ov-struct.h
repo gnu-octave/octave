@@ -52,6 +52,9 @@ public:
   octave_struct (void)
     : octave_base_value () { }
 
+  octave_struct (const octave_map& m)
+    : octave_base_value (), map (m) { }
+
   octave_struct (const Octave_map& m)
     : octave_base_value (), map (m) { }
 
@@ -62,6 +65,8 @@ public:
 
   octave_base_value *clone (void) const { return new octave_struct (*this); }
   octave_base_value *empty_clone (void) const { return new octave_struct (); }
+
+  octave_base_value *try_narrowing_conversion (void);
 
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
@@ -102,8 +107,7 @@ public:
   // of elements is numel () * nfields ().
   octave_idx_type numel (void) const
   {
-    dim_vector dv = dims ();
-    return dv.numel ();
+    return map.numel ();
   }
 
   octave_idx_type nfields (void) const { return map.nfields (); }
@@ -112,7 +116,7 @@ public:
     { return map.reshape (new_dims); }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    { Octave_map tmap = map; tmap.resize (dv); return tmap; }
+    { octave_map tmap = map; tmap.resize (dv); return tmap; }
 
   bool is_defined (void) const { return true; }
 
@@ -122,9 +126,9 @@ public:
 
   builtin_type_t builtin_type (void) const { return btyp_struct; }
 
-  Octave_map map_value (void) const { return map; }
+  octave_map map_value (void) const { return map; }
 
-  string_vector map_keys (void) const { return map.keys (); }
+  string_vector map_keys (void) const { return map.fieldnames (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -152,9 +156,126 @@ public:
 protected:
 
   // The associative array used to manage the structure data.
-  Octave_map map;
+  octave_map map;
 
 private:
+
+  DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+};
+
+class
+octave_scalar_struct : public octave_base_value
+{
+public:
+
+  octave_scalar_struct (void)
+    : octave_base_value () { }
+
+  octave_scalar_struct (const octave_scalar_map& m)
+    : octave_base_value (), map (m) { }
+
+  octave_scalar_struct (const octave_scalar_struct& s)
+    : octave_base_value (), map (s.map) { }
+
+  ~octave_scalar_struct (void) { }
+
+  octave_base_value *clone (void) const { return new octave_scalar_struct (*this); }
+  octave_base_value *empty_clone (void) const { return new octave_scalar_struct (); }
+
+  octave_value dotref (const octave_value_list& idx, bool auto_add = false);
+
+  octave_value subsref (const std::string& type,
+                        const std::list<octave_value_list>& idx);
+
+  octave_value_list subsref (const std::string& type,
+                             const std::list<octave_value_list>& idx, int);
+
+
+  octave_value subsref (const std::string& type,
+                        const std::list<octave_value_list>& idx,
+                        bool auto_add);
+
+  static octave_value numeric_conv (const octave_value& val,
+                                    const std::string& type);
+
+  octave_value subsasgn (const std::string& type,
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
+
+  octave_value squeeze (void) const { return map; }
+
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return octave_map (map).permute (vec, inv); }
+
+  octave_value do_index_op (const octave_value_list& idx,
+                            bool resize_ok = false);
+
+  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+
+  size_t byte_size (void) const;
+
+  // This is the number of elements in each field.  The total number
+  // of elements is numel () * nfields ().
+  octave_idx_type numel (void) const
+  {
+    return 1;
+  }
+
+  octave_idx_type nfields (void) const { return map.nfields (); }
+
+  octave_value reshape (const dim_vector& new_dims) const
+    { return octave_map (map).reshape (new_dims); }
+
+  octave_value resize (const dim_vector& dv, bool = false) const
+    { octave_map tmap = map; tmap.resize (dv); return tmap; }
+
+  bool is_defined (void) const { return true; }
+
+  bool is_constant (void) const { return true; }
+
+  bool is_map (void) const { return true; }
+
+  builtin_type_t builtin_type (void) const { return btyp_struct; }
+
+  octave_map map_value (void) const { return map; }
+
+  octave_scalar_map scalar_map_value (void) const { return map; }
+
+  string_vector map_keys (void) const { return map.fieldnames (); }
+
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
+
+  bool save_ascii (std::ostream& os);
+
+  bool load_ascii (std::istream& is);
+
+  bool save_binary (std::ostream& os, bool& save_as_floats);
+
+  bool load_binary (std::istream& is, bool swap, 
+                    oct_mach_info::float_format fmt);
+
+#if defined (HAVE_HDF5)
+  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+
+  bool load_hdf5 (hid_t loc_id, const char *name);
+#endif
+
+  mxArray *as_mxArray (void) const;
+
+protected:
+
+  // The associative array used to manage the structure data.
+  octave_scalar_map map;
+
+private:
+
+  octave_value to_array (void);
 
   DECLARE_OCTAVE_ALLOCATOR
 

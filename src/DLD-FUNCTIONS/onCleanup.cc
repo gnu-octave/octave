@@ -58,7 +58,10 @@ public:
 
   bool is_object (void) const { return true; } // do we want this?
 
-  Octave_map map_value (void) const;
+  octave_map map_value (void) const
+    { return scalar_map_value (); }
+
+  octave_scalar_map scalar_map_value (void) const;
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
@@ -169,11 +172,11 @@ octave_oncleanup::~octave_oncleanup (void)
     }
 }
 
-Octave_map 
-octave_oncleanup::map_value (void) const
+octave_scalar_map 
+octave_oncleanup::scalar_map_value (void) const
 {
-  Octave_map retval;
-  retval.assign ("task", fcn);
+  octave_scalar_map retval;
+  retval.setfield ("task", fcn);
   return retval;
 }
 

@@ -45,6 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.h"
 
 class Cell;
+class octave_map;
+class octave_scalar_map;
 class Octave_map;
 class octave_stream;
 class octave_function;
@@ -275,6 +277,8 @@ public:
   octave_value (const idx_vector& idx, bool lazy = true);
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
+  octave_value (const octave_map& m);
+  octave_value (const octave_scalar_map& m);
   octave_value (const Octave_map& m);
   octave_value (const Octave_map& m, const std::string& id);
   octave_value (const octave_value_list& m, bool = false);
@@ -840,7 +844,11 @@ public:
   Range range_value (void) const
     { return rep->range_value (); }
 
-  Octave_map map_value (void) const;
+  octave_map map_value (void) const;
+
+  octave_scalar_map scalar_map_value (void) const;
+
+  Octave_map old_map_value (void) const;
 
   string_vector map_keys (void) const
     { return rep->map_keys (); }

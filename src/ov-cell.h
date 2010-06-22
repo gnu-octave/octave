@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
-class Octave_map;
 class octave_value_list;
 
 class tree_walker;

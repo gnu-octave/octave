@@ -130,7 +130,9 @@ public:
 
   bool is_object (void) const { return true; }
 
-  Octave_map map_value (void) const { return map; }
+  octave_map map_value (void) const { return map; }
+
+  Octave_map old_map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
 

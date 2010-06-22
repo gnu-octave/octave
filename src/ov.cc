@@ -1116,9 +1116,21 @@ octave_value::octave_value (const Range& r)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const octave_map& m)
+  : rep (new octave_struct (m))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_scalar_map& m)
+  : rep (new octave_scalar_struct (m))
+{
+}
+
 octave_value::octave_value (const Octave_map& m)
   : rep (new octave_struct (m))
 {
+  maybe_mutate ();
 }
 
 octave_value::octave_value (const Octave_map& m, const std::string& id)
@@ -1431,10 +1443,22 @@ octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 #endif
 }
 
-Octave_map
+octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
+}
+
+octave_scalar_map
+octave_value::scalar_map_value (void) const
+{
+  return rep->scalar_map_value ();
+}
+
+Octave_map
+octave_value::old_map_value (void) const
+{
+  return rep->old_map_value ();
 }
 
 octave_function *

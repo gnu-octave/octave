@@ -261,7 +261,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   Octave_map my_map;
 
-  my_map = obvp ? obvp->map_value () : map;
+  my_map = obvp ? obvp->old_map_value () : map;
 
   std::string nm = idx(0).string_value ();
 
@@ -721,7 +721,7 @@ octave_class::subsasgn (const std::string& type,
               {
                 if (t_rhs.is_object () || t_rhs.is_map ())
                   {
-                    Octave_map rhs_map = t_rhs.map_value ();
+                    Octave_map rhs_map = t_rhs.old_map_value ();
 
                     if (! error_state)
                       {
@@ -1108,12 +1108,12 @@ octave_class::save_ascii (std::ostream& os)
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
       if (! error_state)
-        m = tmp(0).map_value ();
+        m = tmp(0).old_map_value ();
       else
         return false;
     }
   else
-    m = map_value ();
+    m = old_map_value ();
 
   os << "# length: " << m.nfields () << "\n";
 
@@ -1189,7 +1189,7 @@ octave_class::load_ascii (std::istream& is)
                           octave_value_list tmp = feval ("loadobj", in, 1);
 
                           if (! error_state)
-                            map = tmp(0).map_value ();
+                            map = tmp(0).old_map_value ();
                           else
                             success = false;
                         }
@@ -1238,12 +1238,12 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
       if (! error_state)
-        m = tmp(0).map_value ();
+        m = tmp(0).old_map_value ();
       else
         return false;
     }
   else
-    m = map_value ();
+    m = old_map_value ();
 
   int32_t len = m.nfields();
   os.write (reinterpret_cast<char *> (&len), 4);
@@ -1335,7 +1335,7 @@ octave_class::load_binary (std::istream& is, bool swap,
                   octave_value_list tmp = feval ("loadobj", in, 1);
 
                   if (! error_state)
-                    map = tmp(0).map_value ();
+                    map = tmp(0).old_map_value ();
                   else
                     success = false;
                 }
@@ -1410,12 +1410,12 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       octave_value in = new octave_class (*this);
       octave_value_list tmp = feval ("saveobj", in, 1);
       if (! error_state)
-        m = tmp(0).map_value ();
+        m = tmp(0).old_map_value ();
       else
         goto error_cleanup;
     }
   else
-    m = map_value ();
+    m = old_map_value ();
 
   // recursively add each element of the class to this group
   i = m.begin ();
@@ -1576,7 +1576,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
 
               if (! error_state)
                 {
-                  map = tmp(0).map_value ();
+                  map = tmp(0).old_map_value ();
                   retval = true;
                 }
               else
@@ -1624,7 +1624,7 @@ octave_class::exemplar_info::exemplar_info (const octave_value& obj)
 {
   if (obj.is_object ())
     {
-      Octave_map m = obj.map_value ();
+      Octave_map m = obj.old_map_value ();
       field_names = m.keys ();
 
       parent_class_names = obj.parent_class_name_list ();
@@ -1646,7 +1646,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
     {
       if (nfields () == obj.nfields ())
         {
-          Octave_map obj_map = obj.map_value ();
+          Octave_map obj_map = obj.old_map_value ();
           string_vector obj_fnames = obj_map.keys ();
           string_vector fnames = fields ();
 
@@ -1725,7 +1725,7 @@ derived.\n\
 
       if (fcn && fcn->is_class_constructor ())
         {
-          Octave_map m = args(0).map_value ();
+          Octave_map m = args(0).old_map_value ();
 
           if (! error_state)
             {

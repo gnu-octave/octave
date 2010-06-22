@@ -1,5 +1,9 @@
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
+        * ChangeLog: Correctly break lines > 80 characters.
+
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
         * interpreter/intro.txi: Clarify wording.  (bug #30165).
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
@@ -93,8 +97,8 @@
 
 2009-12-20  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/geometryimages.m: Correctly set postscript output when QHULL
-	library does not exist and sombrero image is printed.
+	* interpreter/geometryimages.m: Correctly set postscript output when 
+        QHULL library does not exist and sombrero image is printed.
 
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
@@ -114,28 +118,28 @@
 
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as it
-	is better supported by automake.
+	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as
+        it is better supported by automake.
 
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am: new distdir-local rule to check for presence of
-	necessary libraries before packaging distribution
+	* interpreter/Makefile.am: new distdir-local rule to check for presence
+        of necessary libraries before packaging distribution
 
 2009-12-08  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am: Distribute all generated documentation (.pdf,
-	.ps, .html, .dvi) to remove build requirement for TexInfo
+	* interpreter/Makefile.am: Distribute all generated documentation 
+        (.pdf, .ps, .html, .dvi) to remove build requirement for TexInfo
 
 2009-12-07  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/Makefile.am, faq/Makefile.am, liboctave/Makefile.am: Document
-	use of NOTPARALLEL directive.
+	* interpreter/Makefile.am, faq/Makefile.am, liboctave/Makefile.am: 
+        Document use of NOTPARALLEL directive.
 
 2009-12-07  Rik <octave@nomad.inbox5.com>
 
-	* refcard/Makefile.am: Add CLEANFILES and MAINTAINERCLEANFILES objects to
-	properly clean directory.
+	* refcard/Makefile.am: Add CLEANFILES and MAINTAINERCLEANFILES objects
+        to properly clean directory.
 
 2009-12-05  Rik <octave@nomad.inbox5.com>
 
@@ -150,25 +154,26 @@
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove
-	  lingering configuration support for conf.texi
-	* liboctave/Makefile.am: distribute .texi files
+	  lingering configuration support for conf.texi.
+	* liboctave/Makefile.am: distribute .texi files.
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m, interpreter/plotimages.m:
-	  Switch to color output for PostScript documentation images
+	  Switch to color output for PostScript documentation images.
 
 2009-12-04  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m, interpreter/plotimages.m:
-	  Set default paperorientation to landscape to stop warning message
+	  Set default paperorientation to landscape to stop warning message.
 
 2009-12-04  Ben Abbott <bpabbott@mac.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m: Set default papersize to the desired imagesize
+	  interpreter/sparseimages.m: Set default papersize to the desired 
+          imagesize.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
@@ -245,8 +250,8 @@
 
 2009-12-01  Rik <octave@nomad.inbox5.com>
 
-	* faq/Makefile.am, doc/interpreter/bugs.txi, doc/interpreter/install.txi:
-	Eliminate false dependency on conf.texi
+	* faq/Makefile.am, doc/interpreter/bugs.txi, 
+        doc/interpreter/install.txi: Eliminate false dependency on conf.texi.
 
 2009-11-30  Rik <octave@nomad.inbox5.com>
 
@@ -287,13 +292,14 @@
 2009-11-25  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
-	Simplify doc-cache handling in Makefile.am to use only install-data-local
-	target
+	Simplify doc-cache handling in Makefile.am to use only 
+        install-data-local target
 
 2009-11-24  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
-	Correct Makefile so that it halts on error when unable to build doc-cache
+	Correct Makefile so that it halts on error when unable to build 
+        doc-cache.
 
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
@@ -304,13 +310,13 @@
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Add . to SUBDIRS to force automake to compile this
-	directory, and make conf.texi, before recursively compiling SUBDIRS which
-	depend on conf.texi
+	directory, and make conf.texi, before recursively compiling SUBDIRS
+        which depend on conf.texi
 
 2009-11-11  Rik <octave@nomad.inbox5.com>
 
-	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can be
-	cleaned by automake.
+	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can
+        be cleaned by automake.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
@@ -417,10 +423,10 @@
 
 2009-06-03  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist plot
-	reprodroducible for docs.
-	* interpreter/interpimages.m: Correct typo in legend of interpft plot for
-	docs
+	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist
+        plot reprodroducible for docs.
+	* interpreter/interpimages.m: Correct typo in legend of interpft plot
+        for docs.
 
 2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -450,8 +456,8 @@
 
 2009-05-21  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/Makefile.in, texmf.cnf: Change texi2pdf call to include local
-	TeX configuration file which increases save_history variable.
+	* interpreter/Makefile.in, texmf.cnf: Change texi2pdf call to include
+        local TeX configuration file which increases save_history variable.
 
 2009-05-17  Rik  <rdrider0-list@yahoo.com>
 
@@ -460,8 +466,9 @@
 
 2009-05-17  Rik  <rdrider0-list@yahoo.com>
 
-	* interpreter/*.txi: Simplify TeXinfo files by eliminating redundant @iftex
-	followed by @tex construction.  Also, spellchecked all .txi and .texi files.
+	* interpreter/*.txi: Simplify TeXinfo files by eliminating redundant
+        @iftex followed by @tex construction.  Also, spellchecked all .txi 
+        and .texi files.
 
 2009-05-14  Rik  <rdrider0-list@yahoo.com>
 

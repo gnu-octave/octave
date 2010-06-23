@@ -345,9 +345,8 @@ octave_map::extract_scalar (octave_scalar_map& dest,
                             octave_idx_type idx) const
 {
   octave_idx_type nf = nfields ();
-  dest.vals.reserve (nf);
   for (octave_idx_type i = 0; i < nf; i++)
-    dest.vals.push_back (vals[i](idx));
+    dest.vals[i] = vals[i](idx);
 }
 
 octave_scalar_map

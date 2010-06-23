@@ -317,7 +317,7 @@ public:
 
   // remove a given field. do nothing if not exist.
   void rmfield (const std::string& key);
-  void del (const std::string& key) { rmfield (key); }
+  void del (const std::string& k) { rmfield (k); }
 
   // return a copy with fields ordered, optionally along with permutation.
   octave_map orderfields (void) const;

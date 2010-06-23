@@ -2223,6 +2223,17 @@ public:
 
   virtual void remove_all_listeners (void);
 
+  virtual void reset_default_properties (void)
+    {
+      if (valid_object ())
+        {
+          std::string msg = (type () + "::reset_default_properties");
+          gripe_not_implemented (msg.c_str ());
+        }
+      else
+        error ("base_graphics_object::default: invalid graphics object");
+    }
+
 protected:
   // A reference count.
   int count;
@@ -2409,6 +2420,9 @@ public:
                                  listener_mode mode = POSTSET)
     { rep->delete_property_listener (nm, v, mode); }
 
+  void reset_default_properties (void)
+  { rep->reset_default_properties (); }
+
 private:
   base_graphics_object *rep;
 };
@@ -2547,6 +2561,8 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;
@@ -2751,6 +2767,8 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;
@@ -3198,6 +3216,8 @@ public:
   void update_axis_limits (const std::string& axis_type);
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;

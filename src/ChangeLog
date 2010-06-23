@@ -1,3 +1,16 @@
+2010-06-23  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (void root_figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	Freset): New functions.
+	* graphics.h.in (void graphics_object:reset_default_properies (void),
+	virtual void base_graphics_object:reset_default_properies (void)):
+	New functions.
+	(void root_figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	void figure::reset_default_properties (void)): Declarations.
+
 2010-06-21  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option. 

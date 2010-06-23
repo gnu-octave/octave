@@ -1,3 +1,10 @@
+2010-06-23  David Bateman  <dbateman@free.fr>
+
+	* whitebg.m: New function.
+	* module.mk (plot_FCN_FILES): Add it here.
+	* __go_draw_figure__.m: Set the border color to the inverse of the
+	background color.
+
 2010-06-17  Brad Froehle <brad.froehle@gmail.com>
 
 	* sparse/spy.m: Fix typo.

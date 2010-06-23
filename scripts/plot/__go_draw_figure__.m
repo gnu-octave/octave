@@ -92,6 +92,9 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
                 else
                   fg_is_set = false;
                 endif
+                if (bg_is_set)
+                  fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", 255 * (1 - bg));
+                endif
                 if (output_to_paper)
                   axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
                   axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);

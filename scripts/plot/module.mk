@@ -157,6 +157,7 @@ plot_FCN_FILES = \
   plot/title.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
+  plot/whitebg.m \
   plot/xlabel.m \
   plot/xlim.m \
   plot/ylabel.m \

@@ -302,6 +302,9 @@ public:
   bool isfield (const std::string& name) const 
     { return keys.isfield (name); }
 
+  bool contains (const std::string& name) const 
+    { return isfield (name); }
+
   string_vector fieldnames (void) const
     { return keys.fieldnames (); }
 
@@ -314,6 +317,7 @@ public:
 
   // remove a given field. do nothing if not exist.
   void rmfield (const std::string& key);
+  void del (const std::string& key) { rmfield (key); }
 
   // return a copy with fields ordered, optionally along with permutation.
   octave_map orderfields (void) const;
@@ -358,7 +362,7 @@ public:
 
   octave_map reshape (const dim_vector& dv) const;
 
-  void resize (const dim_vector& dv);
+  void resize (const dim_vector& dv, bool fill = false);
 
   static octave_map
   cat (int dim, octave_idx_type n, const octave_scalar_map *map_list);
@@ -366,15 +370,15 @@ public:
   static octave_map
   cat (int dim, octave_idx_type n, const octave_map *map_list);
 
-  octave_map index (const idx_vector& i, bool resize_ok) const;
+  octave_map index (const idx_vector& i, bool resize_ok = false) const;
 
   octave_map index (const idx_vector& i, const idx_vector& j,
-                    bool resize_ok) const;
+                    bool resize_ok = false) const;
 
   octave_map index (const Array<idx_vector>& ia,
-                    bool resize_ok) const;
+                    bool resize_ok = false) const;
 
-  octave_map index (const octave_value_list&, bool resize_ok) const;
+  octave_map index (const octave_value_list&, bool resize_ok = false) const;
   
   void assign (const idx_vector& i, const octave_map& rhs);
 

@@ -501,13 +501,18 @@ octave_map::reshape (const dim_vector& dv) const
 */
 
 void
-octave_map::resize (const dim_vector& dv)
+octave_map::resize (const dim_vector& dv, bool fill)
 {
   octave_idx_type nf = nfields ();
   if (nf > 0)
     {
       for (octave_idx_type i = 0; i < nf; i++)
-        vals[i].resize (dv);
+        {
+          if (fill)
+            vals[i].resize (dv, Cell::resize_fill_value ());
+          else
+            vals[i].resize (dv);
+        }
     }
   else
     {

@@ -970,6 +970,10 @@ public:
 
   base_property* clone (void) const { return new color_property (*this); }
 
+  std::string values_as_string (void) const { return radio_val.values_as_string (); }
+
+  Cell values_as_cell (void) const { return radio_val.values_as_cell (); }
+      
 protected:
   OCTINTERP_API bool do_set (const octave_value& newval);
 

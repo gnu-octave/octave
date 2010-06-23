@@ -10,6 +10,8 @@
 	(void root_figure::reset_default_properties (void),
 	void figure::reset_default_properties (void),
 	void figure::reset_default_properties (void)): Declarations.
+	(std::string color_property::values_as_string (void) const,
+	Cell color_property::values_as_cell (void) const): New functions.
 
 2010-06-21  Rik <octave@nomad.inbox5.com>
 

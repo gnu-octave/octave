@@ -236,8 +236,9 @@ initialize (void)
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
+  vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG", %OCTAVE_CONF_F77_INTEGER8_FLAG%);
 
-  vars["ALL_FFLAGS"] = vars["FFLAGS"];
+  vars["ALL_FFLAGS"] = vars["FFLAGS"] + " " + vars["F77_INTEGER8_FLAG"];
 
   vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"]
     + " " + vars["CFLAGS"];

@@ -942,18 +942,33 @@ fi
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 ### Checks for BLAS and LAPACK libraries:
+
+## Need to adjust FFLAGS to include correct integer size.
+save_FFLAGS="$FFLAGS"
+FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+
 ACX_BLAS_WITH_F77_FUNC([:], [:])
 ACX_LAPACK([:], [:])
+
+## Restore FFLAGS.
+FFLAGS="$save_FFLAGS"
+
+if test "x$acx_blas_f77_func_ok" = "xno"; then
+  if $USE_64_BIT_IDX_T && test "$acx_blas_integer_size_ok" = "no" ; then
+    ## Attempt to be more informative.
+    AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers. This is incompatible with --enable-64.])
+  else
+    AC_MSG_ERROR([A BLAS library was detected but found incompatible with your Fortran 77 compiler settings.])
+  fi
+fi
 
 if test x$acx_blas_ok = xno || test x$acx_lapack_ok = xno; then
   AC_MSG_ERROR([You are required to have BLAS and LAPACK libraries])
 fi
 
-if test "x$acx_blas_f77_func_ok" = "xno"; then
-  AC_MSG_ERROR([A BLAS library was detected but found incompatible with your Fortran 77 compiler])
-fi
-
-# Check for the qrupdate library
+### Check for the qrupdate library
+## No need to adjust FFLAGS because only link is attempted. 
+## Must supply proper LIBS, however.
 
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"

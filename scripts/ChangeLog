@@ -15,13 +15,13 @@
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m, 
-        deprecated/fstat.m, general/accumdim.m, general/interp1.m, 
-        linear-algebra/ishermitian.m, linear-algebra/issymmetric.m, 
-        miscellaneous/substruct.m, optimization/fminbnd.m, 
+        * @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m,
+        deprecated/fstat.m, general/accumdim.m, general/interp1.m,
+        linear-algebra/ishermitian.m, linear-algebra/issymmetric.m,
+        miscellaneous/substruct.m, optimization/fminbnd.m,
         optimization/fsolve.m, plot/bar.m, plot/daspect.m, plot/pbaspect.m,
         plot/print.m, polynomial/mkpp.m, polynomial/ppval.m, set/union.m,
-        signal/unwrap.m, specfun/nthroot.m: Periodic grammar check of 
+        signal/unwrap.m, specfun/nthroot.m: Periodic grammar check of
         documentation to ensure a common format.
 
 2010-06-14  Rik <octave@nomad.inbox5.com>
@@ -56,8 +56,8 @@
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/cumtrapz.m, general/postpad.m, general/prepad.m, 
-        general/shift.m, general/trapz.m, signal/unwrap.m: Use common 
+        * general/cumtrapz.m, general/postpad.m, general/prepad.m,
+        general/shift.m, general/trapz.m, signal/unwrap.m: Use common
         method to find first non-singleton dimension.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
@@ -67,18 +67,18 @@
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/cart2pol.m, general/cart2sph.m, general/pol2cart.m, 
-        general/sph2cart.m: Add option to operate on column matrix of 
+        * general/cart2pol.m, general/cart2sph.m, general/pol2cart.m,
+        general/sph2cart.m: Add option to operate on column matrix of
         coordinates.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/arrayfun.m, general/cart2pol.m, general/cart2sph.m, 
-        general/idivide.m, general/logspace.m, general/sph2cart.m, 
-        general/structfun.m, image/imagesc.m, io/csvread.m, io/csvwrite.m, 
-        linear-algebra/cond.m, linear-algebra/condest.m, 
-        linear-algebra/isdefinite.m, linear-algebra/null.m, 
-        linear-algebra/orth.m, miscellaneous/list_primes.m, 
+        * general/arrayfun.m, general/cart2pol.m, general/cart2sph.m,
+        general/idivide.m, general/logspace.m, general/sph2cart.m,
+        general/structfun.m, image/imagesc.m, io/csvread.m, io/csvwrite.m,
+        linear-algebra/cond.m, linear-algebra/condest.m,
+        linear-algebra/isdefinite.m, linear-algebra/null.m,
+        linear-algebra/orth.m, miscellaneous/list_primes.m,
         optimization/fminunc.m, optimization/fzero.m, path/matlabroot.m,
         plot/axis.m, plot/plot.m, plot/semilogx.m, plot/semilogxerr.m,
         plot/semilogy.m, plot/semilogyerr.m, plot/stem.m, polynomial/poly.m,
@@ -86,8 +86,8 @@
         polynomial/polyout.m, polynomial/polyval.m, set/ismember.m,
         sparse/spfun.m, specfun/betaln.m, statistics/base/mean.m,
         statistics/base/median.m, statistics/base/mode.m, statistics/base/ols.m,
-        statistics/base/ranks.m, 
-        statistics/distributions/kolmogorov_smirnov_cdf.m, 
+        statistics/base/ranks.m,
+        statistics/distributions/kolmogorov_smirnov_cdf.m,
         statistics/distributions/wblpdf.m: Improve documentation strings
 
 2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
@@ -103,11 +103,11 @@
 
 2010-06-03  Alois Schlögl
 
-        * signal/arch_test.m, statistics/tests/bartlett_test.m, 
-        statistics/tests/chisquare_test_homogeneity.m, 
-        statistics/tests/chisquare_test_independence.m, 
-        statistics/tests/manova.m, statistics/tests/mcnemar_test.m, 
-        statistics/tests/run_test.m, statistics/distributions/chi2pdf.m: 
+        * signal/arch_test.m, statistics/tests/bartlett_test.m,
+        statistics/tests/chisquare_test_homogeneity.m,
+        statistics/tests/chisquare_test_independence.m,
+        statistics/tests/manova.m, statistics/tests/mcnemar_test.m,
+        statistics/tests/run_test.m, statistics/distributions/chi2pdf.m:
         Replace calls to obsolete chisquare_cdf with chi2cdf.
 
 2010-06-03  Rik <octave@nomad.inbox5.com>
@@ -117,7 +117,7 @@
 2010-06-02  Rik <octave@nomad.inbox5.com>
 
 	* optimization/sqp.m: Overhaul sqp code.
-        Guarantee equivalent results if sqp called with or wihout bounds 
+        Guarantee equivalent results if sqp called with or wihout bounds
         (bug #29989).  Simplify input option handling and add %tests
         to check validation code.  Rewrite documentation string.
 
@@ -137,8 +137,8 @@
         validation routines.
 
 2010-05-30  Rik <octave@nomad.inbox5.com>
-        
-        * sparse/svds.m: Overhaul code.  
+
+        * sparse/svds.m: Overhaul code.
         Return smallest singular values if sigma == 0 (Bug #29721).
         Avoid calculating U and V matrices unless requested.
         Correctly handle zero matrix input.
@@ -146,11 +146,11 @@
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
 
-        * statistics/base/histc.m, statistics/base/iqr.m, 
-        statistics/base/kurtosis.m, statistics/base/mode.m, 
-        statistics/base/ranks.m, statistics/base/run_count.m, 
-        statistics/base/skewness.m, statistics/base/statistics.m, 
-        statistics/base/studentize.m: Improve validation of input arguments. 
+        * statistics/base/histc.m, statistics/base/iqr.m,
+        statistics/base/kurtosis.m, statistics/base/mode.m,
+        statistics/base/ranks.m, statistics/base/run_count.m,
+        statistics/base/skewness.m, statistics/base/statistics.m,
+        statistics/base/studentize.m: Improve validation of input arguments.
 
 2010-05-26  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -161,7 +161,7 @@
         * plot/legend.m: Improve documentation string.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
-        
+
         * sparse/svds.m: Check struct input arguments.  Overhaul documentation.
 
 2010-05-26  Ben Abbott <bpabbott@mac.com>
@@ -193,12 +193,12 @@
 	non-singleton dimension computation.
 
 2010-05-24  Rik <octave@nomad.inbox5.com>
-        * general/private/__isequal__.m, image/image.m, 
+        * general/private/__isequal__.m, image/image.m,
         statistics/base/ranks.m: Replace calls to deprecated functions.
 
 2010-05-23  Rik <octave@nomad.inbox5.com>
 
-        * image/imshow.m: Scale image point color according to colormap. 
+        * image/imshow.m: Scale image point color according to colormap.
         Bug #29926.
 
 2010-05-16  Rik <octave@nomad.inbox5.com>
@@ -232,7 +232,7 @@
 
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
-        * scripts/plot/contourc.m, scripts/plot/private/__contour__.m, 
+        * scripts/plot/contourc.m, scripts/plot/private/__contour__.m,
           scripts/plot/surface.m, scripts/plot/surfnorm.m: Check input
           arguments for size and type (bug #29861).
 
@@ -263,8 +263,8 @@
 
 2010-05-05  Rik <octave@nomad.inbox5.com>
 
-        * statistics/tests/cor_test.m, statistics/tests/t_test.m, 
-          statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m, 
+        * statistics/tests/cor_test.m, statistics/tests/t_test.m,
+          statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m,
           statistics/tests/welch_test.m: Replace deprecated function calls.
           Patch provided by Alois Schlögl.
 
@@ -861,7 +861,7 @@
 
 	* plot/axis.m, plot/__go_draw_axes__.m, plot/colorbar.m,
 	plot/isocolors.m, plot/isonormals.m, plot/isosurface.m,
-	plot/plotyy.m, plot/polar.m, plot/surfl.m, 
+	plot/plotyy.m, plot/polar.m, plot/surfl.m,
 	plot/private/__actual_axis_position.m:
 	Replace dataaspectratio and dataaspectratiomode properties with
 	plotboxaspectratio and plotboxaspectratio properties.
@@ -1044,7 +1044,7 @@
 
 	* general/structfun.m, miscellaneous/getfield.m,
 	miscellaneous/orderfields.m, miscellaneous/setfield.m,
-	miscellaneous/substruct.m: Update documentation string. 
+	miscellaneous/substruct.m: Update documentation string.
 
 2010-01-16  David Bateman  <dbateman@free.fr>
 

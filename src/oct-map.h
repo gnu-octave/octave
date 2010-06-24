@@ -80,7 +80,7 @@ public:
   operator = (const octave_fields& o)
     {
       o.rep->count++;
-      if (--rep->count)
+      if (--rep->count == 0)
         delete rep;
       rep = o.rep;
 

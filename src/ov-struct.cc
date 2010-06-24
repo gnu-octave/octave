@@ -1724,10 +1724,12 @@ If the argument is an object, return the underlying struct.\n\
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
 
+  if (nargin == 1 && args(0).is_map ())
+    return args(0);
+
   if (nargin == 1 && args(0).is_object ())
     {
-      octave_map m = args(0).map_value ();
-      retval = octave_value (new octave_struct (m));
+      retval = args(0).map_value ();
 
       return retval;
     }

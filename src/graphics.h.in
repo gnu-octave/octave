@@ -970,6 +970,10 @@ public:
 
   base_property* clone (void) const { return new color_property (*this); }
 
+  std::string values_as_string (void) const { return radio_val.values_as_string (); }
+
+  Cell values_as_cell (void) const { return radio_val.values_as_cell (); }
+      
 protected:
   OCTINTERP_API bool do_set (const octave_value& newval);
 
@@ -2223,6 +2227,17 @@ public:
 
   virtual void remove_all_listeners (void);
 
+  virtual void reset_default_properties (void)
+    {
+      if (valid_object ())
+        {
+          std::string msg = (type () + "::reset_default_properties");
+          gripe_not_implemented (msg.c_str ());
+        }
+      else
+        error ("base_graphics_object::default: invalid graphics object");
+    }
+
 protected:
   // A reference count.
   int count;
@@ -2409,6 +2424,9 @@ public:
                                  listener_mode mode = POSTSET)
     { rep->delete_property_listener (nm, v, mode); }
 
+  void reset_default_properties (void)
+  { rep->reset_default_properties (); }
+
 private:
   base_graphics_object *rep;
 };
@@ -2547,6 +2565,8 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;
@@ -2751,6 +2771,8 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;
@@ -3198,6 +3220,8 @@ public:
   void update_axis_limits (const std::string& axis_type);
 
   bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
 
 private:
   property_list default_properties;

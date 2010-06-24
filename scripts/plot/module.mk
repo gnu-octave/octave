@@ -124,6 +124,9 @@ plot_FCN_FILES = \
   plot/plotyy.m \
   plot/polar.m \
   plot/print.m \
+  plot/__gnuplot_print__.m \
+  plot/__fltk_print__.m \
+  plot/__print_parse_opts__.m \
   plot/quiver.m \
   plot/quiver3.m \
   plot/refresh.m \
@@ -157,6 +160,7 @@ plot_FCN_FILES = \
   plot/title.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
+  plot/whitebg.m \
   plot/xlabel.m \
   plot/xlim.m \
   plot/ylabel.m \

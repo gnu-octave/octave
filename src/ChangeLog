@@ -15,9 +15,24 @@
 	* ov-class.h (octave_class::old_map_value): New override.
 	* ov-class.cc: Use old_map_value for efficiency.
 
+2010-06-23  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (void root_figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	Freset): New functions.
+	* graphics.h.in (void graphics_object:reset_default_properies (void),
+	virtual void base_graphics_object:reset_default_properies (void)):
+	New functions.
+	(void root_figure::reset_default_properties (void),
+	void figure::reset_default_properties (void),
+	void figure::reset_default_properties (void)): Declarations.
+	(std::string color_property::values_as_string (void) const,
+	Cell color_property::values_as_cell (void) const): New functions.
+
 2010-06-21  Rik <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option. 
+	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option.
         (bug #30183).
 
 2010-06-21  David Bateman  <dbateman@free.fr>
@@ -67,11 +82,11 @@
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc, 
-        DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc, 
+        * DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc,
+        DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc,
         DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/onCleanup.cc,
         DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spparms.cc, DLD-FUNCTIONS/svd.cc,
-        data.cc, dirfns.cc, graphics.cc, mappers.cc, ov-cell.cc, ov-range.cc: 
+        data.cc, dirfns.cc, graphics.cc, mappers.cc, ov-cell.cc, ov-range.cc:
         Periodic grammar check of documentation to ensure a common format.
 
 2010-06-11  David Bateman  <dbateman@free.fr>
@@ -129,9 +144,9 @@
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc, 
-        DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc, 
-        DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/tril.cc, 
+        * DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc,
+        DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc,
+        DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/tril.cc,
         data.cc, ov.cc: Improve documentation string.
 
 2010-06-06  Michael Goffioul  <michael.goffioul@gmail.com>
@@ -278,7 +293,7 @@
 2010-05-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-save.cc (install_loaded_variable): Pre-extract symbol record
-	reference to do all operations. 
+	reference to do all operations.
 
 2010-05-11  David Bateman  <dbateman@free.fr>
 
@@ -299,7 +314,7 @@
 
 2010-05-10  Rik <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test 
+	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test
         when QRUPDATE is present and low precision when it is not.
 
 2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
@@ -383,7 +398,7 @@
 
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
-	* ov-cell.cc: Wrap documentation line to prevent overfull hbox 
+	* ov-cell.cc: Wrap documentation line to prevent overfull hbox
         LaTex warning
 
 2010-05-01  Ben Abbott <bpabbott@mac.com>
@@ -777,12 +792,12 @@
 
 2010-03-09  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-intx.h 
+	* ov-intx.h
 	(OCTAVE_INT_NDARRAY_T::convert_gripe): Remove method.
 	(OCTAVE_INT_NDARRAY_T): Remove all uses.
 	(OCTAVE_INT_T::convert_gripe): Remove method.
 	(OCTAVE_INT_T): Remove all uses.
-	* ov.cc (convert_to_int_array, convert_to_octave_idx_type_array): 
+	* ov.cc (convert_to_int_array, convert_to_octave_idx_type_array):
 	Remove int conversion warnings.
 	* data.cc (NATIVE_REDUCTION_1): Ditto.
 
@@ -1938,7 +1953,7 @@
 
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
-	* strfns.cc (do_strcmp_fun, 
+	* strfns.cc (do_strcmp_fun,
 	strcmp_array_op, strcmp_str_op,
 	strcmpi_array_op, strcmpi_str_op,
 	strncmp_array_op, strncmp_str_op,
@@ -2105,7 +2120,7 @@
 	* ls-mat5.cc (read_mat5_binary_element): Ditto.
 	* mex.cc (call_mex, mexGetVariable): Ditto.
 	* oct-hist.cc (do_edit_history, do_run_history): Ditto.
-	* octave.cc (execute_startup_files, execute_eval_option_code, 
+	* octave.cc (execute_startup_files, execute_eval_option_code,
 	  execute_command_line_file): Ditto.
 	* ov-builtin.cc (octave_builtin::do_multi_index_op): Ditto.
 	* ov-class.cc (octave_class::subsasgn, octave_class::print_raw):
@@ -2150,7 +2165,7 @@
 	* DLD-FUNCTIONS/quad.cc (Fquad): Ditto.
 	* DLD-FUNCTIONS/rand.cc (Frandn, Frande, Frandg, Frandp): Ditto.
 	* DLD-FUNCTIONS/typecast.cc (get_data_and_bytesize, Ftypecast): Ditto.
-	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, mput_directory, 
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, mput_directory,
 	getallfiles, F__ftp_mget__): Ditto.
 
 2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
@@ -2233,7 +2248,7 @@
 	* ov.cc (decode_subscripts): Move to utils.cc.
 	* utils.cc (decode_subscripts): New func.
 	* utils.h: Declare it.
-	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Optimize the 
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Optimize the
 	`cellfun (@subsref, args, {subs}, "uniformoutput", true)' case.
 
 2009-12-26  Jaroslav Hajek  <highegg@gmail.com>

@@ -2625,6 +2625,34 @@ root_figure::properties::remove_child (const graphics_handle& gh)
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
+void
+root_figure::reset_default_properties (void)
+{
+  property_list new_defaults;
+
+  for (property_list::plist_map_const_iterator p = default_properties.begin ();
+       p != default_properties.end (); p++)
+    {
+      const property_list::pval_map_type pval_map = p->second;
+      std::string prefix = p->first;
+      
+      for (property_list::pval_map_const_iterator q = pval_map.begin ();
+           q != pval_map.end ();
+           q++)
+        {
+          std::string s = q->first;
+
+          if (prefix == "axes" && (s == "position" || s == "units"))
+            new_defaults.set (prefix + s, q->second);
+          else if (prefix == "figure" && (s == "position" || s == "units" 
+                                          || s == "windowstyle" 
+                                          || s == "paperunits"))
+            new_defaults.set (prefix + s, q->second);
+        }
+    }
+  default_properties = new_defaults;
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -2767,6 +2795,34 @@ figure::get_default (const caseless_str& name) const
     }
 
   return retval;
+}
+
+void
+figure::reset_default_properties (void)
+{
+  property_list new_defaults;
+
+  for (property_list::plist_map_const_iterator p = default_properties.begin ();
+       p != default_properties.end (); p++)
+    {
+      const property_list::pval_map_type pval_map = p->second;
+      std::string prefix = p->first;
+      
+      for (property_list::pval_map_const_iterator q = pval_map.begin ();
+           q != pval_map.end ();
+           q++)
+        {
+          std::string s = q->first;
+
+          if (prefix == "axes" && (s == "position" || s == "units"))
+            new_defaults.set (prefix + s, q->second);
+          else if (prefix == "figure" && (s == "position" || s == "units" 
+                                          || s == "windowstyle" 
+                                          || s == "paperunits"))
+            new_defaults.set (prefix + s, q->second);
+        }
+    }
+  default_properties = new_defaults;
 }
 
 // ---------------------------------------------------------------------
@@ -4286,6 +4342,34 @@ axes::properties::clear_zoom_stack (void)
   unzoom ();
 }
 
+void
+axes::reset_default_properties (void)
+{
+  property_list new_defaults;
+
+  for (property_list::plist_map_const_iterator p = default_properties.begin ();
+       p != default_properties.end (); p++)
+    {
+      const property_list::pval_map_type pval_map = p->second;
+      std::string prefix = p->first;
+      
+      for (property_list::pval_map_const_iterator q = pval_map.begin ();
+           q != pval_map.end ();
+           q++)
+        {
+          std::string s = q->first;
+
+          if (prefix == "axes" && (s == "position" || s == "units"))
+            new_defaults.set (prefix + s, q->second);
+          else if (prefix == "figure" && (s == "position" || s == "units" 
+                                          || s == "windowstyle" 
+                                          || s == "paperunits"))
+            new_defaults.set (prefix + s, q->second);
+        }
+    }
+  default_properties = new_defaults;
+}
+
 // ---------------------------------------------------------------------
 
 Matrix
@@ -5030,6 +5114,35 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
     print_usage ();
 
   return retval;
+}
+
+DEFUN (reset, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
+Removes any defaults set for the handle @var{h}. The default figure\n\
+properties \"position\", \"units\", \"windowstyle\" and\n\
+\"paperunits\" and the default axes properties \"position\" and \"units\"\n\
+are not reset.\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ();
+  else
+    {
+      // get vector of graphics handles
+      ColumnVector hcv (args(0).vector_value ());
+
+      if (! error_state)
+        {
+          // loop over graphics objects
+          for (octave_idx_type n = 0; n < hcv.length (); n++) 
+            gh_manager::get_object (hcv(n)).reset_default_properties ();
+        }
+    }
+
+  return octave_value ();
 }
 
 DEFUN (set, args, nargout,

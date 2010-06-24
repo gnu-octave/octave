@@ -72,7 +72,7 @@ before doing that, it might be helpful to give a sampling of some of its
 capabilities.
 
 If you are new to Octave, I recommend that you try these examples to
-begin learning Octave by using it.  Lines marked with @samp{octave:13>}
+begin learning Octave by using it.  Lines marked like so, @samp{octave:13>},
 are lines you type, ending each with a carriage return.  Octave will
 respond with an answer, or by displaying a graph.
 

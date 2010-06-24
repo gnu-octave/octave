@@ -143,22 +143,22 @@ class OCTINTERP_API
 octave_scalar_map
 {
   octave_scalar_map (const octave_fields& k)
-    : keys (k), vals (k.nfields ()) { }
+    : xkeys (k), xvals (k.nfields ()) { }
 
 public:
 
-  octave_scalar_map (void) : keys (), vals () { }
+  octave_scalar_map (void) : xkeys (), xvals () { }
 
   octave_scalar_map (const string_vector& k)
-    : keys (k), vals (k.length ()) { }
+    : xkeys (k), xvals (k.length ()) { }
 
   octave_scalar_map (const octave_scalar_map& m)
-    : keys (m.keys), vals(m.vals) { }
+    : xkeys (m.xkeys), xvals(m.xvals) { }
 
   octave_scalar_map& operator = (const octave_scalar_map& m)
     {
-      keys = m.keys;
-      vals = m.vals;
+      xkeys = m.xkeys;
+      xvals = m.xvals;
 
       return *this;
     }
@@ -168,37 +168,43 @@ public:
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
-  const_iterator begin (void) const { return keys.begin (); }
-  const_iterator end (void) const { return keys.end (); }
+  const_iterator begin (void) const { return xkeys.begin (); }
+  const_iterator end (void) const { return xkeys.end (); }
 
-  const_iterator seek (const std::string& k) const { return keys.seek (k); }
+  const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 
   std::string key (const_iterator p) const 
-    { return keys.key (p); }
+    { return xkeys.key (p); }
   octave_idx_type index (const_iterator p) const
-    { return keys.index (p); }
+    { return xkeys.index (p); }
 
   const octave_value& contents (const_iterator p) const 
-    { return vals[keys.index (p)]; }
+    { return xvals[xkeys.index (p)]; }
 
   octave_value& contents (iterator p)
-    { return vals[keys.index (p)]; }
+    { return xvals[xkeys.index (p)]; }
 
   const octave_value& contents (octave_idx_type i) const
-    { return vals[i]; }
+    { return xvals[i]; }
 
   octave_value& contents (octave_idx_type i)
-    { return vals[i]; }
+    { return xvals[i]; }
 
   // number of fields.
-  octave_idx_type nfields (void) const { return keys.nfields (); }
+  octave_idx_type nfields (void) const { return xkeys.nfields (); }
 
   // check whether a field exists.
   bool isfield (const std::string& name) const 
-    { return keys.isfield (name); }
+    { return xkeys.isfield (name); }
+
+  bool contains (const std::string& name) const 
+    { return isfield (name); }
 
   string_vector fieldnames (void) const
-    { return keys.fieldnames (); }
+    { return xkeys.fieldnames (); }
+
+  string_vector keys (void) const
+    { return fieldnames (); }
 
   // get contents of a given field. empty value if not exist.
   octave_value getfield (const std::string& key) const;
@@ -208,6 +214,7 @@ public:
 
   // remove a given field. do nothing if not exist.
   void rmfield (const std::string& key);
+  void del (const std::string& k) { rmfield (k); }
 
   // return a copy with fields ordered, optionally along with permutation.
   octave_scalar_map orderfields (void) const;
@@ -221,16 +228,16 @@ public:
 
   void clear (void)
     {
-      keys.clear ();
-      vals.clear ();
+      xkeys.clear ();
+      xvals.clear ();
     }
 
   friend class octave_map;
 
 private:
 
-  octave_fields keys;
-  std::vector<octave_value> vals;
+  octave_fields xkeys;
+  std::vector<octave_value> xvals;
 
 };
 
@@ -238,22 +245,22 @@ class OCTINTERP_API
 octave_map
 {
   octave_map (const octave_fields& k)
-    : keys (k), vals (k.nfields ()), dimensions () { }
+    : xkeys (k), xvals (k.nfields ()), dimensions () { }
 
 public:
 
-  octave_map (void) : keys (), vals (), dimensions () { }
+  octave_map (void) : xkeys (), xvals (), dimensions () { }
 
-  octave_map (const dim_vector& dv) : keys (), vals (), dimensions (dv) { }
+  octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }
 
   octave_map (const string_vector& k)
-    : keys (k), vals (k.length ()), dimensions (1, 1) { }
+    : xkeys (k), xvals (k.length ()), dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
-    : keys (k), vals (k.length ()), dimensions (dv) { }
+    : xkeys (k), xvals (k.length ()), dimensions (dv) { }
 
   octave_map (const octave_map& m)
-    : keys (m.keys), vals (m.vals), dimensions (m.dimensions) { }
+    : xkeys (m.xkeys), xvals (m.xvals), dimensions (m.dimensions) { }
 
   octave_map (const octave_scalar_map& m);
 
@@ -261,8 +268,8 @@ public:
 
   octave_map& operator = (const octave_map& m)
     {
-      keys = m.keys;
-      vals = m.vals;
+      xkeys = m.xkeys;
+      xvals = m.xvals;
       dimensions = m.dimensions;
 
       return *this;
@@ -273,40 +280,43 @@ public:
   typedef octave_fields::const_iterator const_iterator;
   typedef const_iterator iterator;
 
-  const_iterator begin (void) const { return keys.begin (); }
-  const_iterator end (void) const { return keys.end (); }
+  const_iterator begin (void) const { return xkeys.begin (); }
+  const_iterator end (void) const { return xkeys.end (); }
 
-  const_iterator seek (const std::string& k) const { return keys.seek (k); }
+  const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 
   std::string key (const_iterator p) const 
-    { return keys.key (p); }
+    { return xkeys.key (p); }
   octave_idx_type index (const_iterator p) const
-    { return keys.index (p); }
+    { return xkeys.index (p); }
 
   const Cell& contents (const_iterator p) const 
-    { return vals[keys.index (p)]; }
+    { return xvals[xkeys.index (p)]; }
 
   Cell& contents (iterator p)
-    { return vals[keys.index (p)]; }
+    { return xvals[xkeys.index (p)]; }
 
   const Cell& contents (octave_idx_type i) const
-    { return vals[i]; }
+    { return xvals[i]; }
 
   Cell& contents (octave_idx_type i)
-    { return vals[i]; }
+    { return xvals[i]; }
 
   // number of fields.
-  octave_idx_type nfields (void) const { return keys.nfields (); }
+  octave_idx_type nfields (void) const { return xkeys.nfields (); }
 
   // check whether a field exists.
   bool isfield (const std::string& name) const 
-    { return keys.isfield (name); }
+    { return xkeys.isfield (name); }
 
   bool contains (const std::string& name) const 
     { return isfield (name); }
 
   string_vector fieldnames (void) const
-    { return keys.fieldnames (); }
+    { return xkeys.fieldnames (); }
+
+  string_vector keys (void) const
+    { return fieldnames (); }
 
   // get contents of a given field. empty value if not exist.
   Cell getfield (const std::string& key) const;
@@ -331,8 +341,8 @@ public:
 
   void clear (void)
     {
-      keys.clear ();
-      vals.clear ();
+      xkeys.clear ();
+      xvals.clear ();
     }
 
   // The Array-like methods.
@@ -400,8 +410,8 @@ public:
 
 private:
 
-  octave_fields keys;
-  std::vector<Cell> vals;
+  octave_fields xkeys;
+  std::vector<Cell> xvals;
   dim_vector dimensions;
 
   void optimize_dimensions (void);

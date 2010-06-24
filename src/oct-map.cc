@@ -839,7 +839,7 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
       octave_map rhs1 = rhs.orderfields (*this, perm);
       if (! error_state)
         {
-          assert (rhs1.xkeys.is_same (rhs.xkeys));
+          assert (rhs1.xkeys.is_same (xkeys));
           assign (i, rhs1);
         }
       else
@@ -876,7 +876,7 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
       octave_map rhs1 = rhs.orderfields (*this, perm);
       if (! error_state)
         {
-          assert (rhs1.xkeys.is_same (rhs.xkeys));
+          assert (rhs1.xkeys.is_same (xkeys));
           assign (i, j, rhs1);
         }
       else
@@ -913,7 +913,7 @@ octave_map::assign (const Array<idx_vector>& ia,
       octave_map rhs1 = rhs.orderfields (*this, perm);
       if (! error_state)
         {
-          assert (rhs1.xkeys.is_same (rhs.xkeys));
+          assert (rhs1.xkeys.is_same (xkeys));
           assign (ia, rhs1);
         }
       else
@@ -967,6 +967,37 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
       }
       break;
     }
+}
+
+void
+octave_map::assign (const octave_value_list& idx, const std::string& k,
+                    const Cell& rhs)
+{
+  Cell tmp;
+  iterator p = seek (k);
+  Cell& ref = p != end () ? contents (p) : tmp;
+
+  if (&ref == &tmp)
+    ref.clear (dimensions);
+
+  ref.assign (idx, rhs);
+    
+  if (! error_state && ref.dims () != dimensions)
+    {
+      dimensions = ref.dims ();
+
+      octave_idx_type nf = nfields ();
+      for (octave_idx_type k = 0; k < nf; k++)
+        {
+          if (&xvals[k] != &ref)
+            xvals[k].resize (dimensions, Cell::resize_fill_value ());
+        }
+
+      optimize_dimensions ();
+    }
+
+  if (! error_state && &ref == &tmp)
+    setfield (k, tmp);
 }
 
 void

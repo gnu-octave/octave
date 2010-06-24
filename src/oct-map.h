@@ -398,6 +398,9 @@ public:
 
   void assign (const octave_value_list&, const octave_map& rhs);
   
+  void assign (const octave_value_list& idx, const std::string& k,
+               const Cell& rhs);
+
   void delete_elements (const idx_vector& i);
 
   void delete_elements (int dim, const idx_vector& i);

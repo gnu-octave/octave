@@ -431,7 +431,7 @@ octave_struct::subsasgn (const std::string& type,
                           tmp_cell = tmp_cell.reshape (didx);
 
 
-                        map.contents (key).assign (idxf, tmp_cell);
+                        map.assign (idxf, key, tmp_cell);
 
                         if (! error_state)
                           {
@@ -448,7 +448,7 @@ octave_struct::subsasgn (const std::string& type,
                         if (idxf.all_scalars () 
                             || cmap.contents (key).index (idxf, true).numel () == 1)
                           {
-                            map.contents (key).assign (idxf, Cell (t_rhs.storable_value ()));
+                            map.assign (idxf, key, Cell (t_rhs.storable_value ()));
                             if (! error_state)
                               {
                                 count++;
@@ -1239,6 +1239,9 @@ octave_scalar_struct::subsasgn (const std::string& type,
         map.setfield (key, t_rhs.storable_value ());
       else
         gripe_failed_assignment ();
+
+      count++;
+      retval = this;
     }
   else
     {

@@ -978,7 +978,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
   Cell& ref = p != end () ? contents (p) : tmp;
 
   if (&ref == &tmp)
-    ref.clear (dimensions);
+    ref = Cell (dimensions);
 
   ref.assign (idx, rhs);
     
@@ -987,10 +987,10 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
       dimensions = ref.dims ();
 
       octave_idx_type nf = nfields ();
-      for (octave_idx_type k = 0; k < nf; k++)
+      for (octave_idx_type i = 0; i < nf; i++)
         {
-          if (&xvals[k] != &ref)
-            xvals[k].resize (dimensions, Cell::resize_fill_value ());
+          if (&xvals[i] != &ref)
+            xvals[i].resize (dimensions, Cell::resize_fill_value ());
         }
 
       optimize_dimensions ();

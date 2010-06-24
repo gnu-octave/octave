@@ -18,7 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
+## @deftypefn  {Function File} {} polar (@var{theta}, @var{rho})
+## @deftypefnx {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
+## @deftypefnx {Function File} {} polar (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} polar (@dots{})
 ## Make a two-dimensional plot given the polar coordinates @var{theta} and
 ## @var{rho}.
 ##
@@ -31,6 +34,10 @@
 function retval = polar (varargin)
 
   [h, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});
+
+  if (nargs < 1)
+    print_usage(); 
+  endif
 
   oldh = gca ();
   unwind_protect

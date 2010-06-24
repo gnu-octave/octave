@@ -109,11 +109,7 @@ function retval = __plt__ (caller, h, varargin)
     endwhile
 
   else
-    msg = sprintf ("%s (y)\n", caller);
-    msg = sprintf ("%s       %s (x, y, ...)\n", msg, caller);
-    msg = sprintf ("%s       %s (x, y, fmt, ...)\n", msg, caller);
-    msg = sprintf ("%s       %s (x, y, property, value, ...)", msg, caller);
-    usage (msg);
+    error ("__plt__: invalid number of arguments");
   endif
 
 endfunction

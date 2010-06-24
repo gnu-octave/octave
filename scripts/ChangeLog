@@ -1,3 +1,10 @@
+2010-06-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/private/__plt__.m: Replace usage message with error.
+	* plot/loglog.m, plot/plot.m, plot/polar.m, plot/semilogx.m,
+	plot/semilogy.m: Call print_usage if no args are supplied.
+        Add additional calling forms to documentation.
+
 2010-06-24  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* plot/print.m: convert to wrapper for backend specific print functions

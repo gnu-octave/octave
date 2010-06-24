@@ -1,3 +1,20 @@
+2010-06-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.h (octave_map, octave_scalar_map): New classes.
+	* oct-map.cc (octave_map, octave_scalar_map): Implement them.
+	(Octave_map::Octave_map (const octave_map&)): New ctor.
+	* ov-struct.h (octave_struct): Use octave_map for storage.
+	(octave_scalar_struct): New class.
+	* ov-struct.cc: Update implementations.
+	* ov-base.h (octave_base_value::old_map_value): New method.
+	(octave_base_value::map_value): Return octave_map.
+	(octave_base_value::scalar_map_value): New method.
+	* ov-base.cc (octave_base_value::old_map_value,
+	octave_base_value::map_value, octave_base_value::scalar_map_value): 
+	Add default implementations.
+	* ov-class.h (octave_class::old_map_value): New override.
+	* ov-class.cc: Use old_map_value for efficiency.
+
 2010-06-21  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option. 

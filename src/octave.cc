@@ -467,7 +467,7 @@ verbose_usage (void)
 {
   std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY "\n\
 \n\
-Usage: octave [options]\n\
+Usage: octave [options] [FILE]\n\
 \n\
 Options:\n\
 \n\

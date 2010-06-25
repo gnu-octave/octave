@@ -18,9 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} loglog (@var{args})
+## @deftypefn  {Function File} {} loglog (@var{y})
+## @deftypefnx {Function File} {} loglog (@var{x}, @var{y})
+## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} loglog (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {Function File} {} loglog (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} loglog (@dots{})
 ## Produce a two-dimensional plot using log scales for both axes.  See
-## the description of @code{plot} for a description of the arguments
+## the documentation of @code{plot} for a description of the arguments
 ## that @code{loglog} will accept.
 ## @seealso{plot, semilogx, semilogy}
 ## @end deftypefn
@@ -29,7 +34,11 @@
 
 function retval = loglog (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("loglog", varargin{:});
+  [h, varargin, nargs] = __plt_get_axis_arg__ ("loglog", varargin{:});
+
+  if (nargs < 1)
+    print_usage(); 
+  endif
 
   oldh = gca ();
   unwind_protect

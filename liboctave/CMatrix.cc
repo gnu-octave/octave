@@ -2665,10 +2665,6 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
                                  ps, rcon, rank, work.fortran_vec (),
                                  lwork, prwork, piwork, info));
 
-      std::cerr << "work(0): " << work(0) << std::endl;
-      std::cerr << "rwork(0): " << rwork(0) << std::endl;
-      std::cerr << "iwork(0): " << iwork(0) << std::endl;
-
       // The workspace query is broken in at least LAPACK 3.0.0
       // through 3.1.1 when n >= mnthr.  The obtuse formula below
       // should provide sufficient workspace for ZGELSD to operate
@@ -2701,10 +2697,6 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
       work.resize (lwork, 1);
-
-      std::cerr << "work numel: " << work.numel () << std::endl;
-      std::cerr << "rwork numel: " << rwork.numel () << std::endl;
-      std::cerr << "iwork numel: " << iwork.numel () << std::endl;
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,

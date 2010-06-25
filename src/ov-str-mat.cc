@@ -242,6 +242,25 @@ octave_char_matrix_str::string_value (bool) const
   return retval;
 }
 
+Array<std::string>
+octave_char_matrix_str::cellstr_value (void) const
+{
+  Array<std::string> retval;
+
+  if (matrix.ndims () == 2)
+    {
+      const charMatrix chm = matrix.matrix_value ();
+      octave_idx_type nr = chm.rows ();
+      retval.clear (nr, 1);
+      for (octave_idx_type i = 0; i < nr; i++)
+        retval.xelem(i) = chm.row_as_string (i);
+    }
+  else
+    error ("cellstr: cannot convert multidimensional arrays");
+
+  return retval;
+}
+
 void
 octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {

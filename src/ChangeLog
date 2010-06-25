@@ -2,6 +2,10 @@
 
 	* ov-struct.cc (Fcell2struct): Rewrite.
 
+2010-06-24  Rik <octave@nomad.inbox5.com>
+
+        * octave.cc: Add [FILE] to octave usage string (bug #30258).
+
 2010-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-map.h (octave_map, octave_scalar_map): New classes.

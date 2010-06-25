@@ -1991,67 +1991,6 @@ Return the number of fields of the structure @var{s}.\n\
 
 */
 
-// Check that the dimensions of the input arguments are correct.
-
-static bool
-cell2struct_check_args (const dim_vector& c_dv, const dim_vector& f_dv,
-                        bool is_cell, int dim)
-{
-  bool retval = true;
-
-  if (dim >= 0 && dim < c_dv.length ())
-    {
-      if (is_cell)
-        {
-          if (f_dv.numel () != c_dv(dim))
-            {
-              error ("cell2struct: numel (FIELD) != size (CELL, DIM)");
-
-              retval = false;
-            }
-        }
-      else
-        {
-          if (f_dv.length () > 2)
-            {
-              error ("cell2struct: field array must be a 2-d matrix");
-
-              retval = false;
-            }
-          else if (f_dv(0) != c_dv(dim))
-            {
-              error ("cell2struct: size (FIELD, 1) != length (C, DIM)");
-
-              retval = false;
-            }
-        }
-    }
-  else
-    {
-      error ("cell2struct: DIM out of range");
-
-      retval = false;
-    }
-
-  return retval;
-}
-
-static void
-cell2struct_construct_idx (Array<octave_idx_type>& ra_idx1,
-                           const Array<octave_idx_type>& ra_idx2,
-                           octave_idx_type dim, octave_idx_type fill_value)
-{
-  octave_idx_type iidx = 0;
-
-  for (octave_idx_type idx = 0; idx < ra_idx1.length (); idx++)
-    {
-      if (idx == dim)
-        ra_idx1.elem (idx) = fill_value;
-      else
-        ra_idx1.elem (idx) = ra_idx2(iidx++);
-    }
-}
-
 DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
@@ -2079,158 +2018,44 @@ A(1)\n\
 
   if (args.length () == 3)
     {
-      Cell c = args(0).cell_value ();
-
-      if (! error_state)
+      if (! args(0).is_cell ()) 
+        error ("cell2struct: first argument must be a cell");
+      else if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
+        error ("cell2struct: second argument must be a cell array of strings or a character matrix");
+      else if (! args(2).is_real_scalar ())
+        error ("cell2struct: third argument must be a real scalar");
+      else
         {
-          octave_value field = args(1);
-
-          // Field is either cell or character matrix.
-
-          // FIXME -- this could be simplified if we had
-          // cellstr and iscellstr functions available.
-
-          bool field_is_cell = field.is_cell ();
-
-          Cell field_cell;
-          charMatrix field_char;
-
-          if (field_is_cell)
-            field_cell = field.cell_value ();
+          const Cell vals = args(0).cell_value ();
+          const Array<std::string> fields = args(1).cellstr_value ();
+          int dim = args(2).int_value () - 1;
+          octave_idx_type ext = 0;
+          
+          if (dim < 0)
+            error ("cell2struct: dim must be a valid dimension");
           else
-            field_char = field.char_matrix_value ();
+            {
+              ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
+              if (ext != fields.numel ())
+                error ("cell2struct: number of fields doesn't match dimension");
+            }
+
 
           if (! error_state)
             {
-              // Retrieve the dimension value.
+              octave_map map;
+              Array<idx_vector> ia (std::max (dim+1, vals.ndims ()), 1, 
+                                    idx_vector::colon);
 
-              // FIXME --  int_value () should print out the
-              // conversions it does to be Matlab compatible.
-
-              octave_idx_type dim = args(2).int_value () - 1;
-
-              if (! error_state)
+              for (octave_idx_type i = 0; i < ext; i++)
                 {
-                  dim_vector c_dv = c.dims ();
-                  dim_vector field_dv = field.dims ();
-
-                  if (cell2struct_check_args (c_dv, field_dv, field_is_cell,
-                                              dim))
-                    {
-                      octave_idx_type c_dv_length = c_dv.length ();
-
-                      // Dimension vector for the Cell arrays to be
-                      // put into the structure.
-
-                      dim_vector value_dv;
-
-                      // Initialize c_value_dv.
-
-                      if (c_dv_length == 2)
-                        value_dv = dim_vector (1, 1);
-                      else
-                        value_dv.resize (c_dv_length - 1);
-
-                      octave_idx_type idx_tmp = 0;
-
-                      for (octave_idx_type i = 0; i < c_dv_length; i++)
-                        {
-                          if (i != dim)
-                            value_dv.elem (idx_tmp++) = c_dv.elem (i);
-                        }
-
-                      // All initializing is done, we can start moving
-                      // values.
-
-                      octave_map map;
-
-                      // If field is a cell array then we use all
-                      // elements in array, on the other hand when
-                      // field is a character array the number of
-                      // elements is equals the number of rows.
-
-                      octave_idx_type field_numel
-                        = field_is_cell ? field_dv.numel (): field_dv(0);
-
-                      // For matlab compatibility.
-
-                      if (field_numel == 0)
-                        map.reshape (dim_vector (0, 1));
-
-                      for (octave_idx_type i = 0; i < field_numel; i++)
-                        {
-                          // Construct cell array which goes into the
-                          // structure together with the appropriate
-                          // field name.
-
-                          Cell c_value (value_dv);
-
-                          Array<octave_idx_type> value_idx (value_dv.length (), 1, 0);
-                          Array<octave_idx_type> c_idx (c_dv_length, 1, 0);
-
-                          for (octave_idx_type j = 0; j < value_dv.numel (); j++)
-                            {
-                              // Need to do this to construct the
-                              // appropriate idx for getting elements
-                              // from the original cell array.
-
-                              cell2struct_construct_idx (c_idx, value_idx,
-                                                         dim, i);
-
-                              c_value.elem (value_idx) = c.elem (c_idx);
-
-                              increment_index (value_idx, value_dv);
-                            }
-
-                          std::string field_str;
-
-                          if (field_is_cell)
-                            {
-                              // Matlab retrieves the field values
-                              // column by column.
-
-                              octave_value field_tmp = field_cell.elem (i);
-
-                              field_str = field_tmp.string_value ();
-
-                              if (error_state)
-                                {
-                                  error ("cell2struct: fields have to be of type string");
-                                  break;
-                                }
-                            }
-                          else
-                            {
-                              field_str = field_char.row_as_string (i);
-
-                              if (error_state)
-                                return retval;
-                            }
-
-                          if (! valid_identifier (field_str))
-                            {
-                              error ("cell2struct: invalid field name `%s'",
-                                     field_str.c_str ());
-                              break;
-                            }
-
-                          map.reshape (value_dv);
-
-                          map.setfield (field_str, c_value);
-                        }
-
-                      if (! error_state)
-                        retval = map;
-                    }
+                  ia(dim) = i;
+                  map.setfield (fields(i), vals.index (ia));
                 }
-              else
-                error ("cell2struct: expecting third argument to be an integer");
+
+              retval = map;
             }
-          else
-            error ("cell2struct: expecting second argument to be a cell or character array");
         }
-      else
-        error ("cell2struct: expecting first argument to be a cell array");
     }
   else
     print_usage ();

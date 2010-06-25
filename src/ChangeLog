@@ -1,3 +1,7 @@
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.cc (Fcell2struct): Rewrite.
+
 2010-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-map.h (octave_map, octave_scalar_map): New classes.

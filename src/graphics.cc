@@ -2625,8 +2625,8 @@ root_figure::properties::remove_child (const graphics_handle& gh)
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
-void
-root_figure::reset_default_properties (void)
+static void
+reset_default_properties (property_list& default_properties)
 {
   property_list new_defaults;
 
@@ -2650,7 +2650,14 @@ root_figure::reset_default_properties (void)
             new_defaults.set (prefix + s, q->second);
         }
     }
+
   default_properties = new_defaults;
+}
+
+void
+root_figure::reset_default_properties (void)
+{
+  ::reset_default_properties (default_properties);
 }
 
 // ---------------------------------------------------------------------
@@ -2800,29 +2807,7 @@ figure::get_default (const caseless_str& name) const
 void
 figure::reset_default_properties (void)
 {
-  property_list new_defaults;
-
-  for (property_list::plist_map_const_iterator p = default_properties.begin ();
-       p != default_properties.end (); p++)
-    {
-      const property_list::pval_map_type pval_map = p->second;
-      std::string prefix = p->first;
-      
-      for (property_list::pval_map_const_iterator q = pval_map.begin ();
-           q != pval_map.end ();
-           q++)
-        {
-          std::string s = q->first;
-
-          if (prefix == "axes" && (s == "position" || s == "units"))
-            new_defaults.set (prefix + s, q->second);
-          else if (prefix == "figure" && (s == "position" || s == "units" 
-                                          || s == "windowstyle" 
-                                          || s == "paperunits"))
-            new_defaults.set (prefix + s, q->second);
-        }
-    }
-  default_properties = new_defaults;
+  ::reset_default_properties (default_properties);
 }
 
 // ---------------------------------------------------------------------
@@ -4345,29 +4330,7 @@ axes::properties::clear_zoom_stack (void)
 void
 axes::reset_default_properties (void)
 {
-  property_list new_defaults;
-
-  for (property_list::plist_map_const_iterator p = default_properties.begin ();
-       p != default_properties.end (); p++)
-    {
-      const property_list::pval_map_type pval_map = p->second;
-      std::string prefix = p->first;
-      
-      for (property_list::pval_map_const_iterator q = pval_map.begin ();
-           q != pval_map.end ();
-           q++)
-        {
-          std::string s = q->first;
-
-          if (prefix == "axes" && (s == "position" || s == "units"))
-            new_defaults.set (prefix + s, q->second);
-          else if (prefix == "figure" && (s == "position" || s == "units" 
-                                          || s == "windowstyle" 
-                                          || s == "paperunits"))
-            new_defaults.set (prefix + s, q->second);
-        }
-    }
-  default_properties = new_defaults;
+  ::reset_default_properties (default_properties);
 }
 
 // ---------------------------------------------------------------------

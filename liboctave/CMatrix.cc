@@ -2698,10 +2698,6 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
       work.resize (lwork, 1);
 
-      std::cerr << "work numel: " << work.numel () << std::endl;
-      std::cerr << "rwork numel: " << rwork.numel () << std::endl;
-      std::cerr << "iwork numel: " << iwork.numel () << std::endl;
-
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
                                  work.fortran_vec (), lwork, 

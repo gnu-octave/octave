@@ -1,3 +1,7 @@
+2010-06-24  Rik <octave@nomad.inbox5.com>
+
+        * octave.cc: Add [FILE] to octave usage string (bug #30258).
+
 2010-06-23  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (void root_figure::reset_default_properties (void),

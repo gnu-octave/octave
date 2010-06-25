@@ -811,6 +811,22 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
   return retval;
 }
 
+// Perhaps one day these will be optimized. Right now, they just call index.
+octave_map 
+octave_map::column (octave_idx_type k) const
+{
+  return index (idx_vector::colon, k);
+}
+
+octave_map 
+octave_map::page (octave_idx_type k) const
+{
+  static Array<idx_vector> ia (3, 1, idx_vector::colon);
+
+  ia(2) = k;
+  return index (ia);
+}
+
 void
 octave_map::assign (const idx_vector& i, const octave_map& rhs)
 {

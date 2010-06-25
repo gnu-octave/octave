@@ -363,6 +363,15 @@ public:
   octave_scalar_map
   checkelem (const Array<octave_idx_type>& ra_idx) const;
 
+  octave_scalar_map operator () (octave_idx_type n) const
+    { return checkelem (n); }
+  octave_scalar_map operator () (octave_idx_type i, octave_idx_type j) const
+    { return checkelem (i, j); }
+
+  octave_scalar_map
+  operator () (const Array<octave_idx_type>& ra_idx) const
+    { return checkelem (ra_idx); }
+
   octave_map squeeze (void) const; 
 
   octave_map permute (const Array<int>& vec, bool inv = false) const; 
@@ -393,6 +402,9 @@ public:
 
   octave_map index (const octave_value_list&, bool resize_ok = false) const;
   
+  octave_map column (octave_idx_type k) const;
+  octave_map page (octave_idx_type k) const;
+
   void assign (const idx_vector& i, const octave_map& rhs);
 
   void assign (const idx_vector& i, const idx_vector& j, const octave_map& rhs);

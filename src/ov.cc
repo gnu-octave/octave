@@ -2653,6 +2653,7 @@ install_types (void)
   octave_sparse_matrix::register_type ();
   octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
+  octave_scalar_struct::register_type ();
   octave_class::register_type ();
   octave_cs_list::register_type ();
   octave_magic_colon::register_type ();

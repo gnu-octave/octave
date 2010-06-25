@@ -833,6 +833,12 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
 
       optimize_dimensions ();
     }
+  else if (nfields () == 0)
+    {
+      octave_map tmp (dimensions, rhs.xkeys);
+      tmp.assign (i, rhs);
+      *this = tmp;
+    }
   else
     {
       Array<octave_idx_type> perm;
@@ -870,6 +876,12 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
 
       optimize_dimensions ();
     }
+  else if (nfields () == 0)
+    {
+      octave_map tmp (dimensions, rhs.xkeys);
+      tmp.assign (i, j, rhs);
+      *this = tmp;
+    }
   else
     {
       Array<octave_idx_type> perm;
@@ -906,6 +918,12 @@ octave_map::assign (const Array<idx_vector>& ia,
         }
 
       optimize_dimensions ();
+    }
+  else if (nfields () == 0)
+    {
+      octave_map tmp (dimensions, rhs.xkeys);
+      tmp.assign (ia, rhs);
+      *this = tmp;
     }
   else
     {

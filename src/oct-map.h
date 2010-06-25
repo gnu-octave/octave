@@ -247,6 +247,9 @@ octave_map
   octave_map (const octave_fields& k)
     : xkeys (k), xvals (k.nfields ()), dimensions () { }
 
+  octave_map (const dim_vector& dv, const octave_fields& k)
+    : xkeys (k), xvals (k.nfields (), Cell (dv)), dimensions (dv) { }
+
 public:
 
   octave_map (void) : xkeys (), xvals (), dimensions () { }
@@ -257,7 +260,7 @@ public:
     : xkeys (k), xvals (k.length ()), dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
-    : xkeys (k), xvals (k.length ()), dimensions (dv) { }
+    : xkeys (k), xvals (k.length (), Cell (dv)), dimensions (dv) { }
 
   octave_map (const octave_map& m)
     : xkeys (m.xkeys), xvals (m.xvals), dimensions (m.dimensions) { }

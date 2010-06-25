@@ -1418,7 +1418,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
   bool success = true;
   octave_idx_type len = 0;
 
-  if (extract_keyword (is, "length", len, true) && len >= 0)
+  if (extract_keyword (is, "length", len) && len >= 0)
     {
       if (len > 0)
         {
@@ -2043,14 +2043,31 @@ A(1)\n\
 
           if (! error_state)
             {
-              octave_map map;
-              Array<idx_vector> ia (std::max (dim+1, vals.ndims ()), 1, 
-                                    idx_vector::colon);
+              int nd = std::max (dim+1, vals.ndims ());
+              // result dimensions.
+              dim_vector rdv = vals.dims ().redim (nd);
+
+              assert (ext == rdv(dim));
+              if (nd == 2)
+                {
+                  rdv(0) = rdv(1-dim);
+                  rdv(1) = 1;
+                }
+              else
+                {
+                  for (int i =  dim + 1; i < nd; i++)
+                    rdv(i-1) = rdv(i);
+
+                  rdv.resize (nd-1);
+                }
+
+              octave_map map (rdv);
+              Array<idx_vector> ia (nd, 1, idx_vector::colon);
 
               for (octave_idx_type i = 0; i < ext; i++)
                 {
                   ia(dim) = i;
-                  map.setfield (fields(i), vals.index (ia));
+                  map.setfield (fields(i), vals.index (ia).reshape (rdv));
                 }
 
               retval = map;

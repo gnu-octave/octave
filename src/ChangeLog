@@ -1,5 +1,12 @@
 2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-map.h (octave_map::octave_map (const dim_vector&, const
+	octave_fields&)): New internal ctor.
+
+	* oct-map.cc (octave_map::assign): Handle no fields case.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-struct.cc (Fcell2struct): Rewrite.
 
 2010-06-24  Rik <octave@nomad.inbox5.com>

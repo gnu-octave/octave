@@ -252,6 +252,8 @@ octave_map
 
 public:
 
+  typedef octave_scalar_map element_type;
+
   octave_map (void) : xkeys (), xvals (), dimensions () { }
 
   octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }

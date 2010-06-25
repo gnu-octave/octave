@@ -1,5 +1,10 @@
 2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell, do_num2cell): Optimize cells
+	and structs.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-struct.h (octave_scalar_struct::resize, octave_struct::resize):
 	Don't ignore fill argument.
 

@@ -555,6 +555,8 @@ octave_struct::subsasgn (const std::string& type,
   else
     gripe_failed_assignment ();
 
+  retval.maybe_mutate ();
+
   return retval;
 }
 

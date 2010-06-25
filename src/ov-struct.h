@@ -115,8 +115,8 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }
 
-  octave_value resize (const dim_vector& dv, bool = false) const
-    { octave_map tmap = map; tmap.resize (dv); return tmap; }
+  octave_value resize (const dim_vector& dv, bool fill = false) const
+    { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
 
   bool is_defined (void) const { return true; }
 
@@ -228,8 +228,8 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     { return octave_map (map).reshape (new_dims); }
 
-  octave_value resize (const dim_vector& dv, bool = false) const
-    { octave_map tmap = map; tmap.resize (dv); return tmap; }
+  octave_value resize (const dim_vector& dv, bool fill = false) const
+    { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
 
   bool is_defined (void) const { return true; }
 

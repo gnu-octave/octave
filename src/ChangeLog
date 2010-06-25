@@ -1,5 +1,10 @@
 2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-struct.h (octave_scalar_struct::resize, octave_struct::resize):
+	Don't ignore fill argument.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-map.h (octave_map::octave_map (const dim_vector&, const
 	octave_fields&)): New internal ctor.
 

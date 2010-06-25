@@ -2593,7 +2593,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
         case '(':
           {
             if (type.length () > 1 && type[1] == '.')
-              retval = Octave_map ();
+              retval = octave_map ();
             else
               retval = octave_value (rhs.empty_clone ());
           }
@@ -2604,7 +2604,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
           break;
 
         case '.':
-          retval = Octave_map ();
+          retval = octave_scalar_map ();
           break;
 
         default:

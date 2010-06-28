@@ -62,7 +62,7 @@ class equal_types <T, T>
 {
 public:
 
-  static const bool value = false;
+  static const bool value = true;
 };
 
 // Determine whether a type is an instance of a template.

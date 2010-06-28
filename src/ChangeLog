@@ -1,3 +1,11 @@
+2010-06-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (single_type_concat): Optimize all scalars case where
+	applicable.
+	(single_type_concat_map, do_single_type_concat_map): New funcs.
+	* pt-mat.cc (get_concat_class): Handle cell and struct concats.
+
+
 2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell, do_num2cell): Optimize cells

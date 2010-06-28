@@ -249,6 +249,10 @@ get_concat_class (const std::string& c1, const std::string& c2)
         retval = c2;
       else if (c1_is_logical && c2_is_logical)
         retval = c1;
+      else if (c1 == "struct" && c2 == c1)
+        retval = c1;
+      else if (c1 == "cell" && c2 == c1)
+        retval = c1;
     }
 
   return retval;    

@@ -241,6 +241,10 @@ private:
 
 };
 
+template<>
+inline octave_scalar_map octave_value_extract<octave_scalar_map> (const octave_value& v)
+  { return v.scalar_map_value (); }
+
 class OCTINTERP_API
 octave_map
 {
@@ -442,6 +446,10 @@ private:
   static void do_cat (int dim, octave_idx_type n, 
                       const octave_map *map_list, octave_map& retval);
 };
+
+template<>
+inline octave_map octave_value_extract<octave_map> (const octave_value& v)
+  { return v.map_value (); }
 
 // The original Octave_map object. Octave_map and octave_map are convertible to
 // each other.

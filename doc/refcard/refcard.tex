@@ -533,7 +533,7 @@ circshift ({\it arr}, {\it s})&rotate the array elements.\cr
 
 \sec Sparse Matrices;
 sparse (...)&create a sparse matrix.\cr
-speye ({\it n)}&create sparse identify matrix.\cr
+speye ({\it n)}&create sparse identity matrix.\cr
 sprand ({\it n}, {\it m}, {\it d})&sparse rand matrix of density {\it d}.\cr
 spdiags (...)&sparse generalization of {\it diag}.\cr
 nnz ({\it s})&No. non-zero elements in sparse matrix.\cr
@@ -575,7 +575,7 @@ nnz ({\it s})&No. non-zero elements in sparse matrix.\cr
 
 \sec Global and Persistent Variables;
 global {\it var1} ...&Declare variables global.\cr
-global {\it var1} = {\it val}&Declare variable global. Set intial value.\cr
+global {\it var1} = {\it val}&Declare variable global. Set initial value.\cr
 persistent {\it var1}&Declare a variable as static to a function.\cr
 persistent {\it var1} = {\it val}&Declare a variable as static to a 
   function and set its initial value.\cr
@@ -677,7 +677,7 @@ realmin&minimum representable value\cr
 \vfill\eject
 
 \sec Paths and Packages;
-path&display the current Octave cunction path.\cr
+path&display the current Octave function path.\cr
 pathdef&display the default path.\cr
 addpath({\it dir})&add a directory to the path.\cr
 EXEC\_PATH&manipulate the Octave executable path.\cr
@@ -771,7 +771,7 @@ warning ({\it message})&print a warning message\cr
 clear {\it pattern}&clear variables matching pattern\cr
 exist ({\it str})&check existence of variable or function\cr
 who, whos&list current variables\cr
-whos {\it var}&details of the varibale {\it var}\cr
+whos {\it var}&details of the variable {\it var}\cr
 \endsec
 
 \sec Basic Matrix Manipulations;
@@ -820,7 +820,7 @@ norm ({\it a}, {\it p})&compute the {\it p}-norm of a matrix\cr
 pinv ({\it a})&compute pseudoinverse of {\it a}\cr
 qr ({\it a})&compute the QR factorization of a matrix\cr
 rank ({\it a})&matrix rank\cr
-sprank ({\it a})&structrual matrix rank\cr
+sprank ({\it a})&structural matrix rank\cr
 schur ({\it a})&Schur decomposition of a matrix\cr
 svd ({\it a})&singular value decomposition\cr
 syl ({\it a}, {\it b}, {\it c})&solve the Sylvester equation\cr
@@ -854,8 +854,8 @@ ifft ({\it a})&inverse FFT using FFTW\cr
 freqz ({\it args})&FIR filter frequency response\cr
 filter ({\it a}, {\it b}, {\it x})&filter by transfer function\cr
 conv ({\it a}, {\it b})&convolve two vectors\cr
-hamming ({\it n})&return Hamming window coefficents\cr
-hanning ({\it n})&return Hanning window coefficents\cr
+hamming ({\it n})&return Hamming window coefficients\cr
+hanning ({\it n})&return Hanning window coefficients\cr
 \endsec
 
 \altsec Image Processing;

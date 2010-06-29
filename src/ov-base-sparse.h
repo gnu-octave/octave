@@ -39,8 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "boolSparse.h"
 #include "MatrixType.h"
 
-class Octave_map;
-
 class tree_walker;
 
 class octave_sparse_bool_matrix;

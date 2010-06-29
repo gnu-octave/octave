@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MatrixType.h"
 
-class Octave_map;
 class octave_value_list;
 
 class tree_walker;

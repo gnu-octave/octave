@@ -402,11 +402,19 @@ octave_range::save_ascii (std::ostream& os)
   double base = r.base ();
   double limit = r.limit ();
   double inc = r.inc ();
+  octave_idx_type len = r.nelem ();
 
-  os << "# base, limit, increment\n";
+  if (inc != 0)
+    os << "# base, limit, increment\n";
+  else
+    os << "# base, length, increment\n";
+
   octave_write_double (os, base);
   os << " ";
-  octave_write_double (os, limit);
+  if (inc != 0)
+    octave_write_double (os, limit);
+  else
+    os << len;
   os << " ";
   octave_write_double (os, inc);
   os << "\n";
@@ -420,13 +428,19 @@ octave_range::load_ascii (std::istream& is)
   // # base, limit, range comment added by save ().
   skip_comments (is);
 
-  is >> range;
+  double base, limit, inc;
+  is >> base >> limit >> inc;
 
   if (!is)
     {
       error ("load: failed to load range constant");
       return false;
     }
+
+  if (inc != 0)
+    range = Range (base, limit, inc);
+  else
+    range = Range (base, inc, static_cast<octave_idx_type> (limit));
 
   return true;
 }
@@ -440,6 +454,9 @@ octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
   double bas = r.base ();
   double lim = r.limit ();
   double inc = r.inc ();
+  if (inc == 0)
+    lim = r.nelem ();
+
   os.write (reinterpret_cast<char *> (&bas), 8);
   os.write (reinterpret_cast<char *> (&lim), 8);
   os.write (reinterpret_cast<char *> (&inc), 8);
@@ -467,8 +484,11 @@ octave_range::load_binary (std::istream& is, bool swap,
     return false;
   if (swap)
     swap_bytes<8> (&inc);
-  Range r (bas, lim, inc);
-  range = r;
+  if (inc != 0)
+    range = Range (bas, lim, inc);
+  else
+    range = Range (bas, inc, static_cast<octave_idx_type> (lim));
+
   return true;
 }
 
@@ -525,7 +545,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
-  range_vals[1] = r.limit ();
+  range_vals[1] = r.inc () != 0 ? r.limit () : r.nelem ();
   range_vals[2] = r.inc ();
 
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
@@ -575,8 +595,11 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
                rangevals) >= 0)
     {
       retval = true;
-      Range r (rangevals[0], rangevals[1], rangevals[2]);
-      range = r;
+      if (rangevals[2] != 0)
+        range = Range (rangevals[0], rangevals[1], rangevals[2]);
+      else
+        range = Range (rangevals[0], rangevals[2], 
+                       static_cast<octave_idx_type> (rangevals[1]));
     }
 
   H5Tclose (range_type);

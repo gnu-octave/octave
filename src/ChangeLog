@@ -1,3 +1,17 @@
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (octave_fields::equal_up_to_order (const octave_fields&,
+	octave_idx_type *)): New overload.
+	(octave_fields::equal_up_to_order (const octave_fields&,
+	Array<octave_idx_type>&)): Use it here.
+	(octave_map::fast_elem_insert,
+	octave_map::fast_elem_extract): New methods.
+	* oct-map.h: Update decls.
+	* ov-struct.cc (octave_struct::fast_elem_extract,
+	octave_struct::fast_elem_insert,
+	octave_scalar_struct::fast_elem_insert_self): New methods.
+	* ov-struct.h: Update decls.
+
 2010-06-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (single_type_concat): Optimize all scalars case where

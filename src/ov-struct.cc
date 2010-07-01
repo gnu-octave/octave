@@ -1074,6 +1074,33 @@ octave_struct::as_mxArray (void) const
   return retval;
 }
 
+octave_value
+octave_struct::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < map.numel ())
+    return map.checkelem (n);
+  else
+    return octave_value ();
+}
+
+bool
+octave_struct::fast_elem_insert (octave_idx_type n, 
+                                 const octave_value& x)
+{
+  bool retval = false;
+
+  if (n < map.numel ())
+    {
+      // To avoid copying the scalar struct, it just stores a pointer to
+      // itself.
+      const octave_scalar_map *sm_ptr;
+      void *here = reinterpret_cast<void *>(&sm_ptr);
+      return (x.get_rep().fast_elem_insert_self (here, btyp_struct)
+              && map.fast_elem_insert (n, *sm_ptr));
+    }
+
+  return retval;
+}
 DEFINE_OCTAVE_ALLOCATOR(octave_scalar_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct", "struct");
@@ -1682,6 +1709,18 @@ octave_scalar_struct::to_array (void)
   return new octave_struct (octave_map (map));
 }
 
+bool
+octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+{
+
+  if (btyp == btyp_struct)
+    {
+      *(reinterpret_cast<const octave_scalar_map **>(where)) = &map;
+      return true;
+    }
+  else
+    return false;
+}
 /*
 %!shared x
 %! x(1).a=1; x(2).a=2; x(1).b=3; x(2).b=3;

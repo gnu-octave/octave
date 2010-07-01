@@ -108,21 +108,17 @@ octave_fields::orderfields (Array<octave_idx_type>& perm)
 
 bool 
 octave_fields::equal_up_to_order (const octave_fields& other,
-                                  Array<octave_idx_type>& perm) const
+                                  octave_idx_type* perm) const
 {
   bool retval = true;
 
   octave_idx_type n = nfields ();
-  if (perm.length () != n)
-    perm.clear (1, n);
-  else
-    perm.make_unique (); // optimization
 
   iterator p = begin (), q = other.begin ();
   for (; p != end () && q != other.end (); p++, q++)
     {
       if (p->first == q->first)
-        perm.xelem(p->second) = q->second;
+        perm[p->second] = q->second;
       else
         {
           retval = false;
@@ -133,6 +129,19 @@ octave_fields::equal_up_to_order (const octave_fields& other,
   retval = (p == end () && q == other.end ());
 
   return retval;
+}
+
+bool 
+octave_fields::equal_up_to_order (const octave_fields& other,
+                                  Array<octave_idx_type>& perm) const
+{
+  bool retval = true;
+
+  octave_idx_type n = nfields ();
+  if (perm.length () != n)
+    perm.clear (1, n);
+
+  return equal_up_to_order (other, perm.fortran_vec ());
 }
 
 string_vector
@@ -378,6 +387,45 @@ octave_map::checkelem (const Array<octave_idx_type>& ra_idx) const
 
   // Optimize this so that there is just one check.
   extract_scalar (retval, compute_index (ra_idx, dimensions));
+
+  return retval;
+}
+
+octave_scalar_map
+octave_map::fast_elem_extract (octave_idx_type n) const
+{
+  octave_scalar_map retval (xkeys);
+
+  extract_scalar (retval, n);
+
+  return retval;
+}
+
+bool
+octave_map::fast_elem_insert (octave_idx_type n, 
+                              const octave_scalar_map& rhs)
+{
+  bool retval = false;
+
+  octave_idx_type nf = nfields ();
+  if (rhs.xkeys.is_same (xkeys))
+    {
+      for (octave_idx_type i = 0; i < nf; i++)
+        xvals[i](n) = rhs.xvals[i];
+
+      retval = true;
+    }
+  else
+    {
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, nf);
+      if (xkeys.equal_up_to_order (rhs.xkeys, perm))
+        {
+          for (octave_idx_type i = 0; i < nf; i++)
+            xvals[i](n) = rhs.xvals[perm[i]];
+
+          retval = true;
+        }
+    }
 
   return retval;
 }

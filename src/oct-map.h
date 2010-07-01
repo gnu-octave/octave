@@ -124,6 +124,9 @@ public:
   // returns a permutation needed to bring the fields of *other*
   // into the order of *this*.
   bool equal_up_to_order (const octave_fields& other,
+                          octave_idx_type* perm) const;
+
+  bool equal_up_to_order (const octave_fields& other,
                           Array<octave_idx_type>& perm) const;
 
   bool is_same (const octave_fields& other) const
@@ -431,6 +434,12 @@ public:
   void delete_elements (const octave_value_list&);
 
   octave_map concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx);
+
+  // like checkelem, but no check.
+  octave_scalar_map fast_elem_extract (octave_idx_type n) const;
+
+  // element assignment, no bounds check
+  bool fast_elem_insert (octave_idx_type n, const octave_scalar_map& rhs);
 
 private:
 

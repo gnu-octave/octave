@@ -153,6 +153,12 @@ public:
 
   mxArray *as_mxArray (void) const;
 
+  octave_value
+  fast_elem_extract (octave_idx_type n) const;
+
+  bool
+  fast_elem_insert (octave_idx_type n, const octave_value& x);
+
 protected:
 
   // The associative array used to manage the structure data.
@@ -267,6 +273,8 @@ public:
 #endif
 
   mxArray *as_mxArray (void) const;
+
+  bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
 protected:
 

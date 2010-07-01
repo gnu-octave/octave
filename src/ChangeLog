@@ -1,5 +1,11 @@
 2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-map.h (octave_scalar_map::assign (const std::string&, const
+	octave_value&), octave_map::assign (const std::string&, const Cell&)):
+	Backward-compatible aliases for setfield.
+
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-map.cc (octave_fields::equal_up_to_order (const octave_fields&,
 	octave_idx_type *)): New overload.
 	(octave_fields::equal_up_to_order (const octave_fields&,

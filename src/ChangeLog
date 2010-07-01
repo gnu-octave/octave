@@ -1,5 +1,9 @@
 2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* syscalls.cc (mk_stat_map, Funame): Use octave_scalar_map.
+
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-map.h (octave_scalar_map::assign (const std::string&, const
 	octave_value&), octave_map::assign (const std::string&, const Cell&)):
 	Backward-compatible aliases for setfield.

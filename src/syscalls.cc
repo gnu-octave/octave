@@ -57,10 +57,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "input.h"
 
-static Octave_map
+static octave_scalar_map
 mk_stat_map (const base_file_stat& fs)
 {
-  Octave_map m;
+  octave_scalar_map m;
 
   m.assign ("dev", static_cast<double> (fs.dev ()));
   m.assign ("ino", fs.ino ());
@@ -1202,7 +1202,7 @@ system-dependent error message.\n\
     {
       octave_uname sysinfo;
 
-      Octave_map m;
+      octave_scalar_map m;
 
       m.assign ("sysname", sysinfo.sysname ());
       m.assign ("nodename", sysinfo.nodename ());

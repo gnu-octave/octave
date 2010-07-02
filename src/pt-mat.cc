@@ -70,14 +70,14 @@ private:
         all_sq_str (false), all_dq_str (false),
         some_str (false), all_real (false), all_cmplx (false),
         all_mt (true), any_sparse (false), any_class (false),
-        class_nm (), ok (false)
+        all_1x1 (false), class_nm (), ok (false)
     { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
         some_str (false), all_real (false), all_cmplx (false),
         all_mt (true), any_sparse (false), any_class (false),
-        class_nm (), ok (false)
+        all_1x1 (! row.empty ()), class_nm (), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -95,6 +95,7 @@ private:
     bool all_mt;
     bool any_sparse;
     bool any_class;
+    bool all_1x1;
 
     std::string class_nm;
 
@@ -171,6 +172,7 @@ public:
   bool all_empty_p (void) const { return rep->all_mt; }
   bool any_sparse_p (void) const { return rep->any_sparse; }
   bool any_class_p (void) const { return rep->any_class; }
+  bool all_1x1_p (void) const { return rep->all_1x1; }
 
   std::string class_name (void) const { return rep->class_nm; }
 
@@ -326,6 +328,8 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (!any_class && val.is_object ())
     any_class = true;
 
+  all_1x1 = all_1x1 && val.numel () == 1;
+
   return true;
 }
 
@@ -420,6 +424,7 @@ public:
   bool all_empty_p (void) const { return all_mt; }
   bool any_sparse_p (void) const { return any_sparse; }
   bool any_class_p (void) const { return any_class; }
+  bool all_1x1_p (void) const { return all_1x1; }
 
   std::string class_name (void) const { return class_nm; }
 
@@ -438,6 +443,7 @@ private:
   bool all_mt;
   bool any_sparse;
   bool any_class;
+  bool all_1x1;
 
   std::string class_nm;
 
@@ -462,6 +468,7 @@ tm_const::init (const tree_matrix& tm)
   all_cmplx = true;
   any_sparse = false;
   any_class = false;
+  all_1x1 = ! empty ();
 
   bool first_elem = true;
 
@@ -506,6 +513,8 @@ tm_const::init (const tree_matrix& tm)
 
           if (!any_class && tmp.any_class_p ())
             any_class = true;
+
+          all_1x1 = all_1x1 && tmp.all_1x1_p ();
 
           append (tmp);
         }
@@ -681,6 +690,7 @@ single_type_concat (Array<T>& result,
     {
       // If possible, forward the operation to liboctave.
       // Single row.
+      // FIXME: optimize all scalars case.
       tm_row_const& row = tmp.front ();
       octave_idx_type ncols = row.length (), i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
@@ -752,6 +762,49 @@ single_type_concat (Sparse<T>& result,
   result = Sparse<T>::cat (0, nrows, sparse_row_list);
 }
 
+template<class MAP>
+static void 
+single_type_concat (octave_map& result,
+                    const dim_vector& dv,
+                    tm_const& tmp)
+{
+  if (dv.any_zero ())
+    {
+      result = octave_map (dv);
+      return;
+    }
+
+  octave_idx_type nrows = tmp.length (), j = 0;
+  OCTAVE_LOCAL_BUFFER (octave_map, map_row_list, nrows);
+  for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
+    {
+      tm_row_const row = *p;
+      octave_idx_type ncols = row.length (), i = 0;
+      OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
+
+      for (tm_row_const::iterator q = row.begin ();
+           q != row.end () && ! error_state;
+           q++)
+        {
+          octave_quit ();
+
+          // Use 0x0 in place of all empty arrays to allow looser rules.
+          // If MAP is octave_scalar_map, the condition is vacuously true.
+          if (! q->is_empty ())
+            map_list[i] = octave_value_extract<MAP> (*q);
+          i++;
+        }
+
+      octave_map mtmp = octave_map::cat (1, ncols, map_list);
+      // Use 0x0 in place of all empty arrays to allow looser rules.
+      if (! mtmp.is_empty ())
+        map_row_list[j] = mtmp;
+      j++;
+    }
+
+  result = octave_map::cat (0, nrows, map_row_list);
+}
+
 template<class TYPE>
 static octave_value 
 do_single_type_concat (const dim_vector& dv,
@@ -760,6 +813,21 @@ do_single_type_concat (const dim_vector& dv,
   TYPE result;
 
   single_type_concat<TYPE> (result, dv, tmp);
+
+  return result;
+}
+
+template<>
+octave_value 
+do_single_type_concat<octave_map> (const dim_vector& dv,
+                                   tm_const& tmp)
+{
+  octave_map result;
+
+  if (tmp.all_1x1_p ())
+    single_type_concat<octave_scalar_map> (result, dv, tmp);
+  else
+    single_type_concat<octave_map> (result, dv, tmp);
 
   return result;
 }
@@ -933,6 +1001,10 @@ tree_matrix::rvalue1 (int)
         retval = do_single_type_concat<uint32NDArray> (dv, tmp);
       else if (result_type == "uint64")
         retval = do_single_type_concat<uint64NDArray> (dv, tmp);
+      else if (result_type == "cell")
+        retval = do_single_type_concat<Cell> (dv, tmp);
+      else if (result_type == "struct")
+        retval = do_single_type_concat<octave_map> (dv, tmp);
       else
         {
           // The line below might seem crazy, since we take a copy of

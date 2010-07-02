@@ -1,5 +1,19 @@
 2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::all_1x1,
+	tm_cont::all_1x1): New member fields.
+	(tm_row_const::tm_row_const_rep::init, tm_const::init):
+	Handle them here.
+	(tm_row_const::all_1x1_p, tm_const::all_1x1_p): New methods.
+	(single_type_concat<MAP> (octave_map&, ...)): New template
+	overload.
+	(do_single_type_concat<octave_map>): New template specialization.
+	(tree_matrix::rvalue1): Specialize for cell and struct classes.
+	* oct-map.cc (octave_map::do_cat (..., const octave_map *, ...)): 
+	Assign result dimensions.
+
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-map.cc (octave_map::cat (..., const octave_scalar_map *)):
 	Handle special dims (-1, -2). 
 	* data.cc (do_single_type_concat_map): Don't handle them here.

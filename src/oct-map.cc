@@ -609,6 +609,8 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_map *map_list,
         field_list[i] = map_list[i].xvals[j];
 
       retval.xvals.push_back (Array<octave_value>::cat (dim, n, field_list));
+      if (j == 0)
+        retval.dimensions = retval.xvals[j].dims ();
     }
 }
 

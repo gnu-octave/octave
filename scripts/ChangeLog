@@ -1,3 +1,8 @@
+2010-07-02  Rik <octave@nomad.inbox5.com>
+
+        * audio/wavread.m: Correctly handle non-word aligned data chunks.
+        (bug #30309).
+
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
         * plot/stairs.m: Add additional calling forms to documentation.

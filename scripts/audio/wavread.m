@@ -29,7 +29,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
 ## Read only the first @var{n} samples from each channel.
 ##
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename},[@var{n1} @var{n2}])
+## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
 ## Read only samples @var{n1} through @var{n2} from each channel.
 ##
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}] =} wavread (@var{filename}, "size")
@@ -52,7 +52,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   endif
 
   if (! ischar (filename))
-    error ("wavread: expecting filename to be a character string");
+    error ("wavread: FILENAME must be a character string");
   endif
 
   # Open file for binary reading.
@@ -157,20 +157,21 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   if (nargin == 1)
     length = 8 * data_size / bits_per_sample;
   else
-    if (size (param, 2) == 1)
+    nparams = size (param, 2);
+    if (nparams == 1)
       ## Number of samples is given.
       length = param * channels;
-    elseif (size (param, 2) == 2)
+    elseif (nparams == 2)
       ## Sample range is given.
       if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), "cof") < 0)
         warning ("wavread: seeking failed");
       endif
       length = (param(2)-param(1)+1) * channels;
-    elseif (size (param, 2) == 4 && char (param) == "size")
+    elseif (nparams == 4 && char (param) == "size")
       ## Size of the file is requested.
       fclose (fid);
       y = [data_size/channels/(bits_per_sample/8), channels];
-      return
+      return;
     else
       fclose (fid);
       error ("wavread: invalid argument 2");
@@ -204,7 +205,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       case 16
         yi /= 32767;
       case 24
-                yi /= 8388607;
+        yi /= 8388607;
       case 32
         yi /= 2147483647;
     endswitch
@@ -230,6 +231,8 @@ function chunk_size = find_chunk (fid, chunk_id, size)
     fseek (fid, chunk_size, "cof");
     id = char (fread (fid, 4))';
     chunk_size = fread (fid, 1, "uint32", 0, "ieee-le");
+    ## Chunk sizes must be word-aligned (2 byte)
+    chunk_size += rem (chunk_size, 2);  
     offset = offset + 8 + chunk_size;
   endwhile
   if (! strcmp (id, chunk_id))

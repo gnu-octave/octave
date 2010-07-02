@@ -1,3 +1,9 @@
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (octave_map::cat (..., const octave_scalar_map *)):
+	Handle special dims (-1, -2). 
+	* data.cc (do_single_type_concat_map): Don't handle them here.
+
 2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* syscalls.cc (mk_stat_map, Funame): Use octave_scalar_map.

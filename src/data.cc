@@ -1482,12 +1482,7 @@ do_single_type_concat_map (const octave_value_list& args,
 {
   octave_map result;
   if (all_scalar_1x1 (args)) // optimize all scalars case.
-    {
-      if (dim < 0)
-        dim = -dim;
-
-      single_type_concat_map<octave_scalar_map> (result, args, dim);
-    }
+    single_type_concat_map<octave_scalar_map> (result, args, dim);
   else
     single_type_concat_map<octave_map> (result, args, dim);
 

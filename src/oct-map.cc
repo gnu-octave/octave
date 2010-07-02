@@ -640,6 +640,13 @@ octave_map
 octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
 {
   octave_map retval;
+  // Allow dim = -1, -2 for compatibility, though it makes no difference here.
+  if (dim == -1 || dim == -2)
+    dim = -dim - 1;
+  else if (dim < 0)
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension");
+
   if (n > 0)
     {
       retval.xkeys = map_list[0].xkeys;

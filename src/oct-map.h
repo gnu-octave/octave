@@ -58,6 +58,7 @@ public:
 
   octave_fields (void) : rep (&nil_rep) { rep->count++; }
   octave_fields (const string_vector&);
+  octave_fields (const char * const *);
 
   ~octave_fields (void)
     {
@@ -145,10 +146,10 @@ public:
 class OCTINTERP_API
 octave_scalar_map
 {
+public:
+
   octave_scalar_map (const octave_fields& k)
     : xkeys (k), xvals (k.nfields ()) { }
-
-public:
 
   octave_scalar_map (void) : xkeys (), xvals () { }
 
@@ -253,13 +254,13 @@ inline octave_scalar_map octave_value_extract<octave_scalar_map> (const octave_v
 class OCTINTERP_API
 octave_map
 {
+public:
+
   octave_map (const octave_fields& k)
     : xkeys (k), xvals (k.nfields ()), dimensions () { }
 
   octave_map (const dim_vector& dv, const octave_fields& k)
     : xkeys (k), xvals (k.nfields (), Cell (dv)), dimensions (dv) { }
-
-public:
 
   typedef octave_scalar_map element_type;
 

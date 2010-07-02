@@ -42,6 +42,14 @@ octave_fields::octave_fields (const string_vector& fields)
     (*rep)[fields(i)] = i;
 }
 
+octave_fields::octave_fields (const char * const *fields)
+  : rep (new fields_rep)
+{
+  octave_idx_type n = 0;
+  while (*fields)
+    (*rep)[std::string (*fields++)] = n++;
+}
+
 bool
 octave_fields::isfield (const std::string& field) const
 {
@@ -112,8 +120,6 @@ octave_fields::equal_up_to_order (const octave_fields& other,
 {
   bool retval = true;
 
-  octave_idx_type n = nfields ();
-
   iterator p = begin (), q = other.begin ();
   for (; p != end () && q != other.end (); p++, q++)
     {
@@ -135,8 +141,6 @@ bool
 octave_fields::equal_up_to_order (const octave_fields& other,
                                   Array<octave_idx_type>& perm) const
 {
-  bool retval = true;
-
   octave_idx_type n = nfields ();
   if (perm.length () != n)
     perm.clear (1, n);

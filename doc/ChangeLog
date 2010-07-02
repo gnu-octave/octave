@@ -1,3 +1,11 @@
+2010-07-01  Rik <octave@nomad.inbox5.com>
+
+        * refcard/refcard.tex: Fix italic macro typo for stem.
+
+2010-06-28  Rik <octave@nomad.inbox5.com>
+
+        * refcard/refcard.tex: Fix typos in refcard (bug #30260).
+
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
         * ChangeLog: Correctly break lines > 80 characters.

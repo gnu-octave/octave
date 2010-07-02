@@ -18,16 +18,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} stairs (@var{x}, @var{y})
+## @deftypefn  {Function File} {} stairs (@var{y})
+## @deftypefnx {Function File} {} stairs (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} stairs (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} stairs (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} stairs (@dots{})
+## @deftypefnx {Function File} {[@var{xstep}, @var{ystep}] =} stairs (@dots{})
 ## Produce a stairstep plot.  The arguments may be vectors or matrices.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
 ##
+## If one output argument is requested, return a graphics handle to the plot.
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,
 ##

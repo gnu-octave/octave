@@ -1,3 +1,7 @@
+2010-06-16  Rik <octave@nomad.inbox5.com>
+
+        * plot/stairs.m: Add additional calling forms to documentation.
+
 2010-06-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__plt__.m: Replace usage message with error.

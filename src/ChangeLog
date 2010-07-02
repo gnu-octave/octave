@@ -1,5 +1,14 @@
 2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
+	* toplev.cc (octave_call_stack::do_backtrace): Use static
+	octave_fields struct.
+	(octave_call_stack::empty_backtrace): New static method.
+	* toplev.h: Declare it.
+	* error.cc (Vlast_error_stack, initialize_last_error_stack,
+	Frethrow): Use octave_map or octave_scalar_map where applicable.
+
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::all_1x1,
 	tm_cont::all_1x1): New member fields.
 	(tm_row_const::tm_row_const_rep::init, tm_const::init):

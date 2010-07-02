@@ -234,12 +234,22 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
   return retval;
 }
 
-Octave_map
+// Use static fields for the best efficiency.
+// NOTE: C++0x will allow these two to be merged into one.
+static const char *bt_fieldnames[] = { "file", "name", "line",
+    "column", "scope", "context", 0 };
+static const octave_fields bt_fields (bt_fieldnames);
+
+octave_map
+octave_call_stack::empty_backtrace (void)
+{
+  return octave_map (dim_vector (0, 1), bt_fields);
+}
+
+octave_map
 octave_call_stack::do_backtrace (size_t nskip,
                                  octave_idx_type& curr_user_frame) const
 {
-  Octave_map retval;
-
   size_t user_code_frames = do_num_user_code_frames (curr_user_frame);
 
   size_t nframes = nskip <= user_code_frames ? user_code_frames - nskip : 0;
@@ -247,21 +257,14 @@ octave_call_stack::do_backtrace (size_t nskip,
   // Our list is reversed.
   curr_user_frame = nframes - curr_user_frame - 1;
 
-  Cell keys (6, 1);
+  octave_map retval (dim_vector (nframes, 1), bt_fields);
 
-  keys(0) = "file";
-  keys(1) = "name";
-  keys(2) = "line";
-  keys(3) = "column";
-  keys(4) = "scope";
-  keys(5) = "context";
-
-  Cell file (nframes, 1);
-  Cell name (nframes, 1);
-  Cell line (nframes, 1);
-  Cell column (nframes, 1);
-  Cell scope (nframes, 1);
-  Cell context (nframes, 1);
+  Cell& file = retval.contents (0);
+  Cell& name = retval.contents (1);
+  Cell& line = retval.contents (2);
+  Cell& column = retval.contents (3);
+  Cell& scope = retval.contents (4);
+  Cell& context = retval.contents (5);
 
   if (nframes > 0)
     {
@@ -306,13 +309,6 @@ octave_call_stack::do_backtrace (size_t nskip,
                 }
             }
         }
-
-      retval.assign ("file", file);
-      retval.assign ("name", name);
-      retval.assign ("line", line);
-      retval.assign ("column", column);
-      retval.assign ("scope", scope);
-      retval.assign ("context", context);
     }
 
   return retval;

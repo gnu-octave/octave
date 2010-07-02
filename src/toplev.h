@@ -266,11 +266,13 @@ public:
       instance->do_goto_base_frame ();
   }
 
-  static Octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
+  static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
   {
     return instance_ok ()
-      ? instance->do_backtrace (nskip, curr_user_frame) : Octave_map ();
+      ? instance->do_backtrace (nskip, curr_user_frame) : octave_map ();
   }
+
+  static octave_map empty_backtrace (void);
 
   static void pop (void)
   {
@@ -389,7 +391,7 @@ private:
       }
   }
 
-  Octave_map do_backtrace (size_t nskip,
+  octave_map do_backtrace (size_t nskip,
                            octave_idx_type& curr_user_frame) const;
 
   bool do_goto_frame (size_t n, bool verbose);

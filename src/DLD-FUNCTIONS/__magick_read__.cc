@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_MAGICK
 
 #include <Magick++.h>
+#include <clocale>
 
 octave_value_list
 read_indexed_images (std::vector<Magick::Image>& imvec,
@@ -388,9 +389,16 @@ Instead you should use @code{imread}.\n\
 
   if (! initialized)
     {
+      // Save the locale as GraphicsMagick might change this (depending on version)
+      const char *static_locale = setlocale (LC_ALL, NULL);
+      const std::string locale (static_locale);
+
       std::string program_name = octave_env::get_program_invocation_name ();
 
       Magick::InitializeMagick (program_name.c_str ());
+
+      // Restore locale from before GraphicsMagick initialisation
+      setlocale (LC_ALL, locale.c_str ());
 
       initialized = true;
     }

@@ -1,3 +1,7 @@
+2010-07-04  Soren Hauberg  <hauberg@gmail.com>
+	* DLD_FUNCTIONS/__magick_read__.cc: restore locale after
+	GraphicsMagick initialisation.
+
 2010-06-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-range.cc (octave_range::save_ascii): Save length rather than

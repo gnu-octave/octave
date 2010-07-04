@@ -1,3 +1,8 @@
+2010-07-04  Soren Hauberg  <hauberg@gmail.com>
+
+	* polynomial/deconv.m: ensure that the orientation of the third
+	input to 'filter' matches the orientation of 'y'.
+
 2010-07-02  Rik <octave@nomad.inbox5.com>
 
         * audio/wavread.m: Correctly handle non-word aligned data chunks.

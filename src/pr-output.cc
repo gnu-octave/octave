@@ -118,6 +118,10 @@ static bool print_g = false;
 // TRUE means print E instead of e for exponent field.
 static bool print_big_e = false;
 
+// TRUE means use an engineering format.
+static bool print_eng = false;
+
+class pr_engineering_float;
 class pr_formatted_float;
 class pr_rational_float;
 
@@ -140,16 +144,20 @@ public:
 
   float_format (int w = current_output_max_field_width (),
                 int p = current_output_precision (), int f = 0)
-    : fw (w), prec (p), fmt (f), up (0), sp (0) { }
+    : fw (w), ex (0), prec (p), fmt (f), up (0), sp (0) { }
+
+  float_format (int w, int e, int p, int f)
+    : fw (w), ex (e), prec (p), fmt (f), up (0), sp (0) { }
 
   float_format (const float_format& ff)
-    : fw (ff.fw), prec (ff.prec), fmt (ff.fmt), up (ff.up), sp (ff.sp) { }
+    : fw (ff.fw), ex (ff.ex), prec (ff.prec), fmt (ff.fmt), up (ff.up), sp (ff.sp) { }
 
   float_format& operator = (const float_format& ff)
     {
       if (&ff != this)
         {
           fw = ff.fw;
+          ex = ff.ex;
           prec = ff.prec;
           fmt = ff.fmt;
           up = ff.up;
@@ -176,6 +184,9 @@ public:
     { sp = tz ? std::ios::showpoint : 0; return *this; }
 
   friend std::ostream& operator << (std::ostream& os,
+                                    const pr_engineering_float& pff);
+
+  friend std::ostream& operator << (std::ostream& os,
                                     const pr_formatted_float& pff);
 
   friend std::ostream& operator << (std::ostream& os,
@@ -185,6 +196,9 @@ private:
 
   // Field width.  Zero means as wide as necessary.
   int fw;
+
+  // Exponent Field width.  Zero means as wide as necessary.
+  int ex;
 
   // Precision.
   int prec;
@@ -198,6 +212,90 @@ private:
   // Show trailing zeros.
   int sp;
 };
+
+static int
+maybe_mod3 (const int& x)
+{
+  return print_eng ? x - (x % 3) : x;
+}
+
+static int
+engineering_exponent (const double& x)
+{
+  int ex = 0;
+  if (x != 0)
+    {
+      double absval = (x < 0.0 ? -x : x);
+      int logabsval = static_cast<int> (floor (log10 (absval)));
+      if (logabsval < 0.0)
+        ex = maybe_mod3 (logabsval - 2);  
+      else
+        ex = maybe_mod3 (logabsval);  
+    }
+  return ex;
+}
+
+static int
+calc_digits (const double& x)
+{
+  return print_eng ? engineering_exponent (x)
+    : static_cast<int> (floor (log10 (x)));
+}
+
+class
+pr_engineering_float
+{
+public:
+
+  const float_format& f;
+
+  double val;
+
+  int exponent (void) const
+  {
+    return engineering_exponent (val);
+  }
+    
+  double mantissa (void) const
+  {
+    return val / std::pow (10.0, exponent ());
+  }
+
+  pr_engineering_float (const float_format& f_arg, double val_arg)
+    : f (f_arg), val (val_arg) { }
+};
+
+std::ostream&
+operator << (std::ostream& os, const pr_engineering_float& pff)
+{
+  if (pff.f.fw >= 0)
+    os << std::setw (pff.f.fw - pff.f.ex);
+
+  if (pff.f.prec >= 0)
+    os << std::setprecision (pff.f.prec);
+
+  std::ios::fmtflags oflags = 
+    os.flags (static_cast<std::ios::fmtflags> 
+              (pff.f.fmt | pff.f.up | pff.f.sp));
+
+  os << pff.mantissa ();
+
+  int ex = pff.exponent ();
+  if (ex < 0)
+    {
+      os << std::setw (0) << "e-";
+      ex = -ex;
+    }
+  else
+    os << std::setw (0) << "e+";
+
+  os << std::setw (pff.f.ex - 2) << std::setfill('0') << ex 
+     << std::setfill(' ');
+
+  os.flags (oflags);
+
+  return os;
+}
 
 class
 pr_formatted_float
@@ -485,21 +583,30 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (fw > Voutput_max_field_width || print_e || print_g))
+      && (fw > Voutput_max_field_width || print_e || print_g || print_eng))
     {
       if (print_g)
         fmt = float_format ();
       else
         {
-          int exp_field = 4;
+          int ex = 4;
           if (digits > 100)
-            exp_field++;
+            ex++;
 
-          fw = 2 + prec + exp_field;
-          if (inf_or_nan && fw < 4)
-            fw = 4;
-
-          fmt = float_format (fw, prec - 1, std::ios::scientific);
+          if (print_eng)
+            {
+              fw = 4 + prec + ex;
+              if (inf_or_nan && fw < 6)
+                fw = 6;
+              fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
+            }
+          else
+            {
+              fw = 2 + prec + ex;
+              if (inf_or_nan && fw < 4)
+                fw = 4;
+              fmt = float_format (fw, prec - 1, std::ios::scientific);
+            }
         }
 
       if (print_big_e)
@@ -529,7 +636,7 @@ set_format (double d, int& fw)
   double d_abs = d < 0.0 ? -d : d;
 
   int digits = (inf_or_nan || d_abs == 0.0)
-    ? 0 : static_cast<int> (floor (log10 (d_abs) + 1.0));
+    ? 0 : (calc_digits (d_abs) + 1);
 
   set_real_format (digits, inf_or_nan, int_only, fw);
 }
@@ -629,22 +736,31 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
-          || print_g
+          || print_eng || print_g
           || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
       if (print_g)
         fmt = float_format ();
       else
         {
-          int exp_field = 4;
+          int ex = 4;
           if (x_max > 100 || x_min > 100)
-            exp_field++;
+            ex++;
 
-          fw = 2 + prec + exp_field;
-          if (inf_or_nan && fw < 4)
-            fw = 4;
-
-          fmt = float_format (fw, prec - 1, std::ios::scientific);
+          if (print_eng)
+            {
+              fw = 4 + prec + ex;
+              if (inf_or_nan && fw < 6)
+                fw = 6;
+              fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
+            }
+          else
+            {
+              fw = 2 + prec + ex;
+              if (inf_or_nan && fw < 4)
+                fw = 4;
+              fmt = float_format (fw, prec - 1, std::ios::scientific);
+            }
         }
 
       if (print_big_e)
@@ -675,13 +791,12 @@ set_format (const Matrix& m, int& fw, double& scale)
   double max_abs = pr_max_internal (m_abs);
   double min_abs = pr_min_internal (m_abs);
 
-  int x_max = max_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (max_abs) + 1.0));
+  int x_max = max_abs == 0.0 ? 0 : (calc_digits (max_abs) + 1);
 
-  int x_min = min_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
+  int x_min = min_abs == 0.0 ? 0 : (calc_digits (min_abs) + 1);
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
+    : std::pow (10.0, maybe_mod3 (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
@@ -787,7 +902,7 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
-      && (r_fw > Voutput_max_field_width || print_e || print_g))
+      && (r_fw > Voutput_max_field_width || print_e || print_eng || print_g))
     {
       if (print_g)
         {
@@ -796,20 +911,34 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
         }
       else
         {
-          int exp_field = 4;
+          int ex = 4;
           if (x_max > 100 || x_min > 100)
-            exp_field++;
+            ex++;
 
-          i_fw = prec + exp_field;
-          r_fw = i_fw + 1;
-          if (inf_or_nan && i_fw < 3)
+          if (print_eng)
             {
-              i_fw = 3;
-              r_fw = 4;
+              i_fw =  3 + prec + ex;
+              r_fw = i_fw + 1;
+              if (inf_or_nan && i_fw < 5)
+                {
+                  i_fw = 5;
+                  r_fw = 6;
+                }
+              r_fmt = float_format (r_fw, ex, prec - 1, std::ios::fixed);
+              i_fmt = float_format (i_fw, ex, prec - 1, std::ios::fixed);
             }
-
-          r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
-          i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+          else
+            {
+              i_fw = 1 + prec + ex;
+              r_fw = i_fw + 1;
+              if (inf_or_nan && i_fw < 3)
+                {
+                  i_fw = 3;
+                  r_fw = 4;
+                }
+              r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+              i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+            }
         }
 
       if (print_big_e)
@@ -853,10 +982,10 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double i_abs = ip < 0.0 ? -ip : ip;
 
   int r_x = (xisinf (rp) || xisnan (rp) || r_abs == 0.0)
-    ? 0 : static_cast<int> (floor (log10 (r_abs) + 1.0));
+    ? 0 : (calc_digits (r_abs) + 1);
 
   int i_x = (xisinf (ip) || xisnan (ip) || i_abs == 0.0)
-    ? 0 : static_cast<int> (floor (log10 (i_abs) + 1.0));
+    ? 0 : (calc_digits (i_abs) + 1);
 
   int x_max, x_min;
 
@@ -987,7 +1116,7 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
-          || print_g
+          || print_eng || print_g
           || (! Vfixed_point_format && r_fw > Voutput_max_field_width)))
     {
       if (print_g)
@@ -997,20 +1126,34 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
         }
       else
         {
-          int exp_field = 4;
+          int ex = 4;
           if (x_max > 100 || x_min > 100)
-            exp_field++;
+            ex++;
 
-          i_fw = prec + exp_field;
-          r_fw = i_fw + 1;
-          if (inf_or_nan && i_fw < 3)
+          if (print_eng)
             {
-              i_fw = 3;
-              r_fw = 4;
+              i_fw = 3 + prec + ex;
+              r_fw = i_fw + 1;
+              if (inf_or_nan && i_fw < 5)
+                {
+                  i_fw = 5;
+                  r_fw = 6;
+                }
+              r_fmt = float_format (r_fw, ex, prec - 1, std::ios::fixed);
+              i_fmt = float_format (i_fw, ex, prec - 1, std::ios::fixed);
             }
-
-          r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
-          i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+          else
+            {
+              i_fw = 1 + prec + ex;
+              r_fw = i_fw + 1;
+              if (inf_or_nan && i_fw < 3)
+                {
+                  i_fw = 3;
+                  r_fw = 4;
+                }
+              r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+              i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+            }
         }
 
       if (print_big_e)
@@ -1059,22 +1202,19 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   double i_max_abs = pr_max_internal (i_m_abs);
   double i_min_abs = pr_min_internal (i_m_abs);
 
-  int r_x_max = r_max_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (r_max_abs) + 1.0));
+  int r_x_max = r_max_abs == 0.0 ? 0 : (calc_digits (r_max_abs) + 1);
 
-  int r_x_min = r_min_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (r_min_abs) + 1.0));
+  int r_x_min = r_min_abs == 0.0 ? 0 : (calc_digits (r_min_abs) + 1);
 
-  int i_x_max = i_max_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (i_max_abs) + 1.0));
+  int i_x_max = i_max_abs == 0.0 ? 0 : (calc_digits (i_max_abs) + 1);
 
-  int i_x_min = i_min_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (i_min_abs) + 1.0));
+  int i_x_min = i_min_abs == 0.0 ? 0 : (calc_digits (i_min_abs) + 1);
 
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
+    : std::pow (10.0, maybe_mod3 (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
                              int_or_inf_or_nan, r_fw, i_fw);
@@ -1167,20 +1307,27 @@ set_range_format (int x_max, int x_min, int all_ints, int& fw)
 
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
-          || print_g
+          || print_eng || print_g
           || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
       if (print_g)
         fmt = float_format ();
       else
         {
-          int exp_field = 4;
+          int ex = 4;
           if (x_max > 100 || x_min > 100)
-            exp_field++;
+            ex++;
 
-          fw = 3 + prec + exp_field;
-
-          fmt = float_format (fw, prec - 1, std::ios::scientific);
+          if (print_eng)
+            {
+              fw = 5 + prec + ex;
+              fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
+            }
+          else
+            {
+              fw = 3 + prec + ex;
+              fmt = float_format (fw, prec - 1, std::ios::scientific);
+            }
         }
 
       if (print_big_e)
@@ -1218,13 +1365,12 @@ set_format (const Range& r, int& fw, double& scale)
   double max_abs = r_max < 0.0 ? -r_max : r_max;
   double min_abs = r_min < 0.0 ? -r_min : r_min;
 
-  int x_max = max_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (max_abs) + 1.0));
+  int x_max = max_abs == 0.0 ? 0 : (calc_digits (max_abs) + 1);
 
-  int x_min = min_abs == 0.0
-    ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
+  int x_min = min_abs == 0.0 ? 0 : (calc_digits (min_abs) + 1);
 
-  scale = (x_max == 0 || all_ints) ? 1.0 : std::pow (10.0, x_max - 1);
+  scale = (x_max == 0 || all_ints) ? 1.0 
+    : std::pow (10.0, maybe_mod3 (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
 }
@@ -1391,6 +1537,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           else
             os << "NaN";
         }
+      else if (print_eng)
+        os << pr_engineering_float (*fmt, d);
       else
         os << pr_formatted_float (*fmt, d);
     }
@@ -3381,6 +3529,7 @@ init_format_state (void)
   print_e = false;
   print_big_e = false;
   print_g = false;
+  print_eng = false;
 }
 
 static void
@@ -3427,6 +3576,11 @@ set_format_style (int argc, const string_vector& argv)
                   print_g = true;
                   print_big_e = true;
                 }
+              else if (arg == "eng")
+                {
+                  init_format_state ();
+                  print_eng = true;
+                }
               else
                 {
                   error ("format: unrecognized option `short %s'",
@@ -3466,6 +3620,11 @@ set_format_style (int argc, const string_vector& argv)
                   init_format_state ();
                   print_g = true;
                   print_big_e = true;
+                }
+              else if (arg == "eng")
+                {
+                  init_format_state ();
+                  print_eng = true;
                 }
               else
                 {
@@ -3625,6 +3784,13 @@ ans =\n\
   8.1058e+15\n\
 @end group\n\
 @end example\n\
+\n\
+@item short eng\n\
+@itemx long eng\n\
+Identical to @samp{short e} or @samp{long e} but displays the value\n\
+using an engineering format, where the exponent is divisible by 3. For\n\
+example, with the @samp{short eng} format, @code{10 * pi} is displayed as\n\
+@code{31.4159e+00}.\n\
 \n\
 @item long G\n\
 @itemx short G\n\

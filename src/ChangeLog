@@ -1,3 +1,29 @@
+2010-07-06  David Bateman  <dbateman@free.fr>
+
+	* pr-output.cc (static bool print_eng): Flag engineering format,
+	(float_format::float_format (int, int, int, int)): New constructor.
+	(int float_format::ex): New field in the class.
+	(static int maybe_mod3 (const int&), static int
+	engineering_exponent (const double&),
+	static int calc_digits (const double&)): New functions
+	(class pr_engineering_float): New class
+	(std::ostream& operator << (std::ostream&,
+	const pr_formatted_float&)): New operator. Make it a friend of the
+	float_format class.
+	(static void set_real_format(...),
+	static void set_real_matrix_format (...),
+	static void set_complex_format(...),
+	static void set_complex_matrix_format (...),
+	static void set_range_format (...)): Set width for engineering format.
+	(static void set_format (...)): Call calc_digits to find the number
+	of digits in a value.
+	(static void pr_any_float (const float_format *, std::ostream&,
+	double, int)): Print engineering formats.
+	(static void init_format_state (void)): Set default state of print_eng.
+	(static void set_format_style (int, const string_vector&)): Parse
+	the "eng" argument.
+	(Fformat): Document the new engineering format.
+
 2010-07-04  Soren Hauberg  <hauberg@gmail.com>
 	* DLD_FUNCTIONS/__magick_read__.cc: restore locale after
 	GraphicsMagick initialisation.

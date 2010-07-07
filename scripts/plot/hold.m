@@ -29,6 +29,11 @@
 ## Retain plot data and settings so that subsequent plot commands are displayed
 ## on a single graph.
 ##
+## @item hold all
+## Retain plot line color, line style, data and settings so that subsequent
+## plot commands are displayed on a single graph with the next line color and
+## style.
+##
 ## @item hold off
 ## Clear plot and restore default graphics settings before each new plot
 ## command.  (default).
@@ -57,6 +62,7 @@ function hold (varargin)
     nargs = numel (varargin);
   endif
 
+  hold_all = false;
   if (nargs == 0)
     turn_hold_off = ishold (ax);
   elseif (nargs == 1)
@@ -64,6 +70,9 @@ function hold (varargin)
     if (ischar (state))
       if (strcmpi (state, "off"))
         turn_hold_off = true;
+      elseif (strcmpi (state, "all"))
+        turn_hold_off = false;
+        hold_all = true;
       elseif (strcmpi (state, "on"))
         turn_hold_off = false;
       else
@@ -80,6 +89,7 @@ function hold (varargin)
     set (ax, "nextplot", "add");
     set (fig, "nextplot", "add");
   endif
+  set (ax, "__hold_all__", hold_all);
 
 endfunction
 

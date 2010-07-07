@@ -32,10 +32,12 @@ function rgb = __next_line_color__ (reset)
   persistent color_index;
 
   if (nargin < 2)
-    if (nargin == 1 && reset)
-      color_rotation = get (gca (), "colororder");
-      num_colors = rows (color_rotation);
-      color_index = 1;
+    if (nargin == 1) 
+      if (reset || isempty (color_rotation))
+        color_rotation = get (gca (), "colororder");
+        num_colors = rows (color_rotation);
+        color_index = 1;
+      endif
     elseif (! isempty (color_rotation))
       rgb = color_rotation(color_index,:);
       if (++color_index > num_colors)

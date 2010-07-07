@@ -848,8 +848,6 @@ public:
 
   octave_scalar_map scalar_map_value (void) const;
 
-  Octave_map old_map_value (void) const;
-
   string_vector map_keys (void) const
     { return rep->map_keys (); }
 

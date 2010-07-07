@@ -909,12 +909,6 @@ octave_base_value::scalar_map_value (void) const
     }
 }
 
-Octave_map
-octave_base_value::old_map_value (void) const
-{
-  return map_value ();
-}
-
 string_vector
 octave_base_value::map_keys (void) const
 {

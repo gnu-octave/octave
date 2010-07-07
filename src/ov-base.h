@@ -548,8 +548,6 @@ public:
 
   virtual octave_scalar_map scalar_map_value (void) const;
 
-  virtual Octave_map old_map_value (void) const;
-
   virtual string_vector map_keys (void) const;
 
   virtual size_t nparents (void) const;

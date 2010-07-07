@@ -1455,12 +1455,6 @@ octave_value::scalar_map_value (void) const
   return rep->scalar_map_value ();
 }
 
-Octave_map
-octave_value::old_map_value (void) const
-{
-  return rep->old_map_value ();
-}
-
 octave_function *
 octave_value::function_value (bool silent) const
 {

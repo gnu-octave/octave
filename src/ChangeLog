@@ -1,3 +1,10 @@
+2010-07-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.h (octave_class::map): Turn to octave_map.
+	* ov-class.cc (octave_class): Update methods.
+	* ov-base.h, ov-base.cc (octave_base_value::old_map_value) : Remove.
+	* ov.h, ov.cc (octave_value::old_map_value) : Remove.
+
 2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* toplev.cc (octave_call_stack::do_backtrace): Use static

@@ -1,3 +1,15 @@
+2010-07-07  Rik <octave@nomad.inbox5.com>
+
+	* pr-output.cc (calc_scale_exp): Avoid use of % operator on negative
+        operands for portability between C++ compilers.
+        (engineering_exponent): Avoid use of % operator.  Keep calculation of
+        exponent within pr_engineering_float class.  (encapsulation).
+        (num_digits): Rename from calc_digits.  Return true number of digits =
+        1 + calc_digits.
+        (calc_scale_exp): Rename from maybe_mod3 for readability.
+        (operator << (... pr_engineering_float pef): Use pef abbreviation for
+        pr_engineering_float.
+
 2010-07-07  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (axes): Add hidden property __hold_all.

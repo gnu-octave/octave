@@ -184,13 +184,13 @@ public:
     { sp = tz ? std::ios::showpoint : 0; return *this; }
 
   friend std::ostream& operator << (std::ostream& os,
-                                    const pr_engineering_float& pff);
+                                    const pr_engineering_float& pef);
 
   friend std::ostream& operator << (std::ostream& os,
                                     const pr_formatted_float& pff);
 
   friend std::ostream& operator << (std::ostream& os,
-                                    const pr_rational_float& pff);
+                                    const pr_rational_float& prf);
 
 private:
 
@@ -214,9 +214,24 @@ private:
 };
 
 static int
-maybe_mod3 (const int& x)
+calc_scale_exp (const int& x)
 {
-  return print_eng ? x - (x % 3) : x;
+  if (! print_eng)
+    return x;
+  else
+    return x - 3*static_cast<int> (x/3);
+  /* The expression above is equivalent to x - (x % 3).
+   * According to the ISO specification for C++ the modulo operator is
+   * compiler dependent if any of the arguments are negative.  Since this
+   * function will need to work on negative arguments, and we want to avoid
+   * portability issues, we re-implement the modulo function to the desired
+   * behavior (truncation).  There may be a gnulib replacement.
+   *
+   * ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO, IEC. 2003 .
+   * "the binary % operator yields the remainder from the division of the first
+   * expression by the second. .... If both operands are nonnegative then the 
+   * remainder is nonnegative; if not, the sign of the remainder is 
+   * implementation-defined".  */
 }
 
 static int
@@ -227,19 +242,21 @@ engineering_exponent (const double& x)
     {
       double absval = (x < 0.0 ? -x : x);
       int logabsval = static_cast<int> (floor (log10 (absval)));
+      /* Avoid using modulo function with negative arguments for portability.
+       * See extended comment at calc_scale_exp */
       if (logabsval < 0.0)
-        ex = maybe_mod3 (logabsval - 2);  
+        ex = logabsval - 2 + ((-logabsval + 2) % 3);  
       else
-        ex = maybe_mod3 (logabsval);  
+        ex = logabsval - (logabsval % 3);
     }
   return ex;
 }
 
 static int
-calc_digits (const double& x)
+num_digits (const double& x)
 {
-  return print_eng ? engineering_exponent (x)
-    : static_cast<int> (floor (log10 (x)));
+  return 1 + (print_eng ? engineering_exponent (x)
+                        : static_cast<int> (floor (log10 (x))));
 }
 
 class
@@ -266,21 +283,21 @@ public:
 };
 
 std::ostream&
-operator << (std::ostream& os, const pr_engineering_float& pff)
+operator << (std::ostream& os, const pr_engineering_float& pef)
 {
-  if (pff.f.fw >= 0)
-    os << std::setw (pff.f.fw - pff.f.ex);
+  if (pef.f.fw >= 0)
+    os << std::setw (pef.f.fw - pef.f.ex);
 
-  if (pff.f.prec >= 0)
-    os << std::setprecision (pff.f.prec);
+  if (pef.f.prec >= 0)
+    os << std::setprecision (pef.f.prec);
 
   std::ios::fmtflags oflags = 
     os.flags (static_cast<std::ios::fmtflags> 
-              (pff.f.fmt | pff.f.up | pff.f.sp));
+              (pef.f.fmt | pef.f.up | pef.f.sp));
 
-  os << pff.mantissa ();
+  os << pef.mantissa ();
 
-  int ex = pff.exponent ();
+  int ex = pef.exponent ();
   if (ex < 0)
     {
       os << std::setw (0) << "e-";
@@ -289,7 +306,7 @@ operator << (std::ostream& os, const pr_engineering_float& pff)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pff.f.ex - 2) << std::setfill('0') << ex 
+  os << std::setw (pef.f.ex - 2) << std::setfill('0') << ex 
      << std::setfill(' ');
 
   os.flags (oflags);
@@ -636,7 +653,7 @@ set_format (double d, int& fw)
   double d_abs = d < 0.0 ? -d : d;
 
   int digits = (inf_or_nan || d_abs == 0.0)
-    ? 0 : (calc_digits (d_abs) + 1);
+    ? 0 : num_digits (d_abs);
 
   set_real_format (digits, inf_or_nan, int_only, fw);
 }
@@ -791,12 +808,12 @@ set_format (const Matrix& m, int& fw, double& scale)
   double max_abs = pr_max_internal (m_abs);
   double min_abs = pr_min_internal (m_abs);
 
-  int x_max = max_abs == 0.0 ? 0 : (calc_digits (max_abs) + 1);
+  int x_max = max_abs == 0.0 ? 0 : num_digits (max_abs);
 
-  int x_min = min_abs == 0.0 ? 0 : (calc_digits (min_abs) + 1);
+  int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
-    : std::pow (10.0, maybe_mod3 (x_max - 1));
+    : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
@@ -982,10 +999,10 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double i_abs = ip < 0.0 ? -ip : ip;
 
   int r_x = (xisinf (rp) || xisnan (rp) || r_abs == 0.0)
-    ? 0 : (calc_digits (r_abs) + 1);
+    ? 0 : num_digits (r_abs);
 
   int i_x = (xisinf (ip) || xisnan (ip) || i_abs == 0.0)
-    ? 0 : (calc_digits (i_abs) + 1);
+    ? 0 : num_digits (i_abs);
 
   int x_max, x_min;
 
@@ -1202,19 +1219,19 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   double i_max_abs = pr_max_internal (i_m_abs);
   double i_min_abs = pr_min_internal (i_m_abs);
 
-  int r_x_max = r_max_abs == 0.0 ? 0 : (calc_digits (r_max_abs) + 1);
+  int r_x_max = r_max_abs == 0.0 ? 0 : num_digits (r_max_abs);
 
-  int r_x_min = r_min_abs == 0.0 ? 0 : (calc_digits (r_min_abs) + 1);
+  int r_x_min = r_min_abs == 0.0 ? 0 : num_digits (r_min_abs);
 
-  int i_x_max = i_max_abs == 0.0 ? 0 : (calc_digits (i_max_abs) + 1);
+  int i_x_max = i_max_abs == 0.0 ? 0 : num_digits (i_max_abs);
 
-  int i_x_min = i_min_abs == 0.0 ? 0 : (calc_digits (i_min_abs) + 1);
+  int i_x_min = i_min_abs == 0.0 ? 0 : num_digits (i_min_abs);
 
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
   scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
-    : std::pow (10.0, maybe_mod3 (x_max - 1));
+    : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
                              int_or_inf_or_nan, r_fw, i_fw);
@@ -1365,12 +1382,12 @@ set_format (const Range& r, int& fw, double& scale)
   double max_abs = r_max < 0.0 ? -r_max : r_max;
   double min_abs = r_min < 0.0 ? -r_min : r_min;
 
-  int x_max = max_abs == 0.0 ? 0 : (calc_digits (max_abs) + 1);
+  int x_max = max_abs == 0.0 ? 0 : num_digits (max_abs);
 
-  int x_min = min_abs == 0.0 ? 0 : (calc_digits (min_abs) + 1);
+  int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
   scale = (x_max == 0 || all_ints) ? 1.0 
-    : std::pow (10.0, maybe_mod3 (x_max - 1));
+    : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
 }

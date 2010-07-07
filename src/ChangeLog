@@ -1,3 +1,10 @@
+2010-07-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.h (octave_class::map): Turn to octave_map.
+	* ov-class.cc (octave_class): Update methods.
+	* ov-base.h, ov-base.cc (octave_base_value::old_map_value) : Remove.
+	* ov.h, ov.cc (octave_value::old_map_value) : Remove.
+
 2010-07-06  David Bateman  <dbateman@free.fr>
 
 	* pr-output.cc (static bool print_eng): Flag engineering format,
@@ -28,6 +35,88 @@
 	* DLD_FUNCTIONS/__magick_read__.cc: restore locale after
 	GraphicsMagick initialisation.
 
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* toplev.cc (octave_call_stack::do_backtrace): Use static
+	octave_fields struct.
+	(octave_call_stack::empty_backtrace): New static method.
+	* toplev.h: Declare it.
+	* error.cc (Vlast_error_stack, initialize_last_error_stack,
+	Frethrow): Use octave_map or octave_scalar_map where applicable.
+
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::all_1x1,
+	tm_cont::all_1x1): New member fields.
+	(tm_row_const::tm_row_const_rep::init, tm_const::init):
+	Handle them here.
+	(tm_row_const::all_1x1_p, tm_const::all_1x1_p): New methods.
+	(single_type_concat<MAP> (octave_map&, ...)): New template
+	overload.
+	(do_single_type_concat<octave_map>): New template specialization.
+	(tree_matrix::rvalue1): Specialize for cell and struct classes.
+	* oct-map.cc (octave_map::do_cat (..., const octave_map *, ...)): 
+	Assign result dimensions.
+
+2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (octave_map::cat (..., const octave_scalar_map *)):
+	Handle special dims (-1, -2). 
+	* data.cc (do_single_type_concat_map): Don't handle them here.
+
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* syscalls.cc (mk_stat_map, Funame): Use octave_scalar_map.
+
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.h (octave_scalar_map::assign (const std::string&, const
+	octave_value&), octave_map::assign (const std::string&, const Cell&)):
+	Backward-compatible aliases for setfield.
+
+2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (octave_fields::equal_up_to_order (const octave_fields&,
+	octave_idx_type *)): New overload.
+	(octave_fields::equal_up_to_order (const octave_fields&,
+	Array<octave_idx_type>&)): Use it here.
+	(octave_map::fast_elem_insert,
+	octave_map::fast_elem_extract): New methods.
+	* oct-map.h: Update decls.
+	* ov-struct.cc (octave_struct::fast_elem_extract,
+	octave_struct::fast_elem_insert,
+	octave_scalar_struct::fast_elem_insert_self): New methods.
+	* ov-struct.h: Update decls.
+
+2010-06-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (single_type_concat): Optimize all scalars case where
+	applicable.
+	(single_type_concat_map, do_single_type_concat_map): New funcs.
+	* pt-mat.cc (get_concat_class): Handle cell and struct concats.
+
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fnum2cell, do_num2cell): Optimize cells
+	and structs.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.h (octave_scalar_struct::resize, octave_struct::resize):
+	Don't ignore fill argument.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.h (octave_map::octave_map (const dim_vector&, const
+	octave_fields&)): New internal ctor.
+
+	* oct-map.cc (octave_map::assign): Handle no fields case.
+
+2010-06-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-struct.cc (Fcell2struct): Rewrite.
+
 2010-06-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-range.cc (octave_range::save_ascii): Save length rather than
@@ -48,6 +137,23 @@
 2010-06-24  Rik <octave@nomad.inbox5.com>
 
         * octave.cc: Add [FILE] to octave usage string (bug #30258).
+
+2010-06-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.h (octave_map, octave_scalar_map): New classes.
+	* oct-map.cc (octave_map, octave_scalar_map): Implement them.
+	(Octave_map::Octave_map (const octave_map&)): New ctor.
+	* ov-struct.h (octave_struct): Use octave_map for storage.
+	(octave_scalar_struct): New class.
+	* ov-struct.cc: Update implementations.
+	* ov-base.h (octave_base_value::old_map_value): New method.
+	(octave_base_value::map_value): Return octave_map.
+	(octave_base_value::scalar_map_value): New method.
+	* ov-base.cc (octave_base_value::old_map_value,
+	octave_base_value::map_value, octave_base_value::scalar_map_value): 
+	Add default implementations.
+	* ov-class.h (octave_class::old_map_value): New override.
+	* ov-class.cc: Use old_map_value for efficiency.
 
 2010-06-23  David Bateman  <dbateman@free.fr>
 

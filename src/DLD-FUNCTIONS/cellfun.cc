@@ -906,6 +906,16 @@ do_num2cell_helper (const dim_vector& dv,
 }
 
 template<class NDA>
+static inline typename NDA::element_type
+do_num2cell_elem (const NDA& array, octave_idx_type i)
+{ return array(i); }
+
+static inline Cell
+do_num2cell_elem (const Cell& array, octave_idx_type i)
+{ return Cell (array(i)); }
+
+
+template<class NDA>
 static Cell
 do_num2cell (const NDA& array, const Array<int>& dimv)
 {
@@ -914,7 +924,7 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
       Cell retval (array.dims ());
       octave_idx_type nel = array.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
-        retval.xelem (i) = array(i);
+        retval.xelem (i) = do_num2cell_elem (array, i);
 
       return retval;
     }
@@ -1030,34 +1040,10 @@ num2cell([1,2;3,4],1)\n\
                 retval = do_num2cell (array.array_value (), dimv);
             }
         }
-      else if (array.is_cell () || array.is_map ())
-        {
-          dim_vector celldv, arraydv;
-          Array<int> perm;
-          do_num2cell_helper (array.dims (), dimv, celldv, arraydv, perm);
-
-          if (! error_state)
-            {
-              // FIXME: this operation may be rather inefficient.
-              octave_value parray = array.permute (perm);
-
-              octave_idx_type nela = arraydv.numel (), nelc = celldv.numel ();
-              parray = parray.reshape (dim_vector (nela, nelc));
-
-              Cell retcell (celldv);
-              octave_value_list idx (2);
-              idx(0) = octave_value::magic_colon_t;
-
-              for (octave_idx_type i = 0; i < nelc; i++)
-                {
-                  idx(1) = i + 1;
-                  octave_value tmp = parray.do_index_op (idx);
-                  retcell(i) = tmp.reshape (arraydv);
-                }
-
-              retval = retcell;
-            }
-        }
+      else if (array.is_map ())
+        retval = do_num2cell (array.map_value (), dimv);
+      else if (array.is_cell ())
+        retval = do_num2cell (array.cell_value (), dimv);
       else
         gripe_wrong_type_arg ("num2cell", array);
     }

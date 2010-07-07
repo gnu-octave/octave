@@ -66,7 +66,7 @@ octave_class::register_type (void)
     (octave_class::t_name, "<unknown>", octave_value (new octave_class ()));
 }
 
-octave_class::octave_class (const Octave_map& m, const std::string& id, 
+octave_class::octave_class (const octave_map& m, const std::string& id, 
                             const octave_value_list& parents)
   : octave_base_value (), map (m), c_name (id), obsolete_copies (0)
 {
@@ -231,7 +231,7 @@ make_idx_args (const std::string& type,
             }
         }
 
-      Octave_map m;
+      octave_map m;
 
       m.assign ("type", type_field);
       m.assign ("subs", subs_field);
@@ -259,7 +259,7 @@ octave_class::dotref (const octave_value_list& idx)
   octave_base_value *obvp
     = method_class.empty () ? 0 : find_parent_class (method_class);
 
-  Octave_map my_map;
+  octave_map my_map;
 
   my_map = obvp ? obvp->map_value () : map;
 
@@ -267,7 +267,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   if (! error_state)
     {
-      Octave_map::const_iterator p = my_map.seek (nm);
+      octave_map::const_iterator p = my_map.seek (nm);
 
       if (p != my_map.end ())
         retval = my_map.contents (p);
@@ -486,7 +486,7 @@ octave_class::numeric_conv (const Cell& val, const std::string& type)
       retval = val(0);
 
       if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
-        retval = Octave_map ();
+        retval = octave_map ();
     }
   else
     gripe_invalid_index_for_assignment ();
@@ -646,11 +646,11 @@ octave_class::subsasgn (const std::string& type,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            Octave_map::iterator pkey = map.seek (key);
+            octave_map::iterator pkey = map.seek (key);
             if (pkey != map.end ())
               {
-                pkey->second.make_unique ();
-                tmpc = pkey->second;
+                map.contents (pkey).make_unique ();
+                tmpc = map.contents (pkey);
               }
 
             // FIXME: better code reuse?
@@ -721,7 +721,7 @@ octave_class::subsasgn (const std::string& type,
               {
                 if (t_rhs.is_object () || t_rhs.is_map ())
                   {
-                    Octave_map rhs_map = t_rhs.map_value ();
+                    octave_map rhs_map = t_rhs.map_value ();
 
                     if (! error_state)
                       {
@@ -742,7 +742,7 @@ octave_class::subsasgn (const std::string& type,
                   {
                     if (t_rhs.is_empty ())
                       {
-                        map.maybe_delete_elements (idx.front());
+                        map.delete_elements (idx.front());
 
                         if (! error_state)
                           {
@@ -851,7 +851,7 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
     {
       std::string key = map.key (p);
 
@@ -884,9 +884,9 @@ octave_class::find_parent_class (const std::string& parent_class_name)
            pit != parent_list.end ();
            pit++)
         {
-          Octave_map::const_iterator smap = map.seek (*pit);
+          octave_map::const_iterator smap = map.seek (*pit);
 
-          const Cell& tmp = smap->second;
+          const Cell& tmp = map.contents (smap);
 
           octave_value vtmp = tmp(0);
 
@@ -915,9 +915,9 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
            pit != parent_list.end ();
            pit++)
         {
-          Octave_map::iterator smap = map.seek (*pit);
+          octave_map::iterator smap = map.seek (*pit);
 
-          Cell& tmp = smap->second;
+          Cell& tmp = map.contents (smap);
 
           octave_value& vtmp = tmp(0);
 
@@ -1053,7 +1053,7 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
     {
       std::string  key = map.key (p);
       Cell         val = map.contents (p);
@@ -1102,7 +1102,7 @@ bool
 octave_class::save_ascii (std::ostream& os)
 {
   os << "# classname: " << class_name () << "\n";
-  Octave_map m;
+  octave_map m;
   if (load_path::find_method (class_name (), "saveobj") != std::string ())
     {
       octave_value in = new octave_class (*this);
@@ -1117,7 +1117,7 @@ octave_class::save_ascii (std::ostream& os)
 
   os << "# length: " << m.nfields () << "\n";
 
-  Octave_map::iterator i = m.begin ();
+  octave_map::iterator i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1146,7 +1146,7 @@ octave_class::load_ascii (std::istream& is)
         {
           if (len > 0)
             {
-              Octave_map m (map);
+              octave_map m (map);
 
               for (octave_idx_type j = 0; j < len; j++)
                 {
@@ -1203,7 +1203,7 @@ octave_class::load_ascii (std::istream& is)
             }
           else if (len == 0 )
             {
-              map = Octave_map (dim_vector (1, 1));
+              map = octave_map (dim_vector (1, 1));
               c_name = classname;
             }
           else
@@ -1232,7 +1232,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   os.write (reinterpret_cast<char *> (&classname_len), 4);
   os << class_name ();
 
-  Octave_map m;
+  octave_map m;
   if (load_path::find_method (class_name (), "saveobj") != std::string ())
     {
       octave_value in = new octave_class (*this);
@@ -1248,7 +1248,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   int32_t len = m.nfields();
   os.write (reinterpret_cast<char *> (&len), 4);
   
-  Octave_map::iterator i = m.begin ();
+  octave_map::iterator i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1295,7 +1295,7 @@ octave_class::load_binary (std::istream& is, bool swap,
 
   if (len > 0)
     {
-      Octave_map m (map);
+      octave_map m (map);
 
       for (octave_idx_type j = 0; j < len; j++)
         {
@@ -1348,7 +1348,7 @@ octave_class::load_binary (std::istream& is, bool swap,
         }
     }
   else if (len == 0 )
-    map = Octave_map (dim_vector (1, 1));
+    map = octave_map (dim_vector (1, 1));
   else
     panic_impossible ();
 
@@ -1366,8 +1366,8 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   hid_t space_hid = -1;
   hid_t class_hid = -1;
   hid_t data_hid = -1;
-  Octave_map m;
-  Octave_map::iterator i;
+  octave_map m;
+  octave_map::iterator i;
 
 #if HAVE_HDF5_18
   group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -1468,7 +1468,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
   hdf5_callback_data dsub;
 
   herr_t retval2 = 0;
-  Octave_map m (dim_vector (1, 1));
+  octave_map m (dim_vector (1, 1));
   int current_item = 0;
   hsize_t num_obj = 0;
   int slen = 0;
@@ -1624,7 +1624,7 @@ octave_class::exemplar_info::exemplar_info (const octave_value& obj)
 {
   if (obj.is_object ())
     {
-      Octave_map m = obj.map_value ();
+      octave_map m = obj.map_value ();
       field_names = m.keys ();
 
       parent_class_names = obj.parent_class_name_list ();
@@ -1646,7 +1646,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
     {
       if (nfields () == obj.nfields ())
         {
-          Octave_map obj_map = obj.map_value ();
+          octave_map obj_map = obj.map_value ();
           string_vector obj_fnames = obj_map.keys ();
           string_vector fnames = fields ();
 
@@ -1725,7 +1725,7 @@ derived.\n\
 
       if (fcn && fcn->is_class_constructor ())
         {
-          Octave_map m = args(0).map_value ();
+          octave_map m = args(0).map_value ();
 
           if (! error_state)
             {

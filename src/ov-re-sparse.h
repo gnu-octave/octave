@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-sparse.h"
 #include "ov-cx-sparse.h"
 
-class Octave_map;
 class octave_value_list;
 
 class tree_walker;

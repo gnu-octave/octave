@@ -885,12 +885,28 @@ octave_base_value::range_value (void) const
   return retval;
 }
 
-Octave_map
+octave_map
 octave_base_value::map_value (void) const
 {
-  Octave_map retval;
+  octave_map retval;
   gripe_wrong_type_arg ("octave_base_value::map_value()", type_name ());
   return retval;
+}
+
+octave_scalar_map
+octave_base_value::scalar_map_value (void) const
+{
+  octave_map tmp = map_value ();
+
+  if (tmp.numel () == 1)
+    return tmp.checkelem (0);
+  else
+    {
+      if (! error_state)
+        error ("invalid conversion of multidimensional struct to scalar struct");
+
+      return octave_scalar_map ();
+    }
 }
 
 string_vector

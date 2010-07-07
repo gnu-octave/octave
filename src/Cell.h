@@ -136,4 +136,8 @@ private:
   Cell map (ctype_mapper) const;
 };
 
+template<>
+inline Cell octave_value_extract<Cell> (const octave_value& v)
+  { return v.cell_value (); }
+
 #endif

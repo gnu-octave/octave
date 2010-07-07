@@ -39,8 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
-class Octave_map;
-
 class tree_walker;
 
 // Real matrix values.

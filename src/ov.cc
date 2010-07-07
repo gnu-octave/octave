@@ -1116,9 +1116,21 @@ octave_value::octave_value (const Range& r)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const octave_map& m)
+  : rep (new octave_struct (m))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_scalar_map& m)
+  : rep (new octave_scalar_struct (m))
+{
+}
+
 octave_value::octave_value (const Octave_map& m)
   : rep (new octave_struct (m))
 {
+  maybe_mutate ();
 }
 
 octave_value::octave_value (const Octave_map& m, const std::string& id)
@@ -1431,10 +1443,16 @@ octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 #endif
 }
 
-Octave_map
+octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
+}
+
+octave_scalar_map
+octave_value::scalar_map_value (void) const
+{
+  return rep->scalar_map_value ();
 }
 
 octave_function *
@@ -2569,7 +2587,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
         case '(':
           {
             if (type.length () > 1 && type[1] == '.')
-              retval = Octave_map ();
+              retval = octave_map ();
             else
               retval = octave_value (rhs.empty_clone ());
           }
@@ -2580,7 +2598,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
           break;
 
         case '.':
-          retval = Octave_map ();
+          retval = octave_scalar_map ();
           break;
 
         default:
@@ -2629,6 +2647,7 @@ install_types (void)
   octave_sparse_matrix::register_type ();
   octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
+  octave_scalar_struct::register_type ();
   octave_class::register_type ();
   octave_cs_list::register_type ();
   octave_magic_colon::register_type ();

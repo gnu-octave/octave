@@ -117,7 +117,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
 // This function is supplied to allow a Matlab style class structure
 // to be returned..
-Octave_map
+octave_map
 octave_fcn_inline::map_value (void) const
 {
   Octave_map m;

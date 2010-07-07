@@ -87,7 +87,7 @@ static std::string Vlast_warning_id;
 static std::string Vlast_error_id;
 
 // The last file in which an error occured
-static Octave_map Vlast_error_stack;
+static octave_map Vlast_error_stack;
 
 // Current error state.
 //
@@ -141,24 +141,10 @@ initialize_warning_options (const std::string& state)
   warning_options.assign ("state", state);
 }
 
-static Octave_map
+static octave_map
 initialize_last_error_stack (void)
 {
-  static bool initialized = false;
-
-  static string_vector sv (4);
-
-  if (! initialized)
-    {
-      sv[0] = "file";
-      sv[1] = "name";
-      sv[2] = "line";
-      sv[3] = "column";
-
-      initialized = true;
-    }
-
-  return Octave_map (dim_vector (0, 1), sv);
+  return octave_call_stack::empty_backtrace ();
 }
 
 // Warning messages are never buffered.
@@ -867,14 +853,14 @@ location of the error.  Typically @var{err} is returned from\n\
     print_usage ();
   else
     {
-      Octave_map err = args(0).map_value ();
+      const octave_scalar_map err = args(0).scalar_map_value ();
 
       if (! error_state)
         {
           if (err.contains ("message") && err.contains ("identifier"))
             {
-              std::string msg = err.contents("message")(0).string_value ();
-              std::string id = err.contents("identifier")(0).string_value ();
+              std::string msg = err.contents("message").string_value ();
+              std::string id = err.contents("identifier").string_value ();
               int len = msg.length();
 
               std::string file;
@@ -882,11 +868,11 @@ location of the error.  Typically @var{err} is returned from\n\
               int l = -1;
               int c = -1;
 
-              Octave_map err_stack = initialize_last_error_stack ();
+              octave_map err_stack = initialize_last_error_stack ();
 
               if (err.contains ("stack"))
                 {
-                  err_stack = err.contents("stack")(0).map_value ();
+                  err_stack = err.contents("stack").map_value ();
 
                   if (err_stack.numel () > 0)
                     {

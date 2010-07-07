@@ -52,14 +52,14 @@ public:
   octave_class (void)
     : octave_base_value (), obsolete_copies (0)  { }
 
-  octave_class (const Octave_map& m, const std::string& id)
+  octave_class (const octave_map& m, const std::string& id)
     : octave_base_value (), map (m), c_name (id), obsolete_copies (0) { }
 
   octave_class (const octave_class& s)
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
 
-  octave_class (const Octave_map& m, const std::string& id, 
+  octave_class (const octave_map& m, const std::string& id, 
                 const octave_value_list& parents);
 
   ~octave_class (void) { }
@@ -70,7 +70,7 @@ public:
 
   octave_base_value *empty_clone (void) const
   {
-    return new octave_class (Octave_map (map.keys ()), class_name ());
+    return new octave_class (octave_map (map.keys ()), class_name ());
   }
 
   Cell dotref (const octave_value_list& idx);
@@ -122,7 +122,7 @@ public:
     { return map.reshape (new_dims); }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    { Octave_map tmap = map; tmap.resize (dv); return tmap; }
+    { octave_map tmap = map; tmap.resize (dv); return tmap; }
 
   bool is_defined (void) const { return true; }
 
@@ -130,7 +130,7 @@ public:
 
   bool is_object (void) const { return true; }
 
-  Octave_map map_value (void) const { return map; }
+  octave_map map_value (void) const { return map; }
 
   string_vector map_keys (void) const;
 
@@ -178,7 +178,7 @@ public:
 
 private:
 
-  Octave_map map;
+  octave_map map;
 
   DECLARE_OCTAVE_ALLOCATOR
 

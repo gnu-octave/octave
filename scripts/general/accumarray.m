@@ -205,7 +205,7 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
         A = reshape (A, sz);
       endif
 
-      if (fillval != zero && isnan (fillval) != isnan (zero))
+      if (fillval != zero && ! (isnan (fillval) || isnan (zero)))
         mask = true (size (A));
         mask(subs) = false;
         A(mask) = fillval;
@@ -228,7 +228,7 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
         A = reshape (A, sz);
       endif
 
-      if (fillval != zero && isnan (fillval) != isnan (zero))
+      if (fillval != zero && ! (isnan (fillval) || isnan (zero)))
         mask = true (size (A));
         mask(subs) = false;
         A(mask) = fillval;

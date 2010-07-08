@@ -1,5 +1,9 @@
 2010-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* mkoctfile.in: F77_INTEGER_8_FLAG -> OCTAVE_CONF_F77_INTEGER_8_FLAG.
+
+2010-06-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* configure.ac: Temporarily include F77_INTEGER_8_FLAG in FFLAGS for
 	BLAS checking.
 	* mkoctfile.in: Include F77_INTEGER_8_FLAG in ALL_FFLAGS.

@@ -1,3 +1,7 @@
+2010-07-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-06-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mkoctfile.in: F77_INTEGER_8_FLAG -> OCTAVE_CONF_F77_INTEGER_8_FLAG.

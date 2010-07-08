@@ -282,7 +282,28 @@ Summary of important user-visible changes for version 3.3:
     changes to the variable in function rm_rf or any of the functions
     it calls.
 
+ ** pkg now accepts a -forge option for downloading and installing packages 
+    from OctaveForge automatically. For example, 
+    
+      pkg install -forge general
+    
+    will automatically download the latest release of the general package and
+    attempt to install it. No automatic resolving of dependencies is provided.
+    Further,
 
+      pkg list -forge
+    
+    can be used to list all available packages.
+
+  ** The internal data representation of structs has been completely rewritten
+     to make certain optimizations feasible. The field data can now be shared 
+     between structs with equal keys but different dimensions or values, making
+     operations that preserve the fields faster. Economized storage is now used
+     for scalar structs (just like most other scalars), making their usage more
+     memory-efficient. Certain array-like operations on structs (concatenation,
+     uniform cellfun, num2cell) have gained a significant speed-up.
+     Additionally, the octave_scalar_map class now provides a simpler interface
+     to work with scalar structs within a C++ DLD function.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

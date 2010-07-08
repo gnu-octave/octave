@@ -403,7 +403,7 @@ Instead you should use @code{imread}.\n\
       initialized = true;
     }
 
-  if (args.length () > 2 || args.length () < 1 || ! args(0).is_string ()
+  if (args.length () > 3 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)
     {
       print_usage ();
@@ -411,9 +411,19 @@ Instead you should use @code{imread}.\n\
     }
 
   Array<int> frameidx;
+  bool all_frames = false;
 
   if (args.length () == 2 && args(1).is_real_type ())
     frameidx = args(1).int_vector_value();
+  else if (args.length () == 3 && args(1).is_string () 
+           && args(1).string_value() == "frames")
+    {
+      if (args(2).is_string () 
+          && args(2).string_value() == "all")
+        all_frames = true;
+      else if (args(2).is_real_type ())
+        frameidx = args(2).int_vector_value();
+    }
   else
     {
       frameidx = Array<int> (1, 1);
@@ -441,16 +451,24 @@ Instead you should use @code{imread}.\n\
       return output;
     }
 
-  for (int i = 0; i < frameidx.length(); i++)
+  int nframes = imvec.size ();
+  if (all_frames)
     {
-      frameidx(i) = frameidx(i) - 1;
-
-      int nframes = imvec.size ();
-
-      if (frameidx(i) >= nframes || frameidx(i) < 0)
+      frameidx = Array<int> (1, nframes);
+      for (int i = 0; i < frameidx.length(); i++)
+        frameidx(i) = i;
+    }
+  else
+    {
+      for (int i = 0; i < frameidx.length(); i++)
         {
-          error ("__magick_read__: invalid index vector");
-          return output;
+          frameidx(i) = frameidx(i) - 1;
+
+          if (frameidx(i) >= nframes || frameidx(i) < 0)
+            {
+              error ("__magick_read__: invalid index vector");
+              return output;
+            }
         }
     }
 

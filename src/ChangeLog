@@ -1,3 +1,8 @@
+2010-07-08  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/__magick_read__,cc (F__magick_read__): Add the syntax
+	__magick_read__ ("file", "frames", "all").
+
 2010-07-08  Rik <octave@nomad.inbox5.com>
 
 	* DLD_FUNCTIONS/eigs.cc: Initialize random number generator in test

@@ -305,6 +305,12 @@ Summary of important user-visible changes for version 3.3:
      Additionally, the octave_scalar_map class now provides a simpler interface
      to work with scalar structs within a C++ DLD function.
 
+  ** Two new formats are available for displaying numbers:
+     format short eng
+     format long eng
+     Both display numbers in engineering notation, i.e., mantissa + exponent
+     where the exponent is a multiple of 3.
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

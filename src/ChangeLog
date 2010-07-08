@@ -1,3 +1,8 @@
+2010-07-08  Rik <octave@nomad.inbox5.com>
+
+	* DLD_FUNCTIONS/eigs.cc: Initialize random number generator in test
+        blocks to get reproducible results.
+
 2010-07-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-cell.cc (Fstruct2cell): Use octave_map. Optimize.
@@ -52,6 +57,7 @@
 	(Fformat): Document the new engineering format.
 
 2010-07-04  Soren Hauberg  <hauberg@gmail.com>
+
 	* DLD_FUNCTIONS/__magick_read__.cc: restore locale after
 	GraphicsMagick initialisation.
 

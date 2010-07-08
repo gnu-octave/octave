@@ -753,6 +753,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
@@ -828,7 +829,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! AA = speye (10);
 %! fn = @(x) AA * x;
 %! opts.issym = 1; opts.isreal = 1;
-%! assert (eigs (fn, 10, AA, 3, 'lm', opts), [1; 1; 1]);
+%! assert (eigs (fn, 10, AA, 3, 'lm', opts), [1; 1; 1],10*eps);
 %!testif HAVE_ARPACK
 %! [v1,d1] = eigs(A, k, 'lm');
 %! d1 = diag(d1);
@@ -872,6 +873,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d0 = eig (A);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
@@ -1001,6 +1003,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d0 = eig (A);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
@@ -1135,6 +1138,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d2 = sort (d0);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
@@ -1249,6 +1253,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d0 = eig (A);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
@@ -1378,6 +1383,7 @@ K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
 %! d0 = eig (A);
 %! [~, idx] = sort (abs(d0));
 %! d0 = d0(idx);
+%! rand("state", 42); % initialize generator to make eigs behavior reproducible
 %!testif HAVE_ARPACK
 %! d1 = eigs (A, k);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);

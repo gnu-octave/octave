@@ -1402,15 +1402,13 @@ cell array will have a dimension vector corresponding to\n\
 
   if (nargin == 1)
     {
-      Octave_map m = args(0).map_value ();
+      const octave_map m = args(0).map_value ();
 
       if (! error_state)
         {
-          dim_vector m_dv = m.dims ();
+          const dim_vector m_dv = m.dims ();
 
-          string_vector keys = m.keys ();
-
-          octave_idx_type num_fields = keys.length ();
+          octave_idx_type num_fields = m.nfields ();
 
           // The resulting dim_vector should have dimensions:
           // [numel(fields) size(struct)]
@@ -1427,22 +1425,15 @@ cell array will have a dimension vector corresponding to\n\
           for (int i = 1; i < result_dv.length (); i++)
             result_dv(i) = m_dv(i-1);
 
-          Cell c (result_dv);
+          NoAlias<Cell> c (result_dv);
 
           octave_idx_type n_elts = m.numel ();
 
-          for (octave_idx_type j = 0; j < num_fields; j++)
-            {
-              octave_idx_type k = j;
-
-              const Cell vals = m.contents (keys(j));
-
-              for (octave_idx_type i = 0; i < n_elts; i++)
-                {
-                  c(k) = vals(i);
-                  k += num_fields;
-                }
-            }
+          // Fill c in one sweep. Note that thanks to octave_map structure,
+          // we don't need a key lookup at all.
+          for (octave_idx_type j = 0; j < n_elts; j++)
+            for (octave_idx_type i = 0; i < num_fields; i++)
+              c(i,j) = m.contents(i)(j);
 
           retval = c;
         }

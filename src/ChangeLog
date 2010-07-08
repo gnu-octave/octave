@@ -1,3 +1,7 @@
+2010-07-08  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-cell.cc (Fstruct2cell): Use octave_map. Optimize.
+
 2010-07-07  Rik <octave@nomad.inbox5.com>
 
 	* pr-output.cc (calc_scale_exp): Avoid use of % operator on negative

@@ -1,3 +1,8 @@
+2010-07-09  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* general/interp2.m: improve input argument handling and
+	allow not equally spaced griddata (bug #29601)
+
 2010-07-08  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/accumarray.m: Fix incorrect handling of nondefault fill

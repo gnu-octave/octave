@@ -318,7 +318,7 @@ function ZI = interp2 (varargin)
 
   else
 
-    ## If X and Y vectors produce a grid from them
+    ## Check dimensions of X and Y
     if (isvector (X) && isvector (Y))
       X = X(:).';
       Y = Y(:);
@@ -332,10 +332,10 @@ function ZI = interp2 (varargin)
       endif
     endif
 
-    ## If Xi and Yi are vectors of different orientation build a grid
-    if ((rows (XI) == 1 && columns (YI) == 1)
-        || (columns (XI) == 1 && rows (YI) == 1))
-      ## Do nothing
+    ## Check dimensions of XI and YI
+    if (isvector (XI) && isvector (YI))
+      XI = XI(:).';
+      YI = YI(:);
     elseif (! size_equal (XI, YI))
       error ("interp2: XI and YI must be matrices of same size");
     endif
@@ -409,8 +409,7 @@ endfunction
 
 function b = isgriddata (X)
   d1 = diff (X, 1, 1);
-  d2 = diff (X, 1, 2);
-  b = all (d1 (:) == 0) & all (d2 (:) == d2 (1));
+  b = all (d1 (:) == 0);
 endfunction
 
 ## Compute the bicubic interpolation coefficients

@@ -1,3 +1,10 @@
+2010-07-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* CMatrix.cc (ComplexMatrix::lssolve (const ComplexMatrix&)):
+	Undo 10708:2786b7ae3f80, implement proper correction.
+	* fCMatrix.cc (FloatComplexMatrix::lssolve (const FloatComplexMatrix&)):
+	Ditto.
+
 2010-06-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.h (dim_vector::scalar_1x1): New method.

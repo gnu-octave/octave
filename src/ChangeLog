@@ -1,5 +1,11 @@
 2010-07-12  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/rand.cc (do_rand): Pass the distribution name as an
+	argument. Ensure restoration using unwind_protect.
+	(Frand, Frandn, Frandg, Frandp, Frande): Update.
+
+2010-07-12  Jaroslav Hajek  <highegg@gmail.com>
+
 	* unwind-prot.h (unwind_protect::fcn_crefarg_elem): New class.
 	(unwind_protect::add_fcn (void (*) (const T&), T)): New method
 	overload.

@@ -51,12 +51,19 @@ along with Octave; see the file COPYING.  If not, see
 
 static octave_value
 do_rand (const octave_value_list& args, int nargin, const char *fcn,
-         bool additional_arg = false)
+         const std::string& distribution, bool additional_arg = false)
 {
   octave_value retval;
   NDArray a;
   int idx = 0;
   dim_vector dims;
+
+  unwind_protect frame;
+  // Restore current distribution on any exit.
+  frame.add_fcn (octave_rand::distribution,
+                 octave_rand::distribution ());
+
+  octave_rand::distribution (distribution);
 
   if (additional_arg)
     {
@@ -397,7 +404,7 @@ using the \"reset\" keyword.\n\
 
   int nargin = args.length ();
 
-  retval = do_rand (args, nargin, "rand");
+  retval = do_rand (args, nargin, "rand", "uniform");
 
   return retval;
 }
@@ -508,21 +515,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect frame;
-
-  // This relies on the fact that elements are popped from the unwind
-  // stack in the reverse of the order they are pushed
-  // (i.e. current_distribution will be reset before calling
-  // reset_rand_generator()).
-
-  frame.add_fcn (reset_rand_generator);
-  frame.protect_var (current_distribution);
-
-  current_distribution = "normal";
-
-  octave_rand::distribution (current_distribution);
-
-  retval = do_rand (args, nargin, "randn");
+  retval = do_rand (args, nargin, "randn", "normal");
 
   return retval;
 }
@@ -581,21 +574,7 @@ J. Statistical Software, vol 5, 2000,\n\
 
   int nargin = args.length ();
 
-  unwind_protect frame;
-
-  // This relies on the fact that elements are popped from the unwind
-  // stack in the reverse of the order they are pushed
-  // (i.e. current_distribution will be reset before calling
-  // reset_rand_generator()).
-
-  frame.add_fcn (reset_rand_generator);
-  frame.protect_var (current_distribution);
-
-  current_distribution = "exponential";
-
-  octave_rand::distribution (current_distribution);
-
-  retval = do_rand (args, nargin, "rande");
+  retval = do_rand (args, nargin, "rande", "exponential");
 
   return retval;
 }
@@ -712,23 +691,7 @@ r = r / sum (r)\n\
   if (nargin < 1)
     error ("randg: insufficient arguments");
   else
-    {
-      unwind_protect frame;
-
-      // This relies on the fact that elements are popped from the unwind
-      // stack in the reverse of the order they are pushed
-      // (i.e. current_distribution will be reset before calling
-      // reset_rand_generator()).
-
-      frame.add_fcn (reset_rand_generator);
-      frame.protect_var (current_distribution);
-
-      current_distribution = "gamma";
-
-      octave_rand::distribution (current_distribution);
-
-      retval = do_rand (args, nargin, "randg", true);
-    }
+    retval = do_rand (args, nargin, "randg", "gamma", true);
 
   return retval;
 }
@@ -927,23 +890,7 @@ D 50 p1284, 1994\n\
   if (nargin < 1)
     error ("randp: insufficient arguments");
   else
-    {
-      unwind_protect frame;
-
-      // This relies on the fact that elements are popped from the unwind
-      // stack in the reverse of the order they are pushed
-      // (i.e. current_distribution will be reset before calling
-      // reset_rand_generator()).
-
-      frame.add_fcn (reset_rand_generator);
-      frame.protect_var (current_distribution);
-
-      current_distribution = "poisson";
-
-      octave_rand::distribution (current_distribution);
-
-      retval = do_rand (args, nargin, "randp", true);
-    }
+    retval = do_rand (args, nargin, "randp", "poisson", true);
 
   return retval;
 }

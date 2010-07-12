@@ -1,3 +1,8 @@
+2010-07-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/cell2mat.m: Optimize so as to minimize the number of
+	concats.
+
 2010-07-12  John W. Eaton  <jwe@octave.org>
 
 	* general/display.m: Print usage message if nargin != 1.

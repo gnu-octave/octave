@@ -1,4 +1,5 @@
 ## Copyright (C) 2005, 2006, 2007, 2008 Laurent Mazet
+## Copyright (C) 2010 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -49,35 +50,28 @@ function m = cell2mat (c)
 
   if (nb == 0)
     m = [];
-  elseif (ndims (c) == 2)
-    ## 2d case optimized
-    [nr, nc] = size (c);
-    if (nc > nr)
-      c1 = cell (nr, 1);
-      for i = 1 : nr
-        c1{i} = [c{i,:}];
-      endfor
-      m = vertcat (c1 {:});
-    else
-      c1 = cell (nc, 1);
-      for i = 1 : nc
-        c1{i} = vertcat (c{:,i});
-      endfor
-      m = [c1{:}];
-    endif
   else
-    ## n dimensions case
-    for k = ndims (c):-1:2,
-      sz = size (c);
-      sz(k) = 1;
-      c1 = cell (sz);
-      n1 = prod (sz);
-      for i = 1:n1
-        c1{i} = cat (k, c{i:n1:end});
-      endfor
-      c = c1;
+    ## The goal is to minimize the total number of cat() calls.
+    ## The dimensions can be concatenated along in arbitrary order.
+    ## The numbers of concatenations are:
+    ## n / d1
+    ## n / (d1 * d2)
+    ## n / (d1 * d2 * d3)
+    ## etc.
+    ## This is minimized if d1 >= d2 >= d3... 
+
+    sc = size (c);
+    nd = ndims (c);
+    [~, isc] = sort (sc);
+    for idim = isc
+      if (sc(idim) == 1)
+        continue;
+      endif
+      xdim = [1:idim-1, idim+1:nd];
+      cc = num2cell (c, xdim);
+      c = cellfun (@cat, {idim}, cc{:}, "uniformoutput", false);
     endfor
-    m = cat (1, c1{:});
+    m = c{1};
   endif
 
 endfunction

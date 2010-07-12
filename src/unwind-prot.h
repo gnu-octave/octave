@@ -81,6 +81,23 @@ public:
     T e_arg;
   };
 
+  // An element that stores a variable of type T along with a void (*) (const T&)
+  // function pointer, and calls the function with the parameter.
+
+  template <class T>
+  class fcn_crefarg_elem : public elem
+  {
+  public:
+    fcn_crefarg_elem (void (*fcn) (const T&), T arg)
+      : e_fcn (fcn), e_arg (arg) { }
+
+    void run (void) { e_fcn (e_arg); }
+
+  private:
+    void (*e_fcn) (const T&);
+    T e_arg;
+  };
+
   // An element for calling a member function.
 
   template <class T>
@@ -152,6 +169,13 @@ public:
   void add_fcn (void (*action) (T), T val)
     {
       add (new fcn_arg_elem<T> (action, val));
+    }
+
+  // Call to void func (const T&).
+  template <class T>
+  void add_fcn (void (*action) (const T&), T val)
+    {
+      add (new fcn_crefarg_elem<T> (action, val));
     }
 
   // Call to T::method (void).

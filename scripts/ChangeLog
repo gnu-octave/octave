@@ -1,3 +1,8 @@
+2010-07-12  John W. Eaton  <jwe@octave.org>
+
+	* general/display.m: Print usage message if nargin != 1.
+	Bug #30421.
+
 2010-07-09  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/interp2.m: improve input argument handling and

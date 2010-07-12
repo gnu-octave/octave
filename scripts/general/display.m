@@ -33,5 +33,9 @@
 ## @end deftypefn
 
 function idx = display (a)
-  error ("display: not defined for class \"%s\"", class(a));
+  if (nargin == 1)
+    error ("display: not defined for class \"%s\"", class(a));
+  else
+    print_usage ();
+  endif
 endfunction

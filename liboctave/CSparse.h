@@ -395,10 +395,6 @@ public:
 
   SparseComplexMatrix squeeze (void) const;
 
-  SparseComplexMatrix index (const idx_vector& i, bool resize_ok) const;
-
-  SparseComplexMatrix index (const idx_vector& i, const idx_vector& j, bool resize_ok) const;
-
   SparseComplexMatrix reshape (const dim_vector& new_dims) const;
 
   SparseComplexMatrix permute (const Array<octave_idx_type>& vec, 

@@ -406,10 +406,6 @@ public:
 
   SparseMatrix squeeze (void) const;
 
-  SparseMatrix index (const idx_vector& i, bool resize_ok) const;
-
-  SparseMatrix index (const idx_vector& i, const idx_vector& j, bool resize_ok) const;
-
   SparseMatrix reshape (const dim_vector& new_dims) const;
 
   SparseMatrix permute (const Array<octave_idx_type>& vec, bool inv = false) const;

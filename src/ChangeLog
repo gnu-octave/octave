@@ -1,3 +1,7 @@
+2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (do_sparse_diff): Use typecasts where needed.
+
 2010-07-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/rand.cc (do_rand): Pass the distribution name as an

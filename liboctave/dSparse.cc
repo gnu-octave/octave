@@ -7594,18 +7594,6 @@ SparseMatrix::squeeze (void) const
 }
 
 SparseMatrix
-SparseMatrix::index (const idx_vector& i, bool resize_ok) const 
-{ 
-  return MSparse<double>::index (i, resize_ok); 
-}
-
-SparseMatrix
-SparseMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const 
-{ 
-  return MSparse<double>::index (i, j, resize_ok); 
-}
-  
-SparseMatrix
 SparseMatrix::reshape (const dim_vector& new_dims) const
 {
   return MSparse<double>::reshape (new_dims);

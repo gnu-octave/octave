@@ -1,5 +1,11 @@
 2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/cellfun.cc (mat2cell_mismatch, prepare_idx,
+	do_mat2cell_2d, do_mat2cell_nd, do_mat2cell): New helper funcs.
+	(Fmat2cell): Use them here.
+
+2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* data.cc (do_sparse_diff): Use typecasts where needed.
 
 2010-07-12  Jaroslav Hajek  <highegg@gmail.com>

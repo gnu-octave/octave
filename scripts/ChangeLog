@@ -1,3 +1,8 @@
+2010-07-14  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__gnuplot_print__.m: Fix broken options "-orientation",
+	"-special_flag", "-debug_file", "-tight_flag", and "-printer".
+
 2010-07-14  Rik <octave@nomad.inbox5.com>
 
        * linear-algebra/normest.m: Improve documentation.  Add better input

@@ -231,13 +231,13 @@ function __gnuplot_print__ (varargin)
 
     elseif (strcmp (dev, "fig"))
       ## XFig
-      options = orientation;
+      options = opts.orientation;
       if (opts.use_color >= 0)
         options = " color";
       else
         options = " mono";
       endif
-      options = cstrcat (options, " ", special_flag);
+      options = cstrcat (options, " ", opts.special_flag);
       if (! isempty (opts.fontsize))
         options = cstrcat (options, " fontsize ", opts.fontsize);
       endif
@@ -370,11 +370,11 @@ function __gnuplot_print__ (varargin)
     endif
 
     if (strcmp (termn, "postscript") && ! strncmp (dev, "eps", 3))
-      if (isempty (orientation))
-        orientation = paperorientation;
+      if (isempty (opts.orientation))
+        opts.orientation = paperorientation;
       endif
       ## This is done here to accommodate ghostscript conversion.
-      options = cstrcat (orientation, " ", options);
+      options = cstrcat (opts.orientation, " ", options);
     end
 
     new_terminal = cstrcat (termn, " ", options);
@@ -458,7 +458,7 @@ function __gnuplot_print__ (varargin)
          endif
     endif
       if (opts.debug)
-        drawnow (new_terminal, opts.name, mono, debug_file);
+        drawnow (new_terminal, opts.name, mono, opts.debug_file);
       else
         drawnow (new_terminal, opts.name, mono);
       endif
@@ -487,7 +487,7 @@ function __gnuplot_print__ (varargin)
     end_unwind_protect
 
     if (! isempty (ghostscript_output))
-      if (is_eps_file && tight_flag)
+      if (is_eps_file && opts.tight_flag)
         ## If gnuplot's output is an eps-file then crop at the bounding box.
         fix_eps_bbox (name, ghostscript_binary);
       endif
@@ -526,10 +526,10 @@ function __gnuplot_print__ (varargin)
         ## FIXME - besides Unix and Windows, what other OS's might be considered.
         prn_opt = "";
       endif
-      if (isempty (printer))
+      if (isempty (opts.printer))
         prn_cmd = sprintf ("lpr %s '%s' 2>&1", prn_opt, printname);
       else
-        prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", prn_opt, printer, printname);
+        prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", prn_opt, opts.printer, printname);
       endif
       [status, output] = system (prn_cmd);
       if (status != 0)

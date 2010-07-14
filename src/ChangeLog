@@ -1,3 +1,7 @@
+2010-07-08  Rik <octave@nomad.inbox5.com>
+
+	* DLD_FUNCTIONS/rand.cc: Correct typo in rande documentation (bug #30446).
+
 2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cellfun.cc (mat2cell_mismatch, prepare_idx,

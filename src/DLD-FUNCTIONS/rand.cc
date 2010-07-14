@@ -562,7 +562,7 @@ DEFUN_DLD (rande, args, ,
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
+By default, @code{rande} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
 transform from a uniform to a exponential distribution.  (G. Marsaglia and\n\
 W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
 J. Statistical Software, vol 5, 2000,\n\

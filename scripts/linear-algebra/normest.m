@@ -18,10 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{n}, @var{c}] =} normest (@var{a}, @var{tol})
+## @deftypefn  {Function File} {@var{n} =} normest (@var{a})
+## @deftypefnx {Function File} {@var{n} =} normest (@var{a}, @var{tol})
+## @deftypefnx {Function File} {[@var{n}, @var{c}] =} normest (@dots{})
 ## Estimate the 2-norm of the matrix @var{a} using a power series
 ## analysis.  This is typically used for large matrices, where the cost
-## of calculating the @code{norm (@var{a})} is prohibitive and an approximation
+## of calculating @code{norm (@var{a})} is prohibitive and an approximation
 ## to the 2-norm is acceptable.
 ##
 ## @var{tol} is the tolerance to which the 2-norm is calculated.  By default
@@ -29,36 +31,63 @@
 ## @code{normest} to converge.
 ## @end deftypefn
 
-function [e, c] = normest (A, tol = 1e-6)
-  if (! ismatrix (A) || ndims (A) != 2)
-    error ("normest: A must be a matrix");
+function [n, c] = normest (A, tol = 1e-6)
+
+  if (nargin != 1 && nargin != 2)
+    print_usage ();
+  endif
+
+  if (! (isnumeric (A) && ndims (A) == 2))
+    error ("normest: A must be a numeric 2-D matrix");
   endif 
+
+  if (! (isscalar (tol) && isreal (tol)))
+    error ("normest: TOL must be a real scalar");
+  endif 
+
   if (! isfloat (A))
     A = double (A);
   endif
+
   tol = max (tol, eps (class (A)));
+  ## Set random number generator to depend on target matrix
+  v = rand ("state");
+  rand ("state", trace (A));
+  ncols = columns (A);
+  ## Randomize y to avoid bad guesses for important matrices.
+  y = rand (ncols, 1);
   c = 0;
-  x = norm (A, "columns").';
-  e = norm (x);
-  if (e > 0)
-    [m, n] = size (A);
-    ## Randomize x to avoid bad guesses for important matrices.
-    ## FIXME: can we do something smarter?
-    x .*= randn (n, 1);
-    e = norm (x);
-    x /= e;
-    e0 = 0;
-    while (abs (e - e0) > tol * e)
-      e0 = e;
-      y = A*x;
-      e = norm (y);
-      if (e == 0)
-        x = rand (n, 1);
-      else
-        x = A'*(y / e);
-      endif
-      x /= norm (x);
-      c += 1;
-    endwhile
-  endif
+  n = 0;
+  do
+    n0 = n;
+    x = A * y;
+    normx = norm (x);
+    if (normx == 0)
+      x = rand (ncols, 1);
+    else
+      x = x / normx;
+    end
+    y = A' * x;
+    n = norm (y);
+    c += 1;
+  until (abs (n - n0) <= tol * n)
+
+  rand ("state", v);    # restore state of random number generator
 endfunction
+
+%!test
+%! A = toeplitz ([-2,1,0,0]);
+%! assert (normest(A), norm(A), 1e-6);
+
+%!test
+%! A = rand (10);
+%! assert (normest(A), norm(A), 1e-6);
+
+%% Test input validation
+%!error normest ()
+%!error normest (1, 2, 3)
+%!error normest ([true true])
+%!error normest (ones (3,3,3))
+%!error normest (1, [1, 2])
+%!error normest (1, 1+1i)
+

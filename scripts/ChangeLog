@@ -1,3 +1,13 @@
+2010-07-14  Rik <octave@nomad.inbox5.com>
+
+       * linear-algebra/normest.m: Improve documentation.  Add better input
+       validation.  Use same variable names in code as in documentation.
+
+2010-07-14  Marco Caliari  <marco.caliari@univr.it>
+
+       * linear-algebra/normest.m: Set the "state" of the random number
+       generator to trace(A).
+
 2010-07-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/cell2mat.m: Optimize so as to minimize the number of

@@ -1,3 +1,33 @@
+2010-07-17  Rik <octave@nomad.inbox5.com>
+
+        * interpreter/doccheck: New directory for spelling/grammar scripts.
+        * interpreter/doccheck/README: Instructions for using scripts.
+        * interpreter/doccheck/spellcheck: Script to spellcheck a Texinfo file.
+        * interpreter/doccheck/aspell.conf: GNU Aspell configuration file for
+        Octave documentation.
+        * interpreter/doccheck/aspell-octave.en.pws: Private Aspell dictionary.
+        * interpreter/doccheck/add_to_aspell_dict: Script to add new 
+        Octave-specific words to private Aspell dictionary.
+        * interpreter/octave.texi: New @nospell macro which forces Aspell to
+          ignore the word marked by the macro.
+        * interpreter/mk_doc_cache.m: Skip new @nospell macro when 
+          building doc_cache.
+        * interpreter/arith.txi, interpreter/audio.txi, 
+          interpreter/bugs.txi, interpreter/contrib.txi, 
+          interpreter/debug.txi, interpreter/diagperm.txi,
+          interpreter/dynamic.txi, interpreter/geometry.txi,
+          interpreter/matrix.txi, interpreter/numbers.txi, 
+          interpreter/oop.txi, interpreter/package.txi,
+          interpreter/sparse.txi, interpreter/tips.txi: 
+          Spellcheck documentation.
+
+          DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
+          DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
+          DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
+          DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
+          DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
+          file-io.cc, syscalls.cc
+
 2010-07-01  Rik <octave@nomad.inbox5.com>
 
         * refcard/refcard.tex: Fix italic macro typo for stem.

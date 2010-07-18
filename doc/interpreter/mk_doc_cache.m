@@ -58,6 +58,7 @@ endfor
 text = [text{:}, doc_delim];
 
 text = regexprep (text, "@seealso *{([^}]*)}", "See also: $1.");
+text = regexprep (text, "@nospell *{([^}]*)}", "$1");
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 text = regexprep (text, "@", "@@");
 

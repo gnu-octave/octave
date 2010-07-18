@@ -25,7 +25,7 @@
 ## size.  If so, @var{err} is zero, and @var{yi} is a matrix of the
 ## common size with all entries equal to @var{xi} if this is a scalar or
 ## @var{xi} otherwise.  If the inputs cannot be brought to a common size,
-## errorcode is 1, and @var{yi} is @var{xi}.  For example,
+## @var{err} is 1, and @var{yi} is @var{xi}.  For example,
 ##
 ## @example
 ## @group

@@ -23,7 +23,7 @@
 ## string of cell string array by @var{prop} and the objects containing
 ## these properties by the handle array @var{h}.
 ##
-## An example of the use of linkprops is
+## An example of the use of linkprop is
 ##
 ## @example
 ## @group

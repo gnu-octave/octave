@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b})
+## @deftypefn {Function File}  {@var{q} =} quadl (@var{f}, @var{a}, @var{b})
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol})
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
@@ -38,8 +38,8 @@
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
 ##
-## Reference: W. Gander and W. Gautschi, 'Adaptive Quadrature - 
-## Revisited', BIT Vol. 40, No. 1, March 2000, pp. 84--101.
+## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature - 
+## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
 ## @url{http://www.inf.ethz.ch/personal/gander/}
 ##
 ## @end deftypefn

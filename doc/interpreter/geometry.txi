@@ -21,7 +21,7 @@
 
 Much of the geometry code in Octave is based on the Qhull 
 library@footnote{Barber, C.B., Dobkin, D.P., and Huhdanpaa, H.T., 
-"The Quickhull algorithm for convex hulls," ACM Trans. on Mathematical 
+@cite{The Quickhull Algorithm for Convex Hulls}, ACM Trans. on Mathematical 
 Software, 22(4):469--483, Dec 1996, @url{http://www.qhull.org}}.  
 Some of the documentation for Qhull, particularly for the options that 
 can be passed to @code{delaunay}, @code{voronoi} and @code{convhull}, 
@@ -282,7 +282,7 @@ tessellation where @var{p} is a member of @var{s}, are closer to @var{p}
 than any other point in @var{s}.  The Voronoi diagram is related to the
 Delaunay triangulation of a set of points, in that the vertexes of the
 Voronoi tessellation are the centers of the circum-circles of the
-simplicies of the Delaunay tessellation. 
+simplices of the Delaunay tessellation. 
 
 @DOCSTRING(voronoi)
 
@@ -412,8 +412,8 @@ An important use of the Delaunay tessellation is that it can be used to
 interpolate from scattered data to an arbitrary set of points.  To do
 this the N-simplex of the known set of points is calculated with
 @code{delaunay}, @code{delaunay3} or @code{delaunayn}.  Then the
-simplicies in to which the desired points are found are
-identified.  Finally the vertices of the simplicies are used to
+simplices in to which the desired points are found are
+identified.  Finally the vertices of the simplices are used to
 interpolate to the desired points.  The functions that perform this
 interpolation are @code{griddata}, @code{griddata3} and
 @code{griddatan}.

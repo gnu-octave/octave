@@ -732,7 +732,7 @@ ans = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
 
 In order to change the contents of the object, we need to define a
 @code{subsasgn} method.  For example, we may make the polynomial field
-publicly writeable.
+publicly writable.
 
 @example
 @group

@@ -130,8 +130,8 @@ in the form of an inline function, function handle, or the name of a\n\
 function (in a character string).  In the case of a character string\n\
 argument, the function must accept a single argument named @var{x}, and\n\
 it must return a string value.  The function can take one or more arguments,\n\
-with the inputs args given by @var{c}, @var{d}, etc.  Equally the function\n\
-can return one or more output arguments.  For example\n\
+with the inputs arguments given by @var{c}, @var{d}, etc.  Equally the\n\
+function can return one or more output arguments.  For example\n\
 \n\
 @example\n\
 @group\n\

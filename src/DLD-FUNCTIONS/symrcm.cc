@@ -429,12 +429,12 @@ The algorithm represents a heuristic approach to the NP-complete\n\
 bandwidth minimization problem.  The implementation is based in the\n\
 descriptions found in\n\
 \n\
-E. Cuthill, J. McKee: Reducing the Bandwidth of Sparse Symmetric\n\
-Matrices. Proceedings of the 24th ACM National Conference, 157--172\n\
+E. Cuthill, J. McKee. @cite{Reducing the Bandwidth of Sparse Symmetric\n\
+Matrices}. Proceedings of the 24th ACM National Conference, 157--172\n\
 1969, Brandon Press, New Jersey.\n\
 \n\
-Alan George, Joseph W. H. Liu: Computer Solution of Large Sparse\n\
-Positive Definite Systems, Prentice Hall Series in Computational\n\
+A. George, J.W.H. Liu. @cite{Computer Solution of Large Sparse\n\
+Positive Definite Systems}, Prentice Hall Series in Computational\n\
 Mathematics, ISBN 0-13-165274-5, 1981.\n\
 \n\
 @seealso{colperm, colamd, symamd}\n\

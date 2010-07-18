@@ -1,6 +1,16 @@
+2010-07-17  Rik <octave@nomad.inbox5.com>
+
+        * DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
+          DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
+          DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
+          DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
+          DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
+          file-io.cc, syscalls.cc: Spellcheck documentation
+
 2010-07-08  Rik <octave@nomad.inbox5.com>
 
-	* DLD_FUNCTIONS/rand.cc: Correct typo in rande documentation (bug #30446).
+	* DLD_FUNCTIONS/rand.cc: Correct typo in rande documentation.
+        (bug #30446).
 
 2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
 

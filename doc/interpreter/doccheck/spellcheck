@@ -1,0 +1,46 @@
+#!/usr/bin/perl -w
+
+################################################################################
+# File   : spellcheck
+# Purpose: Spellcheck a single Texinfo file
+#          written in Perl, rather than the shell, to be more portable to OS 
+#          without good command lines such as Windows.
+# Usage  : spellcheck FILENAME.texi
+################################################################################
+use File::Temp ":POSIX";
+
+# Initialize variables
+# Octave specific configuration file for Aspell
+$aspell_conf = './doccheck/aspell.conf';
+
+################################################################################
+# Parse command line arguments
+if (@ARGV != 1)
+{
+   die ("USAGE: spellcheck <filename.texi>\n",
+        "       invoked from doc/interpreter directory\n");
+}
+
+################################################################################
+# Run Aspell with Octave-specific configuration file.
+# Avoid use of pipes and use temporary files for portability
+$fname = shift(@ARGV);
+$tmp_fname = &tmpnam();  # from File::Temp
+system ("aspell --conf=$aspell_conf list < $fname > $tmp_fname");
+
+if ($?)
+{
+   unlink ($tmp_fname);
+   die ("Aspell command unsuccesful.  Cannot continue\n");
+}
+
+open (FH, "<$tmp_fname") or die "Unable to open misspelled words file: $tmp_fname\n";
+while (<FH>) { $words{$_} = 1; }
+close (FH);
+
+# Print out sorted and uniquified list of misspelled words
+print sort keys(%words);
+
+################################################################################
+# Clean up temporary files
+unlink ($tmp_fname) or die "Unable to delete temporary file: $tmp_fname\n";

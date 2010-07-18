@@ -467,8 +467,8 @@ fn = workaround description
 @noindent
 This workaround description will not appear when listing functions in the 
 package with @code{pkg describe} but they will be published
-in the html documentation online.
-Workaround descriptions can use any html markup, but
+in the HTML documentation online.
+Workaround descriptions can use any HTML markup, but
 keep in mind that it will be enclosed in a bold-italic environment.  
 For the special case of:
 

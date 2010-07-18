@@ -129,7 +129,7 @@ such row index exists.  @code{@var{stats} (7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats} (8 : 20)} is always zero in\n\
 the current version of CCOLAMD (reserved for future use).\n\
 \n\
-The authors of the code itself are S. Larimore, T. Davis (Uni of Florida)\n\
+The authors of the code itself are S. Larimore, T. Davis (Univ. of Florida)\n\
 and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
 by the National Science Foundation (DMS-9504974, DMS-9803599, CCR-0203270),\n\
 and a grant from Sandia National Lab.  See\n\

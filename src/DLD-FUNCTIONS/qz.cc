@@ -292,7 +292,7 @@ DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})\n\
 Generalized eigenvalue problem @math{A x = s B x},\n\
-@var{QZ} decomposition.  There are three ways to call this function:\n\
+QZ decomposition.  There are three ways to call this function:\n\
 @enumerate\n\
 @item @code{lambda = qz(A,B)}\n\
 \n\
@@ -332,6 +332,7 @@ As in form [2], but allows ordering of generalized eigenpairs\n\
 for (e.g.) solution of discrete time algebraic Riccati equations.\n\
 Form 3 is not available for complex matrices, and does not compute\n\
 the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
+\n\
 @table @var\n\
 @item opt\n\
 for ordering eigenvalues of the GEP pencil.  The leading block\n\
@@ -341,7 +342,7 @@ of the revised pencil contains all eigenvalues that satisfy:\n\
 = unordered (default) \n\
 \n\
 @item \"S\"\n\
-= small: leading block has all |lambda| <=1 \n\
+= small: leading block has all |lambda| <= 1 \n\
 \n\
 @item \"B\"\n\
 = big: leading block has all |lambda| >= 1 \n\
@@ -358,7 +359,7 @@ in the closed right half-plane\n\
 @end enumerate\n\
 \n\
 Note: qz performs permutation balancing, but not scaling (see balance).\n\
-Order of output arguments was selected for compatibility with @sc{matlab}\n\
+The order of output arguments was selected for compatibility with @sc{matlab}\n\
 \n\
 @seealso{balance, eig, schur}\n\
 @end deftypefn")

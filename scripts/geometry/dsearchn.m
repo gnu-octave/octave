@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
 ## Returns the index @var{idx} or the closest point in @var{x} to the elements
 ## @var{xi}.  If @var{outval} is supplied, then the values of @var{xi} that are
-## not contained within one of the simplicies @var{tri} are set to 
+## not contained within one of the simplices @var{tri} are set to 
 ## @var{outval}.  Generally, @var{tri} is returned from @code{delaunayn 
 ## (@var{x})}.
 ## @seealso{dsearch, tsearch}

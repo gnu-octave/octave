@@ -270,7 +270,7 @@ notice unless it is glaringly wrong.
 
 Even if the problem you experience is a fatal signal, you should still
 say so explicitly.  Suppose something strange is going on, such as, your
-copy of the interpreter is out of synch, or you have encountered a bug
+copy of the interpreter is out of sync, or you have encountered a bug
 in the C library on your system.  Your copy might crash and the copy
 here would not.  If you said to expect a crash, then when the
 interpreter here fails to crash, we would know that the bug was not
@@ -359,7 +359,7 @@ install them both.  We might want to install just one.
 @item
 Use @samp{diff -c} to make your diffs.  Diffs without context are hard
 for us to install reliably.  More than that, they make it hard for us to
-study the diffs to decide whether we want to install them.  Unidiff
+study the diffs to decide whether we want to install them.  Unified diff
 format is better than contextless diffs, but not as easy to read as
 @samp{-c} format.
 
@@ -392,7 +392,7 @@ the change, send us the header line.
 The mailing list @email{help@@octave.org} exists for the discussion of
 matters related to using and installing Octave.  If would like to join
 the discussion, please send a short note to
-@email{help@strong{-request}@@octave.org}.
+@email{help-request@@octave.org}.
 
 @strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.

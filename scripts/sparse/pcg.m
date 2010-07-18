@@ -196,15 +196,14 @@
 ## @end group
 ## @end example
 ## 
-## @sc{References}
+## References:
 ## 
-##      [1] C.T.Kelley, 'Iterative methods for linear and nonlinear equations',
-##      SIAM, 1995 (the base PCG algorithm) 
+##   [1] C.T. Kelley, @cite{Iterative Methods for Linear and Nonlinear Equations},
+##       SIAM, 1995 (the base PCG algorithm) 
 ##      
-##      [2] Y.Saad, 'Iterative methods for sparse linear systems', PWS 1996
-##      (condition number estimate from PCG) Revised version of this book is
-##      available online at http://www-users.cs.umn.edu/~saad/books.html
-## 
+##   [2] Y. Saad, @cite{Iterative Methods for Sparse Linear Systems}, PWS 1996
+##       (condition number estimate from PCG) Revised version of this book is
+##       available online at @url{http://www-users.cs.umn.edu/~saad/books.html}
 ##
 ## @seealso{sparse, pcr}
 ## @end deftypefn

@@ -21,7 +21,7 @@
 ##
 ## Return all primes up to @var{n}.  
 ##
-## The algorithm used is the Sieve of Erastothenes.
+## The algorithm used is the Sieve of Eratosthenes.
 ##
 ## Note that if you need a specific number of primes you can use the
 ## fact the distance from one prime to the next is, on average,

@@ -58,7 +58,7 @@ Compute @code{aa = dd \\ a * dd} in which @code{aa} is a matrix whose\n\
 row and column norms are roughly equal in magnitude, and\n\
 @code{dd} = @code{p * d}, in which @code{p} is a permutation\n\
 matrix and @code{d} is a diagonal matrix of powers of two.  This allows\n\
-the equilibration to be computed without roundoff.  Results of\n\
+the equilibration to be computed without round-off.  Results of\n\
 eigenvalue calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\

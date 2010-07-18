@@ -33,7 +33,7 @@
 ##
 ## @noindent
 ## plots 31 stems with heights from 0 to 6 lying on a circle.  Color 
-## definitions with rgb-triples are not valid!
+## definitions with RGB-triples are not valid!
 ## @seealso{bar, barh, stem, plot}
 ## @end deftypefn
 

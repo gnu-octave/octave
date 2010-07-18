@@ -77,7 +77,7 @@
 ##   @itemx aifm
 ##     Adobe Illustrator
 ##   @item cdr
-##   @itemx corel
+##   @itemx @nospell{corel}
 ##     CorelDraw
 ##   @item dxf
 ##     AutoCAD
@@ -135,8 +135,8 @@
 ##   For a complete list, type `system ("gs -h")' to see what formats
 ## and devices are available.
 ##
-##   When the ghostscript is sent to a printer the size is determined
-## by the figure's "papersize" property.  When the ghostscript output 
+##   When Ghostscript output is sent to a printer the size is determined
+## by the figure's "papersize" property.  When the output 
 ## is sent to a file the size is determined by the figure's
 ## "paperposition" property.
 ##
@@ -150,8 +150,8 @@
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Forces a tight bounding box for eps-files.  Since the ghostscript
-## devices are conversion of an eps-file, this option works the those
+##   Forces a tight bounding box for eps-files.  Since the Ghostscript
+## devices are conversions of an eps-file, this option works for those
 ## devices as well.
 ##
 ## @itemx -S@var{xsize},@var{ysize}
@@ -165,7 +165,7 @@
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   @var{fontname} set the postscript font (for use with postscript,
-## aifm, corel and fig).  By default, 'Helvetica' is set for PS/Aifm,
+## aifm, @nospell{corel} and fig).  By default, 'Helvetica' is set for PS/aifm,
 ## and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
 ## @var{size} is given in points.  @var{fontname} is ignored for the
 ## fig device.

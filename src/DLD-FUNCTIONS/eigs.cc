@@ -296,8 +296,8 @@ Given a third return argument @var{flag}, @code{eigs} returns the status\n\
 of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.\n\
 Any other value indicates a failure to converge.\n\
 \n\
-This function is based on the @sc{arpack} package, written by R Lehoucq,\n\
-K Maschhoff, D Sorensen, and C Yang.  For more information see\n\
+This function is based on the @sc{arpack} package, written by R. Lehoucq,\n\
+K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 @url{http://www.caam.rice.edu/software/ARPACK/}.\n\
 \n\
 @seealso{eig, svds}\n\

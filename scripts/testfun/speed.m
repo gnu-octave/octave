@@ -39,20 +39,20 @@
 ## @item @var{init}
 ## Initialization expression for function argument values.  Use @var{k} 
 ## for the test number and @var{n} for the size of the test.  This should
-## compute values for all variables listed in args.  Note that init will
+## compute values for all variables used by @var{f}.  Note that init will
 ## be evaluated first for @math{k = 0}, so things which are constant throughout
 ## the test can be computed then.  The default value is @code{@var{x} =
-## randn (@var{n}, 1);}.
+## randn (@var{n}, 1)}.
 ##
 ## @item @var{f2}
 ## An alternative expression to evaluate, so the speed of the two
-## can be compared.  Default is @code{[]}.
+## can be compared.  The default is @code{[]}.
 ##
 ## @item @var{tol}
 ## If @var{tol} is @code{Inf}, then no comparison will be made between the
 ## results of expression @var{f} and expression @var{f2}.  Otherwise,
 ## expression @var{f} should produce a value @var{v} and expression @var{f2} 
-## should produce a value @var{v2}, and these shall be compared using 
+## should produce a value @var{v2}, and these will be compared using 
 ## @code{assert(@var{v},@var{v2},@var{tol})}.  If @var{tol} is positive,
 ## the tolerance is assumed to be absolute.  If @var{tol} is negative,
 ## the tolerance is assumed to be relative.  The default is @code{eps}.
@@ -82,7 +82,7 @@
 ## general order of your algorithm.  It should indicate if for 
 ## example your implementation is unexpectedly @code{O(n^2)} 
 ## rather than @code{O(n)} because it extends a vector each 
-## time through the loop rather than preallocating one which is 
+## time through the loop rather than pre-allocating one which is 
 ## big enough.  For example, in the current version of Octave,
 ## the following is not the expected @code{O(n)}:
 ##

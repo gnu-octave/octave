@@ -250,7 +250,7 @@ value to obtain or set.
 
 Note that these functions do significant error checking and so in some
 circumstances the user might prefer to access the data of the array or
-matrix directly through the fortran_vec method discussed below.
+matrix directly through the @nospell{fortran_vec} method discussed below.
 
 @deftypefn Method octave_idx_type nelem (void) const
 The total number of elements in the matrix or array.
@@ -578,7 +578,7 @@ for (int j = 0; j < nc; j++)
 @end example
 
 Finally, as the sparse types aren't just represented as a contiguous
-block of memory, the @code{fortran_vec} method of the @code{Array<T>}
+block of memory, the @nospell{@code{fortran_vec}} method of the @code{Array<T>}
 is not available.  It is however replaced by three separate methods
 @code{ridx}, @code{cidx} and @code{data}, that access the raw compressed
 column format that the Octave sparse matrices are stored in.
@@ -708,7 +708,7 @@ A third means of creating a sparse matrix is to work directly with
 the data in compressed row format.  An example of this technique might
 be
 
-@c Note the @verbatim environment is a relatively new addition to texinfo.
+@c Note the @verbatim environment is a relatively new addition to Texinfo.
 @c Therefore use the @example environment and replace @, with @@,
 @c { with @{, etc
 
@@ -942,12 +942,12 @@ consistent behavior across a number of compilers.
 
 The underlying Fortran code should use the @code{XSTOPX} function to
 replace the Fortran @code{STOP} function.  @code{XSTOPX} uses the Octave
-exception handler to treat failing cases in the fortran code
+exception handler to treat failing cases in the Fortran code
 explicitly.  Note that Octave supplies its own replacement @sc{blas}
 @code{XERBLA} function, which uses @code{XSTOPX}.
 
 If the underlying code calls @code{XSTOPX}, then the @w{@code{F77_XFCN}}
-macro should be used to call the underlying fortran function.  The Fortran
+macro should be used to call the underlying Fortran function.  The Fortran
 exception state can then be checked with the global variable
 @code{f77_exception_encountered}.  If @code{XSTOPX} will not be called,
 then the @w{@code{F77_FCN}} macro should be used instead to call the Fortran
@@ -967,7 +967,7 @@ given in the following example, where the C++ wrapper is
 @end example
 
 @noindent
-and the fortran function is
+and the Fortran function is
 
 @example
 @EXAMPLEFILE(fortsub.f)
@@ -986,7 +986,7 @@ as exception handling.  An example of the behavior of this function is
 [b, s] = fortdemo(0:3)
 error: fortsub:divide by zero
 error: exception encountered in Fortran subroutine fortsub_
-error: fortdemo: error in fortran
+error: fortdemo: error in Fortran
 @end group
 @end example
 
@@ -1091,7 +1091,7 @@ The disadvantage of this is that if the foreign code allocates any
 memory internally, then this memory might be lost during an interrupt,
 without being deallocated.  Therefore, ideally Octave itself should
 allocate any memory that is needed by the foreign code, with either the
-fortran_vec method or the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
+@nospell{fortran_vec} method or the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
 
 The Octave unwind_protect mechanism (@ref{The @code{unwind_protect} Statement})
 can also be used in oct-files.  In conjunction with the exception

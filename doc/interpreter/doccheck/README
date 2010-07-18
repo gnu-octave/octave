@@ -1,0 +1,76 @@
+################################################################################
+                                   README
+                             doccheck directory
+################################################################################
+This directory contains scripts and data for validating Octave's Texinfo
+documentation.  These scripts are internal developer tools for ensuring 
+consistent documentation formats and avoiding misspellings.
+
+The scripts provide two services:
+
+1) A spellchecker, built atop GNU Aspell with a private dictionary of keywords
+   specific to Octave.
+
+2) A grammarchecker designed from scratch in Perl to ensure a common format
+   for Octave documentation and make use of as many features of Texinfo as 
+   possible.
+
+
+################################################################################
+                                   FILES
+################################################################################
+spellcheck : script to spellcheck a single .texi file.
+aspell.conf: Octave-specific configuration file for Aspell.
+aspell-octave.en.pws : private dictionary of Octave keywords for Aspell.
+add_to_aspell_dict : script to add new words to the private Octave dictionary.
+
+grammarcheck : Perl script to check Octave Texinfo documentation in a single
+               m-file(.m), C++ file(.cc), or Texinfo file(.txi, .texi).
+
+################################################################################
+                                   USAGE
+################################################################################
+
+SPELLING:
+
+From the doc/interpreter/ directory, type 'doccheck/spellcheck FILENAME.texi'.
+This will produce a list of misspelled words on stdout.
+
++Sample Flow
+
+cd doc/interpreter
+doccheck/spellcheck arith.texi > misspellings
+vi arith.texi
+vi misspellings
+....
+  Review misspellings and identify where to correct the source (.m, .cc, .txi)
+  The original source file is marked with a comment: '@c SRC_DIR/SRC_FILE'
+  When there is no source file comment, the source file is the .txi source.
+  Make corrections to source files, *not* arith.texi which is derived.
+....
+cd ../../  # top-level of Octave development tree
+make       # propagate changes to arith.texi
+  repeat spellcheck until the words that remain are not misspellings.
+
++Special Cases
+
+Any words remaining after all misspellings have been corrected are
+Octave-specific spellings and should be added to the Octave private dictionary.
+
+doccheck/add_to_aspell_dict misspellings
+
+Words which are misspellings, but which can't be changed in the original
+source, should be marked with the @nospell{WORD} macro.  This will cause Aspell
+to ignore this particular instance of the word.
+
+For example, in linalg.texi there is a citation of a paper from the
+Manchester Centre for Computational Mathematics.  The proper spelling of Centre
+in the en_US locale is Center.  This word is not an Octave-specific exception
+which can be added to the private dictionary.  Instead the source is marked up:
+Manchester @nospell{Centre} for Computational Mathematics.
+
+Now Aspell no longer reports any misspellings for linalg.texi.
+
+GRAMMAR:
+
+To be added

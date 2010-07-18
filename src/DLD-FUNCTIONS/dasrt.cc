@@ -305,7 +305,7 @@ If the name of the constraint function is omitted, @code{dasrt} solves\n\
 the same problem as @code{daspk} or @code{dassl}.\n\
 \n\
 Note that because of numerical errors in the constraint functions\n\
-due to roundoff and integration error, @sc{Dasrt} may return false\n\
+due to round-off and integration error, @sc{Dasrt} may return false\n\
 roots, or return the same root at two or more nearly equal values of\n\
 @var{T}.  If such false roots are suspected, the user should consider\n\
 smaller error tolerances or higher precision in the evaluation of the\n\

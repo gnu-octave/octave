@@ -75,7 +75,7 @@ There are many different means of storing sparse matrix data.  What all
 of the methods have in common is that they attempt to reduce the complexity
 and storage given a-priori knowledge of the particular class of problems
 that will be solved.  A good summary of the available techniques for storing
-sparse matrix is given by Saad @footnote{Youcef Saad "SPARSKIT: A basic toolkit
+sparse matrix is given by Saad @footnote{Y. Saad "SPARSKIT: A basic toolkit
 for sparse matrix computation", 1994,
 @url{http://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}}.
 With full matrices, knowledge of the point of an element of the matrix
@@ -292,7 +292,7 @@ It should be noted, that due to the way that the Octave
 assignment functions are written that the assignment will reallocate
 the memory used by the sparse matrix at each iteration of the above loop. 
 Therefore the @dfn{spalloc} function ignores the @var{nz} argument and 
-does not preassign the memory for the matrix.  Therefore, it is vitally
+does not pre-assign the memory for the matrix.  Therefore, it is vitally
 important that code using to above structure should be vectorized
 as much as possible to minimize the number of assignments and reduce the
 number of memory allocations.

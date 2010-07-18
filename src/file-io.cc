@@ -262,7 +262,7 @@ For example, it is always a good idea to flush the standard output\n\
 stream before calling @code{input}.\n\
 \n\
 @code{fflush} returns 0 on success and an OS dependent error value\n\
-(@minus{}1 on unix) on error.\n\
+(@minus{}1 on Unix) on error.\n\
 @seealso{fopen, fclose}\n\
 @end deftypefn")
 {

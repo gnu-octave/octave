@@ -148,7 +148,7 @@ angle in degrees.
 
 Octave provides the following trigonometric functions where angles are
 specified in degrees.  These functions produce true zeros at the appropriate
-intervals rather than the small roundoff error that occurs when using
+intervals rather than the small round-off error that occurs when using
 radians.  For example:
 @example
 @group

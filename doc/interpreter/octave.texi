@@ -39,6 +39,14 @@
 @strong{See also:} \args\.
 @end macro
 
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -543,7 +551,7 @@ Object Groups
 * Stem Series::                 
 * Surface group::               
 
-Graphics backends
+Graphics Backends
 
 * Interaction with gnuplot::
 

@@ -202,7 +202,7 @@ endfor
 Sometimes the number of items can't be computed in advance, and stack-like operations
 are needed.  When elements are being repeatedly inserted at/removed from the end of an
 array, Octave detects it as stack usage and attempts to use a smarter memory management
-strategy preallocating the array in bigger chunks.  Likewise works for cell and
+strategy pre-allocating the array in bigger chunks.  Likewise works for cell and
 struct arrays.
 
 @example
@@ -518,7 +518,7 @@ string of the @w{@code{DEFUN_DLD}} macro for dynamically loadable
 functions.  The important aspects of the documentation string are
 
 @table @asis
-@item -*- texinfo -*-
+@item -*- @nospell{texinfo} -*-
 This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
 @item @@deftypefn@{class@} @dots{} @@end deftypefn
@@ -545,7 +545,7 @@ Texinfo format has been designed to generate output for online viewing
 with text terminals as well as generating high-quality printed output.
 To these ends, Texinfo has commands which control the diversion of parts
 of the document into a particular output processor.  Three formats are
-of importance: info, html and @TeX{}.  These are selected with
+of importance: info, HTML and @TeX{}.  These are selected with
 
 @example
 @group
@@ -571,7 +571,7 @@ Text area for TeX only
 @end group
 @end example
 
-Note that often @TeX{} output can be used in html documents and so often
+Note that often @TeX{} output can be used in HTML documents and so often
 the @code{@@ifhtml} blocks are unnecessary.  If no specific output
 processor is chosen, by default, the text goes into all output
 processors.  It is usual to have the above blocks in pairs to allow the

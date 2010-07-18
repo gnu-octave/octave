@@ -171,6 +171,7 @@
 ##
 ## If the first argument is an axis handle, then plot into these axes, 
 ## rather than the current axis handle returned by @code{gca}. 
+## 
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, bar,
 ## stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn

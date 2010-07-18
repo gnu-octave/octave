@@ -19,11 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rosser ()
 ##
-## Returns the Rosser matrix.  This is a difficult test case used to test
+## Return the Rosser matrix.  This is a difficult test case used to evaluate
 ## eigenvalue algorithms.
 ##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
-##           hadamard, wilkinson, compan, pascal}
+##          hadamard, wilkinson, compan, pascal}
 ## @end deftypefn
 
 ## Author: Peter Ekberg

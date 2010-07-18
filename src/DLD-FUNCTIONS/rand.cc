@@ -358,13 +358,14 @@ length <= 625 for @var{v}.  This new state will be a hash based on the\n\
 value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
-available, otherwise from cpu time, wall clock time and the current\n\
+available, otherwise from CPU time, wall clock time and the current\n\
 fraction of a second.\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
 Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and T. Nishimura,\n\
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform pseudorandom number generator}, ACM Trans. on\n\
-Modeling and Computer Simulation Vol. 8, No. 1, January pp.3-30 1998,\n\
+@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform \n\
+pseudorandom number generator}, ACM Trans. on\n\
+Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
 Do @strong{not} use for cryptography without securely hashing\n\
 several returned values together, otherwise the generator state\n\
@@ -502,9 +503,11 @@ Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
-transform from a uniform to a normal distribution.  (G. Marsaglia and\n\
-W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
+By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
+to transform from a uniform to a normal distribution.\n\
+\n\
+Reference: G. Marsaglia and W.W. Tsang,\n\
+@cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
 \n\
@@ -562,11 +565,14 @@ DEFUN_DLD (rande, args, ,
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{rande} uses the Marsaglia and Tsang ``Ziggurat technique'' to\n\
-transform from a uniform to a exponential distribution.  (G. Marsaglia and\n\
-W.W. Tsang, @cite{Ziggurat method for generating random variables},\n\
+By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
+to transform from a uniform to a exponential distribution.\n\
+\n\
+Reference: G. Marsaglia and W.W. Tsang,\n\
+@cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
+\n\
 @seealso{rand, randn, randg, randp}\n\
 @end deftypefn")
 {
@@ -866,19 +872,19 @@ and whether or not @var{l} is a scalar or a matrix.\n\
 \n\
 @table @asis\n\
 @item For scalar @var{l} <= 12, use direct method.\n\
-Press, et al., 'Numerical Recipes in C', Cambridge University Press, 1992.\n\
+W.H. Press, et al., @cite{Numerical Recipes in C}, Cambridge University Press, 1992.\n\
 @item For scalar @var{l} > 12, use rejection method.[1]\n\
-Press, et al., 'Numerical Recipes in C', Cambridge University Press, 1992.\n\
+W.H. Press, et al., @cite{Numerical Recipes in C}, Cambridge University Press, 1992.\n\
 @item For matrix @var{l} <= 10, use inversion method.[2]\n\
-Stadlober E., et al., WinRand source code, available via FTP.\n\
+E. Stadlober, et al., WinRand source code, available via FTP.\n\
 @item For matrix @var{l} > 10, use patchwork rejection method.\n\
-Stadlober E., et al., WinRand source code, available via FTP, or\n\
-H. Zechner, 'Efficient sampling from continuous and discrete\n\
-unimodal distributions', Doctoral Dissertation, 156pp., Technical\n\
+E. Stadlober, et al., WinRand source code, available via FTP, or\n\
+H. Zechner, @cite{Efficient sampling from continuous and discrete\n\
+unimodal distributions}, Doctoral Dissertation, 156pp., Technical\n\
 University Graz, Austria, 1994.\n\
 @item For @var{l} > 1e8, use normal approximation.\n\
-L. Montanet, et al., 'Review of Particle Properties', Physical Review\n\
-D 50 p1284, 1994\n\
+L. Montanet, et al., @cite{Review of Particle Properties}, Physical Review\n\
+D 50 p1284, 1994.\n\
 @end table\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
@@ -987,8 +993,8 @@ DEFUN_DLD (randperm, args, ,
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of a NxM matrix.  The complexity is O(M*N) in both time and\n\
-memory.  The randomization is performed using rand().\n\
+one in each row of a @nospell{NxM} matrix.  The complexity is O(M*N) in both\n\
+time and memory.  The randomization is performed using rand().\n\
 All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")

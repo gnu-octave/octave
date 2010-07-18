@@ -19,10 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
 ## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
-## computes n- dimensional voronoi facets.  The input matrix @var{pts}
+## computes n- dimensional Voronoi facets.  The input matrix @var{pts}
 ## of size [n, dim] contains n points of dimension dim.
-## @var{C} contains the points of the voronoi facets.  The list @var{F}
-## contains for each facet the indices of the voronoi points.
+## @var{C} contains the points of the Voronoi facets.  The list @var{F}
+## contains for each facet the indices of the Voronoi points.
 ##
 ## A second optional argument, which must be a string, contains extra options
 ## passed to the underlying qhull command.  See the documentation for the

@@ -39,7 +39,7 @@ $D_{ij} = 0$ if $i \neq j$
 @code{D(i,j) == 0} if @code{i != j}.
 @end ifnottex
 Most often, square diagonal matrices are considered; however, the definition can equally
-be applied to nonsquare matrices, in which case we usually speak of a rectangular diagonal 
+be applied to non-square matrices, in which case we usually speak of a rectangular diagonal 
 matrix.
 
 A permutation matrix is defined as a square matrix that has a single element equal to unity
@@ -243,7 +243,7 @@ The situation for right-multiplication @code{M*D} is analogous.
 
 The expressions @code{D \ M} and @code{M / D} perform inverse scaling.
 They are equivalent to solving a diagonal (or rectangular diagonal)
-in a least-squares minimum-norm sense.  In exact arithmetics, this is
+in a least-squares minimum-norm sense.  In exact arithmetic, this is
 equivalent to multiplying by a pseudoinverse.  The pseudoinverse of
 a rectangular diagonal matrix is again a rectangular diagonal matrix
 with swapped dimensions, where each nonzero diagonal element is replaced

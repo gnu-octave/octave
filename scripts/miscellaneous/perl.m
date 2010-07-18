@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile})
 ## @deftypefnx {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
-## Invoke perl script @var{scriptfile} with possibly a list of
+## Invoke Perl script @var{scriptfile} with possibly a list of
 ## command line arguments.
 ## Returns output in @var{output} and status
 ## in @var{status}.

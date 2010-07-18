@@ -38,7 +38,7 @@
 ## @code{length(A)-1}, then @var{h} contains the Hessenberg matrix such
 ## that @code{a*u == u*h}.
 ##
-## The value of @var{nu} is the dimension of the span of the krylov
+## The value of @var{nu} is the dimension of the span of the Krylov
 ## subspace (based on @var{eps1}).
 ##
 ## If @var{b} is a vector and @var{k} is greater than @var{m-1}, then
@@ -50,9 +50,9 @@
 ## If the optional parameter @var{pflg} is nonzero, row pivoting is used
 ## to improve numerical behavior.  The default value is 0.
 ##
-## Reference: Hodel and Misra, "Partial Pivoting in the Computation of
-## Krylov Subspaces", to be submitted to Linear Algebra and its
-## Applications
+## Reference: A. Hodel, P. Misra, @cite{Partial Pivoting in the Computation of
+## Krylov Subspaces of Large Sparse Systems}, Proceedings of the 42nd IEEE 
+## Conference on Decision and Control, December 2003.
 ## @end deftypefn
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>

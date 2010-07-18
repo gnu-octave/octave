@@ -217,9 +217,9 @@ DEFUN_DLD (sqrtm, args, nargout,
 @deftypefn {Loadable Function} {[@var{result}, @var{error_estimate}] =} sqrtm (@var{a})\n\
 Compute the matrix square root of the square matrix @var{a}.\n\
 \n\
-Ref: Nicholas J. Higham.  A new sqrtm for @sc{matlab}.  Numerical Analysis\n\
-Report No. 336, Manchester Centre for Computational Mathematics,\n\
-Manchester, England, January 1999.\n\
+Ref: N.J. Higham.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\
+Analysis Report No. 336, Manchester @nospell{Centre} for Computational\n\
+Mathematics, Manchester, England, January 1999.\n\
 @seealso{expm, logm}\n\
 @end deftypefn")
 {

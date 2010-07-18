@@ -447,7 +447,7 @@ Append on each write.\n\
 Create the file if it does not exist.\n\
 \n\
 @item O_NONBLOCK\n\
-Nonblocking mode.\n\
+Non-blocking mode.\n\
 \n\
 @item O_SYNC\n\
 Wait for writes to complete.\n\

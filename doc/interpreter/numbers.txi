@@ -303,7 +303,7 @@ easily be misinterpreted.
 @subsection Empty Matrices
 
 A matrix may have one or both dimensions zero, and operations on empty
-matrices are handled as described by Carl de Boor in @cite{An Empty
+matrices are handled as described by Carl @nospell{de} Boor in @cite{An Empty
 Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and C. N. Nett and W. M.
 Haddad, in @cite{A System-Theoretic Appropriate Realization of the Empty
 Matrix Concept}, IEEE Transactions on Automatic Control, Volume 38,

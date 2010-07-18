@@ -307,7 +307,7 @@ statements - use nested @code{if} statements if possible.
 @node Other Sources
 @section Other Sources
 Apart from C++ and Octave language (m-files), Octave's sources include files
-written in C, Fortran, M4, perl, unix shell, AWK, texinfo and @TeX{}.  There are
+written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo and @TeX{}.  There are
 not many rules to follow when using these other languages; some of them are
 summarized below.  In any case, the golden rule is: if you modify a source
 file, try to follow any conventions you can detect in the file or other similar
@@ -320,12 +320,12 @@ with common extensions like @code{END DO}.  Currently, we want all sources
 to be compilable with the f2c and g77 compilers, without special flags if
 possible.  This usually means that non-legacy compilers also accept the sources.
 
-The M4 macro language is mainly used for autoconf configuration files.  You should
+The M4 macro language is mainly used for Autoconf configuration files.  You should
 follow normal M4 rules when contributing to these files.  Some M4 files come
 from external source, namely the Autoconf archive
 @url{http://autoconf-archive.cryp.to}.
 
-If you give a code example in the documentation written in texinfo with the 
+If you give a code example in the documentation written in Texinfo with the 
 @code{@@example} environment, you should be aware that the text within such an 
 environment will not be wrapped.  It is recommended that you keep the lines
 short enough to fit on pages in the generated pdf or ps documents.  Here is a 

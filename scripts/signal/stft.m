@@ -27,9 +27,9 @@
 ## is applied:
 ##
 ## @table @asis
-## @item hanning
+## @item @nospell{hanning}
 ## w_type = 1
-## @item hamming
+## @item @nospell{hamming}
 ## w_type = 2
 ## @item rectangle
 ## w_type = 3

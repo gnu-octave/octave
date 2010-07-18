@@ -198,7 +198,7 @@ endfunction
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
-%! AI=linspace(min(y),max(y),26)';
+%! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"linear").');
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;

@@ -19,7 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} wilkinson (@var{n})
 ##
-## Return the Wilkinson matrix of order @var{n}.
+## Return the Wilkinson matrix of order @var{n}.  Wilkinson matrices are
+## symmetric and tridiagonal with pairs of nearly, but not exactly, equal
+## eigenvalues.
 ##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
 ##           hadamard, rosser, compan, pascal}
@@ -34,9 +36,8 @@ function retval = wilkinson (n)
     print_usage ();
   endif
 
-  nmax = length (n);
-  if (! (nmax == 1))
-    error ("wilkinson: expecting scalar argument, found something else");
+  if (! (isscalar (n) && (n == fix (n)) && n > 0))
+    error ("wilkinson: N must be an integer greater than 1");
   endif
 
   side = ones (n-1, 1);

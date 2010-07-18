@@ -55,7 +55,7 @@ the functions @code{debug_on_interrupt}, @code{debug_on_warning} and
 @DOCSTRING(debug_on_error)
 
 @node Leaving Debug Mode
-@section Leavinging Debug Mode
+@section Leaving Debug Mode
 
 To leave the debug mode, use either @code{dbcont} 
 or @code{return}.

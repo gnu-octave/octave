@@ -1,3 +1,20 @@
+2010-07-17  Rik <octave@nomad.inbox5.com>
+
+          * audio/lin2mu.m, general/common_size.m, general/interp1.m, 
+          general/interp2.m, general/interpn.m, general/quadl.m,
+          geometry/dsearchn.m, geometry/voronoi.m, geometry/voronoin.m,
+          image/hsv2rgb.m, image/imread.m, image/rgb2hsv.m,
+          linear-algebra/commutation_matrix.m, linear-algebra/condest.m,
+          linear-algebra/expm.m, linear-algebra/krylov.m,
+          linear-algebra/onenormest.m, miscellaneous/perl.m,
+          plot/linkprop.m, plot/plot.m, plot/print.m, plot/stem3.m,
+          signal/diffpara.m, signal/stft.m, sparse/pcg.m, sparse/pcr.m,
+          specfun/primes.m, special-matrix/hadamard.m, special-matrix/hankel.m,
+          special-matrix/invhilb.m, special-matrix/pascal.m,
+          special-matrix/rosser.m, special-matrix/toeplitz.m,
+          special-matrix/vander.m, special-matrix/wilkinson.m,
+          testfun/speed.m: Spellcheck documentation
+
 2010-07-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/flipdim.m: Suuport flipping about trailing singleton

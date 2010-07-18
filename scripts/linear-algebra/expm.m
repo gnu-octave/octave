@@ -35,22 +35,9 @@
 ## The Taylor series is @emph{not} the way to compute the matrix
 ## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
 ## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
-## uses Ward's diagonal
-## @tex
-## Pad\'e
-## @end tex
-## @ifnottex
-## Pade'
-## @end ifnottex
-## approximation method with three step preconditioning (SIAM Journal on
-## Numerical Analysis, 1977).  Diagonal
-## @tex
-## Pad\'e
-## @end tex
-## @ifnottex
-## Pade'
-## @end ifnottex
-##  approximations are rational polynomials of matrices
+## uses Ward's diagonal Pad@'e approximation method with three step 
+## preconditioning (SIAM Journal on Numerical Analysis, 1977).  Diagonal
+## Pad@'e approximations are rational polynomials of matrices
 ## @tex
 ## $D_q(a)^{-1}N_q(a)$
 ## @end tex
@@ -64,7 +51,7 @@
 ## @end example
 ## 
 ## @end ifnottex
-##  whose Taylor series matches the first
+## whose Taylor series matches the first
 ## @tex
 ## $2 q + 1 $
 ## @end tex
@@ -73,13 +60,7 @@
 ## @end ifnottex
 ## terms of the Taylor series above; direct evaluation of the Taylor series
 ## (with the same preconditioning steps) may be desirable in lieu of the
-## @tex
-## Pad\'e
-## @end tex
-## @ifnottex
-## Pade'
-## @end ifnottex
-## approximation when
+## Pad@'e approximation when
 ## @tex
 ## $D_q(a)$
 ## @end tex

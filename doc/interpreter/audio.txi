@@ -32,7 +32,7 @@ channels (1 for mono, 2 for stereo, etc.).
 There are many different formats for representing such data.  Currently,
 only the two most popular, @emph{linear encoding} and @emph{mu-law
 encoding}, are supported by Octave.  There is an excellent FAQ on audio
-formats by Guido van Rossum <guido@@cwi.nl> which can be found at any
+formats by Guido van Rossum @email{guido@@cwi.nl} which can be found at any
 FAQ ftp site, in particular in the directory
 @file{/pub/usenet/news.answers/audio-fmts} of the archive site
 @code{rtfm.mit.edu}.

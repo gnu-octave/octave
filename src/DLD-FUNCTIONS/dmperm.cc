@@ -147,8 +147,8 @@ permutations, such that @code{@var{s} (@var{p}, @var{q})} is in block\n\
 triangular form.  The values of @var{r} and @var{s} define the boundaries\n\
 of the blocks.  If @var{s} is square then @code{@var{r} == @var{s}}.\n\
 \n\
-The method used is described in: A. Pothen & C.-J. Fan. Computing the block\n\
-triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
+The method used is described in: A. Pothen & C.-J. Fan. @cite{Computing the\n\
+Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 16(4):303-324, 1990.\n\
 @seealso{colamd, ccolamd}\n\
 @end deftypefn")

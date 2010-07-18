@@ -33,8 +33,8 @@
 ## described above is returned in @var{dd}.  The value of @var{d} is
 ## simply the mean of @var{dd}.
 ##
-## Reference: Brockwell, Peter J. & Davis, Richard A. Time Series:
-## Theory and Methods Springer 1987.
+## Reference: P.J. Brockwell & R.A. Davis. @cite{Time Series:
+## Theory and Methods}. Springer 1987.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

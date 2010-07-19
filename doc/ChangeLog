@@ -1,7 +1,13 @@
 2010-07-18  Rik <octave@nomad.inbox5.com>
 
+        * interpreter/doccheck/spellcheck,
+	interpreter/doccheck/spellcheck/add_to_aspell_dict:
+	Use case insensitive sort in spellcheck scripts.
+
+2010-07-18  Rik <octave@nomad.inbox5.com>
+
         * interpreter/doccheck/aspell-octave.en.pws: Add Octave-specific words
-	from stats.texi to private Aspell dictionary
+	from stats.texi to private Aspell dictionary.
 
 2010-07-17  Rik <octave@nomad.inbox5.com>
 

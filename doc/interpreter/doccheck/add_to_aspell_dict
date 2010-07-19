@@ -20,7 +20,7 @@ if (@ARGV != 1)
 $new_words_fname = shift(@ARGV);
 if (!-r $new_words_fname)
 {
-	die "Unable to read input file: $new_words_fname\n";
+   die "Unable to read input file: $new_words_fname\n";
 }
 
 ################################################################################
@@ -39,6 +39,6 @@ close (FH);
 unlink ($octdict_fname) or die "Unable to delete Octave dictionary: $octdict_fname\n";
 open (FH, ">$octdict_fname") or die "Unable to open file for writing: $octdict_fname\n";
 print FH $header;
-print FH sort keys(%dict_db);
+print FH sort { uc($a) cmp uc ($b) } keys(%dict_db);
 close (FH);
 

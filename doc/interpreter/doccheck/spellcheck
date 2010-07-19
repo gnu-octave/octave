@@ -39,7 +39,7 @@ while (<FH>) { $words{$_} = 1; }
 close (FH);
 
 # Print out sorted and uniquified list of misspelled words
-print sort keys(%words);
+print sort { uc($a) cmp uc ($b) } keys(%words);
 
 ################################################################################
 # Clean up temporary files

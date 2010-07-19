@@ -6492,3 +6492,120 @@ then an empty matrix is returned.\n\
 %!error diff (1, 2, 3, 4);
 
 */
+
+template <class T>
+static Array<T> 
+do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
+{
+  Array<T> retval;
+
+  assert (rep.ndims () == 2 && rep.rows () == 2);
+
+  octave_idx_type n = rep.columns (), l = 0;
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      octave_idx_type k = rep(1, i);
+      if (k < 0)
+        {
+          error ("repelems: second row must contain nonnegative numbers");
+          return retval;
+        }
+
+      l += k;
+    }
+
+  retval.clear (1, l);
+  T *dest = retval.fortran_vec ();
+  l = 0;
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      octave_idx_type k = rep(1, i);
+      std::fill_n (dest, k, src.checkelem (rep(0, i) - 1));
+      dest += k;
+    }
+
+  return retval;
+}
+
+DEFUN (repelems, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} repelems (@var{x}, @var{r})\n\
+Constructs a vector of repeated elements of @var{x}. @var{r}\n\
+should be a 2-by-n integer matrix.\n\
+The result is a row vector constructed as follows:\n\
+\n\
+@example\n\
+  y = [];\n\
+  for i = 1:columns (n)\n\
+    y = [y, x(n(1,i)*ones(1, n(2,i)))];\n\
+  endfor\n\
+@end example\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      octave_value x = args(0);
+
+      const Matrix rm = args(1).matrix_value ();
+      if (error_state)
+        return retval;
+      else if (rm.rows () != 2 || rm.ndims () != 2)
+        {
+          error ("repelems: second argument must be a matrix with two rows");
+          return retval;
+        }
+      else
+        {
+          NoAlias< Array<octave_idx_type> > r (rm.dims ());
+
+          for (octave_idx_type i = 0; i < rm.numel (); i++)
+            {
+              octave_idx_type rx = rm(i);
+              if (static_cast<double> (rx) != rm(i))
+                {
+                  error ("repelems: a matrix of integers is expected.");
+                  return retval;
+                }
+
+              r(i) = rx;
+            }
+
+          switch (x.builtin_type ())
+            {
+#define BTYP_BRANCH(X, EX) \
+            case btyp_ ## X: \
+              retval = do_repelems (x.EX ## _value (), r); \
+              break
+
+              BTYP_BRANCH (double, array);
+              BTYP_BRANCH (float, float_array);
+              BTYP_BRANCH (complex, complex_array);
+              BTYP_BRANCH (float_complex, float_complex_array);
+              BTYP_BRANCH (bool, bool_array);
+              BTYP_BRANCH (char, char_array);
+
+              BTYP_BRANCH (int8,  int8_array);
+              BTYP_BRANCH (int16, int16_array);
+              BTYP_BRANCH (int32, int32_array);
+              BTYP_BRANCH (int64, int64_array);
+              BTYP_BRANCH (uint8,  uint8_array);
+              BTYP_BRANCH (uint16, uint16_array);
+              BTYP_BRANCH (uint32, uint32_array);
+              BTYP_BRANCH (uint64, uint64_array);
+
+              BTYP_BRANCH (cell, cell);
+              //BTYP_BRANCH (struct, map);//FIXME
+#undef BTYP_BRANCH
+
+            default:
+              gripe_wrong_type_arg ("repelems", x);
+            }
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}

@@ -17,19 +17,19 @@
 	* interpreter/doccheck/aspell.conf: GNU Aspell configuration file for
 	Octave documentation.
 	* interpreter/doccheck/aspell-octave.en.pws: Private Aspell dictionary.
-	* interpreter/doccheck/add_to_aspell_dict: Script to add new 
+	* interpreter/doccheck/add_to_aspell_dict: Script to add new
 	Octave-specific words to private Aspell dictionary.
 	* interpreter/octave.texi: New @nospell macro which forces Aspell to
 	  ignore the word marked by the macro.
-	* interpreter/mk_doc_cache.m: Skip new @nospell macro when 
+	* interpreter/mk_doc_cache.m: Skip new @nospell macro when
 	  building doc_cache.
-	* interpreter/arith.txi, interpreter/audio.txi, 
-	  interpreter/bugs.txi, interpreter/contrib.txi, 
+	* interpreter/arith.txi, interpreter/audio.txi,
+	  interpreter/bugs.txi, interpreter/contrib.txi,
 	  interpreter/debug.txi, interpreter/diagperm.txi,
 	  interpreter/dynamic.txi, interpreter/geometry.txi,
-	  interpreter/matrix.txi, interpreter/numbers.txi, 
+	  interpreter/matrix.txi, interpreter/numbers.txi,
 	  interpreter/oop.txi, interpreter/package.txi,
-	  interpreter/sparse.txi, interpreter/tips.txi: 
+	  interpreter/sparse.txi, interpreter/tips.txi:
 	  Spellcheck documentation.
 
 2010-07-01  Rik <octave@nomad.inbox5.com>

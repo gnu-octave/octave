@@ -142,7 +142,7 @@
 
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
-	* audio/lin2mu.m, general/common_size.m, general/interp1.m, 
+	* audio/lin2mu.m, general/common_size.m, general/interp1.m,
 	general/interp2.m, general/interpn.m, general/quadl.m,
 	geometry/dsearchn.m, geometry/voronoi.m, geometry/voronoin.m,
 	image/hsv2rgb.m, image/imread.m, image/rgb2hsv.m,

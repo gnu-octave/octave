@@ -9,13 +9,13 @@
 	(view2status): new function
 	* src/graphics.cc: Remove limitations for zooming and translation.
 	(axes::properties::rotate_view): new function
-	
+
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
 	  DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
 	  DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
-	  DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
+	  DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc,
 	  DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
 	  file-io.cc, syscalls.cc: Spellcheck documentation
 
@@ -134,13 +134,13 @@
 	overload.
 	(do_single_type_concat<octave_map>): New template specialization.
 	(tree_matrix::rvalue1): Specialize for cell and struct classes.
-	* oct-map.cc (octave_map::do_cat (..., const octave_map *, ...)): 
+	* oct-map.cc (octave_map::do_cat (..., const octave_map *, ...)):
 	Assign result dimensions.
 
 2010-07-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-map.cc (octave_map::cat (..., const octave_scalar_map *)):
-	Handle special dims (-1, -2). 
+	Handle special dims (-1, -2).
 	* data.cc (do_single_type_concat_map): Don't handle them here.
 
 2010-07-01  Jaroslav Hajek  <highegg@gmail.com>
@@ -229,7 +229,7 @@
 	(octave_base_value::map_value): Return octave_map.
 	(octave_base_value::scalar_map_value): New method.
 	* ov-base.cc (octave_base_value::old_map_value,
-	octave_base_value::map_value, octave_base_value::scalar_map_value): 
+	octave_base_value::map_value, octave_base_value::scalar_map_value):
 	Add default implementations.
 	* ov-class.h (octave_class::old_map_value): New override.
 	* ov-class.cc: Use old_map_value for efficiency.

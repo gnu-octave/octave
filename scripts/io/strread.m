@@ -15,18 +15,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {[@var{a}, @dots{}] =} strread (@var{str})
-## @deftypefnx {Function File}  {[@var{a}, @dots{}] =} strread (@var{str}, @var{format})
+## @deftypefn  {Function File} {[@var{a}, @dots{}] =} strread (@var{str})
+## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @
 ## @var{prop1}, @var{value1}, @dots{})
 ## Read data from a string.
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the
-## specifiers in @var{format}.  The first word is matched to the first specifier,
-## the second to the second specifier and so forth.  If there are more words than
+## specifiers in @var{format}.  The first word is matched to the first
+## specifier,
+## the second to the second specifier and so forth.  If there are more words
+## than
 ## specifiers, the process is repeated until all words have been processed.
 ##
-## The string @var{format} describes how the words in @var{str} should be parsed.
+## The string @var{format} describes how the words in @var{str} should be
+## parsed.
 ## It may contain any combination of the following specifiers:
 ## @table @code
 ## @item %s
@@ -41,7 +44,8 @@
 ## Parsed word corresponding to the first specifier are returned in the first
 ## output argument and likewise for the rest of the specifiers.
 ##
-## By default, @var{format} is @t{"%f"}, meaning that numbers are read from @var{str}.
+## By default, @var{format} is @t{"%f"}, meaning that numbers are read from
+## @var{str}.
 ##
 ## For example, the string
 ##

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} datenum (@var{year}, @var{month}, @var{day})
+## @deftypefn  {Function File} {} datenum (@var{year}, @var{month}, @var{day})
 ## @deftypefnx {Function File} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
 ## @deftypefnx {Function File} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
 ## @deftypefnx {Function File} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})

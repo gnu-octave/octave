@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} std (@var{x})
+## @deftypefn  {Function File} {} std (@var{x})
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, compute the standard deviation of the elements
@@ -40,19 +40,20 @@
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ##
-## The argument @var{opt} determines the type of normalization to use.  Valid values
-## are
+## The argument @var{opt} determines the type of normalization to use.  Valid
+## values are
 ##
 ## @table @asis 
 ## @item 0:
-##   normalizes with @math{N-1}, provides the square root of best unbiased estimator of 
-##   the variance [default]
+##   normalizes with @math{N-1}, provides the square root of best unbiased 
+##   estimator of the variance [default]
 ## @item 1:
-##   normalizes with @math{N}, this provides the square root of the second moment around 
-##   the mean
+##   normalizes with @math{N}, this provides the square root of the second
+##   moment around the mean
 ## @end table
 ##
-## The third argument @var{dim} determines the dimension along which the standard
+## The third argument @var{dim} determines the dimension along which the
+## standard
 ## deviation is calculated.
 ## @seealso{mean, median}
 ## @end deftypefn

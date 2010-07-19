@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} __fdjac__ (@var{fcn}, @var{x}, @var{fvec}, @var{err})
+## @deftypefn {Function File} {} __fdjac__ (@var{fcn}, @var{x}, @var{fvec}, @var{err})
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
+## @deftypefn  {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} pcolor (@var{c})
 ## Density plot for given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
-## the mesh's vertices.  If @var{x} and @var{y} are vectors, then a typical vertex
+## the mesh's vertices.  If @var{x} and @var{y} are vectors, then a typical
+## vertex
 ## is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
 ## correspond to different @var{x} values and rows of @var{c} correspond
 ## to different @var{y} values.

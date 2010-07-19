@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{idx} =} strchr (@var{str}, @var{chars})
+## @deftypefn  {Function File} {@var{idx} =} strchr (@var{str}, @var{chars})
 ## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n})
 ## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
-## Search for the string @var{str} for occurrences of characters from the set @var{chars}.
+## Search for the string @var{str} for occurrences of characters from the set
+## @var{chars}.
 ## The return value, as well as the @var{n} and @var{direction} arguments behave
 ## identically as in @code{find}.
 ##

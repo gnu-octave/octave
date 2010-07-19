@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} test @var{name}
+## @deftypefn  {Function File} {} test @var{name}
 ## @deftypefnx {Function File} {} test @var{name} quiet|normal|verbose
 ## @deftypefnx {Function File} {} test ('@var{name}', 'quiet|normal|verbose', @var{fid})
 ## @deftypefnx {Function File} {} test ([], 'explain', @var{fid})

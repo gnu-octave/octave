@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{varname} =} genvarname (@var{str})
+## @deftypefn  {Function File} {@var{varname} =} genvarname (@var{str})
 ## @deftypefnx {Function File} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
 ## Create unique variable(s) from @var{str}.  If @var{exclusions} is
 ## given, then the variable(s) will be unique to each other and to

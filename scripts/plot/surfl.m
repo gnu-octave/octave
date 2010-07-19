@@ -17,12 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} surfl (@var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} surfl (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} surfl (@var{z})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
 ## @deftypefnx {Function File} {} surfl (@dots{},"light")
-## Plot a lighted surface given matrices @var{x}, and @var{y} from @code{meshgrid} and
+## Plot a lighted surface given matrices @var{x}, and @var{y} from
+## @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
@@ -30,7 +31,8 @@
 ## to different @var{y} values.
 ##
 ## The light direction can be specified using @var{L}.  It can be
-## given as 2-element vector [azimuth, elevation] in degrees or as 3-element vector [lx, ly, lz].
+## given as 2-element vector [azimuth, elevation] in degrees or as 3-element
+## vector [lx, ly, lz].
 ## The default value is rotated 45° counter-clockwise from the current view.
 ##
 ## The material properties of the surface can specified using a 4-element vector
@@ -43,8 +45,10 @@
 ## @item "EXP" specular exponent
 ## @end table
 ## 
-## The default lighting mode "cdata", changes the cdata property to give the impression
-## of a lighted surface.  Please note: the alternative "light" mode, which creates a light
+## The default lighting mode "cdata", changes the cdata property to give the
+## impression
+## of a lighted surface.  Please note: the alternative "light" mode, which
+## creates a light
 ## object to illuminate the surface is not implemented (yet).
 ##
 ## Example:

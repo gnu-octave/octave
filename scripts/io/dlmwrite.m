@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dlmwrite (@var{file}, @var{a})
+## @deftypefn  {Function File} {} dlmwrite (@var{file}, @var{a})
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{key}, @var{val} @dots{})
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, "-append", @dots{})

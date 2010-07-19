@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{text}] =} dos (@var{command})
+## @deftypefn  {Function File} {[@var{status}, @var{text}] =} dos (@var{command})
 ## @deftypefnx {Function File} {[@var{status}, @var{text}] =} dos (@var{command}, "-echo")
 ## Execute a system command if running under a Windows-like operating
 ## system, otherwise do nothing.  Return the exit status of the program

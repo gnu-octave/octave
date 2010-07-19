@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spy (@var{x})
+## @deftypefn  {Function File} {} spy (@var{x})
 ## @deftypefnx {Function File} {} spy (@dots{}, @var{markersize})
 ## @deftypefnx {Function File} {} spy (@dots{}, @var{line_spec})
 ## Plot the sparsity pattern of the sparse matrix @var{x}.  If the argument

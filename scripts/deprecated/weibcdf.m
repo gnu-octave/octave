@@ -27,7 +27,7 @@
 ## @end example
 ##
 ## @noindent
-## for @var{x} >= 0.
+## for @var{x} @geq{} 0.
 ## @end deftypefn
 
 ## Deprecated in version 3.0

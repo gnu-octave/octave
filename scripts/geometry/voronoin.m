@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
+## @deftypefn  {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
 ## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
 ## computes n- dimensional Voronoi facets.  The input matrix @var{pts}
 ## of size [n, dim] contains n points of dimension dim.

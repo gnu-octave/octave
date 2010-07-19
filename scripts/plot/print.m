@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} print ()
+## @deftypefn  {Function File} {} print ()
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
@@ -86,9 +86,9 @@
 ##     Microsoft Enhanced Metafile
 ##   @item fig
 ##     XFig.  If this format is selected the additional options
-##     @code{-textspecial} or @code{-textnormal} can be used to control
+##     @option{-textspecial} or @option{-textnormal} can be used to control
 ##     whether the special flag should be set for the text in
-##     the figure (default is @code{-textnormal}). 
+##     the figure (default is @option{-textnormal}). 
 ##   @item hpgl
 ##     HP plotter language
 ##   @item mf
@@ -155,7 +155,7 @@
 ## devices as well.
 ##
 ## @itemx -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG.  If
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  If
 ## using the command form of the print function, you must quote the
 ## @var{xsize},@var{ysize} option.  For example, by writing
 ## @w{@code{"-S640,480"}}.  The size defaults to that specified by the

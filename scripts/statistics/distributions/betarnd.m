@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, @var{sz})
 ## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of 
 ## random samples from the Beta distribution with parameters @var{a} and

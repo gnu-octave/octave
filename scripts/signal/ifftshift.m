@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ifftshift (@var{v})
+## @deftypefn  {Function File} {} ifftshift (@var{v})
 ## @deftypefnx {Function File} {} ifftshift (@var{v}, @var{dim})
 ## Undo the action of the @code{fftshift} function.  For even length 
 ## @var{v}, @code{fftshift} is its own inverse, but odd lengths differ 

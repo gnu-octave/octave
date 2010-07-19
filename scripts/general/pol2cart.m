@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
-## @deftypefnx  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{p})
+## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{p})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{p})
 ## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
 ## Transform polar or cylindrical to Cartesian coordinates.

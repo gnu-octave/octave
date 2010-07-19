@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{xl} =} zlim ()
+## @deftypefn  {Function File} {@var{xl} =} zlim ()
 ## @deftypefnx {Function File} {} zlim (@var{xl})
 ## @deftypefnx {Function File} {@var{m} =} zlim ('mode')
 ## @deftypefnx {Function File} {} zlim (@var{m})

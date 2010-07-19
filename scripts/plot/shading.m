@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} shading (@var{type})
+## @deftypefn  {Function File} {} shading (@var{type})
 ## @deftypefnx {Function File} {} shading (@var{ax}, @dots{})
 ## Set the shading of surface or patch graphic objects.  Valid arguments
 ## for @var{type} are

@@ -35,7 +35,7 @@
 ## @end group
 ## @end example
 ##
-## This function is patterned after AWK.  You can get the same result by
+## This function is patterned after AWK@.  You can get the same result by
 ## @code{@var{s}(@var{offset} : (@var{offset} + @var{len} - 1))}.
 ## @end deftypefn
 

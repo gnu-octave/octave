@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} meansq (@var{x})
+## @deftypefn  {Function File} {} meansq (@var{x})
 ## @deftypefnx {Function File} {} meansq (@var{x}, @var{dim})
 ## For vector arguments, return the mean square of the values.
 ## For matrix arguments, return a row vector containing the mean square

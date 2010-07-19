@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dx} =} gradient (@var{m})
+## @deftypefn  {Function File} {@var{dx} =} gradient (@var{m})
 ## @deftypefnx {Function File} {[@var{dx}, @var{dy}, @var{dz}, @dots{}] =} gradient (@var{m})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{s})
 ## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{m}, @var{x}, @var{y}, @var{z}, @dots{})
@@ -38,8 +38,10 @@
 ## @var{s} parameter.  If @var{s} is a scalar, it is assumed to be the spacing
 ## for all dimensions. 
 ## Otherwise, separate values of the spacing can be supplied by
-## the @var{x}, @dots{} arguments.  Scalar values specify an equidistant spacing.
-## Vector values for the @var{x}, @dots{} arguments specify the coordinate for that
+## the @var{x}, @dots{} arguments.  Scalar values specify an equidistant
+## spacing.
+## Vector values for the @var{x}, @dots{} arguments specify the coordinate for
+## that
 ## dimension.  The length must match their respective dimension of @var{m}.
 ## 
 ## At boundary points a linear extrapolation is applied.  Interior points

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} treeplot (@var{tree})
+## @deftypefn  {Function File} {} treeplot (@var{tree})
 ## @deftypefnx {Function File} {} treeplot (@var{tree}, @var{line_style}, @var{edge_style})
 ## Produces a graph of tree or forest.  The first argument is vector of
 ## predecessors, optional parameters @var{line_style} and @var{edge_style}

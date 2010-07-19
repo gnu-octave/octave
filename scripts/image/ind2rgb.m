@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
+## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
 ## @deftypefnx {Function File} {[@var{r}, @var{g}, @var{b}] =} ind2rgb (@var{x}, @var{map})
 ## Convert an indexed image to red, green, and blue color components.
 ## If the colormap doesn't contain enough colors, pad it with the

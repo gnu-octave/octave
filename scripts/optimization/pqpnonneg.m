@@ -19,15 +19,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d})
+## @deftypefn  {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d})
 ## @deftypefnx {Function File} {@var{x} =} pqpnonneg (@var{c}, @var{d}, @var{x0})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}] =} pqpnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}] =} pqpnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}] =} pqpnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{minval}, @var{exitflag}, @var{output}, @var{lambda}] =} pqpnonneg (@dots{})
-## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >=
-## 0}.  @var{c} and @var{d} must be real, and @var{c} must be symmetric and positive definite.
-## @var{x0} is an optional initial guess for @var{x}.
+## Minimize @code{1/2*x'*c*x + d'*x} subject to @code{@var{x} >= 0}.  @var{c}
+## and @var{d} must be real, and @var{c} must be symmetric and positive
+## definite.  @var{x0} is an optional initial guess for @var{x}.
 ##
 ## Outputs:
 ## @itemize @bullet

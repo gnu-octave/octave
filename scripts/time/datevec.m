@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{v} =} datevec (@var{date})
+## @deftypefn  {Function File} {@var{v} =} datevec (@var{date})
 ## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f})
 ## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{p})
 ## @deftypefnx {Function File} {@var{v} =} datevec (@var{date}, @var{f}, @var{p})

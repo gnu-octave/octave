@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {[@var{l}, @var{u}] =} splu (@var{a})
+## @deftypefn  {Loadable Function} {[@var{l}, @var{u}] =} splu (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}] =} splu (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}, @var{Q}] =} splu (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{P}, @var{Q}] =} splu (@dots{}, @var{thres})

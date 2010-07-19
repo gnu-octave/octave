@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ezplot (@var{f})
+## @deftypefn  {Function File} {} ezplot (@var{f})
 ## @deftypefnx {Function File} {} ezplot (@var{fx}, @var{fy})
 ## @deftypefnx {Function File} {} ezplot (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezplot (@dots{}, @var{n})

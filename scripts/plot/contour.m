@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} contour (@var{z})
+## @deftypefn  {Function File} {} contour (@var{z})
 ## @deftypefnx {Function File} {} contour (@var{z}, @var{vn})
 ## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})

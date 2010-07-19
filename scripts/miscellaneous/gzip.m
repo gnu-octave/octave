@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} gzip (@var{files})
+## @deftypefn  {Function File} {@var{entries} =} gzip (@var{files})
 ## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
 ## Compress the list of files and/or directories specified in @var{files}.
 ## Each file is compressed separately and a new file with a '.gz' extension

@@ -22,7 +22,8 @@
 ## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
 ## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
-## Solve an unconstrained optimization problem defined by the function @var{fcn}.
+## Solve an unconstrained optimization problem defined by the function
+## @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
 ## In other words, this function attempts to determine a vector @var{x} such 
@@ -50,7 +51,8 @@
 ## 
 ## @table @asis
 ## @item 1
-## Converged to a solution point.  Relative gradient error is less than specified
+## Converged to a solution point.  Relative gradient error is less than
+## specified
 ## by TolFun.
 ## @item 2
 ## Last relative step size was less that TolX.
@@ -63,7 +65,7 @@
 ## @end table
 ##
 ## Optionally, fminunc can also yield a structure with convergence statistics
-## (@var{output}), the output gradient (@var{grad}) and approximate hessian
+## (@var{output}), the output gradient (@var{grad}) and approximate Hessian
 ## (@var{hess}).
 ##
 ## Note: If you only have a single nonlinear equation of one variable, using 

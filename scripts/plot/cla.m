@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cla ()
+## @deftypefn  {Function File} {} cla ()
 ## @deftypefnx {Function File} {} cla ("reset")
 ## @deftypefnx {Function File} {} cla (@var{hax})
 ## @deftypefnx {Function File} {} cla (@var{hax}, "reset")

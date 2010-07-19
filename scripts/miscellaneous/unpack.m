@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
+## @deftypefn  {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
 ## Unpack the archive @var{file} based on its extension to the directory
 ## @var{dir}.  If @var{file} is a cellstr, then all files will be

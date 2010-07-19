@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} optimset ()
+## @deftypefn  {Function File} {} optimset ()
 ## @deftypefnx {Function File} {} optimset (@var{par}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} optimset (@var{old}, @var{par}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} optimset (@var{old}, @var{new})

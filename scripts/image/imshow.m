@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imshow (@var{im})
+## @deftypefn  {Function File} {} imshow (@var{im})
 ## @deftypefnx {Function File} {} imshow (@var{im}, @var{limits})
 ## @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
 ## @deftypefnx {Function File} {} imshow (@var{rgb}, @dots{})

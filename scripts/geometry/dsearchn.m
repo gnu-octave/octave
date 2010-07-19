@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
+## @deftypefn  {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
 ## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
 ## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{xi})
 ## @deftypefnx {Function File} {[@var{idx}, @var{d}] =} dsearchn (@dots{})

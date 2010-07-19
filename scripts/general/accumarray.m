@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
+## @deftypefn  {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
 ## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
@@ -53,8 +53,10 @@
 ## @end group
 ## @end example
 ##
-## The complexity in the non-sparse case is generally O(M+N), where N is the number of
-## subscripts and M is the maximum subscript (linearized in multidimensional case).
+## The complexity in the non-sparse case is generally O(M+N), where N is the
+## number of
+## subscripts and M is the maximum subscript (linearized in multi-dimensional
+## case).
 ## If @var{func} is one of @code{@@sum} (default), @code{@@max}, @code{@@min}
 ## or @code{@@(x) @{x@}}, an optimized code path is used. 
 ## Note that for general reduction function the interpreter overhead can play a

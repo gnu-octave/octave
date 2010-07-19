@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{sz})
 ## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
 ## random samples from the binomial distribution with parameters @var{n}

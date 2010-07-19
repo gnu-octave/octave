@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
-## Plot a triangular surface in 3D.  The variable @var{tri} is the triangular
+## Plot a triangular surface in 3D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned 
 ## from @code{delaunay}.  The variable @var{z} is value at the point 
 ## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic 

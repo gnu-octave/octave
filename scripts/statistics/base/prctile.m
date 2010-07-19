@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} prctile (@var{x}, @var{p})
+## @deftypefn  {Function File} {@var{y} =} prctile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p}, @var{dim})
 ## For a sample @var{x}, compute the quantiles, @var{y}, corresponding
 ## to the cumulative probability values, P, in percent.  All non-numeric

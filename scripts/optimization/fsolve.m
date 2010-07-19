@@ -49,7 +49,7 @@
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ## 
 ## If @code{"Updating"} is "on", the function will attempt to use Broyden
-## updates to update the Jacobian, in order to reduce the amount of jacobian
+## updates to update the Jacobian, in order to reduce the amount of Jacobian
 ## calculations.
 ## If your user function always calculates the Jacobian (regardless of number
 ## of output arguments), this option provides no advantage and should be set to
@@ -68,7 +68,8 @@
 ## 
 ## @table @asis
 ## @item 1
-## Converged to a solution point.  Relative residual error is less than specified
+## Converged to a solution point.  Relative residual error is less than
+## specified
 ## by TolFun.
 ## @item 2
 ## Last relative step size was less that TolX.
@@ -84,15 +85,15 @@
 ## @code{fzero} is usually a much better idea.
 ## @seealso{fzero, optimset}
 ##
-## Note about user-supplied jacobians:
-## As an inherent property of the algorithm, jacobian is always requested for a
+## Note about user-supplied Jacobians:
+## As an inherent property of the algorithm, Jacobian is always requested for a
 ## solution vector whose residual vector is already known, and it is the last
 ## accepted successful step.  Often this will be one of the last two calls, but
 ## not always.  If the savings by reusing intermediate results from residual
-## calculation in jacobian calculation are significant, the best strategy is to
+## calculation in Jacobian calculation are significant, the best strategy is to
 ## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
 ## called with that vector, then the intermediate results should be saved for
-## future jacobian evaluation, and should be kept until a jacobian evaluation
+## future Jacobian evaluation, and should be kept until a Jacobian evaluation
 ## is requested or until outputfcn is called with a different vector, in which
 ## case they should be dropped in favor of this most recent vector.  A short
 ## example how this can be achieved follows:

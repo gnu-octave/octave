@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} num2str (@var{x})
+## @deftypefn  {Function File} {} num2str (@var{x})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
 ## Convert a number (or array) to a string (or a character array).  The

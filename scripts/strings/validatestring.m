@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
+## @deftypefn  {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@dots{}, @var{position})

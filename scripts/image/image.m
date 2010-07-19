@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {} image (@var{img})
+## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap, and the colormap will be scaled so that the

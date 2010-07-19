@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mget (@var{f}, @var{file})
+## @deftypefn  {Function File} {} mget (@var{f}, @var{file})
 ## @deftypefnx {Function File} {} mget (@var{f}, @var{dir})
 ## @deftypefnx {Function File} {} mget (@dots{}, @var{target})
 ## Downloads a remote file @var{file} or directory @var{dir} to the local

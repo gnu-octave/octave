@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} lognrnd (@var{mu}, @var{sigma}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## lognormal distribution with parameters @var{mu} and @var{sigma}.  Both

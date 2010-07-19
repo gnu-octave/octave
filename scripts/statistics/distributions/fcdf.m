@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} fcdf (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the CDF at @var{x} of the F
 ## distribution with @var{m} and @var{n} degrees of freedom, i.e.,
-## PROB (F (@var{m}, @var{n}) <= @var{x}). 
+## PROB (F (@var{m}, @var{n}) @leq{} @var{x}). 
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} close
+## @deftypefn  {Command} {} close
 ## @deftypefnx {Command} {} close (@var{n})
 ## @deftypefnx {Command} {} close all
 ## @deftypefnx {Command} {} close all hidden

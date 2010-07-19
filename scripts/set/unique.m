@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unique (@var{x})
+## @deftypefn  {Function File} {} unique (@var{x})
 ## @deftypefnx {Function File} {} unique (@var{x}, "rows")
 ## @deftypefnx {Function File} {} unique (@dots{}, "first")
 ## @deftypefnx {Function File} {} unique (@dots{}, "last")

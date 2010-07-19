@@ -24,7 +24,7 @@
 ## $2^n \ge |x|$.
 ## @end tex
 ## @ifnottex
-## 2^n >= abs (x).
+## 2^n @geq{} abs (x).
 ## @end ifnottex
 ##
 ## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.

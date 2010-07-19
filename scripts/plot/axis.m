@@ -24,8 +24,8 @@
 ## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi, @var{y}_lo, @var{y}_hi, @var{z}_lo, @var{z}_hi])
 ## @deftypefnx {Function File} {} axis (@var{option})
 ## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
-## @deftypefnx  {Function File} {} axis (@var{h}, @dots{})
-## @deftypefnx  {Function File} {@var{limits} =} axis ()
+## @deftypefnx {Function File} {} axis (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{limits} =} axis ()
 ## Set axis limits for plots.
 ##
 ## The argument @var{limits} should be a 2, 4, or 6 element vector.  The

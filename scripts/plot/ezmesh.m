@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ezmesh (@var{f})
+## @deftypefn  {Function File} {} ezmesh (@var{f})
 ## @deftypefnx {Function File} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{n})

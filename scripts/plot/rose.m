@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rose (@var{th}, @var{r})
+## @deftypefn  {Function File} {} rose (@var{th}, @var{r})
 ## @deftypefnx {Function File} {} rose (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
 ## @deftypefnx {Function File} {[@var{r}, @var{th}] =} rose (@dots{})

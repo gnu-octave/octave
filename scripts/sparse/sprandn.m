@@ -20,7 +20,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
+## @deftypefn  {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
 ## @deftypefnx {Function File} {} sprandn (@var{s})
 ## Generate a random sparse matrix.  The size of the matrix will be
 ## @var{m} by @var{n}, with a density of values given by @var{d}.

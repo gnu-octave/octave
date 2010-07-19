@@ -18,7 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} spdiag (@var{v}, @var{k})
-## This function has been deprecated.  Use @code{sparse (diag (@dots{}))} instead.
+## This function has been deprecated.  Use @code{sparse (diag (@dots{}))}
+## instead.
 ## @end deftypefn
 
 ## Deprecated in version 3.2

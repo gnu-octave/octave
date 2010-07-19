@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} __fltk_print__ (@var{...})
+## @deftypefn {Function File} {} __fltk_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 

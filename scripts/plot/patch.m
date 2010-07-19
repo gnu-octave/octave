@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} patch ()
+## @deftypefn  {Function File} {} patch ()
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{fv})

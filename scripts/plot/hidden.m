@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hidden (@var{mode})
+## @deftypefn  {Function File} {} hidden (@var{mode})
 ## @deftypefnx {Function File} {} hidden ()
 ## Manipulation the mesh hidden line removal.  Called with no argument
 ## the hidden line removal is toggled.  The argument @var{mode} can be either

@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} prepad (@var{x}, @var{l}, @var{c})
+## @deftypefn  {Function File} {} prepad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
 ## Prepend (append) the scalar value @var{c} to the vector @var{x}
 ## until it is of length @var{l}.  If the third argument is not

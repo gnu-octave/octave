@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
+## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
 ## Set up a plot grid with @var{cols} by @var{rows} subwindows and plot
 ## in location given by @var{index}.

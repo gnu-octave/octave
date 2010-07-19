@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} grid (@var{arg})
+## @deftypefn  {Function File} {} grid (@var{arg})
 ## @deftypefnx {Function File} {} grid ("minor", @var{arg2})
 ## @deftypefnx {Function File} {} grid (@var{hax}, @dots{})
 ## Force the display of a grid on the plot.

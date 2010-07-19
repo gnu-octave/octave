@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+## @deftypefn  {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
 ## @deftypefnx {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
 ## @deftypefnx {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
 ## @deftypefnx {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
@@ -33,14 +33,17 @@
 ## Bessel functions of the second kind.  If the argument @var{opt} is supplied,
 ## the result is multiplied by @code{exp(-abs(imag(x)))}.
 ## @item besseli
-## Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,
+## Modified Bessel functions of the first kind.  If the argument @var{opt} is
+## supplied,
 ## the result is multiplied by @code{exp(-abs(real(x)))}.
 ## @item besselk
-## Modified Bessel functions of the second kind.  If the argument @var{opt} is supplied,
+## Modified Bessel functions of the second kind.  If the argument @var{opt} is
+## supplied,
 ## the result is multiplied by @code{exp(x)}.
 ## @item besselh
 ## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
-## = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied by
+## = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied
+## by
 ## @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
 ## @var{k} = 2.
 ## @end table

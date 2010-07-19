@@ -25,7 +25,7 @@
 ## approximately follows a standard normal distribution when @var{n} > 25.
 ##
 ## @strong{Warning}: This function assumes a normal distribution for @var{z}
-## and thus is invalid for @var{n} <= 25.
+## and thus is invalid for @var{n} @leq{} 25.
 ##
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or

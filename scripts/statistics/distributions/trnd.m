@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} trnd (@var{n}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} trnd (@var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} trnd (@var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the t
 ## (Student) distribution with @var{n} degrees of freedom.  @var{n} must

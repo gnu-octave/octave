@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unifcdf (@var{x}, @var{a}, @var{b})
 ## Return the CDF at @var{x} of the uniform distribution on [@var{a},
-## @var{b}], i.e., PROB (uniform (@var{a}, @var{b}) <= x).
+## @var{b}], i.e., PROB (uniform (@var{a}, @var{b}) @leq{} x).
 ##
 ## Default values are @var{a} = 0, @var{b} = 1.
 ## @end deftypefn

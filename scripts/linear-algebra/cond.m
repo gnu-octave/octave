@@ -20,7 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} cond (@var{a})
 ## @deftypefnx {Function File} {} cond (@var{a},@var{p})
-## Compute the @var{p}-norm condition number of a matrix.  @code{cond (@var{a})} is
+## Compute the @var{p}-norm condition number of a matrix.  @code{cond
+## (@var{a})} is
 ## defined as 
 ## @tex
 ## $ {\parallel a \parallel_p * \parallel a^{-1} \parallel_p .} $

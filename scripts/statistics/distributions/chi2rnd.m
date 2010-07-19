@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} chi2rnd (@var{n}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} chi2rnd (@var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} chi2rnd (@var{n}, @var{sz})
 ## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
 ## random samples from the chisquare distribution with @var{n} degrees 

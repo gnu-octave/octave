@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} setxor (@var{a}, @var{b})
+## @deftypefn  {Function File} {} setxor (@var{a}, @var{b})
 ## @deftypefnx {Function File} {} setxor (@var{a}, @var{b}, 'rows')
 ##
 ## Return the elements exclusive to @var{a} or @var{b}, sorted in ascending
@@ -28,7 +28,8 @@
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})
 ##
-## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and @code{b(ib)} are
+## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
+## @code{b(ib)} are
 ## disjoint sets whose union is @var{c}.
 ## 
 ## @seealso{unique, union, intersect, setdiff, ismember}

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{c}, @var{a}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
-## Solve a linear program using the GNU GLPK library.  Given three
+## Solve a linear program using the GNU @sc{glpk} library.  Given three
 ## arguments, @code{glpk} solves the following standard LP:
 ## 
 ## @tex
@@ -269,8 +269,8 @@
 ## 
 ## @item tolpiv (@w{@code{LPX_K_TOLPIV}}, default: 10e-9)
 ## Relative tolerance used to choose eligible pivotal elements of the
-## simplex table.  It is not recommended that you change this parameter unless you
-## have a detailed understanding of its purpose.
+## simplex table.  It is not recommended that you change this parameter unless
+## you have a detailed understanding of its purpose.
 ## 
 ## @item objll (@w{@code{LPX_K_OBJLL}}, default: -DBL_MAX)
 ## Lower limit of the objective function.  If on the phase II the objective
@@ -388,7 +388,7 @@
 ## Time (in seconds) used for solving LP/MIP problem.
 ## @item mem
 ## Memory (in bytes) used for solving LP/MIP problem (this is not 
-## available if the version of GLPK is 4.15 or later).
+## available if the version of @sc{glpk} is 4.15 or later).
 ## @end table
 ## @end table
 ## 

@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
+## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
 ## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
 ## Write images in various file formats.
 ##
 ## If @var{fmt} is missing, the file extension (if any) of
 ## @var{filename} is used to determine the format.
 ##
-## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional.  Currently
+## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional. 
+## Currently
 ## the following options are supported for @t{JPEG} images
 ##
 ## @table @samp

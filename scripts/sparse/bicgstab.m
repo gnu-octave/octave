@@ -17,20 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bicgstab (@var{A}, @var{b})
+## @deftypefn  {Function File} {} bicgstab (@var{A}, @var{b})
 ## @deftypefnx {Function File} {} bicgstab (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## This procedure attempts to solve a system of linear equations A*x = b for x.
 ## The @var{A} must be square, symmetric and positive definite real matrix N*N.
 ## The @var{b} must be a one column vector with a length of N.
-## The @var{tol} specifies the tolerance of the method, the default value is 1e-6.
-## The @var{maxit} specifies the maximum number of iterations, the default value is min(20,N).
-## The @var{M1} specifies a preconditioner, can also be a function handler which returns M\X.
-## The @var{M2} combined with @var{M1} defines preconditioner as preconditioner=M1*M2.
+## The @var{tol} specifies the tolerance of the method, the default value is
+## 1e-6.
+## The @var{maxit} specifies the maximum number of iterations, the default value
+## is min(20,N).
+## The @var{M1} specifies a preconditioner, can also be a function handler which
+## returns M\X.
+## The @var{M2} combined with @var{M1} defines preconditioner as
+## preconditioner=M1*M2.
 ## The @var{x0} is the initial guess, the default value is zeros(N,1).
 ##
 ## The value @var{x} is a computed result of this procedure.
-## The value @var{flag} can be 0 when we reach tolerance in @var{maxit} iterations, 1 when
-## we don't reach tolerance in @var{maxit} iterations and 3 when the procedure stagnates.
+## The value @var{flag} can be 0 when we reach tolerance in @var{maxit}
+## iterations, 1 when
+## we don't reach tolerance in @var{maxit} iterations and 3 when the procedure
+## stagnates.
 ## The value @var{relres} is a relative residual - norm(b-A*x)/norm(b).
 ## The value @var{iter} is an iteration number in which x was computed.
 ## The value @var{resvec} is a vector of @var{relres} for each iteration.

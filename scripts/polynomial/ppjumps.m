@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {ppd =} ppjumps (pp)
+## @deftypefn {Function File} {ppd =} ppjumps (pp)
 ## Evaluates the boundary jumps of a piecewise polynomial.
 ## If there are n intervals, and the dimensionality of pp is d,
 ## the resulting array has dimensions @code{[d, n-1]}.

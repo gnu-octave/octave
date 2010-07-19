@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} findobj ()
+## @deftypefn  {Function File} {@var{h} =} findobj ()
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{prop_name}, @var{prop_value})
 ## @deftypefnx {Function File} {@var{h} =} findobj ('-property', @var{prop_name})
 ## @deftypefnx {Function File} {@var{h} =} findobj ('-regexp', @var{prop_name}, @var{pattern})

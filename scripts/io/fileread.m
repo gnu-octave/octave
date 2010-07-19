@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {@var{str} =} fileread (@var{filename})
+## @deftypefn {Function File} {@var{str} =} fileread (@var{filename})
 ## Read the contents of a file and return it as a string.
 ## @seealso{fread, textread}
 ## @end deftypefn

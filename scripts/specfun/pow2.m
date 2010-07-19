@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} pow2 (@var{x})
+## @deftypefn  {Mapping Function} {} pow2 (@var{x})
 ## @deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
 ## With one argument, computes
 ## @tex

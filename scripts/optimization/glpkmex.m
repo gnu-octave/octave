@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpkmex (@var{sense}, @var{c}, @var{a}, @var{b}, @var{ctype}, @var{lb}, @var{ub}, @var{vartype}, @var{param}, @var{lpsolver}, @var{save_pb})
 ## This function is provided for compatibility with the old @sc{matlab}
-## interface to the GNU GLPK library.  For Octave code, you should use
+## interface to the GNU @sc{glpk} library.  For Octave code, you should use
 ## the @code{glpk} function instead.
 ## @end deftypefn
 

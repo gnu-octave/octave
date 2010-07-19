@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cylinder
+## @deftypefn  {Function File} {} cylinder
 ## @deftypefnx {Function File} {} cylinder (@var{r})
 ## @deftypefnx {Function File} {} cylinder (@var{r}, @var{n})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})

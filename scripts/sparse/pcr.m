@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} pcr (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
+## @deftypefn  {Function File} {@var{x} =} pcr (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ## 
 ## Solves the linear system of equations @code{@var{a} * @var{x} =

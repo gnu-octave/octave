@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} comet (@var{y})
+## @deftypefn  {Function File} {} comet (@var{y})
 ## @deftypefnx {Function File} {} comet (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} comet (@var{x}, @var{y}, @var{p})
 ## @deftypefnx {Function File} {} comet (@var{ax}, @dots{})

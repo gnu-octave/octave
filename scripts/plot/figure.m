@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} figure (@var{n})
+## @deftypefn  {Function File} {} figure (@var{n})
 ## @deftypefnx {Function File} {} figure (@var{n}, @var{property}, @var{value}, @dots{})
 ## Set the current plot window to plot window @var{n}.  If no arguments are
 ## specified, the next available window number is chosen.

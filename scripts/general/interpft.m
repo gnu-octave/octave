@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} interpft (@var{x}, @var{n})
+## @deftypefn  {Function File} {} interpft (@var{x}, @var{n})
 ## @deftypefnx {Function File} {} interpft (@var{x}, @var{n}, @var{dim})
 ##
 ## Fourier interpolation.  If @var{x} is a vector, then @var{x} is

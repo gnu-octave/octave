@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fill (@var{x}, @var{y}, @var{c})
+## @deftypefn  {Function File} {} fill (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} fill (@var{x1}, @var{y1}, @var{c1}, @var{x2}, @var{y2}, @var{c2})
 ## @deftypefnx {Function File} {} fill (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} fill (@var{h}, @dots{})

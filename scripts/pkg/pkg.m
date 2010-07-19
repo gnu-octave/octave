@@ -69,7 +69,7 @@
 ## @noindent
 ## removes the @code{image} package from the system.  If another installed
 ## package depends on the @code{image} package an error will be issued.
-## The package can be uninstalled anyway by using the @code{-nodeps} option.
+## The package can be uninstalled anyway by using the @option{-nodeps} option.
 ## @item load
 ## Add named packages to the path.  After loading a package it is
 ## possible to use the functions provided by the package.  For example,
@@ -171,7 +171,7 @@
 ## @item rebuild
 ## Rebuilds the package database from the installed directories.  This can 
 ## be used in cases where for some reason the package database is corrupted.
-## It can also take the @code{-auto} and @code{-noauto} options to allow the
+## It can also take the @option{-auto} and @option{-noauto} options to allow the
 ## autoloading state of a package to be changed.  For example
 ##
 ## @example
@@ -191,7 +191,7 @@
 ## @noindent
 ## where @code{builddir} is the name of a directory where the temporary
 ## installation will be produced and the binary packages will be found.
-## The options @code{-verbose} and @code{-nodeps} are respected, while 
+## The options @option{-verbose} and @option{-nodeps} are respected, while 
 ## the other options are ignored.
 ## @end table
 ## @end deffn

@@ -18,13 +18,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lin2mu (@var{x}, @var{n})
-## Converts audio data from linear to mu-law.  Mu-law values use 8-bit
+## @deftypefn  {Function File} {} lin2mu (@var{x})
+## @deftypefnx {Function File} {} lin2mu (@var{x}, @var{n})
+## Convert audio data from linear to mu-law.  Mu-law values use 8-bit
 ## unsigned integers.  Linear values use @var{n}-bit signed integers or 
-## floating point values in the range -1@leq{}@var{x}<=1 if @var{n} is 0.  
-## If @var{n} is not specified it defaults to 0, 8 or 16 depending on 
-## the range values in @var{x}.
-## @seealso{mu2lin, loadaudio, saveaudio, playaudio, setaudio, record}
+## floating point values in the range -1 @leq{} @var{x} @leq{} 1 if
+## @var{n} is 0.  
+## If @var{n} is not specified it defaults to 0, 8, or 16 depending on 
+## the range of values in @var{x}.
+## @seealso{mu2lin, loadaudio, saveaudio}
 ## @end deftypefn
 
 
@@ -32,32 +34,32 @@
 ## Created: 17 October 1994
 ## Adapted-By: jwe
 
-function y = lin2mu (x, bit)
+function y = lin2mu (x, n)
 
   if (nargin == 1)
     range = max (abs (x (:)));
     if (range <= 1)
-      bit = 0;
+      n = 0;
     elseif (range <= 128)
-      bit = 8;
-      warning ("lin2mu: no precision specified, so using %d", bit);
+      n = 8;
+      warning ("lin2mu: no precision specified, so using %d", n);
     else
-      bit = 16;
+      n = 16;
     endif
   elseif (nargin == 2)
-    if (bit != 0 && bit != 8 && bit != 16)
-      error ("lin2mu: bit must be either 0, 8 or 16");
+    if (n != 0 && n != 8 && n != 16)
+      error ("lin2mu: n must be either 0, 8 or 16");
     endif
   else
     print_usage ();
   endif
 
   ## Transform real and n-bit format to 16-bit.
-  if (bit == 0)
+  if (n == 0)
     ## [-1,1] -> [-32768, 32768]
     x = 32768 * x;
-  elseif (bit != 16)
-    x = 2^(16-bit) .* x;
+  elseif (n != 16)
+    x = 2^(16-n) .* x;
   endif
 
   ## Determine sign of x, set sign(0) = 1.

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hggroup ()
+## @deftypefn  {Function File} {} hggroup ()
 ## @deftypefnx {Function File} {} hggroup (@var{h})
 ## @deftypefnx {Function File} {} hggroup (@dots{}, @var{property}, @var{value}, @dots{})
 ## Create group object with parent @var{h}.  If no parent is specified,

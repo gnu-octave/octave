@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nbinrnd (@var{n}, @var{p}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} nbinrnd (@var{n}, @var{p}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} nbinrnd (@var{n}, @var{p}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the Pascal
 ## (negative binomial) distribution with parameters @var{n} and @var{p}.

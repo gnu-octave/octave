@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} pcg (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
+## @deftypefn  {Function File} {@var{x} =} pcg (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
 ## Solves the linear system of equations @code{@var{a} * @var{x} =
@@ -198,12 +198,16 @@
 ## 
 ## References:
 ## 
-##   [1] C.T. Kelley, @cite{Iterative Methods for Linear and Nonlinear Equations},
-##       SIAM, 1995 (the base PCG algorithm) 
+## @enumerate
+## @item
+## C.T. Kelley, @cite{Iterative Methods for Linear and Nonlinear Equations},
+## SIAM, 1995. (the base PCG algorithm)
 ##      
-##   [2] Y. Saad, @cite{Iterative Methods for Sparse Linear Systems}, PWS 1996
-##       (condition number estimate from PCG) Revised version of this book is
-##       available online at @url{http://www-users.cs.umn.edu/~saad/books.html}
+## @item
+## Y. Saad, @cite{Iterative Methods for Sparse Linear Systems}, PWS 1996.
+## (condition number estimate from PCG) Revised version of this book is
+## available online at @url{http://www-users.cs.umn.edu/~saad/books.html}
+## @end enumerate
 ##
 ## @seealso{sparse, pcr}
 ## @end deftypefn

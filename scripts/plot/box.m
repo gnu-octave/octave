@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} box (@var{arg})
+## @deftypefn  {Function File} {} box (@var{arg})
 ## @deftypefnx {Function File} {} box (@var{h}, @dots{})
 ## Control the display of a border around the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is

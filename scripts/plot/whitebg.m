@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} whitebg ()
+## @deftypefn  {Function File} {} whitebg ()
 ## @deftypefnx {Function File} {} whitebg (@var{color})
 ## @deftypefnx {Function File} {} whitebg (@var{fig})
 ## @deftypefnx {Function File} {} whitebg (@var{fig}, @var{color})
-## Inverts the colors in the current current.  The root properties are
+## Invert the colors in the current color scheme.  The root properties are
 ## also inverted such that all subsequent plot use the new color scheme.
 ##
 ## If defined, @var{fig} is the handle to the figure to be inverted.  In
@@ -29,7 +29,7 @@
 ##
 ## The background colors of the figure and its children can be set 
 ## specifically if @var{color} is defined.  @var{color} must be a valid
-## color set as a string or an RGB triplet, or  the value "none".
+## color set as a string or an RGB triplet, or the value "none".
 ##
 ## @seealso{reset, colordef}
 ## @end deftypefn

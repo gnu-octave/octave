@@ -18,7 +18,8 @@
 ## @deftypefn {Function File} gen_doc_cache (@var{out_file}, @var{directory})
 ## Generate documentation caches for all functions in a given directory.
 ##
-## A documentation cache is generated for all functions in @var{directory}.  The
+## A documentation cache is generated for all functions in @var{directory}. 
+## The
 ## resulting cache is saved in the file @var{out_file}.
 ## The cache is used to speed up @code{lookfor}.
 ##

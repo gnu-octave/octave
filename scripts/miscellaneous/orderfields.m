@@ -28,7 +28,8 @@
 ## order in a permutation vector or a cell array of strings containing
 ## the fieldnames of @var{s1} in the desired order.
 ##
-## The optional second output argument @var{p} is assigned the permutation vector
+## The optional second output argument @var{p} is assigned the permutation
+## vector
 ## which converts the original name order into the new name order.
 ##
 ## Examples:

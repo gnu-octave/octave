@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dir (@var{directory})
+## @deftypefn  {Function File} {} dir (@var{directory})
 ## @deftypefnx {Function File} {[@var{list}] =} dir (@var{directory})
 ## Display file listing for directory @var{directory}.  If a return
 ## value is requested, return a structure array with the fields

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} view (@var{azimuth}, @var{elevation})
+## @deftypefn  {Function File} {} view (@var{azimuth}, @var{elevation})
 ## @deftypefnx {Function File} {} view (@var{dims})
 ## @deftypefnx {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
 ## Set or get the viewpoint for the current axes.

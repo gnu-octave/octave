@@ -37,7 +37,7 @@
 ## for @var{x} > 0.
 ##
 ## The optional parameter @var{tol} specifies the precision up to which
-## the series should be evaluated;  the default is @var{tol} = @code{eps}.
+## the series should be evaluated; the default is @var{tol} = @code{eps}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

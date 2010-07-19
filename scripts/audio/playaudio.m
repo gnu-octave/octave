@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} playaudio (@var{name}, @var{ext})
+## @deftypefn  {Function File} {} playaudio (@var{name}, @var{ext})
 ## @deftypefnx {Function File} {} playaudio (@var{x})
 ## Plays the audio file @file{@var{name}.@var{ext}} or the audio data
 ## stored in the vector @var{x}.

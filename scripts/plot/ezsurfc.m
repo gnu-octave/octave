@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ezsurfc (@var{f})
+## @deftypefn  {Function File} {} ezsurfc (@var{f})
 ## @deftypefnx {Function File} {} ezsurfc (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {} ezsurfc (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezsurfc (@dots{}, @var{n})

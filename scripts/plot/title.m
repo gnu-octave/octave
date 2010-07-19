@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} title (@var{title})
+## @deftypefn  {Function File} {} title (@var{title})
 ## @deftypefnx {Function File} {} title (@var{title}, @var{p1}, @var{v1}, @dots{})
 ## Create a title object and return a handle to it.
 ## @end deftypefn

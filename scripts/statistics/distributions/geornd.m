@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} geornd (@var{p}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} geornd (@var{p}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} geornd (@var{p}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## geometric distribution with parameter @var{p}, which must be a scalar

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} caxis (@var{limits})
+## @deftypefn  {Function File} {} caxis (@var{limits})
 ## @deftypefnx {Function File} {} caxis (@var{h}, @dots{})
 ## Set color axis limits for plots.
 ##

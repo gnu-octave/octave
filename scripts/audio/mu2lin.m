@@ -19,25 +19,25 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
-## Converts audio data from linear to mu-law.  Mu-law values are 8-bit
+## Convert audio data from mu-law to linear.  Mu-law values are 8-bit
 ## unsigned integers.  Linear values use @var{n}-bit signed integers
-## or floating point values in the range -1<=y<=1 if @var{n} is 0.  If
+## or floating point values in the range -1@leq{}y@leq{}1 if @var{n} is 0.  If
 ## @var{n} is not specified it defaults to 8.
-## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, record}
+## @seealso{lin2mu, loadaudio, saveaudio}
 ## @end deftypefn
 
 ## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994
 ## Adapted-By: jwe
 
-function y = mu2lin (x, bit)
+function y = mu2lin (x, n)
 
   if (nargin == 1)
-    ## COMPATIBILITY -- bps defaults to 8 for octave, 0 for Matlab
-    bit = 8;
+    ## COMPATIBILITY -- bps defaults to 8 for Octave, 0 for Matlab
+    n = 8;
   elseif (nargin == 2)
-    if (bit != 0 && bit != 8 && bit != 16)
-      error ("mu2lin: bit must be either 0, 8 or 16");
+    if (n != 0 && n != 8 && n != 16)
+      error ("mu2lin: n must be either 0, 8, or 16");
     endif
   else
     print_usage ();
@@ -68,10 +68,10 @@ function y = mu2lin (x, bit)
   y(:) = ulaw (x + 1);
 
   ## Convert to real or 8-bit.
-  if (bit == 0)
+  if (n == 0)
     ## [ -32768, 32767 ] -> [ -1, 1)
     y = y/32768;
-  elseif (bit == 8)
+  elseif (n == 8)
     ld = max (abs (y (:)));
     if (ld < 16384 && ld > 0)
       sc = 64 / ld;

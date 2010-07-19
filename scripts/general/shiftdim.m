@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} shiftdim (@var{x}, @var{n})
+## @deftypefn  {Function File} {@var{y} =} shiftdim (@var{x}, @var{n})
 ## @deftypefnx {Function File} {[@var{y}, @var{ns}] =} shiftdim (@var{x})
 ## Shifts the dimension of @var{x} by @var{n}, where @var{n} must be
 ## an integer scalar.  When @var{n} is positive, the dimensions of

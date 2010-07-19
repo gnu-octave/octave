@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile})
+## @deftypefn  {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile})
 ## @deftypefnx {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
 ## Invoke Perl script @var{scriptfile} with possibly a list of
 ## command line arguments.

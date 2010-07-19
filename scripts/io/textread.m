@@ -15,14 +15,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {[@var{a}, @dots{}] =} textread (@var{filename})
-## @deftypefnx {Function File}  {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format})
+## @deftypefn  {Function File} {[@var{a}, @dots{}] =} textread (@var{filename})
+## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @
 ## @var{prop1}, @var{value1}, @dots{})
 ## Read data from a text file.
 ##
 ## The file @var{filename} is read and parsed according to @var{format}.  The
-## function behaves like @code{strread} except it works by parsing a file instead
+## function behaves like @code{strread} except it works by parsing a file
+## instead
 ## of a string.  See the documentation of @code{strread} for details.
 ## In addition to the options supported by @code{strread}, this function
 ## supports one more:

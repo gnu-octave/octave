@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{xl} =} ylim ()
+## @deftypefn  {Function File} {@var{xl} =} ylim ()
 ## @deftypefnx {Function File} {} ylim (@var{xl})
 ## @deftypefnx {Function File} {@var{m} =} ylim ('mode')
 ## @deftypefnx {Function File} {} ylim (@var{m})

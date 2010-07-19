@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
+## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
 ## @deftypefnx {Function File} {} sphere (@var{h}, @dots{})
 ## Generates three matrices in @code{meshgrid} format, such that 
 ## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit sphere. 

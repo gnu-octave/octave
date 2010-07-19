@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{l} =} splchol (@var{a})
+## @deftypefn  {Loadable Function} {@var{l} =} splchol (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{p}] =} splchol (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{p}, @var{q}] =} splchol (@var{a})
 ## This function has been deprecated.  Use @code{chol (@dots{},'lower')}

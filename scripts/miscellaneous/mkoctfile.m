@@ -61,7 +61,7 @@
 ##
 ## @item -p VAR
 ## @itemx --print VAR
-## Print the configuration variable VAR.  Recognized variables are: 
+## Print the configuration variable VAR@.  Recognized variables are: 
 ##
 ## @example             
 ##    ALL_CFLAGS                FFTW_LIBS     

@@ -54,7 +54,8 @@
 ## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
 ## the next image in an animated sequence.
 ## @item AnimationIterations
-## Number of iterations to loop an animation (e.g., Netscape loop extension) for.
+## Number of iterations to loop an animation (e.g., Netscape loop extension)
+## for.
 ## @item ByteOrder
 ## Endian option for formats that support it.  Is either @code{"little-endian"},
 ## @code{"big-endian"}, or @code{"undefined"}.
@@ -64,7 +65,8 @@
 ## @item Matte
 ## @code{true} if the image has transparency.
 ## @item ModulusDepth
-## Image modulus depth (minimum number of bits required to support red/green/blue
+## Image modulus depth (minimum number of bits required to support
+## red/green/blue
 ## components without loss of accuracy).
 ## @item Quality
 ## JPEG/MIFF/PNG compression level.
@@ -74,7 +76,8 @@
 ## Units of image resolution.  Is either @code{"pixels per inch"},
 ## @code{"pixels per centimeter"}, or @code{"undefined"}.
 ## @item ColorType
-## Image type.  Is either @code{"grayscale"}, @code{"indexed"}, @code{"truecolor"},
+## Image type.  Is either @code{"grayscale"}, @code{"indexed"},
+## @code{"truecolor"},
 ## or @code{"undefined"}.
 ## @item View
 ## FlashPix viewing parameters.

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{lev}] =}  contourc (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefn {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
 ## Compute isolines (contour lines) of the matrix @var{z}. 
 ## Parameters @var{x}, @var{y} and @var{vn} are optional.
 ##

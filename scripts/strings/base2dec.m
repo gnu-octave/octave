@@ -30,7 +30,7 @@
 ##
 ## If @var{s} is a matrix, returns a column vector with one value per
 ## row of @var{s}.  If a row contains invalid symbols then the
-## corresponding value will be NaN.  Rows are right-justified before
+## corresponding value will be NaN@.  Rows are right-justified before
 ## converting so that trailing spaces are ignored.
 ##
 ## If @var{b} is a string, the characters of @var{b} are used as the

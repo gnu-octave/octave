@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {ppd =} ppint (pp, c)
+## @deftypefn {Function File} {ppd =} ppint (pp, c)
 ## Computes the antiderivative of a piecewise polynomial struct @var{pp}.
 ## @var{c}, if given, is the constant of integration.
 ## @seealso{mkpp,ppval}

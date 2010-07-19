@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} bzip2 (@var{files})
+## @deftypefn  {Function File} {@var{entries} =} bzip2 (@var{files})
 ## @deftypefnx {Function File} {@var{entries} =} bzip2 (@var{files}, @var{outdir})
 ## Compress the list of files specified in @var{files}.
 ## Each file is compressed separately and a new file with a '.bz2' extension

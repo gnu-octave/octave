@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} colorbar (@var{s})
+## @deftypefn  {Function File} {} colorbar (@var{s})
 ## @deftypefnx {Function File} {} colorbar ("peer", @var{h}, @dots{})
 ## Adds a colorbar to the current axes.  Valid values for @var{s} are
 ##

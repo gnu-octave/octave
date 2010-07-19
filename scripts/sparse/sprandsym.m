@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sprandsym (@var{n}, @var{d})
+## @deftypefn  {Function File} {} sprandsym (@var{n}, @var{d})
 ## @deftypefnx {Function File} {} sprandsym (@var{s})
 ## Generate a symmetric random sparse matrix.  The size of the matrix will be
 ## @var{n} by @var{n}, with a density of values given by @var{d}.

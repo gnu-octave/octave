@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} empirical_rnd (@var{n}, @var{data})
+## @deftypefn  {Function File} {} empirical_rnd (@var{n}, @var{data})
 ## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{sz})
 ## Generate a bootstrap sample of size @var{n} from the empirical

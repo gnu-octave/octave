@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} exprnd (@var{lambda}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} exprnd (@var{lambda}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} exprnd (@var{lambda}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## exponential distribution with mean @var{lambda}, which must be a

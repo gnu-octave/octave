@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{r} =} spqr (@var{a})
+## @deftypefn  {Loadable Function} {@var{r} =} spqr (@var{a})
 ## @deftypefnx {Loadable Function} {@var{r} =} spqr (@var{a},0)
 ## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b})
 ## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b},0)

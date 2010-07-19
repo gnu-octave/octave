@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} datetick ()
+## @deftypefn  {Function File} {} datetick ()
 ## @deftypefnx {Function File} {} datetick (@var{form})
 ## @deftypefnx {Function File} {} datetick (@var{axis}, @var{form})
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keeplimits")

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
+## @deftypefn  {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
 ## @deftypefnx {Function File} {@var{s} =} mat2str (@dots{}, 'class')
 ##
 ## Format real/complex numerical matrices as strings.  This function

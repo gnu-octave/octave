@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} axes ()
+## @deftypefn  {Function File} {} axes ()
 ## @deftypefnx {Function File} {} axes (@var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} axes (@var{h})
 ## Create an axes object and return a handle to it.

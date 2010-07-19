@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pie (@var{y})
+## @deftypefn  {Function File} {} pie (@var{y})
 ## @deftypefnx {Function File} {} pie (@var{y}, @var{explode})
 ## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie (@var{h}, @dots{});

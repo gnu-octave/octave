@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} intwarning (@var{action})
+## @deftypefn  {Function File} {} intwarning (@var{action})
 ## @deftypefnx {Function File} {} intwarning (@var{s})
 ## @deftypefnx {Function File} {@var{s} =} intwarning (@dots{})
 ## Control the state of the warning for integer conversions and math

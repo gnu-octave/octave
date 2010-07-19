@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {} imagesc (@var{a})
+## @deftypefn  {Function File} {} imagesc (@var{a})
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{a})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
 ## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})

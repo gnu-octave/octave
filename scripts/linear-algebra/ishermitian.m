@@ -20,7 +20,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ishermitian (@var{x}, @var{tol})
-## Return true if @var{x} is symmetric within the tolerance specified by @var{tol},
+## Return true if @var{x} is symmetric within the tolerance specified by
+## @var{tol},
 ## otherwise return false.  The default tolerance is zero (uses faster code).
 ## Matrix @var{x} is considered symmetric if
 ## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.

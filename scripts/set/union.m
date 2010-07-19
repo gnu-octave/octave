@@ -19,8 +19,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} union (@var{a}, @var{b})
-## @deftypefnx{Function File} {} union (@var{a}, @var{b}, "rows")
+## @deftypefn  {Function File} {} union (@var{a}, @var{b})
+## @deftypefnx {Function File} {} union (@var{a}, @var{b}, "rows")
 ## Return the set of elements that are in either of the sets @var{a} and
 ## @var{b}.  @var{a}, @var{b} may be cell arrays of string(s).
 ## For example,
@@ -46,7 +46,8 @@
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@var{a}, @var{b})
 ##
-## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and @code{b(ib)} are
+## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
+## @code{b(ib)} are
 ## disjoint sets whose union is @var{c}.
 ## 
 ## @seealso{intersect, setdiff, unique}

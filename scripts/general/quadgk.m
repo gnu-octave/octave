@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
+## @deftypefn  {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
 ## @deftypefnx {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {[@var{q}, @var{err}] =} quadgk (@dots{})
 ## Numerically evaluate integral using adaptive Gauss-Konrod quadrature.

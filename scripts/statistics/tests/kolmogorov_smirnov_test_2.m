@@ -28,7 +28,7 @@
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative F
-## != G.  In this case, the test statistic @var{ks} follows a two-sided
+## != G@.  In this case, the test statistic @var{ks} follows a two-sided
 ## Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
 ## one-sided alternative F > G is considered.  Similarly for @code{"<"},
 ## the one-sided alternative F < G is considered.  In this case, the

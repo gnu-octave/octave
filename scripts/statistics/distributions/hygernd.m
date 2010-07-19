@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{sz})
 ## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
 ## Return an @var{r} by @var{c} matrix of random samples from the

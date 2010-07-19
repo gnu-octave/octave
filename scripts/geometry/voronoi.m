@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} voronoi (@var{x}, @var{y})
+## @deftypefn  {Function File} {} voronoi (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle")
 ## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle", @var{options})
 ## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
 ## plots Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The Voronoi facets with points at infinity are not drawn.
-## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the vertices instead of plotting the
+## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the vertices instead of
+## plotting the
 ## diagram. plot (@var{vx}, @var{vy}) shows the Voronoi diagram.
 ##
 ## A fourth optional argument, which must be a string, contains extra options

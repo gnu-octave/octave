@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{a}, @var{t}) 
+## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{a}, @var{t}) 
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply Higham and Tisseur's randomized block 1-norm estimator to
@@ -39,11 +39,13 @@
 ##
 ## References: 
 ## @itemize
-## @item N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @item
+## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. SIMAX vol 21, no 4, pp 1185-1201.
 ## @url{http://dx.doi.org/10.1137/S0895479899356080}
-## @item N.J. Higham and F. Tisseur, @cite{A Block Algorithm
+## @item
+## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}
 ## @end itemize

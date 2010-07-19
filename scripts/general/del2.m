@@ -44,16 +44,17 @@
 ## @end example
 ## @end ifnottex
 ##
-## For N-dimensional arrays the sum in parentheses is expanded to include second derivatives 
+## For N-dimensional arrays the sum in parentheses is expanded to include second
+## derivatives 
 ## over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
 ## scalar defining the equidistant spacing in all dimensions.  Alternatively, 
-## the spacing in each dimension may be defined separately by @var{dx}, @var{dy},
-## etc.  A scalar spacing argument defines equidistant spacing, whereas a vector
-## argument can be used to specify variable spacing.  The length of the spacing vectors
-## must match the respective dimension of @var{m}.  The default spacing value
-## is 1.
+## the spacing in each dimension may be defined separately by @var{dx},
+## @var{dy}, etc.  A scalar spacing argument defines equidistant spacing, 
+## whereas a vector argument can be used to specify variable spacing.  The
+## length of the spacing vectors must match the respective dimension of
+## @var{m}.  The default spacing value is 1.
 ##
 ## At least 3 data points are needed for each dimension.  Boundary points are
 ## calculated from the linear extrapolation of interior points.

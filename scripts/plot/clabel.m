@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} clabel (@var{c}, @var{h})
+## @deftypefn  {Function File} {} clabel (@var{c}, @var{h})
 ## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, @var{v})
 ## @deftypefnx {Function File} {} clabel (@var{c}, @var{h}, "manual")
 ## @deftypefnx {Function File} {} clabel (@var{c})

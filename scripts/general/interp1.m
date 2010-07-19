@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefn  {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')

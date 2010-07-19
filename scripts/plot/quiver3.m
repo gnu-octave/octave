@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} quiver3 (@var{u}, @var{v}, @var{w})
+## @deftypefn  {Function File} {} quiver3 (@var{u}, @var{v}, @var{w})
 ## @deftypefnx {Function File} {} quiver3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
 ## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{s})
 ## @deftypefnx {Function File} {} quiver3 (@dots{}, @var{style})

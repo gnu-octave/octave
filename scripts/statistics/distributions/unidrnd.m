@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidrnd (@var{mx});
+## @deftypefn  {Function File} {} unidrnd (@var{mx});
 ## @deftypefnx {Function File} {} unidrnd (@var{mx}, @var{v});
 ## @deftypefnx {Function File} {} unidrnd (@var{mx}, @var{m}, @var{n}, @dots{});
 ## Return random values from discrete uniform distribution, with maximum
 ## value(s) given by the integer @var{mx}, which may be a scalar or
-## multidimensional array.
+## multi-dimensional array.
 ##
 ## If @var{mx} is a scalar, the size of the result is specified by
 ## the vector @var{v}, or by the optional arguments @var{m}, @var{n},

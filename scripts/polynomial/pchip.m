@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
+## @deftypefn  {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
 ##
 ## Piecewise Cubic Hermite interpolating polynomial.  Called with two

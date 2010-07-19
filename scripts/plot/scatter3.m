@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
+## @deftypefn  {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, 'filled')
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} scatter3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter3 (@dots{})
 ##
-## Plot a scatter plot of the data in 3D.  A marker is plotted at each point 
+## Plot a scatter plot of the data in 3D@.  A marker is plotted at each point 
 ## defined by the points in the vectors @var{x}, @var{y} and @var{z}.  The size
 ## of the markers used is determined by @var{s}, which can be a scalar or
 ## a vector of the same length of @var{x}, @var{y} and @var{z}.  If @var{s} is

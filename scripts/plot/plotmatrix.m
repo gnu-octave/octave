@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} plotmatrix (@var{x}, @var{y})
+## @deftypefn  {Function File} {} plotmatrix (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} plotmatrix (@var{x})
 ## @deftypefnx {Function File} {} plotmatrix (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} plotmatrix (@var{h}, @dots{})

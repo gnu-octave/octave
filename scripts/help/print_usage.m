@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Søren Hauberg
+## Copyright (C) 2009 Sï¿½ren Hauberg
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} print_usage ()
-## @deftypefnx{Function File} {} print_usage (@var{name})
+## @deftypefn  {Function File} {} print_usage ()
+## @deftypefnx {Function File} {} print_usage (@var{name})
 ## Print the usage message for a function.  When called with no input arguments
 ## the @code{print_usage} function displays the usage message of the currently
 ## executing function.

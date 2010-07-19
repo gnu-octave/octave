@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} spmax (@var{x}, @var{y}, @var{dim})
+## @deftypefn  {Mapping Function} {} spmax (@var{x}, @var{y}, @var{dim})
 ## @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} spmax (@var{x})
 ## This function has been deprecated.  Use @code{max} instead.
 ## @end deftypefn

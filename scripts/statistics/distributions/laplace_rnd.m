@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} laplace_rnd (@var{r}, @var{c})
+## @deftypefn  {Function File} {} laplace_rnd (@var{r}, @var{c})
 ## @deftypefnx {Function File} {} laplace_rnd (@var{sz});
 ## Return an @var{r} by @var{c} matrix of random numbers from the
 ## Laplace distribution.  Or if @var{sz} is a vector, create a matrix of

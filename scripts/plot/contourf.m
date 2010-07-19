@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z}, @var{lvl})
+## @deftypefn  {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z}, @var{lvl})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z}, @var{n})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contourf (@var{z}, @var{n})

@@ -30,7 +30,7 @@
 ## If the function @var{name} is available in a file on your path and
 ## that file is modifiable, then it will be edited in place.  If it 
 ## is a system function, then it will first be copied to the directory
-## @code{HOME} (see further down) and then edited.  
+## @env{HOME} (see further down) and then edited.  
 ## If no file is found, then the m-file 
 ## variant, ending with ".m", will be considered.  If still no file
 ## is found, then variants with a leading "@@" and then with both a
@@ -38,13 +38,13 @@
 ##
 ## @item
 ## If @var{name} is the name of a function defined in the interpreter but 
-## not in an m-file, then an m-file will be created in @code{HOME}
+## not in an m-file, then an m-file will be created in @env{HOME}
 ## to contain that function along with its current definition.  
 ##
 ## @item
 ## If @code{name.cc} is specified, then it will search for @code{name.cc}
 ## in the path and try to modify it, otherwise it will create a new
-## @file{.cc} file in @code{HOME}.  If @var{name} happens to be an
+## @file{.cc} file in @env{HOME}.  If @var{name} happens to be an
 ## m-file or interpreter defined function, then the text of that
 ## function will be inserted into the .cc file as a comment.
 ##
@@ -52,7 +52,7 @@
 ## If @var{name.ext} is on your path then it will be edited, otherwise
 ## the editor will be started with @file{HOME/name.ext} as the
 ## filename.  If @file{name.ext} is not modifiable, it will be copied to
-## @code{HOME} before editing.
+## @env{HOME} before editing.
 ##
 ## @strong{WARNING!} You may need to clear name before the new definition
 ## is available.  If you are editing a .cc file, you will need
@@ -71,7 +71,7 @@
 ## @table @samp
 ## @item editor
 ## This is the editor to use to modify the functions.  By default it uses
-## Octave's @code{EDITOR} built-in function, which comes from 
+## Octave's @env{EDITOR} built-in function, which comes from 
 ## @code{getenv("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
 ## In place of the function name.  For example,
 ## @table @samp

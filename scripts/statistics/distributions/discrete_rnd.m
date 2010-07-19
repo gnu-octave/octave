@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} discrete_rnd (@var{n}, @var{v}, @var{p})
+## @deftypefn  {Function File} {} discrete_rnd (@var{n}, @var{v}, @var{p})
 ## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{sz})
 ## Generate a row vector containing a random sample of size @var{n} from

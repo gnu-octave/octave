@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} powerset (@var{a})
+## @deftypefn  {Function File} {} powerset (@var{a})
 ## @deftypefnx {Function File} {} powerset (@var{a}, "rows")
 ##
 ## Return the cell array of all subsets of the set @var{a}.

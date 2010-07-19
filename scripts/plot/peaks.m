@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} peaks ()
+## @deftypefn  {Function File} {} peaks ()
 ## @deftypefnx {Function File} {} peaks (@var{n})
 ## @deftypefnx {Function File} {} peaks (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} peaks (@dots{})

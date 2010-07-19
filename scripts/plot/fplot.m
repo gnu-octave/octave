@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fplot (@var{fn}, @var{limits})
+## @deftypefn  {Function File} {} fplot (@var{fn}, @var{limits})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{tol})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{n})
 ## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})

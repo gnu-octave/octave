@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Søren Hauberg
+## Copyright (C) 2009 Sï¿½ren Hauberg
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ## Display the definition of each @var{name} that refers to a function.
 ## 
 ## Normally also displays whether each @var{name} is user-defined or built-in;
-## the @code{-q} option suppresses this behavior.
+## the @option{-q} option suppresses this behavior.
 ##
 ## If an output argument is requested nothing is displayed.  Instead, a cell 
 ## array of strings is returned, where each element corresponds to the 

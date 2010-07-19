@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  {@var{z} =} trapz (@var{y})
+## @deftypefn  {Function File} {@var{z} =} trapz (@var{y})
 ## @deftypefnx {Function File} {@var{z} =} trapz (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} trapz (@dots{}, @var{dim})
 ## 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} =} mkpp (@var{x}, @var{p})
+## @deftypefn  {Function File} {@var{pp} =} mkpp (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{x}, @var{p}, @var{d})
 ## 
 ## Construct a piece-wise polynomial structure from sample points
@@ -28,7 +28,8 @@
 ## @code{rows (@var{p}) == length (@var{x}) - 1}.  
 ##
 ## @var{p} may also be a multi-dimensional array, specifying a vector-valued
-## or array-valued polynomial.  The shape is determined by @var{d}.  If @var{d} is
+## or array-valued polynomial.  The shape is determined by @var{d}.  If @var{d}
+## is
 ## not given, the default is @code{size (p)(1:end-2)}.  If @var{d} is given, the
 ## leading dimensions of @var{p} are reshaped to conform to @var{d}.
 ##

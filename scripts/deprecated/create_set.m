@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} create_set (@var{x})
-## @deftypefnx{Function File} {} create_set (@var{x}, "rows")
+## @deftypefn  {Function File} {} create_set (@var{x})
+## @deftypefnx {Function File} {} create_set (@var{x}, "rows")
 ## This function has been deprecated.  Use unique instead.
 ## @end deftypefn
 

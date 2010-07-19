@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} surfnorm (@var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} surfnorm (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} surfnorm (@var{z})
 ## @deftypefnx {Function File} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
 ## @deftypefnx {Function File} {} surfnorm (@var{h}, @dots{})

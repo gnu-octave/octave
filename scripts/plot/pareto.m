@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pareto (@var{x})
+## @deftypefn  {Function File} {} pareto (@var{x})
 ## @deftypefnx {Function File} {} pareto (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} pareto (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} pareto (@dots{})

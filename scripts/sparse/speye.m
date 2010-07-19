@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} speye (@var{m})
+## @deftypefn  {Function File} {@var{y} =} speye (@var{m})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{m}, @var{n})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{sz})
 ## Returns a sparse identity matrix.  This is significantly more

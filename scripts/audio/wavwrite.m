@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wavwrite (@var{y}, @var{filename})
+## @deftypefn  {Function File} {} wavwrite (@var{y}, @var{filename})
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
 ## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{bits}, @var{filename})
 ## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}

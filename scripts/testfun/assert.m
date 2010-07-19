@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} assert (@var{cond})
+## @deftypefn  {Function File} {} assert (@var{cond})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected})
@@ -42,11 +42,14 @@
 ##
 ## @item assert(@var{observed}, @var{expected}, @var{tol})
 ## Accept a tolerance when comparing numbers. 
-## If @var{tol} is positive use it as an absolute tolerance, will produce an error if
+## If @var{tol} is positive use it as an absolute tolerance, will produce an
+## error if
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
-## If @var{tol} is negative use it as a relative tolerance, will produce an error if
+## If @var{tol} is negative use it as a relative tolerance, will produce an
+## error if
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} * @var{expected})}.
-## If @var{expected} is zero @var{tol} will always be used as an absolute tolerance.
+## If @var{expected} is zero @var{tol} will always be used as an absolute
+## tolerance.
 ## @end table
 ## @seealso{test}
 ## @end deftypefn

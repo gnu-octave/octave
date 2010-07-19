@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} bitset (@var{a}, @var{n})
+## @deftypefn  {Function File} {@var{x} =} bitset (@var{a}, @var{n})
 ## @deftypefnx {Function File} {@var{x} =} bitset (@var{a}, @var{n}, @var{v})
 ## Set or reset bit(s) @var{n} of unsigned integers in @var{a}.
 ## @var{v} = 0 resets and @var{v} = 1 sets the bits.

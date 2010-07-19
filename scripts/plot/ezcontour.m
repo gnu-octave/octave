@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ezcontour (@var{f})
+## @deftypefn  {Function File} {} ezcontour (@var{f})
 ## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezcontour (@dots{}, @var{n})
 ## @deftypefnx {Function File} {} ezcontour (@var{h}, @dots{})

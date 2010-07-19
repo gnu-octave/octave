@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} barh (@var{x}, @var{y})
+## @deftypefn  {Function File} {} barh (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} barh (@var{y})
 ## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w})
 ## @deftypefnx {Function File} {} barh (@var{x}, @var{y}, @var{w}, @var{style})

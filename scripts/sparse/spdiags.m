@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{b}, @var{c}] =} spdiags (@var{a})
+## @deftypefn  {Function File} {[@var{b}, @var{c}] =} spdiags (@var{a})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{a}, @var{c})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})

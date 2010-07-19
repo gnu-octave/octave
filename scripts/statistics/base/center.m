@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} center (@var{x})
+## @deftypefn  {Function File} {} center (@var{x})
 ## @deftypefnx {Function File} {} center (@var{x}, @var{dim})
 ## If @var{x} is a vector, subtract its mean.
 ## If @var{x} is a matrix, do the above for each column.

@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
 ## Evaluate piece-wise polynomial @var{pp} at the points @var{xi}.  
-## If @var{pp} is scalar-valued, the result is an array of the same shape as @var{xi}.
+## If @var{pp} is scalar-valued, the result is an array of the same shape as
+## @var{xi}.
 ## Otherwise, the size of the result is @code{[pp.d, length(@var{xi})]} if
 ## @var{xi} is a vector, or @code{[pp.d, size(@var{xi})]} if it is a multi-dimensional
 ## array.  If pp.orient is 1, the dimensions are permuted as in interp1, to

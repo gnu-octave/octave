@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} =} spline (@var{x}, @var{y})
+## @deftypefn  {Function File} {@var{pp} =} spline (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ##
 ## Return the cubic spline interpolant of @var{y} at points @var{x}. 

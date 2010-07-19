@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} rat (@var{x}, @var{tol})
+## @deftypefn  {Function File} {@var{s} =} rat (@var{x}, @var{tol})
 ## @deftypefnx {Function File} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
 ##
 ## Find a rational approximation to @var{x} within the tolerance defined

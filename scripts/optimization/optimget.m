@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} optimget (@var{options}, @var{parname})
+## @deftypefn  {Function File} {} optimget (@var{options}, @var{parname})
 ## @deftypefnx {Function File} {} optimget (@var{options}, @var{parname}, @var{default})
 ## Return a specific option from a structure created by 
 ## @code{optimset}.  If @var{parname} is not a field of the @var{options}

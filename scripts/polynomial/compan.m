@@ -34,17 +34,18 @@
 ## $$
 ## @end tex
 ## @ifnottex
-##
 ## @c Set example in small font to prevent overfull line
 ## @smallexample
+## @group
 ##      _                                                        _
 ##     |  -c(2)/c(1)   -c(3)/c(1)  @dots{}  -c(N)/c(1)  -c(N+1)/c(1)  |
 ##     |       1            0      @dots{}       0             0      |
 ##     |       0            1      @dots{}       0             0      |
-## A = |       .            .   .            .             .      |
+## A = |       .            .      .         .             .      |
 ##     |       .            .       .        .             .      |
-##     |       .            .           .    .             .      |
+##     |       .            .        .       .             .      |
 ##     |_      0            0      @dots{}       1             0     _|
+## @end group
 ## @end smallexample
 ## @end ifnottex
 ##

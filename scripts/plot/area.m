@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} area (@var{x}, @var{y})
+## @deftypefn  {Function File} {} area (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} area (@var{x}, @var{y}, @var{lvl})
 ## @deftypefnx {Function File} {} area (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} area (@var{y}, @dots{})

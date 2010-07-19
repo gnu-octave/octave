@@ -23,7 +23,7 @@
 ## vector @var{x}.
 ##
 ## The extension @var{ext} determines how the data in the audio file is
-## interpreted;  the extensions @file{lin} (default) and @file{raw}
+## interpreted; the extensions @file{lin} (default) and @file{raw}
 ## correspond to linear, the extensions @file{au}, @file{mu}, or @file{snd}
 ## to mu-law encoding.
 ##

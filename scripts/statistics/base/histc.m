@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{n} =} histc (@var{y}, @var{edges})
+## @deftypefn  {Function File} {@var{n} =} histc (@var{y}, @var{edges})
 ## @deftypefnx {Function File} {@var{n} =} histc (@var{y}, @var{edges}, @var{dim})
 ## @deftypefnx {Function File} {[@var{n}, @var{idx}] =} histc (@dots{})
 ## Produce histogram counts.

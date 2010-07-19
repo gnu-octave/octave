@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the F
 ## distribution with @var{m} and @var{n} degrees of freedom.  Both

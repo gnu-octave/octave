@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gplot (@var{a}, @var{xy})
+## @deftypefn  {Function File} {} gplot (@var{a}, @var{xy})
 ## @deftypefnx {Function File} {} gplot (@var{a}, @var{xy}, @var{line_style})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}] =} gplot (@var{a}, @var{xy})
 ## Plot a graph defined by @var{A} and @var{xy} in the graph theory

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {} spfind (@var{x})
+## @deftypefn  {Loadable Function} {} spfind (@var{x})
 ## @deftypefnx {Loadable Function} {} spfind (@var{x}, @var{n})
 ## @deftypefnx {Loadable Function} {} spfind (@var{x}, @var{n}, @var{direction})
 ## @deftypefnx {Loadable Function} {[@var{i}, @var{j}, @var{v}} spfind (@dots{})

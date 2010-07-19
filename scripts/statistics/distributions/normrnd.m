@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normrnd (@var{m}, @var{s}, @var{r}, @var{c})
+## @deftypefn  {Function File} {} normrnd (@var{m}, @var{s}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} normrnd (@var{m}, @var{s}, @var{sz})
 ## Return an @var{r} by @var{c}  or @code{size (@var{sz})} matrix of
 ## random samples from the normal distribution with parameters mean @var{m} 

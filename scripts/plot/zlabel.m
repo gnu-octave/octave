@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zlabel (@var{string})
+## @deftypefn  {Function File} {} zlabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{h}, @var{string})
 ## @seealso{xlabel}.
 ## @end deftypefn

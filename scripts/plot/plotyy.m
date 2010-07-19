@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
+## @deftypefn  {Function File} {} plotyy (@var{x1}, @var{y1}, @var{x2}, @var{y2})
 ## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun})
 ## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun1}, @var{fun2})
 ## @deftypefnx {Function File} {} plotyy (@var{h}, @dots{})

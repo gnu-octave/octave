@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} compass (@var{u}, @var{v})
+## @deftypefn  {Function File} {} compass (@var{u}, @var{v})
 ## @deftypefnx {Function File} {} compass (@var{z})
 ## @deftypefnx {Function File} {} compass (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} compass (@var{h}, @dots{})

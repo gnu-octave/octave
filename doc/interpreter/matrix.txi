@@ -175,6 +175,8 @@ a (i, :)
 
 @DOCSTRING(repmat)
 
+@DOCSTRING(repelems)
+
 @DOCSTRING(rand)
 
 @DOCSTRING(randn)

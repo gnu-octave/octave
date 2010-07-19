@@ -1,3 +1,7 @@
+2010-07-19  Rik <octave@nomad.inbox5.com>
+
+	* general/repmat.m: Add seealso to new repelems function
+
 2010-07-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* specfun/nchoosek.m: Optimize.

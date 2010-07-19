@@ -1,3 +1,7 @@
+2010-07-17  Rik <octave@nomad.inbox5.com>
+
+	* data.cc (repelems): Add more documentation about new function.
+
 2010-07-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (do_repelems): New helper func.

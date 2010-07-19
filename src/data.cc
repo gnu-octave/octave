@@ -6530,16 +6530,25 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 DEFUN (repelems, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} repelems (@var{x}, @var{r})\n\
-Constructs a vector of repeated elements of @var{x}. @var{r}\n\
-should be a 2-by-n integer matrix.\n\
-The result is a row vector constructed as follows:\n\
+Construct a vector of repeated elements from @var{x}.  @var{r}\n\
+is a 2x@var{N} integer matrix specifying which elements to repeat and\n\
+how often to repeat each element.\n\
+\n\
+Entries in the first row, @var{r}(1,j), select an element to repeat.\n\
+The corresponding entry in the second row, @var{r}(2,j), specifies\n\
+the repeat count.  If @var{x} is a matrix then the columns of @var{x} are\n\
+imagined to be stacked on top of each other for purposes of the selection\n\
+index.  A row vector is always returned.\n\
+\n\
+Conceptually the result is calculated as follows:\n\
 \n\
 @example\n\
-  y = [];\n\
-  for i = 1:columns (n)\n\
-    y = [y, x(n(1,i)*ones(1, n(2,i)))];\n\
-  endfor\n\
+y = [];\n\
+for i = 1:columns (@var{r})\n\
+  y = [y, @var{x}(@var{r}(1,i)*ones(1, @var{r}(2,i)))];\n\
+endfor\n\
 @end example\n\
+@seealso{repmat}\n\
 @end deftypefn")
 {
   octave_value retval;

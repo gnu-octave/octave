@@ -1,3 +1,7 @@
+2010-07-19  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/matrix.txi: Add new function repelems to matrix chapter.
+
 2010-07-18  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/spellcheck,

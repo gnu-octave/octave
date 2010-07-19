@@ -24,6 +24,7 @@
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.  If @var{n} is not specified, form an 
 ## @var{m} by @var{m} block matrix.
+## @seealso{repelems}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

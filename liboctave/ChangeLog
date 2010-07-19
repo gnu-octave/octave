@@ -41,7 +41,7 @@
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * DASSL-opts.in: Periodic grammar check on documentation.
+	* DASSL-opts.in: Periodic grammar check on documentation.
 
 2010-06-16  David Bateman  <dbateman@free.fr>
 
@@ -218,11 +218,11 @@
 
 	* Sparse.cc (template <class T> Sparse<T>::Sparse (const Array<T>&,
 	const idx_vector&, const idx_vector&, octave_idx_type,
-        octave_idx_type, bool, octave_idx_type)): Add argument defining the
+	octave_idx_type, bool, octave_idx_type)): Add argument defining the
 	minimum storage to allocate for the sparse matrix.
 	* Sparse.h (template <class T> Sparse (const Array<T>&,
 	const idx_vector&, const idx_vector&, octave_idx_type,
-        octave_idx_type, bool, octave_idx_type)): ditto.
+	octave_idx_type, bool, octave_idx_type)): ditto.
 	* MSparse.h : ditto
 	* CSparse.h : ditto
 	* dSparse.h : ditto

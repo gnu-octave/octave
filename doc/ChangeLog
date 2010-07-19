@@ -1,75 +1,68 @@
 2010-07-18  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/doccheck/spellcheck,
+	* interpreter/doccheck/spellcheck,
 	interpreter/doccheck/spellcheck/add_to_aspell_dict:
 	Use case insensitive sort in spellcheck scripts.
 
 2010-07-18  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/doccheck/aspell-octave.en.pws: Add Octave-specific words
+	* interpreter/doccheck/aspell-octave.en.pws: Add Octave-specific words
 	from stats.texi to private Aspell dictionary.
 
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/doccheck: New directory for spelling/grammar scripts.
-        * interpreter/doccheck/README: Instructions for using scripts.
-        * interpreter/doccheck/spellcheck: Script to spellcheck a Texinfo file.
-        * interpreter/doccheck/aspell.conf: GNU Aspell configuration file for
-        Octave documentation.
-        * interpreter/doccheck/aspell-octave.en.pws: Private Aspell dictionary.
-        * interpreter/doccheck/add_to_aspell_dict: Script to add new 
-        Octave-specific words to private Aspell dictionary.
-        * interpreter/octave.texi: New @nospell macro which forces Aspell to
-          ignore the word marked by the macro.
-        * interpreter/mk_doc_cache.m: Skip new @nospell macro when 
-          building doc_cache.
-        * interpreter/arith.txi, interpreter/audio.txi, 
-          interpreter/bugs.txi, interpreter/contrib.txi, 
-          interpreter/debug.txi, interpreter/diagperm.txi,
-          interpreter/dynamic.txi, interpreter/geometry.txi,
-          interpreter/matrix.txi, interpreter/numbers.txi, 
-          interpreter/oop.txi, interpreter/package.txi,
-          interpreter/sparse.txi, interpreter/tips.txi: 
-          Spellcheck documentation.
-
-          DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
-          DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
-          DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
-          DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
-          DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
-          file-io.cc, syscalls.cc
+	* interpreter/doccheck: New directory for spelling/grammar scripts.
+	* interpreter/doccheck/README: Instructions for using scripts.
+	* interpreter/doccheck/spellcheck: Script to spellcheck a Texinfo file.
+	* interpreter/doccheck/aspell.conf: GNU Aspell configuration file for
+	Octave documentation.
+	* interpreter/doccheck/aspell-octave.en.pws: Private Aspell dictionary.
+	* interpreter/doccheck/add_to_aspell_dict: Script to add new 
+	Octave-specific words to private Aspell dictionary.
+	* interpreter/octave.texi: New @nospell macro which forces Aspell to
+	  ignore the word marked by the macro.
+	* interpreter/mk_doc_cache.m: Skip new @nospell macro when 
+	  building doc_cache.
+	* interpreter/arith.txi, interpreter/audio.txi, 
+	  interpreter/bugs.txi, interpreter/contrib.txi, 
+	  interpreter/debug.txi, interpreter/diagperm.txi,
+	  interpreter/dynamic.txi, interpreter/geometry.txi,
+	  interpreter/matrix.txi, interpreter/numbers.txi, 
+	  interpreter/oop.txi, interpreter/package.txi,
+	  interpreter/sparse.txi, interpreter/tips.txi: 
+	  Spellcheck documentation.
 
 2010-07-01  Rik <octave@nomad.inbox5.com>
 
-        * refcard/refcard.tex: Fix italic macro typo for stem.
+	* refcard/refcard.tex: Fix italic macro typo for stem.
 
 2010-06-28  Rik <octave@nomad.inbox5.com>
 
-        * refcard/refcard.tex: Fix typos in refcard (bug #30260).
+	* refcard/refcard.tex: Fix typos in refcard (bug #30260).
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * ChangeLog: Correctly break lines > 80 characters.
+	* ChangeLog: Correctly break lines > 80 characters.
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/intro.txi: Clarify wording.  (bug #30165).
+	* interpreter/intro.txi: Clarify wording.  (bug #30165).
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/set.txi: Remove reference to deprecated function.
+	* interpreter/set.txi: Remove reference to deprecated function.
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/expr.txi, interpreter/func.txi, interpreter/install.txi,
-        interpreter/plot.txi, interpreter/sparse.txi: Periodic grammar check
-        of documentation to ensure a common format.
+	* interpreter/expr.txi, interpreter/func.txi, interpreter/install.txi,
+	interpreter/plot.txi, interpreter/sparse.txi: Periodic grammar check
+	of documentation to ensure a common format.
 
 2010-05-27  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/arith.txi, interpreter/diffeq.txi, interpreter/intro.txi,
-        interpreter/nonlin.txi, interpreter/poly.txi, interpreter/sparse.txi:
-        Replace @ifinfo with @ifnottex.
+	* interpreter/arith.txi, interpreter/diffeq.txi, interpreter/intro.txi,
+	interpreter/nonlin.txi, interpreter/poly.txi, interpreter/sparse.txi:
+	Replace @ifinfo with @ifnottex.
 
 2010-05-07  John W. Eaton  <jwe@octave.org>
 
@@ -77,10 +70,10 @@
 
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
-        * interpreter/contrib.txi, interpreter/install.txi,
-        interpreter/plot.txi, interpreter/sparse.txi,
-        interpreter/octave.texi: Remove tabs causing problems with
-        pdf formatting.
+	* interpreter/contrib.txi, interpreter/install.txi,
+	interpreter/plot.txi, interpreter/sparse.txi,
+	interpreter/octave.texi: Remove tabs causing problems with
+	pdf formatting.
 
 2010-04-14  Shai Ayal  <shaiay@users.sourceforge.net>
 
@@ -147,7 +140,7 @@
 2009-12-20  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m: Correctly set postscript output when
-        QHULL library does not exist and sombrero image is printed.
+	QHULL library does not exist and sombrero image is printed.
 
 2009-12-19  Rik <octave@nomad.inbox5.com>
 
@@ -168,27 +161,27 @@
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as
-        it is better supported by automake.
+	it is better supported by automake.
 
 2009-12-10  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: new distdir-local rule to check for presence
-        of necessary libraries before packaging distribution
+	of necessary libraries before packaging distribution
 
 2009-12-08  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Distribute all generated documentation
-        (.pdf, .ps, .html, .dvi) to remove build requirement for TexInfo
+	(.pdf, .ps, .html, .dvi) to remove build requirement for TexInfo
 
 2009-12-07  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am, faq/Makefile.am, liboctave/Makefile.am:
-        Document use of NOTPARALLEL directive.
+	Document use of NOTPARALLEL directive.
 
 2009-12-07  Rik <octave@nomad.inbox5.com>
 
 	* refcard/Makefile.am: Add CLEANFILES and MAINTAINERCLEANFILES objects
-        to properly clean directory.
+	to properly clean directory.
 
 2009-12-05  Rik <octave@nomad.inbox5.com>
 
@@ -222,7 +215,7 @@
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m: Set default papersize to the desired
-          imagesize.
+	  imagesize.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
@@ -300,7 +293,7 @@
 2009-12-01  Rik <octave@nomad.inbox5.com>
 
 	* faq/Makefile.am, doc/interpreter/bugs.txi,
-        doc/interpreter/install.txi: Eliminate false dependency on conf.texi.
+	doc/interpreter/install.txi: Eliminate false dependency on conf.texi.
 
 2009-11-30  Rik <octave@nomad.inbox5.com>
 
@@ -342,13 +335,13 @@
 
 	* interpreter/Makefile.am:
 	Simplify doc-cache handling in Makefile.am to use only
-        install-data-local target
+	install-data-local target
 
 2009-11-24  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
 	Correct Makefile so that it halts on error when unable to build
-        doc-cache.
+	doc-cache.
 
 2009-11-23  Rik <octave@nomad.inbox5.com>
 
@@ -360,12 +353,12 @@
 
 	* Makefile.am: Add . to SUBDIRS to force automake to compile this
 	directory, and make conf.texi, before recursively compiling SUBDIRS
-        which depend on conf.texi
+	which depend on conf.texi
 
 2009-11-11  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can
-        be cleaned by automake.
+	be cleaned by automake.
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
@@ -383,7 +376,7 @@
 2009-10-23  Rik <octave@nomad.inbox5.com>
 
 	* various: Periodic grammar check of Octave documentation files to
-        ensure a standardized format.
+	ensure a standardized format.
 
 2009-10-20  Rik <octave@nomad.inbox5.com>
 
@@ -473,9 +466,9 @@
 2009-06-03  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/plotimages.m: Correct errorbar plot for docs.  Make hist
-        plot reprodroducible for docs.
+	plot reprodroducible for docs.
 	* interpreter/interpimages.m: Correct typo in legend of interpft plot
-        for docs.
+	for docs.
 
 2009-06-03  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -506,7 +499,7 @@
 2009-05-21  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/Makefile.in, texmf.cnf: Change texi2pdf call to include
-        local TeX configuration file which increases save_history variable.
+	local TeX configuration file which increases save_history variable.
 
 2009-05-17  Rik  <rdrider0-list@yahoo.com>
 
@@ -516,8 +509,8 @@
 2009-05-17  Rik  <rdrider0-list@yahoo.com>
 
 	* interpreter/*.txi: Simplify TeXinfo files by eliminating redundant
-        @iftex followed by @tex construction.  Also, spellchecked all .txi
-        and .texi files.
+	@iftex followed by @tex construction.  Also, spellchecked all .txi
+	and .texi files.
 
 2009-05-14  Rik  <rdrider0-list@yahoo.com>
 

@@ -1,22 +1,23 @@
 2010-07-18  Kai Habel <kai.habel@gmx.de>
-        * DLD-FUNCTIONS/fltk_backend.cc: Add mode for mouse rotation.
-        (view2status): new function
-        * src/graphics.cc: Remove limitations for zooming and translation.
-        (axes::properties::rotate_view): new function
-        
+
+	* DLD-FUNCTIONS/fltk_backend.cc: Add mode for mouse rotation.
+	(view2status): new function
+	* src/graphics.cc: Remove limitations for zooming and translation.
+	(axes::properties::rotate_view): new function
+	
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
-        * DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
-          DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
-          DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
-          DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
-          DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
-          file-io.cc, syscalls.cc: Spellcheck documentation
+	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
+	  DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
+	  DLD-FUNCTIONS/dmperm.cc, DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qz.cc,
+	  DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sparse.cc, 
+	  DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
+	  file-io.cc, syscalls.cc: Spellcheck documentation
 
 2010-07-08  Rik <octave@nomad.inbox5.com>
 
 	* DLD_FUNCTIONS/rand.cc: Correct typo in rande documentation.
-        (bug #30446).
+	(bug #30446).
 
 2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -48,7 +49,7 @@
 2010-07-08  Rik <octave@nomad.inbox5.com>
 
 	* DLD_FUNCTIONS/eigs.cc: Initialize random number generator in test
-        blocks to get reproducible results.
+	blocks to get reproducible results.
 
 2010-07-08  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -57,14 +58,14 @@
 2010-07-07  Rik <octave@nomad.inbox5.com>
 
 	* pr-output.cc (calc_scale_exp): Avoid use of % operator on negative
-        operands for portability between C++ compilers.
-        (engineering_exponent): Avoid use of % operator.  Keep calculation of
-        exponent within pr_engineering_float class.  (encapsulation).
-        (num_digits): Rename from calc_digits.  Return true number of digits =
-        1 + calc_digits.
-        (calc_scale_exp): Rename from maybe_mod3 for readability.
-        (operator << (... pr_engineering_float pef): Use pef abbreviation for
-        pr_engineering_float.
+	operands for portability between C++ compilers.
+	(engineering_exponent): Avoid use of % operator.  Keep calculation of
+	exponent within pr_engineering_float class.  (encapsulation).
+	(num_digits): Rename from calc_digits.  Return true number of digits =
+	1 + calc_digits.
+	(calc_scale_exp): Rename from maybe_mod3 for readability.
+	(operator << (... pr_engineering_float pef): Use pef abbreviation for
+	pr_engineering_float.
 
 2010-07-07  David Bateman  <dbateman@free.fr>
 
@@ -209,7 +210,7 @@
 
 2010-06-24  Rik <octave@nomad.inbox5.com>
 
-        * octave.cc: Add [FILE] to octave usage string (bug #30258).
+	* octave.cc: Add [FILE] to octave usage string (bug #30258).
 
 2010-06-24  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -246,7 +247,7 @@
 2010-06-21  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option.
-        (bug #30183).
+	(bug #30183).
 
 2010-06-21  David Bateman  <dbateman@free.fr>
 
@@ -295,12 +296,12 @@
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc,
-        DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc,
-        DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/onCleanup.cc,
-        DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spparms.cc, DLD-FUNCTIONS/svd.cc,
-        data.cc, dirfns.cc, graphics.cc, mappers.cc, ov-cell.cc, ov-range.cc:
-        Periodic grammar check of documentation to ensure a common format.
+	* DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc,
+	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc,
+	DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/onCleanup.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spparms.cc, DLD-FUNCTIONS/svd.cc,
+	data.cc, dirfns.cc, graphics.cc, mappers.cc, ov-cell.cc, ov-range.cc:
+	Periodic grammar check of documentation to ensure a common format.
 
 2010-06-11  David Bateman  <dbateman@free.fr>
 
@@ -321,7 +322,7 @@
 2010-06-14  Rik <octave@nomad.inbox5.com>
 
 	* pr-output.cc: Remove extra newlines when displaying multi-dimensional
-        arrays (bug #30029).
+	arrays (bug #30029).
 
 2010-06-14  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -357,10 +358,10 @@
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc,
-        DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc,
-        DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/tril.cc,
-        data.cc, ov.cc: Improve documentation string.
+	* DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc,
+	DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/tril.cc,
+	data.cc, ov.cc: Improve documentation string.
 
 2010-06-06  Michael Goffioul  <michael.goffioul@gmail.com>
 
@@ -401,7 +402,7 @@
 2010-05-10  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/eigs.cc: Improve documentation string.
-        Use ~ notation instead of dummy variables for unused return arguments.
+	Use ~ notation instead of dummy variables for unused return arguments.
 
 2010-05-27  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -528,7 +529,7 @@
 2010-05-10  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test
-        when QRUPDATE is present and low precision when it is not.
+	when QRUPDATE is present and low precision when it is not.
 
 2010-05-10  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -612,7 +613,7 @@
 2010-05-02  Rik <octave@nomad.inbox5.com>
 
 	* ov-cell.cc: Wrap documentation line to prevent overfull hbox
-        LaTex warning
+	LaTex warning
 
 2010-05-01  Ben Abbott <bpabbott@mac.com>
 
@@ -654,7 +655,7 @@
 
 	* oct-parse.yy (octave_function * load_fcn_from_file
 	(const std::string&, const std::string&, const std::string&)
-        (const std::string&, bool)): When loading a mex-file attempt
+	(const std::string&, bool)): When loading a mex-file attempt
 	to load the m-file first to get the help string.
 
 2010-04-24  Ben Abbott <bpabbott@mac.com>
@@ -2147,7 +2148,7 @@
 	(Fisstruct): Fix docstring.
 	* DLD-FUNCTIONS/cellfun.cc (Fcellslices, Fisfield, Ffieldnames,
 	Frmfield): Add test.
-        * ov-struct.cc (Fcell2struct): Fix docstring, add test.
+	* ov-struct.cc (Fcell2struct): Fix docstring, add test.
 
 2010-01-16  David Bateman  <dbateman@free.fr>
 

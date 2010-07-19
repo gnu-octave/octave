@@ -142,20 +142,20 @@
 
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
-        * audio/lin2mu.m, general/common_size.m, general/interp1.m, 
-        general/interp2.m, general/interpn.m, general/quadl.m,
-        geometry/dsearchn.m, geometry/voronoi.m, geometry/voronoin.m,
-        image/hsv2rgb.m, image/imread.m, image/rgb2hsv.m,
-        linear-algebra/commutation_matrix.m, linear-algebra/condest.m,
-        linear-algebra/expm.m, linear-algebra/krylov.m,
-        linear-algebra/onenormest.m, miscellaneous/perl.m,
-        plot/linkprop.m, plot/plot.m, plot/print.m, plot/stem3.m,
-        signal/diffpara.m, signal/stft.m, sparse/pcg.m, sparse/pcr.m,
-        specfun/primes.m, special-matrix/hadamard.m, special-matrix/hankel.m,
-        special-matrix/invhilb.m, special-matrix/pascal.m,
-        special-matrix/rosser.m, special-matrix/toeplitz.m,
-        special-matrix/vander.m, special-matrix/wilkinson.m,
-        testfun/speed.m: Spellcheck documentation
+	* audio/lin2mu.m, general/common_size.m, general/interp1.m, 
+	general/interp2.m, general/interpn.m, general/quadl.m,
+	geometry/dsearchn.m, geometry/voronoi.m, geometry/voronoin.m,
+	image/hsv2rgb.m, image/imread.m, image/rgb2hsv.m,
+	linear-algebra/commutation_matrix.m, linear-algebra/condest.m,
+	linear-algebra/expm.m, linear-algebra/krylov.m,
+	linear-algebra/onenormest.m, miscellaneous/perl.m,
+	plot/linkprop.m, plot/plot.m, plot/print.m, plot/stem3.m,
+	signal/diffpara.m, signal/stft.m, sparse/pcg.m, sparse/pcr.m,
+	specfun/primes.m, special-matrix/hadamard.m, special-matrix/hankel.m,
+	special-matrix/invhilb.m, special-matrix/pascal.m,
+	special-matrix/rosser.m, special-matrix/toeplitz.m,
+	special-matrix/vander.m, special-matrix/wilkinson.m,
+	testfun/speed.m: Spellcheck documentation
 
 2010-07-15  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -214,19 +214,19 @@
 
 2010-07-02  Rik <octave@nomad.inbox5.com>
 
-        * audio/wavread.m: Correctly handle non-word aligned data chunks.
-        (bug #30309).
+	* audio/wavread.m: Correctly handle non-word aligned data chunks.
+	(bug #30309).
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * plot/stairs.m: Add additional calling forms to documentation.
+	* plot/stairs.m: Add additional calling forms to documentation.
 
 2010-06-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__plt__.m: Replace usage message with error.
 	* plot/loglog.m, plot/plot.m, plot/polar.m, plot/semilogx.m,
 	plot/semilogy.m: Call print_usage if no args are supplied.
-        Add additional calling forms to documentation.
+	Add additional calling forms to documentation.
 
 2010-06-24  Shai Ayal  <shaiay@users.sourceforge.net>
 
@@ -251,22 +251,22 @@
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * set/union.m: Remove seealso reference to deprecated function.
+	* set/union.m: Remove seealso reference to deprecated function.
 
 2010-06-16  Rik <octave@nomad.inbox5.com>
 
-        * @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m,
-        deprecated/fstat.m, general/accumdim.m, general/interp1.m,
-        linear-algebra/ishermitian.m, linear-algebra/issymmetric.m,
-        miscellaneous/substruct.m, optimization/fminbnd.m,
-        optimization/fsolve.m, plot/bar.m, plot/daspect.m, plot/pbaspect.m,
-        plot/print.m, polynomial/mkpp.m, polynomial/ppval.m, set/union.m,
-        signal/unwrap.m, specfun/nthroot.m: Periodic grammar check of
-        documentation to ensure a common format.
+	* @ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mput.m, @ftp/rename.m,
+	deprecated/fstat.m, general/accumdim.m, general/interp1.m,
+	linear-algebra/ishermitian.m, linear-algebra/issymmetric.m,
+	miscellaneous/substruct.m, optimization/fminbnd.m,
+	optimization/fsolve.m, plot/bar.m, plot/daspect.m, plot/pbaspect.m,
+	plot/print.m, polynomial/mkpp.m, polynomial/ppval.m, set/union.m,
+	signal/unwrap.m, specfun/nthroot.m: Periodic grammar check of
+	documentation to ensure a common format.
 
 2010-06-14  Rik <octave@nomad.inbox5.com>
 
-        * plot/image.m: Flip data, rather than y-axis, for images.  (bug #30033)
+	* plot/image.m: Flip data, rather than y-axis, for images.  (bug #30033)
 
 2010-06-12  Ben Abbott <bpabbott@mac.com>
 
@@ -276,7 +276,7 @@
 
 2010-06-12  Rik <octave@nomad.inbox5.com>
 
-        * plot/scatter.m: Add new calling forms of function to documentation.
+	* plot/scatter.m: Add new calling forms of function to documentation.
 
 2010-06-10  Ben Abbott <bpabbott@mac.com>
 
@@ -291,44 +291,44 @@
 
 2010-06-09  Rik <octave@nomad.inbox5.com>
 
-        * general/flipdim.m, general/accumdim.m: Use > 1 test to find
-        first non-singleton dimension rather than != 1.
+	* general/flipdim.m, general/accumdim.m: Use > 1 test to find
+	first non-singleton dimension rather than != 1.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/cumtrapz.m, general/postpad.m, general/prepad.m,
-        general/shift.m, general/trapz.m, signal/unwrap.m: Use common
-        method to find first non-singleton dimension.
+	* general/cumtrapz.m, general/postpad.m, general/prepad.m,
+	general/shift.m, general/trapz.m, signal/unwrap.m: Use common
+	method to find first non-singleton dimension.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/rotdim.m: Modify function to use same variable names
-        as documentation.
+	* general/rotdim.m: Modify function to use same variable names
+	as documentation.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/cart2pol.m, general/cart2sph.m, general/pol2cart.m,
-        general/sph2cart.m: Add option to operate on column matrix of
-        coordinates.
+	* general/cart2pol.m, general/cart2sph.m, general/pol2cart.m,
+	general/sph2cart.m: Add option to operate on column matrix of
+	coordinates.
 
 2010-06-08  Rik <octave@nomad.inbox5.com>
 
-        * general/arrayfun.m, general/cart2pol.m, general/cart2sph.m,
-        general/idivide.m, general/logspace.m, general/sph2cart.m,
-        general/structfun.m, image/imagesc.m, io/csvread.m, io/csvwrite.m,
-        linear-algebra/cond.m, linear-algebra/condest.m,
-        linear-algebra/isdefinite.m, linear-algebra/null.m,
-        linear-algebra/orth.m, miscellaneous/list_primes.m,
-        optimization/fminunc.m, optimization/fzero.m, path/matlabroot.m,
-        plot/axis.m, plot/plot.m, plot/semilogx.m, plot/semilogxerr.m,
-        plot/semilogy.m, plot/semilogyerr.m, plot/stem.m, polynomial/poly.m,
-        polynomial/polyder.m, polynomial/polyderiv.m, polynomial/polyfit.m,
-        polynomial/polyout.m, polynomial/polyval.m, set/ismember.m,
-        sparse/spfun.m, specfun/betaln.m, statistics/base/mean.m,
-        statistics/base/median.m, statistics/base/mode.m, statistics/base/ols.m,
-        statistics/base/ranks.m,
-        statistics/distributions/kolmogorov_smirnov_cdf.m,
-        statistics/distributions/wblpdf.m: Improve documentation strings
+	* general/arrayfun.m, general/cart2pol.m, general/cart2sph.m,
+	general/idivide.m, general/logspace.m, general/sph2cart.m,
+	general/structfun.m, image/imagesc.m, io/csvread.m, io/csvwrite.m,
+	linear-algebra/cond.m, linear-algebra/condest.m,
+	linear-algebra/isdefinite.m, linear-algebra/null.m,
+	linear-algebra/orth.m, miscellaneous/list_primes.m,
+	optimization/fminunc.m, optimization/fzero.m, path/matlabroot.m,
+	plot/axis.m, plot/plot.m, plot/semilogx.m, plot/semilogxerr.m,
+	plot/semilogy.m, plot/semilogyerr.m, plot/stem.m, polynomial/poly.m,
+	polynomial/polyder.m, polynomial/polyderiv.m, polynomial/polyfit.m,
+	polynomial/polyout.m, polynomial/polyval.m, set/ismember.m,
+	sparse/spfun.m, specfun/betaln.m, statistics/base/mean.m,
+	statistics/base/median.m, statistics/base/mode.m, statistics/base/ols.m,
+	statistics/base/ranks.m,
+	statistics/distributions/kolmogorov_smirnov_cdf.m,
+	statistics/distributions/wblpdf.m: Improve documentation strings
 
 2010-06-07  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -343,12 +343,12 @@
 
 2010-06-03  Alois Schlögl
 
-        * signal/arch_test.m, statistics/tests/bartlett_test.m,
-        statistics/tests/chisquare_test_homogeneity.m,
-        statistics/tests/chisquare_test_independence.m,
-        statistics/tests/manova.m, statistics/tests/mcnemar_test.m,
-        statistics/tests/run_test.m, statistics/distributions/chi2pdf.m:
-        Replace calls to obsolete chisquare_cdf with chi2cdf.
+	* signal/arch_test.m, statistics/tests/bartlett_test.m,
+	statistics/tests/chisquare_test_homogeneity.m,
+	statistics/tests/chisquare_test_independence.m,
+	statistics/tests/manova.m, statistics/tests/mcnemar_test.m,
+	statistics/tests/run_test.m, statistics/distributions/chi2pdf.m:
+	Replace calls to obsolete chisquare_cdf with chi2cdf.
 
 2010-06-03  Rik <octave@nomad.inbox5.com>
 
@@ -357,9 +357,9 @@
 2010-06-02  Rik <octave@nomad.inbox5.com>
 
 	* optimization/sqp.m: Overhaul sqp code.
-        Guarantee equivalent results if sqp called with or wihout bounds
-        (bug #29989).  Simplify input option handling and add %tests
-        to check validation code.  Rewrite documentation string.
+	Guarantee equivalent results if sqp called with or wihout bounds
+	(bug #29989).  Simplify input option handling and add %tests
+	to check validation code.  Rewrite documentation string.
 
 2010-06-01  Rik <octave@nomad.inbox5.com>
 
@@ -368,29 +368,29 @@
 2010-06-01  Rik <octave@nomad.inbox5.com>
 
 	* plot/private/__contour__.m: Correctly size X and Y when only Z
-        specified (bug #30002).
+	specified (bug #30002).
 
 2010-05-31  Rik <octave@nomad.inbox5.com>
 
 	* specfun/legendre.m: Orient row vector correctly (bug #29997).
-        Add input validation for negative values and %tests to check
-        validation routines.
+	Add input validation for negative values and %tests to check
+	validation routines.
 
 2010-05-30  Rik <octave@nomad.inbox5.com>
 
-        * sparse/svds.m: Overhaul code.
-        Return smallest singular values if sigma == 0 (Bug #29721).
-        Avoid calculating U and V matrices unless requested.
-        Correctly handle zero matrix input.
-        Improve documentation string.
+	* sparse/svds.m: Overhaul code.
+	Return smallest singular values if sigma == 0 (Bug #29721).
+	Avoid calculating U and V matrices unless requested.
+	Correctly handle zero matrix input.
+	Improve documentation string.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
 
-        * statistics/base/histc.m, statistics/base/iqr.m,
-        statistics/base/kurtosis.m, statistics/base/mode.m,
-        statistics/base/ranks.m, statistics/base/run_count.m,
-        statistics/base/skewness.m, statistics/base/statistics.m,
-        statistics/base/studentize.m: Improve validation of input arguments.
+	* statistics/base/histc.m, statistics/base/iqr.m,
+	statistics/base/kurtosis.m, statistics/base/mode.m,
+	statistics/base/ranks.m, statistics/base/run_count.m,
+	statistics/base/skewness.m, statistics/base/statistics.m,
+	statistics/base/studentize.m: Improve validation of input arguments.
 
 2010-05-26  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -398,11 +398,11 @@
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
 
-        * plot/legend.m: Improve documentation string.
+	* plot/legend.m: Improve documentation string.
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
 
-        * sparse/svds.m: Check struct input arguments.  Overhaul documentation.
+	* sparse/svds.m: Check struct input arguments.  Overhaul documentation.
 
 2010-05-26  Ben Abbott <bpabbott@mac.com>
 
@@ -411,8 +411,8 @@
 
 2010-05-26  Rik <octave@nomad.inbox5.com>
 
-        * sparse/svds.m: Initialize ARPACK starting vector in svds test code.
-        Bug #29721.
+	* sparse/svds.m: Initialize ARPACK starting vector in svds test code.
+	Bug #29721.
 
 2010-05-25  Ben Abbott <bpabbott@mac.com>
 
@@ -433,48 +433,48 @@
 	non-singleton dimension computation.
 
 2010-05-24  Rik <octave@nomad.inbox5.com>
-        * general/private/__isequal__.m, image/image.m,
-        statistics/base/ranks.m: Replace calls to deprecated functions.
+	* general/private/__isequal__.m, image/image.m,
+	statistics/base/ranks.m: Replace calls to deprecated functions.
 
 2010-05-23  Rik <octave@nomad.inbox5.com>
 
-        * image/imshow.m: Scale image point color according to colormap.
-        Bug #29926.
+	* image/imshow.m: Scale image point color according to colormap.
+	Bug #29926.
 
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
-        * plot/semilogx.m, plot/semilogy.m: Plot minor ticks for semilog plots.
+	* plot/semilogx.m, plot/semilogy.m: Plot minor ticks for semilog plots.
 
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
-        * audio/loadaudio.m, audio/playaudio.m, audio/saveaudio.m,
-        audio/wavread.m, general/bicubic.m, general/bitcmp.m, general/bitget.m,
-        general/bitset.m, general/cplxpair.m, general/del2.m,
-        general/gradient.m, general/interp2.m, general/interp3.m,
-        general/interpn.m, general/postpad.m, general/prepad.m,
-        general/private/__splinen__.m, image/image_viewer.m, image/imagesc.m,
-        image/saveimage.m, linear-algebra/expm.m, linear-algebra/krylov.m,
-        miscellaneous/edit.m, miscellaneous/private/__xzip__.m,
-        miscellaneous/what.m, optimization/glpk.m, optimization/optimset.m,
-        optimization/pqpnonneg.m, path/pathdef.m, plot/__go_draw_axes__.m,
-        plot/__marching_cube__.m, plot/gnuplot_drawnow.m, plot/ishold.m,
-        plot/isocolors.m, plot/isonormals.m, plot/print.m,
-        plot/private/__add_datasource__.m, plot/private/__color_str_rgb__.m,
-        plot/private/__errplot__.m, plot/private/__interp_cube__.m,
-        plot/shading.m, plot/specular.m, polynomial/deconv.m,
-        polynomial/polyint.m, polynomial/ppint.m, set/powerset.m,
-        signal/arch_fit.m, signal/arch_test.m, signal/durbinlevinson.m,
-        special-matrix/hadamard.m, statistics/distributions/unidrnd.m,
-        statistics/distributions/unifinv.m,
-        statistics/models/logistic_regression.m, strings/strjust.m,
-        testfun/rundemos.m, testfun/runtests.m, testfun/test.m, time/datenum.m:
-        Print name of function in error() string messages.
+	* audio/loadaudio.m, audio/playaudio.m, audio/saveaudio.m,
+	audio/wavread.m, general/bicubic.m, general/bitcmp.m, general/bitget.m,
+	general/bitset.m, general/cplxpair.m, general/del2.m,
+	general/gradient.m, general/interp2.m, general/interp3.m,
+	general/interpn.m, general/postpad.m, general/prepad.m,
+	general/private/__splinen__.m, image/image_viewer.m, image/imagesc.m,
+	image/saveimage.m, linear-algebra/expm.m, linear-algebra/krylov.m,
+	miscellaneous/edit.m, miscellaneous/private/__xzip__.m,
+	miscellaneous/what.m, optimization/glpk.m, optimization/optimset.m,
+	optimization/pqpnonneg.m, path/pathdef.m, plot/__go_draw_axes__.m,
+	plot/__marching_cube__.m, plot/gnuplot_drawnow.m, plot/ishold.m,
+	plot/isocolors.m, plot/isonormals.m, plot/print.m,
+	plot/private/__add_datasource__.m, plot/private/__color_str_rgb__.m,
+	plot/private/__errplot__.m, plot/private/__interp_cube__.m,
+	plot/shading.m, plot/specular.m, polynomial/deconv.m,
+	polynomial/polyint.m, polynomial/ppint.m, set/powerset.m,
+	signal/arch_fit.m, signal/arch_test.m, signal/durbinlevinson.m,
+	special-matrix/hadamard.m, statistics/distributions/unidrnd.m,
+	statistics/distributions/unifinv.m,
+	statistics/models/logistic_regression.m, strings/strjust.m,
+	testfun/rundemos.m, testfun/runtests.m, testfun/test.m, time/datenum.m:
+	Print name of function in error() string messages.
 
 2010-05-16  Rik <octave@nomad.inbox5.com>
 
-        * scripts/plot/contourc.m, scripts/plot/private/__contour__.m,
-          scripts/plot/surface.m, scripts/plot/surfnorm.m: Check input
-          arguments for size and type (bug #29861).
+	* scripts/plot/contourc.m, scripts/plot/private/__contour__.m,
+	  scripts/plot/surface.m, scripts/plot/surfnorm.m: Check input
+	  arguments for size and type (bug #29861).
 
 2010-05-13  John W. Eaton  <jwe@octave.org>
 
@@ -482,7 +482,7 @@
 
 2010-05-13   Qianqian Fang <fangq>
 
-        * miscellaneous/tempdir.m: Add filesep to end of tempdir (bug #29864).
+	* miscellaneous/tempdir.m: Add filesep to end of tempdir (bug #29864).
 
 2010-05-11  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -490,7 +490,7 @@
 
 2010-05-08  David Gesswein <djg@pdp8online.com>
 
-        * io/dlmwrite.m: Correctly set output precision (#29870).
+	* io/dlmwrite.m: Correctly set output precision (#29870).
 
 2010-05-12  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
 
@@ -499,14 +499,14 @@
 
 2010-05-08  Rik <octave@nomad.inbox5.com>
 
-        * testfun/test.m: Don't abort testing when skipping a testif block
+	* testfun/test.m: Don't abort testing when skipping a testif block
 
 2010-05-05  Rik <octave@nomad.inbox5.com>
 
-        * statistics/tests/cor_test.m, statistics/tests/t_test.m,
-          statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m,
-          statistics/tests/welch_test.m: Replace deprecated function calls.
-          Patch provided by Alois Schlögl.
+	* statistics/tests/cor_test.m, statistics/tests/t_test.m,
+	  statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m,
+	  statistics/tests/welch_test.m: Replace deprecated function calls.
+	  Patch provided by Alois Schlögl.
 
 2010-05-02  Rik <octave@nomad.inbox5.com>
 

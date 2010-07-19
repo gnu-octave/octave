@@ -1,3 +1,7 @@
+2010-07-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* specfun/nchoosek.m: Optimize.
+
 2010-07-18  Rik <octave@nomad.inbox5.com>
 
 	* scripts/@ftp/ftp.m, scripts/@ftp/mget.m, scripts/audio/lin2mu.m,

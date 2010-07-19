@@ -69,6 +69,8 @@ static double fltk_maxtime = 1e-2;
 const char* help_text = "\
 Keyboard Shortcuts\n\
 a - autoscale\n\
+p - pan/zoom\n\
+r - rotate\n\
 g - toggle grid\n\
 \n\
 Mouse\n\
@@ -219,8 +221,7 @@ class plot_window : public Fl_Window
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
-      fp (xfp), canvas (0), autoscale (0), togglegrid (0), help (0),
-      status (0)
+      fp (xfp), canvas (0), autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0), status (0)
   {
     callback (window_close, static_cast<void*> (this));
 
@@ -245,8 +246,24 @@ public:
                    "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
 
+      panzoom = new
+        Fl_Button (2 * status_h,
+                   hh - status_h,
+                   status_h,
+                   status_h,
+                   "P");
+      panzoom->callback (button_callback, static_cast<void*> (this));
+      
+      rotate = new
+        Fl_Button (3 * status_h,
+                   hh - status_h,
+                   status_h,
+                   status_h,
+                   "R");
+      rotate->callback (button_callback, static_cast<void*> (this));
+      
       help = new
-        Fl_Button (2*status_h,
+        Fl_Button (4 * status_h,
                    hh - status_h,
                    status_h,
                    status_h,
@@ -254,7 +271,7 @@ public:
       help->callback (button_callback, static_cast<void*> (this));
 
       status = new
-        Fl_Output (3*status_h,
+        Fl_Output (5 * status_h,
                    hh - status_h,
                    ww > 2*status_h ? ww - status_h : 0,
                    status_h, "");
@@ -279,11 +296,13 @@ public:
     status->show ();
     autoscale->show ();
     togglegrid->show ();
+    panzoom->show ();
+    rotate->show ();
 
     set_name ();
     resizable (canvas);
     size_range (4*status_h, 2*status_h);
-
+    gui_mode = 1;
   }
 
   ~plot_window (void)
@@ -328,6 +347,10 @@ private:
   // Mod keys status
   int shift;
 
+  // Interactive Mode
+  // 1...pan/zoom, 2...rotate/zoom
+  int gui_mode;
+  
   // Figure properties.
   figure::properties& fp;
 
@@ -355,6 +378,12 @@ private:
 
     if (widg == togglegrid)
       toggle_grid ();
+    
+    if (widg == panzoom)
+      gui_mode = 1;
+    
+    if (widg == rotate)
+      gui_mode = 2;
 
     if (widg == help)
       fl_message ("%s", help_text);
@@ -363,6 +392,8 @@ private:
   OpenGL_fltk* canvas;
   Fl_Button* autoscale;
   Fl_Button* togglegrid;
+  Fl_Button* panzoom;
+  Fl_Button* rotate;
   Fl_Button* help;
   Fl_Output* status;
 
@@ -382,7 +413,7 @@ private:
     feval ("grid", args);
     mark_modified ();
   }
-
+  
   void pixel2pos 
   (graphics_handle ax, int px, int py, double& xx, double& yy) const
   {
@@ -441,7 +472,8 @@ private:
   {
     double x0, y0, x1, y1;
     std::stringstream cbuf;
-
+    cbuf.precision (4);
+    cbuf.width (6);
     pixel2pos (ax, px0, py0, x0, y0);
     cbuf << "[" << x0 << ", " << y0 << "]";
     if (px1 >= 0)
@@ -454,6 +486,24 @@ private:
     status->redraw ();
   }
 
+  void view2status (graphics_object ax)
+  {
+     if (ax && ax.isa ("axes"))
+       {
+         axes::properties& ap = 
+           dynamic_cast<axes::properties&> (ax.get_properties ());
+         std::stringstream cbuf;
+         cbuf.precision (4);
+         cbuf.width (6);
+         Matrix v (1,2,0);
+         v = ap.get("view").matrix_value();
+         cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << "]";
+    
+         status->value (cbuf.str ().c_str ());
+         status->redraw ();
+       }
+  }
+  
   void set_currentpoint (int px, int py)
   {
     Matrix pos (1,2,0);
@@ -583,6 +633,16 @@ private:
             case 'G':
               toggle_grid ();
             break;
+
+            case 'p':
+            case 'P':
+              gui_mode = 1;
+            break;
+
+            case 'r':
+            case 'R':
+              gui_mode = 2;
+            break;
             }
         }
         break;
@@ -624,7 +684,6 @@ private:
         break;
 
       case FL_DRAG:
-        pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
         if (fp.get_windowbuttonmotionfcn ().is_defined ())
           {
             set_currentpoint (Fl::event_x (), Fl::event_y ());
@@ -635,22 +694,37 @@ private:
           {
             if (ax0 && ax0.isa ("axes"))
               {
+                if (gui_mode == 1)
+                  pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                else
+                  view2status (ax0);
                 axes::properties& ap = 
                   dynamic_cast<axes::properties&> (ax0.get_properties ());
               
                 double x0, y0, x1, y1;
+                Matrix pos = fp.get_position ().matrix_value ();
                 pixel2pos (ax0, px0, py0, x0, y0);
                 pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                
+                if (gui_mode == 1)
+                  ap.translate_view (x0 - x1, y0 - y1);
+                else if (gui_mode == 2)
+                  {
+                    double daz, del;
+                    daz = (Fl::event_x () - px0) / pos(2) * 360;
+                    del = (Fl::event_y () - py0) / pos(3) * 360;
+                    ap.rotate_view (del, daz);
+                  }
+
                 px0 = Fl::event_x ();
                 py0 = Fl::event_y ();
-
-                ap.translate_view (x0 - x1, y0 - y1);
                 mark_modified ();
               }
             return 1;
           }
         else if (Fl::event_button () == 3)
           {
+            pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
             Matrix zoom_box (1,4,0);
             zoom_box (0) = px0;
             zoom_box (1) = py0;

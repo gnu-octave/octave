@@ -2912,6 +2912,7 @@ public:
                            bool push_to_zoom_stack = true);
     void zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack = true);
     void translate_view (double delta_x, double delta_y);
+    void rotate_view (double delta_az, double delta_el);
     void unzoom (void);
     void clear_zoom_stack (void);
 

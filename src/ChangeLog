@@ -1,3 +1,9 @@
+2010-07-18  Kai Habel <kai.habel@gmx.de>
+        * DLD-FUNCTIONS/fltk_backend.cc: Add mode for mouse rotation.
+        (view2status): new function
+        * src/graphics.cc: Remove limitations for zooming and translation.
+        (axes::properties::rotate_view): new function
+        
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
         * DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,

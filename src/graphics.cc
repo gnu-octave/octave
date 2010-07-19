@@ -4231,12 +4231,6 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   ylims (0) = y + factor * (ylims (0) - y);
   ylims (1) = y + factor * (ylims (1) - y);
               
-  // Make sure we stay within the range og the plot
-  xlims (0) = force_in_range (xlims (0), minx, maxx);
-  xlims (1) = force_in_range (xlims (1), minx, maxx);
-  ylims (0) = force_in_range (ylims (0), miny, maxy);
-  ylims (1) = force_in_range (ylims (1), miny, maxy);
-
   zoom (xlims, ylims, push_to_zoom_stack);
 }
 
@@ -4280,22 +4274,24 @@ axes::properties::translate_view (double delta_x, double delta_y)
   double min_pos_y = octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, kids, 'y');
   
-  // Make sure we don't exceed the borders
-  if (delta_x > 0)
-    delta_x = std::min (xlims (1) + delta_x, maxx) - xlims (1);
-  else
-    delta_x = std::max (xlims (0) + delta_x, minx) - xlims (0);
-  xlims (0) = xlims (0) + delta_x;
-  xlims (1) = xlims (1) + delta_x;
-                
-  if (delta_y > 0)
-    delta_y = std::min (ylims (1) + delta_y, maxy) - ylims (1);
-  else
-    delta_y = std::max (ylims (0) + delta_y, miny) - ylims (0);
-  ylims (0) = ylims (0) + delta_y;
-  ylims (1) = ylims (1) + delta_y;
+  xlims (0) += delta_x;
+  xlims (1) += delta_x;
+  ylims (0) += delta_y;
+  ylims (1) += delta_y;
                 
   zoom (xlims, ylims, false);
+}
+
+void
+axes::properties::rotate_view (double delta_el, double delta_az)
+{
+  Matrix v = get_view ().matrix_value ();
+
+  v (1) += delta_el;
+  v (0) -= delta_az;
+
+  set_view(v);
+  update_transform();
 }
 
 void

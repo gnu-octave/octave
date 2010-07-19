@@ -1,3 +1,8 @@
+2010-07-18  Rik <octave@nomad.inbox5.com>
+
+        * interpreter/doccheck/aspell-octave.en.pws: Add Octave-specific words
+	from stats.texi to private Aspell dictionary
+
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
         * interpreter/doccheck: New directory for spelling/grammar scripts.

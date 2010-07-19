@@ -1,3 +1,8 @@
+2010-07-19  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::gui_mode):
+	Use enum instead of int.  Change all uses.
+
 2010-07-18  Kai Habel <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/fltk_backend.cc: Add mode for mouse rotation.

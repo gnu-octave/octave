@@ -302,7 +302,7 @@ public:
     set_name ();
     resizable (canvas);
     size_range (4*status_h, 2*status_h);
-    gui_mode = 1;
+    gui_mode = pan_zoom;
   }
 
   ~plot_window (void)
@@ -348,8 +348,7 @@ private:
   int shift;
 
   // Interactive Mode
-  // 1...pan/zoom, 2...rotate/zoom
-  int gui_mode;
+  enum { pan_zoom, rotate_zoom } gui_mode;
   
   // Figure properties.
   figure::properties& fp;
@@ -380,10 +379,10 @@ private:
       toggle_grid ();
     
     if (widg == panzoom)
-      gui_mode = 1;
+      gui_mode = pan_zoom;
     
     if (widg == rotate)
-      gui_mode = 2;
+      gui_mode = rotate_zoom;
 
     if (widg == help)
       fl_message ("%s", help_text);
@@ -636,12 +635,12 @@ private:
 
             case 'p':
             case 'P':
-              gui_mode = 1;
+              gui_mode = pan_zoom;
             break;
 
             case 'r':
             case 'R':
-              gui_mode = 2;
+              gui_mode = rotate_zoom;
             break;
             }
         }
@@ -694,7 +693,7 @@ private:
           {
             if (ax0 && ax0.isa ("axes"))
               {
-                if (gui_mode == 1)
+                if (gui_mode == pan_zoom)
                   pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
                 else
                   view2status (ax0);
@@ -706,9 +705,9 @@ private:
                 pixel2pos (ax0, px0, py0, x0, y0);
                 pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
                 
-                if (gui_mode == 1)
+                if (gui_mode == pan_zoom)
                   ap.translate_view (x0 - x1, y0 - y1);
-                else if (gui_mode == 2)
+                else if (gui_mode == rotate_zoom)
                   {
                     double daz, del;
                     daz = (Fl::event_x () - px0) / pos(2) * 360;

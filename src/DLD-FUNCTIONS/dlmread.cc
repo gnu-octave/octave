@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2008, 2009 Jonathan Stickel
+Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -29,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 #include <fstream>
+#include <limits>
 
 #include "file-ops.h"
 #include "lo-ieee.h"
@@ -38,8 +40,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+static const octave_idx_type idx_max =  std::numeric_limits<octave_idx_type>::max ();
+
 static bool
-read_cell_spec (std::istream& is, unsigned long& row, unsigned long& col)
+read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
 {
   bool stat = false;
 
@@ -76,8 +80,8 @@ read_cell_spec (std::istream& is, unsigned long& row, unsigned long& col)
 
 static bool
 parse_range_spec (const octave_value& range_spec,
-                  unsigned long& rlo, unsigned long& clo,
-                  unsigned long& rup, unsigned long& cup)
+                  octave_idx_type& rlo, octave_idx_type& clo,
+                  octave_idx_type& rup, octave_idx_type& cup)
 {
   bool stat = true;
 
@@ -116,8 +120,8 @@ parse_range_spec (const octave_value& range_spec,
                         stat = false;
                     }
 
-                  rup = ULONG_MAX - 1;
-                  cup = ULONG_MAX - 1;
+                  rup = idx_max - 1;
+                  cup = idx_max - 1;
                 }
               else
                 {
@@ -139,10 +143,10 @@ parse_range_spec (const octave_value& range_spec,
     {
       ColumnVector range(range_spec.vector_value ());
       // double --> unsigned int     
-      rlo = static_cast<unsigned long> (range(0));
-      clo = static_cast<unsigned long> (range(1));
-      rup = static_cast<unsigned long> (range(2));
-      cup = static_cast<unsigned long> (range(3));
+      rlo = static_cast<octave_idx_type> (range(0));
+      clo = static_cast<octave_idx_type> (range(1));
+      rup = static_cast<octave_idx_type> (range(2));
+      cup = static_cast<octave_idx_type> (range(3));
     }
   else 
     stat = false;
@@ -215,7 +219,7 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
     }
   
   // Take a subset if a range was given.
-  unsigned long r0 = 0, c0 = 0, r1 = ULONG_MAX-1, c1 = ULONG_MAX-1;
+  octave_idx_type r0 = 0, c0 = 0, r1 = idx_max-1, c1 = idx_max-1;
   if (nargin > 2)
     {
       if (nargin == 3)
@@ -225,17 +229,20 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
         } 
       else if (nargin == 4) 
         {
-          r0 = args(2).ulong_value ();
-          c0 = args(3).ulong_value ();
+          r0 = args(2).idx_type_value ();
+          c0 = args(3).idx_type_value ();
 
           if (error_state)
             return retval;
         }
+
+      if (r0 < 0 || c0 < 0)
+        error ("dlmread: left & top must not be negative");
     }
 
   if (!error_state)
     {
-      unsigned long i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
+      octave_idx_type i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
 
       Matrix rdata;
       ComplexMatrix cdata;
@@ -243,14 +250,16 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
       bool iscmplx = false;
       bool sepflag = false;
 
-      unsigned long maxrows = r1 - r0;
+      octave_idx_type maxrows = r1 - r0;
 
       std::string line;
 
       // Skip the r0 leading lines as these might be a header.
-      for (unsigned long m = 0; m < r0; m++)
+      for (octave_idx_type m = 0; m < r0; m++)
         getline (file, line);
       r1 -= r0;
+
+      std::istringstream tmp_stream;
 
       // Read in the data one field at a time, growing the data matrix
       // as needed.
@@ -290,6 +299,40 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
                 }
             }
 
+          if (cmax == 0)
+            {
+              // Try to estimate the number of columns.
+              size_t pos1 = 0;
+              do
+                {
+                  size_t pos2 = line.find_first_of (sep, pos1);
+
+                  if (sepflag && pos2 != std::string::npos)
+                    // Treat consecutive separators as one.
+                    {
+                      pos2 = line.find_first_not_of (sep, pos2);
+                      if (pos2 != std::string::npos)
+                        pos2 -= 1;
+                      else
+                        pos2 = line.length () - 1;
+                    }
+
+                  cmax++;
+
+                  if (pos2 != std::string::npos)
+                    pos1 = pos2 + 1;
+                  else
+                    pos1 = std::string::npos;
+
+                }
+              while (pos1 != std::string::npos);
+
+              if (iscmplx)
+                cdata.resize (rmax, cmax);
+              else
+                rdata.resize (rmax, cmax);
+            }
+
           r = (r > i + 1 ? r : i + 1);
           j = 0;
           size_t pos1 = 0;
@@ -307,23 +350,35 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
                 { 
                   // Use resize_and_fill for the case of not-equal
                   // length rows.
-                  if (iscmplx)
-                    cdata.resize (r, c, 0);
-                  else
-                    rdata.resize (r, c, 0);
-                  rmax = r;
+                  rmax = 2*r;
                   cmax = c;
+                  if (iscmplx)
+                    cdata.resize (rmax, cmax);
+                  else
+                    rdata.resize (rmax, cmax);
                 }
 
-              std::istringstream tmp_stream (str);
+              tmp_stream.str (str);
+              tmp_stream.clear ();
+
               double x = octave_read_double (tmp_stream);
               if (tmp_stream)
                 {
                   if (tmp_stream.eof ())
-                    if (iscmplx)
-                      cdata(i,j++) = x;
-                    else
-                      rdata(i,j++) = x;
+                    {
+                      if (iscmplx)
+                        cdata(i,j++) = x;
+                      else
+                        rdata(i,j++) = x;
+                    }
+                  else if (std::toupper (tmp_stream.peek ()) == 'I')
+                    {
+                      // This is to allow pure imaginary numbers.
+                      if (iscmplx)
+                        cdata(i,j++) = x;
+                      else
+                        rdata(i,j++) = x;
+                    }
                   else
                     {
                       double y = octave_read_double (tmp_stream);
@@ -359,35 +414,16 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
           i++;
         }
  
-      if (nargin > 2)
-        {
-          if (nargin == 3)
-            {
-              if (r1 >= r)
-                r1 = r - 1;
-              if (c1 >= c)
-                c1 = c - 1;
-            }
-          else if (nargin == 4) 
-            {
-              // If r1 and c1 are not given, use what was found to be
-              // the maximum.
-              r1 = r - 1;
-              c1 = c - 1;
-            }
+      if (r1 >= r)
+        r1 = r - 1;
+      if (c1 >= c)
+        c1 = c - 1;
 
-          // Now take the subset of the matrix.
-          if (iscmplx)
-            {
-              cdata = cdata.extract (0, c0, r1, c1);
-              cdata.resize (r1 + 1, c1 - c0 + 1);
-            }
-          else
-            {
-              rdata = rdata.extract (0, c0, r1, c1);
-              rdata.resize (r1 + 1, c1 - c0 + 1);
-            }
-        }
+      // Now take the subset of the matrix.
+      if (iscmplx)
+        cdata = cdata.extract (0, c0, r1, c1);
+      else
+        rdata = rdata.extract (0, c0, r1, c1);
   
       if (iscmplx)
         retval(0) = cdata;

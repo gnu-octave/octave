@@ -1,3 +1,10 @@
+2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Use octave_idx_type instead of
+	unsigned long. Over-allocate by a factor 2 to reduce copying.
+	Attempt to estimate number of columns from first line.
+	Hoist tmp_stream out of the loop and reset it for each substring.
+
 2010-07-17  Rik <octave@nomad.inbox5.com>
 
 	* data.cc (repelems): Add more documentation about new function.

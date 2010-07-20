@@ -1,3 +1,8 @@
+2010-07-20  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/typecast.cc (typecast): Combine two @seealso macro
+	uses to one.
+
 2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Use octave_idx_type instead of

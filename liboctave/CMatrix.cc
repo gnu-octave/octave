@@ -909,7 +909,7 @@ ComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type 
 ComplexMatrix
 ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const
 {
-  return index (idx_vector (r1, r1 + nr), idx_vector (r2, r2 + nr));
+  return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
 }
 
 // extract row or column i.

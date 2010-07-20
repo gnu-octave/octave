@@ -338,6 +338,8 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
           size_t pos1 = 0;
           do
             {
+              octave_quit ();
+
               size_t pos2 = line.find_first_of (sep, pos1);
               std::string str = line.substr (pos1, pos2 - pos1);
 

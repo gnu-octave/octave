@@ -44,6 +44,7 @@ To initialize:
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
@@ -230,6 +231,13 @@ public:
       canvas = new
         OpenGL_fltk (0, 0, ww , hh - status_h, number ());
 
+      bottom = new 
+        Fl_Box (0, 
+                hh - status_h, 
+                ww, 
+                status_h);
+      bottom->box(FL_FLAT_BOX);
+      
       autoscale = new
         Fl_Button (0,
                    hh - status_h,
@@ -237,6 +245,7 @@ public:
                    status_h,
                    "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
+      autoscale->tooltip ("Autoscale");
 
       togglegrid = new
         Fl_Button (status_h,
@@ -245,6 +254,7 @@ public:
                    status_h,
                    "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
+      togglegrid->tooltip ("Toggle Grid");
 
       panzoom = new
         Fl_Button (2 * status_h,
@@ -253,6 +263,7 @@ public:
                    status_h,
                    "P");
       panzoom->callback (button_callback, static_cast<void*> (this));
+      panzoom->tooltip ("Mouse Pan/Zoom");
       
       rotate = new
         Fl_Button (3 * status_h,
@@ -261,7 +272,8 @@ public:
                    status_h,
                    "R");
       rotate->callback (button_callback, static_cast<void*> (this));
-      
+      rotate->tooltip ("Mouse Rotate");
+
       help = new
         Fl_Button (4 * status_h,
                    hh - status_h,
@@ -269,6 +281,7 @@ public:
                    status_h,
                    "?");
       help->callback (button_callback, static_cast<void*> (this));
+      help->tooltip ("Help");
 
       status = new
         Fl_Output (5 * status_h,
@@ -389,6 +402,7 @@ private:
   }
 
   OpenGL_fltk* canvas;
+  Fl_Box*    bottom;
   Fl_Button* autoscale;
   Fl_Button* togglegrid;
   Fl_Button* panzoom;

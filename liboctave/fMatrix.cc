@@ -579,28 +579,13 @@ FloatMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2
   if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
   if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
 
-  octave_idx_type new_r = r2 - r1 + 1;
-  octave_idx_type new_c = c2 - c1 + 1;
-
-  FloatMatrix result (new_r, new_c);
-
-  for (octave_idx_type j = 0; j < new_c; j++)
-    for (octave_idx_type i = 0; i < new_r; i++)
-      result.xelem (i, j) = elem (r1+i, c1+j);
-
-  return result;
+  return index (idx_vector (r1, r2+1), idx_vector (c1, c2+1));
 }
 
 FloatMatrix
 FloatMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const
 {
-  FloatMatrix result (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      result.xelem (i, j) = elem (r1+i, c1+j);
-
-  return result;
+  return index (idx_vector (r1, r1 + nr), idx_vector (r2, r2 + nr));
 }
 
 // extract row or column i.

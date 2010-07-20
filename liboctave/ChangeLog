@@ -1,3 +1,11 @@
+2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (Matrix::extract, Matrix::extract_n): Reimplement using
+	index.
+	* fMatrix.cc (FloatMatrix::extract, FloatMatrix::extract_n): Ditto.
+	* CMatrix.cc (ComplexMatrix::extract, ComplexMatrix::extract_n): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::extract, FloatComplexMatrix::extract_n): Ditto.
+
 2010-07-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* MSparse.h (MSparse<T>::index): Remove overloads.

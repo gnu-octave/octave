@@ -120,7 +120,6 @@ single and double should be 4 bytes and 8 bytes wide, respectively.\n\
 \"logical\" is not allowed for @var{class}.\n\
 If the input is a row vector, the return value is a row vector, otherwise it is a column vector.\n\
 If the bit length of @var{x} is not divisible by that of @var{class}, an error occurs.\n\
-@seealso{bitunpack,bitpack}\n\
 \n\
 An example of the use of typecast on a little-endian machine is\n\
 \n\
@@ -131,7 +130,7 @@ typecast (@var{x}, 'uint8')\n\
 @result{} [   0,   1, 255, 255]\n\
 @end group\n\
 @end example\n\
-@seealso{cast, swapbytes}\n\
+@seealso{cast, bitunpack, bitpack, swapbytes}\n\
 @end deftypefn")
 {
   octave_value retval;

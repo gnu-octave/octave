@@ -70,7 +70,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
     error ("__makeinfo__: second input argument must be a string");
   endif
   
-  ## Define the @seealso macro
+  ## Define the function which expands @seealso macro
   if (isempty (see_also))
     if (strcmpi (output_type, "plain text"))
       see_also = @simple_see_also;
@@ -83,14 +83,14 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
     error ("__makeinfo__: third input argument must be the empty matrix, or a function handle");
   endif
   
-  ## It seems like makeinfo sometimes gets angry if the character on a line is
-  ## a space, so we remove these.
+  ## It seems like makeinfo sometimes gets angry if the first character 
+  ## on a line is a space, so we remove these.
   text = strrep (text, "\n ", "\n");
   
   ## Handle @seealso macro
   SEE_ALSO = "@seealso";
   starts = strfind (text, SEE_ALSO);
-  for start = starts
+  for start = fliplr (starts)
     if (start == 1 || (text (start-1) != "@"))
       bracket_start = find (text (start:end) == "{", 1);
       stop = find (text (start:end) == "}", 1);
@@ -112,7 +112,31 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
       text = strcat (text (1:start-1), expanded, text (stop+1:end));
     endif
   endfor
-  
+
+  ## Handle @nospell macro
+  NOSPELL = "@nospell";
+  starts = strfind (text, NOSPELL);
+  for start = fliplr (starts)
+    if (start == 1 || (text (start-1) != "@"))
+      bracket_start = find (text (start:end) == "{", 1);
+      stop = find (text (start:end) == "}", 1);
+      if (!isempty (stop) && !isempty (bracket_start))
+        stop += start - 1;
+        bracket_start += start - 1;
+      else
+        bracket_start = start + length (NOSPELL);
+        stop = find (text (start:end) == "\n", 1);
+        if (isempty (stop))
+          stop = length (text);
+        else
+          stop += start - 1;
+        endif
+      endif
+      text(stop) = [];
+      text(start:bracket_start) = [];
+    endif
+  endfor
+
   if (strcmpi (output_type, "texinfo"))
     status = 0;
     retval = text;
@@ -146,7 +170,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
   
     ## Call makeinfo
     [status, retval] = system (cmd);
-   
+
   unwind_protect_cleanup
     if (exist (name, "file"))
       delete (name);

@@ -23,25 +23,12 @@ endif
 output_file = args{1};
 docstrings_files = args(2:end);
 
+## Special character used as break between DOCSTRINGS
 doc_delim = char (31);
 
-function str = skip_newline (str)
-  n = numel (str);
-  j = 1;
-  while (j <= n)
-    c = str(j);
-    if (c == "\r" || c == "\n")
-      j++;
-    else
-      break;
-    endif
-  endwhile
-  str = str(j:end);
-endfunction
-
 ## Read the contents of all the DOCSTRINGS files into TEXT.
+## It is more efficient to fork to shell for makeinfo only once on large data
 
-text = "";
 nfiles = numel (docstrings_files);
 text = cell (1, nfiles+1);
 for i = 1:nfiles
@@ -51,25 +38,24 @@ for i = 1:nfiles
     error ("unable to open %s for reading", file);
   else
     tmp = fread (fid, Inf, "*char")';
-    delim_idx = find (tmp == doc_delim, 1);
-    text{i} = tmp(delim_idx:end);
+    ## Strip off header lines
+    [null, text{i}] = strtok (tmp, doc_delim);
   endif
 endfor
 text = [text{:}, doc_delim];
 
+## Modify Octave-specific macros before passing to makeinfo
 text = regexprep (text, "@seealso *{([^}]*)}", "See also: $1.");
 text = regexprep (text, "@nospell *{([^}]*)}", "$1");
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 text = regexprep (text, "@", "@@");
 
+## Write data to temporary file for input to makeinfo
 [fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);
-
 if (fid < 0)
   error ("%s: %s\n", name, msg);
 endif
-
 fwrite (fid, text, "char");
-
 fclose (fid);
 
 cmd = sprintf ("%s --no-headers --no-warn --force --no-validate --fill-column=1024 %s",
@@ -86,10 +72,11 @@ if (isempty (formatted_text))
   error ("makeinfo produced no output!");
 endif
 
+## Break apart output and store in cache variable
 delim_idx = find (formatted_text == doc_delim);
-n = numel (delim_idx);
+n = length (delim_idx);
 
-cache = cell (3, n);
+cache = cell (3, n);    # pre-allocate storage for efficiency
 k = 1;
 
 for i = 2:n
@@ -98,11 +85,11 @@ for i = 2:n
 
   [symbol, doc] = strtok (block, "\r\n");
 
-  doc = skip_newline (doc);
+  doc = regexprep (doc, "^[\r\n]+", '');
 
-  ## Skip functions that start with __ as these shouldn't be
-  ## searched by lookfor.
-  if (numel (symbol) > 2 && regexp (symbol, "^__.+__$"))
+  ## Skip internal functions that start with __ as these aren't 
+  ## indexed by lookfor.
+  if (length (symbol) > 2 && regexp (symbol, "^__.+__$"))
     continue;
   endif
 
@@ -119,18 +106,16 @@ for i = 2:n
   start_of_first_sentence = e(end);
 
   tmp = doc(start_of_first_sentence:end);
-
-  end_of_first_sentence = regexp (tmp, '(\.|[\r\n][\r\n])');
-
+  end_of_first_sentence = regexp (tmp, '(\.|[\r\n][\r\n])', "once");
   if (isempty (end_of_first_sentence))
-    end_of_first_sentence = numel (tmp);
+    end_of_first_sentence = length (tmp);
   else
-    end_of_first_sentence = end_of_first_sentence(1);
+    end_of_first_sentence = end_of_first_sentence;
   endif
 
   first_sentence = tmp(1:end_of_first_sentence);
   first_sentence = regexprep (first_sentence, "([\r\n]|  *)", " ");
-  first_sentence = regexprep (first_sentence, "^ *", "");
+  first_sentence = regexprep (first_sentence, "^ +", "");
 
   cache{1,k} = symbol;
   cache{2,k} = doc;
@@ -138,6 +123,6 @@ for i = 2:n
   k++;
 endfor
 
-cache(:,k:end) = [];
+cache(:,k:end) = [];    # delete unused pre-allocated entries
 
 save ("-text", output_file, "cache");

@@ -1,5 +1,10 @@
 2010-07-19  Rik <octave@nomad.inbox5.com>
 
+	* interpreter/mk_doc_cache.m: Use regexp rather than fussing with
+	character arrays.
+
+2010-07-19  Rik <octave@nomad.inbox5.com>
+
 	* interpreter/matrix.txi: Add new function repelems to matrix chapter.
 
 2010-07-18  Rik <octave@nomad.inbox5.com>

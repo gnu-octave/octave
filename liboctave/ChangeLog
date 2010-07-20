@@ -1,5 +1,10 @@
 2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dim-vector.cc (dim_vector::dim_max): New static const member.
+	* dim-vector.h: Declare it.
+
+2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dMatrix.cc (Matrix::extract, Matrix::extract_n): Reimplement using
 	index.
 	* fMatrix.cc (FloatMatrix::extract, FloatMatrix::extract_n): Ditto.

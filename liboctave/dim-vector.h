@@ -219,6 +219,8 @@ private:
 
 public:
 
+  static const octave_idx_type dim_max;
+
   explicit dim_vector (void) : rep (nil_rep ()) { count()++; }
 
   dim_vector (const dim_vector& dv) : rep (dv.rep) { count()++; }

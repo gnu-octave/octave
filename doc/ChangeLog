@@ -1,3 +1,7 @@
+2010-07-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* interpreter/tips.txi: Update some tips.
+
 2010-07-19  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/mk_doc_cache.m: Use regexp rather than fussing with

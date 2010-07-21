@@ -109,8 +109,21 @@ Use built-in and library functions if possible.  Built-in and compiled functions
 Even with a m-file library function, chances are good that it is already optimized, or will be
 optimized more in a future release.
 
+For instance, even better than
+
+@example
+a = b(2:n) - b(1:n-1);
+@end example
+
+is
+
+@example
+a = diff (b);
+@end example
+
+
 @item
-Avoid computing costly intermediate results multiple times.  Octave currently
+Avoid computing costly intermediate results multiple times. Octave currently
 does not eliminate common subexpressions.
 Also, certain internal computation results are cached for variables.
 For instance, if a matrix variable is used multiple times as an index,
@@ -238,6 +251,7 @@ v = cellfun (@@det, a); # faster
 Octave includes a number of other functions that can replace common types of loops,
 including @code{bsxfun}, @code{arrayfun}, @code{structfun}, @code{accumarray}.
 These functions can take an arbitrary function as a handle.
+Be sure to get familiar with them if you want to become an Octave expert.
 
 @item
 Avoid calling @code{eval} or @code{feval} excessively, because

@@ -652,3 +652,23 @@ The default for @var{type} is @code{uint32}.\n\
 
   return retval;
 }
+
+DEFUN (sizemax, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sizemax ()\n\
+Return the largest value that is allowed as the size of an array.\n\
+If Octave is compiled with 64-bit indexing, the result is of class int64,\n\
+otherwise it is of class int32. It will be a tiny bit lower than the maximum\n\
+allowable value for that type, as reported by intmax.\n\
+@seealso{intmax}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = octave_int<octave_idx_type> (dim_vector::dim_max);
+  else
+    print_usage ();
+
+  return retval;
+}

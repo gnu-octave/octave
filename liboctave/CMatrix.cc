@@ -2653,7 +2653,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       // through 3.1.1 when n >= mnthr.  The obtuse formula below
       // should provide sufficient workspace for ZGELSD to operate
       // efficiently.
-      if (n >= mnthr)
+      if (n > m && n >= mnthr)
         {
           octave_idx_type addend = m;
 

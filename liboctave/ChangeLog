@@ -1,3 +1,10 @@
+2010-07-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (Matrix::lssolve): Fix decision test for workaround.
+	* fMatrix.cc (FloatMatrix::lssolve): Ditto.
+	* CMatrix.cc (ComplexMatrix::lssolve): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::lssolve): Ditto.
+
 2010-07-20  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.cc (dim_vector::dim_max): New static const member.

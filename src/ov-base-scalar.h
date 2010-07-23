@@ -94,8 +94,7 @@ public:
 
   octave_value any (int = 0) const { return (scalar != ST ()); }
 
-  octave_value diag (octave_idx_type k = 0) const 
-    { return octave_value (matrix_value (). diag (k)); }
+  octave_value diag (octave_idx_type k = 0) const;
 
   octave_value sort (octave_idx_type, sortmode) const
     { return octave_value (scalar); }

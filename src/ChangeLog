@@ -1,5 +1,10 @@
 2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-base-scalar.cc (octave_base_scalar::diag): Implement here. Fix.
+	* ov-base-scalar.h: Only declare here.
+
+2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-re-diag.cc (octave_diag_matrix::try_narrowing_conversion): Remove
 	redundant cast.
 	* ov-flt-re-diag.cc 

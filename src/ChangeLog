@@ -1,3 +1,8 @@
+2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pt-mat.cc (do_single_type_concat_no_mutate): Remove.
+	(tree_matrix::rvalue1): Use do_single_type_concat instead.
+
 2010-07-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* bitfcns.cc (Fsizemax): New DEFUN.

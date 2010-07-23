@@ -832,18 +832,6 @@ do_single_type_concat<octave_map> (const dim_vector& dv,
   return result;
 }
 
-template<class TYPE, class OV_TYPE>
-static octave_value 
-do_single_type_concat_no_mutate (const dim_vector& dv,
-                                 tm_const& tmp)
-{
-  TYPE result;
-
-  single_type_concat<TYPE> (result, dv, tmp);
-
-  return new OV_TYPE (result);
-}
-
 octave_value
 tree_matrix::rvalue1 (int)
 {
@@ -946,16 +934,14 @@ tree_matrix::rvalue1 (int)
               if (all_real_p)
                 retval = do_single_type_concat<SparseMatrix> (dv, tmp);
               else
-                retval = do_single_type_concat_no_mutate<SparseComplexMatrix,
-                                octave_sparse_complex_matrix> (dv, tmp);
+                retval = do_single_type_concat<SparseComplexMatrix> (dv, tmp);
             }
           else
             {
               if (all_real_p)
                 retval = do_single_type_concat<NDArray> (dv, tmp);
               else
-                retval = do_single_type_concat_no_mutate<ComplexNDArray,
-                                octave_complex_matrix> (dv, tmp);
+                retval = do_single_type_concat<ComplexNDArray> (dv, tmp);
             }
         }
       else if (result_type == "single")
@@ -963,8 +949,7 @@ tree_matrix::rvalue1 (int)
           if (all_real_p)
             retval = do_single_type_concat<FloatNDArray> (dv, tmp);
           else
-            retval = do_single_type_concat_no_mutate<FloatComplexNDArray,
-                        octave_float_complex_matrix> (dv, tmp);
+            retval = do_single_type_concat<FloatComplexNDArray> (dv, tmp);
         }
       else if (result_type == "char")
         {

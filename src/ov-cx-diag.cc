@@ -78,8 +78,7 @@ octave_complex_diag_matrix::try_narrowing_conversion (void)
 
   if (matrix.nelem () == 1)
     {
-      // FIXME: the proxy mechanism of DiagArray2 causes problems here.
-      retval = new octave_complex (Complex (matrix (0, 0)));
+      retval = new octave_complex (matrix (0, 0));
       octave_base_value *rv2 = retval->try_narrowing_conversion ();
       if (rv2)
         {

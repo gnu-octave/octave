@@ -1,5 +1,16 @@
 2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
 
+	* ov-re-diag.cc (octave_diag_matrix::try_narrowing_conversion): Remove
+	redundant cast.
+	* ov-flt-re-diag.cc 
+	(octave_float_diag_matrix::try_narrowing_conversion): Ditto.
+	* ov-cx-diag.cc 
+	(octave_complex_diag_matrix::try_narrowing_conversion): Ditto.
+	* ov-flt-cx-diag.cc 
+	(octave_float_complex_diag_matrix::try_narrowing_conversion): Ditto.
+
+2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-mat.cc (do_single_type_concat_no_mutate): Remove.
 	(tree_matrix::rvalue1): Use do_single_type_concat instead.
 

@@ -59,9 +59,8 @@ octave_float_diag_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  // FIXME: the proxy mechanism of DiagArray2 causes problems here.
   if (matrix.nelem () == 1)
-    retval = new octave_float_scalar (float (matrix (0, 0)));
+    retval = new octave_float_scalar (matrix (0, 0));
 
   return retval;
 }

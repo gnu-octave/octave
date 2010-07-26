@@ -1,3 +1,7 @@
+2010-07-26  Soren Hauberg <hauberg@gmail.com>
+
+	* image/image.m: Replace parenthesis with curly bracket in Texinfo.
+
 2010-07-25  Rik <octave@nomad.inbox5.com>
 
 	* image/image.m: Always reverse 'ydir' property when displaying images.

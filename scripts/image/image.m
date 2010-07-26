@@ -37,7 +37,7 @@
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the
-## @code{ydir) property to "reverse".  This has implications whenever
+## @code{ydir} property to "reverse".  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.

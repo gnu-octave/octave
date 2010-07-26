@@ -18,14 +18,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefn {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')
 ##
 ## One-dimensional interpolation.  Interpolate @var{y}, defined at the
 ## points @var{x}, at the points @var{xi}.  The sample points @var{x} 
-## must be monotonic.  If @var{y} is an array, treat the columns
+## must be monotonic. If not specified, @var{x} is taken to be the
+## indices of @var{y}. If @var{y} is an array, treat the columns
 ## of @var{y} separately.
 ##
 ## Method is one of:
@@ -36,7 +38,7 @@
 ## @item 'linear'
 ## Linear interpolation from nearest neighbors
 ## @item 'pchip'
-## Piece-wise cubic Hermite interpolating polynomial
+## Piece-wise cubic hermite interpolating polynomial
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors
 ## @item 'spline'
@@ -99,7 +101,7 @@
 
 function yi = interp1 (x, y, varargin)
 
-  if (nargin < 3 || nargin > 6)
+  if (nargin < 2 || nargin > 6)
     print_usage ();
   endif
 
@@ -130,6 +132,12 @@ function yi = interp1 (x, y, varargin)
         endif
       endif
     endfor
+  endif
+
+  if (isempty (xi) && firstnumeric && ! pp)
+    xi = y;
+    y = x;
+    x = 1:numel(y);
   endif
 
   ## reshape matrices for convenience
@@ -601,3 +609,4 @@ endfunction
 
 %!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap"), [-2,0.5,4,3,1.5])
 %!assert (interp1 ([4,4,3,2,0],[0,1,4,2,1],[1.5,4,4.5], "linear"), [0,1,NA])
+%!assert (interp1 (0:4, 2.5), 1.5)

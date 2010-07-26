@@ -1,5 +1,6 @@
 2010-07-26  Ben Abbott <bpabbott@mac.com>
 
+	* general/interp1.m: When absent set X equal to the inices of Y.
 	* general/interpn.m: Convert interpolation vectors of non-equal
 	length to nd-arrays.
 

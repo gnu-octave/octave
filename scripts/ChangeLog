@@ -1,3 +1,7 @@
+2010-07-25  Rik <octave@nomad.inbox5.com>
+
+	* image/image.m: Always reverse 'ydir' property when displaying images.
+
 2010-07-19  Rik <octave@nomad.inbox5.com>
 
 	* help/__makeinfo__.m: Add support to process @nopsell macro.

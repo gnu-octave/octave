@@ -32,6 +32,15 @@
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
+##
+## Implementation Note: The origin (0, 0) for images is located in the 
+## upper left.  For ordinary plots, the origin is located in the lower
+## left.  Octave handles this inversion by plotting the data normally,
+## and then reversing the direction of the y-axis by setting the
+## @code{ydir) property to "reverse".  This has implications whenever
+## an image and an ordinary plot need to be overlaid.  The recommended
+## solution is to display the image and then plot the reversed ydata
+## using, for example, @code{flipud (ydata,1)}.
 ## @seealso{imshow, imagesc, colormap, image_viewer}
 ## @end deftypefn
 
@@ -115,8 +124,7 @@ function h = __img__ (x, y, img, varargin)
 
   ca = gca ();
 
-  tmp = __go_image__ (ca, "cdata", flipdim (img, 1), 
-                      "xdata", xdata, "ydata", ydata,
+  tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
                       "cdatamapping", "direct", varargin {:});
 
   ## FIXME -- how can we do this and also get the {x,y}limmode
@@ -137,6 +145,9 @@ function h = __img__ (x, y, img, varargin)
   endif
 
   set (ca, "view", [0, 90]);
+
+  # Always reverse y-axis for images, even on existing plots
+  set (ca, "ydir", "reverse");
 
   if (nargout > 0)
     h = tmp;

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{v}, @var{y1}, @var{y2}, @dots{})
+## @deftypefn {Function File} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{v}, @var{y1}, @var{y2}, @dots{})
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v}, @var{y1}, @var{y2}, @dots{})
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v}, @var{m})
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@var{v})
@@ -137,6 +137,13 @@ function vi = interpn (varargin)
 
   method = tolower (method);
 
+  all_vectors = all (cellfun (@isvector, y));
+  different_lengths = numel (unique (cellfun (@numel, y))) > 1;
+  if (all_vectors && different_lengths)
+    [foobar(1:numel(y)).y] = ndgrid (y{:});
+    y = {foobar.y};
+  endif
+
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
     vi (isna (vi)) = extrapval;
@@ -149,10 +156,10 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}) >= x{i}(yidx{i} + 1) - y{i});
+      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
     vi = v (sub2ind (sz, idx{:}));
-    idx = zeros (prod(yshape),1);
+    idx = zeros (prod (yshape), 1);
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
     endfor
@@ -251,6 +258,25 @@ endfunction
 %! assert (interpn(x,y,z,f,x,y,z), f)
 %! assert (interpn(x,y,z,f,x,y,z,'nearest'), f)
 %! assert (interpn(x,y,z,f,x,y,z,'spline'), f)
+
+%!test
+%! [x, y, z] = ndgrid (0:2, 1:4, 2:6);
+%! f = x + y + z;
+%! xi = [0.5 1.0 1.5];
+%! yi = [1.5 2.0 2.5 3.5];
+%! zi = [2.5 3.5 4.0 5.0 5.5];
+%! fi = interpn (x, y, z, f, xi, yi, zi);
+%! [xi, yi, zi] = ndgrid (xi, yi, zi);
+%! assert (fi, xi + yi + zi)
+
+%!test
+%! xi = 0:2;
+%! yi = 1:4;
+%! zi = 2:6;
+%! [x, y, z] = ndgrid (xi, yi, zi);
+%! f = x + y + z;
+%! fi = interpn (x, y, z, f, xi, yi, zi, "nearest");
+%! assert (fi, x + y + z)
 
 %!test
 %! [x,y,z] = ndgrid(0:2);

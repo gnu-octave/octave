@@ -25,18 +25,21 @@
 ## the characteristic polynomial of @var{a}.  For example, 
 ## the following code finds the eigenvalues of @var{a} which are the roots of 
 ## @code{poly (@var{a})}.
+##
 ## @example
 ## @group
 ## roots(poly(eye(3)))
-## @result{} 1.00000 + 0.00000i
-## @result{} 1.00000 - 0.00000i
-## @result{} 1.00000 + 0.00000i
+## @result{} 1.00001 + 0.00001i
+## @result{} 1.00001 - 0.00001i
+## @result{} 0.99999 + 0.00000i
 ## @end group
 ## @end example
-## For numerical performance, however, the @code{eig} function
-## should be used for computing eigenvalues.
 ##
-## If @var{x} is a vector, @code{poly (@var{x})} is a vector of coefficients
+## In fact, all three eigenvalues are exactly 1 which emphasizes that for 
+## numerical performance the @code{eig} function should be used to compute
+## eigenvalues.
+##
+## If @var{x} is a vector, @code{poly (@var{x})} is a vector of the coefficients
 ## of the polynomial whose roots are the elements of @var{x}.  That is,
 ## if @var{c} is a polynomial, then the elements of 
 ## @code{@var{d} = roots (poly (@var{c}))} are contained in @var{c}.

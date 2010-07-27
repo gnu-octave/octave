@@ -32,7 +32,7 @@
 ## The value @var{multp} is a vector specifying the multiplicity of the
 ## poles.  @var{multp}(:) refers to multiplicity of @var{p}(@var{indx}(:)).
 ##
-## For example,
+## For example:
 ##
 ## @example
 ## @group

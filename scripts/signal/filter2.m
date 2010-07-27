@@ -26,8 +26,10 @@
 ## @table @asis
 ## @item 'full'
 ## pad @var{x} with zeros on all sides before filtering.
+##
 ## @item 'same'
 ## unpadded @var{x} (default)
+##
 ## @item 'valid'
 ## trim @var{x} after filtering so edge effects are no included.
 ## @end table

@@ -55,8 +55,8 @@
 ##      A_lb <= A_in*x <= A_ub
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## using a null-space active-set method.
 ##
@@ -77,23 +77,34 @@
 ## @end table
 ## @end table
 ##
-## The value @var{info} is a structure with the following fields:
+## @table @var
+## @item info
+## Structure containing run-time information about the algorithm.  The
+## following fields are defined:
+##
 ## @table @code
 ## @item solveiter
 ## The number of iterations required to find the solution.
+##
 ## @item info
-## An integer indicating the status of the solution, as follows:
+## An integer indicating the status of the solution.
+## 
 ## @table @asis
 ## @item 0
 ## The problem is feasible and convex.  Global solution found.
+##
 ## @item 1
 ## The problem is not convex.  Local solution found.
+##
 ## @item 2
 ## The problem is not convex and unbounded.
+##
 ## @item 3
 ## Maximum number of iterations reached.
+##
 ## @item 6
 ## The problem is infeasible.
+## @end table
 ## @end table
 ## @end table
 ## @end deftypefn

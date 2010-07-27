@@ -30,6 +30,7 @@
 ## @item 0:
 ## Normalizes with @math{N-1}, provides the best unbiased estimator of the
 ## variance [default].
+##
 ## @item 1:
 ## Normalizes with @math{N}, this provides the second moment around the mean.
 ## @end table

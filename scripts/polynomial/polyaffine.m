@@ -17,8 +17,9 @@
 ## @deftypefn {Function File} {} polyaffine (@var{f}, @var{mu})
 ## Return the coefficients of the polynomial whose coefficients are given by
 ## vector @var{f} after an affine tranformation.  If @var{f} is the vector
-## representing the polynomial f(x), then @var{g} = polytrans (@var{f},
-## @var{mu}) is the vector representing 
+## representing the polynomial f(x), then @code{@var{g} = polyaffine (@var{f},
+## @var{mu})} is the vector representing 
+##
 ## @example
 ## g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
 ## @end example
@@ -34,11 +35,11 @@ function g = polyaffine (f, mu)
    endif
 
    if (! isvector (f))
-      error ("polyaffine: first argument must be a vector.");
+      error ("polyaffine: F must be a vector.");
    endif
 
    if (! isvector (mu) || length (mu) != 2)
-      error ("polyaffine: second argument must be a two-element vector.");
+      error ("polyaffine: MU must be a two-element vector.");
    endif
 
    lf = length (f);

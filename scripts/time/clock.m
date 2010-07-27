@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} clock ()
 ## Return a vector containing the current year, month (1-12), day (1-31),
-## hour (0-23), minute (0-59) and second (0-61).  For example,
+## hour (0-23), minute (0-59) and second (0-61).  For example:
 ##
 ## @example
 ## @group

@@ -59,7 +59,7 @@
 ## use @code{eval(example('function',n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
-## with the 'if' on the same line as 'demo'.  For example,
+## with the 'if' on the same line as 'demo'.  For example:
 ##
 ## @example
 ## @group

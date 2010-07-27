@@ -40,8 +40,11 @@
 ## @var{p} = [0.55 0.6 0.4 10]. 
 ## @table @code
 ## @item "AM" strength of ambient light
+##
 ## @item "D" strength of diffuse reflection
+##
 ## @item "SP" strength of specular reflection
+##
 ## @item "EXP" specular exponent
 ## @end table
 ## 

@@ -25,7 +25,7 @@
 ## returns a cell string with the individual cells concatenated.
 ## For numerical input, each element is converted to the
 ## corresponding ASCII character.  Trailing white space is eliminated.
-## For example,
+## For example:
 ##
 ## @example
 ## @group

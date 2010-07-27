@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
 ## Return the position of the last occurrence of the character string
 ## @var{t} in the character string @var{s}, or 0 if no occurrence is
-## found.  For example,
+## found.  For example:
 ##
 ## @example
 ## @group
@@ -30,7 +30,7 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:}  This function does not work for arrays of
+## @strong{Caution:} This function does not work for arrays of
 ## character strings.
 ## @seealso{find, index}
 ## @end deftypefn

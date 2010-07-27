@@ -20,16 +20,17 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cloglog (@var{x})
 ## Return the complementary log-log function of @var{x}, defined as
-##
 ## @tex
 ## $$
 ## {\rm cloglog}(x) = - \log (- \log (x))
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## cloglog(x) = - log (- log (@var{x}))
 ## @end example
+##
 ## @end ifnottex
 ## @end deftypefn
 

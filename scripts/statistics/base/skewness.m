@@ -31,6 +31,7 @@
 ## @example
 ## skewness (x) = N^(-1) std(x)^(-3) sum ((x - mean(x)).^3)
 ## @end example
+##
 ## @end ifnottex
 ##
 ## @noindent

@@ -54,12 +54,16 @@
 ## @table @asis
 ## @item 'nearest'
 ## Return the nearest neighbor.
+##
 ## @item 'linear'
 ## Linear interpolation from nearest neighbors.
+##
 ## @item 'pchip'
 ## Piece-wise cubic Hermite interpolating polynomial.
+##
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors.
+##
 ## @item 'spline'
 ## Cubic spline interpolation--smooth first and second derivatives
 ## throughout the curve.

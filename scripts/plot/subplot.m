@@ -42,10 +42,9 @@
 ## \vskip 10pt
 ## @end tex
 ## @ifnottex
-## @display
+##
 ## @example
 ## @group
-##
 ## +-----+-----+-----+
 ## |  1  |  2  |  3  |
 ## +-----+-----+-----+
@@ -53,7 +52,7 @@
 ## +-----+-----+-----+
 ## @end group
 ## @end example
-## @end display
+##
 ## @end ifnottex
 ## @seealso{plot}
 ## @end deftypefn

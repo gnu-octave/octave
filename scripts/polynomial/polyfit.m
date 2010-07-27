@@ -31,12 +31,16 @@
 ## @table @samp
 ## @item R
 ## Triangular factor R from the QR decomposition.
+##
 ## @item X
 ## The Vandermonde matrix used to compute the polynomial coefficients.
+##
 ## @item df
 ## The degrees of freedom.
+##
 ## @item normr
 ## The norm of the residuals.
+##
 ## @item yf
 ## The values of the polynomial for each value of @var{x}.
 ## @end table

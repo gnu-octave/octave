@@ -117,7 +117,7 @@
 ## @item Octave:empty-list-elements
 ## If the @code{Octave:empty-list-elements} warning is enabled, a
 ## warning is issued when an empty matrix is found in a matrix list.
-## For example,
+## For example:
 ## 
 ## @example
 ## a = [1, [], 3, [], 5]
@@ -183,6 +183,7 @@
 ##      @result{} "foo"
 ## @end group
 ## @end example
+##
 ## elicits a warning if the @code{Octave:num-to-str} warning is
 ## enabled.  By default, the @code{Octave:num-to-str} warning is enabled.
 ## 
@@ -219,12 +220,14 @@
 ## If the @code{Octave:str-to-num} warning is enabled, a warning is printed
 ## for implicit conversions of strings to their numeric ASCII equivalents.
 ## For example,
+##
 ## @example
 ## @group
 ## "abc" + 0
 ##      @result{} 97 98 99
 ## @end group
 ## @end example
+##
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
 ## 

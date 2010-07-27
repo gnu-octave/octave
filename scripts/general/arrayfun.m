@@ -40,7 +40,7 @@
 ## the input arguments given as third input argument @var{b}, fourth
 ## input argument @var{c}, @dots{}  If given more than one array input
 ## argument then all input arguments must have the same sizes, for
-## example
+## example:
 ##
 ## @example
 ## @group
@@ -54,7 +54,7 @@
 ## function @var{func} must return a single element which then will be
 ## concatenated into the return value and is of type matrix.  Otherwise,
 ## if that parameter is set to @code{false}, then the outputs are
-## concatenated in a cell array.  For example
+## concatenated in a cell array.  For example:
 ##
 ## @example
 ## @group
@@ -70,7 +70,7 @@
 ##
 ## If more than one output arguments are given then the named function
 ## must return the number of return values that also are expected, for
-## example
+## example:
 ##
 ## @example
 ## @group
@@ -111,7 +111,7 @@
 ## the array elements that caused the error.  The size of the output
 ## argument of @var{errfunc} must have the same size as the output
 ## argument of @var{func}, otherwise a real error is thrown.  For
-## example
+## example:
 ##
 ## @example
 ## @group

@@ -25,7 +25,9 @@
 ##
 ## @enumerate
 ## @item @file{~/.octaverc}
+##
 ## @item @file{<octave-home>/@dots{}/<version>/m/startup/octaverc}
+##
 ## @item Octave's path prior to changes by any octaverc.
 ## @end enumerate
 ## @seealso{path, addpath, rmpath, genpath, savepath, pathsep}

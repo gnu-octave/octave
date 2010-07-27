@@ -32,7 +32,7 @@
 ##
 ## If @var{f} has two variables then @code{@var{f}(@var{x},@var{y}) = 0}
 ## is calculated over the meshed domain @code{-2*pi < @var{x} | @var{y}
-## < 2*pi} with 60 by 60 in the mesh.  For example
+## < 2*pi} with 60 by 60 in the mesh.  For example:
 ##
 ## @example
 ## ezplot (@@(@var{x}, @var{y}) @var{x} .^ 2 - @var{y} .^ 2 - 1)

@@ -22,7 +22,7 @@
 ## Return the vector of all positions in the longer of the two strings
 ## @var{s} and @var{t} where an occurrence of the shorter of the two starts.
 ## If the optional argument @var{overlap} is nonzero, the returned vector
-## can include overlapping positions (this is the default).  For example,
+## can include overlapping positions (this is the default).  For example:
 ##
 ## @example
 ## @group

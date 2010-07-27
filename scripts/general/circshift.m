@@ -23,7 +23,7 @@
 ## @var{x}.  The values of @var{n} can be either positive or negative,
 ## which determines the direction in which the values or @var{x} are
 ## shifted.  If an element of @var{n} is zero, then the corresponding
-## dimension of @var{x} will not be shifted.  For example
+## dimension of @var{x} will not be shifted.  For example:
 ##
 ## @example
 ## @group

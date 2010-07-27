@@ -31,11 +31,12 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## For matrices, each row is an observation and each column a variable;
 ## vectors are always observations and may be row or column vectors.
 ##

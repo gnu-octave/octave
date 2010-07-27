@@ -46,6 +46,7 @@
 ## c(n)^(n-1) @dots{} c(n)^2  c(n)  1
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## @seealso{hankel, sylvester_matrix, hilb, invhilb, toeplitz}
 ## @end deftypefn

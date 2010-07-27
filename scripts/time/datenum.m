@@ -33,14 +33,19 @@
 ## @itemize
 ## @item
 ## Years can be negative and/or fractional.
+##
 ## @item
 ## Months below 1 are considered to be January.
+##
 ## @item
 ## Days of the month start at 1.
+##
 ## @item
 ## Days beyond the end of the month go into subsequent months.
+##
 ## @item
 ## Days before the beginning of the month go to the previous month.
+##
 ## @item
 ## Days can be fractional.
 ## @end itemize

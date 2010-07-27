@@ -77,8 +77,10 @@
 ## @table @samp
 ## @item [EDITOR, " %s"]
 ## Use the editor which Octave uses for @code{bug_report}.
+##
 ## @item "xedit %s &"           
 ## pop up simple X11 editor in a separate window
+##
 ## @item "gnudoit -q \"(find-file \\\"%s\\\")\""   
 ## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
 ## @end table
@@ -86,10 +88,11 @@
 ## See also field 'mode', which controls how the editor is run by Octave.
 ## 
 ## On Cygwin, you will need to convert the Cygwin path to a Windows
-## path if you are using a native Windows editor.  For example
-## @c Set example in small font to prevent overfull line
+## path if you are using a native Windows editor.  For example:
+## @c Set example in small font to prevent overfull line in TeX
+##
 ## @smallexample
-## '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
+## @exdent '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
 ## @end smallexample
 ##
 ## @item home
@@ -110,10 +113,13 @@
 ## @table @samp
 ## @item gpl
 ## GNU General Public License (default).
+##
 ## @item bsd
 ## BSD-style license without advertising clause.
+##
 ## @item pd
 ## Public domain.
+##
 ## @item "text"
 ## Your own default copyright and license.
 ## @end table

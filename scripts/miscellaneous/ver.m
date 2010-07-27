@@ -29,10 +29,13 @@
 ## @table @code
 ##   @item Name
 ##   Package name.
+##
 ##   @item Version
 ##   Version of the package.
+##
 ##   @item Revision
 ##   Revision of the package.
+##
 ##   @item Date
 ##   Date respecting the version/revision.
 ## @end table

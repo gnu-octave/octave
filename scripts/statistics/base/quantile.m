@@ -42,7 +42,9 @@
 ## 
 ## @enumerate 1
 ## @item Method 1: Inverse of empirical distribution function.
+##
 ## @item Method 2: Similar to method 1 but with averaging at discontinuities.
+##
 ## @item Method 3: SAS definition: nearest even order statistic.
 ## @end enumerate
 ## 
@@ -51,12 +53,17 @@
 ## 
 ## @enumerate 4
 ## @item Method 4: p(k) = k / n. That is, linear interpolation of the empirical cdf.
+##
 ## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function where 
 ## the knots are the values midway through the steps of the empirical cdf. 
+##
 ## @item Method 6: p(k) = k / (n + 1).
+##
 ## @item Method 7: p(k) = (k - 1) / (n - 1).
+##
 ## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile estimates 
 ## are approximately median-unbiased regardless of the distribution of @var{x}.
+##
 ## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile estimates 
 ## are approximately unbiased for the expected order statistics if @var{x} is 
 ## normally distributed.

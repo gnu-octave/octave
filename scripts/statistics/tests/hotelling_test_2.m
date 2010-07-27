@@ -25,18 +25,18 @@
 ## (@var{x}) == mean (@var{y})}.
 ##
 ## Hotelling's two-sample @math{T^2} is returned in @var{tsq}.  Under the null,
-##
 ## @tex
 ## $$
 ## {n_x+n_y-p-1) T^2 \over p(n_x+n_y-2)}
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## (n_x+n_y-p-1) T^2 / (p(n_x+n_y-2))
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## has an F distribution with @math{p} and @math{n_x+n_y-p-1} degrees of
 ## freedom, where @math{n_x} and @math{n_y} are the sample sizes and

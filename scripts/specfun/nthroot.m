@@ -24,7 +24,7 @@
 ## @deftypefn {Function File} {} nthroot (@var{x}, @var{n})
 ## 
 ## Compute the n-th root of @var{x}, returning real results for real 
-## components of @var{x}.  For example
+## components of @var{x}.  For example:
 ##
 ## @example
 ## @group

@@ -28,57 +28,79 @@
 ## @table @samp
 ## @item Filename
 ## The full name of the image file.
+##
 ## @item FileSize
 ## Number of bytes of the image on disk
+##
 ## @item FileModDate
 ## Date of last modification to the file.
+##
 ## @item Height
 ## Image height in pixels.
+##
 ## @item Width
 ## Image Width in pixels.
+##
 ## @item BitDepth
 ## Number of bits per channel per pixel.
+##
 ## @item Format
 ## Image format (e.g., @code{"jpeg"}).
+##
 ## @item LongFormat
 ## Long form image format description.
+##
 ## @item XResolution
 ## X resolution of the image.
+##
 ## @item YResolution
 ## Y resolution of the image.
+##
 ## @item TotalColors
 ## Number of unique colors in the image.
+##
 ## @item TileName
 ## Tile name.
+##
 ## @item AnimationDelay
 ## Time in 1/100ths of a second (0 to 65535) which must expire before displaying
 ## the next image in an animated sequence.
+##
 ## @item AnimationIterations
 ## Number of iterations to loop an animation (e.g., Netscape loop extension)
 ## for.
+##
 ## @item ByteOrder
 ## Endian option for formats that support it.  Is either @code{"little-endian"},
 ## @code{"big-endian"}, or @code{"undefined"}.
+##
 ## @item Gamma
 ## Gamma level of the image.  The same color image displayed on two different
 ## workstations may look different due to differences in the display monitor.
+##
 ## @item Matte
 ## @code{true} if the image has transparency.
+##
 ## @item ModulusDepth
 ## Image modulus depth (minimum number of bits required to support
 ## red/green/blue
 ## components without loss of accuracy).
+##
 ## @item Quality
 ## JPEG/MIFF/PNG compression level.
+##
 ## @item QuantizeColors
 ## Preferred number of colors in the image.
+##
 ## @item ResolutionUnits
 ## Units of image resolution.  Is either @code{"pixels per inch"},
 ## @code{"pixels per centimeter"}, or @code{"undefined"}.
+##
 ## @item ColorType
 ## Image type.  Is either @code{"grayscale"}, @code{"indexed"},
 ## @code{"truecolor"},
 ## or @code{"undefined"}.
+##
 ## @item View
 ## FlashPix viewing parameters.
 ## @end table

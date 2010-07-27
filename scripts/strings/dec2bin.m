@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2bin (@var{n}, @var{len})
 ## Return a binary number corresponding to the non-negative decimal number
-## @var{n}, as a string of ones and zeros.  For example,
+## @var{n}, as a string of ones and zeros.  For example:
 ##
 ## @example
 ## @group

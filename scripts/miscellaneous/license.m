@@ -39,6 +39,7 @@
 ## @item "enable"
 ## Future tests for the specified license of @var{feature} are conducted
 ## as usual.
+##
 ## @item "disable"
 ## Future tests for the specified license of @var{feature} return 0.
 ## @end table

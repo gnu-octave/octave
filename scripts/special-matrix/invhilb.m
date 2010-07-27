@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} invhilb (@var{n})
-## Return the inverse of a Hilbert matrix of order @var{n}.  This can be 
+## Return the inverse of the Hilbert matrix of order @var{n}.  This can be 
 ## computed exactly using
 ## @tex
 ## $$\eqalign{
@@ -33,9 +33,10 @@
 ## $$
 ##   p(k) = -1^k \left( \matrix{ k+n-1 \cr k-1 } \right)
 ##               \left( \matrix{ n \cr k } \right)
-##$$
+## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##
@@ -47,7 +48,9 @@
 ##
 ## @end group
 ## @end example
+##
 ## where
+##
 ## @example
 ## @group
 ##              k  /k+n-1\   /n\
@@ -55,17 +58,17 @@
 ##                 \ k-1 /   \k/
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## The validity of this formula can easily be checked by expanding 
 ## the binomial coefficients in both formulas as factorials.  It can 
-## be derived more directly via the theory of Cauchy matrices: 
-## see J. W. Demmel, @cite{Applied Numerical Linear Algebra}, p. 92.
+## be derived more directly via the theory of Cauchy matrices. 
+## See J. W. Demmel, @cite{Applied Numerical Linear Algebra}, p. 92.
 ##
 ## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
-## @seealso{hankel, vander, sylvester_matrix, hilb, toeplitz}
+## @seealso{hilb, hankel, vander, sylvester_matrix, toeplitz}
 ## @end deftypefn
 
 ## Author: Dirk Laurie <dlaurie@na-net.ornl.gov>

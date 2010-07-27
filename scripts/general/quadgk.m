@@ -35,7 +35,7 @@
 ## The bounds of the quadrature @code{[@var{a}, @var{b}]} can be finite
 ## or infinite and contain weak end singularities.  Variable
 ## transformation will be used to treat infinite intervals and weaken
-## the singularities.  For example
+## the singularities.  For example:
 ##
 ## @example
 ## quadgk(@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
@@ -78,7 +78,7 @@
 ## @code{"WayPoints"} property.  This forces the ends of a sub-interval
 ## to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
-## computation or both.  For example,
+## computation or both.  For example:
 ##
 ## @example
 ## quadgk (@@(x) abs (1 - x .^ 2), 0, 2, 'Waypoints', 1)

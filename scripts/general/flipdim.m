@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
 ## @var{dim} defaults to the first non-singleton dimension.
-## For example,
+## For example:
 ##
 ## @example
 ## @group

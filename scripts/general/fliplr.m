@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fliplr (@var{x})
 ## Return a copy of @var{x} with the order of the columns reversed.  For
-## example,
+## example:
 ##
 ## @example
 ## @group

@@ -28,9 +28,11 @@
 ## two-element vector specifying two points which bracket a zero.  In
 ## other words, there must be a change in sign of the function between
 ## @var{x0}(1) and @var{x0}(2).  More mathematically, the following must hold
+##
 ## @example
 ## sign (@var{fun}(@var{x0}(1))) * sign (@var{fun}(@var{x0}(2))) <= 0
 ## @end example
+##
 ## If @var{x0} is a single scalar then several nearby and distant
 ## values are probed in an attempt to obtain a valid bracketing.  If this
 ## is not successful, the function fails.
@@ -47,10 +49,13 @@
 ## @itemize
 ## @item 1
 ##  The algorithm converged to a solution.
+##
 ## @item 0
 ##  Maximum number of iterations or function evaluations has been reached.
+##
 ## @item -1
 ## The algorithm has been terminated from user output function.
+##
 ## @item -5
 ## The algorithm may have converged to a singular point.
 ## @end itemize
@@ -61,10 +66,13 @@
 ## @itemize
 ## @item iterations
 ##  Number of iterations through loop.
+##
 ## @item nfev
 ##  Number of function evaluations.
+##
 ## @item bracketx
 ##  A two-element vector with the final bracketing of the zero along the x-axis.
+##
 ## @item brackety
 ##  A two-element vector with the final bracketing of the zero along the y-axis.
 ## @end itemize

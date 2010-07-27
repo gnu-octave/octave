@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isstrprop (@var{str}, @var{pred})
-## Test character string properties.  For example,
+## Test character string properties.  For example:
 ##
 ## @example
 ## @group

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bin2dec (@var{s})
 ## Return the decimal number corresponding to the binary number stored
-## in the string @var{s}.  For example,
+## in the string @var{s}.  For example:
 ##
 ## @example
 ## @group

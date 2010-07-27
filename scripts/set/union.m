@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} union (@var{a}, @var{b}, "rows")
 ## Return the set of elements that are in either of the sets @var{a} and
 ## @var{b}.  @var{a}, @var{b} may be cell arrays of string(s).
-## For example,
+## For example:
 ##
 ## @example
 ## @group
@@ -34,7 +34,8 @@
 ##
 ## If the optional third input argument is the string "rows" each row of
 ## the matrices @var{a} and @var{b} will be considered an element of sets.
-## For example,
+## For example:
+##
 ## @example
 ## @group
 ## union([1, 2; 2, 3], [1, 2; 3, 4], "rows")

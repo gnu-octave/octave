@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
 ##
 ## Find a rational approximation to @var{x} within the tolerance defined
-## by @var{tol} using a continued fraction expansion.  For example,
+## by @var{tol} using a continued fraction expansion.  For example:
 ##
 ## @example
 ## @group

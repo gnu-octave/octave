@@ -34,9 +34,11 @@
 ## @table @code
 ## @item %s
 ## The word is parsed as a string.
+##
 ## @item %d
 ## @itemx %f
 ## The word is parsed as a number.
+##
 ## @item %*
 ## The word is skipped.
 ## @end table
@@ -72,15 +74,20 @@
 ## @itemize
 ## @item "shell"
 ## Everything from @code{#} characters to the nearest end-line is skipped.
+##
 ## @item "c"
 ## Everything between @code{/*} and @code{*/} is skipped.
+##
 ## @item "c++"
 ## Everything from @code{//} characters to the nearest end-line is skipped.
+##
 ## @item "matlab"
 ## Everything from @code{%} characters to the nearest end-line is skipped.
 ## @end itemize
+##
 ## @item "delimiter"
 ## Any character in @var{value} will be used to split @var{str} into words.
+##
 ## @item "emptyvalue"
 ## Parts of the output where no word is available is filled with @var{value}.
 ## @end itemize

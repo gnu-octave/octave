@@ -20,55 +20,55 @@
 ## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{c}, @var{a}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
 ## Solve a linear program using the GNU @sc{glpk} library.  Given three
 ## arguments, @code{glpk} solves the following standard LP:
-## 
 ## @tex
 ## $$
 ##   \min_x C^T x
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## min C'*x
 ## @end example
+##
 ## @end ifnottex
-## 
 ## subject to
-## 
 ## @tex
 ## $$
 ##   Ax = b \qquad x \geq 0
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ## A*x  = b
 ##   x >= 0
 ## @end group
 ## @end example
+##
 ## @end ifnottex
-## 
 ## but may also solve problems of the form
-## 
 ## @tex
 ## $$
 ##   [ \min_x | \max_x ] C^T x
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## [ min | max ] C'*x
 ## @end example
+##
 ## @end ifnottex
-## 
 ## subject to
-## 
 ## @tex
 ## $$
 ##  Ax [ = | \leq | \geq ] b \qquad LB \leq x \leq UB
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ## A*x [ "=" | "<=" | ">=" ] b
@@ -76,6 +76,7 @@
 ##   x <= UB
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## 
 ## Input arguments:
@@ -108,12 +109,16 @@
 ## @table @code
 ## @item "F"
 ## A free (unbounded) constraint (the constraint is ignored).
+##
 ## @item "U"
 ## An inequality constraint with an upper bound (@code{A(i,:)*x <= b(i)}).
+##
 ## @item "S"
 ## An equality constraint (@code{A(i,:)*x = b(i)}).
+##
 ## @item "L"
 ## An inequality with a lower bound (@code{A(i,:)*x >= b(i)}).
+##
 ## @item "D"
 ## An inequality constraint with both upper and lower bounds
 ## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
@@ -124,6 +129,7 @@
 ## @table @code
 ## @item "C"
 ## A continuous variable.
+##
 ## @item "I"
 ## An integer variable.
 ## @end table
@@ -146,10 +152,13 @@
 ## @table @asis
 ## @item 0
 ## No output.
+##
 ## @item 1
 ## Error messages only.
+##
 ## @item 2
-## Normal output .
+## Normal output.
+##
 ## @item 3
 ## Full output (includes informational messages).
 ## @end table
@@ -159,8 +168,10 @@
 ## @table @asis
 ## @item 0
 ## No scaling.
+##
 ## @item 1
 ## Equilibration scaling.
+##
 ## @item 2
 ## Geometric mean scaling, then equilibration scaling.
 ## @end table
@@ -170,6 +181,7 @@
 ## @table @asis
 ## @item 0
 ## Do not use the dual simplex.
+##
 ## @item 1
 ## If initial basic solution is dual feasible, use the dual simplex.
 ## @end table
@@ -179,6 +191,7 @@
 ## @table @asis
 ## @item 0
 ## Textbook pricing.
+##
 ## @item 1
 ## Steepest edge pricing.
 ## @end table
@@ -188,6 +201,7 @@
 ## @table @asis
 ## @item 0
 ## Report all primal and dual values "as is".
+##
 ## @item 1
 ## Replace tiny primal and dual values by exact zero.
 ## @end table
@@ -208,8 +222,10 @@
 ## @table @asis
 ## @item 0
 ## Branch on the first variable.
+##
 ## @item 1
 ## Branch on the last variable.
+##
 ## @item 2
 ## Branch using a heuristic by Driebeck and Tomlin.
 ## @end table
@@ -219,8 +235,10 @@
 ## @table @asis
 ## @item 0
 ## Depth first search.
+##
 ## @item 1
 ## Breadth first search.
+##
 ## @item 2
 ## Backtrack using the best projection heuristic.
 ## @end table        
@@ -235,9 +253,11 @@
 ## @table @asis
 ## @item 1
 ## Revised simplex method.
+##
 ## @item 2
 ## Interior point method.
 ## @end table
+##
 ## @item save (default: 0)
 ## If this parameter is nonzero, save a copy of the problem in
 ## CPLEX LP format to the file @file{"outpb.lp"}.  There is currently no
@@ -311,8 +331,10 @@
 ## @table @var
 ## @item xopt
 ## The optimizer (the value of the decision variables at the optimum).
+##
 ## @item fopt
 ## The optimum value of the objective function.
+##
 ## @item status
 ## Status of the optimization.
 ## 
@@ -377,15 +399,19 @@
 ## @item 214 (@w{@code{LPX_E_NODFS}})
 ## No dual feasible solution (LP presolver).
 ## @end table
+##
 ## @item extra
 ## A data structure containing the following fields:
 ## @table @code
 ## @item lambda
 ## Dual variables.
+##
 ## @item redcosts
 ## Reduced Costs.
+##
 ## @item time
 ## Time (in seconds) used for solving LP/MIP problem.
+##
 ## @item mem
 ## Memory (in bytes) used for solving LP/MIP problem (this is not 
 ## available if the version of @sc{glpk} is 4.15 or later).

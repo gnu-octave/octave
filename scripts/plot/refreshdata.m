@@ -28,6 +28,7 @@
 ## @table @code
 ## @item "base"
 ## Evaluate the datasource properties in the base workspace.  (default).
+##
 ## @item "caller"
 ## Evaluate the datasource properties in the workspace of the function
 ## that called @code{refreshdata}.

@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} is_leap_year (@var{year})
 ## Return 1 if the given year is a leap year and 0 otherwise.  If no
 ## arguments are provided, @code{is_leap_year} will use the current year.
-## For example,
+## For example:
 ##
 ## @example
 ## @group

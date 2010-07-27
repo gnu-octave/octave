@@ -37,6 +37,7 @@
 ## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##          1    
@@ -44,8 +45,8 @@
 ##       n (n-1)   i,j
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## in which the
 ## @tex
@@ -54,8 +55,7 @@
 ## @ifnottex
 ## @var{q}(@var{i}) and @var{r}(@var{i})
 ## @end ifnottex
-##  are the ranks of
-## @var{x} and @var{y}, respectively.
+## are the ranks of @var{x} and @var{y}, respectively.
 ##
 ## If @var{x} and @var{y} are drawn from independent distributions,
 ## Kendall's @var{tau} is asymptotically normal with mean 0 and variance

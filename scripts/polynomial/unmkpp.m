@@ -25,16 +25,20 @@
 ## @table @asis
 ## @item @var{x}
 ## Sample points.
+##
 ## @item @var{p}
 ## Polynomial coefficients for points in sample interval.  @code{@var{p}
 ## (@var{i}, :)} contains the coefficients for the polynomial over
 ## interval @var{i} ordered from highest to lowest.  If @code{@var{d} >
 ## 1}, @code{@var{p} (@var{r}, @var{i}, :)} contains the coefficients for 
 ## the r-th polynomial defined on interval @var{i}.
+##
 ## @item @var{n}
 ## Number of polynomial pieces.
+##
 ## @item @var{k}
 ## Order of the polynomial plus 1.
+##
 ## @item @var{d}
 ## Number of polynomials defined for each interval.
 ## @end table

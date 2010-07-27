@@ -26,24 +26,31 @@
 ## @table @code
 ## @item Name
 ## Full name of @var{file}.
+##
 ## @item archive
 ## True if @var{file} is an archive (Windows).
+##
 ## @item system
 ## True if @var{file} is a system file (Windows).
+##
 ## @item hidden
 ## True if @var{file} is a hidden file (Windows).
+##
 ## @item directory
 ## True if @var{file} is a directory.
+##
 ## @item UserRead
 ## @itemx GroupRead
 ## @itemx OtherRead
 ## True if the user (group; other users) has read permission for
 ## @var{file}.
+##
 ## @item UserWrite
 ## @itemx GroupWrite
 ## @itemx OtherWrite
 ## True if the user (group; other users) has write permission for
 ## @var{file}.
+##
 ## @item UserExecute
 ## @itemx GroupExecute
 ## @itemx OtherExecute

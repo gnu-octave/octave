@@ -29,17 +29,21 @@
 ## @item besselj
 ## Bessel functions of the first kind.  If the argument @var{opt} is supplied, 
 ## the result is multiplied by @code{exp(-abs(imag(x)))}.
+##
 ## @item bessely
 ## Bessel functions of the second kind.  If the argument @var{opt} is supplied,
 ## the result is multiplied by @code{exp(-abs(imag(x)))}.
+##
 ## @item besseli
 ## Modified Bessel functions of the first kind.  If the argument @var{opt} is
 ## supplied,
 ## the result is multiplied by @code{exp(-abs(real(x)))}.
+##
 ## @item besselk
 ## Modified Bessel functions of the second kind.  If the argument @var{opt} is
 ## supplied,
 ## the result is multiplied by @code{exp(x)}.
+##
 ## @item besselh
 ## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
 ## = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied
@@ -64,15 +68,20 @@
 ## @enumerate 0
 ## @item
 ## Normal return.
+##
 ## @item
 ## Input error, return @code{NaN}.
+##
 ## @item
 ## Overflow, return @code{Inf}.
+##
 ## @item
 ## Loss of significance by argument reduction results in less than
 ## half of machine accuracy.
+##
 ## @item
 ## Complete loss of significance by argument reduction, return @code{NaN}.
+##
 ## @item
 ## Error---no computation, algorithm termination condition not met,
 ## return @code{NaN}.

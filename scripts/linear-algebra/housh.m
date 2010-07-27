@@ -35,8 +35,10 @@
 ## @table @var
 ## @item x
 ## vector
+##
 ## @item j
 ## index into vector
+##
 ## @item z
 ## threshold for zero  (usually should be the number 0)
 ## @end table
@@ -47,6 +49,7 @@
 ## @table @var
 ## @item beta
 ## If beta = 0, then no reflection need be applied (zer set to 0)
+##
 ## @item housv
 ## householder vector
 ## @end table

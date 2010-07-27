@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following five-field
-## format: Thu Mar 28 08:40:14 1996.  For example,
+## format: Thu Mar 28 08:40:14 1996.  For example:
 ##
 ## @example
 ## @group

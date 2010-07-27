@@ -47,8 +47,8 @@
 ##     |_      0            0      @dots{}       1             0     _|
 ## @end group
 ## @end smallexample
-## @end ifnottex
 ##
+## @end ifnottex
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
 ## @seealso{poly, roots, residue, conv, deconv, polyval, polyderiv,

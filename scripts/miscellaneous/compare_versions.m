@@ -37,21 +37,27 @@
 ## @item
 ## "=="
 ## equal
+##
 ## @item
 ## "<"
 ## less than
+##
 ## @item
 ## "<="
 ## less than or equal to
+##
 ## @item
 ## ">"
 ## greater than
+##
 ## @item
 ## ">="
 ## greater than or equal to
+##
 ## @item
 ## "!="
 ## not equal
+##
 ## @item
 ## "~="
 ## not equal

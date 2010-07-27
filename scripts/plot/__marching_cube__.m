@@ -41,7 +41,7 @@
 ## beyond other surface and geometry stuff at Paul Bourke's website
 ## @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise}.
 ##
-## For example,
+## For example:
 ## @example
 ## @group
 ## N = 20;
@@ -57,7 +57,7 @@
 ## @end example
 ##
 ## Instead of the @command{trimesh} function the @command{patch}
-## function can be used to visualize the geometry.  For example,
+## function can be used to visualize the geometry.  For example:
 ##
 ## @example
 ## @group

@@ -36,18 +36,23 @@
 ## @item -P@var{printer}
 ##   Set the @var{printer} name to which the graph is sent if no
 ##   @var{filename} is specified.
+##
 ## @item -G@var{ghostscript_command}
 ##   Specify the command for calling Ghostscript.  For Unix and Windows,
 ## the defaults are 'gs' and 'gswin32c', respectively.
+##
 ## @item -color
 ## @itemx -mono
 ##   Monochrome or color lines.
+##
 ## @item -solid
 ## @itemx -dashed
 ##   Solid or dashed lines.
+##
 ## @item -portrait
 ## @itemx -landscape
 ##   Specify the orientation of the plot for printed output.
+##
 ## @item -d@var{device}
 ##   Output device, where @var{device} is one of:
 ##   @table @code
@@ -56,6 +61,7 @@
 ##   @itemx psc
 ##   @itemx psc2
 ##     Postscript (level 1 and 2, mono and color)
+##
 ##   @item eps
 ##   @itemx eps2
 ##   @itemx epsc
@@ -71,39 +77,53 @@
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.
+##
 ##   @item tikz
 ##     Generate a @LaTeX{} file using gnuplot's Lua/TikZ terminal.
+##
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator
+##
 ##   @item cdr
 ##   @itemx @nospell{corel}
 ##     CorelDraw
+##
 ##   @item dxf
 ##     AutoCAD
+##
 ##   @item emf
 ##   @itemx meta
 ##     Microsoft Enhanced Metafile
+##
 ##   @item fig
 ##     XFig.  If this format is selected the additional options
 ##     @option{-textspecial} or @option{-textnormal} can be used to control
 ##     whether the special flag should be set for the text in
 ##     the figure (default is @option{-textnormal}). 
+##
 ##   @item hpgl
 ##     HP plotter language
+##
 ##   @item mf
 ##     Metafont
+##
 ##   @item png
 ##     Portable network graphics
+##
 ##   @item jpg
 ##   @itemx jpeg
 ##     JPEG image
+##
 ##   @item gif
 ##     GIF image
+##
 ##   @item pbm
 ##     PBMplus
+##
 ##   @item svg
 ##     Scalable vector graphics
+##
 ##   @item pdf
 ##     Portable document format
 ##   @end table
@@ -118,16 +138,22 @@
 ##   @table @code
 ##   @item ljet2p 
 ##     HP LaserJet IIP
+##
 ##   @item ljet3 
 ##     HP LaserJet III
+##
 ##   @item deskjet
 ##     HP DeskJet and DeskJet Plus
+##
 ##   @item cdj550
 ##     HP DeskJet 550C
+##
 ##   @item paintjet
 ##     HP PointJet
+##
 ##   @item pcx24b
 ##     24-bit color PCX file format
+##
 ##   @item ppm
 ##     Portable Pixel Map file format
 ##   @end table

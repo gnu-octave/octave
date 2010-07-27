@@ -39,23 +39,33 @@
 ## as follows:
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
+##
 ## @item @tab north @tab
 ##   center top
+##
 ## @item @tab south @tab
 ##   center bottom
+##
 ## @item @tab east @tab
 ##   right center
+##
 ## @item @tab west @tab
 ##   left center
+##
 ## @item @tab northeast @tab
 ##   right top (default)
+##
 ## @item @tab northwest @tab
 ##   left top
+##
 ## @item @tab southeast @tab
 ##   right bottom
+##
 ## @item @tab southwest @tab
 ##   left bottom
+##
 ## @item 
+##
 ## @item @tab outside @tab
 ##   can be appended to any location string
 ## @end multitable
@@ -65,15 +75,20 @@
 ## @table @asis
 ## @item "show"
 ##   Show legend on the plot
+##
 ## @item "hide"
 ## @itemx "off"
 ##   Hide legend on the plot
+##
 ## @item "boxon"
 ##   Show a box around legend
+##
 ## @item "boxoff"
 ##   Hide the box around legend
+##
 ## @item "left"
 ##   Place text to the left of the keys
+##
 ## @item "right"
 ##   Place text to the right of the keys
 ## @end table

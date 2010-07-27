@@ -54,8 +54,8 @@
 ##      lb <= x <= ub
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## using a successive quadratic programming method.
 ##
@@ -119,7 +119,6 @@
 ## function handles.  The first element should point to the constraint
 ## function and the second should point to a function that computes the
 ## gradient of the constraint function:
-##
 ## @tex
 ## $$
 ##  \Bigg( {\partial f(x) \over \partial x_1}, 
@@ -128,6 +127,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##                 [ d f(x)   d f(x)        d f(x) ]
@@ -135,8 +135,8 @@
 ##                 [  dx_1     dx_2          dx_N  ]
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## The fifth and sixth arguments contain lower and upper bounds
 ## on @var{x}.  These must be consistent with the equality and inequality
 ## constraints @var{g} and @var{h}.  If the arguments are vectors then
@@ -152,6 +152,7 @@
 ## The default value is @code{eps}.
 ##
 ## The value returned in @var{info} may be one of the following:
+##
 ## @table @asis
 ## @item 101
 ## The algorithm terminated normally.  
@@ -163,8 +164,10 @@
 ## delta @var{x},
 ## @end ifnottex
 ## is less than @code{tol * norm (x)}.
+## 
 ## @item 102
 ## The BFGS update failed.
+## 
 ## @item 103
 ## The maximum number of iterations was reached. 
 ## @end table

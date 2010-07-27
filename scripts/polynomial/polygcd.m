@@ -17,19 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
+## @deftypefn  {Function File} {@var{q} =} polygcd (@var{b}, @var{a})
+## @deftypefnx {Function File} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
 ##
-## Find greatest common divisor of two polynomials.  This is equivalent
+## Find the greatest common divisor of two polynomials.  This is equivalent
 ## to the polynomial found by multiplying together all the common roots.
 ## Together with deconv, you can reduce a ratio of two polynomials.
-## Tolerance defaults to 
-## @example 
-## sqrt(eps).
-## @end example
-##  Note that this is an unstable
-## algorithm, so don't try it on large polynomials.
+## Tolerance defaults to @code{sqrt(eps)}.
 ##
-## Example
+## Note that this is a numerically unstable algorithm, and should not be used
+## on large polynomials.
+##
+## Example:
+##
 ## @example
 ## @group
 ## polygcd (poly(1:8), poly(3:12)) - poly(3:8)

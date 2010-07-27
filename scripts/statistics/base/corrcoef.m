@@ -32,11 +32,12 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})}.
 ## @end deftypefn
 

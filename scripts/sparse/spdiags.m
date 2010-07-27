@@ -37,7 +37,7 @@
 ## diagonal, and positive values of @var{c} diagonals above the main
 ## diagonal.
 ##
-## For example
+## For example:
 ##
 ## @example
 ## @group

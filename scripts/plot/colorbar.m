@@ -24,20 +24,28 @@
 ## @table @asis
 ## @item "EastOutside"
 ## Place the colorbar outside the plot to the right.  This is the default.
+##
 ## @item "East"
 ## Place the colorbar inside the plot to the right.
+##
 ## @item "WestOutside"
 ## Place the colorbar outside the plot to the left.
+##
 ## @item "West"
 ## Place the colorbar inside the plot to the left.
+##
 ## @item "NorthOutside"
 ## Place the colorbar above the plot.
+##
 ## @item "North"
 ## Place the colorbar at the top of the plot.
+##
 ## @item "SouthOutside"
 ## Place the colorbar under the plot.
+##
 ## @item "South"
 ## Place the colorbar at the bottom of the plot.
+##
 ## @item "Off", "None"
 ## Remove any existing colorbar from the plot.
 ## @end table

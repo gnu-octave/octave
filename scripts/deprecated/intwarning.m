@@ -50,7 +50,7 @@
 ##
 ## The original state of the integer warnings can be restored by passing
 ## the structure array returned by @code{intwarning} to a later call to
-## @code{intwarning}.  For example
+## @code{intwarning}.  For example:
 ##
 ## @example
 ## @group

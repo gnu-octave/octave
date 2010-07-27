@@ -41,7 +41,7 @@
 ## If no output argument is given then directly redraw the patch that is
 ## given by the patch handle @var{p}.
 ##
-## For example,
+## For example:
 ## @example
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode","manual","PlotBoxAspectRatio",[1 1 1]);

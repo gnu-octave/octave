@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2hex (@var{n}, @var{len})
 ## Return the hexadecimal string corresponding to the non-negative 
-## integer @var{n}.  For example,
+## integer @var{n}.  For example:
 ##
 ## @example
 ## @group

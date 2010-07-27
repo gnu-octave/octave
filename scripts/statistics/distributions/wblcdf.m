@@ -21,15 +21,16 @@
 ## Compute the cumulative distribution function (CDF) at @var{x} of the
 ## Weibull distribution with shape parameter @var{scale} and scale
 ## parameter @var{shape}, which is
-##
 ## @tex
 ## $$ 1 - \exp(-(x/shape)^{scale}) $$
 ## for $x\geq 0$.
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## 1 - exp(-(x/shape)^scale)
 ## @end example
+##
 ## for @var{x} @geq{} 0.
 ## @end ifnottex
 ## @end deftypefn

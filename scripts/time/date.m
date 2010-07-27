@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} date ()
 ## Return the date as a character string in the form DD-MMM-YY@.  For
-## example,
+## example:
 ##
 ## @example
 ## @group

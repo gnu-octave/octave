@@ -43,7 +43,7 @@
 ## change the colors of a patch that is given by the patch handle
 ## @var{p}.
 ##
-## For example,
+## For example:
 ## @example
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", \

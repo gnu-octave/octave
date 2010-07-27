@@ -24,11 +24,14 @@
 ## be taken depending on the value of @var{command}.
 ##
 ## @table @samp
+##
 ## @item install
 ## Install named packages.  For example,
+##
 ## @example
 ## pkg install image-1.0.0.tar.gz
 ## @end example
+##
 ## @noindent
 ## installs the package found in the file @file{image-1.0.0.tar.gz}.
 ##
@@ -63,122 +66,155 @@
 ##
 ## @item uninstall
 ## Uninstall named packages.  For example,
+##
 ## @example
 ## pkg uninstall image
 ## @end example
+##
 ## @noindent
 ## removes the @code{image} package from the system.  If another installed
 ## package depends on the @code{image} package an error will be issued.
 ## The package can be uninstalled anyway by using the @option{-nodeps} option.
+##
 ## @item load
 ## Add named packages to the path.  After loading a package it is
 ## possible to use the functions provided by the package.  For example,
+##
 ## @example
 ## pkg load image
 ## @end example
+##
 ## @noindent
 ## adds the @code{image} package to the path.  It is possible to load all
 ## installed packages at once with the command
+##
 ## @example
 ## pkg load all
 ## @end example
+##
 ## @item unload
 ## Removes named packages from the path.  After unloading a package it is
 ## no longer possible to use the functions provided by the package.
 ## This command behaves like the @code{load} command.
+##
 ## @item list
 ## Show a list of the currently installed packages.  By requesting one or two
 ## output argument it is possible to get a list of the currently installed
 ## packages.  For example,
+##
 ## @example
 ## installed_packages = pkg list;
 ## @end example
+##
 ## @noindent
 ## returns a cell array containing a structure for each installed package.
 ## The command
+##
 ## @example
 ## [@var{user_packages}, @var{system_packages}] = pkg list
 ## @end example
+##
 ## @noindent
 ## splits the list of installed packages into those who are installed by
 ## the current user, and those installed by the system administrator.
+##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
 ## '-verbose' also list functions provided by the package, e.g.:
+##
 ## @example
 ##  pkg describe -verbose all
 ## @end example
+##
 ## @noindent
 ## will describe all installed packages and the functions they provide.
 ## If one output is requested a cell of structure containing the
 ## description and list of functions of each package is returned as
 ## output rather than printed on screen:
+##
 ## @example
 ##  desc = pkg ("describe", "secs1d", "image")
 ## @end example
+##
 ## @noindent
 ## If any of the requested packages is not installed, pkg returns an
 ## error, unless a second output is requested:
+##
 ## @example
 ##  [ desc, flag] = pkg ("describe", "secs1d", "image")
 ## @end example
+##
 ## @noindent
 ## @var{flag} will take one of the values "Not installed", "Loaded" or
 ## "Not loaded" for each of the named packages.
+##
 ## @item prefix
 ## Set the installation prefix directory.  For example,
+##
 ## @example
 ## pkg prefix ~/my_octave_packages
 ## @end example
+##
 ## @noindent
 ## sets the installation prefix to @file{~/my_octave_packages}.
 ## Packages will be installed in this directory.
 ##
 ## It is possible to get the current installation prefix by requesting an
-## output argument.  For example,
+## output argument.  For example:
+##
 ## @example
 ## p = pkg prefix
 ## @end example
 ##
 ## The location in which to install the architecture dependent files can be
-## independent specified with an addition argument.  For example
+## independent specified with an addition argument.  For example:
 ##
 ## @example
 ## pkg prefix ~/my_octave_packages ~/my_arch_dep_pkgs
 ## @end example
+##
 ## @item local_list
 ## Set the file in which to look for information on the locally
 ## installed packages.  Locally installed packages are those that are
-## typically available only to the current user.  For example
+## typically available only to the current user.  For example:
+##
 ## @example
 ## pkg local_list ~/.octave_packages
 ## @end example
+##
 ## It is possible to get the current value of local_list with the following
+##
 ## @example
 ## pkg local_list
 ## @end example
+##
 ## @item global_list
 ## Set the file in which to look for, for information on the globally
 ## installed packages.  Globally installed packages are those that are
-## typically available to all users.  For example
+## typically available to all users.  For example:
+##
 ## @example
 ## pkg global_list /usr/share/octave/octave_packages
 ## @end example
+##
 ## It is possible to get the current value of global_list with the following
+##
 ## @example
 ## pkg global_list
 ## @end example
+##
 ## @item rebuild
 ## Rebuilds the package database from the installed directories.  This can 
 ## be used in cases where for some reason the package database is corrupted.
 ## It can also take the @option{-auto} and @option{-noauto} options to allow the
-## autoloading state of a package to be changed.  For example
+## autoloading state of a package to be changed.  For example,
 ##
 ## @example
 ## pkg rebuild -noauto image
 ## @end example
 ##
 ## will remove the autoloading status of the image package.
+##
 ## @item build
 ## Builds a binary form of a package or packages.  The binary file produced
 ## will itself be an Octave package that can be installed normally with

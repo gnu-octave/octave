@@ -24,6 +24,7 @@
 ## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp(-2 k^2 x^2) $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##          Inf
@@ -31,8 +32,8 @@
 ##        k = -Inf
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## for @var{x} > 0.
 ##

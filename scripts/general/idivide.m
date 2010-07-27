@@ -31,12 +31,15 @@
 ## @item "fix"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards zero.
+##
 ## @item "round"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards the nearest integer.
+##
 ## @item "floor"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards negative infinity.
+##
 ## @item "ceil"
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards positive infinity.

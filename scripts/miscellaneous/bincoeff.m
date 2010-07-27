@@ -36,9 +36,9 @@
 ##  \   /
 ## @end group
 ## @end example
-## @end ifnottex
 ##
-## For example,
+## @end ifnottex
+## For example:
 ##
 ## @example
 ## @group

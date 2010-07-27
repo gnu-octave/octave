@@ -26,7 +26,7 @@
 ## the string.  If @var{len} is omitted, the substring extends to the end
 ## of S.
 ##
-## For example,
+## For example:
 ##
 ## @example
 ## @group

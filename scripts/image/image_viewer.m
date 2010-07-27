@@ -35,21 +35,27 @@
 ## the filename of the image, and the @code{%f} will (if present) be
 ## replaced by the zoom factor given to the @code{image} function.
 ## For example,
+##
 ## @example
 ## image_viewer ("eog %s");
 ## @end example
+##
 ## changes the image viewer to the @code{eog} program.
 ##
 ## With two input arguments, images will be displayed by calling
 ## the function @var{function_handle}.  For example,
+##
 ## @example
 ## image_viewer (data, @@my_image_viewer);
 ## @end example
+##
 ## sets the image viewer function to @code{my_image_viewer}.  The image
 ## viewer function is called with
+##
 ## @example
 ## my_image_viewer (@var{x}, @var{y}, @var{im}, @var{zoom}, @var{data})
 ## @end example
+##
 ## where @var{x} and @var{y} are the axis of the image, @var{im} is the image
 ## variable, and @var{data} is extra user-supplied data to be passed to
 ## the viewer function.

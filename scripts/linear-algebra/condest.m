@@ -34,10 +34,13 @@
 ## @table @var
 ## @item apply
 ## @code{A*x} for a matrix @code{x} of size @var{n} by @var{t}.
+##
 ## @item apply_t
 ## @code{A'*x} for a matrix @code{x} of size @var{n} by @var{t}.
+##
 ## @item solve
 ## @code{A \ b} for a matrix @code{b} of size @var{n} by @var{t}.
+##
 ## @item solve_t
 ## @code{A' \ b} for a matrix @code{b} of size @var{n} by @var{t}.
 ## @end table
@@ -59,6 +62,7 @@
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. SIMAX vol 21, no 4, pp 1185-1201.
 ## @url{http://dx.doi.org/10.1137/S0895479899356080}
+##
 ## @item 
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm

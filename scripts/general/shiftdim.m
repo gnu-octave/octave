@@ -30,7 +30,7 @@
 ## singleton dimensions, returning the number of dimensions removed
 ## in the second output argument @var{ns}.
 ##
-## For example 
+## For example:
 ##
 ## @example
 ## @group

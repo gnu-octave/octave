@@ -44,12 +44,13 @@
 ## c(0)  r(1)   r(2)  @dots{}  r(n)
 ## c(1)  c(0)   r(1)  @dots{} r(n-1)
 ## c(2)  c(1)   c(0)  @dots{} r(n-2)
-##  .     ,      ,   .      .
-##  .     ,      ,     .    .
-##  .     ,      ,       .  .
+##  .     .      .   .      .
+##  .     .      .     .    .
+##  .     .      .       .  .
 ## c(n) c(n-1) c(n-2) @dots{}  c(0)
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb}
 ## @end deftypefn

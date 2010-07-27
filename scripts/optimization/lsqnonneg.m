@@ -35,22 +35,27 @@
 ## @item resnorm
 ##
 ## The squared 2-norm of the residual: norm(@var{c}*@var{x}-@var{d})^2
+##
 ## @item residual
 ##
 ## The residual: @var{d}-@var{c}*@var{x}
+##
 ## @item exitflag
 ##
 ## An indicator of convergence.  0 indicates that the iteration count
 ## was exceeded, and therefore convergence was not reached; >0 indicates
 ## that the algorithm converged.  (The algorithm is stable and will
 ## converge given enough iterations.)
+##
 ## @item output
 ##
 ## A structure with two fields:
 ## @itemize @bullet
 ## @item "algorithm": The algorithm used ("nnls")
+##
 ## @item "iterations": The number of iterations taken.
 ## @end itemize
+##
 ## @item lambda
 ##
 ## Not implemented.

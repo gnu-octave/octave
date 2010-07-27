@@ -42,7 +42,7 @@
 ## value is wanted, set @code{@var{vn} = [val, val]};
 ## If @var{vn} is omitted it defaults to 10.
 ##
-## For example,
+## For example:
 ## @example
 ## @group
 ## x = 0:2;

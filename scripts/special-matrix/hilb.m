@@ -37,6 +37,7 @@
 ## @example
 ## H (i, j) = 1 / (i + j - 1)
 ## @end example
+##
 ## @end ifnottex
 ## @seealso{hankel, vander, sylvester_matrix, invhilb, toeplitz}
 ## @end deftypefn

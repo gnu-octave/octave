@@ -36,8 +36,10 @@
 ## @itemize
 ## @item 1
 ## The algorithm converged to a solution.
+##
 ## @item 0
 ## Maximum number of iterations or function evaluations has been exhausted.
+##
 ## @item -1
 ## The algorithm has been terminated from user output function.
 ## @end itemize

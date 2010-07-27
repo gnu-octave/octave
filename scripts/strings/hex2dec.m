@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hex2dec (@var{s})
 ## Return the integer corresponding to the hexadecimal number stored
-## in the string @var{s}.  For example,
+## in the string @var{s}.  For example:
 ##
 ## @example
 ## @group

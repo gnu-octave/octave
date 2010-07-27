@@ -32,6 +32,7 @@
 ## @example
 ## v(1) * z^(N-1) + @dots{} + v(N-1) * z + v(N)
 ## @end example
+##
 ## @end ifnottex
 ##
 ## As an example, the following code finds the roots of the quadratic
@@ -40,10 +41,13 @@
 ## $$ p(x) = x^2 - 5. $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## p(x) = x^2 - 5.
 ## @end example
+##
 ## @end ifnottex
+##
 ## @example
 ## @group
 ## c = [1, 0, -5];
@@ -52,6 +56,7 @@
 ## @result{} -2.2361
 ## @end group
 ## @end example
+##
 ## Note that the true result is
 ## @tex
 ## $\pm \sqrt{5}$
@@ -127,7 +132,7 @@ endfunction
  
 %!assert(isempty (roots (1)));
 
- %!error roots ([1, 2; 3, 4]);
+%!error roots ([1, 2; 3, 4]);
  
 %!error roots ([1 Inf 1]);
 

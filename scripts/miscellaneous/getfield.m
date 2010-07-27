@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{}) 
-## Extract a field from a structure (or a nested structure).  For example
+## Extract a field from a structure (or a nested structure).  For example:
 ##
 ## @example
 ## @group

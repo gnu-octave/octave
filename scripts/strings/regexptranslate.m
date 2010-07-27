@@ -28,6 +28,7 @@
 ## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
 ## with wildcards that are appropriate for a regular expression. 
 ## For example:
+##
 ## @example
 ## @group
 ## regexptranslate ("wildcard", "*.m")
@@ -38,12 +39,14 @@
 ## @item "escape"
 ## The characters @code{$.?[]}, that have special meaning for regular
 ## expressions are escaped so that they are treated literally.  For example:
+##
 ## @example
 ## @group
 ## regexptranslate ("escape", "12.5")
 ##      @result{} "12\.5"
 ## @end group
 ## @end example
+##
 ## @end table
 ## @seealso{regexp, regexpi, regexprep}
 ## @end deftypefn

@@ -35,6 +35,7 @@
 ## of axes.
 ##
 ## Examples:
+##
 ## @example
 ## @group
 ## disp ("plotting a cone")

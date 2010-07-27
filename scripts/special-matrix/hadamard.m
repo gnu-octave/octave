@@ -33,13 +33,17 @@
 ## @item
 ## @code{kron (@var{Hm}, @var{Hn})} is a Hadamard matrix of size 
 ## @var{m}-by-@var{n}.
+##
 ## @item
 ## @code{Hn * Hn' == @var{n} * eye (@var{n})}.
+##
 ## @item
 ## The rows of @var{Hn} are orthogonal.
+##
 ## @item
 ## @code{det (@var{A}) <= abs(det (@var{Hn}))} for all @var{A} with
 ## @code{abs (@var{A} (@var{i}, @var{j})) <= 1}.
+##
 ## @item
 ## Multiply any row or column by -1 and still have a Hadamard matrix.
 ## @end itemize

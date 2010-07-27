@@ -22,7 +22,6 @@
 ## @deftypefn {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
 ## Compute the partial fraction expansion for the quotient of the
 ## polynomials, @var{b} and @var{a}.
-##
 ## @tex
 ## $$
 ## {B(s)\over A(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
@@ -38,8 +37,8 @@
 ##  A(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## @noindent
 ## where @math{M} is the number of poles (the length of the @var{r},
 ## @var{p}, and @var{e}), the @var{k} vector is a polynomial of order @math{N-1}
@@ -87,9 +86,9 @@
 ## by @var{r}, @var{p} and @var{k}, and the pole multiplicity @var{e}.
 ##
 ## If the multiplicity, @var{e}, is not explicitly specified the multiplicity is
-## determined by the script mpoles.m.
+## determined by the function @code{mpoles}.
 ##
-## For example,
+## For example:
 ##
 ## @example
 ## @group
@@ -100,7 +99,7 @@
 ##      @result{} b = [1, -5, 9, -3, 1]
 ##      @result{} a = [1, -5, 8, -4]
 ##
-## where mpoles.m is used to determine e = [1; 2; 1]
+## where mpoles is used to determine e = [1; 2; 1]
 ##
 ## @end group
 ## @end example
@@ -135,6 +134,7 @@
 ##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyint}
 ## @end deftypefn

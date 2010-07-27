@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deffn {Command} ls options
-## List directory contents.  For example,
+## List directory contents.  For example:
 ## 
 ## @example
 ## @group

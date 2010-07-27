@@ -36,6 +36,7 @@
 ## std (x) = sqrt (sumsq (x - mean (x)) / (n - 1))
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
@@ -47,6 +48,7 @@
 ## @item 0:
 ##   normalizes with @math{N-1}, provides the square root of best unbiased 
 ##   estimator of the variance [default]
+##
 ## @item 1:
 ##   normalizes with @math{N}, this provides the square root of the second
 ##   moment around the mean

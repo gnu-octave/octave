@@ -62,8 +62,10 @@
 ## @table @code
 ## @item "square"
 ## Force a square aspect ratio.
+##
 ## @item "equal"
 ## Force x distance to equal y-distance.
+##
 ## @item "normal"
 ## Restore the balance.
 ## @end table
@@ -75,8 +77,10 @@
 ## @item "auto" 
 ## Set the specified axes to have nice limits around the data
 ## or all if no axes are specified.
+##
 ## @item "manual" 
 ## Fix the current axes limits.
+##
 ## @item "tight"
 ## Fix axes to the limits of the data.
 ## @end table
@@ -91,14 +95,18 @@
 ## @table @code
 ## @item "on" 
 ## Turn tic marks and labels on for all axes.
+##
 ## @item "off"
 ## Turn tic marks off for all axes.
+##
 ## @item "tic[xyz]"
 ## Turn tic marks on for all axes, or turn them on for the
 ## specified axes and off for the remainder.
+##
 ## @item "label[xyz]"
 ## Turn tic labels on for all axes, or turn them on for the 
 ## specified axes and off for the remainder.
+##
 ## @item "nolabel"
 ## Turn tic labels off for all axes.
 ## @end table
@@ -111,6 +119,7 @@
 ## @table @code
 ## @item "ij"
 ## Reverse y-axis, so lower values are nearer the top.
+##
 ## @item "xy" 
 ## Restore y-axis, so higher values are nearer the top. 
 ## @end table

@@ -35,6 +35,7 @@
 ## 
 ## @itemize 
 ## @item 2D and 3D: @var{opt} = @code{@{"Qt", "Qbb", "Qc"@}}
+##
 ## @item 4D and higher: @var{opt} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}} 
 ## @end itemize
 ## 

@@ -30,11 +30,11 @@
 ## operator.
 ## @end ifnottex
 ## For a 2-dimensional matrix @var{m} this is defined as
-##
 ## @tex
 ## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##       1    / d^2            d^2         \
@@ -42,11 +42,10 @@
 ##       4    \ dx^2           dy^2        /
 ## @end group
 ## @end example
-## @end ifnottex
 ##
+## @end ifnottex
 ## For N-dimensional arrays the sum in parentheses is expanded to include second
-## derivatives 
-## over the additional higher dimensions.
+## derivatives over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
 ## scalar defining the equidistant spacing in all dimensions.  Alternatively, 

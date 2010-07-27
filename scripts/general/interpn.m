@@ -44,10 +44,13 @@
 ## @table @asis
 ## @item 'nearest'
 ## Return the nearest neighbor.
+##
 ## @item 'linear'
 ## Linear interpolation from nearest neighbors.
+##
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors (not implemented yet).
+##
 ## @item 'spline'
 ## Cubic spline interpolation--smooth first and second derivatives
 ## throughout the curve.

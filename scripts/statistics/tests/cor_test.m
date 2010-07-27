@@ -42,14 +42,19 @@
 ## @table @var
 ## @item pval
 ## The p-value of the test.
+##
 ## @item stat
 ## The value of the test statistic.
+##
 ## @item dist
 ## The distribution of the test statistic.
+##
 ## @item params
 ## The parameters of the null distribution of the test statistic.
+##
 ## @item alternative
 ## The alternative hypothesis.
+##
 ## @item method
 ## The method used for testing.
 ## @end table

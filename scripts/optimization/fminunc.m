@@ -54,12 +54,16 @@
 ## Converged to a solution point.  Relative gradient error is less than
 ## specified
 ## by TolFun.
+##
 ## @item 2
 ## Last relative step size was less that TolX.
+##
 ## @item 3
 ## Last relative decrease in func value was less than TolF. 
+##
 ## @item 0
 ## Iteration limit exceeded.
+##
 ## @item -3
 ## The trust region radius became excessively small. 
 ## @end table

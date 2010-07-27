@@ -22,7 +22,7 @@
 ## @deftypefn  {Function File} {} fsolve (@var{fcn}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
-## @var{fcn} should accepts a vector (array) defining the unknown variables,
+## @var{fcn} should accept a vector (array) defining the unknown variables,
 ## and return a vector of left-hand sides of the equations.  Right-hand sides
 ## are defined to be zeros.
 ## In other words, this function attempts to determine a vector @var{x} such 
@@ -69,14 +69,17 @@
 ## @table @asis
 ## @item 1
 ## Converged to a solution point.  Relative residual error is less than
-## specified
-## by TolFun.
+## specified by TolFun.
+##
 ## @item 2
 ## Last relative step size was less that TolX.
+##
 ## @item 3
 ## Last relative decrease in residual was less than TolF. 
+##
 ## @item 0
 ## Iteration limit exceeded.
+##
 ## @item -3
 ## The trust region radius became excessively small. 
 ## @end table
@@ -122,7 +125,6 @@
 ## 
 ## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
 ## @end example
-###
 ## @end deftypefn
 
 ## PKG_ADD: __all_opts__ ("fsolve");
@@ -161,7 +163,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
   ## Get scaling matrix using the TypicalX option. If set to "auto", the
-  ## scaling matrix is estimated using the jacobian.
+  ## scaling matrix is estimated using the Jacobian.
   typicalx = optimget (options, "TypicalX");
   if (isempty (typicalx))
     typicalx = ones (n, 1);
@@ -224,7 +226,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     ## Calculate function value and Jacobian (possibly via FD).
     if (has_jac)
       [fvec, fjac] = fcn (reshape (x, xsiz));
-      ## If the jacobian is sparse, disable Broyden updating.
+      ## If the Jacobian is sparse, disable Broyden updating.
       if (issparse (fjac))
         updating = false;
       endif
@@ -236,7 +238,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     endif
 
     ## For square and overdetermined systems, we update a QR
-    ## factorization of the jacobian to avoid solving a full system in each
+    ## factorization of the Jacobian to avoid solving a full system in each
     ## step. In this case, we pass a triangular matrix to __dogleg__.
     useqr = updating && m >= n && n > 10;
 
@@ -259,7 +261,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ## Rescale adaptively.
         ## FIXME: the original minpack used the following rescaling strategy:
         ##   dg = max (dg, jcn);
-        ## but it seems not good if we start with a bad guess yielding jacobian
+        ## but it seems not good if we start with a bad guess yielding Jacobian
         ## columns with large norms that later decrease, because the corresponding
         ## variable will still be overscaled. So instead, we only give the old
         ## scaling a small momentum, but do not honor it.
@@ -275,7 +277,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     endif
 
     ## It also seems that in the case of fast (and inhomogeneously) changing
-    ## jacobian, the Broyden updates are of little use, so maybe we could
+    ## Jacobian, the Broyden updates are of little use, so maybe we could
     ## skip them if a big disproportional change is expected. The question is,
     ## of course, how to define the above terms :)
 
@@ -399,7 +401,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         endif
       endif
 
-      ## Criterion for recalculating jacobian.
+      ## Criterion for recalculating Jacobian.
       if (! updating || nfail == 2 || nsuciter < 2)
         break;
       endif
@@ -415,7 +417,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         u = (fvec1 - w);
         v = dg .* ((dg .* s) / sn);
 
-        ## update the jacobian
+        ## update the Jacobian
         fjac += u * v';
       endif
     endwhile

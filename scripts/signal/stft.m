@@ -29,8 +29,10 @@
 ## @table @asis
 ## @item @nospell{hanning}
 ## w_type = 1
+##
 ## @item @nospell{hamming}
 ## w_type = 2
+##
 ## @item rectangle
 ## w_type = 3
 ## @end table

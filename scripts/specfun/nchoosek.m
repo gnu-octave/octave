@@ -23,7 +23,6 @@
 ## Compute the binomial coefficient or all combinations of @var{n}.
 ## If @var{n} is a scalar then, calculate the binomial coefficient
 ## of @var{n} and @var{k}, defined as
-##
 ## @tex
 ## $$
 ##  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
@@ -41,6 +40,7 @@
 ##  \   /
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
 ## If @var{n} is a vector generate all combinations of the elements

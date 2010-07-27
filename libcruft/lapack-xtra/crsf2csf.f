@@ -35,8 +35,8 @@ c apply previous rotations to rows
 c 2x2 block, form Givens rotation [c, i*s; i*s, c] 
            x = t(j,j)
            z = t(j,j+1)
-           c(j) = sqrt(abs(z/(y-z)))
-           s(j) = sign(sqrt(abs(y/(y-z))),z)
+           c(j) = sqrt(z/(z-y))
+           s(j) = sign(sqrt(-y/(z-y)),z)
 c apply new rotation to t(j:j+1,j)
            call crcrot1(2,t(j,j),c(j),s(j))
 c apply all rotations to t(1:j+1,j+1)

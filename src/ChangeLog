@@ -1,3 +1,8 @@
+2010-07-27  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/schur.cc (rsf2csf): Change first documentation line to
+	active voice.
+
 2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/schur.cc (Frsf2csf): New DEFUN.

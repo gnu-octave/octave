@@ -394,13 +394,13 @@ $S$.\n\
 DEFUN_DLD (rsf2csf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
-Converts a real, upper quasi-triangular Schur form @var{TR} to a complex,\n\
+Convert a real, upper quasi-triangular Schur form @var{TR} to a complex,\n\
 upper triangular Schur form @var{T}.\n\
 \n\
 Note that the following relations hold: \n\
 \n\
 @code{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
-@code{@var{U}' * @var{U}} is identity.\n\
+@code{@var{U}' * @var{U}} is the identity matrix.\n\
 \n\
 Note also that U and T are not unique.\n\
 \n\
@@ -415,7 +415,7 @@ Note also that U and T are not unique.\n\
       else if (! args(1).is_numeric_type ())
         gripe_wrong_type_arg ("rsf2csf", args(1));
       else if (args(0).is_complex_type () || args(1).is_complex_type ())
-        error ("rsf2csf: both matrices should be real");
+        error ("rsf2csf: both matrices must be real");
       else
         {
 

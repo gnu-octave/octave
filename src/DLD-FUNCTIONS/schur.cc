@@ -390,3 +390,81 @@ $S$.\n\
 %!error schur ([1, 2, 3; 4, 5, 6]);
 
 */
+
+DEFUN_DLD (rsf2csf, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
+Converts a real, upper quasi-triangular Schur form @var{TR} to a complex,\n\
+upper triangular Schur form @var{T}.\n\
+\n\
+Note that the following relations hold: \n\
+\n\
+@code{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
+@code{@var{U}' * @var{U}} is identity.\n\
+\n\
+Note also that U and T are not unique.\n\
+\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 2 && nargout <= 2)
+    {
+      if (! args(0).is_numeric_type ())
+        gripe_wrong_type_arg ("rsf2csf", args(0));
+      else if (! args(1).is_numeric_type ())
+        gripe_wrong_type_arg ("rsf2csf", args(1));
+      else if (args(0).is_complex_type () || args(1).is_complex_type ())
+        error ("rsf2csf: both matrices should be real");
+      else
+        {
+
+          if (args(0).is_single_type () || args(1).is_single_type ())
+            {
+              FloatMatrix u = args(0).float_matrix_value ();
+              FloatMatrix t = args(1).float_matrix_value ();
+              if (! error_state)
+                {
+                  FloatComplexSCHUR cs (FloatSCHUR (t, u));
+
+                  retval(1) = cs.schur_matrix ();
+                  retval(0) = cs.unitary_matrix ();
+                }
+            }
+          else
+            {
+              Matrix u = args(0).matrix_value ();
+              Matrix t = args(1).matrix_value ();
+              if (! error_state)
+                {
+                  ComplexSCHUR cs (SCHUR (t, u));
+
+                  retval(1) = cs.schur_matrix ();
+                  retval(0) = cs.unitary_matrix ();
+                }
+            }
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!test
+%! A = [1, 1, 1, 2; 1, 2, 1, 1; 1, 1, 3, 1; -2, 1, 1, 1];
+%! [u, t] = schur (A);
+%! [U, T] = rsf2csf (u, t);
+%! assert (norm (u * t * u' - U * T * U'), 0, 1e-12)
+%! assert (norm (A - U * T * U'), 0, 1e-12)
+
+%!test
+%! A = rand (10);
+%! [u, t] = schur (A);
+%! [U, T] = rsf2csf (u, t);
+%! assert (norm (tril (T, -1)), 0)
+%! assert (norm (U * U'), 1, 1e-14)
+
+*/

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "fCMatrix.h"
+#include "floatSCHUR.h"
 
 class
 OCTAVE_API
@@ -48,6 +49,10 @@ public:
 
   FloatComplexSCHUR (const FloatComplexSCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
+
+  FloatComplexSCHUR (const FloatComplexMatrix& s, const FloatComplexMatrix& u);
+
+  FloatComplexSCHUR (const FloatSCHUR& s);
 
   FloatComplexSCHUR& operator = (const FloatComplexSCHUR& a)
     {

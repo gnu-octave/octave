@@ -146,6 +146,15 @@ FloatSCHUR::init (const FloatMatrix& a, const std::string& ord, bool calc_unitar
   return info;
 }
 
+FloatSCHUR::FloatSCHUR (const FloatMatrix& s, const FloatMatrix& u)
+: schur_mat (s), unitary_mat (u)
+{
+  octave_idx_type n = s.rows ();
+  if (s.columns () != n || u.rows () != n || u.columns () != n)
+    (*current_liboctave_error_handler)
+      ("schur: inconsistent matrix dimensions");
+}
+
 std::ostream&
 operator << (std::ostream& os, const FloatSCHUR& a)
 {

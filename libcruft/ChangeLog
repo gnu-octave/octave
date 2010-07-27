@@ -1,3 +1,8 @@
+2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lapack-xtra/zrsf2csf.f, lapack-xtra/crsf2csf.f: New sources.
+	* lapack-xtra/module.mk: Add them.
+
 2010-05-04  John W. Eaton  <jwe@octave.org>
 
 	* villad/dfopr.f, villad/dif.f, villad/intrp.f, villad/jcobi.f,

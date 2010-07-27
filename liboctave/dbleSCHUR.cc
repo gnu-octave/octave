@@ -154,3 +154,13 @@ operator << (std::ostream& os, const SCHUR& a)
 
   return os;
 }
+
+SCHUR::SCHUR (const Matrix& s, const Matrix& u)
+: schur_mat (s), unitary_mat (u)
+{
+  octave_idx_type n = s.rows ();
+  if (s.columns () != n || u.rows () != n || u.columns () != n)
+    (*current_liboctave_error_handler)
+      ("schur: inconsistent matrix dimensions");
+}
+

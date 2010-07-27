@@ -7,4 +7,6 @@ libcruft_la_SOURCES += \
   lapack-xtra/xilaenv.f \
   lapack-xtra/xslamch.f \
   lapack-xtra/xslange.f \
-  lapack-xtra/xzlange.f
+  lapack-xtra/xzlange.f \
+  lapack-xtra/zrsf2csf.f \
+  lapack-xtra/crsf2csf.f

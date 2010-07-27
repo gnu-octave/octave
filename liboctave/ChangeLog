@@ -1,3 +1,20 @@
+2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dbleSCHUR.cc (SCHUR::SCHUR (const Matrix&, const Matrix&)): 
+	New ctor.
+	* dbleSCHUR.h: Declare it.
+	* floatSCHUR.cc (FloatSCHUR::FloatSCHUR (const FloatMatrix&, const
+	FloatMatrix&)): New ctor.
+	* floatSCHUR.h: Declare it.
+	* CmplxSCHUR.cc (ComplexSCHUR::ComplexSCHUR (const ComplexMatrix&,
+	const ComplexMatrix&),
+	ComplexSCHUR::ComplexSCHUR (const SCHUR&)): New ctors.
+	* CmplxSCHUR.h: Declare them.
+	* fCmplxSCHUR.cc (FloatComplexSCHUR::FloatComplexSCHUR 
+	(const FloatComplexMatrix&, const FloatComplexMatrix&),
+	FloatComplexSCHUR::FloatComplexSCHUR (const FloatSCHUR&)): New ctors.
+	* fCmplxSCHUR.h: Declare them.
+
 2010-07-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::lssolve): Fix decision test for workaround.

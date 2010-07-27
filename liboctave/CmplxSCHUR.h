@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "CMatrix.h"
+#include "dbleSCHUR.h"
 
 class
 OCTAVE_API
@@ -48,6 +49,10 @@ public:
 
   ComplexSCHUR (const ComplexSCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
+
+  ComplexSCHUR (const ComplexMatrix& s, const ComplexMatrix& u);
+
+  ComplexSCHUR (const SCHUR& s);
 
   ComplexSCHUR& operator = (const ComplexSCHUR& a)
     {

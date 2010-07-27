@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCmplxSCHUR.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "oct-locbuf.h"
 
 extern "C"
 {
@@ -43,6 +44,9 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (crsf2csf, CRSF2CSF) (const octave_idx_type&,
+                                 FloatComplex *, FloatComplex *, float *, float *);
 }
 
 static octave_idx_type
@@ -139,4 +143,28 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
                              F77_CHAR_ARG_LEN (1)));
 
   return info;
+}
+
+FloatComplexSCHUR::FloatComplexSCHUR (const FloatComplexMatrix& s, 
+                                      const FloatComplexMatrix& u)
+: schur_mat (s), unitary_mat (u)
+{
+  octave_idx_type n = s.rows ();
+  if (s.columns () != n || u.rows () != n || u.columns () != n)
+    (*current_liboctave_error_handler)
+      ("schur: inconsistent matrix dimensions");
+}
+
+FloatComplexSCHUR::FloatComplexSCHUR (const FloatSCHUR& s)
+: schur_mat (s.schur_matrix ()), unitary_mat (s.unitary_matrix ())
+{
+  octave_idx_type n = schur_mat.rows ();
+  if (n > 0)
+    {
+      OCTAVE_LOCAL_BUFFER (float, c, n-1);
+      OCTAVE_LOCAL_BUFFER (float, sx, n-1);
+
+      F77_XFCN (crsf2csf, CRSF2CSF, (n, schur_mat.fortran_vec (),
+                                     unitary_mat.fortran_vec (), c, sx));
+    }
 }

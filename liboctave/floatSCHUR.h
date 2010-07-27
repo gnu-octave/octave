@@ -48,6 +48,8 @@ public:
   FloatSCHUR (const FloatSCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
 
+  FloatSCHUR (const FloatMatrix& s, const FloatMatrix& u);
+
   FloatSCHUR& operator = (const FloatSCHUR& a)
     {
       if (this != &a)

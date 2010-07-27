@@ -48,6 +48,8 @@ public:
   SCHUR (const SCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
 
+  SCHUR (const Matrix& s, const Matrix& u);
+
   SCHUR& operator = (const SCHUR& a)
     {
       if (this != &a)

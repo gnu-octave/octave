@@ -4,18 +4,34 @@
 ##
 ## This file is part of Octave.
 ##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{s}, @var{iters}] =} logm (@var{a}, @var{opt_iters})
-## Compute the matrix logarithm of the square matrix @var{a}.  Utilizes a Pade 
-## approximant and the identity
+## @deftypefn  {Function File} {@var{s} =} logm (@var{a})
+## @deftypefnx {Function File} {@var{s} =} logm (@var{a}, @var{opt_iters})
+## @deftypefnx {Function File} {[@var{s}, @var{iters}] =} logm (@dots{})
+## Compute the matrix logarithm of the square matrix @var{a}.  The
+## implementation utilizes a Pad@'e approximant and the identity
 ##
-## @code{ logm(@var{a}) = 2^k * logm(@var{a}^(1 / 2^k)) }.
+## @example
+## logm(@var{a}) = 2^k * logm(@var{a}^(1 / 2^k))
+## @end example
 ##
-## Optional argument @var{opt_iters} is the number of square roots computed
-## and defaults to 100.  Optional output @var{iters} is the number of square
-## roots actually computed.
+## The optional argument @var{opt_iters} is the maximum number of square roots
+## to compute and defaults to 100.  The optional output @var{iters} is the
+## number of square roots actually computed.
 ##
 ## @end deftypefn
 
@@ -45,8 +61,9 @@ function [s, iters] = logm (a, opt_iters)
 
   if (any (diag (s) < 0))
     warning ("Octave:logm:non-principal",
-    ["logm: Matrix has nonegative eigenvalues.  Principal matrix logarithm is not defined.", ...
-    "Computing non-principal logarithm."]);
+    ["logm: Matrix has negative eigenvalues.", ...
+     "  Principal matrix logarithm is not defined.", ...
+     "  Computing non-principal logarithm."]);
   endif
 
   k = 0;
@@ -118,16 +135,18 @@ endfunction
 
 function [x,w] = gauss_legendre(n)
   i = 1:n-1;
-  v = i./sqrt((2*i).^2-1);
-  [V,D] = eig( diag(v,-1)+diag(v,1) );
-  x = diag(D);
+  v = i./sqrt ((2*i).^2-1);
+  [V,D] = eig ( diag(v,-1)+diag(v,1) );
+  x = diag (D);
   w = 2*(V(1,:)'.^2);
 endfunction
 
 
 %!assert(norm(logm([1 -1;0 1]) - [0 -1; 0 0]) < 1e-5);
 %!assert(norm(expm(logm([-1 2 ; 4 -1])) - [-1 2 ; 4 -1]) < 1e-5);
+%!assert(logm([1 -1 -1;0 1 -1; 0 0 1]), [0 -1 -1.5; 0 0 -1; 0 0 0], 1e-5);
 %!
+%% Test input validation
 %!error logm ();
 %!error logm (1, 2, 3);
 %!error <logm: argument must be a square matrix.> logm([1 0;0 1; 2 2]);

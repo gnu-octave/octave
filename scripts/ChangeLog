@@ -1,3 +1,8 @@
+2010-07-26  Rik <octave@nomad.inbox5.com>
+
+	* linear-algebra/logm.m: Improve documentation string.  Add GPL header.
+	Add additional test block.
+
 2010-07-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/logm.m: Rewrite. Thanks to M. Caliari and R. T. Guy.

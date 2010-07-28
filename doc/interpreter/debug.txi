@@ -84,7 +84,7 @@ Note that breakpoints cannot be set in built-in functions
 set a breakpoint immediately on entering a function, the breakpoint
 should be set to line 1. The leading comment block will be ignored and
 the breakpoint will be set to the first executable statement in the
-function.  For example
+function.  For example:
 
 @example
 @group
@@ -107,7 +107,8 @@ Taking the above as an example, @code{dbstatus ("asind")} should return
 @DOCSTRING(dbclear)
 
 @noindent
-These functions can be used to clear all the breakpoints in a function.  For example,
+These functions can be used to clear all the breakpoints in a function.  For
+example:
 
 @example
 dbclear ("asind", dbstatus ("asind"));

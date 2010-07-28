@@ -50,6 +50,7 @@ really get familiar with Mercurial.  A good place to start is
 also find help how to install Mercurial.
 
 A simple contribution sequence could look like this:
+
 @example
 @group
 hg clone http://www.octave.org/hg/octave
@@ -71,6 +72,7 @@ You may want to get familiar with Mercurial queues to manage your changesets.
 Here is a slightly less simple example using Mercurial queues, where you work 
 on two unrelated changesets in parallel and update one of the changesets after 
 discussion in the maintainers mailing list:
+
 @example
 hg qnew nasty_bug            # create a new patch 
 # change sources@dots{}
@@ -159,10 +161,10 @@ The preferred comment mark for places that may need further attention is FIXME.
 @node Octave Sources (m-files)
 @section Octave Sources (m-files)
 
-Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your editor
-so that it converts tabs to spaces.  Indent the bodies of the statement blocks.
-Recommended indent is 2 spaces.  When calling functions, put spaces after commas
-and before the calling parentheses, like this:
+Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your
+editor so that it converts tabs to spaces.  Indent the bodies of the statement
+blocks.  Recommended indent is 2 spaces.  When calling functions, put spaces
+after commas and before the calling parentheses, like this:
 
 @example
   x = max (sin (y+3), 2);
@@ -178,8 +180,9 @@ An exception are matrix and vector constructors:
 @noindent
 Here, putting spaces after @code{sin}, @code{cos} would result in a parse error.
 In indexing expression, do not put a space after the identifier (this
-differentiates indexing and function calls nicely).  The space after comma is not
-necessary if index expressions are simple, i.e., you may write
+differentiates indexing and function calls nicely).  The space after comma is
+not necessary if index expressions are simple, i.e., you may write
+
 @example
   A(:,i,j)
 @end example
@@ -222,8 +225,8 @@ endfor
 @node C++ Sources
 @section C++ Sources
 
-Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your editor
-so that it converts tabs to spaces.  Format function headers like this:
+Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your
+editor so that it converts tabs to spaces.  Format function headers like this:
 
 @example
 @group
@@ -261,9 +264,9 @@ If you have nested @code{if} statements, use extra braces for extra
 clarification. 
 
 Split long expressions in such a way that a continuation line starts with an
-operator rather than identifier.  If the split occurs inside braces, continuation
-should be aligned with the first char after the innermost braces enclosing the
-split.  Example:
+operator rather than identifier.  If the split occurs inside braces,
+continuation should be aligned with the first char after the innermost braces
+enclosing the split.  Example:
 
 @example
 @group
@@ -320,9 +323,9 @@ with common extensions like @code{END DO}.  Currently, we want all sources
 to be compilable with the f2c and g77 compilers, without special flags if
 possible.  This usually means that non-legacy compilers also accept the sources.
 
-The M4 macro language is mainly used for Autoconf configuration files.  You should
-follow normal M4 rules when contributing to these files.  Some M4 files come
-from external source, namely the Autoconf archive
+The M4 macro language is mainly used for Autoconf configuration files.  You
+should follow normal M4 rules when contributing to these files.  Some M4 files
+come from external source, namely the Autoconf archive
 @url{http://autoconf-archive.cryp.to}.
 
 If you give a code example in the documentation written in Texinfo with the 

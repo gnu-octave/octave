@@ -51,16 +51,18 @@ $$
 $$
 @end tex
 @ifnottex
+
 @example
 min C'*x
 @end example
+
 @end ifnottex
 subject to the linear constraints
 @tex
 $Ax = b$ where $x \geq 0$.
 @end tex
 @ifnottex
-@math{A*x = b} where @math{x >= 0}.
+@math{A*x = b} where @math{x @geq{} 0}.
 @end ifnottex
 
 @noindent
@@ -78,9 +80,11 @@ $$
 $$
 @end tex
 @ifnottex
+
 @example
 min 0.5 x'*H*x + x'*q
 @end example
+
 @end ifnottex
 subject to
 @tex
@@ -89,6 +93,7 @@ $$
 $$
 @end tex
 @ifnottex
+
 @example
 @group
      A*x = b
@@ -96,6 +101,7 @@ $$
      A_lb <= A_in*x <= A_ub
 @end group
 @end example
+
 @end ifnottex
 
 @DOCSTRING(qp)

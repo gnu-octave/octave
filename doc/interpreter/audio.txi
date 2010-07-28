@@ -24,7 +24,7 @@
 Octave provides a few functions for dealing with audio data.  An audio
 `sample' is a single output value from an A/D converter, i.e., a small
 integer number (usually 8 or 16 bits), and audio data is just a series
-of such samples.  It can be characterized by three parameters:  the
+of such samples.  It can be characterized by three parameters: the
 sampling rate (measured in samples per second or Hz, e.g., 8000 or
 44100), the number of bits per sample (e.g., 8 or 16), and the number of
 channels (1 for mono, 2 for stereo, etc.).

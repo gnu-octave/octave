@@ -80,7 +80,7 @@ probably only useful if you are actually trying to debug the parser.
 @cindex @code{--doc-cache-file @var{filename}}
 Specify the name of the doc cache file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@w{@code{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
+@w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
 in the system or user startup files that use the @code{doc_cache_file}
 function.
 
@@ -91,16 +91,16 @@ function.
 Echo commands as they are executed.
 
 @item --eval @var{code}
-Evaluate @var{code} and exit when finished unless @code{--persist} is also
+Evaluate @var{code} and exit when finished unless @option{--persist} is also
 specified.
 
 @item --exec-path @var{path}
 @cindex @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
-@w{@code{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
+@w{@env{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
 in the system or user startup files that set the built-in variable
-@w{@code{EXEC_PATH}}.
+@w{@env{EXEC_PATH}}.
 
 @item  --help
 @itemx -h
@@ -114,15 +114,15 @@ Print short help message and exit.
 @cindex @code{--image-path @var{path}}
 Add path to the head of the search path for images.  The value of 
 @var{path} specified on the command line will override any value of 
-@w{@code{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands 
+@w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands 
 in the system or user startup files that set the built-in variable 
-@w{@code{IMAGE_PATH}}.
+@w{@env{IMAGE_PATH}}.
 
 @item --info-file @var{filename}
 @cindex @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@w{@code{OCTAVE_INFO_FILE}} found in the environment, but not any commands
+@w{@env{OCTAVE_INFO_FILE}} found in the environment, but not any commands
 in the system or user startup files that use the @code{info_file}
 function.
 
@@ -130,7 +130,7 @@ function.
 @cindex @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
-@w{@code{OCTAVE_INFO_PROGRAM}} found in the environment, but not any
+@w{@env{OCTAVE_INFO_PROGRAM}} found in the environment, but not any
 commands in the system or user startup files that use the
 @code{info_program} function.
 
@@ -174,8 +174,8 @@ Don't read the site-wide @file{octaverc} initialization files.
 @cindex @code{--norc}
 @cindex @code{-f}
 Don't read any of the system or user initialization files at startup.
-This is equivalent to using both of the options @code{--no-init-file}
-and @code{--no-site-file}.
+This is equivalent to using both of the options @option{--no-init-file}
+and @option{--no-site-file}.
 
 @item  --path @var{path}
 @itemx -p @var{path}
@@ -183,13 +183,13 @@ and @code{--no-site-file}.
 @cindex @code{-p @var{path}}
 Add path to the head of the search path for function files.  The 
 value of @var{path} specified on the command line will override any value
-of @w{@code{OCTAVE_PATH}} found in the environment, but not any commands in the
+of @w{@env{OCTAVE_PATH}} found in the environment, but not any commands in the
 system or user startup files that set the internal load path through one
 of the path functions.
 
 @item --persist
 @cindex @code{--persist}
-Go to interactive mode after @code{--eval} or reading from a file
+Go to interactive mode after @option{--eval} or reading from a file
 named on the command line.
 
 @item  --silent
@@ -225,6 +225,7 @@ print_empty_dimensions          = false
 
 @noindent
 and disable the following warnings
+
 @example
 @group
 Octave:abbreviated-property-match
@@ -248,7 +249,7 @@ Print the program version number and exit.
 
 @item @var{file}
 Execute commands from @var{file}.  Exit when done unless
-@code{--persist} is also specified.
+@option{--persist} is also specified.
 @end table
 
 Octave also includes several functions which return information 
@@ -300,7 +301,7 @@ This file is provided so that changes to the default Octave environment
 can be made globally for all users at your site for all versions of Octave
 you have installed.  Care should be taken when making changes to this file 
 since all users of Octave at your site will be affected.  The default file 
-may be overridden by the environment variable @w{@code{OCTAVE_SITE_INITFILE}}.
+may be overridden by the environment variable @w{@env{OCTAVE_SITE_INITFILE}}.
 
 @item @var{octave-home}/share/octave/@var{version}/m/startup/octaverc
 @cindex version startup file
@@ -311,7 +312,7 @@ to the default Octave environment can be made globally for all users of
 a particular version of Octave.  Care should be taken when making
 changes to this file since all users of Octave at your site will be
 affected.  The default file may be overridden by the environment variable
-@w{@code{OCTAVE_VERSION_INITFILE}}.
+@w{@env{OCTAVE_VERSION_INITFILE}}.
 
 @item ~/.octaverc
 @cindex personal startup file
@@ -333,8 +334,8 @@ If you start Octave in your home directory, commands from the file
 @end table
 
 A message will be displayed as each of the startup files is read if you
-invoke Octave with the @code{--verbose} option but without the
-@code{--silent} option.
+invoke Octave with the @option{--verbose} option but without the
+@option{--silent} option.
 
 @node Quitting Octave
 @section Quitting Octave
@@ -993,6 +994,7 @@ character, @samp{#}, or the percent symbol @samp{%} and continues to the
 end of the line.  Any text following the sharp sign or percent symbol is
 ignored by the Octave interpreter and not executed.  The following example
 shows whole line and partial line comments.
+
 @example
 @group
 function countdown
@@ -1015,6 +1017,7 @@ endfunction
 Entire blocks of code can be commented by enclosing the code between 
 matching @samp{#@{} and @samp{#@}} or @samp{%@{} and @samp{%@}} markers.  
 For example,
+
 @example
 @group
 function quick_countdown
@@ -1044,6 +1047,7 @@ block of comments in a function and return those as a documentation
 string.  This means that the same commands used to get help
 on built-in functions are available for properly formatted user-defined
 functions.  For example, after defining the function @code{f} below,
+
 @example
 @group
 function xdot = f (x, t)

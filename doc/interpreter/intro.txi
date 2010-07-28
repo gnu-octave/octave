@@ -197,22 +197,21 @@ message and compute a minimum norm solution.
 A simple example comes from chemistry and the need to obtain balanced 
 chemical equations.  Consider the burning of hydrogen and oxygen to 
 produce water.
-
 @tex
 $$ {\rm H_{2}} + {\rm O_{2}} \rightarrow {\rm H_{2}O} $$
 @end tex
 @ifnottex
+
 @example
 H2 + O2 --> H2O
 @end example
-@end ifnottex
 
+@end ifnottex
 @noindent
 The equation above is not accurate.  The Law of Conservation of Mass requires 
 that the number of molecules of each type balance on the left- and right-hand 
 sides of the equation.  Writing the variable overall reaction with 
 individual equations for hydrogen and oxygen one finds:
-
 @tex
 \vbox{
 $$ x_{1}{\rm H_{2}} + x_{2}{\rm O_{2}} \rightarrow {\rm H_{2}O} $$
@@ -221,6 +220,7 @@ $$ {\rm O:}\quad 0x_{1} + 2x_{2} \rightarrow 1 $$
 }
 @end tex
 @ifnottex
+
 @example
 @group
 x1*H2 + x2*O2 --> H2O
@@ -228,8 +228,8 @@ H: 2*x1 + 0*x2 --> 2
 O: 0*x1 + 2*x2 --> 1
 @end group
 @end example
-@end ifnottex
 
+@end ifnottex
 @noindent
 The solution in Octave is found in just three steps.
 
@@ -266,8 +266,8 @@ with the initial condition
 @example
 x(t = t0) = x0
 @end example
-@end ifnottex
 
+@end ifnottex
 @noindent
 For Octave to integrate equations of this form, you must first provide a
 definition of the function
@@ -444,7 +444,7 @@ in this font or form: @key{ANY}.
 @cindex documentation notation
 
 In the examples in this manual, results from expressions that you
-evaluate are indicated with @samp{@result{}}.  For example,
+evaluate are indicated with @samp{@result{}}.  For example:
 
 @example
 @group
@@ -483,7 +483,7 @@ in order to clearly show the structure of the result.
 
 Sometimes to help describe one expression, another expression is
 shown that produces identical results.  The exact equivalence of
-expressions is indicated with @samp{@equiv{}}.  For example,
+expressions is indicated with @samp{@equiv{}}.  For example:
 
 @example
 @group

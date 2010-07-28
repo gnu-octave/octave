@@ -115,10 +115,12 @@ legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
 
 @noindent
 @ifinfo
-which demonstrates the poor behavior of Fourier interpolation for non-periodic functions.
+which demonstrates the poor behavior of Fourier interpolation for non-periodic
+functions.
 @end ifinfo
 @ifnotinfo
-which demonstrates the poor behavior of Fourier interpolation for non-periodic functions, as can be seen in @ref{fig:interpft}.
+which demonstrates the poor behavior of Fourier interpolation for non-periodic
+functions, as can be seen in @ref{fig:interpft}.
 
 @float Figure,fig:interpft
 @center @image{interpft,4in}
@@ -146,13 +148,13 @@ in @ref{Interpolation on Scattered Data}.
 @DOCSTRING(interpn)
 
 A significant difference between @code{interpn} and the other two
-multidimensional interpolation functions is the fashion in which the
+multi-dimensional interpolation functions is the fashion in which the
 dimensions are treated.  For @code{interp2} and @code{interp3}, the 'y'
 axis is considered to be the columns of the matrix, whereas the 'x'
 axis corresponds to the rows of the array.  As Octave indexes arrays in
 column major order, the first dimension of any array is the columns, and
 so @code{interpn} effectively reverses the 'x' and 'y' dimensions. 
-Consider the example
+Consider the example,
 
 @example
 @group

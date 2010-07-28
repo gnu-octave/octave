@@ -238,7 +238,7 @@ If invoked without arguments, @code{rand} and @code{randn} return a
 single element of a random sequence.
 
 The original @code{rand} and @code{randn} functions use Fortran code from
-@sc{Ranlib}, a library of Fortran routines for random number generation,
+@sc{ranlib}, a library of Fortran routines for random number generation,
 compiled by Barry W. Brown and James Lovato of the Department of
 Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
 Houston, TX 77030.

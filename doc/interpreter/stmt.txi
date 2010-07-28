@@ -383,6 +383,7 @@ switch (foo)
   @dots{}
 @end group
 @end example
+
 @end itemize
 
 @node The @code{while} Statement
@@ -576,7 +577,7 @@ In this case the variable @code{i} takes on the value of the columns of
 the matrix or cell matrix.  So the first loop iterates twice, producing
 two column vectors @code{[1;2]}, followed by @code{[3;4]}, and likewise
 for the loop over the cell array.  This can be extended to loops over
-multidimensional arrays.  For example
+multi-dimensional arrays.  For example:
 
 @example
 @group
@@ -588,7 +589,7 @@ endfor
 @end example
 
 @noindent
-In the above case, the multidimensional matrix @var{c} is reshaped to a
+In the above case, the multi-dimensional matrix @var{c} is reshaped to a
 two-dimensional matrix as @code{reshape (c, rows(c),
 prod(size(c)(2:end)))} and then the same behavior as a loop over a two
 dimensional matrix is produced.
@@ -624,7 +625,7 @@ endfor
 In this form of the @code{for} statement, the value of @var{expression}
 must be a structure.  If it is, @var{key} and @var{val} are set to the
 name of the element and the corresponding value in turn, until there are
-no more elements.  For example,
+no more elements.  For example:
 
 @example
 @group

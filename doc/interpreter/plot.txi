@@ -34,8 +34,9 @@
 
 Earlier versions of Octave provided plotting through the use of
 gnuplot.  This capability is still available.  But, a newer plotting
-capability is provided by access to OpenGL.  Which plotting system
-is used is controlled by the @code{backend} function.  (See @ref{Graphics Backends}.)
+capability is provided by access to OpenGL@.  Which plotting system
+is used is controlled by the @code{backend} function.  (See @ref{Graphics
+Backends}.)
 
 The function call @code{backend("fltk")} selects the fltk/OpenGL system, and
 @code{backend("gnuplot")} selects the gnuplot system.
@@ -301,7 +302,7 @@ The @code{meshc} function is similar to @code{mesh}, but also produces a
 plot of contours for the surface.
 
 The @code{plot3} function displays arbitrary three-dimensional data,
-without requiring it to form a surface.  For example
+without requiring it to form a surface.  For example,
 
 @example
 @group
@@ -317,7 +318,7 @@ displays the spiral in three dimensions shown in @ref{fig:plot3}.
 
 @float Figure,fig:plot3
 @center @image{plot3,4in}
-@caption{Three dimensional spiral.}
+@caption{Three-dimensional spiral.}
 @end float
 
 Finally, the @code{view} function changes the viewpoint for
@@ -390,7 +391,7 @@ three-dimensional plots.
 @subsection Plot Annotations
 
 You can add titles, axis labels, legends, and arbitrary text to an
-existing plot.  For example,
+existing plot.  For example:
 
 @example
 @group
@@ -458,7 +459,7 @@ numbered in column-major order (top to bottom, left to right).
 @subsection Multiple Plot Windows
 
 You can open multiple plot windows using the @code{figure} function.
-For example
+For example,
 
 @example
 @group
@@ -575,7 +576,7 @@ with the codes
 @end multitable
 
 These are be used in conjunction with the @{ and @} characters to limit
-the change in the font to part of the string.  For example
+the change in the font to part of the string.  For example,
 
 @example
 xlabel ('@{\bf H@} = a @{\bf V@}')
@@ -862,11 +863,11 @@ are: @code{figure}, @code{axes},
 Each of these objects has a function by the
 same name. and, each of these functions returns a graphics handle pointing
 to an object of corresponding type.  In addition there are several functions
-which operate on properties of the graphics objects and which return handles: the functions @code{ plot}
-and @code{plot3}
-return a handle pointing to an object of type line, the function @code{subplot}
-returns a handle pointing to an object of type axes, the function @code{fill} returns a
-handle pointing to an object of type patch, the functions @code{area}, @code{bar},
+which operate on properties of the graphics objects and which return handles:
+the functions @code{ plot} and @code{plot3} return a handle pointing to an
+object of type line, the function @code{subplot} returns a handle pointing to an
+object of type axes, the function @code{fill} returns a handle pointing to an
+object of type patch, the functions @code{area}, @code{bar},
 @code{barh}, @code{contour}, @code{contourf}, @code{contour3}, @code{surf}, @code{mesh},
 @code{surfc}, @code{meshc},
 @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter}, @code{scatter3},
@@ -887,24 +888,24 @@ The graphics objects are arranged in a hierarchy:
 @code{line}, @code{text}, @code{patch},
 @code{surface}, and @code{image} objects.
 
-Graphics handles may be distinguished from function handles (@ref{Function Handles})
-by means of the function @code{ishandle()}.  @code{ishandle} returns true if its
-argument is a handle of a graphics object.  In addition, the figure object
-may be tested using @code{isfigure()}.  @code{isfigure} returns true only if its
-argument is a handle of a figure.
-ishghandle() is synonymous with ishandle().  The @code{whos} function can be used
-to show the object type of each currently defined graphics handle.  (Note: this is
-not true today, but it is, I hope, considered an error in whos.  It may be better
-to have whos just show graphics_handle as the class, and provide a new function
-which, given a graphics handle, returns its object type.  This could generalize
-the ishandle() functions and, in fact, replace them.)
+Graphics handles may be distinguished from function handles (@ref{Function
+Handles}) by means of the function @code{ishandle()}.  @code{ishandle} returns
+true if its argument is a handle of a graphics object.  In addition, the figure
+object may be tested using @code{isfigure()}.  @code{isfigure} returns true only
+if its argument is a handle of a figure. ishghandle() is synonymous with
+ishandle().  The @code{whos} function can be used to show the object type of
+each currently defined graphics handle.  (Note: this is not true today, but it
+is, I hope, considered an error in whos.  It may be better to have whos just
+show graphics_handle as the class, and provide a new function which, given a
+graphics handle, returns its object type.  This could generalize the ishandle()
+functions and, in fact, replace them.)
 
 The @code{get} and @code{set} commands are
-used to obtain and set the values of properties of graphics objects.  In addition,
-the @code{get} command may be used to obtain property names.
+used to obtain and set the values of properties of graphics objects.  In
+addition, the @code{get} command may be used to obtain property names.
 
-For example, the property "type" of the graphics object pointed to by the graphics
-handle h may be displayed by:
+For example, the property "type" of the graphics object pointed to by the
+graphics handle h may be displayed by:
 
 @code{get(h, "type")}
 
@@ -1170,39 +1171,67 @@ The @code{root figure} properties are:
 @table @code
 @item __modified__  
 --- Values: "on," "off"
+
 @item __myhandle__
+
 @item beingdeleted  
 --- Values: "on," "off"
+
 @item busyaction
+
 @item buttondownfcn
+
 @item callbackobject
+
 @item children
+
 @item clipping
  --- Values: "on," "off"
+
 @item createfcn
+
 @item currentfigure
+
 @item deletefcn
+
 @item handlevisibility  
 --- Values: "on," "off"
+
 @item hittest
 --- Values: "on," "off"
+
 @item interruptible  
 --- Values: "on," "off"
+
 @item parent
+
 @item screendepth
+
 @item screenpixelsperinch
+
 @item screensize
+
 @item selected
+
 @item selectionhighlight
+
 @item screendepth
+
 @item screenpixelsperinch
+
 @item showhiddenhandles  
 --- Values: "on," "off"
+
 @item tag
+
 @item type
+
 @item uicontextmenu
+
 @item units
+
 @item userdata
+
 @item visible
 @end table
 
@@ -1214,50 +1243,80 @@ The @code{figure} properties are:
 @table @code
 @item __backend__  
 --- The backend currently in use.
+
 @item __enhanced__
+
 @item __modified__
+
 @item __myhandle__
+
 @item __plot_stream__
+
 @item alphamap
+
 @item beingdeleted 
 --- Values: "on," "off"
+
 @item busyaction
+
 @item buttondownfcn
+
 @item children
 Handle to children.
+
 @item clipping
 --- Values: "on," "off"
+
 @item closerequestfcn 
 --- Handle of function to call on close.
+
 @item color
+
 @item colormap
 An N-by-3 matrix containing the color map for the current axes.
+
 @item paperorientation
+
 @item createfcn
+
 @item currentaxes 
 Handle to graphics object of current axes.
+
 @item currentcharacter
+
 @item currentobject
+
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
 the mouse button was pressed.  If a mouse callback function is defined,
 @code{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
+
 @item deletefcn
+
 @item dockcontrols 
 --- Values: "on," "off"
+
 @item doublebuffer 
 --- Values: "on," "off"
+
 @item filename
+
 @item handlevisibility 
 --- Values: "on," "off"
+
 @item hittest
+
 @item integerhandle
+
 @item interruptible 
 --- Values: "on," "off"
+
 @item inverthardcopy
+
 @item keypressfcn
 see @code{"keypressfcn"}
+
 @item keyreleasefcn
 With @code{"keypressfcn"}, The keyboard callback functions.  These
 callback functions get called when a key is pressed/released
@@ -1267,68 +1326,111 @@ argument holds the event structure which has the following members:
 @table @code
 @item Character
 The ASCII value of the key
+
 @item Key
 lowercase value of the key
+
 @item Modifier
 A cell array containing strings representing the modifiers pressed with
 the key.  Possible values are @code{"shift"}, @code{"alt"}, and
 @code{"control"}.
 @end table
+
 @item menubar
+
 @item mincolormap
+
 @item name
+
 @item nextplot
 May be one of
 @table @code
 @item "new"
+
 @item "add"
+
 @item "replace"
+
 @item "replacechildren"
 @end table
+
 @item numbertitle
+
 @item paperorientation
 Indicates the orientation for printing.  Either @code{"landscape"} or
 @code{"portrait"}.
+
 @item paperposition
+
 @item paperpositionmode
+
 @item papersize
+
 @item papertype
+
 @item paperunits
+
 @item pointer
+
 @item pointershapecdata
+
 @item pointershapehotspot
+
 @item position
+
 @item renderer
+
 @item renderermode
+
 @item resize
+
 @item resizefcn
+
 @item selected
+
 @item selectionhighlight 
 --- Values: "on," "off"
+
 @item selectiontype
+
 @item tag
+
 @item toolbar
+
 @item type
+
 @item units
+
 @item userdata
+
 @item visible
 Either @code{"on"} or @code{"off"} to toggle display of the figure.
+
 @item windowbuttondownfcn
 See @code{"windowbuttonupfcn"}
+
 @item windowbuttonmotionfcn
 See @code{"windowbuttonupfcn"}
+
 @item windowbuttonupfcn
 With @code{"windowbuttondownfcn"} and @code{"windowbuttonmotionfcn"},
 The mouse callback functions.  These callback functions get called when
 the mouse button is pressed, dragged, and released respectively.  When
 these callback functions are called, the @code{"currentpoint"} property
 holds the current coordinates of the cursor.
+
 @item windowbuttonwheelfcn
+
 @item windowstyle
+
 @item wvisual
+
 @item wvisualmode
+
 @item xdisplay
+
 @item xvisual
+
 @item xvisualmode
 @end table
 
@@ -1339,42 +1441,68 @@ holds the current coordinates of the cursor.
 The @code{axes} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item activepositionproperty
+
 @item alim
+
 @item alimmode
+
 @item ambientlightcolor
+
 @item beingdeleted
+
 @item box
 Box surrounding axes. 
 --- Values: "on," "off"
+
 @item busyaction
+
 @item buttondownfcn
+
 @item cameraposition
+
 @item camerapositionmode
+
 @item cameratarget
+
 @item cameratargetmode
+
 @item cameraupvector
+
 @item cameraupvectormode
+
 @item cameraviewangle
+
 @item cameraviewanglemode
+
 @item children
+
 @item clim
 Two-element vector defining the limits for the c axis of
 an image.  See @code{pcolor} property.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item climmode
 Either @code{"manual"} or @code{"auto"}.
+
 @item clipping
+
 @item color
+
 @item colororder
+
 @item createfcn
+
 @item currentpoint
 Holds the coordinates of the point over which the mouse pointer was when
 the mouse button was pressed.  If a mouse callback function is defined,
 @code{"currentpoint"} holds the coordinates of the point over which the
 mouse pointer is when the function gets called.
+
 @item dataaspectratio
 A two-element vector specifying the relative height and width of the
 data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
@@ -1382,48 +1510,74 @@ data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
 same as the length of 2 units on the x-axis.  Setting
 @code{dataaspectratio} also forces the @code{dataaspectratiomode}
 property to be set to @code{"manual"}.
+
 @item dataaspectratiomode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item deletefcn
+
 @item drawmode
+
 @item fontangle
+
 @item fontname
+
 @item fontsize
+
 @item fontunits
+
 @item fontweight
+
 @item gridlinestyle
+
 @item handlevisibility
+
 @item hittest
+
 @item interpreter
+
 @item interruptible
+
 @item key
 Toggle display of the legend.  --- Values: "on," "off"
 Note that this property is not compatible with @sc{matlab} and may be
 removed in a future version of Octave.
+
 @item keybox
 Toggle display of a box around the
 legend.  --- Values: "on," "off"
 Note that this property is not compatible with @sc{matlab} and
 may be removed in a future version of Octave.
+
 @item keypos
 An integer from 1 to 4 specifying the position of the legend.  1
 indicates upper right corner, 2 indicates upper left, 3 indicates lower
 left, and 4 indicates lower right.  Note that this property is not
 compatible with @sc{matlab} and may be removed in a future version of
 Octave.
+
 @item keyreverse
+
 @item layer
+
 @item linestyleorder
+
 @item linewidth
+
 @item minorgridlinestyle
+
 @item nextplot
 May be one of
 @table @code
 @item "new"
+
 @item "add"
+
 @item "replace"
+
 @item "replacechildren"
 @end table
+
 @item outerposition
 A vector specifying the position of the plot, including titles, axes and
 legend.  The four elements of the vector are the coordinates of the
@@ -1432,9 +1586,13 @@ to the width and height of the plot window.  For example, @code{[0.2,
 0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
 0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
 the @code{position} property.
+
 @item parent
+
 @item plotboxaspectratio
+
 @item plotboxaspectratiomode
+
 @item position
 A vector specifying the position of the plot, excluding titles, axes and
 legend.  The four elements of the vector are the coordinates of the
@@ -1443,118 +1601,179 @@ to the width and height of the plot window.  For example, @code{[0.2,
 0.3, 0.4, 0.5]} sets the lower left corner of the axes at @math{(0.2,
 0.3)} and the width and height to be 0.4 and 0.5 respectively.  See also
 the @code{outerposition} property.
+
 @item projection
+
 @item selected
+
 @item selectionhighlight
+
 @item tag
+
 @item tickdir
+
 @item tickdirmode
+
 @item ticklength
+
 @item tightinset
+
 @item title
 Index of text object for the axes title.
+
 @item type
+
 @item uicontextmenu
+
 @item units
+
 @item userdata
+
 @item view
 A three element vector specifying the view point for three-dimensional plots.
+
 @item visible
 Either @code{"on"} or @code{"off"} to toggle display of the axes.
+
 @item x_normrendertransform
+
 @item x_projectiontransform
+
 @item x_rendertransform
+
 @item x_viewporttransform
+
 @item x_viewtransform
+
 @item xaxislocation 
 Either @code{"top"} or @code{"bottom"}.
+
 @item xcolor
+
 @item xdir
 Either @code{"forward"} or @code{"reverse"}.
+
 @item xgrid
 Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+
 @item xlabel
 Indices to text objects for the axes labels.
+
 @item xlim
 Two-element vector defining the limits for the x-axis.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item xlimmode
 Either @code{"manual"} or @code{"auto"}.
+
 @item xminorgrid 
 Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+
 @item xminortick
+
 @item xscale
 Either @code{"linear"} or @code{"log"}.
+
 @item xtick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item xticklabel
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item xticklabelmode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item xtickmode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item yaxislocation 
 Either @code{"left"} or @code{"right"}
+
 @item ycolor
+
 @item ydir
 Either @code{"forward"} or @code{"reverse"}.
+
 @item ygrid
 Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+
 @item ylabel
 Indices to text objects for the axes labels.
+
 @item ylim
 Two-element vectors defining the limits for the x, y, and z axes and the
 Setting one of these properties also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item ylimmode
 Either @code{"manual"} or @code{"auto"}.
+
 @item yminorgrid 
 Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+
 @item yminortick
+
 @item yscale
 Either @code{"linear"} or @code{"log"}.
+
 @item ytick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item yticklabel
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item yticklabelmode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item ytickmode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item zcolor
+
 @item zdir
 Either @code{"forward"} or @code{"reverse"}.
+
 @item zgrid
 Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+
 @item zlabel
 Indices to text objects for the axes labels.
+
 @item zlim
 Two-element vector defining the limits for z-axis.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item zlimmode
 Either @code{"manual"} or @code{"auto"}.
+
 @item zminorgrid 
 Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+
 @item zminortick
+
 @item zscale
 Either @code{"linear"} or @code{"log"}.
+
 @item ztick
 Set position of tick marks.
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item zticklabel 
 Setting this property also forces the corresponding mode
 property to be set to @code{"manual"}.
+
 @item zticklabelmode 
 Either @code{"manual"} or @code{"auto"}.
+
 @item ztickmode
 Either @code{"manual"} or @code{"auto"}.
 
@@ -1567,65 +1786,111 @@ Either @code{"manual"} or @code{"auto"}.
 The @code{line} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item beingdeleted
+
 @item busyaction
+
 @item buttondownfcn
+
 @item children
+
 @item clipping
+
 @item color
 The RGB color of the line, or a color name.  @xref{Colors}.
+
 @item createfcn
+
 @item deletefcn
+
 @item displayname
+
 @item erasemode
+
 @item handlevisibility
+
 @item hittest
+
 @item interpreter
+
 @item interruptible
+
 @item keylabel
 The text of the legend entry corresponding to this line.  Note that this
 property is not compatible with @sc{matlab} and may be removed in a
 future version of Octave.
+
 @item ldata
 The lower errorbar in the y direction to be plotted.
+
 @item linestyle
 @itemx linewidth
 @xref{Line Styles}.
+
 @item linewidth
+
 @item marker
+
 @item markeredgecolor
+
 @item markerfacecolor
+
 @item markersize
 @xref{Marker Styles}.
+
 @item parent
+
 @item selected
+
 @item selectionhighlight
+
 @item tag
+
 @item type
+
 @item udata
 The upper errorbar in the y direction to be plotted.
+
 @item uicontextmenu
+
 @item userdata
+
 @item visible
+
 @item xdata
 The data to be plotted.
+
 @item xdatasource
+
 @item xldata
 The lower errorbar to be plotted.
+
 @item xlim
+
 @item xliminclude
+
 @item xudata
 The upper errorbar to be plotted.
+
 @item ydata
 The data to be plotted.
+
 @item ydatasource
+
 @item ylim
+
 @item yliminclude
+
 @item zdata
 The data to be plotted.
+
 @item zdatasource
+
 @item zlim
+
 @item zliminclude
 @end table
 
@@ -1636,65 +1901,111 @@ The data to be plotted.
 The @code{text} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item backgroundcolor
+
 @item beingdeleted
+
 @item busyaction
+
 @item buttondownfcn
+
 @item children
+
 @item clipping
+
 @item color
 The color of the text.  @xref{Colors}.
+
 @item createfcn
+
 @item deletefcn
+
 @item displayname
+
 @item edgecolor
+
 @item editing
+
 @item erasemode
+
 @item fontangle
 Flag whether the font is italic or normal.  Valid values are 'normal',
 'italic' and 'oblique'.
+
 @item fontname
 The font used for the text.
+
 @item fontsize
 The size of the font, in points to use.
+
 @item fontunits
+
 @item fontweight
 Flag whether the font is bold, etc.  Valid values are 'normal', 'bold',
 'demi' or 'light'.
+
 @item handlevisibility
+
 @item hittest
+
 @item horizontalalignment
 May be @code{"left"}, @code{"center"}, or @code{"right"}.
+
 @item interpreter
 Determines how the text is rendered.  Valid values are 'none', 'tex' or
 'latex'.
+
 @item interruptible
+
 @item linestyle
+
 @item linewidth
+
 @item margin
+
 @item parent
+
 @item position
 The coordinates of the text object.
+
 @item rotation
 The angle of rotation for the displayed text, measured in degrees.
+
 @item selected
+
 @item selectionhighlight
+
 @item string
 The character string contained by the text object.
+
 @item tag
+
 @item type
+
 @item uicontextmenu
+
 @item units
 May be @code{"normalized"} or @code{"graph"}.
+
 @item userdata
+
 @item verticalalignment
+
 @item visible
+
 @item xlim
+
 @item xliminclude
+
 @item ylim
+
 @item yliminclude
+
 @item zlim
+
 @item zliminclude
 
 @end table
@@ -1706,43 +2017,72 @@ May be @code{"normalized"} or @code{"graph"}.
 The @code{image} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item beingdeleted
+
 @item busyaction
+
 @item buttondownfcn
+
 @item cdata
 The data for the image.  Each pixel of the image corresponds to an
 element of @code{cdata}.  The value of an element of @code{cdata}
 specifies the row-index into the colormap of the axes object containing
 the image.  The color value found in the color map for the given index
 determines the color of the pixel.
+
 @item cdatamapping
+
 @item children
+
 @item clim
+
 @item climinclude
+
 @item clipping
+
 @item createfcn
+
 @item deletefcn
+
 @item handlevisibility
+
 @item hittest
+
 @item interruptible
+
 @item parent
+
 @item selected
+
 @item selectionhighlight
+
 @item tag
+
 @item type
+
 @item uicontextmenu
+
 @item userdata
+
 @item visible
+
 @item xdata
 Two-element vector specifying the range of the x-coordinates for
 the image.
+
 @item xlim
+
 @item xliminclude
+
 @item ydata
 Two-element vector specifying the range of the y-coordinates for
 the image.
+
 @item ylim
+
 @item yliminclude
 @end table
 
@@ -1753,80 +2093,142 @@ the image.
 The @code{patch} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item alim
+
 @item aliminclude
+
 @item alphadatamapping
+
 @item ambientstrength
+
 @item backfacelighting
+
 @item beingdeleted
+
 @item busyaction
+
 @item buttondownfcn
+
 @item cdata
 Data defining the patch object.
+
 @item cdatamapping
+
 @item children
+
 @item clim
+
 @item climinclude
+
 @item clipping
+
 @item createfcn
+
 @item deletefcn
+
 @item diffusestrength
+
 @item edgealpha
+
 @item edgecolor
 The color of the line defining the patch.  @xref{Colors}.
+
 @item edgelighting
+
 @item erasemode
+
 @item facealpha
 A number in the range [0, 1] indicating the transparency of the patch.
+
 @item facecolor
 The fill color of the patch.  @xref{Colors}.
+
 @item facelighting
+
 @item faces
+
 @item facevertexalphadata
+
 @item facevertexcdata
+
 @item handlevisibility
+
 @item hittest
+
 @item interpreter
+
 @item interruptible
+
 @item keylabel
+
 @item linestyle
 @xref{Line Styles}.
+
 @item linewidth
 @xref{Line Styles}.
+
 @item marker
 @xref{Marker Styles}.
+
 @item markeredgecolor
 @xref{Marker Styles}.
+
 @item markerfacecolor
 @xref{Marker Styles}.
+
 @item markersize
 @xref{Marker Styles}.
+
 @item normalmode
+
 @item parent
+
 @item selected
+
 @item selectionhighlight
+
 @item specularcolorreflectance
+
 @item specularexponent
+
 @item specularstrength
+
 @item tag
+
 @item type
+
 @item uicontextmenu
+
 @item userdata
+
 @item vertexnormals
+
 @item vertices
+
 @item visible
+
 @item xdata
 Data defining the patch object.
+
 @item xlim
+
 @item xliminclude
+
 @item ydata
 Data defining the patch object.
+
 @item ylim
+
 @item yliminclude
+
 @item zdata
 Data defining the patch object.
+
 @item zlim
+
 @item zliminclude
 
 @end table
@@ -1838,78 +2240,142 @@ Data defining the patch object.
 The @code{surface} properties are:
 @table @code
 @item __modified__
+
 @item __myhandle__
+
 @item alim
+
 @item aliminclude
+
 @item alphadata
+
 @item alphadatamapping
+
 @item ambientstrength
+
 @item backfacelighting
+
 @item beingdeleted
+
 @item busyaction
+
 @item buttondownfcn
+
 @item cdata
+
 @item cdatamapping
+
 @item cdatasource
+
 @item children
+
 @item clim
+
 @item climinclude
+
 @item clipping
+
 @item createfcn
+
 @item deletefcn
+
 @item diffusestrength
+
 @item edgealpha
+
 @item edgecolor
+
 @item edgelighting
+
 @item erasemode
+
 @item facealpha
+
 @item facecolor
+
 @item facelighting
+
 @item handlevisibility
+
 @item hittest
+
 @item interpreter
+
 @item interruptible
+
 @item keylabel
 The text of the legend entry corresponding to this surface.  Note that
 this property is not compatible with @sc{matlab} and may be removed in a
 future version of Octave.
+
 @item linestyle
+
 @item linewidth
+
 @item marker
+
 @item markeredgecolor
+
 @item markerfacecolor
+
 @item markersize
+
 @item meshstyle
+
 @item normalmode
+
 @item parent
+
 @item selected
+
 @item selectionhighlight
+
 @item specularcolorreflectance
+
 @item specularexponent
+
 @item specularstrength
+
 @item tag
+
 @item type
+
 @item uicontextmenu
+
 @item userdata
+
 @item vertexnormals
+
 @item visible
+
 @item xdata
 The data determining the surface.  The @code{xdata} and @code{ydata}
 elements are vectors and @code{zdata} must be a matrix.
+
 @item xdatasource
+
 @item xlim
+
 @item xliminclude
+
 @item ydata
 The data determining the surface.  The @code{xdata} and @code{ydata}
 elements are vectors and @code{zdata} must be a matrix.
+
 @item ydatasource
+
 @item ylim
+
 @item yliminclude
+
 @item zdata
 The data determining the surface.  The @code{xdata} and @code{ydata}
 elements are vectors and @code{zdata} must be a matrix.
+
 @item zdatasource
+
 @item zlim
+
 @item zliminclude
 @end table
 
@@ -2044,10 +2510,13 @@ May be one of
 @table @code
 @item "-"
 Solid lines.
+
 @item "--"
 Dashed lines.
+
 @item ":"
 Points.
+
 @item "-."
 A dash-dot line.
 @end table
@@ -2100,7 +2569,7 @@ endfunction
 where @code{src} gives a handle to the source of the callback, and
 @code{code} gives some event specific data.  This can then be associated
 with an object either at the objects creation or later with the
-@code{set} function.  For example
+@code{set} function.  For example,
 
 @example
 plot (x, "DeleteFcn", @@(s, e) disp("Window Deleted"))
@@ -2111,7 +2580,7 @@ where at the moment that the plot is deleted, the message "Window
 Deleted" will be displayed.
 
 Additional user arguments can be passed to callback functions, and will
-be passed after the 2 default arguments.  For example
+be passed after the 2 default arguments.  For example:
 
 @example
 @group
@@ -2241,7 +2710,9 @@ one or more graphics object and are used to:
 
 @itemize @bullet
 @item group together multiple graphics objects,
+
 @item create linked properties between different graphics objects, and
+
 @item to hide the nominal user data, from the actual data of the objects.
 @end itemize
 
@@ -2329,7 +2800,8 @@ areas.  @xref{Line Styles}.
 
 @item edgecolor
 @itemx facecolor
-The line and fill color of the patch objects making up the areas.  @xref{Colors}.
+The line and fill color of the patch objects making up the areas. 
+@xref{Colors}.
 
 @item xdata
 @itemx ydata
@@ -2454,7 +2926,9 @@ Flag whether the contour labels are shown or not.
 The distance between labels on a single contour in points.
 
 @item linewidth
+
 @item linestyle
+
 @item linecolor
 The properties of the contour lines.  The properties @code{linewidth} and
 @code{linestyle} are similar to the corresponding properties for lines.  The
@@ -2485,11 +2959,13 @@ the errorbars separately.  The properties of the error bar series are
 
 @table @code
 @item color
-The RGB color or color name of the line objects of the error bars.  @xref{Colors}.
+The RGB color or color name of the line objects of the error bars. 
+@xref{Colors}.
 
 @item linewidth
 @itemx linestyle
-The line width and style of the line objects of the error bars.  @xref{Line Styles}.
+The line width and style of the line objects of the error bars.  @xref{Line
+Styles}.
 
 @item marker
 @itemx markeredgecolor
@@ -2740,8 +3216,10 @@ The properties of the surface group are
 
 @table @code
 @item edgecolor
+
 @item facecolor
-The RGB color or color name of the edges or faces of the surface.  @xref{Colors}.
+The RGB color or color name of the edges or faces of the surface. 
+@xref{Colors}.
 
 @item linewidth
 @itemx linestyle
@@ -2756,7 +3234,7 @@ The line and fill color of the markers on the surface.  @xref{Colors}.
 @item xdata
 @itemx ydata
 @itemx zdata
-@item cdata
+@itemx cdata
 The original x, y, z and c data.
 
 @item xdatasource

@@ -85,6 +85,7 @@ isn't written in Texinfo, the error message contains the entire help
 message.
 
 Consider the following function.
+
 @example
 @group
 ## -*- texinfo -*-

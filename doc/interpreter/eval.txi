@@ -111,7 +111,7 @@ which is similar to using a pointer in programming languages such
 as C.
 
 Consider how you might write @code{save} and @code{load} as
-m-files.  For example,
+m-files.  For example:
 
 @example
 @group

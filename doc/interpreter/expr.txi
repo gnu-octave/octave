@@ -60,6 +60,7 @@ indexed using one or two indices.  When using a single index
 expression, the elements of the matrix are taken in column-first order;
 the dimensions of the output match those of the index expression.  For
 example,
+
 @example
 @group
 a (2)       # a scalar
@@ -70,7 +71,8 @@ a ([1; 2])  # a column vector
 
 As a special case, when a colon is used as a single index, the output
 is a column vector containing all the elements of the vector or matrix.
-For example
+For example:
+
 @example
 a (:)       # a column vector
 @end example
@@ -97,11 +99,11 @@ and select the first row of the matrix.
 
 In general, an array with @samp{n} dimensions can be indexed using @samp{m}
 indices.  If @code{n == m}, each index corresponds to its respective dimension.
-The set of index tuples determining the result is formed by the Cartesian product
-of the index vectors (or ranges or scalars).
-If @code{n < m}, then the array is padded by trailing singleton dimensions.
-If @code{n > m}, the last @code{n-m+1} dimensions are folded into a single
-dimension with extent equal to product of extents of the original dimensions.
+The set of index tuples determining the result is formed by the Cartesian
+product of the index vectors (or ranges or scalars).  If @code{n < m}, then the
+array is padded by trailing singleton dimensions.  If @code{n > m}, the last
+@code{n-m+1} dimensions are folded into a single dimension with extent equal to
+product of extents of the original dimensions.
 
 @c FIXED -- sections on variable prefer_zero_one_indexing were removed
 
@@ -142,8 +144,8 @@ The last example could also be written as
 
 It should be, noted that @code{ones (1, n)} (a row vector of ones) results in a
 range (with zero increment), and is therefore more efficient when used in index
-expression than other forms of @dfn{ones}.  In particular, when @samp{r} is a row
-vector, the expressions
+expression than other forms of @dfn{ones}.  In particular, when @samp{r} is a
+row vector, the expressions
 
 @example
   r(ones (1, n), :)
@@ -499,7 +501,7 @@ expansion if @var{y} is not an integer.  An error results if both
 The implementation of this operator needs to be improved.
 
 @item @var{x} .^ @var{y}
-@item @var{x} .** @var{y}
+@itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
 Element by element power operator.  If both operands are matrices, the
@@ -575,7 +577,7 @@ such as equality.  They are written using
 
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
-work on an element-by-element basis.  For example,
+work on an element-by-element basis.  For example:
 
 @example
 @group
@@ -620,14 +622,17 @@ True if @var{x} is not equal to @var{y}.
 For complex numbers, the following ordering is defined:
 @var{z1} < @var{z2}
 iff
+
 @example
 @group
   abs(@var{z1}) < abs(@var{z2}) 
   || (abs(@var{z1}) == abs(@var{z2}) && arg(@var{z1}) < arg(@var{z2}))
 @end group
 @end example
-This is consistent with the ordering used by @dfn{max}, @dfn{min} and @dfn{sort},
-but is not consistent with @sc{matlab}, which only compares the real parts.
+
+This is consistent with the ordering used by @dfn{max}, @dfn{min} and
+@dfn{sort}, but is not consistent with @sc{matlab}, which only compares the real
+parts.
 
 String comparisons may also be performed with the @code{strcmp}
 function, not with the comparison operators listed above.
@@ -1009,8 +1014,8 @@ anywhere:
 
 This is cleaner and more memory efficient than using a dummy variable.
 The @code{nargout} value for the right-hand side expression is not affected.
-If the assignment is used as an expression, the return value is a comma-separated list
-with the ignored values dropped.
+If the assignment is used as an expression, the return value is a
+comma-separated list with the ignored values dropped.
 
 @opindex +=
 A very common programming pattern is to increment an existing variable

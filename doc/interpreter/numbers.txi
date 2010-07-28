@@ -133,6 +133,7 @@ $$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
 
 @end group
 @end example
+
 @end ifnottex
 
 Elements of a matrix may be arbitrary expressions, provided that the
@@ -340,6 +341,7 @@ s * [](mxn) = [](mxn) * s = [](mxn)
     [](mx0) * [](0xn) =  0(mxn)
 @end group
 @end example
+
 @end ifnottex
 
 By default, dimensions of the empty matrix are printed along with the
@@ -416,7 +418,8 @@ allowed, because a division by zero would occur in determining the number of
 range elements.  However, ranges with zero increment (i.e., all elements equal)
 are useful, especially in indexing, and Octave allows them to be constructed
 using the built-in function @dfn{ones}.  Note that because a range must be a row
-vector, @samp{ones (1, 10)} produces a range, while @samp{ones (10, 1)} does not.
+vector, @samp{ones (1, 10)} produces a range, while @samp{ones (10, 1)} does
+not.
 
 When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it
@@ -432,7 +435,7 @@ precision answers.  A single precision variable is created with the
 
 @DOCSTRING(single)
 
-for example
+for example:
 
 @example
 @group
@@ -618,7 +621,7 @@ Octave also includes the ability to left-shift and right-shift values bitwise.
 
 Bits that are shifted out of either end of the value are lost.  Octave
 also uses arithmetic shifts, where the sign bit of the value is kept
-during a right shift.  For example
+during a right shift.  For example:
 
 @example
 @group
@@ -681,7 +684,7 @@ or @code{false} functions.
 @node Promotion and Demotion of Data Types
 @section Promotion and Demotion of Data Types
 
-Many operators and functions can work with mixed data types.  For example
+Many operators and functions can work with mixed data types.  For example,
 
 @example
 @group
@@ -745,7 +748,7 @@ min (single (1), 0)
 where the returned value is single precision.
 
 In the case of mixed type indexed assignments, the type is not
-changed.  For example
+changed.  For example,
 
 @example
 @group

@@ -23,7 +23,7 @@
 Unless otherwise noted, all of the functions described in this chapter
 will work for real and complex scalar, vector, or matrix arguments.  Functions
 described as @dfn{mapping functions} apply the given operation individually to 
-each element when given a matrix argument.  For example,
+each element when given a matrix argument.  For example:
 
 @example
 @group
@@ -150,6 +150,7 @@ Octave provides the following trigonometric functions where angles are
 specified in degrees.  These functions produce true zeros at the appropriate
 intervals rather than the small round-off error that occurs when using
 radians.  For example:
+
 @example
 @group
 cosd (90)

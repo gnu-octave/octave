@@ -177,14 +177,17 @@ There are several means to create sparse matrix.
 @item Returned from a function
 There are many functions that directly return sparse matrices.  These include
 @dfn{speye}, @dfn{sprand}, @dfn{diag}, etc.
+
 @item Constructed from matrices or vectors
 The function @dfn{sparse} allows a sparse matrix to be constructed from 
 three vectors representing the row, column and data.  Alternatively, the
 function @dfn{spconvert} uses a three column matrix format to allow easy
 importation of data from elsewhere.
+
 @item Created and then filled
 The function @dfn{sparse} or @dfn{spalloc} can be used to create an empty
 matrix that is then filled by the user
+
 @item From a user binary program
 The user can directly create the sparse matrix within an oct-file.
 @end table
@@ -206,7 +209,7 @@ elements of @var{d}.
 Other functions of interest that directly create sparse matrices, are
 @dfn{diag} or its generalization @dfn{spdiags}, that can take the
 definition of the diagonals of the matrix and create the sparse matrix 
-that corresponds to this.  For example
+that corresponds to this.  For example,
 
 @example
 s = diag (sparse(randn(1,n)), -1);
@@ -236,7 +239,7 @@ diagonal defined.
 
 The recommended way for the user to create a sparse matrix, is to create 
 two vectors containing the row and column index of the data and a third
-vector of the same size containing the data to be stored.  For example
+vector of the same size containing the data to be stored.  For example,
 
 @example
 @group
@@ -261,7 +264,7 @@ The first two columns represent the row and column index respectively and
 the third and four columns, the real and imaginary parts of the sparse
 matrix.  The matrix can contain zero elements and the elements can be 
 sorted in any order.  Adding zero elements is a convenient way to define
-the size of the sparse matrix.  For example
+the size of the sparse matrix.  For example:
 
 @example
 @group
@@ -346,7 +349,7 @@ matrix as discussed in @ref{Sparse Linear Algebra}.  Octave probes the
 matrix type when the div (/) or ldiv (\) operator is first used with
 the matrix and then caches the type.  However the @dfn{matrix_type}
 function can be used to determine the type of the sparse matrix prior
-to use of the div or ldiv operators.  For example
+to use of the div or ldiv operators.  For example,
 
 @example
 @group
@@ -357,9 +360,9 @@ ans = Lower
 @end group
 @end example
 
-show that Octave correctly determines the matrix type for lower
+shows that Octave correctly determines the matrix type for lower
 triangular matrices.  @dfn{matrix_type} can also be used to force
-the type of a matrix to be a particular type.  For example
+the type of a matrix to be a particular type.  For example:
 
 @example
 @group
@@ -395,7 +398,7 @@ is then associated with a set of coordinates, then the @dfn{gplot}
 command can be used to graphically display the interconnections
 between nodes.
 
-As a trivial example of the use of @dfn{gplot}, consider the example
+As a trivial example of the use of @dfn{gplot} consider the example,
 
 @example
 @group
@@ -520,7 +523,7 @@ where it no longer makes sense to store it as a sparse matrix, but rather
 as a full matrix.  For this reason operators and functions that have a 
 high probability of returning a full matrix will always return one.  For
 example adding a scalar constant to a sparse matrix will almost always
-make it a full matrix, and so the example
+make it a full matrix, and so the example,
 
 @example
 @group
@@ -610,7 +613,7 @@ consistent with sparse implementations in other products.
 
 A particular problem of sparse matrices comes about due to the fact that
 as the zeros are not stored, the sign-bit of these zeros is equally not
-stored.  In certain cases the sign-bit of zero is important.  For example
+stored.  In certain cases the sign-bit of zero is important.  For example:
 
 @example
 @group
@@ -713,8 +716,8 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 
 In the case of an asymmetric matrix, the appropriate sparsity
 preserving permutation is @dfn{colamd} and the factorization using
-this reordering can be visualized using the command @code{q =
-colamd(A); [l, u, p] = lu(A(:,q)); spy(l+u)}.
+this reordering can be visualized using the command
+@code{q = colamd(A); [l, u, p] = lu(A(:,q)); spy(l+u)}.
 
 Finally, Octave implicitly reorders the matrix when using the div (/)
 and ldiv (\) operators, and so no the user does not need to explicitly
@@ -762,18 +765,18 @@ than that given by @code{spparms ("bandden")} continue, else goto 4.
 continue, else goto 3b.
 
 @enumerate
-@item If the matrix is hermitian, with a positive real diagonal, attempt
+@item If the matrix is Hermitian, with a positive real diagonal, attempt
       Cholesky factorization using @sc{lapack} xPTSV.
 
-@item If the above failed or the matrix is not hermitian with a positive
+@item If the above failed or the matrix is not Hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
       @sc{lapack} xGTSV, and goto 8.
 @end enumerate
 
-@item If the matrix is hermitian with a positive real diagonal, attempt
+@item If the matrix is Hermitian with a positive real diagonal, attempt
       Cholesky factorization using @sc{lapack} xPBTRF.
 
-@item if the above failed or the matrix is not hermitian with a positive
+@item if the above failed or the matrix is not Hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
       @sc{lapack} xGBTRF, and goto 8.
 @end enumerate
@@ -785,16 +788,16 @@ or backward substitution, and goto 8
 or lower triangular matrix with row permutations, perform a sparse forward 
 or backward substitution, and goto 8
 
-@item If the matrix is square, hermitian with a real positive diagonal, attempt
-sparse Cholesky factorization using CHOLMOD.
+@item If the matrix is square, Hermitian with a real positive diagonal, attempt
+sparse Cholesky factorization using @sc{cholmod}.
 
 @item If the sparse Cholesky factorization failed or the matrix is not
-hermitian with a real positive diagonal, and the matrix is square, factorize 
+Hermitian with a real positive diagonal, and the matrix is square, factorize 
 using @sc{umfpack}.
 
 @item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a minimum norm solution using
-CXSPARSE@footnote{The CHOLMOD, UMFPACK and CXSPARSE packages were
+@sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse} packages were
 written by Tim Davis and are available at
 http://www.cise.ufl.edu/research/sparse/}.
 @end enumerate

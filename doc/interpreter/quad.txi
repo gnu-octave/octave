@@ -190,9 +190,11 @@ $$
 $$
 @end tex
 @ifnottex
+
 @example
 f(x, y) = sin(pi*x*y)*sqrt(x*y)
 @end example
+
 @end ifnottex
 for @math{x} and @math{y} between 0 and 1.
 
@@ -221,7 +223,7 @@ I = quadl("g", 0, 1)
 
 The above process can be simplified with the @code{dblquad} and
 @code{triplequad} functions for integrals over two and three
-variables.  For example
+variables.  For example:
 
 @example
 @group

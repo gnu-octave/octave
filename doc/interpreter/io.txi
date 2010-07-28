@@ -92,7 +92,7 @@ work with a single command statement.  The function @code{fflush} may be
 used to force output to be sent to the pager (or any other stream)
 immediately.
 
-You can select the program to run as the pager using the @code{PAGER}
+You can select the program to run as the pager using the @env{PAGER}
 function, and you can turn paging off by using the function
 @code{more}.
 
@@ -449,7 +449,7 @@ described in more detail in the following sections.
 
 When given a matrix value, Octave's formatted output functions cycle
 through the format template until all the values in the matrix have been
-printed.  For example,
+printed.  For example:
 
 @example
 @group
@@ -465,7 +465,7 @@ If more than one value is to be printed in a single call, the output
 functions do not return to the beginning of the format template when
 moving on from one value to the next.  This can lead to confusing output
 if the number of elements in the matrices are not exact multiples of the
-number of conversions in the format template.  For example,
+number of conversions in the format template.  For example:
 
 @example
 @group

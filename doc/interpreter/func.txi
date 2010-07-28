@@ -350,7 +350,7 @@ along with a warning.
 
 Sometimes the number of input arguments is not known when the function
 is defined.  As an example think of a function that returns the smallest
-of all its input arguments.  For example,
+of all its input arguments.  For example:
 
 @example
 @group
@@ -440,9 +440,9 @@ print_arguments (1, "two", 3);
 @node Ignoring Arguments
 @section Ignoring Arguments
 
-In the formal argument list, it is possible to use the dummy placeholder @code{~}
-instead of a name.  This indicates that the corresponding argument value should be ignored
-and not stored to any variable.
+In the formal argument list, it is possible to use the dummy placeholder
+@code{~} instead of a name.  This indicates that the corresponding argument
+value should be ignored and not stored to any variable.
 
 @example
 @group
@@ -568,6 +568,7 @@ value @var{val1}.
 
 As an example, the following function implements a variant of the classic
 ``Hello, World'' program.
+
 @example
 @group
 function hello (who = "World")
@@ -578,6 +579,7 @@ endfunction
 
 @noindent
 When called without an input argument the function prints the following
+
 @example
 @group
 hello ();
@@ -587,6 +589,7 @@ hello ();
 
 @noindent
 and when it's called with an input argument it prints the following
+
 @example
 @group
 hello ("Beautiful World of Free Software");
@@ -597,6 +600,7 @@ hello ("Beautiful World of Free Software");
 Sometimes it is useful to explicitly tell Octave to use the default value
 of an input argument.  This can be done writing a @samp{:} as the value
 of the input argument when calling the function.
+
 @example
 @group
 hello (:);
@@ -759,7 +763,7 @@ be placed in a subdirectory, called "private", of the directory in which
 the functions needing access to this helper function are found.
 
 As a simple example, consider a function @code{func1}, that calls a helper
-function @code{func2} to do much of the work.  For example
+function @code{func2} to do much of the work.  For example:
 
 @example
 @group
@@ -781,7 +785,7 @@ then @code{func2} is only available for use of the functions, like
 The @code{dispatch} function can be used to alias one function name to
 another.  It can be used to alias all calls to a particular function name
 to another function, or the alias can be limited to only a particular
-variable type.  Consider the example
+variable type.  Consider the example,
 
 @example
 @group
@@ -798,8 +802,8 @@ y1 = sin(speye(3));
 @end example
 
 @noindent
-which aliases the user-defined function @code{spsin} to @code{sin}, but only for real sparse
-matrices.  Note that the builtin @code{sin} already correctly treats
+which aliases the user-defined function @code{spsin} to @code{sin}, but only for
+real sparse matrices.  Note that the builtin @code{sin} already correctly treats
 sparse matrices and so this example is only illustrative.
 
 @DOCSTRING(dispatch)
@@ -1076,19 +1080,19 @@ the syntax
 @end example
 
 @noindent
-For example
+For example,
 
 @example
 f = @@sin;
 @end example
 
 @noindent
-Creates a function handle called @code{f} that refers to the
+creates a function handle called @code{f} that refers to the
 function @code{sin}.
 
 Function handles are used to call other functions indirectly, or to pass
 a function as an argument to another function like @code{quad} or
-@code{fsolve}.  For example
+@code{fsolve}.  For example:
 
 @example
 @group
@@ -1101,7 +1105,7 @@ quad (f, 0, pi)
 You may use @code{feval} to call a function using function handle, or
 simply write the name of the function handle followed by an argument
 list.  If there are no arguments, you must use an empty argument list
-@samp{()}.  For example
+@samp{()}.  For example:
 
 @example
 @group

@@ -93,9 +93,9 @@ system doesn't already have one.
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
 linking externally compiled functions (this is the default if
-@code{--enable-shared} is specified).  This option only works on systems
+@option{--enable-shared} is specified).  This option only works on systems
 that actually have these functions.  If you plan on using this feature, you
-should probably also use @code{--enable-shared} to reduce the size of
+should probably also use @option{--enable-shared} to reduce the size of
 your @file{.oct} files.
 
 @item --without-blas
@@ -106,21 +106,21 @@ as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
 an optimized @sc{blas} will generally result in several-times faster matrix
 operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
 libraries that cause problems for some reason.  You can also use
-@code{--with-blas=lib} to specify a particular @sc{blas} library
+@option{--with-blas=lib} to specify a particular @sc{blas} library
  that configure doesn't check for automatically.
 
 @item --without-ccolamd
-Don't use CCOLAMD, disable some sparse matrix functionality.
+Don't use @sc{ccolamd}, disable some sparse matrix functionality.
 
 @item --without-colamd
-Don't use COLAMD, disable some sparse matrix functionality.
+Don't use @sc{colamd}, disable some sparse matrix functionality.
 
 @item --without-curl
 Don't use the cURL, disable the ftp objects, @code{urlread} and @code{urlwrite}
 functions.
 
 @item --without-cxsparse
-Don't use CXSPARSE, disable some sparse matrix functionality.
+Don't use @sc{cxsparse}, disable some sparse matrix functionality.
 
 @item --without-umfpack
 Don't use @sc{umfpack}, disable some sparse matrix functionality.
@@ -129,10 +129,10 @@ Don't use @sc{umfpack}, disable some sparse matrix functionality.
 Use the included @sc{fftpack} library instead of the @sc{fftw} library.
 
 @item --without-glpk
-Don't use the GLPK library for linear programming.
+Don't use the @sc{glpk} library for linear programming.
 
 @item --without-hdf5
-Don't use the HDF5 library for reading and writing HDF5 files.
+Don't use the @sc{hdf5} library for reading and writing @sc{hdf5} files.
 
 @item --without-zlib
 Don't use the zlib library, disable data file compression and support
@@ -146,20 +146,20 @@ as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
 an optimized @sc{blas} will generally result in several-times faster matrix
 operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
 libraries that cause problems for some reason.  You can also use
-@code{--with-blas=lib} to specify a particular @sc{blas} library
+@option{--with-blas=lib} to specify a particular @sc{blas} library
  that configure doesn't check for automatically.
 
 @item --without-framework-carbon
 Don't use framework Carbon headers, libraries and specific source code
 for compilation even if the configure test succeeds (the default value
-is @code{--with-framework-carbon}).  This is a platform specific configure
+is @option{--with-framework-carbon}).  This is a platform specific configure
 option for Mac systems.
 
 @item --without-framework-opengl
 Don't use framework OpenGL headers, libraries and specific source code
 for compilation even if the configure test succeeds.  If this option is
 given then OpenGL headers and libraries in standard system locations are
-tested (the default value is @code{--with-framework-opengl}).  This is a
+tested (the default value is @option{--with-framework-opengl}).  This is a
 platform specific configure option for Mac systems.
 
 @item --help
@@ -434,7 +434,7 @@ On NeXT systems, if you get errors like this:
 
 @noindent
 when compiling @file{Array.cc} and @file{Matrix.cc}, try recompiling
-these files without @code{-g}.
+these files without @option{-g}.
 
 @item
 Some people have reported that calls to shell_cmd and the pager do not
@@ -456,7 +456,7 @@ _tcflow
 
 @noindent
 which are part of @file{libposix.a}.  Unfortunately, linking Octave with
-@code{-posix} results in the following undefined symbols.
+@option{-posix} results in the following undefined symbols.
 
 @example
 @group
@@ -500,10 +500,10 @@ location that is not normally searched by the compiler, you can add the
 directory to the include search path by specifying (for example)
 @code{CPPFLAGS=-I/some/nonstandard/directory} as an argument to
 @code{configure}.  Other variables that can be specified this way are
-@code{CFLAGS}, @code{CXXFLAGS}, @code{FFLAGS}, and @code{LDFLAGS}.
+@env{CFLAGS}, @env{CXXFLAGS}, @env{FFLAGS}, and @env{LDFLAGS}.
 Passing them as options to the configure script also records them in the
-@file{config.status} file.  By default, @code{CPPFLAGS} and
-@code{LDFLAGS} are empty, @code{CFLAGS} and @code{CXXFLAGS} are set to
-@code{"-g -O"} and @code{FFLAGS} is set to @code{"-O"}.
+@file{config.status} file.  By default, @env{CPPFLAGS} and
+@env{LDFLAGS} are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to
+@code{"-g -O"} and @env{FFLAGS} is set to @code{"-O"}.
 
 @end itemize

@@ -50,6 +50,7 @@ dx
 dt
 @end group
 @end example
+
 @end ifnottex
 
 @noindent
@@ -122,6 +123,7 @@ $$
 @example
 0 = f (x-dot, x, t),    x(t=0) = x_0, x-dot(t=0) = x-dot_0
 @end example
+
 @end ifnottex
 
 @noindent
@@ -133,14 +135,14 @@ $\dot{x} = {dx \over dt}$
 @math{x-dot}
 @end ifnottex
 is the derivative of @math{x}.  The equation is solved using Petzold's
-DAE solver @sc{Daspk}.
+DAE solver @sc{daspk}.
 
 @DOCSTRING(daspk)
 
 @DOCSTRING(daspk_options)
 
-Octave also includes @sc{Dassl}, an earlier version of @var{Daspk},
-and @var{dasrt}, which can be used to solve DAEs with constraints
+Octave also includes @sc{dassl}, an earlier version of @sc{daspk},
+and @sc{dasrt}, which can be used to solve DAEs with constraints
 (stopping conditions).
 
 @DOCSTRING(dassl)
@@ -153,4 +155,4 @@ and @var{dasrt}, which can be used to solve DAEs with constraints
 
 See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for
-more information about the implementation of @sc{Dassl}.
+more information about the implementation of @sc{dassl}.

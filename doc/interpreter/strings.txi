@@ -501,7 +501,7 @@ Octave also provides the following character class test functions
 patterned after the functions in the standard C library.  They all
 operate on string arrays and return matrices of zeros and ones.
 Elements that are nonzero indicate that the condition was true for the
-corresponding character in the string array.  For example,
+corresponding character in the string array.  For example:
 
 @example
 @group

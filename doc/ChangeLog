@@ -1,3 +1,19 @@
+2010-07-28  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/arith.txi, interpreter/audio.txi, interpreter/basics.txi,
+	interpreter/container.txi, interpreter/contrib.txi,
+	interpreter/debug.txi, interpreter/diagperm.txi,
+	interpreter/diffeq.txi, interpreter/dynamic.txi, interpreter/emacs.txi,
+	interpreter/errors.txi, interpreter/eval.txi, interpreter/expr.txi,
+	interpreter/func.txi, interpreter/image.txi, interpreter/install.txi,
+	interpreter/interp.txi, interpreter/intro.txi, interpreter/io.txi,
+	interpreter/linalg.txi, interpreter/matrix.txi, interpreter/nonlin.txi,
+	interpreter/numbers.txi, interpreter/optim.txi,
+	interpreter/package.txi, interpreter/plot.txi, interpreter/poly.txi,
+	interpreter/quad.txi, interpreter/sparse.txi, interpreter/stmt.txi,
+	interpreter/strings.txi, interpreter/testfun.txi, interpreter/tips.txi,
+	interpreter/var.txi: Grammarcheck .txi documentation files.
+
 2010-07-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* interpreter/tips.txi: Update some tips.

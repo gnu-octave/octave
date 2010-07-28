@@ -95,7 +95,7 @@ possible that one package depends on another one.  If a package
 depends on another, it will check if that package is installed
 during installation.  If it is not, an error will be reported and
 the package will not be installed.  This behavior can be disabled
-by passing the @code{-nodeps} flag to the @code{pkg install}
+by passing the @option{-nodeps} flag to the @code{pkg install}
 command
 
 @example
@@ -272,7 +272,7 @@ of the installed package for future reference.
 
 @item package/bin
 An optional directory containing files that will be added to the
-Octave @w{@code{EXEC_PATH}} when the package is loaded.  This might contain
+Octave @w{@env{EXEC_PATH}} when the package is loaded.  This might contain
 external scripts, etc., called by functions within the package.
 @end table
 
@@ -442,7 +442,7 @@ function names on the line belong to the last mentioned category.
 @end itemize
 
 @noindent
-The format can be summarized with the following example
+The format can be summarized with the following example.
 
 @example
 @group
@@ -488,7 +488,7 @@ fn = use <a href="someothersite.html"><code>fn</code></a>
 Sometimes functions are only partially compatible, in which
 case you can list the non-compatible cases separately.  To
 refer to another function in the package, use @code{<f>fn</f>}.
-For example,
+For example:
 
 @example
 eig (a, b) = use <f>qz</f>
@@ -504,7 +504,7 @@ $id = expansion
 
 @noindent
 defines the macro id.  You can use @code{$id} anywhere in the
-description and it will be expanded.  For example,
+description and it will be expanded.  For example:
 
 @example
 @group

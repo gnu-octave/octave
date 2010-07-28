@@ -32,6 +32,7 @@ $$
 @example
 F (x) = 0
 @end example
+
 @end ifnottex
 
 @noindent
@@ -57,6 +58,7 @@ $$
  3x^2 - 2xy^2 + 3 cos(x) = -4
 @end group
 @end example
+
 @end ifnottex
 
 @noindent
@@ -103,7 +105,7 @@ info = 1
 A value of @code{info = 1} indicates that the solution has converged.
 
 The function @code{perror} may be used to print English messages
-corresponding to the numeric error codes.  For example,
+corresponding to the numeric error codes.  For example:
 
 @example
 @group

@@ -86,6 +86,7 @@ Here are some ways of improving the execution speed of Octave programs.
 @itemize @bullet
 @item
 Vectorize loops.  For instance, rather than
+
 @example
 @group
 for i = 1:n-1
@@ -100,14 +101,15 @@ write
 a = b(2:n) - b(1:n-1);
 @end example
 
-This is especially important for loops with "cheap" bodies.  Often it suffices to vectorize
-just the innermost loop to get acceptable performance.  A general rule of thumb is that the
-"order" of the vectorized body should be greater or equal to the "order" of the enclosing loop.
+This is especially important for loops with "cheap" bodies.  Often it suffices
+to vectorize just the innermost loop to get acceptable performance.  A general
+rule of thumb is that the "order" of the vectorized body should be greater or
+equal to the "order" of the enclosing loop.
 
 @item
-Use built-in and library functions if possible.  Built-in and compiled functions are very fast.
-Even with a m-file library function, chances are good that it is already optimized, or will be
-optimized more in a future release.
+Use built-in and library functions if possible.  Built-in and compiled functions
+are very fast.  Even with a m-file library function, chances are good that it is
+already optimized, or will be optimized more in a future release.
 
 For instance, even better than
 
@@ -123,7 +125,7 @@ a = diff (b);
 
 
 @item
-Avoid computing costly intermediate results multiple times. Octave currently
+Avoid computing costly intermediate results multiple times.  Octave currently
 does not eliminate common subexpressions.
 Also, certain internal computation results are cached for variables.
 For instance, if a matrix variable is used multiple times as an index,
@@ -168,7 +170,7 @@ case it becomes orphaned, still occupying unnecessarily more memory than needed.
 To provide a remedy working in most real cases,
 Octave checks for orphaned lazy slices at certain situations, when a value
 is stored into a "permanent" location, such as a named variable or cell or
-struct element, and possibly economizes them.  For example
+struct element, and possibly economizes them.  For example:
 
 @example
 @group
@@ -180,9 +182,9 @@ c@{1@} = b; # b is reallocated at this point
 @end example
 
 @item
-Avoid deep recursion.  Function calls to m-file functions carry a relatively significant overhead,
-so rewriting a recursion as a loop often helps.  Also, note that the maximum level of recursion is
-limited.
+Avoid deep recursion.  Function calls to m-file functions carry a relatively
+significant overhead, so rewriting a recursion as a loop often helps.  Also,
+note that the maximum level of recursion is limited.
 
 @item
 Avoid resizing matrices unnecessarily.  When building a single result
@@ -212,11 +214,11 @@ endfor
 @end group
 @end example
 
-Sometimes the number of items can't be computed in advance, and stack-like operations
-are needed.  When elements are being repeatedly inserted at/removed from the end of an
-array, Octave detects it as stack usage and attempts to use a smarter memory management
-strategy pre-allocating the array in bigger chunks.  Likewise works for cell and
-struct arrays.
+Sometimes the number of items can't be computed in advance, and stack-like
+operations are needed.  When elements are being repeatedly inserted at/removed
+from the end of an array, Octave detects it as stack usage and attempts to use a
+smarter memory management strategy pre-allocating the array in bigger chunks. 
+Likewise works for cell and struct arrays.
 
 @example
 @group
@@ -248,9 +250,9 @@ v = cellfun (@@det, a); # faster
 @end example
 
 @item
-Octave includes a number of other functions that can replace common types of loops,
-including @code{bsxfun}, @code{arrayfun}, @code{structfun}, @code{accumarray}.
-These functions can take an arbitrary function as a handle.
+Octave includes a number of other functions that can replace common types of
+loops, including @code{bsxfun}, @code{arrayfun}, @code{structfun},
+@code{accumarray}.  These functions can take an arbitrary function as a handle.
 Be sure to get familiar with them if you want to become an Octave expert.
 
 @item
@@ -535,21 +537,26 @@ functions.  The important aspects of the documentation string are
 @item -*- @nospell{texinfo} -*-
 This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
+
 @item @@deftypefn@{class@} @dots{} @@end deftypefn
 The entire help string should be enclosed within the block defined by
 deftypefn.
+
 @item @@cindex index term
 This generates an index entry, and can be useful when the function is
 included as part of a larger piece of documentation.  It is ignored
 within Octave's help viewer.  Only one index term may appear per line
 but multiple @@cindex lines are valid if the function should be 
 filed under different terms.
+
 @item @@var@{variable@}
 All variables should be marked with this macro.  The markup of variables
 is then changed appropriately for display.
+
 @item @@code@{sample of code@}
 All samples of code should be marked with this macro for the same
 reasons as the @@var macro.
+
 @item @@seealso@{function2@}
 This is a comma separated list of function names that allows cross
 referencing from one function documentation string to another.

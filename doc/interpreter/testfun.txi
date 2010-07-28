@@ -42,7 +42,7 @@ generates an error, then the test is said to fail.
 Since @code{eval()} will stop at the first error it encounters, you must
 divide your tests up into blocks, with anything in a separate
 block evaluated separately.  Blocks are introduced by the keyword
-@code{test} immediately following the @code{%!}.  For example,
+@code{test} immediately following the @code{%!}.  For example:
 
 @example
 @group
@@ -246,18 +246,25 @@ Block type summary:
 @table @code
 @item %!test
 check that entire block is correct
+
 @item %!error
 check for correct error message
+
 @item %!warning
 check for correct warning message
+
 @item %!demo
 demo only executes in interactive mode
+
 @item %!#
 comment: ignore everything within the block
+
 @item %!shared x,y,z
 declares variables for use in multiple tests
+
 @item %!function
 defines a function value for a shared variable
+
 @item %!assert (x, y, tol)
 shorthand for %!test assert (x, y, tol)
 @end table

@@ -136,7 +136,7 @@ x
 @end example
 
 Note that when Octave prints the value of a structure that contains
-other structures, only a few levels are displayed.  For example,
+other structures, only a few levels are displayed.  For example:
 
 @example
 @group
@@ -201,7 +201,7 @@ f (rand (2) + rand (2) * I)
 @end example
 
 Function return lists can include structure elements, and they may be
-indexed like any other variable.  For example,
+indexed like any other variable.  For example:
 
 @example
 [ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4]);
@@ -285,7 +285,7 @@ x(1)
 
 Furthermore, the structure array can return a comma separated list of
 field values (@pxref{Comma Separated Lists}), if indexed by one of its
-own field names.  For example
+own field names.  For example:
 
 @example
 @group
@@ -309,7 +309,8 @@ left-hand side of an assignment:
 @end group
 @end example
 
-Just as for numerical arrays, it is possible to use vectors as indices (@pxref{Index Expressions}):
+Just as for numerical arrays, it is possible to use vectors as indices
+(@pxref{Index Expressions}):
 
 @example
 @group
@@ -367,7 +368,7 @@ As well as indexing a structure with ".", Octave can create a structure
 with the @code{struct} command.  @code{struct} takes pairs of arguments,
 where the first argument in the pair is the fieldname to include in the
 structure and the second is a scalar or cell array, representing the
-values to include in the structure or structure array.  For example
+values to include in the structure or structure array.  For example:
 
 @example
 @group
@@ -382,7 +383,7 @@ struct ("field1", 1, "field2", 2)
 
 If the values passed to @code{struct} are a mix of scalar and cell
 arrays, then the scalar arguments are expanded to create a 
-structure array with a consistent dimension.  For example
+structure array with a consistent dimension.  For example:
 
 @example
 @group
@@ -600,7 +601,7 @@ c = cell(2,2)
 @end group
 @end example
 
-Just like numerical arrays, cell arrays can be multidimensional.  The
+Just like numerical arrays, cell arrays can be multi-dimensional.  The
 @code{cell} function accepts any number of positive integers to describe
 the size of the returned cell array.  It is also possible to set the size
 of the cell array through a vector of positive integers.  In the
@@ -664,7 +665,7 @@ array, while with @samp{()} you access a sub array of a cell
 array.
 
 Using the @samp{(} and @samp{)} operators, indexing works for cell
-arrays like for multidimensional arrays.  As an example, all the rows
+arrays like for multi-dimensional arrays.  As an example, all the rows
 of the first and third column of a cell array can be set to @code{0}
 with the following command:
 
@@ -988,7 +989,7 @@ out = cell (4, 1);
 @subsection Comma Separated Lists Generated from Structure Arrays
 Structure arrays can equally be used to create comma separated
 lists.  This is done by addressing one of the fields of a structure
-array.  For example
+array.  For example:
 
 @example
 @group

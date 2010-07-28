@@ -1,3 +1,7 @@
+2010-07-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/logm.m: Rewrite. Thanks to M. Caliari and R. T. Guy.
+
 2010-07-26  Rik <octave@nomad.inbox5.com>
 	* deprecated/complement.m, deprecated/intwarning.m, general/arrayfun.m,
 	general/circshift.m, general/colon.m, general/common_size.m,

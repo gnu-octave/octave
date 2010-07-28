@@ -82,24 +82,6 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
   return retval;
 }
 
-#define INSTANTIATE_FIND_ARRAY(T) \
-template octave_value_list find_nonzero_elem_idx (const Array<T>&, int, \
-                                                  octave_idx_type, int)
-
-INSTANTIATE_FIND_ARRAY(double);
-INSTANTIATE_FIND_ARRAY(float);
-INSTANTIATE_FIND_ARRAY(Complex);
-INSTANTIATE_FIND_ARRAY(FloatComplex);
-INSTANTIATE_FIND_ARRAY(bool);
-INSTANTIATE_FIND_ARRAY(octave_int8);
-INSTANTIATE_FIND_ARRAY(octave_int16);
-INSTANTIATE_FIND_ARRAY(octave_int32);
-INSTANTIATE_FIND_ARRAY(octave_int64);
-INSTANTIATE_FIND_ARRAY(octave_uint8);
-INSTANTIATE_FIND_ARRAY(octave_uint16);
-INSTANTIATE_FIND_ARRAY(octave_uint32);
-INSTANTIATE_FIND_ARRAY(octave_uint64);
-
 template <typename T>
 octave_value_list
 find_nonzero_elem_idx (const Sparse<T>& v, int nargout, 
@@ -242,15 +224,6 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 
   return retval;
 }
-
-template octave_value_list find_nonzero_elem_idx (const Sparse<double>&, int,
-                                                  octave_idx_type, int);
-
-template octave_value_list find_nonzero_elem_idx (const Sparse<Complex>&, int,
-                                                  octave_idx_type, int);
-
-template octave_value_list find_nonzero_elem_idx (const Sparse<bool>&, int,
-                                                  octave_idx_type, int);
 
 octave_value_list
 find_nonzero_elem_idx (const PermMatrix& v, int nargout, 
@@ -552,64 +525,54 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
       if (! error_state)
         retval = find_nonzero_elem_idx (P, nargout, n_to_find, direction);
     }
-  else
+  else if (arg.is_string ())
     {
-      if (arg.is_single_type ())
+      charNDArray chnda = arg.char_array_value ();
+
+      if (! error_state)
+        retval = find_nonzero_elem_idx (chnda, nargout, n_to_find, direction);
+    }
+  else if (arg.is_single_type ())
+    {
+      if (arg.is_real_type ())
         {
-          if (arg.is_real_type ())
-            {
-              FloatNDArray nda = arg.float_array_value ();
+          FloatNDArray nda = arg.float_array_value ();
 
-              if (! error_state)
-                retval = find_nonzero_elem_idx (nda, nargout, 
-                                                n_to_find, direction);
-            }
-          else if (arg.is_complex_type ())
-            {
-              FloatComplexNDArray cnda = arg.float_complex_array_value ();
-
-              if (! error_state)
-                retval = find_nonzero_elem_idx (cnda, nargout, 
-                                                n_to_find, direction);
-            }
+          if (! error_state)
+            retval = find_nonzero_elem_idx (nda, nargout, n_to_find,
+                                            direction);
         }
-      else
+      else if (arg.is_complex_type ())
         {
-          if (arg.is_real_type ())
-            {
-              NDArray nda = arg.array_value ();
+          FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-              if (! error_state)
-                retval = find_nonzero_elem_idx (nda, nargout, 
-                                                n_to_find, direction);
-            }
-          else if (arg.is_complex_type ())
-            {
-              ComplexNDArray cnda = arg.complex_array_value ();
-
-              if (! error_state)
-                retval = find_nonzero_elem_idx (cnda, nargout, 
-                                                n_to_find, direction);
-            }
-          else if (arg.is_string ())
-            {
-              charNDArray cnda = arg.char_array_value ();
-
-              if (! error_state)
-                retval = find_nonzero_elem_idx (cnda, nargout, 
-                                                n_to_find, direction);
-            }
-          else
-            {
-              gripe_wrong_type_arg ("find", arg);
-            }
+          if (! error_state)
+            retval = find_nonzero_elem_idx (cnda, nargout, n_to_find,
+                                            direction);
         }
     }
+  else if (arg.is_real_type ())
+    {
+      NDArray nda = arg.array_value ();
+
+      if (! error_state)
+        retval = find_nonzero_elem_idx (nda, nargout, n_to_find, direction);
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexNDArray cnda = arg.complex_array_value ();
+
+      if (! error_state)
+        retval = find_nonzero_elem_idx (cnda, nargout, n_to_find, direction);
+    }
+  else
+    gripe_wrong_type_arg ("find", arg);
 
   return retval;
 }
 
 /*
+%!assert(find (char ([0, 97])), 2);
 %!assert(find ([1, 0, 1, 0, 1]), [1, 3, 5]);
 %!assert(find ([1; 0; 3; 0; 1]), [1; 3; 5]);
 %!assert(find ([0, 0, 2; 0, 3, 0; -1, 0, 0]), [3; 5; 7]);

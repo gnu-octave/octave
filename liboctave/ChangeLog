@@ -1,3 +1,9 @@
+2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dim-vector.cc (dim_vector::dim_max (void)): Turn it into a function.
+	(dim_vector::safe_numel): Update usage.
+	* dim-vector.h: Update declaration.
+
 2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleSCHUR.cc (SCHUR::SCHUR (const Matrix&, const Matrix&)): 

@@ -219,7 +219,7 @@ private:
 
 public:
 
-  static const octave_idx_type dim_max;
+  static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ()) { count()++; }
 

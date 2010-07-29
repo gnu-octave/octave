@@ -666,7 +666,7 @@ allowable value for that type, as reported by intmax.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    retval = octave_int<octave_idx_type> (dim_vector::dim_max);
+    retval = octave_int<octave_idx_type> (dim_vector::dim_max ());
   else
     print_usage ();
 

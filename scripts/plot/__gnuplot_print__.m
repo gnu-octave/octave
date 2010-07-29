@@ -29,27 +29,10 @@ function __gnuplot_print__ (varargin)
 
   persistent warn_on_inconsistent_orientation = true
 
-  persistent ghostscript_binary = "";
-  if (isempty (ghostscript_binary))
-    ghostscript_binary = getenv ("GSC");
-    ng = 0;
-    if (isunix ())
-      ## Unix - Includes Mac OSX and Cygwin.
-      gs_binaries = {"gs", "gs.exe"};
-    else
-      ## pc - Includes Win32 and mingw.
-      gs_binaries = {"gs.exe", "gswin32c.exe"};
-    endif
-    while (ng < numel (gs_binaries) && isempty (ghostscript_binary))
-      ng = ng + 1;
-      ghostscript_binary = file_in_path (EXEC_PATH, gs_binaries{ng});
-    endwhile
-  endif
-
   old_fig = get (0, "currentfigure");
   unwind_protect
     opts = __print_parse_opts__ (varargin{:});
-    have_ghostscript = (exist (ghostscript_binary, "file") == 2);
+    have_ghostscript = ! isempty (opts.ghostscript_binary);
 
     doprint = isempty (opts.name);
     if (doprint)
@@ -465,7 +448,7 @@ function __gnuplot_print__ (varargin)
       if (opts.append_to_file)
         ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE";
         command = sprintf ("%s %s -sDEVICE=%s -sOutputFile=%s %s %s -q", ...
-                    ghostscript_binary, ghostscript_options, ghostscript_device,  ...
+                    opts.ghostscript_binary, ghostscript_options, ghostscript_device,  ...
                     temp_name, appended_file_name, opts.name);
         status1 = system (command);
         status2 = system (sprintf ("mv %s %s", temp_name, appended_file_name));
@@ -489,7 +472,7 @@ function __gnuplot_print__ (varargin)
     if (! isempty (ghostscript_output))
       if (is_eps_file && opts.tight_flag)
         ## If gnuplot's output is an eps-file then crop at the bounding box.
-        fix_eps_bbox (name, ghostscript_binary);
+        __fix_eps_bbox__ (name);
       endif
       ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4";
       if (is_eps_file)
@@ -501,8 +484,9 @@ function __gnuplot_print__ (varargin)
       endif
       ghostscript_options = sprintf ("%s -sDEVICE=%s", ghostscript_options,
                                      ghostscript_device);
-      command = sprintf ("\"%s\" %s -sOutputFile=\"%s\" \"%s\" 2>&1", ghostscript_binary,
-                          ghostscript_options, ghostscript_output, opts.name);
+      command = sprintf ("\"%s\" %s -sOutputFile=\"%s\" \"%s\" 2>&1", 
+                         opts.ghostscript_binary,
+                         ghostscript_options, ghostscript_output, opts.name);
       [errcode, output] = system (command);
       unlink (name);
       if (errcode)
@@ -513,7 +497,7 @@ function __gnuplot_print__ (varargin)
       ## If the saved output file is an eps file, use ghostscript to set a tight bbox.
       ## This may result in a smaller or larger bbox geometry.
       if (have_ghostscript)
-        fix_eps_bbox (name, ghostscript_binary);
+        __fix_eps_bbox__ (name);
       endif
     endif
 
@@ -548,66 +532,6 @@ function __gnuplot_print__ (varargin)
       figure (old_fig)
     endif
   end_unwind_protect
-
-endfunction
-
-function bb = fix_eps_bbox (eps_file_name, ghostscript_binary)
-
-  persistent warn_on_no_ghostscript = true
-
-  box_string = "%%BoundingBox:";
-
-  ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
-  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", ghostscript_binary,
-                 ghostscript_options, eps_file_name);
-  [status, output] = system (cmd);
-
-  if (status == 0)
-
-    pattern = strcat (box_string, "[^%]*");
-    pattern = pattern(1:find(double(pattern)>32, 1, "last"));
-    bbox_line = regexp (output, pattern, "match");
-    if (iscell (bbox_line))
-      bbox_line = bbox_line{1};
-    endif
-    ## Remore the EOL characters.
-    bbox_line(double(bbox_line)<32) = "";
-
-    fid = fopen (eps_file_name, "r+");
-    unwind_protect
-      bbox_replaced = false;
-      while (! bbox_replaced)
-        current_line = fgetl (fid);
-        if (strncmpi (current_line, box_string, numel(box_string)))
-          line_length = numel (current_line);
-          num_spaces = line_length - numel (bbox_line);
-          if (numel (current_line) < numel (bbox_line))
-            ## If there new line is longer, continue with the current line.
-            new_line = current_line;
-          else
-            new_line = bbox_line;
-            new_line(end+1:numel(current_line)) = " ";
-          endif
-          ## Back up to the beginning of the line (include EOL characters).
-          if (ispc ())
-            fseek (fid, -line_length-2, "cof");
-          else
-            fseek (fid, -line_length-1, "cof");
-          endif
-          count = fprintf (fid, "%s", new_line);
-          bbox_replaced = true;
-        elseif (! ischar (current_line))
-          bbox_replaced = true;
-          warning ("print.m: no bounding box found in '%s'.", eps_file_name)
-        endif
-      endwhile
-    unwind_protect_cleanup
-      fclose (fid);
-    end_unwind_protect
-  elseif (warn_on_no_ghostscript)
-    warn_on_no_ghostscript = false;
-    warning ("print.m: Ghostscript failed to determine the bounding box.\nError was:\n%s\n", output)
-  endif
 
 endfunction
 

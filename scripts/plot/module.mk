@@ -18,6 +18,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__errcomm__.m \
   plot/private/__errplot__.m \
   plot/private/__ezplot__.m \
+  plot/private/__ghostscript__.m \
   plot/private/__interp_cube__.m \
   plot/private/__line__.m \
   plot/private/__patch__.m \
@@ -25,7 +26,8 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__pltopt__.m \
   plot/private/__quiver__.m \
   plot/private/__scatter__.m \
-  plot/private/__stem__.m
+  plot/private/__stem__.m \
+  plot/private/__tight_eps_bbox__.m
 
 plot_FCN_FILES = \
   plot/__gnuplot_get_var__.m \

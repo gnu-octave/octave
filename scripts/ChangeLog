@@ -1,3 +1,10 @@
+2010-07-29  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m, plot/__print_parse_opts__.m, plot/__fltk_print__.m,
+	plot/__gnuplot_print__.m: Improved printing for the fltk backend.
+	* plot/private/__ghostscript__.m, plot/private/__tight_eps_bbox__.m:
+	New files to support printing.
+
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/expm.m: Special-case scalars and diagonal matrices.

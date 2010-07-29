@@ -93,30 +93,6 @@ tree_if_command::~tree_if_command (void)
   delete trail_comm;
 }
 
-void
-tree_if_command::set_breakpoint (void)
-{
-  if (list)
-    {
-      tree_if_clause *elt = list->front ();
-
-      if (elt)
-        elt->set_breakpoint ();
-    }
-}
-
-void
-tree_if_command::delete_breakpoint (void)
-{
-  if (list)
-    {
-      tree_if_clause *elt = list->front ();
-
-      if (elt)
-        elt->set_breakpoint ();
-    }
-}
-
 tree_command *
 tree_if_command::dup (symbol_table::scope_id scope,
                       symbol_table::context_id context) const
@@ -228,30 +204,6 @@ tree_switch_command::~tree_switch_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
-}
-
-void
-tree_switch_command::set_breakpoint (void)
-{
-  if (list)
-    {
-      tree_switch_case *elt = list->front ();
-
-      if (elt)
-        elt->set_breakpoint ();
-    }
-}
-
-void
-tree_switch_command::delete_breakpoint (void)
-{
-  if (list)
-    {
-      tree_switch_case *elt = list->front ();
-
-      if (elt)
-        elt->set_breakpoint ();
-    }
 }
 
 tree_command *

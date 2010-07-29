@@ -1,3 +1,13 @@
+2010-07-29  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.cc (tree_breakpoint::visit_if_command): Also allow
+	breakpoint to be set on command, same as for switch, while, or
+	do-until statments.
+	* pt-select.h, pt-select.cc (tree_if_command::set_breakpoint,
+	tree_if_command::delete_breakpoint, tree_switch_command::set_breakpoint,
+	tree_switch_command::delete_breakpoint): Delete functions and decls.
+	(bug #30490).
+
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::subsref (..., const std::list<octave_lvalue> *)

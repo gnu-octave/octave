@@ -133,10 +133,6 @@ public:
 
   ~tree_if_command (void);
 
-  void set_breakpoint (void);
-
-  void delete_breakpoint (void);
-
   tree_if_command_list *cmd_list (void) { return list; }
 
   octave_comment_list *leading_comment (void) { return lead_comm; }
@@ -269,10 +265,6 @@ public:
       trail_comm (tc) { }
 
   ~tree_switch_command (void);
-
-  void set_breakpoint (void);
-
-  void delete_breakpoint (void);
 
   tree_expression *switch_value (void) { return expr; }
 

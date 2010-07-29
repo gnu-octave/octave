@@ -76,6 +76,14 @@ function r = expm (a)
     error ("expm: input must be a square matrix");
   endif
 
+  if (isscalar (a))
+    r = exp (a);
+    return
+  elseif (strfind (typeinfo (a), "diagonal matrix"))
+    r = diag (exp (diag (a)));
+    return
+  endif
+
   n = rows (a);
   ## Trace reduction.
   a(a == -Inf) = -realmax;

@@ -1,3 +1,8 @@
+2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/expm.m: Special-case scalars and diagonal matrices.
+	Suggested by M. Caliari.
+
 2010-07-26  Rik <octave@nomad.inbox5.com>
 
 	* linear-algebra/logm.m: Improve documentation string.  Add GPL header.

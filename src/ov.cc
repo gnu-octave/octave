@@ -1202,6 +1202,17 @@ octave_value::subsref (const std::string& type,
     return rep->subsref (type, idx, nargout);
 }
 
+octave_value_list
+octave_value::subsref (const std::string& type,
+                       const std::list<octave_value_list>& idx, int nargout,
+                       const std::list<octave_lvalue> *lvalue_list)
+{
+  if (lvalue_list)
+    return rep->subsref (type, idx, nargout, lvalue_list);
+  else
+    return subsref (type, idx, nargout);
+}
+
 octave_value
 octave_value::next_subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
@@ -1254,6 +1265,13 @@ octave_value_list
 octave_value::do_multi_index_op (int nargout, const octave_value_list& idx)
 {
   return rep->do_multi_index_op (nargout, idx);
+}
+
+octave_value_list
+octave_value::do_multi_index_op (int nargout, const octave_value_list& idx,
+                                 const std::list<octave_lvalue> *lvalue_list)
+{
+  return rep->do_multi_index_op (nargout, idx, lvalue_list);
 }
 
 #if 0

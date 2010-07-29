@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_tree_expr_h 1
 
 #include <string>
+#include <list>
 
 class octave_value;
 class octave_lvalue;
@@ -77,6 +78,9 @@ public:
   virtual octave_value rvalue1 (int nargout = 1);
 
   virtual octave_value_list rvalue (int nargout);
+
+  virtual octave_value_list rvalue (int nargout,
+                                    const std::list<octave_lvalue> *lvalue_list);
 
   virtual octave_lvalue lvalue (void);
 

@@ -125,12 +125,16 @@ tree_parameter_list::validate (in_or_out type)
 
 void
 tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
-                                                    int nargout,
-                                                    const octave_value& val)
+                                                    int nargout, const octave_value& val)
 {
   bool warned = false;
 
   int count = 0;
+
+  octave_value tmp = symbol_table::varval (".ignored.");
+  const Matrix ignored = tmp.is_defined () ? tmp.matrix_value () : Matrix ();
+
+  octave_idx_type k = 0;
 
   for (iterator p = begin (); p != end (); p++)
     {
@@ -145,10 +149,27 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
             {
               warned = true;
 
-              warning_with_id
-                ("Octave:undefined-return-values",
-                 "%s: some elements in list of return values are undefined",
-                 warnfor.c_str ());
+              while (k < ignored.numel ())
+                {
+                  octave_idx_type l = ignored (k);
+                  if (l == count)
+                    {
+                      warned = false;
+                      break;
+                    }
+                  else if (l > count)
+                    break;
+                  else
+                    k++;
+                }
+
+              if (warned)
+                {
+                  warning_with_id
+                    ("Octave:undefined-return-values",
+                     "%s: some elements in list of return values are undefined",
+                     warnfor.c_str ());
+                }
             }
 
           octave_lvalue tmp = elt->lvalue ();

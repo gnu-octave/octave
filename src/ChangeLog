@@ -1,3 +1,31 @@
+2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::subsref (..., const std::list<octave_lvalue> *)
+	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	New methods.
+	* ov.h: Declare them.
+	* ov-base.cc (octave_base_value::subsref (..., const std::list<octave_lvalue> *)
+	octave_base_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	New methods.
+	* ov-base.h: Declare them.
+	* ov-usr-fcn.cc (octave_user_function::subsref (..., const std::list<octave_lvalue> *)
+	octave_user_function::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	New virtual method overrides. Move code here.
+	(octave_user_function::bind_automatic_vars): Add lvalue_list
+	parameter. Bind automatic variable ".ignored.".
+	(Fis_ignored_output): New defun.
+	* ov-usr-fcn.h: Update decls.
+	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):
+	Skip warning if outputs are ignored.
+	* pt-exp.cc (tree_expression::rvalue (..., const
+	std::list<octave_lvalue> *)): New method overload.
+	* pt-exp.h: Declare it.
+	* pt-idx.cc (tree_index_expression::rvalue (..., const
+	std::list<octave_lvalue> *)): New method override. Move code here.
+	* pt-idx.h: Declare it.
+	* pt-assign.cc (tree_multi_assignment::rvalue): Pass in the pointer to
+	lvalue_list.
+
 2010-07-28  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/find.cc (Ffind): Reorder cases to check for

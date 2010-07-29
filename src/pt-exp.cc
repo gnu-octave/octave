@@ -69,6 +69,12 @@ tree_expression::rvalue (int)
   return octave_value_list ();
 }
 
+octave_value_list
+tree_expression::rvalue (int nargout, const std::list<octave_lvalue> *)
+{
+  return rvalue (nargout);
+}
+
 octave_lvalue
 tree_expression::lvalue (void)
 {

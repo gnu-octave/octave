@@ -354,7 +354,7 @@ tree_multi_assignment::rvalue (int)
       if (error_state)
         return retval;
 
-      int n_out = 0;
+      octave_idx_type n_out = 0;
 
       for (std::list<octave_lvalue>::const_iterator p = lvalue_list.begin ();
            p != lvalue_list.end ();
@@ -362,7 +362,7 @@ tree_multi_assignment::rvalue (int)
         n_out += p->numel ();
 
       // The following trick is used to keep rhs_val constant.
-      const octave_value_list rhs_val1 = rhs->rvalue (n_out);
+      const octave_value_list rhs_val1 = rhs->rvalue (n_out, &lvalue_list);
       const octave_value_list rhs_val = (rhs_val1.length () == 1 && rhs_val1(0).is_cs_list ()
                                          ? rhs_val1(0).list_value () : rhs_val1);
 

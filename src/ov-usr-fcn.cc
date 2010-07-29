@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "input.h"
 #include "oct-obj.h"
 #include "ov-usr-fcn.h"
@@ -282,6 +283,14 @@ octave_user_function::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,
                                int nargout)
 {
+  return octave_user_function::subsref (type, idx, nargout, 0);
+}
+
+octave_value_list
+octave_user_function::subsref (const std::string& type,
+                               const std::list<octave_value_list>& idx,
+                               int nargout, const std::list<octave_lvalue>* lvalue_list)
+{
   octave_value_list retval;
 
   switch (type[0])
@@ -290,7 +299,8 @@ octave_user_function::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front (),
+                                    idx.size () == 1 ? lvalue_list : 0);
       }
       break;
 
@@ -319,6 +329,14 @@ octave_user_function::subsref (const std::string& type,
 octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
                                          const octave_value_list& args)
+{
+  return do_multi_index_op (nargout, args, 0);
+}
+
+octave_value_list
+octave_user_function::do_multi_index_op (int nargout,
+                                         const octave_value_list& args,
+                                         const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -392,7 +410,8 @@ octave_user_function::do_multi_index_op (int nargout,
       frame.add_fcn (symbol_table::clear_variables);
     }
 
-  bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args));
+  bind_automatic_vars (arg_names, nargin, nargout, all_va_args (args),
+                       lvalue_list);
 
   bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
@@ -522,7 +541,7 @@ octave_user_function::print_code_function_trailer (void)
 void
 octave_user_function::bind_automatic_vars
   (const string_vector& arg_names, int nargin, int nargout,
-   const octave_value_list& va_args)
+   const octave_value_list& va_args, const std::list<octave_lvalue> *lvalue_list)
 {
   if (! arg_names.empty ())
     symbol_table::varref ("argn") = arg_names;
@@ -535,6 +554,31 @@ octave_user_function::bind_automatic_vars
 
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
+  
+  if (lvalue_list)
+    {
+      octave_idx_type nbh = 0;
+      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
+           p != lvalue_list->end (); p++)
+        nbh += p->is_black_hole ();
+
+      if (nbh > 0)
+        {
+          // Only assign the hidden variable if black holes actually present.
+          Matrix bh (1, nbh);
+          octave_idx_type k = 0, l = 0;
+          for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
+               p != lvalue_list->end (); p++)
+            {
+              if (p->is_black_hole ())
+                bh(l++) = k+1;
+              k += p->numel ();
+            }
+
+          symbol_table::varref (".ignored.") = bh;
+          symbol_table::mark_hidden (".ignored.");
+        }
+    }
 }
 
 DEFUN (nargin, args, ,
@@ -683,3 +727,69 @@ subsasgn method of a user-defined class.\n\
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
 }
+
+static bool val_in_table (const Matrix& table, double val)
+{
+  if (table.is_empty ())
+    return false;
+
+  octave_idx_type i = table.lookup (val, ASCENDING);
+  return (i > 0 && table(i-1) == val);
+}
+
+DEFUN (is_ignored_output, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_ignored_output (@var{k})\n\
+Within a function, given an index @var{k} within the range @code{1:nargout},\n\
+return a logical value indicating whether the argument will be ignored on output\n\
+using the tilde (~) special output argument. If @var{k} is outside the range,\n\
+the function yields false. @var{k} can also be an array, in which case the function\n\
+works element-wise and a logical array is returned.\n\
+\n\
+At the top level, @code{is_ignored_output} returns an error.\n\
+@seealso{nargout, nargin, varargin, varargout}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (! symbol_table::at_top_level ())
+        {
+          Matrix ignored;
+          octave_value tmp = symbol_table::varval (".ignored.");
+          if (tmp.is_defined ())
+            ignored = tmp.matrix_value ();
+
+          if (args(0).is_scalar_type ())
+            {
+              double k = args(0).double_value ();
+              if (! error_state)
+                retval = val_in_table (ignored, k);
+            }
+          else if (args(0).is_numeric_type ())
+            {
+              const NDArray ka = args(0).array_value ();
+              if (! error_state)
+                {
+                  boolNDArray r (ka.dims ());
+                  for (octave_idx_type i = 0; i < ka.numel (); i++)
+                    r(i) = val_in_table (ignored, ka(i));
+
+                  retval = r;
+                }
+            }
+          else
+            gripe_wrong_type_arg ("is_ignored_output", args(0));
+        }
+      else
+        error ("is_ignored_output: invalid call at top level");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+

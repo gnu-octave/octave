@@ -86,6 +86,8 @@ public:
 
   octave_value_list rvalue (int nargout);
 
+  octave_value_list rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
+
   octave_lvalue lvalue (void);
 
   tree_index_expression *dup (symbol_table::scope_id scope,

@@ -275,6 +275,12 @@ tree_index_expression::make_arg_struct (void) const
 octave_value_list
 tree_index_expression::rvalue (int nargout)
 {
+  return tree_index_expression::rvalue (nargout, 0);
+}
+
+octave_value_list
+tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list)
+{
   octave_value_list retval;
 
   if (error_state)
@@ -398,7 +404,8 @@ tree_index_expression::rvalue (int nargout)
         }
 
       if (! error_state)
-        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout);
+        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
+                              lvalue_list);
     }
 
   return retval;

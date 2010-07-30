@@ -684,7 +684,11 @@ tree_evaluator::visit_statement (tree_statement& stmt)
     {
       if (in_fcn_or_script_body)
         {
-          octave_call_stack::set_statement (&stmt);
+          // Skip commands issued at a debug> prompt to avoid disturbing
+          // the state of the program we are debugging.
+
+          if (! Vdebugging)
+            octave_call_stack::set_statement (&stmt);
 
           if (Vecho_executing_commands & ECHO_FUNCTIONS)
             stmt.echo_code ();

@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <deque>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <set>
 #include <string>
@@ -152,7 +153,7 @@ get_file_line (const std::string& fname, size_t line)
       size_t bol = offsets[line];
       size_t eol = offsets[line+1];
 
-      while (eol > 0 && (buf[eol-1] == '\n' || buf[eol-1] == '\r'))
+      while (eol > 0 && eol > bol && (buf[eol-1] == '\n' || buf[eol-1] == '\r'))
         eol--;
 
       retval = buf.substr (bol, eol - bol);
@@ -594,7 +595,7 @@ mode this should be left out.\n\
       for (bp_table::fname_line_map_iterator it = bp_list.begin ();
            it != bp_list.end (); it++)
         {         
-          octave_stdout << "Breakpoint in " << it->first << " at line(s) ";
+          octave_stdout << "breakpoint in " << it->first << " at line(s) ";
 
           bp_table::intmap m = it->second;
 
@@ -658,28 +659,13 @@ Show where we are in the code\n\
           name = dbg_fcn->name ();
         }
 
-      octave_stdout << name << ":";
+      octave_stdout << "stopped in " << name << " at ";
 
-      unwind_protect frame;
-
-      frame.add_fcn (octave_call_stack::restore_frame, 
-                     octave_call_stack::current_frame ());
-
-      // Skip the frame assigned to the dbwhere function.
-      octave_call_stack::goto_frame_relative (0);
-
-      int l = octave_call_stack::current_line ();
+      int l = octave_call_stack::caller_user_code_line ();
 
       if (l > 0)
         {
-          octave_stdout << " line " << l;
-
-          int c = octave_call_stack::current_column ();
-
-          if (c > 0)
-            octave_stdout << ", column " << c;
-
-          octave_stdout << std::endl;
+          octave_stdout << " line " << l << std::endl;
 
           if (have_file)
             {
@@ -690,7 +676,7 @@ Show where we are in the code\n\
             }
         }
       else
-        octave_stdout << " (unknown line)\n";
+        octave_stdout << " <unknown line>" << std::endl;
     }
   else
     error ("dbwhere: must be inside of a user function to use dbwhere\n");
@@ -894,24 +880,41 @@ Print or return current stack information.  With optional argument\n\
 
           if (nframes_to_display > 0)
             {
-              octave_stdout << "Stopped in:\n\n";
+              octave_stdout << "stopped in:\n\n";
 
               Cell names = stk.contents ("name");
+              Cell files = stk.contents ("file");
               Cell lines = stk.contents ("line");
-              Cell columns = stk.contents ("column");
+
+              bool show_top_level = true;
+
+              size_t max_name_len = 0;
 
               for (octave_idx_type i = 0; i < nframes_to_display; i++)
                 {
-                  octave_value name = names(i);
-                  octave_value line = lines(i);
-                  octave_value column = columns(i);
+                  std::string name = names(i).string_value ();
 
-                  octave_stdout << (i == curr_frame ? "--> " : "    ")
-                                << name.string_value ()
-                                << " at line " << line.int_value ()
-                                << " column " << column.int_value ()
+                  max_name_len = std::max (name.length (), max_name_len);
+                }
+
+              for (octave_idx_type i = 0; i < nframes_to_display; i++)
+                {
+                  std::string name = names(i).string_value ();
+                  std::string file = files(i).string_value ();
+                  int line = lines(i).int_value ();
+
+                  if (show_top_level && i == curr_frame)
+                    show_top_level = false;
+
+                  octave_stdout << (i == curr_frame ? "  --> " : "      ")
+                                << std::setw (max_name_len) << name
+                                << " at line " << line
+                                << " [" << file << "]"
                                 << std::endl;
                 }
+
+              if (show_top_level)
+                octave_stdout << "  --> top level" << std::endl;
             }
         }
       else

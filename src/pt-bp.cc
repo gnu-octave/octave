@@ -274,8 +274,10 @@ tree_breakpoint::visit_multi_assignment (tree_multi_assignment&)
 }
 
 void
-tree_breakpoint::visit_no_op_command (tree_no_op_command&)
+tree_breakpoint::visit_no_op_command (tree_no_op_command& cmd)
 {
+  if (cmd.is_end_of_fcn_or_script () && cmd.line () >= line)
+    take_action (cmd);
 }
 
 void
@@ -336,19 +338,17 @@ tree_breakpoint::visit_simple_assignment (tree_simple_assignment&)
 void
 tree_breakpoint::visit_statement (tree_statement& stmt)
 {
-  if (stmt.line () >= line)
-    {
-      take_action (stmt);
-    }
-  else if (stmt.is_command ())
+  if (stmt.is_command ())
     {
       tree_command *cmd = stmt.command ();
 
       cmd->accept (*this);
     }
-
-  // There is no need to do anything for expressions because they
-  // can't contain additional lists of statements.
+  else
+    {
+      if (stmt.line () >= line)
+        take_action (stmt);
+    }
 }
 
 void
@@ -457,16 +457,16 @@ tree_breakpoint::take_action (tree& tr)
     }
   else if (act == clear)
     {
-      tr.delete_breakpoint ();
-      found = true;
+      if (tr.is_breakpoint ())
+        {
+          tr.delete_breakpoint ();
+          found = true;
+        }
     }
   else if (act == list)
     {
       if (tr.is_breakpoint ())
-        {
-          bp_list.append (octave_value (tr.line ()));
-          line = tr.line () + 1;
-        }
+        bp_list.append (octave_value (tr.line ()));
     }
   else
     panic_impossible ();
@@ -485,16 +485,16 @@ tree_breakpoint::take_action (tree_statement& stmt)
     }
   else if (act == clear)
     {
-      stmt.delete_breakpoint ();
-      found = true;
+      if (stmt.is_breakpoint ())
+        {
+          stmt.delete_breakpoint ();
+          found = true;
+        }
     }
   else if (act == list)
     {
       if (stmt.is_breakpoint ())
-        {
-          bp_list.append (octave_value (lineno));
-          line = lineno + 1;
-        }
+        bp_list.append (octave_value (lineno));
     }
   else
     panic_impossible ();

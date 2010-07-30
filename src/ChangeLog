@@ -1,3 +1,13 @@
+2010-07-30  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.cc (tree_breakpoint::take_action): Only call
+	delete_breakpoint if is_breakpoint returns true.
+	(tree_breakpoint::visit_statement): If statement is command,
+	accept it, otherwise, maybe take action on the statement.
+	(tree_breakpoint::visit_no_op_command): Handle breakpoints at
+	end of function.
+	Addresses more problems found with bug #30490.
+
 2010-07-30  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: add .DOCSTRINGS to the DISTCLEANFILES list

@@ -1,3 +1,7 @@
+2010-07-29  Ben Abbott <bpabbott@mac.com>
+
+	* gl-render.cc: Transpose markers '^' and 'v'.
+
 2010-07-29  John W. Eaton  <jwe@octave.org>
 
 	* pt-bp.cc (tree_breakpoint::visit_if_command): Also allow

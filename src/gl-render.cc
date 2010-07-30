@@ -3125,14 +3125,14 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2d (-sz/2, 0);
       glEnd();
       break;
-    case '^':
+    case 'v':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
       glVertex2f (0, sz/2);
       glVertex2f (sz/2, -sz/2);
       glVertex2f (-sz/2, -sz/2);
       glEnd ();
       break;
-    case 'v':
+    case '^':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
       glVertex2f (0, -sz/2);
       glVertex2f (-sz/2, sz/2);

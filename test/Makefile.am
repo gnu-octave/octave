@@ -81,8 +81,12 @@ EXTRA_DIST = \
 
 CLEANFILES = \
   test_sparse.m \
-  test_bc_overloads.m
+  test_bc_overloads.m \
+  tbcover.m
 
 DISTCLEANFILES = \
   fntests.log
-
+        
+clean-local:
+	-rm -rf @double @logical @int8 @uint64 @int64 @cell @single @int32 \
+	@uint8 @uint16 @uint32 @struct @int16 @function_handle @char

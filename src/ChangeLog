@@ -1,3 +1,7 @@
+2010-07-30  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: add .DOCSTRINGS to the DISTCLEANFILES list
+
 2010-07-30  John W. Eaton  <jwe@octave.org>
 
 	* pt-eval.cc (tree_evaluator::visit_if_command,
@@ -1423,7 +1427,7 @@
 	* load-path.cc (in_path_list): New helper function.
 	(add_to_fcn_map): Use it here.
 
-2010-02-18  Søren Hauberg  <hauberg@gmail.com>
+2010-02-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (__magick_finfo__):
 	Handle multiple frames in a single image file.
@@ -7443,12 +7447,12 @@
 
 	* DLD-FUNCTIONS/eigs.cc: eigs.cc: skip tests if ARPACK is missing.
 
-2009-01-25  Søren Hauberg  <hauberg@gmail.com>
+2009-01-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help.cc (do_get_help_text, raw_help_from_symbol_table): new output to
 	flag the a function is found but not documented.
 
-2009-01-25  Søren Hauberg  <hauberg@gmail.com>
+2009-01-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* help.cc (raw_help_from_file): No longer search for files called
 	'Contents.m', as this is moved to 'script/help.m'.
@@ -7499,7 +7503,7 @@
 	* do_which (const std::string&):
 	Call do_which (const std::string&, std::string&) to do the work.
 
-2009-01-22  Søren Hauberg  <hauberg@gmail.com>
+2009-01-22  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* defun-int.h (print_usage): No longer mark as deprecated.
 	* defun.cc (print_usage): Simply call feval to execute print_usage.m.
@@ -7649,12 +7653,12 @@
 	* ov-struct.cc: Ditto.
 	* pt-decl.h: Ditto.
 
-2009-01-15  Søren Hauberg  <hauberg@gmail.com>
+2009-01-15  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image):
 	Initialize bitdepth.
 
-2009-01-14  Søren Hauberg  <hauberg@gmail.com>
+2009-01-14  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/betainc.cc, DLD-FUNCTIONS/chol.cc,
 	DLD-FUNCTIONS/daspk.cc, DLD-FUNCTIONS/dasrt.cc,
@@ -8626,7 +8630,7 @@
 	* symtab.cc (symbol_table::do_find): Don't set evaluated_args and
 	args_evaluated here, prior to call to symbol_table::fcn_info::find.
 
-2008-09-24  Søren Hauberg  <hauberg@gmail.com>
+2008-09-24  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (magick_to_octave_value): New
 	template function with specializations for various
@@ -9070,7 +9074,7 @@
 	Fix typo in warning identifier.
 	(make_unimplemented_options): Use CamelCase names here.
 
-2008-08-06  Søren Hauberg  <hauberg@gmail.com>
+2008-08-06  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* error.cc (Ferror): Update format of error messages in exmple.
 	* parse.y: (Feval): Likewise.
@@ -11662,7 +11666,7 @@
 	* DLD-FUNCTIONS/__convn__.cc (convn): Use traits class and
 	typedefs to allow all types to be deduced from argument types.
 
-2008-03-27  Søren Hauberg  <hauberg@gmail.com>
+2008-03-27  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc (Fconvn): Allow convolving real data with
 	complex data.
@@ -11712,7 +11716,7 @@
 	DLD-FUNCTIONS/qr.cc, DLD-FUNCTIONS/symrcm.cc, file-io.cc):
 	Texinfo fixes.
 
-2008-03-26  Søren Hauberg  <hauberg@gmail.com>
+2008-03-26  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc (Fconvn):
 	Call complex_array_value to extract N-d array.
@@ -11722,7 +11726,7 @@
 	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):
 	Also display percentage of elements that are nonzero.
 
-2008-03-25  Søren Hauberg  <hauberg@gmail.com>
+2008-03-25  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc: New file.
 	* Makefile.in: Add __convn__.cc
@@ -14002,7 +14006,7 @@
 
 	* DLD-FUNCTIONS/__qp__.cc (qp): Fix check for Wact(j).
 
-2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+2007-10-15  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* error.cc (Ferror): Make text fit on pages when using smallbook.
 	* load-save.cc (Fsave_header_format_string): Ditto.
@@ -14730,7 +14734,7 @@
 	(octave_stream_list::do_insert, octave_steam_list::insert):
 	Remove const qualifier of argument.
 
-2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+2007-06-18  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__lin_interpn__.cc: Replace octave_NaN with octave_NA.
 
@@ -14945,7 +14949,7 @@
 	arguments.
 	(Fdbclar): ditto. Eliminate extraneous debugging messages.
 
-2007-05-21  Søren Hauberg  <hauberg@gmail.com>
+2007-05-21  Sï¿½ren Hauberg  <hauberg@gmail.com>
 
 	* load-path.cc (Fpath, Frehash): Replace "LOADPATH" with "load
 	path" in doc strings.
@@ -14966,7 +14970,7 @@
 	(Octave_map::empty): Delete.
 	Change all uses of empty to check nfields () == 0 instead.
 
-2007-05-21  Søren Hauberg  <soren@hauberg.org>
+2007-05-21  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* help.cc (Fautoload): Doc fix.
 	* variables.cc (Fiscommand): Doc fix.
@@ -14975,7 +14979,7 @@
 
 	* ov-fcn-inline.cc (Fvectorize): Doc fix.
 
-2007-05-16  Søren Hauberg  <soren@hauberg.org>
+2007-05-16  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* ov.cc (Fsubsref, Fsubsasgn): Doc fix.
 
@@ -15043,14 +15047,14 @@
 
 	* DLD-FUNCTIONS/fft.cc (do_fft): Handle empty matrices.  New tests.
 
-2007-05-14  Søren Hauberg  <soren@hauberg.org>
+2007-05-14  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* toplev.cc (Fatexit): Simplify example in doc string.
 	* help.cc (Flookfor): Doc fix.
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun):
 	Reformat to avoid long lines in doc string example.
 
-2007-05-13  Søren Hauberg  <soren@hauberg.org>
+2007-05-13  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* toplev.cc (Fquit): Doc fix.
 	* help.cc (Fhelp): Doc fix.
@@ -15131,7 +15135,7 @@
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
 	Only deal with varargout if ret_list->takes_varargs () is true.
 
-2007-04-26  Søren Hauberg  <soren@hauberg.org>
+2007-04-26  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc: Doc fix.
 
@@ -15160,7 +15164,7 @@
 	(color_property::validate): Use rgba.
 	(color_property::c2rgba): New function.
 
-2007-04-23  Søren Hauberg  <soren@hauberg.org>
+2007-04-23  Sï¿½ren Hauberg  <soren@hauberg.org>
 
 	* data.cc (Fsize_equal): Allow more than two arguments.
 
@@ -16563,7 +16567,7 @@
 	New functions.
 	* ov-base-int.h: Provide decls.
 
-2006-09-15  Søren Hauberg  <soren@hauberg.org>.
+2006-09-15  Sï¿½ren Hauberg  <soren@hauberg.org>.
 
 	* data.cc (Fsize): If nargout > ndims, fill with 1.
 
@@ -18669,7 +18673,7 @@
 	* help.cc (help_from_info): Simplify.
 	(try_info): Use feval to call doc instead of executing info program.
 	(additional_help_message): Point users to doc instead of help -i.
-	From Søren Hauberg <soren@hauberg.org>.
+	From Sï¿½ren Hauberg <soren@hauberg.org>.
 
 	* toplev.cc (Fsystem): Return output if nargout > 1, not 0.
 
@@ -19516,7 +19520,7 @@
 
 2005-07-18  John W. Eaton  <jwe@octave.org>
 
-	* strfns.cc (Fstrcmp): New function from Søren Hauberg
+	* strfns.cc (Fstrcmp): New function from Sï¿½ren Hauberg
 	<soren@hauberg.org> and Tom Holroyd <tomh@kurage.nimh.nih.gov>.
 	Adapt to Octave conventions.
 

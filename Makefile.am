@@ -95,7 +95,7 @@ INFO_FILES = \
 
 CLEANFILES = $(BUILT_SHELL_FILES)
 
-DISTCLEANFILES = $(INFO_FILES) 
+DISTCLEANFILES = $(INFO_FILES) .gdbinit 
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

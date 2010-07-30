@@ -1,3 +1,7 @@
+2010-07-30  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: add .gdbinit to the DISTCLEANFILES list
+
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Include list of new functions.

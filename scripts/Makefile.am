@@ -408,6 +408,7 @@ EXTRA_DIST += \
   mk-pkg-add
 
 DISTCLEANFILES = \
+  .DOCSTRINGS \
   DOCSTRINGS \
   $(PKG_ADD_FILES) \
   $(DIRSTAMP_FILES) \

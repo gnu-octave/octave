@@ -542,6 +542,9 @@ tree_evaluator::visit_if_clause (tree_if_clause&)
 void
 tree_evaluator::visit_if_command (tree_if_command& cmd)
 {
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint ());
+
   tree_if_command_list *lst = cmd.cmd_list ();
 
   if (lst)
@@ -808,6 +811,9 @@ tree_evaluator::visit_switch_case_list (tree_switch_case_list&)
 void
 tree_evaluator::visit_switch_command (tree_switch_command& cmd)
 {
+  if (debug_mode)
+    do_breakpoint (cmd.is_breakpoint ());
+
   tree_expression *expr = cmd.switch_value ();
 
   if (expr)

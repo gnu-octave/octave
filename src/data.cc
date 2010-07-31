@@ -147,7 +147,7 @@ nonzero.\n\
 \n\
 For a matrix argument, return a row vector of ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
-corresponding column of the matrix are nonzero.  For example,\n\
+corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -157,7 +157,7 @@ any (eye (2, 4))\n\
 @end example\n\
 \n\
 If the optional argument @var{dim} is supplied, work along dimension\n\
-@var{dim}.  For example,\n\
+@var{dim}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -337,7 +337,7 @@ do_hypot (const octave_value& x, const octave_value& y)
 
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} hypot (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} hypot (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})\n\
 Compute the element-by-element square root of the sum of the squares of\n\
 @var{x} and @var{y}.  This is equivalent to\n\
@@ -345,6 +345,7 @@ Compute the element-by-element square root of the sum of the squares of\n\
 avoids overflows for large values of @var{x} or @var{y}.\n\
 @code{hypot} can also be called with more than 2 arguments; in this case,\n\
 the arguments are accumulated from left to right:\n\
+\n\
 @example\n\
 @group\n\
   hypot (hypot (@var{x}, @var{y}), @var{z})\n\
@@ -399,7 +400,7 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 
 DEFUN (log2, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} log2 (@var{x})\n\
+@deftypefn  {Mapping Function} {} log2 (@var{x})\n\
 @deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
 Compute the base-2 logarithm of each element of @var{x}.\n\
 \n\
@@ -499,7 +500,7 @@ $x = 0$, $f = e = 0$.\n\
 
 DEFUN (rem, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} rem (@var{x}, @var{y})\n\
+@deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
 @deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
 Return the remainder of the division @code{@var{x} / @var{y}}, computed \n\
 using the expression\n\
@@ -1223,7 +1224,7 @@ Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
 second argument is optional.  If it is positive, the vector is placed on\n\
 the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
 @var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n\
-vector is placed on the main diagonal.  For example,\n\
+vector is placed on the main diagonal.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1715,6 +1716,7 @@ second dimension the following way:\n\
 @var{dim} can be larger than the dimensions of the N-d array objects\n\
 and the result will thus have @var{dim} dimensions as the\n\
 following example shows:\n\
+\n\
 @example\n\
 @group\n\
 cat (4, ones(2, 2), zeros (2, 2))\n\
@@ -1937,6 +1939,7 @@ The inverse of the @code{permute} function.  The expression\n\
 @example\n\
 ipermute (permute (a, perm), perm)\n\
 @end example\n\
+\n\
 returns the original array @var{a}.\n\
 @seealso{permute}\n\
 @end deftypefn")
@@ -1968,6 +1971,7 @@ DEFUN (ndims, args, ,
 Return the number of dimensions of @var{a}.\n\
 For any array, the result will always be larger than or equal to 2.\n\
 Trailing singleton dimensions are not counted.\n\
+\n\
 @example\n\
 @group\n\
   ndims (ones (4, 1, 2, 1)\n\
@@ -1993,9 +1997,11 @@ DEFUN (numel, args, ,
 Return the number of elements in the object @var{a}.\n\
 Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
 return the number of elements that would result from the indexing\n\
+\n\
 @example\n\
   @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
+\n\
 This method is also called when an object appears as lvalue with cs-list\n\
 indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\
@@ -2027,7 +2033,7 @@ Return the number rows and columns of @var{a}.\n\
 With one input argument and one output argument, the result is returned\n\
 in a row vector.  If there are multiple output arguments, the number of\n\
 rows is assigned to the first, and the number of columns to the second,\n\
-etc.  For example,\n\
+etc.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2041,7 +2047,7 @@ size ([1, 2; 3, 4; 5, 6])\n\
 @end example\n\
 \n\
 If given a second argument, @code{size} will return the size of the\n\
-corresponding dimension.  For example\n\
+corresponding dimension.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -2227,7 +2233,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 If the optional argument 'native' is given, then the sum is performed\n\
 in the same type as the original argument, rather than in the default\n\
-double type.  For example\n\
+double type.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2237,13 +2243,14 @@ sum ([true, true], 'native')\n\
   @result{} true\n\
 @end group\n\
 @end example\n\
+\n\
   \n\
 On the contrary, if 'double' is given, the sum is performed in double precision\n\
 even for single precision inputs.\n\
 \n\
 For double precision inputs, 'extra' indicates that a more accurate algorithm\n\
-than straightforward summation is to be used.  For single precision inputs, 'extra' is\n\
-the same as 'double'.  Otherwise, 'extra' has no effect.\n\
+than straightforward summation is to be used.  For single precision inputs,\n\
+'extra' is the same as 'double'.  Otherwise, 'extra' has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
@@ -2440,9 +2447,11 @@ Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
 This function is conceptually equivalent to computing\n\
+\n\
 @example\n\
 sum (x .* conj (x), dim)\n\
 @end example\n\
+\n\
 but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 @seealso{sum}\n\
 @end deftypefn")
@@ -2884,8 +2893,8 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
-Return nonzero if @var{x} is a numeric object, i.e., an integer, real or complex array.\n\
-Logical and character arrays are not considered to be numeric.\n\
+Return nonzero if @var{x} is a numeric object, i.e., an integer, real or complex\n\
+array.  Logical and character arrays are not considered to be numeric.\n\
 @seealso{ischar, islogical, isinteger}\n\
 @end deftypefn")
 {
@@ -3385,7 +3394,7 @@ val_matrix = val * ones (n, m)\n\
 @end example\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
-and defaults to double.  For example\n\
+and defaults to double.  For example:\n\
 \n\
 @example\n\
 val = ones (n,m, \"uint8\")\n\
@@ -3428,7 +3437,7 @@ integer arguments, or a vector of integer values, return an array with\n\
 given dimensions.\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
-and defaults to double.  For example\n\
+and defaults to double.  For example:\n\
 \n\
 @example\n\
 val = zeros (n,m, \"uint8\")\n\
@@ -3471,6 +3480,7 @@ to the IEEE representation for positive infinity.\n\
 Infinity is produced when results are too large to be represented using the\n\
 the IEEE floating point format for numbers.  Two common examples which\n\
 produce infinity are division by zero and overflow.\n\
+\n\
 @example\n\
 @group\n\
 [1/0 e^800]\n\
@@ -4046,7 +4056,7 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} eye (@var{x})\n\
+@deftypefn  {Built-in Function} {} eye (@var{x})\n\
 @deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})\n\
 Return an identity matrix.  If invoked with a single scalar argument,\n\
@@ -4054,7 +4064,7 @@ Return an identity matrix.  If invoked with a single scalar argument,\n\
 supply two scalar arguments, @code{eye} takes them to be the number of\n\
 rows and columns.  If given a vector with two elements, @code{eye} uses\n\
 the values of the elements as the number of rows and columns,\n\
-respectively.  For example,\n\
+respectively.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -4289,7 +4299,7 @@ fewer than two values are requested.\n\
 
 DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} resize (@var{x}, @var{m})\n\
+@deftypefn  {Built-in Function} {} resize (@var{x}, @var{m})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
 Resize @var{x} cutting off elements as necessary.\n\
@@ -4376,13 +4386,13 @@ Resizing an object to fewer dimensions is not possible.\n\
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
+@deftypefn  {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
 @deftypefnx {Built-in Function} {} reshape (@var{a}, @var{size})\n\
 Return a matrix with the given dimensions whose elements are taken\n\
 from the matrix @var{a}.  The elements of the matrix are accessed in\n\
 column-major order (like Fortran arrays are stored).\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -4562,7 +4572,8 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
- returns a full storage matrix from a sparse, diagonal, permutation matrix or a range.\n\
+ returns a full storage matrix from a sparse, diagonal, permutation matrix or a\n\
+range.\n\
 @seealso{sparse}\n\
 @end deftypefn")
 {
@@ -4898,7 +4909,7 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
 
 DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} plus (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x + y}.\n\
 If more arguments are given, the summation is applied\n\
@@ -4926,7 +4937,7 @@ This function is equivalent to @code{x - y}.\n\
 
 DEFUN (mtimes, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x * y}.\n\
 If more arguments are given, the multiplication is applied\n\
@@ -5026,7 +5037,7 @@ This function is equivalent to @code{x != y}.\n\
 
 DEFUN (times, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} times (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x .* y}.\n\
 If more arguments are given, the multiplication is applied\n\
@@ -5072,7 +5083,7 @@ This function is equivalent to @code{x .\\ y}.\n\
 
 DEFUN (and, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} and (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} and (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x & y}.\n\
 If more arguments are given, the logical and is applied\n\
@@ -5091,7 +5102,7 @@ At least one argument is needed.\n\
 
 DEFUN (or, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} or (@var{x}, @var{y})\n\
+@deftypefn  {Built-in Function} {} or (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
 This function is equivalent to @code{x | y}.\n\
 If more arguments are given, the logical or is applied\n\
@@ -5112,7 +5123,7 @@ static double tic_toc_timestamp = -1.0;
 
 DEFUN (tic, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} tic ()\n\
+@deftypefn  {Built-in Function} {} tic ()\n\
 @deftypefnx {Built-in Function} {} toc ()\n\
 Set or check a wall-clock timer.  Calling @code{tic} without an\n\
 output argument sets the timer.  Subsequent calls to @code{toc}\n\
@@ -5148,7 +5159,7 @@ If you are more interested in the CPU time that your process used, you\n\
 should use the @code{cputime} function instead.  The @code{tic} and\n\
 @code{toc} functions report the actual wall clock time that elapsed\n\
 between the calls.  This may include time spent processing other jobs or\n\
-doing nothing at all.  For example,\n\
+doing nothing at all.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -5286,14 +5297,14 @@ CPU time used is nonzero.\n\
 
 DEFUN (sort, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+@deftypefn  {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements arranged in increasing\n\
 order.  For matrices, @code{sort} orders the elements in each column.\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -5306,7 +5317,7 @@ sort ([1, 2; 2, 3; 3, 1])\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\
-matrix.  For example,\n\
+matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -5679,7 +5690,7 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
 
 DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
+@deftypefn  {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
 Returns true if the array is sorted according to @var{mode}, which\n\
 may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
@@ -5787,17 +5798,18 @@ This function does not yet support sparse matrices.\n\
 
 DEFUN (nth_element, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nth_element (@var{x}, @var{n})\n\
+@deftypefn  {Built-in Function} {} nth_element (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {} nth_element (@var{x}, @var{n}, @var{dim})\n\
-Select the n-th smallest element of a vector, using the ordering defined by @code{sort}.\n\
-In other words, the result is equivalent to @code{sort(@var{x})(@var{n})}.\n\
+Select the n-th smallest element of a vector, using the ordering defined by\n\
+@code{sort}.  In other words, the result is equivalent to\n\
+@code{sort(@var{x})(@var{n})}.\n\
 @var{n} can also be a contiguous range, either ascending @code{l:u}\n\
 or descending @code{u:-1:l}, in which case a range of elements is returned.\n\
-If @var{x} is an array, @code{nth_element} operates along the dimension defined by @var{dim},\n\
-or the first non-singleton dimension if @var{dim} is not given.\n\
+If @var{x} is an array, @code{nth_element} operates along the dimension defined\n\
+by @var{dim}, or the first non-singleton dimension if @var{dim} is not given.\n\
 \n\
-nth_element encapsulates the C++ standard library algorithms nth_element and partial_sort.\n\
-On average, the complexity of the operation is O(M*log(K)), where\n\
+nth_element encapsulates the C++ standard library algorithms nth_element and\n\
+partial_sort.  On average, the complexity of the operation is O(M*log(K)), where\n\
 @code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
 This function is intended for cases where the ratio K/M is small; otherwise,\n\
 it may be better to use @code{sort}.\n\
@@ -6189,17 +6201,20 @@ do_merge (const Array<bool>& mask,
 
 DEFUN (merge, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
+@deftypefn  {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
 @var{mask}.  If @var{mask} is a logical scalar, the other two arguments can be\n\
-arbitrary values.  Otherwise, @var{mask} must be a logical array, and @var{tval},\n\
+arbitrary values.  Otherwise, @var{mask} must be a logical array, and\n\
+@var{tval},\n\
 @var{fval} should be arrays of matching class, or cell arrays.\n\
 In the scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
 @var{fval} is returned.\n\
 \n\
 In the array mask case, both @var{tval} and @var{fval} must be either scalars or\n\
-arrays with dimensions equal to @var{mask}.  The result is constructed as follows:\n\
+arrays with dimensions equal to @var{mask}.  The result is constructed as\n\
+follows: \n\
+\n\
 @example\n\
 @group\n\
 result(mask) = tval(mask);\n\
@@ -6543,10 +6558,12 @@ index.  A row vector is always returned.\n\
 Conceptually the result is calculated as follows:\n\
 \n\
 @example\n\
+@group\n\
 y = [];\n\
 for i = 1:columns (@var{r})\n\
   y = [y, @var{x}(@var{r}(1,i)*ones(1, @var{r}(2,i)))];\n\
 endfor\n\
+@end group\n\
 @end example\n\
 @seealso{repmat}\n\
 @end deftypefn")

@@ -396,12 +396,12 @@ install_defaults (void)
 
 DEFUN (EDITOR, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} EDITOR ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
 Query or set the internal variable that specifies the editor to\n\
 use with the @code{edit_history} command.  The default value is taken from\n\
-the environment variable @w{@code{EDITOR}} when Octave starts.  If the\n\
-environment variable is not initialized, @w{@code{EDITOR}} will be set to\n\
+the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
+environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 @code{\"emacs\"}.\n\
 @seealso{edit_history}\n\
 @end deftypefn")
@@ -411,17 +411,17 @@ environment variable is not initialized, @w{@code{EDITOR}} will be set to\n\
 
 DEFUN (EXEC_PATH, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories to search when executing external programs.\n\
 Its initial value is taken from the environment variable\n\
-@w{@code{OCTAVE_EXEC_PATH}} (if it exists) or @code{PATH}, but that\n\
+@w{@env{OCTAVE_EXEC_PATH}} (if it exists) or @env{PATH}, but that\n\
 value can be overridden by the command line argument\n\
-@code{--exec-path PATH}.  At startup, an additional set of\n\
+@option{--exec-path PATH}.  At startup, an additional set of\n\
 directories (including the shell PATH) is appended to the path\n\
 specified in the environment or on the command line.  If you use\n\
-the @w{@code{EXEC_PATH}} function to modify the path, you should take\n\
+the @w{@env{EXEC_PATH}} function to modify the path, you should take\n\
 care to preserve these additional directories.\n\
 @end deftypefn")
 {
@@ -437,7 +437,7 @@ care to preserve these additional directories.\n\
 
 DEFUN (IMAGE_PATH, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\

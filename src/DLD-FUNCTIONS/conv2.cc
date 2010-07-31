@@ -51,7 +51,7 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
+@deftypefn  {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
 @deftypefnx {Loadable Function} {y =} conv2 (@var{v1}, @var{v2}, @var{M}, @var{shape})\n\
 \n\
 Returns 2D convolution of @var{a} and @var{b} where the size\n\
@@ -60,8 +60,10 @@ of @var{c} is given by\n\
 @table @asis\n\
 @item @var{shape} = 'full'\n\
 returns full 2-D convolution\n\
+\n\
 @item @var{shape} = 'same'\n\
 same size as a. 'central' part of convolution\n\
+\n\
 @item @var{shape} = 'valid'\n\
 only parts which do not include zero-padded edges\n\
 @end table\n\
@@ -246,8 +248,10 @@ of @var{c} is given by\n\
 @table @asis\n\
 @item @var{shape} = 'full'\n\
 returns full n-D convolution\n\
+\n\
 @item @var{shape} = 'same'\n\
 same size as a. 'central' part of convolution\n\
+\n\
 @item @var{shape} = 'valid'\n\
 only parts which do not include zero-padded edges\n\
 @end table\n\

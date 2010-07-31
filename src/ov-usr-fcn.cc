@@ -583,7 +583,7 @@ octave_user_function::bind_automatic_vars
 
 DEFUN (nargin, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nargin ()\n\
+@deftypefn  {Built-in Function} {} nargin ()\n\
 @deftypefnx {Built-in Function} {} nargin (@var{fcn_name})\n\
 Within a function, return the number of arguments passed to the function.\n\
 At the top level, return the number of command line arguments passed to\n\
@@ -639,7 +639,7 @@ function accepts a variable number of arguments.\n\
 
 DEFUN (nargout, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nargout ()\n\
+@deftypefn  {Built-in Function} {} nargout ()\n\
 @deftypefnx {Built-in Function} {} nargout (@var{fcn_name})\n\
 Within a function, return the number of values the caller expects to\n\
 receive.  If called with the optional argument @var{fcn_name}, return the\n\
@@ -718,8 +718,8 @@ At the top level, @code{nargout} is undefined.\n\
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls  (@var{new_val})\n\
+@deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
 subsasgn method of a user-defined class.\n\
@@ -742,9 +742,9 @@ DEFUN (is_ignored_output, args, ,
 @deftypefn {Built-in Function} {} is_ignored_output (@var{k})\n\
 Within a function, given an index @var{k} within the range @code{1:nargout},\n\
 return a logical value indicating whether the argument will be ignored on output\n\
-using the tilde (~) special output argument. If @var{k} is outside the range,\n\
-the function yields false. @var{k} can also be an array, in which case the function\n\
-works element-wise and a logical array is returned.\n\
+using the tilde (~) special output argument.  If @var{k} is outside the range,\n\
+the function yields false.  @var{k} can also be an array, in which case the\n\
+function works element-wise and a logical array is returned.\n\
 \n\
 At the top level, @code{is_ignored_output} returns an error.\n\
 @seealso{nargout, nargin, varargin, varargout}\n\

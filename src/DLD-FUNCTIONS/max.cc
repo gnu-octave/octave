@@ -331,6 +331,7 @@ min (2:5, pi)\n\
     @result{}  2.0000  3.0000  3.1416  3.1416\n\
 @end group\n\
 @end example\n\
+\n\
 @noindent\n\
 compares each element of the range @code{2:5} with @code{pi}, and\n\
 returns a row vector of the minimum values.\n\
@@ -407,6 +408,7 @@ max (2:5, pi)\n\
     @result{}  3.1416  3.1416  4.0000  5.0000\n\
 @end group\n\
 @end example\n\
+\n\
 @noindent\n\
 compares each element of the range @code{2:5} with @code{pi}, and\n\
 returns a row vector of the maximum values.\n\
@@ -566,7 +568,7 @@ DEFUN_DLD (cummin, args, nargout,
 @deftypefnx {Loadable Function} {} cummin (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
 Return the cumulative minimum values along dimension @var{dim}.  If @var{dim}\n\
-is unspecified it defaults to column-wise operation.  For example,\n\
+is unspecified it defaults to column-wise operation.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -577,12 +579,14 @@ cummin ([5 4 6 2 3 1])\n\
 \n\
 \n\
 The call\n\
+\n\
 @example\n\
   [w, iw] = cummin (x)\n\
 @end example\n\
 \n\
 @noindent\n\
 with @code{x} a vector, is equivalent to the following code:\n\
+\n\
 @example\n\
 @group\n\
 w = iw = zeros (size (x));\n\
@@ -606,7 +610,7 @@ DEFUN_DLD (cummax, args, nargout,
 @deftypefnx {Loadable Function} {} cummax (@var{x}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} cummax (@var{x})\n\
 Return the cumulative maximum values along dimension @var{dim}.  If @var{dim}\n\
-is unspecified it defaults to column-wise operation.  For example,\n\
+is unspecified it defaults to column-wise operation.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -616,12 +620,14 @@ cummax ([1 3 2 6 4 5])\n\
 @end example\n\
 \n\
 The call\n\
+\n\
 @example\n\
 [w, iw] = cummax (x, dim)\n\
 @end example\n\
 \n\
 @noindent\n\
 with @code{x} a vector, is equivalent to the following code:\n\
+\n\
 @example\n\
 @group\n\
 w = iw = zeros (size (x));\n\

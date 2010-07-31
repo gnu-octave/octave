@@ -632,7 +632,7 @@ octave_range::as_mxArray (void) const
 
 DEFUN (allow_noninteger_range_as_index, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
 Query or set the internal variable that controls whether non-integer\n\
 ranges are allowed as indices.  This might be useful for @sc{matlab}\n\

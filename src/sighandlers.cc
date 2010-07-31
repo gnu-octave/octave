@@ -961,7 +961,7 @@ Return a structure containing Unix signal names and their defined values.\n\
 
 DEFUN (debug_on_interrupt, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter debugging mode when it receives an interrupt signal (typically\n\
@@ -974,7 +974,7 @@ before reaching the debugging mode, a normal interrupt will occur.\n\
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it receives\n\
@@ -986,7 +986,7 @@ a hangup signal.\n\
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it receives\n\

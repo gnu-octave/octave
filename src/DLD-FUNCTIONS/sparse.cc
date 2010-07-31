@@ -58,7 +58,7 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
 
 DEFUN_DLD (sparse, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{s} =} sparse (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{s} =} sparse (@var{a})\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
@@ -71,8 +71,8 @@ Given the integer index vectors @var{i} and @var{j}, a 1-by-@code{nnz} vector\n\
 of real of complex values @var{sv}, overall dimensions @var{m} and @var{n}\n\
 of the sparse matrix.  The argument @code{nzmax} is ignored but accepted for\n\
 compatibility with @sc{matlab}.  If @var{m} or @var{n} are not specified their\n\
-values are derived from the maximum index in the vectors @var{i} and @var{j}\n\
-as given by @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.\n\
+values are derived from the maximum index in the vectors @var{i} and @var{j} as\n\
+given by @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}.\n\
 \n\
 @strong{Note}: if multiple values are specified with the same\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
@@ -214,7 +214,9 @@ the pre-allocated memory, provided they are of one of the simple forms\n\
 \n\
 @itemize\n\
 @item @code{@var{s}(I:J) = @var{x}}\n\
+\n\
 @item @code{@var{s}(:,I:J) = @var{x}}\n\
+\n\
 @item @code{@var{s}(K:L,I:J) = @var{x}}\n\
 @end itemize\n\
 \n\
@@ -222,15 +224,19 @@ the pre-allocated memory, provided they are of one of the simple forms\n\
 \n\
 @itemize\n\
 @item the assignment does not decrease nnz(@var{S}).\n\
+\n\
 @item after the assignment, nnz(@var{S}) does not exceed @var{nz}.\n\
+\n\
 @item no index is out of bounds.\n\
 @end itemize\n\
 \n\
-Partial movement of data may still occur, but in general the assignment will be more\n\
-memory and time-efficient under these circumstances.  In particular, it is possible\n\
-to efficiently build a pre-allocated sparse matrix from contiguous block of columns.\n\
+Partial movement of data may still occur, but in general the assignment will be\n\
+more memory and time-efficient under these circumstances.  In particular, it is\n\
+possible to efficiently build a pre-allocated sparse matrix from contiguous\n\
+block of columns.\n\
 \n\
-The amount of pre-allocated memory for a given matrix may be queried using the function\n\
+The amount of pre-allocated memory for a given matrix may be queried using the\n\
+function\n\
 @code{nzmax}.\n\
 @seealso{nzmax, sparse}\n\
 @end deftypefn")

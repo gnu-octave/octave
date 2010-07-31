@@ -57,7 +57,8 @@ For numerical input, each element is converted\n\
 to the corresponding ASCII character.  A range error results if an input\n\
 is outside the ASCII range (0-255).\n\
 \n\
-For cell arrays, each element is concatenated separately.  Cell arrays converted through\n\
+For cell arrays, each element is concatenated separately.  Cell arrays converted\n\
+through\n\
 @code{char} can mostly be converted back with @code{cellstr}.\n\
 For example,\n\
 \n\
@@ -180,7 +181,8 @@ For numerical input, each element is converted\n\
 to the corresponding ASCII character.  A range error results if an input\n\
 is outside the ASCII range (0-255).\n\
 \n\
-For cell arrays, each element is concatenated separately.  Cell arrays converted through\n\
+For cell arrays, each element is concatenated separately.  Cell arrays converted\n\
+through\n\
 @code{strvcat} can mostly be converted back with @code{cellstr}.\n\
 For example,\n\
 \n\
@@ -639,8 +641,8 @@ strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 DEFUN (strncmp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
-Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are the same,\n\
-and 0 otherwise.\n\
+Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are\n\
+the same, and 0 otherwise.\n\
 \n\
 @example\n\
 @group\n\

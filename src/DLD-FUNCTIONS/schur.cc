@@ -60,7 +60,7 @@ mark_upper_triangular (const Matrix& a)
 
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{s} =} schur (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{s} =} schur (@var{a})\n\
 @deftypefnx {Loadable Function} {@var{s} =} schur (@var{a}, \"complex\")\n\
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})\n\
 @cindex Schur decomposition\n\

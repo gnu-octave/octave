@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (hess, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{h} =} hess (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{h} =} hess (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{a})\n\
 @cindex Hessenberg decomposition\n\
 Compute the Hessenberg decomposition of the matrix @var{a}.\n\

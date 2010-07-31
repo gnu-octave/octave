@@ -274,7 +274,7 @@ make_absolute (const string_vector& sv)
 
 DEFUN (file_in_loadpath, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} file_in_loadpath (@var{file})\n\
+@deftypefn  {Built-in Function} {} file_in_loadpath (@var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
 Return the absolute name of @var{file} if it can be found in\n\
@@ -325,12 +325,12 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
 DEFUN (file_in_path, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
+@deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
 directories in the format described for @code{path}.  If no file\n\
-is found, return an empty character string.  For example,\n\
+is found, return an empty character string.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -825,7 +825,7 @@ containing all the directory names that match.\n\
 
 DEFUNX ("errno", Ferrno, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{err} =} errno ()\n\
+@deftypefn  {Built-in Function} {@var{err} =} errno ()\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})\n\
 Return the current value of the system-dependent variable errno,\n\

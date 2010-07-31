@@ -53,7 +53,7 @@ char qh_version[] = "convhulln.oct 2007-07-24";
 
 DEFUN_DLD (convhulln, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{h} =} convhulln (@var{p})\n\
+@deftypefn  {Loadable Function} {@var{h} =} convhulln (@var{p})\n\
 @deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{p}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
 Return an index vector to the points of the enclosing convex hull.\n\

@@ -298,22 +298,22 @@ This function must have the form\n\
 @end example\n\
 \n\
 and return a vector of the constraint function values.\n\
-If the value of any of the constraint functions changes sign, @sc{Dasrt}\n\
+If the value of any of the constraint functions changes sign, @sc{dasrt}\n\
 will attempt to stop the integration at the point of the sign change.\n\
 \n\
 If the name of the constraint function is omitted, @code{dasrt} solves\n\
 the same problem as @code{daspk} or @code{dassl}.\n\
 \n\
 Note that because of numerical errors in the constraint functions\n\
-due to round-off and integration error, @sc{Dasrt} may return false\n\
+due to round-off and integration error, @sc{dasrt} may return false\n\
 roots, or return the same root at two or more nearly equal values of\n\
 @var{T}.  If such false roots are suspected, the user should consider\n\
 smaller error tolerances or higher precision in the evaluation of the\n\
 constraint functions.\n\
 \n\
 If a root of some constraint function defines the end of the problem,\n\
-the input to @sc{Dasrt} should nevertheless allow integration to a\n\
-point slightly past that root, so that @sc{Dasrt} can locate the root\n\
+the input to @sc{dasrt} should nevertheless allow integration to a\n\
+point slightly past that root, so that @sc{dasrt} can locate the root\n\
 by interpolation.\n\
 \n\
 The third and fourth arguments to @code{dasrt} specify the initial\n\
@@ -322,7 +322,7 @@ specifies a vector of output times at which the solution is desired,\n\
 including the time corresponding to the initial condition.\n\
 \n\
 The set of initial states and derivatives are not strictly required to\n\
-be consistent.  In practice, however, @sc{Dassl} is not very good at\n\
+be consistent.  In practice, however, @sc{dassl} is not very good at\n\
 determining a consistent set for you, so it is best if you ensure that\n\
 the initial values result in the function evaluating to zero.\n\
 \n\
@@ -332,7 +332,7 @@ avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
 \n\
 After a successful computation, the value of @var{istate} will be\n\
-greater than zero (consistent with the Fortran version of @sc{Dassl}).\n\
+greater than zero (consistent with the Fortran version of @sc{dassl}).\n\
 \n\
 If the computation is not successful, the value of @var{istate} will be\n\
 less than zero and @var{msg} will contain additional information.\n\

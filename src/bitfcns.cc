@@ -407,7 +407,7 @@ bitshift (float a, int n, int64_t mask)
 
 DEFUN (bitshift, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
+@deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned\n\
 integers in @var{a}.  A positive @var{k} leads to a left shift.\n\
@@ -536,18 +536,25 @@ The variable @var{type} can be\n\
 @table @code\n\
 @item int8\n\
 signed 8-bit integer.\n\
+\n\
 @item int16\n\
 signed 16-bit integer.\n\
+\n\
 @item int32\n\
 signed 32-bit integer.\n\
+\n\
 @item int64\n\
 signed 64-bit integer.\n\
+\n\
 @item uint8\n\
 unsigned 8-bit integer.\n\
+\n\
 @item uint16\n\
 unsigned 16-bit integer.\n\
+\n\
 @item uint32\n\
 unsigned 32-bit integer.\n\
+\n\
 @item uint64\n\
 unsigned 64-bit integer.\n\
 @end table\n\
@@ -599,18 +606,25 @@ The variable @var{type} can be\n\
 @table @code\n\
 @item int8\n\
 signed 8-bit integer.\n\
+\n\
 @item int16\n\
 signed 16-bit integer.\n\
+\n\
 @item int32\n\
 signed 32-bit integer.\n\
+\n\
 @item int64\n\
 signed 64-bit integer.\n\
+\n\
 @item uint8\n\
 unsigned 8-bit integer.\n\
+\n\
 @item uint16\n\
 unsigned 16-bit integer.\n\
+\n\
 @item uint32\n\
 unsigned 32-bit integer.\n\
+\n\
 @item uint64\n\
 unsigned 64-bit integer.\n\
 @end table\n\
@@ -658,7 +672,7 @@ DEFUN (sizemax, args, ,
 @deftypefn {Built-in Function} {} sizemax ()\n\
 Return the largest value that is allowed as the size of an array.\n\
 If Octave is compiled with 64-bit indexing, the result is of class int64,\n\
-otherwise it is of class int32. It will be a tiny bit lower than the maximum\n\
+otherwise it is of class int32.  It will be a tiny bit lower than the maximum\n\
 allowable value for that type, as reported by intmax.\n\
 @seealso{intmax}\n\
 @end deftypefn")

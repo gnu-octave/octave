@@ -487,6 +487,7 @@ Set a breakpoint in a function\n\
 @item func\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
+\n\
 @item line\n\
 Line number you would like the breakpoint to be set on.  Multiple\n\
 lines might be given as separate arguments or as a vector.\n\
@@ -519,6 +520,7 @@ Delete a breakpoint in a function\n\
 @item func\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
+\n\
 @item line\n\
 Line number where you would like to remove the breakpoint.  Multiple\n\
 lines might be given as separate arguments or as a vector.\n\

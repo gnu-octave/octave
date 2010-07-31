@@ -106,7 +106,7 @@ DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} gmtime (@var{t})\n\
 Given a value returned from time (or any non-negative integer),\n\
-return a time structure corresponding to CUT.  For example,\n\
+return a time structure corresponding to CUT@.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -234,7 +234,7 @@ DEFUN_DLD (mktime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} mktime (@var{tm_struct})\n\
 Convert a time structure corresponding to the local time to the number\n\
-of seconds since the epoch.  For example,\n\
+of seconds since the epoch.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -292,7 +292,7 @@ Padding is with zeros by default; for fields that display a single\n\
 number, padding can be changed or inhibited by following the @samp{%}\n\
 with one of the modifiers described below.  Unknown field specifiers are\n\
 copied as normal characters.  All other characters are copied to the\n\
-output without change.  For example,\n\
+output without change.  For example:\n\
 \n\
 @example\n\
 @group\n\

@@ -22,6 +22,7 @@ OPTION
   NAME = "absolute tolerance"
   DOC_ITEM
 Absolute tolerance; may be zero for pure relative error test.
+
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "::sqrt (DBL_EPSILON)"
@@ -31,9 +32,10 @@ END_OPTION
 OPTION
   NAME = "relative tolerance"
   DOC_ITEM
-Nonnegative relative tolerance.  If the absolute tolerance is zero,
+Non-negative relative tolerance.  If the absolute tolerance is zero,
 the relative tolerance must be greater than or equal to 
 @code{max (50*eps, 0.5e-28)}.
+
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "::sqrt (DBL_EPSILON)"
@@ -45,6 +47,7 @@ OPTION
   DOC_ITEM
 Absolute tolerance for single precision; may be zero for pure relative 
 error test.
+
   END_DOC_ITEM
   TYPE = "float"
   INIT_VALUE = "::sqrt (FLT_EPSILON)"
@@ -54,7 +57,7 @@ END_OPTION
 OPTION
   NAME = "single precision relative tolerance"
   DOC_ITEM
-Nonnegative relative tolerance for single precision.  If the absolute
+Non-negative relative tolerance for single precision.  If the absolute
 tolerance is zero, the relative tolerance must be greater than or equal to 
 @code{max (50*eps, 0.5e-28)}.
   END_DOC_ITEM

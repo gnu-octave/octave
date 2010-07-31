@@ -1411,7 +1411,7 @@ void symbol_table::cleanup (void)
 
 DEFUN (ignore_function_time_stamp, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave checks\n\
 the time stamp on files each time it looks up functions defined in\n\
@@ -1488,7 +1488,7 @@ Undocumented internal function.\n\
 
 DEFUN (__dump_symtab_info__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __dump_symtab_info__ ()\n\
+@deftypefn  {Built-in Function} {} __dump_symtab_info__ ()\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (@var{scope})\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"functions\")\n\

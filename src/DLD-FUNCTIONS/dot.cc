@@ -111,8 +111,8 @@ non-singleton dimension.  If the optional argument @var{dim} is\n\
 given, calculate the dot products along this dimension.\n\
 \n\
 This is equivalent to doing @code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
-but avoids forming a temporary array and is faster.\n\
-When @var{X} and @var{Y} are column vectors, the result is equivalent to\n\
+but avoids forming a temporary array and is faster.  When @var{X} and @var{Y}\n\
+are column vectors, the result is equivalent to\n\
 @code{ @var{X}'*@var{Y} }.\n\
 @end deftypefn")
 {

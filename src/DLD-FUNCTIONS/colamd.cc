@@ -210,14 +210,15 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
 
 DEFUN_DLD (colamd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} colamd (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} colamd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} colamd (@var{s}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{s})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{s}, @var{knobs})\n\
 \n\
-Column approximate minimum degree permutation.  @code{@var{p} = colamd\n\
-(@var{s})} returns the column approximate minimum degree permutation\n\
-vector for the sparse matrix @var{s}.  For a non-symmetric matrix @var{s},\n\
+Column approximate minimum degree permutation.\n\
+@code{@var{p} = colamd (@var{s})} returns the column approximate minimum degree\n\
+permutation vector for the sparse matrix @var{s}.  For a non-symmetric matrix\n\
+@var{s},\n\
 @code{@var{s} (:,@var{p})} tends to have sparser LU factors than @var{s}.\n\
 The Cholesky factorization of @code{@var{s} (:,@var{p})' * @var{s}\n\
 (:,@var{p})} also tends to be sparser than that of @code{@var{s}' *\n\
@@ -237,23 +238,23 @@ printed.  The default is @code{@var{knobs} = [10 10 0]}.  Note that\n\
 about the ordering and the validity of the input matrix @var{s}.  Ordering\n\
 statistics are in @code{@var{stats} (1:3)}.  @code{@var{stats} (1)} and\n\
 @code{@var{stats} (2)} are the number of dense or empty rows and columns\n\
-ignored by COLAMD and @code{@var{stats} (3)} is the number of garbage\n\
-collections performed on the internal data structure used by COLAMD\n\
+ignored by @sc{colamd} and @code{@var{stats} (3)} is the number of garbage\n\
+collections performed on the internal data structure used by @sc{colamd}\n\
 (roughly of size @code{2.2 * nnz(@var{s}) + 4 * @var{m} + 7 * @var{n}}\n\
 integers).\n\
 \n\
 Octave built-in functions are intended to generate valid sparse matrices,\n\
 with no duplicate entries, with ascending row indices of the nonzeros\n\
 in each column, with a non-negative number of entries in each column (!)\n\
-and so on.  If a matrix is invalid, then COLAMD may or may not be able\n\
+and so on.  If a matrix is invalid, then @sc{colamd} may or may not be able\n\
 to continue.  If there are duplicate entries (a row index appears two or\n\
 more times in the same column) or if the row indices in a column are out\n\
-of order, then COLAMD can correct these errors by ignoring the duplicate\n\
+of order, then @sc{colamd} can correct these errors by ignoring the duplicate\n\
 entries and sorting each column of its internal copy of the matrix\n\
 @var{s} (the input matrix @var{s} is not repaired, however).  If a matrix\n\
-is invalid in other ways then COLAMD cannot continue, an error message is\n\
+is invalid in other ways then @sc{colamd} cannot continue, an error message is\n\
 printed, and no output arguments (@var{p} or @var{stats}) are returned.\n\
-COLAMD is thus a simple way to check a sparse matrix to see if it's\n\
+@sc{colamd} is thus a simple way to check a sparse matrix to see if it's\n\
 valid.\n\
 \n\
 @code{@var{stats} (4:7)} provide information if COLAMD was able to\n\
@@ -264,12 +265,12 @@ unsorted or contains duplicate entries, or zero if no such column exists.\n\
 index in the column index given by @code{@var{stats} (5)}, or zero if no\n\
 such row index exists.  @code{@var{stats} (7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats} (8:20)} is always zero in\n\
-the current version of COLAMD (reserved for future use).\n\
+the current version of @sc{colamd} (reserved for future use).\n\
 \n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
 The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was\n\
+Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
 developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
 Ng, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
@@ -449,7 +450,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
 DEFUN_DLD (symamd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} symamd (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} symamd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} symamd (@var{s}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{s})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{s}, @var{knobs})\n\
@@ -505,7 +506,7 @@ The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
 \n\
 The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis (davis@@cise.ufl.edu), University of Florida.  The algorithm was\n\
+Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
 developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
 Ng, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
@@ -646,7 +647,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
 DEFUN_DLD (etree, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} etree (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} etree (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} etree (@var{s}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{s}, @var{typ})\n\
 \n\

@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (amd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} amd (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} amd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{s}, @var{opts})\n\
 \n\
 Returns the approximate minimum degree permutation of a matrix.  This\n\
@@ -77,7 +77,7 @@ If this value is a non zero scalar, then @code{amd} performs aggressive\n\
 absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\
-The author of the code itself is Timothy A. Davis (davis@@cise.ufl.edu),\n\
+The author of the code itself is Timothy A. Davis @email{davis@@cise.ufl.edu},\n\
 University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
 @seealso{symamd, colamd}\n\
 @end deftypefn")

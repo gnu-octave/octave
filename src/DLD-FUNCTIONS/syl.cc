@@ -47,8 +47,9 @@ $$\n\
 @example\n\
 A X + X B + C = 0\n\
 @end example\n\
+\n\
 @end ifnottex\n\
-using standard @sc{lapack} subroutines.  For example,\n\
+using standard @sc{lapack} subroutines.  For example:\n\
 \n\
 @example\n\
 @group\n\

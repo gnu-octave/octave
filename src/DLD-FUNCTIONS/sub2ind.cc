@@ -63,7 +63,7 @@ get_dim_vector (const octave_value& val, const char *name)
 
 DEFUN_DLD (sub2ind, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
+@deftypefn  {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
 @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
 Convert subscripts into a linear index.\n\
 \n\
@@ -178,6 +178,7 @@ Convert a linear index into subscripts.\n\
 The following example shows how to convert the linear index @code{8}\n\
 in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed\n\
 moving from one column to next, filling up all rows in each column.\n\
+\n\
 @example\n\
 @group\n\
 [r, c] = ind2sub ([3, 3], 8)\n\

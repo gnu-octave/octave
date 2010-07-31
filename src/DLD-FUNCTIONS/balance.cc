@@ -49,7 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
+@deftypefn  {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{d}, @var{p}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
@@ -63,7 +63,7 @@ eigenvalue calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\
 the diagonal @code{d} and the permutation @code{p} separately as vectors.  \n\
-In this case, @code{dd = eye(n)(:,p) * diag (d)}, where @code{n} is the matrix \n\
+In this case, @code{dd = eye(n)(:,p) * diag (d)}, where @code{n} is the matrix\n\
 size.  \n\
 \n\
 If four output values are requested, compute @code{aa = cc*a*dd} and\n\

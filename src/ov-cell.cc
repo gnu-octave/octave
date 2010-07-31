@@ -1250,7 +1250,7 @@ false.\n\
 
 DEFUN (cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cell (@var{x})\n\
+@deftypefn  {Built-in Function} {} cell (@var{x})\n\
 @deftypefnx {Built-in Function} {} cell (@var{n}, @var{m})\n\
 Create a new cell array object.  If invoked with a single scalar\n\
 argument, @code{cell} returns a square cell array with the dimension\n\

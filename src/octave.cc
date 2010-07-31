@@ -901,7 +901,7 @@ octave --no-line-editing --silent\n\
 \n\
 @noindent\n\
 @code{argv} would return a cell array of strings with the elements\n\
-@code{--no-line-editing} and @code{--silent}.\n\
+@option{--no-line-editing} and @option{--silent}.\n\
 \n\
 If you write an executable Octave script, @code{argv} will return the\n\
 list of arguments passed to the script.  @xref{Executable Octave Programs},\n\

@@ -304,6 +304,7 @@ $\\lambda$\n\
 @var{lambda}\n\
 @end ifnottex\n\
 of @math{(A - s B)}.\n\
+\n\
 @item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
 \n\
 Computes qz decomposition, generalized eigenvectors, and \n\
@@ -314,6 +315,7 @@ $$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
 $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @end tex\n\
 @ifnottex\n\
+\n\
 @example\n\
 @group\n\
 \n\
@@ -323,6 +325,7 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 \n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 \n\
@@ -331,7 +334,8 @@ with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 As in form [2], but allows ordering of generalized eigenpairs\n\
 for (e.g.) solution of discrete time algebraic Riccati equations.\n\
 Form 3 is not available for complex matrices, and does not compute\n\
-the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
+the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix\n\
+@var{Q}.\n\
 \n\
 @table @var\n\
 @item opt\n\
@@ -342,10 +346,10 @@ of the revised pencil contains all eigenvalues that satisfy:\n\
 = unordered (default) \n\
 \n\
 @item \"S\"\n\
-= small: leading block has all |lambda| <= 1 \n\
+= small: leading block has all |lambda| @leq{} 1 \n\
 \n\
 @item \"B\"\n\
-= big: leading block has all |lambda| >= 1 \n\
+= big: leading block has all |lambda| @geq{} 1 \n\
 \n\
 @item \"-\"\n\
 = negative real part: leading block has all eigenvalues\n\

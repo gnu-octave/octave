@@ -1702,7 +1702,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 
 DEFUN (class, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} class (@var{expr})\n\
+@deftypefn  {Built-in Function} {} class (@var{expr})\n\
 @deftypefnx {Built-in Function} {} class (@var{s}, @var{id})\n\
 @deftypefnx {Built-in Function} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
 Return the class of the expression @var{expr} or create a class with\n\
@@ -1874,7 +1874,7 @@ is a method of this class.\n\
 
 DEFUN (methods, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} methods (@var{x})\n\
+@deftypefn  {Built-in Function} {} methods (@var{x})\n\
 @deftypefnx {Built-in Function} {} methods (\"classname\")\n\
 Return a cell array containing the names of the methods for the\n\
 object @var{x} or the named class.\n\

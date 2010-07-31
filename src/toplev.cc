@@ -679,7 +679,7 @@ clean_up_and_exit (int retval)
 
 DEFUN (quit, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} exit (@var{status})\n\
+@deftypefn  {Built-in Function} {} exit (@var{status})\n\
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
 Exit the current Octave session.  If the optional integer value\n\
 @var{status} is supplied, pass that value to the operating system as the\n\
@@ -1065,7 +1065,7 @@ octave_remove_atexit_function (const std::string& fname)
 
 DEFUN (atexit, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} atexit (@var{fcn})\n\
+@deftypefn  {Built-in Function} {} atexit (@var{fcn})\n\
 @deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
 Register a function to be called when Octave exits.  For example,\n\
 \n\

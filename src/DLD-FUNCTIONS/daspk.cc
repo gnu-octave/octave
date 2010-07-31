@@ -232,6 +232,7 @@ jac = -- + c ------\n\
       dx     d xdot\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 The modified Jacobian function must have the form\n\
@@ -260,7 +261,7 @@ avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
 \n\
 After a successful computation, the value of @var{istate} will be\n\
-greater than zero (consistent with the Fortran version of @sc{Daspk}).\n\
+greater than zero (consistent with the Fortran version of @sc{daspk}).\n\
 \n\
 If the computation is not successful, the value of @var{istate} will be\n\
 less than zero and @var{msg} will contain additional information.\n\

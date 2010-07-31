@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (md5sum, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} md5sum (@var{file})\n\
+@deftypefn  {Loadable Function} {} md5sum (@var{file})\n\
 @deftypefnx {Loadable Function} {} md5sum (@var{str}, @var{opt})\n\
 Calculates the MD5 sum of the file @var{file}.  If the second parameter\n\
 @var{opt} exists and is true, then calculate the MD5 sum of the\n\

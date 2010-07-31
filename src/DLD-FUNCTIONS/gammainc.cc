@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (gammainc, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
+@deftypefn  {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
 Compute the normalized incomplete gamma function,\n\
@@ -47,11 +47,13 @@ $$\n\
 @ifnottex\n\
 \n\
 @smallexample\n\
+@group\n\
                                 x\n\
                       1        /\n\
 gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
                   gamma (a)    /\n\
                             t=0\n\
+@end group\n\
 @end smallexample\n\
 \n\
 @end ifnottex\n\

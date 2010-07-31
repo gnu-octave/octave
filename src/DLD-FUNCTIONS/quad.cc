@@ -176,7 +176,7 @@ quad_float_user_function (float x)
 DEFUN_DLD (quad, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-Integrate a nonlinear function of one variable using Quadpack.\n\
+Integrate a nonlinear function of one variable using @sc{quadpack}.\n\
 The first argument is the name of the function, the function handle or\n\
 the inline function to call to compute the value of the integrand.  It\n\
 must have the form\n\

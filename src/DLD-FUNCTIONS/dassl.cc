@@ -226,6 +226,7 @@ J = {\\partial f \\over \\partial x}\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
+\n\
 @example\n\
 @group\n\
       df       df\n\
@@ -233,6 +234,7 @@ jac = -- + c ------\n\
       dx     d xdot\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 The modified Jacobian function must have the form\n\
@@ -251,7 +253,7 @@ specifies a vector of output times at which the solution is desired,\n\
 including the time corresponding to the initial condition.\n\
 \n\
 The set of initial states and derivatives are not strictly required to\n\
-be consistent.  In practice, however, @sc{Dassl} is not very good at\n\
+be consistent.  In practice, however, @sc{dassl} is not very good at\n\
 determining a consistent set for you, so it is best if you ensure that\n\
 the initial values result in the function evaluating to zero.\n\
 \n\
@@ -261,7 +263,7 @@ avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
 \n\
 After a successful computation, the value of @var{istate} will be\n\
-greater than zero (consistent with the Fortran version of @sc{Dassl}).\n\
+greater than zero (consistent with the Fortran version of @sc{dassl}).\n\
 \n\
 If the computation is not successful, the value of @var{istate} will be\n\
 less than zero and @var{msg} will contain additional information.\n\

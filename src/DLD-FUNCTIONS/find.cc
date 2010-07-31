@@ -338,13 +338,13 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
 DEFUN_DLD (find, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} find (@var{x})\n\
+@deftypefn  {Loadable Function} {} find (@var{x})\n\
 @deftypefnx {Loadable Function} {} find (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {} find (@var{x}, @var{n}, @var{direction})\n\
 Return a vector of indices of nonzero elements of a matrix, as a row if\n\
 @var{x} is a row or as a column otherwise.  To obtain a single index for\n\
 each matrix element, Octave pretends that the columns of a matrix form one\n\
-long vector (like Fortran arrays are stored).  For example,\n\
+long vector (like Fortran arrays are stored).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -354,7 +354,7 @@ find (eye (2))\n\
 @end example\n\
 \n\
 If two outputs are requested, @code{find} returns the row and column\n\
-indices of nonzero elements of a matrix.  For example,\n\
+indices of nonzero elements of a matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -365,7 +365,7 @@ indices of nonzero elements of a matrix.  For example,\n\
 @end example\n\
 \n\
 If three outputs are requested, @code{find} also returns a vector\n\
-containing the nonzero values.  For example,\n\
+containing the nonzero values.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -385,7 +385,7 @@ However, the indices are always returned in ascending order.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
 it extracts the non-zero elements as vectors, which can then be used to\n\
-create the original matrix.  For example,\n\
+create the original matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\

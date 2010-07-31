@@ -843,7 +843,7 @@ get_user_input (const octave_value_list& args, int nargout)
 
 DEFUN (input, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} input (@var{prompt})\n\
+@deftypefn  {Built-in Function} {} input (@var{prompt})\n\
 @deftypefnx {Built-in Function} {} input (@var{prompt}, \"s\")\n\
 Print a prompt and wait for user input.  For example,\n\
 \n\
@@ -1277,6 +1277,7 @@ DEFUN (add_input_event_hook, args, ,
 Add the named function @var{fcn} to the list of functions to call\n\
 periodically when Octave is waiting for input.  The function should\n\
 have the form\n\
+\n\
 @example\n\
 @var{fcn} (@var{data})\n\
 @end example\n\
@@ -1355,7 +1356,7 @@ periodically when Octave is waiting for input.\n\
 
 DEFUN (PS1, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} PS1 ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
 Query or set the primary prompt string.  When executing interactively,\n\
 Octave displays the primary prompt when it is ready to read a command.\n\
@@ -1381,7 +1382,7 @@ character string.\n\
 
 DEFUN (PS2, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} PS2 ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
 Query or set the secondary prompt string.  The secondary prompt is\n\
 printed when Octave is expecting additional input to complete a\n\
@@ -1397,7 +1398,7 @@ string is @code{\"> \"}.\n\
 
 DEFUN (PS4, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} PS4 ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} PS4 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
@@ -1411,7 +1412,7 @@ The default value is @code{\"+ \"}.\n\
 
 DEFUN (completion_append_char, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} completion_append_char ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} completion_append_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
 Query or set the internal character variable that is appended to\n\
 successful command-line completion attempts.  The default\n\
@@ -1423,7 +1424,7 @@ value is @code{\" \"} (a single space).\n\
 
 DEFUN (echo_executing_commands, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
 Query or set the internal variable that controls the echo state.\n\
 It may be the sum of the following values:\n\
@@ -1443,7 +1444,7 @@ More than one state can be active at once.  For example, a value of 3 is\n\
 equivalent to the command @kbd{echo on all}.\n\
 \n\
 The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
-command or the command line option @code{--echo-commands}.\n\
+command or the command line option @option{--echo-commands}.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
@@ -1451,7 +1452,7 @@ command or the command line option @code{--echo-commands}.\n\
 
 DEFUN (__request_drawnow__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __request_drawnow__ ()\n\
+@deftypefn  {Built-in Function} {} __request_drawnow__ ()\n\
 @deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1495,7 +1496,7 @@ DEFUN (filemarker, args, nargout,
 @deftypefn {Built-in Function} {} filemarker ()\n\
 Returns or sets the character used to separate filename from the\n\
 the subfunction names contained within the file.  This can be used in\n\
-a generic manner to interact with subfunctions.  For example\n\
+a generic manner to interact with subfunctions.  For example,\n\
 \n\
 @example\n\
 help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
@@ -1505,7 +1506,7 @@ help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 returns the help string associated with the sub-function @code{mysubfunc}\n\
 of the function @code{myfunc}.  Another use of @code{filemarker} is when\n\
 debugging it allows easier placement of breakpoints within sub-functions.\n\
-For example\n\
+For example,\n\
 \n\
 @example\n\
 dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\

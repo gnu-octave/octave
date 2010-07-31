@@ -1517,11 +1517,11 @@ install_base_type_conversions (void)
 
 DEFUN (sparse_auto_mutate, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will\n\
 automatically mutate sparse matrices to real matrices to save memory.\n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\

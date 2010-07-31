@@ -55,7 +55,7 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 
 DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{tri} =} __voronoi__ (@var{point})\n\
+@deftypefn  {Loadable Function} {@var{tri} =} __voronoi__ (@var{point})\n\
 @deftypefnx {Loadable Function} {@var{tri} =} __voronoi__ (@var{point}, @var{options})\n\
 Undocumented internal function.\n\
 @end deftypefn")

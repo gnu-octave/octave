@@ -3435,7 +3435,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
 DEFUN (disp, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} disp (@var{x})\n\
-Display the value of @var{x}.  For example,\n\
+Display the value of @var{x}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -3479,7 +3479,7 @@ returns the formatted output in a string.\n\
 DEFUN (fdisp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
-Display the value of @var{x} on the stream @var{fid}.  For example,\n\
+Display the value of @var{x} on the stream @var{fid}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -3861,6 +3861,7 @@ in IEEE format with the least significant byte first, the value of\n\
 @item hex\n\
 The same as @code{native-hex}, but always print the most significant\n\
 byte first.\n\
+\n\
 @item native-bit\n\
 Print the bit representation of numbers as stored in memory.\n\
 For example, the value of @code{pi} is\n\
@@ -3875,6 +3876,7 @@ For example, the value of @code{pi} is\n\
 (shown here in two 32 bit sections for typesetting purposes) when\n\
 printed in native-bit format on a workstation which stores 8 byte real values\n\
 in IEEE format with the least significant byte first.\n\
+\n\
 @item bit\n\
 The same as @code{native-bit}, but always print the most significant\n\
 bits first.\n\
@@ -3892,6 +3894,7 @@ The following two options affect the display of all matrices.\n\
 @item compact\n\
 Remove extra blank space around column number labels producing more compact\n\
 output with more data per page.\n\
+\n\
 @item loose\n\
 Insert blank lines above and below column number labels to produce a more\n\
 readable output with less data per page.  (default).\n\
@@ -3914,12 +3917,12 @@ readable output with less data per page.  (default).\n\
 
 DEFUN (fixed_point_format, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} fixed_point_format ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will\n\
 use a scaled format to print matrix values such that the largest\n\
 element may be written with a single leading digit with the scaling\n\
-factor is printed on the first line of output.  For example,\n\
+factor is printed on the first line of output.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -3947,7 +3950,7 @@ this reason, you should be careful when setting\n\
 
 DEFUN (print_empty_dimensions, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
 Query or set the internal variable that controls whether the\n\
 dimensions of empty matrices are printed along with the empty matrix\n\
@@ -3970,7 +3973,7 @@ ans = [](3x0)\n\
 
 DEFUN (split_long_rows, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} split_long_rows ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} split_long_rows ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
 Query or set the internal variable that controls whether rows of a matrix\n\
 may be split when displayed to a terminal window.  If the rows are split,\n\
@@ -4002,7 +4005,7 @@ ans =\n\
 
 DEFUN (output_max_field_width, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} output_max_field_width ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} output_max_field_width ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
 Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
@@ -4014,7 +4017,7 @@ of a numeric output field.\n\
 
 DEFUN (output_precision, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} output_precision ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} output_precision ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
 Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
@@ -4026,7 +4029,7 @@ significant figures to display for numeric output.\n\
 
 DEFUN (struct_levels_to_print, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
 Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\

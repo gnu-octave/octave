@@ -84,9 +84,11 @@ that,\n\
 $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 @end tex\n\
 @ifnottex\n\
+\n\
 @example\n\
 @var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 For backward compatibility with previous versions of this function, when\n\

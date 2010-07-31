@@ -53,17 +53,19 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (ccolamd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} ccolamd (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} ccolamd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{s}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{s}, @var{knobs}, @var{cmember})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} ccolamd (@dots{})\n\
 \n\
-Constrained column approximate minimum degree permutation.  @code{@var{p} =\n\
-ccolamd (@var{s})} returns the column approximate minimum degree permutation\n\
-vector for the sparse matrix @var{s}.  For a non-symmetric matrix @var{s},\n\
+Constrained column approximate minimum degree permutation.\n\
+@code{@var{p} = ccolamd (@var{s})} returns the column approximate minimum degree\n\
+permutation vector for the sparse matrix @var{s}.  For a non-symmetric matrix\n\
+@var{s},\n\
 @code{@var{s} (:, @var{p})} tends to have sparser LU factors than @var{s}.\n\
 @code{chol (@var{s} (:, @var{p})' * @var{s} (:, @var{p}))} also tends to be\n\
-sparser than @code{chol (@var{s}' * @var{s})}.  @code{@var{p} = ccolamd\n\
+sparser than @code{chol (@var{s}' * @var{s})}.\n\
+@code{@var{p} = ccolamd\n\
 (@var{s}, 1)} optimizes the ordering for @code{lu (@var{s} (:, @var{p}))}.\n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
@@ -99,14 +101,14 @@ on the column ordering.  If @code{@var{cmember} (j) = @var{c}}, then column\n\
 @var{j} is in constraint set @var{c} (@var{c} must be in the range 1 to\n\
 @var{n}).  In the output permutation @var{p}, all columns in set 1 appear\n\
 first, followed by all columns in set 2, and so on.  @code{@var{cmember} =\n\
-ones(1,n)} if not present or empty.  @code{ccolamd (@var{s}, [], 1 :\n\
-@var{n})} returns @code{1 : @var{n}}\n\
+ones(1,n)} if not present or empty.\n\
+@code{ccolamd (@var{s}, [], 1 : @var{n})} returns @code{1 : @var{n}}\n\
 \n\
-@code{@var{p} = ccolamd (@var{s})} is about the same as @code{@var{p} =\n\
-colamd (@var{s})}.  @var{knobs} and its default values differ.  @code{colamd}\n\
-always does aggressive absorption, and it finds an ordering suitable for\n\
-both @code{lu (@var{s} (:, @var{p}))} and @code{chol (@var{S} (:, @var{p})'\n\
-* @var{s} (:, @var{p}))}; it cannot optimize its ordering for\n\
+@code{@var{p} = ccolamd (@var{s})} is about the same as\n\
+@code{@var{p} = colamd (@var{s})}.  @var{knobs} and its default values differ.  \n\
+@code{colamd} always does aggressive absorption, and it finds an ordering\n\
+suitable for both @code{lu (@var{s} (:, @var{p}))} and @code{chol (@var{S} (:,\n\
+@var{p})' * @var{s} (:, @var{p}))}; it cannot optimize its ordering for\n\
 @code{lu (@var{s} (:, @var{p}))} to the extent that\n\
 @code{ccolamd (@var{s}, 1)} can.\n\
 \n\
@@ -114,8 +116,8 @@ both @code{lu (@var{s} (:, @var{p}))} and @code{chol (@var{S} (:, @var{p})'\n\
 about the ordering and the validity of the input matrix @var{s}.  Ordering\n\
 statistics are in @code{@var{stats} (1 : 3)}.  @code{@var{stats} (1)} and\n\
 @code{@var{stats} (2)} are the number of dense or empty rows and columns\n\
-ignored by CCOLAMD and @code{@var{stats} (3)} is the number of garbage\n\
-collections performed on the internal data structure used by CCOLAMD\n\
+ignored by @sc{ccolamd} and @code{@var{stats} (3)} is the number of garbage\n\
+collections performed on the internal data structure used by @sc{ccolamd}\n\
 (roughly of size @code{2.2 * nnz (@var{s}) + 4 * @var{m} + 7 * @var{n}}\n\
 integers).\n\
 \n\
@@ -127,7 +129,7 @@ unsorted or contains duplicate entries, or zero if no such column exists.\n\
 index in the column index given by @code{@var{stats} (5)}, or zero if no\n\
 such row index exists.  @code{@var{stats} (7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats} (8 : 20)} is always zero in\n\
-the current version of CCOLAMD (reserved for future use).\n\
+the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
 The authors of the code itself are S. Larimore, T. Davis (Univ. of Florida)\n\
 and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
@@ -333,7 +335,7 @@ colamd, symamd, and other related orderings.\n\
 
 DEFUN_DLD (csymamd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} csymamd (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} csymamd (@var{s})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{s}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{s}, @var{knobs}, @var{cmember})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} csymamd (@dots{})\n\
@@ -382,7 +384,7 @@ unsorted or contains duplicate entries, or zero if no such column exists.\n\
 index in the column index given by @code{@var{stats} (5)}, or zero if no\n\
 such row index exists.  @code{@var{stats} (7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats} (8:20)} is always zero in\n\
-the current version of CCOLAMD (reserved for future use).\n\
+the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
 The authors of the code itself are S. Larimore, T. Davis (Uni of Florida)\n\
 and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\

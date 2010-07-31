@@ -362,7 +362,7 @@ selected.\n\
 The absolute value of @var{k} must not be greater than the number of\n\
 sub- or super-diagonals.\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\

@@ -5078,7 +5078,7 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
 DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
-Removes any defaults set for the handle @var{h}. The default figure\n\
+Removes any defaults set for the handle @var{h}.  The default figure\n\
 properties \"position\", \"units\", \"windowstyle\" and\n\
 \"paperunits\" and the default axes properties \"position\" and \"units\"\n\
 are not reset.\n\
@@ -5106,7 +5106,7 @@ are not reset.\n\
 
 DEFUN (set, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
+@deftypefn  {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{pv})\n\
 Set named property values for the graphics handle (or vector of graphics\n\
@@ -5118,16 +5118,19 @@ There are three ways how to give the property names and values:\n\
 \n\
 Here, each @var{property} is a string containing the property name, each\n\
 @var{value} is a value of the appropriate type for the property.\n\
+\n\
 @item as a cell array of strings @var{properties} containing property names\n\
 and a cell array @var{values} containing property values.\n\
 \n\
 In this case, the number of columns of @var{values} must match the number of\n\
 elements in @var{properties}.  The first column of @var{values} contains values\n\
-for the first entry in @var{properties}, etc.  The number of rows of @var{values}\n\
-must be 1 or match the number of elements of @var{h}.  In the first case, each\n\
-handle in @var{h} will be assigned the same values.  In the latter case, the\n\
-first handle in @var{h} will be assigned the values from the first row of\n\
+for the first entry in @var{properties}, etc.  The number of rows of\n\
+@var{values} must be 1 or match the number of elements of @var{h}.  In the first\n\
+case, each handle in @var{h} will be assigned the same values.  In the latter\n\
+case, the first handle in @var{h} will be assigned the values from the first row\n\
+of\n\
 @var{values} and so on.\n\
+\n\
 @item as a structure array @var{pv}\n\
 \n\
 Here, the field names of @var{pv} represent the property names, and the field\n\
@@ -5715,7 +5718,7 @@ Undocumented internal function.\n\
 
 DEFUN (__go_execute_callback__, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name})\n\
+@deftypefn  {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name})\n\
 @deftypefnx {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -6085,30 +6088,37 @@ The supported property types are:\n\
 @table @code\n\
 @item string\n\
 A string property.  @var{arg} contains the default string value.\n\
+\n\
 @item any\n\
 An un-typed property.  This kind of property can hold any octave\n\
 value.  @var{args} contains the default value.\n\
+\n\
 @item radio\n\
 A string property with a limited set of accepted values.  The first\n\
 argument must be a string with all accepted values separated by\n\
 a vertical bar ('|').  The default value can be marked by enclosing\n\
 it with a '@{' '@}' pair.  The default value may also be given as\n\
 an optional second string argument.\n\
+\n\
 @item boolean\n\
 A boolean property.  This property type is equivalent to a radio\n\
 property with \"on|off\" as accepted values.  @var{arg} contains\n\
 the default property value.\n\
+\n\
 @item double\n\
 A scalar double property.  @var{arg} contains the default value.\n\
+\n\
 @item handle\n\
 A handle property.  This kind of property holds the handle of a\n\
 graphics object.  @var{arg} contains the default handle value.\n\
 When no default value is given, the property is initialized to\n\
 the empty matrix.\n\
+\n\
 @item data\n\
 A data (matrix) property.  @var{arg} contains the default data\n\
 value.  When no default value is given, the data is initialized to\n\
 the empty matrix.\n\
+\n\
 @item color\n\
 A color property.  @var{arg} contains the default color value.\n\
 When no default color is given, the property is set to black.\n\

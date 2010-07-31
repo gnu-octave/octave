@@ -283,7 +283,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 
 DEFUN_DLD (filter, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
+@deftypefn  {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
@@ -299,10 +299,13 @@ $$\n\
 \n\
 @c Set example in small font to prevent overfull line\n\
 @smallexample\n\
+@group\n\
    N                   M\n\
   SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
   k=0                 k=0\n\
+@end group\n\
 @end smallexample\n\
+\n\
 @end ifnottex\n\
 \n\
 @noindent\n\
@@ -325,10 +328,13 @@ $$\n\
 \n\
 @c Set example in small font to prevent overfull line\n\
 @smallexample\n\
+@group\n\
             N                   M\n\
   y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
            k=1                 k=0\n\
+@end group\n\
 @end smallexample\n\
+\n\
 @end ifnottex\n\
 \n\
 @noindent\n\
@@ -369,6 +375,7 @@ $$\n\
               k=1\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 @end deftypefn")
 {

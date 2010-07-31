@@ -2141,8 +2141,8 @@ DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})\n\
 Return a copy of the structure (array) @var{s} with the field @var{f} removed.\n\
-If @var{f} is a cell array of strings or a character array, remove the\n\
-named fields.\n\
+If @var{f} is a cell array of strings or a character array, remove the named\n\
+fields.\n\
 @seealso{cellstr, iscellstr, setfield}\n\
 @end deftypefn")
 {

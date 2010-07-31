@@ -286,9 +286,9 @@ for the general eigenvalue problem.\n\
 The return arguments of @code{eigs} depend on the number of return arguments\n\
 requested.  With a single return argument, a vector @var{d} of length @var{k}\n\
 is returned containing the @var{k} eigenvalues that have been found.  With two\n\
-return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns are\n\
-the @var{k} eigenvectors corresponding to the returned eigenvalues.  The\n\
-eigenvalues themselves are returned in @var{d} in the form of a\n\
+return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns are the\n\
+@var{k} eigenvectors corresponding to the returned eigenvalues.  The eigenvalues\n\
+themselves are returned in @var{d} in the form of a\n\
 @var{n}-by-@var{k} matrix, where the elements on the diagonal are the\n\
 eigenvalues.\n\
 \n\

@@ -880,7 +880,7 @@ octcellregexp (const octave_value_list &args, int nargout, const std::string &nm
 
 DEFUN_DLD (regexp, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
+@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
 \n\
 Regular expression string matching.  Matches @var{pat} in @var{str} and\n\
@@ -893,27 +893,36 @@ operators, including:\n\
 @table @code\n\
 @item .\n\
 Match any character\n\
+\n\
 @item * + ? @{@}\n\
 Repetition operators, representing\n\
 @table @code\n\
 @item *\n\
 Match zero or more times\n\
+\n\
 @item +\n\
 Match one or more times\n\
+\n\
 @item ?\n\
 Match zero or one times\n\
+\n\
 @item @{@}\n\
 Match range operator, which is of the form @code{@{@var{n}@}} to match exactly\n\
 @var{n} times, @code{@{@var{m},@}} to match @var{m} or more times,\n\
 @code{@{@var{m},@var{n}@}} to match between @var{m} and @var{n} times.\n\
 @end table\n\
+\n\
 @item [@dots{}] [^@dots{}]\n\
+\n\
 List operators, where for example @code{[ab]c} matches @code{ac} and @code{bc}\n\
+\n\
 @item ()\n\
 Grouping operator\n\
+\n\
 @item |\n\
 Alternation operator.  Match one of a choice of regular expressions.  The\n\
 alternatives must be delimited by the grouping operator @code{()} above\n\
+\n\
 @item ^ $\n\
 Anchoring operator.  @code{^} matches the start of the string @var{str} and\n\
 @code{$} the end\n\
@@ -927,22 +936,31 @@ before being passed to @code{regexp}.\n\
 @table @code\n\
 @item \\b\n\
 Match a word boundary\n\
+\n\
 @item \\B\n\
 Match within a word\n\
+\n\
 @item \\w\n\
 Matches any word character\n\
+\n\
 @item \\W\n\
 Matches any non word character\n\
+\n\
 @item \\<\n\
 Matches the beginning of a word\n\
+\n\
 @item \\>\n\
 Matches the end of a word\n\
+\n\
 @item \\s\n\
 Matches any whitespace character\n\
+\n\
 @item \\S\n\
 Matches any non whitespace character\n\
+\n\
 @item \\d\n\
 Matches any digit\n\
+\n\
 @item \\D\n\
 Matches any non-digit\n\
 @end table\n\
@@ -992,19 +1010,26 @@ matches to the first match.  Additional arguments are\n\
 @table @asis\n\
 @item matchcase\n\
 Make the matching case sensitive.\n\
+\n\
 @item ignorecase\n\
 Make the matching case insensitive.\n\
+\n\
 @item stringanchors\n\
 Match the anchor characters at the beginning and end of the string.\n\
+\n\
 @item lineanchors\n\
 Match the anchor characters at the beginning and end of the line.\n\
+\n\
 @item dotall\n\
 The character @code{.} matches the newline character.\n\
+\n\
 @item dotexceptnewline\n\
 The character @code{.} matches all but the newline character.\n\
+\n\
 @item freespacing\n\
 The pattern can include arbitrary whitespace and comments starting with\n\
 @code{#}.\n\
+\n\
 @item literalspacing\n\
 The pattern is taken literally.\n\
 @end table\n\
@@ -1200,7 +1225,7 @@ The pattern is taken literally.\n\
 
 DEFUN_DLD (regexpi, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
+@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
 \n\
 Case insensitive regular expression string matching.  Matches @var{pat} in\n\
@@ -1549,12 +1574,13 @@ octregexprep (const octave_value_list &args, const std::string &nm)
 
 DEFUN_DLD (regexprep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function}  {@var{string} =} regexprep (@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
+@deftypefn {Loadable Function} {@var{string} =} regexprep (@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
 Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
 \n\
 \n\
 The replacement can contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  E.g.,\n\
+\n\
 @example\n\
 @group\n\
 \n\
@@ -1562,6 +1588,7 @@ for the ith set of parentheses in the match string.  E.g.,\n\
 \n\
 @end group\n\
 @end example\n\
+\n\
 returns \"Dunn, Bill\"\n\
 \n\
 @var{options} may be zero or more of\n\
@@ -1586,8 +1613,8 @@ Whether . matches newlines in the string.\n\
 Alternatively, use (?s) or (?-s) in the pattern.\n\
 \n\
 @item freespacing or literalspacing\n\
-Whether whitespace and # comments can be used to make the regular expression more readable.\n\
-Alternatively, use (?x) or (?-x) in the pattern.\n\
+Whether whitespace and # comments can be used to make the regular expression\n\
+more readable.  Alternatively, use (?x) or (?-x) in the pattern.\n\
 \n\
 @end table\n\
 @seealso{regexp,regexpi,strrep}\n\

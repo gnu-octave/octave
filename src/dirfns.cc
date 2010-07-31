@@ -101,7 +101,7 @@ cd ~/octave\n\
 @end example\n\
 \n\
 @noindent\n\
-Changes the current working directory to @file{~/octave}.  If the\n\
+changes the current working directory to @file{~/octave}.  If the\n\
 directory does not exist, an error message is printed and the working\n\
 directory is not changed.\n\
 @seealso{mkdir, rmdir, dir}\n\
@@ -200,7 +200,7 @@ system-dependent error message.\n\
 
 DEFUNX ("mkdir", Fmkdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
+@deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
 Create a directory named @var{dir} in the directory @var{parent}.\n\
 \n\
@@ -283,7 +283,7 @@ message identifier.\n\
 
 DEFUNX ("rmdir", Frmdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
+@deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\
 Remove the directory named @var{dir}.\n\
 \n\
@@ -554,6 +554,7 @@ Within a pattern\n\
 matches any string, including the null string,\n\
 @itemx ?\n\
 matches any single character, and\n\
+\n\
 @item [@dots{}]\n\
 matches any of the enclosed characters.\n\
 @end table\n\
@@ -646,7 +647,7 @@ DEFUN (fnmatch, args, ,
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return 1 or zero for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\
-filename pattern matching.  For example,\n\
+filename pattern matching.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -680,7 +681,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 
 DEFUN (filesep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} filesep ()\n\
+@deftypefn  {Built-in Function} {} filesep ()\n\
 @deftypefnx {Built-in Function} {} filesep ('all')\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
@@ -717,7 +718,7 @@ backward slashes) under Windows.\n\
 
 DEFUN (pathsep, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} pathsep ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} pathsep ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
 Query or set the character used to separate directories in\n\
 a path.\n\
@@ -763,7 +764,7 @@ a path.\n\
 
 DEFUN (confirm_recursive_rmdir, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\

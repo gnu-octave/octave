@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (luinc, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, '0')\n\
+@deftypefn  {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, '0')\n\
 @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, @var{droptol})\n\
 @deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, @var{opts})\n\
 @cindex LU decomposition\n\

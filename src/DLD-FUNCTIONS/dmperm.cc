@@ -133,7 +133,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
 DEFUN_DLD (dmperm, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})\n\
 \n\
 @cindex Dulmage-Mendelsohn decomposition\n\
@@ -195,10 +195,10 @@ DEFUN_DLD (sprank, args, nargout,
 @cindex Structural Rank\n\
 Calculates the structural rank of a sparse matrix @var{s}.  Note that\n\
 only the structure of the matrix is used in this calculation based on\n\
-a Dulmage-Mendelsohn permutation to block triangular form.  As such the numerical\n\
-rank of the matrix @var{s} is bounded by @code{sprank (@var{s}) >=\n\
-rank (@var{s})}.  Ignoring floating point errors @code{sprank (@var{s}) ==\n\
-rank (@var{s})}.\n\
+a Dulmage-Mendelsohn permutation to block triangular form.  As such the\n\
+numerical rank of the matrix @var{s} is bounded by\n\
+@code{sprank (@var{s}) >= rank (@var{s})}.  Ignoring floating point errors\n\
+@code{sprank (@var{s}) == rank (@var{s})}.\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {

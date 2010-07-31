@@ -558,10 +558,13 @@ symbols of the specified type.  Valid types are\n\
 @table @samp\n\
 @item \"var\"\n\
 Check only for variables.\n\
+\n\
 @item \"builtin\"\n\
 Check only for built-in functions.\n\
+\n\
 @item \"file\"\n\
 Check only for files.\n\
+\n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
@@ -1745,10 +1748,12 @@ The following are valid options but may not be combined.\n\
 @table @code\n\
 @item global\n\
 List variables in the global scope rather than the current scope.\n\
+\n\
 @item -regexp\n\
 The patterns are considered to be regular expressions when matching the\n\
 variables to display.  The same pattern syntax accepted by\n\
 the @code{regexp} function is used.\n\
+\n\
 @item -file\n\
 The next argument is treated as a filename.  All variables found within the\n\
 specified file are listed.  No patterns are accepted when reading variables\n\
@@ -1794,18 +1799,24 @@ Attributes of the listed variable.  Possible attributes are:\n\
 @table @asis\n\
 @item blank\n\
 Variable in local scope\n\
+\n\
 @item @code{g}\n\
 Variable with global scope\n\
+\n\
 @item @code{p}\n\
 Persistent variable\n\
 @end table\n\
+\n\
 @item Name\n\
 The name of the variable.\n\
+\n\
 @item Size\n\
 The logical size of the variable.  A scalar is 1x1, a vector is 1xN or Nx1,\n\
 a 2-D matrix is MxN.\n\
+\n\
 @item Bytes\n\
 The amount of memory currently used to store the variable.\n\
+\n\
 @item Class\n\
 The class of the variable.  Examples include double, single, char, uint16,\n\
 cell, and struct.\n\
@@ -2285,12 +2296,16 @@ Clears the variables that don't match the following pattern.\n\
 \n\
 @item -functions, -f\n\
 Clears the function names and the built-in symbols names.\n\
+\n\
 @item -global, -g\n\
 Clears the global symbol names.\n\
+\n\
 @item -variables, -v\n\
 Clears the local variable names.\n\
+\n\
 @item -classes, -c\n\
 Clears the class structure table and clears all objects.\n\
+\n\
 @item -regexp, -r\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
@@ -2448,16 +2463,22 @@ The following command sequences are available:\n\
 @item %a\n\
 Prints attributes of variables (g=global, p=persistent,\n\
 f=formal parameter, a=automatic variable).\n\
+\n\
 @item %b\n\
 Prints number of bytes occupied by variables.\n\
+\n\
 @item %c\n\
 Prints class names of variables.\n\
+\n\
 @item %e\n\
 Prints elements held by variables.\n\
+\n\
 @item %n\n\
 Prints variable names.\n\
+\n\
 @item %s\n\
 Prints dimensions of variables.\n\
+\n\
 @item %t\n\
 Prints type names of variables.\n\
 @end table\n\
@@ -2467,8 +2488,10 @@ Every command may also have an alignment modifier:\n\
 @table @code\n\
 @item l\n\
 Left alignment.\n\
+\n\
 @item r\n\
 Right alignment (default).\n\
+\n\
 @item c\n\
 Column-aligned (only applicable to command %s).\n\
 @end table\n\
@@ -2496,7 +2519,7 @@ static std::string Vmissing_function_hook = "unimplemented";
 
 DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} missing_function_hook ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
 Query or set the internal variable that allows setting a custom hook function\n\
 called when an uknown identifier is requested.\n\

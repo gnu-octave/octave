@@ -26,6 +26,7 @@ OPTION
 Absolute tolerance.  May be either vector or scalar.  If a vector, it
 must match the dimension of the state vector, and the relative
 tolerance must also be a vector of the same length.
+
   END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
@@ -61,6 +62,7 @@ The local error test applied at each integration step is
        <= rtol(i) * abs (Y(i)) + atol(i)
 @end group
 @end example
+
   END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
@@ -90,6 +92,7 @@ one of two initialization problems:
 
 @enumerate
 @item Given Y_d, calculate Y_a and Y'_d
+
 @item Given Y', calculate Y.
 @end enumerate
 
@@ -102,6 +105,7 @@ initial conditions that are consistent).
 If this option is set to a nonzero value, you must also set the
 @code{\"algebraic variables\"} option to declare which variables in the
 problem are algebraic.
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -113,6 +117,7 @@ OPTION
   DOC_ITEM
 Set to a nonzero value to use the initial condition heuristics options
 described below.
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -128,8 +133,10 @@ initial condition calculation.
 @table @code
 @item MXNIT
 Maximum number of Newton iterations (default is 5).
+
 @item MXNJ
 Maximum number of Jacobian evaluations (default is 6).
+
 @item MXNH
 Maximum number of values of the artificial stepsize parameter to be
 tried if the @code{\"compute consistent initial condition\"} option has
@@ -139,11 +146,14 @@ Note that the maximum total number of Newton iterations allowed is
 @code{MXNIT*MXNJ*MXNH} if the @code{\"compute consistent initial
 condition\"} option has been set to 1 and @code{MXNIT*MXNJ} if it is
 set to 2.
+
 @item LSOFF
 Set to a nonzero value to disable the linesearch algorithm (default is
 0).
+
 @item STPTOL
 Minimum scaled step in linesearch algorithm (default is eps^(2/3)).
+
 @item EPINIT
 Swing factor in the Newton iteration convergence test.  The test is
 applied to the residual vector, premultiplied by the approximate
@@ -152,6 +162,7 @@ Jacobian.  For convergence, the weighted RMS norm of this vector
 where @code{EPCON} = 0.33 is the analogous test constant used in the
 time steps.  The default is @code{EPINIT} = 0.01.
 @end table
+
   END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
@@ -172,6 +183,7 @@ OPTION
   DOC_ITEM
 Set this option to a nonzero value to display detailed information
 about the initial condition calculation (default is 0).
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -184,6 +196,7 @@ OPTION
 Set to a nonzero value to exclude algebraic variables from the error
 test.  You must also set the @code{\"algebraic variables\"} option to
 declare which variables in the problem are algebraic (default is 0).
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -201,6 +214,7 @@ in the equation set.
 This option is required by the
 @code{compute consistent initial condition\"} and
 @code{\"exclude algebraic variables from error test\"} options.
+
   END_DOC_ITEM
   TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
@@ -230,9 +244,12 @@ option (default is 0).
 
 @enumerate
 @item To have constraint checking only in the initial condition calculation.
+
 @item To enforce constraint checking during the integration.
+
 @item To enforce both options 1 and 2.
 @end enumerate
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -250,18 +267,23 @@ codes
 @table @asis
 @item -2
 Less than zero.
+
 @item -1
 Less than or equal to zero.
+
 @item 0
 Not constrained.
+
 @item 1
 Greater than or equal to zero.
+
 @item 2
 Greater than zero.
 @end table
 
 This option only has an effect if the
 @code{\"enforce inequality constraints\"} option is nonzero.
+
   END_DOC_ITEM
   TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
@@ -290,6 +312,7 @@ scaling difficulties on the first step.  If you know a great deal
 about the scaling of your problem, you can help to alleviate this
 problem by specifying an initial stepsize (default is computed
 automatically).
+
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"
@@ -301,6 +324,7 @@ OPTION
   DOC_ITEM
 Restrict the maximum order of the solution method.  This option must
 be between 1 and 5, inclusive (default is 5).
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "5"

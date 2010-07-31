@@ -26,6 +26,7 @@ OPTION
 Absolute tolerance.  May be either vector or scalar.  If a vector, it
 must match the dimension of the state vector, and the relative
 tolerance must also be a vector of the same length.
+
   END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
@@ -61,6 +62,7 @@ The local error test applied at each integration step is
        <= rtol(i) * abs (Y(i)) + atol(i)
 @end group
 @end example
+
   END_DOC_ITEM
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
@@ -87,6 +89,7 @@ OPTION
 If nonzero, @code{dassl} will attempt to compute a consistent set of initial
 conditions.  This is generally not reliable, so it is best to provide
 a consistent set and leave this option set to zero.
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -101,6 +104,7 @@ non-negative, it may help to set this parameter to a nonzero
 value.  However, it is probably best to try leaving this option set to
 zero first, and only setting it to a nonzero value if that doesn't
 work very well.
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "0"
@@ -114,6 +118,7 @@ Differential-algebraic problems may occasionally suffer from severe
 scaling difficulties on the first step.  If you know a great deal
 about the scaling of your problem, you can help to alleviate this
 problem by specifying an initial stepsize.
+
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"
@@ -125,6 +130,7 @@ OPTION
   DOC_ITEM
 Restrict the maximum order of the solution method.  This option must
 be between 1 and 5, inclusive.
+
   END_DOC_ITEM
   TYPE = "octave_idx_type"
   INIT_VALUE = "-1"
@@ -136,6 +142,7 @@ OPTION
   DOC_ITEM
 Setting the maximum stepsize will avoid passing over very large
 regions  (default is not specified).
+
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"

@@ -147,7 +147,7 @@ qs_search (const Array<char>& needle,
 
 DEFUN_DLD (strfind, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
+@deftypefn  {Loadable Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
 @deftypefnx {Loadable Function} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
 Search for @var{pattern} in the string @var{str} and return the\n\
 starting index of every such occurrence in the vector @var{idx}.\n\
@@ -323,10 +323,10 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 
 DEFUN_DLD (strrep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y})\n\
+@deftypefn  {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y}, \"overlaps\", @var{o})\n\
 Replace all occurrences of the substring @var{x} of the string @var{s}\n\
-with the string @var{y} and return the result.  For example,\n\
+with the string @var{y} and return the result.  For example:\n\
 \n\
 @example\n\
 @group\n\

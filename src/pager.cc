@@ -544,7 +544,7 @@ terminal window in characters (rows and columns).\n\
 
 DEFUN (page_output_immediately, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} page_output_immediately ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} page_output_immediately ()\n\
 @deftypefnx {Built-in Function} {@var{val} =} page_output_immediately (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave sends\n\
 output to the pager as soon as it is available.  Otherwise, Octave\n\
@@ -557,7 +557,7 @@ flush it to the pager.\n\
 
 DEFUN (page_screen_output, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} page_screen_output ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} page_screen_output ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} page_screen_output (@var{new_val})\n\
 Query or set the internal variable that controls whether output intended\n\
 for the terminal window that is longer than one page is sent through a\n\
@@ -571,7 +571,7 @@ backward on the output.\n\
 
 DEFUN (PAGER, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} PAGER ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} PAGER ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PAGER (@var{new_val})\n\
 Query or set the internal variable that specifies the program to use\n\
 to display terminal output on your system.  The default value is\n\
@@ -586,7 +586,7 @@ normally @code{\"less\"}, @code{\"more\"}, or\n\
 
 DEFUN (PAGER_FLAGS, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} PAGER_FLAGS ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} PAGER_FLAGS ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
 Query or set the internal variable that specifies the options to pass\n\
 to the pager.\n\

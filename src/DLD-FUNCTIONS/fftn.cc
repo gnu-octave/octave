@@ -157,7 +157,7 @@ FFTSRC
 ".  The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
-truncated prior to performing the FFT.  Otherwise if an element\n\
+truncated prior to performing the FFT@.  Otherwise if an element\n\
 of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @seealso {ifftn, fft, fft2, fftw}\n\
@@ -174,7 +174,7 @@ FFTSRC
 ".  The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
-truncated prior to performing the inverse FFT.  Otherwise if an element\n\
+truncated prior to performing the inverse FFT@.  Otherwise if an element\n\
 of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @seealso {fftn, ifft, ifft2, fftw}\n\

@@ -614,7 +614,8 @@ as obtained by @code{lu}:\n\
   [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
 @end example\n\
 \n\
-then a factorization of @code{@var{a}+@var{x}*@var{y}.'} can be obtained either as\n\
+then a factorization of @code{@var{a}+@var{x}*@var{y}.'} can be obtained either\n\
+as\n\
 \n\
 @example\n\
   [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\

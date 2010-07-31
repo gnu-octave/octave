@@ -57,6 +57,7 @@ $$\n\
 @example\n\
 A = U*S*V'\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 The function @code{svd} normally returns only the vector of singular values.\n\

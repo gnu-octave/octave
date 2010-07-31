@@ -1700,7 +1700,7 @@ the function handle @var{fcn_handle}.\n\
 
 DEFUN (str2func, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} str2func (@var{fcn_name})\n\
+@deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
 @deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
 If the optional \"global\" argument is passed, locally visible functions\n\

@@ -48,7 +48,7 @@ $|z| = \\sqrt{x^2 + y^2}$.\n\
 |@var{z}| = @code{sqrt (x^2 + y^2)}.\n\
 @end ifnottex\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -173,7 +173,7 @@ See arg.\n\
 
 DEFUN (arg, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} arg (@var{z})\n\
+@deftypefn  {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as,\n\
 @tex\n\
@@ -184,7 +184,7 @@ $\\theta = atan2 (y, x),$\n\
 @end ifnottex\n\
 in radians.\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -387,6 +387,7 @@ DEFUN (ceil, args, ,
 Return the smallest integer not less than @var{x}.  This is equivalent to\n\
 rounding towards positive infinity.  If @var{x} is\n\
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
+\n\
 @example\n\
 @group\n\
 ceil ([-2.7, 2.7])\n\
@@ -555,6 +556,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
                      t=0\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 @seealso{erfc, erfinv}\n\
 @end deftypefn")
@@ -602,6 +604,7 @@ DEFUN (erfinv, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfinv (@var{x})\n\
 Computes the inverse error function, i.e., @var{y} such that\n\
+\n\
 @example\n\
   erf(@var{y}) == @var{x}\n\
 @end example\n\
@@ -754,7 +757,7 @@ DEFUN (finite, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
 Return 1 for elements of @var{x} that are finite values and zero\n\
-otherwise.  For example,\n\
+otherwise.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -791,6 +794,7 @@ DEFUN (fix, args, ,
 Truncate fractional portion of @var{x} and return the integer portion.  This\n\
 is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
+\n\
 @example\n\
 @group\n\
 fix ([-2.7, 2.7])\n\
@@ -827,6 +831,7 @@ DEFUN (floor, args, ,
 Return the largest integer not greater than @var{x}.  This is equivalent to\n\
 rounding towards negative infinity.  If @var{x} is\n\
 complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
+\n\
 @example\n\
 @group\n\
 floor ([-2.7, 2.7])\n\
@@ -877,6 +882,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
          t=0\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 @seealso{gammainc, lgamma}\n\
 @end deftypefn")
@@ -966,7 +972,7 @@ Return 1 for characters that are letters or digits (@code{isalpha\n\
 
 DEFUNX ("isalpha", Fisalpha, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} isalpha (@var{s})\n\
+@deftypefn  {Mapping Function} {} isalpha (@var{s})\n\
 @deftypefnx {Mapping Function} {} isletter (@var{s})\n\
 Return true for characters that are letters (@code{isupper (@var{s})}\n\
 or @code{islower (@var{s})} is true).\n\
@@ -1030,7 +1036,7 @@ DEFUN (isinf, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return 1 for elements of @var{x} that are infinite and zero\n\
-otherwise.  For example,\n\
+otherwise.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1099,7 +1105,7 @@ DEFUN (isna, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return 1 for elements of @var{x} that are NA (missing) values and zero\n\
-otherwise.  For example,\n\
+otherwise.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1139,7 +1145,7 @@ DEFUN (isnan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return 1 for elements of @var{x} that are NaN values and zero\n\
-otherwise.  NA values are also considered NaN values.  For example,\n\
+otherwise.  NA values are also considered NaN values.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1253,7 +1259,7 @@ Return 1 for characters that are hexadecimal digits.\n\
 
 DEFUN (lgamma, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} lgamma (@var{x})\n\
+@deftypefn  {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
 Return the natural logarithm of the gamma function of @var{x}.\n\
 @seealso{gamma, gammainc}\n\
@@ -1417,6 +1423,7 @@ DEFUN (round, args, ,
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.\n\
+\n\
 @example\n\
 @group\n\
 round ([-2.7, 2.7])\n\
@@ -1494,6 +1501,7 @@ sign (x) =  0, x = 0;\n\
             1, x > 0.\n\
 @end group\n\
 @end example\n\
+\n\
 @end ifnottex\n\
 \n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
@@ -1703,7 +1711,7 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 DEFUNX ("toascii", Ftoascii, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\
-Return ASCII representation of @var{s} in a matrix.  For example,\n\
+Return ASCII representation of @var{s} in a matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1726,11 +1734,11 @@ toascii (\"ASCII\")\n\
 
 DEFUNX ("tolower", Ftolower, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} tolower (@var{s})\n\
+@deftypefn  {Mapping Function} {} tolower (@var{s})\n\
 @deftypefnx {Mapping Function} {} lower (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each upper-case\n\
 character replaced by the corresponding lower-case one; non-alphabetic\n\
-characters are left unchanged.  For example,\n\
+characters are left unchanged.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1772,11 +1780,11 @@ DEFALIAS (lower, tolower);
 
 DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} toupper (@var{s})\n\
+@deftypefn  {Built-in Function} {} toupper (@var{s})\n\
 @deftypefnx {Built-in Function} {} upper (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each lower-case\n\
 character replaced by the corresponding upper-case one; non-alphabetic\n\
-characters are left unchanged.  For example,\n\
+characters are left unchanged.  For example:\n\
 \n\
 @example\n\
 @group\n\

@@ -260,7 +260,7 @@ avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
 \n\
 After a successful computation, the value of @var{istate} will be 2\n\
-(consistent with the Fortran version of @sc{Lsode}).\n\
+(consistent with the Fortran version of @sc{lsode}).\n\
 \n\
 If the computation is not successful, @var{istate} will be something\n\
 other than 2 and @var{msg} will contain additional information.\n\

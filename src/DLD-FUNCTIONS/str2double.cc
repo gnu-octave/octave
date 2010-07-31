@@ -202,12 +202,17 @@ Converts a string to real or complex number.\n\
 A complex number should be in one of the formats:\n\
 \n\
 @itemize\n\
-@item  a + bi\n\
-@item  a + b*i\n\
-@item  a + i*b\n\
-@item  bi + a\n\
-@item  b*i + a\n\
-@item  i*b + a\n\
+@item a + bi\n\
+\n\
+@item a + b*i\n\
+\n\
+@item a + i*b\n\
+\n\
+@item bi + a\n\
+\n\
+@item b*i + a\n\
+\n\
+@item i*b + a\n\
 @end itemize\n\
 \n\
 It is also possible to use @code{j} instead of @code{i}, or write just\n\
@@ -215,8 +220,8 @@ It is also possible to use @code{j} instead of @code{i}, or write just\n\
 @code{a} and @code{b} should be real numbers\n\
 in a standard format.\n\
 @var{s} can also be a character matrix, in which case the conversion is repeated\n\
-for each row, or a cell array of strings, in which case each element is converted\n\
-and an array of the same dimensions is returned.\n\
+for each row, or a cell array of strings, in which case each element is\n\
+converted and an array of the same dimensions is returned.\n\
 @end deftypefn")
 {
   octave_value retval;

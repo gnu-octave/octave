@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (fftw, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{method} =} fftw ('planner')\n\
+@deftypefn  {Loadable Function} {@var{method} =} fftw ('planner')\n\
 @deftypefnx {Loadable Function} {} fftw ('planner', @var{method})\n\
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom')\n\
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})\n\
@@ -42,8 +42,8 @@ DEFUN_DLD (fftw, args, ,
 Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
 accelerate the calculation of the FFTs but implies an initial cost\n\
 in its calculation.  When the @sc{fftw} libraries are initialized, they read\n\
-a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing wisdom\n\
-to be shared between applications other than Octave.  Alternatively, the\n\
+a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing\n\
+wisdom to be shared between applications other than Octave.  Alternatively, the\n\
 @code{fftw} function can be used to import wisdom.  For example\n\
 \n\
 @example\n\

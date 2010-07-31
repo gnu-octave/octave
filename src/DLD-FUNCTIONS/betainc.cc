@@ -46,12 +46,15 @@ $$\n\
 \n\
 @c Set example in small font to prevent overfull line\n\
 @smallexample\n\
+@group\n\
                                       x\n\
                                      /\n\
 betainc (x, a, b) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.\n\
                                      /\n\
                                   t=0\n\
+@end group\n\
 @end smallexample\n\
+\n\
 @end ifnottex\n\
 \n\
 If x has more than one component, both @var{a} and @var{b} must be\n\

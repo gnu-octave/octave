@@ -542,7 +542,7 @@ DEFUN (edit_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} edit_history [@var{first}] [@var{last}]\n\
 If invoked with no arguments, @code{edit_history} allows you to edit the\n\
-history list using the editor named by the variable @w{@code{EDITOR}}.  The\n\
+history list using the editor named by the variable @w{@env{EDITOR}}.  The\n\
 commands to be edited are first copied to a temporary file.  When you\n\
 exit the editor, Octave executes the commands that remain in the file.\n\
 It is often more convenient to use @code{edit_history} to define functions \n\
@@ -656,11 +656,11 @@ and the commands are simply executed as they appear in the history list.\n\
 
 DEFUN (history_size, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} history_size ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
 to store in the history file.  The default value is @code{1024},\n\
-but may be overridden by the environment variable @w{@code{OCTAVE_HISTSIZE}}.\n\
+but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, saving_history}\n\
 @end deftypefn")
 {
@@ -677,12 +677,12 @@ but may be overridden by the environment variable @w{@code{OCTAVE_HISTSIZE}}.\n\
 
 DEFUN (history_file, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} history_file ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} history_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 file used to store command history.  The default value is\n\
 @file{~/.octave_hist}, but may be overridden by the environment\n\
-variable @w{@code{OCTAVE_HISTFILE}}.\n\
+variable @w{@env{OCTAVE_HISTFILE}}.\n\
 @seealso{history_size, saving_history, history_timestamp_format_string}\n\
 @end deftypefn")
 {
@@ -698,7 +698,7 @@ variable @w{@code{OCTAVE_HISTFILE}}.\n\
 
 DEFUN (history_timestamp_format_string, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
 Query or set the internal variable that specifies the format string\n\
 for the comment line that is written to the history file when Octave\n\
@@ -716,7 +716,7 @@ value is\n\
 
 DEFUN (saving_history, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} saving_history ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} saving_history ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\

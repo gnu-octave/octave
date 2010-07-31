@@ -74,7 +74,7 @@ get_qr_r (const base_qr<MT>& fact)
 
 DEFUN_DLD (qr, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
+@deftypefn  {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR factorization of @var{a}, using standard @sc{lapack}\n\
@@ -772,9 +772,9 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
 of @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are\n\
 column vectors (rank-1 update) or matrices with equal number of columns\n\
-(rank-k update).  Notice that the latter case is done as a sequence of rank-1 updates;\n\
-thus, for k large enough, it will be both faster and more accurate to recompute\n\
-the factorization from scratch.\n\
+(rank-k update).  Notice that the latter case is done as a sequence of rank-1\n\
+updates; thus, for k large enough, it will be both faster and more accurate to\n\
+recompute the factorization from scratch.\n\
 \n\
 The QR factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\

@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (spparms, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} { } spparms ()\n\
+@deftypefn  {Loadable Function} { } spparms ()\n\
 @deftypefnx {Loadable Function} {@var{vals} =} spparms ()\n\
 @deftypefnx {Loadable Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
 @deftypefnx {Loadable Function} {@var{val} =} spparms (@var{key})\n\
@@ -52,31 +52,43 @@ keys are one of the following strings:\n\
 @table @code\n\
 @item spumoni\n\
 Printing level of debugging information of the solvers (default 0)\n\
+\n\
 @item ths_rel\n\
 Included for compatibility.  Not used.  (default 1)\n\
+\n\
 @item ths_abs\n\
 Included for compatibility.  Not used.  (default 1)\n\
+\n\
 @item exact_d\n\
 Included for compatibility.  Not used.  (default 0)\n\
+\n\
 @item supernd\n\
 Included for compatibility.  Not used.  (default 3)\n\
+\n\
 @item rreduce\n\
 Included for compatibility.  Not used.  (default 3)\n\
+\n\
 @item wh_frac\n\
 Included for compatibility.  Not used.  (default 0.5)\n\
+\n\
 @item autommd\n\
 Flag whether the LU/QR and the '\\' and '/' operators will automatically\n\
 use the sparsity preserving mmd functions (default 1)\n\
+\n\
 @item autoamd\n\
 Flag whether the LU and the '\\' and '/' operators will automatically\n\
 use the sparsity preserving amd functions (default 1)\n\
+\n\
 @item piv_tol\n\
 The pivot tolerance of the @sc{umfpack} solvers (default 0.1)\n\
+\n\
 @item sym_tol\n\
 The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)\n\
+\n\
 @item bandden\n\
 The density of non-zero elements in a banded matrix before it is treated\n\
 by the @sc{lapack} banded solvers (default 0.5)\n\
+\n\
 @item umfpack\n\
 Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 '/' operations (default 1)\n\

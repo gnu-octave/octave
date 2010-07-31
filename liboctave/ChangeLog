@@ -1,3 +1,8 @@
+2010-07-31  Rik <octave@nomad.inbox5.com>
+
+	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in, 
+	  Quad-opts.in: Grammarcheck .cc files
+
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dim-vector.cc (dim_vector::dim_max (void)): Turn it into a function.

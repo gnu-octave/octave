@@ -354,7 +354,7 @@ rand (\"state\", v)\n\
 \n\
 @noindent\n\
 You may also initialize the state vector from an arbitrary vector of\n\
-length <= 625 for @var{v}.  This new state will be a hash based on the\n\
+length @leq{} 625 for @var{v}.  This new state will be a hash based on the\n\
 value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
@@ -634,29 +634,40 @@ This can be used to generate many distributions:\n\
 \n\
 @table @asis\n\
 @item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}\n\
+\n\
 @example\n\
 r = b * randg (a)\n\
 @end example\n\
+\n\
 @item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}\n\
+\n\
 @example\n\
 @group\n\
 r1 = randg (a, 1)\n\
 r = r1 / (r1 + randg (b, 1))\n\
 @end group\n\
 @end example\n\
+\n\
 @item @code{Erlang (a, n)}\n\
+\n\
 @example\n\
 r = a * randg (n)\n\
 @end example\n\
+\n\
 @item @code{chisq (df)} for @code{df > 0}\n\
+\n\
 @example\n\
 r = 2 * randg (df / 2)\n\
 @end example\n\
+\n\
 @item @code{t(df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
+\n\
 @example\n\
 r = randn () / sqrt (2 * randg (df / 2) / df)\n\
 @end example\n\
+\n\
 @item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
+\n\
 @example\n\
 @group\n\
 ## r1 equals 1 if n1 is infinite\n\
@@ -666,12 +677,16 @@ r2 = 2 * randg (n2 / 2) / n2\n\
 r = r1 / r2\n\n\
 @end group\n\
 @end example\n\
+\n\
 @item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\
+\n\
 @example\n\
 r = randp ((1 - p) / p * randg (n))\n\
 @end example\n\
+\n\
 @item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}\n\
 (use chisq if @code{L = 0})\n\
+\n\
 @example\n\
 @group\n\
 r = randp (L / 2)\n\
@@ -679,13 +694,16 @@ r(r > 0) = 2 * randg (r(r > 0))\n\
 r(df > 0) += 2 * randg (df(df > 0)/2)\n\
 @end group\n\
 @end example\n\
+\n\
 @item @code{Dirichlet (a1, @dots{} ak)}\n\
+\n\
 @example\n\
 @group\n\
 r = (randg (a1), @dots{}, randg (ak))\n\
 r = r / sum (r)\n\
 @end group\n\
 @end example\n\
+\n\
 @end table\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
@@ -871,17 +889,23 @@ Five different algorithms are used depending on the range of @var{l}\n\
 and whether or not @var{l} is a scalar or a matrix.\n\
 \n\
 @table @asis\n\
-@item For scalar @var{l} <= 12, use direct method.\n\
-W.H. Press, et al., @cite{Numerical Recipes in C}, Cambridge University Press, 1992.\n\
+@item For scalar @var{l} @leq{} 12, use direct method.\n\
+W.H. Press, et al., @cite{Numerical Recipes in C},\n\
+Cambridge University Press, 1992.\n\
+\n\
 @item For scalar @var{l} > 12, use rejection method.[1]\n\
-W.H. Press, et al., @cite{Numerical Recipes in C}, Cambridge University Press, 1992.\n\
-@item For matrix @var{l} <= 10, use inversion method.[2]\n\
+W.H. Press, et al., @cite{Numerical Recipes in C},\n\
+Cambridge University Press, 1992.\n\
+\n\
+@item For matrix @var{l} @leq{} 10, use inversion method.[2]\n\
 E. Stadlober, et al., WinRand source code, available via FTP.\n\
+\n\
 @item For matrix @var{l} > 10, use patchwork rejection method.\n\
 E. Stadlober, et al., WinRand source code, available via FTP, or\n\
 H. Zechner, @cite{Efficient sampling from continuous and discrete\n\
 unimodal distributions}, Doctoral Dissertation, 156pp., Technical\n\
 University Graz, Austria, 1994.\n\
+\n\
 @item For @var{l} > 1e8, use normal approximation.\n\
 L. Montanet, et al., @cite{Review of Particle Properties}, Physical Review\n\
 D 50 p1284, 1994.\n\

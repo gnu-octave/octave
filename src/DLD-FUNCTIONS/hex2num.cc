@@ -124,7 +124,7 @@ DEFUN_DLD (num2hex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} num2hex (@var{n})\n\
 Typecast a double precision number or vector to a 16 character hexadecimal\n\
-string of the IEEE 754 representation of the number.  For example\n\
+string of the IEEE 754 representation of the number.  For example:\n\
 \n\
 @example\n\
 @group\n\

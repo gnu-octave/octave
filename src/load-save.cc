@@ -613,10 +613,10 @@ name of the file.\n\
 Force Octave to assume the file is in Octave's binary format.\n\
 \n\
 @item -hdf5\n\
-Force Octave to assume the file is in HDF5 format.\n\
+Force Octave to assume the file is in @sc{hdf5} format.\n\
 (HDF5 is a free, portable binary format developed by the National\n\
 Center for Supercomputing Applications at the University of Illinois.)\n\
-Note that Octave can read HDF5 files not created by itself, but may\n\
+Note that Octave can read @sc{hdf5} files not created by itself, but may\n\
 skip some datasets in formats that it cannot support.\n"
 
 HAVE_HDF5_HELP_STRING
@@ -1460,7 +1460,7 @@ Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 output to the terminal.  If no variable names are listed, Octave saves\n\
 all the variables in the current scope.  Otherwise, full variable names or\n\
 pattern syntax can be used to specify the variables to save.\n\
-If the @code{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
+If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
 of the scalar structure @var{STRUCT} are saved as if they were variables\n\
 with corresponding names.\n\
 Valid options for the @code{save} command are listed in the following table.\n\
@@ -1490,7 +1490,7 @@ precision.  Only use this format if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
 @item -hdf5\n\
-Save the data in HDF5 format.\n\
+Save the data in @sc{hdf5} format.\n\
 (HDF5 is a free, portable binary format developed by the National\n\
 Center for Supercomputing Applications at the University of Illinois.)\n"
 
@@ -1498,7 +1498,7 @@ HAVE_HDF5_HELP_STRING
 
 "\n\
 @item -float-hdf5\n\
-Save the data in HDF5 format but only using single precision.\n\
+Save the data in @sc{hdf5} format but only using single precision.\n\
 Only use this format if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
@@ -1553,7 +1553,7 @@ specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters.  \n\
 \n\
 Wildcards may also be used in the field name specifications when using\n\
-the @code{-struct} modifier (but not in the struct name itself).\n\
+the @option{-struct} modifier (but not in the struct name itself).\n\
 \n\
 @end table\n\
 \n\
@@ -1753,7 +1753,7 @@ the file @file{data} in Octave's binary format.\n\
 
 DEFUN (crash_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it\n\
@@ -1771,7 +1771,7 @@ DEFUN (default_save_options, args, nargout,
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
 Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
-The default value is @code{-text}.\n\
+The default value is @option{-text}.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
@@ -1780,7 +1780,7 @@ The default value is @code{-text}.\n\
 
 DEFUN (octave_core_file_limit, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
 Query or set the internal variable that specifies the maximum amount\n\
 of memory (in kilobytes) of the top-level workspace that Octave will\n\
@@ -1798,7 +1798,7 @@ be much larger than the limit.  The default value is -1 (unlimited)\n\
 
 DEFUN (octave_core_file_name, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
@@ -1811,7 +1811,7 @@ The default value is @code{\"octave-core\"}\n\
 
 DEFUN (octave_core_file_options, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
 Query or set the internal variable that specifies the options used for\n\
 saving the workspace data if Octave aborts.  The value of\n\

@@ -379,7 +379,7 @@ do_bessel (enum bessel_type type, const char *fn,
 
 DEFUN_DLD (besselj, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefn  {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
@@ -390,15 +390,21 @@ Compute Bessel or Hankel functions of various kinds:\n\
 @item besselj\n\
 Bessel functions of the first kind.  If the argument @var{opt} is supplied, \n\
 the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
+\n\
 @item bessely\n\
 Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
 the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
+\n\
 @item besseli\n\
-Modified Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp(-abs(real(x)))}.\n\
+\n\
+Modified Bessel functions of the first kind.  If the argument @var{opt} is\n\
+supplied, the result is multiplied by @code{exp(-abs(real(x)))}.\n\
+\n\
 @item besselk\n\
-Modified Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp(x)}.\n\
+\n\
+Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
+supplied, the result is multiplied by @code{exp(x)}.\n\
+\n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
 = 2) kind.  If the argument @var{opt} is supplied, the result is multiplied by\n\
@@ -422,15 +428,20 @@ and is the same size as the result.\n\
 @enumerate 0\n\
 @item\n\
 Normal return.\n\
+\n\
 @item\n\
 Input error, return @code{NaN}.\n\
+\n\
 @item\n\
 Overflow, return @code{Inf}.\n\
+\n\
 @item\n\
 Loss of significance by argument reduction results in less than\n\
 half of machine accuracy.\n\
+\n\
 @item\n\
 Complete loss of significance by argument reduction, return @code{NaN}.\n\
+\n\
 @item\n\
 Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\
@@ -539,15 +550,20 @@ is the same size as the result.\n\
 @enumerate 0\n\
 @item\n\
 Normal return.\n\
+\n\
 @item\n\
 Input error, return @code{NaN}.\n\
+\n\
 @item\n\
 Overflow, return @code{Inf}.\n\
+\n\
 @item\n\
 Loss of significance by argument reduction results in less than half\n\
  of machine accuracy.\n\
+\n\
 @item\n\
 Complete loss of significance by argument reduction, return @code{NaN}.\n\
+\n\
 @item\n\
 Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\

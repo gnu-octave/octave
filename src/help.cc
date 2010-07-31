@@ -286,7 +286,8 @@ Alternate conditional test for an if block.  See @code{if} for an example.\n\
   pair_type ("end",
     "-*- texinfo -*-\n\
 @deffn Keyword end\n\
-Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or @code{function} block.\n\
+Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
+@code{function} block.\n\
 @seealso{for, if, do, while, function}\n\
 @end deffn"),
 
@@ -343,6 +344,7 @@ Mark the end of a while loop.  See @code{while} for an example.\n\
     "-*- texinfo -*-\n\
 @deffn Keyword for @var{i} = @var{range}\n\
 Begin a for loop.\n\
+\n\
 @example\n\
 @group\n\
 for i = 1:10\n\
@@ -367,6 +369,7 @@ parameters.\n\
     "-*- texinfo -*-\n\
 @deffn Keyword global\n\
 Declare variables to have global scope.\n\
+\n\
 @example\n\
 @group\n\
 global @var{x};\n\
@@ -385,6 +388,7 @@ endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
 @deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
 Begin an if block.\n\
+\n\
 @example\n\
 @group\n\
 x = 1;\n\
@@ -443,6 +447,7 @@ This function has been deprecated in favor of persistent.\n\
     "-*- texinfo -*-\n\
 @deffn Keyword switch @var{statement}\n\
 Begin a switch block.\n\
+\n\
 @example\n\
 @group\n\
 yesno = \"yes\"\n\
@@ -1004,8 +1009,8 @@ file_is_in_dir (const std::string filename, const std::string dir)
 
 DEFUN (__list_functions__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {@var{retval} =} __list_functions__ ()\n\
-@deftypefnx{Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
+@deftypefn  {Function File} {@var{retval} =} __list_functions__ ()\n\
+@deftypefnx {Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1044,7 +1049,7 @@ Undocumented internal function.\n\
 
 DEFUN (doc_cache_file, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} doc_cache_file ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave documentation cache file.  A cache file significantly improves\n\
@@ -1053,7 +1058,7 @@ the performance of the @code{lookfor} command.  The default value is \n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
 and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
-@w{@code{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
+@w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file NAME}.\n\
 @seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
@@ -1063,14 +1068,14 @@ The default value may be overridden by the environment variable\n\
 
 DEFUN (info_file, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} info_file ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
 which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
-@w{@code{OCTAVE_INFO_FILE}}, or the command line argument\n\
+@w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file NAME}.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
@@ -1080,7 +1085,7 @@ The default value may be overridden by the environment variable\n\
 
 DEFUN (info_program, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} info_program ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
@@ -1089,7 +1094,7 @@ in which @var{octave-home} is the root directory of the Octave installation,\n\
 @var{version} is the Octave version number, and @var{arch}\n\
 is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default value may be overridden by the environment variable\n\
-@w{@code{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
+@w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
@@ -1099,7 +1104,7 @@ default value may be overridden by the environment variable\n\
 
 DEFUN (makeinfo_program, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} makeinfo_program ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
@@ -1112,7 +1117,7 @@ Texinfo markup commands.  The default value is @code{makeinfo}.\n\
 
 DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\

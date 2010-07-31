@@ -973,7 +973,7 @@ location of the error.  Typically @var{err} is returned from\n\
 
 DEFUN (error, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} error (@var{template}, @dots{})\n\
+@deftypefn  {Built-in Function} {} error (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} error (@var{id}, @var{template}, @dots{})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
@@ -1097,7 +1097,7 @@ error: nargin != 1\n\
 
 DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} warning (@var{template}, @dots{})\n\
+@deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
@@ -1479,7 +1479,7 @@ initialize_default_warning_state (void)
 
 DEFUN (lasterror, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{err} =} lasterror (@var{err})\n\
+@deftypefn  {Built-in Function} {@var{err} =} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
 Returns or sets the last error message.  Called without any arguments\n\
 returns a structure containing the last error message, as well as other\n\
@@ -1488,8 +1488,10 @@ information related to this error.  The elements of this structure are:\n\
 @table @asis\n\
 @item 'message'\n\
 The text of the last error message\n\
+\n\
 @item 'identifier'\n\
 The message identifier of this error message\n\
+\n\
 @item 'stack'\n\
 A structure containing information on where the message occurred.  This might\n\
 be an empty structure if this in the case where this information cannot\n\
@@ -1498,10 +1500,13 @@ be obtained.  The fields of this structure are:\n\
 @table @asis\n\
 @item 'file'\n\
 The name of the file where the error occurred\n\
+\n\
 @item 'name'\n\
 The name of function in which the error occurred\n\
+\n\
 @item 'line'\n\
 The line number at which the error occurred\n\
+\n\
 @item 'column'\n\
 An optional field with the column number at which the error occurred\n\
 @end table\n\
@@ -1760,7 +1765,7 @@ to check for the proper number of arguments.\n\
 
 DEFUN (beep_on_error, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} beep_on_error ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
@@ -1771,7 +1776,7 @@ to ring the terminal bell before printing an error message.\n\
 
 DEFUN (debug_on_error, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} debug_on_error ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.  This will also\n\
@@ -1784,7 +1789,7 @@ the top-level error message).\n\
 
 DEFUN (debug_on_warning, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} debug_on_warning ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\

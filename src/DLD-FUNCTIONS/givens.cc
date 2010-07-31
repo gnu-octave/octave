@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (givens, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})\n\
+@deftypefn  {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
 @tex\n\
 Return a $2\\times 2$ orthogonal matrix\n\
@@ -52,7 +52,7 @@ Return a 2 by 2 orthogonal matrix\n\
 @code{@var{g} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
 @end ifnottex\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\

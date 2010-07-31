@@ -38,23 +38,23 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (matrix_type, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{type} =} matrix_type (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{type} =} matrix_type (@var{a})\n\
 @deftypefnx {Loadable Function} {@var{type} =} matrix_type (@var{a}, 'nocompute')\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, @var{type})\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'upper', @var{perm})\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'lower', @var{perm})\n\
 @deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'banded', @var{nl}, @var{nu})\n\
-Identify the matrix type or mark a matrix as a particular type.  This allows rapid\n\
-for solutions of linear equations involving @var{a} to be performed.  Called with a\n\
-single argument, @code{matrix_type} returns the type of the matrix and caches it for\n\
-future use.  Called with more than one argument, @code{matrix_type} allows the type\n\
-of the matrix to be defined.\n\
+Identify the matrix type or mark a matrix as a particular type.  This allows\n\
+rapid for solutions of linear equations involving @var{a} to be performed.  \n\
+Called with a single argument, @code{matrix_type} returns the type of the matrix\n\
+and caches it for future use.  Called with more than one argument,\n\
+@code{matrix_type} allows the type of the matrix to be defined.\n\
 \n\
-If the option 'nocompute' is given, the function will not attempt to guess the type if it is\n\
-still unknown.  This is useful for debugging purposes.\n\
+If the option 'nocompute' is given, the function will not attempt to guess the\n\
+type if it is still unknown.  This is useful for debugging purposes.\n\
 \n\
-The possible matrix types depend on whether the matrix is full or sparse, and can be\n\
-one of the following\n\
+The possible matrix types depend on whether the matrix is full or sparse, and\n\
+can be one of the following\n\
 \n\
 @table @asis\n\
 @item 'unknown'\n\
@@ -71,45 +71,46 @@ Diagonal Matrix.  (Sparse matrices only)\n\
 \n\
 @item 'permuted diagonal'\n\
 Permuted Diagonal matrix.  The permutation does not need to be specifically\n\
-indicated, as the structure of the matrix explicitly gives this.  (Sparse matrices\n\
-only)\n\
+indicated, as the structure of the matrix explicitly gives this.  (Sparse\n\
+matrices only)\n\
 \n\
 @item 'upper'\n\
-Upper triangular.  If the optional third argument @var{perm} is given, the matrix is\n\
-assumed to be a permuted upper triangular with the permutations defined by the\n\
-vector @var{perm}.\n\
+Upper triangular.  If the optional third argument @var{perm} is given, the\n\
+matrix is assumed to be a permuted upper triangular with the permutations\n\
+defined by the vector @var{perm}.\n\
 \n\
 @item 'lower'\n\
-Lower triangular.  If the optional third argument @var{perm} is given, the matrix is\n\
-assumed to be a permuted lower triangular with the permutations defined by the\n\
-vector @var{perm}.\n\
+Lower triangular.  If the optional third argument @var{perm} is given, the\n\
+matrix is assumed to be a permuted lower triangular with the permutations\n\
+defined by the vector @var{perm}.\n\
 \n\
 @item 'banded'\n\
 @itemx 'banded positive definite'\n\
-Banded matrix with the band size of @var{nl} below the diagonal and @var{nu} above\n\
-it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and treated\n\
-with specialized code.  In addition the matrix can be marked as probably a\n\
-positive definite (Sparse matrices only)\n\
+Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
+above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and\n\
+treated with specialized code.  In addition the matrix can be marked as probably\n\
+a positive definite (Sparse matrices only)\n\
 \n\
 @item 'singular'\n\
-The matrix is assumed to be singular and will be treated with a minimum norm solution\n\
+The matrix is assumed to be singular and will be treated with a minimum norm\n\
+solution\n\
 \n\
 @end table\n\
 \n\
-Note that the matrix type will be discovered automatically on the first attempt to\n\
-solve a linear equation involving @var{a}.  Therefore @code{matrix_type} is only\n\
-useful to give Octave hints of the matrix type.  Incorrectly defining the\n\
+Note that the matrix type will be discovered automatically on the first attempt\n\
+to solve a linear equation involving @var{a}.  Therefore @code{matrix_type} is\n\
+only useful to give Octave hints of the matrix type.  Incorrectly defining the\n\
 matrix type will result in incorrect results from solutions of linear equations,\n\
 and so it is entirely the responsibility of the user to correctly identify the\n\
 matrix type.\n\
 \n\
-Also the test for positive definiteness is a low-cost test for a hermitian\n\
+Also the test for positive definiteness is a low-cost test for a Hermitian\n\
 matrix with a real positive diagonal.  This does not guarantee that the matrix\n\
 is positive definite, but only that it is a probable candidate.  When such a\n\
-matrix is factorized, a Cholesky factorization is first attempted, and if\n\
-that fails the matrix is then treated with an LU factorization.  Once the\n\
-matrix has been factorized, @code{matrix_type} will return the correct\n\
-classification of the matrix.\n\
+matrix is factorized, a Cholesky factorization is first attempted, and if that\n\
+fails the matrix is then treated with an LU factorization.  Once the matrix has\n\
+been factorized, @code{matrix_type} will return the correct classification of\n\
+the matrix.\n\
 @end deftypefn")
 {
   int nargin = args.length ();

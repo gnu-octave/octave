@@ -59,8 +59,10 @@ Factorize @var{s}.  This is the default.\n\
 \n\
 @item col\n\
 Factorize @code{@var{s}' * @var{s}}.\n\
+\n\
 @item row\n\
 Factorize @code{@var{s} * @var{s}'}.\n\
+\n\
 @item lo\n\
 Factorize @code{@var{s}'}\n\
 @end table\n\

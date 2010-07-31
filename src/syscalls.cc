@@ -113,7 +113,7 @@ DEFUNX ("dup2", Fdup2, args, ,
 Duplicate a file descriptor.\n\
 \n\
 If successful, @var{fid} is greater than zero and contains the new file\n\
-ID.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
+ID@.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
 system-dependent error message.\n\
 @end deftypefn")
 {
@@ -248,7 +248,7 @@ and output streams of the subprocess are returned in @var{in} and\n\
 contains the process ID of the subprocess.  Otherwise, @var{pid} is\n\
 @minus{}1.\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 [in, out, pid] = popen2 (\"sort\", \"-r\");\n\
@@ -876,7 +876,7 @@ system-dependent error message.\n\
 
 DEFUNX ("stat", Fstat, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
+@deftypefn  {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
 Return a structure @var{s} containing the following information about\n\
 @var{file}.\n\
@@ -941,7 +941,7 @@ If @var{file} is a symbolic link, @code{stat} will return information\n\
 about the actual file that is referenced by the link.  Use @code{lstat}\n\
 if you want information about the symbolic link itself.\n\
 \n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 [s, err, msg] = stat (\"/vmlinuz\")\n\
@@ -1176,7 +1176,7 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
 DEFUN (uname, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
-Return system information in the structure.  For example,\n\
+Return system information in the structure.  For example:\n\
 \n\
 @example\n\
 @group\n\

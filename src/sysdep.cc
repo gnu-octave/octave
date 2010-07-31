@@ -535,7 +535,7 @@ octave_kbhit (bool wait)
 
 DEFUN (clc, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} clc ()\n\
+@deftypefn  {Built-in Function} {} clc ()\n\
 @deftypefnx {Built-in Function} {} home ()\n\
 Clear the terminal screen and move the cursor to the upper left corner.\n\
 @end deftypefn")
@@ -579,7 +579,7 @@ returns a string containing the value of your path.\n\
 
 DEFUN (putenv, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} putenv (@var{var}, @var{value})\n\
+@deftypefn  {Built-in Function} {} putenv (@var{var}, @var{value})\n\
 @deftypefnx {Built-in Function} {} setenv (@var{var}, @var{value})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
 @end deftypefn")
@@ -820,7 +820,7 @@ slash (or all characters, if there is no slash) are treated as a\n\
 possible user name, and the tilde and the following characters up to the\n\
 slash are replaced by the home directory of the named user.  If the\n\
 tilde is followed immediately by a slash, the tilde is replaced by the\n\
-home directory of the user running Octave.  For example,\n\
+home directory of the user running Octave.  For example:\n\
 \n\
 @example\n\
 @group\n\

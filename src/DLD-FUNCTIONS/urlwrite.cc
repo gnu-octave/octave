@@ -682,12 +682,12 @@ delete_file (std::string file)
 
 DEFUN_DLD (urlwrite, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
+@deftypefn  {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {[@var{f}, @var{success}, @var{message}] =} urlwrite (@var{url}, @var{localfile})\n\
 Download a remote file specified by its @var{url} and save it as\n\
-@var{localfile}.  For example,\n\
+@var{localfile}.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -848,12 +848,12 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
 DEFUN_DLD (urlread, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{s} =} urlread (@var{url})\n\
+@deftypefn  {Loadable Function} {@var{s} =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
 Download a remote file specified by its @var{url} and return its content\n\
-in string @var{s}.  For example,\n\
+in string @var{s}.  For example:\n\
 \n\
 @example\n\
 s = urlread (\"ftp://ftp.octave.org/pub/octave/README\");\n\
@@ -866,7 +866,7 @@ then the error is signaled through Octave's error handling mechanism.\n\
 \n\
 This function uses libcurl.  Curl supports, among others, the HTTP,\n\
 FTP and FILE protocols.  Username and password may be specified in the\n\
-URL.  For example,\n\
+URL@.  For example:\n\
 \n\
 @example\n\
 s = urlread (\"http://user:password@@example.com/file.txt\");\n\
@@ -875,7 +875,7 @@ s = urlread (\"http://user:password@@example.com/file.txt\");\n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
 The parameter @var{method} is either @samp{get} or @samp{post}\n\
 and @var{param} is a cell array of parameter and value pairs.\n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -967,7 +967,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
 DEFUN_DLD (__ftp__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __ftp__ (@var{handle}, @var{host})\n\
+@deftypefn  {Loadable Function} {} __ftp__ (@var{handle}, @var{host})\n\
 @deftypefnx {Loadable Function} {} __ftp__ (@var{handle}, @var{host}, @var{username}, @var{password})\n\
 Undocumented internal function\n\
 @end deftypefn")

@@ -109,18 +109,25 @@ individually.  The function @var{name} can be one of the functions\n\
 @table @code\n\
 @item isempty\n\
 Return 1 for empty elements.\n\
+\n\
 @item islogical\n\
 Return 1 for logical elements.\n\
+\n\
 @item isreal\n\
 Return 1 for real elements.\n\
+\n\
 @item length\n\
 Return a vector of the lengths of cell elements.\n\
+\n\
 @item ndims\n\
 Return the number of dimensions of each element.\n\
+\n\
 @item prodofsize\n\
 Return the product of dimensions of each element.\n\
+\n\
 @item size\n\
 Return the size along the @var{k}-th dimension.\n\
+\n\
 @item isclass\n\
 Return 1 for elements of @var{class}.\n\
 @end table\n\
@@ -131,7 +138,7 @@ function (in a character string).  In the case of a character string\n\
 argument, the function must accept a single argument named @var{x}, and\n\
 it must return a string value.  The function can take one or more arguments,\n\
 with the inputs arguments given by @var{c}, @var{d}, etc.  Equally the\n\
-function can return one or more output arguments.  For example\n\
+function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -141,8 +148,8 @@ cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
 @end example\n\
 \n\
 The number of output arguments of @code{cellfun} matches the number of output\n\
-arguments of the function.  The outputs of the function will be collected into the\n\
-output arguments of @code{cellfun} like this:\n\
+arguments of the function.  The outputs of the function will be collected into\n\
+the output arguments of @code{cellfun} like this:\n\
 \n\
 @example\n\
 @group\n\
@@ -158,15 +165,15 @@ endfunction\n\
            1 4 9\n\
 @end group\n\
 @end example\n\
+\n\
 Note that per default the output argument(s) are arrays of the same size as the\n\
-input arguments.\n\
-Input arguments that are singleton (1x1) cells will be automatically expanded\n\
-to the size of the other arguments.\n\
+input arguments.  Input arguments that are singleton (1x1) cells will be\n\
+automatically expanded to the size of the other arguments.\n\
 \n\
 If the parameter 'UniformOutput' is set to true (the default), then the function\n\
-must return scalars which will be concatenated into the\n\
-return array(s).  If 'UniformOutput' is false, the outputs are concatenated into\n\
-a cell array (or cell arrays).  For example\n\
+must return scalars which will be concatenated into the return array(s).  If\n\
+'UniformOutput' is false, the outputs are concatenated into a cell array (or\n\
+cell arrays).  For example\n\
 \n\
 @example\n\
 @group\n\
@@ -187,7 +194,7 @@ where there is an additional input argument to @var{errfunc} relative to\n\
 @var{func}, given by @var{s}.  This is a structure with the elements\n\
 'identifier', 'message' and 'index', giving respectively the error\n\
 identifier, the error message, and the index into the input arguments\n\
-of the element that caused the error.  For example\n\
+of the element that caused the error.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1281,7 +1288,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 
 DEFUN_DLD (mat2cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})\n\
+@deftypefn  {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{r})\n\
 Convert the matrix @var{a} to a cell array.  If @var{a} is 2-D, then\n\
@@ -1453,9 +1460,9 @@ do_cellslices_nda (const NDA& array,
 DEFUN_DLD (cellslices, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
-Given an array @var{x}, this function produces a cell array of slices from the array\n\
-determined by the index vectors @var{lb}, @var{ub}, for lower and upper bounds, respectively.\n\
-In other words, it is equivalent to the following code:\n\
+Given an array @var{x}, this function produces a cell array of slices from the\n\
+array determined by the index vectors @var{lb}, @var{ub}, for lower and upper\n\
+bounds, respectively.  In other words, it is equivalent to the following code:\n\
 \n\
 @example\n\
 @group\n\

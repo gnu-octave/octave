@@ -218,6 +218,7 @@ additional options.\n\
 @item m\n\
 @code{table(idx(i)) == val(i)} if @code{val(i)}\n\
 occurs in table; otherwise, @code{idx(i)} is zero.\n\
+\n\
 @item b\n\
 @code{idx(i)} is a logical 1 or 0, indicating whether\n\
 @code{val(i)} is contained in table or not.\n\
@@ -226,6 +227,7 @@ occurs in table; otherwise, @code{idx(i)} is zero.\n\
 For numeric lookups\n\
 the leftmost subinterval shall be extended to infinity (i.e., all indices\n\
 at least 1)\n\
+\n\
 @item r\n\
 For numeric lookups\n\
 the rightmost subinterval shall be extended to infinity (i.e., all indices\n\

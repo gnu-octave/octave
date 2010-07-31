@@ -2035,7 +2035,7 @@ No checks are made for duplicate elements.\n\
 
 DEFUN (addpath, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
+@deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add @var{dir1}, @dots{} to the current function search path.  If\n\
 @var{option} is @samp{\"-begin\"} or 0 (the default), prepend the\n\

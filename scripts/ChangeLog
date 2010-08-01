@@ -1,3 +1,8 @@
+2010-08-01  Martin Helm <martin@mhelm.de>
+
+	* plot/isosurface.m: Swap rows and columns of matrix in call to
+	meshgrid.
+
 2010-08-01  Rik <octave@nomad.inbox5.com>
 
 	* plot/print.m: Update documentation string.  Change to active voice.

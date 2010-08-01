@@ -132,7 +132,7 @@ function varargout = isosurface(varargin)
     endif
   else
     val = varargin{1};
-    [n1, n2, n3] = size (val);
+    [n2, n1, n3] = size (val);
     [x, y, z] = meshgrid (1:n1, 1:n2, 1:n3);
     iso = varargin{2};
     if (nargin >= 3 && ismatrix (varargin{3}))

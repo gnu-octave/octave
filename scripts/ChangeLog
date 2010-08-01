@@ -1,3 +1,7 @@
+2010-08-01  Rik <octave@nomad.inbox5.com>
+
+	* plot/print.m: Update documentation string.  Change to active voice.
+
 2010-07-30  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: add .DOCSTRINGS to the DISTCLEANFILES list

@@ -21,38 +21,38 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a graph, or save it to a file
+## Print a plot, or save it to a file.
 ##
-## @var{filename} defines the file name of the output file.  If the
-## file name has no suffix, one is inferred from the specified
+## @var{filename} specifies the name of the output file.  If the
+## file name has no suffix, then one is inferred from the specified
 ## device and appended to the file name.  If no
-## filename is specified, the output is sent to the printer.
+## filename is specified the output is sent to the printer.
 ##
-## @var{h} specifies the figure handle.  If no handle is specified
+## @var{h} specifies the figure handle to print.  If no handle is specified
 ## the handle for the current figure is used.
 ##
 ## @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed. The
-##   default is the current figure.
+##   Specify the handle, @var{h}, of the figure to be printed.  The
+## default is the current figure.
 ##
 ## @item -P@var{printer}
-##   Set the @var{printer} name to which the graph is sent if no
-##   @var{filename} is specified.
+##   Set the @var{printer} name to which the plot is sent when no
+## @var{filename} is specified.
 ##
 ## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows,
-## the defaults are 'gs' and 'gswin32c', respectively.
+##   Specify the command for invoking Ghostscript.  The defaults for Unix and
+## Windows are 'gs' and 'gswin32c' respectively.
 ##
 ## @item -color
 ## @itemx -mono
-##   Monochrome or color lines.
+##   Print monochrome or color lines.
 ##
 ## @item -solid
 ## @itemx -dashed
-##   Solid or dashed lines.
+##   Print solid or dashed lines.
 ##
 ## @item -portrait
 ## @itemx -landscape
@@ -72,6 +72,7 @@
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated postscript (level 1 and 2, mono and color)
+##
 ##   @item tex
 ##   @itemx epslatex
 ##   @itemx epslatexstandalone
@@ -103,9 +104,9 @@
 ##
 ##   @item fig
 ##     XFig.  If this format is selected the additional options
-##     @option{-textspecial} or @option{-textnormal} can be used to control
-##     whether the special flag should be set for the text in
-##     the figure (default is @option{-textnormal}). 
+## @option{-textspecial} or @option{-textnormal} can be used to control
+## whether the special flag should be set for the text in
+## the figure (default is @option{-textnormal}). 
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -137,8 +138,8 @@
 ## or if there is no filename it is sent to the printer as postscript.
 ##
 ## @item -d@var{ghostscript_device}
-##   Additional devices are supported by Ghostscript.
-## Some examples are;
+##   Specify an output device supported by Ghostscript.
+## Some examples are:
 ##
 ##   @table @code
 ##   @item ljet2p 
@@ -166,39 +167,39 @@
 ##     Converts ps or eps to pdf
 ##   @end table
 ##
-##   For a complete list, type `system ("gs -h")' to see what formats
-## and devices are available.
+##   For a complete list of available formats and devices type
+##   @samp{system ("gs -h")}.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
 ## by the figure's "papersize" property.  When the output 
 ## is sent to a file the size is determined by the figure's
 ## "paperposition" property.
 ##
-## @itemx -append
-##   Appends the output to a pre-existing file.  Presently only PDF,
-## and Postscript files are supported.
+## @item -append
+##   Append the output to a pre-existing file.  Only PDF
+## and Postscript files are currently supported.
 ##
-## @itemx -r@var{NUM}
+## @item -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
-## SVG the default is the screen resolution, for other it is 150 dpi.
+## SVG the default is the screen resolution, for others it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Forces a tight bounding box for eps-files.  Since the Ghostscript
+##   Force a tight bounding box for eps-files.  Because the Ghostscript
 ## devices are conversions of an eps-file, this option works for those
 ## devices as well.
 ##
-## @itemx -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  If
-## using the command form of the print function, you must quote the
-## @var{xsize},@var{ysize} option.  For example, by writing
+## @item -S@var{xsize},@var{ysize}
+##   Specify plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  If
+## using the command form of the print function, the  @var{xsize},@var{ysize}
+## option must be quoted.  For example, by writing
 ## @w{@code{"-S640,480"}}.  The size defaults to that specified by the
 ## figure's paperposition property.
 ##
-## @item -F@var{fontname}
+## @item  -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
-##   @var{fontname} set the postscript font (for use with postscript,
+##   Set the postscript font to @var{fontname} (for use with postscript,
 ## aifm, @nospell{corel} and fig).  By default, 'Helvetica' is set for PS/aifm,
 ## and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
 ## @var{size} is given in points.  @var{fontname} is ignored for the

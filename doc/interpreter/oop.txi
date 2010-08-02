@@ -124,7 +124,7 @@ at the first executable line of the display method of the polynomial
 class.
 
 To check where a variable is a user class, the @code{isobject} and
-@code{isa} functions can be used. for example
+@code{isa} functions can be used. for example:
 
 @example
 @group
@@ -151,7 +151,7 @@ To inquire whether a particular method is available to a user class, the
 @DOCSTRING(ismethod)
 
 @noindent
-For example
+For example:
 
 @example
 @group
@@ -192,7 +192,7 @@ To be consistent with the Octave graphic handle classes, a class
 should also define the @code{get} and @code{set} methods.  The
 @code{get} method should accept one or two arguments, and given one
 argument of the appropriate class it should return a structure with
-all of the properties of the class.  For example
+all of the properties of the class.  For example:
 
 @example
 @group
@@ -226,7 +226,7 @@ is discussed in the next section.
 
 Finally, user classes can be considered as a special type of a
 structure, and so they can be saved to a file in the same manner as a
-structure.  For example
+structure.  For example:
 
 @example
 @group
@@ -277,8 +277,9 @@ determined by the @code{subsref} method.
 @DOCSTRING(subsref)
 
 For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of @var{n}-th power).
-In this case the @code{subsref} method of our polynomial class might look like
+polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of
+@var{n}-th power).  In this case the @code{subsref} method of our polynomial
+class might look like
 
 @example
 @group
@@ -347,6 +348,7 @@ a call to subsasgn:
 @end group
 @end example
 
+@noindent
 and the corresponding method looking like this:
 
 @example
@@ -387,18 +389,17 @@ This allows, for instance, defining a polynomial class where modifying a single
 element takes constant time.
 
 It is important to understand the implications that this optimization brings.
-Since no extra copy of @code{x} in the caller's scope will exist, it is @i{solely}
-the callee's responsibility to not leave @code{x} in an invalid state if an error
-occurs throughout the execution.  Also, if the method partially changes @code{x}
-and then errors out, the changes @i{will} affect @code{x} in the caller's scope.
-Deleting or completely replacing @code{x} inside subsasgn will not do anything,
-however, only indexed assignments matter.
+Since no extra copy of @code{x} in the caller's scope will exist, it is
+@emph{solely} the callee's responsibility to not leave @code{x} in an invalid
+state if an error occurs throughout the execution.  Also, if the method
+partially changes @code{x} and then errors out, the changes @emph{will} affect
+@code{x} in the caller's scope.  Deleting or completely replacing @code{x}
+inside subsasgn will not do anything, however, only indexed assignments matter.
 
-Since this optimization may change the way code works (especially if badly written),
-a built-in variable @code{optimize_subsasgn_calls} is provided to control it.
-It is on by default.
-Another option to avoid the effect is to declare subsasgn methods with different
-output and input arguments, like this:
+Since this optimization may change the way code works (especially if badly
+written), a built-in variable @code{optimize_subsasgn_calls} is provided to
+control it.  It is on by default.  Another option to avoid the effect is to
+declare subsasgn methods with different output and input arguments, like this:
 
 @example
 @group

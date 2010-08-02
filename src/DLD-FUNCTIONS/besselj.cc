@@ -407,8 +407,8 @@ supplied, the result is multiplied by @code{exp(x)}.\n\
 \n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
-= 2) kind.  If the argument @var{opt} is supplied, the result is multiplied by\n\
-@code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
+= 2) kind.  If the argument @var{opt} is supplied, the result is multiplied\n\
+by @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
 @var{k} = 2.\n\
 @end table\n\
 \n\

@@ -155,6 +155,7 @@ row vector, the expressions
   r(ones (n, 1), :)
 @end example
 
+@noindent
 will produce identical results, but the first one will be significantly
 faster, at least for @samp{r} and @samp{n} large enough.  The reason is that
 in the first case the index is kept in a compressed form, which allows Octave

@@ -31,6 +31,7 @@
 ## 1 - exp(-(x/shape)^scale)
 ## @end example
 ##
+## @noindent
 ## for @var{x} @geq{} 0.
 ## @end ifnottex
 ## @end deftypefn

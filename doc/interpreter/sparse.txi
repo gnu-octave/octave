@@ -215,6 +215,7 @@ that corresponds to this.  For example,
 s = diag (sparse(randn(1,n)), -1);
 @end example
 
+@noindent
 creates a sparse (@var{n}+1)-by-(@var{n}+1) sparse matrix with a single
 diagonal defined.
 
@@ -253,6 +254,7 @@ vector of the same size containing the data to be stored.  For example,
 @end group
 @end example
 
+@noindent
 creates an @var{r}-by-@var{c} sparse matrix with a random distribution
 of @var{n} (<@var{r}) elements per column.  The elements of the vectors
 do not need to be sorted in any particular order as Octave will sort
@@ -360,6 +362,7 @@ ans = Lower
 @end group
 @end example
 
+@noindent
 shows that Octave correctly determines the matrix type for lower
 triangular matrices.  @dfn{matrix_type} can also be used to force
 the type of a matrix to be a particular type.  For example:
@@ -409,6 +412,7 @@ gplot(A,xy)
 @end group
 @end example
 
+@noindent
 which creates an adjacency matrix @code{A} where node 1 is connected
 to nodes 2 and 6, node 2 with nodes 1 and 3, etc.  The coordinates of
 the nodes are given in the n-by-2 matrix @code{xy}.
@@ -534,6 +538,7 @@ speye(3) + 0
 @end group
 @end example
 
+@noindent
 returns a full matrix as can be seen. 
 
 
@@ -561,6 +566,7 @@ depending on the type of its input arguments.  So
  a = diag (sparse([1,2,3]), -1);
 @end example
 
+@noindent
 should return a sparse matrix.  To ensure this actually happens, the
 @dfn{sparse} function, and other functions based on it like @dfn{speye}, 
 always returns a sparse matrix, even if the memory used will be larger 
@@ -593,6 +599,7 @@ the examples
 @end group
 @end example
 
+@noindent
 will give.  The first example of @var{s} raised to the power of 2 causes
 no problems.  However @var{s} raised element-wise to itself involves a
 large number of terms @code{0 .^ 0} which is 1. There @code{@var{s} .^

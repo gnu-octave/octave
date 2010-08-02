@@ -176,6 +176,7 @@ dt\n\
 @end group\n\
 @end example\n\
 \n\
+@noindent\n\
 with\n\
 \n\
 @example\n\
@@ -210,6 +211,7 @@ must have the form\n\
 @var{jac} = j (@var{x}, @var{t})\n\
 @end example\n\
 \n\
+@noindent\n\
 in which @var{jac} is the matrix of partial derivatives\n\
 @tex\n\
 $$ J = {\\partial f_i \\over \\partial x_j} = \\left[\\matrix{\n\

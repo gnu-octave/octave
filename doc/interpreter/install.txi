@@ -75,7 +75,7 @@ integers for array dimensions and indexing on 64-bit platforms.  You
 probably don't want to use this option unless you know what you are
 doing.
 
-If you use @code{--enable-64}, you must ensure that your Fortran
+If you use @option{--enable-64}, you must ensure that your Fortran
 compiler generates code with 8 byte signed @code{INTEGER} values, and
 that your @sc{blas} and @sc{lapack} libraries are compiled to use 8 byte
 signed integers for array dimensions and indexing.

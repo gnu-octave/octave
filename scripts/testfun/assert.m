@@ -47,9 +47,9 @@
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
 ## If @var{tol} is negative use it as a relative tolerance, will produce an
 ## error if
-## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} * @var{expected})}.
-## If @var{expected} is zero @var{tol} will always be used as an absolute
-## tolerance.
+## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} *
+## @var{expected})}.  If @var{expected} is zero @var{tol} will always be used as
+## an absolute tolerance.
 ## @end table
 ## @seealso{test}
 ## @end deftypefn

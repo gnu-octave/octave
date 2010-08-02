@@ -636,6 +636,7 @@ Compute the modulo of @var{x} and @var{y}.  Conceptually this is given by\n\
 x - y .* floor (x ./ y)\n\
 @end example\n\
 \n\
+@noindent\n\
 and is written such that the correct modulus is returned for\n\
 integer types.  This function handles negative values correctly.  That\n\
 is, @code{mod (-1, 3)} is 2, not -1, as @code{rem (-1, 3)} returns.\n\
@@ -1940,6 +1941,7 @@ The inverse of the @code{permute} function.  The expression\n\
 ipermute (permute (a, perm), perm)\n\
 @end example\n\
 \n\
+@noindent\n\
 returns the original array @var{a}.\n\
 @seealso{permute}\n\
 @end deftypefn")
@@ -2245,8 +2247,8 @@ sum ([true, true], 'native')\n\
 @end example\n\
 \n\
   \n\
-On the contrary, if 'double' is given, the sum is performed in double precision\n\
-even for single precision inputs.\n\
+On the contrary, if 'double' is given, the sum is performed in double\n\
+precision even for single precision inputs.\n\
 \n\
 For double precision inputs, 'extra' indicates that a more accurate algorithm\n\
 than straightforward summation is to be used.  For single precision inputs,\n\
@@ -2452,6 +2454,7 @@ This function is conceptually equivalent to computing\n\
 sum (x .* conj (x), dim)\n\
 @end example\n\
 \n\
+@noindent\n\
 but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 @seealso{sum}\n\
 @end deftypefn")
@@ -2893,8 +2896,9 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
-Return nonzero if @var{x} is a numeric object, i.e., an integer, real or complex\n\
-array.  Logical and character arrays are not considered to be numeric.\n\
+Return nonzero if @var{x} is a numeric object, i.e., an integer, real or\n\
+complex array.  Logical and character arrays are not considered to be\n\
+numeric.\n\
 @seealso{ischar, islogical, isinteger}\n\
 @end deftypefn")
 {
@@ -4572,8 +4576,8 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
- returns a full storage matrix from a sparse, diagonal, permutation matrix or a\n\
-range.\n\
+ returns a full storage matrix from a sparse, diagonal, permutation matrix\n\
+or a range.\n\
 @seealso{sparse}\n\
 @end deftypefn")
 {
@@ -5805,12 +5809,13 @@ Select the n-th smallest element of a vector, using the ordering defined by\n\
 @code{sort(@var{x})(@var{n})}.\n\
 @var{n} can also be a contiguous range, either ascending @code{l:u}\n\
 or descending @code{u:-1:l}, in which case a range of elements is returned.\n\
-If @var{x} is an array, @code{nth_element} operates along the dimension defined\n\
-by @var{dim}, or the first non-singleton dimension if @var{dim} is not given.\n\
+If @var{x} is an array, @code{nth_element} operates along the dimension\n\
+defined by @var{dim}, or the first non-singleton dimension if @var{dim} is\n\
+not given.\n\
 \n\
 nth_element encapsulates the C++ standard library algorithms nth_element and\n\
-partial_sort.  On average, the complexity of the operation is O(M*log(K)), where\n\
-@code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
+partial_sort.  On average, the complexity of the operation is O(M*log(K)),\n\
+where @code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
 This function is intended for cases where the ratio K/M is small; otherwise,\n\
 it may be better to use @code{sort}.\n\
 @seealso{sort, min, max}\n\
@@ -6203,17 +6208,16 @@ DEFUN (merge, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
-Merges elements of @var{true_val} and @var{false_val}, depending on the value of\n\
-@var{mask}.  If @var{mask} is a logical scalar, the other two arguments can be\n\
-arbitrary values.  Otherwise, @var{mask} must be a logical array, and\n\
-@var{tval},\n\
-@var{fval} should be arrays of matching class, or cell arrays.\n\
-In the scalar mask case, @var{tval} is returned if @var{mask} is true, otherwise\n\
-@var{fval} is returned.\n\
+Merges elements of @var{true_val} and @var{false_val}, depending on the\n\
+value of @var{mask}.  If @var{mask} is a logical scalar, the other two\n\
+arguments can be arbitrary values.  Otherwise, @var{mask} must be a logical\n\
+array, and @var{tval}, @var{fval} should be arrays of matching class, or\n\
+cell arrays.  In the scalar mask case, @var{tval} is returned if @var{mask}\n\
+is true, otherwise @var{fval} is returned.\n\
 \n\
-In the array mask case, both @var{tval} and @var{fval} must be either scalars or\n\
-arrays with dimensions equal to @var{mask}.  The result is constructed as\n\
-follows: \n\
+In the array mask case, both @var{tval} and @var{fval} must be either\n\
+scalars or arrays with dimensions equal to @var{mask}.  The result is\n\
+constructed as follows: \n\
 \n\
 @example\n\
 @group\n\

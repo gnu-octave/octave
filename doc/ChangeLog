@@ -1,3 +1,14 @@
+2010-08-01  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/basics.txi, interpreter/contrib.txi,
+	interpreter/diagperm.txi, interpreter/dynamic.txi, interpreter/eos.txi,
+	interpreter/expr.txi, interpreter/geometry.txi,
+	interpreter/install.txi, interpreter/matrix.txi,
+	interpreter/numbers.txi, interpreter/oop.txi, interpreter/plot.txi,
+	interpreter/sparse.txi, interpreter/stats.txi, interpreter/testfun.txi,
+	interpreter/tips.txi: Grammarcheck documentation.  Add @noindent lines
+	and ensure line length is less than 80.
+
 2010-07-28  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/audio.txi, interpreter/basics.txi,

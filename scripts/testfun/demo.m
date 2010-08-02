@@ -50,6 +50,7 @@
 ##    %! input("Press <enter> to continue: ","s");
 ## @end example
 ##
+## @noindent
 ## between the sections, but this is discouraged.  Other techniques
 ## include using multiple plots by saying figure between each, or
 ## using subplot to put multiple plots in the same window.

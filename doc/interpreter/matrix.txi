@@ -48,7 +48,7 @@ a matrix meet a specified condition.
 
 Since the comparison operators (@pxref{Comparison Ops}) return matrices
 of ones and zeros, it is easy to test a matrix for many things, not just
-whether the elements are nonzero.  For example, 
+whether the elements are nonzero.  For example,
 
 @example
 @group

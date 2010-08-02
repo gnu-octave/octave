@@ -40,6 +40,7 @@
 ## image_viewer ("eog %s");
 ## @end example
 ##
+## @noindent
 ## changes the image viewer to the @code{eog} program.
 ##
 ## With two input arguments, images will be displayed by calling
@@ -49,6 +50,7 @@
 ## image_viewer (data, @@my_image_viewer);
 ## @end example
 ##
+## @noindent
 ## sets the image viewer function to @code{my_image_viewer}.  The image
 ## viewer function is called with
 ##
@@ -56,6 +58,7 @@
 ## my_image_viewer (@var{x}, @var{y}, @var{im}, @var{zoom}, @var{data})
 ## @end example
 ##
+## @noindent
 ## where @var{x} and @var{y} are the axis of the image, @var{im} is the image
 ## variable, and @var{data} is extra user-supplied data to be passed to
 ## the viewer function.

@@ -296,8 +296,8 @@ $$\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
-\n\
 @c Set example in small font to prevent overfull line\n\
+\n\
 @smallexample\n\
 @group\n\
    N                   M\n\
@@ -325,8 +325,8 @@ y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
-\n\
 @c Set example in small font to prevent overfull line\n\
+\n\
 @smallexample\n\
 @group\n\
             N                   M\n\

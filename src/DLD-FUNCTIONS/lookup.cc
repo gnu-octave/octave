@@ -203,9 +203,9 @@ For non-strictly monotonic tables, empty intervals are always skipped.\n\
 The result is undefined if @var{table} is not monotonic, or if\n\
 @var{table} contains a NaN.\n\
 \n\
-The complexity of the lookup is O(M*log(N)) where N is the size of @var{table}\n\
-and M is the size of @var{y}.  In the special case when @var{y} is also sorted,\n\
-the complexity is O(min(M*log(N),M+N)).\n\
+The complexity of the lookup is O(M*log(N)) where N is the size of\n\
+@var{table} and M is the size of @var{y}.  In the special case when @var{y}\n\
+is also sorted, the complexity is O(min(M*log(N),M+N)).\n\
 \n\
 @var{table} and @var{y} can also be cell arrays of strings\n\
 (or @var{y} can be a single string).  In this case, string lookup\n\

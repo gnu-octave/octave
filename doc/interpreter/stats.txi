@@ -24,7 +24,7 @@ Octave has support for various statistical methods.  This includes
 basic descriptive statistics, statistical tests, random number generation,
 and much more.
 
-The functions that analyze data all assume that multidimensional data
+The functions that analyze data all assume that multi-dimensional data
 is arranged in a matrix where each row is an observation, and each
 column is a variable.  So, the matrix defined by
 

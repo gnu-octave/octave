@@ -95,6 +95,7 @@ endfor
 @end group
 @end example
 
+@noindent
 write
 
 @example
@@ -117,6 +118,7 @@ For instance, even better than
 a = b(2:n) - b(1:n-1);
 @end example
 
+@noindent
 is
 
 @example
@@ -626,6 +628,7 @@ strings is the @code{@@example} environment.  An example of its use is
 @end group
 @end example
 
+@noindent
 which produces
 
 @example

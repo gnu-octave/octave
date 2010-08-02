@@ -3856,7 +3856,8 @@ point.\n\
 Print the hexadecimal representation of numbers as they are stored in\n\
 memory.  For example, on a workstation which stores 8 byte real values\n\
 in IEEE format with the least significant byte first, the value of\n\
-@code{pi} when printed in @code{native-hex} format is @code{400921fb54442d18}.\n\
+@code{pi} when printed in @code{native-hex} format is\n\
+@code{400921fb54442d18}.\n\
 \n\
 @item hex\n\
 The same as @code{native-hex}, but always print the most significant\n\

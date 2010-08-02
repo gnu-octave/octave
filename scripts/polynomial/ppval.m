@@ -22,9 +22,11 @@
 ## If @var{pp} is scalar-valued, the result is an array of the same shape as
 ## @var{xi}.
 ## Otherwise, the size of the result is @code{[pp.d, length(@var{xi})]} if
-## @var{xi} is a vector, or @code{[pp.d, size(@var{xi})]} if it is a multi-dimensional
-## array.  If pp.orient is 1, the dimensions are permuted as in interp1, to
-## @code{[pp.d, length(@var{xi})]} and @code{[pp.d, size(@var{xi})]} respectively.
+## @var{xi} is a vector, or @code{[pp.d, size(@var{xi})]} if it is a
+## multi-dimensional array.  If pp.orient is 1, the dimensions are permuted as
+## in interp1, to
+## @code{[pp.d, length(@var{xi})]} and @code{[pp.d, size(@var{xi})]}
+## respectively.
 ## @seealso{mkpp, unmkpp, spline}
 ## @end deftypefn 
 

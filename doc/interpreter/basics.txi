@@ -1064,6 +1064,7 @@ endfunction
 @end group
 @end example
 
+@noindent
 the command @kbd{help f} produces the output
 
 @example

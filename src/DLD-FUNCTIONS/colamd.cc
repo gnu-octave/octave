@@ -216,23 +216,23 @@ DEFUN_DLD (colamd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{s}, @var{knobs})\n\
 \n\
 Column approximate minimum degree permutation.\n\
-@code{@var{p} = colamd (@var{s})} returns the column approximate minimum degree\n\
-permutation vector for the sparse matrix @var{s}.  For a non-symmetric matrix\n\
-@var{s},\n\
-@code{@var{s} (:,@var{p})} tends to have sparser LU factors than @var{s}.\n\
-The Cholesky factorization of @code{@var{s} (:,@var{p})' * @var{s}\n\
-(:,@var{p})} also tends to be sparser than that of @code{@var{s}' *\n\
-@var{s}}.\n\
+@code{@var{p} = colamd (@var{s})} returns the column approximate minimum\n\
+degree permutation vector for the sparse matrix @var{s}.  For a\n\
+non-symmetric matrix @var{s}, @code{@var{s} (:,@var{p})} tends to have\n\
+sparser LU factors than @var{s}.  The Cholesky factorization of\n\
+@code{@var{s}(:,@var{p})' * @var{s} (:,@var{p})} also tends to be sparser\n\
+than that of @code{@var{s}' * @var{s}}.\n\
 \n\
 @var{knobs} is an optional one- to three-element input vector.  If @var{s} is\n\
-m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))} entries\n\
-are ignored.  Columns with more than @code{max(16,knobs(2)*sqrt(min(m,n)))}\n\
-entries are removed prior to ordering, and ordered last in the output\n\
-permutation @var{p}.  Only completely dense rows or columns are removed\n\
-if @code{@var{knobs} (1)} and @code{@var{knobs} (2)} are < 0, respectively.\n\
-If @code{@var{knobs} (3)} is nonzero, @var{stats} and @var{knobs} are\n\
-printed.  The default is @code{@var{knobs} = [10 10 0]}.  Note that\n\
-@var{knobs} differs from earlier versions of colamd\n\
+m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}\n\
+entries are ignored.  Columns with more than\n\
+@code{max(16,knobs(2)*sqrt(min(m,n)))} entries are removed prior to\n\
+ordering, and ordered last in the output permutation @var{p}.  Only\n\
+completely dense rows or columns are removed if @code{@var{knobs} (1)} and\n\
+@code{@var{knobs} (2)} are < 0, respectively.  If @code{@var{knobs} (3)} is\n\
+nonzero, @var{stats} and @var{knobs} are printed.  The default is\n\
+@code{@var{knobs} = [10 10 0]}.  Note that @var{knobs} differs from earlier\n\
+versions of colamd\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{s}.  Ordering\n\
@@ -252,8 +252,8 @@ more times in the same column) or if the row indices in a column are out\n\
 of order, then @sc{colamd} can correct these errors by ignoring the duplicate\n\
 entries and sorting each column of its internal copy of the matrix\n\
 @var{s} (the input matrix @var{s} is not repaired, however).  If a matrix\n\
-is invalid in other ways then @sc{colamd} cannot continue, an error message is\n\
-printed, and no output arguments (@var{p} or @var{stats}) are returned.\n\
+is invalid in other ways then @sc{colamd} cannot continue, an error message\n\
+is printed, and no output arguments (@var{p} or @var{stats}) are returned.\n\
 @sc{colamd} is thus a simple way to check a sparse matrix to see if it's\n\
 valid.\n\
 \n\

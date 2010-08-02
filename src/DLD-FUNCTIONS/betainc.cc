@@ -43,8 +43,8 @@ $$\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
-\n\
 @c Set example in small font to prevent overfull line\n\
+\n\
 @smallexample\n\
 @group\n\
                                       x\n\

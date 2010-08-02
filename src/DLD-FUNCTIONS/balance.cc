@@ -63,8 +63,8 @@ eigenvalue calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\
 the diagonal @code{d} and the permutation @code{p} separately as vectors.  \n\
-In this case, @code{dd = eye(n)(:,p) * diag (d)}, where @code{n} is the matrix\n\
-size.  \n\
+In this case, @code{dd = eye(n)(:,p) * diag (d)}, where @code{n} is the\n\
+matrix size.  \n\
 \n\
 If four output values are requested, compute @code{aa = cc*a*dd} and\n\
 @code{bb = cc*b*dd)}, in which @code{aa} and @code{bb} have non-zero\n\

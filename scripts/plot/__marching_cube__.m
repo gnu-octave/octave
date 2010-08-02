@@ -42,6 +42,7 @@
 ## @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise}.
 ##
 ## For example:
+##
 ## @example
 ## @group
 ## N = 20;

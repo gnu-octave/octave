@@ -81,6 +81,7 @@
 ## errorbar (@var{x}, @var{y}, @var{ex}, ">")
 ## @end example
 ##
+## @noindent
 ## produces an xerrorbar plot of @var{y} versus @var{x} with @var{x}
 ## errorbars drawn from @var{x}-@var{ex} to @var{x}+@var{ex}.
 ##
@@ -91,6 +92,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## produces yerrorbar plots with @var{y1} and @var{y2} versus @var{x}.
 ## Errorbars for @var{y1} are drawn from @var{y1}-@var{ey} to
 ## @var{y1}+@var{ey}, errorbars for @var{y2} from @var{y2}-@var{ly} to
@@ -103,6 +105,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## produces an xyerrorbar plot of @var{y} versus @var{x} in which
 ## @var{x} errorbars are drawn from @var{x}-@var{lx} to @var{x}+@var{ux}
 ## and @var{y} errorbars from @var{y}-@var{ly} to @var{y}+@var{uy}.

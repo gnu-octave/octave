@@ -28,8 +28,8 @@
 ## With an output argument, return the current state of the integer
 ## conversion and math warnings.  With no output arguments, print the
 ## current state.
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## @group
 ## intwarning ("query")

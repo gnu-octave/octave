@@ -582,6 +582,7 @@ the change in the font to part of the string.  For example,
 xlabel ('@{\bf H@} = a @{\bf V@}')
 @end example
 
+@noindent
 where the character 'a' will not appear in a bold font.  Note that to
 avoid having Octave interpret the backslash characters in the strings,
 the strings should be in single quotes.
@@ -851,28 +852,25 @@ at the Octave prompt should display a three-dimensional plot.
 @cindex introduction to graphics structures
 @anchor{doc-graphics structures}
 
-The graphics functions use pointers, which are of class graphics_handle,
-in order to address the data structures which control
-graphical displays.
-A graphics handle may point any one of a number of different object types.
-The objects are the graphics data structures.  The types of objects
-are: @code{figure}, @code{axes},
-@code{line}, @code{text}, @code{patch},
+The graphics functions use pointers, which are of class graphics_handle, in
+order to address the data structures which control graphical displays.  A
+graphics handle may point any one of a number of different object types.  The
+objects are the graphics data structures.  The types of objects are:
+@code{figure}, @code{axes}, @code{line}, @code{text}, @code{patch},
 @code{surface}, @code{text} and @code{image}.
 
-Each of these objects has a function by the
-same name. and, each of these functions returns a graphics handle pointing
-to an object of corresponding type.  In addition there are several functions
-which operate on properties of the graphics objects and which return handles:
-the functions @code{ plot} and @code{plot3} return a handle pointing to an
-object of type line, the function @code{subplot} returns a handle pointing to an
-object of type axes, the function @code{fill} returns a handle pointing to an
-object of type patch, the functions @code{area}, @code{bar},
-@code{barh}, @code{contour}, @code{contourf}, @code{contour3}, @code{surf}, @code{mesh},
-@code{surfc}, @code{meshc},
-@code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter}, @code{scatter3},
-@code{stair}, @code{stem}, @code{stem3} each return a handle as documented
-in @ref{doc-datasources,, Data Sources}.
+Each of these objects has a function by the same name. and, each of these
+functions returns a graphics handle pointing to an object of corresponding
+type.  In addition there are several functions which operate on properties of
+the graphics objects and which return handles: the functions @code{ plot} and
+@code{plot3} return a handle pointing to an object of type line, the function
+@code{subplot} returns a handle pointing to an object of type axes, the
+function @code{fill} returns a handle pointing to an object of type patch, the
+functions @code{area}, @code{bar}, @code{barh}, @code{contour},
+@code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
+@code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
+@code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
+as documented in @ref{doc-datasources,, Data Sources}.
 
 
 The graphics objects are arranged in a hierarchy:
@@ -1011,6 +1009,7 @@ graphics objects are always referenced by @dfn{handle}.
 
 @table @asis
 @c @group
+
 @item root figure
 @cindex root figure graphics object
 @cindex graphics object, root figure
@@ -2566,6 +2565,7 @@ endfunction
 @end group
 @end example
 
+@noindent
 where @code{src} gives a handle to the source of the callback, and
 @code{code} gives some event specific data.  This can then be associated
 with an object either at the objects creation or later with the

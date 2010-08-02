@@ -110,9 +110,10 @@ are matrices, calculate the dot products along the first \n\
 non-singleton dimension.  If the optional argument @var{dim} is\n\
 given, calculate the dot products along this dimension.\n\
 \n\
-This is equivalent to doing @code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
-but avoids forming a temporary array and is faster.  When @var{X} and @var{Y}\n\
-are column vectors, the result is equivalent to\n\
+This is equivalent to doing\n\
+@code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
+but avoids forming a temporary array and is faster.  When @var{X} and\n\
+@var{Y} are column vectors, the result is equivalent to\n\
 @code{ @var{X}'*@var{Y} }.\n\
 @end deftypefn")
 {

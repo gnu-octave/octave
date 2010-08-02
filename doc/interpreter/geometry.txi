@@ -116,6 +116,7 @@ triplot (tri, x, y);
 @end group
 @end example
 
+@noindent
 that plot the Delaunay triangulation of a set of random points in
 2-dimensions.
 @ifnotinfo

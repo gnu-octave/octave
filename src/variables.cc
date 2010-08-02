@@ -2451,8 +2451,8 @@ DEFUN (whos_line_format, args, nargout,
 Query or set the format string used by the command @code{whos}.\n\
 \n\
 A full format string is:\n\
-\n\
 @c Set example in small font to prevent overfull line\n\
+\n\
 @smallexample\n\
 %[modifier]<command>[:width[:left-min[:balance]]];\n\
 @end smallexample\n\

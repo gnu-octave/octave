@@ -112,16 +112,17 @@ of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
 @end group\n\
 @end example\n\
 \n\
-the last two are reserved for @var{class}; they indicate that a complex-valued\n\
-result is requested.  Complex arrays are stored in memory as consecutive pairs\n\
-of real numbers.  The sizes of integer types are given by their bit counts.  \n\
-Both logical and char are typically one byte wide; however, this is not\n\
-guaranteed by C++.  If your system is IEEE conformant, single and double should\n\
-be 4 bytes and 8 bytes wide, respectively.  \"logical\" is not allowed for\n\
-@var{class}.  If the input is a row vector, the return value is a row vector,\n\
-otherwise it is a column vector.  If the bit length of @var{x} is not divisible\n\
-by that of\n\
-@var{class}, an error occurs.\n\
+@noindent\n\
+the last two are reserved for @var{class}; they indicate that a\n\
+complex-valued result is requested.  Complex arrays are stored in memory as\n\
+consecutive pairs of real numbers.  The sizes of integer types are given by\n\
+their bit counts.  Both logical and char are typically one byte wide;\n\
+however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
+single and double should be 4 bytes and 8 bytes wide, respectively.  \n\
+\"logical\" is not allowed for @var{class}.  If the input is a row vector,\n\
+the return value is a row vector, otherwise it is a column vector.  If the\n\
+bit length of @var{x} is not divisible by that of @var{class}, an error\n\
+occurs.\n\
 \n\
 An example of the use of typecast on a little-endian machine is\n\
 \n\
@@ -273,9 +274,9 @@ do_bitpack (const boolNDArray& bitp)
 DEFUN_DLD (bitpack, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
-Returns a new array @var{y} resulting from interpreting a logical array @var{x}\n\
-as raw bit pattern for data of the numeric class @var{class}.  @var{class} must\n\
-be one of the built-in numeric classes:\n\
+Returns a new array @var{y} resulting from interpreting a logical array\n\
+@var{x} as raw bit pattern for data of the numeric class @var{class}.  \n\
+@var{class} must be one of the built-in numeric classes:\n\
 \n\
 @example\n\
 @group\n\
@@ -294,11 +295,10 @@ be one of the built-in numeric classes:\n\
 @end example\n\
 \n\
 The number of elements of @var{x} should be divisible by the bit length of\n\
-@var{class}.  If it is not, excess bits are discarded.  Bits come in increasing\n\
-order of significance, i.e.\n\
-@code{x(1)} is bit 0, @code{x(2)} is bit 1, etc.\n\
-The result is a row vector if @var{x} is a row vector, otherwise it is a column\n\
-vector.\n\
+@var{class}.  If it is not, excess bits are discarded.  Bits come in\n\
+increasing order of significance, i.e. @code{x(1)} is bit 0, @code{x(2)} is\n\
+bit 1, etc.  The result is a row vector if @var{x} is a row vector, otherwise\n\
+it is a column vector.\n\
 @seealso{bitunpack,typecast,bitget,bitset}\n\
 @end deftypefn")
 {
@@ -383,8 +383,8 @@ do_bitunpack (const ArrayType& array)
 DEFUN_DLD (bitunpack, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x})\n\
-Returns a logical array @var{y} corresponding to the raw bit pattern of @var{x}.\n\
-@var{x} must belong to one of the built-in numeric classes:\n\
+Returns a logical array @var{y} corresponding to the raw bit pattern of\n\
+@var{x}.  @var{x} must belong to one of the built-in numeric classes:\n\
 \n\
 @example\n\
 @group\n\
@@ -402,8 +402,8 @@ Returns a logical array @var{y} corresponding to the raw bit pattern of @var{x}.
 @end group\n\
 @end example\n\
 \n\
-The result is a row vector if @var{x} is a row vector, otherwise it is a column\n\
-vector.\n\
+The result is a row vector if @var{x} is a row vector, otherwise it is a\n\
+column vector.\n\
 @seealso{bitpack,typecast,bitget,bitset}\n\
 @end deftypefn")
 {

@@ -213,6 +213,7 @@
 ## pkg rebuild -noauto image
 ## @end example
 ##
+## @noindent
 ## will remove the autoloading status of the image package.
 ##
 ## @item build

@@ -410,6 +410,7 @@ that it is safe to do so.  For instance, doing
 a = 2*(1:1e7) - 1;
 @end example
 
+@noindent
 will produce the same result as @samp{1:2:2e7-1}, but without ever forming a
 vector with ten million elements.
 
@@ -578,6 +579,7 @@ duplicated.  Therefore
 bitget (100, 8:-1:1)
 @end example
 
+@noindent
 is the same as
 
 @example

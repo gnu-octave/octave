@@ -42,6 +42,7 @@
 ## given by the patch handle @var{p}.
 ##
 ## For example:
+##
 ## @example
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode","manual","PlotBoxAspectRatio",[1 1 1]);

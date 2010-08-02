@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
+## @deftypefn  {Function File} {@var{yi} =} interp1 (@var{x}, @var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
@@ -26,8 +26,8 @@
 ##
 ## One-dimensional interpolation.  Interpolate @var{y}, defined at the
 ## points @var{x}, at the points @var{xi}.  The sample points @var{x} 
-## must be monotonic. If not specified, @var{x} is taken to be the
-## indices of @var{y}. If @var{y} is an array, treat the columns
+## must be monotonic.  If not specified, @var{x} is taken to be the
+## indices of @var{y}.  If @var{y} is an array, treat the columns
 ## of @var{y} separately.
 ##
 ## Method is one of:
@@ -40,7 +40,7 @@
 ## Linear interpolation from nearest neighbors
 ##
 ## @item 'pchip'
-## Piece-wise cubic hermite interpolating polynomial
+## Piece-wise cubic Hermite interpolating polynomial
 ##
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors

@@ -362,7 +362,8 @@ available, otherwise from CPU time, wall clock time and the current\n\
 fraction of a second.\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and T. Nishimura,\n\
+Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and\n\
+T. Nishimura,\n\
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform \n\
 pseudorandom number generator}, ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
@@ -384,6 +385,7 @@ as in\n\
 rand (\"seed\", val)\n\
 @end example\n\
 \n\
+@noindent\n\
 which sets the seed of the generator to @var{val}.  The seed of the\n\
 generator can be queried with\n\
 \n\

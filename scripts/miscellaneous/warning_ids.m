@@ -184,6 +184,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## elicits a warning if the @code{Octave:num-to-str} warning is
 ## enabled.  By default, the @code{Octave:num-to-str} warning is enabled.
 ## 
@@ -228,6 +229,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
 ## 

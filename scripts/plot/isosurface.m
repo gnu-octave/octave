@@ -53,7 +53,7 @@
 ## If called with no output argument then directly process the
 ## isosurface geometry with the @command{patch} command.
 ##
-## For example
+## For example,
 ##
 ## @example
 ## @group
@@ -63,6 +63,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## will directly draw a random isosurface geometry in a graphics window.
 ## Another example for an isosurface geometry with different additional
 ## coloring

@@ -741,10 +741,10 @@ DEFUN (is_ignored_output, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_ignored_output (@var{k})\n\
 Within a function, given an index @var{k} within the range @code{1:nargout},\n\
-return a logical value indicating whether the argument will be ignored on output\n\
-using the tilde (~) special output argument.  If @var{k} is outside the range,\n\
-the function yields false.  @var{k} can also be an array, in which case the\n\
-function works element-wise and a logical array is returned.\n\
+return a logical value indicating whether the argument will be ignored on\n\
+output using the tilde (~) special output argument.  If @var{k} is outside\n\
+the range, the function yields false.  @var{k} can also be an array, in\n\
+which case the function works element-wise and a logical array is returned.\n\
 \n\
 At the top level, @code{is_ignored_output} returns an error.\n\
 @seealso{nargout, nargin, varargin, varargout}\n\

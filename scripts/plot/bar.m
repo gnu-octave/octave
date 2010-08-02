@@ -41,7 +41,7 @@
 ## object with one handle per column of the variable @var{y}.  This
 ## series allows common elements of the group of bar series objects to
 ## be changed in a single bar series and the same properties are changed
-## in the other "bar series".  For example
+## in the other "bar series".  For example,
 ##
 ## @example
 ## @group
@@ -66,6 +66,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## will change the colors used for the bars.  If you wish to force the bars to
 ## particular colors, this can be achieved like
 ##

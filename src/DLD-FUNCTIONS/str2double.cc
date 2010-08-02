@@ -219,9 +219,9 @@ It is also possible to use @code{j} instead of @code{i}, or write just\n\
 @code{i} instead of @code{1*i}.\n\
 @code{a} and @code{b} should be real numbers\n\
 in a standard format.\n\
-@var{s} can also be a character matrix, in which case the conversion is repeated\n\
-for each row, or a cell array of strings, in which case each element is\n\
-converted and an array of the same dimensions is returned.\n\
+@var{s} can also be a character matrix, in which case the conversion is\n\
+repeated for each row, or a cell array of strings, in which case each element\n\
+is converted and an array of the same dimensions is returned.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -93,8 +93,9 @@ DEFUN (isnull, args, ,
 @deftypefn {Built-in Function} {} isnull (@var{x})\n\
 Return 1 if @var{x} is a special null matrix, string or single quoted string.\n\
 Indexed assignment with such a value as right-hand side should delete array\n\
-elements.  This function should be used when overloading indexed assignment for\n\
-user-defined classes instead of @code{isempty}, to distinguish the cases:\n\
+elements.  This function should be used when overloading indexed assignment\n\
+for user-defined classes instead of @code{isempty}, to distinguish the\n\
+cases:\n\
 @table @asis\n\
 @item @code{A(I) = []}\n\
 This should delete elements if @code{I} is nonempty.\n\

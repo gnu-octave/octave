@@ -1003,8 +1003,8 @@ DEFUN_DLD (choldelete, args, ,
 @deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
-triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where @w{p =\n\
-[1:j-1,j+1:n+1]}.\n\
+triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
+@w{p = [1:j-1,j+1:n+1]}.\n\
 @seealso{chol, cholupdate, cholinsert}\n\
 @end deftypefn")
 {

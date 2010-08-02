@@ -90,6 +90,7 @@
 ## speed ("for i = 1:n, y@{i@} = x(i); end", "", [1000,10000])
 ## @end example
 ##
+## @noindent
 ## but it is if you preallocate the cell array @code{y}:
 ##
 ## @example

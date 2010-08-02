@@ -1,3 +1,18 @@
+2010-08-01  Rik <octave@nomad.inbox5.com>
+
+	* deprecated/intwarning.m, general/arrayfun.m, general/cplxpair.m,
+	general/interp1.m, general/interpn.m, general/quadgk.m,
+	general/structfun.m, image/image_viewer.m, io/strread.m,
+	miscellaneous/warning_ids.m, optimization/lsqnonneg.m, pkg/pkg.m,
+	plot/__marching_cube__.m, plot/bar.m, plot/contourc.m, plot/errorbar.m,
+	plot/ezplot.m, plot/isocolors.m, plot/isonormals.m, plot/isosurface.m,
+	plot/stem.m, plot/stem3.m, polynomial/compan.m, polynomial/ppval.m,
+	signal/arch_rnd.m, sparse/pcg.m, sparse/svds.m,
+	special-matrix/invhilb.m, statistics/distributions/wblcdf.m,
+	testfun/assert.m, testfun/demo.m, testfun/speed.m: 
+	Grammarcheck documentation.  Add @noindent lines and ensure line 
+	length is less than 80.
+
 2010-08-01  Martin Helm <martin@mhelm.de>
 
 	* plot/isosurface.m: Swap rows and columns of matrix in call to

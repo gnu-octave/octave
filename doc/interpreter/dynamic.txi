@@ -484,6 +484,7 @@ Therefore, to obtain the underlying @code{octave_value} we write
 octave_value tmp = arg0.contents (p1) (0);
 @end example
 
+@noindent
 where the trailing (0) is the () operator on the @code{Cell} object.  We
 can equally iterate of the elements of the Cell array to address the
 elements of the structure array.
@@ -541,6 +542,7 @@ int nel = sm.nelem ();
 @end group
 @end example
 
+@noindent
 returns the number of non-zero elements.  If the user really requires the
 number of elements in the matrix, including the non-zero elements, they
 should use @code{numel} rather than @code{nelem}.  Note that for very
@@ -571,6 +573,7 @@ for (int j = 0; j < nc; j++)
 @end group
 @end example
 
+@noindent
 is a great way of turning the sparse matrix into a dense one, and a
 very slow way at that since it reallocates the sparse object at each
 zero element in the matrix.
@@ -1022,6 +1025,7 @@ An example of its use is
 OCTAVE_LOCAL_BUFFER (double, tmp, len)
 @end example
 
+@noindent
 that returns a pointer @code{tmp} of type @code{double *} of length
 @code{len}.
 

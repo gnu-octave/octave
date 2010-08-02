@@ -179,9 +179,9 @@ $A \\nu = \\lambda B \\nu$.\n\
 @end ifinfo\n\
 \n\
 The argument @var{sigma} determines which eigenvalues are returned.\n\
-@var{sigma} can be either a scalar or a string.  When @var{sigma} is a scalar,\n\
-the @var{k} eigenvalues closest to @var{sigma} are returned.  If @var{sigma}\n\
-is a string, it must have one of the following values.\n\
+@var{sigma} can be either a scalar or a string.  When @var{sigma} is a\n\
+scalar, the @var{k} eigenvalues closest to @var{sigma} are returned.  If\n\
+@var{sigma} is a string, it must have one of the following values.\n\
 \n\
 @table @asis\n\
 @item 'lm'\n\
@@ -285,10 +285,10 @@ for the general eigenvalue problem.\n\
 \n\
 The return arguments of @code{eigs} depend on the number of return arguments\n\
 requested.  With a single return argument, a vector @var{d} of length @var{k}\n\
-is returned containing the @var{k} eigenvalues that have been found.  With two\n\
-return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns are the\n\
-@var{k} eigenvectors corresponding to the returned eigenvalues.  The eigenvalues\n\
-themselves are returned in @var{d} in the form of a\n\
+is returned containing the @var{k} eigenvalues that have been found.  With\n\
+two return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns\n\
+are the @var{k} eigenvectors corresponding to the returned eigenvalues.  The\n\
+eigenvalues themselves are returned in @var{d} in the form of a\n\
 @var{n}-by-@var{k} matrix, where the elements on the diagonal are the\n\
 eigenvalues.\n\
 \n\

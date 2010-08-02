@@ -49,8 +49,9 @@
 ## arguments, a default value equal to 20 is used.
 ## 
 ## @item
-## @var{m} = @var{m1} * @var{m2} is the (left) preconditioning matrix, so that the iteration is
-## (theoretically) equivalent to solving by @code{pcg} @code{@var{P} *
+## @var{m} = @var{m1} * @var{m2} is the (left) preconditioning matrix, so that
+## the iteration is (theoretically) equivalent to solving by @code{pcg}
+## @code{@var{P} *
 ## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
 ## Note that a proper choice of the preconditioner may dramatically
 ## improve the overall performance of the method.  Instead of matrices

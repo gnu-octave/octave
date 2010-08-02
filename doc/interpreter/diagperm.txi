@@ -117,12 +117,14 @@ That is, if @var{q} is a permutation vector of length @var{n}, the expression
   P = eye (n) (:, q);
 @end example
 
+@noindent
 will create a permutation matrix - a special matrix object.
 
 @example
 eye (n) (q, :) 
 @end example
 
+@noindent
 will also work (and create a row permutation matrix), as well as 
 
 @example
@@ -246,6 +248,7 @@ If @code{m < n}, then the expression @code{D*M} is equivalent to
 D(:,1:m) * M(1:m,:),
 @end example
 
+@noindent
 i.e., trailing @code{n-m} rows of @var{M} are ignored.  If @code{m > n}, 
 then @code{D*M} is equivalent to 
 
@@ -253,6 +256,7 @@ then @code{D*M} is equivalent to
 [D(1:n,n) * M; zeros(m-n, columns (M))],
 @end example
 
+@noindent
 i.e., null rows are appended to the result.
 The situation for right-multiplication @code{M*D} is analogous.
 
@@ -289,6 +293,7 @@ D1 \ D2
 @end group
 @end example
 
+@noindent
 again produce diagonal matrices, provided that normal
 dimension matching rules are obeyed.  The relations used are same as described
 above.
@@ -309,6 +314,7 @@ elements.  Thus,
 A = A + eps * eye (n)
 @end example
 
+@noindent
 is an efficient method of augmenting the diagonal of a matrix.  Subtraction
 works analogically.
 

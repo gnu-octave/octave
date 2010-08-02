@@ -773,8 +773,8 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 of @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are\n\
 column vectors (rank-1 update) or matrices with equal number of columns\n\
 (rank-k update).  Notice that the latter case is done as a sequence of rank-1\n\
-updates; thus, for k large enough, it will be both faster and more accurate to\n\
-recompute the factorization from scratch.\n\
+updates; thus, for k large enough, it will be both faster and more accurate\n\
+to recompute the factorization from scratch.\n\
 \n\
 The QR factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
@@ -961,8 +961,8 @@ If @var{orient} is @code{\"col\"},\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
 @w{B(:,@var{j})} gives @var{u} and @w{B(:,@var{j}) = []} gives @var{A}.\n\
 Notice that the latter case is done as a sequence of k insertions;\n\
-thus, for k large enough, it will be both faster and more accurate to recompute\n\
-the factorization from scratch.\n\
+thus, for k large enough, it will be both faster and more accurate to\n\
+recompute the factorization from scratch.\n\
 \n\
 If @var{orient} is @code{\"col\"},\n\
 the QR factorization supplied may be either full\n\
@@ -1180,8 +1180,8 @@ If @var{orient} is @code{\"col\"},\n\
 resulting in the QR@tie{}factorization of a matrix @var{B} such that\n\
 @w{A(:,@var{j}) = []} gives @var{B}.\n\
 Notice that the latter case is done as a sequence of k deletions;\n\
-thus, for k large enough, it will be both faster and more accurate to recompute\n\
-the factorization from scratch.\n\
+thus, for k large enough, it will be both faster and more accurate to\n\
+recompute the factorization from scratch.\n\
 \n\
 If @var{orient} is @code{\"col\"},\n\
 the QR factorization supplied may be either full\n\

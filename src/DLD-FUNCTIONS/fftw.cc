@@ -43,17 +43,18 @@ Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
 accelerate the calculation of the FFTs but implies an initial cost\n\
 in its calculation.  When the @sc{fftw} libraries are initialized, they read\n\
 a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing\n\
-wisdom to be shared between applications other than Octave.  Alternatively, the\n\
-@code{fftw} function can be used to import wisdom.  For example\n\
+wisdom to be shared between applications other than Octave.  Alternatively,\n\
+the @code{fftw} function can be used to import wisdom.  For example,\n\
 \n\
 @example\n\
 @var{wisdom} = fftw ('dwisdom')\n\
 @end example\n\
 \n\
+@noindent\n\
 will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
 This string can then be saved to a file and restored using the @code{save}\n\
-and @code{load} commands respectively.  This existing wisdom can be reimported\n\
-as follows\n\
+and @code{load} commands respectively.  This existing wisdom can be\n\
+reimported as follows\n\
 \n\
 @example\n\
 fftw ('dwisdom', @var{wisdom})\n\
@@ -98,6 +99,7 @@ be probed with\n\
 @var{method} = fftw ('planner')\n\
 @end example\n\
 \n\
+@noindent\n\
 and the method used can be set using\n\
 \n\
 @example\n\

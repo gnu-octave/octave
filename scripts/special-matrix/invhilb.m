@@ -49,6 +49,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## where
 ##
 ## @example

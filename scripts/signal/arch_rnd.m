@@ -22,8 +22,8 @@
 ## Simulate an ARCH sequence of length @var{t} with AR
 ## coefficients @var{b} and CH coefficients @var{a}.  I.e., the result
 ## @math{y(t)} follows the model
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## y(t) = b(1) + b(2) * y(t-1) + @dots{} + b(lb) * y(t-lb+1) + e(t),
 ## @end smallexample
@@ -31,8 +31,8 @@
 ## @noindent
 ## where @math{e(t)}, given @var{y} up to time @math{t-1}, is
 ## @math{N(0, h(t))}, with
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## h(t) = a(1) + a(2) * e(t-1)^2 + @dots{} + a(la) * e(t-la+1)^2
 ## @end smallexample

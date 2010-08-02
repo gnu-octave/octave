@@ -60,6 +60,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## can be read using
 ##
 ## @example

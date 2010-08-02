@@ -59,8 +59,9 @@ DEFUN_DLD (ccolamd, args, nargout,
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} ccolamd (@dots{})\n\
 \n\
 Constrained column approximate minimum degree permutation.\n\
-@code{@var{p} = ccolamd (@var{s})} returns the column approximate minimum degree\n\
-permutation vector for the sparse matrix @var{s}.  For a non-symmetric matrix\n\
+@code{@var{p} = ccolamd (@var{s})} returns the column approximate minimum\n\
+degree permutation vector for the sparse matrix @var{s}.  For a non-symmetric\n\
+matrix\n\
 @var{s},\n\
 @code{@var{s} (:, @var{p})} tends to have sparser LU factors than @var{s}.\n\
 @code{chol (@var{s} (:, @var{p})' * @var{s} (:, @var{p}))} also tends to be\n\
@@ -105,11 +106,11 @@ ones(1,n)} if not present or empty.\n\
 @code{ccolamd (@var{s}, [], 1 : @var{n})} returns @code{1 : @var{n}}\n\
 \n\
 @code{@var{p} = ccolamd (@var{s})} is about the same as\n\
-@code{@var{p} = colamd (@var{s})}.  @var{knobs} and its default values differ.  \n\
-@code{colamd} always does aggressive absorption, and it finds an ordering\n\
-suitable for both @code{lu (@var{s} (:, @var{p}))} and @code{chol (@var{S} (:,\n\
-@var{p})' * @var{s} (:, @var{p}))}; it cannot optimize its ordering for\n\
-@code{lu (@var{s} (:, @var{p}))} to the extent that\n\
+@code{@var{p} = colamd (@var{s})}.  @var{knobs} and its default values\n\
+differ.  @code{colamd} always does aggressive absorption, and it finds an\n\
+ordering suitable for both @code{lu (@var{s} (:, @var{p}))} and @code{chol\n\
+(@var{S} (:, @var{p})' * @var{s} (:, @var{p}))}; it cannot optimize its\n\
+ordering for @code{lu (@var{s} (:, @var{p}))} to the extent that\n\
 @code{ccolamd (@var{s}, 1)} can.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\

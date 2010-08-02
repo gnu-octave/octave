@@ -113,7 +113,8 @@ preserving column transformation @var{Q} is returned, such that\n\
 \n\
 Called with a fifth output argument and a sparse input matrix, then\n\
 @dfn{lu} attempts to use a scaling factor @var{r} on the input matrix\n\
-such that @code{@var{p} * (@var{r} \\ @var{a}) * @var{q} = @var{l} * @var{u}}.\n\
+such that\n\
+@code{@var{p} * (@var{r} \\ @var{a}) * @var{q} = @var{l} * @var{u}}.\n\
 This typically leads to a sparser and more stable factorization.\n\
 \n\
 An additional input argument @var{thres}, that defines the pivoting\n\
@@ -614,6 +615,7 @@ as obtained by @code{lu}:\n\
   [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
 @end example\n\
 \n\
+@noindent\n\
 then a factorization of @code{@var{a}+@var{x}*@var{y}.'} can be obtained either\n\
 as\n\
 \n\
@@ -621,6 +623,7 @@ as\n\
   [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
 @end example\n\
 \n\
+@noindent\n\
 or\n\
 \n\
 @example\n\

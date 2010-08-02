@@ -5123,13 +5123,12 @@ Here, each @var{property} is a string containing the property name, each\n\
 and a cell array @var{values} containing property values.\n\
 \n\
 In this case, the number of columns of @var{values} must match the number of\n\
-elements in @var{properties}.  The first column of @var{values} contains values\n\
-for the first entry in @var{properties}, etc.  The number of rows of\n\
-@var{values} must be 1 or match the number of elements of @var{h}.  In the first\n\
-case, each handle in @var{h} will be assigned the same values.  In the latter\n\
-case, the first handle in @var{h} will be assigned the values from the first row\n\
-of\n\
-@var{values} and so on.\n\
+elements in @var{properties}.  The first column of @var{values} contains\n\
+values for the first entry in @var{properties}, etc.  The number of rows of\n\
+@var{values} must be 1 or match the number of elements of @var{h}.  In the\n\
+first case, each handle in @var{h} will be assigned the same values.  In the\n\
+latter case, the first handle in @var{h} will be assigned the values from\n\
+the first row of @var{values} and so on.\n\
 \n\
 @item as a structure array @var{pv}\n\
 \n\

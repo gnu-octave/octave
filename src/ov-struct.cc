@@ -2140,9 +2140,9 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rmfield (@var{s}, @var{f})\n\
-Return a copy of the structure (array) @var{s} with the field @var{f} removed.\n\
-If @var{f} is a cell array of strings or a character array, remove the named\n\
-fields.\n\
+Return a copy of the structure (array) @var{s} with the field @var{f}\n\
+removed.  If @var{f} is a cell array of strings or a character array, remove\n\
+the named fields.\n\
 @seealso{cellstr, iscellstr, setfield}\n\
 @end deftypefn")
 {

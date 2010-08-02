@@ -1,3 +1,20 @@
+2010-08-01  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc, 
+	DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/betainc.cc,
+	DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/daspk.cc,
+	DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/dot.cc, DLD-FUNCTIONS/eigs.cc,
+	DLD-FUNCTIONS/fftw.cc, DLD-FUNCTIONS/filter.cc,
+	DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/lu.cc,
+	DLD-FUNCTIONS/matrix_type.cc, DLD-FUNCTIONS/onCleanup.cc,
+	DLD-FUNCTIONS/qr.cc, DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/regexp.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/str2double.cc,
+	DLD-FUNCTIONS/tril.cc, DLD-FUNCTIONS/typecast.cc, data.cc, graphics.cc,
+	load-save.cc, ov-null-mat.cc, ov-struct.cc, ov-usr-fcn.cc,
+	pr-output.cc, strfns.cc, variables.cc: Grammarcheck documentation.  
+	Add @noindent lines and ensure line length is less than 80.
+
 2010-07-31  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc, DLD-FUNCTIONS/__voronoi__.cc,

@@ -148,8 +148,8 @@ cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
 @end example\n\
 \n\
 The number of output arguments of @code{cellfun} matches the number of output\n\
-arguments of the function.  The outputs of the function will be collected into\n\
-the output arguments of @code{cellfun} like this:\n\
+arguments of the function.  The outputs of the function will be collected\n\
+into the output arguments of @code{cellfun} like this:\n\
 \n\
 @example\n\
 @group\n\
@@ -166,14 +166,14 @@ endfunction\n\
 @end group\n\
 @end example\n\
 \n\
-Note that per default the output argument(s) are arrays of the same size as the\n\
-input arguments.  Input arguments that are singleton (1x1) cells will be\n\
+Note that per default the output argument(s) are arrays of the same size as\n\
+the input arguments.  Input arguments that are singleton (1x1) cells will be\n\
 automatically expanded to the size of the other arguments.\n\
 \n\
-If the parameter 'UniformOutput' is set to true (the default), then the function\n\
-must return scalars which will be concatenated into the return array(s).  If\n\
-'UniformOutput' is false, the outputs are concatenated into a cell array (or\n\
-cell arrays).  For example\n\
+If the parameter 'UniformOutput' is set to true (the default), then the\n\
+function must return scalars which will be concatenated into the return\n\
+array(s).  If 'UniformOutput' is false, the outputs are concatenated into a\n\
+cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -190,6 +190,7 @@ call in case @var{func} generates an error.  The form of the function is\n\
 function [@dots{}] = errfunc (@var{s}, @dots{})\n\
 @end example\n\
 \n\
+@noindent\n\
 where there is an additional input argument to @var{errfunc} relative to\n\
 @var{func}, given by @var{s}.  This is a structure with the elements\n\
 'identifier', 'message' and 'index', giving respectively the error\n\
@@ -1460,9 +1461,10 @@ do_cellslices_nda (const NDA& array,
 DEFUN_DLD (cellslices, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
-Given an array @var{x}, this function produces a cell array of slices from the\n\
-array determined by the index vectors @var{lb}, @var{ub}, for lower and upper\n\
-bounds, respectively.  In other words, it is equivalent to the following code:\n\
+Given an array @var{x}, this function produces a cell array of slices from\n\
+the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
+upper bounds, respectively.  In other words, it is equivalent to the\n\
+following code:\n\
 \n\
 @example\n\
 @group\n\
@@ -1474,8 +1476,8 @@ endfor\n\
 @end group\n\
 @end example\n\
 \n\
-The position of the index is determined by @var{dim}.  If not specified, slicing\n\
-is done along the first non-singleton dimension.\n\
+The position of the index is determined by @var{dim}.  If not specified,\n\
+slicing is done along the first non-singleton dimension.\n\
 @end deftypefn")
 {
   octave_value retval;

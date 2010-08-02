@@ -77,8 +77,9 @@ If this value is a non zero scalar, then @code{amd} performs aggressive\n\
 absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\
-The author of the code itself is Timothy A. Davis @email{davis@@cise.ufl.edu},\n\
-University of Florida (see @url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
+The author of the code itself is Timothy A. Davis\n\
+@email{davis@@cise.ufl.edu}, University of Florida (see\n\
+@url{http://www.cise.ufl.edu/research/sparse/amd}).\n\
 @seealso{symamd, colamd}\n\
 @end deftypefn")
 {

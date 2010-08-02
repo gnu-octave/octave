@@ -104,6 +104,7 @@
 ## function [@dots{}] = errfunc (@var{s}, @dots{})
 ## @end example
 ##
+## @noindent
 ## where there is an additional input argument to @var{errfunc}
 ## relative to @var{func}, given by @var{s}.  This is a structure with
 ## the elements "identifier", "message" and "index", giving

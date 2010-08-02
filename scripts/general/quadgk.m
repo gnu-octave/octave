@@ -78,7 +78,7 @@
 ## @code{"WayPoints"} property.  This forces the ends of a sub-interval
 ## to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
-## computation or both.  For example:
+## computation or both.  For example,
 ##
 ## @example
 ## quadgk (@@(x) abs (1 - x .^ 2), 0, 2, 'Waypoints', 1)
@@ -95,7 +95,7 @@
 ## If any of @var{a}, @var{b} or @var{waypoints} is complex, then the
 ## quadrature is treated as a contour integral along a piecewise
 ## continuous path defined by the above.  In this case the integral is
-## assumed to have no edge singularities.  For example
+## assumed to have no edge singularities.  For example,
 ##
 ## @example
 ## @group

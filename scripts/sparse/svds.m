@@ -69,6 +69,7 @@
 ## @var{a}_approx = @var{u}*@var{s}*@var{v}'
 ## @end example
 ##
+## @noindent
 ## where @var{a}_approx is a matrix of size @var{a} but only rank @var{k}.
 ## 
 ## @var{flag} returns 0 if the algorithm has succesfully converged, and 1 
@@ -80,8 +81,9 @@
 ## @end group
 ## @end example
 ##
-## @code{svds} is best for finding only a few singular values from a large sparse
-## matrix.  Otherwise, @code{svd (full(@var{a}))} will likely be more efficient.
+## @code{svds} is best for finding only a few singular values from a large
+## sparse matrix.  Otherwise, @code{svd (full(@var{a}))} will likely be more
+## efficient.
 ## @end deftypefn
 ## @seealso{svd, eigs}
 

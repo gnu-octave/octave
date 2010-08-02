@@ -907,14 +907,15 @@ Match one or more times\n\
 Match zero or one times\n\
 \n\
 @item @{@}\n\
-Match range operator, which is of the form @code{@{@var{n}@}} to match exactly\n\
-@var{n} times, @code{@{@var{m},@}} to match @var{m} or more times,\n\
+Match range operator, which is of the form @code{@{@var{n}@}} to match\n\
+exactly @var{n} times, @code{@{@var{m},@}} to match @var{m} or more times,\n\
 @code{@{@var{m},@var{n}@}} to match between @var{m} and @var{n} times.\n\
 @end table\n\
 \n\
 @item [@dots{}] [^@dots{}]\n\
 \n\
-List operators, where for example @code{[ab]c} matches @code{ac} and @code{bc}\n\
+List operators, where for example @code{[ab]c} matches @code{ac} and\n\
+@code{bc}\n\
 \n\
 @item ()\n\
 Grouping operator\n\
@@ -1589,6 +1590,7 @@ for the ith set of parentheses in the match string.  E.g.,\n\
 @end group\n\
 @end example\n\
 \n\
+@noindent\n\
 returns \"Dunn, Bill\"\n\
 \n\
 @var{options} may be zero or more of\n\

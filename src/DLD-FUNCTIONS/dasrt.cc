@@ -221,6 +221,7 @@ $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 0 = f (x, xdot, t)\n\
 @end example\n\
 \n\
+@noindent\n\
 with\n\
 \n\
 @example\n\
@@ -297,6 +298,7 @@ This function must have the form\n\
 @var{g_out} = g (@var{x}, @var{t})\n\
 @end example\n\
 \n\
+@noindent\n\
 and return a vector of the constraint function values.\n\
 If the value of any of the constraint functions changes sign, @sc{dasrt}\n\
 will attempt to stop the integration at the point of the sign change.\n\

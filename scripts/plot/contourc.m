@@ -43,6 +43,7 @@
 ## If @var{vn} is omitted it defaults to 10.
 ##
 ## For example:
+##
 ## @example
 ## @group
 ## x = 0:2;

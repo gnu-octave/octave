@@ -41,7 +41,7 @@ All functionality is provided by the Emacs Lisp package EOS (for ``Emacs
 Octave Support'').  This chapter describes how to set up and use this
 package.
 
-Please contact <Kurt.Hornik@@wu-wien.ac.at> if you have any questions
+Please contact @email{Kurt.Hornik@@wu-wien.ac.at} if you have any questions
 or suggestions on using EOS.
 
 @menu
@@ -145,13 +145,13 @@ symbol against Octave's reserved words and built-in variables
 Move backward to the beginning of a function
 (@code{octave-beginning-of-defun}).
 With prefix argument @var{N}, do it that many times if @var{N} is
-positive;  otherwise, move forward to the @var{N}-th following beginning
+positive; otherwise, move forward to the @var{N}-th following beginning
 of a function.
 
 @item M-C-e
 Move forward to the end of a function (@code{octave-end-of-defun}).
 With prefix argument @var{N}, do it that many times if @var{N} is
-positive;  otherwise, move back to the @var{N}-th preceding end of a
+positive; otherwise, move back to the @var{N}-th preceding end of a
 function.
 
 @item M-C-h
@@ -194,9 +194,9 @@ move that many code lines forward (backward if @var{N} is negative).
 @item C-c C-a
 Move to the `real' beginning of the current line
 (@code{octave-beginning-of-line}).  If point is in an empty or comment
-line, simply go to its beginning;  otherwise, move backwards to the
+line, simply go to its beginning; otherwise, move backwards to the
 beginning of the first code line which is not inside a continuation
-statement,  i.e., which does not follow a code line ending in @samp{...}
+statement, i.e., which does not follow a code line ending in @samp{...}
 or @samp{\}, or is inside an open parenthesis list.
 
 @item C-c C-e
@@ -221,7 +221,7 @@ negative).
 @item C-c M-C-d
 Move forward down one begin-end block level of Octave code
 (@code{octave-down-block}).  With numeric prefix argument, do it that
-many times;  a negative argument means move backward, but still go down
+many times; a negative argument means move backward, but still go down
 one level.
 
 @item C-c M-C-u
@@ -268,7 +268,7 @@ line to where the new text should go after inserting the newline.  This
 is because the standard Emacs convention is that @key{RET} (aka
 @kbd{C-m}) just adds a newline, whereas @key{LFD} (aka @kbd{C-j}) adds a
 newline and indents it.  This is particularly inconvenient for users with
-keyboards which do not have a special @key{LFD} key at all;  in such
+keyboards which do not have a special @key{LFD} key at all; in such
 cases, it is typically more convenient to use @key{RET} as the @key{LFD}
 key (rather than typing @kbd{C-j}).  
 
@@ -290,7 +290,7 @@ solution is
 (this works for all modes by adding to the startup hooks, without having
 to know the particular binding of @key{RET} in that mode!).  Similar
 considerations apply for using @key{M-RET} as @key{M-LFD}.  As Barry
-A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the documentation for his
+A. Warsaw @email{bwarsaw@@cnri.reston.va.us} says in the documentation for his
 @code{cc-mode}, ``This is a very common question.  @code{:-)} If you want
 this to be the default behavior, don't lobby me, lobby RMS!''
 
@@ -333,15 +333,19 @@ If Font Lock mode is enabled, Octave mode will display
 @itemize @bullet
 @item
 strings in @code{font-lock-string-face}
+
 @item
 comments in @code{font-lock-comment-face}
+
 @item
 the Octave reserved words (such as all block keywords) and the text
 functions (such as @samp{cd} or @samp{who}) which are also reserved
 using @code{font-lock-keyword-face}
+
 @item
 the built-in operators (@samp{&&}, @samp{==}, @dots{}) using
 @code{font-lock-reference-face}
+
 @item
 and the function names in function declarations in
 @code{font-lock-function-name-face}.
@@ -398,21 +402,27 @@ Send the current line to the inferior Octave process
 With positive prefix argument @var{N}, send that many lines.
 If @code{octave-send-line-auto-forward} is non-@code{nil}, go to the
 next unsent code line.
+
 @item C-c i b
 Send the current block to the inferior Octave process
 (@code{octave-send-block}).
+
 @item C-c i f
 Send the current function to the inferior Octave process
 (@code{octave-send-defun}).
+
 @item C-c i r
 Send the region to the inferior Octave process
 (@code{octave-send-region}).
+
 @item C-c i s
 Make sure that `inferior-octave-buffer' is displayed
 (@code{octave-show-process-buffer}).
+
 @item C-c i h
 Delete all windows that display the inferior Octave buffer
 (@code{octave-hide-process-buffer}).
+
 @item C-c i k
 Kill the inferior Octave process and its buffer
 (@code{octave-kill-process}).
@@ -440,7 +450,7 @@ specifying command lines arguments to be passed to Octave on startup
 as a list of strings.  For example, to suppress the startup message and
 use `traditional' mode, set this to @code{'("-q" "--traditional")}.
 You can also specify a startup file of Octave commands to be loaded on
-startup;  note that these commands will not produce any visible output
+startup; note that these commands will not produce any visible output
 in the process buffer.  Which file to use is controlled by the variable
 @code{inferior-octave-startup-file}.  If this is @code{nil}, the file
 @file{~/.emacs-octave} is used if it exists.
@@ -495,11 +505,11 @@ to your @file{.emacs} file.
 
 You can use either `plain' Emacs Info or the function @code{octave-help}
 as your Octave info reader (for @samp{help -i}).  In the former case,
-set the Octave variable @w{@code{INFO_PROGRAM}} to @code{"info-emacs-info"}.
+set the Octave variable @w{@env{INFO_PROGRAM}} to @code{"info-emacs-info"}.
 The latter is perhaps more attractive because it allows to look up keys
 in the indices of @emph{several} info files related to Octave (provided
 that the Emacs variable @code{octave-help-files} is set correctly).  In
-this case, set @w{@code{INFO_PROGRAM}} to @code{"info-emacs-octave-help"}.
+this case, set @w{@env{INFO_PROGRAM}} to @code{"info-emacs-octave-help"}.
 
 If you use Octave from within Emacs, these settings are best done in the
 @file{~/.emacs-octave} startup file (or the file pointed to by the Emacs

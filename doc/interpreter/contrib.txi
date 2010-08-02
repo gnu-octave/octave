@@ -244,8 +244,8 @@ and function calls.
 
 Recommended indent is 2 spaces.  When indenting, indent the statement after
 control structures (like @code{if}, @code{while}, etc.). If there is a compound
-statement, indent @i{both} the curly braces and the body of the statement (so
-that the body gets indented by @i{two} indents).  Example:
+statement, indent @emph{both} the curly braces and the body of the statement (so
+that the body gets indented by @emph{two} indents).  Example:
 
 @example
 @group

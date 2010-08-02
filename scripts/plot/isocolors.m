@@ -44,6 +44,7 @@
 ## @var{p}.
 ##
 ## For example:
+##
 ## @example
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", \

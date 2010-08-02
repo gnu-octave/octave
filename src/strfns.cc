@@ -57,10 +57,10 @@ For numerical input, each element is converted\n\
 to the corresponding ASCII character.  A range error results if an input\n\
 is outside the ASCII range (0-255).\n\
 \n\
-For cell arrays, each element is concatenated separately.  Cell arrays converted\n\
-through\n\
+For cell arrays, each element is concatenated separately.  Cell arrays\n\
+converted through\n\
 @code{char} can mostly be converted back with @code{cellstr}.\n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -181,10 +181,10 @@ For numerical input, each element is converted\n\
 to the corresponding ASCII character.  A range error results if an input\n\
 is outside the ASCII range (0-255).\n\
 \n\
-For cell arrays, each element is concatenated separately.  Cell arrays converted\n\
-through\n\
+For cell arrays, each element is concatenated separately.  Cell arrays\n\
+converted through\n\
 @code{strvcat} can mostly be converted back with @code{cellstr}.\n\
-For example,\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -791,8 +791,8 @@ strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
-Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the same,\n\
-disregarding case of alphabetic characters, and 0 otherwise.\n\
+Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
+same, disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\
 If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
 of the same size is returned, containing the values described above for\n\

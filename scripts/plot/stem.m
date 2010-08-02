@@ -34,7 +34,7 @@
 ## The default color is @code{"b"} (blue).  The default line style is
 ## @code{"-"} and the default marker is @code{"o"}.  The line style can
 ## be altered by the @code{linespec} argument in the same manner as the
-## @code{plot} command.  For example
+## @code{plot} command.  For example,
 ##
 ## @example
 ## @group
@@ -51,7 +51,7 @@
 ## handles, with one handle per column of the variable @var{y}.  This
 ## handle regroups the elements of the stem graph together as the
 ## children of the "stem series" handle, allowing them to be altered
-## together.  For example
+## together.  For example,
 ##
 ## @example
 ## @group

@@ -35,6 +35,7 @@
 ## @end tex
 ## @ifnottex
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## @group
 ##      _                                                        _

@@ -48,6 +48,7 @@
 ## @end group
 ## @end example
 ##
+## @noindent
 ## is plotted over the domain @code{-2*pi < @var{t} < 2*pi} with 500
 ## points. 
 ##

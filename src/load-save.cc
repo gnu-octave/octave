@@ -1529,9 +1529,9 @@ Save the data in Octave's text data format.  (default).\n\
 \n\
 @item -zip\n\
 @itemx -z\n\
-Use the gzip algorithm to compress the file.  This works equally on files that\n\
-are compressed with gzip outside of octave, and gzip can equally be used to\n\
-convert the files for backward compatibility.\n"
+Use the gzip algorithm to compress the file.  This works equally on files\n\
+that are compressed with gzip outside of octave, and gzip can equally be\n\
+used to convert the files for backward compatibility.\n"
 
 HAVE_ZLIB_HELP_STRING
 
@@ -1836,8 +1836,8 @@ passed to @code{strftime} and should begin with the character\n\
 @code{save_header_format_string} is the empty string,\n\
 the header comment is omitted from text-format data files.  The\n\
 default value is\n\
-\n\
 @c Set example in small font to prevent overfull line\n\
+\n\
 @smallexample\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\

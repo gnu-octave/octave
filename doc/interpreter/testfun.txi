@@ -117,6 +117,7 @@ is a shorthand form:
    %!assert (@dots{})
 @end example
 
+@noindent
 which is equivalent to:
 
 @example
@@ -184,12 +185,13 @@ For example:
    %!error <passes!> error('this test passes!');
 @end example
 
-If the code doesn't generate an error, the test fails.  For example,
+If the code doesn't generate an error, the test fails.  For example:
 
 @example
    %!error "this is an error because it succeeds.";
 @end example
 
+@noindent
 produces
 
 @example
@@ -214,6 +216,7 @@ it is executed.  For example,
 @end group
 @end example
 
+@noindent
 produces
 
 @example
@@ -282,6 +285,7 @@ can even embed tests directly in your C++ code:
 @end group
 @end example
 
+@noindent
 or
 
 @example
@@ -292,6 +296,7 @@ or
 @end group
 @end example
 
+@noindent
 but then the code will have to be on the load path and the user 
 will have to remember to type test('name.cc').  Conversely, you
 can separate the tests from normal Octave script files by putting

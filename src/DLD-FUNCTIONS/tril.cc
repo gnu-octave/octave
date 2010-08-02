@@ -386,7 +386,8 @@ tril (ones (3), 1)\n\
 @end example\n\
 \n\
 If the option \"pack\" is given as third argument, the extracted elements\n\
-are not inserted into a matrix, but rather stacked column-wise one above other.\n\
+are not inserted into a matrix, but rather stacked column-wise one above\n\
+other.\n\
 @seealso{triu, diag}\n\
 @end deftypefn")
 {

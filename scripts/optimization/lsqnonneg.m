@@ -26,9 +26,9 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
-## Minimize @code{norm (@var{c}*@var{x}-d)} subject to @code{@var{x} >=
-## 0}.  @var{c} and @var{d} must be real.  @var{x0} is an optional
-## initial guess for @var{x}.
+## Minimize @code{norm (@var{c}*@var{x} - d)} subject to 
+## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
+## optional initial guess for @var{x}.
 ##
 ## Outputs:
 ## @itemize @bullet

@@ -36,8 +36,8 @@
 ## error if all complex numbers are not exact conjugates (to within
 ## @var{tol}).  Note that there is no defined order for pairs with identical
 ## real parts but differing imaginary parts.
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## cplxpair (exp(2i*pi*[0:4]'/5)) == exp(2i*pi*[3; 2; 4; 1; 0]/5)
 ## @end smallexample

@@ -308,7 +308,7 @@ xlgamma (double x)
 
   if (xisnan (x))
     result = x;
-  else if (xisinf (x))
+  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Inf;
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
@@ -330,7 +330,7 @@ rc_lgamma (double x)
 
   if (xisnan (x))
     result = x;
-  else if (xisinf (x))
+  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Inf;
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
@@ -373,7 +373,7 @@ xlgamma (float x)
 
   if (xisnan (x))
     result = x;
-  else if (xisinf (x))
+  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Float_Inf;
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));
@@ -395,7 +395,7 @@ rc_lgamma (float x)
 
   if (xisnan (x))
     result = x;
-  else if (xisinf (x))
+  else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Float_Inf;
   else
     F77_XFCN (algams, ALGAMS, (x, result, sgngam));

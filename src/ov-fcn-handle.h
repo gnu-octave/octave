@@ -83,8 +83,16 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
+  octave_value_list subsref (const std::string& type,
+                             const std::list<octave_value_list>& idx,
+                             int nargout, const std::list<octave_lvalue>* lvalue_list);
+
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
+
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args, 
+                     const std::list<octave_lvalue>* lvalue_list);
 
   bool is_defined (void) const { return true; }
 

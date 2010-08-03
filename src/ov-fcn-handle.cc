@@ -85,6 +85,14 @@ octave_fcn_handle::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
                             int nargout)
 {
+  return octave_fcn_handle::subsref (type, idx, nargout, 0);
+}
+
+octave_value_list
+octave_fcn_handle::subsref (const std::string& type,
+                            const std::list<octave_value_list>& idx,
+                            int nargout, const std::list<octave_lvalue>* lvalue_list)
+{
   octave_value_list retval;
 
   switch (type[0])
@@ -93,7 +101,8 @@ octave_fcn_handle::subsref (const std::string& type,
       {
         int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
 
-        retval = do_multi_index_op (tmp_nargout, idx.front ());
+        retval = do_multi_index_op (tmp_nargout, idx.front (),
+                                    idx.size () == 1 ? lvalue_list : 0);
       }
       break;
 
@@ -122,6 +131,14 @@ octave_fcn_handle::subsref (const std::string& type,
 octave_value_list
 octave_fcn_handle::do_multi_index_op (int nargout, 
                                       const octave_value_list& args)
+{
+  return do_multi_index_op (nargout, args, 0);
+}
+
+octave_value_list
+octave_fcn_handle::do_multi_index_op (int nargout, 
+                                      const octave_value_list& args,
+                                      const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -153,9 +170,9 @@ octave_fcn_handle::do_multi_index_op (int nargout,
         }
 
       if (ov_fcn.is_defined ())
-        retval = ov_fcn.do_multi_index_op (nargout, args);
+        retval = ov_fcn.do_multi_index_op (nargout, args, lvalue_list);
       else if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args);
+        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
       else
         error ("%s: no method for class %s", nm.c_str (), dispatch_type.c_str ());
     }
@@ -163,7 +180,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
     {
       // Non-overloaded function (anonymous, subfunction, private function).
       if (fcn.is_defined ())
-        retval = fcn.do_multi_index_op (nargout, args);
+        retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
       else
         error ("%s: no longer valid function handle", nm.c_str ());
     }

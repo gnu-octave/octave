@@ -737,16 +737,28 @@ static bool val_in_table (const Matrix& table, double val)
   return (i > 0 && table(i-1) == val);
 }
 
-DEFUN (is_ignored_output, args, ,
+static bool isargout1 (int nargout, const Matrix& ignored, double k)
+{
+  if (k != xround (k) || k <= 0)
+    {
+      error ("isargout: argument must be a positive integer");
+      return false;
+    }
+  else
+    return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
+}
+
+DEFUN (isargout, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_ignored_output (@var{k})\n\
+@deftypefn {Built-in Function} {} isargout (@var{k})\n\
 Within a function, given an index @var{k} within the range @code{1:nargout},\n\
-return a logical value indicating whether the argument will be ignored on\n\
-output using the tilde (~) special output argument.  If @var{k} is outside\n\
-the range, the function yields false.  @var{k} can also be an array, in\n\
+return a logical value indicating whether the argument will be assigned on\n\
+output to a variable or cell or struct element. If the result is false,\n\
+the argument will be ignored using the tilde (~) special output argument.\n\
+If @var{k} is outside the range @code{1:nargout}, the function yields false.\n\
+@var{k} can also be an array, in\n\
 which case the function works element-wise and a logical array is returned.\n\
-\n\
-At the top level, @code{is_ignored_output} returns an error.\n\
+At the top level, @code{isargout} returns an error.\n\
 @seealso{nargout, nargin, varargin, varargout}\n\
 @end deftypefn")
 {
@@ -758,6 +770,13 @@ At the top level, @code{is_ignored_output} returns an error.\n\
     {
       if (! symbol_table::at_top_level ())
         {
+          int nargout1 = symbol_table::varval (".nargout.").int_value ();
+          if (error_state)
+            {
+              error ("isargout: internal error");
+              return retval;
+            }
+
           Matrix ignored;
           octave_value tmp = symbol_table::varval (".ignored.");
           if (tmp.is_defined ())
@@ -767,7 +786,7 @@ At the top level, @code{is_ignored_output} returns an error.\n\
             {
               double k = args(0).double_value ();
               if (! error_state)
-                retval = val_in_table (ignored, k);
+                retval = isargout1 (nargout1, ignored, k);
             }
           else if (args(0).is_numeric_type ())
             {
@@ -775,21 +794,20 @@ At the top level, @code{is_ignored_output} returns an error.\n\
               if (! error_state)
                 {
                   boolNDArray r (ka.dims ());
-                  for (octave_idx_type i = 0; i < ka.numel (); i++)
-                    r(i) = val_in_table (ignored, ka(i));
+                  for (octave_idx_type i = 0; i < ka.numel () && ! error_state; i++)
+                    r(i) = isargout1 (nargout1, ignored, ka(i));
 
                   retval = r;
                 }
             }
           else
-            gripe_wrong_type_arg ("is_ignored_output", args(0));
+            gripe_wrong_type_arg ("isargout", args(0));
         }
       else
-        error ("is_ignored_output: invalid call at top level");
+        error ("isargout: invalid call at top level");
     }
   else
     print_usage ();
 
   return retval;
 }
-

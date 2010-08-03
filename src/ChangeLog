@@ -1,3 +1,8 @@
+2010-08-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-usr-fcn.cc (Fis_ignored_output): Rename to Fisargout. Change the
+	behavior to indicate not ignored outputs.
+
 2010-08-01  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc, 

@@ -1,3 +1,8 @@
+2010-08-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/sortrows.m: Don't actually permute the rows if not
+	requested.
+
 2010-08-01  Rik <octave@nomad.inbox5.com>
 
 	* deprecated/intwarning.m, general/arrayfun.m, general/cplxpair.m,

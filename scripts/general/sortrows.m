@@ -53,7 +53,10 @@ function [s, i] = sortrows (m, c)
     i = sort_rows_idx_generic (default_mode, other_mode, m, c);
   endif
 
-  s = m(i,:);
+  ## Only bother to compute s if needed.
+  if (isargout (1))
+    s = m(i,:);
+  endif
 
 endfunction
 

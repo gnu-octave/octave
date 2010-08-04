@@ -134,28 +134,32 @@ function [n, idx] = histc (data, edges, dim)
     ## Zero invalid ones (including NaNs). data < edges(1) are already zero. 
     idx(! (data <= edges(end))) = 0;
 
-    iidx = idx;
+    ## Don't accumulate the histogram if not needed. In that case,
+    ## histc() is just a (Matlab-compatible) wrapper for lookup.
+    if (isargout (1))
+      iidx = idx;
 
-    ## In case of matrix input, we adjust the indices.
-    if (! isvector (data))
-      nl = prod (sz(1:dim-1));
-      nn = sz(dim);
-      nu = prod (sz(dim+1:end));
-      if (nl != 1)
-        iidx = (iidx-1) * nl;
-        iidx += reshape (kron (ones (1, nn*nu), 1:nl), sz);
+      ## In case of matrix input, we adjust the indices.
+      if (! isvector (data))
+        nl = prod (sz(1:dim-1));
+        nn = sz(dim);
+        nu = prod (sz(dim+1:end));
+        if (nl != 1)
+          iidx = (iidx-1) * nl;
+          iidx += reshape (kron (ones (1, nn*nu), 1:nl), sz);
+        endif
+        if (nu != 1)
+          ne =length (edges);
+          iidx += reshape (kron (nl*ne*(0:nu-1), ones (1, nl*nn)), sz);
+        endif
       endif
-      if (nu != 1)
-        ne =length (edges);
-        iidx += reshape (kron (nl*ne*(0:nu-1), ones (1, nl*nn)), sz);
-      endif
+
+      ## Select valid elements.
+      iidx = iidx(idx != 0);
+
+      ## Call accumarray to sum the indexed elements.
+      n = accumarray (iidx(:), 1, nsz);
     endif
-
-    ## Select valid elements.
-    iidx = iidx(idx != 0);
-
-    ## Call accumarray to sum the indexed elements.
-    n = accumarray (iidx(:), 1, nsz);
 
   endif
 

@@ -41,7 +41,7 @@ DEFASSIGNOP (assign, char_matrix_str, octave_matrix)
                                   a1.is_sq_string () ? '\'' : '"');
 
   if (! error_state)
-    v1.assign (idx, tmp.char_matrix_value ());
+    v1.assign (idx, tmp.char_array_value ());
 
   return octave_value ();
 }

@@ -1,5 +1,11 @@
 2010-08-03  Jaroslav Hajek  <highegg@gmail.com>
 
+	* OPERATORS/op-str-str.cc: Fix assignment operator.
+	* OPERATORS/op-str-s.cc: Likewise.
+	* OPERATORS/op-str-m.cc: Likewise.
+
+2010-08-03  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-fcn-handle.cc 
 	(octave_value::subsref (..., const std::list<octave_lvalue> *)
 	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 

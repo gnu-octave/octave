@@ -89,7 +89,7 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 {
   CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_char_matrix_str&);
 
-  v1.assign (idx, v2.char_matrix_value ());
+  v1.assign (idx, v2.char_array_value ());
   return octave_value ();
 }
 

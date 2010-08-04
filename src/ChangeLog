@@ -1,3 +1,9 @@
+2010-08-04  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_number (const char *)): Create empty string if
+	given NULL arg  (bug #30639).  Create 0x0 string array if given
+	an empty string argument, not 1x0.
+
 2010-08-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* OPERATORS/op-str-str.cc: Fix assignment operator.

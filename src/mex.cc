@@ -1131,7 +1131,9 @@ public:
   }
 
   mxArray_number (const char *str)
-    : mxArray_matlab (mxCHAR_CLASS, 1, strlen (str)),
+    : mxArray_matlab (mxCHAR_CLASS,
+                      str ? (strlen (str) ? 1 : 0) : 0,
+                      str ? strlen (str) : 0),
       pr (calloc (get_number_of_elements (), get_element_size ())),
       pi (0)
   {

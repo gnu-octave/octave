@@ -1,5 +1,8 @@
 2010-08-05  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__print_parse_opts__.m, plot/__fltk_print__.m: Add epslatex,
+	pslatex, and pdflatex output for fltk backend. Use the gs png16m device
+	instead of png256.
 	* plot/print.m: Modify texinfo. Add unwind_protect block.
 
 2010-08-01 Marco Caliari <marco.caliari@univr.it>

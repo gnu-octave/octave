@@ -38,14 +38,35 @@ function __fltk_print__ (opts)
     if (opts.tight_flag)
       __tight_eps_bbox__ (opts, opts.name);
     endif
-  case {"epslatex", "epslatexstandalone", "pslatex"}
-    # FIXME - format GL2PS_TEX is not implemented
-    drawnow ("epslatex", opts.name);
-    if (opts.tight_flag)
-      __tight_eps_bbox__ (opts, opts.name);
+  case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
+        "pslatexstandalone", "pdflatexstandalone"}
+    ## format GL2PS_TEX
+    ## FIXME - rotated text do not align properly.
+    n = find (opts.devopt == "l", 1);
+    suffix = opts.devopt(1:n-1);
+    dot = find (opts.name == ".", 1, "last");
+    if ((! isempty (dot))
+        && any (strcmpi (opts.name(dot:end), {".eps", ".ps", ".pdf", ".tex", "."})))
+      name = opts.name(1:dot-1);
+      if (dot < numel (opts.name)
+          && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
+        ## If user provides eps/ps/pdf suffix, use it.
+        suffix = opts.name(dot+1:end);
+      endif
+    elseif (dot == numel (opts.name))
+      name = opts.name;
+    endif
+    drawnow (strcat (lower (suffix), "notxt"), strcat (name, ".", suffix));
+    drawnow ("tex", strcat (name, ".", suffix, ".tex"));
+    movefile (strcat (name, ".", suffix, ".tex"), strcat (name, ".tex"));
+    if (opts.tight_flag && strncmpi (opts.devopt, "eps", 3))
+      __tight_eps_bbox__ (opts, strcat (opts.name, ".eps"));
+    endif
+    if (! isempty (strfind (opts.devopt, "standalone")))
+      __standalone__ (strcat (name, ".tex"));
     endif
   case {"tikz"}
-    ## FIXME - format GL2PS_PGF if not implemented
+    ## format GL2PS_PGF
     drawnow ("pgf", opts.name);
   case {"ps", "ps2", "psc", "psc2", "pdf"}
     opts.ghostscript.source = strcat (tmpnam (), ".eps");
@@ -61,14 +82,14 @@ function __fltk_print__ (opts)
       __tight_eps_bbox__ (opts, opts.ghostscript.source);
     endif
   case {"svg"}
-    ## FIXME - format GL2PS_SVG if not implemented
+    ## format GL2PS_SVG
     drawnow ("svg", opts.name);
   case {"jpeg", "pbm", "pbmraw", "pcx24b", "pcx256", "pcx16", ...
         "pgm", "pgmraw", "png", "ppm", "ppmraw", "pdfwrite", ...
         "tiff", "tiffn"}
     switch opts.devopt
     case "png"
-      opts.ghostscript.device = "png256";
+      opts.ghostscript.device = "png16m";
     case {"tiff", "tiffn"}
       opts.ghostscript.device = "tiff24nc";
     otherwise
@@ -164,6 +185,40 @@ function status = __pstoedit__ (opts, devopt, name)
   if (status != 0)
     disp (output)
     warning ("print.m: failed to delete temporay file, '%s'.", tmp_epsfile)
+  endif
+endfunction
+
+function __standalone__ (latexfile)
+  prepend = {"\\documentclass{minimal}";
+             "\\usepackage{epsfig,color}";
+             "\\begin{document}";
+             "\\centering"};
+  postpend = {"\\end{document}"};
+  fid = fopen (latexfile, "r");
+  if (fid >= 0)
+    latex = fscanf (fid, "%c", Inf);
+    status = fclose (fid);
+    if (status != 0)
+      error ("print:errorclosingfile",
+             "print.m: error closing file '%s'", latexfile)
+    endif
+  else
+    error ("print:erroropeningfile",
+           "print.m: error opening file '%s'", latexfile)
+  endif
+  fid = fopen (latexfile, "w");
+  if (fid >= 0)
+    fprintf (fid, "%s\n", prepend{:});
+    fprintf (fid, "%s", latex);
+    fprintf (fid, "%s\n", postpend{:});
+    status = fclose (fid);
+    if (status != 0)
+      error ("print:errorclosingfile",
+             "print.m: error closing file '%s'", latexfile)
+    endif
+  else
+    error ("print:erroropeningfile",
+           "print.m: error opening file '%s'", latexfile)
   endif
 endfunction
 

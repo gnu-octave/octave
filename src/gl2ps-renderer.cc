@@ -49,14 +49,31 @@ glps_renderer::draw (const graphics_object& go)
 
       glGetIntegerv (GL_VIEWPORT, viewport);
 
+      GLint gl2ps_term;
+      if (term.find ("eps") != std::string::npos) gl2ps_term = GL2PS_EPS;
+      else if (term.find ("pdf") != std::string::npos) gl2ps_term = GL2PS_PDF;
+      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
+      else if (term.find ("ps") != std::string::npos) gl2ps_term = GL2PS_PS;
+      else if (term.find ("pgf") != std::string::npos) gl2ps_term = GL2PS_PGF;
+      else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
+      else 
+        {
+          error ("gl2ps-renderer:: Unknown terminal");
+          return;
+        }
+
+      GLint gl2ps_text = 0;
+      if (term.find ("notxt") != std::string::npos) gl2ps_text = GL2PS_NO_TEXT;
+
       while (state == GL2PS_OVERFLOW)
         { 
           buffsize += 1024*1024;
           gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
-                          GL2PS_EPS, GL2PS_BSP_SORT,
+                          gl2ps_term, GL2PS_BSP_SORT,
                           (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-                           | GL2PS_BEST_ROOT), GL_RGBA, 0, NULL, 0, 0, 0,
+                           | GL2PS_BEST_ROOT | gl2ps_text), 
+                          GL_RGBA, 0, NULL, 0, 0, 0,
                           buffsize, fp, filename.c_str () );
 
           opengl_renderer::draw (go);

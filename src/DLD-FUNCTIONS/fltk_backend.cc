@@ -105,9 +105,10 @@ public:
   bool zoom (void) { return in_zoom; }
   void set_zoom_box (const Matrix& zb) { zoom_box = zb; }
   
-  void print (const std::string& filename)
+  void print (const std::string& filename, const std::string& term)
   {
     print_filename  = filename;
+    print_term  = term;
   }
 
 private:
@@ -118,6 +119,7 @@ private:
   Matrix zoom_box;
 
   std::string print_filename;
+  std::string print_term;
 
   void setup_viewport (int ww, int hh)
   {
@@ -136,7 +138,7 @@ private:
 
     if (! print_filename.empty ())
       {
-        opengl_renderer *rend = new glps_renderer (print_filename);
+        opengl_renderer *rend = new glps_renderer (print_filename, print_term);
         rend->draw (gh_manager::lookup (number));
         print_filename = "";
         delete rend;
@@ -330,9 +332,9 @@ public:
   // FIXME -- this could change.
   double number (void) { return fp.get___myhandle__ ().value (); }
 
-  void print (const std::string& fname)
+  void print (const std::string& fname, const std::string& term)
   {
-    canvas->print (fname);
+    canvas->print (fname, term);
 
     // Print immediately so the output file will exist when the drawnow
     // command is done.
@@ -935,10 +937,10 @@ public:
     return get_size (hnd2idx (gh));
   }
 
-  static void print (const graphics_handle& gh , const std::string& filename)
+  static void print (const graphics_handle& gh , const std::string& filename,  const std::string& term)
   {
     if (instance_ok ())
-      instance->do_print (hnd2idx(gh), filename);
+      instance->do_print (hnd2idx(gh), filename, term);
   }
 
 private:
@@ -1037,12 +1039,12 @@ private:
     return sz;
   }
 
-  void do_print (int idx, const std::string& filename)
+  void do_print (int idx, const std::string& filename,  const std::string& term)
   {
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-        win->second->print (filename);
+        win->second->print (filename, term);
       }
   }
 
@@ -1201,11 +1203,11 @@ public:
   }
 
   void print_figure (const graphics_object& go,
-                     const std::string& /*term*/,
+                     const std::string& term,
                      const std::string& file, bool /*mono*/,
                      const std::string& /*debug_file*/) const 
   { 
-    figure_manager::print (go.get_handle (), file);
+    figure_manager::print (go.get_handle (), file, term);
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const

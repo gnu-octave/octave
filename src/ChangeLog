@@ -1,3 +1,8 @@
+2010-08-05  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl2ps-renderer.cc (draw): Add support for more terminal types.
+	* DLD-FUNCTIONS/fltk_backend.cc: Likewise.
+
 2010-08-04  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_number (const char *)): Create empty string if
@@ -28,7 +33,7 @@
 	* DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc, 
 	DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/betainc.cc,
 	DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
-	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/daspk.cc,
+ 	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/daspk.cc,
 	DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/dot.cc, DLD-FUNCTIONS/eigs.cc,
 	DLD-FUNCTIONS/fftw.cc, DLD-FUNCTIONS/filter.cc,
 	DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/lu.cc,

@@ -26,9 +26,8 @@
 
 function arg_st = __print_parse_opts__ (varargin)
 
-  ## FIXME - change to numeric values: `canvas_size', `resolution', `fontsize'
   arg_st.append_to_file = false;
-  arg_st.canvas_size = "";
+  arg_st.canvas_size = [];
   arg_st.debug = false;
   arg_st.debug_file = "octave-print-commands.log";
   arg_st.devopt = "";
@@ -37,14 +36,18 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.fontsize = "";
   arg_st.font = "";
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
-  arg_st.ghostscript_binary = __ghostscript_binary__ ();
-  arg_st.ghostscript_device = ""; # gs converts eps/ps to this format/printer-language
-  arg_st.ghostscript_output = ""; # gs converts arg_st.name to arg_st.ghostscript_output
-  arg_st.pstoedit_binary = __find_binary__ ("pstoedit");
-  arg_st.name = ""; # This is the file produced by the backend
+  arg_st.ghostscript.binary = __ghostscript_binary__ ();
+  arg_st.ghostscript.device = "";
+  arg_st.ghostscript.output = "";
+  arg_st.ghostscript.papersize = "";
+  arg_st.ghostscript.pageoffset = [];
+  arg_st.ghostscript.debug = false;
+  arg_st.ghostscript.epscrop = false;
+  arg_st.ghostscript.resolution = 150;
   arg_st.orientation = "";
+  arg_st.pstoedit_binary = __find_binary__ ("pstoedit");
+  arg_st.name = "";
   arg_st.printer = "";
-  arg_st.resolution = num2str (get (0, "screenpixelsperinch"));
   arg_st.special_flag = "textnormal";
   arg_st.tight_flag = false;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
@@ -73,9 +76,9 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.force_solid = 1;
       elseif (strcmp (arg, "-dashed"))
         arg_st.force_solid = -1;
-      elseif (strcmp (arg, "-portrait"))
+      elseif (strncmp (arg, "-portrait", numel (arg)))
         arg_st.orientation = "portrait";
-      elseif (strcmp (arg, "-landscape"))
+      elseif (strncmp (arg, "-landscape", numel (arg)))
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-tight"))
         arg_st.tight_flag = true;
@@ -83,6 +86,7 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.special_flag = "textspecial";
       elseif (strncmp (arg, "-debug", 6))
         arg_st.debug = true;
+        arg_st.ghostscript.debug = true;
         if (length (arg) > 7)
           arg_st.debug_file = arg(8:end);
         endif
@@ -91,25 +95,25 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
-        arg_st.ghostscript_binary = arg(3:end);
-        if (exist (arg_st.ghostscript_binary, "file") != 2)
-          arg_st.ghostscript_binary = file_in_path (EXEC_PATH, arg_st.ghostscript_binary);
+        arg_st.ghostscript.binary = arg(3:end);
+        if (exist (arg_st.ghostscript.binary, "file") != 2)
+          arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg_st.ghostscript.binary);
         endif
-        if (isempty (arg_st.ghostscript_binary))
+        if (isempty (arg_st.ghostscript.binary))
           error ("print: Ghostscript binary ""%s"" could not be located", arg(3:end))
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-F")
         idx = rindex (arg, ":");
         if (idx)
           arg_st.font = arg(3:idx-1);
-          arg_st.fontsize = arg(idx+1:length(arg));
+          arg_st.fontsize = str2num (arg(idx+1:end));
         else
-          arg_st.font = arg(3:length(arg));
+          arg_st.font = arg(3:end);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-S")
-        arg_st.canvas_size = arg(3:length(arg));
+        arg_st.canvas_size = str2num (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-r")
-        arg_st.resolution = arg(3:length(arg));
+        arg_st.ghostscript.resolution = arg(3:end);
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2num (arg(3:end));
       elseif (length (arg) >= 1 && arg(1) == "-")
@@ -124,17 +128,22 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endfor
 
+  if (arg_st.ghostscript.resolution == 0)
+    ## Do as Matlab does.
+    arg_st.ghostscript.resolution = num2str (get (0, "screenpixelsperinch"));
+  endif
+
   if (isempty (arg_st.orientation))
     if (isfigure (arg_st.figure))
       arg_st.orientation = get (arg_st.figure, "paperorientation");
     else
       ## Allows tests to be run without error.
-      arg_st.orientation = get (0, "defaultfigurepaperorientation");
+      arg_st.orientation = get (0, "portrait");
     endif
   endif
 
-  if (isempty (arg_st.ghostscript_binary))
-    arg_st.ghostscript_binary = __ghostscript_binary__ ();
+  if (isempty (arg_st.ghostscript.binary))
+    arg_st.ghostscript.binary = __ghostscript_binary__ ();
   endif
 
   dot = rindex (arg_st.name, ".");
@@ -146,8 +155,8 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt))
-      || (! isempty (strfind (arg_st.devopt, "tex")) && arg_st.use_color == 0))
+  if ((any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt))
+      || (! isempty (strfind (arg_st.devopt, "tex")))) && arg_st.use_color == 0)
     ## Mono is the default for ps, eps, and the tex/latex, devices
     arg_st.use_color = -1;
   elseif (arg_st.use_color == 0)
@@ -155,14 +164,20 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   if (arg_st.append_to_file)
-    if (any (strcmpi (arg_st.devopt, {"ps", "ps2", "psc", "psc2", "pdf"})))
+    if (isempty (arg_st.name))
+      arg_st.append_to_file = false;
+    elseif (any (strcmpi (arg_st.devopt, {"eps", "eps2", "epsc", "epsc2", ...
+                                          "ps", "ps2", "psc", "psc2", "pdf"})))
       have_ghostscript = ! isempty (__ghostscript_binary__ ());
       if (have_ghostscript)
         file_exists = ((numel (dir (arg_st.name)) == 1) && (! isdir (arg_st.name)));
         if (! file_exists)
           arg_st.append_to_file = false;
         end
-      end
+      else
+        arg_st.append_to_file = false;
+        warning ("print.m: appended output requires ghostscript to be installed.")
+      endif
     else
       warning ("print.m: appended output is not supported for device '%s'", arg_st.devopt)
       arg_st.append_to_file = false;
@@ -189,16 +204,22 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
-              "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
-              "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
-              "epsc", "epsc2", "emf", "pdf", "pslatex", ...
-              "epslatex", "epslatexstandalone", "pstex", "tikz"};
+              "gif", "pbm", "pbmraw", "dxf", "mf", ...
+              "svg", "hpgl", "ps", "ps2", "psc", ...
+              "psc2", "eps", "eps2", "epsc", "epsc2", ...
+              "emf", "pdf", "pslatex", "epslatex", "epslatexstandalone", ...
+              "pstex", "tiff", "tiffn" "tikz", "pcxmono", ...
+              "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
+              "ppm", "ppmraw"};
 
   suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
-              "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
-              "ps", "ps", "ps", "ps", "eps", "eps", ...
-              "eps", "eps", "emf", "pdf", "tex", ...
-              "tex", "tex", "tex", "tikz"};
+              "gif", "pbm", "pbm", "dxf", "mf", ...
+              "svg", "hpgl", "ps", "ps", "ps", ...
+              "ps", "eps", "eps", "eps", "eps", ...
+              "emf", "pdf", "tex", "tex", "tex", ...
+              "tex", "tiff", "tiff", "tikz", "pcx", ...
+              "pcx", "pcx", "pcx", "pgm", "pgm", ...
+              "ppm", "ppm"};
 
   match = strcmpi (dev_list, arg_st.devopt);
   if (any (match))
@@ -220,34 +241,29 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   if (all (! strcmp (arg_st.devopt, dev_list)))
-    arg_st.ghostscript_device = arg_st.devopt;
-    arg_st.ghostscript_output = arg_st.name;
-    ## FIXME - This will not work correctly if GS is used to produce a print
-    ##         stream that is saved to a file and not sent to the printer.
-    if (arg_st.send_to_printer)
-      arg_st.devopt = "psc";
-      arg_st.name = strcat (tmpnam (), ".ps");
-      arg_st.unlink{end+1} = arg_st.name;
+    arg_st.ghostscript.device = arg_st.devopt;
+    arg_st.ghostscript.output = arg_st.name;
+  endif
+
+  if (isempty (arg_st.canvas_size))
+    if (isfigure (arg_st.figure))
+      [arg_st.ghostscript.papersize, paperposition] = gs_papersize (arg_st.figure,
+                                                               arg_st.orientation);
     else
-      ## Assume the user desires only the figuure. This is useful for producing
-      ## pdf figures for pdflatex
-      ## octave:#> print -f1 -dpdfwrite figure1.pdf
-      arg_st.devopt = "epsc";
-      arg_st.name = strcat (tmpnam (), ".eps");
-      arg_st.unlink{end+1} = arg_st.name;
+      ## allows tests to be run
+      arg_st.ghostscript.papersize = "letter";
+      paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
     endif
-  endif
-
-  if (any (strncmp (arg_st.devopt(1:2), {"ps", "pdf"}, 2)))
-    arg_st.paperoutput = true;
+    arg_st.canvas_size = paperposition(3:4);
+    arg_st.ghostscript.pageoffset = paperposition(1:2);
   else
-    arg_st.paperoutput = false;
+    ## Canvas size in points.
+    arg_st.canvas_size = arg_st.canvas_size * 72 / arg_st.ghostscript.resolution;
+    arg_st.ghostscript.papersize = arg_st.canvas_size;
+    arg_st.ghostscript.epscrop = true;
+    arg_st.ghostscript.pageoffset = [0, 0];
   endif
 
-  if (arg_st.debug)
-    disp ("Printing options");
-    disp (arg_st)
-  endif
 endfunction
 
 %!test
@@ -255,11 +271,16 @@ endfunction
 %! assert (opts.devopt, "psc");
 %! assert (opts.use_color, 1);
 %! assert (opts.send_to_printer, true);
-%! assert (opts.paperoutput, true);
 %! assert (opts.name, opts.unlink{1})
+%! assert (opts.canvas_size, [576, 432]);
+%! assert (opts.ghostscript.device, "")
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
+
+%!test
+%! opts = __print_parse_opts__ ("test.pdf", "-SX640,Y480");
+%! assert (opts.canvas_size, [307.2, 230.4], 0.1);
 
 %!test
 %! opts = __print_parse_opts__ ("-dpsc", "-append");
@@ -268,7 +289,7 @@ endfunction
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, 1);
 %! assert (opts.append_to_file, false);
-%! assert (opts.paperoutput, true);
+%! assert (opts.ghostscript.device, "")
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
@@ -277,9 +298,9 @@ endfunction
 %! opts = __print_parse_opts__ ("-deps", "-tight");
 %! assert (opts.name, opts.unlink{1})
 %! assert (opts.tight_flag, true);
-%! assert (opts.paperoutput, false)
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
+%! assert (opts.ghostscript.device, "")
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
@@ -288,31 +309,29 @@ endfunction
 %! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono");
 %! assert (opts.devopt, "jpeg")
 %! assert (opts.name, "foobar.jpg")
-%! assert (opts.ghostscript_device, "")
+%! assert (opts.ghostscript.device, "")
 %! assert (opts.send_to_printer, false);
 %! assert (opts.printer, "");
-%! assert (opts.paperoutput, false)
 %! assert (opts.use_color, -1);
+%! assert (opts.ghostscript.device, "")
 
 %!test
 %! opts = __print_parse_opts__ ("-ddeskjet", "foobar", "-mono", "-Pmyprinter");
-%! assert (opts.ghostscript_output, "foobar.deskjet")
-%! assert (opts.ghostscript_device, "deskjet")
-%! assert (opts.devopt, "psc")
+%! assert (opts.ghostscript.output, "foobar.deskjet")
+%! assert (opts.ghostscript.device, "deskjet")
+%! assert (opts.devopt, "deskjet")
 %! assert (opts.send_to_printer, true);
 %! assert (opts.printer, "-Pmyprinter");
-%! assert (opts.paperoutput, true)
 %! assert (opts.use_color, -1);
 
 %!test
 %! opts = __print_parse_opts__ ("-f5", "-dljet3");
-%! assert (opts.name, opts.unlink{2})
-%! assert (opts.ghostscript_output, opts.unlink{1})
-%! assert (strfind (opts.ghostscript_output, ".ljet3"))
-%! assert (strfind (opts.name, ".ps"))
-%! assert (opts.devopt, "psc")
+%! assert (opts.name, opts.unlink{1})
+%! assert (opts.ghostscript.output, opts.unlink{1})
+%! assert (opts.ghostscript.device, "ljet3")
+%! assert (strfind (opts.ghostscript.output, ".ljet3"))
+%! assert (opts.devopt, "ljet3")
 %! assert (opts.send_to_printer, true);
-%! assert (opts.paperoutput, true)
 %! assert (opts.figure, 5)
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
@@ -393,4 +412,79 @@ function bin = __find_binary__ (binary)
 
 endfunction
 
+function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
+  persistent papertypes papersizes
+
+  if (isempty (papertypes))
+    papertypes = {"usletter", "uslegal",     "a0",     "a1", ...
+                        "a2",      "a3",     "a4",     "a5", ...
+                        "b0",      "b1",     "b2",     "b3", ...
+                        "b4",      "b5", "arch-a", "arch-b", ...
+                    "arch-c",  "arch-d", "arch-e",      "a", ...
+                         "b",       "c",      "d",      "e", ...
+                   "tabloid"};
+    papersizes = [ 8.5, 11.0;  8.5, 14.0; 33.1, 46.8; 23.4, 33.1;
+                  16.5, 23.4; 11.7, 16.5;  8.3, 11.7;  5.8,  8.3;
+                  39.4, 55.7; 27.8, 39.4; 19.7, 27.8; 13.9, 19.7;
+                   9.8, 13.9;  6.9,  9.8;  9.0, 12.0; 12.0, 18.0;
+                  18.0, 24.0; 24.0, 36.0; 36.0, 48.0;  8.5, 11.0;
+                  11.0, 17.0; 18.0, 24.0; 24.0, 36.0; 36.0, 48.0;
+                  11.0, 17.0] * 72;
+  endif
+
+  papertype = get (hfig, "papertype");
+  paperunits = get (hfig, "paperunits");
+  paperposition = get (hfig, "paperposition");
+  if (strcmp (papertype, "<custom>"))
+    papersize = get (hfig, "papersize");
+    papersize = convert2points (papersize , paperunits);
+  else
+    papersize = papersizes (strcmp (papertypes, papertype), :);
+  endif
+
+  if (strcmp (paperunits, "normalized"))
+    paperposition = paperposition .* papersize([1,2,1,2]);
+  else
+    paperposition = convert2points (paperposition, paperunits);
+  endif
+
+  ## FIXME - This will be obsoleted by listeners for paper properties.
+  ## Papersize is tall when portrait,and wide when landscape.
+  if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
+      || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
+    papersize = papersize ([2,1]);
+    paperposition = paperposition([2,1,4,3]);
+  endif
+
+  if ((! strcmp (papertype, "<custom>")) && (strcmp (paperorientation, "portrait")))
+    ## For portrait use the ghostscript name
+    papersize = papertype;
+    papersize(papersize=="-") = "";
+    papersize = strrep (papersize, "us", "");
+    switch papersize
+    case "a"
+      papersize = "letter";
+    case {"b", "tabloid"}
+      papersize = "11x17";
+    case {"c", "d", "e"}
+      papersize = strcat ("arch", papersize);
+    endswitch
+    if (strncmp (papersize, "arch", 4))
+      papersize(end) = upper (papersize(end));
+    endif
+  endif
+
+endfunction
+
+function value = convert2points (value, units)
+    switch units
+    case {"inches"}
+      value = value * 72;
+    case {"centimeters"}
+      value = value * 72 / 25.4;
+    case {"normalized"}
+      error ("print:customnormalized",
+             "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined.")
+    endswitch
+endfunction
 

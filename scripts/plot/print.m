@@ -21,42 +21,46 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a plot, or save it to a file.
+## Print a graph, or save it to a file
 ##
-## @var{filename} specifies the name of the output file.  If the
-## file name has no suffix, then one is inferred from the specified
+## @var{filename} defines the file name of the output file.  If the
+## file name has no suffix, one is inferred from the specified
 ## device and appended to the file name.  If no
-## filename is specified the output is sent to the printer.
+## filename is specified, the output is sent to the printer.
 ##
-## @var{h} specifies the figure handle to print.  If no handle is specified
+## @var{h} specifies the figure handle.  If no handle is specified
 ## the handle for the current figure is used.
 ##
 ## @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed.  The
-## default is the current figure.
+##   Specify the handle, @var{h}, of the figure to be printed. The
+##   default is the current figure.
 ##
 ## @item -P@var{printer}
-##   Set the @var{printer} name to which the plot is sent when no
-## @var{filename} is specified.
+##   Set the @var{printer} name to which the graph is sent if no
+##   @var{filename} is specified.
 ##
 ## @item -G@var{ghostscript_command}
-##   Specify the command for invoking Ghostscript.  The defaults for Unix and
-## Windows are 'gs' and 'gswin32c' respectively.
+##   Specify the command for calling Ghostscript.  For Unix and Windows,
+## the defaults are 'gs' and 'gswin32c', respectively.
 ##
 ## @item -color
 ## @itemx -mono
-##   Print monochrome or color lines.
+##   Monochrome or color output.
 ##
 ## @item -solid
 ## @itemx -dashed
-##   Print solid or dashed lines.
+##   Forces all lines to be solid or dashed, respectively.
 ##
 ## @item -portrait
 ## @itemx -landscape
-##   Specify the orientation of the plot for printed output.
+##   Specify the orientation of the plot for printed output. For
+## non-printed output the aspect ratio of the output corresponds to
+## the plot area defined by the "paperposition" property in the
+## orientation specified. This options is equivalent to changing
+## the figure's "paperorientation" property.
 ##
 ## @item -d@var{device}
 ##   Output device, where @var{device} is one of:
@@ -65,13 +69,15 @@
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     Postscript (level 1 and 2, mono and color)
+##     Postscript (level 1 and 2, mono and color). The FLTK backend
+## generates Postscript level 3.0.
 ##
 ##   @item eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
-##     Encapsulated postscript (level 1 and 2, mono and color)
+##     Encapsulated postscript (level 1 and 2, mono and color). The FLTK backend
+## generates Postscript level 3.0.
 ##
 ##   @item tex
 ##   @itemx epslatex
@@ -103,10 +109,10 @@
 ##     Microsoft Enhanced Metafile
 ##
 ##   @item fig
-##     XFig.  If this format is selected the additional options
-## @option{-textspecial} or @option{-textnormal} can be used to control
-## whether the special flag should be set for the text in
-## the figure (default is @option{-textnormal}). 
+##     XFig.  For the Gnuplot backend, the additional options
+##     @option{-textspecial} or @option{-textnormal} can be used to control
+##     whether the special flag should be set for the text in
+##     the figure (default is @option{-textnormal}). 
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -122,7 +128,7 @@
 ##     JPEG image
 ##
 ##   @item gif
-##     GIF image
+##     GIF image (only available for the Gnuplot backend)
 ##
 ##   @item pbm
 ##     PBMplus
@@ -138,8 +144,8 @@
 ## or if there is no filename it is sent to the printer as postscript.
 ##
 ## @item -d@var{ghostscript_device}
-##   Specify an output device supported by Ghostscript.
-## Some examples are:
+##   Additional devices are supported by Ghostscript.
+## Some examples are;
 ##
 ##   @table @code
 ##   @item ljet2p 
@@ -164,46 +170,44 @@
 ##     Portable Pixel Map file format
 ##
 ##   @item pdfwrite
-##     Converts ps or eps to pdf
+##     Produces pdf output from eps
 ##   @end table
 ##
-##   For a complete list of available formats and devices type
-##   @samp{system ("gs -h")}.
+##   For a complete list, type `system ("gs -h")' to see what formats
+## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
 ## by the figure's "papersize" property.  When the output 
-## is sent to a file the size is determined by the figure's
-## "paperposition" property.
+## is sent to a file the size is determined by the plot box defined by
+## the figure's "paperposition" property.
 ##
-## @item -append
-##   Append the output to a pre-existing file.  Only PDF
-## and Postscript files are currently supported.
+## @itemx -append
+##   Appends the PS, PDF, or EPS output to a pre-existing file of the 
+## same type.
 ##
-## @item -r@var{NUM}
+## @itemx -r@var{NUM}
 ##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
-## SVG the default is the screen resolution, for others it is 150 dpi.
+## SVG the default is the screen resolution, for other it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Force a tight bounding box for eps-files.  Because the Ghostscript
-## devices are conversions of an eps-file, this option works for those
+##   Forces a tight bounding box for eps-files.  Since Ghostscript
+## is used to produce other devices, this option works for those
 ## devices as well.
 ##
 ## @item -S@var{xsize},@var{ysize}
-##   Specify plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  If
-## using the command form of the print function, the  @var{xsize},@var{ysize}
-## option must be quoted.  For example, by writing
-## @w{@code{"-S640,480"}}.  The size defaults to that specified by the
-## figure's paperposition property.
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. For
+## PS, EPS, PDF, and other vector formats the plot size is in points.
+## This option is equivalent to changing the size of the plot box
+## associated with "paperposition" property. Using the command form of
+## the print function, you must quote the @var{xsize},@var{ysize}
+## option.  For example, by writing @w{@code{"-S640,480"}}.
 ##
-## @item  -F@var{fontname}
+## @item -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
-##   Set the postscript font to @var{fontname} (for use with postscript,
-## aifm, @nospell{corel} and fig).  By default, 'Helvetica' is set for PS/aifm,
-## and 'SwitzerlandLight' for Corel.  It can also be 'Times-Roman'.
-## @var{size} is given in points.  @var{fontname} is ignored for the
-## fig device.
+##   Associates all text with the @var{fontname} and/or @var{fontsize}.
+## @var{fontname} is ignored for some devices; dxf, fig, hpgl, etc.
 ## @end table
 ##
 ## The filename and options can be given in any order.
@@ -225,25 +229,34 @@ function print (varargin)
   if (strcmp (backend, "gnuplot"))
     ## FIXME - this can be removed when __gnuplot_print__ has been modified
     ##         to work consistently with __fltk_print__
-    __gnuplot_print__ (varargin{:});
+    opts.ghostscript_binary = opts.ghostscript.binary;
+    opts.resolution = opts.ghostscript.resolution;
+    opts.canvas_size = opts.canvas_size * opts.resolution / 72;
+    opts.resolution = sprintf ("%d", opts.resolution);
+    opts.fontsize = sprintf ("%d", opts.fontsize);
+    if (strcmp (opts.devopt, "tiff"))
+      error ("print:notiffoutput",
+             "print.m: TIFF output is not available for the Gnuplot backend.")
+    endif
+    __gnuplot_print__ (opts);
     return
+  else
+    if (strcmp (opts.devopt, "gif"))
+      error ("print:notiffoutput",
+             "print.m: GIF output is not available for the FLTK backend.")
+    endif
   endif
 
-  ## FIXME - this can be moved to __print_parse_opts__ when __gnuplot_print__
-  ##         has been modified to work consistently with __fltk_print__
-  if (! isempty (opts.canvas_size) && ischar (opts.resolution))
-    opts.canvas_size = str2num (strrep (strrep (opts.canvas_size, "X", ""), "Y", ""));
-  endif
-  if (! isempty (opts.resolution) && ischar (opts.resolution))
-    opts.resolution = str2num (opts.resolution);
-  endif
-  if (! isempty (opts.fontsize) && ischar (opts.fontsize))
-    opts.fontsize = str2num (opts.fontsize);
+  if (opts.append_to_file && ! (strncmp (opts.devopt, "pdf", 3)
+         || strncmp (opts.devopt(1:2), "ps", 2)))
+    warning ("print:cannotappendfile", 
+             "print.m: Cannot append files of type '%s'.", opts.devopt)
+    opts.append_to_file = false;
   endif
 
   if (opts.append_to_file)
     saved_original_file = strcat (tmpnam (), ".", opts.devopt);
-    opts.unlink(end+1) = {save_original_file};
+    opts.unlink(end+1) = {saved_original_file};
     movefile (opts.name, saved_original_file);
   endif
 
@@ -251,41 +264,13 @@ function print (varargin)
   ## FIXME - need an unwind_protect block
   props = [];
 
-  if ((! isempty (opts.canvas_size))
-      || (! strcmpi (get (opts.figure, "paperorientation"), opts.orientation)))
-    m = numel (props);
-    props(m+1).h = opts.figure;
-    props(m+1).name = "paperposition";
-    props(m+1).value = {get(opts.figure, "paperposition")};
-    props(m+2).h = opts.figure;
-    props(m+2).name = "paperunits";
-    props(m+2).value = {get(opts.figure, "paperunits")};
-    props(m+3).h = opts.figure;
-    props(m+3).name = "papersize";
-    props(m+3).value = {get(opts.figure, "papersize")};
-    props(m+4).h = opts.figure;
-    props(m+4).name = "paperorientation";
-    props(m+4).value = {get(opts.figure, "paperorientation")};
-    props(m+5).h = opts.figure;
-    props(m+5).name = "papertype";
-    props(m+5).value = {get(opts.figure, "papertype")};
-    if (! isempty (opts.canvas_size))
-      ## canvas_size is in pixels/points
-      set (opts.figure, "paperorientation", "portrait");
-      set (opts.figure, "paperposition", [0, 0, opts.canvas_size]);
-      set (opts.figure, "paperunits", "points");
-      set (opts.figure, "papersize", opts.canvas_size);
-      fpos = get (opts.figure, "position");
-      props(m+6).h = opts.figure;
-      props(m+6).name = "position";
-      props(m+6).value = {fpos};
-      fpos(3:4) = opts.canvas_size;
-      set (opts.figure, "position", fpos);
-    elseif (opts.paperoutput)
-      ## FIXME - should the backend handle this?
-      orient (opts.orientation)
-    endif
-  endif
+  ## backend tranlates figure position to eps bbox in points
+  fpos = get (opts.figure, "position");
+  props(1).h = opts.figure;
+  props(1).name = "position";
+  props(1).value = {fpos};
+  fpos(3:4) = opts.canvas_size;
+  set (opts.figure, "position", fpos)
 
   if (opts.force_solid != 0)
     h = findobj (opts.figure, "-property", "linestyle");
@@ -364,10 +349,10 @@ function print (varargin)
 
   ## Send to the printer
   if (opts.send_to_printer)
-    if (isempty (opts.ghostscript_output))
+    if (isempty (opts.ghostscript.output))
       prn_datafile = opts.name;
     else
-      prn_datafile = opts.ghostscript_output;
+      prn_datafile = opts.ghostscript.output;
     endif
     if (isempty (opts.printer))
       prn_cmd = sprintf ("lpr %s '%s' 2>&1", opts.lpr_options, prn_datafile);
@@ -377,6 +362,8 @@ function print (varargin)
     endif
     if (opts.debug)
       fprintf ("lpr command: %s\n", prn_cmd)
+      [status, output] = system ("lpq");
+      disp (output)
     endif
     [status, output] = system (prn_cmd);
     if (status != 0)
@@ -387,16 +374,21 @@ function print (varargin)
 
   ## Append to file using GS
   if (opts.append_to_file)
-    if (strcmp (opts.devopt, "pdf"))
+    if (strncmp (opts.devopt, "pdf", 3))
       suffix = "pdf";
-    elseif (strcmp (opts.devopt(1:2), "ps"))
+      device = suffix;
+    elseif (strncmp (opts.devopt(1:2), "ps", 2))
+      ## FIXME - For FLTK the fonts get mangled
+      ##         See the seciton "How to concatenate several PS files" at the link,
+      ##         http://en.wikibooks.org/wiki/PostScript_FAQ
       suffix = "ps";
+      device = suffix;
     endif
     tmp_combined_file = strcat (tmpnam (), ".", suffix);
     opts.unlink{end+1} = tmp_combined_file;
-    gs_opts = "-q -dNOPAUSE -dBATCH";
+    gs_opts = "-dQUIET -dNOPAUSE -dBATCH -dSAFER -dFIXEDMEDIA";
     gs_cmd = sprintf ("%s %s -sDEVICE=%swrite -sOutputFile=%s %s %s", 
-             opts.ghostscript_binary, gs_opts, suffix, tmp_combined_file,
+             opts.ghostscript.binary, gs_opts, device, tmp_combined_file,
              saved_original_file, opts.name);
     [status, output] = system (gs_cmd);
     if (opts.debug)
@@ -405,9 +397,9 @@ function print (varargin)
     if (status != 0)
       warning ("print:failedtoappendfile", 
                "print.m: failed to append output to file '%s'.", opts.name)
-      movefile (saved_original_file, opts.name);
+      copyfile (saved_original_file, opts.name);
     else
-      movefile (tmp_combined_file, opts.name);
+      copyfile (tmp_combined_file, opts.name);
     endif
   endif
 
@@ -416,7 +408,7 @@ function print (varargin)
     [status, output] = unlink (opts.unlink{n});
     if (status != 0)
       disp (output)
-      warning ("print.m: failed to delete temporay file, '%s'.", opts.name)
+      warning ("print.m: failed to delete temporay file, '%s'.", opts.unlink{n})
     endif
   endfor
 

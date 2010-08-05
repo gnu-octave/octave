@@ -23,11 +23,14 @@
 
 function __fltk_print__ (opts)
 
-  if (opts.debug)
-    fprintf ("FLTK backend: output file = '%s' for device '%s'\n", opts.name, opts.devopt);
-  endif
-  
   file2unlink = "";
+
+  if (! isempty (opts.fig2dev_binary))
+    fig2dev_devices = {"pstex", "mf", "emf"};
+  else
+    ## If no fig2dev is present, support emf using pstoedit.
+    fig2dev_devices = {"pstex", "mf"};
+  endif
 
   switch lower (opts.devopt)
   case {"eps", "eps2", "epsc", "epsc2"}
@@ -44,41 +47,66 @@ function __fltk_print__ (opts)
   case {"tikz"}
     ## FIXME - format GL2PS_PGF if not implemented
     drawnow ("pgf", opts.name);
-  case {"ps", "ps2", "psc", "psc2"}
-    ## FIXME - format GL2PS_PS if not implemented
-    drawnow ("ps", opts.name);
-  case {"pdf"}
-    ## FIXME - format GL2PS_PDF if not implemented
-    drawnow ("pdf", opts.name);
+  case {"ps", "ps2", "psc", "psc2", "pdf"}
+    opts.ghostscript.source = strcat (tmpnam (), ".eps");
+    file2unlink = opts.ghostscript.source;
+    if (strcmp (opts.devopt, "pdf"))
+      opts.ghostscript.device = "pdfwrite";
+    else
+      opts.ghostscript.device = "pswrite";
+    endif
+    opts.ghostscript.output = opts.name;
+    drawnow ("eps", opts.ghostscript.source);
+    if (opts.tight_flag)
+      __tight_eps_bbox__ (opts, opts.ghostscript.source);
+    endif
   case {"svg"}
     ## FIXME - format GL2PS_SVG if not implemented
     drawnow ("svg", opts.name);
-  case {"gif", "jpeg", "png", "pbm"}
-    opts.ghostscript_device = opts.devopt;
-    opts.ghostscript_output = opts.name;
-    opts.name = strcat (tmpnam (), ".eps");
-    file2unlink = opts.name;
-    opts.devopt = "epsc";
-    drawnow ("eps", opts.name);
+  case {"jpeg", "pbm", "pbmraw", "pcx24b", "pcx256", "pcx16", ...
+        "pgm", "pgmraw", "png", "ppm", "ppmraw", "pdfwrite", ...
+        "tiff", "tiffn"}
+    switch opts.devopt
+    case "png"
+      opts.ghostscript.device = "png256";
+    case {"tiff", "tiffn"}
+      opts.ghostscript.device = "tiff24nc";
+    otherwise
+      opts.ghostscript.device = opts.devopt;
+    endswitch
+    opts.ghostscript.output = opts.name;
+    opts.ghostscript.source = strcat (tmpnam (), ".eps");
+    opts.ghostscript.epscrop = true;
+    file2unlink = opts.ghostscript.source;
+    drawnow ("eps", opts.ghostscript.source)
     if (opts.tight_flag)
-      __tight_eps_bbox__ (opts, opts.name);
+      __tight_eps_bbox__ (opts, opts.ghostscript.source);
     endif
-  case {"aifm", "dxf", "emf", "fig", "hpgl"}
-    status = __pstoedit__ (opts);
-  case {"pstex", "mf", "emf"}
+  case fig2dev_devices
     tmp_figfile = strcat (tmpnam (), ".fig");
     file2unlink = tmp_figfile;
     status = __pstoedit__ (opts, "fig", tmp_figfile);
     if (status == 0)
       status = __fig2dev__ (opts, tmp_figfile);
     endif
+  case {"aifm", "dxf", "emf", "fig", "hpgl"};
+    status = __pstoedit__ (opts);
   otherwise
-    error ("print:unavailabledevice", 
-    "print.m: device '%s' is unavailable for the fltk backend.", opts.devopt)
+    ## various ghostscript devices for printers
+    opts.ghostscript.device = opts.devopt;
+    opts.ghostscript.output = opts.name;
+    opts.ghostscript.epscrop = false;
+    opts.ghostscript.source = strcat (tmpnam (), ".eps");
+    file2unlink = opts.ghostscript.source;
+    drawnow ("eps", opts.ghostscript.source)
+    if (opts.tight_flag)
+      __tight_eps_bbox__ (opts, opts.ghostscript.source);
+    endif
   endswitch
 
-  if (! isempty (opts.ghostscript_device))
-    __ghostscript__ (opts);
+  ## FIXME - warning: unrecognized escape sequence `\P' -- converting to `P'
+  if (! isempty (opts.ghostscript.device))
+    status = __ghostscript__ (opts.ghostscript);
   endif
 
   if (! isempty (file2unlink))

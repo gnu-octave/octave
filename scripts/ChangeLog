@@ -3,6 +3,13 @@
 	* general/sortrows.m: Don't actually permute the rows if not
 	requested.
 
+2010-08-04  Ben Abbott <bpabbott@mac.com>
+
+	* /plot/print.m, plot/__print_parse_opts__.m, plot/__gnuplot_print__.m, 
+	plot/private/__ghostscript__.m: plot/__fltk_print__.m: Add ps and pdf
+	output for fltk backend, improved use of ghostscript, and minor
+	improvements.
+
 2010-08-01  Rik <octave@nomad.inbox5.com>
 
 	* deprecated/intwarning.m, general/arrayfun.m, general/cplxpair.m,

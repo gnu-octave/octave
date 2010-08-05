@@ -22,29 +22,87 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-07-26
 
-function status = __ghostscript__ (opts, varargin);
+function status = __ghostscript__ (varargin);
 
-  if (nargin > 1)
-    opts.name = varargin{1};
+  opts.binary = "";
+  opts.source = "";
+  opts.output = "";
+  opts.device = "";
+  opts.epscrop = false;
+  opts.antialiasing  = false;
+  opts.resolution = 150;
+  opts.papersize = "";
+  opts.pageoffset = [0 0];
+  opts.debug = false;
+
+  offsetfile = "";
+
+  args = varargin;
+  n = find (cellfun (@isstruct, args));
+  if (! isempty (n))
+    f = fieldnames (args{n});
+    for m = 1:numel(f)
+      opts.(f{m}) = args{n}.(f{m});
+    endfor
+    args(n) = [];
   endif
-  if (nargin > 2)
-    opts.ghostscript_device = varargin{2};
-  endif
-  if (nargin > 3)
-    opts.ghostscript_output = varargin{3};
+  for n = 1:2:numel(args)
+    opts.(args{n}) = args{n+1};
+  endfor
+
+  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s", opts.device);
+  if (opts.antialiasing)
+    gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
+    gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
+  elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
+    gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);
+    if (strcmp (opts.device, "pdfwrite"))
+      ## Optimize for loading
+      gs_opts = sprintf ("%s -dOptimize=true", gs_opts);
+    endif
   endif
 
-  if (strncmp (opts.devopt, "eps", 3))
-    ## "eps" files
-    gs_opts = "-q -dNOPAUSE -dBATCH -dSAFER -dEPSCrop";
-  else
-    ## "ps" or "pdf" files
-    gs_opts = "-q -dNOPAUSE -dBATCH -dSAFER";
+  if (opts.epscrop)
+    ## papersize is specified by the eps bbox
+    gs_opts = sprintf ("%s -dEPSCrop", gs_opts);
+  elseif (! isempty (opts.papersize))
+    if (ischar (opts.papersize))
+      gs_opts = sprintf ("%s -sPAPERSIZE=%s", gs_opts, opts.papersize);
+    elseif (isnumeric (opts.papersize) && numel (opts.papersize) == 2)
+      gs_opts = sprintf ("%s -dDEVICEWIDTHPOINTS=%d -dDEVICEHEIGHTPOINTS=%d", gs_opts, opts.papersize);
+      if (opts.papersize(1) > opts.papersize(2))
+        ## Lanscape mode: This option will result in automatic rotation of the document page if the
+        ##                requested page size matches one of the default page sizes
+        gs_opts = sprintf ("%s -dNORANGEPAGESIZE", gs_opts);
+      endif
+    else
+      error ("print:badpapersize", "__ghostscript__.m: invalid 'papersize'")
+    endif
+    gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
+    offsetfile = strcat (tmpnam (), ".ps");
+    fid = fopen (offsetfile, "w");
+    if (fid == -1)
+      error ("print:fopenfailed", "__ghostscript__.m: fopen() failed.");
+    endif
+    fprintf (fid, "%s\n", "%!PS-Adobe-3.0")
+    fprintf (fid, "%s [%d %d] %s\n", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
+             opts.pageoffset, ">> setpagedevice");
+    fprintf (fid, "%%EOF");
+    status = fclose (fid);
+    if (status == -1)
+      error ("print:fclosefailed", "__ghostscript__.m: fclose() failed.");
+    endif
+    if (opts.debug)
+      [~,output] = system (sprintf ("cat %s", offsetfile));
+      fprintf ("---- begin %s ----\n", offsetfile)
+      disp (output)
+      fprintf ("----- end %s -----\n", offsetfile)
+    endif
   endif
 
-  cmd = sprintf ("%s %s -sDEVICE=%s -r%d -sOutputFile=%s %s", 
-                 opts.ghostscript_binary, gs_opts, opts.ghostscript_device,
-                 opts.resolution, opts.ghostscript_output, opts.name);
+  cmd = sprintf ("%s %s -sOutputFile=%s %s %s", 
+                 opts.binary, gs_opts,
+                 opts.output, offsetfile, opts.source);
 
   if (opts.debug)
     fprintf ("Ghostscript command: %s\n", cmd);
@@ -54,7 +112,9 @@ function status = __ghostscript__ (opts, varargin);
 
   if (status != 0)
     warning ("print:ghostscripterror", 
-             "print.m: gs failed to convert output to file '%s'.", opts.ghostscript_output)
+             "print.m: ghostscript failed to convert output to file '%s'.", opts.output)
   endif
 
 endfunction
+
+

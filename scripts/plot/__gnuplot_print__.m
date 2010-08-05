@@ -25,13 +25,12 @@
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 ## Adapted-By: jwe
 
-function __gnuplot_print__ (varargin)
+function __gnuplot_print__ (opts)
 
   persistent warn_on_inconsistent_orientation = true
 
   old_fig = get (0, "currentfigure");
   unwind_protect
-    opts = __print_parse_opts__ (varargin{:});
     have_ghostscript = ! isempty (opts.ghostscript_binary);
 
     doprint = isempty (opts.name);
@@ -255,7 +254,7 @@ function __gnuplot_print__ (varargin)
         options = "";
       end
       if (! isempty (opts.canvas_size))
-        options = cstrcat (options, " size ", opts.canvas_size);
+        options = sprintf ("%s size %d, %d", options, opts.canvas_size);
       endif
 
     elseif (any (strcmp (dev, {"dxf", "mf", "hpgl"})))
@@ -395,7 +394,7 @@ function __gnuplot_print__ (varargin)
         ## render an image the size of the paperposition box.
         ## Trigger the listener to convert all paper props to inches.
         if (! isempty (opts.canvas_size))
-          size_in_pixels = sscanf (opts.canvas_size ,"%d, %d");
+          size_in_pixels = opts.canvas_size;
           size_in_pixels = reshape (size_in_pixels, [1, numel(size_in_pixels)]);
           papersize_in_inches = size_in_pixels ./ opts.resolution;
           paperposition_in_inches = [0, 0, papersize_in_inches];

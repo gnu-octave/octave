@@ -1,4 +1,8 @@
-2010-03-24  John W. Eaton  <jwe@octave.org>
+2010-08-05  Rik <octave@nomad.inbox5.com>
+
+	* ChangeLog: Correct date in version upgrade 3.3.52+ comment.
+
+2010-08-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_INIT): Version is now 3.3.52+.
 

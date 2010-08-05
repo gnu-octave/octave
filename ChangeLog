@@ -1,5 +1,14 @@
 2010-08-05  Rik <octave@nomad.inbox5.com>
 
+	* Makefile.am: Remove distribution of emacs directory
+
+	* emacs/info-emacs-info, emacs/info-emacs-octave-help, emacs/module.mk,
+	emacs/NEWS, emacs/octave-hlp.el, emacs/octave-inf.el,
+	emacs/octave-mod.el, emacs/octave-tags, emacs/octave-tags.1,
+	emacs/README, emacs/TODO: Remove from further hg checkouts.
+
+2010-08-05  Rik <octave@nomad.inbox5.com>
+
 	* ChangeLog: Correct date in version upgrade 3.3.52+ comment.
 
 2010-08-01  John W. Eaton  <jwe@octave.org>

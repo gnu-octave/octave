@@ -66,7 +66,6 @@ EXTRA_DIST = \
   octave-sh \
   run-octave.in
 
-include emacs/module.mk
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.

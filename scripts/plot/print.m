@@ -84,14 +84,15 @@
 ##   @itemx epslatexstandalone
 ##   @itemx pstex
 ##   @itemx pslatex
-##     Generate a @LaTeX{} (or @TeX{}) file for labels, and eps/ps for
-## graphics.  The file produced by @code{epslatexstandalone} can be
+##   @itemx pdflatex
+##     Generate a @LaTeX{} (or @TeX{}) file for labels, and eps/ps/pdf
+## for graphics.  The file produced by @code{epslatexstandalone} can be
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.
 ##
 ##   @item tikz
-##     Generate a @LaTeX{} file using gnuplot's Lua/TikZ terminal.
+##     Generate a @LaTeX{} file using PGF/TikZ.
 ##
 ##   @item ill
 ##   @itemx aifm
@@ -264,88 +265,94 @@ function print (varargin)
   ## FIXME - need an unwind_protect block
   props = [];
 
-  ## backend tranlates figure position to eps bbox in points
-  fpos = get (opts.figure, "position");
-  props(1).h = opts.figure;
-  props(1).name = "position";
-  props(1).value = {fpos};
-  fpos(3:4) = opts.canvas_size;
-  set (opts.figure, "position", fpos)
+  unwind_protect
 
-  if (opts.force_solid != 0)
-    h = findobj (opts.figure, "-property", "linestyle");
-    m = numel (props);
-    for n = 1:numel(h)
-      props(m+n).h = h(n);
-      props(m+n).name = "linestyle";
-      props(m+n).value = {get(h(n), "linestyle")};
-    endfor
-    if (opts.force_solid > 0)
-      linestyle = "-";
-    else
-      linestyle = "--";
-    endif
-    set (h, "linestyle", linestyle)
-  endif
+    ## backend tranlates figure position to eps bbox in points
+    fpos = get (opts.figure, "position");
+    props(1).h = opts.figure;
+    props(1).name = "position";
+    props(1).value = {fpos};
+    fpos(3:4) = opts.canvas_size;
+    set (opts.figure, "position", fpos)
 
-  if (opts.use_color < 0)
-    color_props = {"color", "facecolor", "edgecolor"};
-    for c = 1:numel(color_props)
-      h = findobj (opts.figure, "-property", color_props{c});
-      hnone = findobj (opts.figure, color_props{c}, "none");
-      h = setdiff (h, hnone);
+    if (opts.force_solid != 0)
+      h = findobj (opts.figure, "-property", "linestyle");
       m = numel (props);
       for n = 1:numel(h)
-        rgb = get (h(n), color_props{c});
         props(m+n).h = h(n);
-        props(m+n).name = color_props{c};
-        props(m+n).value = {get(h(n), color_props{c})};
-        xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
-        ## convert RGB color to RGB gray scale
-        ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
-        set (h(n), color_props{c}, ggg)
+        props(m+n).name = "linestyle";
+        props(m+n).value = {get(h(n), "linestyle")};
       endfor
-    endfor
-  endif
+      if (opts.force_solid > 0)
+        linestyle = "-";
+      else
+        linestyle = "--";
+      endif
+      set (h, "linestyle", linestyle)
+    endif
 
-  if (! isempty (opts.font) || ! isempty (opts.fontsize))
-    h = findobj (opts.figure, "-property", "fontname");
-    m = numel (props);
-    for n = 1:numel(h)
+    if (opts.use_color < 0)
+      color_props = {"color", "facecolor", "edgecolor"};
+      for c = 1:numel(color_props)
+        h = findobj (opts.figure, "-property", color_props{c});
+        hnone = findobj (opts.figure, color_props{c}, "none");
+        h = setdiff (h, hnone);
+        m = numel (props);
+        for n = 1:numel(h)
+          rgb = get (h(n), color_props{c});
+          props(m+n).h = h(n);
+          props(m+n).name = color_props{c};
+          props(m+n).value = {get(h(n), color_props{c})};
+          xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
+          ## convert RGB color to RGB gray scale
+          ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
+          set (h(n), color_props{c}, ggg)
+        endfor
+      endfor
+    endif
+
+    if (! isempty (opts.font) || ! isempty (opts.fontsize))
+      h = findobj (opts.figure, "-property", "fontname");
+      m = numel (props);
+      for n = 1:numel(h)
+        if (! isempty (opts.font))
+          props(end+1).h = h(n);
+          props(end).name = "fontname";
+          props(end).value = {get(h(n), "fontname")};
+        endif
+        if (! isempty (opts.fontsize))
+          props(end+1).h = h(n);
+          props(end).name = "fontsize";
+          props(end).value = {get(h(n), "fontsize")};
+        endif
+      endfor
       if (! isempty (opts.font))
-        props(end+1).h = h(n);
-        props(end).name = "fontname";
-        props(end).value = {get(h(n), "fontname")};
+        set (h, "fontname", opts.font)
       endif
       if (! isempty (opts.fontsize))
-        props(end+1).h = h(n);
-        props(end).name = "fontsize";
-        props(end).value = {get(h(n), "fontsize")};
+        if (ischar (opts.fontsize))
+          fontsize = str2double (opts.fontsize);
+        else
+          fontsize = opts.fontsize;
+        endif
+        set (h, "fontsize", fontsize)
       endif
-    endfor
-    if (! isempty (opts.font))
-      set (h, "fontname", opts.font)
     endif
-    if (! isempty (opts.fontsize))
-      if (ischar (opts.fontsize))
-        fontsize = str2double (opts.fontsize);
-      else
-        fontsize = opts.fontsize;
-      endif
-      set (h, "fontsize", fontsize)
+
+    ## call the backend print script
+    drawnow ("expose")
+    feval (strcat ("__", backend, "_print__"), opts);
+
+  unwind_protect_cleanup
+
+    ## restore modified properties
+    if (isstruct (props))
+      for n = 1:numel(props)
+        set (props(n).h, props(n).name, props(n).value{1})
+      endfor
     endif
-  endif
 
-  ## call the backend print script
-  drawnow ("expose")
-  feval (strcat ("__", backend, "_print__"), opts);
-
-  ## restore modified properties
-  if (isstruct (props))
-    for n = 1:numel(props)
-      set (props(n).h, props(n).name, props(n).value{1})
-    endfor
-  endif
+  end_unwind_protect
 
   ## Send to the printer
   if (opts.send_to_printer)

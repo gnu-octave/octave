@@ -177,7 +177,7 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
   cs3 = cs3([1,1,1,1],:);
 
   lent = length (ct0);
-  lens = length (cs0);
+  lens = columns (cs0);
   F = zeros (lent, lens);
   
   for i = 1:lent

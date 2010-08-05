@@ -1,3 +1,8 @@
+2010-08-01 Marco Caliari <marco.caliari@univr.it>
+
+	* general/bicubic.m: Fix bug #30400 when bicubic called with small
+	numbers of arguments.
+
 2010-08-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/sortrows.m: Don't actually permute the rows if not

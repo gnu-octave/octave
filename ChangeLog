@@ -1,5 +1,10 @@
 2010-08-05  Rik <octave@nomad.inbox5.com>
 
+	* configure.ac: Change warning messages about freetype and fontconfig
+	to reflect their requirement for native graphics.  Bug #30594.
+
+2010-08-05  Rik <octave@nomad.inbox5.com>
+
 	* Makefile.am: Remove distribution of emacs directory
 
 	* emacs/info-emacs-info, emacs/info-emacs-octave-help, emacs/module.mk,

@@ -815,7 +815,7 @@ AC_SUBST(MAGICK_LIBS)
 
 # ---------------------------------------------------------------------
 
-## libraries needed for graphics
+## libraries needed for native graphics renderer
 
 warn_freetype=""
 
@@ -830,7 +830,7 @@ if test -n "$OPENGL_LIBS"; then
 
   AC_CHECK_FT2([9.0.3], [AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
-    [warn_freetype="FreeType library not found.  Native renderer will not have on-screen text"])
+    [warn_freetype="FreeType library not found.  Native graphics will be disabled."])
 
   ## fontconfig library
 
@@ -842,7 +842,7 @@ if test -n "$OPENGL_LIBS"; then
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
       AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])], [
       have_fontconfig=no
-      warn_fontconfig="Fontconfig not found.  Native text rendering will use hard-coded font instead."])
+      warn_fontconfig="Fontconfig library not found.  Native graphics will be disabled."])
   fi
 
   ## fltk (www.fltk.org)

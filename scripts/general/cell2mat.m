@@ -43,9 +43,10 @@ function m = cell2mat (c)
   valid |= cellfun (@islogical, c);
   valid |= cellfun (@ischar, c);
   validc = cellfun (@iscell, c);
+  valids = cellfun (@isstruct, c);
 
-  if (! all (valid(:)) && ! all (validc(:)))
-    error ("cell2mat: wrong type elements or mixed cells and matrices");
+  if (! all (valid(:)) && ! all (validc(:)) && ! all (valids(:)))
+    error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
   endif
 
   if (nb == 0)

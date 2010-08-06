@@ -387,7 +387,7 @@ function bin = __find_binary__ (binary)
   if (! isfield (data, binary))
     ## Reinitialize when `user_binaries' is present.
     data.(binary).bin = "";
-    data.(binary).warn_on_absence = true;
+    data.(binary).warn_on_absence = false;
   endif
 
   if (isempty (data.(binary).bin))

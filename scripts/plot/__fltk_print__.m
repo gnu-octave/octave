@@ -149,15 +149,15 @@ function status = __fig2dev__ (opts, figfile, devopt, devfile)
     devopt =  opts.devopt;
   endif
   if (! isempty (opts.fig2dev_binary))
-    cmd = sprintf ("%s -L %s %s %s 2>&1", opts.fig2dev_binary, devopt, figfile, devfile);
+    cmd = sprintf ("%s -L %s %s %s 2>&1", opts.fig2dev_binary, devopt,
+                   figfile, devfile);
     [status, output] = system (cmd);
-    if (opts.debug)
+    if (opts.debug || status != 0)
       fprintf ("fig2dev command: %s", cmd)
     endif
-    if (status)
-      warning ("print:fig2devfailed", "print.m: error running fig2dev.")
-      disp (cmd)
+    if (status != 0)
       disp (output)
+      warning ("print:fig2devfailed", "print.m: error running fig2dev.")
     endif
   elseif (isempty (opts.fig2dev_binary) && warn_on_absence)
     warning ("print:nofig2dev", "print.m: 'fig2dev' not found in EXEC_PATH.")
@@ -173,21 +173,21 @@ function status = __pstoedit__ (opts, devopt, name)
   if (nargin < 2)
     devopt =  opts.devopt;
   endif
+  if (! isempty (opts.pstoedit_binary))
     tmp_epsfile = strcat (tmpnam (), ".eps");
+    drawnow ("eps", tmp_epsfile)
     if (opts.tight_flag)
       __tight_eps_bbox__ (opts, tmp_epsfile);
     endif
-  if (! isempty (opts.pstoedit_binary))
-    drawnow ("eps", tmp_epsfile)
-    cmd = sprintf ("%s -f %s %s %s 2>&1", opts.pstoedit_binary, devopt, tmp_epsfile, name);
+    cmd = sprintf ("%s -f %s %s %s 2>&1", opts.pstoedit_binary, devopt,
+                   tmp_epsfile, name);
     [status, output] = system (cmd);
-    if (opts.debug)
+    if (opts.debug || status != 0)
       fprintf ("pstoedit command: %s", cmd)
     endif
-    if (status)
-      warning ("print:pstoeditfailed", "print.m: error running pstoedit.")
-      disp (cmd)
+    if (status != 0)
       disp (output)
+      warning ("print:pstoeditfailed", "print.m: error running pstoedit.")
     endif
     [status, output] = unlink (tmp_epsfile);
     if (status != 0)

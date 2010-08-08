@@ -652,7 +652,8 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 	fi
-	./gendoc > $@
+	@echo "creating .DOCSTRINGS from .cc source files"
+	@./gendoc > $@
 	$(top_srcdir)/move-if-change $@ DOCSTRINGS
 	touch $@
 

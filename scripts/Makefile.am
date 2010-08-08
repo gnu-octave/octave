@@ -323,7 +323,8 @@ gethelp_SOURCES = gethelp.cc
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 	fi
-	$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
+	@echo "creating .DOCSTRINGS from .m script files"
+	@$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
 	$(top_srcdir)/move-if-change $@ DOCSTRINGS
 	touch $@
 

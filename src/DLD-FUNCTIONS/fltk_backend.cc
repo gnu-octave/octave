@@ -1208,6 +1208,7 @@ public:
                      const std::string& /*debug_file*/) const 
   { 
     figure_manager::print (go.get_handle (), file, term);
+    redraw_figure (go);
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const

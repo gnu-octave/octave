@@ -328,7 +328,7 @@ gethelp_SOURCES = gethelp.cc
 	touch $@
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
-	$(do_subst_config_vals)
+	@$(do_subst_config_vals)
 
 check-m-sources:
 	@echo -n "checking whether files in source tree are listed in module.mk files..."; \

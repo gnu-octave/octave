@@ -743,10 +743,10 @@ $(OPT_INC) : %.h : %.in
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 
 defaults.h: defaults.h.in Makefile
-	$(do_subst_default_vals)
+	@$(do_subst_default_vals)
 
 oct-conf.h: oct-conf.h.in Makefile
-	$(do_subst_config_vals)
+	@$(do_subst_config_vals)
 
 oct-errno.cc: oct-errno.cc.in Makefile
 	if test -n "$(PERL)"; then \

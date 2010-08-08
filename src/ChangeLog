@@ -1,3 +1,8 @@
+2010-08-08  Rik <octave@nomad.inbox5.com>
+
+	* Makefile.am: Run do_subst macro quietly without cluttering screen 
+	during build.
+
 2010-08-08  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* DLD-FUNCTIONS/fltk_backend.cc

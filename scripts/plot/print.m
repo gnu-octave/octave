@@ -292,7 +292,7 @@ function print (varargin)
     endif
 
     if (opts.use_color < 0)
-      color_props = {"color", "facecolor", "edgecolor"};
+      color_props = {"color", "facecolor", "edgecolor", "colormap"};
       for c = 1:numel(color_props)
         h = findobj (opts.figure, "-property", color_props{c});
         hnone = findobj (opts.figure, color_props{c}, "none");
@@ -304,9 +304,11 @@ function print (varargin)
           props(m+n).name = color_props{c};
           props(m+n).value = {get(h(n), color_props{c})};
           xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
-          ## convert RGB color to RGB gray scale
-          ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
-          set (h(n), color_props{c}, ggg)
+          if (isnumeric (rgb))
+            ## convert RGB color to RGB gray scale
+            ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
+            set (h(n), color_props{c}, ggg)
+          endif
         endfor
       endfor
     endif

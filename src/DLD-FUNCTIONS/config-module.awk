@@ -19,6 +19,7 @@ BEGIN {
       sep = "\n";
     printf ("  DLD-FUNCTIONS/%s.la%s", basename, sep);
   }
+  print ""
   print "octlib_LTLIBRARIES += $(DLD_FUNCTIONS_LIBS)";
   print ""
   print "if AMCOND_ENABLE_DYNAMIC_LINKING";
@@ -33,6 +34,7 @@ BEGIN {
     print "\t  $(LN_S) .libs/`$(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $$la` $$of";
   }
   print "endif";
+  print ""
 
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];

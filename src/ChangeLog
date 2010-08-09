@@ -1,5 +1,10 @@
 2010-08-08  Rik <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/config-module.awk: Add newlines to divide blocks
+	in generated modules.mk and improve readability.
+
+2010-08-08  Rik <octave@nomad.inbox5.com>
+
 	* Makefile.am: Create .DOCSTRINGS quietly and avoid screen clutter
 	during build.
 

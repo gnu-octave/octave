@@ -263,7 +263,7 @@ octave_cell::subsasgn (const std::string& type,
                 // Allow conversion of empty cell array to some other
                 // type in cases like
                 //
-                //  x = []; x(i).f = rhs
+                //  x = {}; x(i).f = rhs
 
                 octave_value tmp = octave_value::empty_conv (type, rhs);
 
@@ -328,8 +328,15 @@ octave_cell::subsasgn (const std::string& type,
 
         case '.':
           {
-            std::string nm = type_name ();
-            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+            if (is_empty ())
+              {
+                // Do nothing; the next branch will handle it.
+              }
+            else
+              {
+                std::string nm = type_name ();
+                error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+              }
           }
           break;
 
@@ -402,8 +409,22 @@ octave_cell::subsasgn (const std::string& type,
 
         case '.':
           {
-            std::string nm = type_name ();
-            error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+            if (is_empty ())
+              {
+                // Allow conversion of empty cell array to some other
+                // type in cases like
+                //
+                //  x = {}; x.f = rhs
+
+                octave_value tmp = octave_value::empty_conv (type, rhs);
+
+                return tmp.subsasgn (type, idx, rhs);
+              }
+            else
+              {
+                std::string nm = type_name ();
+                error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+              }
           }
           break;
 

@@ -1,3 +1,13 @@
+2010-08-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov.cc (octave_value::assign (assign_op, const std::string&,
+	const std::list<octave_value_list>&, const octave_value&):
+	Don't attempt to fix struct assignment to non-struct values here.
+	Check for successful assignment before overwriting this.
+
+	* ov-cell.cc (octave_cell::subsasgn): Allow dot assignment into empty
+	cell.
+
 2010-08-08  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/config-module.awk: Add newlines to divide blocks

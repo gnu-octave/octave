@@ -1332,17 +1332,13 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (! error_state)
     {
-      if (type[0] == '.' && ! (is_map () || is_object ()))
-        {
-          octave_value tmp = Octave_map ();
-          *this = tmp.subsasgn (type, idx, t_rhs);
-        }
-      else
-        *this = subsasgn (type, idx, t_rhs);
+      octave_value tmp = subsasgn (type, idx, t_rhs);
 
       if (error_state)
         gripe_assign_failed_or_no_method (assign_op_as_string (op_asn_eq),
                                           type_name (), rhs.type_name ());
+      else
+        *this = tmp;
     }
 
   return *this;

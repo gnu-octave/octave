@@ -1,3 +1,8 @@
+2010-08-09  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (parse_fcn_file): Handle empty script files
+	(bug #30588).
+
 2010-08-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::assign (assign_op, const std::string&,

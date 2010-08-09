@@ -3488,6 +3488,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
+      if (! help_txt.empty ())
+        help_buf.push (help_txt);
+
       if (! eof)
         {
           std::string file_type;
@@ -3553,9 +3556,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           symbol_table::scope_id scope = symbol_table::top_scope ();
           frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
-          if (! help_txt.empty ())
-            help_buf.push (help_txt);
-
           if (reading_script_file)
             prep_lexer_for_script_file ();
           else
@@ -3575,6 +3575,15 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           if (status != 0)
             error ("parse error while reading %s file %s",
                    file_type.c_str(), ff.c_str ());
+        }
+      else
+        {
+          tree_statement *end_of_script
+            = make_end ("endscript", input_line_number, current_input_column);
+
+          make_script (0, end_of_script);
+
+          fcn_ptr = primary_fcn_ptr;
         }
     }
   else if (require_file)

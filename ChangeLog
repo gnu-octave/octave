@@ -1,3 +1,8 @@
+2010-08-09  Rik <octave@nomad.inbox5.com>
+
+	* examples/Makefile.am: Don't echo 'echo' command when building
+	octave.desktop.
+
 2010-08-09  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

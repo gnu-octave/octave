@@ -35,7 +35,7 @@ include @FIRfilter/module.mk
 all-local: octave.desktop
 
 octave.desktop: octave.desktop.in Makefile
-	echo "making $@ from $<"
+	@echo "making $@ from $<"
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|"

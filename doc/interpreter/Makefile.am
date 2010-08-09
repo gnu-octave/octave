@@ -78,6 +78,9 @@ EXAMPLE_FILES = \
 
 include images.mk
 
+$(srcdir)/images.mk: $(srcdir)/config-images.sh $(srcdir)/images.awk $(srcdir)/images
+	$(srcdir)/config-images.sh $(top_srcdir)
+
 .eps.pdf:
 	if [ -f $< ] ; then $(GHOSTSCRIPT) -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
 
@@ -147,7 +150,7 @@ octave_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES)
+octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) images.mk
 
 octave.info: $(IMAGES_TXT)
 

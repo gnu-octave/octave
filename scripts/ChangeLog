@@ -1,3 +1,7 @@
+2010-08-09  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Default pstex suffix should be '.ps'.
+
 2010-08-08  Rik <octave@nomad.inbox5.com>
 
 	* Makefile.am: Create .DOCSTRINGS quietly and avoid screen clutter

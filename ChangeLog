@@ -1,3 +1,7 @@
+2010-08-09  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-08-05  Rik <octave@nomad.inbox5.com>
 
 	* configure.ac: Change warning messages about freetype and fontconfig

@@ -1,3 +1,7 @@
+2010-08-08  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/images.awk: HTML images depend on octave.html/index.html.
+
 2010-08-01  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/basics.txi, interpreter/contrib.txi,

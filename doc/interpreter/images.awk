@@ -40,7 +40,7 @@ BEGIN {
 
     for (j = 2; j <= NF; j++) {
       if (ext == "png") {
-	printf ("octave.html/%s.png: %s.png octave.html\n", $j, $j);
+	printf ("octave.html/%s.png: %s.png octave.html/index.html\n", $j, $j);
 	printf ("\tcp $< $@\n");
       }
       printf ("%s.%s: %s\n", $j, ext, script);

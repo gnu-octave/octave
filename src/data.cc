@@ -6461,8 +6461,8 @@ then an empty matrix is returned.\n\
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
-  else if (! args(0).is_numeric_type ())
-    error ("diff: X must be numeric");
+  else if (! (args(0).is_numeric_type () || args(0).is_bool_type ()))
+    error ("diff: X must be numeric or logical");
 
   if (! error_state)
     {

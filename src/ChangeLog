@@ -1,3 +1,7 @@
+2010-08-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* data.cc (Fdiff): Allow logical type.
+
 2010-08-09  Rik <octave@nomad.inbox5.com>
 
 	* oct-parse.yy (parse_fcn_file): Restore parsing of help text

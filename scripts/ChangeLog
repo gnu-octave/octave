@@ -1,5 +1,11 @@
 2010-08-08  Rik <octave@nomad.inbox5.com>
 
+	* miscellaneous/unimplemented.m: Add newlines to format output for
+	easier reading.  Format all lines < 80 characters.  Remove 
+	'whitebg' function from unimplemented list.
+
+2010-08-08  Rik <octave@nomad.inbox5.com>
+
 	* @ftp/PKG_ADD: Remove temporary build file from hg version control.
 
 2010-08-09  Ben Abbott <bpabbott@mac.com>

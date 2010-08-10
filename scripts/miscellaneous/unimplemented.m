@@ -26,21 +26,27 @@ function unimplemented (fcn)
 
   ## Some smarter cases, add more as needed.
   switch (fcn)
-  case "textscan"
-    txt = ["textscan is not implemented. Consider using textread or sscanf."];
+
+  case "quad2d"
+    txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
-    txt = ["gsvd is currently not part of Octave. See the linear-algebra package at ",...
-    "@url{http://octave.sf.net/linear-algebra/}."];
+    txt = ["gsvd is not currently part of Octave.  See the linear-algebra",... 
+    "package at @url{http://octave.sf.net/linear-algebra/}."];
 
   case "linprog"
-    txt = ["Octave does not currently provide linprog. Linear programming problems may be solved ",...
-    "using @code{glpk}. Try @code{help glpk} for more info."];
+    txt = ["Octave does not currently provide linprog.  ",...
+    "Linear programming problems may be solved using @code{glpk}.  ",...
+    "Try @code{help glpk} for more info."];
 
   case {"ode113", "ode15i", "ode15s", "ode23", "ode23s", "ode23t", "ode45", "odeget", "odeset"}
-    txt = ["Octave provides lsode for solving differential equations. For more information, ",...
-    "try @code{help lsode}.\n Matlab-compatible ODE functions are provided by the odepkg package. ",...
+    txt = ["Octave provides lsode for solving differential equations.  ",...
+    "For more information try @code{help lsode}.  ",...
+    "Matlab-compatible ODE functions are provided by the odepkg package.  ",...
     "See @url{http://octave.sf.net/odepkg/}."];
+  
+  case "textscan"
+    txt = ["textscan is not implemented.  Consider using textread or sscanf."];
 
   otherwise
     if (ismember (fcn, missing_functions ()))
@@ -54,7 +60,8 @@ function unimplemented (fcn)
     endif
   endswitch
 
-  txt = [txt, "\nPlease read @url{http://www.octave.org/missing.html} ",...
+  txt = [txt, "\n\n@noindent\nPlease read ",...
+  "@url{http://www.octave.org/missing.html} ",...
   "to find out how you can help with contributing missing functionality."];
 
   warning ("Octave:missing-function",["\n", __makeinfo__(txt)]);
@@ -424,7 +431,6 @@ function list = missing_functions ()
   "wavrecord", 
   "web", 
   "whatsnew", 
-  "whitebg", 
   "wk1finfo", 
   "wk1read", 
   "wk1write", 

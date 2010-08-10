@@ -3556,6 +3556,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           symbol_table::scope_id scope = symbol_table::top_scope ();
           frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
+          if (! help_txt.empty ())
+            help_buf.push (help_txt);
+
           if (reading_script_file)
             prep_lexer_for_script_file ();
           else

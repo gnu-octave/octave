@@ -1,3 +1,8 @@
+2010-08-09  Rik <octave@nomad.inbox5.com>
+
+	* oct-parse.yy (parse_fcn_file): Restore parsing of help text
+	accidentally lost in previous changeset.
+
 2010-08-09  John W. Eaton  <jwe@octave.org>
 
 	* oct-parse.yy (parse_fcn_file): Handle empty script files

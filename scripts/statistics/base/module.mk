@@ -34,7 +34,6 @@ statistics_base_FCN_FILES = \
   statistics/base/std.m \
   statistics/base/studentize.m \
   statistics/base/table.m \
-  statistics/base/values.m \
   statistics/base/var.m
 
 FCN_FILES += $(statistics_base_FCN_FILES)

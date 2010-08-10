@@ -39,6 +39,7 @@ deprecated_FCN_FILES = \
   deprecated/str2mat.m \
   deprecated/unmark_command.m \
   deprecated/unmark_rawcommand.m \
+  deprecated/values.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \
   deprecated/weibpdf.m \

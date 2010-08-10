@@ -29,7 +29,16 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Extract unique elements
 
+## Deprecated in version 3.4
+
 function v = values (x)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "values is obsolete and will be removed from a future version of Octave; please use unique instead");
+  endif
 
   if (nargin != 1)
     print_usage ();

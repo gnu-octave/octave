@@ -1,3 +1,7 @@
+2010-08-11  Rik <octave@nomad.inbox5.com>
+
+	* set/unique.m: Handle corner case where sparse matrix is actually full.
+
 2010-08-10  Rik <octave@nomad.inbox5.com>
 
 	* set/unique.m: Check whether outputs are used before calculating.

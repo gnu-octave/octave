@@ -88,7 +88,12 @@ function [y, i, j] = unique (x, varargin)
 
   if (exist ("issparse"))
     if (issparse (x) && ! optrows && nargout <= 1)
-      y = unique ([0; (full (nonzeros (x)))], varargin{:});
+      if (nnz (x) < numel (x)) 
+        y = unique ([0; (full (nonzeros (x)))], varargin{:});
+      else
+        ## Corner case where sparse matrix is actually full
+        y = unique (full (x), varargin{:});
+      endif
       return;
     endif
   endif
@@ -179,6 +184,9 @@ endfunction
 %!assert(unique({}), {})
 %!assert(unique([1,2,2,3,2,4], 'rows'), [1,2,2,3,2,4])
 %!assert(unique([1,2,2,3,2,4]), [1,2,3,4])
+%!assert(unique([1,2,2,3,2,4]', 'rows'), [1,2,3,4]')
+%!assert(unique(sparse([2,0;2,0])), [0,2]')
+%!assert(unique(sparse([1,2;2,3])), [1,2,3]')
 %!assert(unique([1,2,2,3,2,4]', 'rows'), [1,2,3,4]')
 %!assert(unique(single([1,2,2,3,2,4]), 'rows'), single([1,2,2,3,2,4]))
 %!assert(unique(single([1,2,2,3,2,4])), single([1,2,3,4]))

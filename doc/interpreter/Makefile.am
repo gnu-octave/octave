@@ -150,7 +150,7 @@ octave_TEXINFOS = \
   contributors.texi \
   $(MUNGED_TEXI_SRC)
 
-octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) images.mk
+octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_TEXINFOS) $(EXAMPLE_FILES) $(srcdir)/images.mk
 
 octave.info: $(IMAGES_TXT)
 

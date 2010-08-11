@@ -1,3 +1,7 @@
+2010-08-10  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: Change dependency to $(srcdir)/images.mk.
+
 2010-08-08  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Add documentation dependency on images.mk.

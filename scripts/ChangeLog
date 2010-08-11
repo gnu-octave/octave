@@ -1,5 +1,9 @@
 2010-08-10  Rik <octave@nomad.inbox5.com>
 
+	* set/unique.m: Check whether outputs are used before calculating.
+
+2010-08-10  Rik <octave@nomad.inbox5.com>
+
 	* statistics/base/module.mk, deprecated/module.mk,
 	statistics/base/values.m, deprecated/values.m: Deprecate values.m
 	  

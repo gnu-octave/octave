@@ -1,3 +1,8 @@
+2010-08-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-lazy-idx.h (octave_lazy_index::subsasgn): Remove override. Leave
+	it to the defualt numeric conversion mechanism.
+
 2010-08-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* data.cc (Fdiff): Allow logical type.

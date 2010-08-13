@@ -402,7 +402,6 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
                       tree_statement *s = elt.stmt;
 
                       int l = s ? s->line () : -1;
-                      int c = s ? s->column () : -1;
 
                       buf << "stopped in " << f->name ()
                           << " at line " << l << std::endl;

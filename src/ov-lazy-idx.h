@@ -241,6 +241,8 @@ private:
   idx_vector index;
   mutable octave_value value;
 
+  static octave_base_value *numeric_conversion_function (const octave_base_value&);
+
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 

@@ -221,7 +221,10 @@ Summary of important user-visible changes for version 3.3:
     functions are now built-in functions, providing better performance.
  
  ** Matlab-style ignoring input and output function arguments using
-    tilde (~) is now supported.  For more details, consult the manual.
+    tilde (~) is now supported. Ignored output arguments may be detected
+    from a function using the built-in function `isargout'.
+    For more details, consult the manual.
+
 
  ** The list datatype, deprecated since the introduction of cells, has
     been removed.

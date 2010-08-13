@@ -32,11 +32,11 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.debug_file = "octave-print-commands.log";
   arg_st.devopt = "";
   arg_st.figure = get (0, "currentfigure");
-  arg_st.fig2dev_binary = __find_binary__ ("fig2dev");
+  arg_st.fig2dev_binary = __quote_path__ (__find_binary__ ("fig2dev"));
   arg_st.fontsize = "";
   arg_st.font = "";
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
-  arg_st.ghostscript.binary = __ghostscript_binary__ ();
+  arg_st.ghostscript.binary = __quote_path__ (__ghostscript_binary__ ());
   arg_st.ghostscript.device = "";
   arg_st.ghostscript.output = "";
   arg_st.ghostscript.papersize = "";
@@ -45,7 +45,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.epscrop = false;
   arg_st.ghostscript.resolution = 150;
   arg_st.orientation = "";
-  arg_st.pstoedit_binary = __find_binary__ ("pstoedit");
+  arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
   arg_st.name = "";
   arg_st.printer = "";
   arg_st.special_flag = "textnormal";
@@ -95,12 +95,11 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
-        arg_st.ghostscript.binary = arg(3:end);
-        if (exist (arg_st.ghostscript.binary, "file") != 2)
-          arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg_st.ghostscript.binary);
-        endif
+        arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg(3:end));
         if (isempty (arg_st.ghostscript.binary))
           error ("print: Ghostscript binary ""%s"" could not be located", arg(3:end))
+        else
+          arg_st.ghostscript_binary = __quote_path__ (arg_st.ghostscript_binary);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-F")
         idx = rindex (arg, ":");
@@ -338,6 +337,12 @@ endfunction
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
+
+function cmd = __quote_path__ (cmd)
+  if (any (cmd == " ") && ! (cmd(1) == """" && cmd(end) == """"))
+    cmd = strcat ("""", strrep (cmd, """", """"""), """");
+  endif
+endfunction
 
 function gs = __ghostscript_binary__ ()
 

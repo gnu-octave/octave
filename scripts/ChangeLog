@@ -1,3 +1,7 @@
+2010-08-13  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Double quote paths with spaces.
+
 2010-08-11  Rik <octave@nomad.inbox5.com>
 
 	* set/unique.m: Handle corner case where sparse matrix is actually full.

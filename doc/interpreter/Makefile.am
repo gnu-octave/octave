@@ -44,6 +44,11 @@ dist_man1_MANS = \
 ## The following example files are listed for dependencies.
 ## They should not be distributed from this directory.
 EXAMPLE_FILES = \
+  $(top_srcdir)/examples/@FIRfilter/display.m \
+  $(top_srcdir)/examples/@FIRfilter/FIRfilter_aggregation.m \
+  $(top_srcdir)/examples/@FIRfilter/FIRfilter.m \
+  $(top_srcdir)/examples/@FIRfilter/subsasgn.m \
+  $(top_srcdir)/examples/@FIRfilter/subsref.m \
   $(top_srcdir)/examples/@polynomial/display.m \
   $(top_srcdir)/examples/@polynomial/double.m \
   $(top_srcdir)/examples/@polynomial/end.m \
@@ -54,10 +59,10 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/@polynomial/polynomial_superiorto.m \
   $(top_srcdir)/examples/@polynomial/polyval.m \
   $(top_srcdir)/examples/@polynomial/set.m \
-  $(top_srcdir)/examples/@polynomial/subsasgn.m \
   $(top_srcdir)/examples/@polynomial/subsref.m \
   $(top_srcdir)/examples/addtwomatrices.cc \
   $(top_srcdir)/examples/celldemo.cc \
+  $(top_srcdir)/examples/embedded.cc \
   $(top_srcdir)/examples/firstmexdemo.c \
   $(top_srcdir)/examples/fortdemo.cc \
   $(top_srcdir)/examples/fortsub.f \
@@ -72,9 +77,12 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/mystring.c \
   $(top_srcdir)/examples/mystruct.c \
   $(top_srcdir)/examples/paramdemo.cc \
+  $(top_srcdir)/examples/standalone.cc \
   $(top_srcdir)/examples/stringdemo.cc \
   $(top_srcdir)/examples/structdemo.cc \
   $(top_srcdir)/examples/unwinddemo.cc
+
+
 
 include images.mk
 

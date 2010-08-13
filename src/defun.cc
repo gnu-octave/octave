@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "oct-obj.h"
+#include "oct-lvalue.h"
 #include "pager.h"
 #include "symtab.h"
 #include "toplev.h"
@@ -145,3 +146,55 @@ get_current_shlib (void)
 
   return retval;
 }
+
+bool defun_isargout (int nargout, int iout)
+{
+  const std::list<octave_lvalue> *lvalue_list = octave_builtin::curr_lvalue_list;
+  if (iout >= std::max (nargout, 1))
+    return false;
+  else if (lvalue_list)
+    {
+      int k = 0;
+      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
+           p != lvalue_list->end (); p++)
+        {
+          if (k == iout)
+            return ! p->is_black_hole ();
+          k += p->numel ();
+          if (k > iout)
+            break;
+        }
+
+      return true;
+    }
+  else
+    return true;
+}
+
+void defun_isargout (int nargout, int nout, bool *isargout)
+{
+  const std::list<octave_lvalue> *lvalue_list = octave_builtin::curr_lvalue_list;
+  if (lvalue_list)
+    {
+      int k = 0;
+      for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
+           p != lvalue_list->end () && k < nout; p++)
+        {
+          if (p->is_black_hole ())
+            isargout[k++] = false;
+          else
+            {
+              int l = std::min (k + p->numel (), nout);
+              while (k < l)
+                isargout[k++] = true;
+            }
+        }
+    }
+  else
+    for (int i = 0; i < nout; i++)
+      isargout[i] = true;
+
+  for (int i = std::max(nargout, 1); i < nout; i++)
+    isargout[i] = false;
+}
+

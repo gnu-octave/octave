@@ -72,6 +72,12 @@ public:
     : octave_shlib (shl) { }
 };
 
+extern OCTINTERP_API bool
+defun_isargout (int, int);
+
+extern OCTINTERP_API void
+defun_isargout (int, int, bool *);
+
 #define DECLARE_FUNX(name, args_name, nargout_name) \
   OCTAVE_EXPORT octave_value_list \
   name (const octave_value_list& args_name, int nargout_name)

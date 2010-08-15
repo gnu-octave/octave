@@ -1,3 +1,8 @@
+2010-08-15  Rik <octave@nomad.inbox5.com>
+
+	* image/imwrite.m: Allow writing of 1-bit (B&W) images.
+	Improve documentation string.  Add input validation tests.
+
 2010-08-13  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: Double quote paths with spaces.

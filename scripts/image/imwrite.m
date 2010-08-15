@@ -17,66 +17,65 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
-## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
+## @deftypefn  {Function File} {} imwrite (@var{img}, @var{filename})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{filename}, @var{fmt}, @var{p1}, @var{v1}, @dots{})
+## @deftypefnx {Function File} {} imwrite (@var{img}, @var{map}, @var{filename}, @dots{})
 ## Write images in various file formats.
 ##
-## If @var{fmt} is missing, the file extension (if any) of
-## @var{filename} is used to determine the format.
+## If @var{fmt} is not supplied, the file extension of @var{filename} is used
+## to determine the format.
 ##
 ## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional. 
-## Currently
-## the following options are supported for @t{JPEG} images
+## Currently the following options are supported for @t{JPEG} images:
 ##
 ## @table @samp
 ## @item Quality
-## Sets the quality of the compression.  The corresponding value should be an
-## integer between 0 and 100, with larger values meaning higher visual quality
-## and less compression.
+## Set the quality of the compression.  The value should be an
+## integer between 0 and 100, with larger values indicating higher visual 
+## quality and lower compression.
 ## @end table
 ##
 ## @seealso{imread, imfinfo}
 ## @end deftypefn
 
-function imwrite (varargin)
+function imwrite (img, varargin)
 
   persistent accepted_formats = { "bmp", "gif", "jpg", "jpeg", ...
     "ras", "pbm", "pgm", "png", "ppm", "svg", "tif", "tiff" };
 
-  img = [];
+  if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
+    print_usage ();
+  endif
+
   map = [];
   fmt = "";
 
-  if (nargin > 1 && isnumeric (varargin{1}))
-    img = varargin{1};
+  offset = 1;
+  if (isnumeric (varargin{1}))
+    map = varargin{1};
+    if (isempty (map))
+      error ("imwrite: colormap must not be empty");
+    endif
     offset = 2;
-    if (isnumeric (varargin{2}))
-      map = varargin{2};
-      if (isempty (map))
-        error ("imwrite: colormap must not be empty");
-      endif
-      offset = 3;
-    endif
-    if (offset <= nargin && ischar (varargin{offset}))
-      filename = varargin{offset};
+  endif
+  if (offset <= length (varargin) && ischar (varargin{offset}))
+    filename = varargin{offset};
+    offset++;
+    if (rem (length (varargin) - offset, 2) == 0 && ischar (varargin{offset}))
+      fmt = varargin{offset};
       offset++;
-      if (rem (nargin - offset, 2) == 0 && ischar (varargin{offset}))
-        fmt = varargin{offset};
-        offset++;
-      endif
-    else
-      print_usage ();
-    endif
-    if (offset < nargin)
-      has_param_list = 1;
-      for ii = offset:2:(nargin - 1)
-        options.(varargin{ii}) = varargin{ii + 1};
-      endfor
-    else
-      has_param_list = 0;
     endif
   else
     print_usage ();
+  endif
+  if (offset < length (varargin))
+    has_param_list = 1;
+    for ii = offset:2:(length (varargin) - 1)
+      options.(varargin{ii}) = varargin{ii + 1};
+    endfor
+  else
+    has_param_list = 0;
   endif
 
   filename = tilde_expand (filename);
@@ -88,12 +87,12 @@ function imwrite (varargin)
     endif
   endif
 
-  if (issparse (img) || issparse (map))
-    error ("imwrite: sparse images not supported");
-  endif
-
   if (isempty (img))
     error ("imwrite: invalid empty image");
+  endif
+
+  if (issparse (img) || issparse (map))
+    error ("imwrite: sparse images not supported");
   endif
 
   if (! strcmp (fmt, accepted_formats))
@@ -160,3 +159,15 @@ function imwrite (varargin)
   endif
 
 endfunction
+
+%% Test input validation
+%!error imwrite ()                           # Wrong # of args
+%!error imwrite (1)                          # Wrong # of args
+%!error imwrite ({"cell"}, "filename.jpg")   # Wrong class for img
+%!error imwrite (1, [], "filename.jpg")      # Empty image map
+%!error imwrite (1, 2, 3)                    # No filename specified
+%!error imwrite (1, "filename")              # No fmt specified
+%!error imwrite (1, "filename", "junk")      # Invalid fmt specified
+%!error imwrite ([], "filename.jpg")         # Empty img matrix
+%!error imwrite (spones(2), "filename.jpg")  # Invalid sparse img
+

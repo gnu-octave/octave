@@ -1,5 +1,11 @@
 2010-08-15  Rik <octave@nomad.inbox5.com>
 
+	* general/randi.m: Add new script for random integers.
+	* general/module.mk: Add randi to build file list.
+	* miscellaneous/unimplemented.m: Remove randi from unimplemented list.
+
+2010-08-15  Rik <octave@nomad.inbox5.com>
+
 	* image/imwrite.m: Allow writing of 1-bit (B&W) images.
 	Improve documentation string.  Add input validation tests.
 

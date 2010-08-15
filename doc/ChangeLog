@@ -1,3 +1,7 @@
+2010-08-15  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/matrx.txi: Add documentation for randi function.
+
 2010-08-13  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Update @EXAMPLEFILE dependencies.

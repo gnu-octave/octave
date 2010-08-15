@@ -179,6 +179,8 @@ a (i, :)
 
 @DOCSTRING(rand)
 
+@DOCSTRING(randi)
+
 @DOCSTRING(randn)
 
 @DOCSTRING(rande)

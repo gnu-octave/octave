@@ -334,7 +334,6 @@ function list = missing_functions ()
   "qmr", 
   "quad2d", 
   "questdlg", 
-  "randi", 
   "rbbox", 
   "rectangle", 
   "recycle", 

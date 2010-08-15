@@ -62,6 +62,7 @@ general_FCN_FILES = \
   general/quadgk.m \
   general/quadl.m \
   general/quadv.m \
+  general/randi.m \
   general/rat.m \
   general/repmat.m \
   general/rot90.m \

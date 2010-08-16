@@ -1461,19 +1461,19 @@ octave_base_value::reset (void) const
 
 
 octave_value
-octave_base_value::fast_elem_extract (octave_idx_type n) const
+octave_base_value::fast_elem_extract (octave_idx_type) const
 {
   return octave_value ();
 }
 
 bool
-octave_base_value::fast_elem_insert (octave_idx_type n, const octave_value& x)
+octave_base_value::fast_elem_insert (octave_idx_type, const octave_value&)
 {
   return false;
 }
 
 bool 
-octave_base_value::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+octave_base_value::fast_elem_insert_self (void *, builtin_type_t) const
 {
   return false;
 }

@@ -3245,8 +3245,11 @@ static void gl2psPrintTeXPrimitive(void *data)
   case GL2PS_TEXT :
     fprintf(gl2ps->stream, "\\fontsize{%d}{0}\n\\selectfont", 
             prim->data.text->fontsize);
-    fprintf(gl2ps->stream, "\\put(%g,%g){\\makebox(0,0)",
+    fprintf(gl2ps->stream, "\\put(%g,%g)",
             prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
+    if(prim->data.text->angle)
+      fprintf(gl2ps->stream, "{\\rotatebox{%g}", prim->data.text->angle);
+    fprintf(gl2ps->stream, "{\\makebox(0,0)");
     switch(prim->data.text->alignment){
     case GL2PS_TEXT_C:
       fprintf(gl2ps->stream, "{");
@@ -3277,8 +3280,6 @@ static void gl2psPrintTeXPrimitive(void *data)
       fprintf(gl2ps->stream, "[bl]{");
       break;
     }
-    if(prim->data.text->angle)
-      fprintf(gl2ps->stream, "\\rotatebox{%g}{", prim->data.text->angle);
     fprintf(gl2ps->stream, "\\textcolor[rgb]{%g,%g,%g}{{%s}}",
             prim->verts[0].rgba[0], prim->verts[0].rgba[1], prim->verts[0].rgba[2],
             prim->data.text->str);
@@ -5111,6 +5112,42 @@ static void gl2psPrintSVGPrimitive(void *data)
     if(prim->data.text->angle)
       gl2psPrintf("transform=\"rotate(%g, %g, %g)\" ",
                   -prim->data.text->angle, xyz[0][0], xyz[0][1]);
+    switch(prim->data.text->alignment){
+    case GL2PS_TEXT_C:
+      gl2psPrintf("text-anchor=\"middle\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize / 2);
+      break;
+    case GL2PS_TEXT_CL:
+      gl2psPrintf("text-anchor=\"start\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize / 2);
+      break;
+    case GL2PS_TEXT_CR:
+      gl2psPrintf("text-anchor=\"end\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize / 2);
+      break;
+    case GL2PS_TEXT_B:
+      gl2psPrintf("text-anchor=\"middle\" baseline-shift=\"0\" ");
+      break;
+    case GL2PS_TEXT_BR:
+      gl2psPrintf("text-anchor=\"end\" baseline-shift=\"0\" ");
+      break;
+    case GL2PS_TEXT_T:
+      gl2psPrintf("text-anchor=\"middle\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize);
+      break;
+    case GL2PS_TEXT_TL:
+      gl2psPrintf("text-anchor=\"start\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize);
+      break;
+    case GL2PS_TEXT_TR:
+      gl2psPrintf("text-anchor=\"end\" baseline-shift=\"%d\" ",
+                  -prim->data.text->fontsize);
+      break;
+    case GL2PS_TEXT_BL:
+    default: /* same as GL2PS_TEXT_BL */
+      gl2psPrintf("text-anchor=\"start\" baseline-shift=\"0\" ");
+      break;
+    }
     if(!strcmp(prim->data.text->fontname, "Times-Roman"))
       gl2psPrintf("font-family=\"Times\">");
     else if(!strcmp(prim->data.text->fontname, "Times-Bold"))

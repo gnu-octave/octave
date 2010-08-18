@@ -514,16 +514,33 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 
 DEFUN (bitmax, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} bitmax ()\n\
-Return the largest integer that can be represented as a floating point\n\
-value.  On IEEE-754 compatible systems, @code{bitmax} is @code{2^53 - 1}.\n\
+@deftypefn  {Built-in Function} {} bitmax ()\n\
+@deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
+@deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
+Return the largest integer that can be represented within a floating point\n\
+value.  The default class is \"double\", but \"single\" is a valid option.  \n\
+On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
 @end deftypefn")
 {
   octave_value retval;
-  if (args.length () != 0)
-    print_usage ();
-  else
+  std::string cname = "double";
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_string ())
+    cname = args(0).string_value ();
+  else if (nargin != 0)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (cname == "double")
     retval = (static_cast<double> (0x1FFFFFFFFFFFFFLL));
+  else if (cname == "single")
+    retval = (static_cast<double> (0xFFFFFFL));
+  else
+    error ("bitmax: not defined for class '%s'", cname.c_str ());
+
   return retval;
 }
 

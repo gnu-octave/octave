@@ -1,5 +1,10 @@
 2010-08-17  Rik <octave@nomad.inbox5.com>
 
+	* bitfcns.cc (bitmax): Add additional calling argument, class, and 
+	additional return value for bitmax("single").
+
+2010-08-17  Rik <octave@nomad.inbox5.com>
+
 	* bitfcns.cc (sizemax): Improve documentation string.
 
 2010-08-16  Ben Abbott <bpabbott@mac.com>

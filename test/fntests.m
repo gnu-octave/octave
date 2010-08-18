@@ -264,7 +264,7 @@ try
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".cc");
 
   puts ("\nPlease help improve Octave by contributing tests for\n");
-  puts ("these files (see the list in the file fntests.log).\n");
+  puts ("these files (see the list in the file fntests.log).\n\n");
 
   fprintf (fid, "\nFiles with no tests:\n\n%s",
 	  list_in_columns (files_with_no_tests, 80));

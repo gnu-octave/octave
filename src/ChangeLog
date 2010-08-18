@@ -4,6 +4,10 @@
 
 2010-08-13  Rik <octave@nomad.inbox5.com>
 
+	* bitfcns.cc (sizemax): Improve documentation string.
+
+2010-08-13  Rik <octave@nomad.inbox5.com>
+
 	* toplev.c (do_goto_frame_relative): Remove unused variable c.
 
 2010-08-13  Jaroslav Hajek  <highegg@gmail.com>

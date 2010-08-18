@@ -1,3 +1,14 @@
+2010-08-18  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mx-inlines.cc (mx_inline_all_finite): New check.
+	* Sparse-op-defs.h (SPARSE_SMS_BIN_OP_1, SPARSE_SMS_BIN_OP_2,
+	SPARSE_SSM_BIN_OP_1, SPARSE_SSM_BIN_OP_2): Use unchecked access where
+	appropriate.
+	(SPARSE_SMM_BIN_OP_1, SPARSE_MSM_BIN_OP_1): Simplify.
+	(SPARSE_SMM_BIN_OP_2, SPARSE_MSM_BIN_OP_2): Use optimized code path
+	if all values are finite.
+	(SPARSE_MSM_BIN_OPS): Use SPARSE_MSM_BIN_OP_1 for division.
+
 2010-07-31  Rik <octave@nomad.inbox5.com>
 
 	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in, 

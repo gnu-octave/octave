@@ -185,6 +185,19 @@ mx_inline_any_nan (size_t n, const T* x)  throw ()
   return false;
 }
 
+template <class T>
+inline bool
+mx_inline_all_finite (size_t n, const T* x)  throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (! xfinite (x[i]))
+        return false;
+    }
+
+  return true;
+}
+
 template <class T> 
 inline bool 
 mx_inline_any_negative (size_t n, const T* x) throw () 

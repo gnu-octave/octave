@@ -85,10 +85,13 @@ function ri = randi (bounds, varargin)
     rclass = "double";
   endif
 
-  ## FIXME: No check for class "single"
   if (strfind (rclass, "int"))
     if (imax > intmax (rclass))
       error ("randi: require IMAX < intmax (CLASS)");
+    endif
+  elseif (strcmp (rclass, "single"))
+    if (imax > bitmax (rclass))
+      error ("randi: require IMAX < bitmax (CLASS)");
     endif
   endif
   ## Limit set by use of class double in rand()
@@ -132,6 +135,7 @@ endfunction
 %!error(randi(0))
 %!error(randi([10, 1]))
 %!error(randi(256, "uint8"))
+%!error(randi(2^25, "single"))
 %!error(randi(bitmax() + 1))
 %!error(randi([-1, bitmax()]))
 

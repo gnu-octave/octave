@@ -1,3 +1,7 @@
+2010-08-17  Rik <octave@nomad.inbox5.com>
+
+	* general/randi.m: Add IMAX check for class "single" numbers.
+
 2010-08-15  Rik <octave@nomad.inbox5.com>
 
 	* general/randi.m: Add new script for random integers.

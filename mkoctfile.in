@@ -284,6 +284,9 @@ EOF
     -[lLR]* | -Wl,*)
       ldflags="$ldflags $1"
     ;;
+    -pthread)
+      ldflags="$ldflags $1"
+    ;;
     -M | -depend | --depend)
       depend=true
       compile=false

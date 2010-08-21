@@ -1,3 +1,9 @@
+2010-08-21  Rik <octave@nomad.inbox5.com>
+
+	* CmplxQRP.cc, CmplxQRP.h, dbleQRP.cc, dbleQRP.h, fCmplxQRP.cc,
+	fCmplxQRP.h, floatQRP.cc, floatQRP.h: Declare Pvec as RowVector,
+	not ColumnVector.  Bug #30832.
+
 2010-08-18  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mx-inlines.cc (mx_inline_all_finite): New check.

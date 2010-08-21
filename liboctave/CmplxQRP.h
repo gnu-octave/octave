@@ -58,7 +58,7 @@ public:
 
   PermMatrix P (void) const { return p; }
 
-  ColumnVector Pvec (void) const;
+  RowVector Pvec (void) const;
 
   friend std::ostream&  operator << (std::ostream&, const ComplexQRP&);
 

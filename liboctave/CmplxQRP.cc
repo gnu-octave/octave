@@ -97,10 +97,10 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
   form (n, afact, tau, qr_type);
 }
 
-ColumnVector
+RowVector
 ComplexQRP::Pvec (void) const
 {
   Array<double> pa (p.pvec ());
-  ColumnVector pv (MArray<double> (pa) + 1.0);
+  RowVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }

@@ -1,3 +1,7 @@
+2010-08-21  Rik <octave@nomad.inbox5.com>
+
+	* NEWS: Add randi to list of new functions
+
 2010-08-09  John Swensen <jpswensen@gmail.com>
 
 	* mkoctfile.in: Add ability to pass -pthread through to linker.

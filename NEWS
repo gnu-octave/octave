@@ -316,13 +316,13 @@ Summary of important user-visible changes for version 3.3:
 
   ** The following new functions were added:
 
-      accumdim     erfcx        luupdate     ppder        sizemax
-      bitpack      fileread     merge        ppint        strread
-      bitunpack    fminbnd      nfields      ppjumps      textread
-      blkmm        fskipl       nth_element  pqpnonneg    whitebg
-      cbrt         ifelse       onCleanup    repelems
-      chop         ishermitian  pbaspect     reset
-      daspect      isindex      powerset     rsf2csf
+      accumdim     erfcx        luupdate     ppder        rsf2csf
+      bitpack      fileread     merge        ppint        sizemax
+      bitunpack    fminbnd      nfields      ppjumps      strread
+      blkmm        fskipl       nth_element  pqpnonneg    textread
+      cbrt         ifelse       onCleanup    randi        whitebg
+      chop         ishermitian  pbaspect     repelems     
+      daspect      isindex      powerset     reset
   
   ** The behavior of struct assignments to non-struct values has been changed.
      Previously, it was possible to overwrite an arbitrary value:

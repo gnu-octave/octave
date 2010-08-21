@@ -1,5 +1,10 @@
 2010-08-17  Rik <octave@nomad.inbox5.com>
 
+	* mappers.cc (gamma,lgamma): Add %!tests for negative integer
+	input arguments.
+
+2010-08-17  Rik <octave@nomad.inbox5.com>
+
 	* bitfcns.cc (bitmax): Add additional calling argument, class, and 
 	additional return value for bitmax("single").
 

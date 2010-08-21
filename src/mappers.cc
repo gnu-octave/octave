@@ -916,6 +916,12 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 %! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
 %! assert(gamma(x), v, sqrt(eps('single')))
 
+%!test
+%! x = [-1, 0, 1, Inf];
+%! v = [NaN, Inf, 1, Inf];
+%! assert (gamma(x), v);
+%! assert (gamma(single (x)), single (v));
+
 %!error gamma();
 %!error gamma(1,2);
 
@@ -1293,6 +1299,12 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 %! x = single([.5, 1, 1.5, 2, 3, 4, 5]);
 %! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
 %! assert(lgamma(x), log(v), sqrt(eps ('single')))
+
+%!test
+%! x = [-1, 0, 1, Inf];
+%! v = [Inf, Inf, 0, Inf];
+%! assert (lgamma(x), v);
+%! assert (lgamma(single (x)), single(v));
 
 %!error lgamma();
 %!error lgamma(1,2);

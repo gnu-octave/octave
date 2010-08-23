@@ -39,7 +39,7 @@ load_path
 protected:
 
   load_path (void)
-    : dir_info_list (), fcn_map (), method_map () { }
+    : dir_info_list (), fcn_map (), private_fcn_map (), method_map () { }
 
 public:
 
@@ -404,7 +404,7 @@ private:
 
   typedef method_map_type::const_iterator const_method_map_iterator;
   typedef method_map_type::iterator method_map_iterator;
- 
+
   mutable dir_info_list_type dir_info_list;
 
   mutable fcn_map_type fcn_map;

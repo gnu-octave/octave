@@ -1,3 +1,10 @@
+2010-08-23  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::dir_info::initialize): Clear
+	method_file_map before updating file list.
+	* load-path.cc (load_path::load_path): Explicitly initialize
+	private_fcn_map.
+
 2010-08-17  Rik <octave@nomad.inbox5.com>
 
 	* mappers.cc (gamma,lgamma): Add %!tests for negative integer

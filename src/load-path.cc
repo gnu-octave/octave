@@ -117,6 +117,8 @@ load_path::dir_info::initialize (void)
 
   if (fs)
     {
+      method_file_map.clear ();
+
       dir_mtime = fs.mtime ();
       dir_time_last_checked = octave_time ();
 

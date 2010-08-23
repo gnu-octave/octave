@@ -1,3 +1,8 @@
+2010-08-23  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/interp2.m: Don't use bicubic for consistency (can't handle
+	non-grid interpolation).
+
 2010-08-17  Rik <octave@nomad.inbox5.com>
 
 	* general/randi.m: Add IMAX check for class "single" numbers.

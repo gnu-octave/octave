@@ -344,9 +344,10 @@ function ZI = interp2 (varargin)
       error ("interp2: XI and YI must be matrices of same size");
     endif
 
-    ## FIXME bicubic/__splinen__ don't handle arbitrary XI, YI
+    ## FIXME bicubic/__splinen__ don't handle arbitrary XI, YI.
     if (strcmp (method, "cubic"))
-      if (isgriddata (XI) && isgriddata (YI'))
+      ## Please remove the dummy zero when bicubic is fixed.
+      if (0 && isgriddata (XI) && isgriddata (YI'))
         ZI = bicubic (X, Y, Z, XI (1, :), YI (:, 1), extrapval);
       elseif (isgriddata (X) && isgriddata (Y'))
         ## Allocate output

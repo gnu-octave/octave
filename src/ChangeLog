@@ -1,3 +1,23 @@
+2010-08-24  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (static void read_mat5_binary_data (std::istream&,
+	float *, octave_idx_type, bool, mat5_data_type,
+	oct_mach_info::float_format)) : New function
+	(std::string read_mat5_binary_element (std::istream&,
+	const std::string&, bool, bool&, octave_value&)): Treat
+	MAT_FILE_SINGLE_CLASS as single precision rather than convert to
+	double precision.
+	(static void write_mat5_array (std::ostream&, const FloatNDArray&,
+	bool), int save_mat5_array_length (const float*, octave_idx_type,
+	bool), int save_mat5_array_length (const FloatComplex*,
+	octave_idx_type, bool)): New functions.
+	(int save_mat5_element_length (const octave_value&,
+	const std::string&, bool save_as_floats, bool), bool
+	save_mat5_binary_element (std::ostream&, const octave_value&,
+	const std::string&, bool, bool, bool, bool)):  Treat
+	MAT_FILE_SINGLE_CLASS as single precision rather than convert to
+	double precision.
+
 2010-08-23  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::dir_info::initialize): Clear

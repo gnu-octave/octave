@@ -186,6 +186,71 @@ read_mat5_binary_data (std::istream& is, double *data,
     }
 }
 
+static void
+read_mat5_binary_data (std::istream& is, float *data,
+                       octave_idx_type  count, bool swap, mat5_data_type type,
+                       oct_mach_info::float_format flt_fmt)
+{
+  
+  switch (type)
+    {
+    case miINT8:
+      read_floats (is, data, LS_CHAR, count, swap, flt_fmt);
+      break;
+
+    case miUTF8:
+    case miUINT8:
+      read_floats (is, data, LS_U_CHAR, count, swap, flt_fmt);
+      break;
+
+    case miINT16:
+      read_floats (is, data, LS_SHORT, count, swap, flt_fmt);
+      break;
+
+    case miUTF16:
+    case miUINT16:
+      read_floats (is, data, LS_U_SHORT, count, swap, flt_fmt);
+      break;
+
+    case miINT32:
+      read_floats (is, data, LS_INT, count, swap, flt_fmt);
+      break;
+
+    case miUTF32:
+    case miUINT32:
+      read_floats (is, data, LS_U_INT, count, swap, flt_fmt);
+      break;
+
+    case miSINGLE:
+      read_floats (is, data, LS_FLOAT, count, swap, flt_fmt);
+      break;
+
+    case miRESERVE1:
+      break;
+
+    case miDOUBLE:
+      read_floats (is, data, LS_DOUBLE, count, swap, flt_fmt);
+      break;
+
+    case miRESERVE2:
+    case miRESERVE3:
+      break;
+
+    // FIXME -- how are the 64-bit cases supposed to work here?
+    case miINT64:
+      read_floats (is, data, LS_LONG, count, swap, flt_fmt);
+      break;
+
+    case miUINT64:
+      read_floats (is, data, LS_U_LONG, count, swap, flt_fmt);
+      break;
+
+    case miMATRIX:
+    default:
+      break;
+    }
+}
+
 template <class T>
 void
 read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
@@ -1195,11 +1260,73 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_MAT5_INTEGER_READ (uint64NDArray);
       break;
 
+
+    case MAT_FILE_SINGLE_CLASS:
+      {
+        FloatNDArray re (dims);
+      
+        // real data subelement
+
+        std::streampos tmp_pos;
+          
+        if (read_mat5_tag (is, swap, type, len))
+          {
+            error ("load: reading matrix data for `%s'", retval.c_str ());
+            goto data_read_error;
+          }
+
+        octave_idx_type n = re.numel ();
+        tmp_pos = is.tellg ();
+        read_mat5_binary_data (is, re.fortran_vec (), n, swap,
+                               static_cast<enum mat5_data_type> (type), flt_fmt);
+
+        if (! is || error_state)
+          {
+            error ("load: reading matrix data for `%s'", retval.c_str ());
+            goto data_read_error;
+          }
+
+        is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
+
+        if (imag)
+          {
+            // imaginary data subelement
+
+            FloatNDArray im (dims);
+          
+            if (read_mat5_tag (is, swap, type, len))
+              {
+                error ("load: reading matrix data for `%s'", retval.c_str ());
+                goto data_read_error;
+              }
+
+            n = im.numel ();
+            read_mat5_binary_data (is, im.fortran_vec (), n, swap,
+                                   static_cast<enum mat5_data_type> (type), flt_fmt);
+
+            if (! is || error_state)
+              {
+                error ("load: reading imaginary matrix data for `%s'",
+                       retval.c_str ());
+                goto data_read_error;
+              }
+
+            FloatComplexNDArray ctmp (dims);
+
+            for (octave_idx_type i = 0; i < n; i++)
+              ctmp(i) = Complex (re(i), im(i));
+
+            tc = ctmp;
+          }
+        else
+          tc = re;
+      }
+      break;
+
     case MAT_FILE_CHAR_CLASS:
       // handle as a numerical array to start with
 
     case MAT_FILE_DOUBLE_CLASS:
-    case MAT_FILE_SINGLE_CLASS:
     default:
       {
         NDArray re (dims);
@@ -1444,14 +1571,6 @@ write_mat5_tag (std::ostream& is, int type, octave_idx_type bytes)
   return 1;
 }
 
-// write out the numeric values in M to OS,
-// preceded by the appropriate tag.
-static void 
-write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
-{
-  save_type st = LS_DOUBLE;
-  const double *data = m.data ();
-
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data().
 
@@ -1464,6 +1583,14 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
       stream.write (reinterpret_cast<char *> (ptr), count * sizeof (TYPE)); \
     } \
   while (0)
+
+// write out the numeric values in M to OS,
+// preceded by the appropriate tag.
+static void 
+write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
+{
+  save_type st = LS_DOUBLE;
+  const double *data = m.data ();
 
   if (save_as_floats)
     {
@@ -1541,6 +1668,92 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 
       case LS_DOUBLE: // No conversion necessary.
         os.write (reinterpret_cast<const char *> (data), len);
+        break;
+
+      default:
+        (*current_liboctave_error_handler)
+          ("unrecognized data format requested");
+        break;
+      }
+  }
+  if (PAD (len) > len)
+    {
+      static char buf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+      os.write (buf, PAD (len) - len);
+    }
+}
+
+static void 
+write_mat5_array (std::ostream& os, const FloatNDArray& m, bool)
+{
+  save_type st = LS_FLOAT;
+  const float *data = m.data ();
+
+  float max_val, min_val;
+  if (m.all_integers (max_val, min_val))
+    st = get_save_type (max_val, min_val);
+
+  mat5_data_type mst;
+  int size;
+  switch (st)
+    {
+    default:
+    case LS_DOUBLE:  mst = miDOUBLE; size = 8; break;
+    case LS_FLOAT:   mst = miSINGLE; size = 4; break;
+    case LS_U_CHAR:  mst = miUINT8;  size = 1; break;
+    case LS_U_SHORT: mst = miUINT16; size = 2; break;
+    case LS_U_INT:   mst = miUINT32; size = 4; break;
+    case LS_CHAR:    mst = miINT8;   size = 1; break;
+    case LS_SHORT:   mst = miINT16;  size = 2; break;
+    case LS_INT:     mst = miINT32;  size = 4; break;
+    }
+
+  octave_idx_type nel = m.numel ();
+  octave_idx_type len = nel*size;
+
+  write_mat5_tag (os, mst, len);
+
+  {
+    switch (st)
+      {
+      case LS_U_CHAR:
+        MAT5_DO_WRITE (uint8_t, data, nel, os);
+        break;
+        
+      case LS_U_SHORT:
+        MAT5_DO_WRITE (uint16_t, data, nel, os);
+        break;
+        
+      case LS_U_INT:
+        MAT5_DO_WRITE (uint32_t, data, nel, os);
+        break;
+        
+      case LS_U_LONG:
+        MAT5_DO_WRITE (uint64_t, data, nel, os);
+        break;
+
+      case LS_CHAR:
+        MAT5_DO_WRITE (int8_t, data, nel, os);
+        break;
+        
+      case LS_SHORT:
+        MAT5_DO_WRITE (int16_t, data, nel, os);
+        break;
+
+      case LS_INT:
+        MAT5_DO_WRITE (int32_t, data, nel, os);
+        break;
+
+      case LS_LONG:
+        MAT5_DO_WRITE (int64_t, data, nel, os);
+        break;
+
+      case LS_FLOAT: // No conversion necessary.
+        os.write (reinterpret_cast<const char *> (data), len);
+        break;
+
+      case LS_DOUBLE:
+        MAT5_DO_WRITE (double, data, nel, os);
         break;
 
       default:
@@ -1741,12 +1954,88 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
 }
 
 int
+save_mat5_array_length (const float* val, octave_idx_type nel, bool)
+{
+  if (nel > 0)
+    {
+      int size = 4;
+
+
+      // The code below is disabled since get_save_type currently doesn't
+      // deal with integer types. This will need to be activated if get_save_type
+      // is changed.
+
+      // float max_val = val[0];
+      // float min_val = val[0];
+      // bool all_integers =  true;
+      //
+      // for (int i = 0; i < nel; i++)
+      //   {
+      //     float val = val[i];
+      //
+      //     if (val > max_val)
+      //       max_val = val;
+      //
+      //     if (val < min_val)
+      //       min_val = val;
+      //
+      //     if (D_NINT (val) != val)
+      //       {
+      //         all_integers = false;
+      //         break;
+      //       }
+      //   }
+      //
+      // if (all_integers)
+      //   {
+      //     if (max_val < 256 && min_val > -1)
+      //       size = 1;
+      //     else if (max_val < 65536 && min_val > -1)
+      //       size = 2;
+      //     else if (max_val < 4294967295UL && min_val > -1)
+      //       size = 4;
+      //     else if (max_val < 128 && min_val >= -128)
+      //       size = 1;
+      //     else if (max_val < 32768 && min_val >= -32768)
+      //       size = 2;
+      //     else if (max_val <= 2147483647L && min_val >= -2147483647L)
+      //       size = 4;
+      //   }
+
+      return 8 + nel * size;
+    }
+  else
+    return 8;
+}
+
+int
 save_mat5_array_length (const Complex* val, octave_idx_type nel,
                         bool save_as_floats)
 {
   int ret;
 
   OCTAVE_LOCAL_BUFFER (double, tmp, nel);
+
+  for (octave_idx_type i = 1; i < nel; i++)
+    tmp[i] = std::real (val[i]);
+
+  ret = save_mat5_array_length (tmp, nel, save_as_floats);
+
+  for (octave_idx_type i = 1; i < nel; i++)
+    tmp[i] = std::imag (val[i]);
+
+  ret += save_mat5_array_length (tmp, nel, save_as_floats);
+
+  return ret;
+}
+
+int
+save_mat5_array_length (const FloatComplex* val, octave_idx_type nel,
+                        bool save_as_floats)
+{
+  int ret;
+
+  OCTAVE_LOCAL_BUFFER (float, tmp, nel);
 
   for (octave_idx_type i = 1; i < nel; i++)
     tmp[i] = std::real (val[i]);
@@ -1838,9 +2127,18 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     INT_LEN (tc.bool_array_value ().numel (), 1)
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {
-      NDArray m = tc.array_value ();
-      ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                     save_as_floats);
+      if (tc.is_single_type ())
+        {
+          FloatNDArray m = tc.float_array_value ();
+          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
+                                         save_as_floats);
+        }
+      else
+        {
+          NDArray m = tc.array_value ();
+          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
+                                         save_as_floats);
+        }
     }
   else if (tc.is_cell ())
     {
@@ -1853,9 +2151,18 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ()) 
     {
-      ComplexNDArray m = tc.complex_array_value ();
-      ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
-                                     save_as_floats);
+      if (tc.is_single_type ())
+        {
+          FloatComplexNDArray m = tc.float_complex_array_value ();
+          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
+                                         save_as_floats);
+        }
+      else
+        {      
+          ComplexNDArray m = tc.complex_array_value ();
+          ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
+                                         save_as_floats);
+        }
     }
   else if (tc.is_map () || tc.is_inline_function () || tc.is_object ()) 
     {
@@ -2055,14 +2362,14 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_UINT64_CLASS;
   else if (tc.is_sparse_type ())
     flags |= MAT_FILE_SPARSE_CLASS;
-  else if (tc.is_real_scalar ())
-    flags |= MAT_FILE_DOUBLE_CLASS;
-  else if (tc.is_real_matrix () || tc.is_range ())
-    flags |= MAT_FILE_DOUBLE_CLASS;
-  else if (tc.is_complex_scalar ())
-    flags |= MAT_FILE_DOUBLE_CLASS;
-  else if (tc.is_complex_matrix ())
-    flags |= MAT_FILE_DOUBLE_CLASS;
+  else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ()
+           || tc.is_complex_scalar () || tc.is_complex_matrix ())
+    {
+      if (tc.is_single_type ())
+        flags |= MAT_FILE_SINGLE_CLASS;
+      else
+        flags |= MAT_FILE_DOUBLE_CLASS;
+    }
   else if (tc.is_map ()) 
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.is_cell ())
@@ -2232,9 +2539,18 @@ save_mat5_binary_element (std::ostream& os,
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {
-      NDArray m = tc.array_value ();
+      if (tc.is_single_type ())
+        {
+          FloatNDArray m = tc.float_array_value ();
 
-      write_mat5_array (os, m, save_as_floats);
+          write_mat5_array (os, m, save_as_floats);
+        }
+      else
+        {
+          NDArray m = tc.array_value ();
+
+          write_mat5_array (os, m, save_as_floats);
+        }
     }
   else if (tc.is_cell ())
     {
@@ -2245,10 +2561,20 @@ save_mat5_binary_element (std::ostream& os,
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ()) 
     {
-      ComplexNDArray m_cmplx = tc.complex_array_value ();
+      if (tc.is_single_type ())
+        {
+          FloatComplexNDArray m_cmplx = tc.float_complex_array_value ();
 
-      write_mat5_array (os, ::real (m_cmplx), save_as_floats);
-      write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
+          write_mat5_array (os, ::real (m_cmplx), save_as_floats);
+          write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
+        }
+      else
+        {
+          ComplexNDArray m_cmplx = tc.complex_array_value ();
+
+          write_mat5_array (os, ::real (m_cmplx), save_as_floats);
+          write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
+        }
     }
   else if (tc.is_map () || tc.is_inline_function() || tc.is_object ()) 
     {

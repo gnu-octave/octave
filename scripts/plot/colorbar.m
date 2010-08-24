@@ -575,6 +575,13 @@ endfunction
 
 %!demo
 %! clf
+%! pcolor (peaks (20))
+%! shading ("interp")
+%! axis ("tight", "square")
+%! colorbar ()
+
+%!demo
+%! clf
 %! plot([0, 2])
 %! colorbar ("east")
 %! axis equal

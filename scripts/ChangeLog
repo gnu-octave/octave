@@ -1,3 +1,9 @@
+2010-08-24  Ben Abbott <bpabbott@mac.com>
+
+	* plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m:
+	Properly interpret plotboxaspectratio when 3D objects are viewed as 2D.
+	* /plot/colorbar.m: Add demo.
+
 2010-08-23  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/interp2.m: Don't use bicubic for consistency (can't handle

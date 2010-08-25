@@ -1,3 +1,8 @@
+2010-08-25  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Revert erroneous portion of changeset
+	10910 40cf7cc4ea62.
+
 2010-08-24  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m:

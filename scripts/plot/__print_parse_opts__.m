@@ -155,10 +155,12 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
-    arg_st.use_color = -1;
-  else
-    arg_st.use_color = 1;
+  if (arg_st.use_color == 0)
+    if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
+      arg_st.use_color = -1;
+    else
+      arg_st.use_color = 1;
+    endif
   endif
 
   if (arg_st.tight_flag)
@@ -201,7 +203,8 @@ function arg_st = __print_parse_opts__ (varargin)
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
               "ppm", "ppm", "tex"};
 
-  if (strcmp (get (arg_st.figure, "__backend__"), "gnuplot")
+  if (isfigure (arg_st.figure)
+      && strcmp (get (arg_st.figure, "__backend__"), "gnuplot")
       && __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
     suffixes(strncmp (dev_list, "epslatex", 8)) = {"eps"};
   endif

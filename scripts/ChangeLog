@@ -1,3 +1,7 @@
+2010-08-27  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Fix tests.
+
 2010-08-27  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* plot/__go_draw_axes__.m (__calc_dimensions__): Delete.

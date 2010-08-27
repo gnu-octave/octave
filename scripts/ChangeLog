@@ -1,3 +1,8 @@
+2010-08-27  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* plot/__go_draw_axes__.m (__calc_dimensions__): Delete.
+	* plot/__actual_axis_position__.m (__calc_dimensions__): Delete.
+
 2010-08-27  Pascal A. Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* plot/hold.m: If arg is axis handle, get corresponding figure

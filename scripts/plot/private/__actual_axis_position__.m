@@ -31,7 +31,8 @@ function pos = __actual_axis_position__ (axis_obj)
 
   ## When using {rltb}margin, Gnuplot does not handle the specified
   ## aspect ratio properly, so handle it here.
-  if (__calc_dimensions__ (axis_obj) == 2 || all (mod (axis_obj.view, 90) == 0))
+  if (__calc_dimensions__ (axis_obj.parent) == 2
+      || all (mod (axis_obj.view, 90) == 0))
     aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
   else
     ## FIXME -- this works for "axis square", but has not been
@@ -61,28 +62,5 @@ function pos = __actual_axis_position__ (axis_obj)
     set (axis_obj.parent, "position", orig_fig_position)
   end_unwind_protect
 
-endfunction
-
-function nd = __calc_dimensions__ (obj)
-  kids = obj.children;
-  nd = 2;
-  for i = 1:length (kids)
-    obj = get (kids(i));
-    switch (obj.type)
-      case {"image", "text"}
-        ## ignore as they 
-      case {"line", "patch"}
-        if (! isempty (obj.zdata))
-          nd = 3;
-        endif
-      case "surface"
-        nd = 3;
-      case "hggroup"
-        obj_nd = __calc_dimensions__ (obj);
-        if (obj_nd == 3)
-          nd = 3;
-        endif
-    endswitch
-  endfor
 endfunction
 

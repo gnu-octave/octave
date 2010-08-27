@@ -4250,6 +4250,8 @@ private:
 void get_children_limits (double& min_val, double& max_val, double& min_pos,
                           const Matrix& kids, char limit_type);
 
+OCTINTERP_API int calc_dimensions (const graphics_object& gh);
+
 // This function is NOT equivalent to the scripting language function gcf.
 OCTINTERP_API graphics_handle gcf (void);
 

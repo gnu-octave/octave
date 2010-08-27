@@ -224,7 +224,8 @@ class plot_window : public Fl_Window
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
-      fp (xfp), canvas (0), autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0), status (0)
+      ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
+      panzoom (0), rotate (0), help (0), status (0)
   {
     callback (window_close, static_cast<void*> (this));
 
@@ -239,7 +240,9 @@ public:
                 ww, 
                 status_h);
       bottom->box(FL_FLAT_BOX);
-      
+
+      ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
+
       autoscale = new
         Fl_Button (0,
                    hh - status_h,
@@ -266,7 +269,7 @@ public:
                    "P");
       panzoom->callback (button_callback, static_cast<void*> (this));
       panzoom->tooltip ("Mouse Pan/Zoom");
-      
+
       rotate = new
         Fl_Button (3 * status_h,
                    hh - status_h,
@@ -275,6 +278,9 @@ public:
                    "R");
       rotate->callback (button_callback, static_cast<void*> (this));
       rotate->tooltip ("Mouse Rotate");
+
+      if (ndim == 2)
+        rotate->deactivate ();
 
       help = new
         Fl_Button (4 * status_h,
@@ -317,7 +323,7 @@ public:
     set_name ();
     resizable (canvas);
     size_range (4*status_h, 2*status_h);
-    gui_mode = pan_zoom;
+    gui_mode = (ndim == 3 ? rotate_zoom : pan_zoom);
   }
 
   ~plot_window (void)
@@ -346,6 +352,15 @@ public:
   {
     damage (FL_DAMAGE_ALL);
     canvas->damage (FL_DAMAGE_ALL);
+    ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
+
+    if (ndim == 3)
+      rotate->activate ();
+    else
+      {
+        rotate->deactivate ();
+        gui_mode = pan_zoom;
+      }
   }
 
   void set_name (void)
@@ -361,6 +376,9 @@ private:
 
   // Mod keys status
   int shift;
+
+  // Number of dimensions, 2 or 3.
+  int ndim;
 
   // Interactive Mode
   enum { pan_zoom, rotate_zoom } gui_mode;
@@ -396,7 +414,7 @@ private:
     if (widg == panzoom)
       gui_mode = pan_zoom;
     
-    if (widg == rotate)
+    if (widg == rotate && ndim == 3)
       gui_mode = rotate_zoom;
 
     if (widg == help)
@@ -656,7 +674,10 @@ private:
 
             case 'r':
             case 'R':
-              gui_mode = rotate_zoom;
+              if (ndim == 3)
+                gui_mode = rotate_zoom;
+              else
+                gui_mode = pan_zoom;
             break;
             }
         }

@@ -3434,8 +3434,10 @@ axes::properties::update_camera (void)
 
       if (el == 90 || el == -90)
         {
-          c_upv(0) = -sin(az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
-          c_upv(1) = cos(az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
+          c_upv(0) =
+            -signum(el)*sin(az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
+          c_upv(1) =
+            signum(el)*cos(az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
         }
       else
         c_upv(2) = 1;
@@ -4278,7 +4280,7 @@ axes::properties::translate_view (double delta_x, double delta_y)
   xlims (1) += delta_x;
   ylims (0) += delta_y;
   ylims (1) += delta_y;
-                
+ 
   zoom (xlims, ylims, false);
 }
 
@@ -4288,7 +4290,13 @@ axes::properties::rotate_view (double delta_el, double delta_az)
   Matrix v = get_view ().matrix_value ();
 
   v (1) += delta_el;
-  v (0) -= delta_az;
+
+  if(v(1) > 90)
+    v(1) = 90;
+  if(v(1) < -90)
+    v(1) = -90;
+
+  v (0) = fmod(v(0) - delta_az + 720,360);
 
   set_view(v);
   update_transform();
@@ -5497,6 +5505,67 @@ Undocumented internal function.\n\
     print_usage (); \
  \
   return retval
+
+int
+calc_dimensions (const graphics_object& go)
+{
+
+  int nd = 2;
+
+  if (go.isa ("surface"))
+    nd = 3;
+
+  if ((go.isa ("line") || go.isa ("patch")) && ! go.get("zdata").is_empty ())
+    nd = 3;
+
+  Matrix kids = go.get_properties().get_children ();
+
+  for (octave_idx_type i = 0; i < kids.length (); i++)
+    {
+      graphics_handle hnd = gh_manager::lookup (kids(i));
+
+      if (hnd.ok ())
+        {
+          const graphics_object& kid = gh_manager::get_object(hnd);
+
+          if (kid.valid_object())
+            nd = calc_dimensions (kid);
+
+          if (nd == 3)
+            break;
+        }
+    }
+
+  return nd;
+}
+
+DEFUN (__calc_dimensions__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __calc_dimensions__ (@var{axes})\n\
+Internal function. Determine the number of dimensions in a graphics\n\
+object, whether 2 or 3.\n\
+@end deftypefn")
+{
+  gh_manager::autolock guard;
+
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      double h = args(0).double_value ();
+
+      if (! error_state)
+        retval = calc_dimensions (gh_manager::get_object (h));
+      else
+        error ("__calc_dimensions__: expecting graphics handle as only argument");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
 
 DEFUN (__go_axes__, args, ,
   "-*- texinfo -*-\n\

@@ -45,7 +45,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
       ymirror = true;
     endif
 
-    nd = __calc_dimensions__ (axis_obj);
+    nd = __calc_dimensions__ (h);
+
     if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
       pos = __actual_axis_position__ (axis_obj);
     else
@@ -1784,29 +1785,6 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   fputs (plot_stream, ";\n");
 
-endfunction
-
-function nd = __calc_dimensions__ (obj)
-  kids = obj.children;
-  nd = 2;
-  for i = 1:length (kids)
-    obj = get (kids(i));
-    switch (obj.type)
-      case {"image", "text"}
-        ## ignore as they 
-      case {"line", "patch"}
-        if (! isempty (obj.zdata))
-          nd = 3;
-        endif
-      case "surface"
-        nd = 3;
-      case "hggroup"
-        obj_nd = __calc_dimensions__ (obj);
-        if (obj_nd == 3)
-          nd = 3;
-        endif
-    endswitch
-  endfor
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)

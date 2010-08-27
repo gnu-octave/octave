@@ -1,3 +1,21 @@
+2010-08-27  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* graphics.cc (axes::properties::rotate_view): Don't rotate past
+	the top and bottom.
+	(axes::properties::update_camera): Fix the view when rotating to
+	the bottom.
+	(calc_dimensions): New static function.
+	(F__calc_dimensions__) New defun to replace m-script function.
+	* graphics.h.in (calc_dimension): Provide decl.
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::plot_window):
+	Use calc_dimensions to decide whether the current figure should
+	be rotated.
+	(plot_window::mark_modified) Recompute the number of dimensions.
+	Deactivate rotation if necessary.
+	(plot_window::ndim) New data member.
+	(plot_window::button_press, plot_window::handle): Only turn on
+	rotation if ndim == 3.
+
 2010-08-24  David Bateman  <dbateman@free.fr>
 
 	* ls-mat5.cc (static void read_mat5_binary_data (std::istream&,

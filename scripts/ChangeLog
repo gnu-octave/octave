@@ -1,5 +1,6 @@
 2010-08-27  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__gnuplot_print__.m: Properly restore fontsize after eps output.
 	* plot/plotyy.m: Modified demo for changeset 10912 9abc67b4bd4f.
 	* plot/__fltk_print__.m, plot/__go_draw_axes__.m,
 	plot/__go_draw_figure__.m, plot/__gnuplot_print__.m,

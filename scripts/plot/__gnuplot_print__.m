@@ -163,7 +163,7 @@ function eps_drawnow (opts, epsfile, gp_opts)
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
     for n = 1:numel(h)
-      set (h, "fontsize", 2 * fontsize{n});
+      set (h(n), "fontsize", 2 * fontsize{n});
     endfor
     local_drawnow (sprintf ("postscript eps %s", gp_opts), epsfile, opts);
     if (opts.tight_flag)
@@ -171,7 +171,7 @@ function eps_drawnow (opts, epsfile, gp_opts)
     endif
   unwind_protect_cleanup
     for n = 1:numel(h)
-      set (h, "fontsize", fontsize{n});
+      set (h(n), "fontsize", fontsize{n});
     endfor
   end_unwind_protect
 endfunction

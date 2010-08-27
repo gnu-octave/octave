@@ -54,6 +54,7 @@ function hold (varargin)
   if (nargin > 0 && numel (varargin{1}) == 1 && ishandle (varargin{1})
       && strcmp (get (varargin{1}, "type"), "axes"))
     [ax, varargin, nargs] = __plt_get_axis_arg__ ("hold", varargin{:});
+    fig = get (ax, "parent");
   elseif (nargin > 0 && numel (varargin{1}) > 1 && ishandle (varargin{1}))
     print_usage ();
   else

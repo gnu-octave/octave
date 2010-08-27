@@ -1203,6 +1203,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
           color = obj.color;
           if (strcmpi (units, "normalized"))
             units = "graph";
+          elseif (strcmp (axis_obj.yaxislocation, "right")
+                  && strcmp (units, "data"))
+            units = "second";
           else
             units = "";
           endif

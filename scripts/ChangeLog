@@ -1,3 +1,8 @@
+2010-08-26  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: For yaxislocation == 'right' associate text
+	position with 'second' coordinate system.
+
 2010-08-25  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Revert erroneous portion of changeset

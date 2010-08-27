@@ -37,7 +37,7 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
   endif
 
   ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
-  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", opts.ghostscript_binary,
+  cmd = sprintf ("\"%s\" %s \"%s\" 2>&1", opts.ghostscript.binary,
                  ghostscript_options, eps_file_name);
   [status, output] = system (cmd);
 
@@ -88,7 +88,6 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
     unwind_protect_cleanup
       fclose (fid);
     end_unwind_protect
-    ## FIXME - should strfind() limit the instances as find() does?
     n = strfind (data, box_string);
     if (numel (n) > 1)
       ## Only replace one instance.

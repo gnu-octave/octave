@@ -34,6 +34,7 @@ function status = __ghostscript__ (varargin);
   opts.papersize = "";
   opts.pageoffset = [0 0];
   opts.debug = false;
+  opts.level = [];
 
   offsetfile = "";
 
@@ -51,6 +52,11 @@ function status = __ghostscript__ (varargin);
   endfor
 
   gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s", opts.device);
+
+  if (! isempty (opts.level) && ismember (opts.level, [1, 2, 3]))
+    gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, round (opts.level));
+  endif
+
   if (opts.antialiasing)
     gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
     gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
@@ -80,18 +86,23 @@ function status = __ghostscript__ (varargin);
     endif
     gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
     offsetfile = strcat (tmpnam (), ".ps");
-    fid = fopen (offsetfile, "w");
-    if (fid == -1)
-      error ("print:fopenfailed", "__ghostscript__.m: fopen() failed.");
-    endif
-    fprintf (fid, "%s\n", "%!PS-Adobe-3.0")
-    fprintf (fid, "%s [%d %d] %s\n", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
-             opts.pageoffset, ">> setpagedevice");
-    fprintf (fid, "%%EOF");
-    status = fclose (fid);
-    if (status == -1)
-      error ("print:fclosefailed", "__ghostscript__.m: fclose() failed.");
-    endif
+    unwind_protect
+      fid = fopen (offsetfile, "w");
+      onCleanup (@() unlink (offsetfile));
+      if (fid == -1)
+        error ("print:fopenfailed", "__ghostscript__.m: fopen() failed.");
+      endif
+      fprintf (fid, "%s\n", "%!PS-Adobe-3.0")
+      ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
+      fprintf (fid, "%s [%d %d] %s\n", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
+               opts.pageoffset, ">> setpagedevice");
+      fprintf (fid, "%%EOF");
+    unwind_protect_cleanup
+      status = fclose (fid);
+      if (status == -1)
+        error ("print:fclosefailed", "__ghostscript__.m: fclose() failed.");
+      endif
+    end_unwind_protect
     if (opts.debug)
       [~,output] = system (sprintf ("cat %s", offsetfile));
       fprintf ("---- begin %s ----\n", offsetfile)
@@ -112,7 +123,7 @@ function status = __ghostscript__ (varargin);
 
   if (status != 0)
     warning ("print:ghostscripterror", 
-             "print.m: ghostscript failed to convert output to file '%s'.", opts.output)
+             "print.m: %s, '%s'.", output, opts.output)
   endif
 
 endfunction

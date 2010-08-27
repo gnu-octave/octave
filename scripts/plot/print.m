@@ -89,14 +89,16 @@
 ## for graphics.  The file produced by @code{epslatexstandalone} can be
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
-## is the same as the @code{epslatex} device.
+## is the same as the @code{epslatex} device. The @code{pdflatex} device
+## is only available for the FLTK backend.
 ##
 ##   @item tikz
-##     Generate a @LaTeX{} file using PGF/TikZ.
+##     Generate a @LaTeX{} file using PGF/TikZ. For the FLTK the result is
+##   PGF.
 ##
 ##   @item ill
 ##   @itemx aifm
-##     Adobe Illustrator
+##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
 ##
 ##   @item cdr
 ##   @itemx @nospell{corel}
@@ -183,7 +185,7 @@
 ## the figure's "paperposition" property.
 ##
 ## @itemx -append
-##   Appends the PS, PDF, or EPS output to a pre-existing file of the 
+##   Appends the PS, or PDF output to a pre-existing file of the 
 ## same type.
 ##
 ## @itemx -r@var{NUM}
@@ -224,29 +226,6 @@ function print (varargin)
 
   orig_figure = get (0, "currentfigure");
   figure (opts.figure)
-  drawnow ();
-  backend = (get (opts.figure, "__backend__"));
-
-  if (strcmp (backend, "gnuplot"))
-    ## FIXME - this can be removed when __gnuplot_print__ has been modified
-    ##         to work consistently with __fltk_print__
-    opts.ghostscript_binary = opts.ghostscript.binary;
-    opts.resolution = opts.ghostscript.resolution;
-    opts.canvas_size = opts.canvas_size * opts.resolution / 72;
-    opts.resolution = sprintf ("%d", opts.resolution);
-    opts.fontsize = sprintf ("%d", opts.fontsize);
-    if (strcmp (opts.devopt, "tiff"))
-      error ("print:notiffoutput",
-             "print.m: TIFF output is not available for the Gnuplot backend.")
-    endif
-    __gnuplot_print__ (opts);
-    return
-  else
-    if (strcmp (opts.devopt, "gif"))
-      error ("print:notiffoutput",
-             "print.m: GIF output is not available for the FLTK backend.")
-    endif
-  endif
 
   if (opts.append_to_file && ! (strncmp (opts.devopt, "pdf", 3)
          || strncmp (opts.devopt(1:2), "ps", 2)))
@@ -255,17 +234,16 @@ function print (varargin)
     opts.append_to_file = false;
   endif
 
-  if (opts.append_to_file)
-    saved_original_file = strcat (tmpnam (), ".", opts.devopt);
-    opts.unlink(end+1) = {saved_original_file};
-    movefile (opts.name, saved_original_file);
-  endif
-
-  ## Modify properties as specified by options
-  ## FIXME - need an unwind_protect block
-  props = [];
-
   unwind_protect
+
+    if (opts.append_to_file)
+      saved_original_file = strcat (tmpnam (), ".", opts.devopt);
+      opts.unlink(end+1) = {saved_original_file};
+      movefile (opts.name, saved_original_file);
+    endif
+
+    ## Modify properties as specified by options
+    props = [];
 
     ## backend tranlates figure position to eps bbox in points
     fpos = get (opts.figure, "position");
@@ -275,8 +253,16 @@ function print (varargin)
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos)
 
+    ## Set figure background to none. This is done both for
+    ## consistency with Matlab and to elliminate the visible
+    ## box along the figure's perimeter.
+    props(2).h = opts.figure;
+    props(2).name = "color";
+    props(2).value{1} = get (props(2).h, props(2).name);
+    set (props(2).h, props(2).name, "none");
+
     if (opts.force_solid != 0)
-      h = findobj (opts.figure, "-property", "linestyle");
+      h = findall (opts.figure, "-property", "linestyle");
       m = numel (props);
       for n = 1:numel(h)
         props(m+n).h = h(n);
@@ -291,11 +277,12 @@ function print (varargin)
       set (h, "linestyle", linestyle)
     endif
 
-    if (opts.use_color < 0)
+    if (opts.use_color < 0
+        && ! strcmp (get (opts.figure, "__backend__"), "gnuplot"))
       color_props = {"color", "facecolor", "edgecolor", "colormap"};
       for c = 1:numel(color_props)
-        h = findobj (opts.figure, "-property", color_props{c});
-        hnone = findobj (opts.figure, color_props{c}, "none");
+        h = findall (opts.figure, "-property", color_props{c});
+        hnone = findall (opts.figure, color_props{c}, "none");
         h = setdiff (h, hnone);
         m = numel (props);
         for n = 1:numel(h)
@@ -314,7 +301,7 @@ function print (varargin)
     endif
 
     if (! isempty (opts.font) || ! isempty (opts.fontsize))
-      h = findobj (opts.figure, "-property", "fontname");
+      h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel(h)
         if (! isempty (opts.font))
@@ -342,11 +329,65 @@ function print (varargin)
     endif
 
     ## call the backend print script
-    drawnow ("expose")
-    feval (strcat ("__", backend, "_print__"), opts);
+    feval (strcat ("__", get (opts.figure, "__backend__") , "_print__"), opts);
+
+    ## Send to the printer
+    if (opts.send_to_printer)
+      if (isempty (opts.ghostscript.output))
+        prn_datafile = opts.name;
+      else
+        prn_datafile = opts.ghostscript.output;
+      endif
+      if (isempty (opts.printer))
+        prn_cmd = sprintf ("lpr %s '%s' 2>&1", opts.lpr_options, prn_datafile);
+      else
+        prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", opts.lpr_options,
+                           opts.printer, prn_datafile);
+      endif
+      if (opts.debug)
+        fprintf ("lpr command: %s\n", prn_cmd)
+        [status, output] = system ("lpq");
+        disp (output)
+      endif
+      [status, output] = system (prn_cmd);
+      if (status != 0)
+        disp (output)
+        warning ("print.m: printing failed.")
+      endif
+    endif
+
+    ## Append to file using GS
+    if (opts.append_to_file)
+      if (strncmp (opts.devopt, "pdf", 3))
+        suffix = "pdf";
+        device = suffix;
+      elseif (strncmp (opts.devopt(1:2), "ps", 2))
+        ## FIXME - For FLTK & Gnuplot the fonts get mangled
+        ##         See "How to concatenate several PS files" at the link,
+        ##         http://en.wikibooks.org/wiki/PostScript_FAQ
+        suffix = "ps";
+        device = suffix;
+      endif
+      tmp_combined_file = strcat (tmpnam (), ".", suffix);
+      opts.unlink{end+1} = tmp_combined_file;
+      gs_opts = "-dQUIET -dNOPAUSE -dBATCH -dSAFER -dFIXEDMEDIA";
+      gs_cmd = sprintf ("%s %s -sDEVICE=%swrite -sOutputFile=%s %s %s", 
+               opts.ghostscript.binary, gs_opts, device, tmp_combined_file,
+               saved_original_file, opts.name);
+      [status, output] = system (gs_cmd);
+      if (opts.debug)
+        fprintf ("Append files: %s\n", gs_cmd);
+      endif
+      if (status != 0)
+        warning ("print:failedtoappendfile", 
+                 "print.m: failed to append output to file '%s'.", opts.name)
+        copyfile (saved_original_file, opts.name);
+      else
+        copyfile (tmp_combined_file, opts.name);
+      endif
+    endif
 
   unwind_protect_cleanup
-
     ## restore modified properties
     if (isstruct (props))
       for n = 1:numel(props)
@@ -354,72 +395,14 @@ function print (varargin)
       endfor
     endif
 
+    ## Unlink temporary files
+    for n = 1:numel(opts.unlink)
+      [status, output] = unlink (opts.unlink{n});
+      if (status != 0)
+        warning ("print.m: %s, '%s'.", output, opts.unlink{n})
+      endif
+    endfor
   end_unwind_protect
-
-  ## Send to the printer
-  if (opts.send_to_printer)
-    if (isempty (opts.ghostscript.output))
-      prn_datafile = opts.name;
-    else
-      prn_datafile = opts.ghostscript.output;
-    endif
-    if (isempty (opts.printer))
-      prn_cmd = sprintf ("lpr %s '%s' 2>&1", opts.lpr_options, prn_datafile);
-    else
-      prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", opts.lpr_options,
-                         opts.printer, prn_datafile);
-    endif
-    if (opts.debug)
-      fprintf ("lpr command: %s\n", prn_cmd)
-      [status, output] = system ("lpq");
-      disp (output)
-    endif
-    [status, output] = system (prn_cmd);
-    if (status != 0)
-      disp (output)
-      warning ("print.m: printing failed.")
-    endif
-  endif
-
-  ## Append to file using GS
-  if (opts.append_to_file)
-    if (strncmp (opts.devopt, "pdf", 3))
-      suffix = "pdf";
-      device = suffix;
-    elseif (strncmp (opts.devopt(1:2), "ps", 2))
-      ## FIXME - For FLTK the fonts get mangled
-      ##         See the seciton "How to concatenate several PS files" at the link,
-      ##         http://en.wikibooks.org/wiki/PostScript_FAQ
-      suffix = "ps";
-      device = suffix;
-    endif
-    tmp_combined_file = strcat (tmpnam (), ".", suffix);
-    opts.unlink{end+1} = tmp_combined_file;
-    gs_opts = "-dQUIET -dNOPAUSE -dBATCH -dSAFER -dFIXEDMEDIA";
-    gs_cmd = sprintf ("%s %s -sDEVICE=%swrite -sOutputFile=%s %s %s", 
-             opts.ghostscript.binary, gs_opts, device, tmp_combined_file,
-             saved_original_file, opts.name);
-    [status, output] = system (gs_cmd);
-    if (opts.debug)
-      fprintf ("Append files: %s\n", gs_cmd);
-    endif
-    if (status != 0)
-      warning ("print:failedtoappendfile", 
-               "print.m: failed to append output to file '%s'.", opts.name)
-      copyfile (saved_original_file, opts.name);
-    else
-      copyfile (tmp_combined_file, opts.name);
-    endif
-  endif
-
-  ## Unlink temporary files
-  for n = 1:numel(opts.unlink)
-    [status, output] = unlink (opts.unlink{n});
-    if (status != 0)
-      disp (output)
-      warning ("print.m: failed to delete temporay file, '%s'.", opts.unlink{n})
-    endif
-  endfor
 
   if (isfigure (orig_figure))
     figure (orig_figure);

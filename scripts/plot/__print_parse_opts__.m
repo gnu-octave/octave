@@ -58,7 +58,6 @@ function arg_st = __print_parse_opts__ (varargin)
   elseif (ispc ())
     arg_st.lpr_options = "-o l";
   else
-    ## FIXME - What other OS's might be considered.
     arg_st.lpr_options = "";
   endif
   arg_st.unlink = {};
@@ -82,6 +81,8 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-tight"))
         arg_st.tight_flag = true;
+      elseif (strcmp (arg, "-loose"))
+        arg_st.tight_flag = false;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
       elseif (strncmp (arg, "-debug", 6))
@@ -154,39 +155,17 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if ((any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt))
-      || (! isempty (strfind (arg_st.devopt, "tex")))) && arg_st.use_color == 0)
-    ## Mono is the default for ps, eps, and the tex/latex, devices
+  if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
     arg_st.use_color = -1;
-  elseif (arg_st.use_color == 0)
+  else
     arg_st.use_color = 1;
-  endif
-
-  if (arg_st.append_to_file)
-    if (isempty (arg_st.name))
-      arg_st.append_to_file = false;
-    elseif (any (strcmpi (arg_st.devopt, {"eps", "eps2", "epsc", "epsc2", ...
-                                          "ps", "ps2", "psc", "psc2", "pdf"})))
-      have_ghostscript = ! isempty (__ghostscript_binary__ ());
-      if (have_ghostscript)
-        file_exists = ((numel (dir (arg_st.name)) == 1) && (! isdir (arg_st.name)));
-        if (! file_exists)
-          arg_st.append_to_file = false;
-        end
-      else
-        arg_st.append_to_file = false;
-        warning ("print.m: appended output requires ghostscript to be installed.")
-      endif
-    else
-      warning ("print.m: appended output is not supported for device '%s'", arg_st.devopt)
-      arg_st.append_to_file = false;
-    endif
   endif
 
   if (arg_st.tight_flag)
     if (any (strcmpi (arg_st.devopt, {"ps", "ps2", "psc", "psc2", "pdf"})))
       arg_st.tight_flag = false;
-      warning ("print.m: '-tight' is not supported for device '%s'", arg_st.devopt)
+      warning ("print.m: '-tight' is not supported for device '%s'",
+               arg_st.devopt)
     endif
   endif
 
@@ -222,6 +201,11 @@ function arg_st = __print_parse_opts__ (varargin)
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
               "ppm", "ppm", "tex"};
 
+  if (strcmp (get (arg_st.figure, "__backend__"), "gnuplot")
+      && __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
+    suffixes(strncmp (dev_list, "epslatex", 8)) = {"eps"};
+  endif
+
   match = strcmpi (dev_list, arg_st.devopt);
   if (any (match))
     default_suffix = suffixes {match};
@@ -231,6 +215,27 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (dot == 0 && ! isempty (arg_st.name))
     arg_st.name = strcat (arg_st.name, ".", default_suffix);
+  endif
+
+  if (arg_st.append_to_file)
+    if (isempty (arg_st.name))
+      arg_st.append_to_file = false;
+    elseif (any (strcmpi (arg_st.devopt, {"eps", "eps2", "epsc", "epsc2", ...
+                                          "ps", "ps2", "psc", "psc2", "pdf"})))
+      have_ghostscript = ! isempty (__ghostscript_binary__ ());
+      if (have_ghostscript)
+        file_exists = ((numel (dir (arg_st.name)) == 1) && (! isdir (arg_st.name)));
+        if (! file_exists)
+          arg_st.append_to_file = false;
+        end
+      else
+        arg_st.append_to_file = false;
+        warning ("print.m: appended output requires ghostscript to be installed.")
+      endif
+    else
+      warning ("print.m: appended output is not supported for device '%s'", arg_st.devopt)
+      arg_st.append_to_file = false;
+    endif
   endif
 
   if (! isempty (arg_st.printer) || isempty (arg_st.name))
@@ -249,7 +254,7 @@ function arg_st = __print_parse_opts__ (varargin)
   if (isempty (arg_st.canvas_size))
     if (isfigure (arg_st.figure))
       [arg_st.ghostscript.papersize, paperposition] = gs_papersize (arg_st.figure,
-                                                               arg_st.orientation);
+                                                             arg_st.orientation);
     else
       ## allows tests to be run
       arg_st.ghostscript.papersize = "letter";
@@ -456,7 +461,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   endif
 
   ## FIXME - This will be obsoleted by listeners for paper properties.
-  ## Papersize is tall when portrait,and wide when landscape.
+  ##         Papersize is tall when portrait,and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize ([2,1]);

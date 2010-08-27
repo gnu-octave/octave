@@ -1,3 +1,12 @@
+2010-08-25  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__fltk_print__.m, plot/__go_draw_axes__.m,
+	plot/__go_draw_figure__.m, plot/__gnuplot_print__.m,
+	plot/gnuplot_drawnow.m, plot/print.m, plot/private/__ghostscript__.m,
+	plot/private/__tight_eps_bbox__.m: Unify gnuplot printing with the
+	the fltk backend. Turn figure background color off when printing.
+	Improve the axes font spacing for most gnuplot terminals.
+
 2010-08-26  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: For yaxislocation == 'right' associate text

@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_is_set)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
 
   if (nargin >= 4 && nargin <= 6)
 
@@ -51,7 +51,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
     else
       pos = axis_obj.position;
     endif
-    pos(1:2) = pos(1:2) - implicit_margin .* [0.75, 0.5];
     if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
       if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
         x = [1, 1];
@@ -59,10 +58,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
         ## 3D plots need to be sized down to fit in the window.
         x = 1.0 ./ sqrt([2, 2.5]);
       endif
-      fprintf (plot_stream, "set tmargin screen %.15g;\n", pos(2)+pos(4)/2+x(2)*pos(4)/2);
-      fprintf (plot_stream, "set bmargin screen %.15g;\n", pos(2)+pos(4)/2-x(2)*pos(4)/2);
-      fprintf (plot_stream, "set lmargin screen %.15g;\n", pos(1)+pos(3)/2-x(1)*pos(3)/2);
-      fprintf (plot_stream, "set rmargin screen %.15g;\n", pos(1)+pos(3)/2+x(1)*pos(3)/2);
+      fprintf (plot_stream, "set tmargin screen %.15g;\n",
+               pos(2)+pos(4)/2+x(2)*pos(4)/2);
+      fprintf (plot_stream, "set bmargin screen %.15g;\n",
+               pos(2)+pos(4)/2-x(2)*pos(4)/2);
+      fprintf (plot_stream, "set lmargin screen %.15g;\n",
+               pos(1)+pos(3)/2-x(1)*pos(3)/2);
+      fprintf (plot_stream, "set rmargin screen %.15g;\n",
+               pos(1)+pos(3)/2+x(1)*pos(3)/2);
     else
       ## FIXME -- nothing should change for gnuplot 4.2.x.
       fprintf (plot_stream, "set tmargin 0;\n");
@@ -101,7 +104,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, implicit_margin, bg_i
         fprintf (plot_stream, "set title \"%s\" %s %s",
                  undo_string_escapes (tt), fontspec,
                  __do_enhanced_option__ (enhanced, t));
-        if (nd == 3 && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+        if (nd == 3
+            && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
           fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
         else
           fprintf (plot_stream, ";\n");

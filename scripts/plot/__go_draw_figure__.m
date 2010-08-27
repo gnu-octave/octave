@@ -23,43 +23,11 @@
 
 ## Author: jwe
 
-function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, implicit_margin)
+function __go_draw_figure__ (h, plot_stream, enhanced, mono)
 
-  if (nargin < 5)
-    output_to_paper = false;
-  elseif (nargin < 6)
-    ## Gnuplot has implicit margins for some output. For example, for postscript
-    ## the margin is 50pts. If not specified asssume 0.
-    implicit_margin = 0;
-  endif
-
-  if (nargin >= 4 && nargin <= 6)
+  if (nargin == 4)
     htype = get (h, "type");
     if (strcmp (htype, "figure"))
-      ## When printing, set paperunits to inches and rely on a listener to convert
-      ## the values for papersize and paperposition.
-      if (output_to_paper)
-        orig_paper_units = get (h, "paperunits");
-        gpval_term = __gnuplot_get_var__ (h, "GPVAL_TERM");
-        gpval_termoptions = __gnuplot_get_var__ (h, "GPVAL_TERMOPTIONS");
-        unwind_protect
-          set (h, "paperunits", "inches");
-          paper_size = get (h, "papersize");
-          paper_position = get (h, "paperposition");
-          paper_position = paper_position ./ paper_size([1, 2, 1, 2]);
-          implicit_margin = implicit_margin ./ paper_size;
-        unwind_protect_cleanup
-          set (h, "paperunits", orig_paper_units);
-        end_unwind_protect
-        if (strcmp (gpval_term, "postscript")
-            && ! isempty (strfind (gpval_termoptions, "landscape")))
-          ## This needed to obtain the expected result.
-          implicit_margin(2) = -implicit_margin(2);
-        endif
-      else
-        implicit_margin = implicit_margin * [1 1];
-      endif
-
       ## Get complete list of children.
       kids = allchild (h);
       nkids = length (kids);
@@ -95,16 +63,9 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono, output_to_paper, im
                 if (bg_is_set)
                   fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", 255 * (1 - bg));
                 endif
-                if (output_to_paper)
-                  axes_position_on_page = orig_axes_position .* paper_position([3, 4, 3 ,4]);
-                  axes_position_on_page(1:2) = axes_position_on_page(1:2) +  paper_position(1:2);
-                  set (kids(i), "position", axes_position_on_page);
-                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
-                else
-                  ## Return axes "units" and "position" back to their original values.
-                  __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, implicit_margin, bg_is_set);
-                endif
-                unwind_protect_cleanup
+                ## Return axes "units" and "position" back to their original values.
+                __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, bg_is_set);
+              unwind_protect_cleanup
                 set (kids(i), "units", orig_axes_units);
                 set (kids(i), "position", orig_axes_position);
                 bg_is_set = false;

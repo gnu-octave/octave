@@ -107,6 +107,7 @@ function h = colorbar (varargin)
 
   if (! deleting)
     obj = get (ax);
+    obj.__my_handle__ = ax;
     position = obj.position;
     clen = rows (get (get (ax, "parent"), "colormap"));
     cext = get (ax, "clim");
@@ -220,6 +221,7 @@ function update_colorbar_axis (h, d, cax, orig_props)
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);
+    obj.__my_handle__ = h;
     obj.position = orig_props.position;
     obj.outerposition = orig_props.outerposition;
     [pos, cpos, vertical, mirror] =  ...

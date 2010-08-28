@@ -1,5 +1,8 @@
 2010-08-27  Ben Abbott <bpabbott@mac.com>
 
+	* plot/colorbar.m, * plot/__go_draw_axes__.m,
+	plot/private/__actual_axis_position__.m: Don't pass figure handle to
+	__calc_dimensions__.
 	* plot/private/__ghostscript__.m: Don't set anti-aliasing options for
 	vector formats.
 	* plot/__print_parse_opts__.m: Fix tests.

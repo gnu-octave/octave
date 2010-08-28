@@ -48,7 +48,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
     nd = __calc_dimensions__ (h);
 
     if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
-      pos = __actual_axis_position__ (axis_obj);
+      pos = __actual_axis_position__ (h);
     else
       pos = axis_obj.position;
     endif

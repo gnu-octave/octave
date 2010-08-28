@@ -24,14 +24,18 @@
 
 ## Author: Ben Abbott
 
-function pos = __actual_axis_position__ (axis_obj)
-  if (ishandle (axis_obj))
-    axis_obj = get (axis_obj);
+function pos = __actual_axis_position__ (h)
+
+  if (ishandle (h))
+    axis_obj = get (h);
+  elseif (isstruct (h))
+    axis_obj = h;
+    h = axis_obj.__my_handle__;
   endif
 
   ## When using {rltb}margin, Gnuplot does not handle the specified
   ## aspect ratio properly, so handle it here.
-  if (__calc_dimensions__ (axis_obj.parent) == 2
+  if (__calc_dimensions__ (h) == 2
       || all (mod (axis_obj.view, 90) == 0))
     aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
   else

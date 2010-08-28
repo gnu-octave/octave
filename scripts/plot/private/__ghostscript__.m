@@ -57,7 +57,8 @@ function status = __ghostscript__ (varargin);
     gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, round (opts.level));
   endif
 
-  if (opts.antialiasing)
+  if (opts.antialiasing && isempty (strfind (opts.device, "write")))
+    ## Apply anti-aliasing to all bitmap formats/devices
     gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
     gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
   elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))

@@ -748,54 +748,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
                lw  = "";
              endif
 
-             if (isfield (obj, "marker"))
-               if (isfield (obj, "marker"))
-                 switch (obj.marker)
-                   case "+"
-                     pt = pt2 = "pt 1";
-                   case "o"
-                     pt = "pt 6";
-                     pt2 = "pt 7";
-                   case "*"
-                     pt = pt2 = "pt 3";
-                   case "."
-                     pt = pt2 = "pt 0";
-                   case "x"
-                     pt = pt2 = "pt 2";
-                   case {"square", "s"}
-                     pt = "pt 4";
-                     pt2 = "pt 5";
-                   case {"diamond", "d"}
-                     pt = "pt 12";
-                     pt2 = "pt 13";
-                   case "^"
-                     pt = "pt 8";
-                     pt2 = "pt 9";
-                   case "v"
-                     pt = "pt 10";
-                     pt2 = "pt 11";
-                   case ">"
-                     ## FIXME missing point type 
-                     pt = "pt 8";
-                     pt2 = "pt 9";
-                   case "<"
-                     ## FIXME missing point type 
-                     pt = "pt 10";
-                     pt2 = "pt 11";
-                   case {"pentagram", "p"}
-                     ## FIXME missing point type 
-                     pt = pt2 = "pt 3";
-                   case {"hexagram", "h"}
-                     pt = pt2 = "pt 3";
-                   case "none"
-                     pt = pt2 = "";
-                   otherwise
-                     pt = pt2 = "";
-                 endswitch
-               endif
-             else
-               pt = pt2 = "";
-             endif
+             [pt, pt2] = gnuplot_pointtype (obj);
 
              if (mono)
                colorspec = "";
@@ -1626,52 +1579,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     found_style = true;
   endif
 
-  if (isfield (obj, "marker"))
-    switch (obj.marker)
-      case "+"
-        pt = pt2 = "1";
-      case "o"
-        pt = "6";
-        pt2 = "7";
-      case "*"
-        pt = pt2 = "3";
-      case "."
-        pt = pt2 = "0";
-      case "x"
-        pt = pt2 = "2";
-      case {"square", "s"}
-        pt = "4";
-        pt2 = "5";
-      case {"diamond", "d"}
-        pt = "12";
-        pt2 = "13";
-      case "^"
-        pt = "8";
-        pt2 = "9";
-      case "v"
-        pt = "10";
-        pt2 = "11";
-      case ">"
-        ## FIXME missing point type 
-        pt = "8";
-        pt2 = "9";
-      case "<"
-        ## FIXME missing point type 
-        pt = "10";
-        pt2 = "11";
-      case {"pentagram", "p"}
-        ## FIXME missing point type 
-        pt = pt2 = "3";
-      case {"hexagram", "h"}
-        pt = pt2 = "3";
-      case "none"
-        pt = pt2 = "";
-      otherwise
-        pt = pt2 = "";
-    endswitch
-  else
-    pt = pt2 = "";
-  endif
+  [pt, pt2] = gnuplot_pointtype (obj);
 
   if (! isempty (pt))
     found_style = true;
@@ -1785,6 +1693,57 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
   fputs (plot_stream, ";\n");
 
+endfunction
+
+function [pt, pt2] = gnuplot_pointtype (obj)
+  if (isfield (obj, "marker"))
+    switch (obj.marker)
+      case "+"
+        pt = pt2 = "1";
+      case "o"
+        pt = "6";
+        pt2 = "7";
+      case "*"
+        pt = pt2 = "3";
+      case "."
+        pt = pt2 = "0";
+      case "x"
+        pt = pt2 = "2";
+      case {"square", "s"}
+        pt = "4";
+        pt2 = "5";
+      case {"diamond", "d"}
+        pt = "12";
+        pt2 = "13";
+      case "^"
+        pt = "8";
+        pt2 = "9";
+      case "v"
+        pt = "10";
+        pt2 = "11";
+      case ">"
+        ## FIXME -- should be triangle pointing right, use triangle pointing up
+        pt = "8";
+        pt2 = "9";
+      case "<"
+        ## FIXME -- should be triangle pointing left, use triangle pointing down
+        pt = "10";
+        pt2 = "11";
+      case {"pentagram", "p"}
+        ## FIXME -- should be pentagram, using pentagon
+        pt = "14";
+        pt2 = "15";
+      case {"hexagram", "h"}
+        ## FIXME -- should be 6 pt start, using "*" instead
+        pt = pt2 = "3";
+      case "none"
+        pt = pt2 = "";
+      otherwise
+        pt = pt2 = "";
+    endswitch
+  else
+    pt = pt2 = "";
+  endif
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)

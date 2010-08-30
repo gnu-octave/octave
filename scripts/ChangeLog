@@ -1,3 +1,7 @@
+2010-08-30  Ben Abbott <bpabbott@mac.com>
+
+	* /plot/__go_draw_axes__.m: Use gnuplot's pentagon for marker == 'p'.
+
 2010-08-27  Ben Abbott <bpabbott@mac.com>
 
 	* plot/colorbar.m, * plot/__go_draw_axes__.m,

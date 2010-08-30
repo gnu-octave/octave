@@ -598,41 +598,38 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 
   double *av = a.fortran_vec ();
   const double *cmapv = cmap.data ();
-  const double *cv = 0;
-  const octave_uint8 *icv = 0;
+  const double *cv = cdata.array_value().data ();
 
-  if (cdata.is_integer_type ())
-    icv = cdata.uint8_array_value ().data ();
-  else
-    cv = cdata.array_value ().data ();
-
-  for (octave_idx_type i = 0; i < lda; i++)
+  if (! error_state)
     {
-      double x = (cv ? cv[i] : double (icv[i]));
-
-      if (is_scaled)
-        x = xround ((nc - 1) * (x - clim(0)) / (clim(1) - clim(0)));
-      else
-        x = xround (x - 1);
-
-      if (xisnan (x))
+      for (octave_idx_type i = 0; i < lda; i++)
         {
-          av[i]       = x;
-          av[i+lda]   = x;
-          av[i+2*lda] = x;
-        }
-      else
-        {
-          if (x < 0)
-            x = 0;
-          else if (x >= nc)
-            x = (nc - 1);
+          double x = cv[i];
 
-          octave_idx_type idx = static_cast<octave_idx_type> (x);
+          if (is_scaled)
+            x = xround ((nc - 1) * (x - clim(0)) / (clim(1) - clim(0)));
+          else
+            x = xround (x - 1);
 
-          av[i]       = cmapv[idx];
-          av[i+lda]   = cmapv[idx+nc];
-          av[i+2*lda] = cmapv[idx+2*nc];
+          if (xisnan (x))
+            {
+              av[i]       = x;
+              av[i+lda]   = x;
+              av[i+2*lda] = x;
+            }
+          else
+            {
+              if (x < 0)
+                x = 0;
+              else if (x >= nc)
+                x = (nc - 1);
+
+              octave_idx_type idx = static_cast<octave_idx_type> (x);
+
+              av[i]       = cmapv[idx];
+              av[i+lda]   = cmapv[idx+nc];
+              av[i+2*lda] = cmapv[idx+2*nc];
+            }
         }
     }
 

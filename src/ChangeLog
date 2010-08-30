@@ -1,3 +1,10 @@
+2010-08-30  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (convert_cdata): Allow cdata to be any type that
+	can be converted to double.
+	* graphics.h.in (surface::properties::init): Remove constraints
+	on cdata and alphadata.
+
 2010-08-27  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* graphics.cc (axes::properties::rotate_view): Don't rotate past

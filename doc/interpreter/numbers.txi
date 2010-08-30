@@ -393,6 +393,24 @@ convert range constants to vectors unless it is necessary to do so.
 This allows you to write a constant like @samp{1 : 10000} without using
 80,000 bytes of storage on a typical 32-bit workstation.
 
+A common example of when it does become necessary to convert ranges into
+vectors occurs when they appear within a vector (i.e. inside square
+brackets). For instance, whereas
+
+@example
+x = 0 : 0.1 : 1;
+@end example
+
+defines @var{x} to be a variable of type @code{range} and occupies 24
+bytes of memory, the expression
+
+@example
+y = [ 0 : 0.1 : 1];
+@end example
+
+defines @var{y} to be of type @code{matrix} and occupies 88 bytes of
+memory.
+
 Note that the upper (or lower, if the increment is negative) bound on
 the range is not always included in the set of values, and that ranges
 defined by floating point values can produce surprising results because

@@ -1,3 +1,8 @@
+2010-11-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* interpreter/numbers.txi: Explain that ranges in vectors do get
+	expanded.
+
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/mk_undocumented_list: New verification

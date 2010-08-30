@@ -1,3 +1,8 @@
+2010-08-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* graphics.cc (convert_cdata): Avoid extracting pointer to temporary
+	copy.
+
 2010-08-30  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (convert_cdata): Allow cdata to be any type that

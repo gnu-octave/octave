@@ -598,7 +598,8 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 
   double *av = a.fortran_vec ();
   const double *cmapv = cmap.data ();
-  const double *cv = cdata.array_value().data ();
+  const NDArray xcdata = cdata.array_value ();
+  const double *cv = xcdata.data ();
 
   if (! error_state)
     {

@@ -1,3 +1,7 @@
+2010-08-30  Ben Abbott <bpabbott@mac.com>
+
+	* gl-render.cc: Matlab compatible markers for the OpenGL.
+
 2010-08-30  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (convert_cdata_1, convert_cdata_2): New functions.

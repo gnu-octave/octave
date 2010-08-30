@@ -3092,12 +3092,14 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glEnd ();
       break;
     case '.':
-      glBegin (GL_POLYGON);
-      glVertex2f (-sz/10, -sz/10);
-      glVertex2f (-sz/10, sz/10);
-      glVertex2f (sz/10, sz/10);
-      glVertex2f (sz/10, -sz/10);
-      glEnd ();
+      {
+        double ang_step = M_PI / 5;
+
+        glBegin (GL_POLYGON);
+        for (double ang = 0; ang < (2*M_PI); ang += ang_step)
+          glVertex2d (sz*cos(ang)/6, sz*sin(ang)/6);
+        glEnd ();
+      }
       break;
     case 's':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
@@ -3152,6 +3154,38 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2f (sz/2, -sz/2);
       glVertex2f (sz/2, sz/2);
       glEnd ();
+      break;
+    case 'p':
+      {
+        double ang;
+        double r;
+        double dr = 1.0 - sin(M_PI/10)/sin(3*M_PI/10)*1.02;
+  
+        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+        for (int i = 0; i < 2*5; i++)
+          {
+            ang = (-0.5 + double(i+1)/5) * M_PI;
+            r = 1.0 - (dr * mod(double(i+1), 2.0));
+            glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
+          }
+        glEnd ();
+      }
+      break;
+    case 'h':
+      {
+        double ang;
+        double r;
+        double dr = 1.0 - 0.5/sin(M_PI/3)*1.02;
+  
+        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+        for (int i = 0; i < 2*6; i++)
+          {
+            ang = (0.5 + double(i+1)/6.0) * M_PI;
+            r = 1.0 - (dr * mod(double(i+1), 2.0));
+            glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
+          }
+        glEnd ();
+      }
       break;
     default:
       warning ("opengl_renderer: unsupported marker `%s'",

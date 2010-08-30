@@ -1,3 +1,11 @@
+2010-08-30  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (convert_cdata_1, convert_cdata_2): New functions.
+	(convert_cdata): Use them to avoid converting all elements of
+	cdata to double at once.
+	* graphics.h.in (surface::properties::init): Constrain cdata and
+	alphadata to be single, double, or uint8.
+
 2010-08-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* graphics.cc (convert_cdata): Avoid extracting pointer to temporary

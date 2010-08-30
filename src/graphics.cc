@@ -552,6 +552,47 @@ xget_ancestor (const graphics_object& go_arg, const std::string& type)
  while (true);
 }
 
+static void
+convert_cdata_2 (bool is_scaled, double clim_0, double clim_1,
+                 const double *cmapv, double x, octave_idx_type lda,
+                 octave_idx_type nc, octave_idx_type i, double *av)
+{
+  if (is_scaled)
+    x = xround ((nc - 1) * (x - clim_0) / (clim_1 - clim_0));
+  else
+    x = xround (x - 1);
+
+  if (xisnan (x))
+    {
+      av[i]       = x;
+      av[i+lda]   = x;
+      av[i+2*lda] = x;
+    }
+  else
+    {
+      if (x < 0)
+        x = 0;
+      else if (x >= nc)
+        x = (nc - 1);
+
+      octave_idx_type idx = static_cast<octave_idx_type> (x);
+
+      av[i]       = cmapv[idx];
+      av[i+lda]   = cmapv[idx+nc];
+      av[i+2*lda] = cmapv[idx+2*nc];
+    }
+}
+
+template <class T>
+void
+convert_cdata_1 (bool is_scaled, double clim_0, double clim_1,
+                 const double *cmapv, const T *cv, octave_idx_type lda,
+                 octave_idx_type nc, double *av)
+{
+  for (octave_idx_type i = 0; i < lda; i++)
+    convert_cdata_2 (is_scaled, clim_0, clim_1, cmapv, cv[i], lda, nc, i, av);
+}
+
 static octave_value
 convert_cdata (const base_properties& props, const octave_value& cdata,
                bool is_scaled, int cdim)
@@ -598,41 +639,30 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 
   double *av = a.fortran_vec ();
   const double *cmapv = cmap.data ();
-  const NDArray xcdata = cdata.array_value ();
-  const double *cv = xcdata.data ();
 
-  if (! error_state)
-    {
-      for (octave_idx_type i = 0; i < lda; i++)
-        {
-          double x = cv[i];
+  double clim_0 = clim(0);
+  double clim_1 = clim(1);
 
-          if (is_scaled)
-            x = xround ((nc - 1) * (x - clim(0)) / (clim(1) - clim(0)));
-          else
-            x = xround (x - 1);
+#define CONVERT_CDATA_1(ARRAY_T, VAL_FN) \
+  do \
+    { \
+      ARRAY_T tmp = cdata. VAL_FN ## array_value (); \
+ \
+      convert_cdata_1 (is_scaled, clim_0, clim_1, cmapv, \
+                       tmp.data (), lda, nc, av); \
+    } \
+  while (0)
 
-          if (xisnan (x))
-            {
-              av[i]       = x;
-              av[i+lda]   = x;
-              av[i+2*lda] = x;
-            }
-          else
-            {
-              if (x < 0)
-                x = 0;
-              else if (x >= nc)
-                x = (nc - 1);
+  if (cdata.is_uint8_type ())
+    CONVERT_CDATA_1 (uint8NDArray, uint8_);
+  else if (cdata.is_single_type ())
+    CONVERT_CDATA_1 (FloatNDArray, float_);
+  else if (cdata.is_double_type ())
+    CONVERT_CDATA_1 (NDArray, );
+  else
+    error ("unsupported type for cdata (= %s)", cdata.type_name ().c_str ());
 
-              octave_idx_type idx = static_cast<octave_idx_type> (x);
-
-              av[i]       = cmapv[idx];
-              av[i+lda]   = cmapv[idx+nc];
-              av[i+2*lda] = cmapv[idx+2*nc];
-            }
-        }
-    }
+#undef CONVERT_CDATA_1
 
   return octave_value (a);
 }

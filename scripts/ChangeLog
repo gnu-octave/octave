@@ -1,6 +1,6 @@
 2010-08-30  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/__go_draw_axes__.m: Use gnuplot's pentagon for marker == 'p'.
+	* plot/__go_draw_axes__.m: Use gnuplot's pentagon for marker == 'p'.
 
 2010-08-27  Ben Abbott <bpabbott@mac.com>
 
@@ -46,7 +46,7 @@
 
 	* plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m:
 	Properly interpret plotboxaspectratio when 3D objects are viewed as 2D.
-	* /plot/colorbar.m: Add demo.
+	* plot/colorbar.m: Add demo.
 
 2010-08-23  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -124,7 +124,7 @@
 
 2010-08-05  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/__print_parse_opts__.m, plot/__fltk_print__.m: Don't warn on
+	* plot/__print_parse_opts__.m, plot/__fltk_print__.m: Don't warn on
 	absence of fig2dev or pstoedit until they are needed.
 	* plot/__print_parse_opts__.m, plot/__fltk_print__.m: Add epslatex,
 	pslatex, and pdflatex output for fltk backend. Use the gs png16m device
@@ -143,7 +143,7 @@
 
 2010-08-04  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/print.m, plot/__print_parse_opts__.m, plot/__gnuplot_print__.m, 
+	* plot/print.m, plot/__print_parse_opts__.m, plot/__gnuplot_print__.m, 
 	plot/private/__ghostscript__.m: plot/__fltk_print__.m: Add ps and pdf
 	output for fltk backend, improved use of ghostscript, and minor
 	improvements.
@@ -1028,11 +1028,11 @@
 
 2010-04-19  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/colorbar.m: Allow 'peer' option to be specified.
-	* /plot/colorbar.m: Consistent treatment of plotboxaspectratio, and
+	* plot/colorbar.m: Allow 'peer' option to be specified.
+	* plot/colorbar.m: Consistent treatment of plotboxaspectratio, and
 	add listener for plotboxaspectratiomode.
-	* /plot/axis.m: Consistent treatment of plotboxaspectratio.
-	* /plot/__go_draw_axes__.m: Consistently determine axes position.
+	* plot/axis.m: Consistent treatment of plotboxaspectratio.
+	* plot/__go_draw_axes__.m: Consistently determine axes position.
 
 2010-04-17  Ben Abbott <bpabbott@mac.com>
 
@@ -1074,7 +1074,7 @@
 
 2010-04-16  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/plotyy.m: Add listener for dataaspectratiomode.
+	* plot/plotyy.m: Add listener for dataaspectratiomode.
 
 2010-04-12  Ben Abbott <bpabbot@mac.com>
 
@@ -1126,7 +1126,7 @@
 
 2010-03-25  Ben Abbott <bpabbot@mac.com>
 
-	* /general/cell2mat.m: Add test for cells of cells.
+	* general/cell2mat.m: Add test for cells of cells.
 
 2010-03-24  Petr Mikulik <mikulik@physics.muni.cz>
 
@@ -1173,11 +1173,11 @@
 
 2010-03-18  Petr Mikulik <mikulik@physics.muni.cz>
 
-	* /plot/print.m: Add '-append' option.
+	* plot/print.m: Add '-append' option.
 
 2010-03-18  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/print.m: print.m: Detabify.
+	* plot/print.m: print.m: Detabify.
 
 2010-03-16  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -1252,7 +1252,7 @@
 
 2010-02-27  Liam Groener <liamg@mac.com>
 
-	* /time/datetick.m: Fix 'keepticks' bug, and untabify.
+	* time/datetick.m: Fix 'keepticks' bug, and untabify.
 
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 

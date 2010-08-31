@@ -749,6 +749,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
              endif
 
              [pt, pt2] = gnuplot_pointtype (obj);
+             if (! isempty (pt))
+               pt = sprintf ("pointtype %s", pt);
+               pt2 = sprintf ("pointtype %s", pt2);
+             endif
 
              if (mono)
                colorspec = "";

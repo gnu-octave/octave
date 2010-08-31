@@ -1,5 +1,7 @@
 2010-07-07  David Bateman  <dbateman@free.fr>
 
+	* miscellaneous/what.m: Off by one error.
+
 	* plot/__go_draw_axes__.m: Improve matlab compatibility for "."
 	marker.
 

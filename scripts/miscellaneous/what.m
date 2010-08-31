@@ -103,7 +103,7 @@ function __display_filenames__ (msg, p, f)
     for i = 1 : nrows
       args  = f(i:nrows:end);
       if (length (args) < ncols)
-        args(end : ncols) = {""};
+        args(end + 1 : ncols) = {""};
       endif
       printf (fmt, args{:});
     endfor

@@ -116,10 +116,10 @@ octave_class::unique_clone (void)
     }
 }
 
-static std::string
-get_current_method_class (void)
+std::string
+octave_class::get_current_method_class (void)
 {
-  std::string retval;
+  std::string retval = class_name ();
 
   octave_function *fcn = octave_call_stack::current ();
 
@@ -256,12 +256,15 @@ octave_class::dotref (const octave_value_list& idx)
   // Find the class in which this method resides before attempting to access
   // the requested field.
 
-  octave_base_value *obvp
-    = method_class.empty () ? 0 : find_parent_class (method_class);
+  octave_base_value *obvp = find_parent_class (method_class);
 
-  octave_map my_map;
+  if (obvp == 0)
+    {
+      error ("malformed class");
+      return retval;
+    }
 
-  my_map = obvp ? obvp->map_value () : map;
+  octave_map my_map = (obvp == this) ? obvp->map_value () : map;
 
   std::string nm = idx(0).string_value ();
 

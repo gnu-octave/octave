@@ -200,6 +200,7 @@ private:
   std::list<std::string> parent_list;
 
   bool in_class_method (void);
+  std::string get_current_method_class (void);
 
   int obsolete_copies;
 

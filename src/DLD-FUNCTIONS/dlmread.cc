@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 
 #include "defun-dld.h"
+#include "oct-stream.h"
 #include "error.h"
 #include "oct-obj.h"
 #include "utils.h"
@@ -173,7 +174,10 @@ left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
 where the lowest index value is zero.  Alternatively, a spreadsheet style\n\
 range such as 'A2..Q15' or 'T1:AA5' can be used.  The lowest alphabetical\n\
 index 'A' refers to the first column.  The lowest row index is 1.\n\
-@seealso{csvread,dlmwrite}\n\
+\n\
+@var{file} should be a file name or file id given by @code{fopen}. In the\n\
+latter case, the file is read until end of file is reached.\n\
+@seealso{csvread,dlmwrite,fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -186,25 +190,47 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
       return retval;
     }
 
-  if (!args(0).is_string ())
+  std::istream *input = 0;
+  std::auto_ptr<std::ifstream> input_file;
+  octave_stream input_fid;
+
+  if (args(0).is_string ())
     {
-      error ("dlmread: 1st argument must be a string");
+      // File name.
+      std::string fname (args(0).string_value ());
+      if (error_state)
+         return retval;
+
+      std::string tname = file_ops::tilde_expand (fname);
+
+      input_file = std::auto_ptr<std::ifstream> (new std::ifstream (tname.c_str ()));
+      if (input_file->bad ())
+        {
+          error ("dlmread: unable to open file `%s'", fname.c_str ());
+          return retval;
+        }
+      else
+         input = input_file.get ();
+    }
+  else if (args(0).is_scalar_type ())
+    {
+      input_fid = octave_stream_list::lookup (args(0), "dlmread");
+      if (error_state)
+         return retval;
+
+      input = input_fid.input_stream ();
+      if (! input)
+        {
+          error ("dlmread: stream not open for input");
+          return retval;
+        }
+    }
+  else
+    {
+      error ("dlmread: 1st argument must be a string or file id");
       return retval;
     }
-  
-  std::string fname (args(0).string_value ());
-  if (error_state)
-    return retval;
 
-  std::string tname = file_ops::tilde_expand (fname);
-
-  std::ifstream file (tname.c_str ());
-  if (!file)
-    {
-      error ("dlmread: unable to open file `%s'", fname.c_str ());
-      return retval;
-    }
-  
   // Set default separator.
   std::string sep;
   if (nargin > 1)
@@ -256,14 +282,14 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
 
       // Skip the r0 leading lines as these might be a header.
       for (octave_idx_type m = 0; m < r0; m++)
-        getline (file, line);
+        getline (*input, line);
       r1 -= r0;
 
       std::istringstream tmp_stream;
 
       // Read in the data one field at a time, growing the data matrix
       // as needed.
-      while (getline (file, line))
+      while (getline (*input, line))
         {
           // Skip blank lines for compatibility.
           if (line.find_first_not_of (" \t") == std::string::npos)

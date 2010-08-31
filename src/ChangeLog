@@ -1,5 +1,9 @@
 2010-08-31  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Support reading from a file ID.
+
+2010-08-31  Jaroslav Hajek  <highegg@gmail.com>
+
 	* ov-class.cc (get_current_method_class): Make it an octave_class
 	method. Return class_name as default.
 	(octave_class::dotref): Error on zero return value.

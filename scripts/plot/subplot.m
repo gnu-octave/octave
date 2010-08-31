@@ -151,7 +151,9 @@ function h = subplot (rows, columns, index)
     else
       pos = subplot_position (rows, columns, index, "outerposition", units);
       pos2 = subplot_position (rows, columns, index, "position", units);
-      tmp = axes ("outerposition", pos, "position", pos2);
+      tmp = axes ("outerposition", pos,
+                  "position", pos2,
+                  "activepositionproperty", "position");
     endif
 
   unwind_protect_cleanup

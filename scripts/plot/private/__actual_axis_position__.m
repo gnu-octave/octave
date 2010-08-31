@@ -33,23 +33,48 @@ function pos = __actual_axis_position__ (h)
     h = axis_obj.__my_handle__;
   endif
 
-  ## When using {rltb}margin, Gnuplot does not handle the specified
-  ## aspect ratio properly, so handle it here.
-  if (__calc_dimensions__ (h) == 2
-      || all (mod (axis_obj.view, 90) == 0))
-    aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
-  else
-    ## FIXME -- this works for "axis square", but has not been
-    ##          thoroughly tested for other aspect ratios.
-    aspect_ratio_2d = [max(axis_obj.plotboxaspectratio(1:2)), ...
-                           axis_obj.plotboxaspectratio(3)/sqrt(2)];
-  endif
+  ## Get figure size in pixels
   orig_fig_units = get (axis_obj.parent, "units");
   orig_fig_position = get (axis_obj.parent, "position");
   unwind_protect
     set (axis_obj.parent, "units", "pixels")
     fig_position = get (axis_obj.parent, "position");
+  unwind_protect_cleanup
+    set (axis_obj.parent, "units", orig_fig_units)
+    set (axis_obj.parent, "position", orig_fig_position)
+  end_unwind_protect
+  ## Get axes size in pixels
+  if (strcmp (axis_obj.activepositionproperty, "position"))
     pos_in_pixels = axis_obj.position .* fig_position([3, 4, 3, 4]);
+  else
+    pos_in_pixels = axis_obj.outerposition .* fig_position([3, 4, 3, 4]);
+  endif
+    
+  nd = __calc_dimensions__ (h);
+
+  if (strcmp (axis_obj.plotboxaspectratiomode, "auto")
+      && strcmp (axis_obj.dataaspectratiomode, "manual")
+      && strcmp (axis_obj.xlimmode, "manual")
+      && strcmp (axis_obj.ylimmode, "manual")
+      && (nd == 2 || all (mod (axis_obj.view, 90) == 0)))
+    ## Force plotboxaspectrato to a manual value
+    dx_dy_dz = [diff(axis_obj.xlim), diff(axis_obj.ylim), diff(axis_obj.zlim)];
+    dx_dy_dz = dx_dy_dz / min (dx_dy_dz(dx_dy_dz>0));
+    axis_obj.plotboxaspectratiomode = "manual";
+    axis_obj.plotboxaspectratio = dx_dy_dz ./ axis_obj.dataaspectratio;
+  endif
+
+  if (strcmp (axis_obj.plotboxaspectratiomode, "manual"))
+    ## When using {rltb}margin, Gnuplot does not handle the specified
+    ## aspect ratio properly, so handle it here.
+    if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
+      aspect_ratio_2d = axis_obj.plotboxaspectratio(1:2);
+    else
+      ## FIXME -- this works for "axis square", but has not been
+      ##          thoroughly tested for other aspect ratios.
+      aspect_ratio_2d = [max(axis_obj.plotboxaspectratio(1:2)), ...
+                             axis_obj.plotboxaspectratio(3)/sqrt(2)];
+    endif
     orig_aspect_ratio_2d = pos_in_pixels(3:4);
     rel_aspect_ratio_2d =  aspect_ratio_2d ./ orig_aspect_ratio_2d;
     rel_aspect_ratio_2d = rel_aspect_ratio_2d ./ max (rel_aspect_ratio_2d);
@@ -61,10 +86,10 @@ function pos = __actual_axis_position__ (h)
       pos_in_pixels = pos_in_pixels + dy*[0.0, 0.5, 0.0, -1.0];
     endif
     pos = pos_in_pixels ./ fig_position([3, 4, 3, 4]);
-  unwind_protect_cleanup
-    set (axis_obj.parent, "units", orig_fig_units)
-    set (axis_obj.parent, "position", orig_fig_position)
-  end_unwind_protect
-
+  elseif (strcmp (axis_obj.activepositionproperty, "position"))
+    pos = axis_obj.position;
+  else
+    pos = axis_obj.outerposition;
+  endif
 endfunction
 

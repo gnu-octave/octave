@@ -1,5 +1,8 @@
 2010-08-31  Ben Abbott <bpabbott@mac.com>
 
+	* plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m,
+	plot/axis.m, plot/colorbar.m, plot/daspect.m, plot/plotyy.m,
+	plot/subplot.m: Treatment of activepositionproperty for gnuplot.
 	* plot/__go_draw_axes__.m: Missing part of last changeset.
 	* plot/__go_draw_axes__.m: Fix specification of pointtype for patches
 	(bug introduced in rev 2f9de135e7f9).

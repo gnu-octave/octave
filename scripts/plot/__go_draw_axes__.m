@@ -47,41 +47,101 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
 
     nd = __calc_dimensions__ (h);
 
-    if (strcmpi (axis_obj.plotboxaspectratiomode, "manual"))
-      pos = __actual_axis_position__ (h);
-    else
-      pos = axis_obj.position;
+    if (strcmp (axis_obj.dataaspectratiomode, "manual") 
+        && strcmp (axis_obj.xlimmode, "manual")
+        && strcmp (axis_obj.ylimmode, "manual"))
+      ## All can't be "manual"
+      axis_obj.plotboxaspectratiomode = "auto";
     endif
-    if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+
+    if (strcmp (axis_obj.dataaspectratiomode, "manual")
+        && strcmp (axis_obj.xlimmode, "manual")
+        && strcmp (axis_obj.ylimmode, "manual")
+        && (nd == 2 || all (mod (axis_obj.view, 90) == 0)))
+      ## FIXME - adjust plotboxaspectratio to respect other
+      fpos = get (axis_obj.parent, "position");
+      apos = axis_obj.position;
+    endif
+
+    pos = __actual_axis_position__ (h);
+
+    if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+      dr = axis_obj.dataaspectratio;
       if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
-        x = [1, 1];
+        dr = dr(1) / dr(2);
       else
-        ## 3D plots need to be sized down to fit in the window.
-        x = 1.0 ./ sqrt([2, 2.5]);
+        ## FIXME - need to properly implement 3D
+        dr = mean (dr(1:2)) / dr(3);
       endif
-      fprintf (plot_stream, "set tmargin screen %.15g;\n",
-               pos(2)+pos(4)/2+x(2)*pos(4)/2);
-      fprintf (plot_stream, "set bmargin screen %.15g;\n",
-               pos(2)+pos(4)/2-x(2)*pos(4)/2);
-      fprintf (plot_stream, "set lmargin screen %.15g;\n",
-               pos(1)+pos(3)/2-x(1)*pos(3)/2);
-      fprintf (plot_stream, "set rmargin screen %.15g;\n",
-               pos(1)+pos(3)/2+x(1)*pos(3)/2);
     else
-      ## FIXME -- nothing should change for gnuplot 4.2.x.
-      fprintf (plot_stream, "set tmargin 0;\n");
-      fprintf (plot_stream, "set bmargin 0;\n");
-      fprintf (plot_stream, "set lmargin 0;\n");
-      fprintf (plot_stream, "set rmargin 0;\n");
+      dr = 1;
+    endif
 
-      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
-
-      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
-        r = axis_obj.dataaspectratio;
-        fprintf (plot_stream, "set size ratio %.15g;\n", -r(2)/r(1));
+    if (strcmp (axis_obj.activepositionproperty, "position"))
+      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+        if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
+          x = [1, 1];
+        else
+          ## 3D plots need to be sized down to fit in the window.
+          x = 1.0 ./ sqrt([2, 2.5]);
+        endif
+        fprintf (plot_stream, "set tmargin screen %.15g;\n",
+                 pos(2)+pos(4)/2+x(2)*pos(4)/2);
+        fprintf (plot_stream, "set bmargin screen %.15g;\n",
+                 pos(2)+pos(4)/2-x(2)*pos(4)/2);
+        fprintf (plot_stream, "set lmargin screen %.15g;\n",
+                 pos(1)+pos(3)/2-x(1)*pos(3)/2);
+        fprintf (plot_stream, "set rmargin screen %.15g;\n",
+                 pos(1)+pos(3)/2+x(1)*pos(3)/2);
+        sz_str = "";
       else
-        fputs (plot_stream, "set size noratio;\n");
+        fprintf (plot_stream, "set tmargin 0;\n");
+        fprintf (plot_stream, "set bmargin 0;\n");
+        fprintf (plot_stream, "set lmargin 0;\n");
+        fprintf (plot_stream, "set rmargin 0;\n");
+
+        if (nd == 3 && all (axis_obj.view == [0, 90]))
+          ## FIXME -- Kludge to allow colorbar to be added to a pcolor() plot
+          pos(3:4) = pos(3:4) * 1.4;
+          pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
+        endif
+  
+        fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+  
+        if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+          sz_str = sprintf ("set size ratio %.15g", -dr);
+        else
+          sz_str = "set size noratio";
+        endif
+        sz_str = sprintf ("%s %.15g, %.15g;\n", sz_str, pos(3), pos(4));
+      endif
+    else ## activepositionproperty == outerposition
+      fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2))
+      sz_str = "";
+      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+        sz_str = sprintf ("ratio %g", -dr);
+      else
+        sz_str = "noratio";
+      endif
+      sz_str = sprintf ("set size %s %g, %g;\n", sz_str, pos(3:4));
+    endif
+    if (! isempty (sz_str))
+      fputs (plot_stream, sz_str);
+    endif
+
+    if (strcmp (axis_obj.plotboxaspectratiomode, "manual")
+        && strcmp (axis_obj.dataaspectratiomode, "manual"))
+      if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
+        dy = diff (axis_obj.ylim);
+        dx = diff (axis_obj.xlim);
+        ar = dx / dy;
+        if (ar > dr)
+          axis_obj.ylim = mean (axis_obj.ylim) + (ar/dr) * dy * [-1, 1] / 2;
+        elseif (ar < dr)
+          axis_obj.xlim = mean (axis_obj.xlim) + (dr/ar) * dx * [-1, 1] / 2;
+        endif
+      else
+        ## FIXME - need to implement 3D
       endif
     endif
 

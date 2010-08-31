@@ -106,6 +106,10 @@ function h = colorbar (varargin)
   end_unwind_protect
 
   if (! deleting)
+    ## FIXME - Matlab does not require the "position" property to be active.
+    ##         Is there a way to determine the plotbox position for the gnuplot
+    ##         backend with the outerposition is active?
+    set (ax, "activepositionproperty", "position");
     obj = get (ax);
     obj.__my_handle__ = ax;
     position = obj.position;
@@ -117,7 +121,7 @@ function h = colorbar (varargin)
 
     [pos, cpos, vertical, mirror] =  ...
         __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
-    set (ax, "activepositionproperty", "position", "position", pos);
+    set (ax, "position", pos);
 
     cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar", 
                        "handlevisibility", "on", 
@@ -182,7 +186,8 @@ function deletecolorbar (h, d, hc, orig_props)
     if (!isempty (ancestor (h, "axes")) &&
         strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
       set (ancestor (h, "axes"), "position", orig_props.position, ...
-                                 "outerposition", orig_props.outerposition);
+                            "outerposition", orig_props.outerposition, ...
+                    "activepositionproperty", orig_props.activepositionproperty);
     endif
   endif
 endfunction
@@ -192,7 +197,8 @@ function resetaxis (h, d, orig_props)
       (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
       ishandle (get (h, "axes")))
      set (get (h, "axes"), "position", orig_props.position, ...
-                           "outerposition", orig_props.outerposition);
+                           "outerposition", orig_props.outerposition, ...
+                   "activepositionproperty", orig_props.activepositionproperty);
   endif
 endfunction
 
@@ -265,8 +271,13 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
     else
       scale = [scale, 1];
     endif
-    obj.position = obj.position .* [1, 1, scale];
-    off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
+    if (strcmp (obj.activepositionproperty, "position"))
+      obj.position = obj.position .* [1, 1, scale];
+      off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
+    else
+      obj.outerposition = obj.outerposition .* [1, 1, scale];
+      off = 0.5 * (obj.outerposition (3:4) - __actual_axis_position__ (obj)(3:4));
+    endif
   else
     off = 0.0;
   endif
@@ -581,6 +592,7 @@ endfunction
 %! shading ("interp")
 %! axis ("tight", "square")
 %! colorbar ()
+#%! axes('color','none','box','on','activepositionproperty','position')
 
 %!demo
 %! clf

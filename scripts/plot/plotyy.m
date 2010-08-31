@@ -113,6 +113,8 @@ function [Ax, H1, H2] = plotyy (varargin)
     endif
   end_unwind_protect
 
+  set (ax, "activepositionproperty", "position")
+
   if (nargout > 0)
     Ax = ax;
     H1 = h1;

@@ -88,7 +88,7 @@ endfunction
 %! plot (x, cos (x), x, sin (x))
 %! axis square
 %! daspect ([1 1 1])
-%! title ("axis limits should be [0, 4, -2, 2]")
+%! title ("square plot-box with axis limits [0, 4, -2, 2]")
 
 %!demo
 %! x = 0:0.01:4;
@@ -96,5 +96,23 @@ endfunction
 %! plot (x, cos (x), x, sin (x))
 %! axis ([0 4 -1 1])
 %! daspect ([2 1 1])
-%! title ("axis box should be square")
+%! title ("square plot-box with axis limits [0, 4, -1, 1]")
+
+%!demo
+%! x = 0:0.01:4;
+%! clf
+%! plot (x, cos (x), x, sin (x))
+%! axis square
+%! set (gca, "activepositionproperty", "position")
+%! daspect ([1 1 1])
+%! title ("square plot-box with axis limits [0, 4, -2, 2]")
+
+%!demo
+%! x = 0:0.01:4;
+%! clf
+%! plot (x, cos (x), x, sin (x))
+%! axis ([0 4 -1 1])
+%! set (gca, "activepositionproperty", "position")
+%! daspect ([2 1 1])
+%! title ("square plot-box with axis limits [0, 4, -1, 1]")
 

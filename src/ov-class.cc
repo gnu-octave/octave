@@ -264,7 +264,7 @@ octave_class::dotref (const octave_value_list& idx)
       return retval;
     }
 
-  octave_map my_map = (obvp == this) ? obvp->map_value () : map;
+  octave_map my_map = (obvp != this) ? obvp->map_value () : map;
 
   std::string nm = idx(0).string_value ();
 

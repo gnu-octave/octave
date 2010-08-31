@@ -1,5 +1,6 @@
 2010-08-31  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Missing part of last changeset.
 	* plot/__go_draw_axes__.m: Fix specification of pointtype for patches
 	(bug introduced in rev 2f9de135e7f9).
 

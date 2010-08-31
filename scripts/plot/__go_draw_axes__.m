@@ -751,6 +751,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
              [pt, pt2] = gnuplot_pointtype (obj);
              if (! isempty (pt))
                pt = sprintf ("pointtype %s", pt);
+             endif
+             if (! isempty (pt2))
                pt2 = sprintf ("pointtype %s", pt2);
              endif
 

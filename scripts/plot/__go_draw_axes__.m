@@ -808,7 +808,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
                lw  = "";
              endif
 
-             [pt, pt2] = gnuplot_pointtype (obj);
+             [pt, pt2, obj] = gnuplot_pointtype (obj);
              if (! isempty (pt))
                pt = sprintf ("pointtype %s", pt);
              endif
@@ -1645,7 +1645,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     found_style = true;
   endif
 
-  [pt, pt2] = gnuplot_pointtype (obj);
+  [pt, pt2, obj] = gnuplot_pointtype (obj);
 
   if (! isempty (pt))
     found_style = true;
@@ -1761,7 +1761,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
 
 endfunction
 
-function [pt, pt2] = gnuplot_pointtype (obj)
+function [pt, pt2, obj] = gnuplot_pointtype (obj)
   if (isfield (obj, "marker"))
     switch (obj.marker)
       case "+"
@@ -1772,7 +1772,17 @@ function [pt, pt2] = gnuplot_pointtype (obj)
       case "*"
         pt = pt2 = "3";
       case "."
-        pt = pt2 = "0";
+        pt = "6";
+        pt2 = "7";
+        if (isfield (obj, "markerfacecolor")
+            || strncmp (obj.markerfacecolor, "none", 4))
+          obj.markerfacecolor = "auto";
+        endif
+        if (isfield (obj, "markersize"))
+          obj.markersize /= 3;
+        else
+          obj.markersize = 5;
+        endif
       case "x"
         pt = pt2 = "2";
       case {"square", "s"}

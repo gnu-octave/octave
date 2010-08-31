@@ -1,3 +1,8 @@
+2010-07-07  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Improve matlab compatibility for "."
+	marker.
+
 2010-08-31  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m,

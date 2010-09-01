@@ -1,5 +1,9 @@
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* io/dlmwrite.m: Don't fclose if file ID is supplied.
+
+2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* io/dlmwrite.m: Support file IDs.
 
 2010-07-07  David Bateman  <dbateman@free.fr>

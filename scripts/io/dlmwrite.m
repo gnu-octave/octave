@@ -192,7 +192,9 @@ function dlmwrite (file, a, varargin)
     else
       fprintf (fid, template, a.');
     endif
-    fclose (fid);
+    if (! isscalar (file))
+      fclose (fid);
+    endif
   endif
 endfunction
 

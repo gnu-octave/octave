@@ -690,8 +690,21 @@ single_type_concat (Array<T>& result,
     {
       // If possible, forward the operation to liboctave.
       // Single row.
-      // FIXME: optimize all scalars case.
       tm_row_const& row = tmp.front ();
+      if (! (equal_types<T, char>::value || equal_types<T, octave_value>::value)
+          && row.all_1x1_p ())
+        {
+          // Optimize all scalars case.
+          result.clear (dv);
+          assert (result.numel () == row.length ());
+          octave_idx_type i = 0;
+          for (tm_row_const::iterator q = row.begin ();
+               q != row.end () && ! error_state; q++)
+             result(i++) = octave_value_extract<T> (*q);
+
+          return;
+        }
+
       octave_idx_type ncols = row.length (), i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
 

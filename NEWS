@@ -331,6 +331,10 @@ Summary of important user-visible changes for version 3.3:
         a.x = 2;
 
      This is no longer possible unless a is an empty matrix or cell array.
+  
+  ** By popular demand, dlmread has been extended to allow specifying a custom
+     value for empty fields and also to accept file IDs opened by fopen. Likewise,
+     dlmwrite can write to file IDs.
 
 
 Summary of important user-visible changes for version 3.2:

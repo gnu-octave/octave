@@ -1,3 +1,8 @@
+2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Support "emptyvalue" option.
+	Fix condition for terminating read.
+
 2010-08-31  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Support reading from a file ID.

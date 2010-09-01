@@ -161,6 +161,7 @@ DEFUN_DLD (dlmread, args, ,
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@dots{}, \"emptyvalue\", @var{EMPTYVAL})\n\
 Read the matrix @var{data} from a text file.  If not defined the separator\n\
 between fields is determined from the file itself.  Otherwise the\n\
 separation character is defined by @var{sep}.\n\
@@ -177,12 +178,26 @@ index 'A' refers to the first column.  The lowest row index is 1.\n\
 \n\
 @var{file} should be a file name or file id given by @code{fopen}. In the\n\
 latter case, the file is read until end of file is reached.\n\
+\n\
+The \"emptyvalue\" option may be used to specify the value used to fill empty\n\
+fields. Default is zero.\n\
 @seealso{csvread,dlmwrite,fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
+
+  double empty_value = 0.0;
+
+  if (nargin > 2 && args(nargin-2).is_string () 
+      && args(nargin-2).string_value () == "emptyvalue")
+    {
+      empty_value = args(nargin-1).double_value ();
+      if (error_state)
+         return retval;
+      nargin -= 2;
+    }
 
   if (nargin < 1 || nargin > 4) 
     {
@@ -275,8 +290,6 @@ latter case, the file is read until end of file is reached.\n\
 
       bool iscmplx = false;
       bool sepflag = false;
-
-      octave_idx_type maxrows = r1 - r0;
 
       std::string line;
 
@@ -424,9 +437,9 @@ latter case, the file is read until end of file is reached.\n\
                     }
                 }
               else if (iscmplx)
-                cdata(i,j++) = 0.;
+                cdata(i,j++) = empty_value;
               else
-                rdata(i,j++) = 0.;
+                rdata(i,j++) = empty_value;
 
               if (pos2 != std::string::npos)
                 pos1 = pos2 + 1;
@@ -436,7 +449,7 @@ latter case, the file is read until end of file is reached.\n\
             }
           while (pos1 != std::string::npos);
 
-          if (nargin == 3 && i == maxrows)
+          if (i == r1)
             break;
 
           i++;

@@ -701,14 +701,12 @@ single_type_concat (Array<T>& result,
         {
           octave_quit ();
 
-          // Use 0x0 in place of all empty arrays to allow looser rules.
-          if (! q->is_empty ())
-            array_list[i] = octave_value_extract<TYPE> (*q);
+          array_list[i] = octave_value_extract<TYPE> (*q);
           i++;
         }
 
       if (! error_state)
-        result = Array<T>::cat (1, ncols, array_list);
+        result = Array<T>::cat (-2, ncols, array_list);
     }
   else
     {
@@ -746,20 +744,16 @@ single_type_concat (Sparse<T>& result,
         {
           octave_quit ();
 
-          // Use 0x0 in place of all empty arrays to allow looser rules.
-          if (! q->is_empty ())
-            sparse_list[i] = octave_value_extract<TYPE> (*q);
+          sparse_list[i] = octave_value_extract<TYPE> (*q);
           i++;
         }
 
-      Sparse<T> stmp = Sparse<T>::cat (1, ncols, sparse_list);
-      // Use 0x0 in place of all empty arrays to allow looser rules.
-      if (! stmp.is_empty ())
-        sparse_row_list[j] = stmp;
+      Sparse<T> stmp = Sparse<T>::cat (-2, ncols, sparse_list);
+      sparse_row_list[j] = stmp;
       j++;
     }
 
-  result = Sparse<T>::cat (0, nrows, sparse_row_list);
+  result = Sparse<T>::cat (-1, nrows, sparse_row_list);
 }
 
 template<class MAP>
@@ -788,21 +782,16 @@ single_type_concat (octave_map& result,
         {
           octave_quit ();
 
-          // Use 0x0 in place of all empty arrays to allow looser rules.
-          // If MAP is octave_scalar_map, the condition is vacuously true.
-          if (! q->is_empty ())
-            map_list[i] = octave_value_extract<MAP> (*q);
+          map_list[i] = octave_value_extract<MAP> (*q);
           i++;
         }
 
-      octave_map mtmp = octave_map::cat (1, ncols, map_list);
-      // Use 0x0 in place of all empty arrays to allow looser rules.
-      if (! mtmp.is_empty ())
-        map_row_list[j] = mtmp;
+      octave_map mtmp = octave_map::cat (-2, ncols, map_list);
+      map_row_list[j] = mtmp;
       j++;
     }
 
-  result = octave_map::cat (0, nrows, map_row_list);
+  result = octave_map::cat (-1, nrows, map_row_list);
 }
 
 template<class TYPE>

@@ -1,5 +1,14 @@
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-map.cc (octave_map::cat): Search first for an index with 
+	nonzero nfields and use it for comparisons.
+	(permute_to_correct_order1): New overloaded helper func.
+	(permute_to_correct_order): use it here. Pass the index here.
+	* pt-mat.cc (single_type_concat): Don't subst 0x0 for all empty
+	arrays. Use the respective cat() capability instead.
+
+2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Support "emptyvalue" option.
 	Fix condition for terminating read.
 

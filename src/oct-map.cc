@@ -618,18 +618,39 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_map *map_list,
     }
 }
 
+// This is just a wrapper.
+void permute_to_correct_order1 (const octave_scalar_map& ref, const octave_scalar_map& src,
+                                octave_scalar_map& dest, Array<octave_idx_type>& perm)
+{
+  dest = src.orderfields (ref, perm);
+}
+
+// In non-scalar case, we also promote empty structs without fields.
+void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
+                                octave_map& dest, Array<octave_idx_type>& perm)
+{
+  if (src.nfields () == 0 && src.is_empty ())
+     dest = octave_map (src.dims (), ref.keys ());
+  else
+     dest = src.orderfields (ref, perm);
+}
+
 template <class map>
 static void
 permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
-                          const map *map_list, map *new_map_list)
+                          octave_idx_type idx, const map *map_list, 
+                          map *new_map_list)
 {
-  new_map_list[0] = map_list[0];
+  new_map_list[idx] = map_list[idx];
 
   Array<octave_idx_type> perm (1, nf);
 
-  for (octave_idx_type i = 1; i < n; i++)
+  for (octave_idx_type i = 0; i < n; i++)
     {
-      new_map_list[i] = map_list[i].orderfields (map_list[0], perm);
+      if (i == idx)
+         continue;
+
+      permute_to_correct_order1 (map_list[idx], map_list[i], new_map_list[i], perm);
 
       if (error_state)
         {
@@ -655,15 +676,24 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
 
   if (n > 0)
     {
-      retval.xkeys = map_list[0].xkeys;
-      octave_idx_type nf = map_list[0].nfields ();
+      octave_idx_type idx, nf = 0;
+      for (idx = 0; idx < n; idx++)
+        {
+          nf = map_list[idx].nfields ();
+          if (nf > 0)
+            {
+              retval.xkeys = map_list[idx].xkeys;
+              break;
+            }
+        }
+
       if (nf > 0)
         {
           // Try the fast case.
           bool all_same = true;
-          for (octave_idx_type i = 1; i < n; i++)
+          for (octave_idx_type i = 0; i < n; i++)
             {
-              all_same = map_list[0].xkeys.is_same (map_list[i].xkeys);
+              all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
               if (! all_same)
                 break;
             }
@@ -675,7 +705,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
               // permute all structures to common order.
               OCTAVE_LOCAL_BUFFER (octave_scalar_map, new_map_list, n);
 
-              permute_to_correct_order (n, nf, map_list, new_map_list);
+              permute_to_correct_order (n, nf, idx, map_list, new_map_list);
 
               do_cat (dim, n, new_map_list, retval);
             }
@@ -701,14 +731,22 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
   octave_map retval;
   if (n > 0)
     {
-      retval.xkeys = map_list[0].xkeys;
-      octave_idx_type nf = map_list[0].nfields ();
+      octave_idx_type idx, nf = 0;
+      for (idx = 0; idx < n; idx++)
+        {
+          nf = map_list[idx].nfields ();
+          if (nf > 0)
+            {
+              retval.xkeys = map_list[idx].xkeys;
+              break;
+            }
+        }
 
       // Try the fast case.
       bool all_same = true;
-      for (octave_idx_type i = 1; i < n; i++)
+      for (octave_idx_type i = 0; i < n; i++)
         {
-          all_same = map_list[0].xkeys.is_same (map_list[i].xkeys);
+          all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
           if (! all_same)
             break;
         }
@@ -720,7 +758,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
           // permute all structures to correct order.
           OCTAVE_LOCAL_BUFFER (octave_map, new_map_list, n);
 
-          permute_to_correct_order (n, nf, map_list, new_map_list);
+          permute_to_correct_order (n, nf, idx, map_list, new_map_list);
 
           if (nf > 0)
             do_cat (dim, n, new_map_list, retval);
@@ -729,7 +767,7 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
               // Use dummy arrays. FIXME: Need(?) a better solution.
               OCTAVE_LOCAL_BUFFER (Array<char>, dummy, n);
               for (octave_idx_type i = 0; i < n; i++)
-                dummy[i].clear (map_list[0].dimensions);
+                dummy[i].clear (map_list[i].dimensions);
               Array<char>::cat (dim, n, dummy);
             }
         }

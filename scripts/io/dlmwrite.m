@@ -23,6 +23,8 @@
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, "-append", @dots{})
 ## Write the matrix @var{a} to the named file using delimiters.
 ##
+## @var{file} should be a file name or writable file ID given by @code{fopen}.
+##
 ## The parameter @var{delim} specifies the delimiter to use to separate
 ## values on a row.
 ##
@@ -153,7 +155,15 @@ function dlmwrite (file, a, varargin)
     endif
   endwhile
 
-  [fid, msg] = fopen (file, opentype);
+  if (ischar (file))
+    [fid, msg] = fopen (file, opentype);
+  elseif (isscalar (file) && isnumeric (file))
+    fid = file;
+    msg = "invalid file number";
+  else
+    error ("dlmwrite: file must be a string file ID");
+  endif
+
   if (fid < 0)
     error (msg);
   else

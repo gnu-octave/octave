@@ -3949,6 +3949,8 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         {
           tmp_lims(0) = std::pow (10.,tmp_lims(0));
           tmp_lims(1) = std::pow (10.,tmp_lims(1));
+          if (tmp_lims(0) <= 0)
+            tmp_lims(0) = std::pow (10., lo);
         }
       lims = tmp_lims;
     }

@@ -1,3 +1,7 @@
+2010-09-01  Marco Caliari <marco.caliari@univr.it>
+
+	* graphics.cc: Fix axes limits underflow to zero for logscale.
+
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* pt-mat.cc (single_type_concat (Array<T>&, ...)): Optimize all

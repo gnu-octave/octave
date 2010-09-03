@@ -119,9 +119,12 @@ function h = __img__ (x, y, img, varargin)
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
 
-  xlim = [x(1)-0.5, x(end)+0.5];
-  ylim = [y(1)-0.5, y(end)+0.5];
+  c = size (img, 2);
+  xlim = 0.5 * ((x(end) - x(1)) * c / (c - 1) * [-1, 1] + (x(1) + x(end)));
 
+  r = size (img, 1);
+  ylim = 0.5 * ((y(end) - y(1)) * r / (r - 1) * [-1, 1] + (y(1) + y(end)));
+  
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
@@ -154,3 +157,11 @@ function h = __img__ (x, y, img, varargin)
   endif
 
 endfunction
+
+%!demo
+%! img = 1 ./ hilb (10);
+%! x = 20 * rand (1, 41) - 20;
+%! y = -1:1;
+%! h = image (x, y, img);
+%! set (h, "cdatamapping", "scaled")
+

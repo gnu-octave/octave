@@ -1,3 +1,7 @@
+2010-09-03  Ben Abbott <bpabbott@mac.com>
+
+	* image/image.m: Matlab compatible axis limits, add demo.
+
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* io/dlmwrite.m: Don't fclose if file ID is supplied.

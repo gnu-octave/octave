@@ -19,6 +19,7 @@ colamd.cc
 colloc.cc
 conv2.cc
 convhulln.cc
+cquad.cc
 daspk.cc
 dasrt.cc
 dassl.cc

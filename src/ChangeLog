@@ -1,3 +1,8 @@
+2010-09-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cquad.cc: New source, courtesy by Pedro Gonnet.
+	* DLD-FUNCTIONS/module-files: Update.
+
 2010-09-01  Marco Caliari <marco.caliari@univr.it>
 
 	* graphics.cc: Fix axes limits underflow to zero for logscale.

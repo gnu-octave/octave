@@ -50,7 +50,8 @@ function ret = delaunay (x, y, opt)
     print_usage ();
   endif
   
-  if (isvector (x) && isvector (y) && length (x) == length (y))
+  if ((isvector (x) && isvector (y) && length (x) == length (y))
+      || size_equal (x, y))
     if (nargin == 2)
       tri = delaunayn ([x(:), y(:)]);
     elseif (ischar (opt) || iscellstr (opt))
@@ -59,7 +60,7 @@ function ret = delaunay (x, y, opt)
       error ("delaunay: third argument must be a string");
     endif
   else
-    error ("delaunay: first two input arguments must be vectors of same size");
+    error ("delaunay: first two input arguments must be matrices of same size");
   endif
 
   if (nargout == 0)

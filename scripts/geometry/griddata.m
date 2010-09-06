@@ -19,9 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
 ## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
-## 
+##
 ## Generate a regular mesh from irregular data using interpolation.
 ## The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.
+## Inputs @code{@var{x}, @var{y}, @var{z}} are vectors of the same length
+## or @code{@var{x}, @var{y}} are vectors and @code{@var{z}} is matrix.
+##
 ## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
 ## @var{xi}, @var{yi} are vectors then they are made into a 2D mesh.
 ##
@@ -32,25 +35,32 @@
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
 ## Adapted-by:  Alexander Barth <barth.alexander@gmail.com>
-##              xi and yi are not "meshgridded" if both are vectors 
+##              xi and yi are not "meshgridded" if both are vectors
 ##              of the same size (for compatibility)
 
 function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
-        
+
   if (nargin == 5)
     method = "linear";
   endif
-  if (nargin < 5 || nargin > 7) 
+  if (nargin < 5 || nargin > 7)
     print_usage ();
   endif
 
   if (ischar (method))
     method = tolower (method);
   endif
-  if (! all (size (x) == size (y) & size (x) == size (z)))
-    error ("griddata: x, y, and z must be vectors of same length");
+
+  if (isvector (x) && isvector (y) && all ([numel(y), numel(x)] == size (z)))
+    [x, y] = meshgrid (x, y);
+  elseif (! all (size (x) == size (y) & size (x) == size (z)))
+    if (isvector (z))
+      error ("griddata: x, y, and z, be vectors of same length.");
+    else
+      error ("griddata: lengths of x, y must match the columns and rows of z.");
+    endif
   endif
-  
+
   ## Meshgrid xi and yi if they are a row and column vector.
   if (rows (xi) == 1 && columns (yi) == 1)
     [xi, yi] = meshgrid (xi, yi);
@@ -61,7 +71,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   endif
 
   [nr, nc] = size (xi);
-  
+
   x = x(:);
   y = y(:);
   z = z(:);
@@ -69,7 +79,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   ## Triangulate data.
   tri = delaunay (x, y);
   zi = NaN (size (xi));
-  
+
   if (strcmp (method, "cubic"))
     error ("griddata: cubic interpolation not yet implemented");
 
@@ -107,14 +117,14 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1]);
     ## Normalize.
     N = diag (norm (N, "rows")) \ N;
-    
+
     ## Calculate D of plane equation
     ## Ax+By+Cz+D = 0;
     D = -(N(:,1) .* x1 + N(:,2) .* y1 + N(:,3) .* z1);
-    
+
     ## Calculate zi by solving plane equation for xi, yi.
     zi(valid) = -(N(:,1).*xi(:)(valid) + N(:,2).*yi(:)(valid) + D) ./ N(:,3);
-    
+
   else
     error ("griddata: unknown interpolation method");
   endif

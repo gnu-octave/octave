@@ -76,7 +76,7 @@ c
         do j = 1,nb
           do i = 1,mb
             btmp = b(i,j)
-            call caxpy(ma-mb+1,btmp,a(i,k+j-1),1,c(1,k),1)
+            call caxpy(ma-mb+1,btmp,a(mb+1-i,k+j-1),1,c(1,k),1)
           end do
         end do
       end do

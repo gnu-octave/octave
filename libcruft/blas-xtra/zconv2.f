@@ -52,7 +52,7 @@ c purpose:      a 2-dimensional inner additive convolution.
 c               equivalent to the following:
 c                 for i = 1:ma-mb+1
 c                   for j = 1:na-nb+1
-c                     c(i,j) = sum (sum (a(i:i+mb-1,j:j+nb-1) .* b))
+c                     c(i,j) = sum (sum (a(i+mb-1:-1:i,j+nb-1:-1:j) .* b))
 c                   endfor
 c                 endfor
 c arguments:
@@ -70,7 +70,7 @@ c
       do k = 1,na-nb+1
         do j = 1,nb
           do i = 1,mb
-            call zaxpy(ma-mb+1,b(i,j),a(i,k+j-1),1,c(1,k),1)
+            call zaxpy(ma-mb+1,b(i,j),a(mb+1-i,k+j-1),1,c(1,k),1)
           end do
         end do
       end do

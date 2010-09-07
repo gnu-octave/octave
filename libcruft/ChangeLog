@@ -1,3 +1,9 @@
+2010-09-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* blas-xtra/cconv2.f, blas-xtra/csconv2.f, blas-xtra/dconv2.f,
+	blas-xtra/sconv2.f, blas-xtra/zconv2.f, blas-xtra/zdconv2.f:
+	Fix inner convolution formula.
+
 2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* lapack-xtra/zrsf2csf.f, lapack-xtra/crsf2csf.f: New sources.

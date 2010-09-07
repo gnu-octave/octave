@@ -1,3 +1,10 @@
+2010-09-07  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (maybe_initialize_magick): New
+	helper function. Move initialization code & static variable here.
+	(F__magick_read__, F__magick_write__, F__magick_finfo__): Call it
+	here.
+
 2010-09-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/cquad.cc: New source, courtesy by Pedro Gonnet.

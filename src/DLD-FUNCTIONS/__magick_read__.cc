@@ -371,18 +371,9 @@ read_images (const std::vector<Magick::Image>& imvec,
 
 #endif
 
-DEFUN_DLD (__magick_read__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
-Read images with ImageMagick++.  In general you should not be using this\n\
-function.  Instead you should use @code{imread}.\n\
-@seealso{imread}\n\
-@end deftypefn")
+static void
+maybe_initialize_magick (void)
 {
-  octave_value_list output;
-
 #ifdef HAVE_MAGICK
 
   static bool initialized = false;
@@ -402,6 +393,24 @@ function.  Instead you should use @code{imread}.\n\
 
       initialized = true;
     }
+#endif
+}
+
+DEFUN_DLD (__magick_read__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
+@deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
+@deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
+Read images with ImageMagick++.  In general you should not be using this\n\
+function.  Instead you should use @code{imread}.\n\
+@seealso{imread}\n\
+@end deftypefn")
+{
+  octave_value_list output;
+
+#ifdef HAVE_MAGICK
+
+  maybe_initialize_magick ();
 
   if (args.length () > 3 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)
@@ -832,6 +841,8 @@ function.  Instead you should use @code{imwrite}.\n\
   octave_value_list retval;
 
 #ifdef HAVE_MAGICK
+  maybe_initialize_magick ();
+
   int nargin = args.length ();
 
   if (nargin > 2)
@@ -960,6 +971,8 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
   octave_value retval;
 
 #ifdef HAVE_MAGICK
+
+  maybe_initialize_magick ();
 
   if (args.length () < 1 || ! args (0).is_string ())
     {

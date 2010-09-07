@@ -310,7 +310,7 @@ AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
-ACX_PTHREAD
+AX_PTHREAD
 ### Include pthread libs and flags here in case other tests need them.
 ### They seem to be required for the OpenGL tests on Debian systems.
 LIBS="$PTHREAD_LIBS $LIBS"
@@ -947,14 +947,14 @@ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-ACX_BLAS_WITH_F77_FUNC([:], [:])
-ACX_LAPACK([:], [:])
+AX_BLAS_WITH_F77_FUNC([:], [:])
+AX_LAPACK([:], [:])
 
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
-if test "x$acx_blas_f77_func_ok" = "xno"; then
-  if $USE_64_BIT_IDX_T && test "$acx_blas_integer_size_ok" = "no" ; then
+if test "x$ax_blas_f77_func_ok" = "xno"; then
+  if $USE_64_BIT_IDX_T && test "$ax_blas_integer_size_ok" = "no" ; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers. This is incompatible with --enable-64.])
   else
@@ -962,7 +962,7 @@ if test "x$acx_blas_f77_func_ok" = "xno"; then
   fi
 fi
 
-if test x$acx_blas_ok = xno || test x$acx_lapack_ok = xno; then
+if test x$ax_blas_ok = xno || test x$ax_lapack_ok = xno; then
   AC_MSG_ERROR([You are required to have BLAS and LAPACK libraries])
 fi
 

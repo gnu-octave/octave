@@ -1589,7 +1589,7 @@ dnl
 dnl External macros.
 dnl
 
-m4_include([m4/acx_pthread.m4])
-m4_include([m4/acx_blas.m4])
-m4_include([m4/acx_blas_f77_func.m4])
-m4_include([m4/acx_lapack.m4])
+m4_include([m4/ax_pthread.m4])
+m4_include([m4/ax_blas.m4])
+m4_include([m4/ax_blas_f77_func.m4])
+m4_include([m4/ax_lapack.m4])

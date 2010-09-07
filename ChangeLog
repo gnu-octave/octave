@@ -1,3 +1,12 @@
+2010-09-07  Ben Abbott  <bpabbott@mac.com>
+
+	* acinclude.m4, configure.ac, m4/module.mk: Update acx_*.m4
+	macros to the newer ax_*.m4 versions.
+	* ax_blas.m4, ax_lapack.m4, ax_blas_f77_func.m4,
+	ax_pthread.m4: Add files.
+	* acx_blas.m4, acx_lapack.m4, acx_blas_f77_func.m4,
+	acx_pthread.m4: Remove files.
+
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

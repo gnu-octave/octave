@@ -1,10 +1,10 @@
 # ===========================================================================
-#               http://autoconf-archive.cryp.to/acx_lapack.html
+#         http://www.gnu.org/software/autoconf-archive/ax_lapack.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   ACX_LAPACK([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
+#   AX_LAPACK([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
 #
 # DESCRIPTION
 #
@@ -14,11 +14,11 @@
 #
 #   To link with LAPACK, you should link with:
 #
-#       $LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS
+#     $LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS
 #
-#   in that order. BLAS_LIBS is the output variable of the ACX_BLAS macro,
+#   in that order. BLAS_LIBS is the output variable of the AX_BLAS macro,
 #   called automatically. FLIBS is the output variable of the
-#   AC_F77_LIBRARY_LDFLAGS macro (called if necessary by ACX_BLAS), and is
+#   AC_F77_LIBRARY_LDFLAGS macro (called if necessary by AX_BLAS), and is
 #   sometimes necessary in order to link with F77 libraries. Users will also
 #   need to use AC_F77_DUMMY_MAIN (see the autoconf manual), for the same
 #   reason.
@@ -34,13 +34,9 @@
 #   is not found. If ACTION-IF-FOUND is not specified, the default action
 #   will define HAVE_LAPACK.
 #
-# LAST MODIFICATION
+# LICENSE
 #
-#   2008-06-29
-#
-# COPYLEFT
-#
-#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
+#   Copyright (c) 2009 Steven G. Johnson <stevenj@alum.mit.edu>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -64,19 +60,22 @@
 #   all other use of the material that constitutes the Autoconf Macro.
 #
 #   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Macro Archive. When you make and
-#   distribute a modified version of the Autoconf Macro, you may extend this
-#   special exception to the GPL to apply to your modified version as well.
+#   Macro released by the Autoconf Archive. When you make and distribute a
+#   modified version of the Autoconf Macro, you may extend this special
+#   exception to the GPL to apply to your modified version as well.
 
-AC_DEFUN([ACX_LAPACK], [
-AC_REQUIRE([ACX_BLAS])
-acx_lapack_ok=no
+#serial 7
+
+AU_ALIAS([ACX_LAPACK], [AX_LAPACK])
+AC_DEFUN([AX_LAPACK], [
+AC_REQUIRE([AX_BLAS])
+ax_lapack_ok=no
 
 AC_ARG_WITH(lapack,
-        [AC_HELP_STRING([--with-lapack=<lib>], [use LAPACK library <lib>])])
+        [AS_HELP_STRING([--with-lapack=<lib>], [use LAPACK library <lib>])])
 case $with_lapack in
         yes | "") ;;
-        no) acx_lapack_ok=disable ;;
+        no) ax_lapack_ok=disable ;;
         -* | */* | *.a | *.so | *.so.* | *.o) LAPACK_LIBS="$with_lapack" ;;
         *) LAPACK_LIBS="-l$with_lapack" ;;
 esac
@@ -85,8 +84,8 @@ esac
 AC_F77_FUNC(cheev)
 
 # We cannot use LAPACK if BLAS is not found
-if test "x$acx_blas_ok" != xyes; then
-        acx_lapack_ok=noblas
+if test "x$ax_blas_ok" != xyes; then
+        ax_lapack_ok=noblas
         LAPACK_LIBS=""
 fi
 
@@ -94,27 +93,27 @@ fi
 if test "x$LAPACK_LIBS" != x; then
         save_LIBS="$LIBS"; LIBS="$LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS"
         AC_MSG_CHECKING([for $cheev in $LAPACK_LIBS])
-        AC_TRY_LINK_FUNC($cheev, [acx_lapack_ok=yes], [LAPACK_LIBS=""])
-        AC_MSG_RESULT($acx_lapack_ok)
+        AC_TRY_LINK_FUNC($cheev, [ax_lapack_ok=yes], [LAPACK_LIBS=""])
+        AC_MSG_RESULT($ax_lapack_ok)
         LIBS="$save_LIBS"
-        if test $acx_lapack_ok = no; then
+        if test $ax_lapack_ok = no; then
                 LAPACK_LIBS=""
         fi
 fi
 
 # LAPACK linked to by default?  (is sometimes included in BLAS lib)
-if test $acx_lapack_ok = no; then
+if test $ax_lapack_ok = no; then
         save_LIBS="$LIBS"; LIBS="$LIBS $BLAS_LIBS $FLIBS"
-        AC_CHECK_FUNC($cheev, [acx_lapack_ok=yes])
+        AC_CHECK_FUNC($cheev, [ax_lapack_ok=yes])
         LIBS="$save_LIBS"
 fi
 
 # Generic LAPACK library?
 for lapack in lapack lapack_rs6k; do
-        if test $acx_lapack_ok = no; then
+        if test $ax_lapack_ok = no; then
                 save_LIBS="$LIBS"; LIBS="$BLAS_LIBS $LIBS"
                 AC_CHECK_LIB($lapack, $cheev,
-                    [acx_lapack_ok=yes; LAPACK_LIBS="-l$lapack"], [], [$FLIBS])
+                    [ax_lapack_ok=yes; LAPACK_LIBS="-l$lapack"], [], [$FLIBS])
                 LIBS="$save_LIBS"
         fi
 done
@@ -122,11 +121,11 @@ done
 AC_SUBST(LAPACK_LIBS)
 
 # Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
-if test x"$acx_lapack_ok" = xyes; then
+if test x"$ax_lapack_ok" = xyes; then
         ifelse([$1],,AC_DEFINE(HAVE_LAPACK,1,[Define if you have LAPACK library.]),[$1])
         :
 else
-        acx_lapack_ok=no
+        ax_lapack_ok=no
         $2
 fi
-])dnl ACX_LAPACK
+])dnl AX_LAPACK

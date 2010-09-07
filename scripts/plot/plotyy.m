@@ -195,16 +195,9 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   set (ax, "tag", "plotyy")
 
   ## Store the axes handles for the sister axes.
-  try 
-    addproperty ("__plotyy_axes__", ax(1), "data", ax);
-  catch
-    set (ax(1), "__plotyy_axes__", ax);
-  end_try_catch
-  try 
-    addproperty ("__plotyy_axes__", ax(2), "data", ax);
-  catch
-    set (ax(2), "__plotyy_axes__", ax);
-  end_try_catch
+  addproperty ("__plotyy_axes__", ax(1), "data", ax);
+  addproperty ("__plotyy_axes__", ax(2), "data", ax);
+
 endfunction
 
 %!demo

@@ -2552,65 +2552,6 @@ base_graphics_object::values_as_struct (void)
 
 // ---------------------------------------------------------------------
 
-octave_value
-root_figure::properties::get_monitorpositions (void) const
-{
-  Matrix sz = screensize.get ().matrix_value ().extract_n (0, 2, 1, 2);
-  return convert_position (monitorpositions.get ().matrix_value (), 
-                           "pixels", get_units (), sz);
-
-}
-
-void 
-root_figure::properties::set_monitorpositions (const octave_value& val)
-{
-  if (! error_state)
-    {
-      Matrix sz = screensize.get ().matrix_value ().extract_n (0, 2, 1, 2);
-      Matrix pos = convert_position (val.matrix_value (), get_units (), "pixels", sz);
-
-      if (monitorpositions.set (octave_value (pos), true))
-        {
-          mark_modified ();
-        }
-    }
-}
-
-octave_value
-root_figure::properties::get_pointerlocation (void) const
-{
-  Matrix sz = screensize.get ().matrix_value ().extract_n (0, 2, 1, 2);
-  Matrix pos = pointerpositions.get ().matrix_value ();
-  pos.resize (1, 4);
-  return convert_position (pos, "pixels", get_units (), sz).extract_n (0, 0, 1, 2);
-}
-
-void 
-root_figure::properties::set_pointerlocation (const octave_value& val)
-{
-  if (! error_state)
-    {
-      Matrix sz = screensize.get ().matrix_value ().extract_n (0, 2, 1, 2);
-      Matrix pos1 = val.matrix_value ();
-      pos1.resize (1, 4);
-      Matrix pos2 = convert_position (pos1, get_units (), "pixels", sz).extract_n (0, 0, 1, 2);
-
-      if (pointerlocation.set (octave_value (pos2), true))
-        {
-          mark_modified ();
-        }
-    }
-}
-
-octave_value
-root_figure::properties::get_screensize (void) const
-{
-  Matrix sz = screensize.get ().matrix_value ().extract_n (0, 2, 1, 2);
-  Matrix sz2 (sz);
-  sz2.resize (1, 4);
-  return convert_position (sz2, "pixels", get_units (), sz).extract_n (0, 0, 1, 2);
-}
-
 void
 root_figure::properties::set_currentfigure (const octave_value& v)
 {
@@ -2809,7 +2750,7 @@ figure::properties::get_boundingbox (bool) const
   Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
   Matrix pos;
 
-  pos = convert_position (position.get ().matrix_value (), get_units (),
+  pos = convert_position (get_position ().matrix_value (), get_units (),
                           "pixels", screen_size);
 
   pos(0)--;
@@ -2833,14 +2774,6 @@ figure::properties::set_boundingbox (const Matrix& bb)
   set_position (pos);
 }
 
-octave_value
-figure::properties::get_position (void) const
-{
-  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-  return convert_position (position.get ().matrix_value (), 
-                           "pixels", get_units (), screen_size);
-}
-
 void
 figure::properties::set_position (const octave_value& v)
 {
@@ -2849,9 +2782,7 @@ figure::properties::set_position (const octave_value& v)
       Matrix old_bb, new_bb;
 
       old_bb = get_boundingbox ();
-      Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-      position = convert_position (v.matrix_value (), get_units (), 
-                                   "pixels", screen_size);
+      position = v;
       new_bb = get_boundingbox ();
 
       if (old_bb != new_bb)
@@ -2864,55 +2795,6 @@ figure::properties::set_position (const octave_value& v)
         }
 
       mark_modified ();
-    }
-}
-
-octave_value
-figure::properties::get_paperposition (void) const
-{
-  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-  return convert_position (paperposition.get ().matrix_value (), 
-                           "inches", get_paperunits (), screen_size);
-}
-
-void 
-figure::properties::set_paperposition (const octave_value& val)
-{
-  if (! error_state)
-    {
-      Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-      Matrix pos =  convert_position (val.matrix_value (), get_paperunits (), 
-                                      "inches", screen_size);
-      if (paperposition.set (octave_value (pos), true))
-        {
-          mark_modified ();
-        }
-    }
-}
-
-octave_value
-figure::properties::get_papersize (void) const
-{
-  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-  Matrix sz = papersize.get ().matrix_value ();
-  sz. resize (1, 4);
-  return convert_position (sz, "inches", get_paperunits (), screen_size). extract_n (0, 0, 1, 2);
-}
-
-void 
-figure::properties::set_papersize (const octave_value& val)
-{
-  if (! error_state)
-    {
-      Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
-      Matrix sz = val.matrix_value ();
-      sz. resize (1, 4);
-
-      Matrix pos =  convert_position (sz, get_paperunits (), "inches", screen_size). extract_n (0, 0, 1, 2);
-      if (papersize.set (octave_value (pos), true))
-        {
-          mark_modified ();
-        }
     }
 }
 
@@ -3789,61 +3671,6 @@ axes::properties::get_boundingbox (bool internal) const
   pos(1) = parent_bb(3) - pos(1) - pos(3);
 
   return pos;
-}
-
-octave_value 
-axes::properties::get_outerposition (void) const 
-{ 
-  graphics_object obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
-  return convert_position (outerposition.get ().matrix_value (),
-                           "normalized", get_units (), 
-                           parent_bb.extract_n (0, 2, 1, 2));
-}
-    
-void 
-axes::properties::set_outerposition (const octave_value& val)
-{
-  if (! error_state)
-    {
-      graphics_object obj = gh_manager::get_object (get_parent ());
-      Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
-      Matrix pos = convert_position (val.matrix_value(), get_units (), 
-                                     "normalized",
-                                     parent_bb.extract_n (0, 2, 1, 2));
-      if (outerposition.set (octave_value (pos), true))
-        {
-          update_outerposition ();
-          mark_modified ();
-        }
-    }
-}
-
-octave_value 
-axes::properties::get_position (void) const
-{ 
-  graphics_object obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
-  return convert_position (position.get ().matrix_value (), 
-                           "normalized", get_units (), 
-                           parent_bb.extract_n (0, 2, 1, 2));
-}
-
-void 
-axes::properties::set_position (const octave_value& val)
-{
-  if (! error_state)
-    {
-      graphics_object obj = gh_manager::get_object (get_parent ());
-      Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
-      Matrix pos = convert_position (val.matrix_value (), get_units (), "normalized",
-                                     parent_bb.extract_n (0, 2, 1, 2));
-      if (position.set (octave_value (pos), true))
-        {
-          update_position ();
-          mark_modified ();
-        }
-    }
 }
 
 ColumnVector

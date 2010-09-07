@@ -40,8 +40,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       && varargin{1}(1) != 0 && ! isfigure (varargin{1}(1)))
     tmp = varargin{1};
     obj = get (tmp);
-    if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend")) 
-        || strcmp (obj.type, "hggroup"))
+    if (strcmp (obj.type, "axes") || strcmp (obj.type, "hggroup"))
       h = ancestor (tmp, "axes");
       varargin(1) = [];
       if (isempty (varargin))

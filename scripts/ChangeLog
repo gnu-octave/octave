@@ -1,3 +1,8 @@
+2010-09-08  Ben Abbott <bpabbott@mac.com>
+
+	* image/image.m: Fix axis limits for single dimension images, add
+	demo.
+
 2010-09-07  David Bateman  <dbateman@free.fr>
 
 	* plot/plotyy.m: Don't add the __plotyy_axes__ property to the

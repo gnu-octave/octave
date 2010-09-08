@@ -120,11 +120,27 @@ function h = __img__ (x, y, img, varargin)
   ydata = [y(1), y(end)];
 
   c = size (img, 2);
-  xlim = 0.5 * ((x(end) - x(1)) * c / (c - 1) * [-1, 1] + (x(1) + x(end)));
+  if (c > 1)
+    xlim = 0.5 * (diff (xdata) * c / (c - 1) * [-1, 1] + sum (xdata));
+  elseif (numel (unique (x)) > 1)
+    xlim = xdata;
+  elseif (x(1) !=  0)
+    xlim = [0, x];
+  else
+    xlim = [0, 1];
+  endif
 
   r = size (img, 1);
-  ylim = 0.5 * ((y(end) - y(1)) * r / (r - 1) * [-1, 1] + (y(1) + y(end)));
-  
+  if (r > 1)
+    ylim = 0.5 * (diff (ydata) * r / (r - 1) * [-1, 1] + sum (ydata));
+  elseif (numel (unique (y)) > 1)
+    ylim = ydata;
+  elseif (y(1) !=  0)
+    ylim = [0, y];
+  else
+    ylim = [0, 1];
+  endif
+
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
@@ -164,4 +180,12 @@ endfunction
 %! y = -1:1;
 %! h = image (x, y, img);
 %! set (h, "cdatamapping", "scaled")
+
+%!demo
+%! M = 25;
+%! img = 1 ./ rand (5, 11) - 1;
+%! x = 10 * sort (rand (1, 9));
+%! y = sort (rand (1, 8));
+%! clf
+%! image (x, y, img); 
 

@@ -1,5 +1,8 @@
 2010-09-08  Ben Abbott <bpabbott@mac.com>
 
+	* plot/colorbar.m, plot/axis.m,
+	plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m:
+	Revert treatment of activepositionproperty from the gnuplot backend.
 	* image/image.m: Fix axis limits for single dimension images, add
 	demo.
 

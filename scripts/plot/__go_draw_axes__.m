@@ -77,53 +77,42 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
       dr = 1;
     endif
 
-    if (strcmp (axis_obj.activepositionproperty, "position"))
-      if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-        if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
-          x = [1, 1];
-        else
-          ## 3D plots need to be sized down to fit in the window.
-          x = 1.0 ./ sqrt([2, 2.5]);
-        endif
-        fprintf (plot_stream, "set tmargin screen %.15g;\n",
-                 pos(2)+pos(4)/2+x(2)*pos(4)/2);
-        fprintf (plot_stream, "set bmargin screen %.15g;\n",
-                 pos(2)+pos(4)/2-x(2)*pos(4)/2);
-        fprintf (plot_stream, "set lmargin screen %.15g;\n",
-                 pos(1)+pos(3)/2-x(1)*pos(3)/2);
-        fprintf (plot_stream, "set rmargin screen %.15g;\n",
-                 pos(1)+pos(3)/2+x(1)*pos(3)/2);
-        sz_str = "";
+    if (__gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
+      if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
+        x = [1, 1];
       else
-        fprintf (plot_stream, "set tmargin 0;\n");
-        fprintf (plot_stream, "set bmargin 0;\n");
-        fprintf (plot_stream, "set lmargin 0;\n");
-        fprintf (plot_stream, "set rmargin 0;\n");
-
-        if (nd == 3 && all (axis_obj.view == [0, 90]))
-          ## FIXME -- Kludge to allow colorbar to be added to a pcolor() plot
-          pos(3:4) = pos(3:4) * 1.4;
-          pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
-        endif
-  
-        fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-  
-        if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
-          sz_str = sprintf ("set size ratio %.15g", -dr);
-        else
-          sz_str = "set size noratio";
-        endif
-        sz_str = sprintf ("%s %.15g, %.15g;\n", sz_str, pos(3), pos(4));
+        ## 3D plots need to be sized down to fit in the window.
+        x = 1.0 ./ sqrt([2, 2.5]);
       endif
-    else ## activepositionproperty == outerposition
-      fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2))
+      fprintf (plot_stream, "set tmargin screen %.15g;\n",
+               pos(2)+pos(4)/2+x(2)*pos(4)/2);
+      fprintf (plot_stream, "set bmargin screen %.15g;\n",
+               pos(2)+pos(4)/2-x(2)*pos(4)/2);
+      fprintf (plot_stream, "set lmargin screen %.15g;\n",
+               pos(1)+pos(3)/2-x(1)*pos(3)/2);
+      fprintf (plot_stream, "set rmargin screen %.15g;\n",
+               pos(1)+pos(3)/2+x(1)*pos(3)/2);
       sz_str = "";
-      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
-        sz_str = sprintf ("ratio %g", -dr);
-      else
-        sz_str = "noratio";
+    else
+      fprintf (plot_stream, "set tmargin 0;\n");
+      fprintf (plot_stream, "set bmargin 0;\n");
+      fprintf (plot_stream, "set lmargin 0;\n");
+      fprintf (plot_stream, "set rmargin 0;\n");
+
+      if (nd == 3 && all (axis_obj.view == [0, 90]))
+        ## FIXME -- Kludge to allow colorbar to be added to a pcolor() plot
+        pos(3:4) = pos(3:4) * 1.4;
+        pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
       endif
-      sz_str = sprintf ("set size %s %g, %g;\n", sz_str, pos(3:4));
+
+      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+
+      if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
+        sz_str = sprintf ("set size ratio %.15g", -dr);
+      else
+        sz_str = "set size noratio";
+      endif
+      sz_str = sprintf ("%s %.15g, %.15g;\n", sz_str, pos(3), pos(4));
     endif
     if (! isempty (sz_str))
       fputs (plot_stream, sz_str);

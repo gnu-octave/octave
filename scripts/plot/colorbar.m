@@ -271,13 +271,8 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
     else
       scale = [scale, 1];
     endif
-    if (strcmp (obj.activepositionproperty, "position"))
-      obj.position = obj.position .* [1, 1, scale];
-      off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
-    else
-      obj.outerposition = obj.outerposition .* [1, 1, scale];
-      off = 0.5 * (obj.outerposition (3:4) - __actual_axis_position__ (obj)(3:4));
-    endif
+    obj.position = obj.position .* [1, 1, scale];
+    off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
   else
     off = 0.0;
   endif
@@ -592,7 +587,6 @@ endfunction
 %! shading ("interp")
 %! axis ("tight", "square")
 %! colorbar ()
-#%! axes('color','none','box','on','activepositionproperty','position')
 
 %!demo
 %! clf

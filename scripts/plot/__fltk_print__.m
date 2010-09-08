@@ -21,12 +21,10 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function __fltk_print__ (opts)
+function opts = __fltk_print__ (opts)
 
   figure (opts.figure)
   drawnow ("expose")
-
-  file2unlink = "";
 
   if (! isempty (opts.fig2dev_binary))
     fig2dev_devices = {"pstex", "mf", "emf"};
@@ -35,121 +33,70 @@ function __fltk_print__ (opts)
     fig2dev_devices = {"pstex", "mf"};
   endif
 
-  unwind_protect
-
-    switch lower (opts.devopt)
-    case {"eps", "eps2", "epsc", "epsc2"}
-      drawnow ("eps", opts.name);
-      if (opts.tight_flag)
-        __tight_eps_bbox__ (opts, opts.name);
+  switch lower (opts.devopt)
+  case {"eps", "eps2", "epsc", "epsc2"}
+    drawnow ("eps", opts.name);
+    if (opts.tight_flag)
+      __tight_eps_bbox__ (opts, opts.name);
+    endif
+  case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
+        "pslatexstandalone", "pdflatexstandalone"}
+    ## format GL2PS_TEX
+    n = find (opts.devopt == "l", 1);
+    suffix = opts.devopt(1:n-1);
+    dot = find (opts.name == ".", 1, "last");
+    if ((! isempty (dot))
+        && any (strcmpi (opts.name(dot:end), ...
+                {".eps", ".ps", ".pdf", ".tex", "."})))
+      name = opts.name(1:dot-1);
+      if (dot < numel (opts.name)
+          && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
+        ## If user provides eps/ps/pdf suffix, use it.
+        suffix = opts.name(dot+1:end);
       endif
-    case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
-          "pslatexstandalone", "pdflatexstandalone"}
-      ## format GL2PS_TEX
-      n = find (opts.devopt == "l", 1);
-      suffix = opts.devopt(1:n-1);
-      dot = find (opts.name == ".", 1, "last");
-      if ((! isempty (dot))
-          && any (strcmpi (opts.name(dot:end), {".eps", ".ps", ".pdf", ".tex", "."})))
-        name = opts.name(1:dot-1);
-        if (dot < numel (opts.name)
-            && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
-          ## If user provides eps/ps/pdf suffix, use it.
-          suffix = opts.name(dot+1:end);
+    elseif (dot == numel (opts.name))
+      name = opts.name;
+    endif
+    drawnow (strcat (lower (suffix), "notxt"), strcat (name, ".", suffix));
+    drawnow ("tex", strcat (name, ".tex"));
+    if (opts.tight_flag && strcmp (suffix, "eps"))
+      __tight_eps_bbox__ (opts, strcat (name, ".", suffix));
+    endif
+    if (! isempty (strfind (opts.devopt, "standalone")))
+      __latex_standalone__ (strcat (name, ".tex"));
+    endif
+  case {"tikz"}
+    ## format GL2PS_PGF
+    drawnow ("pgf", opts.name);
+  case {"svg"}
+    ## format GL2PS_SVG
+    drawnow ("svg", opts.name);
+  case fig2dev_devices
+    tmp_figfile = strcat (tmpnam (), ".fig");
+    opts.unlink{end+1} = tmp_figfile;
+    status = __pstoedit__ (opts, "fig", tmp_figfile);
+    if (status == 0)
+      status = __fig2dev__ (opts, tmp_figfile);
+      if (strcmp (opts.devopt, "pstex") && status == 0)
+        if (strfind (opts.name, ".ps") == numel(opts.name) - 2)
+          devfile = strcat (opts.name(1:end-2), "tex");
+        else
+          devfile = strcat (opts.name, ".tex");
         endif
-      elseif (dot == numel (opts.name))
-        name = opts.name;
-      endif
-      drawnow (strcat (lower (suffix), "notxt"), strcat (name, ".", suffix));
-      drawnow ("tex", strcat (name, ".", suffix, ".tex"));
-      movefile (strcat (name, ".", suffix, ".tex"), strcat (name, ".tex"));
-      if (opts.tight_flag && strncmpi (opts.devopt, "eps", 3))
-        __tight_eps_bbox__ (opts, strcat (opts.name, ".eps"));
-      endif
-      if (! isempty (strfind (opts.devopt, "standalone")))
-        __latex_standalone__ (strcat (name, ".tex"));
-      endif
-    case {"tikz"}
-      ## format GL2PS_PGF
-      drawnow ("pgf", opts.name);
-    case {"ps", "ps2", "psc", "psc2", "pdf"}
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      file2unlink = opts.ghostscript.source;
-      if (strcmp (opts.devopt, "pdf"))
-        opts.ghostscript.device = "pdfwrite";
-      elseif (any (opts.devopt == '2'))
-        opts.ghostscript.device = "ps2write";
-      else
-        opts.ghostscript.device = "pswrite";
-      endif
-      opts.ghostscript.output = opts.name;
-      drawnow ("eps", opts.ghostscript.source);
-      if (opts.tight_flag)
-        __tight_eps_bbox__ (opts, opts.ghostscript.source);
-      endif
-    case {"svg"}
-      ## format GL2PS_SVG
-      drawnow ("svg", opts.name);
-    case gs_based_devices ()
-      opts.ghostscript.antialiasing = true;
-      switch opts.devopt
-      case "bmp"
-        opts.ghostscript.device = "bmp32b";
-      case "png"
-        opts.ghostscript.device = "png16m";
-      case {"tiff", "tiffn"}
-        opts.ghostscript.device = "tiff24nc";
-      otherwise
-        opts.ghostscript.device = opts.devopt;
-      endswitch
-      opts.ghostscript.output = opts.name;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      opts.ghostscript.epscrop = true;
-      file2unlink = opts.ghostscript.source;
-      drawnow ("eps", opts.ghostscript.source)
-      if (opts.tight_flag)
-        __tight_eps_bbox__ (opts, opts.ghostscript.source);
-      endif
-    case fig2dev_devices
-      tmp_figfile = strcat (tmpnam (), ".fig");
-      file2unlink = tmp_figfile;
-      status = __pstoedit__ (opts, "fig", tmp_figfile);
-      if (status == 0)
-        status = __fig2dev__ (opts, tmp_figfile);
-      endif
-    case {"aifm", "dxf", "emf", "fig", "hpgl"}
-      status = __pstoedit__ (opts);
-    case {"corel", "gif"}
-      error ("print:unsupporteddevice",
-             "print.m: %s output is not available for the FLTK backend.",
-             upper (opts.devopt))
-    otherwise
-      ## various ghostscript devices for printers
-      opts.ghostscript.device = opts.devopt;
-      opts.ghostscript.output = opts.name;
-      opts.ghostscript.epscrop = false;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      file2unlink = opts.ghostscript.source;
-      ## Empirical observatin: "-dpxlcolor" requires a sign change.
-      opts.ghostscript.pageoffset = opts.ghostscript.pageoffset .* [1, -1];
-      drawnow ("eps", opts.ghostscript.source)
-      if (opts.tight_flag)
-        __tight_eps_bbox__ (opts, opts.ghostscript.source);
-      endif
-    endswitch
-  
-    if (! isempty (opts.ghostscript.device))
-      status = __ghostscript__ (opts.ghostscript);
-    endif
-
-  unwind_protect_cleanup
-    if (! isempty (file2unlink))
-      [status, output] = unlink (file2unlink);
-      if (status != 0)
-        warning ("print.m: %s, '%s'.", output, file2unlink)
+        status = __fig2dev__ (opts, tmp_figfile, "pstex_t", devfile);
       endif
     endif
-  end_unwind_protect
+  case {"aifm"}
+    status = __pstoedit__ (opts, "ps2ai");
+  case {"dxf", "emf", "fig", "hpgl"}
+    status = __pstoedit__ (opts);
+  case {"corel", "gif"}
+    error ("print:unsupporteddevice",
+           "print.m: %s output is not available for the FLTK backend.",
+           upper (opts.devopt))
+  case opts.ghostscript.device
+    drawnow ("eps", opts.ghostscript.source);
+  endswitch
 
 endfunction
 
@@ -249,17 +196,4 @@ function __latex_standalone__ (latexfile)
   endif
 endfunction
 
-function device_list = gs_based_devices ();
-  device_list = {"bmp16", "bmp16m", "bmp256", "bmp32b", "bmpgray", ...
-                 "jpeg", "jpegcymk", "jpeggray", "pbm", "pbmraw", ...
-                 "pcx16", "pcx24b", "pcx256", "pcx2up", "pcxcmyk", ...
-                 "pcxgray", "pcxmono", "pdfwrite", "pgm", "pgmraw", ...
-                 "pgnm", "pgnmraw", "png16", "png16m", "png256", ...
-                 "png48", "pngalpha", "pnggray", "pngmono", "pnm", ...
-                 "pnmraw", "ppm", "ppmraw", "ps2write", "pswrite", ...
-                 "tiff12nc", "tiff24nc", "tiff32nc", "tiffcrle", ...
-                 "tiffg3", "tiffg32d", "tiffg4", "tiffgray", "tifflzw", ...
-                 "tiffpack", "tiffsep", "bmp", "png", "tiff", "tiffn", ...
-                 "pdf", "ps", "psc", "ps2", "psc2"};
-endfunction
 

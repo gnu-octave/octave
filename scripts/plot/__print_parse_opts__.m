@@ -36,22 +36,26 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.fontsize = "";
   arg_st.font = "";
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
+  arg_st.formatted_for_printing = false;
   arg_st.ghostscript.binary = __quote_path__ (__ghostscript_binary__ ());
+  arg_st.ghostscript.debug = false;
   arg_st.ghostscript.device = "";
+  arg_st.ghostscript.epscrop = true;
+  arg_st.ghostscript.level = [];
   arg_st.ghostscript.output = "";
   arg_st.ghostscript.papersize = "";
   arg_st.ghostscript.pageoffset = [];
-  arg_st.ghostscript.debug = false;
-  arg_st.ghostscript.epscrop = false;
   arg_st.ghostscript.resolution = 150;
+  arg_st.ghostscript.antialiasing = false;
+  arg_st.loose = false;
+  arg_st.name = "";
   arg_st.orientation = "";
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
-  arg_st.name = "";
   arg_st.printer = "";
+  arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
   arg_st.tight_flag = false;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
-  arg_st.send_to_printer = false;
   
   if (isunix ())
     arg_st.lpr_options = "-l";
@@ -79,6 +83,8 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.orientation = "portrait";
       elseif (strncmp (arg, "-landscape", numel (arg)))
         arg_st.orientation = "landscape";
+      elseif (strcmp (arg, "-loose"))
+        arg_st.loose = true;
       elseif (strcmp (arg, "-tight"))
         arg_st.tight_flag = true;
       elseif (strcmp (arg, "-loose"))
@@ -98,7 +104,8 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
         arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg(3:end));
         if (isempty (arg_st.ghostscript.binary))
-          error ("print: Ghostscript binary ""%s"" could not be located", arg(3:end))
+          error ("print: Ghostscript binary ""%s"" could not be located",
+                 arg(3:end))
         else
           arg_st.ghostscript_binary = __quote_path__ (arg_st.ghostscript_binary);
         endif
@@ -220,6 +227,10 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.name = strcat (arg_st.name, ".", default_suffix);
   endif
 
+  if (any (strcmp (arg_st.devopt, {"ps", "ps2", "psc", "psc2", "pdf"})))
+    arg_st.formatted_for_printing = true;
+  endif
+
   if (arg_st.append_to_file)
     if (isempty (arg_st.name))
       arg_st.append_to_file = false;
@@ -249,9 +260,32 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (all (! strcmp (arg_st.devopt, dev_list)))
+  aliases = gs_aliases ();
+  if (any (strcmp (arg_st.devopt, fieldnames (aliases))))
+    arg_st.devopt = aliases.(arg_st.devopt);
+  endif
+
+  if (strcmp (arg_st.devopt, "pswrite"))
+    arg_st.ghostscript.level = 1;
+  elseif (strcmp (arg_st.devopt, "ps2write"))
+    arg_st.ghostscript.level = 2;
+  endif
+
+  if (any (strcmp (arg_st.devopt, gs_device_list)) &&
+      ! arg_st.formatted_for_printing)
+    ## Use ghostscript for graphic formats
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
+    arg_st.ghostscript.antialiasing = true;
+    ## pstoedit throws errors if the EPS file isn't cropped
+    arg_st.ghostscript.epscrop = true;
+  elseif (all (! strcmp (arg_st.devopt, dev_list)))
+    ## Assume we are formating output for a printer
+    arg_st.formatted_for_printing = true;
+    arg_st.ghostscript.device = arg_st.devopt;
+    arg_st.ghostscript.output = arg_st.name;
+    arg_st.ghostscript.antialiasing = false;
+    arg_st.ghostscript.epscrop = ! arg_st.loose;
   endif
 
   if (isempty (arg_st.canvas_size))
@@ -266,23 +300,27 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.canvas_size = paperposition(3:4);
     arg_st.ghostscript.pageoffset = paperposition(1:2);
   else
-    ## Canvas size in points.
+    ## Convert canvas size to points from pixles.
     arg_st.canvas_size = arg_st.canvas_size * 72 / arg_st.ghostscript.resolution;
     arg_st.ghostscript.papersize = arg_st.canvas_size;
     arg_st.ghostscript.epscrop = true;
     arg_st.ghostscript.pageoffset = [0, 0];
   endif
 
+  if (arg_st.formatted_for_printing)
+    arg_st.ghostscript.resolution = [];
+  endif
+
 endfunction
 
 %!test
 %! opts = __print_parse_opts__ ();
-%! assert (opts.devopt, "psc");
+%! assert (opts.devopt, "pswrite");
 %! assert (opts.use_color, 1);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.name, opts.unlink{1})
 %! assert (opts.canvas_size, [576, 432]);
-%! assert (opts.ghostscript.device, "")
+%! assert (opts.ghostscript.device, "pswrite")
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
@@ -292,13 +330,14 @@ endfunction
 %! assert (opts.canvas_size, [307.2, 230.4], 0.1);
 
 %!test
-%! opts = __print_parse_opts__ ("-dpsc", "-append");
-%! assert (opts.devopt, "psc");
+%! opts = __print_parse_opts__ ("-dpsc", "-append", "-loose");
+%! assert (opts.devopt, "pswrite");
 %! assert (opts.name(end+(-2:0)), ".ps");
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, 1);
 %! assert (opts.append_to_file, false);
-%! assert (opts.ghostscript.device, "")
+%! assert (opts.ghostscript.device, "pswrite")
+%! assert (opts.ghostscript.epscrop, false);
 %! for n = 1:numel(opts.unlink)
 %!   unlink (opts.unlink{n});
 %! endfor
@@ -315,14 +354,14 @@ endfunction
 %! endfor
 
 %!test
-%! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono");
+%! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono", "-loose");
 %! assert (opts.devopt, "jpeg")
 %! assert (opts.name, "foobar.jpg")
-%! assert (opts.ghostscript.device, "")
+%! assert (opts.ghostscript.device, "jpeg")
+%! assert (opts.ghostscript.epscrop, true);
 %! assert (opts.send_to_printer, false);
 %! assert (opts.printer, "");
 %! assert (opts.use_color, -1);
-%! assert (opts.ghostscript.device, "")
 
 %!test
 %! opts = __print_parse_opts__ ("-ddeskjet", "foobar", "-mono", "-Pmyprinter");
@@ -501,5 +540,36 @@ function value = convert2points (value, units)
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined.")
     endswitch
+endfunction
+
+function device_list = gs_device_list ();
+  ## Graphics formats/languages, not priners.
+  device_list = {"bmp16"; "bmp16m"; "bmp256"; "bmp32b"; "bmpgray"; ...
+                 "jpeg"; "jpegcymk"; "jpeggray"; "pbm"; "pbmraw"; ...
+                 "pcx16"; "pcx24b"; "pcx256"; "pcx2up"; "pcxcmyk"; ...
+                 "pcxgray"; "pcxmono"; "pdfwrite"; "pgm"; "pgmraw"; ...
+                 "pgnm"; "pgnmraw"; "png16"; "png16m"; "png256"; ...
+                 "png48"; "pngalpha"; "pnggray"; "pngmono"; "pnm"; ...
+                 "pnmraw"; "ppm"; "ppmraw"; "ps2write"; "pswrite"; ...
+                 "tiff12nc"; "tiff24nc"; "tiff32nc"; "tiffcrle"; ...
+                 "tiffg3"; "tiffg32d"; "tiffg4"; "tiffgray"; "tifflzw"; ...
+                 "tiffpack"; "tiffsep"};
+endfunction
+
+function aliases = gs_aliases ();
+  ## Aliases for other devices: "bmp", "png", "tiff", "tiffn", "pdf",
+  ##                            "ps", "ps2", "psc", "psc2"
+  ##
+  ## eps, epsc, eps2, epsc2 are not included here because those are 
+  ## are generated by the backend.
+  aliases.bmp = "bmp32b";
+  aliases.pdf = "pdfwrite";
+  aliases.png = "png16m";
+  aliases.ps = "pswrite";
+  aliases.ps2 = "ps2write";
+  aliases.psc = "pswrite";
+  aliases.psc2 = "ps2write";
+  aliases.tiff = "tiff24nc";
+  aliases.tiffn = "tiff24nc";
 endfunction
 

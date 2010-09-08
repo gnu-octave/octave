@@ -328,8 +328,25 @@ function print (varargin)
       endif
     endif
 
+    if (strcmp (opts.devopt, opts.ghostscript.device))
+      opts.ghostscript.output = opts.name;
+      opts.ghostscript.source = strcat (tmpnam (), ".eps");
+      opts.unlink{end+1} = opts.ghostscript.source;
+    endif
+
     ## call the backend print script
-    feval (strcat ("__", get (opts.figure, "__backend__") , "_print__"), opts);
+    opts = feval (strcat ("__", get (opts.figure, "__backend__"), "_print__"),
+                  opts);
+
+    if (strcmp (opts.devopt, opts.ghostscript.device))
+      if (opts.tight_flag && ! opts.formatted_for_printing)
+        __tight_eps_bbox__ (opts, opts.ghostscript.source);
+      endif
+      status = __ghostscript__ (opts.ghostscript);
+      if (status != 0)
+        warning ("print.m:gsfailed", "print.m: ghostscript failure")
+      endif
+    endif
 
     ## Send to the printer
     if (opts.send_to_printer)

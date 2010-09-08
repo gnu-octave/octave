@@ -25,9 +25,7 @@
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 ## Adapted-By: jwe
 
-function __gnuplot_print__ (opts)
-
-  file2unlink = "";
+function opts = __gnuplot_print__ (opts)
 
   if (isempty (opts.fontsize))
     ## If no fontsize, determine the nominal axes fontsize.
@@ -46,116 +44,56 @@ function __gnuplot_print__ (opts)
   ## the font spec given in "set terminal ..."
   gp_opts = font_spec (opts);
 
-  unwind_protect
-    switch lower (opts.devopt)
-    case {"eps", "eps2", "epsc", "epsc2"}
-      if (any (strcmp (opts.devopt, {"eps", "epsc"})))
-        gp_opts = sprintf ("%s level1", gp_opts);
-      endif
-      eps_drawnow (opts, opts.name, gp_opts);
-    case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
-      n = find (opts.devopt == "l", 1);
-      suffix = opts.devopt(1:n-1);
-      dot = find (opts.name == ".", 1, "last");
-      if ((! isempty (dot))
-          && any (strcmpi (opts.name(dot:end),
-                  {".eps", ".ps", ".pdf", ".tex", "."})))
-        name = opts.name(1:dot-1);
-        if (dot < numel (opts.name)
-            && any (strcmpi (opts.name(dot+1:end), {"eps", "ps"})))
-          ## If user provides eps/ps suffix, use it.
-          suffix = opts.name(dot+1:end);
-        endif
-      elseif (dot == numel (opts.name))
-        name = opts.name;
-      endif
-      if (strfind (opts.devopt, "standalone"))
-        term = sprintf ("%s ",
-                        strrep (opts.devopt, "standalone", " standalone"));
-      else
-        term = sprintf ("%s ", opts.devopt);
-      endif
-      local_drawnow (sprintf ("%s %s", term, gp_opts),
-               strcat (name, ".", suffix, ".tex"), opts)
-      movefile (strcat (name, ".", suffix, ".tex"), strcat (name, ".tex"));
-      if (opts.tight_flag && strncmpi (opts.devopt, "eps", 3))
-        __tight_eps_bbox__ (opts, strcat (opts.name, ".eps"));
-      endif
-    case {"tikz"}
-      local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
-    case {"ps", "ps2", "psc", "psc2", "pdf"}
-      if (any (strcmp (opts.devopt, {"ps", "psc"})))
-        gp_opts = sprintf ("%s level1", gp_opts);
-      endif
+  switch lower (opts.devopt)
+  case {"eps", "eps2", "epsc", "epsc2"}
+    if (any (strcmp (opts.devopt, {"eps", "epsc"})))
+      gp_opts = sprintf ("%s level1", gp_opts);
+    endif
+    eps_drawnow (opts, opts.name, gp_opts);
+  case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
+    dot = find (opts.name == ".", 1, "last");
+    if ((! isempty (dot))
+        && any (strcmpi (opts.name(dot:end),
+                {".eps", ".ps", ".pdf", ".tex", "."})))
+      name = opts.name(1:dot-1);
+    endif
+    if (strfind (opts.devopt, "standalone"))
+      term = sprintf ("%s ",
+                      strrep (opts.devopt, "standalone", " standalone"));
+    else
+      term = sprintf ("%s ", opts.devopt);
+    endif
+    if (__gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
+      suffix = "tex";
+    else
+      %% Gnuplot 4.0 wants a ".eps" suffix.
+      suffix = "eps";
+    endif
+    local_drawnow (sprintf ("%s %s", term, gp_opts),
+                   strcat (name, ".", suffix), opts)
+    if (opts.tight_flag && strncmpi (opts.devopt, "eps", 3))
+      __tight_eps_bbox__ (opts, strcat (name, "-inc.eps"));
+    endif
+  case {"tikz"}
+    local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
+  case {"svg"}
+    local_drawnow (sprintf ("svg dynamic %s", gp_opts), opts.name, opts);
+  case {"aifm", "corel", "eepic", "emf", "fig", "pdfcairo", "pngcairo"}
+    local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
+  case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
+    local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts)
+  case opts.ghostscript.device
+    if (opts.formatted_for_printing)
       ## Gnuplot's BBox LLHC is located at [50,50]
       opts.ghostscript.pageoffset = opts.ghostscript.pageoffset - 50;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      file2unlink = opts.ghostscript.source;
-      if (strcmp (opts.devopt, "pdf"))
-        opts.ghostscript.device = "pdfwrite";
-      elseif (any (opts.devopt == '2'))
-        opts.ghostscript.device = "ps2write";
-      else
-        opts.ghostscript.device = "pswrite";
-        opts.ghostscript.level = 1;
-      endif
-      opts.ghostscript.output = opts.name;
-      eps_drawnow (opts, opts.ghostscript.source, gp_opts);
-    case {"svg"}
-      local_drawnow (sprintf ("svg dynamic %s", gp_opts), opts.name, opts);
-    case {"aifm", "corel", "eepic", "emf", "fig", "pdfcairo", "pngcairo"}
-      local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
-    case gs_based_devices ()
-      opts.ghostscript.antialiasing = true;
-      switch opts.devopt
-      case "bmp"
-        opts.ghostscript.device = "bmp32b";
-      case "png"
-        opts.ghostscript.device = "png16m";
-      case {"tiff", "tiffn"}
-        opts.ghostscript.device = "tiff24nc";
-      otherwise
-        opts.ghostscript.device = opts.devopt;
-      endswitch
-      opts.ghostscript.output = opts.name;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      opts.ghostscript.epscrop = true;
-      file2unlink = opts.ghostscript.source;
-      eps_drawnow (opts, opts.ghostscript.source, gp_opts);
-    case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
-      local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts)
-    case {"pdflatex", "pslatexstandalone", "pdflatexstandalone"}
-      error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for the GNUPLOT backend.",
-             upper (opts.devopt))
-    otherwise
-      ## various ghostscript devices for printers
-      opts.ghostscript.device = opts.devopt;
-      opts.ghostscript.output = opts.name;
-      opts.ghostscript.epscrop = false;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      file2unlink = opts.ghostscript.source;
-      ## Gnuplot's BBox LLHC is located at [50,50]
-      opts.ghostscript.pageoffset = opts.ghostscript.pageoffset - 50;
-      ## Empirical observation: "-dpxlcolor" requires a sign change.
-      opts.ghostscript.pageoffset = opts.ghostscript.pageoffset .* [1, -1];
-      ## Printers are not included in gs_devices()
-      gp_opts = font_spec (opts, "devopt", "eps");
-      eps_drawnow (opts, opts.ghostscript.source, gp_opts);
-    endswitch
-  
-    if (! isempty (opts.ghostscript.device))
-      status = __ghostscript__ (opts.ghostscript);
     endif
-  
-  unwind_protect_cleanup
-    if (! isempty (file2unlink))
-      [status, output] = unlink (file2unlink);
-      if (status != 0)
-        warning ("print.m: %s, '%s'.", output, file2unlink)
-      endif
-    endif
-  end_unwind_protect
+    gp_opts = font_spec (opts, "devopt", "eps");
+    eps_drawnow (opts, opts.ghostscript.source, gp_opts);
+  otherwise
+    error (sprintf ("print:no%soutput", opts.devopt),
+           "print.m: %s output is not available for the GNUPLOT backend.",
+           upper (opts.devopt))
+  endswitch
 
 endfunction
 
@@ -190,22 +128,6 @@ function local_drawnow (term, file, opts)
   endif
 endfunction
 
-function device_list = gs_based_devices ();
-  ## Aliases for other devices: "bmp", "png", "tiff", "tiffn", "pdf",
-  ##                            "ps", "ps2", "psc", "psc2"
-  device_list = {"bmp16", "bmp16m", "bmp256", "bmp32b", "bmpgray", ...
-                 "jpeg", "jpegcymk", "jpeggray", "pbm", "pbmraw", ...
-                 "pcx16", "pcx24b", "pcx256", "pcx2up", "pcxcmyk", ...
-                 "pcxgray", "pcxmono", "pdfwrite", "pgm", "pgmraw", ...
-                 "pgnm", "pgnmraw", "png16", "png16m", "png256", ...
-                 "png48", "pngalpha", "pnggray", "pngmono", "pnm", ...
-                 "pnmraw", "ppm", "ppmraw", "ps2write", "pswrite", ...
-                 "tiff12nc", "tiff24nc", "tiff32nc", "tiffcrle", ...
-                 "tiffg3", "tiffg32d", "tiffg4", "tiffgray", "tifflzw", ...
-                 "tiffpack", "tiffsep", "bmp", "png", "tiff", "tiffn", ...
-                 "pdf", "ps", "ps2", "psc", "psc2"};
-endfunction
-
 function f = font_spec (opts, varargin)
   for n = 1:2:numel(varargin)
     opts.(varargin{n}) = varargin{n+1};
@@ -220,7 +142,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("%d", opts.fontsize);
     endif
-  case {"eps", "eps2", "epsc", "epsc2", gs_based_devices(){:}}
+  case {"eps", "eps2", "epsc", "epsc2"}
     ## Gnuplot renders fonts as half their specification, which 
     ## results in a tight spacing for the axes-labels and tick-labels.
     ## Compensate for the half scale. This will produce the proper

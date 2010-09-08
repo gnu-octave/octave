@@ -30,7 +30,7 @@ function status = __ghostscript__ (varargin);
   opts.device = "";
   opts.epscrop = false;
   opts.antialiasing  = false;
-  opts.resolution = 150;
+  opts.resolution = [];
   opts.papersize = "";
   opts.pageoffset = [0 0];
   opts.debug = false;
@@ -51,16 +51,23 @@ function status = __ghostscript__ (varargin);
     opts.(args{n}) = args{n+1};
   endfor
 
-  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s", opts.device);
+  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s",
+                     opts.device);
 
   if (! isempty (opts.level) && ismember (opts.level, [1, 2, 3]))
     gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, round (opts.level));
   endif
 
-  if (opts.antialiasing && isempty (strfind (opts.device, "write")))
-    ## Apply anti-aliasing to all bitmap formats/devices
-    gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
-    gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
+  if (isempty (strfind (opts.device, "write")))
+    ## Empirical observation: "-dpxlcolor" requires a sign change as
+    ##                        compared to pdfwrite, or pswrite output.
+    opts.pageoffset = opts.pageoffset .* [1, -1];
+    if (! isempty (opts.resolution))
+      gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
+    endif
+    if (opts.antialiasing)
+      gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
+    endif
   elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);
     if (strcmp (opts.device, "pdfwrite"))
@@ -76,10 +83,12 @@ function status = __ghostscript__ (varargin);
     if (ischar (opts.papersize))
       gs_opts = sprintf ("%s -sPAPERSIZE=%s", gs_opts, opts.papersize);
     elseif (isnumeric (opts.papersize) && numel (opts.papersize) == 2)
-      gs_opts = sprintf ("%s -dDEVICEWIDTHPOINTS=%d -dDEVICEHEIGHTPOINTS=%d", gs_opts, opts.papersize);
+      gs_opts = sprintf ("%s -dDEVICEWIDTHPOINTS=%d -dDEVICEHEIGHTPOINTS=%d",
+                         gs_opts, opts.papersize);
       if (opts.papersize(1) > opts.papersize(2))
-        ## Lanscape mode: This option will result in automatic rotation of the document page if the
-        ##                requested page size matches one of the default page sizes
+        ## Lanscape mode: This option will result in automatic rotation of the
+        ##                document page if the requested page size matches one
+        ##                of the default page sizes.
         gs_opts = sprintf ("%s -dNORANGEPAGESIZE", gs_opts);
       endif
     else
@@ -112,7 +121,7 @@ function status = __ghostscript__ (varargin);
     endif
   endif
 
-  cmd = sprintf ("%s %s -sOutputFile=%s %s %s", 
+  cmd = sprintf ("%s %s -sOutputFile=%s %s %s 2>&1", 
                  opts.binary, gs_opts,
                  opts.output, offsetfile, opts.source);
 

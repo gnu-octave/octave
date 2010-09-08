@@ -1,5 +1,8 @@
 2010-09-08  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__fltk_print__.m, plot/private/__ghostscript__.m,
+	plot/__gnuplot_print__.m, plot/__print_parse_opts__.m,
+	plot/print.m: Consolidate gs code into print.m.
 	* plot/colorbar.m, plot/axis.m,
 	plot/private/__actual_axis_position__.m, plot/__go_draw_axes__.m:
 	Revert treatment of activepositionproperty from the gnuplot backend.

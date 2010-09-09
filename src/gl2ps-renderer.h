@@ -31,8 +31,8 @@ OCTINTERP_API
 glps_renderer : public opengl_renderer
 {
 public:
-  glps_renderer (const std::string& _filename, const std::string& _term) 
-    : opengl_renderer () , filename (_filename), term (_term) { }
+  glps_renderer (const int _fid, const std::string& _term) 
+    : opengl_renderer () , fid (_fid), term (_term) { }
 
   ~glps_renderer (void) { }
 
@@ -74,7 +74,7 @@ protected:
   }
 
 private:
-  std::string filename;
+  int fid;
   caseless_str term;
   double fontsize;
   std::string fontname;

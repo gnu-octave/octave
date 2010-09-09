@@ -43,7 +43,7 @@ glps_renderer::draw (const graphics_object& go)
     {
       in_draw = true;
 
-      FILE *fp = fopen (filename.c_str (), "wb");
+      FILE *fp = fdopen (fid, "wb");
       GLint buffsize = 0, state = GL2PS_OVERFLOW;
       GLint viewport[4];
 
@@ -74,7 +74,7 @@ glps_renderer::draw (const graphics_object& go)
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
                            | GL2PS_BEST_ROOT | gl2ps_text), 
                           GL_RGBA, 0, NULL, 0, 0, 0,
-                          buffsize, fp, filename.c_str () );
+                          buffsize, fp, "" );
 
           opengl_renderer::draw (go);
           state = gl2psEndPage ();

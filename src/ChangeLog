@@ -1,3 +1,10 @@
+2010-09-09  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* gl2ps-renderer.cc: Renders to a previously opened fid.
+	* gl2ps-renderer.h: Ditto.
+	* DLD-FUNCTIONS/fltk_backend.cc: print now accepts fid instead
+	of filename to use with above change
+
 2010-09-07  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (maybe_initialize_magick): New

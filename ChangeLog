@@ -1,3 +1,7 @@
+2010-09-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* m4/ax_blas_f77_func.m4: Update.
+
 2010-09-07  Ben Abbott  <bpabbott@mac.com>
 
 	* acinclude.m4, configure.ac, m4/module.mk: Update acx_*.m4

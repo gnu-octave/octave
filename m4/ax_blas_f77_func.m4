@@ -63,6 +63,7 @@ AC_REQUIRE([AX_BLAS])
 if test "$cross_compiling" = yes ; then
 	ifelse($3, ,$1,$3)
 elif test x"$ax_blas_ok" = xyes; then
+	save_ax_blas_f77_func_LIBS="$LIBS"
 	LIBS="$BLAS_LIBS $LIBS"
 	AC_LANG_PUSH(Fortran 77)
 # LSAME check (LOGICAL return values)
@@ -94,7 +95,7 @@ elif test x"$ax_blas_ok" = xyes; then
 	[ax_blas_isamax_fcall_ok=no])
 	AC_MSG_RESULT([$ax_blas_isamax_fcall_ok])
 # SDOT check (REAL return values)
-	AC_MSG_CHECKING([whether DDOT is called correctly from Fortran])
+	AC_MSG_CHECKING([whether SDOT is called correctly from Fortran])
 	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
       real sdot,a(1),b(1),w
       external sdot
@@ -141,6 +142,33 @@ elif test x"$ax_blas_ok" = xyes; then
       ]]),[ax_blas_zdotu_fcall_ok=yes],
 	[ax_blas_zdotu_fcall_ok=no])
 	AC_MSG_RESULT([$ax_blas_zdotu_fcall_ok])
+# Check for correct integer size
+# FIXME: this may fail with things like -ftrapping-math.
+        AC_MSG_CHECKING([whether the integer size is correct])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      integer n,nn(3)
+      real s,a(1),b(1),sdot
+      a(1) = 1.0
+      b(1) = 1.0
+c Generate -2**33 + 1, if possible
+      n = 2
+      n = -4 * (n ** 30)
+      n = n + 1
+      if (n >= 0) goto 1
+c This means we're on 64-bit integers. Check whether the BLAS is, too.
+      s = sdot(n,a,1,b,1)
+      if (s .ne. 0.0) stop 1
+    1 continue
+c We may be on 32-bit integers, and the BLAS on 64 bits. This is almost bound
+c to have already failed, but just in case, we'll check.
+      nn(1) = -1
+      nn(2) = 1
+      nn(3) = -1
+      s = sdot(nn(2),a,1,b,1)
+      if (s .ne. 1.0) stop 1
+       ]]),[ax_blas_integer_size_ok=yes],
+	[ax_blas_integer_size_ok=no])
+	AC_MSG_RESULT([$ax_blas_integer_size_ok])
 
 	AC_LANG_POP(Fortran 77)
 
@@ -149,13 +177,15 @@ elif test x"$ax_blas_ok" = xyes; then
 		-a $ax_blas_sdot_fcall_ok = yes \
 		-a $ax_blas_ddot_fcall_ok = yes \
 		-a $ax_blas_cdotu_fcall_ok = yes \
-		-a $ax_blas_zdotu_fcall_ok = yes ; then
+		-a $ax_blas_zdotu_fcall_ok = yes \
+		-a $ax_blas_integer_size_ok = yes; then
 		ax_blas_f77_func_ok=yes;
 		$1
 	else
 		ax_blas_f77_func_ok=no;
 		$2
 	fi
+	LIBS="$save_ax_blas_f77_func_LIBS"
 fi
 
 ])dnl AX_BLAS_F77_FUNC

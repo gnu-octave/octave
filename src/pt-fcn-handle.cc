@@ -126,7 +126,7 @@ tree_anon_fcn_handle::rvalue1 (int)
 
   octave_value ov_fcn (uf);
 
-  octave_value fh (new octave_fcn_handle (ov_fcn, octave_fcn_handle::anonymous));
+  octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn));
 
   return fh;
 }

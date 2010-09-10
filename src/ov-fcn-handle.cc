@@ -2,6 +2,7 @@
 
 Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
+Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -47,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-exp.h"
 #include "pt-assign.h"
+#include "pt-arg-list.h"
 #include "variables.h"
 #include "parse.h"
 #include "unwind-prot.h"
@@ -1756,3 +1758,188 @@ are ignored in the lookup.\n\
 %!test
 %! assert (testrecursionfunc (@(x) x, 1), 8);
 */
+
+octave_fcn_binder::octave_fcn_binder (const octave_value& f, 
+                                      const octave_value& root,
+                                      const octave_value_list& templ, 
+                                      const std::vector<int>& mask, 
+                                      int exp_nargin)
+: octave_fcn_handle (f), root_handle (root), arg_template (templ),
+  arg_mask (mask), expected_nargin (exp_nargin)
+{
+}
+
+octave_fcn_handle *
+octave_fcn_binder::maybe_binder (const octave_value& f)
+{
+  octave_fcn_handle *retval = 0;
+
+  octave_user_function *usr_fcn = f.user_function_value (false);
+  tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
+  
+  // Verify that the body is a single expression (always true in theory).
+  
+  tree_statement_list *cmd_list = usr_fcn ? usr_fcn->body () : 0;
+  tree_expression *body_expr = (cmd_list->length () == 1 
+                                ? cmd_list->front ()->expression () : 0);
+
+
+  if (body_expr && body_expr->is_index_expression () 
+      && ! (param_list && param_list->takes_varargs ()))
+    {
+      // It's an index expression.
+      tree_index_expression *idx_expr = dynamic_cast<tree_index_expression *> (body_expr);
+      tree_expression *head_expr = idx_expr->expression ();
+      std::list<tree_argument_list *> arg_lists = idx_expr->arg_lists ();
+      std::string type_tags = idx_expr->type_tags ();
+
+      if (type_tags.length () == 1 && type_tags[0] == '('
+          && head_expr->is_identifier ())
+        {
+          assert (arg_lists.size () == 1);
+
+          // It's a single index expression: a(x,y,....)
+          tree_identifier *head_id = dynamic_cast<tree_identifier *> (head_expr);
+          tree_argument_list *arg_list = arg_lists.front ();
+
+          // Build a map of input params to their position.
+          std::map<std::string, int> arginmap;
+          int npar = 0;
+
+          if (param_list)
+            {
+              for (tree_parameter_list::iterator it = param_list->begin ();
+                   it != param_list->end (); ++it, ++npar)
+                {
+                  tree_decl_elt *elt = *it;
+                  tree_identifier *id = elt ? elt->ident () : 0;
+                  if (id && ! id->is_black_hole ())
+                     arginmap[id->name ()] = npar;
+                }
+            }
+
+          if (arg_list && arg_list->length () > 0)
+            {
+              bool bad = false;
+              int nargs = arg_list->length ();
+              octave_value_list arg_template (nargs);
+              std::vector<int> arg_mask (nargs);
+
+              // Verify that each argument is either a named param, a constant, or a defined identifier.
+              int iarg = 0;
+              for (tree_argument_list::iterator it = arg_list->begin ();
+                   it != arg_list->end (); ++it, ++iarg)
+                {
+                  tree_expression *elt = *it;
+                  if (elt && elt->is_constant ())
+                    {
+                      arg_template(iarg) = elt->rvalue1 ();
+                      arg_mask[iarg] = -1;
+                    }
+                  else if (elt && elt->is_identifier ())
+                    {
+                      tree_identifier *elt_id = dynamic_cast<tree_identifier *> (elt);
+                      if (arginmap.find (elt_id->name ()) != arginmap.end ())
+                        {
+                          arg_mask[iarg] = arginmap[elt_id->name ()];
+                        }
+                      else if (elt_id->is_defined ())
+                        {
+                          arg_template(iarg) = elt_id->rvalue1 ();
+                          arg_mask[iarg] = -1;
+                        }
+                      else
+                        {
+                          bad = true;
+                          break;
+                        }
+                    }
+                  else
+                    {
+                      bad = true;
+                      break;
+                    }
+                }
+
+              octave_value root_val;
+
+              if (! bad)
+                {
+                  // If the head is a value, use it as root.
+                  if (head_id->is_defined ())
+                     root_val = head_id->rvalue1 ();
+                  else
+                    {
+                      // It's a name.
+                      std::string head_name = head_id->name ();
+                      // Function handles can't handle legacy dispatch, so
+                      // we make sure it's not defined.
+                      if (symbol_table::get_dispatch (head_name).size () > 0)
+                         bad = true;
+                      else
+                        {
+                          // Simulate try/catch.
+                          // FIXME: there should be a method for that.
+                          unwind_protect frame;
+
+                          frame.protect_var (error_state);
+                          frame.protect_var (buffer_error_messages);
+                          frame.protect_var (Vdebug_on_error);
+                          frame.protect_var (Vdebug_on_warning);
+
+                          buffer_error_messages++;
+                          Vdebug_on_error = false;
+                          Vdebug_on_warning = false;
+
+                          root_val = make_fcn_handle (head_name);
+                          if (error_state)
+                             bad = true;
+                        }
+                    }
+                }
+
+              if (! bad)
+                {
+                  retval = new octave_fcn_binder (f, root_val, arg_template, 
+                                                  arg_mask, npar);
+                }
+            }
+        }
+    }
+
+  if (! retval)
+     retval = new octave_fcn_handle (f, octave_fcn_handle::anonymous);
+
+  return retval;
+}
+
+octave_value_list
+octave_fcn_binder::do_multi_index_op (int nargout, 
+                                      const octave_value_list& args)
+{
+  return do_multi_index_op (nargout, args, 0);
+}
+
+octave_value_list
+octave_fcn_binder::do_multi_index_op (int nargout, 
+                                      const octave_value_list& args,
+                                      const std::list<octave_lvalue>* lvalue_list)
+{
+  octave_value_list retval;
+
+  if (args.length () == expected_nargin)
+    {
+      for (int i = 0; i < arg_template.length (); i++)
+        {
+          int j = arg_mask[i];
+          if (j >= 0)
+             arg_template.xelem(i) = args(j);
+        }
+
+      retval = root_handle.do_multi_index_op (nargout, arg_template, lvalue_list);
+    }
+  else
+     retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);
+
+  return retval;
+}

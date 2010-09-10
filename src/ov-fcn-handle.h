@@ -187,4 +187,33 @@ protected:
 extern octave_value make_fcn_handle (const std::string& nm,
                                      bool local_funcs = true);
 
+class
+OCTINTERP_API
+octave_fcn_binder : public octave_fcn_handle
+{
+private:
+  // Private ctor.
+  octave_fcn_binder (const octave_value& f, const octave_value& root,
+                     const octave_value_list& templ, 
+                     const std::vector<int>& mask, int exp_nargin);
+
+public:
+
+  // Factory method.
+  static octave_fcn_handle *maybe_binder (const octave_value& f);
+
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args);
+
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args, 
+                     const std::list<octave_lvalue>* lvalue_list);
+
+protected:
+
+  octave_value root_handle;
+  octave_value_list arg_template;
+  std::vector<int> arg_mask;
+  int expected_nargin;
+};
 #endif

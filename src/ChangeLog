@@ -1,3 +1,10 @@
+2010-09-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-fcn-handle.h (octave_fcn_binder): New subclass.
+	* ov-fcn-handle.cc: Define methods.
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue1): Call
+	octave_fcn_binder::maybe_binder.
+
 2010-09-11  John W. Eaton  <jwe@octave.org>
 
 	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):

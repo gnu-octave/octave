@@ -2082,9 +2082,12 @@ Directories added to the path must exist.\n\
           if (! error_state)
             {
               if (val == 0)
-                append = false;
+                nargin--;
               else if (val == 1)
-                append = true;
+                {
+                  append = true;
+                  nargin--;
+                }
               else
                 {
                   error ("addpath: expecting final argument to be 1 or 0");

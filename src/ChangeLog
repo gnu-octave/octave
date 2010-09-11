@@ -1,3 +1,8 @@
+2010-09-11  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (Faddpath): Adjust value of nargin if numeric
+	option is found (bug #31001).
+
 2010-09-09  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* gl2ps-renderer.cc: Renders to a previously opened fid.

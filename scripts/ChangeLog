@@ -1,3 +1,7 @@
+2010-09-11  Jaroslav Hajek  <highegg@gmail.com>
+
+	* pkg/get_forge_pkg.m: Allow underscores in pkg names.
+
 2010-09-08  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__fltk_print__.m, plot/private/__ghostscript__.m,

@@ -1,5 +1,10 @@
 2010-09-11  John W. Eaton  <jwe@octave.org>
 
+	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):
+	Avoid GCC shadow variable warning.
+
+2010-09-11  John W. Eaton  <jwe@octave.org>
+
 	* load-path.cc (Faddpath): Adjust value of nargin if numeric
 	option is found (bug #31001).
 

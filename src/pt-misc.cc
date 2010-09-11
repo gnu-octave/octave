@@ -172,9 +172,9 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
                 }
             }
 
-          octave_lvalue tmp = elt->lvalue ();
+          octave_lvalue lval = elt->lvalue ();
 
-          tmp.assign (octave_value::op_asn_eq, val);
+          lval.assign (octave_value::op_asn_eq, val);
         }
     }
 }

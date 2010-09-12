@@ -1900,6 +1900,11 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
               if (! bad)
                 {
+                  // Stash proper name tags.
+                  std::list<string_vector> arg_names = idx_expr->arg_names ();
+                  assert (arg_names.size () == 1);
+                  arg_template.stash_name_tags (arg_names.front ());
+
                   retval = new octave_fcn_binder (f, root_val, arg_template, 
                                                   arg_mask, npar);
                 }
@@ -1933,10 +1938,13 @@ octave_fcn_binder::do_multi_index_op (int nargout,
         {
           int j = arg_mask[i];
           if (j >= 0)
-             arg_template.xelem(i) = args(j);
+             arg_template(i) = args(j); // May force a copy...
         }
 
-      retval = root_handle.do_multi_index_op (nargout, arg_template, lvalue_list);
+      // Make a shallow copy of arg_template, to ensure consistency throughout the following
+      // call even if we happen to get back here.
+      octave_value_list tmp (arg_template);
+      retval = root_handle.do_multi_index_op (nargout, tmp, lvalue_list);
     }
   else
      retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);

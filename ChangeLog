@@ -1,3 +1,7 @@
+2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* NEWS: Update.
+
 2010-09-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* m4/ax_blas_f77_func.m4: Update.

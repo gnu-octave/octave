@@ -336,6 +336,14 @@ Summary of important user-visible changes for version 3.3:
      value for empty fields and also to accept file IDs opened by fopen. Likewise,
      dlmwrite can write to file IDs.
 
+  ** Octave can now optimize away the interpreter overhead of an anonymous function
+     handle, if the function simply calls another function or handle with some of its
+     parameters bound to certain values. Example:
+     
+       f = @(x) sum (x, 1);
+
+     When f is called, the call is forwarded to @sum with the constant 1 appended, and
+     the anonymous function call does not occur on the call stack.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

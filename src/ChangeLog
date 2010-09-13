@@ -1,5 +1,9 @@
 2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Remove subsref optimization.
+
+2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* DLD-FUNCTIONS/cellfun.cc (Fcellindexmat): New DEFUN.
 
 2010-09-12  Jaroslav Hajek  <highegg@gmail.com>

@@ -71,13 +71,9 @@ function [errorcode, varargout] = common_size (varargin)
         scal = !nscal;
         varargout = varargin;
         if (any (nscal))
-          ## This could also be achieved by cellfun (@repmat, ...), but repmat is an
-          ## m-function and hence still carries interpreter overhead. Further,
-          ## cellfun is slightly optimized for the case used below.
-          uo = "uniformoutput";
           dims = size (varargin{find (nscal, 1)});
-          subs = substruct ("()", arrayfun (@ones, 1, dims, uo, false));
-          varargout(scal) = cellfun ("subsref", varargin(scal), {subs}, uo, false);
+          subs = arrayfun (@ones, 1, dims, "uniformoutput", false);
+          varargout(scal) = cellindexmat (varargin(scal), subs{:});
         endif
       endif
     endif

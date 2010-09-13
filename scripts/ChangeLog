@@ -1,5 +1,9 @@
 2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
 
+	* general/common_size.m: Partially rewrite using cellindexmat.
+
+2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
+
 	* general/accumarray.m: Use @vec instead of @(x) x(:) for faster call.
 
 2010-09-11  Jaroslav Hajek  <highegg@gmail.com>

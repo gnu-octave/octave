@@ -1577,3 +1577,46 @@ slicing is done along the first non-singleton dimension.\n\
 %! c = cellslices (m, [1, 2], [2, 3], 2);
 %! assert (c, {[1, 2; 5, 6; 9, 10], [2, 3; 6, 7; 10, 11]});
 */
+
+DEFUN_DLD (cellindexmat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
+Given a cell array of matrices @var{x}, this function computes\n\
+@example\n\
+  Y = cell (size (X));\n\
+  for i = 1:numel (X)\n\
+    Y@{i@} = X@{i@}(varargin@{:@});\n\
+  endfor\n\
+@end example\n\
+@seealso{cellfun, cellslices}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () >= 1)
+    {
+      if (args(0).is_cell ())
+        {
+          const Cell x = args(0).cell_value ();
+          NoAlias<Cell> y(x.dims ());
+          octave_idx_type nel = x.numel ();
+          octave_value_list idx = args.slice (1, args.length () - 1);
+
+          for (octave_idx_type i = 0; i < nel; i++)
+            {
+              octave_quit ();
+              octave_value tmp = x(i);
+              y(i) = tmp.do_index_op (idx);
+              if (error_state)
+                break;
+            }
+
+          retval = y;
+        }
+      else
+        error ("cellindexmat: first argument must be a cell");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}

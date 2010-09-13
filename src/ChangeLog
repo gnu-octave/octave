@@ -1,3 +1,7 @@
+2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellindexmat): New DEFUN.
+
 2010-09-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-fcn-handle.cc (octave_fcn_binder::maybe_binder): Stash name tags

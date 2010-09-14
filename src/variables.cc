@@ -493,16 +493,10 @@ symbol_exist (const std::string& name, const std::string& type)
 
           if (fs)
             {
-              if ((type == "any" || type == "file")
-                  && fs.is_reg ())
-                {
-                  retval = 2;
-                }
-              else if ((type == "any" || type == "dir")
-                       && fs.is_dir ())
-                {
-                  retval = 7;
-                }
+              if (type == "any" || type == "file")
+                retval = fs.is_dir () ? 7 : 2;
+              else if (type == "dir" && fs.is_dir ())
+                retval = 7;
             }
         }
     }
@@ -596,6 +590,21 @@ Check only for directories.\n\
 
   return retval;
 }
+
+/*
+%!test
+%!  if (isunix ())
+%!    assert (exist ("/tmp") == 7);
+%!    assert (exist ("/tmp", "file") == 7);
+%!    assert (exist ("/tmp", "dir") == 7);
+%!    assert (exist ("/bin/sh") == 2);
+%!    assert (exist ("/bin/sh", "file") == 2);
+%!    assert (exist ("/bin/sh", "dir") == 0);
+%!    assert (exist ("/dev/null") == 2);
+%!    assert (exist ("/dev/null", "file") == 2);
+%!    assert (exist ("/dev/null", "dir") == 0);
+%!  endif
+*/
 
 octave_value
 lookup_function_handle (const std::string& nm)

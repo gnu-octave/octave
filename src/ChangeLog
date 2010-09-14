@@ -1,5 +1,11 @@
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (symbol_exist): If looking for any type of file
+	or "file", return 7 for directories and 2 for all other types of
+	files.
+
+2010-09-14  John W. Eaton  <jwe@octave.org>
+
 	* graphics.h.in (base_graphics_backend::initialize): Rename
 	from base_graphics_backend::object_created.  Change all uses.
 	(base_graphics_backend::finalize): Rename from

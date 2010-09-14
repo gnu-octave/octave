@@ -41,14 +41,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
     default_plot_stream = get (h, "__plot_stream__");
     unwind_protect
       plot_stream = __gnuplot_open_stream__ (2, h);
-      if (__gnuplot_has_feature__ ("variable_GPVAL_TERMINALS"))
-        available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
-        available_terminals = regexp (available_terminals, "\\b\\w+\\b", "match");
-        gnuplot_supports_term = any (strcmpi (available_terminals,
-                                              gnuplot_trim_term (term)));
-      else
-        gnuplot_supports_term = true;
-      endif
+      gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream);
       if (gnuplot_supports_term)
         enhanced = gnuplot_set_term (plot_stream (1), true, h, term, file);
         __go_draw_figure__ (h, plot_stream(1), enhanced, mono);

@@ -1829,10 +1829,6 @@ genpath (const std::string& dirname, const string_vector& skip)
         {
           std::string elt = dirlist[i];
 
-          // FIXME -- the caller should be able to specify the list of
-          // directories to skip in addition to ".", "..", and
-          // directories beginning with "@".
-
           bool skip_p = (elt == "." || elt == ".." || elt[0] == '@');
 
           if (! skip_p)
@@ -1851,7 +1847,7 @@ genpath (const std::string& dirname, const string_vector& skip)
                   file_stat fs (nm);
 
                   if (fs && fs.is_dir ())
-                    retval += dir_path::path_sep_str () + genpath (nm);
+                    retval += dir_path::path_sep_str () + genpath (nm, skip);
                 }
             }
         }
@@ -1896,12 +1892,17 @@ execute_pkg_del (const std::string& dir)
 DEFUN (genpath, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} genpath (@var{dir})\n\
+@deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
+If additional string parameters are given, the resulting path will \n\
+exclude directories with those names.\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  octave_idx_type nargin = args.length ();
+
+  if (nargin == 1)
     {
       std::string dirname = args(0).string_value ();
 
@@ -1909,6 +1910,25 @@ Return a path constructed from @var{dir} and all its subdirectories.\n\
         retval = genpath (dirname);
       else
         error ("genpath: expecting argument to be a character string");
+    }
+  else if (nargin > 1)
+    {
+      std::string dirname = args(0).string_value ();
+
+      string_vector skip (nargin - 1);
+
+      for (octave_idx_type i = 1; i < nargin; i++)
+        {
+          skip[i-1] = args(i).string_value ();
+
+          if (error_state)
+            break;
+        }
+
+      if (! error_state)
+        retval = genpath (dirname, skip);
+      else
+        error ("genpath: expecting all arguments to be character strings");
     }
   else
     print_usage ();

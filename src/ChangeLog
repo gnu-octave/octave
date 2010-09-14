@@ -1,3 +1,8 @@
+2010-09-14  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
+
+	* load-path.cc (genpath): Pass SKIP in recursive call.
+	(Fgenpath): Accept list of directories to skip.
+
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (BEGIN_CHAR_CLASS_CONVERSION): If we hit EOF but

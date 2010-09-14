@@ -1186,7 +1186,9 @@ public:
     if (go.isa ("figure"))
       {
         octave_value ov = go.get (caseless_str ("__plot_stream__"));
-        figure_manager::delete_window (ov.string_value ());
+
+        if (! ov.is_empty ())
+          figure_manager::delete_window (ov.string_value ());
       }
   }
 

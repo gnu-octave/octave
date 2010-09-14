@@ -1,3 +1,8 @@
+2010-09-14  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (fltk_backend::object_destroyed):
+	Don't attempt to delete window if __plot_stream__ is empty.
+
 2010-09-14  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
 
 	* load-path.cc (genpath): Pass SKIP in recursive call.

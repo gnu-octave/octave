@@ -1671,19 +1671,25 @@ public:
       return Matrix (1, 2, 0.0);
     }
 
-  // Called when graphics object using this backend changes it's property.
+  // Callback function executed when the given graphics object
+  // changes.  This allows the grahpics backend to act on property
+  // changes if needed.
   virtual void update (const graphics_object&, int)
     { gripe_invalid ("base_graphics_backend::update"); }
 
   void update (const graphics_handle&, int);
   
-  // Called when new object using this backend is created.
+  // Callback function executed when the given graphics object is
+  // created.  This allows the graphics backend to do backend-specific
+  // initializations for a newly created object.
   virtual void initialize (const graphics_object&)
     { gripe_invalid ("base_graphics_backend::initialize"); }
 
   void initialize (const graphics_handle&);
 
-  // Called when object using this backend is destroyed.
+  // Callback function executed just prior to deleting the given
+  // graphics object.  This allows the graphics backend to perform
+  // backend-specific cleanup operations before an object is deleted.
   virtual void finalize (const graphics_object&)
     { gripe_invalid ("base_graphics_backend::finalize"); }
 

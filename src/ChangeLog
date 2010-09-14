@@ -1,7 +1,7 @@
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
-	* oct-stream.cc (BEGIN_CHAR_CLASS_CONVERSION):
-	If we hit EOF but have found a match, clear the stream state.
+	* oct-stream.cc (BEGIN_CHAR_CLASS_CONVERSION): If we hit EOF but
+	have found a match, clear the stream state (bug # 30997).
 
 2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
 

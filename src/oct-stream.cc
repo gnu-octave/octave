@@ -1657,6 +1657,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
       if (tmp.empty ()) \
         is.setstate (std::ios::failbit); \
+      else if (c == EOF) \
+        is.clear (); \
+ \
     } \
   while (0)
 

@@ -1,3 +1,7 @@
+2010-09-13  Ben Abbott <bpabbott@mac.com>
+
+	* plot/private/__gnuplot_has_terminal__.m: New function.
+
 2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/common_size.m: Partially rewrite using cellindexmat.

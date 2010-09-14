@@ -19,6 +19,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__errplot__.m \
   plot/private/__ezplot__.m \
   plot/private/__ghostscript__.m \
+  plot/private/__gnuplot_has_terminal__.m\
   plot/private/__interp_cube__.m \
   plot/private/__line__.m \
   plot/private/__patch__.m \

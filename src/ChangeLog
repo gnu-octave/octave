@@ -1,5 +1,14 @@
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (base_graphics_backend::initialize): Rename
+	from base_graphics_backend::object_created.  Change all uses.
+	(base_graphics_backend::finalize): Rename from
+	base_graphics_backend::object_destoyed.  Change all uses.
+	(base_graphics_backend::update): Rename from
+	base_graphics_backend::property_changed.  Change all uses. 
+
+2010-09-14  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/fltk_backend.cc (fltk_backend::object_destroyed):
 	Don't attempt to delete window if __plot_stream__ is empty.
 

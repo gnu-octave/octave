@@ -1672,22 +1672,22 @@ public:
     }
 
   // Called when graphics object using this backend changes it's property.
-  virtual void property_changed (const graphics_object&, int)
-    { gripe_invalid ("property_changed"); }
+  virtual void update (const graphics_object&, int)
+    { gripe_invalid ("base_graphics_backend::update"); }
 
-  void property_changed (const graphics_handle&, int);
+  void update (const graphics_handle&, int);
   
   // Called when new object using this backend is created.
-  virtual void object_created (const graphics_object&)
-    { gripe_invalid ("object_created"); }
+  virtual void initialize (const graphics_object&)
+    { gripe_invalid ("base_graphics_backend::initialize"); }
 
-  void object_created (const graphics_handle&);
+  void initialize (const graphics_handle&);
 
   // Called when object using this backend is destroyed.
-  virtual void object_destroyed (const graphics_object&)
-    { gripe_invalid ("object_destroyed"); }
+  virtual void finalize (const graphics_object&)
+    { gripe_invalid ("base_graphics_backend::finalize"); }
 
-  void object_destroyed (const graphics_handle&);
+  void finalize (const graphics_handle&);
 
 private:
   std::string name;
@@ -1764,27 +1764,27 @@ public:
     { return rep->get_screen_size (); }
 
   // Notifies backend that object't property has changed.
-  void property_changed (const graphics_object& go, int id)
-    { rep->property_changed (go, id); }
+  void update (const graphics_object& go, int id)
+    { rep->update (go, id); }
   
-  void property_changed (const graphics_handle& h, int id)
-    { rep->property_changed (h, id); }
+  void update (const graphics_handle& h, int id)
+    { rep->update (h, id); }
 
   // Notifies backend that new object was created.
-  void object_created (const graphics_object& go)
-    { rep->object_created (go); }
+  void initialize (const graphics_object& go)
+    { rep->initialize (go); }
   
-  void object_created (const graphics_handle& h)
-    { rep->object_created (h); }
+  void initialize (const graphics_handle& h)
+    { rep->initialize (h); }
   
   // Notifies backend that object was destroyed.
   // This is called only for explicitly deleted object. Children are
   // deleted implicitly and backend isn't notified.
-  void object_destroyed (const graphics_object& go)
-    { rep->object_destroyed (go); }
+  void finalize (const graphics_object& go)
+    { rep->finalize (go); }
   
-  void object_destroyed (const graphics_handle& h)
-    { rep->object_destroyed (h); }
+  void finalize (const graphics_handle& h)
+    { rep->finalize (h); }
   
   OCTINTERP_API static graphics_backend default_backend (void);
 
@@ -2599,7 +2599,7 @@ public:
     void set_backend (const graphics_backend& b) 
     { 
       if (backend)
-        backend.object_destroyed (__myhandle__);
+        backend.finalize (__myhandle__);
       backend = b; 
       __backend__ = b.get_name ();
       __plot_stream__ = Matrix ();

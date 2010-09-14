@@ -1181,7 +1181,7 @@ public:
 
   bool is_valid (void) const { return true; }
 
-  void object_destroyed (const graphics_object& go)
+  void finalize (const graphics_object& go)
   {
     if (go.isa ("figure"))
       {
@@ -1192,7 +1192,7 @@ public:
       }
   }
 
-  void property_changed (const graphics_object& go, int id)
+  void update (const graphics_object& go, int id)
   {
     if (go.isa ("figure"))
       {

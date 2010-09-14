@@ -784,7 +784,7 @@ base_property::set (const octave_value& v, bool do_run )
             {
               graphics_backend backend = go.get_backend();
               if (backend)
-                backend.property_changed (go, id);
+                backend.update (go, id);
             }
         }
 
@@ -1827,7 +1827,7 @@ gh_manager::do_free (const graphics_handle& h)
               // notify backend
               graphics_backend backend = p->second.get_backend ();
               if (backend)
-                backend.object_destroyed (p->second);
+                backend.finalize (p->second);
 
               // Note: this will be valid only for first explicitly 
               // deleted object.  All its children will then have an
@@ -2006,27 +2006,27 @@ xcreatefcn (const graphics_handle& h)
 // ---------------------------------------------------------------------
 
 void
-base_graphics_backend::property_changed (const graphics_handle& h, int id)
+base_graphics_backend::update (const graphics_handle& h, int id)
 {
   graphics_object go = gh_manager::get_object (h);
 
-  property_changed (go, id);
+  update (go, id);
 }
 
 void
-base_graphics_backend::object_created (const graphics_handle& h)
+base_graphics_backend::initialize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
 
-  object_created (go);
+  initialize (go);
 }
 
 void
-base_graphics_backend::object_destroyed (const graphics_handle& h)
+base_graphics_backend::finalize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
 
-  object_destroyed (go);
+  finalize (go);
 }
 // ---------------------------------------------------------------------
 
@@ -2329,7 +2329,7 @@ public:
 
   bool is_valid (void) const { return true; }
 
-  void object_destroyed (const graphics_object& go)
+  void finalize (const graphics_object& go)
     {
       if (go.isa ("figure"))
         {
@@ -2340,7 +2340,7 @@ public:
         }
     }
 
-  void property_changed (const graphics_object& go, int id)
+  void update (const graphics_object& go, int id)
     {
       if (go.isa ("figure"))
         {
@@ -4717,7 +4717,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
       // notify backend
       graphics_backend backend = go->get_backend ();
       if (backend)
-        backend.object_created (obj);
+        backend.initialize (obj);
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
@@ -4739,7 +4739,7 @@ gh_manager::do_make_figure_handle (double val)
   // notify backend
   graphics_backend backend = go->get_backend ();
   if (backend)
-    backend.object_created (obj);
+    backend.initialize (obj);
   
   return h;
 }

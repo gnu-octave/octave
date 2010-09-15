@@ -72,6 +72,8 @@ public:
 
   SparseComplexMatrix (const MSparse<Complex>& a) : MSparse<Complex> (a) { }
 
+  SparseComplexMatrix (const Sparse<Complex>& a) : MSparse<Complex> (a) { }
+
   explicit SparseComplexMatrix (const ComplexMatrix& a) 
     : MSparse<Complex> (a) { }
 

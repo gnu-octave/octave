@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "MSparse-defs.h"
 #include "Sparse-op-defs.h"
 
+class SparseMatrix;
+
 class
 OCTAVE_API
 SparseBoolMatrix : public Sparse<bool>
@@ -108,6 +110,7 @@ public:
 
   SparseBoolMatrix all (int dim = -1) const;
   SparseBoolMatrix any (int dim = -1) const;
+  SparseMatrix sum (int dim = -1) const;
 
   // i/o
 

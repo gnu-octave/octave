@@ -1,5 +1,14 @@
 2010-09-15  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dSparse.h (SparseMatrix::SparseMatrix (const Sparse<double>&)):
+	New ctor.
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix 
+	(const Sparse<Complex>&)): New ctor.
+	* boolSparse.cc (SparseBoolMatrix::sum): New method.
+	* boolSparse.h: Declare it.
+
+2010-09-15  Jaroslav Hajek  <highegg@gmail.com>
+
 	* boolSparse.cc (SparseBoolMatrix::any): Optimize.
 
 2010-08-24  Jaroslav Hajek  <highegg@gmail.com>

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "boolSparse.h"
+#include "dSparse.h"
 #include "oct-mem.h"
 #include "oct-locbuf.h"
 
@@ -169,13 +170,58 @@ SparseBoolMatrix::any (int dim) const
         }
       else
         {
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, tmpridx, nz);
-          copy_or_memcpy (nz, ridx (), tmpridx);
-          std::sort (tmpridx, tmpridx+nz);
-          octave_idx_type new_nz = std::unique (tmpridx, tmpridx + nz) - tmpridx;
-          retval = Sparse<bool> (nr, 1, new_nz);
-          copy_or_memcpy (new_nz, tmpridx, retval.ridx ());
-          fill_or_memset (new_nz, true, retval.data ());
+          Array<octave_idx_type> tmp (nz, 1);
+          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          retval = Sparse<bool> (Array<bool> (1, 1, true),
+                                 idx_vector (tmp), idx_vector (0), nr, 1,
+                                 false);
+        }
+    }
+
+  return retval;
+}
+
+SparseMatrix
+SparseBoolMatrix::sum (int dim) const
+{
+  Sparse<double> retval;
+  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  if (dim == -1)
+    dim = (nr == 1 && nc != 1) ? 1 : 0;
+
+  if (dim == 0)
+    {
+      // Result is a row vector.
+      retval = Sparse<double> (1, nc);
+      for(octave_idx_type i = 0; i < nc; i++)
+        retval.xcidx(i+1) = retval.xcidx(i) + (cidx(i+1) > cidx(i));
+      octave_idx_type new_nz = retval.xcidx(nc);
+      retval.change_capacity (new_nz);
+      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+      for(octave_idx_type i = 0, k = 0; i < nc; i++)
+        {
+          octave_idx_type c = cidx(i+1) - cidx(i);
+          if (c > 0)
+            retval.xdata(k++) = c;
+        }
+    }
+  else if (dim == 1)
+    {
+      // Result is a column vector.
+      if (nz > nr)
+        {
+          // We can use O(nr) memory.
+          Array<double> tmp (nr, 1, 0);
+          for (octave_idx_type i = 0; i < nz; i++)
+            tmp.xelem(ridx(i)) += 1.0;
+          retval = tmp;
+        }
+      else
+        {
+          Array<octave_idx_type> tmp (nz, 1);
+          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          retval = Sparse<double> (Array<double> (1, 1, 1.0),
+                                   idx_vector (tmp), idx_vector (0), nr, 1);
         }
     }
 

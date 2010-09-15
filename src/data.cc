@@ -2361,7 +2361,7 @@ than straightforward summation is to be used.  For single precision inputs,\n\
                   if (isnative)
                     retval = arg.sparse_bool_matrix_value ().any (dim);
                   else
-                    retval = arg.sparse_matrix_value ().sum (dim);
+                    retval = arg.sparse_bool_matrix_value ().sum (dim);
                 }
               else if (isnative)
                 retval = arg.bool_array_value ().any (dim);

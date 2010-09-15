@@ -66,6 +66,8 @@ SparseMatrix : public MSparse<double>
 
   SparseMatrix (const MSparse<double>& a) : MSparse<double> (a) { }
 
+  SparseMatrix (const Sparse<double>& a) : MSparse<double> (a) { }
+
   explicit SparseMatrix (const SparseBoolMatrix& a);
 
   explicit SparseMatrix (const Matrix& a) : MSparse<double> (a) { }

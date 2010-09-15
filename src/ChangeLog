@@ -1,3 +1,7 @@
+2010-09-15  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (Faddpath, Frmpath): Document path arguments.
+
 2010-09-15  John Swensen <jpswensen@gmail.com>
 
 	* __magick_read__.cc: Allow image_write to write filetypes

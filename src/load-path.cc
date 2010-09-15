@@ -2011,7 +2011,7 @@ If @var{nargin} is zero and nargout is greater than zero, return the\n\
 current load path.\n\
 \n\
 If @var{nargin} is greater than zero, concatenate the arguments,\n\
-separating them with @code{pathsep()}.  Set the internal search path\n\
+separating them with @code{pathsep}.  Set the internal search path\n\
 to the result and return it.\n\
 \n\
 No checks are made for duplicate elements.\n\
@@ -2064,6 +2064,13 @@ Add @var{dir1}, @dots{} to the current function search path.  If\n\
 directory name to the current path.  If @var{option} is @samp{\"-end\"}\n\
 or 1, append the directory name to the current path.\n\
 Directories added to the path must exist.\n\
+\n\
+In addition to accepting individual directory arguments, lists of\n\
+directory names separated by @code{pathsep} are also accepted.  For example,\n
+\n\
+@example\n\
+addpath (\"dir1:/dir2:~/dir3\");\n\
+@end example\n\
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {
@@ -2169,6 +2176,12 @@ DEFUN (rmpath, args, nargout,
 @deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
 Remove @var{dir1}, @dots{} from the current function search path.\n\
 \n\
+In addition to accepting individual directory arguments, lists of\n\
+directory names separated by @code{pathsep} are also accepted.  For example,\n
+\n\
+@example\n\
+rmpath (\"dir1:/dir2:~/dir3\");\n\
+@end example\n\
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
 {

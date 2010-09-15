@@ -535,7 +535,6 @@ jpg_settings (std::vector<Magick::Image>& imvec,
               const Octave_map& options,
               bool)
 {
-  int nframes = static_cast<int>(imvec.size ());
   bool something_set = 0;
 
   // Quality setting
@@ -554,11 +553,11 @@ jpg_settings (std::vector<Magick::Image>& imvec,
       something_set = 1;
       if (result.is_real_type ())
         {
-          int qlev = static_cast<int>(result.int_value ());
+          int qlev = result.int_value ();
           if (qlev < 0 || qlev > 100)
             warning ("warning: Quality setting invalid--use default of 75");
           else
-            for (int fnum = 0; fnum < nframes; fnum++)
+            for (size_t fnum = 0; fnum < imvec.size (); fnum++)
               imvec[fnum].quality (static_cast<unsigned int>(qlev));
         }
       else
@@ -729,9 +728,8 @@ static void
 encode_map (std::vector<Magick::Image>& imvec, const NDArray& cmap)
 {
   unsigned int mapsize = cmap.dim1 ();
-  int nframes = static_cast<int>(imvec.size ());
 
-  for (int fnum = 0; fnum < nframes; fnum++)
+  for (size_t fnum = 0; fnum < imvec.size (); fnum++)
     {
       imvec[fnum].colorMapSize (mapsize);
       imvec[fnum].type (Magick::PaletteType);
@@ -811,8 +809,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
   try
     {
-      int nframes = static_cast<int>(imvec.size ());
-      for (int i = 0; i < nframes ; i++)
+      for (int i = 0; i < imvec.size (); i++)
         imvec[i].magick (fmt);
           
       Magick::writeImages (imvec.begin (), imvec.end (), filename);

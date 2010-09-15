@@ -1,3 +1,8 @@
+2010-09-15  John Swensen <jpswensen@gmail.com>
+
+	* __magick_read__.cc: Allow image_write to write filetypes
+	without an extension (bug #30784).
+
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_exist): If looking for any type of file

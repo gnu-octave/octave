@@ -811,6 +811,10 @@ write_image (const std::string& filename, const std::string& fmt,
 
   try
     {
+      int nframes = static_cast<int>(imvec.size ());
+      for (int i = 0; i < nframes ; i++)
+        imvec[i].magick (fmt);
+          
       Magick::writeImages (imvec.begin (), imvec.end (), filename);
     }
   catch (Magick::Warning& w)

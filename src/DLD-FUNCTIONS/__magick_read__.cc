@@ -427,8 +427,7 @@ function.  Instead you should use @code{imread}.\n\
   else if (args.length () == 3 && args(1).is_string () 
            && args(1).string_value() == "frames")
     {
-      if (args(2).is_string () 
-          && args(2).string_value() == "all")
+      if (args(2).is_string () && args(2).string_value() == "all")
         all_frames = true;
       else if (args(2).is_real_type ())
         frameidx = args(2).int_vector_value();
@@ -464,12 +463,12 @@ function.  Instead you should use @code{imread}.\n\
   if (all_frames)
     {
       frameidx = Array<int> (1, nframes);
-      for (int i = 0; i < frameidx.length(); i++)
+      for (int i = 0; i < frameidx.length (); i++)
         frameidx(i) = i;
     }
   else
     {
-      for (int i = 0; i < frameidx.length(); i++)
+      for (int i = 0; i < frameidx.length (); i++)
         {
           frameidx(i) = frameidx(i) - 1;
 
@@ -535,30 +534,38 @@ jpg_settings (std::vector<Magick::Image>& imvec,
               const Octave_map& options,
               bool)
 {
-  bool something_set = 0;
+  bool something_set = false;
 
   // Quality setting
   octave_value result;
   Octave_map::const_iterator p;
-  bool found_it = 0;
+  bool found_it = false;
+
   for (p = options.begin (); p != options.end (); p++)
-    if (options.key (p) == "Quality")
-      {
-        found_it = 1;
-        result = options.contents (p).elem (0);
-        break;
-      }
+    {
+      if (options.key (p) == "Quality")
+        {
+          found_it = true;
+          result = options.contents (p).elem (0);
+          break;
+        }
+    }
+
   if (found_it && (! result.is_empty ()))
     {
-      something_set = 1;
+      something_set = true;
+
       if (result.is_real_type ())
         {
           int qlev = result.int_value ();
+
           if (qlev < 0 || qlev > 100)
             warning ("warning: Quality setting invalid--use default of 75");
           else
-            for (size_t fnum = 0; fnum < imvec.size (); fnum++)
-              imvec[fnum].quality (static_cast<unsigned int>(qlev));
+            {
+              for (size_t fnum = 0; fnum < imvec.size (); fnum++)
+                imvec[fnum].quality (static_cast<unsigned int>(qlev));
+            }
         }
       else
         warning ("warning: Quality setting invalid--use default of 75");
@@ -591,21 +598,25 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
       im.classType (Magick::DirectClass);
       im.depth (1);
 
-      for (int y=0; y < columns; y++)
+      for (int y = 0; y < columns; y++)
         {
           idx(1) = y;
-          for (int x=0; x < rows; x++)
+
+          for (int x = 0; x < rows; x++)
             {
               if (nframes > 1)
                 {
                   idx(2) = 0;
                   idx(3) = ii;
                 }
+
               idx(0) = x;
+
               if (m(idx))
                 im.pixelColor (y, x, "white");
             }
         }
+
       imvec.push_back (im);
     }
 }
@@ -636,6 +647,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   unsigned int nframes = 1;
   if (dsizes.length () == 4)
     nframes = dsizes(3);
+
   bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
   bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
 
@@ -648,8 +660,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
   for (unsigned int ii = 0; ii < nframes; ii++)
     {
-      Magick::Image im(Magick::Geometry (columns, rows), "black");
+      Magick::Image im (Magick::Geometry (columns, rows), "black");
+
       im.depth (bitdepth);
+
       if (has_map)
         im.classType (Magick::PseudoClass);
       else
@@ -663,19 +677,24 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             im.type (Magick::TrueColorType);
 
           Magick::ColorRGB c;
-          for (int y=0; y < columns; y++)
+
+          for (int y = 0; y < columns; y++)
             {
               idx(1) = y;
-              for (int x=0; x < rows; x++)
+
+              for (int x = 0; x < rows; x++)
                 {
                   idx(0) = x;
+
                   if (nframes > 1)
                     idx(3) = ii;
 
                   idx(2) = 0;
                   c.red (static_cast<double>(m(idx)) / div_factor);
+
                   idx(2) = 1;
                   c.green (static_cast<double>(m(idx)) / div_factor);
+
                   idx(2) = 2;
                   c.blue (static_cast<double>(m(idx)) / div_factor);
 
@@ -684,6 +703,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                       idx(2) = 3;
                       c.alpha (static_cast<double>(m(idx)) / div_factor);
                     }
+
                   im.pixelColor (y, x, c);
                 }
             }
@@ -697,17 +717,20 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
           Magick::ColorGray c;
 
-          for (int y=0; y < columns; y++)
+          for (int y = 0; y < columns; y++)
             {
               idx(1) = y;
+
               for (int x=0; x < rows; x++)
                 {
                   idx(0) = x;
+
                   if (nframes > 1)
                     {
                       idx(2) = 0;
                       idx(3) = ii;
                     }
+
                   if (has_alpha)
                     {
                       idx(2) = 1;
@@ -716,10 +739,12 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                     }
 
                   c.shade (static_cast<double>(m(idx)) / div_factor);
+
                   im.pixelColor (y, x, c);
                 }
             }
         }
+
       imvec.push_back (im);
     }
 }
@@ -809,7 +834,7 @@ write_image (const std::string& filename, const std::string& fmt,
 
   try
     {
-      for (int i = 0; i < imvec.size (); i++)
+      for (size_t i = 0; i < imvec.size (); i++)
         imvec[i].magick (fmt);
           
       Magick::writeImages (imvec.begin (), imvec.end (), filename);

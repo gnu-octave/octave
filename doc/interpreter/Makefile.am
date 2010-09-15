@@ -218,6 +218,7 @@ EXTRA_DIST = \
   contributors.in \
   find-docstring-files.sh \
   images \
+  images.awk \
   images.mk \
   mk_doc_cache.m \
   mkcontrib.awk \

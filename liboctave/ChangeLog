@@ -1,3 +1,7 @@
+2010-09-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* boolSparse.cc (SparseBoolMatrix::any): Optimize.
+
 2010-08-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array-ch.cc: Inline basic sorts.

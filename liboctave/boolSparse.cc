@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "boolSparse.h"
+#include "oct-mem.h"
+#include "oct-locbuf.h"
 
 // SparseBoolMatrix class.
 
@@ -138,7 +140,46 @@ SparseBoolMatrix::all (int dim) const
 SparseBoolMatrix
 SparseBoolMatrix::any (int dim) const
 {
-  SPARSE_ANY_OP (dim);
+  Sparse<bool> retval;
+  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  if (dim == -1)
+    dim = (nr == 1 && nc != 1) ? 1 : 0;
+
+  if (dim == 0)
+    {
+      // Result is a row vector.
+      retval = Sparse<bool> (1, nc);
+      for(octave_idx_type i = 0; i < nc; i++)
+        retval.xcidx(i+1) = retval.xcidx(i) + (cidx(i+1) > cidx(i));
+      octave_idx_type new_nz = retval.xcidx(nc);
+      retval.change_capacity (new_nz);
+      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+      fill_or_memset (new_nz, true, retval.data ());
+    }
+  else if (dim == 1)
+    {
+      // Result is a column vector.
+      if (nz > nr/4)
+        {
+          // We can use O(nr) memory.
+          Array<bool> tmp (nr, 1, false);
+          for (octave_idx_type i = 0; i < nz; i++)
+            tmp.xelem(ridx(i)) = true;
+          retval = tmp;
+        }
+      else
+        {
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, tmpridx, nz);
+          copy_or_memcpy (nz, ridx (), tmpridx);
+          std::sort (tmpridx, tmpridx+nz);
+          octave_idx_type new_nz = std::unique (tmpridx, tmpridx + nz) - tmpridx;
+          retval = Sparse<bool> (nr, 1, new_nz);
+          copy_or_memcpy (new_nz, tmpridx, retval.ridx ());
+          fill_or_memset (new_nz, true, retval.data ());
+        }
+    }
+
+  return retval;
 }
 
 SparseBoolMatrix

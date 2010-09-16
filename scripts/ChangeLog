@@ -1,3 +1,8 @@
+2010-09-16  Jaroslav Hajek  <highegg@gmail.com>
+
+	* signal/periodogram.m: Support additional inputs:
+	win, nfft, Fs, range. Thanks to Alois Schlögl.
+
 2010-09-13  Ben Abbott <bpabbott@mac.com>
 
 	* plot/gnuplot_drawnow.m: Use new function __gnuplot_has_terminal__().

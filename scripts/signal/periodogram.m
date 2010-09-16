@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2005, 2007
 ##               Friedrich Leisch
+## Copyright (C) 2010 Alois Schloegl
 ##
 ## This file is part of Octave.
 ##
@@ -18,33 +19,174 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} periodogram (@var{x})
+## @deftypefn {Function File} {[Pxx,w]} = periodogram (@var{x})
 ## For a data matrix @var{x} from a sample of size @var{n}, return the
-## periodogram.
+## periodogram. w returns the angular frequency.
+##
+##   [Pxx,w] = periodogram (@var{x}).
+##
+##   [Pxx,w] = periodogram (@var{x},win).
+##
+##   [Pxx,w] = periodogram (@var{x},win,nfft).
+##
+##   [Pxx,f] = periodogram (@var{x},win,nfft,Fs).
+##
+##   [Pxx,f] = periodogram (@var{x},win,nfft,Fs,"range").
+##
+##   @itemize
+##   @item x: data; if real-valued a one-sided spectrum is estimated,
+##   if complex-valued or range indicates "twosided", the full spectrum is estimated.
+##
+##   @item win: weight data with window, x.*win is used for further computation,
+##   if window is empty, a rectangular window is used.
+##
+##   @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
+##
+##   @item Fs: sampleing rate, default 1.
+##
+##   @item range: "onesided" computes spectrum from [0..nfft/2+1].
+##   "twosided" computes spectrum from [0..nfft-1]. These strings can appear at any
+##    position in the list input arguments after window.
+##
+##   @item Pxx: one-, or two-sided power spectrum.
+##
+##   @item w: angular frequency [0..2*pi) (two-sided) or [0..pi] one-sided.
+##
+##   @item f: frequency [0..Fs) (two-sided) or [0..Fs/2] one-sided.
+##   @end itemize
+##
+##
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Compute the periodogram
 
-function retval = periodogram (x)
+function [pxx, f] = periodogram (x, varargin)
 
-  if (nargin != 1)
+  ## check input arguments
+
+  if (nargin < 1 || nargin > 5)
     print_usage ();
   endif
 
-  [r, c] = size(x);
+  nfft = []; fs = []; range = []; window = [];
+  j = 1;
+  for k = 1:length (varargin)
+    if (ischar (varargin{k}))
+      range = varargin{k};
+    else
+      switch (j)
+      case 1
+        window = varargin{k};
+      case 2
+        nfft   = varargin{k};
+      case 3
+        fs     = varargin{k};
+      case 4
+        range  = varargin{k};
+      endswitch
+      j++;
+    endif
+  endfor
 
+  [r, c] = size (x);
   if (r == 1)
     r = c;
   endif
 
-  retval = (abs (fft (x - mean (x)))) .^ 2 / r;
+  if (ischar (window))
+    range = window;
+    window = [];
+  endif;
+  if (ischar (nfft))
+    range = nfft;
+    nfft = [];
+  endif;
+  if (ischar (fs))
+    range = fs;
+    fs = [];
+  endif;
+
+  if (!  isempty (window))
+    if (all (size (x) == size (window)))
+      x .*= window;
+    elseif (size (x, 1) == size (window, 1) && size (window, 2) == 1)
+      x .*= window (:,ones (1,c));
+    endif;
+  endif
+
+  if (numel (nfft)>1)
+    error ("nfft must be scalar");
+  endif
+  if (isempty (nfft))
+    nfft = max (256, 2.^ceil (log2 (r)));
+  endif
+
+  if (strcmp (range, "onesided"))
+    range = 1;
+  elseif strcmp (range, "twosided")
+    range = 2;
+  else
+    range = 2-isreal (x);
+  endif
+
+  ## compute periodogram
+
+  if (r>nfft)
+    Pxx = 0;
+    rr = rem (length (x), nfft);
+    if (rr)
+    	x = [x(:);zeros (nfft-rr, 1)];
+    end
+    x = sum (reshape (x, nfft, []), 2);
+  endif
+
+  if (isempty (window))
+    n = r;
+  else
+    n = sumsq (window);
+  end;
+  Pxx = (abs (fft (x, nfft))) .^ 2 / n ;
+
+  if (nargin<4)
+    Pxx /= 2*pi;
+  elseif (! isempty (fs))
+    Pxx /= fs;
+  endif
+
+  ## generate output arguments
+
+  if (range == 1)  # onesided
+    Pxx = Pxx(1:nfft/2+1) + [0; Pxx(end:-1:(nfft/2+2)); 0];
+  endif
+
+  if (nargout != 1)
+    if (range == 1)
+      f = (0:nfft/2)"/nfft;
+    elseif (range == 2)
+      f = (0:nfft-1)"/nfft;
+    endif
+    if (nargin<4)
+      f *= 2*pi; # generate w=2*pi*f
+    elseif (! isempty (fs))
+      f *= fs;
+    endif
+  endif
+
+  if (nargout == 0)
+    if (nargin<4)
+      plot (f/(2*pi), 10*log10 (Pxx));
+      xlabel ("normalized frequency [x pi rad]");
+      ylabel ("Power density [dB/rad/sample]");
+    else
+      plot (f, 10*log10 (Pxx));
+      xlabel ("frequency [Hz]");
+      ylabel ("Power density [dB/Hz]");
+    end
+    grid on;
+    title ("Periodogram Power Spectral Density Estimate");
+  else
+    pxx = Pxx;
+  endif
 
 endfunction
-
-
-
-
-
-
-

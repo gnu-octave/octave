@@ -1,3 +1,15 @@
+2010-09-16  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/svd.cc (Fsvd): Delete assert to avoid
+	"comparison is always false due to limited range of data type"
+	warning from GCC.
+
+	* utils.cc (octave_vsnprintf): Declare nchars volatile to avoid
+	GCC warning.
+
+	* pr-output.cc (octave_print_internal): Avoid uninitialized
+	variable warning from GCC.
+
 2010-09-16  John Swensen  <jpswensen@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (write_images): Allow

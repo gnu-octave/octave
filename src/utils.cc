@@ -1213,7 +1213,7 @@ octave_vsnprintf (const char *fmt, va_list args)
 
   static char *buf = 0;
 
-  int nchars = 0;
+  volatile int nchars = 0;
 
   if (! buf)
     buf = new char [size];

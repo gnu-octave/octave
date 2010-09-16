@@ -152,7 +152,6 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
                     : (nargin == 2) ? SVD::economy : SVD::std);
 
   SVD::driver driver = static_cast<SVD::driver> (Vsvd_driver);
-  assert (driver == SVD::GESVD || driver == SVD::GESDD);
 
   if (nr == 0 || nc == 0)
     {

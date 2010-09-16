@@ -2648,7 +2648,7 @@ octave_print_internal (std::ostream& os, const Range& r,
     }
   else
     {
-      int fw;
+      int fw = 0;
       double scale = 1.0;
       set_format (r, fw, scale);
 

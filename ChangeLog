@@ -1,3 +1,25 @@
+2010-09-16  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (SCRIPTS_EXE_SUFFIX) Delete variable and all uses.
+	(BUILD_COMPILED_AUX_PROGRAMS): New variable.
+	(AMCOND_BUILD_COMPILED_AUX_PROGRAMS): New Automake conditional.
+	* Makefile.am (SCRIPTS_EXE_SUFFIX, BUILT_SHELL_FILES): Delete
+	variables and all uses.
+	(bin_SCRIPTS, bin_PROGRAMS, mkoctfile_SOURCES,
+	nodist_mkoctfile_SOURCES, octave_config_SOURCES,
+	nodist_octave_config_SOURCES, octave_bug_SOURCES,
+	nodist_octave_bug_SOURCES, BUILT_SOURCES): Define conditionally
+	based on AMCOND_BUILD_COMPILED_AUX_PROGRAMS.
+	(noinst_SCRIPTS): New variable.
+	(CLEANFILES): Include $(bin_PROGRAMS) $(bin_SCRIPTS)
+	$(BUILT_SOURCES) in the list.
+	(all-local): Also depend on $(bin_PROGRAMS) and $(noinst_SCRIPTS).
+	(octave-bug.cc, octave-config.cc, mkoctfile.cc, octave-bug)
+	(octave-config, mkoctfile): Make rules conditional on
+	AMCOND_BUILD_COMPILED_AUX_PROGRAMS.
+	(make-version-links, remove-version-links): Define different
+	rules conditional on AMCOND_BUILD_COMPILED_AUX_PROGRAMS.
+
 2010-09-13  Jaroslav Hajek  <highegg@gmail.com>
 
 	* NEWS: Update.

@@ -1151,7 +1151,7 @@ OCTINTERP_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 ldpreloadsep=" "
-SCRIPTS_EXE_SUFFIX=
+BUILD_COMPILED_AUX_PROGRAMS=false
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
@@ -1206,6 +1206,7 @@ case "$canonical_host_type" in
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
+    BUILD_COMPILED_AUX_PROGRAMS=true
     if test "$have_msvc" = "yes"; then
       DL_LDFLAGS="-shared"
       CPICFLAG=
@@ -1231,7 +1232,6 @@ case "$canonical_host_type" in
       OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
       OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
       OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
-      SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
     else
       CPICFLAG=
       CXXPICFLAG=
@@ -1243,11 +1243,11 @@ case "$canonical_host_type" in
       SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
       SONAME_FLAGS='-Wl,--out-implib=$@.a'
       library_path_var=PATH
-      SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
     fi
   ;;
 
   *-*-msdosmsvc)
+    BUILD_COMPILED_AUX_PROGRAMS=true
     DL_LDFLAGS="-shared"
     CPICFLAG=
     CXXPICFLAG=
@@ -1272,7 +1272,6 @@ case "$canonical_host_type" in
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
     OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
     OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
-    SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1355,6 +1354,9 @@ case "$canonical_host_type" in
   ;;
 esac
 
+AM_CONDITIONAL([AMCOND_BUILD_COMPILED_AUX_PROGRAMS],
+  [test x$BUILD_COMPILED_AUX_PROGRAMS = xtrue])
+
 if $use_rpath; then
   if test -n "$enable_rpath_arg"; then
     RLD_FLAG="$enable_rpath_arg"
@@ -1422,7 +1424,6 @@ AC_SUBST(OCTINTERP_DLL_DEFS)
 AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
 AC_SUBST(ldpreloadsep)
-AC_SUBST(SCRIPTS_EXE_SUFFIX)
 
 ### special checks for odd OS specific things.
 

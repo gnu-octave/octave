@@ -27,8 +27,6 @@ include common.mk
 
 ACLOCAL_AMFLAGS = -I m4
 
-SCRIPTS_EXE_SUFFIX = @SCRIPTS_EXE_SUFFIX@
-
 BUILT_DISTFILES = BUGS INSTALL.OCTAVE
 
 EXTRA_DIST = \
@@ -77,32 +75,49 @@ dist-hook:
 	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
 
-BUILT_SHELL_FILES = \
-  mkoctfile$(SCRIPTS_EXE_SUFFIX) \
-  octave-config$(SCRIPTS_EXE_SUFFIX) \
-  octave-bug$(SCRIPTS_EXE_SUFFIX) \
-  run-octave
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+bin_PROGRAMS = \
+  mkoctfile \
+  octave-config \
+  octave-bug
 
+mkoctfile_SOURCES =
+nodist_mkoctfile_SOURCES = mkoctfile.cc
+
+octave_config_SOURCES =
+nodist_octave_config_SOURCES = octave-config.cc
+
+octave_bug_SOURCES =
+nodist_octave_bug_SOURCES = octave-bug.cc
+
+BUILT_SOURCES = \
+  mkoctfile.cc \
+  octave-config.cc \
+  octave-bug.cc
+
+else
 bin_SCRIPTS = \
-  mkoctfile$(SCRIPTS_EXE_SUFFIX) \
-  octave-config$(SCRIPTS_EXE_SUFFIX) \
-  octave-bug$(SCRIPTS_EXE_SUFFIX)
+  mkoctfile \
+  octave-config \
+  octave-bug \
+  run-octave
+endif
+
+noinst_SCRIPTS = run-octave
 
 INFO_FILES = \
   INSTALL.OCTAVE \
   BUGS
 
-CLEANFILES = $(BUILT_SHELL_FILES)
+CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
 
 DISTCLEANFILES = $(INFO_FILES) .gdbinit 
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
-BUILT_SOURCES = run-octave
-
 nodist_octinclude_HEADERS = config.h
 
-all-local: $(bin_SCRIPTS) $(INFO_FILES) .gdbinit
+all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
@@ -111,44 +126,28 @@ all-local: $(bin_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
 
-octave-bug: octave-bug.in Makefile
-	@$(do_subst_config_vals)
-	chmod a+rx $@
-
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-bug.cc: octave-bug.cc.in Makefile
 	@$(do_subst_config_vals)
 
-# ifneq ($(EXEEXT),)
-# octave-bug$(EXEEXT): octave-bug.o
-# 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-# 	    $(ALL_LDFLAGS) -o $@ octave-bug.o
-# endif
+octave-config.cc: octave-config.cc.in Makefile
+	@$(do_subst_default_vals)
+
+mkoctfile.cc: mkoctfile.cc.in Makefile
+	@$(do_subst_config_vals)
+else
+octave-bug: octave-bug.in Makefile
+	@$(do_subst_config_vals)
+	chmod a+rx $@
 
 octave-config: octave-config.in Makefile
 	@$(do_subst_default_vals)
 	chmod a+rx $@
 
-octave-config.cc: octave-config.cc.in Makefile
-	@$(do_subst_default_vals)
-
-# ifneq ($(EXEEXT),)
-# octave-config$(EXEEXT): octave-config.o
-# 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-# 	    $(ALL_LDFLAGS) -o $@ octave-config.o
-# endif
-
 mkoctfile: mkoctfile.in Makefile
 	@$(do_subst_config_vals)
 	chmod a+rx $@
-
-mkoctfile.cc: mkoctfile.cc.in Makefile
-	@$(do_subst_config_vals)
-
-# ifneq ($(EXEEXT),)
-# mkoctfile$(EXEEXT): mkoctfile.o
-# 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
-# 	    $(ALL_LDFLAGS) -o $@ mkoctfile.o
-# endif
+endif
 
 run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
@@ -187,17 +186,31 @@ install-exec-hook: make-version-links
 
 uninstall-local: remove-version-links
 
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+make-version-links:
+	cd $(DESTDIR)$(bindir) && \
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
+	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
+	done
+
+remove-version-links:
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
+	done
+else
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
 	for f in $(basename $(bin_SCRIPTS)); do \
-	  mv $$f$(SCRIPTS_EXE_SUFFIX) $$f-$(version)$(SCRIPTS_EXE_SUFFIX) && \
-	    $(LN_S) $$f-$(version)$(SCRIPTS_EXE_SUFFIX) $$f$(SCRIPTS_EXE_SUFFIX); \
+	  mv $$f $$f-$(version) && \
+	    $(LN_S) $$f-$(version) $$f; \
 	done
-.PHONY: make-version-links
 
 remove-version-links:
 	for f in $(basename $(bin_SCRIPTS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(SCRIPTS_EXE_SUFFIX); \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
 	done
-.PHONY: remove-version-links
+endif
+
+.PHONY: make-version-links remove-version-links
 

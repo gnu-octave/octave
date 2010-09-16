@@ -1342,7 +1342,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
     else
       if (nd == 3)
         fputs (plot_stream, "set border 895;\n");
-      else
+      elseif (! isempty (axis_obj.ytick))
         if (strcmpi (axis_obj.yaxislocation, "right"))
           fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
                    axis_obj.tickdir);

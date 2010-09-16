@@ -532,6 +532,15 @@ convert_text_position (const Matrix& pos, const text::properties& props,
   return retval;
 }
 
+// This function always returns the screensize in pixels
+static Matrix
+screen_size_pixels (void)
+{
+  graphics_object obj = gh_manager::get_object (0);
+  Matrix sz = obj.get ("screensize").matrix_value ();
+  return convert_position (sz, obj.get ("units").string_value (), "pixels", sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
+}
+
 static graphics_object
 xget_ancestor (const graphics_object& go_arg, const std::string& type)
 {
@@ -2600,6 +2609,9 @@ root_figure::properties::set_callbackobject (const octave_value& v)
     gripe_set_invalid ("callbackobject");
 }
 
+// FIXME This should update monitorpositions and pointerlocation, but
+// as these properties are yet used, and so it doesn't matter that they
+// aren't set yet.
 void
 root_figure::properties::update_units (void)
 {
@@ -2747,7 +2759,7 @@ figure::properties::set_visible (const octave_value& val)
 Matrix
 figure::properties::get_boundingbox (bool) const
 {
-  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
+  Matrix screen_size = screen_size_pixels ();
   Matrix pos;
 
   pos = convert_position (get_position ().matrix_value (), get_units (),
@@ -2763,7 +2775,7 @@ figure::properties::get_boundingbox (bool) const
 void
 figure::properties::set_boundingbox (const Matrix& bb)
 {
-  Matrix screen_size = xget (0, "screensize").matrix_value ().extract_n (0, 2, 1, 2);
+  Matrix screen_size = screen_size_pixels ();
   Matrix pos = bb;
 
   pos(1) = screen_size(1) - pos(1) - pos(3);
@@ -2796,6 +2808,297 @@ figure::properties::set_position (const octave_value& v)
 
       mark_modified ();
     }
+}
+
+void
+figure::properties::set_paperunits (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str typ = get_papertype ();
+      caseless_str punits = v.string_value ();
+      if (! error_state)
+        {
+          if (punits.compare ("normalized") && typ.compare ("custom"))
+            error ("set: can't set the paperunits to normalized when the papertype is custom");
+          else
+            {
+              caseless_str old_paperunits = get_paperunits ();
+              if (paperunits.set (v, true))
+                {
+                  update_paperunits (old_paperunits);
+                  mark_modified ();
+                }
+            }
+        }
+    }
+}
+
+void
+figure::properties::set_papertype (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str typ = v.string_value ();
+      caseless_str punits = get_paperunits ();
+      if (! error_state)
+        {
+          if (punits.compare ("normalized") && typ.compare ("custom"))
+            error ("set: can't set the paperunits to normalized when the papertype is custom");
+          else
+            {
+              if (papertype.set (v, true))
+                {
+                  update_papertype ();
+                  mark_modified ();
+                }
+            }
+        }
+    }
+}
+
+static Matrix
+papersize_from_type (const caseless_str punits, const caseless_str typ)
+{ 
+  Matrix ret (1, 2, 1.0);
+
+  if (! punits.compare ("normalized"))
+    {
+      double in2units;
+      double mm2units;
+      
+      if (punits.compare ("inches"))
+        {
+          in2units = 1.0;
+          mm2units = 1 / 25.4 ;
+        }
+      else if (punits.compare ("centimeters"))
+        {
+          in2units = 2.54;
+          mm2units = 1 / 10.0;
+        }
+      else // points
+        {
+          in2units = 72.0;
+          mm2units = 72.0 / 25.4;
+        }
+
+      if (typ.compare ("usletter"))
+        {
+          ret (0) = 8.5 * in2units;
+          ret (1) = 11.0 * in2units;
+        }
+      else if (typ.compare ("uslegal"))
+        {
+          ret (0) = 8.5 * in2units;
+          ret (1) = 14.0 * in2units;
+        }
+      else if (typ.compare ("tabloid"))
+        {
+          ret (0) = 11.0 * in2units;
+          ret (1) = 17.0 * in2units;
+        }
+      else if (typ.compare ("a0"))
+        {
+          ret (0) = 841.0 * mm2units;
+          ret (1) = 1189.0 * mm2units;
+        }
+      else if (typ.compare ("a1"))
+        {
+          ret (0) = 594.0 * mm2units;
+          ret (1) = 841.0 * mm2units;
+        }
+      else if (typ.compare ("a2"))
+        {
+          ret (0) = 420.0 * mm2units;
+          ret (1) = 594.0 * mm2units;
+        }
+      else if (typ.compare ("a3"))
+        {
+          ret (0) = 297.0 * mm2units;
+          ret (1) = 420.0 * mm2units;
+        }
+      else if (typ.compare ("a4"))
+        {
+          ret (0) = 210.0 * mm2units;
+          ret (1) = 297.0 * mm2units;
+        }
+      else if (typ.compare ("a5"))
+        {
+          ret (0) = 148.0 * mm2units;
+          ret (1) = 210.0 * mm2units;
+        }
+      else if (typ.compare ("b0"))
+        {
+          ret (0) = 1029.0 * mm2units;
+          ret (1) = 1456.0 * mm2units;
+        }
+      else if (typ.compare ("b1"))
+        {
+          ret (0) = 728.0 * mm2units;
+          ret (1) = 1028.0 * mm2units;
+        }
+      else if (typ.compare ("b2"))
+        {
+          ret (0) = 514.0 * mm2units;
+          ret (1) = 728.0 * mm2units;
+        }
+      else if (typ.compare ("b3"))
+        {
+          ret (0) = 364.0 * mm2units;
+          ret (1) = 514.0 * mm2units;
+        }
+      else if (typ.compare ("b4"))
+        {
+          ret (0) = 257.0 * mm2units;
+          ret (1) = 364.0 * mm2units;
+        }
+      else if (typ.compare ("b5"))
+        {
+          ret (0) = 182.0 * mm2units;
+          ret (1) = 257.0 * mm2units;
+        }
+      else if (typ.compare ("arch-a"))
+        {
+          ret (0) = 9.0 * in2units;
+          ret (1) = 12.0 * in2units;
+        }
+      else if (typ.compare ("arch-b"))
+        {
+          ret (0) = 12.0 * in2units;
+          ret (1) = 18.0 * in2units;
+        }
+      else if (typ.compare ("arch-c"))
+        {
+          ret (0) = 18.0 * in2units;
+          ret (1) = 24.0 * in2units;
+        }
+      else if (typ.compare ("arch-d"))
+        {
+          ret (0) = 24.0 * in2units;
+          ret (1) = 36.0 * in2units;
+        }
+      else if (typ.compare ("arch-e"))
+        {
+          ret (0) = 36.0 * in2units;
+          ret (1) = 48.0 * in2units;
+        }
+      else if (typ.compare ("a"))
+        {
+          ret (0) = 8.5 * in2units;
+          ret (1) = 11.0 * in2units;
+        }
+      else if (typ.compare ("b"))
+        {
+          ret (0) = 11.0 * in2units;
+          ret (1) = 17.0 * in2units;
+        }
+      else if (typ.compare ("c"))
+        {
+          ret (0) = 17.0 * in2units;
+          ret (1) = 22.0 * in2units;
+        }
+      else if (typ.compare ("d"))
+        {
+          ret (0) = 22.0 * in2units;
+          ret (1) = 34.0 * in2units;
+        }
+      else if (typ.compare ("e"))
+        {
+          ret (0) = 34.0 * in2units;
+          ret (1) = 43.0 * in2units;
+        }
+    }
+ 
+  return ret;
+}
+
+void
+figure::properties::update_paperunits (const caseless_str& old_paperunits)
+{
+  Matrix pos = get_paperposition ().matrix_value ();
+  Matrix sz = get_papersize ().matrix_value ();
+  
+  pos (0) = pos (0) / sz(0);
+  pos (1) = pos (1) / sz(1);
+  pos (2) = pos (2) / sz(0);
+  pos (3) = pos (3) / sz(1);
+
+  caseless_str punits = get_paperunits ();
+  caseless_str typ = get_papertype ();
+
+  if (typ.compare ("custom"))
+    {
+      if (old_paperunits.compare ("centimeters"))
+        {
+          sz (0) = sz (0) / 2.54;
+          sz (1) = sz (1) / 2.54;
+        }
+      else if (old_paperunits.compare ("points"))
+        {
+          sz (0) = sz (0) / 72.0;
+          sz (1) = sz (1) / 72.0;
+        }
+
+      if (punits.compare ("centimeters"))
+        {
+          sz(0) = sz(0) * 2.54;
+          sz(1) = sz(1) * 2.54;
+        }
+      else if (old_paperunits.compare ("points"))
+        {
+          sz (0) = sz (0) * 72.0;
+          sz (1) = sz (1) * 72.0;
+        }
+    }
+  else
+    sz = papersize_from_type (punits, typ);
+
+  pos (0) = pos (0) * sz(0);
+  pos (1) = pos (1) * sz(1);
+  pos (2) = pos (2) * sz(0);
+  pos (3) = pos (3) * sz(1);
+
+  papersize.set (octave_value (sz));
+  paperposition.set (octave_value (pos));
+}
+
+void
+figure::properties::update_papertype (void)
+{
+  caseless_str typ = get_papertype ();
+
+  if (! typ.compare ("custom"))
+    // Call papersize.set rather than set_papersize to avoid loops between 
+    // update_papersize and update_papertype
+    papersize.set (octave_value (papersize_from_type (get_paperunits (), typ)));
+}
+
+void
+figure::properties::update_papersize (void)
+{
+  papertype.set ("custom");
+}
+
+void
+figure::properties::set_units (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_units = get_units ();
+      if (units.set (v, true))
+        {
+          update_units (old_units);
+          mark_modified ();
+        }
+    }
+}
+
+void
+figure::properties::update_units (const caseless_str& old_units)
+{
+  set_position (convert_position (get_position ().matrix_value (), old_units,
+                                  get_units (), screen_size_pixels ()));
 }
 
 std::string
@@ -3671,6 +3974,74 @@ axes::properties::get_boundingbox (bool internal) const
   pos(1) = parent_bb(3) - pos(1) - pos(3);
 
   return pos;
+}
+
+void
+axes::properties::set_units (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_units = get_units ();
+      if (units.set (v, true))
+        {
+          update_units (old_units);
+          mark_modified ();
+        }
+    }
+}
+
+void
+axes::properties::update_units (const caseless_str& old_units)
+{
+  graphics_object obj = gh_manager::get_object (get_parent ());
+  Matrix parent_bb = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+  caseless_str new_units = get_units ();
+  set_position (octave_value (convert_position (get_position().matrix_value(), old_units, new_units, parent_bb)));
+  set_outerposition (octave_value (convert_position (get_outerposition().matrix_value(), old_units, new_units, parent_bb)));
+  set_tightinset (octave_value (convert_position (get_tightinset().matrix_value(), old_units, new_units, parent_bb)));
+}
+
+void
+axes::properties::set_fontunits (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_fontunits = get_fontunits ();
+      if (fontunits.set (v, true))
+        {
+          update_fontunits (old_fontunits);
+          mark_modified ();
+        }
+    }
+}
+
+void
+axes::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double fsz = get_fontsize ();
+  double pixelsperinch = xget (0, "screenpixelsperinch").double_value();
+  double parent_height = get_boundingbox (true).elem (3);
+
+  if (old_units.compare ("normalized"))
+    fsz = fsz * parent_height * 72 / pixelsperinch;
+  else if (old_units.compare ("pixels"))
+    fsz = fsz * 72 / pixelsperinch;
+  else if (old_units.compare ("inches"))
+    fsz = fsz * 72;
+  else if (old_units.compare ("centimeters"))
+    fsz = fsz * 72 / 2.54;
+
+  if (new_units.compare ("normalized"))
+    fsz = fsz * pixelsperinch / parent_height / 72;
+  else if (new_units.compare ("pixels"))
+    fsz = fsz * pixelsperinch / 72;
+  else if (new_units.compare ("inches"))
+    fsz = fsz / 72;
+  else if (new_units.compare ("centimeters"))
+    fsz = fsz * 2.54 / 72;
+
+  set_fontsize (octave_value (fsz));
 }
 
 ColumnVector

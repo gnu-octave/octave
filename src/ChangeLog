@@ -1,11 +1,16 @@
+2010-09-16  John Swensen  <jpswensen@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (write_images): Allow
+	arbitrary extensions with format specifier.
+
 2010-09-15  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (Faddpath, Frmpath): Document path arguments.
 
 2010-09-15  John Swensen <jpswensen@gmail.com>
 
-	* __magick_read__.cc: Allow image_write to write filetypes
-	without an extension (bug #30784).
+	* DLD-FUNCTIONS/__magick_read__.cc (write_image): Allow writing
+	arbitrary image types to filenames without an extension (bug #30784).
 
 2010-09-14  John W. Eaton  <jwe@octave.org>
 

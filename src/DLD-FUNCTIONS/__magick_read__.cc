@@ -837,7 +837,7 @@ write_image (const std::string& filename, const std::string& fmt,
       for (size_t i = 0; i < imvec.size (); i++)
         imvec[i].magick (fmt);
           
-      Magick::writeImages (imvec.begin (), imvec.end (), filename);
+      Magick::writeImages (imvec.begin (), imvec.end (), fmt + ":" + filename);
     }
   catch (Magick::Warning& w)
     {

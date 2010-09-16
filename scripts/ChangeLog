@@ -1,3 +1,7 @@
+2010-09-16  John Swensen  <jpswensen@gmail.com>
+
+	* imwrite.m: Accept more image formats.
+
 2010-09-16  Jaroslav Hajek  <highegg@gmail.com>
 
 	* signal/periodogram.m: Support additional inputs:

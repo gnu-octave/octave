@@ -36,13 +36,39 @@
 ## quality and lower compression.
 ## @end table
 ##
+## @strong{Supported Formats} 
+## @multitable @columnfractions .33 .66
+## @headitem Extension @tab Format 
+## @item bmp @tab Windows Bitmap 
+## @item gif @tab Graphics Interchange Format 
+## @item jpg and jpeg @tab Joint Photographic Experts Group
+## @item pbm @tab Portable Bitmap
+## @item pcx @tab 
+## @item pgm @tab Portable Graymap
+## @item png @tab Portable Network Graphics
+## @item pnm @tab Portable Anymap
+## @item ppm @tab Portable Pixmap
+## @item ras @tab Sun Raster
+## @item tif and tiff @tab Tagged Image File Format
+## @item xwd @tab X11 Dump
+## @end multitable
+##
+## @strong{Unsupported Formats} 
+## @multitable @columnfractions .33 .66
+## @headitem Extension @tab Format 
+## @item hdf @tab Hierarchical Data Format V4
+## @item jp2 and jpx @tab Joint Photographic Experts Group 2000
+## @end multitable
+##
 ## @seealso{imread, imfinfo}
 ## @end deftypefn
 
 function imwrite (img, varargin)
-
+  
+  %missing_formats = { "hdf", "jp2", "jpx" }; 
   persistent accepted_formats = { "bmp", "gif", "jpg", "jpeg", ...
-    "ras", "pbm", "pgm", "png", "ppm", "svg", "tif", "tiff" };
+    "pbm", "pcx", "pgm", "png", "pnm", "ppm", "ras", ...
+    "tif", "tiff", "xwd" };
 
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ();

@@ -2639,10 +2639,6 @@ public:
 
     void set_boundingbox (const Matrix& bb);
 
-    void update_units (const caseless_str& old_units);
-
-    void update_paperunits (const caseless_str& old_paperunits);
-
     std::string get_title (void) const;
 
     // See the genprops.awk script for an explanation of the
@@ -2672,11 +2668,11 @@ public:
       double_property mincolormap , 64
       string_property name , ""
       bool_property numbertitle , "on"
-      radio_property paperunits Su , "{inches}|centimeters|normalized|points"
+      radio_property paperunits , "{inches}|centimeters|normalized|points"
       array_property paperposition , default_figure_paperposition ()
       radio_property paperpositionmode , "auto|{manual}"
-      array_property papersize U , default_figure_papersize ()
-      radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
+      array_property papersize , default_figure_papersize ()
+      radio_property papertype , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
@@ -2687,7 +2683,7 @@ public:
       callback_property resizefcn , Matrix ()
       radio_property selectiontype , "{normal}|open|alt|extend"
       radio_property toolbar , "none|{auto}|figure"
-      radio_property units Su , "inches|centimeters|normalized|points|{pixels}|characters"
+      radio_property units , "inches|centimeters|normalized|points|{pixels}|characters"
       callback_property windowbuttondownfcn , Matrix ()
       callback_property windowbuttonmotionfcn , Matrix ()
       callback_property windowbuttonupfcn , Matrix ()
@@ -2926,10 +2922,6 @@ public:
     void unzoom (void);
     void clear_zoom_stack (void);
 
-    void update_units (const caseless_str& old_units);
-
-    void update_fontunits (const caseless_str& old_fontunits);
-
   private:
     scaler sx, sy, sz;
     Matrix x_render, x_render_inv;
@@ -3026,7 +3018,7 @@ public:
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 12
-      radio_property fontunits SU , "{points}|normalized|inches|centimeters|pixels"
+      radio_property fontunits , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"
       string_array_property linestyleorder , "-"
@@ -3040,7 +3032,7 @@ public:
       array_property ticklength , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       // FIXME -- uicontextmenu should be moved here.
-      radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
+      radio_property units , "{normalized}|inches|centimeters|points|pixels|characters"
       // hidden properties for transformation computation
       array_property x_viewtransform h , Matrix (4, 4, 0.0)
       array_property x_projectiontransform h , Matrix (4, 4, 0.0)

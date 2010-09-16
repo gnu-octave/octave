@@ -1,27 +1,3 @@
-2010-09-16  David Bateman  <dbateman@free.fr>
-
-	* graphics.cc (static Matrix screen_size_pixels (void), static Matrix
-	papersize_from_type (const caseless_str, const caseless_str))): New
-	functions.
-	(void figure::properties::set_paperunits (const octave_value&),
-	void figure::properties::set_papertype (const octave_value&),
-	void figure::properties::update_paperunits (const caseless_str&))
-	void figure::properties::update_papertype (void),
-	void figure::properties::update_papersize (void),
-	void figure::properties::update_units (const caseless_str&)): New
-	methods of the figure class.
-	(void axes::properties::set_units (const octave_value&),
-	void axes::properties::update_units (const caseless_str&),
-	void axes::properties::set_fontunits (const octave_value&),
-	void axes::properties::update_fontunits (const caseless_str&)):
-	New methods of the axes class.
-	* graphics.h.in (void figure::properties::update_paperunits
-	(const caseless_str&), void figure::properties::update_units
-	(const caseless_str&)): Declaration of new figure methods.
-	(void figure::properties::update_paperunits (const caseless_str&),
-	void figure::properties::update_units (const caseless_str&)):
-	Declaration of new axes methods.
-
 2010-09-16  John P. Swensen  <jpswensen@gmail.com>
 
 	* DLD-FUNCTIONS/))magick_read__.cc (write_image): Remove

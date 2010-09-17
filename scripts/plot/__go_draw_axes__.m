@@ -399,6 +399,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
     while (! isempty (kids))
 
       obj = get (kids(end));
+      if (isfield (obj, "units"))
+        units = obj.units;
+        unwind_protect
+          set (kids(end), "units", "data")
+          obj = get (kids(end));
+        unwind_protect_cleanup
+          set (kids(end), "units", units)
+        end_unwind_protect
+      endif
       kids = kids(1:(end-1));
 
       if (strcmpi (obj.visible, "off"))

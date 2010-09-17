@@ -1,3 +1,7 @@
+2010-09-16  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Ensure text objects have units of "data".
+
 2010-09-16  John Swensen  <jpswensen@gmail.com>
 
 	* imwrite.m: Accept more image formats.

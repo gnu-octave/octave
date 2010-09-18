@@ -1,3 +1,16 @@
+2010-09-18  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Modify legend code to use data from legend
+	axes.
+	* plot/__go_draw_figure__.m: Draw draw figure axes, but pass their
+	data to the axis they are associated with.
+	* plot/__get_plt_axes_arg__.m: Ignores axes tagged with "legend".
+	* plot/legend.m: Rewrite to use line and text primitives in a seperate
+	axis.
+	* plot/plot3.m: Support old legend format (eg "-;title'") with new
+	legend code.
+	* plot/private/__plt__.m: Ditto.
+
 2010-09-16  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Ensure text objects have units of "data".

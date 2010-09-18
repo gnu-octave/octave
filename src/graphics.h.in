@@ -2950,10 +2950,6 @@ public:
     BEGIN_PROPERTIES (axes)
       array_property position u , default_axes_position ()
       bool_property box , "on"
-      bool_property key , "off"
-      bool_property keybox , "off"
-      bool_property keyreverse , "off"
-      any_property keypos , 1
       array_property colororder , default_colororder ()
       array_property dataaspectratio m , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode , "{auto}|manual"
@@ -3254,7 +3250,7 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // properties which are not in matlab: keylabel, interpreter
+    // properties which are not in matlab: interpreter
 
     BEGIN_PROPERTIES (line)
       row_vector_property xdata u , default_data ()
@@ -3270,7 +3266,6 @@ public:
       color_property markeredgecolor , "{auto}|none"
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
-      string_property keylabel , ""
       radio_property interpreter , "{tex}|none|latex"
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
@@ -3582,7 +3577,6 @@ public:
       color_property markeredgecolor , "{auto}|none|flat"
       color_property markerfacecolor , "auto|{none}|flat"
       double_property markersize , 6
-      string_property keylabel , ""
       radio_property interpreter , "{tex}|none|latex"
       radio_property alphadatamapping l , "none|{scaled}|direct"
       // hidden properties for limit computation
@@ -3688,7 +3682,6 @@ public:
       color_property markeredgecolor , "{auto}|none"
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
-      string_property keylabel , ""
       radio_property interpreter , "{tex}|none|latex"
       array_property alphadata u , Matrix ()
       radio_property alphadatamapping l , "none|direct|{scaled}"

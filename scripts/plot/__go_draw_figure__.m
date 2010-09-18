@@ -48,7 +48,12 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
           type = get (kids(i), "type");
           switch (type)
             case "axes"
-              ## Rely upon listener to convert axes position to "normalized" units.
+              if (strcmpi (get (kids (i), "tag"), "legend"))
+                continue;
+              endif
+
+              ## Rely upon listener to convert axes position 
+              ## to "normalized" units.
               orig_axes_units = get (kids(i), "units");
               orig_axes_position = get (kids(i), "position");
               unwind_protect
@@ -63,9 +68,26 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                 if (bg_is_set)
                   fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", 255 * (1 - bg));
                 endif
-                ## Return axes "units" and "position" back to their original values.
-                __go_draw_axes__ (kids(i), plot_stream, enhanced, mono, bg_is_set);
+                ## Find if this axes has an associated legend axes and pass it
+                ## to __go_draw_axes__
+                hlegend = [];
+                fkids = get (h, "children");
+                for j = 1 : numel(fkids)
+                  if (ishandle (fkids (j)) 
+                      && strcmp (get (fkids (j), "type"), "axes") 
+                      && (strcmp (get (fkids (j), "tag"), "legend")))
+                    udata = get (fkids (j), "userdata");
+                    if (! isempty (intersect (udata.handle, kids (i))))
+                      hlegend = fkids (j);
+                      break;
+                    endif
+                  endif
+                endfor
+                __go_draw_axes__ (kids(i), plot_stream, enhanced, mono,
+                                  bg_is_set, hlegend);
               unwind_protect_cleanup
+                ## Return axes "units" and "position" back to
+                ## their original values.
                 set (kids(i), "units", orig_axes_units);
                 set (kids(i), "position", orig_axes_position);
                 bg_is_set = false;

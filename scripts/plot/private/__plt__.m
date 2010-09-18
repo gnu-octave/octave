@@ -37,6 +37,9 @@ function retval = __plt__ (caller, h, varargin)
     property_set = false;
     properties = {};
 
+    hlgnd = [];
+    tlgnd = {};
+
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
     retval = [];
@@ -77,10 +80,12 @@ function retval = __plt__ (caller, h, varargin)
           endif
           if (y_set)
             tmp = __plt2__ (h, x, y, options, properties);
+            [hlgnd, tlgnd] = __plt_key__ (tmp, options);
             properties = {};
             retval = [retval; tmp];
           else
             tmp = __plt1__ (h, x, options, properties);
+            [hlgnd, tlgnd] = __plt_key__ (tmp, options);
             properties = {};
             retval = [retval; tmp];
           endif
@@ -93,6 +98,7 @@ function retval = __plt__ (caller, h, varargin)
         if (y_set)
           options = __pltopt__ (caller, {""});
           tmp = __plt2__ (h, x, y, options, properties);
+          [hlgnd, tlgnd] = __plt_key__ (tmp, options);
           retval = [retval; tmp];
           x = next_arg;
           y_set = false;
@@ -108,12 +114,32 @@ function retval = __plt__ (caller, h, varargin)
 
     endwhile
 
+    if (!isempty (hlgnd))
+      legend (gca(), hlgnd, tlgnd);
+    endif
   else
     error ("__plt__: invalid number of arguments");
   endif
 
 endfunction
-  
+
+function [hlgnd, tlgnd] = __plt_key__ (h, options)
+  hlgnd = [];
+  tlgnd = {};
+  n = numel (h);
+  if (numel (options) == 1)
+    options = repmat (options(:), n, 1);
+  endif
+
+  for i = 1 : n
+    key = options.key;
+    if (! isempty (key))
+      hlgnd = [h(i), tmp(idx)];
+      tlgnd = {tlgnd{:}, key};
+    endif
+  endfor
+endfunction
+
 function retval = __plt1__ (h, x1, options, properties)
 
   if (nargin < 2 || nargin > 4)
@@ -238,10 +264,6 @@ function retval = __plt2mm__ (h, x, y, options, properties)
       endif
       retval = zeros (x_nc, 1);
       for i = 1:x_nc
-        tkey = options(i).key;
-        if (! isempty (tkey))
-          set (h, "key", "on");
-        endif
         linestyle = options(i).linestyle;
         marker = options(i).marker;
         if (isempty (marker) && isempty (linestyle))
@@ -252,7 +274,7 @@ function retval = __plt2mm__ (h, x, y, options, properties)
           color = __next_line_color__ ();
         endif
 
-        retval(i) = line (x(:,i), y(:,i), "keylabel", tkey, "color", color,
+        retval(i) = line (x(:,i), y(:,i), "color", color,
                           "linestyle", linestyle,
                           "marker", marker, properties{:});
       endfor
@@ -306,10 +328,6 @@ function retval = __plt2mv__ (h, x, y, options, properties)
     endif
     retval = zeros (x_nc, 1);
     for i = 1:x_nc
-      tkey = options(i).key;
-      if (! isempty (tkey))
-        set (h, "key", "on");
-      endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
       if (isempty (marker) && isempty (linestyle))
@@ -320,7 +338,7 @@ function retval = __plt2mv__ (h, x, y, options, properties)
         color = __next_line_color__ ();
       endif
 
-      retval(i) = line (x(:,i), y, "keylabel", tkey, "color", color,
+      retval(i) = line (x(:,i), y, "color", color,
                         "linestyle", linestyle,
                         "marker", marker, properties{:});
     endfor
@@ -352,10 +370,6 @@ function retval = __plt2ss__ (h, x, y, options, properties)
   [y_nr, y_nc] = size (y);
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
-    key = options.key;
-    if (! isempty (key))
-      set (h, "key", "on");
-    endif
     linestyle = options.linestyle;
     marker = options.marker;
     if (isempty (marker) && isempty (linestyle))
@@ -366,7 +380,7 @@ function retval = __plt2ss__ (h, x, y, options, properties)
       color = __next_line_color__ ();
     endif
 
-    retval = line (x, y, "keylabel", key, "color", color,
+    retval = line (x, y, "color", color,
                    "linestyle", linestyle,
                    "marker", marker, properties{:});
   else
@@ -396,10 +410,6 @@ function retval = __plt2sv__ (h, x, y, options, properties)
     endif
     retval = zeros (len, 1);
     for i = 1:len
-      tkey = options(i).key;
-      if (! isempty (tkey))
-        set (h, "key", "on");
-      endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
       if (isempty (marker) && isempty (linestyle))
@@ -410,7 +420,7 @@ function retval = __plt2sv__ (h, x, y, options, properties)
         color = __next_line_color__ ();
       endif
 
-      retval(i) = line (x, y(i), "keylabel", tkey, "color", color,
+      retval(i) = line (x, y(i), "color", color,
                         "linestyle", linestyle,
                         "marker", marker, properties{:});
     endfor
@@ -461,10 +471,6 @@ function retval = __plt2vm__ (h, x, y, options, properties)
     endif
     retval = zeros (y_nc, 1);
     for i = 1:y_nc
-      tkey = options(i).key;
-      if (! isempty (tkey))
-        set (h, "key", "on");
-      endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
       if (isempty (marker) && isempty (linestyle))
@@ -475,7 +481,7 @@ function retval = __plt2vm__ (h, x, y, options, properties)
         color = __next_line_color__ ();
       endif
 
-      retval(i) = line (x, y(:,i), "keylabel", tkey, "color", color,
+      retval(i) = line (x, y(:,i), "color", color,
                         "linestyle", linestyle,
                         "marker", marker, properties{:});
     endfor
@@ -506,10 +512,6 @@ function retval = __plt2vs__ (h, x, y, options, properties)
     endif
     retval = zeros (len, 1);
     for i = 1:len
-      tkey = options(i).key;
-      if (! isempty (tkey))
-        set (h, "key", "on");
-      endif
       linestyle = options(i).linestyle;
       marker = options(i).marker;
       if (isempty (marker) && isempty (linestyle))
@@ -520,7 +522,7 @@ function retval = __plt2vs__ (h, x, y, options, properties)
         color = __next_line_color__ ();
       endif
 
-      retval(i) = line (x(i), y, "keylabel", tkey, "color", color,
+      retval(i) = line (x(i), y, "color", color,
                         "linestyle", linestyle,
                         "marker", marker, properties{:});
     endfor
@@ -566,10 +568,6 @@ function retval = __plt2vv__ (h, x, y, options, properties)
   endif
 
   if (x_nr == y_nr)
-    key = options.key;
-    if (! isempty (key))
-      set (h, "key", "on");
-    endif
     linestyle = options.linestyle;
     marker = options.marker;
     if (isempty (marker) && isempty (linestyle))
@@ -580,7 +578,7 @@ function retval = __plt2vv__ (h, x, y, options, properties)
       color = __next_line_color__ ();
     endif
 
-    retval = line (x, y, "keylabel", key, "color", color,
+    retval = line (x, y, "color", color,
               "linestyle", linestyle,
               "marker", marker, properties{:});
   else

@@ -1,3 +1,7 @@
+2010-09-18  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in: Remove properties for dead legend code.
+
 2010-09-18  Ben Abbott <bpabbott@mac.com>
 
 	* graphics.cc: Replace pagetype property value custom with <custom>.

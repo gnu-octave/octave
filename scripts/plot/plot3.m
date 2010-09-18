@@ -95,7 +95,8 @@ function retval = plot3 (varargin)
   property_set = 0;
   fmt_set = 0;
   properties = {};
-
+  tlgnd = {};
+  hlgnd = [];
   idx = 0;
 
   ## Gather arguments, decode format, and plot lines.
@@ -171,11 +172,6 @@ function retval = plot3 (varargin)
         error ("plot3: x, y, and z must have the same shape");
       endif
 
-      key = options.key;
-      if (! isempty (key))
-        set (gca (), "key", "on");
-      endif
-
       for i = 1 : columns (x)
         linestyle = options.linestyle;
         marker = options.marker;
@@ -183,13 +179,18 @@ function retval = plot3 (varargin)
            [linestyle, marker] = __next_line_style__ ();
         endif
         color = options.color;
-        if (isempty (options.color))
+        if (isempty (color))
           color = __next_line_color__ ();
         endif
 
-        tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+        tmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                            "color", color, "linestyle", linestyle,
                            "marker", marker, properties{:});
+        key = options.key;
+        if (! isempty (key))
+          hlgnd = [hlgnd, tmp(idx)];
+          tlgnd = {tlgnd{:}, key};
+        endif
       endfor
 
       x_set = 0;
@@ -224,11 +225,6 @@ function retval = plot3 (varargin)
       endif
 
       options =  __default_plot_options__ ();
-      key = options.key;
-      if (! isempty (key))
-        set (gca (), "key", "on");
-      endif
-
       for i = 1 : columns (x)
         linestyle = options.linestyle;
         marker = options.marker;
@@ -240,9 +236,14 @@ function retval = plot3 (varargin)
           color = __next_line_color__ ();
         endif
 
-        tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key,
+        tmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                            "color", color, "linestyle", linestyle,
                            "marker", marker, properties{:});
+        key = options.key;
+        if (! isempty (key))
+          hlgnd = [hlgnd, tmp(idx)];
+          tlgnd = {tlgnd{:}, key};
+        endif
       endfor
 
       x = new;
@@ -296,10 +297,6 @@ function retval = plot3 (varargin)
     endif
 
     options =  __default_plot_options__ ();
-    key = options.key;
-    if (! isempty (key))
-      set (gca (), "key", "on");
-    endif
 
     for i = 1 : columns (x)
       linestyle = options.linestyle;
@@ -312,10 +309,19 @@ function retval = plot3 (varargin)
         color = __next_line_color__ ();
       endif
 
-      tmp(++idx) = line (x(:, i), y(:, i), z(:, i),  "keylabel", key, 
+      tmp(++idx) = line (x(:, i), y(:, i), z(:, i),
                          "color", color, "linestyle", linestyle,
                          "marker", marker, properties{:});
+      key = options.key;
+      if (! isempty (key))
+        hlgnd = [hlgnd, tmp(idx)];
+        tlgnd = {tlgnd{:}, key};
+      endif
     endfor
+  endif
+
+  if (!isempty (hlgnd))
+    legend (gca(), hlgnd, tlgnd);
   endif
 
   set (gca (), "view", [-37.5, 30]);

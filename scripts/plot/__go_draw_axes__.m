@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
 
   if (nargin >= 4 && nargin <= 6)
 
@@ -31,6 +31,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
     unwind_protect
       set (0, "showhiddenhandles", "on");
       axis_obj = __get__ (h);
+      if (isempty (hlegend))
+        hlgnd = [];
+      else
+        hlgnd = __get__ (hlegend);
+      endif
     unwind_protect_cleanup
       set (0, "showhiddenhandles", showhiddenhandles);
     end_unwind_protect
@@ -486,11 +491,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
           parametric(data_idx) = true;
           have_cdata(data_idx) = false;
           have_3d_patch(data_idx) = false;
-
-          if (isempty (obj.keylabel))
+          if (isempty (obj.displayname))
             titlespec{data_idx} = "title \"\"";
           else
-            tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+            tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
             titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
           endif
           usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
@@ -606,10 +610,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
                  have_3d_patch(data_idx) = false;
                endif
 
-               if (i > 1 || isempty (obj.keylabel))
+               if (i > 1 || isempty (obj.displayname))
                  titlespec{local_idx} = "title \"\"";
                else
-                 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+                 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
                  titlespec{local_idx} = cstrcat ("title \"", tmp, "\"");
                endif
                if (isfield (obj, "facecolor"))
@@ -1028,10 +1032,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
             style = do_linestyle_command (obj, obj.edgecolor,
                                           data_idx, mono, 
                                           plot_stream);
-            if (isempty (obj.keylabel))
+
+            if (isempty (obj.displayname))
               titlespec{data_idx} = "title \"\"";
             else
-              tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel"));
+              tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
               titlespec{data_idx} = cstrcat ("title \"", tmp, "\"");
             endif
             withclause{data_idx} = sprintf ("with pm3d linestyle %d",
@@ -1351,7 +1356,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
     else
       if (nd == 3)
         fputs (plot_stream, "set border 895;\n");
-      else
+      elseif (! isempty (axis_obj.ytick))
         if (strcmpi (axis_obj.yaxislocation, "right"))
           fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
                    axis_obj.tickdir);
@@ -1386,19 +1391,30 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
       fprintf (plot_stream, "set border lw %f;\n", axis_obj.linewidth);
     endif
 
-    if (strcmpi (axis_obj.key, "on"))
-      if (strcmpi (axis_obj.keybox, "on"))
+    if (! isempty (hlgnd) 
+        && any (strcmpi (get (get (hlegend, "children"), "visible"), "on")))
+      hlgnd.box
+      hlgnd.orientation
+      hlgnd.textposition
+      hlgnd.location
+
+      if (strcmpi (hlgnd.box, "on"))
         box = "box";
       else
         box = "nobox";
       endif
-      if (strcmpi (axis_obj.keyreverse, "on"))
+      if (strcmpi (hlgnd.orientation, "vertical"))
+        horzvert = "vertical";
+      else
+        horzvert = "horizontal";
+      endif
+      if (strcmpi (hlgnd.textposition, "right"))
         reverse = "reverse";
       else
         reverse = "noreverse";
       endif
       inout = "inside";
-      keypos = axis_obj.keypos;
+      keypos = hlgnd.location;
       if (ischar (keypos))
         keypos = lower (keypos);
         keyout = findstr (keypos, "outside");
@@ -1408,17 +1424,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
         endif
       endif
       switch (keypos)
-        case -1
-          pos = "right top";
-          inout = "outside";
-        case 1
-          pos = "right top";
-        case 2
-          pos = "left top";
-        case 3
-          pos = "left bottom";
-        case {4, 0}
-          pos = "right bottom";
         case "north"
           pos = "center top";
         case "south"
@@ -1444,16 +1449,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set)
           pos = "";
       endswitch
       if (__gnuplot_has_feature__ ("key_has_font_properties"))
-        fontspec = create_fontspec (axis_obj.fontname, axis_obj.fontsize, gnuplot_term);
+        fontspec = create_fontspec (hlgnd.fontname, hlgnd.fontsize, gnuplot_term);
       else
         fontspec = "";
       endif
-      fprintf (plot_stream, "set key %s %s %s %s %s;\n", inout, pos, box,
-               reverse, fontspec);
+      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s;\n", 
+               inout, pos, box, reverse, horzvert, fontspec);
     else
       fputs (plot_stream, "unset key;\n");
     endif
-
     fputs (plot_stream, "set style data lines;\n");
 
     if (! use_gnuplot_for_images)

@@ -3316,10 +3316,6 @@ axes::properties::set_defaults (base_graphics_object& obj,
                                 const std::string& mode)
 {
   box = "on";
-  key = "off";
-  keybox = "off";
-  keyreverse = "off";
-  keypos = 1.0;
   colororder = default_colororder ();
   dataaspectratio = Matrix (1, 3, 1.0);
   dataaspectratiomode = "auto";

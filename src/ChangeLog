@@ -1,3 +1,7 @@
+2010-09-18  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.cc: Replace pagetype property value custom with <custom>.
+
 2010-09-16  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (static Matrix screen_size_pixels (void), static Matrix

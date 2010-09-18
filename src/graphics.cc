@@ -2819,7 +2819,7 @@ figure::properties::set_paperunits (const octave_value& v)
       caseless_str punits = v.string_value ();
       if (! error_state)
         {
-          if (punits.compare ("normalized") && typ.compare ("custom"))
+          if (punits.compare ("normalized") && typ.compare ("<custom>"))
             error ("set: can't set the paperunits to normalized when the papertype is custom");
           else
             {
@@ -2843,7 +2843,7 @@ figure::properties::set_papertype (const octave_value& v)
       caseless_str punits = get_paperunits ();
       if (! error_state)
         {
-          if (punits.compare ("normalized") && typ.compare ("custom"))
+          if (punits.compare ("normalized") && typ.compare ("<custom>"))
             error ("set: can't set the paperunits to normalized when the papertype is custom");
           else
             {
@@ -3027,7 +3027,7 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
   caseless_str punits = get_paperunits ();
   caseless_str typ = get_papertype ();
 
-  if (typ.compare ("custom"))
+  if (typ.compare ("<custom>"))
     {
       if (old_paperunits.compare ("centimeters"))
         {
@@ -3068,7 +3068,7 @@ figure::properties::update_papertype (void)
 {
   caseless_str typ = get_papertype ();
 
-  if (! typ.compare ("custom"))
+  if (! typ.compare ("<custom>"))
     // Call papersize.set rather than set_papersize to avoid loops between 
     // update_papersize and update_papertype
     papersize.set (octave_value (papersize_from_type (get_paperunits (), typ)));
@@ -3077,7 +3077,7 @@ figure::properties::update_papertype (void)
 void
 figure::properties::update_papersize (void)
 {
-  papertype.set ("custom");
+  papertype.set ("<custom>");
 }
 
 void

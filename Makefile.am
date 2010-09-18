@@ -93,13 +93,17 @@ nodist_octave_bug_SOURCES = octave-bug.cc
 BUILT_SOURCES = \
   mkoctfile.cc \
   octave-config.cc \
-  octave-bug.cc
+  octave-bug.cc \
+  run-octave
 
 else
 bin_SCRIPTS = \
   mkoctfile \
   octave-config \
   octave-bug \
+  run-octave
+
+BUILT_SOURCES = \
   run-octave
 endif
 

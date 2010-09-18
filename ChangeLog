@@ -1,3 +1,7 @@
+2010-09-18  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (BUILT_SOURCES): Include run-octave in the list.
+
 2010-09-16  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (SCRIPTS_EXE_SUFFIX) Delete variable and all uses.

@@ -46,7 +46,18 @@
 ## @item -M
 ## @itemx --depend 
 ## Generate dependency files (.d) for C and C++ source files.
-##          
+##
+## @item -R DIR
+## Add the runtime path to the link command.
+##
+## @item -Wl,@dots{}
+## Pass flags though the linker like "-Wl,-rpath=@dots{}".
+## The quotes are needed since commas are interpreted as command
+## separators.
+##
+## @item -W@dots{}
+## Pass flags though the compiler like "-Wa,OPTION".
+##
 ## @item -c
 ## Compile but do not link.
 ##
@@ -110,9 +121,12 @@
 ##                   .cc   C++ source
 ##                   .C    C++ source
 ##                   .cpp  C++ source
-##                   .f    Fortran source
-##                   .F    Fortran source
+##                   .f    Fortran source (fixed form)
+##                   .F    Fortran source (fixed form)
+##                   .f90  Fortran source (free form)
+##                   .F90  Fortran source (free form)
 ##                   .o    object file
+##                   .a    library file
 ## @end group
 ## @end example
 ##

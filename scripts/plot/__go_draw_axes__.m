@@ -1393,11 +1393,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
 
     if (! isempty (hlgnd) 
         && any (strcmpi (get (get (hlegend, "children"), "visible"), "on")))
-      hlgnd.box
-      hlgnd.orientation
-      hlgnd.textposition
-      hlgnd.location
-
       if (strcmpi (hlgnd.box, "on"))
         box = "box";
       else

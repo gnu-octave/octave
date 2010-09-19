@@ -3578,6 +3578,7 @@ public:
       color_property markerfacecolor , "auto|{none}|flat"
       double_property markersize , 6
       radio_property interpreter , "{tex}|none|latex"
+      string_property displayname , ""
       radio_property alphadatamapping l , "none|{scaled}|direct"
       // hidden properties for limit computation
       row_vector_property xlim hlr , Matrix ()
@@ -3683,6 +3684,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       radio_property interpreter , "{tex}|none|latex"
+      string_property displayname , ""
       array_property alphadata u , Matrix ()
       radio_property alphadatamapping l , "none|direct|{scaled}"
       double_property ambientstrength , 0.3

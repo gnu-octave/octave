@@ -621,27 +621,31 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         yk = 0;
         for k = 1 : numel (hplots)
           hobjects = [hobjects, texthandle (k)];
-          color = get (hplots (k), "color");
-          style = get (hplots (k), "linestyle");
-          if (! strcmp (style, "none"))
-            l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
-                       "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), 
-                       "color", color, "linestyle", style);
-            hobjects = [hobjects, l1];
-          endif
-          marker = get (hplots (k), "marker");
-          if (! strcmp (marker, "none"))
-            l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                       "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), 
-                       "color", color, "marker", marker,
-	               "markeredgecolor", get (hplots (k), "markeredgecolor"),
-	               "markerfacecolor", get (hplots (k), "markerfacecolor"),
-	               "markersize", get (hplots (k), "markersize"));
-            hobjects = [hobjects, l1];
-          endif
+          switch get (hplots(k), "type")
+          case "line"
+            color = get (hplots(k), "color");
+            style = get (hplots(k), "linestyle");
+            if (! strcmp (style, "none"))
+              l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
+                         "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), 
+                         "color", color, "linestyle", style);
+              hobjects = [hobjects, l1];
+            endif
+            marker = get (hplots(k), "marker");
+            if (! strcmp (marker, "none"))
+              l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
+                         "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), 
+                         "color", color, "marker", marker,
+	                 "markeredgecolor", get (hplots (k), "markeredgecolor"),
+	                 "markerfacecolor", get (hplots (k), "markerfacecolor"),
+	                 "markersize", get (hplots (k), "markersize"));
+              hobjects = [hobjects, l1];
+            endif
+          case "patch"
+          case "surface"
+          endswitch
           set (texthandle (k), "position", [(txoffset + xk * xstep) / lpos(3), ...
                                             (lpos(4) - yoffset - yk * ystep) / lpos(4)]);
-
           if (strcmp (orientation, "vertical"))
             yk++;
             if (yk > num1)

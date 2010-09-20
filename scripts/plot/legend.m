@@ -134,8 +134,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
       if (pos >= -1 && pos <= 4)
-        position = {"northeastoutside", "best", "northeast",
-                    "northwest", "southwest", "southeast"} (pos + 2);
+        position = [{"northeastoutside", "best", "northeast",
+                     "northwest", "southwest", "southeast"}] {pos + 2};
         nargs--;
       else
         error ("legend: invalid position specified");

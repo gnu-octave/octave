@@ -486,7 +486,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               idx = ovector[1];
               sz++;
 
-              if (once)
+              if (once || idx >= buffer.length ())
                 break;
 
             }

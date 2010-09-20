@@ -1,3 +1,9 @@
+2010-09-20  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list) [HAVE_PCRE]:
+	Break from search loop if idx is at or beyond end of buffer
+	(bug #31056).
+
 2010-09-19  Ben Abbott <bpabbott@mac.com>
 
 	* graphics.h.in: Add displayname property to patch and surface objects.

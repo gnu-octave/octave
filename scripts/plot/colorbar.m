@@ -271,8 +271,14 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
     else
       scale = [scale, 1];
     endif
-    obj.position = obj.position .* [1, 1, scale];
-    off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
+    if (strcmp (get (cf, "__backend__"), "gnuplot")
+        && strcmp (obj.activepositionproperty, "outerposition"))
+      obj.outerposition = obj.outerposition .* [1, 1, scale];
+      off = 0.5 * (obj.outerposition (3:4) - __actual_axis_position__ (obj)(3:4));
+    else
+      obj.position = obj.position .* [1, 1, scale];
+      off = 0.5 * (obj.position (3:4) - __actual_axis_position__ (obj)(3:4));
+    endif
   else
     off = 0.0;
   endif
@@ -587,6 +593,7 @@ endfunction
 %! shading ("interp")
 %! axis ("tight", "square")
 %! colorbar ()
+#%! axes('color','none','box','on','activepositionproperty','position')
 
 %!demo
 %! clf

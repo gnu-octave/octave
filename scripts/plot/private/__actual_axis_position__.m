@@ -43,8 +43,13 @@ function pos = __actual_axis_position__ (h)
     set (axis_obj.parent, "units", orig_fig_units)
     set (axis_obj.parent, "position", orig_fig_position)
   end_unwind_protect
-  ## Get axis plot-box size in pixels
-  pos_in_pixels = axis_obj.position .* fig_position([3, 4, 3, 4]);
+  ## Get axes size in pixels
+  if (strcmp (get (axis_obj.parent, "__backend__"), "gnuplot")
+      && strcmp (axis_obj.activepositionproperty, "outerposition"))
+    pos_in_pixels = axis_obj.outerposition .* fig_position([3, 4, 3, 4]);
+  else
+    pos_in_pixels = axis_obj.position .* fig_position([3, 4, 3, 4]);
+  endif
     
   nd = __calc_dimensions__ (h);
 
@@ -82,6 +87,9 @@ function pos = __actual_axis_position__ (h)
       pos_in_pixels = pos_in_pixels + dy*[0.0, 0.5, 0.0, -1.0];
     endif
     pos = pos_in_pixels ./ fig_position([3, 4, 3, 4]);
+  elseif (strcmp (get (axis_obj.parent, "__backend__"), "gnuplot")
+          && strcmp (axis_obj.activepositionproperty, "outerposition"))
+    pos = axis_obj.outerposition;
   else
     pos = axis_obj.position;
   endif

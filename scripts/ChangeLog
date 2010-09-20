@@ -1,6 +1,7 @@
 2010-09-19  Ben Abbott <bpabbott@mac.com>
 
-	* /plot/legend.m: Treat line, patch, and surface objects differetly.
+	* plot/private/__plt__.m: Trivial fix for recent legend changeset.
+	* plot/legend.m: Treat line, patch, and surface objects differetly.
 	* plot/__go_draw_axes__.m: Remove left over debug code.
 	* miscellaneous/mkoctfile.m: Change help text to be consistent with
 	the shell version.

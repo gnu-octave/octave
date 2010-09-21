@@ -508,29 +508,13 @@ ComplexNDArray::operator ! (void) const
 bool
 ComplexNDArray::any_element_is_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      Complex val = elem (i);
-      if (xisnan (val))
-        return true;
-    }
-  return false;
+  return do_mx_check<Complex> (*this, mx_inline_any_nan);
 }
 
 bool
 ComplexNDArray::any_element_is_inf_or_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      Complex val = elem (i);
-      if (xisinf (val) || xisnan (val))
-        return true;
-    }
-  return false;
+  return ! do_mx_check<Complex> (*this, mx_inline_all_finite);
 }
 
 // Return true if no elements have imaginary components.
@@ -538,7 +522,7 @@ ComplexNDArray::any_element_is_inf_or_nan (void) const
 bool
 ComplexNDArray::all_elements_are_real (void) const
 {
-  return mx_inline_all_real (numel (), data ());
+  return do_mx_check<Complex> (*this, mx_inline_all_real);
 }
 
 // Return nonzero if any element of CM has a non-integer real or

@@ -2630,11 +2630,7 @@ Matrix::any_element_is_negative (bool neg_zero) const
           return true;
     }
   else
-    {
-      for (octave_idx_type i = 0; i < nel; i++)
-        if (elem (i) < 0)
-          return true;
-    }
+    return do_mx_check<double> (*this, mx_inline_any_negative);
 
   return false;
 }

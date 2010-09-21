@@ -3045,35 +3045,13 @@ FloatComplexMatrix::operator ! (void) const
 bool
 FloatComplexMatrix::any_element_is_nan (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        FloatComplex val = elem (i, j);
-        if (xisnan (val))
-          return true;
-      }
-
-  return false;
+  return do_mx_check<FloatComplex> (*this, mx_inline_any_nan);
 }
 
 bool
 FloatComplexMatrix::any_element_is_inf_or_nan (void) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        FloatComplex val = elem (i, j);
-        if (xisinf (val) || xisnan (val))
-          return true;
-      }
-
-  return false;
+  return ! do_mx_check<FloatComplex> (*this, mx_inline_all_finite);
 }
 
 // Return true if no elements have imaginary components.
@@ -3081,7 +3059,7 @@ FloatComplexMatrix::any_element_is_inf_or_nan (void) const
 bool
 FloatComplexMatrix::all_elements_are_real (void) const
 {
-  return mx_inline_all_real (numel (), data ());
+  return do_mx_check<FloatComplex> (*this, mx_inline_all_real);
 }
 
 // Return nonzero if any element of CM has a non-integer real or

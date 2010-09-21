@@ -1,3 +1,30 @@
+2010-09-21  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dNDArray.cc (NDArray::any_element_is_negative, 
+	NDArray::any_element_is_nan, 
+	NDArray::any_element_is_inf_or_nan): Simplify.
+	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
+	FloatNDArray::any_element_is_nan, 
+	FloatNDArray::any_element_is_inf_or_nan): Simplify.
+	* dMatrix.cc (Matrix::any_element_is_negative, 
+	Matrix::any_element_is_nan, 
+	Matrix::any_element_is_inf_or_nan): Simplify.
+	* fMatrix.cc (FloatMatrix::any_element_is_negative, 
+	FloatMatrix::any_element_is_nan, 
+	FloatMatrix::any_element_is_inf_or_nan): Simplify.
+	* CNDArray.cc (ComplexNDArray::any_element_is_negative, 
+	ComplexNDArray::any_element_is_nan, 
+	ComplexNDArray::any_element_is_inf_or_nan): Simplify.
+	* fCNDArray.cc (FloatComplexNDArray::any_element_is_negative, 
+	FloatComplexNDArray::any_element_is_nan, 
+	FloatComplexNDArray::any_element_is_inf_or_nan): Simplify.
+	* CMatrix.cc (ComplexMatrix::any_element_is_negative, 
+	ComplexMatrix::any_element_is_nan, 
+	ComplexMatrix::any_element_is_inf_or_nan): Simplify.
+	* fCMatrix.cc (FloatComplexMatrix::any_element_is_negative, 
+	FloatComplexMatrix::any_element_is_nan, 
+	FloatComplexMatrix::any_element_is_inf_or_nan): Simplify.
+
 2010-09-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (do_get_host_name): Call gnulib::gethostname

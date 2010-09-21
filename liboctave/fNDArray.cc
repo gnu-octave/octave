@@ -514,7 +514,7 @@ FloatNDArray::any_element_is_negative (bool neg_zero) const
           return true;
     }
   else
-    return mx_inline_any_negative (numel (), data ());
+    return do_mx_check<float> (*this, mx_inline_any_negative);
 
   return false;
 }
@@ -522,31 +522,13 @@ FloatNDArray::any_element_is_negative (bool neg_zero) const
 bool
 FloatNDArray::any_element_is_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-      if (xisnan (val))
-        return true;
-    }
-
-  return false;
+  return do_mx_check<float> (*this, mx_inline_any_nan);
 }
 
 bool
 FloatNDArray::any_element_is_inf_or_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-      if (xisinf (val) || xisnan (val))
-        return true;
-    }
-
-  return false;
+  return ! do_mx_check<float> (*this, mx_inline_all_finite);
 }
 
 bool

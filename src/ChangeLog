@@ -1,5 +1,9 @@
 2010-09-20  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/time.cc (Fmktime): New tests (bug #31079).
+
+2010-09-20  John W. Eaton  <jwe@octave.org>
+
 	Bug #31085:
 
 	* file-io.cc (do_stream_open): Use fopen, fileno, and gzdopen

@@ -58,7 +58,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_zone = ps;
 #endif
 
-  ot_unix_time = mktime (&t);
+  ot_unix_time = gnulib::mktime (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
   delete [] ps;
@@ -272,7 +272,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   if (t.tm_mday != 0 && t.tm_mon >= 0 && t.tm_year != INT_MIN)
     {
       t.tm_isdst = -1;
-      mktime (&t);
+      gnulib::mktime (&t);
     }
 
   if (t.tm_mon < 0)

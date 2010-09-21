@@ -279,6 +279,12 @@ mktime (localtime (time ()))\n\
 
 %!error <Invalid call to mktime.*> mktime (1, 2, 3);
 
+%% These tests fail on systems with mktime functions of limited
+%% intelligence:
+%!assert (datestr (datenum (1969, 1, 1), 0), "01-Jan-1969 00:00:00")
+%!assert (datestr (datenum (1901, 1, 1), 0), "01-Jan-1901 00:00:00")
+%!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
+
 */
 
 DEFUN_DLD (strftime, args, ,

@@ -1,3 +1,7 @@
+2010-09-20  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap.conf (gnulib_modules): Include mktime in the list.
+
 2010-09-18  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (BUILT_SOURCES): Include run-octave in the list.

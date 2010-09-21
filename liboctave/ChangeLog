@@ -1,3 +1,8 @@
+2010-09-20  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.cc (octave_time::octave_time, octave_strptime::init):
+	Call gnulib::mktime instead of mktime (may fix bug #31079).
+
 2010-09-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dSparse.h (SparseMatrix::SparseMatrix (const Sparse<double>&)):

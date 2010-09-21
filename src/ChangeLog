@@ -1,5 +1,10 @@
 2010-09-21  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.h (octave_base_stream::file_number): Return 0, 1,
+	and 2 for named stdin, stdout, and stderr streams; -1 otherwise.
+
+2010-09-21  John W. Eaton  <jwe@octave.org>
+
 	* syscalls.cc (Fgethostname): New function.
 
 2010-09-20  John W. Eaton  <jwe@octave.org>

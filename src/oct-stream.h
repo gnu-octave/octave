@@ -383,7 +383,19 @@ public:
         }
     }
 
-  virtual int file_number (void) const { return -1; }
+  virtual int file_number (void) const
+  {
+    // Kluge alert!
+
+    if (name () == "stdin")
+      return 0;
+    else if (name () == "stdout")
+      return 1;
+    else if (name () == "stderr")
+      return 2;
+    else
+      return -1;
+  }
 
   bool ok (void) const { return ! fail; }
 

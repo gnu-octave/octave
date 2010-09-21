@@ -33,24 +33,14 @@ octave_tstdiostream : public octave_base_stream
 {
 public:
 
-  octave_tstdiostream (const std::string& n, FILE_T f = 0,
+  octave_tstdiostream (const std::string& n, FILE_T f = 0, int fid = 0,
                        std::ios::openmode m = std::ios::in|std::ios::out,
                        oct_mach_info::float_format ff
                          = oct_mach_info::native_float_format (),
                        typename BUF_T::close_fcn cf = BUF_T::file_close)
     : octave_base_stream (m, ff), nm (n), md (m),
-      s (f ? new STREAM_T (f, cf) : 0)
+      s (f ? new STREAM_T (f, cf) : 0), fnum (fid)
   { }
-
-  static octave_stream
-  create (const std::string& n, FILE_T f = 0,
-          std::ios::openmode m = std::ios::in|std::ios::out,
-          oct_mach_info::float_format ff
-            = oct_mach_info::native_float_format (),
-          typename BUF_T::close_fcn cf = BUF_T::file_close)
-  {
-    return octave_stream (new octave_tstdiostream (n, f, m, ff, cf));
-  }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -77,6 +67,8 @@ public:
   BUF_T *rdbuf (void) const
     { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
 
+  int file_number (void) const { return fnum; }
+
   bool bad (void) const { return s ? s->bad () : true; }
 
   void clear (void) { if (s) s->clear (); }
@@ -91,6 +83,9 @@ protected:
 
   STREAM_T *s;
 
+  // The file number associated with this file.
+  int fnum;
+
   ~octave_tstdiostream (void) { delete s; }
 
 private:
@@ -102,11 +97,79 @@ private:
   octave_tstdiostream& operator = (const octave_tstdiostream&);
 };
 
-typedef octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> octave_stdiostream;
+class
+octave_stdiostream
+  : public octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
+{
+public:
+
+  octave_stdiostream (const std::string& n, FILE *f = 0,
+                      std::ios::openmode m = std::ios::in|std::ios::out,
+                      oct_mach_info::float_format ff
+                        = oct_mach_info::native_float_format (),
+                      c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
+    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> (n, f, f ? ::fileno (f) : -1, m, ff, cf) { }
+
+  static octave_stream
+  create (const std::string& n, FILE *f = 0,
+          std::ios::openmode m = std::ios::in|std::ios::out,
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format (),
+          c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
+  {
+    return octave_stream (new octave_stdiostream (n, f, m, ff, cf));
+  }
+
+protected:
+
+  ~octave_stdiostream (void) { }
+
+private:
+
+  // No copying!
+
+  octave_stdiostream (const octave_stdiostream&);
+
+  octave_stdiostream& operator = (const octave_stdiostream&);
+};
 
 #ifdef HAVE_ZLIB
 
-typedef octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile> octave_zstdiostream;
+class
+octave_zstdiostream
+  : public octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
+{
+public:
+
+  octave_zstdiostream (const std::string& n, gzFile f = 0, int fid = 0,
+                       std::ios::openmode m = std::ios::in|std::ios::out,
+                       oct_mach_info::float_format ff
+                         = oct_mach_info::native_float_format (),
+                       c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
+    : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile> (n, f, fid, m, ff, cf) { }
+
+  static octave_stream
+  create (const std::string& n, gzFile f = 0, int fid = 0,
+          std::ios::openmode m = std::ios::in|std::ios::out,
+          oct_mach_info::float_format ff
+            = oct_mach_info::native_float_format (),
+          c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
+  {
+    return octave_stream (new octave_zstdiostream (n, f, fid, m, ff, cf));
+  }
+
+protected:
+
+  ~octave_zstdiostream (void) { }
+
+private:
+
+  // No copying!
+
+  octave_zstdiostream (const octave_zstdiostream&);
+
+  octave_zstdiostream& operator = (const octave_zstdiostream&);
+};
 
 #endif
 

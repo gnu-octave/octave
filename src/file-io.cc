@@ -492,10 +492,15 @@ do_stream_open (const std::string& name, const std::string& mode,
                 {
                   tmode.erase (pos, 1);
 
-                  gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+
+                  int fd = ::fileno (fptr);
+
+                  gzFile gzf = ::gzdopen (fd, tmode.c_str ());
 
                   if (fptr)
-                    retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
+                    retval = octave_zstdiostream::create (fname, gzf, fd,
+                                                          md, flt_fmt);
                   else
                     retval.error (gnulib::strerror (errno));
                 }

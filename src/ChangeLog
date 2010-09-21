@@ -1,5 +1,26 @@
 2010-09-20  John W. Eaton  <jwe@octave.org>
 
+	Bug #31085:
+
+	* file-io.cc (do_stream_open): Use fopen, fileno, and gzdopen
+	instead of gzopen.  Pass integer file id to
+	octave_zstdiostream::create.
+
+	* oct-stdstrm.h (class octave_base_tstdiostream): Rename from
+	octave_tstdiostream.
+	(octave_tstdiostream::fnum): New data member.
+	(octave_tstdiostream::file_number): New member function.
+	(octave_tstdiostream::octave_tstdiostream): New arg, FID.
+	(octave_tstdiostream::create): Delete.
+	(class octave_stdiostream, class octave_zstdiostream): New
+	non-template classes derived from octave_tstdiostream to replace
+	typedefs.
+
+	* oct-stream.h (octave_base_stream::file_number): Now virtual
+	and const.  Return -1 in defaault implementation.
+
+2010-09-20  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list) [HAVE_PCRE]:
 	Break from search loop if idx is at or beyond end of buffer
 	(bug #31056).

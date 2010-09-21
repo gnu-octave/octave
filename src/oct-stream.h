@@ -383,7 +383,7 @@ public:
         }
     }
 
-  int file_number (void);
+  virtual int file_number (void) const { return -1; }
 
   bool ok (void) const { return ! fail; }
 

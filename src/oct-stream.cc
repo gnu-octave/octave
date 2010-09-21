@@ -876,51 +876,6 @@ printf_format_list::printme (void) const
     }
 }
 
-int
-octave_base_stream::file_number (void)
-{
-  // Kluge alert!
-
-  if (name () == "stdin")
-    return 0;
-
-  if (name () == "stdout")
-    return 1;
-
-  if (name () == "stderr")
-    return 2;
-
-  int retval = -1;
-
-  std::istream *is = input_stream ();
-  std::ostream *os = output_stream ();
-
-  // There is no standard way to get the underlying file descriptor from 
-  // std::filebuf (nor in the GNU libstdc++-v3 implementation). We cache
-  // the descriptor in c_file_ptr_buf, and then extract it here.
-
-  c_file_ptr_buf *ibuf
-    = is ? dynamic_cast<c_file_ptr_buf *> (is->rdbuf ()) : 0;
-
-  c_file_ptr_buf *obuf
-    = os ? dynamic_cast<c_file_ptr_buf *> (os->rdbuf ()) : 0;
-
-  int i_fid = ibuf ? ibuf->file_number () : -1;
-  int o_fid = obuf ? obuf->file_number () : -1;
-
-  if (i_fid >= 0)
-    {
-      if (o_fid >= 0)
-        retval = (i_fid == o_fid) ? i_fid : -1;
-      else
-        retval = i_fid;
-    }
-  else if (o_fid >= 0)
-    retval = o_fid;
-
-  return retval;
-}
-
 void
 octave_base_stream::error (const std::string& msg)
 {

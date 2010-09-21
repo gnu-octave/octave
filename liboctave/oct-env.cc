@@ -450,9 +450,9 @@ octave_env::do_get_host_name (void) const
 {
   if (host_name.empty ())
     {
-      char hostname[256];
+      char hostname[1024];
 
-      int status = octave_gethostname (hostname, 255);
+      int status = gnulib::gethostname (hostname, 1023);
 
       host_name = (status < 0) ? "unknown" : hostname;
     }

@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
 
@@ -1167,6 +1168,22 @@ DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
       else
         error ("S_ISSOCK: invalid mode value");
     }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (gethostname, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
+Return the hostname of the system on which Octave is running\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = octave_env::get_host_name ();
   else
     print_usage ();
 

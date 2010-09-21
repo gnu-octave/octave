@@ -1,3 +1,7 @@
+2010-09-21  John W. Eaton  <jwe@octave.org>
+
+	* syscalls.cc (Fgethostname): New function.
+
 2010-09-20  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/time.cc (Fmktime): New tests (bug #31079).

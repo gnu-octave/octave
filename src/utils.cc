@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-mappers.h"
+#include "lo-utils.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "pathsearch.h"

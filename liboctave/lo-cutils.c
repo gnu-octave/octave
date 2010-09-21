@@ -20,14 +20,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/*
-
-The function gethostname was adapted from a similar function from GNU
-Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
-Software Foundation, Inc.
-
-*/
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -65,12 +57,6 @@ OCTAVE_API int
 octave_strncasecmp (const char *s1, const char *s2, size_t n)
 {
   return strncasecmp (s1, s2, n);
-}
-
-OCTAVE_API int
-octave_gethostname (char *name, int namelen)
-{
-  return gethostname (name, namelen);
 }
 
 #ifdef HAVE_LOADLIBRARY_API

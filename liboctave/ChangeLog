@@ -1,3 +1,7 @@
+2010-09-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* lo-utils.cc (xis_int_or_inf_or_nan): Fix typos.
+
 2010-09-21  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.h (Array::test, Array::test_all, Array::test_any): New

@@ -26,11 +26,14 @@
 
 function arg_st = __print_parse_opts__ (varargin)
 
+  persistent warn_on_missing_binary = true
+
   arg_st.append_to_file = false;
   arg_st.canvas_size = [];
   arg_st.debug = false;
   arg_st.debug_file = "octave-print-commands.log";
   arg_st.devopt = "";
+  arg_st.epstool_binary = __quote_path__ (__find_binary__ ("epstool"));
   arg_st.figure = get (0, "currentfigure");
   arg_st.fig2dev_binary = __quote_path__ (__find_binary__ ("fig2dev"));
   arg_st.fontsize = "";
@@ -48,15 +51,17 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.resolution = 150;
   arg_st.ghostscript.antialiasing = false;
   arg_st.loose = false;
+  arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
   arg_st.name = "";
   arg_st.orientation = "";
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
+  arg_st.preview = "";
   arg_st.printer = "";
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
   arg_st.tight_flag = false;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
-  
+
   if (isunix ())
     arg_st.lpr_options = "-l";
   elseif (ispc ())
@@ -67,7 +72,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.unlink = {};
   
   for i = 1:nargin
-    arg = varargin{i};
+    arg = strtrim (varargin{i});
     if (ischar (arg))
       if (strcmp (arg, "-color"))
         arg_st.use_color = 1;
@@ -91,6 +96,8 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.tight_flag = false;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
+      elseif (any (strcmp (arg, {"-interchange", "-metafile", "-pict", "-tiff"})))
+        arg_st.preview = arg(2:end);
       elseif (strncmp (arg, "-debug", 6))
         arg_st.debug = true;
         arg_st.ghostscript.debug = true;
@@ -101,6 +108,12 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.devopt = tolower (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
+      elseif (strncmp (arg, "-EPSTOOL:", 9))
+        arg_st.epstool_binary = arg{10:end};
+      elseif (strncmp (arg, "-FIG2DEV:", 9))
+        arg_st.fig2dev_binary = arg{10:end};
+      elseif (strncmp (arg, "-PSTOEDIT:", 9))
+        arg_st.pstoedit_binary = arg{10:end};
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
         arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg(3:end));
         if (isempty (arg_st.ghostscript.binary))
@@ -198,7 +211,8 @@ function arg_st = __print_parse_opts__ (varargin)
               "pslatexstandalone", "pdflatexstandalone", ...
               "pstex", "tiff", "tiffn" "tikz", "pcxmono", ...
               "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
-              "ppm", "ppmraw", "pdflatex"};
+              "ppm", "ppmraw", "pdflatex", "texdraw", ...
+              "pdfcairo", "pngcairo", "pstricks"};
 
   suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
@@ -208,7 +222,8 @@ function arg_st = __print_parse_opts__ (varargin)
               "tex", "tex", ...
               "ps", "tiff", "tiff", "tikz", "pcx", ...
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
-              "ppm", "ppm", "tex"};
+              "ppm", "ppm", "tex", "tex", ...
+              "pdf", "png", "tex"};
 
   if (isfigure (arg_st.figure)
       && strcmp (get (arg_st.figure, "__backend__"), "gnuplot")
@@ -238,7 +253,8 @@ function arg_st = __print_parse_opts__ (varargin)
                                           "ps", "ps2", "psc", "psc2", "pdf"})))
       have_ghostscript = ! isempty (__ghostscript_binary__ ());
       if (have_ghostscript)
-        file_exists = ((numel (dir (arg_st.name)) == 1) && (! isdir (arg_st.name)));
+        file_exists = ((numel (dir (arg_st.name)) == 1) 
+                       && (! isdir (arg_st.name)));
         if (! file_exists)
           arg_st.append_to_file = false;
         end
@@ -247,17 +263,14 @@ function arg_st = __print_parse_opts__ (varargin)
         warning ("print.m: appended output requires ghostscript to be installed.")
       endif
     else
-      warning ("print.m: appended output is not supported for device '%s'", arg_st.devopt)
+      warning ("print.m: appended output is not supported for device '%s'",
+               arg_st.devopt)
       arg_st.append_to_file = false;
     endif
   endif
 
   if (! isempty (arg_st.printer) || isempty (arg_st.name))
     arg_st.send_to_printer = true;
-    if (isempty (arg_st.name))
-      arg_st.name = strcat (tmpnam (), ".", default_suffix);
-      arg_st.unlink{end+1} = arg_st.name;
-    endif
   endif
 
   aliases = gs_aliases ();
@@ -290,8 +303,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (isempty (arg_st.canvas_size))
     if (isfigure (arg_st.figure))
-      [arg_st.ghostscript.papersize, paperposition] = gs_papersize (arg_st.figure,
-                                                             arg_st.orientation);
+      [arg_st.ghostscript.papersize, paperposition] = ...
+                           gs_papersize (arg_st.figure, arg_st.orientation);
     else
       ## allows tests to be run
       arg_st.ghostscript.papersize = "letter";
@@ -309,6 +322,25 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.formatted_for_printing)
     arg_st.ghostscript.resolution = [];
+  else
+    arg_st.ghostscript.papersize = "";
+    arg_st.ghostscript.pageoffset = [0, 0];
+  endif
+
+  if (warn_on_missing_binary)
+    if (isempty (arg_st.ghostscript.binary))
+      warning ("print:missinggs", "print.m: Ghostscript binary is not available.")
+    endif
+    if (isempty (arg_st.epstool_binary))
+      warning ("print:missinggs", "print.m: epstool binary is not available.")
+    endif
+    if (isempty (arg_st.fig2dev_binary))
+      warning ("print:missinggs", "print.m: fig2dev binary is not available.")
+    endif
+    if (isempty (arg_st.pstoedit_binary))
+      warning ("print:missinggs", "print.m: pstoedit binary is not available.")
+    endif
+    warn_on_missing_binary = false;
   endif
 
 endfunction
@@ -318,12 +350,8 @@ endfunction
 %! assert (opts.devopt, "pswrite");
 %! assert (opts.use_color, 1);
 %! assert (opts.send_to_printer, true);
-%! assert (opts.name, opts.unlink{1})
 %! assert (opts.canvas_size, [576, 432]);
 %! assert (opts.ghostscript.device, "pswrite")
-%! for n = 1:numel(opts.unlink)
-%!   unlink (opts.unlink{n});
-%! endfor
 
 %!test
 %! opts = __print_parse_opts__ ("test.pdf", "-S640,480");
@@ -332,26 +360,18 @@ endfunction
 %!test
 %! opts = __print_parse_opts__ ("-dpsc", "-append", "-loose");
 %! assert (opts.devopt, "pswrite");
-%! assert (opts.name(end+(-2:0)), ".ps");
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, 1);
 %! assert (opts.append_to_file, false);
 %! assert (opts.ghostscript.device, "pswrite")
 %! assert (opts.ghostscript.epscrop, false);
-%! for n = 1:numel(opts.unlink)
-%!   unlink (opts.unlink{n});
-%! endfor
 
 %!test
 %! opts = __print_parse_opts__ ("-deps", "-tight");
-%! assert (opts.name, opts.unlink{1})
 %! assert (opts.tight_flag, true);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
 %! assert (opts.ghostscript.device, "")
-%! for n = 1:numel(opts.unlink)
-%!   unlink (opts.unlink{n});
-%! endfor
 
 %!test
 %! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono", "-loose");
@@ -359,6 +379,8 @@ endfunction
 %! assert (opts.name, "foobar.jpg")
 %! assert (opts.ghostscript.device, "jpeg")
 %! assert (opts.ghostscript.epscrop, true);
+%! assert (opts.ghostscript.papersize, "");
+%! assert (opts.ghostscript.pageoffset, [0, 0]);
 %! assert (opts.send_to_printer, false);
 %! assert (opts.printer, "");
 %! assert (opts.use_color, -1);
@@ -374,16 +396,11 @@ endfunction
 
 %!test
 %! opts = __print_parse_opts__ ("-f5", "-dljet3");
-%! assert (opts.name, opts.unlink{1})
-%! assert (opts.ghostscript.output, opts.unlink{1})
 %! assert (opts.ghostscript.device, "ljet3")
 %! assert (strfind (opts.ghostscript.output, ".ljet3"))
 %! assert (opts.devopt, "ljet3")
 %! assert (opts.send_to_printer, true);
 %! assert (opts.figure, 5)
-%! for n = 1:numel(opts.unlink)
-%!   unlink (opts.unlink{n});
-%! endfor
 
 function cmd = __quote_path__ (cmd)
   if (any (cmd == " ") && ! (cmd(1) == """" && cmd(end) == """"))

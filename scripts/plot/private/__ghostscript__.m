@@ -22,21 +22,24 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-07-26
 
-function status = __ghostscript__ (varargin);
+function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
 
   opts.binary = "";
-  opts.source = "";
-  opts.output = "";
+  opts.source = "-";
+  opts.output = "-";
   opts.device = "";
   opts.epscrop = false;
   opts.antialiasing  = false;
-  opts.resolution = [];
+  opts.resolution = 150;
   opts.papersize = "";
   opts.pageoffset = [0 0];
   opts.debug = false;
   opts.level = [];
+  opts.prepend = "";
 
   offsetfile = "";
+  offset_ps = {};
+  cleanup_cmd = "";
 
   args = varargin;
   n = find (cellfun (@isstruct, args));
@@ -51,23 +54,22 @@ function status = __ghostscript__ (varargin);
     opts.(args{n}) = args{n+1};
   endfor
 
-  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s",
-                     opts.device);
+  if (isempty (opts.papersize))
+    format_for_printer = false;
+  else
+    format_for_printer = true;
+  endif
+
+  gs_opts = sprintf ("-dQUIET -dNOPAUSE -dBATCH -dSAFER -sDEVICE=%s", opts.device);
 
   if (! isempty (opts.level) && ismember (opts.level, [1, 2, 3]))
     gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, round (opts.level));
   endif
 
-  if (isempty (strfind (opts.device, "write")))
-    ## Empirical observation: "-dpxlcolor" requires a sign change as
-    ##                        compared to pdfwrite, or pswrite output.
-    opts.pageoffset = opts.pageoffset .* [1, -1];
-    if (! isempty (opts.resolution))
-      gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
-    endif
-    if (opts.antialiasing)
-      gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
-    endif
+  if (opts.antialiasing && isempty (strfind (opts.device, "write")))
+    ## Apply anti-aliasing to all bitmap formats/devices
+    gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
+    gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
   elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);
     if (strcmp (opts.device, "pdfwrite"))
@@ -79,7 +81,8 @@ function status = __ghostscript__ (varargin);
   if (opts.epscrop)
     ## papersize is specified by the eps bbox
     gs_opts = sprintf ("%s -dEPSCrop", gs_opts);
-  elseif (! isempty (opts.papersize))
+  endif
+  if (format_for_printer)
     if (ischar (opts.papersize))
       gs_opts = sprintf ("%s -sPAPERSIZE=%s", gs_opts, opts.papersize);
     elseif (isnumeric (opts.papersize) && numel (opts.papersize) == 2)
@@ -88,25 +91,30 @@ function status = __ghostscript__ (varargin);
       if (opts.papersize(1) > opts.papersize(2))
         ## Lanscape mode: This option will result in automatic rotation of the
         ##                document page if the requested page size matches one
-        ##                of the default page sizes.
+        ##                of the default page sizes
         gs_opts = sprintf ("%s -dNORANGEPAGESIZE", gs_opts);
       endif
     else
       error ("print:badpapersize", "__ghostscript__.m: invalid 'papersize'")
     endif
     gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
-    offsetfile = strcat (tmpnam (), ".ps");
+    ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
+    str = sprintf ("%s [%d %d] %s", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
+                   opts.pageoffset, ">> setpagedevice");
+    offset_ps = {"%!PS-Adobe-3.0", str, "%%EOF"};
+    if (isfield (opts, "offsetfile"))
+      offsetfile = opts.offsetfile;
+      cleanup_cmd = "";
+    else
+      offsetfile = strcat (tmpnam (), ".ps");
+      cleanup_cmd = sprintf ("rm %s", offsetfile);
+    endif
     unwind_protect
       fid = fopen (offsetfile, "w");
-      onCleanup (@() unlink (offsetfile));
       if (fid == -1)
         error ("print:fopenfailed", "__ghostscript__.m: fopen() failed.");
       endif
-      fprintf (fid, "%s\n", "%!PS-Adobe-3.0")
-      ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
-      fprintf (fid, "%s [%d %d] %s\n", "<< /Margins [0 0] /.HWMargins [0 0 0 0] /PageOffset",
-               opts.pageoffset, ">> setpagedevice");
-      fprintf (fid, "%%EOF");
+      fprintf (fid, "%s\n", offset_ps{:})
     unwind_protect_cleanup
       status = fclose (fid);
       if (status == -1)
@@ -114,27 +122,36 @@ function status = __ghostscript__ (varargin);
       endif
     end_unwind_protect
     if (opts.debug)
-      [~,output] = system (sprintf ("cat %s", offsetfile));
       fprintf ("---- begin %s ----\n", offsetfile)
-      disp (output)
+      fprintf ("%s\n", offset_ps{:})
       fprintf ("----- end %s -----\n", offsetfile)
     endif
   endif
 
-  cmd = sprintf ("%s %s -sOutputFile=%s %s %s 2>&1", 
-                 opts.binary, gs_opts,
-                 opts.output, offsetfile, opts.source);
+  if (isempty (opts.output))
+    cmd = sprintf ("%s %s", opts.binary, gs_opts);
+  else
+    cmd = sprintf ("%s %s -sOutputFile=%s", opts.binary, gs_opts, opts.output);
+  endif
+  if (! isempty (opts.prepend)
+      && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
+    ## FIXME - Fonts get may be mangled when appending ps/ps2.
+    ##         See "How to concatenate several PS files" at the link,
+    ##         http://en.wikibooks.org/wiki/PostScript_FAQ
+    cmd = sprintf ("%s %s", cmd, opts.prepend);
+  endif
+  if (! isempty (offsetfile) && format_for_printer)
+    cmd = sprintf ("%s %s", cmd, offsetfile);
+  endif
+  if (! isempty (opts.source))
+    cmd = sprintf ("%s %s", cmd, opts.source);
+  endif
 
   if (opts.debug)
-    fprintf ("Ghostscript command: %s\n", cmd);
+    fprintf ("Ghostscript command: '%s'\n", cmd);
   endif
 
-  [status, output] = system (cmd);
-
-  if (status != 0)
-    warning ("print:ghostscripterror", 
-             "print.m: %s, '%s'.", output, opts.output)
-  endif
+  gs_cmd = cmd;
 
 endfunction
 

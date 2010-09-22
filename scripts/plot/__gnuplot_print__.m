@@ -27,6 +27,8 @@
 
 function opts = __gnuplot_print__ (opts)
 
+  dos_shell = (ispc () && ! isunix ());
+
   if (isempty (opts.fontsize))
     ## If no fontsize, determine the nominal axes fontsize.
     defaultfontsize = get (0, "defaultaxesfontsize");
@@ -44,12 +46,27 @@ function opts = __gnuplot_print__ (opts)
   ## the font spec given in "set terminal ..."
   gp_opts = font_spec (opts);
 
+  pipeline = "";
+
   switch lower (opts.devopt)
   case {"eps", "eps2", "epsc", "epsc2"}
     if (any (strcmp (opts.devopt, {"eps", "epsc"})))
       gp_opts = sprintf ("%s level1", gp_opts);
     endif
-    eps_drawnow (opts, opts.name, gp_opts);
+    if (opts.tight_flag || ! isempty (opts.preview))
+      tmp_file = strcat (tmpnam (), ".eps");
+      eps_drawnow (opts, tmp_file, gp_opts);
+      if (dos_shell)
+        cleanup = sprintf (" & delete %s", tmp_file);
+      else
+        cleanup = sprintf (" ; rm %s", tmp_file);
+      endif
+      pipeline = {sprintf("%s %s",
+                          opts.epstool_cmd (opts, tmp_file, opts.name),
+                          cleanup)};
+    else
+      eps_drawnow (opts, opts.name, gp_opts);
+    endif
   case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
     dot = find (opts.name == ".", 1, "last");
     if ((! isempty (dot))
@@ -71,29 +88,76 @@ function opts = __gnuplot_print__ (opts)
     endif
     local_drawnow (sprintf ("%s %s", term, gp_opts),
                    strcat (name, ".", suffix), opts)
-    if (opts.tight_flag && strncmpi (opts.devopt, "eps", 3))
-      __tight_eps_bbox__ (opts, strcat (name, "-inc.eps"));
-    endif
   case {"tikz"}
-    local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
+    if (__gnuplot_has_terminal__ ("tikz"))
+      local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
+    else
+      error (sprintf ("print:no%soutput", opts.devopt),
+             "print.m: '%s' output is not available for Gnuplot-%s.",
+             upper (opts.devopt), __gnuplot_version__ ())
+    endif
   case {"svg"}
     local_drawnow (sprintf ("svg dynamic %s", gp_opts), opts.name, opts);
-  case {"aifm", "corel", "eepic", "emf", "fig", "pdfcairo", "pngcairo"}
+  case {"aifm", "corel", "eepic", "emf", "fig"}
     local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
+  case {"pdfcairo", "pngcairo"}
+    if (__gnuplot_has_terminal__ (opts.devopt))
+      local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
+    else
+      error (sprintf ("print:no%soutput", opts.devopt),
+             "print.m: '%s' output is not available for Gnuplot-%s.",
+             upper (opts.devopt), __gnuplot_version__ ())
+    endif
   case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
     local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts)
   case opts.ghostscript.device
-    if (opts.formatted_for_printing)
-      ## Gnuplot's BBox LLHC is located at [50,50]
-      opts.ghostscript.pageoffset = opts.ghostscript.pageoffset - 50;
-    endif
     gp_opts = font_spec (opts, "devopt", "eps");
+    opts.ghostscript.output = opts.name;
+    opts.ghostscript.source = strcat (tmpnam (), ".eps");
     eps_drawnow (opts, opts.ghostscript.source, gp_opts);
+    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript); 
+    if (opts.send_to_printer || isempty (opts.name))
+      cmd_lpr = opts.lpr_cmd (opts);
+      cmd = sprintf ("%s | %s", cmd_gs, cmd_lpr);
+    else
+      cmd = sprintf ("%s", cmd_gs);
+    endif
+    if (dos_shell)
+      cmd = sprintf ("%s & delete %s", cmd, opts.ghostscript.source);
+    else
+      cmd = sprintf ("%s ; rm %s", cmd, opts.ghostscript.source);
+    endif
+    if (! isempty (cmd_cleanup))
+      if (dos_shell)
+        pipeline = {sprintf("%s & %s", cmd, cmd_cleanup)};
+      else
+        pipeline = {sprintf("%s ; %s", cmd, cmd_cleanup)};
+      endif
+    else
+      pipeline = {cmd};
+    endif
   otherwise
     error (sprintf ("print:no%soutput", opts.devopt),
-           "print.m: %s output is not available for the GNUPLOT backend.",
+           "print.m: %s output is not available for the Gnuplot backend.",
            upper (opts.devopt))
   endswitch
+
+
+  opts.pipeline = pipeline;
+
+  for n = 1:numel(pipeline)
+    if (opts.debug)
+      fprintf ("gnuplot-pipeline: '%s'\n", pipeline{n})
+    endif
+    [status, output] = system (pipeline{n});
+    if (status)
+      fprintf ("%s\n%s\n%s\n", 
+               "---------- output begin ----------",
+               output,
+               "----------- output end -----------");
+      error ("gnuplot:failedpipe", "print: Failed to print.")
+    endif
+  endfor
 
 endfunction
 
@@ -104,9 +168,6 @@ function eps_drawnow (opts, epsfile, gp_opts)
       set (h(n), "fontsize", 2 * fontsize{n});
     endfor
     local_drawnow (sprintf ("postscript eps %s", gp_opts), epsfile, opts);
-    if (opts.tight_flag)
-      __tight_eps_bbox__ (opts, epsfile);
-    endif
   unwind_protect_cleanup
     for n = 1:numel(h)
       set (h(n), "fontsize", fontsize{n});

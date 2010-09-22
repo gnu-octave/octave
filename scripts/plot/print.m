@@ -194,9 +194,24 @@
 ## To specify screen resolution, use "-r0".
 ##
 ## @item -tight
-##   Forces a tight bounding box for eps-files.  Since Ghostscript
-## is used to produce other devices, this option works for those
-## devices as well.
+##   Forces a tight bounding box for eps-files.
+##
+## @item -@var{preview}
+##   Adds a preview to eps-files. Supported formats are;
+##
+##   @table @code
+##   @item -interchange
+##     Provides a interchange preview.
+##
+##   @item -metalfile
+##     Provides a metafile preview.
+##
+##   @item -pict
+##     Provides pict preview.
+##
+##   @item -tiff
+##     Provides a tiff preview.
+##   @end table
 ##
 ## @item -S@var{xsize},@var{ysize}
 ##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. For
@@ -220,6 +235,12 @@ function print (varargin)
 
   opts = __print_parse_opts__ (varargin{:});
 
+  opts.pstoedit_cmd = @pstoedit;
+  opts.fig2dev_cmd = @fig2dev;
+  opts.latex_standalone = @latex_standalone;
+  opts.lpr_cmd = @lpr;
+  opts.epstool_cmd = @epstool;
+
   if (! isfigure (opts.figure))
     error ("print: no figure to print.")
   endif
@@ -227,20 +248,14 @@ function print (varargin)
   orig_figure = get (0, "currentfigure");
   figure (opts.figure)
 
-  if (opts.append_to_file && ! (strncmp (opts.devopt, "pdf", 3)
-         || strncmp (opts.devopt(1:2), "ps", 2)))
-    warning ("print:cannotappendfile", 
-             "print.m: Cannot append files of type '%s'.", opts.devopt)
-    opts.append_to_file = false;
+  if (opts.append_to_file)
+    [~, ~, ext] = fileparts (opts.ghostscript.output);
+    opts.ghostscript.prepend = strcat (tmpnam (), ext);
+    movefile (opts.ghostscript.output, opts.ghostscript.prepend);
+    opts.unlink{end+1} = opts.ghostscript.prepend;
   endif
 
   unwind_protect
-
-    if (opts.append_to_file)
-      saved_original_file = strcat (tmpnam (), ".", opts.devopt);
-      opts.unlink(end+1) = {saved_original_file};
-      movefile (opts.name, saved_original_file);
-    endif
 
     ## Modify properties as specified by options
     props = [];
@@ -328,81 +343,13 @@ function print (varargin)
       endif
     endif
 
-    if (strcmp (opts.devopt, opts.ghostscript.device))
-      opts.ghostscript.output = opts.name;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
-      opts.unlink{end+1} = opts.ghostscript.source;
-    endif
-
     ## call the backend print script
-    opts = feval (strcat ("__", get (opts.figure, "__backend__"), "_print__"),
-                  opts);
-
-    if (strcmp (opts.devopt, opts.ghostscript.device))
-      if (opts.tight_flag && ! opts.formatted_for_printing)
-        __tight_eps_bbox__ (opts, opts.ghostscript.source);
-      endif
-      status = __ghostscript__ (opts.ghostscript);
-      if (status != 0)
-        warning ("print.m:gsfailed", "print.m: ghostscript failure")
-      endif
-    endif
-
-    ## Send to the printer
-    if (opts.send_to_printer)
-      if (isempty (opts.ghostscript.output))
-        prn_datafile = opts.name;
-      else
-        prn_datafile = opts.ghostscript.output;
-      endif
-      if (isempty (opts.printer))
-        prn_cmd = sprintf ("lpr %s '%s' 2>&1", opts.lpr_options, prn_datafile);
-      else
-        prn_cmd = sprintf ("lpr %s -P %s '%s' 2>&1", opts.lpr_options,
-                           opts.printer, prn_datafile);
-      endif
-      if (opts.debug)
-        fprintf ("lpr command: %s\n", prn_cmd)
-        [status, output] = system ("lpq");
-        disp (output)
-      endif
-      [status, output] = system (prn_cmd);
-      if (status != 0)
-        disp (output)
-        warning ("print.m: printing failed.")
-      endif
-    endif
-
-    ## Append to file using GS
-    if (opts.append_to_file)
-      if (strncmp (opts.devopt, "pdf", 3))
-        suffix = "pdf";
-        device = suffix;
-      elseif (strncmp (opts.devopt(1:2), "ps", 2))
-        ## FIXME - For FLTK & Gnuplot the fonts get mangled
-        ##         See "How to concatenate several PS files" at the link,
-        ##         http://en.wikibooks.org/wiki/PostScript_FAQ
-        suffix = "ps";
-        device = suffix;
-      endif
-      tmp_combined_file = strcat (tmpnam (), ".", suffix);
-      opts.unlink{end+1} = tmp_combined_file;
-      gs_opts = "-dQUIET -dNOPAUSE -dBATCH -dSAFER -dFIXEDMEDIA";
-      gs_cmd = sprintf ("%s %s -sDEVICE=%swrite -sOutputFile=%s %s %s", 
-               opts.ghostscript.binary, gs_opts, device, tmp_combined_file,
-               saved_original_file, opts.name);
-      [status, output] = system (gs_cmd);
-      if (opts.debug)
-        fprintf ("Append files: %s\n", gs_cmd);
-      endif
-      if (status != 0)
-        warning ("print:failedtoappendfile", 
-                 "print.m: failed to append output to file '%s'.", opts.name)
-        copyfile (saved_original_file, opts.name);
-      else
-        copyfile (tmp_combined_file, opts.name);
-      endif
-    endif
+    switch get (opts.figure, "__backend__")
+    case "gnuplot"
+      opts = __gnuplot_print__ (opts);
+    otherwise
+      opts = __fltk_print__ (opts);
+    endswitch
 
   unwind_protect_cleanup
     ## restore modified properties
@@ -426,3 +373,236 @@ function print (varargin)
   endif
 
 endfunction
+
+function cmd = epstool (opts, filein, fileout)
+  ## As epstool does not work with pipes, a subshell is used to
+  ## permit piping. Since this solution does not work with the DOS
+  ## command shell, the -tight and -preview options are disabled if
+  ## output must be piped.
+
+  ## DOS Shell:
+  ##   copy con <filein> & epstool -bbox -preview-tiff <filein> <fileout> & delete <filein>
+  ## Unix Shell;
+  ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
+
+  dos_shell = (ispc () && ! isunix ());
+
+  cleanup = "";
+  if (nargin < 3)
+    fileout = opts.name;
+  elseif (isempty (fileout))
+    fileout = "-";
+  endif
+
+  if (nargin < 2 || strcmp (filein, "-") || isempty (filein))
+    pipein = true;
+    filein = strcat (tmpnam (), ".eps");
+    if (dos_shell)
+      cleanup = sprintf ("& delete %s ", filein);
+    else
+      cleanup = sprintf ("; rm %s ", filein);
+    endif
+  else
+    pipein = false;
+    filein = strcat ("'", strtrim (filein), "'");
+  endif
+  if (strcmp (fileout, "-"))
+    pipeout = true;
+    fileout = strcat (tmpnam (), ".eps");
+    if (dos_shell)
+      cleanup = horzcat (cleanup, sprintf ("& delete %s ", fileout));
+    else
+      cleanup = horzcat (cleanup, sprintf ("; rm %s ", fileout));
+    endif
+  else
+    pipeout = false;
+    fileout = strcat ("'", strtrim (fileout), "'");
+  endif
+
+  if (! isempty (opts.preview) && opts.tight_flag)
+    warning ("print:previewandtight",
+             "print.m: eps preview may not be combined with -tight.")
+  endif
+  if (! isempty (opts.preview) || opts.tight_flag)
+    if (! isempty (opts.epstool_binary))
+      if (opts.tight_flag)
+        cmd = "--copy --bbox";
+      elseif (! isempty (opts.preview))
+        switch opts.preview
+        case "tiff"
+          cmd = sprintf ("--add-%s-preview --device tiffg3", opts.preview);
+        case {"tiff6u", "tiff6p", "metafile"}
+          cmd = sprintf ("--add-%s-preview --device bmpgray", opts.preview);
+        case {"tiff4", "interchange"}
+          cmd = sprintf ("--add-%s-preview", opts.preview);
+        case "pict"
+          cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
+        otherwise
+          error ("print:invalidpreview",
+                 "print.m: epstool cannot include preview for format '%s'",
+                 opts.preview);
+        endswitch
+        if (! isempty (opts.ghostscript.resolution))
+          cmd = sprintf ("%s --dpi %d", cmd, opts.ghostscript.resolution);
+        endif
+      else
+        cmd = "";
+      endif
+      if (! isempty (cmd))
+        cmd = sprintf ("%s --quiet %s %s %s ", opts.epstool_binary,
+                       cmd, filein, fileout);
+      endif
+      if (pipein)
+        if (dos_shell)
+          cmd = sprintf ("copy con %s & %s", filein, cmd);
+        else
+          cmd = sprintf ("cat > %s ; %s", filein, cmd);
+        endif
+      endif
+      if (pipeout)
+        if (dos_shell)
+          cmd = sprintf ("%s & type %s", cmd, fileout);
+        else
+          cmd = sprintf ("%s ; cat %s", cmd, fileout);
+        endif
+      endif
+      if (! isempty (cleanup))
+        if (pipeout && dos_shell)
+          error ("print:epstoolpipe",
+                 "print.m: cannot pipe output of 'epstool' for DOS shell.")
+        elseif (pipeout)
+          cmd = sprintf ("( %s %s )", cmd, cleanup);
+        else
+          cmd = sprintf ("%s %s", cmd, cleanup);
+        endif
+      endif
+    elseif (isempty (opts.epstool_binary))
+      error ("print:noepstool", "print.m: 'epstool' not found in EXEC_PATH.")
+    endif
+  else
+    if (pipein && pipeout)
+      if (dos_shell)
+        cmd = sprintf ("copy con %s & type %s", filein, fileout);
+      else
+        cmd = " cat ";
+      endif
+    elseif (pipein && ! pipeout)
+      if (dos_shell)
+        cmd = sprintf (" copy con %s ", fileout);
+      else
+        cmd = sprintf (" cat > %s ", fileout);
+      endif
+    elseif (! pipein && pipeout)
+      if (dos_shell)
+        cmd = sprintf (" type %s ", filein);
+      else
+        cmd = sprintf (" cat %s ", filein);
+      endif
+    else
+      if (dos_shell)
+        cmd = sprintf (" copy %s %s ", filein, fileout);
+      else
+        cmd = sprintf (" cp %s %s ", filein, fileout);
+      endif
+    endif
+  endif
+  if (opts.debug)
+    fprintf ("epstool command: '%s'\n", cmd)
+  endif
+endfunction
+
+function cmd = fig2dev (opts, devopt)
+  if (nargin < 2)
+    devopt =  opts.devopt;
+  endif
+  dos_shell = (ispc () && ! isunix ());
+  if (! isempty (opts.fig2dev_binary))
+    if (dos_shell)
+      ## FIXME - is this the right thing to do for DOS?
+      cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
+    else
+      cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
+    endif
+  elseif (isempty (opts.fig2dev_binary))
+    error ("print:nofig2dev", "print.m: 'fig2dev' not found in EXEC_PATH.")
+  endif
+  if (opts.debug)
+    fprintf ("fig2dev command: '%s'\n", cmd)
+  endif
+endfunction
+
+function latex_standalone (latexfile)
+  prepend = {"\\documentclass{minimal}";
+             "\\usepackage{epsfig,color}";
+             "\\begin{document}";
+             "\\centering"};
+  postpend = {"\\end{document}"};
+  fid = fopen (latexfile, "r");
+  if (fid >= 0)
+    latex = fscanf (fid, "%c", Inf);
+    status = fclose (fid);
+    if (status != 0)
+      error ("print:errorclosingfile",
+             "print.m: error closing file '%s'", latexfile)
+    endif
+  else
+    error ("print:erroropeningfile",
+           "print.m: error opening file '%s'", latexfile)
+  endif
+  fid = fopen (latexfile, "w");
+  if (fid >= 0)
+    fprintf (fid, "%s\n", prepend{:});
+    fprintf (fid, "%s", latex);
+    fprintf (fid, "%s\n", postpend{:});
+    status = fclose (fid);
+    if (status != 0)
+      error ("print:errorclosingfile",
+             "print.m: error closing file '%s'", latexfile)
+    endif
+  else
+    error ("print:erroropeningfile",
+           "print.m: error opening file '%s'", latexfile)
+  endif
+endfunction
+
+function cmd = lpr (opts)
+  if (nargin < 2)
+    devopt =  opts.devopt;
+  endif
+  if (! isempty (opts.lpr_binary))
+    cmd = opts.lpr_binary;
+    if (! isempty (opts.lpr_options))
+      cmd = sprintf ("%s %s", cmd, opts.lpr_options);
+    end
+    if (! isempty (opts.printer))
+      cmd = sprintf ("%s -P %s", cmd, opts.printer);
+    end
+  elseif (isempty (opts.lpr_binary))
+    error ("print:nolpr", "print.m: 'lpr' not found in EXEC_PATH.")
+  endif
+  if (opts.debug)
+    fprintf ("lpr command: '%s'\n", cmd)
+  endif
+endfunction
+
+function cmd = pstoedit (opts, devopt)
+  if (nargin < 2)
+    devopt =  opts.devopt;
+  endif
+  dos_shell = (ispc () && ! isunix ());
+  if (! isempty (opts.pstoedit_binary))
+    if (dos_shell)
+      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+    else
+      ## FIXME - is this the right thing to do for DOS?
+      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+    endif
+  elseif (isempty (opts.pstoedit_binary))
+    error ("print:nopstoedit", "print.m: 'pstoedit' not found in EXEC_PATH.")
+  endif
+  if (opts.debug)
+    fprintf ("pstoedit command: '%s'\n", cmd)
+  endif
+endfunction
+
+

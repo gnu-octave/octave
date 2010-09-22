@@ -23,22 +23,26 @@
 
 function opts = __fltk_print__ (opts)
 
+  dos_shell = (ispc () && ! isunix ());
+
   figure (opts.figure)
   drawnow ("expose")
 
   if (! isempty (opts.fig2dev_binary))
+    ## fig2dev is prefered for conversion to emf
     fig2dev_devices = {"pstex", "mf", "emf"};
   else
-    ## If no fig2dev is present, support emf using pstoedit.
     fig2dev_devices = {"pstex", "mf"};
   endif
 
+  gl2ps_device = {};
+  pipeline = {};
   switch lower (opts.devopt)
   case {"eps", "eps2", "epsc", "epsc2"}
-    drawnow ("eps", opts.name);
-    if (opts.tight_flag)
-      __tight_eps_bbox__ (opts, opts.name);
-    endif
+    ## format GL2PS_EPS
+    gl2ps_device = {"eps"};
+    ## FIXME - use epstool to tighten bbox and provide preview.
+    pipeline = {opts.epstool_cmd(opts, "-", opts.name)};
   case {"epslatex", "pslatex", "pdflatex", "epslatexstandalone", ...
         "pslatexstandalone", "pdflatexstandalone"}
     ## format GL2PS_TEX
@@ -57,143 +61,104 @@ function opts = __fltk_print__ (opts)
     elseif (dot == numel (opts.name))
       name = opts.name;
     endif
-    drawnow (strcat (lower (suffix), "notxt"), strcat (name, ".", suffix));
-    drawnow ("tex", strcat (name, ".tex"));
-    if (opts.tight_flag && strcmp (suffix, "eps"))
-      __tight_eps_bbox__ (opts, strcat (name, ".", suffix));
-    endif
-    if (! isempty (strfind (opts.devopt, "standalone")))
-      __latex_standalone__ (strcat (name, ".tex"));
+    gl2ps_device = {sprintf("%snotxt", lower (suffix))};
+    gl2ps_device{2} = "tex";
+    if (dos_shell)
+      pipeline = {sprintf("copy con %s.%s", name, suffix)};
+      pipeline{2} = sprintf ("copy con %s.tex", name);
+    else
+      pipeline = {sprintf("cat > %s.%s", name, suffix)};
+      pipeline{2} = sprintf ("cat > %s.tex", name);
     endif
   case {"tikz"}
     ## format GL2PS_PGF
-    drawnow ("pgf", opts.name);
+    gl2ps_device = {"pgf"};
+    pipeline = {sprintf("cat > %s", opts.name)};
   case {"svg"}
     ## format GL2PS_SVG
-    drawnow ("svg", opts.name);
+    gl2ps_device = {"svg"};
+    pipeline = {sprintf("cat > %s", opts.name)};
   case fig2dev_devices
-    tmp_figfile = strcat (tmpnam (), ".fig");
-    opts.unlink{end+1} = tmp_figfile;
-    status = __pstoedit__ (opts, "fig", tmp_figfile);
-    if (status == 0)
-      status = __fig2dev__ (opts, tmp_figfile);
-      if (strcmp (opts.devopt, "pstex") && status == 0)
-        if (strfind (opts.name, ".ps") == numel(opts.name) - 2)
-          devfile = strcat (opts.name(1:end-2), "tex");
-        else
-          devfile = strcat (opts.name, ".tex");
-        endif
-        status = __fig2dev__ (opts, tmp_figfile, "pstex_t", devfile);
+    cmd_pstoedit = opts.pstoedit_cmd (opts, "fig");
+    cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
+    if (strcmp (opts.devopt, "pstex"))
+      [~, ~, ext] = fileparts (opts.name);
+      if (any (strcmpi (ext, {".ps", ".tex", "."})))
+        opts.name = opts.name(1:end-numel(ext));
       endif
+      opts.name = strcat (opts.name, ".ps");
+      cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+      gl2ps_device = {"eps"};
+      pipeline = {cmd};
+      cmd_fig2dev = opts.fig2dev_cmd (opts, "pstex_t");
+      gl2ps_device{2} = "eps";
+      pipeline{2} = sprintf ("%s | %s > %s", cmd_pstoedit,
+                             cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
+    else
+      cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
+      gl2ps_device = {"eps"};
+      pipeline = {cmd};
     endif
   case {"aifm"}
-    status = __pstoedit__ (opts, "ps2ai");
+    cmd = opts.pstoedit_cmd (opts, "ps2ai");
+    gl2ps_device = {"eps"};
+    pipeline = {sprintf("%s > %s", cmd, opts.name)};
   case {"dxf", "emf", "fig", "hpgl"}
-    status = __pstoedit__ (opts);
+    cmd = opts.pstoedit_cmd (opts);
+    gl2ps_device = {"eps"};
+    pipeline = {sprintf("%s > %s", cmd, opts.name)};
   case {"corel", "gif"}
     error ("print:unsupporteddevice",
            "print.m: %s output is not available for the FLTK backend.",
            upper (opts.devopt))
   case opts.ghostscript.device
-    drawnow ("eps", opts.ghostscript.source);
+    opts.ghostscript.source = "-";
+    opts.ghostscript.output = opts.name;
+    if (opts.send_to_printer)
+      opts.unlink(strcmp (opts.unlink, opts.ghostscript.output)) = [];
+      opts.ghostscript.output = "-";
+    endif
+    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
+    if (opts.send_to_printer || isempty (opts.name))
+      cmd_lpr = opts.lpr_cmd (opts);
+      cmd = sprintf("%s | %s", cmd_gs, cmd_lpr);
+    else
+      cmd = sprintf("%s", cmd_gs);
+    endif
+    if (! isempty (cmd_cleanup))
+      gl2ps_device = {"eps"};
+      if (dos_shell)
+        pipeline = {sprintf("%s & %s", cmd, cmd_cleanup)};
+      else
+        pipeline = {sprintf("%s ; %s", cmd, cmd_cleanup)};
+      endif
+    else
+      gl2ps_device = {"eps"};
+      pipeline = {cmd};
+    endif
+  otherwise
+    error (sprintf ("print:no%soutput", opts.devopt),
+           "print.m: %s output is not available for GL2PS output.",
+           upper (opts.devopt))
   endswitch
 
-endfunction
+  opts.pipeline = pipeline;
 
-function status = __fig2dev__ (opts, figfile, devopt, devfile)
-  persistent warn_on_absence = true
-  if (nargin < 4)
-    devfile = opts.name;
-  endif
-  if (nargin < 3)
-    devopt =  opts.devopt;
-  endif
-  if (! isempty (opts.fig2dev_binary))
-    cmd = sprintf ("%s -L %s %s %s 2>&1", opts.fig2dev_binary, devopt,
-                   figfile, devfile);
-    [status, output] = system (cmd);
-    if (opts.debug || status != 0)
-      fprintf ("fig2dev command: %s", cmd)
+  for n = 1:numel(pipeline)
+    if (opts.debug)
+      fprintf ("fltk-pipeline: '%s'\n", pipeline{n})
     endif
-    if (status != 0)
-      disp (output)
-      warning ("print:fig2devfailed", "print.m: error running fig2dev.")
+    pid = popen (pipeline{n}, "w");
+    if (pid < 0)
+      error ("print:popenfailed", "print.m: failed to open pipe.");
     endif
-  elseif (isempty (opts.fig2dev_binary) && warn_on_absence)
-    warning ("print:nofig2dev", "print.m: 'fig2dev' not found in EXEC_PATH.")
-    warn_on_absence = false;
-  endif
-endfunction
-
-function status = __pstoedit__ (opts, devopt, name)
-  persistent warn_on_absence = true
-  if (nargin < 3)
-    name = opts.name;
-  endif
-  if (nargin < 2)
-    devopt =  opts.devopt;
-  endif
-  if (! isempty (opts.pstoedit_binary))
-    tmp_epsfile = strcat (tmpnam (), ".eps");
     unwind_protect
-      drawnow ("eps", tmp_epsfile)
-      if (opts.tight_flag)
-        __tight_eps_bbox__ (opts, tmp_epsfile);
-      endif
-      cmd = sprintf ("%s -f %s %s %s 2>&1", opts.pstoedit_binary, devopt,
-                     tmp_epsfile, name);
-      [status, output] = system (cmd);
-      if (opts.debug || status != 0)
-        fprintf ("pstoedit command: %s", cmd)
-      endif
-      if (status != 0)
-        disp (output)
-        warning ("print:pstoeditfailed", "print.m: error running pstoedit.")
-      endif
+      drawnow (gl2ps_device{n} , sprintf ("%d" , pid));
+      waitpid (pid);
     unwind_protect_cleanup
-      [status, output] = unlink (tmp_epsfile);
-      if (status != 0)
-        warning ("print.m: %s, '%s'.", output, tmp_epsfile)
-      endif
+      pclose (pid);
     end_unwind_protect
-  elseif (isempty (opts.pstoedit_binary) && warn_on_absence)
-    warning ("print:nopstoedit", "print.m: 'pstoedit' not found in EXEC_PATH.")
-    warn_on_absence = false;
-  endif
-endfunction
+  endfor
 
-function __latex_standalone__ (latexfile)
-  prepend = {"\\documentclass{minimal}";
-             "\\usepackage{epsfig,color}";
-             "\\begin{document}";
-             "\\centering"};
-  postpend = {"\\end{document}"};
-  fid = fopen (latexfile, "r");
-  if (fid >= 0)
-    latex = fscanf (fid, "%c", Inf);
-    status = fclose (fid);
-    if (status != 0)
-      error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile)
-    endif
-  else
-    error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile)
-  endif
-  fid = fopen (latexfile, "w");
-  if (fid >= 0)
-    fprintf (fid, "%s\n", prepend{:});
-    fprintf (fid, "%s", latex);
-    fprintf (fid, "%s\n", postpend{:});
-    status = fclose (fid);
-    if (status != 0)
-      error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile)
-    endif
-  else
-    error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile)
-  endif
 endfunction
-
 

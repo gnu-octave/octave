@@ -251,8 +251,7 @@ function print (varargin)
   if (opts.append_to_file)
     [~, ~, ext] = fileparts (opts.ghostscript.output);
     opts.ghostscript.prepend = strcat (tmpnam (), ext);
-    movefile (opts.ghostscript.output, opts.ghostscript.prepend);
-    opts.unlink{end+1} = opts.ghostscript.prepend;
+    copyfile (opts.ghostscript.output, opts.ghostscript.prepend);
   endif
 
   unwind_protect

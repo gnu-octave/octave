@@ -139,6 +139,11 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     ##         See "How to concatenate several PS files" at the link,
     ##         http://en.wikibooks.org/wiki/PostScript_FAQ
     cmd = sprintf ("%s %s", cmd, opts.prepend);
+    if (isempty (cleanup_cmd))
+      cleanup_cmd = sprintf ("rm %s", opts.prepend);
+    else
+      cleanup_cmd = sprintf ("%s ; rm %s", cleanup_cmd, opts.prepend);
+    endif
   endif
   if (! isempty (offsetfile) && format_for_printer)
     cmd = sprintf ("%s %s", cmd, offsetfile);

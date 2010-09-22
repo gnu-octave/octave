@@ -1,3 +1,8 @@
+2010-09-22  Ben Abbott <bpabbott@mac.com>
+
+	* plot/private/__ghostscript__.m, plot/print.m: When appending, delete
+	temporay files at the end of the ghostscript pipeline.
+
 2010-09-21  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__fltk_print__.m, plot/private/__ghostscript__.m,

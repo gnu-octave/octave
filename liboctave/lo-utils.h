@@ -39,6 +39,16 @@ extern OCTAVE_API int NINT (float x);
 extern OCTAVE_API double D_NINT (double x);
 extern OCTAVE_API float F_NINT (float x);
 
+extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
+extern OCTAVE_API bool xis_one_or_zero (double x);
+extern OCTAVE_API bool xis_zero (double x);
+extern OCTAVE_API bool xtoo_large_for_float (double x);
+
+extern OCTAVE_API bool xis_int_or_inf_or_nan (float x);
+extern OCTAVE_API bool xis_one_or_zero (float x);
+extern OCTAVE_API bool xis_zero (float x);
+extern OCTAVE_API bool xtoo_large_for_float (float x);
+
 extern OCTAVE_API char *strsave (const char *);
 
 extern OCTAVE_API void

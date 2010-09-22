@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <cfloat>
 
 #include <limits>
 #include <string>
@@ -110,6 +111,27 @@ F_NINT (float x)
   else
     return floor (x + 0.5);
 }
+
+bool xis_int_or_inf_or_nan (double x)
+{ return ! (xisnan (x) || D_NINT (x) == x); }
+
+bool xis_one_or_zero (double x)
+{ return x == 0 || x == 1; }
+
+bool xis_zero (double x)
+{ return x == 0; }
+
+bool xtoo_large_for_float (double x)
+{ return (! (xisnan (x) || xisinf (x)) && fabs (x) > FLT_MAX); }
+
+bool xis_int_or_inf_or_nan (float x)
+{ return ! (xisnan (x) || D_NINT (x) == x); }
+
+bool xis_one_or_zero (float x)
+{ return x == 0 || x == 1; }
+
+bool xis_zero (float x)
+{ return x == 0; }
 
 // Save a string.
 

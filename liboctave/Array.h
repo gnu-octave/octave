@@ -623,6 +623,58 @@ public:
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&)> (fcn); }
 
+  // Generic any/all test functionality with arbitrary predicate.
+  template <class F, bool zero>
+  bool test (F fcn) const
+  {
+    octave_idx_type len = length ();
+
+    const T *m = data ();
+
+    octave_idx_type i;
+    for (i = 0; i < len - 3; i += 4)
+      {
+        octave_quit ();
+
+        if (fcn (m[i]) != zero 
+            || fcn (m[i+1]) != zero
+            || fcn (m[i+2]) != zero
+            || fcn (m[i+3]) != zero)
+           return ! zero;
+
+      }
+
+    octave_quit ();
+
+    for (; i < len; i++)
+       if (fcn (m[i]) != zero)
+          return ! zero;
+
+    return zero;
+  }
+
+  // Simpler calls.
+  template <class F>
+  bool test_any (F fcn) const
+  { return test<F, false> (fcn); }
+
+  template <class F>
+  bool test_all (F fcn) const
+  { return test<F, true> (fcn); }
+
+  // Overloads for function references.
+  bool test_any (bool (&fcn) (T)) const
+  { return test<bool (&) (T), false> (fcn); }
+
+  bool test_any (bool (&fcn) (const T&)) const
+  { return test<bool (&) (const T&), false> (fcn); }
+
+  bool test_all (bool (&fcn) (T)) const
+  { return test<bool (&) (T), true> (fcn); }
+
+  bool test_all (bool (&fcn) (const T&)) const
+  { return test<bool (&) (const T&), true> (fcn); }
+
   template <class U> friend class Array;
 
   // Returns true if this->dims () == dv, and if so, replaces this->dimensions

@@ -2620,18 +2620,8 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
 bool
 FloatMatrix::any_element_is_negative (bool neg_zero) const
 {
-  octave_idx_type nel = nelem ();
-
-  if (neg_zero)
-    {
-      for (octave_idx_type i = 0; i < nel; i++)
-        if (lo_ieee_signbit (elem (i)))
-          return true;
-    }
-  else
-    return do_mx_check<float> (*this, mx_inline_any_negative);
-
-  return false;
+  return (neg_zero ? test_all (xnegative_sign)
+          : do_mx_check<float> (*this, mx_inline_any_negative));
 }
 
 bool
@@ -2649,33 +2639,13 @@ FloatMatrix::any_element_is_inf_or_nan (void) const
 bool
 FloatMatrix::any_element_not_one_or_zero (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-      if (val != 0 && val != 1)
-        return true;
-    }
-
-  return false;
+  return ! test_all (xis_one_or_zero);
 }
 
 bool
 FloatMatrix::all_elements_are_int_or_inf_or_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-      if (xisnan (val) || D_NINT (val) == val)
-        continue;
-      else
-        return false;
-    }
-
-  return true;
+  return test_all (xis_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract
@@ -2704,7 +2674,7 @@ FloatMatrix::all_integers (float& max_val, float& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (D_NINT (val) != val)
+      if (! xisinteger (val))
         return false;
     }
 
@@ -2714,17 +2684,6 @@ FloatMatrix::all_integers (float& max_val, float& min_val) const
 bool
 FloatMatrix::too_large_for_float (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-
-      if (! (xisnan (val) || xisinf (val))
-          && fabs (val) > FLT_MAX)
-        return true;
-    }
-
   return false;
 }
 

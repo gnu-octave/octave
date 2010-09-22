@@ -211,4 +211,16 @@ extern OCTAVE_API FloatComplex rc_log10 (float);
 extern OCTAVE_API Complex rc_sqrt (double);
 extern OCTAVE_API FloatComplex rc_sqrt (float);
 
+// Some useful tests, that are commonly repeated.
+// Test for a finite integer.
+inline bool xisinteger (double x)
+{ return xfinite (x) && x == xround (x); }
+inline bool xisinteger (float x)
+{ return xfinite (x) && x == xround (x); }
+
+// Test for negative sign. 
+extern OCTAVE_API bool xnegative_sign (double x);
+extern OCTAVE_API bool xnegative_sign (float x);
+
+
 #endif

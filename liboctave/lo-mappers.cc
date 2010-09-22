@@ -702,3 +702,9 @@ FloatComplex rc_sqrt (float x)
 {
   return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
 }
+
+bool xnegative_sign (double x)
+{ return __lo_ieee_signbit (x); }
+
+bool xnegative_sign (float x)
+{ return __lo_ieee_float_signbit (x); }

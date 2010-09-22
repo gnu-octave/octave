@@ -1,5 +1,30 @@
 2010-09-21  Jaroslav Hajek  <highegg@gmail.com>
 
+	* Array.h (Array::test, Array::test_all, Array::test_any): New
+	overloaded template methods.
+	* lo-mappers.h (xisinteger, xnegative_sign): New bool mappers.
+	* dNDArray.cc (NDArray::any_element_is_negative, 
+	NDArray::all_integers): Simplify.
+	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
+	FloatNDArray::all_integers): Simplify.
+
+	* lo-utils.cc (xis_int_or_inf_or_nan, xis_one_or_zero,
+	xis_zero, xtoo_large_for_float): New utility functions.
+
+	* dNDArray.cc (NDArray::any_element_is_negative, 
+	NDArray::all_integers, NDArray::all_elements_are_zero,
+	NDArray::all_elements_are_int_or_inf_or_nan, 
+	NDArray::any_element_not_one_or_zero,
+	NDArray::too_large_for_float): Simplify.
+
+	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
+	FloatNDArray::all_integers, FloatNDArray::all_elements_are_zero,
+	FloatNDArray::all_elements_are_int_or_inf_or_nan, 
+	FloatNDArray::any_element_not_one_or_zero,
+	FloatNDArray::too_large_for_float): Simplify.
+
+2010-09-21  Jaroslav Hajek  <highegg@gmail.com>
+
 	* dNDArray.cc (NDArray::any_element_is_negative, 
 	NDArray::any_element_is_nan, 
 	NDArray::any_element_is_inf_or_nan): Simplify.

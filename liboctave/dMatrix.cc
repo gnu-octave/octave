@@ -2621,80 +2621,32 @@ operator * (const ColumnVector& v, const RowVector& a)
 bool
 Matrix::any_element_is_negative (bool neg_zero) const
 {
-  octave_idx_type nel = nelem ();
-
-  if (neg_zero)
-    {
-      for (octave_idx_type i = 0; i < nel; i++)
-        if (lo_ieee_signbit (elem (i)))
-          return true;
-    }
-  else
-    return do_mx_check<double> (*this, mx_inline_any_negative);
-
-  return false;
+  return (neg_zero ? test_all (xnegative_sign)
+          : do_mx_check<double> (*this, mx_inline_any_negative));
 }
 
 bool
 Matrix::any_element_is_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-      if (xisnan (val))
-        return true;
-    }
-
-  return false;
+  return do_mx_check<double> (*this, mx_inline_any_nan);
 }
 
 bool
 Matrix::any_element_is_inf_or_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-      if (xisinf (val) || xisnan (val))
-        return true;
-    }
-
-  return false;
+  return ! do_mx_check<double> (*this, mx_inline_all_finite);
 }
 
 bool
 Matrix::any_element_not_one_or_zero (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-      if (val != 0 && val != 1)
-        return true;
-    }
-
-  return false;
+  return ! test_all (xis_one_or_zero);
 }
 
 bool
 Matrix::all_elements_are_int_or_inf_or_nan (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-      if (xisnan (val) || D_NINT (val) == val)
-        continue;
-      else
-        return false;
-    }
-
-  return true;
+  return test_all (xis_int_or_inf_or_nan);
 }
 
 // Return nonzero if any element of M is not an integer.  Also extract
@@ -2723,7 +2675,7 @@ Matrix::all_integers (double& max_val, double& min_val) const
       if (val < min_val)
         min_val = val;
 
-      if (D_NINT (val) != val)
+      if (! xisinteger (val))
         return false;
     }
 
@@ -2733,18 +2685,7 @@ Matrix::all_integers (double& max_val, double& min_val) const
 bool
 Matrix::too_large_for_float (void) const
 {
-  octave_idx_type nel = nelem ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-
-      if (! (xisnan (val) || xisinf (val))
-          && fabs (val) > FLT_MAX)
-        return true;
-    }
-
-  return false;
+  return test_all (xtoo_large_for_float);
 }
 
 // FIXME Do these really belong here?  Maybe they should be

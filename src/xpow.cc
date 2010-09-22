@@ -1117,9 +1117,7 @@ elem_xpow (double a, const NDArray& b)
 {
   octave_value retval;
 
-  double d1, d2;
-
-  if (a < 0.0 && ! b.all_integers (d1, d2))
+  if (a < 0.0 && ! b.all_integers ())
     {
       Complex atmp (a);
       ComplexNDArray result (b.dims ());
@@ -2433,9 +2431,7 @@ elem_xpow (float a, const FloatNDArray& b)
 {
   octave_value retval;
 
-  float d1, d2;
-
-  if (a < 0.0 && ! b.all_integers (d1, d2))
+  if (a < 0.0 && ! b.all_integers ())
     {
       FloatComplex atmp (a);
       FloatComplexNDArray result (b.dims ());

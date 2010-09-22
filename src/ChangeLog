@@ -1,3 +1,8 @@
+2010-09-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* xpow.cc (elem_xpow (float, const NDArray&),
+	elem_xpow (float, const FloatNDArray&)): Use simpler tests.
+
 2010-09-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.h (octave_base_stream::file_number): Return 0, 1,

@@ -1,3 +1,10 @@
+2010-09-23  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (ALL_DEF_FILES): New variable.
+	(DEF_FILES): Don't include $(DLD_DYNAMIC_DEF_FILES) in the list.
+	(DEF_FILES DLD_DYNAMIC_DEF_FILES): Fix dependency info.
+	(doc-files): Depend on $(ALL_DEF_FILES), not $(DEF_FILES).
+
 2010-09-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xpow.cc (elem_xpow (float, const NDArray&),

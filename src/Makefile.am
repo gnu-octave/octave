@@ -483,9 +483,15 @@ DLD_STATIC_DEF_FILES = $(DLD_STATIC_SRC:.cc=.df)
 
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
-DEF_FILES = $(SRC_DEF_FILES) $(DLD_DYNAMIC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
+## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
+## .df files that correspond to sources included in liboctave.
+DEF_FILES = $(SRC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
 
-$(DEF_FILES): mkdefs Makefile $(OPT_HANDLERS)
+ALL_DEF_FILES = $(DEF_FILES) $(DLD_DYNAMIC_DEF_FILES)
+
+$(DEF_FILES) $(DYNAMIC_DLD_DEF_FILES): mkdefs Makefile
+
+$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCTAVE_LIBS = \
@@ -657,8 +663,8 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 	$(top_srcdir)/move-if-change $@ DOCSTRINGS
 	touch $@
 
-doc-files: $(DEF_FILES)
-	echo $(DEF_FILES) > $@-t
+doc-files: $(ALL_DEF_FILES)
+	echo $(ALL_DEF_FILES) > $@-t
 	mv $@-t $@
 
 gendoc.cc: doc-files mkgendoc
@@ -671,8 +677,6 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 ops.cc: $(OPERATORS_SRC) mkops
 	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
 	mv $@-t $@
-
-$(DEF_FILES): $(OPT_INC) mkdefs 
 
 install-exec-hook: make-version-links
 

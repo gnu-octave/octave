@@ -1,3 +1,8 @@
+2010-09-23  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/bug_report.m: Display information about how to
+	submit bug reports instead of creating and mailing a bug report.
+
 2010-09-22  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__ghostscript__.m, plot/print.m: When appending, delete

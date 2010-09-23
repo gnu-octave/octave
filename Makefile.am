@@ -57,8 +57,6 @@ EXTRA_DIST = \
   mkoctfile.cc.in \
   mkoctfile.in \
   move-if-change \
-  octave-bug.cc.in \
-  octave-bug.in \
   octave-config.cc.in \
   octave-config.in \
   octave-sh \
@@ -78,8 +76,7 @@ endif
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 bin_PROGRAMS = \
   mkoctfile \
-  octave-config \
-  octave-bug
+  octave-config
 
 mkoctfile_SOURCES =
 nodist_mkoctfile_SOURCES = mkoctfile.cc
@@ -87,20 +84,15 @@ nodist_mkoctfile_SOURCES = mkoctfile.cc
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
 
-octave_bug_SOURCES =
-nodist_octave_bug_SOURCES = octave-bug.cc
-
 BUILT_SOURCES = \
   mkoctfile.cc \
   octave-config.cc \
-  octave-bug.cc \
   run-octave
 
 else
 bin_SCRIPTS = \
   mkoctfile \
   octave-config \
-  octave-bug \
   run-octave
 
 BUILT_SOURCES = \
@@ -131,19 +123,12 @@ all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbin
 	@echo ""
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-octave-bug.cc: octave-bug.cc.in Makefile
-	@$(do_subst_config_vals)
-
 octave-config.cc: octave-config.cc.in Makefile
 	@$(do_subst_default_vals)
 
 mkoctfile.cc: mkoctfile.cc.in Makefile
 	@$(do_subst_config_vals)
 else
-octave-bug: octave-bug.in Makefile
-	@$(do_subst_config_vals)
-	chmod a+rx $@
-
 octave-config: octave-config.in Makefile
 	@$(do_subst_default_vals)
 	chmod a+rx $@

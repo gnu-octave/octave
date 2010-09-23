@@ -1,5 +1,5 @@
 ## Copyright (C) 1994, 1995, 1996, 1997, 1998, 2000, 2002, 2003, 2005,
-##               2007, 2008 John W. Eaton
+##               2007, 2008, 2010 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,55 +19,28 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bug_report ()
-## Have Octave create a bug report template file, invoke your favorite
-## editor, and submit the report to the bug-octave mailing list when
-## you are finished editing.
+## Display information about how to submit bug reports for Octave.
 ## @end deftypefn
 
 ## Author: jwe
 
 function bug_report ()
 
-  if (nargin != 0)
-    warning ("bug_report: ignoring extra arguments");
-  endif
-
-  printf ("Please enter a one-line description of your bug report.\n\n");
-  fflush (stdout);
-
-  subject = "";
-  subject = input ("Subject: ", "s");
-
-  unwind_protect
-
-    prefs = tmpnam ();
-
-    if (! isempty (prefs))
-      fid = fopen (prefs, "wt");
-      if (fid > 0)
-        dump_prefs (fid);
-        fclose (fid);
-      endif
-    endif
-
-    cmd = cstrcat ("octave-bug-", OCTAVE_VERSION);
-
-    if (length (subject) > 0)
-      cmd = sprintf ("%s -s \"%s\"", cmd, subject);
-    endif
-
-    if (! isempty (prefs))
-      cmd = sprintf ("%s \"%s\"", cmd, prefs);
-    endif
-
-    system (cmd);
-
-  unwind_protect_cleanup
-
-    if (! isempty (prefs))
-      unlink (prefs);
-    endif
-
-  end_unwind_protect
+  puts ("\n");
+  puts ("  Bug reports play an essential role in making Octave\n");
+  puts ("  reliable.  Please use the Octave bug tracker at\n");
+  puts ("\n");
+  puts ("    http://bugs.octave.org\n");
+  puts ("\n");
+  puts ("  to report problems.\n");
+  puts ("\n");
+  puts ("  Please also read the bug reporting guidelines at\n");
+  puts ("\n");
+  puts ("    http://www.octave.org/bugs.html\n");
+  puts ("\n");
+  puts ("  to learn how to submit useful bug reports that will\n");
+  puts ("  help the Octave community diagnose and fix the problem\n");
+  puts ("  quickly and efficiently.\n");
+  puts ("\n");
 
 endfunction

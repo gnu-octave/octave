@@ -1,3 +1,13 @@
+2010-09-23  John W. Eaton  <jwe@octave.org>
+
+	* octave-bug.in, octave-bug.cc.in: Delete
+	* Makefile.am (EXTRA_DIST): Remove them from the list.
+	(bin_PROGRAMS): Remove octave-bug from the list.
+	(octave_bug_SOURCES, nodist_octave_bug_SOURCES): Delete variables.
+	(BUILT_SOURCES): Remove octave-bug.cc from the list.
+	(bin_SCRIPTS): Remove octave-bug from the list.
+	(octave-bug.cc, octave-bug): Delete rules.
+
 2010-09-20  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include mktime in the list.

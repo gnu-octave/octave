@@ -1,3 +1,7 @@
+2010-09-24  Jaroslav Hajek  <highegg@gmail.com>
+
+	* m4/ax_blas.m4: Update.
+
 2010-09-23  John W. Eaton  <jwe@octave.org>
 
 	* octave-bug.in, octave-bug.cc.in: Delete

@@ -63,7 +63,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 8
+#serial 11
 
 AU_ALIAS([ACX_BLAS], [AX_BLAS])
 AC_DEFUN([AX_BLAS], [
@@ -101,7 +101,9 @@ fi
 # BLAS linked to by default?  (happens on some supercomputers)
 if test $ax_blas_ok = no; then
 	save_LIBS="$LIBS"; LIBS="$LIBS"
-	AC_CHECK_FUNC($sgemm, [ax_blas_ok=yes])
+	AC_MSG_CHECKING([if $sgemm is being linked in already])
+	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes])
+	AC_MSG_RESULT($ax_blas_ok)
 	LIBS="$save_LIBS"
 fi
 
@@ -134,7 +136,9 @@ fi
 # BLAS in Apple vecLib library?
 if test $ax_blas_ok = no; then
 	save_LIBS="$LIBS"; LIBS="-framework vecLib $LIBS"
-	AC_CHECK_FUNC($sgemm, [ax_blas_ok=yes;BLAS_LIBS="-framework vecLib"])
+	AC_MSG_CHECKING([for $sgemm in -framework vecLib])
+	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes;BLAS_LIBS="-framework vecLib"])
+	AC_MSG_RESULT($ax_blas_ok)
 	LIBS="$save_LIBS"
 fi
 
@@ -153,7 +157,7 @@ if test $ax_blas_ok = no; then
 	if test "x$GCC" != xyes; then # only works with Sun CC
 		AC_CHECK_LIB(sunmath, acosp,
 			[AC_CHECK_LIB(sunperf, $sgemm,
-        			[BLAS_LIBS="-xlic_lib=sunperf -lsunmath"
+				[BLAS_LIBS="-xlic_lib=sunperf -lsunmath"
                                  ax_blas_ok=yes],[],[-lsunmath])])
 	fi
 fi

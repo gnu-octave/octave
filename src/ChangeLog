@@ -1,3 +1,8 @@
+2010-09-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/gcd.cc (Fgcd): Rewrite. Use more efficient code.
+	Specialize for simple/extended Euclid. Handle integer arguments.
+
 2010-09-24  Rik <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep): Update docstring to 

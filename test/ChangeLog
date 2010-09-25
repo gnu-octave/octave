@@ -1,3 +1,7 @@
+2010-09-24  Rik <octave@nomad.inbox5.com>
+
+	* fntests.m: Rephrase output for clarity.
+
 2010-08-17  Rik <octave@nomad.inbox5.com>
 
 	* fntests.m: Add extra newline for more readable output.

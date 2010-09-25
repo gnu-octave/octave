@@ -1,3 +1,7 @@
+2010-09-25  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Recongize gs devices {eps/pdf/ps}write.
+
 2010-09-23  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/bug_report.m: Display information about how to

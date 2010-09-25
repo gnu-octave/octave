@@ -1,10 +1,16 @@
+2010-08-15  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/mk_doc_cache.m: Remove requirement for PCRE to build
+	doc cache.  Correctly parse first sentence from docstrings with 
+	multiple @deftypefn lines.
+
 2010-09-15  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.am (EXTRA_DIST): Add images.awk to the list.
 
 2010-08-15  Rik <octave@nomad.inbox5.com>
 
-	* interpreter/matrx.txi: Add documentation for randi function.
+	* interpreter/matrix.txi: Add documentation for randi function.
 
 2010-08-13  Rik <octave@nomad.inbox5.com>
 

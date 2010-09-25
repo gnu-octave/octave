@@ -45,8 +45,8 @@ endfor
 text = [text{:}, doc_delim];
 
 ## Modify Octave-specific macros before passing to makeinfo
-text = regexprep (text, "@seealso *{([^}]*)}", "See also: $1.");
-text = regexprep (text, "@nospell *{([^}]*)}", "$1");
+text = regexprep (text, "@seealso *\\{([^}]*)\\}", "See also: $1.");
+text = regexprep (text, "@nospell *\\{([^}]*)\\}", "$1");
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 text = regexprep (text, "@", "@@");
 
@@ -97,15 +97,20 @@ for i = 2:n
     continue;
   endif
 
-  [s, e] = regexp (doc, "^ -- [^\r\n]*[\r\n]", "lineanchors");
+  tmp = doc;
+  found = 0;
+  do
+    [s, e] = regexp (tmp, "^ -- [^\r\n]*[\r\n]");
+    if (! isempty(s))
+      found = 1;
+      tmp = tmp(e+1:end);
+    endif
+  until (isempty (s))
 
-  if (isempty (s))
+  if (! found)
     continue;
   endif
 
-  start_of_first_sentence = e(end);
-
-  tmp = doc(start_of_first_sentence:end);
   end_of_first_sentence = regexp (tmp, '(\.|[\r\n][\r\n])', "once");
   if (isempty (end_of_first_sentence))
     end_of_first_sentence = length (tmp);

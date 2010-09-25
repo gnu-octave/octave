@@ -676,7 +676,7 @@ clean_up_and_exit (int retval)
     (*octave_exit) (retval == EOF ? 0 : retval);
 }
 
-DEFUN (quit, args, nargout,
+DEFUN (quit, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} exit (@var{status})\n\
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
@@ -689,7 +689,7 @@ Octave's exit status.  The default value is zero.\n\
 
   if (! quit_allowed)
     error ("quit: not supported in embedded mode.");
-  else if (nargout == 0)
+  else
     {
       if (args.length () > 0)
         {
@@ -710,8 +710,6 @@ Octave's exit status.  The default value is zero.\n\
           octave_throw_interrupt_exception ();
         }
     }
-  else
-    error ("quit: invalid number of output arguments");
 
   return retval;
 }

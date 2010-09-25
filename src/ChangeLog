@@ -1,3 +1,7 @@
+2010-09-25  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (Fquit): Allow any number of output parameters.
+
 2010-09-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/gcd.cc (Fgcd): Rewrite. Use more efficient code.

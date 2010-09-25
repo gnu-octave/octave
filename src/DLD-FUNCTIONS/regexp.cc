@@ -882,7 +882,6 @@ DEFUN_DLD (regexp, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
-\n\
 Regular expression string matching.  Matches @var{pat} in @var{str} and\n\
 returns the position and matching substrings or empty values if there are\n\
 none.\n\
@@ -1020,16 +1019,19 @@ Match the anchor characters at the beginning and end of the string.\n\
 \n\
 @item lineanchors\n\
 Match the anchor characters at the beginning and end of the line.\n\
+Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
 \n\
 @item dotall\n\
 The character @code{.} matches the newline character.\n\
 \n\
 @item dotexceptnewline\n\
 The character @code{.} matches all but the newline character.\n\
+Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
 \n\
 @item freespacing\n\
 The pattern can include arbitrary whitespace and comments starting with\n\
 @code{#}.\n\
+Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
 \n\
 @item literalspacing\n\
 The pattern is taken literally.\n\
@@ -1231,7 +1233,7 @@ DEFUN_DLD (regexpi, args, nargout,
 \n\
 Case insensitive regular expression string matching.  Matches @var{pat} in\n\
 @var{str} and returns the position and matching substrings or empty values\n\
-if there are none.  @xref{doc-regexp,,regexp}, for more details\n\
+if there are none.  @xref{doc-regexp,,regexp}, for more details.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1576,18 +1578,13 @@ octregexprep (const octave_value_list &args, const std::string &nm)
 DEFUN_DLD (regexprep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{string} =} regexprep (@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
-Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
-\n\
+Replace matches of @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
 The replacement can contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  E.g.,\n\
 \n\
 @example\n\
-@group\n\
-\n\
    regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
-\n\
-@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -1607,16 +1604,23 @@ Ignore case for the pattern matching (see @code{regexpi}).\n\
 Alternatively, use (?i) or (?-i) in the pattern.\n\
 \n\
 @item lineanchors and stringanchors\n\
-Whether characters ^ and $ match the beginning and ending of lines.\n\
+Whether characters ^ and $ match the start/end of lines or of the entire\n\
+string.\n\
 Alternatively, use (?m) or (?-m) in the pattern.\n\
+'lineanchors' is only available when Octave is compiled with\n\
+Perl Compatible Regular Expressions.\n\
 \n\
 @item dotexceptnewline and dotall\n\
 Whether . matches newlines in the string.\n\
 Alternatively, use (?s) or (?-s) in the pattern.\n\
+'dotexceptnewline' is only available when Octave is compiled with\n\
+Perl Compatible Regular Expressions.\n\
 \n\
 @item freespacing or literalspacing\n\
 Whether whitespace and # comments can be used to make the regular expression\n\
 more readable.  Alternatively, use (?x) or (?-x) in the pattern.\n\
+'freespacing' is only available when Octave is compiled with\n\
+Perl Compatible Regular Expressions.\n\
 \n\
 @end table\n\
 @seealso{regexp,regexpi,strrep}\n\

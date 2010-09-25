@@ -1,3 +1,8 @@
+2010-09-24  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep): Update docstring to 
+	discuss limits when not compiled with PCRE.
+
 2010-09-23  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (ALL_DEF_FILES): New variable.

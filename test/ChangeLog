@@ -1,3 +1,8 @@
+2010-09-26  Rik <octave@nomad.inbox5.com>
+
+	* fntests.m (has_tests, has_functions): Recode to remove requirement 
+	for PCRE.
+
 2010-09-24  Rik <octave@nomad.inbox5.com>
 
 	* fntests.m: Rephrase output for clarity.

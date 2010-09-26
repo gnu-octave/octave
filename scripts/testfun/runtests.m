@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rundtests (@var{directory})
+## @deftypefn {Function File} {} runtests (@var{directory})
+## Execute built-in tests for all function files in the specified directory.
 ## @end deftypefn
 
 ## Author: jwe
@@ -69,23 +70,19 @@ function run_all_tests (directory)
     endif
   endfor
   if (! isempty (no_tests))
-    printf ("\nThe following files in have no tests:\n\n", directory);
+    printf ("\nThe following files in %s have no tests:\n\n", directory);
     printf ("%s", list_in_columns (no_tests));
   endif
 endfunction
 
 function retval = has_tests (f)
-  retval = false;
   fid = fopen (f);
   if (fid >= 0)
-    while (! feof (fid))
-      ln = fgetl (fid);
-      if (! isempty (regexp (ln, "%!(assert|error|test)", "lineanchors")))
-        retval = true;
-        break;
-      endif
-    endwhile
+    str = fread (fid, "*char")';
     fclose (fid);
+    ## Avoid PCRE 'lineanchors' by searching for newline followed by PTN.
+    ## Equivalent to regexp ('^PTN','lineanchors')
+    retval = ! isempty (regexp (str, '[\r\n]\s*%!(test|assert|error|warning)', "once"));
   else
     error ("runtests: fopen failed: %s", f);
   endif

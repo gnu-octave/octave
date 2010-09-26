@@ -68,34 +68,34 @@ function print_pass_fail (n, p)
   puts ("\n");
 endfunction
 
-function y = hasfunctions (f)
+function retval = has_functions (f)
   n = length (f);
   if (n > 3 && strcmp (f((end-2):end), ".cc"))
     fid = fopen (f);
-    if (fid < 0)
-      error ("fopen failed: %s", f);
-    else
+    if (fid >= 0)
       str = fread (fid, "*char")';
       fclose (fid);
-      y = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\b', "lineanchors"));
+      retval = ! isempty (regexp (str,'[\r\n](DEFUN|DEFUN_DLD)\b', "once"));
+    else
+      error ("fopen failed: %s", f);
     endif
   elseif (n > 2 && strcmp (f((end-1):end), ".m"))
-    y = true;
+    retval = true;
   else
-    y = false;
+    retval = false;
   endif
 endfunction
 
-## FIXME -- should we only try match the keyword at the start of a line?
-function y = hastests (f)
+function retval = has_tests (f)
   fid = fopen (f);
-  if (fid < 0)
-    error ("fopen failed: %s", f);
-  else
+  if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    y = ! isempty (regexp (str, "^[ \t]*%!(test|assert|error|warning)",
-                           "lineanchors"));
+    ## Avoid PCRE 'lineanchors' by searching for newline followed by PTN.
+    ## Equivalent to regexp ('^PTN','lineanchors')
+    retval = ! isempty (regexp (str, '[\r\n]\s*%!(test|assert|error|warning)', "once"));
+  else
+    error ("fopen failed: %s", f);
   endif
 endfunction
 
@@ -110,7 +110,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
 	&& strcmp (nm((end-1):end), ".m"))
       p = n = xf = sk = 0;
       ffnm = fullfile (d, nm);
-      if (hastests (ffnm))
+      if (has_tests (ffnm))
 	print_test_file_name (nm);
 	[p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
 	print_pass_fail (n, p);
@@ -155,7 +155,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         (length (nm) > 3 && strcmp (nm((end-2):end), ".cc")))
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
-      if (hastests (f))
+      if (has_tests (f))
 	tmp = strrep (f, [topsrcdir, "/"], "");
 	tmp = strrep (tmp, [topbuilddir, "/"], "../");
 	print_test_file_name (tmp);
@@ -166,7 +166,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
 	dxf += xf;
 	dsk += sk;
 	files_with_tests(end+1) = f;
-      elseif (hasfunctions (f))
+      elseif (has_functions (f))
 	## To reduce the list length, only mark .cc files that contain
 	## DEFUN definitions.
 	files_with_no_tests(end+1) = f;
@@ -196,7 +196,7 @@ endfunction
 function n = num_elts_matching_pattern (lst, pat)
   n = 0;
   for i = 1:length (lst)
-    if (! isempty (regexp (lst{i}, pat)))
+    if (! isempty (regexp (lst{i}, pat, "once")))
       n++;
     endif
   endfor

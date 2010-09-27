@@ -1631,7 +1631,10 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   // 1st pass: draw light objects
 
-  for (int i = 0; i < children.numel (); i++)
+  // Start with the last element of the array of child objects to
+  // display them in the oder they were added to the array.
+
+  for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
     {
       graphics_object go = gh_manager::get_object (children (i));
 

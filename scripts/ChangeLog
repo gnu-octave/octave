@@ -1,3 +1,7 @@
+2010-09-27  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Properly crop eps image and fix tests.
+
 2010-09-26  Rik <octave@nomad.inbox5.com>
 
 	* testfun/runtests.m (has_tests): Recode to remove requirement for PCRE.

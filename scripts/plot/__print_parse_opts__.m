@@ -90,10 +90,10 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-loose"))
         arg_st.loose = true;
-      elseif (strcmp (arg, "-tight"))
-        arg_st.tight_flag = true;
-      elseif (strcmp (arg, "-loose"))
         arg_st.tight_flag = false;
+      elseif (strcmp (arg, "-tight"))
+        arg_st.loose = false;
+        arg_st.tight_flag = true;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
       elseif (any (strcmp (arg, {"-interchange", "-metafile", "-pict", "-tiff"})))
@@ -183,14 +183,6 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (arg_st.tight_flag)
-    if (any (strcmpi (arg_st.devopt, {"ps", "ps2", "psc", "psc2", "pdf"})))
-      arg_st.tight_flag = false;
-      warning ("print.m: '-tight' is not supported for device '%s'",
-               arg_st.devopt)
-    endif
-  endif
-
   if (strcmp (arg_st.devopt, "tex"))
     arg_st.devopt = "epslatex";
   elseif (strcmp (arg_st.devopt, "ill"))
@@ -227,8 +219,14 @@ function arg_st = __print_parse_opts__ (varargin)
               "pdf", "png", "tex", ...
               "eps", "ps", "ps", "pdf"};
 
-  if (isfigure (arg_st.figure)
-      && strcmp (get (arg_st.figure, "__backend__"), "gnuplot")
+  if (isfigure (arg_st.figure))
+    __backend__ = get (arg_st.figure, "__backend__");
+  else
+    ## Allow tests when no figures are present.
+    __backend__ = get (0, "defaultfigure__backend__");
+  endif
+
+  if (strcmp (__backend__, "gnuplot")
       && __gnuplot_has_feature__ ("epslatex_implies_eps_filesuffix"))
     suffixes(strncmp (dev_list, "epslatex", 8)) = {"eps"};
   endif
@@ -294,8 +292,12 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = true;
-    ## pstoedit throws errors if the EPS file isn't cropped
-    arg_st.ghostscript.epscrop = true;
+    if (arg_st.formatted_for_printing)
+      arg_st.ghostscript.epscrop = ! arg_st.loose;
+    else
+      ## pstoedit throws errors if the EPS file isn't cropped
+      arg_st.ghostscript.epscrop = true;
+    endif
   elseif (all (! strcmp (arg_st.devopt, dev_list)))
     ## Assume we are formating output for a printer
     arg_st.formatted_for_printing = true;
@@ -315,7 +317,11 @@ function arg_st = __print_parse_opts__ (varargin)
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
     endif
     arg_st.canvas_size = paperposition(3:4);
-    arg_st.ghostscript.pageoffset = paperposition(1:2);
+    if (strcmp (__backend__, "gnuplot") && ! arg_st.ghostscript.epscrop)
+      arg_st.ghostscript.pageoffset = paperposition(1:2) - 50;
+    else
+      arg_st.ghostscript.pageoffset = paperposition(1:2);
+    endif
   else
     ## Convert canvas size to points from pixles.
     arg_st.canvas_size = arg_st.canvas_size * 72 / arg_st.ghostscript.resolution;
@@ -382,7 +388,7 @@ endfunction
 %! assert (opts.devopt, "jpeg")
 %! assert (opts.name, "foobar.jpg")
 %! assert (opts.ghostscript.device, "jpeg")
-%! assert (opts.ghostscript.epscrop, true);
+%! assert (opts.ghostscript.epscrop, false);
 %! assert (opts.ghostscript.papersize, "");
 %! assert (opts.ghostscript.pageoffset, [0, 0]);
 %! assert (opts.send_to_printer, false);

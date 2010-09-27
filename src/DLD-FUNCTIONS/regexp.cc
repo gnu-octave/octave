@@ -299,7 +299,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                       if (!lookbehind_warned)
                         {
                           lookbehind_warned = true;
-                          warning ("%s: arbitrary length lookbehind patterns are only support up to length %d", nm.c_str(), MAXLOOKBEHIND);
+                          warning ("%s: arbitrary length lookbehind patterns are only supported up to length %d", nm.c_str(), MAXLOOKBEHIND);
                         }
 
                       buf << pattern.substr (pos, new_pos - pos) << "(";
@@ -881,10 +881,12 @@ octcellregexp (const octave_value_list &args, int nargout, const std::string &nm
 DEFUN_DLD (regexp, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
-Regular expression string matching.  Matches @var{pat} in @var{str} and\n\
-returns the position and matching substrings or empty values if there are\n\
-none.\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
+Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
+return the positions and substrings of any matches, or empty values if there\n\
+are none.  Note, some features and extended options are only available when\n\
+Octave is compiled with support for Perl Compatible Regular Expressions\n\
+(PCRE).\n\
 \n\
 The matched pattern @var{pat} can include any of the standard regex\n\
 operators, including:\n\
@@ -905,16 +907,21 @@ Match one or more times\n\
 @item ?\n\
 Match zero or one times\n\
 \n\
-@item @{@}\n\
-Match range operator, which is of the form @code{@{@var{n}@}} to match\n\
-exactly @var{n} times, @code{@{@var{m},@}} to match @var{m} or more times,\n\
-@code{@{@var{m},@var{n}@}} to match between @var{m} and @var{n} times.\n\
+@item @{@var{n}@}\n\
+Match exactly @var{n} times\n\
+\n\
+@item @{@var{n},@}\n\
+Match @var{n} or more times\n\
+\n\
+@item @{@var{m},@var{n}@}\n\
+Match between @var{m} and @var{n} times\n\
 @end table\n\
 \n\
 @item [@dots{}] [^@dots{}]\n\
 \n\
-List operators, where for example @code{[ab]c} matches @code{ac} and\n\
-@code{bc}\n\
+List operators.  The pattern will match any character listed between \"[\"\n\
+and \"]\".  If the first character is \"^\" then the pattern is inverted and\n\
+any character except those listed between brackets will match\n\
 \n\
 @item ()\n\
 Grouping operator\n\
@@ -924,14 +931,14 @@ Alternation operator.  Match one of a choice of regular expressions.  The\n\
 alternatives must be delimited by the grouping operator @code{()} above\n\
 \n\
 @item ^ $\n\
-Anchoring operator.  @code{^} matches the start of the string @var{str} and\n\
-@code{$} the end\n\
+Anchoring operators.  Requires pattern to occur at the start (@code{^}) or\n\
+end (@code{$}) of the string\n\
 @end table\n\
 \n\
-In addition the following escaped characters have special meaning.  It should\n\
-be noted that it is recommended to quote @var{pat} in single quotes rather\n\
-than double quotes, to avoid the escape sequences being interpreted by Octave\n\
-before being passed to @code{regexp}.\n\
+In addition, the following escaped characters have special meaning.  Note,\n\
+it is recommended to quote @var{pat} in single quotes, rather than double\n\
+quotes, to avoid the escape sequences being interpreted by Octave before\n\
+being passed to @code{regexp}.\n\
 \n\
 @table @code\n\
 @item \\b\n\
@@ -941,57 +948,57 @@ Match a word boundary\n\
 Match within a word\n\
 \n\
 @item \\w\n\
-Matches any word character\n\
+Match any word character\n\
 \n\
 @item \\W\n\
-Matches any non word character\n\
+Match any non-word character\n\
 \n\
 @item \\<\n\
-Matches the beginning of a word\n\
+Match the beginning of a word\n\
 \n\
 @item \\>\n\
-Matches the end of a word\n\
+Match the end of a word\n\
 \n\
 @item \\s\n\
-Matches any whitespace character\n\
+Match any whitespace character\n\
 \n\
 @item \\S\n\
-Matches any non whitespace character\n\
+Match any non-whitespace character\n\
 \n\
 @item \\d\n\
-Matches any digit\n\
+Match any digit\n\
 \n\
 @item \\D\n\
-Matches any non-digit\n\
+Match any non-digit\n\
 @end table\n\
 \n\
-The outputs of @code{regexp} by default are in the order as given below\n\
+The outputs of @code{regexp} default to the order given below\n\
 \n\
 @table @asis\n\
 @item @var{s}\n\
-The start indices of each of the matching substrings\n\
+The start indices of each matching substring\n\
 \n\
 @item @var{e}\n\
 The end indices of each matching substring\n\
 \n\
 @item @var{te}\n\
-The extents of each of the matched token surrounded by @code{(@dots{})} in\n\
-@var{pat}.\n\
+The extents of each matched token surrounded by @code{(@dots{})} in\n\
+@var{pat}\n\
 \n\
 @item @var{m}\n\
-A cell array of the text of each match.\n\
+A cell array of the text of each match\n\
 \n\
 @item @var{t}\n\
-A cell array of the text of each token matched.\n\
+A cell array of the text of each token matched\n\
 \n\
 @item @var{nm}\n\
 A structure containing the text of each matched named token, with the name\n\
-being used as the fieldname.  A named token is denoted as\n\
-@code{(?<name>@dots{})}\n\
+being used as the fieldname.  A named token is denoted by\n\
+@code{(?<name>@dots{})} and is only available with PCRE support.\n\
 @end table\n\
 \n\
-Particular output arguments or the order of the output arguments can be\n\
-selected by additional @var{opts} arguments.  These are strings and the\n\
+Particular output arguments, or the order of the output arguments, can be\n\
+selected by additional @var{opt} arguments.  These are strings and the\n\
 correspondence between the output arguments and the optional argument\n\
 are\n\
 \n\
@@ -1001,42 +1008,64 @@ are\n\
 @item @tab 'tokenExtents' @tab @var{te} @tab\n\
 @item @tab 'match'        @tab @var{m}  @tab\n\
 @item @tab 'tokens'       @tab @var{t}  @tab\n\
-@item @tab 'names'        @tab @var{nm}  @tab\n\
+@item @tab 'names'        @tab @var{nm} @tab\n\
 @end multitable\n\
 \n\
-A further optional argument is 'once', that limits the number of returned\n\
-matches to the first match.  Additional arguments are\n\
+Additional arguments are summarized below.\n\
 \n\
-@table @asis\n\
+@table @samp\n\
+@item once\n\
+Return only the first occurrence of the pattern.\n\
+\n\
 @item matchcase\n\
-Make the matching case sensitive.\n\
+Make the matching case sensitive.  (default)\n\
+\n\
+Alternatively, use (?-i) in the pattern when PCRE is available.\n\
 \n\
 @item ignorecase\n\
-Make the matching case insensitive.\n\
+Ignore case when matching the pattern to the string.\n\
+\n\
+Alternatively, use (?i) in the pattern when PCRE is available.\n\
 \n\
 @item stringanchors\n\
-Match the anchor characters at the beginning and end of the string.\n\
+Match the anchor characters at the beginning and end of the string.  \n\
+(default)\n\
+\n\
+Alternatively, use (?-m) in the pattern when PCRE is available.\n\
 \n\
 @item lineanchors\n\
 Match the anchor characters at the beginning and end of the line.\n\
-Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
+Only available when Octave is compiled with PCRE.\n\
+\n\
+Alternatively, use (?m) in the pattern when PCRE is available.\n\
 \n\
 @item dotall\n\
-The character @code{.} matches the newline character.\n\
+The pattern @code{.} matches all characters including the newline character.\n\
+ (default)\n\
+\n\
+Alternatively, use (?s) in the pattern when PCRE is available.\n\
 \n\
 @item dotexceptnewline\n\
-The character @code{.} matches all but the newline character.\n\
-Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
+The pattern @code{.} matches all characters except the newline character.\n\
+Only available when Octave is compiled with PCRE.\n\
 \n\
-@item freespacing\n\
-The pattern can include arbitrary whitespace and comments starting with\n\
-@code{#}.\n\
-Only available if Octave is compiled with Perl Compatible Regular Expressions.\n\
+Alternatively, use (?-s) in the pattern when PCRE is available.\n\
 \n\
 @item literalspacing\n\
-The pattern is taken literally.\n\
+All characters in the pattern, including whitespace, are significant and are\n\
+used in pattern matching.  (default)\n\
+\n\
+Alternatively, use (?-x) in the pattern when PCRE is available.\n\
+\n\
+@item freespacing\n\
+The pattern may include arbitrary whitespace and also comments beginning with\n\
+the character @samp{#}.\n\
+Only available when Octave is compiled with PCRE.\n\
+\n\
+Alternatively, use (?x) in the pattern when PCRE is available.\n\
+\n\
 @end table\n\
-@seealso{regexpi, regexprep}\n\
+@seealso{regexpi,strfind,regexprep}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1215,25 +1244,27 @@ The pattern is taken literally.\n\
 %!assert(regexp('Strings',{'t','s'}),{2,7})
 
 ## Test case for lookaround operators
-%!assert(regexp('Iraq','q(?!u)'),4)
-%!assert(regexp('quit','q(?!u)'), zeros(1,0))
-%!assert(regexp('quit','q(?=u)','match'), {'q'})
-%!assert(regexp("quit",'q(?=u+)','match'), {'q'})
-%!assert(regexp("qit",'q(?=u+)','match'), cell(1,0))
-%!assert(regexp("qit",'q(?=u*)','match'), {'q'})
-
-%!assert(regexp('thingamabob','(?<=a)b'), 9)
+%!testif HAVE_PCRE
+%! assert(regexp('Iraq','q(?!u)'),4)
+%! assert(regexp('quit','q(?!u)'), zeros(1,0))
+%! assert(regexp('quit','q(?=u)','match'), {'q'})
+%! assert(regexp("quit",'q(?=u+)','match'), {'q'})
+%! assert(regexp("qit",'q(?=u+)','match'), cell(1,0))
+%! assert(regexp("qit",'q(?=u*)','match'), {'q'})
+%! assert(regexp('thingamabob','(?<=a)b'), 9)
 
 */
 
 DEFUN_DLD (regexpi, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
-Case insensitive regular expression string matching.  Matches @var{pat} in\n\
-@var{str} and returns the position and matching substrings or empty values\n\
-if there are none.  @xref{doc-regexp,,regexp}, for more details.\n\
+Case insensitive regular expression string matching.  Search for @var{pat} in\n\
+@var{str} and return the positions and substrings of any matches, or empty\n\
+values if there are none.  @xref{doc-regexp,,regexp}, for details on the\n\
+syntax of the search pattern.\n\
+@seealso{regexp}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1255,9 +1286,9 @@ if there are none.  @xref{doc-regexp,,regexp}, for more details.\n\
 %!assert(regexpi("abcde","."),[1,2,3,4,5])
 
 ## Check that anchoring of pattern works correctly
-%!assert(regexpi('abcabc','^abc'),1);
-%!assert(regexpi('abcabc','abc$'),4);
-%!assert(regexpi('abcabc','^abc$'),zeros(1,0));
+%!assert(regexpi('abcabc','^ABC'),1);
+%!assert(regexpi('abcabc','ABC$'),4);
+%!assert(regexpi('abcabc','^ABC$'),zeros(1,0));
 
 %!test
 %! [s, e, te, m, t] = regexpi(' No Match ', 'f(.*)uck');
@@ -1360,19 +1391,19 @@ if there are none.  @xref{doc-regexp,,regexp}, for more details.\n\
 %! assert(regexpi("caseCaSe",'(?-i)case'),1)
 %! assert(regexpi("caseCaSe",'(?i)case'),[1,5])
 
-%!assert (regexpi("abc\nabc",'c$'),7)
-%!assert (regexpi("abc\nabc",'c$',"stringanchors"),7)
+%!assert (regexpi("abc\nabc",'C$'),7)
+%!assert (regexpi("abc\nabc",'C$',"stringanchors"),7)
 %!testif HAVE_PCRE
-%! assert (regexpi("abc\nabc",'(?-m)c$'),7)
-%! assert (regexpi("abc\nabc",'c$',"lineanchors"),[3,7])
-%! assert (regexpi("abc\nabc",'(?m)c$'),[3,7])
+%! assert (regexpi("abc\nabc",'(?-m)C$'),7)
+%! assert (regexpi("abc\nabc",'C$',"lineanchors"),[3,7])
+%! assert (regexpi("abc\nabc",'(?m)C$'),[3,7])
 
-%!assert (regexpi("this word",'s w'),4)
-%!assert (regexpi("this word",'s w','literalspacing'),4)
+%!assert (regexpi("this word",'S w'),4)
+%!assert (regexpi("this word",'S w','literalspacing'),4)
 %!testif HAVE_PCRE
-%! assert (regexpi("this word",'(?-x)s w','literalspacing'),4)
-%! assert (regexpi("this word",'s w','freespacing'),zeros(1,0))
-%! assert (regexpi("this word",'(?x)s w'),zeros(1,0))
+%! assert (regexpi("this word",'(?-x)S w','literalspacing'),4)
+%! assert (regexpi("this word",'S w','freespacing'),zeros(1,0))
+%! assert (regexpi("this word",'(?x)S w'),zeros(1,0))
 
 %!error regexpi('string', 'tri', 'BadArg');
 %!error regexpi('string');
@@ -1577,20 +1608,25 @@ octregexprep (const octave_value_list &args, const std::string &nm)
 
 DEFUN_DLD (regexprep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{string} =} regexprep (@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
-Replace matches of @var{pat} in @var{string} with @var{repstr}.\n\
+@deftypefn  {Loadable Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr})\n\
+@deftypefnx {Loadable Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr}, \"@var{opt1}\", @dots{})\n\
+Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
 \n\
-The replacement can contain @code{$i}, which substitutes\n\
-for the ith set of parentheses in the match string.  E.g.,\n\
+The pattern is a regular expression as documented for @code{regexp}.\n\
+@xref{doc-regexp,,regexp}.\n\
+\n\
+The replacement string may contain @code{$i}, which substitutes\n\
+for the ith set of parentheses in the match string.  For example,\n\
 \n\
 @example\n\
-   regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
+regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
 @end example\n\
 \n\
 @noindent\n\
 returns \"Dunn, Bill\"\n\
 \n\
-@var{options} may be zero or more of\n\
+Options in addition to those of @code{regexp} are\n\
+\n\
 @table @samp\n\
 \n\
 @item once\n\
@@ -1598,29 +1634,6 @@ Replace only the first occurrence of @var{pat} in the result.\n\
 \n\
 @item warnings\n\
 This option is present for compatibility but is ignored.\n\
-\n\
-@item ignorecase or matchcase\n\
-Ignore case for the pattern matching (see @code{regexpi}).\n\
-Alternatively, use (?i) or (?-i) in the pattern.\n\
-\n\
-@item lineanchors and stringanchors\n\
-Whether characters ^ and $ match the start/end of lines or of the entire\n\
-string.\n\
-Alternatively, use (?m) or (?-m) in the pattern.\n\
-'lineanchors' is only available when Octave is compiled with\n\
-Perl Compatible Regular Expressions.\n\
-\n\
-@item dotexceptnewline and dotall\n\
-Whether . matches newlines in the string.\n\
-Alternatively, use (?s) or (?-s) in the pattern.\n\
-'dotexceptnewline' is only available when Octave is compiled with\n\
-Perl Compatible Regular Expressions.\n\
-\n\
-@item freespacing or literalspacing\n\
-Whether whitespace and # comments can be used to make the regular expression\n\
-more readable.  Alternatively, use (?x) or (?-x) in the pattern.\n\
-'freespacing' is only available when Octave is compiled with\n\
-Perl Compatible Regular Expressions.\n\
 \n\
 @end table\n\
 @seealso{regexp,regexpi,strrep}\n\
@@ -1759,6 +1772,7 @@ Perl Compatible Regular Expressions.\n\
 %!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
 
 # Nasty lookbehind expression
-%!assert(regexprep('x^(-1)+y(-1)+z(-1)=0','(?<=[a-z]+)\(\-[1-9]*\)','_minus1'),'x^(-1)+y_minus1+z_minus1=0')
+%!testif HAVE_PCRE
+%! assert(regexprep('x^(-1)+y(-1)+z(-1)=0','(?<=[a-z]+)\(\-[1-9]*\)','_minus1'),'x^(-1)+y_minus1+z_minus1=0')
 
 */

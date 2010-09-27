@@ -1,3 +1,9 @@
+2010-09-26  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep, regexpi): Update
+	docstrings to more fully explain PCRE.  Modify advanced tests to run
+	only run when PCRE is present.
+
 2010-09-25  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (Fquit): Allow any number of output parameters.

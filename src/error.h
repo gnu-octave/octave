@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 class octave_value_list;
+class unwind_protect;
 
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \
@@ -136,5 +137,7 @@ extern OCTINTERP_API std::string last_error_message (void);
 extern OCTINTERP_API std::string last_error_id (void);
 extern OCTINTERP_API std::string last_warning_message (void);
 extern OCTINTERP_API std::string last_warning_id (void);
+
+extern OCTINTERP_API void interpreter_try (unwind_protect&);
 
 #endif

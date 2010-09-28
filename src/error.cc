@@ -1821,3 +1821,18 @@ last_warning_id (void)
 {
   return Vlast_warning_id;
 }
+
+void
+interpreter_try (unwind_protect& frame)
+{
+  frame.protect_var (error_state);
+  frame.protect_var (buffer_error_messages);
+  frame.protect_var (Vdebug_on_error);
+  frame.protect_var (Vdebug_on_warning);
+
+  buffer_error_messages++;
+  Vdebug_on_error = false;
+  Vdebug_on_warning = false;
+}
+
+

@@ -1,3 +1,10 @@
+2010-09-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* error.cc (interpreter_try): New function.
+	* error.h: Declare it.
+	* ov-fcn-handle.cc (octave_fcn_binder::maybe_binder): Use it here.
+	* variables.cc (safe_symbol_lookup): Also here.
+
 2010-09-27  John W. Eaton  <jwe@octave.org>
 
 	* gl-render.cc (opengl_renderer::draw_axes): Reverse order in

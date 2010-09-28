@@ -1879,17 +1879,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                       else
                         {
                           // Simulate try/catch.
-                          // FIXME: there should be a method for that.
                           unwind_protect frame;
-
-                          frame.protect_var (error_state);
-                          frame.protect_var (buffer_error_messages);
-                          frame.protect_var (Vdebug_on_error);
-                          frame.protect_var (Vdebug_on_warning);
-
-                          buffer_error_messages++;
-                          Vdebug_on_error = false;
-                          Vdebug_on_warning = false;
+                          interpreter_try (frame);
 
                           root_val = make_fcn_handle (head_name);
                           if (error_state)

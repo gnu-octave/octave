@@ -385,14 +385,7 @@ safe_symbol_lookup (const std::string& symbol_name)
   octave_value retval;
 
   unwind_protect frame;
-  
-  frame.protect_var (buffer_error_messages);
-  frame.protect_var (Vdebug_on_error);
-  frame.protect_var (Vdebug_on_warning);
-
-  buffer_error_messages++;
-  Vdebug_on_error = false;
-  Vdebug_on_warning = false;
+  interpreter_try (frame);
 
   retval = symbol_table::find (symbol_name);
 

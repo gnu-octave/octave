@@ -1,3 +1,9 @@
+2010-09-28  John P. Swensen  <jpswensen@gmail.com>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image)
+	(encode_bool_image): Ensure bit depth encoding is correct for
+	logical, uint8, and uint16 images.
+
 2010-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* xpow.cc (xpow (double, const Matrix&)): Ensure real result for

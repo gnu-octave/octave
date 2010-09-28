@@ -617,6 +617,10 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
             }
         }
 
+      im.quantizeColorSpace (Magick::GRAYColorspace);
+      im.quantizeColors (2);
+      im.quantize ();
+
       imvec.push_back (im);
     }
 }
@@ -743,6 +747,10 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                   im.pixelColor (y, x, c);
                 }
             }
+
+          im.quantizeColorSpace (Magick::GRAYColorspace);
+          im.quantizeColors (pow (2, bitdepth));
+          im.quantize ();
         }
 
       imvec.push_back (im);

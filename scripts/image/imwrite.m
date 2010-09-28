@@ -65,11 +65,12 @@
 
 function imwrite (img, varargin)
   
-  %missing_formats = { "hdf", "jp2", "jpx" }; 
-  persistent accepted_formats = { "bmp", "gif", "jpg", "jpeg", ...
-    "pbm", "pcx", "pgm", "png", "pnm", "ppm", "ras", ...
-    "tif", "tiff", "xwd" };
+  persistent imwrite_possible_formats = {
+    "bmp" "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
+    "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
 
+  persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);
+  
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ();
   endif

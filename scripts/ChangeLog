@@ -1,3 +1,8 @@
+2010-09-28  John P. Swensen  <jpswensen@gmail.com>
+
+	* image/imwrite.m: Call __magick_format_list__ to get list of
+	accepted formats.
+
 2010-09-28  Rik <octave@nomad.inbox5.com>
 
 	* scripts/linear-algebra/logm.m, scripts/plot/legend.m, 

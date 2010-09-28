@@ -1,5 +1,10 @@
 2010-09-28  John P. Swensen  <jpswensen@gmail.com>
 
+	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_format_list__):
+	New function. 
+
+2010-09-28  John P. Swensen  <jpswensen@gmail.com>
+
 	* DLD-FUNCTIONS/__magick_read__.cc (encode_uint_image)
 	(encode_bool_image): Ensure bit depth encoding is correct for
 	logical, uint8, and uint16 images.

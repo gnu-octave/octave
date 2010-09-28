@@ -1132,3 +1132,61 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
 }
 
 #undef GET_PARAM
+
+// Determine the file formats supported by GraphicsMagick.  This is
+// called once at the beginning of imread or imwrite to determine
+// exactly which file formats are supported, so error messages can be
+// displayed properly.
+
+DEFUN_DLD (__magick_format_list__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Function File} {} __magick_format_list__ (@var{formats})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+#ifdef HAVE_MAGICK
+  maybe_initialize_magick ();
+
+  std::list<std::string> accepted_formats;
+
+  if (args.length () == 1)
+    {
+      Cell c = args (0).cell_value ();
+
+      if (! error_state)
+        {
+          for (octave_idx_type i = 0; i < c.nelem (); i++)
+            {
+              try
+                {
+                  std::string fmt = c.elem (i).string_value ();
+
+                  Magick::CoderInfo info(fmt);
+
+                  if (info.isReadable () && info.isWritable ())
+                    accepted_formats.push_back (fmt);
+                }
+              catch (Magick::Exception& e)
+                {
+                  // Do nothing: exception here are simply missing formats.
+                }
+            }
+        }
+      else
+        error ("__magick_format_list__: expecting a cell array of image format names");
+    }
+  else
+    print_usage ();
+
+  retval = Cell (accepted_formats);
+
+#else
+
+  error ("__magick_format_list__: not available in this version of Octave");
+
+#endif
+
+  return retval;
+}

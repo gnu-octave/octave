@@ -1,3 +1,7 @@
+2010-09-28  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: Fix test.
+
 2010-09-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* elfun/lcm.m: Simplify.

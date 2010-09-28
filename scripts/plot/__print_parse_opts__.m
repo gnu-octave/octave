@@ -388,7 +388,7 @@ endfunction
 %! assert (opts.devopt, "jpeg")
 %! assert (opts.name, "foobar.jpg")
 %! assert (opts.ghostscript.device, "jpeg")
-%! assert (opts.ghostscript.epscrop, false);
+%! assert (opts.ghostscript.epscrop, true);
 %! assert (opts.ghostscript.papersize, "");
 %! assert (opts.ghostscript.pageoffset, [0, 0]);
 %! assert (opts.send_to_printer, false);

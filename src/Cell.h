@@ -63,6 +63,8 @@ public:
 
   Cell (const string_vector& sv, bool trim = false);
 
+  Cell (const std::list<std::string>& lst);
+
   Cell (const Array<std::string>& sa);
 
   Cell (const dim_vector& dv, const string_vector& sv, bool trim = false);

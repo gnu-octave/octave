@@ -63,6 +63,25 @@ Cell::Cell (const string_vector& sv, bool trim)
     }
 }
 
+Cell::Cell (const std::list<std::string>& lst)
+  : Array<octave_value> ()
+{
+  size_t n = lst.size ();
+
+  if (n > 0)
+    {
+      resize (dim_vector (n, 1));
+
+      octave_idx_type i = 0;
+
+      for (std::list<std::string>::const_iterator it = lst.begin ();
+           it != lst.end (); it++)
+        {
+          elem(i++,0) = *it;
+        }
+    }
+}
+
 Cell::Cell (const Array<std::string>& sa)
   : Array<octave_value> (sa.dims ())
 {

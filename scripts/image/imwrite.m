@@ -66,7 +66,7 @@
 function imwrite (img, varargin)
   
   persistent imwrite_possible_formats = {
-    "bmp" "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
+    "bmp"; "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
     "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
 
   persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);

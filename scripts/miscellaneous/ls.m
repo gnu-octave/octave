@@ -60,7 +60,7 @@ function retval = ls (varargin)
         if (nargout == 0)
           puts (output);
         else
-          retval = strvcat (regexp (output, '[^\s]+', 'match'){:});
+          retval = strvcat (regexp (output, '\S+', 'match'){:});
         endif
       else
         error ("ls: command exited abnormally with status %d", status);

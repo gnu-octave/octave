@@ -208,7 +208,7 @@ function varargout = savepath (savefile)
 endfunction  
 
 function path_elements = parsepath (p)
-  pat = sprintf ("([^%s]+[%s$])", pathsep, pathsep);
+  pat = sprintf ('([^%s]+[%s$])', pathsep, pathsep);
   [jnk1, jnk2, jnk3, path_elements] = regexpi (strcat (p, pathsep), pat);
 endfunction
 

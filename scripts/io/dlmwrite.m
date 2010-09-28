@@ -172,7 +172,7 @@ function dlmwrite (file, a, varargin)
                repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
     endif
     if (iscomplex (a))
-      cprecision = regexprep (precision, '^%([-\d.])','%+$1');
+      cprecision = regexprep (precision, '^%([-.0-9])','%+$1');
       template = [precision, cprecision, "i", ...
                   repmat([delim, precision, cprecision, "i"], 1, ...
                   columns(a) - 1), newline ];

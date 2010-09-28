@@ -80,7 +80,7 @@ function refreshdata (h, ws)
   for i = 1 : numel (h)
     obj = get (h (i));
     fldnames = fieldnames (obj);
-    m = regexpi (fieldnames(obj), "^.+datasource$", "match");
+    m = regexpi (fieldnames(obj), '^.+datasource$', "match");
     idx = cellfun (@(x) !isempty(x), m);
     if (any (idx))
       tmp = m(idx);

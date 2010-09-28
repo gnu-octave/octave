@@ -2147,8 +2147,8 @@ addpath (\"dir1:/dir2:~/dir3\");\n\
                 {
                   std::string dir = *p;
 
-                  //dir = regexprep (dir_elts{j}, "//+", "/");
-                  //dir = regexprep (dir, "/$", "");
+                  //dir = regexprep (dir_elts{j}, '//+', "/");
+                  //dir = regexprep (dir, '/$', "");
 
                   if (append)
                     load_path::append (dir, true);
@@ -2213,8 +2213,8 @@ rmpath (\"dir1:/dir2:~/dir3\");\n\
                 {
                   std::string dir = *p;
 
-                  //dir = regexprep (dir_elts{j}, "//+", "/");
-                  //dir = regexprep (dir, "/$", "");
+                  //dir = regexprep (dir_elts{j}, '//+', "/");
+                  //dir = regexprep (dir, '/$', "");
 
                   if (! load_path::remove (dir))
                     warning ("rmpath: %s: not found", dir.c_str ());

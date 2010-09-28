@@ -246,11 +246,11 @@ function ret = edit (file, state)
   if (idx == 0)
     ## Create the list of files to look for
     filelist = {file};
-    if (isempty (regexp (file, "\\.m$")))
+    if (isempty (regexp (file, '\.m$')))
       ## No ".m" at the end of the file, add to the list.
       filelist{end+1} = cat (2, file, ".m");
     endif
-    if (isempty (regexp (file, "\\.cc$")))
+    if (isempty (regexp (file, '\.cc$')))
       ## No ".cc" at the end of the file, add to the list.
       filelist{end+1} = cat (2, file, ".cc");
     endif

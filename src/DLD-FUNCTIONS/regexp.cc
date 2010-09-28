@@ -921,18 +921,24 @@ Match between @var{m} and @var{n} times\n\
 \n\
 List operators.  The pattern will match any character listed between \"[\"\n\
 and \"]\".  If the first character is \"^\" then the pattern is inverted and\n\
-any character except those listed between brackets will match\n\
+any character except those listed between brackets will match.\n\
+\n\
+With PCRE support, escape sequences defined below can be used inside list\n\
+operators.  For example, a template for a floating point number might be\n\
+@code{[-+.\\d]+}.  POSIX regular expressions do not use escape sequences\n\
+and any backslash @samp{\\} will be interpreted literally as one\n\
+of the list of characters to match.\n\
 \n\
 @item ()\n\
 Grouping operator\n\
 \n\
 @item |\n\
 Alternation operator.  Match one of a choice of regular expressions.  The\n\
-alternatives must be delimited by the grouping operator @code{()} above\n\
+alternatives must be delimited by the grouping operator @code{()} above.\n\
 \n\
 @item ^ $\n\
 Anchoring operators.  Requires pattern to occur at the start (@code{^}) or\n\
-end (@code{$}) of the string\n\
+end (@code{$}) of the string.\n\
 @end table\n\
 \n\
 In addition, the following escaped characters have special meaning.  Note,\n\
@@ -968,30 +974,36 @@ Match any non-whitespace character\n\
 @item \\d\n\
 Match any digit\n\
 \n\
+This sequence is only available with PCRE support.  For POSIX regular\n\
+expressions use the following list operator @code{[0-9]}.\n\
+\n\
 @item \\D\n\
 Match any non-digit\n\
+\n\
+This sequence is only available with PCRE support.  For POSIX regular\n\
+expressions use the following list operator @code{[^0-9]}.\n\
 @end table\n\
 \n\
 The outputs of @code{regexp} default to the order given below\n\
 \n\
-@table @asis\n\
-@item @var{s}\n\
+@table @var\n\
+@item s\n\
 The start indices of each matching substring\n\
 \n\
-@item @var{e}\n\
+@item e\n\
 The end indices of each matching substring\n\
 \n\
-@item @var{te}\n\
+@item te\n\
 The extents of each matched token surrounded by @code{(@dots{})} in\n\
 @var{pat}\n\
 \n\
-@item @var{m}\n\
+@item m\n\
 A cell array of the text of each match\n\
 \n\
-@item @var{t}\n\
+@item t\n\
 A cell array of the text of each token matched\n\
 \n\
-@item @var{nm}\n\
+@item nm\n\
 A structure containing the text of each matched named token, with the name\n\
 being used as the fieldname.  A named token is denoted by\n\
 @code{(?<name>@dots{})} and is only available with PCRE support.\n\
@@ -1156,7 +1168,6 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (isempty(t))
 
 %!testif HAVE_PCRE
-%! ## This test is expected to fail if PCRE is not installed
 %! [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %! assert (s,1)
 %! assert (e,10)
@@ -1173,7 +1184,6 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (nm.word2,'test')
 
 %!testif HAVE_PCRE
-%! ## This test is expected to fail if PCRE is not installed
 %! [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,10)
@@ -1190,7 +1200,6 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (nm.word2,'test')
 
 %!testif HAVE_PCRE
-%! ## This test is expected to fail if PCRE is not installed
 %! [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
 %! assert (size(t), [1,2]);
 %! assert (t{1}{1},'John');
@@ -1344,7 +1353,6 @@ syntax of the search pattern.\n\
 %! assert (isempty(t))
 
 %!testif HAVE_PCRE
-%! ## This test is expected to fail if PCRE is not installed
 %! [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %! assert (s,1)
 %! assert (e,10)
@@ -1361,7 +1369,6 @@ syntax of the search pattern.\n\
 %! assert (nm.word2,'Test')
 
 %!testif HAVE_PCRE
-%! ## This test is expected to fail if PCRE is not installed
 %! [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,10)
@@ -1737,13 +1744,14 @@ This option is present for compatibility but is ignored.\n\
 %! t = regexprep(xml,'<[!?][^>]*>','','tokenize');
 %! assert(t,' <tag v="hello">some stuff</tag>')
 
-%!testif HAVE_PCRE # Capture replacement
+## Test capture replacement
+%!testif HAVE_PCRE
 %! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
 %! result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
 %! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
 %! assert(t,result)
 
-# Return the original if no match
+## Return the original if no match
 %!assert(regexprep('hello','world','earth'),'hello')
 
 ## Test a general replacement

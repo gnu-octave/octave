@@ -1,3 +1,22 @@
+2010-09-27  Rik <octave@nomad.inbox5.com>
+
+	* scripts/io/dlmwrite.m: Replace non-POSIX '\d' regex pattern.
+
+	* scripts/miscellaneous/edit.m, scripts/path/savepath.m, 
+	scripts/plot/__gnuplot_get_var__.m,
+	scripts/plot/private/__gnuplot_has_terminal__.m,
+	scripts/plot/refreshdata.m, scripts/plot/whitebg.m,
+	scripts/testfun/runtests.m, scripts/time/datestr.m: Use single quotes
+	for regular expression patterns when possible.
+
+	* scripts/miscellaneous/ls.m, scripts/plot/__gnuplot_ginput__.m, 
+	scripts/plot/__go_draw_axes__.m, scripts/plot/private/__ezplot__.m,
+	scripts/testfun/test.m: Remove uses of shorthand character classes
+	within list operators which is unsupported by POSIX regex.
+
+	* scripts/pkg/get_forge_pkg.m: Select desired output from regexp
+	rather than ignoring most outputs.
+
 2010-09-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: Fix test.
@@ -9,6 +28,13 @@
 2010-09-27  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: Properly crop eps image and fix tests.
+
+	scripts/plot/__go_draw_axes__.m, scripts/plot/private/__ezplot__.m,
+	scripts/testfun/test.m: Remove uses of shorthand character classes
+	within list operators which is unsupported by POSIX regex.
+
+	* scripts/pkg/get_forge_pkg.m: Select desired output from regexp
+	rather than ignoring most outputs.
 
 2010-09-26  Rik <octave@nomad.inbox5.com>
 

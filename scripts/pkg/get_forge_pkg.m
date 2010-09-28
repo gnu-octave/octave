@@ -41,8 +41,8 @@ function [ver, url] = get_forge_pkg (name)
     ## Remove blanks for simpler matching.
     html(isspace(html)) = [];
     ## Good. Let's grep for the version.
-    pat = "<tdclass=""package_table"">PackageVersion:</td><td>([0-9\\.]*)</td>";
-    [~, ~, ~, ~, t] = regexp (html, pat);
+    pat = "<tdclass=""package_table"">PackageVersion:</td><td>([0-9.]*)</td>";
+    t = regexp (html, pat, "tokens");
     if (isempty (t) || isempty(t{1}))
       error ("get_forge_pkg: could not read version number from package's page.");
     else
@@ -61,7 +61,7 @@ function [ver, url] = get_forge_pkg (name)
     ## Try get the list of all packages.
     [html, succ] = urlread ("http://octave.sourceforge.net/packages.php");
     if (succ)
-      [~, ~, ~, ~, t] = regexp (html, "<div class=""package"" id=""(\\w+)"">");
+      t = regexp (html, "<div class=""package"" id=""(\\w+)"">", "tokens");
       t = horzcat (t{:});
       if (any (strcmp (t, name)))
         error ("get_forge_pkg: package name exists, but index page not available");

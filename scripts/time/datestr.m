@@ -229,7 +229,7 @@ function retval = datestr (date, f, p)
     endif
 
     df_orig = df;
-    df = regexprep (df, "[AP]M", "%p");
+    df = regexprep (df, '[AP]M', "%p");
     if (strcmp (df, df_orig))
       ## PM not set.
       df = strrep (df, "HH", "%H");
@@ -237,19 +237,19 @@ function retval = datestr (date, f, p)
       df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
     endif  
 
-    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%Y");
+    df = regexprep (df, '[Yy][Yy][Yy][Yy]', "%Y");
 
-    df = regexprep (df, "[Yy][Yy]", "%y");
+    df = regexprep (df, '[Yy][Yy]', "%y");
 
-    df = regexprep (df, "[Dd][Dd][Dd][Dd]", "%A");
+    df = regexprep (df, '[Dd][Dd][Dd][Dd]', "%A");
 
-    df = regexprep (df, "[Dd][Dd][Dd]", "%a");
+    df = regexprep (df, '[Dd][Dd][Dd]', "%a");
 
-    df = regexprep (df, "[Dd][Dd]", "%d");
+    df = regexprep (df, '[Dd][Dd]', "%d");
 
     tmp = names_d{weekday (datenum (v(i,1), v(i,2), v(i,3)))};
-    df = regexprep (df, "([^%])[Dd]", sprintf ("$1%s", tmp));
-    df = regexprep (df, "^[Dd]", sprintf ("%s", tmp));
+    df = regexprep (df, '([^%])[Dd]', sprintf ("$1%s", tmp));
+    df = regexprep (df, '^[Dd]', sprintf ("%s", tmp));
 
     df = strrep (df, "mmmm", "%B");
 
@@ -258,15 +258,15 @@ function retval = datestr (date, f, p)
     df = strrep (df, "mm", "%m");
 
     tmp = names_m{v(i,2)};
-    pos = regexp (df, "[^%]m") + 1;
+    pos = regexp (df, '[^%]m') + 1;
     df(pos) = tmp;
-    df = regexprep (df, "^m", tmp);
+    df = regexprep (df, '^m', tmp);
 
     df = strrep (df, "MM", "%M");
 
     df = strrep (df, "SS", "%S");
 
-    df = regexprep (df, "[Qq][Qq]", sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
+    df = regexprep (df, '[Qq][Qq]', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
 
     vi = v(i,:);
     tm.year = vi(1) - 1900;

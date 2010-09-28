@@ -119,7 +119,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     fstr = func2str (fun);
     if (length (findstr (fstr, ")")) != 0)
       args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3), 
-                     '(\w[\w\d]*)', 'tokens');
+                     '(\w+)', 'tokens');
     fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
     else
       args = {{"x"}};
@@ -177,7 +177,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       fstry = func2str (funy);
       if (length (findstr (fstry, ")")) != 0)
         args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
-                       '(\w[\w\d]*)', 'tokens');
+                       '(\w+)', 'tokens');
         fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
       else
         args = {{"y"}};
@@ -217,7 +217,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       elseif (isa (funz, "function_handle"))
         fstrz = func2str (funz);
         args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3), 
-                       '(\w[\w\d]*)', 'tokens');
+                       '(\w+)', 'tokens');
         if (length (args) != nargs)
           error ("%s: excepting a function of %d arguments", func, nargs);
         endif
@@ -330,15 +330,15 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       Z = __eliminate_sing__ (Z);
     endif
 
-    fstrx = regexprep (regexprep (regexprep (fstrx,'\.\^\s*','^'), 
-                      '\./', '/'), '[\.]*\*', '');
-    fstry = regexprep (regexprep (regexprep (fstry,'\.\^\s*','^'), 
-                      '\./', '/'), '[\.]*\*', '');
+    fstrx = regexprep (regexprep (regexprep (fstrx,'\s*\.?\^\s*','^'), 
+                      '\./', '/'), '\.?\*', '');
+    fstry = regexprep (regexprep (regexprep (fstry,'\s*\.?\^\s*','^'), 
+                      '\./', '/'), '\.?\*', '');
     if (isplot)
       fstr = cstrcat ("x = ",fstrx,", y = ",fstry);
     else
-      fstrz = regexprep (regexprep (regexprep (fstrz,'\.\^\s*','^'), 
-                                    '\./', '/'), '[\.]*\*', '');
+      fstrz = regexprep (regexprep (regexprep (fstrz,'\s*\.?\^\s*','^'), 
+                                    '\./', '/'), '\.?\*', '');
       fstr = cstrcat ("x = ",fstrx,",y = ",fstry,", z = ",fstrz);
     endif
   else
@@ -347,8 +347,8 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       return;
     endif
 
-    fstr = regexprep (regexprep (regexprep (fstr,'\.\^\s*','^'), '\./', '/'), 
-                      '[\.]*\*', '');
+    fstr = regexprep (regexprep (regexprep (fstr,'\s*\.?\^\s*','^'), '\./', '/'), 
+                      '\.?\*', '');
     if (isplot && nargs == 2)
       if (strcmp (typeinfo (fun), "inline function") && 
           !isempty (strfind (formula (fun) , "=")))

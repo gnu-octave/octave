@@ -1,4 +1,9 @@
-2010-08-15  Rik <octave@nomad.inbox5.com>
+2010-09-27  Rik <octave@nomad.inbox5.com>
+
+	* interpreter/mk_doc_cache.m: Use single quotes for regular expression
+	patterns where possible.
+
+2010-09-25  Rik <octave@nomad.inbox5.com>
 
 	* interpreter/mk_doc_cache.m: Remove requirement for PCRE to build
 	doc cache.  Correctly parse first sentence from docstrings with 

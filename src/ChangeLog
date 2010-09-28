@@ -18,6 +18,17 @@
 
 2010-09-26  Rik <octave@nomad.inbox5.com>
 
+	* load-path.cc: Use single quotes for regex when possible.
+	* DLD-FUNCTIONS/regexp.cc (regexp): Update docstring to highlight
+	differences between POSIX and PCRE regex.
+
+2010-09-26  Rik <octave@nomad.inbox5.com>
+
+	* load-path.cc: Use single quotes for regular expression patterns when
+	possible.
+
+2010-09-26  Rik <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep, regexpi): Update
 	docstrings to more fully explain PCRE.  Modify advanced tests to run
 	only run when PCRE is present.

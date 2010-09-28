@@ -45,10 +45,10 @@ endfor
 text = [text{:}, doc_delim];
 
 ## Modify Octave-specific macros before passing to makeinfo
-text = regexprep (text, "@seealso *\\{([^}]*)\\}", "See also: $1.");
-text = regexprep (text, "@nospell *\\{([^}]*)\\}", "$1");
+text = regexprep (text, '@seealso *\{([^}]*)\}', "See also: $1.");
+text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
-text = regexprep (text, "@", "@@");
+text = regexprep (text, '@', "@@");
 
 ## Write data to temporary file for input to makeinfo
 [fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);
@@ -89,7 +89,7 @@ for i = 2:n
 
   ## Skip internal functions that start with __ as these aren't 
   ## indexed by lookfor.
-  if (length (symbol) > 2 && regexp (symbol, "^__.+__$"))
+  if (length (symbol) > 2 && regexp (symbol, '^__.+__$'))
     continue;
   endif
 
@@ -111,7 +111,7 @@ for i = 2:n
     continue;
   endif
 
-  end_of_first_sentence = regexp (tmp, '(\.|[\r\n][\r\n])', "once");
+  end_of_first_sentence = regexp (tmp, "(\\.|[\r\n][\r\n])", "once");
   if (isempty (end_of_first_sentence))
     end_of_first_sentence = length (tmp);
   else
@@ -119,8 +119,8 @@ for i = 2:n
   endif
 
   first_sentence = tmp(1:end_of_first_sentence);
-  first_sentence = regexprep (first_sentence, "([\r\n]|  *)", " ");
-  first_sentence = regexprep (first_sentence, "^ +", "");
+  first_sentence = regexprep (first_sentence, "([\r\n]| {2,})", " ");
+  first_sentence = regexprep (first_sentence, '^ +', "");
 
   cache{1,k} = symbol;
   cache{2,k} = doc;

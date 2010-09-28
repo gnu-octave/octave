@@ -1990,7 +1990,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                    tickdir, ticklength, axispos);
         endif
  
-        labels = regexprep(labels, "%", "%%");
+        labels = regexprep(labels, '%', "%%");
         for i = 1:ntics
           fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
           if (i < ntics)
@@ -2315,7 +2315,7 @@ endfunction
 
 function l = length_string (s)
   l = length (s) - length (strfind(s,'{')) - length (strfind(s,'}'));
-  m = regexp (s, '/([\w\-]+|[\w\-]+=\d+)', 'matches');
+  m = regexp (s, '/([a-zA-Z0-9_-]+|[a-zA-Z0-9_-]+=[0-9]+)', 'matches');
   if (!isempty (m))
     l = l - sum (cellfun (@length, m));
   endif

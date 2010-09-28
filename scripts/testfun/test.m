@@ -444,7 +444,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 ### TESTIF
 
     elseif (strcmp (__type, "testif"))
-      [__e, __feat] = regexp (__code, '^\s*([^\s]+)', 'end', 'tokens');
+      [__e, __feat] = regexp (__code, '^\s*(\S+)', 'end', 'tokens');
       if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
         __xskip++;
         __istest = 0;

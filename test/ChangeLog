@@ -1,3 +1,7 @@
+2010-09-27  Rik <octave@nomad.inbox5.com>
+
+	* fntests.m: Use single quotes for regex when possible.
+
 2010-09-26  Rik <octave@nomad.inbox5.com>
 
 	* fntests.m (has_tests, has_functions): Recode to remove requirement 

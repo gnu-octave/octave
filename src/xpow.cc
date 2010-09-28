@@ -123,7 +123,11 @@ xpow (double a, const Matrix& b)
             }
           ComplexDiagMatrix D (lambda);
 
-          retval = ComplexMatrix (Q * D * Q.inverse ());
+          ComplexMatrix C = Q * D * Q.inverse ();
+          if (a > 0)
+            retval = real (C);
+          else
+            retval = C;
         }
       else
         error ("xpow: matrix diagonalization failed");
@@ -1534,7 +1538,12 @@ xpow (float a, const FloatMatrix& b)
             }
           FloatComplexDiagMatrix D (lambda);
 
-          retval = FloatComplexMatrix (Q * D * Q.inverse ());
+          FloatComplexMatrix C = Q * D * Q.inverse ();
+
+          if (a > 0)
+            retval = real (C);
+          else
+            retval = C;
         }
       else
         error ("xpow: matrix diagonalization failed");

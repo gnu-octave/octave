@@ -1,5 +1,11 @@
 2010-09-28  Jaroslav Hajek  <highegg@gmail.com>
 
+	* xpow.cc (xpow (double, const Matrix&)): Ensure real result for
+	positive base.
+	(xpow (double, const Matrix&)): Likewise.
+
+2010-09-28  Jaroslav Hajek  <highegg@gmail.com>
+
 	* error.cc (interpreter_try): New function.
 	* error.h: Declare it.
 	* ov-fcn-handle.cc (octave_fcn_binder::maybe_binder): Use it here.

@@ -1,5 +1,10 @@
 2010-09-28  John P. Swensen  <jpswensen@gmail.com>
 
+	* DLD-FUNCTIONS/__magick_read__.cc (maybe_initialize_magick):
+	Warn on initialization of *Magick if QuantumDepth is less than 32.
+
+2010-09-28  John P. Swensen  <jpswensen@gmail.com>
+
 	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_format_list__):
 	New function. 
 

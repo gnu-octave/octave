@@ -391,6 +391,10 @@ maybe_initialize_magick (void)
       // Restore locale from before GraphicsMagick initialisation
       setlocale (LC_ALL, locale.c_str ());
 
+      if (QuantumDepth < 32)
+        warning ("your version of %s limits images to %d bits per pixel",
+                 MagickPackageName, QuantumDepth);
+
       initialized = true;
     }
 #endif

@@ -75,11 +75,11 @@
 %!    y = feval (fn, m, varargin{:});
 %!    y2 = feval (fn, reshape (mn, size (m)), varargin{:});
 %!    if (!strcmp (class (y), class (m)) ||
-%!	   issparse (y) != issparse (m) || !size_equal (y, y2))
+%!         issparse (y) != issparse (m) || !size_equal (y, y2))
 %!      error ('failed for type %s\n', typ{i});
 %!    endif
 %!    if (!(strcmp (typ{i}, 'cell') || strcmp (typ{i}, 'struct')) &&
-%!	  any (vec (cast (real (y), 'double')) !=
+%!        any (vec (cast (real (y), 'double')) !=
 %!             vec (feval (fn , cast (real (m), 'double'), varargin{:}))))
 %!      error ('failed for type %s\n', typ{i});
 %!    endif

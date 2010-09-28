@@ -636,9 +636,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
                          "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), 
                          "color", color, "marker", marker,
-	                 "markeredgecolor", get (hplots (k), "markeredgecolor"),
-	                 "markerfacecolor", get (hplots (k), "markerfacecolor"),
-	                 "markersize", get (hplots (k), "markersize"));
+                         "markeredgecolor", get (hplots (k), "markeredgecolor"),
+                         "markerfacecolor", get (hplots (k), "markerfacecolor"),
+                         "markersize", get (hplots (k), "markersize"));
               hobjects = [hobjects, l1];
             endif
           case "patch"

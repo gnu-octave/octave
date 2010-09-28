@@ -1,3 +1,8 @@
+2010-09-28  Rik <octave@nomad.inbox5.com>
+
+	* test/@Gork/set.m, test/fntests.m, test/test_func.m, test/test_io.m:
+	Untabify scripts.
+
 2010-09-27  Rik <octave@nomad.inbox5.com>
 
 	* fntests.m: Use single quotes for regex when possible.

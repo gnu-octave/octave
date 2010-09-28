@@ -30,8 +30,8 @@ function geometryimages (nm, typ)
 
   if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL"))
       && (strcmp (nm, "voronoi") || strcmp (nm, "griddata")
-	  || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
-	  || strcmp (nm, "triplot")))
+          || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
+          || strcmp (nm, "triplot")))
     sombreroimage (nm, typ);
   elseif (strcmp (typ, "txt"))
     image_as_txt (nm);

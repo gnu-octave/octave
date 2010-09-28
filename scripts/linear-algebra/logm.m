@@ -36,7 +36,7 @@
 ## @end deftypefn
 
 ## Reference: N. J. Higham, Functions of Matrices: Theory and Computation 
-## 	 (SIAM, 2008.)
+##            (SIAM, 2008.)
 ##
 
 function [s, iters] = logm (a, opt_iters)
@@ -101,10 +101,10 @@ function [s, iters] = logm (a, opt_iters)
 endfunction
 
 ################## ANCILLARY FUNCTIONS ################################
-######	Taken from the mfttoolbox (GPL 3) by D. Higham.
+######  Taken from the mfttoolbox (GPL 3) by D. Higham.
 ######  Reference: 
 ######      D. Higham, Functions of Matrices: Theory and Computation 
-######		(SIAM, 2008.).
+######      (SIAM, 2008.).
 #######################################################################
 
 ##LOGM_PADE_PF   Evaluate Pade approximant to matrix log by partial fractions.

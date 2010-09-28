@@ -107,16 +107,16 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   for i = 1:length (lst)
     nm = lst(i).name;
     if (length (nm) > 5 && strcmp (nm(1:5), "test_")
-	&& strcmp (nm((end-1):end), ".m"))
+        && strcmp (nm((end-1):end), ".m"))
       p = n = xf = sk = 0;
       ffnm = fullfile (d, nm);
       if (has_tests (ffnm))
-	print_test_file_name (nm);
-	[p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
-	print_pass_fail (n, p);
-	files_with_tests(end+1) = ffnm;
+        print_test_file_name (nm);
+        [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
+        print_pass_fail (n, p);
+        files_with_tests(end+1) = ffnm;
       else
-	files_with_no_tests(end+1) = ffnm;
+        files_with_no_tests(end+1) = ffnm;
       endif
       dp += p;
       dn += n;
@@ -136,7 +136,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   for i = 1:length (lst)
     nm = lst(i).name;
     if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
-	&& ! strcmp (nm, "CVS") && ! strcmp (nm, "deprecated") )
+        && ! strcmp (nm, "CVS") && ! strcmp (nm, "deprecated") )
       [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
       dp += p;
       dn += n;
@@ -156,20 +156,20 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (has_tests (f))
-	tmp = strrep (f, [topsrcdir, "/"], "");
-	tmp = strrep (tmp, [topbuilddir, "/"], "../");
-	print_test_file_name (tmp);
-	[p, n, xf, sk] = test (f, "quiet", fid);
-	print_pass_fail (n, p);
-	dp += p;
-	dn += n;
-	dxf += xf;
-	dsk += sk;
-	files_with_tests(end+1) = f;
+        tmp = strrep (f, [topsrcdir, "/"], "");
+        tmp = strrep (tmp, [topbuilddir, "/"], "../");
+        print_test_file_name (tmp);
+        [p, n, xf, sk] = test (f, "quiet", fid);
+        print_pass_fail (n, p);
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dsk += sk;
+        files_with_tests(end+1) = f;
       elseif (has_functions (f))
-	## To reduce the list length, only mark .cc files that contain
-	## DEFUN definitions.
-	files_with_no_tests(end+1) = f;
+        ## To reduce the list length, only mark .cc files that contain
+        ## DEFUN definitions.
+        files_with_no_tests(end+1) = f;
       endif
     endif
   endfor 
@@ -249,7 +249,7 @@ try
       t2 = "failure";
     endif
     printf ("\nThere %s %d expected %s (see fntests.log for details).\n",
-	    t1, dxf, t2);
+            t1, dxf, t2);
     puts ("\nExpected failures are known bugs.  Please help improve\n");
     puts ("Octave by contributing fixes for them.\n");
   endif
@@ -267,7 +267,7 @@ try
   puts ("these files (see the list in the file fntests.log).\n\n");
 
   fprintf (fid, "\nFiles with no tests:\n\n%s",
-	  list_in_columns (files_with_no_tests, 80));
+          list_in_columns (files_with_no_tests, 80));
   fclose (fid);
 
   page_screen_output (pso);

@@ -1,3 +1,8 @@
+2010-09-28  Rik <octave@nomad.inbox5.com>
+
+	* scripts/linear-algebra/logm.m, scripts/plot/legend.m, 
+	scripts/signal/periodogram.m: Untabify scripts.
+
 2010-09-27  Rik <octave@nomad.inbox5.com>
 
 	* scripts/io/dlmwrite.m: Replace non-POSIX '\d' regex pattern.

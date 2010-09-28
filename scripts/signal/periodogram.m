@@ -136,7 +136,7 @@ function [pxx, f] = periodogram (x, varargin)
     Pxx = 0;
     rr = rem (length (x), nfft);
     if (rr)
-    	x = [x(:);zeros (nfft-rr, 1)];
+      x = [x(:);zeros (nfft-rr, 1)];
     end
     x = sum (reshape (x, nfft, []), 2);
   endif

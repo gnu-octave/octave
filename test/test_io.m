@@ -105,59 +105,59 @@
 %!      assert (a4, b4, tol);
 %!
 %!      if (! isequal (a5, b5))
-%!	  error ("failed: %s boolean", file);
+%!        error ("failed: %s boolean", file);
 %!      endif
 %!
 %!      if (! strcmp (file, "mat5") && ! strcmp (file, "mat7"))
 %!        if (! isequal (a6, b6))
-%!	    error ("failed: %s boolean matrix", file);
+%!          error ("failed: %s boolean matrix", file);
 %!        endif
 %!      endif
 %!
 %!      assert ([a7], [b7], tol);
 %!
 %!      if (! isequal (a8, b8))
-%!	  error ("failed: %s struct", file);
+%!        error ("failed: %s struct", file);
 %!      endif
 %!      
 %!      if (! isequal (a9, b9))
-%!	  error ("failed: %s cell", file);
+%!        error ("failed: %s cell", file);
 %!      endif
 %!      
 %!      if (! isequal (a10, b10))
-%!	  error ("failed: %s string", file);
+%!        error ("failed: %s string", file);
 %!      endif
 %!
 %!      if (! isequal (a11, b11))
-%!	  error ("failed: %s int8", file);
+%!        error ("failed: %s int8", file);
 %!      endif
 %!
 %!      if (! isequal (a12, b12))
-%!	  error ("failed: %s int16", file);
+%!        error ("failed: %s int16", file);
 %!      endif
 %!
 %!      if (! isequal (a13, b13))
-%!	  error ("failed: %s int32", file);
+%!        error ("failed: %s int32", file);
 %!      endif
 %!
 %!      if (! isequal (a14, b14))
-%!	  error ("failed: %s int64", file);
+%!        error ("failed: %s int64", file);
 %!      endif
 %!
 %!      if (! isequal (a15, b15))
-%!	  error ("failed: %s uint8", file);
+%!        error ("failed: %s uint8", file);
 %!      endif
 %!
 %!      if (! isequal (a16, b16))
-%!	  error ("failed: %s uint16", file);
+%!        error ("failed: %s uint16", file);
 %!      endif
 %!
 %!      if (! isequal (a17, b17))
-%!	  error ("failed: %s uint32", file);
+%!        error ("failed: %s uint32", file);
 %!      endif
 %!
 %!      if (! isequal (a18, b18))
-%!	  error ("failed: %s uint64", file);
+%!        error ("failed: %s uint64", file);
 %!      endif
 %!
 %!      assert (a19, b19, tol);
@@ -171,7 +171,7 @@
 %!          || isglobal ("a13") || isglobal ("a14") || isglobal ("a15")
 %!          || isglobal ("a16") || isglobal ("a17") || isglobal ("a18")
 %!          || isglobal ("a19") || isglobal ("a20"))
-%!	  error ("failed: %s global test", file); 
+%!        error ("failed: %s global test", file); 
 %!      endif
 %!    endfor
 %!  endif
@@ -201,20 +201,20 @@
 %! STR = load ("struct.dat");
 %!
 %! assert(STR.scalar_fld == 1 && ...
-%! 	STR.matrix_fld == [1.1,2;3,4] && ...
-%! 	STR.string_fld == "Octave" && ...
-%! 	STR.struct_fld.x == 0 && ...
-%! 	STR.struct_fld.y == 1 );
+%!        STR.matrix_fld == [1.1,2;3,4] && ...
+%!        STR.string_fld == "Octave" && ...
+%!        STR.struct_fld.x == 0 && ...
+%!        STR.struct_fld.y == 1 );
 %!
 %!
 %! save -binary struct.dat -struct STR matrix_fld str*_fld;
 %! STR = load ("struct.dat");
 %!
 %! assert(!isfield(STR,"scalar_fld") && ...
-%! 	STR.matrix_fld == [1.1,2;3,4] && ...
-%! 	STR.string_fld == "Octave" && ...
-%! 	STR.struct_fld.x == 0 && ...
-%! 	STR.struct_fld.y == 1);
+%!        STR.matrix_fld == [1.1,2;3,4] && ...
+%!        STR.string_fld == "Octave" && ...
+%!        STR.struct_fld.x == 0 && ...
+%!        STR.struct_fld.y == 1);
 %!
 %! delete struct.dat;
 %!

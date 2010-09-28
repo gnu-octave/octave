@@ -29,11 +29,11 @@ function sparseimages (nm, typ)
       txtimages (nm, 15, typ);
     else
       if (strcmp (nm, "gplot"))
-	gplotimages ("gplot", typ);
+        gplotimages ("gplot", typ);
       elseif (strcmp (nm, "grid"))
-	femimages ("grid", typ);
+        femimages ("grid", typ);
       else
-	otherimages (nm, 200, typ);
+        otherimages (nm, 200, typ);
       endif
     endif
   else ## There is no sparse matrix implementation available because
@@ -65,7 +65,7 @@ function gplotimages (nm, typ)
   endif
 
   A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
-	      [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
+              [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot (A, xy)
   print (cstrcat (nm, ".", typ), d_typ)
@@ -86,13 +86,13 @@ function txtimages(nm,n,typ)
     printsparse(a,cstrcat("spmatrix.",typ));
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+        !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
       if (strcmp (nm, "spchol"))
-	r1 = chol(a);
-	printsparse(r1,cstrcat("spchol.",typ));
+        r1 = chol(a);
+        printsparse(r1,cstrcat("spchol.",typ));
       elseif (strcmp (nm, "spcholperm"))
-	[r2,p2,q2]=chol(a);
-	printsparse(r2,cstrcat("spcholperm.",typ));
+        [r2,p2,q2]=chol(a);
+        printsparse(r2,cstrcat("spcholperm.",typ));
       endif
       ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -116,19 +116,19 @@ function otherimages(nm,n,typ)
     hide_output ();
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
-	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
+        !isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
       if (strcmp (nm, "spchol"))
-	r1 = chol(a);
-	spy(r1);
-	axis("ij")
-	print(cstrcat("spchol.",typ), d_typ)
-	hide_output ();
+        r1 = chol(a);
+        spy(r1);
+        axis("ij")
+        print(cstrcat("spchol.",typ), d_typ)
+        hide_output ();
       elseif (strcmp (nm, "spcholperm"))
-	[r2,p2,q2]=chol(a);
-	spy(r2);
-	axis("ij")
-	print(cstrcat("spcholperm.",typ), d_typ)
-	hide_output ();
+        [r2,p2,q2]=chol(a);
+        spy(r2);
+        axis("ij")
+        print(cstrcat("spcholperm.",typ), d_typ)
+        hide_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -146,9 +146,9 @@ function printsparse(a,nm)
     endif
     for j = 1:size(a,2)
       if (a(i,j) == 0)
-	fprintf(fid,"  ")
+        fprintf(fid,"  ")
       else
-	fprintf(fid," *")
+        fprintf(fid," *")
       endif
     endfor
     fprintf(fid,"\n")

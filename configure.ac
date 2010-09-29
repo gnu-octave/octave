@@ -765,23 +765,29 @@ OCTAVE_CHECK_LIBRARY(curl, cURL,
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"
 
-### GraphicsMagick++
+### Graphics/ImageMagick++
 
-warn_magick="GraphicsMagick++ library not found.  The imread function for reading image files will not be fully functional."
+  AC_ARG_WITH(magick,
+          [  --with-magick=LIB   Library to use for image IO (options: GraphicsMagick(default) or ImageMagick)],
+          magick="$withval",
+          magick="GraphicsMagick")
+
+
+warn_magick="$magick++ library not found.  The imread function for reading image files will not be fully functional."
 
 MAGICK_CPPFLAGS=
 MAGICK_LDFLAGS=
 MAGICK_LIBS=
 
-PKG_CHECK_EXISTS([GraphicsMagick++], [
-  ## Make sure we only get -I, -L and -l flags. Some GraphicsMagick++
+PKG_CHECK_EXISTS([$magick++], [
+  ## Make sure we only get -I, -L and -l flags. Some Graphics/ImageMagick++
   ## packages adds extra flags that are useful when building
-  ## GraphicsMagick++ extentions. These extra flags break the Octave build.
-  MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L GraphicsMagick++`
-  MAGICK_LIBS=`$PKG_CONFIG --libs-only-l GraphicsMagick++`
-  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I GraphicsMagick++`
+  ## Graphics/ImageMagick++ extentions. These extra flags break the Octave build.
+  MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
+  MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
+  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
 
-  warn_magick="GraphicsMagick++ library fails tests.  The imread function for reading image files will not be fully functional."
+  warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
 
   save_CPPFLAGS="$CPPFLAGS"
   save_LIBS="$LIBS"
@@ -803,7 +809,7 @@ PKG_CHECK_EXISTS([GraphicsMagick++], [
 ])
 
 if test -z "$warn_magick"; then
-  AC_DEFINE(HAVE_MAGICK, 1, [Define if GraphicsMagick++ is available.])
+  AC_DEFINE(HAVE_MAGICK, 1, [Define if Graphics/ImageMagick++ is available.])
 else
   MAGICK_CPPFLAGS=
   MAGICK_LDFLAGS=
@@ -2133,9 +2139,9 @@ Octave is now configured for $canonical_host_type
   GLPK libraries:              $GLPK_LIBS
   graphics CFLAGS:             $GRAPHICS_CFLAGS
   graphics LIBS:               $GRAPHICS_LIBS
-  GraphicsMagick++ CPPFLAGS:   $MAGICK_CPPFLAGS
-  GraphicsMagick++ LDFLAGS:    $MAGICK_LDFLAGS
-  GraphicsMagick++ libraries:  $MAGICK_LIBS
+  Magick++ CPPFLAGS:           $MAGICK_CPPFLAGS
+  Magick++ LDFLAGS:            $MAGICK_LDFLAGS
+  Magick++ libraries:          $MAGICK_LIBS
   HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
   HDF5 LDFLAGS:                $HDF5_LDFLAGS
   HDF5 libraries:              $HDF5_LIBS

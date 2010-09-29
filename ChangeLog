@@ -1,3 +1,8 @@
+2010-09-29  John P. Swensen  <jpswensen@gmail.com>
+
+	* configure.ac: Allow selection of GraphicsMagick or ImageMagick
+	at configure time using "--with-magick=" option.
+
 2010-09-24  Jaroslav Hajek  <highegg@gmail.com>
 
 	* m4/ax_blas.m4: Update.

@@ -156,7 +156,7 @@ for @var{f}.\n\
                   p++;
                 }
 
-              Octave_map m;
+              octave_scalar_map m;
 
               m.assign ("type", type_field);
               m.assign ("name", name_field);

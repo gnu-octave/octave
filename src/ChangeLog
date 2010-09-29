@@ -1,5 +1,12 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/dispatch.cc (Fdispatch): Use octave_scalar_map
+	instead of Octave_map.
+	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::handle): Likewise.
+	* DLD-FUNCTIONS/regexp.cc (octregexp): Likewise.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/eigs.cc (Feigs): Use octave_scalar_map instead
 	of Octave_map.
 

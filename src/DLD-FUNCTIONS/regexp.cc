@@ -587,7 +587,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
 
       octave_idx_type i = 0;
 #ifdef HAVE_PCRE
-      Octave_map nmap;
+      octave_scalar_map nmap;
       if (sz == 1)
         {
           for (int j = 0; j < named.length(); j++)
@@ -607,7 +607,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
           retval(5) = nmap;
         }
 #else
-      retval(5) = Octave_map();
+      retval(5) = octave_scalar_map ();
 #endif
 
       if (once)

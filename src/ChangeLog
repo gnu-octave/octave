@@ -1,3 +1,11 @@
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/time.cc (intfield, stringfield): New functions.
+	(mk_tm_map, extract_tm): Arg is now octave_scalar_map instead of
+	Octave_map.
+	(extract_tm): Use local intfield and setfield functions.
+	(Fmktime, Fstrftime): Use octave_scalar_map instead of Octave_map.
+
 2010-09-28  John W. Eaton  <jwe@octave.org>
 
 	* Cell.h, Cell.cc (Cell::Cell (const std::list<std::string>&)):

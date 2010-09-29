@@ -36,10 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 
 // Date and time functions.
 
-static Octave_map
+static octave_scalar_map
 mk_tm_map (const octave_base_tm& t)
 {
-  Octave_map m;
+  octave_scalar_map m;
 
   m.assign ("usec", static_cast<double> (t.usec ()));
   m.assign ("sec", static_cast<double> (t.sec ()));
@@ -56,22 +56,48 @@ mk_tm_map (const octave_base_tm& t)
   return m;
 }
 
+static inline int
+intfield (const octave_scalar_map& m, const std::string& k)
+{
+  int retval = 0;
+
+  octave_value v = m.getfield (k);
+
+  if (! v.is_empty ())
+    retval = v.int_value ();
+
+  return retval;
+}
+
+static inline std::string
+stringfield (const octave_scalar_map& m, const std::string& k)
+{
+  std::string retval;
+
+  octave_value v = m.getfield (k);
+
+  if (! v.is_empty ())
+    retval = v.string_value ();
+
+  return retval;
+}
+
 static octave_base_tm
-extract_tm (Octave_map &m)
+extract_tm (const octave_scalar_map& m)
 {
   octave_base_tm tm;
 
-  tm.usec (m.intfield ("usec"));
-  tm.sec (m.intfield ("sec"));
-  tm.min (m.intfield ("min"));
-  tm.hour (m.intfield ("hour"));
-  tm.mday (m.intfield ("mday"));
-  tm.mon (m.intfield ("mon"));
-  tm.year (m.intfield ("year"));
-  tm.wday (m.intfield ("wday"));
-  tm.yday (m.intfield ("yday"));
-  tm.isdst (m.intfield ("isdst"));
-  tm.zone (m.stringfield ("zone"));
+  tm.usec (intfield (m, "usec"));
+  tm.sec (intfield (m, "sec"));
+  tm.min (intfield (m, "min"));
+  tm.hour (intfield (m, "hour"));
+  tm.mday (intfield (m, "mday"));
+  tm.mon (intfield (m, "mon"));
+  tm.year (intfield (m, "year"));
+  tm.wday (intfield (m, "wday"));
+  tm.yday (intfield (m, "yday"));
+  tm.isdst (intfield (m, "isdst"));
+  tm.zone (stringfield (m, "zone"));
 
   return tm;
 }
@@ -249,7 +275,7 @@ mktime (localtime (time ()))\n\
 
   if (args.length () == 1)
     {
-      Octave_map map = args(0).map_value ();
+      octave_scalar_map map = args(0).scalar_map_value ();
 
       if (! error_state)
         {
@@ -448,7 +474,7 @@ Year (1970-).\n\
 
       if (! error_state)
         {
-          Octave_map map = args(1).map_value ();
+          octave_scalar_map map = args(1).scalar_map_value ();
 
           if (! error_state)
             {

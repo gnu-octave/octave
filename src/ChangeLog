@@ -1,5 +1,10 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/eigs.cc (Feigs): Use octave_scalar_map instead
+	of Octave_map.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/getpwent.cc (mk_pw_map): Use octave_scalar_map
 	instead of Octave_map.
 	* DLD-FUNCTIONS/getgrent.cc (mk_gr_map): Likewise.

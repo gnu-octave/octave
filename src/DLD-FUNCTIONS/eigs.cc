@@ -475,43 +475,60 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
     {
       if (args(3+arg_offset).is_map ())
         {
-          Octave_map map = args(3+arg_offset).map_value ();
+          octave_scalar_map map = args(3+arg_offset).scalar_map_value ();
 
-          // issym is ignored if A is not a function
-          if (map.contains ("issym") && have_a_fun)
-              symmetric = map.contents ("issym")(0).double_value () != 0.;
-
-          // isreal is ignored if A is not a function
-          if (map.contains ("isreal") && have_a_fun)
-              a_is_complex = ! (map.contents ("isreal")(0).double_value () != 0.);
-
-          if (map.contains ("tol"))
-            tol = map.contents ("tol")(0).double_value ();
-
-          if (map.contains ("maxit"))
-            maxit = map.contents ("maxit")(0).nint_value ();
-
-          if (map.contains ("p"))
-            p = map.contents ("p")(0).nint_value ();
-
-          if (map.contains ("v0"))
+          if (! error_state)
             {
-              if (a_is_complex || b_is_complex)
-                cresid = ComplexColumnVector 
-                  (map.contents ("v0")(0).complex_vector_value());
-              else
-                resid = ColumnVector (map.contents ("v0")(0).vector_value());
+              octave_value tmp;
+
+              // issym is ignored if A is not a function
+              tmp = map.getfield ("issym");
+              if (tmp.is_defined () && have_a_fun)
+                symmetric = tmp.double_value () != 0.;
+
+              // isreal is ignored if A is not a function
+              tmp = map.getfield ("isreal");
+              if (tmp.is_defined () && have_a_fun)
+                a_is_complex = ! (tmp.double_value () != 0.);
+
+              tmp = map.getfield ("tol");
+              if (tmp.is_defined ())
+                tol = tmp.double_value ();
+
+              tmp = map.getfield ("maxit");
+              if (tmp.is_defined ())
+                maxit = tmp.nint_value ();
+
+              tmp = map.getfield ("p");
+              if (tmp.is_defined ())
+                p = tmp.nint_value ();
+
+              tmp = map.getfield ("v0");
+              if (tmp.is_defined ())
+                {
+                  if (a_is_complex || b_is_complex)
+                    cresid = ComplexColumnVector (tmp.complex_vector_value ());
+                  else
+                    resid = ColumnVector (tmp.vector_value ());
+                }
+
+              tmp = map.getfield ("disp");
+              if (tmp.is_defined ())
+                disp = tmp.nint_value ();
+
+              tmp = map.getfield ("cholB");
+              if (tmp.is_defined ())
+                cholB = tmp.double_value () != 0.;
+
+              tmp = map.getfield ("permB");
+              if (tmp.is_defined ())
+                permB = ColumnVector (tmp.vector_value ()) - 1.0;
             }
-
-          if (map.contains ("disp"))
-            disp = map.contents ("disp")(0).nint_value ();
-
-          if (map.contains ("cholB"))
-            cholB = map.contents ("cholB")(0).double_value () != 0.;
-
-          if (map.contains ("permB"))
-            permB = ColumnVector (map.contents ("permB")(0).vector_value ()) 
-              - 1.0;
+          else
+            {
+              error ("eigs: options argument must be a scalar structure");
+              return retval;
+            }
         }
       else
         {

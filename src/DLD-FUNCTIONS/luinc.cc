@@ -121,36 +121,53 @@ Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
         }
       else if (args(1).is_map ())
         {
-          Octave_map map = args(1).map_value ();
+          octave_scalar_map map = args(1).scalar_map_value ();
 
-          if (map.contains ("droptol"))
-            droptol = map.contents ("droptol")(0).double_value ();
-
-          if (map.contains ("milu"))
+          if (! error_state)
             {
-              double tmp = map.contents ("milu")(0).double_value ();
+              octave_value tmp;
 
-              milu = (tmp == 0. ? false : true);
-            }
+              tmp = map.contents ("droptol");
+              if (tmp.is_defined ())
+                droptol = tmp.double_value ();
 
-          if (map.contains ("udiag"))
-            {
-              double tmp = map.contents ("udiag")(0).double_value ();
-
-              udiag = (tmp == 0. ? false : true);
-            }
-
-          if (map.contains ("thresh"))
-            {
-              thresh = map.contents ("thresh")(0).matrix_value ();
-
-              if (thresh.nelem () == 1)
+              tmp = map.contents ("milu");
+              if (tmp.is_defined ())
                 {
-                  thresh.resize(1,2);
-                  thresh(1) = thresh(0);
+                  double val = tmp.double_value ();
+
+                  milu = (val == 0. ? false : true);
                 }
-              else if (thresh.nelem () != 2)
-                error ("chol: expecting 2 element vector for thresh");
+
+              tmp = map.contents ("udiag");
+              if (tmp.is_defined ())
+                {
+                  double val = tmp.double_value ();
+
+                  udiag = (val == 0. ? false : true);
+                }
+
+              tmp = map.contents ("thresh");
+              if (tmp.is_defined ())
+                {
+                  thresh = tmp.matrix_value ();
+
+                  if (thresh.nelem () == 1)
+                    {
+                      thresh.resize(1,2);
+                      thresh(1) = thresh(0);
+                    }
+                  else if (thresh.nelem () != 2)
+                    {
+                      error ("luinc: expecting 2 element vector for thresh");
+                      return retval;
+                    }
+                }
+            }
+          else
+            {
+              error ("luinc: options argument must be a scalar structure");
+              return retval;
             }
         }
       else

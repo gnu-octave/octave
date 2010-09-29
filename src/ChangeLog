@@ -1,5 +1,10 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/luinc.cc (Fluinc): Use octave_scalar_map
+	instead of Octave_map.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Use octave_scalar_map
 	instead of Octave_map.  Use scalar values where appropriate in
 	call to glpk.

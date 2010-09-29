@@ -1,5 +1,13 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__glpk__.cc (OCTAVE_GLPK_GET_REAL_PARAM,
+	OCTAVE_GLPK_GET_INT_PARAM): Use GETFIELD to access map fields,
+	not CONTENTS.
+	* DLD-FUNCTIONS/amd.cc (Famd): Likewise.
+	* DLD-FUNCTIONS/luinc.cc (Fluinc): Likewise.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/urlwrite.cc (F__ftp_dir__): Use octave_scalar_map
 	instead of Octave_map.
 

@@ -127,11 +127,11 @@ Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
             {
               octave_value tmp;
 
-              tmp = map.contents ("droptol");
+              tmp = map.getfield ("droptol");
               if (tmp.is_defined ())
                 droptol = tmp.double_value ();
 
-              tmp = map.contents ("milu");
+              tmp = map.getfield ("milu");
               if (tmp.is_defined ())
                 {
                   double val = tmp.double_value ();
@@ -139,7 +139,7 @@ Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
                   milu = (val == 0. ? false : true);
                 }
 
-              tmp = map.contents ("udiag");
+              tmp = map.getfield ("udiag");
               if (tmp.is_defined ())
                 {
                   double val = tmp.double_value ();
@@ -147,7 +147,7 @@ Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
                   udiag = (val == 0. ? false : true);
                 }
 
-              tmp = map.contents ("thresh");
+              tmp = map.getfield ("thresh");
               if (tmp.is_defined ())
                 {
                   thresh = tmp.matrix_value ();

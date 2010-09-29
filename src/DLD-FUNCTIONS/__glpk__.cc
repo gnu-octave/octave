@@ -418,7 +418,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 #define OCTAVE_GLPK_GET_REAL_PARAM(NAME, IDX) \
   do \
     { \
-      octave_value tmp = PARAM.contents (NAME); \
+      octave_value tmp = PARAM.getfield (NAME); \
  \
       if (tmp.is_defined ()) \
         { \
@@ -444,7 +444,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 #define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL) \
   do \
     { \
-      octave_value tmp = PARAM.contents (NAME); \
+      octave_value tmp = PARAM.getfield (NAME); \
  \
       if (tmp.is_defined ()) \
         { \

@@ -144,11 +144,11 @@ The author of the code itself is Timothy A. Davis\n\
                 {
                   octave_value tmp;
 
-                  tmp = arg1.contents ("dense");
+                  tmp = arg1.getfield ("dense");
                   if (tmp.is_defined ())
                     Control[AMD_DENSE] = tmp.double_value ();
 
-                  tmp = arg1.contents ("aggressive");
+                  tmp = arg1.getfield ("aggressive");
                   if (tmp.is_defined ())
                     Control[AMD_AGGRESSIVE] = tmp.double_value ();
                 }

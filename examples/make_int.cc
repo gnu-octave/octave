@@ -25,7 +25,6 @@
 #include <octave/symtab.h>
 #include <octave/variables.h>
 
-class Octave_map;
 class octave_value_list;
 
 class tree_walker;

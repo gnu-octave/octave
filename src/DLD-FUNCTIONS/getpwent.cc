@@ -48,7 +48,7 @@ mk_pw_map (const octave_passwd& pw)
 
   if (pw)
     {
-      Octave_map m;
+      octave_scalar_map m;
 
       m.assign ("name", pw.name ());
       m.assign ("passwd", pw.passwd ());

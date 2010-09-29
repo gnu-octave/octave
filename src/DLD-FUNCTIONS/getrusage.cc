@@ -123,8 +123,8 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 @end table\n\
 @end deftypefn")
 {
-  Octave_map m;
-  Octave_map tv_tmp;
+  octave_scalar_map m;
+  octave_scalar_map tv_tmp;
 
   // FIXME -- maybe encapsulate all of this in a liboctave class
 #if defined (HAVE_GETRUSAGE)

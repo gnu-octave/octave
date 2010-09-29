@@ -48,7 +48,7 @@ mk_gr_map (const octave_group& gr)
 
   if (gr)
     {
-      Octave_map m;
+      octave_scalar_map m;
 
       m.assign ("name", gr.name ());
       m.assign ("passwd", gr.passwd ());

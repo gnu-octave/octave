@@ -1,5 +1,12 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/getpwent.cc (mk_pw_map): Use octave_scalar_map
+	instead of Octave_map.
+	* DLD-FUNCTIONS/getgrent.cc (mk_gr_map): Likewise.
+	* DLD-FUNCTIONS/getrusage.cc (Fgetrusage): Likewise.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/time.cc (intfield, stringfield): New functions.
 	(mk_tm_map, extract_tm): Arg is now octave_scalar_map instead of
 	Octave_map.

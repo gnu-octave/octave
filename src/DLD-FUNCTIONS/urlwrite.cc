@@ -1112,11 +1112,11 @@ Undocumented internal function\n\
                       flds(2) = "bytes";
                       flds(3) = "isdir";
                       flds(4) = "datenum";
-                      retval = Octave_map (flds); 
+                      retval = octave_map (flds); 
                     }
                   else
                     {
-                      Octave_map st;
+                      octave_map st;
                       Cell filectime (dim_vector (n, 1));
                       Cell filesize (dim_vector (n, 1));
                       Cell fileisdir (dim_vector (n, 1));

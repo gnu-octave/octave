@@ -240,7 +240,7 @@ Creates an integer variable from VAL.")
   if (! type_loaded)
     {
       octave_integer::register_type ();
-      mlock ("make_int");
+      mlock ();
 
       octave_stdout << "installing integer type at type-id = "
            << octave_integer::static_type_id () << "\n";

@@ -1,5 +1,9 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* examples/make_int.cc (Fmake_int): Don't pass arg to mlock.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* examples/structdemo.cc (Fstructdemo): Use octave_scalar_map
 	instead of Octave_map.
 

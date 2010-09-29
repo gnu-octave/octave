@@ -813,40 +813,38 @@ Undocumented internal function.\n\
 
   //-- Assign pointers to the output parameters
   ColumnVector xmin (mrowsc, octave_NA);
-  ColumnVector fmin (1, octave_NA);
-  ColumnVector status (1);
+  double fmin = octave_NA;
+  double status;
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
-  ColumnVector time (1);
-  ColumnVector mem (1);
+  double time;
+  double mem;
 
   int jmpret = setjmp (mark);
 
   if (jmpret == 0)
     glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
           cn.fortran_vec (), a.fortran_vec (), b, ctype,
-          freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
-          ub, vartype.fortran_vec (), isMIP, lpsolver,
-          save_pb, xmin.fortran_vec (), fmin.fortran_vec (),
-          status.fortran_vec (), lambda.fortran_vec (),
-          redcosts.fortran_vec (), time.fortran_vec (),
-          mem.fortran_vec ());
+          freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
+          vartype.fortran_vec (), isMIP, lpsolver, save_pb,
+          xmin.fortran_vec (), &fmin, &status, lambda.fortran_vec (),
+          redcosts.fortran_vec (), &time, &mem);
 
-  Octave_map extra;
+  octave_scalar_map extra;
 
   if (! isMIP)
     {
-      extra.assign ("lambda", octave_value (lambda));
-      extra.assign ("redcosts", octave_value (redcosts));
+      extra.assign ("lambda", lambda);
+      extra.assign ("redcosts", redcosts);
     }
 
-  extra.assign ("time", octave_value (time));
-  extra.assign ("mem", octave_value (mem));
+  extra.assign ("time", time);
+  extra.assign ("mem", mem);
 
   retval(3) = extra;
-  retval(2) = octave_value(status);
-  retval(1) = octave_value(fmin);
-  retval(0) = octave_value(xmin);
+  retval(2) = status;
+  retval(1) = fmin;
+  retval(0) = xmin;
 
 #else
 

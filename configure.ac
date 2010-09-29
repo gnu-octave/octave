@@ -767,11 +767,11 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ### Graphics/ImageMagick++
 
-  AC_ARG_WITH(magick,
-          [  --with-magick=LIB   Library to use for image IO (options: GraphicsMagick(default) or ImageMagick)],
-          magick="$withval",
-          magick="GraphicsMagick")
-
+AC_ARG_WITH([magick], [
+  AS_HELP_STRING([--with-magick=LIB],
+    [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])], [
+  magick="$withval"], [
+  magick="GraphicsMagick"])
 
 warn_magick="$magick++ library not found.  The imread function for reading image files will not be fully functional."
 
@@ -780,9 +780,10 @@ MAGICK_LDFLAGS=
 MAGICK_LIBS=
 
 PKG_CHECK_EXISTS([$magick++], [
-  ## Make sure we only get -I, -L and -l flags. Some Graphics/ImageMagick++
+  ## Make sure we only get -I, -L and -l flags.  Some Graphics/ImageMagick++
   ## packages adds extra flags that are useful when building
-  ## Graphics/ImageMagick++ extentions. These extra flags break the Octave build.
+  ## Graphics/ImageMagick++ extentions.  These extra flags break the
+  ## Octave build. 
   MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
   MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
   MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
@@ -852,14 +853,18 @@ if test -n "$OPENGL_LIBS"; then
   fi
 
   ## fltk (www.fltk.org)
-  AC_ARG_WITH(fltk-prefix,
-          [  --with-fltk-prefix=PFX   Prefix where FLTK is installed (optional)],
-          fltk_prefix="$withval",
-          fltk_prefix="")
-  AC_ARG_WITH(fltk-exec-prefix,
-          [  --with-fltk-exec-prefix=PFX Exec prefix where FLTK is installed (optional)],
-          fltk_exec_prefix="$withval", 
-          fltk_exec_prefix="")
+
+  AC_ARG_WITH([fltk-prefix], [
+    AS_HELP_STRING([--with-fltk-prefix=PFX],
+      [Prefix where FLTK is installed (optional)])], [
+    fltk_prefix="$withval"], [
+    fltk_prefix=""])
+
+  AC_ARG_WITH([fltk-exec-prefix], [
+    AS_HELP_STRING([--with-fltk-exec-prefix=PFX],
+      [Exec prefix where FLTK is installed (optional)])], [
+    fltk_exec_prefix="$withval"], [
+    fltk_exec_prefix=""])
 
   if test -n "$fltk_exec_prefix"; then
     fltk_args="$fltk_args --exec-prefix=$fltk_exec_prefix"
@@ -875,7 +880,7 @@ if test -n "$OPENGL_LIBS"; then
     fi
   fi
 
-  AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
+  AC_PATH_PROG([FLTK_CONFIG], [fltk-config], [no])
 
   warn_fltk_config=""
   warn_fltk_opengl=""
@@ -2432,10 +2437,6 @@ if test -n "$warn_gnuplot"; then
 
   warn_msg_printed=true
 fi
-
-
-
-
 
 if $warn_msg_printed; then
   AC_MSG_NOTICE([])

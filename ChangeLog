@@ -1,3 +1,7 @@
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Style fixes.
+
 2010-09-29  John P. Swensen  <jpswensen@gmail.com>
 
 	* configure.ac: Allow selection of GraphicsMagick or ImageMagick

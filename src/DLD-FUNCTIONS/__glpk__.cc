@@ -418,13 +418,13 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 #define OCTAVE_GLPK_GET_REAL_PARAM(NAME, IDX) \
   do \
     { \
-      if (PARAM.contains (NAME)) \
-        { \
-          Cell tmp = PARAM.contents (NAME); \
+      octave_value tmp = PARAM.contents (NAME); \
  \
+      if (tmp.is_defined ()) \
+        { \
           if (! tmp.is_empty ()) \
             { \
-              lpxRealParam[IDX] = tmp(0).scalar_value (); \
+              lpxRealParam[IDX] = tmp.scalar_value (); \
  \
               if (error_state) \
                 { \
@@ -444,13 +444,13 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 #define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL) \
   do \
     { \
-      if (PARAM.contains (NAME)) \
-        { \
-          Cell tmp = PARAM.contents (NAME); \
+      octave_value tmp = PARAM.contents (NAME); \
  \
+      if (tmp.is_defined ()) \
+        { \
           if (! tmp.is_empty ()) \
             { \
-              VAL = tmp(0).int_value (); \
+              VAL = tmp.int_value (); \
  \
               if (error_state) \
                 { \
@@ -681,7 +681,7 @@ Undocumented internal function.\n\
     sense = -1;
 
   //-- 9th Input. A structure containing the control parameters.
-  Octave_map PARAM = args(8).map_value ();
+  octave_scalar_map PARAM = args(8).scalar_map_value ();
 
   if (error_state)
     {

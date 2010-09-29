@@ -1,5 +1,12 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Use octave_scalar_map
+	instead of Octave_map.
+	(OCTAVE_GLPK_GET_REAL_PARAM, OCTAVE_GLPK_GET_INT_PARAM):
+	Update for octave_scalar_map.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/amd.cc (Famd): Use octave_scalar_map instead of
 	Octave_map.
 	* DLD-FUNCTIONS/cellfun.cc (get_output_list): Likewise.

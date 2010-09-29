@@ -250,14 +250,13 @@ try
     endif
     printf ("\nThere %s %d expected %s (see fntests.log for details).\n",
             t1, dxf, t2);
-    puts ("\nExpected failures are known bugs.  Please help improve\n");
-    puts ("Octave by contributing fixes for them.\n");
+    puts ("\nExpected failures are known bugs.  Please help improve Octave\n");
+    puts ("by contributing fixes for them.\n");
   endif
   if (dsk > 0)
     printf ("\nThere were %d skipped tests (see fntests.log for details).\n", dsk);
-    puts ("Skipped tests are features that are disabled in this version\n");
-    puts ("of Octave because the needed libraries were not present when Octave\n");
-    puts ("was built.\n");
+    puts ("Skipped tests are features that are disabled in this version of Octave\n");
+    puts ("because the needed libraries were not present when Octave was built.\n");
   endif
 
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");

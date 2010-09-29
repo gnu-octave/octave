@@ -1,3 +1,7 @@
+2010-09-29  Rik <octave@nomad.inbox5.com>
+
+	* fntests.m: Break output text differently for better readability.
+
 2010-09-28  Rik <octave@nomad.inbox5.com>
 
 	* test/@Gork/set.m, test/fntests.m, test/test_func.m, test/test_io.m:

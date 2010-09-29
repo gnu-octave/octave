@@ -1,5 +1,11 @@
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/amd.cc (Famd): Use octave_scalar_map instead of
+	Octave_map.
+	* DLD-FUNCTIONS/cellfun.cc (get_output_list): Likewise.
+
+2010-09-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/dispatch.cc (Fdispatch): Use octave_scalar_map
 	instead of Octave_map.
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::handle): Likewise.

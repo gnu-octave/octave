@@ -138,27 +138,22 @@ The author of the code itself is Timothy A. Davis\n\
           AMD_NAME (_defaults) (Control) ;
           if (nargin > 1)
             {
-              Octave_map arg1 = args(1).map_value ();
+              octave_scalar_map arg1 = args(1).scalar_map_value ();
           
               if (!error_state)
                 {
-                  if (arg1.contains ("dense"))
-                    {
-                      Cell c = arg1.contents ("dense");
-                      if (c.length() == 1)
-                        Control[AMD_DENSE] = c.elem(0).double_value ();
-                      else
-                        error ("amd: invalid options structure");
-                    }
-                  if (arg1.contains ("aggressive"))
-                    {
-                      Cell c = arg1.contents ("aggressive");
-                      if (c.length() == 1)
-                        Control[AMD_AGGRESSIVE] = c.elem(0).double_value ();
-                      else
-                        error ("amd: invalid options structure");
-                    }
+                  octave_value tmp;
+
+                  tmp = arg1.contents ("dense");
+                  if (tmp.is_defined ())
+                    Control[AMD_DENSE] = tmp.double_value ();
+
+                  tmp = arg1.contents ("aggressive");
+                  if (tmp.is_defined ())
+                    Control[AMD_AGGRESSIVE] = tmp.double_value ();
                 }
+              else
+                error ("amd: options argument must be a scalar structure");
             }
 
           if (!error_state)

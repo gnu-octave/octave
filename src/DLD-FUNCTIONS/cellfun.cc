@@ -70,10 +70,10 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     {
       if (error_handler.is_defined ())
         {
-          Octave_map msg;
+          octave_scalar_map msg;
           msg.assign ("identifier", last_error_id ());
           msg.assign ("message", last_error_message ());
-          msg.assign ("index", octave_value(double (count + static_cast<octave_idx_type>(1))));
+          msg.assign ("index", static_cast<double> (count + static_cast<octave_idx_type>(1)));
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
           buffer_error_messages--;

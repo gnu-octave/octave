@@ -238,7 +238,7 @@ octave_scalar_map::contents (const std::string& k)
 {
   octave_idx_type idx = xkeys.getfield (k);
   if (idx >= static_cast<octave_idx_type> (xvals.size ()))
-    xvals.resize (idx);
+    xvals.resize (idx+1);
   return xvals[idx];
 }
 

@@ -1,3 +1,7 @@
+2010-09-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.cc (octave_map::contents): Fix off-by-1 error.
+
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc (OCTAVE_GLPK_GET_REAL_PARAM,

@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function sparseimages (nm, typ)
+  backend ("gnuplot");
   set_print_size ();
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
@@ -72,7 +73,7 @@ function gplotimages (nm, typ)
   hide_output ();
 endfunction
 
-function txtimages(nm,n,typ)
+function txtimages(nm, n, typ)
   a = 10*speye(n) + sparse(1:n,ceil([1:n]/2),1,n,n) + ...
       sparse(ceil([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "gplot") || strcmp (nm, "grid"))
@@ -99,7 +100,7 @@ function txtimages(nm,n,typ)
   endif
 endfunction
 
-function otherimages(nm,n,typ)
+function otherimages(nm, n, typ)
   hide_output ();
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -135,7 +136,7 @@ function otherimages(nm,n,typ)
   endif
 endfunction
 
-function printsparse(a,nm)
+function printsparse(a, nm)
   fid = fopen (nm,"wt");
   fputs (fid, "\n");
   for i = 1:size(a,1)
@@ -173,7 +174,7 @@ function printsparse(a,nm)
   fclose(fid);
 endfunction
 
-function femimages (nm,typ)
+function femimages (nm, typ)
   hide_output ();
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
@@ -289,7 +290,7 @@ function sombreroimage (nm, typ)
     z = sin (r) ./ r;
     unwind_protect
       mesh (x, y, z);
-      title ("Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.");
+      title ("Sorry, graphics are unavailable because Octave was\ncompiled without a sparse matrix implementation.");
     unwind_protect_cleanup
       print (cstrcat (nm, ".", typ), d_typ);
       hide_output ();

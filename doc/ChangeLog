@@ -1,5 +1,13 @@
 2010-09-28  Rik <octave@nomad.inbox5.com>
 
+	* doc/interpreter/Makefile.am, doc/interpreter/geometryimages.m,
+	doc/interpreter/images.awk, doc/interpreter/interpimages.m,
+	doc/interpreter/plotimages.m, doc/interpreter/sparseimages.m: Use
+	Octave to create pdf versions of plots for documentation rather than
+	Ghostscript via Makefile.
+
+2010-09-28  Rik <octave@nomad.inbox5.com>
+
 	* doc/interpreter/geometryimages.m, doc/interpreter/interpimages.m,
 	doc/interpreter/plotimages.m, doc/interpreter/sparseimages.m: Untabify
 	scripts.

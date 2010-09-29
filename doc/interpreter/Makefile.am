@@ -89,9 +89,6 @@ include images.mk
 $(srcdir)/images.mk: $(srcdir)/config-images.sh $(srcdir)/images.awk $(srcdir)/images
 	$(srcdir)/config-images.sh $(top_srcdir)
 
-.eps.pdf:
-	if [ -f $< ] ; then $(GHOSTSCRIPT) -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
-
 IMAGES = \
   $(IMAGES_EPS) \
   $(IMAGES_PDF) \

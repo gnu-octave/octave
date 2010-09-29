@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function interpimages (nm, typ)
+  backend ("gnuplot");
   set_print_size ();
   hide_output ();
   if (strcmp (typ, "png"))

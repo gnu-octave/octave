@@ -1,5 +1,11 @@
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-errno.cc (octave_errno::list, octave_errno::do_list): Use
+	octave_scalar_map instead of Octave_map.
+	* oct-errno.h: Update decls.
+
+2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* pt-idx.cc (tree_index_expression::make_arg_struct): Use octave_map
 	instead of Octave_map.
 	* pt-idx.h: Update decl.

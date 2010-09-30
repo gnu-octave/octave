@@ -45,7 +45,7 @@ public:
 
   static int lookup (const std::string& name);
 
-  static Octave_map list (void);
+  static octave_scalar_map list (void);
 
   static int get (void) { return errno; }
 
@@ -64,7 +64,7 @@ private:
 
   int do_lookup (const std::string& name);
 
-  Octave_map do_list (void);
+  octave_scalar_map do_list (void);
 };
 
 #endif

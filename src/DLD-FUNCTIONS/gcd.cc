@@ -43,11 +43,14 @@ simple_gcd (double a, double b)
     (*current_liboctave_error_handler)
       ("gcd: all values must be integers");
 
-  double aa = fabs (a), bb = fabs (b);
+  double aa = fabs (a);
+  double bb = fabs (b);
+
   while (bb != 0)
     {
       double tt = fmod (aa, bb);
-      aa = bb; bb = tt;
+      aa = bb;
+      bb = tt;
     }
 
   return aa;
@@ -61,9 +64,11 @@ static void
 divide(const std::complex<FP>& a, const std::complex<FP>& b,
        std::complex<FP>& q, std::complex<FP>& r)
 {
-  FP qr = floor((a/b).real() + 0.5);
-  FP qi = floor((a/b).imag() + 0.5);
-  q = std::complex<FP>(qr,qi);
+  FP qr = floor ((a/b).real () + 0.5);
+  FP qi = floor ((a/b).imag () + 0.5);
+
+  q = std::complex<FP> (qr, qi);
+
   r = a - q*b;
 }
 
@@ -71,19 +76,18 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if ( ! xisinteger (a.real ()) || ! xisinteger(a.imag ()) ||
-       ! xisinteger (b.real ()) || ! xisinteger(b.imag ()) )
+  if (! xisinteger (a.real ()) || ! xisinteger(a.imag ())
+      || ! xisinteger (b.real ()) || ! xisinteger(b.imag ()))
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 
-  std::complex<FP> aa = a, bb = b;
+  std::complex<FP> aa = a;
+  std::complex<FP> bb = b;
 
-  if ( abs(aa) < abs(bb) )
-    {
-      std::swap(aa,bb);
-    }
+  if (abs (aa) < abs (bb))
+    std::swap (aa, bb);
 
-  while ( abs(bb) != 0)
+  while (abs (bb) != 0)
     {
       std::complex<FP> qq, rr;
       divide (aa, bb, qq, rr);
@@ -98,11 +102,14 @@ template <class T>
 static octave_int<T>
 simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
 {
-  T aa = a.abs ().value (), bb = b.abs ().value ();
+  T aa = a.abs ().value ();
+  T bb = b.abs ().value ();
+
   while (bb != 0)
     {
       T tt = aa % bb;
-      aa = bb; bb = tt;
+      aa = bb;
+      bb = tt;
     }
 
   return aa;
@@ -115,19 +122,27 @@ extended_gcd (double a, double b, double& x, double& y)
     (*current_liboctave_error_handler)
       ("gcd: all values must be integers");
 
-  double aa = fabs (a), bb = fabs (b);
-  double xx = 0, lx = 1, yy = 1, ly = 0;
+  double aa = fabs (a);
+  double bb = fabs (b);
+
+  double xx = 0, yy = 1;
+  double lx = 1, ly = 0;
+
   while (bb != 0)
     {
       double qq = floor (aa / bb);
       double tt = fmod (aa, bb);
-      aa = bb; bb = tt;
+
+      aa = bb;
+      bb = tt;
 
       double tx = lx - qq*xx;
-      lx = xx; xx = tx;
+      lx = xx;
+      xx = tx;
 
       double ty = ly - qq*yy;
-      ly = yy; yy = ty;
+      ly = yy;
+      yy = ty;
     }
 
   x = a >= 0 ? lx : -lx;
@@ -141,39 +156,43 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if ( ! xisinteger (a.real ()) || ! xisinteger(a.imag ()) ||
-       ! xisinteger (b.real ()) || ! xisinteger(b.imag ()) )
+  if (! xisinteger (a.real ()) || ! xisinteger(a.imag ())
+      || ! xisinteger (b.real ()) || ! xisinteger(b.imag ()))
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 
   std::complex<FP> aa = a, bb = b;
   bool swapped = false;
-  if ( abs(aa) < abs(bb) )
+  if (abs (aa) < abs (bb))
     {
-      std::swap(aa,bb);
+      std::swap (aa, bb);
       swapped = true;
     }
 
-  std::complex<FP> xx = 0, lx = 1, yy = 1, ly = 0;
-  while ( abs(bb) != 0)
+  std::complex<FP> xx = 0, lx = 1;
+  std::complex<FP> yy = 1, ly = 0;
+
+  while (abs(bb) != 0)
     {
       std::complex<FP> qq, rr;
       divide (aa, bb, qq, rr);
-      aa = bb; bb = rr;
+      aa = bb;
+      bb = rr;
 
       std::complex<FP> tx = lx - qq*xx;
-      lx = xx; xx = tx;
+      lx = xx;
+      xx = tx;
 
       std::complex<FP> ty = ly - qq*yy;
-      ly = yy; yy = ty;
+      ly = yy;
+      yy = ty;
     }
 
   x = lx;
   y = ly;
+
   if (swapped)
-    {
-      std::swap(x,y);
-    }
+    std::swap (x, y);
 
   return aa;
 }
@@ -183,19 +202,25 @@ static octave_int<T>
 extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
               octave_int<T>& x, octave_int<T>& y)
 {
-  T aa = a.abs ().value (), bb = b.abs ().value ();
-  T xx = 0, lx = 1, yy = 1, ly = 0;
+  T aa = a.abs ().value ();
+  T bb = b.abs ().value ();
+  T xx = 0, lx = 1;
+  T yy = 1, ly = 0;
+
   while (bb != 0)
     {
       T qq = aa / bb;
       T tt = aa % bb;
-      aa = bb; bb = tt;
+      aa = bb;
+      bb = tt;
 
       T tx = lx - qq*xx;
-      lx = xx; xx = tx;
+      lx = xx;
+      xx = tx;
 
       T ty = ly - qq*yy;
-      ly = yy; yy = ty;
+      ly = yy;
+      yy = ty;
     }
 
   x = octave_int<T> (lx) * a.signum ();
@@ -243,14 +268,17 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
           retval = do_simple_gcd<SparseMatrix> (a, b);
           break;
         }
-      else { } // fall through!
+      // fall through!
+
     case btyp_float:
       retval = do_simple_gcd<NDArray> (a, b);
       break;
+
 #define MAKE_INT_BRANCH(X) \
     case btyp_ ## X: \
       retval = do_simple_gcd<X ## NDArray> (a, b); \
       break
+
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);
     MAKE_INT_BRANCH (int32);
@@ -259,13 +287,17 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
     MAKE_INT_BRANCH (uint16);
     MAKE_INT_BRANCH (uint32);
     MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
+
     case btyp_complex:
-      retval = do_simple_gcd<ComplexNDArray> (a,b);
+      retval = do_simple_gcd<ComplexNDArray> (a, b);
       break;
+
     case btyp_float_complex:
-      retval = do_simple_gcd<FloatComplexNDArray> (a,b);
+      retval = do_simple_gcd<FloatComplexNDArray> (a, b);
       break;
+
     default:
       error ("gcd: invalid class combination for gcd: %s and %s\n",
              a.class_name ().c_str (), b.class_name ().c_str ());
@@ -308,9 +340,11 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 
       NDA gg (dv), xx (dv), yy (dv);
 
-      const T *aptr = aa.fortran_vec (), *bptr = bb.fortran_vec ();
+      const T *aptr = aa.fortran_vec ();
+      const T *bptr = bb.fortran_vec ();
 
-      bool inca = aa.numel () != 1, incb = bb.numel () != 1;
+      bool inca = aa.numel () != 1;
+      bool incb = bb.numel () != 1;
 
       T *gptr = gg.fortran_vec ();
       T *xptr = xx.fortran_vec (), *yptr = yy.fortran_vec ();
@@ -321,12 +355,14 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
           octave_quit ();
 
           *gptr++ = extended_gcd (*aptr, *bptr, *xptr++, *yptr++);
+
           aptr += inca;
           bptr += incb;
         }
 
       x = xx;
       y = yy;
+
       retval = gg;
     }
 
@@ -339,6 +375,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
                  octave_value& x, octave_value& y)
 {
   octave_value retval;
+
   builtin_type_t btyp = btyp_mixed_numeric (a.builtin_type (),
                                             b.builtin_type ());
   switch (btyp)
@@ -347,10 +384,12 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     case btyp_float:
       retval = do_extended_gcd<NDArray> (a, b, x, y);
       break;
+
 #define MAKE_INT_BRANCH(X) \
     case btyp_ ## X: \
       retval = do_extended_gcd<X ## NDArray> (a, b, x, y); \
       break
+
     MAKE_INT_BRANCH (int8);
     MAKE_INT_BRANCH (int16);
     MAKE_INT_BRANCH (int32);
@@ -359,13 +398,17 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     MAKE_INT_BRANCH (uint16);
     MAKE_INT_BRANCH (uint32);
     MAKE_INT_BRANCH (uint64);
+
 #undef MAKE_INT_BRANCH
+
     case btyp_complex:
       retval = do_extended_gcd<ComplexNDArray> (a, b, x, y);
       break;
+
     case btyp_float_complex:
       retval = do_extended_gcd<FloatComplexNDArray> (a, b, x, y);
       break;
+
     default:
       error ("gcd: invalid class combination for gcd: %s and %s\n",
              a.class_name ().c_str (), b.class_name ().c_str ());
@@ -388,7 +431,6 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 
   return retval;
 }
-
 
 DEFUN_DLD (gcd, args, nargout,
   "-*- texinfo -*-\n\
@@ -431,6 +473,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
   int nargin = args.length ();
 
   if (nargin > 1)
@@ -438,7 +481,9 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
       if (nargout > 1)
         {
           retval.resize (nargin + 1);
+
           retval(0) = do_extended_gcd (args(0), args(1), retval(1), retval(2));
+
           for (int j = 2; j < nargin; j++)
             {
               octave_value x;
@@ -446,6 +491,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
                                            x, retval(j+1));
               for (int i = 0; i < j; i++)
                 retval(i+1).assign (octave_value::op_el_mul_eq, x);
+
               if (error_state)
                 break;
             }
@@ -453,9 +499,11 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
       else
         {
           retval(0) = do_simple_gcd (args(0), args(1));
+
           for (int j = 2; j < nargin; j++)
             {
               retval(0) = do_simple_gcd (retval(0), args(j));
+
               if (error_state)
                 break;
             }

@@ -1,9 +1,14 @@
 2010-09-30  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/gcd.cc: Style fixes.
+
+2010-09-30  John W. Eaton  <jwe@octave.org>
+
 	* oct-errno.cc.in (octave_errno::do_list, octave_errno::list):
 	Use octave_scalar_map instead of Octave_map.
 
 2010-09-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
 	* DLD-FUNCTIONS/gcd.cc (divide): New function, complex integer
 	division with remainder.
 	(simple_gcd): Overload for complex values.

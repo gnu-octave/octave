@@ -555,7 +555,7 @@ mode this should be left out.\n\
 @seealso{dbclear, dbwhere}\n\
 @end deftypefn")
 {
-  Octave_map retval;
+  octave_map retval;
   int nargin = args.length ();
   octave_value_list fcn_list;
   bp_table::fname_line_map bp_list;
@@ -874,7 +874,7 @@ Print or return current stack information.  With optional argument\n\
 
   if (! error_state)
     {
-      Octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
+      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
 
       if (nargout == 0)
         {

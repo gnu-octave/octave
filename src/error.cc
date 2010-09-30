@@ -72,7 +72,7 @@ static bool Vverbose_warning;
 static bool Vquiet_warning = false;
 
 // A structure containing (most of) the current state of warnings.
-static Octave_map warning_options;
+static octave_map warning_options;
 
 // The text of the last error message.
 static std::string Vlast_error_message;
@@ -135,10 +135,12 @@ reset_error_handler (void)
 static void
 initialize_warning_options (const std::string& state)
 {
-  warning_options.clear ();
+  octave_scalar_map initw;
 
-  warning_options.assign ("identifier", "all");
-  warning_options.assign ("state", state);
+  initw.setfield ("identifier", "all");
+  initw.setfield ("state", state);
+
+  warning_options = initw;
 }
 
 static octave_map
@@ -435,7 +437,7 @@ pr_where (const char *who)
 {
   octave_idx_type curr_frame = -1;
 
-  Octave_map stk = octave_call_stack::backtrace (0, curr_frame);
+  octave_map stk = octave_call_stack::backtrace (0, curr_frame);
 
   octave_idx_type nframes_to_display = stk.numel ();
 
@@ -1063,30 +1065,27 @@ error: nargin != 1\n\
         {
           octave_value_list tmp;
 
-          Octave_map m = args(0).map_value ();
+          octave_scalar_map m = args(0).scalar_map_value ();
 
-          if (m.numel () == 1)
+          if (m.contains ("message"))
             {
-              if (m.contains ("message"))
-                {
-                  Cell c = m.contents ("message");
+              octave_value c = m.getfield ("message");
 
-                  if (! c.is_empty () && c(0).is_string ())
-                    nargs(0) = c(0).string_value ();
-                }
-
-              if (m.contains ("identifier"))
-                {
-                  Cell c = m.contents ("identifier");
-
-                  if (! c.is_empty () && c(0).is_string ())
-                    id = c(0).string_value ();
-                }
-
-              // FIXME -- also need to handle "stack" field in error
-              // structure, but that will require some more significant
-              // surgery on handle_message, error_with_id, etc.
+              if (c.is_string ())
+                 nargs(0) = c.string_value ();
             }
+
+          if (m.contains ("identifier"))
+            {
+              octave_value c = m.getfield ("identifier");
+
+              if (c.is_string ())
+                 id = c.string_value ();
+            }
+
+          // FIXME -- also need to handle "stack" field in error
+          // structure, but that will require some more significant
+          // surgery on handle_message, error_with_id, etc.
         }
 
       handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
@@ -1144,11 +1143,11 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 
           if (arg1 == "on" || arg1 == "off" || arg1 == "error")
             {
-              Octave_map old_warning_options = warning_options;
+              octave_map old_warning_options = warning_options;
 
               if (arg2 == "all")
                 {
-                  Octave_map tmp;
+                  octave_map tmp;
 
                   Cell id (1, 1);
                   Cell st (1, 1);
@@ -1293,7 +1292,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
               else if (arg2 == "backtrace" || arg2 == "debug"
                        || arg2 == "verbose" || arg2 == "quiet")
                 {
-                  Octave_map tmp;
+                  octave_scalar_map tmp;
                   tmp.assign ("identifier", arg2);
                   if (arg2 == "backtrace")
                     tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
@@ -1345,7 +1344,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 
                   if (found)
                     {
-                      Octave_map tmp;
+                      octave_scalar_map tmp;
 
                       tmp.assign ("identifier", arg2);
                       tmp.assign ("state", val);
@@ -1370,11 +1369,11 @@ warning named by @var{id} is handled as if it were an error instead.\n\
     {
       octave_value arg = args(0);
 
-      Octave_map old_warning_options = warning_options;
+      octave_map old_warning_options = warning_options;
 
       if (arg.is_map ())
         {
-          Octave_map m = arg.map_value ();
+          octave_map m = arg.map_value ();
 
           if (m.contains ("identifier") && m.contains ("state"))
             warning_options = m;
@@ -1532,7 +1531,7 @@ their default values.\n\
 
   if (nargin < 2)
     {
-      Octave_map err;
+      octave_scalar_map err;
 
       err.assign ("message", Vlast_error_message);
       err.assign ("identifier", Vlast_error_id);
@@ -1555,7 +1554,7 @@ their default values.\n\
             }
           else if (args(0).is_map ())
             {
-              Octave_map new_err = args(0).map_value ();
+              octave_scalar_map new_err = args(0).scalar_map_value ();
               std::string new_error_message;
               std::string new_error_id;
               std::string new_error_file;
@@ -1566,47 +1565,47 @@ their default values.\n\
               if (! error_state && new_err.contains ("message"))
                 {
                   const std::string tmp = 
-                    new_err.contents("message")(0).string_value ();
+                    new_err.getfield("message").string_value ();
                   new_error_message = tmp;
                 }
 
               if (! error_state && new_err.contains ("identifier"))
                 {
                   const std::string tmp = 
-                    new_err.contents("identifier")(0).string_value ();
+                    new_err.getfield("identifier").string_value ();
                   new_error_id = tmp;
                 }
 
               if (! error_state && new_err.contains ("stack"))
                 {
-                  Octave_map new_err_stack = 
-                    new_err.contents("identifier")(0).map_value ();
+                  octave_scalar_map new_err_stack = 
+                    new_err.getfield("identifier").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
                     {
                       const std::string tmp = 
-                        new_err_stack.contents("file")(0).string_value ();
+                        new_err_stack.getfield("file").string_value ();
                       new_error_file = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("name"))
                     {
                       const std::string tmp = 
-                        new_err_stack.contents("name")(0).string_value ();
+                        new_err_stack.getfield("name").string_value ();
                       new_error_name = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("line"))
                     {
                       const int tmp = 
-                        new_err_stack.contents("line")(0).nint_value ();
+                        new_err_stack.getfield("line").nint_value ();
                       new_error_line = tmp;
                     }
                   
                   if (! error_state && new_err_stack.contains ("column"))
                     {
                       const int tmp = 
-                        new_err_stack.contents("column")(0).nint_value ();
+                        new_err_stack.getfield("column").nint_value ();
                       new_error_column = tmp;
                     }
                 }

@@ -1,5 +1,13 @@
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* debug.cc (Fdbstatus, Fdbstack): Use octave_map instead of
+	Octave_map.
+	* error.cc (warning_options, initialize_warning_options,
+	pr_where, Frethrow, Ferror, Fwarning, Flasterror): Use
+	octave_scalar_map or octave_map instead of Octave_map.
+
+2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* oct-errno.cc (octave_errno::list, octave_errno::do_list): Use
 	octave_scalar_map instead of Octave_map.
 	* oct-errno.h: Update decls.

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 David Bateman
-Copyirght (C) 2010 Jaroslav Hajek
+Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 
-static double 
+static double
 simple_gcd (double a, double b)
 {
   if (! xisinteger (a) || ! xisinteger (b))
@@ -48,6 +48,47 @@ simple_gcd (double a, double b)
     {
       double tt = fmod (aa, bb);
       aa = bb; bb = tt;
+    }
+
+  return aa;
+}
+
+// Don't use the Complex and FloatComplex typedefs because we need to
+// refer to the actual float precision FP in the body (and when gcc
+// implements template aliases from C++0x, can do a small fix here).
+template <typename FP>
+static void
+divide(const std::complex<FP>& a, const std::complex<FP>& b,
+       std::complex<FP>& q, std::complex<FP>& r)
+{
+  FP qr = floor((a/b).real() + 0.5);
+  FP qi = floor((a/b).imag() + 0.5);
+  q = std::complex<FP>(qr,qi);
+  r = a - q*b;
+}
+
+template <typename FP>
+static std::complex<FP>
+simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
+{
+  if ( ! xisinteger (a.real ()) || ! xisinteger(a.imag ()) ||
+       ! xisinteger (b.real ()) || ! xisinteger(b.imag ()) )
+    (*current_liboctave_error_handler)
+      ("gcd: all complex parts must be integers");
+
+  std::complex<FP> aa = a, bb = b;
+
+  if ( abs(aa) < abs(bb) )
+    {
+      std::swap(aa,bb);
+    }
+
+  while ( abs(bb) != 0)
+    {
+      std::complex<FP> qq, rr;
+      divide (aa, bb, qq, rr);
+      aa = bb;
+      bb = rr;
     }
 
   return aa;
@@ -67,7 +108,7 @@ simple_gcd (const octave_int<T>& a, const octave_int<T>& b)
   return aa;
 }
 
-static double 
+static double
 extended_gcd (double a, double b, double& x, double& y)
 {
   if (! xisinteger (a) || ! xisinteger (b))
@@ -89,8 +130,50 @@ extended_gcd (double a, double b, double& x, double& y)
       ly = yy; yy = ty;
     }
 
-  x = a >= 0 ? lx : -lx; 
+  x = a >= 0 ? lx : -lx;
   y = b >= 0 ? ly : -ly;
+
+  return aa;
+}
+
+template <typename FP>
+static std::complex<FP>
+extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
+              std::complex<FP>& x, std::complex<FP>& y)
+{
+  if ( ! xisinteger (a.real ()) || ! xisinteger(a.imag ()) ||
+       ! xisinteger (b.real ()) || ! xisinteger(b.imag ()) )
+    (*current_liboctave_error_handler)
+      ("gcd: all complex parts must be integers");
+
+  std::complex<FP> aa = a, bb = b;
+  bool swapped = false;
+  if ( abs(aa) < abs(bb) )
+    {
+      std::swap(aa,bb);
+      swapped = true;
+    }
+
+  std::complex<FP> xx = 0, lx = 1, yy = 1, ly = 0;
+  while ( abs(bb) != 0)
+    {
+      std::complex<FP> qq, rr;
+      divide (aa, bb, qq, rr);
+      aa = bb; bb = rr;
+
+      std::complex<FP> tx = lx - qq*xx;
+      lx = xx; xx = tx;
+
+      std::complex<FP> ty = ly - qq*yy;
+      ly = yy; yy = ty;
+    }
+
+  x = lx;
+  y = ly;
+  if (swapped)
+    {
+      std::swap(x,y);
+    }
 
   return aa;
 }
@@ -178,8 +261,11 @@ do_simple_gcd (const octave_value& a, const octave_value& b)
     MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
     case btyp_complex:
+      retval = do_simple_gcd<ComplexNDArray> (a,b);
+      break;
     case btyp_float_complex:
-      error ("gcd: complex numbers not allowed");
+      retval = do_simple_gcd<FloatComplexNDArray> (a,b);
+      break;
     default:
       error ("gcd: invalid class combination for gcd: %s and %s\n",
              a.class_name ().c_str (), b.class_name ().c_str ());
@@ -275,8 +361,11 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
     MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
     case btyp_complex:
+      retval = do_extended_gcd<ComplexNDArray> (a, b, x, y);
+      break;
     case btyp_float_complex:
-      error ("gcd: complex numbers not allowed");
+      retval = do_extended_gcd<FloatComplexNDArray> (a, b, x, y);
+      break;
     default:
       error ("gcd: invalid class combination for gcd: %s and %s\n",
              a.class_name ().c_str (), b.class_name ().c_str ());
@@ -309,7 +398,10 @@ DEFUN_DLD (gcd, args, nargout,
 Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}. If more\n\
 than one argument is given all arguments must be the same size or scalar.\n\
   In this case the greatest common divisor is calculated for each element\n\
-individually.  All elements must be integers.  For example,\n\
+individually.  All elements must be ordinary or Gaussian (complex)\n\
+integers. Note that for Gaussian integers, the gcd is not unique up to\n\
+units (multiplication by 1, -1, @var{i} or -@var{i}), so an arbitrary\n\
+greatest common divisor amongst four possible is returned. For example,\n\
 \n\
 @noindent\n\
 and\n\
@@ -380,6 +472,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 %!assert(gcd (200, 300, 50, 35), 5)
 %!assert(gcd (int16(200), int16(300), int16(50), int16(35)), int16(5))
 %!assert(gcd (uint64(200), uint64(300), uint64(50), uint64(35)), uint64(5))
+%!assert(gcd (18-i, -29+3i), -3-4i)
 
 %!error <Invalid call to gcd.*> gcd ();
 

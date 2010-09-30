@@ -1,4 +1,13 @@
 2010-09-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+	* DLD-FUNCTIONS/gcd.cc (divide): New function, complex integer
+	division with remainder.
+	(simple_gcd): Overload for complex values.
+	(extended_gcd): Ditto.
+	(do_simple_gcd): Dispatch for complex gcd.
+	(do_extended_gcd): Ditto.
+	(Fgcd): Mention that complex gcd is now also possible.
+
+2010-09-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* DLD-FUNCTIONS/gcd.cc (extended_gcd): Fix bug that didn't
 	distinguish the two output coefficients.

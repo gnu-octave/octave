@@ -1601,7 +1601,7 @@ Return a struct containing information about the function handle\n\
 
           if (fcn)
             {
-              Octave_map m;
+              octave_scalar_map m;
 
               std::string fh_nm = fh->fcn_name ();
 
@@ -1609,35 +1609,35 @@ Return a struct containing information about the function handle\n\
                 {
                   std::ostringstream buf;
                   fh->print_raw (buf);
-                  m.assign ("function", buf.str ());
+                  m.setfield ("function", buf.str ());
 
-                  m.assign ("type", "anonymous");
+                  m.setfield ("type", "anonymous");
                 }
               else
                 {
-                  m.assign ("function", fh_nm);
+                  m.setfield ("function", fh_nm);
 
                   if (fcn->is_nested_function ())
                     {
-                      m.assign ("type", "subfunction");
+                      m.setfield ("type", "subfunction");
                       Cell parentage (dim_vector (1, 2));
                       parentage.elem(0) = fh_nm;
                       parentage.elem(1) = fcn->parent_fcn_name ();
-                      m.assign ("parentage", octave_value (parentage)); 
+                      m.setfield ("parentage", octave_value (parentage)); 
                     }
                   else if (fcn->is_private_function ())
-                    m.assign ("type", "private");
+                    m.setfield ("type", "private");
                   else if (fh->is_overloaded ())
-                    m.assign ("type", "overloaded");
+                    m.setfield ("type", "overloaded");
                   else
-                    m.assign ("type", "simple");
+                    m.setfield ("type", "simple");
                 }
 
               std::string nm = fcn->fcn_file_name ();
 
               if (fh_nm == octave_fcn_handle::anonymous)
                 {
-                  m.assign ("file", nm);
+                  m.setfield ("file", nm);
 
                   octave_user_function *fu = fh->user_function_value ();
 
@@ -1648,23 +1648,23 @@ Return a struct containing information about the function handle\n\
 
                   if (varlen > 0)
                     {
-                      Octave_map ws;
+                      octave_scalar_map ws;
                       for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
                            p != vars.end (); p++)
                         {
                           ws.assign (p->name (), p->varval (0));
                         }
 
-                      m.assign ("workspace", ws);
+                      m.setfield ("workspace", ws);
                     }
                 }
               else if (fcn->is_user_function () || fcn->is_user_script ())
                 {
                   octave_function *fu = fh->function_value ();
-                  m.assign ("file", fu->fcn_file_name ());
+                  m.setfield ("file", fu->fcn_file_name ());
                 }
               else
-                m.assign ("file", "");
+                m.setfield ("file", "");
 
               retval = m;
             }

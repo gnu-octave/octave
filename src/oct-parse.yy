@@ -3832,7 +3832,7 @@ With no arguments, return a structure containing the current autoload map.\n\
           i++;
         }
 
-      Octave_map m;
+      octave_map m;
 
       m.assign ("function", func_names);
       m.assign ("file", file_names);

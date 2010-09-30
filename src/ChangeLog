@@ -1,5 +1,11 @@
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* oct-parse.yy (Fautoload): Replace Octave_map by octave_map.
+	* ov-fcn-handle.cc (Ffunctions): Replace Octave_map by 
+	octave_scalar_map.
+
+2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* help.cc (F__which__): Use octave_map instead of Octave_map.
 	* load-save.cc (do_load, save_fields, save_vars): Use 
 	octave_scalar_map instead of Octave_map.

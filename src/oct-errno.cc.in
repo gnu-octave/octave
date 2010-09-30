@@ -310,10 +310,10 @@ octave_errno::lookup (const std::string& name)
   return (instance_ok ()) ? instance->do_lookup (name) : -1;
 }
 
-Octave_map
+octave_scalar_map
 octave_errno::list (void)
 {
-  return (instance_ok ()) ? instance->do_list () : Octave_map ();
+  return (instance_ok ()) ? instance->do_list () : octave_scalar_map ();
 }
 
 int
@@ -322,10 +322,10 @@ octave_errno::do_lookup (const std::string& name)
   return (errno_tbl.find (name) != errno_tbl.end ()) ? errno_tbl[name] : -1;
 }
 
-Octave_map
+octave_scalar_map
 octave_errno::do_list (void)
 {
-  Octave_map retval;
+  octave_scalar_map retval;
 
   for (std::map<std::string, int>::const_iterator p = errno_tbl.begin ();
        p != errno_tbl.end ();

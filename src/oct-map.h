@@ -52,11 +52,15 @@ octave_fields
 
   fields_rep *rep;
 
-  static fields_rep nil_rep; 
+  static fields_rep *nil_rep (void)
+    {
+      static fields_rep *nr = new fields_rep ();
+      return nr;
+    }
 
 public:
 
-  octave_fields (void) : rep (&nil_rep) { rep->count++; }
+  octave_fields (void) : rep (nil_rep ()) { rep->count++; }
   octave_fields (const string_vector&);
   octave_fields (const char * const *);
 

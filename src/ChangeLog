@@ -1,3 +1,8 @@
+2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-map.h (octave_fields::nil_rep): Make a static function.
+	(octave_fields::octave_fields (void)): Use it here.
+
 2010-09-30  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_config_info): Use Octave_scalar_map instead

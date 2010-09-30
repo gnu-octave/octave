@@ -530,15 +530,17 @@ tree_index_expression::lvalue (void)
                   {
                     octave_value_list pidx = idx.back ();
 
+                    // Use octave_map, not octave_scalar_map so that the
+                    // dimensions are 0x0, not 1x1.
                     if (tmp.is_undefined ())
                       {
                         if (pidx.has_magic_colon ())
                           gripe_invalid_inquiry_subscript ();
                         else
-                          tmp = octave_scalar_map ();
+                          tmp = octave_map ();
                       }
                     else if (autoconv)
-                      tmp = octave_scalar_map ();
+                      tmp = octave_map ();
 
                     retval.numel (tmp.numel (pidx));
 

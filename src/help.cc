@@ -950,7 +950,7 @@ Undocumented internal function.\n\
 
       if (argc > 1)
         {
-          Octave_map m (dim_vector (1, argc-1));
+          octave_map m (dim_vector (1, argc-1));
 
           Cell names (1, argc-1);
           Cell files (1, argc-1);

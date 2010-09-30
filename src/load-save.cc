@@ -337,7 +337,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 {
   octave_value retval;
 
-  Octave_map retstruct;
+  octave_scalar_map retstruct;
 
   std::ostringstream output_buf;
   std::list<std::string> symbol_names;
@@ -987,7 +987,7 @@ do_save (std::ostream& os, const symbol_table::symbol_record& sr,
 // in the format specified by FMT.
 
 static size_t
-save_fields (std::ostream& os, const Octave_map& m,
+save_fields (std::ostream& os, const octave_scalar_map& m,
              const std::string& pattern,
              load_save_format fmt, bool save_as_floats)
 {
@@ -995,13 +995,13 @@ save_fields (std::ostream& os, const Octave_map& m,
   
   size_t saved = 0;
 
-  for (Octave_map::const_iterator p = m.begin (); p != m.end (); p++)
+  for (octave_scalar_map::const_iterator p = m.begin (); p != m.end (); p++)
     {
       std::string empty_str;
 
-      if (pat.match(p->first))
+      if (pat.match(m.key (p)))
         {
-          do_save (os, p->second(0), p->first, empty_str,
+          do_save (os, m.contents (p), m.key (p), empty_str,
                    0, fmt, save_as_floats);
 
           saved++;
@@ -1279,7 +1279,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
                  struct_name.c_str ());
           return;
         }
-      Octave_map struct_var_map = struct_var.map_value ();
+      octave_scalar_map struct_var_map = struct_var.scalar_map_value ();
 
       ++argv_idx;
 

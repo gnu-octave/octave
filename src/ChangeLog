@@ -1,5 +1,11 @@
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
+	* help.cc (F__which__): Use octave_map instead of Octave_map.
+	* load-save.cc (do_load, save_fields, save_vars): Use 
+	octave_scalar_map instead of Octave_map.
+
+2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
+
 	* debug.cc (Fdbstatus, Fdbstack): Use octave_map instead of
 	Octave_map.
 	* error.cc (warning_options, initialize_warning_options,

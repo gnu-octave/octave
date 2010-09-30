@@ -1,3 +1,8 @@
+2010-09-30  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/contributors.in: Add Jordi Gutiérrez Hermoso to
+	the list.  Fix spelling of Søren Hauberg.
+
 2010-09-28  Rik <octave@nomad.inbox5.com>
 
 	* doc/interpreter/Makefile.am, doc/interpreter/geometryimages.m,

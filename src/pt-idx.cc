@@ -224,7 +224,7 @@ tree_index_expression::get_struct_index
   return fn;
 }
 
-Octave_map
+octave_map
 tree_index_expression::make_arg_struct (void) const
 {
   int n = args.size ();
@@ -236,7 +236,7 @@ tree_index_expression::make_arg_struct (void) const
   std::list<string_vector>::const_iterator p_arg_nm = arg_nm.begin ();
   std::list<tree_expression *>::const_iterator p_dyn_field = dyn_field.begin ();
 
-  Octave_map m;
+  octave_map m;
 
   for (int i = 0; i < n; i++)
     {

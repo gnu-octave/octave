@@ -30,7 +30,7 @@ class tree_argument_list;
 
 class tree_walker;
 
-class Octave_map;
+class octave_map;
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
@@ -115,7 +115,7 @@ private:
 
   tree_index_expression (int l, int c);
 
-  Octave_map make_arg_struct (void) const;
+  octave_map make_arg_struct (void) const;
 
   std::string
   get_struct_index

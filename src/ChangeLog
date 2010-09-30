@@ -1,5 +1,16 @@
 2010-09-30  John W. Eaton  <jwe@octave.org>
 
+	* toplev.cc (octave_config_info): Use Octave_scalar_map instead
+	of Octave_map.
+	* sighandlers.cc (make_sig_struct, FSIG): Likewise.
+
+	* utils.cc (decode_subscripts): Use octave_map instead of Octave_map.
+	* octave.cc (F__version_info__): Likewise.
+	* pt-eval.cc (visit_complex_for_command): Likewise.
+	* pt-idx.cc (tree_index_expression::lvalue): Likewise.
+
+2010-09-30  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/gcd.cc: Style fixes.
 
 2010-09-30  John W. Eaton  <jwe@octave.org>

@@ -1160,7 +1160,7 @@ specified option.\n\
 #endif
 
   static bool initialized = false;
-  static Octave_map m;
+  static octave_scalar_map m;
 
   struct conf_info_struct
   {
@@ -1361,9 +1361,9 @@ specified option.\n\
           if (key)
             {
               if (elt.subst_home)
-                m.assign (key, octave_value (subst_octave_home (elt.val)));
+                m.assign (key, subst_octave_home (elt.val));
               else
-                m.assign (key, octave_value (elt.val));
+                m.assign (key, elt.val);
             }
           else
             break;

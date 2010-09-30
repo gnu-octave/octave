@@ -451,7 +451,7 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
 
       octave_lvalue key_ref = elt->lvalue ();
 
-      const Octave_map tmp_val = rhs.map_value ();
+      const octave_map tmp_val = rhs.map_value ();
 
       tree_statement_list *loop_body = cmd.body ();
 

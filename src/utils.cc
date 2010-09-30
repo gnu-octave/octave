@@ -1036,17 +1036,19 @@ decode_subscripts (const char* name, const octave_value& arg,
                    std::string& type_string,
                    std::list<octave_value_list>& idx)
 {
-  Octave_map m = arg.map_value ();
+  const octave_map m = arg.map_value ();
 
   if (! error_state
       && m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
     {
-      Cell& type = m.contents ("type");
-      Cell& subs = m.contents ("subs");
+      const Cell type = m.contents ("type");
+      const Cell subs = m.contents ("subs");
 
-      type_string = std::string (type.length(), '\0');
+      octave_idx_type nel = type.numel ();
 
-      for (int k = 0; k < type.length (); k++)
+      type_string = std::string (nel, '\0');
+
+      for (int k = 0; k < nel; k++)
         {
           std::string item = type(k).string_value ();
 

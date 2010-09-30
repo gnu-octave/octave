@@ -662,10 +662,10 @@ install_signal_handlers (void)
 
 }
 
-static Octave_map
+static octave_scalar_map
 make_sig_struct (void)
 {
-  Octave_map m;
+  octave_scalar_map m;
 
 #ifdef SIGABRT
   m.assign ("ABRT", SIGABRT);
@@ -949,7 +949,7 @@ Return a structure containing Unix signal names and their defined values.\n\
 
   if (args.length () == 0)
     {
-      static Octave_map m = make_sig_struct ();
+      static octave_scalar_map m = make_sig_struct ();
 
       retval = m;
     }

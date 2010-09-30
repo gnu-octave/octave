@@ -227,7 +227,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 
-  static Octave_map vinfo;
+  static octave_map vinfo;
 
   int nargin = args.length ();
 

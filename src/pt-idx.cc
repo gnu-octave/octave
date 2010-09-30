@@ -535,10 +535,10 @@ tree_index_expression::lvalue (void)
                         if (pidx.has_magic_colon ())
                           gripe_invalid_inquiry_subscript ();
                         else
-                          tmp = Octave_map ();
+                          tmp = octave_scalar_map ();
                       }
                     else if (autoconv)
-                      tmp = Octave_map ();
+                      tmp = octave_scalar_map ();
 
                     retval.numel (tmp.numel (pidx));
 

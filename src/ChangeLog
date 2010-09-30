@@ -1,3 +1,9 @@
+2010-09-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* DLD-FUNCTIONS/gcd.cc (extended_gcd): Fix bug that didn't
+	distinguish the two output coefficients.
+	(Fgcd): Fix off-by-one bug and typo from copy-pasted code.
+
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-parse.yy (Fautoload): Replace Octave_map by octave_map.

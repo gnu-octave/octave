@@ -75,7 +75,7 @@ extended_gcd (double a, double b, double& x, double& y)
       ("gcd: all values must be integers");
 
   double aa = fabs (a), bb = fabs (b);
-  double xx = 0, lx = 1, yy = 0, ly = 1;
+  double xx = 0, lx = 1, yy = 1, ly = 0;
   while (bb != 0)
     {
       double qq = floor (aa / bb);
@@ -101,7 +101,7 @@ extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
               octave_int<T>& x, octave_int<T>& y)
 {
   T aa = a.abs ().value (), bb = b.abs ().value ();
-  T xx = 0, lx = 1, yy = 0, ly = 1;
+  T xx = 0, lx = 1, yy = 1, ly = 0;
   while (bb != 0)
     {
       T qq = aa / bb;
@@ -350,10 +350,10 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
           for (int j = 2; j < nargin; j++)
             {
               octave_value x;
-              retval(0) = do_extended_gcd (retval(0), args(1), 
+              retval(0) = do_extended_gcd (retval(0), args(j),
                                            x, retval(j+1));
               for (int i = 0; i < j; i++)
-                retval(i).assign (octave_value::op_el_mul_eq, x);
+                retval(i+1).assign (octave_value::op_el_mul_eq, x);
               if (error_state)
                 break;
             }

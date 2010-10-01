@@ -1,3 +1,8 @@
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_info_list::map_value): Use
+	octave_scalar_map and octave_map instead of Octave_map.
+
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-map.h (octave_fields::nil_rep): Make a static function.

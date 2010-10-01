@@ -1218,7 +1218,7 @@ public:
 
   bool empty (void) const { return lst.empty (); }
 
-  Octave_map
+  octave_map
   map_value (const std::string& caller_function_name, int nesting_level) const
   {
     size_t len = lst.size ();
@@ -1239,7 +1239,7 @@ public:
       {
         const symbol_info& si = *p++;
 
-        Octave_map ni;
+        octave_scalar_map ni;
 
         ni.assign ("function", caller_function_name);
         ni.assign ("level", nesting_level);
@@ -1258,7 +1258,7 @@ public:
         nesting_info(j) = ni;
       }
 
-    Octave_map info;
+    octave_map info;
 
     info.assign ("name", name_info);
     info.assign ("size", size_info);

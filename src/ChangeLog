@@ -1,5 +1,23 @@
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (base_properties::get_dynamic): Create and return
+	octave_scalar_map object instead of Octave_map.
+	(base_graphics_object::remove_all_listeners): Use octave_map
+	instead of Octave_map.
+	(base_graphics_object::values_as_string): Likewise.
+
+	* graphics.h.in, graphics.cc (property_list::as_struct):
+	Return octave_scalar_map instead of Octave_map.
+	(base_graphics_object::values_as_struct): Likewise.
+	(graphics_object:values_as_struct): Likewise.
+	(graphics_object::set): Accept octave_map instead of Octave_map.
+
+	* genprops.awk: Use octave_map instead of Octave_map in
+	generated code.  Convert second arg to octave_value in call to
+	octave_map::assign.
+
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
 	* mex.cc (mxArray_struct::as_octave_value): Use octave_map
 	instead of Octave_map.
 

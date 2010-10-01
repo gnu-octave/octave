@@ -1548,10 +1548,10 @@ property_list::lookup (const caseless_str& name) const
   return retval;
 }
 
-Octave_map
+octave_scalar_map
 property_list::as_struct (const std::string& prefix_arg) const
 {
-  Octave_map m;
+  octave_scalar_map m;
 
   for (plist_map_const_iterator p = begin (); p != end (); p++)
     {
@@ -1684,9 +1684,9 @@ graphics_object::set (const Array<std::string>& names,
 
 // Set properties given in a struct array
 void
-graphics_object::set (const Octave_map& m)
+graphics_object::set (const octave_map& m)
 {
-  for (Octave_map::const_iterator p = m.begin ();
+  for (octave_map::const_iterator p = m.begin ();
        p != m.end (); p++)
     {
       caseless_str name  = m.key (p);
@@ -2086,7 +2086,7 @@ base_properties::get_dynamic (const caseless_str& name) const
 octave_value
 base_properties::get_dynamic (bool all) const
 {
-  Octave_map m;
+  octave_scalar_map m;
 
   for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.begin ();
        it != all_props.end (); ++it)
@@ -2469,9 +2469,9 @@ base_graphics_object::update_axis_limits (const std::string& axis_type)
 void
 base_graphics_object::remove_all_listeners (void)
 {
-  Octave_map m = get (true).map_value ();
+  octave_map m = get (true).map_value ();
 
-  for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+  for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
     {
       // FIXME -- there has to be a better way.  I think we want to
       // ask whether it is OK to delete the listener for the given
@@ -2498,9 +2498,9 @@ base_graphics_object::values_as_string (void)
 
   if (valid_object ())
     {
-      Octave_map m = get ().map_value ();
+      octave_map m = get ().map_value ();
   
-      for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+      for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
         {
           if (pa->first != "children")
             {
@@ -2523,16 +2523,17 @@ base_graphics_object::values_as_string (void)
   return retval;
 }
 
-Octave_map
+octave_scalar_map
 base_graphics_object::values_as_struct (void)
 {
-  Octave_map retval;
+  octave_scalar_map retval;
 
   if (valid_object ())
     {
-      Octave_map m = get ().map_value ();
+      octave_scalar_map m = get ().scalar_map_value ();
   
-      for (Octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
+      for (octave_scalar_map::const_iterator pa = m.begin ();
+           pa != m.end (); pa++)
         {
           if (pa->first != "children")
             {
@@ -2541,10 +2542,9 @@ base_graphics_object::values_as_struct (void)
               if (p.ok () && ! p.is_hidden ())
                 {
                   if (p.is_radio ())
-                    retval.assign (p.get_name (), 
-                                   octave_value (p.values_as_cell ()));
+                    retval.assign (p.get_name (), p.values_as_cell ());
                   else
-                    retval.assign (p.get_name (), octave_value (Cell ()));
+                    retval.assign (p.get_name (), Cell ());
                 }
             }
         }

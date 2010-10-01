@@ -466,21 +466,21 @@ function emit_source ()
     if (base)
     {
       printf ("octave_value\nbase_properties::get (bool all) const\n{\n");
-      printf ("  Octave_map m = get_dynamic (all).map_value ();\n\n");
+      printf ("  octave_map m = get_dynamic (all).map_value ();\n\n");
     }
     else
     {
       printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name);
-      printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n");
+      printf ("  octave_map m = base_properties::get (all).map_value ();\n\n");
     }
 
     for (i = 1; i <= idx; i++)
     {
       if (hidden[i])
-        printf ("  if (all)\n    m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
+        printf ("  if (all)\n    m.assign (\"%s\", octave_value (get_%s ()%s));\n", name[i], name[i],
                 (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
       else
-        printf ("  m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
+        printf ("  m.assign (\"%s\", octave_value (get_%s ()%s));\n", name[i], name[i],
                 (type[i] == "handle_property" || type[i] == "graphics_handle" ? ".as_octave_value ()" : ""));
     }
 

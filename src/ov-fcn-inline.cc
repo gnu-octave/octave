@@ -120,17 +120,23 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 octave_map
 octave_fcn_inline::map_value (void) const
 {
-  Octave_map m;
+  octave_scalar_map m;
+
+  m.assign ("version", 1.0);
+  m.assign ("isEmpty", 0.0);
+  m.assign ("expr", fcn_text ());
+
   string_vector args = fcn_arg_names ();
-  m.assign ("version", octave_value (1.0));
-  m.assign ("isEmpty", octave_value (0.0));
-  m.assign ("expr", octave_value (fcn_text ()));
-  m.assign ("numArgs", octave_value (args.length ()));
-  m.assign ("args", octave_value (args));
+
+  m.assign ("numArgs", args.length ());
+  m.assign ("args", args);
+
   std::ostringstream buf;
+
   for (int i = 0; i < args.length (); i++)
     buf << args(i) << " = INLINE_INPUTS_{" << i + 1 << "}; ";
-  m.assign ("inputExpr", octave_value (buf.str ()));
+
+  m.assign ("inputExpr", buf.str ());
 
   return m;
 }

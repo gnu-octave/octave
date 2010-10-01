@@ -1,5 +1,10 @@
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (class caseless_str): Move to
+	liboctave/caseless-string.h.
+
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
 	* graphics.cc (base_properties::get_dynamic): Create and return
 	octave_scalar_map object instead of Octave_map.
 	(base_graphics_object::remove_all_listeners): Use octave_map

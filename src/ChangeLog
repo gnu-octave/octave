@@ -1,5 +1,9 @@
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
+	* ov-base.h: Delete forward decl for Octave_map class.
+
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
 	* ov-struct.h (octave_struct (const Octave_map&)): Delete constructor.
 
 2010-10-01  John W. Eaton  <jwe@octave.org>

@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-hdf5.h"
 
 class Cell;
-class Octave_map;
 class octave_map;
 class octave_scalar_map;
 class octave_value;

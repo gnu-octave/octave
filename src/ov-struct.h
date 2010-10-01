@@ -55,9 +55,6 @@ public:
   octave_struct (const octave_map& m)
     : octave_base_value (), map (m) { }
 
-  octave_struct (const Octave_map& m)
-    : octave_base_value (), map (m) { }
-
   octave_struct (const octave_struct& s)
     : octave_base_value (), map (s.map) { }
 

@@ -1,5 +1,9 @@
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.h (octave_struct (const Octave_map&)): Delete constructor.
+
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
 	* ov-fcn-inline.cc (octave_fcn_inline::map_value):  Use
 	octave_scalar_map and octave_map instead of Octave_map.
 

@@ -1,5 +1,10 @@
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mxArray_struct::as_octave_value): Use octave_map
+	instead of Octave_map.
+
+2010-10-01  John W. Eaton  <jwe@octave.org>
+
 	* ov-base.h: Delete forward decl for Octave_map class.
 
 2010-10-01  John W. Eaton  <jwe@octave.org>

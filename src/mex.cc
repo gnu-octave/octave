@@ -1831,7 +1831,7 @@ protected:
 
     string_vector keys (fields, nfields);
 
-    Octave_map m;
+    octave_map m;
 
     mwSize ntot = nfields * get_number_of_elements ();
 

@@ -1,3 +1,8 @@
+2010-10-04  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* image/image.m (__img__): Use __image_pixel_size__ to calculate
+	limits
+
 2010-09-28  John P. Swensen  <jpswensen@gmail.com>
 
 	* image/imwrite.m: Call __magick_format_list__ to get list of

@@ -6227,6 +6227,45 @@ Undocumented internal function.\n\
   return retval;
 }
 
+DEFUN (__image_pixel_size__, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{px},@var{py}} __image_pixel_size__ (@var{h})\n\
+Internal function: returns the pixel size of the image in normalized units.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      double h = args(0).double_value ();
+
+      if (! error_state)
+        {
+          graphics_object fobj = gh_manager::get_object (h);
+          if (fobj &&  fobj.isa ("image"))
+            {
+              image::properties& ip =
+                dynamic_cast<image::properties&> (fobj.get_properties ());
+              
+              Matrix dp =  Matrix (1, 2, 0);
+              dp(0, 0) = ip.pixel_xsize ();
+              dp(0, 1) = ip.pixel_ysize ();
+              retval = dp;
+            }
+          else
+            error ("__image_pixel_size__: object is not an image");
+        }
+      else
+        error ("__image_pixel_size__: argument is not a handle");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (available_backends, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_backends ()\n\

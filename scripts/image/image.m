@@ -119,32 +119,14 @@ function h = __img__ (x, y, img, varargin)
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
 
-  c = size (img, 2);
-  if (c > 1)
-    xlim = 0.5 * (diff (xdata) * c / (c - 1) * [-1, 1] + sum (xdata));
-  elseif (numel (unique (x)) > 1)
-    xlim = xdata;
-  elseif (x(1) !=  0)
-    xlim = [0, x];
-  else
-    xlim = [0, 1];
-  endif
-
-  r = size (img, 1);
-  if (r > 1)
-    ylim = 0.5 * (diff (ydata) * r / (r - 1) * [-1, 1] + sum (ydata));
-  elseif (numel (unique (y)) > 1)
-    ylim = ydata;
-  elseif (y(1) !=  0)
-    ylim = [0, y];
-  else
-    ylim = [0, 1];
-  endif
-
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
-                      "cdatamapping", "direct", varargin {:});
+                    "cdatamapping", "direct", varargin {:});
+
+  px = __image_pixel_size__ (tmp);
+  xlim = xdata + [-px(1), px(1)];
+  ylim = ydata + [-px(2), px(2)];
 
   ## FIXME -- how can we do this and also get the {x,y}limmode
   ## properties to remain "auto"?  I suppose this adjustment should

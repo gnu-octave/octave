@@ -1,3 +1,14 @@
+2010-10-04  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (axis::properties::pixel_size): New function.
+	(axis::properties::pixel_xsize,axis::properties::pixel_ysize):
+	New functions, use axis::properties::pixel_size
+	(axis::properties::update_ydata,axis::properties::update_xdata):
+	Use axis::properties::pixel_size functions
+
+	* graphics.cc (__image_pixel_size__): New function uses
+	axis::properties::pixel_size functions
+
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (class caseless_str): Move to

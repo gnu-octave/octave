@@ -3435,9 +3435,8 @@ public:
   private:
     void update_xdata (void)
     { 
-      octave_idx_type iw = (get_cdata ().dims ())(1) - 1;
       Matrix limits = xdata.get_limits ();
-      float dp = (limits(1) - limits(0))/(2*iw);
+      float dp = pixel_xsize ();
 
       limits(0) = limits(0) - dp;
       limits(1) = limits(1) + dp;
@@ -3446,9 +3445,8 @@ public:
 
     void update_ydata (void)
     {
-      octave_idx_type ih = (get_cdata().dims ())(0) - 1;
       Matrix limits = ydata.get_limits ();
-      float dp = (limits(1) - limits(0))/(2*ih);
+      float dp = pixel_ysize ();
 
       limits(0) = limits(0) - dp;
       limits(1) = limits(1) + dp;
@@ -3462,6 +3460,34 @@ public:
         else
           clim = cdata.get_limits ();
       }
+
+    float pixel_size (octave_idx_type dim, const Matrix limits)
+    {
+      octave_idx_type l = dim - 1;
+      float dp;
+
+      if (l > 0)
+        dp = (limits(1) - limits(0))/(2*l);
+      else
+        {
+          if (limits(1) == limits(2))
+            dp = 0.5;
+          else
+            dp = (limits(1) - limits(0))/2;
+        }
+      return dp;
+    }
+
+  public:
+    float  pixel_xsize (void)
+    {
+      return pixel_size ((get_cdata ().dims ())(1), xdata.get_limits ());
+    }
+
+    float pixel_ysize (void)
+    {
+      return pixel_size ((get_cdata ().dims ())(0), ydata.get_limits ());
+    }
   };
 
 private:

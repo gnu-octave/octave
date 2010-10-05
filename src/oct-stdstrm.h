@@ -108,7 +108,7 @@ public:
                       oct_mach_info::float_format ff
                         = oct_mach_info::native_float_format (),
                       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
-    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> (n, f, f ? ::fileno (f) : -1, m, ff, cf) { }
+    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> (n, f, f ? fileno (f) : -1, m, ff, cf) { }
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,

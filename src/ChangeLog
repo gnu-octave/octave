@@ -1,3 +1,8 @@
+2010-10-05  John W. Eaton  <jwe@octave.org>
+
+	* oct-stdstrm.h (octave_stdiostream::octave_stdiostream): Use
+	fileno instead of ::fileno to avoid problems if fileno is a macro.
+
 2010-10-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in (axis::properties::pixel_size): New function.

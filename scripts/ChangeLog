@@ -1,3 +1,8 @@
+2010-10-05  Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* general/quadv.m: Fix help string and add a test for vector
+	valued functions.
+
 2010-10-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* image/image.m (__img__): Use __image_pixel_size__ to calculate

@@ -23,22 +23,25 @@
 ## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
 ## @deftypefnx {Function File} {[@var{q}, @var{fcnt}] =} quadv (@dots{})
 ##
-## Numerically evaluate integral using adaptive Simpson's rule.
-## @code{quadv (@var{f}, @var{a}, @var{b})} approximates the integral of
-## @code{@var{f}(@var{x})} to the default absolute tolerance of @code{1e-6}. 
+## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} 
+## using adaptive Simpson's rule.
 ## @var{f} is either a function handle, inline function or string
-## containing the name of the function to evaluate.  The function @var{f}
-## must accept a string, and can return a vector representing the
-## approximation to @var{n} different sub-functions.
+## containing the name of the function to evaluate. 
+## The function defined by @var{f} may be a scalar, vector or array-valued.
 ##
-## If defined, @var{tol} defines the absolute tolerance to which to
-## which to integrate each sub-interval of @code{@var{f}(@var{x})}.
-## While if @var{trace} is defined, displays the left end point of the
-## current interval, the interval length, and the partial integral.
+## If a value for @var{tol} is given, it defines the tolerance used to stop 
+## the adaptation procedure, otherwise the default value of 1e-6 is used.
+##
+## The algorithm used by @code{quadv}, involves recursively subdividing the
+## integration interval and  applying Simpson's rule on each sub-interval.
+## If  @var{trace} is  @var{true}, after computing each of these partial integrals, 
+## display the total number of function evaluations, the left end of the sub-interval, 
+## the length of the sub-interval and the approximation of the integral over the sub-interval.
 ##
 ## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
+##
 ## @seealso{triplequad, dblquad, quad, quadl, quadgk, trapz}
 ## @end deftypefn
 
@@ -80,10 +83,10 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
     fb = feval (f, b - myeps * (b-a), varargin{:});
   endif
 
-  h = (b - a) / 2;
+  h = (b - a);
   q = (b - a) / 6 * (fa + 4 * fc + fb);
  
-  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (b - a), 
+  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (h), 
                                 tol, trace, varargin{:});
 
   if (fcnt > 10000)
@@ -133,4 +136,7 @@ endfunction
 
 %% Handles weak singularities at the edge
 %!assert (quadv (@(x) 1 ./ sqrt(x), 0, 1), 2, 1e-5)
+
+%% Handles vector-valued functions
+%!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-5)
 

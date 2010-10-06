@@ -1,3 +1,8 @@
+2010-10-06  Ben Abbott <bpabbott@mac.com>
+
+	* image/image.m: Allow x/ydata to imply a flip of the image.
+	Modify demos.
+
 2010-10-05  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* general/quadv.m: Fix help string and add a test for vector

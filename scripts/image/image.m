@@ -119,6 +119,19 @@ function h = __img__ (x, y, img, varargin)
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
 
+  if (diff (xdata) < 0)
+    xdata = fliplr (xdata);
+    img = fliplr (img);
+  elseif (diff (xdata) == 0)
+    xdata = xdata(1) + [0, size(img,2)-1];
+  endif
+  if (diff (ydata) < 0)
+    ydata = fliplr (ydata);
+    img = flipud (img);
+  elseif (diff (ydata) == 0)
+    ydata = ydata(1) + [0, size(img,1)-1];
+  endif
+
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
@@ -157,17 +170,26 @@ function h = __img__ (x, y, img, varargin)
 endfunction
 
 %!demo
-%! img = 1 ./ hilb (10);
-%! x = 20 * rand (1, 41) - 20;
-%! y = -1:1;
-%! h = image (x, y, img);
+%! img = 1 ./ hilb (11);
+%! x = -5:5;
+%! y = x;
+%! subplot (2,2,1)
+%! h = image (abs(x), abs(y), img);
 %! set (h, "cdatamapping", "scaled")
+%! ylabel ("limits = [4.5, 15.5]")
+%! title ('image (abs(x), abs(y), img)')
+%! subplot (2,2,2)
+%! h = image (-x, y, img);
+%! set (h, "cdatamapping", "scaled")
+%! title ('image (-x, y, img)')
+%! subplot (2,2,3)
+%! h = image (x, -y, img);
+%! set (h, "cdatamapping", "scaled")
+%! title ('image (x, -y, img)')
+%! ylabel ("limits = [-5.5, 5.5]")
+%! subplot (2,2,4)
+%! h = image (-x, -y, img);
+%! set (h, "cdatamapping", "scaled")
+%! title ('image (-x, -y, img)')
 
-%!demo
-%! M = 25;
-%! img = 1 ./ rand (5, 11) - 1;
-%! x = 10 * sort (rand (1, 9));
-%! y = sort (rand (1, 8));
-%! clf
-%! image (x, y, img); 
 

@@ -136,7 +136,7 @@ function [pxx, f] = periodogram (x, varargin)
     Pxx = 0;
     rr = rem (length (x), nfft);
     if (rr)
-      x = [x(:);zeros (nfft-rr, 1)];
+      x = [x(:); (zeros (nfft-rr, 1))];
     end
     x = sum (reshape (x, nfft, []), 2);
   endif
@@ -162,9 +162,9 @@ function [pxx, f] = periodogram (x, varargin)
 
   if (nargout != 1)
     if (range == 1)
-      f = (0:nfft/2)"/nfft;
+      f = (0:nfft/2)'/nfft;
     elseif (range == 2)
-      f = (0:nfft-1)"/nfft;
+      f = (0:nfft-1)'/nfft;
     endif
     if (nargin<4)
       f *= 2*pi; # generate w=2*pi*f

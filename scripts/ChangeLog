@@ -1,5 +1,9 @@
 2010-10-07  John W. Eaton  <jwe@octave.org>
 
+	* signal/periodogram.m: Fix parse errors.
+
+2010-10-07  John W. Eaton  <jwe@octave.org>
+
 	* time/datevec.m: Use endfunction to mark end of primary
 	function and subfunctions.
 

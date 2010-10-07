@@ -1,3 +1,8 @@
+2010-10-07  John W. Eaton  <jwe@octave.org>
+
+	* time/datevec.m: Use endfunction to mark end of primary
+	function and subfunctions.
+
 2010-10-07  Rik <octave@nomad.inbox5.com>
 
 	* scripts/polynomial/conv.m: Improve docstring.

@@ -182,7 +182,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     y = [y, m, d, h, mi, s];
   endif
 
-### endfunction
+endfunction
 
 function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
@@ -259,7 +259,7 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   fmi = index (f, "%M");
   fs = index (f, "%S");
 
-### endfunction
+endfunction
 
 function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
 
@@ -302,7 +302,7 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
     found = false;
   endif
 
-### endfunction
+endfunction
 
 %!shared nowvec
 %! nowvec = datevec (now); # Some tests could fail around midnight!

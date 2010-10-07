@@ -3,7 +3,7 @@
 	* interpreter/contributors.in: Add Jordi Gutiérrez Hermoso to
 	the list.  Fix spelling of Søren Hauberg.
 
-2010-09-28  Rik <octave@nomad.inbox5.com>
+2010-09-28  Rik  <octave@nomad.inbox5.com>
 
 	* doc/interpreter/Makefile.am, doc/interpreter/geometryimages.m,
 	doc/interpreter/images.awk, doc/interpreter/interpimages.m,
@@ -11,50 +11,50 @@
 	Octave to create pdf versions of plots for documentation rather than
 	Ghostscript via Makefile.
 
-2010-09-28  Rik <octave@nomad.inbox5.com>
+2010-09-28  Rik  <octave@nomad.inbox5.com>
 
 	* doc/interpreter/geometryimages.m, doc/interpreter/interpimages.m,
 	doc/interpreter/plotimages.m, doc/interpreter/sparseimages.m: Untabify
 	scripts.
 
-2010-09-27  Rik <octave@nomad.inbox5.com>
+2010-09-27  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/mk_doc_cache.m: Use single quotes for regular expression
 	patterns where possible.
 
-2010-09-25  Rik <octave@nomad.inbox5.com>
+2010-09-25  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/mk_doc_cache.m: Remove requirement for PCRE to build
-	doc cache.  Correctly parse first sentence from docstrings with 
+	doc cache.  Correctly parse first sentence from docstrings with
 	multiple @deftypefn lines.
 
 2010-09-15  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.am (EXTRA_DIST): Add images.awk to the list.
 
-2010-08-15  Rik <octave@nomad.inbox5.com>
+2010-08-15  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Add documentation for randi function.
 
-2010-08-13  Rik <octave@nomad.inbox5.com>
+2010-08-13  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Update @EXAMPLEFILE dependencies.
 
-2010-08-10  Rik <octave@nomad.inbox5.com>
+2010-08-10  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Change dependency to $(srcdir)/images.mk.
 
-2010-08-08  Rik <octave@nomad.inbox5.com>
+2010-08-08  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Add documentation dependency on images.mk.
-	* interpreter/config-images.sh: Create images.mk in passed in srcdir, 
+	* interpreter/config-images.sh: Create images.mk in passed in srcdir,
 	rather than pwd.
 
-2010-08-08  Rik <octave@nomad.inbox5.com>
+2010-08-08  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/images.awk: HTML images depend on octave.html/index.html.
 
-2010-08-01  Rik <octave@nomad.inbox5.com>
+2010-08-01  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/basics.txi, interpreter/contrib.txi,
 	interpreter/diagperm.txi, interpreter/dynamic.txi, interpreter/eos.txi,
@@ -65,7 +65,7 @@
 	interpreter/tips.txi: Grammarcheck documentation.  Add @noindent lines
 	and ensure line length is less than 80.
 
-2010-07-28  Rik <octave@nomad.inbox5.com>
+2010-07-28  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/audio.txi, interpreter/basics.txi,
 	interpreter/container.txi, interpreter/contrib.txi,
@@ -85,27 +85,27 @@
 
 	* interpreter/tips.txi: Update some tips.
 
-2010-07-19  Rik <octave@nomad.inbox5.com>
+2010-07-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/mk_doc_cache.m: Use regexp rather than fussing with
 	character arrays.
 
-2010-07-19  Rik <octave@nomad.inbox5.com>
+2010-07-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Add new function repelems to matrix chapter.
 
-2010-07-18  Rik <octave@nomad.inbox5.com>
+2010-07-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/spellcheck,
 	interpreter/doccheck/spellcheck/add_to_aspell_dict:
 	Use case insensitive sort in spellcheck scripts.
 
-2010-07-18  Rik <octave@nomad.inbox5.com>
+2010-07-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/aspell-octave.en.pws: Add Octave-specific words
 	from stats.texi to private Aspell dictionary.
 
-2010-07-17  Rik <octave@nomad.inbox5.com>
+2010-07-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck: New directory for spelling/grammar scripts.
 	* interpreter/doccheck/README: Instructions for using scripts.
@@ -128,33 +128,33 @@
 	  interpreter/sparse.txi, interpreter/tips.txi:
 	  Spellcheck documentation.
 
-2010-07-01  Rik <octave@nomad.inbox5.com>
+2010-07-01  Rik  <octave@nomad.inbox5.com>
 
 	* refcard/refcard.tex: Fix italic macro typo for stem.
 
-2010-06-28  Rik <octave@nomad.inbox5.com>
+2010-06-28  Rik  <octave@nomad.inbox5.com>
 
 	* refcard/refcard.tex: Fix typos in refcard (bug #30260).
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* ChangeLog: Correctly break lines > 80 characters.
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/intro.txi: Clarify wording.  (bug #30165).
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/set.txi: Remove reference to deprecated function.
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/expr.txi, interpreter/func.txi, interpreter/install.txi,
 	interpreter/plot.txi, interpreter/sparse.txi: Periodic grammar check
 	of documentation to ensure a common format.
 
-2010-05-27  Rik <octave@nomad.inbox5.com>
+2010-05-27  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/diffeq.txi, interpreter/intro.txi,
 	interpreter/nonlin.txi, interpreter/poly.txi, interpreter/sparse.txi:
@@ -164,7 +164,7 @@
 
 	* basics.txi: Update list of internal variables for --traditional.
 
-2010-05-02  Rik <octave@nomad.inbox5.com>
+2010-05-02  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/contrib.txi, interpreter/install.txi,
 	interpreter/plot.txi, interpreter/sparse.txi,
@@ -233,12 +233,12 @@
 	* interpreter/munge-texi.cc: Avoid C-style casts.
 	(main): Call usage if fewer than two arguments.
 
-2009-12-20  Rik <octave@nomad.inbox5.com>
+2009-12-20  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m: Correctly set postscript output when
 	QHULL library does not exist and sombrero image is printed.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am, faq/Makefile.am, interpreter/Makefile.am,
 	liboctave/Makefile.am, refcard/Makefile.am, interpreter/images.awk:
@@ -254,60 +254,60 @@
 	* interpreter/Makefile.am: remove install-local target and use automake
 	syntax to install doc-cache file.
 
-2009-12-10  Rik <octave@nomad.inbox5.com>
+2009-12-10  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Replace distdir-local with dist-hook rule as
 	it is better supported by automake.
 
-2009-12-10  Rik <octave@nomad.inbox5.com>
+2009-12-10  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: new distdir-local rule to check for presence
 	of necessary libraries before packaging distribution
 
-2009-12-08  Rik <octave@nomad.inbox5.com>
+2009-12-08  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Distribute all generated documentation
 	(.pdf, .ps, .html, .dvi) to remove build requirement for TexInfo
 
-2009-12-07  Rik <octave@nomad.inbox5.com>
+2009-12-07  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am, faq/Makefile.am, liboctave/Makefile.am:
 	Document use of NOTPARALLEL directive.
 
-2009-12-07  Rik <octave@nomad.inbox5.com>
+2009-12-07  Rik  <octave@nomad.inbox5.com>
 
 	* refcard/Makefile.am: Add CLEANFILES and MAINTAINERCLEANFILES objects
 	to properly clean directory.
 
-2009-12-05  Rik <octave@nomad.inbox5.com>
+2009-12-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Set dependency of *.texi files on
 	munge-texi source code rather than executable.
 
-2009-12-04  Rik <octave@nomad.inbox5.com>
+2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/images.awk: Revert to using Ghostscript for documentation
 	pdf image creation rather than Octave.
 
-2009-12-04  Rik <octave@nomad.inbox5.com>
+2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove
 	  lingering configuration support for conf.texi.
 	* liboctave/Makefile.am: distribute .texi files.
 
-2009-12-04  Rik <octave@nomad.inbox5.com>
+2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m, interpreter/plotimages.m:
 	  Switch to color output for PostScript documentation images.
 
-2009-12-04  Rik <octave@nomad.inbox5.com>
+2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m, interpreter/plotimages.m:
 	  Set default paperorientation to landscape to stop warning message.
 
-2009-12-04  Ben Abbott <bpabbott@mac.com>
+2009-12-04  Ben Abbott  <bpabbott@mac.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
 	  interpreter/sparseimages.m: Set default papersize to the desired
@@ -381,17 +381,17 @@
 	Delete variable.
 	(liboctave_TEXINFOS): Include ../conf.texi in the list.
 
-2009-12-02  Rik <octave@nomad.inbox5.com>
+2009-12-02  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Correct Makefile.am to allow VPATH builds of
 	documentation
 
-2009-12-01  Rik <octave@nomad.inbox5.com>
+2009-12-01  Rik  <octave@nomad.inbox5.com>
 
 	* faq/Makefile.am, doc/interpreter/bugs.txi,
 	doc/interpreter/install.txi: Eliminate false dependency on conf.texi.
 
-2009-11-30  Rik <octave@nomad.inbox5.com>
+2009-11-30  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
 	Overhaul Makefile to correctly generate *.texi files and to stop their
@@ -427,31 +427,31 @@
 	objects.
 	* interpreter/system.txi: Document the ftp objects
 
-2009-11-25  Rik <octave@nomad.inbox5.com>
+2009-11-25  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
 	Simplify doc-cache handling in Makefile.am to use only
 	install-data-local target
 
-2009-11-24  Rik <octave@nomad.inbox5.com>
+2009-11-24  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am:
 	Correct Makefile so that it halts on error when unable to build
 	doc-cache.
 
-2009-11-23  Rik <octave@nomad.inbox5.com>
+2009-11-23  Rik  <octave@nomad.inbox5.com>
 
 	* faq/Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am:
 	Stop distribution of conf.texi by autotools.  conf.texi must be re-made
 	from conf.texi.in during configure step
 
-2009-11-23  Rik <octave@nomad.inbox5.com>
+2009-11-23  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Add . to SUBDIRS to force automake to compile this
 	directory, and make conf.texi, before recursively compiling SUBDIRS
 	which depend on conf.texi
 
-2009-11-11  Rik <octave@nomad.inbox5.com>
+2009-11-11  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Add DISTCLEANFILES macro so that generated conf.texi can
 	be cleaned by automake.
@@ -469,40 +469,40 @@
 	* liboctave/liboctave.texi: Surround @direntry in appropriate magic.
 	* faq/OctaveFAQ.texi: Rename from faq/Octave-FAQ.texi.
 
-2009-10-23  Rik <octave@nomad.inbox5.com>
+2009-10-23  Rik  <octave@nomad.inbox5.com>
 
 	* various: Periodic grammar check of Octave documentation files to
 	ensure a standardized format.
 
-2009-10-20  Rik <octave@nomad.inbox5.com>
+2009-10-20  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.in: Clean Makefile.in and remove a few
 	non-functional targets
 
-2009-10-13  Rik <octave@nomad.inbox5.com>
+2009-10-13  Rik  <octave@nomad.inbox5.com>
 
 	* various: Fix various incorrect usages of deffn and deftypefn macros
 
-2009-10-12  Rik <octave@nomad.inbox5.com>
+2009-10-12  Rik  <octave@nomad.inbox5.com>
 
 	* liboctave/Makefile.in: Simplify Makefile using GNU Make functions
 	* liboctave/liboctave.texi: Stop header of file, which was meant to be
 	commented, from being transferred into the documentation.
 
-2009-10-12  Rik <octave@nomad.inbox5.com>
+2009-10-12  Rik  <octave@nomad.inbox5.com>
 
 	* faq/Makefile.in: Clean a few non-functional commands from Makefile
 
-2009-10-12  Rik <octave@nomad.inbox5.com>
+2009-10-12  Rik  <octave@nomad.inbox5.com>
 
 	* refcard/Makefile.in: Simplify Makefile using GNU Make functions
 
-2009-10-11  Rik <octave@nomad.inbox5.com>
+2009-10-11  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.in: Include texmf.cnf in distributed files to fix texinfo
 	runtime error with stack overflow.
 
-2009-10-11  Rik <octave@nomad.inbox5.com>
+2009-10-11  Rik  <octave@nomad.inbox5.com>
 
 	* intepreter/Makefile.in: Fix broken command to create octave.dvi
 

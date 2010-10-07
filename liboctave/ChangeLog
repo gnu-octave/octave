@@ -11,51 +11,51 @@
 	* Array.h (Array::test, Array::test_all, Array::test_any): New
 	overloaded template methods.
 	* lo-mappers.h (xisinteger, xnegative_sign): New bool mappers.
-	* dNDArray.cc (NDArray::any_element_is_negative, 
+	* dNDArray.cc (NDArray::any_element_is_negative,
 	NDArray::all_integers): Simplify.
-	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
+	* fNDArray.cc (FloatNDArray::any_element_is_negative,
 	FloatNDArray::all_integers): Simplify.
 
 	* lo-utils.cc (xis_int_or_inf_or_nan, xis_one_or_zero,
 	xis_zero, xtoo_large_for_float): New utility functions.
 
-	* dNDArray.cc (NDArray::any_element_is_negative, 
+	* dNDArray.cc (NDArray::any_element_is_negative,
 	NDArray::all_integers, NDArray::all_elements_are_zero,
-	NDArray::all_elements_are_int_or_inf_or_nan, 
+	NDArray::all_elements_are_int_or_inf_or_nan,
 	NDArray::any_element_not_one_or_zero,
 	NDArray::too_large_for_float): Simplify.
 
-	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
+	* fNDArray.cc (FloatNDArray::any_element_is_negative,
 	FloatNDArray::all_integers, FloatNDArray::all_elements_are_zero,
-	FloatNDArray::all_elements_are_int_or_inf_or_nan, 
+	FloatNDArray::all_elements_are_int_or_inf_or_nan,
 	FloatNDArray::any_element_not_one_or_zero,
 	FloatNDArray::too_large_for_float): Simplify.
 
 2010-09-21  Jaroslav Hajek  <highegg@gmail.com>
 
-	* dNDArray.cc (NDArray::any_element_is_negative, 
-	NDArray::any_element_is_nan, 
+	* dNDArray.cc (NDArray::any_element_is_negative,
+	NDArray::any_element_is_nan,
 	NDArray::any_element_is_inf_or_nan): Simplify.
-	* fNDArray.cc (FloatNDArray::any_element_is_negative, 
-	FloatNDArray::any_element_is_nan, 
+	* fNDArray.cc (FloatNDArray::any_element_is_negative,
+	FloatNDArray::any_element_is_nan,
 	FloatNDArray::any_element_is_inf_or_nan): Simplify.
-	* dMatrix.cc (Matrix::any_element_is_negative, 
-	Matrix::any_element_is_nan, 
+	* dMatrix.cc (Matrix::any_element_is_negative,
+	Matrix::any_element_is_nan,
 	Matrix::any_element_is_inf_or_nan): Simplify.
-	* fMatrix.cc (FloatMatrix::any_element_is_negative, 
-	FloatMatrix::any_element_is_nan, 
+	* fMatrix.cc (FloatMatrix::any_element_is_negative,
+	FloatMatrix::any_element_is_nan,
 	FloatMatrix::any_element_is_inf_or_nan): Simplify.
-	* CNDArray.cc (ComplexNDArray::any_element_is_negative, 
-	ComplexNDArray::any_element_is_nan, 
+	* CNDArray.cc (ComplexNDArray::any_element_is_negative,
+	ComplexNDArray::any_element_is_nan,
 	ComplexNDArray::any_element_is_inf_or_nan): Simplify.
-	* fCNDArray.cc (FloatComplexNDArray::any_element_is_negative, 
-	FloatComplexNDArray::any_element_is_nan, 
+	* fCNDArray.cc (FloatComplexNDArray::any_element_is_negative,
+	FloatComplexNDArray::any_element_is_nan,
 	FloatComplexNDArray::any_element_is_inf_or_nan): Simplify.
-	* CMatrix.cc (ComplexMatrix::any_element_is_negative, 
-	ComplexMatrix::any_element_is_nan, 
+	* CMatrix.cc (ComplexMatrix::any_element_is_negative,
+	ComplexMatrix::any_element_is_nan,
 	ComplexMatrix::any_element_is_inf_or_nan): Simplify.
-	* fCMatrix.cc (FloatComplexMatrix::any_element_is_negative, 
-	FloatComplexMatrix::any_element_is_nan, 
+	* fCMatrix.cc (FloatComplexMatrix::any_element_is_negative,
+	FloatComplexMatrix::any_element_is_nan,
 	FloatComplexMatrix::any_element_is_inf_or_nan): Simplify.
 
 2010-09-21  John W. Eaton  <jwe@octave.org>
@@ -74,7 +74,7 @@
 
 	* dSparse.h (SparseMatrix::SparseMatrix (const Sparse<double>&)):
 	New ctor.
-	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix 
+	* CSparse.h (SparseComplexMatrix::SparseComplexMatrix
 	(const Sparse<Complex>&)): New ctor.
 	* boolSparse.cc (SparseBoolMatrix::sum): New method.
 	* boolSparse.h: Declare it.
@@ -87,7 +87,7 @@
 
 	* Array-ch.cc: Inline basic sorts.
 
-2010-08-21  Rik <octave@nomad.inbox5.com>
+2010-08-21  Rik  <octave@nomad.inbox5.com>
 
 	* CmplxQRP.cc, CmplxQRP.h, dbleQRP.cc, dbleQRP.h, fCmplxQRP.cc,
 	fCmplxQRP.h, floatQRP.cc, floatQRP.h: Declare Pvec as RowVector,
@@ -104,9 +104,9 @@
 	if all values are finite.
 	(SPARSE_MSM_BIN_OPS): Use SPARSE_MSM_BIN_OP_1 for division.
 
-2010-07-31  Rik <octave@nomad.inbox5.com>
+2010-07-31  Rik  <octave@nomad.inbox5.com>
 
-	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in, 
+	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in,
 	  Quad-opts.in: Grammarcheck .cc files
 
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
@@ -117,7 +117,7 @@
 
 2010-07-27  Jaroslav Hajek  <highegg@gmail.com>
 
-	* dbleSCHUR.cc (SCHUR::SCHUR (const Matrix&, const Matrix&)): 
+	* dbleSCHUR.cc (SCHUR::SCHUR (const Matrix&, const Matrix&)):
 	New ctor.
 	* dbleSCHUR.h: Declare it.
 	* floatSCHUR.cc (FloatSCHUR::FloatSCHUR (const FloatMatrix&, const
@@ -127,7 +127,7 @@
 	const ComplexMatrix&),
 	ComplexSCHUR::ComplexSCHUR (const SCHUR&)): New ctors.
 	* CmplxSCHUR.h: Declare them.
-	* fCmplxSCHUR.cc (FloatComplexSCHUR::FloatComplexSCHUR 
+	* fCmplxSCHUR.cc (FloatComplexSCHUR::FloatComplexSCHUR
 	(const FloatComplexMatrix&, const FloatComplexMatrix&),
 	FloatComplexSCHUR::FloatComplexSCHUR (const FloatSCHUR&)): New ctors.
 	* fCmplxSCHUR.h: Declare them.
@@ -193,7 +193,7 @@
 	(matrix_complex_probe): Parametrize by real type. Use
 	OCTAVE_LOCAL_BUFFER for temporary array.
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* DASSL-opts.in: Periodic grammar check on documentation.
 
@@ -1828,7 +1828,7 @@
 	* Array-b.cc: Inline ascending and descending sort.
 	(do_bool_partition): New helper template function.
 	(octave_sort<bool>::sort): Provide specializations.
-	
+
 2010-01-14  Jaroslav Hajek  <highegg@gmail.com>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, const
@@ -1875,7 +1875,7 @@
 	(Array<T>::permute): Don't call deprecate method here.
 	(Array<T>::assign): Neither here.
 
-2010-01-11  Rik <octave@nomad.inbox5.com>
+2010-01-11  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Remove unnecessary use of
 	simple_move_if_change_rule to allow Make to update timestamps.
@@ -1937,7 +1937,7 @@
 	(LIBOCTAVE_C_SOURCES): Remove md5.c from the list.
 	* md5.c, md5.h: Delete.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in
 	automake variables of top_builddir and top_srcdir.
@@ -1964,7 +1964,7 @@
 	* idx-vector.h (idx_vector::loop, idx_vector::bloop): Fix behavior for
 	masks.
 
-2009-12-13  Rik <octave@nomad.inbox5.com>
+2009-12-13  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use DISTCLEANFILES rather than distclean-local rule.
 	Use PERL variable defined by autoconf rather than direct call.
@@ -2263,7 +2263,7 @@
 
 2009-11-10  John W. Eaton  <jwe@octave.org>
 
-	* mx-ops, sparse-mx-ops, vx-ops b/liboctave/vx-ops:
+	* mx-ops, sparse-mx-ops, vx-ops, vx-ops:
 	Add comment about updating.
 	* Makefile.am, config-ops.sh: New files.
 	* Makefile.in: Delete.
@@ -2819,8 +2819,8 @@
 
 2009-08-31  John W. Eaton  <jwe@octave.org>
 
-	* liboctave/lo-ieee.cc (octave_ieee_init): Abort if floating point
-	format is not recognized as IEEE.
+	* lo-ieee.cc (octave_ieee_init): Abort if floating point format
+	is not recognized as IEEE.
 
 2009-08-27  John W. Eaton  <jwe@octave.org>
 
@@ -6358,16 +6358,11 @@
 
 	* lo-math.h: New file.
 	* Makefile.in (INCLUDES): Add it to the list.
-	* liboctave/Array2.h, liboctave/ArrayN.h, liboctave/CmplxDET.cc,
-	liboctave/DASPK.cc, liboctave/DASPK.h, liboctave/DASRT.cc,
-	liboctave/DASRT.h, liboctave/DASSL.cc, liboctave/DASSL.h,
-	liboctave/LSODE.cc, liboctave/LSODE.h, liboctave/NLEqn.h,
-	liboctave/Quad.h, liboctave/Range.cc, liboctave/dbleDET.cc,
-	liboctave/lo-cieee.c, liboctave/lo-ieee.cc,
-	liboctave/lo-mappers.cc, liboctave/oct-time.cc,
-	liboctave/oct-time.h, liboctave/randgamma.c,
-	liboctave/randmtzig.c, liboctave/randpoisson.c: Include lo-math.h
-	instead of cmath or math.h.
+	* Array2.h, ArrayN.h, CmplxDET.cc, DASPK.cc, DASPK.h, DASRT.cc,
+	DASRT.h, DASSL.cc, DASSL.h, LSODE.cc, LSODE.h, NLEqn.h, Quad.h,
+	Range.cc, dbleDET.cc, lo-cieee.c, lo-ieee.cc, lo-mappers.cc,
+	oct-time.cc, oct-time.h, randgamma.c, randmtzig.c,
+	randpoisson.c: Include lo-math.h instead of cmath or math.h.
 	* lo-mappers.h: Don't include sunmath.h here.
 
 2007-11-26  John W. Eaton  <jwe@octave.org>

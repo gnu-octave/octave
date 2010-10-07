@@ -79,11 +79,11 @@
 	* misc/quit.h: Define inline-function variant of OCTAVE_QUIT in C++
 	mode.
 
-2009-01-13  Rik <octave@nomad.inbox5.com>
+2009-01-13  Rik  <octave@nomad.inbox5.com>
 
 	* STOP.patch: Remove unmaintained patch for Fortran code
 
-2009-01-13  Rik <octave@nomad.inbox5.com>
+2009-01-13  Rik  <octave@nomad.inbox5.com>
 
 	* ranlib/advnst.f ranlib/genbet.f ranlib/genchi.f ranlib/genexp.f
 	ranlib/genf.f ranlib/gengam.f ranlib/genmul.f ranlib/gennch.f
@@ -102,17 +102,17 @@
 
 	* Makefile.am (AM_CPPFLAGS): New variable.
 
-2009-12-31  Rik <octave@nomad.inbox5.com>
+2009-12-31  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Reverse using simple_move_if_change_rule for cruft.def
 	which interferes with make timestamp algorithm.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
 	variables of top_builddir and top_srcdir.
 
-2009-12-13  Rik <octave@nomad.inbox5.com>
+2009-12-13  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use simple_move_if_change_rule for cruft.def to eliminate
 	unnecessary compilations.
@@ -281,7 +281,7 @@
 
 2008-06-02  David Bateman  <dbateman@free.fr>
 
-	* libcruft/xsgmainc.f: Replace DLGAMS with ALGAMS.
+	* slatec/xsgmainc.f: Replace DLGAMS with ALGAMS.
 
 2008-05-30  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
@@ -666,7 +666,7 @@
 
 2007-04-18  Michael Goffioul  <michael.goffioul@swing.be>
 
-	* libcruft/blas-xtra/xdnrm2.f, libcruft/blas-xtra/xdznrm2.f:
+	* blas-xtra/xdnrm2.f, blas-xtra/xdznrm2.f:
 	Delete spurious semicolons.
 
 2007-04-06  John W. Eaton  <jwe@octave.org>
@@ -1097,37 +1097,29 @@
 
 2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* libcruft/blas/dtbsv.f: New file.
-	* libcruft/lapack/dlatrs.f, libcruft/lapack/dtrti2.f,
-	libcruft/lapack/dtrtri.f, libcruft/lapack/ztrti2.f,
-	libcruft/lapack/ztrtri.f: New files.
+	* blas/dtbsv.f: New file.
+	* lapack/dlatrs.f, lapack/dtrti2.f, lapack/dtrtri.f, lapack/ztrti2.f,
+	lapack/ztrtri.f: New files.
 
 2003-02-04  David Bateman  <dbateman@free.fr>
 
-	* libcruft/Makefile.in (CRUFT_DIRS): Remove linpack from list.
+	* Makefile.in (CRUFT_DIRS): Remove linpack from list.
 
-	* libcruft/linpackdgbfa.f, libcruft/linpackdgbsl.f
-	libcruft/linpackdgeco.f, libcruft/linpackdgedi.f,
-	libcruft/linpackdgefa.f, libcruft/linpackdgesl.f,
-	libcruft/linpackspofa.f, libcruft/linpackzgeco.f,
-	libcruft/linpackzgedi.f, libcruft/linpackzgefa.f,
-	libcruft/linpackzgesl.f: Delete.
+	* linpackdgbfa.f, linpackdgbsl.f, linpackdgeco.f, linpackdgedi.f,
+	linpackdgefa.f, linpackdgesl.f, linpackspofa.f, linpackzgeco.f,
+	linpackzgedi.f, linpackzgefa.f, linpackzgesl.f: Delete.
 
-	* libcruft/dassl/ddajac.f, libcruft/dassl/ddaslv.f:  Use DGxTRF and
+	* dassl/ddajac.f, dassl/ddaslv.f:  Use DGxTRF and
 	DGxTRS instead of DGxFA and DGxSL.
-	* libcruft/daspk/ddaspk.f, libcruft/daspk/dmatd.f,
-	libcruft/daspk/dslvd.f: Likewise.
-	* libcruft/odepack/lsode.f, libcruft/odepack/prepj.f,
-	libcruft/odepack/solsy.f: Likewise.
-	* libcruft/odessa/odessa.f, libcruft/odessa/odessa_prepj.f,
-	libcruft/odessa/odessa_solsy.f: Likewise.
+	* daspk/ddaspk.f, daspk/dmatd.f, daspk/dslvd.f: Likewise.
+	* odepack/lsode.f, odepack/prepj.f, odepack/solsy.f: Likewise.
+	* odessa/odessa.f, odessa/odessa_prepj.f, odessa/odessa_solsy.f:
+	Likewise.
 	* libcrudt/ranlib/setgmn.f: Use SPOTRF instead of SPOFA.
 
-	* libcruft/lapack/dgbtf2.f, libcruft/lapack/dgbtrf.f,
-	libcruft/lapack/dgbtrs.f, libcruft/lapack/dgecon.f,
-	libcruft/lapack/dgetri.f, libcruft/lapack/spotf2.f,
-	libcruft/lapack/spotrf.f, libcruft/lapack/zgecon.f,
-	libcruft/lapack/zgetri.f: New files.
+	* lapack/dgbtf2.f, lapack/dgbtrf.f, lapack/dgbtrs.f,
+	lapack/dgecon.f, lapack/dgetri.f, lapack/spotf2.f,
+	lapack/spotrf.f, lapack/zgecon.f, lapack/zgetri.f: New files.
 
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

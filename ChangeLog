@@ -81,11 +81,11 @@
 
 	* NEWS: Update.
 
-2010-08-21  Rik <octave@nomad.inbox5.com>
+2010-08-21  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add randi to list of new functions
 
-2010-08-09  John Swensen <jpswensen@gmail.com>
+2010-08-09  John Swensen  <jpswensen@gmail.com>
 
 	* mkoctfile.in: Add ability to pass -pthread through to linker.
 
@@ -93,7 +93,7 @@
 
 	* NEWS: Update.
 
-2010-08-09  Rik <octave@nomad.inbox5.com>
+2010-08-09  Rik  <octave@nomad.inbox5.com>
 
 	* examples/Makefile.am: Don't echo 'echo' command when building
 	octave.desktop.
@@ -102,12 +102,12 @@
 
 	* NEWS: Update.
 
-2010-08-05  Rik <octave@nomad.inbox5.com>
+2010-08-05  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: Change warning messages about freetype and fontconfig
 	to reflect their requirement for native graphics.  Bug #30594.
 
-2010-08-05  Rik <octave@nomad.inbox5.com>
+2010-08-05  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Remove distribution of emacs directory
 
@@ -116,7 +116,7 @@
 	emacs/octave-mod.el, emacs/octave-tags, emacs/octave-tags.1,
 	emacs/README, emacs/TODO: Remove from further hg checkouts.
 
-2010-08-05  Rik <octave@nomad.inbox5.com>
+2010-08-05  Rik  <octave@nomad.inbox5.com>
 
 	* ChangeLog: Correct date in version upgrade 3.3.52+ comment.
 
@@ -130,7 +130,7 @@
 	(OCTAVE_API_VERSION_NUMBER): Now 40.
 	(OCTAVE_RELEASE_DATE): Now 2010-08-01.
 
-2010-07-30  Rik <octave@nomad.inbox5.com>
+2010-07-30  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: add .gdbinit to the DISTCLEANFILES list
 
@@ -138,7 +138,7 @@
 
 	* NEWS: Include list of new functions.
 
-2010-07-08  Rik <octave@nomad.inbox5.com>
+2010-07-08  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Update with addition of engineering format.
 
@@ -161,7 +161,7 @@
 
 	* NEWS: Update.
 
-2010-05-11  Rik <octave@nomad.inbox5.com>
+2010-05-11  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: Capitalize ARPACK in messages.
 
@@ -169,7 +169,7 @@
 
 	* ROADMAP: Delete entry for villad.
 
-2010-04-26  Rik <octave@nomad.inbox5.com>
+2010-04-26  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: fix bug with shell HERE document introduced in
         previous change.
@@ -451,7 +451,7 @@
 
 	* bootstrap.conf (gnulib_modules): Include getopt-gnu in the list.
 
-2010-01-17  Michael Goffioul <michael.goffioul@gmail.com>
+2010-01-17  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* bootstrap.conf: Add round module.
 	* configure.ac: Allow to use MSVC with *mingw* build host. Check for
@@ -500,7 +500,7 @@
 
 	* bootstrap.conf (gnulib_modules): Remove nonexistent fstat module.
 
-2009-12-22  Rik <octave@nomad.inbox5.com>
+2009-12-22  Rik  <octave@nomad.inbox5.com>
 
 	* WWW/: remove web directory no longer used
 
@@ -530,45 +530,45 @@
 
 	* bootstrap.conf (gnulib_modules): Include crypto/md5 in the list.
 
-2009-12-22  Rik <octave@nomad.inbox5.com>
+2009-12-22  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: Remove second redundant test for nlink_t
 
-2009-12-21  Rik <octave@nomad.inbox5.com>
+2009-12-21  Rik  <octave@nomad.inbox5.com>
 
 	* dlfcn directory: Remove dlfcn directory with leftover code from 1996
 
-2009-12-20  Rik <octave@nomad.inbox5.com>
+2009-12-20  Rik  <octave@nomad.inbox5.com>
 
 	* acinclude.m4: use M4 quoting for arguments to autoconf macros
 
-2009-12-20  Rik <octave@nomad.inbox5.com>
+2009-12-20  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac, acinclude.m4: Better warnings when gnuplot is not
 	installed but native graphics are available
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* emacs/module.mk, examples/Makefile.am, info-emacs-info,
 	info-emacs-octave-help: Distribute emacs specific files from emacs
 	directory rather than examples directory
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* m4/module.mk, Makefile.am: Redo previous patch with distribution
 	triggered by m4/module.mk.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Distribute m4/gnulib-cache.m4 per recommendation
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am, examples/Makefile.am, common.mk, configure.ac: Eliminate
 	TOPDIR variable in favor of built-in automake variables of top_builddir
 	and top_srcdir.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Use M4 quoting for arguments to autoconf macros containing
 	variables
@@ -588,7 +588,7 @@
 	* configure.ac: Don't check for glob.h or the glob and fnmatch
 	functions.  Eliminate LIBGLOB variable.
 
-2009-12-11  Rik <octave@nomad.inbox5.com>
+2009-12-11  Rik  <octave@nomad.inbox5.com>
 
 	* HACKING: Elaborate which DIRNAME to use for --gnulib-srcdir option.
 
@@ -597,7 +597,7 @@
 	* configure.ac: Add $PTHREAD_LIBS to $LIBS and $PTHREAD_CFLAGS
 	to $CFLAGS for subsequent tests.
 
-2009-12-11  Rik <octave@nomad.inbox5.com>
+2009-12-11  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: remove install-extras target and use automake syntax to
 	distribute NEWS file.
@@ -654,7 +654,7 @@
 	distributed.
 	* HACKING: New file.
 
-2009-12-08  Rik <octave@nomad.inbox5.com>
+2009-12-08  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: add BUGS and OCTAVE.INSTALL to DISTCLEANFILES
 
@@ -708,7 +708,7 @@
 
 	* examples/Makefile.am (CLEANFILES): New variable.
 
-2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
+2009-11-30  Kacper Kowalik  <xarthisius.kk@gmail.com>
 
 	* acinclude.m4 (OCTAVE_HDF5_HAS_ENFORCED_16_API): New macro that
 	tests whether the HDF5 library has an enforced v1.6 API and detects
@@ -741,7 +741,7 @@
 	(OCTAVE_PROG_GHOSTSCRIPT): Check for gswin32c first on Windows
 	systems, then gs.
 
-2009-11-25  Rik <octave@nomad.inbox5.com>
+2009-11-25  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am examples/Makefile.am liboctave/Makefile.am
 	scripts/Makefile.am src/Makefile.am test/Makefile.am:
@@ -783,7 +783,7 @@
 	* acinclude.m4 (OCTAVE_IEEE754_DATA_FORMAT): Fail if IEEE 754
 	format is not detected.
 
-2009-11-11  Shai Ayal <shaiay@users.sourceforge.net>
+2009-11-11  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* configure.ac: Remove tests for ftgl.
 

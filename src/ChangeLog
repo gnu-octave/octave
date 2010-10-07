@@ -1,4 +1,4 @@
-2010-10-07  Rik <octave@nomad.inbox5.com>
+2010-10-07  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/conv2.cc (convn): Update docstring.  Add 1 new test.
 
@@ -117,13 +117,13 @@
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-parse.yy (Fautoload): Replace Octave_map by octave_map.
-	* ov-fcn-handle.cc (Ffunctions): Replace Octave_map by 
+	* ov-fcn-handle.cc (Ffunctions): Replace Octave_map by
 	octave_scalar_map.
 
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
 
 	* help.cc (F__which__): Use octave_map instead of Octave_map.
-	* load-save.cc (do_load, save_fields, save_vars): Use 
+	* load-save.cc (do_load, save_fields, save_vars): Use
 	octave_scalar_map instead of Octave_map.
 
 2010-09-30  Jaroslav Hajek  <highegg@gmail.com>
@@ -222,7 +222,7 @@
 2010-09-28  John P. Swensen  <jpswensen@gmail.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (F__magick_format_list__):
-	New function. 
+	New function.
 
 2010-09-28  John P. Swensen  <jpswensen@gmail.com>
 
@@ -248,18 +248,18 @@
 	* gl-render.cc (opengl_renderer::draw_axes): Reverse order in
 	which child objects are processed.
 
-2010-09-26  Rik <octave@nomad.inbox5.com>
+2010-09-26  Rik  <octave@nomad.inbox5.com>
 
 	* load-path.cc: Use single quotes for regex when possible.
 	* DLD-FUNCTIONS/regexp.cc (regexp): Update docstring to highlight
 	differences between POSIX and PCRE regex.
 
-2010-09-26  Rik <octave@nomad.inbox5.com>
+2010-09-26  Rik  <octave@nomad.inbox5.com>
 
 	* load-path.cc: Use single quotes for regular expression patterns when
 	possible.
 
-2010-09-26  Rik <octave@nomad.inbox5.com>
+2010-09-26  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep, regexpi): Update
 	docstrings to more fully explain PCRE.  Modify advanced tests to run
@@ -274,9 +274,9 @@
 	* DLD-FUNCTIONS/gcd.cc (Fgcd): Rewrite. Use more efficient code.
 	Specialize for simple/extended Euclid. Handle integer arguments.
 
-2010-09-24  Rik <octave@nomad.inbox5.com>
+2010-09-24  Rik  <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep): Update docstring to 
+	* DLD-FUNCTIONS/regexp.cc (regexp, regexprep): Update docstring to
 	discuss limits when not compiled with PCRE.
 
 2010-09-23  John W. Eaton  <jwe@octave.org>
@@ -331,7 +331,7 @@
 	Break from search loop if idx is at or beyond end of buffer
 	(bug #31056).
 
-2010-09-19  Ben Abbott <bpabbott@mac.com>
+2010-09-19  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.h.in: Add displayname property to patch and surface objects.
 
@@ -339,7 +339,7 @@
 
 	* graphics.h.in: Remove properties for dead legend code.
 
-2010-09-18  Ben Abbott <bpabbott@mac.com>
+2010-09-18  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.cc: Replace pagetype property value custom with <custom>.
 
@@ -411,14 +411,14 @@
 	(base_graphics_backend::finalize): Rename from
 	base_graphics_backend::object_destoyed.  Change all uses.
 	(base_graphics_backend::update): Rename from
-	base_graphics_backend::property_changed.  Change all uses. 
+	base_graphics_backend::property_changed.  Change all uses.
 
 2010-09-14  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (fltk_backend::object_destroyed):
 	Don't attempt to delete window if __plot_stream__ is empty.
 
-2010-09-14  Jordi Gutiérrez Hermoso <jordigh@gmail.com>
+2010-09-14  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* load-path.cc (genpath): Pass SKIP in recursive call.
 	(Fgenpath): Accept list of directories to skip.
@@ -480,7 +480,7 @@
 	* DLD-FUNCTIONS/cquad.cc: New source, courtesy by Pedro Gonnet.
 	* DLD-FUNCTIONS/module-files: Update.
 
-2010-09-01  Marco Caliari <marco.caliari@univr.it>
+2010-09-01  Marco Caliari  <marco.caliari@univr.it>
 
 	* graphics.cc: Fix axes limits underflow to zero for logscale.
 
@@ -491,7 +491,7 @@
 
 2010-09-01  Jaroslav Hajek  <highegg@gmail.com>
 
-	* oct-map.cc (octave_map::cat): Search first for an index with 
+	* oct-map.cc (octave_map::cat): Search first for an index with
 	nonzero nfields and use it for comparisons.
 	(permute_to_correct_order1): New overloaded helper func.
 	(permute_to_correct_order): use it here. Pass the index here.
@@ -513,7 +513,7 @@
 	method. Return class_name as default.
 	(octave_class::dotref): Error on zero return value.
 
-2010-08-30  Ben Abbott <bpabbott@mac.com>
+2010-08-30  Ben Abbott  <bpabbott@mac.com>
 
 	* gl-render.cc: Matlab compatible markers for the OpenGL.
 
@@ -582,33 +582,33 @@
 	* load-path.cc (load_path::load_path): Explicitly initialize
 	private_fcn_map.
 
-2010-08-17  Rik <octave@nomad.inbox5.com>
+2010-08-17  Rik  <octave@nomad.inbox5.com>
 
 	* mappers.cc (gamma,lgamma): Add %!tests for negative integer
 	input arguments.
 
-2010-08-17  Rik <octave@nomad.inbox5.com>
+2010-08-17  Rik  <octave@nomad.inbox5.com>
 
-	* bitfcns.cc (bitmax): Add additional calling argument, class, and 
+	* bitfcns.cc (bitmax): Add additional calling argument, class, and
 	additional return value for bitmax("single").
 
-2010-08-17  Rik <octave@nomad.inbox5.com>
+2010-08-17  Rik  <octave@nomad.inbox5.com>
 
 	* bitfcns.cc (sizemax): Improve documentation string.
 
-2010-08-16  Ben Abbott <bpabbott@mac.com>
+2010-08-16  Ben Abbott  <bpabbott@mac.com>
 
 	* gl2ps.c: Use upstream version gl2ps-1.3.5-svn-20100816.
 
-2010-08-13  Rik <octave@nomad.inbox5.com>
+2010-08-13  Rik  <octave@nomad.inbox5.com>
 
 	* toplev.c (do_goto_frame_relative): Remove unused variable c.
 
 2010-08-13  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-builtin.cc 
+	* ov-builtin.cc
 	(octave_builtin::subsref (..., const std::list<octave_lvalue> *)
-	octave_builtin::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	octave_builtin::do_multi_index_op (..., const std::list<octave_lvalue> *)):
 	New methods. Move code here. Set curr_lvalue_list.
 	(octave_builtin::curr_lvalue_list): New static member.
 	* ov-fcn-handle.h: Declare them.
@@ -624,7 +624,7 @@
 
 	* data.cc (Fdiff): Allow logical type.
 
-2010-08-09  Rik <octave@nomad.inbox5.com>
+2010-08-09  Rik  <octave@nomad.inbox5.com>
 
 	* oct-parse.yy (parse_fcn_file): Restore parsing of help text
 	accidentally lost in previous changeset.
@@ -644,19 +644,19 @@
 	* ov-cell.cc (octave_cell::subsasgn): Allow dot assignment into empty
 	cell.
 
-2010-08-08  Rik <octave@nomad.inbox5.com>
+2010-08-08  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/config-module.awk: Add newlines to divide blocks
 	in generated modules.mk and improve readability.
 
-2010-08-08  Rik <octave@nomad.inbox5.com>
+2010-08-08  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Create .DOCSTRINGS quietly and avoid screen clutter
 	during build.
 
-2010-08-08  Rik <octave@nomad.inbox5.com>
+2010-08-08  Rik  <octave@nomad.inbox5.com>
 
-	* Makefile.am: Run do_subst macro quietly without cluttering screen 
+	* Makefile.am: Run do_subst macro quietly without cluttering screen
 	during build.
 
 2010-08-08  Shai Ayal  <shaiay@users.sourceforge.net>
@@ -684,9 +684,9 @@
 
 2010-08-03  Jaroslav Hajek  <highegg@gmail.com>
 
-	* ov-fcn-handle.cc 
+	* ov-fcn-handle.cc
 	(octave_value::subsref (..., const std::list<octave_lvalue> *)
-	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)):
 	New methods. Move code here.
 	* ov-fcn-handle.h: Declare them.
 
@@ -695,9 +695,9 @@
 	* ov-usr-fcn.cc (Fis_ignored_output): Rename to Fisargout. Change the
 	behavior to indicate not ignored outputs.
 
-2010-08-01  Rik <octave@nomad.inbox5.com>
+2010-08-01  Rik  <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc, 
+	* DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc,
 	DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/betainc.cc,
 	DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/cellfun.cc,
  	DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/daspk.cc,
@@ -709,10 +709,10 @@
 	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/str2double.cc,
 	DLD-FUNCTIONS/tril.cc, DLD-FUNCTIONS/typecast.cc, data.cc, graphics.cc,
 	load-save.cc, ov-null-mat.cc, ov-struct.cc, ov-usr-fcn.cc,
-	pr-output.cc, strfns.cc, variables.cc: Grammarcheck documentation.  
+	pr-output.cc, strfns.cc, variables.cc: Grammarcheck documentation.
 	Add @noindent lines and ensure line length is less than 80.
 
-2010-07-31  Rik <octave@nomad.inbox5.com>
+2010-07-31  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/__magick_read__.cc, DLD-FUNCTIONS/__voronoi__.cc,
 	DLD-FUNCTIONS/amd.cc, DLD-FUNCTIONS/balance.cc,
@@ -771,7 +771,7 @@
 	end of function.
 	Addresses more problems found with bug #30490.
 
-2010-07-30  Rik <octave@nomad.inbox5.com>
+2010-07-30  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: add .DOCSTRINGS to the DISTCLEANFILES list
 
@@ -781,7 +781,7 @@
 	tree_evaluator::visit_switch_command): Also process breakpoints
 	for the command (bug #30490).
 
-2010-07-29  Ben Abbott <bpabbott@mac.com>
+2010-07-29  Ben Abbott  <bpabbott@mac.com>
 
 	* gl-render.cc: Transpose markers '^' and 'v'.
 
@@ -798,15 +798,15 @@
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov.cc (octave_value::subsref (..., const std::list<octave_lvalue> *)
-	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	octave_value::do_multi_index_op (..., const std::list<octave_lvalue> *)):
 	New methods.
 	* ov.h: Declare them.
 	* ov-base.cc (octave_base_value::subsref (..., const std::list<octave_lvalue> *)
-	octave_base_value::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	octave_base_value::do_multi_index_op (..., const std::list<octave_lvalue> *)):
 	New methods.
 	* ov-base.h: Declare them.
 	* ov-usr-fcn.cc (octave_user_function::subsref (..., const std::list<octave_lvalue> *)
-	octave_user_function::do_multi_index_op (..., const std::list<octave_lvalue> *)): 
+	octave_user_function::do_multi_index_op (..., const std::list<octave_lvalue> *)):
 	New virtual method overrides. Move code here.
 	(octave_user_function::bind_automatic_vars): Add lvalue_list
 	parameter. Bind automatic variable ".ignored.".
@@ -830,7 +830,7 @@
 	Delete explicit instantiations of find_nonzero_elem_idx templates.
 	New test for char array argument.
 
-2010-07-27  Rik <octave@nomad.inbox5.com>
+2010-07-27  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/schur.cc (rsf2csf): Change first documentation line to
 	active voice.
@@ -848,11 +848,11 @@
 
 	* ov-re-diag.cc (octave_diag_matrix::try_narrowing_conversion): Remove
 	redundant cast.
-	* ov-flt-re-diag.cc 
+	* ov-flt-re-diag.cc
 	(octave_float_diag_matrix::try_narrowing_conversion): Ditto.
-	* ov-cx-diag.cc 
+	* ov-cx-diag.cc
 	(octave_complex_diag_matrix::try_narrowing_conversion): Ditto.
-	* ov-flt-cx-diag.cc 
+	* ov-flt-cx-diag.cc
 	(octave_float_complex_diag_matrix::try_narrowing_conversion): Ditto.
 
 2010-07-23  Jaroslav Hajek  <highegg@gmail.com>
@@ -869,7 +869,7 @@
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::plot_window):
 	Added a bottom Fl_Box (copied from gmsh) and tooltips
 
-2010-07-20  Rik <octave@nomad.inbox5.com>
+2010-07-20  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/typecast.cc (typecast): Combine two @seealso macro
 	uses to one.
@@ -881,7 +881,7 @@
 	Attempt to estimate number of columns from first line.
 	Hoist tmp_stream out of the loop and reset it for each substring.
 
-2010-07-17  Rik <octave@nomad.inbox5.com>
+2010-07-17  Rik  <octave@nomad.inbox5.com>
 
 	* data.cc (repelems): Add more documentation about new function.
 
@@ -895,14 +895,14 @@
 	* DLD-FUNCTIONS/fltk_backend.cc (plot_window::gui_mode):
 	Use enum instead of int.  Change all uses.
 
-2010-07-18  Kai Habel <kai.habel@gmx.de>
+2010-07-18  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/fltk_backend.cc: Add mode for mouse rotation.
 	(view2status): new function
-	* src/graphics.cc: Remove limitations for zooming and translation.
+	* graphics.cc: Remove limitations for zooming and translation.
 	(axes::properties::rotate_view): new function
 
-2010-07-17  Rik <octave@nomad.inbox5.com>
+2010-07-17  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/ccolamd.cc,
 	  DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dasrt.cc,
@@ -911,7 +911,7 @@
 	  DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/symrcm.cc, dirfns.cc,
 	  file-io.cc, syscalls.cc: Spellcheck documentation
 
-2010-07-08  Rik <octave@nomad.inbox5.com>
+2010-07-08  Rik  <octave@nomad.inbox5.com>
 
 	* DLD_FUNCTIONS/rand.cc: Correct typo in rande documentation.
 	(bug #30446).
@@ -943,7 +943,7 @@
 	* DLD-FUNCTIONS/__magick_read__,cc (F__magick_read__): Add the syntax
 	__magick_read__ ("file", "frames", "all").
 
-2010-07-08  Rik <octave@nomad.inbox5.com>
+2010-07-08  Rik  <octave@nomad.inbox5.com>
 
 	* DLD_FUNCTIONS/eigs.cc: Initialize random number generator in test
 	blocks to get reproducible results.
@@ -952,7 +952,7 @@
 
 	* ov-cell.cc (Fstruct2cell): Use octave_map. Optimize.
 
-2010-07-07  Rik <octave@nomad.inbox5.com>
+2010-07-07  Rik  <octave@nomad.inbox5.com>
 
 	* pr-output.cc (calc_scale_exp): Avoid use of % operator on negative
 	operands for portability between C++ compilers.
@@ -1105,7 +1105,7 @@
 	figure::reset_default_properties, axes::reset_default_properties):
 	Use it to avoid duplicated code.
 
-2010-06-24  Rik <octave@nomad.inbox5.com>
+2010-06-24  Rik  <octave@nomad.inbox5.com>
 
 	* octave.cc: Add [FILE] to octave usage string (bug #30258).
 
@@ -1141,7 +1141,7 @@
 	(std::string color_property::values_as_string (void) const,
 	Cell color_property::values_as_cell (void) const): New functions.
 
-2010-06-21  Rik <octave@nomad.inbox5.com>
+2010-06-21  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/dlmread.cc: Fix spreadsheet style range option.
 	(bug #30183).
@@ -1191,7 +1191,7 @@
 	empty arrays otherwise.
 	(tree_matrix::rvalue1): Skip empty arrays in the fallback branch.
 
-2010-06-16  Rik <octave@nomad.inbox5.com>
+2010-06-16  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/dot.cc,
 	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/lookup.cc,
@@ -1212,11 +1212,11 @@
 
 	* data.cc (Fsort): Fix invalid tests.
 
-2010-06-15  Rik <octave@nomad.inbox5.com>
+2010-06-15  Rik  <octave@nomad.inbox5.com>
 
 	* pr-output.cc: Second try at removing extra newlines from NDArrays
 
-2010-06-14  Rik <octave@nomad.inbox5.com>
+2010-06-14  Rik  <octave@nomad.inbox5.com>
 
 	* pr-output.cc: Remove extra newlines when displaying multi-dimensional
 	arrays (bug #30029).
@@ -1226,7 +1226,7 @@
 	* data.cc (Fsort, Fnth_element): Fix behavior when trailing singleton
 	dim is specified.
 
-2010-06-12  Ben Abbott <bpabbott@mac.com>
+2010-06-12  Ben Abbott  <bpabbott@mac.com>
 
 	* DLD-FUNCTIONS/gammainc.cc: Fix doc-string typo.
 
@@ -1235,7 +1235,7 @@
 	* DLD-FUNCTIONS/gammainc.cc: Implement complementary incomplete
 	gamma function.
 
-2010-06-10  Ben Abbott <bpabbott@mac.com>
+2010-06-10  Ben Abbott  <bpabbott@mac.com>
 
 	* data.cc: Fix test for concatentating empty nd-arrays.
 
@@ -1253,7 +1253,7 @@
 
 	* ov-struct.cc (Fisfield): Accept cell array as name argument.
 
-2010-06-08  Rik <octave@nomad.inbox5.com>
+2010-06-08  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/cellfun.cc,
 	DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lu.cc,
@@ -1296,7 +1296,7 @@
 	scalar_col_helper_nda, make_col_helper, can_extract): Remove.
 	(Fcellfun): Use the new fast_elem_insert method.
 
-2010-05-10  Rik <octave@nomad.inbox5.com>
+2010-05-10  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/eigs.cc: Improve documentation string.
 	Use ~ notation instead of dummy variables for unused return arguments.
@@ -1423,7 +1423,7 @@
 	* DLD-FUNCTIONS/sqrtm.cc (do_sqrtm): Mark the result as triangular
 	where applicable.
 
-2010-05-10  Rik <octave@nomad.inbox5.com>
+2010-05-10  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/qr.cc: Split qrdelete test into high precision test
 	when QRUPDATE is present and low precision when it is not.
@@ -1507,12 +1507,12 @@
 	(Fsvd): Use it to select a driver.
 	(Fsvd_driver): New DEFUN.
 
-2010-05-02  Rik <octave@nomad.inbox5.com>
+2010-05-02  Rik  <octave@nomad.inbox5.com>
 
 	* ov-cell.cc: Wrap documentation line to prevent overfull hbox
 	LaTex warning
 
-2010-05-01  Ben Abbott <bpabbott@mac.com>
+2010-05-01  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.cc, graphics.h.in: Remove line object properties ldata,
 	udata, xldata, xudata.
@@ -1555,7 +1555,7 @@
 	(const std::string&, bool)): When loading a mex-file attempt
 	to load the m-file first to get the help string.
 
-2010-04-24  Ben Abbott <bpabbott@mac.com>
+2010-04-24  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.h.in: Have figure color property support a radio value,
 	'none'.
@@ -1571,11 +1571,11 @@
 	* Makefile.am: change GRAPHICS_CPPFLAGS to GRAPHICS_CFLAGS since
 	the former does not exist and the latter serves the same purpose
 
-2010-04-23  Rik <octave@nomad.inbox5.com>
+2010-04-23  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Clarify compilation note about defaults.h
 
-2010-04-23  Rik <octave@nomad.inbox5.com>
+2010-04-23  Rik  <octave@nomad.inbox5.com>
 
 	* symtab.h: Clear global variables when 'clear -all' called
 
@@ -1607,7 +1607,7 @@
 	* oct-obj.cc (octave_value_list::octave_value_list):
 	Explicitly resize data to be row vector.
 
-2010-04-23  Rik <octave@nomad.inbox5.com>
+2010-04-23  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/regexp.cc.: Eliminate compile warning.
 	warning: suggest explicit braces to avoid ambiguous 'else'.
@@ -1639,7 +1639,7 @@
 	* ov.h: Update decls.
 	* oct-lvalue.cc (octave_lvalue::assign): Simplify.
 
-2010-04-22  Rik <octave@nomad.inbox5.com>
+2010-04-22  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/hess.cc.: return correct Hessenberg matrix when
 	called with only one output argument.
@@ -1698,7 +1698,7 @@
 	(const octave_value_list& idx, const SparseMatrix& rhs)): Remove.
 	* ov-cx-sparse.h: Remove decl.
 
-2010-04-10  Ben Abbott <bpabbott@mac.com>
+2010-04-10  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.h.in: Fix nextplot property values. Add "new" to
 	list for axes nextplot values. Change "replace_children" to
@@ -1893,7 +1893,7 @@
 	(c_file_ptr_buf::file_close): Move here from
 	c-file-ptr-stream.h.  Tag call to fclose with gnulib::.
 
-2010-03-12  Ben Abbott <bpabbott@mac.com>
+2010-03-12  Ben Abbott  <bpabbott@mac.com>
 
 	* /DLD-FUNCTIONS/chol.cc: Increase tolerance for single precision test.
 
@@ -2039,8 +2039,8 @@
 
 2010-02-26  Jaroslav Hajek  <highegg@gmail.com>
 
-	* src/xpow.cc: Update.
-	* src/ov-base-diag.cc: Update.
+	* xpow.cc: Update.
+	* ov-base-diag.cc: Update.
 
 2010-02-25  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -2144,7 +2144,7 @@
 	Don't write element if dimension is too large to save.
 	(gripe_dim_too_large, write_mat5_sparse_index_vector): New functions.
 
-2010-02-22  Carlo de Falco <kingcrimson@tiscali.it>
+2010-02-22  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* dirfns.cc (Fglob): Make glob function test more robust.
 
@@ -3134,7 +3134,7 @@
 	* DLD-FUNCTIONS/strfind.cc (Fstrfind): Call it here.
 	(Fstrrep): Also here.
 
-2010-01-11  Rik <octave@nomad.inbox5.com>
+2010-01-11  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Update DOCSTRINGS rules to avoid
 	simple_move_if_change_rule and allow Make to update timestamps.
@@ -3326,7 +3326,7 @@
 	* Makefile.am (install-oct): Write $(DESTDIR)$(...), not
 	$(DESTDIR).$(...).
 
-2010-01-02  Ben Abbott <bpabbott@mac.com>
+2010-01-02  Ben Abbott  <bpabbott@mac.com>
 
 	* mappers.cc: Change test tolerance from 1e-16 to eps.
 
@@ -3400,7 +3400,7 @@
 	(figure_manager::set_name, figure_manage::do_set_name): New methods.
 	(fltk_backend::property_changed): Handle change of figure title string.
 
-2009-12-19  Rik <octave@nomad.inbox5.com>
+2009-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Eliminate TOPDIR variable in favor of built-in automake
 	variables of top_builddir and top_srcdir.
@@ -3507,11 +3507,11 @@
 	* Makefile.am (DOCSTRINGS): Use $(cp_update_rule) instead of
 	cp -a --update.
 
-2009-12-10  Rik <octave@nomad.inbox5.com>
+2009-12-10  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: distclean symbolic links for OCT_FILES
 
-2009-12-10  Rik <octave@nomad.inbox5.com>
+2009-12-10  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Copy DOCSTRINGS from srcdir to builddir if it does not
 	exist.  Enables VPATH builds.
@@ -3589,7 +3589,7 @@
 	(OCTAVE_LIBS, OCTINTERP_LINK_DEPS, OCT_LINK_DEPS):
 	Add ../libgnu/libgnu.la to the list.
 
-2009-12-09  Rik <octave@nomad.inbox5.com>
+2009-12-09  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Distribute DOCSTRINGS in tar.gz file
 
@@ -3713,7 +3713,7 @@
 
 	* Makefile.am: Build OPT_HANDLERS before DEF_FILES.
 
-2009-12-06  Rik <rik@nomad.inbox5.com>
+2009-12-06  Rik  <rik@nomad.inbox5.com>
 
 	* Makefile.am: Distribute DOCSTRINGS so that documentation will
 	not require rebuild after merely untarring a distribution.
@@ -3785,7 +3785,7 @@
 	* find-defun-files.sh: Omit directory part from .df file names.
 	Operate on .ll and .yy files instead of generated .cc files.
 
-2009-12-02  Rik <rik@nomad.inbox5.com>
+2009-12-02  Rik  <rik@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/urlwrite.cc: Correctly compile code even when
 	libcurl is not present according to configure.
@@ -3800,7 +3800,7 @@
 	the mask case.
 	* DLD-FUNCTIONS/find.cc (Ffind): Explicitly call unmask.
 
-2009-11-30  Kacper Kowalik <xarthisius.kk@gmail.com>
+2009-11-30  Kacper Kowalik  <xarthisius.kk@gmail.com>
 
 	* oct-hdf5.h: Drop force the use of the v1.6 API * ls-hdf5.cc,
 	ov-base-int.cc, ov-bool-mat.cc, ov-bool-sparse.cc, ov-bool.cc,
@@ -3838,7 +3838,7 @@
 
 	* graphics.cc (maybe_set_children): Store sorted child lists.
 
-2009-11-27  Kacper Kowalik <xarthisius.kk@gmail.com>
+2009-11-27  Kacper Kowalik  <xarthisius.kk@gmail.com>
 
 	* ls-hdf5.cc (have_h5giterate_bug): Drop this group iteration
 	flag for buggy pre 1.2.2 versions of hdf5.  * ov-base-int.cc
@@ -4319,7 +4319,7 @@
 	* ov.cc (octave_value::int_vector_value, octave_idx_type_vector_value):
 	Call error_with_cfn.
 
-2009-10-21  Rik <octave@nomad.inbox5.com>
+2009-10-21  Rik  <octave@nomad.inbox5.com>
 
 	* variables.cc: Correct use of deftypefnx for who and whos.
 
@@ -4793,7 +4793,7 @@
 
 2009-09-07  Jaroslav Hajek  <highegg@gmail.com>
 
-	* src/Makefile.in: Add LDFLAGS to OCT_LINK_DEPS.
+	* Makefile.in: Add LDFLAGS to OCT_LINK_DEPS.
 
 2009-09-06  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -6161,7 +6161,7 @@
 
 2009-05-22  Jaroslav Hajek  <highegg@gmail.com>
 
-	* src/ov-base-mat.cc (octave_base_matrix<MT>::assign (const
+	* ov-base-mat.cc (octave_base_matrix<MT>::assign (const
 	octave_value_list, typename MT::element_type)): Avoid out of bounds
 	assignments.
 
@@ -9539,7 +9539,7 @@
 
 2008-08-29  David Bateman  <dbateman@free.fr>
 
-	* src/graphics.cc: Replace int by octave_idx_type in multiple
+	* graphics.cc: Replace int by octave_idx_type in multiple
 	places.
 	(array_property::is_equal): In macro CHECK_ARRAY_EQUAL, special
 	case scalar case and keep copy of array value to avoid early
@@ -9827,7 +9827,7 @@
 	* ov.cc (octave_value::idx_type_value): Don't include default
 	argument values in definition.
 
-	* src/glrender.h, src/zfstream.h: Don't include config.h.
+	* glrender.h, zfstream.h: Don't include config.h.
 
 	* oct-errno.h: Include <cerrno>.
 
@@ -10601,11 +10601,11 @@
 	graphics/fltk_backend/Makefile.in, graphics/opengl/Makefile.in:
 	Delete.
 
-	* gl-render.cc, gl-render.h: Move here from src/graphics/opengl.
+	* gl-render.cc, gl-render.h: Move here from graphics/opengl.
 	* Makefile.in: Add them to the appropriate lists.
 	(octave$(EXEEXT)): Also link with $(OPENGL_LIBS)
 
-	* fltk_backend.cc: Move here from src/graphics/fltk_backend.
+	* fltk_backend.cc: Move here from graphics/fltk_backend.
 	* Makefile.in (DLD_XSRC): Add it to the list
 	(fltk_backend.oct): Include special rules for linking with
 	$(GRAPHICS_LIBS) and $(FT2_LIBS).
@@ -13595,7 +13595,7 @@
 
 2008-01-07  John W. Eaton  <jwe@octave.org>
 
-	* src/pt-except.cc (tree_try_catch_command::eval):
+	* pt-except.cc (tree_try_catch_command::eval):
 	Set Vdebug_on_error and Vdebug_on_warning to false while executing
 	try block.
 
@@ -13681,12 +13681,12 @@
 
 	2007-06-28  John W. Eaton  <jwe@octave.org>
 
-	* src/ov-class.cc (sanitize): New function.
+	* ov-class.cc (sanitize): New function.
 	(make_idx_args): Use it.
 
 	2007-06-28  John W. Eaton  <jwe@octave.org>
 
-	* src/ov-class.cc (octave_class::subsasgn): Expect and use only
+	* ov-class.cc (octave_class::subsasgn): Expect and use only
 	one return value from feval of subsasgn method.
 
 	* ov.cc (octave_value::assign): Don't convert to struct if
@@ -14184,7 +14184,7 @@
 
 	* Makefile.in (INCLUDES): Add builtins.h to the list.
 
-	* src/oct-hist.cc (default_history_file): Use += instead of
+	* oct-hist.cc (default_history_file): Use += instead of
 	push_back to append character to std::string object.
 
 	* Makefile.in (LIBDLFCN): Delete all uses.
@@ -14231,10 +14231,10 @@
 	operator > (const Complex&, const Complex&)):
 	Pass args by const reference, not value.
 
-	* src/data.cc, src/matherr.c, src/pr-output.cc, src/sysdep.cc,
-	src/DLD-FUNCTIONS/__dsearchn__.cc, src/DLD-FUNCTIONS/minmax.cc,
-	src/DLD-FUNCTIONS/qz.cc, src/DLD-FUNCTIONS/sort.cc,
-	src/DLD-FUNCTIONS/tsearch.cc: Include lo-math.h instead of cmath
+	* data.cc, matherr.c, pr-output.cc, sysdep.cc,
+	DLD-FUNCTIONS/__dsearchn__.cc, DLD-FUNCTIONS/minmax.cc,
+	DLD-FUNCTIONS/qz.cc, DLD-FUNCTIONS/sort.cc,
+	DLD-FUNCTIONS/tsearch.cc: Include lo-math.h instead of cmath
 	or math.h.
 
 2007-11-30  Moritz Borgmann  <octave@moriborg.de>
@@ -15450,7 +15450,7 @@
 
 2007-07-14  Michael Goffioul  <michael.goffioul@swing.be>
 
-	* src/ov-bool-sparse.cc (octave_sparse_bool_matrix:load_hdf5):
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix:load_hdf5):
 	Use OCTAVE_LOCAL_BUFFER for temporary boolean value.
 
 2007-06-27  David Bateman  <dbateman@free.fr>
@@ -15481,13 +15481,13 @@
 
 2007-06-27  David Bateman  <dbateman@free.fr>
 
-	* src/load-save.cc (Fsave): Ensure header is written for non
+	* load-save.cc (Fsave): Ensure header is written for non
 	existent file with "-append".
-	* src/ls-hdf5.h: First steps towards having append work for hdf5.
+	* ls-hdf5.h: First steps towards having append work for hdf5.
 
 2007-06-26  John W. Eaton  <jwe@octave.org>
 
-	* src/load-save.cc (Fsave): Open files correctly for -append.
+	* load-save.cc (Fsave): Open files correctly for -append.
 	Don't write file headers if appending.  Error for -append -hdf5.
 
 2007-06-25  Olaf Till  <i7tiol@t-online.de>
@@ -15928,7 +15928,7 @@
 
 2007-04-23  Shai Ayal  <shaiay@users.sourceforge.net>
 
-	* src/graphics.cc (color_property::color_property):
+	* graphics.cc (color_property::color_property):
 	New arg A for alpha channel.  Set rgba instead of red, green, blue.
 	(color_property::color_property (char)): New constructor.
 	(color_propery::rgba): New data member.
@@ -16313,7 +16313,7 @@
 	look for file using parent function name.  Delete unused
 	variable NAMES.
 
-	* src/oct-stream.cc (octave_stream::do_gets): If no limit or not
+	* oct-stream.cc (octave_stream::do_gets): If no limit or not
 	at limit, read ahead one character at end of line for compatibility.
 	(octave_stream::gets, octave_stream::getl): Set max_len to -1 if
 	tc_max_len is not defined.
@@ -19433,7 +19433,7 @@
 
 2006-03-15  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
-	* src/data.cc (Frows, Fcolumns): New functions.
+	* data.cc (Frows, Fcolumns): New functions.
 
 	* DLD-FUNCTIONS/time.cc (Fstrptime, Fstrftime): Fix docstring.
 

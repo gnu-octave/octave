@@ -1,5 +1,9 @@
 2010-10-07  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/conv2.cc (convn): Style fixes.  Edit docstring.
+
+2010-10-07  John W. Eaton  <jwe@octave.org>
+
 	* file-io.cc (do_stream_open): Use fileno instead of ::fileno to
 	avoid problems if fileno is a macro.
 

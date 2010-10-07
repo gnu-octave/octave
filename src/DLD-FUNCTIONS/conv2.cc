@@ -52,25 +52,24 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
-@deftypefnx {Loadable Function} {y =} conv2 (@var{v1}, @var{v2}, @var{M}, @var{shape})\n\
-\n\
-Returns 2D convolution of @var{a} and @var{b} where the size\n\
+@deftypefnx {Loadable Function} {y =} conv2 (@var{v1}, @var{v2}, @var{m}, @var{shape})\n\
+Return the 2-D convolution of @var{a} and @var{b} where the size\n\
 of @var{c} is given by\n\
 \n\
 @table @asis\n\
-@item @var{shape} = 'full'\n\
-returns full 2-D convolution\n\
+@item @var{shape} = \"full\"\n\
+Return the full convolution.\n\
 \n\
-@item @var{shape} = 'same'\n\
-same size as a. 'central' part of convolution\n\
+@item @var{shape} = \"same\"\n\
+Return central part of the convolution with the same size as @var{a}.\n\
 \n\
-@item @var{shape} = 'valid'\n\
-only parts which do not include zero-padded edges\n\
+@item @var{shape} = \"valid\"\n\
+Return only the parts which do not include zero-padded edges.\n\
 @end table\n\
 \n\
-By default @var{shape} is 'full'.  When the third argument is a matrix\n\
-returns the convolution of the matrix @var{M} by the vector @var{v1}\n\
-in the column direction and by vector @var{v2} in the row direction\n\
+By default @var{shape} is @samp{\"full\"}.  When the third argument\n\
+is a matrix, return the convolution of the matrix @var{m} by the vector\n\
+@var{v1} in the column direction and by vector @var{v2} in the row direction\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -122,12 +121,10 @@ in the column direction and by vector @var{v2} in the row direction\n\
            return retval;
          }
 
-       if (args(0).is_single_type () || 
-           args(1).is_single_type () || 
-           args(2).is_single_type ())
+       if (args(0).is_single_type () || args(1).is_single_type ()
+           || args(2).is_single_type ())
          {
-           if (args(0).is_complex_type ()
-               || args(1).is_complex_type ()
+           if (args(0).is_complex_type () || args(1).is_complex_type ()
                || args(2).is_complex_type ())
              {
                FloatComplexMatrix a (args(2).float_complex_matrix_value ());
@@ -154,8 +151,7 @@ in the column direction and by vector @var{v2} in the row direction\n\
          }
        else
          {
-           if (args(0).is_complex_type ()
-               || args(1).is_complex_type ()
+           if (args(0).is_complex_type () || args(1).is_complex_type ()
                || args(2).is_complex_type ())
              {
                ComplexMatrix a (args(2).complex_matrix_value ());
@@ -183,11 +179,9 @@ in the column direction and by vector @var{v2} in the row direction\n\
      } // if (separable)
    else
      {
-       if (args(0).is_single_type () || 
-           args(1).is_single_type ())
+       if (args(0).is_single_type () || args(1).is_single_type ())
          {
-           if (args(0).is_complex_type ()
-               || args(1).is_complex_type ())
+           if (args(0).is_complex_type () || args(1).is_complex_type ())
              {
                FloatComplexMatrix a (args(0).float_complex_matrix_value ());
                if (args(1).is_real_type ())
@@ -210,8 +204,7 @@ in the column direction and by vector @var{v2} in the row direction\n\
          }
        else
          {
-           if (args(0).is_complex_type ()
-               || args(1).is_complex_type ())
+           if (args(0).is_complex_type () || args(1).is_complex_type ())
              {
                ComplexMatrix a (args(0).complex_matrix_value ());
                if (args(1).is_real_type ())
@@ -241,22 +234,21 @@ in the column direction and by vector @var{v2} in the row direction\n\
 DEFUN_DLD (convn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
-\n\
-Returns n-D convolution of @var{a} and @var{b} where the size\n\
+Return the n-D convolution of @var{a} and @var{b} where the size\n\
 of @var{c} is given by\n\
 \n\
 @table @asis\n\
-@item @var{shape} = 'full'\n\
-returns full n-D convolution\n\
+@item @var{shape} = \"full\"\n\
+Return the full convolution.\n\
 \n\
-@item @var{shape} = 'same'\n\
-same size as a. 'central' part of convolution\n\
+@item @var{shape} = \"same\"\n\
+Return central part of the convolution with the same size as @var{a}.\n\
 \n\
-@item @var{shape} = 'valid'\n\
-only parts which do not include zero-padded edges\n\
+@item @var{shape} = \"valid\"\n\
+Return only the parts which do not include zero-padded edges.\n\
 @end table\n\
 \n\
-By default @var{shape} is 'full'.\n\
+By default @var{shape} is @samp{\"full\"}.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -292,11 +284,9 @@ By default @var{shape} is 'full'.\n\
       return retval;
     }
 
-  if (args(0).is_single_type () || 
-      args(1).is_single_type ())
+  if (args(0).is_single_type () || args(1).is_single_type ())
     {
-      if (args(0).is_complex_type ()
-          || args(1).is_complex_type ())
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
         {
           FloatComplexNDArray a (args(0).float_complex_array_value ());
           if (args(1).is_real_type ())
@@ -319,8 +309,7 @@ By default @var{shape} is 'full'.\n\
     }
   else
     {
-      if (args(0).is_complex_type ()
-          || args(1).is_complex_type ())
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
         {
           ComplexNDArray a (args(0).complex_array_value ());
           if (args(1).is_real_type ())

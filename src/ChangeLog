@@ -1,3 +1,8 @@
+2010-10-07  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (do_stream_open): Use fileno instead of ::fileno to
+	avoid problems if fileno is a macro.
+
 2010-10-05  John W. Eaton  <jwe@octave.org>
 
 	* oct-stdstrm.h (octave_stdiostream::octave_stdiostream): Use

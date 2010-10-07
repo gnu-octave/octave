@@ -494,7 +494,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 
                   FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
 
-                  int fd = ::fileno (fptr);
+                  int fd = fileno (fptr);
 
                   gzFile gzf = ::gzdopen (fd, tmode.c_str ());
 

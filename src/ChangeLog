@@ -1,3 +1,7 @@
+2010-10-07  Rik <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/conv2.cc (convn): Update docstring.  Add 1 new test.
+
 2010-10-07  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/conv2.cc (convn): Style fixes.  Edit docstring.

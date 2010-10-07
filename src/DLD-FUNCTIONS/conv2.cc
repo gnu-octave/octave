@@ -46,30 +46,37 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 %!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6]),
 %!        [1,4,4;5,18,16;14,48,40;19,62,48;15,48,36;]);
+
+%!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
+%!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
+
 */
 
 
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
-@deftypefnx {Loadable Function} {y =} conv2 (@var{v1}, @var{v2}, @var{m}, @var{shape})\n\
-Return the 2-D convolution of @var{a} and @var{b} where the size\n\
-of @var{c} is given by\n\
+@deftypefn  {Loadable Function} {} conv2 (@var{a}, @var{b})\n\
+@deftypefnx {Loadable Function} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
+@deftypefnx {Loadable Function} {} conv2 (@dots{}, @var{shape})\n\
+Return the 2-D convolution of @var{a} and @var{b}.  The size of the result\n\
+is determined by the optional @var{shape} argument which takes the following\n\
+values\n\
 \n\
 @table @asis\n\
 @item @var{shape} = \"full\"\n\
-Return the full convolution.\n\
+Return the full convolution.  (default)\n\
 \n\
 @item @var{shape} = \"same\"\n\
-Return central part of the convolution with the same size as @var{a}.\n\
+Return the central part of the convolution with the same size as @var{a}.\n\
 \n\
 @item @var{shape} = \"valid\"\n\
 Return only the parts which do not include zero-padded edges.\n\
 @end table\n\
 \n\
-By default @var{shape} is @samp{\"full\"}.  When the third argument\n\
+When the third argument\n\
 is a matrix, return the convolution of the matrix @var{m} by the vector\n\
 @var{v1} in the column direction and by vector @var{v2} in the row direction\n\
+@seealso{conv, fftconv}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -18,28 +18,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} conv (@var{a}, @var{b}, @var{shape})
+## @deftypefn  {Function File} {} conv (@var{a}, @var{b})
+## @deftypefnx {Function File} {} conv (@var{a}, @var{b}, @var{shape})
 ## Convolve two vectors.
 ##
-## @code{y = conv (a, b)} returns a vector of length equal to
-## @code{length (a) + length (b) - 1}.
-## If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
-## returns the coefficients of the product polynomial.
+## @code{c = conv (@var{a}, @var{b})} returns a vector of length equal to
+## @code{length (@var{a}) + length (@var{b}) - 1}.
+## If @var{a} and @var{b} are the coefficient vectors of two polynomials, the
+## returned value is the coefficient vector of the product polynomial.
 ##
-## The optional @var{shape} parameter may be
+## The optional @var{shape} argument may be
 ##
 ## @table @asis
 ## @item @var{shape} = "full"
-## Return the full convolution.
+## Return the full convolution.  (default)
 ##
 ## @item @var{shape} = "same"
-## Return central part of the convolution with the same size as @var{a}.
+## Return the central part of the convolution with the same size as @var{a}.
 ## @end table
 ##
-## @noindent
-## By default, @var{shape} is @samp{"full"}.
-##
-## @seealso{deconv, poly, roots, residue, polyval, polyderiv, polyint}
+## @seealso{deconv, fftconv, conv2, poly}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -111,8 +109,7 @@ endfunction
 %!  assert (conv (x, c), [3; 3; 3]);
 %!  assert (conv (y, c), [3, 3, 3]);
 %!  assert (conv (b, c), 6);
-%!error conv ([1, 2; 3, 4], 3);
-%!error conv (2, []);
+
 
 %!test
 %!  a = 1:10;
@@ -134,6 +131,12 @@ endfunction
 %!test
 %!  a = 1:10;
 %!  b = 1:3;
+%!  assert (conv(a,b,"full"), conv(a,b))
+%!  assert (conv(b,a,"full"), conv(b,a))
+
+%!test
+%!  a = 1:10;
+%!  b = 1:3;
 %!  assert (conv(a,b,'same'), [4, 10, 16, 22, 28, 34, 40, 46, 52, 47])
 %!  assert (conv(b,a,'same'), [28, 34, 40])
 
@@ -142,3 +145,9 @@ endfunction
 %!  b = (1:3).';
 %!  assert (size(conv(a,b)), [1, numel(a)+numel(b)-1])
 %!  assert (size(conv(b,a)), [1, numel(a)+numel(b)-1])
+
+%% Test input validation
+%!error conv (1);
+%!error conv (1,2,3,4);
+%!error conv ([1, 2; 3, 4], 3);
+%!error conv (2, []);

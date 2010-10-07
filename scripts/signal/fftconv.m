@@ -18,14 +18,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fftconv (@var{a}, @var{b}, @var{n})
-## Return the convolution of the vectors @var{a} and @var{b}, as a vector
-## with length equal to the @code{length (a) + length (b) - 1}.  If @var{a}
-## and @var{b} are the coefficient vectors of two polynomials, the returned
-## value is the coefficient vector of the product polynomial.
+## @deftypefn  {Function File} {} fftconv (@var{a}, @var{b})
+## @deftypefnx {Function File} {} fftconv (@var{a}, @var{b}, @var{n})
+## Convolve two vectors using the FFT for computation.
+## 
+## @code{c = fftconv (@var{a}, @var{b})} returns a vector of length equal to
+## @code{length (@var{a}) + length (@var{b}) - 1}.
+## If @var{a} and @var{b} are the coefficient vectors of two polynomials, the
+## returned value is the coefficient vector of the product polynomial.
 ##
 ## The computation uses the FFT by calling the function @code{fftfilt}.  If
 ## the optional argument @var{n} is specified, an N-point FFT is used.
+## @seealso{deconv, conv, conv2}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -39,7 +43,7 @@ function c = fftconv (a, b, N)
   endif
 
   if (! (isvector (a) && isvector (b)))
-    error ("fftconv: both a and b should be vectors");
+    error ("fftconv: both A and B must be vectors");
   endif
   la = length (a);
   lb = length (b);
@@ -53,10 +57,12 @@ function c = fftconv (a, b, N)
       c = fftfilt (a, b);
     else
       if (! (isscalar (N)))
-        error ("fftconv: N has to be a scalar");
+        error ("fftconv: N must be a scalar");
       endif
       c = fftfilt (a, b, N);
     endif
   endif
 
 endfunction
+
+%% FIXME: Borrow tests from conv.m.  May need a tolerance on the assert comparison

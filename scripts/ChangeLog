@@ -1,3 +1,8 @@
+2010-10-07  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/conv.m: Handle optional third argument.  New
+	tests.  Update doc string.
+
 2010-10-06  Ben Abbott <bpabbott@mac.com>
 
 	* image/image.m: Allow x/ydata to imply a flip of the image.

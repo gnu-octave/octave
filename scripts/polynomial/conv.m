@@ -28,10 +28,10 @@
 ##
 ## The optional @var{shape} parameter may be
 ##
-## @table @asis\n\
+## @table @asis
 ## @item @var{shape} = "full"
 ## Return the full convolution.
-## \n\
+##
 ## @item @var{shape} = "same"
 ## Return central part of the convolution with the same size as @var{a}.
 ## @end table

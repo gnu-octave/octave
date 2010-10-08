@@ -1,3 +1,8 @@
+2010-10-08  Ben Abbott <bpabbott@mac.com>
+
+	* image/image.m, plot/__go_draw_axes__.m: Do not store flipped image
+	property values when x/ydata descends.
+
 2010-10-07  John W. Eaton  <jwe@octave.org>
 
 	* signal/periodogram.m: Fix parse errors.

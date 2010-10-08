@@ -453,6 +453,19 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
             have_cdata(data_idx) = false;
             have_3d_patch(data_idx) = false;
 
+            if (img_xdata(2) < img_xdata(1))
+              img_xdata = img_xdata(2:-1:1);
+              img_data = img_data(:,end:-1:1,:);
+            elseif (img_xdata(1) == img_xdata(2))
+              img_xdata = img_xdata(1) + [0, size(img_data,2)-1];
+            endif
+            if (img_ydata(2) < img_ydata(1))
+              img_ydata = img_ydata(2:-1:1);
+              img_data = img_data(end:-1:1,:,:);
+            elseif (img_ydata(1) == img_ydata(2))
+              img_ydata = img_ydata(1) + [0, size(img_data,1)-1];
+            endif
+
             [y_dim, x_dim] = size (img_data(:,:,1));
             if (x_dim > 1)
               dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
@@ -468,6 +481,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
               img_data = [img_data; img_data];
               dy = abs (img_ydata(2)-img_ydata(1));
             endif
+
             x_origin = min (img_xdata);
             y_origin = min (img_ydata);
 

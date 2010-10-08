@@ -96,6 +96,8 @@ public:
 
   virtual std::string original_text (void) const;
 
+  virtual void mark_braindead_shortcircuit (const std::string&) { }
+
   tree_expression *mark_in_parens (void)
     {
       num_parens++;

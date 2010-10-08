@@ -569,6 +569,7 @@ maximum_braindamage (void)
   bind_internal_variable ("confirm_recursive_rmdir", false);
   bind_internal_variable ("crash_dumps_octave_core", false);
   bind_internal_variable ("default_save_options", "-mat-binary");
+  bind_internal_variable ("do_braindead_shortcircuit_evaluation", true);
   bind_internal_variable ("fixed_point_format", true);
   bind_internal_variable ("history_timestamp_format_string",
                          "%%-- %D %I:%M %p --%%");
@@ -579,6 +580,7 @@ maximum_braindamage (void)
   disable_warning ("Octave:fopen-file-in-path");
   disable_warning ("Octave:function-name-clash");
   disable_warning ("Octave:load-file-in-path");
+  disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
 // You guessed it.

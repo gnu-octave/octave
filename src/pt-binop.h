@@ -46,18 +46,41 @@ public:
   tree_binary_expression (int l = -1, int c = -1,
                           octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-    : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t) { }
+    : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t),
+      eligible_for_braindead_shortcircuit (false) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
                           int l = -1, int c = -1,
                           octave_value::binary_op t
                             = octave_value::unknown_binary_op)
-    : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t) { }
+    : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t),
+      eligible_for_braindead_shortcircuit (false) { }
 
   ~tree_binary_expression (void)
     {
       delete op_lhs;
       delete op_rhs;
+    }
+
+  void mark_braindead_shortcircuit (const std::string& file)
+    {
+      if (etype == octave_value::op_el_and
+          || etype == octave_value::op_el_or)
+        {
+          if (file.empty ())
+            warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                             "possible Matlab-style short-circuit operator at line %d, column %d",
+                             line (), column ());
+          else
+            warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                             "%s: possible Matlab-style short-circuit operator at line %d, column %d",
+                             file.c_str (), line (), column ());
+
+          eligible_for_braindead_shortcircuit = true;
+
+          op_lhs->mark_braindead_shortcircuit (file);
+          op_rhs->mark_braindead_shortcircuit (file);
+        }
     }
 
   bool has_magic_end (void) const
@@ -96,6 +119,10 @@ private:
 
   // The type of the expression.
   octave_value::binary_op etype;
+
+  // TRUE if this is an | or & expression in the condition of an IF
+  // or WHILE statement.
+  bool eligible_for_braindead_shortcircuit;
 
   // No copying!
 

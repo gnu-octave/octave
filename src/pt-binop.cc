@@ -26,11 +26,17 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
+#include "defun.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "pt-binop.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
+#include "variables.h"
+
+// TRUE means we mark | and & expressions for braindead short-circuit
+// behavior.
+static bool Vdo_braindead_shortcircuit_evaluation;
 
 // Binary expressions.
  
@@ -55,6 +61,55 @@ tree_binary_expression::rvalue1 (int)
 
   if (error_state)
     return retval;
+
+  if (Vdo_braindead_shortcircuit_evaluation
+      && eligible_for_braindead_shortcircuit)
+    {
+      if (op_lhs)
+        {
+          octave_value a = op_lhs->rvalue1 ();
+
+          if (! error_state)
+            {
+              if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
+                {
+                  bool result = false;
+
+                  bool a_true = a.is_true ();
+
+                  if (! error_state)
+                    {
+                      if (a_true)
+                        {
+                          if (etype == octave_value::op_el_or)
+                            {
+                              result = true;
+                              goto done;
+                            }
+                        }
+                      else
+                        {
+                          if (etype == octave_value::op_el_and)
+                            goto done;
+                        }
+
+                      if (op_rhs)
+                        {
+                          octave_value b = op_rhs->rvalue1 ();
+
+                          if (! error_state)
+                            result = b.is_true ();
+                        }
+
+                    done:
+
+                      if (! error_state)
+                        return octave_value (result);
+                    }
+                }
+            }
+        }
+    }
 
   if (op_lhs)
     {
@@ -206,4 +261,22 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
   new_be->copy_base (*this);
 
   return new_be;
+}
+
+DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
+@deftypefnx  {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will\n\
+do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
+conditions of if or while statements.\n\
+\n\
+This feature is only provided for compatibility with Matlab and should\n\
+not be used unless you are porting old code that relies on this feature.\n\
+\n\
+To obtain short-circuit behavior for logical expressions in new programs,\n\
+you should always use the @samp{&&} and @samp{||} operators.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
 }

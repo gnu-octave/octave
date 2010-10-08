@@ -1066,7 +1066,11 @@ if_cmd_list     : if_cmd_list1
                 ;
 
 if_cmd_list1    : expression opt_sep opt_list
-                  { $$ = start_if_command ($1, $3); }
+                  {
+                    $1->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+
+                    $$ = start_if_command ($1, $3);
+                  }
                 | if_cmd_list1 elseif_clause
                   {
                     $1->append ($2);
@@ -1075,7 +1079,11 @@ if_cmd_list1    : expression opt_sep opt_list
                 ;
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression opt_sep opt_list
-                  { $$ = make_elseif_clause ($1, $4, $6, $2); }
+                  {
+                    $4->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+
+                    $$ = make_elseif_clause ($1, $4, $6, $2);
+                  }
                 ;
 
 else_clause     : ELSE stash_comment opt_sep opt_list
@@ -1129,6 +1137,8 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   {
+                    $3->mark_braindead_shortcircuit (curr_fcn_file_full_name);
+
                     if (! ($$ = make_while_command ($1, $3, $5, $6, $2)))
                       ABORT_PARSE;
                   }

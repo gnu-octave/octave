@@ -1,3 +1,24 @@
+2010-10-08  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (maximum_braindamage):
+	Set do_braindead_shortcircuit_evaluation to true.
+	Disable Octave:possible-matlab-short-circuit-operator warning.
+	* oct-parse.yy (if_cmd_list1, elseif_clause, loop_command):
+	Mark conditions in IF and WHILE statements for braindead
+	short-circuit behavior.
+	* pt-binop.cc (Vdo_braindead_shortcircuit_evaluation): New
+	static variable.
+	(Fdo_braindead_shortcircuit_evaluation): New function.
+	(tree_binary_expression::rvalue1): Perform short-circuit
+	evaluation of | and & expressions that are conditions of WHILE
+	and IF statements if Vdo_braindead_shortcircuit_evaluation is true.
+	* pt-binop.h
+	(tree_binary_expression::eligible_for_braindead_shortcircuit):
+	New data member.  Initialize it in class constructors.
+	(tree_binary_expression::mark_braindead_shortcircuit): New function.
+	* pt-exp.h (tree_expression::mark_braindead_shortcircuit):
+	New virtual function.
+
 2010-10-08  Ben Abbott <bpabbott@mac.com>
 
 	* graphics.h.in: Properly set image pixel size when unique(x/ydata)

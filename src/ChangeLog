@@ -1,3 +1,8 @@
+2010-10-08  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.h.in: Properly set image pixel size when unique(x/ydata)
+	is scalar.
+
 2010-10-07  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/conv2.cc (convn): Update docstring.  Add 1 new test.

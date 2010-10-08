@@ -3466,7 +3466,7 @@ public:
       octave_idx_type l = dim - 1;
       float dp;
 
-      if (l > 0)
+      if (l > 0 && limits(0) != limits(1))
         dp = (limits(1) - limits(0))/(2*l);
       else
         {

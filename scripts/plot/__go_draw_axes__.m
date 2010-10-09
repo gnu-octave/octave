@@ -1642,18 +1642,9 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         lt = "";
     endswitch
 
-    ## FIXME -- linetype is currently broken, since it disables the
-    ## gnuplot default dashed and solid linestyles with the only
-    ## benefit of being able to specify '--' and get a single sized
-    ## dashed line of identical dash pattern for all called this way.
-    ## All dash patterns are a subset of "with lines" and none of the
-    ## lt specifications will correctly propagate into the x11 terminal
-    ## or the print command.   Therefore, it is currently disabled in
-    ## order to allow print (..., "-dashed") etc. to work correctly.
-
-    ##    if (! isempty (lt))
-    ##      fprintf (plot_stream, " linetype %s", lt);
-    ##    endif
+    if (! isempty (lt))
+      fprintf (plot_stream, " linetype %s", lt);
+    endif
 
   else
     lt = "";
@@ -1680,7 +1671,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     else
       style {sidx} = "lines";
     endif
-    
+
     facesame = true;
     if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
         && !strncmp (obj.markerfacecolor, "none", 4))

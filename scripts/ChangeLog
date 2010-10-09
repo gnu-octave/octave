@@ -1,3 +1,7 @@
+2010-10-09  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Enable linetypes for gnuplot.
+
 2010-10-09  John W. Eaton  <jwe@octave.org>
 
 	* statistics/distributions/geornd.m,

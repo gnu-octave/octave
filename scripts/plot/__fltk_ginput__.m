@@ -49,7 +49,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
       sleep (0.01);
 
       [x, y, n0] = ginput_aggregator (-1, 0, 0);
-      if (n0 == n | n0 < 0)
+      if (n0 == n || n0 < 0)
         break;
       endif
     endwhile

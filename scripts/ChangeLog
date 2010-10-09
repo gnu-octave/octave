@@ -1,3 +1,7 @@
+2010-10-09  John W. Eaton  <jwe@octave.org>
+
+	* plot/__fltk_ginput__.m: Use || instead of | in IF condition.
+
 2010-10-08  Ben Abbott <bpabbott@mac.com>
 
 	* image/image.m, plot/__go_draw_axes__.m: Do not store flipped image

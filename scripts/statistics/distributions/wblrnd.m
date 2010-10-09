@@ -77,7 +77,7 @@ function rnd = wblrnd (scale, shape, r, c)
   endif
 
   if (isscalar (shape) && isscalar (scale))
-    if ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf))
+    if (shape > 0 && shape < Inf && scale > 0 && scale < Inf)
       rnd = scale .* rande(sz) .^ (1./shape);
     else
       rnd = NaN (sz);

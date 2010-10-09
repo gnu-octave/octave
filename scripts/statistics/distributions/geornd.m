@@ -67,11 +67,11 @@ function rnd = geornd (p, r, c)
 
 
   if (isscalar (p))
-    if (!(p >= 0) || !(p <= 1))
+    if (p < 0 || p > 1)
       rnd = NaN (sz);
     elseif (p == 0)
       rnd = Inf (sz);
-    elseif ((p > 0) & (p < 1));
+    elseif (p > 0 && p < 1);
       rnd = floor (- rande(sz) ./ log (1 - p));
     else
       rnd = zeros (sz);

@@ -1,5 +1,15 @@
 2010-10-09  John W. Eaton  <jwe@octave.org>
 
+	* statistics/distributions/geornd.m,
+	* statistics/distributions/hygecdf.m,
+	* statistics/distributions/hygeinv.m,
+	* statistics/distributions/poissrnd.m, 
+	* statistics/distributions/wblrnd.m:
+	Use || instead of | and && instead of & in IF conditions
+	involving scalars.
+
+2010-10-09  John W. Eaton  <jwe@octave.org>
+
 	* plot/__fltk_ginput__.m: Use || instead of | in IF condition.
 
 2010-10-08  Ben Abbott <bpabbott@mac.com>

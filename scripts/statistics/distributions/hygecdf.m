@@ -42,8 +42,8 @@ function cdf = hygecdf (x, t, m, n)
     error ("hygecdf: t, m and n must all be positive integers");
   endif
 
-  if ((t < 0) | (m < 0) | (n <= 0) | (t != round (t)) |
-      (m != round (m)) | (n != round (n)) | (m > t) | (n > t))
+  if (t < 0 || m < 0 || n <= 0 || t != round (t) || m != round (m)
+      || n != round (n) || m > t || n > t)
     cdf = NaN (size (x))
   else
     cdf = discrete_cdf (x, 0 : n, hygepdf (0 : n, t, m, n));

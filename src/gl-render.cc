@@ -2703,8 +2703,15 @@ opengl_renderer::draw_image (const image::properties& props)
   int h = dv(0), w = dv(1);
   bool ok = true;
   
-  const Matrix x = props.get_xdata ().matrix_value ();
-  const Matrix y = props.get_ydata ().matrix_value ();
+  Matrix x = props.get_xdata ().matrix_value ();
+  Matrix y = props.get_ydata ().matrix_value ();
+
+  if (w > 1 && x(1) == x(0)) 
+    x(1) = x(1) + (w-1);
+
+  if (h > 1 && y(1) == y(0)) 
+    y(1) = y(1) + (h-1);
+
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
 

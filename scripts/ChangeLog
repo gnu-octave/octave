@@ -1,3 +1,8 @@
+2010-10-14  John W. Eaton  <jwe@octave.org>
+
+	* set/unique.m: Remove check for issparse existence since it is
+	now a built-in function.
+
 2010-10-14  Ben Abbott <bpabbott@mac.com>
 
 	* strings/strjust.m: Clarify that justification  applies to spaces and

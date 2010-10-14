@@ -1,3 +1,11 @@
+2010-10-14  John W. Eaton  <jwe@octave.org>
+
+	* sparse.cc: Rename from DLD-FUNCTIONS/sparse.cc.  Include
+	defun.h, not defun-dld.h.
+	(Fissparse, Fsparse, Fspalloc): Use DEFUN, not DEFUN_DLD.
+	* Makefile.am (DIST_SRC): Add sparse.cc to the list.
+	* DLD-FUNCTIONS/module-files: Remove sparse.cc from the list of files.
+
 2010-10-09  Ben Abbott <bpabbott@mac.com>
 
 	* gl-render.cc: Treat images with scalar unique(x/ydata) like Matlab.

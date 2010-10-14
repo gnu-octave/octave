@@ -82,20 +82,14 @@ function [y, i, j] = unique (x, varargin)
   ## fast as for full matrices, operate on the nonzero elements of the
   ## sparse array as long as we are not operating on rows.
 
-  ## FIXME -- unique is called when PKG_ADD files are parsed, but
-  ## issparse is not yet available because it is coming from a .oct
-  ## file?!?
-
-  if (exist ("issparse"))
-    if (issparse (x) && ! optrows && nargout <= 1)
-      if (nnz (x) < numel (x)) 
-        y = unique ([0; (full (nonzeros (x)))], varargin{:});
-      else
-        ## Corner case where sparse matrix is actually full
-        y = unique (full (x), varargin{:});
-      endif
-      return;
+  if (issparse (x) && ! optrows && nargout <= 1)
+    if (nnz (x) < numel (x)) 
+      y = unique ([0; (full (nonzeros (x)))], varargin{:});
+    else
+      ## Corner case where sparse matrix is actually full
+      y = unique (full (x), varargin{:});
     endif
+    return;
   endif
 
   if (optrows)

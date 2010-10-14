@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "utils.h"
 #include "pager.h"
-#include "defun-dld.h"
+#include "defun.h"
 #include "gripes.h"
 #include "quit.h"
 #include "unwind-prot.h"
@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 #include "ov-bool-sparse.h"
 
-DEFUN_DLD (issparse, args, ,
+DEFUN (issparse, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} issparse (@var{expr})\n\
 Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
@@ -56,7 +56,7 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
      return octave_value (args(0).is_sparse_type ());
 }
 
-DEFUN_DLD (sparse, args, ,
+DEFUN (sparse, args, ,
     "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{s} =} sparse (@var{a})\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
@@ -205,7 +205,7 @@ to have a common size.\n\
    return retval;
 }
 
-DEFUN_DLD (spalloc, args, ,
+DEFUN (spalloc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
 Creates a @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\

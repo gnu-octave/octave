@@ -434,6 +434,7 @@ DIST_SRC = \
   procstream.cc \
   sighandlers.cc \
   siglist.c \
+  sparse.cc \
   sparse-xdiv.cc \
   sparse-xpow.cc \
   strfns.cc \

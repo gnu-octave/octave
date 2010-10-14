@@ -1,3 +1,8 @@
+2010-10-14  Ben Abbott <bpabbott@mac.com>
+
+	* strings/strjust.m: Clarify that justification  applies to spaces and
+	null characters.
+
 2010-10-09  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Enable linetypes for gnuplot.

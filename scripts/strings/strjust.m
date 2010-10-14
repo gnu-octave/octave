@@ -18,12 +18,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strjust (@var{s}, ["left"|"right"|"center"])
-## Shift the non-blank text of @var{s} to the left, right or center of
-## the string.  If @var{s} is a string array, justify each string in the
-## array.  Null characters are replaced by blanks.  If no justification
-## is specified, then all rows are right-justified.  For example:
+## @deftypefn {Function File} strjust (@var{s})
+## @deftypefnx {Function File} strjust (@var{s}, "right")
+## Returns the text, S, justified to the right.
 ##
+## @deftypefnx {Function File} strjust (@var{s}, "left")
+## Returns left justified text.
+##
+## @deftypefnx {Function File} strjust (@var{s}, "center")
+## Returns center justified text.
+##
+## Null characters are replaced by spaces. All other character
+## data are treated as non-white space.
+##
+## Example:
 ## @example
 ## @group
 ## strjust (["a"; "ab"; "abc"; "abcd"])
@@ -34,6 +42,7 @@
 ##         abcd
 ## @end group
 ## @end example
+## @seealso{deblank, strtrim}
 ## @end deftypefn
 
 function y = strjust (x, just)

@@ -1,5 +1,12 @@
 2010-10-14  John W. Eaton  <jwe@octave.org>
 
+	* special-matrix/rosser.m: New tests.
+	* special-matrix/wilkinson.m: Fix error message.  New tests.
+	* special-matrix/pascal.m: Error if T is out of range.
+	New tests.
+
+2010-10-14  John W. Eaton  <jwe@octave.org>
+
 	* set/unique.m: Remove check for issparse existence since it is
 	now a built-in function.
 

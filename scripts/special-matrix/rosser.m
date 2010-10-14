@@ -18,7 +18,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rosser ()
-##
 ## Return the Rosser matrix.  This is a difficult test case used to evaluate
 ## eigenvalue algorithms.
 ##
@@ -44,3 +43,6 @@ function retval = rosser ()
             -49,    -8,     8,    59,   208,   208,    99,  -911;
              29,   -44,    52,   -23,   208,   208,  -911,    99];
 endfunction
+
+%!assert (size(rosser()), [8,8])
+%!error (rosser(1))

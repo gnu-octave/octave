@@ -20,7 +20,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} pascal (@var{n})
 ## @deftypefnx {Function File} {} pascal (@var{n}, @var{t})
-##
 ## Return the Pascal matrix of order @var{n} if @code{@var{t} = 0}.
 ## @var{t} defaults to 0.  Return lower triangular Cholesky factor of 
 ## the Pascal matrix if @code{@var{t} = 1}.  This matrix is its own
@@ -52,6 +51,10 @@ function retval = pascal (n, t)
     error ("pascal: expecting scalar arguments, found something else");
   endif
 
+  if (t < -1 || t > 2)
+    error ("pascal: expecting t to be -1, 0, 1, or 2, found %d", t);
+  endif
+
   retval = zeros (n);
   retval(:,1) = 1;
 
@@ -78,3 +81,13 @@ function retval = pascal (n, t)
   endif
 
 endfunction
+
+%!assert (pascal(3,-1), [1,0,0;1,1,0;1,2,1])
+%!assert (pascal(3,0), [1,1,1;1,2,3;1,3,6])
+%!assert (pascal(3,0), pascal(3))
+%!assert (pascal(3,1), [1,0,0;1,-1,0;1,-2,1])
+%!assert (pascal(3,2), [0,0,-1;0,-1,2;-1,-1,1])
+%!error (pascal(3,4))
+%!error (pascal(3,-2))
+%!error (pascal())
+%!error (pascal(1,2,3))

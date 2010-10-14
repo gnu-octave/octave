@@ -18,7 +18,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} wilkinson (@var{n})
-##
 ## Return the Wilkinson matrix of order @var{n}.  Wilkinson matrices are
 ## symmetric and tridiagonal with pairs of nearly, but not exactly, equal
 ## eigenvalues.
@@ -37,7 +36,7 @@ function retval = wilkinson (n)
   endif
 
   if (! (isscalar (n) && (n == fix (n)) && n > 0))
-    error ("wilkinson: N must be an integer greater than 1");
+    error ("wilkinson: N must be an integer greater than 0");
   endif
 
   side = ones (n-1, 1);
@@ -45,3 +44,10 @@ function retval = wilkinson (n)
   retval = diag (side, -1) + diag (center) + diag (side, 1);
 
 endfunction
+
+%!assert (wilkinson(1), [])
+%!assert (wilkinson(2), [0.5,1;1,0.5])
+%!assert (wilkinson(3), [1,1,0;1,0,1;0,1,1])
+%!assert (wilkinson(4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])
+%!error (wilkinson())
+%!error (wilkinson(1,2))

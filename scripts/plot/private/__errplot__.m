@@ -34,6 +34,8 @@ function h = __errplot__ (fstr, p, varargin)
 
   [fmt, key] = __pltopt__ ("__errplot__", fstr);
 
+  fmt
+
   [len, nplots] = size (varargin{1});
   h = [];
 
@@ -53,7 +55,7 @@ function h = __errplot__ (fstr, p, varargin)
     elseif (strcmp (fmt.errorstyle, "#~>"))
       ifmt = "boxxy";
     else
-      ifmt = "~";
+      ifmt = "yerr";
     endif
 
     hg = hggroup ("parent", p);

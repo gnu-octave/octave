@@ -1,3 +1,8 @@
+2010-10-16  Ben Abbott <bpabbott@mac.com>
+
+	* plot/private/__errplot__.m, plot/errorbar.m: Allow line and marker
+	types to be set.
+
 2010-10-14  John W. Eaton  <jwe@octave.org>
 
 	* special-matrix/rosser.m: New tests.

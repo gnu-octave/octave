@@ -52,8 +52,9 @@
 ## If @var{fmt} is missing, yerrorbars ("~") plot style is assumed.
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as in
-## normal plots.  In addition the following plot styles are supported by
-## errorbar:
+## normal plots. In addition, @var{fmt} may include an errorbar style
+## which must preceed the line and marker format.  The following plot
+## styles are supported by errorbar:
 ##
 ## @table @samp
 ## @item ~
@@ -154,7 +155,7 @@ endfunction
 %! err = x/100; 
 %! y1 = sin (x); 
 %! y2 = cos (x); 
-%! hg = errorbar (x, y1, err, err, "#", x, y2, err, err, "#~");
+%! hg = errorbar (x, y1, err, err, "#r", x, y2, err, err, "#~");
 
 %!demo
 %! x = 0:0.5:2*pi; 
@@ -162,6 +163,5 @@ endfunction
 %! y1 = sin (x); 
 %! y2 = cos (x); 
 %! hg = errorbar (x, y1, err, err, err, err, "~>", ...
-%!                x, y2, err, err, err, err, "#~>");
-%! set (hg(2), "marker", "*")
+%!                x, y2, err, err, err, err, "#~>-*");
 

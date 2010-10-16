@@ -141,6 +141,8 @@ public:
 
   int is_double (void) const = 0;
 
+  int is_function_handle (void) const = 0;
+
   int is_int16 (void) const = 0;
 
   int is_int32 (void) const = 0;
@@ -342,6 +344,8 @@ public:
   int is_complex (void) const { return val.is_complex_type (); }
 
   int is_double (void) const { return val.is_double_type (); }
+
+  int is_function_handle (void) const { return val.is_function_handle (); }
 
   int is_int16 (void) const { return val.is_int16_type (); }
 
@@ -786,6 +790,8 @@ public:
   int is_complex (void) const { return 0; }
 
   int is_double (void) const { return id == mxDOUBLE_CLASS; }
+
+  int is_function_handle (void) const { return id == mxFUNCTION_CLASS; }
 
   int is_int16 (void) const { return id == mxINT16_CLASS; }
 
@@ -2646,6 +2652,12 @@ int
 mxIsDouble (const mxArray *ptr)
 {
   return ptr->is_double ();
+}
+
+int
+mxIsFunctionHandle (const mxArray *ptr)
+{
+  return ptr->is_function_handle ();
 }
 
 int

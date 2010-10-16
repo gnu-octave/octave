@@ -146,6 +146,7 @@ extern OCTINTERP_API int mxIsChar (const mxArray *ptr);
 extern OCTINTERP_API int mxIsClass (const mxArray *ptr, const char *name);
 extern OCTINTERP_API int mxIsComplex (const mxArray *ptr);
 extern OCTINTERP_API int mxIsDouble (const mxArray *ptr);
+extern OCTINTERP_API int mxIsFunctionHandle (const mxArray *ptr);
 extern OCTINTERP_API int mxIsInt16 (const mxArray *ptr);
 extern OCTINTERP_API int mxIsInt32 (const mxArray *ptr);
 extern OCTINTERP_API int mxIsInt64 (const mxArray *ptr);

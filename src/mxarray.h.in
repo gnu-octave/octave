@@ -184,6 +184,8 @@ public:
 
   virtual int is_double (void) const { return rep->is_double (); }
 
+  virtual int is_function_handle (void) const { return rep->is_function_handle (); }
+
   virtual int is_int16 (void) const { return rep->is_int16 (); }
 
   virtual int is_int32 (void) const { return rep->is_int32 (); }

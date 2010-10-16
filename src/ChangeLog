@@ -1,3 +1,12 @@
+2010-10-16  John W. Eaton  <jwe@octave.org>
+
+	* mxarray.h.in (mxArray::is_function_handle): New virtual function.
+	* mex.cc (mxArray_base::is_function_handle): New pure virtual function.
+	(mxArray_octave_value::is_function_handle): New function.
+	(mxArray_matlab::is_function_handle): New function.
+	(mxIsFunctionHandle): New function.
+	* mexproto.h (mxIsFunctionHandle): Provide decl.
+
 2010-10-14  John W. Eaton  <jwe@octave.org>
 
 	* sparse.cc: Rename from DLD-FUNCTIONS/sparse.cc.  Include

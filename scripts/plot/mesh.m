@@ -18,14 +18,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} mesh (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} mesh (@var{z})
+## @deftypefnx {Function File} {} mesh (@dots{}, @var{c})
+## @deftypefnx {Function File} {} mesh (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} = } mesh (@dots{})
 ## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
-## @seealso{meshgrid, contour}
+##
+## The color of the mesh is derirved from the @code{colormap}
+## and the value of @var{z}. Optionally the color of the mesh can be
+## specified independent of of @var{z}, by adding a fourth matrix, @var{c}.
+## @seealso{colormap, contour, meshgrid, surf}
 ## @end deftypefn
 
 ## Author: jwe

@@ -1,3 +1,8 @@
+2010-10-17  Ben Abbott <bpabbott@mac.com>
+
+	* plot/mesh.m, plot/surf.m: Include the 4th input (color) in the
+	docstring.
+
 2010-10-16  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__errplot__.m, plot/errorbar.m: Allow line and marker

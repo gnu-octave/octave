@@ -1,3 +1,7 @@
+2010-10-18  Ben Abbott <bpabbott@mac.com>
+
+	* strings/untabify.m: New function to untabify text.
+
 2010-10-17  Ben Abbott <bpabbott@mac.com>
 
 	* plot/mesh.m, plot/surf.m: Include the 4th input (color) in the

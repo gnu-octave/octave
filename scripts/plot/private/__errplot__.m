@@ -34,8 +34,6 @@ function h = __errplot__ (fstr, p, varargin)
 
   [fmt, key] = __pltopt__ ("__errplot__", fstr);
 
-  fmt
-
   [len, nplots] = size (varargin{1});
   h = [];
 

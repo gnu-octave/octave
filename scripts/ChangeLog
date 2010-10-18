@@ -1,3 +1,8 @@
+2010-10-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/private/__errplot__.m: Remove debugging statement from
+	previous change.
+
 2010-10-17  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/edit.m: Use version 3 in GPL notice.

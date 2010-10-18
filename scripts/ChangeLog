@@ -1,3 +1,8 @@
+2010-10-18  Gunnar Farneback <gunnar@lysator.liu.se>
+
+	* general/interp2.m: Fix input checks for cubic
+	interpolation (bug #31352, part 1).
+
 2010-10-18  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: Add examples to the docstring.

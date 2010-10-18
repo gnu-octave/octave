@@ -326,7 +326,7 @@ function ZI = interp2 (varargin)
     if (isvector (X) && isvector (Y))
       X = X(:).';
       Y = Y(:);
-      if (!isequal ([length(X), length(Y)], size(Z)))
+      if (!isequal ([length(Y), length(X)], size(Z)))
         error ("interp2: X and Y size must match Z dimensions");
       endif
     elseif (!size_equal (X, Y))

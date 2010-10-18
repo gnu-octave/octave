@@ -1,3 +1,10 @@
+2010-10-17  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/tril.cc: Use Octave copyright notice instead of
+	generic "This program is free software" notice.
+
+	* toplev.cc (Fwarranty): Say "GNU Octave" instead of "This program".
+
 2010-10-16  John W. Eaton  <jwe@octave.org>
 
 	* mxarray.h.in (mxArray::is_function_handle): New virtual function.

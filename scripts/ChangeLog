@@ -1,3 +1,27 @@
+2010-10-17  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/edit.m: Use version 3 in GPL notice.
+
+	* @ftp/ascii.m, @ftp/binary.m, @ftp/cd.m, @ftp/close.m,
+	@ftp/delete.m, @ftp/dir.m, @ftp/display.m, @ftp/ftp.m,
+	@ftp/loadobj.m, @ftp/mget.m, @ftp/mkdir.m, @ftp/mput.m,
+	@ftp/rename.m, @ftp/rmdir.m, @ftp/saveobj.m,
+	help/__makeinfo__.m, help/__strip_html_tags__.m,
+	help/gen_doc_cache.m, help/get_first_help_sentence.m,
+	help/help.m, help/lookfor.m, help/print_usage.m,
+	help/private/__additional_help_message__.m, help/type.m,
+	help/which.m, io/fileread.m, io/strread.m, io/textread.m,
+	pkg/get_forge_pkg.m, plot/__gnuplot_has_feature__.m,
+	plot/__gnuplot_open_stream__.m, plot/__marching_cube__.m,
+	plot/cla.m, plot/comet.m, plot/daspect.m, plot/isocolors.m,
+	plot/isonormals.m, plot/isosurface.m, plot/pbaspect.m,
+	plot/private/__interp_cube__.m, plot/private/__ghostscript__.m,
+	plot/private/__tight_eps_bbox__.m,
+	plot/private/__gnuplot_has_terminal__.m,
+	polynomial/polyaffine.m, sparse/svds.m, strings/strsplit.m:
+	Use Octave copyright notice instead of generic "This program is
+	free software" notice.
+
 2010-10-18  Ben Abbott <bpabbott@mac.com>
 
 	* strings/untabify.m: New function to untabify text.

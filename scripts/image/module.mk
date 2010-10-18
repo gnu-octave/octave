@@ -16,7 +16,6 @@ image_FCN_FILES = \
   image/hsv.m \
   image/hsv2rgb.m \
   image/image.m \
-  image/image_viewer.m \
   image/imagesc.m \
   image/imfinfo.m \
   image/imread.m \

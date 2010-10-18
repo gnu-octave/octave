@@ -405,10 +405,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
     endif
     addedcmap = [];
 
-    [view_cmd, view_fcn, view_zoom] = image_viewer ();
-    use_gnuplot_for_images = (ischar (view_fcn)
-                              && strcmpi (view_fcn, "gnuplot_internal"));
-
     ximg_data = {};
     ximg_data_idx = 0;
 
@@ -440,69 +436,63 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
           img_xdata = obj.xdata;
           img_ydata = obj.ydata;
 
-          if (use_gnuplot_for_images)
-
-            if (ndims (img_data) == 3)
-              truecolor = true;
-            elseif (strcmpi (obj.cdatamapping, "direct"))
-              cdatadirect = true;
-            endif
-            data_idx++;
-            is_image_data(data_idx) = true;
-            parametric(data_idx) = false;
-            have_cdata(data_idx) = false;
-            have_3d_patch(data_idx) = false;
-
-            if (img_xdata(2) < img_xdata(1))
-              img_xdata = img_xdata(2:-1:1);
-              img_data = img_data(:,end:-1:1,:);
-            elseif (img_xdata(1) == img_xdata(2))
-              img_xdata = img_xdata(1) + [0, size(img_data,2)-1];
-            endif
-            if (img_ydata(2) < img_ydata(1))
-              img_ydata = img_ydata(2:-1:1);
-              img_data = img_data(end:-1:1,:,:);
-            elseif (img_ydata(1) == img_ydata(2))
-              img_ydata = img_ydata(1) + [0, size(img_data,1)-1];
-            endif
-
-            [y_dim, x_dim] = size (img_data(:,:,1));
-            if (x_dim > 1)
-              dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
-            else
-              x_dim = 2;
-              img_data = [img_data, img_data];
-              dx = abs (img_xdata(2)-img_xdata(1));
-            endif
-            if (y_dim > 1)
-              dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
-            else
-              y_dim = 2;
-              img_data = [img_data; img_data];
-              dy = abs (img_ydata(2)-img_ydata(1));
-            endif
-
-            x_origin = min (img_xdata);
-            y_origin = min (img_ydata);
-
-            if (ndims (img_data) == 3)
-              data{data_idx} = permute (img_data, [3, 1, 2])(:);
-              format = "1:2:3";
-              imagetype = "rgbimage";
-            else
-              data{data_idx} = img_data(:);
-              format = "1";
-              imagetype = "image";
-            endif
-
-            titlespec{data_idx} = "title \"\"";
-            usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
-                x_dim, y_dim, x_origin, y_origin, dx, dy, format);
-            withclause{data_idx} = sprintf ("with %s;", imagetype);
-
-          else
-            ximg_data{++ximg_data_idx} = img_data;
+          if (ndims (img_data) == 3)
+            truecolor = true;
+          elseif (strcmpi (obj.cdatamapping, "direct"))
+            cdatadirect = true;
           endif
+          data_idx++;
+          is_image_data(data_idx) = true;
+          parametric(data_idx) = false;
+          have_cdata(data_idx) = false;
+          have_3d_patch(data_idx) = false;
+
+          if (img_xdata(2) < img_xdata(1))
+            img_xdata = img_xdata(2:-1:1);
+            img_data = img_data(:,end:-1:1,:);
+          elseif (img_xdata(1) == img_xdata(2))
+            img_xdata = img_xdata(1) + [0, size(img_data,2)-1];
+          endif
+          if (img_ydata(2) < img_ydata(1))
+            img_ydata = img_ydata(2:-1:1);
+            img_data = img_data(end:-1:1,:,:);
+          elseif (img_ydata(1) == img_ydata(2))
+            img_ydata = img_ydata(1) + [0, size(img_data,1)-1];
+          endif
+
+          [y_dim, x_dim] = size (img_data(:,:,1));
+          if (x_dim > 1)
+            dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
+          else
+            x_dim = 2;
+            img_data = [img_data, img_data];
+            dx = abs (img_xdata(2)-img_xdata(1));
+          endif
+          if (y_dim > 1)
+            dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
+          else
+            y_dim = 2;
+            img_data = [img_data; img_data];
+            dy = abs (img_ydata(2)-img_ydata(1));
+          endif
+
+          x_origin = min (img_xdata);
+          y_origin = min (img_ydata);
+
+          if (ndims (img_data) == 3)
+            data{data_idx} = permute (img_data, [3, 1, 2])(:);
+            format = "1:2:3";
+            imagetype = "rgbimage";
+          else
+            data{data_idx} = img_data(:);
+            format = "1";
+            imagetype = "image";
+          endif
+
+          titlespec{data_idx} = "title \"\"";
+          usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
+              x_dim, y_dim, x_origin, y_origin, dx, dy, format);
+          withclause{data_idx} = sprintf ("with %s;", imagetype);
 
         case "line"
           if (strncmp (obj.linestyle, "none", 4)
@@ -1479,12 +1469,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
       fputs (plot_stream, "unset key;\n");
     endif
     fputs (plot_stream, "set style data lines;\n");
-
-    if (! use_gnuplot_for_images)
-      for i = 1:ximg_data_idx
-        view_fcn (xlim, ylim, ximg_data{i}, view_zoom, view_cmd);
-      endfor
-    endif
 
     cmap = [cmap; addedcmap];
     cmap_sz = cmap_sz + rows(addedcmap);

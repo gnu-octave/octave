@@ -82,19 +82,13 @@ file.
 
 A natural part of image processing is visualization of an image.
 The most basic function for this is the @code{imshow} function that
-shows the image given in the first input argument.  This function uses
-an external program to show the image.  If gnuplot 4.2 or later is 
-available it will be used to display the image, otherwise the
-@code{display}, @code{xv}, or @code{xloadimage} program is used.  The
-actual program can be selected with the @code{image_viewer} function.
+shows the image given in the first input argument.
 
 @DOCSTRING(imshow)
 
 @DOCSTRING(image)
 
 @DOCSTRING(imagesc)
-
-@DOCSTRING(image_viewer)
 
 @node Representing Images
 @section Representing Images

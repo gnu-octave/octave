@@ -24,11 +24,6 @@
 ## into the current colormap, and the colormap will be scaled so that the
 ## extremes of @var{x} are mapped to the extremes of the colormap.
 ##
-## It first tries to use @code{gnuplot}, then @code{display} from 
-## @code{ImageMagick}, then @code{xv}, and then @code{xloadimage}.
-## The actual program used can be changed using the @code{image_viewer}
-## function.
-##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
@@ -37,11 +32,11 @@
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the
-## @code{ydir} property to "reverse".  This has implications whenever
+## @code{ydir} property to @code{"reverse"}.  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
-## @seealso{imshow, imagesc, colormap, image_viewer}
+## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

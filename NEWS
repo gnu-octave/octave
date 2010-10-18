@@ -225,7 +225,6 @@ Summary of important user-visible changes for version 3.3:
     from a function using the built-in function `isargout'.
     For more details, consult the manual.
 
-
  ** The list datatype, deprecated since the introduction of cells, has
     been removed.
 
@@ -323,7 +322,11 @@ Summary of important user-visible changes for version 3.3:
       cbrt         ifelse       onCleanup    randi        whitebg
       chop         ishermitian  pbaspect     repelems     
       daspect      isindex      powerset     reset
-  
+
+  ** Using the image function to view images with external programs such
+     as display, xv, and xloadimage is no longer supported.  The
+     image_viewer function has also been removed.
+
   ** The behavior of struct assignments to non-struct values has been changed.
      Previously, it was possible to overwrite an arbitrary value:
       

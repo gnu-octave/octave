@@ -1,3 +1,11 @@
+2010-10-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Always use gnuplot to display images.
+	* image/image.m: Delete references to image_viewer.
+	* image/image_viewer.m: Delete obsolete function.
+	* image/module.mk (image_FCN_FILES): Remove image/image_viewer.m
+	from the list.
+
 2010-10-18  Gunnar Farneback <gunnar@lysator.liu.se>
 
 	* general/interp2.m: Fix input checks for cubic

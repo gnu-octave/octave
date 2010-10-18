@@ -41,7 +41,7 @@ function opts = __gnuplot_print__ (opts)
     else
       opts.fontsize = axesfontsize;
     endif
-  end
+  endif
   ## The axes-label and tick-label spacing is determined by
   ## the font spec given in "set terminal ..."
   gp_opts = font_spec (opts);

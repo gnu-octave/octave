@@ -1,3 +1,10 @@
+2010-10-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* general/gradient.m, linear-algebra/normest.m,	plot/__gnuplot_print__.m,
+	plot/__print_parse_opts__.m, plot/daspect.m,
+	plot/gnuplot_drawnow.m, plot/pbaspect.m, plot/print.m,
+	signal/periodogram.m: Style fix, replace end by endfor.
+
 2010-10-18  Marco Caliari <marco.caliari@univr.it>
 
 	* polynomial/polyval.m: Use Horner's method.

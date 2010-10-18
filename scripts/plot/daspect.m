@@ -57,7 +57,7 @@ function varargout = daspect (varargin)
             return
           else
             error ("daspect: only one output is allowed.")
-          end
+          endif
         case {"manual"}
           set (hax, "dataaspectratiomode", "manual");
         case {"auto"}
@@ -74,13 +74,13 @@ function varargout = daspect (varargin)
     endif
   elseif (nargout == 0)
     print_usage ();
-  end
+  endif
 
   if (nargout == 1)
     varargout{1} = get (hax, "dataaspectratio");
   elseif (nargout > 1)
     error ("daspect: only one output is allowed.")
-  end
+  endif
 
 endfunction
 

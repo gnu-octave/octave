@@ -122,7 +122,7 @@ function varargout = matrix_gradient (m, varargin)
     ## have spacing value for each dimension
     if (length(varargin) != nd)
       error ("gradient: dimensions and number of spacing values do not match.");
-    end
+    endif
     for i = 1:nd
       if (isscalar (varargin{i}))
         d{i} = varargin{i} * ones (sz(i) - 1, 1);

@@ -253,7 +253,7 @@ function arg_st = __print_parse_opts__ (varargin)
                        && (! isdir (arg_st.name)));
         if (! file_exists)
           arg_st.append_to_file = false;
-        end
+        endif
       else
         arg_st.append_to_file = false;
         warning ("print.m: appended output requires ghostscript to be installed.")

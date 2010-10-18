@@ -137,7 +137,7 @@ function [pxx, f] = periodogram (x, varargin)
     rr = rem (length (x), nfft);
     if (rr)
       x = [x(:); (zeros (nfft-rr, 1))];
-    end
+    endif
     x = sum (reshape (x, nfft, []), 2);
   endif
 
@@ -182,7 +182,7 @@ function [pxx, f] = periodogram (x, varargin)
       plot (f, 10*log10 (Pxx));
       xlabel ("frequency [Hz]");
       ylabel ("Power density [dB/Hz]");
-    end
+    endif
     grid on;
     title ("Periodogram Power Spectral Density Estimate");
   else

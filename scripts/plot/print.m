@@ -592,10 +592,10 @@ function cmd = lpr (opts)
     cmd = opts.lpr_binary;
     if (! isempty (opts.lpr_options))
       cmd = sprintf ("%s %s", cmd, opts.lpr_options);
-    end
+    endif
     if (! isempty (opts.printer))
       cmd = sprintf ("%s -P %s", cmd, opts.printer);
-    end
+    endif
   elseif (isempty (opts.lpr_binary))
     error ("print:nolpr", "print.m: 'lpr' not found in EXEC_PATH.")
   endif

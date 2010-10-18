@@ -86,7 +86,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
                                    term, dumb_tmp_file);
     else
       enhanced = gnuplot_set_term (plot_stream (1), new_stream, h, term);
-    end
+    endif
     __go_draw_figure__ (h, plot_stream (1), enhanced, mono);
     fflush (plot_stream (1));
     if (strcmp (term, "dumb"))
@@ -102,9 +102,9 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
         if (a(1)==12)
           ## avoid ^L at the beginning
           a = a(2:end);
-        end
+        endif
         puts (a);
-      end
+      endif
       unlink (dumb_tmp_file);
     endif
   else
@@ -221,7 +221,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             else
               ## Use the gnuplot default.
               size_str = "";
-            end
+            endif
           case {"aqua", "fig", "corel"}
             size_str = sprintf ("size %g %g", gnuplot_size);
           case "dxf"

@@ -1,3 +1,7 @@
+2010-10-18  Marco Caliari <marco.caliari@univr.it>
+
+	* polynomial/polyval.m: Use Horner's method.
+
 2010-10-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Always use gnuplot to display images.

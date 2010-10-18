@@ -69,10 +69,11 @@ function [y, dy] = polyval (p, x, s, mu)
   endif
 
   n = length (p) - 1;
-  k = numel (x);
   x = (x - mu(1)) / mu(2);
-  A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
-  y = A * p(:);
+  y = p(1);
+  for i = 2:n+1
+    y = y .* x(:) + p(i);
+  endfor
   y = reshape (y, size (x));
 
   if (nargout == 2)
@@ -82,6 +83,8 @@ function [y, dy] = polyval (p, x, s, mu)
     ##   dy = t * sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df)
     ## If my inference is correct, then t must equal 1 for polyval.
     ## This is because finv (0.5, n, n) = 1.0 for any n.
+    k = numel (x);
+    A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
     dy = sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df);
     dy = reshape (dy, size (x));
   endif

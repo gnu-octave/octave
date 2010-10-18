@@ -229,6 +229,26 @@
 ## @end table
 ##
 ## The filename and options can be given in any order.
+##
+## Example: Print to a file, using the svg device.
+##
+## @example
+## figure (1)
+## clf ()
+## surf (peaks)
+## print -dsvg figure1.svg
+## @end example
+##
+## Example: Print to an HP Deskjet 550C.
+##
+## @example
+## figure (1)
+## clf ()
+## surf (peaks)
+## print -dcdj550
+## @end example
+##
+## @seealso{figure, orient}
 ## @end deftypefn
 
 function print (varargin)

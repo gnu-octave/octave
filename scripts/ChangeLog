@@ -1,3 +1,7 @@
+2010-10-18  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: Add examples to the docstring.
+
 2010-10-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__errplot__.m: Remove debugging statement from

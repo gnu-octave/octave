@@ -1,3 +1,7 @@
+2010-10-17  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/strings.txi: Document untabify.
+
 2010-09-30  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/contributors.in: Add Jordi Gutiérrez Hermoso to

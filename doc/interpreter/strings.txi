@@ -448,6 +448,8 @@ general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(regexptranslate)
 
+@DOCSTRING(untabify)
+
 @node String Conversions
 @section String Conversions
 

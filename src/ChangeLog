@@ -1,3 +1,9 @@
+2010-10-18  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_find_first_of,
+	load_path::do_find_all_first_of): Also search path for relative
+	filenames.
+
 2010-10-17  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/tril.cc: Use Octave copyright notice instead of

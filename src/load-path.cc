@@ -1257,15 +1257,35 @@ load_path::do_find_first_of (const string_vector& flist) const
 
   for (octave_idx_type i = 0; i < flen; i++)
     {
-      if (octave_env::absolute_pathname (flist[i]))
-        {
-          file_stat fs (flist[i]);
+      std::string file = flist[i];
 
-          if (fs.exists ())
-            return flist[i];
+      if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
+        {
+          if (octave_env::absolute_pathname (file)
+              || octave_env::rooted_relative_pathname (file))
+            {
+              file_stat fs (file);
+
+              if (fs.exists ())
+                return file;
+            }
+          else
+            {
+              for (const_dir_info_list_iterator p = dir_info_list.begin ();
+                   p != dir_info_list.end ();
+                   p++)
+                {
+                  std::string tfile = file_ops::concat (p->dir_name, file);
+
+                  file_stat fs (tfile);
+
+                  if (fs.exists ())
+                    return tfile;
+                }
+            }
         }
       else
-        rel_flist[rel_flen++] = flist[i];
+        rel_flist[rel_flen++] = file;
     }
 
   rel_flist.resize (rel_flen);
@@ -1316,15 +1336,35 @@ load_path::do_find_all_first_of (const string_vector& flist) const
 
   for (octave_idx_type i = 0; i < flen; i++)
     {
-      if (octave_env::absolute_pathname (flist[i]))
-        {
-          file_stat fs (flist[i]);
+      std::string file = flist[i];
 
-          if (fs.exists ())
-            retlist.push_back (flist[i]);
+      if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
+        {
+          if (octave_env::absolute_pathname (file)
+              || octave_env::rooted_relative_pathname (file))
+            {
+              file_stat fs (file);
+
+              if (fs.exists ())
+                retlist.push_back (file);
+            }
+          else
+            {
+              for (const_dir_info_list_iterator p = dir_info_list.begin ();
+                   p != dir_info_list.end ();
+                   p++)
+                {
+                  std::string tfile = file_ops::concat (p->dir_name, file);
+
+                  file_stat fs (tfile);
+
+                  if (fs.exists ())
+                    retlist.push_back (tfile);
+                }
+            }
         }
       else
-        rel_flist[rel_flen++] = flist[i];
+        rel_flist[rel_flen++] = file;
     }
 
   rel_flist.resize (rel_flen);

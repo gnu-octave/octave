@@ -1,3 +1,8 @@
+2010-10-19  Ben Abbott <bpabbott@mac.com>
+
+	* strings/strjust.m: Add "untabify" and "strrep" to @seealso{} in the
+	doc-string.
+
 2010-10-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/gradient.m, linear-algebra/normest.m,	plot/__gnuplot_print__.m,

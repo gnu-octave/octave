@@ -42,7 +42,7 @@
 ##         abcd
 ## @end group
 ## @end example
-## @seealso{deblank, strtrim}
+## @seealso{deblank, strrep, strtrim, untabify}
 ## @end deftypefn
 
 function y = strjust (x, just)

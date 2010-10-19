@@ -1,3 +1,9 @@
+2010-10-19  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (AC_INIT): Version is now 3.3.53.
+	(OCTAVE_API_VERSION_NUMBER): Now 41.
+	(OCTAVE_RELEASE_DATE): Now 2010-10-19.
+
 2010-09-29  John W. Eaton  <jwe@octave.org>
 
 	* examples/make_int.cc (Fmake_int): Don't pass arg to mlock.

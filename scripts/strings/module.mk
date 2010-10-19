@@ -27,6 +27,7 @@ strings_FCN_FILES = \
   strings/strtrim.m \
   strings/strtrunc.m \
   strings/substr.m \
+  strings/untabify.m \
   strings/validatestring.m
 
 FCN_FILES += $(strings_FCN_FILES)

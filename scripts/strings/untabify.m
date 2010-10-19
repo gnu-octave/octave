@@ -39,7 +39,7 @@
 ## fclose (fid);
 ## fid = fopen ("untabified_script.m", "w");
 ## text = untabify (strsplit (text, "\n"), 8, true);
-## fprintf (fid, "%s\n", text{:});
+## fprintf (fid, "%s\n", text@{:@});
 ## fclose (fid);
 ## @end group
 ## @end example

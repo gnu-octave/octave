@@ -1,3 +1,9 @@
+2010-10-19  John W. Eaton  <jwe@octave.org>
+
+	* strings/module.mk (strings_FCN_FILES): Include
+	strings/untabify.m in the list.
+	* strings/untabify.m: Escape { and } characters in docstring.
+
 2010-10-19  Ben Abbott <bpabbott@mac.com>
 
 	* strings/strjust.m: Add "untabify" and "strrep" to @seealso{} in the

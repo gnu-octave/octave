@@ -1,3 +1,7 @@
+2010-10-19  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (INCS): Add caseless-str.h to the list.
+
 2010-10-01  John W. Eaton  <jwe@octave.org>
 
 	* caseless-str.h: New file, extracted from src/graphics.h.in.

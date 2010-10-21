@@ -7442,6 +7442,9 @@ SparseMatrix::too_large_for_float (void) const
 SparseBoolMatrix 
 SparseMatrix::operator ! (void) const 
 { 
+  if (any_element_is_nan ())
+    gripe_nan_to_logical_conversion ();
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
   octave_idx_type nz1 = nnz ();

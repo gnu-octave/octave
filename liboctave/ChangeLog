@@ -1,5 +1,26 @@
 2010-10-21  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (INCS): Include lo-array-gripes.h in the list.
+	(LIBOCTAVE_CXX_SOURCES): Include lo-array-gripes.cc in the list.
+
+	* lo-array-gripes.h: New file.  Move gripe function decls here
+	from Array-util.h.
+	* lo-array-gripes.c: New file.  Move gripe function definitions
+	here from Array-util.cc.
+
+	* CMatrix.cc (ComplexMatrix::operator !): Gripe if any element is NaN.
+	* CNDArray.cc (ComplexNDArray::operator !): Likewise.
+	* CSparse.cc (SparseComplexMatrix::operator !): Likewise.
+	* dMatrix.cc (Matrix::operator !): Likewise.
+	* dNDArray.cc (NDArray::operator !): Likewise.
+	* dSparse.cc (SparseMatrix::operator !): Likewise.
+	* fCMatrix.cc (FloatComplexMatrix::operator !): Likewise.
+	* fCNDArray.cc (FloatComplexNDArray::operator !): Likewise.
+	* fMatrix.cc (FloatMatrix::operator !): Likewise.
+	* fNDArray.cc (FloatNDArray::operator !): Likewise.
+
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
 	* Array-util.cc (gripe_nan_to_character_conversion): New function.
 	* Array-util.h: Provide decl.
 

@@ -1,5 +1,9 @@
 2010-10-21  John W. Eaton  <jwe@octave.org>
 
+	* gripes.h: Include lo-array-gripes.h.
+
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
 	* ov-float.cc, ov-flt-re-mat.cc, ov-re-mat.cc, ov-re-sparse.cc,
 	ov-scalar.cc: Use gripe_nan_to_character_conversion.
 

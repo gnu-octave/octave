@@ -202,6 +202,7 @@ INCS = \
   glob-match.h \
   idx-vector.h \
   kpse-xfns.h \
+  lo-array-gripes.h \
   lo-ieee.h \
   lo-macros.h \
   lo-mappers.h \
@@ -424,6 +425,7 @@ LIBOCTAVE_CXX_SOURCES = \
   file-stat.cc \
   glob-match.cc \
   idx-vector.cc \
+  lo-array-gripes.cc \
   lo-ieee.cc \
   lo-mappers.cc \
   lo-specfun.cc \

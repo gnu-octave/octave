@@ -23,12 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_Array_util_h)
 #define octave_Array_util_h 1
 
-#include <cassert>
-
 #include "Array.h"
 #include "dim-vector.h"
 #include "idx-vector.h"
-#include "lo-error.h"
+#include "lo-array-gripes.h"
 
 extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
                              const dim_vector& dimensions);
@@ -103,38 +101,5 @@ permute_vector
 };
 
 extern int OCTAVE_API permute_vector_compare (const void *a, const void *b);
-
-extern OCTAVE_API const char *error_id_nonconformant_args;
-
-extern OCTAVE_API const char *error_id_index_out_of_bounds;
-
-extern OCTAVE_API const char *error_id_invalid_index;
-
-extern void OCTAVE_API gripe_nan_to_logical_conversion (void);
-
-extern void OCTAVE_API gripe_nan_to_character_conversion (void);
-
-extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
-
-extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
-                                 int op2_nr, int op2_nc);
-
-
-extern void OCTAVE_API gripe_nonconformant (const char *op, const dim_vector& op1_dims,
-                                            const dim_vector& op2_dims);
-
-extern void OCTAVE_API gripe_index_out_of_range (int nd, int dim, 
-                                                 octave_idx_type iext, octave_idx_type ext);
-
-extern void OCTAVE_API gripe_del_index_out_of_range (bool is1d, octave_idx_type iext, 
-                                                     octave_idx_type ext);
-
-extern void OCTAVE_API gripe_invalid_index (void);
-
-extern void OCTAVE_API gripe_invalid_resize (void);
-
-extern void OCTAVE_API gripe_invalid_assignment_size (void);
-
-extern void OCTAVE_API gripe_assignment_dimension_mismatch (void);
 
 #endif

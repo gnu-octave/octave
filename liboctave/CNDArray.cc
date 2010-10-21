@@ -500,6 +500,9 @@ ComplexNDArray::ifourierNd (void) const
 boolNDArray
 ComplexNDArray::operator ! (void) const
 {
+  if (any_element_is_nan ())
+    gripe_nan_to_logical_conversion ();
+
   return do_mx_unary_op<bool, Complex> (*this, mx_inline_not);
 }
 

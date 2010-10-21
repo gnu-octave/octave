@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "lo-array-gripes.h"
+
 class octave_value;
 
 extern OCTINTERP_API void

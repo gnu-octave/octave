@@ -7145,6 +7145,9 @@ SparseComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
 SparseBoolMatrix
 SparseComplexMatrix::operator ! (void) const
 {
+  if (any_element_is_nan ())
+    gripe_nan_to_logical_conversion ();
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
   octave_idx_type nz1 = nnz ();

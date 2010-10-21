@@ -1,3 +1,7 @@
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/contributors.in: Add Gunnar Farnebäck to the list.
+
 2010-10-18  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/image.txi (Displaying Images):

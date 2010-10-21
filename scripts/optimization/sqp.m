@@ -234,13 +234,13 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
   obj_grd = @fd_obj_grd;
   have_hess = 0;
   if (iscell (objf))
-    switch length (objf)
-     case {1}
+    switch (numel (objf))
+     case 1
        obj_fun = objf{1};
-     case {2}
+     case 2
        obj_fun = objf{1};
        obj_grd = objf{2};
-     case {3}
+     case 3
        obj_fun = objf{1};
        obj_grd = objf{2};
        obj_hess = objf{3};
@@ -258,10 +258,10 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
   if (nargin > 2)
     ce_grd = @fd_ce_jac;
     if (iscell (cef))
-      switch length (cef)
-       case {1}
+      switch (numel (cef))
+       case 1
          ce_fun = cef{1};
-       case {2}
+       case 2
          ce_fun = cef{1};
          ce_grd = cef{2};
        otherwise

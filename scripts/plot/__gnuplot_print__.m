@@ -48,7 +48,7 @@ function opts = __gnuplot_print__ (opts)
 
   pipeline = "";
 
-  switch lower (opts.devopt)
+  switch (lower (opts.devopt))
   case {"eps", "eps2", "epsc", "epsc2"}
     if (any (strcmp (opts.devopt, {"eps", "epsc"})))
       gp_opts = sprintf ("%s level1", gp_opts);
@@ -88,7 +88,7 @@ function opts = __gnuplot_print__ (opts)
     endif
     local_drawnow (sprintf ("%s %s", term, gp_opts),
                    strcat (name, ".", suffix), opts)
-  case {"tikz"}
+  case "tikz"
     if (__gnuplot_has_terminal__ ("tikz"))
       local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
     else
@@ -96,7 +96,7 @@ function opts = __gnuplot_print__ (opts)
              "print.m: '%s' output is not available for Gnuplot-%s.",
              upper (opts.devopt), __gnuplot_version__ ())
     endif
-  case {"svg"}
+  case "svg"
     local_drawnow (sprintf ("svg dynamic %s", gp_opts), opts.name, opts);
   case {"aifm", "corel", "eepic", "emf", "fig"}
     local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
@@ -194,8 +194,8 @@ function f = font_spec (opts, varargin)
     opts.(varargin{n}) = varargin{n+1};
   endfor
   f = "";
-  switch opts.devopt
-  case {"cgm"}
+  switch (opts.devopt)
+  case "cgm"
     if (! isempty (opts.font) && ! isempty (opts.fontsize))
       f = sprintf ("font ""%s,%d""", opts.font, opts.fontsize);
     elseif (! isempty (opts.font))
@@ -215,7 +215,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("%d", 2 * opts.fontsize);
     endif
-  case {"svg"}
+  case "svg"
     if (! isempty (opts.font) && ! isempty (opts.fontsize))
       fontsize = round (opts.fontsize * 0.75);
       f = sprintf ("fname ""%s"" fsize %d", opts.font, fontsize);
@@ -225,7 +225,7 @@ function f = font_spec (opts, varargin)
       fontsize = round (opts.fontsize * 0.75);
       f = sprintf ("%s fsize %d", f, fontsize);
     endif
-  case {"pdf"}
+  case "pdf"
     if (! isempty (opts.font) && ! isempty (opts.fontsize))
       f = sprintf ("font ""%s,%d""", opts.font, opts.fontsize);
     elseif (! isempty (opts.font))
@@ -245,7 +245,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("%d", opts.fontsize);
     endif
-  case {"pslatex"}
+  case "pslatex"
     if (! isempty (opts.fontsize))
       f = sprintf ("%d", opts.fontsize);
     endif
@@ -257,7 +257,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("font ""%d""", opts.fontsize);
     endif
-  case {"emf"}
+  case "emf"
     if (! isempty (opts.font) && ! isempty (opts.fontsize))
       f = sprintf ("""%s"" %d", opts.font, opts.fontsize);
     elseif (! isempty (opts.font))
@@ -265,7 +265,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("%d", opts.fontsize);
     endif
-  case {"canvas"}
+  case "canvas"
     if (! isempty (opts.fontsize))
       f = sprintf ("fsize %d", opts.fontsize);
     endif
@@ -277,7 +277,7 @@ function f = font_spec (opts, varargin)
     elseif (! isempty (opts.fontsize))
       f = sprintf ("%d", opts.fontsize);
     endif
-  case {"fig"}
+  case "fig"
     if (! isempty (opts.font) && ! isempty (opts.fontsize))
       f = sprintf ("font %s fontsize %d", opts.font, opts.fontsize);
     elseif (! isempty (opts.font))
@@ -291,7 +291,7 @@ endfunction
 function [h, fontsize] = get_figure_text_objs (opts)
   h = findall (opts.figure, "-property", "fontsize");
   fontsize = get (h, "fontsize");
-  switch numel (fontsize)
+  switch (numel (fontsize))
   case 0
     fontsize = {};
   case 1

@@ -206,7 +206,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           if (__gnuplot_has_feature__ ("wxt_figure_size"))
             terminals_with_size{end+1} = "wxt";
           endif
-          switch term
+          switch (term)
           case terminals_with_size
             size_str = sprintf ("size %g,%g", gnuplot_size);
           case "tikz"

@@ -512,7 +512,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         else
           lpos = [0, 0, num1 * xstep, num2 * ystep];
         endif
-        switch(position)
+        switch (position)
           case "north"
             if (outside)
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
@@ -621,7 +621,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         yk = 0;
         for k = 1 : numel (hplots)
           hobjects = [hobjects, texthandle (k)];
-          switch get (hplots(k), "type")
+          switch (get (hplots(k), "type"))
           case "line"
             color = get (hplots(k), "color");
             style = get (hplots(k), "linestyle");

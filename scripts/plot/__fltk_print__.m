@@ -37,7 +37,7 @@ function opts = __fltk_print__ (opts)
 
   gl2ps_device = {};
   pipeline = {};
-  switch lower (opts.devopt)
+  switch (lower (opts.devopt))
   case {"eps", "eps2", "epsc", "epsc2"}
     ## format GL2PS_EPS
     gl2ps_device = {"eps"};
@@ -70,11 +70,11 @@ function opts = __fltk_print__ (opts)
       pipeline = {sprintf("cat > %s.%s", name, suffix)};
       pipeline{2} = sprintf ("cat > %s.tex", name);
     endif
-  case {"tikz"}
+  case "tikz"
     ## format GL2PS_PGF
     gl2ps_device = {"pgf"};
     pipeline = {sprintf("cat > %s", opts.name)};
-  case {"svg"}
+  case "svg"
     ## format GL2PS_SVG
     gl2ps_device = {"svg"};
     pipeline = {sprintf("cat > %s", opts.name)};
@@ -99,7 +99,7 @@ function opts = __fltk_print__ (opts)
       gl2ps_device = {"eps"};
       pipeline = {cmd};
     endif
-  case {"aifm"}
+  case "aifm"
     cmd = opts.pstoedit_cmd (opts, "ps2ai");
     gl2ps_device = {"eps"};
     pipeline = {sprintf("%s > %s", cmd, opts.name)};

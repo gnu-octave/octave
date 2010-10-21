@@ -50,21 +50,21 @@ function varargout = pbaspect (varargin)
     if (numel (varargin) == 1)
       if (ischar (varargin{1})
           && any (strcmpi (varargin{1}, {"mode", "manual", "auto"})))
-        switch varargin{1}
-        case {"mode"}
+        switch (varargin{1})
+        case "mode"
           if (nargout < 2)
             varargout{1} = get (hax, "plotboxaspectratiomode");
             return
           else
             error ("pbaspect: only one output is allowed.")
           endif
-        case {"manual"}
+        case "manual"
           set (hax, "plotboxaspectratiomode", "manual");
-        case {"auto"}
+        case "auto"
           set (hax, "plotboxaspectratiomode", "auto");
         endswitch
       elseif (isreal (varargin{1})
-              && any (numel (varargin{1}) == [2 3]))
+              && any (numel (varargin{1}) == [2, 3]))
         set (hax, "plotboxaspectratio", varargin{1})
       else
         error ("pbaspect: invalid input.")

@@ -192,7 +192,7 @@ function varargout = strread (str, formatstr = "%f", varargin)
     data = words (m:nspecif:end);
 
     ## Map to format
-    switch specif (m, :)
+    switch (specif(m,:))
       case "%s"
         data (end+1:num_lines) = {""};
         varargout {k} = data';

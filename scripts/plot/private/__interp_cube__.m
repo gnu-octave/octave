@@ -50,7 +50,7 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
     return
   endif
 
-  switch req
+  switch (req)
     case "values"
       [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v);
     case "normals"

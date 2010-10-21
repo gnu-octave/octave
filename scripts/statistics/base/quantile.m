@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Ben Abbott and Jaroslav Hajek
+n## Copyright (C) 2008, 2009 Ben Abbott and Jaroslav Hajek
 ## 
 ## This file is part of Octave.
 ##
@@ -52,21 +52,24 @@
 ## interpolation function respecting each methods' representative cdf.
 ## 
 ## @enumerate 4
-## @item Method 4: p(k) = k / n. That is, linear interpolation of the empirical cdf.
+## @item Method 4: p(k) = k / n. That is, linear interpolation of the
+## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function where 
-## the knots are the values midway through the steps of the empirical cdf. 
+## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear
+## function where the knots are the values midway through the steps of
+## the empirical cdf.
 ##
 ## @item Method 6: p(k) = k / (n + 1).
 ##
 ## @item Method 7: p(k) = (k - 1) / (n - 1).
 ##
-## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile estimates 
-## are approximately median-unbiased regardless of the distribution of @var{x}.
+## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile
+## estimates are approximately median-unbiased regardless of the
+## distribution of @var{x}.
 ##
-## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile estimates 
-## are approximately unbiased for the expected order statistics if @var{x} is 
-## normally distributed.
+## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile
+## estimates are approximately unbiased for the expected order
+## statistics if @var{x} is normally distributed.
 ## @end enumerate
 ## 
 ## Hyndman and Fan (1996) recommend method 8.  Maxima, S, and R
@@ -323,9 +326,9 @@ function inv = __quantile__ (x, p, method = 5)
     ## The column-distribution indices.
     pcd = kron (ones (n, 1), mx*(0:nx-1));
     mm = kron (ones (n, 1), m);
-    switch method
+    switch (method)
       case {1, 2, 3}
-        switch method
+        switch (method)
           case 1
             p = max (ceil (kron (p, m)), 1);
             inv(k,:) = x(p + pcd);
@@ -345,7 +348,7 @@ function inv = __quantile__ (x, p, method = 5)
         endswitch
 
       otherwise
-        switch method
+        switch (method)
           case 4
             p = kron (p, m);
 

@@ -363,7 +363,7 @@ function print (varargin)
     endif
 
     ## call the backend print script
-    switch get (opts.figure, "__backend__")
+    switch (get (opts.figure, "__backend__"))
     case "gnuplot"
       opts = __gnuplot_print__ (opts);
     otherwise

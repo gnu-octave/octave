@@ -50,21 +50,21 @@ function varargout = daspect (varargin)
     if (numel (varargin) == 1)
       if (ischar (varargin{1})
           && any (strcmpi (varargin{1}, {"mode", "manual", "auto"})))
-        switch varargin{1}
-        case {"mode"}
+        switch (varargin{1})
+        case "mode"
           if (nargout < 2)
             varargout{1} = get (hax, "dataaspectratiomode");
             return
           else
             error ("daspect: only one output is allowed.")
           endif
-        case {"manual"}
+        case "manual"
           set (hax, "dataaspectratiomode", "manual");
-        case {"auto"}
+        case "auto"
           set (hax, "dataaspectratiomode", "auto");
         endswitch
       elseif (isreal (varargin{1})
-              && any (numel (varargin{1}) == [2 3]))
+              && any (numel (varargin{1}) == [2, 3]))
         set (hax, "dataaspectratio", varargin{1})
       else
         error ("daspect: invalid input.")

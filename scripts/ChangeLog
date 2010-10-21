@@ -1,3 +1,12 @@
+2010-10-20  John W. Eaton  <jwe@octave.org>
+
+	* io/strread.m, optimization/sqp.m, plot/daspect.m,
+	plot/pbaspect.m, plot/gnuplot_drawnow.m, plot/isocolors.m,
+	plot/isonormals.m, plot/legend.m, plot/print.m,
+	plot/private/__interp_cube__.m, plot/__fltk_print__.m,
+	plot/__gnuplot_print__.m, plot/__print_parse_opts__.m,
+	statistics/base/quantile.m: Style fixes.
+
 2010-10-19  John W. Eaton  <jwe@octave.org>
 
 	* strings/module.mk (strings_FCN_FILES): Include

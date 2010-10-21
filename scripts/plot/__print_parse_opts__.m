@@ -542,7 +542,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
     papersize = papertype;
     papersize(papersize=="-") = "";
     papersize = strrep (papersize, "us", "");
-    switch papersize
+    switch (papersize)
     case "a"
       papersize = "letter";
     case {"b", "tabloid"}
@@ -558,12 +558,12 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
 endfunction
 
 function value = convert2points (value, units)
-    switch units
-    case {"inches"}
+    switch (units)
+    case "inches"
       value = value * 72;
-    case {"centimeters"}
+    case "centimeters"
       value = value * 72 / 25.4;
-    case {"normalized"}
+    case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined.")
     endswitch

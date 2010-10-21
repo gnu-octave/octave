@@ -100,7 +100,7 @@
 
 function varargout = isocolors(varargin)
   calc_rgb = false;
-  switch nargin
+  switch (nargin)
     case 2
       c = varargin{1};
       vp = varargin{2};
@@ -141,17 +141,17 @@ function varargout = isocolors(varargin)
     pa = vp;
     v = get (pa, "Vertices");
   else
-    error("isocolors: last argument is not a vertex list or patch handle");
+    error ("isocolors: last argument is not a vertex list or patch handle");
   endif
-  if ( calc_rgb )
+  if (calc_rgb)
     new_col = zeros (size (v, 1), 3);
-    new_col(:, 1) = __interp_cube__ (x, y, z, R, v, "values" );
-    new_col(:, 2) = __interp_cube__ (x, y, z, G, v, "values" );
-    new_col(:, 3) = __interp_cube__ (x, y, z, B, v, "values" );
+    new_col(:,1) = __interp_cube__ (x, y, z, R, v, "values" );
+    new_col(:,2) = __interp_cube__ (x, y, z, G, v, "values" );
+    new_col(:,3) = __interp_cube__ (x, y, z, B, v, "values" );
   else
     new_col = __interp_cube__ (x, y, z, c, v, "values" );
   endif
-  switch nargout
+  switch (nargout)
     case 0
       if (!isempty (pa))
         set (pa, "FaceVertexCData", new_col);

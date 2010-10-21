@@ -105,7 +105,7 @@ function varargout = isonormals(varargin)
       error ("isonormals: Unknown option '%s'", varargin{nargin});
     endif
   endif
-  switch na
+  switch (na)
     case 2
       c = varargin{1};
       vp = varargin{2};
@@ -135,7 +135,7 @@ function varargout = isonormals(varargin)
   else
     normals = __interp_cube__ (x, y, z, c, v, "normals");
   endif
-  switch nargout
+  switch (nargout)
     case 0
       if (!isempty (pa))
         set (pa, "VertexNormals", normals);

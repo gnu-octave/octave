@@ -216,7 +216,7 @@ boolNDArray
 octave_float_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else if (warn && matrix.any_element_not_one_or_zero ())
     gripe_logical_conversion ();
 
@@ -283,7 +283,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 
       if (xisnan (d))
         {
-          ::error ("invalid conversion from NaN to character");
+          gripe_nan_to_character_conversion ();
           return retval;
         }
       else

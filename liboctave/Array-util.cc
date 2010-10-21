@@ -661,7 +661,15 @@ const char *error_id_invalid_index = "Octave:invalid-index";
 void
 gripe_nan_to_logical_conversion (void)
 {
-  (*current_liboctave_error_handler) ("invalid conversion of NaN to logical");
+  (*current_liboctave_error_handler)
+    ("invalid conversion from NaN to logical");
+}
+
+void
+gripe_nan_to_character_conversion (void)
+{
+  (*current_liboctave_error_handler)
+    ("invalid conversion from NaN to character");
 }
 
 void

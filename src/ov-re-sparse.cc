@@ -145,7 +145,7 @@ octave_sparse_matrix::bool_array_value (bool warn) const
   NDArray m = matrix.matrix_value ();
 
   if (m.any_element_is_nan ())
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else if (warn && m.any_element_not_one_or_zero ())
     gripe_logical_conversion ();
 
@@ -188,7 +188,7 @@ SparseBoolMatrix
 octave_sparse_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else if (warn && matrix.any_element_not_one_or_zero ())
     gripe_logical_conversion ();
 
@@ -225,7 +225,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 
               if (xisnan (d))
                 {
-                  ::error ("invalid conversion from NaN to character");
+                  gripe_nan_to_character_conversion ();
                   return retval;
                 }
               else

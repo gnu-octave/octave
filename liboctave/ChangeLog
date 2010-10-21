@@ -1,3 +1,8 @@
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
+	* Array-util.cc (gripe_nan_to_character_conversion): New function.
+	* Array-util.h: Provide decl.
+
 2010-10-19  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (INCS): Add caseless-str.h to the list.

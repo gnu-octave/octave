@@ -413,7 +413,7 @@ octave_base_matrix<MT>::is_true (void) const
       MT t1 (matrix.reshape (dim_vector (nel, 1)));
 
       if (t1.any_element_is_nan ())
-        error ("invalid conversion from NaN to logical");
+        gripe_nan_to_logical_conversion ();
       else
         {
           boolNDArray t2 = t1.all ();

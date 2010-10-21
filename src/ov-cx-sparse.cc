@@ -215,7 +215,7 @@ SparseBoolMatrix
 octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else if (warn && (! matrix.all_elements_are_real () 
                     || real (matrix).any_element_not_one_or_zero ()))
     gripe_logical_conversion ();

@@ -119,7 +119,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
   octave_value retval;
 
   if (xisnan (scalar))
-    ::error ("invalid conversion from NaN to character");
+    gripe_nan_to_character_conversion ();
   else
     {
       int ival = NINT (scalar);

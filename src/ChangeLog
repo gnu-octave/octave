@@ -1,3 +1,13 @@
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
+	* ov-float.cc, ov-flt-re-mat.cc, ov-re-mat.cc, ov-re-sparse.cc,
+	ov-scalar.cc: Use gripe_nan_to_character_conversion.
+
+	* ops.h, ov-base-mat.cc, ov-base-scalar.cc, ov-complex.h,
+	ov-cx-mat.cc, ov-cx-sparse.cc, ov-float.h, ov-flt-complex.h,
+	ov-flt-cx-mat.cc, ov-flt-re-mat.cc, ov-range.cc, ov-re-mat.cc,
+	ov-re-sparse.cc, ov-scalar.h: Use gripe_nan_to_logical_conversion.
+
 2010-10-20  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (Fsystem): Allow optional RETURN_OUTPUT and TYPE

@@ -317,7 +317,7 @@ octave_range::bool_array_value (bool warn) const
   Matrix m = range.matrix_value ();
 
   if (m.any_element_is_nan ())
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else if (warn && m.any_element_not_one_or_zero ())
     gripe_logical_conversion ();
 

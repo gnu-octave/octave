@@ -112,6 +112,8 @@ extern OCTAVE_API const char *error_id_invalid_index;
 
 extern void OCTAVE_API gripe_nan_to_logical_conversion (void);
 
+extern void OCTAVE_API gripe_nan_to_character_conversion (void);
+
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
 
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_nc,

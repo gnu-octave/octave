@@ -128,7 +128,7 @@ octave_base_scalar<ST>::is_true (void) const
   bool retval = false;
 
   if (xisnan (scalar))
-    error ("invalid conversion from NaN to logical");
+    gripe_nan_to_logical_conversion ();
   else
     retval = (scalar != ST ());
 

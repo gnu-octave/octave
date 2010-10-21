@@ -303,7 +303,7 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (const CONCAT2(octave_, t1)&, const CONCAT2(octave_, t2)&); \
     if (xisnan (v1.CONCAT2(t1, _value) ()) || xisnan (v2.CONCAT2(t2, _value) ())) \
       { \
-        error ("invalid conversion from NaN to logical"); \
+        gripe_nan_to_logical_conversion (); \
         return octave_value (); \
       } \
     else \

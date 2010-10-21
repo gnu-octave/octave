@@ -1,3 +1,8 @@
+2010-10-20  Rik  <octave@nomad.inbox5.com>
+
+	* polynomial/conv.m: Remove redundant test.
+	* signal/fftconv.m: Add tests used by conv.m code.
+
 2010-10-20  Olaf Till  <olaf.till@uni-jena.de>
 
 	* optimization/optimset.m: Use cell2struct instead of struct to

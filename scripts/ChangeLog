@@ -1,3 +1,9 @@
+2010-10-21  Rik  <octave@nomad.inbox5.com>
+
+	* statistics/distributions/wblcdf.m, statistics/distributions/wblinv.m,
+	  statistics/distributions/wblpdf.m, statistics/distributions/wblrnd.m:
+	  Fix reversed documentation for shape and scale parameters.
+
 2010-10-21  Ben Abbott <bpabbott@mac.com>
 
 	* io/strread.m: Improve compatibility with Matlab.

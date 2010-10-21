@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} wblinv (@var{x}, @var{scale}, @var{shape})
 ## Compute the quantile (the inverse of the CDF) at @var{x} of the
-## Weibull distribution with shape parameter @var{scale} and scale
+## Weibull distribution with scale parameter @var{scale} and shape
 ## parameter @var{shape}.
 ## @end deftypefn
 
@@ -40,8 +40,8 @@ function inv = wblinv (x, scale, shape)
     scale = 1;
   endif
 
-  if (!isscalar (shape) || !isscalar (scale))
-    [retval, x, shape, scale] = common_size (x, shape, scale);
+  if (!isscalar (scale) || !isscalar (shape))
+    [retval, x, scale, shape] = common_size (x, scale, shape);
     if (retval > 0)
       error ("wblinv: x, scale and shape must be of common size or scalar");
     endif
@@ -49,7 +49,7 @@ function inv = wblinv (x, scale, shape)
 
   inv = NaN (size (x));
 
-  ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
+  ok = ((scale > 0) & (scale < Inf) & (shape > 0) & (shape < Inf));
 
   k = find ((x == 0) & ok);
   if (any (k))
@@ -58,7 +58,7 @@ function inv = wblinv (x, scale, shape)
 
   k = find ((x > 0) & (x < 1) & ok);
   if (any (k))
-    if (isscalar (shape) && isscalar (scale))
+    if (isscalar (scale) && isscalar (shape))
       inv(k) = scale * (- log (1 - x(k))) .^ (1 / shape);
     else
       inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));

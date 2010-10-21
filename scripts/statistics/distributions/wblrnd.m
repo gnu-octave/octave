@@ -34,10 +34,10 @@
 function rnd = wblrnd (scale, shape, r, c)
 
   if (nargin > 1)
-    if (!isscalar(shape) || !isscalar(scale)) 
-      [retval, shape, scale] = common_size (shape, scale);
+    if (!isscalar(scale) || !isscalar(shape)) 
+      [retval, scale, shape] = common_size (scale, shape);
       if (retval > 0)
-        error ("wblrnd: shape and scale must be of common size or scalar");
+        error ("wblrnd: scale and shape must be of common size or scalar");
       endif
     endif
   endif
@@ -54,7 +54,7 @@ function rnd = wblrnd (scale, shape, r, c)
     if (any (size (scale) != 1) && 
         ((length (size (scale)) != length (sz))
          || any (size (scale) != sz)))
-      error ("wblrnd: shape and scale must be scalar or of size [r, c]");
+      error ("wblrnd: scale and shape must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -68,23 +68,23 @@ function rnd = wblrnd (scale, shape, r, c)
     if (any (size (scale) != 1) && 
         ((length (size (scale)) != length (sz))
          || any (size (scale) != sz)))
-      error ("wblrnd: shape and scale must be scalar or of size sz");
+      error ("wblrnd: scale and shape must be scalar or of size sz");
     endif
   elseif (nargin == 2)
-    sz = size(shape);
+    sz = size(scale);
   else
     print_usage ();
   endif
 
-  if (isscalar (shape) && isscalar (scale))
-    if (shape > 0 && shape < Inf && scale > 0 && scale < Inf)
+  if (isscalar (scale) && isscalar (shape))
+    if (scale > 0 && scale < Inf && shape > 0 && shape < Inf)
       rnd = scale .* rande(sz) .^ (1./shape);
     else
       rnd = NaN (sz);
     endif
   else
     rnd = scale .* rande(sz) .^ (1./shape);
-    k = find ((shape <= 0) | (shape == Inf) | ((scale <= 0) & (scale == Inf)));
+    k = find ((scale <= 0) | (scale == Inf) | ((shape <= 0) & (shape == Inf)));
     if (any(k))
       rnd(k) = NaN;
     endif

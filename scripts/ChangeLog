@@ -1,3 +1,8 @@
+2010-10-20  Iain Murray <murray@cs.toronto.edu>
+
+	* general/private/__isequal__.m: Fix bug #31239 where 
+	isequalwithequalnans is incorrect.
+
 2010-10-20  Rik  <octave@nomad.inbox5.com>
 
 	* polynomial/conv.m: Remove redundant test.

@@ -159,12 +159,12 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         m = (x == y);
         t = all (m);
 
-        if (!t)
-          if (nans_compare_equal)
+        if (!t) && (nans_compare_equal)
             t = isnan (x(!m)) && isnan (y(!m));
-          else
+        endif
+
+        if (!t)
             return;
-          endif
         endif
       endfor
 

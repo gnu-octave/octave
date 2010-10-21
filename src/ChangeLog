@@ -28,7 +28,7 @@
 	* Makefile.am (DIST_SRC): Add sparse.cc to the list.
 	* DLD-FUNCTIONS/module-files: Remove sparse.cc from the list of files.
 
-2010-10-09  Ben Abbott <bpabbott@mac.com>
+2010-10-09  Ben Abbott  <bpabbott@mac.com>
 
 	* gl-render.cc: Treat images with scalar unique(x/ydata) like Matlab.
 
@@ -53,7 +53,7 @@
 	* pt-exp.h (tree_expression::mark_braindead_shortcircuit):
 	New virtual function.
 
-2010-10-08  Ben Abbott <bpabbott@mac.com>
+2010-10-08  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.h.in: Properly set image pixel size when unique(x/ydata)
 	is scalar.

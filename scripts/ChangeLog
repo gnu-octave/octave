@@ -18,19 +18,20 @@
 	strings/untabify.m in the list.
 	* strings/untabify.m: Escape { and } characters in docstring.
 
-2010-10-19  Ben Abbott <bpabbott@mac.com>
+2010-10-19  Ben Abbott  <bpabbott@mac.com>
 
 	* strings/strjust.m: Add "untabify" and "strrep" to @seealso{} in the
 	doc-string.
 
 2010-10-18  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
-	* general/gradient.m, linear-algebra/normest.m,	plot/__gnuplot_print__.m,
-	plot/__print_parse_opts__.m, plot/daspect.m,
-	plot/gnuplot_drawnow.m, plot/pbaspect.m, plot/print.m,
-	signal/periodogram.m: Style fix, replace end by endfor.
+	* general/gradient.m, linear-algebra/normest.m,
+	plot/__gnuplot_print__.m, plot/__print_parse_opts__.m,
+	plot/daspect.m, plot/gnuplot_drawnow.m, plot/pbaspect.m,
+	plot/print.m, signal/periodogram.m:
+	Style fix, replace end by endfor.
 
-2010-10-18  Marco Caliari <marco.caliari@univr.it>
+2010-10-18  Marco Caliari  <marco.caliari@univr.it>
 
 	* polynomial/polyval.m: Use Horner's method.
 
@@ -42,12 +43,12 @@
 	* image/module.mk (image_FCN_FILES): Remove image/image_viewer.m
 	from the list.
 
-2010-10-18  Gunnar Farneback <gunnar@lysator.liu.se>
+2010-10-18  Gunnar Farneback  <gunnar@lysator.liu.se>
 
 	* general/interp2.m: Fix input checks for cubic
 	interpolation (bug #31352, part 1).
 
-2010-10-18  Ben Abbott <bpabbott@mac.com>
+2010-10-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/print.m: Add examples to the docstring.
 
@@ -80,16 +81,16 @@
 	Use Octave copyright notice instead of generic "This program is
 	free software" notice.
 
-2010-10-18  Ben Abbott <bpabbott@mac.com>
+2010-10-18  Ben Abbott  <bpabbott@mac.com>
 
 	* strings/untabify.m: New function to untabify text.
 
-2010-10-17  Ben Abbott <bpabbott@mac.com>
+2010-10-17  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/mesh.m, plot/surf.m: Include the 4th input (color) in the
 	docstring.
 
-2010-10-16  Ben Abbott <bpabbott@mac.com>
+2010-10-16  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/private/__errplot__.m, plot/errorbar.m: Allow line and marker
 	types to be set.
@@ -106,12 +107,12 @@
 	* set/unique.m: Remove check for issparse existence since it is
 	now a built-in function.
 
-2010-10-14  Ben Abbott <bpabbott@mac.com>
+2010-10-14  Ben Abbott  <bpabbott@mac.com>
 
 	* strings/strjust.m: Clarify that justification  applies to spaces and
 	null characters.
 
-2010-10-09  Ben Abbott <bpabbott@mac.com>
+2010-10-09  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Enable linetypes for gnuplot.
 
@@ -129,7 +130,7 @@
 
 	* plot/__fltk_ginput__.m: Use || instead of | in IF condition.
 
-2010-10-08  Ben Abbott <bpabbott@mac.com>
+2010-10-08  Ben Abbott  <bpabbott@mac.com>
 
 	* image/image.m, plot/__go_draw_axes__.m: Do not store flipped image
 	property values when x/ydata descends.

@@ -825,21 +825,20 @@ enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})\n\
-Execute a shell command specified by @var{string}.  The second\n\
-argument is optional.  If @var{type} is @code{\"async\"}, the process\n\
+@deftypefn {Built-in Function} {[@var{status}, @var{output}]} system (@var{string}, @var{return_output}, @var{type})\n\
+Execute a shell command specified by @var{string}.\n\
+If the optional argument @var{type} is @code{\"async\"}, the process\n\
 is started in the background and the process id of the child process\n\
 is returned immediately.  Otherwise, the process is started, and\n\
 Octave waits until it exits.  If the @var{type} argument is omitted, a\n\
 value of @code{\"sync\"} is assumed.\n\
 \n\
-If two input arguments are given (the actual value of\n\
-@var{return_output} is irrelevant) and the subprocess is started\n\
-synchronously, or if @var{system} is called with one input argument and\n\
-one or more output arguments, the output from the command is returned.\n\
-Otherwise, if the subprocess is executed synchronously, its output is\n\
-sent to the standard output.  To send the output of a command executed\n\
-with @var{system} through the pager, use a command like\n\
+If the optional argument @var{return_output} is true and the subprocess\n\
+is started synchronously, or if @var{system} is called with one input\n\
+argument and one or more output arguments, the output from the command\n\
+is returned.  Otherwise, if the subprocess is executed synchronously, its\n\
+output is sent to the standard output.  To send the output of a command\n\
+executed with @code{system} through the pager, use a command like\n\
 \n\
 @example\n\
 disp (system (cmd, 1));\n\
@@ -863,6 +862,9 @@ command that was written to the standard output stream.  For example,\n\
 @noindent\n\
 will set the variable @code{output} to the string @samp{foo}, and the\n\
 variable @code{status} to the integer @samp{2}.\n\
+\n\
+For commands run asynchronously, @var{status} is the process id of the\n\
+command shell that is started to run the command.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -873,33 +875,51 @@ variable @code{status} to the integer @samp{2}.\n\
 
   if (nargin > 0 && nargin < 4)
     {
-      bool return_output = (nargout > 1 || nargin > 1);
-
-      std::string cmd_str = args(0).string_value ();
+      bool return_output = (nargin == 1 && nargout > 1);
 
       system_exec_type type = et_sync;
 
-      if (! error_state)
+      if (nargin == 3)
         {
-          if (nargin > 2)
-            {
-              std::string type_str = args(2).string_value ();
+          std::string type_str = args(2).string_value ();
 
-              if (! error_state)
-                {
-                  if (type_str == "sync")
-                    type = et_sync;
-                  else if (type_str == "async")
-                    type = et_async;
-                  else
-                    error ("system: third arg must be \"sync\" or \"async\"");
-                }
+          if (! error_state)
+            {
+              if (type_str == "sync")
+                type = et_sync;
+              else if (type_str == "async")
+                type = et_async;
               else
-                error ("system: third argument must be a string");
+                {
+                  error ("system: third arg must be \"sync\" or \"async\"");
+                  return retval;
+                }
+            }
+          else
+            {
+              error ("system: third argument must be a character string");
+              return retval;
             }
         }
-      else
-        error ("system: expecting std::string as first argument");
+
+      if (nargin > 1)
+        {
+          return_output = args(1).is_true ();
+
+          if (error_state)
+            {
+              error ("system: expecting second argument to be true or false");
+              return retval;
+            }
+        }
+
+      if (return_output && type == et_async)
+        {
+          error ("system: can't return output from commands run asynchronously");
+          return retval;
+        }
+
+      std::string cmd_str = args(0).string_value ();
 
       if (! error_state)
         {
@@ -966,6 +986,8 @@ variable @code{status} to the integer @samp{2}.\n\
               retval(0) = status;
             }
         }
+      else
+        error ("system: expecting std::string as first argument");
     }
   else
     print_usage ();

@@ -1,3 +1,8 @@
+2010-10-20  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (Fsystem): Allow optional RETURN_OUTPUT and TYPE
+	arguments to be specified independently.  Update doc string.
+
 2010-10-18  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_first_of,

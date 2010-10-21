@@ -1,3 +1,7 @@
+2010-10-21  John W. Eaton  <jwe@octave.org>
+
+	* general/private/__isequal__.m: Style fixes.
+
 2010-10-20  Iain Murray <murray@cs.toronto.edu>
 
 	* general/private/__isequal__.m: Fix bug #31239 where 

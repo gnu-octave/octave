@@ -61,7 +61,8 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   t = (all (strcmp (class(x),
                    cellfun (@class, varargin, "UniformOutput", false)))
        || ((isnumeric (x) || islogical (x))
-           && all ((cellfun (@isnumeric, varargin) | cellfun (@islogical, varargin)))));
+           && all (cellfun (@isnumeric, varargin)
+                   | cellfun (@islogical, varargin))));
 
   if (t)
     ## Test that everything has the same number of dimensions.
@@ -78,7 +79,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     idx = 0;
     while (t && idx < l_x)
       idx++;
-      t = all (s_x(idx) == s_v(idx, :));
+      t = all (s_x(idx) == s_v(idx,:));
     endwhile
   endif
 
@@ -159,12 +160,12 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         m = (x == y);
         t = all (m);
 
-        if (!t) && (nans_compare_equal)
-            t = isnan (x(!m)) && isnan (y(!m));
+        if (!t && nans_compare_equal)
+          t = isnan (x(!m)) && isnan (y(!m));
         endif
 
         if (!t)
-            return;
+          return;
         endif
       endfor
 

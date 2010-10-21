@@ -103,8 +103,8 @@ function varargout = strread (str, formatstr = "%f", varargin)
   if (nargin < 1)
     print_usage ();
   endif
-  
-  if (!ischar (str) || !ischar (str))
+ 
+  if (!ischar (str) || !ischar (formatstr))
     error ("strread: first and second input arguments must be strings");
   endif
 
@@ -112,6 +112,7 @@ function varargout = strread (str, formatstr = "%f", varargin)
   comment_flag = false;
   numeric_fill_value = 0;
   white_spaces = " \n\r\t\b";
+  delimiter_str = "";
   for n = 1:2:length (varargin)
     switch (lower (varargin {n}))
       case "commentstyle"
@@ -134,15 +135,18 @@ function varargout = strread (str, formatstr = "%f", varargin)
         numeric_fill_value = varargin {n+1};
       case "bufsize"
         ## XXX: We could synthesize this, but that just seems weird...
-        warning ("strread: property \"bufsize\"  is not implemented");
+        warning ("strread: property \"bufsize\" is not implemented");
       case "whitespace"
         white_spaces = varargin {n+1}; 
       case "expchars"
-        warning ("strread: property \"expchars\"  is not implemented");
+        warning ("strread: property \"expchars\" is not implemented");
       otherwise
         warning ("strread: unknown property \"%s\"", varargin {n});
     endswitch
   endfor
+  if (isempty (delimiter_str))
+    delimiter_str = white_spaces;
+  endif
 
   ## Parse format string
   idx = strfind (formatstr, "%")';
@@ -180,36 +184,64 @@ function varargout = strread (str, formatstr = "%f", varargin)
     str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
     str = [str{:}];
   endif
-  
+
+  ## Determine the number of words per line
+  [~, ~, ~, fmt_words] = regexp (formatstr, "[^\\s]+");
+
+  num_words_per_line = numel (fmt_words);
+  for m = 1:numel(fmt_words)
+    ## Convert formats such as "%Ns" to "%s" (see the FIXME below)
+    if (length (fmt_words{m}) > 2)
+      if (strcmp (fmt_words{m}(1:2), "%*"))
+        fmt_words{m} = "%*";
+      elseif (fmt_words{m}(1) == "%")
+        fmt_words{m} = fmt_words{m}([1, end]);
+      endif
+    endif
+  endfor
+ 
   ## Split 'str' into words
-  words = split_by (str, white_spaces);
+  words = split_by (str, delimiter_str);
   num_words = numel (words);
-  num_lines = ceil (num_words / nspecif);
-  
+  num_lines = ceil (num_words / num_words_per_line);
+ 
   ## For each specifier
   k = 1;
-  for m = 1:nspecif
-    data = words (m:nspecif:end);
-
+  for m = 1:num_words_per_line
+    data = words (m:num_words_per_line:end);
     ## Map to format
-    switch (specif(m,:))
+    ## FIXME - add support for formats like "%4s" or "<%s>", "%[a-zA-Z]"
+    ##         Someone with regexp experience is needed.
+    switch fmt_words{m}
       case "%s"
         data (end+1:num_lines) = {""};
         varargout {k} = data';
         k++;
       case {"%d", "%f"}
+        n = cellfun (@isempty, data);
         data = str2double (data);
+        data(n) = numeric_fill_value;
         data (end+1:num_lines) = numeric_fill_value;
         varargout {k} = data.';
         k++;
-      case "%*"
-        ## do nothing
+      case {"%*", "%*s"}
+        ## skip the word
+      otherwise
+        ## Ensure descriptive content is consistent
+        if (numel (unique (data)) > 1
+            || ! strcmpi (unique (data), fmt_words{m}))
+          error ("strread: format does not match data")
+        endif
     endswitch
   endfor
 endfunction
 
 function out = split_by (text, sep)
-  out = strtrim (strsplit (text, sep, true));
+  sep = union (sep, "\n");
+  pat = sprintf ("[^%s]+", sep);
+  [~, ~, ~, out] = regexp (text, pat);
+  out(cellfun (@isempty, out)) = {""};
+  out = strtrim (out);
 endfunction
 
 %!test
@@ -243,4 +275,16 @@ endfunction
 %! str = sprintf ('/* this is\nacomment*/ 1 2 3');
 %! a = strread (str, '%f', 'commentstyle', 'c');
 %! assert (a, [1; 2; 3]);
+
+%!test
+%! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");
+%! fmt = "%s %f miles/hr";
+%! c = cell (1, 2);
+%! [c{:}] = strread (str, fmt);
+%! assert (c{1}, {"Tom"; "Dick"; "Harry"})
+%! assert (c{2}, [100; 90; 80])
+
+%!test
+%! a = strread ("a b c, d e, , f", "%s", "delimiter", ",");
+%! assert (a, {"a b c"; "d e"; ""; "f"});
 

@@ -1361,22 +1361,22 @@ protected:
 
           if (pi)
             {
-              ComplexNDArray val (dv);
+              FloatComplexNDArray val (dv);
 
-              Complex *ptr = val.fortran_vec ();
+              FloatComplex *ptr = val.fortran_vec ();
 
               float *ppi = static_cast<float *> (pi);
 
               for (mwIndex i = 0; i < nel; i++)
-                ptr[i] = Complex (ppr[i], ppi[i]);
+                ptr[i] = FloatComplex (ppr[i], ppi[i]);
 
               retval = val;
             }
           else
             {
-              NDArray val (dv);
+              FloatNDArray val (dv);
 
-              double *ptr = val.fortran_vec ();
+              float *ptr = val.fortran_vec ();
 
               for (mwIndex i = 0; i < nel; i++)
                 ptr[i] = ppr[i];

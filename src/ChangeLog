@@ -17,6 +17,12 @@
 	* toplev.cc (Fsystem): Allow optional RETURN_OUTPUT and TYPE
 	arguments to be specified independently.  Update doc string.
 
+2010-10-21  Gunnar Farneback  <gunnar@lysator.liu.se>
+
+	* mex.cc (mxArray_number::as_octave_value): Convert single
+	matlab array to single octave array instead of to double octave
+	array.
+
 2010-10-18  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_first_of,

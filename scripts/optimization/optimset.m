@@ -76,11 +76,13 @@ function retval = optimset (varargin)
     retval = old;
   elseif (rem (nargs, 2) && isstruct (varargin{1}))
     ## Set values in old from name/value pairs.
-    retval = optimset (varargin{1}, struct (varargin{2:end}));
+    pairs = reshape (varargin(2:end), 2, []);
+    retval = optimset (varargin{1}, cell2struct (pairs(2, :), pairs(1, :), 2));
   elseif (rem (nargs, 2) == 0)
     ## Create struct.  Default values are replaced by those specified by
     ## name/value pairs.
-    retval = optimset (struct (), struct (varargin{:}));
+    pairs = reshape (varargin, 2, []);
+    retval = optimset (struct (), cell2struct (pairs(2, :), pairs(1, :), 2));
   else
     print_usage ();
   endif

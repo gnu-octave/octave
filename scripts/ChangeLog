@@ -1,3 +1,8 @@
+2010-10-20  Olaf Till  <olaf.till@uni-jena.de>
+
+	* optimization/optimset.m: Use cell2struct instead of struct to
+	handle cell arrays as options.
+
 2010-10-20  John W. Eaton  <jwe@octave.org>
 
 	* io/strread.m, optimization/sqp.m, plot/daspect.m,

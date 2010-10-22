@@ -1,3 +1,7 @@
+2010-10-22  Ben Abbott <bpabbott@mac.com>
+
+	* plot/legend.m: Trivial fix to allow legend handle to be returned.
+
 2010-10-21  John W. Eaton  <jwe@octave.org>
 
 	* statistics/base/quantile.m: Fix typo in previous change.

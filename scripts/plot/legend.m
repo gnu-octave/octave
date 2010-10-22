@@ -726,7 +726,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   endif
 
   if (nargout > 0)
-    hlegend2 = hlegend2;
+    hlegend2 = hlegend;
     hobjects2 = hobjects;
     hplot2 = hplots;
     text_strings2 = text_strings;

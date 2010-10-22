@@ -3724,7 +3724,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
       size_t pos = nm.find_last_of (file_ops::dir_sep_str ());
       if (pos != std::string::npos)
-        nm = nm.substr (pos+1pp);
+        nm = nm.substr (pos+1);
     }
 
   if (autoload)

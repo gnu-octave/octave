@@ -1,3 +1,8 @@
+2010-10-22  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (load_fcn_from_file): Also strip directory when
+	computing function name from filename.  Bug #31395.
+
 2010-10-21  Gunnar Farnebäck  <gunnar@lysator.liu.se>
 
 	* mex.cc (mxArray_number::as_octave_value): Convert single

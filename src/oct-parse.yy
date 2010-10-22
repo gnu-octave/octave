@@ -3721,6 +3721,10 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     {
       nm = octave_env::base_pathname (file);
       nm = nm.substr (0, nm.find_last_of ('.'));
+
+      size_t pos = nm.find_last_of (file_ops::dir_sep_str ());
+      if (pos != std::string::npos)
+        nm = nm.substr (pos+1pp);
     }
 
   if (autoload)

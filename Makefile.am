@@ -50,6 +50,8 @@ EXTRA_DIST = \
   ROADMAP \
   SENDING-PATCHES \
   autogen.sh \
+  bootstrap \
+  bootstrap.conf \
   gdbinit \
   missing \
   mk-opts.pl \

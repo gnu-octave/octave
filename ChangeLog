@@ -1,3 +1,8 @@
+2010-10-22  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (EXTRA_DIST): Include bootstrap and bootstrap.conf
+	in the list.
+
 2010-10-19  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_INIT): Version is now 3.3.53+.

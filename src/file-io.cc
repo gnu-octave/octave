@@ -554,7 +554,7 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
   return retval;
 }
 
-DEFUN (fopen, args, ,
+DEFUN (fopen, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})\n\
 @deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
@@ -664,7 +664,7 @@ however, conversions are currently only supported for @samp{native}\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_string ())
+      if (nargout < 2 && args(0).is_string ())
         {
           // If there is only one argument and it is a string but it
           // is not the string "all", we assume it is a file to open

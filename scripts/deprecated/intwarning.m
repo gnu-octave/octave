@@ -108,10 +108,10 @@ function y = intwarning (x)
       endif
     elseif (isstruct(x))
       for fld = fieldnames (x)
-        if (strcmp ("Octave:int-convert-nan") || 
-            strcmp ("Octave:int-convert-non-int-val") || 
-            strcmp ("Octave:int-convert-overflow") ||
-            strcmp ("Octave:int-cmath-overflow"))
+        if (strcmp ("Octave:int-convert-nan")
+            || strcmp ("Octave:int-convert-non-int-val")
+            || strcmp ("Octave:int-convert-overflow")
+            || strcmp ("Octave:int-cmath-overflow"))
           s = getfield (x, fld);
           if (! ischar (s) || !(strcmpi("s","on") || strcmpi("s","off")))
             error ("intwarning: unexpected warning state");

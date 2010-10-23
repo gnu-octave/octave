@@ -51,8 +51,8 @@ function rnd = lognrnd (mu, sigma, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (mu) != 1) && 
-        ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+    if (any (size (mu) != 1)
+        && ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
       error ("lognrnd: mu and sigma must be scalar or of size [r, c]");
     endif
 
@@ -65,8 +65,8 @@ function rnd = lognrnd (mu, sigma, r, c)
       error ("lognrnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (mu) != 1) && 
-        ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
+    if (any (size (mu) != 1)
+        && ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
       error ("lognrnd: mu and sigma must be scalar or of size sz");
     endif
   elseif (nargin == 2)

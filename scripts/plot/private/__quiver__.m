@@ -211,8 +211,8 @@ function hg = __quiver__ (varargin)
     endif
 
     if (have_line_spec)
-      if (isfield (linespec, "marker") && 
-        ! strncmp (linespec.marker, "none", 4))
+      if (isfield (linespec, "marker")
+          && ! strncmp (linespec.marker, "none", 4))
         if (is3d)
           h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                       [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),

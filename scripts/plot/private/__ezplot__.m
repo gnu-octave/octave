@@ -197,8 +197,8 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
 
     if (!isplot && parametric)
       funz = varargin {3};
-      if (ischar (funz) && ! strcmp (funz, "circ") && 
-          ! strcmp (funz, "animate"))
+      if (ischar (funz) && ! strcmp (funz, "circ")
+          && ! strcmp (funz, "animate"))
         if (exist (funz, "file") || exist (funz, "builtin"))
           funz = vectorize (inline (cstrcat (funz, "(t)")));
         else
@@ -350,8 +350,8 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     fstr = regexprep (regexprep (regexprep (fstr,'\s*\.?\^\s*','^'), '\./', '/'), 
                       '\.?\*', '');
     if (isplot && nargs == 2)
-      if (strcmp (typeinfo (fun), "inline function") && 
-          !isempty (strfind (formula (fun) , "=")))
+      if (strcmp (typeinfo (fun), "inline function")
+          && !isempty (strfind (formula (fun) , "=")))
         fun = inline (cstrcat (strrep (formula (fun), "=", "- ("), ")"));
       else
         fstr = cstrcat (fstr, " = 0");

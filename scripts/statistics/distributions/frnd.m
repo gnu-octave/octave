@@ -53,8 +53,8 @@ function rnd = frnd (m, n, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (m) != 1) && 
-        ((length (size (m)) != length (sz)) || any (size (m) != sz)))
+    if (any (size (m) != 1)
+        && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
       error ("frnd: m and n must be scalar or of size [r,c]");
     endif
   elseif (nargin == 3)
@@ -66,8 +66,8 @@ function rnd = frnd (m, n, r, c)
       error ("frnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (m) != 1) && 
-        ((length (size (m)) != length (sz)) || any (size (m) != sz)))
+    if (any (size (m) != 1)
+        && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
       error ("frnd: m and n must be scalar or of size sz");
     endif
   elseif (nargin == 2)

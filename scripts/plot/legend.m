@@ -766,9 +766,9 @@ function hideshowlegend (h, d, ca, pos1, pos2, outpos1, outpos2)
   endif
 
   for i = 1 : numel (ca)
-    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
-        strcmp (get (ca(i), "beingdeleted"), "off"))
+    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes")
+        && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+        && strcmp (get (ca(i), "beingdeleted"), "off"))
       units = get (ca(i), "units");
       unwind_protect
         set (ca(i), "units", "points");
@@ -785,18 +785,18 @@ function hideshowlegend (h, d, ca, pos1, pos2, outpos1, outpos2)
 endfunction
 
 function deletelegend1 (h, d, ca)
-  if (ishandle (ca) && strcmp (get (ca, "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
-      strcmp (get (ca, "beingdeleted"), "off"))
+  if (ishandle (ca) && strcmp (get (ca, "type"), "axes")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+      && strcmp (get (ca, "beingdeleted"), "off"))
     delete (ca);
   endif
 endfunction
 
 function deletelegend2 (h, d, ca, pos, outpos, t1)
   for i = 1 : numel (ca)
-    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
-        strcmp (get (ca(i), "beingdeleted"), "off"))
+    if (ishandle (ca(i)) && strcmp (get (ca(i), "type"), "axes")
+        && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+        && strcmp (get (ca(i), "beingdeleted"), "off"))
       if (!isempty (pos) && !isempty(outpos))
         units = get (ca(i), "units");
         unwind_protect

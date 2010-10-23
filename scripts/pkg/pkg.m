@@ -828,8 +828,8 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   ## Check if the installed directory is empty. If it is remove it
   ## from the list.
   for i = length (descriptions):-1:1
-    if (dirempty (descriptions{i}.dir, {"packinfo", "doc"}) &&
-        dirempty (getarchdir (descriptions{i})))
+    if (dirempty (descriptions{i}.dir, {"packinfo", "doc"})
+        && dirempty (getarchdir (descriptions{i})))
       warning ("package %s is empty\n", descriptions{i}.name);
       rm_rf (descriptions{i}.dir);
       rm_rf (getarchdir (descriptions{i}));
@@ -1512,8 +1512,8 @@ function copy_files (desc, packdir, global_install)
       rm_rf (desc.dir);
       error ("couldn't copy files to the installation directory");
     endif
-    if (exist (fullfile (desc.dir, getarch ()), "dir") &&
-        ! strcmp (fullfile (desc.dir, getarch ()), octfiledir))
+    if (exist (fullfile (desc.dir, getarch ()), "dir")
+        && ! strcmp (fullfile (desc.dir, getarch ()), octfiledir))
       if (! exist (octfiledir, "dir"))
         ## Can be required to create upto three levels of dirs.
         octm1 = fileparts (octfiledir);
@@ -2254,8 +2254,8 @@ function newdesc = save_order (desc)
   newdesc = {};
   for i = 1 : length(desc)
     deps = desc{i}.depends;
-    if (isempty (deps) || (length (deps) == 1 && 
-                          strcmp(deps{1}.package, "octave")))
+    if (isempty (deps)
+        || (length (deps) == 1 && strcmp(deps{1}.package, "octave")))
       newdesc {end + 1} = desc{i};
     else
       tmpdesc = {};
@@ -2319,14 +2319,14 @@ endfunction
 
 function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
   for i = lidx
-    if (isfield (installed_pkgs_lst{i}, "loaded") &&
-        installed_pkgs_lst{i}.loaded)
+    if (isfield (installed_pkgs_lst{i}, "loaded")
+        && installed_pkgs_lst{i}.loaded)
       continue;
     else
       if (handle_deps)
         deps = installed_pkgs_lst{i}.depends;
-        if ((length (deps) > 1) || (length (deps) == 1 && 
-                          ! strcmp(deps{1}.package, "octave")))
+        if ((length (deps) > 1)
+            || (length (deps) == 1 && ! strcmp(deps{1}.package, "octave")))
           tmplidx = [];
           for k = 1 : length (deps)
             for j = 1 : length (installed_pkgs_lst)

@@ -92,8 +92,8 @@ function __datetick__ (varargin)
 
   if (nargin != 0)
     arg = varargin{1};
-    if (ischar(arg) && (strcmp (arg, "x") || strcmp (arg, "y") || 
-      strcmp (arg, "z")))
+    if (ischar (arg) && (strcmp (arg, "x") || strcmp (arg, "y")
+                         || strcmp (arg, "z")))
       ax = arg;
       if (nargin > 1)
         form = varargin{2};

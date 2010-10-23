@@ -1,5 +1,32 @@
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
+	* statistics/distributions/nbinrnd.m: Use | instead of || in
+	argument to find.
+
+	* deprecated/intwarning.m, general/bicubic.m, general/postpad.m,
+	general/prepad.m, general/private/__splinen__.m,
+	general/shift.m, miscellaneous/swapbytes.m, pkg/pkg.m,
+	plot/clabel.m, plot/colorbar.m, plot/fill.m, plot/legend.m,
+	plot/plotmatrix.m, plot/plotyy.m, plot/private/__clabel__.m,
+	plot/private/__ezplot__.m, plot/private/__quiver__.m,
+	plot/subplot.m, signal/unwrap.m, statistics/base/histc.m,
+	statistics/base/iqr.m, statistics/base/kurtosis.m,
+	statistics/base/mode.m, statistics/base/ranks.m,
+	statistics/base/run_count.m, statistics/base/skewness.m,
+	statistics/base/statistics.m, statistics/base/studentize.m,
+	statistics/distributions/exprnd.m,
+	statistics/distributions/frnd.m,
+	statistics/distributions/geornd.m,
+	statistics/distributions/lognrnd.m,
+	statistics/distributions/nbinrnd.m,
+	statistics/distributions/poissrnd.m,
+	statistics/distributions/trnd.m,
+	statistics/distributions/wblrnd.m, strings/strcat.m,
+	time/datestr.m, time/datetick.m: Break lines before && and ||,
+	not before.
+
+2010-10-23  John W. Eaton  <jwe@octave.org>
+
 	* io/strread.m: Docstring fixes.
 
 2010-10-23  John W. Eaton  <jwe@octave.org>

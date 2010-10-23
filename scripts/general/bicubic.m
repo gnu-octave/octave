@@ -48,8 +48,8 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     extrapval = NaN;
   endif
 
-  if (isa (X, "single") || isa (Y, "single") || isa (Z, "single") || 
-      isa (XI, "single") || isa (YI, "single"))
+  if (isa (X, "single") || isa (Y, "single") || isa (Z, "single")
+      || isa (XI, "single") || isa (YI, "single"))
     myeps = eps("single");
   else
     myeps = eps;

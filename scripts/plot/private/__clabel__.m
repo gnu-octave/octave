@@ -28,8 +28,8 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   xspacing = 72 * 4 / abs(lims(1) - lims(2));
   yspacing = 72 * 3 / abs(lims(3) - lims(4));
 
-  if (isscalar (hparent) && ishandle(hparent) && 
-        strcmp (get (hparent, "type"), "hggroup"))
+  if (isscalar (hparent) && ishandle(hparent)
+      && strcmp (get (hparent, "type"), "hggroup"))
     x = get (hparent, "xdata");
     xmin = min (x(:));
     xmax = max (x(:));
@@ -89,8 +89,8 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
       endwhile
       tpos = sum(c(:,i1+j1-1:i1+j1), 2) ./ 2;
 
-      if (tpos(1) != xmin &&  tpos(1) != xmax && 
-          tpos(2) != ymin &&  tpos(2) != ymax)
+      if (tpos(1) != xmin &&  tpos(1) != xmax
+          && tpos(2) != ymin &&  tpos(2) != ymax)
         trot = 180 / pi * atan2 (diff (c(2,i1+j1-1:i1+j1)),
                                  diff (c(1,i1+j1-1:i1+j1)));
 

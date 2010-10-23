@@ -178,13 +178,13 @@ endfunction
 function deletecolorbar (h, d, hc, orig_props)
   ## Don't delete the colorbar and reset the axis size if the
   ## parent figure is being deleted.
-  if (ishandle (hc) && strcmp (get (hc, "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
+  if (ishandle (hc) && strcmp (get (hc, "type"), "axes")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     if (strcmp (get (hc, "beingdeleted"), "off"))
       delete (hc);
     endif
-    if (!isempty (ancestor (h, "axes")) &&
-        strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
+    if (!isempty (ancestor (h, "axes"))
+        && strcmp (get (ancestor (h, "axes"), "beingdeleted"), "off"))
       set (ancestor (h, "axes"), "position", orig_props.position, ...
                             "outerposition", orig_props.outerposition, ...
                     "activepositionproperty", orig_props.activepositionproperty);
@@ -193,9 +193,9 @@ function deletecolorbar (h, d, hc, orig_props)
 endfunction
 
 function resetaxis (h, d, orig_props)
-  if (ishandle (h) && strcmp (get (h, "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
-      ishandle (get (h, "axes")))
+  if (ishandle (h) && strcmp (get (h, "type"), "axes")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+      && ishandle (get (h, "axes")))
      set (get (h, "axes"), "position", orig_props.position, ...
                            "outerposition", orig_props.outerposition, ...
                    "activepositionproperty", orig_props.activepositionproperty);
@@ -203,8 +203,8 @@ function resetaxis (h, d, orig_props)
 endfunction
 
 function update_colorbar_clim (h, d, hi, vert)
-  if (ishandle (h) && strcmp (get (h, "type"), "image") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
+  if (ishandle (h) && strcmp (get (h, "type"), "image")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     clen = rows (get (get (h, "parent"), "colormap"));
     cext = get (h, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
@@ -223,8 +223,8 @@ endfunction
 
 function update_colorbar_axis (h, d, cax, orig_props)
 
-  if (ishandle (cax) && strcmp (get (cax, "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
+  if (ishandle (cax) && strcmp (get (cax, "type"), "axes")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")))
     loc = get (cax, "location");
     obj = get (h);
     obj.__my_handle__ = h;

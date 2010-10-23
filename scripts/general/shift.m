@@ -46,8 +46,8 @@ function y = shift (x, b, dim)
   sz = size (x);
 
   if (nargin == 3)
-    if (!(isscalar (dim) && dim == round (dim)) || 
-        !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == round (dim))
+        || !(1 <= dim && dim <= nd))
       error ("shift: DIM must be an integer and a valid dimension");
     endif
   else

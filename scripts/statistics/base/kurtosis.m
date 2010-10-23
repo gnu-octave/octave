@@ -62,8 +62,8 @@ function retval = kurtosis (x, dim)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == round (dim)) || 
-        !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == round (dim))
+        || !(1 <= dim && dim <= nd))
       error ("kurtosis: DIM must be an integer and a valid dimension");
     endif
   endif

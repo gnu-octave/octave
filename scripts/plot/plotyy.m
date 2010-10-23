@@ -57,8 +57,8 @@ function [Ax, H1, H2] = plotyy (varargin)
 
   ## Don't use __plt_get_axis_arg__ here as ax is a two vector for plotyy
   if (nargin > 1 && length (varargin{1}) == 2 && ishandle(varargin{1}(1)) 
-      &&  ishandle(varargin{1}(2)) && 
-      all (floor (varargin{1}) != varargin{1}))
+      && ishandle(varargin{1}(2))
+      && all (floor (varargin{1}) != varargin{1}))
     obj1 = get (varargin{1}(1));
     obj2 = get (varargin{1}(2));
     if (strcmp (obj1.type, "axes") || strcmp (obj2.type, "axes"))
@@ -237,9 +237,9 @@ endfunction
 %! axis square
 
 function deleteplotyy (h, d, ax2, t2)
-  if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes") && 
-      (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off")) &&
-      strcmp (get (ax2, "beingdeleted"), "off"))
+  if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")
+      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+      && strcmp (get (ax2, "beingdeleted"), "off"))
     set (t2, "deletefcn", []);
     delete (ax2);
   endif

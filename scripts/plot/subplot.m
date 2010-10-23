@@ -118,8 +118,8 @@ function h = subplot (rows, columns, index)
       endif
       if (strcmp (get (child, "type"), "axes"))
         ## Skip legend and colorbar objects.
-        if (strcmp (get (child, "tag"), "legend") || 
-            strcmp (get (child, "tag"), "colorbar"))
+        if (strcmp (get (child, "tag"), "legend")
+            || strcmp (get (child, "tag"), "colorbar"))
           continue;
         endif
         objpos = get (child, "position");

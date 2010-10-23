@@ -74,9 +74,9 @@ function iargs = __find_patches__ (varargin)
 
     if (i <= nargin)
       while (true);
-        if (ischar (varargin{i}) && 
-            (strcmpi (varargin{i}, "faces")
-             || strcmpi (varargin{i}, "vertices")))
+        if (ischar (varargin{i})
+            && (strcmpi (varargin{i}, "faces")
+                || strcmpi (varargin{i}, "vertices")))
           break;
         elseif (isnumeric (varargin{i}))
           ## Assume its the colorspec

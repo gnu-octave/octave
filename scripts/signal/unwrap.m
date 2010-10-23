@@ -50,8 +50,8 @@ function retval = unwrap (a, tol, dim)
   nd = ndims (a);
   sz = size (a);
   if (nargin == 3)
-    if (!(isscalar (dim) && dim == fix (dim)) || 
-        !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
       error ("unwrap: DIM must be an integer and a valid dimension");
     endif
   else

@@ -49,8 +49,8 @@ function y = postpad (x, l, c, dim)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || 
-        !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
       error ("postpad: DIM must be an integer and a valid dimension");
     endif
   endif

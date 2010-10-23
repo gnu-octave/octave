@@ -66,8 +66,8 @@ function retval = clabel (c, varargin)
     hparent = gca ();
   else
     arg = varargin{1};
-    if (isscalar (arg) && ishandle(arg) && 
-        strcmp (get (arg, "type"), "hggroup"))
+    if (isscalar (arg) && ishandle(arg)
+        && strcmp (get (arg, "type"), "hggroup"))
       obj = get (arg);
       if (! isfield (obj, "contourmatrix"))
         error ("clabel: expecting the handle to be a contour group");

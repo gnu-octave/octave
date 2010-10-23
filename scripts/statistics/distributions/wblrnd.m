@@ -51,9 +51,9 @@ function rnd = wblrnd (scale, shape, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (scale) != 1) && 
-        ((length (size (scale)) != length (sz))
-         || any (size (scale) != sz)))
+    if (any (size (scale) != 1)
+        && ((length (size (scale)) != length (sz))
+            || any (size (scale) != sz)))
       error ("wblrnd: scale and shape must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -65,9 +65,9 @@ function rnd = wblrnd (scale, shape, r, c)
       error ("wblrnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (scale) != 1) && 
-        ((length (size (scale)) != length (sz))
-         || any (size (scale) != sz)))
+    if (any (size (scale) != 1)
+        && ((length (size (scale)) != length (sz))
+            || any (size (scale) != sz)))
       error ("wblrnd: scale and shape must be scalar or of size sz");
     endif
   elseif (nargin == 2)

@@ -42,8 +42,8 @@ function rnd = trnd (n, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (n) != 1) && 
-        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
+    if (any (size (n) != 1)
+        && ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 2)
@@ -55,8 +55,8 @@ function rnd = trnd (n, r, c)
       error ("trnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (n) != 1) && 
-        ((length (size (n)) != length (sz)) || any (size (n) != sz)))
+    if (any (size (n) != 1)
+        && ((length (size (n)) != length (sz)) || any (size (n) != sz)))
       error ("trnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)

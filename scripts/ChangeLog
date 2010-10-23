@@ -8,12 +8,12 @@
 	* io/is_valid_file_id.m: New function.
 	* io/module.mk (io_FCN_FILES): Add it to the list.
 
-2010-10-23  Ben Abbott <bpabbott@mac.com>
+2010-10-23  Ben Abbott  <bpabbott@mac.com>
 
 	* io/textscan.m, miscellaneous/unimplemented.m, io/module.mk:
 	New function.
 
-2010-10-22  Ben Abbott <bpabbott@mac.com>
+2010-10-22  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/legend.m: Trivial fix to allow legend handle to be returned.
 
@@ -27,7 +27,7 @@
 	  statistics/distributions/wblpdf.m, statistics/distributions/wblrnd.m:
 	  Fix reversed documentation for shape and scale parameters.
 
-2010-10-21  Ben Abbott <bpabbott@mac.com>
+2010-10-21  Ben Abbott  <bpabbott@mac.com>
 
 	* io/strread.m: Improve compatibility with Matlab.
 
@@ -35,9 +35,9 @@
 
 	* general/private/__isequal__.m: Style fixes.
 
-2010-10-20  Iain Murray <murray@cs.toronto.edu>
+2010-10-20  Iain Murray  <murray@cs.toronto.edu>
 
-	* general/private/__isequal__.m: Fix bug #31239 where 
+	* general/private/__isequal__.m: Fix bug #31239 where
 	isequalwithequalnans is incorrect.
 
 2010-10-20  Rik  <octave@nomad.inbox5.com>

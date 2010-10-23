@@ -1,11 +1,11 @@
+2010-10-23  Ben Abbott  <bpabbott@mac.com>
+
+	* interpreter/strings.txi: Add @DOCSTRING(strread).
+
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/io.txi (Opening and Closing Files):
 	Document is_valid_file_id.
-
-2010-10-23  Ben Abbott <bpabbott@mac.com>
-
-	* interpreter/strings.txi: Add @DOCSTRING(strread).
 
 2010-10-21  John W. Eaton  <jwe@octave.org>
 

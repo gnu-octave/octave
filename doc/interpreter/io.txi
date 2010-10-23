@@ -320,6 +320,8 @@ fclose (fid);
 
 @DOCSTRING(fclose)
 
+@DOCSTRING(is_valid_file_id)
+
 @node Simple Output
 @subsection Simple Output
 

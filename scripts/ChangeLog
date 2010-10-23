@@ -1,3 +1,8 @@
+2010-10-23  John W. Eaton  <jwe@octave.org>
+
+	* io/is_valid_file_id.m: New function.
+	* io/module.mk (io_FCN_FILES): Add it to the list.
+
 2010-10-23  Ben Abbott <bpabbott@mac.com>
 
 	* io/textscan.m, miscellaneous/unimplemented.m, io/module.mk:

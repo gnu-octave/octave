@@ -6,6 +6,7 @@ io_FCN_FILES = \
   io/csvwrite.m \
   io/dlmwrite.m \
   io/fileread.m \
+  io/is_valid_file_id.m \
   io/strread.m \
   io/textscan.m \
   io/textread.m

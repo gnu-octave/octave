@@ -114,7 +114,7 @@ static bool verbose_flag = false;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+  "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing]\n\
        [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
@@ -124,7 +124,7 @@ static const char *usage_string =
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
 // to prevent getopt from permuting arguments!
-static const char *short_opts = "+?HVdfhip:qvx";
+static const char *short_opts = "+HVdfhip:qvx";
 
 // The code to evaluate at startup (--eval CODE)
 static std::string code_to_eval;
@@ -476,7 +476,7 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
-  --help, -h, -?          Print short help message and exit.\n\
+  --help, -h,             Print short help message and exit.\n\
   --image-path PATH       Add PATH to head of image search path.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
@@ -513,7 +513,7 @@ OCTAVE_BUGS_STATEMENT "\n";
 static void
 usage (void)
 {
-  std::cerr << "usage: " << usage_string << "\n";
+  std::cerr << "\nusage: " << usage_string << "\n\n";
   exit (1);
 }
 
@@ -648,6 +648,13 @@ octave_main (int argc, char **argv, int embedded)
 
       switch (optc)
         {
+        case '?':
+          // Unrecognized option.  getopt_long already printed a
+          // message about that, so we will just print the usage string
+          // and exit.
+          usage ();
+          break;
+
         case 'H':
           read_history_file = false;
           bind_internal_variable ("saving_history", false);
@@ -668,7 +675,6 @@ octave_main (int argc, char **argv, int embedded)
           break;
 
         case 'h':
-        case '?':
           verbose_usage ();
           break;
 
@@ -764,7 +770,11 @@ octave_main (int argc, char **argv, int embedded)
           break;
 
         default:
-          usage ();
+          // getopt_long should print a message about unrecognized
+          // options and return '?', which is handled above.  So if we
+          // end up here, it is because there was an option but we
+          // forgot to handle it.  That should be fatal.
+          panic_impossible ();
           break;
         }
     }

@@ -1,5 +1,15 @@
 2010-10-22  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (usage): Put whitespace before and after usage message.
+	(octave_main): If getopt_long returns '?', it means an
+	unrecognized option was encountered.
+	Panic if default case in option switch statement is reached.
+ 	(verbose_usage, short_opts, usage_string): Remove '?' as an
+	alias for 'h' in the list of possible options.
+	Fixes bug #31423.
+
+2010-10-22  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (load_fcn_from_file): Also strip directory when
 	computing function name from filename.  Bug #31395.
 

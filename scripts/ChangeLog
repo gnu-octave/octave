@@ -1,5 +1,10 @@
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
+	* strings/untabify.m, strings/strjust.m, io/strread.m:
+	Docstring fixes.
+
+2010-10-23  John W. Eaton  <jwe@octave.org>
+
 	* statistics/distributions/nbinrnd.m: Use | instead of || in
 	argument to find.
 

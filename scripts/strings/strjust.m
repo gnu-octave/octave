@@ -18,15 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} strjust (@var{s})
-## @deftypefnx {Function File} strjust (@var{s}, "right")
-## Returns the text, S, justified to the right.
-##
-## @deftypefnx {Function File} strjust (@var{s}, "left")
-## Returns left justified text.
-##
-## @deftypefnx {Function File} strjust (@var{s}, "center")
-## Returns center justified text.
+## @deftypefn {Function File} {} strjust (@var{s}, @var{pos})
+## Return the text, @var{s}, justified according to @var{pos}, which may
+## be @samp{"left"}, @samp{"center"}, or @samp{"right"}.  If @var{pos}
+## is omitted, @samp{"right"} is assumed. 
 ##
 ## Null characters are replaced by spaces. All other character
 ## data are treated as non-white space.

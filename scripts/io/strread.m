@@ -19,8 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{a}, @dots{}] =} strread (@var{str})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @
-## @var{prop1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{prop1}, @var{value1}, @dots{})
 ## Read data from a string.
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the
@@ -95,7 +94,7 @@
 ##
 ## @item "emptyvalue"
 ## Parts of the output where no word is available is filled with @var{value}.
-## @end itemize
+## @end table
 ##
 ## @seealso{textread, load, dlmread, fscanf}
 ## @end deftypefn

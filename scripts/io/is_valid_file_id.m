@@ -28,11 +28,19 @@ function retval = is_valid_file_id (fid)
 
   if (nargin == 1)
     try
-      [file, mode, arch] = fopen (fid);
-      retval = ! isempty (file);
+      if (isscalar (fid))
+        [file, mode, arch] = fopen (fid);
+        retval = ! isempty (file);
+      endif
     end_try_catch
   else
     print_usage ();
   endif
 
 endfunction
+
+%!assert (is_valid_file_id (stdout))
+%!assert (! is_valid_file_id ([1,2;3,4]))
+%!assert (! is_valid_file_id ("not_a_file_id"))
+%!assert (! is_valid_file_id (-1))
+%!assert (! is_valid_file_id (pi))

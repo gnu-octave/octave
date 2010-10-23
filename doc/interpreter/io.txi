@@ -219,6 +219,8 @@ separated lists.
 
 @DOCSTRING(csvread)
 
+Formatted data from can be read from, or written to, text files as well.
+
 @DOCSTRING(textread)
 
 @DOCSTRING(textscan)

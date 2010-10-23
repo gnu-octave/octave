@@ -219,6 +219,10 @@ separated lists.
 
 @DOCSTRING(csvread)
 
+@DOCSTRING(textread)
+
+@DOCSTRING(textscan)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu

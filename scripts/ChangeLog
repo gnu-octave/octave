@@ -1,5 +1,9 @@
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
+	* io/strread.m: Docstring fixes.
+
+2010-10-23  John W. Eaton  <jwe@octave.org>
+
 	* io/is_valid_file_id.m: Ensure that FID is a scalar before
 	calling fopen to get info.  New tests.
 

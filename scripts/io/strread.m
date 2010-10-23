@@ -69,9 +69,11 @@
 ## [@var{a}, @var{b}, @var{c}] = strread (@var{str}, "%s %s %f");
 ## @end example
 ##
-## The behaviour of @code{strread} can be changed via properties @var{prop}
-## @itemize @code
-## @item "commentstyle":
+## The behaviour of @code{strread} can be changed via property-value
+## pairs.  The following properties are recognized:
+##
+## @table @code
+## @item "commentstyle"
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.
 ## @itemize

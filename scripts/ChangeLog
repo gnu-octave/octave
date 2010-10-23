@@ -1,3 +1,8 @@
+2010-10-23  Ben Abbott <bpabbott@mac.com>
+
+	* io/textscan.m, miscellaneous/unimplemented.m, io/module.mk:
+	New function.
+
 2010-10-22  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Trivial fix to allow legend handle to be returned.

@@ -45,9 +45,6 @@ function unimplemented (fcn)
     "Matlab-compatible ODE functions are provided by the odepkg package.  ",...
     "See @url{http://octave.sf.net/odepkg/}."];
   
-  case "textscan"
-    txt = ["textscan is not implemented.  Consider using textread or sscanf."];
-
   otherwise
     if (ismember (fcn, missing_functions ()))
 
@@ -378,7 +375,6 @@ function list = missing_functions ()
   "syntax", 
   "tetramesh", 
   "texlabel", 
-  "textscan", 
   "textwrap", 
   "tfqmr", 
   "timer", 

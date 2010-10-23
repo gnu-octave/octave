@@ -7,6 +7,7 @@ io_FCN_FILES = \
   io/dlmwrite.m \
   io/fileread.m \
   io/strread.m \
+  io/textscan.m \
   io/textread.m
 
 FCN_FILES += $(io_FCN_FILES)

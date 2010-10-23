@@ -1,12 +1,6 @@
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
 
- ** The fltk graphics backend now implements the following callback
-    properties: keypressfcn, keyreleasefcn, windowbuttondownfcn,
-    windowbuttonmotionfcn, windowbuttonupfcn, and currentpoint.  These
-    enable keyboard and mouse interaction, an example of which can be
-    seen in the __fltk_ginput__.m script.
-
  ** BLAS and LAPACK libraries are now required to build Octave.  The
     subset of the reference BLAS and LAPACK libraries has been removed
     from the Octave sources.
@@ -462,10 +456,7 @@ Summary of important user-visible changes for version 3.2:
 
         backend (h, "fltk")
 
-    where "h" is a valid figure handle.  Please note that this backend
-    does not yet support text objects.  Obviously, this is a necessary
-    feature before it can be considered usable.  We are looking for
-    volunteers to help implement this missing feature.
+    where "h" is a valid figure handle.
 
  ** Functions providing direct access to gnuplot have been removed.
 

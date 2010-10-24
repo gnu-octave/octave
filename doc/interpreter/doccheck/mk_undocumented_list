@@ -1,0 +1,130 @@
+#!/usr/bin/perl -w
+
+################################################################################
+# Get a list from Octave of all visible functions
+@octave_output = <<`_END_OCT_SCRIPT_`;
+../../run-octave --norc --silent --no-history --eval '\
+ funclist  = vertcat (__list_functions__ , __builtins__) \
+ disp("#!-separator-!#") \
+ where = cellfun (\@which, funclist, \"UniformOutput\", 0)' 
+_END_OCT_SCRIPT_
+
+die "Unable to invoke 'run-octave'.  Exiting\n" unless (@octave_output);
+
+################################################################################
+# Winnow list of functions that require a DOCSTRING
+
+$idx = 0;
+while (($_ = $octave_output[$idx++]) !~ /^#!-separator-!#$/)
+{
+   push(@all_functions, $1) if (/] = (\w+)$/);
+}
+while ($_ = $octave_output[$idx++])
+{
+   push(@where, $1) if (/] = (\S*)$/);
+}
+
+# Remove deprecated functions from the list of features requiring a DOCSTRING  
+FUNC: foreach $idx (0 .. $#where)
+{
+   next FUNC if ($where[$idx] =~ /deprecated/i);
+
+   push (@functions, $all_functions[$idx]); 
+}
+
+# Remove internal functions from the list of features requiring a DOCSTRING  
+@functions = grep (! /^__/, @functions);
+
+# Load list of function exceptions not requiring a DOCSTRING
+# Exception data is stored at the bottom of this script
+map { chomp, $exceptions{$_}=1; } <DATA>;
+
+# Remove exception data from the list of features requiring a DOCSTRING
+@functions = grep (! $exceptions{$_}, @functions);
+
+################################################################################
+# Get a list of all documented functions
+foreach $txi_file (glob("*.txi"))
+{
+   open(TXI_FILE, $txi_file) or die "Unable to open $txi_file for reading\n";
+   while (<TXI_FILE>)
+   {
+      $docstrings{$1} = 1 if (/\@DOCSTRING\((\w+)\)/) ;
+   }
+}
+
+################################################################################
+# Find features which have not been documented in the txi files
+@undocumented = grep (! $docstrings{$_}, @functions);
+
+# Exit successfully if no undocumented functions
+exit(0) if (! @undocumented);
+
+$, = "\n";  # Set output record separator
+print sort(@undocumented);
+exit(1);
+
+################################################################################
+# Exception list of functions not requiring a DOCSTRING
+################################################################################
+__DATA__
+angle
+bessel
+besselh
+besseli
+besselk
+bessely
+build_bc_overloads_expected
+chdir
+comma
+debug
+exit
+fntests
+gammaln
+geometryimages
+i
+inf
+interpimages
+inverse
+j
+J
+lower
+nan
+paren
+plotimages
+SEEK_CUR
+SEEK_END
+semicolon
+setenv
+sparseimages
+tbcover
+test_args
+test_bc_overloads
+test_classes
+test_contin
+test_diag_perm
+test_error
+test_for
+test_func
+test_global
+test_if
+test_io
+test_null_assign
+test_prefer
+test_range
+test_recursion
+test_return
+test_slice
+test_sparse
+test_string
+test_struct
+test_switch
+test_system
+test_transpose
+test_try
+test_unwind
+test_while
+toc
+triu
+unimplemented
+upper

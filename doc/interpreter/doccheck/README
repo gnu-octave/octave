@@ -6,15 +6,17 @@ This directory contains scripts and data for validating Octave's Texinfo
 documentation.  These scripts are internal developer tools for ensuring 
 consistent documentation formats and avoiding misspellings.
 
-The scripts provide two services:
+The scripts provide 3 services:
 
 1) A spellchecker, built atop GNU Aspell with a private dictionary of keywords
    specific to Octave.
 
 2) A grammarchecker designed from scratch in Perl to ensure a common format
-   for Octave documentation and make use of as many features of Texinfo as 
+   for Octave documentation and to make use of as many features of Texinfo as 
    possible.
 
+3) A list of undocumented functions, i.e, those missing an @DOCSTRING reference
+   in the .txi files.
 
 ################################################################################
                                    FILES
@@ -26,6 +28,8 @@ add_to_aspell_dict : script to add new words to the private Octave dictionary.
 
 grammarcheck : Perl script to check Octave Texinfo documentation in a single
                m-file(.m), C++ file(.cc), or Texinfo file(.txi, .texi).
+
+mk_undocumented_list : Perl script to make undocumented function list
 
 ################################################################################
                                    USAGE
@@ -74,3 +78,12 @@ Now Aspell no longer reports any misspellings for linalg.texi.
 GRAMMAR:
 
 To be added
+
+UNDOCUMENTED:
+
+From the doc/interpreter/ directory, type 'doccheck/mk_undocumented_list'.
+This will produce a list of undocumented functions on stdout.  
+
+Functions which don't require an @DOCSTRING reference can be added to the list
+of exceptions at the bottom of the mk_undocumented_list script.
+

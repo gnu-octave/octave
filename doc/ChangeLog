@@ -1,3 +1,8 @@
+2010-10-24  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/doccheck/mk_undocumented_list: New verification
+	script produces a list of undocumented functions.
+
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/io.txi (Simple File I/O): Document textscan and

@@ -3,11 +3,9 @@ FCN_FILE_DIRS += specfun
 specfun_FCN_FILES = \
   specfun/bessel.m \
   specfun/beta.m \
-  specfun/betai.m \
   specfun/betaln.m \
   specfun/factor.m \
   specfun/factorial.m \
-  specfun/gammai.m \
   specfun/isprime.m \
   specfun/legendre.m \
   specfun/nchoosek.m \

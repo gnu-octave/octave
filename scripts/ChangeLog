@@ -1,3 +1,9 @@
+2010-10-24  Rik  <octave@nomad.inbox5.com>
+
+	* specfun/module.mk, deprecated/module.mk, deprecated/betai.m, 
+	  deprecated/gammai.m, deprecated/is_global.m: Deprecate betai,
+	  gammai, and is_global functions.
+
 2010-10-23  John W. Eaton  <jwe@octave.org>
 
 	* strings/untabify.m, strings/strjust.m, io/strread.m:

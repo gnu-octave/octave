@@ -370,15 +370,6 @@ isglobal (\"x\")\n\
   return do_isglobal (args);
 }
 
-DEFUN (is_global, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
-This function has been deprecated.  Use isglobal instead.\n\
-@end deftypefn")
-{
-  return do_isglobal (args);
-}
-
 static octave_value
 safe_symbol_lookup (const std::string& symbol_name)
 {

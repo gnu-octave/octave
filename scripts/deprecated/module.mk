@@ -1,14 +1,17 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
+  deprecated/betai.m \
   deprecated/cellidx.m \
   deprecated/clg.m \
   deprecated/complement.m \
   deprecated/create_set.m \
   deprecated/dmult.m \
   deprecated/fstat.m \
+  deprecated/gammai.m \
   deprecated/intwarning.m \
   deprecated/iscommand.m \
+  deprecated/is_global.m \
   deprecated/israwcommand.m \
   deprecated/isstr.m \
   deprecated/lchol.m \

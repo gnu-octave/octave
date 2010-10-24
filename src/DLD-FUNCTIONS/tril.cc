@@ -347,7 +347,7 @@ DEFUN_DLD (tril, args, ,
 @deftypefnx {Function File} {} triu (@var{a})\n\
 @deftypefnx {Function File} {} triu (@var{a}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{a}, @var{k}, @var{pack})\n\
-Return a new matrix formed by extracting extract the lower (@code{tril})\n\
+Return a new matrix formed by extracting the lower (@code{tril})\n\
 or upper (@code{triu}) triangular part of the matrix @var{a}, and\n\
 setting all other elements to zero.  The second argument is optional,\n\
 and specifies how many diagonals above or below the main diagonal should\n\

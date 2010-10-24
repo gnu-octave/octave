@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{xl} =} zlim ()
-## @deftypefnx {Function File} {} zlim (@var{xl})
+## @deftypefn  {Function File} {@var{zl} =} zlim ()
+## @deftypefnx {Function File} {} zlim (@var{zl})
 ## @deftypefnx {Function File} {@var{m} =} zlim ('mode')
 ## @deftypefnx {Function File} {} zlim (@var{m})
 ## @deftypefnx {Function File} {} zlim (@var{h}, @dots{})
 ## Get or set the limits of the z-axis of the current plot.  Called without
 ## arguments @code{zlim} returns the z-axis limits of the current plot.
-## If passed a two element vector @var{xl}, the limits of the z-axis are set
+## If passed a two element vector @var{zl}, the limits of the z-axis are set
 ## to this value.
 ##
 ## The current mode for calculation of the z-axis can be returned with a

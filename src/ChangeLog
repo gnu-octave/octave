@@ -1,5 +1,9 @@
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/tril.cc, syscalls.cc: Docstring improvements.
+
+2010-10-24  Rik  <octave@nomad.inbox5.com>
+
 	* variables.cc: Deprecate is_global function
 
 2010-10-23  John W. Eaton  <jwe@octave.org>

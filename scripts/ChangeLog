@@ -1,5 +1,10 @@
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/compare_versions.m, plot/ylabel.m, plot/ylim.m, 
+	  plot/zlabel.m, plot/zlim.m: Docstring improvements.
+
+2010-10-24  Rik  <octave@nomad.inbox5.com>
+
 	* specfun/module.mk, deprecated/module.mk, deprecated/betai.m, 
 	  deprecated/gammai.m, deprecated/is_global.m: Deprecate betai,
 	  gammai, and is_global functions.

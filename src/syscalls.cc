@@ -1709,7 +1709,7 @@ DEFUNX ("O_APPEND", FO_APPEND, args, ,
 @deftypefn {Built-in Function} {} O_APPEND ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate each write operation appends,\n\
-or that may be passed to @code{fcntl} to set the write mode to append.\\n\
+or that may be passed to @code{fcntl} to set the write mode to append.\n\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {

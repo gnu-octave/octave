@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} zlabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{h}, @var{string})
-## @seealso{xlabel}.
+## @seealso{xlabel}
 ## @end deftypefn
 
 ## Author: jwe

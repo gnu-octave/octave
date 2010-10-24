@@ -18,16 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
-## Compares to version strings using the given @var{operator}.
+## Compare two version strings using the given @var{operator}.
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are
 ## arbitrarily long strings made of numeric and period characters
 ## possibly followed by an arbitrary string (e.g., "1.2.3", "0.3",
 ## "0.1.2+", or "1.2.3.4-test1").
 ##
-## The version is first split into the numeric and the character parts
-## then the parts are padded to be the same length (i.e., "1.1" would be
-## padded to be like "1.1.0" when being compared with "1.1.1", and
+## The version is first split into numeric and character portions
+## and then the parts are padded to be the same length (i.e., "1.1" would be
+## padded to be "1.1.0" when being compared with "1.1.1", and
 ## separately, the character parts of the strings are padded with
 ## nulls).
 ##
@@ -63,7 +63,7 @@
 ## not equal
 ## @end itemize
 ##
-## Note that version "1.1-test2" would compare as greater than
+## Note that version "1.1-test2" will compare as greater than
 ## "1.1-test10".  Also, since the numeric part is compared first, "a"
 ## compares less than "1a" because the second string starts with a
 ## numeric part even though double("a") is greater than double("1").

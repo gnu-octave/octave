@@ -265,7 +265,7 @@ Summary of important user-visible changes for version 3.4:
  ** Configuration pseudo-variables, such as page_screen_output or 
     confirm_recursive_rmdir (or the above mentioned svd_driver), now 
     accept a "local" option as second argument, requesting the change 
-    to be undone when current function returns:
+    to be undone when the current function returns:
         
     function [status, msg] = rm_rf (dir)
       confirm_recursive_rmdir (false, "local");
@@ -407,7 +407,8 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      cellidx  fstat  values
+      cellidx      fstat        values       gammai
+      betai        is_global
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

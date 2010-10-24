@@ -1,3 +1,7 @@
+2010-10-24  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Update deprecated function list for version 3.4.
+
 2010-10-22  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (EXTRA_DIST): Include bootstrap and bootstrap.conf

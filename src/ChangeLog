@@ -5,11 +5,30 @@
 
 2010-10-25  Kai Habel  <kai.habel@gmx.de>
 
-	* plot/uimenu.m: New function
-	* plot/__go_draw_figure__.m: Ignore uimenu objects for gnuplot
-	backend
-	* plot/module.mk (plot_FCN_FILES): Add it to the list.
-
+	* gl-render.cc (opengl_renderer::draw): Ignore uimenu objects here.
+	* graphics.h.in (class OCTINTERP_API uimenu): New graphics object.
+	* graphics.cc (lookup_object_name): Add uimenu here.
+	(make_graphics_object_from_type): Likewise.
+	(property_list::set): Likewise.
+	(property_list::lookup): Likewise.
+	(root_figure::init_factory_properties): Likewise.
+	(__go_uimenu__): New function.
+	* DLD-Functions/fltk-backend.cc (OpenGL_fltk::resize): Make public.
+	(script_cb): New function.
+	(fltk_uimenu): New class.
+	(plot_window::plot_window): Initialize fltk_uimenu object.
+	(plot_window::~plot_window): Delete fltk_uimenu object.
+	(plot_window::show_menubar): New function.
+	(plot_window::hide_menubar): New function.
+	(plot_window::uimenu_update): New function.
+	(plot_window::handle): Do not evaluate FLTK events when 
+	figure is deleted.
+	(figure_manager::uimenu_update): New function.
+	(figure_manager::toggle_menubar_visibility): New functions.
+	(figure_manager::do_toggle_menubar_visibility): New function.
+	(figure_manager::do_uimenu_update): New function.
+	(fltk_backend::uimenu_set_fltk_label): New function.
+	(fltk_backend::update): Add figure and uimenu updates.
 
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 

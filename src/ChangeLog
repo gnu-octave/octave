@@ -1,3 +1,8 @@
+2010-10-25  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (octave_main): Use F77_CHAR_ARC_LEN macro to pass
+	character string length in call to xerbla.
+
 2010-10-25  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/uimenu.m: New function

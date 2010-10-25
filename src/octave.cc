@@ -610,7 +610,7 @@ octave_main (int argc, char **argv, int embedded)
   // actually call xerbla.
 
   if (octave_NaN == -1)
-    F77_FUNC (xerbla, XERBLA) ("octave", 13, 6L);
+    F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
 
   initialize_error_handlers ();
 

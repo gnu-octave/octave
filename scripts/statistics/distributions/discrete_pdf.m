@@ -53,7 +53,8 @@ function pdf = discrete_pdf (x, v, p)
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
-    pdf (k) = p (lookup (v, x(k), 'm'));
+    [vs, vi] = sort (v);
+    pdf (k) = p (vi(lookup (vs, x(k), 'm')));
   endif
 
 endfunction

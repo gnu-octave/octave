@@ -1,3 +1,8 @@
+2010-10-25  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/discrete_pdf.m: Sort values before calling
+	the lookup function.
+
 2010-10-25  Kai Habel  <kai.habel@gmx.de>
 
 	* gl-render.cc (opengl_renderer::draw ): Ignore uimenu objects here.

@@ -1,3 +1,7 @@
+2010-10-25  Kai Habel  <kai.habel@gmx.de>
+
+	* NEWS: Add uimenu.
+
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Update deprecated function list for version 3.4.

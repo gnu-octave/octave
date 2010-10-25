@@ -439,8 +439,8 @@ Summary of important user-visible changes for version 3.2:
       allchild            ezmesh      gtext        specular
       available_backends  ezmeshc     intwarning   surfl
       backend             ezplot      ishghandle   trisurf
-      cla                 ezplot3     isocolors    waitforbuttonpress
-      clabel              ezpolar     isonormals  
+      cla                 ezplot3     isocolors    uimenu
+      clabel              ezpolar     isonormals   waitforbuttonpress
       comet               ezsurf      isosurface  
       dellistener         findall     linkprop   
       diffuse             gcbf        plotmatrix

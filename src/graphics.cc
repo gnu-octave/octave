@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
-static graphics_object xget_ancestor (const graphics_object& go_arg,
+graphics_object xget_ancestor (const graphics_object& go_arg,
                                       const std::string& type);
 
 static void
@@ -541,7 +541,7 @@ screen_size_pixels (void)
   return convert_position (sz, obj.get ("units").string_value (), "pixels", sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
 }
 
-static graphics_object
+graphics_object
 xget_ancestor (const graphics_object& go_arg, const std::string& type)
 {
   graphics_object go = go_arg;
@@ -727,7 +727,7 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
             {
               pfx = name.substr (0, 6);
 
-              if (pfx.compare ("figure"))
+              if (pfx.compare ("figure") || pfx.compare ("uimenu"))
                 offset = 6;
               else if (len >= 7)
                 {
@@ -773,7 +773,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new surface (h, p);
   else if (type.compare ("hggroup"))
     go = new hggroup (h, p);
-
+  else if (type.compare ("uimenu"))
+    go = new uimenu (h, p);
   return go;
 }
 
@@ -1416,7 +1417,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
             {
               pfx = name.substr (0, 6);
 
-              if (pfx.compare ("figure"))
+              if (pfx.compare ("figure") || pfx.compare ("uimenu"))
                 offset = 6;
               else if (len > 7)
                 {
@@ -1454,6 +1455,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = surface::properties::has_core_property (pname);
           else if (pfx == "hggroup")
             has_property = hggroup::properties::has_core_property (pname);
+	  else if (pfx == "uimenu")
+            has_property = uimenu::properties::has_core_property (pname);
 
           if (has_property)
             {
@@ -1512,7 +1515,7 @@ property_list::lookup (const caseless_str& name) const
             {
               pfx = name.substr (0, 6);
 
-              if (pfx.compare ("figure"))
+              if (pfx.compare ("figure") || pfx.compare ("uimenu"))
                 offset = 6;
               else if (len > 7)
                 {
@@ -5456,6 +5459,7 @@ root_figure::init_factory_properties (void)
   plist_map["patch"] = patch::properties::factory_defaults ();
   plist_map["surface"] = surface::properties::factory_defaults ();
   plist_map["hggroup"] = hggroup::properties::factory_defaults ();
+  plist_map["uimenu"] = uimenu::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -6025,6 +6029,15 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (hggroup);
+}
+
+DEFUN (__go_uimenu__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uimenu__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uimenu);
 }
 
 DEFUN (__go_delete__, args, ,

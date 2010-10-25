@@ -161,6 +161,7 @@ plot_FCN_FILES = \
   plot/surfnorm.m \
   plot/text.m \
   plot/title.m \
+  plot/uimenu.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
   plot/whitebg.m \

@@ -3855,6 +3855,64 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API uimenu : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    void remove_child (const graphics_handle& h)
+      {
+        base_properties::remove_child (h);
+      }
+
+    void adopt (const graphics_handle& h)
+      {
+        base_properties::adopt (h);
+      }
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uimenu)
+      string_property accelerator , ""
+      callback_property callback , Matrix()
+      bool_property checked , "off"
+      bool_property enable , "on"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      string_property label , ""
+      double_property position , 9
+      bool_property separator , "off"
+      string_property fltk_label h , ""
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      { }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uimenu (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uimenu (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+  
+};
+
+// ---------------------------------------------------------------------
+
 octave_value
 get_property_from_handle (double handle, const std::string &property,
                           const std::string &func);

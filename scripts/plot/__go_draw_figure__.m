@@ -95,6 +95,8 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   fputs (plot_stream, "unset obj 2\n");
                 endif
               end_unwind_protect
+            case "uimenu"
+              ## ignore uimenu objects
             otherwise
               error ("__go_draw_figure__: unknown object class, %s", type);
           endswitch

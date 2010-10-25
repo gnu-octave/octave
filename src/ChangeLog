@@ -1,3 +1,11 @@
+2010-10-25  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/uimenu.m: New function
+	* plot/__go_draw_figure__.m: Ignore uimenu objects for gnuplot
+	backend
+	* plot/module.mk (plot_FCN_FILES): Add it to the list.
+
+
 2010-10-24  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/tril.cc, syscalls.cc: Docstring improvements.

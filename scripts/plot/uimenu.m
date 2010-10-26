@@ -104,3 +104,12 @@ function hui = uimenu (varargin)
   endif
 
 endfunction
+
+%!demo
+%! surfl(peaks);
+%! colormap(copper);
+%! shading("interp");
+%! f = uimenu("label", "&File", "accelerator", "f");
+%! e = uimenu("label", "&Edit", "accelerator", "e");
+%! uimenu(f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
+%! uimenu(e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");

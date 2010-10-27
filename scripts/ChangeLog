@@ -1,3 +1,9 @@
+2010-10-27  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__patch__.m (setdata, setvertexdata): If argments are
+	repeated, take the last argument only into account. Set cdata and
+	facevertexcdata properties always.
+
 2010-10-26  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/uimenu.m: Add simple demo

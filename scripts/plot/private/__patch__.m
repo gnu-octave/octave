@@ -171,25 +171,25 @@ function args = setdata (args)
   ## Remove the readonly fields as well
   args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
-  idx = find (cellfun (@(x) strcmpi (x, "faces"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "faces"), args))(end) + 1;
   if (idx > nargs)
     faces = [];
   else
     faces = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "vertices"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "vertices"), args))(end) + 1;
   if (idx > nargs)
     vert = [];
   else
     vert = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args))(end) + 1;
   if (isempty(idx) || idx > nargs)
     fvc = [];
   else
     fvc = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args))(end) + 1;
   if (isempty(idx) || idx > nargs)
     if (!isempty (fvc))
       fc = "flat";
@@ -219,20 +219,16 @@ function args = setdata (args)
     z = [];
   endif
 
-  if (ischar (fc) && (strcmpi (fc, "flat") || strcmpi (fc, "interp")))
-    if (size(fvc, 1) == nc || size (fvc, 1) == 1)
-      c = reshape (fvc, [1, size(fvc)]);
-    else
-      if (size(fvc, 2) == 3)
-        c = cat(3, reshape (fvc(idx, 1), size(idx)),
-                reshape (fvc(idx, 2), size(idx)),
-                reshape (fvc(idx, 3), size(idx)));
-      else
-        c = reshape (fvc(idx), size(idx));
-      endif
-    endif
+  if (size(fvc, 1) == nc || size (fvc, 1) == 1)
+    c = reshape (fvc, [1, size(fvc)]);
   else
-    c = [];
+    if (size(fvc, 2) == 3)
+      c = cat(3, reshape (fvc(idx, 1), size(idx)),
+              reshape (fvc(idx, 2), size(idx)),
+              reshape (fvc(idx, 3), size(idx)));
+    else
+      c = reshape (fvc(idx), size(idx));
+    endif
   endif
   args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
 endfunction
@@ -242,31 +238,31 @@ function args = setvertexdata (args)
   ## Remove the readonly fields as well
   args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
-  idx = find (cellfun (@(x) strcmpi (x, "xdata"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "xdata"), args))(end) + 1;
   if (idx > nargs)
     x = [];
   else
     x = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "ydata"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "ydata"), args))(end) + 1;
   if (idx > nargs)
     y = [];
   else
     y = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "zdata"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "zdata"), args))(end) + 1;
   if (isempty(idx) || idx > nargs)
     z = [];
   else
     z = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "cdata"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "cdata"), args))(end) + 1;
   if (isempty(idx) || idx > nargs)
     c = [];
   else
     c = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args)) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args))(end) + 1;
   if (isempty(idx) || idx > nargs)
     if (!isempty (c))
       fc = "flat";
@@ -287,16 +283,12 @@ function args = setvertexdata (args)
   faces = reshape (1:numel(x), rows (x), columns (x));
   faces = faces';
 
-  if (ischar (fc) && (strcmpi (fc, "flat") || strcmpi (fc, "interp")))
-    if (ndims (c) == 3)
-      fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
-    else
-      fvc = c(:);
-    endif
+  if (ndims (c) == 3)
+    fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
   else
-    fvc = [];
+    fvc = c(:).';
   endif
-
+ 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};
 endfunction
 

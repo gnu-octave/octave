@@ -2911,8 +2911,8 @@ public:
       array_property position u , default_axes_position ()
       bool_property box , "on"
       array_property colororder , default_colororder ()
-      array_property dataaspectratio m , Matrix (1, 3, 1.0)
-      radio_property dataaspectratiomode , "{auto}|manual"
+      array_property dataaspectratio mu , Matrix (1, 3, 1.0)
+      radio_property dataaspectratiomode u , "{auto}|manual"
       radio_property layer , "{bottom}|top"
       row_vector_property xlim mu , default_lim ()
       row_vector_property ylim mu , default_lim ()
@@ -2988,8 +2988,8 @@ public:
       string_array_property linestyleorder , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
-      array_property plotboxaspectratio m , Matrix (1, 3, 1.0)
-      radio_property plotboxaspectratiomode , "{auto}|manual"
+      array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
+      radio_property plotboxaspectratiomode u , "{auto}|manual"
       radio_property projection , "{orthographic}|perpective"
       radio_property tickdir m , "{in}|out"
       radio_property tickdirmode , "{auto}|manual"
@@ -3014,6 +3014,10 @@ public:
     void update_zscale (void) { sz = get_zscale (); }
 
     void update_view (void) { update_camera (); }
+    void update_dataaspectratio (void) { update_transform (); }
+    void update_dataaspectratiomode (void) { update_transform (); }
+    void update_plotboxaspectratio (void) { update_transform (); }
+    void update_plotboxaspectratiomode (void) { update_transform (); }
 
     void update_xdir (void) { update_camera (); }
     void update_ydir (void) { update_camera (); }

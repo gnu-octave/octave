@@ -3911,9 +3911,51 @@ axes::properties::update_camera (void)
   x_gl_mat2 = x_viewport * x_projection;
 }
 
+static void
+normalized_aspectratios (Matrix& aspectratios, const Matrix& scalefactors,
+                         double xlength, double ylength, double zlength)
+{
+      double xval = xlength/scalefactors(0);
+      double yval = ylength/scalefactors(1);
+      double zval = zlength/scalefactors(2);
+
+      double minval = xmin (xmin (xval, yval), zval);
+
+      aspectratios(0) = xval/minval;
+      aspectratios(1) = yval/minval;
+      aspectratios(2) = zval/minval;
+}
+
+static void
+max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
+                double pbfactor, double dafactor, char limit_type, bool tight)
+{
+  if (tight)
+    {
+      double minval = octave_Inf;
+      double maxval = -octave_Inf;
+      double min_pos = octave_Inf;
+      get_children_limits (minval, maxval, min_pos, kids, limit_type);
+      if (!xisinf (minval) && !xisnan (minval)
+          && !xisinf (maxval) && !xisnan (maxval))
+        {
+          limits(0) = minval;
+          limits(1) = maxval;
+          s = xmax(s, (maxval - minval) / (pbfactor * dafactor));
+        }
+    }
+  else
+    s = xmax(s, (limits(1) - limits(0)) / (pbfactor * dafactor));
+}
+
+static bool updating_aspectratios = false;
+
 void
 axes::properties::update_aspectratios (void)
 {
+  if (updating_aspectratios)
+    return;
+
   Matrix xlimits = get_xlim ().matrix_value ();
   Matrix ylimits = get_ylim ().matrix_value ();
   Matrix zlimits = get_zlim ().matrix_value ();
@@ -3922,35 +3964,102 @@ axes::properties::update_aspectratios (void)
   double dy = (ylimits(1)-ylimits(0));
   double dz = (zlimits(1)-zlimits(0));
 
+  Matrix da = get_dataaspectratio ().matrix_value ();
+  Matrix pba = get_plotboxaspectratio ().matrix_value ();
+
   if (dataaspectratiomode_is ("auto"))
     {
-      double dmin = xmin (xmin (dx, dy), dz);
-      Matrix da (1, 3, 0.0);
+      if (plotboxaspectratiomode_is ("auto"))
+        {
+          pba = Matrix (1, 3, 1.0);
+          plotboxaspectratio.set (pba, false);
+        }
 
-      da(0) = dx/dmin;
-      da(1) = dy/dmin;
-      da(2) = dz/dmin;
-
-      dataaspectratio = da;
+      normalized_aspectratios (da, pba, dx, dy, dz);
+      dataaspectratio.set (da, false);
     }
-
-  if (plotboxaspectratiomode_is ("auto"))
+  else if (plotboxaspectratiomode_is ("auto"))
     {
-      if (dataaspectratiomode_is ("auto"))
-        plotboxaspectratio = Matrix (1, 3, 1.0);
+      normalized_aspectratios (pba, da, dx, dy, dz);
+      plotboxaspectratio.set (pba, false);
+    }
+  else
+    {
+      double s = -octave_Inf;
+      bool modified_limits = false;
+      Matrix kids;
+
+      if (xlimmode_is ("auto") && ylimmode_is ("auto") && zlimmode_is ("auto"))
+        {
+          modified_limits = true;
+          kids = get_children ();
+          max_axes_scale (s, xlimits, kids, pba(0), da(0), 'x', true);
+          max_axes_scale (s, ylimits, kids, pba(1), da(1), 'y', true);
+          max_axes_scale (s, zlimits, kids, pba(2), da(2), 'z', true);
+        }
+      else if (xlimmode_is ("auto") && ylimmode_is ("auto"))
+        {
+          modified_limits = true;
+          max_axes_scale (s, zlimits, kids, pba(2), da(2), 'z', false);
+        }
+      else if (ylimmode_is ("auto") && zlimmode_is ("auto"))
+        {
+          modified_limits = true;
+          max_axes_scale (s, xlimits, kids, pba(0), da(0), 'x', false);
+        }
+      else if (zlimmode_is ("auto") && xlimmode_is ("auto"))
+        {
+          modified_limits = true;
+          max_axes_scale (s, ylimits, kids, pba(1), da(1), 'y', false);
+        }
+
+      if (modified_limits)
+        {
+
+          unwind_protect frame;
+          frame.protect_var (updating_aspectratios);
+
+          updating_aspectratios = true;
+
+          dx = pba(0) *da(0);
+          dy = pba(1) *da(1);
+          dz = pba(2) *da(2);
+          if (xisinf (s))
+            s = 1 / xmin (xmin (dx, dy), dz);
+
+          if (xlimmode_is ("auto"))
+            {
+              dx = s * dx;
+              xlimits(0) = 0.5 * (xlimits(0) + xlimits(1) - dx);
+              xlimits(1) = xlimits(0) + dx;
+              set_xlim (xlimits);
+              set_xlimmode ("auto");
+            }
+
+          if (ylimmode_is ("auto"))
+            {
+              dy = s * dy;
+              ylimits(0) = 0.5 * (ylimits(0) + ylimits(1) - dy);
+              ylimits(1) = ylimits(0) + dy;
+              set_ylim (ylimits);
+              set_ylimmode ("auto");
+            }
+
+          if (zlimmode_is ("auto"))
+            {
+              dz = s * dz;
+              zlimits(0) = 0.5 * (zlimits(0) + zlimits(1) - dz);
+              zlimits(1) = zlimits(0) + dz;
+              set_zlim (zlimits);
+              set_zlimmode ("auto");
+            }
+        }
       else
         {
-          Matrix da = get_dataaspectratio ().matrix_value ();
-          Matrix pba (1, 3, 0.0);
-
-          pba(0) = dx/da(0);
-          pba(1) = dy/da(1);
-          pba(2) = dz/da(2);
+          normalized_aspectratios (pba, da, dx, dy, dz);
+          plotboxaspectratio.set (pba, false);
         }
     }
-  
-  // FIXME -- if plotboxaspectratiomode is "manual", limits
-  // and/or dataaspectratio might be adapted.
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -4448,7 +4557,7 @@ static bool updating_axis_limits = false;
 void
 axes::update_axis_limits (const std::string& axis_type)
 {
-  if (updating_axis_limits)
+  if (updating_axis_limits || updating_aspectratios)
     return;
 
   Matrix kids = xproperties.get_children ();

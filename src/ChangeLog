@@ -3,6 +3,29 @@
 	* gl-render.cc: Crop ticks, ticklabels, and gridlines for OpenGL
 	backend.
 
+2010-10-28  Konstantinos Poulios  <logari81@googlemail.com>
+
+        * graphics.cc (normalized_aspectratios, max_axes_scale):
+        New file-scope static function
+        (updating_aspectratios): New file-scope variable.
+        (axes::properties::update_aspectratios, axes::update_axis_limits):
+        Return immediately if updating_aspecratios is true.
+        (axes::properties::update_aspectratios):
+        If dataaspectratiomode is set to manual this function will try to
+        respect it even after changes in xlim, ylim, zlim.
+        If both dataaspectratiomode and plotboxaspectratiomode is set to
+        manual this function will try to recalulate xlim, ylim, zlim
+        depending on the status of xlimmode, ylimmode, zlimmode. If
+        altering xlim, ylim, zlim is not possible, plotboxaspectratio will
+        be overriden.
+        * graphics.h.in (class axes::properties): Tag dataaspectratio,
+        dataaspectratiomode, plotboxaspectratio, and
+        plotboxaspectratiomode with "u" qualifier.
+        (axes::update_dataaspectratio,
+        axes::update_dataaspectratiomode,
+        axes::update_plotboxaspectratio,
+        axes::update_plotboxaspectratiomode): New functions.
+
 2010-10-25  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Use F77_CHAR_ARC_LEN macro to pass

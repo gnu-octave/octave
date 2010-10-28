@@ -143,10 +143,10 @@ function [c, hg] = __contour__ (varargin)
   ## allow the use of contourgroups with the contour3, meshc and surfc 
   ## functions. 
   if (isnumeric (zlevel))
-    addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", "manual");
+    addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", "manual")
     addproperty ("zlevel", hg, "data", zlevel);
   else
-    addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", zlevel);
+    addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", zlevel)
     if (ischar (zlevel) && strcmpi (zlevel, "manual"))
       z = varargin{3};
       z = 2 * (min (z(:)) - max (z(:)));
@@ -211,8 +211,6 @@ function [c, hg] = __contour__ (varargin)
 
   add_patch_children (hg);
 
-  axis("tight");
-
   if (!isempty (opts))
     set (hg, opts{:});
   endif
@@ -222,13 +220,12 @@ function add_patch_children (hg)
   c = get (hg, "contourmatrix");
   lev = get (hg, "levellist");
   fill = get (hg, "fill");
-  zlev = get (hg, "zlevel");
+  z = get (hg, "zlevel");
   zmode = get (hg, "zlevelmode");
   lc = get (hg, "linecolor");
   lw = get (hg, "linewidth");
   ls = get (hg, "linestyle");
   filled = get (hg, "fill");
-  ca = gca ();
 
   if (strcmpi (lc, "auto"))
     lc = "flat";
@@ -246,7 +243,11 @@ function add_patch_children (hg)
       cont_lev(ncont) = c(1, i1);
       cont_len(ncont) = c(2, i1);
       cont_idx(ncont) = i1+1;
+
       ii = i1+1:i1+cont_len(ncont);
+      cur_cont = c(:, ii);
+      startidx = ii(1);
+      stopidx = ii(end);
       cont_area(ncont) = polyarea (c(1, ii), c(2, ii));
       i1 += c(2, i1) + 1;
     endwhile
@@ -319,19 +320,17 @@ function add_patch_children (hg)
       else
         ## Special case unclosed contours
       endif
-      h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:), 
-                           "vertices", ctmp.', "faces", 1:(cont_len(idx)-1),
-                           "facevertexcdata", cont_lev(idx),
-                           "facecolor", "flat", "cdata", cont_lev(idx),
-                           "edgecolor", lc, "linestyle", ls, 
-                           "linewidth", lw, "parent", hg)];
+      h = [h; patch(ctmp(1, :), ctmp(2, :), cont_lev(idx), "edgecolor", lc, 
+                    "linestyle", ls, "linewidth", lw, "parent", hg)];
     endfor
 
     if (min (lev) == max (lev))
-      set (ca, "clim", [min(lev)-1, max(lev)+1], "layer", "top");
+      set (gca (), "clim", [min(lev)-1, max(lev)+1]);
     else
-      set (ca, "clim", [min(lev), max(lev)], "layer", "top");
+      set (gca(), "clim", [min(lev), max(lev)]);
     endif
+
+    set (gca (), "layer", "top");
   else
     ## Decode contourc output format.
     i1 = 1;
@@ -341,40 +340,28 @@ function add_patch_children (hg)
       clen = c(2,i1);
 
       if (all (c(:,i1+1) == c(:,i1+clen)))
-        p = c(:, i1+1:i1+clen-1).';
+        p = c(:, i1+1:i1+clen-1);
       else
-        p = [c(:, i1+1:i1+clen), NaN(2, 1)].';
+        p = [c(:, i1+1:i1+clen), NaN(2, 1)];
       endif
 
       switch (zmode)
         case "none"
-          h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", [], "facecolor", "none", 
-                               "vertices", p, "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "edgecolor", lc, "linestyle", ls,
-                               "linewidth", lw,
-                               "cdata", clev, "parent", hg)]; 
+          h = [h; patch(p(1,:), p(2,:), "facecolor", "none", 
+                        "edgecolor", lc, "linestyle", ls, "linewidth", lw,
+                        "cdata", clev, "parent", hg)]; 
         case "auto"
-          h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", clev * ones(rows(p),1),
-                               "vertices", [p, clev * ones(rows(p),1)], 
-                               "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "facecolor", "none", "edgecolor", lc, 
-                               "linestyle", ls, "linewidth", lw,
-                               "cdata", clev, "parent", hg)];
+          h = [h; patch(p(1,:), p(2,:), clev * ones (1, columns (p)),
+                        "facecolor", "none", "edgecolor", lc, 
+                        "linestyle", ls, "linewidth", lw, "cdata", clev, 
+                        "parent", hg)];
         otherwise
-          h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", zlev * ones (rows(p), 1),
-                               "vertices", [p, zlev * ones(rows(p),1)], 
-                               "faces", 1:rows(p),
-                               "facevertexcdata", clev,
-                               "facecolor", "none", "edgecolor", lc,
-                               "linestyle", ls, "linewidth", lw,
-                               "cdata", clev, "parent", hg)];
+          h = [h; patch(p(1,:), p(2,:), z * ones (1, columns (p)),
+                        "facecolor", "none", "edgecolor", lc,
+                        "linestyle", ls, "linewidth", lw, "cdata", clev,
+                        "parent", hg)];
       endswitch
-      i1 += clen + 1;
+      i1 += clen+1;
     endwhile
   endif
 

@@ -2578,7 +2578,6 @@ opengl_renderer::draw_patch (const patch::properties &props)
           set_linestyle (props.get_linestyle (), false);
           set_linewidth (props.get_linewidth ());
 
-
           // FIXME: use __index__ property from patch object; should we
           // offset patch contour as well?
           patch_tesselator tess (this, ec_mode, el_mode);
@@ -2586,47 +2585,20 @@ opengl_renderer::draw_patch (const patch::properties &props)
           for (int i = 0; i < nf; i++)
             {
               if (clip_f(i))
+                continue;
+
+              tess.begin_polygon (false);
+              tess.begin_contour ();
+
+              for (int j = 0; j < count_f(i); j++)
                 {
-                  // This is an unclosed contour. Draw it as a line
-                  bool flag = false;
-
-                  for (int j = 0; j < count_f(i); j++)
-                    {
-                      if (! clip(int (f(i,j) - 1)))
-                        {
-                          vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-                          const Matrix m = vv->coords;
-                          if (! flag)
-                            {
-                              flag = true;
-                              glBegin (GL_LINE_STRIP);
-                            }
-                          glVertex3d (m(0), m(1), m(2));
-                        }
-                      else if (flag)
-                        {
-                          flag = false;
-                          glEnd ();
-                        }
-                    }
-
-                  if (flag)
-                    glEnd ();
+                  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+        
+                  tess.add_vertex (vv->coords.fortran_vec (), vv);
                 }
-              else
-                {
-                  tess.begin_polygon (false);
-                  tess.begin_contour ();
 
-                  for (int j = 0; j < count_f(i); j++)
-                    {
-                      vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-                      tess.add_vertex (vv->coords.fortran_vec (), vv);
-                    }
-
-                  tess.end_contour ();
-                  tess.end_polygon ();
-                }
+              tess.end_contour ();
+              tess.end_polygon ();
             }
 
           set_linestyle ("-");

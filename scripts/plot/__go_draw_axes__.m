@@ -719,9 +719,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
 
            ## patch outline
            if (!(strncmp (obj.edgecolor, "none", 4)
-                  && (strncmp (obj.marker, "none", 4) 
-                      || (strncmp (obj.markeredgecolor, "none", 4)
-                          && strncmp (obj.markerfacecolor, "none", 4)))))
+                  && strncmp (obj.markeredgecolor, "none", 4)
+                  && strncmp (obj.markerfacecolor, "none", 4)))
 
              data_idx++;
              is_image_data(data_idx) = false;

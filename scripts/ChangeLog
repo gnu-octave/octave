@@ -1,8 +1,3 @@
-2010-10-27  David Bateman  <dbateman@free.fr>
-
-	* plot/__go_draw_axes__.m: Don't attempt to plot patch outlines if
-	the marker property is set to none.
-
 2010-10-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/daspect.m, plot/pbaspect.m: Add demos setting both data and

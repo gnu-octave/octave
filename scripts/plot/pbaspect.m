@@ -89,12 +89,20 @@ endfunction
 %! clf
 %! plot (x, cos (x), x, sin (x))
 %! pbaspect ([1 1 1])
-%! title ('plot box should be square')
+%! title ("plot box should be square")
 
 %!demo
 %! x = 0:0.01:4;
 %! clf
 %! plot (x, cos (x), x, sin (x))
 %! pbaspect ([2 1 1])
-%! title ('plot box aspect ratio should be 2x1')
+%! title ("plot box aspect ratio should be 2x1")
+
+%!demo
+%! x = 0:0.01:4;
+%! clf
+%! plot (x, cos (x), x, sin (x))
+%! daspect ([1 1 1])
+%! pbaspect ([2 1 1])
+%! title ("plot box should be 2x1, and axes [0 4 -1 1]")
 

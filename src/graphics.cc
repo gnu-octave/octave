@@ -688,7 +688,8 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
     {
       double e = double (data[i]);
 
-      if (! (xisinf (e) || xisnan (e)))
+      // Don't need to test for NaN here as NaN>x and NaN<x is always false 
+      if (! xisinf (e))
         {
           if (e < emin)
             emin = e;
@@ -1204,6 +1205,62 @@ handle_property::do_set (const octave_value& v)
            get_name ().c_str ());
 
   return false;
+}
+
+Matrix 
+children_property::do_get_children (bool return_hidden) const
+{
+  Matrix retval (children_list.size (), 1);
+  octave_idx_type k = 0;
+
+  graphics_object go = gh_manager::get_object (0);
+          
+  root_figure::properties& props =
+    dynamic_cast<root_figure::properties&> (go.get_properties ());
+
+  if (! props.is_showhiddenhandles ())
+    {
+      for (const_children_list_iterator p = children_list.begin ();
+           p != children_list.end (); p++)
+        {
+          graphics_handle kid = *p;
+
+          if (gh_manager::is_handle_visible (kid))
+            {
+              if (! return_hidden)
+                retval(k++) = *p;
+            }
+          else if (return_hidden)
+            retval(k++) = *p;
+        }
+
+      retval.resize (k, 1);
+    }
+  else
+    {
+      for (const_children_list_iterator p = children_list.begin ();
+           p != children_list.end (); p++)
+        retval(k++) = *p;
+    }
+      
+  return retval;
+}
+
+void 
+children_property::do_delete_children (bool clear)
+{
+  for (children_list_iterator p = children_list.begin ();
+       p != children_list.end (); p++)
+    {
+      graphics_object go = gh_manager::get_object (*p);
+
+      if (go.valid_object ())
+        gh_manager::free (*p);
+
+    }
+
+  if (clear)
+    children_list.clear ();
 }
 
 bool
@@ -1883,7 +1940,6 @@ xset (const graphics_handle& h, const octave_value_list& args)
     }
 }
 
-
 static octave_value
 xget (const graphics_handle& h, const caseless_str& name)
 {
@@ -1952,7 +2008,6 @@ static void
 adopt (const graphics_handle& p, const graphics_handle& h)
 {
   graphics_object parent_obj = gh_manager::get_object (p);
-
   parent_obj.adopt (h);
 }
 
@@ -2147,34 +2202,6 @@ base_properties::get_property_dynamic (const caseless_str& name)
 }
 
 void
-base_properties::remove_child (const graphics_handle& h)
-{
-  octave_idx_type k = -1;
-  octave_idx_type n = children.numel ();
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      if (h.value () == children(i))
-        {
-          k = i;
-          break;
-        }
-    }
-
-  if (k >= 0)
-    {
-      Matrix new_kids (n-1, 1);
-      octave_idx_type j = 0;
-      for (octave_idx_type i = 0; i < n; i++)
-        {
-          if (i != k)
-            new_kids(j++) = children(i);
-        }
-      children = new_kids;
-      mark_modified ();
-    }
-}
-
-void
 base_properties::set_parent (const octave_value& val)
 {
   double tmp = val.double_value ();
@@ -2200,45 +2227,6 @@ base_properties::set_parent (const octave_value& val)
     }
   else
     error ("set: expecting parent to be a graphics handle");
-}
-
-void
-base_properties::set_children (const octave_value& val)
-{
-  const Matrix new_kids = val.matrix_value ();
-
-  octave_idx_type nel = new_kids.numel ();
-
-  const Matrix new_kids_column = new_kids.reshape (dim_vector (nel, 1));
-
-  bool ok = true;
-
-  if (! error_state)
-    {
-      const Matrix visible_kids = get_children ();
-
-      if (visible_kids.numel () == new_kids.numel ())
-        {
-          Matrix t1 = visible_kids.sort ();
-          Matrix t2 = new_kids_column.sort ();
-
-          if (t1 != t2)
-            ok = false;
-        }
-      else
-        ok = false;
-
-      if (! ok)
-        error ("set: new children must be a permutation of existing children");
-    }
-  else
-    {
-      ok = false;
-      error ("set: expecting children to be array of graphics handles");
-    }
-
-  if (ok)
-    children = new_kids_column.stack (get_hidden_children ());
 }
 
 void
@@ -2269,19 +2257,13 @@ base_properties::update_axis_limits (const std::string& axis_type) const
 }
 
 void
-base_properties::delete_children (void)
+base_properties::update_axis_limits (const std::string& axis_type,
+                                     const graphics_handle& h) const
 {
-  octave_idx_type n = children.numel ();
+  graphics_object obj = gh_manager::get_object (__myhandle__);
 
-  // A callback function might have already deleted the child,
-  // so check before deleting
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      graphics_object go = gh_manager::get_object (children(i));
-
-      if (go.valid_object ())
-        gh_manager::free (children(i));
-    }
+  if (obj)
+    obj.update_axis_limits (axis_type, h);
 }
 
 graphics_backend
@@ -2464,6 +2446,21 @@ base_graphics_object::update_axis_limits (const std::string& axis_type)
 
       if (parent_obj)
         parent_obj.update_axis_limits (axis_type);
+    }
+  else
+    error ("base_graphics_object::update_axis_limits: invalid graphics object");
+}
+
+void
+base_graphics_object::update_axis_limits (const std::string& axis_type,
+                                          const graphics_handle& h)
+{
+  if (valid_object ())
+    {
+      graphics_object parent_obj = gh_manager::get_object (get_parent ());
+
+      if (parent_obj)
+        parent_obj.update_axis_limits (axis_type, h);
     }
   else
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
@@ -2728,9 +2725,11 @@ figure::properties::remove_child (const graphics_handle& gh)
     {
       graphics_handle new_currentaxes;
 
-      for (octave_idx_type i = 0; i < children.numel (); i++)
+      Matrix kids = get_children ();
+
+      for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
-          graphics_handle kid = children(i);
+          graphics_handle kid = kids(i);
 
           graphics_object go = gh_manager::get_object (kid);
 
@@ -3418,9 +3417,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
       activepositionproperty = "outerposition";
     }
 
-  delete_children ();
-
-  children = Matrix ();
+  delete_children (true);
 
   xlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
   ylabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
@@ -3502,54 +3499,6 @@ axes::properties::remove_child (const graphics_handle& h)
     delete_text_child (title);
   else
     base_properties::remove_child (h);
-}
-
-Matrix
-base_properties::get_children_internal (bool return_hidden) const
-{
-  Matrix retval = children;
-  
-  graphics_object go = gh_manager::get_object (0);
-
-  root_figure::properties& props =
-      dynamic_cast<root_figure::properties&> (go.get_properties ());
-
-  if (! props.is_showhiddenhandles ())
-    {
-      octave_idx_type k = 0;
-
-      for (octave_idx_type i = 0; i < children.numel (); i++)
-        {
-          graphics_handle kid = children (i);
-
-          if (gh_manager::is_handle_visible (kid))
-            {
-              if (! return_hidden)
-                retval(k++) = children(i);
-            }
-          else
-            {
-              if (return_hidden)
-                retval(k++) = children(i);
-            }
-        }
-
-      retval.resize (k, 1);
-    }
-
-  return retval;
-}
-
-Matrix
-base_properties::get_children (void) const
-{
-  return get_children_internal (false);
-}
-
-Matrix
-base_properties::get_hidden_children (void) const
-{
-  return get_children_internal (true);
 }
 
 inline Matrix
@@ -4446,6 +4395,198 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
 static bool updating_axis_limits = false;
 
 void
+axes::update_axis_limits (const std::string& axis_type,
+                          const graphics_handle& h)
+{
+  if (updating_axis_limits)
+    return;
+
+  Matrix kids = Matrix (1, 1, h.value ());
+ 
+  double min_val = octave_Inf;
+  double max_val = -octave_Inf;
+  double min_pos = octave_Inf;
+
+  char update_type = 0;
+
+  Matrix limits;
+  double val;
+
+#define FIX_LIMITS \
+  if (limits.numel() == 3) \
+    { \
+      val = limits(0); \
+      if (! (xisinf (val) || xisnan (val))) \
+        min_val = val; \
+      val = limits(1); \
+      if (! (xisinf (val) || xisnan (val))) \
+        max_val = val; \
+      val = limits(2); \
+      if (! (xisinf (val) || xisnan (val))) \
+        min_pos = val; \
+    } \
+  else \
+    { \
+      limits.resize(3, 1); \
+      limits(0) = min_val; \
+      limits(1) = max_val; \
+      limits(2) = min_pos; \
+    }
+
+  if (axis_type == "xdata" || axis_type == "xscale"
+      || axis_type == "xlimmode" || axis_type == "xliminclude"
+      || axis_type == "xlim")
+    {
+      if (xproperties.xlimmode_is ("auto"))
+        {
+          limits = xproperties.get_xlim ().matrix_value ();
+          FIX_LIMITS ;
+
+          get_children_limits (min_val, max_val, min_pos, kids, 'x');
+          
+          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+                                                xproperties.xscale_is ("log"));
+
+          update_type = 'x';
+        }
+    }
+  else if (axis_type == "ydata" || axis_type == "yscale"
+           || axis_type == "ylimmode" || axis_type == "yliminclude"
+           || axis_type == "ylim")
+    {
+      if (xproperties.ylimmode_is ("auto"))
+        {
+          limits = xproperties.get_ylim ().matrix_value ();
+          FIX_LIMITS ;
+
+          get_children_limits (min_val, max_val, min_pos, kids, 'y');
+
+          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+                                                xproperties.yscale_is ("log"));
+
+          update_type = 'y';
+        }
+    }
+  else if (axis_type == "zdata" || axis_type == "zscale"
+           || axis_type == "zlimmode" || axis_type == "zliminclude"
+           || axis_type == "zlim")
+    {
+      if (xproperties.zlimmode_is ("auto"))
+        {
+          limits = xproperties.get_zlim ().matrix_value ();
+          FIX_LIMITS ;
+
+          get_children_limits (min_val, max_val, min_pos, kids, 'z');
+
+          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+                                                xproperties.zscale_is ("log"));
+
+          update_type = 'z';
+        }
+    }
+  else if (axis_type == "cdata" || axis_type == "climmode"
+           || axis_type == "cdatamapping" || axis_type == "climinclude"
+           || axis_type == "clim")
+    {
+      if (xproperties.climmode_is ("auto"))
+        {
+          limits = xproperties.get_clim ().matrix_value ();
+          FIX_LIMITS ;
+
+          get_children_limits (min_val, max_val, min_pos, kids, 'c');
+
+          if (min_val > max_val)
+            {
+              min_val = min_pos = 0;
+              max_val = 1;
+            }
+          else if (min_val == max_val)
+            max_val = min_val + 1;
+
+          limits.resize (1, 2);
+
+          limits(0) = min_val;
+          limits(1) = max_val;
+
+          update_type = 'c';
+        }
+
+    }
+  else if (axis_type == "alphadata" || axis_type == "alimmode"
+           || axis_type == "alphadatamapping" || axis_type == "aliminclude"
+           || axis_type == "alim")
+    {
+      if (xproperties.alimmode_is ("auto"))
+        {
+          limits = xproperties.get_alim ().matrix_value ();
+          FIX_LIMITS ;
+
+          get_children_limits (min_val, max_val, min_pos, kids, 'a');
+
+          if (min_val > max_val)
+            {
+              min_val = min_pos = 0;
+              max_val = 1;
+            }
+          else if (min_val == max_val)
+            max_val = min_val + 1;
+
+          limits.resize (1, 2);
+
+          limits(0) = min_val;
+          limits(1) = max_val;
+
+          update_type = 'a';
+        }
+
+    }
+
+#undef FIX_LIMITS
+
+  unwind_protect frame;
+  frame.protect_var (updating_axis_limits);
+
+  updating_axis_limits = true;
+
+  switch (update_type)
+    {
+    case 'x':
+      xproperties.set_xlim (limits);
+      xproperties.set_xlimmode ("auto");
+      xproperties.update_xlim ();
+      break;
+
+    case 'y':
+      xproperties.set_ylim (limits);
+      xproperties.set_ylimmode ("auto");
+      xproperties.update_ylim ();
+      break;
+
+    case 'z':
+      xproperties.set_zlim (limits);
+      xproperties.set_zlimmode ("auto");
+      xproperties.update_zlim ();
+      break;
+
+    case 'c':
+      xproperties.set_clim (limits);
+      xproperties.set_climmode ("auto");
+      break;
+
+    case 'a':
+      xproperties.set_alim (limits);
+      xproperties.set_alimmode ("auto");
+      break;
+
+    default:
+      break;
+    }
+
+  xproperties.update_transform ();
+
+}
+
+void
 axes::update_axis_limits (const std::string& axis_type)
 {
   if (updating_axis_limits)
@@ -4957,9 +5098,151 @@ surface::properties::update_normals (void)
 
 // ---------------------------------------------------------------------
 
+void 
+hggroup::properties::update_limits (void) const
+{
+  graphics_object obj = gh_manager::get_object (__myhandle__);
+
+  if (obj)
+    {
+      obj.update_axis_limits ("xlim");
+      obj.update_axis_limits ("ylim");
+      obj.update_axis_limits ("zlim");
+      obj.update_axis_limits ("clim");
+      obj.update_axis_limits ("alim");
+    }
+}
+
+void 
+hggroup::properties::update_limits (const graphics_handle& h) const
+{
+  graphics_object obj = gh_manager::get_object (__myhandle__);
+
+  if (obj)
+    {
+      obj.update_axis_limits ("xlim", h);
+      obj.update_axis_limits ("ylim", h);
+      obj.update_axis_limits ("zlim", h);
+      obj.update_axis_limits ("clim", h);
+      obj.update_axis_limits ("alim", h);
+    }
+}
+
+static bool updating_hggroup_limits = false;
+
+void
+hggroup::update_axis_limits (const std::string& axis_type,
+                             const graphics_handle& h)
+{
+  if (updating_hggroup_limits)
+    return;
+
+  Matrix kids = Matrix (1, 1, h.value ());
+ 
+  double min_val = octave_Inf;
+  double max_val = -octave_Inf;
+  double min_pos = octave_Inf;
+
+  Matrix limits;
+  double val;
+
+  char update_type = 0;
+
+  if (axis_type == "xlim" || axis_type == "xliminclude")
+    {
+      limits = xproperties.get_xlim ().matrix_value ();
+      update_type = 'x';
+    }
+  else if (axis_type == "ylim" || axis_type == "yliminclude")
+    {
+      limits = xproperties.get_ylim ().matrix_value ();
+      update_type = 'y';
+    }
+  else if (axis_type == "zlim" || axis_type == "zliminclude")
+    {
+      limits = xproperties.get_zlim ().matrix_value ();
+      update_type = 'z';
+    }
+  else if (axis_type == "clim" || axis_type == "climinclude")
+    {
+      limits = xproperties.get_clim ().matrix_value ();
+      update_type = 'c';
+    }
+  else if (axis_type == "alim" || axis_type == "aliminclude")
+    {
+      limits = xproperties.get_alim ().matrix_value ();
+      update_type = 'a';
+    }
+
+  if (limits.numel() == 3)
+    {
+      val = limits(0);
+      if (! (xisinf (val) || xisnan (val)))
+        min_val = val;
+      val = limits(1);
+      if (! (xisinf (val) || xisnan (val)))
+        max_val = val;
+      val = limits(2);
+      if (! (xisinf (val) || xisnan (val)))
+        min_pos = val;
+    }
+  else
+    {
+      limits.resize(3,1);
+      limits(0) = min_val;
+      limits(1) = max_val;
+      limits(2) = min_pos;
+    }
+
+  get_children_limits (min_val, max_val, min_pos, kids, update_type);
+
+  unwind_protect frame;
+  frame.protect_var (updating_hggroup_limits);
+
+  updating_hggroup_limits = true;
+
+  if (limits(0) != min_val || limits(1) != max_val || limits(2) != min_pos)
+    {
+      limits(0) = min_val;
+      limits(1) = max_val;
+      limits(2) = min_pos;
+
+      switch (update_type)
+        {
+        case 'x':
+          xproperties.set_xlim (limits);
+          break;
+
+        case 'y':
+          xproperties.set_ylim (limits);
+          break;
+
+        case 'z':
+          xproperties.set_zlim (limits);
+          break;
+
+        case 'c':
+          xproperties.set_clim (limits);
+          break;
+
+        case 'a':
+          xproperties.set_alim (limits);
+          break;
+
+        default:
+          break;
+        }
+
+      base_graphics_object::update_axis_limits (axis_type, h);
+    }
+}
+
 void
 hggroup::update_axis_limits (const std::string& axis_type)
 {
+  if (updating_hggroup_limits)
+    return;
+
   Matrix kids = xproperties.get_children ();
 
   double min_val = octave_Inf;
@@ -4971,7 +5254,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
   if (axis_type == "xlim" || axis_type == "xliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'x');
-      
+          
       update_type = 'x';
     }
   else if (axis_type == "ylim" || axis_type == "yliminclude")
@@ -4991,7 +5274,6 @@ hggroup::update_axis_limits (const std::string& axis_type)
       get_children_limits (min_val, max_val, min_pos, kids, 'c');
 
       update_type = 'c';
-
     }
   else if (axis_type == "alim" || axis_type == "aliminclude")
     {
@@ -4999,6 +5281,11 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
       update_type = 'a';
     }
+
+  unwind_protect frame;
+  frame.protect_var (updating_hggroup_limits);
+
+  updating_hggroup_limits = true;
 
   Matrix limits (1, 3, 0.0);
 
@@ -5774,6 +6061,10 @@ static octave_value
 make_graphics_object (const std::string& go_name,
                       const octave_value_list& args)
 {
+  //octave_time now;
+  //double t1, t2, t3;
+  //double t0 = now.double_value ();
+
   octave_value retval;
 
   double val = octave_NaN;
@@ -5816,9 +6107,15 @@ make_graphics_object (const std::string& go_name,
           if (! error_state)
             {
               adopt (parent, h);
+              //now.stamp();
+              //t1 = now.double_value ();
 
               xset (h, xargs);
+              //now.stamp();
+              //t2 = now.double_value ();
               xcreatefcn (h);
+              //now.stamp();
+              //t3 = now.double_value ();
 
               retval = h.value ();
 
@@ -5834,6 +6131,10 @@ make_graphics_object (const std::string& go_name,
     }
   else
     error ("__go_%s__: invalid parent", go_name.c_str ());
+
+  
+  //now.stamp();
+  //octave_stdout << "Make object times : " << t1 - t0 << " " << t2 - t1 << " " << t3 - t2 << " " << now.double_value() - t3 << " seconds.\n";
 
   return retval;
 }

@@ -1,3 +1,8 @@
+2010-10-29  Ben Abbott <bpabbott@mac.com>
+
+	* gl-render.cc: Crop ticks, ticklabels, and gridlines for OpenGL
+	backend.
+
 2010-10-25  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Use F77_CHAR_ARC_LEN macro to pass

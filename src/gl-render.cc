@@ -554,8 +554,6 @@ opengl_renderer::draw (const graphics_object& go)
     draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
     draw_image (dynamic_cast<const image::properties&> (props));
-  else if (go.isa ("uimenu"))
-    ;
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
              props.graphics_object_name ().c_str ());
@@ -919,12 +917,15 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double xval = xticks(i);
 
-              glVertex3d (xval, yPlaneN, zpTick);
-              glVertex3d (xval, yPlane, zpTick);
-              if (zstate != AXE_DEPTH_DIR)
+              if (xlim(0) <= xval && xlim(1) >= xval)
                 {
-                  glVertex3d (xval, yPlane, zPlaneN);
-                  glVertex3d (xval, yPlane, zPlane);
+                  glVertex3d (xval, yPlaneN, zpTick);
+                  glVertex3d (xval, yPlane, zpTick);
+                  if (zstate != AXE_DEPTH_DIR)
+                    {
+                      glVertex3d (xval, yPlane, zPlaneN);
+                      glVertex3d (xval, yPlane, zPlane);
+                    }
                 }
             }
           glEnd ();
@@ -939,17 +940,20 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double xval = xticks(i);
 
-              glVertex3d (xval, yPlaneN, zPlane);
-              glVertex3d (xval, yPlaneN, zPlane+signum(zPlane-zPlaneN)*fz*xticklen*tickdir);
-              if (box && xstate != AXE_ANY_DIR)
+              if (xlim(0) <= xval && xlim(1) >= xval)
                 {
-                  glVertex3d (xval, yPlaneN, zPlaneN);
-                  glVertex3d (xval, yPlaneN,
-                        zPlaneN+signum(zPlaneN-zPlane)*fz*xticklen*tickdir);
+                  glVertex3d (xval, yPlaneN, zPlane);
+                  glVertex3d (xval, yPlaneN, zPlane+signum(zPlane-zPlaneN)*fz*xticklen*tickdir);
+                  if (box && xstate != AXE_ANY_DIR)
+                    {
+                      glVertex3d (xval, yPlaneN, zPlaneN);
+                      glVertex3d (xval, yPlaneN,
+                            zPlaneN+signum(zPlaneN-zPlane)*fz*xticklen*tickdir);
+                    }
+                  tickpos(i,0) = xval;
+                  tickpos(i,1) = yPlaneN;
+                  tickpos(i,2) = zPlane+signum(zPlane-zPlaneN)*fz*xtickoffset;
                 }
-              tickpos(i,0) = xval;
-              tickpos(i,1) = yPlaneN;
-              tickpos(i,2) = zPlane+signum(zPlane-zPlaneN)*fz*xtickoffset;
             }
           glEnd ();
         }
@@ -960,17 +964,20 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double xval = xticks(i);
 
-              glVertex3d (xval, yPlaneN, zpTick);
-              glVertex3d (xval, yPlaneN+signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zpTick);
-              if (box && xstate != AXE_ANY_DIR)
+              if (xlim(0) <= xval && xlim(1) >= xval)
                 {
-                  glVertex3d (xval, yPlane, zpTick);
-                  glVertex3d (xval,
-                        yPlane+signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zpTick);
+                  glVertex3d (xval, yPlaneN, zpTick);
+                  glVertex3d (xval, yPlaneN+signum(yPlaneN-yPlane)*fy*xticklen*tickdir, zpTick);
+                  if (box && xstate != AXE_ANY_DIR)
+                    {
+                      glVertex3d (xval, yPlane, zpTick);
+                      glVertex3d (xval,
+                            yPlane+signum(yPlane-yPlaneN)*fy*xticklen*tickdir, zpTick);
+                    }
+                  tickpos(i,0) = xval;
+                  tickpos(i,1) = yPlaneN+signum(yPlaneN-yPlane)*fy*xtickoffset;
+                  tickpos(i,2) = zPlane;
                 }
-              tickpos(i,0) = xval;
-              tickpos(i,1) = yPlaneN+signum(yPlaneN-yPlane)*fy*xtickoffset;
-              tickpos(i,2) = zPlane;
             }
           glEnd ();
         }
@@ -986,14 +993,19 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
           for (int i = 0; i < n; i++)
             {
-              // FIXME: as tick text is transparent, shouldn't be
-              //        drawn after axes object, for correct rendering?
-              Matrix b = render_text (xticklabels(i),
-                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                    halign, valign); 
+              double xval = xticks(i);
 
-              wmax = std::max (wmax, static_cast<int> (b(2)));
-              hmax = std::max (hmax, static_cast<int> (b(3)));
+              if (xlim(0) <= xval && xlim(1) >= xval)
+                {
+                  // FIXME: as tick text is transparent, shouldn't be
+                  //        drawn after axes object, for correct rendering?
+                  Matrix b = render_text (xticklabels(i),
+                                        tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                        halign, valign); 
+
+                  wmax = std::max (wmax, static_cast<int> (b(2)));
+                  hmax = std::max (hmax, static_cast<int> (b(3)));
+                }
             }
         }
 
@@ -1006,12 +1018,15 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double xval = xmticks(i);
 
-              glVertex3d (xval, yPlaneN, zpTick);
-              glVertex3d (xval, yPlane, zpTick);
-              if (zstate != AXE_DEPTH_DIR)
+              if (xlim(0) <= xval && xlim(1) >= xval)
                 {
-                  glVertex3d (xval, yPlane, zPlaneN);
-                  glVertex3d (xval, yPlane, zPlane);
+                  glVertex3d (xval, yPlaneN, zpTick);
+                  glVertex3d (xval, yPlane, zpTick);
+                  if (zstate != AXE_DEPTH_DIR)
+                    {
+                      glVertex3d (xval, yPlane, zPlaneN);
+                      glVertex3d (xval, yPlane, zPlane);
+                    }
                 }
             }
           glEnd ();
@@ -1028,14 +1043,17 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double xval = xmticks(i);
 
-                  glVertex3d (xval, yPlaneN, zPlane);
-                  glVertex3d (xval, yPlaneN,
-                      zPlane+signum(zPlane-zPlaneN)*fz*xticklen/2*tickdir);
-                  if (box && xstate != AXE_ANY_DIR)
+                  if (xlim(0) <= xval && xlim(1) >= xval)
                     {
-                      glVertex3d (xval, yPlaneN, zPlaneN);
+                      glVertex3d (xval, yPlaneN, zPlane);
                       glVertex3d (xval, yPlaneN,
-                          zPlaneN+signum(zPlaneN-zPlane)*fz*xticklen/2*tickdir);
+                          zPlane+signum(zPlane-zPlaneN)*fz*xticklen/2*tickdir);
+                      if (box && xstate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xval, yPlaneN, zPlaneN);
+                          glVertex3d (xval, yPlaneN,
+                              zPlaneN+signum(zPlaneN-zPlane)*fz*xticklen/2*tickdir);
+                        }
                     }
                 }
               glEnd ();
@@ -1047,14 +1065,17 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double xval = xmticks(i);
 
-                  glVertex3d (xval, yPlaneN, zpTick);
-                  glVertex3d (xval,
-                        yPlaneN+signum(yPlaneN-yPlane)*fy*xticklen/2*tickdir, zpTick);
-                  if (box && xstate != AXE_ANY_DIR)
+                  if (xlim(0) <= xval && xlim(1) >= xval)
                     {
-                      glVertex3d (xval, yPlane, zpTick);
+                      glVertex3d (xval, yPlaneN, zpTick);
                       glVertex3d (xval,
-                            yPlane+signum(yPlane-yPlaneN)*fy*xticklen/2*tickdir, zpTick);
+                            yPlaneN+signum(yPlaneN-yPlane)*fy*xticklen/2*tickdir, zpTick);
+                      if (box && xstate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xval, yPlane, zpTick);
+                          glVertex3d (xval,
+                                yPlane+signum(yPlane-yPlaneN)*fy*xticklen/2*tickdir, zpTick);
+                        }
                     }
                 }
               glEnd ();
@@ -1131,12 +1152,15 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double yval = yticks(i);
 
-              glVertex3d (xPlaneN, yval, zpTick);
-              glVertex3d (xPlane, yval, zpTick);
-              if (zstate != AXE_DEPTH_DIR)
+              if (ylim(0) <= yval && ylim(1) >= yval)
                 {
-                  glVertex3d (xPlane, yval, zPlaneN);
-                  glVertex3d (xPlane, yval, zPlane);
+                  glVertex3d (xPlaneN, yval, zpTick);
+                  glVertex3d (xPlane, yval, zpTick);
+                  if (zstate != AXE_DEPTH_DIR)
+                    {
+                      glVertex3d (xPlane, yval, zPlaneN);
+                      glVertex3d (xPlane, yval, zPlane);
+                    }
                 }
             }
           glEnd ();
@@ -1151,17 +1175,20 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double yval = yticks(i);
 
-              glVertex3d (xPlaneN, yval, zPlane);
-              glVertex3d (xPlaneN, yval, zPlane+signum(zPlane-zPlaneN)*fz*yticklen*tickdir);
-              if (box && ystate != AXE_ANY_DIR)
+              if (ylim(0) <= yval && ylim(1) >= yval)
                 {
-                  glVertex3d (xPlaneN, yval, zPlaneN);
-                  glVertex3d (xPlaneN, yval,
-                        zPlaneN+signum(zPlaneN-zPlane)*fz*yticklen*tickdir);
+                  glVertex3d (xPlaneN, yval, zPlane);
+                  glVertex3d (xPlaneN, yval, zPlane+signum(zPlane-zPlaneN)*fz*yticklen*tickdir);
+                  if (box && ystate != AXE_ANY_DIR)
+                    {
+                      glVertex3d (xPlaneN, yval, zPlaneN);
+                      glVertex3d (xPlaneN, yval,
+                            zPlaneN+signum(zPlaneN-zPlane)*fz*yticklen*tickdir);
+                    }
+                  tickpos(i,0) = xPlaneN;
+                  tickpos(i,1) = yval;
+                  tickpos(i,2) = zPlane+signum(zPlane-zPlaneN)*fz*ytickoffset;
                 }
-              tickpos(i,0) = xPlaneN;
-              tickpos(i,1) = yval;
-              tickpos(i,2) = zPlane+signum(zPlane-zPlaneN)*fz*ytickoffset;
             }
           glEnd ();
         }
@@ -1172,17 +1199,20 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double yval = yticks(i);
 
-              glVertex3d (xPlaneN, yval, zpTick);
-              glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yval, zpTick);
-              if (box && ystate != AXE_ANY_DIR)
+              if (ylim(0) <= yval && ylim(1) >= yval)
                 {
-                  glVertex3d (xPlane, yval, zpTick);
-                  glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*yticklen*tickdir,
-                        yval, zpTick);
+                  glVertex3d (xPlaneN, yval, zpTick);
+                  glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*yticklen*tickdir, yval, zpTick);
+                  if (box && ystate != AXE_ANY_DIR)
+                    {
+                      glVertex3d (xPlane, yval, zpTick);
+                      glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*yticklen*tickdir,
+                            yval, zpTick);
+                    }
+                  tickpos(i,0) = xPlaneN+signum(xPlaneN-xPlane)*fx*ytickoffset;
+                  tickpos(i,1) = yval;
+                  tickpos(i,2) = zPlane;
                 }
-              tickpos(i,0) = xPlaneN+signum(xPlaneN-xPlane)*fx*ytickoffset;
-              tickpos(i,1) = yval;
-              tickpos(i,2) = zPlane;
             }
           glEnd ();
         }
@@ -1196,14 +1226,19 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
           for (int i = 0; i < n; i++)
             {
-              // FIXME: as tick text is transparent, shouldn't be
-              //        drawn after axes object, for correct rendering?
-              Matrix b = render_text (yticklabels(i),
-                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                    halign, valign); 
+              double yval = yticks(i);
 
-              wmax = std::max (wmax, static_cast<int> (b(2)));
-              hmax = std::max (hmax, static_cast<int> (b(3)));
+              if (ylim(0) <= yval && ylim(1) >= yval)
+                {
+                  // FIXME: as tick text is transparent, shouldn't be
+                  //        drawn after axes object, for correct rendering?
+                  Matrix b = render_text (yticklabels(i),
+                                        tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                        halign, valign); 
+
+                  wmax = std::max (wmax, static_cast<int> (b(2)));
+                  hmax = std::max (hmax, static_cast<int> (b(3)));
+                }
             }
         }
 
@@ -1216,12 +1251,15 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double yval = ymticks(i);
 
-              glVertex3d (xPlaneN, yval, zpTick);
-              glVertex3d (xPlane, yval, zpTick);
-              if (zstate != AXE_DEPTH_DIR)
+              if (ylim(0) <= yval && ylim(1) >= yval)
                 {
-                  glVertex3d (xPlane, yval, zPlaneN);
-                  glVertex3d (xPlane, yval, zPlane);
+                  glVertex3d (xPlaneN, yval, zpTick);
+                  glVertex3d (xPlane, yval, zpTick);
+                  if (zstate != AXE_DEPTH_DIR)
+                    {
+                      glVertex3d (xPlane, yval, zPlaneN);
+                      glVertex3d (xPlane, yval, zPlane);
+                    }
                 }
             }
           glEnd ();
@@ -1238,14 +1276,17 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double yval = ymticks(i);
 
-                  glVertex3d (xPlaneN, yval, zPlane);
-                  glVertex3d (xPlaneN, yval,
-                        zPlane+signum(zPlane-zPlaneN)*fz*yticklen/2*tickdir);
-                  if (box && ystate != AXE_ANY_DIR)
+                  if (ylim(0) <= yval && ylim(1) >= yval)
                     {
-                      glVertex3d (xPlaneN, yval, zPlaneN);
+                      glVertex3d (xPlaneN, yval, zPlane);
                       glVertex3d (xPlaneN, yval,
-                            zPlaneN+signum(zPlaneN-zPlane)*fz*yticklen/2*tickdir);
+                            zPlane+signum(zPlane-zPlaneN)*fz*yticklen/2*tickdir);
+                      if (box && ystate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xPlaneN, yval, zPlaneN);
+                          glVertex3d (xPlaneN, yval,
+                                zPlaneN+signum(zPlaneN-zPlane)*fz*yticklen/2*tickdir);
+                        }
                     }
                 }
               glEnd ();
@@ -1257,14 +1298,17 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double yval = ymticks(i);
 
-                  glVertex3d (xPlaneN, yval, zpTick);
-                  glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*yticklen/2*tickdir,
-                        yval, zpTick);
-                  if (box && ystate != AXE_ANY_DIR)
+                  if (ylim(0) <= yval && ylim(1) >= yval)
                     {
-                      glVertex3d (xPlane, yval, zpTick);
-                      glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*yticklen/2*tickdir,
+                      glVertex3d (xPlaneN, yval, zpTick);
+                      glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*yticklen/2*tickdir,
                             yval, zpTick);
+                      if (box && ystate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xPlane, yval, zpTick);
+                          glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*yticklen/2*tickdir,
+                                yval, zpTick);
+                        }
                     }
                 }
               glEnd ();
@@ -1340,10 +1384,13 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double zval = zticks(i);
 
-              glVertex3d (xPlaneN, yPlane, zval);
-              glVertex3d (xPlane, yPlane, zval);
-              glVertex3d (xPlane, yPlaneN, zval);
-              glVertex3d (xPlane, yPlane, zval);
+              if (zlim(0) <= zval && zlim(1) >= zval)
+                {
+                  glVertex3d (xPlaneN, yPlane, zval);
+                  glVertex3d (xPlane, yPlane, zval);
+                  glVertex3d (xPlane, yPlaneN, zval);
+                  glVertex3d (xPlane, yPlane, zval);
+                }
             }
           glEnd ();
           set_linestyle ("-", true);
@@ -1359,18 +1406,21 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double zval = zticks(i);
 
-                  glVertex3d (xPlaneN, yPlane, zval);
-                  glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*zticklen*tickdir,
-                        yPlane, zval);
-                  if (box && zstate != AXE_ANY_DIR)
+                  if (zlim(0) <= zval && zlim(1) >= zval)
                     {
-                      glVertex3d (xPlane, yPlane, zval);
-                      glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen*tickdir,
+                      glVertex3d (xPlaneN, yPlane, zval);
+                      glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*zticklen*tickdir,
                             yPlane, zval);
+                      if (box && zstate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xPlane, yPlane, zval);
+                          glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen*tickdir,
+                                yPlane, zval);
+                        }
+                      tickpos(i,0) = xPlaneN+signum(xPlaneN-xPlane)*fx*ztickoffset;
+                      tickpos(i,1) = yPlane;
+                      tickpos(i,2) = zval;
                     }
-                  tickpos(i,0) = xPlaneN+signum(xPlaneN-xPlane)*fx*ztickoffset;
-                  tickpos(i,1) = yPlane;
-                  tickpos(i,2) = zval;
                 }
               glEnd ();
             }
@@ -1381,11 +1431,14 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double zval = zticks(i);
 
-                  glVertex3d (xPlaneN, yPlane, zval);
-                  glVertex3d (xPlaneN, yPlane+signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zval);
-                  tickpos(i,0) = xPlaneN;
-                  tickpos(i,1) = yPlane+signum(yPlane-yPlaneN)*fy*ztickoffset;
-                  tickpos(i,2) = zval;
+                  if (zlim(0) <= zval && zlim(1) >= zval)
+                    {
+                      glVertex3d (xPlaneN, yPlane, zval);
+                      glVertex3d (xPlaneN, yPlane+signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zval);
+                      tickpos(i,0) = xPlaneN;
+                      tickpos(i,1) = yPlane+signum(yPlane-yPlaneN)*fy*ztickoffset;
+                      tickpos(i,2) = zval;
+                    }
                 }
               glEnd ();
             }
@@ -1399,16 +1452,19 @@ opengl_renderer::draw_axes (const axes::properties& props)
                 {
                   double zval = zticks(i);
 
-                  glVertex3d (xPlane, yPlaneN, zval);
-                  glVertex3d (xPlane, yPlaneN+signum(yPlaneN-yPlane)*fy*zticklen*tickdir, zval);
-                  if (box && zstate != AXE_ANY_DIR)
+                  if (zlim(0) <= zval && zlim(1) >= zval)
                     {
-                      glVertex3d (xPlane, yPlane, zval);
-                      glVertex3d (xPlane, yPlane+signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zval);
+                      glVertex3d (xPlane, yPlaneN, zval);
+                      glVertex3d (xPlane, yPlaneN+signum(yPlaneN-yPlane)*fy*zticklen*tickdir, zval);
+                      if (box && zstate != AXE_ANY_DIR)
+                        {
+                          glVertex3d (xPlane, yPlane, zval);
+                          glVertex3d (xPlane, yPlane+signum(yPlane-yPlaneN)*fy*zticklen*tickdir, zval);
+                        }
+                      tickpos(i,0) = xPlane;
+                      tickpos(i,1) = yPlaneN+signum(yPlaneN-yPlane)*fy*ztickoffset;
+                      tickpos(i,2) = zval;
                     }
-                  tickpos(i,0) = xPlane;
-                  tickpos(i,1) = yPlaneN+signum(yPlaneN-yPlane)*fy*ztickoffset;
-                  tickpos(i,2) = zval;
                 }
               glEnd ();
             }
@@ -1419,11 +1475,14 @@ opengl_renderer::draw_axes (const axes::properties& props)
               {
                 double zval = zticks(i);
 
-                glVertex3d (xPlane, yPlaneN, zval);
-                glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlaneN, zval);
-                tickpos(i,0) = xPlane+signum(xPlane-xPlaneN)*fx*ztickoffset;
-                tickpos(i,1) = yPlaneN;
-                tickpos(i,2) = zval;
+                if (zlim(0) <= zval && zlim(1) >= zval)
+                  {
+                    glVertex3d (xPlane, yPlaneN, zval);
+                    glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen*tickdir, yPlaneN, zval);
+                    tickpos(i,0) = xPlane+signum(xPlane-xPlaneN)*fx*ztickoffset;
+                    tickpos(i,1) = yPlaneN;
+                    tickpos(i,2) = zval;
+                  }
               }
             glEnd ();
           }
@@ -1438,14 +1497,19 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
           for (int i = 0; i < n; i++)
             {
-              // FIXME: as tick text is transparent, shouldn't be
-              //        drawn after axes object, for correct rendering?
-              Matrix b = render_text (zticklabels(i),
-                                    tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                    halign, valign); 
+              double zval = zticks(i);
 
-              wmax = std::max (wmax, static_cast<int> (b(2)));
-              hmax = std::max (hmax, static_cast<int> (b(3)));
+              if (zlim(0) <= zval && zlim(1) >= zval)
+                {
+                  // FIXME: as tick text is transparent, shouldn't be
+                  //        drawn after axes object, for correct rendering?
+                  Matrix b = render_text (zticklabels(i),
+                                        tickpos(i,0), tickpos(i,1), tickpos(i,2),
+                                        halign, valign); 
+
+                  wmax = std::max (wmax, static_cast<int> (b(2)));
+                  hmax = std::max (hmax, static_cast<int> (b(3)));
+                }
             }
         }
 
@@ -1458,10 +1522,13 @@ opengl_renderer::draw_axes (const axes::properties& props)
             {
               double zval = zmticks(i);
 
-              glVertex3d (xPlaneN, yPlane, zval);
-              glVertex3d (xPlane, yPlane, zval);
-              glVertex3d (xPlane, yPlaneN, zval);
-              glVertex3d (xPlane, yPlane, zval);
+              if (zlim(0) <= zval && zlim(1) >= zval)
+                {
+                  glVertex3d (xPlaneN, yPlane, zval);
+                  glVertex3d (xPlane, yPlane, zval);
+                  glVertex3d (xPlane, yPlaneN, zval);
+                  glVertex3d (xPlane, yPlane, zval);
+                }
             }
           glEnd ();
           set_linestyle ("-", true);
@@ -1479,14 +1546,17 @@ opengl_renderer::draw_axes (const axes::properties& props)
                     {
                       double zval = zmticks(i);
 
-                      glVertex3d (xPlaneN, yPlane, zval);
-                      glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir,
-                            yPlane, zval);
-                      if (box && zstate != AXE_ANY_DIR)
+                      if (zlim(0) <= zval && zlim(1) >= zval)
                         {
-                          glVertex3d (xPlane, yPlane, zval);
-                          glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir,
+                          glVertex3d (xPlaneN, yPlane, zval);
+                          glVertex3d (xPlaneN+signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir,
                                 yPlane, zval);
+                          if (box && zstate != AXE_ANY_DIR)
+                            {
+                              glVertex3d (xPlane, yPlane, zval);
+                              glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir,
+                                    yPlane, zval);
+                            }
                         }
                     }
                   glEnd ();
@@ -1498,8 +1568,11 @@ opengl_renderer::draw_axes (const axes::properties& props)
                     {
                       double zval = zmticks(i);
 
-                      glVertex3d (xPlaneN, yPlane, zval);
-                      glVertex3d (xPlaneN, yPlane+signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir, zval);
+                      if (zlim(0) <= zval && zlim(1) >= zval)
+                        {
+                          glVertex3d (xPlaneN, yPlane, zval);
+                          glVertex3d (xPlaneN, yPlane+signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir, zval);
+                        }
                     }
                   glEnd ();
                 }
@@ -1513,12 +1586,15 @@ opengl_renderer::draw_axes (const axes::properties& props)
                     {
                       double zval = zmticks(i);
 
-                      glVertex3d (xPlane, yPlaneN, zval);
-                      glVertex3d (xPlane, yPlaneN+signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir, zval);
-                      if (box && zstate != AXE_ANY_DIR)
+                      if (zlim(0) <= zval && zlim(1) >= zval)
                         {
-                          glVertex3d (xPlane, yPlane, zval);
-                          glVertex3d (xPlane, yPlane+signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir, zval);
+                          glVertex3d (xPlane, yPlaneN, zval);
+                          glVertex3d (xPlane, yPlaneN+signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir, zval);
+                          if (box && zstate != AXE_ANY_DIR)
+                            {
+                              glVertex3d (xPlane, yPlane, zval);
+                              glVertex3d (xPlane, yPlane+signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir, zval);
+                            }
                         }
                     }
                   glEnd ();
@@ -1530,8 +1606,11 @@ opengl_renderer::draw_axes (const axes::properties& props)
                     {
                       double zval = zmticks(i);
 
-                      glVertex3d (xPlane, yPlaneN, zval);
-                      glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir, yPlaneN, zval);
+                      if (zlim(0) <= zval && zlim(1) >= zval)
+                        {
+                          glVertex3d (xPlane, yPlaneN, zval);
+                          glVertex3d (xPlane+signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir, yPlaneN, zval);
+                        }
                     }
                   glEnd ();
                 }

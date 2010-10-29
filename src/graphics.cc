@@ -4966,8 +4966,11 @@ image::properties::get_color_data (void) const
 octave_value
 patch::properties::get_color_data (void) const
 {
-  return convert_cdata (*this, get_facevertexcdata (),
-                        cdatamapping_is ("scaled"), 2);
+  octave_value fvc = get_facevertexcdata();
+  if (fvc.is_undefined () || fvc.is_empty ())
+    return Matrix ();
+  else
+    return convert_cdata (*this, fvc,cdatamapping_is ("scaled"), 2);
 }
 
 // ---------------------------------------------------------------------

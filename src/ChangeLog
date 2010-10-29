@@ -1,3 +1,12 @@
+2010-10-29  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (octave_value patch::properties::get_color_data
+	(void) const): Don't call convert_data is the facevertexcdata
+	property is undefined or empty.
+	* gl-render.cc (void opengl_renderer::draw_patch
+	(const patch::properties &)): Set ec_mode to 0 if edgecolor is "none".
+	Set fc_mode to 0 if facecolor is "none".
+
 2010-10-29  Ben Abbott <bpabbott@mac.com>
 
 	* gl-render.cc: Crop ticks, ticklabels, and gridlines for OpenGL

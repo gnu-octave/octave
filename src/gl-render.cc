@@ -2449,13 +2449,15 @@ opengl_renderer::draw_patch (const patch::properties &props)
   bool has_facecolor = false;
   bool has_facealpha = false;
 
-  int fc_mode = (props.facecolor_is_rgb () ? 0 :
+  int fc_mode = ((props.facecolor_is("none") 
+                  || props.facecolor_is_rgb ()) ? 0 :
                  (props.facecolor_is("flat") ? 1 : 2));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
                  (props.facelighting_is ("flat") ? 1 : 2));
   int fa_mode = (props.facealpha_is_double () ? 0 :
                  (props.facealpha_is ("flat") ? 1 : 2));
-  int ec_mode = (props.edgecolor_is_rgb () ? 0 :
+  int ec_mode = ((props.edgecolor_is("none") 
+                  || props.edgecolor_is_rgb ()) ? 0 :
                  (props.edgecolor_is("flat") ? 1 : 2));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
                  (props.edgelighting_is ("flat") ? 1 : 2));

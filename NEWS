@@ -408,7 +408,7 @@ Summary of important user-visible changes for version 3.4:
     release after 3.4):
 
       cellidx      fstat        values       gammai
-      betai        is_global
+      betai        is_global    autocor      autocov
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

@@ -23,12 +23,24 @@
 ## If @var{h} is omitted, all autocorrelations are computed.
 ## If @var{x} is a matrix, the autocorrelations of each column are
 ## computed.
+## The particular algorithm used is from the field of statistics and 
+## differs from the definition used in signal processing.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Compute autocorrelations
 
+## Deprecated in version 3.4
+
 function retval = autocor (X, h)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "autocor is obsolete and will be removed from a future version of Octave; See the Octave-Forge signal package and the function xcor for a replacement");
+  endif
+
 
   if (nargin == 1)
     retval = autocov (X);

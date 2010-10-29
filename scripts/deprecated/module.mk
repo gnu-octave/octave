@@ -1,6 +1,8 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
+  deprecated/autocor.m \
+  deprecated/autocov.m \
   deprecated/betai.m \
   deprecated/cellidx.m \
   deprecated/clg.m \

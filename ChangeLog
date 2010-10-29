@@ -1,3 +1,7 @@
+2010-10-28  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Update deprecated function list with autocov and autocor.
+
 2010-10-25  Kai Habel  <kai.habel@gmx.de>
 
 	* NEWS: Add uimenu.

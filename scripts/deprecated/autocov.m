@@ -23,12 +23,22 @@
 ## If @var{h} is omitted, all autocovariances are computed.
 ## If @var{x} is a matrix, the autocovariances of each column are
 ## computed.
+## The particular algorithm used is from the field of statistics and 
+## differs from the definition used in signal processing.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Compute autocovariances
 
+## Deprecated in version 3.4
+
 function retval = autocov (X, h)
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "autocov is obsolete and will be removed from a future version of Octave; See the Octave-Forge signal package and the function xcov for a replacement");
+  endif
 
   [n, c] = size (X);
 

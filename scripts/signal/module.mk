@@ -5,8 +5,6 @@ signal_FCN_FILES = \
   signal/arch_rnd.m \
   signal/arch_test.m \
   signal/arma_rnd.m \
-  signal/autocor.m \
-  signal/autocov.m \
   signal/autoreg_matrix.m \
   signal/bartlett.m \
   signal/blackman.m \

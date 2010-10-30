@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2base (@var{n}, @var{b}, @var{len})
+## @deftypefn  {Function File} {} dec2base (@var{d}, @var{b})
+## @deftypefnx {Function File} {} dec2base (@var{d}, @var{b}, @var{len})
 ## Return a string of symbols in base @var{b} corresponding to
-## the non-negative integer @var{n}.
+## the non-negative integer @var{d}.
 ##
 ## @example
 ## @group
@@ -28,11 +29,11 @@
 ## @end group
 ## @end example
 ##
-## If @var{n} is a vector, return a string matrix with one row per value,
+## If @var{d} is a vector, return a string matrix with one row per value,
 ## padded with leading zeros to the width of the largest value.
 ##
 ## If @var{b} is a string then the characters of @var{b} are used as
-## the symbols for the digits of @var{n}.  Space (' ') may not be used
+## the symbols for the digits of @var{d}.  Space (' ') may not be used
 ## as a symbol.
 ##
 ## @example
@@ -50,43 +51,48 @@
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function retval = dec2base (n, base, len)
+function retval = dec2base (d, base, len)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  if (numel (n) != length (n))
-    n = n(:);
-  elseif (any (n < 0 | n != fix (n)))
-    error ("dec2base: can only convert non-negative integers");
+  # Create column vector for algorithm
+  if (columns (d) > 1 || !isvector (d))
+    d = d(:);
+  endif
+
+  if (any (d < 0 | d != fix (d)))
+    error ("dec2base: input must be non-negative integers");
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   if (ischar (base))
     symbols = base;
     base = length (symbols);
-    if any (diff (sort (toascii (symbols))) == 0)
+    if (length (unique (symbols)) != base)
       error ("dec2base: symbols representing digits must be unique");
     endif
   elseif (! isscalar (base))
     error ("dec2base: cannot convert from several bases at once");
   elseif (base < 2 || base > length (symbols))
-    error ("dec2base: base must be between 2 and 36 or a string of symbols");
+    error ("dec2base: BASE must be between 2 and 36, or a string of symbols");
   endif
   
   ## determine number of digits required to handle all numbers, can overflow
   ## by 1 digit
-  max_len = round (log (max (max (n), 1)) ./ log (base)) + 1;
+  max_len = round (log (max (max (d), 1)) ./ log (base)) + 1;
 
   if (nargin == 3)
     max_len = max (max_len, len);
   endif
   
   ## determine digits for each number
-  power = ones (length (n), 1) * (base .^ (max_len-1 : -1 : 0));
-  n = n(:) * ones (1, max_len);
-  digits = floor (double (rem (n, base*power)) ./ power);
+  digits = zeros (length (d), max_len);
+  for k = max_len:-1:1
+    digits(:,k) = mod(d, base);
+    d = round ((d - digits(:,k)) / base);
+  endfor
 
   ## convert digits to symbols
   retval = reshape (symbols (digits+1), size (digits));
@@ -129,6 +135,19 @@ endfunction
 %!   assert(dec2base(0,b),'0');
 %! end
 
-%!test
-%!   assert(dec2base(2^51-1,2),
-%!          '111111111111111111111111111111111111111111111111111');
+%!assert(dec2base(0,2,4), "0000");
+%!assert(dec2base(2^51-1,2), ...
+%!       '111111111111111111111111111111111111111111111111111');
+%!assert(dec2base(uint64(2)^63-1,16), '7FFFFFFFFFFFFFFF');
+
+%!Test input validation
+%!error dec2base ()
+%!error dec2base (1)
+%!error dec2base (1, 2, 3, 4)
+%!error dec2base (-1)
+%!error dec2base (1.1)
+%!error dec2base (1,"ABA")
+%!error dec2base (1, ones(2))
+%!error dec2base (1, 1)
+%!error dec2base (1, 37)
+

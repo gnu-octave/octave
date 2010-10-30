@@ -1,3 +1,7 @@
+2010-10-30  Gunnar Farnebäck <gunnar@lysator.liu.se>
+
+	* strings/dec2base.m: Update algorithm to handle numbers up to 2^64-1.
+
 2010-10-28  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, signal/module.mk, deprecated/autocov.m,

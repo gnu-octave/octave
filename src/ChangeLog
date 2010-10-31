@@ -1,3 +1,8 @@
+2010-10-31  Kai Habel  <kai.habel@gmx.de>
+
+	* fltk-backend.cc (find_uimenu_children): Remove template argument.
+	(do_find_uimenu_children): New function.
+
 2010-10-29  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (octave_value patch::properties::get_color_data

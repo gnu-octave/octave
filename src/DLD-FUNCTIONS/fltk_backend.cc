@@ -316,13 +316,26 @@ public:
         }
       return (-1);
     }
+  
+  Matrix find_uimenu_children (uimenu::properties& uimenup) const
+    {
+      Matrix uimenu_childs = uimenup.get_children ();
+      Matrix retval = do_find_uimenu_children (uimenu_childs);
+      return retval;
+    }
 
-  template <class T>
-  Matrix find_uimenu_children (T& prop) const
+  Matrix find_uimenu_children (figure::properties& figp) const
+    {
+      Matrix uimenu_childs = figp.get_children ();
+      Matrix retval = do_find_uimenu_children (uimenu_childs);
+      return retval;
+    }
+    
+  Matrix do_find_uimenu_children (Matrix uimenu_childs) const
     {
       octave_idx_type k = 0;
       
-      Matrix uimenu_childs = prop.get_children ();
+      
       Matrix pos = Matrix (uimenu_childs.numel (), 1);
       
       for (octave_idx_type ii = 0; ii < uimenu_childs.numel (); ii++)

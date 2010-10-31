@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 // (reinterpret_cast is assumed to be an inexpensive operation).
 
 class
+OCTAVE_API
 dim_vector
 {
 private:

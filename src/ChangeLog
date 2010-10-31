@@ -1,3 +1,8 @@
+2010-10-31  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* xnorm.h (xnorm, xcolnorms, xrownorms, xfrobnorm): tag with
+	OCTINTERP_API.
+
 2010-10-31  Kai Habel  <kai.habel@gmx.de>
 
 	* fltk-backend.cc (find_uimenu_children): Remove template argument.

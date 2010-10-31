@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2bin (@var{n}, @var{len})
-## Return a binary number corresponding to the non-negative decimal number
-## @var{n}, as a string of ones and zeros.  For example:
+## @deftypefn {Function File} {} dec2bin (@var{d}, @var{len})
+## Return a binary number corresponding to the non-negative integer
+## @var{d}, as a string of ones and zeros.  For example:
 ##
 ## @example
 ## @group
@@ -29,23 +29,23 @@
 ## @end group
 ## @end example
 ##
-## If @var{n} is a vector, returns a string matrix, one row per value,
+## If @var{d} is a vector, returns a string matrix, one row per value,
 ## padded with leading zeros to the width of the largest value.
 ##
 ## The optional second argument, @var{len}, specifies the minimum
 ## number of digits in the result.
-## @seealso{bin2dec, dec2base, base2dec, hex2dec, dec2hex}
+## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function retval = dec2bin (n, len)
+function b = dec2bin (d, len)
 
   if (nargin == 1)
-    retval = dec2base (n, 2);
+    b = dec2base (d, 2);
   elseif (nargin == 2)
-    retval = dec2base (n, 2, len);
+    b = dec2base (d, 2, len);
   else
     print_usage ();
   endif
@@ -53,10 +53,9 @@ function retval = dec2bin (n, len)
 endfunction
 
 %!assert(strcmp (dec2bin (14), "1110"));
-
-%!error dec2bin ();
-
 %!assert(strcmp (dec2bin (14, 6), "001110"));
 
+%%Test input validation
+%!error dec2bin ();
 %!error dec2bin (1, 2, 3);
 

@@ -1,3 +1,10 @@
+2010-10-31  Rik  <octave@nomad.inbox5.com>
+
+	* strings/base2dec.m, strings/bin2dec.m, strings/dec2base.m,
+	  strings/dec2bin.m, strings/dec2hex.m, strings/hex2dec.m:
+	  Improve docstrings, use more descriptive variable names,
+	  add more tests for functions used to convert between bases.
+	  
 2010-10-31  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* plot/__go_draw_axes__.m: Removing deprecated code handling the case

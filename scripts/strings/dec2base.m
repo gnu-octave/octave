@@ -45,7 +45,7 @@
 ##
 ## The optional third argument, @var{len}, specifies the minimum
 ## number of digits in the result.
-## @seealso{base2dec, dec2bin, bin2dec, hex2dec, dec2hex}
+## @seealso{base2dec, dec2bin, dec2hex}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
@@ -72,6 +72,9 @@ function retval = dec2base (d, base, len)
     base = length (symbols);
     if (length (unique (symbols)) != base)
       error ("dec2base: symbols representing digits must be unique");
+    endif
+    if (any (isspace (symbols)))
+      error ("dec2base: whitespace characters are not valid symbols");
     endif
   elseif (! isscalar (base))
     error ("dec2base: cannot convert from several bases at once");
@@ -140,13 +143,14 @@ endfunction
 %!       '111111111111111111111111111111111111111111111111111');
 %!assert(dec2base(uint64(2)^63-1,16), '7FFFFFFFFFFFFFFF');
 
-%!Test input validation
+%%Test input validation
 %!error dec2base ()
 %!error dec2base (1)
 %!error dec2base (1, 2, 3, 4)
 %!error dec2base (-1)
 %!error dec2base (1.1)
 %!error dec2base (1,"ABA")
+%!error dec2base (1,"A B")
 %!error dec2base (1, ones(2))
 %!error dec2base (1, 1)
 %!error dec2base (1, 37)

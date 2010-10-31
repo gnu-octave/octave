@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bin2dec (@var{s})
-## Return the decimal number corresponding to the binary number stored
-## in the string @var{s}.  For example:
+## Return the decimal number corresponding to the binary number represented
+## by the string @var{s}.  For example:
 ##
 ## @example
 ## @group
@@ -29,33 +29,30 @@
 ## @end group
 ## @end example
 ##
-## If @var{s} is a string matrix, returns a column vector of converted
+## If @var{s} is a string matrix, return a column vector of converted
 ## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
-## @seealso{dec2hex, base2dec, dec2base, hex2dec, dec2bin}
+## @seealso{dec2bin, base2dec, hex2dec}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function d = bin2dec (h)
+function d = bin2dec (s)
 
-  if (nargin == 1 && ischar (h))
-    n = rows (h);
-    d = zeros (n, 1);
-    for i = 1:n
-      s = h(i,:);
-      s = s(! isspace (s));
-      d(i) = base2dec (s, 2);
-    endfor
+  if (nargin == 1 && ischar (s))
+    d = base2dec (s, 2);
   else
     print_usage ();
   endif
 
 endfunction
 
-%!assert(bin2dec ("1110") == 14);
+%!assert(bin2dec ("0000"), 0);
+%!assert(bin2dec ("1110"), 14);
+%!assert(bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1);
 
+%%Test input validation
 %!error bin2dec ();
-
-%!error bin2dec ("str", 1);
+%!error bin2dec (1);
+%!error bin2dec ("1", 2);
 

@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hex2dec (@var{s})
-## Return the integer corresponding to the hexadecimal number stored
-## in the string @var{s}.  For example:
+## Return the integer corresponding to the hexadecimal number represented
+## by the string @var{s}.  For example:
 ##
 ## @example
 ## @group
@@ -33,25 +33,28 @@
 ##
 ## If @var{s} is a string matrix, returns a column vector of converted
 ## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
-## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
+## @seealso{dec2hex, base2dec, bin2dec}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function d = hex2dec (h)
+function d = hex2dec (s)
 
-  if (nargin != 1)
-    print_usage ();
+  if (nargin == 1 && ischar (s))
+    d = base2dec (s, 16);
   else
-    d = base2dec (h, 16);
+    print_usage ();
   endif
 
 endfunction
 
+%!assert(hex2dec ("0000"), 0);
+%!assert(hex2dec ("1FFFFFFFFFFFFF"), 2^53-1);
 %!assert(hex2dec ("12b") == 299 && hex2dec ("12B") == 299);
 
+%%Test input validation
 %!error hex2dec ();
-
-%!error hex2dec ("str", 1);
+%!error hex2dec (1);
+%!error hex2dec ("1", 2);
 

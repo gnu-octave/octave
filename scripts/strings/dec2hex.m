@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2hex (@var{n}, @var{len})
+## @deftypefn {Function File} {} dec2hex (@var{d}, @var{len})
 ## Return the hexadecimal string corresponding to the non-negative 
-## integer @var{n}.  For example:
+## integer @var{d}.  For example:
 ##
 ## @example
 ## @group
@@ -29,34 +29,33 @@
 ## @end group
 ## @end example
 ##
-## If @var{n} is a vector, returns a string matrix, one row per value,
+## If @var{d} is a vector, return a string matrix, one row per value,
 ## padded with leading zeros to the width of the largest value.
 ##
 ## The optional second argument, @var{len}, specifies the minimum
 ## number of digits in the result.
-## @seealso{hex2dec, dec2base, base2dec, bin2dec, dec2bin}
+## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function retval = dec2hex (n, len)
+function h = dec2hex (d, len)
 
   if (nargin == 1)
-    retval = dec2base (n, 16);
+    h = dec2base (d, 16);
   elseif (nargin == 2)
-    retval = dec2base (n, 16, len);
+    h = dec2base (d, 16, len);
   else
     print_usage ();
   endif
 
 endfunction
 
-%!assert(strcmp (tolower (dec2hex (2748)), "abc"));
+%!assert(strcmpi (dec2hex (2748), "abc"));
+%!assert(strcmpi (dec2hex (2748, 5), "00abc"));
 
+%% Test input validation
 %!error dec2hex ();
-
-%!assert(strcmp (tolower (dec2hex (2748, 5)), "00abc"));
-
 %!error dec2hex (1, 2, 3);
 

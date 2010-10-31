@@ -134,22 +134,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
       fputs (plot_stream, sz_str);
     endif
 
-    if (strcmp (axis_obj.plotboxaspectratiomode, "manual")
-        && strcmp (axis_obj.dataaspectratiomode, "manual"))
-      if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
-        dy = diff (axis_obj.ylim);
-        dx = diff (axis_obj.xlim);
-        ar = dx / dy;
-        if (ar > dr)
-          axis_obj.ylim = mean (axis_obj.ylim) + (ar/dr) * dy * [-1, 1] / 2;
-        elseif (ar < dr)
-          axis_obj.xlim = mean (axis_obj.xlim) + (dr/ar) * dx * [-1, 1] / 2;
-        endif
-      else
-        ## FIXME - need to implement 3D
-      endif
-    endif
-
     ## Reset all labels, axis-labels, tick-labels, and title
     ## FIXME - We should have an function to initialize the axis.
     ##         Presently, this is dispersed in this function.

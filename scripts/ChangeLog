@@ -1,3 +1,10 @@
+2010-10-31  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* plot/__go_draw_axes__.m: Removing deprecated code handling the case
+        of both plotboxaspectratiomode and dataaspectratiomode set to manual
+        for the gnuplot backend. Now this case is handled already in
+        src/graphics.cc where xlim, ylim, zlim are recalculated if necessary.
+
 2010-10-30  Gunnar Farnebäck <gunnar@lysator.liu.se>
 
 	* strings/dec2base.m: Update algorithm to handle numbers up to 2^64-1.

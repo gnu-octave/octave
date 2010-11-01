@@ -1,3 +1,10 @@
+2010-11-01  David Bateman  <dbateman@free.fr>
+
+	* plot/__private__/__contour__.m: Use __go_patch__ rather than patch
+	to avoid the cost of the patch callback functions. Ensure that the
+	properties that are normally set by patch are correctly set in the
+	call to __go_patch__.
+
 2010-11-01  Ben Abbott <bpabbott@mac.com>
 
 	* plot/axis.m: Exclude hggroup {x,y,z}data properties when determing
@@ -9,7 +16,7 @@
 	  strings/dec2bin.m, strings/dec2hex.m, strings/hex2dec.m:
 	  Improve docstrings, use more descriptive variable names,
 	  add more tests for functions used to convert between bases.
-	  
+
 2010-10-31  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* plot/__go_draw_axes__.m: Removing deprecated code handling the case

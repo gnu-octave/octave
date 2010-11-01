@@ -1368,6 +1368,174 @@ private:
 
 // ---------------------------------------------------------------------
 
+class children_property : public base_property
+{
+public: 
+  children_property (void)
+    : base_property ("", graphics_handle ())
+    {
+      do_init_children (Matrix ());
+    }
+  
+  children_property (const std::string& nm, const graphics_handle& h,
+                     const Matrix &val)
+    : base_property (nm, h)
+    {
+      do_init_children (val);
+    }
+
+  children_property (const children_property& p)
+    : base_property (p) 
+    {
+      do_init_children (p.children_list);
+    }
+
+  children_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+  base_property* clone (void) const { return new children_property (*this); }
+
+  bool remove_child (const double &val)
+    {
+      return do_remove_child (val);
+    }
+  
+  void adopt (const double &val)
+    {
+      do_adopt_child (val);
+    }
+  
+  Matrix get_children (void) const
+    {
+      return do_get_children (false);
+    }
+  
+  Matrix get_hidden (void) const
+    {
+      return do_get_children (true);
+    }
+
+  Matrix get_all (void) const
+   {
+     return do_get_all_children ();
+   }
+  
+  octave_value get (void) const
+    {
+      return octave_value (get_children ());
+    }
+  
+  void delete_children (bool clear = false)
+    {
+      do_delete_children (clear);
+    }
+  
+private:
+  typedef std::list<double>::iterator children_list_iterator;
+  typedef std::list<double>::const_iterator const_children_list_iterator;
+  std::list<double> children_list;
+
+protected:
+  bool do_set (const octave_value& val)
+    {
+      const Matrix new_kids = val.matrix_value ();
+
+      octave_idx_type nel = new_kids.numel ();
+
+      const Matrix new_kids_column = new_kids.reshape (dim_vector (nel, 1));
+
+      bool is_ok = true;
+
+      if (! error_state)
+        {
+          const Matrix visible_kids = do_get_children (false);
+
+          if (visible_kids.numel () == new_kids.numel ())
+            {
+              Matrix t1 = visible_kids.sort ();
+              Matrix t2 = new_kids_column.sort ();
+
+              if (t1 != t2)
+                is_ok = false;
+            }
+          else
+            is_ok = false;
+
+          if (! is_ok)
+            error ("set: new children must be a permutation of existing children");
+        }
+      else
+        {
+          is_ok = false;
+          error ("set: expecting children to be array of graphics handles");
+        }
+
+      if (is_ok)
+        {
+          children_list.clear ();
+          do_init_children (new_kids_column.stack (get_hidden ()));
+        }
+
+      return is_ok;
+    }
+
+private:
+  void do_init_children (const Matrix &val)
+    {
+      children_list.clear ();
+      for (octave_idx_type i = 0; i < val.numel (); i++)
+        children_list.push_front (val.xelem (i));
+    }
+
+  void do_init_children (const std::list<double> &val)
+    {
+      children_list.clear ();
+      for (const_children_list_iterator p = val.begin (); p != val.end (); p++)
+        children_list.push_front (*p);
+    }
+
+  Matrix do_get_children (bool return_hidden) const;
+
+  Matrix do_get_all_children (void) const
+    {
+      Matrix retval (children_list.size (), 1);
+      octave_idx_type i  = 0;
+      
+      for (const_children_list_iterator p = children_list.begin ();
+           p != children_list.end (); p++)
+        retval(i++) = *p;
+      return retval;
+    }
+
+  bool do_remove_child (double child)
+    {
+      for (children_list_iterator p = children_list.begin ();
+           p != children_list.end (); p++)
+        {
+          if (*p == child)
+            {
+              children_list.erase (p);
+              return true;
+            }
+        }
+      return false;
+    }
+
+  void do_adopt_child (const double &val)
+    {
+      children_list.push_front (val);
+    }
+  
+  void do_delete_children (bool clear);
+};
+
+
+
+// ---------------------------------------------------------------------
+
 class callback_property : public base_property
 {
 public:
@@ -1848,15 +2016,15 @@ public:
 
   bool is_modified (void) const { return is___modified__ (); }
  
-  virtual void remove_child (const graphics_handle& h);
+  virtual void remove_child (const graphics_handle& h)
+    {
+      if (children.remove_child (h.value ()))
+        mark_modified ();
+    }
 
   virtual void adopt (const graphics_handle& h)
   {
-    octave_idx_type n = children.numel ();
-    children.resize (n+1, 1);
-    for (octave_idx_type i = n; i > 0; i--)
-      children(i) = children(i-1);
-    children(0) = h.value ();
+    children.adopt (h.value ());
     mark_modified ();
   }
 
@@ -1877,11 +2045,20 @@ public:
 
   void set_parent (const octave_value& val);
 
-  Matrix get_all_children (void) const { return children; }
+  Matrix get_children (void) const
+    {
+      return children.get_children ();
+    }
+  
+  Matrix get_all_children (void) const 
+    { 
+      return children.get_all ();
+    }
 
-  Matrix get_hidden_children (void) const;
-
-  void set_children (const octave_value& val);
+  Matrix get_hidden_children (void) const
+    {
+      return children.get_hidden ();
+    }
 
   void set_modified (const octave_value& val) { set___modified__ (val); }
 
@@ -1894,8 +2071,14 @@ public:
 
   virtual void update_axis_limits (const std::string& axis_type) const;
 
-  virtual void delete_children (void);
+  virtual void update_axis_limits (const std::string& axis_type,
+                                   const graphics_handle& h) const;
 
+  virtual void delete_children (bool clear = false)
+    {
+      children.delete_children (clear);
+    }
+  
   static property_list::pval_map_type factory_defaults (void);
 
   // FIXME -- these functions should be generated automatically by the
@@ -1940,8 +2123,7 @@ protected:
     bool_property beingdeleted , "off"
     radio_property busyaction , "{queue}|cancel"
     callback_property buttondownfcn , Matrix ()
-    // FIXME -- use a property class for children.
-    Matrix children Gfs , Matrix ()
+    children_property children gf , Matrix ()
     bool_property clipping , "on"
     callback_property createfcn , Matrix ()
     callback_property deletefcn , Matrix ()
@@ -1983,9 +2165,6 @@ protected:
     { insert_property (name, property (&p, true)); }
   
   virtual void init (void) { }
-
-private:
-  Matrix get_children_internal (bool return_hidden) const;
 };
 
 class OCTINTERP_API base_graphics_object
@@ -2150,6 +2329,9 @@ public:
   }
 
   virtual void update_axis_limits (const std::string& axis_type);
+
+  virtual void update_axis_limits (const std::string& axis_type,
+                                   const graphics_handle& h);
 
   virtual bool valid_object (void) const { return false; }
 
@@ -2334,6 +2516,12 @@ public:
   void update_axis_limits (const std::string& axis_type)
   {
     rep->update_axis_limits (axis_type);
+  }
+
+  void update_axis_limits (const std::string& axis_type,
+                           const graphics_handle& h)
+  {
+    rep->update_axis_limits (axis_type, h);
   }
 
   bool valid_object (void) const { return rep->valid_object (); }
@@ -3195,6 +3383,9 @@ public:
 
   void update_axis_limits (const std::string& axis_type);
 
+  void update_axis_limits (const std::string& axis_type,
+                           const graphics_handle& h);
+
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
@@ -3800,8 +3991,9 @@ public:
 
     void adopt (const graphics_handle& h)
       {
+
         base_properties::adopt (h);
-        update_limits ();
+        update_limits (h);
       }
 
     // See the genprops.awk script for an explanation of the
@@ -3822,18 +4014,14 @@ public:
     END_PROPERTIES
 
   private:
-    void update_limits (void)
-      {
-        update_axis_limits ("xlim");
-        update_axis_limits ("ylim");
-        update_axis_limits ("zlim");
-        update_axis_limits ("clim");
-        update_axis_limits ("alim");
-      }
+      void update_limits (void) const;
+
+      void update_limits (const graphics_handle& h) const;
 
   protected:
     void init (void)
       { }
+
   };
 
 private:
@@ -3853,8 +4041,12 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
-  
+
   void update_axis_limits (const std::string& axis_type);
+
+  void update_axis_limits (const std::string& axis_type,
+                           const graphics_handle& h);
+
 };
 
 // ---------------------------------------------------------------------

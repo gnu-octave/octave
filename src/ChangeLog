@@ -1,3 +1,46 @@
+2010-11-01  David Bateman  <dbateman@free.fr>
+
+	* gl-render.cc (void opengl_renderer::draw_patch (const
+	patch::properties &)): Draw clipped contours of patches.
+	* graphics.cc (template<class T> static void get_array_limits
+	(const Array<T>&, double&, double&, double&)): Don't need to test
+	for NaN as comparison is always false.
+	(Matrix children_property::do_get_children (bool) const): New method of
+	new children_property class.
+	(void children_property::do_delete_children (bool)): Ditto.
+	(void base_properties::remove_child (const graphics_handle&)): Delete.
+	(void base_properties::set_children (const octave_value&)): Delete.
+	(void base_properties::delete_children (void)): Delete.
+	(base_properties::update_axis_limits (const std::string&,
+        const graphics_handle&) const): New method.
+	(void base_graphics_object::update_axis_limits (const std::string&,
+        const graphics_handle&)): New Method.
+	(Matrix base_properties::get_children_internal (bool) const): Delete.
+	(Matrix base_properties::get_children (void) const): Delete.
+	(Matrix base_properties::get_hidden_children (void) const): Delete.
+	(void axes::update_axis_limits (const std::string&,
+        const graphics_handle&): New Method.
+	(void hggroup::properties::update_limits (void) const): New method.
+	(void hggroup::properties::update_limits (const graphics_handle&)
+	const): New method.
+	(void hggroup::update_axis_limits (const std::string&,
+        const graphics_handle&)): New method.
+	* graphics.h.in (class children_property): New class.
+	(class base_properties): Use it.
+	(base_graphics_object::update_axis_limits(const std::string&,
+	const graphics_handle&)): New method.
+	(graphics_object::update_axis_limits(const std::string&,
+	const graphics_handle&)): New method.
+	(axes::update_axis_limits(const std::string&,
+	const graphics_handle&)): New method.
+	(hggroup::adopt (const graphics_handle&)): Use it
+	(void hggroup::properties::update_limits (void) const): Remove inline
+	definition of the methid.
+	(void hggroup::properties::update_limits (const graphics_handle&)
+	const): New method.
+	(void hggroup::update_axis_limits (const std::string&,
+        const graphics_handle&)): New method.
+
 2010-10-31  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* xnorm.h (xnorm, xcolnorms, xrownorms, xfrobnorm): tag with

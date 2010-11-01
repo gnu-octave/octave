@@ -1,3 +1,8 @@
+2010-11-01  Ben Abbott <bpabbott@mac.com>
+
+	* plot/axis.m: Exclude hggroup {x,y,z}data properties when determing
+	tight axis limits.
+
 2010-10-31  Rik  <octave@nomad.inbox5.com>
 
 	* strings/base2dec.m, strings/bin2dec.m, strings/dec2base.m,

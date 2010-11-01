@@ -308,6 +308,10 @@ function lims = __get_tight_lims__ (ca, ax)
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
   kids = findobj (ca, "-property", strcat (ax, "data"));
+  ## Since contours set the cdata for the patches to the hggroup zdata property, exclude
+  ## hgroups when determining the tight limits.
+  hg_kids = findobj (ca, "-property", strcat (ax, "data"), "type", "hggroup");
+  kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
     lims = get (ca, strcat (ax, "lim"));

@@ -671,11 +671,11 @@ hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
   if (as_id >= 0)
     {
 #if HAVE_HDF5_18
-      hid_t a_id = H5Acreate (loc_id, attr_name, H5T_NATIVE_UCHAR, 
+      hid_t a_id = H5Acreate (loc_id, attr_name, type_id, 
                               as_id, H5P_DEFAULT, H5P_DEFAULT);
 #else
       hid_t a_id = H5Acreate (loc_id, attr_name,
-                              H5T_NATIVE_UCHAR, as_id, H5P_DEFAULT);
+                              type_id, as_id, H5P_DEFAULT);
 #endif
       if (a_id >= 0)
         {
@@ -693,12 +693,6 @@ hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
 
   return retval;
 }
-
-
-
-
-
-
 
 // Save an empty matrix, if needed. Returns
 //    > 0  Saved empty matrix

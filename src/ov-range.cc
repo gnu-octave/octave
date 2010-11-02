@@ -548,8 +548,15 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   range_vals[1] = r.inc () != 0 ? r.limit () : r.nelem ();
   range_vals[2] = r.inc ();
 
-  retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-                     range_vals) >= 0;
+  if (H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                range_vals) >= 0)
+    {
+      octave_idx_type nel = r.nelem ();
+      retval = hdf5_add_scalar_attr (data_hid, H5T_NATIVE_IDX,
+                                     "OCTAVE_RANGE_NELEM", &nel) >= 0;
+    }
+  else
+    retval = false;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -595,11 +602,18 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
                rangevals) >= 0)
     {
       retval = true;
-      if (rangevals[2] != 0)
-        range = Range (rangevals[0], rangevals[1], rangevals[2]);
+      octave_idx_type nel;
+      if (hdf5_get_scalar_attr (data_hid, H5T_NATIVE_IDX, 
+                                "OCTAVE_RANGE_NELEM", &nel))
+        range = Range (rangevals[0], rangevals[2], nel);
       else
-        range = Range (rangevals[0], rangevals[2], 
-                       static_cast<octave_idx_type> (rangevals[1]));
+        {
+          if (rangevals[2] != 0)
+            range = Range (rangevals[0], rangevals[1], rangevals[2]);
+          else
+            range = Range (rangevals[0], rangevals[2], 
+                           static_cast<octave_idx_type> (rangevals[1]));
+        }
     }
 
   H5Tclose (range_type);

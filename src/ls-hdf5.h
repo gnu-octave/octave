@@ -186,6 +186,21 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
                 const std::string& name, const std::string& doc,
                 bool mark_as_global, bool save_as_floats);
 
+extern OCTINTERP_API bool
+hdf5_check_attr (hid_t loc_id, const char *attr_name);
+
+extern OCTINTERP_API bool
+hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id, const char *attr_name,
+                      void *buf);
+
+extern OCTINTERP_API herr_t
+hdf5_add_attr (hid_t loc_id, const char *attr_name);
+
+
+extern OCTINTERP_API herr_t
+hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id, 
+                      const char *attr_name, void *buf);
+
 #ifdef IDX_TYPE_LONG
 #define H5T_NATIVE_IDX H5T_NATIVE_LONG
 #else

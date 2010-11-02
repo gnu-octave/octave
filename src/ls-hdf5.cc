@@ -156,7 +156,7 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
   if (attr_id >= 0)
     {
       // successful
-      retval = 1;
+      retval = true;
       H5Aclose (attr_id);
     }
 
@@ -168,6 +168,55 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
 #endif
   return retval;
 }
+
+bool
+hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id, 
+                      const char *attr_name, void *buf)
+{
+  bool retval = false;
+
+  // we have to pull some shenanigans here to make sure
+  // HDF5 doesn't print out all sorts of error messages if we
+  // call H5Aopen for a non-existing attribute
+
+  H5E_auto_t err_func;
+  void *err_func_data;
+
+  // turn off error reporting temporarily, but save the error
+  // reporting function:
+
+#if HAVE_HDF5_18
+  H5Eget_auto (H5E_DEFAULT, &err_func, &err_func_data);
+  H5Eset_auto (H5E_DEFAULT, 0, 0);
+#else
+  H5Eget_auto (&err_func, &err_func_data);
+  H5Eset_auto (0, 0);
+#endif
+
+  hid_t attr_id = H5Aopen_name (loc_id, attr_name);
+
+  if (attr_id >= 0)
+    {
+      hid_t space_id = H5Aget_space (attr_id);
+
+      hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+      if (rank == 0)
+        retval = H5Aread (attr_id, type_id, buf) >= 0;
+      H5Aclose (attr_id);
+    }
+
+  // restore error reporting:
+#if HAVE_HDF5_18
+  H5Eset_auto (H5E_DEFAULT, err_func, err_func_data);
+#else
+  H5Eset_auto (err_func, err_func_data);
+#endif
+  return retval;
+}
+
+
+
 
 // The following subroutines creates an HDF5 representations of the way
 // we will store Octave complex types (pairs of floating-point numbers).
@@ -576,7 +625,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
 // Add an attribute named attr_name to loc_id (a simple scalar
 // attribute with value 1).  Return value is >= 0 on success.
-static herr_t
+herr_t
 hdf5_add_attr (hid_t loc_id, const char *attr_name)
 {
   herr_t retval = 0;
@@ -610,6 +659,46 @@ hdf5_add_attr (hid_t loc_id, const char *attr_name)
 
   return retval;
 }
+
+herr_t
+hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
+                      const char *attr_name, void *buf)
+{
+  herr_t retval = 0;
+
+  hid_t as_id = H5Screate (H5S_SCALAR);
+
+  if (as_id >= 0)
+    {
+#if HAVE_HDF5_18
+      hid_t a_id = H5Acreate (loc_id, attr_name, H5T_NATIVE_UCHAR, 
+                              as_id, H5P_DEFAULT, H5P_DEFAULT);
+#else
+      hid_t a_id = H5Acreate (loc_id, attr_name,
+                              H5T_NATIVE_UCHAR, as_id, H5P_DEFAULT);
+#endif
+      if (a_id >= 0)
+        {
+          retval = H5Awrite (a_id, type_id, buf);
+
+          H5Aclose (a_id);
+        }
+      else
+        retval = a_id;
+
+      H5Sclose (as_id);
+    }
+  else
+    retval = as_id;
+
+  return retval;
+}
+
+
+
+
+
+
 
 // Save an empty matrix, if needed. Returns
 //    > 0  Saved empty matrix

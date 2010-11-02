@@ -2025,7 +2025,7 @@ well-behaved integrand than other methods such as\n\
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
-              igral = copysign (INFINITY, igral);
+              igral = copysign (octave_Inf, igral);
               warning ("cquad: divergent integral detected.");
               break;
             }
@@ -2123,7 +2123,7 @@ well-behaved integrand than other methods such as\n\
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
-              igral = copysign (INFINITY, igral);
+              igral = copysign (octave_Inf, igral);
               warning ("cquad: divergent integral detected.");
               break;
             }

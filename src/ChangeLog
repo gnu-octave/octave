@@ -1,3 +1,7 @@
+2010-11-02  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/cquad.cc (Fcquad): Use octave_Inf, not INFINITY.
+
 2010-11-02  David Bateman  <dbateman@free.fr>
 
 	* ls-hdf5.cc (bool hdf5_get_scalar_attr (hid_t, hid_t,

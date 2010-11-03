@@ -1,3 +1,8 @@
+2010-11-03  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/cquad.cc: If we don't have copysign but we do
+	have _copysign, define copysign to be _copysign.
+
 2010-11-02  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/cquad.cc (Fcquad): Use octave_Inf, not INFINITY.

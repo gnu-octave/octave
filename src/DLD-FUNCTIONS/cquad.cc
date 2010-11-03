@@ -31,6 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "ov-fcn-handle.h"
 
+#if ! defined (HAVE_COPYSIGN) && defined (HAVE__COPYSIGN)
+#define copysign _copysign
+#define HAVE_COPYSIGN 1
+#endif
+
 /* Define the size of the interval heap. */
 #define cquad_heapsize                  200
 

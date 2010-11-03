@@ -338,8 +338,10 @@ function __do_tight_option__ (ca)
 
   set (ca,
        "xlim", __get_tight_lims__ (ca, "x"),
-       "ylim", __get_tight_lims__ (ca, "y"),
-       "zlim", __get_tight_lims__ (ca, "z"));
+       "ylim", __get_tight_lims__ (ca, "y"));
+  if __calc_dimensions__ (ca) > 2
+    set (ca, "zlim", __get_tight_lims__ (ca, "z"));
+  endif
 
 endfunction
 

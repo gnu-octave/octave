@@ -1,3 +1,7 @@
+2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* plot/axis.m: Leave zlim unchanged during "axis tight" on 2D plots
+
 2010-11-03  Ben Abbott <bpabbott@mac.com>
 
 	* miscellaneous/getappdata.m, miscellaneous/isappdata.m,

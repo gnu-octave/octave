@@ -1,3 +1,9 @@
+2010-11-03  Ben Abbott <bpabbott@mac.com>
+
+	* miscellaneous/getappdata.m, miscellaneous/isappdata.m,
+	miscellaneous/rmappdata.m, miscellaneous/setappdata.m:
+	Add new appdata function.
+
 2010-11-01  David Bateman  <dbateman@free.fr>
 
 	* plot/__private__/__contour__.m: Use __go_patch__ rather than patch

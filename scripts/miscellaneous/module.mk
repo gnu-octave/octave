@@ -24,11 +24,13 @@ miscellaneous_FCN_FILES = \
   miscellaneous/fileparts.m \
   miscellaneous/flops.m \
   miscellaneous/fullfile.m \
+  miscellaneous/getappdata.m \
   miscellaneous/getfield.m \
   miscellaneous/gunzip.m \
   miscellaneous/gzip.m \
   miscellaneous/info.m \
   miscellaneous/inputname.m \
+  miscellaneous/isappdata.m \
   miscellaneous/ismac.m \
   miscellaneous/ispc.m \
   miscellaneous/isunix.m \
@@ -48,8 +50,10 @@ miscellaneous_FCN_FILES = \
   miscellaneous/paren.m \
   miscellaneous/parseparams.m \
   miscellaneous/perl.m \
+  miscellaneous/rmappdata.m \
   miscellaneous/run.m \
   miscellaneous/semicolon.m \
+  miscellaneous/setappdata.m \
   miscellaneous/setfield.m \
   miscellaneous/substruct.m \
   miscellaneous/swapbytes.m \

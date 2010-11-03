@@ -554,6 +554,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
     draw_image (dynamic_cast<const image::properties&> (props));
+  else if (go.isa ("uimenu"))
+    ;
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
              props.graphics_object_name ().c_str ());

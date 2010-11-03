@@ -1,3 +1,7 @@
+2010-11-03  Ben Abbott <bpabbott@mac.com>
+
+	* gl-render.cc: Do not give rendering error for uimenus.
+
 2010-11-03  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/cquad.cc: If we don't have copysign but we do

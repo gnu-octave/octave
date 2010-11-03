@@ -1,5 +1,9 @@
 2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
 
+	* plot/axis.m: Making 'axis equal' equivalent to 'daspect([1,1,1])'.
+
+2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* plot/private/__actual_axis_position__.m: Remove temporary
 	calculation of plotboxratio for the gnuplot backend when
 	dataaspectratiomode, xlimmode and ylimmode are all set to manual.

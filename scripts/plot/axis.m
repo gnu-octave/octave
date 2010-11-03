@@ -182,13 +182,15 @@ function curr_axis = __axis__ (ca, ax, varargin)
     elseif (strcmpi (ax, "square"))
       set (ca, "plotboxaspectratio", [1, 1, 1]);
     elseif  (strcmp (ax, "equal"))
-      x = xlim;
-      y = ylim;
       if (strcmp (get (get (ca, "parent"), "__backend__"), "gnuplot"))
         ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
+        ## The following line is a trick used to trigger the recalculation of 
+        ## aspect related magnitudes even if the aspect ratio is the same
+        ## (useful with the x11 gnuplot terminal after a window resize)
+        set (ca, "dataaspectratiomode", "auto");
       endif
-      set (ca, "plotboxaspectratio", [(x(2)-x(1)), (y(2)-y(1)), 1]);
+      set (ca, "dataaspectratio", [1, 1, 1])
     elseif (strcmpi (ax, "normal"))
       set (ca, "plotboxaspectratio", [1, 1, 1])
       set (ca, "plotboxaspectratiomode", "auto");

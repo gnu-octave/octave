@@ -15,6 +15,11 @@
 
 2010-11-03  Ben Abbott <bpabbott@mac.com>
 
+	* plot/private/__patch__.m: Don't index an empty array; bug introduced
+	by changeset 11175.
+
+2010-11-03  Ben Abbott <bpabbott@mac.com>
+
 	* miscellaneous/getappdata.m, miscellaneous/isappdata.m,
 	miscellaneous/rmappdata.m, miscellaneous/setappdata.m:
 	Add new appdata function.

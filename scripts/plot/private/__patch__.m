@@ -183,13 +183,13 @@ function args = setdata (args)
   else
     vert = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args))(end) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     fvc = [];
   else
     fvc = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args))(end) + 1;
+  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     if (!isempty (fvc))
       fc = "flat";
@@ -227,7 +227,7 @@ function args = setdata (args)
               reshape (fvc(idx, 2), size(idx)),
               reshape (fvc(idx, 3), size(idx)));
     else
-      c = reshape (fvc(idx), size(idx));
+      c = [];
     endif
   endif
   args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};

@@ -53,19 +53,8 @@ function pos = __actual_axis_position__ (h)
     
   nd = __calc_dimensions__ (h);
 
-  if (strcmp (axis_obj.plotboxaspectratiomode, "auto")
-      && strcmp (axis_obj.dataaspectratiomode, "manual")
-      && strcmp (axis_obj.xlimmode, "manual")
-      && strcmp (axis_obj.ylimmode, "manual")
-      && (nd == 2 || all (mod (axis_obj.view, 90) == 0)))
-    ## Force plotboxaspectrato to a manual value
-    dx_dy_dz = [diff(axis_obj.xlim), diff(axis_obj.ylim), diff(axis_obj.zlim)];
-    dx_dy_dz = dx_dy_dz / min (dx_dy_dz(dx_dy_dz>0));
-    axis_obj.plotboxaspectratiomode = "manual";
-    axis_obj.plotboxaspectratio = dx_dy_dz ./ axis_obj.dataaspectratio;
-  endif
-
-  if (strcmp (axis_obj.plotboxaspectratiomode, "manual"))
+  if (strcmp (axis_obj.plotboxaspectratiomode, "manual")
+      || strcmp (axis_obj.dataaspectratiomode, "manual"))
     ## When using {rltb}margin, Gnuplot does not handle the specified
     ## aspect ratio properly, so handle it here.
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))

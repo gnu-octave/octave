@@ -1,5 +1,12 @@
 2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
 
+	* plot/private/__actual_axis_position__.m: Remove temporary
+	calculation of plotboxratio for the gnuplot backend when
+	dataaspectratiomode, xlimmode and ylimmode are all set to manual.
+	Now this case is handled in src/graphics.cc .
+
+2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* plot/axis.m: Leave zlim unchanged during "axis tight" on 2D plots
 
 2010-11-03  Ben Abbott <bpabbott@mac.com>

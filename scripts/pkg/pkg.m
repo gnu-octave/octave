@@ -342,8 +342,8 @@ function [local_packages, global_packages] = pkg (varargin)
       unwind_protect
 
         if (octave_forge)
-          [urls, local_files] = cellfun (@get_forge_download, files, "uniformoutput", false);
-          [files, succ] = cellfun (@urlwrite, urls, local_files, "uniformoutput", false);
+          [urls, local_files] = cellfun (@get_forge_download, files, "UniformOutput", false);
+          [files, succ] = cellfun (@urlwrite, urls, local_files, "UniformOutput", false);
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);

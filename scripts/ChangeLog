@@ -1,5 +1,11 @@
 2010-11-03  Rik  <octave@nomad.inbox5.com>
 
+	* general/accumdim.m, general/cell2mat.m, general/common_size.m,
+	  general/structfun.m, pkg/pkg.m, strings/untabify.m: Use CamelCase
+	  for 'UniformOutput' option to cellfun.
+
+2010-11-03  Rik  <octave@nomad.inbox5.com>
+
 	* scripts/plot/plotyy.m, scripts/plot/xlim.m, scripts/plot/ylim.m,
 	  scripts/plot/zlim.m: Fix typos in docstring and demo string.
 

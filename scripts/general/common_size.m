@@ -72,7 +72,7 @@ function [errorcode, varargout] = common_size (varargin)
         varargout = varargin;
         if (any (nscal))
           dims = size (varargin{find (nscal, 1)});
-          subs = arrayfun (@ones, 1, dims, "uniformoutput", false);
+          subs = arrayfun (@ones, 1, dims, "UniformOutput", false);
           varargout(scal) = cellindexmat (varargin(scal), subs{:});
         endif
       endif

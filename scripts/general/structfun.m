@@ -140,6 +140,6 @@ endfunction
 %! s = struct ("a", {1, 2, 3}, "b", {4, 5, 6});
 %! c = struct ("a", {2, 4, 6}, "b", {8, 10, 12});
 %! d = struct ("a", {1, 4, 9}, "b", {16, 25, 36});
-%! [aa, bb] = structfun(@twoouts, s, "uniformoutput", false);
+%! [aa, bb] = structfun(@twoouts, s, "UniformOutput", false);
 %! assert(aa, c);
 %! assert(bb, d);

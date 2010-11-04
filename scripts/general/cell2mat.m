@@ -70,7 +70,7 @@ function m = cell2mat (c)
       endif
       xdim = [1:idim-1, idim+1:nd];
       cc = num2cell (c, xdim);
-      c = cellfun (@cat, {idim}, cc{:}, "uniformoutput", false);
+      c = cellfun (@cat, {idim}, cc{:}, "UniformOutput", false);
     endfor
     m = c{1};
   endif

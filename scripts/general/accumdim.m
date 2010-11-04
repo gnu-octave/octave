@@ -116,9 +116,9 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
   val = mat2cell (val(subsc{:}), szc{:});
   ## Apply reductions. Special case min, max.
   if (func == @min || func == @max)
-    val = cellfun (func, val, {[]}, {dim}, "uniformoutput", false);
+    val = cellfun (func, val, {[]}, {dim}, "UniformOutput", false);
   else
-    val = cellfun (func, val, {dim}, "uniformoutput", false);
+    val = cellfun (func, val, {dim}, "UniformOutput", false);
   endif
   subs = subs(jdx);
 

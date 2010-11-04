@@ -29,9 +29,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
     error ("ginput: must have at least one axes");
   endif
 
-  x = [];
-  y = [];
-  button = [];
+  x = y = button = [];
   ginput_aggregator (0, 0, 0);
 
   unwind_protect
@@ -64,18 +62,18 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
 endfunction
 
 function [x, y, n] = ginput_aggregator (mode , xn, yn)
-  persistent x y n
+  persistent x y n;
 
-  if (mode == 0),
+  if (mode == 0)
     x = [];
     y = [];
     n = 0;
   elseif (mode == 1)
-    x = [x, xn];
-    y = [y, yn];
+    x = [x; xn];
+    y = [y; yn];
     n += 1;
   elseif (mode == 2)
-    n = -1
+    n = -1;
   endif
 endfunction
 
@@ -85,8 +83,8 @@ function ginput_windowbuttondownfcn (src, data)
 endfunction
 
 function ginput_keypressfcn (src, evt)
-  if (evt.Key == 10)
-    ginput_aggregator (2, 0, 0)
+  if (evt.Key == 10)    # linefeed character
+    ginput_aggregator (2, 0, 0);
   endif
 endfunction
 

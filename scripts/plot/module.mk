@@ -31,6 +31,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__tight_eps_bbox__.m
 
 plot_FCN_FILES = \
+  plot/__fltk_ginput__.m \
   plot/__gnuplot_get_var__.m \
   plot/__gnuplot_ginput__.m \
   plot/__gnuplot_has_feature__.m \

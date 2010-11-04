@@ -1,5 +1,9 @@
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
+	* plot/module.mk: Add __fltk_ginput__.m to list of scripts
+
+2010-11-04  Rik  <octave@nomad.inbox5.com>
+
 	* Makefile.am: Update check-m-sources target to include generated
 	  function files.
 

@@ -32,7 +32,7 @@
 ## current plotting mode can be set by passing either 'auto' or 'manual' 
 ## as the argument.
 ##
-## If passed an handle as the first argument, then operate on this handle
+## If passed a handle as the first argument, then operate on this handle
 ## rather than the current axes handle.
 ## @seealso{xlim, ylim, set, get, gca}
 ## @end deftypefn

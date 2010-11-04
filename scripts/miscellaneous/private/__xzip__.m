@@ -76,14 +76,14 @@ function entries = __xzip__ (commandname, extension,
         if (nargin == 5)
           compressed_files = cellfun(
               @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)), 
-              f, "UniformOutput", false);
+              f, "uniformoutput", false);
         else
           movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f, 
-                            "UniformOutput", false), cwd);
+                            "uniformoutput", false), cwd);
           ## FIXME this does not work when you try to compress directories
 
           compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
-                                      files, "UniformOutput", false);
+                                      files, "uniformoutput", false);
         endif
 
         if (nargout > 0)
@@ -112,9 +112,9 @@ function entries = __xzip__ (commandname, extension,
 endfunction
 
 function [d, f] = myfileparts (files)
-  [d, f, ext] = cellfun (@(x) fileparts (x), files, "UniformOutput", false);
+  [d, f, ext] = cellfun (@(x) fileparts (x), files, "uniformoutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
-               "UniformOutput", false); 
+               "uniformoutput", false); 
   idx = cellfun (@isdir, files);
   d(idx) = "";
   f(idx) = files(idx);

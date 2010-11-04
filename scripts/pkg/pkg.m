@@ -342,8 +342,8 @@ function [local_packages, global_packages] = pkg (varargin)
       unwind_protect
 
         if (octave_forge)
-          [urls, local_files] = cellfun (@get_forge_download, files, "UniformOutput", false);
-          [files, succ] = cellfun (@urlwrite, urls, local_files, "UniformOutput", false);
+          [urls, local_files] = cellfun (@get_forge_download, files, "uniformoutput", false);
+          [files, succ] = cellfun (@urlwrite, urls, local_files, "uniformoutput", false);
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
@@ -503,7 +503,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (cellfun(@(x) cstrcat(x, '-*'), files, 'UniformOutput', 0));
+      dirlist = glob (cellfun(@(x) cstrcat(x, '-*'), files, 'uniformoutput', 0));
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect
@@ -1359,7 +1359,7 @@ function configure_make (desc, packdir, verbose)
 
       filenames = cellfun (@(x) fullfile (src, x),
                            {m.name, oct.name, mex.name},
-                           "UniformOutput", false);
+                           "uniformoutput", false);
     endif
 
     ## Split into architecture dependent and independent files.

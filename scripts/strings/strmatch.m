@@ -67,7 +67,7 @@ function idx = strmatch (s, A, exact)
     idx = find (strncmp (s, A, len));
     if (exact)
       ## We can't just use strcmp, because we need to ignore whitespace.
-      B = cellfun (@strtrimr, A(idx), "UniformOutput", false);
+      B = cellfun (@strtrimr, A(idx), "uniformoutput", false);
       idx = idx (strcmp (s, B));
     endif
   elseif (ischar (A))

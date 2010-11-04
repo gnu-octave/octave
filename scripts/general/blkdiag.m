@@ -44,7 +44,7 @@ function retval = blkdiag (varargin)
 
   ## size is an option for cellfun, but it's a bit different from
   ## calling size directly.
-  tmp = cell2mat (cellfun (@size, varargin', "UniformOutput", false));
+  tmp = cell2mat (cellfun (@size, varargin', "uniformoutput", false));
   csz = cumsum ([0 0; tmp], 1);
   retval = zeros (csz(end,:));
 

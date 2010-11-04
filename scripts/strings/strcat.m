@@ -61,7 +61,7 @@ function st = strcat (varargin)
       st = varargin{1};
     elseif (nargin > 1)
       ## Convert to cells of strings
-      uo = "UniformOutput";
+      uo = "uniformoutput";
       reals = cellfun (@isreal, varargin);
       if (any (reals))
         varargin(reals) = cellfun (@char, varargin(reals), uo, false);

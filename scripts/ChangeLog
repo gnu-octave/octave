@@ -1,3 +1,15 @@
+2010-11-04  Rik  <octave@nomad.inbox5.com>
+
+	* general/accumarray.m, general/accumdim.m, general/blkdiag.m,
+	  general/cell2mat.m, general/common_size.m,
+	  general/private/__isequal__.m, general/private/__splinen__.m,
+	  geometry/voronoi.m, io/textscan.m, miscellaneous/private/__xzip__.m,
+	  pkg/pkg.m, plot/axis.m, plot/pareto.m, plot/private/__patch__.m,
+	  statistics/base/mode.m, strings/deblank.m, strings/strcat.m,
+	  strings/strmatch.m, strings/strtrim.m, strings/untabify.m:
+	  Reverse previous changeset.  Use all lower case for "uniformoutput"
+	  option.
+
 2010-11-03  Rik  <octave@nomad.inbox5.com>
 
 	* general/accumdim.m, general/cell2mat.m, general/common_size.m,

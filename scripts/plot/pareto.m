@@ -66,12 +66,12 @@ function h = pareto (varargin)
       if (ischar (y))
         y = cellstr (y);
       else
-        y = cellfun (@num2str, num2cell (y), "UniformOutput", false);
+        y = cellfun (@num2str, num2cell (y), "uniformoutput", false);
       endif
     endif
   else
     y = cellfun (@int2str, num2cell (1 : numel(x)), 
-                 "UniformOutput", false);
+                 "uniformoutput", false);
   endif
 
   [x, idx] = sort (x, "descend");

@@ -106,7 +106,7 @@ function [c, p] = textscan (fid, formatstr, varargin)
       [c{:}] = strread (str, formatstr, args{:});
 
       if (ischar (fid) && isfinite (nlines))
-        c = cellfun (@(x) x(1:nlines), c, "UniformOutput", false);
+        c = cellfun (@(x) x(1:nlines), c, "uniformoutput", false);
       endif
 
       if (nargout == 2)

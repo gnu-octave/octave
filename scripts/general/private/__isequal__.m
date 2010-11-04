@@ -59,7 +59,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## All arguments must either be of the same class or they must be
   ## numeric values.
   t = (all (strcmp (class(x),
-                   cellfun (@class, varargin, "UniformOutput", false)))
+                   cellfun (@class, varargin, "uniformoutput", false)))
        || ((isnumeric (x) || islogical (x))
            && all (cellfun (@isnumeric, varargin)
                    | cellfun (@islogical, varargin))));
@@ -67,7 +67,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   if (t)
     ## Test that everything has the same number of dimensions.
     s_x = size (x);
-    s_v = cellfun (@size, varargin, "UniformOutput", false);
+    s_v = cellfun (@size, varargin, "uniformoutput", false);
     t = all (length (s_x) == cellfun (@length, s_v));
   endif
 
@@ -89,7 +89,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       ## Test the number of fields.
       fn_x = fieldnames (x);
       l_fn_x = length (fn_x);
-      fn_v = cellfun (@fieldnames, varargin, "UniformOutput", false);
+      fn_v = cellfun (@fieldnames, varargin, "uniformoutput", false);
       t = all (l_fn_x == cellfun (@length, fn_v));
 
       ## Test that all the names are equal.

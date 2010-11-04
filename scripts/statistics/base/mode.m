@@ -115,7 +115,7 @@ endfunction
 %! [m2, f2, c2] = mode (full (a));
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
-%! assert (c, cellfun (@(x) sparse (0), c2, 'UniformOutput', false));
+%! assert (c, cellfun (@(x) sparse (0), c2, 'uniformoutput', false));
 
 %!assert(mode([2,3,1,2,3,4],1),[2,3,1,2,3,4])
 %!assert(mode([2,3,1,2,3,4],2),2)

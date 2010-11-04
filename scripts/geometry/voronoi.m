@@ -131,7 +131,7 @@ function [vvx, vvy] = voronoi (varargin)
   c = c(idx).';
   k = sum (cellfun ('length', c));
   edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c, 
-                            "UniformOutput", false));
+                            "uniformoutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';

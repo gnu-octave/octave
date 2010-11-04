@@ -55,7 +55,7 @@ function s = deblank (s)
 
   elseif (iscell(s))
 
-    s = cellfun (@deblank, s, "UniformOutput", false);
+    s = cellfun (@deblank, s, "uniformoutput", false);
 
   else
     error ("deblank: expecting character string argument");

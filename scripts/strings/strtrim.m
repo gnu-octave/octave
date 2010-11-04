@@ -55,7 +55,7 @@ function s = strtrim (s)
 
   elseif (iscell(s))
 
-    s = cellfun (@strtrim, s, "UniformOutput", false);
+    s = cellfun (@strtrim, s, "uniformoutput", false);
 
   else
     error ("strtrim: expecting string argument");

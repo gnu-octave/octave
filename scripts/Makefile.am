@@ -332,10 +332,10 @@ $(GEN_FCN_FILES) : %.m : %.in Makefile
 	@$(do_subst_config_vals)
 
 check-m-sources:
-	@echo -n "checking whether files in source tree are listed in module.mk files..."; \
+	@echo "checking whether files in source tree are listed in module.mk files..."; \
 	for f in $$(find $(srcdir) -name '*.m'); do \
 	  found=false; \
-	  for m in $(FCN_FILES); do \
+	  for m in $(FCN_FILES) $(GEN_FCN_FILES); do \
 	    if [ "$$f" = $(srcdir)/"$$m" ]; then \
 	      found=true; \
 	      break; \

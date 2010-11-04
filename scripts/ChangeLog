@@ -1,3 +1,10 @@
+2010-11-03  Rik  <octave@nomad.inbox5.com>
+
+	* general/common_size.m, miscellaneous/private/__xzip__.m, 
+	  miscellaneous/what.m, plot/pareto.m, plot/private/__patch__.m:
+	  Use function handle as input to cellfun rather than quoted function
+	  name or anonymous function wrapper.
+
 2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* plot/axis.m: Making 'axis equal' equivalent to 'daspect([1,1,1])'.

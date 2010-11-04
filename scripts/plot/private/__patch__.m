@@ -171,25 +171,25 @@ function args = setdata (args)
   ## Remove the readonly fields as well
   args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
-  idx = find (cellfun (@(x) strcmpi (x, "faces"), args))(end) + 1;
+  idx = find (strcmpi (args, "faces"), 1, "last") + 1;
   if (idx > nargs)
     faces = [];
   else
     faces = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "vertices"), args))(end) + 1;
+  idx = find (strcmpi (args, "vertices"), 1, "last") + 1;
   if (idx > nargs)
     vert = [];
   else
     vert = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facevertexcdata"), args), 1, "last") + 1;
+  idx = find (strcmpi (args, "facevertexcdata"), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     fvc = [];
   else
     fvc = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args), 1, "last") + 1;
+  idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     if (!isempty (fvc))
       fc = "flat";
@@ -238,31 +238,31 @@ function args = setvertexdata (args)
   ## Remove the readonly fields as well
   args = delfields (args, {"type", "uicontextmenu"});
   nargs = length (args);
-  idx = find (cellfun (@(x) strcmpi (x, "xdata"), args))(end) + 1;
+  idx = find (strcmpi (args, "xdata"), 1, "last") + 1;
   if (idx > nargs)
     x = [];
   else
     x = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "ydata"), args))(end) + 1;
+  idx = find (strcmpi (args, "ydata"), 1, "last") + 1;
   if (idx > nargs)
     y = [];
   else
     y = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "zdata"), args))(end) + 1;
+  idx = find (strcmpi (args, "zdata"), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     z = [];
   else
     z = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "cdata"), args))(end) + 1;
+  idx = find (strcmpi (args, "cdata"), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     c = [];
   else
     c = args {idx};
   endif
-  idx = find (cellfun (@(x) strcmpi (x, "facecolor"), args))(end) + 1;
+  idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
   if (isempty(idx) || idx > nargs)
     if (!isempty (c))
       fc = "flat";

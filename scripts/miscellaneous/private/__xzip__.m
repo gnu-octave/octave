@@ -115,7 +115,7 @@ function [d, f] = myfileparts (files)
   [d, f, ext] = cellfun (@(x) fileparts (x), files, "UniformOutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
                "UniformOutput", false); 
-  idx = cellfun (@(x) isdir (x), files);
+  idx = cellfun (@isdir, files);
   d(idx) = "";
   f(idx) = files(idx);
 endfunction

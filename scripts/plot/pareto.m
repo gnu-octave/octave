@@ -66,11 +66,11 @@ function h = pareto (varargin)
       if (ischar (y))
         y = cellstr (y);
       else
-        y = cellfun (@(x) num2str (x), num2cell (y), "UniformOutput", false);
+        y = cellfun (@num2str, num2cell (y), "UniformOutput", false);
       endif
     endif
   else
-    y = cellfun (@(x) int2str (x), num2cell (1 : numel(x)), 
+    y = cellfun (@int2str, num2cell (1 : numel(x)), 
                  "UniformOutput", false);
   endif
 

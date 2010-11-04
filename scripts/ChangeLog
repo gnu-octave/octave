@@ -1,5 +1,10 @@
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
+	* Makefile.am: Update check-m-sources target to include generated
+	  function files.
+
+2010-11-04  Rik  <octave@nomad.inbox5.com>
+
 	* general/accumarray.m, general/accumdim.m, general/blkdiag.m,
 	  general/cell2mat.m, general/common_size.m,
 	  general/private/__isequal__.m, general/private/__splinen__.m,

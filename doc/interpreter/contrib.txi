@@ -33,21 +33,23 @@ This chapter is dedicated to those who wish to contribute code to Octave.
 
 @node How to Contribute
 @section How to Contribute
-The mailing list for Octave development discussion and sending contributions is
-@email{maintainers@@octave.org}.  This concerns the development of Octave core,
-i.e., code that goes to Octave directly.  You may consider developing and
-publishing a package instead; a great place for this is the allied Octave-Forge
-project (@url{http://octave.sf.net}).  Note that the Octave project is
+The mailing list for Octave development discussion and sending
+contributions is @email{maintainers@@octave.org}.  This concerns the
+development of Octave core, i.e., code that goes to Octave directly.
+You may consider developing and publishing a package instead; a great
+place for this is the allied Octave-Forge project
+(@url{http://octave.sf.net}).  Note that the Octave project is
 inherently more conservative and follows narrower rules.
 
-The preferable form of contribution is creating a Mercurial changeset and
-sending it via e-mail to the octave-maintainers mailing list.  Mercurial is the
-source code management system currently used to develop Octave.  Other forms of 
-contributions (e.g., simple diff patches) are also acceptable, but they slow 
-down the review process.  If you want to make more contributions, you should 
-really get familiar with Mercurial.  A good place to start is 
-@url{http://www.selenic.com/mercurial/wiki/index.cgi/Tutorial}.  There you will
-also find help how to install Mercurial.
+The preferable form of contribution is creating a Mercurial changeset
+and sending it via e-mail to the octave-maintainers mailing list.
+Mercurial is the source code management system currently used to develop
+Octave.  Other forms of contributions (e.g., simple diff patches) are
+also acceptable, but they slow down the review process.  If you want to
+make more contributions, you should really get familiar with Mercurial.
+A good place to start is
+@url{http://www.selenic.com/mercurial/wiki/index.cgi/Tutorial}.  There
+you will also find help how to install Mercurial.
 
 A simple contribution sequence could look like this:
 
@@ -68,10 +70,11 @@ hg export -o ../cool.diff tip
 @end group
 @end example
 
-You may want to get familiar with Mercurial queues to manage your changesets.
-Here is a slightly less simple example using Mercurial queues, where you work 
-on two unrelated changesets in parallel and update one of the changesets after 
-discussion in the maintainers mailing list:
+You may want to get familiar with Mercurial queues to manage your
+changesets.  Here is a slightly less simple example using Mercurial
+queues, where you work on two unrelated changesets in parallel and
+update one of the changesets after discussion in the maintainers mailing
+list:
 
 @example
 hg qnew nasty_bug            # create a new patch 
@@ -105,11 +108,11 @@ hg export -o ../nasty2.diff tip
 @node General Guidelines
 @section General Guidelines
 
-All Octave's sources are distributed under the General Public License (GPL).
-Currently, Octave uses GPL version 3.  For details about this license, see
-@url{http://www.gnu.org/licenses/gpl.html}.  Therefore, whenever you create a
-new source file, it should have the following comment header (use appropriate
-year, name and comment marks):
+All Octave's sources are distributed under the General Public License
+(GPL).  Currently, Octave uses GPL version 3.  For details about this
+license, see @url{http://www.gnu.org/licenses/gpl.html}.  Therefore,
+whenever you create a new source file, it should have the following
+comment header (use appropriate year, name and comment marks):
 
 @example
 ## Copyright (C) 1996, 1997, 2007 John W. Eaton <jwe@@octave.org>
@@ -133,13 +136,14 @@ year, name and comment marks):
 ## see <http://www.gnu.org/licenses/>.
 @end example
 
-Always include ChangeLog entries in changesets.  After making your source
-changes, record and briefly describe the changes in the nearest ChangeLog file
-upwards in the directory tree.  Use the previous entries as a template.  Your
-entry should contain your name and email, and the path to the modified source
-file relative to the parent directory of the ChangeLog file.  If there are more
-functions in the file, you should also include the name of the modified function
-(in parentheses after file path).  Example:
+Always include ChangeLog entries in changesets.  After making your
+source changes, record and briefly describe the changes in the nearest
+ChangeLog file upwards in the directory tree.  Use the previous entries
+as a template.  Your entry should contain your name and email, and the
+path to the modified source file relative to the parent directory of the
+ChangeLog file.  If there are more functions in the file, you should
+also include the name of the modified function (in parentheses after
+file path).  Example:
 
 @example
 @group
@@ -156,15 +160,17 @@ explanation of why a change is needed should appear as comments in the
 code, particularly if there is something that might not be obvious to
 someone reading it later.
 
-The preferred comment mark for places that may need further attention is FIXME.
+The preferred comment mark for places that may need further attention is
+FIXME.
 
 @node Octave Sources (m-files)
 @section Octave Sources (m-files)
 
-Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your
-editor so that it converts tabs to spaces.  Indent the bodies of the statement
-blocks.  Recommended indent is 2 spaces.  When calling functions, put spaces
-after commas and before the calling parentheses, like this:
+Don't use tabs.  Tabs cause trouble.  If you are used to them, set up
+your editor so that it converts tabs to spaces.  Indent the bodies of
+the statement blocks.  Recommended indent is 2 spaces.  When calling
+functions, put spaces after commas and before the calling parentheses,
+like this:
 
 @example
   x = max (sin (y+3), 2);
@@ -178,10 +184,11 @@ An exception are matrix and vector constructors:
 @end example
 
 @noindent
-Here, putting spaces after @code{sin}, @code{cos} would result in a parse error.
-In indexing expression, do not put a space after the identifier (this
-differentiates indexing and function calls nicely).  The space after comma is
-not necessary if index expressions are simple, i.e., you may write
+Here, putting spaces after @code{sin}, @code{cos} would result in a
+parse error.  In indexing expression, do not put a space after the
+identifier (this differentiates indexing and function calls nicely).
+The space after comma is not necessary if index expressions are simple,
+i.e., you may write
 
 @example
   A(:,i,j)
@@ -194,14 +201,16 @@ but
   A([1:i-1;i+1:n], XI(:,2:n-1))
 @end example
 
-Use lowercase names if possible.  Uppercase is acceptable for variable names
-consisting of 1-2 letters.  Do not use mixed case names.  Function names must be
-lowercase.  Function names are global, so choose them wisely.
+Use lowercase names if possible.  Uppercase is acceptable for variable
+names consisting of 1-2 letters.  Do not use mixed case names.  Function
+names must be lowercase.  Function names are global, so choose them
+wisely.
 
 Always use a specific end-of-block statement (like @code{endif},
-@code{endswitch}) rather than generic @code{end}.  Enclose the @code{if},
-@code{while}, @code{until} and @code{switch} conditions in parentheses, 
-like in C: 
+@code{endswitch}) rather than generic @code{end}.
+
+Enclose the @code{if}, @code{while}, @code{until} and @code{switch}
+conditions in parentheses, like in C: 
 
 @example
 @group
@@ -212,7 +221,8 @@ endif
 @end example
 
 @noindent
-Do not do this, however, with @code{for}:
+Do not do this, however, with the iteration counter portion of a
+@code{for} statement.  Write:
 
 @example
 @group
@@ -225,8 +235,9 @@ endfor
 @node C++ Sources
 @section C++ Sources
 
-Don't use tabs.  Tabs cause trouble.  If you are used to them, set up your
-editor so that it converts tabs to spaces.  Format function headers like this:
+Don't use tabs.  Tabs cause trouble.  If you are used to them, set up
+your editor so that it converts tabs to spaces.  Format function headers
+like this:
 
 @example
 @group
@@ -237,15 +248,16 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 @end example
 
 @noindent
-The function name should start in column 1, and multi-line argument lists should
-be aligned on the first char after the open parenthesis.  You should put a space
-after the left open parenthesis and after commas, for both function definitions
-and function calls.
+The function name should start in column 1, and multi-line argument
+lists should be aligned on the first char after the open parenthesis.
+You should put a space after the left open parenthesis and after commas,
+for both function definitions and function calls.
 
-Recommended indent is 2 spaces.  When indenting, indent the statement after
-control structures (like @code{if}, @code{while}, etc.). If there is a compound
-statement, indent @emph{both} the curly braces and the body of the statement (so
-that the body gets indented by @emph{two} indents).  Example:
+Recommended indent is 2 spaces.  When indenting, indent the statement
+after control structures (like @code{if}, @code{while}, etc.). If there
+is a compound statement, indent @emph{both} the curly braces and the
+body of the statement (so that the body gets indented by @emph{two}
+indents).  Example:
 
 @example
 @group
@@ -263,10 +275,10 @@ else
 If you have nested @code{if} statements, use extra braces for extra
 clarification. 
 
-Split long expressions in such a way that a continuation line starts with an
-operator rather than identifier.  If the split occurs inside braces,
-continuation should be aligned with the first char after the innermost braces
-enclosing the split.  Example:
+Split long expressions in such a way that a continuation line starts
+with an operator rather than identifier.  If the split occurs inside
+braces, continuation should be aligned with the first char after the
+innermost braces enclosing the split.  Example:
 
 @example
 @group
@@ -277,14 +289,15 @@ SVD::type type = ((nargout == 0 || nargout == 1)
 @end example
 
 @noindent
-Consider putting extra braces around a multiline expression to make it more
-readable, even if they are not necessary.  Also, do not hesitate to put extra
-braces anywhere if it improves clarity.
+Consider putting extra braces around a multiline expression to make it
+more readable, even if they are not necessary.  Also, do not hesitate to
+put extra braces anywhere if it improves clarity.
 
-Try declaring variables just before they're needed.  Use local variables of
-blocks - it helps optimization.  Don't write multi-line variable declaration
-with a single type specification and multiple variables.  If the variables don't
-fit on single line, repeat the type specification.  Example:
+Declare variables just before they're needed.  Use local variables of
+blocks---it helps optimization.  Don't write multi-line variable
+declaration with a single type specification and multiple variables.  If
+the variables don't fit on single line, repeat the type specification.
+Example:
 
 @example
 @group
@@ -297,43 +310,45 @@ double d1, d2;
 @end group
 @end example
 
-Use lowercase names if possible.  Uppercase is acceptable for variable names
-consisting of 1-2 letters.  Do not use mixed case names.
+Use lowercase names if possible.  Uppercase is acceptable for variable
+names consisting of 1-2 letters.  Do not use mixed case names.
 
-Try to use Octave's types and classes if possible.  Otherwise, try to use C++
-standard library.  Use of STL containers and algorithms is encouraged.  Use
-templates wisely to reduce code duplication.  Avoid comma expressions, labels
-and gotos, and explicit typecasts.  If you need to typecast, use the modern C++
-casting operators.  In functions, try to reduce the number of @code{return}
-statements - use nested @code{if} statements if possible.
+Use Octave's types and classes if possible.  Otherwise, use the C++
+standard library.  Use of STL containers and algorithms is encouraged.
+Use templates wisely to reduce code duplication.  Avoid comma
+expressions, labels and gotos, and explicit typecasts.  If you need to
+typecast, use the modern C++ casting operators.  In functions, minimize
+the number of @code{return} statements---use nested @code{if} statements
+if possible.
 
 @node Other Sources
 @section Other Sources
-Apart from C++ and Octave language (m-files), Octave's sources include files
-written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo and @TeX{}.  There are
-not many rules to follow when using these other languages; some of them are
-summarized below.  In any case, the golden rule is: if you modify a source
-file, try to follow any conventions you can detect in the file or other similar
-files.
+Apart from C++ and Octave language (m-files), Octave's sources include
+files written in C, Fortran, M4, Perl, Unix shell, AWK, Texinfo and
+@TeX{}.  There are not many rules to follow when using these other
+languages; some of them are summarized below.  In any case, the golden
+rule is: if you modify a source file, try to follow any conventions you
+can detect in the file or other similar files.
 
 For C you should obviously follow all C++ rules that can apply.
 
-If you happen to modify a Fortran file, you should stay within Fortran 77
-with common extensions like @code{END DO}.  Currently, we want all sources
-to be compilable with the f2c and g77 compilers, without special flags if
-possible.  This usually means that non-legacy compilers also accept the sources.
+If you modify a Fortran file, you should stay within Fortran 77 with
+common extensions like @code{END DO}.  Currently, we want all sources to
+be compilable with the f2c and g77 compilers, without special flags if
+possible.  This usually means that non-legacy compilers also accept the
+sources.
 
-The M4 macro language is mainly used for Autoconf configuration files.  You
-should follow normal M4 rules when contributing to these files.  Some M4 files
-come from external source, namely the Autoconf archive
+The M4 macro language is mainly used for Autoconf configuration files.
+You should follow normal M4 rules when contributing to these files.
+Some M4 files come from external source, namely the Autoconf archive
 @url{http://autoconf-archive.cryp.to}.
 
-If you give a code example in the documentation written in Texinfo with the 
-@code{@@example} environment, you should be aware that the text within such an 
-environment will not be wrapped.  It is recommended that you keep the lines
-short enough to fit on pages in the generated pdf or ps documents.  Here is a 
-ruler (in an @code{@@example} environment) for finding the appropriate line 
-width:
+If you give a code example in the documentation written in Texinfo with
+the @code{@@example} environment, you should be aware that the text
+within such an environment will not be wrapped.  It is recommended that
+you keep the lines short enough to fit on pages in the generated pdf or
+ps documents.  Here is a ruler (in an @code{@@example} environment) for
+finding the appropriate line width:
 
 @example
 @group

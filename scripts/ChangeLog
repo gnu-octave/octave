@@ -1,3 +1,8 @@
+2010-11-06  Marco Caliari <marco.caliari@univr.it>
+
+	* polynomial/spline.m: Fit a parabola for input with 3
+	elements (bug #31098).
+
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
 	* plot/__fltk_ginput__.m: Use semicolons to prevent internal

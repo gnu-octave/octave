@@ -166,6 +166,8 @@ function h = colorbar (varargin)
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical})
     addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj})
     addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj})
+    addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax, obj})
+    addlistener (ax, "dataaspectratiomode", {@update_colorbar_axis, cax, obj})
     addlistener (ax, "position", {@update_colorbar_axis, cax, obj})
 
   endif
@@ -260,7 +262,8 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
   pos = obj.position;
   sz = pos(3:4);
 
-  if (strcmpi (obj.plotboxaspectratiomode, "manual"))
+  if (strcmpi (obj.plotboxaspectratiomode, "manual")
+      || strcmpi (obj.dataaspectratiomode, "manual"))
     if (isempty (strfind (cbox, "outside")))
       scale = 1.0;
     else
@@ -334,7 +337,8 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
 
   cpos = [origin, sz];
 
-  if (strcmpi (obj.plotboxaspectratiomode, "manual"))
+  if (strcmpi (obj.plotboxaspectratiomode, "manual")
+      || strcmpi (obj.dataaspectratiomode, "manual"))
     obj.position = pos;
     actual_pos = __actual_axis_position__ (obj);
     if (strfind (cbox, "outside"))

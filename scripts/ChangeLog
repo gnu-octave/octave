@@ -1,3 +1,7 @@
+2010-11-07  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* plot/colorbar.m: Make colorbar function aware of dataaspect settings.
+
 2010-11-06  Marco Caliari <marco.caliari@univr.it>
 
 	* polynomial/spline.m: Fit a parabola for input with 3

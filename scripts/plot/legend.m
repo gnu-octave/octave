@@ -109,11 +109,13 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     ca = get (fig, "currentaxes");
   endif
 
-  plty = get(ca (strcmp (get (ca, "tag"), "plotyy")), "userdata");
-  if (isscalar (plty))
-    ca = [ca, plty];
-  else 
-    ca = [ca, plty{:}];
+  if (strcmp (get (ca, "tag"), "plotyy"))
+    plty = get(ca (strcmp (get (ca, "tag"), "plotyy")), "userdata");
+    if (isscalar (plty))
+      ca = [ca, plty];
+    else 
+      ca = [ca, plty{:}];
+    endif
   endif
 
   if (all (ishandle (varargin{1})))

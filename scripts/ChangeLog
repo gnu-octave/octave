@@ -1,5 +1,7 @@
 2010-11-07  David Bateman  <dbateman@free.fr>
 
+	* plot/legend.m: Remove call to drawnow.
+
 	* plot/__go_draw_axes__.m: Pass the legend axes as a structure.
 	Test whether the legend axis has any children before using it.
 	* plot/__go_draw_figure.m: Setup a fake axis to handle multi-parent

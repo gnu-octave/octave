@@ -418,10 +418,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         box = "off";
       endif
       
-      ## Force the figure to be drawn here, so that the figure position
-      ## is updated correctly before reading it
-      drawnow ();
-
       ## Get axis size and fontsize in points.  
       ## Rely on listener to handle coversion.
       units = get (ca(1), "units");

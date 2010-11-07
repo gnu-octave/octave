@@ -520,9 +520,9 @@ function update_text (h, d)
                       get (h, "labelspacing"), []);
       endswitch
     endif
-  endif
 
-  recursive = false;
+    recursive = false;
+  endif
 endfunction
 
 function lvl_eps = get_lvl_eps (lev)

@@ -302,7 +302,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     fputs (plot_stream, "unset multiplot;\n");
     flickering_terms = {"x11", "windows", "wxt", "dumb"};
     if (! any (strcmp (term, flickering_terms))
-        || numel (findall (h, "type", "axes")) > 1
+        || (numel (findall (h, "type", "axes")) -
+            sum (strcmp (get (findall (h, "type", "axes"), "tag"), "legend"))) > 1
         || numel (findall (h, "type", "image")) > 0)
       fprintf (plot_stream, "%s\n", term_str);
       if (nargin == 5)

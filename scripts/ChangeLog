@@ -1,3 +1,18 @@
+2010-11-07  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Pass the legend axes as a structure.
+	Test whether the legend axis has any children before using it.
+	* plot/__go_draw_figure.m: Setup a fake axis to handle multi-parent
+	legend axes and delete this fake axiss when we're done with it.
+	* plot/gnuplot_drawnow.m: Don't cound legend axes when decidong if
+	multiplot should be used or not.
+	* plot/legend.m: Handle correctly plotyy as a multi-parented axis.
+	Reuse existing legend axis if possible. Setup listeners to propagate
+	changes in the lines to the legend. Setup listeners that handle the
+	properties that need to legend to be recreated.
+	* plot/plotyy.m: Cross-references the axes of the plotyy in the userdata
+	of the axes.
+
 2010-11-07  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* plot/colorbar.m: Make colorbar function aware of dataaspect settings.

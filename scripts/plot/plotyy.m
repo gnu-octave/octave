@@ -194,6 +194,10 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   ## not to mirror the y axis tick marks
   set (ax, "tag", "plotyy")
 
+  ## Cross-reference one axis to the other in the userdata
+  set (ax(1), "userdata", ax(2));
+  set (ax(2), "userdata", ax(1));
+
   ## Store the axes handles for the sister axes.
   try 
     addproperty ("__plotyy_axes__", ax(1), "data", ax);

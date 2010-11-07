@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlgnd)
 
   if (nargin >= 4 && nargin <= 6)
 
@@ -31,11 +31,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
     unwind_protect
       set (0, "showhiddenhandles", "on");
       axis_obj = __get__ (h);
-      if (isempty (hlegend))
-        hlgnd = [];
-      else
-        hlgnd = __get__ (hlegend);
-      endif
     unwind_protect_cleanup
       set (0, "showhiddenhandles", showhiddenhandles);
     end_unwind_protect
@@ -1391,8 +1386,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlegend)
       fprintf (plot_stream, "set border lw %f;\n", axis_obj.linewidth);
     endif
 
-    if (! isempty (hlgnd) 
-        && any (strcmpi (get (get (hlegend, "children"), "visible"), "on")))
+    if (! isempty (hlgnd) && ! isempty (hlgnd.children)
+        && any (strcmpi (get (hlgnd.children, "visible"), "on")))
       if (strcmpi (hlgnd.box, "on"))
         box = "box";
       else

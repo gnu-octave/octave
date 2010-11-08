@@ -340,19 +340,13 @@ public:
       
       for (octave_idx_type ii = 0; ii < uimenu_childs.numel (); ii++)
       {
-        graphics_handle kid = uimenu_childs (ii);
+        graphics_object kidgo = gh_manager::get_object (uimenu_childs (ii));
         
-        if (gh_manager::is_handle_visible (kid))
-          {  
-            graphics_object kidgo = gh_manager::get_object (kid);
-            if (kidgo.isa ("uimenu"))
-              {
-                uimenu_childs(k) = uimenu_childs(ii);
-                pos(k++) =
-                  dynamic_cast<uimenu::properties&> (kidgo.get_properties ()).get_position ();
-                std::string lbl =
-                  dynamic_cast<uimenu::properties&> (kidgo.get_properties ()).get_fltk_label ();
-              }
+        if (kidgo.valid_object() && kidgo.isa ("uimenu"))
+          {
+            uimenu_childs(k) = uimenu_childs(ii);
+            pos(k++) =
+              dynamic_cast<uimenu::properties&> (kidgo.get_properties ()).get_position ();
           }
       }
       
@@ -368,19 +362,6 @@ public:
       return retval;
     }
     
-  void update_submenu (uimenu::properties& uimenup)
-    {
-      Matrix uimenu_ch = find_uimenu_children (uimenup);
-
-      if (uimenu_ch.numel () > 0) 
-        {
-          std::string fltk_label = uimenup.get_fltk_label ();
-          int idx = find_index_by_name (fltk_label.c_str ());
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(&menubar->menu () [idx]);
-          menubar->mode(idx, item->flags|FL_SUBMENU);
-        }
-    }
-
   void delete_entry(uimenu::properties& uimenup)
     {
       std::string fltk_label = uimenup.get_fltk_label ();
@@ -491,7 +472,7 @@ public:
     {
 
       std::string fltk_label = uimenup.get_fltk_label ();
-      
+
       if (!fltk_label.empty ())
         {
           bool item_added = false;
@@ -549,17 +530,16 @@ public:
       update_enable (uimenup);
       update_visible (uimenup);
       update_seperator (uimenup);
-
+      
       for (octave_idx_type ii = 0; ii < len; ii++)
         {
-          graphics_handle kid = kids (len - (ii + 1));
-          graphics_object kgo = gh_manager::get_object (kid);
-          uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+          graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
           if (kgo.valid_object ())
-            add_to_menu (kprop);
+            {
+              uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              add_to_menu (kprop);
+            }
         }
-      
-      
     }
 
   void add_to_menu (figure::properties& figp)
@@ -569,11 +549,13 @@ public:
       menubar->clear ();      
       for (octave_idx_type ii = 0; ii < len; ii++)
         {
-          graphics_handle kid = kids (len - (ii + 1));
-          graphics_object kgo = gh_manager::get_object (kid);
-          uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+          graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
+
           if (kgo.valid_object ())
-            add_to_menu (kprop);
+            {
+              uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              add_to_menu (kprop);
+            }
         }
     }
 
@@ -587,11 +569,13 @@ public:
 
       for (octave_idx_type ii = 0; ii < len; ii++)
         {
-          graphics_handle kid = kids (len - (ii + 1));
-          graphics_object kgo = gh_manager::get_object (kid);
-          uimenu::properties kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+          graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
+
           if (kgo.valid_object ())
-            remove_from_menu (kprop);
+            {
+              uimenu::properties kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              remove_from_menu (kprop);
+            }
         }
 
       if (type.compare("uimenu") == 0)

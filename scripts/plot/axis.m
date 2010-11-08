@@ -319,6 +319,10 @@ function lims = __get_tight_lims__ (ca, ax)
     lims = get (ca, strcat (ax, "lim"));
   else
     data = get (kids, strcat (ax, "data"));
+    scale = get (ca, strcat (ax, "scale"));
+    if (strcmp (scale, "log"))
+      data(data<=0) = NaN;
+    end
     if (iscell (data))
       data = data (find (! cellfun (@isempty, data)));
       if (! isempty (data))
@@ -332,7 +336,6 @@ function lims = __get_tight_lims__ (ca, ax)
       lims = [min(data(:)), max(data(:))];
     endif
   endif
-
 
 endfunction
 
@@ -482,4 +485,12 @@ endfunction
 %! s = x1/max(x(:));
 %! pcolor(s*x+x1,s*y+x1/2,5*z)
 %! axis tight
+
+%!demo
+%! clf
+%! x = -10:10;
+%! plot (x, x, x, -x)
+%! set (gca, "yscale", "log")
+%! legend ({"x >= 1", "x <= 1"}, "location", "north")
+%! title ("ylim = [1, 10]")
 

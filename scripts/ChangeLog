@@ -1,3 +1,8 @@
+2010-11-08  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m, plot/axis.m: Set proper tight axis limits
+	for log scale.
+
 2010-11-07  David Bateman  <dbateman@free.fr>
 
 	* plot/legend.m: Remove call to drawnow.

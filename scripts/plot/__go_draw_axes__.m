@@ -405,6 +405,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlgnd)
         continue;
       endif
 
+      if (xlogscale)
+        obj.xdata(obj.xdata<=0) = NaN;
+      endif
+      if (ylogscale)
+        obj.ydata(obj.ydata<=0) = NaN;
+      endif
+      if (zlogscale)
+        obj.zdata(obj.zdata<=0) = NaN;
+      endif
+
       ## Check for facecolor interpolation for surfaces.
       doing_interp_color = ...
          isfield (obj, "facecolor") && strncmp (obj.facecolor, "interp", 6);

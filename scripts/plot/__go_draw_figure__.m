@@ -117,7 +117,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                       fprintf (plot_stream, "set border linecolor rgb \"#%02x%02x%02x\"\n", 255 * (1 - bg));
                     endif
                     __go_draw_axes__ (kids(i), plot_stream, enhanced, mono,
-                                      bg_is_set, hlgnd);
+                                      bg_is_set, false, hlgnd);
                   unwind_protect_cleanup
                     ## Return axes "units" and "position" back to
                     ## their original values.
@@ -165,16 +165,14 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                     endif
                   endfor
                   __go_draw_axes__ (kids(i), plot_stream, enhanced, mono,
-                                    bg_is_set, hlegend);
+                                    bg_is_set, fg_is_set, hlegend);
                 unwind_protect_cleanup
                   ## Return axes "units" and "position" back to
                   ## their original values.
                   set (kids(i), "units", orig_axes_units);
                   set (kids(i), "position", orig_axes_position);
                   bg_is_set = false;
-                  if (fg_is_set)
-                    fputs (plot_stream, "unset obj 2\n");
-                  endif
+                  fg_is_set = false;
                 end_unwind_protect
               endif
             case "uimenu"

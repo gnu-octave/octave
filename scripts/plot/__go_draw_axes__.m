@@ -23,9 +23,10 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlgnd)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono, 
+                           bg_is_set, fg_is_set, hlgnd)
 
-  if (nargin >= 4 && nargin <= 6)
+  if (nargin >= 4 && nargin <= 7)
 
     showhiddenhandles = get (0, "showhiddenhandles");
     unwind_protect
@@ -1514,14 +1515,22 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono, bg_is_set, hlgnd)
               fputs (plot_stream, "unset obj 1; \\\n");
               bg_is_set = false;
             endif
+            if (fg_is_set)
+              fputs (plot_stream, "unset obj 2; \\\n");
+              fg_is_set = false;
+            endif
           endif
           fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                    usingclause{i}, titlespec{i}, withclause{i});
         elseif (is_image_data (i-1))
           if (bg_is_set)      
             fputs (plot_stream, "unset obj 1; \\\n");
-              bg_is_set = false;
-            endif
+            bg_is_set = false;
+          endif
+          if (fg_is_set)
+            fputs (plot_stream, "unset obj 2; \\\n");
+            fg_is_set = false;
+          endif
           fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
                    usingclause{i}, titlespec{i}, withclause{i});
         else

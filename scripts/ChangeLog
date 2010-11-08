@@ -1,3 +1,8 @@
+2010-11-08  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Remove foreground color earlier.
+	* plot/__go_draw_figure__.m: Don't set the foreground color here.
+
 2010-11-08  Rik  <octave@nomad.inbox5.com>
 
 	* sparse/sprand.m: Add input validation to function.

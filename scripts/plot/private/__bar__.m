@@ -114,7 +114,11 @@ function varargout = __bar__ (vertical, func, varargin)
   endif
 
   ycols = size (y, 2);
-  cutoff = min (diff (double(x))) / 2;
+  if (numel (x) > 1)
+    cutoff = min (diff (double(x))) / 2;
+  else
+    cutoff = 1;
+  endif
   if (group)
     delta_p = delta_m = repmat (cutoff * width / ycols, size (x));
   else

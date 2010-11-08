@@ -1,5 +1,6 @@
 2010-11-08  Ben Abbott <bpabbott@mac.com>
 
+	* plot/private/__bar__.m: Permit bar() to be called with scalar inputs.
 	* plot/__go_draw_axes__.m, plot/axis.m: Set proper tight axis limits
 	for log scale.
 

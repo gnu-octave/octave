@@ -24,11 +24,11 @@
 ## @deftypefnx {Function File} {} sprand (@var{s})
 ## Generate a random sparse matrix.  The size of the matrix will be
 ## @var{m} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1. Values will be uniformly
+## @var{d} should be between 0 and 1.  Values will be uniformly
 ## distributed between 0 and 1.
 ##
 ## Note: sometimes the actual density may be a bit smaller than @var{d}. 
-## This is unlikely to happen for large really sparse matrices.
+## This is unlikely to happen for large, truly sparse, matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero.
@@ -46,31 +46,49 @@
 ##      2004-10-20      Texinfo help and copyright message 
 
 function S = sprand (m, n, d)
+
+  if (nargin != 1 && nargin != 3)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     [i, j, v] = find (m);
     [nr, nc] = size (m);
     S = sparse (i, j, rand (size (v)), nr, nc);
-  elseif (nargin == 3)
-    mn = n*m;
-    ## how many entries in S would be satisfactory?
-    k = round (d*mn);
-    idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1; 
-    ## idx contains random numbers in [1,mn]
-    ## generate 1% or 10 more random values than necessary in order to
-    ## reduce the probability that there are less than k distinct
-    ## values; maybe a better strategy could be used but I don't think
-    ## it's worth the price
-
-    ## actual number of entries in S
-    k = min (length (idx), k);
-    j = floor ((idx(1:k)-1)/m);
-    i = idx(1:k) - j*m;
-    if (isempty (i))
-      S = sparse (m, n);
-    else
-      S = sparse (i, j+1, rand (k, 1), m, n);
-    endif
-  else
-    print_usage ();
+    return;
   endif
+
+  if (!(isscalar (m) && m == fix (m) && m > 0))
+    error ("sprand: M must be an integer greater than 0");
+  endif
+
+  if (!(isscalar (n) && n == fix (n) && n > 0))
+    error ("sprand: N must be an integer greater than 0");
+  endif
+
+  if (d < 0 || d > 1)
+    error ("sprand: density D must be between 0 and 1");
+  endif
+
+  mn = m*n;
+  ## how many entries in S would be satisfactory?
+  k = round (d*mn);
+  idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1; 
+  ## idx contains random numbers in [1,mn]
+  ## generate 1% or 10 more random values than necessary in order to
+  ## reduce the probability that there are less than k distinct
+  ## values; maybe a better strategy could be used but I don't think
+  ## it's worth the price
+
+  ## actual number of entries in S
+  k = min (length (idx), k);
+  j = floor ((idx(1:k)-1)/m);
+  i = idx(1:k) - j*m;
+  if (isempty (i))
+    S = sparse (m, n);
+  else
+    S = sparse (i, j+1, rand (k, 1), m, n);
+  endif
+
 endfunction
+

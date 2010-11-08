@@ -1,3 +1,7 @@
+2010-11-08  Rik  <octave@nomad.inbox5.com>
+
+	* sparse/sprand.m: Add input validation to function.
+
 2010-11-08  Ben Abbott <bpabbott@mac.com>
 
 	* plot/private/__bar__.m: Permit bar() to be called with scalar inputs.

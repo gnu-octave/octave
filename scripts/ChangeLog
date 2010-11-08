@@ -1,5 +1,7 @@
 2010-11-08  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Check for z/y/zdata before converting
+	negative values to NaNs. Bug fix for changeset 11201.
 	* plot/daspect.m: Fix demo using both daspect and pbaspect.
 
 2010-11-08  David Bateman  <dbateman@free.fr>

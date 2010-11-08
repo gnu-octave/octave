@@ -406,13 +406,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         continue;
       endif
 
-      if (xlogscale)
+      if (xlogscale && isfield (obj, "xdata"))
         obj.xdata(obj.xdata<=0) = NaN;
       endif
-      if (ylogscale)
+      if (ylogscale && isfield (obj, "ydata"))
         obj.ydata(obj.ydata<=0) = NaN;
       endif
-      if (zlogscale)
+      if (zlogscale && isfield (obj, "zdata"))
         obj.zdata(obj.zdata<=0) = NaN;
       endif
 

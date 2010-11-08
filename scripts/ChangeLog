@@ -1,3 +1,7 @@
+2010-11-08  Ben Abbott <bpabbott@mac.com>
+
+	* plot/daspect.m: Fix demo using both daspect and pbaspect.
+
 2010-11-08  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Remove foreground color earlier.

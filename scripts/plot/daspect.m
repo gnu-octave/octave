@@ -104,7 +104,7 @@ endfunction
 %! x = 0:0.01:4;
 %! clf
 %! plot (x, cos (x), x, sin (x))
-%! daspect ([1 1 1])
+%! daspect ([1 2 1])
 %! pbaspect ([2 1 1])
 %! title ("2x1 plot box with axis limits [0, 4, -2, 2]")
 

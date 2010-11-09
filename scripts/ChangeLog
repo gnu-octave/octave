@@ -1,3 +1,10 @@
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
+	* help/help.m: Call missing_function_hook with output argument
+	and print message here.
+	* miscellaneous/unimplemented.m: Return message if nargout > 0.
+	Fixes bug #31597.
+
 2010-11-08  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Check for z/y/zdata before converting

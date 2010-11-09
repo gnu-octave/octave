@@ -22,12 +22,14 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function unimplemented (fcn)
+function txt = unimplemented (fcn)
+
+  is_matlab_function = true;
 
   ## Some smarter cases, add more as needed.
   switch (fcn)
 
-  case "quad2d"
+    case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
@@ -47,21 +49,23 @@ function unimplemented (fcn)
   
   otherwise
     if (ismember (fcn, missing_functions ()))
-
-      ## The default case.
-
-      txt = sprintf ("The %s function is not yet implemented in Octave.", fcn);
-
+      txt = sprintf ("the `%s' function is not yet implemented in Octave", fcn);
     else
-      return;
+      is_matlab_function = false;
+      txt = "";
     endif
   endswitch
 
-  txt = [txt, "\n\n@noindent\nPlease read ",...
-  "@url{http://www.octave.org/missing.html} ",...
-  "to find out how you can help with contributing missing functionality."];
+  if (is_matlab_function)
+    txt = [txt, "\n\n@noindent\nPlease read ",...
+           "@url{http://www.octave.org/missing.html} to learn how ",...
+           "you can contribute missing functionality."];
+    txt = __makeinfo__ (txt);
+  endif
 
-  warning ("Octave:missing-function",["\n", __makeinfo__(txt)]);
+  if (nargout == 0)
+    warning ("Octave:missing-function", "%s", txt);
+  endif
 
 endfunction
 

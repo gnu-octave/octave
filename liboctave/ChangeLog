@@ -1,5 +1,18 @@
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
+	* lo-mappers.cc, lo-mappers.h (xmod, xrem): Move definitions
+	from lo-mappers.cc to lo-mappers.h and convert to templates.
+	(xtrunc): Move definitions from lo-mappers.cc to lo-mappers.h.
+	* lo-mappers.cc (fix): Use xtrunc.
+	* lo-mappers.h (xfloor): New functions.
+	(X_NINT): New template function.
+	(D_NINT, F_NINT): Define in terms of X_NINT.
+	* lo-utils.h, lo-utils.cc (D_NINT, F_NINT): Delete.
+	* lo-mappers.h, lo-mappers.cc (NINTbig,	NINT): Move from
+	lo-utils.cc and lo-utils.h.
+
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
 	* Array.cc (Array<T>::sort, Array<T>::is_sorted,
 	Array<T>::is_sorted_rows): Use comparisons to sortmode values
 	instead of testing mode directly.

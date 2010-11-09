@@ -55,7 +55,7 @@ conj (double x)
 double
 fix (double x)
 {
-  return gnulib::trunc (x);
+  return xtrunc (x);
 }
 
 double
@@ -74,12 +74,6 @@ double
 xround (double x)
 {
   return gnulib::round (x);
-}
-
-double
-xtrunc (double x)
-{
-  return gnulib::trunc (x);
 }
 
 double 
@@ -104,88 +98,6 @@ signum (double x)
     tmp = 1.0;
 
   return xisnan (x) ? octave_NaN : tmp;
-}
-
-double
-xmod (double x, double y)
-{
-  double retval;
-
-  if (y == 0)
-    retval = x;
-  else
-    {
-      double q = x / y;
-
-      double n = floor (q);
-
-      if (D_NINT (y) != y)
-        {
-          if (D_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - D_NINT (q)) < DBL_EPSILON)
-                    n = D_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - D_NINT (q))/ D_NINT (q)) < DBL_EPSILON)
-                    n = D_NINT (q);
-                }
-            }
-        }
-
-      retval = x - y * n;
-    }
-
-  if (x != y && y != 0)
-    retval = copysignf (retval, y);
-
-  return retval;
-}
-
-double
-xrem (double x, double y)
-{
-  double retval;
-
-  if (y == 0)
-    retval = x;
-  else
-    {
-      double q = x / y;
-
-      double n = trunc (q);
-
-      if (D_NINT (y) != y)
-        {
-          if (D_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - D_NINT (q)) < DBL_EPSILON)
-                    n = D_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - D_NINT (q))/ D_NINT (q)) < DBL_EPSILON)
-                    n = D_NINT (q);
-                }
-            }
-        }
-
-      retval = x - y * n;
-    }
-
-  if (x != y && y != 0)
-    retval = copysignf (retval, x);
-
-  return retval;
 }
 
 double
@@ -416,7 +328,7 @@ conj (float x)
 float
 fix (float x)
 {
-  return gnulib::truncf (x);
+  return xtrunc (x);
 }
 
 float
@@ -435,12 +347,6 @@ float
 xround (float x)
 {
   return gnulib::round (x);
-}
-
-float
-xtrunc (float x)
-{
-  return gnulib::truncf (x);
 }
 
 float 
@@ -465,88 +371,6 @@ signum (float x)
     tmp = 1.0;
 
   return xisnan (x) ? octave_Float_NaN : tmp;
-}
-
-float
-xmod (float x, float y)
-{
-  float retval;
-
-  if (y == 0)
-    retval = x;
-  else
-    {
-      float q = x / y;
-
-      float n = floor (q);
-
-      if (F_NINT (y) != y)
-        {
-          if (F_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - F_NINT (q)) < FLT_EPSILON)
-                    n = F_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - F_NINT (q))/ F_NINT (q)) < FLT_EPSILON)
-                    n = F_NINT (q);
-                }
-            }
-        }
-
-      retval = x - y * n;
-    }
-
-  if (x != y && y != 0)
-    retval = copysignf (retval, y);
-
-  return retval;
-}
-
-float
-xrem (float x, float y)
-{
-  float retval;
-
-  if (y == 0)
-    retval = x;
-  else
-    {
-      float q = x / y;
-
-      float n = truncf (q);
-
-      if (F_NINT (y) != y)
-        {
-          if (F_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - F_NINT (q)) < FLT_EPSILON)
-                    n = F_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - F_NINT (q))/ F_NINT (q)) < FLT_EPSILON)
-                    n = F_NINT (q);
-                }
-            }
-        }
-
-      retval = x - y * n;
-    }
-
-  if (x != y && y != 0)
-    retval = copysignf (retval, x);
-
-  return retval;
 }
 
 float
@@ -852,3 +676,52 @@ bool xnegative_sign (double x)
 
 bool xnegative_sign (float x)
 { return __lo_ieee_float_signbit (x); }
+
+// Convert X to the nearest integer value.  Should not pass NaN to
+// this function.
+
+// Sometimes you need a large integer, but not always.
+
+octave_idx_type
+NINTbig (double x)
+{
+  if (x > std::numeric_limits<octave_idx_type>::max ())
+    return std::numeric_limits<octave_idx_type>::max ();
+  else if (x < std::numeric_limits<octave_idx_type>::min ())
+    return std::numeric_limits<octave_idx_type>::min ();
+  else
+    return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
+}
+
+octave_idx_type
+NINTbig (float x)
+{
+  if (x > std::numeric_limits<octave_idx_type>::max ())
+    return std::numeric_limits<octave_idx_type>::max ();
+  else if (x < std::numeric_limits<octave_idx_type>::min ())
+    return std::numeric_limits<octave_idx_type>::min ();
+  else
+    return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
+}
+
+int
+NINT (double x)
+{
+  if (x > std::numeric_limits<int>::max ())
+    return std::numeric_limits<int>::max ();
+  else if (x < std::numeric_limits<int>::min ())
+    return std::numeric_limits<int>::min ();
+  else
+    return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
+}
+
+int
+NINT (float x)
+{
+  if (x > std::numeric_limits<int>::max ())
+    return std::numeric_limits<int>::max ();
+  else if (x < std::numeric_limits<int>::min ())
+    return std::numeric_limits<int>::min ();
+  else
+    return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
+}

@@ -32,13 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "syswait.h"
 
-extern OCTAVE_API octave_idx_type NINTbig (double x);
-extern OCTAVE_API octave_idx_type NINTbig (float x);
-extern OCTAVE_API int NINT (double x);
-extern OCTAVE_API int NINT (float x);
-extern OCTAVE_API double D_NINT (double x);
-extern OCTAVE_API float F_NINT (float x);
-
 extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
 extern OCTAVE_API bool xis_one_or_zero (double x);
 extern OCTAVE_API bool xis_zero (double x);

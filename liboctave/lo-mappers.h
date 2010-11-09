@@ -25,10 +25,16 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_liboctave_mappers_h)
 #define octave_liboctave_mappers_h 1
 
+#include <limits>
+
 #include "oct-cmplx.h"
 #include "lo-math.h"
 
 // Double Precision 
+inline double xtrunc (double x) { return gnulib::trunc (x); }
+inline double xcopysign (double x, double y) { return copysignf (x, y); }
+inline double xfloor (double x) { return floor (x); }
+
 extern OCTAVE_API double arg (double x);
 extern OCTAVE_API double conj (double x);
 extern OCTAVE_API double fix (double x);
@@ -37,9 +43,6 @@ extern OCTAVE_API double real (double x);
 extern OCTAVE_API double xround (double x);
 extern OCTAVE_API double xroundb (double x);
 extern OCTAVE_API double signum (double x);
-extern OCTAVE_API double xtrunc (double x);
-extern OCTAVE_API double xmod (double x, double y);
-extern OCTAVE_API double xrem (double x, double y);
 extern OCTAVE_API double xlog2 (double x); 
 extern OCTAVE_API Complex xlog2 (const Complex& x); 
 extern OCTAVE_API double xlog2 (double x, int& exp);
@@ -119,6 +122,10 @@ extern OCTAVE_API Complex xmin (const Complex& x, const Complex& y);
 extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 
 // Single Precision 
+inline float xtrunc (float x) { return gnulib::truncf (x); }
+inline float xcopysign (float x, float y) { return copysignf (x, y); }
+inline float xfloor (float x) { return floorf (x); }
+
 extern OCTAVE_API float arg (float x);
 extern OCTAVE_API float conj (float x);
 extern OCTAVE_API float fix (float x);
@@ -127,9 +134,6 @@ extern OCTAVE_API float real (float x);
 extern OCTAVE_API float xround (float x);
 extern OCTAVE_API float xroundb (float x);
 extern OCTAVE_API float signum (float x);
-extern OCTAVE_API float xtrunc (float x);
-extern OCTAVE_API float xmod (float x, float y);
-extern OCTAVE_API float xrem (float x, float y);
 extern OCTAVE_API float xlog2 (float x); 
 extern OCTAVE_API FloatComplex xlog2 (const FloatComplex& x); 
 extern OCTAVE_API float xlog2 (float x, int& exp);
@@ -224,5 +228,113 @@ inline bool xisinteger (float x)
 extern OCTAVE_API bool xnegative_sign (double x);
 extern OCTAVE_API bool xnegative_sign (float x);
 
+extern OCTAVE_API octave_idx_type NINTbig (double x);
+extern OCTAVE_API octave_idx_type NINTbig (float x);
+
+extern OCTAVE_API int NINT (double x);
+extern OCTAVE_API int NINT (float x);
+
+template <typename T>
+OCTAVE_API
+T
+X_NINT (T x)
+{
+  return (xisinf (x) || xisnan (x)) ? x : xfloor (x + 0.5);
+}
+
+inline OCTAVE_API double D_NINT (double x) { return X_NINT (x); }
+inline OCTAVE_API float F_NINT (float x) { return X_NINT (x); }
+
+// Template functions can have either float or double arguments.
+
+template <typename T>
+OCTAVE_API
+T
+xmod (T x, T y)
+{
+  T retval;
+
+  if (y == 0)
+    retval = x;
+  else
+    {
+      T q = x / y;
+
+      T n = floor (q);
+
+      if (X_NINT (y) != y)
+        {
+          if (X_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - X_NINT (q))
+                      < std::numeric_limits<T>::epsilon ())
+                    n = X_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
+                      < std::numeric_limits<T>::epsilon ())
+                    n = D_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = xcopysign (retval, y);
+
+  return retval;
+}
+
+template <typename T>
+OCTAVE_API
+T
+xrem (T x, T y)
+{
+  T retval;
+
+  if (y == 0)
+    retval = x;
+  else
+    {
+      T q = x / y;
+
+      T n = xtrunc (q);
+
+      if (X_NINT (y) != y)
+        {
+          if (X_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - X_NINT (q))
+                      < std::numeric_limits<T>::epsilon ())
+                    n = X_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
+                      < std::numeric_limits<T>::epsilon ())
+                    n = X_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = xcopysign (retval, x);
+
+  return retval;
+}
 
 #endif

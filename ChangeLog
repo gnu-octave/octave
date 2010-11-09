@@ -1,3 +1,8 @@
+2010-11-09  Rik  <octave@nomad.inbox5.com>
+
+	* configure.ac: Remove redundant warning message when '--without-opengl'
+	option used.
+
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac: Don't check for trunc, copysign, or _copysign.

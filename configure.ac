@@ -828,7 +828,7 @@ warn_freetype=""
 
 check_opengl=false
 AC_ARG_WITH([opengl],
-  [AS_HELP_STRING([--with-opengl=yes], [use opengl library for graphics])],
+  [AS_HELP_STRING([--without-opengl], [don't use OpenGL libraries, disable native graphics])],
   [if test "x$withval" = xno; then
      warn_opengl="--without-opengl specified.  Native graphics will be disabled."
      AC_MSG_WARN([$warn_opengl])
@@ -843,6 +843,12 @@ fi
 
 GRAPHICS_LIBS=
 GRAPHICS_CFLAGS=
+
+if test -z "$OPENGL_LIBS"; then
+  if $check_opengl; then
+    warn_fltk_opengl="OpenGL libs (GL and GLU) not found. Native graphics will be disabled."
+  fi
+fi
 
 if test -n "$OPENGL_LIBS"; then
   AC_DEFINE(HAVE_OPENGL, 1, [Define if OpenGL is available])
@@ -928,8 +934,6 @@ EOF
       AC_MSG_RESULT(no)
     fi
   fi
-else
-  warn_fltk_opengl="OpenGL libs (GL and GLU) not found. Native graphics will be disabled."
 fi
 
 AC_SUBST(GRAPHICS_CFLAGS)

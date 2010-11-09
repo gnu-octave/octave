@@ -1,5 +1,11 @@
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
+	* Array.cc (Array<T>::sort, Array<T>::is_sorted,
+	Array<T>::is_sorted_rows): Use comparisons to sortmode values
+	instead of testing mode directly.
+
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
 	* lo-mappers.cc (xmod, xrem): New functions.
 	(mod): Delete.
 	* lo-mappers.h (xmod, xrem): Provide decls.

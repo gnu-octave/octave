@@ -1711,7 +1711,7 @@ Array<T>::sort (int dim, sortmode mode) const
 
   octave_sort<T> lsort;
   
-  if (mode) 
+  if (mode != UNSORTED) 
     lsort.set_compare (mode);
   else
     return m;
@@ -1833,7 +1833,7 @@ Array<T>::sort (Array<octave_idx_type> &sidx, int dim,
   sidx = Array<octave_idx_type> (dv);
   octave_idx_type *vi = sidx.fortran_vec ();
   
-  if (mode) 
+  if (mode != UNSORTED) 
     lsort.set_compare (mode);
   else
     return m;
@@ -1970,7 +1970,7 @@ Array<T>::is_sorted (sortmode mode) const
   if (n <= 1)
     return mode ? mode : ASCENDING;
 
-  if (! mode)
+  if (mode == UNSORTED)
     {
       // Auto-detect mode.
       compare_fcn_type compare
@@ -1982,7 +1982,7 @@ Array<T>::is_sorted (sortmode mode) const
         mode = ASCENDING;
     }
 
-  if (mode)
+  if (mode != UNSORTED)
     {
       lsort.set_compare (safe_comparator (mode, *this, false));
 
@@ -2023,7 +2023,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
   if (r <= 1 || c == 0)
     return mode ? mode : ASCENDING;
 
-  if (! mode)
+  if (mode == UNSORTED)
     {
       // Auto-detect mode.
       compare_fcn_type compare
@@ -2054,11 +2054,11 @@ Array<T>::is_sorted_rows (sortmode mode) const
                 mode = DESCENDING;
             }
         }
-      if (! mode && i == cols ())
+      if (mode == UNSORTED && i == cols ())
         mode = ASCENDING;
     }
 
-  if (mode)
+  if (mode != UNSORTED)
     {
       lsort.set_compare (safe_comparator (mode, *this, false));
 

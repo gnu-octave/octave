@@ -2361,7 +2361,7 @@ handle_number (void)
 
   lexer_flags.quote_is_transpose = true;
   lexer_flags.convert_spaces_to_comma = true;
-  lexer_flags.looking_for_object_index = true;
+  lexer_flags.looking_for_object_index = false;
   lexer_flags.at_beginning_of_statement = false;
 
   yylval.tok_val = new token (value, yytext, input_line_number,

@@ -1,3 +1,8 @@
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
+	* test_parser.m: New file.
+	* Makefile.am (FCN_FILES): Add it to the list.
+
 2010-09-29  Rik  <octave@nomad.inbox5.com>
 
 	* fntests.m: Break output text differently for better readability.

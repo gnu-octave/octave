@@ -1,5 +1,10 @@
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
+	* lex.ll (handle_number): Set lexer_flags.looking_for_object_index
+	to false here.  Fixes bug #31608.
+
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
 	* gl-render.cc (make_marker_list): Call fmod instead of mod.
 
 	* data.cc (Frem): Use xrem instead of fmod and fmodf.

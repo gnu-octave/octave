@@ -39,6 +39,7 @@ FCN_FILES = \
   test_logical-wfi-f.m \
   test_logical-wfi-t.m \
   test_null_assign.m \
+  test_parser.m \
   test_prefer.m \
   test_range.m \
   test_recursion.m \

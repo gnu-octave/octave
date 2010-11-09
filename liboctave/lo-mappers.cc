@@ -40,42 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // double -> double mappers.
 
-double
-arg (double x)
-{
-  return atan2 (0.0, x);
-}
-
-double
-conj (double x)
-{
-  return x;
-}
-
-double
-fix (double x)
-{
-  return xtrunc (x);
-}
-
-double
-imag (double)
-{
-  return 0.0;
-}
-
-double
-real (double x)
-{
-  return x;
-}
-
-double
-xround (double x)
-{
-  return gnulib::round (x);
-}
-
 double 
 xroundb (double x)
 {
@@ -242,44 +206,6 @@ atanh (const Complex& x)
   return log ((1.0 + x) / (1.0 - x)) / 2.0;
 }
 
-Complex
-ceil (const Complex& x)
-{
-  return Complex (ceil (real (x)), ceil (imag (x)));
-}
-
-Complex
-fix (const Complex& x)
-{
-  return Complex (fix (real (x)), fix (imag (x)));
-}
-
-Complex
-floor (const Complex& x)
-{
-  return Complex (floor (real (x)), floor (imag (x)));
-}
-
-Complex
-xround (const Complex& x)
-{
-  return Complex (xround (real (x)), xround (imag (x)));
-}
-
-Complex
-xroundb (const Complex& x)
-{
-  return Complex (xroundb (real (x)), xroundb (imag (x)));
-}
-
-Complex
-signum (const Complex& x)
-{
-  double tmp = abs (x);
-
-  return tmp == 0 ? 0.0 : x / tmp;
-}
-
 // complex -> bool mappers.
 
 bool
@@ -313,48 +239,12 @@ xmax (const Complex& x, const Complex& y)
 
 // float -> float mappers.
 
-float
-arg (float x)
-{
-  return atan2 (0.0f, x);
-}
-
-float
-conj (float x)
-{
-  return x;
-}
-
-float
-fix (float x)
-{
-  return xtrunc (x);
-}
-
-float
-imag (float)
-{
-  return 0.0;
-}
-
-float
-real (float x)
-{
-  return x;
-}
-
-float
-xround (float x)
-{
-  return gnulib::round (x);
-}
-
 float 
 xroundb (float x)
 {
   float t = xround (x);
 
-  if (fabs (x - t) == 0.5)
+  if (fabsf (x - t) == 0.5)
     t = 2 * xtrunc (0.5 * t);
 
   return t;
@@ -515,44 +405,6 @@ atanh (const FloatComplex& x)
   return log ((static_cast<float>(1.0) + x) / (static_cast<float>(1.0) - x)) / static_cast<float>(2.0);
 }
 
-FloatComplex
-ceil (const FloatComplex& x)
-{
-  return FloatComplex (ceil (real (x)), ceil (imag (x)));
-}
-
-FloatComplex
-fix (const FloatComplex& x)
-{
-  return FloatComplex (fix (real (x)), fix (imag (x)));
-}
-
-FloatComplex
-floor (const FloatComplex& x)
-{
-  return FloatComplex (floor (real (x)), floor (imag (x)));
-}
-
-FloatComplex
-xround (const FloatComplex& x)
-{
-  return FloatComplex (xround (real (x)), xround (imag (x)));
-}
-
-FloatComplex
-xroundb (const FloatComplex& x)
-{
-  return FloatComplex (xroundb (real (x)), xroundb (imag (x)));
-}
-
-FloatComplex
-signum (const FloatComplex& x)
-{
-  float tmp = abs (x);
-
-  return tmp == 0 ? 0.0 : x / tmp;
-}
-
 // complex -> bool mappers.
 
 bool
@@ -595,87 +447,107 @@ rc_acos (float x)
   return fabsf (x) > 1.0f ? acos (FloatComplex (x)) : FloatComplex (acosf (x));
 }
 
-Complex rc_acosh (double x)
+Complex
+rc_acosh (double x)
 {
   return x < 1.0 ? acosh (Complex (x)) : Complex (acosh (x));
 }
 
-FloatComplex rc_acosh (float x)
+FloatComplex
+rc_acosh (float x)
 {
   return x < 1.0f ? acosh (FloatComplex (x)) : FloatComplex (acoshf (x));
 }
 
-Complex rc_asin (double x)
+Complex
+rc_asin (double x)
 {
   return fabs (x) > 1.0 ? asin (Complex (x)) : Complex (asin (x));
 }
 
-FloatComplex rc_asin (float x)
+FloatComplex
+rc_asin (float x)
 {
   return fabsf (x) > 1.0f ? asin (FloatComplex (x)) : FloatComplex (asinf (x));
 }
 
-Complex rc_atanh (double x)
+Complex
+rc_atanh (double x)
 {
   return fabs (x) > 1.0 ? atanh (Complex (x)) : Complex (atanh (x));
 }
 
-FloatComplex rc_atanh (float x)
+FloatComplex
+rc_atanh (float x)
 {
   return fabsf (x) > 1.0f ? atanh (FloatComplex (x)) : FloatComplex (atanhf (x));
 }
 
-Complex rc_log (double x)
+Complex
+rc_log (double x)
 {
   const double pi = 3.14159265358979323846;
   return x < 0.0 ? Complex (log (-x), pi) : Complex (log (x));
 }
 
-FloatComplex rc_log (float x)
+FloatComplex
+rc_log (float x)
 {
   const float pi = 3.14159265358979323846f;
   return x < 0.0f ? FloatComplex (logf (-x), pi) : FloatComplex (logf (x));
 }
 
-Complex rc_log2 (double x)
+Complex
+rc_log2 (double x)
 {
   const double pil2 = 4.53236014182719380962; // = pi / log(2)
   return x < 0.0 ? Complex (xlog2 (-x), pil2) : Complex (xlog2 (x));
 }
 
-FloatComplex rc_log2 (float x)
+FloatComplex
+rc_log2 (float x)
 {
   const float pil2 = 4.53236014182719380962f; // = pi / log(2)
   return x < 0.0f ? FloatComplex (xlog2 (-x), pil2) : FloatComplex (xlog2 (x));
 }
 
-Complex rc_log10 (double x)
+Complex
+rc_log10 (double x)
 {
   const double pil10 = 1.36437635384184134748; // = pi / log(10)
   return x < 0.0 ? Complex (log10 (-x), pil10) : Complex (log10 (x));
 }
 
-FloatComplex rc_log10 (float x)
+FloatComplex
+rc_log10 (float x)
 {
   const float pil10 = 1.36437635384184134748f; // = pi / log(10)
   return x < 0.0f ? FloatComplex (log10 (-x), pil10) : FloatComplex (log10f (x));
 }
 
-Complex rc_sqrt (double x)
+Complex
+rc_sqrt (double x)
 {
   return x < 0.0 ? Complex (0.0, sqrt (-x)) : Complex (sqrt (x));
 }
 
-FloatComplex rc_sqrt (float x)
+FloatComplex
+rc_sqrt (float x)
 {
   return x < 0.0f ? FloatComplex (0.0f, sqrtf (-x)) : FloatComplex (sqrtf (x));
 }
 
-bool xnegative_sign (double x)
-{ return __lo_ieee_signbit (x); }
+bool
+xnegative_sign (double x)
+{
+  return __lo_ieee_signbit (x);
+}
 
-bool xnegative_sign (float x)
-{ return __lo_ieee_float_signbit (x); }
+bool
+xnegative_sign (float x)
+{
+  return __lo_ieee_float_signbit (x);
+}
 
 // Convert X to the nearest integer value.  Should not pass NaN to
 // this function.

@@ -33,14 +33,15 @@ along with Octave; see the file COPYING.  If not, see
 // Double Precision 
 inline double xtrunc (double x) { return gnulib::trunc (x); }
 inline double xcopysign (double x, double y) { return copysignf (x, y); }
+inline double xceil (double x) { return ceil (x); }
 inline double xfloor (double x) { return floor (x); }
 
-extern OCTAVE_API double arg (double x);
-extern OCTAVE_API double conj (double x);
-extern OCTAVE_API double fix (double x);
-extern OCTAVE_API double imag (double x);
-extern OCTAVE_API double real (double x);
-extern OCTAVE_API double xround (double x);
+inline double arg (double x) { return atan2 (0.0, x); }
+inline double conj (double x) { return x; }
+inline double fix (double x) { return xtrunc (x); }
+inline double imag (double) { return 0.0; }
+inline double real (double x) { return x; }
+inline double xround (double x) { return gnulib::round (x); }
 extern OCTAVE_API double xroundb (double x);
 extern OCTAVE_API double signum (double x);
 extern OCTAVE_API double xlog2 (double x); 
@@ -78,18 +79,30 @@ extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 // Generic xmin, xmax definitions
 template <class T>
 inline T xmin (T x, T y)
-{ return x <= y ? x : y; }
+{
+  return x <= y ? x : y;
+}
+
 template <class T>
 inline T xmax (T x, T y)
-{ return x >= y ? x : y; }
+{
+  return x >= y ? x : y;
+}
 
-// This form is favorable. GCC will translate (x <= y ? x : y) without a jump,
-// hence the only conditional jump involved will be the first (xisnan), infrequent
-// and hence friendly to branch prediction.
-inline double xmin (double x, double y)
-{ return xisnan (y) ? x : (x <= y ? x : y);; }
-inline double xmax (double x, double y)
-{ return xisnan (y) ? x : (x >= y ? x : y);; }
+// This form is favorable. GCC will translate (x <= y ? x : y) without a
+// jump, hence the only conditional jump involved will be the first
+// (xisnan), infrequent and hence friendly to branch prediction.
+inline double
+xmin (double x, double y)
+{
+  return xisnan (y) ? x : (x <= y ? x : y);
+}
+
+inline double
+xmax (double x, double y)
+{
+  return xisnan (y) ? x : (x >= y ? x : y);
+}
 
 extern OCTAVE_API Complex acos (const Complex& x);
 extern OCTAVE_API Complex acosh (const Complex& x);
@@ -97,23 +110,6 @@ extern OCTAVE_API Complex asin (const Complex& x);
 extern OCTAVE_API Complex asinh (const Complex& x);
 extern OCTAVE_API Complex atan (const Complex& x);
 extern OCTAVE_API Complex atanh (const Complex& x);
-
-extern OCTAVE_API Complex ceil (const Complex& x);
-extern OCTAVE_API Complex fix (const Complex& x);
-extern OCTAVE_API Complex floor (const Complex& x);
-extern OCTAVE_API Complex xround (const Complex& x);
-extern OCTAVE_API Complex xroundb (const Complex& x);
-extern OCTAVE_API Complex signum (const Complex& x);
-
-inline bool
-xisnan (const Complex& x)
-{ return (xisnan (real (x)) || xisnan (imag (x))); }
-inline bool
-xfinite (const Complex& x)
-{ return (xfinite (real (x)) && xfinite (imag (x))); }
-inline bool
-xisinf (const Complex& x)
-{ return (xisinf (real (x)) || xisinf (imag (x))); }
 
 extern OCTAVE_API bool octave_is_NA (const Complex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const Complex& x);
@@ -124,14 +120,15 @@ extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 // Single Precision 
 inline float xtrunc (float x) { return gnulib::truncf (x); }
 inline float xcopysign (float x, float y) { return copysignf (x, y); }
+inline float xceil (float x) { return ceilf (x); }
 inline float xfloor (float x) { return floorf (x); }
 
-extern OCTAVE_API float arg (float x);
-extern OCTAVE_API float conj (float x);
-extern OCTAVE_API float fix (float x);
-extern OCTAVE_API float imag (float x);
-extern OCTAVE_API float real (float x);
-extern OCTAVE_API float xround (float x);
+inline float arg (float x) { return atan2f (0.0f, x); }
+inline float conj (float x) { return x; }
+inline float fix (float x) { return xtrunc (x); }
+inline float imag (float) { return 0.0f; }
+inline float real (float x) { return x; }
+inline float xround (float x) { return gnulib::round (x); }
 extern OCTAVE_API float xroundb (float x);
 extern OCTAVE_API float signum (float x);
 extern OCTAVE_API float xlog2 (float x); 
@@ -159,14 +156,20 @@ inline bool xisinf (float x)
 extern OCTAVE_API bool xisinf (float x);
 #endif
 
-
 extern OCTAVE_API bool octave_is_NA (float x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
 
-inline float xmin (float x, float y)
-{ return xisnan (y) ? x : (x <= y ? x : y);; }
-inline float xmax (float x, float y)
-{ return xisnan (y) ? x : (x >= y ? x : y);; }
+inline float
+xmin (float x, float y)
+{
+  return xisnan (y) ? x : (x <= y ? x : y);
+}
+
+inline float
+xmax (float x, float y)
+{
+  return xisnan (y) ? x : (x >= y ? x : y);
+}
 
 extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
 extern OCTAVE_API FloatComplex acosh (const FloatComplex& x);
@@ -174,23 +177,6 @@ extern OCTAVE_API FloatComplex asin (const FloatComplex& x);
 extern OCTAVE_API FloatComplex asinh (const FloatComplex& x);
 extern OCTAVE_API FloatComplex atan (const FloatComplex& x);
 extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
-
-extern OCTAVE_API FloatComplex ceil (const FloatComplex& x);
-extern OCTAVE_API FloatComplex fix (const FloatComplex& x);
-extern OCTAVE_API FloatComplex floor (const FloatComplex& x);
-extern OCTAVE_API FloatComplex xround (const FloatComplex& x);
-extern OCTAVE_API FloatComplex xroundb (const FloatComplex& x);
-extern OCTAVE_API FloatComplex signum (const FloatComplex& x);
-
-inline bool
-xisnan (const FloatComplex& x)
-{ return (xisnan (real (x)) || xisnan (imag (x))); }
-inline bool
-xfinite (const FloatComplex& x)
-{ return (xfinite (real (x)) && xfinite (imag (x))); }
-inline bool
-xisinf (const FloatComplex& x)
-{ return (xisinf (real (x)) || xisinf (imag (x))); }
 
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
@@ -219,14 +205,23 @@ extern OCTAVE_API FloatComplex rc_sqrt (float);
 
 // Some useful tests, that are commonly repeated.
 // Test for a finite integer.
-inline bool xisinteger (double x)
-{ return xfinite (x) && x == xround (x); }
-inline bool xisinteger (float x)
-{ return xfinite (x) && x == xround (x); }
+inline bool
+xisinteger (double x)
+{
+  return xfinite (x) && x == xround (x);
+}
+
+inline bool
+xisinteger (float x)
+{
+  return xfinite (x) && x == xround (x);
+}
 
 // Test for negative sign. 
 extern OCTAVE_API bool xnegative_sign (double x);
 extern OCTAVE_API bool xnegative_sign (float x);
+
+// Some old rounding functions.
 
 extern OCTAVE_API octave_idx_type NINTbig (double x);
 extern OCTAVE_API octave_idx_type NINTbig (float x);
@@ -246,6 +241,71 @@ inline OCTAVE_API double D_NINT (double x) { return X_NINT (x); }
 inline OCTAVE_API float F_NINT (float x) { return X_NINT (x); }
 
 // Template functions can have either float or double arguments.
+
+template <typename T>
+bool
+xisnan (const std::complex<T>& x)
+{
+  return (xisnan (real (x)) || xisnan (imag (x)));
+}
+
+template <typename T>
+bool
+xfinite (const std::complex<T>& x)
+{
+  return (xfinite (real (x)) && xfinite (imag (x)));
+}
+
+template <typename T>
+bool
+xisinf (const std::complex<T>& x)
+{
+  return (xisinf (real (x)) || xisinf (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+fix (const std::complex<T>& x)
+{
+  return std::complex<T> (fix (real (x)), fix (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+ceil (const std::complex<T>& x)
+{
+  return std::complex<T> (xceil (real (x)), xceil (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+floor (const std::complex<T>& x)
+{
+  return std::complex<T> (xfloor (real (x)), xfloor (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+xround (const std::complex<T>& x)
+{
+  return std::complex<T> (xround (real (x)), xround (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+xroundb (const std::complex<T>& x)
+{
+  return std::complex<T> (xroundb (real (x)), xroundb (imag (x)));
+}
+
+template <typename T>
+std::complex<T>
+signum (const std::complex<T>& x)
+{
+  T tmp = abs (x);
+
+  return tmp == 0 ? 0.0 : x / tmp;
+}
 
 template <typename T>
 OCTAVE_API

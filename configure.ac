@@ -767,8 +767,8 @@ CPPFLAGS="$save_CPPFLAGS"
 
 ### Graphics/ImageMagick++
 
-AC_ARG_WITH([magick], [
-  AS_HELP_STRING([--with-magick=LIB],
+AC_ARG_WITH([magick],
+  [AS_HELP_STRING([--with-magick=LIB],
     [select library to use for image I/O (options: GraphicsMagick(default) or ImageMagick)])], [
   magick="$withval"], [
   magick="GraphicsMagick"])
@@ -1125,8 +1125,8 @@ LIBS="$save_LIBS"
 ### and want to try dynamic linking too (works on some systems, for
 ### example, OS X and Windows).
 
-AC_ARG_ENABLE([dl], [
-  AS_HELP_STRING([--enable-dl],
+AC_ARG_ENABLE([dl],
+  [AS_HELP_STRING([--enable-dl],
     [create shared libraries (not all systems)])], [
   case "${enableval}" in
     yes) ENABLE_DYNAMIC_LINKING=true ;;

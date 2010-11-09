@@ -346,7 +346,7 @@ xmod (T x, T y)
       retval = x - y * n;
     }
 
-  if (x != y && y != 0)
+  if (x != y && y != 0 && retval != 0)
     retval = xcopysign (retval, y);
 
   return retval;
@@ -391,7 +391,7 @@ xrem (T x, T y)
       retval = x - y * n;
     }
 
-  if (x != y && y != 0)
+  if (x != y && y != 0 && retval != 0)
     retval = xcopysign (retval, x);
 
   return retval;

@@ -1,5 +1,9 @@
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
+	* lo-mappers.h (xmod, xrem): Don't copy sign if result is zero.
+
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
 	* lo-mappers.cc, lo-mappers.h (xisnan, xisinf, xfinite, xmod,
 	xrem, floor, ceil, xround, xroundb, signum): Move definitions
 	from lo-mappers.cc to lo-mappers.h and convert to templates.

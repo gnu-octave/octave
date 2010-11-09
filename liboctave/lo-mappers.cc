@@ -107,13 +107,85 @@ signum (double x)
 }
 
 double
-mod (double x, double y)
+xmod (double x, double y)
 {
-  if (y == 0)
-    return x;
+  double retval;
 
-  double r = fmod (x, y);
-  return ((r < 0) != (y < 0)) ? y+r : r;
+  if (y == 0)
+    retval = x;
+  else
+    {
+      double q = x / y;
+
+      double n = floor (q);
+
+      if (D_NINT (y) != y)
+        {
+          if (D_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - D_NINT (q)) < DBL_EPSILON)
+                    n = D_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - D_NINT (q))/ D_NINT (q)) < DBL_EPSILON)
+                    n = D_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = copysignf (retval, y);
+
+  return retval;
+}
+
+double
+xrem (double x, double y)
+{
+  double retval;
+
+  if (y == 0)
+    retval = x;
+  else
+    {
+      double q = x / y;
+
+      double n = trunc (q);
+
+      if (D_NINT (y) != y)
+        {
+          if (D_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - D_NINT (q)) < DBL_EPSILON)
+                    n = D_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - D_NINT (q))/ D_NINT (q)) < DBL_EPSILON)
+                    n = D_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = copysignf (retval, x);
+
+  return retval;
 }
 
 double
@@ -396,13 +468,85 @@ signum (float x)
 }
 
 float
-mod (float x, float y)
+xmod (float x, float y)
 {
-  if (y == 0)
-    return x;
+  float retval;
 
-  float r = fmodf (x, y);
-  return ((r < 0) != (y < 0)) ? y+r : r;
+  if (y == 0)
+    retval = x;
+  else
+    {
+      float q = x / y;
+
+      float n = floor (q);
+
+      if (F_NINT (y) != y)
+        {
+          if (F_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - F_NINT (q)) < FLT_EPSILON)
+                    n = F_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - F_NINT (q))/ F_NINT (q)) < FLT_EPSILON)
+                    n = F_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = copysignf (retval, y);
+
+  return retval;
+}
+
+float
+xrem (float x, float y)
+{
+  float retval;
+
+  if (y == 0)
+    retval = x;
+  else
+    {
+      float q = x / y;
+
+      float n = truncf (q);
+
+      if (F_NINT (y) != y)
+        {
+          if (F_NINT (q) == q)
+            n = q;
+          else
+            {
+              if (x >= -1 && x <= 1)
+                {
+                  if (std::abs (q - F_NINT (q)) < FLT_EPSILON)
+                    n = F_NINT (q);
+                }
+              else
+                {
+                  if (std::abs ((q - F_NINT (q))/ F_NINT (q)) < FLT_EPSILON)
+                    n = F_NINT (q);
+                }
+            }
+        }
+
+      retval = x - y * n;
+    }
+
+  if (x != y && y != 0)
+    retval = copysignf (retval, x);
+
+  return retval;
 }
 
 float

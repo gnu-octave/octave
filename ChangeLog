@@ -1,3 +1,7 @@
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac: Don't check for trunc, copysign, or _copysign.
+
 2010-11-08  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (--without-opengl): New configure option.

@@ -567,12 +567,12 @@ agree, or if either of the arguments is complex.\n\
       else if (args(0).is_single_type () || args(1).is_single_type ())
         {
           if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-            retval = fmodf (args(0).float_value (), args(1).float_value ());
+            retval = xrem (args(0).float_value (), args(1).float_value ());
           else
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, fmodf, "rem");
+              retval = binmap<float> (a0, a1, xrem, "rem");
             }
         }
       else
@@ -580,19 +580,19 @@ agree, or if either of the arguments is complex.\n\
           bool a0_scalar = args(0).is_scalar_type ();
           bool a1_scalar = args(1).is_scalar_type ();
           if (a0_scalar && a1_scalar)
-            retval = fmod (args(0).scalar_value (), args(1).scalar_value ());
+            retval = xrem (args(0).scalar_value (), args(1).scalar_value ());
           else if ((a0_scalar || args(0).is_sparse_type ()) 
                    && (a1_scalar || args(1).is_sparse_type ()))
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, fmod, "rem");
+              retval = binmap<double> (m0, m1, xrem, "rem");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, fmod, "rem");
+              retval = binmap<double> (a0, a1, xrem, "rem");
             }
         }
     }
@@ -700,12 +700,12 @@ either of the arguments is complex.\n\
       else if (args(0).is_single_type () || args(1).is_single_type ())
         {
           if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-            retval = mod (args(0).float_value (), args(1).float_value ());
+            retval = xmod (args(0).float_value (), args(1).float_value ());
           else
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, mod, "mod");
+              retval = binmap<float> (a0, a1, xmod, "mod");
             }
         }
       else
@@ -713,19 +713,19 @@ either of the arguments is complex.\n\
           bool a0_scalar = args(0).is_scalar_type ();
           bool a1_scalar = args(1).is_scalar_type ();
           if (a0_scalar && a1_scalar)
-            retval = mod (args(0).scalar_value (), args(1).scalar_value ());
+            retval = xmod (args(0).scalar_value (), args(1).scalar_value ());
           else if ((a0_scalar || args(0).is_sparse_type ()) 
                    && (a1_scalar || args(1).is_sparse_type ()))
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, mod, "mod");
+              retval = binmap<double> (m0, m1, xmod, "mod");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, mod, "mod");
+              retval = binmap<double> (a0, a1, xmod, "mod");
             }
         }
     }

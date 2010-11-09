@@ -3288,7 +3288,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
         for (int i = 0; i < 2*5; i++)
           {
             ang = (-0.5 + double(i+1)/5) * M_PI;
-            r = 1.0 - (dr * mod(double(i+1), 2.0));
+            r = 1.0 - (dr * fmod(double(i+1), 2.0));
             glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
           }
         glEnd ();
@@ -3304,7 +3304,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
         for (int i = 0; i < 2*6; i++)
           {
             ang = (0.5 + double(i+1)/6.0) * M_PI;
-            r = 1.0 - (dr * mod(double(i+1), 2.0));
+            r = 1.0 - (dr * fmod(double(i+1), 2.0));
             glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
           }
         glEnd ();

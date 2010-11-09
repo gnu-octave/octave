@@ -1572,7 +1572,7 @@ AC_CHECK_FUNCS(basename canonicalize_file_name \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \
   setpwent setvbuf siglongjmp \
-  strsignal tempnam tgammaf trunc umask \
+  strsignal tempnam tgammaf umask \
   uname utime waitpid \
   _chmod x_utime _utime32)
 
@@ -1744,8 +1744,8 @@ case "$canonical_host_type" in
     AC_DEFINE(HAVE_ISNAN, 1, [Define if you have isnan().])
   ;;
   *)
-    AC_CHECK_FUNCS(finite isnan isinf copysign signbit)
-    AC_CHECK_FUNCS(_finite _isnan _copysign)
+    AC_CHECK_FUNCS(finite isnan isinf signbit)
+    AC_CHECK_FUNCS(_finite _isnan)
     AC_CHECK_DECLS(signbit, , , [#include <math.h>])
   ;;
 esac

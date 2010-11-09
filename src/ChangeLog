@@ -1,3 +1,10 @@
+2010-11-09  John W. Eaton  <jwe@octave.org>
+
+	* gl-render.cc (make_marker_list): Call fmod instead of mod.
+
+	* data.cc (Frem): Use xrem instead of fmod and fmodf.
+	(Fmod): Use xmod instead of mod.
+
 2010-11-08  Kai Habel  <kai.habel@gmx.de>
 
 	* fltk-backend.cc (do_find_uimenu_children): Simplify code, Remove 

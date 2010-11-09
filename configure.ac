@@ -826,7 +826,21 @@ AC_SUBST(MAGICK_LIBS)
 
 warn_freetype=""
 
-OCTAVE_OPENGL
+check_opengl=false
+AC_ARG_WITH([opengl],
+  [AS_HELP_STRING([--with-opengl=yes], [use opengl library for graphics])],
+  [if test "x$withval" = xno; then
+     warn_opengl="--without-opengl specified.  Native graphics will be disabled."
+     AC_MSG_WARN([$warn_opengl])
+   else
+     check_opengl=true
+   fi],
+  [check_opengl=true])
+
+if $check_opengl; then
+  OCTAVE_OPENGL
+fi
+
 GRAPHICS_LIBS=
 GRAPHICS_CFLAGS=
 
@@ -2377,6 +2391,12 @@ if $USE_OPENMP; then
 fi
 
 native_graphics=true
+if test -n "warn_opengl"; then
+  AC_MSG_WARN([$warn_opengl])
+  native_graphics=false
+  warn_msg_printed=true
+fi
+
 if test -n "$warn_freetype"; then
   AC_MSG_WARN([$warn_freetype])
   native_graphics=false

@@ -1,3 +1,7 @@
+2010-11-08  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (--without-opengl): New configure option.
+
 2010-11-03  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include copysign in the list.

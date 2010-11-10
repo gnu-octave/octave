@@ -1,5 +1,7 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	Bug #31567.
+
 	* ov-fcn.h (octave_base_value::is_class_constructor)
 	octave_base_value::is_class_method): New optional character
 	string argument.

@@ -8,6 +8,7 @@ deprecated_FCN_FILES = \
   deprecated/clg.m \
   deprecated/complement.m \
   deprecated/create_set.m \
+  deprecated/dispatch.m \
   deprecated/dmult.m \
   deprecated/fstat.m \
   deprecated/gammai.m \

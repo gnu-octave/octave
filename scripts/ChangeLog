@@ -1,3 +1,8 @@
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/dispatch.m: Deprecate dispatch function.
+	* deprecated/module.mk (deprecated_FCN_FILES): Add it to the list.
+
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
 	* help/help.m: Call missing_function_hook with output argument

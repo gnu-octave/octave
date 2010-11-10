@@ -1,5 +1,6 @@
 __contourc__.cc
 __delaunayn__.cc
+__dispatch__.cc
 __dsearchn__.cc
 __glpk__.cc
 __lin_interpn__.cc
@@ -25,7 +26,6 @@ dasrt.cc
 dassl.cc
 det.cc
 dot.cc
-dispatch.cc
 dlmread.cc
 dmperm.cc
 eig.cc

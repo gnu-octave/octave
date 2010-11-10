@@ -1,5 +1,14 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__dispatch__.cc: Rename from dispatch.cc.
+	Move tests to scripts/deprecated/dispatch.m.
+	(F__dispatch__): Rename from Fdispatch.
+
+	* DLD-FUNCTIONS/module-files: Add __dispatch__.cc to the list.
+	Remove dispatch.cc from the list.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (Fbuiltin): Move here from DLD-FUNCTIONS/dispatch.cc.
 
 2010-11-10  Kai Habel  <kai.habel@gmx.de>

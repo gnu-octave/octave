@@ -123,6 +123,8 @@ octave_class::get_current_method_class (void)
 
   octave_function *fcn = octave_call_stack::current ();
 
+  // Here we are just looking to see if FCN is a method or constructor
+  // for any class, not specifically this one.
   if (fcn->is_class_method () || fcn->is_class_constructor ())
     retval = fcn->dispatch_class ();
 
@@ -1726,45 +1728,53 @@ derived.\n\
     {
       octave_function *fcn = octave_call_stack::caller ();
 
-      if (fcn && fcn->is_class_constructor ())
+      std::string id = args(1).string_value ();
+
+      if (! error_state)
         {
-          octave_map m = args(0).map_value ();
-
-          if (! error_state)
+          if (fcn)
             {
-              std::string id = args(1).string_value ();
-
-              if (! error_state)
+              if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
                 {
-                  if (nargin == 2)
-                    retval = octave_value (new octave_class (m, id));
-                  else
-                    {
-                      octave_value_list parents = args.slice (2, nargin-2);
-
-                      retval = octave_value (new octave_class (m, id, parents));
-                    }
+                  octave_map m = args(0).map_value ();
 
                   if (! error_state)
                     {
-                      octave_class::exemplar_const_iterator it
-                        = octave_class::exemplar_map.find (id);
+                      if (nargin == 2)
+                        retval = octave_value (new octave_class (m, id));
+                      else
+                        {
+                          octave_value_list parents = args.slice (2, nargin-2);
 
-                      if (it == octave_class::exemplar_map.end ())
-                        octave_class::exemplar_map[id]
-                          = octave_class::exemplar_info (retval);
-                      else if (! it->second.compare (retval))
-                        error ("class: object of class `%s' does not match previously constructed objects", id.c_str ());
+                          retval
+                            = octave_value (new octave_class (m, id, parents));
+                        }
+
+                      if (! error_state)
+                        {
+                          octave_class::exemplar_const_iterator it
+                            = octave_class::exemplar_map.find (id);
+
+                          if (it == octave_class::exemplar_map.end ())
+                            octave_class::exemplar_map[id]
+                              = octave_class::exemplar_info (retval);
+                          else if (! it->second.compare (retval))
+                            error ("class: object of class `%s' does not match previously constructed objects",
+                                   id.c_str ());
+                        }
                     }
+                  else
+                    error ("class: expecting structure as first argument");
                 }
               else
-                error ("class: expecting character string as second argument");
+                error ("class: `%s' is invalid as a class name in this context",
+                       id.c_str ());
             }
           else
-            error ("class: expecting structure as first argument");
+            error ("class: invalid call from outside class constructor or method");
         }
       else
-        error ("class: invalid call from outside class constructor");
+        error ("class: expecting character string as second argument");
     }
 
   return retval;

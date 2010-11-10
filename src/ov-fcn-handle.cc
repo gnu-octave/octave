@@ -1493,8 +1493,11 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
   octave_value f = symbol_table::find_function (tnm, octave_value_list (),
                                                 local_funcs);
+
   octave_function *fptr = f.function_value (true);
 
+  // Here we are just looking to see if FCN is a method or constructor
+  // for any class.
   if (local_funcs && fptr 
       && (fptr->is_nested_function () || fptr->is_private_function ()
           || fptr->is_class_constructor ()))

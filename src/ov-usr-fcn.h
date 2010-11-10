@@ -251,11 +251,19 @@ public:
 
   void mark_as_class_constructor (void) { class_constructor = true; }
 
-  bool is_class_constructor (void) const { return class_constructor; }
+  bool is_class_constructor (const std::string& cname = std::string ()) const
+    {
+      return class_constructor
+        ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    }
 
   void mark_as_class_method (void) { class_method = true; }
 
-  bool is_class_method (void) const { return class_method; }
+  bool is_class_method (const std::string& cname = std::string ()) const
+    {
+      return class_method
+        ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)

@@ -1,3 +1,16 @@
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn.h (octave_base_value::is_class_constructor)
+	octave_base_value::is_class_method): New optional character
+	string argument.
+	* ov-usr-fcn.h (octave_usr_fcn::is_class_constructor)
+	octave_usr_fcn::is_class_method): New optional arg. If this
+	argument is not empty, also check it against the name of the
+	dispatch class.
+	* ov-class.cc (Fclass): Allow class function to be called inside
+	a class method.  Require that the to-be-constructed object is of
+	the same class as the class constructor or method.
+
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
 	* lex.ll (handle_number): Set lexer_flags.looking_for_object_index

@@ -177,7 +177,7 @@
 2010-07-31  Rik  <octave@nomad.inbox5.com>
 
 	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in,
-	  Quad-opts.in: Grammarcheck .cc files
+	Quad-opts.in: Grammarcheck .cc files
 
 2010-07-29  Jaroslav Hajek  <highegg@gmail.com>
 
@@ -6869,7 +6869,7 @@
 	* dMatrix.cc (Matrix Matrix::inverse (MatrixType &, octave_idx_type&,
 	double&, int, int)): ditto. If rcond==0 force matrix of infinities.
 	* dMatrix.cc (ComplexMatrix ComplexMatrix::inverse (MatrixType &,
-	 octave_idx_type&, double&, int, int)): ditto.
+	octave_idx_type&, double&, int, int)): ditto.
 
 2007-08-27  John W. Eaton  <jwe@octave.org>
 

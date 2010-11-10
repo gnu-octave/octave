@@ -153,17 +153,17 @@
 	* interpreter/doccheck/add_to_aspell_dict: Script to add new
 	Octave-specific words to private Aspell dictionary.
 	* interpreter/octave.texi: New @nospell macro which forces Aspell to
-	  ignore the word marked by the macro.
+	ignore the word marked by the macro.
 	* interpreter/mk_doc_cache.m: Skip new @nospell macro when
-	  building doc_cache.
+	building doc_cache.
 	* interpreter/arith.txi, interpreter/audio.txi,
-	  interpreter/bugs.txi, interpreter/contrib.txi,
-	  interpreter/debug.txi, interpreter/diagperm.txi,
-	  interpreter/dynamic.txi, interpreter/geometry.txi,
-	  interpreter/matrix.txi, interpreter/numbers.txi,
-	  interpreter/oop.txi, interpreter/package.txi,
-	  interpreter/sparse.txi, interpreter/tips.txi:
-	  Spellcheck documentation.
+	interpreter/bugs.txi, interpreter/contrib.txi,
+	interpreter/debug.txi, interpreter/diagperm.txi,
+	interpreter/dynamic.txi, interpreter/geometry.txi,
+	interpreter/matrix.txi, interpreter/numbers.txi,
+	interpreter/oop.txi, interpreter/package.txi,
+	interpreter/sparse.txi, interpreter/tips.txi:
+	Spellcheck documentation.
 
 2010-07-01  Rik  <octave@nomad.inbox5.com>
 
@@ -329,26 +329,26 @@
 2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am, interpreter/Makefile.am, liboctave/Makefile.am: remove
-	  lingering configuration support for conf.texi.
+	lingering configuration support for conf.texi.
 	* liboctave/Makefile.am: distribute .texi files.
 
 2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m, interpreter/plotimages.m:
-	  Switch to color output for PostScript documentation images.
+	interpreter/sparseimages.m, interpreter/plotimages.m:
+	Switch to color output for PostScript documentation images.
 
 2009-12-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m, interpreter/plotimages.m:
-	  Set default paperorientation to landscape to stop warning message.
+	interpreter/sparseimages.m, interpreter/plotimages.m:
+	Set default paperorientation to landscape to stop warning message.
 
 2009-12-04  Ben Abbott  <bpabbott@mac.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,
-	  interpreter/sparseimages.m: Set default papersize to the desired
-	  imagesize.
+	interpreter/sparseimages.m: Set default papersize to the desired
+	imagesize.
 
 2009-12-04  John W. Eaton  <jwe@octave.org>
 
@@ -972,8 +972,9 @@
 	precedence here.
 
 2008-10-16  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
 	* interpreter/contrib.txi: added recommendation of limited
-	  line width in code examples
+	line width in code examples
 
 2008-10-03  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
@@ -1836,7 +1837,7 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* interpreter/matrix.txi: Add rande, randp, randg and update
-	  for different random generator behavior.
+	for different random generator behavior.
 
 2006-03-28  John W. Eaton  <jwe@octave.org>
 

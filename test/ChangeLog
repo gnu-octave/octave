@@ -534,7 +534,7 @@
 2006-04-03  David Bateman  <dbateman@free.fr>
 
 	* test_number.m: Reverse sense of isscalar and isvector tests
-	  for recent changes.
+	for recent changes.
 
 2006-03-21  John W. Eaton  <jwe@octave.org>
 

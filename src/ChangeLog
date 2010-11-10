@@ -28,12 +28,14 @@
 2010-11-08  Kai Habel  <kai.habel@gmx.de>
 
 	* fltk-backend.cc (do_find_uimenu_children): Simplify code, Remove 
-	unused code. (update_submenu): Remove unused function.
-	(add_to_menu (uimenu::properties&)): Simplify code. Get properties for valid objects 
-	only. (add_to_menu (figure::properties&)): Dito.
-	(remove_from_menu (T_prop&)): Dito.
+	unused code.
+	(update_submenu): Remove unused function.
+	(add_to_menu (uimenu::properties&)): Simplify.  Get properties
+	for valid objects only.
+	(add_to_menu (figure::properties&)): Ditto.
+	(remove_from_menu (T_prop&)): Ditto.
 
-2010-11-03  Ben Abbott <bpabbott@mac.com>
+2010-11-03  Ben Abbott  <bpabbott@mac.com>
 
 	* gl-render.cc: Do not give rendering error for uimenus.
 
@@ -127,7 +129,7 @@
 	(const patch::properties &)): Set ec_mode to 0 if edgecolor is "none".
 	Set fc_mode to 0 if facecolor is "none".
 
-2010-10-29  Ben Abbott <bpabbott@mac.com>
+2010-10-29  Ben Abbott  <bpabbott@mac.com>
 
 	* gl-render.cc: Crop ticks, ticklabels, and gridlines for OpenGL
 	backend.
@@ -3328,12 +3330,12 @@
 2010-01-18  David Grundberg  <davidg@cs.umu.se>
 
 	* mex.cc (mexPrintf): Change signature.
-	* mexproto.h (mexPrintf): Dito.
+	* mexproto.h (mexPrintf): Ditto.
 
 2010-01-18  David Grundberg  <davidg@cs.umu.se>
 
 	* mexproto.h (mxSetDimensions): Change signature.
-	* mex.cc (mxSetDimensions): Dito.
+	* mex.cc (mxSetDimensions): Ditto.
 
 2010-01-17  Jaroslav Hajek  <highegg@gmail.com>
 

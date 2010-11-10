@@ -5,7 +5,7 @@
 	* miscellaneous/unimplemented.m: Return message if nargout > 0.
 	Fixes bug #31597.
 
-2010-11-08  Ben Abbott <bpabbott@mac.com>
+2010-11-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Check for z/y/zdata before converting
 	negative values to NaNs. Bug fix for changeset 11201.
@@ -20,7 +20,7 @@
 
 	* sparse/sprand.m: Add input validation to function.
 
-2010-11-08  Ben Abbott <bpabbott@mac.com>
+2010-11-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/private/__bar__.m: Permit bar() to be called with scalar inputs.
 	* plot/__go_draw_axes__.m, plot/axis.m: Set proper tight axis limits
@@ -55,7 +55,7 @@
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
 	* plot/__fltk_ginput__.m: Use semicolons to prevent internal
-	  function evaluations being output to screen.
+	function evaluations being output to screen.
 
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
@@ -64,37 +64,37 @@
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Update check-m-sources target to include generated
-	  function files.
+	function files.
 
 2010-11-04  Rik  <octave@nomad.inbox5.com>
 
 	* general/accumarray.m, general/accumdim.m, general/blkdiag.m,
-	  general/cell2mat.m, general/common_size.m,
-	  general/private/__isequal__.m, general/private/__splinen__.m,
-	  geometry/voronoi.m, io/textscan.m, miscellaneous/private/__xzip__.m,
-	  pkg/pkg.m, plot/axis.m, plot/pareto.m, plot/private/__patch__.m,
-	  statistics/base/mode.m, strings/deblank.m, strings/strcat.m,
-	  strings/strmatch.m, strings/strtrim.m, strings/untabify.m:
-	  Reverse previous changeset.  Use all lower case for "uniformoutput"
-	  option.
+	general/cell2mat.m, general/common_size.m,
+	general/private/__isequal__.m, general/private/__splinen__.m,
+	geometry/voronoi.m, io/textscan.m, miscellaneous/private/__xzip__.m,
+	pkg/pkg.m, plot/axis.m, plot/pareto.m, plot/private/__patch__.m,
+	statistics/base/mode.m, strings/deblank.m, strings/strcat.m,
+	strings/strmatch.m, strings/strtrim.m, strings/untabify.m:
+	Reverse previous changeset.  Use all lower case for "uniformoutput"
+	option.
 
 2010-11-03  Rik  <octave@nomad.inbox5.com>
 
 	* general/accumdim.m, general/cell2mat.m, general/common_size.m,
-	  general/structfun.m, pkg/pkg.m, strings/untabify.m: Use CamelCase
-	  for 'UniformOutput' option to cellfun.
+	general/structfun.m, pkg/pkg.m, strings/untabify.m: Use CamelCase
+	for 'UniformOutput' option to cellfun.
 
 2010-11-03  Rik  <octave@nomad.inbox5.com>
 
 	* scripts/plot/plotyy.m, scripts/plot/xlim.m, scripts/plot/ylim.m,
-	  scripts/plot/zlim.m: Fix typos in docstring and demo string.
+	scripts/plot/zlim.m: Fix typos in docstring and demo string.
 
 2010-11-03  Rik  <octave@nomad.inbox5.com>
 
-	* general/common_size.m, miscellaneous/private/__xzip__.m, 
-	  miscellaneous/what.m, plot/pareto.m, plot/private/__patch__.m:
-	  Use function handle as input to cellfun rather than quoted function
-	  name or anonymous function wrapper.
+	* general/common_size.m, miscellaneous/private/__xzip__.m,
+	miscellaneous/what.m, plot/pareto.m, plot/private/__patch__.m:
+	Use function handle as input to cellfun rather than quoted function
+	name or anonymous function wrapper.
 
 2010-11-03  Konstantinos Poulios  <logari81@googlemail.com>
 
@@ -111,12 +111,12 @@
 
 	* plot/axis.m: Leave zlim unchanged during "axis tight" on 2D plots
 
-2010-11-03  Ben Abbott <bpabbott@mac.com>
+2010-11-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/private/__patch__.m: Don't index an empty array; bug introduced
 	by changeset 11175.
 
-2010-11-03  Ben Abbott <bpabbott@mac.com>
+2010-11-03  Ben Abbott  <bpabbott@mac.com>
 
 	* miscellaneous/getappdata.m, miscellaneous/isappdata.m,
 	miscellaneous/rmappdata.m, miscellaneous/setappdata.m:
@@ -129,7 +129,7 @@
 	properties that are normally set by patch are correctly set in the
 	call to __go_patch__.
 
-2010-11-01  Ben Abbott <bpabbott@mac.com>
+2010-11-01  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/axis.m: Exclude hggroup {x,y,z}data properties when determing
 	tight axis limits.
@@ -155,14 +155,14 @@
 2010-10-28  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, signal/module.mk, deprecated/autocov.m,
-	  deprecated/autocor.m: Deprecate autocov and autocor functions.
+	deprecated/autocor.m: Deprecate autocov and autocor functions.
 
 2010-10-27  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Don't attempt to plot patch outlines if
 	the marker property is set to none.
 
-2010-10-28  Ben Abbott <bpabbott@mac.com>
+2010-10-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/daspect.m, plot/pbaspect.m: Add demos setting both data and
 	plotbox aspect ratios.
@@ -262,8 +262,8 @@
 2010-10-21  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/distributions/wblcdf.m, statistics/distributions/wblinv.m,
-	  statistics/distributions/wblpdf.m, statistics/distributions/wblrnd.m:
-	  Fix reversed documentation for shape and scale parameters.
+	statistics/distributions/wblpdf.m, statistics/distributions/wblrnd.m:
+	Fix reversed documentation for shape and scale parameters.
 
 2010-10-21  Ben Abbott  <bpabbott@mac.com>
 
@@ -1362,8 +1362,8 @@
 2010-05-16  Rik  <octave@nomad.inbox5.com>
 
 	* plot/contourc.m, plot/private/__contour__.m,
-	  plot/surface.m, plot/surfnorm.m: Check input
-	  arguments for size and type (bug #29861).
+	plot/surface.m, plot/surfnorm.m: Check input
+	arguments for size and type (bug #29861).
 
 2010-05-13  John W. Eaton  <jwe@octave.org>
 
@@ -1393,9 +1393,9 @@
 2010-05-05  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/tests/cor_test.m, statistics/tests/t_test.m,
-	  statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m,
-	  statistics/tests/welch_test.m: Replace deprecated function calls.
-	  Patch provided by Alois Schlögl.
+	statistics/tests/t_test_2.m, statistics/tests/t_test_regression.m,
+	statistics/tests/welch_test.m: Replace deprecated function calls.
+	Patch provided by Alois Schlögl.
 
 2010-05-02  Rik  <octave@nomad.inbox5.com>
 
@@ -4580,11 +4580,11 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 2008-11-29  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* miscellaneous/gzip.m: Remove @seealso reference to __xzip__,
-	  improve tests
-	  miscellaneous/bzip2.m: Remove @seealso reference to __xzip__,
-	  fix handling of output argument, add test
-	  miscellaneous/__xzip__.m: Improve error messages, fix cleanup
-	  of temporary directories, remove tab characters
+	improve tests.
+	* miscellaneous/bzip2.m: Remove @seealso reference to __xzip__,
+	fix handling of output argument, add test.
+	* miscellaneous/__xzip__.m: Improve error messages, fix cleanup
+	of temporary directories, remove tab characters
 
 2008-11-24  Ben Abbott  <bpabbott@mac.com>
 
@@ -4627,7 +4627,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 2008-11-07  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* mkdoc: do not remove white space before @ within @example
-	  environment
+	environment
 
 2008-11-05  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
@@ -4636,7 +4636,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 2008-11-04  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* miscellaneous/unpack.m: return directly after recursive handling
-	  of cell-strings
+	of cell-strings
 
 2008-11-03  Ben Abbott  <bpabbott@mac.com>
 
@@ -4678,7 +4678,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 	* miscellaneous/bzip2.m, miscellaneous/__xzip__.m: new commands.
 	* miscellaneous/gzip.m: change to use __xzip__ for actual compression,
-	  add tests.
+	add tests.
 
 2008-10-31  David Bateman  <dbateman@free.fr>
 
@@ -6494,8 +6494,8 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 2007-12-17  Ben Abbott  <bpabbott@mac.com>
 
-	 * miscellaneous/run.m: Replace script with f when looking for
-	 file to run.
+	* miscellaneous/run.m: Replace script with f when looking for
+	file to run.
 
 2007-12-14  David Bateman  <dbateman@free.fr>
 
@@ -7319,7 +7319,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
-	 * toplev.cc (Foctave_config_info): Add field "mac".
+	* toplev.cc (Foctave_config_info): Add field "mac".
 
 	* miscellaneous/ismac.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
@@ -7831,7 +7831,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 	* general/del2.m: New function for discrete laplacian operator.
 	* general/Makefile.in: Include rat.m and del2.m  in SOURCES.
 
-	 * image/autumn.m image/bone.m image/cool.m image/copper.m
+	* image/autumn.m image/bone.m image/cool.m image/copper.m
 	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m
 	image/rainbow.m image/spring.m image/summer.m image/white.m
 	image/winter.m, image/brighten.m: Port image functions from
@@ -9492,7 +9492,7 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 2007-01-09  S�ren Hauberg  <hauberg@gmail.com>
 
-	 * pkg/pkg.m: Allow filenames to contain glob patterns.
+	* pkg/pkg.m: Allow filenames to contain glob patterns.
 
 2007-01-08  S�ren Hauberg  <hauberg@gmail.com>
 
@@ -10794,8 +10794,8 @@ v	* general/nargchk.m: Don't generate error if output is struct.
 
 2006-01-13  Bill Denney  <bill@givebillmoney.com>
 
-	 * miscellaneous/dir.m: Use filesep instead of "/" where needed.
-	 * miscellaneous/fullfile.m: Likewise.
+	* miscellaneous/dir.m: Use filesep instead of "/" where needed.
+	* miscellaneous/fullfile.m: Likewise.
 
 2006-01-12  David Bateman  <dbateman@free.fr>
 

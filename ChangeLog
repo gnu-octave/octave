@@ -1,5 +1,9 @@
 2010-11-09  Rik  <octave@nomad.inbox5.com>
 
+	* configure.ac: Fix typo where variable name was missing '$'
+
+2010-11-09  Rik  <octave@nomad.inbox5.com>
+
 	* configure.ac: Properly m4 quote AS_HELP_STRING.
 
 2010-11-09  Rik  <octave@nomad.inbox5.com>

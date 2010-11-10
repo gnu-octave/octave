@@ -2395,7 +2395,7 @@ if $USE_OPENMP; then
 fi
 
 native_graphics=true
-if test -n "warn_opengl"; then
+if test -n "$warn_opengl"; then
   AC_MSG_WARN([$warn_opengl])
   native_graphics=false
   warn_msg_printed=true

@@ -1,3 +1,10 @@
+2010-11-10  Kai Habel  <kai.habel@gmx.de>
+
+	* fltk-backend.cc (update_accelerator), (update_callback), (update_enable),
+	(update_foregroundcolor), (update_visible): Check if find_item
+	was succesful. (update_seperator): Make sure we don't write 
+	beyond limits of menubar structure.
+
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
 	Bug #31491.

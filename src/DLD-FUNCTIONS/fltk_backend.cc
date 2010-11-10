@@ -377,11 +377,14 @@ public:
       if (!fltk_label.empty ())
         {
           Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
-          std::string acc = uimenup.get_accelerator ();
-          if (acc.length () > 0)
+          if (item != NULL)
             {
-              int key = FL_CTRL + acc[0];
-              item->shortcut (key);
+              std::string acc = uimenup.get_accelerator ();
+              if (acc.length () > 0)
+                {
+                  int key = FL_CTRL + acc[0];
+                  item->shortcut (key);
+                }
             }
         }
     }
@@ -392,11 +395,14 @@ public:
       if (!fltk_label.empty ())
         {
           Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
-          if (!uimenup.get_callback ().is_empty ())
-            item->callback(static_cast<Fl_Callback*>(script_cb), //callback
-                          static_cast<void*>(&uimenup));        //callback data
-          else
-            item->callback(NULL, static_cast<void*>(0));
+          if (item != NULL)
+            {
+              if (!uimenup.get_callback ().is_empty ())
+                item->callback(static_cast<Fl_Callback*>(script_cb), //callback
+                              static_cast<void*>(&uimenup));        //callback data
+              else
+                item->callback(NULL, static_cast<void*>(0));
+            }
         }
     }
             
@@ -406,10 +412,13 @@ public:
       if (!fltk_label.empty ())
         {
           Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
-          if (uimenup.is_enable ())
-            item->activate ();
-          else
-            item->deactivate ();
+          if (item != NULL)
+            {
+              if (uimenup.is_enable ())
+                item->activate ();
+              else
+                item->deactivate ();
+            }
         }
     }
 
@@ -419,10 +428,13 @@ public:
       if (!fltk_label.empty ())
         {
           Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
-          Matrix rgb = uimenup.get_foregroundcolor_rgb ();
-          item->labelcolor(fl_rgb_color(static_cast<uchar>(floor (rgb(0)*255)),
-                                        static_cast<uchar>(floor (rgb(1)*255)),
-                                        static_cast<uchar>(floor (rgb(2)*255))));
+          if (item != NULL)
+            {
+              Matrix rgb = uimenup.get_foregroundcolor_rgb ();
+              item->labelcolor(fl_rgb_color(static_cast<uchar>(floor (rgb(0)*255)),
+                                            static_cast<uchar>(floor (rgb(1)*255)),
+                                            static_cast<uchar>(floor (rgb(2)*255))));
+            }
         }
     }
 
@@ -445,13 +457,16 @@ public:
                 break;
             }
 
-          if (uimenup.is_separator ())
+          if ((idx >= 0) && (idx < menubar->size ()))
             {
-              if (idx >= 0 && !(itemflags & FL_SUBMENU))
-                menubar->mode (idx, itemflags | FL_MENU_DIVIDER);
+              if (uimenup.is_separator ())
+                {
+                  if (idx >= 0 && !(itemflags & FL_SUBMENU))
+                    menubar->mode (idx, itemflags | FL_MENU_DIVIDER);
+                }
+              else
+                menubar->mode (idx, itemflags & (~FL_MENU_DIVIDER));
             }
-          else
-            menubar->mode (idx, itemflags & (~FL_MENU_DIVIDER));
         }
     }
 
@@ -461,10 +476,13 @@ public:
       if (!fltk_label.empty ())
         {
           Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
-          if (uimenup.is_visible ())
-            item->show ();
-          else
-            item->hide ();
+          if (item != NULL)
+            {
+              if (uimenup.is_visible ())
+                item->show ();
+              else
+                item->hide ();
+            }
         }
     }
     

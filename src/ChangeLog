@@ -1,3 +1,7 @@
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (Fbuiltin): Move here from DLD-FUNCTIONS/dispatch.cc.
+
 2010-11-10  Kai Habel  <kai.habel@gmx.de>
 
 	* fltk-backend.cc (update_accelerator), (update_callback), (update_enable),

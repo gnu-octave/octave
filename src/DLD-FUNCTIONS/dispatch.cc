@@ -40,41 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "variables.h"
 
-DEFUN_DLD (builtin, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@dots{}]} builtin (@var{f}, @dots{})\n\
-Call the base function @var{f} even if @var{f} is overloaded to\n\
-some other function for the given type signature.\n\
-@seealso{dispatch}\n\
-@end deftypefn")
-{
-  octave_value_list retval; 
-
-  int nargin = args.length ();
-
-  if (nargin > 0)
-    {
-      const std::string name (args(0).string_value ());
- 
-      if (! error_state)
-        {
-          octave_value fcn = symbol_table::builtin_find (name);
-
-          if (fcn.is_defined ())
-            retval = feval (fcn.function_value (), args.splice (0, 1),
-                            nargout);
-          else
-            error ("builtin: lookup for symbol `%s' failed", name.c_str ());
-        }
-      else
-        error ("builtin: expecting function name as first argument");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 DEFUN_DLD (dispatch, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dispatch (@var{f}, @var{r}, @var{type})\n\

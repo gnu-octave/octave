@@ -13,10 +13,12 @@
 
 2010-11-10  Kai Habel  <kai.habel@gmx.de>
 
-	* fltk-backend.cc (update_accelerator), (update_callback), (update_enable),
-	(update_foregroundcolor), (update_visible): Check if find_item
-	was succesful. (update_seperator): Make sure we don't write 
-	beyond limits of menubar structure.
+	* fltk-backend.cc (fltk_uimenu::update_accelerator
+	fltk_uimenu::update_callback, fltk_uimenu::update_enable,
+	fltk_uimenu::update_foregroundcolor fltk_uimenu::update_visible):
+	Check if find_item was succesful.
+	(fltk_uimenu::update_seperator): Make sure we don't write beyond
+	limits of menubar structure.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
@@ -60,13 +62,11 @@
 
 2010-11-08  Kai Habel  <kai.habel@gmx.de>
 
-	* fltk-backend.cc (do_find_uimenu_children): Simplify code, Remove 
-	unused code.
-	(update_submenu): Remove unused function.
-	(add_to_menu (uimenu::properties&)): Simplify.  Get properties
-	for valid objects only.
-	(add_to_menu (figure::properties&)): Ditto.
-	(remove_from_menu (T_prop&)): Ditto.
+	* fltk-backend.cc (fltk_uimenu::do_find_uimenu_children):
+	Simplify.  Remove unused code.
+	(fltk_uimenu::update_submenu): Remove unused function.
+	(fltk_uimenu::add_to_menu, fltk_uimenu::remove_from_menu):
+	Simplify.  Get properties for valid objects only.
 
 2010-11-03  Ben Abbott  <bpabbott@mac.com>
 

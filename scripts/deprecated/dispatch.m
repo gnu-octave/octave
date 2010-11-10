@@ -50,54 +50,52 @@ endfunction
 
 
 %!test # builtin function replacement
-%! warning off Octave:deprecated-function
 %! dispatch('sin','length','string')
 %! assert(sin("abc"),3)
 %! assert(sin(0),0,10*eps); 
+
 %!test # 'any' function
-%! warning off Octave:deprecated-function
 %! dispatch('sin','exp','any')
 %! assert(sin(0),1,eps);
 %! assert(sin("abc"),3);
+
 %!test # 'builtin' function
-%! warning off Octave:deprecated-function
 %! assert(builtin('sin',0),0,eps);
 %! builtin('eval','x=1;');
 %! assert(x,1);
+
 %!test # clear function mapping
-%! warning off Octave:deprecated-function
 %! dispatch('sin','string')
 %! dispatch('sin','any')
 %! assert(sin(0),0,10*eps);
+
 %!test # oct-file replacement
-%! warning off Octave:deprecated-function
 %! dispatch('fft','length','string')
 %! assert(fft([1,1]),[2,0]);
 %! assert(fft("abc"),3)
 %! dispatch('fft','string');
+
 %!test # m-file replacement
-%! warning off Octave:deprecated-function
 %! dispatch('hamming','length','string')
 %! assert(hamming(1),1)
 %! assert(hamming("abc"),3)
 %! dispatch('hamming','string')
 
 %!test # override preloaded builtin
-%! warning off Octave:deprecated-function
 %! evalin('base','cos(1);');
 %! dispatch('cos','length','string')
 %! evalin('base','assert(cos("abc"),3)');
 %! evalin('base','assert(cos(0),1,eps)');
 %! dispatch('cos','string')
+
 %!test # override pre-loaded oct-file
-%! warning off Octave:deprecated-function
 %! evalin('base','qr(1);');
 %! dispatch('qr','length','string')
 %! evalin('base','assert(qr("abc"),3)');
 %! evalin('base','assert(qr(1),1)');
 %! dispatch('qr','string');
+
 %!test # override pre-loaded m-file
-%! warning off Octave:deprecated-function
 %! evalin('base','hanning(1);');
 %! dispatch('hanning','length','string')
 %! evalin('base','assert(hanning("abc"),3)');

@@ -136,7 +136,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   for i = 1:length (lst)
     nm = lst(i).name;
     if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
-        && ! strcmp (nm, "CVS") && ! strcmp (nm, "deprecated") )
+        && ! strcmp (nm, "CVS"))
       [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
       dp += p;
       dn += n;
@@ -215,6 +215,7 @@ warn_state = warning ("query", "quiet");
 warning ("on", "quiet");
 try
   page_screen_output (0);
+  warning ("off", "Octave:deprecated-functions");
   fid = fopen ("fntests.log", "wt");
   if (fid < 0)
     error ("could not open fntests.log for writing");

@@ -1,5 +1,18 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	Bug #31491.
+
+	* pt-pr-code.cc, pt-pr-code.h (tree_print_code::print_fcn_handle_body):
+	New function.
+	* ov-fcn-handle (octave_fcn_handle::print_raw): Use it.
+	* pt-pr-code.cc (tree_print_code::visit_anon_fcn_handle): Likewise.
+	* pt-pr-code.h (tree_print_code::suppress_newline): Rename from
+	printing_newlines.  Now int.  Change all uses.
+	* pt-pr-code.cc (tree_print_code::newline): Only set
+	beginning_of_line if newline is printed.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	Bug #31567.
 
 	* ov-fcn.h (octave_base_value::is_class_constructor)

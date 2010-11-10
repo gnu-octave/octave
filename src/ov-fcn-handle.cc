@@ -1321,33 +1321,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
           os << ") ";
 
-          tree_statement_list *b = f->body ();
-
-          if (b)
-            {
-              assert (b->length () == 1);
-
-              tree_statement *s = b->front ();
-
-              if (s)
-                {
-                  if (s->is_expression ())
-                    {
-                      tree_expression *e = s->expression ();
-
-                      if (e)
-                        e->accept (tpc);
-                    }
-                  else
-                    {
-                      tree_command *c = s->command ();
-
-                      tpc.suspend_newline ();
-                      c->accept (tpc);
-                      tpc.resume_newline ();
-                    }
-                }
-            }
+          tpc.print_fcn_handle_body (f->body ());
 
           printed = true;
         }

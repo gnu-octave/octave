@@ -51,10 +51,7 @@ tree_print_code::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
 
   os << ") ";
 
-  tree_statement_list *body = afh.body ();
-
-  if (body)
-    body->accept (*this);
+  print_fcn_handle_body (afh.body ());
 
   print_parens (afh, ")");
 }
@@ -1150,6 +1147,40 @@ tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
   newline ();
 }
 
+void
+tree_print_code::print_fcn_handle_body (tree_statement_list *b)
+{
+  if (b)
+    {
+      assert (b->length () == 1);
+
+      tree_statement *s = b->front ();
+
+      if (s)
+        {
+          if (s->is_expression ())
+            {
+              tree_expression *e = s->expression ();
+
+              if (e)
+                {
+                  suppress_newlines++;
+                  e->accept (*this);
+                  suppress_newlines--;
+                }
+            }
+          else
+            {
+              tree_command *c = s->command ();
+
+              suppress_newlines++;
+              c->accept (*this);
+              suppress_newlines--;
+            }
+        }
+    }
+}
+
 // Each print_code() function should call this before printing
 // anything.
 //
@@ -1160,17 +1191,14 @@ tree_print_code::indent (void)
 {
   assert (curr_print_indent_level >= 0);
 
-  if (printing_newlines)
+  if (beginning_of_line)
     {
-      if (beginning_of_line)
-        {
-          os << prefix;
+      os << prefix;
 
-          for (int i = 0; i < curr_print_indent_level; i++)
-            os << " ";
+      for (int i = 0; i < curr_print_indent_level; i++)
+        os << " ";
 
-          beginning_of_line = false;
-        }
+      beginning_of_line = false;
     }
 }
 
@@ -1179,9 +1207,14 @@ tree_print_code::indent (void)
 void
 tree_print_code::newline (const char *alt_txt)
 {
-  os << (printing_newlines ? "\n" : alt_txt);
+  if (suppress_newlines)
+    os << alt_txt;
+  else
+    {
+      os << "\n";
 
-  beginning_of_line = true;
+      beginning_of_line = true;
+    }
 }
 
 // For ressetting print_code state.

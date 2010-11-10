@@ -46,7 +46,7 @@ public:
     : os (os_arg), prefix (pfx), nesting (),
       print_original_text (pr_orig_txt),
       curr_print_indent_level (0), beginning_of_line (true),
-      printing_newlines (true)
+      suppress_newlines (0)
   {
     // For "none".
     nesting.push ('n');
@@ -140,9 +140,7 @@ public:
 
   void visit_do_until_command (tree_do_until_command&);
 
-  void suspend_newline (void) { printing_newlines = false; }
-
-  void resume_newline (void) { printing_newlines = true; }
+  void print_fcn_handle_body (tree_statement_list *);
 
 private:
 
@@ -160,8 +158,8 @@ private:
   // TRUE means we are at the beginning of a line.
   bool beginning_of_line;
 
-  // TRUE means we are printing newlines and indenting.
-  bool printing_newlines;
+  // Nonzero means we are not printing newlines and indenting.
+  int suppress_newlines;
 
   void do_decl_command (tree_decl_command& cmd);
 

@@ -37,13 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_NAN_H)
-#if defined (SCO)
-#define _IEEE 1
-#endif
 #include <nan.h>
-#if defined (SCO)
-#undef _IEEE
-#endif
 #endif
 
 #include "lo-error.h"
@@ -73,10 +67,7 @@ octave_ieee_init (void)
 
         volatile double tmp_inf;
 
-#if defined (SCO)
-        volatile double tmp = 1.0;
-        tmp_inf = 1.0 / (tmp - tmp);
-#elif defined (__alpha__) && defined (__osf__)
+if defined (__alpha__) && defined (__osf__)
         extern unsigned int DINFINITY[2];
         tmp_inf =  (*(X_CAST(double *, DINFINITY)));
 #else
@@ -127,10 +118,6 @@ octave_ieee_init (void)
 
         volatile float float_tmp_inf;
 
-#if defined (SCO)
-        volatile float float_tmp = 1.0;
-        float_tmp_inf = 1.0 / (float_tmp - float_tmp);
-#else
         float float_tmp = 1e+10;
         float_tmp_inf = float_tmp;
         for (;;)
@@ -140,7 +127,6 @@ octave_ieee_init (void)
               break;
             float_tmp = float_tmp_inf;
           }
-#endif
 
 #if defined (__NetBSD__)
         octave_Float_NaN = nanf ("");

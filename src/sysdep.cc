@@ -278,17 +278,6 @@ OS2_init (void)
 }
 #endif
 
-#if defined (SCO)
-static void
-SCO_init (void)
-{
-#if defined (HAVE_IEEEFP_H)
-  // Disable trapping on common exceptions.
-  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#endif
-}
-#endif
-
 void
 sysdep_init (void)
 {
@@ -302,8 +291,6 @@ sysdep_init (void)
   NeXT_init ();
 #elif defined (__EMX__)
   OS2_init ();
-#elif defined (SCO)
-  SCO_init ();
 #endif
 
   octave_ieee_init ();

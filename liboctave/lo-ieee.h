@@ -73,16 +73,6 @@ typedef union
 
 extern OCTAVE_API void octave_ieee_init (void);
 
-#if defined (SCO)
-extern int __isnan (double);
-extern int __isinf (double);
-extern int __isnanf (float);
-extern int __isinff (float);
-
-#define isnan(x) (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
-#define isinf(x) (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
-#endif
-
 extern OCTAVE_API int __lo_ieee_isnan (double x);
 extern OCTAVE_API int __lo_ieee_finite (double x);
 extern OCTAVE_API int __lo_ieee_isinf (double x);

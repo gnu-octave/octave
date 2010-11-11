@@ -1732,20 +1732,10 @@ dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
 dnl fails, we try again by including math.h and invoking the function
 dnl with an argument. 
 
-### I am told that Inf and NaN don't work on m68k HP sytems, and that
-### on SCO systems, isnan and isinf don't work, but they can be
-### replaced by something that does.
+### I am told that Inf and NaN don't work on m68k HP sytems.
 
 case "$canonical_host_type" in
   m68k-hp-hpux*)
-  ;;
-  *-*-sco*)
-    AC_MSG_NOTICE([defining SCO to be 1])
-    AC_DEFINE(SCO, 1, [Define if using an SCO system.])
-    AC_MSG_NOTICE([forcing HAVE_ISINF for SCO])
-    AC_DEFINE(HAVE_ISINF, 1, [Define if you have isinf().])
-    AC_MSG_NOTICE([forcing HAVE_ISNAN for SCO])
-    AC_DEFINE(HAVE_ISNAN, 1, [Define if you have isnan().])
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf signbit)

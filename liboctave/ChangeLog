@@ -1,3 +1,8 @@
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
+	* lo-ieee.h: Eliminate special cases for SCO.
+	* lo-ieee.cc (octave_ieee_init): Eliminate special cases for SCO.
+
 2010-11-09  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.h (xmod, xrem): Don't copy sign if result is zero.

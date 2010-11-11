@@ -1,5 +1,9 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac: Eliminate special checks for SCO systems.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* NEWS: Update deprecated function list with dispatch.
 
 2010-11-09  Rik  <octave@nomad.inbox5.com>

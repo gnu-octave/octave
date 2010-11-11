@@ -1,5 +1,10 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* sysdep.cc (sysdep_init): Eliminate special case for SCO.
+	(SCO_init): Delete.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__dispatch__.cc: Rename from dispatch.cc.
 	Move tests to scripts/deprecated/dispatch.m.
 	(F__dispatch__): Rename from Fdispatch.

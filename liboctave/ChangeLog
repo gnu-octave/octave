@@ -1,5 +1,10 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* lo-sysdep.cc (octave_chdir): Delete special case for __EMX__.
+	* oct-env.cc (octave_env::do_make_absolute): Likewise.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* lo-ieee.h: Eliminate special cases for SCO.
 	* lo-ieee.cc (octave_ieee_init): Eliminate special cases for SCO.
 

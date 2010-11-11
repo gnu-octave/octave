@@ -270,14 +270,6 @@ NeXT_init (void)
 }
 #endif
 
-#if defined (__EMX__)
-OS2_init (void)
-{
-  _control87 ((EM_INVALID | EM_DENORMAL | EM_ZERODIVIDE | EM_OVERFLOW
-               | EM_UNDERFLOW | EM_INEXACT), MCW_EM);
-}
-#endif
-
 void
 sysdep_init (void)
 {
@@ -289,8 +281,6 @@ sysdep_init (void)
   MSVC_init ();
 #elif defined (NeXT)
   NeXT_init ();
-#elif defined (__EMX__)
-  OS2_init ();
 #endif
 
   octave_ieee_init ();
@@ -846,15 +836,3 @@ tilde_expand (\"~/bin\")\n\
 
   return retval;
 }
-
-#if defined (__EMX__) && defined (OS2)
-
-DEFUN (extproc, , ,
-  "extproc: ignored by Octave")
-{
-  return octave_value_list ();
-}
-
-DEFALIAS (EXTPROC, extproc);
-
-#endif

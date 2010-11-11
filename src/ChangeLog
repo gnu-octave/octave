@@ -1,5 +1,12 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* sighandlers.cc (MAYBE_ACK_SIGNAL): Delete macro and all uses.
+	(sigchld_handler): Delete special case for __EMX__.
+	* sysdep.cc (sysdep_init): Eliminate special case for __EMX__.
+	(OS2_init, Fextproc): Delete.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* sysdep.cc (sysdep_init): Eliminate special case for SCO.
 	(SCO_init): Delete.
 

@@ -321,11 +321,6 @@ std::string
 octave_env::do_make_absolute (const std::string& s,
                               const std::string& dot_path) const
 {
-#if defined (__EMX__)
-  if (s.length () > 1 && s[1] == ':')
-    return s;
-#endif
-
   if (dot_path.empty () || s.empty () || do_absolute_pathname (s))
     return s;
 

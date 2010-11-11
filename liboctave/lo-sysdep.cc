@@ -72,33 +72,12 @@ octave_chdir (const std::string& path_arg)
 {
   std::string path = file_ops::tilde_expand (path_arg);
 
-#if defined (__EMX__)
-  int retval = -1;
-
-  char *tmp_path = strsave (path.c_str ());
-
-  if (path.length () == 2 && path[1] == ':')
-    {
-      char *upper_case_dir_name = strupr (tmp_path);
-      _chdrive (upper_case_dir_name[0]);
-      if (_getdrive () == upper_case_dir_name[0])
-        retval = _chdir2 ("/");
-    }
-  else
-    retval = _chdir2 (tmp_path);
-
-  delete [] tmp_path;
-
-  return retval;
-#else
-
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
   if (path.length() == 2 && path[1] == ':')
     path += "\\";
 #endif
 
   return chdir (path.c_str ());
-#endif
 }
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)

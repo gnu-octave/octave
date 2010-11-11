@@ -71,15 +71,6 @@ static bool Vsighup_dumps_octave_core = true;
 // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
 static bool Vsigterm_dumps_octave_core = true;
 
-#if defined (__EMX__)
-#define MAYBE_ACK_SIGNAL(sig) \
-  octave_set_signal_handler (sig, SIG_ACK)
-#define ACK_USES_SIG 1
-#else
-#define MAYBE_ACK_SIGNAL(sig) \
-  do { } while (0)
-#endif
-
 // List of signals we have caught since last call to octave_signal_handler.
 static bool octave_signals_caught[NSIG];
 
@@ -218,15 +209,6 @@ sigchld_handler (int /* sig */)
   volatile octave_interrupt_handler saved_interrupt_handler
      = octave_ignore_interrupts ();
 
-  // I wonder if this is really right, or if SIGCHLD should just be
-  // blocked on OS/2 systems the same as for systems with POSIX signal
-  // functions.
-
-#if defined (__EMX__)
-  volatile sig_handler *saved_sigchld_handler
-    = octave_set_signal_handler (SIGCHLD, SIG_IGN);
-#endif
-
   sigset_t set, oset;
 
   BLOCK_CHILD (set, oset);
@@ -243,12 +225,6 @@ sigchld_handler (int /* sig */)
   octave_set_interrupt_handler (saved_interrupt_handler);
 
   UNBLOCK_CHILD (oset);
-
-#ifdef __EMX__
-  octave_set_signal_handler (SIGCHLD, saved_sigchld_handler);
-#endif
-
-  MAYBE_ACK_SIGNAL (SIGCHLD);
 }
 #endif /* defined(SIGCHLD) */
 
@@ -257,8 +233,6 @@ sigchld_handler (int /* sig */)
 static void
 sigfpe_handler (int /* sig */)
 {
-  MAYBE_ACK_SIGNAL (SIGFPE);
-
   if (can_interrupt && octave_interrupt_state >= 0)
     {
       octave_signal_caught = 1;
@@ -275,8 +249,6 @@ sigfpe_handler (int /* sig */)
 static void
 sig_hup_or_term_handler (int sig)
 {
-  MAYBE_ACK_SIGNAL (sig);
-
   switch (sig)
     {
 #if defined (SIGHUP)
@@ -310,8 +282,6 @@ sig_hup_or_term_handler (int sig)
 static void
 sigwinch_handler (int /* sig */)
 {
-  MAYBE_ACK_SIGNAL (SIGWINCH);
-
   command_editor::resize_terminal ();
 }
 #endif
@@ -382,8 +352,6 @@ user_abort (const char *sig_name, int sig_number)
 static void
 sigint_handler (int sig)
 {
-  MAYBE_ACK_SIGNAL (sig);
-
 #ifdef USE_W32_SIGINT
   if (w32_in_main_thread ())
     user_abort (strsignal (sig), sig);
@@ -398,8 +366,6 @@ sigint_handler (int sig)
 static void
 sigpipe_handler (int /* sig */)
 {
-  MAYBE_ACK_SIGNAL (SIGPIPE);
-
   octave_signal_caught = 1;
 
   octave_signals_caught[SIGPIPE] = true;

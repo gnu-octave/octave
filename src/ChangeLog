@@ -3,8 +3,8 @@
 	* fltk-backend.cc (plot_window::uimenu_update,
 	fltk_backend::update): Add prefix 'ID_' to property ids to avoid
 	name clash on windows systems.
-	* graphics.cc (gnuplot_backend::update): Dito.
-	* genprops.awk (emit_declarations, emit_source): Dito
+	* graphics.cc (gnuplot_backend::update): Ditto.
+	* genprops.awk (emit_declarations, emit_source): Ditto.
 
 2010-11-11  John W. Eaton  <jwe@octave.org>
 

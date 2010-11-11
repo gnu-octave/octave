@@ -201,7 +201,6 @@ INCS = \
   functor.h \
   glob-match.h \
   idx-vector.h \
-  kpse-xfns.h \
   lo-array-gripes.h \
   lo-ieee.h \
   lo-macros.h \
@@ -498,8 +497,7 @@ LIBOCT_PATHSEARCH_CXX_SOURCES = pathsearch.cc
 
 LIBOCT_PATHSEARCH_C_SOURCES = kpse-xfns.c
 
-LIBOCT_PATHSEARCH_SOURCES = \
-	$(LIBOCT_PATHSEARCH_C_SOURCES) $(LIBOCT_PATHSEARCH_CXX_SOURCES)
+LIBOCT_PATHSEARCH_SOURCES = pathsearch.cc
 
 LINK_DEPS = \
   $(RLD_FLAG) \

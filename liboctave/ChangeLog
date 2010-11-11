@@ -1,5 +1,14 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* kpse-xfns.c: Delete.
+	* kpse-xfns.h: Delete.  Move defintions to kpse.cc.
+	* Makefile.am (INCS): Remove kpse-xfns.h from the list.
+	(LIBOCT_PATHSEARCH_SOURCES): Define to pathsearch.cc.
+	(LIBOCT_PATHSEARCH_CXX_SOURCES,	LIBOCT_PATHSEARCH_C_SOURCES):
+	Delete variables.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* lo-cieee.c Eliminate special cases for SCO.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>

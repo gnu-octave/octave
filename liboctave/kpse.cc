@@ -88,7 +88,35 @@ extern "C" {
 #define stat ln_stat
 #endif /* OS2 */
 
-#include "kpse-xfns.h"
+/* Define the characters which separate components of
+   filenames and environment variable paths.  */
+
+/* What separates filename components?  */
+#ifndef DIR_SEP
+#ifdef DOSISH
+/* Either \'s or 's work.  Wayne Sullivan's web2pc prefers /, so we'll
+   go with that.  */
+#define DIR_SEP '/'
+#define DIR_SEP_STRING "/"
+#define IS_DEVICE_SEP(ch) ((ch) == ':')
+#define NAME_BEGINS_WITH_DEVICE(name) ((name.length()>0) && IS_DEVICE_SEP((name)[1]))
+/* On DOS, it's good to allow both \ and / between directories.  */
+#define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
+#else
+#define DIR_SEP '/'
+#define DIR_SEP_STRING "/"
+#endif /* not DOSISH */
+#endif /* not DIR_SEP */
+
+#ifndef IS_DIR_SEP
+#define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
+#endif
+#ifndef IS_DEVICE_SEP /* No `devices' on, e.g., Unix.  */
+#define IS_DEVICE_SEP(ch) 0 
+#endif
+#ifndef NAME_BEGINS_WITH_DEVICE
+#define NAME_BEGINS_WITH_DEVICE(name) 0 
+#endif
 
 #include "lo-error.h"
 #include "oct-env.h"

@@ -52,14 +52,4 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define NAME_BEGINS_WITH_DEVICE(name) 0 
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern const char *octave_basename (const char *name);
-
-#ifdef __cplusplus
-}
-#endif
-
 #endif

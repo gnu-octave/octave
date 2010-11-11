@@ -34,16 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ieeefp.h>
 #endif
 
-#if defined (HAVE_NAN_H)
-#if defined (SCO)
-#define _IEEE 1
-#endif
-#include <nan.h>
-#if defined (SCO)
-#undef _IEEE
-#endif
-#endif
-
 #include "lo-ieee.h"
 #include "lo-math.h"
 
@@ -81,34 +71,6 @@ float octave_Float_NaN;
 
 int lo_ieee_hw;
 int lo_ieee_lw;
-
-#if defined (SCO)
-
-int
-__isnan (double x)
-{
-  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
-}
-
-int
-__isinf (double x)
-{
-  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
-}
-
-int
-__isnanf (float x)
-{
-  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
-}
-
-int
-__isinff (float x)
-{
-  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
-}
-
-#endif
 
 int
 __lo_ieee_isnan (double x)

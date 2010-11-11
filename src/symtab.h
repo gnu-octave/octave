@@ -1825,6 +1825,19 @@ public:
     parent_map[classname] = parent_list;
   }
 
+  static std::list<std::string>
+  parent_classes (const std::string& dispatch_type)
+  {
+    std::list<std::string> retval;
+
+    const_parent_map_iterator it = parent_map.find (dispatch_type);
+
+    if (it != parent_map.end ())
+      retval = it->second;
+
+    return retval;
+  }
+
   static octave_user_function *get_curr_fcn (scope_id scope = xcurrent_scope)
     {
       symbol_table *inst = get_instance (scope);

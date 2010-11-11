@@ -208,8 +208,27 @@ out_of_date_check (octave_value& function,
                           // decide whether it came from a relative lookup.
 
                           if (! dispatch_type.empty ())
-                            file = load_path::find_method (dispatch_type, nm,
-                                                           dir_name);
+                            {
+                              file = load_path::find_method (dispatch_type, nm,
+                                                             dir_name);
+
+                              if (file.empty ())
+                                {
+                                  const std::list<std::string>& plist
+                                    = symbol_table::parent_classes (dispatch_type);
+                                  std::list<std::string>::const_iterator it
+                                    = plist.begin ();
+
+                                  while (it != plist.end ())
+                                    {
+                                      file = load_path::find_method (*it, nm, dir_name);
+                                      if (! file.empty ())
+                                        break;
+
+                                      it++;
+                                    }
+                                }
+                            }
 
                           // Maybe it's an autoload?
                           if (file.empty ())
@@ -387,25 +406,21 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
         {
           // Search parent classes
 
-          const_parent_map_iterator r = parent_map.find (dispatch_type);
+          const std::list<std::string>& plist = parent_classes (dispatch_type);
 
-          if (r != parent_map.end ())
+          std::list<std::string>::const_iterator it = plist.begin ();
+
+          while (it != plist.end ())
             {
-              const std::list<std::string>& plist = r->second;
-              std::list<std::string>::const_iterator it = plist.begin ();
+              retval = find_method (*it);
 
-              while (it != plist.end ())
+              if (retval.is_defined ()) 
                 {
-                  retval = find_method (*it);
-
-                  if (retval.is_defined ()) 
-                    {
-                      class_methods[dispatch_type] = retval;
-                      break;
-                    }
-
-                  it++;
+                  class_methods[dispatch_type] = retval;
+                  break;
                 }
+
+              it++;
             }
         }
     }

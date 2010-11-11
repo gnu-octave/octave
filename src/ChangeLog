@@ -1,3 +1,13 @@
+2010-11-11  John W. Eaton  <jwe@octave.org>
+
+	Bug #31165.
+
+	* symtab.h (symbol_table::parent_classes): New static function.
+	* symtab.cc (out_of_date_check): Also look for methods defined
+	in parent classes of dispatch_type.
+	(symbol_table::fcn_info::fcn_info_rep::load_class_method): Call
+	parent_classes instead of accessing parent_map directly.
+
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (octave_main): Call octave_ieee_init here.

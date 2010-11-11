@@ -31,17 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 
 // Double Precision 
-inline double xtrunc (double x) { return gnulib::trunc (x); }
+extern OCTAVE_API double xtrunc (double x);
 inline double xcopysign (double x, double y) { return copysignf (x, y); }
 inline double xceil (double x) { return ceil (x); }
 inline double xfloor (double x) { return floor (x); }
-
 inline double arg (double x) { return atan2 (0.0, x); }
 inline double conj (double x) { return x; }
 inline double fix (double x) { return xtrunc (x); }
 inline double imag (double) { return 0.0; }
 inline double real (double x) { return x; }
-inline double xround (double x) { return gnulib::round (x); }
+extern OCTAVE_API double xround (double x);
 extern OCTAVE_API double xroundb (double x);
 extern OCTAVE_API double signum (double x);
 extern OCTAVE_API double xlog2 (double x); 
@@ -118,17 +117,16 @@ extern OCTAVE_API Complex xmin (const Complex& x, const Complex& y);
 extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 
 // Single Precision 
-inline float xtrunc (float x) { return gnulib::truncf (x); }
+extern OCTAVE_API float xtrunc (float x);
 inline float xcopysign (float x, float y) { return copysignf (x, y); }
 inline float xceil (float x) { return ceilf (x); }
 inline float xfloor (float x) { return floorf (x); }
-
 inline float arg (float x) { return atan2f (0.0f, x); }
 inline float conj (float x) { return x; }
 inline float fix (float x) { return xtrunc (x); }
 inline float imag (float) { return 0.0f; }
 inline float real (float x) { return x; }
-inline float xround (float x) { return gnulib::round (x); }
+extern OCTAVE_API float xround (float x);
 extern OCTAVE_API float xroundb (float x);
 extern OCTAVE_API float signum (float x);
 extern OCTAVE_API float xlog2 (float x); 

@@ -40,6 +40,21 @@ along with Octave; see the file COPYING.  If not, see
 
 // double -> double mappers.
 
+// Both xtrunc and xround belong here so we can keep gnulib:: out of
+// lo-mappers.h.
+
+double
+xtrunc (double x)
+{
+  return gnulib::trunc (x);
+}
+
+double
+xround (double x)
+{
+  return gnulib::round (x);
+}
+
 double 
 xroundb (double x)
 {
@@ -238,6 +253,21 @@ xmax (const Complex& x, const Complex& y)
 
 
 // float -> float mappers.
+
+// Both xtrunc and xround belong here so we can keep gnulib:: out of
+// lo-mappers.h.
+
+float
+xtrunc (float x)
+{
+  return gnulib::truncf (x);
+}
+
+float
+xround (float x)
+{
+  return gnulib::round (x);
+}
 
 float 
 xroundb (float x)

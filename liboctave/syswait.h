@@ -31,32 +31,8 @@ extern "C" {
 
 #include <sys/types.h>
 
-#if defined (NeXT) && ! defined (_POSIX_SOURCE)
-#define HAVE_SYS_WAIT_H
-#endif
-
 #if defined HAVE_SYS_WAIT_H
 #include <sys/wait.h>
-#endif
-
-#if defined (NeXT)
-#define HAVE_WAITPID 1
-#define WAITPID(a, b, c) \
-  wait4 ((a) == -1 ? 0 : (a), (union wait *)(b), c, 0)
-
-/* Use the defaults below.  */
-#undef WIFEXITED
-#undef WEXITSTATUS
-#undef WIFSIGNALLED
-#endif
-
-/* NeXT has sys/wait.h, but it is not compatible with POSIX.1, so we
-   try to define waitpid in terms of wait4.  */
-
-#if defined (NeXT)
-#include <sys/wait.h>
-#define waitpid(a, b, c) \
-  wait4 ((a) == -1 ? 0 : (a), (union wait *)(b), c, 0)
 #endif
 
 #ifndef WIFEXITED

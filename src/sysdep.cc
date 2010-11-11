@@ -247,29 +247,6 @@ std::string::append (const std::string&, size_t, size_t);
 
 #endif
 
-#if defined (NeXT)
-extern "C"
-{
-  typedef void (*_cplus_fcn_int) (int);
-  extern void (*malloc_error (_cplus_fcn_int)) (int);
-}
-
-static void
-malloc_handler (int code)
-{
-  if (code == 5)
-    warning ("hopefully recoverable malloc error: freeing wild pointer");
-  else
-    panic ("probably irrecoverable malloc error: code %d", code);
-}
-
-static void
-NeXT_init (void)
-{
-  malloc_error (malloc_handler);
-}
-#endif
-
 void
 sysdep_init (void)
 {
@@ -279,8 +256,6 @@ sysdep_init (void)
   MINGW_init ();
 #elif defined (_MSC_VER)
   MSVC_init ();
-#elif defined (NeXT)
-  NeXT_init ();
 #endif
 
   octave_ieee_init ();

@@ -511,8 +511,6 @@ dnl in case -lm is needed to compile Fortran programs.
 ### Look for math library.  If found, this will add -lm to LIBS.
 
 case "$canonical_host_type" in
-  *-*-nextstep*)
-  ;;  
   *-*-linux*)
     AC_CHECK_LIB(m, sin, , , -lc)
   ;;
@@ -1546,17 +1544,6 @@ AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
 AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
 AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
-
-### I'm told that termios.h is broken on NeXT systems.
-
-case "$canonical_host_type" in
-  *-*-nextstep*)
-    if test "$have_termios_h" = yes; then
-      AC_MSG_WARN([Ignoring termios.h on NeXT systems.])
-      have_termios_h=no
-    fi
-  ;;
-esac
 
 if test "$have_termios_h" = yes \
     || test "$have_termio_h" = yes \

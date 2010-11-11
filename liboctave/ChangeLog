@@ -1,5 +1,9 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* syswait.h: Delete special cases for NeXT systems.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* lo-sysdep.cc (octave_chdir): Delete special case for __EMX__.
 	* oct-env.cc (octave_env::do_make_absolute): Likewise.
 

@@ -67,7 +67,7 @@ octave_ieee_init (void)
 
         volatile double tmp_inf;
 
-if defined (__alpha__) && defined (__osf__)
+#if defined (__alpha__) && defined (__osf__)
         extern unsigned int DINFINITY[2];
         tmp_inf =  (*(X_CAST(double *, DINFINITY)));
 #else

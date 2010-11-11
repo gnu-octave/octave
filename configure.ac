@@ -1526,11 +1526,10 @@ AC_HEADER_SYS_WAIT
 
 ### C headers
 
-AC_CHECK_HEADERS(curses.h direct.h dlfcn.h \
-  floatingpoint.h grp.h ieeefp.h inttypes.h locale.h memory.h nan.h \
-  ncurses.h poll.h pthread.h pwd.h sunmath.h sys/ioctl.h \
-  sys/param.h sys/poll.h sys/resource.h sys/select.h \
-  sys/utsname.h termcap.h)
+AC_CHECK_HEADERS(curses.h direct.h dlfcn.h floatingpoint.h grp.h \
+  ieeefp.h inttypes.h locale.h memory.h ncurses.h poll.h pthread.h \
+  pwd.h sunmath.h sys/ioctl.h sys/param.h sys/poll.h sys/resource.h \
+  sys/select.h sys/utsname.h termcap.h)
 
 ### C++ headers
 

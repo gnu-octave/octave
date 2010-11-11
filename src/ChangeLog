@@ -1,5 +1,10 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (octave_main): Call octave_ieee_init here.
+	* sysdep.cc (sysdep_init): Not here.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* sysdep.cc: Eliminate special case for __DECCXX.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>

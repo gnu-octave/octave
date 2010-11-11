@@ -245,8 +245,6 @@ sysdep_init (void)
 #elif defined (_MSC_VER)
   MSVC_init ();
 #endif
-
-  octave_ieee_init ();
 }
 
 void

@@ -604,6 +604,8 @@ octave_main (int argc, char **argv, int embedded)
 
   sysdep_init ();
 
+  octave_ieee_init ();
+
   // The idea here is to force xerbla to be referenced so that we will
   // link to our own version instead of the one provided by the BLAS
   // library.  But octave_NaN should never be -1, so we should never

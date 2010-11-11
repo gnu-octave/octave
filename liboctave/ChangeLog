@@ -1,5 +1,12 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* lo-ieee.cc (octave_ieee_init): Don't initialize octave_Inf,
+	octave_NaN, and octave_NA to DBL_MAX.  Don't initialize
+	octave_Float_Inf, octave_Float_NaN, and octave_Float_NA to FLT_MAX.
+	(octave_ieee_init): Simplify using std::numeric_limits template.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* syswait.h: Delete special cases for NeXT systems.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>

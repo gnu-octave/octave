@@ -235,18 +235,6 @@ same_file_internal (const std::string& file1, const std::string& file2)
 #endif
 }
 
-#if defined (__DECCXX)
-
-// These don't seem to be instantiated automatically...
-
-template std::istream&
-std::operator >> (std::istream&, std::complex<double>&);
-
-template std::string&
-std::string::append (const std::string&, size_t, size_t);
-
-#endif
-
 void
 sysdep_init (void)
 {

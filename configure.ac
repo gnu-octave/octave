@@ -1977,10 +1977,6 @@ typedef unsigned long ino_t;
 #define OCTAVE_HAVE_SIG_JUMP
 #endif
 
-#if defined (__DECCXX)
-#define __USE_STD_IOSTREAM
-#endif
-
 #if defined (_UNICOS)
 #define F77_USES_CRAY_CALLING_CONVENTION
 #endif

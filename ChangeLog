@@ -1,5 +1,10 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac (AH_BOTTOM): Eliminate special case for __DECCXX: 
+	(WARN_CXXFLAGS): 
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Eliminate special cases for nextstep.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>

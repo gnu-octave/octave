@@ -20,10 +20,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if defined (__DECCXX)
-#define __USE_STD_IOSTREAM
-#endif
-
 #include <cstdio>
 
 #include <iostream>

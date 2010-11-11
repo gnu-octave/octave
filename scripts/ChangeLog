@@ -1,5 +1,9 @@
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
+	* gethelp.cc: Eliminate special case for __DECCXX.
+
+2010-11-10  John W. Eaton  <jwe@octave.org>
+
 	* scripts/deprecated/dispatch.m: Don't set warning state in tests.
 
 2010-11-10  John W. Eaton  <jwe@octave.org>

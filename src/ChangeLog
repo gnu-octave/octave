@@ -1,3 +1,7 @@
+2010-11-11  John W. Eaton  <jwe@octave.org>
+
+	* data.cc: New tests for cat.  Enable 4 asserts that were disabled.
+
 2010-11-11  Kai Habel  <kai.habel@gmx.de>
 
 	* fltk-backend.cc (plot_window::uimenu_update,

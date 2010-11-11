@@ -1,5 +1,10 @@
 2010-11-11  John W. Eaton  <jwe@octave.org>
 
+	* Array.cc (Array<T>::cat): New special case for concatenating
+	empty matrices.  Bug #31615.
+
+2010-11-11  John W. Eaton  <jwe@octave.org>
+
 	* lo-mappers.cc (xtrunc, xround): Move definitions here from
 	lo-mappers.h.
 

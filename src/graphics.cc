@@ -2345,7 +2345,7 @@ public:
 
           switch (id)
             {
-            case base_properties::VISIBLE:
+            case base_properties::ID_VISIBLE:
               if (! props.is_visible ())
                 {
                   send_quit (props.get___plot_stream__ ());

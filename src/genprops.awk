@@ -283,7 +283,7 @@ function emit_declarations ()
     printf ("  enum\n  {");
     for (i = 1; i <= idx; i++)
     {
-      printf ("%s\n    %s = %d", (i == 1 ? "" : ","), toupper(name[i]), pcount);
+      printf ("%s\n    ID_%s = %d", (i == 1 ? "" : ","), toupper(name[i]), pcount);
       pcount++;
     }
     printf ("\n  };\n\n");
@@ -425,7 +425,7 @@ function emit_source ()
 ##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]);
       if (ptype[i])
       {
-        printf ("  %s.set_id (%s);\n", name[i], toupper(name[i]));
+        printf ("  %s.set_id (ID_%s);\n", name[i], toupper(name[i]));
         if (hidden[i])
           printf ("  %s.set_hidden (true);\n", name[i]);
       }

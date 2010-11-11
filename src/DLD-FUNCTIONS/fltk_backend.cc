@@ -796,34 +796,34 @@ public:
         
         switch(id)
           {
-            case base_properties::BEINGDELETED:
+            case base_properties::ID_BEINGDELETED:
               uimenu->remove_from_menu (uimenup);
               break;
-            case base_properties::VISIBLE:
+            case base_properties::ID_VISIBLE:
               uimenu->update_visible (uimenup);
               break;
-            case uimenu::properties::ACCELERATOR:
+            case uimenu::properties::ID_ACCELERATOR:
               uimenu->update_accelerator (uimenup);
               break;
-            case uimenu::properties::CALLBACK:
+            case uimenu::properties::ID_CALLBACK:
               uimenu->update_callback (uimenup);
               break;
-            case uimenu::properties::CHECKED:
+            case uimenu::properties::ID_CHECKED:
               uimenu->add_to_menu (figp);//rebuilding entire menu
               break;
-            case uimenu::properties::ENABLE:
+            case uimenu::properties::ID_ENABLE:
               uimenu->update_enable (uimenup);
               break;
-            case uimenu::properties::FOREGROUNDCOLOR:
+            case uimenu::properties::ID_FOREGROUNDCOLOR:
               uimenu->update_foregroundcolor (uimenup);
               break;
-            case uimenu::properties::LABEL:
+            case uimenu::properties::ID_LABEL:
               uimenu->add_to_menu (figp);//rebuilding entire menu
               break;
-            case uimenu::properties::POSITION:
+            case uimenu::properties::ID_POSITION:
               uimenu->add_to_menu (figp);//rebuilding entire menu
               break;
-            case uimenu::properties::SEPARATOR:
+            case uimenu::properties::ID_SEPARATOR:
               uimenu->update_seperator (uimenup);
               break;
           }
@@ -1804,17 +1804,17 @@ public:
             
             switch (id)
               {
-                case base_properties::VISIBLE:
+                case base_properties::ID_VISIBLE:
                   figure_manager::toggle_window_visibility (ov.string_value (), fp.is_visible ());
                   break;
-                case figure::properties::MENUBAR:
+                case figure::properties::ID_MENUBAR:
 		  figure_manager::toggle_menubar_visibility (ov.string_value (), fp.menubar_is("figure"));
                   break;
-                case figure::properties::NAME:
-		case figure::properties::CURRENTAXES:
+                case figure::properties::ID_NAME:
+		case figure::properties::ID_CURRENTAXES:
                   figure_manager::update_canvas (go.get_handle (), fp.get_currentaxes ());
                   break;
-                case figure::properties::NUMBERTITLE:
+                case figure::properties::ID_NUMBERTITLE:
                   figure_manager::set_name (ov.string_value ());
                   break;
               }
@@ -1822,7 +1822,7 @@ public:
       }
     else if (go.isa ("uimenu"))
       {
-        if (id == uimenu::properties::LABEL)
+        if (id == uimenu::properties::ID_LABEL)
           uimenu_set_fltk_label (go);
         
         graphics_object fig = xget_ancestor(go,"figure");

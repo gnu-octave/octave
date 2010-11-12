@@ -55,6 +55,7 @@ extern "C"
 static ODEFunc::ODERHSFunc user_fcn;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
+static bool user_jac_ignore_ml_mu;
 
 static F77_INT
 lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
@@ -80,8 +81,9 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
 }
 
 static F77_INT
-lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
-         const F77_INT&, double *pd, const F77_INT& nrowpd)
+lsode_j (const F77_INT& neq, const double& time, double *, 
+         const F77_INT& ml, const F77_INT& mu,
+         double *pd, const F77_INT& nrowpd)
 {
   Matrix tmp_jac (neq, neq);
 
@@ -91,10 +93,17 @@ lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
 
   tmp_jac = (*user_jac) (*tmp_x, time);
 
-  for (F77_INT j = 0; j < neq; j++)
-    for (F77_INT i = 0; i < neq; i++)
-      pd[nrowpd * j + i] = tmp_jac (i, j);
-
+  if (user_jac_ignore_ml_mu)
+    for (F77_INT j = 0; j < neq; j++)
+      for (F77_INT i = 0; i < neq; i++)
+        pd[nrowpd * j + i] = tmp_jac (i, j);
+  else
+    // upper left ends of subdiagonals in tmp_jac
+    for (F77_INT i = 0, j = mu; i <= ml; j == 0 ? i++ : j--)
+      // walk down the subdiagonal in tmp_jac
+      for (F77_INT k = i, l = j; k < neq && l < neq; k++, l++)
+        pd[nrowpd * l + k + mu - l] = tmp_jac (k, l);    
+      
   return 0;
 }
 
@@ -120,14 +129,43 @@ LSODE::do_integrate (double tout)
 
       octave_idx_type max_maxord = 0;
 
+      user_jac_ignore_ml_mu = true;
+
+      m_iwork(0) = lower_jacobian_subdiagonals (); // 'ML' in dlsode.f
+
+      m_iwork(1) = upper_jacobian_subdiagonals (); // 'MU' in dlsode.f
+
       if (integration_method () == "stiff")
         {
           max_maxord = 5;
 
           if (m_jac)
-            m_method_flag = 21;
+            {
+              if (jacobian_type () == "banded")
+                {
+                  m_method_flag = 24;
+                  user_jac_ignore_ml_mu = false;
+                }
+              else
+                m_method_flag = 21;
+            }
           else
-            m_method_flag = 22;
+            {
+              if (jacobian_type () == "full")
+                m_method_flag = 22;
+              else if (jacobian_type () == "banded")
+                m_method_flag = 25;
+              else if (jacobian_type () == "diagonal")
+                m_method_flag = 23;
+              else
+                {
+                  // should be prevented by lsode_options
+                  (*current_liboctave_error_handler)
+                    ("lsode: internal error, wrong jacobian type");
+                  m_integration_error = true;
+                  return retval;
+                }
+            }
 
           m_liw = 20 + n;
           m_lrw = 22 + n * (9 + n);

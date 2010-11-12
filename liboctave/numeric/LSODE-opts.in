@@ -164,3 +164,67 @@ Maximum number of steps allowed (default is 100000).
   INIT_VALUE = "100000"
   SET_EXPR = "val"
 END_OPTION
+
+OPTION
+  NAME = "jacobian type"
+  DOC_ITEM
+A string specifying the type of Jacobian used with the stiff backward
+differentiation formula (BDF) integration method. Valid values are
+
+@table @asis
+@item @qcode{"full"}
+The default. All partial derivatives are approximated or used from the
+user-supplied Jacobian function.
+
+@item @qcode{"banded"}
+Only the diagonal and the number of lower and upper subdiagonals specified by
+the options @qcode{"lower jacobian subdiagonals"} and @qcode{"upper jacobian
+subdiagonals"}, respectively, are approximated or used from the user-supplied
+Jacobian function. A user-supplied Jacobian function may set all other
+partial derivatives to arbitrary values.
+
+@item @qcode{"diagonal"}
+If a Jacobian function is supplied by the user, this setting has no effect.
+A Jacobian approximated by @code{lsode} is restricted to the diagonal, where
+each partial derivative is computed by applying a finite change to all
+elements of the state together; if the real Jacobian is indeed always diagonal,
+this has the same effect as applying the finite change only to the respective
+element of the state, but is more efficient.
+@end table
+
+  END_DOC_ITEM
+  TYPE = "std::string"
+  SET_ARG_TYPE = "const $TYPE&"
+  INIT_VALUE = ""full""
+  SET_BODY
+    if (val == "full" || val == "banded" || val == "diagonal")
+      $OPTVAR = val;
+    else
+      (*current_liboctave_error_handler)
+        ("lsode_options: jacobian type must be \"full\", \"banded\", or \"diagonal\"");
+  END_SET_BODY
+END_OPTION
+
+OPTION
+  NAME = "lower jacobian subdiagonals"
+  DOC_ITEM
+Number of lower subdiagonals used if option @qcode{"jacobian type"} is set to
+@qcode{"banded"}. The default is zero.
+
+  END_DOC_ITEM
+  TYPE = "octave_idx_type"
+  INIT_VALUE = "0"
+  SET_EXPR = "val"
+END_OPTION
+
+OPTION
+  NAME = "upper jacobian subdiagonals"
+  DOC_ITEM
+Number of upper subdiagonals used if option @qcode{"jacobian type"} is set to
+@qcode{"banded"}. The default is zero.
+
+  END_DOC_ITEM
+  TYPE = "octave_idx_type"
+  INIT_VALUE = "0"
+  SET_EXPR = "val"
+END_OPTION

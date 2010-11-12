@@ -2537,49 +2537,47 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 
   // Special case:
   //
-  //   cat (dim, [], ..., [], A)
+  //   cat (dim, [], ..., [], A, ...)
   //
   // with dim > 2, A not 0x0, and at least three arguments to
-  // concatenate results in A.  Note that this check must be performed
-  // here because for full-on braindead Matlab compatibility, we need
-  // the above to succeed, but things like
+  // concatenate is equivalent to
+  //
+  //   cat (dim, A, ...)
+  //
+  // Note that this check must be performed here because for full-on
+  // braindead Matlab compatibility, we need to have things like
+  //
+  //   cat (3, [], [], A)
+  //
+  // succeed, but to have things like
   //
   //   cat (3, cat (3, [], []), A)
   //   cat (3, zeros (0, 0, 2), A)
   //
-  // to fail.  See also bug report #31615.
+  // fail.  See also bug report #31615.
+
+  octave_idx_type istart = 0;
 
   if (n > 2 && dim > 1)
     {
-      dim_vector dv = array_list[n-1].dims ();
-
-      if (! dv.zero_by_zero ())
+      for (octave_idx_type i = 0; i < n; i++)
         {
-          bool all_but_last_are_zero_by_zero = true;
+          dim_vector dv = array_list[i].dims ();
 
-          if (all_but_last_are_zero_by_zero)
-            {
-              for (octave_idx_type i = 0; i < n-1; i++)
-                {
-                  dim_vector dv = array_list[i].dims ();
-
-                  if (! dv.zero_by_zero ())
-                    {
-                      all_but_last_are_zero_by_zero = false;
-                      break;
-                    }
-                }
-            }
-
-          if (all_but_last_are_zero_by_zero)
-            return array_list[n-1];
+          if (dv.zero_by_zero ())
+            istart++;
+          else
+            break;
         }
+
+      // Don't skip any initial aguments if they are all empty.
+      if (istart >= n)
+        istart = 0;
     }
 
+  dim_vector dv = array_list[istart++].dims ();
 
-  dim_vector dv = array_list[0].dims ();
-
-  for (octave_idx_type i = 1; i < n; i++)
+  for (octave_idx_type i = istart; i < n; i++)
     if (! (dv.*concat_rule) (array_list[i].dims (), dim))
       (*current_liboctave_error_handler)
         ("cat: dimension mismatch");

@@ -1,3 +1,7 @@
+2010-11-12  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::cat): Simplify previous change.
+
 2010-11-11  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::cat): New special case for concatenating

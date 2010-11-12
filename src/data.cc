@@ -1890,6 +1890,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!assert (cat (3, [], [1,2;3,4], []), [1,2;3,4]);
 %!assert (cat (3, [], [], []), zeros (0, 0, 3));
 
+%!assert (cat (3, [], [], 1, 2), cat (3, 1, 2));
 %!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4]);
 %!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4]);
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4]);

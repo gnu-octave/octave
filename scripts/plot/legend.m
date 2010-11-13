@@ -100,13 +100,18 @@
 
 function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
-  if (! ishandle (varargin {1}) || (strcmp (get (varargin {1}, "type"), "axes")
-      && ! strcmp (get (varargin {1}, "tag"), "legend")))
+  if (nargin > 0
+      && (! ishandle (varargin{1})
+          || (strcmp (get (varargin{1}, "type"), "axes")
+              && ! strcmp (get (varargin{1}, "tag"), "legend"))))
     [ca, varargin, nargs] = __plt_get_axis_arg__ ("legend", varargin{:});
     fig = get (ca, "parent");
   else
     fig = get (0, "currentfigure");
-    ca = get (fig, "currentaxes");
+    if (isempty (fig))
+      fig = gcf ();
+    endif
+    ca = gca ();
   endif
 
   if (strcmp (get (ca, "tag"), "plotyy"))
@@ -118,10 +123,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     endif
   endif
 
-  if (all (ishandle (varargin{1})))
+  if (nargin > 0 && all (ishandle (varargin{1})))
     kids = flipud (varargin{1}(:));
     varargin(1) = [];
-    nargs = numel (varargin);
   else
     kids = ca;
     kids (strcmp (get (ca, "tag"), "legend")) = [];
@@ -131,6 +135,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       kids = [get(kids, "children"){:}](:);
     endif
   endif
+  nargs = numel (varargin);
   nkids = numel (kids);
 
   orientation = "default";

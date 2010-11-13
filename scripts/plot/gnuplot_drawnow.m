@@ -302,9 +302,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     fputs (plot_stream, "unset multiplot;\n");
     flickering_terms = {"x11", "windows", "wxt", "dumb"};
     if (! any (strcmp (term, flickering_terms))
-        || (numel (findall (h, "type", "axes")) -
-            sum (strcmp (get (findall (h, "type", "axes"), "tag"), "legend"))) > 1
+        || have_non_legend_axes (h)
         || numel (findall (h, "type", "image")) > 0)
+1
       fprintf (plot_stream, "%s\n", term_str);
       if (nargin == 5)
         if (! isempty (file))
@@ -377,4 +377,16 @@ function ret = output_to_screen (term)
   ret = any (strcmpi ({"aqua", "dumb", "wxt", "x11", "windows", "pm"}, term));
 endfunction
 
-
+function retval = have_non_legend_axes (h)
+  retval = false;
+  all_axes = findall (h, "type", "axes");
+  if (! isempty (all_axes))
+    n_all_axes = numel (all_axes);
+    all_axes_tags = get (all_axes, "tag");
+    legend_axes = strcmp (all_axes_tags, "legend");
+    if (! isempty (legend_axes))
+      n_legend_axes = sum (legend_axes);
+      retval = (n_all_axes - n_legend_axes) > 1;
+    endif
+  endif
+endfunction

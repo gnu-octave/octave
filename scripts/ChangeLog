@@ -1,3 +1,9 @@
+2010-11-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_drawnow.m (have_non_legend_axes): New function.
+	Use it to avoid errors if there are no axes.
+	* plot/legend.m: Avoid indexing beyond end of varargin array.
+
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
 	* gethelp.cc: Eliminate special case for __DECCXX.

@@ -217,6 +217,7 @@ INCS = \
   oct-convn.h \
   oct-env.h \
   oct-fftw.h \
+  oct-glob.h \
   oct-group.h \
   oct-inttypes.h \
   oct-locbuf.h \
@@ -448,6 +449,7 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-syscalls.cc \
   oct-time.cc \
   oct-uname.cc \
+  pathsearch.cc \
   regex-match.cc \
   sparse-sort.cc \
   sparse-util.cc \
@@ -484,20 +486,11 @@ LIBOCTAVE_C_SOURCES = \
   tempnam.c \
   tempname.c
 
-LIBOCTAVE_SOURCES = $(LIBOCTAVE_CXX_SOURCES) $(BUILT_LIBOCTAVE_CXX_SOURCES) \
-	$(LIBOCTAVE_C_SOURCES)
-
 LIBOCT_READLINE_CXX_SOURCES = cmd-edit.cc cmd-hist.cc
 
 LIBOCT_READLINE_C_SOURCES = oct-rl-edit.c oct-rl-hist.c
 
 LIBOCT_READLINE_SOURCES = $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
-
-LIBOCT_PATHSEARCH_CXX_SOURCES = pathsearch.cc
-
-LIBOCT_PATHSEARCH_C_SOURCES = kpse-xfns.c
-
-LIBOCT_PATHSEARCH_SOURCES = pathsearch.cc
 
 LINK_DEPS = \
   $(RLD_FLAG) \
@@ -515,10 +508,14 @@ LINK_DEPS = \
   $(PTHREAD_LIBS) $(LIBS)
 
 liboctave_la_SOURCES = \
+  $(LIBOCTAVE_CXX_SOURCES) \
+  $(LIBOCTAVE_C_SOURCES) \
   $(LIBOCTAVE_SOURCES) \
   $(LIBOCT_READLINE_SOURCES) \
-  $(LIBOCT_PATHSEARCH_SOURCES) \
-  $(PRIVATE_INCS)
+  $(LIBOCT_PATHSEARCH_SOURCES)
+
+nodist_liboctave_la_SOURCES = \
+  $(BUILT_LIBOCTAVE_CXX_SOURCES)
 
 liboctave_la_LIBADD = $(LINK_DEPS)
 
@@ -538,10 +535,12 @@ liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
 
 octinclude_HEADERS = \
   $(INCS) \
-  $(BUILT_INCS) \
   $(OTHER_INC) \
   $(TEMPLATE_SRC) \
   $(EXTRA_HEADERS)
+
+nodist_octinclude_HEADERS = \
+  $(BUILT_INCS)
 
 $(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<

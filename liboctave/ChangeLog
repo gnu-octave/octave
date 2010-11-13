@@ -1,5 +1,22 @@
 2010-11-12  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (LIBOCTAVE_SOURCES): Delete variable.
+	(liboctave_la_SOURCES): Include $(LIBOCTAVE_CXX_SOURCES) and
+	$(LIBOCTAVE_C_SOURCES) in this list instead of
+	$(LIBOCTAVE_SOURCES).
+	(nodist_liboctave_la_SOURCES): New variable.
+	(octinclude_HEADERS): Don't include $(BUILT_INCS) in the list.
+	(noinst_octinclude_HEADERS): New variable.
+	(PRIVATE_INCS): Delete variable.
+	(INCS): Include oct-glob.h in the list.
+	(liboctave_la_SOURCES): Don't include $(PRIVATE_INCS) in the
+	list.
+	(LIBOCT_PATHSEARCH_CXX_SOURCES, LIBOCT_PATHSEARCH_C_SOURCES,
+	LIBOCT_PATHSEARCH_SOURCES): Delete variables.
+	(LIBOCTAVE_CXX_SOURCES): Include pathsearch.cc in the list.
+
+2010-11-12  John W. Eaton  <jwe@octave.org>
+
 	* Array.cc (Array<T>::cat): Simplify previous change.
 
 2010-11-11  John W. Eaton  <jwe@octave.org>

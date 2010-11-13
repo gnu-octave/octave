@@ -1,6 +1,7 @@
 2010-11-13  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (figure::properties::filename): Make writable.
+	Bug #31450.
 
 2010-11-12  John W. Eaton  <jwe@octave.org>
 

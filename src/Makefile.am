@@ -587,7 +587,6 @@ nodist_liboctinterp_la_SOURCES = \
   oct-errno.cc \
   ops.cc \
   version.h \
-  $(OPT_HANDLERS) \
   $(OPT_INC)
 
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)

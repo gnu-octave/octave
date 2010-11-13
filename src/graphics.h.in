@@ -2811,7 +2811,7 @@ public:
       array_property currentpoint r , Matrix (2, 1, 0)
       bool_property dockcontrols , "off"
       bool_property doublebuffer , "on"
-      string_property filename r , ""
+      string_property filename , ""
       bool_property integerhandle , "on"
       bool_property inverthardcopy , "off"
       callback_property keypressfcn , Matrix ()

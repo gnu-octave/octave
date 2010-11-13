@@ -1,7 +1,7 @@
 2010-11-12  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (nodist_liboctinterp_la_SOURCES): Remove
-	$(OPT_HANDLERS) from  the  list.
+	$(OPT_HANDLERS) from  the  list.  Bug #31623.
 
 2010-11-11  John W. Eaton  <jwe@octave.org>
 

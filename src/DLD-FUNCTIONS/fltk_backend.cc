@@ -85,9 +85,6 @@ right drag - rectangle zoom\n\
 left double click - autoscale\n\
 ";
 
-graphics_object xget_ancestor (const graphics_object& go_arg,
-                                      const std::string& type);
-
 class OpenGL_fltk : public Fl_Gl_Window
 {
 public:
@@ -790,7 +787,7 @@ public:
         uimenu::properties& uimenup =
           dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
         std::string fltk_label = uimenup.get_fltk_label();
-        graphics_object fig = xget_ancestor(uimenu_obj,"figure");
+        graphics_object fig = uimenu_obj.get_ancestor("figure");
         figure::properties& figp =
           dynamic_cast<figure::properties&> (fig.get_properties ());
         
@@ -1825,7 +1822,7 @@ public:
         if (id == uimenu::properties::ID_LABEL)
           uimenu_set_fltk_label (go);
         
-        graphics_object fig = xget_ancestor(go,"figure");
+        graphics_object fig = go.get_ancestor("figure");
         figure_manager::uimenu_update(fig.get_handle (), go.get_handle (), id);
       }
   }

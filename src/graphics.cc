@@ -55,8 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
-graphics_object xget_ancestor (const graphics_object& go_arg,
-                                      const std::string& type);
 
 static void
 gripe_set_invalid (const std::string& pname)
@@ -460,7 +458,7 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                        const caseless_str& to_units)
 {
   graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
-  graphics_object ax = xget_ancestor (go, "axes");
+  graphics_object ax = go.get_ancestor ("axes");
 
   Matrix retval (1, pos.numel (), 0);
 
@@ -541,26 +539,6 @@ screen_size_pixels (void)
   return convert_position (sz, obj.get ("units").string_value (), "pixels", sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
 }
 
-graphics_object
-xget_ancestor (const graphics_object& go_arg, const std::string& type)
-{
-  graphics_object go = go_arg;
-
-  do
-    {
-      if (go.valid_object ())
-        {
-          if (go.isa (type))
-            return go;
-          else
-            go = gh_manager::get_object (go.get_parent ());
-        }
-      else
-        return graphics_object ();
-    }
- while (true);
-}
-
 static void
 convert_cdata_2 (bool is_scaled, double clim_0, double clim_1,
                  const double *cmapv, double x, octave_idx_type lda,
@@ -615,7 +593,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   Matrix clim (1, 2, 0.0);
 
   graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
-  graphics_object fig = xget_ancestor (go, "figure");
+  graphics_object fig = go.get_ancestor ("figure");
 
   if (fig.valid_object ())
     {
@@ -627,7 +605,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 
   if (is_scaled)
     {
-      graphics_object ax = xget_ancestor (go, "axes");
+      graphics_object ax = go.get_ancestor ("axes");
 
       if (ax.valid_object ())
         {
@@ -2553,6 +2531,20 @@ base_graphics_object::values_as_struct (void)
     error ("base_graphics_object::values_as_struct: invalid graphics object");
 
   return retval;
+}
+
+graphics_object
+graphics_object::get_ancestor (const std::string& type) const
+{
+  if (valid_object ())
+    {
+      if (isa (type))
+        return *this;
+      else
+        return gh_manager::get_object (get_parent ()).get_ancestor (type);
+    }
+  else
+    return graphics_object ();
 }
 
 // ---------------------------------------------------------------------

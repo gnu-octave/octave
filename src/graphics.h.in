@@ -2496,6 +2496,8 @@ public:
 
   graphics_handle get_handle (void) const { return rep->get_handle (); }
 
+  graphics_object get_ancestor (const std::string& type) const;
+
   void remove_child (const graphics_handle& h) { rep->remove_child (h); }
 
   void adopt (const graphics_handle& h) { rep->adopt (h); }

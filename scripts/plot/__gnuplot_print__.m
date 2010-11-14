@@ -57,7 +57,7 @@ function opts = __gnuplot_print__ (opts)
       tmp_file = strcat (tmpnam (), ".eps");
       eps_drawnow (opts, tmp_file, gp_opts);
       if (dos_shell)
-        cleanup = sprintf (" & delete %s", tmp_file);
+        cleanup = sprintf (" & del %s", strrep (tmp_file, '/', '\'));
       else
         cleanup = sprintf (" ; rm %s", tmp_file);
       endif
@@ -123,7 +123,7 @@ function opts = __gnuplot_print__ (opts)
       cmd = sprintf ("%s", cmd_gs);
     endif
     if (dos_shell)
-      cmd = sprintf ("%s & delete %s", cmd, opts.ghostscript.source);
+      cmd = sprintf ("%s & del %s", cmd, strrep (opts.ghostscript.source, '/', '\'));
     else
       cmd = sprintf ("%s ; rm %s", cmd, opts.ghostscript.source);
     endif

@@ -400,7 +400,7 @@ function cmd = epstool (opts, filein, fileout)
   ## output must be piped.
 
   ## DOS Shell:
-  ##   copy con <filein> & epstool -bbox -preview-tiff <filein> <fileout> & delete <filein>
+  ##   copy con <filein> & epstool -bbox -preview-tiff <filein> <fileout> & del <filein>
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
@@ -417,7 +417,7 @@ function cmd = epstool (opts, filein, fileout)
     pipein = true;
     filein = strcat (tmpnam (), ".eps");
     if (dos_shell)
-      cleanup = sprintf ("& delete %s ", filein);
+      cleanup = sprintf ("& del %s ", strrep (filein, '/', '\'));
     else
       cleanup = sprintf ("; rm %s ", filein);
     endif
@@ -429,7 +429,7 @@ function cmd = epstool (opts, filein, fileout)
     pipeout = true;
     fileout = strcat (tmpnam (), ".eps");
     if (dos_shell)
-      cleanup = horzcat (cleanup, sprintf ("& delete %s ", fileout));
+      cleanup = horzcat (cleanup, sprintf ("& del %s ", strrep (fileout, '/', '\')));
     else
       cleanup = horzcat (cleanup, sprintf ("; rm %s ", fileout));
     endif

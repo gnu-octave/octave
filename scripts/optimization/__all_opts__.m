@@ -54,10 +54,12 @@ function names = __all_opts__ (varargin)
       end_try_catch
     endfor
     names = unique (names);
-    lnames = unique (tolower (names));
+    [lnames, idx] = unique (tolower (names));
     if (length (lnames) < length (names))
       ## This is bad.
       error ("__all_opts__: duplicate options with inconsistent case");
+    else
+      names = names(idx);
     endif
     saved_names = names;
     recursive = false;

@@ -1,3 +1,8 @@
+2010-11-14  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/__all_opts__.m: Ensure that the array is always
+	case-insensitively sorted.
+
 2010-11-13  John W. Eaton  <jwe@octave.org>
 
 	* plot/gnuplot_drawnow.m (have_non_legend_axes): New function.

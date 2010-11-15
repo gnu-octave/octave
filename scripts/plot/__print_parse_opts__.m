@@ -71,6 +71,11 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
   arg_st.unlink = {};
   
+  if (isfigure (varargin{1}))
+    arg_st.figure = varargin{1};
+    varargin(1) = [];
+  endif
+
   for i = 1:nargin
     arg = strtrim (varargin{i});
     if (ischar (arg))

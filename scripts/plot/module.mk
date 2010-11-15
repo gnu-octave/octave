@@ -138,6 +138,7 @@ plot_FCN_FILES = \
   plot/replot.m \
   plot/ribbon.m \
   plot/rose.m \
+  plot/saveas.m \
   plot/scatter.m \
   plot/scatter3.m \
   plot/semilogx.m \

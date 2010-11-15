@@ -248,7 +248,7 @@
 ## print -dcdj550
 ## @end example
 ##
-## @seealso{figure, orient}
+## @seealso{figure, orient, saveas}
 ## @end deftypefn
 
 function print (varargin)

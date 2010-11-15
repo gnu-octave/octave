@@ -1,3 +1,11 @@
+2010-11-15  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/saveas.m: New file.
+	* plot/module.mk: Add saveas.m
+	* plot/__print_parse_opts__.m: Parse arguments correctly when first
+	argument is a figure handle.
+	* plot/print.m: Add saveas to seealso entry.
+
 2010-11-14  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/print.m: Use "del" instead of "delete" in DOS shell, and

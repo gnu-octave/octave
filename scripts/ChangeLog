@@ -1,3 +1,7 @@
+2010-11-16  Ben Abbott <bpabbott@mac.com>
+
+	* miscellaneous/unimplemented.m: Update unimplemented functions list.
+
 2010-11-15  Rik  <octave@nomad.inbox5.com>
 
 	* plot/saveas.m: Add function name to error messages.  Use semicolons

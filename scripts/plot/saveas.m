@@ -17,37 +17,44 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} saveas (@var{h}, @var{file_name})
-## @deftypefnx  {Function File} {} saveas (@var{h}, @var{file_name}, @var{file_ext})
-## Save the graphic object @var{h} to file @var{file_name} in graphic
-## format @var{file_ext}. 
+## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
+## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{ext})
+## Save the graphic object @var{h} to file @var{filename} in graphic
+## format @var{ext}. 
 ## 
-## @var{file_ext} should be one of the following formats:
+## @var{ext} should be one of the following formats:
 ##
 ## @table @code
 ##   @item ps
 ##     Postscript
+##
 ##   @item eps
 ##     Encapsulated Postscript
+##
 ##   @item jpg
 ##     JPEG Image
+##
 ##   @item png
 ##     PNG Image
+##
 ##   @item emf
 ##     Enhanced Meta File
+##
 ##   @item pdf
 ##     Portable Document Format
 ## @end table
 ##
-## All device formats specified in @code{print} can also be used. If @var{file_ext}
-## is omitted it is extracted from @var{file_name}. The default value is
-## pdf.
+## All device formats specified in @code{print} may also be used.  If
+## @var{ext} is omitted it is extracted from @var{filename}.  The default
+## value is pdf.
 ##
 ## @example
+## @group
 ## figure (1);
 ## clf ();
 ## surf (peaks);
 ## saveas(1, "figure1.png");
+## @end group
 ## @end example
 ##
 ## @seealso{print}
@@ -65,14 +72,14 @@ function  saveas (h, fname, fext = "pdf")
     if (isfigure (h))
       fig = h;
     else
-      fig = ancestor (h, "figure")
+      fig = ancestor (h, "figure");
     endif
   else
-    error ("first argument must be a graphics handle");
+    error ("saveas: first argument H must be a graphics handle");
   endif
   
-  if (!ischar(fname))
-    error ("file_name must be a string.");
+  if (!ischar (fname))
+    error ("saveas: FILENAME must be a string");
   endif
 
   if (nargin == 2)
@@ -84,7 +91,7 @@ function  saveas (h, fname, fext = "pdf")
 
   if (nargin == 3)
     if (!ischar (fname))
-      error ("fext must be a string.");
+      error ("saveas: EXT must be a string");
     endif
 
     [~, ~, ext] = fileparts (fname);
@@ -96,5 +103,6 @@ function  saveas (h, fname, fext = "pdf")
 
   prt_opt = strcat ("-d", tolower (fext));
   
-  print (fname, prt_opt)
+  print (fname, prt_opt);
+
 endfunction

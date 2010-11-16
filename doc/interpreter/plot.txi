@@ -59,8 +59,8 @@ and @ref{Advanced Plotting}.
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
-* Printing Plots::              
-* Interacting with plots::      
+* Printing and Saving Plots::              
+* Interacting with Plots::      
 * Test Plotting Functions::     
 @end menu
 
@@ -793,9 +793,10 @@ The result of which can be seen in @ref{fig:extendedtext}
 @end float
 @end ifnotinfo
 
-@node Printing Plots
-@subsection Printing Plots
+@node Printing and Saving Plots
+@subsection Printing and Saving Plots
 @cindex printing plots
+@cindex saving plots
 
 The @code{print} command allows you to save plots in a variety of
 formats.  For example,
@@ -810,10 +811,12 @@ writes the current figure to an encapsulated PostScript file called
 
 @DOCSTRING(print)
 
+@DOCSTRING(saveas)
+
 @DOCSTRING(orient)
 
-@node Interacting with plots
-@subsection Interacting with plots
+@node Interacting with Plots
+@subsection Interacting with Plots
 
 The user can select points on a plot with the @code{ginput} function or
 selection the position at which to place text on the plot with the

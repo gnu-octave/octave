@@ -496,8 +496,8 @@ Introduction to Plotting
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
-* Printing Plots::              
-* Interacting with plots::      
+* Printing and Saving Plots::              
+* Interacting with Plots::      
 * Test Plotting Functions::     
 
 Two-Dimensional Plots

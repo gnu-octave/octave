@@ -1,3 +1,9 @@
+2010-11-15  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/octave.texi, interpreter/plot.txi: Rename subsection
+	"Printing Plots" to "Printing and Saving Plots".  Add reference to
+	new saveas function.
+
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/munge-texi.cc: Eliminate special case for __DECCXX.

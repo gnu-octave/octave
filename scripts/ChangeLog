@@ -1,3 +1,9 @@
+2010-11-15  Rik  <octave@nomad.inbox5.com>
+
+	* plot/saveas.m: Add function name to error messages.  Use semicolons
+	to prevent unnecessary output.  Use common terms 'ext' for extension
+	and 'filename' for filename in docstring.
+
 2010-11-15  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/saveas.m: New file.

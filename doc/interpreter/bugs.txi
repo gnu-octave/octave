@@ -53,10 +53,6 @@ where people's opinions differ as to what is best.
 @menu
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::              
-* Bug Criteria::                
-* Bug Tracker::                   
-* Bug Reporting::               
-* Sending Patches::             
 * Service::                     
 @end menu
 
@@ -110,13 +106,13 @@ information that makes it possible to fix the bug.
 
 @menu
 * Bug Criteria::                
-* Where: Bug Tracker::          Where to submit your bug report.
-* Reporting: Bug Reporting::    How to report a bug effectively.
-* Patches: Sending Patches::    How to send a patch for Octave.
+* Bug Tracker::        Where to submit your bug report.
+* Bug Reporting::      How to report a bug effectively.
+* Sending Patches::    How to send a patch for Octave.
 @end menu
 
 @node Bug Criteria
-@appendixsec Have You Found a Bug?
+@appendixsubsec Have You Found a Bug?
 @cindex bug criteria
 
 If you are not sure whether you have found a bug, here are some guidelines:
@@ -168,7 +164,7 @@ for improvement are welcome in any case.
 @end itemize
 
 @node Bug Tracker
-@appendixsec Where to Report Bugs
+@appendixsubsec Where to Report Bugs
 @cindex bug tracker
 @cindex reporting bugs
 @cindex bugs, reporting
@@ -180,7 +176,7 @@ To report a bug in Octave, submit a bug report to the Octave bug tracker
 Octave do not want to receive bug reports.
 
 @node Bug Reporting
-@appendixsec How to Report Bugs
+@appendixsubsec How to Report Bugs
 @cindex bugs, reporting
 
 Submit bug reports for Octave to the Octave bug tracker
@@ -317,7 +313,7 @@ should report it, even if you cannot send a fix for the problem.
 @end itemize
 
 @node Sending Patches
-@appendixsec Sending Patches for Octave
+@appendixsubsec Sending Patches for Octave
 @cindex improving Octave
 @cindex diffs, submitting
 @cindex patches, submitting

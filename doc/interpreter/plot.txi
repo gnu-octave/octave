@@ -2767,8 +2767,8 @@ corresponding hggroup elements.
 * Surface Group::               
 @end menu
 
-@node Data sources in object groups
-@subsubsection Data sources in object groups
+@node Data Sources in Object Groups
+@subsubsection Data Sources in Object Groups
 @cindex data sources in object groups
 @anchor{doc-datasources}
 All of the group objects contain data source parameters.  There are
@@ -2783,8 +2783,8 @@ function is called.
 @c remove the explicit anchor when you add the corresponding @DOCSTRING
 @c command
 
-@node Area series
-@subsubsection Area series
+@node Area Series
+@subsubsection Area Series
 @cindex series objects
 @cindex area series
 
@@ -2817,8 +2817,8 @@ function.
 Data source variables.
 @end table
 
-@node Bar series
-@subsubsection Bar series
+@node Bar Series
+@subsubsection Bar Series
 @cindex series objects
 @cindex bar series
 
@@ -2873,8 +2873,8 @@ The y value of the bars in the @code{hggroup}.
 Data source variables.
 @end table
 
-@node Contour groups
-@subsubsection Contour groups
+@node Contour Groups
+@subsubsection Contour Groups
 @cindex series objects
 @cindex contour series
 
@@ -2951,8 +2951,8 @@ The original x, y, and z data of the contour lines.
 Data source variables.
 @end table
 
-@node Error bar series
-@subsubsection Error bar series
+@node Error Bar Series
+@subsubsection Error Bar Series
 @cindex series objects
 @cindex error bar series
 
@@ -2993,8 +2993,8 @@ The original x, y, l, u, xl, xu data of the error bars.
 Data source variables.
 @end table
 
-@node Line series
-@subsubsection Line series
+@node Line Series
+@subsubsection Line Series
 @cindex series objects
 @cindex line series
 
@@ -3027,8 +3027,8 @@ The original x, y and z data.
 Data source variables.
 @end table
 
-@node Quiver group
-@subsubsection Quiver group
+@node Quiver Group
+@subsubsection Quiver Group
 @cindex group objects
 @cindex quiver group
 
@@ -3085,8 +3085,8 @@ The values of the vector field to plot.
 Data source variables.
 @end table
 
-@node Scatter group
-@subsubsection Scatter group
+@node Scatter Group
+@subsubsection Scatter Group
 @cindex group objects
 @cindex scatter group
 
@@ -3125,8 +3125,8 @@ unique size can be specified.
 Data source variables.
 @end table
 
-@node Stair group
-@subsubsection Stair group
+@node Stair Group
+@subsubsection Stair Group
 @cindex group objects
 @cindex stair group
 
@@ -3206,8 +3206,8 @@ The original x, y and z data of the stems.
 Data source variables.
 @end table
 
-@node Surface group
-@subsubsection Surface group
+@node Surface Group
+@subsubsection Surface Group
 @cindex group objects
 @cindex surface group
 

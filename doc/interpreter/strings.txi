@@ -64,8 +64,8 @@ Types}, for more information about creating matrices.
 * Character Class Functions::   
 @end menu
 
-@node Escape Sequences in string constants
-@section Escape Sequences in string constants
+@node Escape Sequences in String Constants
+@section Escape Sequences in String Constants
 @cindex escape sequence notation
 In double-quoted strings, the backslash character is used to introduce
 @dfn{escape sequences} that represent other characters.  For example,

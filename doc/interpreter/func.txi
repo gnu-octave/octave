@@ -676,8 +676,8 @@ ignore the time stamps for all function files.  Passing
 * Function Precedence::
 @end menu
 
-@node Manipulating the load path
-@subsection Manipulating the load path
+@node Manipulating the Load Path
+@subsection Manipulating the Load Path
 
 When a function is called, Octave searches a list of directories for
 a file that contains the function declaration.  This list of directories

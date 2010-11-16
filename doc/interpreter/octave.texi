@@ -815,18 +815,14 @@ Trouble
 
 * Actual Bugs::                 Bugs we will fix later.
 * Reporting Bugs::              
-* Bug Criteria::                
-* Bug Tracker::                   
-* Bug Reporting::               
-* Sending Patches::             
 * Service::                     
 
 Reporting Bugs
 
 * Bug Criteria::                
-* Where: Bug Tracker::          Where to submit your bug report.
-* Reporting: Bug Reporting::    How to report a bug effectively.
-* Patches: Sending Patches::    How to send a patch for Octave.
+* Bug Tracker::ff               Where to submit your bug report.
+* Bug Reporting::               How to report a bug effectively.
+* Sending Patches::             How to send a patch for Octave.
 
 Installation
 

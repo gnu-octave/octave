@@ -110,9 +110,9 @@ information that makes it possible to fix the bug.
 
 @menu
 * Bug Criteria::                
-* Where: Bug Tracker.           Where to submit your bug report.
-* Reporting: Bug Reporting.     How to report a bug effectively.
-* Patches: Sending Patches.     How to send a patch for Octave.
+* Where: Bug Tracker::          Where to submit your bug report.
+* Reporting: Bug Reporting::    How to report a bug effectively.
+* Patches: Sending Patches::    How to send a patch for Octave.
 @end menu
 
 @node Bug Criteria

@@ -34,7 +34,7 @@ like built-in functions.
 * Variable-length Argument Lists::  
 * Ignoring Arguments::  
 * Variable-length Return Lists::  
-* Returning From a Function::   
+* Returning from a Function::   
 * Default Arguments::   
 * Function Files::              
 * Script Files::                
@@ -497,8 +497,8 @@ and is handled the same as any other parameter name.
 
 @DOCSTRING(deal)
 
-@node Returning From a Function
-@section Returning From a Function
+@node Returning from a Function
+@section Returning from a Function
 
 The body of a user-defined function can contain a @code{return} statement.
 This statement returns control to the rest of the Octave program.  It
@@ -668,7 +668,7 @@ ignore the time stamps for all function files.  Passing
 @DOCSTRING(ignore_function_time_stamp)
 
 @menu
-* Manipulating the load path::
+* Manipulating the Load Path::
 * Subfunctions::
 * Private Functions::
 * Overloading and Autoloading::

@@ -245,12 +245,12 @@ about the status of files.
 @section Networking Utilities
 
 @menu
-* FTP objects::
-* URL manipulation::
+* FTP Objects::
+* URL Manipulation::
 @end menu
 
-@node FTP objects
-@subsection FTP objects
+@node FTP Objects
+@subsection FTP Objects
 
 @DOCSTRING(@ftp/ftp)
 
@@ -262,8 +262,8 @@ about the status of files.
 
 @DOCSTRING(@ftp/binary)
 
-@node URL manipulation
-@subsection URL manipulation
+@node URL Manipulation
+@subsection URL Manipulation
 
 @DOCSTRING(urlread)
 

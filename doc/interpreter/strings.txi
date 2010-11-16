@@ -55,7 +55,7 @@ produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric Data
 Types}, for more information about creating matrices.
 
 @menu
-* Escape Sequences in string constants::
+* Escape Sequences in String Constants::
 * Character Arrays::
 * Creating Strings:: 
 * Comparing Strings::           

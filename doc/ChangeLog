@@ -1,5 +1,13 @@
 2010-11-15  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/bugs.txi, interpreter/emacs.txi, interpreter/func.txi, 
+	interpreter/geometry.txi, interpreter/linalg.txi,
+	interpreter/octave.texi, interpreter/package.txi, interpreter/plot.txi,
+	interpreter/stmt.txi, interpreter/strings.txi, interpreter/system.txi:
+	Update info-based documentation menus to include new nodes.
+
+2010-11-15  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave.texi, interpreter/plot.txi: Rename subsection
 	"Printing Plots" to "Printing and Saving Plots".  Add reference to
 	new saveas function.

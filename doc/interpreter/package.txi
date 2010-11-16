@@ -278,8 +278,8 @@ external scripts, etc., called by functions within the package.
 
 @menu
 * The DESCRIPTION File::        
-* The INDEX file::              
-* PKG_ADD and PKG_DEL directives::  
+* The INDEX File::              
+* PKG_ADD and PKG_DEL Directives::  
 @end menu
 
 @node The DESCRIPTION File
@@ -418,8 +418,8 @@ where the first package name will be used as a default and if the
 RPMs are built on a Mandriva distribution, then the second package
 name will be used instead. 
 
-@node The INDEX file
-@subsection The INDEX file
+@node The INDEX File
+@subsection The INDEX File
 
 The optional @code{INDEX} file provides a categorical view of the
 functions in the package.  This file has a very simple format
@@ -516,8 +516,8 @@ arcov = $TSA <code>armcv</code>
 @noindent
 id is any string of letters, numbers and @code{_}.
 
-@node PKG_ADD and PKG_DEL directives
-@subsection PKG_ADD and PKG_DEL directives
+@node PKG_ADD and PKG_DEL Directives
+@subsection PKG_ADD and PKG_DEL Directives
 
 If the package contains files called @w{@code{PKG_ADD}} or @w{@code{PKG_DEL}}
 the commands in these files will be executed when the package is

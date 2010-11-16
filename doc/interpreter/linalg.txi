@@ -25,15 +25,15 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
 
 @menu
-* Techniques used for Linear Algebra::
+* Techniques Used for Linear Algebra::
 * Basic Matrix Functions::      
 * Matrix Factorizations::       
 * Functions of a Matrix::       
 * Specialized Solvers::
 @end menu
 
-@node Techniques used for Linear Algebra
-@section Techniques used for Linear Algebra
+@node Techniques Used for Linear Algebra
+@section Techniques Used for Linear Algebra
 
 Octave includes a polymorphic solver, that selects an appropriate
 matrix factorization depending on the properties of the matrix itself. 

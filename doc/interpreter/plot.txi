@@ -2754,17 +2754,17 @@ and position are automatically adjusted, based on changes to the
 corresponding hggroup elements.
 
 @menu
-* Data sources in object groups::  
-* Area series::                 
-* Bar series::                  
-* Contour groups::              
-* Error bar series::            
-* Line series::                 
-* Quiver group::                
-* Scatter group::               
-* Stair group::                 
+* Data Sources in Object Groups::  
+* Area Series::                 
+* Bar Series::                  
+* Contour Groups::              
+* Error Bar Series::            
+* Line Series::                 
+* Quiver Group::                
+* Scatter Group::               
+* Stair Group::                 
 * Stem Series::                 
-* Surface group::               
+* Surface Group::               
 @end menu
 
 @node Data sources in object groups

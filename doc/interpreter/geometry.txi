@@ -88,7 +88,7 @@ The result of which can be seen in @ref{fig:delaunay}.
 
 @menu
 * Plotting the Triangulation::
-* Identifying points in Triangulation::
+* Identifying Points in Triangulation::
 @end menu
 
 @node Plotting the Triangulation
@@ -128,8 +128,8 @@ The output of the above can be seen in @ref{fig:triplot}.
 @end float
 @end ifnotinfo
 
-@node Identifying points in Triangulation
-@subsection Identifying points in Triangulation
+@node Identifying Points in Triangulation
+@subsection Identifying Points in Triangulation
 
 It is often necessary to identify whether a particular point in the
 N-dimensional space is within the Delaunay tessellation of a set of

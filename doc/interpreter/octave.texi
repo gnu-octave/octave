@@ -302,7 +302,7 @@ Integer Data Types
 
 Strings
 
-* Escape Sequences in string constants::
+* Escape Sequences in String Constants::
 * Character Arrays::
 * Creating Strings:: 
 * Comparing Strings::           
@@ -323,6 +323,7 @@ Data Containers
 
 Data Structures
 
+* Basic Usage and Examples::
 * Structure Arrays::
 * Creating Structures::
 * Manipulating Structures::
@@ -330,10 +331,16 @@ Data Structures
 
 Cell Arrays
 
-* Creating Cell Arrays::                 
+* Basic Usage of Cell Arrays::
+* Creating Cell Arrays::
 * Indexing Cell Arrays::
 * Cell Arrays of Strings::
 * Processing Data in Cell Arrays::
+
+Comma Separated Lists
+
+* Comma Separated Lists Generated from Cell Arrays::
+* Comma Separated Lists Generated from Structure Arrays::
 
 Variables
 
@@ -382,7 +389,7 @@ Statements
 
 The @code{switch} Statement
 
-* Notes for the C programmer::  
+* Notes for the C Programmer::  
 
 The @code{for} Statement
 
@@ -393,8 +400,9 @@ Functions and Scripts
 * Defining Functions::          
 * Multiple Return Values::      
 * Variable-length Argument Lists::  
+* Ignoring Arguments::  
 * Variable-length Return Lists::  
-* Returning From a Function::   
+* Returning from a Function::   
 * Default Arguments::   
 * Function Files::              
 * Script Files::                
@@ -404,7 +412,7 @@ Functions and Scripts
 
 Function Files
 
-* Manipulating the load path::
+* Manipulating the Load Path::
 * Subfunctions::
 * Private Functions::
 * Overloading and Autoloading::
@@ -489,7 +497,7 @@ Plotting
 * Graphics Data Structures::    
 * Advanced Plotting::           
 
-Introduction to Plotting
+High-Level Plotting
 
 * Two-Dimensional Plots::       
 * Three-Dimensional Plotting::  
@@ -502,12 +510,12 @@ Introduction to Plotting
 
 Two-Dimensional Plots
 
-* Two-dimensional Function Plotting::
+* Two-dimensional Function Plotting::  
 
 Three-Dimensional Plotting
 
-* Three-dimensional Function Plotting::
-* Three-dimensional Geometric Shapes::
+* Three-dimensional Function Plotting::  
+* Three-dimensional Geometric Shapes::  
 
 Graphics Data Structures
 
@@ -539,21 +547,21 @@ Advanced Plotting
 
 Object Groups
 
-* Data sources in object groups::  
-* Area series::                 
-* Bar series::                  
-* Contour groups::              
-* Error bar series::            
-* Line series::                 
-* Quiver group::                
-* Scatter group::               
-* Stair group::                 
+* Data Sources in Object Groups::  
+* Area Series::                 
+* Bar Series::                  
+* Contour Groups::              
+* Error Bar Series::            
+* Line Series::                 
+* Quiver Group::                
+* Scatter Group::               
+* Stair Group::                 
 * Stem Series::                 
-* Surface group::               
+* Surface Group::               
 
 Graphics Backends
 
-* Interaction with gnuplot::
+* Interaction with gnuplot::    
 
 Matrix Manipulation
 
@@ -576,7 +584,7 @@ Arithmetic
 
 Linear Algebra
 
-* Techniques used for Linear Algebra::
+* Techniques Used for Linear Algebra::
 * Basic Matrix Functions::      
 * Matrix Factorizations::       
 * Functions of a Matrix::       
@@ -682,7 +690,7 @@ Geometry
 Delaunay Triangulation
 
 * Plotting the Triangulation::
-* Identifying points in Triangulation::
+* Identifying Points in Triangulation::
 
 Image Processing
 
@@ -698,6 +706,12 @@ Object Oriented Programming
 * Manipulating Classes::
 * Indexing Objects::
 * Overloading Objects::
+* Inheritance and Aggregation::
+
+Indexing Objects
+
+* Defining Indexing And Indexed Assignment::
+* Indexed Assignment Optimization::
 
 Overloading Objects
 
@@ -720,6 +734,11 @@ System Utilities
 * System Information::          
 * Hashing Functions::
 
+Networking Utilities
+
+* FTP Objects::
+* URL Manipulation::
+
 Packages
 
 * Installing and Removing Packages::  
@@ -730,8 +749,8 @@ Packages
 Creating Packages
 
 * The DESCRIPTION File::        
-* The INDEX file::              
-* PKG_ADD and PKG_DEL directives::  
+* The INDEX File::              
+* PKG_ADD and PKG_DEL Directives::  
 
 Dynamically Linked Functions
 
@@ -805,9 +824,9 @@ Trouble
 Reporting Bugs
 
 * Bug Criteria::                
-* Where: Bug Tracker.           Where to send your bug report.
-* Reporting: Bug Reporting.     How to report a bug effectively.
-* Patches: Sending Patches.     How to send a patch for Octave.
+* Where: Bug Tracker::          Where to submit your bug report.
+* Reporting: Bug Reporting::    How to report a bug effectively.
+* Patches: Sending Patches::    How to send a patch for Octave.
 
 Installation
 
@@ -817,7 +836,7 @@ Emacs Octave Support
 
 * Installing EOS::              
 * Using Octave Mode::           
-* Running Octave From Within Emacs::  
+* Running Octave from Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
 @end detailmenu
 @end menu

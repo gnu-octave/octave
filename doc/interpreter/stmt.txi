@@ -329,11 +329,11 @@ endswitch
 @end example
 
 @menu
-* Notes for the C programmer::  
+* Notes for the C Programmer::  
 @end menu
 
-@node Notes for the C programmer
-@subsection Notes for the C programmer
+@node Notes for the C Programmer
+@subsection Notes for the C Programmer
 
 The @code{switch} statement is also available in the widely used C
 programming language.  There are, however, some differences

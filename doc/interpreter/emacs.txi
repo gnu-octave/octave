@@ -47,7 +47,7 @@ or suggestions on using EOS.
 @menu
 * Installing EOS::              
 * Using Octave Mode::           
-* Running Octave From Within Emacs::  
+* Running Octave from Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
 @end menu
 
@@ -371,8 +371,8 @@ automatically sets up a mail buffer with version information already
 added.  You just need to add a description of the problem, including a
 reproducible test case and send the message.
 
-@node Running Octave From Within Emacs
-@appendixsec Running Octave From Within Emacs
+@node Running Octave from Within Emacs
+@appendixsec Running Octave from Within Emacs
 
 The package @file{octave} provides commands for running an inferior
 Octave process in a special Emacs buffer.  Use 

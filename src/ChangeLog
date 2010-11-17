@@ -1,5 +1,11 @@
 2010-11-17  John W. Eaton  <jwe@octave.org>
 
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue1): Also stash
+	the directory name of the parent function in the newly created
+	anonymous function.  Bug #31484.
+
+2010-11-17  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (parse_fcn_file): Protect and set global_command
 	to 0 before calling yyparse.
 	* toplev.cc (main_loop): Likewise.

@@ -112,7 +112,11 @@ tree_anon_fcn_handle::rvalue1 (int)
 
   if (curr_fcn)
     {
+      // FIXME -- maybe it would be better to just stash curr_fcn
+      // instead of individual bits of info about it?
+
       uf->stash_parent_fcn_name (curr_fcn->name ());
+      uf->stash_dir_name (curr_fcn->dir_name ());
 
       symbol_table::scope_id parent_scope = curr_fcn->parent_fcn_scope ();
 

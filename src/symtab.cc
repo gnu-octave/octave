@@ -613,6 +613,12 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         {
           if (curr_fcn)
             {
+              // FIXME -- maybe it would be better if we could just get
+              // a pointer to the parent function so we would have
+              // access to all info about it instead of only being able
+              // to query the current function for specific bits of info
+              // about its parent function?
+
               scope_id pscope = curr_fcn->parent_fcn_scope ();
 
               if (pscope > 0)

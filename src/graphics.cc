@@ -5043,6 +5043,8 @@ text::properties::update_text_extent (void)
 #endif
   box = text_renderer.get_extent (elt, get_rotation ());
 
+  delete elt;
+
   Matrix ext (1, 4, 0.0);
 
   // FIXME: also handle left and bottom components

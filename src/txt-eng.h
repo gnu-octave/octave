@@ -179,6 +179,11 @@ public:
 
   ~text_parser_none (void) { }
 
+  // FIXME: is it possible to use reference counting to manage the
+  // memory for the object returned by the text parser?  That would be
+  // preferable to having to know when and where to delete the object it
+  // creates...
+
   text_element* parse (const std::string& s)
     {
       return new text_element_string (s);

@@ -1,3 +1,7 @@
+2010-11-17  Kim Hansen  <kim@ange.dk>
+
+	* strings/strchr.m: New tests.
+
 2010-11-16  Ben Abbott <bpabbott@mac.com>
 
 	* miscellaneous/unimplemented.m: Update unimplemented functions list.

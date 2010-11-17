@@ -2,6 +2,10 @@
 
 	* strings/strchr.m: New tests.
 
+2010-11-17  John W. Eaton  <jwe@octave.org>
+
+	* strings/strchr.m: Style fixes.
+
 2010-11-16  Ben Abbott <bpabbott@mac.com>
 
 	* miscellaneous/unimplemented.m: Update unimplemented functions list.

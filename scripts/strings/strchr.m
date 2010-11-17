@@ -20,10 +20,9 @@
 ## @deftypefn  {Function File} {@var{idx} =} strchr (@var{str}, @var{chars})
 ## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n})
 ## @deftypefnx {Function File} {@var{idx} =} strchr (@var{str}, @var{chars}, @var{n}, @var{direction})
-## Search for the string @var{str} for occurrences of characters from the set
-## @var{chars}.
-## The return value, as well as the @var{n} and @var{direction} arguments behave
-## identically as in @code{find}.
+## Search for the string @var{str} for occurrences of characters from
+## the set @var{chars}.  The return value, as well as the @var{n} and
+## @var{direction} arguments behave identically as in @code{find}.
 ##
 ## This will be faster than using regexp in most cases.
 ##
@@ -44,12 +43,14 @@ function varargout = strchr (str, chars, varargin)
       mask |= str == chars(i);
     endfor
   else
-    ## Index the str into a mask of valid values. This is slower than it could be
-    ## because of the +1 issue.
+    ## Index the str into a mask of valid values.  This is slower than
+    ## it could be because of the +1 issue.
     f = false (1, 256);
     f(chars + 1) = true;
-    si = uint32 (str); # default goes via double - unnecessarily long.
-    ++si; # in-place
+    ## Default goes via double -- unnecessarily long.
+    si = uint32 (str);
+    ## in-place
+    ++si;
     mask = reshape (f(si), size (str));
   endif
   varargout = cell (1, nargout);

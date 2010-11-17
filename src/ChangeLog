@@ -1,3 +1,13 @@
+2010-11-17  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (parse_fcn_file): Protect and set global_command
+	to 0 before calling yyparse.
+	* toplev.cc (main_loop): Likewise.
+
+	* oct-parse.yy (eval_string): Set global_command to 0 after
+	protecting it and before calling yyparse.
+	* input.cc (get_debug_input): Likewise.
+
 2010-11-14  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (graphics_object::get_ancestor): New method.

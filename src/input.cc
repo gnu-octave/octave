@@ -737,6 +737,8 @@ get_debug_input (const std::string& prompt)
           // Save current value of global_command.
           frame.protect_var (global_command);
 
+          global_command = 0;
+
           // Do this with an unwind-protect cleanup function so that the
           // forced variables will be unmarked in the event of an interrupt.
           symbol_table::scope_id scope = symbol_table::top_scope ();

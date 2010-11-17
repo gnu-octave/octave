@@ -560,6 +560,10 @@ main_loop (void)
           symbol_table::scope_id scope = symbol_table::top_scope ();
           frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
+          frame.protect_var (global_command);
+
+          global_command = 0;
+
           // This is the same as yyparse in parse.y.
           retval = octave_parse ();
 

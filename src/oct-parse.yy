@@ -546,9 +546,7 @@ input           : input1
                     YYACCEPT;
                   }
                 | function_file
-                  {
-                    YYACCEPT;
-                  }
+                  { YYACCEPT; }
                 | simple_list parse_error
                   { ABORT_PARSE; }
                 | parse_error
@@ -3576,7 +3574,13 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           lexer_flags.parsing_class_method = ! dispatch_type.empty ();
 
+          frame.protect_var (global_command);
+
+          global_command = 0;
+
           int status = yyparse ();
+
+          delete global_command;
 
           fcn_ptr = primary_fcn_ptr;
 
@@ -4317,6 +4321,8 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
       reset_parser ();
 
       frame.protect_var (global_command);
+
+      global_command = 0;
 
       // Do this with an unwind-protect cleanup function so that the
       // forced variables will be unmarked in the event of an

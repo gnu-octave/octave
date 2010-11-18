@@ -1,3 +1,11 @@
+2010-11-18  John W. Eaton  <jwe@octave.org>
+
+	Bug # 31689.
+
+	* ov-str-mat.cc (octave_char_matrix_str::save_ascii):
+	Adapt to change in charMatrix::row_as_string function.
+	* DLD-FUNCTIONS/md5sum.cc: New tests.
+
 2010-11-17  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue1): Also stash

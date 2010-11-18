@@ -69,7 +69,7 @@ public:
   charMatrix& insert (const char *s, octave_idx_type r, octave_idx_type c);
   charMatrix& insert (const charMatrix& a, octave_idx_type r, octave_idx_type c);
 
-  std::string row_as_string (octave_idx_type, bool strip_ws = false, bool raw = false) const;
+  std::string row_as_string (octave_idx_type, bool strip_ws = false) const;
 
   // resize is the destructive equivalent for this one
 

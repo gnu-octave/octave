@@ -293,7 +293,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
         {
           unsigned len = chm.cols ();
           os << "# length: " << len << "\n";
-          std::string tstr = chm.row_as_string (i, false, true);
+          std::string tstr = chm.row_as_string (i);
           const char *tmp = tstr.data ();
           if (tstr.length () > len)
             panic_impossible ();

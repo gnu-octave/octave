@@ -86,3 +86,16 @@ string @var{str}.\n\
 
   return retval;
 }
+
+/*
+%!assert (md5sum ("abc\0", true), "147a664a2ca9410911e61986d3f0d52a");
+
+%!test
+%! tfile = tmpnam ();
+%! fid = fopen (tfile, "wb");
+%! fwrite (fid, "abc\0");
+%! fclose (fid);
+%! assert (md5sum (tfile), "147a664a2ca9410911e61986d3f0d52a");
+%! unlink (tfile);
+*/
+

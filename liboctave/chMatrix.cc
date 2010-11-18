@@ -131,7 +131,7 @@ charMatrix::insert (const charMatrix& a, octave_idx_type r, octave_idx_type c)
 }
 
 std::string
-charMatrix::row_as_string (octave_idx_type r, bool strip_ws, bool raw) const 
+charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const 
 {
   std::string retval;
 
@@ -152,22 +152,13 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws, bool raw) const
   for (octave_idx_type i = 0; i < nc; i++)
     retval[i] = elem (r, i);
 
-  if (! raw)
+  if (strip_ws)
     {
-      if (strip_ws)
+      while (--nc >= 0)
         {
-          while (--nc >= 0)
-            {
-              char c = retval[nc];
-              if (c && c != ' ')
-                break;
-            }
-        }
-      else
-        {
-          while (--nc >= 0)
-            if (retval[nc])
-              break;
+          char c = retval[nc];
+          if (c && c != ' ')
+            break;
         }
 
       retval.resize (nc+1);

@@ -1,3 +1,7 @@
+2010-11-17  Ben Abbott <bpabbott@mac.com>
+
+	* general/subsindex.m: Fix typo in doc-string.
+
 2010-11-17  John W. Eaton  <jwe@octave.org>
 
 	* strings/strchr.m: Style fixes.

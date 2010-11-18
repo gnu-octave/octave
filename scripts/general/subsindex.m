@@ -28,7 +28,7 @@
 ## @example
 ## @group
 ## function b = myclass (a)
-##  b = myclass (struct ("a", a), "myclass");
+##  b = class (struct ("a", a), "myclass");
 ## endfunction
 ## @end group
 ## @end example
@@ -62,3 +62,4 @@
 function idx = subsindex (a)
   error ("subsindex: not defined for class \"%s\"", class(a));
 endfunction
+

@@ -1,3 +1,8 @@
+2010-11-18  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m: For tests, allow __print_parse_opts__
+	to run with no inputs.
+
 2010-11-17  Ben Abbott <bpabbott@mac.com>
 
 	* general/subsindex.m: Fix typo in doc-string.

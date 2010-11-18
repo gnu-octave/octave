@@ -71,7 +71,7 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
   arg_st.unlink = {};
   
-  if (isfigure (varargin{1}))
+  if (nargin > 0 && isfigure (varargin{1}))
     arg_st.figure = varargin{1};
     varargin(1) = [];
   endif

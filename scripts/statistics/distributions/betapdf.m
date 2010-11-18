@@ -1,4 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 2005, 2006, 2007 Kurt Hornik
+## Copyright (C) 2010 Christos Dimitrakakis
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +23,7 @@
 ## distribution with parameters @var{a} and @var{b}.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
+## Author: KH <Kurt.Hornik@wu-wien.ac.at>, CD <christos.dimitrakakis@gmail.com>
 ## Description: PDF of the Beta distribution
 
 function pdf = betapdf (x, a, b)
@@ -46,15 +47,52 @@ function pdf = betapdf (x, a, b)
     pdf (k) = NaN;
   endif
 
-  k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
+  k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0) & ((a != 1) | (b != 1)));
   if (any (k))
     if (isscalar(a) && isscalar(b))
       pdf(k) = exp ((a - 1) .* log (x(k))
-                    + (b - 1) .* log (1 - x(k))) ./ beta (a, b);
+		            + (b - 1) .* log (1 - x(k))
+                    + lgamma(a + b) - lgamma(a) - lgamma(b));
     else
       pdf(k) = exp ((a(k) - 1) .* log (x(k))
-                    + (b(k) - 1) .* log (1 - x(k))) ./ beta (a(k), b(k));
+		            + (b(k) - 1) .* log (1 - x(k))
+                    + lgamma(a(k) + b(k)) - lgamma(a(k)) - lgamma(b(k)));
     endif
+  endif
+
+  ## Most important special cases when the density is finite.
+  k = find ((x == 0) & (a == 1) & (b > 0) & (b != 1));
+  if (any (k))
+    if (isscalar(a) && isscalar(b))
+      pdf(k) = exp(lgamma(a + b) - lgamma(a) - lgamma(b));
+    else
+      pdf(k) = exp(lgamma(a(k) + b(k)) - lgamma(a(k)) - lgamma(b(k)));
+    endif
+  endif
+
+  k = find ((x == 1) & (b == 1) & (a > 0) & (a != 1));
+  if (any (k))
+    if (isscalar(a) && isscalar(b))
+      pdf(k) = exp(lgamma(a + b) - lgamma(a) - lgamma(b));
+    else
+      pdf(k) = exp(lgamma(a(k) + b(k)) - lgamma(a(k)) - lgamma(b(k)));
+    endif
+  endif
+
+  k = find ((x >= 0) & (x <= 1) & (a == 1) & (b == 1));
+  if (any (k))
+    pdf(k) = 1;
+  endif
+
+  ## Other special case when the density at the boundary is infinite.
+  k = find ((x == 0) & (a < 1));
+  if (any (k))
+    pdf(k) = Inf;
+  endif
+
+  k = find ((x == 1) & (b < 1));
+  if (any (k))
+    pdf(k) = Inf;
   endif
 
 endfunction

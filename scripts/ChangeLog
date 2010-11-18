@@ -1,3 +1,9 @@
+2010-11-18  Christos Dimitrakakis  <christos.dimitrakakis@gmail.com>
+
+	* statistics/distributions/betapdf.m: Use lgamma to compute
+	normalising constant in log space in order to handle large
+	parameters a and b.  Ensure correct values at x == 0 or x == 1.
+
 2010-11-18  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: For tests, allow __print_parse_opts__

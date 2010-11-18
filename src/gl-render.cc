@@ -1877,7 +1877,9 @@ opengl_renderer::draw_line (const line::properties& props)
       for (int i = 0; i < n; i++)
         {
           if (clip[i] == clip_ok)
-            draw_marker (x(i), y(i), (has_z ? z(i) : 0), lc, fc);
+            draw_marker (x(i), y(i),
+                         has_z ? z(i) : static_cast<double> (i) / n,
+                         lc, fc);
         }
 
       end_marker ();

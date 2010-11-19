@@ -1,3 +1,7 @@
+2010-11-18  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Fix bug setting zscale to yscale (31693).
+
 2010-11-18  Christos Dimitrakakis  <christos.dimitrakakis@gmail.com>
 
 	* statistics/distributions/betapdf.m: Use lgamma to compute

@@ -1927,7 +1927,7 @@ function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zminortick, obj.zticklabelmode,
              obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
              "border", obj.tickdir, ticklength, fontname, fontspec,
-             obj.interpreter, obj.yscale);
+             obj.interpreter, obj.zscale);
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,

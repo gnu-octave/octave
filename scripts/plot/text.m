@@ -76,15 +76,15 @@ function h = text (varargin)
         label = label{1};
         for i = 1:nx
           tmp(i) = __go_text__ (ca, "string", label,
-                                "position", pos(i,:),
-                                varargin{:});
+                                varargin{:},
+                                "position", pos(i,:));
         endfor
         __request_drawnow__ ();
       elseif (n == nx)
         for i = 1:nx
           tmp(i) = __go_text__ (ca, "string", label{i},
-                                "position", pos(i,:),
-                                varargin{:});
+                                varargin{:},
+                                "position", pos(i,:));
         endfor
         __request_drawnow__ ();
       else

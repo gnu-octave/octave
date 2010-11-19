@@ -1,5 +1,7 @@
 2010-11-18  Ben Abbott <bpabbott@mac.com>
 
+	* plot/text.m: Ensure text position property is set after units
+	property.
 	* plot/__go_draw_axes__.m: Fix bug setting zscale to yscale (31693).
 
 2010-11-18  Christos Dimitrakakis  <christos.dimitrakakis@gmail.com>

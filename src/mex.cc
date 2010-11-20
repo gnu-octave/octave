@@ -2216,8 +2216,10 @@ public:
 
             if (p != foreign_memlist.end ())
               foreign_memlist.erase (p);
+#ifdef DEBUG
             else
               warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
+#endif
           }
       }
   }

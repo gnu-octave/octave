@@ -1,3 +1,8 @@
+2010-11-19  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mex::free): Don't warn about skipping memory not
+	allocated by mxMalloc, mxCalloc, or mxRealloc.
+
 2010-11-18  Daisuke TAKAGO  <takago@neptune.kanazawa-it.ac.jp>
 
 	* gl-render.cc (opengl_renderer::draw_line):

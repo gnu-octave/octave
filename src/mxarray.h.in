@@ -163,9 +163,9 @@ public:
 
   mxArray (mwSize m, mwSize n);
 
-  virtual mxArray *clone (void) const
+  virtual mxArray *dup (void) const
   {
-    mxArray *new_rep = rep->clone ();
+    mxArray *new_rep = rep->dup ();
 
     return new mxArray (new_rep, name);
   }

@@ -1,5 +1,13 @@
 2010-11-19  John W. Eaton  <jwe@octave.org>
 
+	Bug #31706.
+
+	* mex.h, mex.cc (mxArray::dup): Rename from clone.  Change all
+	uses and derived classes.
+	(mxArray_octave_value::dup): Convert to mxArray object here.
+
+2010-11-19  John W. Eaton  <jwe@octave.org>
+
 	* mex.cc (mex::free): Don't warn about skipping memory not
 	allocated by mxMalloc, mxCalloc, or mxRealloc.
 

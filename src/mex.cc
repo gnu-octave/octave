@@ -115,7 +115,7 @@ protected:
 
 public:
 
-  mxArray *clone (void) const = 0;
+  mxArray *dup (void) const = 0;
 
   ~mxArray_base (void) { }
 
@@ -327,7 +327,7 @@ public:
     : mxArray_base (), val (ov), mutate_flag (false),
       id (mxUNKNOWN_CLASS), class_name (0), ndims (-1), dims (0) { }
 
-  mxArray *clone (void) const { return new mxArray_octave_value (*this); }
+  mxArray *dup (void) const { return val.as_mxArray (); }
 
   ~mxArray_octave_value (void)
   {
@@ -1175,7 +1175,7 @@ public:
       } 
   }
 
-  mxArray_number *clone (void) const { return new mxArray_number (*this); }
+  mxArray_number *dup (void) const { return new mxArray_number (*this); }
 
   ~mxArray_number (void)
   {
@@ -1494,7 +1494,7 @@ public:
     jc = static_cast<mwIndex *> (calloc (n + 1, sizeof (mwIndex)));
   }
 
-  mxArray_sparse *clone (void) const { return new mxArray_sparse (*this); }
+  mxArray_sparse *dup (void) const { return new mxArray_sparse (*this); }
 
   ~mxArray_sparse (void)
   {
@@ -1680,7 +1680,7 @@ public:
       fields[i] = strsave (keys[i]);
   }
 
-  mxArray_struct *clone (void) const { return new mxArray_struct (*this); }
+  mxArray_struct *dup (void) const { return new mxArray_struct (*this); }
 
   ~mxArray_struct (void)
   {
@@ -1878,7 +1878,7 @@ private:
     for (mwIndex i = 0; i < nel * nfields; i++)
       {
         mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->clone () : 0;
+        data[i] = ptr ? ptr->dup () : 0;
       }
   }
 };
@@ -1901,7 +1901,7 @@ public:
     : mxArray_matlab (mxCELL_CLASS, m, n),
       data (static_cast<mxArray **> (calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
 
-  mxArray_cell *clone (void) const { return new mxArray_cell (*this); }
+  mxArray_cell *dup (void) const { return new mxArray_cell (*this); }
 
   ~mxArray_cell (void)
   {
@@ -1955,7 +1955,7 @@ private:
     for (mwIndex i = 0; i < nel; i++)
       {
         mxArray *ptr = val.data[i];
-        data[i] = ptr ? ptr->clone () : 0;
+        data[i] = ptr ? ptr->dup () : 0;
       }
   }
 };
@@ -2614,7 +2614,7 @@ mxCreateStructMatrix (mwSize m, mwSize n, int num_keys, const char **keys)
 mxArray *
 mxDuplicateArray (const mxArray *ptr)
 {
-  return maybe_mark_array (ptr->clone ());
+  return maybe_mark_array (ptr->dup ());
 }
 
 // Destructor.

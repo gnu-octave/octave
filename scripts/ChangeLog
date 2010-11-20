@@ -1,3 +1,8 @@
+2010-11-19  Ben Abbott <bpabbott@mac.com>
+
+	* plot/__gnuplot_has_feature__.m: Since there is not gnuplot 4.3.x
+	release, replace reference to version 4.3 with 4.4.
+
 2010-11-18  Ben Abbott <bpabbott@mac.com>
 
 	* plot/text.m: Ensure text position property is set after units

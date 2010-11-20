@@ -94,8 +94,7 @@ BUILT_SOURCES = \
 else
 bin_SCRIPTS = \
   mkoctfile \
-  octave-config \
-  run-octave
+  octave-config
 
 BUILT_SOURCES = \
   run-octave

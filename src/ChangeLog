@@ -8,6 +8,8 @@
 
 2010-11-19  John W. Eaton  <jwe@octave.org>
 
+	Bug #31707.
+
 	* mex.cc (mex::free): Don't warn about skipping memory not
 	allocated by mxMalloc, mxCalloc, or mxRealloc.
 

@@ -1,3 +1,7 @@
+2010-11-20  Ben Abbott <bpabbott@mac.com>
+
+	* graphics.h.in: Change intended for 11272.
+
 2010-11-19  John W. Eaton  <jwe@octave.org>
 
 	Bug #31706.

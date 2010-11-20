@@ -3507,8 +3507,8 @@ public:
       row_vector_property xlim hlr , Matrix ()
       row_vector_property ylim hlr , Matrix ()
       row_vector_property zlim hlr , Matrix ()
-      bool_property xliminclude hl , "on"
-      bool_property yliminclude hl , "on"
+      bool_property xliminclude hl , "off"
+      bool_property yliminclude hl , "off"
       bool_property zliminclude hl , "off"
     END_PROPERTIES
 

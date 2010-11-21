@@ -1,3 +1,8 @@
+2010-11-20  Rik  <octave@nomad.inbox5.com>
+
+	* plot/gnuplot_drawnow.m: Remove spurious line causing 'ans=1' to be
+	returned when printing plots.  
+
 2010-11-19  Ben Abbott <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Since there is not gnuplot 4.3.x

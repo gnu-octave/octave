@@ -304,7 +304,6 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     if (! any (strcmp (term, flickering_terms))
         || have_non_legend_axes (h)
         || numel (findall (h, "type", "image")) > 0)
-1
       fprintf (plot_stream, "%s\n", term_str);
       if (nargin == 5)
         if (! isempty (file))

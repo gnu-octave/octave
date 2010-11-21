@@ -1,8 +1,14 @@
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
+	* (plot/uigetfile.m, plot/uiputfile.m): Set default directory to pwd
+
+2010-11-21  Kai Habel  <kai.habel@gmx.de>
+
 	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m, 
  plot/private/__fltk_file_filter__.m): New files.
-	* plot/module.mk: Add new files
+	* plot/module.mk: Add new files.
+	* miscellaneous/unimplemented.m: Remove uigetdir.m, uigetfile.m,
+	and uiputfile.m from list of unimplemented functions.
 
 2010-11-20  Rik  <octave@nomad.inbox5.com>
 

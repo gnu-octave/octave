@@ -60,7 +60,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
     defaultvals = {"All Files(*)", #FLTK File Filter
                    "Save File?",   #Dialog Title
-                   "",             #FLTK default file name
+                   pwd,            #FLTK default file name
                    [240, 120],     #Dialog Position (pixel x/y)
                    "create"};
 

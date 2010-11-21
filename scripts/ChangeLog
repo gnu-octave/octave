@@ -1,3 +1,7 @@
+2010-11-21  Ben Abbott <bpabbot@mac.com>
+
+	* general/cell2mat.m: Return empty matrix for empty cell.
+
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
 	* (plot/uigetfile.m, plot/uiputfile.m): Set default directory to pwd

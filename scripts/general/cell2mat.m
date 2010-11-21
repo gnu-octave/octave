@@ -38,20 +38,21 @@ function m = cell2mat (c)
   
   nb = numel (c);
 
-  ## We only want numeric, logical, and char matrices.
-  valid = cellfun (@isnumeric, c);
-  valid |= cellfun (@islogical, c);
-  valid |= cellfun (@ischar, c);
-  validc = cellfun (@iscell, c);
-  valids = cellfun (@isstruct, c);
-
-  if (! all (valid(:)) && ! all (validc(:)) && ! all (valids(:)))
-    error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
-  endif
-
   if (nb == 0)
     m = [];
   else
+
+    ## We only want numeric, logical, and char matrices.
+    valid = cellfun (@isnumeric, c);
+    valid |= cellfun (@islogical, c);
+    valid |= cellfun (@ischar, c);
+    validc = cellfun (@iscell, c);
+    valids = cellfun (@isstruct, c);
+
+    if (! all (valid(:)) && ! all (validc(:)) && ! all (valids(:)))
+      error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
+    endif
+
     ## The goal is to minimize the total number of cat() calls.
     ## The dimensions can be concatenated along in arbitrary order.
     ## The numbers of concatenations are:
@@ -96,6 +97,7 @@ endfunction
 %!test
 %! m = {1, 2, 3};
 %! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
+%!assert (cell2mat ({}), []);
 ## Demos
 %!demo
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};

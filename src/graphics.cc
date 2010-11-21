@@ -1490,7 +1490,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = surface::properties::has_core_property (pname);
           else if (pfx == "hggroup")
             has_property = hggroup::properties::has_core_property (pname);
-	  else if (pfx == "uimenu")
+          else if (pfx == "uimenu")
             has_property = uimenu::properties::has_core_property (pname);
 
           if (has_property)

@@ -1,3 +1,9 @@
+2010-11-21  Kai Habel  <kai.habel@gmx.de>
+
+	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m, 
+ plot/private/__fltk_file_filter__.m): New files.
+	* plot/module.mk: Add new files
+
 2010-11-20  Rik  <octave@nomad.inbox5.com>
 
 	* plot/gnuplot_drawnow.m: Remove spurious line causing 'ans=1' to be

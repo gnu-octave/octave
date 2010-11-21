@@ -18,6 +18,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__errcomm__.m \
   plot/private/__errplot__.m \
   plot/private/__ezplot__.m \
+  plot/private/__fltk_file_filter__.m \
   plot/private/__ghostscript__.m \
   plot/private/__gnuplot_has_terminal__.m\
   plot/private/__interp_cube__.m \
@@ -163,6 +164,9 @@ plot_FCN_FILES = \
   plot/surfnorm.m \
   plot/text.m \
   plot/title.m \
+  plot/uigetdir.m \
+  plot/uigetfile.m \
+  plot/uiputfile.m \
   plot/uimenu.m \
   plot/view.m \
   plot/waitforbuttonpress.m \

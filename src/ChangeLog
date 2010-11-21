@@ -1,3 +1,9 @@
+2010-11-21  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/fltk-backend.cc (__fltk_uigetfile__): New function
+	for GUI file dialogs. graphics.cc (property_list::set): Indentation
+	fix.
+
 2010-11-20  Ben Abbott <bpabbott@mac.com>
 
 	* graphics.h.in: Change intended for 11272.

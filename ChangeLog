@@ -1,3 +1,7 @@
+2010-11-21  Kai Habel  <kai.habel@gmx.de>
+
+	* NEWS: Add uigetdir, uigetfile, uiputfile.
+
 2010-11-19  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.am (bin_SCRIPTS): Remove run-octave from the list.

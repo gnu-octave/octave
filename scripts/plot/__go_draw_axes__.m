@@ -147,15 +147,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
         fontspec = create_fontspec (f, s, gnuplot_term);
-        fprintf (plot_stream, "set title \"%s\" %s %s",
+        fprintf (plot_stream, "set title \"%s\" %s %s;\n",
                  undo_string_escapes (tt), fontspec,
                  __do_enhanced_option__ (enhanced, t));
-        if (nd == 3
-            && __gnuplot_has_feature__ ("screen_coordinates_for_{lrtb}margin"))
-          fprintf (plot_stream, " offset screen 0, screen %.3f;\n", pos(4)/5);
-        else
-          fprintf (plot_stream, ";\n");
-        endif
       endif
     endif
 

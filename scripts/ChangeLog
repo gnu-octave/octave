@@ -1,5 +1,7 @@
-2010-11-21  Ben Abbott <bpabbot@mac.com>
+2010-11-21  Ben Abbott <bpabbott@mac.com>
 
+	* plot/__go_draw_axes__.m: Fix plot titles so they are visible for
+	gnuplot 4.4.x (31711).
 	* general/cell2mat.m: Return empty matrix for empty cell.
 
 2010-11-21  Kai Habel  <kai.habel@gmx.de>

@@ -184,7 +184,8 @@ void defun_isargout (int nargout, int nout, bool *isargout)
             isargout[k++] = false;
           else
             {
-              int l = std::min (k + p->numel (), nout);
+              int l = std::min (k + p->numel (),
+                                static_cast<octave_idx_type> (nout));
               while (k < l)
                 isargout[k++] = true;
             }

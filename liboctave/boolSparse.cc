@@ -173,8 +173,9 @@ SparseBoolMatrix::any (int dim) const
           Array<octave_idx_type> tmp (nz, 1);
           copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (1, 1, true),
-                                 idx_vector (tmp), idx_vector (0), nr, 1,
-                                 false);
+                                 idx_vector (tmp),
+                                 idx_vector (static_cast<octave_idx_type> (0)),
+                                 nr, 1, false);
         }
     }
 
@@ -221,7 +222,9 @@ SparseBoolMatrix::sum (int dim) const
           Array<octave_idx_type> tmp (nz, 1);
           copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (1, 1, 1.0),
-                                   idx_vector (tmp), idx_vector (0), nr, 1);
+                                   idx_vector (tmp),
+                                   idx_vector (static_cast<octave_idx_type> (0)),
+                                   nr, 1);
         }
     }
 

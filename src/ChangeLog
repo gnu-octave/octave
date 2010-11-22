@@ -6,10 +6,10 @@
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/fltk-backend.cc (__fltk_uigetfile__): New function
-	for GUI file dialogs. graphics.cc (property_list::set): Indentation
-	fix.
+	for GUI file dialogs.
+	* graphics.cc (property_list::set): Indentation	fix.
 
-2010-11-20  Ben Abbott <bpabbott@mac.com>
+2010-11-20  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.h.in: Change intended for 11272.
 
@@ -340,8 +340,8 @@
 	(plot_window::show_menubar): New function.
 	(plot_window::hide_menubar): New function.
 	(plot_window::uimenu_update): New function.
-	(plot_window::handle): Do not evaluate FLTK events when 
-	figure is deleted.
+	(plot_window::handle): Do not evaluate FLTK events when figure
+	is deleted.
 	(figure_manager::uimenu_update): New function.
 	(figure_manager::toggle_menubar_visibility): New functions.
 	(figure_manager::do_toggle_menubar_visibility): New function.

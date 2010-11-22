@@ -1,4 +1,4 @@
-2010-11-21  Ben Abbott <bpabbott@mac.com>
+2010-11-21  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix plot titles so they are visible for
 	gnuplot 4.4.x (31711).
@@ -6,12 +6,12 @@
 
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
-	* (plot/uigetfile.m, plot/uiputfile.m): Set default directory to pwd
+	* (plot/uigetfile.m, plot/uiputfile.m): Set default directory to pwd.
 
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
-	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m, 
- plot/private/__fltk_file_filter__.m): New files.
+	* plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m,
+	plot/private/__fltk_file_filter__.m: New files.
 	* plot/module.mk: Add new files.
 	* miscellaneous/unimplemented.m: Remove uigetdir.m, uigetfile.m,
 	and uiputfile.m from list of unimplemented functions.
@@ -19,14 +19,14 @@
 2010-11-20  Rik  <octave@nomad.inbox5.com>
 
 	* plot/gnuplot_drawnow.m: Remove spurious line causing 'ans=1' to be
-	returned when printing plots.  
+	returned when printing plots.
 
-2010-11-19  Ben Abbott <bpabbott@mac.com>
+2010-11-19  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__gnuplot_has_feature__.m: Since there is not gnuplot 4.3.x
 	release, replace reference to version 4.3 with 4.4.
 
-2010-11-18  Ben Abbott <bpabbott@mac.com>
+2010-11-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/text.m: Ensure text position property is set after units
 	property.
@@ -38,12 +38,12 @@
 	normalising constant in log space in order to handle large
 	parameters a and b.  Ensure correct values at x == 0 or x == 1.
 
-2010-11-18  Ben Abbott <bpabbott@mac.com>
+2010-11-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: For tests, allow __print_parse_opts__
 	to run with no inputs.
 
-2010-11-17  Ben Abbott <bpabbott@mac.com>
+2010-11-17  Ben Abbott  <bpabbott@mac.com>
 
 	* general/subsindex.m: Fix typo in doc-string.
 
@@ -55,7 +55,7 @@
 
 	* strings/strchr.m: New tests.
 
-2010-11-16  Ben Abbott <bpabbott@mac.com>
+2010-11-16  Ben Abbott  <bpabbott@mac.com>
 
 	* miscellaneous/unimplemented.m: Update unimplemented functions list.
 

@@ -38,7 +38,9 @@ function [retdir] = uigetdir (init_path = pwd, name = "Choose directory?")
   endif
 
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_backends)))
-      init_path = fileparts (init_path);
+      if (!isdir (init_path))
+        init_path = fileparts (init_path);
+      endif
       retdir = __fltk_uigetfile__ ("", name, init_path, [240, 120], "dir");
   else
     error ("uigetdir requires fltk backend.");

@@ -25,6 +25,7 @@
 
 function retval = __fltk_file_filter__ (file_filter)
   # converts octave's file filter format into fltk's.
+  retval = "";
   if (iscell (file_filter))
     [r, c] = size (file_filter);
     if ((c == 0) || (c > 2))
@@ -61,10 +62,11 @@ function retval = __fltk_file_filter__ (file_filter)
     endfor
     retval = fltk_str;
   elseif (ischar (file_filter))
-    outargs{3} = file_filter;
-    [fdir, fname, fext] = fileparts (file_filter);
-    if (length (fext) > 0)
-      retval = strcat ("*", fext, "\t*");
+    if (!isdir (file_filter))
+      [fdir, fname, fext] = fileparts (file_filter);
+      if (length (fext) > 0)
+        retval = strcat ("*", fext, "\t*");
+      endif
     endif
   endif  
 endfunction

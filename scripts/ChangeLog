@@ -1,3 +1,8 @@
+2010-11-21  Kai Habel  <kai.habel@gmx.de>
+
+	* (plot/uigetdir.m, plot/private/__fltk_file_filter__.m:): Check if
+	file argument is a valid path, don't use fileparts in this case.
+
 2010-11-21  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Fix plot titles so they are visible for

@@ -193,8 +193,7 @@ a single script.
 
 If you plan to modify the parser you will also need GNU @code{bison} and
 @code{flex}.  If you modify the documentation, you will need GNU
-Texinfo, along with the patch for the @code{makeinfo} program that is
-distributed with Octave.
+Texinfo.
 
 GNU Make, @code{gcc}, and @code{libstdc++}, @code{gnuplot},
 @code{bison}, @code{flex}, and Texinfo are all available from many

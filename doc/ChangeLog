@@ -1,3 +1,8 @@
+2010-11-23  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/install.txi: Delete obsolete statement about
+	needing a patch for makeinfo.
+
 2010-11-18  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/contributors.in: Add Christos Dimitrakakis to the list.

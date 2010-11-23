@@ -149,7 +149,7 @@
 ## The default value is 100.
 ##
 ## The eighth argument specifies the tolerance for the stopping criteria.
-## The default value is @code{eps}.
+## The default value is @code{sqrt(eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##

@@ -36,10 +36,13 @@ along with Octave; see the file COPYING.  If not, see
 static std::string
 oct_md5_result_to_str (const unsigned char *buf)
 {
-  char tmp [32];
+  char tmp [33];
 
-  for (octave_idx_type i = 0; i < 16; i++)
-    sprintf (&tmp[2*i], "%02x", buf[i]);
+  sprintf (tmp,
+           "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+           buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7],
+           buf[8],  buf[9], buf[10], buf[11], buf[12], buf[13], buf[14],
+           buf[15]);
 
   return std::string (tmp, 32);
 }

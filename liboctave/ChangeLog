@@ -1,5 +1,10 @@
 2010-11-23  John W. Eaton  <jwe@octave.org>
 
+	* oct-md5.cc (oct_md5_result_to_str): Avoid buffer overrun in
+	call to sprintf.  Replace loop with a single call to sprintf.
+
+2010-11-23  John W. Eaton  <jwe@octave.org>
+
 	* oct-md5.cc (oct_md5_file): Close file after reading.
 
 2010-11-22  John W. Eaton  <jwe@octave.org>

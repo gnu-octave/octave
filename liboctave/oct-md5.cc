@@ -65,7 +65,11 @@ oct_md5_file (const std::string file)
     {
       unsigned char buf[16];
 
-      if (! md5_stream (ifile, buf))
+      int errflag = md5_stream (ifile, buf);
+
+      fclose (ifile);
+
+      if (! errflag)
         retval = oct_md5_result_to_str (buf);
       else
         (*current_liboctave_error_handler) ("internal error in md5_stream");

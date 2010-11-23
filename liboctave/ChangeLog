@@ -1,3 +1,7 @@
+2010-11-23  John W. Eaton  <jwe@octave.org>
+
+	* oct-md5.cc (oct_md5_file): Close file after reading.
+
 2010-11-22  John W. Eaton  <jwe@octave.org>
 
 	* boolSparse.cc (SparseBoolMatrix::sum, SparseBoolMatrix::any):

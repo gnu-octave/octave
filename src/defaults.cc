@@ -227,31 +227,42 @@ set_default_bin_dir (void)
 }
 
 void
-set_exec_path (const std::string& path)
+set_exec_path (const std::string& path_arg)
 {
-  VEXEC_PATH = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
-    + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
-    + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
-    + Varch_lib_dir + dir_path::path_sep_str ()
-    + Vbin_dir;
-  
+  std::string tpath = path_arg;
+
+  if (tpath.empty ())
+    tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
+
+  if (tpath.empty ())
+    tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
+      + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
+      + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
+      + Varch_lib_dir + dir_path::path_sep_str ()
+      + Vbin_dir;
+
+  VEXEC_PATH = tpath;
+
+  // FIXME -- should we really be modifying PATH in the environment?
+  // The way things are now, Octave will ignore directories set in the
+  // PATH with calls like
+  //
+  //   setenv ("PATH", "/my/path");
+  //
+  // To fix this, I think Octave should be searching the combination of
+  // PATH and EXEC_PATH for programs that it executes instead of setting
+  // the PATH in the environment and relying on the shell to do the
+  // searching.
+
   // This is static so that even if set_exec_path is called more than
   // once, shell_path is the original PATH from the environment,
   // before we start modifying it.
   static std::string shell_path = octave_env::getenv ("PATH");
 
   if (! shell_path.empty ())
-    VEXEC_PATH += dir_path::path_sep_str () + shell_path;
+    tpath = shell_path + dir_path::path_sep_str () + tpath;
 
-  std::string tpath = path;
-
-  if (tpath.empty ())
-    tpath = octave_env::getenv ("OCTAVE_EXEC_PATH");
-
-  if (! tpath.empty ())
-    VEXEC_PATH = tpath + dir_path::path_sep_str () + VEXEC_PATH;
-
-  octave_env::putenv ("PATH", VEXEC_PATH);
+  octave_env::putenv ("PATH", tpath);
 }
 
 void
@@ -414,23 +425,15 @@ DEFUN (EXEC_PATH, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
 Query or set the internal variable that specifies a colon separated\n\
-list of directories to search when executing external programs.\n\
-Its initial value is taken from the environment variable\n\
-@w{@env{OCTAVE_EXEC_PATH}} (if it exists) or @env{PATH}, but that\n\
-value can be overridden by the command line argument\n\
-@option{--exec-path PATH}.  At startup, an additional set of\n\
-directories (including the shell PATH) is appended to the path\n\
-specified in the environment or on the command line.  If you use\n\
-the @w{@env{EXEC_PATH}} function to modify the path, you should take\n\
-care to preserve these additional directories.\n\
+list of directories to append to the shell PATH when executing external\n\
+programs.  The initial value of is taken from the environment variable\n\
+@w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by\n\
+the command line argument @option{--exec-path PATH}.\n\
 @end deftypefn")
 {
-  std::string saved_exec_path = VEXEC_PATH;
-
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
 
-  if (VEXEC_PATH != saved_exec_path)
-    octave_env::putenv ("PATH", VEXEC_PATH);
+  set_exec_path (VEXEC_PATH);
 
   return retval;
 }

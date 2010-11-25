@@ -125,7 +125,7 @@ function __datetick__ (varargin)
   endif
 
   if (keepticks)
-    ticks = get (gca (), strcat (ax, "tick"))
+    ticks = get (gca (), strcat (ax, "tick"));
   else
     ## Need to do our own axis tick position calculation as
     ## year, etc, don't fallback on nice datenum values.

@@ -1,3 +1,8 @@
+2010-11-25  Kai Habel  <kai.habel@gmx.de>
+
+	* (plot/uimenu.m): Simplify code, add further check.
+	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m): Fix error messages.
+
 2010-11-25  John W. Eaton  <jwe@octave.org>
 
 	* time/datetick.m: Add missing semicolon.

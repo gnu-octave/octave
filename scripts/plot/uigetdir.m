@@ -30,7 +30,7 @@
 function [retdir] = uigetdir (init_path = pwd, name = "Choose directory?")
 
   if (!ischar(init_path) || !ischar(name))
-    error ("Expecting string arguments.");
+    error ("uigetdir: expecting string arguments.");
   endif
   
   if (nargin > 2)
@@ -43,7 +43,7 @@ function [retdir] = uigetdir (init_path = pwd, name = "Choose directory?")
       endif
       retdir = __fltk_uigetfile__ ("", name, init_path, [240, 120], "dir");
   else
-    error ("uigetdir requires fltk backend.");
+    error ("uigetdir: fltk backend required.");
   endif
 
 endfunction

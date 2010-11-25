@@ -121,7 +121,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
       ## check for even number of remaining arguments, prop/value pair(s)
       if (rem (nargin - stridx + 1, 2))
-        error ("expecting property/value pairs");
+        error ("uigetfile: expecting property/value pairs");
       endif
 
       for i = stridx : 2 : nargin
@@ -131,27 +131,27 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
           if (ismatrix (val) && length(val) == 2)
             outargs{4} = val;
           else
-            error ("expecting 2-element vector for position argument")
+            error ("uigetfile: expecting 2-element vector for position argument")
           endif
         elseif (strncmp (tolower (prop), "multiselect", 11))
           if (ischar (val))
             outargs{5} = tolower (val);
           else
-            error ("expecting string argument (on/off) for multiselect")
+            error ("uigetfile: expecting string argument (on/off) for multiselect")
           endif
         else
-          error ("unknown argument");
+          error ("uigetfile: unknown argument");
         endif
       endfor
     endif
   else
-    error ("number of input arguments must be less than eight");
+    error ("uigetfile: number of input arguments must be less than eight");
   endif
 
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_backends)))
     [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});  
   else
-    error ("uigetfile requires fltk backend.");
+    error ("uigetfile: fltk backend required.");
   endif
 
          

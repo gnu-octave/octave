@@ -79,24 +79,18 @@
 function hui = uimenu (varargin)
 
   args = varargin;
-  if (nargin == 0)
-    h = gcf ();
-  elseif (nargin == 1)
-    if (ishandle (args{1}))
-      h = args{1};
-      args(1) = [];
-    else
-      error ("expected handle as first argument");
-    endif
+
+  if (ishandle (args{1}))
+    h = args{1};
+    args(1) = [];
   else
-    if (ishandle (args{1}))
-      h = args{1};
-      args(1) = [];
-    else
-      h = gcf ();
-    endif
+    h = gcf ();
   endif
-  
+
+  if (rem (length (args), 2))
+    error ("uimenu: expecting property/value pairs");
+  endif
+
   tmp = __go_uimenu__ (h, args{:});
 
   if (nargout > 0)

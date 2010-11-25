@@ -1,3 +1,10 @@
+2010-11-25  John W. Eaton  <jwe@octave.org>
+
+	* defaults.cc (set_exec_path): Append EXEC_PATH to PATH.  Store
+	only extra directories in EXEC_PATH.
+	(FEXEC_PATH): Update doc string.
+	Bug #31695.
+
 2010-11-22  John W. Eaton  <jwe@octave.org>
 
 	* defun.cc (defun_isargout): Cast nout to octave_idx_type in call

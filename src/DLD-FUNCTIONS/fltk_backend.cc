@@ -221,6 +221,8 @@ private:
 
 // Parameter controlling how fast we zoom when using the scrool wheel.
 static double wheel_zoom_speed = 0.05;
+// Parameter controlling the GUI mode.
+static enum { pan_zoom, rotate_zoom, none } gui_mode;
 
 void script_cb(Fl_Widget*, void* data)
   {
@@ -877,9 +879,6 @@ private:
   // Number of dimensions, 2 or 3.
   int ndim;
 
-  // Interactive Mode
-  enum { pan_zoom, rotate_zoom } gui_mode;
- 
   // Figure properties.
   figure::properties& fp;
 
@@ -1967,8 +1966,63 @@ value.\n\
   return retval;
 }
 
+DEFUN_DLD (fltk_gui_mode, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{mode} =} fltk_gui_mode\n\
+@deftypefnx {Built-in Function} {} fltk_gui_mode (@var{mode})\n\
+Returns the current GUI mode string for the fltk backend. If\n\
+the @var{mode} argument is given the GUI mode is set to this\n\
+value. It can be one of the following strings:\n\
+@table @code\n\
+@item 2d\n\
+Allows panning and zooming of current axes.\n\
+@item 3d\n\
+Allows rotating and zooming of current axes.\n\
+@item none\n\
+Mouse inputs have no effect.\n\
+@end table\n\
+@end deftypefn")
+{
+  caseless_str mode_str;
+
+  if (gui_mode == pan_zoom)
+    mode_str = "2d";
+  else if (gui_mode == rotate_zoom)
+    mode_str = "3d";
+  else
+    mode_str = "none";
+  
+  
+  bool failed = false;
+  
+  if (args.length () == 1)
+    {
+      if (args(0).is_string ())
+        {
+          mode_str = args(0).string_value ();
+
+          if (mode_str.compare ("2d"))
+            gui_mode = pan_zoom;
+          else if (mode_str.compare ("3d"))
+            gui_mode = rotate_zoom;
+          else if (mode_str.compare ("none"))
+            gui_mode = none;
+          else
+            failed = true;
+        }
+      else
+        failed = true;
+    }
+    
+  if (failed)
+    error ("argument must be one of the strings: ""2D"", ""3D"", or ""None"".");
+  
+  
+  return octave_value(mode_str);
+}
+
 #include "file-ops.h"
-DEFUN_DLD (__fltk_uigetfile__, args, nargout,
+DEFUN_DLD (__fltk_uigetfile__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __fltk_uigetfile__ ([@var{...}])\n\
 Internal Function.\n\

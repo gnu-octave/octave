@@ -433,7 +433,8 @@ the command line argument @option{--exec-path PATH}.\n\
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
 
-  set_exec_path (VEXEC_PATH);
+  if (args.length () > 0)
+    set_exec_path (VEXEC_PATH);
 
   return retval;
 }

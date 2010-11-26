@@ -1,3 +1,15 @@
+2010-11-26  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: Append directories to EXEC_PATH instead of
+	prepending them.  Use pathsep instead of ":".
+
+	* miscellaneous/copyfile.m, miscellaneous/movefile.m,
+	miscellaneous/ls_command.m, plot/__print_parse_opts__.m:
+	Search PATH for programs, not EXEC_PATH.
+
+	* plot/print.m: Refer to PATH, not EXEC_PATH in error messages.
+	* plot/__print_parse_opts__.m: Likewise.
+
 2010-11-25  Kai Habel  <kai.habel@gmx.de>
 
 	* (plot/uimenu.m): Simplify code, add further check.

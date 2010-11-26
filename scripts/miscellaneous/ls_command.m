@@ -32,7 +32,8 @@ function old_cmd = ls_command (cmd)
 
   if (isempty (__ls_command__))
     ## FIXME -- ispc and isunix both return true for Cygwin.  Should they?
-    if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "ls")))
+    if (ispc () && ! isunix ()
+        && isempty (file_in_path (getenv ("PATH"), "ls")))
       __ls_command__ = "cmd /C dir /D";
     else
       __ls_command__ = "ls -C";

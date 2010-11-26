@@ -120,7 +120,7 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (strncmp (arg, "-PSTOEDIT:", 9))
         arg_st.pstoedit_binary = arg{10:end};
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
-        arg_st.ghostscript.binary = file_in_path (EXEC_PATH, arg(3:end));
+        arg_st.ghostscript.binary = file_in_path (getenv ("PATH"), arg(3:end));
         if (isempty (arg_st.ghostscript.binary))
           error ("print: Ghostscript binary ""%s"" could not be located",
                  arg(3:end))
@@ -261,7 +261,7 @@ function arg_st = __print_parse_opts__ (varargin)
         endif
       else
         arg_st.append_to_file = false;
-        warning ("print.m: appended output requires ghostscript to be installed.")
+        warning ("print.m: appended output requires ghostscript to be installed")
       endif
     else
       warning ("print.m: appended output is not supported for device '%s'",
@@ -344,16 +344,16 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_binary)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("print:missinggs", "print.m: Ghostscript binary is not available.")
+      warning ("print:missinggs", "print.m: Ghostscript binary is not available")
     endif
     if (isempty (arg_st.epstool_binary))
-      warning ("print:missinggs", "print.m: epstool binary is not available.")
+      warning ("print:missinggs", "print.m: epstool binary is not available")
     endif
     if (isempty (arg_st.fig2dev_binary))
-      warning ("print:missinggs", "print.m: fig2dev binary is not available.")
+      warning ("print:missinggs", "print.m: fig2dev binary is not available")
     endif
     if (isempty (arg_st.pstoedit_binary))
-      warning ("print:missinggs", "print.m: pstoedit binary is not available.")
+      warning ("print:missinggs", "print.m: pstoedit binary is not available")
     endif
     warn_on_missing_binary = false;
   endif
@@ -431,11 +431,12 @@ function gs = __ghostscript_binary__ ()
 
   if (isempty (ghostscript_binary))
     GSC = getenv ("GSC");
-    if (exist (GSC, "file") || (! isempty (GSC) && file_in_path (EXEC_PATH, GSC)))
+    if (exist (GSC, "file")
+        || (! isempty (GSC) && file_in_path (getenv ("PATH"), GSC)))
       gs_binaries = {GSC};
     elseif (! isempty (GSC) && warn_on_bad_gsc)
       warning ("print:badgscenv",
-               "print.m: GSC environment variable not set properly.")
+               "print.m: GSC environment variable not set properly")
       warn_on_bad_gsc = false;
       gs_binaries = {};
     else
@@ -451,11 +452,11 @@ function gs = __ghostscript_binary__ ()
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))
       n = n + 1;
-      ghostscript_binary = file_in_path (EXEC_PATH, gs_binaries{n});
+      ghostscript_binary = file_in_path (getenv ("PATH"), gs_binaries{n});
     endwhile
     if (warn_on_no_ghostscript && isempty (ghostscript_binary))
       warning ("print:noghostscript",
-               "print.m: ghostscript not found in EXEC_PATH.")
+               "print.m: ghostscript not found in PATH")
       warn_on_no_ghostscript = false;
     endif
   endif
@@ -485,11 +486,11 @@ function bin = __find_binary__ (binary)
     n = 0;
     while (n < numel (binaries) && isempty (data.(binary).bin))
       n = n + 1;
-      data.(binary).bin = file_in_path (EXEC_PATH, binaries{n});
+      data.(binary).bin = file_in_path (getenv ("PATH"), binaries{n});
     endwhile
     if (isempty (data.(binary).bin) && data.(binary).warn_on_absence)
       warning (sprintf ("print:no%s", binary),
-               "print.m: '%s' not found in EXEC_PATH", binary)
+               "print.m: '%s' not found in PATH", binary)
       data.(binary).warn_on_absence = false;
     endif
   endif
@@ -570,7 +571,7 @@ function value = convert2points (value, units)
       value = value * 72 / 25.4;
     case "normalized"
       error ("print:customnormalized",
-             "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined.")
+             "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined")
     endswitch
 endfunction
 

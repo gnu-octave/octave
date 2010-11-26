@@ -1,3 +1,8 @@
+2010-11-26  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/install.txi (Compiling Octave with 64-bit
+	Indexing): New section.
+
 2010-11-23  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/install.txi: Delete obsolete statement about

@@ -73,12 +73,8 @@ recommended for general use.
 This is an @strong{experimental} option to enable Octave to use 64-bit
 integers for array dimensions and indexing on 64-bit platforms.  You
 probably don't want to use this option unless you know what you are
-doing.
-
-If you use @option{--enable-64}, you must ensure that your Fortran
-compiler generates code with 8 byte signed @code{INTEGER} values, and
-that your @sc{blas} and @sc{lapack} libraries are compiled to use 8 byte
-signed integers for array dimensions and indexing.
+doing.  @xref{Compiling Octave with 64-bit Indexing}, for more details
+about building Octave with this option.
 
 @item --enable-shared
 Create shared libraries (this is the default).  If you are planning to
@@ -211,7 +207,7 @@ make CFLAGS=-O CXXFLAGS=-O LDFLAGS=
 @end example
 
 @noindent
-instead of just @samp{make}.
+instead of just @command{make}.
 
 @item
 If you encounter errors while compiling Octave, first check the list of
@@ -226,7 +222,7 @@ see the file BUGS
 for information about how to report bugs.
 
 @item
-Once you have successfully compiled Octave, run @samp{make install}.
+Once you have successfully compiled Octave, run @code{make install}.
 
 This will install a copy of Octave, its libraries, and its documentation
 in the destination directory.  As distributed, Octave is installed in
@@ -271,8 +267,318 @@ Image files that are distributed with Octave.
 @end itemize
 
 @menu
+* Compiling Octave with 64-bit Indexing::       
 * Installation Problems::       
 @end menu
+
+@node Compiling Octave with 64-bit Indexing  
+@appendixsec Compiling Octave with 64-bit Indexing
+
+Note: the following only applies to systems that have 64-bit
+pointers.  Configuring Octave with @option{--enable-64} cannot magically
+make a 32-bit system have a 64-bit address space.
+
+On 64-bit systems, Octave is limited to (approximately) the following
+array sizes when using the default 32-bit indexing mode:
+
+@example
+@group
+double:         16GB
+single:          8GB 
+uint64, int64:  16GB
+uint32, int32:   8GB
+uint16, int16:   4GB
+uint8, int8:     2GB
+@end group
+@end example
+
+In each case, the limit is really (approximately) @math{2^31} elements
+because of the default type of the value used for indexing arrays
+(signed 32-bit integer, corresponding to the size of a Fortran INTEGER
+value).
+
+Trying to create larger arrays will produce the following error:
+
+@example
+@group
+octave:1> a = zeros (1024*1024*1024*3, 1, 'int8');
+error: memory exhausted or requested size too large
+       for range of Octave's index type --
+       trying to return to prompt
+@end group
+@end example
+
+@noindent
+You will obtain this error even if your system has enough memory to
+create this array (4 GB in the above case).
+
+To use arrays larger than 2 GB, Octave has to be configured with the
+option @option{--enable-64}.  This option is experimental and you are (as
+always) encouraged to submit bug reports if you find a problem.  With
+this option, Octave will use 64-bit integers internally for array
+dimensions and indexing.  However, all numerical libraries used by
+Octave will also need to use 64-bit integers for array dimensions and
+indexing.  In most cases, this means they will need to be compiled
+from source since most (all?) distributions which package these
+libraries compile them with the default Fortran integer size, which is
+normally 32-bits wide.
+
+The following instructions were tested with the development version of
+Octave and GCC 4.3.4 on an x86_64 Debian system.
+
+The versions listed below are the versions used for testing.  If newer
+versions of these packages are available, you should try to use them,
+though there may be some differences.
+
+All libraries and header files will be installed in subdirectories of
+@code{$prefix64} (you must choose the location of this directory).
+
+@itemize @bullet
+@item
+BLAS and LAPACK (@url{http://www.netlib.org/lapack})
+
+Reference versions for both libraries are included in the reference
+LAPACK 3.2.1 distribution from @url{netlib.org}.
+
+@itemize @minus
+@item
+Copy the file @file{make.inc.example} and name it @file{make.inc}.
+The options @option{-fdefault-integer-8} and @option{-fPIC} (on 64-bit
+CPU) have to be added to the variable @code{OPTS} and @code{NOOPT}.
+
+@item
+Once you have compiled this library make sure that you use it for
+compiling Suite Sparse and Octave.  In the following we assume that
+you installed the LAPACK library as $prefix64/lib/liblapack.a.
+@end itemize
+
+@item
+ARPACK (@url{http://www.caam.rice.edu/software/ARPACK})
+
+@itemize @minus
+@item
+In @file{ARmake.inc} set the following variables:
+
+@example
+@group
+home=path to directory ARPACK
+FC=gfortran 
+FFLAGS=-fPIC -fdefault-integer-8
+MAKE=/usr/bin/make 
+ARPACKLIB=$(home)/libarpack.a
+DIRS=$(UTILdir) $(SRCdir)
+@end group
+@end example
+
+@item
+Edit the file @file{UTIL/second.f} and change the line
+
+@example
+EXTERNAL           ETIME
+@end example
+
+@noindent
+to
+
+@example
+INTRINSIC          ETIME
+@end example
+
+@item
+After building the @file{.a} library, you can make a shared version with
+
+@example
+@group
+mkdir tmp
+cd tmp
+ar x ../libarpack.a
+gcc -shared -o ../libarpack.so *.o -L$prefix64/lib \
+    -llapack -lblas 
+cd ..
+rm -rf tmp
+@end group
+@end example
+
+@noindent
+Copy the library @file{libarpack.so} to @file{$prefix64/lib/libarpack.a}.
+@end itemize
+
+@item
+QRUPDATE (@url{http://sourceforge.net/projects/qrupdate})
+
+In the @file{Makeconf} file:
+
+@itemize @minus
+@item
+Add @option{-fdefault-integer-8} to @code{FFLAGS}.
+
+@item
+Adjust the BLAS and LAPACK variables as needed if your 64-bit aware BLAS
+and LAPACK libraries are in a non-standard location.
+
+@item
+Set @code{PREFIX} to the top-level directory of your install tree.
+
+@item
+Run @code{make solib} to make a shared library.
+
+@item
+Run @code{make install} to install the library.
+@end itemize
+
+@item
+SuiteSparse (@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse})
+
+@itemize @minus
+@item
+In @file{UFconfig/UFconfig.mk} use the following options for
+@code{CFLAGS} and @code{F77FLAGS}:
+
+@example
+@group
+CC = gcc
+CFLAGS = -fPIC -O -DLP64 -DLONGBLAS='long int' -DLONG='long int'
+F77 = gfortran
+F77FLAGS = -fPIC -O -fdefault-integer-8
+BLAS = -L$BLAS/lib -lblas -lgfortran"
+LAPACK = -L$LAPACK/lib -llapack"
+@end group
+@end example
+
+@item
+Disable the GPL-incompatible @code{METIS} library:
+
+@example
+@group
+CHOLMOD_CONFIG = -DNPARTITION
+SPQR_CONFIG = -DNPARTITION
+METIS_PATH =
+METIS =
+@end group
+@end example
+
+@item
+Disable the @code{DI} versions of the @code{CHOLMOD} library files by setting
+
+@example
+OBJ = $(DL)
+@end example
+
+@noindent
+in @file{CHOLMOD/Lib/Makefile}.
+
+@item
+Disable the @code{DI} versions of the @code{CHOLMOD} tests by commenting
+out or deleting the following lines in @file{CHOLMOD/Demo/Makefile}:
+
+@example
+@group
+./cholmod_demo < Matrix/bcsstk01.tri
+./cholmod_demo < Matrix/lp_afiro.tri
+./cholmod_demo < Matrix/can___24.mtx
+./cholmod_demo < Matrix/c.tri
+./cholmod_simple < Matrix/c.tri
+./cholmod_simple < Matrix/can___24.mtx
+./cholmod_simple < Matrix/bcsstk01.tri
+@end group
+@end example
+
+@item
+Run @command{make} to build the libraries.
+
+@item
+The SuiteSparse @file{Makefile} does not have an install target so
+you must install the files by hand:
+
+@example
+@group
+mkdir $prefix64/include/suitesparse
+cp UFconfig/UFconfig.h $prefix64/include/suitesparse
+for d in AMD BTF CAMD CCOLAMD \
+         CHOLMOD COLAMD CXSparse UMFPACK; do
+  cp $d/Lib/lib*a $prefix64/lib
+  cp $d/Include/*h $prefix64/include/suitesparse
+done
+@end group
+@end example
+
+@item
+You can generate shared versions of these libraries by doing the
+following in the @file{$prefix64/lib} directory: 
+
+@example
+@group
+top=$(pwd)
+for f in *.a; do
+  mkdir tmp
+  cd tmp
+  ar vx ../$f
+  gcc -shared -o ../$@{f%%.a@}.so *.o
+  cd $top
+  rm -rf tmp
+done
+@end group
+@end example
+@end itemize
+
+@item
+ATLAS instead of reference BLAS and LAPACK
+
+Suggestions on how to compile ATLAS, will be most welcome.
+
+@item
+GLPK
+
+Suggestions on how to compile GLPK will be most welcome.
+
+@item
+QHULL (@url{http://www.qhull.org})
+
+Suggestions on how to compile QHULL will be most welcome.
+
+@item Octave
+Octave's 64-bit index support is activated with the configure option
+@option{--enable-64}.
+
+@example
+@group
+./configure \
+  LD_LIBRARY_PATH="$prefix64/lib" \
+  CPPFLAGS="-I$prefix64/include" LDFLAGS="-L$prefix64/lib" \
+  --enable-64
+@end group
+@end example
+
+You must ensure that all Fortran sources except those in the
+@file{libcruft/ranlib} directory are compiled such that INTEGERS are
+8-bytes wide.  If you are using gfortan, the configure script should
+automatically set the Makefile variable @code{F77_INTEGER_8_FLAG} to 
+@option{-fdefault-integer-8}.  If you are using another compiler, you
+must set this variable yourself.  You should NOT set this flag in
+@code{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be
+miscompiled.
+
+@item
+Other dependencies
+
+Probably nothing special needs to be done for the following
+dependencies.  If you discover that something does need to be done,
+please submit a bug report.
+
+@itemize @minus
+@item pcre or regex
+@item zlib
+@item hdf5
+@item fftw3
+@item cURL
+@item GraphicsMagick++
+@item OpenGL
+@item freetype
+@item fontconfig
+@item fltk
+@end itemize
+
+@end itemize
 
 @node Installation Problems
 @appendixsec Installation Problems

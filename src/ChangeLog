@@ -1,13 +1,14 @@
-2010-11-25  Kai Habel  <kai.habel@gmx.de>
-
-	* DLD-FUNCTIONS/fltk_backend.cc (fltk_gui_mode): New
-	function to set GUI mode. (__fltk_uigetfile__): Remove nargout from
-	argument list. (plot_window): Remove gui_mode enum here. 
-
 2010-11-26  John W. Eaton  <jwe@octave.org>
 
 	* defaults.cc (FEXEC_PATH): Only call set_exec_path if nargin is
 	greater than zero.
+
+2010-11-25  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (fltk_gui_mode): New
+	function to set GUI mode.
+	(__fltk_uigetfile__): Remove nargout from argument list.
+	(plot_window): Remove gui_mode enum here.
 
 2010-11-25  John W. Eaton  <jwe@octave.org>
 

@@ -1,3 +1,8 @@
+2010-11-26  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (find_uimenu_children, 
+	__fltk_redraw__): Consider hidden handles here.
+
 2010-11-26  John W. Eaton  <jwe@octave.org>
 
 	* defaults.cc (FEXEC_PATH): Only call set_exec_path if nargin is

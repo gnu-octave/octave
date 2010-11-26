@@ -318,14 +318,14 @@ public:
   
   Matrix find_uimenu_children (uimenu::properties& uimenup) const
     {
-      Matrix uimenu_childs = uimenup.get_children ();
+      Matrix uimenu_childs = uimenup.get_all_children ();
       Matrix retval = do_find_uimenu_children (uimenu_childs);
       return retval;
     }
 
   Matrix find_uimenu_children (figure::properties& figp) const
     {
-      Matrix uimenu_childs = figp.get_children ();
+      Matrix uimenu_childs = figp.get_all_children ();
       Matrix retval = do_find_uimenu_children (uimenu_childs);
       return retval;
     }
@@ -1722,7 +1722,7 @@ __fltk_redraw__ (void)
       if (obj && obj.isa ("root"))
         {
           base_properties& props = obj.get_properties ();
-          Matrix children = props.get_children ();
+          Matrix children = props.get_all_children ();
 
           for (octave_idx_type n = 0; n < children.numel (); n++)
             {

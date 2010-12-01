@@ -419,10 +419,6 @@ tree_print_code::visit_octave_user_function_trailer (octave_user_function& fcn)
 {
   print_indented_comment (fcn.trailing_comment ());
 
-  indent ();
-
-  os << "endfunction";
-
   newline ();
 }
 

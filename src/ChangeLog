@@ -1,3 +1,25 @@
+2010-12-01  John W. Eaton  <jwe@octave.org>
+
+	* pt-pr-code.cc	(tree_print_code::visit_octave_user_function_trailer):
+	Don't indent or print "endfunction" here.
+	* ov-usr-fcn.cc (ov_user_script::do_multi_index_op): Save and
+	set tree_evaluator::statement_context, not
+	tree_evaluator::in_fcn_or_script_body.
+	(ov_user_function::do_multi_index_op): Likewise.
+	* pt-eval.cc: Initialize tree_evaluator::statement_context, not
+	tree_evaluator::in_fcn_or_script_body.
+	(tree_evaluator::visit_break_command): Check statement_context,
+	not in_fcn_or_script_body.
+	(tree_evaluator::visit_continue_command): Likewise.
+	(tree_evaluator::visit_return_command): Likewise.
+	(visit_statement): Also echo commands in scripts if
+	Vecho_executing_commands & ECHO_SCRIPTS is true.
+	* pt-eval.h (tree_evaluator::in_fcn_body,
+	tree_evaluator::in_script_body): New static variables.
+	(tree_evaluator::): Now an enum.
+	(tree_evaluator::in_function_or_script_body): Now an enum.
+	Rename from in_fcn_or_script_body.
+
 2010-12-01  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (fltk_gui_mode): Fix gui mode

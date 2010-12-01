@@ -147,8 +147,16 @@ public:
 
   static bool debug_mode;
 
-  // TRUE means we are evaluating a function or script body.
-  static bool in_fcn_or_script_body;
+  // Possible types of evaluation contexts.
+  enum stmt_list_type
+  {
+    function,  // function body
+    script,    // script file
+    other      // command-line input or eval string
+  };
+
+  // The context for the current evaluation.
+  static stmt_list_type statement_context;
 
   // TRUE means we are evaluating some kind of looping construct.
   static bool in_loop_command;

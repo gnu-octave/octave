@@ -129,8 +129,8 @@ octave_user_script::do_multi_index_op (int nargout,
 
                   frame.add_fcn (octave_call_stack::pop);
 
-                  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
-                  tree_evaluator::in_fcn_or_script_body = true;
+                  frame.protect_var (tree_evaluator::statement_context);
+                  tree_evaluator::statement_context = tree_evaluator::script;
 
                   cmd_list->accept (*current_evaluator);
 
@@ -426,8 +426,8 @@ octave_user_function::do_multi_index_op (int nargout,
 
   // Evaluate the commands that make up the function.
 
-  frame.protect_var (tree_evaluator::in_fcn_or_script_body);
-  tree_evaluator::in_fcn_or_script_body = true;
+  frame.protect_var (tree_evaluator::statement_context);
+  tree_evaluator::statement_context = tree_evaluator::function;
 
   bool special_expr = (is_inline_function ()
                        || cmd_list->is_anon_function_body ());

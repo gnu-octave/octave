@@ -54,7 +54,8 @@ size_t tree_evaluator::current_frame = 0;
 
 bool tree_evaluator::debug_mode = false;
 
-bool tree_evaluator::in_fcn_or_script_body = false;
+tree_evaluator::stmt_list_type tree_evaluator::statement_context
+  = tree_evaluator::other;
 
 bool tree_evaluator::in_loop_command = false;
 
@@ -94,8 +95,8 @@ tree_evaluator::visit_break_command (tree_break_command& cmd)
       if (debug_mode)
         do_breakpoint (cmd.is_breakpoint ());
 
-      if (tree_evaluator::in_fcn_or_script_body
-          || tree_evaluator::in_loop_command)
+      if (statement_context == function || statement_context == script
+          || in_loop_command)
         tree_break_command::breaking = 1;
     }
 }
@@ -114,8 +115,8 @@ tree_evaluator::visit_continue_command (tree_continue_command& cmd)
       if (debug_mode)
         do_breakpoint (cmd.is_breakpoint ());
 
-      if (tree_evaluator::in_fcn_or_script_body
-          || tree_evaluator::in_loop_command)
+      if (statement_context == function || statement_context == script
+          || in_loop_command)
         tree_continue_command::continuing = 1;
     }
 }
@@ -656,8 +657,8 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
 
           reset_debug_state ();
         }
-      else if (tree_evaluator::in_fcn_or_script_body
-               || tree_evaluator::in_loop_command)
+      else if (statement_context == function || statement_context == script
+               || in_loop_command)
         tree_return_command::returning = 1;
     }
 }
@@ -682,7 +683,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 
   if (cmd || expr)
     {
-      if (in_fcn_or_script_body)
+      if (statement_context == function || statement_context == script)
         {
           // Skip commands issued at a debug> prompt to avoid disturbing
           // the state of the program we are debugging.
@@ -690,7 +691,13 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           if (! Vdebugging)
             octave_call_stack::set_statement (&stmt);
 
-          if (Vecho_executing_commands & ECHO_FUNCTIONS)
+          // FIXME -- we need to distinguish functions from scripts to
+          // get this right.
+          if ((statement_context == script
+               && ((Vecho_executing_commands & ECHO_SCRIPTS)
+                   || (Vecho_executing_commands & ECHO_FUNCTIONS)))
+              || (statement_context == function
+                  && (Vecho_executing_commands & ECHO_FUNCTIONS)))
             stmt.echo_code ();
         }
 
@@ -703,7 +710,8 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               if (debug_mode)
                 do_breakpoint (expr->is_breakpoint ());
 
-              if (in_fcn_or_script_body && Vsilent_functions)
+              if ((statement_context == function || statement_context == script)
+                  && Vsilent_functions)
                 expr->set_print_flag (false);
 
               // FIXME -- maybe all of this should be packaged in

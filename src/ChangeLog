@@ -1,3 +1,8 @@
+2010-12-01  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/fltk_backend.cc (fltk_gui_mode): Fix gui mode
+	problems when set to none.
+
 2010-11-26  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/fltk_backend.cc (find_uimenu_children, 

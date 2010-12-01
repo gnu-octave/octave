@@ -705,9 +705,9 @@ public:
       if (fp.is_visible ())
         {
           show ();
-	  if (fp.get_currentaxes ().ok())
-	    show_canvas ();
-	  else
+          if (fp.get_currentaxes ().ok())
+            show_canvas ();
+          else
             hide_canvas ();
         }
     }
@@ -855,7 +855,7 @@ public:
 
     if (ndim == 3)
       rotate->activate ();
-    else
+    else if ((ndim == 2) &&  (gui_mode == rotate_zoom))
       {
         rotate->deactivate ();
         gui_mode = pan_zoom;

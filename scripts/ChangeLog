@@ -1,3 +1,7 @@
+2010-12-02  Ben Abbott <bpabbott@mac.com>
+
+	* plot/subplot.m: Add suppport for "align" and "replace" options.
+
 2010-11-26  John W. Eaton  <jwe@octave.org>
 
 	* pkg/pkg.m: Append directories to EXEC_PATH instead of

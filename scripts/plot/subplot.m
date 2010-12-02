@@ -60,10 +60,24 @@
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe
 
-function h = subplot (rows, columns, index)
+function h = subplot (rows, columns, index, varargin)
 
-  if (nargin != 3 && nargin != 1)
+  align_axes = false;
+  replace_axes = false;
+
+  if (! (nargin >= 3) && nargin != 1)
     print_usage ();
+  elseif (nargin > 3)
+    for n = 1:numel(varargin)
+      switch lower(varargin{n})
+      case "align"
+        align_axes = true;
+      case "replace"
+        replace_axes = true;
+      otherwise
+        print_usage ();
+      endswitch
+    endfor
   endif
 
   if (nargin == 1)
@@ -123,7 +137,7 @@ function h = subplot (rows, columns, index)
           continue;
         endif
         objpos = get (child, "position");
-        if (all (objpos == pos))
+        if (all (objpos == pos) && ! replace_axes)
           ## If the new axes are in exactly the same position as an
           ## existing axes object, use the existing axes.
           found = true;
@@ -151,9 +165,12 @@ function h = subplot (rows, columns, index)
     else
       pos = subplot_position (rows, columns, index, "outerposition", units);
       pos2 = subplot_position (rows, columns, index, "position", units);
-      tmp = axes ("outerposition", pos,
-                  "position", pos2,
-                  "activepositionproperty", "position");
+      tmp = axes ("outerposition", pos, "position", pos2,
+                  "activepositionproperty", "outerposition");
+    endif
+
+    if (align_axes && strcmp (get (cf, "__backend__"), "gnuplot"))
+      set (tmp, "activepositionproperty", "position");
     endif
 
   unwind_protect_cleanup
@@ -264,4 +281,20 @@ endfunction
 %! title (sprintf ("title #%d:%d", 1, 3))
 %! text (0.5, 0.5, sprintf('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:})
 %! axis ([0 1 0 1])
+
+%!demo
+%! clf
+%! x = 0:1;
+%! for n = 1:4
+%!   subplot (2, 2, n, "align")
+%!   plot (x, x)
+%!   xlabel (sprintf ("xlabel (2,2,%d)", n))
+%!   ylabel (sprintf ("ylabel (2,2,%d)", n))
+%!   title (sprintf ("title (2,2,%d)", n))
+%! endfor
+%! subplot (1, 2, 1, "align")
+%! plot (x, x)
+%! xlabel (sprintf ("xlabel (1,2,%d)", n))
+%! ylabel (sprintf ("ylabel (1,2,%d)", n))
+%! title (sprintf ("title (1,2,%d)", n))
 

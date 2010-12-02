@@ -36,6 +36,10 @@ function retval = fill (varargin)
   unwind_protect
     axes (h);
 
+    nextplot = get (h, "nextplot");
+    if (strncmp (nextplot, "replace", 7))
+      set (h, "nextplot", "add");
+    endif
     for i = 1 : length (iargs)
       if (i == length (iargs))
         args = varargin (iargs(i):end);
@@ -49,6 +53,9 @@ function retval = fill (varargin)
       endif
       htmp (end + 1) = tmp;
     endfor
+    if (strncmp (nextplot, "replace", 7))
+      set (h, "nextplot", nextplot);
+    endif
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

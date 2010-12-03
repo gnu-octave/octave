@@ -1,3 +1,9 @@
+2010-12-03  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: If not set, then unset the gnuplot
+	{tblr}margins. Needed when using subplots with differing
+	activepositionproperty.
+
 2010-12-03  Konstantinos Poulios <logari81@gmail.com>
 
 	* plot/pbaspect.m, plot/daspect.m: Fix handling of input array of

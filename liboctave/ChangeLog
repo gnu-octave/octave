@@ -1,3 +1,8 @@
+2010-11-25  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::assign): Use correct endpoint for
+	destination range when making room for new elements. 
+
 2010-11-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-md5.cc (oct_md5_result_to_str): Avoid buffer overrun in

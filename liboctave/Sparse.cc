@@ -1747,10 +1747,10 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   if (new_nz > nz)
                     {
                       // Make room first.
-                      std::copy_backward (data () + ui, data () + nz, data () + li + rnz);
-                      std::copy_backward (ridx () + ui, ridx () + nz, ridx () + li + rnz);
+                      std::copy_backward (data () + ui, data () + nz, data () + nz + rnz);
+                      std::copy_backward (ridx () + ui, ridx () + nz, ridx () + nz + rnz);
                     }
-
+                  
                   // Copy data and adjust indices from rhs.
                   copy_or_memcpy (rnz, rhs.data (), data () + li);
                   mx_inline_add (rnz, ridx () + li, rhs.ridx (), lb);

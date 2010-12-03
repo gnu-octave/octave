@@ -78,4 +78,7 @@ endfunction
 %! hold on
 %! surface (peaks (19), "facecolor", "none", "edgecolor", "black")
 %! colormap hot
+%! axis tight
+%! zlim auto
 %! hold off
+%! box off

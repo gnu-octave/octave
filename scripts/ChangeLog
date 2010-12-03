@@ -1,5 +1,6 @@
 2010-12-02  Ben Abbott <bpabbott@mac.com>
 
+	* plot/contour3.m: Modify demo to avoid clipping mesh.
 	* plot/fill.m: Allow multiple filled polygons.
 	* plot/subplot.m: Add suppport for "align" and "replace" options.
 

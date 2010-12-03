@@ -1,9 +1,12 @@
 2010-12-02  Ben Abbott <bpabbott@mac.com>
 
-	* image/image.m: Only flip y-axis if nextplot property equal "replace".
-	* plot/contour3.m: Modify demo to avoid clipping mesh.
-	* plot/fill.m: Allow multiple filled polygons.
+	* image/image.m: Only flip y-axis if nextplot property equal
+	"replace". Fixes bug 31745.
+	* plot/contour3.m: Modify demo to avoid clipping mesh. Fixes bug
+	31744.
+	* plot/fill.m: Allow multiple filled polygons. Fixes bug 31750.
 	* plot/subplot.m: Add suppport for "align" and "replace" options.
+	Partial fix for bug 31610.
 
 2010-11-26  John W. Eaton  <jwe@octave.org>
 

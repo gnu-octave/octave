@@ -63,8 +63,9 @@ function varargout = pbaspect (varargin)
         case "auto"
           set (hax, "plotboxaspectratiomode", "auto");
         endswitch
-      elseif (isreal (varargin{1})
-              && any (numel (varargin{1}) == [2, 3]))
+      elseif (isreal (varargin{1}) && numel (varargin{1}) == 2)
+        set (hax, "plotboxaspectratio", [varargin{1}, 1])
+      elseif (isreal (varargin{1}) && numel (varargin{1}) == 3)
         set (hax, "plotboxaspectratio", varargin{1})
       else
         error ("pbaspect: invalid input.")

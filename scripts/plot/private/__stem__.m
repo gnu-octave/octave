@@ -99,15 +99,13 @@ function h = __stem__ (have_z, varargin)
                         ms, "linestyle", "none", "markerfacecolor",
                         fc, "parent", hg); 
 
-        if (i == 1)
-          x_axis_range = get (ax, "xlim");
-          h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
-          set (h_baseline, "handlevisibility", "off");
-          set (h_baseline, "xliminclude", "off");
-          addlistener (ax, "xlim", @update_xlim);
-          addlistener (h_baseline, "ydata", @update_baseline);
-          addlistener (h_baseline, "visible", @update_baseline);
-        endif
+        x_axis_range = get (ax, "xlim");
+        h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
+        set (h_baseline, "handlevisibility", "off");
+        set (h_baseline, "xliminclude", "off");
+        addlistener (ax, "xlim", @update_xlim);
+        addlistener (h_baseline, "ydata", @update_baseline);
+        addlistener (h_baseline, "visible", @update_baseline);
       endif
 
       ## Setup the hggroup and listeners.

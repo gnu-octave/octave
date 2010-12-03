@@ -1,5 +1,6 @@
 2010-12-03  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/private/__stem__.m: Create a baseline for each stem hggroup.
 	* plot/__go_draw_axes__.m: If not set, then unset the gnuplot
 	{tblr}margins. Needed when using subplots with differing
 	activepositionproperty.

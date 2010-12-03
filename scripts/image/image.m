@@ -153,8 +153,10 @@ function h = __img__ (x, y, img, varargin)
 
   set (ca, "view", [0, 90]);
 
-  # Always reverse y-axis for images, even on existing plots
-  set (ca, "ydir", "reverse");
+  if (strcmp (get (ca, "nextplot"), "replace"))
+    # Always reverse y-axis for images, unless hold is on
+    set (ca, "ydir", "reverse");
+  endif
 
   if (nargout > 0)
     h = tmp;

@@ -1,3 +1,7 @@
+2010-12-06  Rik  <octave@nomad.inbox5.com>
+
+	* scripts/testfun/speed.m: Overhaul documentation string.
+
 2010-12-03  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/private/__stem__.m: Create a baseline for each stem hggroup.

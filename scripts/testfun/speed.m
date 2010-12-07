@@ -21,12 +21,12 @@
 ## @deftypefn  {Function File} {} speed (@var{f}, @var{init}, @var{max_n}, @var{f2}, @var{tol})
 ## @deftypefnx {Function File} {[@var{order}, @var{n}, @var{T_f}, @var{T_f2}] =} speed (@dots{})
 ##
-## Determine the execution time of an expression for various @var{n}.
-## The @var{n} are log-spaced from 1 to @var{max_n}.  For each @var{n},
-## an initialization expression is computed to create whatever data
-## are needed for the test.  If a second expression is given, the
-## execution times of the two expressions will be compared.  Called 
-## without output arguments the results are presented graphically.
+## Determine the execution time of an expression (@var{f}) for various input 
+## values (@var{n}).  The @var{n} are log-spaced from 1 to @var{max_n}.  For
+## each @var{n}, an initialization expression (@var{init}) is computed to 
+## create any data needed for the test.  If a second expression (@var{f2}) is
+## given then the execution times of the two expressions are compared.  When
+## called without output arguments the results are displayed graphically.
 ##
 ## @table @code
 ## @item @var{f}
@@ -34,35 +34,33 @@
 ##
 ## @item @var{max_n}
 ## The maximum test length to run.  Default value is 100.  Alternatively,
-## use @code{[min_n,max_n]} or for complete control, @code{[n1,n2,@dots{},nk]}.
+## use @code{[min_n, max_n]} or specify the @var{n} exactly with 
+## @code{[n1, n2, @dots{}, nk]}.
 ##
 ## @item @var{init}
 ## Initialization expression for function argument values.  Use @var{k} 
 ## for the test number and @var{n} for the size of the test.  This should
-## compute values for all variables used by @var{f}.  Note that init will
+## compute values for all variables used by @var{f}.  Note that @var{init} will
 ## be evaluated first for @math{k = 0}, so things which are constant throughout
-## the test can be computed then.  The default value is @code{@var{x} =
-## randn (@var{n}, 1)}.
+## the test series can be computed once.  The default value is 
+## @code{@var{x} = randn (@var{n}, 1)}.
 ##
 ## @item @var{f2}
-## An alternative expression to evaluate, so the speed of the two
-## can be compared.  The default is @code{[]}.
+## An alternative expression to evaluate, so that the speed of two
+## expressions can be directly compared.  The default is @code{[]}.
 ##
 ## @item @var{tol}
-## If @var{tol} is @code{Inf}, then no comparison will be made between the
-## results of expression @var{f} and expression @var{f2}.  Otherwise,
-## expression @var{f} should produce a value @var{v} and expression @var{f2} 
-## should produce a value @var{v2}, and these will be compared using 
-## @code{assert(@var{v},@var{v2},@var{tol})}.  If @var{tol} is positive,
-## the tolerance is assumed to be absolute.  If @var{tol} is negative,
-## the tolerance is assumed to be relative.  The default is @code{eps}.
+## Tolerance used to compare the results of expression @var{f} and expression
+## @var{f2}.  If @var{tol} is positive, the tolerance is an absolute one.
+## If @var{tol} is negative, the tolerance is a relative one.  The default is
+## @code{eps}.  If @var{tol} is @code{Inf}, then no comparison will be made.
 ##
 ## @item @var{order}
-## The time complexity of the expression @code{O(a n^p)}.  This
+## The time complexity of the expression @math{O(a*n^p)}.  This
 ## is a structure with fields @code{a} and @code{p}.
 ##
 ## @item @var{n}
-## The values @var{n} for which the expression was calculated and
+## The values @var{n} for which the expression was calculated AND
 ## the execution time was greater than zero.
 ##
 ## @item @var{T_f}
@@ -70,37 +68,37 @@
 ##
 ## @item @var{T_f2}
 ## The nonzero execution times recorded for the expression @var{f2} in seconds.
-## If it is needed, the mean time ratio is just @code{mean(T_f./T_f2)}.
+## If required, the mean time ratio is simply @code{mean (T_f./T_f2)}.
 ##
 ## @end table
 ##
 ## The slope of the execution time graph shows the approximate
-## power of the asymptotic running time @code{O(n^p)}.  This
+## power of the asymptotic running time @math{O(n^p)}.  This
 ## power is plotted for the region over which it is approximated
 ## (the latter half of the graph).  The estimated power is not
 ## very accurate, but should be sufficient to determine the
-## general order of your algorithm.  It should indicate if for 
-## example your implementation is unexpectedly @code{O(n^2)} 
-## rather than @code{O(n)} because it extends a vector each 
-## time through the loop rather than pre-allocating one which is 
-## big enough.  For example, in the current version of Octave,
-## the following is not the expected @code{O(n)}:
+## general order of an algorithm.  It should indicate if, for 
+## example, the implementation is unexpectedly @math{O(n^2)} 
+## rather than @math{O(n)} because it extends a vector each 
+## time through the loop rather than pre-allocating storage.
+## In the current version of Octave, the following is not the
+## expected @math{O(n)}.
 ##
 ## @example
-## speed ("for i = 1:n, y@{i@} = x(i); end", "", [1000,10000])
+## speed ("for i = 1:n, y@{i@} = x(i); endfor", "", [1000, 10000])
 ## @end example
 ##
 ## @noindent
-## but it is if you preallocate the cell array @code{y}:
+## But it is if you preallocate the cell array @code{y}:
 ##
 ## @example
 ## @group
-## speed ("for i = 1:n, y@{i@} = x(i); end", ...
+## speed ("for i = 1:n, y@{i@} = x(i); endfor", ...
 ##        "x = rand (n, 1); y = cell (size (x));", [1000, 10000])
 ## @end group
 ## @end example
 ##
-## An attempt is made to approximate the cost of the individual 
+## An attempt is made to approximate the cost of individual 
 ## operations, but it is wildly inaccurate.  You can improve the
 ## stability somewhat by doing more work for each @code{n}.  For
 ## example:
@@ -109,11 +107,11 @@
 ## speed ("airy(x)", "x = rand (n, 10)", [10000, 100000])
 ## @end example
 ##
-## When comparing a new and original expression, the line on the
-## speedup ratio graph should be larger than 1 if the new expression
-## is faster.  Better algorithms have a shallow slope.  Generally, 
+## When comparing two different expressions (@var{f}, @var{f2}), the slope
+## of the line on the speedup ratio graph should be larger than 1 if the new
+## expression is faster.  Better algorithms have a shallow slope.  Generally, 
 ## vectorizing an algorithm will not change the slope of the execution 
-## time graph, but it will shift it relative to the original.  For
+## time graph, but will shift it relative to the original.  For
 ## example:
 ##
 ## @example
@@ -123,10 +121,10 @@
 ## @end group
 ## @end example
 ## 
-## A more complex example, if you had an original version of @code{xcorr}
-## using for loops and another version using an FFT, you could compare the
-## run speed for various lags as follows, or for a fixed lag with varying
-## vector lengths as follows:
+## The following is a more complex example.  If there was an original version
+## of @code{xcorr} using for loops and a second version using an FFT, then 
+## one could compare the run speed for various lags as follows, or for a fixed
+## lag with varying vector lengths as follows:
 ##
 ## @example
 ## @group
@@ -137,17 +135,17 @@
 ## @end group
 ## @end example
 ##
-## Assuming one of the two versions is in @var{xcorr_orig}, this
+## Assuming one of the two versions is in xcorr_orig, this
 ## would compare their speed and their output values.  Note that the
 ## FFT version is not exact, so we specify an acceptable tolerance on
-## the comparison @code{100*eps}, and the errors should be computed
-## relatively, as @code{abs((@var{x} - @var{y})./@var{y})} rather than 
-## absolutely as @code{abs(@var{x} - @var{y})}.
+## the comparison @code{100*eps}, and that the errors should be computed
+## relatively, as @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather than 
+## absolutely as @code{abs (@var{x} - @var{y})}.
 ##
-## Type @code{example('speed')} to see some real examples.  Note for 
-## obscure reasons, you can't run examples 1 and 2 directly using 
-## @code{demo('speed')}.  Instead use, @code{eval(example('speed',1))}
-## and @code{eval(example('speed',2))}.
+## Type @code{example('speed')} to see some real examples.  Note that for 
+## obscure reasons, examples 1 and 2 can not be run directly using 
+## @code{demo('speed')}.  Instead use, @code{eval ( example('speed', 1) )}
+## or @code{eval ( example('speed', 2) )}.
 ## @end deftypefn
 
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
@@ -375,10 +373,10 @@ endfunction
 %!  type build;
 %!  disp("-----------------------");
 %!
-%!  disp("Vectorized test. This takes a little while...");
+%!  disp("Vectorized test.\nThis takes a little while...");
 %!  speed('build(n)', '', 1000, 'build_orig(n)');
 %!  clear build build_orig
 %!  disp("-----------------------");
 %!  disp("This time, the for loop is done away with entirely.");
-%!  disp("Notice how much bigger the speedup is then in example 1.");
+%!  disp("Notice how much bigger the speedup is than in example 1.");
 %! endif

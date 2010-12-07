@@ -19,11 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} xlabel (@var{string})
-## @deftypefnx {Function File} {} ylabel (@var{string})
-## @deftypefnx {Function File} {} zlabel (@var{string})
 ## @deftypefnx {Function File} {} xlabel (@var{h}, @var{string})
-## Specify x-, y-, and z-axis labels for the current figure.  If @var{h} is
-## specified then label the axis defined by @var{h}.
+## @deftypefnx {Function File} {@var{h} =} xlabel (@dots{})
+## @deftypefnx {Function File} {} ylabel (@dots{})
+## @deftypefnx {Function File} {} zlabel (@dots{})
+## Specify x-, y-, or z-axis labels for the current axis.  If @var{h} is
+## specified then label the axis defined by @var{h}.  The optional return
+## value @var{h} provides a handle to the created label.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs, title}
 ## @end deftypefn

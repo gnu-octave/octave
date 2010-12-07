@@ -1,5 +1,10 @@
 2010-12-06  Rik  <octave@nomad.inbox5.com>
 
+	* plot/xlabel.m, plot/ylabel.m, plot/zlabel.m: Add additional calling
+	form to docstring which returns handle (h)
+
+2010-12-06  Rik  <octave@nomad.inbox5.com>
+
 	* scripts/testfun/speed.m: Overhaul documentation string.
 
 2010-12-03  Ben Abbott  <bpabbott@mac.com>

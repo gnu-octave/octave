@@ -24,8 +24,10 @@
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
 ## @deftypefnx {Function File} {} plot (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
-## Produces two-dimensional plots.  Many different combinations of
-## arguments are possible.  The simplest form is
+## Produce two-dimensional plots. 
+## 
+## Many different combinations of arguments are possible.  The simplest
+## form is
 ##
 ## @example
 ## plot (@var{y})
@@ -33,7 +35,7 @@
 ##
 ## @noindent
 ## where the argument is taken as the set of @var{y} coordinates and the
-## @var{x} coordinates are taken to be the indices of the elements,
+## @var{x} coordinates are taken to be the indices of the elements
 ## starting with 1.
 ##
 ## To save a plot, in one of several image formats such as PostScript

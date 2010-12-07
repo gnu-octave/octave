@@ -1,5 +1,10 @@
 2010-12-07  John W. Eaton  <jwe@octave.org>
 
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find): If an
+	error occurred during the first call to xfind, don't try again.
+
+2010-12-07  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (case_list): Also accept default_case by itself.
 	Bug #31793.
 

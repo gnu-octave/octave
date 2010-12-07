@@ -575,7 +575,7 @@ symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
 {
   octave_value retval = xfind (args, local_funcs);
 
-  if (! retval.is_defined ())
+  if (! (error_state || retval.is_defined ()))
     {
       // It is possible that the user created a file on the fly since
       // the last prompt or chdir, so try updating the load path and

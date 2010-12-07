@@ -1,3 +1,8 @@
+2010-12-07  John W. Eaton  <jwe@octave.org>
+
+	* general/repmat.m: Handle special case of replicating scalar
+	using an index vector containing zeros.  Bug #31775.
+
 2010-12-06  Rik  <octave@nomad.inbox5.com>
 
 	* plot/plot.m: Eliminate present tense in first sentence of docstring.

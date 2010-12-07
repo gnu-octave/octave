@@ -61,8 +61,12 @@ function x = repmat (a, m, n)
 
   if (numel (a) == 1)
     ## optimize the scalar fill case.
-    x(1:prod (idx)) = a;
-    x = reshape (x, idx);
+    if (any (idx == 0))
+      x = resize (a, idx);
+    else
+      x(1:prod (idx)) = a;
+      x = reshape (x, idx);
+    endif
   elseif (ndims (a) == 2 && length (idx) < 3)
     if (issparse (a))
       x = kron (ones (idx), a);
@@ -136,3 +140,21 @@ endfunction
 %!assert (size (repmat (".", -1, 1)), [0, 1]);
 %!assert (size (repmat (".", 1, -1)), [1, 0]);
 %!error (size (repmat (".", -1, -1)));
+
+%!assert (size (repmat (1, [1, 0])), [1, 0]);
+%!assert (size (repmat (1, [5, 0])), [5, 0]);
+%!assert (size (repmat (1, [0, 1])), [0, 1]);
+%!assert (size (repmat (1, [0, 5])), [0, 5]);
+
+%!shared x
+%! x = struct ("a", [], "b", []);
+%!assert (size (repmat (x, [1, 0])), [1, 0]);
+%!assert (size (repmat (x, [5, 0])), [5, 0]);
+%!assert (size (repmat (x, [0, 1])), [0, 1]);
+%!assert (size (repmat (x, [0, 5])), [0, 5]);
+
+%!assert (size (repmat ({1}, [1, 0])), [1, 0]);
+%!assert (size (repmat ({1}, [5, 0])), [5, 0]);
+%!assert (size (repmat ({1}, [0, 1])), [0, 1]);
+%!assert (size (repmat ({1}, [0, 5])), [0, 5]);
+

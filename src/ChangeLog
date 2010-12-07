@@ -1,3 +1,8 @@
+2010-12-07  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (case_list): Also accept default_case by itself.
+	Bug #31793.
+
 2010-12-01  John W. Eaton  <jwe@octave.org>
 
 	* pt-pr-code.cc	(tree_print_code::visit_octave_user_function_trailer):

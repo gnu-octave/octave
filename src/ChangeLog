@@ -1,3 +1,8 @@
+2010-12-08  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find_user_function):
+	Return if an error occurs in out_of_date_check.
+
 2010-12-07  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find): If an

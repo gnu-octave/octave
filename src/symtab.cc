@@ -972,7 +972,7 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
   if (function_on_path.is_defined ())
     out_of_date_check (function_on_path);
 
-  if (! function_on_path.is_defined ())
+  if (! error_state || function_on_path.is_defined ())
     {
       std::string dir_name;
 

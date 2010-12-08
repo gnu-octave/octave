@@ -167,7 +167,7 @@ function h = imshow (im, varargin)
     tmp = image (im);
     set (tmp, "cdatamapping", "scaled");
   endif
-  set (gca (), "visible", "off");
+  set (gca (), "visible", "off", "ydir", "reverse");
   axis ("image");
 
   if (nargout > 0)

@@ -1,3 +1,7 @@
+2010-12-08  Ben Abbott <bpabbott@mac.com>
+
+	* image/imshow.m: Flip y-axis.
+
 2010-12-08  John W. Eaton  <jwe@octave.org>
 
 	* strings/strmatch.m: Avoid passing length of zero to strncmp.

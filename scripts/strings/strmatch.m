@@ -64,7 +64,11 @@ function idx = strmatch (s, A, exact)
   exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
 
   if (iscell (A))
-    idx = find (strncmp (s, A, len));
+    if (len > 0)
+      idx = find (strncmp (s, A, len));
+    else
+      idx = find (strcmp (s, A));
+    endif
     if (exact)
       ## We can't just use strcmp, because we need to ignore whitespace.
       B = cellfun (@strtrimr, A(idx), "uniformoutput", false);
@@ -107,4 +111,4 @@ endfunction
 %!        [1; 2]);
 %!assert (strmatch ("apple pie", "apple"), []);
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}));
-
+%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])

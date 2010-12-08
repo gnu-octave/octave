@@ -1475,8 +1475,16 @@ protected:
 
       if (is_ok)
         {
+          Matrix tmp = new_kids_column.stack (get_hidden ());
+
           children_list.clear ();
-          do_init_children (new_kids_column.stack (get_hidden ()));
+
+          // Don't use do_init_children here, as that reverses the
+          // order of the list, and we don't want to do that if setting
+          // the child list directly.
+
+          for (octave_idx_type i = 0; i < tmp.numel (); i++)
+            children_list.push_back (tmp.xelem (i));
         }
 
       return is_ok;

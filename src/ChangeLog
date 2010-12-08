@@ -1,5 +1,10 @@
 2010-12-08  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (base_property::do_set): Don't reverse order of
+	children.  Bug #31822.
+
+2010-12-08  John W. Eaton  <jwe@octave.org>
+
 	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find_user_function):
 	Return if an error occurs in out_of_date_check.
 

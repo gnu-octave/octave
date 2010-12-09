@@ -29,7 +29,7 @@
 ## a uniform distribution on [2,4], use
 ##
 ## @example
-## kolmogorov_smirnov_test(x, "uniform", 2, 4)
+## kolmogorov_smirnov_test(x, "unif", 2, 4)
 ## @end example
 ##
 ## @noindent
@@ -66,24 +66,30 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
 
   n = length (x);
   s = sort (x);
-  f = str2func (sprintf ("%s_cdf", dist));
+  try
+    f = str2func (sprintf ("%scdf", dist));
+  catch
+    try
+      f = str2func (sprintf ("%s_cdf", dist));
+    catch
+      error ("kolmogorov_smirnov_test: no %scdf or %s_cdf function found",
+             dist, dist);
+    end_try_catch
+  end_try_catch
 
   alt  = "!=";
 
-  if (nargin == 2)
-    z = reshape (feval (f, s), 1, n);
-  else
-    args = "";
-    for k = 1 : (nargin-2);
-      tmp  = varargin{k};
-      if ischar (tmp)
-        alt = tmp;
-      else
-        args = sprintf ("%s, %g", args, tmp);
-      endif
-    endfor
-    z = reshape (eval (sprintf ("%s(s%s);", func2str (f), args)), 1, n);
+  args{1} = s;
+  nvargs = numel (varargin);
+  if (nvargs > 0)
+    if (ischar (varargin{end}))
+      args(2:nvargs) = varargin(1:end-1);
+    else
+      args(2:nvargs+1) = varargin;
+    endif
   endif
+
+  z = reshape (feval (f, args{:}), 1, n);
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     ks   = sqrt (n) * max (max ([abs(z - (0:(n-1))/n); abs(z - (1:n)/n)]));

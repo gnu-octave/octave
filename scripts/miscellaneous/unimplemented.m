@@ -314,7 +314,6 @@ function list = missing_functions ()
   "pcode", 
   "pdepe", 
   "pdeval", 
-  "pie3", 
   "playshow", 
   "plotbrowser", 
   "plotedit", 

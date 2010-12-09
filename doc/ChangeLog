@@ -1,3 +1,7 @@
+2010-12-09  Kai Habel  <kai.habel@gmx.de>
+
+	* interpreter/plot.txi: Add pie3 function.
+
 2010-11-26  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/install.txi (Compiling Octave with 64-bit

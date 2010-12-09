@@ -24,6 +24,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__interp_cube__.m \
   plot/private/__line__.m \
   plot/private/__patch__.m \
+  plot/private/__pie__.m \
   plot/private/__plt__.m \
   plot/private/__pltopt__.m \
   plot/private/__quiver__.m \
@@ -123,6 +124,7 @@ plot_FCN_FILES = \
   plot/pcolor.m \
   plot/peaks.m \
   plot/pie.m \
+  plot/pie3.m \
   plot/plot.m \
   plot/plot3.m \
   plot/plotmatrix.m \

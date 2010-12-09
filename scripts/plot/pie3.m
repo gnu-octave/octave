@@ -1,4 +1,5 @@
 ## Copyright (C) 2007, 2008, 2009 David Bateman
+## Copyright (C) 2010 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie (@var{y})
-## @deftypefnx {Function File} {} pie (@var{y}, @var{explode})
-## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
-## @deftypefnx {Function File} {} pie (@var{h}, @dots{});
-## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
-## Produce a pie chart. 
+## @deftypefn  {Function File} {} pie3 (@var{y})
+## @deftypefnx {Function File} {} pie3 (@var{y}, @var{explode})
+## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
+## @deftypefnx {Function File} {} pie3 (@var{h}, @dots{});
+## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
+## Drawa a 3D pie chart. 
 ##
-## Called with a single vector argument, produces a pie chart of the
+## Called with a single vector argument, produces a 3D pie chart of the
 ## elements in @var{x}, with the size of the slice determined by percentage
 ## size of the values of @var{x}.
 ##
@@ -34,15 +35,16 @@
 ## If given @var{labels} is a cell array of strings of the same length as
 ## @var{x}, giving the labels of each of the slices of the pie chart. 
 ##
-## The optional return value @var{h} provides a handle to the patch object.
+## The optional return value @var{h} provides a handle list to patch, surface
+## and text objects generating this plot.
 ##
-## @seealso{pie3, bar, stem}
+## @seealso{pie, bar, stem}
 ## @end deftypefn
 
 ## Very roughly based on pie.m from octave-forge whose author was
 ## Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 
-function retval = pie (varargin)
+function retval = pie3 (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("pie", varargin{:});
 
@@ -53,7 +55,7 @@ function retval = pie (varargin)
     unwind_protect
       axes (h);
       newplot ();
-      tmp = __pie__ ("pie", h, varargin{:});
+      tmp = __pie__ ("pie3", h, varargin{:});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect
@@ -66,10 +68,10 @@ function retval = pie (varargin)
 endfunction
 
 %!demo
-%! pie ([3, 2, 1], [0, 0, 1]);
+%! pie3 ([5:-1:1], [0, 0, 1, 0, 0]);
 %! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 
 %!demo
-%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
+%! pie3 ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
 %! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);

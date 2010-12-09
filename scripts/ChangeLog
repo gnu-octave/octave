@@ -1,3 +1,11 @@
+2010-12-09  Kai Habel  <kai.habel@gmx.de>
+
+	* (plot/pie3.m, plot/private/__pie__.m): New functions.
+	* (plot/pie.m): Move __pie__ function to plot/private, in order to be used
+	by pie and pie3.
+	* miscellaneous/unimplemented.m: Remove pie3.m from list of 
+	unimplemented functions.
+
 2010-12-09  John W. Eaton  <jwe@octave.org>
 
 	* time/datestr.m: Don't call localtime (mktime (tm)) to fill in

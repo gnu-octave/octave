@@ -202,6 +202,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(pie)
 
+@DOCSTRING(pie3)
+
 @DOCSTRING(quiver)
 
 @DOCSTRING(quiver3)

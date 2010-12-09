@@ -45,7 +45,7 @@ function hlist = __pie__ (caller, varargin)
       if (numel (x) != numel (labels))
         error ("__pie__: mismatch in number of labels and data");
       endif
-    elseif (isnumeric (arg))
+    elseif (! ischar (arg))
       explode = arg;
       have_explode = true;
       if (! size_equal (x, explode))

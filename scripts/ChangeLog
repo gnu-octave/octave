@@ -1,3 +1,7 @@
+2010-12-09  Rik  <octave@nomad.inbox5.com>
+
+	* plot/private/__pie__.m: Allow logical indices for 'explode' variable.
+
 2010-12-09  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/pie3.m, plot/private/__pie__.m: New functions.

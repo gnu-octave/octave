@@ -138,7 +138,7 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-S")
         arg_st.canvas_size = str2num (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-r")
-        arg_st.ghostscript.resolution = arg(3:end);
+        arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2num (arg(3:end));
       elseif (length (arg) >= 1 && arg(1) == "-")

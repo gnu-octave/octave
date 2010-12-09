@@ -1,5 +1,10 @@
 2010-12-09  Rik  <octave@nomad.inbox5.com>
 
+	* plot/__print_parse_opts__.m: Convert print resolution from char to
+	double.  Fixes Bug #31834.
+
+2010-12-09  Rik  <octave@nomad.inbox5.com>
+
 	* plot/private/__pie__.m: Allow logical indices for 'explode' variable.
 
 2010-12-09  Kai Habel  <kai.habel@gmx.de>

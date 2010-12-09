@@ -324,6 +324,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       ## use "back" instead.
       fputs (plot_stream, "set border back;\n");
     endif
+
+    fprintf (plot_stream, "set grid linewidth %f, linewidth %f;\n",
+             axis_obj.linewidth, axis_obj.linewidth);
+
     if (! have_grid)
       fputs (plot_stream, "unset grid;\n");
     endif

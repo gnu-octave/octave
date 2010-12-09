@@ -1,3 +1,8 @@
+2010-12-09  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Set major and grid linewidths from
+	axis linewidth property.
+
 2010-12-09  Rik  <octave@nomad.inbox5.com>
 
 	* plot/__print_parse_opts__.m: Convert print resolution from char to

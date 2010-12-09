@@ -247,7 +247,8 @@ function retval = datestr (date, f, p)
 
     df = regexprep (df, '[Dd][Dd]', "%d");
 
-    tmp = names_d{weekday (datenum (v(i,1), v(i,2), v(i,3)))};
+    wday = weekday (datenum (v(i,1), v(i,2), v(i,3)));
+    tmp = names_d{wday};
     df = regexprep (df, '([^%])[Dd]', sprintf ("$1%s", tmp));
     df = regexprep (df, '^[Dd]', sprintf ("%s", tmp));
 
@@ -277,10 +278,14 @@ function retval = datestr (date, f, p)
     sec = vi(6);
     tm.sec = fix (sec);
     tm.usec = fix (rem (sec, 1) * 1e6);
-    ## Force mktime to check for DST.
-    tm.isdst = -1;
- 
-    str = strftime (df, localtime (mktime (tm)));
+    tm.wday = wday - 1;
+    ## FIXME -- Do we need YDAY and DST?  How should they be computed?
+    ## We don't want to use "localtime (mktime (tm))" because that
+    ## doesn't correctly handle dates before 1970-01-01 on some systems.
+    ## tm.yday = ?;
+    ## tm.isdst = ?;
+
+    str = strftime (df, tm);
 
     if (i == 1)
       retval = str;

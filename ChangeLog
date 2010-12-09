@@ -1,3 +1,7 @@
+2010-12-09  Marco Atzeri  <marcox_atzeri@yahoo.it>
+
+	* configure.ac: Don't add -lwsock32 to LIBS on cygwin systems.
+
 2010-11-21  Kai Habel  <kai.habel@gmx.de>
 
 	* NEWS: Add uigetdir, uigetfile, uiputfile.

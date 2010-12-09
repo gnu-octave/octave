@@ -1458,9 +1458,6 @@ AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 NO_UNDEFINED_LDFLAG=
 case "$canonical_host_type" in
-  *-*-cygwin*)
-    LIBS="$LIBS -lwsock32"
-  ;;
   *-*-mingw*)
     if test "$have_msvc" = "yes"; then
       AC_CHECK_LIB(dirent, opendir)

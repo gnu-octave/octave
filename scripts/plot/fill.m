@@ -37,10 +37,10 @@ function retval = fill (varargin)
     axes (h);
 
     nextplot = get (h, "nextplot");
-    if (strncmp (nextplot, "replace", 7))
-      set (h, "nextplot", "add");
-    endif
     for i = 1 : length (iargs)
+      if (i > 1 && strncmp (nextplot, "replace", 7))
+        set (h, "nextplot", "add");
+      endif
       if (i == length (iargs))
         args = varargin (iargs(i):end);
       else

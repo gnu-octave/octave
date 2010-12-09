@@ -336,6 +336,8 @@ endfunction
 ## avoid the bug where someone happens to give a vector of datenums that
 ## happens to be 6 wide
 %!assert(datestr(733452.933:733457.933), ["14-Feb-2008 22:23:31";"15-Feb-2008 22:23:31";"16-Feb-2008 22:23:31";"17-Feb-2008 22:23:31";"18-Feb-2008 22:23:31";"19-Feb-2008 22:23:31"])
+%!assert (datestr ([1944, 6, 6, 6, 30, 0], 0), "06-Jun-1944 06:30:00");
+
 # demos
 %!demo
 %! datestr (now ())

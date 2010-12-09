@@ -1,7 +1,7 @@
 2010-12-09  John W. Eaton  <jwe@octave.org>
 
 	* time/datestr.m: Don't call localtime (mktime (tm)) to fill in
-	missing elements of time strcture.
+	missing elements of time strcture.  Bug #31079.
 
 2010-12-08  Ben Abbott <bpabbott@mac.com>
 

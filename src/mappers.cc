@@ -918,7 +918,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 
 %!test
 %! x = [-1, 0, 1, Inf];
-%! v = [NaN, Inf, 1, Inf];
+%! v = [Inf, Inf, 1, Inf];
 %! assert (gamma(x), v);
 %! assert (gamma(single (x)), single (v));
 

@@ -281,9 +281,6 @@ erfcf (float x)
 double
 xgamma (double x)
 {
-#if defined (HAVE_TGAMMA)
-  return tgamma (x);
-#else
   double result;
 
   if (xisnan (x))
@@ -291,10 +288,13 @@ xgamma (double x)
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Inf;
   else
+#if defined (HAVE_TGAMMA)
+    result = tgamma (x);
+#else
     F77_XFCN (xdgamma, XDGAMMA, (x, result));
+#endif
 
   return result;
-#endif
 }
 
 double
@@ -346,9 +346,6 @@ rc_lgamma (double x)
 float
 xgamma (float x)
 {
-#if defined (HAVE_TGAMMAF)
-  return tgammaf (x);
-#else
   float result;
 
   if (xisnan (x))
@@ -356,10 +353,13 @@ xgamma (float x)
   else if ((x <= 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Float_Inf;
   else
+#if defined (HAVE_TGAMMAF)
+    result = tgammaf (x);
+#else
     F77_XFCN (xgamma, XGAMMA, (x, result));
+#endif
 
   return result;
-#endif
 }
 
 float

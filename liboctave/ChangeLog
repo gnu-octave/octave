@@ -1,3 +1,8 @@
+2010-12-09  Marco Atzeri  <marco_atzeri@yahoo.it>
+
+	* lo-specfun.cc (xgamma): Also handle negative integer values as
+	special cases when using tgamma.
+
 2010-11-25  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::assign): Use correct endpoint for

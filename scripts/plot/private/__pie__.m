@@ -61,8 +61,17 @@ function hlist = __pie__ (caller, varargin)
     explode = zeros (size (x));
   endif
 
+  normalize = true;
+  if (sum (x(:)) < 1)
+    normalize = false;
+  endif 
+
   if (! have_labels)
-    xp = round (100 * x ./ sum (x)); 
+    if (normalize)
+      xp = round (100 * x ./ sum (x));
+    else
+      xp = round (100 * x);
+    endif
     for i = 1:len
       labels{i} = sprintf ("%d%%", xp(i));
     endfor
@@ -71,7 +80,12 @@ function hlist = __pie__ (caller, varargin)
   hlist = [];
   refinement = 90;
   phi = 0:refinement:360;
-  xphi = cumsum (x / sum (x) * 360);
+  if (normalize)
+    xphi = cumsum (x / sum (x) * 360);
+  else
+    xphi = cumsum (x * 360);
+  endif
+
   for i = 1:len 
     if (i == 1)
       xn = 0 : 360 / refinement : xphi(i);

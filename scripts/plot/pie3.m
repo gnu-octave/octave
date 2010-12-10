@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} pie3 (@var{y})
-## @deftypefnx {Function File} {} pie3 (@var{y}, @var{explode})
+## @deftypefn  {Function File} {} pie3 (@var{x})
+## @deftypefnx {Function File} {} pie3 (@var{x}, @var{explode})
 ## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie3 (@var{h}, @dots{});
 ## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
@@ -75,3 +75,9 @@ endfunction
 %! pie3 ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
 %! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
+
+%!demo
+%! pie3 ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
+%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! axis ([-2,2,-2,2]);
+%! title ("missing slice");

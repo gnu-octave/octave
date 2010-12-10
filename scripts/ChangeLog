@@ -1,3 +1,9 @@
+2010-12-10  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/private/__pie__.m: Add missing slice option to pie and
+	pie3 function.
+	* plot/pie.m, plot/pie3.m: Add new demo.
+
 2010-12-10  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* statistics/tests/kolmogorov_smirnov_test.m: Add tests.

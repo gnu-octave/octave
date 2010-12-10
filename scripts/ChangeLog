@@ -1,3 +1,7 @@
+2010-12-10  Rik  <octave@nomad.inbox5.com>
+
+	* testfun/speed.m: Eliminate line continuation in function definition.
+
 2010-12-10  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/private/__pie__.m: Add missing slice option to pie and

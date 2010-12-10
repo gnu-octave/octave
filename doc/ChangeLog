@@ -22,7 +22,7 @@
 
 2010-11-15  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/bugs.txi, interpreter/emacs.txi, interpreter/func.txi, 
+	* interpreter/bugs.txi, interpreter/emacs.txi, interpreter/func.txi,
 	interpreter/geometry.txi, interpreter/linalg.txi,
 	interpreter/octave.texi, interpreter/package.txi, interpreter/plot.txi,
 	interpreter/stmt.txi, interpreter/strings.txi, interpreter/system.txi:

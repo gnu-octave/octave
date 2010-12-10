@@ -6,7 +6,7 @@
 2010-11-25  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::assign): Use correct endpoint for
-	destination range when making room for new elements. 
+	destination range when making room for new elements.
 
 2010-11-23  John W. Eaton  <jwe@octave.org>
 

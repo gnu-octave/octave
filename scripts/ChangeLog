@@ -29,7 +29,7 @@
 	* plot/pie3.m, plot/private/__pie__.m: New functions.
 	* plot/pie.m: Move __pie__ function to plot/private, in order to be used
 	by pie and pie3.
-	* miscellaneous/unimplemented.m: Remove pie3.m from list of 
+	* miscellaneous/unimplemented.m: Remove pie3.m from list of
 	unimplemented functions.
 
 2010-12-09  John W. Eaton  <jwe@octave.org>
@@ -37,7 +37,7 @@
 	* time/datestr.m: Don't call localtime (mktime (tm)) to fill in
 	missing elements of time strcture.  Bug #31079.
 
-2010-12-08  Ben Abbott <bpabbott@mac.com>
+2010-12-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/fill.m: Fix bug that implies nextplot = "add".
 	* image/imshow.m: Flip y-axis.
@@ -77,7 +77,7 @@
 	* plot/pbaspect.m, plot/daspect.m: Fix handling of input array of
 	length 2.
 
-2010-12-02  Ben Abbott <bpabbott@mac.com>
+2010-12-02  Ben Abbott  <bpabbott@mac.com>
 
 	* image/image.m: Only flip y-axis if nextplot property equal
 	"replace". Fixes bug 31745.

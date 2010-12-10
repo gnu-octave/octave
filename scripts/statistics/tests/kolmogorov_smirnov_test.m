@@ -110,3 +110,18 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
   endif
 
 endfunction
+
+%!error <Invalid call to kolmogorov_smirnov_test>
+%!  kolmogorov_smirnov_test (1);
+%!error <kolmogorov_smirnov_test: x must be a vector>
+%!  kolmogorov_smirnov_test ({}, "unif", 2, 4);
+%!error <kolmogorov_smirnov_test: no not_a_distcdf or not_a_dist_cdf function found>
+%!  kolmogorov_smirnov_test (1, "not_a_dist");
+%!error <kolmogorov_smirnov_test: alternative bla not recognized>
+%!  kolmogorov_smirnov_test (1, "unif", 2, 4, "bla");
+%!test # for recognition of unifcdf function
+%!  assert (kolmogorov_smirnov_test (0:100, "unif", 0, 100), 1.0, eps);
+%!test # for recognition of logistic_cdf function
+%!  assert (kolmogorov_smirnov_test (0:100, "logistic"), 0);
+%!test # F < G
+%!  assert (kolmogorov_smirnov_test (50:100, "unif", 0, 50, "<"));

@@ -29,7 +29,7 @@ function hlist = __pie__ (caller, varargin)
   iarg = 3;
 
   if (! isvector (x))
-    error ("__pie__: expecting vector argument");
+    error ("%s: expecting vector argument", caller);
   endif
 
   len = length (x);
@@ -43,14 +43,17 @@ function hlist = __pie__ (caller, varargin)
       labels = arg;
       have_labels = true;
       if (numel (x) != numel (labels))
-        error ("__pie__: mismatch in number of labels and data");
+        error ("%s: mismatch in number of labels and data", caller);
       endif
-    elseif (! ischar (arg))
+    elseif (isnumeric (arg) || islogical (arg))
       explode = arg;
       have_explode = true;
       if (! size_equal (x, explode))
-        error ("__pie__: mismatch in number of elements in explode and data");
+        error ("%s: mismatch in number of elements in explode and data",
+               caller);
       endif
+    else
+      error ("%s: %s is invalid as an optional argument", caller, class (arg));
     endif
   endwhile
 
@@ -122,7 +125,7 @@ function hlist = __pie__ (caller, varargin)
                text(xt, yt, labels{i}, "horizontalalignment", align)];
 
     else
-      error ("__pie__: unknown caller");
+      error ("__pie__: unknown caller `%s'", caller);
     endif
   endfor
 

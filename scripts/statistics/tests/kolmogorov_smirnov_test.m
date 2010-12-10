@@ -83,6 +83,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
   nvargs = numel (varargin);
   if (nvargs > 0)
     if (ischar (varargin{end}))
+      alt = varargin{end};
       args(2:nvargs) = varargin(1:end-1);
     else
       args(2:nvargs+1) = varargin;

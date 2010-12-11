@@ -1,3 +1,7 @@
+2010-12-10  Ben Abbott  <bpabbott@mac.com>
+
+	* io/strread.m: Don't require space between format specifiers.
+
 2010-12-10  Rik  <octave@nomad.inbox5.com>
 
 	* testfun/speed.m: Eliminate line continuation in function definition.

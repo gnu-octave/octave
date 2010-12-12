@@ -59,10 +59,11 @@ function retval = optimset (varargin)
     fnames = fieldnames (old);
     ## skip validation if we're in the internal query
     validation = ! isempty (opts);
+    uopts = toupper(opts);
     for [val, key] = new
       if (validation)
         ## Case insensitive lookup in all options.
-        i = lookup (opts, key, "i");
+        i = lookup (uopts, toupper(key), "i");
         ## Validate option.
         if (i > 0 && strcmpi (opts{i}, key))
           ## Use correct case.

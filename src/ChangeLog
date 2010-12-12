@@ -1,3 +1,7 @@
+2010-12-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Drop support for the "i" option.
+
 2010-12-09  Marco Atzeri   <marco_atzeri@yahoo.it>
 
 	* mappers.cc: In test for gamma, expect Inf for gamma(-1), not NaN.

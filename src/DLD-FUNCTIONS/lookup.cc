@@ -232,9 +232,6 @@ at least 1)\n\
 For numeric lookups\n\
 the rightmost subinterval shall be extended to infinity (i.e., all indices\n\
 at most n-1).\n\
-\n\
-@item i\n\
-For string lookups, use case-insensitive comparison.\n\
 @end table\n\
 @end deftypefn") 
 {
@@ -259,14 +256,12 @@ For string lookups, use case-insensitive comparison.\n\
   bool right_inf = false;
   bool match_idx = false;
   bool match_bool = false;
-  bool icase = false;
 
   if (nargin == 3)
     {
       std::string opt = args(2).string_value ();
       left_inf = contains_char (opt, 'l');
       right_inf = contains_char (opt, 'r');
-      icase = contains_char (opt, 'i');
       match_idx = contains_char (opt, 'm');
       match_bool = contains_char (opt, 'b');
     }
@@ -277,8 +272,6 @@ For string lookups, use case-insensitive comparison.\n\
     error ("lookup: only one of m, b can be specified");
   else if (str_case && (left_inf || right_inf))
     error ("lookup: l,r not recognized for string lookups");
-  else if (num_case && icase)
-    error ("lookup: i not recognized for numeric lookups");
 
   if (error_state)
     return retval;
@@ -325,13 +318,6 @@ For string lookups, use case-insensitive comparison.\n\
     }
   else if (str_case)
     {
-      // FIXME: this should be handled directly.
-      if (icase)
-        {
-          table = table.xtoupper ();
-          y = y.xtoupper ();
-        }
-
       Array<std::string> str_table = table.cellstr_value ();
       Array<std::string> str_y (1, 1);
 

@@ -1,3 +1,10 @@
+2010-12-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* optimization/optimget.m: Use explicit toupper conversion rather than
+	lookup(..., "i").
+	* optimization/optimset.m: Ditto.
+	* miscellaneous/parseparams.m: Ditto.
+
 2010-12-12  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/view.m: Fix bugs with respect to number if inputs and argument

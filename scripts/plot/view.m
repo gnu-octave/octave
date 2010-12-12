@@ -18,39 +18,70 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} view (@var{azimuth}, @var{elevation})
+## @deftypefnx  {Function File} {} view ([@var{azimuth}, @var{elevation}])
+## @deftypefnx  {Function File} {} view ([@var{x}, @var{y}, @var{z}])
 ## @deftypefnx {Function File} {} view (@var{dims})
+## @deftypefnx {Function File} {} view (@var{ax}, @dots{})
 ## @deftypefnx {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
-## Set or get the viewpoint for the current axes.
+## Set or get the viewpoint for the current axes. The parameters 
+## @var{azimuth} and @var{elevation} can be given as two arguments or as
+## 2-element vector. 
+## The viewpoint can also be given with cartesian coordinates @var{x}, 
+## @var{y}, and @var{z}. 
+## The call @code{view (2)} sets the viewpoint to @var{azimuth} = 0
+## and @var{elevation} = 90, which is default for 2d graphs.
+## The call @code{view (3)} sets the viewpoint to @var{azimuth} = -37.5
+## and @var{elevation} = 30, which is default for 3d graphs.
+## If @var{ax} is given, the viewpoint is set for this axes, otherwise
+## it is set for the current axes.
 ## @end deftypefn
 
 ## Author: jwe
 
-function [azimuth, elevation] = view (x, y, z)
+function [azimuth, elevation] = view (varargin)
 
-  if (nargin < 4)
+  if (nargin < 3)
+
     if (nargin == 0)
       tmp = get (gca (), "view");
       az = tmp(1);
       el = tmp(2);
-    elseif (nargin == 1)
-      if (x == 2)
+    else
+      ax = varargin{1};
+      if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
+        args = varargin{2:end};
+      else
+        ax = gca;
+        args = varargin;
+      endif
+    endif
+    
+    if (nargin == 1)
+      x = args{1};
+      if (length (x) == 2)
+        az = x(1);
+        el = x(2);
+      elseif (length (x) == 3)
+        [az, el] = cart2sph (x(1), x(2), x(3));
+        az *= 180/pi;
+        az += 90;
+        el *= 180/pi;
+      elseif (x == 2)
         az = 0;
         el = 90;
       elseif (x == 3)
         az = -37.5;
         el = 30;
       else
-        error ("view: expecting single argument to be 2 or 3");
+        print_usage ();
       endif
     elseif (nargin == 2)
-      az = x;
-      el = y;
-    elseif (nargin == 3)
-      error ("view: view (x, y, z) not implemented");
+      az = args{1};
+      el = args{2};
     endif
 
     if (nargin > 0)
-      set (gca (), "view", [az, el]);
+      set (ax, "view", [az, el]);
     endif
 
     if (nargout == 1)

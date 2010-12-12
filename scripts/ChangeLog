@@ -1,5 +1,10 @@
 2010-12-12  Kai Habel  <kai.habel@gmx.de>
 
+	* plot/view.m: Fix bugs with respect to number if inputs and argument
+	handling.
+
+2010-12-12  Kai Habel  <kai.habel@gmx.de>
+
 	* plot/view.m: Make view more compatible. Allow cartesian
 	coordinates and axes handle arguments.
 

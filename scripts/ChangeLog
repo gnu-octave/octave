@@ -1,3 +1,7 @@
+2010-12-13 Doug Stewart  <doug.dastew@gmail.com>
+
+       * plot/hist.m: Improved the help section.
+
 2010-12-13  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/private/__add_default_menu__.m: New function.

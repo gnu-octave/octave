@@ -18,19 +18,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hist (@var{y}, @var{x}, @var{norm})
+## @deftypefn {Function File} {} hist (@var{y})
+## @deftypefnx {Function File} {} hist (@var{y}, @var{x})
+## @deftypefnx {Function File} {} hist (@var{y}, @var{nbins})
+## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
+## @deftypefnx {Function File} {[@var{nn}, @var{xx}] =} hist (@dots{})
+## @deftypefnx {Function File} {[@dots{}] =} hist (@dots{}, @var{prop}, @var{val})
+##
 ## Produce histogram counts or plots.
 ##
-## With one vector input argument, plot a histogram of the values with
-## 10 bins.  The range of the histogram bins is determined by the range
-## of the data.  With one matrix input argument, plot a histogram where
-## each bin contains a bar per input column.
+## With one vector input argument, @var{y}, plot a histogram of the values 
+## with 10 bins.  The range of the histogram bins is determined by the 
+## range of the data.  With one matrix input argument, @var{y}, plot a
+## histogram where each bin contains a bar per input column.
 ##
-## Given a second scalar argument, use that as the number of bins.
+## Given a second vector argument, @var{x}, use that as the centers of
+## the bins, with the width of the bins determined from the adjacent 
+## values in the vector.
 ##
-## Given a second vector argument, use that as the centers of the bins,
-## with the width of the bins determined from the adjacent values in
-## the vector.
+## If scaler, the second argument, @var{nbins}, defines the number of bins.
 ##
 ## If third argument is provided, the histogram is normalized such that
 ## the sum of the bars is equal to @var{norm}.
@@ -39,6 +45,27 @@
 ##
 ## With two output arguments, produce the values @var{nn} and @var{xx} such
 ## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
+##
+## The histogram's appearance may be modified by specifying property/value
+## pairs, @var{prop} and @var{val} pairs. For example the face and edge 
+## color may be modified.
+##
+## @example
+## @group
+## hist (randn (1, 100), 25, "facecolor", "r", "edgecolor", "b")
+## @end group
+## @end example
+##
+## @noindent
+## The histograms colors also depend upon the colormap.
+##
+## @example
+## @group
+## hist (rand (10, 3))
+## colormap (summer ())
+## @end group
+## @end example
+##
 ## @seealso{bar}
 ## @end deftypefn
 

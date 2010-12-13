@@ -1,3 +1,9 @@
+2010-12-13  Kai Habel  <kai.habel@gmx.de>
+
+	* (plot/private/__add_default_menu__.m): New function.
+	* (plot/figure.m): Call __add_default_menu__ function.
+	* plot/module.mk: Add new file to list.
+
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 
 	* optimization/sqp.m: Change docstring to refer to x0 as the initial

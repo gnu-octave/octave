@@ -73,6 +73,9 @@ function h = figure (varargin)
     print_usage ();
   endif
 
+  cf = get (0, "currentfigure");
+  __add_default_menu__ (cf);
+
   if (nargout > 0)
     h = f;
   endif

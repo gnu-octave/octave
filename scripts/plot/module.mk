@@ -8,6 +8,7 @@ GEN_FCN_FILES += $(plot_GEN_FCN_FILES)
 plot_PRIVATE_FCN_FILES = \
   plot/private/__actual_axis_position__.m \
   plot/private/__add_datasource__.m \
+  plot/private/__add_default_menu__.m \
   plot/private/__axes_limits__.m \
   plot/private/__axis_label__.m \
   plot/private/__bar__.m \

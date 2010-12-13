@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x}, @var{phi}, @var{g})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
+## @deftypefn  {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x0}, @var{phi})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
 ## Solve the nonlinear program
 ## @tex
 ## $$
@@ -57,9 +57,9 @@
 ##
 ## @end ifnottex
 ## @noindent
-## using a successive quadratic programming method.
+## using a sequential quadratic programming method.
 ##
-## The first argument is the initial guess for the vector @var{x}.
+## The first argument is the initial guess for the vector @var{x0}.
 ##
 ## The second argument is a function handle pointing to the objective
 ## function.  The objective function must be of the form
@@ -211,7 +211,7 @@
 ## @seealso{qp}
 ## @end deftypefn
 
-function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxiter, tolerance)
+function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, maxiter, tolerance)
 
   global __sqp_nfun__;
   global __sqp_obj_fun__;
@@ -224,11 +224,11 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     print_usage ();
   endif
 
-  if (!isvector (x))
-    error ("sqp: X must be a vector");
+  if (!isvector (x0))
+    error ("sqp: X0 must be a vector");
   endif
-  if (rows (x) == 1)
-    x = x';
+  if (rows (x0) == 1)
+    x0 = x0';
   endif
 
   obj_grd = @fd_obj_grd;
@@ -307,15 +307,15 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     else
       ## constraint inequality function with bounds present
       global __sqp_lb__;
-      lb_idx = ub_idx = true (size (x));
-      ub_grad = - (lb_grad = eye (rows (x)));
+      lb_idx = ub_idx = true (size (x0));
+      ub_grad = - (lb_grad = eye (rows (x0)));
       if (isvector (lb))
         __sqp_lb__ = tmp_lb = lb(:);
         lb_idx(:) = tmp_idx = (lb != -Inf);
         __sqp_lb__ = __sqp_lb__(tmp_idx);
         lb_grad = lb_grad(lb_idx, :);
       elseif (isempty (lb))
-        if (isa (x, "single"))
+        if (isa (x0, "single"))
           __sqp_lb__ = tmp_lb = -realmax ("single");
         else
           __sqp_lb__ = tmp_lb = -realmax;
@@ -331,7 +331,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
         __sqp_ub__ = __sqp_ub__(tmp_idx);
         ub_grad = ub_grad(ub_idx, :);
       elseif (isempty (ub))
-        if (isa (x, "single"))
+        if (isa (x0, "single"))
           __sqp_ub__ = tmp_ub = realmax ("single");
         else
           __sqp_ub__ = tmp_ub = realmax;
@@ -369,58 +369,53 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     endif
   endif
 
-  ## Evaluate objective function, constraints, and gradients at initial
-  ## value of x.
+  ## Initialize variables for search loop
+  ## Seed x with initial guess and evaluate objective function, constraints,
+  ## and gradients at initial value x0.
   ##
   ## obj_fun   -- objective function
   ## obj_grad  -- objective gradient
   ## ce_fun    -- equality constraint functions
   ## ci_fun    -- inequality constraint functions
   ## A == [grad_{x_1} cx_fun, grad_{x_2} cx_fun, ..., grad_{x_n} cx_fun]^T
+  x = x0; 
 
-  obj = feval (obj_fun, x);
+  obj = feval (obj_fun, x0);
   __sqp_nfun__ = 1;
 
-  c = feval (obj_grd, x);
+  c = feval (obj_grd, x0);
 
-  ## Choose an initial NxN symmetric positive definite Hessan
-  ## approximation B.
-  n = length (x);
+  ## Choose an initial NxN symmetric positive definite Hessian approximation B.
+  n = length (x0);
   if (have_hess)
-    B = feval (obj_hess, x);
+    B = feval (obj_hess, x0);
   else
     B = eye (n, n);
   endif
 
-  ce = feval (ce_fun, x);
-  F = feval (ce_grd, x);
+  ce = feval (ce_fun, x0);
+  F = feval (ce_grd, x0);
 
-  ci = feval (ci_fun, x);
-  C = feval (ci_grd, x);
+  ci = feval (ci_fun, x0);
+  C = feval (ci_grd, x0);
 
   A = [F; C];
 
   ## Choose an initial lambda (x is provided by the caller).
-
   lambda = 100 * ones (rows (A), 1);
 
   qp_iter = 1;
   alpha = 1;
 
-  # report ();
-
-  # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
-
   info = 0;
   iter = 0;
+  # report ();  # Called with no arguments to initialize reporting
+  # report (iter, qp_iter, alpha, __sqp_nfun__, obj);
 
   while (++iter < iter_max)
 
     ## Check convergence.  This is just a simple check on the first
     ## order necessary conditions.
-
-    ## idx is the indices of the active inequality constraints.
-
     nr_f = rows (F);
 
     lambda_e = lambda((1:nr_f)');
@@ -440,7 +435,6 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     endif
 
     ## Compute search direction p by solving QP.
-
     g = -ce;
     d = -ci;
 
@@ -453,13 +447,10 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
     ## Choose mu such that p is a descent direction for the chosen
     ## merit function phi.
-
     [x_new, alpha, obj_new] = linesearch_L1 (x, p, obj_fun, obj_grd,
                                              ce_fun, ci_fun, lambda, obj);
 
-    ## Evaluate objective function, constraints, and gradients at
-    ## x_new.
-
+    ## Evaluate objective function, constraints, and gradients at x_new.
     c_new = feval (obj_grd, x_new);
 
     ce_new = feval (ce_fun, x_new);
@@ -494,14 +485,11 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
       B = feval (obj_hess, x);
 
     else
-
       ## Update B using a quasi-Newton formula.
-
       delxt = delx';
 
       ## Damped BFGS.  Or maybe we would actually want to use the Hessian
-      ## of the Lagrangian, computed directly.
-
+      ## of the Lagrangian, computed directly?
       d1 = delxt*B*delx;
 
       t1 = 0.2 * d1;
@@ -633,17 +621,6 @@ function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
 endfunction
 
 
-function report (iter, qp_iter, alpha, nfun, obj)
-
-  if (nargin == 0)
-    printf ("  Itn ItQP     Step  Nfun     Objective\n");
-  else
-    printf ("%5d %4d %8.1g %5d %13.6e\n", iter, qp_iter, alpha, nfun, obj);
-  endif
-
-endfunction
-
-
 function grd = fdgrd (f, x)
 
   if (! isempty (f))
@@ -665,6 +642,7 @@ endfunction
 
 
 function jac = fdjac (f, x)
+
   nx = length (x);
   if (! isempty (f))
     y0 = feval (f, x);
@@ -758,6 +736,20 @@ function res = cigrad_ub_lb (x, bgrad)
   endif
 
 endfunction
+
+# Utility function used to debug sqp
+function report (iter, qp_iter, alpha, nfun, obj)
+
+  if (nargin == 0)
+    printf ("  Itn ItQP     Step  Nfun     Objective\n");
+  else
+    printf ("%5d %4d %8.1g %5d %13.6e\n", iter, qp_iter, alpha, nfun, obj);
+  endif
+
+endfunction
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Test Code
 
 %!function r = g (x)
 %!  r = [sumsq(x)-10;

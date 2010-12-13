@@ -1,3 +1,8 @@
+2010-12-13  Rik  <octave@nomad.inbox5.com>
+
+	* optimization/sqp.m: Change docstring to refer to x0 as the initial
+	seed vector.
+
 2010-12-13  Olaf Till <olaf.till@uni-jena.de>
 
 	* optimization/sqp.m: Remove never violated Inf bounds from

@@ -307,13 +307,18 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
     else
       ## constraint inequality function with bounds present
       global __sqp_lb__;
+      lb_idx = ub_idx = true (size (x));
+      ub_grad = - (lb_grad = eye (rows (x)));
       if (isvector (lb))
-        __sqp_lb__ = lb(:);
+        __sqp_lb__ = tmp_lb = lb(:);
+        lb_idx(:) = tmp_idx = (lb != -Inf);
+        __sqp_lb__ = __sqp_lb__(tmp_idx);
+        lb_grad = lb_grad(lb_idx, :);
       elseif (isempty (lb))
         if (isa (x, "single"))
-          __sqp_lb__ = -realmax ("single");
+          __sqp_lb__ = tmp_lb = -realmax ("single");
         else
-          __sqp_lb__ = -realmax;
+          __sqp_lb__ = tmp_lb = -realmax;
         endif
       else
         error ("sqp: invalid lower bound");
@@ -321,22 +326,26 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
       global __sqp_ub__;
       if (isvector (ub))
-        __sqp_ub__ = ub(:);
+        __sqp_ub__ = tmp_ub = ub(:);
+        ub_idx(:) = tmp_idx = (ub != Inf);
+        __sqp_ub__ = __sqp_ub__(tmp_idx);
+        ub_grad = ub_grad(ub_idx, :);
       elseif (isempty (ub))
         if (isa (x, "single"))
-          __sqp_ub__ = realmax ("single");
+          __sqp_ub__ = tmp_ub = realmax ("single");
         else
-          __sqp_ub__ = realmax;
+          __sqp_ub__ = tmp_ub = realmax;
         endif
       else
         error ("sqp: invalid upper bound");
       endif
 
-      if (__sqp_lb__ > __sqp_ub__)
+      if (any (tmp_lb > tmp_ub))
         error ("sqp: upper bound smaller than lower bound");
       endif
-      ci_fun = @cf_ub_lb;
-      ci_grd = @cigrad_ub_lb;
+      bounds_grad = [lb_grad; ub_grad];
+      ci_fun = @ (x) cf_ub_lb (x, lb_idx, ub_idx);
+      ci_grd = @ (x) cigrad_ub_lb (x, bounds_grad);
     endif
 
     __sqp_ci_fun__ = ci_fun;
@@ -434,12 +443,6 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
     g = -ce;
     d = -ci;
-
-    ## Discard inequality constraints that have -Inf bounds since those
-    ## will never be active.
-    idx = isinf (d) & d < 0;
-    d(idx) = [];
-    C(idx,:) = [];
 
     [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
                                     Inf (size (d)));
@@ -723,25 +726,24 @@ function jac = fd_ci_jac (x)
 endfunction
 
 
-function res = cf_ub_lb (x)
+function res = cf_ub_lb (x, lbidx, ubidx)
 
   ## combine constraint function with ub and lb
   global __sqp_cifcn__ __sqp_lb__ __sqp_ub__
 
-  res = [x-__sqp_lb__; __sqp_ub__-x];
-
-  if (! isempty (__sqp_cifcn__))
-    res = [feval(__sqp_cifcn__,x); x-__sqp_lb__; __sqp_ub__-x];
+  if (isempty (__sqp_cifcn__))
+    res = [x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
+  else
+    res = [feval(__sqp_cifcn__,x); \
+           x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
   endif
 
 endfunction
 
 
-function res = cigrad_ub_lb (x)
+function res = cigrad_ub_lb (x, bgrad)
 
   global __sqp_cif__
-
-  res = [eye(numel(x)); -eye(numel(x))];
 
   cigradfcn = @fd_ci_jac;
 
@@ -749,8 +751,10 @@ function res = cigrad_ub_lb (x)
     cigradfcn = __sqp_cif__{2};
   endif
         
-  if (! isempty (cigradfcn))
-    res = [feval(cigradfcn,x); eye(numel(x)); -eye(numel(x))];
+  if (isempty (cigradfcn))
+    res = bgrad;
+  else
+    res = [feval(cigradfcn,x); bgrad];
   endif
 
 endfunction

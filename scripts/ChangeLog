@@ -1,3 +1,10 @@
+2010-12-13  Olaf Till <olaf.till@uni-jena.de>
+
+	* optimization/sqp.m: Remove never violated Inf bounds from
+	computation in function for inequality constraints (bug
+	#31742). Remove non-functional check for inequality constraints
+	being +Inf in each iteration.
+
 2010-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* optimization/optimget.m: Use explicit toupper conversion rather than

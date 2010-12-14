@@ -41,3 +41,4 @@ endfunction
 %!assert(isequalwithequalnans([1,2,NaN,4],[1,2,3,4]),false)
 ## test for equality (struct)
 %!assert(isequalwithequalnans(struct('a',NaN,'b',2),struct('a',NaN,'b',2),struct('a',NaN,'b',2)),true)
+%!assert(isequalwithequalnans(1,2,1), false)

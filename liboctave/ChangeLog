@@ -1,3 +1,8 @@
+2010-12-13  John W. Eaton  <jwe@octave.org>
+
+	* CMatrix.cc (operator * (const Matrix& m, const ComplexMatrix&	a)):
+	Fix cut and paste error.
+
 2010-12-09  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* lo-specfun.cc (xgamma): Also handle negative integer values as

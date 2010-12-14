@@ -3668,7 +3668,7 @@ operator * (const Matrix& m, const ComplexMatrix& a)
   if (a.rows () > std::min (m.rows (), a.columns ()) / 10)
     return ComplexMatrix (m * real (a), m * imag (a));
   else
-    return m * ComplexMatrix (a);
+    return ComplexMatrix (m) * a;
 }
 
 /* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests

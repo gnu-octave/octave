@@ -9,6 +9,7 @@
 2010-12-13  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m: Fix indexing bug for varargin.
+	Bug #31862.
 
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 

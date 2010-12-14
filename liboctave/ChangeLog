@@ -7,22 +7,24 @@
 2010-12-13  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (operator * (const Matrix& m, const ComplexMatrix&	a)):
-	Fix cut and paste error.
+	Fix cut and paste error.  Bug #31869.
 
 2010-12-09  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* lo-specfun.cc (xgamma): Also handle negative integer values as
-	special cases when using tgamma.
+	special cases when using tgamma.  Bug #31772.
 
 2010-11-25  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::assign): Use correct endpoint for
 	destination range when making room for new elements.
+	Bug #31734.
 
 2010-11-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-md5.cc (oct_md5_result_to_str): Avoid buffer overrun in
 	call to sprintf.  Replace loop with a single call to sprintf.
+	Bug #31689.
 
 2010-11-23  John W. Eaton  <jwe@octave.org>
 

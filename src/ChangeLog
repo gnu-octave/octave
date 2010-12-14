@@ -13,6 +13,7 @@
 2010-12-09  Marco Atzeri   <marco_atzeri@yahoo.it>
 
 	* mappers.cc: In test for gamma, expect Inf for gamma(-1), not NaN.
+	Bug #31772.
 
 2010-12-08  John W. Eaton  <jwe@octave.org>
 

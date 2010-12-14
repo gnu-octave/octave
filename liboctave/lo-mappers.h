@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Double Precision 
 extern OCTAVE_API double xtrunc (double x);
-inline double xcopysign (double x, double y) { return copysignf (x, y); }
+inline double xcopysign (double x, double y) { return copysign (x, y); }
 inline double xceil (double x) { return ceil (x); }
 inline double xfloor (double x) { return floor (x); }
 inline double arg (double x) { return atan2 (0.0, x); }
@@ -318,7 +318,7 @@ xmod (T x, T y)
     {
       T q = x / y;
 
-      T n = floor (q);
+      T n = xfloor (q);
 
       if (X_NINT (y) != y)
         {
@@ -336,7 +336,7 @@ xmod (T x, T y)
                 {
                   if (std::abs ((q - X_NINT (q))/ X_NINT (q))
                       < std::numeric_limits<T>::epsilon ())
-                    n = D_NINT (q);
+                    n = X_NINT (q);
                 }
             }
         }

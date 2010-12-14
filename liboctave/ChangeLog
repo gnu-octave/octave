@@ -1,3 +1,9 @@
+2010-12-14  John W. Eaton  <jwe@octave.org>
+
+	* lo-mappers.h (xcopysign (double)): Call copysign, not copysignf.
+	(xmod): Call X_NINT, not D_NINT.  Call xfloor, not floor.
+	Bug #31872.
+
 2010-12-13  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (operator * (const Matrix& m, const ComplexMatrix&	a)):

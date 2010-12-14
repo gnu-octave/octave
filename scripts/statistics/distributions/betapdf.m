@@ -96,3 +96,6 @@ function pdf = betapdf (x, a, b)
   endif
 
 endfunction
+
+%% Test large values for betapdf
+%!assert (betapdf(0.5, 1000, 1000), 35.678, 1e-3)

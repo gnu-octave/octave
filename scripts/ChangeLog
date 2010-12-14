@@ -1,5 +1,10 @@
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 
+	* statistics/distributions/betapdf.m: Add test for large values of
+	alpha and beta.
+
+2010-12-13  Rik  <octave@nomad.inbox5.com>
+
 	* strings/strmatch.m: Add test with null search pattern.
 
 2010-12-13 Doug Stewart  <doug.dastew@gmail.com>

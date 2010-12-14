@@ -2024,12 +2024,12 @@ Return the number of fields of the structure @var{s}.\n\
 %!# test isfield
 %!test
 %!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3;
-%!  assert (isfield (x, "b"));
-%!assert( isfield( struct("a", "1"), "a"));
-%!assert( isfield( {1}, "c"), logical (0));
-%!assert( isfield( struct("a", "1"), 10), logical (0));
-%!assert( isfield( struct("a", "b"), "a "), logical (0));
-
+%!  assert (isfield (x, 'b'));
+%!assert (isfield (struct('a', '1'), 'a'));
+%!assert (isfield ({1}, 'c'), false);
+%!assert (isfield (struct('a', '1'), 10), false);
+%!assert (isfield (struct('a', 'b'), "a "), false);
+%!assert (isfield (struct('a', 1, 'b', 2), {'a', 'c'}), [true, false]);
 */
 
 DEFUN (cell2struct, args, ,

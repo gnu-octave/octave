@@ -772,6 +772,10 @@ either of the arguments is complex.\n\
 %!assert (mod(uint8(5),4),uint8(1))
 %!assert (mod(5,uint8(4)),uint8(1))
 %!assert (mod(uint8([1:5]),4),uint8([1,2,3,0,1]))
+
+## non-integer real numbers
+%!assert (mod (2.1, 0.1), 0)
+%!assert (mod (2.1, 0.2), 0.1, eps)
 */
 
 // FIXME Need to convert the reduction functions of this file for single precision

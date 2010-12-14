@@ -1,3 +1,7 @@
+2010-12-13  Rik  <octave@nomad.inbox5.com>
+
+	* data.cc (mod): Additional tests for mod with non-integer real values.
+
 2010-12-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc (Flookup): Drop support for the "i" option.

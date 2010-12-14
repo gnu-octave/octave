@@ -76,7 +76,7 @@ function arg_st = __print_parse_opts__ (varargin)
     varargin(1) = [];
   endif
 
-  for i = 1:nargin
+  for i = 1:numel(varargin)
     arg = strtrim (varargin{i});
     if (ischar (arg))
       if (strcmp (arg, "-color"))

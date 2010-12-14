@@ -1,6 +1,10 @@
+2010-12-13  Rik  <octave@nomad.inbox5.com>
+
+	* strings/strmatch.m: Add test with null search pattern.
+
 2010-12-13 Doug Stewart  <doug.dastew@gmail.com>
 
-       * plot/hist.m: Improved the help section.
+	* plot/hist.m: Improved the help section.
 
 2010-12-13  Kai Habel  <kai.habel@gmx.de>
 
@@ -17,7 +21,7 @@
 
 	* optimization/sqp.m: Remove never violated Inf bounds from
 	computation in function for inequality constraints (bug
-	#31742). Remove non-functional check for inequality constraints
+	#31742).  Remove non-functional check for inequality constraints
 	being +Inf in each iteration.
 
 2010-12-12  Jaroslav Hajek  <highegg@gmail.com>

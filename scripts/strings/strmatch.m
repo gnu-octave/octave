@@ -112,3 +112,4 @@ endfunction
 %!assert (strmatch ("apple pie", "apple"), []);
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}));
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
+%!assert (strmatch ('', { '', '% comment line', 'var a = 5', ''}, 'exact'), [1,4])

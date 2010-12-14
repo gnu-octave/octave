@@ -86,7 +86,8 @@ endfunction
 %! && median ([x2, 2*x2]) == [3.5, 7]
 %! && median ([y2, 3*y2]) == [4, 12]));
 
-%!error median ();
+%!assert (median ([1, 2, 3, NaN]), NaN)
 
+%!error median ();
 %!error median (1, 2, 3);
 

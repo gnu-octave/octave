@@ -1,5 +1,9 @@
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 
+	* statistics/median.m: Add NaN test case from bug #29930.
+
+2010-12-13  Rik  <octave@nomad.inbox5.com>
+
 	* general/isequalwithequalnans.m: Add test case from bug #31239.
 
 2010-12-13  Ben Abbott  <bpabbott@mac.com>

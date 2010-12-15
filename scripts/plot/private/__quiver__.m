@@ -192,7 +192,7 @@ function hg = __quiver__ (varargin)
         h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
                     [y.'; yend.'; NaN(1, length (y))](:),
                     [z.'; zend.'; NaN(1, length (z))](:),
-                    "parent", hg);
+                    "color", "black", "parent", hg);
       else
         h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
                    [y.'; yend.'; NaN(1, length (y))](:),
@@ -241,7 +241,7 @@ function hg = __quiver__ (varargin)
       h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                   [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
                   [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-                  "parent", hg);
+                  "color", "black", "parent", hg);
     else
       h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
                  [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),

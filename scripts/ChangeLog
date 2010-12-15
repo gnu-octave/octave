@@ -1,3 +1,8 @@
+2010-12-14  John W. Eaton  <jwe@octave.org>
+
+	* plot/private/__quiver__.m: Use high contrast color black for arrows
+	in quiver3 plots.  Bug #31802.
+
 2010-12-14  Rik  <octave@nomad.inbox5.com>
 
 	* plot/compass.m, plot/errorbar.m, plot/legend.m, plot/rose.m, 

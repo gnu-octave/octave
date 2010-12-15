@@ -1,5 +1,7 @@
 2010-12-15  John W. Eaton  <jwe@octave.org>
 
+	Bug #31883.
+
 	* oct-hist.cc (initialize_history): Call command_history::initialize.
 
 	* octave.cc (gripe_safe_source_exception): New function.
@@ -9,6 +11,8 @@
 	(execute_eval_option_code): Also catch octave_execution	exception.
 
 2010-12-15  John W. Eaton  <jwe@octave.org>
+
+	Bug #31861.
 
 	* lex.h (lexical_feedback::defining_func): Now int instead of bool.
 	lex.ll (is_keyword_token): Increment lexer_flags.defining_func

@@ -1,5 +1,7 @@
 2010-12-15  John W. Eaton  <jwe@octave.org>
 
+	Bug #31883.
+
 	* cmd-hist.cc (command_history::do_clean_up_and_save,
 	command_history::do_truncate_file,
 	command_history::do_append, command_history::do_write,

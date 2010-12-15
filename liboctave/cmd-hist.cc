@@ -253,60 +253,66 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
 void
 gnu_history::do_write (const std::string& f_arg)
 {
-  std::string f = f_arg;
-
-  if (f.empty ())
-    f = xfile;
-
-  if (! f.empty ())
+  if (initialized)
     {
-      int status = ::octave_write_history (f.c_str ());
+      std::string f = f_arg;
 
-      if (status != 0)
-        error (status);
+      if (f.empty ())
+        f = xfile;
+
+      if (! f.empty ())
+        {
+          int status = ::octave_write_history (f.c_str ());
+
+          if (status != 0)
+            error (status);
+        }
+      else
+        error ("gnu_history::write: missing file name");
     }
-  else
-    error ("gnu_history::write: missing file name");
 }
 
 void
 gnu_history::do_append (const std::string& f_arg)
 {
-  if (lines_this_session)
+  if (initialized)
     {
-      if (lines_this_session < do_where ())
+      if (lines_this_session)
         {
-          // Create file if it doesn't already exist.
-
-          std::string f = f_arg;
-
-          if (f.empty ())
-            f = xfile;
-
-          if (! f.empty ())
+          if (lines_this_session < do_where ())
             {
-              file_stat fs (f);
+              // Create file if it doesn't already exist.
 
-              if (! fs)
+              std::string f = f_arg;
+
+              if (f.empty ())
+                f = xfile;
+
+              if (! f.empty ())
                 {
-                  int tem;
+                  file_stat fs (f);
 
-                  tem = gnulib::open (f.c_str (), O_CREAT, 0666);
-                  gnulib::close (tem);
+                  if (! fs)
+                    {
+                      int tem;
+
+                      tem = gnulib::open (f.c_str (), O_CREAT, 0666);
+                      gnulib::close (tem);
+                    }
+
+                  int status
+                    = ::octave_append_history (lines_this_session, f.c_str ());
+
+                  if (status != 0)
+                    error (status);
+                  else
+                    lines_in_file += lines_this_session;
+
+                  lines_this_session = 0;
                 }
-
-              int status
-                = ::octave_append_history (lines_this_session, f.c_str ());
-
-              if (status != 0)
-                error (status);
               else
-                lines_in_file += lines_this_session;
-
-              lines_this_session = 0;
+                error ("gnu_history::append: missing file name");
             }
-          else
-            error ("gnu_history::append: missing file name");
         }
     }
 }
@@ -314,15 +320,18 @@ gnu_history::do_append (const std::string& f_arg)
 void
 gnu_history::do_truncate_file (const std::string& f_arg, int n)
 {
-  std::string f = f_arg;
+  if (initialized)
+    {
+      std::string f = f_arg;
 
-  if (f.empty ())
-    f = xfile;
+      if (f.empty ())
+        f = xfile;
 
-  if (! f.empty ())
-    ::octave_history_truncate_file (f.c_str (), n);
-  else
-    error ("gnu_history::truncate_file: missing file name");
+      if (! f.empty ())
+        ::octave_history_truncate_file (f.c_str (), n);
+      else
+        error ("gnu_history::truncate_file: missing file name");
+    }
 }
 
 string_vector
@@ -358,22 +367,25 @@ gnu_history::do_replace_entry (int which, const std::string& line)
 void
 gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
 {
-  std::string f = f_arg;
-
-  if (f.empty ())
-    f = xfile;
-
-  if (! f.empty ())
+  if (initialized)
     {
-      if (n < 0)
-        n = xsize;
+      std::string f = f_arg;
 
-      stifle (n);
+      if (f.empty ())
+        f = xfile;
 
-      do_write (f.c_str ());
+      if (! f.empty ())
+        {
+          if (n < 0)
+            n = xsize;
+
+          stifle (n);
+
+          do_write (f.c_str ());
+        }
+      else
+        error ("gnu_history::clean_up_and_save: missing file name");
     }
-  else
-    error ("gnu_history::clean_up_and_save: missing file name");
 }
 
 #endif
@@ -405,6 +417,22 @@ command_history::make_command_history (void)
 #else
   instance = new command_history ();
 #endif
+}
+
+void
+command_history::initialize (bool read_history_file,
+                             const std::string& f_arg, int sz)
+{
+  if (instance_ok ())
+    instance->do_initialize (read_history_file, f_arg, sz);
+}
+
+bool
+command_history::is_initialized (void)
+{
+  // We just want to check the status of an existing instance, not
+  // create one.
+  return instance && instance->do_is_initialized ();
 }
 
 void
@@ -614,6 +642,25 @@ command_history::clean_up_and_save (const std::string& f, int n)
 }
 
 void
+command_history::do_initialize (bool read_history_file,
+                                const std::string& f_arg, int sz)
+{
+  command_history::set_file (f_arg);
+  command_history::set_size (sz);
+
+  if (read_history_file)
+    command_history::read (false);
+
+  initialized = true;
+}
+
+bool
+command_history::do_is_initialized (void) const
+{
+  return initialized;
+}
+
+void
 command_history::do_set_file (const std::string& f)
 {
   xfile = f;
@@ -734,31 +781,37 @@ command_history::do_read_range (const std::string& f, int, int, bool)
 void
 command_history::do_write (const std::string& f_arg)
 {
-  std::string f = f_arg;
+  if (initialized)
+    {
+      std::string f = f_arg;
 
-  if (f.empty ())
-    f = xfile;
+      if (f.empty ())
+        f = xfile;
 
-  if (f.empty ())
-    error ("command_history::write: missing file name");
+      if (f.empty ())
+        error ("command_history::write: missing file name");
+    }
 }
 
 void
 command_history::do_append (const std::string& f_arg)
 {
-  if (lines_this_session)
+  if (initialized)
     {
-      if (lines_this_session < do_where ())
+      if (lines_this_session)
         {
-          // Create file if it doesn't already exist.
+          if (lines_this_session < do_where ())
+            {
+              // Create file if it doesn't already exist.
 
-          std::string f = f_arg;
+              std::string f = f_arg;
 
-          if (f.empty ())
-            f = xfile;
+              if (f.empty ())
+                f = xfile;
 
-          if (f.empty ())
-            error ("command_history::append: missing file name");
+              if (f.empty ())
+                error ("command_history::append: missing file name");
+            }
         }
     }
 }
@@ -766,13 +819,16 @@ command_history::do_append (const std::string& f_arg)
 void
 command_history::do_truncate_file (const std::string& f_arg, int)
 {
-  std::string f = f_arg;
+  if (initialized)
+    {
+      std::string f = f_arg;
 
-  if (f.empty ())
-    f = xfile;
+      if (f.empty ())
+        f = xfile;
 
-  if (f.empty ())
-    error ("command_history::truncate_file: missing file name");
+      if (f.empty ())
+        error ("command_history::truncate_file: missing file name");
+    }
 }
 
 string_vector
@@ -795,13 +851,16 @@ command_history::do_replace_entry (int, const std::string&)
 void
 command_history::do_clean_up_and_save (const std::string& f_arg, int)
 {
-  std::string f = f_arg;
+  if (initialized)
+    {
+      std::string f = f_arg;
 
-  if (f.empty ())
-    f = xfile;
+      if (f.empty ())
+        f = xfile;
 
-  if (f.empty ())
-    error ("command_history::clean_up_and_save: missing file name");
+      if (f.empty ())
+        error ("command_history::clean_up_and_save: missing file name");
+    }
 }
 
 void

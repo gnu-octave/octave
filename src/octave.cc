@@ -275,6 +275,51 @@ initialize_version_info (void)
   F__version_info__ (args, 0);
 }
 
+static void
+gripe_safe_source_exception (const std::string& file, const std::string& msg)
+{
+  std::cerr << "error: " << msg << "\n"
+            << "error: execution of " << file << " failed\n"
+            << "error: trying to make my way to a command prompt"
+            << std::endl;
+}
+
+// Execute commands from a file and catch potential exceptions in a
+// consistent way.  This function should be called anywhere we might
+// parse and execute commands from a file before before we have entered
+// the main loop in toplev.cc.
+
+static void
+safe_source_file (const std::string& file_name,
+                  const std::string& context = std::string (),
+                  bool verbose = false, bool require_file = true,
+                  const std::string& warn_for = std::string ())
+{
+  try
+    {
+      source_file (file_name, context, verbose, require_file, warn_for);
+    }
+  catch (octave_interrupt_exception)
+    {
+      recover_from_exception ();
+      octave_stdout << "\n";
+      if (quitting_gracefully)
+        clean_up_and_exit (exit_status);
+    }
+  catch (octave_execution_exception)
+    {
+      recover_from_exception ();
+      gripe_safe_source_exception (file_name, "unhandled execution exception");
+    }
+  catch (std::bad_alloc)
+    {
+      recover_from_exception ();
+      gripe_safe_source_exception
+        (file_name,
+         "memory exhausted or requested size too large for range of Octave's index type");
+    }
+}
+
 // Initialize by reading startup files.
 
 static void
@@ -299,9 +344,10 @@ execute_startup_files (void)
       // (if it exists), then from the file
       // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
-      source_file (Vlocal_site_defaults_file, context, verbose, require_file);
+      safe_source_file (Vlocal_site_defaults_file, context, verbose,
+                        require_file);
 
-      source_file (Vsite_defaults_file, context, verbose, require_file);
+      safe_source_file (Vsite_defaults_file, context, verbose, require_file);
     }
 
   if (read_init_files)
@@ -325,7 +371,7 @@ execute_startup_files (void)
 
       if (! home_rc.empty ())
         {
-          source_file (home_rc, context, verbose, require_file);
+          safe_source_file (home_rc, context, verbose, require_file);
 
           // Names alone are not enough.
 
@@ -347,7 +393,7 @@ execute_startup_files (void)
           if (local_rc.empty ())
             local_rc = octave_env::make_absolute (initfile);
 
-          source_file (local_rc, context, verbose, require_file);
+          safe_source_file (local_rc, context, verbose, require_file);
         }
     }
 }
@@ -385,6 +431,12 @@ execute_eval_option_code (const std::string& code)
       octave_stdout << "\n";
       if (quitting_gracefully)
         clean_up_and_exit (exit_status);
+    }
+  catch (octave_execution_exception)
+    {
+      recover_from_exception ();
+      std::cerr << "error: unhandled execution exception -- eval failed"
+                << std::endl;
     }
   catch (std::bad_alloc)
     {
@@ -438,26 +490,11 @@ execute_command_line_file (const std::string& fname)
 
   octave_program_name = tmp;
 
-  try
-    {
-      std::string context;
-      bool verbose = false;
-      bool require_file = true;
+  std::string context;
+  bool verbose = false;
+  bool require_file = true;
 
-      source_file (fname, context, verbose, require_file, "octave");
-    }
-  catch (octave_interrupt_exception)
-    {
-      recover_from_exception ();
-      octave_stdout << "\n";
-      if (quitting_gracefully)
-        clean_up_and_exit (exit_status);
-    }
-  catch (std::bad_alloc)
-    {
-      std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- execution of "
-                << fname << " failed" << std::endl;
-    }
+  safe_source_file (fname, context, verbose, require_file, "octave");
 }
 
 // Usage message with extra help.

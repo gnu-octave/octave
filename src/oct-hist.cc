@@ -520,11 +520,7 @@ do_run_history (int argc, const string_vector& argv)
 void
 initialize_history (bool read_history_file)
 {
-  command_history::set_file (Vhistory_file);
-  command_history::set_size (Vhistory_size);
-
-  if (read_history_file)
-    command_history::read (false);
+  command_history::initialize (read_history_file, Vhistory_file, Vhistory_size);
 }
 
 void

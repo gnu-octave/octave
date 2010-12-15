@@ -1,3 +1,21 @@
+2010-12-15  John W. Eaton  <jwe@octave.org>
+
+	* cmd-hist.cc (command_history::do_clean_up_and_save,
+	command_history::do_truncate_file,
+	command_history::do_append, command_history::do_write,
+	gnu_history::do_clean_up_and_save, gnu_history::do_truncate_file,
+	gnu_history::do_append, gnu_history::do_write,
+	gnu_history::do_read_range):
+	Don't do anything if not initialized.
+
+	* cmd-hist.cc, cmd-hist.h (command_history::initialize,
+	command_history::is_initialized): New static functions.
+	(command_history::do_initialize,
+	command_history::do_is_initialized): New member functions.
+
+	* cmd-hist.h (command_history::initialized): New data member.
+	(comand_history::command_history): Initialize it.
+
 2010-12-14  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.h (xcopysign (double)): Call copysign, not copysignf.

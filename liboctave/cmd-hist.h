@@ -34,12 +34,16 @@ command_history
 protected:
 
   command_history (void)
-    : ignoring_additions (false), lines_in_file (0),
+    : initialized (false), ignoring_additions (false), lines_in_file (0),
       lines_this_session (0), xfile (), xsize (-1) { }
 
 public:
 
   virtual ~command_history (void) { }
+
+  static void initialize (bool, const std::string&, int);
+
+  static bool is_initialized (void);
 
   static void set_file (const std::string&);
 
@@ -128,6 +132,10 @@ protected:
 
   virtual std::string do_file (void);
 
+  virtual void do_initialize (bool, const std::string&, int);
+
+  virtual bool do_is_initialized (void) const;
+
   virtual void do_set_size (int);
 
   virtual int do_size (void);
@@ -181,6 +189,10 @@ protected:
   void error (int);
 
   void error (const std::string&);
+
+  // TRUE means we have initialized the history file name and number of
+  // lines to save.
+  bool initialized;
 
   // TRUE means we are ignoring new additions.
   bool ignoring_additions;

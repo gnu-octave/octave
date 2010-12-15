@@ -1,5 +1,15 @@
 2010-12-15  John W. Eaton  <jwe@octave.org>
 
+	* oct-hist.cc (initialize_history): Call command_history::initialize.
+
+	* octave.cc (gripe_safe_source_exception): New function.
+	(safe_source_file): New function.
+	(execute_startup_files): Call safe_source_file instead of source_file.
+	(execute_command_line_file): Likewise.  Don't handle exceptions here.
+	(execute_eval_option_code): Also catch octave_execution	exception.
+
+2010-12-15  John W. Eaton  <jwe@octave.org>
+
 	* lex.h (lexical_feedback::defining_func): Now int instead of bool.
 	lex.ll (is_keyword_token): Increment lexer_flags.defining_func
 	instead of setting it to true.

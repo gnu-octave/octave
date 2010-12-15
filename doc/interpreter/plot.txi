@@ -3037,7 +3037,7 @@ Data source variables.
 Quiver series objects are created by the @code{quiver} or @code{quiver3}
 functions.  Each @code{hggroup} element of the series contains three line
 objects as children representing the body and head of the arrow,
-together with a marker as the point of original of the arrows.  The
+together with a marker as the point of origin of the arrows.  The
 properties of the quiver series are
 
 @table @code

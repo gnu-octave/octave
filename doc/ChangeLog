@@ -1,3 +1,7 @@
+2010-12-09  Doug Stewart <doug.dastew@gmail.com>
+
+        * interpreter/plot.txi: changed origial to origin in Quiver section
+
 2010-12-09  Kai Habel  <kai.habel@gmx.de>
 
 	* interpreter/plot.txi: Add pie3 function.

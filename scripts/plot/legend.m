@@ -984,51 +984,54 @@ function [hplots, text_strings] = getlegenddata (hlegend)
   endwhile
 endfunction
 
-%!demo
-%! clf
-%! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("incline is blue and decline is green");
-%! legend({"I'm blue", "I'm green"}, "location", "east")
 
 %!demo
 %! clf
 %! plot(1:10, 1:10, 1:10, fliplr(1:10));
 %! title("incline is blue and decline is green");
-%! legend("I'm blue", "I'm green", "location", "east")
+%! legend({"I'm blue", "I'm green"}, "location", "east");
+
+%!demo
+%! clf
+%! plot(1:10, 1:10, 1:10, fliplr(1:10));
+%! title("incline is blue and decline is green");
+%! legend("I'm blue", "I'm green", "location", "east");
 
 %!demo
 %! clf
 %! plot(1:10, 1:10);
 %! title("a very long label can sometimes cause problems");
-%! legend({"hello world"}, "location", "northeastoutside")
+%! legend({"hello world"}, "location", "northeastoutside");
 
 %!demo
 %! clf
 %! plot(1:10, 1:10);
 %! title("a very long label can sometimes cause problems");
-%! legend("hello world", "location", "northeastoutside")
+%! legend("hello world", "location", "northeastoutside");
 
 %!demo
 %! clf
 %! labels = {};
 %! for i = 1:5
-%!     h = plot(1:100, i + rand(100,1)); hold on;
-%!     set (h, "color", get (gca, "colororder")(i,:))
-%!     labels = {labels{:}, cstrcat("Signal ", num2str(i))};
-%! endfor; hold off;
+%!   h = plot(1:100, i + rand(100,1)); hold on;
+%!   set (h, "color", get (gca, "colororder")(i,:))
+%!   labels = {labels{:}, cstrcat("Signal ", num2str(i))};
+%! endfor
+%! hold off;
 %! title("Signals with random offset and uniform noise")
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
-%! legend(labels, "location", "southoutside")
-%! legend("boxon")
+%! legend(labels, "location", "southoutside");
+%! legend("boxon");
 
 %!demo
 %! clf
 %! labels = {};
 %! for i = 1:5
-%!     h = plot(1:100, i + rand(100,1)); hold on;
-%!     set (h, "color", get (gca, "colororder")(i,:))
-%!     labels = {labels{:}, cstrcat("Signal ", num2str(i))};
-%! endfor; hold off;
+%!   h = plot(1:100, i + rand(100,1)); hold on;
+%!   set (h, "color", get (gca, "colororder")(i,:))
+%!   labels = {labels{:}, cstrcat("Signal ", num2str(i))};
+%! endfor
+%! hold off;
 %! title("Signals with random offset and uniform noise")
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
 %! legend(labels{:}, "location", "southoutside")
@@ -1057,19 +1060,22 @@ endfunction
 
 %!demo
 %! clf
-%! bar (rand (2, 3))
-%! ylim ([0 1.2])
-%! legend ({"1st Bar", "2nd Bar", "3rd Bar"})
+%! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
+%! bar (rand_2x3_data1);
+%! ylim ([0 1.2]);
+%! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
 
 %!demo
 %! clf
-%! bar (rand (2, 3))
-%! ylim ([0 1.2])
-%! legend ("1st Bar", "2nd Bar", "3rd Bar")
+%! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
+%! bar (rand_2x3_data2);
+%! ylim ([0 1.2]);
+%! legend ("1st Bar", "2nd Bar", "3rd Bar");
 
 %!demo
 %! clf
 %! x = 0:0.1:7;
 %! h = plot (x, sin(x), x, cos(x), x, sin(x.^2/10), x, cos(x.^2/10));
-%! title ("Only the sin() objects have keylabels")
-%! legend (h([1, 3]), {"sin(x)", "sin(x^2/10)"}, "location", "southwest")
+%! title ("Only the sin() objects have keylabels");
+%! legend (h([1, 3]), {"sin(x)", "sin(x^2/10)"}, "location", "southwest");
+

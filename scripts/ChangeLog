@@ -1,3 +1,9 @@
+2010-12-14  Rik  <octave@nomad.inbox5.com>
+
+	* plot/compass.m, plot/errorbar.m, plot/legend.m, plot/rose.m, 
+	plot/scatter.m, plot/scatter3.m, plot/stairs.m: Assign data used in 
+	demo plots for reproducibility between runs.
+
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/median.m: Add NaN test case from bug #29930.

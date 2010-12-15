@@ -209,14 +209,17 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
 
 endfunction
 
+
 %!demo
 %! x = 1:10;
-%! y = rand (1, 10);
+%! rand_1x10_data1 = [0.073, 0.455, 0.837, 0.124, 0.426, 0.781, 0.004, 0.024, 0.519, 0.698];
+%! y = rand_1x10_data1;
 %! stairs (x, y);
 
 %!demo
 %! x = 1:10;
-%! y = rand (1, 10);
+%! rand_1x10_data2 = [0.014, 0.460, 0.622, 0.394, 0.531, 0.378, 0.466, 0.788, 0.342, 0.893];
+%! y = rand_1x10_data2;
 %! [xs, ys] = stairs (x, y);
 %! plot (xs, ys);
 
@@ -226,6 +229,7 @@ endfunction
 %!demo
 %! [xs, ys] = stairs (9:-1:1);
 %! plot (xs, ys);
+
 
 function update_props (h, d)
   set (get (h, "children"), "color", get (h, "color"), 

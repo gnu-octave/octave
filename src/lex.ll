@@ -1580,7 +1580,7 @@ is_keyword_token (const std::string& s)
         case function_kw:
           promptflag--;
 
-          lexer_flags.defining_func = true;
+          lexer_flags.defining_func++;
           lexer_flags.parsed_function_name = false;
 
           if (! (reading_fcn_file || reading_script_file
@@ -3332,7 +3332,7 @@ lexical_feedback::init (void)
   looping = 0;
 
   // Not initially defining a function.
-  defining_func = false;
+  defining_func = 0;
   parsed_function_name = false;
   parsing_class_method = false;
   

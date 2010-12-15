@@ -79,8 +79,8 @@ public:
   // command name is possible.
   bool at_beginning_of_statement;
 
-  // TRUE means we're in the middle of defining a function.
-  bool defining_func;
+  // Nonzero means we're in the middle of defining a function.
+  int defining_func;
 
   // Nonzero means we are parsing a function handle.
   int looking_at_function_handle;

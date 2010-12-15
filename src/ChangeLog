@@ -1,3 +1,14 @@
+2010-12-15  John W. Eaton  <jwe@octave.org>
+
+	* lex.h (lexical_feedback::defining_func): Now int instead of bool.
+	lex.ll (is_keyword_token): Increment lexer_flags.defining_func
+	instead of setting it to true.
+	(lexical_feedback::init): Set defining_func to 0 instead of false.
+	* oct-parse.yy (recover_from_parsing_function): Decrement
+	lexer_flags.defining_func here.
+	* input.cc (input_event_hook): Don't do anything if we are
+	lexer_flags.defining_func is nonzero.
+
 2010-12-13  Rik  <octave@nomad.inbox5.com>
 
 	* ov-struct.cc (isfield): Additional test for cellstring of field names.

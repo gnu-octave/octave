@@ -1247,28 +1247,31 @@ static hook_fcn_map_type hook_fcn_map;
 static int
 input_event_hook (void)
 {
-  hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
-
-  while (p != hook_fcn_map.end ())
+  if (! lexer_flags.defining_func)
     {
-      std::string hook_fcn = p->first;
-      octave_value user_data = p->second;
+      hook_fcn_map_type::iterator p = hook_fcn_map.begin ();
 
-      p++;
-
-      if (is_valid_function (hook_fcn))
+      while (p != hook_fcn_map.end ())
         {
-          if (user_data.is_defined ())
-            feval (hook_fcn, user_data, 0);
-          else
-            feval (hook_fcn, octave_value_list (), 0);
-        }
-      else
-        hook_fcn_map.erase (p);
-    }
+          std::string hook_fcn = p->first;
+          octave_value user_data = p->second;
 
-  if (hook_fcn_map.empty ())
-    command_editor::remove_event_hook (input_event_hook);
+          p++;
+
+          if (is_valid_function (hook_fcn))
+            {
+              if (user_data.is_defined ())
+                feval (hook_fcn, user_data, 0);
+              else
+                feval (hook_fcn, octave_value_list (), 0);
+            }
+          else
+            hook_fcn_map.erase (p);
+        }
+
+      if (hook_fcn_map.empty ())
+        command_editor::remove_event_hook (input_event_hook);
+    }
 
   return 0;
 }

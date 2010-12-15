@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {} bar (@var{h}, @dots{})
 ## Produce a bar graph from two vectors of x-y data.
 ##
-## If only one argument is given, it is taken as a vector of y-values
+## If only one argument is given, @var{y}, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
 ##
 ## The default width of 0.8 for the bars can be changed using @var{w}. 
@@ -54,9 +54,15 @@
 ## changes the position on the base of all of the bar series.
 ##
 ## The optional input handle @var{h} allows an axis handle to be passed.
-## Properties of the patch graphics object can be changed using
-## @var{prop}, @var{val} pairs.
 ##
+## The bargraph's appearance may be modified by specifying property/value
+## pairs.  The following example modifies the face and edge colors.
+##
+## @example
+## bar (randn (1, 100), "facecolor", "r", "edgecolor", "b")
+## @end example
+##
+## @noindent
 ## The color of the bars is taken from the figure's colormap, such that
 ##
 ## @example
@@ -67,8 +73,8 @@
 ## @end example
 ##
 ## @noindent
-## will change the colors used for the bars.  If you wish to force the bars to
-## particular colors, this can be achieved like
+## will change the colors used for the bars.  The color of bars can also be set
+## manually using the "facecolor" property as shown below.
 ##
 ## @example
 ## @group

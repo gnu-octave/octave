@@ -12,7 +12,7 @@
 
 2010-12-15  John W. Eaton  <jwe@octave.org>
 
-	Bug #31861.
+	Bug #31861.  Also bug #31286.
 
 	* lex.h (lexical_feedback::defining_func): Now int instead of bool.
 	lex.ll (is_keyword_token): Increment lexer_flags.defining_func

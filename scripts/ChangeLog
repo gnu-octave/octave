@@ -1,3 +1,7 @@
+2010-12-16  Olaf Till <olaf.till@uni-jena.de>
+
+	* optimization/sqp.m: Fix indexing error in sqp bounds selection. 
+
 2010-12-14  Doug Stewart <doug.dastew@gmail.com>
 
 	* plot/bar.m: Improve the docstring.

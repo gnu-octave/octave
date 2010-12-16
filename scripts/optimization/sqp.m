@@ -312,7 +312,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       if (isvector (lb))
         __sqp_lb__ = tmp_lb = lb(:);
         lb_idx(:) = tmp_idx = (lb != -Inf);
-        __sqp_lb__ = __sqp_lb__(tmp_idx);
+        __sqp_lb__ = __sqp_lb__(tmp_idx, 1);
         lb_grad = lb_grad(lb_idx, :);
       elseif (isempty (lb))
         if (isa (x0, "single"))
@@ -328,7 +328,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       if (isvector (ub))
         __sqp_ub__ = tmp_ub = ub(:);
         ub_idx(:) = tmp_idx = (ub != Inf);
-        __sqp_ub__ = __sqp_ub__(tmp_idx);
+        __sqp_ub__ = __sqp_ub__(tmp_idx, 1);
         ub_grad = ub_grad(ub_idx, :);
       elseif (isempty (ub))
         if (isa (x0, "single"))

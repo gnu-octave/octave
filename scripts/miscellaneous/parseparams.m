@@ -88,7 +88,7 @@ function [reg, varargout] = parseparams (params, varargin)
       if (! size_equal (pnames, values) || ! all (strs(i:2:end)))
         error_as_caller ("options must be given as name-value pairs");
       endif
-      idx = lookup (toupper(names), toupper(pnames), "mi);
+      idx = lookup (toupper(names), toupper(pnames), "m");
       if (! all (idx))
         error_as_caller ("unrecognized option: %s", pnames{find (idx == 0, 1)});
       else

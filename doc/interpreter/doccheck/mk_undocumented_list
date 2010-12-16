@@ -124,6 +124,7 @@ test_transpose
 test_try
 test_unwind
 test_while
+test_parser
 toc
 triu
 unimplemented

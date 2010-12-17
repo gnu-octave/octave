@@ -1,5 +1,17 @@
 2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
 
+	* graphics.h.in (class text::properties): New properties positionmode,
+	rotationmode, horizontalalignmentmode, verticalalignmentmode.
+	* graphics.cc (axes::properties::init, axes::properties::set_defaults):
+	Set mode to auto for all initialized positioning properties.
+	(axes::properties::set_xlabel,set_ylabel,set_zlabel,set_title):
+	Revert to auto-positioning mode and turn clipping off when title or
+	labels are set.
+	* gl-render.cc (opengl_renderer::draw_axes): Disable auto-positioning
+	of manually positioned title and axes labels.
+
+2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* graphics.h.in (class axes::properties): Change default value for
 	fontsize from 12 to 10.
 	* graphics.cc (axes::properties::set_defaults): Likewise.

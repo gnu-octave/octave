@@ -3183,15 +3183,24 @@ axes::properties::init (void)
   xset (title.handle_value (), "handlevisibility", "off");
 
   xset (xlabel.handle_value (), "horizontalalignment", "center");
+  xset (xlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (ylabel.handle_value (), "horizontalalignment", "center");
+  xset (ylabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (zlabel.handle_value (), "horizontalalignment", "right");
+  xset (zlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (title.handle_value (), "horizontalalignment", "center");
+  xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
   xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
+  xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
   xset (title.handle_value (), "verticalalignment", "bottom");
+  xset (title.handle_value (), "verticalalignmentmode", "auto");
 
   xset (ylabel.handle_value (), "rotation", 90.0);
+  xset (ylabel.handle_value (), "rotationmode", "auto");
+
   xset (zlabel.handle_value (), "visible", "off");
   
   xset (xlabel.handle_value (), "clipping", "off");
@@ -3285,24 +3294,45 @@ void
 axes::properties::set_xlabel (const octave_value& v)
 {
   set_text_child (xlabel, "xlabel", v);
+  xset (xlabel.handle_value (), "positionmode", "auto");
+  xset (xlabel.handle_value (), "rotationmode", "auto");
+  xset (xlabel.handle_value (), "horizontalalignmentmode", "auto");
+  xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
+  xset (xlabel.handle_value (), "clipping", "off");
 }
 
 void
 axes::properties::set_ylabel (const octave_value& v)
 {
   set_text_child (ylabel, "ylabel", v);
+  xset (ylabel.handle_value (), "positionmode", "auto");
+  xset (ylabel.handle_value (), "rotationmode", "auto");
+  xset (ylabel.handle_value (), "horizontalalignmentmode", "auto");
+  xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
+  xset (ylabel.handle_value (), "clipping", "off");
 }
 
 void
 axes::properties::set_zlabel (const octave_value& v)
 {
   set_text_child (zlabel, "zlabel", v);
+  xset (zlabel.handle_value (), "positionmode", "auto");
+  xset (zlabel.handle_value (), "rotationmode", "auto");
+  xset (zlabel.handle_value (), "horizontalalignmentmode", "auto");
+  xset (zlabel.handle_value (), "verticalalignmentmode", "auto");
+  xset (zlabel.handle_value (), "clipping", "off");
 }
 
 void
 axes::properties::set_title (const octave_value& v)
 {
   set_text_child (title, "title", v);
+  xset (title.handle_value (), "positionmode", "auto");
+  xset (title.handle_value (), "horizontalalignment", "center");
+  xset (title.handle_value (), "horizontalalignmentmode", "auto");
+  xset (title.handle_value (), "verticalalignment", "bottom");
+  xset (title.handle_value (), "verticalalignmentmode", "auto");
+  xset (title.handle_value (), "clipping", "off");
 }
 
 void
@@ -3422,15 +3452,24 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (title.handle_value (), "handlevisibility", "off");
 
   xset (xlabel.handle_value (), "horizontalalignment", "center");
+  xset (xlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (ylabel.handle_value (), "horizontalalignment", "center");
+  xset (ylabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (zlabel.handle_value (), "horizontalalignment", "right");
+  xset (zlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (title.handle_value (), "horizontalalignment", "center");
+  xset (title.handle_value (), "horizontalalignmentmode", "auto");
 
   xset (xlabel.handle_value (), "verticalalignment", "cap");
+  xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignment", "bottom");
+  xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
   xset (title.handle_value (), "verticalalignment", "bottom");
+  xset (title.handle_value (), "verticalalignmentmode", "auto");
 
   xset (ylabel.handle_value (), "rotation", 90.0);
+  xset (ylabel.handle_value (), "rotationmode", "auto");
+
   xset (zlabel.handle_value (), "visible", "off");
   
   xset (xlabel.handle_value (), "clipping", "off");

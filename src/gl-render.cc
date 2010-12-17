@@ -1089,38 +1089,55 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       xlabel_props.set_visible ("on");
 
-      // FIXME: auto-positioning should be disabled if the 
-      //        label has been positioned manually
       if (! xlabel_props.get_string ().empty ())
         {
-          xlabel_props.set_horizontalalignment (xstate > AXE_DEPTH_DIR ? "center" : (xySym ? "left" : "right"));
-          xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
-
-          double angle = 0;
-          ColumnVector p = graphics_xform::xform_vector ((x_min+x_max)/2, yPlaneN, zPlane);
-
-          if (tick_along_z)
-            p(2) += (signum(zPlane-zPlaneN)*fz*xtickoffset);
-          else
-            p(1) += (signum(yPlaneN-yPlane)*fy*xtickoffset);
-          p = xform.transform (p(0), p(1), p(2), false);
-          switch (xstate)
+          if (xlabel_props.horizontalalignmentmode_is("auto"))
             {
-              case AXE_ANY_DIR:
-                p(0) += (xySym ? wmax : -wmax);
-                p(1) += (zd*zv(2) <= 0 ? hmax : -hmax);
-                break;
-              case AXE_VERT_DIR:
-                p(0) -= wmax;
-                angle = 90;
-                break;
-              case AXE_HORZ_DIR:
-                p(1) += hmax;
-                break;
+              xlabel_props.set_horizontalalignment (xstate > AXE_DEPTH_DIR ? "center" : (xySym ? "left" : "right"));
+              xlabel_props.set_horizontalalignmentmode("auto");
             }
-          p = xform.untransform (p(0), p(1), p(2), true);
-          xlabel_props.set_position (p.extract_n (0, 3).transpose ());
-          xlabel_props.set_rotation (angle);
+          if (xlabel_props.verticalalignmentmode_is("auto"))
+            {
+              xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
+              xlabel_props.set_verticalalignmentmode("auto");
+            }
+
+          if (xlabel_props.positionmode_is("auto") || xlabel_props.rotationmode_is("auto"))
+            {
+              double angle = 0;
+              ColumnVector p = graphics_xform::xform_vector ((x_min+x_max)/2, yPlaneN, zPlane);
+
+              if (tick_along_z)
+                p(2) += (signum(zPlane-zPlaneN)*fz*xtickoffset);
+              else
+                p(1) += (signum(yPlaneN-yPlane)*fy*xtickoffset);
+              p = xform.transform (p(0), p(1), p(2), false);
+              switch (xstate)
+                {
+                  case AXE_ANY_DIR:
+                    p(0) += (xySym ? wmax : -wmax);
+                    p(1) += (zd*zv(2) <= 0 ? hmax : -hmax);
+                    break;
+                  case AXE_VERT_DIR:
+                    p(0) -= wmax;
+                    angle = 90;
+                    break;
+                  case AXE_HORZ_DIR:
+                    p(1) += hmax;
+                    break;
+                }
+              if (xlabel_props.positionmode_is("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  xlabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  xlabel_props.set_positionmode ("auto");
+	        }
+              if (xlabel_props.rotationmode_is("auto"))
+                {
+                  xlabel_props.set_rotation (angle);
+                  xlabel_props.set_rotationmode ("auto");
+	        }
+            }
         }
     }
   else
@@ -1322,38 +1339,55 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       ylabel_props.set_visible ("on");
 
-      // FIXME: auto-positioning should be disabled if the 
-      //        label has been positioned manually
       if (! ylabel_props.get_string ().empty ())
         {
-          ylabel_props.set_horizontalalignment (ystate > AXE_DEPTH_DIR ? "center" : (!xySym ? "left" : "right"));
-          ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
-
-          double angle = 0;
-          ColumnVector p = graphics_xform::xform_vector (xPlaneN, (y_min+y_max)/2, zPlane);
-
-          if (tick_along_z)
-            p(2) += (signum(zPlane-zPlaneN)*fz*ytickoffset);
-          else
-            p(0) += (signum(xPlaneN-xPlane)*fx*ytickoffset);
-          p = xform.transform (p(0), p(1), p(2), false);
-          switch (ystate)
+          if (ylabel_props.horizontalalignmentmode_is("auto"))
             {
-              case AXE_ANY_DIR:
-                p(0) += (!xySym ? wmax : -wmax);
-                p(1) += (zd*zv(2) <= 0 ? hmax : -hmax);
-                break;
-              case AXE_VERT_DIR:
-                p(0) -= wmax;
-                angle = 90;
-                break;
-              case AXE_HORZ_DIR:
-                p(1) += hmax;
-                break;
+              ylabel_props.set_horizontalalignment (ystate > AXE_DEPTH_DIR ? "center" : (!xySym ? "left" : "right"));
+              ylabel_props.set_horizontalalignmentmode("auto");
             }
-          p = xform.untransform(p(0), p(1), p(2), true);
-          ylabel_props.set_position (p.extract_n (0, 3).transpose ());
-          ylabel_props.set_rotation (angle);
+          if (ylabel_props.verticalalignmentmode_is("auto"))
+            {
+              ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
+              ylabel_props.set_verticalalignmentmode("auto");
+            }
+
+          if (ylabel_props.positionmode_is("auto") || ylabel_props.rotationmode_is("auto"))
+            {
+              double angle = 0;
+              ColumnVector p = graphics_xform::xform_vector (xPlaneN, (y_min+y_max)/2, zPlane);
+
+              if (tick_along_z)
+                p(2) += (signum(zPlane-zPlaneN)*fz*ytickoffset);
+              else
+                p(0) += (signum(xPlaneN-xPlane)*fx*ytickoffset);
+              p = xform.transform (p(0), p(1), p(2), false);
+              switch (ystate)
+                {
+                  case AXE_ANY_DIR:
+                    p(0) += (!xySym ? wmax : -wmax);
+                    p(1) += (zd*zv(2) <= 0 ? hmax : -hmax);
+                    break;
+                  case AXE_VERT_DIR:
+                    p(0) -= wmax;
+                    angle = 90;
+                    break;
+                  case AXE_HORZ_DIR:
+                    p(1) += hmax;
+                    break;
+                }
+              if (ylabel_props.positionmode_is("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  ylabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  ylabel_props.set_positionmode ("auto");
+	        }
+              if (ylabel_props.rotationmode_is("auto"))
+                {
+                  ylabel_props.set_rotation (angle);
+                  ylabel_props.set_rotationmode ("auto");
+	        }
+            }
         }
     }
   else
@@ -1624,59 +1658,76 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
       zlabel_props.set_visible ("on");
 
-      // FIXME: auto-positioning should be disabled if the 
-      //        label has been positioned manually
       if (! zlabel_props.get_string ().empty ())
         {
           bool camAuto = props.cameraupvectormode_is ("auto");
 
-          zlabel_props.set_horizontalalignment ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
-          zlabel_props.set_verticalalignment(zstate == AXE_VERT_DIR ? "bottom" : ((zd*zv(2) < 0 || camAuto) ? "bottom" : "top"));
-
-          double angle = 0;
-          ColumnVector p;
-
-          if (xySym)
+          if (zlabel_props.horizontalalignmentmode_is("auto"))
             {
-              p = graphics_xform::xform_vector (xPlaneN, yPlane, (z_min+z_max)/2);
-              if (xisinf (fy))
-                p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
-              else
-                p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
+              zlabel_props.set_horizontalalignment ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
+              zlabel_props.set_horizontalalignmentmode("auto");
             }
-          else
+          if (zlabel_props.verticalalignmentmode_is("auto"))
             {
-              p = graphics_xform::xform_vector (xPlane, yPlaneN, (z_min+z_max)/2);
-              if (xisinf (fx))
-                p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
-              else
-                p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
+              zlabel_props.set_verticalalignment(zstate == AXE_VERT_DIR ? "bottom" : ((zd*zv(2) < 0 || camAuto) ? "bottom" : "top"));
+              zlabel_props.set_verticalalignmentmode("auto");
             }
-          p = xform.transform (p(0), p(1), p(2), false);
-          switch (zstate)
+
+          if (zlabel_props.positionmode_is("auto") || zlabel_props.rotationmode_is("auto"))
             {
-              case AXE_ANY_DIR:
-                if (camAuto)
-                  {
+              double angle = 0;
+              ColumnVector p;
+
+              if (xySym)
+                {
+                  p = graphics_xform::xform_vector (xPlaneN, yPlane, (z_min+z_max)/2);
+                  if (xisinf (fy))
+                    p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
+                  else
+                    p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
+                }
+              else
+                {
+                  p = graphics_xform::xform_vector (xPlane, yPlaneN, (z_min+z_max)/2);
+                  if (xisinf (fx))
+                    p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
+                  else
+                    p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
+                }
+              p = xform.transform (p(0), p(1), p(2), false);
+              switch (zstate)
+                {
+                  case AXE_ANY_DIR:
+                    if (camAuto)
+                      {
+                        p(0) -= wmax;
+                        angle = 90;
+                      }
+                    /* FIXME: what's the correct offset?
+                       p[0] += (!xySym ? wmax : -wmax);
+                       p[1] += (zd*zv[2] <= 0 ? hmax : -hmax);
+                       */
+                    break;
+                  case AXE_VERT_DIR:
                     p(0) -= wmax;
                     angle = 90;
-                  }
-                /* FIXME: what's the correct offset?
-                   p[0] += (!xySym ? wmax : -wmax);
-                   p[1] += (zd*zv[2] <= 0 ? hmax : -hmax);
-                   */
-                break;
-              case AXE_VERT_DIR:
-                p(0) -= wmax;
-                angle = 90;
-                break;
-              case AXE_HORZ_DIR:
-                p(1) += hmax;
-                break;
+                    break;
+                  case AXE_HORZ_DIR:
+                    p(1) += hmax;
+                    break;
+                }
+              if (zlabel_props.positionmode_is("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  zlabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  zlabel_props.set_positionmode ("auto");
+	        }
+              if (zlabel_props.rotationmode_is("auto"))
+                {
+                  zlabel_props.set_rotation (angle);
+                  zlabel_props.set_rotationmode ("auto");
+	        }
             }
-          p = xform.untransform (p(0), p(1), p(2), true);
-          zlabel_props.set_position (p.extract_n (0, 3).transpose ());
-          zlabel_props.set_rotation (angle);
         }
     }
   else
@@ -1691,9 +1742,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   text::properties& title_props =
     reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_title ()).get_properties ());
       
-  // FIXME: auto-positioning should be disabled if the 
-  //        title has been positioned manually
-  if (! title_props.get_string ().empty ())
+  if (! title_props.get_string ().empty () && title_props.positionmode_is("auto"))
     {
       Matrix bb = props.get_boundingbox (true);
       ColumnVector p = xform.untransform (bb(0)+bb(2)/2, (bb(1)-10),

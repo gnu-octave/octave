@@ -38,7 +38,7 @@
 
 function comet (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("comet", varargin{:});
 
   if (nargin == 0)
     print_usage ();

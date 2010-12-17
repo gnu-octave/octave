@@ -1,5 +1,7 @@
 2010-12-16  Ben Abbott <bpabbott@mac.com>
 
+	* miscellaneous/unimplemented.m: Remove isprop() form list of
+	unimplemented functions.
 	* plot/isprop.m: New function.
 
 2010-12-16  Olaf Till <olaf.till@uni-jena.de>

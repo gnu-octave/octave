@@ -29,7 +29,7 @@ function txt = unimplemented (fcn)
   ## Some smarter cases, add more as needed.
   switch (fcn)
 
-    case "quad2d"
+  case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
@@ -237,7 +237,6 @@ function list = missing_functions ()
   "isjava", 
   "isocaps", 
   "ispref", 
-  "isprop", 
   "isstudent", 
   "javaArray", 
   "javaMethod", 

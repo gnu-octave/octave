@@ -38,44 +38,43 @@
 
 function comet (varargin)
 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("compass", varargin{:});
+
   if (nargin == 0)
     print_usage ();
-  elseif (numel (varargin{1}) == 1 && ishandle (varargin{1})
-          && strcmpi (get (varargin{1}, "type"), "axes"))
-    axes (varargin{1});
-    varargin = varargin(2:end);
-    numargin = nargin - 1;
-  else
-    numargin = nargin;
-  endif
-
-  p = 0.1;
-  if (numargin == 1)
+  elseif (nargin == 1)
     y = varargin{1};
     x = 1:numel(y);
-  elseif (numargin == 2)
+    p = 0.1;
+  elseif (nargin == 2)
     x = varargin{1};
     y = varargin{2};
-  elseif (numargin == 3)
+    p = 0.1;
+  elseif (nargin == 3)
     x = varargin{1};
     y = varargin{2};
     p = varargin{3};
-  else
-    print_usage ();
   endif
   
-  theaxis = [min(x), max(x), min(y), max(y)];
-  num = numel (y);
-  dn = round (num/10);
-  for n = 1:(num+dn);
-    m = n - dn;
-    m = max ([m, 1]);
-    k = min ([n, num]);
-    h = plot (x(1:m), y(1:m), "r", x(m:k), y(m:k), "g", x(k), y(k), "ob");
-    axis (theaxis);
-    drawnow ();
-    pause (p);
-  endfor
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
+    theaxis = [min(x), max(x), min(y), max(y)];
+    num = numel (y);
+    dn = round (num/10);
+    for n = 1:(num+dn);
+      m = n - dn;
+      m = max ([m, 1]);
+      k = min ([n, num]);
+      h = plot (x(1:m), y(1:m), "r", x(m:k), y(m:k), "g", x(k), y(k), "ob");
+      axis (theaxis);
+      drawnow ();
+      pause (p);
+    endfor
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction
 

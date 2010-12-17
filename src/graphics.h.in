@@ -3179,7 +3179,7 @@ public:
       radio_property drawmode , "{normal}|fast"
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
-      double_property fontsize , 12
+      double_property fontsize , 10
       radio_property fontunits SU , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"

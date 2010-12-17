@@ -3395,7 +3395,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
     {
       fontangle = "normal";
       fontname = OCTAVE_DEFAULT_FONTNAME;
-      fontsize = 12;
+      fontsize = 10;
       fontunits = "points";
       fontweight = "normal";
 

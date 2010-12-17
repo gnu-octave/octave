@@ -552,13 +552,6 @@ on integers.  The operators @code{+}, @code{-}, @code{.*}, and @code{./}
 work on integers of the same type.  So, it is possible to add two 32 bit
 integers, but not to add a 32 bit integer and a 16 bit integer.
 
-The arithmetic operations on integers are performed by casting the
-integer values to double precision values, performing the operation, and
-then re-casting the values back to the original integer type.  As the
-double precision type of Octave is only capable of representing integers
-with up to 53 bits of precision, it is not possible to perform
-arithmetic with 64 bit integer types.
-
 When doing integer arithmetic one should consider the possibility of
 underflow and overflow.  This happens when the result of the computation
 can't be represented using the chosen integer type.  As an example it is
@@ -570,7 +563,7 @@ result of @math{10 - 20} when using unsigned integers is zero.
 When doing integer division Octave will round the result to the nearest
 integer.  This is different from most programming languages, where the
 result is often floored to the nearest integer.  So, the result of
-@code{int32(5)./int32(8)} is @code{1}.
+@code{int32(5) ./ int32(8)} is @code{1}.
 
 @DOCSTRING(idivide)
 
@@ -689,7 +682,7 @@ data(idx)
 
 @noindent
 Instead of creating the @code{idx} array it is possible to replace
-@code{data(idx)} with @code{data( data <= 2 )} in the above code.
+@code{data(idx)} with @w{@code{data( data <= 2 )}} in the above code.
 
 Logical values can also be constructed by
 casting numeric objects to logical values, or by using the @code{true}

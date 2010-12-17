@@ -1,3 +1,8 @@
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/numbers.txi: Remove obsolete documentation about 64-bit
+	integer arithmetic.
+
 2010-12-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/mk_undocumented_list: Update list of exception

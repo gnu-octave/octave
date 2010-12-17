@@ -1,3 +1,8 @@
+2010-12-22  Konstantinos Poulios  <logari81@gmail.com>
+
+	* plot/private/__axis_label__.m: Trigger fltk graphics redraw immediately
+	after setting an axis label.
+
 2010-12-22  John W. Eaton  <jwe@octave.org>
 
 	* optimization/optimset.m, optimization/optimget.m,

@@ -1,3 +1,8 @@
+2010-12-17  John W. Eaton  <jwe@octave.org>
+
+	* plot/comet.m: Use __plt_get_axis_arg__ to extract axis
+	argument.  Only switch to specified axis temporarily.
+
 2010-12-16  Ben Abbott <bpabbott@mac.com>
 
 	* miscellaneous/unimplemented.m: Remove isprop() form list of

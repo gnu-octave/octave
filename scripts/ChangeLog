@@ -1,3 +1,7 @@
+2010-12-16  Ben Abbott <bpabbott@mac.com>
+
+	* plot/isprop.m: New function.
+
 2010-12-16  Olaf Till <olaf.till@uni-jena.de>
 
 	* optimization/sqp.m: Fix indexing error in sqp bounds selection. 

@@ -1,5 +1,11 @@
 2010-12-17  John W. Eaton  <jwe@octave.org>
 
+	* plot/comet3.m: New function.
+	* plot/module.mk: Add comet3.m to the list
+	* miscellaneous/unimplemented.m: Remove comet3 from the list.
+
+2010-12-17  John W. Eaton  <jwe@octave.org>
+
 	* plot/comet.m: Use __plt_get_axis_arg__ to extract axis
 	argument.  Only switch to specified axis temporarily.
 

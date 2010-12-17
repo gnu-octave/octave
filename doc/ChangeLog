@@ -1,5 +1,9 @@
 2010-12-17  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/plot.txi (Two-Dimensional Plots): Document comet3.
+
+2010-12-17  John W. Eaton  <jwe@octave.org>
+
 	* interpreter/plot.txi (Introduction to Graphics Structures):
 	Dcoument isprop.
 

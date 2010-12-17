@@ -136,7 +136,6 @@ function list = missing_functions ()
   "cmunique", 
   "colordef", 
   "colormapeditor", 
-  "comet3", 
   "commandhistory", 
   "commandwindow", 
   "condeig", 

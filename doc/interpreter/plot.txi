@@ -1002,6 +1002,8 @@ The root figure has index 0.  Its properties may be displayed by:
 The uses of @code{get()} and @code{set()} are further explained in
 @ref{doc-get,,get}, @ref{doc-set,,set}.
 
+@DOCSTRING(isprop)
+
 @node Graphics Objects
 @subsection Graphics Objects
 @cindex graphics objects

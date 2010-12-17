@@ -1,3 +1,8 @@
+2010-12-17  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/plot.txi (Introduction to Graphics Structures):
+	Dcoument isprop.
+
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/oop.txi: Redo table rendered incorrectly in Info

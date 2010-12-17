@@ -1,5 +1,10 @@
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/oop.txi: Redo table rendered incorrectly in Info
+	environment.
+
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/numbers.txi: Remove obsolete documentation about 64-bit
 	integer arithmetic.
 

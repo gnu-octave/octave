@@ -124,7 +124,7 @@ at the first executable line of the display method of the polynomial
 class.
 
 To check where a variable is a user class, the @code{isobject} and
-@code{isa} functions can be used. for example:
+@code{isa} functions can be used.  For example:
 
 @example
 @group
@@ -518,35 +518,35 @@ width 0.6pt \tabskip=0pt\cr
 @multitable @columnfractions .1 .20 .20 .40 .1
 @item @tab Operation @tab Method @tab Description @tab
 @item @tab a + b @tab plus (a, b) @tab Binary addition @tab
-@item @tab a - b$ @tab minus (a, b) @tab Binary subtraction operator @tab
-@item @tab + a$ @tab uplus (a) @tab Unary addition operator @tab
-@item @tab - a$ @tab uminus (a) @tab Unary subtraction operator @tab
-@item @tab a .* b$ @tab times (a, b) @tab Element-wise multiplication operator @tab
-@item @tab a * b$ @tab mtimes (a, b) @tab Matrix multiplication operator @tab
-@item @tab a ./ b$ @tab rdivide (a, b) @tab Element-wise right division operator @tab
-@item @tab a / b$ @tab mrdivide (a, b) @tab Matrix right division operator @tab
-@item @tab a .\ b$ @tab ldivide (a, b) @tab Element-wise left division operator @tab
-@item @tab a \ b$ @tab mldivide (a, b) @tab Matrix left division operator @tab
-@item @tab a .^ b$ @tab ldivide (a, b) @tab Element-wise power operator @tab
-@item @tab a ^ b$ @tab mldivide (a, b) @tab Matrix power operator @tab
-@item @tab a < b$ @tab lt (a, b) @tab Less than operator @tab
-@item @tab a <= b$ @tab le (a, b) @tab Less than or equal to operator @tab
-@item @tab a > b$ @tab gt (a, b) @tab Greater than operator @tab
-@item @tab a >= b$ @tab ge (a, b) @tab Greater than or equal to operator @tab
-@item @tab a == b$ @tab eq (a, b) @tab Equal to operator @tab
-@item @tab a != b$ @tab ne (a, b) @tab Not equal to operator @tab
-@item @tab a \& b$ @tab and (a, b) @tab Logical and operator @tab
-@item @tab a | b$ @tab or (a, b) @tab Logical or operator @tab
-@item @tab ! b$ @tab not (a) @tab Logical not operator @tab
-@item @tab a'$ @tab ctranspose (a) @tab Complex conjugate transpose operator @tab
-@item @tab a.'$ @tab transpose (a) @tab Transpose operator @tab
-@item @tab a : b$ @tab colon (a, b) @tab Two element range operator @tab
-@item @tab a : b : c$ @tab colon (a, b, c) @tab Three element range operator @tab
-@item @tab [a, b]$ @tab horzcat (a, b) @tab Horizontal concatenation operator @tab
-@item @tab [a; b]$ @tab vertcat (a, b) @tab Vertical concatenation operator @tab
-@item @tab a(s_1, \ldots, s_n)$ @tab subsref (a, s) @tab Subscripted reference @tab
-@item @tab a(s_1, \ldots, s_n) = b$ @tab subsasgn (a, s, b) @tab Subscripted assignment @tab
-@item @tab b (a)$ @tab subsindex (a) @tab Convert to zero-based index @tab
+@item @tab a - b @tab minus (a, b) @tab Binary subtraction operator @tab
+@item @tab + a @tab uplus (a) @tab Unary addition operator @tab
+@item @tab - a @tab uminus (a) @tab Unary subtraction operator @tab
+@item @tab a .* b @tab times (a, b) @tab Element-wise multiplication operator @tab
+@item @tab a * b @tab mtimes (a, b) @tab Matrix multiplication operator @tab
+@item @tab a ./ b @tab rdivide (a, b) @tab Element-wise right division operator @tab
+@item @tab a / b @tab mrdivide (a, b) @tab Matrix right division operator @tab
+@item @tab a .\ b @tab ldivide (a, b) @tab Element-wise left division operator @tab
+@item @tab a \ b @tab mldivide (a, b) @tab Matrix left division operator @tab
+@item @tab a .^ b @tab ldivide (a, b) @tab Element-wise power operator @tab
+@item @tab a ^ b @tab mldivide (a, b) @tab Matrix power operator @tab
+@item @tab a < b @tab lt (a, b) @tab Less than operator @tab
+@item @tab a <= b @tab le (a, b) @tab Less than or equal to operator @tab
+@item @tab a > b @tab gt (a, b) @tab Greater than operator @tab
+@item @tab a >= b @tab ge (a, b) @tab Greater than or equal to operator @tab
+@item @tab a == b @tab eq (a, b) @tab Equal to operator @tab
+@item @tab a != b @tab ne (a, b) @tab Not equal to operator @tab
+@item @tab a \& b @tab and (a, b) @tab Logical and operator @tab
+@item @tab a | b @tab or (a, b) @tab Logical or operator @tab
+@item @tab ! b @tab not (a) @tab Logical not operator @tab
+@item @tab a' @tab ctranspose (a) @tab Complex conjugate transpose operator @tab
+@item @tab a.' @tab transpose (a) @tab Transpose operator @tab
+@item @tab a : b @tab colon (a, b) @tab Two element range operator @tab
+@item @tab a : b : c @tab colon (a, b, c) @tab Three element range operator @tab
+@item @tab [a, b] @tab horzcat (a, b) @tab Horizontal concatenation operator @tab
+@item @tab [a; b] @tab vertcat (a, b) @tab Vertical concatenation operator @tab
+@item @tab a(s_1, @dots{}, s_n) @tab subsref (a, s) @tab Subscripted reference @tab
+@item @tab a(s_1, @dots{}, s_n) = b @tab subsasgn (a, s, b) @tab Subscripted assignment @tab
+@item @tab b (a) @tab subsindex (a) @tab Convert to zero-based index @tab
 @item @tab  @dfn{display} @tab display (a) @tab Commandline display function @tab
 @end multitable
 @end ifnottex

@@ -210,6 +210,12 @@ contributors.texi: contributors.in
 	  --no-validate --no-headers --no-split --output BUGS $<
 	mv BUGS ../../BUGS
 
+undocumented_list:
+	rm -f $@
+	-$(PERL) doccheck/mk_undocumented_list > $@
+.PHONY: undocumented_list
+
+
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \

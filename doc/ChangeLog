@@ -1,3 +1,8 @@
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: Add undocumented_list target to create list
+	of undocumented functions.
+
 2010-12-17  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/plot.txi (Two-Dimensional Plots): Document comet3.

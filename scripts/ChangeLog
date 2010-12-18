@@ -1,3 +1,7 @@
+2010-12-18  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/view.m: Return azimuth and elevation for nargin == 0.
+
 2010-10-28  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, sparse/module.mk, deprecated/sphcat.m,

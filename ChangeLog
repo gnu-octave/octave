@@ -1,3 +1,7 @@
+2010-12-18  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Deprecate sphcat and spvcat functions.
+
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
 	* README.MacOS: New file documenting build instructions for Mac OSX.

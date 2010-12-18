@@ -23,14 +23,15 @@ deprecated_FCN_FILES = \
   deprecated/mark_as_rawcommand.m \
   deprecated/setstr.m \
   deprecated/spatan2.m \
-  deprecated/spchol.m \
   deprecated/spchol2inv.m \
   deprecated/spcholinv.m \
+  deprecated/spchol.m \
   deprecated/spcumprod.m \
   deprecated/spcumsum.m \
   deprecated/spdet.m \
   deprecated/spdiag.m \
   deprecated/spfind.m \
+  deprecated/sphcat.m \
   deprecated/spinv.m \
   deprecated/spkron.m \
   deprecated/splchol.m \
@@ -42,6 +43,7 @@ deprecated_FCN_FILES = \
   deprecated/spqr.m \
   deprecated/spsum.m \
   deprecated/spsumsq.m \
+  deprecated/spvcat.m \
   deprecated/str2mat.m \
   deprecated/unmark_command.m \
   deprecated/unmark_rawcommand.m \

@@ -393,17 +393,17 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.6 (or whatever version is the second major
     release after 3.2):
 
-      create_set          spcholinv  spmax
-      dmult               spcumprod  spmin
-      iscommand           spcumsum   spprod
-      israwcommand        spdet      spqr
-      lchol               spdiag     spsum
-      loadimage           spfind     spsumsq
-      mark_as_command     spinv      str2mat
-      mark_as_rawcommand  spkron     unmark_command
-      spatan2             splchol    unmark_rawcommand
-      spchol              split
-      spchol2inv          splu
+      create_set          spcholinv    splu   
+      dmult               spcumprod    spmax
+      iscommand           spcumsum     spmin
+      israwcommand        spdet        spprod
+      lchol               spdiag       spqr
+      loadimage           spfind       spsum
+      mark_as_command     sphcat       spsumsq
+      mark_as_rawcommand  spinv        spvcat 
+      spatan2             spkron       str2mat
+      spchol              splchol      unmark_command
+      spchol2inv          split        unmark_rawcommand
 
     The following functions have been deprecated in Octave 3.4 and will
     be removed from Octave 3.8 (or whatever version is the second major

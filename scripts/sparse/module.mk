@@ -14,13 +14,11 @@ sparse_FCN_FILES = \
   sparse/spdiags.m \
   sparse/speye.m \
   sparse/spfun.m \
-  sparse/sphcat.m \
   sparse/spones.m \
   sparse/sprand.m \
   sparse/sprandn.m \
   sparse/sprandsym.m \
   sparse/spstats.m \
-  sparse/spvcat.m \
   sparse/spy.m \
   sparse/svds.m \
   sparse/treelayout.m \

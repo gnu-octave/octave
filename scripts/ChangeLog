@@ -1,3 +1,8 @@
+2010-10-28  Rik  <octave@nomad.inbox5.com>
+
+	* deprecated/module.mk, sparse/module.mk, deprecated/sphcat.m,
+	deprecated/spvcat.m: Deprecate sphcat and spvcat functions.
+
 2010-12-17  John W. Eaton  <jwe@octave.org>
 
 	* plot/comet3.m: New function.

@@ -19,17 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} spvcat (@var{a1}, @var{a2}, @dots{}, @var{aN})
 ## Return the vertical concatenation of sparse matrices.  This function
-## is obselete and @code{vertcat} should be used
-## @seealso{sphcat, vertcat, horzcat, cat}
+## is obselete and @code{vertcat} should be used instead.
+## @seealso{vertcat, sphcat, horzcat, cat}
 ## @end deftypefn
 
 function y = spvcat (varargin)
-
-  persistent spvcat_warned = false;
-
-  if (! spvcat_warned)
-    spvcat_warned = true;
-    warning ("spvcat: This function is depreciated. Use vertcat instead");
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "spvcat is obsolete and will be removed from a future version of Octave; please use vertcat instead");
   endif
 
   y = vertcat (varargin{:});

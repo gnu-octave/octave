@@ -537,8 +537,6 @@ when converted.
 
 @DOCSTRING(intmin)
 
-@DOCSTRING(intwarning)
-
 @menu
 * Integer Arithmetic::
 @end menu

@@ -1,5 +1,12 @@
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/container.txi, interpreter/func.txi,
+	interpreter/linalg.txi, interpreter/numbers.txi,
+	interpreter/signal.txi, interpreter/sparse.txi, interpreter/stats.txi,
+	interpreter/system.txi: Remove deprecated functions from manual.
+
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/doccheck/mk_undocumented_list: Update script to
 	automatically remove functions from the "test/" and "doc/interpreter"
 	directories.

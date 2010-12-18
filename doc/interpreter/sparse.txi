@@ -219,16 +219,11 @@ s = diag (sparse(randn(1,n)), -1);
 creates a sparse (@var{n}+1)-by-(@var{n}+1) sparse matrix with a single
 diagonal defined.
 
-
 @DOCSTRING(spdiags)
 
 @DOCSTRING(speye)
 
 @DOCSTRING(spfun)
-
-@DOCSTRING(spmax)
-
-@DOCSTRING(spmin)
 
 @DOCSTRING(spones)
 

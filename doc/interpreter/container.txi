@@ -829,8 +829,6 @@ cell array of strings.
 
 @DOCSTRING(iscellstr)
 
-@DOCSTRING(cellidx)
-
 @node Processing Data in Cell Arrays
 @subsection Processing Data in Cell Arrays
 

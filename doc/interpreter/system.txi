@@ -178,8 +178,6 @@ about the status of files.
 @anchor{doc-lstat}
 @DOCSTRING(stat)
 
-@DOCSTRING(fstat)
-
 @DOCSTRING(fileattrib)
 
 @DOCSTRING(isdir)

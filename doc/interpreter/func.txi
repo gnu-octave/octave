@@ -1206,61 +1206,58 @@ writing @code{f(x)}.
 
 Commands are a special class of functions that only accept string
 input arguments.  A command can be called as an ordinary function, but
-it can also be called without the parentheses like the following example
-shows
+it can also be called without the parentheses.  For example,
 
 @example
 my_command hello world
 @end example
 
 @noindent
-which is the same as
+is equivalent to 
 
 @example
 my_command("hello", "world")
 @end example
 
+@noindent
 The general form of a command call is
 
 @example
-@var{name} @var{arg1} @var{arg2} @dots{}
+@var{cmdname} @var{arg1} @var{arg2} @dots{}
 @end example
 
 @noindent
 which translates directly to
 
 @example
-@var{name} ("@var{arg1}", "@var{arg2}", @dots{})
+@var{cmdname} ("@var{arg1}", "@var{arg2}", @dots{})
 @end example
 
-A function can be used as a command if it accepts string input arguments.
-To do this, the function must be marked as a command, which can be done
-with the @code{mark_as_command} command like this
-
+Any regular function can be used as a command if it accepts string input
+arguments.  For example:
 @example
-mark_as_command name
+@group
+toupper lower_case_arg
+   @result{} ans = LOWER_CASE_ARG
+@end group
 @end example
-
-@noindent
-where @code{name} is the function to be marked as a command.
 
 One difficulty of commands occurs when one of the string input arguments
-are stored in a variable.  Since Octave can't tell the difference between
-a variable name, and an ordinary string, it is not possible to pass a
+is stored in a variable.  Because Octave can't tell the difference between
+a variable name and an ordinary string, it is not possible to pass a
 variable as input to a command.  In such a situation a command must be
-called as a function.
+called as a function.  For example:
 
-@DOCSTRING(mark_as_command)
+@example
+@group
+strvar = "hello world";
+toupper strvar
+   @result{} ans = STRVAR
+toupper (strvar)
+   @result{} ans = HELLO WORLD
+@end group
+@end example
 
-@DOCSTRING(unmark_command)
-
-@DOCSTRING(iscommand)
-
-@DOCSTRING(mark_as_rawcommand)
-
-@DOCSTRING(unmark_rawcommand)
-
-@DOCSTRING(israwcommand)
 
 @node Organization of Functions
 @section Organization of Functions Distributed with Octave

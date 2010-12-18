@@ -106,8 +106,6 @@ Octave also supports various helpful statistical functions.
 
 @DOCSTRING(perms)
 
-@DOCSTRING(values)
-
 @DOCSTRING(table)
 
 @DOCSTRING(spearman)

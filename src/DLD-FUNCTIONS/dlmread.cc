@@ -206,8 +206,7 @@ fields. Default is zero.\n\
     }
 
   std::istream *input = 0;
-  std::auto_ptr<std::ifstream> input_file;
-  octave_stream input_fid;
+  std::ifstream input_file;
 
   if (args(0).is_string ())
     {
@@ -218,22 +217,25 @@ fields. Default is zero.\n\
 
       std::string tname = file_ops::tilde_expand (fname);
 
-      input_file = std::auto_ptr<std::ifstream> (new std::ifstream (tname.c_str ()));
-      if (input_file->bad ())
+      input_file.open (tname.c_str (), std::ios::in);
+
+      if (! input_file)
         {
           error ("dlmread: unable to open file `%s'", fname.c_str ());
           return retval;
         }
       else
-         input = input_file.get ();
+        input = &input_file;
     }
   else if (args(0).is_scalar_type ())
     {
-      input_fid = octave_stream_list::lookup (args(0), "dlmread");
+      octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
+
       if (error_state)
          return retval;
 
-      input = input_fid.input_stream ();
+      input = is.input_stream ();
+
       if (! input)
         {
           error ("dlmread: stream not open for input");

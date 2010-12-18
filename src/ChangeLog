@@ -1,3 +1,8 @@
+2010-12-18  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Simplify file name/id logic.
+	Bug #31910.
+
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
 	* oct-parse.yy (builtin): Remove seealso reference to deprecated 

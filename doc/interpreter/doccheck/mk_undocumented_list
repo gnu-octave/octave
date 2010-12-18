@@ -24,10 +24,13 @@ while ($_ = $octave_output[$idx++])
    push(@where, $1) if (/] = (\S*)$/);
 }
 
-# Remove deprecated functions from the list of features requiring a DOCSTRING  
+# Remove functions based on directory location
+# deprecated directory, doc/interpreter directory, test/ directory
 FUNC: foreach $idx (0 .. $#where)
 {
    next FUNC if ($where[$idx] =~ /deprecated/i);
+   next FUNC if ($where[$idx] =~ /interpreter/i);
+   next FUNC if ($where[$idx] =~ m#test/#i);
 
    push (@functions, $all_functions[$idx]); 
 }
@@ -39,7 +42,7 @@ FUNC: foreach $idx (0 .. $#where)
 # Exception data is stored at the bottom of this script
 map { chomp, $exceptions{$_}=1; } <DATA>;
 
-# Remove exception data from the list of features requiring a DOCSTRING
+# Remove exception data from the list
 @functions = grep (! $exceptions{$_}, @functions);
 
 ################################################################################
@@ -74,7 +77,6 @@ besselh
 besseli
 besselk
 bessely
-build_bc_overloads_expected
 chdir
 comma
 debug
@@ -86,10 +88,8 @@ fntests
 F_SETFD
 F_SETFL
 gammaln
-geometryimages
 i
 inf
-interpimages
 inverse
 j
 J
@@ -106,40 +106,10 @@ O_SYNC
 O_TRUNC
 O_WRONLY
 paren
-plotimages
 SEEK_CUR
 SEEK_END
 semicolon
 setenv
-sparseimages
-tbcover
-test_args
-test_bc_overloads
-test_classes
-test_contin
-test_diag_perm
-test_error
-test_for
-test_func
-test_global
-test_if
-test_io
-test_null_assign
-test_parser
-test_prefer
-test_range
-test_recursion
-test_return
-test_slice
-test_sparse
-test_string
-test_struct
-test_switch
-test_system
-test_transpose
-test_try
-test_unwind
-test_while
 toc
 triu
 unimplemented

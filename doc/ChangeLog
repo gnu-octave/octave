@@ -1,5 +1,11 @@
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/mk_undocumented_list: Update script to
+	automatically remove functions from the "test/" and "doc/interpreter"
+	directories.
+
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/Makefile.am: Add undocumented_list target to create list
 	of undocumented functions.
 

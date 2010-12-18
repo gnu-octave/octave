@@ -4241,8 +4241,7 @@ DEFUN (builtin, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@dots{}]} builtin (@var{f}, @dots{})\n\
 Call the base function @var{f} even if @var{f} is overloaded to\n\
-some other function for the given type signature.\n\
-@seealso{dispatch}\n\
+another function for the given type signature.\n\
 @end deftypefn")
 {
   octave_value_list retval; 

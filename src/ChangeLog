@@ -1,3 +1,8 @@
+2010-12-17  Rik  <octave@nomad.inbox5.com>
+
+	* oct-parse.yy (builtin): Remove seealso reference to deprecated 
+	function dispatch.
+
 2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (class text::properties): New properties positionmode,

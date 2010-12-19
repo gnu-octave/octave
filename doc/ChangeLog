@@ -1,3 +1,8 @@
+2010-12-19  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/Makefile.am: Update mk_undocumented_list target to use
+	$(srcdir) for portability.
+
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/container.txi, interpreter/func.txi,

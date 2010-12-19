@@ -212,7 +212,7 @@ contributors.texi: contributors.in
 
 undocumented_list:
 	rm -f $@
-	-$(PERL) doccheck/mk_undocumented_list > $@
+	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@
 .PHONY: undocumented_list
 
 

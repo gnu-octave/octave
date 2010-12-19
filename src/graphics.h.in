@@ -3135,9 +3135,9 @@ public:
       row_vector_property xtick mu , default_axes_tick ()
       row_vector_property ytick mu , default_axes_tick ()
       row_vector_property ztick mu , default_axes_tick ()
-      radio_property xtickmode , "{auto}|manual"
-      radio_property ytickmode , "{auto}|manual"
-      radio_property ztickmode , "{auto}|manual"
+      radio_property xtickmode u , "{auto}|manual"
+      radio_property ytickmode u , "{auto}|manual"
+      radio_property ztickmode u , "{auto}|manual"
       bool_property xminortick , "off"
       bool_property yminortick , "off"
       bool_property zminortick , "off"
@@ -3235,6 +3235,31 @@ public:
       {
         if (zticklabelmode.is ("auto"))
           calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+      }
+
+    void update_xtickmode (void)
+      {
+      if (xtickmode.is ("auto"))
+        {
+          calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"), xscale.is ("log"));
+          update_xtick ();
+        }
+      }
+    void update_ytickmode (void)
+      {
+      if (ytickmode.is ("auto"))
+        {
+          calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"), yscale.is ("log"));
+          update_ytick ();
+        }
+      }
+    void update_ztickmode (void)
+      {
+      if (ztickmode.is ("auto"))
+        {
+          calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"), zscale.is ("log"));
+          update_ztick ();
+        }
       }
 
     void update_xticklabelmode (void)

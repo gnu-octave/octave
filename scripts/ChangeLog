@@ -1,3 +1,7 @@
+2010-12-19  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/run.m: Use source to execute script.
+
 2010-12-18  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/view.m: Return azimuth and elevation for nargin == 0.

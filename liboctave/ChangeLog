@@ -1,3 +1,8 @@
+2010-12-20  John W. Eaton  <jwe@octave.org>
+
+	* lo-mappers.h (xrem, xmod): Declare temporary result from
+	multiplication volatile.
+
 2010-12-15  John W. Eaton  <jwe@octave.org>
 
 	Bug #31883.

@@ -341,7 +341,10 @@ xmod (T x, T y)
             }
         }
 
-      retval = x - y * n;
+      // Prevent use of extra precision.
+      volatile T tmp = y * n;
+
+      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)
@@ -386,7 +389,10 @@ xrem (T x, T y)
             }
         }
 
-      retval = x - y * n;
+      // Prevent use of extra precision.
+      volatile T tmp = y * n;
+
+      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)

@@ -782,31 +782,13 @@ then @code{func2} is only available for use of the functions, like
 @node Overloading and Autoloading
 @subsection Overloading and Autoloading
 
-The @code{dispatch} function can be used to alias one function name to
-another.  It can be used to alias all calls to a particular function name
-to another function, or the alias can be limited to only a particular
-variable type.  Consider the example,
-
-@example
-@group
-function y = spsin (x)
-  printf ("Calling spsin\n");
-  fflush(stdout);
-  y = spfun ("sin", x);
-endfunction
-
-dispatch ("sin", "spsin", "sparse matrix");
-y0 = sin(eye(3));
-y1 = sin(speye(3));
-@end group
-@end example
-
-@noindent
-which aliases the user-defined function @code{spsin} to @code{sin}, but only for
-real sparse matrices.  Note that the builtin @code{sin} already correctly treats
-sparse matrices and so this example is only illustrative.
-
-@DOCSTRING(dispatch)
+Functions can be overloaded to work with different input arguments.  For
+example, the operator '+' has been overloaded in Octave to work with single,
+double, uint8, int32, and many other arguments.  The preferred way to overload
+functions is through classes and object oriented programming 
+(@pxref{Function Overloading}).  Occasionally, however, one needs to undo
+user overloading and call the default function associated with a specific
+type.  The @code{builtin} function exists for this purpose.
 
 @DOCSTRING(builtin)
 
@@ -930,7 +912,7 @@ An overloaded function of a class as in chapter
 @ref{Object Oriented Programming}.
 
 @item Legacy Dispatch
-An overloaded function as defined by @xref{doc-dispatch}.
+An overloaded function as defined by @code{dispatch}.
 
 @item Command-line Function
 A function that has been defined on the command-line.

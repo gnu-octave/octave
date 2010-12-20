@@ -1,5 +1,10 @@
 2010-12-19  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/func.txi, interpreter/sparse.txi: Remove documentation
+	on deprecated function dispatch.
+
+2010-12-19  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/Makefile.am: Update mk_undocumented_list target to use
 	$(srcdir) for portability.
 

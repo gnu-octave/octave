@@ -451,21 +451,16 @@ symmetric or @code{treeplot(etree(A+A'))} otherwise.
 @node Sparse Functions
 @subsubsection Sparse Functions
 
-An important consideration in the use of the sparse functions of
-Octave is that many of the internal functions of Octave, such as
-@dfn{diag}, cannot accept sparse matrices as an input.  The sparse
-implementation in Octave therefore uses the @dfn{dispatch}
-function to overload the normal Octave functions with equivalent
-functions that work with sparse matrices.  However, at any time the
-sparse matrix specific version of the function can be used by
-explicitly calling its function name. 
+Many Octave functions have been overloaded to work with either sparse or full
+matrices.  There is no difference in calling convention when using an
+overloaded function with a sparse matrix, however, there is also no access to
+potentially sparse-specific features.  At any time the sparse matrix specific
+version of a function can be used by explicitly calling its function name. 
 
-The table below lists all of the sparse functions of Octave.  Note that
-the names of the 
-specific sparse forms of the functions are typically the same as
-the general versions with a @dfn{sp} prefix.  In the table below, and the
-rest of this article the specific sparse versions of the functions are
-used.
+The table below lists all of the sparse functions of Octave.  Note that the
+names of the specific sparse forms of the functions are typically the same as
+the general versions with a @dfn{sp} prefix.  In the table below, and in the
+rest of this article, the specific sparse versions of functions are used.
 
 @c Table includes in comments the missing sparse functions
 

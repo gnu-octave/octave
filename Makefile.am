@@ -48,7 +48,6 @@ EXTRA_DIST = \
   README.Windows \
   README.kpathsea \
   ROADMAP \
-  SENDING-PATCHES \
   autogen.sh \
   bootstrap \
   bootstrap.conf \

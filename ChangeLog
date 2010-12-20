@@ -1,3 +1,7 @@
+2010-12-20  Rik  <octave@nomad.inbox5.com>
+
+	* README.Cray, SENDING-PATCHES, Makefile.am: Remove obsolete files.
+
 2010-12-18  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate sphcat and spvcat functions.

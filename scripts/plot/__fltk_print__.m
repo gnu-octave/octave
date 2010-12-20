@@ -27,6 +27,7 @@ function opts = __fltk_print__ (opts)
 
   figure (opts.figure)
   drawnow ("expose")
+  __fltk_redraw__ ();
 
   if (! isempty (opts.fig2dev_binary))
     ## fig2dev is prefered for conversion to emf

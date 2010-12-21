@@ -104,7 +104,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
   endif
 
   if (isempty (p))
-    p = (localtime (time)).year + 1900 - 50;
+    p = (localtime (time ())).year + 1900 - 50;
   endif
 
   if (ischar (date))
@@ -132,7 +132,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
         endif
       endfor
     else
-      % Decipher the format string just once for sake of speed.
+      ## Decipher the format string just once for sake of speed.
       [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
         [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);

@@ -4534,22 +4534,50 @@ by an empty argument.\n\
 
 DEFUN (vec, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} vec (@var{x})\n\
+@deftypefn  {Built-in Function} {} @var{v} = vec (@var{x})\n\
+@deftypefnx {Built-in Function} {} @var{v} = vec (@var{x}, @var{dim})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
-one above the other.  Equivalent to @code{@var{x}(:)}.  Useful for functional\n\
-programming.\n\
+one above the other.  Without @var{dim} this is equivalent to\n\
+@code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\
+are set to @var{dim} with all elements along the last dimension.\n\
+This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
 @end deftypefn")
 {
   octave_value retval;
+  int dim = 1;
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 2)
+    print_usage () ;
+
+  if (! error_state && nargin == 2)
+    {
+      dim = args(1).idx_type_value ();
+
+      if (dim < 1)
+        error ("vec: dim must greater than zero");
+    }
+
+  if (! error_state)
     {
       octave_value colon (octave_value::magic_colon_t);
       octave_value arg = args(0);
       retval = arg.single_subsref ("(", colon);
+
+
+      if (! error_state && dim > 1)
+        {
+          dim_vector new_dims = dim_vector::alloc (dim);
+
+          for (int i = 0; i < dim-1; i++)
+            new_dims(i) = 1;
+
+          new_dims(dim-1) = retval.numel ();
+
+          retval = retval.reshape (new_dims);
+        }
     }
-  else
-    print_usage ();    
 
   return retval;
 }
@@ -4557,11 +4585,17 @@ programming.\n\
 /*
 
 %!assert(vec ([1, 2; 3, 4]), [1; 3; 2; 4])
-%!assert(vec ([1, 3, 2, 4]) == [1; 3; 2; 4]);
+%!assert(vec ([1, 3, 2, 4]), [1; 3; 2; 4]);
+%!assert(vec ([1, 2, 3, 4], 2), [1, 2, 3, 4]);
+%!assert(vec ([1, 2; 3, 4]), vec ([1, 2; 3, 4], 1));
+%!assert(vec ([1, 2; 3, 4], 1), [1; 3; 2; 4]);
+%!assert(vec ([1, 2; 3, 4], 2), [1, 3, 2, 4]);
+%!assert(vec ([1, 3; 2, 4], 3), reshape ([1, 2, 3, 4], 1, 1, 4));
+%!assert(vec ([1, 3; 2, 4], 3), shiftdim (vec ([1, 3; 2, 4]), -2));
 
 %!error vec ();
-
-%!error vec (1, 2);
+%!error vec (1, 2, 3);
+%!error vec ([1, 2; 3, 4], 0);
 
 */
 

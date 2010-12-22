@@ -460,15 +460,67 @@ in the use of methods of other classes with the user class.  An example
 
 @node Operator Overloading
 @subsection Operator Overloading
+@cindex addition
+@cindex and operator
+@cindex arithmetic operators
+@cindex boolean expressions
+@cindex boolean operators
+@cindex comparison expressions
+@cindex complex-conjugate transpose
+@cindex division
+@cindex equality operator
+@cindex equality, tests for
+@cindex exponentiation
+@cindex expressions, boolean
+@cindex expressions, comparison
+@cindex expressions, logical
+@cindex greater than operator
+@cindex Hermitian operator
+@cindex less than operator
+@cindex logical expressions
+@cindex logical operators
+@cindex matrix multiplication
+@cindex multiplication
+@cindex negation
+@cindex not operator
+@cindex operators, arithmetic
+@cindex operators, boolean
+@cindex operators, logical
+@cindex operators, relational
+@cindex or operator
+@cindex quotient
+@cindex relational operators
+@cindex subtraction
+@cindex tests for equality
+@cindex transpose
+@cindex transpose, complex-conjugate
+@cindex unary minus
 
 @float Table,tab:overload_ops
-
-@anchor{doc-rdivide} @anchor{doc-plus} @anchor{doc-minus} @anchor{doc-uminus}
-@anchor{doc-uplus} @anchor{doc-times} @anchor{doc-mtimes} @anchor{doc-mrdivide}
-@anchor{doc-ldivide} @anchor{doc-mldivide} @anchor{doc-power}
-@anchor{doc-mpower} @anchor{doc-lt} @anchor{doc-le} @anchor{doc-gt}
-@anchor{doc-ge} @anchor{doc-eq} @anchor{doc-ne} @anchor{doc-and}
-@anchor{doc-or} @anchor{doc-not} @anchor{doc-ctranspose} @anchor{doc-transpose}
+@opindex +
+@opindex -
+@opindex .*
+@opindex *
+@opindex ./
+@opindex /
+@opindex .\
+@opindex \
+@opindex .^
+@opindex ^
+@opindex <
+@opindex <=
+@opindex >
+@opindex >=
+@opindex ==
+@opindex !=
+@opindex ~=
+@opindex &
+@opindex |
+@opindex !
+@opindex '
+@opindex .'
+@opindex :
+@opindex <
 
 @tex
 \vskip 6pt

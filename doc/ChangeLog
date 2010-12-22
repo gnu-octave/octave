@@ -1,3 +1,11 @@
+2010-12-22  Judd Storrs <jstorrs@gmail.com>
+
+	* interpreter/expr.txi: Insert operator function docstrings.
+	* interpreter/oop.txi: Remove conflicting anchors for operator
+	functions. Add cindex entries for overloaded operators. Add
+	overloads to opindex.
+	* interpreter/numbers.txi: Fix colon opindex.
+
 2010-12-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/func.txi, interpreter/sparse.txi: Remove documentation

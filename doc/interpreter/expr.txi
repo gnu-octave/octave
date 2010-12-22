@@ -48,6 +48,7 @@ combinations of these with various operators.
 
 @opindex (
 @opindex )
+@opindex :
 
 An @dfn{index expression} allows you to reference or extract selected
 elements of a matrix or vector.
@@ -560,6 +561,50 @@ lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
 
+@opindex '
+@DOCSTRING(ctranspose)
+
+@opindex .\
+@DOCSTRING(ldivide)
+
+@opindex -
+@DOCSTRING(minus)
+
+@opindex \
+@DOCSTRING(mldivide)
+
+@opindex **
+@opindex ^
+@DOCSTRING(mpower)
+
+@opindex /
+@DOCSTRING(mrdivide)
+
+@opindex *
+@DOCSTRING(mtimes)
+
+@opindex +
+@DOCSTRING(plus)
+
+@opindex .**
+@opindex .^
+@DOCSTRING(power)
+
+@opindex ./
+@DOCSTRING(rdivide)
+
+@opindex .*
+@DOCSTRING(times)
+
+@opindex .'
+@DOCSTRING(transpose)
+
+@opindex -
+@DOCSTRING(uminus)
+
+@opindex +
+@DOCSTRING(uplus)
+
 @node Comparison Ops
 @section Comparison Operators
 @cindex comparison expressions
@@ -639,9 +684,28 @@ String comparisons may also be performed with the @code{strcmp}
 function, not with the comparison operators listed above.
 @xref{Strings}.
 
+@opindex ==
+@DOCSTRING(eq)
+
+@opindex >=
+@DOCSTRING(ge)
+
+@opindex >
+@DOCSTRING(gt)
+
 @DOCSTRING(isequal)
 
 @DOCSTRING(isequalwithequalnans)
+
+@opindex <=
+@DOCSTRING(le)
+
+@opindex <
+@DOCSTRING(lt)
+
+@opindex !=
+@opindex ~=
+@DOCSTRING(ne)
 
 @node Boolean Expressions
 @section Boolean Expressions
@@ -736,6 +800,16 @@ the value of the variable @var{b} is incremented even if the variable
 
 This behavior is necessary for the boolean operators to work as
 described for matrix-valued operands.
+
+@opindex &
+@DOCSTRING(and)
+
+@opindex ~
+@opindex !
+@DOCSTRING(not)
+
+@opindex |
+@DOCSTRING(or)
 
 @node Short-circuit Boolean Operators
 @subsection Short-circuit Boolean Operators

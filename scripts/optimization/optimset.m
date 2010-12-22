@@ -47,7 +47,7 @@ function retval = optimset (varargin)
     ## Return defaults for named function.
     fcn = varargin{1};
     try
-      retval = feval (fcn, 'defaults');
+      retval = feval (fcn, "defaults");
     catch
       error ("optimset: no defaults for function `%s'", fcn);
     end_try_catch
@@ -59,11 +59,11 @@ function retval = optimset (varargin)
     fnames = fieldnames (old);
     ## skip validation if we're in the internal query
     validation = ! isempty (opts);
-    uopts = toupper(opts);
+    lopts = tolower (opts);
     for [val, key] = new
       if (validation)
         ## Case insensitive lookup in all options.
-        i = lookup (uopts, toupper(key), "i");
+        i = lookup (lopts, tolower (key), "i");
         ## Validate option.
         if (i > 0 && strcmpi (opts{i}, key))
           ## Use correct case.

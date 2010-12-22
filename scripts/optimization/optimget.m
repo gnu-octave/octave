@@ -33,7 +33,7 @@ function retval = optimget (options, parname, default)
   endif
 
   opts = __all_opts__ ();
-  idx = lookup (toupper(opts), toupper(parname), "m");
+  idx = lookup (tolower (opts), tolower (parname), "m");
 
   if (idx)
     parname = opts{idx};

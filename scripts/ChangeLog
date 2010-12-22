@@ -1,5 +1,11 @@
 2010-12-22  John W. Eaton  <jwe@octave.org>
 
+	* optimization/optimset.m, optimization/optimget.m,
+	optimization/__all_opts__.m: Consistently use lower case for
+	storing and searching option names.
+
+2010-12-22  John W. Eaton  <jwe@octave.org>
+
 	* statistics/base/skewness.m: Make returned value have the same
 	class as the input.
 

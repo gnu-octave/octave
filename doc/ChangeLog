@@ -1,3 +1,7 @@
+2010-12-22  Tatsuro Matsuoka  <tmacchant@yahoo.co.jp>
+
+	* nonlin.txi: Correct docs for using Jacobian with fsolve.
+
 2010-12-22  Judd Storrs <jstorrs@gmail.com>
 
 	* interpreter/expr.txi: Insert operator function docstrings.

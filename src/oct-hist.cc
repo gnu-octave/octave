@@ -597,8 +597,8 @@ Write the current history to the file @var{file}.  If the name is\n\
 omitted, use the default history file (normally @file{~/.octave_hist}).\n\
 \n\
 @item -r @var{file}\n\
-Read the file @var{file}, replacing the current history list with its\n\
-contents.  If the name is omitted, use the default history file\n\
+Read the file @var{file}, appending its contents to the current \n\
+history list.  If the name is omitted, use the default history file\n\
 (normally @file{~/.octave_hist}).\n\
 \n\
 @item @var{n}\n\

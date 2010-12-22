@@ -1370,15 +1370,23 @@ The default value of the primary prompt string is @code{\"\\s:\\#> \"}.\n\
 To change it, use a command like\n\
 \n\
 @example\n\
-octave:13> PS1 (\"\\\\u@@\\\\H> \")\n\
+PS1 (\"\\\\u@@\\\\H> \")\n\
 @end example\n\
 \n\
 @noindent\n\
 which will result in the prompt @samp{boris@@kremvax> } for the user\n\
 @samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
 backslashes are required to enter a backslash into a double-quoted\n\
-character string.\n\
-@xref{Strings}.\n\
+character string. @xref{Strings}\n\
+\n\
+You can also use ANSI escape sequences if your terminal supports them.\n\
+This can be useful for colouring the prompt. For example,\n\
+\n\
+@example\n\
+PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
+@end example\n\
+\n\
+will give the default Octave prompt a red colouring.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
 {

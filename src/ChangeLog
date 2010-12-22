@@ -1,4 +1,4 @@
-2010-12-15  Judd Storrs  <jstorrs@gmail.com>
+2010-12-22  Judd Storrs  <jstorrs@gmail.com>
 
 	* data.cc (Fvec): New optional second argument to set dimension
 	of result.

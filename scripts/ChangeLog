@@ -1,3 +1,7 @@
+2010-12-23  Soren Hauberg  <hauberg@gmail.com>
+	* signal/detrend.m: Also accept polynomial order as a string ("constant" or
+	"linear") for compatibility with Matlab.
+
 2010-12-22  Konstantinos Poulios  <logari81@gmail.com>
 
 	* plot/private/__axis_label__.m: Trigger fltk graphics redraw immediately

@@ -27,22 +27,30 @@
 ##
 ## The second argument is optional.  If it is not specified, a value of 1
 ## is assumed.  This corresponds to removing a linear trend.
+##
+## The order of the polynomial can also be given as a string, in which case
+## @var{p} must be either @t{"constant"} (corresponds to @code{@var{p}=0}) or
+## @t{"linear"} (corresponds to @code{@var{p}=1}).
+## @seealso{polyfit}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Created: 11 October 1994
 ## Adapted-By: jwe
 
-function y = detrend (x, p)
-
-  if (nargin == 1)
-    p = 1;
-  elseif (nargin == 2)
-    if (! (isscalar (p) && p == round (p) && p >= 0))
-      error ("detrend: p must be a nonnegative integer");
+function y = detrend (x, p = 1)
+  ## Check input
+  if (nargin > 0 && isreal (x) && ndims (x) <= 2)
+    ## Check p
+    if (ischar (p) && strcmpi (p, "constant"))
+      p = 0;
+    elseif (ischar (p) && strcmpi (p, "linear"))
+      p = 1;
+    elseif (!isscalar (p) || p < 0 || p != round (p))
+      error ("detrend: second input argument must be 'constant', 'linear' or a positive integer");
     endif
   else
-    print_usage ();
+    error ("detrend: first input argument must be a real vector or matrix");
   endif
 
   [m, n] = size (x);

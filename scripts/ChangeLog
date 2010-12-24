@@ -1,5 +1,9 @@
 2010-12-24  Rik  <octave@nomad.inbox5.com>
 
+	* testfun/test.m: Use 'Command' for deftype in docstring.
+
+2010-12-24  Rik  <octave@nomad.inbox5.com>
+
 	* audio/setaudio.m: Re-write docstring.
 
 2010-12-23  Soren Hauberg  <hauberg@gmail.com>

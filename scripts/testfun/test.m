@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} test @var{name}
-## @deftypefnx {Function File} {} test @var{name} quiet|normal|verbose
+## @deftypefn  {Command} {} test @var{name}
+## @deftypefnx {Command} {} test @var{name} quiet|normal|verbose
 ## @deftypefnx {Function File} {} test ('@var{name}', 'quiet|normal|verbose', @var{fid})
 ## @deftypefnx {Function File} {} test ([], 'explain', @var{fid})
 ## @deftypefnx {Function File} {@var{success} =} test (@dots{})
@@ -65,7 +65,7 @@
 ##
 ## If the second argument is 'explain', then @var{name} is ignored and an
 ## explanation of the line markers used is written to the file @var{fid}.
-## @seealso{error, assert, fail, demo, example}
+## @seealso{assert, fail, error, demo, example}
 ## @end deftypefn
 
 ## FIXME: * Consider using keyword fail rather then error?  This allows us

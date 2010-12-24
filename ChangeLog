@@ -1,3 +1,8 @@
+2010-12-20  Ben Abbott  <bpabbott@mac.com>
+
+	* README.MacOS, Makefile.am: Update build insructions for MacOS and
+	distribute file in tarball.
+
 2010-12-20  Rik  <octave@nomad.inbox5.com>
 
 	* README.Cray, SENDING-PATCHES, Makefile.am: Remove obsolete files.

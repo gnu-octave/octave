@@ -1,5 +1,143 @@
-Building on MacOS can vary significantly between versions.  These instructions
-document the procedure for MacOS 10.6.X.
+1. General Users
+================
+
+A MacOS bundle is available from sourceforge.
+
+  http://octave.sourceforge.net/index.html
+
+There are also Octave packages available from both Fink and MacPorts.  Each
+of these package managers handle the details of compiling Octave from source.
+
+  http://www.finkproject.com
+  http://www.macports.org/
+
+2. Developers
+=============
+
+Building on MacOS can vary significantly between versions.  These
+instructions document the procedure for MacOS 10.6.X.
+
+2.1 Development Tools
+----------------------
+
+Apple's Xcode Developer's Tool must be installed to build from source code.
+
+  http://developer.apple.com/technologies/xcode.html
+
+A Fortran compiler is also required.  AT&T Research provides versions of
+gfortran which have been patched to work with recent versions of Xcode.
+
+  http://r.research.att.com/tools/
+
+2.2 Dependencies
+----------------
+
+There are additional build dependencies and run-time dependencies which
+must be met.  Using a package management system such as Fink or MacPorts
+is the easiest way to meet these requirements.
+
+  http://www.finkproject.com
+  http://www.macports.org/
+
+The list of dependencies is below.  Dependencies in the list are referred to
+using the name of the Fink package.
+
+  aquaterm
+  arpack
+  autoconf (>= 2.6.0)
+  automake (>= 1.11)
+  fftw3 (>= 3.1.1)
+  fftw3-shlibs (>= 3.1.1)
+  flex >= 2.5.30
+  fltk-aqua-shlibs 
+  glpk-dev
+  glpk-shlibs
+  gnuplot (>= 4.2.6)
+  graphicsmagick (<= 1.3.7)
+  graphicsmagick-shlibs (<= 1.3.7)
+  hdf5 (>= 1.6.5)
+  hdf5-shlibs (>= 1.6.5)
+  libcurl4
+  libcurl4-shlibs
+  libncurses5
+  libncurses5-shlibs
+  libtool >= 2.2.2 
+  ncurses
+  pcre
+  pcre-shlibs
+  qhull
+  qrupdate (**)
+  readline5
+  readline5-shlibs 
+  sed
+  suitesparse (= 3.1.0-1 )
+
+Some of Octave's dependencies are among the default packages for Fink. These
+include the list below, and possibly others as well.
+
+  tetex
+  texinfo
+
+(**) Fink does not yet have a package for qrupdate.  However, one is
+       available in the tracker at the link below.
+
+  http://sourceforge.net/tracker/index.php?func=detail&aid=2861045&group_id=17203&atid=414256
+
+2.3 Building With Dependencies Satisfied by Fink
+------------------------------------------------
+
+After installing each of the dependencies, the sources are compiled by
+setting the proper environment variables and then following the standard build
+sequence.  The following is an example set of variables for a 32-bit processor
+compling with gcc-4.2.
+
+  export FINK_PREFIX="/sw"
+  export PREFIX="/usr/local/bin"
+
+  export OPTFLAGS="-O0 -g"
+  export LDFLAGS="-L$FINK_PREFIX/lib -L/usr/lib -m32"
+  export CFLAGS="-I$FINK_PREFIX/include $OPTFLAGS -m32"
+  export CXXFLAGS=$CFLAGS
+  export CPPFLAGS=$CXXFLAGS 
+  export ACLOCAL_FLAGS="-I$FINK_PREFIX/share/aclocal"
+  export PKG_CONFIG_PATH="$FINK_PREFIX/lib/pkgconfig"
+  export PATH="$FINK_PREFIX/var/lib/fink/path-prefix-10.6/:$PATH"
+  export MACOSX_DEPLOYMENT_TARGET=10.5
+  export PATH="$FINK_PREFIX/lib/flex/bin:$PATH"
+  export CPPFLAGS="-I$FINK_PREFIX/lib/flex/include $CPPFLAGS"
+  export LDFLAGS="-L$FINK_PREFIX/lib/flex/lib $LDFLAGS"
+  export CC="gcc-4.2"
+  export CPP="cpp-4.2"
+  export CXX="g++-4.2"
+  export F77="/usr/bin/gfortran-4.2"
+  export FLIBS="-lgfortran -lgfortranbegin"
+  export FFLAGS="-ff2c $OPTFLAGS -m32"
+  export CPPFLAGS="$CPPFLAGS -I$FINK_PREFIX/include/freetype2 \
+                             -I$FINK_PREFIX/include/qhull \
+                             -I/usr/include"
+  export CXXFLAGS="$CXXFLAGS -D_THREAD_SAFE -D_REENTRANT"
+
+  ./autogen.sh
+  ./configure --prefix=$PREFIX \
+              --libexecdir='${prefix}/lib' \
+              --with-blas="-Wl,-framework -Wl,vecLib"
+  make
+
+2.4 Building With Dependencies Satisfied by MacPorts
+----------------------------------------------------
+
+  TODO - add instructions.
+
+2.5 Building without a package manager
+--------------------------------------
+
+  TODO - add instructions.
 
 
-Last updated: Fri Dec 17 20:19:25 PST 2010
+John W. Eaton
+jwe@octave.org
+
+Ben Abbott
+bpabbott@mac.com
+
+Sat, 28 Oct 2010 16:06:00 EDT

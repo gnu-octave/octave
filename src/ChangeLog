@@ -1,3 +1,7 @@
+2010-12-25  Rik  <octave@nomad.inbox5.com>
+
+	* input.cc (PS1): Correct use of xref macro to remove Tex warning.
+
 2010-12-22  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* input.cc (PS1): Give an example of how PS1 can use ANSI escape

@@ -1377,7 +1377,7 @@ PS1 (\"\\\\u@@\\\\H> \")\n\
 which will result in the prompt @samp{boris@@kremvax> } for the user\n\
 @samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
 backslashes are required to enter a backslash into a double-quoted\n\
-character string. @xref{Strings}\n\
+character string.  @xref{Strings}.\n\
 \n\
 You can also use ANSI escape sequences if your terminal supports them.\n\
 This can be useful for colouring the prompt. For example,\n\

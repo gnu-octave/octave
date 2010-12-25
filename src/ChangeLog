@@ -1,5 +1,11 @@
 2010-12-25  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/str2double.cc: Fix bug in converting "numberi" strings
+	such as "2i".  Add ability to process special value "NA".  Rewrite 
+	docstring.
+
+2010-12-25  Rik  <octave@nomad.inbox5.com>
+
 	* input.cc (PS1): Correct use of xref macro to remove Tex warning.
 
 2010-12-22  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>

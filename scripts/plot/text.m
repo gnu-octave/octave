@@ -103,3 +103,28 @@ function h = text (varargin)
   endif
 
 endfunction
+
+%!demo
+%! clf
+%! ha = {"left", "center", "right"};
+%! va = {"bottom", "middle", "top"};
+%! for t = 0:30:359;
+%!   for nh = 1:numel(ha)
+%!     x = [0.25 0.5 0.75](nh);
+%!     for nv = 1:numel(va)
+%!       y = [0.25 0.5 0.75](nv);
+%!       text (x, y, "Hello World",
+%!                   "rotation", t,
+%!                   "horizontalalignment", ha{nh},
+%!                   "verticalalignment", va{nv})
+%!     endfor
+%!   endfor
+%! endfor
+%! set (gca, "xtick", [0.25, 0.5, 0.75],
+%!           "xticklabel", ha,
+%!           "ytick", [0.25, 0.5, 0.75],
+%!           "yticklabel", va)
+%! axis ([0 1 0 1])
+%! xlabel ("horizontal alignment")
+%! ylabel ("vertical alignment")
+%! title ("text alignment and rotation (0:30:360 degrees)")

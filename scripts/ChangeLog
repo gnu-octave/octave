@@ -1,3 +1,7 @@
+2010-12-27  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/text.m: Add demo for text rotation and alignment.
+
 2010-12-26  Michael Godfrey <godfrey@isl.stanford.edu>
 
 	* specfun/legendre.m: Add @tex blocks to docstring.

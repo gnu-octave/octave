@@ -1,3 +1,7 @@
+2010-12-26  Michael Godfrey <godfrey@isl.stanford.edu>
+
+	* gammainc.cc: Add @tex blocks to docstring.
+
 2010-12-25  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/str2double.cc: Fix bug in converting "numberi" strings

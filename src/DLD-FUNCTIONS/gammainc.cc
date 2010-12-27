@@ -41,20 +41,20 @@ DEFUN_DLD (gammainc, args, ,
 Compute the normalized incomplete gamma function,\n\
 @tex\n\
 $$\n\
- \\gamma (x, a) = {\\displaystyle\\int_0^x e^{-t} t^{a-1} dt \\over \\Gamma (a)}\n\
+ \\gamma (x, a) = {1 \\over {\\Gamma (a)}}\\displaystyle{\\int_0^x t^{a-1} e^{-t} dt}\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
 \n\
-@smallexample\n\
+@example\n\
 @group\n\
-                                x\n\
-                      1        /\n\
+                                 x\n\
+                       1        /\n\
 gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
-                  gamma (a)    /\n\
-                            t=0\n\
+                   gamma (a)    /\n\
+                             t=0\n\
 @end group\n\
-@end smallexample\n\
+@end example\n\
 \n\
 @end ifnottex\n\
 with the limiting value of 1 as @var{x} approaches infinity.\n\
@@ -64,14 +64,14 @@ If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
 for each element of @var{x} and vice versa.\n\
 \n\
 If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
-@var{a} must agree, and @var{gammainc} is applied element-by-element.\n\
+@var{a} must agree, and @code{gammainc} is applied element-by-element.\n\
 \n\
 By default the incomplete gamma function integrated from 0 to @var{x} is\n\
 computed.  If \"upper\" is given then the complementary function integrated\n\
-for @var{x} to infinity is calculated.  It should be noted that\n\
+from @var{x} to infinity is calculated.  It should be noted that\n\
 \n\
 @example\n\
-gammainc (@var{x}, @var{a}) = 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
+gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
 @end example\n\
 @seealso{gamma, lgamma}\n\
 @end deftypefn")

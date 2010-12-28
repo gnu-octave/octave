@@ -80,12 +80,12 @@ function retval = __plt__ (caller, h, varargin)
           endif
           if (y_set)
             tmp = __plt2__ (h, x, y, options, properties);
-            [hlgnd, tlgnd] = __plt_key__ (tmp, options);
+            [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
             properties = {};
             retval = [retval; tmp];
           else
             tmp = __plt1__ (h, x, options, properties);
-            [hlgnd, tlgnd] = __plt_key__ (tmp, options);
+            [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
             properties = {};
             retval = [retval; tmp];
           endif
@@ -98,7 +98,7 @@ function retval = __plt__ (caller, h, varargin)
         if (y_set)
           options = __pltopt__ (caller, {""});
           tmp = __plt2__ (h, x, y, options, properties);
-          [hlgnd, tlgnd] = __plt_key__ (tmp, options);
+          [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
           retval = [retval; tmp];
           x = next_arg;
           y_set = false;
@@ -123,9 +123,7 @@ function retval = __plt__ (caller, h, varargin)
 
 endfunction
 
-function [hlgnd, tlgnd] = __plt_key__ (h, options)
-  hlgnd = [];
-  tlgnd = {};
+function [hlgnd, tlgnd] = __plt_key__ (h, options, hlgnd, tlgnd)
   n = numel (h);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);
@@ -134,7 +132,7 @@ function [hlgnd, tlgnd] = __plt_key__ (h, options)
   for i = 1 : n
     key = options.key;
     if (! isempty (key))
-      hlgnd = [h(i), h(i)];
+      hlgnd = [hlgnd(:), h(i)];
       tlgnd = {tlgnd{:}, key};
     endif
   endfor

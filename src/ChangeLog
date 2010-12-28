@@ -1,3 +1,9 @@
+2010-12-28  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (save_mat5_array_length (const float*, octave_idx_type,
+        bool)): Take in to account the 4 bytes of padding for an odd number
+	of elements in single precision arrays.
+
 2010-12-27  Rik  <octave@nomad.inbox5.com>
 
 	* syscalls.cc (stat): Add additional calling form using file descriptor

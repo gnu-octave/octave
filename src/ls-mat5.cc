@@ -1314,7 +1314,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             FloatComplexNDArray ctmp (dims);
 
             for (octave_idx_type i = 0; i < n; i++)
-              ctmp(i) = Complex (re(i), im(i));
+              ctmp(i) = FloatComplex (re(i), im(i));
 
             tc = ctmp;
           }
@@ -1954,7 +1954,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
 }
 
 int
-save_mat5_array_length (const float* val, octave_idx_type nel, bool)
+save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
 {
   if (nel > 0)
     {
@@ -2002,7 +2002,8 @@ save_mat5_array_length (const float* val, octave_idx_type nel, bool)
       //       size = 4;
       //   }
 
-      return 8 + nel * size;
+      // Round nel up to nearest even number of elements
+      return 8 + ((nel + 1) & ~0x1LL) * size;
     }
   else
     return 8;

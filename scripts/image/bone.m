@@ -17,31 +17,33 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bone (@var{n})
-## Create color colormap.  This colormap is a gray colormap with a light 
-## blue tone.  The argument @var{n} should be a scalar.  If it
-## is omitted, the length of the current colormap or 64 is assumed.
+## @deftypefn  {Function File} {@var{map} =} bone ()
+## @deftypefnx {Function File} {@var{map} =} bone (@var{n})
+## Create color colormap.  This colormap varies from black to white with
+## gray-blue shades.
+## The argument @var{n} must be a scalar.  
+## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = bone (number)
+function map = bone (n)
 
   if (nargin == 0)
-    number = rows (colormap);
+    n = rows (colormap);
   elseif (nargin == 1)
-    if (! isscalar (number))
+    if (! isscalar (n))
       error ("bone: argument must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  if (number == 1)
+  if (n == 1)
     map = [0, 0, 0];  
-  elseif (number > 1)
-    x = linspace (0, 1, number)';
+  elseif (n > 1)
+    x = linspace (0, 1, n)';
 
     r = (x < 3/4) .* (7/8 * x) + (x >= 3/4) .* (11/8 * x - 3/8);
     g = (x < 3/8) .* (7/8 * x)\
@@ -58,5 +60,5 @@ endfunction
 %! ## Show the 'bone' colormap as an image
 %! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
 %! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap bone
+%! colormap (bone (64))
 

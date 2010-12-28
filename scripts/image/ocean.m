@@ -18,40 +18,43 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocean (@var{n})
-## Create color colormap.  The argument @var{n} should be a scalar.  If it
-## is omitted, the length of the current colormap or 64 is assumed.
+## @deftypefn  {Function File} {@var{map} =} ocean ()
+## @deftypefnx {Function File} {@var{map} =} ocean (@var{n})
+## Create color colormap.  This colormap varies from black to white with shades
+## of blue.
+## The argument @var{n} must be a scalar.  
+## If unspecified, the length of the current colormap, or 64, is used.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function map = ocean (number)
+function map = ocean (n)
 
   if (nargin == 0)
-    number = rows (colormap);
+    n = rows (colormap);
   elseif (nargin == 1)
-    if (! isscalar (number))
+    if (! isscalar (n))
       error ("ocean: argument must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  cutin = fix (number/3);
+  cutin = fix (n/3);
 
-  dr = (number - 1) / cutin;
+  dr = (n - 1) / cutin;
 
-  r = prepad ([0:dr:(number-1)], number)';
+  r = prepad ([0:dr:(n-1)], n)';
 
-  dg = (number - 1) / (2 * cutin);
+  dg = (n - 1) / (2 * cutin);
 
-  g = prepad([0:dg:(number-1)], number)';
+  g = prepad([0:dg:(n-1)], n)';
 
-  b = [0:(number-1)]';
+  b = [0:(n-1)]';
 
-  map = [ r, g, b ] / (number - 1);
+  map = [ r, g, b ] / (n - 1);
 
 endfunction
 
@@ -59,5 +62,5 @@ endfunction
 %! ## Show the 'ocean' colormap as an image
 %! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
 %! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap ocean
+%! colormap (ocean (64))
 

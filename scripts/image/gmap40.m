@@ -17,31 +17,32 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gmap40 (@var{n})
-## Create a color colormap.  The colormap is red, green, blue, yellow,
-## magenta and cyan.  These are the colors that are allowed with patch
-## objects using gnuplot 4.0, and so this colormap function is specially
-## designed for users of gnuplot 4.0.  The argument @var{n} should be 
-## a scalar.  If it is omitted, a length of 6 is assumed.  Larger values
-## of @var{n} result in a repetition of the above colors
+## @deftypefn  {Function File} {@var{map} =} gmap40 ()
+## @deftypefnx {Function File} {@var{map} =} gmap40 (@var{n})
+## Create color colormap.  The colormap consists of red, green, blue, yellow,
+## magenta and cyan.  This colormap is specifically designed for users of
+## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
+## The argument @var{n} must be a scalar. 
+## If unspecified, a length of 6 is assumed.  Larger values
+## of @var{n} result in a repetition of the above colors.
 ## @seealso{colormap}
 ## @end deftypefn
 
-function map = gmap40 (number)
+function map = gmap40 (n)
 
   if (nargin == 0)
-    number = 6;
+    n = 6;
   elseif (nargin == 1)
-    if (! isscalar (number))
+    if (! isscalar (n))
       error ("gmap40: argument must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  if (number >= 1)
+  if (n >= 1)
     map = repmat ([1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1],
-          ceil (number / 6), 1) (1:number, :);
+          ceil (n / 6), 1) (1:n, :);
   else
     map = [];
   endif
@@ -50,7 +51,7 @@ endfunction
 
 %!demo
 %! ## Show the 'gmap40' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap gmap40
+%! image (1:6, linspace (0, 1, 6), repmat (1:6, 6, 1)')
+%! axis ([1, 6, 0, 1], "ticy", "xy")
+%! colormap (gmap40 (6))
 

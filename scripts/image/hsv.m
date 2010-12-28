@@ -18,36 +18,37 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hsv (@var{n})
-## Create color colormap.  This colormap is red through yellow, green,
-## cyan, blue, magenta to red.  It is obtained by linearly varying the
-## hue through all possible values while keeping constant maximum
+## Create color colormap.  This colormap begins with red, changes through 
+## yellow, green, cyan, blue, and magenta, before returning to red.  
+## It is useful for displaying periodic functions.  It is obtained by linearly
+## varying the hue through all possible values while keeping constant maximum
 ## saturation and value and is equivalent to
 ## @code{hsv2rgb ([linspace(0,1,N)', ones(N,2)])}.
 ##
-## The argument @var{n} should be a scalar.  If it is omitted, the
-## length of the current colormap or 64 is assumed.
+## The argument @var{n} must be a scalar.  
+## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = hsv (number)
+function map = hsv (n)
 
   if (nargin == 0)
-    number = rows (colormap);
+    n = rows (colormap);
   elseif (nargin == 1)
-    if (! isscalar (number))
+    if (! isscalar (n))
       error ("hsv: argument must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  if (number == 1)
+  if (n == 1)
     map = [1, 0, 0];  
-  elseif (number > 1)
-    h = linspace (0, 1, number)';
-    map = hsv2rgb ([h, ones(number, 1), ones(number, 1)]);
+  elseif (n > 1)
+    h = linspace (0, 1, n)';
+    map = hsv2rgb ([h, ones(n, 1), ones(n, 1)]);
   else
     map = [];
   endif
@@ -58,5 +59,5 @@ endfunction
 %! ## Show the 'hsv' colormap as an image
 %! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
 %! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap hsv
+%! colormap (hsv (64))
 

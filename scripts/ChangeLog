@@ -1,3 +1,16 @@
+2010-12-28  Rik  <octave@nomad.inbox5.com>
+
+	* image/autumn.m, image/bone.m, image/cool.m, image/copper.m, 
+	image/flag.m, image/gray.m, image/hot.m, image/hsv.m, image/jet.m,
+	image/ocean.m, image/pink.m, image/prism.m, image/rainbow.m,
+	image/spring.m, image/summer.m, image/white.m, image/winter.m: Use
+	same variable name for documentation and function call.  Change demo
+	code to explicitly use colormap size.  Update docstring.
+
+	* image/gmap40.m: Use same variable name for documentation and function
+	call.  Change demo code to use colormap size of 6 rather than 64.
+	Update docstring.
+
 2010-12-28  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Add demo to legend for inline key.

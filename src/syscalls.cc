@@ -878,9 +878,11 @@ system-dependent error message.\n\
 DEFUNX ("stat", Fstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{fid})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{fid})\n\
 Return a structure @var{s} containing the following information about\n\
-@var{file}.\n\
+@var{file} or file identifier @var{fid}.\n\
 \n\
 @table @code\n\
 @item dev\n\

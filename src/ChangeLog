@@ -1,3 +1,8 @@
+2010-12-27  Rik  <octave@nomad.inbox5.com>
+
+	* syscalls.cc (stat): Add additional calling form using file descriptor
+	fid to docstring.
+
 2010-12-26  Michael Godfrey <godfrey@isl.stanford.edu>
 
 	* gammainc.cc: Add @tex blocks to docstring.

@@ -984,6 +984,11 @@ function [hplots, text_strings] = getlegenddata (hlegend)
   endwhile
 endfunction
 
+%!demo
+%! clf
+%! x = 0:1;
+%! plot (x, x, ";1;", x, 2*x, x, 3*x, ";3;")
+%! title ("1 is Blue, and 3 is Red")
 
 %!demo
 %! clf

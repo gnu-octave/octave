@@ -1,5 +1,6 @@
 2010-12-29  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/text.m: New demo for 3D plot and text with verticalalignment.
 	* plot/__go_draw_axes__.m: Enable vertical alignment of text objects for
 	gnuplot.
 

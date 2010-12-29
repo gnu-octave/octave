@@ -128,3 +128,17 @@ endfunction
 %! xlabel ("horizontal alignment")
 %! ylabel ("vertical alignment")
 %! title ("text alignment and rotation (0:30:360 degrees)")
+
+%!demo
+%! clf
+%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1],
+%!                  "facecolor", "none",
+%!                  "facealpha", 0);
+%! for t = 0:45:359;
+%!   text (25, 25, 0, "Vertical Alignment = Bottom",
+%!                    "rotation", t,
+%!                    "horizontalalignment", "left",
+%!                    "verticalalignment", "bottom")
+%! endfor
+%! caxis ([-100 100])
+%! title ("Vertically Aligned at Bottom")

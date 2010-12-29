@@ -1233,6 +1233,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fontspec = create_fontspec (f, s, gnuplot_term);
           lpos = obj.position;
           halign = obj.horizontalalignment;
+          valign = obj.verticalalignment;
           angle = obj.rotation;
           units = obj.units;
           color = obj.color;
@@ -1249,17 +1250,35 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             colorspec = get_text_colorspec (color, mono);
           endif
 
+          switch valign
+            ## Text offset in characters. This relies on gnuplot for font metrics.
+            case "top"
+              dy = -0.5;
+            case "cap"
+              dy = -0.5;
+            case "middle"
+              dy = 0;
+            case "baseline"
+              dy = 0.5;
+            case "bottom"
+              dy = 0.5;
+          endswitch
+          ## Gnuplot's Character units are different for x/y and vary with fontsize. The aspect ratio
+          ## of 1:2.5 was determined by experiment.
+          dx_and_dy = [(-dy * sind (angle)), (dy * cosd(angle))] .* [2.5 1];
+
           if (nd == 3)
+            ## This produces the desired vertical alignment in 3D.
             fprintf (plot_stream,
-                     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s %s front %s;\n",
+                     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f offset character %f,%f %s %s front %s;\n",
                      undo_string_escapes (label), units, lpos(1),
-                     lpos(2), lpos(3), halign, angle, fontspec,
+                     lpos(2), lpos(3), halign, angle, dx_and_dy, fontspec,
                      __do_enhanced_option__ (enhanced, obj), colorspec);
           else
             fprintf (plot_stream,
-                     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s %s front %s;\n",
+                     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f offset character %f,%f %s %s front %s;\n",
                      undo_string_escapes (label), units,
-                     lpos(1), lpos(2), halign, angle, fontspec,
+                     lpos(1), lpos(2), halign, angle, dx_and_dy, fontspec,
                      __do_enhanced_option__ (enhanced, obj), colorspec);
           endif
 

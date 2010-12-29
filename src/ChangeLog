@@ -1,3 +1,10 @@
+2010-12-28  Rik  <octave@nomad.inbox5.com>
+
+	* data.cc (and, ctranspose, eq, ge, gt, ldivide, le, lt, minus,
+	mldivide, mpower, mrdivide, mtimes, ne, not, or, plus, power, rdivide,
+	times, transpose, uminus, uplus): Improve docstrings for functions
+	which emulate operators.  Add Seealso cross-referencing.
+
 2010-12-28  David Bateman  <dbateman@free.fr>
 
 	* ls-mat5.cc (save_mat5_array_length (const float*, octave_idx_type,

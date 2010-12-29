@@ -4826,7 +4826,9 @@ unary_op_defun_body (octave_value::unary_op op,
 DEFUN (not, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} not (@var{x})\n\
-This function is equivalent to @code{! x}.\n\
+Return the logical NOT of @var{x}.  This function is equivalent to\n\
+@code{! x}.\n\
+@seealso{and, or}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_not, args);
@@ -4835,7 +4837,7 @@ This function is equivalent to @code{! x}.\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function is equivalent to @code{+ x}.\n\
+This function is equivalent to @w{@code{+ x}}.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -4844,7 +4846,7 @@ This function is equivalent to @code{+ x}.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function is equivalent to @code{- x}.\n\
+This function is equivalent to @w{@code{- x}}.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
@@ -4853,7 +4855,8 @@ This function is equivalent to @code{- x}.\n\
 DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
-This function is equivalent to @code{x.'}.\n\
+Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
+@seealso{ctranspose}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_transpose, args);
@@ -4884,7 +4887,9 @@ This function is equivalent to @code{x.'}.\n\
 DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
-This function is equivalent to @code{x'}.\n\
+Return the complex conjugate transpose of @var{x}.  This function is\n\
+equivalent to @code{x'}.\n\
+@seealso{transpose}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_hermitian, args);
@@ -4959,7 +4964,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @code{x + y}.\n\
+This function is equivalent to @w{@code{x + y}}.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -4967,7 +4972,8 @@ cumulatively from left to right:\n\
   (@dots{}((x1 + x2) + x3) + @dots{})\n\
 @end example\n\
 \n\
-At least one argument is needed.\n\
+At least one argument is required.\n\
+@seealso{minus}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_add,
@@ -4977,7 +4983,8 @@ At least one argument is needed.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function is equivalent to @code{x - y}.\n\
+This function is equivalent to @w{@code{x - y}}.\n\
+@seealso{plus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_sub, args);
@@ -4987,7 +4994,8 @@ DEFUN (mtimes, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @code{x * y}.\n\
+Return the matrix multiplicaton product of inputs.\n\
+This function is equivalent to @w{@code{x * y}}.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -4995,7 +5003,8 @@ cumulatively from left to right:\n\
   (@dots{}((x1 * x2) * x3) * @dots{})\n\
 @end example\n\
 \n\
-At least one argument is needed.\n\
+At least one argument is requred.\n\
+@seealso{times}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_mul,
@@ -5005,7 +5014,9 @@ At least one argument is needed.\n\
 DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
-This function is equivalent to @code{x / y}.\n\
+Return the matrix right division of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x / y}}.\n\
+@seealso{mldivide, rdivide}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_div, args);
@@ -5014,7 +5025,9 @@ This function is equivalent to @code{x / y}.\n\
 DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
-This function is equivalent to @code{x ^ y}.\n\
+Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
+This function is equivalent to @w{@code{x ^ y}}.\n\
+@seealso{power}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_pow, args);
@@ -5023,7 +5036,9 @@ This function is equivalent to @code{x ^ y}.\n\
 DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
-This function is equivalent to @code{x \\ y}.\n\
+Return the matrix left division of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x \\ y}}.\n\
+@seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ldiv, args);
@@ -5032,7 +5047,7 @@ This function is equivalent to @code{x \\ y}.\n\
 DEFUN (lt, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} lt (@var{x}, @var{y})\n\
-This function is equivalent to @code{x < y}.\n\
+This function is equivalent to @w{@code{x < y}}.\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_lt, args);
@@ -5041,7 +5056,7 @@ This function is equivalent to @code{x < y}.\n\
 DEFUN (le, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} le (@var{x}, @var{y})\n\
-This function is equivalent to @code{x <= y}.\n\
+This function is equivalent to @w{@code{x <= y}}.\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_le, args);
@@ -5050,7 +5065,9 @@ This function is equivalent to @code{x <= y}.\n\
 DEFUN (eq, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eq (@var{x}, @var{y})\n\
-This function is equivalent to @code{x == y}.\n\
+Return true if the two inputs are equal.\n\
+This function is equivalent to @w{@code{x == y}}.\n\
+@seealso{ne, isequal}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_eq, args);
@@ -5059,7 +5076,7 @@ This function is equivalent to @code{x == y}.\n\
 DEFUN (ge, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ge (@var{x}, @var{y})\n\
-This function is equivalent to @code{x >= y}.\n\
+This function is equivalent to @w{@code{x >= y}}.\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ge, args);
@@ -5068,7 +5085,7 @@ This function is equivalent to @code{x >= y}.\n\
 DEFUN (gt, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} gt (@var{x}, @var{y})\n\
-This function is equivalent to @code{x > y}.\n\
+This function is equivalent to @w{@code{x > y}}.\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_gt, args);
@@ -5077,7 +5094,9 @@ This function is equivalent to @code{x > y}.\n\
 DEFUN (ne, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ne (@var{x}, @var{y})\n\
-This function is equivalent to @code{x != y}.\n\
+Return true if the two inputs are not equal.\n\
+This function is equivalent to @w{@code{x != y}}.\n\
+@seealso{eq, isequal}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ne, args);
@@ -5087,7 +5106,8 @@ DEFUN (times, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @code{x .* y}.\n\
+Return the element-by-element multiplication product of inputs.\n\
+This function is equivalent to @w{@code{x .* y}}.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5095,7 +5115,8 @@ cumulatively from left to right:\n\
   (@dots{}((x1 .* x2) .* x3) .* @dots{})\n\
 @end example\n\
 \n\
-At least one argument is needed.\n\
+At least one argument is required.\n\
+@seealso{mtimes}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_mul,
@@ -5105,7 +5126,9 @@ At least one argument is needed.\n\
 DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
-This function is equivalent to @code{x ./ y}.\n\
+Return the element-by-element right division of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x ./ y}}.\n\
+@seealso{ldivide, mrdivide}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_div, args);
@@ -5114,7 +5137,10 @@ This function is equivalent to @code{x ./ y}.\n\
 DEFUN (power, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
-This function is equivalent to @code{x .^ y}.\n\
+Return the element-by-element operation of @var{x} raised to the\n\
+@var{y} power.\n\
+This function is equivalent to @w{@code{x .^ y}}.\n\
+@seealso{mpower}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);
@@ -5123,7 +5149,9 @@ This function is equivalent to @code{x .^ y}.\n\
 DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
-This function is equivalent to @code{x .\\ y}.\n\
+Return the element-by-element left division of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x .\\ y}}.\n\
+@seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_ldiv, args);
@@ -5133,7 +5161,8 @@ DEFUN (and, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} and (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @code{x & y}.\n\
+Return the logical AND of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x & y}}.\n\
 If more arguments are given, the logical and is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5141,7 +5170,8 @@ cumulatively from left to right:\n\
   (@dots{}((x1 & x2) & x3) & @dots{})\n\
 @end example\n\
 \n\
-At least one argument is needed.\n\
+At least one argument is required.\n\
+@seealso{or, not}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_and,
@@ -5152,7 +5182,8 @@ DEFUN (or, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} or (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @code{x | y}.\n\
+Return the logical OR of @var{x} and @var{y}.\n\
+This function is equivalent to @w{@code{x | y}}.\n\
 If more arguments are given, the logical or is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5160,7 +5191,8 @@ cumulatively from left to right:\n\
   (@dots{}((x1 | x2) | x3) | @dots{})\n\
 @end example\n\
 \n\
-At least one argument is needed.\n\
+At least one argument is required.\n\
+@seealso{and, not}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_or,

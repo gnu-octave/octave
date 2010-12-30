@@ -1,8 +1,13 @@
+2010-12-30  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Tweak vertical alignment of text objects
+	for gnuplot to favor eps/ps output.
+
 2010-12-29  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/text.m: New demo for 3D plot and text with verticalalignment.
-	* plot/__go_draw_axes__.m: Enable vertical alignment of text objects for
-	gnuplot.
+	* plot/__go_draw_axes__.m: Enable vertical alignment of text objects
+	for gnuplot.
 
 2010-12-28  Ben Abbott <bpabbott@mac.com>
 

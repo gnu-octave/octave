@@ -1264,8 +1264,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               dy = 0.5;
           endswitch
           ## Gnuplot's Character units are different for x/y and vary with fontsize. The aspect ratio
-          ## of 1:2.5 was determined by experiment.
-          dx_and_dy = [(-dy * sind (angle)), (dy * cosd(angle))] .* [2.5 1];
+          ## of 1:1.7 was determined by experiment to work for eps/ps/etc. For the MacOS aqua terminal
+          ## a value of 2.5 is needed. However, the difference is barely noticable.
+          dx_and_dy = [(-dy * sind (angle)), (dy * cosd(angle))] .* [1.7 1];
 
           if (nd == 3)
             ## This produces the desired vertical alignment in 3D.

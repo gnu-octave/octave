@@ -42,8 +42,8 @@ function h = meshc (varargin)
     set (ax, "view", [-37.5, 30]);
   endif
 
-  z = get (tmp, "zdata");
-  zmin = 2 * (min(z(:)) - max(z(:)));
+  drawnow
+  zmin = get (ax, "zlim")(1);
 
   [c, tmp2] = __contour__ (ax, zmin, varargin{:});
 

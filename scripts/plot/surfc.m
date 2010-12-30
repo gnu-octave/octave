@@ -41,12 +41,8 @@ function h = surfc (varargin)
     set (ax, "view", [-37.5, 30]);
   endif
 
-  if (nargin == 1)
-    z = varargin{1};
-  else
-    z = varargin{3};
-  endif
-  zmin = 2 * (min(z(:)) - max(z(:)));
+  drawnow
+  zmin = get (ax, "zlim")(1);
 
   [c, tmp2] = __contour__ (ax, zmin, varargin{:});
 

@@ -4,6 +4,10 @@
 	* general/module.mk: Add new file to list.
 	* miscellaneous/unimplemented.m: Remove curl and divergence from list.
 
+2010-12-31  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/scatter3.m: Grid on by default for 3D plots.
+
 2010-12-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/contour3.m, plot/mesh.m, plot/meshc.m, plot/surfc.m: Grid on

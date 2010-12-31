@@ -71,7 +71,8 @@ function retval = scatter3 (varargin)
   endif
 
   if (! ishold ())
-    set (get (tmp, "parent"), "view", [-37.5, 30]);
+    set (ax, "view", [-37.5, 30],
+         "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

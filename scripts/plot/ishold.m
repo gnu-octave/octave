@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ishold
-## Return true if the next line will be added to the current plot, or
-## false if the plot device will be cleared before drawing the next line.
+## Return true if the next plot will be added to the current plot, or
+## false if the plot device will be cleared before drawing the next plot.
+## @seealso{hold}
 ## @end deftypefn
 
 function retval = ishold (h)

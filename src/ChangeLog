@@ -1,3 +1,26 @@
+2010-12-31  Rik  <octave@nomad.inbox5.com>
+
+	* data.cc (islogical, isinteger, iscomplex, isfloat, isempty,
+	isnumeric, ismatrix, issorted): Improve docstring
+	* graphics.cc (ishandle): Improve docstring
+	* lex.ll (iskeyword): Improve docstring
+	* mappers.cc (isalnum, isalpha, isascii, iscntrl, isdigit, isinf,
+	isgraph, islower, isna, isnan, isprint, ispunct, isspace, isupper,
+	isxdigit): Improve docstring
+	(finite/isfinite): Make finite an alias for isfinite rather than the
+	reverse.  Improve docstring.
+	* ov-cell.cc (iscell, iscellstr): Improve docstring
+	* ov-class.cc (isobject, ismethod): Improve docstring
+	* ov-null-mat.cc (isnull): Improve docstring
+	* ov-struct.cc (isstruct, isfield): Improve docstring
+	* ov-usr-fcn.cc (isargout): Improve docstring
+	* sparse.cc (issparse): Improve docstring
+	* strfns.cc (ischar): Improve docstring
+	* sysdep.cc (isieee): Improve docstring
+	* utils.cc (isvarname, is_absolute_filename,
+	is_rooted_relative_filename, isindex): Improve docstring
+	* variables.cc (isglobal): Improve docstring
+
 2010-12-28  Rik  <octave@nomad.inbox5.com>
 
 	* data.cc (and, ctranspose, eq, ge, gt, ldivide, le, lt, minus,

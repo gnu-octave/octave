@@ -751,14 +751,16 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 DEFUN (isargout, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isargout (@var{k})\n\
-Within a function, given an index @var{k} within the range @code{1:max(nargout,1)},\n\
-return a logical value indicating whether the argument will be assigned on\n\
-output to a variable or cell or struct element. If the result is false,\n\
-the argument will be ignored using the tilde (~) special output argument.\n\
-If @var{k} is outside the range @code{1:max(nargout,1)}, the function yields false.\n\
-@var{k} can also be an array, in\n\
-which case the function works element-wise and a logical array is returned.\n\
-At the top level, @code{isargout} returns an error.\n\
+Within a function, return a logical value indicating whether the argument\n\
+@var{k} will be assigned on output to a variable.  If the result is false,\n\
+the argument has been ignored during the function call through the use of\n\
+the tilde (~) special output argument.  Functions can use @code{isargout} to\n\
+avoid performing unnecessary calculations for outputs which are unwanted.\n\
+\n\
+If @var{k} is outside the range @code{1:max(nargout)}, the function returns\n\
+false.  @var{k} can also be an array, in which case the function works\n\
+element-by-element and a logical array is returned.  At the top level,\n\
+@code{isargout} returns an error.\n\
 @seealso{nargout, nargin, varargin, varargout}\n\
 @end deftypefn")
 {

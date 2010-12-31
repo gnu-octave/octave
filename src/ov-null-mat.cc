@@ -91,11 +91,11 @@ octave_null_sq_str::numeric_conversion_function (void) const
 DEFUN (isnull, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnull (@var{x})\n\
-Return 1 if @var{x} is a special null matrix, string or single quoted string.\n\
-Indexed assignment with such a value as right-hand side should delete array\n\
-elements.  This function should be used when overloading indexed assignment\n\
-for user-defined classes instead of @code{isempty}, to distinguish the\n\
-cases:\n\
+Return true if @var{x} is a special null matrix, string, or single quoted\n\
+string.  Indexed assignment with such a value on the right-hand side should\n\
+delete array elements.  This function should be used when overloading\n\
+indexed assignment for user-defined classes instead of @code{isempty}, to\n\
+distinguish the cases:\n\
 @table @asis\n\
 @item @code{A(I) = []}\n\
 This should delete elements if @code{I} is nonempty.\n\
@@ -103,6 +103,7 @@ This should delete elements if @code{I} is nonempty.\n\
 @item @code{X = []; A(I) = X}\n\
 This should give an error if @code{I} is nonempty.\n\
 @end table\n\
+@seealso{isempty, isindex}\n\
 @end deftypefn")
 {
   octave_value retval;

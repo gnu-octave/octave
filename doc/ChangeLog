@@ -1,3 +1,10 @@
+2010-12-31  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/expr.txi: Add isindex function to documentation
+	* interpreter/func.txi: Add isargout function to documentation
+	* interpreter/matrix.txi: Add isfinite function to documentation
+	* interpreter/numbers.txi: Add ishermitian function to documentation
+
 2010-12-31  Kai Habel  <kai.habel@gmx.de>
 
 	* interpreter/arith.txi: Add curl and divergence function.

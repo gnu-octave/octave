@@ -3390,9 +3390,11 @@ is_keyword (const std::string& s)
 
 DEFUN (iskeyword, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} iskeyword (@var{name})\n\
+@deftypefn  {Built-in Function} {} iskeyword ()\n\
+@deftypefnx {Built-in Function} {} iskeyword (@var{name})\n\
 Return true if @var{name} is an Octave keyword.  If @var{name}\n\
 is omitted, return a list of keywords.\n\
+@seealso{isvarname, exist}\n\
 @end deftypefn")
 {
   octave_value retval;

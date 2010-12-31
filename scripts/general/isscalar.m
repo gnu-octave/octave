@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isscalar (@var{a})
-## Return 1 if @var{a} is a scalar.  Otherwise, return 0.
-## @seealso{size, rows, columns, length, isscalar, ismatrix}
+## @deftypefn {Function File} {} isscalar (@var{x})
+## Return true if @var{x} is a scalar.
+## @seealso{isvector, ismatrix}
 ## @end deftypefn
 
 ## Author: jwe

@@ -21,10 +21,10 @@
 ## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{S}) 
 ## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}) 
 ## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}, "rows")
-## Return a matrix @var{tf} with the same shape as @var{A} which has a 1 if 
-## @code{A(i,j)} is in @var{S} and 0 if it is not.  If a second output argument 
-## is requested, the index into @var{S} of each of the matching elements is
-## also returned. 
+## Return a logical matrix @var{tf} with the same shape as @var{A} which is 
+## true (1) if @code{A(i,j)} is in @var{S} and false (0) if it is not.  If a
+## second output argument is requested, the index into @var{S} of each of the
+## matching elements is also returned. 
 ##
 ## @example
 ## @group

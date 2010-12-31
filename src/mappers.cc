@@ -753,11 +753,13 @@ accurately in the neighborhood of zero.\n\
   return retval;
 }
 
-DEFUN (finite, args, ,
+DEFUN (isfinite, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} finite (@var{x})\n\
-Return 1 for elements of @var{x} that are finite values and zero\n\
-otherwise.  For example:\n\
+@deftypefn  {Mapping Function} {} isfinite (@var{x})\n\
+@deftypefnx {Mapping Function} {} finite (@var{x})\n\
+Return a logical array which is true where the elements of @var{x} are\n\
+finite values and false where they are not.\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -765,6 +767,7 @@ finite ([13, Inf, NA, NaN])\n\
      @result{} [ 1, 0, 0, 0 ]\n\
 @end group\n\
 @end example\n\
+@seealso{isinf, isnan, isna}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -963,8 +966,10 @@ Return the imaginary part of @var{z} as a real number.\n\
 DEFUNX ("isalnum", Fisalnum, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
-Return 1 for characters that are letters or digits (@code{isalpha\n\
-(@var{s})} or @code{isdigit (@var{s})} is true).\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+letters or digits and false where they are not.  This is equivalent to\n\
+(@code{isalpha (@var{s}) | isdigit (@var{s})}).\n\
+@seealso{isalpha, isdigit, ispunct, isspace, iscntrl}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -978,10 +983,11 @@ Return 1 for characters that are letters or digits (@code{isalpha\n\
 
 DEFUNX ("isalpha", Fisalpha, args, ,
     "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} isalpha (@var{s})\n\
-@deftypefnx {Mapping Function} {} isletter (@var{s})\n\
-Return true for characters that are letters (@code{isupper (@var{s})}\n\
-or @code{islower (@var{s})} is true).\n\
+@deftypefn {Mapping Function} {} isalpha (@var{s})\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+letters and false where they are not.  This is equivalent to\n\
+(@code{islower (@var{s}) | isupper (@var{s})}).\n\
+@seealso{isdigit, ispunct, isspace, iscntrl, isalnum, islower, isupper}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -996,7 +1002,9 @@ or @code{islower (@var{s})} is true).\n\
 DEFUNX ("isascii", Fisascii, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isascii (@var{s})\n\
-Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+ASCII characters (in the range 0 to 127 decimal) and false where they are\n\
+not.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1011,7 +1019,9 @@ Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
 DEFUNX ("iscntrl", Fiscntrl, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} iscntrl (@var{s})\n\
-Return 1 for control characters.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+control characters and false where they are not.\n\
+@seealso{ispunct, isspace, isalpha, isdigit}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1026,7 +1036,9 @@ Return 1 for control characters.\n\
 DEFUNX ("isdigit", Fisdigit, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isdigit (@var{s})\n\
-Return 1 for characters that are decimal digits.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+decimal digits (0-9) and false where they are not.\n\
+@seealso{isxdigit, isalpha, isletter, ispunct, isspace, iscntrl}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1041,8 +1053,9 @@ Return 1 for characters that are decimal digits.\n\
 DEFUN (isinf, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
-Return 1 for elements of @var{x} that are infinite and zero\n\
-otherwise.  For example:\n\
+Return a logical array which is true where the elements of @var{x} are\n\
+are infinite and false where they are not.\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1050,6 +1063,7 @@ isinf ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 1, 0, 0 ]\n\
 @end group\n\
 @end example\n\
+@seealso{isfinite, isnan, isna}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1080,7 +1094,10 @@ isinf ([13, Inf, NA, NaN])\n\
 DEFUNX ("isgraph", Fisgraph, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isgraph (@var{s})\n\
-Return 1 for printable characters (but not the space character).\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+printable characters (but not the space character) and false where they are\n\
+not.\n\
+@seealso{isprint}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1095,7 +1112,9 @@ Return 1 for printable characters (but not the space character).\n\
 DEFUNX ("islower", Fislower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} islower (@var{s})\n\
-Return 1 for characters that are lower case letters.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+lower case letters and false where they are not.\n\
+@seealso{isupper, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1110,8 +1129,9 @@ Return 1 for characters that are lower case letters.\n\
 DEFUN (isna, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
-Return 1 for elements of @var{x} that are NA (missing) values and zero\n\
-otherwise.  For example:\n\
+Return a logical array which is true where the elements of @var{x} are\n\
+NA (missing) values and false where they are not.\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1119,7 +1139,7 @@ isna ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 0, 1, 0 ]\n\
 @end group\n\
 @end example\n\
-@seealso{isnan}\n\
+@seealso{isnan, isinf, isfinite}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1150,8 +1170,9 @@ isna ([13, Inf, NA, NaN])\n\
 DEFUN (isnan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
-Return 1 for elements of @var{x} that are NaN values and zero\n\
-otherwise.  NA values are also considered NaN values.  For example:\n\
+Return a logical array which is true where the elements of @var{x} are\n\
+NaN values and false where they are not.\n\
+NA values are also considered NaN values.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1159,7 +1180,7 @@ isnan ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 0, 1, 1 ]\n\
 @end group\n\
 @end example\n\
-@seealso{isna}\n\
+@seealso{isna, isinf, isfinite}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1190,7 +1211,10 @@ isnan ([13, Inf, NA, NaN])\n\
 DEFUNX ("isprint", Fisprint, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isprint (@var{s})\n\
-Return 1 for printable characters (including the space character).\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+printable characters (including the space character) and false where they\n\
+are not.\n\
+@seealso{isgraph}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1205,7 +1229,9 @@ Return 1 for printable characters (including the space character).\n\
 DEFUNX ("ispunct", Fispunct, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ispunct (@var{s})\n\
-Return 1 for punctuation characters.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+punctuation characters and false where they are not.\n\
+@seealso{isalpha, isdigit, isspace, iscntrl}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1220,8 +1246,10 @@ Return 1 for punctuation characters.\n\
 DEFUNX ("isspace", Fisspace, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isspace (@var{s})\n\
-Return 1 for whitespace characters (space, formfeed, newline,\n\
-carriage return, tab, and vertical tab).\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+whitespace characters (space, formfeed, newline, carriage return, tab, and\n\
+vertical tab) and false where they are not.\n\
+@seealso{iscntrl, ispunct, isalpha, isdigit}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1236,7 +1264,9 @@ carriage return, tab, and vertical tab).\n\
 DEFUNX ("isupper", Fisupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isupper (@var{s})\n\
-Return 1 for upper case letters.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+upper case letters and false where they are not.\n\
+@seealso{islower, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1251,7 +1281,9 @@ Return 1 for upper case letters.\n\
 DEFUNX ("isxdigit", Fisxdigit, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
-Return 1 for characters that are hexadecimal digits.\n\
+Return a logical array which is true where the elements of @var{s} are\n\
+hexadecimal digits (0-9 and a-fA-F).\n\
+@seealso{isdigit}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1837,4 +1869,4 @@ DEFALIAS (upper, toupper);
 
 DEFALIAS (gammaln, lgamma);
 
-DEFALIAS (isfinite, finite);
+DEFALIAS (finite, isfinite);

@@ -17,14 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isa (@var{x}, @var{class})
-## Return true if @var{x} is a value from the class @var{class}.
+## @deftypefn {Function File} {} isa (@var{obj}, @var{class})
+## Return true if @var{obj} is an object from the class @var{class}.
+## @seealso{class, typeinfo}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## Adapted-by: jwe
 
-function retval = isa (x, cname)
+function retval = isa (obj, cname)
 
   if (nargin != 2)
     print_usage ();
@@ -37,14 +38,14 @@ function retval = isa (x, cname)
                              "int8", "int16", "int32", "int64"};
 
   if (strcmp (cname, "float"))
-    retval = any (strcmp (class (x), float_classes));
+    retval = any (strcmp (class (obj), float_classes));
   elseif (strcmp (cname, "numeric"))
-    retval = any (strcmp (class (x), fnum_classes));
+    retval = any (strcmp (class (obj), fnum_classes));
   else
-    class_of_x = class (x);
+    class_of_x = class (obj);
     retval = strcmp (class_of_x, cname);
-    if (! retval && isobject (x))
-      retval = __isa_parent__ (x, cname);
+    if (! retval && isobject (obj))
+      retval = __isa_parent__ (obj, cname);
     endif
   endif
 

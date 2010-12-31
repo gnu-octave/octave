@@ -1885,9 +1885,9 @@ If the argument is an object, return the underlying struct.\n\
 
 DEFUN (isstruct, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
-Return 1 if the value of the expression @var{expr} is a structure\n\
-(or a structure array).\n\
+@deftypefn {Built-in Function} {} isstruct (@var{x})\n\
+Return true if @var{x} is a structure or a structure array.\n\
+@seealso{ismatrix, iscell, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1945,10 +1945,10 @@ argument that is not a structure.\n\
 
 DEFUN (isfield, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isfield (@var{expr}, @var{name})\n\
-Return true if the expression @var{expr} is a structure and it\n\
+@deftypefn {Built-in Function} {} isfield (@var{x}, @var{name})\n\
+Return true if the @var{x} is a structure and it\n\
 includes an element named @var{name}.  If @var{name} is a cell\n\
-array, a logical array of equal dimension is returned.\n\
+array of strings then a logical array of equal dimension is returned.\n\
 @end deftypefn")
 {
   octave_value retval;

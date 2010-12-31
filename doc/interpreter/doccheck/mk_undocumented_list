@@ -84,6 +84,7 @@ exit
 F_DUPFD
 F_GETFD
 F_GETFL
+finite
 fntests
 F_SETFD
 F_SETFL
@@ -91,6 +92,8 @@ gammaln
 i
 inf
 inverse
+isbool
+isfinite
 j
 J
 lower

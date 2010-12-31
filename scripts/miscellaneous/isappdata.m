@@ -16,8 +16,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{V} =} isappdata (@var{h}, @var{name})
-## Returns a logical vector indicating whether the named application data
-## for the object(s) with handle(s) @var{H} exists.
+## Return true if the named application data, @var{name}, exists for the
+## object with handle @var{h}.  
+## @seealso{getappdata, setappdata, rmappdata}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

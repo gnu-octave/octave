@@ -1,5 +1,19 @@
 2010-12-31  Rik  <octave@nomad.inbox5.com>
 
+	* general/is_duplicate_entry.m , general/isdir.m, general/isscalar.m,
+	general/issquare.m, general/isvector.m, linear-algebra/isdefinite.m,
+	linear-algebra/ishermitian.m, linear-algebra/issymmetric.m,
+	miscellaneous/isappdata.m, miscellaneous/ismac.m, miscellaneous/ispc.m,
+	miscellaneous/isunix.m, plot/isfigure.m, plot/ishold.m, plot/isprop.m,
+	set/ismember.m, specfun/isprime.m, strings/isletter.m,
+	time/is_leap_year.m : Improve docstring
+	* general/isa.m: Improve docstring.  Change function variable name to
+	match documentation variable name.
+	* strings/isstrprop.m: Improve docstring.  Change function variable
+	name to match documentation variable name.  Add new test cases.
+
+2010-12-31  Rik  <octave@nomad.inbox5.com>
+
 	* plot/module.mk: Add isprop.m to list of function files for Automake.
 
 2010-12-31  Kai Habel  <kai.habel@gmx.de>

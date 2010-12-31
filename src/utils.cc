@@ -94,7 +94,8 @@ valid_identifier (const std::string& s)
 DEFUN (isvarname, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isvarname (@var{name})\n\
-Return true if @var{name} is a valid variable name\n\
+Return true if @var{name} is a valid variable name.\n\
+@seealso{exist, who}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -733,6 +734,7 @@ DEFUN (is_absolute_filename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
 Return true if @var{file} is an absolute filename.\n\
+@seealso{is_rooted_relative_filename, make_absolute_filename, isdir}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -750,6 +752,7 @@ DEFUN (is_rooted_relative_filename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
 Return true if @var{file} is a rooted-relative filename.\n\
+@seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -1296,12 +1299,13 @@ octave_sleep (double seconds)
 
 DEFUN (isindex, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
-Returns true if @var{ind} is a valid index.  Valid indices can be\n\
-either positive integers (though possibly real data), or logical arrays.\n\
-If present, @var{n} specifies the extent of the dimension to be indexed.\n\
-Note that, if possible, the internal conversion result is cached so that\n\
-subsequent indexing will not perform the checking again.\n\
+@deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
+@deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
+Return true if @var{ind} is a valid index.  Valid indices are\n\
+either positive integers (although possibly of real datatype), or logical\n\
+arrays.  If present, @var{n} specifies the maximum extent of the dimension\n\
+to be indexed.  When possible the internal result is cached so that\n\
+subsequent indexing using @var{ind} will not perform the check again.\n\
 @end deftypefn")
 {
   octave_value retval;

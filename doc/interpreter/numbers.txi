@@ -816,6 +816,8 @@ variable.
 
 @DOCSTRING(issymmetric)
 
+@DOCSTRING(ishermitian)
+
 @DOCSTRING(isdefinite)
 
 @DOCSTRING(islogical)

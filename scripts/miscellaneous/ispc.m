@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ispc ()
-## Return 1 if Octave is running on a Windows system and 0 otherwise.
-## @seealso{ismac, isunix}
+## Return true if Octave is running on a Windows system and false otherwise.
+## @seealso{isunix, ismac}
 ## @end deftypefn
 
 function retval = ispc ()

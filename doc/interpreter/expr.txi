@@ -229,6 +229,8 @@ repeatedly resize the result.
 
 @DOCSTRING(ind2sub)
 
+@DOCSTRING(isindex)
+
 @node Calling Functions
 @section Calling Functions
 

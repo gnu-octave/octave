@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{res} =} isprop (@var{h}, @var{prop})
-## Determines if @var{prop} is a property of the object with handle, @var{h}.
+## @deftypefn {Function File} {@var{res} =} isprop (@var{h}, @var{prop})
+## Return true if @var{prop} is a property of the object with handle @var{h}.
 ## @seealso{get, set}
 ## @end deftypefn
 

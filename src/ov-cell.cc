@@ -1255,8 +1255,8 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
 DEFUN (iscell, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscell (@var{x})\n\
-Return true if @var{x} is a cell array object.  Otherwise, return\n\
-false.\n\
+Return true if @var{x} is a cell array object.\n\
+@seealso{ismatrix, isstruct, iscellstr, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1332,7 +1332,8 @@ DEFUN (iscellstr, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
 Return true if every element of the cell array @var{cell} is a\n\
-character string\n\
+character string.\n\
+@seealso{ischar}\n\
 @end deftypefn")
 {
   octave_value retval;

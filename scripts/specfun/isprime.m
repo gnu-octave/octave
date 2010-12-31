@@ -18,12 +18,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isprime (@var{n})
-## Return true if @var{n} is a prime number, false otherwise.
+## @deftypefn {Function File} {} isprime (@var{x})
+## Return a logical array which is true where the elements of @var{x} are
+## prime numbers and false where they are not.
 ##
-## If max(n) is very large, then you should be using special purpose 
-## factorization code.
+## If the maximum value in @var{x} is very large, then you should be using
+## special purpose factorization code.
 ##
+## @example
+## @group
+## isprime (1:6)
+##     @result{} [0, 1, 1, 0, 1, 0]
+## @end group
+## @end example
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn
 

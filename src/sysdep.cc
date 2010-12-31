@@ -728,8 +728,8 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 DEFUN (isieee, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isieee ()\n\
-Return 1 if your computer claims to conform to the IEEE standard for\n\
-floating point calculations.\n\
+Return true if your computer @emph{claims} to conform to the IEEE standard\n\
+for floating point calculations.  No actual tests are performed.\n\
 @end deftypefn")
 {
   oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();

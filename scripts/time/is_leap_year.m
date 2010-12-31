@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_leap_year (@var{year})
-## Return 1 if the given year is a leap year and 0 otherwise.  If no
-## arguments are provided, @code{is_leap_year} will use the current year.
+## @deftypefn  {Function File} {} is_leap_year ()
+## @deftypefnx {Function File} {} is_leap_year (@var{year})
+## Return true if the given year is a leap year and false otherwise.  If no
+## year is provided, @code{is_leap_year} will use the current year.
 ## For example:
 ##
 ## @example

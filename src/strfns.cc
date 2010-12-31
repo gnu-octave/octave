@@ -297,8 +297,9 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
 DEFUN (ischar, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ischar (@var{a})\n\
-Return 1 if @var{a} is a character array.  Otherwise, return 0.\n\
+@deftypefn {Built-in Function} {} ischar (@var{x})\n\
+Return true if @var{x} is a character array.\n\
+@seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
 @end deftypefn")
 {
   octave_value retval;

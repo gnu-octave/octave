@@ -17,9 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isvector (@var{a})
-## Return 1 if @var{a} is a vector.  Otherwise, return 0.
-## @seealso{size, rows, columns, length, isscalar, ismatrix}
+## @deftypefn {Function File} {} isvector (@var{x})
+## Return true if @var{x} is a vector.  A vector is a 2-D array
+## where one of the dimensions is equal to 1.  As a consequence a
+## 1x1 array, or scalar, is also a vector.
+## @seealso{isscalar, ismatrix, size, rows, columns, length}
 ## @end deftypefn
 
 ## Author: jwe

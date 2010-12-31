@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} is_duplicate_entry (@var{x})
 ## Return non-zero if any entries in @var{x} are duplicates of one
 ## another.
+## @seealso{unique}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

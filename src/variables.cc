@@ -355,8 +355,8 @@ do_isglobal (const octave_value_list& args)
 DEFUN (isglobal, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isglobal (@var{name})\n\
-Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For\n\
-example,\n\
+Return true if @var{name} is a globally visible variable.\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -365,6 +365,7 @@ isglobal (\"x\")\n\
      @result{} 1\n\
 @end group\n\
 @end example\n\
+@seealso{isvarname, exist}\n\
 @end deftypefn")
 {
   return do_isglobal (args);

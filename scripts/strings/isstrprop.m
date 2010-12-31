@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isstrprop (@var{str}, @var{pred})
+## @deftypefn {Function File} {} isstrprop (@var{str}, @var{prop})
 ## Test character string properties.  For example:
 ##
 ## @example
@@ -32,58 +32,60 @@
 ##
 ## Numeric arrays are converted to character strings.
 ##
-## The second argument @var{pred} may be one of
+## The second argument @var{prop} must be one of
 ##
 ## @table @code
 ## @item "alpha"
-## True for characters that are alphabetic
+## True for characters that are alphabetic (letters).
 ##
 ## @item "alnum"
 ## @itemx "alphanum"
 ## True for characters that are alphabetic or digits.
-## 
-## @item "ascii"
-## True for characters that are in the range of ASCII encoding.
-## 
-## @item "cntrl"
-## True for control characters.
-## 
-## @item "digit"
-## True for decimal digits.
-## 
-## @item "graph"
-## @itemx "graphic"
-## True for printing characters except space.
-## 
+##
 ## @item "lower"
 ## True for lower-case letters.
+##
+## @item "upper"
+## True for upper-case letters.
 ## 
-## @item "print"
-## True for printing characters including space.
-## 
-## @item "punct"
-## True for printing characters except space or letter or digit.
-## 
+## @item "digit"
+## True for decimal digits (0-9).
+##
+## @item "xdigit"
+## True for hexadecimal digits (a-fA-F0-9).
+##
 ## @item "space"
 ## @itemx "wspace"
 ## True for whitespace characters (space, formfeed, newline, carriage
 ## return, tab, vertical tab).
 ## 
-## @item "upper"
-## True for upper-case letters.
+## @item "punct"
+## True for punctuation characters (printing characters except space
+## or letter or digit).
+##
+## @item "cntrl"
+## True for control characters.
+##
+## @item "graph"
+## @itemx "graphic"
+## True for printing characters except space.
+##
+## @item "print"
+## True for printing characters including space.
+##
+## @item "ascii"
+## True for characters that are in the range of ASCII encoding.
 ## 
-## @item "xdigit"
-## True for hexadecimal digits.
 ## @end table
 ##
-## @seealso{isalnum, isalpha, isascii, iscntrl, isdigit, isgraph,
-## islower, isprint, ispunct, isspace, isupper, isxdigit}
+## @seealso{isalpha, isalnum, islower, isupper, isdigit, isxdigit,
+## isspace, ispunct, iscntrl, isgraph, isprint, isascii}
 ## @end deftypefn
 
-function retval = isstrprop (str, pred)
+function retval = isstrprop (str, prop)
 
   if (nargin == 2)
-    switch (pred)
+    switch (prop)
       case "alpha"
         retval = isalpha (str);
       case {"alnum", "alphanum"}
@@ -109,7 +111,7 @@ function retval = isstrprop (str, pred)
       case "xdigit"
         retval = isxdigit (str);
       otherwise
-        error ("isstrprop: invalid predicate");
+        error ("isstrprop: invalid string property");
     endswitch
   else
     print_usage ();
@@ -117,5 +119,12 @@ function retval = isstrprop (str, pred)
 
 endfunction
 
-%!error <invalid predicate> isstrprop ("abc123", "foo");
-%!assert (isstrprop ("abc123", "alpha"), logical ([1, 1, 1, 0, 0, 0]));
+%!error <invalid string property> isstrprop ("abc123", "foo")
+%!assert (isstrprop ("abc123", "alpha"), logical ([1, 1, 1, 0, 0, 0]))
+%!assert (isstrprop ("Hello World", "wspace"), isspace ("Hello World"))
+%!assert (isstrprop ("Hello World", "graphic"), isgraph ("Hello World"))
+
+%%Input Validation
+%!error isstrprop ()
+%!error isstrprop ("abc123")
+%!error isstrprop ("abc123", "alpha", "alpha")

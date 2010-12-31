@@ -75,7 +75,7 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(isnan)
 
-@DOCSTRING(finite)
+@DOCSTRING(isfinite)
 
 @DOCSTRING(find)
         

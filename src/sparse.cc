@@ -43,8 +43,9 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (issparse, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} issparse (@var{expr})\n\
-Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
+@deftypefn {Loadable Function} {} issparse (@var{x})\n\
+Return true if @var{x} is a sparse matrix.\n\
+@seealso{ismatrix}\n\
 @end deftypefn") 
 {
    if (args.length() != 1) 

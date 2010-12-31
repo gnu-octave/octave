@@ -19,14 +19,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ishermitian (@var{x}, @var{tol})
-## Return true if @var{x} is symmetric within the tolerance specified by
-## @var{tol},
-## otherwise return false.  The default tolerance is zero (uses faster code).
+## @deftypefn  {Function File} {} ishermitian (@var{x})
+## @deftypefnx {Function File} {} ishermitian (@var{x}, @var{tol})
+## Return true if @var{x} is Hermitian within the tolerance specified by
+## @var{tol}.
+## The default tolerance is zero (uses faster code).
 ## Matrix @var{x} is considered symmetric if
-## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.
-## @seealso{size, rows, columns, length, ismatrix, isscalar,
-## issquare, isvector}
+## @code{norm (@var{x} - @var{x}', Inf) / norm (@var{x}, Inf) < @var{tol}}.
+## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

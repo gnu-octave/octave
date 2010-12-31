@@ -19,14 +19,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
+## @deftypefn  {Function File} {} issymmetric (@var{x})
+## @deftypefnx {Function File} {} issymmetric (@var{x}, @var{tol})
 ## Return true if @var{x} is a symmetric matrix within the tolerance specified
-## by @var{tol}, otherwise return false.  The default tolerance is zero (uses
-## faster code).
+## by @var{tol}.  The default tolerance is zero (uses faster code).
 ## Matrix @var{x} is considered symmetric if
-## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.
-## @seealso{size, rows, columns, length, ismatrix, isscalar,
-## issquare, isvector}
+## @code{norm (@var{x} - @var{x}.', Inf) / norm (@var{x}, Inf) < @var{tol}}.
+## @seealso{ishermitian, isdefinite}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

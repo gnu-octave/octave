@@ -18,9 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} issquare (@var{x})
-## If @var{x} is a square matrix, return true.
-## Otherwise, return false.
-## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector}
+## Return true if @var{x} is a square matrix.
+## @seealso{isscalar, isvector, ismatrix, size}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

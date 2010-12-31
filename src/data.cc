@@ -2494,8 +2494,10 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 
 DEFUN (islogical, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} islogical (@var{x})\n\
+@deftypefn  {Built-in Function} {} islogical (@var{x})\n\
+@deftypefnx {Built-in Function} {} isbool (@var{x})\n\
 Return true if @var{x} is a logical object.\n\
+@seealso{isfloat, isinteger, ischar, isnumeric, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2528,9 +2530,9 @@ DEFUN (isinteger, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isinteger (@var{x})\n\
 Return true if @var{x} is an integer object (int8, uint8, int16, etc.).\n\
-Note that @code{isinteger (14)} is false because numeric constants in\n\
+Note that @w{@code{isinteger (14)}} is false because numeric constants in\n\
 Octave are double precision floating point values.\n\
-@seealso{isreal, isnumeric, class, isa}\n\
+@seealso{isfloat, ischar, islogical, isnumeric, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2547,6 +2549,7 @@ DEFUN (iscomplex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscomplex (@var{x})\n\
 Return true if @var{x} is a complex-valued numeric object.\n\
+@seealso{isreal, isnumeric}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2563,6 +2566,8 @@ DEFUN (isfloat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isfloat (@var{x})\n\
 Return true if @var{x} is a floating-point numeric object.\n\
+Objects of class double or single are floating-point objects.\n\
+@seealso{isinteger, ischar, islogical, isnumeric, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2874,6 +2879,7 @@ DEFUN (isreal, args, ,
 Return true if @var{x} is a non-complex matrix or scalar.\n\
 For compatibility with @sc{matlab}, this includes logical and character\n\
 matrices.\n\
+@seealso{iscomplex, isnumeric}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2889,8 +2895,9 @@ matrices.\n\
 DEFUN (isempty, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isempty (@var{a})\n\
-Return 1 if @var{a} is an empty matrix (either the number of rows, or\n\
-the number of columns, or both are zero).  Otherwise, return 0.\n\
+Return true if @var{a} is an empty matrix (any one of its dimensions is\n\
+zero).  Otherwise, return false.\n\
+@seealso{isnull}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -2906,10 +2913,10 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 DEFUN (isnumeric, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
-Return nonzero if @var{x} is a numeric object, i.e., an integer, real or\n\
+Return true if @var{x} is a numeric object, i.e., an integer, real, or\n\
 complex array.  Logical and character arrays are not considered to be\n\
 numeric.\n\
-@seealso{ischar, islogical, isinteger}\n\
+@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2925,8 +2932,11 @@ numeric.\n\
 DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
-Return 1 if @var{a} is a numeric, logical or character matrix or scalar.\n\
-Otherwise, return 0.\n\
+Return true if @var{a} is a numeric, logical, or character matrix.\n\
+Scalars (1x1 matrices) and vectors (1xN or Nx1 matrices) are subsets\n\
+of the more general N-dimensional matrix and @code{ismatrix} will return\n\
+true for these objects as well.\n\
+@seealso{isscalar, isvector, iscell, isstruct, issparse}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -5772,15 +5782,17 @@ DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
-Returns true if the array is sorted according to @var{mode}, which\n\
+Return true if the array is sorted according to @var{mode}, which\n\
 may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
- @var{mode} is \"ascending\".  NaNs are treated as by @code{sort}.\n\
-If @var{rows} is supplied and has the value \"rows\", checks whether\n\
-the array is sorted by rows as if output by @code{sortrows} (with no\n\
-options).\n\
+ @var{mode} is \"ascending\".  NaNs are treated in the same manner as\n\
+@code{sort}.\n\
 \n\
-This function does not yet support sparse matrices.\n\
-@seealso{sortrows, sort}\n\
+If the optional argument \"rows\" is supplied, check whether\n\
+the array is sorted by rows as output by the function @code{sortrows}\n\
+(with no options).\n\
+\n\
+This function does not support sparse matrices.\n\
+@seealso{sort, sortrows}\n\
 @end deftypefn\n")
 {
   octave_value retval;

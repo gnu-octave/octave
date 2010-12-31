@@ -24,7 +24,7 @@
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
 ## is omitted, use a tolerance of 
 ## @code{100 * eps * norm (@var{x}, "fro")}
-## @seealso{issymmetric}
+## @seealso{issymmetric, ishermitian}
 ## @end deftypefn
 
 ## Author: Gabriele Pannocchia <g.pannocchia@ing.unipi.it>

@@ -194,9 +194,13 @@ cos (pi/2)
 
 @DOCSTRING(ceil)
 
+@DOCSTRING(curl)
+
 @DOCSTRING(cross)
 
 @DOCSTRING(del2)
+
+@DOCSTRING(divergence)
 
 @DOCSTRING(factor)
 

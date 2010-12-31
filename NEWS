@@ -313,15 +313,15 @@ Summary of important user-visible changes for version 3.4:
 
   ** The following functions are new in Octave 3.4:
 
-       accumdim   fileread     nfields      ppjumps    strread
-       bitpack    fminbnd      nth_element  pqpnonneg  textread
-       bitunpack  fskipl       onCleanup    randi      uigetdir
-       blkmm      ifelse       pbaspect     repelems   uigetfile
-       cbrt       ishermitian  pie3         reset      uiputfile
-       chop       isindex      powerset     rsf2csf    uimenu
-       daspect    luupdate     ppder        saveas     whitebg
-       erfcx      merge        ppint        saveas    
-
+       accumdim    erfcx        nfields      pqpnonneg  uigetfile  
+       bitpack     fileread     nth_element  randi      uiputfile   
+       bitunpack   fminbnd      onCleanup    repelems   uimenu
+       blkmm       fskipl       pbaspect     reset      whitebg
+       cbrt        ifelse       pie3         rsf2csf     
+       curl        ishermitian  powerset     saveas     
+       chop        isindex      ppder        strread         
+       daspect     luupdate     ppint        textread         
+       divergence  merge        ppjumps      uigetdir
 
   ** Using the image function to view images with external programs such
      as display, xv, and xloadimage is no longer supported.  The

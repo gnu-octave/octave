@@ -23,10 +23,12 @@ general_FCN_FILES = \
   general/common_size.m \
   general/cplxpair.m \
   general/cumtrapz.m \
+  general/curl.m \
   general/dblquad.m \
   general/deal.m \
   general/del2.m \
   general/display.m \
+  general/divergence.m \
   general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \

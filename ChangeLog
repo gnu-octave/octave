@@ -1,3 +1,7 @@
+2010-12-31  Kai Habel  <kai.habel@gmx.de>
+
+	* NEWS: Add curl and divergence to new functions list.
+
 2010-12-20  Ben Abbott  <bpabbott@mac.com>
 
 	* README.MacOS, Makefile.am: Update build insructions for MacOS and

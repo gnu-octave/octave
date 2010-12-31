@@ -108,6 +108,7 @@ plot_FCN_FILES = \
   plot/isocolors.m \
   plot/isonormals.m \
   plot/isosurface.m \
+  plot/isprop.m \
   plot/legend.m \
   plot/line.m \
   plot/linkprop.m \

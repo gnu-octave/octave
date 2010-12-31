@@ -1,3 +1,7 @@
+2010-12-31  Rik  <octave@nomad.inbox5.com>
+
+	* plot/module.mk: Add isprop.m to list of function files for Automake.
+
 2010-12-31  Kai Habel  <kai.habel@gmx.de>
 
 	* general/curl.m, general/divergence.m: New functions.

@@ -829,7 +829,8 @@ enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{status}, @var{output}]} system (@var{string}, @var{return_output}, @var{type})\n\
+@deftypefn  {Built-in Function} {[@var{status}, @var{output}]} system (@var{string}, @var{return_output}, @var{type})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{output}]} shell_cmd (@var{string}, @var{return_output}, @var{type})\n\
 Execute a shell command specified by @var{string}.\n\
 If the optional argument @var{type} is @code{\"async\"}, the process\n\
 is started in the background and the process id of the child process\n\

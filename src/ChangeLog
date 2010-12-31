@@ -1,5 +1,10 @@
 2010-12-31  Rik  <octave@nomad.inbox5.com>
 
+	* toplev.cc (system): Add additional calling form "shell_cmd" to
+	documentation.
+
+2010-12-31  Rik  <octave@nomad.inbox5.com>
+
 	* data.cc (islogical, isinteger, iscomplex, isfloat, isempty,
 	isnumeric, ismatrix, issorted): Improve docstring
 	* graphics.cc (ishandle): Improve docstring

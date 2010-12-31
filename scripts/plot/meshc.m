@@ -39,7 +39,8 @@ function h = meshc (varargin)
   set (tmp, "edgecolor", "flat");
 
   if (! ishold ())
-    set (ax, "view", [-37.5, 30]);
+    set (ax, "view", [-37.5, 30],
+         "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
   drawnow

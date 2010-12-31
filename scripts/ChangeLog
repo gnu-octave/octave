@@ -1,5 +1,7 @@
 2010-12-30  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/contour3.m, plot/mesh.m, plot/meshc.m, plot/surfc.m: Grid on
+	by default for 3D plots.
 	* plot/surfc.m, plot/meshc.m: Place contour for meshc/surfc at
 	zlim(1).
 	* plot/__go_draw_axes__.m: Tweak vertical alignment of text objects

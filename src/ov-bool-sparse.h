@@ -95,6 +95,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
+  bool is_numeric_type (void) const { return false; }
+
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

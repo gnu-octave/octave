@@ -1,3 +1,8 @@
+2011-01-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-bool-sparse.h (octave_sparse_bool_matrix::is_numeric_type): New
+	virtual method override.
+
 2010-12-31  Rik  <octave@nomad.inbox5.com>
 
 	* toplev.cc (system): Add additional calling form "shell_cmd" to

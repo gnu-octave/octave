@@ -466,6 +466,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           axes (hlegend);
           delete (get (hlegend, "children"));
         endif
+
         ## Add text label to the axis first, checking their extents
         nentries = numel (hplots);
         texthandle = [];
@@ -774,8 +775,9 @@ function updatelegend (h, d)
   persistent recursive = false;
   if (! recursive)
     recursive = true;
+    hax = getfield (get (h, "userdata"), "handle");
     [hplots, text_strings] = getlegenddata (h);
-    h = legend (fliplr (hplots), get (h, "string"));
+    h = legend (hax, flipud (hplots), get (h, "string"));
     recursive = false;
   endif
 endfunction
@@ -987,20 +989,37 @@ endfunction
 %!demo
 %! clf
 %! x = 0:1;
-%! plot (x, x, ";1;", x, 2*x, x, 3*x, ";3;")
-%! title ("1 is Blue, and 3 is Red")
+%! plot (x, x, ";I am Blue;", x, 2*x, x, 3*x, ";I am Red;")
 
 %!demo
 %! clf
 %! plot(1:10, 1:10, 1:10, fliplr(1:10));
 %! title("incline is blue and decline is green");
-%! legend({"I'm blue", "I'm green"}, "location", "east");
+%! legend({"I am blue", "I am green"}, "location", "east");
+%! legend({"I am blue", "I am green"}, "location", "east");
+%! legend hide
+%! legend show
 
 %!demo
 %! clf
 %! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("incline is blue and decline is green");
-%! legend("I'm blue", "I'm green", "location", "east");
+%! title("Legend is hidden")
+%! legend({"I am blue", "I am green"}, "location", "east");
+%! legend hide
+
+%!demo
+%! clf
+%! plot(1:10, 1:10, 1:10, fliplr(1:10));
+%! title("Legend with box on")
+%! legend({"I am blue", "I am green"}, "location", "east");
+%! legend boxon
+
+%!demo
+%! clf
+%! plot(1:10, 1:10, 1:10, fliplr(1:10));
+%! title("Legend with text to the right")
+%! legend({"I am blue", "I am green"}, "location", "east");
+%! legend right
 
 %!demo
 %! clf

@@ -1,3 +1,8 @@
+2011-01-02  Ben Abbott <bpabbott@mac.com>
+
+	* plot/legend.m: Only one legend per axes (bug 32022). Add / modify
+	demos to test addional features.
+
 2010-12-31  Rik  <octave@nomad.inbox5.com>
 
 	* general/is_duplicate_entry.m , general/isdir.m, general/isscalar.m,

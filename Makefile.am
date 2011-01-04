@@ -45,7 +45,6 @@ EXTRA_DIST = \
   README.Cygwin \
   README.Linux \
   README.MacOS \
-  README.MSVC \
   README.Windows \
   README.kpathsea \
   ROADMAP \

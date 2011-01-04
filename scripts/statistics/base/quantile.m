@@ -22,18 +22,17 @@
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
 ## the cumulative probability values in @var{p}.  All non-numeric values (NaNs)
-## of
-## @var{x} are ignored.
+## of @var{x} are ignored.
 ##
 ## If @var{x} is a matrix, compute the quantiles for each column and
 ## return them in a matrix, such that the i-th row of @var{q} contains
 ## the @var{p}(i)th quantiles of each column of @var{x}.
 ## 
 ## The optional argument @var{dim} determines the dimension along which 
-## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column wise quantiles).  In the 
-## instance that @var{x} is a N-d array, @var{dim} defaults to the first 
-## dimension whose size greater than unity.
+## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
+## a vector or matrix, it defaults to 1 (column-wise quantiles).  If 
+## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton 
+## dimension.
 ## 
 ## The methods available to calculate sample quantiles are the nine methods
 ## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
@@ -55,21 +54,21 @@
 ## @item Method 4: p(k) = k / n. That is, linear interpolation of the
 ## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear
-## function where the knots are the values midway through the steps of
-## the empirical cdf.
+## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function 
+## where the knots are the values midway through the steps of the empirical 
+## cdf. 
 ##
 ## @item Method 6: p(k) = k / (n + 1).
 ##
 ## @item Method 7: p(k) = (k - 1) / (n - 1).
 ##
-## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile
-## estimates are approximately median-unbiased regardless of the
-## distribution of @var{x}.
+## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile 
+## estimates are approximately median-unbiased regardless of the distribution 
+## of @var{x}.
 ##
-## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile
-## estimates are approximately unbiased for the expected order
-## statistics if @var{x} is normally distributed.
+## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile 
+## estimates are approximately unbiased for the expected order statistics if 
+## @var{x} is normally distributed.
 ## @end enumerate
 ## 
 ## Hyndman and Fan (1996) recommend method 8.  Maxima, S, and R
@@ -88,12 +87,13 @@
 ## @item R: A Language and Environment for Statistical Computing;
 ## @url{http://cran.r-project.org/doc/manuals/fullrefman.pdf}.
 ## @end itemize
+## @seealso{prctile}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Description: Matlab style quantile function of a discrete/continuous distribution
 
-function q = quantile (x, p, dim, method)
+function q = quantile (x, p, dim = 1, method = 5)
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
@@ -103,16 +103,9 @@ function q = quantile (x, p, dim, method)
     p = [0.00 0.25, 0.50, 0.75, 1.00];
   endif
 
-  if (nargin < 3)
-    dim = 1;
-  endif
-
-  if (nargin < 4)
-    method = 5;
-  endif
-
-  if (dim > ndims(x))
-    error ("quantile: invalid dimension");
+  if (!(isscalar (dim) && dim == fix (dim)) || 
+      !(1 <= dim && dim <= ndims (x)))
+    error ("quantile: DIM must be an integer and a valid dimension");
   endif
 
   ## Set the permutation vector.
@@ -276,6 +269,13 @@ endfunction
 %! yexp = median (x, dim);
 %! assert (yobs, yexp);
 
+%% Test input validation
+%!error quantile ()
+%!error quantile (1, 2, 3, 4, 5)
+%!error quantile (1, 1, 1.5)
+%!error quantile (1, 1, 0)
+%!error quantile (1, 1, 3)
+
 ## For the cumulative probability values in @var{p}, compute the 
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
@@ -286,7 +286,7 @@ endfunction
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Vectorized version: Jaroslav Hajek <highegg@gmail.com>
-## Description: Quantile function of a empirical samples
+## Description: Quantile function of empirical samples
 
 function inv = __quantile__ (x, p, method = 5)
 
@@ -294,8 +294,8 @@ function inv = __quantile__ (x, p, method = 5)
     print_usage ();
   endif
 
-  if (! ismatrix (x))
-    error ("quantile: x must be a matrix");
+  if (!isnumeric (x))
+    error ("quantile: X must be a numeric vector or matrix");
   endif
 
   ## Save length and set shape of quantiles.
@@ -389,3 +389,4 @@ function inv = __quantile__ (x, p, method = 5)
   endif
 
 endfunction
+

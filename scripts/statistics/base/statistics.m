@@ -20,30 +20,31 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} statistics (@var{x})
 ## @deftypefnx {Function File} {} statistics (@var{x}, @var{dim})
-## If @var{x} is a matrix, return a matrix with the minimum, first
-## quartile, median, third quartile, maximum, mean, standard deviation,
-## skewness, and kurtosis of the columns of @var{x} as its columns.
+## Return a vector with the minimum, first quartile, median, third quartile,
+## maximum, mean, standard deviation, skewness, and kurtosis of the elements of
+## the vector @var{x}.
 ##
-## If @var{x} is a vector, calculate the statistics along the first 
+## If @var{x} is a matrix, calculate statistics over the first 
 ## non-singleton dimension.
-##
+## If the optional argument @var{dim} is given, operate along this dimension.
+## @seealso{min,max,median,mean,std,skewness,kurtosis}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute basic statistics
 
-function S = statistics (X, dim)
+function stats = statistics (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
-  if (!ismatrix(X) || ischar(X))
-    error ("statistics: X must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("statistics: X must be a numeric vector or matrix");
   endif
 
-  nd = ndims (X);
-  sz = size (X);
+  nd = ndims (x);
+  sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
     dim = find (sz > 1, 1);
@@ -61,10 +62,10 @@ function S = statistics (X, dim)
     error ("statistics: dimension of X is too small (<2)");
   endif    
 
-  emp_inv = quantile (X, [0.25; 0.5; 0.75], dim, 7);
+  emp_inv = quantile (x, [0.25; 0.5; 0.75], dim, 7);
 
-  S = cat (dim, min (X, [], dim), emp_inv, max (X, [], dim), mean (X, dim),
-           std (X, [], dim), skewness (X, dim), kurtosis (X, dim));
+  stats = cat (dim, min (x, [], dim), emp_inv, max (x, [], dim), mean (x, dim),
+               std (x, [], dim), skewness (x, dim), kurtosis (x, dim));
 
 endfunction
 
@@ -73,3 +74,14 @@ endfunction
 %! s = statistics (x);
 %! m = median (x);
 %! assert (m, s(3,:), eps);
+
+%% Test input validation
+%!error statistics ()
+%!error statistics (1, 2, 3)
+%!error statistics ([true true])
+%!error statistics (1, ones(2,2))
+%!error statistics (1, 1.5)
+%!error statistics (1, 0)
+%!error statistics (1, 3)
+%!error statistics (1)
+

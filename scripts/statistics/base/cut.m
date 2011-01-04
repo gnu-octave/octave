@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cut (@var{x}, @var{breaks})
-## Create categorical data out of numerical or continuous data by
+## Create categorical data from numerical or continuous data by
 ## cutting into intervals.
 ##
 ## If @var{breaks} is a scalar, the data is cut into that many
@@ -30,35 +30,36 @@
 ## which group each point in @var{x} belongs to.  Groups are labelled
 ## from 1 to the number of groups; points outside the range of
 ## @var{breaks} are labelled by @code{NaN}.
+## @seealso{histc}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Cut data into intervals
 
-function group = cut (X, BREAKS)
+function group = cut (x, breaks)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (! isvector (X))
+  if (!isvector (x))
     error ("cut: X must be a vector");
   endif
-  if isscalar (BREAKS)
-    BREAKS = linspace (min (X), max (X), BREAKS + 1);
-    BREAKS(1) = BREAKS(1) - 1;
-  elseif isvector (BREAKS)
-    BREAKS = sort (BREAKS);
+  if isscalar (breaks)
+    breaks = linspace (min (x), max (x), breaks + 1);
+    breaks(1) = breaks(1) - 1;
+  elseif isvector (breaks)
+    breaks = sort (breaks);
   else
     error ("cut: BREAKS must be a scalar or vector");
   endif
 
-  group = NaN (size (X));
-  m = length (BREAKS);
-  if any (k = find ((X >= min (BREAKS)) & (X < max (BREAKS))))
+  group = NaN (size (x));
+  m = length (breaks);
+  if any (k = find ((x >= min (breaks)) & (x < max (breaks))))
     n = length (k);
-    group(k) = sum ((ones (m, 1) * reshape (X(k), 1, n))
-                    >= (reshape (BREAKS, m, 1) * ones (1, n)));
+    group(k) = sum ((ones (m, 1) * reshape (x(k), 1, n))
+                    >= (reshape (breaks, m, 1) * ones (1, n)));
   endif
 
 endfunction

@@ -18,78 +18,91 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} var (@var{x})
-## For vector arguments, return the (real) variance of the values.
-## For matrix arguments, return a row vector containing the variance for
-## each column.
+## @deftypefn  {Function File} {} var (@var{x})
+## @deftypefnx {Function File} {} var (@var{x}, @var{opt})
+## @deftypefnx {Function File} {} var (@var{x}, @var{opt}, @var{dim})
+## Compute the variance of the elements of the vector @var{x}.
+## @tex
+## $$
+## {\rm std} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
+## $$
+## where $\bar{x}$ is the mean value of $x$.
+## @end tex
+## @ifnottex
 ##
+## @example
+## @group
+## std (x) = 1/(N-1) SUM_i (x(i) - mean(x))^2
+## @end group
+## @end example
+##
+## @end ifnottex
+## If @var{x} is a matrix, compute the variance for each column
+## and return them in a row vector.
+## 
 ## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are
 ##
 ## @table @asis 
 ## @item 0:
-## Normalizes with @math{N-1}, provides the best unbiased estimator of the
-## variance [default].
+##   normalize with @math{N-1}, provides the best unbiased estimator of the
+## variance [default]
 ##
 ## @item 1:
-## Normalizes with @math{N}, this provides the second moment around the mean.
+##   normalizes with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
-## The third argument @var{dim} determines the dimension along which the 
-## variance is calculated.
+## If the optional argument @var{dim} is given, operate along this dimension.
+## @seealso{cov,std,skewness,kurtosis,moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Compute variance
 
-function retval = var (x, opt, dim)
+function retval = var (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
+
+  if (!isnumeric (x))
+    error ("var: X must be a numeric vector or matrix");
+  endif
+
+  if (isempty (opt))
+    opt = 0;
+  endif
+  if (opt != 0 && opt != 1)
+    error ("var: normalization OPT must be 0 or 1");
+  endif
+
   if (nargin < 3)
     dim = find (size (x) > 1, 1);
     if (isempty (dim))
       dim = 1;
     endif
   endif
-  if (nargin < 2 || isempty (opt))
-    opt = 0;
-  endif
 
-  sz = size (x);
-  n = sz(dim);
-  if (isempty (x))
-    ## FIXME -- is there a way to obtain these results without all the
-    ## special cases?
-    if (ndims (x) == 2 && sz(1) == 0 && sz(2) == 0)
-      retval = NaN;
-    else
-      sz(dim) = 1;
-      if (n == 0)
-        if (prod (sz) == 0)
-          retval = zeros (sz);
-        else
-          retval = NaN (sz);
-        endif
-      else
-        retval = zeros (sz);
-      endif
-    endif
-  elseif (n == 1)
-    retval = zeros (sz);
+  n = size (x, dim);
+  if (n == 1)
+    retval = zeros (size (x), class (x));
+  elseif (numel (x) > 0)
+    retval = sumsq (center (x, dim), dim) / (n - 1 + opt);
   else
-    retval = sumsq (center (x, dim), dim) / (n + opt - 1);
+    error ("var: X must not be empty");
   endif
 
 endfunction
 
 %!assert (var (13), 0)
-%!assert (var ([]), NaN)
-%!assert (var (ones (0, 0, 0), 0, 1), zeros (1, 0, 0))
-%!assert (var (ones (0, 0, 0), 0, 2), zeros (0, 1, 0))
-%!assert (var (ones (0, 0, 0), 0, 3), zeros (0, 0))
-%!assert (var (ones (1, 2, 0)), zeros (1, 1, 0))
-%!assert (var (ones (1, 2, 0, 0), 0, 1), zeros (1, 2, 0, 0))
-%!assert (var (ones (1, 2, 0, 0), 0, 2), zeros (1, 1, 0, 0))
-%!assert (var (ones (1, 2, 0, 0), 0, 3), zeros (1, 2, 1, 0))
+%!assert (var ([1,2,3]), 1)
+%!assert (var ([1,2,3], 1), 2/3, eps)
+%!assert (var ([1,2,3], [], 1), [0,0,0])
+
+%% Test input validation
+%!error var ()
+%!error var (1,2,3,4)
+%!error var (true(1,2))
+%!error var (1, -1);
+%!error var ([],1)
+

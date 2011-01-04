@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} corrcoef (@var{x}, @var{y})
-## Compute correlation.
+## @deftypefn  {Function File} {} corrcoef (@var{x})
+## @deftypefnx {Function File} {} corrcoef (@var{x}, @var{y})
+## Compute matrix of correlation coefficients.
 ##
 ## If each row of @var{x} and @var{y} is an observation and each column is
-## a variable, the (@var{i}, @var{j})-th entry of
+## a variable, then the @w{(@var{i}, @var{j})-th} entry of
 ## @code{corrcoef (@var{x}, @var{y})} is the correlation between the
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
-##
 ## @tex
 ## $$
 ## {\rm corrcoef}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
@@ -38,27 +38,44 @@
 ## @end example
 ##
 ## @end ifnottex
-## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})}.
+## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})},
+## the correlation between the columns of @var{x}.
+## @seealso{cov}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <hornik@wu-wien.ac.at>
 ## Created: March 1993
 ## Adapted-By: jwe
 
-function retval = corrcoef (x, y)
+function retval = corrcoef (x, y = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (! (isnumeric (x) && isnumeric (y)))
+    error ("corrcoef: X and Y must be numeric matrices or vectors");
+  endif
+
+  if (ndims (x) != 2 || ndims (y) != 2)
+    error ("corrcoef: X and Y must be 2-D matrices or vectors");
+  endif
+
+  if (isscalar (x))
+    retval = 1;
+    return;
+  endif
+
+  ## No check for division by zero error, which happens only when
+  ## there is a constant vector and should be rare.
   if (nargin == 2)
     c = cov (x, y);
     s = std (x)' * std (y);
     retval = c ./ s;
-  elseif (nargin == 1)
+  else
     c = cov (x);
-    s = reshape (sqrt (diag (c)), 1, columns (c));
-    retval = c ./ (s' * s);
+    s = sqrt (diag (c));
+    retval = c ./ (s * s');
   endif
 
 endfunction
@@ -70,7 +87,13 @@ endfunction
 %! assert((size (cc1) == [10, 10] && size (cc2) == [10, 10]
 %! && abs (cc1 - cc2) < sqrt (eps)));
 
-%!error corrcoef ();
+%!assert(corrcoef (5), 1);
 
+%% Test input validation
+%!error corrcoef ();
 %!error corrcoef (1, 2, 3);
+%!error corrcoef ([true, true]);
+%!error corrcoef ([1, 2], [true, true]);
+%!error corrcoef (ones (2,2,2));
+%!error corrcoef (ones (2,2), ones (2,2,2));
 

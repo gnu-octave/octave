@@ -21,12 +21,12 @@
 @chapter Statistics
 
 Octave has support for various statistical methods.  This includes
-basic descriptive statistics, statistical tests, random number generation,
-and much more.
+basic descriptive statistics, probability distributions, statistical tests, 
+random number generation, and much more.
 
-The functions that analyze data all assume that multi-dimensional data
+The functions that analyze data all assume that multidimensional data
 is arranged in a matrix where each row is an observation, and each
-column is a variable.  So, the matrix defined by
+column is a variable.  Thus, the matrix defined by
 
 @example
 @group
@@ -42,79 +42,91 @@ While this is the default data arrangement, most functions support
 different arrangements.
 
 It should be noted that the statistics functions don't test for data
-containing NaN, NA, or Inf.  Such values need to be handled explicitly.
+containing NaN, NA, or Inf.  These values need to be detected and dealt
+with explicitly.  See @ref{doc-isnan,,isnan}, @ref{doc-isna,,isna}, 
+@ref{doc-isinf,,isinf}, @ref{doc-isfinite,,isfinite}. 
 
 @menu
 * Descriptive Statistics::
 * Basic Statistical Functions:: 
 * Statistical Plots:: 
-* Tests::                       
-* Models::                      
+* Correlation and Regression Analysis::                      
 * Distributions::     
+* Tests::                       
 * Random Number Generation::          
 @end menu
 
 @node Descriptive Statistics
 @section Descriptive Statistics
 
-Octave can compute various statistics such as the moments of a data set.
+One principal goal of descriptive statistics is to represent the essence of a 
+large data set concisely.  Octave provides the mean, median, and mode functions
+which all summarize a data set with just a single number corresponding to 
+the central tendency of the data.
 
 @DOCSTRING(mean)
 
 @DOCSTRING(median)
 
-@DOCSTRING(quantile)
+@DOCSTRING(mode)
 
-@DOCSTRING(prctile)
+Using just one number, such as the mean, to represent an entire data set may
+not give an accurate picture of the data.  One way to characterize the fit is
+to measure the dispersion of the data.  Octave provides several functions for
+measuring dispersion.
+
+@DOCSTRING(range)
+
+@DOCSTRING(iqr)
 
 @DOCSTRING(meansq)
 
 @DOCSTRING(std)
 
+In addition to knowing the size of a dispersion it is useful to know the shape
+of the data set.  For example, are data points massed to the left or right
+of the mean?  Octave provides several common measures to describe the shape
+of the data set.  Octave can also calculate moments allowing arbitrary shape
+measures to be developed.
+
 @DOCSTRING(var)
-
-@DOCSTRING(mode)
-
-@DOCSTRING(cov)
-
-@DOCSTRING(cor)
-
-@DOCSTRING(corrcoef)
-
-@DOCSTRING(kurtosis)
 
 @DOCSTRING(skewness)
 
-@DOCSTRING(statistics)
+@DOCSTRING(kurtosis)
 
 @DOCSTRING(moment)
+
+A summary view of a data set can be generated quickly with the
+@code{statistics} function.
+
+@DOCSTRING(statistics)
 
 @node Basic Statistical Functions
 @section Basic Statistical Functions
 
-Octave also supports various helpful statistical functions.
-
-@DOCSTRING(mahalanobis)
+Octave supports various helpful statistical functions.  Many are useful as
+initial steps to prepare a data set for further analysis.  Others provide 
+different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(center)
 
 @DOCSTRING(studentize)
 
-@DOCSTRING(nchoosek)
-
 @DOCSTRING(histc)
+
+@DOCSTRING(cut)
+
+@c FIXME: really want to put a reference to unique here
+@c @DOCSTRING(values)
+
+@DOCSTRING(nchoosek)
 
 @DOCSTRING(perms)
 
-@DOCSTRING(table)
-
-@DOCSTRING(spearman)
-
-@DOCSTRING(run_count)
-
 @DOCSTRING(ranks)
 
-@DOCSTRING(range)
+@DOCSTRING(run_count)
 
 @DOCSTRING(probit)
 
@@ -122,11 +134,9 @@ Octave also supports various helpful statistical functions.
 
 @DOCSTRING(cloglog)
 
-@DOCSTRING(kendall)
+@DOCSTRING(mahalanobis)
 
-@DOCSTRING(iqr)
-
-@DOCSTRING(cut)
+@DOCSTRING(table)
 
 @node Statistical Plots
 @section Statistical Plots
@@ -146,127 +156,23 @@ using the @code{hist} function as described in
 
 @DOCSTRING(ppplot)
 
-@node Tests
-@section Tests
+@node Correlation and Regression Analysis
+@section Correlation and Regression Analysis
 
-Octave can perform several different statistical tests.  The following
-table summarizes the available tests.
+@c FIXME: Need Intro Here
 
-@tex
-\vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
-\halign{
-\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
-# \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr
-\noalign{\hrule height 0.6pt}
-& @strong{Hypothesis} && {\bf Test Functions} &\cr
-\noalign{\hrule}
-& Equal mean values && anova, hotelling\_test2, t\_test\_2, &\cr
-&                   && welch\_test, wilcoxon\_test, z\_test\_2 &\cr
-& Equal medians && kruskal\_wallis\_test, sign\_test &\cr
-& Equal variances && bartlett\_test, manova, var\_test &\cr
-& Equal distributions && chisquare\_test\_homogeneity, &\cr
-&                     && kolmogorov\_smirnov\_test\_2, u\_test &\cr
-& Equal marginal frequencies && mcnemar\_test &\cr
-& Equal success probabilities && prop\_test\_2 &\cr
-& Independent observations && chisquare\_test\_independence, &\cr
-&                          && run\_test &\cr
-& Uncorrelated observations && cor\_test &\cr
-& Given mean value && hotelling\_test, t\_test, z\_test &\cr
-& Observations from distribution && kolmogorov\_smirnov\_test &\cr
-& Regression && f\_test\_regression, t\_test\_regression &\cr
-\noalign{\hrule height 0.6pt}
-}}\hfill}}
-@end tex
-@ifnottex
-@multitable @columnfractions .4 .5
-@item @strong{Hypothesis}
-  @tab @strong{Test Functions}
-@item Equal mean values
-  @tab @code{anova}, @code{hotelling_test2}, @code{t_test_2},
-       @code{welch_test}, @code{wilcoxon_test}, @code{z_test_2}
-@item Equal medians
-  @tab @code{kruskal_wallis_test}, @code{sign_test}
-@item Equal variances
-  @tab @code{bartlett_test}, @code{manova}, @code{var_test}
-@item Equal distributions
-  @tab @code{chisquare_test_homogeneity}, @code{kolmogorov_smirnov_test_2},
-       @code{u_test}
-@item Equal marginal frequencies
-  @tab @code{mcnemar_test}
-@item Equal success probabilities
-  @tab @code{prop_test_2}
-@item Independent observations
-  @tab @code{chisquare_test_independence}, @code{run_test}
-@item Uncorrelated observations
-  @tab @code{cor_test}
-@item Given mean value
-  @tab @code{hotelling_test}, @code{t_test}, @code{z_test}
-@item Observations from given distribution
-  @tab @code{kolmogorov_smirnov_test}
-@item Regression
-  @tab @code{f_test_regression}, @code{t_test_regression}
-@end multitable
-@end ifnottex
+@DOCSTRING(cov)
 
-The tests return a p-value that describes the outcome of the test.
-Assuming that the test hypothesis is true, the p-value is the probability
-of obtaining a worse result than the observed one.  So large p-values
-corresponds to a successful test.  Usually a test hypothesis is accepted
-if the p-value exceeds @math{0.05}.
+@DOCSTRING(cor)
 
-@DOCSTRING(anova)
+@DOCSTRING(corrcoef)
 
-@DOCSTRING(bartlett_test)
+@DOCSTRING(spearman)
 
-@DOCSTRING(chisquare_test_homogeneity)
+@DOCSTRING(kendall)
 
-@DOCSTRING(chisquare_test_independence)
+@c FIXME: Need discussion of ols & gls and references to them in optim.txi
 
-@DOCSTRING(cor_test)
-
-@DOCSTRING(f_test_regression)
-
-@DOCSTRING(hotelling_test)
-
-@DOCSTRING(hotelling_test_2)
-
-@DOCSTRING(kolmogorov_smirnov_test)
-
-@DOCSTRING(kolmogorov_smirnov_test_2)
-
-@DOCSTRING(kruskal_wallis_test)
-
-@DOCSTRING(manova)
-
-@DOCSTRING(mcnemar_test)
-
-@DOCSTRING(prop_test_2)
-
-@DOCSTRING(run_test)
-
-@DOCSTRING(sign_test)
-
-@DOCSTRING(t_test)
-
-@DOCSTRING(t_test_2)
-
-@DOCSTRING(t_test_regression)
-
-@DOCSTRING(u_test)
-
-@DOCSTRING(var_test)
-
-@DOCSTRING(welch_test)
-
-@DOCSTRING(wilcoxon_test)
-
-@DOCSTRING(z_test)
-
-@DOCSTRING(z_test_2)
-
-@node Models
-@section Models
 
 @DOCSTRING(logistic_regression)
 
@@ -275,12 +181,11 @@ if the p-value exceeds @math{0.05}.
 
 Octave has functions for computing the Probability Density Function
 (PDF), the Cumulative Distribution function (CDF), and the quantile
-(the inverse of the CDF) of a large number of distributions.
+(the inverse of the CDF) for a large number of distributions.
 
 The following table summarizes the supported distributions (in 
 alphabetical order).
 
-@c Do the table explicitly in TeX if possible to get a better layout.
 @tex
 \vskip 6pt
 {\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
@@ -414,133 +319,252 @@ alphabetical order).
 @end multitable
 @end ifnottex
 
+@DOCSTRING(betapdf)
+
 @DOCSTRING(betacdf)
 
 @DOCSTRING(betainv)
 
-@DOCSTRING(betapdf)
+@DOCSTRING(binopdf)
 
 @DOCSTRING(binocdf)
 
 @DOCSTRING(binoinv)
 
-@DOCSTRING(binopdf)
+@DOCSTRING(cauchy_pdf)
 
 @DOCSTRING(cauchy_cdf)
 
 @DOCSTRING(cauchy_inv)
 
-@DOCSTRING(cauchy_pdf)
+@DOCSTRING(chi2pdf)
 
 @DOCSTRING(chi2cdf)
 
 @DOCSTRING(chi2inv)
 
-@DOCSTRING(chi2pdf)
+@DOCSTRING(discrete_pdf)
 
 @DOCSTRING(discrete_cdf)
 
 @DOCSTRING(discrete_inv)
 
-@DOCSTRING(discrete_pdf)
+@DOCSTRING(empirical_pdf)
 
 @DOCSTRING(empirical_cdf)
 
 @DOCSTRING(empirical_inv)
 
-@DOCSTRING(empirical_pdf)
+@DOCSTRING(exppdf)
 
 @DOCSTRING(expcdf)
 
 @DOCSTRING(expinv)
 
-@DOCSTRING(exppdf)
+@DOCSTRING(fpdf)
 
 @DOCSTRING(fcdf)
 
 @DOCSTRING(finv)
 
-@DOCSTRING(fpdf)
+@DOCSTRING(gampdf)
 
 @DOCSTRING(gamcdf)
 
 @DOCSTRING(gaminv)
 
-@DOCSTRING(gampdf)
+@DOCSTRING(geopdf)
 
 @DOCSTRING(geocdf)
 
 @DOCSTRING(geoinv)
 
-@DOCSTRING(geopdf)
+@DOCSTRING(hygepdf)
 
 @DOCSTRING(hygecdf)
 
 @DOCSTRING(hygeinv)
 
-@DOCSTRING(hygepdf)
-
 @DOCSTRING(kolmogorov_smirnov_cdf)
+
+@DOCSTRING(laplace_pdf)
 
 @DOCSTRING(laplace_cdf)
 
 @DOCSTRING(laplace_inv)
 
-@DOCSTRING(laplace_pdf)
+@DOCSTRING(logistic_pdf)
 
 @DOCSTRING(logistic_cdf)
 
 @DOCSTRING(logistic_inv)
 
-@DOCSTRING(logistic_pdf)
+@DOCSTRING(lognpdf)
 
 @DOCSTRING(logncdf)
 
 @DOCSTRING(logninv)
 
-@DOCSTRING(lognpdf)
+@DOCSTRING(nbinpdf)
 
 @DOCSTRING(nbincdf)
 
 @DOCSTRING(nbininv)
 
-@DOCSTRING(nbinpdf)
+@DOCSTRING(normpdf)
 
 @DOCSTRING(normcdf)
 
 @DOCSTRING(norminv)
 
-@DOCSTRING(normpdf)
+@DOCSTRING(poisspdf)
 
 @DOCSTRING(poisscdf)
 
 @DOCSTRING(poissinv)
 
-@DOCSTRING(poisspdf)
+@DOCSTRING(tpdf)
 
 @DOCSTRING(tcdf)
 
 @DOCSTRING(tinv)
 
-@DOCSTRING(tpdf)
+@DOCSTRING(unidpdf)
 
 @DOCSTRING(unidcdf)
 
 @DOCSTRING(unidinv)
 
-@DOCSTRING(unidpdf)
+@DOCSTRING(unifpdf)
 
 @DOCSTRING(unifcdf)
 
 @DOCSTRING(unifinv)
 
-@DOCSTRING(unifpdf)
+@DOCSTRING(wblpdf)
 
 @DOCSTRING(wblcdf)
 
 @DOCSTRING(wblinv)
 
-@DOCSTRING(wblpdf)
+@node Tests
+@section Tests
+
+Octave can perform many different statistical tests.  The following
+table summarizes the available tests.
+
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& @strong{Hypothesis} && {\bf Test Functions} &\cr
+\noalign{\hrule}
+& Equal mean values && anova, hotelling\_test2, t\_test\_2, &\cr
+&                   && welch\_test, wilcoxon\_test, z\_test\_2 &\cr
+& Equal medians && kruskal\_wallis\_test, sign\_test &\cr
+& Equal variances && bartlett\_test, manova, var\_test &\cr
+& Equal distributions && chisquare\_test\_homogeneity, &\cr
+&                     && kolmogorov\_smirnov\_test\_2, u\_test &\cr
+& Equal marginal frequencies && mcnemar\_test &\cr
+& Equal success probabilities && prop\_test\_2 &\cr
+& Independent observations && chisquare\_test\_independence, &\cr
+&                          && run\_test &\cr
+& Uncorrelated observations && cor\_test &\cr
+& Given mean value && hotelling\_test, t\_test, z\_test &\cr
+& Observations from distribution && kolmogorov\_smirnov\_test &\cr
+& Regression && f\_test\_regression, t\_test\_regression &\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@ifnottex
+@multitable @columnfractions .4 .5
+@item @strong{Hypothesis}
+  @tab @strong{Test Functions}
+@item Equal mean values
+  @tab @code{anova}, @code{hotelling_test2}, @code{t_test_2},
+       @code{welch_test}, @code{wilcoxon_test}, @code{z_test_2}
+@item Equal medians
+  @tab @code{kruskal_wallis_test}, @code{sign_test}
+@item Equal variances
+  @tab @code{bartlett_test}, @code{manova}, @code{var_test}
+@item Equal distributions
+  @tab @code{chisquare_test_homogeneity}, @code{kolmogorov_smirnov_test_2},
+       @code{u_test}
+@item Equal marginal frequencies
+  @tab @code{mcnemar_test}
+@item Equal success probabilities
+  @tab @code{prop_test_2}
+@item Independent observations
+  @tab @code{chisquare_test_independence}, @code{run_test}
+@item Uncorrelated observations
+  @tab @code{cor_test}
+@item Given mean value
+  @tab @code{hotelling_test}, @code{t_test}, @code{z_test}
+@item Observations from given distribution
+  @tab @code{kolmogorov_smirnov_test}
+@item Regression
+  @tab @code{f_test_regression}, @code{t_test_regression}
+@end multitable
+@end ifnottex
+
+The tests return a p-value that describes the outcome of the test.
+Assuming that the test hypothesis is true, the p-value is the probability
+of obtaining a worse result than the observed one.  So large p-values
+corresponds to a successful test.  Usually a test hypothesis is accepted
+if the p-value exceeds 0.05.
+
+@DOCSTRING(anova)
+
+@DOCSTRING(bartlett_test)
+
+@DOCSTRING(chisquare_test_homogeneity)
+
+@DOCSTRING(chisquare_test_independence)
+
+@DOCSTRING(cor_test)
+
+@DOCSTRING(f_test_regression)
+
+@DOCSTRING(hotelling_test)
+
+@DOCSTRING(hotelling_test_2)
+
+@DOCSTRING(kolmogorov_smirnov_test)
+
+@DOCSTRING(kolmogorov_smirnov_test_2)
+
+@DOCSTRING(kruskal_wallis_test)
+
+@DOCSTRING(manova)
+
+@DOCSTRING(mcnemar_test)
+
+@DOCSTRING(prop_test_2)
+
+@DOCSTRING(run_test)
+
+@DOCSTRING(sign_test)
+
+@DOCSTRING(t_test)
+
+@DOCSTRING(t_test_2)
+
+@DOCSTRING(t_test_regression)
+
+@DOCSTRING(u_test)
+
+@DOCSTRING(var_test)
+
+@DOCSTRING(welch_test)
+
+@DOCSTRING(wilcoxon_test)
+
+@DOCSTRING(z_test)
+
+@DOCSTRING(z_test_2)
 
 @node Random Number Generation
 @section Random Number Generation

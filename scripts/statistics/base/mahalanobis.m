@@ -29,35 +29,46 @@
 ## Created: July 1993
 ## Adapted-By: jwe
 
-function retval = mahalanobis (X, Y)
+function retval = mahalanobis (x, y)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  [xr, xc] = size (X);
-  [yr, yc] = size (Y);
+  if (! (isnumeric (x) && isnumeric (y)))
+    error ("mahalanobis: X and Y must be numeric matrices or vectors");
+  endif
+
+  if (ndims (x) != 2 || ndims (y) != 2)
+    error ("mahalanobis: X and Y must be 2-D matrices or vectors");
+  endif
+
+  [xr, xc] = size (x);
+  [yr, yc] = size (y);
 
   if (xc != yc)
     error ("mahalanobis: X and Y must have the same number of columns");
   endif
 
-  Xm = sum (X) / xr;
-  Ym = sum (Y) / yr;
+  xm = mean (x);
+  ym = mean (y);
 
-  X = X - ones (xr, 1) * Xm;
-  Y = Y - ones (yr, 1) * Ym;
+  x = x - ones (xr, 1) * xm;
+  y = y - ones (yr, 1) * ym;
 
-  W = (X' * X + Y' * Y) / (xr + yr - 2);
+  w = (x' * x + y' * y) / (xr + yr - 2);
 
-  Winv = inv (W);
+  winv = inv (w);
 
-  retval = (Xm - Ym) * Winv * (Xm - Ym)';
+  retval = (xm - ym) * winv * (xm - ym)';
 
 endfunction
 
+%% Test input validation
 %!error mahalanobis ();
-
 %!error mahalanobis (1, 2, 3);
-
-
+%!error mahalanobis ([true], [true]);
+%!error mahalanobis ([1, 2], [true, true]);
+%!error mahalanobis (ones (2,2,2));
+%!error mahalanobis (ones (2,2), ones (2,2,2));
+%!error mahalanobis (ones (2,2), ones (2,3));

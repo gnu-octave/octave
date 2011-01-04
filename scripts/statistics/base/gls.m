@@ -25,7 +25,7 @@
 ## with $\bar{e} = 0$ and cov(vec($e$)) = $(s^2)o$,
 ## @end tex
 ## @ifnottex
-## @math{y = x b + e} with @math{mean (e) = 0} and
+## @w{@math{y = x*b + e}} with @math{mean (e) = 0} and
 ## @math{cov (vec (e)) = (s^2) o},
 ## @end ifnottex
 ##  where
@@ -37,8 +37,8 @@
 ## @ifnottex
 ## @math{y} is a @math{t} by @math{p} matrix, @math{x} is a @math{t} by
 ## @math{k} matrix, @math{b} is a @math{k} by @math{p} matrix, @math{e}
-## is a @math{t} by @math{p} matrix, and @math{o} is a @math{t p} by
-## @math{t p} matrix.
+## is a @math{t} by @math{p} matrix, and @math{o} is a @math{t*p} by
+## @math{t*p} matrix.
 ## @end ifnottex
 ##
 ## @noindent
@@ -54,41 +54,82 @@
 ## The GLS estimator for @math{s^2}.
 ##
 ## @item r
-## The matrix of GLS residuals, @math{r = y - x beta}.
+## The matrix of GLS residuals, @math{r = y - x*beta}.
 ## @end table
+## @seealso{ols}
 ## @end deftypefn
 
 ## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
 ## Created: May 1993
 ## Adapted-By: jwe
 
-function [BETA, v, R] = gls (Y, X, O)
+function [beta, v, r] = gls (y, x, o)
 
   if (nargin != 3)
     print_usage ();
   endif
 
-  [rx, cx] = size (X);
-  [ry, cy] = size (Y);
-  if (rx != ry)
-    error ("gls: incorrect matrix dimensions");
+  if (! (isnumeric (x) && isnumeric (y) && isnumeric (o)))
+    error ("gls: X, Y, and O must be numeric matrices or vectors");
   endif
 
-  O = O^(-1/2);
-  Z = kron (eye (cy), X);
-  Z = O * Z;
-  Y1 = O * reshape (Y, ry*cy, 1);
-  U = Z' * Z;
-  r = rank (U);
+  if (ndims (x) != 2 || ndims (y) != 2 || ndims (o) != 2)
+    error ("gls: X, Y and O must be 2-D matrices or vectors");
+  endif
+
+  [rx, cx] = size (x);
+  [ry, cy] = size (y);
+  [ro, co] = size (o);
+  if (rx != ry)
+    error ("gls: number of rows of X and Y must be equal");
+  endif
+  if (!issquare(o) || ro != ry*cy)
+    error ("gls: matrix O must be square matrix with rows = rows (Y) * cols (Y)");
+  endif
+
+  o = o^(-1/2);
+  z = kron (eye (cy), x);
+  z = o * z;
+  y1 = o * reshape (y, ry*cy, 1);
+  u = z' * z;
+  r = rank (u);
 
   if (r == cx*cy)
-    B = inv (U) * Z' * Y1;
+    b = inv (u) * z' * y1;
   else
-    B = pinv (Z) * Y1;
+    b = pinv (z) * y1;
   endif
 
-  BETA = reshape (B, cx, cy);
-  R = Y - X * BETA;
-  v = (reshape (R, ry*cy, 1))' * (O^2) * reshape (R, ry*cy, 1) / (rx*cy - r);
+  beta = reshape (b, cx, cy);
+
+  if (isargout (2) || isargout (3))
+    r = y - x * beta;
+    if (isargout (2))
+      v = (reshape (r, ry*cy, 1))' * (o^2) * reshape (r, ry*cy, 1) / (rx*cy - r);
+    endif
+  endif
 
 endfunction
+
+
+%!test
+%! x = [1:5]';
+%! y = 3*x + 2;
+%! x = [x, ones(5,1)];
+%! o = diag (ones (5,1));
+%! assert (gls (y,x,o), [3; 2], 50*eps)
+
+%% Test input validation
+%!error gls ()
+%!error gls (1)
+%!error gls (1, 2)
+%!error gls (1, 2, 3, 4)
+%!error gls ([true, true], [1, 2], ones (2))
+%!error gls ([1, 2], [true, true], ones (2))
+%!error gls ([1, 2], [1, 2], true (2))
+%!error gls (ones (2,2,2), ones (2,2), ones (4,4))
+%!error gls (ones (2,2), ones (2,2,2), ones (4,4))
+%!error gls (ones (2,2), ones (2,2), ones (4,4,4))
+%!error gls (ones(1,2), ones(2,2), ones (2,2))
+%!error gls (ones(2,2), ones(2,2), ones (2,2))
+

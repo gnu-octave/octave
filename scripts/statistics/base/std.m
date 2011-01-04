@@ -21,72 +21,84 @@
 ## @deftypefn  {Function File} {} std (@var{x})
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {} std (@var{x}, @var{opt}, @var{dim})
-## If @var{x} is a vector, compute the standard deviation of the elements
-## of @var{x}.
+## Compute the standard deviation of the elements of the vector @var{x}.
 ## @tex
 ## $$
-## {\rm std} (x) = \sigma (x) = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
+## {\rm std} (x) = \sigma = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
 ## $$
-## where $\bar{x}$ is the mean value of $x$.
+## where $\bar{x}$ is the mean value of $x$ and $N$ is the number of elements.
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## std (x) = sqrt (sumsq (x - mean (x)) / (n - 1))
+## std (x) = sqrt ( 1/(N-1) SUM_i (x(i) - mean(x))^2 )
 ## @end group
 ## @end example
 ##
+## @noindent
+## where @math{N} is the number of elements.
 ## @end ifnottex
+## 
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ##
-## The argument @var{opt} determines the type of normalization to use.  Valid
-## values are
+## The argument @var{opt} determines the type of normalization to use.  
+## Valid values are
 ##
-## @table @asis 
+## @table @asis
 ## @item 0:
-##   normalizes with @math{N-1}, provides the square root of best unbiased 
-##   estimator of the variance [default]
+##   normalize with @math{N-1}, provides the square root of the best unbiased 
+## estimator of the variance [default]
 ##
 ## @item 1:
-##   normalizes with @math{N}, this provides the square root of the second
-##   moment around the mean
+##   normalize with @math{N}, this provides the square root of the second 
+## moment around the mean
 ## @end table
 ##
-## The third argument @var{dim} determines the dimension along which the
-## standard
-## deviation is calculated.
-## @seealso{mean, median}
+## If the optional argument @var{dim} is given, operate along this dimension.
+## @seealso{var, range, iqr, mean, median}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = std (a, opt, dim)
+function retval = std (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
+
+  if (! (isnumeric (x)))
+    error ("std: X must be a numeric vector or matrix");
+  endif
+
+  if (isempty (opt))
+    opt = 0;
+  endif
+  if (opt != 0 && opt != 1)
+    error ("std: normalization OPT must be 0 or 1");
+  endif
+
+  sz = size (x);
   if (nargin < 3)
-    dim = find (size (a) > 1, 1);
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
     if (isempty (dim))
       dim = 1;
     endif
   endif
-  if (nargin < 2 || isempty (opt))
-    opt = 0;
-  endif
 
-  n = size (a, dim);
+  n = size (x, dim);
   if (n == 1)
-    retval = zeros (size (a));
-  elseif (numel (a) > 0)
-    retval = sqrt (sumsq (center (a, dim), dim) / (n + opt - 1));
+    retval = zeros (sz);
+  elseif (numel (x) > 0)
+    retval = sqrt (sumsq (center (x, dim), dim) / (n - 1 + opt));
   else
-    error ("std: x must not be empty");
+    error ("std: X must not be empty");
   endif
 
 endfunction
+
 
 %!test
 %! x = ones (10, 2);
@@ -95,6 +107,10 @@ endfunction
 %! assert (std (x, 0, 3), zeros (10, 2))
 %! assert (std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2))
 
+%% Test input validation
 %!error std ();
-
 %!error std (1, 2, 3, 4);
+%!error std (true(1,2))
+%!error std (1, -1);
+%!error std ([], 1);
+

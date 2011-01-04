@@ -22,6 +22,7 @@
 ## Return the ranks of @var{x} along the first non-singleton dimension
 ## adjusted for ties.  If the optional argument @var{dim} is
 ## given, operate along this dimension.
+## @seealso{spearman,kendall}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -37,8 +38,8 @@ function y = ranks (x, dim)
     print_usage ();
   endif
 
-  if (!ismatrix(x) || ischar(x))
-    error ("ranks: X must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("ranks: X must be a numeric vector or matrix");
   endif
 
   nd = ndims (x);
@@ -50,7 +51,7 @@ function y = ranks (x, dim)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("ranks: DIM must be an integer and a valid dimension");
     endif
@@ -87,3 +88,21 @@ function y = ranks (x, dim)
   endif
 
 endfunction
+
+
+%!assert(ranks (1:2:10), 1:5)
+%!assert(ranks (10:-2:1), 5:-1:1)
+%!assert(ranks ([2, 1, 2, 4]), [2.5, 1, 2.5, 4])
+%!assert(ranks (ones(1, 5)), 3*ones(1, 5))
+%!assert(ranks (1e6*ones(1, 5)), 3*ones(1, 5))
+%!assert(ranks (rand (1, 5), 1), ones(1, 5))
+
+%% Test input validation
+%!error ranks ()
+%!error ranks (1, 2, 3)
+%!error ranks ({1, 2})
+%!error ranks (true(2,1))
+%!error ranks (1, 1.5)
+%!error ranks (1, 0)
+%!error ranks (1, 3)
+

@@ -21,10 +21,27 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} meansq (@var{x})
 ## @deftypefnx {Function File} {} meansq (@var{x}, @var{dim})
-## For vector arguments, return the mean square of the values.
+## Compute the mean square of the elements of the vector @var{x}.
+## @tex
+## $$
+## {\rm meansq} (x) = {\sum_{i=1}^N {x_i}^2 \over N}
+## $$
+## where $\bar{x}$ is the mean value of $x$.
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+## std (x) = 1/N SUM_i x(i)^2
+## @end group
+## @end example
+##
+## @end ifnottex
 ## For matrix arguments, return a row vector containing the mean square
-## of each column.  With the optional @var{dim} argument, returns the
-## mean squared of the values along this dimension.
+## of each column. 
+##
+## If the optional argument @var{dim} is given, operate along this dimension.
+## @seealso{var,std,moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -36,15 +53,39 @@ function y = meansq (x, dim)
     print_usage ();
   endif
 
+  if (!isnumeric (x))
+    error ("mean: X must be a numeric vector or matrix");
+  endif
+
+  nd = ndims (x);
+  sz = size (x); 
   if (nargin < 2)
-    t = find (size (x) != 1);
-    if (isempty (t))
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
       dim = 1;
-    else
-      dim = t(1);
     endif
+  endif
+
+  if (!(isscalar (dim) && dim == fix (dim))
+      || !(1 <= dim && dim <= nd))
+    error ("mean: DIM must be an integer and a valid dimension");
   endif
 
   y = sumsq (x, dim) / size (x, dim);
 
 endfunction
+
+
+%!assert(meansq (1:5), 11)
+%!assert(meansq (magic (4)), [94.5, 92.5, 92.5, 94.5])
+
+%% Test input validation
+%!error meansq ()
+%!error meansq (1, 2, 3)
+%!error kurtosis ([true true])
+%!error meansq (1, ones(2,2))
+%!error meansq (1, 1.5)
+%!error meansq (1, 0)
+%!error meansq (1, 3)
+

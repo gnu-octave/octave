@@ -18,10 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} run_count (@var{x}, @var{n})
+## @deftypefn  {Function File} {} run_count (@var{x}, @var{n})
+## @deftypefnx {Function File} {} run_count (@var{x}, @var{n}, @var{dim})
 ## Count the upward runs along the first non-singleton dimension of
 ## @var{x} of length 1, 2, @dots{}, @var{n}-1 and greater than or equal 
-## to @var{n}.  If the optional argument @var{dim} is given then operate
+## to @var{n}.  
+##
+## If the optional argument @var{dim} is given then operate
 ## along this dimension.
 ## @end deftypefn
 
@@ -34,11 +37,11 @@ function retval = run_count (x, n, dim)
     print_usage ();
   endif
 
-  if (!ismatrix(x) || ischar(x))
-    error ("run_count: X must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("run_count: X must be a numeric vector or matrix");
   endif
 
-  if (!(isscalar (n) && n == round (n)) || n < 1)
+  if (!(isscalar (n) && n == fix (n) && n > 0))
     error ("run_count: N must be a positive integer");
   endif
   
@@ -51,7 +54,7 @@ function retval = run_count (x, n, dim)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("run_count: DIM must be an integer and a valid dimension");
     endif
@@ -91,3 +94,23 @@ function retval = run_count (x, n, dim)
   endif
 
 endfunction
+
+
+%!assert(run_count (magic(3), 4), [1,0,1;1,0,1;0,1,0;0,0,0])
+%!assert(run_count (magic(3), 4, 2), [1,0,1;1,0,1;0,1,0;0,0,0]')
+%!assert(run_count (5:-1:1, 5), [5, 0, 0, 0, 0])
+%!assert(run_count (ones(3), 4), [0,0,0;0,0,0;1,1,1;0,0,0])
+
+%% Test input validation
+%!error run_count ()
+%!error run_count (1)
+%!error run_count (1, 2, 3, 4)
+%!error run_count ({1, 2}, 3)
+%!error run_count (true(3), 3)
+%!error run_count (1:5, ones(2,2))
+%!error run_count (1:5, 1.5)
+%!error run_count (1:5, -2)
+%!error run_count (1:5, 3, ones(2,2))
+%!error run_count (1:5, 3, 1.5)
+%!error run_count (1:5, 3, 0)
+

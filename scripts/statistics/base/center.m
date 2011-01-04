@@ -23,8 +23,8 @@
 ## @deftypefnx {Function File} {} center (@var{x}, @var{dim})
 ## If @var{x} is a vector, subtract its mean.
 ## If @var{x} is a matrix, do the above for each column.
-## If the optional argument @var{dim} is given, perform the above
-## operation along this dimension
+## If the optional argument @var{dim} is given, operate along this dimension.
+## @seealso{studentize}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -36,18 +36,49 @@ function retval = center (x, dim)
     print_usage ();
   endif
 
-  if (nargin < 2)
-    dim = [find(size (x) != 1, 1), 1](1); # First non-singleton dim.
+  if (!isnumeric (x))
+    error ("center: X must be a numeric vector or matrix");
   endif
-  n = size (x, dim);
 
   if (isinteger (x))
     x = double (x);
   endif
+
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 2)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
+      dim = 1;
+    endif
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
+      error ("center: DIM must be an integer and a valid dimension");
+    endif
+  endif
+
+  n = size (x, dim);
 
   if (n == 0)
     retval = x;
   else
     retval = bsxfun (@minus, x, sum (x, dim) / n);
   endif
+
 endfunction
+
+%!assert(center ([1,2,3]), [-1,0,1])
+%!assert(center (int8 ([1,2,3])), [-1,0,1])
+%!assert(center (ones (3,2,0,2)), zeros (3,2,0,2))
+%!assert(center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
+
+%% Test input validation
+%!error center ()
+%!error center (1, 2, 3)
+%!error center ([true true])
+%!error center (1, ones(2,2))
+%!error center (1, 1.5)
+%!error center (1, 0)
+%!error center (1, 3)

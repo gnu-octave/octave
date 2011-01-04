@@ -21,8 +21,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} median (@var{x})
 ## @deftypefnx {Function File} {} median (@var{x}, @var{dim})
-## If @var{x} is a vector, compute the median value of the elements of
-## @var{x}.  If the elements of @var{x} are sorted, the median is defined
+## Compute the median value of the elements of the vector @var{x}.
+## If the elements of @var{x} are sorted, the median is defined
 ## as
 ## @tex
 ## $$
@@ -50,25 +50,41 @@
 
 ## Author: jwe
 
-function retval = median (a, dim)
+function retval = median (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
-  if (nargin < 2)
-    [~, dim] = max (size (a) != 1); # First non-singleton dim.
+
+  if (!isnumeric (x))
+    error ("median: X must be a numeric vector or matrix");
   endif
 
-  if (numel (a) > 0)
-    n = size (a, dim);
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 2)
+    ## Find the first non-singleton dimension.
+    dim = find (sz > 1, 1);
+    if (isempty (dim))
+      dim = 1;
+    endif
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
+      error ("median: DIM must be an integer and a valid dimension");
+    endif
+  endif
+
+  if (numel (x) > 0)
+    n = size (x, dim);
     k = floor ((n+1) / 2);
     if (mod (n, 2) == 1)
-      retval = nth_element (a, k, dim);
+      retval = nth_element (x, k, dim);
     else
-      retval = mean (nth_element (a, k:k+1, dim), dim);
+      retval = mean (nth_element (x, k:k+1, dim), dim);
     endif
     ## Inject NaNs where needed, to be consistent with Matlab.
-    retval(any (isnan (a), dim)) = NaN;
+    retval(any (isnan (x), dim)) = NaN;
   else
     error ("median: invalid matrix argument");
   endif
@@ -81,13 +97,19 @@ endfunction
 %! y = [1, 2, 3, 4, 5, 6, 7];
 %! y2 = y';
 %! 
-%! assert((median (x) == median (x2) && median (x) == 3.5
-%! && median (y) == median (y2) && median (y) == 4
-%! && median ([x2, 2*x2]) == [3.5, 7]
-%! && median ([y2, 3*y2]) == [4, 12]));
+%! assert(median (x) == median (x2) && median (x) == 3.5);
+%! assert(median (y) == median (y2) && median (y) == 4);
+%! assert(median ([x2, 2*x2]) == [3.5, 7]);
+%! assert(median ([y2, 3*y2]) == [4, 12]);
 
-%!assert (median ([1, 2, 3, NaN]), NaN)
+%!assert(median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN]);
 
+%% Test input validation
 %!error median ();
 %!error median (1, 2, 3);
+%!error median ({1:5});
+%!error median (true(1,5));
+%!error median (1, ones(2,2));
+%!error median (1, 1.5);
+%!error median (1, 0);
 

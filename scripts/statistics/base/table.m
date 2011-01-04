@@ -20,8 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{t}, @var{l_x}] =} table (@var{x})
 ## @deftypefnx {Function File} {[@var{t}, @var{l_x}, @var{l_y}] =} table (@var{x}, @var{y})
-## Create a contingency table @var{t} from data vectors.  The @var{l}
-## vectors are the corresponding levels.
+## Create a contingency table @var{t} from data vectors.  The @var{l_x} and
+## @var{l_y} vectors are the corresponding levels.
 ##
 ## Currently, only 1- and 2-dimensional tables are supported.
 ## @end deftypefn
@@ -31,28 +31,43 @@
 
 function [t, v, w] = table (x, y)
 
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
   if (nargin == 1)
-    if (! (isvector (x)))
-      error ("table: x must be a vector");
+    if (!isnumeric (x) || !isvector (x))
+      error ("table: X must be a numeric vector");
     endif
-    v = values (x);
+    v = unique (x);
     for i = 1 : length (v)
       t(i) = sum (x == v(i) | isnan (v(i)) * isnan (x));
     endfor
   elseif (nargin == 2)
-    if (! (isvector (x) && isvector (y) && (length (x) == length (y))))
-      error ("table: x and y must be vectors of the same length");
+    if (! (   isvector (x) && isnumeric (x)
+           && isvector (y) && isnumeric (y)
+           && (length (x) == length (y))))
+      error ("table: X and Y must be numeric vectors of the same length");
     endif
-    v = values (x);
-    w = values (y);
+    v = unique (x);
+    w = unique (y);
     for i = 1 : length (v)
       for j = 1 : length (w)
         t(i,j) = sum ((x == v(i) | isnan (v(i)) * isnan (x)) &
                       (y == w(j) | isnan (w(j)) * isnan (y)));
       endfor
     endfor
-  else
-    print_usage ();
   endif
 
 endfunction
+
+%% Test input validation
+%!error table ()
+%!error table (1, 2, 3)
+%!error table (ones (2))
+%!error table ([true true])
+%!error table (ones (2,1), true (2,1))
+%!error table (true (2,1), ones (2,1))
+%!error table (ones (2,2), ones (2,1))
+%!error table (ones (2,1), ones (2,2))
+%!error table (ones (2,1), ones (3,1))

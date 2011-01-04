@@ -18,15 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} kendall (@var{x}, @var{y})
-## Compute Kendall's @var{tau} for each of the variables specified by
-## the input arguments.
-##
-## For matrices, each row is an observation and each column a variable;
-## vectors are always observations and may be row or column vectors.
-##
-## @code{kendall (@var{x})} is equivalent to @code{kendall (@var{x},
-## @var{x})}.
+## @deftypefn  {Function File} {} kendall (@var{x})
+## @deftypefnx {Function File} {} kendall (@var{x}, @var{y})
+## @cindex Kendall's Tau
+## Compute Kendall's @var{tau}.
 ##
 ## For two data vectors @var{x}, @var{y} of common length @var{n},
 ## Kendall's @var{tau} is the correlation of the signs of all rank
@@ -65,15 +60,27 @@
 ## @ifnottex
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
 ## @end ifnottex
+## 
+## @code{kendall (@var{x})} is equivalent to @code{kendall (@var{x},
+## @var{x})}.
+## @seealso{ranks, spearman}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Kendall's rank correlation tau
 
-function tau = kendall (x, y)
+function tau = kendall (x, y = [])
 
-  if ((nargin < 1) || (nargin > 2))
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  endif
+
+  if (! (isnumeric (x) && isnumeric (y)))
+    error ("kendall: X and Y must be numeric matrices or vectors");
+  endif
+
+  if (ndims (x) != 2 || ndims (y) != 2)
+    error ("kendall: X and Y must be 2-D matrices or vectors");
   endif
 
   if (rows (x) == 1)
@@ -86,7 +93,7 @@ function tau = kendall (x, y)
       y = y';
     endif
     if (rows (y) != n)
-      error ("kendall: x and y must have the same number of observations");
+      error ("kendall: X and Y must have the same number of observations");
     else
       x = [x, y];
     endif
@@ -94,10 +101,20 @@ function tau = kendall (x, y)
 
   r   = ranks (x);
   m   = sign (kron (r, ones (n, 1)) - kron (ones (n, 1), r));
-  tau = cor (m);
+  tau = corrcoef (m);
 
   if (nargin == 2)
     tau = tau (1 : c, (c + 1) : columns (x));
   endif
 
 endfunction
+
+
+%% Test input validation
+%!error kendall ();
+%!error kendall (1, 2, 3);
+%!error kendall ([true, true]);
+%!error kendall (ones(1,2), [true, true]);
+%!error kendall (ones (2,2,2));
+%!error kendall (ones (2,2), ones (2,2,2));
+%!error kendall (ones (2,2), ones (3,2));

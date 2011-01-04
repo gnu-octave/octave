@@ -25,8 +25,7 @@
 ## dimension and returns the value with the highest frequency.  If two, or 
 ## more, values have the same frequency @code{mode} returns the smallest.
 ## 
-## If the optional argument @var{dim} is supplied, work along dimension
-## @var{dim}.
+## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## The return variable @var{f} is the number of occurrences of the mode in
 ## in the dataset.  The cell array @var{c} contains all of the elements
@@ -40,8 +39,8 @@ function [m, f, c] = mode (x, dim)
     print_usage ();
   endif
 
-  if (!ismatrix(x) || ischar(x))
-    error ("mode: X must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("mode: X must be a numeric vector or matrix");
   endif
 
   nd = ndims (x);
@@ -60,9 +59,9 @@ function [m, f, c] = mode (x, dim)
   endif
 
   sz2 = sz;
-  sz2 (dim) = 1;
+  sz2(dim) = 1;
   sz3 = ones (1, nd);
-  sz3 (dim) = sz (dim);
+  sz3(dim) = sz(dim);
 
   if (issparse (x))
     t2 = sparse (sz(1), sz(2));
@@ -131,25 +130,36 @@ endfunction
 %! x(:,:,3) = circshift (toeplitz (1:3), 2);
 %!test
 %! [m, f, c] = mode (x, 1);
-%! assert (reshape (m, [3, 3]), [1 1 1; 2 2 2; 1 1 1])
-%! assert (reshape (f, [3, 3]), [1 1 1; 2 2 2; 1 1 1])
+%! assert (reshape (m, [3, 3]), [1 1 1; 2 2 2; 1 1 1]);
+%! assert (reshape (f, [3, 3]), [1 1 1; 2 2 2; 1 1 1]);
 %! c = reshape (c, [3, 3]);
-%! assert (c{1}, [1; 2; 3])
-%! assert (c{2}, 2)
-%! assert (c{3}, [1; 2; 3])
+%! assert (c{1}, [1; 2; 3]);
+%! assert (c{2}, 2);
+%! assert (c{3}, [1; 2; 3]);
 %!test
 %! [m, f, c] = mode (x, 2);
-%! assert (reshape (m, [3, 3]), [1 1 2; 2 1 1; 1 2 1])
-%! assert (reshape (f, [3, 3]), [1 1 2; 2 1 1; 1 2 1])
+%! assert (reshape (m, [3, 3]), [1 1 2; 2 1 1; 1 2 1]);
+%! assert (reshape (f, [3, 3]), [1 1 2; 2 1 1; 1 2 1]);
 %! c = reshape (c, [3, 3]);
-%! assert (c{1}, [1; 2; 3])
-%! assert (c{2}, 2)
-%! assert (c{3}, [1; 2; 3])
+%! assert (c{1}, [1; 2; 3]);
+%! assert (c{2}, 2);
+%! assert (c{3}, [1; 2; 3]);
 %!test
 %! [m, f, c] = mode (x, 3);
-%! assert (reshape (m, [3, 3]), [1 2 1; 1 2 1; 1 2 1])
-%! assert (reshape (f, [3, 3]), [1 2 1; 1 2 1; 1 2 1])
+%! assert (reshape (m, [3, 3]), [1 2 1; 1 2 1; 1 2 1]);
+%! assert (reshape (f, [3, 3]), [1 2 1; 1 2 1; 1 2 1]);
 %! c = reshape (c, [3, 3]);
-%! assert (c{1}, [1; 2; 3])
-%! assert (c{2}, [1; 2; 3])
-%! assert (c{3}, [1; 2; 3])
+%! assert (c{1}, [1; 2; 3]);
+%! assert (c{2}, [1; 2; 3]);
+%! assert (c{3}, [1; 2; 3]);
+
+%% Test input validation
+%!error mode ()
+%!error mode (1, 2, 3)
+%!error mode ({1 2 3})
+%!error mode (true(1,3))
+%!error mode (1, ones(2,2))
+%!error mode (1, 1.5)
+%!error mode (1, 0)
+%!error mode (1, 3)
+

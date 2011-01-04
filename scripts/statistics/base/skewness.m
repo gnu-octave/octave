@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} skewness (@var{x}, @var{dim})
-## If @var{x} is a vector of length @math{n}, return the skewness
+## @deftypefn  {Function File} {} skewness (@var{x})
+## @deftypefnx {Function File} {} skewness (@var{x}, @var{dim})
+## Compute the skewness of the elements of the vector @var{x}.
 ## @tex
 ## $$
-## {\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i-\bar{x})^3
+## {\rm skewness} (x) = {1\over N \sigma^3} \sum_{i=1}^N (x_i-\bar{x})^3
 ## $$
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
@@ -35,9 +36,10 @@
 ## @end ifnottex
 ##
 ## @noindent
-## of @var{x}.  If @var{x} is a matrix, return the skewness along the
+## If @var{x} is a matrix, return the skewness along the
 ## first non-singleton dimension of the matrix.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
+## @seealso{var,kurtosis,moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -50,8 +52,8 @@ function retval = skewness (x, dim)
     print_usage ();
   endif
 
-  if (!ismatrix(x) || ischar(x))
-    error ("skewness: X must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("skewness: X must be a numeric vector or matrix");
   endif
 
   nd = ndims (x);
@@ -71,7 +73,7 @@ function retval = skewness (x, dim)
 
   c = sz(dim);
   idx = ones (1, nd);
-  idx (dim) = c;
+  idx(dim) = c;
   x = x - repmat (mean (x, dim), idx);
   sz(dim) = 1;
   retval = zeros (sz, class (x));
@@ -82,7 +84,20 @@ function retval = skewness (x, dim)
   
 endfunction
 
-%!error skewness ();
+%!assert(skewness ([-1,0,1]), 0);
+%!assert(skewness ([-2,0,1]) < 0);
+%!assert(skewness ([-1,0,2]) > 0);
+%!assert(skewness ([-3,0,1]) == -1*skewness([-1,0,3]));
+%!test
+%! x = [0; 0; 0; 1];
+%! y = [x, 2*x];
+%! assert(all (abs (skewness (y) - [0.75, 0.75]) < sqrt (eps)));
 
-%!error skewness (1, 2, 3);
-
+%% Test input validation
+%!error skewness ()
+%!error skewness (1, 2, 3)
+%!error skewness ([true true])
+%!error skewness (1, ones(2,2))
+%!error skewness (1, 1.5)
+%!error skewness (1, 0)
+%!error skewness (1, 3)

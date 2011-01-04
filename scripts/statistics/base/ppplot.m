@@ -54,7 +54,7 @@ function [p, y] = ppplot (x, dist, varargin)
   endif
 
   if (! isvector (x))
-    error ("ppplot: x must be a vector");
+    error ("ppplot: X must be a vector");
   endif
 
   s = sort (x);
@@ -63,7 +63,7 @@ function [p, y] = ppplot (x, dist, varargin)
   if (nargin == 1)
     F = @stdnormal_cdf;
   else
-    F = str2func (sprintf ("%s_cdf", dist));
+    F = str2func (sprintf ("%scdf", dist));
   endif;
   if (nargin <= 2)
     y = feval (F, s);
@@ -77,3 +77,8 @@ function [p, y] = ppplot (x, dist, varargin)
   endif
 
 endfunction
+
+%% Test input validation
+%!error ppplot ();
+%!error ppplot (ones(2,2));
+

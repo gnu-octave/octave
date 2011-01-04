@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} kurtosis (@var{x}, @var{dim})
-## If @var{x} is a vector of length @math{N}, return the kurtosis
+## @deftypefn  {Function File} {} kurtosis (@var{x})
+## @deftypefnx {Function File} {} kurtosis (@var{x}, @var{dim})
+## Compute the kurtosis of the elements of the vector @var{x}.
 ## @tex
 ## $$
-##  {\rm kurtosis} (x) = {1\over N \sigma(x)^4} \sum_{i=1}^N (x_i-\bar{x})^4 - 3
+##  {\rm kurtosis} (x) = {1\over N \sigma^4} \sum_{i=1}^N (x_i-\bar{x})^4 - 3
 ## $$
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
@@ -33,10 +34,15 @@
 ## @end example
 ##
 ## @end ifnottex
-## @noindent
-## of @var{x}.  If @var{x} is a matrix, return the kurtosis over the
-## first non-singleton dimension.  The optional argument @var{dim}
-## can be given to force the kurtosis to be given over that dimension.
+## If @var{x} is a matrix, return the kurtosis over the
+## first non-singleton dimension of the matrix.  If the optional
+## @var{dim} argument is given, operate along this dimension.
+## 
+## Note: The definition of kurtosis above yields a kurtosis of zero for the
+## stdnormal distribution and is sometimes referred to as "excess kurtosis".  
+## To calculate kurtosis without the normalization factor of @math{-3} use
+## @code{moment (@var{x}, 4, 'c') / std (@var{x})^4}.
+## @seealso{var,skewness,moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -49,8 +55,8 @@ function retval = kurtosis (x, dim)
     print_usage ();
   endif
 
-  if (!ismatrix(x) || ischar(x))
-    error ("kurtosis: X must be a numeric matrix or vector");
+  if (!isnumeric (x))
+    error ("kurtosis: X must be a numeric vector or matrix");
   endif
 
   nd = ndims (x);
@@ -62,7 +68,7 @@ function retval = kurtosis (x, dim)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("kurtosis: DIM must be an integer and a valid dimension");
     endif
@@ -73,20 +79,26 @@ function retval = kurtosis (x, dim)
   idx = ones (1, nd);
   idx(dim) = c;
   x = x - repmat (mean (x, dim), idx);
-  retval = zeros (sz);
+  retval = zeros (sz, class (x));
   s = std (x, [], dim);
-  x = sum(x.^4, dim);
+  x = sum (x.^4, dim);
   ind = find (s > 0);
   retval(ind) = x(ind) ./ (c * s(ind) .^ 4) - 3;
 
 endfunction
+
 
 %!test
 %! x = [-1; 0; 0; 0; 1];
 %! y = [x, 2*x];
 %! assert(all (abs (kurtosis (y) - [-1.4, -1.4]) < sqrt (eps)));
 
-%!error kurtosis ();
-
-%!error kurtosis (1, 2, 3);
+%% Test input validation
+%!error kurtosis ()
+%!error kurtosis (1, 2, 3)
+%!error kurtosis (true(1,2))
+%!error kurtosis (1, ones(2,2))
+%!error kurtosis (1, 1.5)
+%!error kurtosis (1, 0)
+%!error kurtosis (1, 3)
 

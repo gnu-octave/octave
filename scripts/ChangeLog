@@ -1,3 +1,63 @@
+2011-01-03  Rik  <octave@nomad.inbox5.com>
+
+	* statistics/base/center.m, statistics/base/corrcoef.m,
+	statistics/base/kendall.m, statistics/base/mean.m,
+	statistics/base/meansq.m, statistics/base/skewness.m,
+	statistics/base/studentize.m, statistics/base/var.m,
+	statistics/base/run_count.m, statistics/base/ranks.m: Improve input
+	validation.  Add function tests.  Improve docstring.
+
+	* statistics/base/moment.m, statistics/base/prctile.m,
+	statistics/base/spearman.m, statistics/base/std.m : Improve input 
+	validation.  Add input validation tests.  Improve docstring.
+
+	* statistics/base/cloglog.m: Add function tests.
+
+	* statistics/base/cor.m: Replace with call to corrcoef, now only an
+	alias.
+
+	* statistics/base/cov.m: Add normalization option.  Improve input
+	validation.  Add function tests.  Improve docstring.
+
+	* statistics/base/cut.m: Use lowercase variable names.  Improve
+	docstring.  
+
+	* statistics/base/histc.m, statistics/base/median.m: Use same variable
+	name in documentation and in function.  Add input validation tests.
+	Improve docstring.
+
+	* statistics/base/iqr.m, statistics/base/mode.m: Add input validation
+	tests.  Improve docstring.
+
+	* statistics/base/kurtosis.m: Return same class as input variable.  Add
+	input validation tests.  Improve docstring.  
+
+
+	* statistics/base/logit.m, statistics/base/range.m: Add function tests.
+	Improve docstring.
+
+	* statistics/base/mahalanobis.m: Use lower case variable names.
+	Improve input validation.  Add input validation tests.
+
+	* statistics/base/ols.m, statistics/base/gls.m: Use isargout to only
+	calculate necessary outputs.  Use lowercase variable names.  Add
+	functional tests.  Improve docstring.  
+
+	* statistics/base/ppplot.m: Add input validation tests.
+
+	* statistics/base/qqplot.m: Add ability to call "XXXinv" or "XXX_inv"
+	functions.  Improve input validation.  Improve docstring.  
+
+	* statistics/base/quantile.m: Use defaults for input arguments to
+	simplify code.  Improve input validation.  Add input validation tests.
+	Improve docstring.  
+
+	* statistics/base/statistics.m: Use lowercase variable names.  Improve
+	input validation.  Add input validation tests.  Improve docstring.  
+
+	* statistics/base/table.m: Switch from deprecated function 'values' to
+	'unique'.  Add input validation tests.  Improve docstring.
+
 2011-01-02  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m: Only one legend per axes (bug 32022). Add / modify

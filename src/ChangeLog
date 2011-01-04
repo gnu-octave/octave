@@ -1,5 +1,10 @@
 2011-01-04  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw): Improve
+	display of percentage full.  Bug #32011.
+
+2011-01-04  John W. Eaton  <jwe@octave.org>
+
 	* ov-typeinfo.cc (Ftypeinfo): Return cell array of character
 	strings, not character array.  Bug #32050.
 

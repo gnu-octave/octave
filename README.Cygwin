@@ -1,25 +1,53 @@
 Starting with version 3.0.1, Octave is once again part of the normal
 net distribution of Cygwin, available from http://www.cygwin.com.  
-The latest previous version available was 2.1.73
 
-It is possible to build Octave on Windows systems with Cygwin,
-but with standard gcc-3.4.4-3 compiler there are some performance
+It is possible to build Octave from source on Windows systems with Cygwin,
+but with the old gcc-3.4.4-3 compiler there are some performance
 problems related to the way C++ exception handling is implemented.
-This is a known problem with a long history so it is suggested to use
-version gcc-4.3.2-1 or later.
+This is a known problem with a long history and it is STRONGLY 
+encouraged to use gcc-4.3.2-1 or later.
 
-Binary version 3.0.2-2 is built with gcc-4.3.2-1
+Current binary versions are built with gcc-4.3.4-3 while 
+binary version 3.0.2-2 was built with gcc-4.3.2-1.
+
+The latest development Octave development sources (octave-3.3.54+)
+are built with:
+
+configure --enable-shared \
+          --enable-float-truncate \
+          CC=gcc-4 F77=gfortran-4 CXX=g++-4 CPP=cpp-4 
+          lt_cv_deplibs_check_method=pass_all \
+          LDFLAGS=-no-undefined 
+
+"--enable-float-truncate" is needed for the following bug:
+http://thread.gmane.org/gmane.comp.gnu.octave.bugs/12361/focus=12404
+Without it, one of the quadgk test will fail as
+"a=a" could be false due to truncation problems with 
+complex numbers. 
+
+ 
+"lt_cv_deplibs_check_method=pass_all"  is needed to bypass
+incorrect libtool detection of system capabilities and
+to allow shared libs building.
+
+Octave-3.2.4 was built using:
+
+configure --enable-shared \
+          --without-fltk \
+          --without-framework-opengl \
+          CC=gcc-4 F77=gfortran-4 CXX=g++-4 CPP=cpp-4
+          CFLAGS="-Dtimezone=_timezone"
+
+
+
  
 Current Cygwin package maintainer for Octave:
 
   Marco Atzeri
   http://matzeri.altervista.org
 
-John W. Eaton
-jwe@octave.org
-
 Marco Atzeri
 marco_atzeri@yahoo.it
 Italy
 
-Mon, 14 Sep 2009 14:14:40 EDT
+Mon Jan  3 18:53:41 WEST 2011

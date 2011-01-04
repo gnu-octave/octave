@@ -120,7 +120,7 @@ function demo (name, n)
       __demo__;
     catch
       ## Let the programmer know which demo failed.
-      printf ("%s example %d: failed\n%s", name, doidx(i), __error_text__);
+      printf ("%s example %d: failed\n%s\n", name, doidx(i), __error_text__);
     end_try_catch
     clear __demo__;
   endfor

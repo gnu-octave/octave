@@ -583,8 +583,8 @@ octave_value_typeinfo::do_installed_type_names (void)
 {
   string_vector retval (num_types);
 
-  for (int i = 0;i < num_types; i++)
-    retval (i) = types (i);
+  for (int i = 0; i < num_types; i++)
+    retval(i) = types(i);
 
   return retval;
 }
@@ -603,7 +603,7 @@ currently installed data types.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = octave_value_typeinfo::installed_type_names ();
+    retval = Cell (octave_value_typeinfo::installed_type_names ());
   else if (nargin == 1)
     retval = args(0).type_name ();
   else

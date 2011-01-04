@@ -1,3 +1,8 @@
+2011-01-04  John W. Eaton  <jwe@octave.org>
+
+	* ov-typeinfo.cc (Ftypeinfo): Return cell array of character
+	strings, not character array.  Bug #32050.
+
 2011-01-03  Rik  <octave@nomad.inbox5.com>
 
 	* data.cc (islogical, isnumeric): Add tests to check sparse forms of

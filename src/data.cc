@@ -2523,6 +2523,8 @@ DEFALIAS (isbool, islogical);
 %!assert (islogical(single(1)), false)
 %!assert (islogical(single(1i)), false)
 %!assert (islogical(single([1,1])), false)
+%!assert (islogical(sparse ([true, false])), true)
+%!assert (islogical(sparse ([1, 0])), false)
 
  */
 
@@ -2928,6 +2930,24 @@ numeric.\n\
 
   return retval;
 }
+
+/*
+
+%!assert (isnumeric(1), true)
+%!assert (isnumeric(1i), true)
+%!assert (isnumeric([1,1]), true)
+%!assert (isnumeric(single(1)), true)
+%!assert (isnumeric(single(1i)), true)
+%!assert (isnumeric(single([1,1])), true)
+%!assert (isnumeric(int8(1)), true)
+%!assert (isnumeric(uint8([1,1])), true)
+%!assert (isnumeric("Hello World"), false)
+%!assert (isnumeric(true), false)
+%!assert (isnumeric(false), false)
+%!assert (isnumeric([true, false]), false)
+%!assert (isnumeric(sparse ([true, false])), false)
+
+*/
 
 DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\

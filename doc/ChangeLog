@@ -1,3 +1,8 @@
+2011-01-05  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/plot.txi (Introduction to Plotting): Formatting
+	and style fixes.  Eliminate redundant example.
+
 2011-01-03  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave.texi: Add new menu item "Correlation and 

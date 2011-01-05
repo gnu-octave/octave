@@ -38,8 +38,8 @@ capability is provided by access to OpenGL@.  Which plotting system
 is used is controlled by the @code{backend} function.  (See @ref{Graphics
 Backends}.)
 
-The function call @code{backend("fltk")} selects the fltk/OpenGL system, and
-@code{backend("gnuplot")} selects the gnuplot system.
+The function call @code{backend ("fltk")} selects the fltk/OpenGL system, and
+@code{backend ("gnuplot")} selects the gnuplot system.
 The two systems may be used selectively through the use of the @code{backend}
 property of the graphics handle for each figure.  This is
 explained in @ref{Graphics Data Structures}.
@@ -882,7 +882,7 @@ as documented in @ref{doc-datasources,, Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
-1. The root is at 0.  i.e., @code{get(0)} returns the properties of the root
+1. The root is at 0.  i.e., @code{get (0)} returns the properties of the root
    object.
 
 2. Below the root are @code{figure} objects.
@@ -894,9 +894,9 @@ The graphics objects are arranged in a hierarchy:
 @code{surface}, and @code{image} objects.
 
 Graphics handles may be distinguished from function handles (@ref{Function
-Handles}) by means of the function @code{ishandle()}.  @code{ishandle} returns
+Handles}) by means of the function @code{ishandle}.  @code{ishandle} returns
 true if its argument is a handle of a graphics object.  In addition, the figure
-object may be tested using @code{isfigure()}.  @code{isfigure} returns true only
+object may be tested using @code{isfigure}.  @code{isfigure} returns true only
 if its argument is a handle of a figure. ishghandle() is synonymous with
 ishandle().  The @code{whos} function can be used to show the object type of
 each currently defined graphics handle.  (Note: this is not true today, but it
@@ -912,22 +912,22 @@ addition, the @code{get} command may be used to obtain property names.
 For example, the property "type" of the graphics object pointed to by the
 graphics handle h may be displayed by:
 
-@code{get(h, "type")}
+@example
+get (h, "type")
+@end example
 
-The properties and their current values are returned by @code{get(h)}
+The properties and their current values are returned by @code{get (h)}
 where h is a handle of a graphics object.  If only the names of the
 allowed properties are wanted they may be displayed by:
-@code{get(h, "");}
+@code{get (h, "")}.
 
 Thus, for example,
-@c @example
-@smallformat
+@smallexample
 @group
-@verbatim
-h=figure();
-get(h,"type")
+h = figure ();
+get (h, "type")
 ans = figure
-get(h, "");
+get (h, "");
 error: get: ambiguous figure property name ; possible matches:
 
 __backend__            currentobject          paperposition          toolbar
@@ -945,63 +945,16 @@ closerequestfcn        keyreleasefcn          renderermode           wvisual
 color                  menubar                resize                 wvisualmode
 colormap               mincolormap            resizefcn              xdisplay
 createfcn              name                   selected               xvisual
-currentpoint          nextplot               selectionhighlight     xvisualmode
+currentpoint           nextplot               selectionhighlight     xvisualmode
 currentaxes            numbertitle            selectiontype
 currentcharacter       paperorientation       tag
-@end verbatim
 @end group
-@end smallformat
-@c @end example
-@c @end flushleft
-@c @example
-@smallformat
-@group
-@verbatim
-aa=axes();
-get(aa,"");
-error: get: ambiguous axes property name ; possible matches:
-
-__modified__            drawmode                tickdir                 xtickmode
-__myhandle__            fontangle               tickdirmode             yaxislocation
-activepositionproperty  fontname                ticklength              ycolor
-alim                    fontsize                tightinset              ydir
-alimmode                fontunits               title                   ygrid
-ambientlightcolor       fontweight              type                    ylabel
-beingdeleted            gridlinestyle           uicontextmenu           ylim
-box                     handlevisibility        units                   ylimmode
-busyaction              hittest                 userdata                yminorgrid
-buttondownfcn           interpreter             view                    yminortick
-cameraposition          interruptible           visible                 yscale
-camerapositionmode      key                     x_normrendertransform   ytick
-cameratarget            keybox                  x_projectiontransform   yticklabel
-cameratargetmode        keypos                  x_rendertransform       yticklabelmode
-cameraupvector          keyreverse              x_viewporttransform     ytickmode
-cameraupvectormode      layer                   x_viewtransform         zcolor
-cameraviewangle         linestyleorder          xaxislocation           zdir
-cameraviewanglemode     linewidth               xcolor                  zgrid
-children                minorgridlinestyle      xdir                    zlabel
-clim                    nextplot                xgrid                   zlim
-climmode                outerposition           xlabel                  zlimmode
-@end verbatim
-@end group
-@group
-@verbatim
-clipping                parent                  xlim                    zminorgrid
-color                   plotboxaspectratio      xlimmode                zminortick
-colororder              plotboxaspectratiomode  xminorgrid              zscale
-createfcn               position                xminortick              ztick
-currentpoint            projection              xscale                  zticklabel
-dataaspectratio         selected                xtick                   zticklabelmode
-dataaspectratiomode     selectionhighlight      xticklabel              ztickmode
-deletefcn               tag                     xticklabelmode
-@end verbatim
-@end group
-@end smallformat
-@c @end example
+@end smallexample
 
 The root figure has index 0.  Its properties may be displayed by:
-@code{get(0,"")}.
-The uses of @code{get()} and @code{set()} are further explained in
+@code{get (0, "")}.
+
+The uses of @code{get} and @code{set} are further explained in
 @ref{doc-get,,get}, @ref{doc-set,,set}.
 
 @DOCSTRING(isprop)

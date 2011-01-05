@@ -1,5 +1,9 @@
 2010-01-04  Rik  <octave@nomad.inbox5.com>
 
+	* README.MacOS: Update CFLAGS recommendation to use -O2.
+
+2010-01-04  Rik  <octave@nomad.inbox5.com>
+
 	* README.gnuplot: Update recommendation to version 4.4.
 
 2010-01-04  Marco Atzeri  <marco_atzeri@yahoo.it>

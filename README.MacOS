@@ -94,7 +94,7 @@ compling with gcc-4.2.
   export FINK_PREFIX="/sw"
   export PREFIX="/usr/local/bin"
 
-  export OPTFLAGS="-O0 -g"
+  export OPTFLAGS="-O2 -g"
   export LDFLAGS="-L$FINK_PREFIX/lib -L/usr/lib -m32"
   export CFLAGS="-I$FINK_PREFIX/include $OPTFLAGS -m32"
   export CXXFLAGS=$CFLAGS

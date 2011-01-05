@@ -92,7 +92,8 @@ public:
 
   std::string dispatch_class (void) const { return xdispatch_class; }
 
-  void mark_as_private_function (const std::string& cname = std::string ())
+  virtual void
+  mark_as_private_function (const std::string& cname = std::string ())
   {
     private_function = true;
     xdispatch_class = cname;

@@ -233,6 +233,13 @@ public:
 
   bool takes_var_return (void) const;
 
+  void mark_as_private_function (const std::string& cname = std::string ())
+    {
+      symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
+
+      octave_function::mark_as_private_function (cname);
+    }
+
   void lock_subfunctions (void);
 
   void unlock_subfunctions (void);

@@ -429,6 +429,21 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 }
 
 void
+symbol_table::fcn_info::fcn_info_rep:: mark_subfunction_in_scope_as_private
+  (scope_id scope, const std::string& class_name)
+{
+  scope_val_iterator p = subfunctions.find (scope);
+
+  if (p != subfunctions.end ())
+    {
+      octave_function *fcn = p->second.function_value ();
+
+      if (fcn)
+        fcn->mark_as_private_function (class_name);
+    }
+}
+
+void
 symbol_table::fcn_info::fcn_info_rep::print_dispatch (std::ostream& os) const
 {
   if (dispatch_map.empty ())

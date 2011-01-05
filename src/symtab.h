@@ -594,6 +594,9 @@ public:
           subfunctions.erase (p);
       }
 
+      void mark_subfunction_in_scope_as_private (scope_id scope,
+                                                 const std::string& class_name);
+
       void install_cmdline_function (const octave_value& f)
       {
         cmdline_function = f;
@@ -824,6 +827,12 @@ public:
       rep->erase_subfunction (scope);
     }
 
+    void mark_subfunction_in_scope_as_private (scope_id scope,
+                                               const std::string& class_name)
+    {
+      rep->mark_subfunction_in_scope_as_private (scope, class_name);
+    }
+
     void install_cmdline_function (const octave_value& f)
     {
       rep->install_cmdline_function (f);
@@ -964,6 +973,15 @@ public:
     for (fcn_table_iterator q = fcn_table.begin ();
          q != fcn_table.end (); q++)
       q->second.erase_subfunction (scope);
+  }
+
+  static void
+  mark_subfunctions_in_scope_as_private (scope_id scope,
+                                         const std::string& class_name)
+  {
+    for (fcn_table_iterator q = fcn_table.begin ();
+         q != fcn_table.end (); q++)
+      q->second.mark_subfunction_in_scope_as_private (scope, class_name);
   }
 
   static scope_id dup_scope (scope_id scope)

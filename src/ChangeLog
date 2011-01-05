@@ -1,3 +1,16 @@
+2011-01-05  John W. Eaton  <jwe@octave.org>
+
+	Bug #32060.
+
+	* ov-fcn.h (octave_function::mark_as_private_function): Now virtual.
+	* ov-usr-fcn.h (octave_function::mark_as_private_fucntion):
+	New function.  Mark subfunctions as private also.
+	* symtab.cc, symtab.h
+	(symbol_table::mark_subfunctions_in_scope_as_private,
+	symbol_table::fcn_info::mark_subfunction_in_scope_as_private,
+	symbol_table::fcn_info::fcn_info_rep::mark_subfunction_in_scope_as_private):
+	New functions.
+
 2011-01-04  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw): Improve

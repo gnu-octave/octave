@@ -1,4 +1,8 @@
-2010-01-04 Marco Atzeri  <marco_atzeri@yahoo.it>
+2010-01-04  Rik  <octave@nomad.inbox5.com>
+
+	* README.gnuplot: Update recommendation to version 4.4.
+
+2010-01-04  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* README.Cygmin: Update build instructions before 3.4 release.
 

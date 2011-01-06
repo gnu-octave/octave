@@ -1,8 +1,12 @@
 2011-01-05  Rik  <octave@nomad.inbox5.com>
 
-	* doc/interpreter/numbers.txi, doc/interpreter/obsolete.txi,
-	doc/interpreter/oop.txi, doc/interpreter/stats.txi: Use @headitem
-	macro to create column heads for @multitable entries.
+	* interpreter/octave.texi: Put statistics detailmenu in correct order.
+
+2011-01-05  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/numbers.txi, interpreter/obsolete.txi,
+	interpreter/oop.txi, interpreter/stats.txi: Use @headitem macro to
+	create column heads for @multitable entries.
 
 2011-01-05  Rik  <octave@nomad.inbox5.com>
 

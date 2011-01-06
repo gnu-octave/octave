@@ -657,9 +657,9 @@ Statistics
 * Descriptive Statistics::
 * Basic Statistical Functions:: 
 * Statistical Plots:: 
-* Tests::                       
 * Correlation and Regression Analysis::
 * Distributions::     
+* Tests::                       
 * Random Number Generation::          
 
 Sets

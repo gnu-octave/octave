@@ -1,3 +1,7 @@
+2011-01-05  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/grammar.txi: Update list of keywords in grammar.
+
 2011-01-05  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/plot.txi (Introduction to Plotting): Formatting

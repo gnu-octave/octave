@@ -36,17 +36,20 @@ The following identifiers are keywords, and may not be used as variable
 or function names:
 
 @multitable @columnfractions .33 .33 .33
-@item @code{break} @tab @code{case} @tab @code{catch}
+@item @code{__FILE__} @tab @code{__LINE__} @tab @code{break}
+@item @code{case} @tab @code{catch} @tab @code{classdef}
 @item @code{continue} @tab @code{do} @tab @code{else}
 @item @code{elseif} @tab @code{end} @tab @code{end_try_catch}
-@item @code{end_unwind_protect} @tab @code{endfor} @tab @code{endfunction}
-@item @code{endif} @tab @code{endswitch} @tab @code{endwhile}
-@item @code{for} @tab @code{function} @tab @code{global}
-@item @code{if} @tab @code{otherwise} @tab @code{persistent}
-@item @code{return} @tab @code{static} @tab @code{switch}
+@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endevents}
+@item @code{endfor} @tab @code{endfunction} @tab @code{endif}
+@item @code{endmethods} @tab @code{endproperties} @tab @code{endswitch}
+@item @code{endwhile} @tab @code{events} @tab @code{for}
+@item @code{function} @tab @code{get} @tab @code{global}
+@item @code{if} @tab @code{methods} @tab @code{otherwise}
+@item @code{persistent} @tab @code{properties} @tab @code{return}
+@item @code{set} @tab @code{static} @tab @code{switch}
 @item @code{try} @tab @code{until} @tab @code{unwind_protect}
-@item @code{unwind_protect_cleanup} @tab @code{varargin} @tab @code{varargout}
-@item @code{while} @tab @code{__FILE__} @tab @code{__LINE__}
+@item @code{unwind_protect_cleanup}@tab @code{while}
 @end multitable
 
 @DOCSTRING(iskeyword)

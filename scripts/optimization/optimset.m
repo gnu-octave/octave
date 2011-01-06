@@ -63,7 +63,7 @@ function retval = optimset (varargin)
     for [val, key] = new
       if (validation)
         ## Case insensitive lookup in all options.
-        i = lookup (lopts, tolower (key), "i");
+        i = lookup (lopts, tolower (key));
         ## Validate option.
         if (i > 0 && strcmpi (opts{i}, key))
           ## Use correct case.

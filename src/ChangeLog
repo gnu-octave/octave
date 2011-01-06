@@ -115,12 +115,12 @@
 	* data.cc (Fvec): New optional second argument to set dimension
 	of result.
 
-2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
+2010-12-18  Konstantinos Poulios  <logari81@googlemail.com>
 
-       * graphics.h.in (class axes::properties): Tag xtickmode, ytickmode
-       and ztickmode with "u" qualifier.
-       (axes::properties::update_xtickmode, axes::properties::update_ytickmode
-       axes::properties::update_ztickmode): New functions.
+	* graphics.h.in (class axes::properties): Tag xtickmode, ytickmode
+	and ztickmode with "u" qualifier.
+	(axes::properties::update_xtickmode, axes::properties::update_ytickmode
+	axes::properties::update_ztickmode): New functions.
 
 2010-12-18  John W. Eaton  <jwe@octave.org>
 
@@ -132,7 +132,7 @@
 	* oct-parse.yy (builtin): Remove seealso reference to deprecated 
 	function dispatch.
 
-2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
+2010-12-17  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (class text::properties): New properties positionmode,
 	rotationmode, horizontalalignmentmode, verticalalignmentmode.
@@ -144,7 +144,7 @@
 	* gl-render.cc (opengl_renderer::draw_axes): Disable auto-positioning
 	of manually positioned title and axes labels.
 
-2012-12-17  Konstantinos Poulios  <logari81@googlemail.com>
+2010-12-17  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (class axes::properties): Change default value for
 	fontsize from 12 to 10.

@@ -39,7 +39,7 @@ Replacement functions do not always accept precisely the same arguments
 as the obsolete function, but should provide equivalent functionality.
 
 @multitable @columnfractions .3 .3 .15
-@item @strong{Obsolete Function} @tab @strong{Replacement} @tab @strong{Version}
+@headitem Obsolete Function @tab Replacement @tab Version
 @item @code{beta_cdf} @tab @code{betacdf} @tab 3.4.0
 @item @code{beta_inv} @tab @code{betainv} @tab 3.4.0
 @item @code{beta_pdf} @tab @code{betapdf} @tab 3.4.0

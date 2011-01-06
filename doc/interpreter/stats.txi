@@ -224,10 +224,10 @@ alphabetical order).
 @end tex
 @ifnottex
 @multitable @columnfractions .31 .23 .23 .23
-@item @strong{Distribution}
-  @tab @strong{PDF}
-  @tab @strong{CDF}
-  @tab @strong{Quantile}
+@headitem Distribution
+  @tab PDF
+  @tab CDF
+  @tab Quantile
 @item Beta Distribution
   @tab @code{betapdf}
   @tab @code{betacdf}
@@ -481,8 +481,8 @@ table summarizes the available tests.
 @end tex
 @ifnottex
 @multitable @columnfractions .4 .5
-@item @strong{Hypothesis}
-  @tab @strong{Test Functions}
+@headitem Hypothesis
+  @tab Test Functions
 @item Equal mean values
   @tab @code{anova}, @code{hotelling_test2}, @code{t_test_2},
        @code{welch_test}, @code{wilcoxon_test}, @code{z_test_2}
@@ -613,7 +613,7 @@ The following table summarizes the available random number generators
 @end tex
 @ifnottex
 @multitable @columnfractions .4 .3
-@item @strong{Distribution}             @tab @strong{Function}
+@headitem Distribution                  @tab Function
 @item Beta Distribution                 @tab @code{betarnd}
 @item Binomial Distribution             @tab @code{binornd}
 @item Cauchy Distribution               @tab @code{cauchy_rnd}

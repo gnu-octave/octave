@@ -1,5 +1,11 @@
 2011-01-05  Rik  <octave@nomad.inbox5.com>
 
+	* doc/interpreter/numbers.txi, doc/interpreter/obsolete.txi,
+	doc/interpreter/oop.txi, doc/interpreter/stats.txi: Use @headitem
+	macro to create column heads for @multitable entries.
+
+2011-01-05  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/grammar.txi: Update list of keywords in grammar.
 
 2011-01-05  John W. Eaton  <jwe@octave.org>

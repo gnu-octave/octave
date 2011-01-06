@@ -568,7 +568,7 @@ width 0.6pt \tabskip=0pt\cr
 @end tex
 @ifnottex
 @multitable @columnfractions .1 .20 .20 .40 .1
-@item @tab Operation @tab Method @tab Description @tab
+@headitem @tab Operation @tab Method @tab Description @tab
 @item @tab a + b @tab plus (a, b) @tab Binary addition @tab
 @item @tab a - b @tab minus (a, b) @tab Binary subtraction operator @tab
 @item @tab + a @tab uplus (a) @tab Unary addition operator @tab

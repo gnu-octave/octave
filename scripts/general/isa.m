@@ -52,6 +52,7 @@ function retval = isa (obj, cname)
 endfunction
 
 %!assert (isa ("char", "float"), false)
+%!assert (isa (logical (1), "float"), false)
 %!assert (isa (double (13), "float"), true)
 %!assert (isa (single (13), "float"), true)
 %!assert (isa (int8 (13), "float"), false)
@@ -63,6 +64,7 @@ endfunction
 %!assert (isa (uint32 (13), "float"), false)
 %!assert (isa (uint64 (13), "float"), false)
 %!assert (isa ("char", "numeric"), false)
+%!assert (isa (logical (1), "numeric"), false)
 %!assert (isa (double (13), "numeric"), true)
 %!assert (isa (single (13), "numeric"), true)
 %!assert (isa (int8 (13), "numeric"), true)

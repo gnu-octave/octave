@@ -1,3 +1,7 @@
+2011-01-05  Rik  <octave@nomad.inbox5.com>
+
+	* general/isa.m: Add tests against logical values.
+
 2011-01-04  Rik  <octave@nomad.inbox5.com>
 
 	* testfun/demo.m: Add newline to error output for better formatting.

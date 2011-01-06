@@ -1843,7 +1843,7 @@ gh_manager::get_handle (const std::string& go_name)
         {
           retval = graphics_handle (next_handle);
 
-          next_handle = ceil (next_handle) - 1.0 - make_handle_fraction ();
+          next_handle = std::ceil (next_handle) - 1.0 - make_handle_fraction ();
         }
     }
 
@@ -1888,7 +1888,7 @@ gh_manager::do_free (const graphics_handle& h)
               handle_map.erase (p);
 
               if (h.value () < 0)
-                handle_free_list.insert (ceil (h.value ()) - make_handle_fraction ());
+                handle_free_list.insert (std::ceil (h.value ()) - make_handle_fraction ());
             }
           else
             error ("graphics_handle::free: invalid object %g", h.value ());
@@ -4334,8 +4334,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               min_val *= 0.9;
               max_val *= 1.1;
             }
-          min_val = pow (10, floor (log10 (min_val)));
-          max_val = pow (10, ceil (log10 (max_val)));
+          min_val = pow (10, gnulib::floor (log10 (min_val)));
+          max_val = pow (10, std::ceil (log10 (max_val)));
         }
       else
         {
@@ -4352,8 +4352,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
             }
 
           double tick_sep = calc_tick_sep (min_val , max_val);
-          min_val = tick_sep * std::floor (min_val / tick_sep);
-          max_val = tick_sep * ceil (max_val / tick_sep);
+          min_val = tick_sep * gnulib::floor (min_val / tick_sep);
+          max_val = tick_sep * std::ceil (max_val / tick_sep);
         }
     }
 
@@ -4394,7 +4394,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   double tick_sep = calc_tick_sep (lo , hi);
 
-  int i1 = static_cast<int> (std::floor (lo / tick_sep));
+  int i1 = static_cast<int> (gnulib::floor (lo / tick_sep));
   int i2 = static_cast<int> (std::ceil (hi / tick_sep));
 
   if (limmode_is_auto)
@@ -4417,7 +4417,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     {
       // adjust min and max tics if they are out of limits
       i1 = static_cast<int> (std::ceil (lo / tick_sep));
-      i2 = static_cast<int> (std::floor (hi / tick_sep));
+      i2 = static_cast<int> (gnulib::floor (hi / tick_sep));
     }
       
   Matrix tmp_ticks (1, i2-i1+1);
@@ -5230,7 +5230,7 @@ surface::properties::update_normals (void)
                                  x(j3,i+1)-x(j2,i), y(j+1,i3)-y(j,i2), z(j+1,i+1)-z(j,i),
                                  nx, ny, nz);
 
-              double d = - std::max(std::max(fabs(nx), fabs(ny)), fabs(nz));
+              double d = -std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
 
               nx /= d;
               ny /= d;

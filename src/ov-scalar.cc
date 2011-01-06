@@ -313,7 +313,7 @@ octave_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (exp, ::exp);
       SCALAR_MAPPER (expm1, ::expm1);
       SCALAR_MAPPER (fix, ::fix);
-      SCALAR_MAPPER (floor, ::floor);
+      SCALAR_MAPPER (floor, gnulib::floor);
       SCALAR_MAPPER (log, rc_log);
       SCALAR_MAPPER (log2, rc_log2);
       SCALAR_MAPPER (log10, rc_log10);

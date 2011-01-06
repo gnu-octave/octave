@@ -1062,7 +1062,7 @@ All permutations are equally likely.\n\
 
               for (octave_idx_type i = 0; i < n; i++)
                 {
-                  octave_idx_type k = i + floor (rvec[i] * (n - i));
+                  octave_idx_type k = i + gnulib::floor (rvec[i] * (n - i));
                   std::swap (ivec[i], ivec[k]);
                 }
 

@@ -1,3 +1,9 @@
+2011-01-06  John W. Eaton  <jwe@octave.org>
+
+	* oct-md5.cc (oct_md5_file): Tag call to fclose with gnulib::.
+	* Range.cc (tfloor): Tag calls to floor with gnulib::.
+	* lo-mappers.h (xfloor): Tag call to floor with gnulib::
+
 2010-12-20  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.h (xrem, xmod): Declare temporary result from

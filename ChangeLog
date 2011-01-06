@@ -1,3 +1,8 @@
+2011-01-06  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in, mkoctfile.cc.in: Substitute and use LAPACK_LIBS.
+	Bug #32009.
+
 2010-01-04  Rik  <octave@nomad.inbox5.com>
 
 	* README.MacOS: Update CFLAGS recommendation to use -O2.

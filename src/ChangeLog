@@ -1,3 +1,15 @@
+2011-01-06  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/rand.cc (Frandperm): Tag call to floor with gnulib::.
+	* DLD-FUNCTIONS/gcd.cc (divide): Tag calls to floor with gnulib::.
+	* ov-scalar.cc (octave_scalar::map): Tag floor with gnulib::.
+	* ov-cell.cc (octave_cell::save_hdf5): Tag call to floor with gnulib::.
+	* pr-output.cc (engineering_exponent, num_digits,
+	octave_print_internal_template): Tag call to floor with gnulib::.
+	* graphics.cc: Consistently use std::ceil.
+	(axes::properties::get_axis_limits): Tag calls to floor with gnulib::.
+	(axes::properties::calc_ticks_and_lims): Likewise.
+
 2011-01-05  John W. Eaton  <jwe@octave.org>
 
 	Bug #32060.

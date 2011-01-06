@@ -92,6 +92,7 @@ fi
 : ${LIBOCTINTERP=-loctinterp}
 : ${READLINE_LIBS=-lreadline}
 : ${LIBCRUFT=-lcruft}
+: ${LAPACK_LIBS=%OCTAVE_CONF_LAPACK_LIBS%}
 : ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
 : ${FFTW3_LDFLAGS=%OCTAVE_CONF_FFTW3_LDFLAGS%}
 : ${FFTW3_LIBS=%OCTAVE_CONF_FFTW3_LIBS%}
@@ -225,22 +226,22 @@ Options:
 			    ALL_CFLAGS                FLIBS
 			    ALL_CXXFLAGS              FPICFLAG
 			    ALL_FFLAGS                INCFLAGS
-			    ALL_LDFLAGS               LDFLAGS
-			    BLAS_LIBS                 LD_CXX
-			    CC                        LD_STATIC_FLAG
-			    CFLAGS                    LFLAGS
-			    CPICFLAG                  LIBCRUFT
-			    CPPFLAGS                  LIBOCTAVE
-			    CXX                       LIBOCTINTERP
-			    CXXFLAGS                  LIBS
-			    CXXPICFLAG                OCTAVE_LIBS
-			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG
-			    DEPEND_FLAGS              READLINE_LIBS
-			    DL_LD                     RLD_FLAG
-			    DL_LDFLAGS                SED
-			    F77                       XTRA_CFLAGS
-			    FFLAGS                    XTRA_CXXFLAGS
-			    FFTW_LIBS
+			    ALL_LDFLAGS               LAPACK_LIBS
+			    BLAS_LIBS                 LDFLAGS
+			    CC                        LD_CXX
+			    CFLAGS                    LD_STATIC_FLAG
+			    CPICFLAG                  LFLAGS
+			    CPPFLAGS                  LIBCRUFT
+			    CXX                       LIBOCTAVE
+			    CXXFLAGS                  LIBOCTINTERP
+			    CXXPICFLAG                LIBS
+			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+			    DEPEND_FLAGS              RDYNAMIC_FLAG
+			    DL_LD                     READLINE_LIBS
+			    DL_LDFLAGS                RLD_FLAG
+			    F77                       SED
+			    FFLAGS                    XTRA_CFLAGS
+			    FFTW_LIBS                 XTRA_CXXFLAGS
 
   --link-stand-alone      Link a stand-alone executable file.
 
@@ -524,7 +525,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $READLINE_LIBS $LIBS $FLIBS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $LAPACK_LIBS $BLAS_LIBS $FFTW_LIBS $READLINE_LIBS $LIBS $FLIBS"
       $dbg $cmd
       eval $cmd
     else
@@ -532,7 +533,7 @@ if $link && [ -n "$objfiles" ]; then
       exit 1
     fi
   else
-    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
+    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $LAPACK_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
     cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LINK_DEPS"
     $dbg $cmd
     eval $cmd

@@ -1128,7 +1128,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       std::ostringstream buf;
-      int digits = static_cast<int> (::floor (::log10 (static_cast<double> (nel)) + 1.0));
+      int digits = static_cast<int> (gnulib::floor (::log10 (static_cast<double> (nel)) + 1.0));
       buf << "_" << std::setw (digits) << std::setfill ('0') << i;
       std::string s = buf.str ();
 

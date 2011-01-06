@@ -61,11 +61,11 @@ simple_gcd (double a, double b)
 // implements template aliases from C++0x, can do a small fix here).
 template <typename FP>
 static void
-divide(const std::complex<FP>& a, const std::complex<FP>& b,
-       std::complex<FP>& q, std::complex<FP>& r)
+divide (const std::complex<FP>& a, const std::complex<FP>& b,
+        std::complex<FP>& q, std::complex<FP>& r)
 {
-  FP qr = floor ((a/b).real () + 0.5);
-  FP qi = floor ((a/b).imag () + 0.5);
+  FP qr = gnulib::floor ((a/b).real () + 0.5);
+  FP qi = gnulib::floor ((a/b).imag () + 0.5);
 
   q = std::complex<FP> (qr, qi);
 

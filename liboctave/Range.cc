@@ -438,11 +438,11 @@ tfloor (double x, double ct)
 
   double rmax = q / (2.0 - ct);
 
-  double t1 = 1.0 + floor (x);
+  double t1 = 1.0 + gnulib::floor (x);
   t1 = (ct / q) * (t1 < 0.0 ? -t1 : t1);
   t1 = rmax < t1 ? rmax : t1;
   t1 = ct > t1 ? ct : t1;
-  t1 = floor (x + t1);
+  t1 = gnulib::floor (x + t1);
 
   if (x <= 0.0 || (t1 - x) < rmax)
     return t1;

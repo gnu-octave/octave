@@ -225,6 +225,7 @@ initialize (void)
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["READLINE_LIBS"] = "-lreadline";
   vars["LIBCRUFT"] = "-lcruft";
+  vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
   vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
   vars["FFTW3_LIBS"] = get_variable ("FFTW3_LIBS", %OCTAVE_CONF_FFTW3_LIBS%);
@@ -298,22 +299,22 @@ static string help_msg =
 "			    ALL_CFLAGS                FLIBS\n"
 "			    ALL_CXXFLAGS              FPICFLAG\n"
 "			    ALL_FFLAGS                INCFLAGS\n"
-"			    ALL_LDFLAGS               LDFLAGS\n"
-"			    BLAS_LIBS                 LD_CXX\n"
-"			    CC                        LD_STATIC_FLAG\n"
-"			    CFLAGS                    LFLAGS\n"
-"			    CPICFLAG                  LIBCRUFT\n"
-"			    CPPFLAGS                  LIBOCTAVE\n"
-"			    CXX                       LIBOCTINTERP\n"
-"			    CXXFLAGS                  LIBS\n"
-"			    CXXPICFLAG                OCTAVE_LIBS\n"
-"			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG\n"
-"			    DEPEND_FLAGS              READLINE_LIBS\n"
-"			    DL_LD                     RLD_FLAG\n"
-"			    DL_LDFLAGS                SED\n"
-"			    F77                       XTRA_CFLAGS\n"
-"			    FFLAGS                    XTRA_CXXFLAGS\n"
-"			    FFTW_LIBS\n"
+"			    ALL_LDFLAGS               LAPACK_LIBS\n"
+"			    BLAS_LIBS                 LDFLAGS\n"
+"			    CC                        LD_CXX\n"
+"			    CFLAGS                    LD_STATIC_FLAG\n"
+"			    CPICFLAG                  LFLAGS\n"
+"			    CPPFLAGS                  LIBCRUFT\n"
+"			    CXX                       LIBOCTAVE\n"
+"			    CXXFLAGS                  LIBOCTINTERP\n"
+"			    CXXPICFLAG                LIBS\n"
+"			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
+"			    DEPEND_FLAGS              RDYNAMIC_FLAG\n"
+"			    DL_LD                     READLINE_LIBS\n"
+"			    DL_LDFLAGS                RLD_FLAG\n"
+"			    F77                       SED\n"
+"			    FFLAGS                    XTRA_CFLAGS\n"
+"			    FFTW_LIBS                 XTRA_CXXFLAGS\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"
@@ -743,9 +744,9 @@ main (int argc, char **argv)
 		+ " " + output_option + " " + objfiles + " " + libfiles
 		+ " " + ldflags + " " + vars["LFLAGS"] + " "
 		+ vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " "
-		+ vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " "
-		+ vars["READLINE_LIBS"] + " " + vars["LIBS"] + " "
-		+ vars["FLIBS"];
+		+ vars["LAPACK_LIBS"] + " " vars["BLAS_LIBS"] + " "
+                + vars["FFTW_LIBS"] + " " + vars["READLINE_LIBS"] + " "
+                + vars["LIBS"] + " " + vars["FLIBS"];
 	      result = run_command (cmd);
 	    }
 	  else

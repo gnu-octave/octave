@@ -70,7 +70,7 @@ oct_md5_file (const std::string file)
 
       int errflag = md5_stream (ifile, buf);
 
-      fclose (ifile);
+      gnulib::fclose (ifile);
 
       if (! errflag)
         retval = oct_md5_result_to_str (buf);

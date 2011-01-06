@@ -50,9 +50,15 @@ IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
+## Checking for string equality below with prepended x's in order to
+## handle problems with empty strings.
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb --args"
+    shift
+  elif [ "x$1" = "x-gud" ]; then
+    ## Frontends for gdb (e.g. Emacs's GUD mode) need --annotate=3
+    driver="gdb --annotate=3 --args"
     shift
   elif [ "x$1" = "x-valgrind" ]; then
     driver="valgrind --tool=memcheck"

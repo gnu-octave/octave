@@ -26,17 +26,18 @@ The latest released version of Octave is always available via
 anonymous ftp from ftp.gnu.org and its many mirror sites around the
 world.  You may also find links to binary distributions at
 http://www.octave.org/download.html.  The current development sources
-may be found on Savannah (http://savannah.gnu.org).
+may be found on Savannah (http://savannah.gnu.org/projects/octave)
+under the Source Code tab.
 
-Installation and Bugs
----------------------
+Installation
+------------
 
-Octave requires approximately 1.5GB of disk storage to unpack and
-compile from source (significantly less if you don't compile with
-debugging symbols).  Once installed, Octave requires approximately
-450MB of disk space (again, considerably less if you don't build
-shared libraries or the binaries and libraries do not include
-debugging symbols).
+Octave requires approximately 1.4 GB of disk storage to unpack and
+compile from source (significantly less, 400 MB, if you don't compile
+with debugging symbols).  Once installed, Octave requires
+approximately 350MB of disk space (again, considerably less, 70 MB,
+if you don't build shared libraries or the binaries and libraries do
+not include debugging symbols).
 
 To compile Octave, you will need a recent version of GNU Make.  You
 will also need a recent version of g++ or another ANSI C++ compiler.
@@ -52,18 +53,22 @@ See the notes in the files INSTALL and INSTALL.OCTAVE for more
 specific installation instructions, including directions for
 installing Octave from a binary distribution.
 
-The file BUGS explains the recommended procedure for reporting bugs.
+Bugs and Patches
+----------------
+
+The file BUGS explains the recommended procedure for reporting bugs
+or contributing patches.
 
 Documentation
 -------------
 
-Octave's manual has been revised for version 3.0, but it is lagging a
+Octave's manual has been revised for version 3.4, but it is lagging a
 bit behind the development of the software.  In particular, there is
 currently no complete documentation of the C++ class libraries.  If
-you notice omissions or inconsistencies, please report them as bugs
-to bug@octave.org.  Specific suggestions for ways to improve Octave
-and its documentation are always welcome.  Reports with patches are
-even more welcome.
+you notice omissions or inconsistencies, please report them on the
+bug tracker at http://savannah.gnu.org/bugs/?group=octave.  Specific
+suggestions for ways to improve Octave and its documentation are
+always welcome.  Reports with patches are even more welcome.
 
 Additional Information
 ----------------------

@@ -1,3 +1,7 @@
+2010-01-06  Rik  <octave@nomad.inbox5.com>
+
+	* README: Update links and disk space requirements.
+
 2011-01-06  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* run-octave.in: Add a -gud option so that gdb can be called from

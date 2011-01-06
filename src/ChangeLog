@@ -1,3 +1,33 @@
+2011-01-06  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* txt-eng-ft.h, txt-eng-ft.cc: Remove dependency on graphics.h.
+	(ft_render::set_font): New arguments list.
+	(ft_render::text_to_pixels): New method.
+	* graphics.cc (text::properties::update_text_extent): Adapt the call
+	to ft_render::set_font.
+	(text::properties::get_extent_matrix): New function.
+	(text::properties::update_text_extent): Function rewrite.
+	* gl-render.cc (opengl_renderer::set_font): Likewise.
+	(opengl_renderer::text_to_pixels):
+	Make use of ft_render::text_to_pixels.
+	(opengl_renderer::render_text): Simplify.
+	(opengl_renderer::draw_text): Make text drawing aware of the text
+	extent property.
+	* gl-render.h (opengl_renderer::text_to_pixels): Arguments reordering.
+	(opengl_renderer::get_transform): New function.
+	* gl2ps-renderer.cc (glps_renderer::render_text): Adapt the call to
+	text_to_pixels.
+	(glps_renderer::alignment_to_mode): New function.
+	(glps_renderer::draw_text): Overload inherited function.
+	* gl2ps-renderer.h (glps_renderer::alignment_to_mode): New function.
+	* graphics.h.in: Add dependency on txt-eng-ft.h.
+	(class text::properties): Tag horizontalalignment and verticalalignment
+	with "u" qualifier.
+	(text::properties::get_extent_matrix, get_pixels,
+	update_horizontalalignment, update_verticalalignment): New functions.
+	(text::properties::renderer): New class member of type ft_render.
+	(text::properties::pixels): New class member of type uint8NDArray.
+
 2011-01-06  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/rand.cc (Frandperm): Tag call to floor with gnulib::.

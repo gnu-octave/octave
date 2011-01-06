@@ -71,6 +71,7 @@ public:
     }
 
   virtual void set_viewport (int w, int h);
+  virtual graphics_xform get_transform (void) const { return xform; }
 
 protected:
   virtual void draw_figure (const figure::properties& props);
@@ -97,10 +98,10 @@ protected:
                             const Matrix& lc, const Matrix& fc);
 
   virtual void text_to_pixels (const std::string& txt,
-                               double rotation,
                                uint8NDArray& pixels,
                                Matrix& bbox,
-                               int& rot_mode);
+                               int halign = 0, int valign = 0,
+                               double rotation = 0.0);
 
   virtual Matrix render_text (const std::string& txt,
                               double x, double y, double z,

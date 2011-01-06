@@ -5057,6 +5057,12 @@ text::properties::get_data_position (void) const
   return pos;
 }
 
+Matrix
+text::properties::get_extent_matrix (void) const
+{
+  return extent.get ().matrix_value ();
+}
+
 octave_value
 text::properties::get_extent (void) const
 {
@@ -5070,30 +5076,37 @@ text::properties::update_text_extent (void)
 {
 #ifdef HAVE_FREETYPE
 
-  text_element *elt;
-  ft_render text_renderer;
-  Matrix box;
-
-  // FIXME: parsed content should be cached for efficiency
-  
-  elt = text_parser_none ().parse (get_string ());
+  // FIXME: font and color should be set only when modified, for efficiency
 #ifdef HAVE_FONTCONFIG
-  text_renderer.set_font (*this);
+  renderer.set_font (get ("fontname").string_value (),
+                     get ("fontweight").string_value (),
+                     get ("fontangle").string_value (),
+                     get ("fontsize").double_value ());
 #endif
-  box = text_renderer.get_extent (elt, get_rotation ());
+  renderer.set_color (get_color_rgb ());
 
-  delete elt;
+  int halign = 0, valign = 0;
 
-  Matrix ext (1, 4, 0.0);
+  if (horizontalalignment_is ("center"))
+    halign = 1;
+  else if (horizontalalignment_is ("right"))
+    halign = 2;
+  
+  if (verticalalignment_is ("top"))
+    valign = 2;
+  else if (verticalalignment_is ("baseline"))
+    valign = 3;
+  else if (verticalalignment_is ("middle"))
+    valign = 1;
 
-  // FIXME: also handle left and bottom components
+  Matrix bbox;
+  // FIXME: string should be parsed only when modified, for efficiency
+  renderer.text_to_pixels (get_string (), pixels, bbox,
+                           halign, valign, get_rotation ());
 
-  ext(0) = ext(1) = 1;
-  ext(2) = box(0);
-  ext(3) = box(1);
-
-  set_extent (ext);
-
+  set_extent (bbox);
+#else
+  warning ("update_text_extent: cannot render text, Freetype library not available");
 #endif
 }
 

@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <dMatrix.h>
 #include <uint8NDArray.h>
-#include "graphics.h"
 #include "txt-eng.h"
 
 class
@@ -68,11 +67,16 @@ public:
 
   Matrix get_extent (text_element *elt, double rotation = 0.0);
 
-  void set_font (const base_properties& props);
+  void set_font (const std::string& name, const std::string& weight,
+                 const std::string& angle, double size);
 
   void set_color (Matrix c);
 
   void set_mode (int m);
+
+  void text_to_pixels (const std::string& txt,
+                       uint8NDArray& pixels_, Matrix& bbox,
+                       int halign, int valign, double rotation);
 
 private:
   int rotation_to_mode (double rotation) const;

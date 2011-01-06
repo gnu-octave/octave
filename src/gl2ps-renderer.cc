@@ -88,14 +88,9 @@ glps_renderer::draw (const graphics_object& go)
     opengl_renderer::draw (go); 
 }
 
-Matrix 
-glps_renderer::render_text (const std::string& txt,
-                            double x, double y, double z,
-                            int ha, int va, double rotation)
+int
+glps_renderer::alignment_to_mode (int ha, int va) const
 {
-  if (txt.empty ())
-    return Matrix (1, 4, 0.0);
-
   int gl2psa=GL2PS_TEXT_BL;
   if (ha == 0)
     {
@@ -124,18 +119,26 @@ glps_renderer::render_text (const std::string& txt,
       else if (va == 1)
         gl2psa=GL2PS_TEXT_C;
     }
+  return gl2psa;
+}
+
+Matrix 
+glps_renderer::render_text (const std::string& txt,
+                            double x, double y, double z,
+                            int ha, int va, double rotation)
+{
+  if (txt.empty ())
+    return Matrix (1, 4, 0.0);
 
   glRasterPos3d (x, y, z);
-
-  gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize, gl2psa, rotation);
+  gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize,
+                alignment_to_mode (ha, va), rotation);
 
   // FIXME? -- we have no way of getting a bounding box from gl2ps, so
   // we use freetype
   Matrix bbox;
   uint8NDArray pixels;
-  int rot_mode;
-  text_to_pixels (txt, rotation, pixels, bbox, rot_mode);
-
+  text_to_pixels (txt, pixels, bbox, 0, 0, rotation);
   return bbox;
 }
 
@@ -184,6 +187,38 @@ glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
     ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data));
   else
     gl2psDrawPixels (w, h, 0, 0, format, type, data);
+}
+
+void
+glps_renderer::draw_text (const text::properties& props)
+{
+  if (props.get_string ().empty ())
+    return;
+
+  set_font (props);
+  set_color (props.get_color_rgb ());
+
+  const Matrix pos = get_transform ().scale (props.get_data_position ());
+  int halign = 0, valign = 0;
+
+  if (props.horizontalalignment_is ("center"))
+    halign = 1;
+  else if (props.horizontalalignment_is ("right"))
+    halign = 2;
+  
+  if (props.verticalalignment_is ("top"))
+    valign = 2;
+  else if (props.verticalalignment_is ("baseline"))
+    valign = 3;
+  else if (props.verticalalignment_is ("middle"))
+    valign = 1;
+
+  // FIXME: handle margin and surrounding box
+
+  glRasterPos3d (pos(0), pos(1), pos(2));
+  gl2psTextOpt (props.get_string ().c_str (), fontname.c_str (), fontsize,
+                alignment_to_mode (halign, valign), props.get_rotation ());
+
 }
 
 #endif

@@ -203,23 +203,19 @@ ft_render::~ft_render (void)
 }
 
 void
-ft_render::set_font (const base_properties& props)
+ft_render::set_font (const std::string& name, const std::string& weight,
+                     const std::string& angle, double size)
 {
   if (face)
     FT_Done_Face (face);
 
   // FIXME: take "fontunits" into account
-  double font_size = props.get ("fontsize").double_value ();
-
-  face = ft_manager::get_font (props.get ("fontname").string_value (),
-                               props.get ("fontweight").string_value (),
-                               props.get ("fontangle").string_value (),
-                               font_size);
+  face = ft_manager::get_font (name, weight, angle, size);
 
   if (face)
     {
-      if (FT_Set_Char_Size (face, 0, font_size*64, 0, 0))
-        ::warning ("ft_render: unable to set font size to %d", font_size);
+      if (FT_Set_Char_Size (face, 0, size*64, 0, 0))
+        ::warning ("ft_render: unable to set font size to %d", size);
     }
   else
     ::warning ("ft_render: unable to load appropriate font");
@@ -480,6 +476,57 @@ ft_render::rotation_to_mode (double rotation) const
     return ROTATION_270;
   else
     return ROTATION_0;
+}
+
+void
+ft_render::text_to_pixels (const std::string& txt,
+                           uint8NDArray& pixels_, Matrix& box,
+                           int halign, int valign, double rotation)
+{
+  // FIXME: clip "rotation" between 0 and 360
+  int rot_mode = rotation_to_mode (rotation);
+
+  text_element *elt = text_parser_none ().parse (txt);
+  pixels_ = render (elt, box, rot_mode);
+  delete elt;
+
+  if (pixels_.numel () == 0)
+    {
+      // nothing to render
+      return;
+    }
+
+  switch (halign)
+    {
+    default: box(0) = 0; break;
+    case 1: box(0) = -box(2)/2; break;
+    case 2: box(0) = -box(2); break;
+    }
+  switch (valign)
+    {
+    default: box(1) = 0; break;
+    case 1: box(1) = -box(3)/2; break;
+    case 2: box(1) = -box(3); break;
+    case 3: break;
+    }
+
+  switch (rot_mode)
+    {
+    case ROTATION_90:
+      std::swap (box(0), box(1));
+      std::swap (box(2), box(3));
+      box(0) = -box(0)-box(2);
+      break;
+    case ROTATION_180:
+      box(0) = -box(0)-box(2);
+      box(1) = -box(1)-box(3);
+      break;
+    case ROTATION_270:
+      std::swap (box(0), box(1));
+      std::swap (box(2), box(3));
+      box(1) = -box(1)-box(3);
+      break;
+    }
 }
 
 #endif // HAVE_FREETYPE

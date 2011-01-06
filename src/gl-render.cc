@@ -2838,25 +2838,21 @@ opengl_renderer::draw_text (const text::properties& props)
   set_color (props.get_color_rgb ());
 
   const Matrix pos = xform.scale (props.get_data_position ());
-  int halign = 0, valign = 0;
-
-  if (props.horizontalalignment_is ("center"))
-    halign = 1;
-  else if (props.horizontalalignment_is ("right"))
-    halign = 2;
-  
-  if (props.verticalalignment_is ("top"))
-    valign = 2;
-  else if (props.verticalalignment_is ("baseline"))
-    valign = 3;
-  else if (props.verticalalignment_is ("middle"))
-    valign = 1;
+  const Matrix bbox = props.get_extent_matrix ();
 
   // FIXME: handle margin and surrounding box
+  bool blend = glIsEnabled (GL_BLEND);
 
-  render_text (props.get_string (),
-             pos(0), pos(1), pos(2),
-             halign, valign, props.get_rotation ());
+  glEnable (GL_BLEND);
+  glEnable (GL_ALPHA_TEST);
+  glRasterPos3d (pos(0), pos(1), pos(2));
+  glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+  glDrawPixels (bbox(2), bbox(3),
+                GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
+  glDisable (GL_ALPHA_TEST);
+  if (! blend)
+    glDisable (GL_BLEND);
+
 }
 
 void
@@ -3048,7 +3044,10 @@ void
 opengl_renderer::set_font (const base_properties& props)
 {
 #if HAVE_FREETYPE
-  text_renderer.set_font (props);
+  text_renderer.set_font (props.get ("fontname").string_value (),
+                          props.get ("fontweight").string_value (),
+                          props.get ("fontangle").string_value (),
+                          props.get ("fontsize").double_value ());
 #endif
 }
 
@@ -3374,25 +3373,12 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
 void
 opengl_renderer::text_to_pixels (const std::string& txt,
-                                 double rotation,
                                  uint8NDArray& pixels,
                                  Matrix& bbox,
-                                 int& rot_mode)
+                                 int halign, int valign, double rotation)
 {
-  // FIXME: clip "rotation" between 0 and 360
-
-  rot_mode = ft_render::ROTATION_0;
-
-  if (rotation == 90.0)
-    rot_mode = ft_render::ROTATION_90;
-  else if (rotation == 180.0)
-    rot_mode = ft_render::ROTATION_180;
-  else if (rotation == 270.0)
-    rot_mode = ft_render::ROTATION_270;
-
-  text_element *elt = text_parser_none ().parse (txt);
-  pixels = text_renderer.render (elt, bbox, rot_mode);
-  delete elt;
+  text_renderer.text_to_pixels (txt, pixels, bbox,
+                                halign, valign, rotation);
 }
 
 Matrix
@@ -3404,59 +3390,17 @@ opengl_renderer::render_text (const std::string& txt,
   if (txt.empty ())
     return Matrix (1, 4, 0.0);
 
-  Matrix bbox;
   uint8NDArray pixels;
-  int rot_mode;
-  text_to_pixels (txt, rotation, pixels, bbox, rot_mode);
-
-  int x0 = 0, y0 = 0;
-  int w = bbox(2), h = bbox(3);
-
-  if (pixels.numel () == 0)
-    {
-      // nothing to render
-      return bbox;
-    }
-
-  switch (halign)
-    {
-    default: break;
-    case 1: x0 = -bbox(2)/2; break;
-    case 2: x0 = -bbox(2); break;
-    }
-  switch (valign)
-    {
-    default: break;
-    case 1: y0 = -bbox(3)/2; break;
-    case 2: y0 = -bbox(3); break;
-    case 3: y0 = bbox(1); break;
-    }
-
-  switch (rot_mode)
-    {
-    case ft_render::ROTATION_90:
-      std::swap (x0, y0);
-      std::swap (w, h);
-      x0 = -x0-bbox(3);
-      break;
-    case ft_render::ROTATION_180:
-      x0 = -x0-bbox(2);
-      y0 = -y0-bbox(3);
-      break;
-    case ft_render::ROTATION_270:
-      std::swap (x0, y0);
-      std::swap (w, h);
-      y0 = -y0-bbox(2);
-      break;
-    }
+  Matrix bbox;
+  text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
 
   bool blend = glIsEnabled (GL_BLEND);
 
   glEnable (GL_BLEND);
   glEnable (GL_ALPHA_TEST);
   glRasterPos3d (x, y, z);
-  glBitmap(0, 0, 0, 0, x0, y0, 0);
-  glDrawPixels (w, h,
+  glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+  glDrawPixels (bbox(2), bbox(3),
                 GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
   glDisable (GL_ALPHA_TEST);
   if (! blend)

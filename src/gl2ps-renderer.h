@@ -47,6 +47,7 @@ protected:
 
   virtual void set_font (const base_properties& props);
 
+  virtual void draw_text (const text::properties& props);
   virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
                             GLenum type, const GLvoid *data);
 
@@ -74,6 +75,7 @@ protected:
   }
 
 private:
+  int alignment_to_mode (int ha, int va) const;
   int fid;
   caseless_str term;
   double fontsize;

@@ -39,18 +39,14 @@
 ##            (SIAM, 2008.)
 ##
 
-function [s, iters] = logm (a, opt_iters)
+function [s, iters] = logm (a, opt_iters = 100)
  
-  if (nargin == 0)
-    print_usage ();
-  elseif (nargin < 2)
-    opt_iters = 100;
-  elseif (nargin > 2)
+  if (nargin == 0 || nargin > 2)
     print_usage ();
   endif
 
   if (! issquare (a))
-    error ("logm: argument must be a square matrix.");
+    error ("logm: argument must be a square matrix");
   endif
 
   [u, s] = schur (a);
@@ -61,9 +57,7 @@ function [s, iters] = logm (a, opt_iters)
 
   if (any (diag (s) < 0))
     warning ("Octave:logm:non-principal",
-    ["logm: Matrix has negative eigenvalues.", ...
-     "  Principal matrix logarithm is not defined.", ...
-     "  Computing non-principal logarithm."]);
+             "logm: principal matrix logarithm is not defined for matrices with negative eigenvalues; computing non-principal logarithm");
   endif
 
   k = 0;
@@ -87,7 +81,7 @@ function [s, iters] = logm (a, opt_iters)
   endwhile
 
   if (k >= opt_iters)
-    warning ("logm: Maximum number of square roots exceeded.  Results may still be accurate.");
+    warning ("logm: maximum number of square roots exceeded; results may still be accurate");
   endif
 
   s = logm_pade_pf (s - eye (size (s)), m);
@@ -111,16 +105,16 @@ endfunction
 ##   Y = LOGM_PADE_PF(a,M) evaluates the [M/M] Pade approximation to
 ##   LOG(EYE(SIZE(a))+a) using a partial fraction expansion.
 
-function s = logm_pade_pf(a,m)
-  [nodes,wts] = gauss_legendre(m);
+function s = logm_pade_pf (a, m)
+  [nodes, wts] = gauss_legendre (m);
   ## Convert from [-1,1] to [0,1].
-  nodes = (nodes + 1)/2;
+  nodes = (nodes+1)/2;
   wts = wts/2;
 
-  n = length(a);
-  s = zeros(n);
-  for j=1:m
-    s = s + wts(j)*(a/(eye(n) + nodes(j)*a));
+  n = length (a);
+  s = zeros (n);
+  for j = 1:m
+    s += wts(j)*(a/(eye (n) + nodes(j)*a));
   endfor
 endfunction
 
@@ -133,10 +127,10 @@ endfunction
 ## G. H. Golub and J. H. Welsch, Calculation of Gauss quadrature
 ## rules, Math. Comp., 23(106):221-230, 1969.
 
-function [x,w] = gauss_legendre(n)
+function [x, w] = gauss_legendre (n)
   i = 1:n-1;
   v = i./sqrt ((2*i).^2-1);
-  [V,D] = eig ( diag(v,-1)+diag(v,1) );
+  [V, D] = eig (diag (v, -1) + diag (v, 1));
   x = diag (D);
   w = 2*(V(1,:)'.^2);
 endfunction

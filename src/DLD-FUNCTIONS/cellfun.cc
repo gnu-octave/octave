@@ -527,7 +527,12 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
           retval.resize (nargout1);
           for (int j = 0; j < nargout1; j++)
-            retval(j) = retv[j];
+            {
+              if (nargout > 0 && retv[j].is_undefined ())
+                retval(j) = NDArray (fdims);
+              else
+                retval(j) = retv[j];
+            }
         }
       else
         {
@@ -577,6 +582,16 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 }
 
 /*
+
+%!test
+%!  [a,b] = cellfun (@(x) x, cell (2, 0));
+%!  assert (a, zeros (2, 0));
+%!  assert (b, zeros (2, 0));
+
+%!test
+%!  [a,b] = cellfun (@(x) x, cell (2, 0), "uniformoutput", false);
+%!  assert (a, cell (2, 0));
+%!  assert (b, cell (2, 0));
 
 %% Test function to check the "Errorhandler" option
 %!function [z] = cellfunerror (S, varargin)

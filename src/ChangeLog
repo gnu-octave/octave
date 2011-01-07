@@ -1,3 +1,14 @@
+2011-01-07  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): For uniformoutput case
+	with nargout > 0, initialize elements of retval to NDArray
+	objects of the same size as the input.  Bug #32067.
+
+2011-01-07  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (Fget): Return empty matrix if no values are found.
+	Bug #32067.
+
 2011-01-06  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* txt-eng-ft.h, txt-eng-ft.cc: Remove dependency on graphics.h.
@@ -27,11 +38,6 @@
 	update_horizontalalignment, update_verticalalignment): New functions.
 	(text::properties::renderer): New class member of type ft_render.
 	(text::properties::pixels): New class member of type uint8NDArray.
-
-2011-01-07  John W. Eaton  <jwe@octave.org>
-
-	* graphics.cc (Fget): Return empty matrix if no values are found.
-	Bug #32067.
 
 2011-01-06  John W. Eaton  <jwe@octave.org>
 

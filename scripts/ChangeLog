@@ -1,7 +1,7 @@
 2011-01-07  John W. Eaton  <jwe@octave.org>
 
 	* general/private/__isequal__.m: Compare objects as if they are
-	structures.
+	structures.  Bug #32071.
 
 2011-01-07  John W. Eaton  <jwe@octave.org>
 
@@ -30,7 +30,7 @@
 	validation.  Add function tests.  Improve docstring.
 
 	* statistics/base/moment.m, statistics/base/prctile.m,
-	statistics/base/spearman.m, statistics/base/std.m : Improve input 
+	statistics/base/spearman.m, statistics/base/std.m : Improve input
 	validation.  Add input validation tests.  Improve docstring.
 
 	* statistics/base/cloglog.m: Add function tests.
@@ -42,7 +42,7 @@
 	validation.  Add function tests.  Improve docstring.
 
 	* statistics/base/cut.m: Use lowercase variable names.  Improve
-	docstring.  
+	docstring.
 
 	* statistics/base/histc.m, statistics/base/median.m: Use same variable
 	name in documentation and in function.  Add input validation tests.
@@ -52,7 +52,7 @@
 	tests.  Improve docstring.
 
 	* statistics/base/kurtosis.m: Return same class as input variable.  Add
-	input validation tests.  Improve docstring.  
+	input validation tests.  Improve docstring.
 
 
 	* statistics/base/logit.m, statistics/base/range.m: Add function tests.
@@ -63,19 +63,19 @@
 
 	* statistics/base/ols.m, statistics/base/gls.m: Use isargout to only
 	calculate necessary outputs.  Use lowercase variable names.  Add
-	functional tests.  Improve docstring.  
+	functional tests.  Improve docstring.
 
 	* statistics/base/ppplot.m: Add input validation tests.
 
 	* statistics/base/qqplot.m: Add ability to call "XXXinv" or "XXX_inv"
-	functions.  Improve input validation.  Improve docstring.  
+	functions.  Improve input validation.  Improve docstring.
 
 	* statistics/base/quantile.m: Use defaults for input arguments to
 	simplify code.  Improve input validation.  Add input validation tests.
-	Improve docstring.  
+	Improve docstring.
 
 	* statistics/base/statistics.m: Use lowercase variable names.  Improve
-	input validation.  Add input validation tests.  Improve docstring.  
+	input validation.  Add input validation tests.  Improve docstring.
 
 	* statistics/base/table.m: Switch from deprecated function 'values' to
 	'unique'.  Add input validation tests.  Improve docstring.
@@ -134,7 +134,7 @@
 
 2010-12-28  Rik  <octave@nomad.inbox5.com>
 
-	* image/autumn.m, image/bone.m, image/cool.m, image/copper.m, 
+	* image/autumn.m, image/bone.m, image/cool.m, image/copper.m,
 	image/flag.m, image/gray.m, image/hot.m, image/hsv.m, image/jet.m,
 	image/ocean.m, image/pink.m, image/prism.m, image/rainbow.m,
 	image/spring.m, image/summer.m, image/white.m, image/winter.m: Use
@@ -166,13 +166,14 @@
 	* audio/setaudio.m: Re-write docstring.
 
 2010-12-23  Soren Hauberg  <hauberg@gmail.com>
-	* signal/detrend.m: Also accept polynomial order as a string ("constant" or
-	"linear") for compatibility with Matlab.
+
+	* signal/detrend.m: Also accept polynomial order as a string
+	("constant" or "linear") for compatibility with Matlab.
 
 2010-12-22  Konstantinos Poulios  <logari81@gmail.com>
 
-	* plot/private/__axis_label__.m: Trigger fltk graphics redraw immediately
-	after setting an axis label.
+	* plot/private/__axis_label__.m: Trigger fltk graphics redraw
+	immediately after setting an axis label.
 
 2010-12-22  John W. Eaton  <jwe@octave.org>
 
@@ -225,7 +226,7 @@
 
 2010-12-16  Olaf Till <olaf.till@uni-jena.de>
 
-	* optimization/sqp.m: Fix indexing error in sqp bounds selection. 
+	* optimization/sqp.m: Fix indexing error in sqp bounds selection.
 
 2010-12-14  Doug Stewart <doug.dastew@gmail.com>
 
@@ -238,8 +239,8 @@
 
 2010-12-14  Rik  <octave@nomad.inbox5.com>
 
-	* plot/compass.m, plot/errorbar.m, plot/legend.m, plot/rose.m, 
-	plot/scatter.m, plot/scatter3.m, plot/stairs.m: Assign data used in 
+	* plot/compass.m, plot/errorbar.m, plot/legend.m, plot/rose.m,
+	plot/scatter.m, plot/scatter3.m, plot/stairs.m: Assign data used in
 	demo plots for reproducibility between runs.
 
 2010-12-13  Rik  <octave@nomad.inbox5.com>
@@ -350,8 +351,8 @@
 2010-12-09  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/pie3.m, plot/private/__pie__.m: New functions.
-	* plot/pie.m: Move __pie__ function to plot/private, in order to be used
-	by pie and pie3.
+	* plot/pie.m: Move __pie__ function to plot/private, in order to
+	be used by pie and pie3.
 	* miscellaneous/unimplemented.m: Remove pie3.m from list of
 	unimplemented functions.
 
@@ -425,7 +426,8 @@
 2010-11-25  Kai Habel  <kai.habel@gmx.de>
 
 	* (plot/uimenu.m): Simplify code, add further check.
-	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m): Fix error messages.
+	* (plot/uigetdir.m, plot/uigetfile.m, plot/uiputfile.m):
+	Fix error messages.
 
 2010-11-25  John W. Eaton  <jwe@octave.org>
 
@@ -953,7 +955,7 @@
 	* statistics/distributions/geornd.m,
 	* statistics/distributions/hygecdf.m,
 	* statistics/distributions/hygeinv.m,
-	* statistics/distributions/poissrnd.m, 
+	* statistics/distributions/poissrnd.m,
 	* statistics/distributions/wblrnd.m:
 	Use || instead of | and && instead of & in IF conditions
 	involving scalars.
@@ -1869,6 +1871,7 @@
 	non-singleton dimension computation.
 
 2010-05-24  Rik  <octave@nomad.inbox5.com>
+
 	* general/private/__isequal__.m, image/image.m,
 	statistics/base/ranks.m: Replace calls to deprecated functions.
 

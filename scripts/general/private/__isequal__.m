@@ -59,7 +59,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## All arguments must either be of the same class or they must be
   ## numeric values.
   t = (all (strcmp (class(x),
-                   cellfun (@class, varargin, "uniformoutput", false)))
+                    cellfun (@class, varargin, "uniformoutput", false)))
        || ((isnumeric (x) || islogical (x))
            && all (cellfun (@isnumeric, varargin)
                    | cellfun (@islogical, varargin))));
@@ -81,6 +81,12 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx++;
       t = all (s_x(idx) == s_v(idx,:));
     endwhile
+  endif
+
+  ## From here on, compare objects as if they were structures.
+  if (isobject (x))
+    x = struct (x);
+    varargin = cellfun (@struct, varargin, "uniformoutput", false);
   endif
 
   if (t)

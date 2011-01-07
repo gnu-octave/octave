@@ -1,3 +1,8 @@
+2011-01-08  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* gl-render.cc (opengl_renderer::draw_axes): Revert positionmode
+	to auto after automatic positioning of titles. Bug #32074.
+
 2011-01-08  David Grundberg  <individ@acc.umu.se>
 
 	* ov-fcn.h (is_subfunction): Rename from is_nested_function.

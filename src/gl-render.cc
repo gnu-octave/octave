@@ -1748,6 +1748,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       ColumnVector p = xform.untransform (bb(0)+bb(2)/2, (bb(1)-10),
           (x_zlim(0)+x_zlim(1))/2, true);
       title_props.set_position (p.extract_n(0, 3).transpose ());
+      title_props.set_positionmode ("auto");
     }
 
   set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);

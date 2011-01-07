@@ -28,6 +28,11 @@
 	(text::properties::renderer): New class member of type ft_render.
 	(text::properties::pixels): New class member of type uint8NDArray.
 
+2011-01-07  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (Fget): Return empty matrix if no values are found.
+	Bug #32067.
+
 2011-01-06  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/rand.cc (Frandperm): Tag call to floor with gnulib::.

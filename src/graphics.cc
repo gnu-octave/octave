@@ -6150,14 +6150,20 @@ values or lists respectively.\n\
     {
       octave_idx_type len = vals.numel ();
 
-      if (len > 1)
-        retval = vals;
+      if (len == 0)
+        retval = Matrix ();
       else if (len == 1)
         retval = vals(0);
+      else
+        retval = vals;
     }
 
   return retval;
 }
+
+/*
+%!assert (get (findobj (0, 'Tag', 'nonexistenttag'), 'nonexistentproperty'), [])
+*/
 
 // Return all properties from the graphics handle @var{h}.
 // If @var{h} is a vector, return a cell array including the

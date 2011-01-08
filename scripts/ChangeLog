@@ -1,3 +1,8 @@
+2011-01-08  John Hunt  <huntj@gawab.com>
+
+	* plot/legend.m, plot/private/__plt__.m: legend with more than two
+	inline keys (bug 31991). Add/modifyy demos.
+
 2011-01-07  John W. Eaton  <jwe@octave.org>
 
 	* general/private/__isequal__.m: Compare objects as if they are

@@ -132,7 +132,7 @@ function [hlgnd, tlgnd] = __plt_key__ (h, options, hlgnd, tlgnd)
   for i = 1 : n
     key = options.key;
     if (! isempty (key))
-      hlgnd = [hlgnd(:), h(i)];
+      hlgnd = [hlgnd(:); h(i)];
       tlgnd = {tlgnd{:}, key};
     endif
   endfor

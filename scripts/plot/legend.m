@@ -989,7 +989,13 @@ endfunction
 %!demo
 %! clf
 %! x = 0:1;
+%! plot (x, x, ";I am Blue;", x, 2*x, ";I am Green;", x, 3*x, ";I am Red;")
+
+%!demo
+%! clf
+%! x = 0:1;
 %! plot (x, x, ";I am Blue;", x, 2*x, x, 3*x, ";I am Red;")
+%! title ("Blue and Green keys, with Green mising")
 
 %!demo
 %! clf

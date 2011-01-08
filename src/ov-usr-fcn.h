@@ -248,9 +248,9 @@ public:
 
   void stash_function_name (const std::string& s) { my_name = s; }
 
-  void mark_as_nested_function (void) { nested_function = true; }
+  void mark_as_subfunction (void) { subfunction = true; }
 
-  bool is_nested_function (void) const { return nested_function; }
+  bool is_subfunction (void) const { return subfunction; }
 
   void mark_as_inline_function (void) { inline_function = true; }
 
@@ -366,8 +366,8 @@ private:
   // The number of arguments that have names.
   int num_named_args;
 
-  // TRUE means this is a nested function.
-  bool nested_function;
+  // TRUE means this subfunction of a primary function.
+  bool subfunction;
 
   // TRUE means this is an inline function.
   bool inline_function;

@@ -76,7 +76,7 @@ public:
   virtual octave_time time_checked (void) const
     { return octave_time (static_cast<time_t> (0)); }
 
-  virtual bool is_nested_function (void) const { return false; }
+  virtual bool is_subfunction (void) const { return false; }
 
   virtual bool is_class_constructor (const std::string& = std::string ()) const
     { return false; }

@@ -181,7 +181,7 @@ octave_user_function::octave_user_function
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
-    nested_function (false), inline_function (false),
+    subfunction (false), inline_function (false),
     class_constructor (false), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)

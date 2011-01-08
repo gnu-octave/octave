@@ -1,3 +1,10 @@
+2011-01-08  David Grundberg  <individ@acc.umu.se>
+
+	* ov-fcn.h (is_subfunction): Rename from is_nested_function.
+	Change all uses and nearby comments.
+	* ov-usr-fcn.h (is_subfunction, mark_as_subfunction): Rename from
+	is_nested_function, mark_as_nested_function.  Change all uses.
+
 2011-01-07  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): For uniformoutput case

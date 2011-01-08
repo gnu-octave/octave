@@ -2952,9 +2952,7 @@ finish_function (tree_parameter_list *ret_list,
 
       if (current_function_depth > 1 || parsing_subfunctions)
         {
-          // FIXME -- is this flag used to determine if the function is a
-          // _subfunction_ somewhere?
-          fcn->mark_as_nested_function ();
+          fcn->mark_as_subfunction ();
 
           symbol_table::install_subfunction (nm, octave_value (fcn),
                                              primary_fcn_scope);

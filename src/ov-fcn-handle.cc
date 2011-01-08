@@ -1473,7 +1473,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
   // Here we are just looking to see if FCN is a method or constructor
   // for any class.
   if (local_funcs && fptr 
-      && (fptr->is_nested_function () || fptr->is_private_function ()
+      && (fptr->is_subfunction () || fptr->is_private_function ()
           || fptr->is_class_constructor ()))
     {
       // Locally visible function.
@@ -1594,7 +1594,7 @@ Return a struct containing information about the function handle\n\
                 {
                   m.setfield ("function", fh_nm);
 
-                  if (fcn->is_nested_function ())
+                  if (fcn->is_subfunction ())
                     {
                       m.setfield ("type", "subfunction");
                       Cell parentage (dim_vector (1, 2));

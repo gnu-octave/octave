@@ -169,9 +169,9 @@ out_of_date_check (octave_value& function,
 
   if (fcn)
     {
-      // FIXME -- we need to handle nested functions properly here.
+      // FIXME -- we need to handle subfunctions properly here.
 
-      if (! fcn->is_nested_function ())
+      if (! fcn->is_subfunction ())
         {
           std::string ff = fcn->fcn_file_name ();
 

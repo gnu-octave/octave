@@ -1,3 +1,9 @@
+2011-01-09  John W. Eaton  <jwe@octave.org>
+
+	* lex.h, lex.ll, oct-parse.yy (lexer_flags::parsed_function_name):
+	Declare to be std::stack<bool> instead of bool.  Change all uses.
+	Bug #32083.
+
 2011-01-08  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* gl-render.cc (opengl_renderer::draw_axes): Revert positionmode

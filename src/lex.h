@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_lex_h 1
 
 #include <list>
+#include <stack>
 
 // FIXME -- these input buffer things should be members of a
 // parser input stream class.
@@ -117,9 +118,10 @@ public:
   // structure element.
   bool looking_at_indirect_ref;
 
-  // TRUE means that we've already seen the name of this function.
-  // Should only matter if current_function_level > 0
-  bool parsed_function_name;
+  // If the top of the stack is TRUE, then we've already seen the name
+  // of the current function.  Should only matter if
+  // current_function_level > 0
+  std::stack<bool> parsed_function_name;
 
   // TRUE means we are parsing a class method in function or classdef file.
   bool parsing_class_method;

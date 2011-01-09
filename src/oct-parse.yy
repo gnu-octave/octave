@@ -1377,7 +1377,7 @@ fcn_name        : identifier
                   {
                     std::string id_name = $1->name ();
 
-                    lexer_flags.parsed_function_name = true;
+                    lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
             
                     $$ = $1;
@@ -2998,7 +2998,7 @@ recover_from_parsing_function (void)
   current_function_depth--;
 
   lexer_flags.defining_func--;
-  lexer_flags.parsed_function_name = false;
+  lexer_flags.parsed_function_name.pop ();
   lexer_flags.looking_at_return_list = false;
   lexer_flags.looking_at_parameter_list = false;
 }

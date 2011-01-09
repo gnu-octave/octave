@@ -617,7 +617,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_for_object_index = false;
     lexer_flags.at_beginning_of_statement = false;
 
-    if (lexer_flags.defining_func && ! lexer_flags.parsed_function_name)
+    if (lexer_flags.defining_func
+        && ! lexer_flags.parsed_function_name.top ())
       lexer_flags.looking_at_return_list = true;
     else
       lexer_flags.looking_at_matrix_or_assign_lhs = true;
@@ -1470,7 +1471,7 @@ is_keyword_token (const std::string& s)
               && (inside_any_object_index ()
                   || (lexer_flags.defining_func
                       && ! (lexer_flags.looking_at_return_list
-                            || lexer_flags.parsed_function_name))))
+                            || lexer_flags.parsed_function_name.top ()))))
             return 0;
 
           yylval.tok_val = new token (token::simple_end, l, c);
@@ -1581,7 +1582,7 @@ is_keyword_token (const std::string& s)
           promptflag--;
 
           lexer_flags.defining_func++;
-          lexer_flags.parsed_function_name = false;
+          lexer_flags.parsed_function_name.push (false);
 
           if (! (reading_fcn_file || reading_script_file
                  || reading_classdef_file))
@@ -3333,7 +3334,11 @@ lexical_feedback::init (void)
 
   // Not initially defining a function.
   defining_func = 0;
-  parsed_function_name = false;
+
+  // Not parsing an object index.
+  while (! parsed_function_name.empty ())
+    parsed_function_name.pop ();
+
   parsing_class_method = false;
   
   // Not initially defining a class with classdef.

@@ -1,3 +1,12 @@
+2011-01-09  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (save_mat5_array_length (const float*, octave_idx_type,
+        bool)): Take in to account the short tags for single data elements.
+	(int save_mat5_element_length (const octave_value&, const std::string&,
+	bool, bool)): Declare sparse matrices const to avoid a copy on read.
+	* ls-utils.cc (save_type get_save_type (float, float)): New function.
+	* ls-utils.h  (save_type get_save_type (float, float)): Declare it.
+
 2011-01-09  John W. Eaton  <jwe@octave.org>
 
 	* token.h, token.cc (token::plot_tok_typ): Delete unused enum.

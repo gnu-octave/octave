@@ -58,3 +58,31 @@ get_save_type (double /* max_val */, double /* min_val */)
 
   return st;
 }
+
+save_type
+get_save_type (float /* max_val */, float /* min_val */)
+{
+  save_type st = LS_FLOAT;
+
+  // Matlab doesn't seem to load the UINT32 type correctly, so let's
+  // avoid it (and the other unsigned types, even though they may not
+  // have the same problem.  And apparently, there are problems with
+  // other smaller types as well.  If we avoid them all, then maybe we
+  // will avoid problems.  Unfortunately, we won't be able to save
+  // space...
+
+  //  if (max_val < 256 && min_val > -1)
+  //    st = LS_U_CHAR;
+  //  else if (max_val < 65536 && min_val > -1)
+  //    st = LS_U_SHORT;
+  //  else if (max_val < 4294967295UL && min_val > -1)
+  //    st = LS_U_INT;
+  //  else if (max_val < 128 && min_val >= -128)
+  //    st = LS_CHAR;
+  //  else if (max_val < 32768 && min_val >= -32768)
+  //    st = LS_SHORT;
+  //  else if (max_val <= 2147483647L && min_val >= -2147483647L)
+  //    st = LS_INT;
+
+  return st;
+}

@@ -2002,8 +2002,9 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
       //       size = 4;
       //   }
 
-      // Round nel up to nearest even number of elements
-      return 8 + ((nel + 1) & ~0x1LL) * size;
+      // Round nel up to nearest even number of elements. Take into account
+      // Short tags for 4 byte elements.
+      return PAD ((nel > 0 && nel * size <= 4 ? 4 : 8) + nel * size);
     }
   else
     return 8;
@@ -2076,7 +2077,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     {
       if (tc.is_complex_type ())
         {
-          SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
+          const SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
           octave_idx_type nc = m.cols ();
           octave_idx_type nnz = m.nzmax (); // Yes its nzmax
 
@@ -2088,7 +2089,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
         }
       else
         {
-          SparseMatrix m = tc.sparse_matrix_value ();
+          const SparseMatrix m = tc.sparse_matrix_value ();
           octave_idx_type nc = m.cols ();
           octave_idx_type nnz = m.nzmax ();
 
@@ -2130,13 +2131,13 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     {
       if (tc.is_single_type ())
         {
-          FloatNDArray m = tc.float_array_value ();
+          const FloatNDArray m = tc.float_array_value ();
           ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
                                          save_as_floats);
         }
       else
         {
-          NDArray m = tc.array_value ();
+          const NDArray m = tc.array_value ();
           ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
                                          save_as_floats);
         }
@@ -2154,13 +2155,13 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
     {
       if (tc.is_single_type ())
         {
-          FloatComplexNDArray m = tc.float_complex_array_value ();
+          const FloatComplexNDArray m = tc.float_complex_array_value ();
           ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
                                          save_as_floats);
         }
       else
         {      
-          ComplexNDArray m = tc.complex_array_value ();
+          const ComplexNDArray m = tc.complex_array_value ();
           ret += save_mat5_array_length (m.fortran_vec (), m.numel (),
                                          save_as_floats);
         }

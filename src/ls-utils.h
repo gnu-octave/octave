@@ -26,4 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 extern save_type
 get_save_type (double max_val, double min_val);
 
+extern save_type
+get_save_type (float max_val, float min_val);
+
 #endif

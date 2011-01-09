@@ -1,5 +1,10 @@
 2011-01-09  John W. Eaton  <jwe@octave.org>
 
+	* lex.ll (display_token): Display token value for NUM, IMAG_NUM,
+	STRUCT_ELT, NAME, DQ_STRING, and SQ_STRING tokens.
+
+2011-01-09  John W. Eaton  <jwe@octave.org>
+
 	* lex.h, lex.ll, oct-parse.yy (lexer_flags::parsed_function_name):
 	Declare to be std::stack<bool> instead of bool.  Change all uses.
 	Bug #32083.

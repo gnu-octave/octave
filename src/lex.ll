@@ -3560,13 +3560,34 @@ display_token (int tok)
     case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
     case POW: std::cerr << "POW\n"; break;
     case EPOW: std::cerr << "EPOW\n"; break;
-    case NUM: std::cerr << "NUM\n"; break;
-    case IMAG_NUM: std::cerr << "IMAG_NUM\n"; break;
-    case STRUCT_ELT: std::cerr << "STRUCT_ELT\n"; break;
-    case NAME: std::cerr << "NAME\n"; break;
+
+    case NUM:
+    case IMAG_NUM:
+      std::cerr << (tok == NUM ? "NUM" : "IMAG_NUM")
+                << " [" << yylval.tok_val->number () << "]\n";
+      break;
+
+    case STRUCT_ELT:
+      std::cerr << "STRUCT_ELT [" << yylval.tok_val->text () << "]\n"; break;
+
+    case NAME:
+      {
+        symbol_table::symbol_record *sr = yylval.tok_val->sym_rec ();
+        std::cerr << "NAME";
+        if (sr)
+          std::cerr << " [" << sr->name () << "]";
+        std::cerr << "\n";
+      }
+      break;
+
     case END: std::cerr << "END\n"; break;
-    case DQ_STRING: std::cerr << "DQ_STRING\n"; break;
-    case SQ_STRING: std::cerr << "SQ_STRING\n"; break;
+
+    case DQ_STRING:
+    case SQ_STRING:
+      std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                << " [" << yylval.tok_val->text () << "]\n";
+      break;
+
     case FOR: std::cerr << "FOR\n"; break;
     case WHILE: std::cerr << "WHILE\n"; break;
     case DO: std::cerr << "DO\n"; break;

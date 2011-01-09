@@ -99,13 +99,13 @@
 ## @seealso{textread, load, dlmread, fscanf}
 ## @end deftypefn
 
-function varargout = strread (str, formatstr = "%f", varargin)
+function varargout = strread (str, format = "%f", varargin)
   ## Check input
   if (nargin < 1)
     print_usage ();
   endif
  
-  if (!ischar (str) || !ischar (formatstr))
+  if (!ischar (str) || !ischar (format))
     error ("strread: first and second input arguments must be strings");
   endif
 
@@ -150,10 +150,10 @@ function varargout = strread (str, formatstr = "%f", varargin)
   endif
 
   ## Parse format string
-  idx = strfind (formatstr, "%")';
-  specif = formatstr ([idx, idx+1]);
+  idx = strfind (format, "%")';
+  specif = format ([idx, idx+1]);
   nspecif = length (idx);
-  idx_star = strfind (formatstr, "%*");
+  idx_star = strfind (format, "%*");
   nfields = length (idx) - length (idx_star);
 
   if (max (nargout, 1) != nfields)
@@ -187,8 +187,8 @@ function varargout = strread (str, formatstr = "%f", varargin)
   endif
 
   ## Determine the number of words per line
-  formatstr = strrep (formatstr, "%", " %");
-  [~, ~, ~, fmt_words] = regexp (formatstr, "[^\\s]+");
+  format = strrep (format, "%", " %");
+  [~, ~, ~, fmt_words] = regexp (format, "[^\\s]+");
 
   num_words_per_line = numel (fmt_words);
   for m = 1:numel(fmt_words)

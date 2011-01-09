@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = sech (z)
+function y = sech (x)
 
 if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ cosh(z);
+  y = 1 ./ cosh(x);
 
 endfunction
 

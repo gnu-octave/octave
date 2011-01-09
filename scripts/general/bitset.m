@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} bitset (@var{a}, @var{n})
-## @deftypefnx {Function File} {@var{x} =} bitset (@var{a}, @var{n}, @var{v})
-## Set or reset bit(s) @var{n} of unsigned integers in @var{a}.
-## @var{v} = 0 resets and @var{v} = 1 sets the bits.
+## @deftypefn  {Function File} {@var{C} =} bitset (@var{A}, @var{n})
+## @deftypefnx {Function File} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
+## Set or reset bit(s) @var{n} of unsigned integers in @var{A}.
+## @var{val} = 0 resets and @var{val} = 1 sets the bits.
 ## The lowest significant bit is: @var{n} = 1
 ##
 ## @example
@@ -32,16 +32,16 @@
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
-## Liberally based of the version by Kai Habel from octave-forge
+## Liberally based on the version by Kai Habel from octave-forge
 
-function X = bitset (A, n, value)
+function C = bitset (A, n, val)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
   if (nargin == 2)
-    value = 1;
+    val = 1;
   endif
   
   if (isa (A, "double"))
@@ -85,10 +85,10 @@ function X = bitset (A, n, value)
   endif
 
   mask = bitshift (_conv (1), uint8 (n) - uint8 (1));
-  X = bitxor (A, bitand (A, mask));
+  C = bitxor (A, bitand (A, mask));
 
-  if (value)
-    X = bitor (A, mask);
+  if (val)
+    C = bitor (A, mask);
   endif
 
 endfunction

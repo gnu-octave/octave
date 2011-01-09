@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb_map})
+## @deftypefn {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
 ## Transform a colormap or image from the RGB space to the HSV space.
 ##
 ## A color in the RGB space consists of the red, green and blue intensities.
@@ -33,7 +33,7 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function hsval = rgb2hsv (rgb)
+function hsv_map = rgb2hsv (rgb)
 
   if (nargin != 1)
     print_usage ();
@@ -56,7 +56,7 @@ function hsval = rgb2hsv (rgb)
   endif
 
   if (! ismatrix (rgb) || columns (rgb) != 3)
-    error ("rgb2hsv: argument must be a matrix of size n x 3");
+    error ("rgb2hsv: RGB_MAP must be a matrix of size n x 3");
   endif
 
   ## get the max and min
@@ -93,11 +93,11 @@ function hsval = rgb2hsv (rgb)
   s(! notgray) = 0;
   s(notgray) = 1 - s(notgray) ./ v(notgray);
 
-  hsval = [h, s, v];
+  hsv_map = [h, s, v];
   
   ## If input was an image, convert it back into one.
   if (is_image)
-    hsval = reshape (hsval, Sz);
+    hsv_map = reshape (hsv_map, Sz);
   endif
 
 endfunction

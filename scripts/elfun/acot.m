@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = acot (z)
+function y = acot (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = atan (1./z);
+  y = atan (1./x);
 
 endfunction
 

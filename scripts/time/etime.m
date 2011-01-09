@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} etime (@var{t1}, @var{t2})
-## Return the difference (in seconds) between two time values returned from
-## @code{clock}.  For example:
+## @deftypefn {Function File} {} etime (@var{t2}, @var{t1})
+## Return the difference in seconds between two time values returned from
+## @code{clock} (@math{@var{t2} - @var{t1}}).  For example:
 ##
 ## @example
 ## @group
@@ -37,16 +37,16 @@
 
 ## Author: jwe
 
-function secs = etime (t1, t0)
+function secs = etime (t2, t1)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  [d1, s1] = datenum (t1);
-  [d0, s0] = datenum (t0);
+  [~, s2] = datenum (t2);
+  [~, s1] = datenum (t1);
 
-  secs = s1 - s0;
+  secs = s2 - s1;
 
 endfunction
 

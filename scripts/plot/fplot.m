@@ -41,7 +41,7 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function fplot (fn, limits, n, linespec)
+function fplot (fn, limits, n, fmt)
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
@@ -61,7 +61,7 @@ function fplot (fn, limits, n, linespec)
 
   if (ischar (n))
     have_linespec = true;
-    linespec = n;
+    fmt = n;
     n = 0.002;
   endif
 
@@ -107,7 +107,7 @@ function fplot (fn, limits, n, linespec)
   endif
 
   if (have_linespec)
-    plot (x, y, linespec);
+    plot (x, y, fmt);
   else
     plot (x, y);
   endif

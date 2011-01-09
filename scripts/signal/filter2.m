@@ -43,7 +43,7 @@
 ## 2001-02-08 
 ##    * initial release
 
-function Y = filter2 (B, X, shape)
+function y = filter2 (b, x, shape)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -52,6 +52,7 @@ function Y = filter2 (B, X, shape)
     shape = "same";
   endif
 
-  [nr, nc] = size(B);
-  Y = conv2 (X, B(nr:-1:1, nc:-1:1), shape);
+  [nr, nc] = size(b);
+  y = conv2 (x, b(nr:-1:1, nc:-1:1), shape);
 endfunction
+

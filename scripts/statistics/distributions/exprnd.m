@@ -31,7 +31,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the exponential distribution
 
-function rnd = exprnd (l, r, c)
+function rnd = exprnd (lambda, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
@@ -42,8 +42,8 @@ function rnd = exprnd (l, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (l) != 1)
-        && (length (size (l)) != length (sz) || any (size (l) != sz)))
+    if (any (size (lambda) != 1)
+        && (length (size (lambda)) != length (sz) || any (size (lambda) != sz)))
       error ("exprnd: lambda must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -55,32 +55,32 @@ function rnd = exprnd (l, r, c)
       error ("exprnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (l) != 1)
-        && ((length (size (l)) != length (sz)) || any (size (l) != sz)))
+    if (any (size (lambda) != 1)
+        && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
       error ("exprnd: lambda must be scalar or of size sz");
     endif
   elseif (nargin == 1)
-    sz = size (l);
+    sz = size (lambda);
   else
     print_usage ();
   endif
 
 
-  if (isscalar (l))
-    if ((l > 0) && (l < Inf))
-      rnd = rande(sz) * l;
+  if (isscalar (lambda))
+    if ((lambda > 0) && (lambda < Inf))
+      rnd = rande(sz) * lambda;
     else
       rnd = NaN (sz);
     endif
   else
     rnd = zeros (sz);
-    k = find (!(l > 0) | !(l < Inf));
+    k = find (!(lambda > 0) | !(lambda < Inf));
     if (any (k))
       rnd(k) = NaN;
     endif
-    k = find ((l > 0) & (l < Inf));
+    k = find ((lambda > 0) & (lambda < Inf));
     if (any (k))
-      rnd(k) = rande(size(k)) .* l(k);
+      rnd(k) = rande(size(k)) .* lambda(k);
     endif
   endif
 

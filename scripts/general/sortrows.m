@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sortrows (@var{a}, @var{c})
-## Sort the rows of the matrix @var{a} according to the order of the
+## @deftypefn {Function File} {} sortrows (@var{A}, @var{c})
+## Sort the rows of the matrix @var{A} according to the order of the
 ## columns specified in @var{c}.  If @var{c} is omitted, a
 ## lexicographical sort is used.  By default ascending order is used 
 ## however if elements of @var{c} are negative then the corresponding  
@@ -29,33 +29,33 @@
 ## Author: Daniel Calvelo, Paul Kienzle
 ## Adapted-by: jwe
 
-function [s, i] = sortrows (m, c)
+function [s, i] = sortrows (A, c)
 
   default_mode = "ascend";
   other_mode = "descend";
 
-  if (issparse (m))
+  if (issparse (A))
     ## FIXME -- eliminate this case once __sort_rows_idx__ is fixed to
     ## handle sparse matrices.
     if (nargin == 1)
-      i = sort_rows_idx_generic (default_mode, other_mode, m);
+      i = sort_rows_idx_generic (default_mode, other_mode, A);
     else
-      i = sort_rows_idx_generic (default_mode, other_mode, m, c);
+      i = sort_rows_idx_generic (default_mode, other_mode, A, c);
     endif
   elseif (nargin == 1)
-    i = __sort_rows_idx__ (m, default_mode);
+    i = __sort_rows_idx__ (A, default_mode);
   elseif (all (c > 0))
-    i = __sort_rows_idx__ (m(:,c), default_mode);
+    i = __sort_rows_idx__ (A(:,c), default_mode);
   elseif (all (c < 0))
-    i = __sort_rows_idx__ (m(:,-c), other_mode);
+    i = __sort_rows_idx__ (A(:,-c), other_mode);
   else
     ## Otherwise, fall back to the old algorithm.
-    i = sort_rows_idx_generic (default_mode, other_mode, m, c);
+    i = sort_rows_idx_generic (default_mode, other_mode, A, c);
   endif
 
   ## Only bother to compute s if needed.
   if (isargout (1))
-    s = m(i,:);
+    s = A(i,:);
   endif
 
 endfunction
@@ -91,13 +91,13 @@ function i = sort_rows_idx_generic (default_mode, other_mode, m, c)
 endfunction
 
 
-%!shared m, c, x, idx, sx, sidx
+%!test
 %! m = [1, 1; 1, 2; 3, 6; 2, 7];
 %! c = [1, -2];
 %! [x, idx] = sortrows (m, c);
 %! [sx, sidx] = sortrows (sparse (m), c);
-%!assert (x, [1, 2; 1, 1; 2, 7; 3, 6]);
-%!assert (idx, [2; 1; 4; 3]);
-%!assert (issparse (sx));
-%!assert (x, full (sx));
-%!assert (idx, sidx);
+%! assert (x, [1, 2; 1, 1; 2, 7; 3, 6]);
+%! assert (idx, [2; 1; 4; 3]);
+%! assert (issparse (sx));
+%! assert (x, full (sx));
+%! assert (idx, sidx);

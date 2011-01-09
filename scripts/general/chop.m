@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} chop (@var{x}, @var{d}, @var{u})
-## Truncate elements of @var{x} to @var{d} digits such that the
-## resulting digits are exactly divisible by @var{u}.  If @var{u} is not
+## @deftypefn {Function File} {} chop (@var{x}, @var{ndigits}, @var{base})
+## Truncate elements of @var{x} to a length of @var{ndigits} such that the
+## resulting numbers are exactly divisible by @var{base}.  If @var{base} is not
 ## specified it defaults to 10.
 ##
 ## @example
@@ -32,7 +32,7 @@
 ## @end example
 ## @end deftypefn
 
-function retval = chop (x, digits, units = 10)
+function retval = chop (x, ndigits, base = 10)
 
   if (nargin == 2 || nargin == 3)
     tmp = abs (x);
@@ -50,22 +50,23 @@ function retval = chop (x, digits, units = 10)
     ## produces an integer that contains the digits we want to keep.
     ## Multiplying by deflate puts the decimal back where it belngs.
     ##
-    ## Further scaling and rounding with the units factor produces a
-    ## value with digits exactly divisible by units.  We skip that step
-    ## unless units was explicitly provided.
+    ## Further scaling and rounding with the base factor produces a
+    ## value with ndigits exactly divisible by base.  We skip that step
+    ## unless base was explicitly provided.
 
-    inflate = 10 .^ (digits - tmp);
-    deflate = 10 .^ (tmp - digits);
+    inflate = 10 .^ (ndigits - tmp);
+    deflate = 10 .^ (tmp - ndigits);
     if (nargin == 2)
       retval = deflate .* round (x .* inflate);
     else
-      retval = units .* deflate .* round (round (x .* inflate) ./ units);
+      retval = base .* deflate .* round (round (x .* inflate) ./ base);
     endif
   else
     print_usage ();
   endif
 
 endfunction
+
 
 %!assert (chop (e, 3), 2.72)
 %!assert (chop (e, 4), 2.718)

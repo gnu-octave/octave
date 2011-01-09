@@ -19,11 +19,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strmatch (@var{s}, @var{a}, "exact")
-## Return indices of entries of @var{a} that match the string @var{s}.
-## The second argument @var{a} may be a string matrix or a cell array of
+## @deftypefn {Function File} {} strmatch (@var{s}, @var{A}, "exact")
+## Return indices of entries of @var{A} that match the string @var{s}.
+## The second argument @var{A} may be a string matrix or a cell array of
 ## strings.  If the third argument @code{"exact"} is not given, then
-## @var{s} only needs to match @var{a} up to the length of @var{s}.
+## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing whitespace is ignored.
 ## Results are returned as a column vector. 
 ## For example:

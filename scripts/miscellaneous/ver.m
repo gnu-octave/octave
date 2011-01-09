@@ -40,19 +40,15 @@
 ##   Date respecting the version/revision.
 ## @end table
 ## @deftypefnx {Function File} {v =} ver (@code{"Octave"})
-## Return version information for Octave only..
-## @deftypefnx {Function File} {v =} ver (@var{pkg})
-## Return version information for the specified package @var{pkg}.
+## Return version information for Octave only.
+## @deftypefnx {Function File} {v =} ver (@var{package})
+## Return version information for @var{package}.
 ## @seealso{license, version}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function varargout = ver (pack)
-
-  if (nargin == 0)
-    pack = "";
-  endif
+function varargout = ver (package = "")
 
   if (nargin > 1)
     print_usage ();
@@ -93,10 +89,10 @@ function varargout = ver (pack)
 
     pkg ("list");
   else
-    if (! isempty (pack))
+    if (! isempty (package))
       n = [];
       for r = 1:numel(ret)
-        if (strcmpi (ret(r).Name, pack))
+        if (strcmpi (ret(r).Name, package))
           n = r;
           break;
         endif

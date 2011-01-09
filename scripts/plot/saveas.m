@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
-## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{ext})
-## Save the graphic object @var{h} to file @var{filename} in graphic
-## format @var{ext}. 
+## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{fmt})
+## Save graphic object @var{h} to the file @var{filename} in graphic
+## format @var{fmt}. 
 ## 
-## @var{ext} should be one of the following formats:
+## @var{fmt} should be one of the following formats:
 ##
 ## @table @code
 ##   @item ps
@@ -45,8 +45,8 @@
 ## @end table
 ##
 ## All device formats specified in @code{print} may also be used.  If
-## @var{ext} is omitted it is extracted from @var{filename}.  The default
-## value is pdf.
+## @var{fmt} is omitted it is extracted from the extension of @var{filename}.
+## The default format is @code{"pdf"}.
 ##
 ## @example
 ## @group
@@ -62,7 +62,7 @@
 
 ## Author: Kai Habel
 
-function  saveas (h, fname, fext = "pdf")
+function  saveas (h, filename, fmt = "pdf")
 
   if ((nargin != 2) && (nargin != 3))
     print_usage ();
@@ -78,31 +78,31 @@ function  saveas (h, fname, fext = "pdf")
     error ("saveas: first argument H must be a graphics handle");
   endif
   
-  if (!ischar (fname))
+  if (!ischar (filename))
     error ("saveas: FILENAME must be a string");
   endif
 
   if (nargin == 2)
-    [~, ~, ext] = fileparts (fname);
+    [~, ~, ext] = fileparts (filename);
     if (!isempty (ext))
-      fext = ext(2:end);
+      fmt = ext(2:end);
     endif
   endif
 
   if (nargin == 3)
-    if (!ischar (fname))
+    if (!ischar (filename))
       error ("saveas: EXT must be a string");
     endif
 
-    [~, ~, ext] = fileparts (fname);
+    [~, ~, ext] = fileparts (filename);
 
     if (isempty (ext))
-      fname = strcat (fname, ".", fext);
+      filename = strcat (filename, ".", fmt);
     endif
   endif
 
-  prt_opt = strcat ("-d", tolower (fext));
+  prt_opt = strcat ("-d", tolower (fmt));
   
-  print (fname, prt_opt);
+  print (filename, prt_opt);
 
 endfunction

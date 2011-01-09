@@ -41,13 +41,13 @@
 ## @seealso{help, doc, which}
 ## @end deftypefn
 
-function [out_fun, out_help_text] = lookfor (str, extra)
+function [out_fun, out_help_text] = lookfor (str, arg2)
   if (strcmpi (str, "-all"))
     ## The difference between using '-all' and not, is which part of the caches
     ## we search. The cache is organised such that its first column contains
     ## the function name, its second column contains the full help text, and its
     ## third column contains the first sentence of the help text.
-    str = extra;
+    str = arg2;
     search_type = 2; # when using caches, search its second column
   else
     search_type = 3; # when using caches, search its third column

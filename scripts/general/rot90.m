@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rot90 (@var{x}, @var{n})
-## Return a copy of @var{x} with the elements rotated counterclockwise in
+## @deftypefn {Function File} {} rot90 (@var{A}, @var{k})
+## Return a copy of @var{A} with the elements rotated counterclockwise in
 ## 90-degree increments.  The second argument is optional, and specifies
 ## how many 90-degree rotations are to be applied (the default value is 1).
-## Negative values of @var{n} rotate the matrix in a clockwise direction.
+## Negative values of @var{k} rotate the matrix in a clockwise direction.
 ## For example,
 ##
 ## @example
@@ -53,14 +53,14 @@
 
 ## Author: jwe
 
-function y = rot90 (x, k)
+function B = rot90 (A, k)
 
   if (nargin == 1 || nargin == 2)
     if (nargin < 2)
       k = 1;
     endif
 
-    if (ndims (x) > 2)
+    if (ndims (A) > 2)
       error ("rot90: Only works with 2-D arrays");
     endif
 
@@ -75,13 +75,13 @@ function y = rot90 (x, k)
     endif
 
     if (k == 0)
-      y = x;
+      B = A;
     elseif (k == 1)
-      y = flipud (x.');
+      B = flipud (A.');
     elseif (k == 2)
-      y = flipud (fliplr (x));
+      B = flipud (fliplr (A));
     elseif (k == 3)
-      y = (flipud (x)).';
+      B = (flipud (A)).';
     else
       error ("rot90: internal error!");
     endif
@@ -92,19 +92,19 @@ function y = rot90 (x, k)
 endfunction
 
 %!test
-%! x1 = [1, 2;
-%! 3, 4];
-%! x2 = [2, 4;
-%! 1, 3];
-%! x3 = [4, 3;
-%! 2, 1];
-%! x4 = [3, 1;
-%! 4, 2];
+%! x1 = [1, 2; 3, 4];
+%! x2 = [2, 4; 1, 3];
+%! x3 = [4, 3; 2, 1];
+%! x4 = [3, 1; 4, 2];
 %! 
-%! assert((rot90 (x1)== x2 && rot90 (x1, 2) == x3 && rot90 (x1, 3) == x4
-%! && rot90 (x1, 4) == x1 && rot90 (x1, 5) == x2 && rot90 (x1, -1) == x4));
+%! assert(rot90 (x1) == x2);
+%! assert(rot90 (x1, 2) == x3);
+%! assert(rot90 (x1, 3) == x4);
+%! assert(rot90 (x1, 4) == x1);
+%! assert(rot90 (x1, 5) == x2);
+%! assert(rot90 (x1, -1) == x4);
 
+%% Test input validation
 %!error rot90 ();
-
 %!error rot90 (1, 2, 3);
 

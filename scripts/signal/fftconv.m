@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fftconv (@var{a}, @var{b})
-## @deftypefnx {Function File} {} fftconv (@var{a}, @var{b}, @var{n})
+## @deftypefn  {Function File} {} fftconv (@var{x}, @var{y})
+## @deftypefnx {Function File} {} fftconv (@var{x}, @var{y}, @var{n})
 ## Convolve two vectors using the FFT for computation.
 ## 
-## @code{c = fftconv (@var{a}, @var{b})} returns a vector of length equal to
-## @code{length (@var{a}) + length (@var{b}) - 1}.
-## If @var{a} and @var{b} are the coefficient vectors of two polynomials, the
+## @code{c = fftconv (@var{x}, @var{y})} returns a vector of length equal to
+## @code{length (@var{x}) + length (@var{y}) - 1}.
+## If @var{x} and @var{y} are the coefficient vectors of two polynomials, the
 ## returned value is the coefficient vector of the product polynomial.
 ##
 ## The computation uses the FFT by calling the function @code{fftfilt}.  If
@@ -36,34 +36,35 @@
 ## Created: 3 September 1994
 ## Adapted-By: jwe
 
-function c = fftconv (a, b, N)
+function c = fftconv (x, y, n)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  if (! (isvector (a) && isvector (b)))
+  if (! (isvector (x) && isvector (y)))
     error ("fftconv: both A and B must be vectors");
   endif
-  la = length (a);
-  lb = length (b);
+  la = length (x);
+  lb = length (y);
   if ((la == 1) || (lb == 1))
-    c = a * b;
+    c = x * y;
   else
     lc = la + lb - 1;
-    a(lc) = 0;
-    b(lc) = 0;
+    x(lc) = 0;
+    y(lc) = 0;
     if (nargin == 2)
-      c = fftfilt (a, b);
+      c = fftfilt (x, y);
     else
-      if (! isscalar (N))
+      if (! isscalar (n))
         error ("fftconv: N must be a scalar");
       endif
-      c = fftfilt (a, b, N);
+      c = fftfilt (x, y, n);
     endif
   endif
 
 endfunction
+
 
 %% FIXME: Borrow tests from conv.m.  May need a tolerance on the assert comparison
 %!test

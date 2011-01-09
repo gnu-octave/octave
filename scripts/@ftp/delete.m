@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} delete (@var{f}, @var{file})
 ## Delete the remote file @var{file}, over the FTP connection @var{f}.
-## @var{f} is an FTP object returned by the ftp function.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function delete (obj, file)
-  __ftp_delete__ (obj.curlhandle, file);
+function delete (f, file)
+  __ftp_delete__ (f.curlhandle, file);
 endfunction

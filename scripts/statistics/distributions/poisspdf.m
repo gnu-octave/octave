@@ -25,14 +25,14 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Poisson distribution
 
-function pdf = poisspdf (x, l)
+function pdf = poisspdf (x, lambda)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (!isscalar (l))
-    [retval, x, l] = common_size (x, l);
+  if (!isscalar (lambda))
+    [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("poisspdf: x and lambda must be of common size or scalar");
     endif
@@ -40,17 +40,17 @@ function pdf = poisspdf (x, l)
 
   pdf = zeros (size (x));
 
-  k = find (!(l > 0) | isnan (x));
+  k = find (!(lambda > 0) | isnan (x));
   if (any (k))
     pdf(k) = NaN;
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (l > 0));
+  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (lambda > 0));
   if (any (k))
-    if (isscalar (l))
-      pdf(k) = exp (x(k) .* log (l) - l - gammaln (x(k) + 1));
+    if (isscalar (lambda))
+      pdf(k) = exp (x(k) .* log (lambda) - lambda - gammaln (x(k) + 1));
     else
-      pdf(k) = exp (x(k) .* log (l(k)) - l(k) - gammaln (x(k) + 1));
+      pdf(k) = exp (x(k) .* log (lambda(k)) - lambda(k) - gammaln (x(k) + 1));
     endif
   endif
 

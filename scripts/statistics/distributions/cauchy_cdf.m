@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cauchy_cdf (@var{x}, @var{lambda}, @var{sigma})
+## @deftypefn {Function File} {} cauchy_cdf (@var{x}, @var{location}, @var{scale})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the Cauchy distribution with location
-## parameter @var{lambda} and scale parameter @var{sigma}.  Default
-## values are @var{lambda} = 0, @var{sigma} = 1. 
+## parameter @var{location} and scale parameter @var{scale}.  Default
+## values are @var{location} = 0, @var{scale} = 1. 
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -42,7 +42,7 @@ function cdf = cauchy_cdf (x, location, scale)
   if (!isscalar (location) || !isscalar (scale)) 
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
-      error ("cauchy_cdf: x, lambda and sigma must be of common size or scalar");
+      error ("cauchy_cdf: x, location and scale must be of common size or scalar");
     endif
   endif
 

@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = csc (z)
+function y = csc (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ sin(z);
+  y = 1 ./ sin(x);
 
 endfunction
 

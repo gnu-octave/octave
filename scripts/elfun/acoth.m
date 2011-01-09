@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = acoth (z)
+function y = acoth (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = atanh (1 ./ z);
+  y = atanh (1 ./ x);
 
 endfunction
 

@@ -31,6 +31,6 @@
 ## @seealso{csvread, dlmwrite, dlmread}
 ## @end deftypefn
 
-function csvwrite (f, m, varargin)
-  dlmwrite (f, m, ",", varargin{:});
+function csvwrite (filename, x, varargin)
+  dlmwrite (filename, x, ",", varargin{:});
 endfunction

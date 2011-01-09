@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} perror (@var{name}, @var{num})
-## Print the error message for function @var{name} corresponding to the
+## @deftypefn {Function File} {} perror (@var{funcname}, @var{num})
+## Print the error message for function @var{funcname} corresponding to the
 ## error number @var{num}.  This function is intended to be used to print
 ## useful error messages for those functions that return numeric error
 ## codes.
@@ -28,12 +28,12 @@
 
 ## Author: jwe
 
-function perror (name, err)
+function perror (funcname, num)
 
   if (nargin != 2)
     print_usage ();
   else
-    printf (strerror (name, err));
+    printf (strerror (funcname, num));
   endif
 
 endfunction

@@ -19,46 +19,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} spencer (@var{x})
-## Return Spencer's 15 point moving average of every single column of
+## Return Spencer's 15 point moving average of each column of
 ## @var{x}.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Apply Spencer's 15-point MA filter
 
-function retval = spencer (X)
+function retval = spencer (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  [xr, xc] = size(X);
+  [xr, xc] = size(x);
 
   n = xr;
   c = xc;
 
-  if (isvector(X))
-   n = length(X);
+  if (isvector(x))
+   n = length(x);
    c = 1;
-   X = reshape(X, n, 1);
+   x = reshape(x, n, 1);
   endif
 
-  W = [-3, -6, -5, 3, 21, 46, 67, 74, 67, 46, 21, 3, -5, -6, -3] / 320;
+  w = [-3, -6, -5, 3, 21, 46, 67, 74, 67, 46, 21, 3, -5, -6, -3] / 320;
 
-  retval = fftfilt (W, X);
+  retval = fftfilt (w, x);
   retval = [zeros(7,c); retval(15:n,:); zeros(7,c);];
 
   retval = reshape(retval, xr, xc);
 
 endfunction
-
-
-
-
-
-
-
-
-
-
 

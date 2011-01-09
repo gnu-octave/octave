@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = acsch (z)
+function y = acsch (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = asinh (1 ./ z);
+  y = asinh (1 ./ x);
 
 endfunction
 

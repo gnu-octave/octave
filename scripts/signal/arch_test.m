@@ -66,7 +66,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test for conditional heteroscedascity
 
-function [pval, lm] = arch_test (y, X, p)
+function [pval, lm] = arch_test (y, x, p)
 
   if (nargin != 3)
     error ("arch_test: 3 input arguments required");
@@ -77,9 +77,9 @@ function [pval, lm] = arch_test (y, X, p)
   endif
   T   = length (y);
   y   = reshape (y, T, 1);
-  [rx, cx] = size (X);
+  [rx, cx] = size (x);
   if ((rx == 1) && (cx == 1))
-    X = autoreg_matrix (y, X);
+    x = autoreg_matrix (y, x);
   elseif (! (rx == T))
     error ("arch_test: either rows(X) == length(y), or X is a scalar");
   endif
@@ -87,7 +87,7 @@ function [pval, lm] = arch_test (y, X, p)
     error ("arch_test: p must be a positive integer");
   endif
 
-  [b, v_b, e] = ols (y, X);
+  [b, v_b, e] = ols (y, x);
   Z    = autoreg_matrix (e.^2, p);
   f    = e.^2 / v_b - ones (T, 1);
   f    = Z' * f;

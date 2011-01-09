@@ -21,7 +21,7 @@
 ## Find all children, including hidden children, of a graphics object.
 ##
 ## This function is similar to @code{get (h, "children")}, but also
-## returns includes hidden objects.  If @var{handles} is a scalar,
+## returns hidden objects.  If @var{handles} is a scalar,
 ## @var{h} will be a vector.  Otherwise, @var{h} will be a cell matrix
 ## of the same size as @var{handles} and each cell will contain a
 ## vector of handles.
@@ -30,17 +30,17 @@
 
 ## Author: Bill Denney <bill@denney.ws>
 
-function h = allchild (ha)
+function h = allchild (handles)
 
   shh = get (0, "showhiddenhandles");
   unwind_protect
     set (0, "showhiddenhandles", "on");
-    if (isscalar (ha))
-      h = get (ha, "children");
+    if (isscalar (handles))
+      h = get (handles, "children");
     else
-      h = cell (size (ha));
-      for i = 1:numel (ha)
-        h{i} = get (ha, "children");
+      h = cell (size (handles));
+      for i = 1:numel (handles)
+        h{i} = get (handles, "children");
       endfor
     endif
   unwind_protect_cleanup

@@ -36,27 +36,27 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test linear hypotheses in linear regression model
 
-function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
+function [pval, f, df_num, df_den] = f_test_regression (y, x, rr, r)
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  [T, k] = size (X);
+  [T, k] = size (x);
   if (! (isvector (y) && (length (y) == T)))
     error ("f_test_regression: y must be a vector of length rows (X)");
   endif
   y = reshape (y, T, 1);
 
-  [q, c_R ] = size (R);
+  [q, c_R ] = size (rr);
   if (c_R != k)
-    error ("f_test_regression: R must have as many columns as X");
+    error ("f_test_regression: rr must have as many columns as x");
   endif
 
   if (nargin == 4)
     s_r = size (r);
     if ((min (s_r) != 1) || (max (s_r) != q))
-      error ("f_test_regression: r must be a vector of length rows (R)");
+      error ("f_test_regression: r must be a vector of length rows (rr)");
     endif
     r = reshape (r, q, 1);
   else
@@ -66,9 +66,9 @@ function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
   df_num = q;
   df_den = T - k;
 
-  [b, v] = ols (y, X);
-  diff   = R * b - r;
-  f      = diff' * inv (R * inv (X' * X) * R') * diff / (q * v);
+  [b, v] = ols (y, x);
+  diff   = rr * b - r;
+  f      = diff' * inv (rr * inv (x' * x) * rr') * diff / (q * v);
   pval  = 1 - f_cdf (f, df_num, df_den);
 
   if (nargout == 0)

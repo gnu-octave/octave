@@ -17,15 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, [@var{form}])
+## @deftypefn  {Function File} {[@var{n}, @var{s}] =} weekday (@var{d})
+## @deftypefnx {Function File} {[@var{n}, @var{s}] =} weekday (@var{d}, @var{format})
 ## Return the day of week as a number in @var{n} and a string in @var{s},
 ## for example @code{[1, "Sun"]}, @code{[2, "Mon"]}, @dots{}, or
 ## @code{[7, "Sat"]}.
 ##
 ## @var{d} is a serial date number or a date string.
 ##
-## If the string @var{form} is given and is @code{"long"}, @var{s} will
-## contain the full name of the weekday; otherwise (or if @var{form} is
+## If the string @var{format} is given and is @code{"long"}, @var{s} will
+## contain the full name of the weekday; otherwise (or if @var{format} is
 ## @code{"short"}), @var{s} will contain the abbreviated name of the weekday.
 ## @seealso{datenum, datevec, eomday}
 ## @end deftypefn
@@ -34,14 +35,14 @@
 ## Created: 10 October 2001 (CVS)
 ## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function [d, s] = weekday (d, form)
+function [d, s] = weekday (d, format)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (nargin < 2)
-    form = "short";
+    format = "short";
   endif
 
   if (iscell (d) || isnumeric (d))
@@ -59,7 +60,7 @@ function [d, s] = weekday (d, form)
   d(!d) = 7;
 
   if (nargout > 1)
-    if (strcmpi (form, "long"))
+    if (strcmpi (format, "long"))
       names = {"Sunday" "Monday" "Tuesday" "Wednesday" "Thursday"
                "Friday" "Saturday"};
     else

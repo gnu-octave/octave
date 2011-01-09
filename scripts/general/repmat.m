@@ -30,7 +30,7 @@
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ## Created: July 2000
 
-function x = repmat (a, m, n)
+function x = repmat (A, m, n)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -59,27 +59,27 @@ function x = repmat (a, m, n)
     idx = max (idx, 0);
   endif
 
-  if (numel (a) == 1)
+  if (numel (A) == 1)
     ## optimize the scalar fill case.
     if (any (idx == 0))
-      x = resize (a, idx);
+      x = resize (A, idx);
     else
-      x(1:prod (idx)) = a;
+      x(1:prod (idx)) = A;
       x = reshape (x, idx);
     endif
-  elseif (ndims (a) == 2 && length (idx) < 3)
-    if (issparse (a))
-      x = kron (ones (idx), a);
+  elseif (ndims (A) == 2 && length (idx) < 3)
+    if (issparse (A))
+      x = kron (ones (idx), A);
     else
       ## indexing is now faster, so we use it rather than kron.
-      m = rows (a); n = columns (a);
+      m = rows (A); n = columns (A);
       p = idx(1); q = idx(2);
-      x = reshape (a, m, 1, n, 1);
+      x = reshape (A, m, 1, n, 1);
       x = x(:, ones (1, p), :, ones (1, q));
       x = reshape (x, m*p, n*q);
     endif
   else
-    aidx = size (a);
+    aidx = size (A);
     ## ensure matching size
     idx(end+1:length (aidx)) = 1;
     aidx(end+1:length (idx)) = 1;
@@ -92,8 +92,8 @@ function x = repmat (a, m, n)
     aaidx = aidx;
     # add singleton dims
     aaidx(2,:) = 1;
-    a = reshape (a, aaidx(:));
-    x = reshape (a (cidx{:}), idx .* aidx);
+    A = reshape (A, aaidx(:));
+    x = reshape (A (cidx{:}), idx .* aidx);
   endif
 
 endfunction

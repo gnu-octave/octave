@@ -40,17 +40,17 @@
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Estimate the fractional differencing parameter
 
-function [d, D] = diffpara (X, a, b)
+function [d, dd] = diffpara (x, a, b)
 
   if ((nargin < 1) || (nargin > 3))
     print_usage ();
   else
-    if (isvector (X))
-      n = length (X);
+    if (isvector (x))
+      n = length (x);
       k = 1;
-      X = reshape (X, n, 1);
+      x = reshape (x, n, 1);
     else
-      [n, k] = size(X);
+      [n, k] = size(x);
     endif
     if (nargin == 1)
       a = 0.5 * sqrt (n);
@@ -65,25 +65,25 @@ function [d, D] = diffpara (X, a, b)
     error ("diffpara: a and b must be scalars");
   endif
 
-  D = zeros (b - a + 1, k);
+  dd = zeros (b - a + 1, k);
 
   for l = 1:k
 
     w = 2 * pi * (1 : n-1) / n;
 
     x = 2 * log (abs (1 - exp (-i*w)));
-    y = log (periodogram (X(2:n,l)));
+    y = log (periodogram (x(2:n,l)));
 
     x = center (x);
     y = center (y);
 
     for m = a:b
-      D(m-a+1) = - x(1:m) * y(1:m) / sumsq (x(1:m));
+      dd(m-a+1) = - x(1:m) * y(1:m) / sumsq (x(1:m));
     endfor
 
   endfor
 
-  d = mean (D);
+  d = mean (dd);
 
 endfunction
 

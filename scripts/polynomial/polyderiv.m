@@ -18,14 +18,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyderiv (@var{c})
-## @deftypefnx {Function File} {[@var{q}] =} polyderiv (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyderiv (@var{b}, @var{a})
+## @deftypefn  {Function File} {} polyderiv (@var{p})
+## @deftypefnx {Function File} {[@var{k}] =} polyderiv (@var{a}, @var{b})
+## @deftypefnx {Function File} {[@var{q}, @var{d}] =} polyderiv (@var{b}, @var{a})
 ## Return the coefficients of the derivative of the polynomial whose
-## coefficients are given by vector @var{c}.  If a pair of polynomials
-## is given @var{b} and @var{a}, the derivative of the product is
-## returned in @var{q}, or the quotient numerator in @var{q} and the
-## quotient denominator in @var{r}.
+## coefficients are given by the vector @var{p}.  If a pair of polynomials
+## is given, return the derivative of the product @math{@var{a}*@var{b}}.
+## If two inputs and two outputs are given, return the derivative of the 
+## polynomial quotient @math{@var{b}/@var{a}}.  The quotient numerator is 
+## in @var{q} and the denominator in @var{d}.
 ## @seealso{poly, polyint, polyreduce, roots, conv, deconv, residue,
 ## filter, polygcd, polyval, polyvalm}
 ## @end deftypefn
@@ -34,7 +35,7 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function [q, r] = polyderiv (p, a)
+function [q, d] = polyderiv (p, a)
 
   if (nargin == 1 || nargin == 2)
     if (! isvector (p))
@@ -49,7 +50,7 @@ function [q, r] = polyderiv (p, a)
         q = polyderiv (conv (p, a));
       else
         ## derivative of p/a returns numerator and denominator
-        r = conv (a, a);
+        d = conv (a, a);
         if (numel (p) == 1)
           q = -p * polyderiv (a);
         elseif (numel (a) == 1)
@@ -60,15 +61,15 @@ function [q, r] = polyderiv (p, a)
         endif
 
         ## remove common factors from numerator and denominator
-        x = polygcd (q, r);
+        x = polygcd (q, d);
         if (length(x) != 1)
           q = deconv (q, x);
-          r = deconv (r, x);
+          d = deconv (d, x);
         endif
 
         ## move all the gain into the numerator
-        q = q/r(1);
-        r = r/r(1);
+        q = q/d(1);
+        d = d/d(1);
       endif
     else
       lp = numel (p);

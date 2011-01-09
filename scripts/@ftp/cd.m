@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cd (@var{f}, @var{path})
 ## Set the remote directory to @var{path} on the FTP connection @var{f}.
-## @var{f} is an FTP object returned by the ftp function.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function cd (obj, path)
-  __ftp_cwd__ (obj.curlhandle, path);
+function cd (f, path)
+  __ftp_cwd__ (f.curlhandle, path);
 endfunction

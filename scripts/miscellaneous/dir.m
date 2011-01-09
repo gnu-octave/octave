@@ -52,10 +52,10 @@
 ## FIXME -- this is quite slow for large directories, so perhaps
 ## it should be converted to C++.
 
-function retval = dir (file)
+function retval = dir (directory)
 
   if (nargin == 0)
-    file = ".";
+    directory = ".";
   elseif (nargin > 1)
     print_usage ();
   endif
@@ -64,15 +64,15 @@ function retval = dir (file)
   info = struct (zeros (0, 1),
                  {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
 
-  if (ischar (file))
-    if (strcmp (file, "*"))
-      file = ".";
+  if (ischar (directory))
+    if (strcmp (directory, "*"))
+      directory = ".";
     endif
-    if (strcmp (file, "."))
+    if (strcmp (directory, "."))
       flst = {"."};
       nf = 1;
     else
-      flst = glob (file);
+      flst = glob (directory);
       nf = length (flst);
     endif
 
@@ -136,7 +136,7 @@ function retval = dir (file)
     ## Print the structure to the screen.
     printf ("%s", list_in_columns ({info.name}));
   else
-    warning ("dir: nonexistent file `%s'", file);
+    warning ("dir: nonexistent directory `%s'", directory);
   endif
 
 endfunction

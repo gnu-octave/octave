@@ -27,8 +27,8 @@
 ## @code{">"} (greater than 0), or @code{"<"} (less than 0).  The
 ## default is the two-sided case.
 ##
-## The optional argument string @var{method} specifies on which
-## correlation coefficient the test should be based.  If @var{method} is
+## The optional argument string @var{method} specifies which
+## correlation coefficient to use for testing.  If @var{method} is
 ## @code{"pearson"} (default), the (usual) Pearson's product moment
 ## correlation coefficient is used.  In this case, the data should come
 ## from a bivariate normal distribution.  Otherwise, the other two
@@ -66,33 +66,33 @@
 ## Adapted-by: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test for zero correlation
 
-function t = cor_test (X, Y, ALTERNATIVE, METHOD)
+function t = cor_test (x, y, alt, method)
 
   if ((nargin < 2) || (nargin > 4))
     print_usage ();
   endif
 
-  if (!isvector (X) || !isvector (Y) || length (X) != length (Y))
+  if (!isvector (x) || !isvector (y) || length (x) != length (y))
     error ("cor_test: X and Y must be vectors of the same length");
   endif
 
   if (nargin < 3)
-    ALTERNATIVE = "!=";
-  elseif (! ischar (ALTERNATIVE))
-    error ("cor_test: ALTERNATIVE must be a string");
+    alt = "!=";
+  elseif (! ischar (alt))
+    error ("cor_test: alt must be a string");
   endif
 
   if (nargin < 4)
-    METHOD = "pearson";
-  elseif (! ischar (METHOD))
+    method = "pearson";
+  elseif (! ischar (method))
     error ("cor_test: METHOD must be a string");
   endif
 
-  n = length (X);
-  m = METHOD (1);
+  n = length (x);
+  m = method (1);
 
   if (m == "p")
-    r = cor (X, Y);
+    r = cor (x, y);
     df = n - 2;
     t.method = "Pearson's product moment correlation";
     t.params = df;
@@ -100,34 +100,34 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
     t.dist = "t";
     cdf  = tcdf (t.stat, df);
   elseif (m == "k")
-    tau = kendall (X, Y);
+    tau = kendall (x, y);
     t.method = "Kendall's rank correlation tau";
     t.params = [];
     t.stat = tau / sqrt ((2 * (2*n+5)) / (9*n*(n-1)));
     t.dist = "stdnormal";
     cdf = stdnormal_cdf (t.stat);
   elseif (m == "s")
-    rho = spearman (X, Y);
+    rho = spearman (x, y);
     t.method = "Spearman's rank correlation rho";
     t.params = [];
     t.stat = sqrt (n-1) * (rho - 6/(n^3-n));
     t.dist = "stdnormal";
     cdf = stdnormal_cdf (t.stat);
   else
-    error ("cor_test: method `%s' not recognized", METHOD);
+    error ("cor_test: method `%s' not recognized", method);
   endif
 
-  if (strcmp (ALTERNATIVE, "!=") || strcmp (ALTERNATIVE, "<>"))
+  if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     t.pval = 2 * min (cdf, 1 - cdf);
-  elseif (strcmp (ALTERNATIVE, ">"))
+  elseif (strcmp (alt, ">"))
     t.pval = 1 - cdf;
-  elseif (strcmp (ALTERNATIVE, "<"))
+  elseif (strcmp (alt, "<"))
     t.pval = cdf;
   else
-    error ("cor_test: alternative `%s' not recognized", ALTERNATIVE);
+    error ("cor_test: alternative `%s' not recognized", alt);
   endif
 
-  t.alternative = ALTERNATIVE;
+  t.alternative = alt;
 
   if (nargout == 0)
     printf ("pval: %g\n", t.pval);

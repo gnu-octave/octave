@@ -23,6 +23,6 @@
 ## ftp function.
 ## @end deftypefn
 
-function rename (obj, oldname, newname)
-  __ftp_rename__ (obj.curlhandle, oldname, newname);
+function rename (f, oldname, newname)
+  __ftp_rename__ (f.curlhandle, oldname, newname);
 endfunction

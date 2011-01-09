@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ifftshift (@var{v})
-## @deftypefnx {Function File} {} ifftshift (@var{v}, @var{dim})
+## @deftypefn  {Function File} {} ifftshift (@var{x})
+## @deftypefnx {Function File} {} ifftshift (@var{x}, @var{dim})
 ## Undo the action of the @code{fftshift} function.  For even length 
-## @var{v}, @code{fftshift} is its own inverse, but odd lengths differ 
+## @var{x}, @code{fftshift} is its own inverse, but odd lengths differ 
 ## slightly.
 ## @end deftypefn
 
@@ -30,7 +30,7 @@
 ## Modified-By: Paul Kienzle, converted from fftshift
 ## Modified-By: David Bateman, add NDArray capability and option dim arg
 
-function retval = ifftshift (V, dim)
+function retval = ifftshift (x, dim)
 
   retval = 0;
 
@@ -42,29 +42,29 @@ function retval = ifftshift (V, dim)
     if (! isscalar (dim))
       error ("ifftshift: dimension must be an integer scalar");
     endif
-    nd = ndims (V);
-    sz = size (V);
+    nd = ndims (x);
+    sz = size (x);
     sz2 = floor (sz(dim) / 2);
     idx = cell ();
     for i = 1:nd
       idx{i} = 1:sz(i);
     endfor
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
-    retval = V (idx{:});
+    retval = x(idx{:});
   else
-    if (isvector (V))
-      x = length (V);
+    if (isvector (x))
+      x = length (x);
       xx = floor (x/2);
-      retval = V([xx+1:x, 1:xx]);
-    elseif (ismatrix (V))
-      nd = ndims (V);
-      sz = size (V);
+      retval = x([xx+1:x, 1:xx]);
+    elseif (ismatrix (x))
+      nd = ndims (x);
+      sz = size (x);
       sz2 = floor (sz ./ 2);
       idx = cell ();
       for i = 1:nd
         idx{i} = [sz2(i)+1:sz(i), 1:sz2(i)];
       endfor
-      retval = V (idx{:});
+      retval = x(idx{:});
     else
       error ("ifftshift: expecting vector or matrix argument");
     endif

@@ -51,7 +51,7 @@
 ## @seealso{regexp, regexpi, regexprep}
 ## @end deftypefn
 
-function y = regexptranslate (op, x)
+function y = regexptranslate (op, s)
   
   if nargin != 2
     print_usage ();
@@ -60,11 +60,11 @@ function y = regexptranslate (op, x)
   if (ischar (op))
     op = tolower (op);
     if (strcmp ("wildcard", op))
-      y = regexprep (regexprep (regexprep (x, "\\.", "\\."), "\\*",
+      y = regexprep (regexprep (regexprep (s, "\\.", "\\."), "\\*",
                                 ".*"), "\\?", ".");
     elseif (strcmp ("escape", op))
       ch = {'\$', '\.', '\?', '\[', '\]'};
-      y = x;
+      y = s;
       for i = 1 : length (ch)
         y = regexprep (y, ch{i}, ch{i});
       endfor

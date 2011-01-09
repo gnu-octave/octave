@@ -50,13 +50,13 @@
 ## @seealso{dlmread, fscanf, load, strread, textread}
 ## @end deftypefn
 
-function [c, p] = textscan (fid, formatstr, varargin)
+function [c, p] = textscan (fid, format, varargin)
 
   ## Check input
   if (nargin < 1)
     print_usage ();
-  elseif (nargin == 1 || isempty (formatstr))
-    formatstr = "%f";
+  elseif (nargin == 1 || isempty (format))
+    format = "%f";
   endif
 
   if (nargin > 2 && isnumeric (varargin{1}))
@@ -74,7 +74,7 @@ function [c, p] = textscan (fid, formatstr, varargin)
   endif
 
   if (isa (fid, "double") && fid > 0 || ischar (fid))
-    if (ischar (formatstr))
+    if (ischar (format))
       if (ischar (fid))
         if (nargout == 2)
           error ("textscan: cannot provide postion information for character input")
@@ -98,12 +98,12 @@ function [c, p] = textscan (fid, formatstr, varargin)
       endif
 
       ## Determine the number of data fields
-      num_fields = numel (strfind (formatstr, "%")) - ...
-                   numel (idx_star = strfind (formatstr, "%*"));
+      num_fields = numel (strfind (format, "%")) - ...
+                   numel (idx_star = strfind (format, "%*"));
 
       ## Call strread to make it do the real work
       c = cell (1, num_fields);
-      [c{:}] = strread (str, formatstr, args{:});
+      [c{:}] = strread (str, format, args{:});
 
       if (ischar (fid) && isfinite (nlines))
         c = cellfun (@(x) x(1:nlines), c, "uniformoutput", false);

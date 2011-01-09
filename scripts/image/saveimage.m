@@ -18,9 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})
-## Save the matrix @var{x} to @var{file} in image format @var{fmt}.  Valid
-## values for @var{fmt} are
+## @deftypefn  {Function File} {} saveimage (@var{fname}, @var{img}, @var{fmt})
+## @deftypefnx {Function File} {} saveimage (@var{fname}, @var{img}, @var{fmt}, @var{map})
+## Save the matrix @var{img} to file @var{fname} in image format @var{fmt}.
+## Valid values for @var{fmt} are
 ##
 ## @table @code
 ## @item "img"
@@ -74,7 +75,7 @@
 ## documentation.  This software is provided "as is" without express or
 ## implied warranty.
 
-function saveimage (filename, img, img_form, map)
+function saveimage (fname, img, fmt, map)
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
@@ -95,12 +96,12 @@ function saveimage (filename, img, img_form, map)
   endif
 
   if (nargin < 3)
-    img_form = "img";
-  elseif (! ischar (img_form))
+    fmt = "img";
+  elseif (! ischar (fmt))
     error ("saveimage: image format specification must be a string");
-  elseif (! (strcmp (img_form, "img")
-             || strcmp (img_form, "ppm")
-             || strcmp (img_form, "ps")))
+  elseif (! (strcmp (fmt, "img")
+             || strcmp (fmt, "ppm")
+             || strcmp (fmt, "ps")))
     error ("saveimage: unsupported image format specification");
   endif
 
@@ -108,14 +109,14 @@ function saveimage (filename, img, img_form, map)
     warning ("image variable is not a matrix");
   endif
 
-  if (! ischar (filename))
-    error ("saveimage: file name must be a string");
+  if (! ischar (fname))
+    error ("saveimage: fname name must be a string");
   endif
 
   ## If we just want Octave image format, save and return.
 
-  if (strcmp (img_form, "img"))
-    save ("-text", filename, "map", "img");
+  if (strcmp (fmt, "img"))
+    save ("-text", fname, "map", "img");
     return;
   endif
 
@@ -147,7 +148,7 @@ function saveimage (filename, img, img_form, map)
   img (img > map_nr) = map_nr;
   img (img <= 0) = 1;
 
-  if (strcmp (img_form, "ppm"))
+  if (strcmp (fmt, "ppm"))
 
     ## Would be nice to make this consistent with the line used by the
     ## load/save functions, but we need a good way to get username and
@@ -183,7 +184,7 @@ function saveimage (filename, img, img_form, map)
         tmp(i,:) = sum (bwimg(8*(i-1)+1:8*i,:) .* b);
       endfor
 
-      fid = fopen (filename, "wb");
+      fid = fopen (fname, "wb");
       fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "uchar");
       fprintf (fid, "\n");
@@ -191,7 +192,7 @@ function saveimage (filename, img, img_form, map)
 
     elseif (grey)
 
-      fid = fopen (filename, "wb");
+      fid = fopen (fname, "wb");
       fprintf (fid, "P5\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, map(img), "uchar");
       fprintf (fid, "\n");
@@ -213,7 +214,7 @@ function saveimage (filename, img, img_form, map)
       tmap = map(map_idx);
       tmp(img_idx--) = tmap(img);
 
-      fid = fopen (filename, "wb");
+      fid = fopen (fname, "wb");
       fprintf (fid, "P6\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "uchar");
       fprintf (fid, "\n");
@@ -221,7 +222,7 @@ function saveimage (filename, img, img_form, map)
 
     endif
 
-  elseif (strcmp (img_form, "ps") == 1)
+  elseif (strcmp (fmt, "ps") == 1)
 
     if (! grey)
       error ("saveimage: must have a greyscale color map for conversion to PostScript");
@@ -263,11 +264,11 @@ function saveimage (filename, img, img_form, map)
     urx = llx + fix (scols + 0.5);
     ury = lly + fix (srows + 0.5);
 
-    fid = fopen (filename, "wb");
+    fid = fopen (fname, "wb");
 
     fprintf (fid, "%%!PS-Adobe-2.0 EPSF-2.0\n");
     fprintf (fid, "%%%%Creator: Octave %s (saveimage.m)\n", OCTAVE_VERSION);
-    fprintf (fid, "%%%%Title: %s\n", filename);
+    fprintf (fid, "%%%%Title: %s\n", fname);
     fprintf (fid, "%%%%Pages: 1\n");
     fprintf (fid, "%%%%BoundingBox: %d %d %d %d\n",
              fix (llx), fix (lly), fix (urx), fix (ury));

@@ -26,45 +26,45 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the exponential distribution
 
-function inv = expinv (x, l)
+function inv = expinv (x, lambda)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar(l))
-    [retval, x, l] = common_size (x, l);
+  if (!isscalar (x) && !isscalar(lambda))
+    [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("expinv: x and lambda must be of common size or scalar");
     endif
   endif
 
   if (isscalar (x))
-    sz = size (l);
+    sz = size (lambda);
   else
     sz = size (x);
   endif
 
   inv = zeros (sz);
 
-  k = find (!(l > 0) | (x < 0) | (x > 1) | isnan (x));
+  k = find (!(lambda > 0) | (x < 0) | (x > 1) | isnan (x));
   if (any (k))
     inv(k) = NaN;
   endif
 
-  k = find ((x == 1) & (l > 0));
+  k = find ((x == 1) & (lambda > 0));
   if (any (k))
     inv(k) = Inf;
   endif
 
-  k = find ((x > 0) & (x < 1) & (l > 0));
+  k = find ((x > 0) & (x < 1) & (lambda > 0));
   if (any (k))
-    if isscalar (l)
-      inv(k) = - l .* log (1 - x(k));
+    if isscalar (lambda)
+      inv(k) = - lambda .* log (1 - x(k));
     elseif isscalar (x)
-      inv(k) = - l(k) .* log (1 - x);
+      inv(k) = - lambda(k) .* log (1 - x);
     else
-      inv(k) = - l(k) .* log (1 - x(k));
+      inv(k) = - lambda(k) .* log (1 - x(k));
     endif
   endif
 

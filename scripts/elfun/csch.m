@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = csch (z)
+function y = csch (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ sinh(z);
+  y = 1 ./ sinh(x);
 
 endfunction
 

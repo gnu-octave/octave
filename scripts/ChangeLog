@@ -1,3 +1,144 @@
+2011-01-09  Rik  <octave@nomad.inbox5.com>
+
+	* audio/loadaudio.m, audio/mu2lin.m, audio/saveaudio.m,
+	general/accumdim.m, general/bitget.m, general/bitset.m, general/del2.m,
+	general/isequal.m, general/isequalwithequalnans.m, general/logspace.m,
+	general/repmat.m, general/strerror.m, general/structfun.m,
+	geometry/delaunayn.m, geometry/dsearchn.m, image/ind2gray.m,
+	image/ind2rgb.m, image/rgb2ind.m, io/csvread.m, io/csvwrite.m,
+	linear-algebra/rref.m, linear-algebra/subspace.m,
+	linear-algebra/trace.m, miscellaneous/dir.m, miscellaneous/dos.m,
+	miscellaneous/menu.m, miscellaneous/perl.m, miscellaneous/unix.m,
+	path/savepath.m, plot/allchild.m, plot/diffuse.m, plot/fplot.m,
+	plot/refreshdata.m, plot/specular.m, plot/subplot.m,
+	polynomial/polyreduce.m, set/ismember.m, signal/arch_fit.m,
+	signal/arch_rnd.m, signal/arch_test.m, signal/diffpara.m,
+	signal/fftfilt.m, signal/filter2.m, signal/sinetone.m,
+	signal/spectral_xdf.m, signal/stft.m, signal/synthesis.m,
+	sparse/spfun.m, sparse/spones.m, sparse/spstats.m, sparse/treelayout.m,
+	sparse/treeplot.m, specfun/isprime.m,
+	statistics/distributions/expcdf.m, statistics/distributions/expinv.m,
+	statistics/distributions/exppdf.m, statistics/distributions/exprnd.m,
+	statistics/distributions/poisscdf.m,
+	statistics/distributions/poissinv.m,
+	statistics/distributions/poisspdf.m,
+	statistics/distributions/poissrnd.m,
+	statistics/tests/chisquare_test_independence.m,
+	statistics/tests/cor_test.m, statistics/tests/f_test_regression.m,
+	statistics/tests/t_test_regression.m, strings/base2dec.m,
+	strings/dec2base.m, strings/regexptranslate.m, strings/strjust.m,
+	strings/strmatch.m, time/asctime.m, time/datenum.m:
+	Use common names for variables in documentation and code.
+
+	* @ftp/ascii.m, @ftp/binary.m, @ftp/cd.m, @ftp/close.m, @ftp/delete.m,
+	@ftp/dir.m, @ftp/ftp.m, @ftp/mget.m, @ftp/mkdir.m, @ftp/mput.m,
+	@ftp/rename.m, @ftp/rmdir.m, general/chop.m, geometry/dsearch.m,
+	signal/spencer.m, specfun/primes.m, time/etime.m: Use common names for
+	variables in documentation and code.  Improve docstring
+
+	* elfun/acot.m, elfun/acoth.m, elfun/acsc.m, elfun/acsch.m,
+	elfun/asec.m, elfun/asech.m, elfun/cot.m, elfun/coth.m, elfun/csc.m,
+	elfun/csch.m, elfun/sec.m, elfun/sech.m: Use common names for variables
+	in documentation and code.  Change output variable to 'y' rather than
+	'w'.
+
+	* miscellaneous/bunzip2.m, miscellaneous/gunzip.m,
+	miscellaneous/unpack.m, miscellaneous/untar.m, miscellaneous/unzip.m:
+	Use common names for variables in documentation and code.  Use default
+	on input argument to simplify input validation.
+
+	* general/accumarray.m: Use common names for variables in
+	documentation, code and tests.
+
+	* geometry/inpolygon.m: Use common names for variables in
+	documentation, code and tests.  Improve docstring.
+
+	* general/bitcmp.m: Use common names for variables in documentation and
+	code.  Switch tests to %!test blocks rather than %!shared variables and
+	%!asserts for clarity.
+
+	* general/int2str.m: Switch to input variable name 'n' rather than 'x'.
+
+	* general/isdir.m: Switch to input variable name 'f' rather than 'x'.
+	Switch output variable to 'retval' rather than 'y'.
+
+	* general/perror.m: Switch to input variable name 'funcname' rather
+	than 'name'.  Use common names for variables in documentation and
+	code.
+
+	* general/rot90.m: Switch to input variable name 'A' rather than 'x'.
+	Break very long %!assert line into multiple asserts for readability.
+
+	* general/sortrows.m: Use common names for variables in documentation
+	and code.  Break very long %!assert line into multiple asserts for
+	readability.
+
+	* geometry/voronoin.m: Switch to input variable name 'options' rather
+	than 'opt'.
+
+	* help/lookfor.m: Switch to input variable name 'arg2' rather than
+	'extra'.
+
+	* image/brighten.m: Switch to input variable name 'arg1' rather than
+	'm'.  Eliminate CamelCase in output variable 'Rmap'.
+
+	* image/rgb2hsv.m: Switch to variable name 'hsv_map' rather than
+	'hsval'.
+
+	* image/saveimage.m: Switch to input variable name 'fname', rather than
+	'file'.  Use common names for variables in documentation and code.
+
+	* io/strread.m, io/textread.m, io/textscan.m: Switch to input variable
+	name 'format' rather than 'formatstr'
+
+	* miscellaneous/run.m: Switch to input variable 'script' rather than
+	's'.
+
+	* miscellaneous/ver.m: Switch to input variable 'package' rather than
+	'pack'.  Use default on input argument to simplify input validation.
+
+	* plot/saveas.m: Switch to input variable 'fmt' rather than 'ext'.
+	Improve docstring.
+
+	* plot/title.m: : Switch to input variable 'string' rather than 'title'.
+
+	* plot/uigetdir.m: Improve docstring.  Re-order input validation.
+	Eliminate unnecessary use of cellfun to compare strings.
+
+	* polynomial/polyder.m, polynomial/polyderiv.m: Switch ouput variable
+	name 'r' to 'd'.  Improve docstring.
+
+	* polynomial/polyint.m: Switch input variable name 'c' to 'p'.
+
+	* signal/fftconv.m: Switch input variable names to 'x','y' instead of
+	'a','b' for vectors.
+
+	* signal/fftshift.m, signal/ifftshift.m: Switch input variable name to
+	'x' instead of 'v'.
+
+	* sparse/etreeplot.m: Switch input variable name to 'A' rather than
+	'tree' for matrix.
+
+	* specfun/factor.m: Use common names for variables in documentation and
+	code.  Uncomment and re-instate test code.
+
+	* statistics/distributions/cauchy_cdf.m,
+	statistics/distributions/cauchy_inv.m,
+	statistics/distributions/cauchy_pdf.m,
+	statistics/distributions/cauchy_rnd.m: Switch to input variables
+	'location','scale' rather than 'lambda','sigma'.
+
+	* statistics/tests/manova.m: Switch to input variable 'x' rather than
+	'y'.
+
+	* strings/untabify.m: Switch to input variable 'dblank' rather than
+	'db'.
+
+	* time/datestr.m: Improve docstring
+
+	* time/weekday.m: Switch to input variable name 'format' rather than
+	'form'.  Improve docstring.
+
 2011-01-08  John Hunt  <huntj@gawab.com>
 
 	* plot/legend.m, plot/private/__plt__.m: legend with more than two

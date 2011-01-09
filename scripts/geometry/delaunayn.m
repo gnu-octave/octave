@@ -17,14 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{T} =} delaunayn (@var{P})
-## @deftypefnx {Function File} {@var{T} =} delaunayn (@var{P}, @var{opt})
+## @deftypefn  {Function File} {@var{t} =} delaunayn (@var{p})
+## @deftypefnx {Function File} {@var{t} =} delaunayn (@var{p}, @var{opt})
 ## Form the Delaunay triangulation for a set of points.
 ## The Delaunay triangulation is a tessellation of the convex hull of the
 ## points such that no n-sphere defined by the n-triangles contains
 ## any other points from the set.
-## The input matrix @var{P} of size @code{[n, dim]} contains @var{n}
-## points in a space of dimension dim.  The return matrix @var{T} has the
+## The input matrix @var{p} of size @code{[n, dim]} contains @math{n}
+## points in a space of dimension dim.  The return matrix @var{t} has the
 ## size @code{[m, dim+1]}.  It contains for each row a set of indices to
 ## the points, which describes a simplex of dimension dim.  For example,
 ## a 2d simplex is a triangle and 3d simplex is a tetrahedron.
@@ -48,21 +48,21 @@
 ## 
 ## @end deftypefn
 
-function t = delaunayn (x, varargin)
+function t = delaunayn (p, varargin)
   if (nargin < 1)
     print_usage ();
   endif
 
-  t = __delaunayn__ (x, varargin{:});
+  t = __delaunayn__ (p, varargin{:});
 
-  if (isa (x, "single"))
+  if (isa (p, "single"))
     myeps = eps ("single");
   else
     myeps = eps;
   endif
 
   ## Try to remove the zero volume simplices. The volume of the i-th simplex is
-  ## given by abs(det(x(t(i,1:end-1),:)-x(t(i,2:end),:)))/prod(1:n) 
+  ## given by abs(det(p(t(i,1:end-1),:)-p(t(i,2:end),:)))/prod(1:n) 
   ## (reference http://en.wikipedia.org/wiki/Simplex). Any simplex with a 
   ## relative volume less than some arbitrary criteria is rejected. The 
   ## criteria we use is the volume of the simplex corresponding to an 
@@ -73,7 +73,7 @@ function t = delaunayn (x, varargin)
   idx = [];
   [nt, n] = size (t);
   for i = 1:nt
-    X = x(t(i,1:end-1),:) - x(t(i,2:end),:);
+    X = p(t(i,1:end-1),:) - p(t(i,2:end),:);
     if (abs (det (X)) /  sqrt (sum (X .^ 2, 2)) < 1e3 * myeps)
      idx = [idx, i];
     endif

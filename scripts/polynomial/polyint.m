@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyint (@var{c}, @var{k})
+## @deftypefn  {Function File} {} polyint (@var{p})
+## @deftypefnx {Function File} {} polyint (@var{p}, @var{k})
 ## Return the coefficients of the integral of the polynomial whose
-## coefficients are represented by the vector @var{c}.  The variable
+## coefficients are represented by the vector @var{p}.  The variable
 ## @var{k} is the constant of integration, which by default is set to zero.
 ## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 ## filter, polyval, polyvalm}
@@ -29,7 +30,7 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function p = polyint (p, k)
+function retval = polyint (p, k)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -48,7 +49,7 @@ function p = polyint (p, k)
   lp = length (p);
 
   if (lp == 0)
-    p = [];
+    retval = [];
     return;
   endif
 
@@ -57,6 +58,6 @@ function p = polyint (p, k)
     p = p.';
   endif
 
-  p = [(p ./ [lp:-1:1]), k];
+  retval = [(p ./ [lp:-1:1]), k];
 
 endfunction

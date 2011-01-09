@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cauchy_pdf (@var{x}, @var{lambda}, @var{sigma})
+## @deftypefn {Function File} {} cauchy_pdf (@var{x}, @var{location}, @var{scale})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the Cauchy distribution with location parameter
-## @var{lambda} and scale parameter @var{sigma} > 0.  Default values are
-## @var{lambda} = 0, @var{sigma} = 1. 
+## @var{location} and scale parameter @var{scale} > 0.  Default values are
+## @var{location} = 0, @var{scale} = 1. 
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -42,7 +42,7 @@ function pdf = cauchy_pdf (x, location, scale)
   if (!isscalar (location) || !isscalar (scale)) 
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
-      error ("cauchy_pdf: x, lambda and sigma must be of common size or scalar");
+      error ("cauchy_pdf: x, location and scale must be of common size or scalar");
     endif
   endif
 

@@ -34,17 +34,19 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
-function Rmap = brighten (m, beta)
+function rmap = brighten (arg1, beta)
   h = -1;
   if (nargin == 1)
-    beta = m;
+    beta = arg1;
     m = colormap;
     h = gcf ();
   elseif (nargin == 2)
-    if (ishandle (m))
-      h = m;
+    if (ishandle (arg1))
+      h = arg1;
       m = get (h, "colormap");
-    elseif (! ismatrix (m) || size (m, 2) != 3)
+    elseif (ismatrix (arg1) && columns (arg1) == 3)
+      m = arg1;
+    else
       error ("brighten: first argument must be an Nx3 matrix or a handle");
     endif
   else
@@ -68,7 +70,7 @@ function Rmap = brighten (m, beta)
       colormap (m .^ gamma);
     endif
   else
-    Rmap = m .^ gamma;
+    rmap = m .^ gamma;
   endif
 
 endfunction

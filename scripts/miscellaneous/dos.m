@@ -30,12 +30,12 @@
 ## Author: octave-forge ???
 ## Adapted by: jwe
 
-function [status, text] = dos (cmd, echo_arg)
+function [status, text] = dos (command, echo_arg)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   elseif (! isunix ())
-    [status, text] = system (cmd);
+    [status, text] = system (command);
     if (nargin > 1 || nargout == 0)
       printf ("%s\n", text);
     endif

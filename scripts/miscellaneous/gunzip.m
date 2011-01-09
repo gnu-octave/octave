@@ -20,28 +20,24 @@
 ## @deftypefn {Function File} {} gunzip (@var{gzfile}, @var{dir})
 ## Unpack the gzip archive @var{gzfile} to the directory @var{dir}.  If
 ## @var{dir} is not specified, it defaults to the current directory.  If
-## the @var{gzfile} is a directory, all files in the directory will be
+## the @var{gzfile} is a directory, all gzfile in the directory will be
 ## recursively gunzipped.
 ## @seealso{unpack, bunzip2, tar, untar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = gunzip (files, outputdir)
+function varargout = gunzip (gzfile, dir = ".")
 
-  if (! (nargin == 1 || nargin == 2))
+  if (nargin != 1 && nargin != 2)
     print_usage ();
-  endif
-
-  if (nargin == 1)
-    outputdir = ".";
   endif
 
   if (nargout > 0)
     varargout = cell (1, nargout);
-    [varargout{:}] = unpack (files, outputdir, mfilename ());
+    [varargout{:}] = unpack (gzfile, dir, mfilename ());
   else
-    unpack (files, outputdir, mfilename ());
+    unpack (gzfile, dir, mfilename ());
   endif
 
 endfunction

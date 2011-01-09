@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{lst} =} dir (@var{path})
+## @deftypefn {Function File} {@var{lst} =} dir (@var{f})
 ## List the current directory in verbose form for the FTP connection 
-## @var{f}.  @var{f} is an FTP object returned by the ftp function.
+## @var{f}.  @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function lst = dir (obj)
+function lst = dir (f)
   if (nargout == 0)
-    __ftp_dir__ (obj.curlhandle);
+    __ftp_dir__ (f.curlhandle);
   else
-    lst = __ftp_dir__ (obj.curlhandle);
+    lst = __ftp_dir__ (f.curlhandle);
   endif
 endfunction

@@ -37,7 +37,7 @@
 ## Created: 10 April 1994
 ## Adapted-By: jwe
 
-function X = loadaudio (name, ext, bit)
+function X = loadaudio (name, ext, bps)
 
   if (nargin == 0 || nargin > 3)
     print_usage ();
@@ -48,16 +48,16 @@ function X = loadaudio (name, ext, bit)
   endif
 
   if (nargin < 3)
-    bit = 8;
-  elseif (bit != 8 && bit != 16)
-    error ("loadaudio: bit must be either 8 or 16");
+    bps = 8;
+  elseif (bps != 8 && bps != 16)
+    error ("loadaudio: bps must be either 8 or 16");
   endif
 
   name = [name, ".", ext];
   num = fopen (name, "rb");
 
   if (strcmp (ext, "lin") || strcmp (ext, "raw") || strcmp (ext, "pcm"))
-    if (bit == 8)
+    if (bps == 8)
       [Y, c] = fread (num, inf, "uchar");
       X = Y - 127;
     else
@@ -71,7 +71,7 @@ function X = loadaudio (name, ext, bit)
     if (! isempty (m))
       Y(1:m) = [];
     endif
-    X = mu2lin (Y, bit);
+    X = mu2lin (Y, bps);
   else
     fclose (num);
     error ("loadaudio: unsupported extension");

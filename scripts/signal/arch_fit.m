@@ -51,7 +51,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Fit an ARCH regression model
 
-function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
+function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
 
   if ((nargin < 3) || (nargin == 6) || (nargin > 7))
     print_usage ();
@@ -63,26 +63,26 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
 
   T   = length (y);
   y   = reshape (y, T, 1);
-  [rx, cx] = size (X);
+  [rx, cx] = size (x);
   if ((rx == 1) && (cx == 1))
-    X = autoreg_matrix (y, X);
+    x = autoreg_matrix (y, x);
   elseif (! (rx == T))
-    error ("arch_fit: either rows (X) == length (y), or X is a scalar");
+    error ("arch_fit: either rows (x) == length (y), or x is a scalar");
   endif
 
-  [T, k] = size (X);
+  [T, k] = size (x);
 
   if (nargin == 7)
     a   = a0;
     b   = b0;
-    e   = y - X * b;
+    e   = y - x * b;
   else
-    [b, v_b, e] = ols (y, X);
+    [b, v_b, e] = ols (y, x);
     a   = [v_b, (zeros (1, p))]';
     if (nargin < 5)
       gamma = 0.1;
       if (nargin < 4)
-        ITER = 50;
+        iter = 50;
       endif
     endif
   endif
@@ -90,7 +90,7 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
   esq = e.^2;
   Z   = autoreg_matrix (esq, p);
 
-  for i = 1 : ITER;
+  for i = 1 : iter;
     h    = Z * a;
     tmp  = esq ./ h.^2 - 1 ./ h;
     s    = 1 ./ h(1:T-p);
@@ -102,11 +102,11 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
       r = r + 2 * h(j+1:T-p+j).^2 .* esq(1:T-p);
     endfor
     r   = sqrt (r);
-    X_tilde = X(1:T-p, :) .* (r * ones (1,k));
+    X_tilde = x(1:T-p, :) .* (r * ones (1,k));
     e_tilde = e(1:T-p) .*s ./ r;
     delta_b = inv (X_tilde' * X_tilde) * X_tilde' * e_tilde;
     b   = b + gamma * delta_b;
-    e   = y - X * b;
+    e   = y - x * b;
     esq = e .^ 2;
     Z   = autoreg_matrix (esq, p);
     h   = Z * a;

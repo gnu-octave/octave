@@ -22,10 +22,10 @@
 ## @seealso{is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
-function t = isdir (x)
+function retval = isdir (f)
   if (nargin == 1)
     ## Exist returns an integer but isdir should return a logical.
-    t = exist (x, "dir") == 7;
+    retval = (exist (f, "dir") == 7);
   else
     print_usage ("isdir");
   endif

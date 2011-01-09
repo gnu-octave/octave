@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
-## @deftypefnx {Function File} {[@var{r}, @var{g}, @var{b}] =} ind2rgb (@var{x}, @var{map})
+## @deftypefnx {Function File} {[@var{R}, @var{R}, @var{R}] =} ind2rgb (@var{x}, @var{map})
 ## Convert an indexed image to red, green, and blue color components.
 ## If the colormap doesn't contain enough colors, pad it with the
 ## last color in the map.
@@ -31,7 +31,7 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function [R, G, B] = ind2rgb (X, map)
+function [R, G, B] = ind2rgb (x, map)
 
   ## Do we have the right number of inputs?
   if (nargin < 1 || nargin > 2)
@@ -41,7 +41,7 @@ function [R, G, B] = ind2rgb (X, map)
   endif
 
   ## Check if X is an indexed image.
-  if (ndims (X) != 2 || any (X(:) != round (X(:))) || min (X(:)) < 1)
+  if (ndims (x) != 2 || any (x(:) != round (x(:))) || min (x(:)) < 1)
     error ("ind2rgb: first input argument must be an indexed image");
   endif
   
@@ -51,7 +51,7 @@ function [R, G, B] = ind2rgb (X, map)
   endif
 
   ## Do we have enough colors in the color map?
-  maxidx = max (X(:));
+  maxidx = max (x(:));
   rm = rows (map);
   if (rm < maxidx)
     ## Pad with the last color in the map.
@@ -60,10 +60,10 @@ function [R, G, B] = ind2rgb (X, map)
   endif
   
   ## Compute result
-  [hi, wi] = size (X);
-  R = reshape (map (X(:), 1), hi, wi);
-  G = reshape (map (X(:), 2), hi, wi);
-  B = reshape (map (X(:), 3), hi, wi);
+  [hi, wi] = size (x);
+  R = reshape (map (x(:), 1), hi, wi);
+  G = reshape (map (x(:), 2), hi, wi);
+  B = reshape (map (x(:), 3), hi, wi);
 
   ## Use 3D array if only one output is requested.
   if (nargout <= 1)

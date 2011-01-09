@@ -29,17 +29,17 @@
 ## @seealso{dsearch, tsearch}
 ## @end deftypefn
 
-function [idx, d] = dsearchn (x, t, xi, outval)
+function [idx, d] = dsearchn (x, tri, xi, outval)
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   if (nargin == 2)
-    [idx, d] = __dsearchn__ (x, t);
+    [idx, d] = __dsearchn__ (x, tri);
   else
     [idx, d] = __dsearchn__ (x, xi);
     if (nargin == 4)
-      idx2 = isnan (tsearchn (x, t, xi));
+      idx2 = isnan (tsearchn (x, tri, xi));
       idx(idx2) = outval;
       d(idx2) = outval;
     endif

@@ -65,65 +65,65 @@
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
 ## Author: pkienzle <pkienzle@users.sf.net>
 
-function [days, secs] = datenum (Y, M, D, h, m, s)
+function [days, secs] = datenum (year, month, day, hour, minute, second)
 
   ## Days until start of month assuming year starts March 1.
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
 
-  if (nargin == 0 || (nargin > 2  && ischar (Y)) || nargin > 6)
+  if (nargin == 0 || (nargin > 2  && ischar (year)) || nargin > 6)
     print_usage ();
   endif
-  if (ischar (Y))
+  if (ischar (year))
     if (nargin < 2)
-      M = [];
+      month = [];
     endif
-    [Y, M, D, h, m, s] = datevec (Y, M);
+    [year, month, day, hour, minute, second] = datevec (year, month);
   else
-    if (nargin < 6) s = 0; endif
-    if (nargin < 5) m = 0; endif
-    if (nargin < 4) h = 0; endif
+    if (nargin < 6) second = 0; endif
+    if (nargin < 5) minute = 0; endif
+    if (nargin < 4) hour = 0; endif
     if (nargin == 1)
-      nc = columns (Y);
+      nc = columns (year);
       if (nc > 6 || nc < 3)
-        error ("datenum: expected date vector containing [Y, M, D, h, m, s]");
+        error ("datenum: expected date vector containing [year, month, day, hour, minute, second]");
       endif
-      s = m = h = 0;
-      if (nc >= 6) s = Y(:,6); endif
-      if (nc >= 5) m = Y(:,5); endif
-      if (nc >= 4) h = Y(:,4); endif
-      D = Y(:,3);
-      M = Y(:,2);
-      Y = Y(:,1);
+      second = minute = hour = 0;
+      if (nc >= 6) second = year(:,6); endif
+      if (nc >= 5) minute = year(:,5); endif
+      if (nc >= 4) hour = year(:,4); endif
+      day = year(:,3);
+      month = year(:,2);
+      year = year(:,1);
     endif 
   endif
 
-  M(M<1) = 1; ## For compatibility.  Otherwise allow negative months.
+  month(month<1) = 1; ## For compatibility.  Otherwise allow negative months.
 
   ## Set start of year to March by moving Jan. and Feb. to previous year.
   ## Correct for months > 12 by moving to subsequent years.
-  Y += fix ((M-14)/12);
+  year += fix ((month-14)/12);
 
   ## Lookup number of days since start of the current year.
-  if (numel (M) == 1 || numel (D) == 1)
-    ## Allow M or D to be scalar while other values may be vectors or
+  if (numel (month) == 1 || numel (day) == 1)
+    ## Allow month or day to be scalar while other values may be vectors or
     ## matrices.
-    D += monthstart (mod (M-1,12) + 1) + 60;
-    if (numel (M) > 1)
-      D = reshape (D, size (M));
+    day += monthstart (mod (month-1,12) + 1) + 60;
+    if (numel (month) > 1)
+      day = reshape (day, size (month));
     endif
   else
-    D += reshape (monthstart (mod (M-1,12) + 1), size (D)) + 60;
+    day += reshape (monthstart (mod (month-1,12) + 1), size (day)) + 60;
   endif
 
   ## Add number of days to the start of the current year. Correct
   ## for leap year every 4 years except centuries not divisible by 400.
-  D += 365*Y + floor (Y/4) - floor (Y/100) + floor (Y/400);
+  day += 365*year + floor (year/4) - floor (year/100) + floor (year/400);
 
   ## Add fraction representing current second of the day.
-  days = D + (h+(m+s/60)/60)/24;
+  days = day + (hour+(minute+second/60)/60)/24;
 
   ## Output seconds if asked so that etime can be more accurate
-  secs = 86400*D + h*3600 + m*60 + s;
+  secs = 86400*day + hour*3600 + minute*60 + second;
 
 endfunction
 

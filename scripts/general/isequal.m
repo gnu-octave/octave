@@ -22,10 +22,10 @@
 ## @seealso{isequalwithequalnans}
 ## @end deftypefn
 
-function retval = isequal (x, varargin)
+function retval = isequal (x1, varargin)
 
   if (nargin > 1)
-    retval = __isequal__ (false, x, varargin{:});
+    retval = __isequal__ (false, x1, varargin{:});
   else
     print_usage ();
   endif

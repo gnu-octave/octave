@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
+## @deftypefn {Function File} {} mu2lin (@var{x}, @var{n})
 ## Convert audio data from mu-law to linear.  Mu-law values are 8-bit
 ## unsigned integers.  Linear values use @var{n}-bit signed integers
 ## or floating point values in the range -1@leq{}y@leq{}1 if @var{n} is 0.  If
@@ -33,7 +33,7 @@
 function y = mu2lin (x, n)
 
   if (nargin == 1)
-    ## COMPATIBILITY -- bps defaults to 8 for Octave, 0 for Matlab
+    ## COMPATIBILITY -- n defaults to 8 for Octave, 0 for Matlab
     n = 8;
   elseif (nargin == 2)
     if (n != 0 && n != 8 && n != 16)

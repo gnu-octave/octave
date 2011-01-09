@@ -17,17 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{s})
-## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{s}, @var{j})
-## Return the stats for the non-zero elements of the sparse matrix @var{s}.
+## @deftypefn  {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S})
+## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{S}, @var{j})
+## Return the stats for the non-zero elements of the sparse matrix @var{S}.
 ## @var{count} is the number of non-zeros in each column, @var{mean}
 ## is the mean of the non-zeros in each column, and @var{var} is the  
 ## variance of the non-zeros in each column.
 ##
-## Called with two input arguments, if @var{s} is the data and @var{j}
+## Called with two input arguments, if @var{S} is the data and @var{j}
 ## is the bin number for the data, compute the stats for each bin.  In 
 ## this case, bins can contain data values of zero, whereas with 
-## @code{spstats (@var{s})} the zeros may disappear.
+## @code{spstats (@var{S})} the zeros may disappear.
 ## @end deftypefn
 
 function [count, mean, var] = spstats (S, j)
@@ -56,6 +56,7 @@ function [count, mean, var] = spstats (S, j)
   endif
 
 endfunction
+
 
 %!test
 %! [n,m,v] = spstats([1 2 1 2 3 4],[2 2 1 1 1 1]);

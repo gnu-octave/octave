@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = cot (z)
+function y = cot (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ tan(z);
+  y = 1 ./ tan(x);
 
 endfunction
 

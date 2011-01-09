@@ -34,10 +34,10 @@
 
 ## Author: jwe
 
-function retval = asctime (t)
+function retval = asctime (tm_struct)
 
   if (nargin == 1)
-    retval = strftime ("%a %b %d %H:%M:%S %Y\n", t);
+    retval = strftime ("%a %b %d %H:%M:%S %Y\n", tm_struct);
   else
     print_usage ();
   endif

@@ -25,39 +25,39 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the exponential distribution
 
-function pdf = exppdf (x, l)
+function pdf = exppdf (x, lambda)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar(l))
-    [retval, x, l] = common_size (x, l);
+  if (!isscalar (x) && !isscalar(lambda))
+    [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("exppdf: x and lambda must be of common size or scalar");
     endif
   endif
 
   if (isscalar (x))
-    sz = size (l);
+    sz = size (lambda);
   else
     sz = size (x);
   endif
   pdf = zeros (sz);
 
-  k = find (!(l > 0) | isnan (x));
+  k = find (!(lambda > 0) | isnan (x));
   if (any (k))
     pdf(k) = NaN;
   endif
 
-  k = find ((x > 0) & (x < Inf) & (l > 0));
+  k = find ((x > 0) & (x < Inf) & (lambda > 0));
   if (any (k))
-    if isscalar (l)
-      pdf(k) = exp (- x(k) ./ l) ./ l;
+    if isscalar (lambda)
+      pdf(k) = exp (- x(k) ./ lambda) ./ lambda;
     elseif isscalar (x)
-      pdf(k) = exp (- x ./ l(k)) ./ l(k);
+      pdf(k) = exp (- x ./ lambda(k)) ./ lambda(k);
     else
-      pdf(k) = exp (- x(k) ./ l(k)) ./ l(k);
+      pdf(k) = exp (- x(k) ./ lambda(k)) ./ lambda(k);
     endif
   endif
 

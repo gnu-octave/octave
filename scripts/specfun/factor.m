@@ -20,9 +20,9 @@
 ## @deftypefn  {Function File} {@var{p} =} factor (@var{q})
 ## @deftypefnx {Function File} {[@var{p}, @var{n}] =} factor (@var{q})
 ##
-## Return prime factorization of @var{q}.  That is, @code{prod (@var{p})
-## == @var{q}} and every element of @var{p} is a prime number.  If
-## @code{@var{q} == 1}, returns 1. 
+## Return prime factorization of @var{q}.  That is, 
+## @code{prod (@var{p}) == @var{q}} and every element of @var{p} is a prime
+## number.  If @code{@var{q} == 1}, return 1. 
 ##
 ## With two output arguments, return the unique primes @var{p} and
 ## their multiplicities.  That is, @code{prod (@var{p} .^ @var{n}) ==
@@ -37,39 +37,39 @@
 ## * return multiplicity as suggested by Dirk Laurie
 ## * add error handling
 
-function [x, m] = factor (n)
+function [x, n] = factor (q)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  if (! isscalar (n) || n != fix (n))
-    error ("factor: n must be a scalar integer");
+  if (! isscalar (q) || q != fix (q))
+    error ("factor: q must be a scalar integer");
   endif
 
-  ## Special case of no primes less than sqrt(n).
-  if (n < 4)
-    x = n;
-    m = 1;
+  ## Special case of no primes less than sqrt(q).
+  if (q < 4)
+    x = q;
+    n = 1;
     return;
   endif 
 
   x = [];
-  ## There is at most one prime greater than sqrt(n), and if it exists,
+  ## There is at most one prime greater than sqrt(q), and if it exists,
   ## it has multiplicity 1, so no need to consider any factors greater
-  ## than sqrt(n) directly. [If there were two factors p1, p2 > sqrt(n),
-  ## then n >= p1*p2 > sqrt(n)*sqrt(n) == n. Contradiction.]
-  p = primes (sqrt (n));
-  while (n > 1)
-    ## Find prime factors in remaining n.
-    p = p (rem (n, p) == 0);
+  ## than sqrt(q) directly. [If there were two factors p1, p2 > sqrt(q),
+  ## then q >= p1*p2 > sqrt(q)*sqrt(q) == q. Contradiction.]
+  p = primes (sqrt (q));
+  while (q > 1)
+    ## Find prime factors in remaining q.
+    p = p (rem (q, p) == 0);
     if (isempty (p))
-      ## Can't be reduced further, so n must itself be a prime.
-      p = n;
+      ## Can't be reduced further, so q must itself be a prime.
+      p = q;
     endif
     x = [x, p];
-    ## Reduce n.
-    n = n / prod (p);
+    ## Reduce q.
+    q = q / prod (p);
   endwhile
   x = sort (x);
 
@@ -77,18 +77,19 @@ function [x, m] = factor (n)
   if (nargout > 1)
     idx = find ([0, x] != [x, 0]);
     x = x(idx(1:length(idx)-1));
-    m = diff (idx);
+    n = diff (idx);
   endif
 
 endfunction
 
-## test:
-##   assert(factor(1),1);
-##   for i=2:20
-##      p = factor(i);
-##      assert(prod(p),i);
-##      assert(all(isprime(p)));
-##      [p,n] = factor(i);
-##      assert(prod(p.^n),i);
-##      assert(all([0,p]!=[p,0]));
-##   end
+%!test
+%!  assert(factor(1),1);
+%!  for i=2:20
+%!     p = factor(i);
+%!     assert(prod(p),i);
+%!     assert(all(isprime(p)));
+%!     [p,n] = factor(i);
+%!     assert(prod(p.^n),i);
+%!     assert(all([0,p]!=[p,0]));
+%!  endfor
+

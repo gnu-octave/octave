@@ -26,10 +26,10 @@
 ## files that match the wildcards in @var{file} will be uploaded.
 ## @end deftypefn
 
-function retval = mput (obj, file)
+function retval = mput (f, file)
   if (nargout == 0)
-    __ftp_mput__ (obj.curlhandle, file);
+    __ftp_mput__ (f.curlhandle, file);
   else
-    retval = __ftp_mput__ (obj.curlhandle, file);
+    retval = __ftp_mput__ (f.curlhandle, file);
   endif
 endfunction

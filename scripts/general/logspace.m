@@ -61,7 +61,7 @@
 
 ## Author: jwe
 
-function retval = logspace (x1, x2, n)
+function retval = logspace (base, limit, n)
 
   if (nargin == 2)
     npoints = 50;
@@ -75,12 +75,11 @@ function retval = logspace (x1, x2, n)
     print_usage ();
   endif
 
-  if (length (x1) == 1 && length (x2) == 1)
-    x2_tmp = x2;
-    if (x2 == pi)
-      x2_tmp = log10 (pi);
+  if (length (base) == 1 && length (limit) == 1)
+    if (limit == pi)
+      limit = log10 (pi);
     endif
-    retval = 10 .^ (linspace (x1, x2_tmp, npoints));
+    retval = 10 .^ (linspace (base, limit, npoints));
   else
     error ("logspace: arguments must be scalars");
   endif

@@ -18,26 +18,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} trace (@var{a})
-## Compute the trace of @var{a}, @code{sum (diag (@var{a}))}.
+## @deftypefn {Function File} {} trace (@var{A})
+## Compute the trace of @var{A}, @code{sum (diag (@var{A}))}.
 ## @end deftypefn
 
 ## Author: jwe
 
-function y = trace (x)
+function y = trace (A)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  if (ndims (x) > 2)
+  if (ndims (A) > 2)
     error ("trace: only valid on 2-D objects");
-  elseif (isempty (x))
+  elseif (isempty (A))
     y = 0;
-  elseif (any (size (x) == 1))
-    y = x(1);
+  elseif (any (size (A) == 1))
+    y = A(1);
   else
-    y = sum (diag (x));
+    y = sum (diag (A));
   endif
 
 endfunction

@@ -21,11 +21,11 @@
 ## @deftypefnx {Function File} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
 ## Returns the index @var{idx} or the closest point in @code{@var{x}, @var{y}}
 ## to the elements @code{[@var{xi}(:), @var{yi}(:)]}.  The variable @var{s} is
-## accepted but ignored for compatibility.
+## accepted for compatibility but is ignored.
 ## @seealso{dsearchn, tsearch}
 ## @end deftypefn
 
-function idx = dsearch (x, y, t, xi, yi, s)
+function idx = dsearch (x, y, tri, xi, yi, s)
   if (nargin < 5 || nargin > 6)
     print_usage ();
   endif

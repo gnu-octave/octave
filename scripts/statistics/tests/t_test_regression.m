@@ -42,7 +42,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Test one linear hypothesis in linear regression model
 
-function [pval, t, df] = t_test_regression (y, X, R, r, alt)
+function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
 
   if (nargin == 3)
     r   = 0;
@@ -64,20 +64,20 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
     error ("t_test_regression: alt must be a string");
   endif
 
-  [T, k] = size (X);
+  [T, k] = size (x);
   if (! (isvector (y) && (length (y) == T)))
     error ("t_test_regression: y must be a vector of length rows (X)");
   endif
-  s      = size (R);
+  s      = size (rr);
   if (! ((max (s) == k) && (min (s) == 1)))
-    error ("t_test_regression: R must be a vector of length columns (X)");
+    error ("t_test_regression: rr must be a vector of length columns (X)");
   endif
 
-  R      = reshape (R, 1, k);
+  rr     = reshape (rr, 1, k);
   y      = reshape (y, T, 1);
-  [b, v] = ols (y, X);
+  [b, v] = ols (y, x);
   df     = T - k;
-  t      = (R * b - r) / sqrt (v * R * inv (X' * X) * R');
+  t      = (rr * b - r) / sqrt (v * rr * inv (x' * x) * rr');
   cdf    = tcdf (t, df);
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

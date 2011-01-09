@@ -27,7 +27,7 @@
 
 ## Author: Bill Denney <bill@givebillmoney.com>
 
-function varargout = savepath (savefile)
+function varargout = savepath (file)
 
   retval = 1;
 
@@ -35,7 +35,7 @@ function varargout = savepath (savefile)
   endstring   = "## End savepath auto-created section";
 
   if (nargin == 0)
-    savefile = fullfile ("~", ".octaverc");
+    file = fullfile ("~", ".octaverc");
   endif
 
   ## parse the file if it exists to see if we should replace a section
@@ -43,11 +43,11 @@ function varargout = savepath (savefile)
   startline = 0;
   endline = 0;
   filelines = {};
-  if (exist (savefile) == 2)
+  if (exist (file) == 2)
     ## read in all lines of the file
-    [fid, msg] = fopen (savefile, "rt");
+    [fid, msg] = fopen (file, "rt");
     if (fid < 0)
-      error ("savepath: could not open savefile, %s: %s", savefile, msg);
+      error ("savepath: could not open file, %s: %s", file, msg);
     endif
     unwind_protect
       linenum = 0;
@@ -70,14 +70,14 @@ function varargout = savepath (savefile)
     unwind_protect_cleanup
       closeread = fclose (fid);
       if (closeread < 0)
-        error ("savepath: could not close savefile after reading, %s",
-               savefile);
+        error ("savepath: could not close file after reading, %s",
+               file);
       endif
     end_unwind_protect
   endif
 
   if (startline > endline || (startline > 0 && endline == 0))
-    error ("savepath: unable to parse file, %s", savefile);
+    error ("savepath: unable to parse file, %s", file);
   endif
 
   ## put the current savepath lines into the file
@@ -102,9 +102,9 @@ function varargout = savepath (savefile)
   endif
 
   ## write the results
-  [fid, msg] = fopen (savefile, "wt");
+  [fid, msg] = fopen (file, "wt");
   if (fid < 0)
-    error ("savepath: unable to open file for writing, %s, %s", savefile, msg);
+    error ("savepath: unable to open file for writing, %s, %s", file, msg);
   endif
   unwind_protect
     for i = 1:length (pre)
@@ -193,9 +193,9 @@ function varargout = savepath (savefile)
   unwind_protect_cleanup
     closeread = fclose (fid);
     if (closeread < 0)
-      error ("savepath: could not close savefile after writing, %s", savefile);
+      error ("savepath: could not close savefile after writing, %s", file);
     elseif (nargin == 0)
-      warning ("savepath: current path saved to %s", savefile);
+      warning ("savepath: current path saved to %s", file);
     endif
   end_unwind_protect
 
@@ -209,6 +209,6 @@ endfunction
 
 function path_elements = parsepath (p)
   pat = sprintf ('([^%s]+[%s$])', pathsep, pathsep);
-  [jnk1, jnk2, jnk3, path_elements] = regexpi (strcat (p, pathsep), pat);
+  [~, ~, ~, path_elements] = regexpi (strcat (p, pathsep), pat);
 endfunction
 

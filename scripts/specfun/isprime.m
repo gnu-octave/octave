@@ -34,20 +34,20 @@
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn
 
-function t = isprime (n)
+function t = isprime (x)
 
   if (nargin == 1)
-    if (any ((n != floor (n) | n < 0)(:)))
+    if (any ((x != floor (x) | x < 0)(:)))
       error ("isprime: needs positive integers");
     endif
-    maxn = max (n(:));
+    maxn = max (x(:));
     ## generate prime table of suitable length.
     maxp = min (maxn, max (sqrt (maxn), 1e7)); # FIXME: threshold not optimized.
     pr = primes (maxp);
     ## quick search for table matches.
-    t = lookup (pr, n, "b");
+    t = lookup (pr, x, "b");
     ## take the rest.
-    m = n(n > maxp);
+    m = x(x > maxp);
     if (! isempty (m))
       ## there are still possible primes. filter them out by division.
       if (maxn <= intmax ("uint32"))
@@ -68,8 +68,8 @@ function t = isprime (n)
       mm = arrayfun (@(x) all (rem (x, pr)), m);
       m = m(mm);
       if (! isempty (m))
-        m = cast (sort (m), class (n));
-        t |= lookup (m, n, "b");
+        m = cast (sort (m), class (x));
+        t |= lookup (m, x, "b");
       endif
     endif
 
@@ -78,6 +78,7 @@ function t = isprime (n)
   endif
 
 endfunction
+
 
 %!assert (isprime (4), logical (0));
 %!assert (isprime (3), logical (1));

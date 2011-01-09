@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} base2dec (@var{s}, @var{b})
-## Convert @var{s} from a string of digits in base @var{b} to a decimal
+## @deftypefn {Function File} {} base2dec (@var{s}, @var{base})
+## Convert @var{s} from a string of digits in base @var{base} to a decimal
 ## integer (base 10).
 ##
 ## @example
@@ -33,7 +33,7 @@
 ## corresponding value will be NaN@.  Rows are right-justified before
 ## converting so that trailing spaces are ignored.
 ##
-## If @var{b} is a string, the characters of @var{b} are used as the
+## If @var{base} is a string, the characters of @var{base} are used as the
 ## symbols for the digits of @var{s}.  Space (' ') may not be used as a
 ## symbol.
 ##

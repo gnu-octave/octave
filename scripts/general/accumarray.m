@@ -64,7 +64,7 @@
 ## compute the results in a vectorized manner.
 ## @end deftypefn
 
-function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [])  
+function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])  
 
   if (nargin < 2 || nargin > 6)
     print_usage ();
@@ -84,11 +84,11 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
     fillval = 0;
   endif
 
-  if (isempty (isspar))
-    isspar = false;
+  if (isempty (issparse))
+    issparse = false;
   endif
 
-  if (isspar)
+  if (issparse)
 
     ## Sparse case. Avoid linearizing the subscripts, because it could overflow.
 
@@ -108,8 +108,8 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       error ("accumarray: in the sparse case, needs 1 or 2 subscripts");
     endif
 
-    if (isnumeric (val) || islogical (val))
-      vals = double (val);
+    if (isnumeric (vals) || islogical (vals))
+      vals = double (vals);
     else
       error ("accumarray: in the sparse case, values must be numeric or logical");
     endif
@@ -126,7 +126,7 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       jdx = find (any (diff (subs, 1, 1), 2));
       jdx = [jdx; n];
 
-      val = cellfun (func, mat2cell (val(:)(idx), diff ([0; jdx])));
+      vals = cellfun (func, mat2cell (vals(:)(idx), diff ([0; jdx])));
       subs = subs(jdx, :);
       mode = "unique";
     else
@@ -135,9 +135,9 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
 
     ## Form the sparse matrix.
     if (isempty (sz))
-      A = sparse (subs(:,1), subs(:,2), val, mode);
+      A = sparse (subs(:,1), subs(:,2), vals, mode);
     elseif (length (sz) == 2)
-      A = sparse (subs(:,1), subs(:,2), val, sz(1), sz(2), mode);
+      A = sparse (subs(:,1), subs(:,2), vals, sz(1), sz(2), mode);
     else
       error ("accumarray: dimensions mismatch")
     endif
@@ -173,9 +173,9 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
     if (isempty (func) || func == @sum)
       ## Fast summation.
       if (isempty (sz))
-        A = __accumarray_sum__ (subs, val);
+        A = __accumarray_sum__ (subs, vals);
       else
-        A = __accumarray_sum__ (subs, val, prod (sz));
+        A = __accumarray_sum__ (subs, vals, prod (sz));
         ## set proper shape.
         A = reshape (A, sz);
       endif
@@ -189,11 +189,11 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
     elseif (func == @max)
       ## Fast maximization.
 
-      if (isinteger (val))
-        zero = intmin (class (val));
-      elseif (islogical (val))
+      if (isinteger (vals))
+        zero = intmin (class (vals));
+      elseif (islogical (vals))
         zero = false;
-      elseif (fillval == 0 && all (val(:) >= 0))
+      elseif (fillval == 0 && all (vals(:) >= 0))
         ## This is a common case - fillval is zero, all numbers nonegative.
         zero = 0;
       else
@@ -201,9 +201,9 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       endif
 
       if (isempty (sz))
-        A = __accumarray_max__ (subs, val, zero);
+        A = __accumarray_max__ (subs, vals, zero);
       else
-        A = __accumarray_max__ (subs, val, zero, prod (sz));
+        A = __accumarray_max__ (subs, vals, zero, prod (sz));
         A = reshape (A, sz);
       endif
 
@@ -215,18 +215,18 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
     elseif (func == @min)
       ## Fast minimization.
 
-      if (isinteger (val))
-        zero = intmax (class (val));
-      elseif (islogical (val))
+      if (isinteger (vals))
+        zero = intmax (class (vals));
+      elseif (islogical (vals))
         zero = true;
       else
         zero = NaN; # Neutral value.
       endif
 
       if (isempty (sz))
-        A = __accumarray_min__ (subs, val, zero);
+        A = __accumarray_min__ (subs, vals, zero);
       else
-        A = __accumarray_min__ (subs, val, zero, prod (sz));
+        A = __accumarray_min__ (subs, vals, zero, prod (sz));
         A = reshape (A, sz);
       endif
 
@@ -239,10 +239,10 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
 
       ## The general case. Reduce values. 
       n = rows (subs);
-      if (numel (val) == 1)
-        val = val(ones (1, n), 1);
+      if (numel (vals) == 1)
+        vals = vals(ones (1, n), 1);
       else
-        val = val(:);
+        vals = vals(:);
       endif
       
       ## Sort indices.
@@ -250,26 +250,26 @@ function A = accumarray (subs, val, sz = [], func = [], fillval = [], isspar = [
       ## Identify runs.
       jdx = find (subs(1:n-1) != subs(2:n));
       jdx = [jdx; n];
-      val = mat2cell (val(idx), diff ([0; jdx]));
+      vals = mat2cell (vals(idx), diff ([0; jdx]));
       ## Optimize the case when function is @(x) {x}, i.e. we just want to
       ## collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
       if (! strcmp (func2str (func), simple_cell_str))
-        val = cellfun (func, val);
+        vals = cellfun (func, vals);
       endif
       subs = subs(jdx);
 
       ## Construct matrix of fillvals.
-      if (iscell (val))
+      if (iscell (vals))
         A = cell (sz);
       elseif (fillval == 0)
-        A = zeros (sz, class (val));
+        A = zeros (sz, class (vals));
       else
         A = repmat (fillval, sz);
       endif
 
       ## Set the reduced values.
-      A(subs) = val;
+      A(subs) = vals;
     endif
   endif
 endfunction
@@ -289,21 +289,21 @@ endfunction
 %! assert (A{2},[102;104])
 %!test
 %! subs = ceil (rand (2000, 3)*10);
-%! val = rand (2000, 1);
-%! assert (accumarray (subs, val, [], @max), accumarray (subs, val, [], @(x) max (x)));
+%! vals = rand (2000, 1);
+%! assert (accumarray (subs, vals, [], @max), accumarray (subs, vals, [], @(x) max (x)));
 %!test
 %! subs = ceil (rand (2000, 1)*100);
-%! val = rand (2000, 1);
-%! assert (accumarray (subs, val, [100, 1], @min, NaN), accumarray (subs, val, [100, 1], @(x) min (x), NaN));
+%! vals = rand (2000, 1);
+%! assert (accumarray (subs, vals, [100, 1], @min, NaN), accumarray (subs, vals, [100, 1], @(x) min (x), NaN));
 %!test
 %! subs = ceil (rand (2000, 2)*30);
 %! subsc = num2cell (subs, 1);
-%! val = rand (2000, 1);
-%! assert (accumarray (subsc, val, [], [], 0, true), accumarray (subs, val, [], [], 0, true));
+%! vals = rand (2000, 1);
+%! assert (accumarray (subsc, vals, [], [], 0, true), accumarray (subs, vals, [], [], 0, true));
 %!test
 %! subs = ceil (rand (2000, 3)*10);
 %! subsc = num2cell (subs, 1);
-%! val = rand (2000, 1);
-%! assert (accumarray (subsc, val, [], @max), accumarray (subs, val, [], @max));
+%! vals = rand (2000, 1);
+%! assert (accumarray (subsc, vals, [], @max), accumarray (subs, vals, [], @max));
 
 

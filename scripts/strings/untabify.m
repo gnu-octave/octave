@@ -50,7 +50,7 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-10-15
 
-function s = untabify (t, tw = 8, db = false)
+function s = untabify (t, tw = 8, dblank = false)
 
  if (nargin > 0 && nargin < 4 && (ischar (t) || iscellstr (t)))
    if (ischar (t))
@@ -58,7 +58,7 @@ function s = untabify (t, tw = 8, db = false)
    else
      s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
    endif
-   if (db)
+   if (dblank)
      s = deblank (s);
    endif
  else

@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} close (@var{f})
-## Close the FTP connection represented by given FTP object @var{f}.
-## @var{f} is an FTP object returned by the ftp function.
+## Close the FTP connection represented by the given FTP object @var{f}.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function dir (obj)
-  __ftp_close__ (obj.curlhandle);
+function dir (f)
+  __ftp_close__ (f.curlhandle);
 endfunction

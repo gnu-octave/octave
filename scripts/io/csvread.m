@@ -30,6 +30,6 @@
 ## @seealso{csvwrite, dlmread, dlmwrite}
 ## @end deftypefn
 
-function x = csvread (f, varargin)
-  x = dlmread (f, ",", varargin{:});
+function x = csvread (filename, varargin)
+  x = dlmread (filename, ",", varargin{:});
 endfunction

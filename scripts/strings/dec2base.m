@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dec2base (@var{d}, @var{b})
-## @deftypefnx {Function File} {} dec2base (@var{d}, @var{b}, @var{len})
-## Return a string of symbols in base @var{b} corresponding to
+## @deftypefn  {Function File} {} dec2base (@var{d}, @var{base})
+## @deftypefnx {Function File} {} dec2base (@var{d}, @var{base}, @var{len})
+## Return a string of symbols in base @var{base} corresponding to
 ## the non-negative integer @var{d}.
 ##
 ## @example
@@ -32,7 +32,7 @@
 ## If @var{d} is a vector, return a string matrix with one row per value,
 ## padded with leading zeros to the width of the largest value.
 ##
-## If @var{b} is a string then the characters of @var{b} are used as
+## If @var{base} is a string then the characters of @var{base} are used as
 ## the symbols for the digits of @var{d}.  Space (' ') may not be used
 ## as a symbol.
 ##

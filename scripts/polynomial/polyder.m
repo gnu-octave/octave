@@ -17,21 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} polyder (@var{c})
-## @deftypefnx {Function File} {[@var{q}] =} polyder (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyder (@var{b}, @var{a})
-## See polyderiv.
+## @deftypefn  {Function File} {} polyderiv (@var{p})
+## @deftypefnx {Function File} {[@var{k}] =} polyderiv (@var{a}, @var{b})
+## @deftypefnx {Function File} {[@var{q}, @var{d}] =} polyderiv (@var{b}, @var{a})
+## An alias for @code{polyderiv}.
+## @seealso{polyderiv}
 ## @end deftypefn
 
 ## Author: John W. Eaton
 
-function [q, r] = polyder (p, a)
+function [q, d] = polyder (p, a)
 
   if (nargin == 1)
     q = polyderiv (p);
   elseif (nargin == 2)
     if (nargout == 2)
-      [q, r] = polyderiv (p, a);
+      [q, d] = polyderiv (p, a);
     else
       q = polyderiv (p, a);
     endif

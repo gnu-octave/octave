@@ -40,43 +40,43 @@
 ## @seealso{deblank, strrep, strtrim, untabify}
 ## @end deftypefn
 
-function y = strjust (x, just)
+function y = strjust (s, pos)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (nargin == 1)
-    just = "right";
+    pos = "right";
   else
-    just = tolower (just);
+    pos = tolower (pos);
   endif
 
-  if (ndims (x) != 2)
+  if (ndims (s) != 2)
     error ("strjust: input must be a string or character matrix");
   endif
 
-  if (isempty (x))
-    y = x;
+  if (isempty (s))
+    y = s;
   else
     ## Apparently, Matlab considers nulls to be blanks as well; however, does
     ## not preserve the nulls, but rather converts them to blanks.  That's a
     ## bit unexpected, but it allows simpler processing, because we can move
     ## just the nonblank characters. So we'll do the same here.
 
-    [nr, nc] = size (x);
+    [nr, nc] = size (s);
     ## Find the indices of all nonblanks.
-    nonbl = x != " " & x != "\0";
+    nonbl = s != " " & s != "\0";
     [idx, jdx] = find (nonbl);
 
-    if (strcmp (just, "right"))
+    if (strcmp (pos, "right"))
       ## We wish to find the maximum column index for each row. Because jdx is
       ## sorted, we can take advantage of the fact that assignment is processed
       ## sequentially and for duplicate indices the last value will remain.
       maxs = nc * ones (nr, 1);
       maxs(idx) = jdx;
       shift = nc - maxs;
-    elseif (strcmp (just, "left"))
+    elseif (strcmp (pos, "left"))
       ## See above for explanation.
       mins = ones (nr, 1);
       mins(flipud (idx(:))) = flipud (jdx(:));
@@ -95,7 +95,7 @@ function y = strjust (x, just)
 
     ## Create a blank matrix and position the nonblank characters.
     y = " "(ones (1, nr), ones (1, nc));
-    y(sub2ind ([nr, nc], idx, jdx)) = x(nonbl);
+    y(sub2ind ([nr, nc], idx, jdx)) = s(nonbl);
   endif
 
 endfunction

@@ -18,14 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} manova (@var{y}, @var{g})
+## @deftypefn {Function File} {} manova (@var{x}, @var{g})
 ## Perform a one-way multivariate analysis of variance (MANOVA).  The
 ## goal is to test whether the p-dimensional population means of data
 ## taken from @var{k} different groups are all equal.  All data are
 ## assumed drawn independently from p-dimensional normal distributions
 ## with the same covariance matrix.
 ##
-## The data matrix is given by @var{y}.  As usual, rows are observations
+## The data matrix is given by @var{x}.  As usual, rows are observations
 ## and columns are variables.  The vector @var{g} specifies the
 ## corresponding group labels (e.g., numbers from 1 to @var{k}).
 ##
@@ -41,17 +41,17 @@
 ## Adapted-By: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: One-way multivariate analysis of variance (MANOVA)
 
-function manova (Y, g)
+function manova (x, g)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (isvector (Y))
+  if (isvector (x))
     error ("manova: Y must not be a vector");
   endif
 
-  [n, p] = size (Y);
+  [n, p] = size (x);
 
   if (!isvector (g) || (length (g) != n))
     error ("manova: g must be a vector of length rows (Y)");
@@ -67,13 +67,13 @@ function manova (Y, g)
     group_label = s ([1, (reshape (i, 1, k - 1) + 1)]);
   endif
 
-  Y = Y - ones (n, 1) * mean (Y);
-  SST = Y' * Y;
+  x = x - ones (n, 1) * mean (x);
+  SST = x' * x;
 
   s = zeros (1, p);
   SSB = zeros (p, p);
   for i = 1 : k;
-    v = Y (find (g == group_label (i)), :);
+    v = x (find (g == group_label (i)), :);
     s = sum (v);
     SSB = SSB + s' * s / rows (v);
   endfor

@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = coth (z)
+function y = coth (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ tanh (z);
+  y = 1 ./ tanh (x);
 
 endfunction
 

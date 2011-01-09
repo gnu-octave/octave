@@ -26,14 +26,14 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Poisson distribution
 
-function cdf = poisscdf (x, l)
+function cdf = poisscdf (x, lambda)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (!isscalar (l))
-    [retval, x, l] = common_size (x, l);
+  if (!isscalar (lambda))
+    [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("poisscdf: x and lambda must be of common size or scalar");
     endif
@@ -41,22 +41,22 @@ function cdf = poisscdf (x, l)
 
   cdf = zeros (size (x));
 
-  k = find (isnan (x) | !(l > 0));
+  k = find (isnan (x) | !(lambda > 0));
   if (any (k))
     cdf(k) = NaN;
   endif
 
-  k = find ((x == Inf) & (l > 0));
+  k = find ((x == Inf) & (lambda > 0));
   if (any (k))
     cdf(k) = 1;
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (l > 0));
+  k = find ((x >= 0) & (x < Inf) & (lambda > 0));
   if (any (k))
-    if (isscalar (l))
-      cdf(k) = 1 - gammainc (l, floor (x(k)) + 1);
+    if (isscalar (lambda))
+      cdf(k) = 1 - gammainc (lambda, floor (x(k)) + 1);
     else
-      cdf(k) = 1 - gammainc (l(k), floor (x(k)) + 1);
+      cdf(k) = 1 - gammainc (lambda(k), floor (x(k)) + 1);
     endif
   endif
 

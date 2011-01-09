@@ -17,21 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} spones (@var{x})
-## Replace the non-zero entries of @var{x} with ones.  This creates a
-## sparse matrix with the same structure as @var{x}.
+## @deftypefn {Function File} {@var{r} =} spones (@var{S})
+## Replace the non-zero entries of @var{S} with ones.  This creates a
+## sparse matrix with the same structure as @var{S}.
 ## @end deftypefn
 
-function s = spones (s)
+function r = spones (S)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  [i, j, v] = find (s);
-  [m, n] = size (s);
+  [i, j, v] = find (S);
+  [m, n] = size (S);
 
-  s = sparse (i, j, 1, m, n);
+  r = sparse (i, j, 1, m, n);
 
 endfunction
 

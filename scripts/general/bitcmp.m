@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bitcmp (@var{a}, @var{k})
-## Return the @var{k}-bit complement of integers in @var{a}.  If
+## @deftypefn {Function File} {} bitcmp (@var{A}, @var{k})
+## Return the @var{k}-bit complement of integers in @var{A}.  If
 ## @var{k} is omitted @code{k = log2 (bitmax) + 1} is assumed.
 ##
 ## @example
@@ -34,88 +34,90 @@
 ## @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
-## Liberally based of the version by Kai Habel from octave-forge
+## Liberally based on the version by Kai Habel from octave-forge
 
-function x = bitcmp (a, n)
+function C = bitcmp (A, k)
   
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (nargin == 2 && (! isscalar (n) || (floor (n) != n)))
+  if (nargin == 2 && (! isscalar (k) || (floor (k) != k)))
     error ("bitcmp: k must be a scalar integer");
   endif
 
-  if (isa (a, "double"))
+  if (isa (A, "double"))
     bmax = bitmax;
     amax = ceil (log2 (bmax));
   else
-    if (isa (a, "uint8"))
+    if (isa (A, "uint8"))
       amax = 8;
-    elseif (isa (a, "uint16"))
+    elseif (isa (A, "uint16"))
       amax = 16;
-    elseif (isa (a, "uint32"))
+    elseif (isa (A, "uint32"))
       amax = 32;
-    elseif (isa (a, "uint64"))
+    elseif (isa (A, "uint64"))
       amax = 64;
-    elseif (isa (a, "int8"))
+    elseif (isa (A, "int8"))
       amax = 8;
-    elseif (isa (a, "int16"))
+    elseif (isa (A, "int16"))
       amax = 16;
-    elseif (isa (a, "int32"))
+    elseif (isa (A, "int32"))
       amax = 32;
-    elseif (isa (a, "int64"))
+    elseif (isa (A, "int64"))
       amax = 64;
     else
-      error ("bitcmp: invalid class %s", class (a));
+      error ("bitcmp: invalid class %s", class (A));
     endif
-    bmax = intmax (class (a));
+    bmax = intmax (class (A));
   endif
 
-  if (nargin == 1 || n == amax)
-    x = bitxor (a, bmax);
+  if (nargin == 1 || k == amax)
+    C = bitxor (A, bmax);
   else
-    m = double (n);
+    m = double (k);
     if (any (m < 1) || any (m > amax))
-      error ("bitcmp: n must be in the range [1,%d]", amax);
+      error ("bitcmp: k must be in the range [1,%d]", amax);
     endif
-    mask = bitshift (bmax, n - amax);
-    x = bitxor (bitand (a, mask), mask);
+    mask = bitshift (bmax, k - amax);
+    C = bitxor (bitand (A, mask), mask);
   endif
 endfunction
 
-%!shared Amax,Bmax,A
+
+%!test
 %! Amax=53;
 %! Bmax = bitmax;
 %! A = bitshift(Bmax,-2);
-%!assert(bitcmp(A,Amax),bitor(bitshift(1,Amax-1),bitshift(1,Amax-2)));
-%!assert(bitcmp(A,Amax-1),bitshift(1,Amax-2));
-%!assert(bitcmp(A,Amax-2),0);
-%!shared Amax,Bmax,A
+%! assert(bitcmp(A,Amax),bitor(bitshift(1,Amax-1),bitshift(1,Amax-2)));
+%! assert(bitcmp(A,Amax-1),bitshift(1,Amax-2));
+%! assert(bitcmp(A,Amax-2),0);
+%!test
 %! Amax=8;
 %! Bmax = intmax('uint8');
 %! A = bitshift(Bmax,-2);
-%!assert(bitcmp(A,Amax),bitor(bitshift(uint8(1),Amax-1),bitshift(uint8(1),Amax-2)));
-%!assert(bitcmp(A,Amax-1),bitshift(uint8(1),Amax-2));
-%!assert(bitcmp(A,Amax-2),uint8(0));
-%!shared Amax,Bmax,A
+%! assert(bitcmp(A,Amax),bitor(bitshift(uint8(1),Amax-1),bitshift(uint8(1),Amax-2)));
+%! assert(bitcmp(A,Amax-1),bitshift(uint8(1),Amax-2));
+%! assert(bitcmp(A,Amax-2),uint8(0));
+%!test
 %! Amax=16;
 %! Bmax = intmax('uint16');
 %! A = bitshift(Bmax,-2);
-%!assert(bitcmp(A,Amax),bitor(bitshift(uint16(1),Amax-1),bitshift(uint16(1),Amax-2)));
-%!assert(bitcmp(A,Amax-1),bitshift(uint16(1),Amax-2));
-%!assert(bitcmp(A,Amax-2),uint16(0));
-%!shared Amax,Bmax,A
+%! assert(bitcmp(A,Amax),bitor(bitshift(uint16(1),Amax-1),bitshift(uint16(1),Amax-2)));
+%! assert(bitcmp(A,Amax-1),bitshift(uint16(1),Amax-2));
+%! assert(bitcmp(A,Amax-2),uint16(0));
+%!test
 %! Amax=32;
 %! Bmax = intmax('uint32');
 %! A = bitshift(Bmax,-2);
-%!assert(bitcmp(A,Amax),bitor(bitshift(uint32(1),Amax-1),bitshift(uint32(1),Amax-2)));
-%!assert(bitcmp(A,Amax-1),bitshift(uint32(1),Amax-2));
-%!assert(bitcmp(A,Amax-2),uint32(0));
-%!shared Amax,Bmax,A
+%! assert(bitcmp(A,Amax),bitor(bitshift(uint32(1),Amax-1),bitshift(uint32(1),Amax-2)));
+%! assert(bitcmp(A,Amax-1),bitshift(uint32(1),Amax-2));
+%! assert(bitcmp(A,Amax-2),uint32(0));
+%!test
 %! Amax=64;
 %! Bmax = intmax('uint64');
 %! A = bitshift(Bmax,-2);
-%!assert(bitcmp(A,Amax),bitor(bitshift(uint64(1),Amax-1),bitshift(uint64(1),Amax-2)));
-%!assert(bitcmp(A,Amax-1),bitshift(uint64(1),Amax-2));
-%!assert(bitcmp(A,Amax-2),uint64(0));
+%! assert(bitcmp(A,Amax),bitor(bitshift(uint64(1),Amax-1),bitshift(uint64(1),Amax-2)));
+%! assert(bitcmp(A,Amax-1),bitshift(uint64(1),Amax-2));
+%! assert(bitcmp(A,Amax-2),uint64(0));
+

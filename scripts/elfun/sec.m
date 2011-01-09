@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = sec (z)
+function y = sec (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = 1 ./ cos(z);
+  y = 1 ./ cos(x);
 
 endfunction
 

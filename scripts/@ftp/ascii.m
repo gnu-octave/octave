@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ascii (@var{f})
 ## Put the FTP connection @var{f} into ascii mode.
-## @var{f} is an FTP object returned by the ftp function.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function ascii (obj)
-  __ftp_ascii__ (obj.curlhandle);
+function ascii (f)
+  __ftp_ascii__ (f.curlhandle);
 endfunction

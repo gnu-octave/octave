@@ -50,11 +50,11 @@
 ## @end example
 ## @end deftypefn
 
-function refreshdata (h, ws)
+function refreshdata (h, workspace)
 
   if (nargin == 0)
     h = gcf ();
-    ws = "base";
+    workspace = "base";
   else
     if (iscell (h))
       h = [h{:}];
@@ -63,12 +63,14 @@ function refreshdata (h, ws)
       error ("refreshdata: expecting a list of figure handles");
     endif
     if (nargin < 2)
-      ws = "base";
+      workspace = "base";
     else
-      if (!ischar (ws) || !(strcmpi (ws, "base") || strcmpi (ws, "caller")))
+      if (   !ischar (workspace) 
+          || !(strcmpi (workspace, "base")
+          || strcmpi (workspace, "caller")))
         error ("refreshdata: expecting workspace to be \"base\" or ""caller\"");
       else
-        ws = tolower (ws);
+        workspace = tolower (workspace);
       endif
     endif
   endif
@@ -93,7 +95,7 @@ function refreshdata (h, ws)
     for j = 1 : length (props {i})
       expr = get (objs(i), props{i}{j});
       if (!isempty (expr))
-        val = evalin (ws, expr);
+        val = evalin (workspace, expr);
         prop =  props{i}{j}(1:end-6);
         if (! isequal (get (objs(i), prop), val))
           set (objs(i), props{i}{j}(1:end-6), val);

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{X} =} bitget (@var{a},@var{n})
-## Return the status of bit(s) @var{n} of unsigned integers in @var{a}
+## @deftypefn {Function File} {@var{c} =} bitget (@var{A},@var{n})
+## Return the status of bit(s) @var{n} of unsigned integers in @var{A}
 ## the lowest significant bit is @var{n} = 1.
 ##
 ## @example
@@ -32,7 +32,7 @@
 
 ## Liberally based of the version by Kai Habel from octave-forge
 
-function X = bitget (A, n)
+function C = bitget (A, n)
 
   if (nargin != 2)
     print_usage ();
@@ -76,5 +76,6 @@ function X = bitget (A, n)
     error ("bitget: n must be in the range [1,%d]", Amax);
   endif
 
-  X = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
+  C = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
+
 endfunction

@@ -25,21 +25,17 @@
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = bunzip2 (files, outputdir)
+function varargout = bunzip2 (bzfile, dir = ".")
 
-  if (! (nargin == 1 || nargin == 2))
+  if (nargin != 1 && nargin != 2)
     print_usage ();
-  endif
-
-  if (nargin == 1)
-    outputdir = ".";
   endif
 
   if (nargout > 0)
     varargout = cell (1, nargout);
-    [varargout{:}] = unpack (files, outputdir, mfilename ());
+    [varargout{:}] = unpack (bzfile, dir, mfilename ());
   else
-    unpack (files, outputdir, mfilename ());
+    unpack (bzfile, dir, mfilename ());
   endif
 
 endfunction

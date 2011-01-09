@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = asech (z)
+function y = asech (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = acosh (1 ./ z);
+  y = acosh (1 ./ x);
 
 endfunction
 

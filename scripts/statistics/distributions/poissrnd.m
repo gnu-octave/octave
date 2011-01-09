@@ -29,7 +29,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Poisson distribution
 
-function rnd = poissrnd (l, r, c)
+function rnd = poissrnd (lambda, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
@@ -40,8 +40,8 @@ function rnd = poissrnd (l, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (l) != 1)
-        && ((length (size (l)) != length (sz)) || any (size (l) != sz)))
+    if (any (size (lambda) != 1)
+        && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
       error ("poissrnd: lambda must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -53,36 +53,36 @@ function rnd = poissrnd (l, r, c)
       error ("poissrnd: r must be a positive integer or vector");
     endif
 
-    if (any (size (l) != 1)
-        && ((length (size (l)) != length (sz)) || any (size (l) != sz)))
+    if (any (size (lambda) != 1)
+        && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
       error ("poissrnd: lambda must be scalar or of size sz");
     endif
   elseif (nargin == 1)
-    sz = size (l);
+    sz = size (lambda);
   else
     print_usage ();
   endif
 
-  if (isscalar (l))
+  if (isscalar (lambda))
 
-    if (!(l >= 0) || !(l < Inf))
+    if (!(lambda >= 0) || !(lambda < Inf))
       rnd = NaN (sz);
-    elseif (l > 0 && l < Inf)
-      rnd = randp(l, sz);
+    elseif (lambda > 0 && lambda < Inf)
+      rnd = randp(lambda, sz);
     else
       rnd = zeros (sz);
     endif
   else
     rnd = zeros (sz);
 
-    k = find (!(l >= 0) | !(l < Inf));
+    k = find (!(lambda >= 0) | !(lambda < Inf));
     if (any (k))
       rnd(k) = NaN;
     endif
 
-    k = find ((l > 0) & (l < Inf));
+    k = find ((lambda > 0) & (lambda < Inf));
     if (any (k))
-      rnd(k) = randp(l(k), size(k));
+      rnd(k) = randp(lambda(k), size(k));
     endif
   endif
 

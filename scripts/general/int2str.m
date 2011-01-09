@@ -48,27 +48,27 @@
 
 ## Author: jwe
 
-function retval = int2str (x)
+function retval = int2str (n)
 
   if (nargin == 1)
-    x = round (real(x));
-    sz = size(x);
-    nd = ndims (x);
-    nc = columns (x);
+    n = round (real(n));
+    sz = size(n);
+    nd = ndims (n);
+    nc = columns (n);
     if (nc > 1)
       idx = cell ();
       for i = 1:nd
         idx{i} = 1:sz(i);
       endfor
       idx(2) = 1;
-      ifmt = get_fmt (x(idx{:}), 0);
+      ifmt = get_fmt (n(idx{:}), 0);
       idx(2) = 2:sz(2);
-      rfmt = get_fmt (x(idx{:}), 2);
+      rfmt = get_fmt (n(idx{:}), 2);
       fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n");
     else
-      fmt = cstrcat (get_fmt (x, 0), "\n");
+      fmt = cstrcat (get_fmt (n, 0), "\n");
     endif
-    tmp = sprintf (fmt, permute (x, [2, 1, 3 : nd]));
+    tmp = sprintf (fmt, permute (n, [2, 1, 3 : nd]));
     tmp(end) = "";
     retval = char (strsplit (tmp, "\n"));
   else

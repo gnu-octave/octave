@@ -33,18 +33,18 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Chi-square test for independence
 
-function [pval, chisq, df] = chisquare_test_independence (X)
+function [pval, chisq, df] = chisquare_test_independence (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  [r, s] = size (X);
+  [r, s] = size (x);
   df = (r - 1) * (s - 1);
-  n = sum (sum (X));
-  Y = sum (X')' * sum (X) / n;
-  X = (X - Y) .^2 ./ Y;
-  chisq = sum (sum (X));
+  n = sum (sum (x));
+  y = sum (x')' * sum (x) / n;
+  x = (x - y) .^2 ./ y;
+  chisq = sum (sum (x));
   pval  = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)

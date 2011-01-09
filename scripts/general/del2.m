@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{d} =} del2 (@var{m})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{h})
-## @deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn  {Function File} {@var{d} =} del2 (@var{M})
+## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{h})
+## @deftypefnx {Function File} {@var{d} =} del2 (@var{M}, @var{dx}, @var{dy}, @dots{})
 ##
 ## Calculate the discrete Laplace
 ## @tex
@@ -29,7 +29,7 @@
 ## @ifnottex
 ## operator.
 ## @end ifnottex
-## For a 2-dimensional matrix @var{m} this is defined as
+## For a 2-dimensional matrix @var{M} this is defined as
 ## @tex
 ## $$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$$
 ## @end tex
@@ -53,7 +53,7 @@
 ## @var{dy}, etc.  A scalar spacing argument defines equidistant spacing, 
 ## whereas a vector argument can be used to specify variable spacing.  The
 ## length of the spacing vectors must match the respective dimension of
-## @var{m}.  The default spacing value is 1.
+## @var{M}.  The default spacing value is 1.
 ##
 ## At least 3 data points are needed for each dimension.  Boundary points are
 ## calculated from the linear extrapolation of interior points.

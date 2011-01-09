@@ -36,13 +36,13 @@
 ## @seealso{strread, load, dlmread, fscanf}
 ## @end deftypefn
 
-function varargout = textread (filename, formatstr = "%f", varargin)
+function varargout = textread (filename, format = "%f", varargin)
   ## Check input
   if (nargin < 1)
     print_usage ();
   endif
   
-  if (!ischar (filename) || !ischar (formatstr))
+  if (!ischar (filename) || !ischar (format))
     error ("textread: first and second input arguments must be strings");
   endif
 
@@ -63,5 +63,6 @@ function varargout = textread (filename, formatstr = "%f", varargin)
   fclose (fid);
   
   ## Call strread to make it do the real work
-  [varargout{1:max (nargout, 1)}] = strread (str, formatstr, varargin {:});
+  [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
+
 endfunction

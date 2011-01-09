@@ -17,20 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} etreeplot (@var{tree})
-## @deftypefnx {Function File} {} etreeplot (@var{tree}, @var{node_style}, @var{edge_style})
-## Plot the elimination tree of the matrix @var{s} or
-## @code{@var{s}+@var{s}'}  if @var{s} in non-symmetric.  The optional
-## parameters @var{line_style} and @var{edge_style} define the output
+## @deftypefn  {Function File} {} etreeplot (@var{A})
+## @deftypefnx {Function File} {} etreeplot (@var{A}, @var{node_style}, @var{edge_style})
+## Plot the elimination tree of the matrix @var{A} or
+## @code{@var{A}+@var{A}'} if @var{A} in not symmetric.  The optional
+## parameters @var{node_style} and @var{edge_style} define the output
 ## style.
 ## @seealso{treeplot, gplot}
 ## @end deftypefn
 
-function etreeplot (s, varargin)
+function etreeplot (A, varargin)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  treeplot (etree (s+s'), varargin{:});
+  treeplot (etree (A+A'), varargin{:});
 endfunction

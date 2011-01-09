@@ -29,19 +29,19 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function p = polyreduce (p)
+function p = polyreduce (c)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  if (! (isvector (p) || isempty (p)))
-    error ("polyreduce: argument must be a vector");
+  if (!isvector (c) || isempty (c))
+    error ("polyreduce: C must be a non-empty vector");
   endif
 
-  if (! isempty (p))
+  if (! isempty (c))
 
-    index = find (p != 0);
+    index = find (c != 0);
 
     if (isempty (index))
       
@@ -49,7 +49,7 @@ function p = polyreduce (p)
     
     else
 
-      p = p (index (1):length (p));
+      p = c(index (1):length (c));
 
     endif
 
@@ -62,8 +62,6 @@ endfunction
 %!assert(all (all (polyreduce ([1, 2, 3, 0, 0]) == [1, 2, 3, 0, 0])));
 
 %!assert(all (all (polyreduce ([1, 0, 3]) == [1, 0, 3])));
-
-%!assert(isempty (polyreduce ([])));
 
 %!error polyreduce ([1, 2; 3, 4]);
 

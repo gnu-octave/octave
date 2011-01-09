@@ -28,45 +28,45 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the exponential distribution
 
-function cdf = expcdf (x, l)
+function cdf = expcdf (x, lambda)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar(l))
-    [retval, x, l] = common_size (x, l);
+  if (!isscalar (x) && !isscalar(lambda))
+    [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
       error ("expcdf: x and lambda must be of common size or scalar");
     endif
   endif
 
   if (isscalar (x))
-    sz = size (l);
+    sz = size (lambda);
   else
     sz = size (x);
   endif
 
   cdf = zeros (sz);
 
-  k = find (isnan (x) | !(l > 0));
+  k = find (isnan (x) | !(lambda > 0));
   if (any (k))
     cdf(k) = NaN;
   endif
 
-  k = find ((x == Inf) & (l > 0));
+  k = find ((x == Inf) & (lambda > 0));
   if (any (k))
     cdf(k) = 1;
   endif
 
-  k = find ((x > 0) & (x < Inf) & (l > 0));
+  k = find ((x > 0) & (x < Inf) & (lambda > 0));
   if (any (k))
-    if isscalar (l)
-      cdf (k) = 1 - exp (- x(k) ./ l);
+    if isscalar (lambda)
+      cdf (k) = 1 - exp (- x(k) ./ lambda);
     elseif isscalar (x)
-      cdf (k) = 1 - exp (- x ./ l(k));
+      cdf (k) = 1 - exp (- x ./ lambda(k));
     else
-      cdf (k) = 1 - exp (- x(k) ./ l(k));
+      cdf (k) = 1 - exp (- x(k) ./ lambda(k));
     endif
   endif
 

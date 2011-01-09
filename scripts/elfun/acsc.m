@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = acsc (z)
+function y = acsc (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = asin (1 ./ z);
+  y = asin (1 ./ x);
 
 endfunction
 

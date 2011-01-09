@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{S}) 
-## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}) 
-## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{S}, "rows")
+## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{s}) 
+## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{s}) 
+## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{s}, "rows")
 ## Return a logical matrix @var{tf} with the same shape as @var{A} which is 
-## true (1) if @code{A(i,j)} is in @var{S} and false (0) if it is not.  If a
-## second output argument is requested, the index into @var{S} of each of the
+## true (1) if @code{A(i,j)} is in @var{s} and false (0) if it is not.  If a
+## second output argument is requested, the index into @var{s} of each of the
 ## matching elements is also returned. 
 ##
 ## @example
@@ -36,7 +36,7 @@
 ## @end group
 ## @end example
 ##
-## The inputs, @var{A} and @var{S}, may also be cell arrays.
+## The inputs, @var{A} and @var{s}, may also be cell arrays.
 ##
 ## @example
 ## @group
@@ -49,8 +49,8 @@
 ## @end example
 ##
 ## With the optional third argument @code{"rows"}, and matrices 
-## @var{A} and @var{S} with the same number of columns, compare rows in
-## @var{A} with the rows in @var{S}.
+## @var{A} and @var{s} with the same number of columns, compare rows in
+## @var{A} with the rows in @var{s}.
 ##
 ## @example
 ## @group
@@ -71,13 +71,13 @@
 ## Adapted-by: jwe
 ## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
 
-function [tf, a_idx] = ismember (a, s, varargin) 
+function [tf, a_idx] = ismember (A, s, varargin) 
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  [a, s] = validargs ("ismember", a, s, varargin{:});
+  [A, s] = validargs ("ismember", A, s, varargin{:});
 
   if (nargin == 2)
     s = s(:);
@@ -94,25 +94,25 @@ function [tf, a_idx] = ismember (a, s, varargin)
     endif
     
     if (nargout > 1)
-      a_idx = lookup (s, a, "m");
+      a_idx = lookup (s, A, "m");
       tf = logical (a_idx);
       if (! isempty (is))
         a_idx(tf) = is (a_idx(tf));
       endif
     else
-      tf = lookup (s, a, "b");
+      tf = lookup (s, A, "b");
     endif
 
   else
 
-    if (isempty (a) || isempty (s))
-      tf = false (rows (a), 1);
-      a_idx = zeros (rows (a), 1);
+    if (isempty (A) || isempty (s))
+      tf = false (rows (A), 1);
+      a_idx = zeros (rows (A), 1);
     else
 
       ## FIXME: lookup does not support "rows", so we just use unique.
-      [xx, ii, jj] = unique ([a; s], "rows", "last");
-      na = rows (a);
+      [xx, ii, jj] = unique ([A; s], "rows", "last");
+      na = rows (A);
       jj = ii(jj(1:na));
       tf = jj > na;
 

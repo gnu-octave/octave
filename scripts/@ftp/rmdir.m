@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rmdir (@var{f}, @var{path})
 ## Remove the remote directory @var{path}, over the FTP connection @var{f}.
-## @var{f} is an FTP object returned by the ftp function.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function rmdir (obj, path)
-  __ftp_rmdir__ (obj.curlhandle, path);
+function rmdir (f, path)
+  __ftp_rmdir__ (f.curlhandle, path);
 endfunction

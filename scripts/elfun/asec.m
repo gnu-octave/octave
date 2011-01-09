@@ -25,13 +25,13 @@
 
 ## Author: jwe
 
-function w = asec (z)
+function y = asec (x)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  w = acos (1 ./ z);
+  y = acos (1 ./ x);
 
 endfunction
 

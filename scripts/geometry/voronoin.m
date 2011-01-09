@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
 ## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
-## computes n- dimensional Voronoi facets.  The input matrix @var{pts}
+## Compute N-dimensional Voronoi facets.  The input matrix @var{pts}
 ## of size [n, dim] contains n points of dimension dim.
 ## @var{C} contains the points of the Voronoi facets.  The list @var{F}
 ## contains for each facet the indices of the Voronoi points.
@@ -37,7 +37,7 @@
 ## Added optional second argument to pass options to the underlying
 ## qhull command
 
-function [C, F] = voronoin (pts, opt)
+function [C, F] = voronoin (pts, options)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
@@ -47,8 +47,8 @@ function [C, F] = voronoin (pts, opt)
   if (np > dims)
     if (nargin == 1)
       [C, F, infi] = __voronoi__ (pts);
-    elseif ischar(opt)
-      [C, F, infi] = __voronoi__ (pts, opt);
+    elseif (ischar (options))
+      [C, F, infi] = __voronoi__ (pts, options);
     else
       error ("voronoin: second argument must be a string");
     endif

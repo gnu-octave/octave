@@ -27,7 +27,7 @@
 
 ## Author: jwe
 
-function msg = strerror (name, err)
+function msg = strerror (name, num)
 
   if (nargin != 2)
     print_usage ();
@@ -37,22 +37,22 @@ function msg = strerror (name, err)
     error ("strerror: first argument must be a string");
   endif
 
-  if (! isscalar (err))
+  if (! isscalar (num))
     error ("strerror: second argument must be a scalar");
   endif
 
   if (strcmp (name, "fsolve"))
 
-    if (err == -2)
+    if (num == -2)
       msg = "input error\n";
-    elseif (err == -1)
+    elseif (num == -1)
       msg = "error encountered in user-supplied function\n";
-    elseif (err == 1)
+    elseif (num == 1)
       msg = "solution converged to requested tolerance\n";
-    elseif (err == 4)
-      msg = "iteration limit exceeded\n";
-    elseif (err == 3)
+    elseif (num == 3)
       msg = "iteration is not making good progress\n";
+    elseif (num == 4)
+      msg = "iteration limit exceeded\n";
     else
       error ("strerror: unrecognized error code for fsolve");
     endif

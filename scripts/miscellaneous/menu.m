@@ -30,7 +30,7 @@
 
 ## Author: jwe
 
-function num = menu (t, varargin)
+function num = menu (title, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -49,8 +49,8 @@ function num = menu (t, varargin)
 
     page_screen_output (0);
 
-    if (! isempty (t))
-      disp (t);
+    if (! isempty (title))
+      disp (title);
       printf ("\n");
     endif
 

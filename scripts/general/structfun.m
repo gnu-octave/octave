@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} structfun (@var{func}, @var{s})
+## @deftypefn  {Function File} {} structfun (@var{func}, @var{S})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} structfun (@dots{})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
 ## 
 ## Evaluate the function named @var{name} on the fields of the structure
-## @var{s}.  The fields of @var{s} are passed to the function @var{func}
+## @var{S}.  The fields of @var{S} are passed to the function @var{func}
 ## individually.
 ##
 ## @code{structfun} accepts an arbitrary function @var{func} in the form of 
@@ -73,7 +73,7 @@
 ## @seealso{cellfun, arrayfun, spfun}
 ## @end deftypefn
 
-function varargout = structfun (fun, s, varargin);
+function varargout = structfun (func, S, varargin);
 
   if (nargin < 2)
     print_usage ();
@@ -103,10 +103,10 @@ function varargout = structfun (fun, s, varargin);
   endif
 
   varargout = cell (max ([nargout, 1]), 1);
-  [varargout{:}] = cellfun (fun, struct2cell (s), varargin{:});
+  [varargout{:}] = cellfun (func, struct2cell (S), varargin{:});
 
   if (! uniform_output)
-    varargout = cellfun (@cell2struct, varargout, {fieldnames(s)}, {1}, uo_str, false);
+    varargout = cellfun (@cell2struct, varargout, {fieldnames(S)}, {1}, uo_str, false);
   endif
 endfunction
 

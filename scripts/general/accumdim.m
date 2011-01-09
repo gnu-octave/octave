@@ -52,7 +52,7 @@
 ## @seealso{accumarray}
 ## @end deftypefn
 
-function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
+function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
 
   if (nargin < 2 || nargin > 5)
     print_usage ();
@@ -75,7 +75,7 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
     endif
   endif
 
-  sz = size (val);
+  sz = size (vals);
 
   if (nargin < 3)
     [~, dim] = max (sz != 1); # first non-singleton dim
@@ -88,7 +88,7 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
  
   if (isempty (func) || func == @sum)
     ## Fast summation case.
-    A = __accumdim_sum__ (subs, val, dim, n);
+    A = __accumdim_sum__ (subs, vals, dim, n);
     
     ## Fill in nonzero fill value
     if (fillval != 0)
@@ -113,28 +113,28 @@ function A = accumdim (subs, val, dim, n = 0, func = [], fillval = 0)
   szc{dim} = diff ([0; jdx]);
   subsc = {':'}(ones (1, length (sz)));
   subsc{dim} = idx;
-  val = mat2cell (val(subsc{:}), szc{:});
+  vals = mat2cell (vals(subsc{:}), szc{:});
   ## Apply reductions. Special case min, max.
   if (func == @min || func == @max)
-    val = cellfun (func, val, {[]}, {dim}, "uniformoutput", false);
+    vals = cellfun (func, vals, {[]}, {dim}, "uniformoutput", false);
   else
-    val = cellfun (func, val, {dim}, "uniformoutput", false);
+    vals = cellfun (func, vals, {dim}, "uniformoutput", false);
   endif
   subs = subs(jdx);
 
   ## Concatenate reduced slices.
-  val = cat (dim, val{:});
+  vals = cat (dim, vals{:});
 
   ## Construct matrix of fillvals.
   if (fillval == 0)
-    A = zeros (sz, class (val));
+    A = zeros (sz, class (vals));
   else
     A = repmat (fillval, sz);
   endif
 
   ## Set the reduced values.
   subsc{dim} = subs;
-  A(subsc{:}) = val;
+  A(subsc{:}) = vals;
 
 endfunction
 

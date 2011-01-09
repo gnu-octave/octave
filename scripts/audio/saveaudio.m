@@ -31,7 +31,7 @@
 ## Created: 5 September 1994
 ## Adapted-By: jwe
 
-function saveaudio (name, X, ext, bit)
+function saveaudio (name, x, ext, bps)
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
@@ -42,15 +42,15 @@ function saveaudio (name, X, ext, bit)
   endif
 
   if (nargin < 4)
-    bit = 8;
-  elseif (bit != 8 && bit != 16)
-    error ("saveaudio: bit must be either 8 or 16");
+    bps = 8;
+  elseif (bps != 8 && bps != 16)
+    error ("saveaudio: bps must be either 8 or 16");
   endif
 
-  [nr, nc] = size (X);
+  [nr, nc] = size (x);
   if (nc != 1)
     if (nr == 1)
-      X = X';
+      x = x';
       nr = nc;
     else
       error ("saveaudio: X must be a vector");
@@ -60,25 +60,25 @@ function saveaudio (name, X, ext, bit)
   num = fopen ([name, ".", ext], "wb");
 
   if (strcmp (ext, "lin") || strcmp (ext, "raw"))
-    if (bit == 8)
-      ld = max (abs (X));
+    if (bps == 8)
+      ld = max (abs (x));
       if (ld > 127)   # convert 16 to 8 bit
         if (ld < 16384)
           sc = 64 / ld;
         else
           sc = 1 / 256;
         endif
-        X = fix (X * sc);
+        x = fix (x * sc);
       endif
-      X = X + 127;
-      c = fwrite (num, X, "uchar");
+      x = x + 127;
+      c = fwrite (num, x, "uchar");
     else
-      c = fwrite (num, X, "short");
+      c = fwrite (num, x, "short");
     endif
   elseif (strcmp (ext, "mu") || strcmp (ext, "au")
           || strcmp (ext, "snd") || strcmp (ext, "ul"))
-    Y = lin2mu (X);
-    c = fwrite (num, Y, "uchar");
+    y = lin2mu (x);
+    c = fwrite (num, y, "uchar");
   else
     fclose (num);
     error ("saveaudio: unsupported extension");

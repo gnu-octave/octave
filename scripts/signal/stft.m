@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{c}] =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{w_type})
+## @deftypefn {Function File} {[@var{y}, @var{c}] =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{win_type})
 ## Compute the short-time Fourier transform of the vector @var{x} with
 ## @var{num_coef} coefficients by applying a window of @var{win_size} data
 ## points and an increment of @var{inc} points.
@@ -28,20 +28,20 @@
 ##
 ## @table @asis
 ## @item @nospell{hanning}
-## w_type = 1
+## win_type = 1
 ##
 ## @item @nospell{hamming}
-## w_type = 2
+## win_type = 2
 ##
 ## @item rectangle
-## w_type = 3
+## win_type = 3
 ## @end table
 ##
-## The window names can be passed as strings or by the @var{w_type} number.
+## The window names can be passed as strings or by the @var{win_type} number.
 ##
 ## If not all arguments are specified, the following defaults are used:
 ## @var{win_size} = 80, @var{inc} = 24, @var{num_coef} = 64, and
-## @var{w_type} = 1.
+## @var{win_type} = 1.
 ##
 ## @code{@var{y} = stft (@var{x}, @dots{})} returns the absolute values
 ## of the Fourier coefficients according to the @var{num_coef} positive
@@ -56,30 +56,30 @@
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description: Short-Time Fourier Transform
 
-function [Y, c] = stft(X, win, inc, coef, w_type)
+function [y, c] = stft(x, win_size, inc, num_coef, win_type)
 
   ## Default values of unspecified arguments.
   if (nargin < 5)
-    w_type = 1;
+    win_type = 1;
     if (nargin < 4)
-      coef = 64;
+      num_coef = 64;
       if (nargin < 3)
         inc = 24;
         if (nargin < 2)
-          win = 80;
+          win_size = 80;
         endif
       endif
     endif
   elseif (nargin == 5)
-    if (ischar (w_type))
-      if (strcmp (w_type, "hanning"))
-        w_type = 1;
-      elseif (strcmp (w_type, "hamming"))
-        w_type = 2;
-      elseif (strcmp (w_type, "rectangle"))
-        w_type = 3;
+    if (ischar (win_type))
+      if (strcmp (win_type, "hanning"))
+        win_type = 1;
+      elseif (strcmp (win_type, "hamming"))
+        win_type = 2;
+      elseif (strcmp (win_type, "rectangle"))
+        win_type = 3;
       else
-        error ("stft: unknown window type `%s'", w_type);
+        error ("stft: unknown window type `%s'", win_type);
       endif
     endif
   else
@@ -87,49 +87,49 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
   endif
 
   ## Check whether X is a vector.
-  [nr, nc] = size (X);
+  [nr, nc] = size (x);
   if (nc != 1)
     if (nr == 1)
-      X = X';
+      x = x';
       nr = nc;
     else
       error ("stft: X must be a vector");
     endif
   endif
 
-  num_coef = 2 * coef;
-  if (win > num_coef)
-    win = num_coef;
-    printf ("stft: window size adjusted to %f\n", win);
+  ncoef = 2 * num_coef;
+  if (win_size > ncoef)
+    win_size = ncoef;
+    printf ("stft: window size adjusted to %f\n", win_size);
   endif
-  num_win = fix ((nr - win) / inc);
+  num_win = fix ((nr - win_size) / inc);
 
   ## compute the window coefficients
-  if (w_type == 3)
+  if (win_type == 3)
     ## Rectangular window.
-    WIN_COEF = ones (win, 1);
-  elseif (w_type == 2)
+    win_coef = ones (win_size, 1);
+  elseif (win_type == 2)
     ## Hamming window.
-    WIN_COEF = hamming (win);
+    win_coef = hamming (win_size);
   else
     ## Hanning window.
-    WIN_COEF = hanning (win);
+    win_coef = hanning (win_size);
   endif
 
   ## Create a matrix Z whose columns contain the windowed time-slices.
-  Z = zeros (num_coef, num_win + 1);
+  z = zeros (ncoef, num_win + 1);
   start = 1;
   for i = 0:num_win
-    Z(1:win, i+1) = X(start:start+win-1) .* WIN_COEF;
+    z(1:win_size, i+1) = x(start:start+win_size-1) .* win_coef;
     start = start + inc;
   endfor
 
-  Y = fft (Z);
+  y = fft (z);
 
   if (nargout == 1)
-    Y = abs (Y(1:coef, :));
+    y = abs (y(1:num_coef, :));
   else
-    c = [win, inc, w_type];
+    c = [win_size, inc, win_type];
   endif
 
 endfunction

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
-## Set up a plot grid with @var{cols} by @var{rows} subwindows and plot
+## Set up a plot grid with @var{rows} by @var{cols} subwindows and plot
 ## in location given by @var{index}.
 ##
 ## If only one argument is supplied, then it must be a three digit value
@@ -60,7 +60,7 @@
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe
 
-function h = subplot (rows, columns, index, varargin)
+function h = subplot (rows, cols, index, varargin)
 
   align_axes = false;
   replace_axes = false;
@@ -89,32 +89,32 @@ function h = subplot (rows, columns, index, varargin)
     tmp = rows;
     index = rem (tmp, 10);
     tmp = (tmp - index) / 10;
-    columns = rem (tmp, 10);
-    tmp = (tmp - columns) / 10;
+    cols = rem (tmp, 10);
+    tmp = (tmp - cols) / 10;
     rows = rem (tmp, 10);
 
-  elseif (! (isscalar (columns) && isscalar (rows)))
-    error ("subplot: columns, and rows must be scalars");
-  elseif (any (index < 1) || any (index > rows*columns))
-    error ("subplot: index value must be greater than 1 and less than rows*columns")
+  elseif (! (isscalar (cols) && isscalar (rows)))
+    error ("subplot: cols, and rows must be scalars");
+  elseif (any (index < 1) || any (index > rows*cols))
+    error ("subplot: index value must be greater than 1 and less than rows*cols")
   endif
 
-  columns = round (columns);
+  cols = round (cols);
   rows = round (rows);
   index = round (index);
 
-  if (index > columns*rows)
-    error ("subplot: index must be less than columns*rows");
+  if (index > cols*rows)
+    error ("subplot: index must be less than cols*rows");
   endif
 
-  if (columns < 1 || rows < 1 || index < 1)
-    error ("subplot: columns,rows,index must be be positive");
+  if (cols < 1 || rows < 1 || index < 1)
+    error ("subplot: cols,rows,index must be be positive");
   endif
 
   units = get (0, "defaultaxesunits");
   unwind_protect
     set (0, "defaultaxesunits", "normalized")
-    pos = subplot_position (rows, columns, index, "position", units);
+    pos = subplot_position (rows, cols, index, "position", units);
 
     cf = gcf ();
 
@@ -163,8 +163,8 @@ function h = subplot (rows, columns, index, varargin)
     if (found)
       set (cf, "currentaxes", tmp);
     else
-      pos = subplot_position (rows, columns, index, "outerposition", units);
-      pos2 = subplot_position (rows, columns, index, "position", units);
+      pos = subplot_position (rows, cols, index, "outerposition", units);
+      pos2 = subplot_position (rows, cols, index, "position", units);
       tmp = axes ("outerposition", pos, "position", pos2,
                   "activepositionproperty", "outerposition");
     endif
@@ -183,10 +183,10 @@ function h = subplot (rows, columns, index, varargin)
 
 endfunction
 
-function pos = subplot_position (rows, columns, index, position_property, units)
+function pos = subplot_position (rows, cols, index, position_property, units)
 
   ## For 1 row and 1 column return the usual default.
-  if (rows == 1 && columns == 1)
+  if (rows == 1 && cols == 1)
     if (strcmpi (position_property, "position"))
       pos = get (0, "defaultaxesposition");
     else
@@ -201,13 +201,13 @@ function pos = subplot_position (rows, columns, index, position_property, units)
   margins.top    = 0.075;
   margins.bottom = 0.110;
   pc = 1 ./ [0.1860, (margins.left + margins.right - 1)];
-  margins.column = 1 ./ polyval (pc , columns);
+  margins.column = 1 ./ polyval (pc , cols);
   pr = 1 ./ [0.2282, (margins.top + margins.bottom - 1)];
   margins.row    = 1 ./ polyval (pr , rows);
 
   ## Calculate the width/height of the subplot axes.
-  width = 1 - margins.left - margins.right - (columns-1)*margins.column;
-  width = width / columns;
+  width = 1 - margins.left - margins.right - (cols-1)*margins.column;
+  width = width / cols;
   height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
   height = height / rows;
 
@@ -220,7 +220,7 @@ function pos = subplot_position (rows, columns, index, position_property, units)
       inset.bottom = margins.bottom;
       inset.top = margins.top;
     endif
-    if (columns > 1)
+    if (cols > 1)
       if (strcmpi (units, "normalized"))
         inset.right = max (polyval ([0.1200,-0.0014], width), 5/560);
       else
@@ -238,8 +238,8 @@ function pos = subplot_position (rows, columns, index, position_property, units)
     height = height + inset.top + inset.bottom;
   endif
 
-  yp = fix ((index(:)-1)/columns);
-  xp = index(:) - yp*columns - 1;
+  yp = fix ((index(:)-1)/cols);
+  xp = index(:) - yp*cols - 1;
   yp = (rows - 1) - yp;
 
   x0 = xp .* (width + margins.column) + margins.left;

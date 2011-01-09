@@ -24,7 +24,7 @@
 ## The algorithm used is the Sieve of Eratosthenes.
 ##
 ## Note that if you need a specific number of primes you can use the
-## fact the distance from one prime to the next is, on average,
+## fact that the distance from one prime to the next is, on average,
 ## proportional to the logarithm of the prime.  Integrating, one finds
 ## that there are about @math{k} primes less than
 ## @tex
@@ -40,28 +40,28 @@
 ## Author: Francesco Potortì
 ## Author: Dirk Laurie
 
-function x = primes (p)
+function x = primes (n)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  if (! isscalar (p))
+  if (! isscalar (n))
     error ("primes: n must be a scalar");
   endif
 
-  if (p > 100000)
+  if (n > 100000)
     ## Optimization: 1/6 less memory, and much faster (asymptotically)
     ## 100000 happens to be the cross-over point for Paul's machine;
     ## below this the more direct code below is faster.  At the limit
     ## of memory in Paul's machine, this saves .7 seconds out of 7 for
-    ## p = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
-    lenm = floor ((p+1)/6);       # length of the 6n-1 sieve
-    lenp = floor ((p-1)/6);       # length of the 6n+1 sieve
+    ## n = 3e6.  Hardly worthwhile, but Dirk reports better numbers.
+    lenm = floor ((n+1)/6);       # length of the 6n-1 sieve
+    lenp = floor ((n-1)/6);       # length of the 6n+1 sieve
     sievem = true (1, lenm);      # assume every number of form 6n-1 is prime
     sievep = true (1, lenp);      # assume every number of form 6n+1 is prime
 
-    for i = 1:(sqrt(p)+1)/6       # check up to sqrt(p)
+    for i = 1:(sqrt(n)+1)/6       # check up to sqrt(n)
       if (sievem(i))              # if i is prime, eliminate multiples of i
         sievem(7*i-1:6*i-1:lenm) = false;
         sievep(5*i-1:6*i-1:lenp) = false;
@@ -72,10 +72,10 @@ function x = primes (p)
       endif
     endfor
     x = sort([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
-  elseif (p > 352)                # nothing magical about 352; must be >2
-    len = floor ((p-1)/2);        # length of the sieve
+  elseif (n > 352)                # nothing magical about 352; must be >2
+    len = floor ((n-1)/2);        # length of the sieve
     sieve = true (1, len);        # assume every odd number is prime
-    for i = 1:(sqrt(p)-1)/2       # check up to sqrt(p)
+    for i = 1:(sqrt(n)-1)/2       # check up to sqrt(n)
       if (sieve(i))               # if i is prime, eliminate multiples of i
         sieve(3*i+1:2*i+1:len) = false; # do it
       endif
@@ -88,7 +88,7 @@ function x = primes (p)
          173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, ...
          233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, ...
          293, 307, 311, 313, 317, 331, 337, 347, 349];
-    x = a(a <= p);
+    x = a(a <= n);
   endif
 
 endfunction

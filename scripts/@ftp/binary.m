@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} binary (@var{f})
 ## Put the FTP connection @var{f} into binary mode.
-## @var{f} is an FTP object returned by the ftp function.
+## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function binary (obj)
-  __ftp_binary__ (obj.curlhandle);
+function binary (f)
+  __ftp_binary__ (f.curlhandle);
 endfunction

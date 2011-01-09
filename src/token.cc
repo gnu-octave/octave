@@ -65,14 +65,6 @@ token::token (end_tok_type t, int l, int c)
   et = t;
 }
 
-token::token (plot_tok_type t, int l, int c)
-{
-  line_num = l;
-  column_num = c;
-  type_tag = pttype_token;
-  pt = t;
-}
-
 token::token (symbol_table::symbol_record *s, int l, int c)
 {
   line_num = l;
@@ -128,13 +120,6 @@ token::ettype (void)
 {
   assert (type_tag == ettype_token);
   return et;
-}
-
-token::plot_tok_type
-token::pttype (void)
-{
-  assert (type_tag == pttype_token);
-  return pt;
 }
 
 symbol_table::symbol_record *

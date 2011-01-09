@@ -37,7 +37,6 @@ public:
       string_token,
       double_token,
       ettype_token,
-      pttype_token,
       sym_rec_token,
       scls_rec_token,
       meta_rec_token
@@ -59,19 +58,11 @@ public:
       unwind_protect_end
     };
 
-  enum plot_tok_type
-    {
-      replot = 1,
-      two_dee = 2,
-      three_dee = 3
-    };
-
   token (int l = -1, int c = -1);
   token (const std::string& s, int l = -1, int c = -1);
   token (double d, const std::string& s = std::string (),
          int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
-  token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_table::symbol_record *s, int l = -1, int c = -1);
   token (symbol_table::symbol_record *cls,
          symbol_table::symbol_record *pkg, int l = -1, int c = -1);
@@ -87,7 +78,6 @@ public:
   std::string text (void);
   double number (void);
   end_tok_type ettype (void);
-  plot_tok_type pttype (void);
   symbol_table::symbol_record *sym_rec (void);
 
   symbol_table::symbol_record *method_rec (void);
@@ -115,7 +105,6 @@ private:
       std::string *str;
       double num;
       end_tok_type et;
-      plot_tok_type pt;
       symbol_table::symbol_record *sr;
       struct
         {

@@ -1,5 +1,13 @@
 2011-01-09  John W. Eaton  <jwe@octave.org>
 
+	* token.h, token.cc (token::plot_tok_typ): Delete unused enum.
+	(token::token_type): Delete pttype_token from the list.
+	(token::token (plot_tok_type, int, int)): Delete unused constructor.
+	(token::pttype): Delete unused function.
+	(token::anonymous union): Delete PT element.
+
+2011-01-09  John W. Eaton  <jwe@octave.org>
+
 	* lex.ll (display_token): Display token value for NUM, IMAG_NUM,
 	STRUCT_ELT, NAME, DQ_STRING, and SQ_STRING tokens.
 

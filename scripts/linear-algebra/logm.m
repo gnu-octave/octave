@@ -143,4 +143,4 @@ endfunction
 %% Test input validation
 %!error logm ();
 %!error logm (1, 2, 3);
-%!error <logm: argument must be a square matrix.> logm([1 0;0 1; 2 2]);
+%!error <logm: argument must be a square matrix> logm([1 0;0 1; 2 2]);

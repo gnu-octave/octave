@@ -1,5 +1,13 @@
 2011-01-09  Rik  <octave@nomad.inbox5.com>
 
+	* general/bicubic.m, general/nargchk.m, general/nargoutchk.m,
+	linear-algebra/krylov.m, linear-algebra/krylovb.m,
+	linear-algebra/normest.m, linear-algebra/null.m, linear-algebra/orth.m,
+	linear-algebra/rank.m: Use common names for variables in documentation
+	and code.
+
+2011-01-09  Rik  <octave@nomad.inbox5.com>
+
 	* audio/loadaudio.m, audio/mu2lin.m, audio/saveaudio.m,
 	general/accumdim.m, general/bitget.m, general/bitset.m, general/del2.m,
 	general/isequal.m, general/isequalwithequalnans.m, general/logspace.m,

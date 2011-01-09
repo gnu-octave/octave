@@ -18,19 +18,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rank (@var{a}, @var{tol})
-## Compute the rank of @var{a}, using the singular value decomposition.
-## The rank is taken to be the number of singular values of @var{a} that
+## @deftypefn {Function File} {} rank (@var{A}, @var{tol})
+## Compute the rank of @var{A}, using the singular value decomposition.
+## The rank is taken to be the number of singular values of @var{A} that
 ## are greater than the specified tolerance @var{tol}.  If the second
 ## argument is omitted, it is taken to be
 ##
 ## @example
-## tol = max (size (@var{a})) * sigma(1) * eps;
+## tol = max (size (@var{A})) * sigma(1) * eps;
 ## @end example
 ##
 ## @noindent
 ## where @code{eps} is machine precision and @code{sigma(1)} is the largest
-## singular value of @var{a}.
+## singular value of @var{A}.
 ## @end deftypefn
 
 ## Author: jwe

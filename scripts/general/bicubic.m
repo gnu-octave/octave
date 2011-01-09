@@ -32,7 +32,7 @@
 ## Bicubic interpolation method.
 ## Author: Hoxide Ma <hoxide_dirac@yahoo.com.cn>
 
-function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
+function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
   if (nargin < 1 || nargin > 7)
     print_usage ();
@@ -48,81 +48,81 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     extrapval = NaN;
   endif
 
-  if (isa (X, "single") || isa (Y, "single") || isa (Z, "single")
-      || isa (XI, "single") || isa (YI, "single"))
+  if (isa (x, "single") || isa (y, "single") || isa (z, "single")
+      || isa (xi, "single") || isa (yi, "single"))
     myeps = eps("single");
   else
     myeps = eps;
   endif
 
   if (nargin <= 2)
-    ## bicubic (Z) or bicubic (Z, 2)
+    ## bicubic (z) or bicubic (z, 2)
     if (nargin == 1) 
       n = 1;
     else
-      n = Y;
+      n = y;
     endif
-    Z = X;
-    X = [];
-    [rz, cz] = size (Z);
+    z = x;
+    x = [];
+    [rz, cz] = size (z);
     s = linspace (1, cz, (cz-1)*pow2(n)+1);
     t = linspace (1, rz, (rz-1)*pow2(n)+1);
   elseif (nargin == 3)
-    if (! isvector (X) || ! isvector (Y))
+    if (! isvector (x) || ! isvector (y))
       error ("bicubic: XI and YI must be vector");
     endif
-    s = Y;
-    t = Z;
-    Z = X;
-    [rz, cz] = size (Z);
+    s = y;
+    t = z;
+    z = x;
+    [rz, cz] = size (z);
   elseif (nargin == 5 || nargin == 6)
-    [rz, cz] = size (Z) ; 
-    if (isvector (X) && isvector (Y))
-      if (rz != length (Y) || cz != length (X))
+    [rz, cz] = size (z) ; 
+    if (isvector (x) && isvector (y))
+      if (rz != length (y) || cz != length (x))
         error ("bicubic: length of X and Y must match the size of Z");
       endif
-    elseif (size_equal (X, Y) && size_equal (X, Z))
-      X = X(1,:);
-      Y = Y(:,1);
+    elseif (size_equal (x, y) && size_equal (x, z))
+      x = x(1,:);
+      y = y(:,1);
     else
       error ("bicubic: X, Y and Z must be equal size matrices of same size");
     endif
     
     ## Mark values outside the lookup table.
-    xfirst_ind = find (XI < X(1));
-    xlast_ind  = find (XI > X(cz));    
-    yfirst_ind = find (YI < Y(1));
-    ylast_ind  = find (YI > Y(rz));
+    xfirst_ind = find (xi < x(1));
+    xlast_ind  = find (xi > x(cz));    
+    yfirst_ind = find (yi < y(1));
+    ylast_ind  = find (yi > y(rz));
     ## Set value outside the table preliminary to min max index.
-    XI(xfirst_ind) = X(1);
-    XI(xlast_ind) = X(cz);
-    YI(yfirst_ind) = Y(1);
-    YI(ylast_ind) = Y(rz);
+    xi(xfirst_ind) = x(1);
+    xi(xlast_ind) = x(cz);
+    yi(yfirst_ind) = y(1);
+    yi(ylast_ind) = y(rz);
 
 
-    X = reshape (X, 1, cz);
-    X(cz) *= 1 + sign (X(cz))*myeps;
-    if (X(cz) == 0) 
-      X(cz) = myeps;
+    x = reshape (x, 1, cz);
+    x(cz) *= 1 + sign (x(cz))*myeps;
+    if (x(cz) == 0) 
+      x(cz) = myeps;
     endif; 
-    XI = reshape (XI, 1, length (XI));
-    [m, i] = sort ([X, XI]);
+    xi = reshape (xi, 1, length (xi));
+    [m, i] = sort ([x, xi]);
     o = cumsum (i <= cz);
     xidx = o(find (i > cz));
     
-    Y = reshape (Y, rz, 1);
-    Y(rz) *= 1 + sign (Y(rz))*myeps;
-    if (Y(rz) == 0) 
-      Y(rz) = myeps;
+    y = reshape (y, rz, 1);
+    y(rz) *= 1 + sign (y(rz))*myeps;
+    if (y(rz) == 0) 
+      y(rz) = myeps;
     endif; 
-    YI = reshape (YI, length (YI), 1);
-    [m, i] = sort ([Y; YI]);
+    yi = reshape (yi, length (yi), 1);
+    [m, i] = sort ([y; yi]);
     o = cumsum (i <= rz);
     yidx = o([find(i > rz)]);
     
     ## Set s and t used follow codes.
-    s = xidx + ((XI .- X(xidx))./(X(xidx+1) .- X(xidx)));
-    t = yidx + ((YI - Y(yidx))./(Y(yidx+1) - Y(yidx)));
+    s = xidx + ((xi .- x(xidx))./(x(xidx+1) .- x(xidx)));
+    t = yidx + ((yi - y(yidx))./(y(yidx+1) - y(yidx)));
   else
     print_usage ();
   endif
@@ -145,8 +145,8 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
   t(d) = 1.0;
   d = [];
 
-  p = zeros (size (Z) + 2);
-  p(2:rz+1,2:cz+1) = Z;
+  p = zeros (size (z) + 2);
+  p(2:rz+1,2:cz+1) = z;
   p(1,:) =    (6*(1-a))*p(2,:)    - 3*p(3,:)  + (6*a-2)*p(4,:);
   p(rz+2,:) = (6*(1-a))*p(rz+1,:) - 3*p(rz,:) + (6*a-2)*p(rz-1,:);
   p(:,1) =    (6*(1-a))*p(:,2)    - 3*p(:,3)  + (6*a-2)*p(:,4);
@@ -178,22 +178,22 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
 
   lent = length (ct0);
   lens = columns (cs0);
-  F = zeros (lent, lens);
+  zi = zeros (lent, lens);
   
   for i = 1:lent
     it = indt(i);
     int = [it, it+1, it+2, it+3];
-    F(i,:) = ([ct0(i),ct1(i),ct2(i),ct3(i)]
+    zi(i,:) = ([ct0(i),ct1(i),ct2(i),ct3(i)]
               * (p(int,inds) .* cs0 + p(int,inds+1) .* cs1
                  + p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3));
   endfor
 
   ## Set points outside the table to extrapval.
   if (! (isempty (xfirst_ind) && isempty (xlast_ind)))
-    F(:, [xfirst_ind, xlast_ind]) = extrapval;
+    zi(:, [xfirst_ind, xlast_ind]) = extrapval;
   endif
   if (! (isempty (yfirst_ind) && isempty (ylast_ind)))
-    F([yfirst_ind; ylast_ind], :) = extrapval;
+    zi([yfirst_ind; ylast_ind], :) = extrapval;
   endif
 
 endfunction

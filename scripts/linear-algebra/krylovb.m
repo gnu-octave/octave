@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{u}, @var{ucols}] =} krylovb (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg})
+## @deftypefn {Function File} {[@var{u}, @var{ucols}] =} krylovb (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg})
 ## See @code{krylov}.
 ## @end deftypefn
 

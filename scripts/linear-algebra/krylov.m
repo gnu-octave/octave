@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg})
+## @deftypefn {Function File} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg})
 ## Construct an orthogonal basis @var{u} of block Krylov subspace
 ##
 ## @example
@@ -28,13 +28,13 @@
 ## @noindent
 ## Using Householder reflections to guard against loss of orthogonality.
 ##
-## If @var{v} is a vector, then @var{h} contains the Hessenberg matrix
+## If @var{V} is a vector, then @var{h} contains the Hessenberg matrix
 ## such that @code{a*u == u*h+rk*ek'}, in which @code{rk =
 ## a*u(:,k)-u*h(:,k)}, and @code{ek'} is the vector
 ## @code{[0, 0, @dots{}, 1]} of length @code{k}.  Otherwise, @var{h} is
 ## meaningless.
 ##
-## If @var{v} is a vector and @var{k} is greater than
+## If @var{V} is a vector and @var{k} is greater than
 ## @code{length(A)-1}, then @var{h} contains the Hessenberg matrix such
 ## that @code{a*u == u*h}.
 ##
@@ -42,7 +42,7 @@
 ## subspace (based on @var{eps1}).
 ##
 ## If @var{b} is a vector and @var{k} is greater than @var{m-1}, then
-## @var{h} contains the Hessenberg decomposition of @var{a}.
+## @var{h} contains the Hessenberg decomposition of @var{A}.
 ##
 ## The optional parameter @var{eps1} is the threshold for zero.  The
 ## default value is 1e-12.

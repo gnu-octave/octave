@@ -85,8 +85,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
   ## From here on, compare objects as if they were structures.
   if (isobject (x))
-    x = struct (x);
-    varargin = cellfun (@struct, varargin, "uniformoutput", false);
+    x = builtin ("struct", x);
+    varargin = cellfun (@(x) builtin ("struct", x), varargin,
+                        "uniformoutput", false);
   endif
 
   if (t)

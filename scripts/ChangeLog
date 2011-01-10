@@ -1,3 +1,9 @@
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
+	* general/private/__isequal__.m: Use builtin ("struct", ...) to
+	convert objects to a structs to avoid possible overloading of
+	the struct function.
+
 2011-01-09  Rik  <octave@nomad.inbox5.com>
 
 	* plot/orient.m, statistics/tests/kolmogorov_smirnov_test.m,

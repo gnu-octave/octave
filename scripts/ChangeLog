@@ -1,5 +1,11 @@
 2011-01-09  Rik  <octave@nomad.inbox5.com>
 
+	* plot/orient.m, statistics/tests/kolmogorov_smirnov_test.m,
+	strings/strtrunc.m: Correct failing tests due to change in
+	capitalization of error strings from previous changeset.
+
+2011-01-09  Rik  <octave@nomad.inbox5.com>
+
 	* audio/lin2mu.m, audio/loadaudio.m, audio/mu2lin.m, audio/saveaudio.m,
 	audio/wavwrite.m, deprecated/split.m, deprecated/values.m,
 	general/accumarray.m, general/bitcmp.m, general/cell2mat.m,

@@ -100,7 +100,7 @@ endfunction
 %!  assert (orient, "portrait")
 %!  assert (get (hfig, "papersize"), papersize)
 %!  assert (get (hfig, "paperposition"), tallpaperposition)
-%!fail ("orient ('nobody')", "unknown orientation")
+%!fail ("orient ('nobody')", "unknown ORIENTATION")
 %!test
 %!  orient portrait # errors don't change the state
 %!  assert (orient, "portrait")

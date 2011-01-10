@@ -53,7 +53,7 @@ function s = strtrunc (s, n)
 endfunction
 
 %!error <Invalid call to strtrunc> strtrunc ();
-%!error <s must be a character string or a cell array of strings> strtrunc (1, 1)
+%!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
 %!assert (strtrunc("abcdefg", 4), "abcd");
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});

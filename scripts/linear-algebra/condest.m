@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} condest (@var{a}) 
-## @deftypefnx {Function File} {} condest (@var{a}, @var{t}) 
+## @deftypefn  {Function File} {} condest (@var{A}) 
+## @deftypefnx {Function File} {} condest (@var{A}, @var{t}) 
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@dots{}) 
-## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{a}, @var{solve}, @var{solve_t}, @var{t})
+## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
 ##
 ## Estimate the 1-norm condition number of a matrix @var{A}
@@ -28,7 +28,7 @@
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the condition 
-## number of @var{a} given an LU factorization, @code{condest} uses the 
+## number of @var{A} given an LU factorization, @code{condest} uses the 
 ## following functions:
 ##
 ## @table @var

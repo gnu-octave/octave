@@ -1,5 +1,23 @@
 2011-01-09  Rik  <octave@nomad.inbox5.com>
 
+	* general/arrayfun.m, general/blkdiag.m, general/structfun.m,
+	image/imagesc.m, linear-algebra/cond.m, linear-algebra/condest.m,
+	linear-algebra/expm.m, linear-algebra/logm.m,
+	linear-algebra/onenormest.m, linear-algebra/qzhess.m,
+	optimization/glpk.m, optimization/glpkmex.m, polynomial/poly.m,
+	sparse/gplot.m, sparse/pcg.m, sparse/pcr.m, sparse/spaugment.m,
+	sparse/spdiags.m, sparse/svds.m: Use uppercase 'A' to refer to matrix
+	argument.
+
+	* io/dlmwrite.m: Use uppercase 'M' to refer to matrix argument.
+
+	* io/textscan.m: Use uppercase 'C' to refer to Cell Array output.
+	Improve docstring.
+
+	* signal/unwrap.m: Use 'x' instead of 'a' for vector input argument.
+
+2011-01-09  Rik  <octave@nomad.inbox5.com>
+
 	* general/bicubic.m, general/nargchk.m, general/nargoutchk.m,
 	linear-algebra/krylov.m, linear-algebra/krylovb.m,
 	linear-algebra/normest.m, linear-algebra/null.m, linear-algebra/orth.m,

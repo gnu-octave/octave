@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} imagesc (@var{a})
-## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{a})
+## @deftypefn  {Function File} {} imagesc (@var{A})
+## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
 ## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
-## Display a scaled version of the matrix @var{a} as a color image.  The
+## Display a scaled version of the matrix @var{A} as a color image.  The
 ## colormap is scaled so that the entries of the matrix occupy the entire
 ## colormap.  If @var{limits} = [@var{lo}, @var{hi}] are given, then that
 ## range is set to the 'clim' of the current axes.
@@ -31,7 +31,7 @@
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum
 ## values for the respective axes, or as values for each row and column
-## of the matrix @var{a}.
+## of the matrix @var{A}.
 ##
 ## @seealso{image, imshow, caxis}
 ## @end deftypefn

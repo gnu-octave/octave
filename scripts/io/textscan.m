@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{c} =} textscan (@var{fid}, @var{format})
-## @deftypefnx {Function File} {@var{c} =} textscan (@var{fid}, @var{format}, @
+## @deftypefn  {Function File} {@var{C} =} textscan (@var{fid}, @var{format})
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
 ## @var{n})
-## @deftypefnx {Function File} {@var{c} =} textscan (@var{fid}, @var{format}, @
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
 ## @var{param}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{c} =} textscan (@var{fid}, @var{format}, @
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
 ## @var{n}, @var{param}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{a} =} textscan (@var{str}, @dots{})
-## @deftypefnx {Function File} {[@var{a}, @var{position}] =} textscan (@dots{})
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{str}, @dots{})
+## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@dots{})
 ## Read data from a text file.
 ##
 ## The file associated with @var{fid} is read and parsed according to @var{format}.
@@ -41,7 +41,7 @@
 ## The optional input, @var{n}, specifes the number of lines to be read from
 ## the file, associated with @var{fid}.
 ##
-## The output, @var{c}, is a cell array whose length is given by the number
+## The output, @var{C}, is a cell array whose length is given by the number
 ## of format specifiers.
 ##
 ## The second output, @var{position}, provides the position, in characters,
@@ -50,7 +50,7 @@
 ## @seealso{dlmread, fscanf, load, strread, textread}
 ## @end deftypefn
 
-function [c, p] = textscan (fid, format, varargin)
+function [C, p] = textscan (fid, format, varargin)
 
   ## Check input
   if (nargin < 1)
@@ -102,11 +102,11 @@ function [c, p] = textscan (fid, format, varargin)
                    numel (idx_star = strfind (format, "%*"));
 
       ## Call strread to make it do the real work
-      c = cell (1, num_fields);
-      [c{:}] = strread (str, format, args{:});
+      C = cell (1, num_fields);
+      [C{:}] = strread (str, format, args{:});
 
       if (ischar (fid) && isfinite (nlines))
-        c = cellfun (@(x) x(1:nlines), c, "uniformoutput", false);
+        C = cellfun (@(x) x(1:nlines), C, "uniformoutput", false);
       endif
 
       if (nargout == 2)

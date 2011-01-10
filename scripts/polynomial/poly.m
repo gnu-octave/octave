@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} poly (@var{a})
+## @deftypefn  {Function File} {} poly (@var{A})
 ## @deftypefnx {Function File} {} poly (@var{x})
-## If @var{a} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{a})}
-## is the row vector of the coefficients of @code{det (z * eye (N) - a)},
-## the characteristic polynomial of @var{a}.  For example, 
-## the following code finds the eigenvalues of @var{a} which are the roots of 
-## @code{poly (@var{a})}.
+## If @var{A} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{A})}
+## is the row vector of the coefficients of @code{det (z * eye (N) - A)},
+## the characteristic polynomial of @var{A}.  For example, 
+## the following code finds the eigenvalues of @var{A} which are the roots of 
+## @code{poly (@var{A})}.
 ##
 ## @example
 ## @group

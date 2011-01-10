@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{b}, @var{c}] =} spdiags (@var{a})
-## @deftypefnx {Function File} {@var{b} =} spdiags (@var{a}, @var{c})
-## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
+## @deftypefn  {Function File} {[@var{b}, @var{c}] =} spdiags (@var{A})
+## @deftypefnx {Function File} {@var{b} =} spdiags (@var{A}, @var{c})
+## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{A})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
 ## A generalization of the function @code{diag}.  Called with a single
 ## input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
@@ -29,7 +29,7 @@
 ## The other two forms of @code{spdiags} modify the input matrix by
 ## replacing the diagonals.  They use the columns of @var{v} to replace
 ## the columns represented by the vector @var{c}.  If the sparse matrix
-## @var{a} is defined then the diagonals of this matrix are replaced.
+## @var{A} is defined then the diagonals of this matrix are replaced.
 ## Otherwise a matrix of @var{m} by @var{n} is created with the
 ## diagonals given by @var{v}.
 ##

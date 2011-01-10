@@ -19,14 +19,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} logm (@var{a})
-## @deftypefnx {Function File} {@var{s} =} logm (@var{a}, @var{opt_iters})
+## @deftypefn  {Function File} {@var{s} =} logm (@var{A})
+## @deftypefnx {Function File} {@var{s} =} logm (@var{A}, @var{opt_iters})
 ## @deftypefnx {Function File} {[@var{s}, @var{iters}] =} logm (@dots{})
-## Compute the matrix logarithm of the square matrix @var{a}.  The
+## Compute the matrix logarithm of the square matrix @var{A}.  The
 ## implementation utilizes a Pad@'e approximant and the identity
 ##
 ## @example
-## logm(@var{a}) = 2^k * logm(@var{a}^(1 / 2^k))
+## logm(@var{A}) = 2^k * logm(@var{A}^(1 / 2^k))
 ## @end example
 ##
 ## The optional argument @var{opt_iters} is the maximum number of square roots
@@ -39,19 +39,19 @@
 ##            (SIAM, 2008.)
 ##
 
-function [s, iters] = logm (a, opt_iters = 100)
+function [s, iters] = logm (A, opt_iters = 100)
  
   if (nargin == 0 || nargin > 2)
     print_usage ();
   endif
 
-  if (! issquare (a))
+  if (! issquare (A))
     error ("logm: argument must be a square matrix");
   endif
 
-  [u, s] = schur (a);
+  [u, s] = schur (A);
 
-  if (isreal (a))
+  if (isreal (A))
     [u, s] = rsf2csf (u, s);
   endif
 
@@ -102,19 +102,19 @@ endfunction
 #######################################################################
 
 ##LOGM_PADE_PF   Evaluate Pade approximant to matrix log by partial fractions.
-##   Y = LOGM_PADE_PF(a,M) evaluates the [M/M] Pade approximation to
-##   LOG(EYE(SIZE(a))+a) using a partial fraction expansion.
+##   Y = LOGM_PADE_PF(A,M) evaluates the [M/M] Pade approximation to
+##   LOG(EYE(SIZE(A))+A) using a partial fraction expansion.
 
-function s = logm_pade_pf (a, m)
+function s = logm_pade_pf (A, m)
   [nodes, wts] = gauss_legendre (m);
   ## Convert from [-1,1] to [0,1].
   nodes = (nodes+1)/2;
   wts = wts/2;
 
-  n = length (a);
+  n = length (A);
   s = zeros (n);
   for j = 1:m
-    s += wts(j)*(a/(eye (n) + nodes(j)*a));
+    s += wts(j)*(A/(eye (n) + nodes(j)*A));
   endfor
 endfunction
 

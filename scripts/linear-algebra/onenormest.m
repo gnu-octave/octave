@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{a}, @var{t}) 
+## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t}) 
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply Higham and Tisseur's randomized block 1-norm estimator to
-## matrix @var{a} using @var{t} test vectors.  If @var{t} exceeds 5, then
+## matrix @var{A} using @var{t} test vectors.  If @var{t} exceeds 5, then
 ## only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the norm of 

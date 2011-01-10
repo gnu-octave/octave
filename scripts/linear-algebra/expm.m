@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} expm (@var{a})
+## @deftypefn {Function File} {} expm (@var{A})
 ## Return the exponential of a matrix, defined as the infinite Taylor
 ## series
 ## @tex
@@ -28,7 +28,7 @@
 ## @ifnottex
 ## 
 ## @example
-## expm(a) = I + a + a^2/2! + a^3/3! + @dots{}
+## expm(A) = I + A + A^2/2! + A^3/3! + @dots{}
 ## @end example
 ## 
 ## @end ifnottex
@@ -39,14 +39,14 @@
 ## preconditioning (SIAM Journal on Numerical Analysis, 1977).  Diagonal
 ## Pad@'e approximations are rational polynomials of matrices
 ## @tex
-## $D_q(a)^{-1}N_q(a)$
+## $D_q(A)^{-1}N_q(A)$
 ## @end tex
 ## @ifnottex
 ## 
 ## @example
 ## @group
 ##      -1
-## D (a)   N (a)
+## D (A)   N (A)
 ## @end group
 ## @end example
 ## 
@@ -62,41 +62,41 @@
 ## (with the same preconditioning steps) may be desirable in lieu of the
 ## Pad@'e approximation when
 ## @tex
-## $D_q(a)$
+## $D_q(A)$
 ## @end tex
 ## @ifnottex
-## @code{Dq(a)}
+## @code{Dq(A)}
 ## @end ifnottex
 ## is ill-conditioned.
 ## @end deftypefn
 
-function r = expm (a)
+function r = expm (A)
 
-  if (! ismatrix (a) || ! issquare (a))
+  if (! ismatrix (A) || ! issquare (A))
     error ("expm: input must be a square matrix");
   endif
 
-  if (isscalar (a))
-    r = exp (a);
+  if (isscalar (A))
+    r = exp (A);
     return
-  elseif (strfind (typeinfo (a), "diagonal matrix"))
-    r = diag (exp (diag (a)));
+  elseif (strfind (typeinfo (A), "diagonal matrix"))
+    r = diag (exp (diag (A)));
     return
   endif
 
-  n = rows (a);
+  n = rows (A);
   ## Trace reduction.
-  a(a == -Inf) = -realmax;
-  trshift = trace (a) / length (a);
+  A(A == -Inf) = -realmax;
+  trshift = trace (A) / length (A);
   if (trshift > 0)
-    a -= trshift*eye (n);
+    A -= trshift*eye (n);
   endif
   ## Balancing.
-  [d, p, aa] = balance (a);
+  [d, p, aa] = balance (A);
   ## FIXME: can we both permute and scale at once? Or should we rather do
   ## this:
   ##
-  ##   [d, xx, aa] = balance (a, "noperm");
+  ##   [d, xx, aa] = balance (A, "noperm");
   ##   [xx, p, aa] = balance (aa, "noscal");
   [f, e] = log2 (norm (aa, "inf"));
   s = max (0, e);

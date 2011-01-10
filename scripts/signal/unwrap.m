@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{b} =} unwrap (@var{a})
-## @deftypefnx {Function File} {@var{b} =} unwrap (@var{a}, @var{tol})
-## @deftypefnx {Function File} {@var{b} =} unwrap (@var{a}, @var{tol}, @var{dim})
+## @deftypefn  {Function File} {@var{b} =} unwrap (@var{x})
+## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol})
+## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol}, @var{dim})
 ## 
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to
 ## remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
@@ -30,14 +30,14 @@
 
 ## Author: Bill Lash <lash@tellabs.com>
 
-function retval = unwrap (a, tol, dim)
+function retval = unwrap (x, tol, dim)
         
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (!isnumeric(a))
-    error ("unwrap: A must be a numeric matrix or vector");
+  if (!isnumeric(x))
+    error ("unwrap: x must be a numeric matrix or vector");
   endif
 
   if (nargin < 2 || isempty (tol))
@@ -47,8 +47,8 @@ function retval = unwrap (a, tol, dim)
   ## Don't let anyone use a negative value for TOL.
   tol = abs (tol);
 
-  nd = ndims (a);
-  sz = size (a);
+  nd = ndims (x);
+  sz = size (x);
   if (nargin == 3)
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -68,7 +68,7 @@ function retval = unwrap (a, tol, dim)
   ## Handle case where we are trying to unwrap a scalar, or only have
   ## one sample in the specified dimension.
   if (m == 1)       
-    retval = a;     
+    retval = x;     
     return;         
   endif
 
@@ -79,7 +79,7 @@ function retval = unwrap (a, tol, dim)
     idx{i} = 1:sz(i);
   endfor
   idx{dim} = [1,1:m-1];
-  d = a(idx{:}) - a;
+  d = x(idx{:}) - x;
 
   ## Find only the peaks, and multiply them by the range so that there
   ## are kronecker deltas at each wrap point multiplied by the range
@@ -91,7 +91,7 @@ function retval = unwrap (a, tol, dim)
 
   ## Now add the "steps" to the original data and put output in the
   ## same shape as originally.
-  retval = a + r;
+  retval = x + r;
 
 endfunction
 

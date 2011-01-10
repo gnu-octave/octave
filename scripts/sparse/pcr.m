@@ -17,20 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pcr (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
+## @deftypefn  {Function File} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ## 
-## Solves the linear system of equations @code{@var{a} * @var{x} =
+## Solves the linear system of equations @code{@var{A} * @var{x} =
 ## @var{b}} by means of the Preconditioned Conjugate Residuals iterative
 ## method.  The input arguments are
 ##
 ## @itemize
 ## @item
-## @var{a} can be either a square (preferably sparse) matrix or a
+## @var{A} can be either a square (preferably sparse) matrix or a
 ## function handle, inline function or string containing the name
-## of a function which computes @code{@var{a} * @var{x}}.  In principle
-## @var{a} should be symmetric and non-singular; if @code{pcr}
-## finds @var{a} to be numerically singular, you will get a warning
+## of a function which computes @code{@var{A} * @var{x}}.  In principle
+## @var{A} should be symmetric and non-singular; if @code{pcr}
+## finds @var{A} to be numerically singular, you will get a warning
 ## message and the @var{flag} output parameter will be set.
 ## 
 ## @item
@@ -38,8 +38,8 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{a} * @var{x}}.  The iteration stops if @code{norm
-## (@var{b} - @var{a} * @var{x}) <= @var{tol} * norm (@var{b} - @var{a} *
+## @code{@var{b} - @var{A} * @var{x}}.  The iteration stops if @code{norm
+## (@var{b} - @var{A} * @var{x}) <= @var{tol} * norm (@var{b} - @var{A} *
 ## @var{x0})}.  If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
@@ -51,7 +51,7 @@
 ## @item
 ## @var{m} is the (left) preconditioning matrix, so that the iteration is
 ## (theoretically) equivalent to solving by @code{pcr} @code{@var{P} *
-## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
+## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{A}}.
 ## Note that a proper choice of the preconditioner may dramatically
 ## improve the overall performance of the method.  Instead of matrix
 ## @var{m}, the user may pass a function which returns the results of 
@@ -65,14 +65,14 @@
 ## @end itemize
 ## 
 ## The arguments which follow @var{x0} are treated as parameters, and
-## passed in a proper way to any of the functions (@var{a} or @var{m})
+## passed in a proper way to any of the functions (@var{A} or @var{m})
 ## which are passed to @code{pcr}.  See the examples below for further
 ## details.  The output arguments are
 ##
 ## @itemize
 ## @item
 ## @var{x} is the computed approximation to the solution of
-## @code{@var{a} * @var{x} = @var{b}}.
+## @code{@var{A} * @var{x} = @var{b}}.
 ## 
 ## @item
 ## @var{flag} reports on the convergence.  @code{@var{flag} = 0} means
@@ -101,7 +101,7 @@
 ## @example
 ## @group
 ##      n = 10; 
-##      a = sparse (diag (1:n));
+##      A = sparse (diag (1:n));
 ##      b = rand (N, 1);
 ## @end group
 ## @end example
@@ -113,7 +113,7 @@
 ## @end example
 ## 
 ## @sc{Example 2:} @code{pcr} with a function which computes
-## @code{@var{a} * @var{x}}.
+## @code{@var{A} * @var{x}}.
 ##
 ## @example
 ## @group
@@ -127,7 +127,7 @@
 ## 
 ## @sc{Example 3:}  Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
-## @var{a} is trivial) is defined as a function
+## @var{A} is trivial) is defined as a function
 ## 
 ## @example
 ## @group
@@ -138,7 +138,7 @@
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec] = ...
-##                      pcr (a, b, [], [], "apply_m")
+##                      pcr (A, b, [], [], "apply_m")
 ##   semilogy([1:iter+1], resvec);
 ## @end group
 ## @end example
@@ -154,7 +154,7 @@
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec] = ...
-##                      pcr (a, b, [], [], "apply_m"', [], 3)
+##                      pcr (A, b, [], [], "apply_m"', [], 3)
 ## @end group
 ## @end example
 ## 
@@ -168,7 +168,7 @@
 
 ## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
 
-function [x, flag, relres, iter, resvec] = pcr (a, b, tol, maxit, m, x0, varargin)
+function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargin)
 
   breakdown = false;
 
@@ -197,10 +197,10 @@ function [x, flag, relres, iter, resvec] = pcr (a, b, tol, maxit, m, x0, varargi
   endif
 
   ##  init
-  if (isnumeric (a))            # is A a matrix?
-    r = b - a*x;
+  if (isnumeric (A))            # is A a matrix?
+    r = b - A*x;
   else                          # then A should be a function!
-    r = b - feval (a, x, varargin{:});
+    r = b - feval (A, x, varargin{:});
   endif
 
   if (isnumeric (m))            # is M a matrix?
@@ -218,10 +218,10 @@ function [x, flag, relres, iter, resvec] = pcr (a, b, tol, maxit, m, x0, varargi
   b_bot_old = 1;
   q_old = p_old = s_old = zeros (size (x));
 
-  if (isnumeric (a))            # is A a matrix?
-    q = a * p;
+  if (isnumeric (A))            # is A a matrix?
+    q = A * p;
   else                          # then A should be a function!
-    q = feval (a, p, varargin{:});
+    q = feval (A, p, varargin{:});
   endif
         
   resvec(1) = abs (norm (r)); 
@@ -250,10 +250,10 @@ function [x, flag, relres, iter, resvec] = pcr (a, b, tol, maxit, m, x0, varargi
     x += lambda*p;
     r -= lambda*q;
         
-    if (isnumeric(a))           # is A a matrix?
-      t = a*s;
+    if (isnumeric(A))           # is A a matrix?
+      t = A*s;
     else                        # then A should be a function!
-      t = feval (a, s, varargin{:});
+      t = feval (A, s, varargin{:});
     endif
         
     alpha0 = (t'*s) / b_bot;

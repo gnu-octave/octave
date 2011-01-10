@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} gplot (@var{a}, @var{xy})
-## @deftypefnx {Function File} {} gplot (@var{a}, @var{xy}, @var{line_style})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} gplot (@var{a}, @var{xy})
+## @deftypefn  {Function File} {} gplot (@var{A}, @var{xy})
+## @deftypefnx {Function File} {} gplot (@var{A}, @var{xy}, @var{line_style})
+## @deftypefnx {Function File} {[@var{x}, @var{y}] =} gplot (@var{A}, @var{xy})
 ## Plot a graph defined by @var{A} and @var{xy} in the graph theory
 ## sense.  @var{A} is the adjacency matrix of the array to be plotted
 ## and @var{xy} is an @var{n}-by-2 matrix containing the coordinates of
@@ -32,7 +32,7 @@
 ## @seealso{treeplot, etreeplot, spy}
 ## @end deftypefn
 
-function [x, y] = gplot (a, xy, line_style)
+function [x, y] = gplot (A, xy, line_style)
 
   if (nargin < 2 || nargin > 3 || nargout > 2)
     print_usage ();
@@ -42,7 +42,7 @@ function [x, y] = gplot (a, xy, line_style)
     line_style = "-";
   endif
 
-  [i, j] = find (a);
+  [i, j] = find (A);
   xcoord = [xy(i,1), xy(j,1), NaN(length(i),1) ]'(:);
   ycoord = [xy(i,2), xy(j,2), NaN(length(i),1) ]'(:);
 

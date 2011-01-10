@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{c}, @var{a}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
+## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
 ## Solve a linear program using the GNU @sc{glpk} library.  Given three
 ## arguments, @code{glpk} solves the following standard LP:
 ## @tex
@@ -85,7 +85,7 @@
 ## @item c
 ## A column array containing the objective function coefficients.
 ## 
-## @item a
+## @item A
 ## A matrix containing the constraints coefficients.
 ## 
 ## @item b
@@ -423,7 +423,7 @@
 ## @example
 ## @group
 ## c = [10, 6, 4]';
-## a = [ 1, 1, 1;
+## A = [ 1, 1, 1;
 ##      10, 4, 5;
 ##       2, 2, 6];
 ## b = [100, 600, 300]';
@@ -437,7 +437,7 @@
 ## param.itlim = 100;
 ## 
 ## [xmin, fmin, status, extra] = ...
-##    glpk (c, a, b, lb, ub, ctype, vartype, s, param);
+##    glpk (c, A, b, lb, ub, ctype, vartype, s, param);
 ## @end group
 ## @end example
 ## @end deftypefn
@@ -445,7 +445,7 @@
 ## Author: Nicolo' Giorgetti <giorgetti@dii.unisi.it>
 ## Adapted-by: jwe
 
-function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, sense, param)
+function [xopt, fmin, status, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 
   ## If there is no input output the version and syntax
   if (nargin < 3 || nargin > 9)
@@ -463,12 +463,12 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
 
   ## 2) Matrix constraint
 
-  if (isempty (a))
+  if (isempty (A))
     error ("glpk: A cannot be an empty matrix");
     return;
   endif
-  [nc, nxa] = size(a);
-  if (! isreal (a) || nxa != nx)
+  [nc, nxa] = size(A);
+  if (! isreal (A) || nxa != nx)
     error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
     return;
   endif
@@ -573,6 +573,6 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
   endif
 
   [xopt, fmin, status, extra] = ...
-    __glpk__ (c, a, b, lb, ub, ctype, vartype, sense, param);
+    __glpk__ (c, A, b, lb, ub, ctype, vartype, sense, param);
 
 endfunction

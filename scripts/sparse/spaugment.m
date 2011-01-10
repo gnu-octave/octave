@@ -17,19 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{s} =} spaugment (@var{a}, @var{c})
-## Creates the augmented matrix of @var{a}.  This is given by
+## @deftypefn {Function File} {@var{s} =} spaugment (@var{A}, @var{c})
+## Creates the augmented matrix of @var{A}.  This is given by
 ##
 ## @example
 ## @group
-## [@var{c} * eye(@var{m}, @var{m}),@var{a}; @var{a}', zeros(@var{n},
+## [@var{c} * eye(@var{m}, @var{m}),@var{A}; @var{A}', zeros(@var{n},
 ## @var{n})]
 ## @end group
 ## @end example
 ##
 ## @noindent
 ## This is related to the least squares solution of 
-## @code{@var{a} \\ @var{b}}, by
+## @code{@var{A} \\ @var{b}}, by
 ## 
 ## @example
 ## @group
@@ -42,7 +42,7 @@
 ## where @var{r} is the residual error
 ##
 ## @example
-## @var{r} = @var{b} - @var{a} * @var{x}
+## @var{r} = @var{b} - @var{A} * @var{x}
 ## @end example
 ##
 ## As the matrix @var{s} is symmetric indefinite it can be factorized
@@ -54,10 +54,10 @@
 ## @example
 ## @group
 ## m = 11; n = 10; mn = max(m ,n);
-## a = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],
+## A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],
 ##              [-1, 0, 1], m, n);
-## x0 = a \ ones (m,1);
-## s = spaugment (a);
+## x0 = A \ ones (m,1);
+## s = spaugment (A);
 ## [L, U, P, Q] = lu (s);
 ## x1 = Q * (U \ (L \ (P  * [ones(m,1); zeros(n,1)])));
 ## x1 = x1(end - n + 1 : end);
@@ -72,30 +72,30 @@
 ## using the @code{spaugment} function.
 ## @end deftypefn
 
-function s = spaugment (a, c)
+function s = spaugment (A, c)
   if (nargin < 2)
-    if (issparse (a))
-      c = max (max (abs (a))) / 1000;
+    if (issparse (A))
+      c = max (max (abs (A))) / 1000;
     else
-      if (ndims (a) != 2)
+      if (ndims (A) != 2)
         error ("spaugment: expecting 2-dimenisional matrix")
       else
-        c = max (abs (a(:))) / 1000;
+        c = max (abs (A(:))) / 1000;
       endif
     endif
   elseif (!isscalar (c))
     error ("spaugment: c must be a scalar");
   endif
 
-  [m, n] = size (a);
-  s = [ c * speye(m, m), a; a', sparse(n, n)];
+  [m, n] = size (A);
+  s = [ c * speye(m, m), A; A', sparse(n, n)];
 endfunction
 
 %!testif HAVE_UMFPACK
 %! m = 11; n = 10; mn = max(m ,n);
-%! a = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
-%! x0 = a \ ones (m,1);
-%! s = spaugment (a);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! x0 = A \ ones (m,1);
+%! s = spaugment (A);
 %! [L, U, P, Q] = lu (s);
 %! x1 = Q * (U \ (L \ (P  * [ones(m,1); zeros(n,1)])));
 %! x1 = x1(end - n + 1 : end);

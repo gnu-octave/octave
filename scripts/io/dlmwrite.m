@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dlmwrite (@var{file}, @var{a})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, @var{key}, @var{val} @dots{})
-## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{a}, "-append", @dots{})
-## Write the matrix @var{a} to the named file using delimiters.
+## @deftypefn  {Function File} {} dlmwrite (@var{file}, @var{M})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
+## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
+## Write the matrix @var{M} to the named file using delimiters.
 ##
 ## @var{file} should be a file name or writable file ID given by @code{fopen}.
 ##
@@ -84,7 +84,7 @@
 ## * Significant modifications of the input arguements for additional
 ## functionality.
 
-function dlmwrite (file, a, varargin)
+function dlmwrite (file, M, varargin)
 
   if (nargin < 2 || ! ischar (file))
     print_usage ();
@@ -95,7 +95,7 @@ function dlmwrite (file, a, varargin)
   r = 0;
   c = 0;
   newline = "\n";
-  if (ischar (a))
+  if (ischar (M))
     precision = "%c";
   else
     precision = "%.16g";
@@ -169,28 +169,28 @@ function dlmwrite (file, a, varargin)
   else
     if (r > 0)
       fprintf (fid, "%s",
-               repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
+               repmat ([repmat(delim, 1, c + columns(M)-1), newline], 1, r));
     endif
-    if (iscomplex (a))
+    if (iscomplex (M))
       cprecision = regexprep (precision, '^%([-.0-9])','%+$1');
       template = [precision, cprecision, "i", ...
                   repmat([delim, precision, cprecision, "i"], 1, ...
-                  columns(a) - 1), newline ];
+                  columns(M) - 1), newline ];
     else
-      template = [precision, repmat([delim, precision], 1, columns(a)-1),...
+      template = [precision, repmat([delim, precision], 1, columns(M)-1),...
                   newline];
     endif
     if (c > 0)
       template = [repmat(delim, 1, c), template];
     endif
-    if (iscomplex (a))
-      a = a.';
-      b = zeros (2*rows(a), columns (a));
-      b(1: 2 : end, :) = real (a);
-      b(2: 2 : end, :) = imag (a);
+    if (iscomplex (M))
+      M = M.';
+      b = zeros (2*rows(M), columns (M));
+      b(1: 2 : end, :) = real (M);
+      b(2: 2 : end, :) = imag (M);
       fprintf (fid, template, b);
     else
-      fprintf (fid, template, a.');
+      fprintf (fid, template, M.');
     endif
     if (! isscalar (file))
       fclose (fid);

@@ -18,10 +18,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} arrayfun (@var{func}, @var{a})
-## @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{a})
-## @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{a}, @var{b}, @dots{})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{a}, @dots{})
+## @deftypefn  {Function File} {} arrayfun (@var{func}, @var{A})
+## @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A})
+## @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})
 ## @deftypefnx {Function File} {} arrayfun (@dots{}, "UniformOutput", @var{val})
 ## @deftypefnx {Function File} {} arrayfun (@dots{}, "ErrorHandler", @var{errfunc})
 ##
@@ -31,9 +31,9 @@
 ##
 ## The first input argument @var{func} can be a string, a function
 ## handle, an inline function or an anonymous function.  The input
-## argument @var{a} can be a logic array, a numeric array, a string
+## argument @var{A} can be a logic array, a numeric array, a string
 ## array, a structure array or a cell array.  By a call of the function
-## @command{arrayfun} all elements of @var{a} are passed on to the named
+## @command{arrayfun} all elements of @var{A} are passed on to the named
 ## function @var{func} individually.
 ## 
 ## The named function can also take more than two input arguments, with

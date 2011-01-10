@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} structfun (@var{func}, @var{S})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} structfun (@dots{})
+## @deftypefnx {Function File} {[@var{A}, @dots{}] =} structfun (@dots{})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "ErrorHandler", @var{errfunc})
 ## @deftypefnx {Function File} {} structfun (@dots{}, "UniformOutput", @var{val})
 ## 

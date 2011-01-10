@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} blkdiag (@var{a}, @var{b}, @var{c}, @dots{})
-## Build a block diagonal matrix from @var{a}, @var{b}, @var{c}, @dots{}.
+## @deftypefn {Function File} {} blkdiag (@var{A}, @var{B}, @var{C}, @dots{})
+## Build a block diagonal matrix from @var{A}, @var{B}, @var{C}, @dots{}.
 ## All the arguments must be numeric and are two-dimensional matrices or
 ## scalars.
 ## @seealso{diag, horzcat, vertcat}

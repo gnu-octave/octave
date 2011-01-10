@@ -17,20 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{x} =} pcg (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
+## @deftypefn  {Function File} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
-## Solves the linear system of equations @code{@var{a} * @var{x} =
+## Solves the linear system of equations @code{@var{A} * @var{x} =
 ## @var{b}} by means of the Preconditioned Conjugate Gradient iterative
 ## method.  The input arguments are
 ##
 ## @itemize
 ## @item
-## @var{a} can be either a square (preferably sparse) matrix or a
+## @var{A} can be either a square (preferably sparse) matrix or a
 ## function handle, inline function or string containing the name
-## of a function which computes @code{@var{a} * @var{x}}.  In principle
-## @var{a} should be symmetric and positive definite; if @code{pcg}
-## finds @var{a} to not be positive definite, you will get a warning
+## of a function which computes @code{@var{A} * @var{x}}.  In principle
+## @var{A} should be symmetric and positive definite; if @code{pcg}
+## finds @var{A} to not be positive definite, you will get a warning
 ## message and the @var{flag} output parameter will be set.
 ## 
 ## @item
@@ -38,8 +38,8 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{a} * @var{x}}.  The iteration stops if @code{norm
-## (@var{b} - @var{a} * @var{x}) <= @var{tol} * norm (@var{b} - @var{a} *
+## @code{@var{b} - @var{A} * @var{x}}.  The iteration stops if @code{norm
+## (@var{b} - @var{A} * @var{x}) <= @var{tol} * norm (@var{b} - @var{A} *
 ## @var{x0})}.  If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
@@ -52,7 +52,7 @@
 ## @var{m} = @var{m1} * @var{m2} is the (left) preconditioning matrix, so that
 ## the iteration is (theoretically) equivalent to solving by @code{pcg}
 ## @code{@var{P} *
-## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
+## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{A}}.
 ## Note that a proper choice of the preconditioner may dramatically
 ## improve the overall performance of the method.  Instead of matrices
 ## @var{m1} and @var{m2}, the user may pass two functions which return 
@@ -68,14 +68,14 @@
 ## @end itemize
 ## 
 ## The arguments which follow @var{x0} are treated as parameters, and
-## passed in a proper way to any of the functions (@var{a} or @var{m})
+## passed in a proper way to any of the functions (@var{A} or @var{m})
 ## which are passed to @code{pcg}.  See the examples below for further
 ## details.  The output arguments are
 ##
 ## @itemize
 ## @item
 ## @var{x} is the computed approximation to the solution of
-## @code{@var{a} * @var{x} = @var{b}}.
+## @code{@var{A} * @var{x} = @var{b}}.
 ## 
 ## @item
 ## @var{flag} reports on the convergence.  @code{@var{flag} = 0} means
@@ -99,22 +99,22 @@
 ## 1, 2, @dots{}, @var{iter}+1}.  The preconditioned residual norm
 ## is defined as
 ## @code{norm (@var{r}) ^ 2 = @var{r}' * (@var{m} \ @var{r})} where
-## @code{@var{r} = @var{b} - @var{a} * @var{x}}, see also the
+## @code{@var{r} = @var{b} - @var{A} * @var{x}}, see also the
 ## description of @var{m}.  If @var{eigest} is not required, only
 ## @code{@var{resvec} (:,1)} is returned.
 ## 
 ## @item
 ## @var{eigest} returns the estimate for the smallest @code{@var{eigest}
 ## (1)} and largest @code{@var{eigest} (2)} eigenvalues of the
-## preconditioned matrix @code{@var{P} = @var{m} \ @var{a}}.  In 
+## preconditioned matrix @code{@var{P} = @var{m} \ @var{A}}.  In 
 ## particular, if no preconditioning is used, the estimates for the
-## extreme eigenvalues of @var{a} are returned.  @code{@var{eigest} (1)}
+## extreme eigenvalues of @var{A} are returned.  @code{@var{eigest} (1)}
 ## is an overestimate and @code{@var{eigest} (2)} is an underestimate, 
 ## so that @code{@var{eigest} (2) / @var{eigest} (1)} is a lower bound
 ## for @code{cond (@var{P}, 2)}, which nevertheless in the limit should
 ## theoretically be equal to the actual value of the condition number. 
 ## The method which computes @var{eigest} works only for symmetric positive
-## definite @var{a} and @var{m}, and the user is responsible for
+## definite @var{A} and @var{m}, and the user is responsible for
 ## verifying this assumption. 
 ## @end itemize
 ## 
@@ -124,9 +124,9 @@
 ## @example
 ## @group
 ##      n = 10; 
-##      a = diag (sparse (1:n));
+##      A = diag (sparse (1:n));
 ##      b = rand (n, 1);
-##      [l, u, p, q] = luinc (a, 1.e-3);
+##      [l, u, p, q] = luinc (A, 1.e-3);
 ## @end group
 ## @end example
 ## 
@@ -137,7 +137,7 @@
 ## @end example
 ## 
 ## @sc{Example 2:} @code{pcg} with a function which computes
-## @code{@var{a} * @var{x}}
+## @code{@var{A} * @var{x}}
 ## 
 ## @example
 ## @group
@@ -152,7 +152,7 @@
 ## @sc{Example 3:} @code{pcg} with a preconditioner: @var{l} * @var{u}
 ##
 ## @example
-## x = pcg (a, b, 1.e-6, 500, l*u);
+## x = pcg (A, b, 1.e-6, 500, l*u);
 ## @end example
 ##
 ## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
@@ -160,12 +160,12 @@
 ## are easier to invert
 ##
 ## @example
-## x = pcg (a, b, 1.e-6, 500, l, u);
+## x = pcg (A, b, 1.e-6, 500, l, u);
 ## @end example
 ##
 ## @sc{Example 5:} Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
-## @var{a} is trivial) is defined as a function
+## @var{A} is trivial) is defined as a function
 ## 
 ## @example
 ## @group
@@ -176,7 +176,7 @@
 ##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
-##                      pcg (a, b, [], [], "apply_m");
+##                      pcg (A, b, [], [], "apply_m");
 ##   semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example
@@ -218,7 +218,7 @@
 ##    - Add the ability to provide the pre-conditioner as two separate
 ## matrices
 
-function [x, flag, relres, iter, resvec, eigest] = pcg (a, b, tol, maxit, m1, m2, x0, varargin)
+function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2, x0, varargin)
 
   ## M = M1*M2
 
@@ -261,12 +261,12 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (a, b, tol, maxit, m1, m2
 
   p = zeros (size (b));
   oldtau = 1; 
-  if (isnumeric (a))
+  if (isnumeric (A))
     ## A is a matrix.
-    r = b - a*x; 
+    r = b - A*x; 
   else
     ## A should be a function.
-    r = b - feval (a, x, varargin{:});
+    r = b - feval (A, x, varargin{:});
   endif
 
   resvec(1,1) = norm (r);
@@ -297,12 +297,12 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (a, b, tol, maxit, m1, m2
     beta = tau / oldtau;
     oldtau = tau;
     p = z + beta * p;
-    if (isnumeric (a))
+    if (isnumeric (A))
       ## A is a matrix.
-      w = a * p;
+      w = A * p;
     else
       ## A should be a function.
-      w = feval (a, p, varargin{:});
+      w = feval (A, p, varargin{:});
     endif
     ## Needed only for eigest.
     oldalpha = alpha;

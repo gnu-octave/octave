@@ -51,6 +51,13 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
+// How many levels of structure elements should we print?
+static int Vstruct_levels_to_print = 2;
+
+// TRUE means print struct array contents, up to the number of levels
+// specified by struct_levels_to_print.
+static bool Vprint_struct_array_contents = false;
+
 octave_base_value *
 octave_struct::try_narrowing_conversion (void)
 {
@@ -601,26 +608,20 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool print_keys_only = Vstruct_levels_to_print-- == 0;
+      bool max_depth_reached = Vstruct_levels_to_print-- == 0;
 
-      indent (os);
-      os << "{";
-      newline (os);
+      bool print_fieldnames_only
+        = (max_depth_reached || ! Vprint_struct_array_contents);
 
       increment_indent_level ();
 
-      octave_idx_type n = map.numel ();
+      newline (os);
+      indent (os);
+      dim_vector dv = dims ();
+      os << dv.str () << " struct array containing the fields:";
+      newline (os);
 
-      if (n != 1 || print_keys_only)
-        {
-          indent (os);
-          dim_vector dv = dims ();
-          os << dv.str () << " struct array containing the fields:";
-          newline (os);
-          newline (os);
-
-          increment_indent_level ();
-        }
+      increment_indent_level ();
 
       string_vector key_list = map.fieldnames ();
 
@@ -630,31 +631,25 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
           Cell val = map.contents (key);
 
-          octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
+          newline (os);
 
-          if (n != 1 || print_keys_only)
+          if (print_fieldnames_only)
             {
               indent (os);
               os << key;
-              if (n == 1)
-                {
-                  dim_vector dv = tmp.dims ();
-                  os << ": " << dv.str () << " " << tmp.type_name ();
-                }
-              newline (os);
             }
           else
-            tmp.print_with_name (os, key);
+            {
+              octave_value tmp (val);
+              tmp.print_with_name (os, key);
+            }
         }
 
-      if (n != 1 || print_keys_only)
-        decrement_indent_level ();
+      if (print_fieldnames_only)
+        newline (os);
 
       decrement_indent_level ();
-
-      indent (os);
-      os << "}";
-      newline (os);
+      decrement_indent_level ();
     }
   else
     {
@@ -1323,26 +1318,19 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool print_keys_only = Vstruct_levels_to_print-- == 0;
+      bool max_depth_reached = Vstruct_levels_to_print-- == 0;
 
-      indent (os);
-      os << "{";
-      newline (os);
+      bool print_fieldnames_only = max_depth_reached;
 
       increment_indent_level ();
 
-      octave_idx_type n = 1;
+      newline (os);
+      indent (os);
+      os << "scalar structure containing the fields:";
+      newline (os);
+      newline (os);
 
-      if (n != 1 || print_keys_only)
-        {
-          indent (os);
-          dim_vector dv = dims ();
-          os << dv.str () << " struct array containing the fields:";
-          newline (os);
-          newline (os);
-
-          increment_indent_level ();
-        }
+      increment_indent_level ();
 
       string_vector key_list = map.fieldnames ();
 
@@ -1352,31 +1340,22 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
           Cell val = map.contents (key);
 
-          octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
+          octave_value tmp = val(0);
 
-          if (n != 1 || print_keys_only)
+          if (print_fieldnames_only)
             {
               indent (os);
               os << key;
-              if (n == 1)
-                {
-                  dim_vector dv = tmp.dims ();
-                  os << ": " << dv.str () << " " << tmp.type_name ();
-                }
+              dim_vector dv = tmp.dims ();
+              os << ": " << dv.str () << " " << tmp.type_name ();
               newline (os);
             }
           else
             tmp.print_with_name (os, key);
         }
 
-      if (n != 1 || print_keys_only)
-        decrement_indent_level ();
-
       decrement_indent_level ();
-
-      indent (os);
-      os << "}";
-      newline (os);
+      decrement_indent_level ();
     }
   else
     {
@@ -2194,3 +2173,28 @@ the named fields.\n\
 %!  assert (size (y), [1, 6]);
 */
 
+DEFUN (struct_levels_to_print, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
+Query or set the internal variable that specifies the number of\n\
+structure levels to display.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
+                                            -1, INT_MAX);
+}
+
+DEFUN (print_struct_array_contents, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} print_struct_array_contents ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
+Query or set the internal variable that specifies whether to print struct\n\
+array contents.  If true, values of struct array elements are printed.\n\
+This variable does not affect scalar structures.  Their elements\n\
+are always printed.  In both cases, however, printing will be limited to\n\
+the number of levels specified by @var{struct_levels_to_print}.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (print_struct_array_contents);
+}

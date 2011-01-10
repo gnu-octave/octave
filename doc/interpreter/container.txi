@@ -159,10 +159,14 @@ a
 
 @noindent
 This prevents long and confusing output from large deeply nested
-structures.  The number of levels to print for nested structures can be
-set with the function @code{struct_levels_to_print}:
+structures.  The number of levels to print for nested structures may be
+set with the function @code{struct_levels_to_print}, and the function
+@code{print_struct_array_contents} may be used to enable printing of the
+contents of structure arrays.
 
 @DOCSTRING(struct_levels_to_print)
+
+@DOCSTRING(print_struct_array_contents)
 
 Functions can return structures.  For example, the following function
 separates the real and complex parts of a matrix and stores them in two

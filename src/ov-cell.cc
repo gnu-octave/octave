@@ -678,7 +678,7 @@ octave_cell::cellstr_value (void) const
 bool
 octave_cell::print_as_scalar (void) const
 {
-  return (ndims () > 2 || numel () == 0);
+  return true;
 }
 
 void
@@ -699,6 +699,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
 
       if (nr > 0 && nc > 0)
         {
+          newline (os);
           indent (os);
           os << "{";
           newline (os);

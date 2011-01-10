@@ -1,3 +1,8 @@
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/container.txi (Basic Usage and Examples):
+	Document print_struct_array_contents.
+
 2011-01-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave.texi: Put statistics detailmenu in correct order.

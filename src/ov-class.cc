@@ -956,8 +956,6 @@ octave_class::print_raw (std::ostream& os, bool) const
 {
   unwind_protect frame;
 
-  frame.protect_var (Vstruct_levels_to_print);
-
   indent (os);
   os << "  <class " << class_name () << ">";
   newline (os);

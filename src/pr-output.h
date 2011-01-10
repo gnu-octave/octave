@@ -257,7 +257,4 @@ octave_print_internal (std::ostream& os, const Cell& cell,
 // like this: x = [](2x0).
 extern bool Vprint_empty_dimensions;
 
-// How many levels of structure elements should we print?
-extern OCTINTERP_API int Vstruct_levels_to_print;
-
 #endif

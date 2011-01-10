@@ -79,9 +79,6 @@ bool Vprint_empty_dimensions = true;
 // smaller slices that fit on the screen.
 static bool Vsplit_long_rows = true;
 
-// How many levels of structure elements should we print?
-int Vstruct_levels_to_print = 2;
-
 // TRUE means don't do any fancy formatting.
 static bool free_format = false;
 
@@ -4027,16 +4024,4 @@ significant figures to display for numeric output.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1, INT_MAX);
-}
-
-DEFUN (struct_levels_to_print, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
-Query or set the internal variable that specifies the number of\n\
-structure levels to display.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
-                                            -1, INT_MAX);
 }

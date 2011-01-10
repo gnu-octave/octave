@@ -1,3 +1,18 @@
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
+	* ov-cell.cc (octave_cell::print_as_scalar): Always return true.
+	(octave_cell::print_raw): Handle extra newlines here.
+	* ov-struct.cc (Fstruct_levels_to_print): Move here from pr-output.cc
+	(Vstruct_levels_to_print): Move here from pr-output.cc.  Now static.
+	(Vprint_struct_array_contents): New static variable.
+	(Fprint_struct_array_contents): New function.
+	(octave_struct::print_raw): Use Vprint_struct_array_contents.
+	Simplify and improve output.
+	(octave_scalar_struct::print_raw): Simplify and improve output.
+	* pr-output.h (Vstruct_levels_to_print): Delete decl.
+	* ov-class.cc (octave_class::print_raw): Don't unwind_protect
+	Vstruct_levels_to_print.
+
 2011-01-09  David Bateman  <dbateman@free.fr>
 
 	* ls-mat5.cc (save_mat5_array_length (const float*, octave_idx_type,

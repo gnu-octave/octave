@@ -49,6 +49,14 @@ function [s, iters] = logm (A, opt_iters = 100)
     error ("logm: A must be a square matrix");
   endif
 
+  if (isscalar (A))
+    s = log (A);
+    return;
+  elseif (strfind (typeinfo (A), "diagonal matrix"))
+    s = diag (log (diag (A)));
+    return;
+  endif
+
   [u, s] = schur (A);
 
   if (isreal (A))
@@ -84,7 +92,11 @@ function [s, iters] = logm (A, opt_iters = 100)
     warning ("logm: maximum number of square roots exceeded; results may still be accurate");
   endif
 
-  s = logm_pade_pf (s - eye (size (s)), m);
+  s = s - eye (size (s));
+
+  if (m > 1)
+    s = logm_pade_pf (s, m);
+  endif
 
   s = 2^k * u * s * u';
 
@@ -144,3 +156,7 @@ endfunction
 %!error logm ();
 %!error logm (1, 2, 3);
 %!error <logm: A must be a square matrix> logm([1 0;0 1; 2 2]);
+
+%!assert (logm (10), log (10))
+%!assert (full (logm (eye (3))), logm (full (eye (3))))
+%!assert (full (logm (10*eye (3))), logm (full (10*eye (3))), 8*eps)

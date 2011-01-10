@@ -1,5 +1,11 @@
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
+	* linear-algebra/logm.m: Handle scalar and diagonal matrix
+	arguments specially.  Call logm_pade_pf only if m > 1.  New tests.
+	Special case suggested by Marco Caliari <marco.caliari@univr.it>.
+
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
 	* general/private/__isequal__.m: Use builtin ("struct", ...) to
 	convert objects to a structs to avoid possible overloading of
 	the struct function.

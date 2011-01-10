@@ -43,7 +43,7 @@ function inv = wblinv (x, scale, shape)
   if (!isscalar (scale) || !isscalar (shape))
     [retval, x, scale, shape] = common_size (x, scale, shape);
     if (retval > 0)
-      error ("wblinv: x, scale and shape must be of common size or scalar");
+      error ("wblinv: X, SCALE and SHAPE must be of common size or scalar");
     endif
   endif
 

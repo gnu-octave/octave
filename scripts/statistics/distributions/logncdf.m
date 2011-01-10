@@ -49,7 +49,7 @@ function cdf = logncdf (x, mu, sigma)
   if (!isscalar (mu) || !isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
-      error ("logncdf: x, mu and sigma must be of common size or scalars");
+      error ("logncdf: X, MU and SIGMA must be of common size or scalars");
     endif
   endif
 

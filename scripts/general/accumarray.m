@@ -93,7 +93,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     ## Sparse case. Avoid linearizing the subscripts, because it could overflow.
 
     if (fillval != 0)
-      error ("accumarray: fillval must be zero in the sparse case");
+      error ("accumarray: FILLVAL must be zero in the sparse case");
     endif
 
     ## Ensure subscripts are a two-column matrix.

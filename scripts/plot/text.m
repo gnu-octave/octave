@@ -57,7 +57,7 @@ function h = text (varargin)
       ny = numel (y);
       nz = numel (z);
     else
-      error ("text: expecting label to be a character string or cell array of character strings");
+      error ("text: expecting LABEL to be a character string or cell array of character strings");
     endif
   else
     x = y = z = 0;
@@ -88,7 +88,7 @@ function h = text (varargin)
         endfor
         __request_drawnow__ ();
       else
-        error ("text: dimension mismatch for coordinates and label");
+        error ("text: dimension mismatch for coordinates and LABEL");
       endif
     else
       error ("text: dimension mismatch for coordinates");

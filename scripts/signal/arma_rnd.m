@@ -48,18 +48,18 @@ function x = arma_rnd (a, b, v, t, n)
     n = 100;
   elseif (nargin == 5)
     if (!isscalar (n))
-      error ("arma_rnd: n must be a scalar");
+      error ("arma_rnd: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
   if ((min (size (a)) > 1) || (min (size (b)) > 1))
-    error ("arma_rnd: a and b must not be matrices");
+    error ("arma_rnd: A and B must not be matrices");
   endif
 
   if (!isscalar (t))
-    error ("arma_rnd: t must be a scalar");
+    error ("arma_rnd: T must be a scalar");
   endif
 
   ar = length (a);

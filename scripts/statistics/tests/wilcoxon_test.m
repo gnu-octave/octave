@@ -50,7 +50,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y) && (length (x) == length (y))))
-    error ("wilcoxon_test: x and y must be vectors of the same length");
+    error ("wilcoxon_test: X and Y must be vectors of the same length");
   endif
 
   n = length (x);
@@ -74,7 +74,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error("wilcoxon_test: alt must be a string");
+    error("wilcoxon_test: ALT must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
   elseif (strcmp (alt, ">"))

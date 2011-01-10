@@ -45,7 +45,7 @@ function v = values (x)
   endif
 
   if (! (isvector (x)))
-    error ("values: x must be a vector");
+    error ("values: X must be a vector");
   endif
 
   i = any (isnan (x));

@@ -44,12 +44,12 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
   endif
 
   if (! (isvector(x) && isvector(y) && isvector(c)))
-    error ("chisquare_test_homogeneity: x, y and c must be vectors");
+    error ("chisquare_test_homogeneity: X, Y and C must be vectors");
   endif
   ## Now test c for strictly increasing entries
   df = length (c);
   if (any ((c(2 : df) - c(1 : (df - 1))) <= 0))
-    error ("chisquare_test_homogeneity: c must be increasing");
+    error ("chisquare_test_homogeneity: C must be increasing");
   endif
 
   c     = [(reshape (c, 1, df)), Inf];

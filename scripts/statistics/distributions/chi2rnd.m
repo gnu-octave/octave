@@ -34,16 +34,16 @@ function rnd = chi2rnd (n, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("chi2rnd: r must be a positive integer");
+      error ("chi2rnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("chi2rnd: c must be a positive integer");
+      error ("chi2rnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (n) != 1)
         && (length (size (n)) != length (sz) || any (size (n) != sz)))
-      error ("chi2rnd: n must be scalar or of size [r, c]");
+      error ("chi2rnd: N must be scalar or of size [R, C]");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -51,12 +51,12 @@ function rnd = chi2rnd (n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("chi2rnd: r must be a positive integer or vector");
+      error ("chi2rnd: R must be a positive integer or vector");
     endif
 
     if (any (size (n) != 1)
         && (length (size (n)) != length (sz) || any (size (n) != sz)))
-      error ("chi2rnd: n must be scalar or of size sz");
+      error ("chi2rnd: N must be scalar or of size SZ");
     endif
   elseif (nargin == 1)
     sz = size(n);

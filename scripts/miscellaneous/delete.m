@@ -47,7 +47,7 @@ function delete (arg)
       ## Delete a graphics object.
       __go_delete__ (arg);
     else
-      error ("delete: expecting argument to be a filename or graphics handle");
+      error ("delete: first argument must be a filename or graphics handle");
     endif
   else
     print_usage ();

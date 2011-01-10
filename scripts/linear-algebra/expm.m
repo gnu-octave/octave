@@ -73,7 +73,7 @@
 function r = expm (A)
 
   if (! ismatrix (A) || ! issquare (A))
-    error ("expm: input must be a square matrix");
+    error ("expm: A must be a square matrix");
   endif
 
   if (isscalar (A))

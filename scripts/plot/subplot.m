@@ -83,7 +83,7 @@ function h = subplot (rows, cols, index, varargin)
   if (nargin == 1)
 
     if (! (isscalar (rows) && rows >= 0))
-      error ("subplot: input rcn has to be a positive scalar");
+      error ("subplot: input RCN has to be a positive scalar");
     endif
 
     tmp = rows;
@@ -94,9 +94,9 @@ function h = subplot (rows, cols, index, varargin)
     rows = rem (tmp, 10);
 
   elseif (! (isscalar (cols) && isscalar (rows)))
-    error ("subplot: cols, and rows must be scalars");
+    error ("subplot: COLS, and ROWS must be scalars");
   elseif (any (index < 1) || any (index > rows*cols))
-    error ("subplot: index value must be greater than 1 and less than rows*cols")
+    error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS")
   endif
 
   cols = round (cols);
@@ -104,11 +104,11 @@ function h = subplot (rows, cols, index, varargin)
   index = round (index);
 
   if (index > cols*rows)
-    error ("subplot: index must be less than cols*rows");
+    error ("subplot: INDEX must be less than COLS*ROWS");
   endif
 
   if (cols < 1 || rows < 1 || index < 1)
-    error ("subplot: cols,rows,index must be be positive");
+    error ("subplot: COLS,ROWS,INDEX must be be positive");
   endif
 
   units = get (0, "defaultaxesunits");

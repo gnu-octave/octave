@@ -39,7 +39,7 @@ function cdf = hygecdf (x, t, m, n)
   endif
 
   if (!isscalar (t) || !isscalar (m) || !isscalar (n))
-    error ("hygecdf: t, m and n must all be positive integers");
+    error ("hygecdf: T, M and N must all be positive integers");
   endif
 
   if (t < 0 || m < 0 || n <= 0 || t != round (t) || m != round (m)

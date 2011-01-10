@@ -144,7 +144,7 @@ function [est, v] = condest (varargin)
           have_t = true;
         endif
       else
-        error ("condest: must supply both solve and solve_t");
+        error ("condest: must supply both SOLVE and SOLVE_T");
       endif
     endif
   elseif (nargin > 4)

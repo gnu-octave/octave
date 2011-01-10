@@ -33,7 +33,7 @@ function inv = empirical_inv (x, data)
   endif
 
   if (! isvector (data))
-    error ("empirical_inv: data must be a vector");
+    error ("empirical_inv: DATA must be a vector");
   endif
 
   inv = discrete_inv (x, data, ones (size (data)) / length (data));

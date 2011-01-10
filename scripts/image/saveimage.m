@@ -92,13 +92,13 @@ function saveimage (fname, img, fmt, map)
   [map_nr, map_nc] = size (map);
 
   if (map_nc != 3)
-    error ("saveimage: colormap should be an N x 3 matrix");
+    error ("saveimage: MAP must be an N x 3 matrix");
   endif
 
   if (nargin < 3)
     fmt = "img";
   elseif (! ischar (fmt))
-    error ("saveimage: image format specification must be a string");
+    error ("saveimage: FMT specification must be a string");
   elseif (! (strcmp (fmt, "img")
              || strcmp (fmt, "ppm")
              || strcmp (fmt, "ps")))
@@ -106,11 +106,11 @@ function saveimage (fname, img, fmt, map)
   endif
 
   if (! ismatrix (img))
-    warning ("image variable is not a matrix");
+    warning ("IMG variable is not a matrix");
   endif
 
   if (! ischar (fname))
-    error ("saveimage: fname name must be a string");
+    error ("saveimage: FNAME must be a string");
   endif
 
   ## If we just want Octave image format, save and return.
@@ -225,7 +225,7 @@ function saveimage (fname, img, fmt, map)
   elseif (strcmp (fmt, "ps") == 1)
 
     if (! grey)
-      error ("saveimage: must have a greyscale color map for conversion to PostScript");
+      error ("saveimage: must have a greyscale colormap for conversion to PostScript");
     endif
 
     bps = 8;

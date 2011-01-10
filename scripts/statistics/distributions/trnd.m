@@ -35,16 +35,16 @@ function rnd = trnd (n, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("trnd: r must be a positive integer");
+      error ("trnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("trnd: c must be a positive integer");
+      error ("trnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (n) != 1)
         && ((length (size (n)) != length (sz)) || any (size (n) != sz)))
-      error ("trnd: n must be scalar or of size sz");
+      error ("trnd: N must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -52,12 +52,12 @@ function rnd = trnd (n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("trnd: r must be a positive integer or vector");
+      error ("trnd: R must be a positive integer or vector");
     endif
 
     if (any (size (n) != 1)
         && ((length (size (n)) != length (sz)) || any (size (n) != sz)))
-      error ("trnd: n must be scalar or of size sz");
+      error ("trnd: N must be scalar or of size SZ");
     endif
   elseif (nargin == 1)
     sz = size (n);

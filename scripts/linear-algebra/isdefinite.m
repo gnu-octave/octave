@@ -38,7 +38,7 @@ function retval = isdefinite (x, tol)
   endif
 
   if (! ishermitian (x))
-    error ("isdefinite: x must be a hermitian matrix");
+    error ("isdefinite: X must be a hermitian matrix");
   endif
 
   if (! isfloat (x))

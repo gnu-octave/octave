@@ -77,7 +77,7 @@ function [C, p] = textscan (fid, format, varargin)
     if (ischar (format))
       if (ischar (fid))
         if (nargout == 2)
-          error ("textscan: cannot provide postion information for character input")
+          error ("textscan: cannot provide position information for character input")
         endif
         str = fid;
       else
@@ -114,10 +114,10 @@ function [C, p] = textscan (fid, format, varargin)
       endif
 
     else
-      error ("textscan: second input must be a format specification");
+      error ("textscan: FORMAT must be a valid specification");
     endif
   else
-    error ("textscan: expecting first argument to be a file id or character string");
+    error ("textscan: first argument must be a file id or character string");
   endif
 
 endfunction

@@ -34,7 +34,7 @@ function pdf = poisspdf (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poisspdf: x and lambda must be of common size or scalar");
+      error ("poisspdf: X and LAMBDA must be of common size or scalar");
     endif
   endif
 

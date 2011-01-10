@@ -35,7 +35,7 @@ function pdf = fpdf (x, m, n)
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("fpdf: x, m and n must be of common size or scalar");
+      error ("fpdf: X, M and N must be of common size or scalar");
     endif
   endif
 

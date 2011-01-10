@@ -37,23 +37,23 @@ function rnd = binornd (n, p, r, c)
     if (!isscalar(n) || !isscalar(p)) 
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
-        error ("binornd: n and p must be of common size or scalar");
+        error ("binornd: N and P must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("binornd: r must be a positive integer");
+      error ("binornd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("binornd: c must be a positive integer");
+      error ("binornd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (n) != 1)
         && (length (size (n)) != length (sz) || any (size (n) != sz)))
-      error ("binornd: n and must be scalar or of size [r, c]");
+      error ("binornd: N and must be scalar or of size [R, C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -61,12 +61,12 @@ function rnd = binornd (n, p, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("binornd: r must be a positive integer or vector");
+      error ("binornd: R must be a positive integer or vector");
     endif
 
     if (any (size (n) != 1)
         && (length (size (n)) != length (sz) || any (size (n) != sz)))
-      error ("binornd: n and must be scalar or of size sz");
+      error ("binornd: N and must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(n);

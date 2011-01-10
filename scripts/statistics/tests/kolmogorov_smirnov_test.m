@@ -61,7 +61,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
   endif
 
   if (! isvector (x))
-    error ("kolmogorov_smirnov_test: x must be a vector");
+    error ("kolmogorov_smirnov_test: X must be a vector");
   endif
 
   n = length (x);

@@ -34,7 +34,7 @@ function pdf = exppdf (x, lambda)
   if (!isscalar (x) && !isscalar(lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("exppdf: x and lambda must be of common size or scalar");
+      error ("exppdf: X and LAMBDA must be of common size or scalar");
     endif
   endif
 

@@ -96,7 +96,7 @@ function [theta, beta, dev, dl, d2l, p] ...
   endif;
   [mx, nx] = size (x);
   if (mx != my)
-    error ("logistic_regression: x and y must have the same number of observations");
+    error ("logistic_regression: X and Y must have the same number of observations");
   endif
 
   ## initial calculations

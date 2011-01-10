@@ -42,7 +42,7 @@ function pdf = cauchy_pdf (x, location, scale)
   if (!isscalar (location) || !isscalar (scale)) 
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
-      error ("cauchy_pdf: x, location and scale must be of common size or scalar");
+      error ("cauchy_pdf: X, LOCATION and SCALE must be of common size or scalar");
     endif
   endif
 

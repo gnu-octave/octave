@@ -48,7 +48,7 @@ function y = lin2mu (x, n)
     endif
   elseif (nargin == 2)
     if (n != 0 && n != 8 && n != 16)
-      error ("lin2mu: n must be either 0, 8 or 16");
+      error ("lin2mu: N must be either 0, 8 or 16");
     endif
   else
     print_usage ();

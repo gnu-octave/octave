@@ -39,7 +39,7 @@ function pdf = nbinpdf (x, n, p)
   if (!isscalar(n) || !isscalar(p)) 
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("nbinpdf: x, n and p must be of common size or scalar");
+      error ("nbinpdf: X, N and P must be of common size or scalar");
     endif
   endif
 

@@ -44,7 +44,7 @@ function saveaudio (name, x, ext, bps)
   if (nargin < 4)
     bps = 8;
   elseif (bps != 8 && bps != 16)
-    error ("saveaudio: bps must be either 8 or 16");
+    error ("saveaudio: BPS must be either 8 or 16");
   endif
 
   [nr, nc] = size (x);

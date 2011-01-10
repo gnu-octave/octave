@@ -44,19 +44,19 @@ function [pval, f, df_num, df_den] = f_test_regression (y, x, rr, r)
 
   [T, k] = size (x);
   if (! (isvector (y) && (length (y) == T)))
-    error ("f_test_regression: y must be a vector of length rows (X)");
+    error ("f_test_regression: Y must be a vector of length rows (X)");
   endif
   y = reshape (y, T, 1);
 
   [q, c_R ] = size (rr);
   if (c_R != k)
-    error ("f_test_regression: rr must have as many columns as x");
+    error ("f_test_regression: RR must have as many columns as X");
   endif
 
   if (nargin == 4)
     s_r = size (r);
     if ((min (s_r) != 1) || (max (s_r) != q))
-      error ("f_test_regression: r must be a vector of length rows (rr)");
+      error ("f_test_regression: R must be a vector of length rows (RR)");
     endif
     r = reshape (r, q, 1);
   else

@@ -37,24 +37,24 @@ function rnd = wblrnd (scale, shape, r, c)
     if (!isscalar(scale) || !isscalar(shape)) 
       [retval, scale, shape] = common_size (scale, shape);
       if (retval > 0)
-        error ("wblrnd: scale and shape must be of common size or scalar");
+        error ("wblrnd: SCALE and SHAPE must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("wblrnd: r must be a positive integer");
+      error ("wblrnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("wblrnd: c must be a positive integer");
+      error ("wblrnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (scale) != 1)
         && ((length (size (scale)) != length (sz))
             || any (size (scale) != sz)))
-      error ("wblrnd: scale and shape must be scalar or of size [r, c]");
+      error ("wblrnd: SCALE and SHAPE must be scalar or of size [R, C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,13 +62,13 @@ function rnd = wblrnd (scale, shape, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("wblrnd: r must be a positive integer or vector");
+      error ("wblrnd: R must be a positive integer or vector");
     endif
 
     if (any (size (scale) != 1)
         && ((length (size (scale)) != length (sz))
             || any (size (scale) != sz)))
-      error ("wblrnd: scale and shape must be scalar or of size sz");
+      error ("wblrnd: SCALE and SHAPE must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(scale);

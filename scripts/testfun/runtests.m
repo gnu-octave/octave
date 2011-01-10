@@ -35,7 +35,7 @@ function runtests (directory)
       if (! isempty (fullname))
         dirs = {fullname};
       else
-        error ("runtests: expecting argument to be a directory name");
+        error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
     endif
   else

@@ -84,7 +84,7 @@ function s = spaugment (A, c)
       endif
     endif
   elseif (!isscalar (c))
-    error ("spaugment: c must be a scalar");
+    error ("spaugment: C must be a scalar");
   endif
 
   [m, n] = size (A);

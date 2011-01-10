@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {ppd =} ppint (pp, c)
+## @deftypefn {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
 ## Computes the antiderivative of a piecewise polynomial struct @var{pp}.
 ## @var{c}, if given, is the constant of integration.
 ## @seealso{mkpp,ppval}
@@ -28,7 +28,7 @@ function ppi = ppint (pp, c)
     print_usage ();
   endif
   if (! isstruct (pp))
-    error ("ppint: expects a pp structure");
+    error ("ppint: PP must be a structure");
   endif
 
   [x, p, n, k, d] = unmkpp (pp);
@@ -51,5 +51,4 @@ function ppi = ppint (pp, c)
   ppi.P(:,2:n,k) -= cumsum (jumps, 2);
 
 endfunction
-
 

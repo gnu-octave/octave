@@ -36,7 +36,7 @@ function yi = ppval (pp, xi)
     print_usage ();
   endif
   if (! isstruct (pp))
-    error ("ppval: expects a pp structure");
+    error ("ppval: PP must be a structure");
   endif
 
   ## Extract info.

@@ -55,7 +55,7 @@ function pdf = wblpdf (x, scale, shape)
   if (!isscalar (scale) || !isscalar (shape))
     [retval, x, scale, shape] = common_size (x, scale, shape);
     if (retval > 0)
-      error ("wblpdf: x, scale and shape must be of common size or scalar");
+      error ("wblpdf: X, SCALE and SHAPE must be of common size or scalar");
     endif
   endif
 

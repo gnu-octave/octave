@@ -56,7 +56,7 @@ function cdf = wblcdf (x, scale, shape)
   if (!isscalar (shape) || !isscalar (scale))
     [retval, x, shape, scale] = common_size (x, shape, scale);
     if (retval > 0)
-      error ("wblcdf: x, scale and shape must be of common size or scalar");
+      error ("wblcdf: X, SCALE and SHAPE must be of common size or scalar");
     endif
   endif
 

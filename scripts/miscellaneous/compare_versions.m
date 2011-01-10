@@ -89,9 +89,9 @@ function out = compare_versions (v1, v2, operator)
 
   ## check and make sure that the operator is valid
   if (! ischar (operator))
-    error ("compare_versions: operator must be a character string");
+    error ("compare_versions: OPERATOR must be a character string");
   elseif (numel (operator) > 2)
-    error("compare_versions: operator cannot be more than 2 characters long");
+    error("compare_versions: OPERATOR cannot be more than 2 characters long");
   endif
 
   ## trim off any character data that is not part of a normal version
@@ -166,9 +166,9 @@ function out = compare_versions (v1, v2, operator)
 
   ## Make sure that we don't have conflicting operators.
   if (gt_op && lt_op)
-    error ("compare_versions: operator cannot contain both greater and less than symbols");
+    error ("compare_versions: OPERATOR cannot contain both greater and less than symbols");
   elseif ((gt_op || lt_op) && not_op)
-    error ("compare_versions: operator cannot contain not and greater than or less than symbols");
+    error ("compare_versions: OPERATOR cannot contain not and greater than or less than symbols");
   endif
 
   ## Compare the versions (making sure that they're the same shape)

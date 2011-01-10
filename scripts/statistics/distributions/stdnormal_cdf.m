@@ -34,7 +34,7 @@ function cdf = stdnormal_cdf (x)
 
   sz = size (x);
   if (numel(x) == 0)
-    error ("stdnormal_cdf: x must not be empty");
+    error ("stdnormal_cdf: X must not be empty");
   endif
 
   cdf = erfc (x / (-sqrt(2))) / 2;

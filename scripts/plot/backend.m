@@ -37,7 +37,7 @@ function backend (varargin)
     if (ischar (varargin{1}))
       name = varargin{1};
     else
-      error ("backend: invalid backend name");
+      error ("backend: invalid backend NAME");
     endif
   elseif (nargin == 2)
     if (isnumeric (varargin{1}) && ischar (varargin{2}))
@@ -46,7 +46,7 @@ function backend (varargin)
     elseif (ischar (varargin{2}))
       error ("backend: invalid handle list");
     else
-      error ("backend: invalid backend name");
+      error ("backend: invalid backend NAME");
     endif
   else
     print_usage ();

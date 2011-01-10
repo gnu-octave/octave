@@ -53,14 +53,14 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error ("kolmogorov_smirnov_test_2: both x and y must be vectors");
+    error ("kolmogorov_smirnov_test_2: both X and Y must be vectors");
   endif
 
   if (nargin == 2)
     alt = "!=";
   else
     if (! ischar (alt))
-      error ("kolmogorov_smirnov_test_2: alt must be a string");
+      error ("kolmogorov_smirnov_test_2: ALT must be a string");
     endif
   endif
 

@@ -39,7 +39,7 @@ function pdf = hygepdf (x, t, m, n)
   if (!isscalar (t) || !isscalar (m) || !isscalar (n))
     [retval, x, t, m, n] = common_size (x, t, m, n);
     if (retval > 0)
-      error ("hygepdf: x, t, m, and n must be of common size or scalar");
+      error ("hygepdf: X, T, M, and N must be of common size or scalar");
     endif
   endif
 

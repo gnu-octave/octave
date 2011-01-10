@@ -115,7 +115,7 @@ function ret = __imagesc__ (ax, x, y, A, limits, DEPRECATEDZOOM)
   if (length (limits) == 2 && limits(2) >= limits(1))
     set (ax, "clim", limits);
   elseif (! isempty (limits))
-    error ("imagesc: expected data limits to be [lo, hi]");
+    error ("imagesc: expected data LIMITS to be [lo, hi]");
   endif
 
 endfunction

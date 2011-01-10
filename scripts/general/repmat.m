@@ -38,7 +38,7 @@ function x = repmat (A, m, n)
 
   if (nargin == 3)
     if (! (isscalar (m) && isscalar (n)))
-      error ("repmat: with 3 arguments m and n must be scalar");
+      error ("repmat: with 3 arguments M and N must be scalar");
     endif
     idx = [m, n];
   else 

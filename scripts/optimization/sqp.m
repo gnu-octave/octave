@@ -365,7 +365,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     if (isscalar (tolerance) && tolerance > 0)
       tol = tolerance;
     else
-      error ("sqp: invalid value for tolerance");
+      error ("sqp: invalid value for TOLERANCE");
     endif
   endif
 

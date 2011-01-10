@@ -53,7 +53,7 @@ function idx = strmatch (s, A, exact)
   endif
 
   if (! ischar (s))
-    error ("strmatch: first argument must be a string");
+    error ("strmatch: S must be a string");
   endif
   
   ## Truncate trailing whitespace.
@@ -87,7 +87,7 @@ function idx = strmatch (s, A, exact)
       idx = find (match);
     endif
   else
-    error ("strmatch: second argument must be a string or cell array of strings");
+    error ("strmatch: A must be a string or cell array of strings");
   endif
     
 endfunction 

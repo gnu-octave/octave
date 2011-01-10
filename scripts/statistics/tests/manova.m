@@ -54,7 +54,7 @@ function manova (x, g)
   [n, p] = size (x);
 
   if (!isvector (g) || (length (g) != n))
-    error ("manova: g must be a vector of length rows (Y)");
+    error ("manova: G must be a vector of length rows (Y)");
   endif
 
   s = sort (g);

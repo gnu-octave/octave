@@ -77,7 +77,7 @@ function m = split (s, t, n)
         m = s';
         return;
       elseif (l_s < l_t)
-        error ("split: s must not be shorter than t");
+        error ("split: S must not be shorter than T");
       endif
 
       if (min (size (s)) != 1 || min (size (t)) != 1)
@@ -107,7 +107,7 @@ function m = split (s, t, n)
         m(i,1:length(tmp)) = s(tmp);
       endfor
     else
-      error ("split: both s and t must be strings");
+      error ("split: both S and T must be strings");
     endif
   else
     print_usage ();

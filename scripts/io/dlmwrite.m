@@ -161,7 +161,7 @@ function dlmwrite (file, M, varargin)
     fid = file;
     msg = "invalid file number";
   else
-    error ("dlmwrite: file must be a string file ID");
+    error ("dlmwrite: FILE must be a filename string or numeric FID");
   endif
 
   if (fid < 0)

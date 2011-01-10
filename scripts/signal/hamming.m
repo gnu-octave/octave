@@ -35,7 +35,7 @@ function c = hamming (m)
   endif
 
   if (! (isscalar (m) && (m == round (m)) && (m > 0)))
-    error ("hamming: m has to be an integer > 0");
+    error ("hamming: M has to be an integer > 0");
   endif
 
   if (m == 1)

@@ -36,11 +36,11 @@ function inv = discrete_inv (x, v, p)
   sz = size (x);
 
   if (! isvector (v))
-    error ("discrete_inv: v must be a vector");
+    error ("discrete_inv: V must be a vector");
   elseif (! isvector (p) || (length (p) != length (v)))
-    error ("discrete_inv: p must be a vector with length (v) elements");
+    error ("discrete_inv: P must be a vector with length (V) elements");
   elseif (! (all (p >= 0) && any (p)))
-    error ("discrete_inv: p must be a nonzero, nonnegative vector");
+    error ("discrete_inv: P must be a nonzero, nonnegative vector");
   endif
 
   n = numel (x);

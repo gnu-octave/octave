@@ -42,7 +42,7 @@ function pdf = normpdf (x, m, s)
   if (!isscalar (m) || !isscalar (s))
     [retval, x, m, s] = common_size (x, m, s);
     if (retval > 0)
-      error ("normpdf: x, m and s must be of common size or scalars");
+      error ("normpdf: X, M and S must be of common size or scalars");
     endif
   endif
 

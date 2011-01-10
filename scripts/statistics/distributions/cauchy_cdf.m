@@ -42,7 +42,7 @@ function cdf = cauchy_cdf (x, location, scale)
   if (!isscalar (location) || !isscalar (scale)) 
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
-      error ("cauchy_cdf: x, location and scale must be of common size or scalar");
+      error ("cauchy_cdf: X, LOCATION and SCALE must be of common size or scalar");
     endif
   endif
 

@@ -34,7 +34,7 @@ function inv = binoinv (x, n, p)
   if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binoinv: x, n and p must be of common size or scalars");
+      error ("binoinv: X, N and P must be of common size or scalars");
     endif
   endif
   

@@ -62,7 +62,7 @@ function [d, dd] = diffpara (x, a, b)
   endif
 
   if (! (isscalar (a) && isscalar (b)))
-    error ("diffpara: a and b must be scalars");
+    error ("diffpara: A and B must be scalars");
   endif
 
   dd = zeros (b - a + 1, k);

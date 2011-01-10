@@ -43,7 +43,7 @@ function s = strtrunc (s, n)
       s{i} = s{i}(:,1:(min (n, columns (s{i}))));
     endfor
   else
-    error ("strtrunc: s must be a character string or a cell array of strings");
+    error ("strtrunc: S must be a character string or a cell array of strings");
   endif
 
   if (s_was_char)

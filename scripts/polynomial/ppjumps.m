@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {ppd =} ppjumps (pp)
+## @deftypefn {Function File} {@var{jumps} =} ppjumps (@var{pp})
 ## Evaluates the boundary jumps of a piecewise polynomial.
 ## If there are n intervals, and the dimensionality of pp is d,
 ## the resulting array has dimensions @code{[d, n-1]}.
@@ -28,7 +28,7 @@ function jumps = ppjumps (pp)
     print_usage ();
   endif
   if (! isstruct (pp))
-    error ("ppjumps: expects a pp structure");
+    error ("ppjumps: PP must be a structure");
   endif
 
   ## Extract info.
@@ -52,3 +52,5 @@ function jumps = ppjumps (pp)
   jumps = reshape (rlim - llim, [d, n-1]);
 
 endfunction
+
+

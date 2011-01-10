@@ -77,7 +77,7 @@ function hold (varargin)
       elseif (strcmpi (state, "on"))
         turn_hold_off = false;
       else
-        error ("hold: invalid hold state");
+        error ("hold: invalid hold STATE");
       endif
     endif
   else

@@ -117,7 +117,7 @@ function __datetick__ (varargin)
   if (! isempty (form))
     if (isnumeric (form))
       if (! isscalar (form) || floor (form) != form || form < 0)
-        error ("datetick: expecting form argument to be a positive integer");
+        error ("datetick: expecting FORM argument to be a positive integer");
       endif
     elseif (! ischar (form))
       error ("datetick: expecting valid date format string");

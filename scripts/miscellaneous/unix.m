@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{status}, @var{text}]} unix (@var{command})
-## @deftypefnx {Function File} {[@var{status}, @var{text}]} unix (@var{command}, "-echo")
+## @deftypefn  {Function File} {[@var{status}, @var{text}] =} unix (@var{command})
+## @deftypefnx {Function File} {[@var{status}, @var{text}] =} unix (@var{command}, "-echo")
 ## Execute a system command if running under a Unix-like operating
 ## system, otherwise do nothing.  Return the exit status of the program
 ## in @var{status} and any output sent to the standard output in

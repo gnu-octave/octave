@@ -68,7 +68,7 @@ function refreshdata (h, workspace)
       if (   !ischar (workspace) 
           || !(strcmpi (workspace, "base")
           || strcmpi (workspace, "caller")))
-        error ("refreshdata: expecting workspace to be \"base\" or ""caller\"");
+        error ("refreshdata: expecting WORKSPACE to be \"base\" or ""caller\"");
       else
         workspace = tolower (workspace);
       endif

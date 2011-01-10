@@ -49,7 +49,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error ("var_test: both x and y must be vectors");
+    error ("var_test: both X and Y must be vectors");
   endif
 
   df_num = length (x) - 1;
@@ -62,7 +62,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error ("var_test: alt must be a string");
+    error ("var_test: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

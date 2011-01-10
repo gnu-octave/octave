@@ -54,7 +54,7 @@ function rmap = brighten (arg1, beta)
   endif
 
   if (! isscalar (beta) || beta <= -1 || beta >= 1)
-    error ("brighten: beta must be a scalar in the range (-1,1)");
+    error ("brighten: BETA must be a scalar in the range (-1,1)");
   endif
 
   if (beta > 0)

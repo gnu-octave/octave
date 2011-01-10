@@ -128,7 +128,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
           endif
         endfor
         if (! found)
-          error ("datevec: none of the standard formats match the date string");
+          error ("datevec: none of the standard formats match the DATE string");
         endif
       endfor
     else
@@ -137,7 +137,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
       for k = 1:nd
         [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
         if (! found)
-          error ("datevec: date not parsed correctly with given format");
+          error ("datevec: DATE not parsed correctly with given format");
         endif
       endfor
     endif

@@ -80,7 +80,7 @@ function yi = griddatan (x, y, xi, method, varargin)
     yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
 
   else
-    error ("griddatan: unknown interpolation method");
+    error ("griddatan: unknown interpolation METHOD");
   endif
 
 endfunction

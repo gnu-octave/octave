@@ -42,9 +42,9 @@ function filelist = unpack (file, dir = ".", filetype = "")
   if (ischar (file))
     if (isdir (file))
       if (isempty (filetype))
-        error ("unpack: filetype must be given for a directory");
+        error ("unpack: FILETYPE must be given for a directory");
       elseif (! any (strcmpi (filetype, "gunzip")))
-        error ("unpack: filetype must be gunzip for a directory");
+        error ("unpack: FILETYPE must be gunzip for a directory");
       endif
     else
       [pathstr, name, ext] = fileparts (file);

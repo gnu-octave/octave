@@ -35,7 +35,7 @@ function cdf = fcdf (x, m, n)
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("fcdf: x, m and n must be of common size or scalar");
+      error ("fcdf: X, M and N must be of common size or scalar");
     endif
   endif
 

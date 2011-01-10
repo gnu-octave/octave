@@ -41,7 +41,7 @@ function x = synthesis (y, c)
 
   [nr, nc] = size (c);
   if (nr * nc != 3)
-    error ("synthesis: c must contain exactly 3 elements");
+    error ("synthesis: C must contain exactly 3 elements");
   endif
 
   w_size = c(1);

@@ -37,7 +37,7 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
   endif
 
   if (!all (size (x) == size (y) & size (x) == size(z) & size(x) == size (v)))
-    error ("griddata3: x, y, z, and v must be vectors of same length");
+    error ("griddata3: X, Y, Z, and V must be vectors of same length");
   endif
 
   ## meshgrid xi, yi and zi if they are vectors unless they
@@ -48,7 +48,7 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
   endif
 
   if (any (size(xi) != size(yi)) || any (size(xi) != size(zi)))
-    error ("griddata3: xi, yi and zi must be vectors or matrices of same size");
+    error ("griddata3: XI, YI and ZI must be vectors or matrices of same size");
   endif
 
   vi = griddatan ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});

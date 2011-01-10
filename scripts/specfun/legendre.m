@@ -174,7 +174,7 @@ function retval = legendre (n, x, normalization)
     case "unnorm"
       scale = 1;
     otherwise
-      error ('legendre: expecting normalization option to be "norm", "sch", or "unnorm"');
+      error ('legendre: expecting NORMALIZATION option to be "norm", "sch", or "unnorm"');
   endswitch
 
   if (rows (x) != 1)

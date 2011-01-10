@@ -59,7 +59,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
   if (isvector (x))
     n_x = length (x);
     if (! isvector (y))
-      error ("hotelling_test_2: if x is a vector, y must also be a vector");
+      error ("hotelling_test_2: if X is a vector, Y must also be a vector");
     else
       n_y = length (y);
       p   = 1;
@@ -68,10 +68,10 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
     [n_x, p] = size (x);
     [n_y, q] = size (y);
     if (p != q)
-      error ("hotelling_test_2: x and y must have the same number of columns");
+      error ("hotelling_test_2: X and Y must have the same number of columns");
     endif
   else
-    error ("hotelling_test_2: x and y must be matrices (or vectors)");
+    error ("hotelling_test_2: X and Y must be matrices (or vectors)");
   endif
 
   d    = mean (x) - mean (y);

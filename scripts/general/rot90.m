@@ -65,7 +65,7 @@ function B = rot90 (A, k)
     endif
 
     if (imag (k) != 0 || fix (k) != k)
-      error ("rot90: k must be an integer");
+      error ("rot90: K must be an integer");
     endif
 
     k = rem (k, 4);

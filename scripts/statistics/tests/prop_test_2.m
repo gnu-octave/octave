@@ -62,7 +62,7 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
 
   if (! ischar (alt))
-    error ("prop_test_2: alt must be a string");
+    error ("prop_test_2: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

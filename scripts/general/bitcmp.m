@@ -43,7 +43,7 @@ function C = bitcmp (A, k)
   endif
 
   if (nargin == 2 && (! isscalar (k) || (floor (k) != k)))
-    error ("bitcmp: k must be a scalar integer");
+    error ("bitcmp: K must be a scalar integer");
   endif
 
   if (isa (A, "double"))

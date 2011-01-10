@@ -35,7 +35,7 @@ function entries = __xzip__ (commandname, extension,
 
   if (nargin == 4 || nargin == 5)
     if (! ischar (extension) || length (extension) == 0)
-      error ("__xzip__: extension has to be a string with finite length");
+      error ("__xzip__: EXTENSION has to be a string with finite length");
     endif
     
     if (nargin == 5 && ! exist (outdir, "dir"))

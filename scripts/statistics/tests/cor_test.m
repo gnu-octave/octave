@@ -79,7 +79,7 @@ function t = cor_test (x, y, alt, method)
   if (nargin < 3)
     alt = "!=";
   elseif (! ischar (alt))
-    error ("cor_test: alt must be a string");
+    error ("cor_test: ALT must be a string");
   endif
 
   if (nargin < 4)

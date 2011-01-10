@@ -35,7 +35,7 @@ function cdf = poisscdf (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poisscdf: x and lambda must be of common size or scalar");
+      error ("poisscdf: X and LAMBDA must be of common size or scalar");
     endif
   endif
 

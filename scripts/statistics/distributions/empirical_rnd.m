@@ -45,7 +45,7 @@ function rnd = empirical_rnd (data, r, c)
   endif
 
   if (! isvector (data))
-    error ("empirical_rnd: data must be a vector");
+    error ("empirical_rnd: DATA must be a vector");
   endif
 
   rnd = discrete_rnd (data, ones (size (data)) / length (data), r, c);

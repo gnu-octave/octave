@@ -37,24 +37,24 @@ function rnd = cauchy_rnd (location, scale, r, c)
     if (!isscalar (location) || !isscalar (scale)) 
       [retval, location, scale] = common_size (location, scale);
       if (retval > 0)
-        error ("cauchy_rnd: location and scale must be of common size or scalar");
+        error ("cauchy_rnd: LOCATION and SCALE must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("cauchy_rnd: r must be a positive integer");
+      error ("cauchy_rnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("cauchy_rnd: c must be a positive integer");
+      error ("cauchy_rnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (location) != 1)
         && (length (size (location)) != length (sz)
             || any (size (location) != sz)))
-      error ("cauchy_rnd: location and scale must be scalar or of size [r, c]");
+      error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size [R, C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -62,13 +62,13 @@ function rnd = cauchy_rnd (location, scale, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("cauchy_rnd: r must be a positive integer or vector");
+      error ("cauchy_rnd: R must be a positive integer or vector");
     endif
 
     if (any (size (location) != 1)
         && (length (size (location)) != length (sz)
         || any (size (location) != sz)))
-      error ("cauchy_rnd: location and scale must be scalar or of size sz");
+      error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(location);

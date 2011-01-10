@@ -35,16 +35,16 @@ function rnd = exprnd (lambda, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("exprnd: r must be a positive integer");
+      error ("exprnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("exprnd: c must be a positive integer");
+      error ("exprnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (lambda) != 1)
         && (length (size (lambda)) != length (sz) || any (size (lambda) != sz)))
-      error ("exprnd: lambda must be scalar or of size [r, c]");
+      error ("exprnd: LAMBDA must be scalar or of size [R, C]");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -52,12 +52,12 @@ function rnd = exprnd (lambda, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("exprnd: r must be a positive integer or vector");
+      error ("exprnd: R must be a positive integer or vector");
     endif
 
     if (any (size (lambda) != 1)
         && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
-      error ("exprnd: lambda must be scalar or of size sz");
+      error ("exprnd: LAMBDA must be scalar or of size SZ");
     endif
   elseif (nargin == 1)
     sz = size (lambda);

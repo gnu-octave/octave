@@ -43,7 +43,7 @@ function retval = wienrnd (t, d, n)
   endif
 
   if (!isscalar (t) || !isscalar (d) || !isscalar (n))
-    error ("wienrnd: t, d and n must all be positive integers");
+    error ("wienrnd: T, D and N must all be positive integers");
   endif
 
   retval = randn (n * t, d);

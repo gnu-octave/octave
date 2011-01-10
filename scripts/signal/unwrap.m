@@ -37,7 +37,7 @@ function retval = unwrap (x, tol, dim)
   endif
 
   if (!isnumeric(x))
-    error ("unwrap: x must be a numeric matrix or vector");
+    error ("unwrap: X must be a numeric matrix or vector");
   endif
 
   if (nargin < 2 || isempty (tol))

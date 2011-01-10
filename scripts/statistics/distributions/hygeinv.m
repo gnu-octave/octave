@@ -36,7 +36,7 @@ function inv = hygeinv (x, t, m, n)
   endif
 
   if (!isscalar (t) || !isscalar (m) || !isscalar (n))
-    error ("hygeinv: t, m and n must all be positive integers");
+    error ("hygeinv: T, M and N must all be positive integers");
   endif
 
   if (t < 0 || m < 0 || n <= 0 || t != round (t) || m != round (m)

@@ -30,7 +30,7 @@ function [ver, url] = get_forge_pkg (name)
   endif
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
-    error ("get_forge_pkg: package name must be a string");
+    error ("get_forge_pkg: package NAME must be a string");
   elseif (! all (isalnum (name) | name == "-" | name == "." | name == "_"))
     error ("get_forge_pkg: invalid package name: %s", name);
   endif
@@ -66,7 +66,7 @@ function [ver, url] = get_forge_pkg (name)
       t = regexp (html, "<div class=""package"" id=""(\\w+)"">", "tokens");
       t = horzcat (t{:});
       if (any (strcmp (t, name)))
-        error ("get_forge_pkg: package name exists, but index page not available");
+        error ("get_forge_pkg: package NAME exists, but index page not available");
       else
         ## Try a simplistic method to determine close names.
         dist = cellfun (@(n) length (setdiff (name, n)), t);

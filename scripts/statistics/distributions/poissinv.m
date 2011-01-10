@@ -35,7 +35,7 @@ function inv = poissinv (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poissinv: x and lambda must be of common size or scalar");
+      error ("poissinv: X and LAMBDA must be of common size or scalar");
     endif
   endif
 

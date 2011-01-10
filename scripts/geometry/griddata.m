@@ -55,9 +55,9 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     [x, y] = meshgrid (x, y);
   elseif (! all (size (x) == size (y) & size (x) == size (z)))
     if (isvector (z))
-      error ("griddata: x, y, and z, be vectors of same length.");
+      error ("griddata: X, Y, and Z, be vectors of same length.");
     else
-      error ("griddata: lengths of x, y must match the columns and rows of z.");
+      error ("griddata: lengths of X, Y must match the columns and rows of Z.");
     endif
   endif
 
@@ -67,7 +67,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   endif
 
   if (! size_equal (xi, yi))
-    error ("griddata: xi and yi must be vectors or matrices of same size");
+    error ("griddata: XI and YI must be vectors or matrices of same size");
   endif
 
   [nr, nc] = size (xi);
@@ -126,7 +126,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     zi(valid) = -(N(:,1).*xi(:)(valid) + N(:,2).*yi(:)(valid) + D) ./ N(:,3);
 
   else
-    error ("griddata: unknown interpolation method");
+    error ("griddata: unknown interpolation METHOD");
   endif
 
   if (nargout == 3)

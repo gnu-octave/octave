@@ -35,10 +35,10 @@ function rnd = stdnormal_rnd (r, c)
 
   if (nargin == 2)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("stdnormal_rnd: r must be a positive integer");
+      error ("stdnormal_rnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("stdnormal_rnd: c must be a positive integer");
+      error ("stdnormal_rnd: C must be a positive integer");
     endif
     sz = [r, c];
   else
@@ -47,7 +47,7 @@ function rnd = stdnormal_rnd (r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("stdnormal_rnd: r must be a positive integer or vector");
+      error ("stdnormal_rnd: R must be a positive integer or vector");
     endif
   endif
 

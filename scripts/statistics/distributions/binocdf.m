@@ -34,7 +34,7 @@ function cdf = binocdf (x, n, p)
   if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binocdf: x, n and p must be of common size or scalar");
+      error ("binocdf: X, N and P must be of common size or scalar");
     endif
   endif
 

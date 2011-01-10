@@ -91,11 +91,11 @@ function ret = pchip (x, y, xi)
     h = diff (x);
     y = fliplr (y);
   elseif (any (h <= 0))
-    error("pchip: x must be strictly monotonic");
+    error("pchip: X must be strictly monotonic");
   endif
 
   if (columns (y) != n)
-    error("pchip: size of x and y must match");
+    error("pchip: size of X and Y must match");
   endif
 
   f1 = y(:,1:n-1);

@@ -49,7 +49,7 @@ function retval = unidrnd (n, varargin)
     endfor
     dims = [varargin{:}];
   else
-    error ("unidrnd: Usage unirnd (n, ...)");
+    print_usage ();
   endif
   if (isscalar (n)
       || (length (size (n)) == length (dims) && all (size (n) == dims)))

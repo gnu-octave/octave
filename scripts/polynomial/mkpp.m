@@ -59,7 +59,7 @@ function pp = mkpp (x, P, d)
   pp.orient = 0;
 
   if (size (P, 2) != n)
-    error ("mkpp: num intervals in x doesn't match num polynomials in P");
+    error ("mkpp: num intervals in X doesn't match num polynomials in P");
   endif
 endfunction
 

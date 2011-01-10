@@ -33,16 +33,16 @@ function rnd = poissrnd (lambda, r, c)
 
   if (nargin == 3)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("poissrnd: r must be a positive integer");
+      error ("poissrnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("poissrnd: c must be a positive integer");
+      error ("poissrnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (lambda) != 1)
         && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
-      error ("poissrnd: lambda must be scalar or of size [r, c]");
+      error ("poissrnd: LAMBDA must be scalar or of size [R, C]");
     endif
   elseif (nargin == 2)
     if (isscalar (r) && (r > 0))
@@ -50,12 +50,12 @@ function rnd = poissrnd (lambda, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("poissrnd: r must be a positive integer or vector");
+      error ("poissrnd: R must be a positive integer or vector");
     endif
 
     if (any (size (lambda) != 1)
         && ((length (size (lambda)) != length (sz)) || any (size (lambda) != sz)))
-      error ("poissrnd: lambda must be scalar or of size sz");
+      error ("poissrnd: LAMBDA must be scalar or of size sz");
     endif
   elseif (nargin == 1)
     sz = size (lambda);

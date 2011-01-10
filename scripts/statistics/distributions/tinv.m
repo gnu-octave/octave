@@ -41,7 +41,7 @@ function inv = tinv (x, n)
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("tinv: x and n must be of common size or scalar");
+      error ("tinv: X and N must be of common size or scalar");
     endif
   endif
 

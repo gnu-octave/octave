@@ -93,7 +93,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   endif
 
   if (! isscalar (k))
-    error ("krylov: third argument must be a scalar integer");
+    error ("krylov: K must be a scalar integer");
   endif
 
   Vnrm = norm (V, Inf);

@@ -48,14 +48,14 @@ function y = arch_rnd (a, b, t)
   endif
 
   if (! ((min (size (a)) == 1) && (min (size (b)) == 1)))
-    error ("arch_rnd: a and b must both be scalars or vectors");
+    error ("arch_rnd: A and B must both be scalars or vectors");
   endif
   if (! (isscalar (t) && (t > 0) && (rem (t, 1) == 0)))
     error ("arch_rnd: T must be a positive integer");
   endif
 
   if (! (a(1) > 0))
-    error ("arch_rnd: a(1) must be positive");
+    error ("arch_rnd: A(1) must be positive");
   endif
   ## perhaps add a test for the roots of a(z) here ...
 

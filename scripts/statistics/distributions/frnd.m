@@ -38,7 +38,7 @@ function rnd = frnd (m, n, r, c)
     if (!isscalar(m) || !isscalar(n)) 
       [retval, m, n] = common_size (m, n);
       if (retval > 0)
-        error ("frnd: m and n must be of common size or scalar");
+        error ("frnd: M and N must be of common size or scalar");
       endif
     endif
   endif
@@ -46,16 +46,16 @@ function rnd = frnd (m, n, r, c)
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("frnd: r must be a positive integer");
+      error ("frnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("frnd: c must be a positive integer");
+      error ("frnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (m) != 1)
         && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("frnd: m and n must be scalar or of size [r,c]");
+      error ("frnd: M and N must be scalar or of size [R,C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -63,12 +63,12 @@ function rnd = frnd (m, n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("frnd: r must be a positive integer or vector");
+      error ("frnd: R must be a positive integer or vector");
     endif
 
     if (any (size (m) != 1)
         && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("frnd: m and n must be scalar or of size sz");
+      error ("frnd: M and N must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(a);

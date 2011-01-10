@@ -30,7 +30,7 @@ function map = contrast (x, n)
     n = rows (colormap);
   elseif (nargin == 2)
     if (! isscalar (n))
-      error ("contrast: n must be a scalar");
+      error ("contrast: N must be a scalar");
     endif
   else
     print_usage ();

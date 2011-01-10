@@ -44,7 +44,7 @@ function [x, n] = factor (q)
   endif
 
   if (! isscalar (q) || q != fix (q))
-    error ("factor: q must be a scalar integer");
+    error ("factor: Q must be a scalar integer");
   endif
 
   ## Special case of no primes less than sqrt(q).

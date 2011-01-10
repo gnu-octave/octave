@@ -37,7 +37,7 @@ function cdf = expcdf (x, lambda)
   if (!isscalar (x) && !isscalar(lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("expcdf: x and lambda must be of common size or scalar");
+      error ("expcdf: X and LAMBDA must be of common size or scalar");
     endif
   endif
 

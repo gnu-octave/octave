@@ -36,7 +36,7 @@ function retval = cast (val, typ)
         error ("cast: type name `%s' is not a built-in type", typ);
       endif
     else
-      error ("cast: expecting type name as second argument");
+      error ("cast: expecting TYPE name as second argument");
     endif
   else
     print_usage ();

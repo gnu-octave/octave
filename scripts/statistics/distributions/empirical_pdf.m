@@ -33,7 +33,7 @@ function pdf = empirical_pdf (x, data)
   endif
 
   if (! isvector (data))
-    error ("empirical_pdf: data must be a vector");
+    error ("empirical_pdf: DATA must be a vector");
   endif
 
   pdf = discrete_pdf (x, data, ones (size (data)) / length (data));

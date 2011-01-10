@@ -37,23 +37,23 @@ function rnd = lognrnd (mu, sigma, r, c)
     if (!isscalar(mu) || !isscalar(sigma)) 
       [retval, mu, sigma] = common_size (mu, sigma);
       if (retval > 0)
-        error ("lognrnd: mu and sigma must be of common size or scalar");
+        error ("lognrnd: MU and SIGMA must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("lognrnd: r must be a positive integer");
+      error ("lognrnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("lognrnd: c must be a positive integer");
+      error ("lognrnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (mu) != 1)
         && ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
-      error ("lognrnd: mu and sigma must be scalar or of size [r, c]");
+      error ("lognrnd: MU and SIGMA must be scalar or of size [R, C]");
     endif
 
   elseif (nargin == 3)
@@ -62,12 +62,12 @@ function rnd = lognrnd (mu, sigma, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("lognrnd: r must be a positive integer or vector");
+      error ("lognrnd: R must be a positive integer or vector");
     endif
 
     if (any (size (mu) != 1)
         && ((length (size (mu)) != length (sz)) || any (size (mu) != sz)))
-      error ("lognrnd: mu and sigma must be scalar or of size sz");
+      error ("lognrnd: MU and SIGMA must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(mu);

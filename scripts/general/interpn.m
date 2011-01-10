@@ -92,7 +92,7 @@ function vi = interpn (varargin)
     if (nargs == 2)
       m = varargin{2};
       if (! isnumeric (m) || ! isscalar (m) || floor (m) != m)
-        error ("interpn: m is expected to be a integer scalar");
+        error ("interpn: M is expected to be a integer scalar");
       endif
     endif
     sz = size (v);
@@ -199,7 +199,7 @@ function vi = interpn (varargin)
   elseif (strcmp (method, "cubic")) 
     error ("interpn: cubic interpolation not yet implemented");
   else
-    error ("interpn: unrecognized interpolation method");
+    error ("interpn: unrecognized interpolation METHOD");
   endif
 
 endfunction

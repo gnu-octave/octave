@@ -66,7 +66,7 @@ function b = bincoeff (n, k)
 
   [retval, n, k] = common_size (n, k);
   if (retval > 0)
-    error ("bincoeff: n and k must be of common size or scalars");
+    error ("bincoeff: N and K must be of common size or scalars");
   endif
 
   sz = size (n);

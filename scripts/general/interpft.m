@@ -55,7 +55,7 @@ function z = interpft (x, n, dim)
   endif
 
   if (! isscalar (n))
-    error ("interpft: n must be an integer scalar");
+    error ("interpft: N must be an integer scalar");
   endif
 
   nd = ndims (x);

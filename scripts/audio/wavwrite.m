@@ -97,7 +97,7 @@ function wavwrite (y, varargin)
   ## open file for writing binary
 
   if (! ischar (filename))
-    error ("wavwrite: expecting filename to be a character string");
+    error ("wavwrite: expecting FILENAME to be a character string");
   endif
     
   [fid, msg] = fopen (filename, "wb");

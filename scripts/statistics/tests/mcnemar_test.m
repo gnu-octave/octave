@@ -42,9 +42,9 @@ function [pval, chisq, df] = mcnemar_test (x)
   endif
 
   if (! (min (size (x)) > 1) && issquare (x))
-    error ("mcnemar_test: x must be a square matrix of size > 1");
+    error ("mcnemar_test: X must be a square matrix of size > 1");
   elseif (! (all (all (x >= 0)) && all (all (x == round (x)))))
-    error ("mcnemar_test: all entries of x must be nonnegative integers");
+    error ("mcnemar_test: all entries of X must be nonnegative integers");
   endif
 
   r = rows (x);

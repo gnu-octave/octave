@@ -85,7 +85,7 @@ function [days, secs] = datenum (year, month, day, hour, minute, second)
     if (nargin == 1)
       nc = columns (year);
       if (nc > 6 || nc < 3)
-        error ("datenum: expected date vector containing [year, month, day, hour, minute, second]");
+        error ("datenum: expected date vector containing [YEAR, MONTH, DAY, HOUR, MINUTE, SECOND]");
       endif
       second = minute = hour = 0;
       if (nc >= 6) second = year(:,6); endif

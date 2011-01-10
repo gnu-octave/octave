@@ -35,7 +35,7 @@ function pdf = binopdf (x, n, p)
   if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("binopdf: x, n and p must be of common size or scalar");
+      error ("binopdf: X, N and P must be of common size or scalar");
     endif
   endif
 

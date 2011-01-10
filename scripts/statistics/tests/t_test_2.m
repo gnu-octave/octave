@@ -49,7 +49,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error ("t_test_2: both x and y must be vectors");
+    error ("t_test_2: both X and Y must be vectors");
   endif
 
   n_x  = length (x);
@@ -66,7 +66,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error ("t_test_2: alt must be a string");
+    error ("t_test_2: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

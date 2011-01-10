@@ -65,7 +65,7 @@ function [y, ns]  = shiftdim (x, n)
   endif
 
   if (! isscalar (n) || floor (n) != n)
-    error ("shiftdim: n must be a scalar integer");
+    error ("shiftdim: N must be a scalar integer");
   endif
 
   if (n >= nd)

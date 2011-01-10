@@ -49,7 +49,7 @@ function pdf = lognpdf (x, mu, sigma)
   if (!isscalar (mu) || !isscalar (sigma))
     [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
-      error ("lognpdf: x, mu and sigma must be of common size or scalars");
+      error ("lognpdf: X, MU and SIGMA must be of common size or scalars");
     endif
   endif
 

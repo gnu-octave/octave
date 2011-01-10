@@ -42,7 +42,7 @@ function varargout = imread (filename, varargin)
   endif
 
   if (! ischar (filename))
-    error ("imread: filename must be a string");
+    error ("imread: FILENAME must be a string");
   endif
 
   filename = tilde_expand (filename);

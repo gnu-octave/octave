@@ -35,7 +35,7 @@ function pdf = tpdf (x, n)
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("tpdf: x and n must be of common size or scalar");
+      error ("tpdf: X and N must be of common size or scalar");
     endif
   endif
 

@@ -48,7 +48,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error ("welch_test: both x and y must be vectors");
+    error ("welch_test: both X and Y must be vectors");
   endif
 
   n_x  = length (x);
@@ -67,7 +67,7 @@ function [pval, t, df] = welch_test (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error ("welch_test: alt must be a string");
+    error ("welch_test: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

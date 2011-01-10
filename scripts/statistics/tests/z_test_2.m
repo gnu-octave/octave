@@ -49,10 +49,10 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error("z_test_2: both x and y must be vectors");
+    error("z_test_2: both X and Y must be vectors");
   elseif (! (isscalar (v_x) && (v_x > 0)
              && isscalar (v_y) && (v_y > 0)))
-    error ("z_test_2: both v_x and v_y must be positive scalars");
+    error ("z_test_2: both V_X and V_Y must be positive scalars");
   endif
 
   n_x  = length (x);
@@ -67,7 +67,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (! ischar (alt))
-    error ("z_test_2: alt must be a string");
+    error ("z_test_2: ALT must be a string");
   elseif (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
   elseif (strcmp (alt, ">"))

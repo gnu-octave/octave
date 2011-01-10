@@ -50,7 +50,7 @@ function X = loadaudio (name, ext, bps)
   if (nargin < 3)
     bps = 8;
   elseif (bps != 8 && bps != 16)
-    error ("loadaudio: bps must be either 8 or 16");
+    error ("loadaudio: BPS must be either 8 or 16");
   endif
 
   name = [name, ".", ext];

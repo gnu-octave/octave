@@ -47,7 +47,7 @@ function y = nthroot (x, n)
   endif
 
   if (! isscalar (n))
-    error ("nthroot: n must be a nonzero scalar");
+    error ("nthroot: N must be a nonzero scalar");
   endif
 
   if (n == 3)
@@ -61,7 +61,7 @@ function y = nthroot (x, n)
     if (n == round (n) && mod (n, 2) == 1)
       y = abs (x) .^ (1/n) .* sign (x);
     elseif (any (x(:) < 0))
-      error ("nthroot: if x contains negative values, n must be an odd integer");
+      error ("nthroot: if X contains negative values, N must be an odd integer");
     else
       y = x .^ (1/n);
     endif

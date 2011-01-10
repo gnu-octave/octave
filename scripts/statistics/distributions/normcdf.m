@@ -42,7 +42,7 @@ function cdf = normcdf (x, m, s)
   if (!isscalar (m) || !isscalar (s))
     [retval, x, m, s] = common_size (x, m, s);
     if (retval > 0)
-      error ("normcdf: x, m and s must be of common size or scalar");
+      error ("normcdf: X, M and S must be of common size or scalar");
     endif
   endif
 

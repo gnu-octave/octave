@@ -86,7 +86,7 @@ function [cout, lev] = contourc (varargin)
   endif
 
   if (!ismatrix (z) || isvector (z) || isscalar (z))
-    error ("contourc: z argument must be a matrix");
+    error ("contourc: Z argument must be a matrix");
   endif
 
   if (isscalar (vn))

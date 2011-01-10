@@ -58,7 +58,7 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
     endif
   else
     if (! (isscalar (tol) && (tol > 0)))
-      error ("kolmogorov_smirnov_cdf: tol must be a positive scalar");
+      error ("kolmogorov_smirnov_cdf: TOL must be a positive scalar");
     endif
   endif
 

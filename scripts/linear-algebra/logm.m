@@ -46,7 +46,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   if (! issquare (A))
-    error ("logm: argument must be a square matrix");
+    error ("logm: A must be a square matrix");
   endif
 
   [u, s] = schur (A);
@@ -139,8 +139,8 @@ endfunction
 %!assert(norm(logm([1 -1;0 1]) - [0 -1; 0 0]) < 1e-5);
 %!assert(norm(expm(logm([-1 2 ; 4 -1])) - [-1 2 ; 4 -1]) < 1e-5);
 %!assert(logm([1 -1 -1;0 1 -1; 0 0 1]), [0 -1 -1.5; 0 0 -1; 0 0 0], 1e-5);
-%!
+
 %% Test input validation
 %!error logm ();
 %!error logm (1, 2, 3);
-%!error <logm: argument must be a square matrix> logm([1 0;0 1; 2 2]);
+%!error <logm: A must be a square matrix> logm([1 0;0 1; 2 2]);

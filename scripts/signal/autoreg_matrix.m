@@ -37,7 +37,7 @@ function X = autoreg_matrix (y, k)
   endif
 
   if (! (isvector (y)))
-    error ("autoreg_matrix: y must be a vector");
+    error ("autoreg_matrix: Y must be a vector");
   endif
 
   T = length (y);

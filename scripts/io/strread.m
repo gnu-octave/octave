@@ -106,7 +106,7 @@ function varargout = strread (str, format = "%f", varargin)
   endif
  
   if (!ischar (str) || !ischar (format))
-    error ("strread: first and second input arguments must be strings");
+    error ("strread: STR and FORMAT arguments must be strings");
   endif
 
   ## Parse options
@@ -157,7 +157,7 @@ function varargout = strread (str, format = "%f", varargin)
   nfields = length (idx) - length (idx_star);
 
   if (max (nargout, 1) != nfields)
-    error ("strread: the number of output variables must match that of format specifiers");
+    error ("strread: the number of output variables must match that specified byFORMAT");
   endif
 
   ## Remove comments
@@ -232,7 +232,7 @@ function varargout = strread (str, format = "%f", varargin)
         ## Ensure descriptive content is consistent
         if (numel (unique (data)) > 1
             || ! strcmpi (unique (data), fmt_words{m}))
-          error ("strread: format does not match data")
+          error ("strread: FORMAT does not match data")
         endif
     endswitch
   endfor

@@ -62,7 +62,7 @@ function retval = orient (varargin)
       papersize = get (cf, "papersize");
       set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
     else
-      error ("orient: unknown orientation");
+      error ("orient: unknown ORIENTATION");
     endif
   else
     print_usage ();

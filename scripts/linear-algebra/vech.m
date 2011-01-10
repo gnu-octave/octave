@@ -39,7 +39,7 @@ function v = vech (x)
   endif
 
   if (! issquare (x))
-    error ("vech: x must be square");
+    error ("vech: X must be square");
   endif
 
   n = rows (x);

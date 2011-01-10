@@ -42,7 +42,7 @@ function s = blanks (n)
   if (nargin != 1)
     print_usage ();
   elseif (! (isscalar (n) && n == round (n)))
-    error ("blanks: n must be a non-negative integer");
+    error ("blanks: N must be a non-negative integer");
   endif
 
   ## If 1:n is empty, the following expression will create an empty

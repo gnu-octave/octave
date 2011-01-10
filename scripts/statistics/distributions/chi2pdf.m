@@ -35,7 +35,7 @@ function pdf = chi2pdf (x, n)
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("chi2pdf: x and n must be of common size or scalar");
+      error ("chi2pdf: X and N must be of common size or scalar");
     endif
   endif
 

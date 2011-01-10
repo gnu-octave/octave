@@ -100,24 +100,24 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   
   if (!ismatrix (xx) || !ismatrix (yy) || !ismatrix (zz) || !ismatrix (c) || ...
     ndims (xx) != 3 || ndims (yy) != 3 || ndims (zz) != 3 || ndims (c) != 3)
-    error ("__marching_cube__: xx, yy, zz, c have to be matrizes of dim 3");
+    error ("__marching_cube__: XX, YY, ZZ, C must be matrices of dim 3");
   endif
   
   if (!size_equal (xx, yy, zz, c))
-    error ("__marching_cube__: xx, yy, zz, c are not the same size");
+    error ("__marching_cube__: XX, YY, ZZ, C must be of equal size");
   endif
   
   if (any (size (xx) < [2 2 2]))
-    error ("__marching_cube__: grid size has to be at least 2x2x2");
+    error ("__marching_cube__: grid size must be at least 2x2x2");
   endif
   
   if (!isscalar (iso))
-    error ("__marching_cube__: iso needs to be scalar value");
+    error ("__marching_cube__: ISO must be scalar value");
   endif
 
   if (nargin == 6)
     if ( !ismatrix (colors) || ndims (colors) != 3 || size (colors) != size (c) )
-      error ( "color has to be matrix of dim 3 and of same size as c" );
+      error ( "COLORS must be a matrix of dim 3 and of same size as C" );
     endif
     calc_cols = true;
     lindex = 5;

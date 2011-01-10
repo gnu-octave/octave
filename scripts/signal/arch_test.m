@@ -73,7 +73,7 @@ function [pval, lm] = arch_test (y, x, p)
   endif
 
   if (! (isvector (y)))
-    error ("arch_test: y must be a vector");
+    error ("arch_test: Y must be a vector");
   endif
   T   = length (y);
   y   = reshape (y, T, 1);
@@ -81,10 +81,10 @@ function [pval, lm] = arch_test (y, x, p)
   if ((rx == 1) && (cx == 1))
     x = autoreg_matrix (y, x);
   elseif (! (rx == T))
-    error ("arch_test: either rows(X) == length(y), or X is a scalar");
+    error ("arch_test: either rows(X) == length(Y), or X is a scalar");
   endif
   if (! (isscalar(p) && (rem(p, 1) == 0) && (p > 0)))
-    error ("arch_test: p must be a positive integer");
+    error ("arch_test: P must be a positive integer");
   endif
 
   [b, v_b, e] = ols (y, x);

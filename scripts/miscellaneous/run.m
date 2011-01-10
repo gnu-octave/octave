@@ -39,7 +39,7 @@ function run (script)
       unwind_protect
         cd (d);
         if (! exist (cstrcat (f, ext), "file"))
-          error ("run: file must exist and be a valid Octave script file");
+          error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
         endif
         evalin ("caller", sprintf ("source (\"%s%s\");", f, ext),
                 "rethrow (lasterror ())");

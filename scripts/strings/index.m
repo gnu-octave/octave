@@ -74,7 +74,7 @@ function n = index (s, t, direction)
       n = f(1);
     endif
   else
-    error ("index: direction must be either \"first\" or \"last\"");
+    error ("index: DIRECTION must be either \"first\" or \"last\"");
   endif
 endfunction
 

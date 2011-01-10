@@ -89,7 +89,7 @@ function y = rotdim (x, n, plane)
     if (! (isvector (plane) && length (plane) == 2
            && all (plane == round (plane)) && all (plane > 0)
            && all (plane < (nd + 1)) && plane(1) != plane(2)))
-      error ("rotdim: plane must be a 2 element integer vector defining a valid plane");
+      error ("rotdim: PLANE must be a 2 element integer vector defining a valid PLANE");
     endif
   endif
 

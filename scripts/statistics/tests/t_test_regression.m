@@ -59,18 +59,18 @@ function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
   endif
 
   if (! isscalar (r))
-    error ("t_test_regression: r must be a scalar");
+    error ("t_test_regression: R must be a scalar");
   elseif (! ischar (alt))
-    error ("t_test_regression: alt must be a string");
+    error ("t_test_regression: ALT must be a string");
   endif
 
   [T, k] = size (x);
   if (! (isvector (y) && (length (y) == T)))
-    error ("t_test_regression: y must be a vector of length rows (X)");
+    error ("t_test_regression: Y must be a vector of length rows (X)");
   endif
   s      = size (rr);
   if (! ((max (s) == k) && (min (s) == 1)))
-    error ("t_test_regression: rr must be a vector of length columns (X)");
+    error ("t_test_regression: RR must be a vector of length columns (X)");
   endif
 
   rr     = reshape (rr, 1, k);

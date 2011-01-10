@@ -34,10 +34,10 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
     y = y(:);
     z = z(:);
   else
-    error("__interp_cube__: x, y, z have wrong dimensions");
+    error("__interp_cube__: X, Y, Z have wrong dimensions");
   endif
   if (size (val) != [length(x), length(y), length(z)])
-    error ("__interp_cube__: val has wrong dimensions");
+    error ("__interp_cube__: VAL has wrong dimensions");
   endif
   if (size (v, 2) != 3)
     error ( "v has to be N*3 matrix");

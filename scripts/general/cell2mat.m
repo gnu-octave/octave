@@ -33,7 +33,7 @@ function m = cell2mat (c)
   endif
 
   if (! iscell (c))
-    error ("cell2mat: c is not a cell array");
+    error ("cell2mat: C is not a cell array");
   endif
   
   nb = numel (c);

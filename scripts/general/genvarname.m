@@ -109,15 +109,15 @@ function varname = genvarname (str, exclusions)
     endif
     exclusions = {exclusions};
   elseif (! iscellstr (exclusions))
-    error ("genvarname: exclusions must be a string or a cellstr");
+    error ("genvarname: EXCLUSIONS must be a string or a cellstr");
   endif
   if (ischar (str))
     if (rows (str) != 1)
-      error ("genvarname: if more than one str is given, it must be a cellstr");
+      error ("genvarname: if more than one STR is given, it must be a cellstr");
     endif
     str = {str};
   elseif (! iscellstr (str))
-    error ("genvarname: str must be a string or a cellstr");
+    error ("genvarname: STR must be a string or a cellstr");
   endif
 
   validchars = cstrcat ("A":"Z", "a":"z", "0":"9", "_");

@@ -34,7 +34,7 @@ function pdf = geopdf (x, p)
   if (!isscalar (x) && !isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geopdf: x and p must be of common size or scalar");
+      error ("geopdf: X and P must be of common size or scalar");
     endif
   endif
 

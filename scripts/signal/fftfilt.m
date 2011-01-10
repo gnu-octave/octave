@@ -55,7 +55,7 @@ function y = fftfilt (b, x, n)
   [r_b, c_b] = size (b);
 
   if min ([r_b, c_b]) != 1
-    error ("fftfilt: b should be a vector");
+    error ("fftfilt: B should be a vector");
   endif
 
   l_b = r_b * c_b;
@@ -70,7 +70,7 @@ function y = fftfilt (b, x, n)
   else
     ## Use overlap-add method ...
     if (! (isscalar (n)))
-      error ("fftfilt: n has to be a scalar");
+      error ("fftfilt: N has to be a scalar");
     endif
     n = 2 ^ (ceil (log (max ([n, l_b])) / log (2)));
     L = n - l_b + 1;

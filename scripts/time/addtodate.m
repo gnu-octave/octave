@@ -34,7 +34,7 @@ function d = addtodate (d, q, f)
   elseif (! (ischar (f) && rows (f) == 1))
     ## FIXME: enhance the function so that it works with cellstrs of the
     ## same size as the output.
-    error ("addtodate: f must be a single row character string");
+    error ("addtodate: F must be a single row character string");
   endif
 
   if (numel (d) == 1 && numel (q) > 1)

@@ -32,10 +32,10 @@ function rnd = laplace_rnd (r, c)
 
   if (nargin == 2)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("laplace_rnd: r must be a positive integer");
+      error ("laplace_rnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("laplace_rnd: c must be a positive integer");
+      error ("laplace_rnd: C must be a positive integer");
     endif
     sz = [r, c];
   elseif (nargin == 1)
@@ -44,7 +44,7 @@ function rnd = laplace_rnd (r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("laplace_rnd: r must be a positive integer or vector");
+      error ("laplace_rnd: R must be a positive integer or vector");
     endif
   else
     print_usage ();

@@ -57,7 +57,7 @@ function a = polyarea (x, y, dim)
       a = abs (sum (x .* (shift (y, -1, dim) - shift (y, 1, dim)), dim)) / 2;
     endif
   else
-    error ("polyarea: x and y must have the same shape");
+    error ("polyarea: X and Y must have the same shape");
   endif
 endfunction
 

@@ -59,7 +59,7 @@ function msg = strerror (name, num)
 
   else
 
-    error ("strerror: unrecognized function name");
+    error ("strerror: unrecognized function NAME");
 
   endif
 

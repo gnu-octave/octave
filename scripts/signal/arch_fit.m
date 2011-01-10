@@ -58,7 +58,7 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
   endif
 
   if (! (isvector (y)))
-    error ("arch_fit: y must be a vector");
+    error ("arch_fit: Y must be a vector");
   endif
 
   T   = length (y);
@@ -67,7 +67,7 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
   if ((rx == 1) && (cx == 1))
     x = autoreg_matrix (y, x);
   elseif (! (rx == T))
-    error ("arch_fit: either rows (x) == length (y), or x is a scalar");
+    error ("arch_fit: either rows (X) == length (Y), or X is a scalar");
   endif
 
   [T, k] = size (x);

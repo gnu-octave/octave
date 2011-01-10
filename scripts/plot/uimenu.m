@@ -88,7 +88,7 @@ function hui = uimenu (varargin)
   endif
 
   if (rem (length (args), 2))
-    error ("uimenu: expecting property/value pairs");
+    error ("uimenu: expecting PROPERTY/VALUE pairs");
   endif
 
   tmp = __go_uimenu__ (h, args{:});

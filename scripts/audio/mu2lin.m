@@ -37,7 +37,7 @@ function y = mu2lin (x, n)
     n = 8;
   elseif (nargin == 2)
     if (n != 0 && n != 8 && n != 16)
-      error ("mu2lin: n must be either 0, 8, or 16");
+      error ("mu2lin: N must be either 0, 8, or 16");
     endif
   else
     print_usage ();

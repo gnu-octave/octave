@@ -55,11 +55,11 @@ function y = circshift (x, n)
       sz = size (x);
 
       if (! isvector (n) && length (n) > nd)
-        error ("circshift: n must be a vector, no longer than the number of dimension in x");
+        error ("circshift: N must be a vector, no longer than the number of dimension in X");
       endif
     
       if (any (n != floor (n)))
-        error ("circshift: all values of n must be integers");
+        error ("circshift: all values of N must be integers");
       endif
 
       idx = cell ();

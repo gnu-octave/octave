@@ -33,7 +33,7 @@ function cdf = empirical_cdf (x, data)
   endif
 
   if (! isvector (data))
-    error ("empirical_cdf: data must be a vector");
+    error ("empirical_cdf: DATA must be a vector");
   endif
 
   cdf = discrete_cdf (x, data, ones (size (data)) / length (data));

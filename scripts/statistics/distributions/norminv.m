@@ -42,7 +42,7 @@ function inv = norminv (x, m, s)
   if (!isscalar (m) || !isscalar (s))
     [retval, x, m, s] = common_size (x, m, s);
     if (retval > 0)
-      error ("norminv: x, m and s must be of common size or scalars");
+      error ("norminv: X, M and S must be of common size or scalars");
     endif
   endif
 

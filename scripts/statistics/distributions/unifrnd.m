@@ -36,23 +36,23 @@ function rnd = unifrnd (a, b, r, c)
     if (!isscalar(a) || !isscalar(b)) 
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
-        error ("unifrnd: a and b must be of common size or scalar");
+        error ("unifrnd: A and B must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("unifrnd: r must be a positive integer");
+      error ("unifrnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("unifrnd: c must be a positive integer");
+      error ("unifrnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (a) != 1)
         && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("unifrnd: a and b must be scalar or of size [r, c]");
+      error ("unifrnd: A and B must be scalar or of size [R, C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -60,12 +60,12 @@ function rnd = unifrnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("unifrnd: r must be a positive integer or vector");
+      error ("unifrnd: R must be a positive integer or vector");
     endif
 
     if (any (size (a) != 1)
         && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("unifrnd: a and b must be scalar or of size sz");
+      error ("unifrnd: A and B must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(a);

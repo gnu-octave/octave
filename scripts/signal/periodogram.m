@@ -19,7 +19,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[Pxx,w]} = periodogram (@var{x})
+## @deftypefn {Function File} {[Pxx,w] =} periodogram (@var{x})
 ## For a data matrix @var{x} from a sample of size @var{n}, return the
 ## periodogram. w returns the angular frequency.
 ##

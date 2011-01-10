@@ -67,7 +67,7 @@ function z = cross (x, y, dim)
      endif
    else
      if (size (x, dim) != 3)
-       error ("cross: dimension dim must have 3 elements");
+       error ("cross: dimension DIM must have 3 elements");
      endif
   endif
 
@@ -87,7 +87,7 @@ function z = cross (x, y, dim)
     y3 = y(idx3{:});
     z = cat (dim, (x2.*y3 - x3.*y2), (x3.*y1 - x1.*y3), (x1.*y2 - x2.*y1));
   else
-    error ("cross: x and y must have the same dimensions");
+    error ("cross: X and Y must have the same dimensions");
   endif
 
 endfunction

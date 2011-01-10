@@ -37,10 +37,10 @@ function rnd = discrete_rnd (v, p, r, c)
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("discrete_rnd: r must be a positive integer");
+      error ("discrete_rnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("discrete_rnd: c must be a positive integer");
+      error ("discrete_rnd: C must be a positive integer");
     endif
     sz = [r, c];
   elseif (nargin == 3)
@@ -59,7 +59,7 @@ function rnd = discrete_rnd (v, p, r, c)
       elseif (isvector(r) && all (r > 0))
         sz = r(:)';
       else
-        error ("discrete_rnd: r must be a positive integer or vector");
+        error ("discrete_rnd: R must be a positive integer or vector");
       endif
     endif
   else
@@ -67,11 +67,11 @@ function rnd = discrete_rnd (v, p, r, c)
   endif
 
   if (! isvector (v))
-    error ("discrete_rnd: v must be a vector");
+    error ("discrete_rnd: V must be a vector");
   elseif (! isvector (p) || (length (p) != length (v)))
-    error ("discrete_rnd: p must be a vector with length (v) elements");
+    error ("discrete_rnd: P must be a vector with length (V) elements");
   elseif (! (all (p >= 0) && any (p)))
-    error ("discrete_rnd: p must be a nonzero, nonnegative vector");
+    error ("discrete_rnd: P must be a nonzero, nonnegative vector");
   endif
 
   rnd = v (lookup (cumsum (p (1 : end-1)) / sum(p), rand (sz)) + 1); 

@@ -49,10 +49,10 @@ function [pval, t, df] = t_test (x, m, alt)
   endif
 
   if (! isvector (x))
-    error ("t_test: x must be a vector");
+    error ("t_test: X must be a vector");
   endif
   if (! isscalar (m))
-    error ("t_test: m must be a scalar");
+    error ("t_test: M must be a scalar");
   endif
 
   n   = length (x);
@@ -65,7 +65,7 @@ function [pval, t, df] = t_test (x, m, alt)
   endif
 
   if (! ischar (alt))
-    error ("t_test: alt must be a string");
+    error ("t_test: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

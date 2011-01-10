@@ -37,23 +37,23 @@ function rnd = normrnd (m, s, r, c)
     if (!isscalar (m) || !isscalar (s)) 
       [retval, m, s] = common_size (m, s);
       if (retval > 0)
-        error ("normrnd: m and s must be of common size or scalar");
+        error ("normrnd: M and S must be of common size or scalar");
       endif
     endif
   endif
 
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("normrnd: r must be a positive integer");
+      error ("normrnd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("normrnd: c must be a positive integer");
+      error ("normrnd: C must be a positive integer");
     endif
     sz = [r, c];
 
     if (any (size (m) != 1)
         && (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normrnd: m and s must be scalar or of size [r, c]");
+      error ("normrnd: M and S must be scalar or of size [R, C]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -61,12 +61,12 @@ function rnd = normrnd (m, s, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("normrnd: r must be a positive integer or vector");
+      error ("normrnd: R must be a positive integer or vector");
     endif
 
     if (any (size (m) != 1)
         && (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normrnd: m and s must be scalar or of size sz");
+      error ("normrnd: M and S must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
     sz = size(m);

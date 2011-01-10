@@ -34,7 +34,7 @@ function rundemos (directory)
       if (! isempty (fullname))
         dirs = {fullname};
       else
-        error ("rundemos: expecting argument to be a directory name");
+        error ("rundemos: DIRECTORY argument must be a valid pathname");
       endif
     endif
   else

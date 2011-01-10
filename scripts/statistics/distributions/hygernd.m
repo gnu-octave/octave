@@ -36,10 +36,10 @@ function rnd = hygernd (t, m, n, r, c)
 
   if (nargin == 5)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("hygernd: r must be a positive integer");
+      error ("hygernd: R must be a positive integer");
     endif
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("hygernd: c must be a positive integer");
+      error ("hygernd: C must be a positive integer");
     endif
     sz = [r, c];
   elseif (nargin == 4)
@@ -50,7 +50,7 @@ function rnd = hygernd (t, m, n, r, c)
         sz = r(:)';
       endif
     else
-      error ("hygernd: r must be a vector of positive integers");
+      error ("hygernd: R must be a vector of positive integers");
     endif
   elseif (nargin != 3)
     print_usage ();
@@ -59,11 +59,11 @@ function rnd = hygernd (t, m, n, r, c)
   if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
     [retval, t, m, n] = common_size (t, m, n);
     if (retval > 0)
-      error ("hygernd: t, m and n must be of common size or scalar");
+      error ("hygernd: T, M and N must be of common size or scalar");
     endif
     if (nargin > 3)
       if (any (sz != size (t)))
-        error ("hygernd: t, m and n must have the same size as implied by r and c or must be scalar");
+        error ("hygernd: T, M and N must have the same size as implied by R and C or must be scalar");
       endif
     else
       sz = size (t);

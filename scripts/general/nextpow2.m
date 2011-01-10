@@ -42,7 +42,7 @@ function n = nextpow2 (x)
   endif
 
   if (! (isscalar (x) || isvector (x)))
-    error ("nextpow2: x must be a scalar or a vector");
+    error ("nextpow2: X must be a scalar or a vector");
   endif
 
   t = length (x);

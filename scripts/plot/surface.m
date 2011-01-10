@@ -82,21 +82,21 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     c = varargin{4};
 
     if (! size_equal (z, c))
-      error ("surface: z and c must have the same size");
+      error ("surface: Z and C must have the same size");
     endif
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';
         y = y(:);
       else
-        error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)");
+        error ("surface: rows (Z) must be the same as length (Y) and columns (Z) must be the same as length (X)");
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! size_equal (x, y, z))
-        error ("surface: x, y, and z must have the same dimensions");
+        error ("surface: X, Y, and Z must have the same dimensions");
       endif
     else
-      error ("surface: x and y must be vectors and z must be a matrix");
+      error ("surface: X and Y must be vectors and Z must be a matrix");
     endif
   elseif (firststring == 4)
     x = varargin{1};
@@ -108,14 +108,14 @@ function [h, bad_usage] = __surface__ (ax, varargin)
         x = x(:)';
         y = y(:);
       else
-        error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)");
+        error ("surface: rows (Z) must be the same as length (Y) and columns (Z) must be the same as length (X)");
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! size_equal (x, y, z))
-        error ("surface: x, y, and z must have the same dimensions");
+        error ("surface: X, Y, and Z must have the same dimensions");
       endif
     else
-      error ("surface: x and y must be vectors and z must be a matrix");
+      error ("surface: X and Y must be vectors and Z must be a matrix");
     endif
   elseif (firststring == 3)    
     z = varargin{1};
@@ -125,7 +125,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       x = 1:nc;
       y = (1:nr)';
     else
-      error ("surface: z argument must be a matrix");
+      error ("surface: Z argument must be a matrix");
     endif
   elseif (firststring == 2)    
     z = varargin{1};
@@ -135,7 +135,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       x = 1:nc;
       y = (1:nr)';
     else
-      error ("surface: z argument must be a matrix");
+      error ("surface: Z argument must be a matrix");
     endif
   else
     bad_usage = true;

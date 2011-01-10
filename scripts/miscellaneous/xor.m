@@ -36,7 +36,7 @@ function z = xor (x, y)
       ## Typecast to logicals is necessary for other numeric types.
       z = logical (x) != logical (y);
     else
-      error ("xor: x and y must be of common size or scalars");
+      error ("xor: X and Y must be of common size or scalars");
     endif
   else
     print_usage ();

@@ -47,26 +47,26 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
 
   if (nargin < 2 || nargin > 7 || nargout > 5)
     print_usage ();
-  elseif (!isnumeric (A) || rows (A) != columns (A))
-    error ("bicgstab: the first argument must be a n-by-n matrix");
+  elseif (!(isnumeric (A) && issquare (A)))
+    error ("bicgstab: A must be a square numeric matrix");
   elseif (!isvector (b))
-    error ("bicgstab: b must be a vector");
+    error ("bicgstab: B must be a vector");
   elseif (!any (b))
-    error ("bicgstab: b shuldn't be a vector of zeros");
+    error ("bicgstab: B must not be a vector of all zeros");
   elseif (rows (A) != rows (b))
-    error ("bicgstab: the first and second argument must have the same number of rows");
+    error ("bicgstab: A and B must have the same number of rows");
   elseif (nargin > 2 && !isscalar (tol))
-    error ("bicgstab: tol must be a scalar");
+    error ("bicgstab: TOL must be a scalar");
   elseif (nargin > 3 && !isscalar (maxit))
-    error ("bicgstab: maxit must be a scalar");
+    error ("bicgstab: MAXIT must be a scalar");
   elseif (nargin > 4 && ismatrix (M1) && (rows (M1) != rows (A) || columns (M1) != columns (A)))
     error ("bicgstab: M1 must have the same number of rows and columns as A");
   elseif (nargin > 5 && (!ismatrix (M2) || rows (M2) != rows (A) || columns (M2) != columns (A)))
     error ("bicgstab: M2 must have the same number of rows and columns as A");
   elseif (nargin > 6 && !isvector (x0))
-    error ("bicgstab: x0 must be a vector");
+    error ("bicgstab: X0 must be a vector");
   elseif (nargin > 6 && rows (x0) != rows (b))
-    error ("bicgstab: x0 must have the same number of rows as b");
+    error ("bicgstab: X0 must have the same number of rows as B");
   endif
 
   ## Default tolerance.

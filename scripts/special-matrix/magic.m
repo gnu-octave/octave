@@ -31,7 +31,7 @@ function A = magic(n)
   endif
 
   if (n != floor (n) || n < 0 || n == 2)
-    error ("magic: n must be an positive integer not equal to 2");
+    error ("magic: N must be an positive integer not equal to 2");
   endif
 
   if (n == 0)

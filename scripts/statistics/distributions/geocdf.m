@@ -34,7 +34,7 @@ function cdf = geocdf (x, p)
   if (!isscalar (x) && !isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geocdf: x and p must be of common size or scalar");
+      error ("geocdf: X and P must be of common size or scalar");
     endif
   endif
 

@@ -65,7 +65,7 @@ function [xx, yy, zz] = cylinder (varargin)
   endif
 
   if (length (r) < 2)
-    error ("cylinder: length(r) must be larger than 2")
+    error ("cylinder: length(R) must be larger than 2")
   endif
 
   phi = linspace (0, 2*pi, n+1);

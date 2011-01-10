@@ -51,11 +51,11 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
     t = length (oldphi) + 1;
 
     if (length (c) < t+1)
-      error ("durbinlevinson: c too small");
+      error ("durbinlevinson: C too small");
     endif
 
     if (oldv == 0)
-      error ("durbinlevinson: oldv = 0");
+      error ("durbinlevinson: OLDV = 0");
     endif
 
     if (rows (oldphi) > 1)

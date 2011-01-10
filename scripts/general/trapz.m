@@ -85,7 +85,7 @@ function z = trapz (x, y, dim)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
   else
     if (! size_equal (x, y))
-      error ("trapz: x and y must have same shape");
+      error ("trapz: X and Y must have same shape");
     endif
     z = 0.5 * sum ((x(idx1{:}) - x(idx2{:})) .* 
                    (y(idx1{:}) + y(idx2{:})), dim);

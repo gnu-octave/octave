@@ -36,7 +36,7 @@ function inv = gaminv (x, a, b)
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
-      error ("gaminv: x, a and b must be of common size or scalars");
+      error ("gaminv: X, A and B must be of common size or scalars");
     endif
   endif
 

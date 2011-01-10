@@ -35,7 +35,7 @@ function c = hanning (m)
   endif
 
   if (! (isscalar (m) && (m == round (m)) && (m > 0)))
-    error ("hanning: m has to be an integer > 0");
+    error ("hanning: M has to be an integer > 0");
   endif
 
   if (m == 1)

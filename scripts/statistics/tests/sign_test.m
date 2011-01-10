@@ -50,7 +50,7 @@ function [pval, b, n] = sign_test (x, y, alt)
   endif
 
   if (! (isvector (x) && isvector (y) && (length (x) == length (y))))
-    error ("sign_test: x and y must be vectors of the same length");
+    error ("sign_test: X and Y must be vectors of the same length");
   endif
 
   n   = length (x);
@@ -65,7 +65,7 @@ function [pval, b, n] = sign_test (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error ("sign_test: alt must be a string");
+    error ("sign_test: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

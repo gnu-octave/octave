@@ -42,12 +42,12 @@ function [R, G, B] = ind2rgb (x, map)
 
   ## Check if X is an indexed image.
   if (ndims (x) != 2 || any (x(:) != round (x(:))) || min (x(:)) < 1)
-    error ("ind2rgb: first input argument must be an indexed image");
+    error ("ind2rgb: X must be an indexed image");
   endif
   
   ## Check the color map.
   if (ndims (map) != 2 || columns (map) != 3)
-    error ("ind2rgb: second input argument must be a color map");
+    error ("ind2rgb: MAP must be a valid colormap");
   endif
 
   ## Do we have enough colors in the color map?

@@ -33,10 +33,10 @@ function retval = hidden (mode)
     if (ischar (mode))
       mode = tolower (mode);
       if (! strcmp (mode, "on") && ! strcmp (mode, "off"))
-        error ("hidden: mode expected to be 'on' or 'off'");
+        error ("hidden: MODE expected to be 'on' or 'off'");
       endif
     else
-      error ("hidden: expecting mode to be a string");
+      error ("hidden: expecting MODE to be a string");
     endif
   else
     print_usage ();

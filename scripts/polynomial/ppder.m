@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {ppd =} ppder (pp)
+## @deftypefn {Function File} {@var{ppd} =} ppder (@var{pp})
 ## Computes the piecewise derivative of a piecewise polynomial struct @var{pp}.
 ## @seealso{mkpp,ppval}
 ## @end deftypefn
@@ -27,7 +27,7 @@ function ppd = ppder (pp)
     print_usage ();
   endif
   if (! isstruct (pp))
-    error ("ppder: expects a pp structure");
+    error ("ppder: PP must be a structure");
   endif
 
   [x, p, n, k, d] = unmkpp (pp);

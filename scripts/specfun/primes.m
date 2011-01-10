@@ -37,7 +37,7 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle
-## Author: Francesco Potortì
+## Author: Francesco PotortÃ¬
 ## Author: Dirk Laurie
 
 function x = primes (n)
@@ -47,7 +47,7 @@ function x = primes (n)
   endif
 
   if (! isscalar (n))
-    error ("primes: n must be a scalar");
+    error ("primes: N must be a scalar");
   endif
 
   if (n > 100000)

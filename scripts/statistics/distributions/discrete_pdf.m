@@ -36,11 +36,11 @@ function pdf = discrete_pdf (x, v, p)
   sz = size (x);
 
   if (! isvector (v))
-    error ("discrete_pdf: v must be a vector");
+    error ("discrete_pdf: V must be a vector");
   elseif (! isvector (p) || (length (p) != length (v)))
-    error ("discrete_pdf: p must be a vector with length (v) elements");
+    error ("discrete_pdf: P must be a vector with length (V) elements");
   elseif (! (all (p >= 0) && any (p)))
-    error ("discrete_pdf: p must be a nonzero, nonnegative vector");
+    error ("discrete_pdf: P must be a nonzero, nonnegative vector");
   endif
 
   n = numel (x);

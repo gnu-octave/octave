@@ -37,24 +37,24 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
   if (nargin < 2 || nargin > 7 || nargout > 5)
     print_usage ();
-  elseif (!isnumeric (A) || rows (A) != columns (A))
-    error ("cgs: first argument must be a n-by-n matrix");
+  elseif (!(isnumeric (A) && issquare (A)))
+    error ("cgs: A must be a square numeric matrix");
   elseif (!isvector (b))
-    error ("cgs: b must be a vector");
+    error ("cgs: B must be a vector");
   elseif (rows (A) != rows (b))
-    error ("cgs: first and second argument must have the same number of rows");
+    error ("cgs: A and B must have the same number of rows");
   elseif (nargin > 2 && !isscalar (tol))
-    error ("cgs: tol must be a scalar");
+    error ("cgs: TOL must be a scalar");
   elseif (nargin > 3 && !isscalar (maxit))
-    error ("cgs: maxit must be a scalar");
+    error ("cgs: MAXIT must be a scalar");
   elseif (nargin > 4 && ismatrix (M1) && (rows (M1) != rows (A) || columns (M1) != columns (A)))
     error ("cgs: M1 must have the same number of rows and columns as A");
   elseif (nargin > 5 && (!ismatrix (M2) || rows (M2) != rows (A) || columns (M2) != columns (A)))
     error ("cgs: M2 must have the same number of rows and columns as A");
   elseif (nargin > 6 && !isvector (x0))
-    error ("cgs: x0 must be a vector");
+    error ("cgs: X0 must be a vector");
   elseif (nargin > 6 && rows (x0) != rows (b))
-    error ("cgs: x0 must have the same number of rows as b");
+    error ("cgs: X0 must have the same number of rows as B");
   endif
 
   ## Default tolerance.

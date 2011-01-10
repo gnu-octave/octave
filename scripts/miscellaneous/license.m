@@ -156,7 +156,7 @@ function retval = license (varargin)
           elseif (strcmp (varargin{3}, "disable"))
             __octave_licenses__{p,3} = false;
           else
-            error ("toggle must be either `enable' of `disable'");
+            error ("TOGGLE must be either `enable' of `disable'");
           endif
         else
           error ("feature `%s' not found", feature);

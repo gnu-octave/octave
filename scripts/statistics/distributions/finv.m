@@ -35,7 +35,7 @@ function inv = finv (x, m, n)
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("finv: x, m and n must be of common size or scalar");
+      error ("finv: X, M and N must be of common size or scalar");
     endif
   endif
 

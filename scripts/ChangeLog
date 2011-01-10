@@ -1,5 +1,9 @@
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
+	* linear-algebra/expm.m: Validate nargin.  New tests.
+
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
 	* linear-algebra/logm.m: Handle scalar and diagonal matrix
 	arguments specially.  Call logm_pade_pf only if m > 1.  New tests.
 	Special case suggested by Marco Caliari <marco.caliari@univr.it>.

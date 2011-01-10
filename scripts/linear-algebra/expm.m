@@ -72,6 +72,10 @@
 
 function r = expm (A)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (! ismatrix (A) || ! issquare (A))
     error ("expm: A must be a square matrix");
   endif
@@ -135,3 +139,15 @@ function r = expm (A)
   endif
 
 endfunction
+
+%!assert(norm(expm([1 -1;0 1]) - [e -e; 0 e]) < 1e-5);
+%!assert(expm([1 -1 -1;0 1 -1; 0 0 1]), [e -e -e/2; 0 e -e; 0 0 e], 1e-5);
+
+%% Test input validation
+%!error expm ();
+%!error expm (1, 2);
+%!error <expm: A must be a square matrix> expm([1 0;0 1; 2 2]);
+
+%!assert (expm (10), expm (10))
+%!assert (full (expm (eye (3))), expm (full (eye (3))))
+%!assert (full (expm (10*eye (3))), expm (full (10*eye (3))), 8*eps)

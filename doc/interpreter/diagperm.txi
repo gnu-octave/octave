@@ -510,9 +510,9 @@ like:
 all of these natural mathematical truths would be invalidated by treating
 assumed zeros as numerical ones.
 
-Note that certain competing software does not strictly follow this principle
-and converts assumed zeros to numerical zeros in certain cases, while not doing
-so in other cases.  As of today, there are no intentions to mimic such behavior 
+Note that @sc{Matlab} does not strictly follow this principle and converts
+assumed zeros to numerical zeros in certain cases, while not doing so in
+other cases. As of today, there are no intentions to mimic such behavior
 in Octave.
 
 Examples of effects of assumed zeros vs. numerical zeros:

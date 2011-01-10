@@ -1,3 +1,9 @@
+2011-01-10  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* interpreter/diagperm.txi: Remove Matlab euphemism.
+	* interpreter/dynamic.txi: Ditto. Also use @file macro for a
+	couple of filenames.
+
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/container.txi (Basic Usage and Examples):

@@ -1,3 +1,7 @@
+2011-01-10  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/contributors.in: Add Konstantinos Poulios to the list.
+
 2011-01-10  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* interpreter/diagperm.txi: Remove Matlab euphemism.

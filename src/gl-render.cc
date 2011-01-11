@@ -648,10 +648,29 @@ opengl_renderer::draw_axes (const axes::properties& props)
   double x_min = xlim(0), x_max = xlim(1);
   double y_min = ylim(0), y_max = ylim(1);
   double z_min = zlim(0), z_max = zlim(1);
-  
+
   double xd = (props.xdir_is ("normal") ? 1 : -1);
   double yd = (props.ydir_is ("normal") ? 1 : -1);
   double zd = (props.zdir_is ("normal") ? 1 : -1);
+
+  ColumnVector bbox(4);
+  bbox(0) = octave_Inf;
+  bbox(1) = octave_Inf;
+  bbox(2) = -octave_Inf;
+  bbox(3) = -octave_Inf;
+  for (int i = 0; i <= 1; i++)
+    for (int j = 0; j <= 1; j++)
+      for (int k = 0; k <= 1; k++)
+        {
+          ColumnVector p = xform.transform (i ? x_max : x_min, j ? y_max : y_min,
+                                            k ? z_max : z_min, false);
+          bbox(0) = std::min (bbox(0), p(0));
+          bbox(1) = std::min (bbox(1), p(1));
+          bbox(2) = std::max (bbox(2), p(0));
+          bbox(3) = std::max (bbox(3), p(1));
+        }
+  bbox(2) = bbox(2)-bbox(0);
+  bbox(3) = bbox(3)-bbox(1);
 
   ColumnVector p1, p2, xv (3), yv (3), zv (3);
   int xstate, ystate, zstate;
@@ -1744,8 +1763,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
       
   if (! title_props.get_string ().empty () && title_props.positionmode_is("auto"))
     {
-      Matrix bb = props.get_boundingbox (true);
-      ColumnVector p = xform.untransform (bb(0)+bb(2)/2, (bb(1)-10),
+      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
           (x_zlim(0)+x_zlim(1))/2, true);
       title_props.set_position (p.extract_n(0, 3).transpose ());
       title_props.set_positionmode ("auto");

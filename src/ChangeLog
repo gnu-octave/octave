@@ -1,3 +1,8 @@
+2011-01-11  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* gl-render.cc (opengl_renderer::draw_axes): Improve positioning
+	of titles.
+
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (octave_cell::print_as_scalar): Always return true.

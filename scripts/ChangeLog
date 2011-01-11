@@ -12,7 +12,7 @@
 
 	* general/private/__isequal__.m: Use builtin ("struct", ...) to
 	convert objects to a structs to avoid possible overloading of
-	the struct function.
+	the struct function.  Bug #32071.
 
 2011-01-09  Rik  <octave@nomad.inbox5.com>
 

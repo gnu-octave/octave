@@ -7,6 +7,6 @@ FTP:
   site                          directory
   ----                          ---------
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
-  neacm.fe.up.pt                /pub/octave
+  mirrors.fe.up.pt              /pub/octave
 
-Last updated: Wed, 20 May 2009 20:58:14 PST
+Last updated: Mon Jan 10 21:26:17 PST 2011

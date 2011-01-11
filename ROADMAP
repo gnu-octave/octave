@@ -1,25 +1,17 @@
-Here is an attempt at a simple explanation of the directory layout for
-Octave's source files.
-
-  dlfcn         -- dlopen, dlsym, dlerror, and dlclose for AIX
+An overview of the directory layout of Octave's source files:
 
   doc           -- Texinfo documentation for Octave
-
-  emacs         -- Emacs lisp stuff
 
   examples      -- some example files
 
   libcruft      -- various numerical libraries (mostly Fortran)
     amos           * bessel functions
-    blas           * basic linear algebra subroutines
     blas-xtra      * wrappers for blas functions used in Octave
     daspk          * large scale differential algebraic equation solver
     dasrt          * differential algebraic equation solver with root finding
     dassl          * differential-algebraic system solver
     fftpack        * subroutines for fast fourier transforms
-    lapack         * linear algebra package
     lapack-xtra    * wrappers for lapack functions used in Octave
-    minpack        * nonlinear equation solver
     misc           * miscellaneous utilities
     odepack        * odinary differential equation solver
     ordered-qz     * code for ordering eigenvalues for QZ factorization
@@ -33,28 +25,28 @@ Octave's source files.
 
   scripts       -- functions written in the Octave language
     audio          * play and record sound files (system dependent)
-    control        * control theory
     deprecated     * older deprecated functions
     elfun          * elementary mathematical functions
-    finance        * financial functions
+    @ftp           * ftp object class
     general        * utility functions
+    geometry       * geometry algorithms
     image          * image processing
+    help           * help subsystem functions
     io             * input/output functions
     linear-algebra * linear algebra stuff
     miscellaneous  * stuff that doesn't fit anywhere else
-    optimization   * optimizers
-    path           * functions for path handling
+    optimization   * zero finders and minimizers
+    path           * functions for path manipulation
     pkg            * the package manager
-    plot           * plotting
+    plot           * plotting functions
     polynomial     * polynomial manipulation
-    quaternion     * quaternions
     set            * set manipulation
     signal         * signal processing
     sparse         * sparse matrix support
     specfun        * special mathematical functions
     special-matrix * functions for generating special types of matrices
     startup        * initialization functions
-    statistics     * statistical stuff
+    statistics     * statistical functions, distributions, and tests
     strings        * character string manipulation
     testfun        * unit testing
     time           * time and date functions
@@ -62,11 +54,11 @@ Octave's source files.
   src           -- the interpreter itself
 
   test          -- tests for the interpreter
-    config         * configuration files for DejaGnu
-    octave.test    * subdirectories containing actual tests are here
+    test_*.m       * fixed tests for the interpreter
+    fntests.m      * script to run function tests embedded in C++ and .m files
 
 
 John W. Eaton
 jwe@octave.org
 
-Last updated: Wed, 31 Oct 2007 16:44:04 EDT
+Last updated: Mon Jan 10 21:48:42 PST 2011

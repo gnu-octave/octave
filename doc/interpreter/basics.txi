@@ -445,8 +445,11 @@ Move back one character.
 @item C-f
 Move forward one character.
 
-@item @key{DEL}
+@item @key{BACKSPACE}
 Delete the character to the left of the cursor.
+
+@item @key{DEL}
+Delete the character underneath the cursor.
 
 @item C-d
 Delete the character underneath the cursor.

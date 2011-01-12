@@ -1,3 +1,7 @@
+2011-01-12  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/basics.txi: Add <BACKSPACE> to cursor movement section.
+
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/basics.txi (Commands For History):

@@ -2534,14 +2534,14 @@ base_graphics_object::values_as_struct (void)
 }
 
 graphics_object
-graphics_object::get_ancestor (const std::string& type) const
+graphics_object::get_ancestor (const std::string& obj_type) const
 {
   if (valid_object ())
     {
-      if (isa (type))
+      if (isa (obj_type))
         return *this;
       else
-        return gh_manager::get_object (get_parent ()).get_ancestor (type);
+        return gh_manager::get_object (get_parent ()).get_ancestor (obj_type);
     }
   else
     return graphics_object ();

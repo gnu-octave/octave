@@ -1,3 +1,7 @@
+2011-01-12  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* oct-rl-hist.h: Replace macros with an enum
+
 2011-01-12  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 	    John W. Eaton  <jwe@octave.org>
 

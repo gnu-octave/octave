@@ -28,9 +28,11 @@ extern "C"
 {
 #endif
 
-#define HC_IGNSPACE 0x01
-#define HC_IGNDUPS 0x02
-#define HC_ERASEDUPS 0x04
+enum {
+  HC_IGNSPACE = 0x01,
+  HC_IGNDUPS = 0x02,
+  HC_ERASEDUPS = 0x04
+};
 
 extern int octave_add_history (const char *, int);
 

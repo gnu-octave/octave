@@ -130,7 +130,7 @@ extended_gcd (double a, double b, double& x, double& y)
 
   while (bb != 0)
     {
-      double qq = floor (aa / bb);
+      double qq = gnulib::floor (aa / bb);
       double tt = fmod (aa, bb);
 
       aa = bb;

@@ -79,7 +79,7 @@ hc_erasedups (const char *line)
   int r;
 
   using_history ();
-  while (temp = previous_history ())
+  while ((temp = previous_history ()))
     {
       if (! strcmp (temp->line, line))
         {

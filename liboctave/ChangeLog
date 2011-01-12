@@ -1,3 +1,7 @@
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-rl-hist.c (hc_erasedups): Avoid GCC warning.
+
 2011-01-12  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* oct-rl-hist.h: Replace macros with an enum

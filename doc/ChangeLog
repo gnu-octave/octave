@@ -1,3 +1,8 @@
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/basics.txi (Commands For History):
+	Document history_control.
+
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/contributors.in: Add Konstantinos Poulios to the list.

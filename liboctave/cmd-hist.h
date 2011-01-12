@@ -34,20 +34,24 @@ command_history
 protected:
 
   command_history (void)
-    : initialized (false), ignoring_additions (false), lines_in_file (0),
-      lines_this_session (0), xfile (), xsize (-1) { }
+    : initialized (false), ignoring_additions (false), history_control (0),
+      lines_in_file (0), lines_this_session (0), xfile (), xsize (-1) { }
 
 public:
 
   virtual ~command_history (void) { }
 
-  static void initialize (bool, const std::string&, int);
+  static void initialize (bool, const std::string&, int, const std::string&);
 
   static bool is_initialized (void);
 
   static void set_file (const std::string&);
 
   static std::string file (void);
+
+  static void process_histcontrol (const std::string&);
+
+  static std::string histcontrol (void);
 
   static void set_size (int);
 
@@ -132,7 +136,11 @@ protected:
 
   virtual std::string do_file (void);
 
-  virtual void do_initialize (bool, const std::string&, int);
+  virtual void do_process_histcontrol (const std::string&);
+
+  virtual std::string do_histcontrol (void) const;
+
+  virtual void do_initialize (bool, const std::string&, int, const std::string&);
 
   virtual bool do_is_initialized (void) const;
 
@@ -197,7 +205,10 @@ protected:
   // TRUE means we are ignoring new additions.
   bool ignoring_additions;
 
-  // The number of hisory lines we read from the history file.
+  // Bitmask for history control options.  See oct-rl-hist.h.
+  int history_control;
+
+  // The number of history lines we read from the history file.
   int lines_in_file;
 
   // The number of history lines we've saved so far.

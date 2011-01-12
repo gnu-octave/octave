@@ -114,6 +114,24 @@ default_history_size (void)
 static int Vhistory_size = default_history_size ();
 
 static std::string
+default_history_control (void)
+{
+  std::string retval;
+
+  std::string env_histcontrol = octave_env::getenv ("OCTAVE_HISTCONTROL");
+
+  if (! env_histcontrol.empty ())
+    {
+      return env_histcontrol;
+    }
+
+  return retval;
+}
+
+// The number of lines to keep in the history file.
+static std::string Vhistory_control = default_history_control ();
+
+static std::string
 default_history_timestamp_format (void)
 {
   return
@@ -520,7 +538,8 @@ do_run_history (int argc, const string_vector& argv)
 void
 initialize_history (bool read_history_file)
 {
-  command_history::initialize (read_history_file, Vhistory_file, Vhistory_size);
+  command_history::initialize (read_history_file, Vhistory_file, Vhistory_size,
+                               Vhistory_control);
 }
 
 void
@@ -650,6 +669,39 @@ and the commands are simply executed as they appear in the history list.\n\
   return retval;
 }
 
+DEFUN (history_control, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} history_control ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} history_control (@var{new_val})\n\
+Query or set the internal variable that specifies how commands are saved\n\
+to the history list.  The default value is an empty character string,\n\
+but may be overridden by the environment variable\n\
+@w{@env{OCTAVE_HISTCONTROL}}.\n\
+\n\
+The value of @code{history_control} is a colon-separated list of values\n\
+controlling how commands are saved on the history list.   If the list\n\
+of values includes @code{ignorespace},  lines which begin with a space\n\
+character are not saved in the history list.  A value of @code{ignoredups}\n\
+causes lines matching the previous history entry to not be saved.\n\
+A value of @code{ignoreboth} is shorthand for @code{ignorespace} and\n\
+@code{ignoredups}.  A value of @code{erasedups} causes all previous lines\n\
+matching the current line to be removed from the history list before that\n\
+line is saved.  Any value not in the above list is ignored.  If\n\
+@code{history_control} is the empty string, all commands are saved on\n\
+the history list, subject to the value of @code{saving_history}.\n\
+@seealso{history_file, history_size, history_timestamp_format_string, saving_history}\n\
+@end deftypefn")
+{
+  std::string saved_history_control = Vhistory_control;
+
+  octave_value retval = SET_INTERNAL_VARIABLE (history_control);
+
+  if (Vhistory_control != saved_history_control)
+    command_history::process_histcontrol (Vhistory_control);
+
+  return retval;
+}
+
 DEFUN (history_size, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
@@ -716,7 +768,7 @@ DEFUN (saving_history, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
-@seealso{history_file, history_size, history_timestamp_format_string}\n\
+@seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {
   octave_value retval = SET_INTERNAL_VARIABLE (saving_history);

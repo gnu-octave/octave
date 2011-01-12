@@ -1,3 +1,25 @@
+2011-01-12  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+	    John W. Eaton  <jwe@octave.org>
+
+	* cmd-hist.cc (command_history::process_histcontrol,
+	command_history::hist_control, command_history::process_histcontrol,
+	command_history::hist_control): New functions.
+	(command_history::initialize, command_history::do_initialize):
+	New arg, control_arg.
+	* cmd-hist.cc (gnu_history::do_add): Pass history_control to
+	octave_add_history.
+	* cmd-hist.h (command_history::process_histcontrol,
+	command_history::hist_control, command_history::process_histcontrol,
+	command_history::hist_control): Provide decls.
+	(command_history::history_control): New data member.
+
+	* oct-rl-hist.c (octave_add_history): New arg, history_control.
+	Return int, not void.
+	(check_history_control, hc_erasedups): New static functions
+	borrowed from Bash.
+	* oct-rl-hist.h (octave_add_history): Fix decl.
+	(HC_IGNSPACE, HC_IGNDUPS, HC_ERASEDUPS): New #defined constants.
+
 2011-01-06  John W. Eaton  <jwe@octave.org>
 
 	* oct-md5.cc (oct_md5_file): Tag call to fclose with gnulib::.

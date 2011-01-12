@@ -117,9 +117,7 @@ gnu_history::do_add (const std::string& s)
           || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
         return;
 
-      ::octave_add_history (s.c_str ());
-
-      lines_this_session++;
+      lines_this_session += ::octave_add_history (s.c_str (), history_control);
     }
 }
 
@@ -421,10 +419,11 @@ command_history::make_command_history (void)
 
 void
 command_history::initialize (bool read_history_file,
-                             const std::string& f_arg, int sz)
+                             const std::string& f_arg, int sz,
+                             const std::string & control_arg)
 {
   if (instance_ok ())
-    instance->do_initialize (read_history_file, f_arg, sz);
+    instance->do_initialize (read_history_file, f_arg, sz, control_arg);
 }
 
 bool
@@ -451,6 +450,20 @@ command_history::file (void)
 {
   return (instance_ok ())
     ? instance->do_file () : std::string ();
+}
+
+void
+command_history::process_histcontrol (const std::string& control_arg)
+{
+  if (instance_ok ())
+    instance->do_process_histcontrol(control_arg);
+}
+
+std::string
+command_history::histcontrol (void)
+{
+  return (instance_ok ())
+    ? instance->do_histcontrol () : std::string ();
 }
 
 void
@@ -643,10 +656,12 @@ command_history::clean_up_and_save (const std::string& f, int n)
 
 void
 command_history::do_initialize (bool read_history_file,
-                                const std::string& f_arg, int sz)
+                                const std::string& f_arg, int sz,
+                                const std::string & control_arg)
 {
   command_history::set_file (f_arg);
   command_history::set_size (sz);
+  command_history::process_histcontrol (control_arg);
 
   if (read_history_file)
     command_history::read (false);
@@ -665,6 +680,77 @@ command_history::do_set_file (const std::string& f)
 {
   xfile = f;
 }
+
+void
+command_history::do_process_histcontrol (const std::string& control_arg)
+{
+  history_control = 0;
+
+  size_t len = control_arg.length ();
+  size_t beg = 0;
+
+  while (beg < len)
+    {
+      if (control_arg[beg] == ':')
+        beg++;
+      else
+        {
+          size_t end = control_arg.find (":", beg);
+
+          if (end == std::string::npos)
+            end = len;
+
+          std::string tmp = control_arg.substr (beg, end-beg);
+
+          if (tmp == "erasedups")
+            history_control |= HC_ERASEDUPS;
+          else if (tmp == "ignoreboth")
+            history_control |= HC_IGNDUPS|HC_IGNSPACE;
+          else if (tmp == "ignoredups")
+            history_control |= HC_IGNDUPS;
+          else if (tmp == "ignorespace")
+            history_control |= HC_IGNSPACE;
+          else
+            (*current_liboctave_warning_handler)
+              ("unknown histcontrol directive %s", tmp.c_str ());
+
+          if (end != std::string::npos)
+            beg = end + 1;
+        }
+    }
+}
+
+std::string
+command_history::do_histcontrol (void) const
+{
+  // FIXME -- instead of reconstructing this value, should we just save
+  // the string we were given when constructing the command_history
+  // object?
+
+  std::string retval;
+
+  if (history_control & HC_IGNSPACE)
+    retval.append ("ignorespace");
+
+  if (history_control & HC_IGNDUPS)
+    {
+      if (retval.length() > 0)
+        retval.append (":");
+
+      retval.append ("ignoredups");
+    }
+
+  if (history_control & HC_ERASEDUPS)
+    {
+      if (retval.length() > 0)
+        retval.append (":");
+
+      retval.append ("erasedups");
+    }
+
+  return retval;
+}
+
 
 std::string
 command_history::do_file (void)

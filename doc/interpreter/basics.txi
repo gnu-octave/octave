@@ -660,6 +660,8 @@ is saved.
 
 @DOCSTRING(saving_history)
 
+@DOCSTRING(history_control)
+
 @DOCSTRING(history_file)
 
 @DOCSTRING(history_size)

@@ -28,7 +28,11 @@ extern "C"
 {
 #endif
 
-extern void octave_add_history (const char *);
+#define HC_IGNSPACE 0x01
+#define HC_IGNDUPS 0x02
+#define HC_ERASEDUPS 0x04
+
+extern int octave_add_history (const char *, int);
 
 extern int octave_where_history (void);
 

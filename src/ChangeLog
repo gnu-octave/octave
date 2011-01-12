@@ -1,5 +1,10 @@
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/rand.cc (reset_rand_generator): Delete unused
+	static function.
+
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
 	* graphics.cc (graphics_object::get_ancestor): Avoid GCC warning.
 
 2011-01-12  John W. Eaton  <jwe@octave.org>

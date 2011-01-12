@@ -487,12 +487,6 @@ using the \"reset\" keyword.\n\
 
 static std::string current_distribution = octave_rand::distribution ();
 
-static void
-reset_rand_generator (void)
-{
-  octave_rand::distribution (current_distribution);
-}
-
 DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} randn (@var{x})\n\

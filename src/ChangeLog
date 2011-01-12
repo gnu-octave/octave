@@ -2,7 +2,9 @@
 
 	* DLD-FUNCTIONS/gcd.cc (extended_gcd): Tag call to floor with gnulib::.
 
-	*oct-hist.cc (Fhistory_control): New function.
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-hist.cc (Fhistory_control): New function.
 
 2011-01-12  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 

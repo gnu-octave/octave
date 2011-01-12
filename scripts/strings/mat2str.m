@@ -68,7 +68,7 @@ function s = mat2str (x, n, cls)
     endif
   endif
 
-  if (nargin < 1 || nargin > 3 || ! isnumeric (x))
+  if (nargin < 1 || nargin > 3 || ! (isnumeric (x) || islogical (x)))
     print_usage ();
   endif
   
@@ -76,15 +76,19 @@ function s = mat2str (x, n, cls)
     error ("mat2str: X must be two dimensional");
   endif
 
+  x_islogical = islogical (x);
   x_iscomplex = iscomplex (x);
 
-  if (! x_iscomplex)
-    fmt = sprintf ("%%.%dg", n(1));
-  else
+  if (x_iscomplex)
     if (length (n) == 1)
       n = [n, n];
     endif
     fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));
+  elseif (x_islogical)
+    v = {"false", "true"};
+    fmt = "%s";
+  else
+    fmt = sprintf ("%%.%dg", n(1));
   endif
 
   nel = numel (x);
@@ -94,22 +98,27 @@ function s = mat2str (x, n, cls)
     s = "[]";
   elseif (nel == 1)
     ## Scalar X, don't print brackets
-    if (! x_iscomplex)
-      s = sprintf (fmt, x);
-    else
+    if (x_iscomplex)
       s = sprintf (fmt, real (x), imag (x));
+    elseif (x_islogical)
+      s = v{x+1};
+    else
+      s = sprintf (fmt, x);
     endif
   else
     ## Non-scalar X, print brackets
-    fmt = [fmt, ","];
-    if (! x_iscomplex)
-      s = sprintf (fmt, x.');
-    else
+    fmt = cstrcat (fmt, ",");
+    if (x_iscomplex)
       t = x.';
       s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
+    elseif (x_islogical)
+      t = v(x+1);
+      s = cstrcat (sprintf (fmt, t{:}));
+    else
+      s = sprintf (fmt, x.');
     endif
 
-    s = ["[", s];
+    s = cstrcat ("[", s);
     s(end) = "]";
     ind = find (s == ",");
     nc = columns (x);
@@ -117,7 +126,7 @@ function s = mat2str (x, n, cls)
   endif
 
   if (strcmp ("class", cls))
-    s = [class(x), "(", s, ")"];
+    s = cstrcat (class(x), "(", s, ")");
   endif
 endfunction
 
@@ -125,3 +134,6 @@ endfunction
 %!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]")
 %!assert (mat2str (int16 ([1 -1]), 'class'), "int16([1,-1])")
 
+%!assert (mat2str (true), "true");
+%!assert (mat2str (false), "false");
+%!assert (mat2str (logical (eye (2))), "[true,false;false,true]");

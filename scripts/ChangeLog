@@ -1,3 +1,8 @@
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
+	* strings/mat2str.m: Handle logical arguments.  New tests.
+	Bug #32102.
+
 2011-01-10  John W. Eaton  <jwe@octave.org>
 
 	* linear-algebra/expm.m: Validate nargin.  New tests.

@@ -524,7 +524,8 @@ function.  Instead you should use @code{imread}.\n\
     }
 #else
 
-  error ("__magick_read__: not available in this version of Octave");
+  error ("imread: this installation of Octave does not support reading images."
+	 " Image reading capabilities were disabled when this installation was compiled.");
 
 #endif
 

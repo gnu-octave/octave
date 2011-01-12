@@ -1,3 +1,9 @@
+2011-01-12  David Grundberg  <individ@acc.umu.se>
+
+	* DLD-FUNCTIONS/__magick_read__.cc (__magick_read__) [!HAVE_MAGICK]:
+	Write more verbose error message that blames on imread, not
+	__magick_read__.
+
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/rand.cc (reset_rand_generator): Delete unused

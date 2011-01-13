@@ -1,5 +1,15 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* oct-locbuf.h (octave_chunk_buffer::~octave_chunk_buffer):
+	Now virtual.
+	(class octave_local_buffer, class octave_chunk_buffer):
+	Don't allow copying or assignment.
+
+	* file-stat.h (base_file_stat::~base_file_stat):
+	Now protected and virtual.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* base-lu.h (base_lu::base_lu): Initialize all data members in
 	initialization lists.
 	* base-qr.h (base_qr::base_qr): Likewise.

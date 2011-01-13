@@ -41,8 +41,13 @@ public:
     }
   ~octave_local_buffer (void) { delete [] data; }
   operator T *() const { return data; }
+
 private:
   T *data;
+
+  // No copying!
+  octave_local_buffer (const octave_local_buffer&);
+  octave_local_buffer& operator = (const octave_local_buffer&);
 };
 
 // For buffers of POD types, we'll be more smart. There is one thing that
@@ -59,6 +64,15 @@ private:
 
 class octave_chunk_buffer
 {
+public:
+
+  OCTAVE_API octave_chunk_buffer (size_t size);
+
+  OCTAVE_API virtual ~octave_chunk_buffer (void);
+
+  char *data (void) const { return dat; }
+
+private:
   static const size_t chunk_size;
 
   static char *top, *chunk;
@@ -67,13 +81,9 @@ class octave_chunk_buffer
   char *cnk;
   char *dat;
 
-public:
-
-  OCTAVE_API octave_chunk_buffer (size_t size);
-
-  OCTAVE_API ~octave_chunk_buffer (void);
-
-  char *data (void) const { return dat; }
+  // No copying!
+  octave_chunk_buffer (const octave_chunk_buffer&);
+  octave_chunk_buffer& operator = (const octave_chunk_buffer&);
 };
 
 // This specializes octave_local_buffer to use the chunked buffer mechanism
@@ -83,8 +93,13 @@ template <> \
 class octave_local_buffer<TYPE> : private octave_chunk_buffer \
 { \
 public: \
-  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (TYPE)) { } \
-  operator TYPE *() const { return reinterpret_cast<TYPE *> (this->data ()); } \
+  octave_local_buffer (size_t size) \
+    : octave_chunk_buffer (size * sizeof (TYPE)) { } \
+ \
+  operator TYPE *() const \
+  { \
+    return reinterpret_cast<TYPE *> (this->data ()); \
+  } \
 }
 
 SPECIALIZE_POD_BUFFER (bool);
@@ -107,7 +122,10 @@ template <class T>
 class octave_local_buffer<T *> : private octave_chunk_buffer
 {
 public:
-  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (T *)) { }
+  octave_local_buffer (size_t size)
+    : octave_chunk_buffer (size * sizeof (T *))
+    { }
+
   operator T **() const { return reinterpret_cast<T **> (this->data ()); }
 };
 
@@ -115,8 +133,14 @@ template <class T>
 class octave_local_buffer<const T *> : private octave_chunk_buffer
 {
 public:
-  octave_local_buffer (size_t size) : octave_chunk_buffer (size * sizeof (const T *)) { }
-  operator const T **() const { return reinterpret_cast<const T **> (this->data ()); }
+  octave_local_buffer (size_t size)
+    : octave_chunk_buffer (size * sizeof (const T *))
+    { }
+
+  operator const T **() const
+  {
+    return reinterpret_cast<const T **> (this->data ());
+  }
 };
 
 // If the compiler supports dynamic stack arrays, we can use the attached hack

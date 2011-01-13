@@ -75,8 +75,6 @@ public:
     return *this;
   }
 
-  ~base_file_stat (void) { }
-
   // The minimum difference in file time stamp values.
   // FIXME -- this value should come from the filesystem itself.  How
   // can we get that info?
@@ -146,6 +144,8 @@ public:
   static int is_newer (const std::string&, const octave_time&);
 
 protected:
+
+  virtual ~base_file_stat (void) { }
 
   // TRUE means we have already called stat.
   bool initialized;

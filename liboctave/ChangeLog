@@ -1,5 +1,17 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* idx-vector.h (idx_vector_rep::idx_vector_rep,
+	idx_vector::idx_mask_rep::idx_mask_rep):
+	Initialize all data members in initialization lists.
+
+	* idx-vector.cc (idx_vector::idx_scalar_rep::idx_scalar_rep):
+	Initialize data in member initialization list.
+	(class idx_base_rep, class idx_colon_rep, class idx_range_rep,
+	class idx_scalar_rep, class idx_vector_rep, class idx_mask_rep):
+	Don't allow assignment.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* DAE.h (DAE::~DAE): Now virtual.
 	* DAERT.h (DAERT::~DAERT): Likewise.
 	* ODE.h (ODE::~ODE): Likewise.

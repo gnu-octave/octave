@@ -264,6 +264,7 @@ DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_scalar_rep);
 
 template <class T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
+  : data (0)
 {
   octave_idx_type dummy = 0;
 
@@ -340,7 +341,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
 
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<octave_idx_type>& inda)
   : data (inda.data ()), len (inda.numel ()), ext (0), 
-  aowner (new Array<octave_idx_type> (inda)), orig_dims (inda.dims ())
+    aowner (new Array<octave_idx_type> (inda)), orig_dims (inda.dims ())
 {
   if (len != 0)
     {

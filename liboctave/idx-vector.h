@@ -111,6 +111,7 @@ private:
 
     // No copying!
     idx_base_rep (const idx_base_rep&);
+    idx_base_rep& operator = (const idx_base_rep&);
   };
 
   // The magic colon index.
@@ -146,6 +147,7 @@ private:
 
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
+    idx_colon_rep& operator = (const idx_colon_rep& idx);
   };
 
   // To distinguish the "direct" constructors that blindly trust the data.
@@ -206,6 +208,7 @@ private:
 
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
+    idx_range_rep& operator = (const idx_range_rep& idx);
 
     octave_idx_type start, len, step;
 
@@ -262,6 +265,7 @@ private:
 
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
+    idx_scalar_rep& operator = (const idx_scalar_rep& idx);
 
     octave_idx_type data;
 
@@ -277,7 +281,7 @@ private:
       : data (_data), len (_len), ext (_ext), aowner (0), orig_dims (od) { }
 
     idx_vector_rep (void) 
-      : data (0), len (0), aowner (0)
+      : data (0), len (0), ext (0), aowner (0), orig_dims ()
       { }
 
     // Zero-based constructor.
@@ -328,9 +332,11 @@ private:
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);
+    idx_vector_rep& operator = (const idx_vector_rep& idx);
 
     const octave_idx_type *data;
-    octave_idx_type len, ext;
+    octave_idx_type len;
+    octave_idx_type ext;
 
     // This is a trick to allow user-given zero-based arrays to be used
     // as indices without copying.  If the following pointer is nonzero,
@@ -351,10 +357,12 @@ private:
     // Direct constructor.
     idx_mask_rep (bool *_data, octave_idx_type _len, 
                   octave_idx_type _ext, const dim_vector& od, direct)
-      : data (_data), len (_len), ext (_ext), aowner (0), orig_dims (od) { }
+      : data (_data), len (_len), ext (_ext), lsti (-1), lste (-1),
+        aowner (0), orig_dims (od) { }
 
     idx_mask_rep (void) 
-      : data (0), len (0), aowner (0)
+      : data (0), len (0), ext (0), lsti (-1), lste (-1), aowner (0),
+        orig_dims ()
       { }
 
     idx_mask_rep (bool);
@@ -398,13 +406,16 @@ private:
 
     // No copying!
     idx_mask_rep (const idx_mask_rep& idx);
+    idx_mask_rep& operator = (const idx_mask_rep& idx);
 
     const bool *data;
-    octave_idx_type len, ext;
+    octave_idx_type len;
+    octave_idx_type ext;
 
     // FIXME: I'm not sure if this is a good design. Maybe it would be
     // better to employ some sort of generalized iteration scheme.
-    mutable octave_idx_type lsti, lste;
+    mutable octave_idx_type lsti;
+    mutable octave_idx_type lste;
 
     // This is a trick to allow user-given mask arrays to be used as
     // indices without copying.  If the following pointer is nonzero, we

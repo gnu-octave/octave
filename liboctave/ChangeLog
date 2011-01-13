@@ -1,5 +1,14 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* CMatrix.cc (get_blas_trans_arg): Return char, not char *.
+	Change all uses.
+	* dMatrix.cc (get_blas_trans_arg): Likewise.
+	* fCMatrix.cc (get_blas_trans_arg): Likewise.
+	* fMatrix.cc (get_blas_trans_arg): Likewise.
+	Suggested by Pascal Dupuis  <Pascal.Dupuis@worldonline.be>.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* filemode.c: Use prototypes for function definitions.  Reorder
 	functions to eliminate need for forward declarations.
 	* filemode.h: New file.

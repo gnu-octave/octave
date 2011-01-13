@@ -3096,11 +3096,10 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 %!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
 */
 
-static const char *
+static inline char
 get_blas_trans_arg (bool trans)
 {
-  static char blas_notrans = 'N', blas_trans = 'T';
-  return (trans) ? &blas_trans : &blas_notrans;
+  return trans ? 'T' : 'N';
 }
 
 // the general GEMM operation
@@ -3132,9 +3131,9 @@ xgemm (const Matrix& a, const Matrix& b,
           retval = Matrix (a_nr, b_nc);
           double *c = retval.fortran_vec ();
 
-          const char *ctra = get_blas_trans_arg (tra);
+          const char ctra = get_blas_trans_arg (tra);
           F77_XFCN (dsyrk, DSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
-                                   F77_CONST_CHAR_ARG2 (ctra, 1),
+                                   F77_CONST_CHAR_ARG2 (&ctra, 1),
                                    a_nr, a_nc, 1.0,
                                    a.data (), lda, 0.0, c, a_nr
                                    F77_CHAR_ARG_LEN (1)
@@ -3158,8 +3157,8 @@ xgemm (const Matrix& a, const Matrix& b,
                 F77_FUNC (xddot, XDDOT) (a_nc, a.data (), 1, b.data (), 1, *c);
               else
                 {
-                  const char *ctra = get_blas_trans_arg (tra);
-                  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (ctra, 1),
+                  const char ctra = get_blas_trans_arg (tra);
+                  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (&ctra, 1),
                                            lda, tda, 1.0,  a.data (), lda,
                                            b.data (), 1, 0.0, c, 1
                                            F77_CHAR_ARG_LEN (1)));
@@ -3167,18 +3166,18 @@ xgemm (const Matrix& a, const Matrix& b,
             }
           else if (a_nr == 1)
             {
-              const char *crevtrb = get_blas_trans_arg (! trb);
-              F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (crevtrb, 1),
+              const char crevtrb = get_blas_trans_arg (! trb);
+              F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (&crevtrb, 1),
                                        ldb, tdb, 1.0,  b.data (), ldb,
                                        a.data (), 1, 0.0, c, 1
                                        F77_CHAR_ARG_LEN (1)));
             }
           else
             {
-              const char *ctra = get_blas_trans_arg (tra);
-              const char *ctrb = get_blas_trans_arg (trb);
-              F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 (ctra, 1),
-                                       F77_CONST_CHAR_ARG2 (ctrb, 1),
+              const char ctra = get_blas_trans_arg (tra);
+              const char ctrb = get_blas_trans_arg (trb);
+              F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 (&ctra, 1),
+                                       F77_CONST_CHAR_ARG2 (&ctrb, 1),
                                        a_nr, b_nc, a_nc, 1.0, a.data (),
                                        lda, b.data (), ldb, 0.0, c, a_nr
                                        F77_CHAR_ARG_LEN (1)

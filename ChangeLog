@@ -1,6 +1,12 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
 	* configure.ac (AC_ARG_ENABLE(extra-warning-flags)): Check for
+	-Wcast-qual and -Wcast-align and add them to WARN_CFLAGS and
+	WARN_CXXFLAGS.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (AC_ARG_ENABLE(extra-warning-flags)): Check for
 	-Wpointer-arith, -Wmissing-prototypes, -Wstrict-prototypes, and
 	-Wwrite-strings and add them to WARN_CFLAGS.  Check for
 	-Wpointer-arith and add them to WARN_CXXFLAGS.

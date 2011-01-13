@@ -1863,6 +1863,12 @@ if $try_extra_warning_flags; then
   OCTAVE_CC_FLAG(-Wwrite-strings, [
     WARN_CFLAGS="$WARN_CFLAGS -Wwrite-strings";
     AC_MSG_RESULT([adding -Wwrite-strings to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wcast-align, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wcast-align";
+    AC_MSG_RESULT([adding -Wcast-align to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wcast-qual, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wcast-qual";
+    AC_MSG_RESULT([adding -Wcast-qual to WARN_CFLAGS])])
 
   OCTAVE_CXX_FLAG(-Wall, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall";
@@ -1885,11 +1891,17 @@ if $try_extra_warning_flags; then
   OCTAVE_CXX_FLAG(-Wwrite-strings, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wwrite-strings";
     AC_MSG_RESULT([adding -Wwrite-strings to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wcast-align, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wcast-align";
+    AC_MSG_RESULT([adding -Wcast-align to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wcast-qual, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wcast-qual";
+    AC_MSG_RESULT([adding -Wcast-qual to WARN_CXXFLAGS])])
 fi
 
-GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion"
+GCC_STRICT_FLAGS="-Wconversion"
 
-GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Weffc++"
+GXX_STRICT_FLAGS="-Wconversion -Weffc++"
 
 try_strict_warning_flags=false
 

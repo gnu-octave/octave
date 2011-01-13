@@ -1,5 +1,39 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* kpse.cc (struct str_llist_elt, struct cache_entry):
+	Explicitly define constructor and destructor.
+
+	* Quad.h (Quad::Quad, IndefQuad::IndefQuad,
+	FloatIndefQuad::FloatIndefQuad): Initialize all data members in
+	initialization lists.
+	* CollocWt.h (CollocWt::CollocWt): Likewise.
+	* oct-time.h (octave_strptime::octave_strptime): Likewise.
+	* oct-time.cc (octave_time::octave_time): Likewise.
+	* pathsearch.h (dir_path::dir_path): Likewise.
+	* regex-match.h (regex_match::regex_match): Likewise.
+	* oct-sort.h (octave_sort::MergeState::MergeState): Likewise.
+	* oct-shlib.h, oct-shlib.cc (octave_shlib::shlib_rep::shlib_rep,
+	octave_shlib::octave_shlib): Likewise.
+	* oct-mutex.h, oct-mutex.cc (octave_mutex::octave_mutex): Likewise.
+	* MatrixType.cc (MatrixType::MatrixType): Likewise.
+	* oct-fftw.cc (octave_fftw_planner::octave_fftw_planner,
+	octave_float_fftw_planner::octave_float_fftw_planner): Likewise.
+
+	* mach-info.h, mach-info.cc (oct_mach_info::oct_mach_info):
+	Initialize all data members in initialization lists.
+	(ten_little_endians): Rename from oct_mach_info::ten_little_endians.
+	Now static instead of private member function
+	(get_float_format): Rename from oct_mach_info::init_float_format.
+	Now static instead of private member function.
+
+	* dir-ops.h, dir-ops.cc (dir_entry::copy): Delete.
+	(dir_entry::dir_entry): Initialize all data members in
+	initialization lists.
+	(dir_entry::operator =): Copy elements directly here instead of
+	calling copy.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* cmd-hist.h, cmd-hist.cc: Sprinkle with const.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>

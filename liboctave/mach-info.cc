@@ -70,9 +70,11 @@ equiv_compare (const equiv *std, const equiv *v, int len)
   return 1;
 }
 
-void
-oct_mach_info::init_float_format (void) const
+static oct_mach_info::float_format
+get_float_format (void)
 {
+  oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
+
 #if defined (CRAY)
 
   // FIXME -- this should be determined automatically.
@@ -125,17 +127,19 @@ oct_mach_info::init_float_format (void) const
     {
       if (equiv_compare (fp[i].fp_par, mach_fp_par, 4))
         {
-          native_float_fmt = fp[i].fp_fmt;
+          retval = fp[i].fp_fmt;
           break;
         }
     }
   while (fp[++i].fp_fmt != oct_mach_info::flt_fmt_unknown);
 
 #endif
+
+  return retval;
 }
 
-void
-oct_mach_info::ten_little_endians (void) const
+static bool
+ten_little_endians (void)
 {
   // Are we little or big endian?  From Harbison & Steele.
 
@@ -147,14 +151,12 @@ oct_mach_info::ten_little_endians (void) const
 
   u.l = 1;
 
-  big_chief = (u.c[sizeof (long) - 1] == 1);
+  return (u.c[sizeof (long) - 1] == 1);
 }
 
 oct_mach_info::oct_mach_info (void)
-{
-  init_float_format ();
-  ten_little_endians ();
-}
+  : native_float_fmt (get_float_format ()),
+    big_chief (ten_little_endians ()) { }
 
 bool
 oct_mach_info::instance_ok (void)

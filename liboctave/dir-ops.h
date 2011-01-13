@@ -33,18 +33,25 @@ dir_entry
 {
 public:
 
-  dir_entry (const std::string& n = std::string ()) : name (n), dir (0)
+  dir_entry (const std::string& n = std::string ())
+    : name (n), dir (0), fail (false), errmsg ()
     {
       if (! name.empty ())
         open ();
     }
 
-  dir_entry (const dir_entry& d) { copy (d); }
+  dir_entry (const dir_entry& d)
+    : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
 
   dir_entry& operator = (const dir_entry& d)
     {
       if (this != &d)
-        copy (d);
+        {
+          name = d.name;
+          dir = d.dir;
+          fail = d.fail;
+          errmsg = d.errmsg;
+        }
 
       return *this;
     }
@@ -78,8 +85,6 @@ private:
 
   // If a failure occurs, this contains the system error text.
   std::string errmsg;
-
-  void copy (const dir_entry&);
 };
 
 #endif

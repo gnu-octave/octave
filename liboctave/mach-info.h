@@ -62,10 +62,6 @@ private:
 
   static oct_mach_info *instance;
 
-  void init_float_format (void) const;
-
-  void ten_little_endians (void) const;
-
   // The floating point format for the current machine.
   mutable float_format native_float_fmt;
 

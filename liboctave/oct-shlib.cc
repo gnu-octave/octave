@@ -61,7 +61,7 @@ extern int dlclose (void *);
 #include "str-vec.h"
 
 octave_shlib::shlib_rep::shlib_rep (const std::string& f)
-  : count (1), file (f), tm_loaded ()
+  : count (1), file (f), tm_loaded (), fcn_names ()
 {
   instances[f] = this;
 

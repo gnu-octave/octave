@@ -43,7 +43,7 @@ public: // FIXME: make this class private?
   public:
 
     shlib_rep (void) 
-      : count (1), file (), tm_loaded (time_t ()) { }
+      : count (1), file (), tm_loaded (time_t ()), fcn_names () { }
 
   protected:
 
@@ -121,8 +121,8 @@ public:
     }
 
   octave_shlib (const octave_shlib& sl)
+    : rep (sl.rep)
     {
-      rep = sl.rep;
       rep->count++;
     }
 

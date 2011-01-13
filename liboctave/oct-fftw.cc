@@ -56,6 +56,8 @@ octave_fftw_planner *octave_fftw_planner::instance = 0;
 // ffts.
 
 octave_fftw_planner::octave_fftw_planner (void)
+  : meth (), rplan (), rd (0), rs (0), rr (0), rh (0), rn (0),
+    rsimd_align (false)
 {
   meth = ESTIMATE;
 
@@ -369,6 +371,8 @@ octave_fftw_planner::do_method (FftwMethod _meth)
 octave_float_fftw_planner *octave_float_fftw_planner::instance = 0;
 
 octave_float_fftw_planner::octave_float_fftw_planner (void)
+  : meth (), rplan (), rd (0), rs (0), rr (0), rh (0), rn (0),
+    rsimd_align (false)
 {
   meth = ESTIMATE;
 

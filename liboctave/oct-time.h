@@ -333,10 +333,13 @@ octave_strptime : public octave_base_tm
 public:
 
   octave_strptime (const std::string& str, const std::string& fmt)
-    : octave_base_tm () { init (str, fmt); }
+    : octave_base_tm (), nchars (0)
+  {
+    init (str, fmt);
+  }
 
   octave_strptime (const octave_strptime& s)
-    : octave_base_tm (s) { nchars = s.nchars; }
+    : octave_base_tm (s), nchars (s.nchars) { }
 
   octave_strptime& operator = (const octave_strptime& s)
   {

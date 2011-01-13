@@ -312,6 +312,10 @@ static void xclosedir (DIR *d);
 
 struct str_llist_elt
 {
+  str_llist_elt (void) : str (), moved (0), next (0) { }
+
+  ~str_llist_elt (void) { }
+
   std::string str;
   int moved;
   struct str_llist_elt *next;
@@ -1693,6 +1697,13 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
 
 struct kpse_format_info_type
 {
+  kpse_format_info_type (void)
+    : type (), path (), raw_path (), path_source (), override_path (),
+      client_path (), cnf_path (), default_path (), suffix ()
+  { }
+
+  ~kpse_format_info_type (void) { }
+
   std::string type;          /* Human-readable description.  */
   std::string path;          /* The search path to use.  */
   std::string raw_path;      /* Pre-$~ (but post-default) expansion.  */
@@ -2081,6 +2092,10 @@ checked_dir_list_add (str_llist_type *l, const std::string& dir)
 
 struct cache_entry
 {
+  cache_entry (void) : key (), value (0) { }
+
+  ~cache_entry (void) { }
+
   std::string key;
   str_llist_type *value;
 };

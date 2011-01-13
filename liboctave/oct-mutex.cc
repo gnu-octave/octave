@@ -83,7 +83,7 @@ octave_pthread_mutex : public octave_base_mutex
 {
 public:
   octave_pthread_mutex (void)
-    : octave_base_mutex ()
+    : octave_base_mutex (), pm ()
   {
     pthread_mutexattr_t attr;
 
@@ -114,13 +114,16 @@ private:
 
 #endif
 
-octave_mutex::octave_mutex (void)
+static octave_base_mutex *
+init_rep (void)
 {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-  rep = new octave_w32_mutex ();
+  return new octave_w32_mutex ();
 #elif defined (HAVE_PTHREAD_H)
-  rep = new octave_pthread_mutex ();
+  return new octave_pthread_mutex ();
 #else
-  rep = new octave_base_mutex ();
+  return new octave_base_mutex ();
 #endif
 }
+
+octave_mutex::octave_mutex (void) : rep (init_rep ()) { }

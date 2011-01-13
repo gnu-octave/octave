@@ -47,7 +47,7 @@ MatrixType::MatrixType (void)
 MatrixType::MatrixType (const MatrixType &a)
   : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden), 
     upper_band (a.upper_band), lower_band (a.lower_band), 
-    dense (a.dense), full (a.full), nperm (a.nperm)
+    dense (a.dense), full (a.full), nperm (a.nperm), perm (0)
 { 
   if (nperm != 0)
     {

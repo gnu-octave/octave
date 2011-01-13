@@ -99,12 +99,3 @@ dir_entry::close (void)
 
   dir = 0;
 }
-
-void
-dir_entry::copy (const dir_entry& de)
-{
-  name = de.name;
-  dir = de.dir;
-  fail = de.fail;
-  errmsg = de.errmsg;
-}

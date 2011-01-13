@@ -51,7 +51,7 @@ public:
   CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
             octave_idx_type ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
-      Alpha (a), Beta (b), initialized (false) { }
+      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
 
   CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
             octave_idx_type ir,

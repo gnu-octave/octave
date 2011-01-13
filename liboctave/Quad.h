@@ -53,10 +53,10 @@ Quad : public Quad_options
  public:
 
   Quad (integrand_fcn fcn)
-    : Quad_options (), f (fcn) { }
+    : Quad_options (), f (fcn), ff () { }
 
   Quad (float_integrand_fcn fcn)
-    : Quad_options (), ff (fcn) { }
+    : Quad_options (), f (), ff (fcn) { }
 
   virtual ~Quad (void) { }
 
@@ -164,10 +164,10 @@ IndefQuad : public Quad
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   IndefQuad (integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t) { }
+    : Quad (fcn), bound (b), type (t), integration_error (0) { }
 
   ~IndefQuad (void) { }
 
@@ -226,10 +226,10 @@ FloatIndefQuad : public Quad
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
   FloatIndefQuad (float_integrand_fcn fcn)
-    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
+    : Quad (fcn), bound (0.0), type (bound_to_inf), integration_error (0) { }
 
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
-    : Quad (fcn), bound (b), type (t) { }
+    : Quad (fcn), bound (b), type (t), integration_error (0) { }
 
   ~FloatIndefQuad (void) { }
 

@@ -36,7 +36,7 @@ public:
 
   dir_path (const std::string& s = std::string (),
             const std::string& d = std::string ())
-    : p_orig (s), p_default (d), initialized (false)
+    : p_orig (s), p_default (d), initialized (false), p (), pv ()
     {
       if (! p_orig.empty ())
         init ();

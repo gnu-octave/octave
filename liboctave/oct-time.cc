@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 octave_time::octave_time (const octave_base_tm& tm)
+  : ot_unix_time (), ot_usec ()
 {
   struct tm t;
   

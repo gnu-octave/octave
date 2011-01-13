@@ -51,8 +51,8 @@ public:
   octave_mutex (void);
 
   octave_mutex (const octave_mutex& m)
+    : rep (m.rep)
   {
-    rep = m.rep;
     rep->count++;
   }
 

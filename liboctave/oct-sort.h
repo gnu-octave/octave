@@ -182,8 +182,8 @@ private:
   
   struct MergeState 
   {
-    MergeState (void) 
-      : a (0), ia (0), alloced (0) 
+    MergeState (void)
+      : min_gallop (), a (0), ia (0), alloced (0), n (0)
       { reset (); }
     
     ~MergeState (void) 

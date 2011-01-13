@@ -35,10 +35,15 @@ LSODE : public ODE, public LSODE_options
 {
 public:
 
-  LSODE (void) : ODE (), LSODE_options (), initialized (false) { }
+  LSODE (void)
+    : ODE (), LSODE_options (), initialized (false), method_flag (0),
+      maxord (0), itask (0), iopt (0), itol (0), liw (0), lrw (0),
+      iwork (), rwork (), rel_tol (0.0), abs_tol () { }
 
   LSODE (const ColumnVector& s, double tm, const ODEFunc& f)
-    : ODE (s, tm, f), LSODE_options (), initialized (false) { }
+    : ODE (s, tm, f), LSODE_options (), initialized (false), method_flag (0),
+      maxord (0), itask (0), iopt (0), itol (0), liw (0), lrw (0),
+      iwork (), rwork (), rel_tol (0.0), abs_tol () { }
 
   ~LSODE (void) { }
 
@@ -69,11 +74,6 @@ private:
   double rel_tol;
 
   Array<double> abs_tol;
-
-  double *px;
-  double *pabs_tol;
-  octave_idx_type *piwork;
-  double *prwork;
 };
 
 #endif

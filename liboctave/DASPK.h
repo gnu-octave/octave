@@ -35,14 +35,19 @@ DASPK : public DAE, public DASPK_options
 {
 public:
 
-  DASPK (void) : DAE (), DASPK_options (), initialized (false) { }
+  DASPK (void)
+    : DAE (), DASPK_options (), initialized (false), liw (0), lrw (0),
+      info (), iwork (), rwork (), abs_tol (), rel_tol () { }
 
   DASPK (const ColumnVector& s, double tm, DAEFunc& f)
-    : DAE (s, tm, f), DASPK_options (), initialized (false) { }
+    : DAE (s, tm, f), DASPK_options (), initialized (false), liw (0),
+      lrw (0), info (), iwork (), rwork (), abs_tol (), rel_tol () { }
 
   DASPK (const ColumnVector& s, const ColumnVector& deriv,
          double tm, DAEFunc& f)
-    : DAE (s, deriv, tm, f), DASPK_options (), initialized (false) { }
+    : DAE (s, deriv, tm, f), DASPK_options (), initialized (false),
+      liw (0), lrw (0), info (), iwork (), rwork (), abs_tol (),
+      rel_tol () { }
 
   ~DASPK (void) { }
 
@@ -73,14 +78,6 @@ private:
 
   Array<double> abs_tol;
   Array<double> rel_tol;
-
-  double *px;
-  double *pxdot;
-  double *pabs_tol;
-  double *prel_tol;
-  octave_idx_type *pinfo;
-  octave_idx_type *piwork;
-  double *prwork;
 };
 
 #endif

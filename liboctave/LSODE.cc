@@ -193,11 +193,6 @@ LSODE::do_integrate (double tout)
           itask = 1;
         }
 
-      px = x.fortran_vec ();
-
-      piwork = iwork.fortran_vec ();
-      prwork = rwork.fortran_vec ();
-
       restart = false;
 
       // ODEFunc
@@ -272,10 +267,15 @@ LSODE::do_integrate (double tout)
           iopt = 1;
         }
 
-      pabs_tol = abs_tol.fortran_vec ();
-
       LSODE_options::reset = false;
     }
+
+  double *px = x.fortran_vec ();
+
+  double *pabs_tol = abs_tol.fortran_vec ();
+
+  octave_idx_type *piwork = iwork.fortran_vec ();
+  double *prwork = rwork.fortran_vec ();
 
   F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
                              pabs_tol, itask, istate, iopt, prwork, lrw,

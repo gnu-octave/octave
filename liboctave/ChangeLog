@@ -1,5 +1,35 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* DAE.h (DAE::~DAE): Now virtual.
+	* DAERT.h (DAERT::~DAERT): Likewise.
+	* ODE.h (ODE::~ODE): Likewise.
+	* DAEFunc.h (DAEFunc::~DAEFunc): Likewise.
+	* DAERTFunc.h (DAEFunc::~DAEFunc): Likewise.
+	* ODEFunc.h (ODE::~ODE): Likewise.
+	* ODESFunc.h (ODESFunc::~ODESFunc): Likewise.
+
+	* LSODE.h (class LSODE): Delete pointer data members.
+	(LSODE::LSODE): Initialize all data members in initialization lists.
+	* LSODE.cc (LSODE::integrate): Extract pointers to data from
+	array data members at each call.
+
+	* DASPK.h (class DASPK): Delete pointer data members.
+	(DASPK::DASPK): Initialize all data members in initialization lists.
+	* DASPK.cc (DASPK::integrate): Extract pointers to data from
+	array data members at each call.
+
+	* DASSL.h (class DASSL): Delete pointer data members.
+	(DASSL::DASSL): Initialize all data members in initialization lists.
+	* DASSL.cc (DASSL::integrate): Extract pointers to data from
+	array data members at each call.
+
+	* DASRT.h (class DASRT): Delete pointer data members.
+	(DASRT::DASRT): Initialize all data members in initialization lists.
+	* DASRT.cc (DASRT::integrate): Extract pointers to data from
+	array data members at each call.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* kpse.cc (struct str_llist_elt, struct cache_entry):
 	Explicitly define constructor and destructor.
 

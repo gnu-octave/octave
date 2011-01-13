@@ -32,7 +32,7 @@ ODES : public base_diff_eqn, public ODESFunc
 public:
 
   ODES (void)
-    : base_diff_eqn (), ODESFunc (), theta () { }
+    : base_diff_eqn (), ODESFunc (), xdot (), theta () { }
 
   ODES (const ColumnVector& s, double tm, ODESFunc& f)
     : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0), theta () { }
@@ -43,7 +43,7 @@ public:
       theta (xtheta) { }
 
   ODES (const ODES& a)
-    : base_diff_eqn (a), ODESFunc (a), theta (a.theta) { }
+    : base_diff_eqn (a), ODESFunc (a), xdot (a.xdot), theta (a.theta) { }
 
   ODES& operator = (const ODES& a)
     {

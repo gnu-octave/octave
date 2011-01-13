@@ -73,7 +73,8 @@ static octave_idx_type nn;
 
 static octave_idx_type
 ddaspk_f (const double& time, const double *state, const double *deriv,
-          const double&, double *delta, octave_idx_type& ires, double *, octave_idx_type *)
+          const double&, double *delta, octave_idx_type& ires, double *,
+          octave_idx_type *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -171,8 +172,6 @@ DASPK::do_integrate (double tout)
       for (octave_idx_type i = 0; i < 20; i++)
         info(i) = 0;
 
-      pinfo = info.fortran_vec ();
-
       octave_idx_type n = size ();
 
       nn = n;
@@ -186,9 +185,6 @@ DASPK::do_integrate (double tout)
         }
       else
         info(3) = 0;
-
-      px = x.fortran_vec ();
-      pxdot = xdot.fortran_vec ();
 
       // DAEFunc
 
@@ -240,9 +236,6 @@ DASPK::do_integrate (double tout)
       iwork.resize (liw, 1);
       rwork.resize (lrw, 1);
 
-      piwork = iwork.fortran_vec ();
-      prwork = rwork.fortran_vec ();
-
       // DASPK_options
 
       abs_tol = absolute_tolerance ();
@@ -267,9 +260,6 @@ DASPK::do_integrate (double tout)
           integration_error = true;
           return retval;
         }
-
-      pabs_tol = abs_tol.fortran_vec ();
-      prel_tol = rel_tol.fortran_vec ();
 
       double hmax = maximum_step_size ();
       if (hmax >= 0.0)
@@ -460,8 +450,19 @@ DASPK::do_integrate (double tout)
       restart = false;
     }
 
-  static double *dummy = 0;
-  static octave_idx_type *idummy = 0;
+  double *px = x.fortran_vec ();
+  double *pxdot = xdot.fortran_vec ();
+
+  octave_idx_type *pinfo = info.fortran_vec ();
+
+  double *prel_tol = rel_tol.fortran_vec ();
+  double *pabs_tol = abs_tol.fortran_vec ();
+
+  double *prwork = rwork.fortran_vec ();
+  octave_idx_type *piwork = iwork.fortran_vec ();
+
+  double *dummy = 0;
+  octave_idx_type *idummy = 0;
 
   F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
                              prel_tol, pabs_tol, istate, prwork, lrw,

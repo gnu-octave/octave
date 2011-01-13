@@ -143,8 +143,6 @@ DASSL::do_integrate (double tout)
       for (octave_idx_type i = 0; i < 15; i++)
         info(i) = 0;
 
-      pinfo = info.fortran_vec ();
-
       octave_idx_type n = size ();
 
       liw = 21 + n;
@@ -164,12 +162,6 @@ DASSL::do_integrate (double tout)
         }
       else
         info(3) = 0;
-
-      px = x.fortran_vec ();
-      pxdot = xdot.fortran_vec ();
-
-      piwork = iwork.fortran_vec ();
-      prwork = rwork.fortran_vec ();
 
       restart = false;
 
@@ -245,7 +237,7 @@ DASSL::do_integrate (double tout)
           else
             {
               (*current_liboctave_error_handler)
-                ("dassl: invalid value for maximum order");
+                ("dassl: invalid value for maximum order: %d", maxord);
               integration_error = true;
               return retval;
             }
@@ -280,14 +272,22 @@ DASSL::do_integrate (double tout)
           return retval;
         }
 
-      pabs_tol = abs_tol.fortran_vec ();
-      prel_tol = rel_tol.fortran_vec ();
-
       DASSL_options::reset = false;
     }
 
-  static double *dummy = 0;
-  static octave_idx_type *idummy = 0;
+  double *px = x.fortran_vec ();
+  double *pxdot = xdot.fortran_vec ();
+
+  octave_idx_type *pinfo = info.fortran_vec ();
+
+  double *prel_tol = rel_tol.fortran_vec ();
+  double *pabs_tol = abs_tol.fortran_vec ();
+
+  double *prwork = rwork.fortran_vec ();
+  octave_idx_type *piwork = iwork.fortran_vec ();
+
+  double *dummy = 0;
+  octave_idx_type *idummy = 0;
 
   F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
                              prel_tol, pabs_tol, istate, prwork, lrw,

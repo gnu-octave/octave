@@ -28,16 +28,18 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class qr_type>
 base_qr<qr_type>::base_qr (const qr_type& q_arg, const qr_type& r_arg)
+  : q (q_arg), r (r_arg)
 {
-  octave_idx_type qr = q_arg.rows (), qc = q_arg.columns ();
-  octave_idx_type rr = r_arg.rows (), rc = r_arg.columns ();
-  if (qc == rr && (qr == qc || (qr > qc && rr == rc)))
+  octave_idx_type q_nr = q.rows (), q_nc = q.columns ();
+  octave_idx_type r_nr = r.rows (), r_nc = r.columns ();
+
+  if (! (q_nc == r_nr && (q_nr == q_nc || (q_nr > q_nc && r_nr == r_nc))))
     {
-      q = q_arg;
-      r = r_arg;
+      q = qr_type ();
+      r = qr_type ();
+
+      (*current_liboctave_error_handler) ("QR dimensions mismatch");
     }
-  else
-    (*current_liboctave_error_handler) ("QR dimensions mismatch");
 }
 
 template <class qr_type>
@@ -45,12 +47,14 @@ qr_type_t
 base_qr<qr_type>::get_type (void) const
 {
   qr_type_t retval;
+
   if (!q.is_empty () && q.is_square ())
     retval = qr_type_std;
   else if (q.rows () > q.columns () && r.is_square ())
     retval = qr_type_economy;
   else
     retval = qr_type_raw;
+
   return retval;
 }
 

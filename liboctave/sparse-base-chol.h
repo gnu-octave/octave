@@ -36,25 +36,39 @@ protected:
   class sparse_base_chol_rep
   {
   public:
-    sparse_base_chol_rep (void) : count (1), Lsparse (0), 
-                                  is_pd (false), minor_p (0) { }
+    sparse_base_chol_rep (void)
+      : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
+        perms (), cond (0)
+      { }
 
-    sparse_base_chol_rep (const chol_type& a, 
-                          const bool natural) : count (1)
-      { init (a, natural); }
+    sparse_base_chol_rep (const chol_type& a, const bool natural)
+      : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
+        perms (), cond (0)
+      {
+        init (a, natural);
+      }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info, 
-                          const bool natural) : count (1)
-      { info = init (a, natural); }
+                          const bool natural)
+      : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
+        perms (), cond (0)
+      {
+        info = init (a, natural);
+      }
 
     ~sparse_base_chol_rep (void)
-      { if (is_pd) CHOLMOD_NAME(free_sparse) (&Lsparse, &Common); }
+      {
+        if (is_pd)
+          CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
+      }
 
     cholmod_sparse * L (void) const { return Lsparse; }
 
     octave_idx_type P (void) const 
-      { return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ? 
-                0 : minor_p + 1); }
+      {
+        return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ? 
+                0 : minor_p + 1);
+      }
 
     ColumnVector perm (void) const { return perms + 1; }
 
@@ -90,14 +104,17 @@ protected:
   class sparse_base_chol_rep
   {
   public:
-    sparse_base_chol_rep (void) : count (1), is_pd (false), minor_p (0) { }
+    sparse_base_chol_rep (void)
+      : count (1), is_pd (false), minor_p (0), perms (), cond (0) { }
 
     sparse_base_chol_rep (const chol_type& a, 
-                          const bool natural) : count (1)
+                          const bool natural)
+      : count (1), is_pd (false), minor_p (0), perms (), cond (0)
       { init (a, natural); }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info, 
-                          const bool natural) : count (1)
+                          const bool natural)
+      : count (1), is_pd (false), minor_p (0), perms (), cond (0)
       { info = init (a, natural); }
 
     ~sparse_base_chol_rep (void) { }
@@ -135,21 +152,25 @@ protected:
   
 public:
 
-  sparse_base_chol (void) : rep (new typename 
-    sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep ()) { }
+  sparse_base_chol (void)
+    : rep (new typename 
+           sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep ())
+    { }
 
-  sparse_base_chol (const chol_type& a, const bool n) : rep (new typename 
-    sparse_base_chol<chol_type, chol_elt, p_type>::
-        sparse_base_chol_rep (a, n)) { }
+  sparse_base_chol (const chol_type& a, const bool n)
+    : rep (new typename
+           sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep (a, n))
+    { }
 
-  sparse_base_chol (const chol_type& a, octave_idx_type& info, const bool n) :
-    rep (new typename sparse_base_chol<chol_type, chol_elt, p_type>::
-        sparse_base_chol_rep (a, info, n)) { }
+  sparse_base_chol (const chol_type& a, octave_idx_type& info, const bool n)
+    : rep (new typename sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep (a, info, n))
+    { }
 
-  sparse_base_chol (const sparse_base_chol<chol_type, chol_elt, p_type>& a) : 
-    rep (a.rep) { rep->count++; }
+  sparse_base_chol (const sparse_base_chol<chol_type, chol_elt, p_type>& a)
+    : rep (a.rep)
+    { rep->count++; }
 
-  ~sparse_base_chol (void) 
+  virtual ~sparse_base_chol (void) 
     {
       if (--rep->count <= 0)
         delete rep;

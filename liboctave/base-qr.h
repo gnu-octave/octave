@@ -42,12 +42,11 @@ public:
 
   typedef typename qr_type::element_type qr_elt_type;
 
-  base_qr (void) { }
+  base_qr (void) : q (), r () { }
 
   base_qr (const qr_type& q, const qr_type& r);
 
-  base_qr (const base_qr& a) : 
-    q (a.q), r (a.r) { }
+  base_qr (const base_qr& a) : q (a.q), r (a.r) { }
 
   base_qr& operator = (const base_qr& a)
     {
@@ -59,6 +58,8 @@ public:
       return *this;
     }
 
+  virtual ~base_qr (void) { }
+
   qr_type Q (void) const { return q; }
 
   qr_type R (void) const { return r; }
@@ -69,7 +70,8 @@ public:
 
 protected:
 
-  qr_type q, r;
+  qr_type q;
+  qr_type r;
 };
 
 #ifndef HAVE_QRUPDATE

@@ -34,10 +34,13 @@ sparse_base_lu
 {
 public:
 
-  sparse_base_lu (void) { }
+  sparse_base_lu (void)
+    : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
 
   sparse_base_lu (const sparse_base_lu& a) 
-    : Lfact (a.Lfact), Ufact (a.Ufact), cond (a.cond), P (a.P), Q (a.Q) { }
+    : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
+    P (a.P), Q (a.Q)
+    { }
 
   sparse_base_lu& operator = (const sparse_base_lu& a)
     {
@@ -52,7 +55,7 @@ public:
       return *this;
     }
 
-  ~sparse_base_lu (void) { }
+  virtual ~sparse_base_lu (void) { }
 
   lu_type L (void) const { return Lfact; }
 

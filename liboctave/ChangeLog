@@ -1,5 +1,20 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* base-lu.h (base_lu::base_lu): Initialize all data members in
+	initialization lists.
+	* base-qr.h (base_qr::base_qr): Likewise.
+	* DET.h (base_det::base_det): Likewise.
+	* sparse-base-lu.h (sparse_base_lu::sparse_base_lu): Likewise.
+	* sparse-base-chol.h (sparse_base_chol::sparse_base_chol): Likewise.
+
+	* base-lu.h (base_lu::~base_lu): Explicitly define virtual destrutor.
+	* base-qr.h (base_qr::~base_qr): Likewise.
+	* base-aepbal.h (base_aepbal::~base_aepval): Likewise.
+	* sparse-base-lu.h (sparse_base_lu::~sparse_base_lu): Likewise.
+	* sparse-base-chol.h (sparse_base_chol::~sparse_base_chol): Likewise.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* DAE.h (DAE::~DAE): Now virtual.
 	* DAERT.h (DAERT::~DAERT): Likewise.
 	* ODE.h (ODE::~ODE): Likewise.

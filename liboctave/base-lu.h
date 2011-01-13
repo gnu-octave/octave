@@ -36,10 +36,11 @@ public:
 
   typedef typename lu_type::element_type lu_elt_type;
 
-  base_lu (void) { }
+  base_lu (void)
+    : a_fact (), l_fact (), ipvt () { }
 
-  base_lu (const base_lu& a) : 
-    a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
+  base_lu (const base_lu& a)
+    : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
 
   base_lu (const lu_type& l, const lu_type& u, 
            const PermMatrix& p);
@@ -55,7 +56,7 @@ public:
       return *this;
     }
 
-  ~base_lu (void) { }
+  virtual ~base_lu (void) { }
 
   bool packed (void) const;
 
@@ -76,7 +77,10 @@ public:
 protected:
 
   Array<octave_idx_type> getp (void) const;
-  lu_type a_fact, l_fact;
+
+  lu_type a_fact;
+  lu_type l_fact;
+
   Array<octave_idx_type> ipvt;
 };
 

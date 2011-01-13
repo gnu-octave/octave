@@ -31,6 +31,7 @@ protected:
   VectorT scale;
   octave_idx_type ilo, ihi;
   char job;
+
   base_aepbal (void) : balanced_mat (), scale (), ilo (), ihi (), job () { }
 
 public:
@@ -50,6 +51,8 @@ public:
       job = a.job;
       return *this;
     }
+
+  virtual ~base_aepbal (void) { }
 
   MatrixT balanced_matrix (void) const { return balanced_mat; }
 

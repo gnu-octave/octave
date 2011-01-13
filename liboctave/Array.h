@@ -125,9 +125,9 @@ public:
 
 protected:
 
-  typename Array<T>::ArrayRep *rep;
-
   dim_vector dimensions;
+
+  typename Array<T>::ArrayRep *rep;
 
   // Rationale:
   // slice_data is a pointer to rep->data, denoting together with slice_len the
@@ -142,11 +142,9 @@ protected:
   // slice constructor
   Array (const Array<T>& a, const dim_vector& dv,
          octave_idx_type l, octave_idx_type u)
-    : rep(a.rep), dimensions (dv)
+    : dimensions (dv), rep(a.rep), slice_data (a.slice_data+l), slice_len (u-l)
     {
       rep->count++;
-      slice_data = a.slice_data + l;
-      slice_len = u - l;
       dimensions.chop_trailing_singletons ();
     }
 
@@ -165,57 +163,49 @@ public:
   // Empty ctor (0x0).
 
   Array (void)
-    : rep (nil_rep ()), dimensions () 
+    : dimensions (), rep (nil_rep ()), slice_data (rep->data),
+      slice_len (rep->len)
     { 
       rep->count++; 
-      slice_data = rep->data;
-      slice_len = rep->len;
     }
 
   // Obsolete 1D ctor (there are no 1D arrays).
   explicit Array (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n, 1) 
-    { 
-      slice_data = rep->data;
-      slice_len = rep->len;
-    }
+    : dimensions (n, 1), rep (new typename Array<T>::ArrayRep (n)),
+      slice_data (rep->data), slice_len (rep->len)
+    { }
 
   // 2D uninitialized ctor.
   explicit Array (octave_idx_type m, octave_idx_type n)
-    : rep (), dimensions (m, n) 
-    { 
-      rep = new typename Array<T>::ArrayRep (dimensions.safe_numel ());
-      slice_data = rep->data;
-      slice_len = rep->len;
-    }
+    : dimensions (m, n),
+      rep (new typename Array<T>::ArrayRep (dimensions.safe_numel ())), 
+      slice_data (rep->data), slice_len (rep->len)
+    { }
 
   // 2D initialized ctor.
   explicit Array (octave_idx_type m, octave_idx_type n, const T& val)
-    : rep (), dimensions (m, n) 
+    : dimensions (m, n),
+      rep (new typename Array<T>::ArrayRep (dimensions.safe_numel ())),
+      slice_data (rep->data), slice_len (rep->len)
     { 
-      rep = new typename Array<T>::ArrayRep (dimensions.safe_numel ());
-      slice_data = rep->data;
-      slice_len = rep->len;
       fill (val);
     }
 
   // nD uninitialized ctor.
   explicit Array (const dim_vector& dv)
-    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
-      dimensions (dv) 
+    : dimensions (dv),
+      rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
+      slice_data (rep->data), slice_len (rep->len)
     { 
-      slice_data = rep->data;
-      slice_len = rep->len;
       dimensions.chop_trailing_singletons ();
     }
 
   // nD initialized ctor.
   explicit Array (const dim_vector& dv, const T& val)
-    : rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
-      dimensions (dv)
+    : dimensions (dv),
+      rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
+      slice_data (rep->data), slice_len (rep->len)
     {
-      slice_data = rep->data;
-      slice_len = rep->len;
       fill (val);
       dimensions.chop_trailing_singletons ();
     }
@@ -228,20 +218,17 @@ public:
   // Type conversion case.
   template <class U>
   Array (const Array<U>& a)
-    : rep (new typename Array<T>::ArrayRep (a.data (), a.length ())),
-      dimensions (a.dims ())
-    {
-      slice_data = rep->data;
-      slice_len = rep->len;
-    }
+    : dimensions (a.dims ()),
+      rep (new typename Array<T>::ArrayRep (a.data (), a.length ())),
+      slice_data (rep->data), slice_len (rep->len)
+    { }
 
   // No type conversion case.
   Array (const Array<T>& a)
-    : rep (a.rep), dimensions (a.dimensions)
+    : dimensions (a.dimensions), rep (a.rep), slice_data (a.slice_data),
+      slice_len (a.slice_len)
     {
       rep->count++;
-      slice_data = a.slice_data;
-      slice_len = a.slice_len;
     }
 
 public:

@@ -1,5 +1,16 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* Array.cc (rec_permute_helper::rec_permute_helper,
+	rec_index_helper::rec_index_helper,
+	rec_resize_helper::rec_resize_helper): Initialize all data
+	members in initialization lists.
+
+	* Array.h, Array.cc (Array::Array): Initialize slice_data and
+	slice_len in memeber initialization lists.
+	(Array::~Array): Now virtual.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* oct-locbuf.h (octave_chunk_buffer::~octave_chunk_buffer):
 	Now virtual.
 	(class octave_local_buffer, class octave_chunk_buffer):

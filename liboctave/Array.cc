@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class T>
 Array<T>::Array (const Array<T>& a, const dim_vector& dv)
-  : rep (a.rep), dimensions (dv), 
+  : dimensions (dv), rep (a.rep),
     slice_data (a.slice_data), slice_len (a.slice_len)
 {
   if (dimensions.safe_numel () != a.numel ())
@@ -69,7 +69,7 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
 
 template <class T>
 Array<T>::Array (const Array<T>& a, octave_idx_type nr, octave_idx_type nc)
-  : rep (a.rep), dimensions (nr, nc), 
+  : dimensions (nr, nc), rep (a.rep),
     slice_data (a.slice_data), slice_len (a.slice_len)
 {
   if (dimensions.safe_numel () != a.numel ())
@@ -317,19 +317,22 @@ Array<T>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 // Helper class for multi-d dimension permuting (generalized transpose).
 class rec_permute_helper
 {
-  octave_idx_type *dim, *stride;
-  bool use_blk;
+  // STRIDE occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
+
+  int n;
   int top;
+  octave_idx_type *dim;
+  octave_idx_type *stride;
+  bool use_blk;
 
 public:
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
-    {
-      int n = dv.length ();
-      assert (n == perm.length ());
 
-      dim = new octave_idx_type [2*n];
-      // A hack to avoid double allocation
-      stride = dim + n;
+    : n (dv.length ()), top (0), dim (new octave_idx_type [2*n]),
+      stride (dim + n), use_blk (false)
+    {
+      assert (n == perm.length ());
 
       // Get cumulative dimensions.
       OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, n+1);
@@ -345,7 +348,6 @@ public:
         }
 
       // Reduce contiguous runs.
-      top = 0;
       for (int k = 1; k < n; k++)
         {
           if (stride[k] == stride[top]*dim[top])
@@ -522,27 +524,29 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
   return retval;
 }
 
-// Helper class for multi-d index reduction and recursive indexing/indexed assignment.
-// Rationale: we could avoid recursion using a state machine instead. However, using
-// recursion is much more amenable to possible parallelization in the future.
+// Helper class for multi-d index reduction and recursive
+// indexing/indexed assignment.  Rationale: we could avoid recursion
+// using a state machine instead.  However, using recursion is much
+// more amenable to possible parallelization in the future. 
 // Also, the recursion solution is cleaner and more understandable.
+
 class rec_index_helper
 {
-  octave_idx_type *dim, *cdim;
-  idx_vector *idx;
+  // CDIM occupies the last half of the space allocated for dim to
+  // avoid a double allocation.
+
+  int n;
   int top;
+  octave_idx_type *dim;
+  octave_idx_type *cdim;
+  idx_vector *idx;
 
 public:
   rec_index_helper (const dim_vector& dv, const Array<idx_vector>& ia)
+    : n (ia.length ()), top (0), dim (new octave_idx_type [2*n]),
+      cdim (dim + n), idx (new idx_vector [n])
     {
-      int n = ia.length ();
       assert (n > 0 && (dv.length () == std::max (n, 2)));
-
-      dim = new octave_idx_type [2*n];
-      // A hack to avoid double allocation
-      cdim = dim + n;
-      idx = new idx_vector [n];
-      top = 0;
 
       dim[0] = dv(0);
       cdim[0] = 1;
@@ -579,8 +583,8 @@ private:
         dest += idx[0].index (src, dim[0], dest);
       else
         {
-          octave_idx_type n = idx[lev].length (dim[lev]), d = cdim[lev];
-          for (octave_idx_type i = 0; i < n; i++)
+          octave_idx_type nn = idx[lev].length (dim[lev]), d = cdim[lev];
+          for (octave_idx_type i = 0; i < nn; i++)
             dest = do_index (src + d*idx[lev].xelem (i), dest, lev-1);
         }
 
@@ -595,8 +599,8 @@ private:
         src += idx[0].assign (src, dim[0], dest);
       else
         {
-          octave_idx_type n = idx[lev].length (dim[lev]), d = cdim[lev];
-          for (octave_idx_type i = 0; i < n; i++)
+          octave_idx_type nn = idx[lev].length (dim[lev]), d = cdim[lev];
+          for (octave_idx_type i = 0; i < nn; i++)
             src = do_assign (src, dest + d*idx[lev].xelem (i), lev-1);
         }
 
@@ -611,8 +615,8 @@ private:
         idx[0].fill (val, dim[0], dest);
       else
         {
-          octave_idx_type n = idx[lev].length (dim[lev]), d = cdim[lev];
-          for (octave_idx_type i = 0; i < n; i++)
+          octave_idx_type nn = idx[lev].length (dim[lev]), d = cdim[lev];
+          for (octave_idx_type i = 0; i < nn; i++)
             do_fill (val, dest + d*idx[lev].xelem (i), lev-1);
         }
     }
@@ -640,11 +644,14 @@ public:
 // once (apart from reinitialization)
 class rec_resize_helper
 {
-  octave_idx_type *cext, *sext, *dext;
+  octave_idx_type *cext;
+  octave_idx_type *sext;
+  octave_idx_type *dext;
   int n;
 
 public:
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
+    : cext (0), sext (0), dext (0), n (0)
     {
       int l = ndv.length ();
       assert (odv.length () == l);

@@ -56,7 +56,7 @@ public:
       return *this;
     }
 
-  ~DAERT (void) { }
+  virtual ~DAERT (void) { }
 
   void initialize (const ColumnVector& xx, const ColumnVector& xxdot,
                    double tt)

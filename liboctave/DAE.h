@@ -56,7 +56,7 @@ public:
       return *this;
     }
 
-  ~DAE (void) { }
+  virtual ~DAE (void) { }
 };
 
 #endif

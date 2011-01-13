@@ -1,5 +1,15 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* DAE.h (DAE::~DAE): Now virtual.
+	* DAERT.h (DAERT::~DAERT): Likewise.
+	* ODE.h (ODE::~ODE): Likewise.
+	* DAEFunc.h (DAEFunc::~DAEFunc): Likewise.
+	* DAERTFunc.h (DAEFunc::~DAEFunc): Likewise.
+	* ODEFunc.h (ODE::~ODE): Likewise.
+	* ODESFunc.h (ODESFunc::~ODESFunc): Likewise.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* idx-vector.h (idx_vector_rep::idx_vector_rep,
 	idx_vector::idx_mask_rep::idx_mask_rep):
 	Initialize all data members in initialization lists.
@@ -11,14 +21,6 @@
 	Don't allow assignment.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>
-
-	* DAE.h (DAE::~DAE): Now virtual.
-	* DAERT.h (DAERT::~DAERT): Likewise.
-	* ODE.h (ODE::~ODE): Likewise.
-	* DAEFunc.h (DAEFunc::~DAEFunc): Likewise.
-	* DAERTFunc.h (DAEFunc::~DAEFunc): Likewise.
-	* ODEFunc.h (ODE::~ODE): Likewise.
-	* ODESFunc.h (ODESFunc::~ODESFunc): Likewise.
 
 	* LSODE.h (class LSODE): Delete pointer data members.
 	(LSODE::LSODE): Initialize all data members in initialization lists.

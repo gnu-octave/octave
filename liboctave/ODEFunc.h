@@ -58,7 +58,7 @@ public:
       return *this;
     }
 
-  ~ODEFunc (void) { }
+  virtual ~ODEFunc (void) { }
 
   ODERHSFunc function (void) const { return fun; }
 

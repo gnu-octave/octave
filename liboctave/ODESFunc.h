@@ -71,7 +71,7 @@ public:
       return *this;
     }
 
-  ~ODESFunc (void) { }
+  virtual ~ODESFunc (void) { }
 
   ODES_fsub fsub_function (void) const { return fsub; }
 

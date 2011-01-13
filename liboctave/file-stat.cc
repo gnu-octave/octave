@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "file-stat.h"
+#include "filemode.h"
 #include "statdefs.h"
 
 // FIXME -- the is_* and mode_as_string functions are only valid
@@ -150,8 +151,6 @@ base_file_stat::is_sock (mode_t mode)
   return false;
 #endif
 }
-
-extern "C" void mode_string (unsigned short, char *);
 
 std::string
 base_file_stat::mode_as_string (void) const

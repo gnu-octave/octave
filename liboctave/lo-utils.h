@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "lo-cutils.h"
 #include "oct-cmplx.h"
-#include "syswait.h"
 
 extern OCTAVE_API bool xis_int_or_inf_or_nan (double x);
 extern OCTAVE_API bool xis_one_or_zero (double x);
@@ -52,16 +52,6 @@ extern OCTAVE_API std::string octave_fgetl (std::FILE *);
 
 extern OCTAVE_API std::string octave_fgets (std::FILE *, bool& eof);
 extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
-
-extern "C" OCTAVE_API void
-octave_qsort (void *base, size_t n, size_t size,
-              int (*cmp) (const void *, const void *));
-
-extern "C" OCTAVE_API int
-octave_strcasecmp (const char *s1, const char *s2);
-
-extern "C" OCTAVE_API int
-octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
 template <typename T>
 T
@@ -113,15 +103,5 @@ octave_write_float (std::ostream& os, float dval);
 
 extern OCTAVE_API void
 octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
-
-#ifdef HAVE_LOADLIBRARY_API
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-extern "C" OCTAVE_API void *
-octave_w32_library_search (HINSTANCE handle, const char *name);
-#endif
-
-extern "C" OCTAVE_API pid_t
-octave_waitpid (pid_t pid, int *status, int options);
 
 #endif

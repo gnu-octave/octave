@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "lo-utils.h"
 
+#include "cutils.h"
+
 class octave_value;
 class octave_value_list;
 class string_vector;
@@ -119,13 +121,6 @@ extern OCTINTERP_API char *octave_snprintf (const char *fmt, ...);
 
 extern OCTINTERP_API void octave_sleep (double seconds);
 
-extern "C" OCTINTERP_API void octave_sleep (unsigned int seconds);
-
-extern "C" OCTINTERP_API void octave_usleep (unsigned int useconds);
-
-extern "C" OCTINTERP_API int
-octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args);
-
 extern OCTINTERP_API
 octave_value_list
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
@@ -136,4 +131,5 @@ extern OCTINTERP_API
 octave_value
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args);
+
 #endif

@@ -20,8 +20,7 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "filemode.h"
 
 #if !S_IRUSR
 # if S_IREAD
@@ -89,70 +88,6 @@
 #define S_ISNWK(m) (((m) & S_IFMT) == S_IFNWK)
 #endif
 
-void mode_string ();
-static char ftypelet ();
-static void rwx ();
-static void setst ();
-
-/* filemodestring - fill in string STR with an ls-style ASCII
-   representation of the st_mode field of file stats block STATP.
-   10 characters are stored in STR; no terminating null is added.
-   The characters stored in STR are:
-
-   0    File type.  'd' for directory, 'c' for character
-        special, 'b' for block special, 'm' for multiplex,
-        'l' for symbolic link, 's' for socket, 'p' for fifo,
-        '-' for regular, '?' for any other file type
-
-   1    'r' if the owner may read, '-' otherwise.
-
-   2    'w' if the owner may write, '-' otherwise.
-
-   3    'x' if the owner may execute, 's' if the file is
-        set-user-id, '-' otherwise.
-        'S' if the file is set-user-id, but the execute
-        bit isn't set.
-
-   4    'r' if group members may read, '-' otherwise.
-
-   5    'w' if group members may write, '-' otherwise.
-
-   6    'x' if group members may execute, 's' if the file is
-        set-group-id, '-' otherwise.
-        'S' if it is set-group-id but not executable.
-
-   7    'r' if any user may read, '-' otherwise.
-
-   8    'w' if any user may write, '-' otherwise.
-
-   9    'x' if any user may execute, 't' if the file is "sticky"
-        (will be retained in swap space after execution), '-'
-        otherwise.
-        'T' if the file is sticky but not executable.  */
-
-void
-filemodestring (statp, str)
-     struct stat *statp;
-     char *str;
-{
-  mode_string (statp->st_mode, str);
-}
-
-/* Like filemodestring, but only the relevant part of the `struct stat'
-   is given as an argument.  */
-
-void
-mode_string (mode, str)
-     unsigned short mode;
-     char *str;
-{
-  str[0] = ftypelet ((long) mode);
-  rwx ((mode & 0700) << 0, &str[1]);
-  rwx ((mode & 0070) << 3, &str[4]);
-  rwx ((mode & 0007) << 6, &str[7]);
-  setst (mode, str);
-}
-
 /* Return a character indicating the type of file described by
    file mode BITS:
    'd' for directories
@@ -166,8 +101,7 @@ mode_string (mode, str)
    '?' for any other file type.  */
 
 static char
-ftypelet (bits)
-     long bits;
+ftypelet (long bits)
 {
 #ifdef S_ISBLK
   if (S_ISBLK (bits))
@@ -206,9 +140,7 @@ ftypelet (bits)
    flags in CHARS accordingly.  */
 
 static void
-rwx (bits, chars)
-     unsigned short bits;
-     char *chars;
+rwx (unsigned short bits, char *chars)
 {
   chars[0] = (bits & S_IRUSR) ? 'r' : '-';
   chars[1] = (bits & S_IWUSR) ? 'w' : '-';
@@ -219,9 +151,7 @@ rwx (bits, chars)
    according to the file mode BITS.  */
 
 static void
-setst (bits, chars)
-     unsigned short bits;
-     char *chars;
+setst (unsigned short bits, char *chars)
 {
 #ifdef S_ISUID
   if (bits & S_ISUID)
@@ -253,4 +183,59 @@ setst (bits, chars)
         chars[9] = 't';
     }
 #endif
+}
+
+/* Like filemodestring, but only the relevant part of the `struct stat'
+   is given as an argument.  */
+
+void
+mode_string (unsigned short mode, char *str)
+{
+  str[0] = ftypelet ((long) mode);
+  rwx ((mode & 0700) << 0, &str[1]);
+  rwx ((mode & 0070) << 3, &str[4]);
+  rwx ((mode & 0007) << 6, &str[7]);
+  setst (mode, str);
+}
+
+/* filemodestring - fill in string STR with an ls-style ASCII
+   representation of the st_mode field of file stats block STATP.
+   10 characters are stored in STR; no terminating null is added.
+   The characters stored in STR are:
+
+   0    File type.  'd' for directory, 'c' for character
+        special, 'b' for block special, 'm' for multiplex,
+        'l' for symbolic link, 's' for socket, 'p' for fifo,
+        '-' for regular, '?' for any other file type
+
+   1    'r' if the owner may read, '-' otherwise.
+
+   2    'w' if the owner may write, '-' otherwise.
+
+   3    'x' if the owner may execute, 's' if the file is
+        set-user-id, '-' otherwise.
+        'S' if the file is set-user-id, but the execute
+        bit isn't set.
+
+   4    'r' if group members may read, '-' otherwise.
+
+   5    'w' if group members may write, '-' otherwise.
+
+   6    'x' if group members may execute, 's' if the file is
+        set-group-id, '-' otherwise.
+        'S' if it is set-group-id but not executable.
+
+   7    'r' if any user may read, '-' otherwise.
+
+   8    'w' if any user may write, '-' otherwise.
+
+   9    'x' if any user may execute, 't' if the file is "sticky"
+        (will be retained in swap space after execution), '-'
+        otherwise.
+        'T' if the file is sticky but not executable.  */
+
+void
+filemodestring (struct stat *statp, char *str)
+{
+  mode_string (statp->st_mode, str);
 }

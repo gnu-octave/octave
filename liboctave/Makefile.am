@@ -198,10 +198,12 @@ INCS = \
   dir-ops.h \
   file-ops.h \
   file-stat.h \
+  filemode.h \
   functor.h \
   glob-match.h \
   idx-vector.h \
   lo-array-gripes.h \
+  lo-cutils.h \
   lo-ieee.h \
   lo-macros.h \
   lo-mappers.h \

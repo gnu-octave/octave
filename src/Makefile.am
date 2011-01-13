@@ -223,6 +223,7 @@ octinclude_HEADERS = \
   builtins.h \
   c-file-ptr-stream.h \
   comment-list.h \
+  cutils.h \
   debug.h \
   defaults.h \
   defun-dld.h \

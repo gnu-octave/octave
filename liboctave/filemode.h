@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999, 2000, 2002, 2003, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2011 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,41 +20,22 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <stdio.h>
-#include <time.h>
+#if !defined (octave_liboctave_filemode_h)
+#define octave_liboctave_filemode_h 1
 
 #include <sys/types.h>
-#include <unistd.h>
+#include <sys/stat.h>
 
-#include "cutils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void
-octave_sleep (unsigned int seconds)
-{
-  sleep (seconds);
+void mode_string (unsigned short, char *);
+
+void filemodestring (struct stat *, char *);
+
+#ifdef __cplusplus
 }
+#endif
 
-void
-octave_usleep (unsigned int useconds)
-{
-  struct timespec delay;
-  struct timespec remaining;
-
-  unsigned int sec = useconds / 1000000;
-  unsigned int usec = useconds % 1000000;
-
-  delay.tv_sec = sec;
-  delay.tv_nsec = usec * 1000;
-
-  nanosleep (&delay, &remaining);
-}
-
-int
-octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args)
-{
-  return vsnprintf (buf, n, fmt, args);
-}
+#endif

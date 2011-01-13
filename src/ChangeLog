@@ -1,3 +1,12 @@
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
+	* cutils.h: New file.
+	(octave_sleep, octave_usleep, octave_raw_vsnprintf): Move decls
+	here from utils.h.
+	* Makefile.am (octinclude_HEADERS): Add cutils.h to the list.
+	* utils.h: Include cutils.h.
+	* cutils.c: Include cutils.h.
+
 2011-01-12  David Grundberg  <individ@acc.umu.se>
 
 	* DLD-FUNCTIONS/__magick_read__.cc (__magick_read__) [!HAVE_MAGICK]:

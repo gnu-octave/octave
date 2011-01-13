@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string.h>
 #include <time.h>
 
+#include "lo-cutils.h"
 #include "syswait.h"
 
 OCTAVE_API void

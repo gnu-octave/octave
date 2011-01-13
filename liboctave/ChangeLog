@@ -1,5 +1,22 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* filemode.c: Use prototypes for function definitions.  Reorder
+	functions to eliminate need for forward declarations.
+	* filemode.h: New file.
+	* file-stat.cc: Include filemode.h instead of using local extern
+	declarations.
+	* Makefile.am (INCS): Add filemode.h to the list.
+
+	* lo-cutils.h: New file.
+	(octave_qsort, octave_strcasecmp, octave_strncasecmp,
+	octave_w32_library_search, octave_waitpid): Move decls here from
+	lo-utils.h.
+	* Makefile.am (INCS): Add lo-cutils.h to the list.
+	* lo-utils.h: Include cutils.h.
+	* lo-cutils.c: Include cutils.h.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* SparseCmplxQR.cc
 	(SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep):
 	Correct order of member initialization.

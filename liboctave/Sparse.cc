@@ -173,7 +173,7 @@ Sparse<T>::SparseRep::indices_ok (void) const
 
 template <class T>
 Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
-  : dimensions (dim_vector (nr, nc))
+  : rep (0), dimensions (dim_vector (nr, nc))
 { 
   if (val != T ())
     {
@@ -201,7 +201,7 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
 
 template <class T>
 Sparse<T>::Sparse (const dim_vector& dv)
-  : dimensions (dv)
+  : rep (0), dimensions (dv)
 { 
   if (dv.length() != 2)
     (*current_liboctave_error_handler)
@@ -212,7 +212,7 @@ Sparse<T>::Sparse (const dim_vector& dv)
 
 template <class T>
 Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
-  : dimensions (dv)
+  : rep (0), dimensions (dv)
 {
 
   // Work in unsigned long long to avoid overflow issues with numel
@@ -259,22 +259,20 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                    const idx_vector& c, octave_idx_type nr,
                    octave_idx_type nc, bool sum_terms,
                    octave_idx_type nzm)
-  : rep (nil_rep ()), dimensions ()
+  : rep (0), dimensions ()
 {
   if (nr < 0)
-      nr = r.extent (0);
+    nr = r.extent (0);
   else if (r.extent (nr) > nr)
     (*current_liboctave_error_handler) ("sparse: row index %d out of bound %d",
                                         r.extent (nr), nr);
 
   if (nc < 0)
-      nc = c.extent (0);
+    nc = c.extent (0);
   else if (c.extent (nc) > nc)
-    (*current_liboctave_error_handler) ("sparse: column index %d out of bound %d",
-                                        r.extent (nc), nc);
+    (*current_liboctave_error_handler)
+      ("sparse: column index %d out of bound %d", r.extent (nc), nc);
 
-  if (--rep->count == 0)
-    delete rep;
   rep = new SparseRep (nr, nc);
 
   dimensions = dim_vector (nr, nc);
@@ -598,7 +596,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 
 template <class T>
 Sparse<T>::Sparse (const Array<T>& a)
-  : dimensions (a.dims ())
+  : rep (0), dimensions (a.dims ())
 {
   if (dimensions.length () > 2)
     (*current_liboctave_error_handler)

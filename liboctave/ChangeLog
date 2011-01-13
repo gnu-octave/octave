@@ -1,5 +1,9 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* cmd-hist.h, cmd-hist.cc: Sprinkle with const.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* CmplxCHOL.h (ComplexCHOL::ComplexCHOL): Initialize all data
 	members in constructor initialization lists.
 	* CmplxGEPBAL.h (ComplexGEPBALANCE::ComplexGEPBALANCE): Likewise.

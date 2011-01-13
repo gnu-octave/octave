@@ -65,21 +65,21 @@ public:
 
   void do_remove (int);
 
-  int do_where (void);
+  int do_where (void) const;
 
-  int do_length (void);
+  int do_length (void) const;
 
-  int do_max_input_history (void);
+  int do_max_input_history (void) const;
 
-  int do_base (void);
+  int do_base (void) const;
 
-  int do_current_number (void);
+  int do_current_number (void) const;
 
   void do_stifle (int);
 
   int do_unstifle (void);
 
-  int do_is_stifled (void);
+  int do_is_stifled (void) const;
 
   void do_set_mark (int);
 
@@ -89,15 +89,15 @@ public:
 
   void do_read_range (const std::string&, int, int, bool);
 
-  void do_write (const std::string&);
+  void do_write (const std::string&) const;
 
   void do_append (const std::string&);
 
-  void do_truncate_file (const std::string&, int);
+  void do_truncate_file (const std::string&, int) const;
 
-  string_vector do_list (int, bool);
+  string_vector do_list (int, bool) const;
 
-  std::string do_get_entry (int);
+  std::string do_get_entry (int) const;
 
   void do_replace_entry (int, const std::string&);
 
@@ -128,31 +128,31 @@ gnu_history::do_remove (int n)
 }
 
 int
-gnu_history::do_where (void)
+gnu_history::do_where (void) const
 {
   return ::octave_where_history ();
 }
 
 int
-gnu_history::do_length (void)
+gnu_history::do_length (void) const
 {
   return ::octave_history_length ();
 }
 
 int
-gnu_history::do_max_input_history (void)
+gnu_history::do_max_input_history (void) const
 {
   return ::octave_max_input_history ();
 }
 
 int
-gnu_history::do_base (void)
+gnu_history::do_base (void) const
 {
   return ::octave_history_base ();
 }
 
 int
-gnu_history::do_current_number (void)
+gnu_history::do_current_number (void) const
 {
   return (xsize > 0) ? do_base () + do_where () : -1;
 }
@@ -170,7 +170,7 @@ gnu_history::do_unstifle (void)
 }
 
 int
-gnu_history::do_is_stifled (void)
+gnu_history::do_is_stifled (void) const
 {
   return ::octave_history_is_stifled ();
 }
@@ -249,7 +249,7 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
 }
 
 void
-gnu_history::do_write (const std::string& f_arg)
+gnu_history::do_write (const std::string& f_arg) const
 {
   if (initialized)
     {
@@ -316,7 +316,7 @@ gnu_history::do_append (const std::string& f_arg)
 }
 
 void
-gnu_history::do_truncate_file (const std::string& f_arg, int n)
+gnu_history::do_truncate_file (const std::string& f_arg, int n) const
 {
   if (initialized)
     {
@@ -333,7 +333,7 @@ gnu_history::do_truncate_file (const std::string& f_arg, int n)
 }
 
 string_vector
-gnu_history::do_list (int limit, bool number_lines)
+gnu_history::do_list (int limit, bool number_lines) const
 {
   string_vector retval;
 
@@ -344,7 +344,7 @@ gnu_history::do_list (int limit, bool number_lines)
 }
 
 std::string
-gnu_history::do_get_entry (int n)
+gnu_history::do_get_entry (int n) const
 {
   std::string retval;
 
@@ -765,7 +765,7 @@ command_history::do_set_size (int n)
 }
 
 int
-command_history::do_size (void)
+command_history::do_size (void) const
 {
   return xsize;
 }
@@ -777,7 +777,7 @@ command_history::do_ignore_entries (bool flag)
 }
 
 bool
-command_history::do_ignoring_entries (void)
+command_history::do_ignoring_entries (void) const
 {
   return ignoring_additions;
 }
@@ -793,31 +793,31 @@ command_history::do_remove (int)
 }
 
 int
-command_history::do_where (void)
+command_history::do_where (void) const
 {
   return 0;
 }
 
 int
-command_history::do_length (void)
+command_history::do_length (void) const
 {
   return 0;
 }
 
 int
-command_history::do_max_input_history (void)
+command_history::do_max_input_history (void) const
 {
   return 0;
 }
 
 int
-command_history::do_base (void)
+command_history::do_base (void) const
 {
   return 0;
 }
 
 int
-command_history::do_current_number (void)
+command_history::do_current_number (void) const
 {
   return (xsize > 0) ? do_base () + do_where () : -1;
 }
@@ -834,7 +834,7 @@ command_history::do_unstifle (void)
 }
 
 int
-command_history::do_is_stifled (void)
+command_history::do_is_stifled (void) const
 {
   return 0;
 }
@@ -865,7 +865,7 @@ command_history::do_read_range (const std::string& f, int, int, bool)
 }
 
 void
-command_history::do_write (const std::string& f_arg)
+command_history::do_write (const std::string& f_arg) const
 {
   if (initialized)
     {
@@ -903,7 +903,7 @@ command_history::do_append (const std::string& f_arg)
 }
 
 void
-command_history::do_truncate_file (const std::string& f_arg, int)
+command_history::do_truncate_file (const std::string& f_arg, int) const
 {
   if (initialized)
     {
@@ -918,13 +918,13 @@ command_history::do_truncate_file (const std::string& f_arg, int)
 }
 
 string_vector
-command_history::do_list (int, bool)
+command_history::do_list (int, bool) const
 {
   return string_vector ();
 }
 
 std::string
-command_history::do_get_entry (int)
+command_history::do_get_entry (int) const
 {
   return std::string ();
 }
@@ -950,13 +950,13 @@ command_history::do_clean_up_and_save (const std::string& f_arg, int)
 }
 
 void
-command_history::error (int err_num)
+command_history::error (int err_num) const
 {
   (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
 }
 
 void
-command_history::error (const std::string& s)
+command_history::error (const std::string& s) const
 {
   (*current_liboctave_error_handler) ("%s", s.c_str ());
 }

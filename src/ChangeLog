@@ -1,3 +1,11 @@
+2011-01-12  David Bateman  <dbateman@free.fr>
+
+	ls-mat5.cc (int save_mat5_element_length (const octave_value&,
+	const std::string&, bool, bool)): For sparse matrices use nnz rather
+	than nzmax.
+	(bool save_mat5_binary_element (std::ostream&, const octave_value&,
+	const std::string&, bool, bool, bool, bool)): ditto.
+
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
 	* base-list.h (class octave_base_list): Provide explicit

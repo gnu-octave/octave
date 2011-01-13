@@ -261,6 +261,24 @@ private:
 
     struct class_info
     {
+      class_info (void) : method_file_map (), private_file_map () { }
+
+      class_info (const class_info& ci)
+        : method_file_map (ci.method_file_map),
+          private_file_map (ci.private_file_map) { }
+
+      class_info& operator = (const class_info& ci)
+      {
+        if (this != &ci)
+          {
+            method_file_map = ci.method_file_map;
+            private_file_map = ci.private_file_map;
+          }
+        return *this;
+      }
+
+      ~class_info (void) { }
+
       fcn_file_map_type method_file_map;
       fcn_file_map_type private_file_map;
     };
@@ -274,9 +292,19 @@ private:
     // This default constructor is only provided so we can create a
     // std::map of dir_info objects.  You should not use this
     // constructor for any other purpose.
-    dir_info (void) { }
+    dir_info (void)
+      : dir_name (), abs_dir_name (), is_relative (false),
+        dir_mtime (), dir_time_last_checked (), all_files (),
+        fcn_files (), private_file_map (), method_file_map ()
+      { }
 
-    dir_info (const std::string& d) : dir_name (d) { initialize (); }
+    dir_info (const std::string& d)
+      : dir_name (d), abs_dir_name (), is_relative (false),
+        dir_mtime (), dir_time_last_checked (), all_files (),
+        fcn_files (), private_file_map (), method_file_map ()
+    {
+      initialize ();
+    }
 
     dir_info (const dir_info& di)
       : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),

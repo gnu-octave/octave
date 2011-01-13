@@ -1,5 +1,15 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* base-list.h (class octave_base_list): Provide explicit
+	default and copy construtors, assignment operator, and destructor.
+	* load-path.h (load_path::dir_info::class_info): Likewise.
+
+	* load-path.h (load_path::dir_info::dir_info): Initialize all
+	members in initializaition list.
+	* lex.h (lexical_feedback::lexical_feedback): Likewise.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* cutils.h: New file.
 	(octave_sleep, octave_usleep, octave_raw_vsnprintf): Move decls
 	here from utils.h.

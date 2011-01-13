@@ -57,7 +57,20 @@ lexical_feedback
 {
 public:
 
-  lexical_feedback (void) { init (); }
+  lexical_feedback (void)
+    : bracketflag (0), braceflag (0), looping (0),
+      convert_spaces_to_comma (true), at_beginning_of_statement (true),
+      defining_func (0), looking_at_function_handle (false),
+      looking_at_return_list (false), looking_at_parameter_list (false),
+      looking_at_decl_list (false), looking_at_initializer_expression (false),
+      looking_at_matrix_or_assign_lhs (false), looking_at_object_index (),
+      looking_for_object_index (false), looking_at_indirect_ref (false),
+      parsed_function_name (), parsing_class_method (false),
+      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      quote_is_transpose (false), pending_local_variables ()
+    {
+      init ();
+    }
 
   ~lexical_feedback (void) { }
 

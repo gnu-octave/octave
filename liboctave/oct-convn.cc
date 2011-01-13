@@ -43,17 +43,17 @@ convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
 #define FORWARD_IMPL(T,R,f,F) \
 extern "C" \
 F77_RET_T \
-F77_FUNC (f##conv2o, F##CONV2O) (const octave_idx_type&, const octave_idx_type&, \
-                                 const T*, \
-                                 const octave_idx_type&, const octave_idx_type&, \
-                                 const R*, T *); \
+F77_FUNC (f##conv2o, F##CONV2O) (const octave_idx_type&, \
+                                 const octave_idx_type&, \
+                                 const T*, const octave_idx_type&, \
+                                 const octave_idx_type&, const R*, T *); \
 \
 extern "C" \
 F77_RET_T \
-F77_FUNC (f##conv2i, F##CONV2I) (const octave_idx_type&, const octave_idx_type&, \
-                                 const T*, \
-                                 const octave_idx_type&, const octave_idx_type&, \
-                                 const R*, T *); \
+F77_FUNC (f##conv2i, F##CONV2I) (const octave_idx_type&, \
+                                 const octave_idx_type&, \
+                                 const T*, const octave_idx_type&, \
+                                 const octave_idx_type&, const R*, T *); \
 \
 template <> void \
 convolve_2d<T, R> (const T *a, octave_idx_type ma, octave_idx_type na, \

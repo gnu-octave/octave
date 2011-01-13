@@ -36,9 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (sgeqp3, SGEQP3) (const octave_idx_type&, const octave_idx_type&, float*,
-                             const octave_idx_type&, octave_idx_type*, float*, float*,
-                             const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (sgeqp3, SGEQP3) (const octave_idx_type&, const octave_idx_type&,
+                             float*, const octave_idx_type&, octave_idx_type*,
+                             float*, float*, const octave_idx_type&,
+                             octave_idx_type&);
 }
 
 // It would be best to share some of this code with QR class...

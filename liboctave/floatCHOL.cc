@@ -41,20 +41,24 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-                             float*, const octave_idx_type&, octave_idx_type&
+  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-                             float*, const octave_idx_type&, octave_idx_type&
+  F77_FUNC (spotri, SPOTRI) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
-                             float*, const octave_idx_type&, const float&,
+  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, const float&,
                              float&, float*, octave_idx_type*, 
-                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+                             octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T

@@ -100,7 +100,8 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (ssygv, SSYGV) (const octave_idx_type&,
-                           F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL,
+                           F77_CONST_CHAR_ARG_DECL,
+                           F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, float*,
                            const octave_idx_type&, float*,
                            const octave_idx_type&, float*, float*,

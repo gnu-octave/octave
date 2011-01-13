@@ -41,47 +41,58 @@ template class base_qr<ComplexMatrix>;
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgeqrf, ZGEQRF) (const octave_idx_type&, const octave_idx_type&, Complex*,
-                             const octave_idx_type&, Complex*, Complex*,
-                             const octave_idx_type&, octave_idx_type&); 
+  F77_FUNC (zgeqrf, ZGEQRF) (const octave_idx_type&, const octave_idx_type&,
+                             Complex*, const octave_idx_type&, Complex*,
+                             Complex*, const octave_idx_type&,
+                             octave_idx_type&); 
 
   F77_RET_T
-  F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*,
-                             Complex*, const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*, Complex*,
+                             const octave_idx_type&, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (zqr1up, ZQR1UP) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             Complex*, Complex*, Complex*, double*);
+  F77_FUNC (zqr1up, ZQR1UP) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*,
+                             Complex*, Complex*, double*);
 
   F77_RET_T
-  F77_FUNC (zqrinc, ZQRINC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, const Complex*, double*);
+  F77_FUNC (zqrinc, ZQRINC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const Complex*, double*);
 
   F77_RET_T
-  F77_FUNC (zqrdec, ZQRDEC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, double*);
+  F77_FUNC (zqrdec, ZQRDEC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             double*);
 
   F77_RET_T
   F77_FUNC (zqrinr, ZQRINR) (const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, const Complex*, double*);
+                             Complex*, const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const Complex*, double*);
 
   F77_RET_T
   F77_FUNC (zqrder, ZQRDER) (const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, Complex*, double*);
-
-  F77_RET_T
-  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             Complex*, const octave_idx_type&, Complex*, const octave_idx_type&,
+                             Complex*, const octave_idx_type&, Complex*,
                              const octave_idx_type&, const octave_idx_type&,
                              Complex*, double*);
+
+  F77_RET_T
+  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*, double*);
 
 #endif
 }

@@ -53,80 +53,101 @@ typedef ComplexColumnVector (*EigsComplexFunc)
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dsaupd, DSAUPD) (octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (dsaupd, DSAUPD) (octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL, 
                              const octave_idx_type&, const double&,
                              double*, const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type*,
                              octave_idx_type*, double*, double*, 
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dseupd, DSEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
-                             octave_idx_type*, double*, double*,
-                             const octave_idx_type&, const double&,
-                             F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             const double&, double*, const octave_idx_type&, 
-                             double*, const octave_idx_type&, octave_idx_type*,
-                             octave_idx_type*, double*, double*, 
-                             const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dnaupd, DNAUPD) (octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (dseupd, DSEUPD) (const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type*, double*, double*,
+                             const octave_idx_type&, const double&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, 
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const double&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type*,
+                             octave_idx_type*, double*, double*, 
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dnaupd, DNAUPD) (octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL, 
                              octave_idx_type&, const double&,
                              double*, const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type*,
                              octave_idx_type*, double*, double*, 
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type*, double*, double*,
                              double*, const octave_idx_type&, const double&,
-                             const double&, double*, F77_CONST_CHAR_ARG_DECL, 
-                             const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
+                             const double&, double*,
+                             F77_CONST_CHAR_ARG_DECL, 
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL, 
                              octave_idx_type&, const double&, double*, 
                              const octave_idx_type&, double*, 
                              const octave_idx_type&, octave_idx_type*, 
                              octave_idx_type*, double*, double*, 
                              const octave_idx_type&, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (znaupd, ZNAUPD) (octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (znaupd, ZNAUPD) (octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, const double&,
                              Complex*, const octave_idx_type&, Complex*,
                              const octave_idx_type&, octave_idx_type*,
                              octave_idx_type*, Complex*, Complex*, 
                              const octave_idx_type&, double *, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zneupd, ZNEUPD) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (zneupd, ZNEUPD) (const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
                              octave_idx_type*, Complex*, Complex*, 
-                             const octave_idx_type&, const Complex&,
-                             Complex*, F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, F77_CONST_CHAR_ARG_DECL, 
+                             const octave_idx_type&, const Complex&, Complex*,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL, 
                              const octave_idx_type&, const double&,
                              Complex*, const octave_idx_type&, Complex*,
                              const octave_idx_type&, octave_idx_type*,
                              octave_idx_type*, Complex*, Complex*, 
                              const octave_idx_type&, double *, octave_idx_type&
-                             F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const double&,
-                           const double*, const octave_idx_type&, const double*,
+                           const octave_idx_type&, const octave_idx_type&,
+                           const double&, const double*,
+                           const octave_idx_type&, const double*,
                            const octave_idx_type&, const double&, double*,
                            const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);

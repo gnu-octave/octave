@@ -55,28 +55,33 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zbesj, ZBESJ) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&, double*, double*,
-                           octave_idx_type&, octave_idx_type&);
+                           const octave_idx_type&, const octave_idx_type&,
+                           double*, double*, octave_idx_type&,
+                           octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesy, ZBESY) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&, double*, double*,
-                           octave_idx_type&, double*, double*, octave_idx_type&);
+                           const octave_idx_type&, const octave_idx_type&,
+                           double*, double*, octave_idx_type&, double*,
+                           double*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesi, ZBESI) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&, double*, double*,
-                           octave_idx_type&, octave_idx_type&);
+                           const octave_idx_type&, const octave_idx_type&,
+                           double*, double*, octave_idx_type&,
+                           octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesk, ZBESK) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&, double*, double*,
-                           octave_idx_type&, octave_idx_type&);
+                           const octave_idx_type&, const octave_idx_type&,
+                           double*, double*, octave_idx_type&,
+                           octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zbesh, ZBESH) (const double&, const double&, const double&,
-                           const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
-                           double*, octave_idx_type&, octave_idx_type&);
+                           const octave_idx_type&, const octave_idx_type&,
+                           const octave_idx_type&, double*, double*,
+                           octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (cbesj, cBESJ) (const FloatComplex&, const float&,
@@ -106,20 +111,25 @@ extern "C"
                            octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zairy, ZAIRY) (const double&, const double&, const octave_idx_type&,
-                           const octave_idx_type&, double&, double&, octave_idx_type&, octave_idx_type&);
+  F77_FUNC (zairy, ZAIRY) (const double&, const double&,
+                           const octave_idx_type&, const octave_idx_type&,
+                           double&, double&, octave_idx_type&,
+                           octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (cairy, CAIRY) (const float&, const float&, const octave_idx_type&,
-                           const octave_idx_type&, float&, float&, octave_idx_type&, octave_idx_type&);
+                           const octave_idx_type&, float&, float&,
+                           octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zbiry, ZBIRY) (const double&, const double&, const octave_idx_type&,
-                           const octave_idx_type&, double&, double&, octave_idx_type&);
+  F77_FUNC (zbiry, ZBIRY) (const double&, const double&,
+                           const octave_idx_type&, const octave_idx_type&,
+                           double&, double&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (cbiry, CBIRY) (const float&, const float&, const octave_idx_type&,
-                           const octave_idx_type&, float&, float&, octave_idx_type&);
+                           const octave_idx_type&, float&, float&,
+                           octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (xdacosh, XDACOSH) (const double&, double&);

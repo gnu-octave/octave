@@ -82,7 +82,8 @@ FloatComplexSVD::right_singular_matrix (void) const
 }
 
 octave_idx_type
-FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type, SVD::driver svd_driver)
+FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
+                       SVD::driver svd_driver)
 {
   octave_idx_type info;
 

@@ -42,14 +42,17 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const Complex&,
-                           const Complex*, const octave_idx_type&, const Complex*,
-                           const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
+                           const octave_idx_type&, const octave_idx_type&,
+                           const Complex&, const Complex*,
+                           const octave_idx_type&, const Complex*,
+                           const octave_idx_type&, const Complex&, Complex*,
+                           const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (xzdotu, XZDOTU) (const octave_idx_type&, const Complex*, const octave_idx_type&,
-                             const Complex*, const octave_idx_type&, Complex&);
+  F77_FUNC (xzdotu, XZDOTU) (const octave_idx_type&, const Complex*,
+                             const octave_idx_type&, const Complex*,
+                             const octave_idx_type&, Complex&);
 }
 
 // Complex Row Vector class

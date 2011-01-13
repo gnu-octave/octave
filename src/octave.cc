@@ -73,7 +73,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Kluge.
 extern "C" F77_RET_T
-F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&
+F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
 
 extern void install_builtins (void);

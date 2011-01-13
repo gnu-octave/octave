@@ -35,13 +35,15 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, const double *x, const double *f,
-                             double *d, const octave_idx_type &incfd,
+  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, const double *x,
+                             const double *f, double *d,
+                             const octave_idx_type &incfd,
                              octave_idx_type *ierr);
 
   F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, const float *x, const float *f,
-                           float *d, const octave_idx_type &incfd,
+  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, const float *x,
+                           const float *f, float *d,
+                           const octave_idx_type& incfd,
                            octave_idx_type *ierr);
 }
 

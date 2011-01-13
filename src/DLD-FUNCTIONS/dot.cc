@@ -34,43 +34,44 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (ddot3, DDOT3) (const octave_idx_type&, const octave_idx_type&, 
-                           const octave_idx_type&, 
-                           const double*, const double *, double *);
+                           const octave_idx_type&, const double*,
+                           const double*, double*);
 
   F77_RET_T
   F77_FUNC (sdot3, SDOT3) (const octave_idx_type&, const octave_idx_type&, 
-                           const octave_idx_type&, 
-                           const float*, const float *, float *);
+                           const octave_idx_type&, const float*,
+                           const float*, float*);
 
   F77_RET_T
   F77_FUNC (zdotc3, ZDOTC3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, 
-                             const Complex*, const Complex *, Complex *);
+                             const octave_idx_type&, const Complex*,
+                             const Complex*, Complex*);
 
   F77_RET_T
   F77_FUNC (cdotc3, CDOTC3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, 
-                             const FloatComplex*, const FloatComplex *, FloatComplex *);
+                             const octave_idx_type&, const FloatComplex*,
+                             const FloatComplex*, FloatComplex*);
 
   F77_RET_T
   F77_FUNC (dmatm3, DMATM3) (const octave_idx_type&, const octave_idx_type&, 
                              const octave_idx_type&, const octave_idx_type&, 
-                             const double*, const double *, double *);
+                             const double*, const double*, double*);
 
   F77_RET_T
   F77_FUNC (smatm3, SMATM3) (const octave_idx_type&, const octave_idx_type&, 
                              const octave_idx_type&, const octave_idx_type&, 
-                             const float*, const float *, float *);
+                             const float*, const float*, float*);
 
   F77_RET_T
   F77_FUNC (zmatm3, ZMATM3) (const octave_idx_type&, const octave_idx_type&, 
                              const octave_idx_type&, const octave_idx_type&, 
-                             const Complex*, const Complex *, Complex *);
+                             const Complex*, const Complex*, Complex*);
 
   F77_RET_T
   F77_FUNC (cmatm3, CMATM3) (const octave_idx_type&, const octave_idx_type&, 
                              const octave_idx_type&, const octave_idx_type&, 
-                             const FloatComplex*, const FloatComplex *, FloatComplex *);
+                             const FloatComplex*, const FloatComplex*,
+                             FloatComplex*);
 }
 
 static void 

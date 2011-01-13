@@ -42,13 +42,16 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const float&,
-                           const float*, const octave_idx_type&, const float*,
-                           const octave_idx_type&, const float&, float*, const octave_idx_type&
+                           const octave_idx_type&, const octave_idx_type&,
+                           const float&, const float*,
+                           const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float&,
+                           float*, const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
-  F77_FUNC (xsdot, XSDOT) (const octave_idx_type&, const float*, const octave_idx_type&,
-                           const float*, const octave_idx_type&, float&);
+  F77_FUNC (xsdot, XSDOT) (const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float*,
+                           const octave_idx_type&, float&);
 }
 
 // Row Vector class.

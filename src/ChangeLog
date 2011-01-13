@@ -1,3 +1,8 @@
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__pchip_deriv__.cc, DLD-FUNCTIONS/dot.cc,
+	octave.cc: Style fixes.
+
 2011-01-12  David Bateman  <dbateman@free.fr>
 
 	ls-mat5.cc (int save_mat5_element_length (const octave_value&,

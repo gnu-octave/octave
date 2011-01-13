@@ -36,8 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqp3, DGEQP3) (const octave_idx_type&, const octave_idx_type&, double*,
-                             const octave_idx_type&, octave_idx_type*, double*, double*,
+  F77_FUNC (dgeqp3, DGEQP3) (const octave_idx_type&, const octave_idx_type&,
+                             double*, const octave_idx_type&,
+                             octave_idx_type*, double*, double*,
                              const octave_idx_type&, octave_idx_type&);
 }
 

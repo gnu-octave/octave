@@ -36,9 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zgeqp3, ZGEQP3) (const octave_idx_type&, const octave_idx_type&, Complex*,
-                             const octave_idx_type&, octave_idx_type*, Complex*, Complex*,
-                             const octave_idx_type&, double*, octave_idx_type&);
+  F77_FUNC (zgeqp3, ZGEQP3) (const octave_idx_type&, const octave_idx_type&,
+                             Complex*, const octave_idx_type&,
+                             octave_idx_type*, Complex*, Complex*,
+                             const octave_idx_type&, double*,
+                             octave_idx_type&);
 }
 
 // It would be best to share some of this code with ComplexQR class...

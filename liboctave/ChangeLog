@@ -1,5 +1,19 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* CColVector.cc, CMatrix.cc, CRowVector.cc, CSparse.cc,
+	CmplxAEPBAL.cc, CmplxCHOL.cc, CmplxLU.cc, CmplxQR.cc,
+	CmplxQRP.cc, EIG.cc, Quad.cc, dColVector.cc, dMatrix.cc,
+	dRowVector.cc, dSparse.cc, dbleAEPBAL.cc, dbleCHOL.cc,
+	dbleLU.cc, dbleQR.cc, dbleQRP.cc, eigs-base.cc, fCColVector.cc,
+	fCMatrix.cc, fCNDArray.cc, fCRowVector.cc, fCmplxAEPBAL.cc,
+	fCmplxCHOL.cc, fCmplxLU.cc, fCmplxQR.cc, fCmplxQRP.cc,
+	fCmplxSVD.cc, fColVector.cc, fEIG.cc, fMatrix.cc, fNDArray.cc,
+	fRowVector.cc, floatAEPBAL.cc, floatCHOL.cc, floatLU.cc,
+	floatQR.cc, floatQRP.cc, lo-specfun.cc, oct-convn.cc:
+	Style fixes.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* CMatrix.cc (get_blas_trans_arg): Return char, not char *.
 	Change all uses.
 	* dMatrix.cc (get_blas_trans_arg): Likewise.

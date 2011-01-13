@@ -62,24 +62,29 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (xilaenv, XILAENV) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
+  F77_FUNC (xilaenv, XILAENV) (const octave_idx_type&,
+                               F77_CONST_CHAR_ARG_DECL,
                                F77_CONST_CHAR_ARG_DECL,
                                const octave_idx_type&, const octave_idx_type&,
                                const octave_idx_type&, const octave_idx_type&,
                                octave_idx_type&
-                               F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
+                               F77_CHAR_ARG_LEN_DECL
+                               F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sgebal, SGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, float*, const octave_idx_type&, octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&,
                              octave_idx_type&, float*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sgebak, SGEBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
-                             const octave_idx_type&, float*, const octave_idx_type&, octave_idx_type&
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
@@ -87,24 +92,27 @@ extern "C"
   F77_RET_T
   F77_FUNC (sgemm, SGEMM) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                           const float&, const float*, const octave_idx_type&,
-                           const float*, const octave_idx_type&, const float&,
-                           float*, const octave_idx_type&
+                           const octave_idx_type&, const octave_idx_type&,
+                           const octave_idx_type&, const float&, const float*,
+                           const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float&, float*,
+                           const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (sgemv, SGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const float&,
-                           const float*, const octave_idx_type&, const float*,
+                           const octave_idx_type&, const octave_idx_type&,
+                           const float&, const float*,
+                           const octave_idx_type&, const float*,
                            const octave_idx_type&, const float&, float*,
                            const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (xsdot, XSDOT) (const octave_idx_type&, const float*, const octave_idx_type&,
-                           const float*, const octave_idx_type&, float&);
+  F77_FUNC (xsdot, XSDOT) (const octave_idx_type&, const float*,
+                           const octave_idx_type&, const float*,
+                           const octave_idx_type&, float&);
 
   F77_RET_T
   F77_FUNC (ssyrk, SSYRK) (F77_CONST_CHAR_ARG_DECL,
@@ -116,72 +124,90 @@ extern "C"
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (sgetrf, SGETRF) (const octave_idx_type&, const octave_idx_type&, float*, const octave_idx_type&,
-                      octave_idx_type*, octave_idx_type&);
+  F77_FUNC (sgetrf, SGETRF) (const octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&,
+                             octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (sgetrs, SGETRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (sgetrs, SGETRS) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&, 
                              const float*, const octave_idx_type&,
-                             const octave_idx_type*, float*, const octave_idx_type&, octave_idx_type&
+                             const octave_idx_type*, float*,
+                             const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (sgetri, SGETRI) (const octave_idx_type&, float*, const octave_idx_type&, const octave_idx_type*,
+  F77_FUNC (sgetri, SGETRI) (const octave_idx_type&, float*,
+                             const octave_idx_type&, const octave_idx_type*,
                              float*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (sgecon, SGECON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, float*, 
+  F77_FUNC (sgecon, SGECON) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*, 
                              const octave_idx_type&, const float&, float&, 
                              float*, octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (sgelsy, SGELSY) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&, float*,
-                             const octave_idx_type&, octave_idx_type*, float&, octave_idx_type&,
-                             float*, const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (sgelsy, SGELSY) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type*,
+                             float&, octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (sgelsd, SGELSD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             float*, const octave_idx_type&, float*,
-                             const octave_idx_type&, float*, float&, octave_idx_type&,
-                             float*, const octave_idx_type&, octave_idx_type*,
+  F77_FUNC (sgelsd, SGELSD) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, float*, float&,
+                             octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type*,
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             float *, const octave_idx_type&, 
-                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             float*, const octave_idx_type&, const float&,
-                             float&, float*, octave_idx_type*,
-                             octave_idx_type& F77_CHAR_ARG_LEN_DECL);
-  F77_RET_T
-  F77_FUNC (spotrs, SPOTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             const octave_idx_type&, const float*, 
-                             const octave_idx_type&, float*, 
+  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float *,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (strtri, STRTRI) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (spocon, SPOCON) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, const float&,
+                             float&, float*, octave_idx_type*,
+                             octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (spotrs, SPOTRS) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const float*, const octave_idx_type&, float*, 
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (strtri, STRTRI) (F77_CONST_CHAR_ARG_DECL,
+                             F77_CONST_CHAR_ARG_DECL, 
                              const octave_idx_type&, const float*, 
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
-  F77_FUNC (strcon, STRCON) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
-                             F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
-                             const float*, const octave_idx_type&, float&,
+  F77_FUNC (strcon, STRCON) (F77_CONST_CHAR_ARG_DECL,
+                             F77_CONST_CHAR_ARG_DECL, 
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const float*,
+                             const octave_idx_type&, float&,
                              float*, octave_idx_type*, octave_idx_type& 
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
-  F77_FUNC (strtrs, STRTRS) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
-                             F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
+  F77_FUNC (strtrs, STRTRS) (F77_CONST_CHAR_ARG_DECL,
+                             F77_CONST_CHAR_ARG_DECL, 
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, 
                              const octave_idx_type&, const float*, 
                              const octave_idx_type&, float*, 
                              const octave_idx_type&, octave_idx_type&
@@ -196,15 +222,17 @@ extern "C"
   F77_RET_T
   F77_FUNC (strsyl, STRSYL) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             const float*, const octave_idx_type&, const float*,
-                             const octave_idx_type&, const float*, const octave_idx_type&,
-                             float&, octave_idx_type&
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const float*,
+                             const octave_idx_type&, const float*,
+                             const octave_idx_type&, const float*,
+                             const octave_idx_type&, float&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (xslange, XSLANGE) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
+  F77_FUNC (xslange, XSLANGE) (F77_CONST_CHAR_ARG_DECL,
+                               const octave_idx_type&,
                                const octave_idx_type&, const float*,
                                const octave_idx_type&, float*, float&
                                F77_CHAR_ARG_LEN_DECL); 

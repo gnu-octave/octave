@@ -44,8 +44,9 @@ template class base_lu <FloatComplexMatrix>;
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (cgetrf, CGETRF) (const octave_idx_type&, const octave_idx_type&, FloatComplex*,
-                             const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+  F77_FUNC (cgetrf, CGETRF) (const octave_idx_type&, const octave_idx_type&,
+                             FloatComplex*, const octave_idx_type&,
+                             octave_idx_type*, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE_LUU
   F77_RET_T

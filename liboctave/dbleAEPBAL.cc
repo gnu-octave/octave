@@ -35,15 +35,17 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type&,
                              octave_idx_type&, double*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             const double*, const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const double*,
+                             const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);

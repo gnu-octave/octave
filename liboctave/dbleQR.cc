@@ -41,45 +41,57 @@ template class base_qr<Matrix>;
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgeqrf, DGEQRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*, const octave_idx_type&, octave_idx_type&); 
+  F77_FUNC (dgeqrf, DGEQRF) (const octave_idx_type&, const octave_idx_type&,
+                             double*, const octave_idx_type&, double*,
+                             double*, const octave_idx_type&,
+                             octave_idx_type&); 
 
   F77_RET_T
-  F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
-                             const octave_idx_type&, double*, double*, const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*, double*,
+                             const octave_idx_type&, octave_idx_type&);
 
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (dqr1up, DQR1UP) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*, double*);
+  F77_FUNC (dqr1up, DQR1UP) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*, double*, double*);
 
   F77_RET_T
-  F77_FUNC (dqrinc, DQRINC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, const double*, double*);
+  F77_FUNC (dqrinc, DQRINC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const double*, double*);
 
   F77_RET_T
-  F77_FUNC (dqrdec, DQRDEC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, double*);
+  F77_FUNC (dqrdec, DQRDEC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             double*);
 
   F77_RET_T
   F77_FUNC (dqrinr, DQRINR) (const octave_idx_type&, const octave_idx_type&, 
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, const double*, double*);
+                             double*, const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const double*, double*);
 
   F77_RET_T
   F77_FUNC (dqrder, DQRDER) (const octave_idx_type&, const octave_idx_type&, 
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, double*);
-
-  F77_RET_T
-  F77_FUNC (dqrshc, DQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             double*, const octave_idx_type&, double*, const octave_idx_type&,
+                             double*, const octave_idx_type&, double*,
                              const octave_idx_type&, const octave_idx_type&,
                              double*);
+
+  F77_RET_T
+  F77_FUNC (dqrshc, DQRSHC) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*);
 
 #endif
 }

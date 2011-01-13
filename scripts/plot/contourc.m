@@ -65,6 +65,9 @@ function [cout, lev] = contourc (varargin)
   if (nargin == 1)
     vn = 10;
     z = varargin{1};
+    [nr, nc] = size (z);
+    x = 1:nc;
+    y = 1:nr;
   elseif (nargin == 2)
     vn = varargin{2};
     z = varargin{1};

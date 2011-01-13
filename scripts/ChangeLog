@@ -1,3 +1,7 @@
+2011-01-13  Michael Godfrey  <godfrey@isl.stanford.edu>
+
+	* plot/contourc.m: Correct one argument case.
+
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
 	* strings/mat2str.m: Handle logical arguments.  New tests.

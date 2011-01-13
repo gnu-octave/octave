@@ -1,5 +1,12 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* SparseCmplxQR.cc
+	(SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep):
+	Correct order of member initialization.
+	* SparseQR.cc (SparseQR::SparseQR_rep::SparseQR_rep): Likewise.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* oct-fftw.cc (octave_fftw_planner::octave_fftw_planner,
 	octave_float_fftw_planner::octave_float_fftw_planner):
 	Avoid duplicate initializations.  Correctly initialize RN to

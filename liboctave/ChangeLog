@@ -8,11 +8,6 @@
 	floatGEPBAL.cc, floatHESS.cc, floatSCHUR.cc, floatSVD.cc:
 	Style fixes.
 
-	* CmplxSCHUR.cc (ComplexSCHUR::ComplexSCHUR): Initialize selector.
-	* fCmplxSCHUR.cc (FloatComplexSCHUR::FloatComplexSCHUR): Likewise.
-	* dbleSCHUR.cc (SCHUR::SCHUR): Likewise.
-	* floatSCHUR.cc (FloatSCHUR::FloatSCHUR): Likewise.
-
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
 	* oct-rl-hist.c (hc_erasedups): Avoid GCC warning.

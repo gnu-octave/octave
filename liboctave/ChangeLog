@@ -1,5 +1,12 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* oct-fftw.cc (octave_fftw_planner::octave_fftw_planner,
+	octave_float_fftw_planner::octave_float_fftw_planner):
+	Avoid duplicate initializations.  Correctly initialize RN to
+	empty dim_vector.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* Sparse.cc (Sparse::Sparse): Initialize all data members in
 	initialization lists.
 

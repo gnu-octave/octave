@@ -56,21 +56,14 @@ octave_fftw_planner *octave_fftw_planner::instance = 0;
 // ffts.
 
 octave_fftw_planner::octave_fftw_planner (void)
-  : meth (), rplan (), rd (0), rs (0), rr (0), rh (0), rn (0),
+  : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
     rsimd_align (false)
 {
-  meth = ESTIMATE;
-
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
   simd_align[0] = simd_align[1] = false;
   inplace[0] = inplace[1] = false;
   n[0] = n[1] = dim_vector ();
-
-  rplan = 0;
-  rd = rs = rr = rh = 0;
-  rsimd_align = false;
-  rn = dim_vector ();
   
   // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
@@ -371,22 +364,15 @@ octave_fftw_planner::do_method (FftwMethod _meth)
 octave_float_fftw_planner *octave_float_fftw_planner::instance = 0;
 
 octave_float_fftw_planner::octave_float_fftw_planner (void)
-  : meth (), rplan (), rd (0), rs (0), rr (0), rh (0), rn (0),
+  : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
     rsimd_align (false)
 {
-  meth = ESTIMATE;
-
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
   simd_align[0] = simd_align[1] = false;
   inplace[0] = inplace[1] = false;
   n[0] = n[1] = dim_vector ();
-
-  rplan = 0;
-  rd = rs = rr = rh = 0;
-  rsimd_align = false;
-  rn = dim_vector ();
-  
+ 
   // If we have a system wide wisdom file, import it.
   fftwf_import_system_wisdom ();
 }

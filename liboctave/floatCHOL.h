@@ -36,12 +36,20 @@ FloatCHOL
 {
 public:
 
-  FloatCHOL (void) : chol_mat () { }
+  FloatCHOL (void) : chol_mat (), xrcond (0) { }
 
-  FloatCHOL (const FloatMatrix& a, bool calc_cond = false) { init (a, calc_cond); }
+  FloatCHOL (const FloatMatrix& a, bool calc_cond = false)
+    : chol_mat (), xrcond (0)
+    {
+      init (a, calc_cond);
+    }
 
-  FloatCHOL (const FloatMatrix& a, octave_idx_type& info, bool calc_cond = false) 
-    { info = init (a, calc_cond); }
+  FloatCHOL (const FloatMatrix& a, octave_idx_type& info,
+             bool calc_cond = false) 
+    : chol_mat (), xrcond (0)
+    {
+      info = init (a, calc_cond);
+    }
 
   FloatCHOL (const FloatCHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 

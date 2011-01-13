@@ -1,5 +1,39 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* CmplxCHOL.h (ComplexCHOL::ComplexCHOL): Initialize all data
+	members in constructor initialization lists.
+	* CmplxGEPBAL.h (ComplexGEPBALANCE::ComplexGEPBALANCE): Likewise.
+	* CmplxHESS.h (ComplexHESS::ComplexHESS): Likewise.
+	* CmplxSCHUR.h, CmplxSCHUR.cc (ComplexSCHUR::ComplexSCHUR): Likewise.
+	* CmplxSVD.h (ComplexSVD::ComplexSVD): Likewise.
+	* DET.h (base_det::base_det): Likewise.
+	* EIG.h (EIG::EIG): Likewise.
+	* SparseCmplxQR.cc
+	(SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep):
+	Likewise.
+	* SparseQR.cc (SparseQR::SparseQR_rep::SparseQR_rep): Likewise.
+	* dbleCHOL.h (CHOL::CHOL): Likewise.
+	* dbleGEPBAL.h (GEPBALANCE::GEPBALANCE): Likewise.
+	* dbleHESS.h (HESS::HESS): Likewise.
+	* dbleSCHUR.h, dbleSCHUR.cc (SCHUR::SCHUR): Likewise.
+	* dbleSVD.h (SVD::SVD): Likewise.
+	* fCmplxCHOL.h (FloatComplexCHOL::FloatComplexCHOL): Likewise.
+	* fCmplxGEPBAL.h
+	(FloatComplexGEPBALANCE::FloatComplexGEPBALANCE): Likewise.
+	* fCmplxHESS.h (FloatComplexHESS::FloatComplexHESS): Likewise.
+	* fCmplxSCHUR.h, fCmplxSCHUR.cc
+	(FloatComplexSCHUR::FloatComplexSCHUR): Likewise.
+	* fCmplxSVD.h (FloatComplexSVD::FloatComplexSVD):
+	Likewise.
+	* fEIG.h (FloatEIG::FloatEIG): Likewise.
+	* floatCHOL.h (FloatCHOL::FloatCHOL): Likewise.
+	* floatGEPBAL.h (FloatGEPBALANCE::FloatGEPBALANCE): Likewise.
+	* floatHESS.h (FloatHESS::FloatHESS): Likewise.
+	* floatSCHUR.h, floatSCHUR.cc (FloatSCHUR::FloatSCHUR): Likewise.
+	* floatSVD.h (FloatSVD::FloatSVD): Likewise.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* LSODE.cc, DASSL.cc, DASRT.cc, DASPK.cc, CmplxSVD.cc,
 	CmplxSCHUR.cc, CmplxHESS.cc, CmplxGEPBAL.cc, CmplxCHOL.cc,
 	EIG.cc, dbleCHOL.cc, dbleGEPBAL.cc, dbleHESS.cc, dbleSCHUR.cc,

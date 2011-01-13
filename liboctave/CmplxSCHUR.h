@@ -36,19 +36,26 @@ ComplexSCHUR
 {
 public:
 
-  ComplexSCHUR (void)
-    : schur_mat (), unitary_mat () { }
+  ComplexSCHUR (void) : schur_mat (), unitary_mat (), selector (0) { }
 
   ComplexSCHUR (const ComplexMatrix& a, const std::string& ord,
                 bool calc_unitary = true)
-    : schur_mat (), unitary_mat () { init (a, ord, calc_unitary); }
+    : schur_mat (), unitary_mat (), selector (0)
+    {
+      init (a, ord, calc_unitary);
+    }
 
-  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord, octave_idx_type& info,
+  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord,
+                octave_idx_type& info,
                 bool calc_unitary = true)
-    : schur_mat (), unitary_mat () { info = init (a, ord, calc_unitary); }
+    : schur_mat (), unitary_mat (), selector (0)
+    {
+      info = init (a, ord, calc_unitary);
+    }
 
   ComplexSCHUR (const ComplexSCHUR& a)
-    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
+    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat), selector (0)
+    { }
 
   ComplexSCHUR (const ComplexMatrix& s, const ComplexMatrix& u);
 

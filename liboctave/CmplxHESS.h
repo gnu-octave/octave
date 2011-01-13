@@ -36,9 +36,17 @@ public:
 
   ComplexHESS (void) : hess_mat (), unitary_hess_mat () { }
 
-  ComplexHESS (const ComplexMatrix& a) { init (a); }
+  ComplexHESS (const ComplexMatrix& a)
+    : hess_mat (), unitary_hess_mat ()
+    {
+      init (a);
+    }
 
-  ComplexHESS (const ComplexMatrix& a, octave_idx_type& info) { info = init (a); }
+  ComplexHESS (const ComplexMatrix& a, octave_idx_type& info)
+    : hess_mat (), unitary_hess_mat ()
+    {
+      info = init (a);
+    }
 
   ComplexHESS (const ComplexHESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }

@@ -158,7 +158,7 @@ operator << (std::ostream& os, const SCHUR& a)
 }
 
 SCHUR::SCHUR (const Matrix& s, const Matrix& u)
-: schur_mat (s), unitary_mat (u)
+  : schur_mat (s), unitary_mat (u), selector (0)
 {
   octave_idx_type n = s.rows ();
   if (s.columns () != n || u.rows () != n || u.columns () != n)

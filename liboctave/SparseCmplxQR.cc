@@ -49,7 +49,8 @@ typedef double _Complex cs_complex_t;
 #endif
 
 SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep 
-(GCC_ATTR_UNUSED const SparseComplexMatrix& a, GCC_ATTR_UNUSED int order)
+  (GCC_ATTR_UNUSED const SparseComplexMatrix& a, GCC_ATTR_UNUSED int order)
+  : count (1), nrows (0), N (0), S (0)
 {
 #ifdef HAVE_CXSPARSE
   CXSPARSE_ZNAME () A;

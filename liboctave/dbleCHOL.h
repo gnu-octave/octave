@@ -36,12 +36,19 @@ CHOL
 {
 public:
 
-  CHOL (void) : chol_mat () { }
+  CHOL (void) : chol_mat (), xrcond (0) { }
 
-  CHOL (const Matrix& a, bool calc_cond = false) { init (a, calc_cond); }
+  CHOL (const Matrix& a, bool calc_cond = false)
+    : chol_mat (), xrcond (0)
+    {
+      init (a, calc_cond);
+    }
 
   CHOL (const Matrix& a, octave_idx_type& info, bool calc_cond = false) 
-    { info = init (a, calc_cond); }
+    : chol_mat (), xrcond (0)
+    {
+      info = init (a, calc_cond);
+    }
 
   CHOL (const CHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 

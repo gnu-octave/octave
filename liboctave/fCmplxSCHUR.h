@@ -36,19 +36,25 @@ FloatComplexSCHUR
 {
 public:
 
-  FloatComplexSCHUR (void)
-    : schur_mat (), unitary_mat () { }
+  FloatComplexSCHUR (void) : schur_mat (), unitary_mat (), selector (0) { }
 
   FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord,
                 bool calc_unitary = true)
-    : schur_mat (), unitary_mat () { init (a, ord, calc_unitary); }
+    : schur_mat (), unitary_mat (), selector (0)
+    {
+      init (a, ord, calc_unitary);
+    }
 
-  FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord, octave_idx_type& info,
-                bool calc_unitary = true)
-    : schur_mat (), unitary_mat () { info = init (a, ord, calc_unitary); }
+  FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord,
+                     octave_idx_type& info, bool calc_unitary = true)
+    : schur_mat (), unitary_mat (), selector (0)
+    {
+      info = init (a, ord, calc_unitary);
+    }
 
   FloatComplexSCHUR (const FloatComplexSCHUR& a)
-    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
+    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat), selector (0)
+    { }
 
   FloatComplexSCHUR (const FloatComplexMatrix& s, const FloatComplexMatrix& u);
 

@@ -149,7 +149,7 @@ FloatSCHUR::init (const FloatMatrix& a, const std::string& ord, bool calc_unitar
 }
 
 FloatSCHUR::FloatSCHUR (const FloatMatrix& s, const FloatMatrix& u)
-: schur_mat (s), unitary_mat (u)
+  : schur_mat (s), unitary_mat (u), selector (0)
 {
   octave_idx_type n = s.rows ();
   if (s.columns () != n || u.rows () != n || u.columns () != n)

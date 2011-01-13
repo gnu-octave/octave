@@ -36,9 +36,13 @@ public:
 
   HESS (void) : hess_mat (), unitary_hess_mat () { }
 
-  HESS (const Matrix& a) { init (a); }
+  HESS (const Matrix& a) : hess_mat (), unitary_hess_mat () { init (a); }
 
-  HESS (const Matrix& a, octave_idx_type& info) { info = init (a); }
+  HESS (const Matrix& a, octave_idx_type& info)
+    : hess_mat (), unitary_hess_mat ()
+    {
+      info = init (a);
+    }
 
   HESS (const HESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }

@@ -36,23 +36,30 @@ FloatComplexSVD
 {
 public:
 
-  FloatComplexSVD (void) { }
+  FloatComplexSVD (void)
+    : type_computed (), sigma (), left_sm (), right_sm ()
+    { }
 
   FloatComplexSVD (const FloatComplexMatrix& a, 
-                   SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
+                   SVD::type svd_type = SVD::std,
+                   SVD::driver svd_driver = SVD::GESVD) 
+    : type_computed (), sigma (), left_sm (), right_sm ()
     {
       init (a, svd_type, svd_driver);
     }
 
   FloatComplexSVD (const FloatComplexMatrix& a, octave_idx_type& info,
-                   SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD) 
+                   SVD::type svd_type = SVD::std,
+                   SVD::driver svd_driver = SVD::GESVD) 
+    : type_computed (), sigma (), left_sm (), right_sm ()
     {
       info = init (a, svd_type, svd_driver);
     }
 
   FloatComplexSVD (const FloatComplexSVD& a)
-    : type_computed (a.type_computed),
-      sigma (a.sigma), left_sm (a.left_sm), right_sm (a.right_sm) { }
+    : type_computed (a.type_computed), sigma (a.sigma),
+      left_sm (a.left_sm), right_sm (a.right_sm)
+    { }
 
   FloatComplexSVD& operator = (const FloatComplexSVD& a)
     {

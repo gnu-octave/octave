@@ -36,16 +36,20 @@ ComplexGEPBALANCE
 {
 public:
 
-  ComplexGEPBALANCE (void) : balanced_mat (), balancing_mat () { }
+  ComplexGEPBALANCE (void)
+    : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
+    { }
 
-  ComplexGEPBALANCE (const ComplexMatrix& a, const ComplexMatrix& b, const std::string& balance_job)
+  ComplexGEPBALANCE (const ComplexMatrix& a, const ComplexMatrix& b,
+                     const std::string& balance_job)
+    : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
     {
       init (a, b, balance_job); 
     }
 
   ComplexGEPBALANCE (const ComplexGEPBALANCE& a)
     : balanced_mat (a.balanced_mat), balanced_mat2 (a.balanced_mat2),
-    balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2) { }
+      balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2) { }
 
   ComplexGEPBALANCE& operator = (const ComplexGEPBALANCE& a)
     {

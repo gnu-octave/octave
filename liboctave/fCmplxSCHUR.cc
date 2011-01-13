@@ -149,7 +149,7 @@ FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
 
 FloatComplexSCHUR::FloatComplexSCHUR (const FloatComplexMatrix& s, 
                                       const FloatComplexMatrix& u)
-: schur_mat (s), unitary_mat (u)
+  : schur_mat (s), unitary_mat (u), selector (0)
 {
   octave_idx_type n = s.rows ();
   if (s.columns () != n || u.rows () != n || u.columns () != n)
@@ -158,7 +158,8 @@ FloatComplexSCHUR::FloatComplexSCHUR (const FloatComplexMatrix& s,
 }
 
 FloatComplexSCHUR::FloatComplexSCHUR (const FloatSCHUR& s)
-: schur_mat (s.schur_matrix ()), unitary_mat (s.unitary_matrix ())
+  : schur_mat (s.schur_matrix ()), unitary_mat (s.unitary_matrix ()),
+    selector (0)
 {
   octave_idx_type n = schur_mat.rows ();
   if (n > 0)

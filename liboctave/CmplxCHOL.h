@@ -36,11 +36,17 @@ ComplexCHOL
 {
 public:
 
-  ComplexCHOL (void) : chol_mat () { }
+  ComplexCHOL (void) : chol_mat (), xrcond (0) { }
 
-  ComplexCHOL (const ComplexMatrix& a, bool calc_cond = false) { init (a, calc_cond); }
+  ComplexCHOL (const ComplexMatrix& a, bool calc_cond = false)
+    : chol_mat (), xrcond (0)
+    {
+      init (a, calc_cond);
+    }
 
-  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info, bool calc_cond = false)
+  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info,
+               bool calc_cond = false)
+    : chol_mat (), xrcond (0)
     {
       info = init (a, calc_cond);
     }

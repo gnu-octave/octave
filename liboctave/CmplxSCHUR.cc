@@ -148,9 +148,8 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
   return info;
 }
 
-ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& s, 
-                            const ComplexMatrix& u)
-: schur_mat (s), unitary_mat (u)
+ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& s, const ComplexMatrix& u)
+  : schur_mat (s), unitary_mat (u), selector (0)
 {
   octave_idx_type n = s.rows ();
   if (s.columns () != n || u.rows () != n || u.columns () != n)
@@ -159,7 +158,8 @@ ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& s,
 }
 
 ComplexSCHUR::ComplexSCHUR (const SCHUR& s)
-: schur_mat (s.schur_matrix ()), unitary_mat (s.unitary_matrix ())
+  : schur_mat (s.schur_matrix ()), unitary_mat (s.unitary_matrix ()),
+    selector (0)
 {
   octave_idx_type n = schur_mat.rows ();
   if (n > 0)

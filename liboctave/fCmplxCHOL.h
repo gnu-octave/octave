@@ -36,11 +36,17 @@ FloatComplexCHOL
 {
 public:
 
-  FloatComplexCHOL (void) : chol_mat () { }
+  FloatComplexCHOL (void) : chol_mat (), xrcond (0) { }
 
-  FloatComplexCHOL (const FloatComplexMatrix& a, bool calc_cond = false) { init (a, calc_cond); }
+  FloatComplexCHOL (const FloatComplexMatrix& a, bool calc_cond = false)
+    : chol_mat (), xrcond (0)
+    {
+      init (a, calc_cond);
+    }
 
-  FloatComplexCHOL (const FloatComplexMatrix& a, octave_idx_type& info, bool calc_cond = false)
+  FloatComplexCHOL (const FloatComplexMatrix& a, octave_idx_type& info,
+                    bool calc_cond = false)
+    : chol_mat (), xrcond (0)
     {
       info = init (a, calc_cond);
     }
@@ -71,13 +77,15 @@ public:
 
   octave_idx_type downdate (const FloatComplexColumnVector& u);
 
-  octave_idx_type insert_sym (const FloatComplexColumnVector& u, octave_idx_type j);
+  octave_idx_type insert_sym (const FloatComplexColumnVector& u,
+                              octave_idx_type j);
 
   void delete_sym (octave_idx_type j);
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexCHOL& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatComplexCHOL& a);
 
 private:
 

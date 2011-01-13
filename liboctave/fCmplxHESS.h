@@ -36,9 +36,17 @@ public:
 
   FloatComplexHESS (void) : hess_mat (), unitary_hess_mat () { }
 
-  FloatComplexHESS (const FloatComplexMatrix& a) { init (a); }
+  FloatComplexHESS (const FloatComplexMatrix& a)
+    : hess_mat (), unitary_hess_mat ()
+    {
+      init (a);
+    }
 
-  FloatComplexHESS (const FloatComplexMatrix& a, octave_idx_type& info) { info = init (a); }
+  FloatComplexHESS (const FloatComplexMatrix& a, octave_idx_type& info)
+    : hess_mat (), unitary_hess_mat ()
+    {
+      info = init (a);
+    }
 
   FloatComplexHESS (const FloatComplexHESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }

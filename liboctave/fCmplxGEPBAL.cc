@@ -36,9 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (cggbal, CGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-                             FloatComplex* A, const octave_idx_type& LDA, FloatComplex* B,
-                             const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
+  F77_FUNC (cggbal, CGGBAL) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type& N,
+                             FloatComplex* A, const octave_idx_type& LDA,
+                             FloatComplex* B, const octave_idx_type& LDB,
+                             octave_idx_type& ILO, octave_idx_type& IHI,
                              float* LSCALE, float* RSCALE,
                              float* WORK, octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL);
@@ -46,7 +48,8 @@ extern "C"
   F77_RET_T
   F77_FUNC (sggbak, SGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N, const octave_idx_type& ILO,
+                             const octave_idx_type& N,
+                             const octave_idx_type& ILO,
                              const octave_idx_type& IHI, const float* LSCALE,
                              const float* RSCALE, octave_idx_type& M, float* V,
                              const octave_idx_type& LDV, octave_idx_type& INFO

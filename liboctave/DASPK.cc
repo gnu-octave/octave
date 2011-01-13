@@ -36,27 +36,33 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 typedef octave_idx_type (*daspk_fcn_ptr) (const double&, const double*,
-                              const double*, const double&,
-                              double*, octave_idx_type&, double*, octave_idx_type*);
+                                          const double*, const double&,
+                                          double*, octave_idx_type&,
+                                          double*, octave_idx_type*);
 
 typedef octave_idx_type (*daspk_jac_ptr) (const double&, const double*,
-                              const double*, double*,
-                              const double&, double*, octave_idx_type*);
+                                          const double*, double*,
+                                          const double&, double*,
+                                          octave_idx_type*);
 
-typedef octave_idx_type (*daspk_psol_ptr) (const octave_idx_type&, const double&,
-                               const double*, const double*,
-                               const double*, const double&,
-                               const double*, double*, octave_idx_type*,
-                               double*, const double&, octave_idx_type&,
-                               double*, octave_idx_type*);
+typedef octave_idx_type (*daspk_psol_ptr) (const octave_idx_type&,
+                                           const double&, const double*,
+                                           const double*, const double*,
+                                           const double&, const double*,
+                                           double*, octave_idx_type*,
+                                           double*, const double&,
+                                           octave_idx_type&, double*,
+                                           octave_idx_type*);
 
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const octave_idx_type&, double&,
-                             double*, double*, double&, const octave_idx_type*,
-                             const double*, const double*, octave_idx_type&,
-                             double*, const octave_idx_type&, octave_idx_type*, const octave_idx_type&,
+  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const octave_idx_type&,
+                             double&, double*, double*, double&,
+                             const octave_idx_type*, const double*,
+                             const double*, octave_idx_type&,
+                             double*, const octave_idx_type&,
+                             octave_idx_type*, const octave_idx_type&,
                              const double*, const octave_idx_type*,
                              daspk_jac_ptr, daspk_psol_ptr);
 }

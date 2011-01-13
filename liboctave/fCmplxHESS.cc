@@ -33,25 +33,32 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (cgebal, CGEBAL) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, FloatComplex*, const octave_idx_type&,
-                             octave_idx_type&, octave_idx_type&, float*, octave_idx_type&
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, octave_idx_type&,
+                             octave_idx_type&, float*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
  
   F77_RET_T
-  F77_FUNC (cgehrd, CGEHRD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&, FloatComplex*,
-                             FloatComplex*, const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cgehrd, CGEHRD) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, FloatComplex*,
+                             FloatComplex*, const octave_idx_type&,
+                             octave_idx_type&);
  
   F77_RET_T
-  F77_FUNC (cunghr, CUNGHR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
-                             FloatComplex*, const octave_idx_type&, FloatComplex*,
-                             FloatComplex*, const octave_idx_type&, octave_idx_type&);
+  F77_FUNC (cunghr, CUNGHR) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, FloatComplex*,
+                             FloatComplex*, const octave_idx_type&,
+                             octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (cgebak, CGEBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, float*,
-                             const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 }

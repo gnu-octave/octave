@@ -58,26 +58,28 @@ extern "C"
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*, const octave_idx_type&,
-                             Complex*, double*);
+  F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*, double*);
 
   F77_RET_T
-  F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*, const octave_idx_type&,
-                             Complex*, double*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (zchinx, ZCHINX) (const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, Complex*, double*, 
+  F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*,
+                             const octave_idx_type&, Complex*, double*,
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zchdex, ZCHDEX) (const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, double*);
+  F77_FUNC (zchinx, ZCHINX) (const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             Complex*, double*, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (zchshx, ZCHSHX) (const octave_idx_type&, Complex*, const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&, 
-                             Complex*, double*);
+  F77_FUNC (zchdex, ZCHDEX) (const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             double*);
+
+  F77_RET_T
+  F77_FUNC (zchshx, ZCHSHX) (const octave_idx_type&, Complex*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, Complex*, double*);
 #endif
 }
 

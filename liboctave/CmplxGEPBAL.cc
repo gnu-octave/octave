@@ -36,9 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-                             Complex* A, const octave_idx_type& LDA, Complex* B,
-                             const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
+  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type& N, Complex* A,
+                             const octave_idx_type& LDA, Complex* B,
+                             const octave_idx_type& LDB,
+                             octave_idx_type& ILO, octave_idx_type& IHI,
                              double* LSCALE, double* RSCALE,
                              double* WORK, octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL);
@@ -46,9 +48,11 @@ extern "C"
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type& N, const octave_idx_type& ILO,
-                             const octave_idx_type& IHI, const double* LSCALE,
-                             const double* RSCALE, octave_idx_type& M, double* V,
+                             const octave_idx_type& N,
+                             const octave_idx_type& ILO,
+                             const octave_idx_type& IHI,
+                             const double* LSCALE, const double* RSCALE,
+                             octave_idx_type& M, double* V,
                              const octave_idx_type& LDV, octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);

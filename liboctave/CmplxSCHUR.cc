@@ -37,16 +37,19 @@ extern "C"
                              F77_CONST_CHAR_ARG_DECL,
                              ComplexSCHUR::select_function,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&,
-                             Complex*, Complex*, const octave_idx_type&, double&,
-                             double&, Complex*, const octave_idx_type&, double*, octave_idx_type*,
-                             octave_idx_type&
+                             const octave_idx_type&, Complex*,
+                             const octave_idx_type&, octave_idx_type&,
+                             Complex*, Complex*, const octave_idx_type&,
+                             double&, double&, Complex*,
+                             const octave_idx_type&, double*,
+                             octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
+
   F77_RET_T
-  F77_FUNC (zrsf2csf, ZRSF2CSF) (const octave_idx_type&,
-                                 Complex *, Complex *, double *, double *);
+  F77_FUNC (zrsf2csf, ZRSF2CSF) (const octave_idx_type&, Complex *,
+                                 Complex *, double *, double *);
 }
 
 static octave_idx_type

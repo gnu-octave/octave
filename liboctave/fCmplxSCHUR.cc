@@ -37,16 +37,18 @@ extern "C"
                              F77_CONST_CHAR_ARG_DECL,
                              FloatComplexSCHUR::select_function,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, FloatComplex*, const octave_idx_type&, octave_idx_type&,
-                             FloatComplex*, FloatComplex*, const octave_idx_type&, float&,
-                             float&, FloatComplex*, const octave_idx_type&, float*, octave_idx_type*,
-                             octave_idx_type&
+                             const octave_idx_type&, FloatComplex*,
+                             const octave_idx_type&, octave_idx_type&,
+                             FloatComplex*, FloatComplex*,
+                             const octave_idx_type&, float&, float&,
+                             FloatComplex*, const octave_idx_type&,
+                             float*, octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
-  F77_FUNC (crsf2csf, CRSF2CSF) (const octave_idx_type&,
-                                 FloatComplex *, FloatComplex *, float *, float *);
+  F77_FUNC (crsf2csf, CRSF2CSF) (const octave_idx_type&, FloatComplex *,
+                                 FloatComplex *, float *, float *);
 }
 
 static octave_idx_type

@@ -58,26 +58,28 @@ extern "C"
 #ifdef HAVE_QRUPDATE
 
   F77_RET_T
-  F77_FUNC (dch1up, DCH1UP) (const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*);
+  F77_FUNC (dch1up, DCH1UP) (const octave_idx_type&, double*,
+                             const octave_idx_type&, double*, double*);
 
   F77_RET_T
-  F77_FUNC (dch1dn, DCH1DN) (const octave_idx_type&, double*, const octave_idx_type&,
-                             double*, double*, octave_idx_type&);
-
-  F77_RET_T
-  F77_FUNC (dchinx, DCHINX) (const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, double*, double*, 
+  F77_FUNC (dch1dn, DCH1DN) (const octave_idx_type&, double*,
+                             const octave_idx_type&, double*, double*,
                              octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dchdex, DCHDEX) (const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, double*);
+  F77_FUNC (dchinx, DCHINX) (const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             double*, double*, octave_idx_type&);
 
   F77_RET_T
-  F77_FUNC (dchshx, DCHSHX) (const octave_idx_type&, double*, const octave_idx_type&,
-                             const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (dchdex, DCHDEX) (const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
                              double*);
+
+  F77_RET_T
+  F77_FUNC (dchshx, DCHSHX) (const octave_idx_type&, double*,
+                             const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, double*);
 #endif
 }
 

@@ -38,10 +38,12 @@ extern "C"
                              F77_CONST_CHAR_ARG_DECL,
                              FloatSCHUR::select_function,
                              F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, float*, const octave_idx_type&, octave_idx_type&,
+                             const octave_idx_type&, float*,
+                             const octave_idx_type&, octave_idx_type&,
                              float*, float*, float*, const octave_idx_type&,
                              float&, float&, float*, const octave_idx_type&,
-                             octave_idx_type*, const octave_idx_type&, octave_idx_type*, octave_idx_type&
+                             octave_idx_type*, const octave_idx_type&,
+                             octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);

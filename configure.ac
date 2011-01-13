@@ -1851,6 +1851,18 @@ if $try_extra_warning_flags; then
   OCTAVE_CC_FLAG(-Wformat, [
     WARN_CFLAGS="$WARN_CFLAGS -Wformat";
     AC_MSG_RESULT([adding -Wformat to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wpointer-arith, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wpointer-arith";
+    AC_MSG_RESULT([adding -Wpointer-arith to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wmissing-prototypes, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wmissing-prototypes";
+    AC_MSG_RESULT([adding -Wmissing-prototypes to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wstrict-prototypes, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wstrict-prototypes";
+    AC_MSG_RESULT([adding -Wstrict-prototypes to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-Wwrite-strings, [
+    WARN_CFLAGS="$WARN_CFLAGS -Wwrite-strings";
+    AC_MSG_RESULT([adding -Wwrite-strings to WARN_CFLAGS])])
 
   OCTAVE_CXX_FLAG(-Wall, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall";
@@ -1867,13 +1879,17 @@ if $try_extra_warning_flags; then
   OCTAVE_CXX_FLAG(-Wformat, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wformat";
     AC_MSG_RESULT([adding -Wformat to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wpointer-arith, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wpointer-arith";
+    AC_MSG_RESULT([adding -Wpointer-arith to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-Wwrite-strings, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -Wwrite-strings";
+    AC_MSG_RESULT([adding -Wwrite-strings to WARN_CXXFLAGS])])
 fi
 
-GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Wmissing-prototypes \
-  -Wpointer-arith -Wstrict-prototypes -Wwrite-strings"
+GCC_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion"
 
-GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Wpointer-arith \
-  -Wwrite-strings -Weffc++"
+GXX_STRICT_FLAGS="-Wcast-align -Wcast-qual -Wconversion -Weffc++"
 
 try_strict_warning_flags=false
 

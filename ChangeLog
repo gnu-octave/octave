@@ -1,3 +1,10 @@
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
+	* configure.ac (AC_ARG_ENABLE(extra-warning-flags)): Check for
+	-Wpointer-arith, -Wmissing-prototypes, -Wstrict-prototypes, and
+	-Wwrite-strings and add them to WARN_CFLAGS.  Check for
+	-Wpointer-arith and add them to WARN_CXXFLAGS.
+
 2011-01-12  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl: Generate initialization lists and in-line code for

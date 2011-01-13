@@ -360,6 +360,63 @@ sub parse_set_code
     }
 }
 
+sub emit_copy_body
+{
+  local ($pfx, $var) = @_;
+
+  for ($i = 0; $i < $opt_num; $i++)
+    {
+      print "${pfx}$optvar[$i] = ${var}.$optvar[$i];\n";
+    }
+
+  print "${pfx}reset = ${var}.reset;\n";
+}
+
+## To silence GCC warnings, we create an initialization list even
+## though the init function actually does the work of initialization.
+
+sub emit_default_init_list
+{
+  local ($prefix) = @_;
+
+  for ($i = 0; $i < $opt_num; $i++)
+    {
+      if ($i == 0)
+        {
+          $pfx = "";
+        }
+      else
+        {
+          $pfx = $prefix;
+        }
+
+      print "${pfx}$optvar[$i] (),\n";
+    }
+
+  print "${prefix}reset ()\n";
+}
+
+sub emit_copy_ctor_init_list
+{
+  local ($prefix, $var) = @_;
+
+  for ($i = 0; $i < $opt_num; $i++)
+    {
+      if ($i == 0)
+        {
+          $pfx = "";
+        }
+      else
+        {
+          $pfx = $prefix;
+        }
+
+      print "${pfx}$optvar[$i] ($var.$optvar[$i]),\n";
+    }
+
+  print "${prefix}reset ($var.reset)\n";
+}
+
 sub emit_opt_class_header
 {
   local ($i, $s);
@@ -380,14 +437,30 @@ ${class_name}
 {
 public:
 
-  ${class_name} (void) { init (); }
+  ${class_name} (void)
+    : ";
 
-  ${class_name} (const ${class_name}& opt) { copy (opt); }
+  &emit_default_init_list ("      ");
+
+  print "    {
+      init ();
+    }
+
+  ${class_name} (const ${class_name}& opt)
+    : ";
+
+  &emit_copy_ctor_init_list ("      ", "opt");
+
+  print "    { }
 
   ${class_name}& operator = (const ${class_name}& opt)
     {
       if (this != &opt)
-        copy (opt);
+        {\n";
+
+  &emit_copy_body ("          ", "opt");
+
+  print "        }
 
       return *this;
     }
@@ -415,22 +488,15 @@ public:
   print "      reset = true;
     }\n";
 
-  print "\n  void copy (const ${class_name}& opt)\n    {\n";
-
-  for ($i = 0; $i < $opt_num; $i++)
-    {
-      print "      $optvar[$i] = opt.$optvar[$i];\n";
-    }
-
-  print "      reset = opt.reset;
-    }\n";
-
   ## For backward compatibility and because set_options is probably
   ## a better name in some contexts:
 
-  print "\n  void set_options (const ${class_name}& opt) { copy (opt); }\n";
+  print "\n  void set_options (const ${class_name}& opt)
+    {\n";
 
-  print "\n  void set_default_options (void) { init (); }\n";
+  &emit_copy_body ("      ", "opt");
+
+  print "    }\n\n  void set_default_options (void) { init (); }\n";
 
   for ($i = 0; $i < $opt_num; $i++)
     {

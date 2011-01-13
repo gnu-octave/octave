@@ -1,3 +1,8 @@
+2011-01-12  John W. Eaton  <jwe@octave.org>
+
+	* mk-opts.pl: Generate initialization lists and in-line code for
+	copying.
+
 2010-01-11  Rik  <octave@nomad.inbox5.com>
 
 	* ROADMAP: Update guide to Octave directory structure.

@@ -1,5 +1,12 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* general/interp1.m, general/interp2.m, polynomial/mkpp.m,
+	polynomial/pchip.m, polynomial/ppder.m, polynomial/ppint.m,
+	polynomial/ppjumps.m, polynomial/ppval.m, polynomial/spline.m,
+	polynomial/unmkpp.m: Improve docstrings
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/flops.m: Delete function which was unimplemented
 	in Octave and has been removed from Matlab since version 5.
 

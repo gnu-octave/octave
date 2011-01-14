@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
-## Computes the antiderivative of a piecewise polynomial struct @var{pp}.
+## @deftypefn  {Function File} {@var{ppi} =} ppint (@var{pp})
+## @deftypefnx {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
+## Compute the integral of the piecewise polynomial struct @var{pp}.
 ## @var{c}, if given, is the constant of integration.
-## @seealso{mkpp,ppval}
+## @seealso{mkpp,ppval,ppder}
 ## @end deftypefn
 
 function ppi = ppint (pp, c)

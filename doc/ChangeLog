@@ -1,5 +1,10 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/poly.txi: Add undocumented ppder, ppint, ppjumps
+	functions to documentation.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/system.txi: Add undocumented matlabroot to documentation.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>

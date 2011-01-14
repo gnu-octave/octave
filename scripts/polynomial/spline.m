@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ##
 ## Return the cubic spline interpolant of @var{y} at points @var{x}. 
-## If called with two arguments, @code{spline} returns the piece-wise
+## If called with two arguments, @code{spline} returns the piecewise
 ## polynomial @var{pp} that may later be used with @code{ppval} to
 ## evaluate the polynomial at specific points.
 ## If called with a third input argument, @code{spline} evaluates the 

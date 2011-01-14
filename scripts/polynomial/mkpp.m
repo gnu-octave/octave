@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{pp} =} mkpp (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{x}, @var{p}, @var{d})
 ## 
-## Construct a piece-wise polynomial structure from sample points
+## Construct a piecewise polynomial structure from sample points
 ## @var{x} and coefficients @var{p}.  The i-th row of @var{p},
 ## @code{@var{p} (@var{i},:)}, contains the coefficients for the polynomial
 ## over the @var{i}-th interval, ordered from highest to 

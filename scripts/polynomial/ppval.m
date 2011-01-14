@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
-## Evaluate piece-wise polynomial @var{pp} at the points @var{xi}.  
+## Evaluate piecewise polynomial @var{pp} at the points @var{xi}.  
 ## If @var{pp} is scalar-valued, the result is an array of the same shape as
 ## @var{xi}.
 ## Otherwise, the size of the result is @code{[pp.d, length(@var{xi})]} if

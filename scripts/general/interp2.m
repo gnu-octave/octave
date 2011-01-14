@@ -59,7 +59,7 @@
 ## Linear interpolation from nearest neighbors.
 ##
 ## @item 'pchip'
-## Piece-wise cubic Hermite interpolating polynomial.
+## Piecewise cubic Hermite interpolating polynomial.
 ##
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors.

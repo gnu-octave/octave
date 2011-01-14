@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
 ##
 ## Piecewise Cubic Hermite interpolating polynomial.  Called with two
-## arguments, the piece-wise polynomial @var{pp} is returned, that may
+## arguments, the piecewise polynomial @var{pp} is returned, that may
 ## later be used with @code{ppval} to evaluate the polynomial at
 ## specific points.
 ##
@@ -49,7 +49,7 @@
 ## for compatibility.
 ##
 ## Called with a third input argument, @code{pchip} evaluates the 
-## piece-wise polynomial at the points @var{xi}.  There is an equivalence
+## piecewise polynomial at the points @var{xi}.  There is an equivalence
 ## between @code{ppval (pchip (@var{x}, @var{y}), @var{xi})} and
 ## @code{pchip (@var{x}, @var{y}, @var{xi})}.
 ##

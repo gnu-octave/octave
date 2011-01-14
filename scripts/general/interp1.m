@@ -40,7 +40,7 @@
 ## Linear interpolation from nearest neighbors
 ##
 ## @item 'pchip'
-## Piece-wise cubic Hermite interpolating polynomial
+## Piecewise cubic Hermite interpolating polynomial
 ##
 ## @item 'cubic'
 ## Cubic interpolation from four nearest neighbors
@@ -60,7 +60,7 @@
 ## endpoints with that number.  If @var{extrap} is missing, assume NA.
 ##
 ## If the string argument 'pp' is specified, then @var{xi} should not be
-## supplied and @code{interp1} returns the piece-wise polynomial that
+## supplied and @code{interp1} returns the piecewise polynomial that
 ## can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
 ## @var{y}, @var{method}, 'pp'), @var{xi}) == interp1 (@var{x}, @var{y},

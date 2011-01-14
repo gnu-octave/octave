@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{jumps} =} ppjumps (@var{pp})
-## Evaluates the boundary jumps of a piecewise polynomial.
-## If there are n intervals, and the dimensionality of pp is d,
-## the resulting array has dimensions @code{[d, n-1]}.
+## Evaluate the boundary jumps of a piecewise polynomial.
+## If there are @math{n} intervals, and the dimensionality of @var{pp} is
+## @math{d}, the resulting array has dimensions @code{[d, n-1]}.
+## @seealso{mkpp}
 ## @end deftypefn
 
 function jumps = ppjumps (pp)
@@ -52,5 +53,4 @@ function jumps = ppjumps (pp)
   jumps = reshape (rlim - llim, [d, n-1]);
 
 endfunction
-
 

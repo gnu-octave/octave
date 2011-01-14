@@ -135,13 +135,13 @@ to the functions described in the aforementioned chapter, is to fit
 a single polynomial to some given data points.  To avoid a highly
 fluctuating polynomial, one most often wants to fit a low-order polynomial
 to data.  This usually means that it is necessary to fit the polynomial
-in a least-squares sense, which is what the @code{polyfit} function does.
+in a least-squares sense, which just is what the @code{polyfit} function does.
 
 @DOCSTRING(polyfit)
 
 In situations where a single polynomial isn't good enough, a solution
 is to use several polynomials pieced together.  The function @code{mkpp}
-creates a piece-wise polynomial, @code{ppval} evaluates the function 
+creates a piecewise polynomial, @code{ppval} evaluates the function 
 created by @code{mkpp}, and @code{unmkpp} returns detailed information
 about the function.
 
@@ -162,11 +162,17 @@ plot(xi, yi);
 @end group
 @end example
 
-@DOCSTRING(ppval)
-
 @DOCSTRING(mkpp)
 
 @DOCSTRING(unmkpp)
+
+@DOCSTRING(ppval)
+
+@DOCSTRING(ppder)
+
+@DOCSTRING(ppint)
+
+@DOCSTRING(ppjumps)
 
 @node Miscellaneous Functions
 @section Miscellaneous Functions

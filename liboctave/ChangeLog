@@ -1,3 +1,11 @@
+2011-01-14  David Grundberg  <individ@acc.umu.se>
+
+	* SparseQR.cc (SparseQR_rep::SparseQR_rep) [HAVE_CXSPARSE]:
+	Make initialization list depend on macro. Fixes compile error when
+	macro isn't defined.
+	* SparseCmplxQR.cc (SparseComplexQR_rep::SparseComplexQR_rep)
+	[HAVE_CXSPARSE]: Ditto.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (xfloor): Move function body here from

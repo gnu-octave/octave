@@ -30,7 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 SparseQR::SparseQR_rep::SparseQR_rep (const SparseMatrix& a, int order)
-  : count (1), nrows (0), S (0), N (0)
+  : count (1), nrows (0)
+#ifdef HAVE_CXSPARSE
+    , S (0), N (0)
+#endif
 {
 #ifdef HAVE_CXSPARSE
   CXSPARSE_DNAME () A;

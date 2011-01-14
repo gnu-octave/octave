@@ -465,6 +465,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isieee)
 
+@DOCSTRING(matlabroot)
+
 @DOCSTRING(OCTAVE_HOME)
 
 @DOCSTRING(OCTAVE_VERSION)

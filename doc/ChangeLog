@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/system.txi: Add undocumented matlabroot to documentation.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/linalg.txi: Add undocumented svd_driver to documentation.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>

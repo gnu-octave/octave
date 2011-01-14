@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/module.mk: Remove texas_lotto.m from build system.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/texas_lotto.m: Remove Easter Egg function.
 
 2011-01-14  John W. Eaton  <jwe@octave.org>

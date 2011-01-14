@@ -61,7 +61,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
   miscellaneous/tempname.m \
-  miscellaneous/texas_lotto.m \
   miscellaneous/unimplemented.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \

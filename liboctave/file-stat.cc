@@ -30,9 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "filemode.h"
+
 #include "file-ops.h"
 #include "file-stat.h"
-#include "filemode.h"
 #include "statdefs.h"
 
 // FIXME -- the is_* and mode_as_string functions are only valid
@@ -156,7 +157,7 @@ base_file_stat::mode_as_string (void) const
 {
   char buf[11];
 
-  mode_string (fs_mode, buf);
+  strmode (fs_mode, buf);
 
   buf[10] = '\0';
 

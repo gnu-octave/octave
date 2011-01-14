@@ -197,7 +197,6 @@ INCS = \
   dir-ops.h \
   file-ops.h \
   file-stat.h \
-  filemode.h \
   functor.h \
   glob-match.h \
   idx-vector.h \
@@ -478,7 +477,6 @@ BUILT_LIBOCTAVE_CXX_SOURCES = \
 
 LIBOCTAVE_C_SOURCES = \
   f2c-main.c \
-  filemode.c \
   lo-cieee.c \
   lo-cutils.c \
   randgamma.c \

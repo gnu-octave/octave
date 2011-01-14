@@ -1,5 +1,13 @@
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
+	* file-stat.cc (mode_as_string): Call strmode instead of mode_string.
+
+	* filemode.h, filemode.c: Delete.
+	* Makefile.am (INCS): Remove filemode.h from the list.
+	(LIBOCTAVE_C_SOURCES): Remove filemode.c from the list.
+
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
 	* Update copyright notices for 2011.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>

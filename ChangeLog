@@ -1,3 +1,7 @@
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
+	* bootstrap, bootstrap.conf: Update from gnulib sources.
+
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include mkstemp in the list.

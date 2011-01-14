@@ -1,5 +1,10 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/flops.m: Delete function which was unimplemented
+	in Octave and has been removed from Matlab since version 5.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* specfun/nthroot.m: Add Seealso references to docstring.
 	
 2011-01-14  Rik  <octave@nomad.inbox5.com>

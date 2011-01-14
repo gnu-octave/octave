@@ -22,7 +22,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/edit.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
-  miscellaneous/flops.m \
   miscellaneous/fullfile.m \
   miscellaneous/getappdata.m \
   miscellaneous/getfield.m \

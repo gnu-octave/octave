@@ -23,8 +23,17 @@
 
 ## Author: jwe
 
+## Deprecated in version 3.4
+
 function replot ()
   
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "replot is obsolete and will be removed from a future version of Octave; please use refresh instead");
+  endif
+
   if (nargin == 0)
     drawnow ();
   else

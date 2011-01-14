@@ -410,7 +410,7 @@ Summary of important user-visible changes for version 3.4:
     release after 3.4):
 
       autocor  betai    dispatch  gammai     values
-      autocov  cellidx  fstat     is_global
+      autocov  cellidx  fstat     is_global  replot
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

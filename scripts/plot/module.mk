@@ -141,7 +141,6 @@ plot_FCN_FILES = \
   plot/quiver3.m \
   plot/refresh.m \
   plot/refreshdata.m \
-  plot/replot.m \
   plot/ribbon.m \
   plot/rose.m \
   plot/saveas.m \

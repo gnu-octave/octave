@@ -1,3 +1,7 @@
+2010-01-14  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Add replot to deprecated function list.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap.conf (gnulib_modules): Include filemode in the list.

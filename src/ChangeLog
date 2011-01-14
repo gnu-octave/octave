@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/svd.cc: Add Seealso references to svd.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* src/mappers.cc: Add Seealso links between sqrt, cbrt, nthroot
 	functions.
 

@@ -121,6 +121,7 @@ v =\n\
 If given a second argument, @code{svd} returns an economy-sized\n\
 decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 @var{v}.\n\
+@seealso{svd_driver, svds, eig}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -406,8 +407,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{old} =} svd_driver (@var{new})\n\
-Sets or queries the underlying @sc{lapack} driver used by svd.\n\
-Currently recognized are \"gesvd\" and \"gesdd\".  Default is \"gesvd\".\n\
+Set or query the underlying @sc{lapack} driver used by @code{svd}.\n\
+Currently recognized values are \"gesvd\" and \"gesdd\".  The default\n\
+is \"gesvd\".\n\
 @seealso{svd}\n\
 @end deftypefn")
 {

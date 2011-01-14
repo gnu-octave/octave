@@ -159,6 +159,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(svd)
 
+@DOCSTRING(svd_driver)
+
 @c FIXME -- should there be a new section here?
 
 @DOCSTRING(housh)

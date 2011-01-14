@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Jaroslav Hajek
+## Copyright (C) 2010-2011 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##

@@ -1,5 +1,4 @@
-## Copyright (C) 2000, 2001, 2002, 2004, 2005, 2006, 2007, 2009
-##               Teemu Ikonen
+## Copyright (C) 2000-2011 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##

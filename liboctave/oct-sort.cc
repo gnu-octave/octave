@@ -1,7 +1,8 @@
 /*
-Copyright (C) 2003, 2004, 2005, 2006, 2007 David Bateman
-Copyright (C) 2008, 2009 Jaroslav Hajek
-Copyright (C) 2009, 2010 VZLU Prague
+
+Copyright (C) 2003-2011 David Bateman
+Copyright (C) 2008-2009 Jaroslav Hajek
+Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 

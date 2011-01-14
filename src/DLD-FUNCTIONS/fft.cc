@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 1997, 1999, 2002, 2004, 2005, 2006, 2007, 2008 David Bateman
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1997-2011 David Bateman
+Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
 

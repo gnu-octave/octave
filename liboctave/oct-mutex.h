@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008 Michael Goffioul
+Copyright (C) 2008-2011 Michael Goffioul
 
 This file is part of Octave.
 

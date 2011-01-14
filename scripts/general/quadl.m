@@ -1,4 +1,4 @@
-## Copyright (C) 1998, 2006, 2007, 2008, 2009 Walter Gautschi
+## Copyright (C) 1998-2011 Walter Gautschi
 ##
 ## This file is part of Octave.
 ##

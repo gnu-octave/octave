@@ -1,7 +1,7 @@
 // misc-extern.cc                                     -*- C++ -*-
 /*
 
-Copyright (C) 1996, 1997, 2002, 2005, 2007 John W. Eaton
+Copyright (C) 1996-2011 John W. Eaton
 
 This file is part of Octave.
 

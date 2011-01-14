@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
+Copyright (C) 2003-2011 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 Copyright (C) 2010 Jaroslav Hajek
 

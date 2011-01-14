@@ -1,4 +1,4 @@
-## Copyright (C) 1997, 2006, 2007, 2009 by Vincent Cautaerts
+## Copyright (C) 1997-2011 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##

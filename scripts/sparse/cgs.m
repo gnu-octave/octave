@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Radek Salac
+## Copyright (C) 2008-2011 Radek Salac
 ##
 ## This file is part of Octave.
 ##

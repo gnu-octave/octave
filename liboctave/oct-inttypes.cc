@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2008, 2009 Jaroslav Hajek 
-Copyright (C) 2004, 2005, 2006, 2007 John W. Eaton
+Copyright (C) 2004-2011 John W. Eaton
+Copyright (C) 2008-2009 Jaroslav Hajek 
 
 This file is part of Octave.
 

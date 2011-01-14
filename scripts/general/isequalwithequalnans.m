@@ -1,4 +1,4 @@
-## Copyright (C) 2005, 2006, 2007 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2011 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##

@@ -1,3 +1,7 @@
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
+	* Update copyright notices for 2011.
+
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (mkstemp): Delete.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 David Bateman
+Copyright (C) 2004-2011 David Bateman
 Copyright (C) 2010 Jaroslav Hajek, Jordi Gutiérrez Hermoso
 
 This file is part of Octave.

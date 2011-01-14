@@ -1,9 +1,8 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1996, 1997, 1998, 2000, 2001, 2002, 2003, 2004, 2005,
-              2006, 2007, 2008, 2009 John W. Eaton
-Copyright (C) 2009, 2010 VZLU Prague, a.s.
+Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 2009-2010 VZLU Prague, a.s.
 
 This file is part of Octave.
 

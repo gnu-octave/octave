@@ -2,9 +2,7 @@ dnl configure.in
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-dnl               2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
-dnl               2009 John W. Eaton
+dnl Copyright (C) 1993-2011 John W. Eaton
 ### 
 ### This file is part of Octave.
 ### 

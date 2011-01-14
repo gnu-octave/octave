@@ -1,5 +1,5 @@
-## Copyright (C) 2007, 2008, 2009 Michael Goffioul
-## Copyright (C) 2007, 2008, 2009 David Bateman
+## Copyright (C) 2007-2011 Michael Goffioul
+## Copyright (C) 2007-2009 David Bateman
 ##
 ## This file is part of Octave.
 ##

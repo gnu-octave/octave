@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007, 2008, 2009 Bill Denney
+## Copyright (C) 2006-2011 Bill Denney
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.

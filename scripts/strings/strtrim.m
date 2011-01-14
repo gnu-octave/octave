@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 2007, 2008, 2009 Kurt Hornik
+## Copyright (C) 1996-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##

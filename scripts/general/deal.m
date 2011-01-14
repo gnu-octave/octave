@@ -1,4 +1,4 @@
-## Copyright (C) 1998, 2004, 2005, 2006, 2007 Ariel Tankus
+## Copyright (C) 1998-2011 Ariel Tankus
 ## 
 ## This file is part of Octave.
 ##

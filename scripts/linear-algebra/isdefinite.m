@@ -1,4 +1,4 @@
-## Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Gabriele Pannocchia
+## Copyright (C) 2003-2011 Gabriele Pannocchia
 ##
 ## This file is part of Octave.
 ##

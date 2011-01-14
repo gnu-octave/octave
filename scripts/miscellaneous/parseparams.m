@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007 Alexander Barth
+## Copyright (C) 2006-2011 Alexander Barth
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.

@@ -1,4 +1,4 @@
-## Copyright (C) 2007 Thomas Treichl
+## Copyright (C) 2007-2011 Thomas Treichl
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2009 John W. Eaton
+## Copyright (C) 2009-2011 John W. Eaton
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by

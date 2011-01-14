@@ -1,4 +1,4 @@
-## Copyright (C) 2003, 2007, 2008, 2009 Shai Ayal
+## Copyright (C) 2003-2011 Shai Ayal
 ##
 ## This file is part of Octave.
 ##

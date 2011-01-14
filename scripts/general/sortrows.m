@@ -1,4 +1,4 @@
-## Copyright (C) 2000, 2005, 2007, 2008 Daniel Calvelo
+## Copyright (C) 2000-2011 Daniel Calvelo
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.

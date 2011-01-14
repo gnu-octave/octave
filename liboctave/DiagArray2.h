@@ -1,9 +1,8 @@
 // Template array classes
 /*
 
-Copyright (C) 1996, 1997, 2000, 2002, 2003, 2004, 2005, 2006, 2007
-              John W. Eaton
-Copyright (C) 2008, 2009 Jaroslav Hajek
+Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.

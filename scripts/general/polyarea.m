@@ -1,4 +1,4 @@
-## Copyright (C) 1999, 2006, 2007, 2009 David M. Doolin
+## Copyright (C) 1999-2011 David M. Doolin
 ##
 ## This file is part of Octave.
 ##

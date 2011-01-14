@@ -1,5 +1,5 @@
-## Copyright (C) 2008, 2009 Jaroslav Hajek
-## Copyright (C) 2000, 2006, 2007 Paul Kienzle
+## Copyright (C) 2008-2011 Jaroslav Hajek
+## Copyright (C) 2000, 2006-2007 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##

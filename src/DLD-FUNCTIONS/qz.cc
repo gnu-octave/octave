@@ -1,7 +1,6 @@
 /*
 
-Copyright (C) 1998, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2007,
-              2008, 2009 A. S. Hodel
+Copyright (C) 1998-2011 A. S. Hodel
 
 This file is part of Octave.
 

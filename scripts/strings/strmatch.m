@@ -1,4 +1,4 @@
-## Copyright (C) 2000, 2005, 2006, 2007, 2009 Paul Kienzle
+## Copyright (C) 2000-2011 Paul Kienzle
 ## Copyright (C) 2003 Alois Schloegl
 ## Copyright (C) 2010 VZLU Prague
 ##

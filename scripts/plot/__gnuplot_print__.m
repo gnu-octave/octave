@@ -1,4 +1,4 @@
-## Copyright (C) 1999, 2005, 2006, 2007, 2008, 2009 Daniel Heiserer
+## Copyright (C) 1999-2011 Daniel Heiserer
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This file is part of Octave.

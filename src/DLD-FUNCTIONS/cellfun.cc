@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005, 2006, 2007, 2008, 2009 Mohamed Kamoun
+Copyright (C) 2005-2011 Mohamed Kamoun
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010 John W. Eaton
+Copyright (C) 2010-2011 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002, 2009 Andy Adler
+Copyright (C) 2002-2011 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007, 2008 Alexander Barth
+Copyright (C) 2007-2011 Alexander Barth
 
 This file is part of Octave.
 

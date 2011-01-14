@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2009 Jaroslav Hajek
-Copyright (C) 2009, 2010 VZLU Prague
+Copyright (C) 2009-2011 Jaroslav Hajek
+Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
 

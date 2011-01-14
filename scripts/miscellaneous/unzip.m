@@ -1,4 +1,4 @@
-## Copyright (C) 2005, 2006, 2007, 2008 Søren Hauberg
+## Copyright (C) 2005-2011 Søren Hauberg
 ## 
 ## This file is part of Octave.
 ##

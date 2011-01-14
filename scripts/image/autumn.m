@@ -1,4 +1,4 @@
-## Copyright (C) 1999, 2000, 2007, 2009 Kai Habel
+## Copyright (C) 1999-2011 Kai Habel
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006, 2007, 2008 David Bateman
+Copyright (C) 2006-2011 David Bateman
 Copyright (C) 2006 Andy Adler
 Copyright (C) 2009 VZLU Prague
 

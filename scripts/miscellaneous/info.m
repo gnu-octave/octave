@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Julian Schnidder
+## Copyright (C) 2008-2011 Julian Schnidder
 ##
 ## This file is part of Octave.
 ##

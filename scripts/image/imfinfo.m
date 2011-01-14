@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Soren Hauberg <hauberg@gmail.com>
+## Copyright (C) 2008-2011 Soren Hauberg <hauberg@gmail.com>
 ##
 ## This file is part of Octave.
 ##

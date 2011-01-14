@@ -264,6 +264,8 @@ cos (pi/2)
 
 @DOCSTRING(erfc)
 
+@DOCSTRING(erfcx)
+
 @DOCSTRING(erfinv)
 
 @DOCSTRING(gamma)

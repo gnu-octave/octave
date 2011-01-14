@@ -557,7 +557,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{erfc, erfinv}\n\
+@seealso{erfc, erfcx, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -607,7 +607,7 @@ Computes the inverse error function, i.e., @var{y} such that\n\
 @example\n\
   erf(@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erfc, erf}\n\
+@seealso{erf, erfc, erfcx}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -644,7 +644,7 @@ $1 - {\\rm erf} (z)$.\n\
 @ifnottex\n\
 @code{1 - erf (@var{z})}.\n\
 @end ifnottex\n\
-@seealso{erf, erfinv}\n\
+@seealso{erfcx, erf, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;

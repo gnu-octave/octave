@@ -1,3 +1,7 @@
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
+	* src/mappers.cc: Add Seealso links between erf variants to docstring.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* sighandlers.cc (BADSIG, BLOCK_SIGNAL, SIGCHLD, BLOCK_CHILD,

@@ -73,6 +73,28 @@ static bool Vsigterm_dumps_octave_core = true;
 // List of signals we have caught since last call to octave_signal_handler.
 static bool octave_signals_caught[NSIG];
 
+// Signal handler return type.
+#ifndef BADSIG
+#define BADSIG (void (*)(int))-1
+#endif
+
+#define BLOCK_SIGNAL(sig, nvar, ovar) \
+  do \
+    { \
+      gnulib::sigemptyset (&nvar); \
+      gnulib::sigaddset (&nvar, sig); \
+      gnulib::sigemptyset (&ovar); \
+      gnulib::sigprocmask (SIG_BLOCK, &nvar, &ovar); \
+    } \
+  while (0)
+
+#if !defined (SIGCHLD) && defined (SIGCLD)
+#define SIGCHLD SIGCLD
+#endif
+
+#define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
+#define UNBLOCK_CHILD(ovar) gnulib::sigprocmask (SIG_SETMASK, &ovar, 0)
+
 // Called from octave_quit () to actually do something about the signals
 // we have caught.
 

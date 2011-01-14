@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 extern OCTAVE_API double xtrunc (double x);
 inline double xcopysign (double x, double y) { return copysign (x, y); }
 inline double xceil (double x) { return ceil (x); }
-inline double xfloor (double x) { return gnulib::floor (x); }
+extern OCTAVE_API double xfloor (double x);
 inline double arg (double x) { return atan2 (0.0, x); }
 inline double conj (double x) { return x; }
 inline double fix (double x) { return xtrunc (x); }

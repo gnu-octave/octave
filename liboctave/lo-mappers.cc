@@ -48,6 +48,11 @@ xtrunc (double x)
   return gnulib::trunc (x);
 }
 
+double xfloor (double x)
+{
+  return gnulib::floor (x);
+}
+
 double
 xround (double x)
 {

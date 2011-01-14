@@ -1,5 +1,10 @@
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
+	* sighandlers.cc (BADSIG, BLOCK_SIGNAL, SIGCHLD, BLOCK_CHILD,
+	UNBLOCK_CHILD): Move macro definitions here from sighandlers.h.
+
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
 	* Update copyright notices for 2011.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>

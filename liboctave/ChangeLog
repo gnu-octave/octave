@@ -1,5 +1,10 @@
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
+	* lo-mappers.cc (xfloor): Move function body here from
+	lo-mappers.h to avoid exposing gnulib:: in a header file.
+
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
 	* file-stat.cc (mode_as_string): Call strmode instead of mode_string.
 
 	* filemode.h, filemode.c: Delete.

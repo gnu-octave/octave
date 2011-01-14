@@ -462,7 +462,7 @@ git_modules_config () {
 }
 
 gnulib_path=`git_modules_config submodule.gnulib.path`
-: ${gnulib_path=gnulib}
+: ${gnulib_path:=gnulib}
 
 # Get gnulib files.
 

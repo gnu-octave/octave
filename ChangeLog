@@ -1,5 +1,10 @@
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap (gnulib_path): Set default gnulib path with ${x:=y},
+	not ${x=y}.
+
+2011-01-14  John W. Eaton  <jwe@octave.org>
+
 	* bootstrap, bootstrap.conf: Update from gnulib sources.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>

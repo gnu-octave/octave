@@ -354,8 +354,10 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 DEFUN (cbrt, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cbrt (@var{x})\n\
-Return the real cube root of @var{x}.  Unlike @code{@var{x}^(1/3)},\n\
-the result will be negative if @var{x} is negative.\n\
+Compute the real cube root of each element of @var{x}.\n\
+Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is\n\
+negative.\n\
+@seealso{nthroot}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1652,7 +1654,7 @@ DEFUN (sqrt, args, ,
 Compute the square root of each element of @var{x}.  If @var{x} is negative,\n\
 a complex result is returned.  To compute the matrix square root, see\n\
 @ref{Linear Algebra}.\n\
-@seealso{realsqrt}\n\
+@seealso{realsqrt, nthroot}\n\
 @end deftypefn")
 {
   octave_value retval;

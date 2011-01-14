@@ -1,3 +1,8 @@
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
+	* src/mappers.cc: Add Seealso links between sqrt, cbrt, nthroot
+	functions.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* dirfns.cc (Ffnmatch): Use DEFUNX until gnulib's fnmatch is C++

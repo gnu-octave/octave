@@ -52,25 +52,27 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(log)
 
+@DOCSTRING(reallog)
+
 @DOCSTRING(log1p)
 
 @DOCSTRING(log10)
 
 @DOCSTRING(log2)
 
-@DOCSTRING(nextpow2)
-
-@DOCSTRING(nthroot)
-
 @DOCSTRING(pow2)
 
-@DOCSTRING(reallog)
+@DOCSTRING(nextpow2)
 
 @DOCSTRING(realpow)
 
+@DOCSTRING(sqrt)
+
 @DOCSTRING(realsqrt)
 
-@DOCSTRING(sqrt)
+@DOCSTRING(cbrt)
+
+@DOCSTRING(nthroot)
 
 @node Complex Arithmetic
 @section Complex Arithmetic

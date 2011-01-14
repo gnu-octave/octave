@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* specfun/nthroot.m: Add Seealso references to docstring.
+	
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/module.mk: Remove texas_lotto.m from build system.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>

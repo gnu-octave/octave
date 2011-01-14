@@ -37,7 +37,7 @@
 ## 
 ## @var{n} must be a scalar.  If @var{n} is not an even integer and @var{X} has
 ## negative entries, an error is produced.
-##
+## @seealso{realsqrt, sqrt, cbrt}
 ## @end deftypefn
 
 function y = nthroot (x, n)

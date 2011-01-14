@@ -641,7 +641,7 @@ glob (\"file[12]\")\n\
 %!  assert (result3, {"file1"; "file2"});
 */
 
-DEFUN (fnmatch, args, ,
+DEFUNX ("fnmatch", Ffnmatch, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return 1 or zero for each element of @var{string} that matches any of\n\

@@ -1,5 +1,11 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (mkstemp): Delete.
+	Delete decl for mkstemps.
+	(Fmkstemp): Assume we have mkstemp from gnulib.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__pchip_deriv__.cc, DLD-FUNCTIONS/dot.cc,
 	octave.cc: Style fixes.
 

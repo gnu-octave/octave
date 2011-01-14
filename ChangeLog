@@ -1,5 +1,9 @@
 2011-01-13  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap.conf (gnulib_modules): Include mkstemp in the list.
+
+2011-01-13  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac (AC_ARG_ENABLE(extra-warning-flags)):
 	Eliminate some code duplication.
 

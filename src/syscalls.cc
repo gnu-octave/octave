@@ -1386,7 +1386,7 @@ child terminated normally.\n\
         error ("WIFEXITED: expecting integer argument");
     }
 #else
-  warning ("WIFEXITED always returns false in this version of Octave")
+  warning ("WIFEXITED always returns false in this version of Octave");
 #endif
 
   return retval;
@@ -1414,7 +1414,7 @@ status of the child.  This function should only be employed if\n\
         error ("WEXITSTATUS: expecting integer argument");
     }
 #else
-  warning ("WEXITSTATUS always returns false in this version of Octave")
+  warning ("WEXITSTATUS always returns false in this version of Octave");
 #endif
 
   return retval;

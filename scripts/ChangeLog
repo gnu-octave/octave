@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* general/postpad.m, general/prepad.m: Improve docstring.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* ploynomial/polyaffine.m: Improve docstring.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>

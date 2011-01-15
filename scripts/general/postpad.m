@@ -17,9 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefn  {Function File} {} postpad (@var{x}, @var{l})
+## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
-## @seealso{prepad, resize}
+## Append the scalar value @var{c} to the vector @var{x}
+## until it is of length @var{l}.  If the third argument is not
+## supplied, a value of 0 is used.
+##
+## If @code{length (@var{x}) > @var{l}}, elements from the end of
+## @var{x} are removed until a vector of length @var{l} is obtained.
+##
+## If @var{x} is a matrix, elements are appended or removed from each row.
+##
+## If the optional argument @var{dim} is given, operate along this
+## dimension.
+## @seealso{prepad, cat, resize}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

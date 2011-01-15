@@ -1,5 +1,9 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/matrix.txi: Add undocumented postpad to documentation.
+
+2011-01-14  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave.texi, interpreter/poly.txi: Add undocumented 
 	polyaffine to documentation.
 

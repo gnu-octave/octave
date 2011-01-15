@@ -19,6 +19,7 @@ deprecated_FCN_FILES = \
   deprecated/isstr.m \
   deprecated/lchol.m \
   deprecated/loadimage.m \
+  deprecated/krylovb.m \
   deprecated/mark_as_command.m \
   deprecated/mark_as_rawcommand.m \
   deprecated/replot.m \

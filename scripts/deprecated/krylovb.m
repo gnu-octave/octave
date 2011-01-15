@@ -21,7 +21,16 @@
 ## See @code{krylov}.
 ## @end deftypefn
 
+## Deprecated in version 3.4
+
 function [Uret, Ucols] = krylovb (A, V, k, eps1, pflg)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "krylovb is obsolete and will be removed from a future version of Octave; please use [Uret, ~, Ucols] = krylov (...) instead");
+  endif
 
   switch (nargin)
     case (3)

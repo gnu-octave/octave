@@ -409,8 +409,9 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      autocor  betai    dispatch  gammai     values
-      autocov  cellidx  fstat     is_global  replot
+      autocor  cellidx   gammai     replot
+      autocov  dispatch  is_global  values
+      betai    fstat     krylovb
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

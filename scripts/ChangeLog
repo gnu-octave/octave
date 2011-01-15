@@ -1,3 +1,11 @@
+2011-01-15  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/krylovb: Move here from linear-algebra.
+	* deprecated/module.mk (deprecated_FCN_FILES):
+	Include krylovb.m in the list.
+	* linear-algebra/module.mk (linear_algebra_FCN_FILES):
+	Remove krylovb.m from the list.
+
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* general/postpad.m, general/prepad.m: Improve docstring.

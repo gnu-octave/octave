@@ -1,3 +1,7 @@
+2011-01-15  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: Add krylovb to deprecated function list.
+
 2010-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add replot to deprecated function list.

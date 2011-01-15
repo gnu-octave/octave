@@ -443,17 +443,19 @@ structure or a structure array.
 
 Other functions that can manipulate the fields of a structure are given below.
 
-@DOCSTRING(rmfield)
-
-@DOCSTRING(setfield)
-
-@DOCSTRING(orderfields)
+@DOCSTRING(nfields)
 
 @DOCSTRING(fieldnames)
 
 @DOCSTRING(isfield)
 
 @DOCSTRING(getfield)
+
+@DOCSTRING(setfield)
+
+@DOCSTRING(rmfield)
+
+@DOCSTRING(orderfields)
 
 @DOCSTRING(substruct)
 

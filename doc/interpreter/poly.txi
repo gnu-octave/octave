@@ -41,7 +41,7 @@ p(x) = @var{c}(1) x^@var{N} + @dots{} + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 * Evaluating Polynomials::
 * Finding Roots::
 * Products of Polynomials::
-* Derivatives and Integrals::
+* Derivatives / Integrals / Transforms::
 * Polynomial Interpolation::
 * Miscellaneous Functions::
 @end menu
@@ -103,8 +103,8 @@ for a definition), and then finding its eigenvalues.
 
 @DOCSTRING(residue)
 
-@node Derivatives and Integrals
-@section Derivatives and Integrals
+@node Derivatives / Integrals / Transforms
+@section Derivatives / Integrals / Transforms
 
 Octave comes with functions for computing the derivative and the integral
 of a polynomial.  The functions @code{polyderiv} and @code{polyint}
@@ -125,6 +125,8 @@ area = polyval(integral, 3) - polyval(integral, 0)
 @DOCSTRING(polyder)
 
 @DOCSTRING(polyint)
+
+@DOCSTRING(polyaffine)
 
 @node Polynomial Interpolation
 @section Polynomial Interpolation

@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyaffine (@var{f}, @var{mu})
-## Return the coefficients of the polynomial whose coefficients are given by
-## vector @var{f} after an affine tranformation.  If @var{f} is the vector
-## representing the polynomial f(x), then @code{@var{g} = polyaffine (@var{f},
-## @var{mu})} is the vector representing 
+## Return the coefficients of the polynomial vector @var{f} after an affine
+## tranformation.  If @var{f} is the vector representing the polynomial f(x),
+## then @code{@var{g} = polyaffine (@var{f}, @var{mu})} is the vector
+## representing:
 ##
 ## @example
 ## g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
@@ -69,6 +69,7 @@ function g = polyaffine (f, mu)
 
 endfunction
 
+
 %!test
 %! f = [1/5 4/5 -7/5 -2];
 %!
@@ -79,7 +80,7 @@ endfunction
 %! x = linspace (-4, 4, 100);
 %!
 %! assert (polyval(f, x, [], mu), polyval (g, x), 1e-10);
-%!
+
 %!demo
 %! f = [1/5 4/5 -7/5 -2];
 %!

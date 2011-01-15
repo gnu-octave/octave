@@ -670,7 +670,7 @@ Polynomial Manipulations
 * Evaluating Polynomials::
 * Finding Roots::
 * Products of Polynomials::
-* Derivatives and Integrals::
+* Derivatives / Integrals / Transforms::
 * Polynomial Interpolation::
 * Miscellaneous Functions::
 

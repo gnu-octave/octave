@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn {Command} which name @dots{}
+## @deftypefn {Command} {} which name @dots{}
 ## Display the type of each @var{name}.  If @var{name} is defined from a
 ## function file, the full name of the file is also displayed.
 ## @seealso{help, lookfor}
-## @end deffn
+## @end deftypefn
 
 function varargout = which (varargin)
 

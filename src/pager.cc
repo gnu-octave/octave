@@ -418,7 +418,7 @@ open_diary_file (void)
 
 DEFUN (diary, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} diary options\n\
+@deftypefn {Command} {} diary options\n\
 Record a list of all commands @emph{and} the output they produce, mixed\n\
 together just as you see them on your terminal.  Valid options are:\n\
 \n\
@@ -435,7 +435,7 @@ Record your session in the file named @var{file}.\n\
 @end table\n\
 \n\
 With no arguments, @code{diary} toggles the current diary state.\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -489,13 +489,13 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
 DEFUN (more, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} more\n\
-@deffnx {Command} more on\n\
-@deffnx {Command} more off\n\
+@deftypefn {Command} {} more\n\
+@deftypefnx {Command} {} more on\n\
+@deftypefnx {Command} {} more off\n\
 Turn output pagination on or off.  Without an argument, @code{more}\n\
 toggles the current state.\n\
 The current state can be determined via @code{page_screen_output}.\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

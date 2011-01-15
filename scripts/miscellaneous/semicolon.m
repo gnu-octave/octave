@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn {Operator} ;
+## @deftypefn {Operator} {} ;
 ## Array row or command separator.
 ## @seealso{comma}
-## @end deffn
+## @end deftypefn

@@ -1,5 +1,10 @@
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
+	* doc/interpreter/func.txi, doc/interpreter/intro.txi: Eliminate
+	@deffn macros.
+
+2011-01-15  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/doccheck/mk_undocumented_list: Update list of exceptions
 	not requiring documentation.
 

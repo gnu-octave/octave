@@ -554,10 +554,10 @@ not linked with the HDF5 library."
 
 DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\
-@deffn  {Command} load file\n\
-@deffnx {Command} load options file\n\
-@deffnx {Command} load options file v1 v2 @dots{}\n\
-@deffnx {Command} S = load(\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
+@deftypefn {Command} {} load file\n\
+@deftypefnx {Command} {} load options file\n\
+@deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
+@deftypefnx {Command} {} S = load(\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.  If no variables are specified then all variables found in the\n\
 file will be loaded.  As with @code{save}, the list of variables to extract\n\
@@ -646,7 +646,7 @@ Force Octave to assume the file is in the binary format written by\n\
 Force Octave to assume the file is in Octave's text format.\n\
 @end table\n\
 @seealso{save, dlmwrite, csvwrite, fwrite}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1450,10 +1450,10 @@ the zlib library."
 
 DEFUN (save, args, ,
   "-*- texinfo -*-\n\
-@deffn  {Command} save file\n\
-@deffnx {Command} save options file\n\
-@deffnx {Command} save options file @var{v1} @var{v2} @dots{}\n\
-@deffnx {Command} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
+@deftypefn {Command} {} save file\n\
+@deftypefnx {Command} {} save options file\n\
+@deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 @var{file}.  The special filename @samp{-} may be used to write\n\
 output to the terminal.  If no variable names are listed, Octave saves\n\
@@ -1572,7 +1572,7 @@ save -binary data a b*\n\
 saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
 the file @file{data} in Octave's binary format.\n\
 @seealso{load, default_save_options, dlmread, csvread, fread}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

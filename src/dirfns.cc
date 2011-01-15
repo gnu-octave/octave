@@ -89,8 +89,8 @@ octave_change_to_directory (const std::string& newdir)
 
 DEFUN (cd, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} cd dir\n\
-@deffnx {Command} chdir dir\n\
+@deftypefn {Command} {} cd dir\n\
+@deftypefnx {Command} {} chdir dir\n\
 Change the current working directory to @var{dir}.  If @var{dir} is\n\
 omitted, the current directory is changed to the user's home\n\
 directory.  For example,\n\
@@ -104,7 +104,7 @@ changes the current working directory to @file{~/octave}.  If the\n\
 directory does not exist, an error message is printed and the working\n\
 directory is not changed.\n\
 @seealso{mkdir, rmdir, dir}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

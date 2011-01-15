@@ -2240,7 +2240,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
 
 DEFUN (clear, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} clear [options] pattern @dots{}\n\
+@deftypefn {Command} {} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\
 pattern may contain the following special characters:\n\
 \n\
@@ -2305,7 +2305,7 @@ match will be cleared.\n\
 @end table\n\
 With the exception of @code{exclusive}, all long options can be used \n\
 without the dash as well.\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

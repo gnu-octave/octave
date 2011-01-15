@@ -3732,8 +3732,8 @@ set_format_style (int argc, const string_vector& argv)
 
 DEFUN (format, args, ,
   "-*- texinfo -*-\n\
-@deffn  {Command} format\n\
-@deffnx {Command} format options\n\
+@deftypefn {Command} {} format\n\
+@deftypefnx {Command} {} format options\n\
 Reset or specify the format of the output produced by @code{disp} and\n\
 Octave's normal echoing mechanism.  This command only affects the display\n\
 of numbers but not how they are stored or computed.  To change the internal\n\
@@ -3897,7 +3897,7 @@ output with more data per page.\n\
 Insert blank lines above and below column number labels to produce a more\n\
 readable output with less data per page.  (default).\n\
 @end table\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

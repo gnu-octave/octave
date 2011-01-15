@@ -1033,7 +1033,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 
 DEFUN (echo, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} echo options\n\
+@deftypefn {Command} {} echo options\n\
 Control whether commands are displayed as they are executed.  Valid\n\
 options are:\n\
 \n\
@@ -1055,7 +1055,7 @@ functions.\n\
 \n\
 @noindent\n\
 With no arguments, @code{echo} toggles the current echo state.\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

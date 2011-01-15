@@ -232,116 +232,116 @@ const static pair_type keywords[] =
 {
   pair_type ("break",
     "-*- texinfo -*-\n\
-@deffn Keyword break\n\
+@deftypefn {Keyword} {} break\n\
 Exit the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, continue}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("case",
     "-*- texinfo -*-\n\
-@deffn Keyword case @{@var{value}@}\n\
+@deftypefn {Keyword} {} case @{@var{value}@}\n\
 A case statement in an switch.  Octave cases are exclusive and do not\n\
 fall-through as do C-language cases.  A switch statement must have at least\n\
 one case.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("catch",
     "-*- texinfo -*-\n\
-@deffn Keyword catch\n\
+@deftypefn {Keyword} {} catch\n\
 Begin the cleanup part of a try-catch block.\n\
 @seealso{try}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("continue",
     "-*- texinfo -*-\n\
-@deffn Keyword continue\n\
+@deftypefn {Keyword} {} continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
 @seealso{do, while, for, break}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("do",
     "-*- texinfo -*-\n\
-@deffn Keyword do\n\
+@deftypefn {Keyword} {} do\n\
 Begin a do-until loop.  This differs from a do-while loop in that the\n\
 body of the loop is executed at least once.\n\
 @seealso{while}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("else",
     "-*- texinfo -*-\n\
-@deffn Keyword else\n\
+@deftypefn {Keyword} {} else\n\
 Alternate action for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("elseif",
     "-*- texinfo -*-\n\
-@deffn Keyword elseif (@var{condition})\n\
+@deftypefn {Keyword} {} elseif (@var{condition})\n\
 Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("end",
     "-*- texinfo -*-\n\
-@deffn Keyword end\n\
+@deftypefn {Keyword} {} end\n\
 Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
 @code{function} block.\n\
 @seealso{for, if, do, while, function}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("end_try_catch",
     "-*- texinfo -*-\n\
-@deffn Keyword end_try_catch\n\
+@deftypefn {Keyword} {} end_try_catch\n\
 Mark the end of an @code{try-catch} block.\n\
 @seealso{try, catch}\n\
-@end deffn"), 
+@end deftypefn"), 
 
   pair_type ("end_unwind_protect",
     "-*- texinfo -*-\n\
-@deffn Keyword end_unwind_protect\n\
+@deftypefn {Keyword} {} end_unwind_protect\n\
 Mark the end of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deffn"), 
+@end deftypefn"), 
 
   pair_type ("endfor",
     "-*- texinfo -*-\n\
-@deffn Keyword endfor\n\
+@deftypefn {Keyword} {} endfor\n\
 Mark the end of a for loop.  See @code{for} for an example.\n\
 @seealso{for}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("endfunction",
     "-*- texinfo -*-\n\
-@deffn Keyword endfunction\n\
+@deftypefn {Keyword} {} endfunction\n\
 Mark the end of a function.\n\
 @seealso{function}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("endif",
     "-*- texinfo -*-\n\
-@deffn Keyword endif\n\
+@deftypefn {Keyword} {} endif\n\
 Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("endswitch",
     "-*- texinfo -*-\n\
-@deffn Keyword endswitch\n\
+@deftypefn {Keyword} {} endswitch\n\
 Mark the end of a switch block.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("endwhile",
     "-*- texinfo -*-\n\
-@deffn Keyword endwhile\n\
+@deftypefn {Keyword} {} endwhile\n\
 Mark the end of a while loop.  See @code{while} for an example.\n\
 @seealso{do, while}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("for",
     "-*- texinfo -*-\n\
-@deffn Keyword for @var{i} = @var{range}\n\
+@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
 Begin a for loop.\n\
 \n\
 @example\n\
@@ -352,21 +352,21 @@ endfor\n\
 @end group\n\
 @end example\n\
 @seealso{do, while}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("function",
     "-*- texinfo -*-\n\
-@deffn Keyword function @var{outputs} = function (@var{input}, @dots{})\n\
-@deffnx Keyword function {} function (@var{input}, @dots{})\n\
-@deffnx Keyword function @var{outputs} = function\n\
+@deftypefn {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
+@deftypefnx {Keyword} {} function {} function (@var{input}, @dots{})\n\
+@deftypefnx {Keyword} {} function @var{outputs} = function\n\
 Begin a function body with @var{outputs} as results and @var{inputs} as\n\
 parameters.\n\
 @seealso{return}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("global",
     "-*- texinfo -*-\n\
-@deffn Keyword global\n\
+@deftypefn {Keyword} {} global\n\
 Declare variables to have global scope.\n\
 \n\
 @example\n\
@@ -378,14 +378,14 @@ endif\n\
 @end group\n\
 @end example\n\
 @seealso{persistent}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("if",
     "-*- texinfo -*-\n\
-@deffn Keyword if (@var{cond}) @dots{} endif\n\
-@deffnx Keyword if (@var{cond}) @dots{} else @dots{} endif\n\
-@deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
-@deffnx Keyword if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
+@deftypefn {Keyword} {} if (@var{cond}) @dots{} endif\n\
+@deftypefnx {Keyword} {} if (@var{cond}) @dots{} else @dots{} endif\n\
+@deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
+@deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
 Begin an if block.\n\
 \n\
 @example\n\
@@ -401,50 +401,50 @@ endif\n\
 @end group\n\
 @end example\n\
 @seealso{switch}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("otherwise",
     "-*- texinfo -*-\n\
-@deffn Keyword otherwise\n\
+@deftypefn {Keyword} {} otherwise\n\
 The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("persistent",
     "-*- texinfo -*-\n\
-@deffn Keyword persistent @var{var}\n\
+@deftypefn {Keyword} {} persistent @var{var}\n\
 Declare variables as persistent.  A variable that has been declared\n\
 persistent within a function will retain its contents in memory between\n\
 subsequent calls to the same function.  The difference between persistent\n\
 variables and global variables is that persistent variables are local in \n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("replot",
     "-*- texinfo -*-\n\
-@deffn Keyword replot\n\
+@deftypefn {Keyword} {} replot\n\
 Replot a graphic.\n\
 @seealso{plot}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("return",
     "-*- texinfo -*-\n\
-@deffn Keyword return\n\
+@deftypefn {Keyword} {} return\n\
 Return from a function.\n\
 @seealso{function}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("static",
     "-*- texinfo -*-\n\
-@deffn Keyword static\n\
+@deftypefn {Keyword} {} static\n\
 This function has been deprecated in favor of persistent.\n\
 @seealso{persistent}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("switch",
     "-*- texinfo -*-\n\
-@deffn Keyword switch @var{statement}\n\
+@deftypefn {Keyword} {} switch @var{statement}\n\
 Begin a switch block.\n\
 \n\
 @example\n\
@@ -462,11 +462,11 @@ endswitch\n\
 @end group\n\
 @end example\n\
 @seealso{if, case, otherwise}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("try",
     "-*- texinfo -*-\n\
-@deffn Keyword try\n\
+@deftypefn {Keyword} {} try\n\
 Begin a try-catch block.\n\
 \n\
 If an error occurs within a try block, then the catch code will be run and\n\
@@ -474,18 +474,18 @@ execution will proceed after the catch block (though it is often\n\
 recommended to use the lasterr function to re-throw the error after cleanup\n\
 is completed).\n\
 @seealso{catch,unwind_protect}\n\
-@end deffn"), 
+@end deftypefn"), 
 
   pair_type ("until",
     "-*- texinfo -*-\n\
-@deffn Keyword until\n\
+@deftypefn {Keyword} {} until\n\
 End a do-until loop.\n\
 @seealso{do}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("unwind_protect",
     "-*- texinfo -*-\n\
-@deffn Keyword unwind_protect\n\
+@deftypefn {Keyword} {} unwind_protect\n\
 Begin an unwind_protect block.\n\
 \n\
 If an error occurs within the first part of an unwind_protect block\n\
@@ -495,35 +495,35 @@ unwind_protect_cleanup block is still executed (in other words, the\n\
 unwind_protect_cleanup will be run with or without an error in the\n\
 unwind_protect block).\n\
 @seealso{unwind_protect_cleanup,try}\n\
-@end deffn"), 
+@end deftypefn"), 
 
   pair_type ("unwind_protect_cleanup",
     "-*- texinfo -*-\n\
-@deffn Keyword unwind_protect_cleanup\n\
+@deftypefn {Keyword} {} unwind_protect_cleanup\n\
 Begin the cleanup section of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deffn"), 
+@end deftypefn"), 
 
   pair_type ("varargin",
     "-*- texinfo -*-\n\
-@deffn Keyword varargin\n\
+@deftypefn {Keyword} {} varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
 @seealso{varargout, nargin, nargout}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("varargout",
     "-*- texinfo -*-\n\
-@deffn Keyword varargout\n\
+@deftypefn {Keyword} {} varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
 @seealso{varargin, nargin, nargout}\n\
-@end deffn"),
+@end deftypefn"),
 
   pair_type ("while",
     "-*- texinfo -*-\n\
-@deffn Keyword while\n\
+@deftypefn {Keyword} {} while\n\
 Begin a while loop.\n\
 @seealso{do}\n\
-@end deffn"),
+@end deftypefn"),
 };
 
 // Return a copy of the operator or keyword names.

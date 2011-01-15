@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn {Command} doc @var{function_name}
+## @deftypefn {Command} {} doc @var{function_name}
 ## Display documentation for the function @var{function_name}
 ## directly from an on-line version of
 ## the printed manual, using the GNU Info browser.  If invoked without
@@ -29,7 +29,7 @@
 ## Once the GNU Info browser is running, help for using it is available
 ## using the command @kbd{C-h}.
 ## @seealso{help}
-## @end deffn
+## @end deftypefn
 
 ## Author: Soren Hauberg <soren@hauberg.org>
 ## Adapted-by: jwe

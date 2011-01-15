@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn {Command} ls options
+## @deftypefn {Command} {} ls options
 ## List directory contents.  For example:
 ## 
 ## @example
@@ -33,7 +33,7 @@
 ## system's directory listing command, so the available options may vary
 ## from system to system.
 ## @seealso{dir, stat, readdir, glob, filesep, ls_command}
-## @end deffn
+## @end deftypefn
 
 ## Author: jwe
 

@@ -1,3 +1,9 @@
+2011-01-15  Rik  <octave@nomad.inbox5.com>
+
+	* src/dirfns.cc, src/help.cc, src/input.cc, src/load-save.cc,
+	src/oct-hist.cc, src/pager.cc, src/pr-output.cc, src/variables.cc:
+	Eliminate @deffn macros.
+
 2011-01-15  John W. Eaton  <jwe@octave.org>
 
 	* syscalls.cc (FWEXITSTATUS, FWIFEXITED): Missing semicolon.

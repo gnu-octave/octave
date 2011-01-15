@@ -554,7 +554,7 @@ octave_history_write_timestamp (void)
 
 DEFUN (edit_history, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} edit_history [@var{first}] [@var{last}]\n\
+@deftypefn {Command} {} edit_history [@var{first}] [@var{last}]\n\
 If invoked with no arguments, @code{edit_history} allows you to edit the\n\
 history list using the editor named by the variable @w{@env{EDITOR}}.  The\n\
 commands to be edited are first copied to a temporary file.  When you\n\
@@ -587,7 +587,7 @@ the first command than the last command reverses the list of commands\n\
 before placing them in the buffer to be edited.  If both arguments are\n\
 omitted, the previous command in the history list is used.\n\
 @seealso{run_history}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -605,7 +605,7 @@ omitted, the previous command in the history list is used.\n\
 
 DEFUN (history, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} history options\n\
+@deftypefn {Command} {} history options\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
 that you have executed.  Valid options are:\n\
 \n\
@@ -630,7 +630,7 @@ and pasting commands using the X Window System.\n\
 For example, to display the five most recent commands that you have\n\
 typed without displaying line numbers, use the command\n\
 @kbd{history -q 5}.\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -648,11 +648,11 @@ typed without displaying line numbers, use the command\n\
 
 DEFUN (run_history, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} run_history [@var{first}] [@var{last}]\n\
+@deftypefn {Command} {} run_history [@var{first}] [@var{last}]\n\
 Similar to @code{edit_history}, except that the editor is not invoked,\n\
 and the commands are simply executed as they appear in the history list.\n\
 @seealso{edit_history}\n\
-@end deffn")
+@end deftypefn")
 {
   octave_value_list retval;
 

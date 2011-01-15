@@ -633,13 +633,13 @@ functions that may be called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
 @code{cd} command:
 
-@deffn {Command} cd dir
-@deffnx {Command} chdir dir
+@deftypefn {Command} {} cd dir
+@deftypefnx {Command} {} chdir dir
 Change the current working directory to @var{dir}.  For example,
 @kbd{cd ~/octave} changes the current working directory to
 @file{~/octave}.  If the directory does not exist, an error message is
 printed and the working directory is not changed.
-@end deffn
+@end deftypefn
 
 @node A Sample Variable Description
 @subsubsection A Sample Variable Description

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deffn  {Operator} (
-## @deffnx {Operator} )
+## @deftypefn  {Operator} {} (
+## @deftypefnx {Operator} {} )
 ## Array index or function argument delimeter.
-## @end deffn
+## @end deftypefn

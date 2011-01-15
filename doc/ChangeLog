@@ -1,6 +1,10 @@
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
-	* doc/interpreter/func.txi, doc/interpreter/intro.txi: Eliminate
+	* interpreter/expr.txi: Add merge/ifelse function to documentation.
+
+2011-01-15  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/func.txi, interpreter/intro.txi: Eliminate
 	@deffn macros.
 
 2011-01-15  Rik  <octave@nomad.inbox5.com>

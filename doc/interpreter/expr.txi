@@ -910,7 +910,7 @@ operands for the operator @samp{&}.
 The ternary operator (?:) is not supported in Octave.  If short-circuiting is
 not important, it can be replaced by the @code{ifelse} function.
 
-@DOCSTRING(ifelse)
+@DOCSTRING(merge)
 
 @node Assignment Ops
 @section Assignment Expressions

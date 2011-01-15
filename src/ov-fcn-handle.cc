@@ -1256,7 +1256,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
-%! hm = @flops;
+%! hm = @version;
 %! hdld = @svd;
 %! hbi = @log2;
 %! f2 = f;

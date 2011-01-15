@@ -1,3 +1,7 @@
+2011-01-15  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc: Use version instead of flops in test.
+
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/svd.cc: Add Seealso references to svd.

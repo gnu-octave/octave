@@ -77,6 +77,7 @@ besselh
 besseli
 besselk
 bessely
+bug_report
 chdir
 comma
 debug
@@ -89,6 +90,7 @@ fntests
 F_SETFD
 F_SETFL
 gammaln
+home
 i
 inf
 inverse
@@ -97,6 +99,7 @@ isfinite
 j
 J
 lower
+lstat
 nan
 O_APPEND
 O_ASYNC
@@ -113,6 +116,7 @@ SEEK_CUR
 SEEK_END
 semicolon
 setenv
+shell_cmd
 toc
 triu
 unimplemented

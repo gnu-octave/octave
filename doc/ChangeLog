@@ -1,5 +1,10 @@
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/mk_undocumented_list: Update list of exceptions
+	not requiring documentation.
+
+2011-01-15  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/stats.txi: Add stdnormal_xxx functions to documentation.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>

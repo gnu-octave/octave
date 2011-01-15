@@ -211,9 +211,10 @@ alphabetical order).
 &Laplace      && laplace\_pdf    && laplace\_cdf   && laplace\_inv&\cr
 &Logistic     && logistic\_pdf   && logistic\_cdf  && logistic\_inv&\cr
 &Log-Normal   && lognpdf        && logncdf       && logninv&\cr
-&Pascal       && nbinpdf        && nbincdf       && nbininv&\cr
 &Univariate Normal && normpdf   && normcdf       && norminv&\cr
+&Pascal       && nbinpdf        && nbincdf       && nbininv&\cr
 &Poisson      && poisspdf       && poisscdf      && poissinv&\cr
+&Standard Normal && stdnormal\_pdf  && stdnormal\_cdf && stdnormal\_inv&\cr
 &t (Student)  && tpdf           && tcdf          && tinv&\cr
 &Univariate Discrete && unidpdf && unidcdf       && unidinv&\cr
 &Uniform      && unifpdf        && unifcdf       && unifinv&\cr
@@ -287,18 +288,22 @@ alphabetical order).
   @tab @code{lognpdf}
   @tab @code{logncdf}
   @tab @code{logninv}
-@item Pascal Distribution
-  @tab @code{nbinpdf}
-  @tab @code{nbincdf}
-  @tab @code{nbininv}
 @item Univariate Normal Distribution
   @tab @code{normpdf}
   @tab @code{normcdf}
   @tab @code{norminv}
+@item Pascal Distribution
+  @tab @code{nbinpdf}
+  @tab @code{nbincdf}
+  @tab @code{nbininv}
 @item Poisson Distribution
   @tab @code{poisspdf}
   @tab @code{poisscdf}
   @tab @code{poissinv}
+@item Standard Normal Distribution
+  @tab @code{stdtormal_pdf}
+  @tab @code{stdtormal_cdf}
+  @tab @code{stdtormal_inv}
 @item t (Student) Distribution
   @tab @code{tpdf}
   @tab @code{tcdf}
@@ -421,6 +426,12 @@ alphabetical order).
 @DOCSTRING(poisscdf)
 
 @DOCSTRING(poissinv)
+
+@DOCSTRING(stdnormal_pdf)
+
+@DOCSTRING(stdnormal_cdf)
+
+@DOCSTRING(stdnormal_inv)
 
 @DOCSTRING(tpdf)
 
@@ -602,6 +613,7 @@ The following table summarizes the available random number generators
 & Pascal Distribution               && nbinrnd &\cr
 & Univariate Normal Distribution    && normrnd &\cr
 & Poisson Distribution              && poissrnd &\cr
+& Standard Normal Distribution      && stdnormal\_rnd &\cr
 & t (Student) Distribution          && trnd &\cr
 & Univariate Discrete Distribution  && unidrnd &\cr
 & Uniform Distribution              && unifrnd &\cr
@@ -630,6 +642,7 @@ The following table summarizes the available random number generators
 @item Pascal Distribution               @tab @code{nbinrnd}
 @item Univariate Normal Distribution    @tab @code{normrnd}
 @item Poisson Distribution              @tab @code{poissrnd}
+@item Standard Normal Distribution      @tab @code{stdnormal_rnd}
 @item t (Student) Distribution          @tab @code{trnd}
 @item Univariate Discrete Distribution  @tab @code{unidrnd}
 @item Uniform Distribution              @tab @code{unifrnd}
@@ -671,6 +684,8 @@ The following table summarizes the available random number generators
 @DOCSTRING(normrnd)
 
 @DOCSTRING(poissrnd)
+
+@DOCSTRING(stdnormal_rnd)
 
 @DOCSTRING(trnd)
 

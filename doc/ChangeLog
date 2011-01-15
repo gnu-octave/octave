@@ -1,3 +1,7 @@
+2011-01-15  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/stats.txi: Add stdnormal_xxx functions to documentation.
+
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Add undocumented postpad to documentation.

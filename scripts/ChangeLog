@@ -1,3 +1,8 @@
+2011-01-16  Ben Abbott <bpabbott@mac.com>
+
+	* plot/print.m: For DOS, connect the pipe to ghostscript (bug 31967),
+	and redirect to NUL instead of /dev/null.
+
 2011-01-16  John W. Eaton  <jwe@octave.org>
 
 	* gethelp.cc (main): Write function name along with file name in

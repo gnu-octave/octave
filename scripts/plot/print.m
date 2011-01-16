@@ -320,15 +320,19 @@ function print (varargin)
         h = setdiff (h, hnone);
         m = numel (props);
         for n = 1:numel(h)
-          rgb = get (h(n), color_props{c});
-          props(m+n).h = h(n);
-          props(m+n).name = color_props{c};
-          props(m+n).value = {get(h(n), color_props{c})};
-          xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
-          if (isnumeric (rgb))
-            ## convert RGB color to RGB gray scale
-            ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
-            set (h(n), color_props{c}, ggg)
+          if (ishandle (h(n)))
+            ## Need to verify objects exist since callbacks may delete objects
+            ## as the colors for others are modified.
+            rgb = get (h(n), color_props{c});
+            props(end+1).h = h(n);
+            props(end).name = color_props{c};
+            props(end).value = {get(h(n), color_props{c})};
+            if (isnumeric (rgb))
+              ## convert RGB color to RGB gray scale
+              xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
+              ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
+              set (h(n), color_props{c}, ggg)
+            endif
           endif
         endfor
       endfor
@@ -338,19 +342,23 @@ function print (varargin)
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel(h)
-        if (! isempty (opts.font))
-          props(end+1).h = h(n);
-          props(end).name = "fontname";
-          props(end).value = {get(h(n), "fontname")};
+        if (ishandle (h(n)))
+          if (! isempty (opts.font))
+            props(end+1).h = h(n);
+            props(end).name = "fontname";
+            props(end).value = {get(h(n), "fontname")};
+          endif
         endif
-        if (! isempty (opts.fontsize))
-          props(end+1).h = h(n);
-          props(end).name = "fontsize";
-          props(end).value = {get(h(n), "fontsize")};
+        if (ishandle (h(n)))
+          if (! isempty (opts.fontsize))
+            props(end+1).h = h(n);
+            props(end).name = "fontsize";
+            props(end).value = {get(h(n), "fontsize")};
+          endif
         endif
       endfor
       if (! isempty (opts.font))
-        set (h, "fontname", opts.font)
+        set (h(ishandle(h)), "fontname", opts.font)
       endif
       if (! isempty (opts.fontsize))
         if (ischar (opts.fontsize))
@@ -358,7 +366,7 @@ function print (varargin)
         else
           fontsize = opts.fontsize;
         endif
-        set (h, "fontsize", fontsize)
+        set (h(ishandle(h)), "fontsize", fontsize)
       endif
     endif
 
@@ -374,7 +382,9 @@ function print (varargin)
     ## restore modified properties
     if (isstruct (props))
       for n = 1:numel(props)
-        set (props(n).h, props(n).name, props(n).value{1})
+        if (ishandle (props(n).h))
+          set (props(n).h, props(n).name, props(n).value{1})
+        endif
       endfor
     endif
 
@@ -400,7 +410,7 @@ function cmd = epstool (opts, filein, fileout)
   ## output must be piped.
 
   ## DOS Shell:
-  ##   copy con <filein> & epstool -bbox -preview-tiff <filein> <fileout> & del <filein>
+  ##   gs.exe [...] -sOutputFile=<filein> - & epstool -bbox -preview-tiff <filein> <fileout> & del <filein>
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
@@ -473,7 +483,12 @@ function cmd = epstool (opts, filein, fileout)
       endif
       if (pipein)
         if (dos_shell)
-          cmd = sprintf ("copy con %s & %s", filein, cmd);
+          filein(filein=="'") = "\"";
+          gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
+                                    "device", "epswrite",
+                                    "source", "-",
+                                    "output", filein)
+          cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
         else
           cmd = sprintf ("cat > %s ; %s", filein, cmd);
         endif
@@ -501,13 +516,21 @@ function cmd = epstool (opts, filein, fileout)
   else
     if (pipein && pipeout)
       if (dos_shell)
-        cmd = sprintf ("copy con %s & type %s", filein, fileout);
+        cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
+                               "device", "epswrite",
+                               "source", "-",
+                               "output", "-");
       else
         cmd = " cat ";
       endif
     elseif (pipein && ! pipeout)
       if (dos_shell)
-        cmd = sprintf (" copy con %s ", fileout);
+        ## ghostscript expects double, not single, quotes
+        fileout(fileout=="'") = "\"";
+        cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
+                               "device", "epswrite",
+                               "source", "-",
+                               "output", fileout);
       else
         cmd = sprintf (" cat > %s ", fileout);
       endif
@@ -538,7 +561,7 @@ function cmd = fig2dev (opts, devopt)
   if (! isempty (opts.fig2dev_binary))
     if (dos_shell)
       ## FIXME - is this the right thing to do for DOS?
-      cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
+      cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
     else
       cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
     endif
@@ -611,7 +634,7 @@ function cmd = pstoedit (opts, devopt)
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.pstoedit_binary))
     if (dos_shell)
-      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+      cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
     else
       ## FIXME - is this the right thing to do for DOS?
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);

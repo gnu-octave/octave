@@ -2221,11 +2221,15 @@ private:
           sr.unmark_global ();
       }
 
+
     for (global_table_iterator q = global_table.begin (); 
-         q != global_table.end (); q++)
+         q != global_table.end ();)
       {
         if (pattern.match (q->first))
-          global_table.erase (q);
+          global_table.erase (q++); //Gotta be careful to not
+                                    //invalidate iterators
+        else
+          q++;
       }
 
 

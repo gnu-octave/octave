@@ -613,8 +613,7 @@ public:
     {
       // Remove the elements of the map explicitly as they should
       // be deleted before the call to curl_global_cleanup
-      for (iterator pa = begin (); pa != end (); pa++)
-        map.erase (pa);
+      map.erase (begin(), end());
 
       curl_global_cleanup ();
     }

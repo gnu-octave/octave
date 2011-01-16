@@ -1,3 +1,9 @@
+2011-01-15  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* symtab.h (do_clear_global_pattern): Reword so as to not
+	invalidate iterators when calling std::map::erase().
+	* DLD-FUNCTIONS/urwlwrite.cc (~curl_handles): Ditto.
+
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
 	* src/dirfns.cc, src/help.cc, src/input.cc, src/load-save.cc,

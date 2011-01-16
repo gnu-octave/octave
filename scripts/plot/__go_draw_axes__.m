@@ -1472,7 +1472,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           pos = "";
       endswitch
       if (__gnuplot_has_feature__ ("key_has_font_properties"))
-        fontspec = create_fontspec (hlgnd.fontname, hlgnd.fontsize, gnuplot_term);
+        [fontname, fontsize] = get_fontname_and_size (obj);
+        fontspec = create_fontspec (fontname, fontsize, gnuplot_term);
       else
         fontspec = "";
       endif
@@ -2082,8 +2083,8 @@ function colorspec = get_text_colorspec (color, mono)
 endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
-  if (isempty (t.fontname))
-    fnt = "Helvetica";
+  if (isempty (t.fontname) || strcmp (t.fontname, "*"))
+    fnt = "{}";
   else
     fnt = t.fontname;
   endif

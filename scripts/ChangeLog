@@ -1,6 +1,10 @@
+2011-01-16  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Use "{}" as the default font.
+
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
-	* scripts/help/doc.m, scripts/help/which.m, 
+	* scripts/help/doc.m, scripts/help/which.m,
 	scripts/miscellaneous/comma.m, scripts/miscellaneous/ls.m,
 	scripts/miscellaneous/paren.m, scripts/miscellaneous/semicolon.m,
 	scripts/pkg/pkg.m: Eliminate @deffn macros.

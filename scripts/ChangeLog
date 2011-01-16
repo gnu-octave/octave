@@ -1,3 +1,8 @@
+2011-01-16  John W. Eaton  <jwe@octave.org>
+
+	* gethelp.cc (main): Write function name along with file name in
+	comment.
+
 2011-01-16  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Use "{}" as the default font.

@@ -81,8 +81,7 @@ print_doc_string (const std::string& name, const std::string& file_name,
   else
     std::cout << name << "\n";
 
-  std::cout << "@c " << file_name << "\n"
-            << doc << "\n";
+  std::cout << "@c " << name << " " << file_name << "\n" << doc << "\n";
 }
 
 EOF

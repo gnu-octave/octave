@@ -1,3 +1,7 @@
+2011-01-16  John W. Eaton  <jwe@octave.org>
+
+	* mkgendoc: Write function name along with file name in comment.
+
 2011-01-15  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* symtab.h (do_clear_global_pattern): Reword so as to not

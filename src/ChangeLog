@@ -1,13 +1,13 @@
-2011-01-16  John W. Eaton  <jwe@octave.org>
+2011-01-16  Rik  <octave@nomad.inbox5.com>
 
-	* mkgendoc: Write function name along with file name in comment.
-
-2011-01-15  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
-
-	* symtab.h (do_clear_global_pattern): Reword so as to not
-	invalidate iterators when calling std::map::erase().
-	* DLD-FUNCTIONS/urwlwrite.cc (~curl_handles): Ditto.
-
+	* DLD-FUNCTIONS/__delaunayn__.cc, DLD-FUNCTIONS/__dispatch__.cc,
+	DLD-FUNCTIONS/__dsearchn__.cc, DLD-FUNCTIONS/__glpk__.cc,
+	DLD-FUNCTIONS/__magick_read__.cc, DLD-FUNCTIONS/__pchip_deriv__.cc,
+	DLD-FUNCTIONS/__voronoi__.cc, DLD-FUNCTIONS/amd.cc,
+	DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/besselj.cc,
+	DLD-FUNCTIONS/bsxfun.cc, DLD-FUNCTIONS/ccolamd.cc,
+	DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/chol.cc,
+	DLD-FUNCTIONS/colamd.cc, DLD-FUNCTIONS/colloc.cc,
 	DLD-FUNCTIONS/conv2.cc, DLD-FUNCTIONS/convhulln.cc,
 	DLD-FUNCTIONS/cquad.cc, DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/det.cc,
 	DLD-FUNCTIONS/dlmread.cc, DLD-FUNCTIONS/dmperm.cc,
@@ -32,6 +32,16 @@
 	DLD-FUNCTIONS/tsearch.cc, DLD-FUNCTIONS/typecast.cc,
 	DLD-FUNCTIONS/urlwrite.cc: Improve docstrings.  Use same variable names
 	in error() strings and docstrings.
+
+2011-01-16  John W. Eaton  <jwe@octave.org>
+
+	* mkgendoc: Write function name along with file name in comment.
+
+2011-01-15  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* symtab.h (do_clear_global_pattern): Reword so as to not
+	invalidate iterators when calling std::map::erase().
+	* DLD-FUNCTIONS/urwlwrite.cc (~curl_handles): Ditto.
 
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 

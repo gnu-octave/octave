@@ -28,7 +28,7 @@
 function s = inputname (n)
 
   if (nargin == 1)
-    s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
+    s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", n));
     ## For compatibility with Matlab, return empty string if argument
     ## name is not a valid identifier.
     if (! isvarname (s))

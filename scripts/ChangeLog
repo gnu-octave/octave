@@ -1,3 +1,8 @@
+2011-01-17  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/inputname.m: Use __varval__ to lookup ".argn."
+	instead of "argn".
+
 2011-01-16  Ben Abbott <bpabbott@mac.com>
 
 	* plot/print.m: For DOS, connect the pipe to ghostscript (bug 31967),

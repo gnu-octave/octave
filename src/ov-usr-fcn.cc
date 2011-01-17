@@ -544,9 +544,18 @@ octave_user_function::bind_automatic_vars
 {
   if (! arg_names.empty ())
     {
+      // It is better to save this in the hidden variable .argn. and
+      // then use that in the inputname function instead of using argn,
+      // which might be redefined in a function.  Keep the old argn name
+      // for backward compatibility of functions that use it directly.
+
       symbol_table::varref ("argn") = arg_names;
+      symbol_table::varref (".argn.") = Cell (arg_names);
+
+      symbol_table::mark_hidden (".argn.");
 
       symbol_table::mark_automatic ("argn");
+      symbol_table::mark_automatic (".argn.");
     }
 
   symbol_table::varref (".nargin.") = nargin;

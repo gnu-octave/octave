@@ -2545,3 +2545,26 @@ void maybe_missing_function_hook (const std::string& name)
       feval (func_name, octave_value (name));
     }
 }
+
+DEFUN (__varval__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        retval = symbol_table::varval (args(0).string_value ());
+      else
+        error ("__varval__: expecting argument to be variable name");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}

@@ -114,7 +114,22 @@ octave_signal_handler (void)
             {
 #ifdef SIGCHLD
             case SIGCHLD:
-              octave_child_list::reap ();
+              {
+                volatile octave_interrupt_handler saved_interrupt_handler
+                  = octave_ignore_interrupts ();
+
+                sigset_t set, oset;
+
+                BLOCK_CHILD (set, oset);
+
+                octave_child_list::wait ();
+
+                octave_set_interrupt_handler (saved_interrupt_handler);
+
+                UNBLOCK_CHILD (oset);
+
+                octave_child_list::reap ();
+              }
               break;
 #endif
 
@@ -227,25 +242,9 @@ generic_sig_handler (int sig)
 static void
 sigchld_handler (int /* sig */)
 {
-  volatile octave_interrupt_handler saved_interrupt_handler
-     = octave_ignore_interrupts ();
+  octave_signal_caught = 1;
 
-  sigset_t set, oset;
-
-  BLOCK_CHILD (set, oset);
-
-  if (octave_child_list::wait ())
-    {
-      // The status of some child changed.
-
-      octave_signal_caught = 1;
-
-      octave_signals_caught[SIGCHLD] = true;
-    }
-
-  octave_set_interrupt_handler (saved_interrupt_handler);
-
-  UNBLOCK_CHILD (oset);
+  octave_signals_caught[SIGCHLD] = true;
 }
 #endif /* defined(SIGCHLD) */
 

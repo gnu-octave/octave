@@ -1,3 +1,8 @@
+2011-01-17  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (octave_signal_handler): Wait for children here.
+	(sigchld_handler): Not here.
+
 2011-01-16  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/__delaunayn__.cc, DLD-FUNCTIONS/__dispatch__.cc,

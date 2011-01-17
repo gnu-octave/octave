@@ -1,3 +1,7 @@
+2011-01-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTION/lookup.cc (Flookup): Validate option string.
+
 2011-01-17  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (octave_user_function::bind_automatic_vars):

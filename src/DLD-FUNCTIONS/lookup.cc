@@ -264,6 +264,12 @@ at most n-1).\n\
       right_inf = contains_char (opt, 'r');
       match_idx = contains_char (opt, 'm');
       match_bool = contains_char (opt, 'b');
+      if (opt.find_first_not_of ("lrmb") != std::string::npos)
+        {
+          error ("lookup: unrecognized option: %c",
+                 opt[opt.find_first_not_of ("lrmb")]);
+          return retval;
+        }
     }
 
   if ((match_idx || match_bool) && (left_inf || right_inf))

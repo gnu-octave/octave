@@ -388,21 +388,21 @@ Compute Bessel or Hankel functions of various kinds:\n\
 @table @code\n\
 @item besselj\n\
 Bessel functions of the first kind.  If the argument @var{opt} is supplied, \n\
-the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
+the result is multiplied by @code{exp(-abs(imag(@var{x})))}.\n\
 \n\
 @item bessely\n\
 Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp(-abs(imag(x)))}.\n\
+the result is multiplied by @code{exp(-abs(imag(@var{x})))}.\n\
 \n\
 @item besseli\n\
 \n\
 Modified Bessel functions of the first kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp(-abs(real(x)))}.\n\
+supplied, the result is multiplied by @code{exp(-abs(real(@var{x})))}.\n\
 \n\
 @item besselk\n\
 \n\
 Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp(x)}.\n\
+supplied, the result is multiplied by @code{exp(@var{x})}.\n\
 \n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\

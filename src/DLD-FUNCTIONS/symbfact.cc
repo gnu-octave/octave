@@ -41,35 +41,37 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (symbfact, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{s}, @var{typ}, @var{mode})\n\
+@deftypefn  {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{S})\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
 \n\
-Performs a symbolic factorization analysis on the sparse matrix @var{s}.\n\
+Perform a symbolic factorization analysis on the sparse matrix @var{S}.\n\
 Where\n\
 \n\
-@table @asis\n\
-@item @var{s}\n\
-@var{s} is a complex or real sparse matrix.\n\
+@table @var\n\
+@item S\n\
+@var{S} is a complex or real sparse matrix.\n\
 \n\
-@item @var{typ}\n\
+@item typ\n\
 Is the type of the factorization and can be one of\n\
 \n\
-@table @code\n\
+@table @samp\n\
 @item sym\n\
-Factorize @var{s}.  This is the default.\n\
+Factorize @var{S}.  This is the default.\n\
 \n\
 @item col\n\
-Factorize @code{@var{s}' * @var{s}}.\n\
+Factorize @code{@var{S}' * @var{S}}.\n\
 \n\
 @item row\n\
-Factorize @code{@var{s} * @var{s}'}.\n\
+Factorize @code{@var{S} * @var{S}'}.\n\
 \n\
 @item lo\n\
-Factorize @code{@var{s}'}\n\
+Factorize @code{@var{S}'}\n\
 @end table\n\
 \n\
-@item @var{mode}\n\
-The default is to return the Cholesky factorization for @var{r}, and if\n\
-@var{mode} is 'L', the conjugate transpose of the Cholesky factorization\n\
+@item mode\n\
+The default is to return the Cholesky@tie{}factorization for @var{r}, and if\n\
+@var{mode} is 'L', the conjugate transpose of the Cholesky@tie{}factorization\n\
 is returned.  The conjugate transpose version is faster and uses less\n\
 memory, but returns the same values for @var{count}, @var{h}, @var{parent}\n\
 and @var{post} outputs.\n\
@@ -77,17 +79,17 @@ and @var{post} outputs.\n\
 \n\
 The output variables are\n\
 \n\
-@table @asis\n\
-@item @var{count}\n\
-The row counts of the Cholesky factorization as determined by @var{typ}.\n\
+@table @var\n\
+@item count\n\
+The row counts of the Cholesky@tie{}factorization as determined by @var{typ}.\n\
 \n\
-@item @var{h}\n\
+@item h\n\
 The height of the elimination tree.\n\
 \n\
-@item @var{parent}\n\
+@item parent\n\
 The elimination tree itself.\n\
 \n\
-@item @var{post}\n\
+@item post\n\
 A sparse boolean matrix whose structure is that of the Cholesky\n\
 factorization as determined by @var{typ}.\n\
 @end table\n\
@@ -189,11 +191,11 @@ factorization as determined by @var{typ}.\n\
       else if (ch == 's')
         A->stype = -1;
       else
-        error ("Unrecognized typ in symbolic factorization");
+        error ("symbfact: unrecognized TYP in symbolic factorization");
     }
 
   if (A->stype && A->nrow != A->ncol)
-    error ("Matrix must be square");
+    error ("symbfact: S must be a square matrix");
 
   if (!error_state)
     {

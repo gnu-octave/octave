@@ -252,7 +252,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 DEFUN_DLD (onCleanup, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{c} =} onCleanup (@var{action})\n\
-Creates a special object that executes a given function upon destruction.\n\
+Create a special object that executes a given function upon destruction.\n\
 If the object is copied to multiple variables (or cell or struct array\n\
 elements) or returned from a function, @var{action} will be executed after\n\
 clearing the last copy of the object.  Note that if multiple local onCleanup\n\

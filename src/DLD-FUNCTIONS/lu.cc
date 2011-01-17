@@ -63,21 +63,22 @@ get_lu_u (const base_lu<MT>& fact)
 
 DEFUN_DLD (lu, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{l}, @var{u}] =} lu (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}] =} lu (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{l}, @var{u}, @var{p}, @var{q}, @var{r}] =} lu (@var{s})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} lu (@var{s}, @var{thres})\n\
+@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} lu (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} lu (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} lu (@var{S})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}, @var{Q}, @var{R}] =} lu (@var{S})\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} lu (@var{S}, @var{thres})\n\
 @deftypefnx {Loadable Function} {@var{y} =} lu (@dots{})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, 'vector')\n\
 @cindex LU decomposition\n\
-Compute the LU decomposition of @var{a}.  If @var{a} is full subroutines from\n\
-@sc{lapack} are used and if @var{a} is sparse then @sc{umfpack} is used.  The\n\
+Compute the LU@tie{}decomposition of @var{A}.  If @var{A} is full\n\
+subroutines from\n\
+@sc{lapack} are used and if @var{A} is sparse then @sc{umfpack} is used.  The\n\
 result is returned in a permuted form, according to the optional return\n\
-value @var{p}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
+value @var{P}.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
-[l, u, p] = lu (a)\n\
+[l, u, p] = lu (@var{a})\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -104,37 +105,37 @@ p =\n\
 \n\
 The matrix is not required to be square.\n\
 \n\
-Called with two or three output arguments and a spare input matrix,\n\
-then @dfn{lu} does not attempt to perform sparsity preserving column\n\
+When called with two or three output arguments and a spare input matrix,\n\
+@code{lu} does not attempt to perform sparsity preserving column\n\
 permutations.  Called with a fourth output argument, the sparsity\n\
 preserving column transformation @var{Q} is returned, such that\n\
-@code{@var{p} * @var{a} * @var{q} = @var{l} * @var{u}}.\n\
+@code{@var{P} * @var{A} * @var{Q} = @var{L} * @var{U}}.\n\
 \n\
-Called with a fifth output argument and a sparse input matrix, then\n\
-@dfn{lu} attempts to use a scaling factor @var{r} on the input matrix\n\
+Called with a fifth output argument and a sparse input matrix,\n\
+@code{lu} attempts to use a scaling factor @var{R} on the input matrix\n\
 such that\n\
-@code{@var{p} * (@var{r} \\ @var{a}) * @var{q} = @var{l} * @var{u}}.\n\
+@code{@var{P} * (@var{R} \\ @var{A}) * @var{Q} = @var{L} * @var{U}}.\n\
 This typically leads to a sparser and more stable factorization.\n\
 \n\
 An additional input argument @var{thres}, that defines the pivoting\n\
 threshold can be given.  @var{thres} can be a scalar, in which case\n\
-it defines @sc{umfpack} pivoting tolerance for both symmetric and unsymmetric\n\
-cases.  If @var{thres} is a two element vector, then the first element\n\
-defines the pivoting tolerance for the unsymmetric @sc{umfpack} pivoting\n\
-strategy and the second the symmetric strategy.  By default, the values\n\
-defined by @code{spparms} are used and are by default @code{[0.1, 0.001]}.\n\
+it defines the @sc{umfpack} pivoting tolerance for both symmetric and\n\
+unsymmetric cases.  If @var{thres} is a 2-element vector, then the first\n\
+element defines the pivoting tolerance for the unsymmetric @sc{umfpack}\n\
+pivoting strategy and the second for the symmetric strategy.  By default,\n\
+the values defined by @code{spparms} are used ([0.1, 0.001]).\n\
 \n\
-Given the string argument 'vector', @dfn{lu} returns the values of @var{p}\n\
-@var{q} as vector values, such that for full matrix, @code{@var{a}\n\
-(@var{p},:) = @var{l} * @var{u}}, and @code{@var{r}(@var{p},:) * @var{a}\n\
-(:, @var{q}) = @var{l} * @var{u}}.\n\
+Given the string argument 'vector', @code{lu} returns the values of @var{P}\n\
+and @var{Q} as vector values, such that for full matrix, @code{@var{A}\n\
+(@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:) * @var{A}\n\
+(:, @var{Q}) = @var{L} * @var{U}}.\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\
-lower triangular matrices, such that @code{@var{a} = @var{l} * @var{u}}.\n\
+lower triangular matrices, such that @code{@var{A} = @var{L} * @var{U}}.\n\
 With one output argument @var{y}, then the matrix returned by the @sc{lapack}\n\
-routines is returned.  If the input matrix is sparse then the matrix @var{l}\n\
-is embedded into @var{u} to give a return value similar to the full case.\n\
-For both full and sparse matrices, @dfn{lu} loses the permutation\n\
+routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
+is embedded into @var{U} to give a return value similar to the full case.\n\
+For both full and sparse matrices, @code{lu} loses the permutation\n\
 information.\n\
 @end deftypefn")
 {
@@ -175,7 +176,7 @@ information.\n\
           if (! error_state )
             {
               if (!issparse)
-                error ("lu: can not define pivoting threshold for full matrices");
+                error ("lu: can not define pivoting threshold THRES for full matrices");
               else if (tmp.nelem () == 1)
                 {
                   thres.resize(1,2);
@@ -185,7 +186,7 @@ information.\n\
               else if (tmp.nelem () == 2)
                 thres = tmp;
               else
-                error ("lu: expecting 2 element vector for thres");
+                error ("lu: expecting 2-element vector for THRES");
             }
         }
     }
@@ -596,7 +597,7 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
 
 DEFUN_DLD (luupdate, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} luupdate (@var{l}, @var{u}, @var{x}, @var{y})\n\
+@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} luupdate (@var{L}, @var{U}, @var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 Given an LU@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{L}*@var{U}}, @var{L}@tie{}lower unit trapezoidal and\n\
@@ -615,8 +616,8 @@ as obtained by @code{lu}:\n\
 @end example\n\
 \n\
 @noindent\n\
-then a factorization of @code{@var{a}+@var{x}*@var{y}.'} can be obtained either\n\
-as\n\
+then a factorization of @code{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
+either as\n\
 \n\
 @example\n\
   [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
@@ -629,12 +630,13 @@ or\n\
   [@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 @end example\n\
 \n\
-The first form uses the unpivoted algorithm, which is faster, but less stable.\n\
-The second form uses a slower pivoted algorithm, which is more stable.\n\
+The first form uses the unpivoted algorithm, which is faster, but less\n\
+stable.  The second form uses a slower pivoted algorithm, which is more\n\
+stable.\n\
 \n\
-Note that the matrix case is done as a sequence of rank-1 updates;\n\
-thus, for k large enough, it will be both faster and more accurate to recompute\n\
-the factorization from scratch.\n\
+The matrix case is done as a sequence of rank-1 updates;\n\
+thus, for large enough k, it will be both faster and more accurate to\n\
+recompute the factorization from scratch.\n\
 @seealso{lu,qrupdate,cholupdate}\n\
 @end deftypefn")
 {
@@ -756,10 +758,10 @@ the factorization from scratch.\n\
             }
         }
       else
-        error ("luupdate: dimensions mismatch");
+        error ("luupdate: dimension mismatch");
     }
   else
-    error ("luupdate: expecting numeric arguments");
+    error ("luupdate: L, U, X, and Y must be numeric");
 
   return retval;
 }

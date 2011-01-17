@@ -62,7 +62,8 @@ char qh_version[] = "__delaunayn__.oct 2007-08-21";
 
 DEFUN_DLD (__delaunayn__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{T} =} __delaunayn__ (@var{P}[, @var{opt}])\n\
+@deftypefn  {Loadable Function} {@var{T} =} __delaunayn__ (@var{P})\n\
+@deftypefnx {Loadable Function} {@var{T} =} __delaunayn__ (@var{P}, @var{opt})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 
@@ -122,7 +123,7 @@ Undocumented internal function.\n\
       }
     else 
       {
-        error ("__delaunayn__: second argument must be a string, cell of stringsor empty");
+        error ("__delaunayn__: OPT argument must be a string, cell array of strings, or empty");
         return retval;
       }
     } 

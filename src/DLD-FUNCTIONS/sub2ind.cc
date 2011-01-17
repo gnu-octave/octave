@@ -65,7 +65,7 @@ DEFUN_DLD (sub2ind, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
 @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
-Convert subscripts into a linear index.\n\
+Convert subscripts to a linear index.\n\
 \n\
 The following example shows how to convert the two-dimensional\n\
 index @code{(2,3)} of a 3-by-3 matrix to a linear index.  The matrix\n\
@@ -173,7 +173,7 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 DEFUN_DLD (ind2sub, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})\n\
-Convert a linear index into subscripts.\n\
+Convert a linear index to subscripts.\n\
 \n\
 The following example shows how to convert the linear index @code{8}\n\
 in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed\n\
@@ -183,7 +183,7 @@ moving from one column to next, filling up all rows in each column.\n\
 @group\n\
 [r, c] = ind2sub ([3, 3], 8)\n\
 @result{} r =  2\n\
-c =  3\n\
+   c =  3\n\
 @end group\n\
 @end example\n\
 @seealso{sub2ind}\n\

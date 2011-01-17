@@ -48,36 +48,37 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{d}, @var{p}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
+@deftypefn  {Loadable Function} {@var{AA} =} balance (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{AA} =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{D}, @var{P}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{CC}, @var{DD}, @var{AA}, @var{BB}] =} balance (@var{A}, @var{B}, @var{opt})\n\
 \n\
-Compute @code{aa = dd \\ a * dd} in which @code{aa} is a matrix whose\n\
-row and column norms are roughly equal in magnitude, and\n\
-@code{dd} = @code{p * d}, in which @code{p} is a permutation\n\
-matrix and @code{d} is a diagonal matrix of powers of two.  This allows\n\
-the equilibration to be computed without round-off.  Results of\n\
-eigenvalue calculation are typically improved by balancing first.\n\
+Compute @code{@var{AA} = @var{DD} \\ @var{A} * @var{DD}} in which @var{AA}\n\
+is a matrix whose row and column norms are roughly equal in magnitude, and\n\
+@code{@var{DD} = @var{P} * @var{D}}, in which @var{P} is a permutation\n\
+matrix and @var{D} is a diagonal matrix of powers of two.  This allows the\n\
+equilibration to be computed without round-off.  Results of eigenvalue\n\
+calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\
-the diagonal @code{d} and the permutation @code{p} separately as vectors.  \n\
-In this case, @code{dd = eye(n)(:,p) * diag (d)}, where @code{n} is the\n\
-matrix size.  \n\
+the diagonal @var{D} and the permutation @var{P} separately as vectors.  \n\
+In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where n\n\
+@t{n} is the matrix size.  \n\
 \n\
-If four output values are requested, compute @code{aa = cc*a*dd} and\n\
-@code{bb = cc*b*dd)}, in which @code{aa} and @code{bb} have non-zero\n\
-elements of approximately the same magnitude and @code{cc} and @code{dd}\n\
-are permuted diagonal matrices as in @code{dd} for the algebraic\n\
-eigenvalue problem.\n\
+If four output values are requested, compute @code{@var{AA} =\n\
+@var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},\n\
+in which @var{AA} and @var{BB} have non-zero elements of approximately the\n\
+same magnitude and @var{CC} and @var{DD} are permuted diagonal matrices as\n\
+in @var{DD} for the algebraic eigenvalue problem.\n\
 \n\
-The eigenvalue balancing option @code{opt} may be one of:\n\
+The eigenvalue balancing option @var{opt} may be one of:\n\
 \n\
 @table @asis\n\
-@item @code{\"noperm\"}, @code{\"S\"}\n\
+@item \"noperm\", \"S\"\n\
 Scale only; do not permute.\n\
 \n\
-@item @code{\"noscal\"}, @code{\"P\"}\n\
+@item \"noscal\", \"P\"\n\
 Permute only; do not scale.\n\
 @end table\n\
 \n\
@@ -245,7 +246,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
         bal_job = args(2).string_value ();
       else
         {
-          error ("balance: GEP argument 3 must be a string");
+          error ("balance: OPT argument must be a string");
           return retval;
         }
 

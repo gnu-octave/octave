@@ -37,27 +37,29 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (hess, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{h} =} hess (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{a})\n\
+@deftypefn  {Loadable Function} {@var{h} =} hess (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{A})\n\
 @cindex Hessenberg decomposition\n\
-Compute the Hessenberg decomposition of the matrix @var{a}.\n\
+Compute the Hessenberg decomposition of the matrix @var{A}.\n\
 \n\
-The Hessenberg decomposition is usually used as the first step in an\n\
-eigenvalue computation, but has other applications as well (see Golub,\n\
-Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).  The\n\
-Hessenberg decomposition is\n\
+The Hessenberg decomposition is\n\
 @tex\n\
 $$\n\
 A = PHP^T\n\
 $$\n\
-where $P$ is a square unitary matrix ($P^HP = I$), and $H$\n\
+where $P$ is a square unitary matrix ($P^TP = I$), and $H$\n\
 is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
 @end tex\n\
 @ifnottex\n\
-@code{p * h * p' = a} where @code{p} is a square unitary matrix\n\
-(@code{p' * p = I}, using complex-conjugate transposition) and @code{h}\n\
-is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
+@code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{p} is a square\n\
+unitary matrix (@code{@var{p}' * @var{p} = I}, using complex-conjugate\n\
+transposition) and @var{H} is upper Hessenberg\n\
+(@code{@var{H}(i, j) = 0 forall i >= j+1)}.\n\
 @end ifnottex\n\
+\n\
+The Hessenberg decomposition is usually used as the first step in an\n\
+eigenvalue computation, but has other applications as well (see Golub,\n\
+Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
 @end deftypefn")
 {
   octave_value_list retval;

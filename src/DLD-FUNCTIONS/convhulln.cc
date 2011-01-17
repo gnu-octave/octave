@@ -62,7 +62,7 @@ If a second optional argument is given, it must be a string or cell array\n\
 of strings containing options for the underlying qhull command.  (See\n\
 the Qhull documentation for the available options.)  The default options\n\
 are \"s Qci Tcv\".\n\
-If the second output @var{V} is requested the volume of the convex hull is\n\
+If the second output @var{v} is requested the volume of the convex hull is\n\
 calculated.\n\n\
 @seealso{convhull, delaunayn}\n\
 @end deftypefn")
@@ -91,7 +91,7 @@ calculated.\n\n\
             {
               if (! c.elem(i).is_string ())
                 {
-                  error ("convhulln: second argument must be a string or cell array of strings");
+                  error ("convhulln: OPT must be a string or cell array of strings");
                   return retval;
                 }
 
@@ -100,7 +100,7 @@ calculated.\n\n\
         }
       else
         {
-          error ("convhulln: second argument must be a string or cell array of strings");
+          error ("convhulln: OPT must be a string or cell array of strings");
           return retval;
         }
     }

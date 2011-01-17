@@ -103,7 +103,7 @@ extract_tm (const octave_scalar_map& m)
 
 DEFUN_DLD (time, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} time ()\n\
+@deftypefn {Loadable Function} {@var{seconds} =} time ()\n\
 Return the current time as the number of seconds since the epoch.  The\n\
 epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
 1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the\n\
@@ -129,25 +129,26 @@ value returned by @code{time} was 856163706.\n\
 
 DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} gmtime (@var{t})\n\
-Given a value returned from time (or any non-negative integer),\n\
-return a time structure corresponding to CUT@.  For example:\n\
+@deftypefn {Loadable Function} {@var{tm_struct} =} gmtime (@var{t})\n\
+Given a value returned from @code{time}, or any non-negative integer,\n\
+return a time structure corresponding to CUT (Coordinated Universal Time).  \n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
 gmtime (time ())\n\
      @result{} @{\n\
            usec = 0\n\
-           year = 97\n\
-           mon = 1\n\
-           mday = 17\n\
            sec = 6\n\
-           zone = CST\n\
            min = 15\n\
-           wday = 1\n\
            hour = 7\n\
-           isdst = 0\n\
+           mday = 17\n\
+           mon = 1\n\
+           year = 97\n\
+           wday = 1\n\
            yday = 47\n\
+           isdst = 0\n\
+           zone = CST\n\
          @}\n\
 @end group\n\
 @end example\n\
@@ -193,8 +194,8 @@ gmtime (time ())\n\
 
 DEFUN_DLD (localtime, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} localtime (@var{t})\n\
-Given a value returned from time (or any non-negative integer),\n\
+@deftypefn {Loadable Function} {@var{tm_struct} =} localtime (@var{t})\n\
+Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to the local time zone.\n\
 \n\
 @example\n\
@@ -202,16 +203,16 @@ return a time structure corresponding to the local time zone.\n\
 localtime (time ())\n\
      @result{} @{\n\
            usec = 0\n\
-           year = 97\n\
-           mon = 1\n\
-           mday = 17\n\
            sec = 6\n\
-           zone = CST\n\
            min = 15\n\
-           wday = 1\n\
            hour = 1\n\
-           isdst = 0\n\
+           mday = 17\n\
+           mon = 1\n\
+           year = 97\n\
+           wday = 1\n\
            yday = 47\n\
+           isdst = 0\n\
+           zone = CST\n\
          @}\n\
 @end group\n\
 @end example\n\
@@ -257,7 +258,7 @@ localtime (time ())\n\
 
 DEFUN_DLD (mktime, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} mktime (@var{tm_struct})\n\
+@deftypefn {Loadable Function} {@var{seconds} =} mktime (@var{tm_struct})\n\
 Convert a time structure corresponding to the local time to the number\n\
 of seconds since the epoch.  For example:\n\
 \n\
@@ -283,10 +284,10 @@ mktime (localtime (time ()))\n\
           if (! error_state)
             retval = octave_time (tm);
           else
-            error ("mktime: invalid TMSTRUCT argument");
+            error ("mktime: invalid TM_STRUCT argument");
         }
       else
-        error ("mktime: expecting structure argument");
+        error ("mktime: TM_STRUCT argument must be a structure");
     }
   else
     print_usage ();
@@ -482,13 +483,13 @@ Year (1970-).\n\
               if (! error_state)
                 retval = tm.strftime (fmt);
               else
-                error ("strftime: invalid TMSTRUCT argument");
+                error ("strftime: invalid TM_STRUCT argument");
             }
           else
-            error ("strftime: expecting structure as second argument");
+            error ("strftime: TM_STRUCT must be a structure");
         }
       else
-        error ("strftime: expecting format string as first argument");
+        error ("strftime: FMT must be a string");
     }
   else
     print_usage ();
@@ -516,7 +517,7 @@ DEFUN_DLD (strptime, args, ,
 Convert the string @var{str} to the time structure @var{tm_struct} under\n\
 the control of the format string @var{fmt}.\n\
 \n\
-If @var{fmt} fails to match, @var{nchars} is 0; otherwise it is set to the\n\
+If @var{fmt} fails to match, @var{nchars} is 0; otherwise, it is set to the\n\
 position of last matched character plus 1. Always check for this unless\n\
 you're absolutely sure the date string will be parsed correctly.\n\
 @seealso{strftime, localtime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
@@ -540,10 +541,10 @@ you're absolutely sure the date string will be parsed correctly.\n\
               retval(0) = octave_value (mk_tm_map (t));
             }
           else
-            error ("strptime: expecting format string as second argument");
+            error ("strptime: FMT must be a string");
         }
       else
-        error ("strptime: expecting string as first argument");
+        error ("strptime: argument STR must be a string");
     }
   else
     print_usage ();

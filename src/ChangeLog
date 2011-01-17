@@ -8,6 +8,31 @@
 	invalidate iterators when calling std::map::erase().
 	* DLD-FUNCTIONS/urwlwrite.cc (~curl_handles): Ditto.
 
+	DLD-FUNCTIONS/conv2.cc, DLD-FUNCTIONS/convhulln.cc,
+	DLD-FUNCTIONS/cquad.cc, DLD-FUNCTIONS/dasrt.cc, DLD-FUNCTIONS/det.cc,
+	DLD-FUNCTIONS/dlmread.cc, DLD-FUNCTIONS/dmperm.cc,
+	DLD-FUNCTIONS/dot.cc, DLD-FUNCTIONS/eig.cc, DLD-FUNCTIONS/eigs.cc,
+	DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc, DLD-FUNCTIONS/fftn.cc,
+	DLD-FUNCTIONS/fftw.cc, DLD-FUNCTIONS/filter.cc, DLD-FUNCTIONS/find.cc,
+	DLD-FUNCTIONS/fltk_backend.cc, DLD-FUNCTIONS/gammainc.cc,
+	DLD-FUNCTIONS/gcd.cc, DLD-FUNCTIONS/getgrent.cc,
+	DLD-FUNCTIONS/getpwent.cc, DLD-FUNCTIONS/hess.cc,
+	DLD-FUNCTIONS/hex2num.cc, DLD-FUNCTIONS/inv.cc, DLD-FUNCTIONS/kron.cc,
+	DLD-FUNCTIONS/lookup.cc, DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/lu.cc,
+	DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/matrix_type.cc,
+	DLD-FUNCTIONS/max.cc, DLD-FUNCTIONS/md5sum.cc,
+	DLD-FUNCTIONS/onCleanup.cc, DLD-FUNCTIONS/pinv.cc, DLD-FUNCTIONS/qr.cc,
+	DLD-FUNCTIONS/quad.cc, DLD-FUNCTIONS/qz.cc, DLD-FUNCTIONS/rand.cc,
+	DLD-FUNCTIONS/rcond.cc, DLD-FUNCTIONS/regexp.cc,
+	DLD-FUNCTIONS/schur.cc, DLD-FUNCTIONS/spparms.cc,
+	DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/str2double.cc,
+	DLD-FUNCTIONS/strfind.cc, DLD-FUNCTIONS/sub2ind.cc,
+	DLD-FUNCTIONS/svd.cc, DLD-FUNCTIONS/syl.cc, DLD-FUNCTIONS/symbfact.cc,
+	DLD-FUNCTIONS/symrcm.cc, DLD-FUNCTIONS/time.cc, DLD-FUNCTIONS/tril.cc,
+	DLD-FUNCTIONS/tsearch.cc, DLD-FUNCTIONS/typecast.cc,
+	DLD-FUNCTIONS/urlwrite.cc: Improve docstrings.  Use same variable names
+	in error() strings and docstrings.
+
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
 	* src/dirfns.cc, src/help.cc, src/input.cc, src/load-save.cc,

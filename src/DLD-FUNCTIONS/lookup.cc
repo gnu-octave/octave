@@ -269,9 +269,9 @@ at most n-1).\n\
   if ((match_idx || match_bool) && (left_inf || right_inf))
     error ("lookup: m, b cannot be specified with l or r");
   else if (match_idx && match_bool)
-    error ("lookup: only one of m, b can be specified");
+    error ("lookup: only one of m or b can be specified");
   else if (str_case && (left_inf || right_inf))
-    error ("lookup: l,r not recognized for string lookups");
+    error ("lookup: l, r are not recognized for string lookups");
 
   if (error_state)
     return retval;

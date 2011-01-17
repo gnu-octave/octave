@@ -89,10 +89,10 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
           if (s == "upper")
             lower = false;
           else if (s != "lower")
-            error ("expecting third argument to be \"lower\" or \"upper\"");
+            error ("gammainc: third argument must be \"lower\" or \"upper\"");
         }
       else
-        error ("expecting third argument to be \"lower\" or \"upper\"");
+        error ("gammainc: third argument must be \"lower\" or \"upper\"");
 
     }
 

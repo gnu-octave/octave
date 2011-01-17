@@ -133,19 +133,19 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 
 DEFUN_DLD (dmperm, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})\n\
+@deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{S})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
 \n\
 @cindex Dulmage-Mendelsohn decomposition\n\
-Perform a Dulmage-Mendelsohn permutation on the sparse matrix @var{s}.\n\
-With a single output argument @dfn{dmperm} performs the row permutations\n\
-@var{p} such that @code{@var{s} (@var{p},:)} has no zero elements on the\n\
+Perform a Dulmage-Mendelsohn permutation of the sparse matrix @var{S}.\n\
+With a single output argument @code{dmperm} performs the row permutations\n\
+@var{p} such that @code{@var{S}(@var{p},:)} has no zero elements on the\n\
 diagonal.\n\
 \n\
 Called with two or more output arguments, returns the row and column\n\
-permutations, such that @code{@var{s} (@var{p}, @var{q})} is in block\n\
-triangular form.  The values of @var{r} and @var{s} define the boundaries\n\
-of the blocks.  If @var{s} is square then @code{@var{r} == @var{s}}.\n\
+permutations, such that @code{@var{S}(@var{p}, @var{q})} is in block\n\
+triangular form.  The values of @var{r} and @var{S} define the boundaries\n\
+of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.\n\
 \n\
 The method used is described in: A. Pothen & C.-J. Fan. @cite{Computing the\n\
 Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
@@ -190,15 +190,15 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 
 DEFUN_DLD (sprank, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} sprank (@var{s})\n\
-\n\
+@deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
 @cindex Structural Rank\n\
-Calculates the structural rank of a sparse matrix @var{s}.  Note that\n\
+\n\
+Calculate the structural rank of the sparse matrix @var{S}.  Note that\n\
 only the structure of the matrix is used in this calculation based on\n\
 a Dulmage-Mendelsohn permutation to block triangular form.  As such the\n\
-numerical rank of the matrix @var{s} is bounded by\n\
-@code{sprank (@var{s}) >= rank (@var{s})}.  Ignoring floating point errors\n\
-@code{sprank (@var{s}) == rank (@var{s})}.\n\
+numerical rank of the matrix @var{S} is bounded by\n\
+@code{sprank (@var{S}) >= rank (@var{S})}.  Ignoring floating point errors\n\
+@code{sprank (@var{S}) == rank (@var{S})}.\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {

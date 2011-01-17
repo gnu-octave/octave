@@ -176,7 +176,7 @@ do_kron (const octave_value& a, const octave_value& b)
   } while (0) \
 
 DEFUN_DLD (kron, args, , "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} kron (@var{a}, @var{b})\n\
+@deftypefn {Loadable Function} {} kron (@var{A}, @var{B})\n\
 Form the Kronecker product of two matrices, defined block by block as\n\
 \n\
 @example\n\

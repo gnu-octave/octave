@@ -337,9 +337,11 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
 DEFUN_DLD (find, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} find (@var{x})\n\
-@deftypefnx {Loadable Function} {} find (@var{x}, @var{n})\n\
-@deftypefnx {Loadable Function} {} find (@var{x}, @var{n}, @var{direction})\n\
+@deftypefn  {Loadable Function} {@var{idx} =} find (@var{x})\n\
+@deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n})\n\
+@deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
+@deftypefnx {Loadable Function} {[i, j] =} find (@dots{})\n\
+@deftypefnx {Loadable Function} {[i, j, v]] =} find (@dots{})\n\
 Return a vector of indices of nonzero elements of a matrix, as a row if\n\
 @var{x} is a row or as a column otherwise.  To obtain a single index for\n\
 each matrix element, Octave pretends that the columns of a matrix form one\n\
@@ -393,7 +395,7 @@ sz = size(a);\n\
 b = sparse(i, j, v, sz(1), sz(2));\n\
 @end group\n\
 @end example\n\
-@seealso{sparse}\n\
+@seealso{nonzeros}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -414,7 +416,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
       if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
         {
-          error ("find: expecting second argument to be a nonnegative integer");
+          error ("find: N must be a nonnegative integer");
           return retval;
         }
       else if (! xisinf (val))
@@ -439,7 +441,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
       if (direction == 0)
         {
-          error ("find: expecting third argument to be \"first\" or \"last\"");
+          error ("find: DIRECTION must be \"first\" or \"last\"");
           return retval;
         }
     }

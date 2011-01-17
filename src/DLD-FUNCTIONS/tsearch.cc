@@ -67,7 +67,7 @@ inline double min (double a, double b, double c)
 DEFUN_DLD (tsearch, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
-Searches for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
+Search for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
 delaunay (@var{x}, @var{y})}, finds the index in @var{t} containing the\n\
 points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
 @var{idx} is NaN.\n\

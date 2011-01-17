@@ -52,27 +52,27 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (amd, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{p} =} amd (@var{s})\n\
-@deftypefnx {Loadable Function} {@var{p} =} amd (@var{s}, @var{opts})\n\
+@deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
+@deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
 Returns the approximate minimum degree permutation of a matrix.  This\n\
-permutation such that the Cholesky factorization of @code{@var{s} (@var{p},\n\
-@var{p})} tends to be sparser than the Cholesky factorization of @var{s}\n\
-itself.  @code{amd} is typically faster than @code{symamd} but serves a\n\
-similar purpose.\n\
+permutation such that the Cholesky@tie{}factorization of @code{@var{S}\n\
+(@var{p}, @var{p})} tends to be sparser than the Cholesky@tie{}factorization\n\
+of @var{S} itself.  @code{amd} is typically faster than @code{symamd} but\n\
+serves a similar purpose.\n\
 \n\
 The optional parameter @var{opts} is a structure that controls the\n\
-behavior of @code{amd}.  The fields of these structure are\n\
+behavior of @code{amd}.  The fields of the structure are\n\
 \n\
 @table @asis\n\
-@item opts.dense\n\
+@item @var{opts}.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
 input matrix.  Rows or columns with more than @code{max(16, (dense *\n\
-sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{s},\n\
+sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{S},\n\
 are ignored by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\
-@item opts.aggressive\n\
+@item @var{opts}.aggressive\n\
 If this value is a non zero scalar, then @code{amd} performs aggressive\n\
 absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
@@ -130,7 +130,7 @@ The author of the code itself is Timothy A. Davis\n\
         }
 
       if (!error_state && n_row != n_col)
-        error ("amd: input matrix must be square");
+        error ("amd: matrix S must be square");
 
       if (!error_state)
         {
@@ -153,7 +153,7 @@ The author of the code itself is Timothy A. Davis\n\
                     Control[AMD_AGGRESSIVE] = tmp.double_value ();
                 }
               else
-                error ("amd: options argument must be a scalar structure");
+                error ("amd: OPTS argument must be a scalar structure");
             }
 
           if (!error_state)
@@ -179,7 +179,7 @@ The author of the code itself is Timothy A. Davis\n\
                   error ("amd: out of memory");
                   break;
                 case AMD_INVALID:
-                  error ("amd: input matrix is corrupted");
+                  error ("amd: matrix S is corrupted");
                   break;
                 default:
                   {

@@ -54,10 +54,10 @@ enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} conv2 (@var{a}, @var{b})\n\
+@deftypefn  {Loadable Function} {} conv2 (@var{A}, @var{B})\n\
 @deftypefnx {Loadable Function} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
 @deftypefnx {Loadable Function} {} conv2 (@dots{}, @var{shape})\n\
-Return the 2-D convolution of @var{a} and @var{b}.  The size of the result\n\
+Return the 2-D convolution of @var{A} and @var{B}.  The size of the result\n\
 is determined by the optional @var{shape} argument which takes the following\n\
 values\n\
 \n\
@@ -66,16 +66,16 @@ values\n\
 Return the full convolution.  (default)\n\
 \n\
 @item @var{shape} = \"same\"\n\
-Return the central part of the convolution with the same size as @var{a}.\n\
+Return the central part of the convolution with the same size as @var{A}.\n\
 \n\
 @item @var{shape} = \"valid\"\n\
 Return only the parts which do not include zero-padded edges.\n\
 @end table\n\
 \n\
-When the third argument\n\
-is a matrix, return the convolution of the matrix @var{m} by the vector\n\
-@var{v1} in the column direction and by vector @var{v2} in the row direction\n\
-@seealso{conv, fftconv}\n\
+When the third argument is a matrix, return the convolution of the matrix\n\
+@var{m} by the vector @var{v1} in the column direction and by the vector\n\
+@var{v2} in the row direction\n\
+@seealso{conv, convn}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -111,7 +111,7 @@ is a matrix, return the convolution of the matrix @var{m} by the vector\n\
     ct = convn_valid;
   else
     {
-      error ("conv2: shape type not valid");
+      error ("conv2: SHAPE type not valid");
       print_usage ();
       return retval;
     }
@@ -239,22 +239,23 @@ is a matrix, return the convolution of the matrix @var{m} by the vector\n\
 
 DEFUN_DLD (convn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {y =} conv2 (@var{a}, @var{b}, @var{shape})\n\
-Return the n-D convolution of @var{a} and @var{b} where the size\n\
-of @var{c} is given by\n\
+@deftypefn {Loadable Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
+Return the n-D convolution of @var{A} and @var{B} where the size\n\
+of @var{C} is given by\n\
 \n\
 @table @asis\n\
 @item @var{shape} = \"full\"\n\
 Return the full convolution.\n\
 \n\
 @item @var{shape} = \"same\"\n\
-Return central part of the convolution with the same size as @var{a}.\n\
+Return central part of the convolution with the same size as @var{A}.\n\
 \n\
 @item @var{shape} = \"valid\"\n\
 Return only the parts which do not include zero-padded edges.\n\
 @end table\n\
 \n\
 By default @var{shape} is @samp{\"full\"}.\n\
+@seealso{conv2, conv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -285,7 +286,7 @@ By default @var{shape} is @samp{\"full\"}.\n\
     ct = convn_valid;
   else
     {
-      error ("convn: shape type not valid");
+      error ("convn: SHAPE type not valid");
       print_usage ();
       return retval;
     }

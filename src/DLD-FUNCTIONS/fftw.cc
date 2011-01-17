@@ -37,10 +37,10 @@ DEFUN_DLD (fftw, args, ,
 @deftypefn  {Loadable Function} {@var{method} =} fftw ('planner')\n\
 @deftypefnx {Loadable Function} {} fftw ('planner', @var{method})\n\
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom')\n\
-@deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})\n\
+@deftypefnx {Loadable Function} {} fftw ('dwisdom', @var{wisdom})\n\
 \n\
 Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
-accelerate the calculation of the FFTs but implies an initial cost\n\
+accelerate the calculation of the FFTs, but implies an initial cost\n\
 in its calculation.  When the @sc{fftw} libraries are initialized, they read\n\
 a system wide wisdom file (typically in @file{/etc/fftw/wisdom}), allowing\n\
 wisdom to be shared between applications other than Octave.  Alternatively,\n\
@@ -63,13 +63,13 @@ fftw ('dwisdom', @var{wisdom})\n\
 If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
 \n\
 During the calculation of Fourier transforms further wisdom is generated.\n\
-The fashion in which this wisdom is generated is equally controlled by\n\
+The fashion in which this wisdom is generated is also controlled by\n\
 the @code{fftw} function.  There are five different manners in which the\n\
-wisdom can be treated, these being\n\
+wisdom can be treated:\n\
 \n\
 @table @asis\n\
 @item 'estimate'\n\
-This specifies that no run-time measurement of the optimal means of\n\
+Specifies that no run-time measurement of the optimal means of\n\
 calculating a particular is performed, and a simple heuristic is used\n\
 to pick a (probably sub-optimal) plan.  The advantage of this method is\n\
 that there is little or no overhead in the generation of the plan, which\n\
@@ -80,10 +80,10 @@ In this case a range of algorithms to perform the transform is considered\n\
 and the best is selected based on their execution time.\n\
 \n\
 @item 'patient'\n\
-This is like 'measure', but a wider range of algorithms is considered.\n\
+Similar to 'measure', but a wider range of algorithms is considered.\n\
 \n\
 @item 'exhaustive'\n\
-This is like 'measure', but all possible algorithms that may be used to\n\
+Like 'measure', but all possible algorithms that may be used to\n\
 treat the transform are considered.\n\
 \n\
 @item 'hybrid'\n\
@@ -92,15 +92,15 @@ compromise where 'measure' is used for transforms up to the size of 8192\n\
 and beyond that the 'estimate' method is used.\n\
 @end table\n\
 \n\
-The default method is 'estimate', and the method currently being used can\n\
-be probed with\n\
+The default method is 'estimate'.  The current method can\n\
+be queried with\n\
 \n\
 @example\n\
 @var{method} = fftw ('planner')\n\
 @end example\n\
 \n\
 @noindent\n\
-and the method used can be set using\n\
+or set by using\n\
 \n\
 @example\n\
 fftw ('planner', @var{method})\n\
@@ -173,7 +173,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                           methf = octave_float_fftw_planner::HYBRID;
                         }
                       else
-                        error ("unrecognized planner method");
+                        error ("unrecognized planner METHOD");
 
                       if (!error_state)
                         {
@@ -199,7 +199,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                       if (arg1.length() < 1)
                         fftw_forget_wisdom ();
                       else if (! fftw_import_wisdom_from_string (arg1.c_str()))
-                        error ("could not import supplied wisdom");
+                        error ("could not import supplied WISDOM");
 
                       if (!error_state)
                         retval = octave_value (std::string (str));
@@ -213,7 +213,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                       if (arg1.length() < 1)
                         fftwf_forget_wisdom ();
                       else if (! fftwf_import_wisdom_from_string (arg1.c_str()))
-                        error ("could not import supplied wisdom");
+                        error ("could not import supplied WISDOM");
 
                       if (!error_state)
                         retval = octave_value (std::string (str));

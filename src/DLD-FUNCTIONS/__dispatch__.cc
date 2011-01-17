@@ -56,7 +56,7 @@ DEFUN_DLD (__dispatch__, args, nargout,
 
           if (error_state)
             {
-              error ("__dispatch__: expecting first argument to be function name");
+              error ("__dispatch__: first argument must be a function name");
               return retval;
             }
         }
@@ -67,7 +67,7 @@ DEFUN_DLD (__dispatch__, args, nargout,
 
           if (error_state)
             {
-              error ("__dispatch__: expecting second argument to be function name");
+              error ("__dispatch__: second argument must be a function name");
               return retval;
             }
         }
@@ -78,7 +78,7 @@ DEFUN_DLD (__dispatch__, args, nargout,
 
           if (error_state)
             {
-              error ("__dispatch__: expecting third argument to be type name");
+              error ("__dispatch__: third argument must be a type name");
               return retval;
             }
         }

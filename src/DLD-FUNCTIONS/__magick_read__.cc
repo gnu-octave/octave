@@ -139,7 +139,7 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
       break;
 
     default:
-      error ("__magic_read__: index depths bigger than 16-bit not supported");
+      error ("__magic_read__: index depths greater than 16-bit are not supported");
       return octave_value_list ();
     }
 
@@ -406,7 +406,7 @@ DEFUN_DLD (__magick_read__, args, nargout,
 @deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
 @deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
 Read images with ImageMagick++.  In general you should not be using this\n\
-function.  Instead you should use @code{imread}.\n\
+function.  Instead use @code{imread}.\n\
 @seealso{imread}\n\
 @end deftypefn")
 {
@@ -478,7 +478,7 @@ function.  Instead you should use @code{imread}.\n\
 
           if (frameidx(i) >= nframes || frameidx(i) < 0)
             {
-              error ("__magick_read__: invalid index vector");
+              error ("__magick_read__: invalid INDEX vector");
               return output;
             }
         }
@@ -519,7 +519,7 @@ function.  Instead you should use @code{imread}.\n\
         case 32:
         case 64:
         default:
-          error ("__magick_read__: image depths bigger than 16-bit not supported");
+          error ("__magick_read__: image depths greater than 16-bit are not supported");
         }
     }
 #else
@@ -870,7 +870,7 @@ DEFUN_DLD (__magick_write__, args, ,
 @deftypefn  {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img})\n\
 @deftypefnx {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
 Write images with ImageMagick++.  In general you should not be using this\n\
-function.  Instead you should use @code{imwrite}.\n\
+function.  Instead use @code{imwrite}.\n\
 @seealso{imread}\n\
 @end deftypefn")
 {
@@ -902,10 +902,10 @@ function.  Instead you should use @code{imwrite}.\n\
                 write_image (filename, fmt, args(2));
             }
           else
-            error ("__magick_write__: expecting format as second argument");
+            error ("__magick_write__: FMT must be string");
         }
       else
-        error ("__magick_write__: expecting filename as first argument");
+        error ("__magick_write__: FNAME must be a string");
     }
   else
     print_usage ();
@@ -998,9 +998,9 @@ magick_to_octave_value (const Magick::ImageType magick)
 
 DEFUN_DLD (__magick_finfo__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable File} {} __magick_finfo__(@var{fname})\n\
+@deftypefn {Loadable Function} {} __magick_finfo__(@var{fname})\n\
 Read image information with GraphicsMagick++.  In general you should\n\
-not be using this function.  Instead you should use @code{imfinfo}.\n\
+not be using this function.  Instead use @code{imfinfo}.\n\
 @seealso{imfinfo, imread}\n\
 @end deftypefn")
 {
@@ -1145,7 +1145,7 @@ not be using this function.  Instead you should use @code{imfinfo}.\n\
 
 DEFUN_DLD (__magick_format_list__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} __magick_format_list__ (@var{formats})\n\
+@deftypefn {Function File} {} __magick_format_list__ (@var{formats})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

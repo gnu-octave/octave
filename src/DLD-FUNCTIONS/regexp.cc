@@ -226,7 +226,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
               if (tmp_pos == std::string::npos)
                 {
-                  error ("syntax error in pattern");
+                  error ("regexp: syntax error in pattern");
                   break;
                 }
 

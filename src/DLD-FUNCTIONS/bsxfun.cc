@@ -311,16 +311,15 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 
 DEFUN_DLD (bsxfun, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{a}, @var{b})\n\
-Applies a binary function @var{f} element-by-element to two matrix arguments\n\
-@var{a} and @var{b}.  The function @var{f} must be capable of accepting\n\
-two column vector arguments of equal length, or one column vector\n\
+@deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
+Apply a binary function @var{f} element-by-element to two matrix arguments\n\
+@var{A} and @var{B}.  The function @var{f} must be capable of accepting\n\
+two column-vector arguments of equal length, or one column vector\n\
 argument and a scalar.\n\
 \n\
-The dimensions of @var{a} and @var{b} must be equal or singleton.  The\n\
+The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
 singleton dimensions of the matrices will be expanded to the same\n\
 dimensionality as the other matrix.\n\
-\n\
 @seealso{arrayfun, cellfun}\n\
 @end deftypefn")
 {
@@ -341,7 +340,7 @@ dimensionality as the other matrix.\n\
             error ("bsxfun: invalid function name: %s", name.c_str ());
         }
       else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
-        error ("bsxfun: first argument must be a string or function handle");
+        error ("bsxfun: F must be a string or function handle");
 
       const octave_value A = args (1);
       const octave_value B = args (2);
@@ -381,7 +380,7 @@ dimensionality as the other matrix.\n\
           for (octave_idx_type i = 0; i < nd; i++)
             if (dva (i) != dvb (i) && dva (i) != 1 && dvb (i) != 1)
               {
-                error ("bsxfun: dimensions don't match");
+                error ("bsxfun: dimensions of A and B must match");
                 break;
               }
 

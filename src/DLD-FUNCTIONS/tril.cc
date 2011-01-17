@@ -214,7 +214,7 @@ do_trilu (const std::string& name,
 
       dim_vector dims = arg.dims ();
       if (dims.length () != 2)
-        error ("%s: needs a 2D matrix", name.c_str ());
+        error ("%s: need a 2-D matrix", name.c_str ());
       else if (k < -dims (0) || k > dims(1))
         error ("%s: requested diagonal out of range", name.c_str ());
       else
@@ -341,28 +341,27 @@ do_trilu (const std::string& name,
 
 DEFUN_DLD (tril, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} tril (@var{a})\n\
-@deftypefnx {Function File} {} tril (@var{a}, @var{k})\n\
-@deftypefnx {Function File} {} tril (@var{a}, @var{k}, @var{pack})\n\
-@deftypefnx {Function File} {} triu (@var{a})\n\
-@deftypefnx {Function File} {} triu (@var{a}, @var{k})\n\
-@deftypefnx {Function File} {} triu (@var{a}, @var{k}, @var{pack})\n\
+@deftypefn  {Function File} {} tril (@var{A})\n\
+@deftypefnx {Function File} {} tril (@var{A}, @var{k})\n\
+@deftypefnx {Function File} {} tril (@var{A}, @var{k}, @var{pack})\n\
+@deftypefnx {Function File} {} triu (@var{A})\n\
+@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
+@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
 Return a new matrix formed by extracting the lower (@code{tril})\n\
-or upper (@code{triu}) triangular part of the matrix @var{a}, and\n\
+or upper (@code{triu}) triangular part of the matrix @var{A}, and\n\
 setting all other elements to zero.  The second argument is optional,\n\
 and specifies how many diagonals above or below the main diagonal should\n\
 also be set to zero.\n\
 \n\
 The default value of @var{k} is zero, so that @code{triu} and\n\
-@code{tril} normally include the main diagonal as part of the result\n\
-matrix.\n\
+@code{tril} normally include the main diagonal as part of the result.\n\
 \n\
 If the value of @var{k} is negative, additional elements above (for\n\
 @code{tril}) or below (for @code{triu}) the main diagonal are also\n\
 selected.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
-sub- or super-diagonals.\n\
+sub-diagonals or super-diagonals.\n\
 \n\
 For example:\n\
 \n\
@@ -398,8 +397,10 @@ other.\n\
 
 DEFUN_DLD (triu, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} triu (@var{a}, @var{k})\n\
-See tril.\n\
+@deftypefn  {Function File} {} triu (@var{A})\n\
+@deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
+@deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
+@xref{tril}.\n\
 @end deftypefn")
 {
   return do_trilu ("triu", args);

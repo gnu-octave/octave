@@ -152,7 +152,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             if (xisnan (dval))
               {
-                error ("%s: NaN is invalid a matrix dimension", fcn);
+                error ("%s: NaN is invalid matrix dimension", fcn);
               }
             else
               {
@@ -180,7 +180,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                 octave_idx_type lim = NINTbig (r.limit ());
 
                 if (base < 0 || lim < 0)
-                  error ("%s: all dimensions must be nonnegative", fcn);
+                  error ("%s: all dimensions must be positive", fcn);
                 else
                   {
                     for (octave_idx_type i = 0; i < n; i++)
@@ -193,7 +193,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   }
               }
             else
-              error ("%s: expecting all elements of range to be integers",
+              error ("%s: all elements of range must be integers",
                      fcn);
           }
         else if (tmp.is_matrix_type ())
@@ -212,7 +212,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                     if (elt < 0)
                       {
-                        error ("%s: all dimensions must be nonnegative", fcn);
+                        error ("%s: all dimensions must be positive", fcn);
                         goto done;
                       }
 
@@ -328,9 +328,11 @@ DEFUN_DLD (rand, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} rand (@var{x})\n\
 @deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
-@deftypefnx {Loadable Function} {} rand (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} rand (\"state\")\n\
+@deftypefnx {Loadable Function} {} rand (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", \"reset\")\n\
-@deftypefnx {Loadable Function} {} rand (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} rand (\"seed\")\n\
+@deftypefnx {Loadable Function} {} rand (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rand (\"seed\", \"reset\")\n\
 Return a matrix with random elements uniformly distributed on the\n\
 interval (0, 1).  The arguments are handled the same as the arguments\n\
@@ -490,9 +492,11 @@ DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} randn (@var{x})\n\
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
-@deftypefnx {Loadable Function} {} randn (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randn (\"state\")\n\
+@deftypefnx {Loadable Function} {} randn (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", \"reset\")\n\
-@deftypefnx {Loadable Function} {} randn (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randn (\"seed\")\n\
+@deftypefnx {Loadable Function} {} randn (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", \"reset\")\n\
 Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
@@ -553,15 +557,17 @@ DEFUN_DLD (rande, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} rande (@var{x})\n\
 @deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
-@deftypefnx {Loadable Function} {} rande (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} rande (\"state\")\n\
+@deftypefnx {Loadable Function} {} rande (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", \"reset\")\n\
-@deftypefnx {Loadable Function} {} rande (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} rande (\"seed\")\n\
+@deftypefnx {Loadable Function} {} rande (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", \"reset\")\n\
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
-to transform from a uniform to a exponential distribution.\n\
+to transform from a uniform to an exponential distribution.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -617,9 +623,11 @@ DEFUN_DLD (randg, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} randg (@var{a}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
-@deftypefnx {Loadable Function} {} randg (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randg (\"state\")\n\
+@deftypefnx {Loadable Function} {} randg (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", \"reset\")\n\
-@deftypefnx {Loadable Function} {} randg (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randg (\"seed\")\n\
+@deftypefnx {Loadable Function} {} randg (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randg (\"seed\", \"reset\")\n\
 Return a matrix with @code{gamma(@var{a},1)} distributed random elements.\n\
 The arguments are handled the same as the arguments for @code{rand},\n\
@@ -871,9 +879,11 @@ DEFUN_DLD (randp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} randp (@var{l}, @var{x})\n\
 @deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
-@deftypefnx {Loadable Function} {} randp (\"state\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randp (\"state\")\n\
+@deftypefnx {Loadable Function} {} randp (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", \"reset\")\n\
-@deftypefnx {Loadable Function} {} randp (\"seed\", @var{x})\n\
+@deftypefnx {Loadable Function} {@var{v} =} randp (\"seed\")\n\
+@deftypefnx {Loadable Function} {} randp (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", \"reset\")\n\
 Return a matrix with Poisson distributed random elements with mean value\n\
 parameter given by the first argument, @var{l}.  The arguments\n\
@@ -1012,7 +1022,7 @@ DEFUN_DLD (randperm, args, ,
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of a @nospell{NxM} matrix.  The complexity is O(M*N) in both\n\
+one in each row of an @nospell{NxM} matrix.  The complexity is O(M*N) in both\n\
 time and memory.  The randomization is performed using rand().\n\
 All permutations are equally likely.\n\
 @seealso{perms}\n\
@@ -1033,7 +1043,7 @@ All permutations are equally likely.\n\
       n = args(0).idx_type_value (true);
 
       if (m < 0 || n < 0)
-        error ("randperm: m and n must be non-negative");
+        error ("randperm: M and N must be non-negative");
 
       if (! error_state)
         {

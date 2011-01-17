@@ -434,16 +434,16 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 
 DEFUN_DLD (gcd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
+@deftypefn  {Loadable Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 @deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 \n\
-Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}. If more\n\
+Compute the greatest common divisor of @var{a1}, @var{a2}, @dots{}.  If more\n\
 than one argument is given all arguments must be the same size or scalar.\n\
-  In this case the greatest common divisor is calculated for each element\n\
+In this case the greatest common divisor is calculated for each element\n\
 individually.  All elements must be ordinary or Gaussian (complex)\n\
-integers. Note that for Gaussian integers, the gcd is not unique up to\n\
+integers.  Note that for Gaussian integers, the gcd is not unique up to\n\
 units (multiplication by 1, -1, @var{i} or -@var{i}), so an arbitrary\n\
-greatest common divisor amongst four possible is returned. For example,\n\
+greatest common divisor amongst four possible is returned.  For example,\n\
 \n\
 @noindent\n\
 and\n\

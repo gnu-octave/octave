@@ -131,27 +131,27 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 
 DEFUN_DLD (eigs, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{d} =} eigs (@var{a})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{k}, @var{sigma},@var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{a}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefn  {Loadable Function} {@var{d} =} eigs (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{B}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{A}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
 @deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{B})\n\
 @deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k})\n\
 @deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma})\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma})\n\
 @deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{b}, @var{k}, @var{sigma}, @var{opts})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}] =} eigs (@var{a}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{a}, @dots{})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})\n\
-Calculate a limited number of eigenvalues and eigenvectors of @var{a},\n\
+@deftypefnx {Loadable Function} {@var{d} =} eigs (@var{af}, @var{n}, @var{B}, @var{k}, @var{sigma}, @var{opts})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{d}] =} eigs (@var{A}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{d}] =} eigs (@var{af}, @var{n}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{A}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{d}, @var{flag}] =} eigs (@var{af}, @var{n}, @dots{})\n\
+Calculate a limited number of eigenvalues and eigenvectors of @var{A},\n\
 based on a selection criteria.  The number of eigenvalues and eigenvectors to\n\
 calculate is given by @var{k} and defaults to 6.\n\
 \n\
@@ -219,11 +219,11 @@ If @var{opts} is given, it is a structure defining possible options that\n\
 @table @code\n\
 @item issym\n\
 If @var{af} is given, then flags whether the function @var{af} defines a\n\
-symmetric problem.  It is ignored if @var{a} is given.  The default is false.\n\
+symmetric problem.  It is ignored if @var{A} is given.  The default is false.\n\
 \n\
 @item isreal\n\
 If @var{af} is given, then flags whether the function @var{af} defines a\n\
-real problem.  It is ignored if @var{a} is given.  The default is true.\n\
+real problem.  It is ignored if @var{A} is given.  The default is true.\n\
 \n\
 @item tol\n\
 Defines the required convergence tolerance, calculated as\n\
@@ -242,23 +242,23 @@ The default value is @code{2 * @var{k}}.\n\
 The starting vector for the algorithm.  An initial vector close to the\n\
 final vector will speed up convergence.  The default is for @sc{arpack}\n\
 to randomly generate a starting vector.  If specified, @code{v0} must be\n\
-an @var{n}-by-1 vector where @code{@var{n} = rows (@var{a})}\n\
+an @var{n}-by-1 vector where @code{@var{n} = rows (@var{A})}\n\
 \n\
 @item disp\n\
 The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then\n\
 diagnostics are disabled.  The default value is 0.\n\
 \n\
 @item cholB\n\
-Flag if @code{chol (@var{b})} is passed rather than @var{b}.  The default is\n\
+Flag if @code{chol (@var{B})} is passed rather than @var{B}.  The default is\n\
 false.\n\
 \n\
 @item permB\n\
-The permutation vector of the Cholesky factorization of @var{b} if\n\
-@code{cholB} is true.  That is @code{chol (@var{b}(permB, permB))}.  The\n\
+The permutation vector of the Cholesky@tie{}factorization of @var{B} if\n\
+@code{cholB} is true.  That is @code{chol (@var{B}(permB, permB))}.  The\n\
 default is @code{1:@var{n}}.\n\
 \n\
 @end table\n\
-It is also possible to represent @var{a} by a function denoted @var{af}.\n\
+It is also possible to represent @var{A} by a function denoted @var{af}.\n\
 @var{af} must be followed by a scalar argument @var{n} defining the length\n\
 of the vector argument accepted by @var{af}.  @var{af} can be \n\
 a function handle, an inline function, or a string.  When @var{af} is a\n\
@@ -286,7 +286,7 @@ for the general eigenvalue problem.\n\
 The return arguments of @code{eigs} depend on the number of return arguments\n\
 requested.  With a single return argument, a vector @var{d} of length @var{k}\n\
 is returned containing the @var{k} eigenvalues that have been found.  With\n\
-two return arguments, @var{v} is a @var{n}-by-@var{k} matrix whose columns\n\
+two return arguments, @var{V} is a @var{n}-by-@var{k} matrix whose columns\n\
 are the @var{k} eigenvectors corresponding to the returned eigenvalues.  The\n\
 eigenvalues themselves are returned in @var{d} in the form of a\n\
 @var{n}-by-@var{k} matrix, where the elements on the diagonal are the\n\
@@ -462,7 +462,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             have_sigma = true;
           else
             {
-              error ("eigs: sigma must be a scalar or a string");
+              error ("eigs: SIGMA must be a scalar or a string");
               return retval;
             }
         }
@@ -526,13 +526,13 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             }
           else
             {
-              error ("eigs: options argument must be a scalar structure");
+              error ("eigs: OPTS argument must be a scalar structure");
               return retval;
             }
         }
       else
         {
-          error ("eigs: options argument must be a structure");
+          error ("eigs: OPTS argument must be a structure");
           return retval;
         }
     }

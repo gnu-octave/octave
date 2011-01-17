@@ -698,7 +698,7 @@ urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \n\
 The full path of the downloaded file is returned in @var{f}.  The\n\
 variable @var{success} is 1 if the download was successful,\n\
 otherwise it is 0 in which case @var{message} contains an error\n\
-message.  If no output argument is specified and if an error occurs,\n\
+message.  If no output argument is specified and an error occurs,\n\
 then the error is signaled through Octave's error handling mechanism.\n\
 \n\
 This function uses libcurl.  Curl supports, among others, the HTTP,\n\
@@ -743,7 +743,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (error_state)
     {
-      error ("urlwrite: url must be a character string");
+      error ("urlwrite: URL must be a character string");
       return retval;
     }
 
@@ -752,7 +752,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (error_state)
     {
-      error ("urlwrite: localfile must be a character string");
+      error ("urlwrite: LOCALFILE must be a character string");
       return retval;
     }
 
@@ -765,13 +765,13 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
       if (error_state)
         {
-          error ("urlwrite: method can only be \"get\" or \"post\"");
+          error ("urlwrite: METHOD must be \"get\" or \"post\"");
           return retval;
         }
 
       if (method != "get" && method != "post")
         {
-          error ("urlwrite: method can only be \"get\" or \"post\"");
+          error ("urlwrite: METHOD must be \"get\" or \"post\"");
           return retval;
         }
 
@@ -779,14 +779,14 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
       if (error_state)
         {
-          error ("urlwrite: parameters for get and post requests must be given as a cell");
+          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell");
           return retval;
         }
 
 
       if (param.numel () % 2 == 1 )
         {
-          error ("urlwrite: number of elements in param must be even");
+          error ("urlwrite: number of elements in PARAM must be even");
           return retval;
         }
     }
@@ -860,7 +860,7 @@ s = urlread (\"ftp://ftp.octave.org/pub/octave/README\");\n\
 \n\
 The variable @var{success} is 1 if the download was successful,\n\
 otherwise it is 0 in which case @var{message} contains an error\n\
-message.  If no output argument is specified and if an error occurs,\n\
+message.  If no output argument is specified and an error occurs,\n\
 then the error is signaled through Octave's error handling mechanism.\n\
 \n\
 This function uses libcurl.  Curl supports, among others, the HTTP,\n\
@@ -903,7 +903,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   if (error_state)
     {
-      error ("urlread: url must be a character string");
+      error ("urlread: URL must be a character string");
       return retval;
     }
 
@@ -916,13 +916,13 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
       if (error_state)
         {
-          error ("urlread: method can only be \"get\" or \"post\"");
+          error ("urlread: METHOD must be \"get\" or \"post\"");
           return retval;
         }
 
       if (method != "get" && method != "post")
         {
-          error ("urlread: method can only be \"get\" or \"post\"");
+          error ("urlread: METHOD must be \"get\" or \"post\"");
           return retval;
         }
 
@@ -930,13 +930,13 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
       if (error_state)
         {
-          error ("urlread: parameters for get and post requests must be given as a cell");
+          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell");
           return retval;
         }
 
       if (param.numel () % 2 == 1 )
         {
-          error ("urlread: number of elements in param must be even");
+          error ("urlread: number of elements in PARAM must be even");
           return retval;
         }
     }
@@ -1017,7 +1017,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    error ("incorrect number of arguments");
+    error ("__ftp_pwd__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1049,7 +1049,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 2)
-    error ("incorrect number of arguments");
+    error ("__ftp_cwd__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1086,7 +1086,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    error ("incorrect number of arguments");
+    error ("__ftp_dir__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1165,7 +1165,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    error ("incorrect number of arguments");
+    error ("__ftp_ascii__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1197,7 +1197,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 1)
-    error ("incorrect number of arguments");
+    error ("__ftp_binary__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1229,7 +1229,7 @@ DEFUN_DLD (__ftp_close__, args, ,
    int nargin = args.length ();
 
    if (nargin != 1)
-     error ("incorrect number of arguments");
+     error ("__ftp_close__: incorrect number of arguments");
    else
      {
        std::string handle = args(0).string_value ();
@@ -1255,7 +1255,7 @@ DEFUN_DLD (__ftp_mode__, args, ,
    int nargin = args.length ();
 
    if (nargin != 1)
-     error ("incorrect number of arguments");
+     error ("__ftp_mode__: incorrect number of arguments");
    else
      {
        std::string handle = args(0).string_value ();
@@ -1288,7 +1288,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 2)
-    error ("incorrect number of arguments");
+    error ("__ftp_delete__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1321,7 +1321,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 2)
-    error ("incorrect number of arguments");
+    error ("__ftp_rmdir__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1354,7 +1354,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 2)
-    error ("incorrect number of arguments");
+    error ("__ftp_mkdir__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1387,7 +1387,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 3)
-    error ("incorrect number of arguments");
+    error ("__ftp_rename__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1509,7 +1509,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 2)
-    error ("incorrect number of arguments");
+    error ("__ftp_mput__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();
@@ -1661,7 +1661,7 @@ Undocumented internal function\n\
   int nargin = args.length ();
 
   if (nargin != 2 && nargin != 3)
-    error ("incorrect number of arguments");
+    error ("__ftp_mget__: incorrect number of arguments");
   else
     {
       std::string handle = args(0).string_value ();

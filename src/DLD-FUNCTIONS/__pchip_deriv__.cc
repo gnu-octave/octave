@@ -74,7 +74,7 @@ Undocumented internal function.\n\
 
           if (nx != (rows ? nyc : nyr))
             {
-              error ("__pchip_deriv__: dimension mismatch");
+              error ("__pchip_deriv__: X and Y dimension mismatch");
               return retval;
             }
 
@@ -96,7 +96,7 @@ Undocumented internal function.\n\
 
               if (ierr < 0)
                 {
-                  error ("PCHIM error: %i\n", ierr);
+                  error ("PCHIM: error: %i\n", ierr);
                   return retval;
                 }
             }
@@ -114,7 +114,7 @@ Undocumented internal function.\n\
 
           if (nx != (rows ? nyc : nyr))
             {
-              error ("__pchip_deriv__: dimension mismatch");
+              error ("__pchip_deriv__: X and Y dimension mismatch");
               return retval;
             }
 
@@ -136,7 +136,7 @@ Undocumented internal function.\n\
 
               if (ierr < 0)
                 {
-                  error ("DPCHIM error: %i\n", ierr);
+                  error ("DPCHIM: error: %i\n", ierr);
                   return retval;
                 }
             }

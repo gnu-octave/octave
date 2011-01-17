@@ -43,13 +43,13 @@ DEFUN_DLD (spparms, args, nargout,
 @deftypefnx {Loadable Function} { } spparms ('defaults')\n\
 @deftypefnx {Loadable Function} { } spparms ('tight')\n\
 @deftypefnx {Loadable Function} { } spparms (@var{key}, @var{val})\n\
-Sets or displays the parameters used by the sparse solvers and factorization\n\
+Query or set the parameters used by the sparse solvers and factorization\n\
 functions.  The first four calls above get information about the current\n\
 settings, while the others change the current settings.  The parameters are\n\
 stored as pairs of keys and values, where the values are all floats and the\n\
 keys are one of the following strings:\n\
 \n\
-@table @code\n\
+@table @samp\n\
 @item spumoni\n\
 Printing level of debugging information of the solvers (default 0)\n\
 \n\
@@ -94,10 +94,11 @@ Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 '/' operations (default 1)\n\
 @end table\n\
 \n\
-The value of individual keys can be set with @code{spparms (@var{key},\n\
-@var{val})}.  The default values can be restored with the special keyword\n\
+The value of individual keys can be set with\n\
+@code{spparms (@var{key}, @var{val})}.\n\
+The default values can be restored with the special keyword\n\
 'defaults'.  The special keyword 'tight' can be used to set the mmd solvers\n\
-to attempt for a sparser solution at the potential cost of longer running\n\
+to attempt a sparser solution at the potential cost of longer running\n\
 time.\n\
 @end deftypefn")
 {
@@ -135,7 +136,7 @@ time.\n\
             {
               double val = octave_sparse_params::get_key (str);
               if (xisnan (val))
-                error ("spparams: unrecognized key");
+                error ("spparams: KEY not recognized");
               else
                 retval (0) = val;
             }
@@ -147,7 +148,7 @@ time.\n\
           if (error_state)
             error ("spparms: input must be a string or a vector");
           else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
-            error ("spparams: too many elements in values vector");
+            error ("spparams: too many elements in vector VALS");
           else
             octave_sparse_params::set_vals (vals);
         }
@@ -165,7 +166,7 @@ time.\n\
           else if (str == "umfpack")
             warning ("spparms: request to disable umfpack solvers ignored");
           else if (!octave_sparse_params::set_key (str, val))
-            error ("spparms: key not found");
+            error ("spparms: KEY not found");
         }
       else
         error ("spparms: first argument must be a string");

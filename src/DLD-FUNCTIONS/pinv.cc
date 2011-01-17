@@ -38,7 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (pinv, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} pinv (@var{x}, @var{tol})\n\
+@deftypefn  {Loadable Function} {} pinv (@var{x})\n\
+@deftypefnx {Loadable Function} {} pinv (@var{x}, @var{tol})\n\
 Return the pseudoinverse of @var{x}.  Singular values less than\n\
 @var{tol} are ignored.  \n\
 \n\
@@ -108,7 +109,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
       if (tol < 0.0)
         {
-          error ("pinv: tol must be greater than zero");
+          error ("pinv: TOL must be greater than zero");
           return retval;
         }
 
@@ -142,7 +143,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
       if (tol < 0.0)
         {
-          error ("pinv: tol must be greater than zero");
+          error ("pinv: TOL must be greater than zero");
           return retval;
         }
 

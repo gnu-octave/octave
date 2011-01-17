@@ -173,7 +173,7 @@ do_minmax_body (const octave_value_list& args,
           dim = args(2).int_value (true) - 1;
           if (error_state || dim < 0)
             {
-              error ("%s: invalid dimension", func);
+              error ("%s: DIM must be a valid dimension", func);
               return retval;
             }
 
@@ -512,7 +512,7 @@ do_cumminmax_body (const octave_value_list& args,
           dim = args(1).int_value (true) - 1;
           if (error_state || dim < 0)
             {
-              error ("%s: invalid dimension", func);
+              error ("%s: DIM must be a valid dimension", func);
               return retval;
             }
         }

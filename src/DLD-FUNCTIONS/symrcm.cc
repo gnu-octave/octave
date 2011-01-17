@@ -418,11 +418,11 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 DEFUN_DLD (symrcm, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} symrcm (@var{S})\n\
-Symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
-Return a permutation vector @var{p} such that\n\
-@code{@var{S} (@var{p}, @var{p})} tends to have its diagonal elements\n\
+Return the symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
+@var{p} is a permutation vector such that\n\
+@code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements\n\
 closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
-or Cholesky factorization of matrices that come from 'long, skinny'\n\
+or Cholesky@tie{}factorization of matrices that come from 'long, skinny'\n\
 problems.  It works for both symmetric and asymmetric @var{S}.\n\
 \n\
 The algorithm represents a heuristic approach to the NP-complete\n\

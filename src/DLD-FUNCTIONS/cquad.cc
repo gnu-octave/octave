@@ -1479,12 +1479,12 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 DEFUN_DLD (cquad, args, nargout, 
 "-*- texinfo -*-\n\
-@deftypefn {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} cquad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} cquad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
 @deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} cquad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 Numerically evaluates an integral using the doubly-adaptive\n\
-quadrature described by P. Gonnet in @cite{\"Increasing the\n\
-Reliability of Adaptive Quadrature Using Explicit Interpolants\",\n\
-ACM Transactions on Mathematical Software, in Press, 2010}.\n\
+quadrature described by P. Gonnet in @cite{Increasing the\n\
+Reliability of Adaptive Quadrature Using Explicit Interpolants,\n\
+ACM Transactions on Mathematical Software, in Press, 2010.\n\
 The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
 degree in each interval and bisects the interval if either the\n\
 function does not appear to be smooth or a rule of maximum\n\
@@ -1495,27 +1495,28 @@ of the integrand over the nodes of the respective quadrature rules.\n\
 For example,\n\
 \n\
 @example\n\
-   int = cquad ( f , a , b , 1.0e-6 );\n\
+   int = cquad (f, a, b, 1.0e-6);\n\
 @end example\n\
 \n\
-@noindent computes the integral of a function @var{f} in the interval\n\
-[@var{a},@var{b}] to the relative precision of six\n\
+@noindent\n\
+computes the integral of a function @var{f} in the interval\n\
+[@var{a}, @var{b}] to the relative precision of six\n\
 decimal digits.\n\
 The integrand @var{f} should accept a vector argument and return a vector\n\
 result containing the integrand evaluated at each element of the\n\
-argument, for example\n\
+argument, for example:\n\
 \n\
 @example\n\
-   f = @@(x) x .* sin ( 1 ./ x ) .* sqrt ( abs ( 1 - x ) );\n\
+   f = @@(x) x .* sin (1 ./ x) .* sqrt (abs (1 - x));\n\
 @end example\n\
 \n\
-If the integrand has known singularieites or discontinuities\n\
+If the integrand has known singularities or discontinuities\n\
 in any of its derivatives inside the interval,\n\
 as does the above example at x=1, these can be specified in\n\
 the additional argument @var{sing} as follows\n\
 \n\
 @example\n\
-   int = cquad ( f , a , b , 1.0e-6 , [ 1 ] );\n\
+   int = cquad (f, a, b, 1.0e-6, [ 1 ]);\n\
 @end example\n\
 \n\
 The two additional output variables @var{err} and @var{nr_points}\n\
@@ -1523,7 +1524,7 @@ return an estimate of the absolute integration error and\n\
 the number of points at which the integrand was evaluated\n\
 respectively.\n\
 If the adaptive integration did not converge, the value of\n\
-@var{err} will be larger than the requested tolerance. It is\n\
+@var{err} will be larger than the requested tolerance.  It is\n\
 therefore recommended to verify this value for difficult\n\
 integrands.\n\
 \n\
@@ -1531,9 +1532,9 @@ If either @var{a} or @var{b} are @code{+/-Inf}, @code{cquad}\n\
 integrates @var{f} by substituting the variable of integration\n\
 with @code{x=tan(pi/2*u)}.\n\
 \n\
-@code{cquad} is capable of dealing with non-numerical\n\
+@code{cquad} is capable of dealing with non-numeric\n\
 values of the integrand such as @code{NaN}, @code{Inf}\n\
-or @code{-Inf}, as the above example at x=0.\n\
+or @code{-Inf}, as in the above example at x=0.\n\
 If the integral diverges and @code{cquad} detects this, \n\
 a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
 \n\
@@ -1542,7 +1543,7 @@ and as such may be less efficient for smooth or otherwise\n\
 well-behaved integrand than other methods such as\n\
 @code{quadgk} or @code{trapz}.\n\
 \n\
-@seealso{triplequad, dblquad, quadgk, quadl, quadv, trapz}\n\
+@seealso{quad,quadv,quadl,quadgk,trapz}\n\
 @end deftypefn")
 {
 

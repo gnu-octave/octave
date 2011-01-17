@@ -74,14 +74,14 @@ get_qr_r (const base_qr<MT>& fact)
 
 DEFUN_DLD (qr, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a}, '0')\n\
+@deftypefn  {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
 @cindex QR factorization\n\
-Compute the QR factorization of @var{a}, using standard @sc{lapack}\n\
-subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
+Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}\n\
+subroutines.  For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
-[q, r] = qr (a)\n\
+[@var{Q}, @var{R}] = qr (@var{A})\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -89,12 +89,12 @@ returns\n\
 \n\
 @example\n\
 @group\n\
-q =\n\
+@var{Q} =\n\
 \n\
   -0.31623  -0.94868\n\
   -0.94868   0.31623\n\
 \n\
-r =\n\
+@var{R} =\n\
 \n\
   -3.16228  -4.42719\n\
    0.00000  -0.63246\n\
@@ -120,28 +120,29 @@ for overdetermined systems of equations (i.e.,\n\
 $A$\n\
 @end tex\n\
 @ifnottex\n\
-@code{a}\n\
+@var{A}\n\
 @end ifnottex\n\
- is a tall, thin matrix).  The QR factorization is\n\
+ is a tall, thin matrix).  The QR@tie{}factorization is\n\
 @tex\n\
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @end tex\n\
 @ifnottex\n\
-@code{q * r = a} where @code{q} is an orthogonal matrix and @code{r} is\n\
-upper triangular.\n\
+@code{@var{Q} * @var{Q} = @var{A}} where @var{Q} is an orthogonal matrix and\n\
+@var{R} is upper triangular.\n\
 @end ifnottex\n\
 \n\
 If given a second argument of '0', @code{qr} returns an economy-sized\n\
-QR factorization, omitting zero rows of @var{R} and the corresponding\n\
+QR@tie{}factorization, omitting zero rows of @var{R} and the corresponding\n\
 columns of @var{Q}.\n\
 \n\
-If the matrix @var{a} is full, the permuted QR factorization\n\
-@code{[@var{q}, @var{r}, @var{p}] = qr (@var{a})} forms the QR factorization\n\
-such that the diagonal entries of @code{r} are decreasing in magnitude\n\
-order.  For example,given the matrix @code{a = [1, 2; 3, 4]},\n\
+If the matrix @var{A} is full, the permuted QR@tie{}factorization\n\
+@code{[@var{Q}, @var{R}, @var{P}] = qr (@var{A})} forms the\n\
+QR@tie{}factorization such that the diagonal entries of @var{R} are\n\
+decreasing in magnitude order.  For example, given the matrix @code{a = [1,\n\
+2; 3, 4]},\n\
 \n\
 @example\n\
-[q, r, p] = qr(a)\n\
+[@var{Q}, @var{R}, @var{P}] = qr (@var{A})\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -149,45 +150,46 @@ returns\n\
 \n\
 @example\n\
 @group\n\
-q = \n\
+@var{Q} = \n\
 \n\
   -0.44721  -0.89443\n\
   -0.89443   0.44721\n\
 \n\
-r =\n\
+@var{R} =\n\
 \n\
   -4.47214  -3.13050\n\
    0.00000   0.44721\n\
 \n\
-p =\n\
+@var{P} =\n\
 \n\
    0  1\n\
    1  0\n\
 @end group\n\
 @end example\n\
 \n\
-The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}\n\
-factorization allows the construction of an orthogonal basis of\n\
-@code{span (a)}.\n\
+The permuted @code{qr} factorization @code{[@var{Q}, @var{R}, @var{P}] = qr\n\
+(@var{A})} factorization allows the construction of an orthogonal basis of\n\
+@code{span (A)}.\n\
 \n\
-If the matrix @var{a} is sparse, then compute the sparse QR factorization\n\
-of @var{a}, using @sc{CSparse}.  As the matrix @var{Q} is in general a full\n\
-matrix, this function returns the @var{Q}-less factorization @var{r} of\n\
-@var{a}, such that @code{@var{r} = chol (@var{a}' * @var{a})}.\n\
+If the matrix @var{A} is sparse, then compute the sparse\n\
+QR@tie{}factorization of @var{A}, using @sc{CSparse}.  As the matrix @var{Q}\n\
+is in general a full matrix, this function returns the @var{Q}-less\n\
+factorization @var{R} of @var{A}, such that @code{@var{R} = chol (@var{A}' *\n\
+@var{A})}.\n\
 \n\
 If the final argument is the scalar @code{0} and the number of rows is\n\
 larger than the number of columns, then an economy factorization is\n\
-returned.  That is @var{r} will have only @code{size (@var{a},1)} rows.\n\
+returned.  That is @var{R} will have only @code{size (@var{A},1)} rows.\n\
 \n\
-If an additional matrix @var{b} is supplied, then @code{qr} returns\n\
-@var{c}, where @code{@var{c} = @var{q}' * @var{b}}.  This allows the\n\
-least squares approximation of @code{@var{a} \\ @var{b}} to be calculated\n\
+If an additional matrix @var{B} is supplied, then @code{qr} returns\n\
+@var{C}, where @code{@var{C} = @var{Q}' * @var{B}}.  This allows the\n\
+least squares approximation of @code{@var{A} \\ @var{B}} to be calculated\n\
 as\n\
 \n\
 @example\n\
 @group\n\
-[@var{c},@var{r}] = spqr (@var{a},@var{b})\n\
-@var{x} = @var{r} \\ @var{c}\n\
+[@var{C},@var{R}] = spqr (@var{A},@var{B})\n\
+x = @var{R} \\ @var{C}\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
@@ -776,7 +778,7 @@ column vectors (rank-1 update) or matrices with equal number of columns\n\
 updates; thus, for k large enough, it will be both faster and more accurate\n\
 to recompute the factorization from scratch.\n\
 \n\
-The QR factorization supplied may be either full\n\
+The QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
 @seealso{qr, qrinsert, qrdelete}\n\
@@ -872,10 +874,10 @@ The QR factorization supplied may be either full\n\
             }
         }
       else
-        error ("qrupdate: dimensions mismatch");
+        error ("qrupdate: Q and R dimensions don't match");
     }
   else
-    error ("qrupdate: expecting numeric arguments");
+    error ("qrupdate: Q, R, U, and V must be numeric");
 
   return retval;
 }
@@ -965,7 +967,7 @@ thus, for k large enough, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
 \n\
 If @var{orient} is @code{\"col\"},\n\
-the QR factorization supplied may be either full\n\
+the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
@@ -1088,13 +1090,13 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
               }
             else
-              error ("qrinsert: invalid index");
+              error ("qrinsert: invalid index J");
           }
         else
           error ("qrinsert: dimension mismatch");
 
       else
-        error ("qrinsert: orient must be \"col\" or \"row\"");
+        error ("qrinsert: ORIENT must be \"col\" or \"row\"");
     }
   else
     print_usage ();
@@ -1184,7 +1186,7 @@ thus, for k large enough, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
 \n\
 If @var{orient} is @code{\"col\"},\n\
-the QR factorization supplied may be either full\n\
+the QR@tie{}factorization supplied may be either full\n\
 (Q is square) or economized (R is square).\n\
 \n\
 If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
@@ -1294,13 +1296,13 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                   }
               }
             else
-              error ("qrdelete: invalid index");
+              error ("qrdelete: invalid index J");
           }
         else
           error ("qrdelete: dimension mismatch");
 
       else
-        error ("qrdelete: orient must be \"col\" or \"row\"");
+        error ("qrdelete: ORIENT must be \"col\" or \"row\"");
     }
   else
     print_usage ();
@@ -1521,13 +1523,13 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                 }
             }
           else
-            error ("qrshift: invalid index");
+            error ("qrshift: invalid index I or J");
         }
       else
         error ("qrshift: dimensions mismatch");
     }
   else
-    error ("qrshift: expecting numeric arguments");
+    error ("qrshift: Q and R must be numeric");
 
   return retval;
 }

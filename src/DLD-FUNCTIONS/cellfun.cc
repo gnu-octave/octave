@@ -93,17 +93,17 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
 
 DEFUN_DLD (cellfun, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
-@deftypefnx {Loadable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
-@deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
-@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c})\n\
-@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c}, @var{d})\n\
+@deftypefn  {Loadable Function} {} cellfun (@var{name}, @var{C})\n\
+@deftypefnx {Loadable Function} {} cellfun (\"size\", @var{C}, @var{k})\n\
+@deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C})\n\
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C}, @var{D})\n\
 @deftypefnx {Loadable Function} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
 @deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
 @deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
-@var{c}.  Elements in @var{c} are passed on to the named function\n\
+@var{C}.  Elements in @var{C} are passed on to the named function\n\
 individually.  The function @var{name} can be one of the functions\n\
 \n\
 @table @code\n\
@@ -137,7 +137,7 @@ in the form of an inline function, function handle, or the name of a\n\
 function (in a character string).  In the case of a character string\n\
 argument, the function must accept a single argument named @var{x}, and\n\
 it must return a string value.  The function can take one or more arguments,\n\
-with the inputs arguments given by @var{c}, @var{d}, etc.  Equally the\n\
+with the inputs arguments given by @var{C}, @var{D}, etc.  Equally the\n\
 function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
@@ -223,7 +223,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
   if (! args(1).is_cell ())
     {
-      error ("cellfun: second argument must be a cell array");
+      error ("cellfun: C must be a cell array");
 
       return retval;
     }
@@ -285,7 +285,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               int d = args(2).nint_value () - 1;
 
               if (d < 0)
-                error ("cellfun: third argument must be a positive integer");
+                error ("cellfun: K must be a positive integer");
 
               if (! error_state)
                 {
@@ -302,7 +302,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                 }
             }
           else
-            error ("not enough arguments for `size'");
+            error ("cellfun: not enough arguments for \"size\"");
         }
       else if (name == "isclass")
         {
@@ -316,7 +316,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               retval(0) = result;
             }
           else
-            error ("not enough arguments for `isclass'");
+            error ("cellfun: not enough arguments for \"isclass\"");
         }
       else
         {
@@ -336,7 +336,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             {
               func = symbol_table::find_function (name);
               if (func.is_undefined ())
-                error ("cellfun: invalid function name: %s", name.c_str ());
+                error ("cellfun: invalid function NAME: %s", name.c_str ());
             }
         }
     }
@@ -375,13 +375,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                   error_handler = symbol_table::find_function (err_name);
                   if (error_handler.is_undefined ())
                     {
-                      error ("cellfun: invalid function name: %s", err_name.c_str ());
+                      error ("cellfun: invalid function NAME: %s", err_name.c_str ());
                       break;
                     }
                 }
               else
                 {
-                  error ("invalid errorhandler value");
+                  error ("cellfun: invalid value for 'ErrorHandler' function");
                   break;
                 }
             }
@@ -490,7 +490,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                         retv[j] = val.resize (fdims);
                       else
                         {
-                          error ("cellfun: expecting all values to be scalars for UniformOutput = true");
+                          error ("cellfun: all values must be scalars when UniformOutput = true");
                           break;
                         }
                     }
@@ -514,7 +514,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                             }
                           else
                             {
-                              error ("cellfun: expecting all values to be scalars for UniformOutput = true");
+                              error ("cellfun: all values must be scalars when UniformOutput = true");
                               break;
                             }
                         }
@@ -576,7 +576,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
         }
     }
   else
-    error ("cellfun: first argument must be a string or function handle");
+    error ("cellfun: argument NAME must be a string or function handle");
 
   return retval;
 }
@@ -948,11 +948,11 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{c} =} num2cell (@var{m})\n\
-@deftypefnx {Loadable Function} {@var{c} =} num2cell (@var{m}, @var{dim})\n\
-Convert the matrix @var{m} to a cell array.  If @var{dim} is defined, the\n\
-value @var{c} is of dimension 1 in this dimension and the elements of\n\
-@var{m} are placed into @var{c} in slices.  For example:\n\
+@deftypefn  {Loadable Function} {@var{C} =} num2cell (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
+Convert the numeric matrix @var{A} to a cell array.  If @var{dim} is\n\
+defined, the value @var{C} is of dimension 1 in this dimension and the\n\
+elements of @var{A} are placed into @var{C} in slices.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1275,18 +1275,18 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 
 DEFUN_DLD (mat2cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{m}, @var{n})\n\
-@deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{d1}, @var{d2}, @dots{})\n\
-@deftypefnx {Loadable Function} {@var{b} =} mat2cell (@var{a}, @var{r})\n\
-Convert the matrix @var{a} to a cell array.  If @var{a} is 2-D, then\n\
-it is required that @code{sum (@var{m}) == size (@var{a}, 1)} and\n\
-@code{sum (@var{n}) == size (@var{a}, 2)}.  Similarly, if @var{a} is\n\
-a multi-dimensional and the number of dimensional arguments is equal\n\
-to the dimensions of @var{a}, then it is required that @code{sum (@var{di})\n\
-== size (@var{a}, i)}.\n\
+@deftypefn  {Loadable Function} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
+@deftypefnx {Loadable Function} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
+@deftypefnx {Loadable Function} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
+Convert the matrix @var{A} to a cell array.  If @var{A} is 2-D, then\n\
+it is required that @code{sum (@var{m}) == size (@var{A}, 1)} and\n\
+@code{sum (@var{n}) == size (@var{A}, 2)}.  Similarly, if @var{A} is\n\
+multi-dimensional and the number of dimensional arguments is equal\n\
+to the dimensions of @var{A}, then it is required that @code{sum (@var{di})\n\
+== size (@var{A}, i)}.\n\
 \n\
 Given a single dimensional argument @var{r}, the other dimensional\n\
-arguments are assumed to equal @code{size (@var{a},@var{i})}.\n\
+arguments are assumed to equal @code{size (@var{A},@var{i})}.\n\
 \n\
 An example of the use of mat2cell is\n\
 \n\
@@ -1478,13 +1478,13 @@ slicing is done along the first non-singleton dimension.\n\
         {
           dim = args(3).int_value () - 1;
           if (dim < 0)
-            error ("cellslices: dim must be a valid dimension");
+            error ("cellslices: DIM must be a valid dimension");
         }
 
       if (! error_state)
         {
           if (lb.length () != ub.length ())
-            error ("cellslices: the lengths of lb and ub must match");
+            error ("cellslices: the lengths of LB and UB must match");
           else
             {
               Cell retcell;
@@ -1568,11 +1568,14 @@ DEFUN_DLD (cellindexmat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
 Given a cell array of matrices @var{x}, this function computes\n\
+\n\
 @example\n\
+@group\n\
   Y = cell (size (X));\n\
   for i = 1:numel (X)\n\
     Y@{i@} = X@{i@}(varargin@{:@});\n\
   endfor\n\
+@end group\n\
 @end example\n\
 @seealso{cellfun, cellslices}\n\
 @end deftypefn")
@@ -1599,7 +1602,7 @@ Given a cell array of matrices @var{x}, this function computes\n\
           retval = y;
         }
       else
-        error ("cellindexmat: first argument must be a cell");
+        error ("cellindexmat: X must be a cell");
     }
   else
     print_usage ();

@@ -289,11 +289,12 @@ fout (const octave_idx_type& lsize, const double& alpha,
 
 DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})\n\
-Generalized eigenvalue problem @math{A x = s B x},\n\
-QZ decomposition.  There are three ways to call this function:\n\
+@deftypefn  {Loadable Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
+QZ decomposition of the generalized eigenvalue problem (@math{A x = s B x}).\n\
+There are three ways to call this function:\n\
 @enumerate\n\
-@item @code{lambda = qz(A,B)}\n\
+@item @code{@var{lambda} = qz (@var{A}, @var{B})}\n\
 \n\
 Computes the generalized eigenvalues\n\
 @tex\n\
@@ -304,10 +305,10 @@ $\\lambda$\n\
 @end ifnottex\n\
 of @math{(A - s B)}.\n\
 \n\
-@item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
+@item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
 \n\
-Computes qz decomposition, generalized eigenvectors, and \n\
-generalized eigenvalues of @math{(A - sB)}\n\
+Computes QZ decomposition, generalized eigenvectors, and \n\
+generalized eigenvalues of @math{(A - s B)}\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
 $$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
@@ -318,8 +319,8 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @example\n\
 @group\n\
 \n\
-    A * V = B * V * diag (lambda)\n\
-    W' * A = diag (lambda) * W' * B\n\
+    A * V = B * V * diag (@var{lambda})\n\
+    W' * A = diag (@var{lambda}) * W' * B\n\
     AA = Q * A * Z, BB = Q * B * Z\n\
 \n\
 @end group\n\
@@ -328,7 +329,7 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @end ifnottex\n\
 with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 \n\
-@item @code{[AA,BB,Z@{, lambda@}] = qz(A,B,opt)}\n\
+@item @code{[AA,BB,Z@{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}\n\
 \n\
 As in form [2], but allows ordering of generalized eigenpairs\n\
 for (e.g.) solution of discrete time algebraic Riccati equations.\n\
@@ -340,7 +341,7 @@ the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix\n\
 @item opt\n\
 for ordering eigenvalues of the GEP pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
-@table @code\n\
+@table @asis\n\
 @item \"N\"\n\
 = unordered (default) \n\
 \n\
@@ -361,9 +362,9 @@ in the closed right half-plane\n\
 @end table\n\
 @end enumerate\n\
 \n\
-Note: qz performs permutation balancing, but not scaling (see balance).\n\
-The order of output arguments was selected for compatibility with @sc{matlab}\n\
-\n\
+Note: @code{qz} performs permutation balancing, but not scaling\n\
+(@pxref{doc-balance}).  The order of output arguments was selected for\n\
+compatibility with @sc{matlab}.\n\
 @seealso{balance, eig, schur}\n\
 @end deftypefn")
 {
@@ -397,7 +398,7 @@ The order of output arguments was selected for compatibility with @sc{matlab}\n\
     ord_job = 'N';
   else if (!args(2).is_string ())
     {
-      error ("qz: argument 3 must be a string");
+      error ("qz: OPT must be a string");
       return retval;
     }
   else
@@ -518,7 +519,7 @@ The order of output arguments was selected for compatibility with @sc{matlab}\n\
 
   if (nargin == 3 && complex_case)
     {
-      error ("qz: cannot re-order complex qz decomposition.");
+      error ("qz: cannot re-order complex qz decomposition");
       return retval;
     }
 
@@ -795,7 +796,7 @@ The order of output arguments was selected for compatibility with @sc{matlab}\n\
       if (complex_case)
         {
           // Probably not needed, but better be safe.
-          error ("qz: cannot re-order complex qz decomposition.");
+          error ("qz: cannot re-order complex qz decomposition");
           return retval;
         }
       else
@@ -1225,7 +1226,7 @@ The order of output arguments was selected for compatibility with @sc{matlab}\n\
       break;
 
     default:
-      error ("qz: too many return arguments.");
+      error ("qz: too many return arguments");
       break;
   }
 

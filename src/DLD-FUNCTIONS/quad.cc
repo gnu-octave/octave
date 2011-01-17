@@ -174,9 +174,12 @@ quad_float_user_function (float x)
 
 DEFUN_DLD (quad, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefn  {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
 Integrate a nonlinear function of one variable using @sc{quadpack}.\n\
-The first argument is the name of the function, the function handle or\n\
+The first argument is the name of the function, the function handle, or\n\
 the inline function to call to compute the value of the integrand.  It\n\
 must have the form\n\
 \n\
@@ -195,22 +198,23 @@ accuracy of the result.  The first element of the vector is the desired\n\
 absolute tolerance, and the second element is the desired relative\n\
 tolerance.  To choose a relative test only, set the absolute\n\
 tolerance to zero.  To choose an absolute test only, set the relative\n\
-tolerance to zero.  \n\
+tolerance to zero.\n\
 \n\
 The optional argument @var{sing} is a vector of values at which the\n\
 integrand is known to be singular.\n\
 \n\
-The result of the integration is returned in @var{v} and @var{ier}\n\
+The result of the integration is returned in @var{v}.  @var{ier}\n\
 contains an integer error code (0 indicates a successful integration).\n\
-The value of @var{nfun} indicates how many function evaluations were\n\
-required, and @var{err} contains an estimate of the error in the\n\
+@var{nfun} indicates the number of function evaluations that were\n\
+made, and @var{err} contains an estimate of the error in the\n\
 solution.\n\
 \n\
-You can use the function @code{quad_options} to set optional\n\
+The function @code{quad_options} can set other optional\n\
 parameters for @code{quad}.\n\
 \n\
-It should be noted that since @code{quad} is written in Fortran it\n\
+Note: because @code{quad} is written in Fortran it\n\
 cannot be called recursively.\n\
+@seealso{quad_options,quadv,quadl,quadgk,trapz}\n\
 @end deftypefn")
 {
   octave_value_list retval;

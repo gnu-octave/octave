@@ -66,7 +66,7 @@ DEFUN_DLD (getgrent, args, ,
  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{grp_struct} =} getgrent ()\n\
 Return an entry from the group database, opening it if necessary.\n\
-Once the end of the data has been reached, @code{getgrent} returns 0.\n\
+Once the end of data has been reached, @code{getgrent} returns 0.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -120,7 +120,7 @@ Return the first entry from the group database with the group ID\n\
               retval(1) = msg;
             }
           else
-            error ("getgrgid: argument must be an integer");
+            error ("getgrgid: GID must be an integer");
         }
     }
   else

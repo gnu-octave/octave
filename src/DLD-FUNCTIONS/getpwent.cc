@@ -124,7 +124,7 @@ database, @code{getpwuid} returns 0.\n\
               retval(1) = msg;
             }
           else
-            error ("getpwuid: argument must be an integer");
+            error ("getpwuid: UID must be an integer");
         }
     }
   else

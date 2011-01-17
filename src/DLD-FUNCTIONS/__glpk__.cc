@@ -428,13 +428,13 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
  \
               if (error_state) \
                 { \
-                  error ("glpk: invalid value in param." NAME); \
+                  error ("glpk: invalid value in PARAM." NAME); \
                   return retval; \
                 } \
             } \
           else \
             { \
-              error ("glpk: invalid value in param." NAME); \
+              error ("glpk: invalid value in PARAM." NAME); \
               return retval; \
             } \
         } \
@@ -454,13 +454,13 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
  \
               if (error_state) \
                 { \
-                  error ("glpk: invalid value in param." NAME); \
+                  error ("glpk: invalid value in PARAM." NAME); \
                   return retval; \
                 } \
             } \
           else \
             { \
-              error ("glpk: invalid value in param." NAME); \
+              error ("glpk: invalid value in PARAM." NAME); \
               return retval; \
             } \
         } \
@@ -576,7 +576,7 @@ Undocumented internal function.\n\
 
   if (error_state)
     {
-      error ("__glpk__: invalid value of b");
+      error ("__glpk__: invalid value of B");
       return retval;
     }
 
@@ -588,7 +588,7 @@ Undocumented internal function.\n\
 
   if (error_state || LB.length () < mrowsc)
     {
-      error ("__glpk__: invalid value of lb");
+      error ("__glpk__: invalid value of LB");
       return retval;
     }
 
@@ -613,7 +613,7 @@ Undocumented internal function.\n\
 
   if (error_state || UB.length () < mrowsc)
     {
-      error ("__glpk__: invalid value of ub");
+      error ("__glpk__: invalid value of UB");
       return retval;
     }
 
@@ -637,7 +637,7 @@ Undocumented internal function.\n\
 
   if (error_state)
     {
-      error ("__glpk__: invalid value of ctype");
+      error ("__glpk__: invalid value of CTYPE");
       return retval;
     }
 
@@ -648,7 +648,7 @@ Undocumented internal function.\n\
 
   if (error_state)
     {
-      error ("__glpk__: invalid value of vtype");
+      error ("__glpk__: invalid value of VARTYPE");
       return retval;
     }
 
@@ -671,7 +671,7 @@ Undocumented internal function.\n\
 
   if (error_state)
     {
-      error ("__glpk__: invalid value of sense");
+      error ("__glpk__: invalid value of SENSE");
       return retval;
     }
 
@@ -685,7 +685,7 @@ Undocumented internal function.\n\
 
   if (error_state)
     {
-      error ("__glpk__: invalid value of param");
+      error ("__glpk__: invalid value of PARAM");
       return retval;
     }
 
@@ -697,7 +697,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("msglev", lpxIntParam[0]);
   if (lpxIntParam[0] < 0 || lpxIntParam[0] > 3)
     {
-      error ("__glpk__: param.msglev must be 0 (no output [default]) or 1 (error messages only) or 2 (normal output) or 3 (full output)");
+      error ("__glpk__: PARAM.msglev must be 0 (no output [default]) or 1 (error messages only) or 2 (normal output) or 3 (full output)");
       return retval;
     }
 
@@ -705,7 +705,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("scale", lpxIntParam[1]);
   if (lpxIntParam[1] < 0 || lpxIntParam[1] > 2)
     {
-      error ("__glpk__: param.scale must be 0 (no scaling) or 1 (equilibration scaling [default]) or 2 (geometric mean scaling)");
+      error ("__glpk__: PARAM.scale must be 0 (no scaling) or 1 (equilibration scaling [default]) or 2 (geometric mean scaling)");
       return retval;
     }
 
@@ -713,7 +713,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("dual", lpxIntParam[2]);
   if (lpxIntParam[2] < 0 || lpxIntParam[2] > 1)
     {
-      error ("__glpk__: param.dual must be 0 (do NOT use dual simplex [default]) or 1 (use dual simplex)");
+      error ("__glpk__: PARAM.dual must be 0 (do NOT use dual simplex [default]) or 1 (use dual simplex)");
       return retval;
     }
 
@@ -721,7 +721,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("price", lpxIntParam[3]);
   if (lpxIntParam[3] < 0 || lpxIntParam[3] > 1)
     {
-      error ("__glpk__: param.price must be 0 (textbook pricing) or 1 (steepest edge pricing [default])");
+      error ("__glpk__: PARAM.price must be 0 (textbook pricing) or 1 (steepest edge pricing [default])");
       return retval;
     }
 
@@ -729,7 +729,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("round", lpxIntParam[4]);
   if (lpxIntParam[4] < 0 || lpxIntParam[4] > 1)
     {
-      error ("__glpk__: param.round must be 0 (report all primal and dual values [default]) or 1 (replace tiny primal and dual values by exact zero)");
+      error ("__glpk__: PARAM.round must be 0 (report all primal and dual values [default]) or 1 (replace tiny primal and dual values by exact zero)");
       return retval;
     }
 
@@ -746,7 +746,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("branch", lpxIntParam[14]);
   if (lpxIntParam[14] < 0 || lpxIntParam[14] > 2)
     {
-      error ("__glpk__: param.branch must be (MIP only) 0 (branch on first variable) or 1 (branch on last variable) or 2 (branch using a heuristic by Driebeck and Tomlin [default]");
+      error ("__glpk__: PARAM.branch must be (MIP only) 0 (branch on first variable) or 1 (branch on last variable) or 2 (branch using a heuristic by Driebeck and Tomlin [default]");
       return retval;
     }
 
@@ -754,7 +754,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("btrack", lpxIntParam[15]);
   if (lpxIntParam[15] < 0 || lpxIntParam[15] > 2)
     {
-      error ("__glpk__: param.btrack must be (MIP only) 0 (depth first search) or 1 (breadth first search) or 2 (backtrack using the best projection heuristic [default]");
+      error ("__glpk__: PARAM.btrack must be (MIP only) 0 (depth first search) or 1 (breadth first search) or 2 (backtrack using the best projection heuristic [default]");
       return retval;
     }
 
@@ -762,7 +762,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("presol", lpxIntParam[16]);
   if (lpxIntParam[16] < 0 || lpxIntParam[16] > 1)
     {
-      error ("__glpk__: param.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
+      error ("__glpk__: PARAM.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
       return retval;
     }
 
@@ -771,7 +771,7 @@ Undocumented internal function.\n\
   OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
   if (lpsolver < 1 || lpsolver > 2)
     {
-      error ("__glpk__: param.lpsolver must be 1 (simplex method) or 2 (interior point method)");
+      error ("__glpk__: PARAM.lpsolver must be 1 (simplex method) or 2 (interior point method)");
       return retval;
     }
 

@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (hex2num, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{n} =} hex2num (@var{s})\n\
-Typecast the 16 character hexadecimal character matrix to an IEEE 754\n\
+Typecast the 16 character hexadecimal character string to an IEEE 754\n\
 double precision number.  If fewer than 16 characters are given the\n\
 strings are right padded with '0' characters.\n\
 \n\
@@ -61,7 +61,7 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
       const charMatrix cmat = args(0).char_matrix_value ();
 
       if (cmat.columns () > 16)
-        error ("hex2num: expecting no more than a 16 character string");
+        error ("hex2num: S must be no more than 16 characters");
       else if (! error_state)
         {
           octave_idx_type nr = cmat.rows ();
@@ -92,7 +92,7 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
                     }
                   else
                     {
-                      error ("hex2num: illegal character found in string");
+                      error ("hex2num: illegal character found in string S");
                       break;
                     }
                 }

@@ -38,14 +38,14 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (matrix_type, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{type} =} matrix_type (@var{a})\n\
-@deftypefnx {Loadable Function} {@var{type} =} matrix_type (@var{a}, 'nocompute')\n\
-@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, @var{type})\n\
-@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'upper', @var{perm})\n\
-@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'lower', @var{perm})\n\
-@deftypefnx {Loadable Function} {@var{a} =} matrix_type (@var{a}, 'banded', @var{nl}, @var{nu})\n\
+@deftypefn  {Loadable Function} {@var{type} =} matrix_type (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{type} =} matrix_type (@var{A}, 'nocompute')\n\
+@deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, @var{type})\n\
+@deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, 'upper', @var{perm})\n\
+@deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, 'lower', @var{perm})\n\
+@deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, 'banded', @var{nl}, @var{nu})\n\
 Identify the matrix type or mark a matrix as a particular type.  This allows\n\
-rapid for solutions of linear equations involving @var{a} to be performed.  \n\
+more rapid solutions of linear equations involving @var{A} to be performed.  \n\
 Called with a single argument, @code{matrix_type} returns the type of the\n\
 matrix and caches it for future use.  Called with more than one argument,\n\
 @code{matrix_type} allows the type of the matrix to be defined.\n\
@@ -58,7 +58,7 @@ can be one of the following\n\
 \n\
 @table @asis\n\
 @item 'unknown'\n\
-Remove any previously cached matrix type, and mark type as unknown\n\
+Remove any previously cached matrix type, and mark type as unknown.\n\
 \n\
 @item 'full'\n\
 Mark the matrix as full.\n\
@@ -67,7 +67,7 @@ Mark the matrix as full.\n\
 Probable full positive definite matrix.\n\
 \n\
 @item 'diagonal'\n\
-Diagonal Matrix.  (Sparse matrices only)\n\
+Diagonal matrix.  (Sparse matrices only)\n\
 \n\
 @item 'permuted diagonal'\n\
 Permuted Diagonal matrix.  The permutation does not need to be specifically\n\
@@ -89,28 +89,28 @@ defined by the vector @var{perm}.\n\
 Banded matrix with the band size of @var{nl} below the diagonal and @var{nu}\n\
 above it.  If @var{nl} and @var{nu} are 1, then the matrix is tridiagonal and\n\
 treated with specialized code.  In addition the matrix can be marked as\n\
-probably a positive definite (Sparse matrices only)\n\
+probably a positive definite.  (Sparse matrices only)\n\
 \n\
 @item 'singular'\n\
 The matrix is assumed to be singular and will be treated with a minimum norm\n\
-solution\n\
+solution.\n\
 \n\
 @end table\n\
 \n\
 Note that the matrix type will be discovered automatically on the first\n\
-attempt to solve a linear equation involving @var{a}.  Therefore\n\
+attempt to solve a linear equation involving @var{A}.  Therefore\n\
 @code{matrix_type} is only useful to give Octave hints of the matrix type.  \n\
 Incorrectly defining the matrix type will result in incorrect results from\n\
-solutions of linear equations, and so it is entirely the responsibility of\n\
-the user to correctly identify the matrix type.\n\
+solutions of linear equations; it is entirely @strong{the responsibility of\n\
+the user} to correctly identify the matrix type.\n\
 \n\
-Also the test for positive definiteness is a low-cost test for a Hermitian\n\
+Also, the test for positive definiteness is a low-cost test for a Hermitian\n\
 matrix with a real positive diagonal.  This does not guarantee that the\n\
 matrix is positive definite, but only that it is a probable candidate.  When\n\
-such a matrix is factorized, a Cholesky factorization is first attempted,\n\
-and if that fails the matrix is then treated with an LU factorization.  Once\n\
-the matrix has been factorized, @code{matrix_type} will return the correct\n\
-classification of the matrix.\n\
+such a matrix is factorized, a Cholesky@tie{}factorization is first\n\
+attempted, and if that fails the matrix is then treated with an\n\
+LU@tie{}factorization.  Once the matrix has been factorized,\n\
+@code{matrix_type} will return the correct classification of the matrix.\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -220,7 +220,7 @@ classification of the matrix.\n\
               octave_idx_type nu = 0;
               
               if (error_state)
-                error ("Matrix type must be a string");
+                error ("matrix_type: TYPE must be a string");
               else
                 {
                   // Use STL function to convert to lower case
@@ -280,14 +280,14 @@ classification of the matrix.\n\
                             ColumnVector (args (2).vector_value ());
 
                           if (error_state)
-                            error ("matrix_type: Invalid permutation vector");
+                            error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
                               octave_idx_type len = perm.length ();
                               dim_vector dv = args(0).dims ();
                               
                               if (len != dv(0))
-                                error ("matrix_type: Invalid permutation vector");
+                                error ("matrix_type: Invalid permutation vector PERM");
                               else
                                 {
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
@@ -413,7 +413,7 @@ classification of the matrix.\n\
               MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
 
               if (error_state)
-                error ("Matrix type must be a string");
+                error ("matrix_type: TYPE must be a string");
               else
                 {
                   // Use STL function to convert to lower case
@@ -447,14 +447,14 @@ classification of the matrix.\n\
                             ColumnVector (args (2).vector_value ());
 
                           if (error_state)
-                            error ("matrix_type: Invalid permutation vector");
+                            error ("matrix_type: Invalid permutation vector PERM");
                           else
                             {
                               octave_idx_type len = perm.length ();
                               dim_vector dv = args(0).dims ();
                               
                               if (len != dv(0))
-                                error ("matrix_type: Invalid permutation vector");
+                                error ("matrix_type: Invalid permutation vector PERM");
                               else
                                 {
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);

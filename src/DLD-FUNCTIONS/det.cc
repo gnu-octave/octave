@@ -49,14 +49,19 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} det (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{a})\n\
-Compute the determinant of @var{a}.\n\
+@deftypefn  {Loadable Function} {} det (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{d}, @var{rcond}] =} det (@var{A})\n\
+Compute the determinant of @var{A}.\n\
+\n\
+Return an estimate of the reciprocal condition number if requested.\n\
 \n\
 Routines from @sc{lapack} are used for full matrices and code from\n\
 @sc{umfpack} is used for sparse matrices.\n\
 \n\
-Return an estimate of the reciprocal condition number if requested.\n\
+The determinant should not be used to check a matrix for singularity.\n\
+For that, use any of the condition number functions: @code{cond},\n\
+@code{condest}, @code{rcond}.\n\
+@seealso{cond, condest, rcond}\n\
 @end deftypefn")
 {
   octave_value_list retval;

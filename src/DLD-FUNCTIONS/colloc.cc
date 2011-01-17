@@ -55,7 +55,7 @@ Polynomial Approximation}.\n\
 
   if (! args(0).is_scalar_type ())
     {
-      error ("colloc: first argument must be a scalar");
+      error ("colloc: N must be a scalar");
       return retval;
     }
 
@@ -66,14 +66,14 @@ Polynomial Approximation}.\n\
 
   if (xisnan (tmp))
     {
-      error ("colloc: NaN is invalid as NCOL");
+      error ("colloc: N cannot be NaN");
       return retval;
     }
 
   octave_idx_type ncol = NINTbig (tmp);
   if (ncol < 0)
     {
-      error ("colloc: first argument must be non-negative");
+      error ("colloc: N must be positive");
       return retval;
     }
 
@@ -87,7 +87,7 @@ Polynomial Approximation}.\n\
         {
           if (! args(i).is_string ())
             {
-              error ("colloc: expecting string argument");
+              error ("colloc: expecting string argument \"left\" or \"right\"");
               return retval;
             }
 

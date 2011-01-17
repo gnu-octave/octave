@@ -62,47 +62,47 @@ get_chol_l (const CHOLT& fact)
 
 DEFUN_DLD (chol, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{r} =} chol (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}] =} chol (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}] =} chol (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}] =} chol (@var{s}, 'vector')\n\
-@deftypefnx {Loadable Function} {[@var{l}, @dots{}] =} chol (@dots{}, 'lower')\n\
+@deftypefn  {Loadable Function} {@var{R} =} chol (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{R}, @var{p}] =} chol (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
+@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, 'vector')\n\
+@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, 'lower')\n\
 @cindex Cholesky factorization\n\
-Compute the Cholesky factor, @var{r}, of the symmetric positive definite\n\
-matrix @var{a}, where\n\
+Compute the Cholesky factor, @var{R}, of the symmetric positive definite\n\
+matrix @var{A}, where\n\
 @tex\n\
 $ R^T R = A $.\n\
 @end tex\n\
 @ifnottex\n\
 \n\
 @example\n\
-@var{r}' * @var{r} = @var{a}.\n\
+@var{R}' * @var{R} = @var{A}.\n\
 @end example\n\
 \n\
 @end ifnottex\n\
 \n\
-Called with one output argument @code{chol} fails if @var{a} or @var{s} is\n\
+Called with one output argument @code{chol} fails if @var{A} or @var{S} is\n\
 not positive definite.  With two or more output arguments @var{p} flags\n\
 whether the matrix was positive definite and @code{chol} does not fail.  A\n\
-zero value indicated that the matrix was positive definite and the @var{r}\n\
+zero value indicated that the matrix was positive definite and the @var{R}\n\
 gives the factorization, and @var{p} will have a positive value otherwise.\n\
 \n\
 If called with 3 outputs then a sparsity preserving row/column permutation\n\
-is applied to @var{a} prior to the factorization.  That is @var{r}\n\
-is the factorization of @code{@var{a}(@var{q},@var{q})} such that\n\
+is applied to @var{A} prior to the factorization.  That is @var{R}\n\
+is the factorization of @code{@var{A}(@var{Q},@var{Q})} such that\n\
 @tex\n\
 $ R^T R = Q^T A Q$.\n\
 @end tex\n\
 @ifnottex\n\
 \n\
 @example\n\
-@var{r}' * @var{r} = @var{q}' * @var{a} * @var{q}.\n\
+@var{R}' * @var{R} = @var{Q}' * @var{A} * @var{Q}.\n\
 @end example\n\
 \n\
 @end ifnottex\n\
 \n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the flag 'vector', @var{q} will be returned as a vector\n\
+However, given the flag 'vector', @var{Q} will be returned as a vector\n\
 such that\n\
 @tex\n\
 $ R^T R = A (Q, Q)$.\n\
@@ -110,7 +110,7 @@ $ R^T R = A (Q, Q)$.\n\
 @ifnottex\n\
 \n\
 @example\n\
-@var{r}' * @var{r} = a (@var{q}, @var{q}).\n\
+@var{R}' * @var{R} = @var{A}(@var{Q}, @var{Q}).\n\
 @end example\n\
 \n\
 @end ifnottex\n\
@@ -123,7 +123,7 @@ $ L L^T = A $.\n\
 @ifnottex\n\
 \n\
 @example\n\
-@var{l} * @var{l}' = @var{a}.\n\
+@var{L} * @var{L}' = @var{A}.\n\
 @end example\n\
 \n\
 @end ifnottex\n\
@@ -207,7 +207,7 @@ sparse matrices.\n\
                         retval(0) = fact.R();
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else if (arg.is_complex_type ())
@@ -236,7 +236,7 @@ sparse matrices.\n\
                         retval(0) = fact.R();
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else
@@ -261,7 +261,7 @@ sparse matrices.\n\
                         retval(0) = get_chol_r (fact);
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else if (arg.is_complex_type ())
@@ -281,7 +281,7 @@ sparse matrices.\n\
                         retval(0) = get_chol_r (fact);
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else
@@ -306,7 +306,7 @@ sparse matrices.\n\
                         retval(0) = get_chol_r (fact);
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else if (arg.is_complex_type ())
@@ -326,7 +326,7 @@ sparse matrices.\n\
                         retval(0) = get_chol_r (fact);
                     }
                   else
-                    error ("chol: matrix not positive definite");
+                    error ("chol: input matrix must be positive definite");
                 }
             }
           else
@@ -351,10 +351,10 @@ sparse matrices.\n\
 
 DEFUN_DLD (cholinv, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} cholinv (@var{a})\n\
-Use the Cholesky factorization to compute the inverse of the\n\
-symmetric positive definite matrix @var{a}.\n\
-@seealso{chol, chol2inv}\n\
+@deftypefn {Loadable Function} {} cholinv (@var{A})\n\
+Use the Cholesky@tie{}factorization to compute the inverse of the\n\
+symmetric positive definite matrix @var{A}.\n\
+@seealso{chol, chol2inv, inv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -385,7 +385,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else if (arg.is_complex_type ())
@@ -399,7 +399,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else
@@ -418,7 +418,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else if (arg.is_complex_type ())
@@ -432,7 +432,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else
@@ -451,7 +451,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else if (arg.is_complex_type ())
@@ -465,7 +465,7 @@ symmetric positive definite matrix @var{a}.\n\
                       if (info == 0)
                         retval = chol.inverse ();
                       else
-                        error ("cholinv: matrix not positive definite");
+                        error ("cholinv: A must be positive definite");
                     }
                 }
               else
@@ -501,13 +501,13 @@ symmetric positive definite matrix @var{a}.\n\
 
 DEFUN_DLD (chol2inv, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} chol2inv (@var{u})\n\
+@deftypefn {Loadable Function} {} chol2inv (@var{U})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\
-decomposition, @var{u}.  Note that @var{u} should be an upper-triangular\n\
-matrix with positive diagonal elements.  @code{chol2inv (@var{u})}\n\
-provides @code{inv (@var{u}'*@var{u})} but it is much faster than\n\
+decomposition, @var{U}.  Note that @var{U} should be an upper-triangular\n\
+matrix with positive diagonal elements.  @code{chol2inv (@var{U})}\n\
+provides @code{inv (@var{U}'*@var{U})} but it is much faster than\n\
 using @code{inv}.\n\
-@seealso{chol, cholinv}\n\
+@seealso{chol, cholinv, inv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -594,7 +594,7 @@ using @code{inv}.\n\
 DEFUN_DLD (cholupdate, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
-Update or downdate a Cholesky factorization.  Given an upper triangular\n\
+Update or downdate a Cholesky@tie{}factorization.  Given an upper triangular\n\
 matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
 upper triangular matrix @var{R1} such that\n\
 @itemize @bullet\n\
@@ -725,9 +725,9 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
               error ("cholupdate: singular matrix");
           }
         else
-          error ("cholupdate: dimension mismatch");
+          error ("cholupdate: dimension mismatch between R and U");
       else
-        error ("cholupdate: op must be \"+\" or \"-\"");
+        error ("cholupdate: OP must be \"+\" or \"-\"");
     }
   else
     print_usage ();
@@ -813,7 +813,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
 DEFUN_DLD (cholinsert, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
+@deftypefn  {Loadable Function} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
+@deftypefnx {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
 triangular, return the Cholesky@tie{}factorization of\n\
@@ -922,10 +923,10 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
                 error ("cholinsert: diagonal element must be real");
             }
           else
-            error ("cholinsert: index out of range");
+            error ("cholinsert: index J out of range");
         }
       else
-        error ("cholinsert: dimension mismatch");
+        error ("cholinsert: dimension mismatch between R and U");
     }
   else
     print_usage ();
@@ -1081,10 +1082,10 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
                 }
             }
           else
-            error ("choldelete: index out of range");
+            error ("choldelete: index J out of range");
         }
       else
-        error ("choldelete: dimension mismatch");
+        error ("choldelete: matrix R must be square");
     }
   else
     print_usage ();
@@ -1222,10 +1223,10 @@ triangular, return the Cholesky@tie{}factorization of\n\
                 }
             }
           else
-            error ("cholshift: index out of range");
+            error ("cholshift: index I or J is out of range");
         }
       else
-        error ("cholshift: dimension mismatch");
+        error ("cholshift: R must be a square matrix");
     }
   else
     print_usage ();

@@ -59,11 +59,11 @@ mark_upper_triangular (const Matrix& a)
 
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{s} =} schur (@var{a})\n\
-@deftypefnx {Loadable Function} {@var{s} =} schur (@var{a}, \"complex\")\n\
-@deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})\n\
+@deftypefn  {Loadable Function} {@var{S} =} schur (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
+@deftypefnx {Loadable Function} {[@var{U}, @var{S}] =} schur (@var{A}, @var{opt})\n\
 @cindex Schur decomposition\n\
-The Schur decomposition is used to compute eigenvalues of a\n\
+The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
 square matrix, and has applications in the solution of algebraic\n\
 Riccati equations in control (see @code{are} and @code{dare}).\n\
 @code{schur} always returns\n\
@@ -71,64 +71,64 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 $S = U^T A U$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s = u' * a * u}\n\
+@code{@var{S} = @var{U}' * @var{A} * @var{U}}\n\
 @end ifnottex\n\
 where\n\
 @tex\n\
 $U$\n\
 @end tex\n\
 @ifnottex\n\
-@code{u}\n\
+@var{U}\n\
 @end ifnottex\n\
  is a unitary matrix\n\
 @tex\n\
 ($U^T U$ is identity)\n\
 @end tex\n\
 @ifnottex\n\
-(@code{u'* u} is identity)\n\
+(@code{@var{U}'* @var{U}} is identity)\n\
 @end ifnottex\n\
 and\n\
 @tex\n\
 $S$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}\n\
+@var{S}\n\
 @end ifnottex\n\
 is upper triangular.  The eigenvalues of\n\
 @tex\n\
 $A$ (and $S$)\n\
 @end tex\n\
 @ifnottex\n\
-@code{a} (and @code{s})\n\
+@var{A} (and @var{S})\n\
 @end ifnottex\n\
 are the diagonal elements of\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}.\n\
+@var{S}.\n\
 @end ifnottex\n\
 If the matrix\n\
 @tex\n\
 $A$\n\
 @end tex\n\
 @ifnottex\n\
-@code{a}\n\
+@var{A}\n\
 @end ifnottex\n\
-is real, then the real Schur decomposition is computed, in which the\n\
+is real, then the real Schur@tie{}decomposition is computed, in which the\n\
 matrix\n\
 @tex\n\
 $U$\n\
 @end tex\n\
 @ifnottex\n\
-@code{u}\n\
+@var{U}\n\
 @end ifnottex\n\
 is orthogonal and\n\
 @tex\n\
 $S$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}\n\
+@var{S}\n\
 @end ifnottex\n\
 is block upper triangular\n\
 with blocks of size at most\n\
@@ -143,7 +143,7 @@ along the diagonal.  The diagonal elements of\n\
 $S$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}\n\
+@var{S}\n\
 @end ifnottex\n\
 (or the eigenvalues of the\n\
 @tex\n\
@@ -158,71 +158,71 @@ appropriate) are the eigenvalues of\n\
 $A$\n\
 @end tex\n\
 @ifnottex\n\
-@code{a}\n\
+@var{A}\n\
 @end ifnottex\n\
 and\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}.\n\
+@var{S}.\n\
 @end ifnottex\n\
 \n\
 A complex decomposition may be forced by passing \"complex\" as @var{opt}.\n\
 \n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
-the value of @code{opt}.  @code{opt = \"a\"} indicates that all\n\
+the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\
 eigenvalues with negative real parts should be moved to the leading\n\
 block of\n\
 @tex\n\
 $S$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}\n\
+@var{S}\n\
 @end ifnottex\n\
-(used in @code{are}), @code{opt = \"d\"} indicates that all eigenvalues\n\
+(used in @code{are}), @code{@var{opt} = \"d\"} indicates that all eigenvalues\n\
 with magnitude less than one should be moved to the leading block of\n\
 @tex\n\
 $S$\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}\n\
+@var{S}\n\
 @end ifnottex\n\
-(used in @code{dare}), and @code{opt = \"u\"}, the default, indicates that\n\
-no ordering of eigenvalues should occur.  The leading\n\
+(used in @code{dare}), and @code{@var{opt} = \"u\"}, the default, indicates\n\
+that no ordering of eigenvalues should occur.  The leading\n\
 @tex\n\
 $k$\n\
 @end tex\n\
 @ifnottex\n\
-@code{k}\n\
+@var{k}\n\
 @end ifnottex\n\
 columns of\n\
 @tex\n\
 $U$\n\
 @end tex\n\
 @ifnottex\n\
-@code{u}\n\
+@var{U}\n\
 @end ifnottex\n\
 always span the\n\
 @tex\n\
 $A$-invariant\n\
 @end tex\n\
 @ifnottex\n\
-@code{a}-invariant\n\
+@var{A}-invariant\n\
 @end ifnottex\n\
 subspace corresponding to the\n\
 @tex\n\
 $k$\n\
 @end tex\n\
 @ifnottex\n\
-@code{k}\n\
+@var{k}\n\
 @end ifnottex\n\
 leading eigenvalues of\n\
 @tex\n\
 $S$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{s}.\n\
+@var{S}.\n\
 @end ifnottex\n\
 @end deftypefn")
 {
@@ -246,7 +246,7 @@ $S$.\n\
 
       if (error_state)
         {
-          error ("schur: expecting string as second argument");
+          error ("schur: second argument must be a string");
           return retval;
         }
     }
@@ -393,16 +393,16 @@ $S$.\n\
 DEFUN_DLD (rsf2csf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
-Convert a real, upper quasi-triangular Schur form @var{TR} to a complex,\n\
-upper triangular Schur form @var{T}.\n\
+Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
+upper triangular Schur@tie{}form @var{T}.\n\
 \n\
 Note that the following relations hold: \n\
 \n\
 @code{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
-@code{@var{U}' * @var{U}} is the identity matrix.\n\
+@code{@var{U}' * @var{U}} is the identity matrix I.\n\
 \n\
-Note also that U and T are not unique.\n\
-\n\
+Note also that @var{U} and @var{T} are not unique.\n\
+@seealso{schur}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -414,7 +414,7 @@ Note also that U and T are not unique.\n\
       else if (! args(1).is_numeric_type ())
         gripe_wrong_type_arg ("rsf2csf", args(1));
       else if (args(0).is_complex_type () || args(1).is_complex_type ())
-        error ("rsf2csf: both matrices must be real");
+        error ("rsf2csf: UR and TR must be real matrices");
       else
         {
 

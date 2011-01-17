@@ -154,8 +154,8 @@ starting index of every such occurrence in the vector @var{idx}.\n\
 If there is no such occurrence, or if @var{pattern} is longer\n\
 than @var{str}, then @var{idx} is the empty array @code{[]}.\n\
 \n\
-If the cell array of strings @var{cellstr} is specified instead of the\n\
-string @var{str}, then @var{idx} is a cell array of vectors, as specified\n\
+If a cell array of strings @var{cellstr} is specified\n\
+then @var{idx} is a cell array of vectors, as specified\n\
 above.  Examples:\n\
 \n\
 @example\n\
@@ -175,7 +175,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
         @}\n\
 @end group\n\
 @end example\n\
-@seealso{findstr, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}\n\
+@seealso{findstr,strmatch,regexp,regexpi,find}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -225,7 +225,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
                                             true, true);
                   else
                     {
-                      error ("strfind: each cell element must be a string");
+                      error ("strfind: each element of CELLSTR must be a string");
                       break;
                     }
                 }
@@ -238,7 +238,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
       else if (argpat.is_cell ())
         retval = do_simple_cellfun (Fstrfind, "strfind", args);
       else
-        error ("strfind: pattern must be a string or cell array of strings");
+        error ("strfind: PATTERN must be a string or cell array of strings");
     }
   else
     print_usage ();
@@ -323,10 +323,10 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 
 DEFUN_DLD (strrep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y})\n\
-@deftypefnx {Loadable Function} {} strrep (@var{s}, @var{x}, @var{y}, \"overlaps\", @var{o})\n\
-Replace all occurrences of the substring @var{x} of the string @var{s}\n\
-with the string @var{y} and return the result.  For example:\n\
+@deftypefn  {Loadable Function} {} strrep (@var{s}, @var{ptn}, @var{rep})\n\
+@deftypefnx {Loadable Function} {} strrep (@var{s}, @var{ptn}, @var{rep}, \"overlaps\", @var{o})\n\
+Replace all occurrences of the substring @var{ptn} in the string @var{s}\n\
+with the string @var{rep} and return the result.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -385,7 +385,7 @@ done for each element and a cell array is returned.\n\
                     retc(i) = qs_replace (argse.char_array_value (), pat, rep, table, overlaps);
                   else
                     {
-                      error ("strrep: each cell element must be a string");
+                      error ("strrep: each element of S must be a string");
                       break;
                     }
                 }
@@ -398,7 +398,7 @@ done for each element and a cell array is returned.\n\
       else if (argpat.is_cell () || argrep.is_cell ())
         retval = do_simple_cellfun (Fstrrep, "strrep", args);
       else
-        error ("strrep: x and y arguments must be strings or cell arrays of strings");
+        error ("strrep: X and Y arguments must be strings or cell arrays of strings");
     }
   else
     print_usage ();

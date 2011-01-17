@@ -72,7 +72,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   if (norm == static_cast<T>(0.0))
     {
-      error ("filter: the first element of a must be non-zero");
+      error ("filter: the first element of A must be non-zero");
       return y;
     }
 
@@ -90,13 +90,13 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   if (si_len != ab_len - 1)
     {
-      error ("filter: first dimension of si must be of length max (length (a), length (b)) - 1");
+      error ("filter: first dimension of SI must be of length max (length (a), length (b)) - 1");
       return y;
     }
 
   if (si_dims.length () != x_dims.length ())
     {
-      error ("filter: dimensionality of si and x must agree");
+      error ("filter: dimensionality of SI and X must agree");
       return y;
     }
 
@@ -111,7 +111,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
  
       if (si_dims(++si_dim) != x_dims(i))
         {
-          error ("filter: dimensionality of si and x must agree");
+          error ("filter: dimensionality of SI and X must agree");
           return y;
         }
     }
@@ -352,7 +352,7 @@ equal to the length of the longest coefficient vector minus one.\n\
 If @var{si} is not supplied, the initial state vector is set to all\n\
 zeros.\n\
 \n\
-In terms of the z-transform, y is the result of passing the discrete-\n\
+In terms of the Z Transform, y is the result of passing the discrete-\n\
 time signal x through a system characterized by the following rational\n\
 system function:\n\
 @tex\n\
@@ -376,6 +376,7 @@ $$\n\
 @end example\n\
 \n\
 @end ifnottex\n\
+@seealso{filter2,fftfilt,freqz}\n\
 @end deftypefn")
 {
   octave_value_list retval;

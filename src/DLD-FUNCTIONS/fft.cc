@@ -63,12 +63,12 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
         {
           double dval = args(1).double_value ();
           if (xisnan (dval))
-            error ("%s: NaN is invalid as the N_POINTS", fcn);
+            error ("%s: number of points (N) cannot be NaN", fcn);
           else
             {
               n_points = NINTbig (dval);
               if (n_points < 0)
-                error ("%s: number of points must be greater than zero", fcn);
+                error ("%s: number of points (N) must be greater than zero", fcn);
             }
         }
     }
@@ -80,9 +80,9 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     {
       double dval = args(2).double_value ();
       if (xisnan (dval))
-        error ("%s: NaN is invalid as the N_POINTS", fcn);
+        error ("%s: DIM cannot be NaN", fcn);
       else if (dval < 1 || dval > dims.length ())
-        error ("%s: invalid dimension along which to perform fft", fcn);
+        error ("%s: DIM must be a valid dimension along which to perform FFT", fcn);
       else
         // to be safe, cast it back to int since dim is an int
         dim = NINT (dval) - 1;
@@ -200,20 +200,22 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 DEFUN_DLD (fft, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fft (@var{a}, @var{n}, @var{dim})\n\
-Compute the FFT of @var{a} using subroutines from\n"
+@deftypefn  {Loadable Function} {} fft (@var{x})\n\
+@deftypefnx {Loadable Function} {} fft (@var{x}, @var{n})\n\
+@deftypefnx {Loadable Function} {} fft (@var{x}, @var{n}, @var{dim})\n\
+Compute the FFT of @var{x} using subroutines from\n"
 FFTSRC
 ".  The FFT is calculated along the first non-singleton dimension of the\n\
-array.  Thus if @var{a} is a matrix, @code{fft (@var{a})} computes the\n\
-FFT for each column of @var{a}.\n\
+array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the\n\
+FFT for each column of @var{x}.\n\
 \n\
 If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{a} to use, or an empty\n\
+specifying the number of elements of @var{x} to use, or an empty\n\
 matrix to specify that its value should be ignored.  If @var{n} is\n\
 larger than the dimension along which the FFT is calculated, then\n\
-@var{a} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
 smaller than the dimension along which the FFT is calculated, then\n\
-@var{a} is truncated.\n\
+@var{x} is truncated.\n\
 \n\
 If called with three arguments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the FFT is performed\n\
@@ -226,20 +228,22 @@ dimension of the matrix along which the FFT is performed\n\
 
 DEFUN_DLD (ifft, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n}, @var{dim})\n\
-Compute the inverse FFT of @var{a} using subroutines from\n"
+@deftypefn  {Loadable Function} {} ifft (@var{x})\n\
+@deftypefnx {Loadable Function} {} ifft (@var{x}, @var{n})\n\
+@deftypefnx {Loadable Function} {} ifft (@var{x}, @var{n}, @var{dim})\n\
+Compute the inverse FFT of @var{x} using subroutines from\n"
 FFTSRC
 ".  The inverse FFT is calculated along the first non-singleton dimension\n\
-of the array.  Thus if @var{a} is a matrix, @code{fft (@var{a})} computes\n\
-the inverse FFT for each column of @var{a}.\n\
+of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes\n\
+the inverse FFT for each column of @var{x}.\n\
 \n\
 If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{a} to use, or an empty\n\
+specifying the number of elements of @var{x} to use, or an empty\n\
 matrix to specify that its value should be ignored.  If @var{n} is\n\
 larger than the dimension along which the inverse FFT is calculated, then\n\
-@var{a} is resized and padded with zeros.  Otherwise, if@var{n} is\n\
+@var{x} is resized and padded with zeros.  Otherwise, if @var{n} is\n\
 smaller than the dimension along which the inverse FFT is calculated,\n\
-then @var{a} is truncated.\n\
+then @var{x} is truncated.\n\
 \n\
 If called with three arguments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the inverse FFT is performed\n\

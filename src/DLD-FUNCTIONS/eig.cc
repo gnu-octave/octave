@@ -35,18 +35,18 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (eig, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
-@deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{a}, @var{b})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a}, @var{b})\n\
+@deftypefn  {Loadable Function} {@var{lambda} =} eig (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
 The eigenvalues (and eigenvectors) of a matrix are computed in a several\n\
 step process which begins with a Hessenberg decomposition, followed by a\n\
-Schur decomposition, from which the eigenvalues are apparent.  The\n\
+Schur@tie{}decomposition, from which the eigenvalues are apparent.  The\n\
 eigenvectors, when desired, are computed by further manipulations of the\n\
-Schur decomposition.\n\
+Schur@tie{}decomposition.\n\
 \n\
 The eigenvalues returned by @code{eig} are not ordered.\n\
-@seealso{eigs}\n\
+@seealso{eigs, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -106,16 +106,17 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 DEFUN_DLD (dot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
-Computes the dot product of two vectors.  If @var{x} and @var{y}\n\
+Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
 are matrices, calculate the dot products along the first \n\
 non-singleton dimension.  If the optional argument @var{dim} is\n\
 given, calculate the dot products along this dimension.\n\
 \n\
-This is equivalent to doing\n\
+This is equivalent to\n\
 @code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},\n\
 but avoids forming a temporary array and is faster.  When @var{X} and\n\
 @var{Y} are column vectors, the result is equivalent to\n\
-@code{ @var{X}'*@var{Y} }.\n\
+@code{@var{X}' * @var{Y}}.\n\
+@seealso{cross}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -155,7 +156,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
           if (error_state)
             ;
           else if (dim < 0)
-            error ("dot: dim must be a valid dimension");
+            error ("dot: DIM must be a valid dimension");
           else
             {
               octave_idx_type m, n, k;
@@ -226,11 +227,11 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
             }
         }
       else
-        error ("dot: sizes of x,y must match");
+        error ("dot: sizes of X and Y must match");
 
     }
   else
-    error ("dot: needs numeric arguments");
+    error ("dot: X and Y must be numeric");
 
   return retval;
 }
@@ -242,7 +243,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 DEFUN_DLD (blkmm, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} blkmm (@var{x}, @var{y})\n\
-Computes products of matrix blocks.  The blocks are given as\n\
+Compute products of matrix blocks.  The blocks are given as\n\
 2-dimensional subarrays of the arrays @var{x}, @var{y}.\n\
 The size of @var{x} must have the form @code{[m,k,@dots{}]} and\n\
 size of @var{y} must be @code{[k,n,@dots{}]}.  The result is\n\
@@ -334,12 +335,12 @@ then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
             }
         }
       else
-        error ("blkmm: dimensions don't match: (%s) and (%s)",
+        error ("blkmm: X and Y dimensions don't match: (%s) and (%s)",
                dimx.str ().c_str (), dimy.str ().c_str ());
 
     }
   else
-    error ("blkmm: needs numeric arguments");
+    error ("blkmm: X and Y must be numeric");
 
   return retval;
 }

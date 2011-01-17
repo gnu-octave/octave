@@ -79,7 +79,7 @@ Undocumented internal function.\n\
     {
       if (! args (1).is_string ()) 
         {
-          error ("__voronoi__: second argument must be a string");
+          error ("__voronoi__: OPTIONS argument must be a string");
           return retval;
         }
 

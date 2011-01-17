@@ -158,7 +158,8 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
 DEFUN_DLD (lsode, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
+@deftypefn  {Loadable Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
+@deftypefnx {Loadable Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential equations\n\
 @tex\n\
 $$ {dx \\over dt} = f (x, t) $$\n\

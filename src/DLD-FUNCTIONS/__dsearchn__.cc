@@ -55,7 +55,7 @@ Undocumented internal function.\n\
   if (! error_state)
     {
       if (x.rows() != xi.rows() || x.columns() < 1)
-        error ("__dsearch__: dimensional mismatch");
+        error ("__dsearch__: number of rows of X and XI must match");
       else
         {
           octave_idx_type n = x.rows();

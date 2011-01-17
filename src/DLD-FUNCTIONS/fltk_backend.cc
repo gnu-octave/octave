@@ -1695,7 +1695,7 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
-    error ("fltk_backend:: not a figure");
+    error ("fltk_backend:: H is not a figure");
     return -1;
   }
 
@@ -1947,10 +1947,9 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
 
 DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fltk_mouse_wheel_zoom ([@var{speed}])\n\
-Returns the current mouse wheel zoom factor in the fltk backend.  If\n\
-the @var{speed} argument is given, set the mouse zoom factor to this\n\
-value.\n\
+@deftypefn  {Built-in Function} {@var{speed} =} fltk_mouse_wheel_zoom ()\n\
+@deftypefnx {Built-in Function} {} fltk_mouse_wheel_zoom (@var{speed})\n\
+Query or set the mouse wheel zoom factor in the fltk backend.\n\
 @end deftypefn")
 {
   octave_value retval = wheel_zoom_speed;
@@ -1960,7 +1959,7 @@ value.\n\
       if (args(0).is_real_scalar ())
         wheel_zoom_speed = args(0).double_value ();
       else
-        error ("argument must be a real scalar");
+        error ("fltk_mouse_wheel_zoom: SPEED must be a real scalar");
     }
 
   return retval;
@@ -1968,17 +1967,18 @@ value.\n\
 
 DEFUN_DLD (fltk_gui_mode, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{mode} =} fltk_gui_mode\n\
+@deftypefn  {Built-in Function} {@var{mode} =} fltk_gui_mode ()\n\
 @deftypefnx {Built-in Function} {} fltk_gui_mode (@var{mode})\n\
-Returns the current GUI mode string for the fltk backend. If\n\
-the @var{mode} argument is given the GUI mode is set to this\n\
-value. It can be one of the following strings:\n\
-@table @code\n\
-@item 2d\n\
+Query or set the GUI mode for the fltk backend.\n\
+The @var{mode} argument can be one of the following strings:\n\
+@table @asis\n\
+@item '2d'\n\
 Allows panning and zooming of current axes.\n\
-@item 3d\n\
+\n\
+@item '3d'\n\
 Allows rotating and zooming of current axes.\n\
-@item none\n\
+\n\
+@item 'none'\n\
 Mouse inputs have no effect.\n\
 @end table\n\
 @end deftypefn")
@@ -2015,7 +2015,7 @@ Mouse inputs have no effect.\n\
     }
     
   if (failed)
-    error ("argument must be one of the strings: ""2D"", ""3D"", or ""None"".");
+    error ("MODE must be one of the strings: ""2D"", ""3D"", or ""None"".");
   
   
   return octave_value(mode_str);
@@ -2024,10 +2024,8 @@ Mouse inputs have no effect.\n\
 #include "file-ops.h"
 DEFUN_DLD (__fltk_uigetfile__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __fltk_uigetfile__ ([@var{...}])\n\
-Internal Function.\n\
-\n\
-\n\
+@deftypefn {Built-in Function} {} __fltk_uigetfile__ (@dots{})\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   // This function should be called by uigetfile.m

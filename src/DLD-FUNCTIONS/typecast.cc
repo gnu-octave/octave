@@ -89,7 +89,7 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 DEFUN_DLD (typecast, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} typecast (@var{x}, @var{class})\n\
-Returns a new array @var{y} resulting from interpreting the data of\n\
+Return a new array @var{y} resulting from interpreting the data of\n\
 @var{x} in memory as data of the numeric class @var{class}.  Both the class\n\
 of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
 \n\
@@ -274,8 +274,8 @@ do_bitpack (const boolNDArray& bitp)
 DEFUN_DLD (bitpack, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
-Returns a new array @var{y} resulting from interpreting a logical array\n\
-@var{x} as raw bit pattern for data of the numeric class @var{class}.  \n\
+Return a new array @var{y} resulting from interpreting an array\n\
+@var{x} as raw bit patterns for data of the numeric class @var{class}.\n\
 @var{class} must be one of the built-in numeric classes:\n\
 \n\
 @example\n\
@@ -296,10 +296,10 @@ Returns a new array @var{y} resulting from interpreting a logical array\n\
 \n\
 The number of elements of @var{x} should be divisible by the bit length of\n\
 @var{class}.  If it is not, excess bits are discarded.  Bits come in\n\
-increasing order of significance, i.e. @code{x(1)} is bit 0, @code{x(2)} is\n\
+increasing order of significance, i.e., @code{x(1)} is bit 0, @code{x(2)} is\n\
 bit 1, etc.  The result is a row vector if @var{x} is a row vector, otherwise\n\
 it is a column vector.\n\
-@seealso{bitunpack,typecast,bitget,bitset}\n\
+@seealso{bitunpack,typecast}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -383,7 +383,7 @@ do_bitunpack (const ArrayType& array)
 DEFUN_DLD (bitunpack, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x})\n\
-Returns a logical array @var{y} corresponding to the raw bit pattern of\n\
+Return an array @var{y} corresponding to the raw bit patterns of\n\
 @var{x}.  @var{x} must belong to one of the built-in numeric classes:\n\
 \n\
 @example\n\
@@ -402,9 +402,9 @@ Returns a logical array @var{y} corresponding to the raw bit pattern of\n\
 @end group\n\
 @end example\n\
 \n\
-The result is a row vector if @var{x} is a row vector, otherwise it is a\n\
+The result is a row vector if @var{x} is a row vector; otherwise, it is a\n\
 column vector.\n\
-@seealso{bitpack,typecast,bitget,bitset}\n\
+@seealso{bitpack,typecast}\n\
 @end deftypefn")
 {
   octave_value retval;

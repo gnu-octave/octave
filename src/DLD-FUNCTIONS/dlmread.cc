@@ -170,18 +170,18 @@ Given two scalar arguments @var{r0} and @var{c0}, these define the starting\n\
 row and column of the data to be read.  These values are indexed from zero,\n\
 such that the first row corresponds to an index of zero.\n\
 \n\
-The @var{range} parameter may be a 4 element vector containing the upper\n\
+The @var{range} parameter may be a 4-element vector containing the upper\n\
 left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
 where the lowest index value is zero.  Alternatively, a spreadsheet style\n\
 range such as 'A2..Q15' or 'T1:AA5' can be used.  The lowest alphabetical\n\
 index 'A' refers to the first column.  The lowest row index is 1.\n\
 \n\
-@var{file} should be a file name or file id given by @code{fopen}. In the\n\
+@var{file} should be a file name or file id given by @code{fopen}.  In the\n\
 latter case, the file is read until end of file is reached.\n\
 \n\
 The \"emptyvalue\" option may be used to specify the value used to fill empty\n\
-fields. Default is zero.\n\
-@seealso{csvread,dlmwrite,fopen}\n\
+fields.  The default is zero.\n\
+@seealso{csvread,textscan,textread,dlmwrite}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -238,13 +238,13 @@ fields. Default is zero.\n\
 
       if (! input)
         {
-          error ("dlmread: stream not open for input");
+          error ("dlmread: stream FILE not open for input");
           return retval;
         }
     }
   else
     {
-      error ("dlmread: 1st argument must be a string or file id");
+      error ("dlmread: FILE argument must be a string or file id");
       return retval;
     }
 
@@ -268,7 +268,7 @@ fields. Default is zero.\n\
       if (nargin == 3)
         {
           if (!parse_range_spec (args (2), r0, c0, r1, c1))
-            error ("dlmread: error parsing range");
+            error ("dlmread: error parsing RANGE");
         } 
       else if (nargin == 4) 
         {
@@ -280,7 +280,7 @@ fields. Default is zero.\n\
         }
 
       if (r0 < 0 || c0 < 0)
-        error ("dlmread: left & top must not be negative");
+        error ("dlmread: left & top must be positive");
     }
 
   if (!error_state)

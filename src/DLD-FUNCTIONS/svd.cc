@@ -41,11 +41,11 @@ static int Vsvd_driver = SVD::GESVD;
 
 DEFUN_DLD (svd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{s} =} svd (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a}, @var{econ})\n\
+@deftypefn  {Loadable Function} {@var{s} =} svd (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})\n\
 @cindex singular value decomposition\n\
-Compute the singular value decomposition of @var{a}\n\
+Compute the singular value decomposition of @var{A}\n\
 @tex\n\
 $$\n\
  A = U S V^H\n\
@@ -65,7 +65,7 @@ When called with three return values, it computes\n\
 $U$, $S$, and $V$.\n\
 @end tex\n\
 @ifnottex\n\
-U, S, and V.\n\
+@var{U}, @var{S}, and @var{V}.\n\
 @end ifnottex\n\
 For example,\n\
 \n\
@@ -119,8 +119,8 @@ v =\n\
 @end example\n\
 \n\
 If given a second argument, @code{svd} returns an economy-sized\n\
-decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
-@var{v}.\n\
+decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
+@var{V}.\n\
 @seealso{svd_driver, svds, eig}\n\
 @end deftypefn")
 {
@@ -141,7 +141,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
   if (arg.ndims () != 2)
     {
-      error ("svd: only valid for matrices");
+      error ("svd: A must be a 2-D matrix");
       return retval;
     }
 

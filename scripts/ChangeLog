@@ -1,5 +1,11 @@
 2011-01-17  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/isdeployed.m: New function.
+	* miscellaneous/module.mk (miscellaneous_FCN_FILES): Add it to
+	the list.  Bug #32151.
+
+2011-01-17  John W. Eaton  <jwe@octave.org>
+
 	* miscellaneous/inputname.m: Use __varval__ to lookup ".argn."
 	instead of "argn".
 

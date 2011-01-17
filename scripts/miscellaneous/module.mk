@@ -30,6 +30,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/info.m \
   miscellaneous/inputname.m \
   miscellaneous/isappdata.m \
+  miscellaneous/isdeployed.m \
   miscellaneous/ismac.m \
   miscellaneous/ispc.m \
   miscellaneous/isunix.m \

@@ -744,7 +744,7 @@ main (int argc, char **argv)
 		+ " " + output_option + " " + objfiles + " " + libfiles
 		+ " " + ldflags + " " + vars["LFLAGS"] + " "
 		+ vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " "
-		+ vars["LAPACK_LIBS"] + " " vars["BLAS_LIBS"] + " "
+		+ vars["LAPACK_LIBS"] + " " + vars["BLAS_LIBS"] + " "
                 + vars["FFTW_LIBS"] + " " + vars["READLINE_LIBS"] + " "
                 + vars["LIBS"] + " " + vars["FLIBS"];
 	      result = run_command (cmd);

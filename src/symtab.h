@@ -1578,6 +1578,14 @@ public:
   // For unwind_protect.
   static void pop_context (void *) { pop_context (); }
 
+  static void mark_automatic (const std::string& name)
+  {
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    if (inst)
+      inst->do_mark_automatic (name);
+  }
+
   static void mark_hidden (const std::string& name)
   {
     symbol_table *inst = get_instance (xcurrent_scope);
@@ -2265,6 +2273,11 @@ private:
               sr.clear ();
           }
       }
+  }
+
+  void do_mark_automatic (const std::string& name)
+  {
+    do_insert (name).mark_automatic ();
   }
 
   void do_mark_hidden (const std::string& name)

@@ -1,3 +1,11 @@
+2011-01-17  John W. Eaton  <jwe@octave.org>
+
+	* ov-usr-fcn.cc (bind_automatic_vars): Mark variables created
+	here as automatic.
+
+	* symtab.h (symbol_table::mark_automatic): New function.
+	(symbol_table::do_mark_automatic): New function.
+
 2011-01-17  Michael Godfrey <godfrey@isl.stanford.edu>
 
 	* variables.cc (Fwhos): Describe a and f attributes in help text.

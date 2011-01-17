@@ -543,13 +543,20 @@ octave_user_function::bind_automatic_vars
    const octave_value_list& va_args, const std::list<octave_lvalue> *lvalue_list)
 {
   if (! arg_names.empty ())
-    symbol_table::varref ("argn") = arg_names;
+    {
+      symbol_table::varref ("argn") = arg_names;
+
+      symbol_table::mark_automatic ("argn");
+    }
 
   symbol_table::varref (".nargin.") = nargin;
   symbol_table::varref (".nargout.") = nargout;
 
   symbol_table::mark_hidden (".nargin.");
   symbol_table::mark_hidden (".nargout.");
+
+  symbol_table::mark_automatic (".nargin.");
+  symbol_table::mark_automatic (".nargout.");
 
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
@@ -575,7 +582,9 @@ octave_user_function::bind_automatic_vars
             }
 
           symbol_table::varref (".ignored.") = bh;
+
           symbol_table::mark_hidden (".ignored.");
+          symbol_table::mark_automatic (".ignored.");
         }
     }
 }

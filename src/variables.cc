@@ -1793,11 +1793,18 @@ Attributes of the listed variable.  Possible attributes are:\n\
 @item blank\n\
 Variable in local scope\n\
 \n\
+@item @code{a}\n\
+Automatic variable.  An automatic variable is one created by the\n\
+interpreter, for example @code{argn}.\n\
+\n\
+@item @code{f}\n\
+Formal parameter (function argument).\n\
+\n\
 @item @code{g}\n\
-Variable with global scope\n\
+Variable with global scope.\n\
 \n\
 @item @code{p}\n\
-Persistent variable\n\
+Persistent variable.\n\
 @end table\n\
 \n\
 @item Name\n\

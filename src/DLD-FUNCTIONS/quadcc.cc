@@ -1477,13 +1477,13 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 /* The actual integration routine.
     */
 
-DEFUN_DLD (cquad, args, nargout, 
+DEFUN_DLD (quadcc, args, nargout, 
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} cquad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} cquad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 Numerically evaluates an integral using the doubly-adaptive\n\
 quadrature described by P. Gonnet in @cite{Increasing the\n\
-Reliability of Adaptive Quadrature Using Explicit Interpolants,\n\
+Reliability of Adaptive Quadrature Using Explicit Interpolants},\n\
 ACM Transactions on Mathematical Software, in Press, 2010.\n\
 The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
 degree in each interval and bisects the interval if either the\n\
@@ -1495,7 +1495,7 @@ of the integrand over the nodes of the respective quadrature rules.\n\
 For example,\n\
 \n\
 @example\n\
-   int = cquad (f, a, b, 1.0e-6);\n\
+   int = quadcc (f, a, b, 1.0e-6);\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -1516,7 +1516,7 @@ as does the above example at x=1, these can be specified in\n\
 the additional argument @var{sing} as follows\n\
 \n\
 @example\n\
-   int = cquad (f, a, b, 1.0e-6, [ 1 ]);\n\
+   int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
 @end example\n\
 \n\
 The two additional output variables @var{err} and @var{nr_points}\n\
@@ -1528,22 +1528,22 @@ If the adaptive integration did not converge, the value of\n\
 therefore recommended to verify this value for difficult\n\
 integrands.\n\
 \n\
-If either @var{a} or @var{b} are @code{+/-Inf}, @code{cquad}\n\
+If either @var{a} or @var{b} are @code{+/-Inf}, @code{quadcc}\n\
 integrates @var{f} by substituting the variable of integration\n\
 with @code{x=tan(pi/2*u)}.\n\
 \n\
-@code{cquad} is capable of dealing with non-numeric\n\
+@code{quadcc} is capable of dealing with non-numeric\n\
 values of the integrand such as @code{NaN}, @code{Inf}\n\
 or @code{-Inf}, as in the above example at x=0.\n\
-If the integral diverges and @code{cquad} detects this, \n\
+If the integral diverges and @code{quadcc} detects this, \n\
 a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
 \n\
-Note that @code{cquad} is a general purpose quadrature algorithm\n\
+Note that @code{quadcc} is a general purpose quadrature algorithm\n\
 and as such may be less efficient for smooth or otherwise\n\
 well-behaved integrand than other methods such as\n\
 @code{quadgk} or @code{trapz}.\n\
 \n\
-@seealso{quad,quadv,quadl,quadgk,trapz}\n\
+@seealso{quad,quadv,quadl,quadgk,trapz,dblquad,triplequad}\n\
 @end deftypefn")
 {
 
@@ -1584,7 +1584,7 @@ well-behaved integrand than other methods such as\n\
   if (nargin < 1)
     {
       error
-        ("cquad: first argument (integrand) of type function handle required.");
+        ("quadcc: first argument (integrand) of type function handle required.");
       return octave_value_list ();
     }
   else
@@ -1593,7 +1593,7 @@ well-behaved integrand than other methods such as\n\
         fcn = args (0).function_value ();
       else {
         error
-          ("cquad: first argument (integrand) must be a function handle or an inline function.");
+          ("quadcc: first argument (integrand) must be a function handle or an inline function.");
         return octave_value_list();
         }
     }
@@ -1601,7 +1601,7 @@ well-behaved integrand than other methods such as\n\
   if (nargin < 2 || !args (1).is_real_scalar ())
     {
       error
-        ("cquad: second argument (left interval edge) must be a single real scalar.");
+        ("quadcc: second argument (left interval edge) must be a single real scalar.");
       return octave_value_list ();
     }
   else
@@ -1610,7 +1610,7 @@ well-behaved integrand than other methods such as\n\
   if (nargin < 3 || !args (2).is_real_scalar ())
     {
       error
-        ("cquad: third argument (right interval edge) must be a single real scalar.");
+        ("quadcc: third argument (right interval edge) must be a single real scalar.");
       return octave_value_list ();
     }
   else
@@ -1621,7 +1621,7 @@ well-behaved integrand than other methods such as\n\
   else if (!args (3).is_real_scalar ())
     {
       error
-        ("cquad: fourth argument (tolerance) must be a single real scalar.");
+        ("quadcc: fourth argument (tolerance) must be a single real scalar.");
       return octave_value_list ();
     }
   else
@@ -1636,14 +1636,14 @@ well-behaved integrand than other methods such as\n\
   else if (!(args (4).is_real_scalar () || args (4).is_real_matrix ()))
     {
       error
-        ("cquad: fifth argument (singularities) must be a vector of real values.");
+        ("quadcc: fifth argument (singularities) must be a vector of real values.");
       return octave_value_list ();
     }
   else
     {
       nivals = 1 + args (4).length ();
       if ( nivals > cquad_heapsize ) {
-        error("cquad: maximum number of singular points is limited to %i.",cquad_heapsize-1);
+        error("quadcc: maximum number of singular points is limited to %i.",cquad_heapsize-1);
         return octave_value_list();
         }
       sing = args (4).array_value ().fortran_vec ();
@@ -1697,14 +1697,14 @@ well-behaved integrand than other methods such as\n\
       if (retval.length () != 1 || !retval (0).is_real_matrix ())
         {
           error
-            ("cquad: integrand must return a single, real-valued vector.");
+            ("quadcc: integrand must return a single, real-valued vector.");
           return octave_value_list ();
         }
       Matrix effex = retval (0).matrix_value ();
       if (effex.length () != ex.length ())
         {
           error
-            ("cquad: integrand must return a single, real-valued vector of the same size as the input");
+            ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
           return octave_value_list ();
         }
       for (i = 0; i <= n[3]; i++)
@@ -1790,7 +1790,7 @@ well-behaved integrand than other methods such as\n\
       h = (iv->b - iv->a) / 2;
 
 /*      printf
-        ("cquad: processing ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
+        ("quadcc: processing ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
          heap[0], nivals, iv->a, iv->b, iv->igral, iv->err, iv->depth);
 */
       /* Should we try to increase the degree? */
@@ -1819,14 +1819,14 @@ well-behaved integrand than other methods such as\n\
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector.");
+                  ("quadcc: integrand must return a single, real-valued vector.");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector of the same size as the input.");
+                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -1898,7 +1898,7 @@ well-behaved integrand than other methods such as\n\
         {
 
 /*          printf
-            ("cquad: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
+            ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
              heap[0], nivals, iv->a, iv->b, iv->igral, iv->err,
              iv->depth);
 */
@@ -1969,14 +1969,14 @@ well-behaved integrand than other methods such as\n\
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector.");
+                  ("quadcc: integrand must return a single, real-valued vector.");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector of the same size as the input.");
+                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -2032,7 +2032,7 @@ well-behaved integrand than other methods such as\n\
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
               igral = copysign (octave_Inf, igral);
-              warning ("cquad: divergent integral detected.");
+              warning ("quadcc: divergent integral detected.");
               break;
             }
 
@@ -2067,14 +2067,14 @@ well-behaved integrand than other methods such as\n\
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector.");
+                  ("quadcc: integrand must return a single, real-valued vector.");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
                 error
-                  ("cquad: integrand must return a single, real-valued vector of the same size as the input.");
+                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -2130,7 +2130,7 @@ well-behaved integrand than other methods such as\n\
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
               igral = copysign (octave_Inf, igral);
-              warning ("cquad: divergent integral detected.");
+              warning ("quadcc: divergent integral detected.");
               break;
             }
 
@@ -2214,7 +2214,7 @@ well-behaved integrand than other methods such as\n\
         {
           iv = &(ivals[heap[nivals - 1]]);
 /*          printf
-            ("cquad: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
+            ("quadcc: dropping ival %i (of %i) with [%e,%e] int=%e, err=%e, depth=%i\n",
              heap[0], nivals, iv->a, iv->b, iv->igral, iv->err,
              iv->depth);
 */
@@ -2239,7 +2239,7 @@ well-behaved integrand than other methods such as\n\
     {
       iv = &(ivals[heap[i]]);
       printf
-        ("cquad: ival %i (%i) with [%e,%e], int=%e, err=%e, depth=%i, rdepth=%i, ndiv=%i\n",
+        ("quadcc: ival %i (%i) with [%e,%e], int=%e, err=%e, depth=%i, rdepth=%i, ndiv=%i\n",
          i, heap[i], iv->a, iv->b, iv->igral, iv->err, iv->depth,
          iv->rdepth, iv->ndiv);
     }

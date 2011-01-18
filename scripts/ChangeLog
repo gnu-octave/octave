@@ -1,3 +1,9 @@
+2011-01-17  Rik  <octave@nomad.inbox5.com>
+
+	* general/dblquad.m, general/quadgk.m, general/quadl.m,
+	general/quadv.m, general/triplequad.m: Improve docstring with seealso
+	links to quadcc.
+
 2011-01-17  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/isdeployed.m: New function.

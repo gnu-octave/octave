@@ -30,7 +30,7 @@
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
 ## value for @var{tol} one may pass an empty matrix.
-## @seealso{dblquad, quad, quadv, quadl, quadgk, trapz}
+## @seealso{dblquad,quad,quadv,quadl,quadgk,quadcc,trapz}
 ## @end deftypefn
 
 function Q = triplequad(f, xa, xb, ya, yb, za, zb, tol, quadf, varargin)

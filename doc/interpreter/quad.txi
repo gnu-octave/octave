@@ -54,6 +54,9 @@ Numerical integration using an adaptive Gauss-Konrod rule.
 @item quadv
 Numerical integration using an adaptive vectorized Simpson's rule.
 
+@item quadcc
+Numerical integration using adaptive Clenshaw-Curtis rules.
+
 @item trapz
 Numerical integration using the trapezoidal method.
 @end table
@@ -123,6 +126,8 @@ if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 @DOCSTRING(quadgk)
 
 @DOCSTRING(quadv)
+
+@DOCSTRING(quadcc)
 
 @DOCSTRING(trapz)
 

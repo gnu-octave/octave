@@ -41,7 +41,7 @@
 ## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature - 
 ## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
 ## @url{http://www.inf.ethz.ch/personal/gander/}
-##
+## @seealso{quad,quadv,quadgk,quadcc,trapz,dblquad,triplequad}
 ## @end deftypefn
 
 ##   Author: Walter Gautschi

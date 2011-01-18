@@ -214,7 +214,7 @@ parameters for @code{quad}.\n\
 \n\
 Note: because @code{quad} is written in Fortran it\n\
 cannot be called recursively.\n\
-@seealso{quad_options,quadv,quadl,quadgk,trapz}\n\
+@seealso{quad_options,quadv,quadl,quadgk,quadcc,trapz,dblquad,triplequad}\n\
 @end deftypefn")
 {
   octave_value_list retval;

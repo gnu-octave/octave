@@ -1,3 +1,7 @@
+2011-01-17  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/quad.txi: Add quadcc to documentation.
+
 2011-01-15  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/expr.txi: Add merge/ifelse function to documentation.

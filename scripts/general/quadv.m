@@ -42,7 +42,7 @@
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
 ##
-## @seealso{triplequad, dblquad, quad, quadl, quadgk, trapz}
+##@seealso{quad,quadl,quadgk,quadcc,trapz,dblquad,triplequad}
 ## @end deftypefn
 
 function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)

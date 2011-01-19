@@ -17,19 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
+## @deftypefn  {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{fx}, @var{fy})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy})
-## Calculate divegence of vector field given by the arrays @var{fx}, @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively. 
-## @iftex
+## Calculate divegence of vector field given by the arrays @var{fx},
+## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively. 
 ## @tex
 ## $$
 ## div F(x,y,z) = \partial_x{F} + \partial_y{F} + \partial_z{F}
 ## $$
 ## @end tex
-## @end iftex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##                   d               d               d
@@ -37,9 +37,10 @@
 ##                   dx              dy              dz
 ## @end group
 ## @end example
+##
 ## @end ifnottex
-## The coordinates of the vector field can be given by the arguments @var{x}, @var{y}, @var{z}
-## or @var{x}, @var{y} respectively. 
+## The coordinates of the vector field can be given by the arguments @var{x},
+## @var{y}, @var{z} or @var{x}, @var{y} respectively. 
 ##
 ## @seealso{curl, gradient, del2}
 ## @end deftypefn

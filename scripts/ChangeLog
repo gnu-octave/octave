@@ -1,5 +1,26 @@
 2011-01-17  Rik  <octave@nomad.inbox5.com>
 
+	* audio/wavread.m, deprecated/spqr.m, elfun/lcm.m, general/bitget.m,
+	general/curl.m, general/divergence.m, general/interp3.m,
+	general/quadv.m, geometry/delaunayn.m, geometry/griddata.m,
+	help/help.m, io/textread.m, io/textscan.m, linear-algebra/cond.m,
+	miscellaneous/mkoctfile.m, miscellaneous/orderfields.m,
+	miscellaneous/run.m, miscellaneous/setappdata.m, plot/axis.m,
+	plot/caxis.m, plot/daspect.m, plot/ellipsoid.m, plot/errorbar.m,
+	plot/gnuplot_binary.in, plot/hist.m, plot/hold.m, plot/ishold.m,
+	plot/legend.m, plot/mesh.m, plot/pbaspect.m, plot/pie3.m, plot/print.m,
+	plot/private/__add_default_menu__.m, plot/scatter.m, plot/scatter3.m,
+	plot/shg.m, plot/slice.m, plot/surf.m, plot/surfl.m, plot/uigetdir.m,
+	plot/uigetfile.m, plot/uimenu.m, plot/uiputfile.m, plot/view.m,
+	set/unique.m, signal/periodogram.m, sparse/pcg.m, sparse/pcr.m,
+	sparse/spfun.m, specfun/legendre.m,
+	statistics/distributions/poisspdf.m, statistics/distributions/wblpdf.m,
+	strings/strjust.m, strings/untabify.m, testfun/assert.m,
+	testfun/demo.m, testfun/example.m, testfun/fail.m, testfun/test.m:
+	Grammarcheck m-files for 3.4 release.
+
+2011-01-17  Rik  <octave@nomad.inbox5.com>
+
 	* general/dblquad.m, general/quadgk.m, general/quadl.m,
 	general/quadv.m, general/triplequad.m: Improve docstring with seealso
 	links to quadcc.

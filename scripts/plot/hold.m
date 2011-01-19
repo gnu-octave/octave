@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hold
-## @deftypefnx {Function File} {} hold @var{state}
+## @deftypefn  {Command} {} hold
+## @deftypefnx {Command} {} hold @var{state}
 ## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
 ## Toggle or set the 'hold' state of the plotting engine which determines
 ## whether new graphic objects are added to the plot or replace the existing

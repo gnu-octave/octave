@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} example ('@var{name}',@var{n})
-## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}',@var{n})
+## @deftypefn  {Function File} {} example ('@var{name}', @var{n})
+## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}', @var{n})
 ##
 ##  Display the code for example @var{n} associated with the function 
 ## '@var{name}', but do not run it.  If @var{n} is not given, all examples 

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} poisspdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of the poisson distribution with parameter @var{lambda}.
+## (PDF) at @var{x} of the Poisson distribution with parameter @var{lambda}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} spfun (@var{f},@var{S})
+## @deftypefn {Function File} {@var{y} =} spfun (@var{f}, @var{S})
 ## Compute @code{f(@var{S})} for the non-zero values of @var{S}.
 ## This results in a sparse matrix with the same structure as 
 ## @var{S}.  The function @var{f} can be passed as a string, a

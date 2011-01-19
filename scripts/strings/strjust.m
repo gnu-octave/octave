@@ -23,10 +23,11 @@
 ## be @samp{"left"}, @samp{"center"}, or @samp{"right"}.  If @var{pos}
 ## is omitted, @samp{"right"} is assumed. 
 ##
-## Null characters are replaced by spaces. All other character
+## Null characters are replaced by spaces.  All other character
 ## data are treated as non-white space.
 ##
 ## Example:
+##
 ## @example
 ## @group
 ## strjust (["a"; "ab"; "abc"; "abcd"])

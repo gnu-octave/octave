@@ -18,43 +18,41 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[Pxx,w] =} periodogram (@var{x})
+## @deftypefn {Function File} {[Pxx, @var{w}] =} periodogram (@var{x})
 ## For a data matrix @var{x} from a sample of size @var{n}, return the
-## periodogram. w returns the angular frequency.
+## periodogram.  The angular frequency is returned in @var{w}.
 ##
-##   [Pxx,w] = periodogram (@var{x}).
+## [Pxx,w] = periodogram (@var{x}).
 ##
-##   [Pxx,w] = periodogram (@var{x},win).
+## [Pxx,w] = periodogram (@var{x},win).
 ##
-##   [Pxx,w] = periodogram (@var{x},win,nfft).
+## [Pxx,w] = periodogram (@var{x},win,nfft).
 ##
-##   [Pxx,f] = periodogram (@var{x},win,nfft,Fs).
+## [Pxx,f] = periodogram (@var{x},win,nfft,Fs).
 ##
-##   [Pxx,f] = periodogram (@var{x},win,nfft,Fs,"range").
+## [Pxx,f] = periodogram (@var{x},win,nfft,Fs,"range").
 ##
-##   @itemize
-##   @item x: data; if real-valued a one-sided spectrum is estimated,
-##   if complex-valued or range indicates "twosided", the full spectrum is estimated.
+## @itemize
+## @item x: data; if real-valued a one-sided spectrum is estimated,
+## if complex-valued or range indicates "twosided", the full spectrum is estimated.
 ##
-##   @item win: weight data with window, x.*win is used for further computation,
-##   if window is empty, a rectangular window is used.
+## @item win: weight data with window, x.*win is used for further computation,
+## if window is empty, a rectangular window is used.
 ##
-##   @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
+## @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
 ##
-##   @item Fs: sampleing rate, default 1.
+## @item Fs: sampling rate, default 1.
 ##
-##   @item range: "onesided" computes spectrum from [0..nfft/2+1].
-##   "twosided" computes spectrum from [0..nfft-1]. These strings can appear at any
-##    position in the list input arguments after window.
+## @item range: "onesided" computes spectrum from [0..nfft/2+1].
+## "twosided" computes spectrum from [0..nfft-1]. These strings can appear at any
+##  position in the list input arguments after window.
 ##
-##   @item Pxx: one-, or two-sided power spectrum.
+## @item Pxx: one-, or two-sided power spectrum.
 ##
-##   @item w: angular frequency [0..2*pi) (two-sided) or [0..pi] one-sided.
+## @item w: angular frequency [0..2*pi) (two-sided) or [0..pi] one-sided.
 ##
-##   @item f: frequency [0..Fs) (two-sided) or [0..Fs/2] one-sided.
-##   @end itemize
-##
-##
+## @item f: frequency [0..Fs) (two-sided) or [0..Fs/2] one-sided.
+## @end itemize
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

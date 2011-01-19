@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} surf (@var{x}, @var{y}, @var{z})
+## @deftypefn  {Function File} {} surf (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {} surf (@var{z})
 ## @deftypefnx {Function File} {} surf (@dots{}, @var{c})
 ## @deftypefnx {Function File} {} surf (@var{hax}, @dots{})
-## @deftypefnx {Function File} {@var{h} = } surf (@dots{})
+## @deftypefnx {Function File} {@var{h} =} surf (@dots{})
 ## Plot a surface given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
@@ -30,8 +30,8 @@
 ## to different @var{y} values.
 ##
 ## The color of the surface is derirved from the @code{colormap} and
-## the value of @var{z}. Optionally the color of the surface can be
-## specified independent of of @var{z}, by adding a fourth matrix, @var{c}.
+## the value of @var{z}.  Optionally the color of the surface can be
+## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
 ## @seealso{colormap, contour, meshgrid, mesh}
 ## @end deftypefn
 

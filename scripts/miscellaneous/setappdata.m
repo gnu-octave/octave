@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} setappdata (@var{h}, @var{name}, @var{value})
 ## Sets the named application data to @var{value} for the object(s) with
-## handle(s) @var{h}. If the application data with the specified name does
+## handle(s) @var{h}.  If the application data with the specified name does
 ## not exist, it is created.
 ## @end deftypefn
 

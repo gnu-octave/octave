@@ -26,7 +26,7 @@
 ## or @code{@var{x}, @var{y}} are vectors and @code{@var{z}} is matrix.
 ##
 ## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
-## @var{xi}, @var{yi} are vectors then they are made into a 2D mesh.
+## @var{xi}, @var{yi} are vectors then they are made into a 2-D mesh.
 ##
 ## The interpolation method can be @code{"nearest"}, @code{"cubic"} or
 ## @code{"linear"}.  If method is omitted it defaults to @code{"linear"}.

@@ -39,6 +39,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##  m        m       2  m/2   d^m
@@ -46,6 +47,7 @@
 ##  n                         dx^m   n
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
 ## @noindent
@@ -57,6 +59,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##           1     d^n   2    n
@@ -64,6 +67,7 @@
 ##  n      2^n n!  dx^n
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
 ## @noindent
@@ -93,6 +97,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##   0       0
@@ -100,6 +105,7 @@
 ##   n       n
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
 ## For Legendre functions of degree n and order m:
@@ -110,6 +116,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##   m       m          m    2(n-m)! 0.5
@@ -117,6 +124,7 @@
 ##   n       n               (n+m)!
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ##
 ## If the optional argument @var{normalization} is @code{"norm"}, 
@@ -132,6 +140,7 @@
 ## $$
 ## @end tex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##   m       m          m    (n+0.5)(n-m)! 0.5
@@ -139,6 +148,7 @@
 ##   n       n                   (n+m)!    
 ## @end group
 ## @end example
+##
 ## @end ifnottex
 ## @end deftypefn
 

@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
-## Solves the linear system of equations @code{@var{A} * @var{x} =
-## @var{b}} by means of the Preconditioned Conjugate Gradient iterative
+## Solves the linear system of equations @code{@var{A} * @var{x} = @var{b}}
+## by means of the Preconditioned Conjugate Gradient iterative
 ## method.  The input arguments are
 ##
 ## @itemize
@@ -38,9 +38,10 @@
 ## 
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
-## @code{@var{b} - @var{A} * @var{x}}.  The iteration stops if @code{norm
-## (@var{b} - @var{A} * @var{x}) <= @var{tol} * norm (@var{b} - @var{A} *
-## @var{x0})}.  If @var{tol} is empty or is omitted, the function sets
+## @code{@var{b} - @var{A} * @var{x}}.  The iteration stops if
+## @code{norm (@var{b} - @var{A} * @var{x}) <= 
+##       @var{tol} * norm (@var{b} - @var{A} * @var{x0})}.
+## If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
 ## 
 ## @item

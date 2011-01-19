@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} demo ('@var{name}',@var{n})
+## @deftypefn {Function File} {} demo ('@var{name}', @var{n})
 ##
 ## Runs any examples associated with the function '@var{name}'.  
 ## Examples are stored in the script file, or in a file with the same 

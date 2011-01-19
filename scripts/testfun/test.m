@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} test ([], 'explain', @var{fid})
 ## @deftypefnx {Function File} {@var{success} =} test (@dots{})
 ## @deftypefnx {Function File} {[@var{n}, @var{max}] =} test (@dots{})
-## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ('@var{name}','grabdemo')
+## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ('@var{name}', 'grabdemo')
 ##
 ## Perform tests from the first file in the loadpath matching @var{name}.
 ## @code{test} can be called as a command or as a function.  Called with 

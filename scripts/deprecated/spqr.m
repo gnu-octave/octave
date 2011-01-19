@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Loadable Function} {@var{r} =} spqr (@var{a})
-## @deftypefnx {Loadable Function} {@var{r} =} spqr (@var{a},0)
-## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b})
-## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a},@var{b},0)
+## @deftypefnx {Loadable Function} {@var{r} =} spqr (@var{a}, 0)
+## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a}, @var{b})
+## @deftypefnx {Loadable Function} {[@var{c}, @var{r}] =} spqr (@var{a}, @var{b}, 0)
 ## This function has been deprecated.  Use @code{qr} instead.
 ## @end deftypefn
 

@@ -23,9 +23,9 @@
 ## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie3 (@var{h}, @dots{});
 ## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
-## Drawa a 3D pie chart. 
+## Draw a a 3-D pie chart. 
 ##
-## Called with a single vector argument, produces a 3D pie chart of the
+## Called with a single vector argument, produces a 3-D pie chart of the
 ## elements in @var{x}, with the size of the slice determined by percentage
 ## size of the values of @var{x}.
 ##

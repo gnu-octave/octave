@@ -33,16 +33,17 @@
 ## the adaptation procedure, otherwise the default value of 1e-6 is used.
 ##
 ## The algorithm used by @code{quadv}, involves recursively subdividing the
-## integration interval and  applying Simpson's rule on each sub-interval.
-## If  @var{trace} is  @var{true}, after computing each of these partial integrals, 
-## display the total number of function evaluations, the left end of the sub-interval, 
-## the length of the sub-interval and the approximation of the integral over the sub-interval.
+## integration interval and applying Simpson's rule on each sub-interval.
+## If @var{trace} is @var{true}, after computing each of these partial
+## integrals, display the total number of function evaluations, the left end
+## of the sub-interval, the length of the sub-interval and the approximation
+## of the integral over the sub-interval.
 ##
 ## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
 ##
-##@seealso{quad,quadl,quadgk,quadcc,trapz,dblquad,triplequad}
+##@seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn
 
 function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} interp3 (@var{x}, @var{y},@var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefn  {Function File} {@var{vi} =} interp3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
 ## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v}, @var{xi}, @var{yi}, @var{zi})
 ## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v}, @var{m})
 ## @deftypefnx {Function File} {@var{vi} =} interp3 (@var{v})

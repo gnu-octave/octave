@@ -17,43 +17,45 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile (@var{flt})
-## @deftypefnx  {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uigetfile (@var{flt})
+## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{},"Position",[@var{px}, @var{py}])
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{},"Multiselect",@var{mode})
+## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px}, @var{py}])
+## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Multiselect", @var{mode})
 ##
-## Open a GUI dialog to select a file. It returns the filename @var{fname},
-## the path to this file @var{fpath} and the filter index @var{fltidx}.
+## Open a GUI dialog to select a file.  It returns the filename @var{fname},
+## the path to this file @var{fpath}, and the filter index @var{fltidx}.
 ## @var{flt} contains a (list of) file filter string(s) in one of the following
 ## formats:
 ##
-## @table @code
+## @table @asis
 ## @item "/path/to/filename.ext"
 ## If a filename is given the file extension is extracted and used as filter.
 ## In addtion the path is selected as current path and the filname is selected
 ## as default file.
-## Example: uigetfile("myfun.m");
+## Example: @code{uigetfile ("myfun.m")}
 ##
-## @item A single file extension "*.ext". 
-## Example: uigetfile("*.ext");
+## @item A single file extension "*.ext"
+## Example: @code{uigetfile ("*.ext")}
 ##
-## @item A 2-column cell array,
-## containing the file extension in the 1st column and a brief description
-## in the 2nd column.
-## Example: uigetfile(@{"*.ext","My Description";"*.xyz","XYZ-Format"@});
+## @item A 2-column cell array
+## containing the file extension in the first column and a brief description
+## in the second column.
+## Example: @code{uigetfile (@{"*.ext", "My Description";"*.xyz",
+## "XYZ-Format"@})}
 ## 
 ## The filter string can also contain a semicolon separated list of filter
 ## extensions.
-## Example: uigetfile(@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@});
+## Example: @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture
+## Formats"@})}
 ## @end table
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is selected in the GUI dialog. 
 ## If in addtion a path is given it is also used as current path.
 ## 
-## The screen position of the GUI dialog can be set by using the "Position" key
-## and a 2-valued vector containing the pixel coordinates.
+## The screen position of the GUI dialog can be set using the "Position" key
+## and a 2-element vector containing the pixel coordinates.
 ## Two or more files can be selected when setting the "Multiselect" key to "on".
 ## In that case @var{fname} is a cell array containing the files. 
 ## @end deftypefn

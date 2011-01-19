@@ -17,19 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{cx}, @var{cy}, @var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
+## @deftypefn  {Function File} {[@var{cx}, @var{cy}, @var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{z}, @var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {[@var{cz}, @var{v}] =} curl (@var{x}, @var{y}, @var{fx}, @var{fy})
 ## @deftypefnx {Function File} {[@dots{}] =} curl (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {[@dots{}] =} curl (@var{fx}, @var{fy})
 ## @deftypefnx {Function File} {@var{v} =} curl (@dots{})
-## Calculate curl of vector field given by the arrays @var{fx}, @var{fy}, and @var{fz}
-## or @var{fx}, @var{fy} respectively. 
-## @iftex
+## Calculate curl of vector field given by the arrays @var{fx}, @var{fy}, and
+## @var{fz} or @var{fx}, @var{fy} respectively. 
 ## @tex
 ## $$ curl F(x,y,z) = \left( {\partial{d} \over \partial{y}} F_z - {\partial{d} \over \partial{z}} F_y, {\partial{d} \over \partial{z}} F_x - {\partial{d} \over \partial{x}} F_z, {\partial{d} \over \partial{x}} F_y - {\partial{d} \over \partial{y}} F_x \right)$$
 ## @end tex
-## @end iftex
 ## @ifnottex
+##
 ## @example
 ## @group
 ##                   / d         d       d         d       d         d     \
@@ -37,11 +36,12 @@
 ##                   \ dy        dz      dz        dx      dx        dy    /
 ## @end group
 ## @end example
+##
 ## @end ifnottex
-## The coordinates of the vector field can be given by the arguments @var{x}, @var{y}, @var{z}
-## or @var{x}, @var{y} respectively.
-## @var{v} calculates the scalar component of the angular velocity vector in direction
-## of the z-axis for two-dimensional input. For three-dimensional input the scalar
+## The coordinates of the vector field can be given by the arguments @var{x},
+## @var{y}, @var{z} or @var{x}, @var{y} respectively.  @var{v} calculates the
+## scalar component of the angular velocity vector in direction of the z-axis
+## for two-dimensional input.  For three-dimensional input the scalar
 ## rotation is calculated at each grid point in direction of the vector field
 ## at that point.
 ## @seealso{divergence, gradient, del2}

@@ -71,7 +71,7 @@
 ## @end multitable
 ##
 ## The optional parameter @var{orient} determines if the key elements
-## are placed vertically or horizontally. The allowed values are "vertical"
+## are placed vertically or horizontally.  The allowed values are "vertical"
 ## or "horizontal" with the default being "vertical".
 ##
 ## The following customizations are available using @var{option}:

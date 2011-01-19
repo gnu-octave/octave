@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}[, @var{s2}])
+## @deftypefn  {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1})
+## @deftypefnx {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
 ## Return a copy of @var{s1} with fields arranged alphabetically or
 ## as specified by @var{s2}.
 ##
@@ -35,7 +36,6 @@
 ## Examples:
 ##
 ## @example
-## @group
 ## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
 ## t1 = orderfields(s)
 ##      @result{} t1 = 
@@ -80,7 +80,6 @@
 ##         4
 ##         2
 ##         3
-## @end group
 ## @end example
 ##
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}

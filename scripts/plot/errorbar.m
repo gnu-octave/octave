@@ -51,7 +51,7 @@
 ## If @var{fmt} is missing, yerrorbars ("~") plot style is assumed.
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as in
-## normal plots. In addition, @var{fmt} may include an errorbar style
+## normal plots.  In addition, @var{fmt} may include an errorbar style
 ## which must preceed the line and marker format.  The following plot
 ## styles are supported by errorbar:
 ##

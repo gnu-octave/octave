@@ -35,7 +35,7 @@
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed. The
+##   Specify the handle, @var{h}, of the figure to be printed.  The
 ##   default is the current figure.
 ##
 ## @item -P@var{printer}
@@ -56,10 +56,10 @@
 ##
 ## @item -portrait
 ## @itemx -landscape
-##   Specify the orientation of the plot for printed output. For
+##   Specify the orientation of the plot for printed output.  For
 ## non-printed output the aspect ratio of the output corresponds to
 ## the plot area defined by the "paperposition" property in the
-## orientation specified. This options is equivalent to changing
+## orientation specified.  This options is equivalent to changing
 ## the figure's "paperorientation" property.
 ##
 ## @item -d@var{device}
@@ -69,15 +69,15 @@
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     Postscript (level 1 and 2, mono and color). The FLTK backend
+##     Postscript (level 1 and 2, mono and color).  The FLTK backend
 ## generates Postscript level 3.0.
 ##
 ##   @item eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
-##     Encapsulated postscript (level 1 and 2, mono and color). The FLTK backend
-## generates Postscript level 3.0.
+##     Encapsulated postscript (level 1 and 2, mono and color).  The FLTK
+## backend generates Postscript level 3.0.
 ##
 ##   @item tex
 ##   @itemx epslatex
@@ -89,11 +89,11 @@
 ## for graphics.  The file produced by @code{epslatexstandalone} can be
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
-## is the same as the @code{epslatex} device. The @code{pdflatex} device
+## is the same as the @code{epslatex} device.  The @code{pdflatex} device
 ## is only available for the FLTK backend.
 ##
 ##   @item tikz
-##     Generate a @LaTeX{} file using PGF/TikZ. For the FLTK the result is
+##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK the result is
 ##   PGF.
 ##
 ##   @item ill
@@ -197,11 +197,11 @@
 ##   Forces a tight bounding box for eps-files.
 ##
 ## @item -@var{preview}
-##   Adds a preview to eps-files. Supported formats are;
+##   Adds a preview to eps-files.  Supported formats are;
 ##
 ##   @table @code
 ##   @item -interchange
-##     Provides a interchange preview.
+##     Provides an interchange preview.
 ##
 ##   @item -metalfile
 ##     Provides a metafile preview.
@@ -214,10 +214,10 @@
 ##   @end table
 ##
 ## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG. For
+##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG and SVG@.  For
 ## PS, EPS, PDF, and other vector formats the plot size is in points.
 ## This option is equivalent to changing the size of the plot box
-## associated with "paperposition" property. Using the command form of
+## associated with "paperposition" property.  Using the command form of
 ## the print function, you must quote the @var{xsize},@var{ysize}
 ## option.  For example, by writing @w{@code{"-S640,480"}}.
 ##
@@ -233,19 +233,23 @@
 ## Example: Print to a file, using the svg device.
 ##
 ## @example
+## @group
 ## figure (1)
 ## clf ()
 ## surf (peaks)
 ## print -dsvg figure1.svg
+## @end group
 ## @end example
 ##
 ## Example: Print to an HP Deskjet 550C.
 ##
 ## @example
+## @group
 ## figure (1)
 ## clf ()
 ## surf (peaks)
 ## print -dcdj550
+## @end group
 ## @end example
 ##
 ## @seealso{figure, orient, saveas}

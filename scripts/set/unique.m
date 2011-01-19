@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} unique (@dots{}, "last")
 ## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
 ## Return the unique elements of @var{x}, sorted in ascending order.
-## If the input @var{x} is a vector then the output is a also a vector with the
+## If the input @var{x} is a vector then the output is also a vector with the
 ## same orientation (row or column) as the input.  For a matrix input the 
 ## output is always a column vector.  @var{x} may also be a cell array of
 ## strings.

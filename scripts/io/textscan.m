@@ -28,11 +28,11 @@
 ## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@dots{})
 ## Read data from a text file.
 ##
-## The file associated with @var{fid} is read and parsed according to @var{format}.
-## The function behaves like @code{strread} except it works by parsing a file
-## instead of a string.  See the documentation of @code{strread} for details.
-## In addition to the options supported by @code{strread}, this function
-## supports one more:
+## The file associated with @var{fid} is read and parsed according to
+## @var{format}.  The function behaves like @code{strread} except it works by
+## parsing a file instead of a string.  See the documentation of
+## @code{strread} for details.  In addition to the options supported by
+## @code{strread}, this function supports one more:
 ## @itemize
 ## @item "headerlines":
 ## @end itemize

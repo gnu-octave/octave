@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mkoctfile [-options] file @dots{}
+## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
 ## 
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the

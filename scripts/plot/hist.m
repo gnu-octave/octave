@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hist (@var{y})
+## @deftypefn  {Function File} {} hist (@var{y})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{nbins})
 ## @deftypefnx {Function File} {} hist (@var{y}, @var{x}, @var{norm})
@@ -46,7 +46,7 @@
 ## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
 ##
 ## The histogram's appearance may be modified by specifying property/value
-## pairs, @var{prop} and @var{val} pairs. For example the face and edge 
+## pairs, @var{prop} and @var{val} pairs.  For example the face and edge 
 ## color may be modified.
 ##
 ## @example

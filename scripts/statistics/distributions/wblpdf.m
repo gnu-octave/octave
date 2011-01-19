@@ -32,7 +32,7 @@
 ##
 ## @end ifnottex
 ## @noindent
-## for @var{x} >= 0.
+## for @var{x} @geq{} 0.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

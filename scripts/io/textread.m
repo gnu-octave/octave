@@ -19,8 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{a}, @dots{}] =} textread (@var{filename})
 ## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format})
-## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @
-## @var{prop1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{prop1}, @var{value1}, @dots{})
 ## Read data from a text file.
 ##
 ## The file @var{filename} is read and parsed according to @var{format}.  The

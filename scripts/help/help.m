@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 Søren Hauberg
+## Copyright (C) 2009-2011 Sï¿½ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} help @var{name}
+## @deftypefn {Command} {} help @var{name}
 ## Display the help text for @var{name}.
 ## If invoked without any arguments, @code{help} displays instructions
 ## on how to access help from the command line.

@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ())
-## Open a GUI dialog to select a file. @var{flt} contains a (list of) file
+## Open a GUI dialog to select a file.  @var{flt} contains a (list of) file
 ## filter string(s) in one of the following formats:
 ##
 ## @table @code

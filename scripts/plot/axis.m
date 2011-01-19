@@ -27,9 +27,9 @@
 ## @deftypefnx {Function File} {@var{limits} =} axis ()
 ## Set axis limits for plots.
 ##
-## The argument @var{limits} should be a 2, 4, or 6 element vector.  The
-## first and second elements specify the lower and upper limits for the x
-## axis.  The third and fourth specify the limits for the y-axis, and the
+## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
+## first and second elements specify the lower and upper limits for the
+## x-axis.  The third and fourth specify the limits for the y-axis, and the
 ## fifth and sixth specify the limits for the z-axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.  
@@ -48,7 +48,7 @@
 ## forces a square aspect ratio, and
 ##
 ## @example
-## axis ("labely", "tic");
+## axis ("tic", "labely");
 ## @end example
 ##
 ## @noindent
@@ -58,7 +58,7 @@
 ## @noindent
 ## The following options control the aspect ratio of the axes.
 ##
-## @table @code
+## @table @asis
 ## @item "square"
 ## Force a square aspect ratio.
 ##
@@ -72,7 +72,7 @@
 ## @noindent
 ## The following options control the way axis limits are interpreted.
 ##
-## @table @code
+## @table @asis
 ## @item "auto" 
 ## Set the specified axes to have nice limits around the data
 ## or all if no axes are specified.
@@ -91,7 +91,7 @@
 ## @noindent
 ## The following options affect the appearance of tic marks.
 ##
-## @table @code
+## @table @asis
 ## @item "on" 
 ## Turn tic marks and labels on for all axes.
 ##
@@ -115,7 +115,7 @@
 ## The following options affect the direction of increasing values on
 ## the axes.
 ##
-## @table @code
+## @table @asis
 ## @item "ij"
 ## Reverse y-axis, so lower values are nearer the top.
 ##

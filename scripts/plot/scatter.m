@@ -34,9 +34,9 @@
 ## given or is an empty matrix, then the default value of 8 points is used.
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
-## defining a fixed color, a 3 element vector giving the red, green and blue 
-## components of the color, a vector of the same length as @var{x} that gives
-## a scaled index into the current colormap, or a @var{n}-by-3 matrix defining
+## defining a fixed color; a 3-element vector giving the red, green,and blue 
+## components of the color; a vector of the same length as @var{x} that gives
+## a scaled index into the current colormap; or a @var{n}-by-3 matrix defining
 ## the colors of each of the markers individually.
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a 

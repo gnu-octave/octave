@@ -20,9 +20,10 @@
 ## @deftypefn  {Command} {} run @var{script}
 ## @deftypefnx {Function File} {} run (@var{script})
 ## Run scripts in the current workspace that are not necessarily on the
-## path.  If @var{script} is the script to run, including its path, then @code{run}
-## changes the directory to the directory where @var{script} is found.  @code{run}
-## then executes the script, and returns to the original directory.
+## path.  If @var{script} is the script to run, including its path, then
+## @code{run} changes the directory to the directory where @var{script} is
+## found.  @code{run} then executes the script, and returns to the original
+## directory.
 ## @seealso{system}
 ## @end deftypefn
 

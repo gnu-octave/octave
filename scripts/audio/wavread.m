@@ -29,7 +29,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
 ## Read only the first @var{n} samples from each channel.
 ##
-## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
+## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n1} @var{n2})
 ## Read only samples @var{n1} through @var{n2} from each channel.
 ##
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}] =} wavread (@var{filename}, "size")

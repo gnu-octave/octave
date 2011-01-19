@@ -20,7 +20,8 @@
 ## @deftypefn  {Mapping Function} {} lcm (@var{x}, @var{y})
 ## @deftypefnx {Mapping Function} {} lcm (@var{x}, @var{y}, @dots{})
 ## Compute the least common multiple of @var{x} and @var{y},
-## or of the list of all arguments. All elements must be the same size or scalar.
+## or of the list of all arguments.  All elements must be the same size or
+## scalar.
 ## @seealso{factor, gcd}
 ## @end deftypefn
 

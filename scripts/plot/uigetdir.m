@@ -20,9 +20,9 @@
 ## @deftypefn  {Function File} {@var{dirname} =} uigetdir ()
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path})
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path}, @var{dialog_name})
-## Open a GUI dialog to select a directory. If @var{init_path} is not given
-## the current working directory is used. @var{dialog_name} optionally  be used to
-## customize the dialog title.
+## Open a GUI dialog to select a directory.  If @var{init_path} is not given
+## the current working directory is used.  @var{dialog_name} optionally be
+## used to customize the dialog title.
 ## @end deftypefn
 
 ## Author: Kai Habel

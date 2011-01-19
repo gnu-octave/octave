@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} surfl (@var{z})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L})
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
-## @deftypefnx {Function File} {} surfl (@dots{},"light")
+## @deftypefnx {Function File} {} surfl (@dots{}, "light")
 ## Plot a lighted surface given matrices @var{x}, and @var{y} from
 ## @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of

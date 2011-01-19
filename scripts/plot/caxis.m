@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} caxis (@var{h}, @dots{})
 ## Set color axis limits for plots.
 ##
-## The argument @var{limits} should be a 2 element vector specifying the 
+## The argument @var{limits} should be a 2-element vector specifying the 
 ## lower and upper limits to assign to the first and last value in the
 ## colormap.  Values outside this range are clamped to the first and last
 ## colormap entries. 

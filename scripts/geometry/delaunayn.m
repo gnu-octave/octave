@@ -27,7 +27,7 @@
 ## points in a space of dimension dim.  The return matrix @var{t} has the
 ## size @code{[m, dim+1]}.  It contains for each row a set of indices to
 ## the points, which describes a simplex of dimension dim.  For example,
-## a 2d simplex is a triangle and 3d simplex is a tetrahedron.
+## a 2-D simplex is a triangle and 3-D simplex is a tetrahedron.
 ## 
 ## Extra options for the underlying Qhull command can be specified by the
 ## second argument.  This argument is a cell array of strings.  The default

@@ -36,6 +36,7 @@
 ## Examples:
 ##
 ## @example
+## @group
 ## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
 ## t1 = orderfields(s)
 ##      @result{} t1 = 
@@ -80,6 +81,7 @@
 ##         4
 ##         2
 ##         3
+## @end group
 ## @end example
 ##
 ## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}

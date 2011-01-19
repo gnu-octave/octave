@@ -18,20 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} help @var{name}
-## @deftypefn {Command} {} help @code{--list}
-## Display the help text for @var{name}.
-## If invoked without any arguments, @code{help} display instructions
-## on how to access help from the command line.
-##
-## For example, the command @kbd{help help} prints a short message
-## describing the @code{help} command.
+## @deftypefnx {Command} {} help @code{--list}
+## Display the help text for @var{name}.   For example, the command
+## @kbd{help help} prints a short message describing the @code{help}
+## command.
 ##
 ## Given the single argument @code{--list}, list all operators,
 ## keywords, built-in functions, and loadable functions available
 ## in the current session of Octave.
 ##
-## @deftypefnx {Function File} {@var{text} =} help (@var{name})
-## Return the help text for the function, @var{name}.
+## If invoked without any arguments, @code{help} display instructions
+## on how to access help from the command line.
 ##
 ## The help command can give you information about operators, but not the
 ## comma and semicolons that are used as command separators.  To get help

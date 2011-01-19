@@ -188,7 +188,7 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Determine the number of words per line
   format = strrep (format, "%", " %");
-  [~, ~, ~, fmt_words] = regexp (format, "[^\\s]+");
+  [~, ~, ~, fmt_words] = regexp (format, "[^ ]+");
 
   num_words_per_line = numel (fmt_words);
   for m = 1:numel(fmt_words)

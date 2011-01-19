@@ -33,17 +33,21 @@ FloatRowVector : public MArray<float>
 {
 public:
 
-  FloatRowVector (void) : MArray<float> (1, 0) { }
+  FloatRowVector (void) : MArray<float> (dim_vector (1, 0)) { }
 
-  explicit FloatRowVector (octave_idx_type n) : MArray<float> (1, n) { }
+  explicit FloatRowVector (octave_idx_type n)
+    : MArray<float> (dim_vector (1, n)) { }
 
-  explicit FloatRowVector (const dim_vector& dv) : MArray<float> (dv.as_row ()) { }
+  explicit FloatRowVector (const dim_vector& dv)
+    : MArray<float> (dv.as_row ()) { }
 
-  FloatRowVector (octave_idx_type n, float val) : MArray<float> (1, n, val) { }
+  FloatRowVector (octave_idx_type n, float val)
+    : MArray<float> (dim_vector (1, n), val) { }
 
   FloatRowVector (const FloatRowVector& a) : MArray<float> (a) { }
 
   FloatRowVector (const MArray<float>& a) : MArray<float> (a.as_row ()) { }
+
   FloatRowVector (const Array<float>& a) : MArray<float> (a.as_row ()) { }
 
   FloatRowVector& operator = (const FloatRowVector& a)

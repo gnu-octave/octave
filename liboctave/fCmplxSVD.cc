@@ -146,13 +146,13 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
 
   octave_idx_type lrwork = 5*max_mn;
 
-  Array<float> rwork (lrwork, 1);
+  Array<float> rwork (dim_vector (lrwork, 1));
 
   // Ask ZGESVD what the dimension of WORK should be.
 
   octave_idx_type lwork = -1;
 
-  Array<FloatComplex> work (1, 1);
+  Array<FloatComplex> work (dim_vector (1, 1));
 
   octave_idx_type one = 1;
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);

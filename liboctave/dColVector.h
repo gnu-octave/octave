@@ -34,14 +34,16 @@ ColumnVector : public MArray<double>
 {
 public:
 
-  ColumnVector (void) : MArray<double> (0, 1) { }
+  ColumnVector (void) : MArray<double> (dim_vector (0, 1)) { }
 
-  explicit ColumnVector (octave_idx_type n) : MArray<double> (n, 1) { }
+  explicit ColumnVector (octave_idx_type n)
+    : MArray<double> (dim_vector (n, 1)) { }
 
   explicit ColumnVector (const dim_vector& dv) 
     : MArray<double> (dv.as_column ()) { }
 
-  ColumnVector (octave_idx_type n, double val) : MArray<double> (n, 1, val) { }
+  ColumnVector (octave_idx_type n, double val)
+    : MArray<double> (dim_vector (n, 1), val) { }
 
   ColumnVector (const ColumnVector& a) : MArray<double> (a) { }
 

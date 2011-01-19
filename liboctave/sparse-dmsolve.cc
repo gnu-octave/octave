@@ -130,7 +130,7 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;
 
-  MArray<T> result (new_r, new_c);
+  MArray<T> result (dim_vector (new_r, new_c));
 
   for (octave_idx_type j = 0; j < new_c; j++)
     for (octave_idx_type i = 0; i < new_r; i++)

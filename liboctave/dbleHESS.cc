@@ -84,17 +84,17 @@ HESS::init (const Matrix& a)
   hess_mat = a;
   double *h = hess_mat.fortran_vec ();
 
-  Array<double> scale (n, 1);
+  Array<double> scale (dim_vector (n, 1));
   double *pscale = scale.fortran_vec ();
 
   F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<double> tau (n-1, 1);
+  Array<double> tau (dim_vector (n-1, 1));
   double *ptau = tau.fortran_vec ();
 
-  Array<double> work (lwork, 1);
+  Array<double> work (dim_vector (lwork, 1));
   double *pwork = work.fortran_vec ();
 
   F77_XFCN (dgehrd, DGEHRD, (n, ilo, ihi, h, n, ptau, pwork,

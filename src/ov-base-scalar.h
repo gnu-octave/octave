@@ -109,7 +109,7 @@ public:
     { return mode ? mode : ASCENDING; }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
-    { return Array<octave_idx_type> (1, 0); }
+    { return Array<octave_idx_type> (dim_vector (1, 0)); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
     { return mode ? mode : ASCENDING; }

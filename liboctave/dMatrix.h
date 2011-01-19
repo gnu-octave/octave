@@ -44,13 +44,16 @@ public:
 
   Matrix (void) : MArray<double> () { }
 
-  Matrix (octave_idx_type r, octave_idx_type c) : MArray<double> (r, c) { }
+  Matrix (octave_idx_type r, octave_idx_type c)
+    : MArray<double> (dim_vector (r, c)) { }
 
-  Matrix (octave_idx_type r, octave_idx_type c, double val) : MArray<double> (r, c, val) { }
+  Matrix (octave_idx_type r, octave_idx_type c, double val)
+    : MArray<double> (dim_vector (r, c), val) { }
 
   Matrix (const dim_vector& dv) : MArray<double> (dv.redim (2)) { }
 
-  Matrix (const dim_vector& dv, double val) : MArray<double> (dv.redim (2), val) { }
+  Matrix (const dim_vector& dv, double val)
+    : MArray<double> (dv.redim (2), val) { }
 
   Matrix (const Matrix& a) : MArray<double> (a) { }
 

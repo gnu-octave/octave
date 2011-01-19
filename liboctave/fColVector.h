@@ -34,19 +34,24 @@ FloatColumnVector : public MArray<float>
 {
 public:
 
-  FloatColumnVector (void) : MArray<float> (0, 1) { }
+  FloatColumnVector (void) : MArray<float> (dim_vector (0, 1)) { }
 
-  explicit FloatColumnVector (octave_idx_type n) : MArray<float> (n, 1) { }
+  explicit FloatColumnVector (octave_idx_type n)
+    : MArray<float> (dim_vector (n, 1)) { }
 
   explicit FloatColumnVector (const dim_vector& dv) 
     : MArray<float> (dv.as_column ()) { }
 
-  FloatColumnVector (octave_idx_type n, float val) : MArray<float> (n, 1, val) { }
+  FloatColumnVector (octave_idx_type n, float val)
+    : MArray<float> (dim_vector (n, 1), val) { }
 
   FloatColumnVector (const FloatColumnVector& a) : MArray<float> (a) { }
 
-  FloatColumnVector (const MArray<float>& a) : MArray<float> (a.as_column ()) { }
-  FloatColumnVector (const Array<float>& a) : MArray<float> (a.as_column ()) { }
+  FloatColumnVector (const MArray<float>& a)
+    : MArray<float> (a.as_column ()) { }
+
+  FloatColumnVector (const Array<float>& a)
+    : MArray<float> (a.as_column ()) { }
 
   FloatColumnVector& operator = (const FloatColumnVector& a)
     {

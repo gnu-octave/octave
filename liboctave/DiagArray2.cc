@@ -55,9 +55,9 @@ DiagArray2<T>::diag (octave_idx_type k) const
     // The main diagonal is shallow-copied.
     d = *this;
   else if (k > 0 && k < cols ())
-    d = Array<T> (std::min (cols () - k, rows ()), 1, T ());
+    d = Array<T> (dim_vector (std::min (cols () - k, rows ()), 1), T ());
   else if (k < 0 && -k < rows ())
-    d = Array<T> (std::min (rows () + k, cols ()), 1, T ());
+    d = Array<T> (dim_vector (std::min (rows () + k, cols ()), 1), T ());
   else
     (*current_liboctave_error_handler)
       ("diag: requested diagonal out of range");
@@ -112,9 +112,11 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
 }
 
 template <class T>
-Array<T> DiagArray2<T>::array_value (void) const
+Array<T>
+DiagArray2<T>::array_value (void) const
 {
-  Array<T> result (dim1 (), dim2 ());
+  Array<T> result (dims (), T (0));
+
   for (octave_idx_type i = 0, len = length (); i < len; i++)
     result.xelem (i, i) = dgelem (i);
 

@@ -121,17 +121,18 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
   Complex *s = schur_mat.fortran_vec ();
   Complex *q = unitary_mat.fortran_vec ();
 
-  Array<double> rwork (n, 1);
+  Array<double> rwork (dim_vector (n, 1));
   double *prwork = rwork.fortran_vec ();
 
-  Array<Complex> w (n, 1);
+  Array<Complex> w (dim_vector (n, 1));
   Complex *pw = w.fortran_vec ();
 
-  Array<Complex> work (lwork, 1);
+  Array<Complex> work (dim_vector (lwork, 1));
   Complex *pwork = work.fortran_vec ();
 
   // BWORK is not referenced for non-ordered Schur.
-  Array<octave_idx_type> bwork ((ord_char == 'N' || ord_char == 'n') ? 0 : n, 1);
+  octave_idx_type ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
+  Array<octave_idx_type> bwork (dim_vector (ntmp, 1));
   octave_idx_type *pbwork = bwork.fortran_vec ();
 
   F77_XFCN (zgeesx, ZGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),

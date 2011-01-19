@@ -173,7 +173,8 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
         idx_vector i = idx_arg(0).index_vector ();
 
         if (! error_state)
-          retval = Array<octave_value>::index (i, resize_ok, resize_fill_value ());
+          retval = Array<octave_value>::index (i, resize_ok,
+                                               resize_fill_value ());
       }
       break;
 
@@ -194,7 +195,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 
     default:
       {
-        Array<idx_vector> iv (n, 1);
+        Array<idx_vector> iv (dim_vector (n, 1));
 
         for (octave_idx_type i = 0; i < n; i++)
           {
@@ -221,7 +222,7 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (len, 1);
+  Array<idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx_arg(i).index_vector ();
@@ -235,7 +236,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
 {
   octave_idx_type len = idx_arg.length ();
 
-  Array<idx_vector> ra_idx (len, 1);
+  Array<idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx.xelem (i) = idx_arg(i).index_vector ();

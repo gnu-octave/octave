@@ -87,17 +87,17 @@ FloatComplexHESS::init (const FloatComplexMatrix& a)
   hess_mat = a;
   FloatComplex *h = hess_mat.fortran_vec ();
 
-  Array<float> scale (n, 1);
+  Array<float> scale (dim_vector (n, 1));
   float *pscale = scale.fortran_vec ();
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
                              n, h, n, ilo, ihi, pscale, info
                              F77_CHAR_ARG_LEN (1)));
 
-  Array<FloatComplex> tau (n-1, 1);
+  Array<FloatComplex> tau (dim_vector (n-1, 1));
   FloatComplex *ptau = tau.fortran_vec ();
 
-  Array<FloatComplex> work (lwork, 1);
+  Array<FloatComplex> work (dim_vector (lwork, 1));
   FloatComplex *pwork = work.fortran_vec ();
 
   F77_XFCN (cgehrd, CGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork, info));

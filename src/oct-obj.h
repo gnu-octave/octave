@@ -50,7 +50,7 @@ public:
     : data (dim_vector (1, n), val) { }
 
   octave_value_list (const octave_value& tc)
-    : data (1, 1, tc) { }
+    : data (dim_vector (1, 1), tc) { }
 
   octave_value_list (const Array<octave_value>& d)
     : data (d.as_row ()) { }

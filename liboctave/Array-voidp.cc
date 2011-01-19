@@ -34,7 +34,3 @@ along with Octave; see the file COPYING.  If not, see
 NO_INSTANTIATE_ARRAY_SORT (void *);
 
 INSTANTIATE_ARRAY (void *, OCTAVE_API);
-
-#include "Array3.h"
-
-template class OCTAVE_API Array3<void *>;

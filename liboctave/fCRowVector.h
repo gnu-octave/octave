@@ -36,21 +36,29 @@ friend class FloatComplexColumnVector;
 
 public:
 
-  FloatComplexRowVector (void) : MArray<FloatComplex> (1, 0) { }
+  FloatComplexRowVector (void)
+    : MArray<FloatComplex> (dim_vector (1, 0)) { }
 
-  explicit FloatComplexRowVector (octave_idx_type n) : MArray<FloatComplex> (1, n) { }
+  explicit FloatComplexRowVector (octave_idx_type n)
+    : MArray<FloatComplex> (dim_vector (1, n)) { }
 
-  explicit FloatComplexRowVector (const dim_vector& dv) : MArray<FloatComplex> (dv.as_row ()) { }
+  explicit FloatComplexRowVector (const dim_vector& dv)
+    : MArray<FloatComplex> (dv.as_row ()) { }
 
   FloatComplexRowVector (octave_idx_type n, const FloatComplex& val) 
-    : MArray<FloatComplex> (1, n, val) { }
+    : MArray<FloatComplex> (dim_vector (1, n), val) { }
 
-  FloatComplexRowVector (const FloatComplexRowVector& a) : MArray<FloatComplex> (a) { }
+  FloatComplexRowVector (const FloatComplexRowVector& a)
+    : MArray<FloatComplex> (a) { }
 
-  FloatComplexRowVector (const MArray<FloatComplex>& a) : MArray<FloatComplex> (a.as_row ()) { }
-  FloatComplexRowVector (const Array<FloatComplex>& a) : MArray<FloatComplex> (a.as_row ()) { }
+  FloatComplexRowVector (const MArray<FloatComplex>& a)
+    : MArray<FloatComplex> (a.as_row ()) { }
 
-  explicit FloatComplexRowVector (const FloatRowVector& a) : MArray<FloatComplex> (a) { }
+  FloatComplexRowVector (const Array<FloatComplex>& a)
+    : MArray<FloatComplex> (a.as_row ()) { }
+
+  explicit FloatComplexRowVector (const FloatRowVector& a)
+    : MArray<FloatComplex> (a) { }
 
   FloatComplexRowVector& operator = (const FloatComplexRowVector& a)
     {

@@ -193,7 +193,7 @@ operator -= (MSparse<T>& a, const MSparse<T>& b)
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray<T> r (nr, nc, (0.0 OP s));  \
+    MArray<T> r (dim_vector (nr, nc), (0.0 OP s));      \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \
@@ -239,7 +239,7 @@ SPARSE_A2S_OP_2 (/)
     octave_idx_type nr = a.rows (); \
     octave_idx_type nc = a.cols (); \
  \
-    MArray<T> r (nr, nc, (s OP 0.0));  \
+    MArray<T> r (dim_vector (nr, nc), (s OP 0.0));      \
  \
     for (octave_idx_type j = 0; j < nc; j++) \
       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++) \

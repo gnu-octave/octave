@@ -154,7 +154,7 @@ get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc, b
 }
 
 scanf_format_list::scanf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (16, 1), buf (0)
+  : nconv (0), curr_idx (0), list (dim_vector (16, 1)), buf (0)
 {
   octave_idx_type num_elts = 0;
 
@@ -574,7 +574,7 @@ scanf_format_list::all_numeric_conversions (void)
 // Ugh again.
 
 printf_format_list::printf_format_list (const std::string& s)
-  : nconv (0), curr_idx (0), list (16, 1), buf (0)
+  : nconv (0), curr_idx (0), list (dim_vector (16, 1)), buf (0)
 {
   octave_idx_type num_elts = 0;
 

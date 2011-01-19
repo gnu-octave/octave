@@ -1635,7 +1635,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
             return retval;
 
           int dv_len = dv.length ();
-          Array<octave_idx_type> ra_idx (dv_len, 1, 0);
+          Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
 
           for (int j = 0; j < n_args; j++)
             {

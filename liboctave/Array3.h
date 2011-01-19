@@ -83,4 +83,9 @@ public:
     }
 };
 
+// If we're with GNU C++, issue a warning.
+#ifdef __GNUC__
+#warning Using Array3<T> is deprecated. Use Array<T> directly.
+#endif
+
 #endif

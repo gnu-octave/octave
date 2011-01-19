@@ -640,7 +640,7 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
 {
   new_map_list[idx] = map_list[idx];
 
-  Array<octave_idx_type> perm (1, nf);
+  Array<octave_idx_type> perm (dim_vector (1, nf));
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -888,7 +888,7 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
     default:
       {
-        Array<idx_vector> ia (n_idx, 1);
+        Array<idx_vector> ia (dim_vector (n_idx, 1));
 
         for (octave_idx_type i = 0; i < n_idx; i++)
           {
@@ -917,7 +917,7 @@ octave_map::column (octave_idx_type k) const
 octave_map 
 octave_map::page (octave_idx_type k) const
 {
-  static Array<idx_vector> ia (3, 1, idx_vector::colon);
+  static Array<idx_vector> ia (dim_vector (3, 1), idx_vector::colon);
 
   ia(2) = k;
   return index (ia);
@@ -1082,7 +1082,7 @@ octave_map::assign (const octave_value_list& idx, const octave_map& rhs)
 
     default:
       {
-        Array<idx_vector> ia (n_idx, 1);
+        Array<idx_vector> ia (dim_vector (n_idx, 1));
 
         for (octave_idx_type i = 0; i < n_idx; i++)
           {
@@ -1195,7 +1195,7 @@ octave_map::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type n_idx = idx.length ();
 
-  Array<idx_vector> ia (n_idx, 1);
+  Array<idx_vector> ia (dim_vector (n_idx, 1));
 
   for (octave_idx_type i = 0; i < n_idx; i++)
     {
@@ -1698,7 +1698,7 @@ Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 
   if (n_idx > 0)
     {
-      Array<idx_vector> ra_idx (n_idx, 1);
+      Array<idx_vector> ra_idx (dim_vector (n_idx, 1));
 
       for (octave_idx_type i = 0; i < n_idx; i++)
         {

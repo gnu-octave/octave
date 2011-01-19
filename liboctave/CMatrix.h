@@ -45,10 +45,11 @@ public:
 
   ComplexMatrix (void) : MArray<Complex> () { }
 
-  ComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray<Complex> (r, c) { }
+  ComplexMatrix (octave_idx_type r, octave_idx_type c)
+    : MArray<Complex> (dim_vector (r, c)) { }
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
-    : MArray<Complex> (r, c, val) { }
+    : MArray<Complex> (dim_vector (r, c), val) { }
 
   ComplexMatrix (const dim_vector& dv) : MArray<Complex> (dv.redim (2)) { }
 

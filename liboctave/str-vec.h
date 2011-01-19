@@ -38,11 +38,14 @@ public:
 
   string_vector (void) : Array<std::string> () { }
 
-  explicit string_vector (octave_idx_type n) : Array<std::string> (n, 1) { }
+  explicit string_vector (octave_idx_type n)
+    : Array<std::string> (dim_vector (n, 1)) { }
 
-  string_vector (const char *s) : Array<std::string> (1, 1, s) { }
+  string_vector (const char *s)
+    : Array<std::string> (dim_vector (1, 1), s) { }
 
-  string_vector (const std::string& s) : Array<std::string> (1, 1, s) { }
+  string_vector (const std::string& s)
+    : Array<std::string> (dim_vector (1, 1), s) { }
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
 

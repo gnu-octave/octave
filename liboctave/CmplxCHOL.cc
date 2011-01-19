@@ -127,9 +127,9 @@ ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
       octave_idx_type zpocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<Complex> z (2*n, 1);
+      Array<Complex> z (dim_vector (2*n, 1));
       Complex *pz = z.fortran_vec ();
-      Array<double> rz (n, 1);
+      Array<double> rz (dim_vector (n, 1));
       double *prz = rz.fortran_vec ();
       F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
                                  n, anorm, xrcond, pz, prz, zpocon_info
@@ -419,7 +419,7 @@ ComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
   else
     {
       ComplexMatrix a = chol_mat.hermitian () * chol_mat;
-      Array<octave_idx_type> p (n, 1);
+      Array<octave_idx_type> p (dim_vector (n, 1));
       for (octave_idx_type k = 0; k < n; k++) p(k) = k;
       if (i < j)
         {

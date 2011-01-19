@@ -396,13 +396,13 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
           break;
         case ROTATION_90:
             {
-              Array<octave_idx_type> perm (3, 1);
+              Array<octave_idx_type> perm (dim_vector (3, 1));
               perm(0) = 0;
               perm(1) = 2;
               perm(2) = 1;
               pixels = pixels.permute (perm);
 
-              Array<idx_vector> idx (3, 1);
+              Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
               idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
               idx(2) = idx_vector (':');
@@ -411,7 +411,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
           break;
         case ROTATION_180:
             {
-              Array<idx_vector> idx (3, 1);
+              Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
               idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
               idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
@@ -420,13 +420,13 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
           break;
         case ROTATION_270:
             {
-              Array<octave_idx_type> perm (3, 1);
+              Array<octave_idx_type> perm (dim_vector (3, 1));
               perm(0) = 0;
               perm(1) = 2;
               perm(2) = 1;
               pixels = pixels.permute (perm);
 
-              Array<idx_vector> idx (3, 1);
+              Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
               idx(1) = idx_vector (':');
               idx(2) = idx_vector (pixels.dim3()-1, -1, -1);

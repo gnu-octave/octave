@@ -226,7 +226,7 @@ inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 template <class T, class R, class ACC>
 void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray<R> (1, m.columns ());
+  res = MArray<R> (dim_vector (1, m.columns ()));
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -240,7 +240,7 @@ void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray<R> (m.rows (), 1);
+  res = MArray<R> (dim_vector (m.rows (), 1));
   std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
@@ -256,7 +256,7 @@ void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray<R> (1, m.columns ());
+  res = MArray<R> (dim_vector (1, m.columns ()));
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       ACC accj = acc;
@@ -270,7 +270,7 @@ void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 template <class T, class R, class ACC>
 void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
-  res = MArray<R> (m.rows (), 1);
+  res = MArray<R> (dim_vector (m.rows (), 1));
   std::vector<ACC> acci (m.rows (), acc); 
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {

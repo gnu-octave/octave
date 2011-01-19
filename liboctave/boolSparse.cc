@@ -163,16 +163,16 @@ SparseBoolMatrix::any (int dim) const
       if (nz > nr/4)
         {
           // We can use O(nr) memory.
-          Array<bool> tmp (nr, 1, false);
+          Array<bool> tmp (dim_vector (nr, 1), false);
           for (octave_idx_type i = 0; i < nz; i++)
             tmp.xelem(ridx(i)) = true;
           retval = tmp;
         }
       else
         {
-          Array<octave_idx_type> tmp (nz, 1);
+          Array<octave_idx_type> tmp (dim_vector (nz, 1));
           copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
-          retval = Sparse<bool> (Array<bool> (1, 1, true),
+          retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
                                  idx_vector (tmp),
                                  idx_vector (static_cast<octave_idx_type> (0)),
                                  nr, 1, false);
@@ -212,16 +212,16 @@ SparseBoolMatrix::sum (int dim) const
       if (nz > nr)
         {
           // We can use O(nr) memory.
-          Array<double> tmp (nr, 1, 0);
+          Array<double> tmp (dim_vector (nr, 1), 0);
           for (octave_idx_type i = 0; i < nz; i++)
             tmp.xelem(ridx(i)) += 1.0;
           retval = tmp;
         }
       else
         {
-          Array<octave_idx_type> tmp (nz, 1);
+          Array<octave_idx_type> tmp (dim_vector (nz, 1));
           copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
-          retval = Sparse<double> (Array<double> (1, 1, 1.0),
+          retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
                                    idx_vector (tmp),
                                    idx_vector (static_cast<octave_idx_type> (0)),
                                    nr, 1);

@@ -36,7 +36,6 @@ octave_value_typeinfo *
 octave_value_typeinfo::instance (0);
 
 #include <Array.h>
-#include <Array3.h>
 
 bool
 octave_value_typeinfo::instance_ok (void)
@@ -191,32 +190,34 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
     {
       len *= 2;
 
-      types.resize (len, 1, std::string ());
+      types.resize (dim_vector (len, 1), std::string ());
 
-      vals.resize (len, 1, octave_value ());
+      vals.resize (dim_vector (len, 1), octave_value ());
 
-      unary_ops.resize (static_cast<int> (octave_value::num_unary_ops), len, 0);
+      unary_ops.resize (dim_vector (octave_value::num_unary_ops, len), 0);
 
       non_const_unary_ops.resize
-        (static_cast<int> (octave_value::num_unary_ops), len, 0);
+        (dim_vector (octave_value::num_unary_ops, len), 0);
 
-      binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
-                         len, len, 0);
+      binary_ops.resize
+        (dim_vector (octave_value::num_binary_ops, len, len), 0);
 
-      compound_binary_ops.resize (static_cast<int> (octave_value::num_compound_binary_ops),
-                                  len, len, 0);
+      compound_binary_ops.resize
+        (dim_vector (octave_value::num_compound_binary_ops, len, len), 0);
 
-      cat_ops.resize (len, len, 0);
+      cat_ops.resize (dim_vector (len, len), 0);
 
-      assign_ops.resize (static_cast<int> (octave_value::num_assign_ops), len, len, 0);
+      assign_ops.resize
+        (dim_vector (octave_value::num_assign_ops, len, len), 0);
 
-      assignany_ops.resize (static_cast<int> (octave_value::num_assign_ops), len, 0);
+      assignany_ops.resize
+        (dim_vector (octave_value::num_assign_ops, len), 0);
 
-      pref_assign_conv.resize (len, len, -1);
+      pref_assign_conv.resize (dim_vector (len, len), -1);
 
-      type_conv_ops.resize (len, len, 0);
+      type_conv_ops.resize (dim_vector (len, len), 0);
 
-      widening_ops.resize (len, len, 0);
+      widening_ops.resize (dim_vector (len, len), 0);
     }
 
   types (i) = t_name;

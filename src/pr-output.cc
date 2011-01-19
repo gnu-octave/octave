@@ -2011,7 +2011,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
  \
           dim_vector dims = nda.dims (); \
  \
-          Array<octave_idx_type> ra_idx (ndims, 1, 0); \
+          Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);\
  \
           octave_idx_type m = 1; \
  \
@@ -2046,7 +2046,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                   nm += buf.str (); \
                 } \
  \
-              Array<idx_vector> idx (ndims, 1); \
+              Array<idx_vector> idx (dim_vector (ndims, 1)); \
  \
               idx(0) = idx_vector (':'); \
               idx(1) = idx_vector (':'); \
@@ -2055,7 +2055,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
                 idx(k) = idx_vector (ra_idx(k)); \
  \
               octave_value page \
-                = MAT_T (Array<ELT_T> (nda.index (idx), nr, nc)); \
+                = MAT_T (Array<ELT_T> (nda.index (idx), dim_vector (nr, nc))); \
  \
               if (i != m - 1) \
                 { \
@@ -2855,7 +2855,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 1, 0);
+      Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
       octave_idx_type m = 1;
 
@@ -2888,7 +2888,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
               nm += buf.str ();
             }
 
-          Array<idx_vector> idx (ndims, 1);
+          Array<idx_vector> idx (dim_vector (ndims, 1));
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');
@@ -2896,7 +2896,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array<std::string> page (nda.index (idx), nr, nc);
+          Array<std::string> page (nda.index (idx), dim_vector (nr, nc));
 
           // FIXME -- need to do some more work to put these
           // in neatly aligned columns...
@@ -3120,7 +3120,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
     {
       int ndims = nda.ndims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 1, 0);
+      Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
       dim_vector dims = nda.dims ();
 
@@ -3155,7 +3155,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
               os << nm << " =\n\n";
             }
 
-          Array<idx_vector> idx (ndims, 1);
+          Array<idx_vector> idx (dim_vector (ndims, 1));
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');
@@ -3163,7 +3163,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array<T> page (nda.index (idx), nr, nc);
+          Array<T> page (nda.index (idx), dim_vector (nr, nc));
 
           for (octave_idx_type ii = 0; ii < nr; ii++)
             {
@@ -3191,7 +3191,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
       dim_vector dims = nda.dims ();
 
-      Array<octave_idx_type> ra_idx (ndims, 1, 0);
+      Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
       octave_idx_type m = 1;
 
@@ -3260,7 +3260,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
               os << nm << " =\n\n";
             }
 
-          Array<idx_vector> idx (ndims, 1);
+          Array<idx_vector> idx (dim_vector (ndims, 1));
 
           idx(0) = idx_vector (':');
           idx(1) = idx_vector (':');
@@ -3268,7 +3268,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
           for (int k = 2; k < ndims; k++)
             idx(k) = idx_vector (ra_idx(k));
 
-          Array<T> page (nda.index (idx), nr, nc);
+          Array<T> page (nda.index (idx), dim_vector (nr, nc));
 
           if (free_format)
             {

@@ -867,7 +867,7 @@ compatibility with @sc{matlab}.\n\
           std::cout << std::endl;
 #endif
 
-          Array<octave_idx_type> ind (nn, 1);
+          Array<octave_idx_type> ind (dim_vector (nn, 1));
 
           F77_XFCN (dsubsp, DSUBSP,
                     (nn, nn, aa.fortran_vec (), bb.fortran_vec (),

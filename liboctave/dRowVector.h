@@ -33,17 +33,20 @@ RowVector : public MArray<double>
 {
 public:
 
-  RowVector (void) : MArray<double> (1, 0) { }
+  RowVector (void) : MArray<double> (dim_vector (1, 0)) { }
 
-  explicit RowVector (octave_idx_type n) : MArray<double> (1, n) { }
+  explicit RowVector (octave_idx_type n)
+    : MArray<double> (dim_vector (1, n)) { }
 
   explicit RowVector (const dim_vector& dv) : MArray<double> (dv.as_row ()) { }
 
-  RowVector (octave_idx_type n, double val) : MArray<double> (1, n, val) { }
+  RowVector (octave_idx_type n, double val)
+    : MArray<double> (dim_vector (1, n), val) { }
 
   RowVector (const RowVector& a) : MArray<double> (a) { }
 
   RowVector (const MArray<double>& a) : MArray<double> (a.as_row ()) { }
+
   RowVector (const Array<double>& a) : MArray<double> (a.as_row ()) { }
 
   RowVector& operator = (const RowVector& a)

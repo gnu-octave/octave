@@ -146,7 +146,7 @@ SVD::init (const Matrix& a, SVD::type svd_type, SVD::driver svd_driver)
 
   octave_idx_type lwork = -1;
 
-  Array<double> work (1, 1);
+  Array<double> work (dim_vector (1, 1));
 
   octave_idx_type one = 1;
   octave_idx_type m1 = std::max (m, one), nrow_vt1 = std::max (nrow_vt, one);

@@ -45,23 +45,29 @@ public:
 
   FloatComplexMatrix (void) : MArray<FloatComplex> () { }
 
-  FloatComplexMatrix (octave_idx_type r, octave_idx_type c) : MArray<FloatComplex> (r, c) { }
+  FloatComplexMatrix (octave_idx_type r, octave_idx_type c)
+    : MArray<FloatComplex> (dim_vector (r, c)) { }
 
-  FloatComplexMatrix (octave_idx_type r, octave_idx_type c, const FloatComplex& val)
-    : MArray<FloatComplex> (r, c, val) { }
+  FloatComplexMatrix (octave_idx_type r, octave_idx_type c,
+                      const FloatComplex& val)
+    : MArray<FloatComplex> (dim_vector (r, c), val) { }
 
-  FloatComplexMatrix (const dim_vector& dv) : MArray<FloatComplex> (dv.redim (2)) { }
+  FloatComplexMatrix (const dim_vector& dv)
+    : MArray<FloatComplex> (dv.redim (2)) { }
 
   FloatComplexMatrix (const dim_vector& dv, const FloatComplex& val) 
     : MArray<FloatComplex> (dv.redim (2), val) { }
 
-  FloatComplexMatrix (const FloatComplexMatrix& a) : MArray<FloatComplex> (a) { }
+  FloatComplexMatrix (const FloatComplexMatrix& a)
+    : MArray<FloatComplex> (a) { }
 
   template <class U>
-  FloatComplexMatrix (const MArray<U>& a) : MArray<FloatComplex> (a.as_matrix ()) { }
+  FloatComplexMatrix (const MArray<U>& a)
+    : MArray<FloatComplex> (a.as_matrix ()) { }
 
   template <class U>
-  FloatComplexMatrix (const Array<U>& a) : MArray<FloatComplex> (a.as_matrix ()) { }
+  FloatComplexMatrix (const Array<U>& a)
+    : MArray<FloatComplex> (a.as_matrix ()) { }
 
   explicit FloatComplexMatrix (const FloatMatrix& a);
 

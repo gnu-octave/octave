@@ -181,7 +181,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
     default:
       {
-        Array<idx_vector> idx_vec (n_idx, 1);
+        Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
         bool scalar_opt = n_idx == nd && ! resize_ok;
         const dim_vector dv = matrix.dims ();
 
@@ -246,7 +246,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
     default:
       {
-        Array<idx_vector> idx_vec (n_idx, 1);
+        Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
 
         for (octave_idx_type i = 0; i < n_idx; i++)
           {
@@ -330,7 +330,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
     default:
       {
-        Array<idx_vector> idx_vec (n_idx, 1);
+        Array<idx_vector> idx_vec (dim_vector (n_idx, 1));
         bool scalar_opt = n_idx == nd;
         const dim_vector dv = matrix.dims ().redim (n_idx);
 
@@ -376,7 +376,7 @@ octave_base_matrix<MT>::delete_elements (const octave_value_list& idx)
 {
   octave_idx_type len = idx.length ();
 
-  Array<idx_vector> ra_idx (len, 1);
+  Array<idx_vector> ra_idx (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
     ra_idx(i) = idx(i).index_vector ();

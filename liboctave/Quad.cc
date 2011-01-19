@@ -131,11 +131,11 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abs
   double result = 0.0;
 
   octave_idx_type leniw = 183*npts - 122;
-  Array<octave_idx_type> iwork (leniw, 1);
+  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   octave_idx_type lenw = 2*leniw - npts;
-  Array<double> work (lenw, 1);
+  Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
@@ -165,11 +165,11 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& a
   double result = 0.0;
 
   octave_idx_type leniw = 128;
-  Array<octave_idx_type> iwork (leniw, 1);
+  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   octave_idx_type lenw = 8*leniw;
-  Array<double> work (lenw, 1);
+  Array<double> work (dim_vector (lenw, 1));
   double *pwork = work.fortran_vec ();
 
   user_fcn = f;
@@ -227,11 +227,11 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float&
   float result = 0.0;
 
   octave_idx_type leniw = 183*npts - 122;
-  Array<octave_idx_type> iwork (leniw, 1);
+  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   octave_idx_type lenw = 2*leniw - npts;
-  Array<float> work (lenw, 1);
+  Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
   float_user_fcn = ff;
@@ -261,11 +261,11 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, floa
   float result = 0.0;
 
   octave_idx_type leniw = 128;
-  Array<octave_idx_type> iwork (leniw, 1);
+  Array<octave_idx_type> iwork (dim_vector (leniw, 1));
   octave_idx_type *piwork = iwork.fortran_vec ();
 
   octave_idx_type lenw = 8*leniw;
-  Array<float> work (lenw, 1);
+  Array<float> work (dim_vector (lenw, 1));
   float *pwork = work.fortran_vec ();
 
   float_user_fcn = ff;

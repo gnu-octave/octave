@@ -769,7 +769,7 @@ FloatComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_typ
   
   if (n == dimensions.length ())
     {
-      Array<octave_idx_type> a_ra_idx (a_dv.length (), 1, 0);
+      Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
       
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;

@@ -36,18 +36,23 @@ friend class ComplexColumnVector;
 
 public:
 
-  ComplexRowVector (void) : MArray<Complex> (1, 0) { }
+ ComplexRowVector (void) : MArray<Complex> (dim_vector (1, 0)) { }
 
-  explicit ComplexRowVector (octave_idx_type n) : MArray<Complex> (1, n) { }
+  explicit ComplexRowVector (octave_idx_type n)
+    : MArray<Complex> (dim_vector (1, n)) { }
 
   explicit ComplexRowVector (const dim_vector& dv) : MArray<Complex> (dv) { }
 
-  ComplexRowVector (octave_idx_type n, const Complex& val) : MArray<Complex> (1, n, val) { }
+  ComplexRowVector (octave_idx_type n, const Complex& val)
+    : MArray<Complex> (dim_vector (1, n), val) { }
 
   ComplexRowVector (const ComplexRowVector& a) : MArray<Complex> (a) { }
 
-  ComplexRowVector (const MArray<Complex>& a) : MArray<Complex> (a.as_row ()) { }
-  ComplexRowVector (const Array<Complex>& a) : MArray<Complex> (a.as_row ()) { }
+  ComplexRowVector (const MArray<Complex>& a)
+    : MArray<Complex> (a.as_row ()) { }
+
+  ComplexRowVector (const Array<Complex>& a)
+    : MArray<Complex> (a.as_row ()) { }
 
   explicit ComplexRowVector (const RowVector& a) : MArray<Complex> (a) { }
 

@@ -438,7 +438,7 @@ function.  Instead use @code{imread}.\n\
     }
   else
     {
-      frameidx = Array<int> (1, 1);
+      frameidx = Array<int> (dim_vector (1, 1));
       frameidx(0) = 1;
     }
 
@@ -466,7 +466,7 @@ function.  Instead use @code{imread}.\n\
   int nframes = imvec.size ();
   if (all_frames)
     {
-      frameidx = Array<int> (1, nframes);
+      frameidx = Array<int> (dim_vector (1, nframes));
       for (int i = 0; i < frameidx.length (); i++)
         frameidx(i) = i;
     }
@@ -592,7 +592,7 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
   if (dsizes.length () == 4)
     nframes = dsizes(3);
 
-  Array<octave_idx_type> idx (dsizes.length (), 1);
+  Array<octave_idx_type> idx (dim_vector (dsizes.length (), 1));
 
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
@@ -660,7 +660,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   bool is_color = ((dsizes.length () > 2) && (dsizes(2) > 2));
   bool has_alpha = (dsizes.length () > 2 && (dsizes(2) == 2 || dsizes(2) == 4));
 
-  Array<octave_idx_type> idx (dsizes.length (), 1);
+  Array<octave_idx_type> idx (dim_vector (dsizes.length (), 1));
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
 

@@ -174,19 +174,11 @@ public:
       slice_data (rep->data), slice_len (rep->len)
     { }
 
-  // 2D uninitialized ctor.
-  explicit Array (octave_idx_type m, octave_idx_type n)
-    : dimensions (m, n),
-      rep (new typename Array<T>::ArrayRep (dimensions.safe_numel ())), 
+  // Obsolete initialized 1D ctor (there are no 1D arrays).
+  explicit Array (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
+    : dimensions (n, 1), rep (new typename Array<T>::ArrayRep (n)),
       slice_data (rep->data), slice_len (rep->len)
-    { }
-
-  // 2D initialized ctor.
-  explicit Array (octave_idx_type m, octave_idx_type n, const T& val)
-    : dimensions (m, n),
-      rep (new typename Array<T>::ArrayRep (dimensions.safe_numel ())),
-      slice_data (rep->data), slice_len (rep->len)
-    { 
+    {
       fill (val);
     }
 
@@ -211,8 +203,6 @@ public:
 
   // Reshape constructor.
   Array (const Array<T>& a, const dim_vector& dv);
-
-  Array (const Array<T>& a, octave_idx_type nr, octave_idx_type nc);
 
   // Type conversion case.
   template <class U>
@@ -417,7 +407,7 @@ public:
   Array<T> linear_slice (octave_idx_type lo, octave_idx_type up) const;
 
   Array<T> reshape (octave_idx_type nr, octave_idx_type nc) const
-    { return Array<T> (*this, nr, nc); }
+    { return Array<T> (*this, dim_vector (nr, nc)); }
 
   Array<T> reshape (const dim_vector& new_dims) const
     { return Array<T> (*this, new_dims); }

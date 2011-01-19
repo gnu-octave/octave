@@ -49,10 +49,10 @@ public:
     : Array<T> (), d1 (0), d2 (0) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c) 
-    : Array<T> (std::min (r, c), 1), d1 (r), d2 (c) { }
+    : Array<T> (dim_vector (std::min (r, c), 1)), d1 (r), d2 (c) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) 
-    : Array<T> (std::min (r, c), 1, val), d1 (r), d2 (c) { }
+    : Array<T> (dim_vector (std::min (r, c), 1), val), d1 (r), d2 (c) { }
 
   explicit DiagArray2 (const Array<T>& a) 
     : Array<T> (a.as_column ()), d1 (a.numel ()), d2 (a.numel ()) { }
@@ -64,7 +64,7 @@ public:
 
   template <class U>
   DiagArray2 (const DiagArray2<U>& a) 
-  : Array<T> (a.diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
+    : Array<T> (a.diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
   ~DiagArray2 (void) { }
 

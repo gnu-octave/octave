@@ -123,7 +123,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
 
     default:
       {
-        Array<idx_vector> idx_vec (len, 1);
+        Array<idx_vector> idx_vec (dim_vector (len, 1));
 
         for (octave_idx_type i = 0; i < len; i++)
           idx_vec(i) = idx(i).index_vector ();

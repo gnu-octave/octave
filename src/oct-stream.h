@@ -158,6 +158,7 @@ private:
   // Index to current element;
   octave_idx_type curr_idx;
 
+  // FIXME -- maybe LIST should be a std::list object?
   // List of format elements.
   Array<scanf_format_elt*> list;
 
@@ -291,6 +292,7 @@ private:
   // Index to current element;
   octave_idx_type curr_idx;
 
+  // FIXME -- maybe LIST should be a std::list object?
   // List of format elements.
   Array<printf_format_elt*> list;
 

@@ -1147,7 +1147,7 @@ complete description of the syntax of the template string.\n\
 
                   Array<double> size = (nargin == 3)
                     ? args(2).vector_value ()
-                    : Array<double> (1, 1, lo_ieee_inf_value ());
+                    : Array<double> (dim_vector (1, 1), lo_ieee_inf_value ());
 
                   if (! error_state)
                     {
@@ -1232,7 +1232,8 @@ string is treated as an end-of-file condition.\n\
 
                       Array<double> size = (nargin == 3)
                         ? args(2).vector_value ()
-                        : Array<double> (1, 1, lo_ieee_inf_value ());
+                        : Array<double> (dim_vector (1, 1),
+                                         lo_ieee_inf_value ());
 
                       octave_value tmp = os.scanf (args(1), size, count, who);
 

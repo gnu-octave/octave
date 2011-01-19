@@ -849,7 +849,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         }
       else
         {
-          Array<bool> checked(n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -907,7 +907,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -923,7 +923,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -1010,7 +1010,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
@@ -1172,7 +1172,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         }
       else
         {
-          Array<bool> checked (n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -1192,7 +1192,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   if (have_b)
     bmat = 'G';
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -1208,7 +1208,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   ip(10) = 0;
   // ip(7) to ip(10) return values
 
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -1347,7 +1347,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
                         
   eig_vec.resize (n, k);
@@ -1501,7 +1501,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
       mode = 3;
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -1517,7 +1517,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -1605,7 +1605,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
                         
   eig_vec.resize (n, k);
@@ -1763,7 +1763,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
       else
         {
-          Array<bool> checked (n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -1821,7 +1821,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -1837,7 +1837,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -1924,7 +1924,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   Matrix eig_vec2 (n, k + 1);
@@ -2128,7 +2128,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         }
       else
         {
-          Array<bool> checked (n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -2148,7 +2148,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   if (have_b)
     bmat = 'G';
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -2164,7 +2164,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   ip(10) = 0;
   // ip(7) to ip(10) return values
 
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -2303,7 +2303,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
                         
   Matrix eig_vec2 (n, k + 1);
@@ -2505,7 +2505,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
       mode = 3;
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -2521,7 +2521,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -2608,7 +2608,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   Matrix eig_vec2 (n, k + 1);
@@ -2810,7 +2810,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         }
       else
         {
-          Array<bool> checked (n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -2868,7 +2868,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -2884,7 +2884,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -2971,7 +2971,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
@@ -3134,7 +3134,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         }
       else
         {
-          Array<bool> checked (n, 1, false);
+          Array<bool> checked (dim_vector (n, 1), false);
           for (octave_idx_type i = 0; i < n; i++)
             {
               octave_idx_type bidx = 
@@ -3154,7 +3154,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   if (have_b)
     bmat = 'G';
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -3170,7 +3170,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   ip(10) = 0;
   // ip(7) to ip(10) return values
 
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -3311,7 +3311,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);
@@ -3471,7 +3471,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
       mode = 3;
     }
 
-  Array<octave_idx_type> ip (11, 1);
+  Array<octave_idx_type> ip (dim_vector (11, 1));
   octave_idx_type *iparam = ip.fortran_vec ();
 
   ip(0) = 1; //ishift
@@ -3487,7 +3487,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   ip(10) = 0;
   // ip(7) to ip(10) return values
  
-  Array<octave_idx_type> iptr (14, 1);
+  Array<octave_idx_type> iptr (dim_vector (14, 1));
   octave_idx_type *ipntr = iptr.fortran_vec ();
 
   octave_idx_type ido = 0;
@@ -3575,7 +3575,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   // long as the HOWMNY arg is not "S", the logical array
   // is just workspace for ARPACK, so use int type to 
   // avoid problems.
-  Array<octave_idx_type> s (p, 1);
+  Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
   eig_vec.resize (n, k);

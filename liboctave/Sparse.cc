@@ -1393,7 +1393,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
           // Lookup.
           // FIXME: Could specialize for sorted idx?
-          NoAlias< Array<octave_idx_type> > lidx (new_nr, new_nc);
+          NoAlias< Array<octave_idx_type> > lidx (dim_vector (new_nr, new_nc));
           for (octave_idx_type i = 0; i < new_nr*new_nc; i++)
             lidx(i) = lblookup (ridx (), nz, idxa(i));
 
@@ -1803,8 +1803,8 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
               const Sparse<T> tmp = *this;
               octave_idx_type new_nz = nz + rhl;
               // Disassembly our matrix...
-              Array<octave_idx_type> new_ri (new_nz, 1);
-              Array<T> new_data (new_nz, 1);
+              Array<octave_idx_type> new_ri (dim_vector (new_nz, 1));
+              Array<T> new_data (dim_vector (new_nz, 1));
               copy_or_memcpy (nz, tmp.ridx (), new_ri.fortran_vec ());
               copy_or_memcpy (nz, tmp.data (), new_data.fortran_vec ());
               // ... insert new data (densified) ...

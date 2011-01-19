@@ -428,16 +428,16 @@ CollocWt::init (void)
   else if (nt == 0)
     return;
 
-  Array<double> dif1 (nt, 1);
+  Array<double> dif1 (dim_vector (nt, 1));
   double *pdif1 = dif1.fortran_vec ();
 
-  Array<double> dif2 (nt, 1);
+  Array<double> dif2 (dim_vector (nt, 1));
   double *pdif2 = dif2.fortran_vec ();
 
-  Array<double> dif3 (nt, 1);
+  Array<double> dif3 (dim_vector (nt, 1));
   double *pdif3 = dif3.fortran_vec ();
 
-  Array<double> vect (nt, 1);
+  Array<double> vect (dim_vector (nt, 1));
   double *pvect = vect.fortran_vec ();
 
   r.resize (nt, 1);

@@ -325,7 +325,7 @@ at most n-1).\n\
   else if (str_case)
     {
       Array<std::string> str_table = table.cellstr_value ();
-      Array<std::string> str_y (1, 1);
+      Array<std::string> str_y (dim_vector (1, 1));
 
       if (y.is_cellstr ())
         str_y = y.cellstr_value ();

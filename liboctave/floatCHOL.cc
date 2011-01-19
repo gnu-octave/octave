@@ -128,9 +128,9 @@ FloatCHOL::init (const FloatMatrix& a, bool calc_cond)
       octave_idx_type spocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<float> z (3*n, 1);
+      Array<float> z (dim_vector (3*n, 1));
       float *pz = z.fortran_vec ();
-      Array<octave_idx_type> iz (n, 1);
+      Array<octave_idx_type> iz (dim_vector (n, 1));
       octave_idx_type *piz = iz.fortran_vec ();
       F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
                                  n, anorm, xrcond, pz, piz, spocon_info
@@ -421,7 +421,7 @@ FloatCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
   else
     {
       FloatMatrix a = chol_mat.transpose () * chol_mat;
-      Array<octave_idx_type> p (n, 1);
+      Array<octave_idx_type> p (dim_vector (n, 1));
       for (octave_idx_type k = 0; k < n; k++) p(k) = k;
       if (i < j)
         {

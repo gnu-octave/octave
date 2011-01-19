@@ -44,13 +44,16 @@ public:
 
   FloatMatrix (void) : MArray<float> () { }
 
-  FloatMatrix (octave_idx_type r, octave_idx_type c) : MArray<float> (r, c) { }
+  FloatMatrix (octave_idx_type r, octave_idx_type c)
+    : MArray<float> (dim_vector (r, c)) { }
 
-  FloatMatrix (octave_idx_type r, octave_idx_type c, float val) : MArray<float> (r, c, val) { }
+  FloatMatrix (octave_idx_type r, octave_idx_type c, float val)
+    : MArray<float> (dim_vector (r, c), val) { }
 
   FloatMatrix (const dim_vector& dv) : MArray<float> (dv.redim (2)) { }
 
-  FloatMatrix (const dim_vector& dv, float val) : MArray<float> (dv.redim (2), val) { }
+  FloatMatrix (const dim_vector& dv, float val)
+    : MArray<float> (dv.redim (2), val) { }
 
   FloatMatrix (const FloatMatrix& a) : MArray<float> (a) { }
 

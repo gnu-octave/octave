@@ -595,7 +595,7 @@ Undocumented internal function.\n\
   double *lb = LB.fortran_vec ();
 
   //-- LB argument, default: Free
-  Array<int> freeLB (mrowsc, 1);
+  Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
      {
        if (xisinf (lb[i]))
@@ -619,7 +619,7 @@ Undocumented internal function.\n\
 
   double *ub = UB.fortran_vec ();
 
-  Array<int> freeUB (mrowsc, 1);
+  Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
     {
       if (xisinf (ub[i]))
@@ -652,7 +652,7 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  Array<int> vartype (mrowsc, 1);
+  Array<int> vartype (dim_vector (mrowsc, 1));
   volatile int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {

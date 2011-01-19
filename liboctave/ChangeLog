@@ -1,5 +1,14 @@
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
+	* Array.h (explicit Array (octave_idx_type, const T&)):
+	Restore constructor, but mark as deprecated.
+	(explicit Array (octave_idx_type, octave_idx_type)): Delete.
+	(Array (const Array<T>&, octave_idx_type, octave_idx_type)): Delete.
+	Fix all uses in Octave.
+	* Array3.h: Deprecate header file.  Remove all uses from Octave.
+
+2011-01-19  John W. Eaton  <jwe@octave.org>
+
 	* file-stat.cc (mode_as_string): Declare buffer as an array of
 	12 characters, not 11.  Don't set buf[10] to '\0'; strmode
 	NUL-terminates the array.

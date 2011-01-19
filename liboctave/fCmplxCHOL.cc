@@ -127,9 +127,9 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
       octave_idx_type cpocon_info = 0;
 
       // Now calculate the condition number for non-singular matrix.
-      Array<FloatComplex> z (2*n, 1);
+      Array<FloatComplex> z (dim_vector (2*n, 1));
       FloatComplex *pz = z.fortran_vec ();
-      Array<float> rz (n, 1);
+      Array<float> rz (dim_vector (n, 1));
       float *prz = rz.fortran_vec ();
       F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
                                  n, anorm, xrcond, pz, prz, cpocon_info
@@ -419,7 +419,7 @@ FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
   else
     {
       FloatComplexMatrix a = chol_mat.hermitian () * chol_mat;
-      Array<octave_idx_type> p (n, 1);
+      Array<octave_idx_type> p (dim_vector (n, 1));
       for (octave_idx_type k = 0; k < n; k++) p(k) = k;
       if (i < j)
         {

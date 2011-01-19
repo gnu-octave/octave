@@ -741,7 +741,7 @@ idx_vector::idx_mask_rep::unconvert (void) const
     return *aowner;
   else
     {
-      Array<bool> retval (ext, 1);
+      Array<bool> retval (dim_vector (ext, 1));
       for (octave_idx_type i = 0; i < ext; i++)
         retval.xelem (i) = data[i];
       return retval;
@@ -1117,7 +1117,7 @@ idx_vector::complement (octave_idx_type n) const
     {
       idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
       octave_idx_type nz = r->length (0), ext = r->extent (0);
-      Array<bool> mask (n, 1);
+      Array<bool> mask (dim_vector (n, 1));
       const bool *data = r->get_data ();
       bool *ndata = mask.fortran_vec ();
       for (octave_idx_type i = 0; i < ext; i++)
@@ -1128,7 +1128,7 @@ idx_vector::complement (octave_idx_type n) const
     }
   else
     {
-      Array<bool> mask (n, 1, true);
+      Array<bool> mask (dim_vector (n, 1), true);
       fill (false, length (n), mask.fortran_vec ());
       retval = idx_vector (mask);
     }

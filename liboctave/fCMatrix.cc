@@ -278,7 +278,7 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatColumnVector& cv)
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatDiagMatrix& a)
-  : MArray<FloatComplex> (a.rows (), a.cols (), 0.0)
+  : MArray<FloatComplex> (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -295,7 +295,7 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector& cv)
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
-  : MArray<FloatComplex> (a.rows (), a.cols (), 0.0)
+  : MArray<FloatComplex> (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -310,15 +310,16 @@ FloatComplexMatrix::FloatComplexMatrix (const boolMatrix& a)
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const charMatrix& a)
-  : MArray<FloatComplex> (a.rows (), a.cols (), 0.0)
+  : MArray<FloatComplex> (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
       elem (i, j) = static_cast<unsigned char> (a.elem (i, j));
 }
 
-FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& re, const FloatMatrix& im)
-  : MArray<FloatComplex> (re.rows (), re.cols ())
+FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& re,
+                                        const FloatMatrix& im)
+  : MArray<FloatComplex> (re.dims ())
 {
   if (im.rows () != rows () || im.cols () != cols ())
     (*current_liboctave_error_handler) ("complex: internal error");
@@ -1066,13 +1067,13 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
     (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      Array<octave_idx_type> ipvt (nr, 1);
+      Array<octave_idx_type> ipvt (dim_vector (nr, 1));
       octave_idx_type *pipvt = ipvt.fortran_vec ();
 
       retval = *this;
       FloatComplex *tmp_data = retval.fortran_vec ();
 
-      Array<FloatComplex> z(1, 1);
+      Array<FloatComplex> z (dim_vector (1, 1));
       octave_idx_type lwork = -1;
 
       // Query the optimum work array size.
@@ -1103,7 +1104,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
           // Now calculate the condition number for non-singular matrix.
           octave_idx_type zgecon_info = 0;
           char job = '1';
-          Array<float> rz (2 * nc, 1);
+          Array<float> rz (dim_vector (2 * nc, 1));
           float *prz = rz.fortran_vec ();
           F77_XFCN (cgecon, CGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                      nc, tmp_data, nr, anorm, 
@@ -1339,7 +1340,7 @@ FloatComplexMatrix::fourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1380,7 +1381,7 @@ FloatComplexMatrix::ifourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1424,7 +1425,7 @@ FloatComplexMatrix::fourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1446,7 +1447,7 @@ FloatComplexMatrix::fourier2d (void) const
   wsave.resize (nn, 1);
   pwsave = wsave.fortran_vec ();
 
-  Array<FloatComplex> tmp (npts, 1);
+  Array<FloatComplex> tmp (dim_vector (npts, 1));
   FloatComplex *prow = tmp.fortran_vec ();
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
@@ -1490,7 +1491,7 @@ FloatComplexMatrix::ifourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<FloatComplex> wsave (nn, 1);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1515,7 +1516,7 @@ FloatComplexMatrix::ifourier2d (void) const
   wsave.resize (nn, 1);
   pwsave = wsave.fortran_vec ();
 
-  Array<FloatComplex> tmp (npts, 1);
+  Array<FloatComplex> tmp (dim_vector (npts, 1));
   FloatComplex *prow = tmp.fortran_vec ();
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
@@ -1612,9 +1613,9 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
             }
           else 
             {
-              Array<FloatComplex> z (2 * nc, 1);
+              Array<FloatComplex> z (dim_vector (2 * nc, 1));
               FloatComplex *pz = z.fortran_vec ();
-              Array<float> rz (nc, 1);
+              Array<float> rz (dim_vector (nc, 1));
               float *prz = rz.fortran_vec ();
 
               F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1636,7 +1637,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
 
       if (typ == MatrixType::Full)
         {
-          Array<octave_idx_type> ipvt (nr, 1);
+          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           FloatComplexMatrix atmp = *this;
@@ -1663,9 +1664,9 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
                 {
                   // Now calc the condition number for non-singular matrix.
                   char job = '1';
-                  Array<FloatComplex> z (2 * nc, 1);
+                  Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
-                  Array<float> rz (2 * nc, 1);
+                  Array<float> rz (dim_vector (2 * nc, 1));
                   float *prz = rz.fortran_vec ();
 
                   F77_XFCN (cgecon, CGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1728,9 +1729,9 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
           char uplo = 'U';
           char dia = 'N';
 
-          Array<FloatComplex> z (2 * nc, 1);
+          Array<FloatComplex> z (dim_vector (2 * nc, 1));
           FloatComplex *pz = z.fortran_vec ();
-          Array<float> rz (nc, 1);
+          Array<float> rz (dim_vector (nc, 1));
           float *prz = rz.fortran_vec ();
 
           F77_XFCN (ctrcon, CTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -1756,9 +1757,9 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
           char uplo = 'L';
           char dia = 'N';
 
-          Array<FloatComplex> z (2 * nc, 1);
+          Array<FloatComplex> z (dim_vector (2 * nc, 1));
           FloatComplex *pz = z.fortran_vec ();
-          Array<float> rz (nc, 1);
+          Array<float> rz (dim_vector (nc, 1));
           float *prz = rz.fortran_vec ();
 
           F77_XFCN (ctrcon, CTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -1802,9 +1803,9 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
                 }
               else 
                 {
-                  Array<FloatComplex> z (2 * nc, 1);
+                  Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
-                  Array<float> rz (nc, 1);
+                  Array<float> rz (dim_vector (nc, 1));
                   float *prz = rz.fortran_vec ();
 
                   F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -1822,16 +1823,16 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
             {
               octave_idx_type info = 0;
 
-              Array<octave_idx_type> ipvt (nr, 1);
+              Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if(anorm < 0.)
                 anorm = atmp.abs().sum().
                   row(static_cast<octave_idx_type>(0)).max();
 
-              Array<FloatComplex> z (2 * nc, 1);
+              Array<FloatComplex> z (dim_vector (2 * nc, 1));
               FloatComplex *pz = z.fortran_vec ();
-              Array<float> rz (2 * nc, 1);
+              Array<float> rz (dim_vector (2 * nc, 1));
               float *prz = rz.fortran_vec ();
 
               F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1903,9 +1904,9 @@ FloatComplexMatrix::utsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                   char uplo = 'U';
                   char dia = 'N';
 
-                  Array<FloatComplex> z (2 * nc, 1);
+                  Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
-                  Array<float> rz (nc, 1);
+                  Array<float> rz (dim_vector (nc, 1));
                   float *prz = rz.fortran_vec ();
 
                   F77_XFCN (ctrcon, CTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -2004,9 +2005,9 @@ FloatComplexMatrix::ltsolve (MatrixType &mattype, const FloatComplexMatrix& b,
                   char uplo = 'L';
                   char dia = 'N';
 
-                  Array<FloatComplex> z (2 * nc, 1);
+                  Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
-                  Array<float> rz (nc, 1);
+                  Array<float> rz (dim_vector (nc, 1));
                   float *prz = rz.fortran_vec ();
 
                   F77_XFCN (ctrcon, CTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
@@ -2112,9 +2113,9 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
             {
               if (calc_cond)
                 {
-                  Array<FloatComplex> z (2 * nc, 1);
+                  Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
-                  Array<float> rz (nc, 1);
+                  Array<float> rz (dim_vector (nc, 1));
                   float *prz = rz.fortran_vec ();
 
                   F77_XFCN (cpocon, CPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -2164,15 +2165,15 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
         {
           info = 0;
 
-          Array<octave_idx_type> ipvt (nr, 1);
+          Array<octave_idx_type> ipvt (dim_vector (nr, 1));
           octave_idx_type *pipvt = ipvt.fortran_vec ();
 
           FloatComplexMatrix atmp = *this;
           FloatComplex *tmp_data = atmp.fortran_vec ();
 
-          Array<FloatComplex> z (2 * nc, 1);
+          Array<FloatComplex> z (dim_vector (2 * nc, 1));
           FloatComplex *pz = z.fortran_vec ();
-          Array<float> rz (2 * nc, 1);
+          Array<float> rz (dim_vector (2 * nc, 1));
           float *prz = rz.fortran_vec ();
 
           // Calculate the norm of the matrix, for later use.
@@ -2619,13 +2620,13 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
       FloatComplex *tmp_data = atmp.fortran_vec ();
 
       FloatComplex *pretval = retval.fortran_vec ();
-      Array<float> s (minmn, 1);
+      Array<float> s (dim_vector (minmn, 1));
       float *ps = s.fortran_vec ();
 
       // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
-      Array<FloatComplex> work (1, 1);
+      Array<FloatComplex> work (dim_vector (1, 1));
 
       octave_idx_type smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("CGELSD", 6),
@@ -2660,13 +2661,13 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
                                     n*(1+nrhs) + 2*nrhs);
       if (lrwork < 1)
         lrwork = 1;
-      Array<float> rwork (lrwork, 1);
+      Array<float> rwork (dim_vector (lrwork, 1));
       float *prwork = rwork.fortran_vec ();
 
       octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (liwork, 1);
+      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
@@ -2816,13 +2817,13 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type&
       FloatComplex *tmp_data = atmp.fortran_vec ();
 
       FloatComplex *pretval = retval.fortran_vec ();
-      Array<float> s (minmn, 1);
+      Array<float> s (dim_vector (minmn, 1));
       float *ps = s.fortran_vec ();
 
       // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
-      Array<FloatComplex> work (1, 1);
+      Array<FloatComplex> work (dim_vector (1, 1));
 
       octave_idx_type smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("CGELSD", 6),
@@ -2849,13 +2850,13 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type&
         + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
-      Array<float> rwork (lrwork, 1);
+      Array<float> rwork (dim_vector (lrwork, 1));
       float *prwork = rwork.fortran_vec ();
 
       octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
       if (liwork < 1)
         liwork = 1;
-      Array<octave_idx_type> iwork (liwork, 1);
+      Array<octave_idx_type> iwork (dim_vector (liwork, 1));
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,

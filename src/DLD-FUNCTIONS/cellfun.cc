@@ -1188,8 +1188,8 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  NoAlias< Array<idx_vector> > ra_idx (1, std::max (nd, a.ndims ()),
-                                       idx_vector::colon);
+  NoAlias< Array<idx_vector> > ra_idx
+    (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
     {
@@ -1432,7 +1432,7 @@ do_cellslices_nda (const NDA& array,
         dim = dv.first_non_singleton ();
       ndims = std::max (ndims, dim + 1);
 
-      Array<idx_vector> idx (ndims, 1, idx_vector::colon);
+      Array<idx_vector> idx (dim_vector (ndims, 1), idx_vector::colon);
 
       for (octave_idx_type i = 0; i < n && ! error_state; i++)
         {

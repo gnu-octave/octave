@@ -74,7 +74,7 @@ public:
   {
     int n = str.length ();
 
-    Array<bool> retval (n, 1);
+    Array<bool> retval (dim_vector (n, 1));
 
     for (int i = 0; i < n; i++)
       retval(i) = match (str[i]);

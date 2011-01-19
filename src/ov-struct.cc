@@ -2081,7 +2081,7 @@ A(1)\n\
                 }
 
               octave_map map (rdv);
-              Array<idx_vector> ia (nd, 1, idx_vector::colon);
+              Array<idx_vector> ia (dim_vector (nd, 1), idx_vector::colon);
 
               for (octave_idx_type i = 0; i < ext; i++)
                 {

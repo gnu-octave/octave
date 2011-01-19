@@ -57,14 +57,14 @@ PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
     gripe_invalid_permutation ();
   else
     {
-      Array<octave_idx_type> idxa (len, 1);
+      Array<octave_idx_type> idxa (dim_vector (len, 1));
       for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
       Array<octave_idx_type>::operator = (idxa);
     }
 }
 
 PermMatrix::PermMatrix (octave_idx_type n)
-  : Array<octave_idx_type> (n, 1), _colp (false)
+  : Array<octave_idx_type> (dim_vector (n, 1)), _colp (false)
 {
   for (octave_idx_type i = 0; i < n; i++) xelem (i) = i;
 }
@@ -145,7 +145,7 @@ PermMatrix::power (octave_idx_type m) const
     return PermMatrix (n);
 
   const octave_idx_type *p = data ();
-  Array<octave_idx_type> res_pvec (n, 1, -1);
+  Array<octave_idx_type> res_pvec (dim_vector (n, 1), -1);
   octave_idx_type *q = res_pvec.fortran_vec ();
 
   for (octave_idx_type ics = 0; ics < n; ics++)
@@ -181,7 +181,7 @@ PermMatrix::power (octave_idx_type m) const
 PermMatrix
 PermMatrix::eye (octave_idx_type n)
 {
-  Array<octave_idx_type> p(n, 1);
+  Array<octave_idx_type> p (dim_vector (n, 1));
   for (octave_idx_type i = 0; i < n; i++)
     p(i) = i;
 
@@ -204,7 +204,7 @@ operator *(const PermMatrix& a, const PermMatrix& b)
     }
   else
     {
-      Array<octave_idx_type> ra (n, 1);
+      Array<octave_idx_type> ra (dim_vector (n, 1));
       if (a._colp)
         ra.assign (idx_vector (ib), ia);
       else

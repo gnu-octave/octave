@@ -67,27 +67,6 @@ Array<T>::Array (const Array<T>& a, const dim_vector& dv)
 }
 
 template <class T>
-Array<T>::Array (const Array<T>& a, octave_idx_type nr, octave_idx_type nc)
-  : dimensions (nr, nc), rep (a.rep),
-    slice_data (a.slice_data), slice_len (a.slice_len)
-{
-  if (dimensions.safe_numel () != a.numel ())
-    {
-      std::string dimensions_str = a.dimensions.str ();
-      std::string new_dims_str = dimensions.str ();
-
-      (*current_liboctave_error_handler)
-        ("reshape: can't reshape %s array to %s array",
-         dimensions_str.c_str (), new_dims_str.c_str ());
-    }
-
-  // This goes here because if an exception is thrown by the above,
-  // destructor will be never called.
-  rep->count++;
-  dimensions.chop_trailing_singletons ();
-}
-
-template <class T>
 void
 Array<T>::fill (const T& val)
 {
@@ -941,7 +920,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
                 {
                   static const octave_idx_type max_stack_chunk = 1024;
                   octave_idx_type nn = n + std::min (nx, max_stack_chunk);
-                  Array<T> tmp (Array<T> (nn, 1), dv, 0, n);
+                  Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
                   T *dest = tmp.fortran_vec ();
 
                   copy_or_memcpy (nx, data (), dest);
@@ -1044,7 +1023,7 @@ Array<T>::index (const idx_vector& i, bool resize_ok, const T& rfv) const
       if (n != nx)
         {
           if (i.is_scalar ())
-            return Array<T> (1, 1, rfv);
+            return Array<T> (dim_vector (1, 1), rfv);
           else
             tmp.resize1 (nx, rfv);
         }
@@ -1070,7 +1049,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
       if (r != rx || c != cx)
         {
           if (i.is_scalar () && j.is_scalar ())
-            return Array<T> (1, 1, rfv);
+            return Array<T> (dim_vector (1, 1), rfv);
           else
             tmp.resize (rx, cx, rfv);
         }
@@ -1100,7 +1079,7 @@ Array<T>::index (const Array<idx_vector>& ia,
           for (int i = 0; i < ial; i++) 
             all_scalars = all_scalars && ia(i).is_scalar ();
           if (all_scalars)
-            return Array<T> (1, 1, rfv);
+            return Array<T> (dim_vector (1, 1), rfv);
           else
             tmp.resize (dvx, rfv);
         }
@@ -1443,7 +1422,7 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
       else
         {
           // Use index.
-          Array<idx_vector> ia (ndims (), 1, idx_vector::colon);
+          Array<idx_vector> ia (dim_vector (ndims (), 1), idx_vector::colon);
           ia (dim) = i.complement (n);
           *this = index (ia);
         }
@@ -1498,7 +1477,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     assign (i, j, a);
   else
     {
-      Array<idx_vector> idx (a.ndims (), 1);
+      Array<idx_vector> idx (dim_vector (a.ndims (), 1));
       idx(0) = i;
       idx(1) = j;
       for (int k = 0; k < a.ndims (); k++)
@@ -1514,7 +1493,7 @@ Array<T>&
 Array<T>::insert (const Array<T>& a, const Array<octave_idx_type>& ra_idx)
 {
   octave_idx_type n = ra_idx.length ();
-  Array<idx_vector> idx (n, 1);
+  Array<idx_vector> idx (dim_vector (n, 1));
   const dim_vector dva = a.dims ().redim (n);
   for (octave_idx_type k = 0; k < n; k++)
     idx(k) = idx_vector (ra_idx (k), ra_idx (k) + dva(k));
@@ -2010,7 +1989,7 @@ Array<T>::sort_rows_idx (sortmode mode) const
 
   octave_idx_type r = rows (), c = cols ();
 
-  idx = Array<octave_idx_type> (r, 1);
+  idx = Array<octave_idx_type> (dim_vector (r, 1));
 
   lsort.sort_rows (data (), idx.fortran_vec (), r, c);
 
@@ -2594,7 +2573,7 @@ Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
     return retval;
 
   int nidx = std::max (dv.length (), dim + 1);
-  Array<idx_vector> idxa (nidx, 1, idx_vector::colon);
+  Array<idx_vector> idxa (dim_vector (nidx, 1), idx_vector::colon);
   octave_idx_type l = 0;
 
   for (octave_idx_type i = 0; i < n; i++)
@@ -2686,7 +2665,7 @@ operator << (std::ostream& os, const Array<T>& a)
     {
       os << "data:";
 
-      Array<octave_idx_type> ra_idx (n_dims, 1, 0);
+      Array<octave_idx_type> ra_idx (dim_vector (n_dims, 1), 0);
 
       // Number of times the first 2d-array is to be displayed.
 

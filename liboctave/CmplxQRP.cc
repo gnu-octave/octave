@@ -67,7 +67,7 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
   if (m > n && qr_type == qr_type_std)
     afact.resize (m, m);
 
-  MArray<octave_idx_type> jpvt (n, 1, 0);
+  MArray<octave_idx_type> jpvt (dim_vector (n, 1), 0);
 
   if (m > 0)
     {

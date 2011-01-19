@@ -140,7 +140,7 @@ regex_match::match (const string_vector& s)
 {
   int n = s.length ();
 
-  Array<bool> retval (n, 1);
+  Array<bool> retval (dim_vector (n, 1));
 
   for (int i = 0; i < n; i++)
     retval(i) = match (s[i]);

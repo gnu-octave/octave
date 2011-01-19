@@ -385,11 +385,11 @@ file.
 
 In order to get good help you first need to know the name of the command
 that you want to use.  This name of the function may not always be
-obvious, but a good place to start is to just type @code{help}.
-This will show you all the operators, reserved words, functions,
-built-in variables, and function files.  An alternative is to search the
-documentation using the @code{lookfor} function.  This function is
-described in @ref{Getting Help}.
+obvious, but a good place to start is to just type @code{help --list}.
+This will show you all the operators, keywords, built-in functions,
+and loadable functions available in the current session of Octave.  An
+alternative is to search the documentation using the @code{lookfor}
+function.  This function is described in @ref{Getting Help}.
 
 Once you know the name of the function you wish to use, you can get more
 help on the function by simply including the name as an argument to help.

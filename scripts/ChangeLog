@@ -1,5 +1,9 @@
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
+	* help/help.m: New option --list.
+
+2011-01-19  John W. Eaton  <jwe@octave.org>
+
 	* io/strread.m: Avoid PCRE-ism in regexp.  Bug #32066.
 
 2011-01-17  Rik  <octave@nomad.inbox5.com>

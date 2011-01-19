@@ -18,16 +18,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} help @var{name}
+## @deftypefn {Command} {} help @code{--list}
 ## Display the help text for @var{name}.
-## If invoked without any arguments, @code{help} displays instructions
+## If invoked without any arguments, @code{help} display instructions
 ## on how to access help from the command line.
-## 
+##
 ## For example, the command @kbd{help help} prints a short message
 ## describing the @code{help} command.
-## 
+##
+## Given the single argument @code{--list}, list all operators,
+## keywords, built-in functions, and loadable functions available
+## in the current session of Octave.
+##
 ## @deftypefnx {Function File} {@var{text} =} help (@var{name})
 ## Return the help text for the function, @var{name}.
-## 
+##
 ## The help command can give you information about operators, but not the
 ## comma and semicolons that are used as command separators.  To get help
 ## for those, you must type @kbd{help comma} or @kbd{help semicolon}.
@@ -55,6 +60,16 @@ function retval = help (name)
   For more information visit http://www.octave.org.\n\n");
 
   elseif (nargin == 1 && ischar (name))
+
+    if (strcmp (name, "--list"))
+      tmp = do_list_functions ();
+      if (nargout == 0)
+        printf ("%s", tmp);
+      else
+        retval = tmp;
+      endif
+      return;
+    endif
 
     ## Get help text
     [text, format] = get_help_text (name);
@@ -91,6 +106,34 @@ function retval = help (name)
   else
     error ("help: invalid input\n");
   endif
+
+endfunction
+
+function retval = do_list_functions ()
+
+  operators = sprintf ("*** operators:\n\n%s\n\n",
+                       list_in_columns (__operators__ ()));
+
+  keywords = sprintf ("*** keywords:\n\n%s\n\n",
+                      list_in_columns (__keywords__ ()));
+
+  builtins = sprintf ("*** builtins:\n\n%s\n\n",
+                      list_in_columns (__builtins__ ()));
+
+  dirs = strsplit (path, pathsep);
+  flist = "";
+  for i = 2:numel (dirs)
+    files = sort ({dir(fullfile (dirs{i}, "*.m")).name, ...
+                   dir(fullfile (dirs{i}, "*.oct")).name, ...
+                   dir(fullfile (dirs{i}, "*.mex")).name});
+
+    if (! isempty (files))
+      flist = sprintf ("%s*** functions in %s:\n\n%s\n\n",
+                       flist, dirs{i}, list_in_columns (files));
+    endif
+  endfor
+
+  retval = cstrcat (operators, keywords, builtins, flist);
 
 endfunction
 

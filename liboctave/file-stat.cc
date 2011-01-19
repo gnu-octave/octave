@@ -155,11 +155,9 @@ base_file_stat::is_sock (mode_t mode)
 std::string
 base_file_stat::mode_as_string (void) const
 {
-  char buf[11];
+  char buf[12];
 
   strmode (fs_mode, buf);
-
-  buf[10] = '\0';
 
   return std::string (buf);
 }

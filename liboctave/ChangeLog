@@ -1,3 +1,9 @@
+2011-01-19  John W. Eaton  <jwe@octave.org>
+
+	* file-stat.cc (mode_as_string): Declare buffer as an array of
+	12 characters, not 11.  Don't set buf[10] to '\0'; strmode
+	NUL-terminates the array.
+
 2011-01-14  David Grundberg  <individ@acc.umu.se>
 
 	* SparseQR.cc (SparseQR_rep::SparseQR_rep) [HAVE_CXSPARSE]:

@@ -1,3 +1,8 @@
+2011-01-19  John W. Eaton  <jwe@octave.org>
+
+	* oct-obj.cc (octave_value_list::all_scalars): Check for scalar
+	values, not strings.  Bug #32172.
+
 2011-01-17  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/module-files: Add quadcc.cc to list of files.

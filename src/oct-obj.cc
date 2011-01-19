@@ -179,11 +179,16 @@ octave_value_list::all_strings_p (void) const
 bool
 octave_value_list::all_scalars (void) const
 {
-  octave_idx_type n = length (), i;
+  octave_idx_type n = length ();
 
-  for (i = 0; i < n && elem (i).is_string (); i++) ;
+  for (octave_idx_type i = 0; i < n; i++)
+    {
+      dim_vector dv = elem(i).dims ();
+      if (! dv.all_ones ())
+        return false;
+    }
   
-  return i == n;
+  return true;
 }
 
 bool

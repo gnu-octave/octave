@@ -1,6 +1,6 @@
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
-	* help/help.m: New option --list.
+	* help/help.m: New option --list.  Bug #31905.
 
 2011-01-19  John W. Eaton  <jwe@octave.org>
 

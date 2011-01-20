@@ -48,9 +48,9 @@ class
 octave_base_sparse : public octave_base_value
 {
  public:
- 
+
   octave_base_sparse (void)
-    : octave_base_value (), matrix (), typ (MatrixType ()) 
+    : octave_base_value (), matrix (), typ (MatrixType ())
   { }
 
   octave_base_sparse (const T& a) : octave_base_value (), matrix (a),
@@ -60,14 +60,14 @@ octave_base_sparse : public octave_base_value
       matrix.resize (dim_vector (0, 0));
   }
 
-  octave_base_sparse (const T& a, const MatrixType& t) : octave_base_value (), 
+  octave_base_sparse (const T& a, const MatrixType& t) : octave_base_value (),
                                 matrix (a), typ (t)
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
-  octave_base_sparse (const octave_base_sparse& a) : 
+  octave_base_sparse (const octave_base_sparse& a) :
     octave_base_value (), matrix (a.matrix), typ (a.typ) { }
 
   ~octave_base_sparse (void) { }

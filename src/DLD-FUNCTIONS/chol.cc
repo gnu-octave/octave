@@ -48,7 +48,7 @@ template <class CHOLT>
 static octave_value
 get_chol_r (const CHOLT& fact)
 {
-  return octave_value (fact.chol_matrix (), 
+  return octave_value (fact.chol_matrix (),
                        MatrixType (MatrixType::Upper));
 }
 
@@ -56,7 +56,7 @@ template <class CHOLT>
 static octave_value
 get_chol_l (const CHOLT& fact)
 {
-  return octave_value (fact.chol_matrix ().transpose (), 
+  return octave_value (fact.chol_matrix ().transpose (),
                        MatrixType (MatrixType::Lower));
 }
 
@@ -138,7 +138,7 @@ sparse matrices.\n\
   bool LLt = false;
   bool vecout = false;
 
-  if (nargin < 1 || nargin > 3 || nargout > 3 
+  if (nargin < 1 || nargin > 3 || nargout > 3
       || (! args(0).is_sparse_type () && nargout > 2))
     {
       print_usage ();
@@ -168,7 +168,7 @@ sparse matrices.\n\
   if (! error_state)
     {
       octave_value arg = args(0);
-    
+
       octave_idx_type nr = arg.rows ();
       octave_idx_type nc = arg.columns ();
       bool natural = (nargout != 3);
@@ -226,7 +226,7 @@ sparse matrices.\n\
                       else
                         retval(2) = fact.Q();
                     }
-          
+
                   if (nargout > 1 || info == 0)
                     {
                       retval(1) = fact.P();
@@ -364,7 +364,7 @@ symmetric positive definite matrix @var{A}.\n\
   if (nargin == 1)
     {
       octave_value arg = args(0);
-    
+
       octave_idx_type nr = arg.rows ();
       octave_idx_type nc = arg.columns ();
 
@@ -517,7 +517,7 @@ using @code{inv}.\n\
   if (nargin == 1)
     {
       octave_value arg = args(0);
-    
+
       octave_idx_type nr = arg.rows ();
       octave_idx_type nc = arg.columns ();
 
@@ -741,7 +741,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!       -0.131721   0.738529   0.019851  -0.140295 ;
 %!        0.124120   0.019851   0.354879  -0.059472 ;
 %!       -0.061673  -0.140295  -0.059472   0.600939 ];
-%! 
+%!
 %! u = [  0.98950 ;
 %!        0.39844 ;
 %!        0.63484 ;
@@ -750,7 +750,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!        -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
 %!         0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
 %!        -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
-%! 
+%!
 %! uc = [ 0.54267 + 0.91519i ;
 %!        0.99647 + 0.43141i ;
 %!        0.83760 + 0.68977i ;
@@ -760,53 +760,53 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
 %!test
 %! R = chol(A);
-%! 
+%!
 %! R1 = cholupdate(R,u);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - R'*R - u*u',Inf) < 1e1*eps)
-%! 
+%!
 %! R1 = cholupdate(R1,u,"-");
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 1e1*eps)
-%! 
+%!
 %!test
 %! R = chol(Ac);
-%! 
+%!
 %! R1 = cholupdate(R,uc);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - R'*R - uc*uc',Inf) < 1e1*eps)
-%! 
+%!
 %! R1 = cholupdate(R1,uc,"-");
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 1e1*eps)
 
 %!test
 %! R = chol(single(A));
-%! 
+%!
 %! R1 = cholupdate(R,single(u));
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - R'*R - single(u*u'),Inf) < 1e1*eps('single'))
-%! 
+%!
 %! R1 = cholupdate(R1,single(u),"-");
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 2e1*eps('single'))
-%! 
+%!
 %!test
 %! R = chol(single(Ac));
-%! 
+%!
 %! R1 = cholupdate(R,single(uc));
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - R'*R - single(uc*uc'),Inf) < 1e1*eps('single'))
-%! 
+%!
 %! R1 = cholupdate(R1,single(uc),"-");
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 2e1*eps('single'))
 */
@@ -943,13 +943,13 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!         0.45266 ];
 %!
 %! R = chol(A);
-%! 
+%!
 %! j = 3; p = [1:j-1, j+1:5];
 %! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(A1(p,p) - A,Inf) < 1e1*eps)
-%! 
+%!
 %!test
 %! u2 = [  0.35080  + 0.04298i;
 %!         0.63930  + 0.23778i;
@@ -958,13 +958,13 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!         0.45266  + 0.50020i];
 %!
 %! R = chol(Ac);
-%! 
+%!
 %! j = 3; p = [1:j-1, j+1:5];
 %! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(A1(p,p) - Ac,Inf) < 1e1*eps)
-%! 
+%!
 
 %!test
 %! u2 = single ([  0.35080 ;
@@ -974,13 +974,13 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!                 0.45266 ]);
 %!
 %! R = chol(single(A));
-%! 
+%!
 %! j = 3; p = [1:j-1, j+1:5];
 %! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(A1(p,p) - A,Inf) < 1e1*eps('single'))
-%! 
+%!
 %!test
 %! u2 = single ([  0.35080  + 0.04298i;
 %!                 0.63930  + 0.23778i;
@@ -989,13 +989,13 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!                 0.45266  + 0.50020i]);
 %!
 %! R = chol(single(Ac));
-%! 
+%!
 %! j = 3; p = [1:j-1, j+1:5];
 %! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(A1(p,p) - single(Ac),Inf) < 2e1*eps('single'))
-%! 
+%!
 */
 
 DEFUN_DLD (choldelete, args, ,
@@ -1096,37 +1096,37 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 /*
 %!test
 %! R = chol(A);
-%! 
+%!
 %! j = 3; p = [1:j-1,j+1:4];
 %! R1 = choldelete(R,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
-%! 
+%!
 %!test
 %! R = chol(Ac);
-%! 
+%!
 %! j = 3; p = [1:j-1,j+1:4];
 %! R1 = choldelete(R,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
 
 %!test
 %! R = chol(single(A));
-%! 
+%!
 %! j = 3; p = [1:j-1,j+1:4];
 %! R1 = choldelete(R,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
-%! 
+%!
 %!test
 %! R = chol(single(Ac));
-%! 
+%!
 %! j = 3; p = [1:j-1,j+1:4];
 %! R1 = choldelete(R,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */
@@ -1170,7 +1170,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
           if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
             {
 
-              if (argr.is_single_type () && argi.is_single_type () && 
+              if (argr.is_single_type () && argi.is_single_type () &&
                   argj.is_single_type ())
                 {
                   if (argr.is_real_type ())
@@ -1237,61 +1237,61 @@ triangular, return the Cholesky@tie{}factorization of\n\
 /*
 %!test
 %! R = chol(A);
-%! 
+%!
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
-%! 
+%!
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
-%! 
+%!
 %!test
 %! R = chol(Ac);
-%! 
+%!
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
-%! 
+%!
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
 
 %!test
 %! R = chol(single(A));
-%! 
+%!
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
-%! 
+%!
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
-%! 
+%!
 %!test
 %! R = chol(single(Ac));
-%! 
+%!
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
-%! 
+%!
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift(R,i,j);
-%! 
+%!
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */

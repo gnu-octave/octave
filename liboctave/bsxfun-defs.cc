@@ -113,7 +113,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
         {
           octave_quit ();
 
-          // Compute indices. 
+          // Compute indices.
           // FIXME: performance impact noticeable?
           octave_idx_type xidx = cdvx.cum_compute_index (idx);
           octave_idx_type yidx = cdvy.cum_compute_index (idx);

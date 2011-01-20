@@ -34,18 +34,18 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
 #endif
 
-// Each chunk will be at least this big. 
-const size_t octave_chunk_buffer::chunk_size = 
+// Each chunk will be at least this big.
+const size_t octave_chunk_buffer::chunk_size =
   static_cast<size_t> (OCTAVE_LOCBUF_CHUNKSIZE_MB) << 20;
 
 char *octave_chunk_buffer::top = 0, *octave_chunk_buffer::chunk = 0;
 size_t octave_chunk_buffer::left = 0;
 
-octave_chunk_buffer::octave_chunk_buffer (size_t size) : cnk (0), dat (0) 
+octave_chunk_buffer::octave_chunk_buffer (size_t size) : cnk (0), dat (0)
 {
   // Alignment mask. The size of double or long int, whichever is greater.
   // All data will be aligned to this size. If it's not enough for a type,
-  // that type should not be declared as POD. 
+  // that type should not be declared as POD.
   static const size_t align_mask = (sizeof (long) < sizeof (double)
                                     ? sizeof (double)
                                     : sizeof (long)) - 1;

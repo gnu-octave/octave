@@ -405,8 +405,8 @@ w32_sigint_handler (DWORD sig)
 
   switch(sig)
     {
-      case CTRL_BREAK_EVENT:   
-        sig_name = "Ctrl-Break"; 
+      case CTRL_BREAK_EVENT:
+        sig_name = "Ctrl-Break";
         break;
       case CTRL_C_EVENT:
         sig_name = "Ctrl-C";
@@ -443,7 +443,7 @@ w32_sigint_handler (DWORD sig)
         break;
     }
 
-  // Return TRUE if the event was handled, or FALSE if another handler 
+  // Return TRUE if the event was handled, or FALSE if another handler
   // should be called.
   // FIXME check that windows terminates the thread.
   return TRUE;
@@ -467,7 +467,7 @@ octave_catch_interrupts (void)
 #ifdef USE_W32_SIGINT
 
   // Intercept windows console control events.
-  // Note that the windows console signal handlers chain, so if 
+  // Note that the windows console signal handlers chain, so if
   // install_signal_handlers is called more than once in the same program,
   // then first call the following to avoid duplicates:
   //

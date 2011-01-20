@@ -2,7 +2,7 @@
 
 Copyright (C) 1993-2011 John W. Eaton
 Copyright (C) 2009 VZLU Prague
-  
+
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it
@@ -397,7 +397,7 @@ public:
 
     symbol_record (const symbol_record& sr)
       : rep (sr.rep)
-    { 
+    {
       rep->count++;
     }
 
@@ -530,7 +530,7 @@ public:
       fcn_info_rep (const std::string& nm)
         : name (nm), subfunctions (), private_functions (),
           class_constructors (), class_methods (), dispatch_map (),
-          cmdline_function (), autoload_function (), function_on_path (), 
+          cmdline_function (), autoload_function (), function_on_path (),
           built_in_function (), count (1) { }
 
       octave_value load_private_function (const std::string& dir_name);
@@ -583,7 +583,7 @@ public:
         return p == subfunctions.end ()
           ? std::pair<std::string, octave_value> ()
           : std::pair<std::string, octave_value> (name, p->second);
-      }      
+      }
 
       void erase_subfunction (scope_id scope)
       {
@@ -739,7 +739,7 @@ public:
       : rep (new fcn_info_rep (nm)) { }
 
     fcn_info (const fcn_info& fi) : rep (fi.rep)
-    { 
+    {
       rep->count++;
     }
 
@@ -819,7 +819,7 @@ public:
     subfunction_defined_in_scope (scope_id scope = xcurrent_scope) const
     {
       return rep->subfunction_defined_in_scope (scope);
-    }        
+    }
 
     void erase_subfunction (scope_id scope)
     {
@@ -855,9 +855,9 @@ public:
     void clear (void) { rep->clear (); }
 
     void clear_user_function (void) { rep->clear_user_function (); }
-    
+
     void clear_autoload_function (void) { rep->clear_autoload_function (); }
-    
+
     void clear_mex_function (void) { rep->clear_mex_function (); }
 
     void add_dispatch (const std::string& type, const std::string& fname)
@@ -1039,7 +1039,7 @@ public:
 
   // Find a value corresponding to the given name in the table.
   static octave_value
-  find (const std::string& name, 
+  find (const std::string& name,
         const octave_value_list& args = octave_value_list (),
         bool skip_variables = false,
         bool local_funcs = true);
@@ -1192,7 +1192,7 @@ public:
   }
 
   static octave_value
-  find_function (const std::string& name, 
+  find_function (const std::string& name,
                  const octave_value_list& args = octave_value_list (),
                  bool local_funcs = true);
 
@@ -1297,7 +1297,7 @@ public:
   static void clear_all (void)
   {
     clear_variables ();
-    
+
     clear_global_pattern ("*");
 
     clear_functions ();
@@ -1454,7 +1454,7 @@ public:
                                       const std::string& inf_class);
 
   static bool is_superiorto (const std::string& a, const std::string& b);
-    
+
   static void alias_built_in_function (const std::string& alias,
                                        const std::string& name)
   {
@@ -1701,7 +1701,7 @@ public:
     return retval;
   }
 
-  static std::list<symbol_record> regexp_variables 
+  static std::list<symbol_record> regexp_variables
     (const string_vector& patterns)
   {
     std::list<symbol_record> retval;
@@ -1824,14 +1824,14 @@ public:
     for (fcn_table_iterator p = fcn_table.begin ();
          p != fcn_table.end (); p++)
       p->second.lock_subfunction (scope);
-  }    
+  }
 
   static void unlock_subfunctions (scope_id scope = xcurrent_scope)
   {
     for (fcn_table_iterator p = fcn_table.begin ();
          p != fcn_table.end (); p++)
       p->second.unlock_subfunction (scope);
-  }    
+  }
 
   static void free_scope (scope_id scope)
   {
@@ -1875,7 +1875,7 @@ public:
       assert (scope != xtop_scope && scope != xglobal_scope);
       symbol_table *inst = get_instance (scope);
       // FIXME: normally, functions should not usurp each other's scope.
-      // If for any incredible reason this is needed, call 
+      // If for any incredible reason this is needed, call
       // set_user_function (0, scope) first.
       assert (inst->curr_fcn == 0 || curr_fcn == 0);
       inst->curr_fcn = curr_fcn;
@@ -2230,7 +2230,7 @@ private:
       }
 
 
-    for (global_table_iterator q = global_table.begin (); 
+    for (global_table_iterator q = global_table.begin ();
          q != global_table.end ();)
       {
         if (pattern.match (q->first))

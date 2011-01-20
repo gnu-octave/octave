@@ -230,27 +230,27 @@ octave_matrix::bool_array_value (bool warn) const
 
   return boolNDArray (matrix);
 }
-  
+
 charNDArray
 octave_matrix::char_array_value (bool) const
 {
   charNDArray retval (dims ());
 
   octave_idx_type nel = numel ();
-  
+
   for (octave_idx_type i = 0; i < nel; i++)
     retval.elem (i) = static_cast<char>(matrix.elem (i));
 
   return retval;
 }
-  
-SparseMatrix 
+
+SparseMatrix
 octave_matrix::sparse_matrix_value (bool) const
 {
   return SparseMatrix (matrix.matrix_value ());
 }
 
-SparseComplexMatrix 
+SparseComplexMatrix
 octave_matrix::sparse_complex_matrix_value (bool) const
 {
   // FIXME Need a SparseComplexMatrix (Matrix) constructor to make
@@ -263,7 +263,7 @@ octave_value
 octave_matrix::diag (octave_idx_type k) const
 {
   octave_value retval;
-  if (k == 0 && matrix.ndims () == 2 
+  if (k == 0 && matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     retval = DiagMatrix (DiagArray2<double> (matrix));
   else
@@ -274,7 +274,7 @@ octave_matrix::diag (octave_idx_type k) const
 
 // We override these two functions to allow reshaping both
 // the matrix and the index cache.
-octave_value 
+octave_value
 octave_matrix::reshape (const dim_vector& new_dims) const
 {
   if (idx_cache)
@@ -287,7 +287,7 @@ octave_matrix::reshape (const dim_vector& new_dims) const
     return octave_base_matrix<NDArray>::reshape (new_dims);
 }
 
-octave_value 
+octave_value
 octave_matrix::squeeze (void) const
 {
   if (idx_cache)
@@ -300,7 +300,7 @@ octave_matrix::squeeze (void) const
     return octave_base_matrix<NDArray>::squeeze ();
 }
 
-octave_value 
+octave_value
 octave_matrix::sort (octave_idx_type dim, sortmode mode) const
 {
   if (idx_cache)
@@ -313,7 +313,7 @@ octave_matrix::sort (octave_idx_type dim, sortmode mode) const
     return octave_base_matrix<NDArray>::sort (dim, mode);
 }
 
-octave_value 
+octave_value
 octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
                      sortmode mode) const
 {
@@ -327,7 +327,7 @@ octave_matrix::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     return octave_base_matrix<NDArray>::sort (sidx, dim, mode);
 }
 
-sortmode 
+sortmode
 octave_matrix::is_sorted (sortmode mode) const
 {
   if (idx_cache)
@@ -339,7 +339,7 @@ octave_matrix::is_sorted (sortmode mode) const
   else
     return octave_base_matrix<NDArray>::is_sorted (mode);
 }
-Array<octave_idx_type> 
+Array<octave_idx_type>
 octave_matrix::sort_rows_idx (sortmode mode) const
 {
   if (idx_cache)
@@ -352,7 +352,7 @@ octave_matrix::sort_rows_idx (sortmode mode) const
     return octave_base_matrix<NDArray>::sort_rows_idx (mode);
 }
 
-sortmode 
+sortmode
 octave_matrix::is_sorted_rows (sortmode mode) const
 {
   if (idx_cache)
@@ -414,7 +414,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-bool 
+bool
 octave_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
@@ -432,7 +432,7 @@ octave_matrix::save_ascii (std::ostream& os)
     }
   else
     {
-      // Keep this case, rather than use generic code above for backward 
+      // Keep this case, rather than use generic code above for backward
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
@@ -443,7 +443,7 @@ octave_matrix::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_matrix::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -520,7 +520,7 @@ octave_matrix::load_ascii (std::istream& is)
               else
                 panic_impossible ();
             }
-          else 
+          else
             {
               error ("load: failed to extract number of rows and columns");
               success = false;
@@ -538,7 +538,7 @@ octave_matrix::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
 
@@ -580,7 +580,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -669,7 +669,7 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
     hdims[i] = dv (rank-i-1);
- 
+
   space_hid = H5Screate_simple (rank, hdims, 0);
 
   if (space_hid < 0) return false;
@@ -697,12 +697,12 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
           = save_type_to_hdf5 (get_save_type (max_val, min_val));
     }
 #endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
- 
+
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -741,7 +741,7 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-  
+
   if (rank < 1)
     {
       H5Sclose (space_id);
@@ -770,8 +770,8 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   NDArray m (dv);
   double *re = m.fortran_vec ();
-  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
-               H5P_DEFAULT, re) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+               H5P_DEFAULT, re) >= 0)
     {
       retval = true;
       matrix = m;

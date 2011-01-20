@@ -110,10 +110,10 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       return retval;
     }
 
-  bool isfloat = args(0).is_single_type () || 
-    (! AEPcase && args(1).is_single_type()); 
+  bool isfloat = args(0).is_single_type () ||
+    (! AEPcase && args(1).is_single_type());
 
-  bool complex_case = (args(0).is_complex_type () || 
+  bool complex_case = (args(0).is_complex_type () ||
                        (! AEPcase && args(1).is_complex_type ()));
 
   // Extract argument 1 parameter for both AEP and GEP.
@@ -142,7 +142,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
   // Treat AEP/GEP cases.
   if (AEPcase)
-    {  
+    {
       // Algebraic eigenvalue problem.
       bool noperm = false, noscal = false;
       if (nargin > 1)

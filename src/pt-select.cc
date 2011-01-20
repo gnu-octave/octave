@@ -185,7 +185,7 @@ tree_switch_case_list::dup (symbol_table::scope_id scope,
 
       new_scl->append (elt ? elt->dup (scope, context) : 0);
     }
-  
+
   return new_scl;
 }
 

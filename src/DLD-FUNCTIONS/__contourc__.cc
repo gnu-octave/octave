@@ -194,7 +194,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
   next_r = r;
 
   if (stop_edge == 0)
-    next_r--; 
+    next_r--;
   else if (stop_edge == 1)
     next_c++;
   else if (stop_edge == 2)

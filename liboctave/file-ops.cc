@@ -651,7 +651,7 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
   msg = std::string ();
 
   std::string retval;
-  
+
   const char *pdir = dir.empty () ? 0 : dir.c_str ();
 
   const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();

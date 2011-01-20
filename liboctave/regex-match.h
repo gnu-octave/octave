@@ -42,7 +42,7 @@ regex_match
 {
 public:
 
-  regex_match (const std::string& p, bool insen = false) 
+  regex_match (const std::string& p, bool insen = false)
     : pat (p), case_insen (insen)
 #if HAVE_REGEX
       , compiled (0)
@@ -51,7 +51,7 @@ public:
       init ();
     }
 
-  regex_match (const string_vector& p = string_vector (), bool insen = false) 
+  regex_match (const string_vector& p = string_vector (), bool insen = false)
     : pat (p), case_insen (insen)
 #if HAVE_REGEX
       , compiled (0)
@@ -60,7 +60,7 @@ public:
       init ();
     }
 
-  regex_match (const regex_match& gm) 
+  regex_match (const regex_match& gm)
     : pat (gm.pat), case_insen (gm.case_insen)
 #if HAVE_REGEX
       , compiled (0)

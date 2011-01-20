@@ -51,10 +51,10 @@ public:
   opengl_renderer (void)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
     zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir () 
+    camera_pos (), camera_dir ()
 #if HAVE_FREETYPE
     , text_renderer ()
-#endif 
+#endif
   { }
 
   virtual ~opengl_renderer (void) { }
@@ -114,14 +114,14 @@ protected:
                               double x, double y, double z,
                               int halign, int valign, double rotation = 0.0);
 
-  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
+  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data);
 
 private:
-  opengl_renderer (const opengl_renderer&) 
+  opengl_renderer (const opengl_renderer&)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
     zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-    camera_pos (), camera_dir () 
+    camera_pos (), camera_dir ()
 #if HAVE_FREETYPE
     , text_renderer ()
 #endif

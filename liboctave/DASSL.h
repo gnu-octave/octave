@@ -54,12 +54,12 @@ public:
 
   Matrix do_integrate (const ColumnVector& tout);
 
-  Matrix do_integrate (const ColumnVector& tout, const ColumnVector& tcrit); 
+  Matrix do_integrate (const ColumnVector& tout, const ColumnVector& tcrit);
 
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out);
 
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
-                    const ColumnVector& tcrit); 
+                    const ColumnVector& tcrit);
 
   std::string error_message (void) const;
 
@@ -67,7 +67,7 @@ private:
 
   bool initialized;
 
-  octave_idx_type liw;  
+  octave_idx_type liw;
   octave_idx_type lrw;
 
   Array<octave_idx_type> info;

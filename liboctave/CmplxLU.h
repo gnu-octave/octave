@@ -41,7 +41,7 @@ public:
   ComplexLU (const ComplexLU& a)
     : base_lu <ComplexMatrix> (a) { }
 
-  ComplexLU (const ComplexMatrix& l, const ComplexMatrix& u, 
+  ComplexLU (const ComplexMatrix& l, const ComplexMatrix& u,
              const PermMatrix& p)
     : base_lu <ComplexMatrix> (l, u, p) { }
 

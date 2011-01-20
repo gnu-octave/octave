@@ -39,7 +39,7 @@ public:
 
   FloatLU (const FloatLU& a) : base_lu <FloatMatrix> (a) { }
 
-  FloatLU (const FloatMatrix& l, const FloatMatrix& u, 
+  FloatLU (const FloatMatrix& l, const FloatMatrix& u,
            const PermMatrix& p)
     : base_lu <FloatMatrix> (l, u, p) { }
 

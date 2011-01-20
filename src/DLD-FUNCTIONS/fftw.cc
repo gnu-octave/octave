@@ -132,7 +132,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
         {
           // Use STL function to convert to lower case
           std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
-          
+
           if (nargin == 2)
             {
               std::string arg1 = args(1).string_value ();
@@ -140,7 +140,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                 {
                   if (arg0 == "planner")
                     {
-                      std::transform (arg1.begin (), arg1.end (), 
+                      std::transform (arg1.begin (), arg1.end (),
                                       arg1.begin (), tolower);
                       octave_fftw_planner::FftwMethod meth
                         = octave_fftw_planner::UNKNOWN;
@@ -228,7 +228,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
             {
               if (arg0 == "planner")
                 {
-                  octave_fftw_planner::FftwMethod meth = 
+                  octave_fftw_planner::FftwMethod meth =
                     octave_fftw_planner::method ();
 
                   if (meth == octave_fftw_planner::MEASURE)

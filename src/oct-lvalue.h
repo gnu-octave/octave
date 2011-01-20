@@ -37,12 +37,12 @@ octave_lvalue
 public:
 
   octave_lvalue (octave_value *v = 0)
-    : val (v), type (), idx (), nel (1) 
+    : val (v), type (), idx (), nel (1)
     { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : val (vr.val), type (vr.type), idx (vr.idx), nel (vr.nel) 
-    { 
+    : val (vr.val), type (vr.type), idx (vr.idx), nel (vr.nel)
+    {
     }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
@@ -68,10 +68,10 @@ public:
 
   bool is_map (void) const { return val && val->is_map (); }
 
-  void define (const octave_value& v) 
-    { 
+  void define (const octave_value& v)
+    {
       if (val)
-        *val = v; 
+        *val = v;
     }
 
   void assign (octave_value::assign_op, const octave_value&);

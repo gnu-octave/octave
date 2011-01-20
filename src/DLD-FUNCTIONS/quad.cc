@@ -326,7 +326,7 @@ cannot be called recursively.\n\
             case 3:
               if (indefinite)
                 {
-                  FloatIndefQuad iq (quad_float_user_function, bound, 
+                  FloatIndefQuad iq (quad_float_user_function, bound,
                                      indef_type);
                   iq.set_options (quad_opts);
                   val = iq.float_integrate (ier, nfun, abserr);
@@ -478,15 +478,15 @@ cannot be called recursively.\n\
 
 /*
 
-%!function y = f (x) 
+%!function y = f (x)
 %! y = x + 1;
 %!test
 %! [v, ier, nfun, err] = quad ("f", 0, 5);
-%! assert(ier == 0 && abs (v - 17.5) < sqrt (eps) && nfun > 0 && 
+%! assert(ier == 0 && abs (v - 17.5) < sqrt (eps) && nfun > 0 &&
 %!        err < sqrt (eps))
 %!test
 %! [v, ier, nfun, err] = quad ("f", single(0), single(5));
-%! assert(ier == 0 && abs (v - 17.5) < sqrt (eps ("single")) && nfun > 0 && 
+%! assert(ier == 0 && abs (v - 17.5) < sqrt (eps ("single")) && nfun > 0 &&
 %!        err < sqrt (eps ("single")))
 
 %!function y = f (x)

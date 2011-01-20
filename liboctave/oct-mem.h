@@ -78,16 +78,16 @@ inline void fill_or_memset (size_t n, const T& value, T *dest)
 
 template <class T>
 inline bool helper_is_zero_mem (const T& value)
-{ 
+{
   typedef typename query_integer_type<sizeof (T), false>::type IT; // get integer type of the same size.
-  return *(reinterpret_cast<const IT *>(&value)) == 0; 
+  return *(reinterpret_cast<const IT *>(&value)) == 0;
 }
 
 template <class T>
 inline bool helper_is_zero_mem (const std::complex<T>& value)
 {
-  return (helper_is_zero_mem (value.real ()) 
-          && helper_is_zero_mem (value.imag ())); 
+  return (helper_is_zero_mem (value.real ())
+          && helper_is_zero_mem (value.imag ()));
 }
 
 template <class T>
@@ -124,11 +124,11 @@ DEFINE_POD_FILL (octave_int<T>)
 // Memory allocated by octave_new should be freed by octave_delete.
 template <class T>
 inline T *no_ctor_new (size_t n)
-{ 
+{
   // Some systems let us allocate > 2GB memory even though size_t, which is either
   // buggy or completely cuckoo, so let's check here to stay safe.
   safe_size_comp (n, sizeof (T));
-  return new T[n]; 
+  return new T[n];
 }
 template <class T>
 inline void no_ctor_delete (T *ptr)

@@ -127,7 +127,7 @@ octave_shlib
 get_current_shlib (void)
 {
   octave_shlib retval;
-  
+
   octave_function *curr_fcn = octave_call_stack::current ();
   if (curr_fcn)
     {

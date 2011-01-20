@@ -88,12 +88,12 @@ octave_diag_matrix::do_index_op (const octave_value_list& idx,
 
   // This hack is to allow constructing permutation matrices using
   // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
-  // vectors. 
+  // vectors.
   if (! resize_ok && idx.length () == 2 && matrix.is_multiple_of_identity (1))
     {
       idx_vector idx0 = idx(0).index_vector ();
       idx_vector idx1 = idx(1).index_vector ();
-      
+
       if (! error_state)
         {
           bool left = idx0.is_permutation (matrix.rows ());
@@ -173,7 +173,7 @@ octave_diag_matrix::map (unary_mapper_t umap) const
     }
 }
 
-bool 
+bool
 octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
 
@@ -206,7 +206,7 @@ octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_diag_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -233,8 +233,8 @@ octave_diag_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool 
-octave_diag_matrix::chk_valid_scalar (const octave_value& val, 
+bool
+octave_diag_matrix::chk_valid_scalar (const octave_value& val,
                                       double& x) const
 {
   bool retval = val.is_real_scalar ();

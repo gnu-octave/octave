@@ -64,7 +64,7 @@ select_dig (const Complex& a)
 }
 
 octave_idx_type
-ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord, 
+ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
                     bool calc_unitary)
 {
   octave_idx_type a_nr = a.rows ();

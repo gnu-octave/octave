@@ -92,7 +92,7 @@ c_file_ptr_buf::int_type
 c_file_ptr_buf::pbackfail (int_type c)
 {
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? ungetc (c, f) : 
+  return (c != traits_type::eof () && f) ? ungetc (c, f) :
     traits_type::not_eof (c);
 #else
   return (c != EOF && f) ? ungetc (c, f) : EOF;
@@ -149,7 +149,7 @@ std::streampos
 c_file_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
   // FIXME
-#if 0  
+#if 0
   if (f)
     {
       fseek (f, offset, SEEK_SET);
@@ -252,7 +252,7 @@ c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::pbackfail (int_type c)
 {
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? gzungetc (c, f) : 
+  return (c != traits_type::eof () && f) ? gzungetc (c, f) :
     traits_type::not_eof (c);
 #else
   return (c != EOF && f) ? gzungetc (c, f) : EOF;
@@ -300,7 +300,7 @@ std::streampos
 c_zfile_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
   // FIXME
-#if 0  
+#if 0
   if (f)
     {
       gzseek (f, offset, SEEK_SET);

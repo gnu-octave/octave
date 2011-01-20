@@ -83,7 +83,7 @@ octave_user_script::octave_user_script (const std::string& fnm,
 octave_user_script::octave_user_script (const std::string& fnm,
                                         const std::string& nm,
                                         const std::string& ds)
-  : octave_user_code (nm, ds), cmd_list (0), file_name (fnm), 
+  : octave_user_code (nm, ds), cmd_list (0), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (-1)
@@ -462,7 +462,7 @@ octave_user_function::do_multi_index_op (int nargout,
       octave_call_stack::backtrace_error_message ();
       return retval;
     }
-  
+
   // Copy return values out.
 
   if (ret_list && ! special_expr)
@@ -569,7 +569,7 @@ octave_user_function::bind_automatic_vars
 
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
-  
+
   if (lvalue_list)
     {
       octave_idx_type nbh = 0;

@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ov_type_conv_h)
 #define octave_ov_type_conv_h 1
 
-static 
+static
 octave_value
 octave_type_conv_body (const octave_value &arg, const std::string& name, int t_result)
 {
@@ -38,7 +38,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
     {
       octave_base_value::type_conv_fcn cf1
         = octave_value_typeinfo::lookup_type_conv_op (t_arg, t_result);
-       
+
       if (cf1)
         {
           octave_base_value *tmp (cf1 (*(arg.internal_rep ())));
@@ -71,7 +71,7 @@ octave_type_conv_body (const octave_value &arg, const std::string& name, int t_r
 
   return retval;
 }
-                         
+
 
 #define OCTAVE_TYPE_CONV_BODY3(NAME, MATRIX_RESULT_T, SCALAR_RESULT_T) \
  \

@@ -55,7 +55,7 @@ public:
 
   explicit DiagMatrix (const Array<double>& a) : MDiagArray2<double> (a) { }
 
-  DiagMatrix (const Array<double>& a, octave_idx_type r, octave_idx_type c) 
+  DiagMatrix (const Array<double>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<double> (a, r, c) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
@@ -75,7 +75,7 @@ public:
   DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
   DiagMatrix transpose (void) const { return MDiagArray2<double>::transpose(); }
-  DiagMatrix abs (void) const; 
+  DiagMatrix abs (void) const;
 
   friend OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);
   friend OCTAVE_API DiagMatrix imag (const ComplexDiagMatrix& a);

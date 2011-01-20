@@ -138,7 +138,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
   return retval;
 }
 
-octave_value 
+octave_value
 octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
 {
   charNDArray retval (matrix);
@@ -267,7 +267,7 @@ octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) con
                          current_print_indent_level (), true);
 }
 
-bool 
+bool
 octave_char_matrix_str::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
@@ -304,7 +304,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_char_matrix_str::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -406,12 +406,12 @@ octave_char_matrix_str::load_ascii (std::istream& is)
                     }
                   else
                     {
-                      error ("load: failed to extract string length for element %d", 
+                      error ("load: failed to extract string length for element %d",
                              i+1);
                       success = false;
                     }
                 }
-          
+
               if (! error_state)
                 matrix = chm;
             }
@@ -424,10 +424,10 @@ octave_char_matrix_str::load_ascii (std::istream& is)
       else if (kw == "length")
         {
           int len = val;
-      
+
           if (len >= 0)
             {
-              // This is cruft for backward compatiability, 
+              // This is cruft for backward compatiability,
               // but relatively harmless.
 
               // Use this instead of a C-style character buffer so
@@ -460,7 +460,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_char_matrix_str::save_binary (std::ostream& os,
                                      bool& /* save_as_floats */)
 {
@@ -482,7 +482,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
   return true;
 }
 
-bool 
+bool
 octave_char_matrix_str::load_binary (std::istream& is, bool swap,
                                      oct_mach_info::float_format /* fmt */)
 {
@@ -507,7 +507,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
             swap_bytes<4> (&di);
           dv(i) = di;
         }
-      
+
       // Convert an array with a single dimension to be a row vector.
       // Octave should never write files like this, other software
       // might.
@@ -523,7 +523,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
       charNDArray m(dv);
       char *tmp = m.fortran_vec ();
       is.read (tmp, dv.numel ());
-      
+
       if (error_state || ! is)
         return false;
       matrix = m;
@@ -576,15 +576,15 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
     hdims[i] = dv (rank-i-1);
- 
+
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0)
     return false;
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -598,7 +598,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
   for (int i = 0; i < dv.numel (); ++i)
     s[i] = m(i);
 
-  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
+  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
@@ -607,7 +607,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
   return retval;
 }
 
-bool 
+bool
 octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -660,8 +660,8 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
 
       charNDArray m (dv);
       char *str = m.fortran_vec ();
-      if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
-                   H5P_DEFAULT, str) >= 0) 
+      if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL,
+                   H5P_DEFAULT, str) >= 0)
         {
           retval = true;
           matrix = m;
@@ -704,7 +704,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
                 }
 
               matrix = charMatrix (s);
-          
+
               H5Tclose (st_id);
               H5Tclose (type_hid);
               H5Sclose (space_hid);
@@ -730,7 +730,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // hdf5 string arrays store strings of all the
               // same physical length (I think), which is
               // slightly wasteful, but oh well.
-          
+
               OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
 
               // create datatype for (null-terminated) string

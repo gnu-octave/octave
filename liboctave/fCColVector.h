@@ -43,7 +43,7 @@ public:
   explicit FloatComplexColumnVector (octave_idx_type n)
     : MArray<FloatComplex> (dim_vector (n, 1)) { }
 
-  explicit FloatComplexColumnVector (const dim_vector& dv) 
+  explicit FloatComplexColumnVector (const dim_vector& dv)
     : MArray<FloatComplex> (dv.as_column ()) { }
 
   FloatComplexColumnVector (octave_idx_type n, const FloatComplex& val)

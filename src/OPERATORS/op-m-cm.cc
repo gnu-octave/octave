@@ -63,8 +63,8 @@ DEFBINOP (div, matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
   MatrixType typ = v2.matrix_type ();
-  
-  ComplexMatrix ret = xdiv (v1.matrix_value (), 
+
+  ComplexMatrix ret = xdiv (v1.matrix_value (),
                             v2.complex_matrix_value (), typ);
 
   v2.matrix_type (typ);
@@ -81,8 +81,8 @@ DEFBINOP (ldiv, matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
   MatrixType typ = v1.matrix_type ();
-  
-  ComplexMatrix ret = xleftdiv (v1.matrix_value (), 
+
+  ComplexMatrix ret = xleftdiv (v1.matrix_value (),
                                 v2.complex_matrix_value (), typ);
 
   v1.matrix_type (typ);
@@ -93,8 +93,8 @@ DEFBINOP (trans_ldiv, matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
   MatrixType typ = v1.matrix_type ();
-  
-  ComplexMatrix ret = xleftdiv (v1.matrix_value (), 
+
+  ComplexMatrix ret = xleftdiv (v1.matrix_value (),
                          v2.complex_matrix_value (), typ, blas_trans);
 
   v1.matrix_type (typ);

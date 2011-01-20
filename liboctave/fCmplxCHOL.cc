@@ -113,7 +113,7 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
 
   // Calculate the norm of the matrix, for later use.
   float anorm = 0;
-  if (calc_cond) 
+  if (calc_cond)
     anorm = xnorm (a, 1);
 
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
@@ -122,7 +122,7 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
   xrcond = 0.0;
   if (info > 0)
     chol_mat.resize (info - 1, info - 1);
-  else if (calc_cond) 
+  else if (calc_cond)
     {
       octave_idx_type cpocon_info = 0;
 
@@ -135,7 +135,7 @@ FloatComplexCHOL::init (const FloatComplexMatrix& a, bool calc_cond)
                                  n, anorm, xrcond, pz, prz, cpocon_info
                                  F77_CHAR_ARG_LEN (1)));
 
-      if (cpocon_info != 0) 
+      if (cpocon_info != 0)
         info = -1;
     }
 
@@ -187,7 +187,7 @@ FloatComplexCHOL::inverse (void) const
 void
 FloatComplexCHOL::set (const FloatComplexMatrix& R)
 {
-  if (R.is_square ()) 
+  if (R.is_square ())
     chol_mat = R;
   else
     (*current_liboctave_error_handler) ("CHOL requires square matrix");
@@ -241,7 +241,7 @@ FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u, octave_idx_type
   octave_idx_type info = -1;
 
   octave_idx_type n = chol_mat.rows ();
-  
+
   if (u.length () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
@@ -265,14 +265,14 @@ void
 FloatComplexCHOL::delete_sym (octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  
+
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("choldelete: index out of range");
   else
     {
       OCTAVE_LOCAL_BUFFER (float, rw, n);
 
-      F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (), 
+      F77_XFCN (cchdex, CCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
                                  j + 1, rw));
 
       chol_mat.resize (n-1, n-1);
@@ -283,8 +283,8 @@ void
 FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
     {
@@ -307,7 +307,7 @@ FloatComplexCHOL::update (const FloatComplexColumnVector& u)
 
   if (u.length () == n)
     {
-      init (chol_mat.hermitian () * chol_mat 
+      init (chol_mat.hermitian () * chol_mat
             + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
     }
   else
@@ -337,7 +337,7 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
         info = 2;
       else
         {
-          info = init (chol_mat.hermitian () * chol_mat 
+          info = init (chol_mat.hermitian () * chol_mat
                        - FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
           if (info) info = 1;
         }
@@ -414,7 +414,7 @@ FloatComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
     {

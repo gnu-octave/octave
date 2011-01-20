@@ -192,6 +192,6 @@ install_cs_cs_ops (void)
   INSTALL_ASSIGNCONV (octave_complex, octave_null_str, octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_complex, octave_null_sq_str, octave_complex_matrix);
 
-  INSTALL_CONVOP (octave_complex, octave_float_complex_matrix, 
+  INSTALL_CONVOP (octave_complex, octave_float_complex_matrix,
                   complex_to_float_complex);
 }

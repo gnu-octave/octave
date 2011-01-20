@@ -418,9 +418,9 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 
     }
 
-  // Note hold off reading B till later to avoid issues of double 
+  // Note hold off reading B till later to avoid issues of double
   // copies of the matrix if B is full/real while A is complex..
-  if (!error_state && nargin > 1 + arg_offset && 
+  if (!error_state && nargin > 1 + arg_offset &&
       !(args(1 + arg_offset).is_real_scalar ()))
     {
       if (args(1+arg_offset).is_complex_type ())
@@ -561,7 +561,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         }
     }
 
-  // Mode 1 for SM mode seems unstable for some reason. 
+  // Mode 1 for SM mode seems unstable for some reason.
   // Use Mode 3 instead, with sigma = 0.
   if (!error_state && !have_sigma && typ == "SM")
     have_sigma = true;
@@ -576,7 +576,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 
 
           if (have_a_fun)
-            nconv = EigsComplexNonSymmetricFunc 
+            nconv = EigsComplexNonSymmetricFunc
               (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec, eig_val,
                cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
           else if (have_sigma)
@@ -584,7 +584,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
               if (a_is_sparse)
                 nconv = EigsComplexNonSymmetricMatrixShift
                   (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
-                   cresid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+                   cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
                    maxit);
               else
                 nconv = EigsComplexNonSymmetricMatrixShift
@@ -619,18 +619,18 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
           ComplexColumnVector eig_val;
 
           if (have_a_fun)
-            nconv = EigsComplexNonSymmetricFunc 
+            nconv = EigsComplexNonSymmetricFunc
               (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec, eig_val,
                cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
           else
             {
               if (a_is_sparse)
-                nconv = EigsComplexNonSymmetricMatrixShift 
+                nconv = EigsComplexNonSymmetricMatrixShift
                   (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
                    eig_val, SparseComplexMatrix (bsmm), permB, cresid,
                    octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
               else
-                nconv = EigsComplexNonSymmetricMatrixShift 
+                nconv = EigsComplexNonSymmetricMatrixShift
                   (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
                    eig_val, ComplexMatrix (bmm), permB, cresid,
                    octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
@@ -653,19 +653,19 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
               ColumnVector eig_val;
 
               if (have_a_fun)
-                nconv = EigsRealSymmetricFunc 
+                nconv = EigsRealSymmetricFunc
                   (eigs_func, n, typ, sigmar, k, p, info, eig_vec, eig_val,
-                   resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+                   resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                    maxit);
               else if (have_sigma)
                 {
                   if (a_is_sparse)
-                    nconv = EigsRealSymmetricMatrixShift 
+                    nconv = EigsRealSymmetricMatrixShift
                       (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
                   else
-                    nconv = EigsRealSymmetricMatrixShift 
+                    nconv = EigsRealSymmetricMatrixShift
                       (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
@@ -673,12 +673,12 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
               else
                 {
                   if (a_is_sparse)
-                    nconv = EigsRealSymmetricMatrix 
+                    nconv = EigsRealSymmetricMatrix
                       (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
                   else
-                    nconv = EigsRealSymmetricMatrix 
+                    nconv = EigsRealSymmetricMatrix
                       (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
@@ -699,19 +699,19 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
               ComplexColumnVector eig_val;
 
               if (have_a_fun)
-                nconv = EigsRealNonSymmetricFunc 
+                nconv = EigsRealNonSymmetricFunc
                   (eigs_func, n, typ, sigmar, k, p, info, eig_vec, eig_val,
-                   resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+                   resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                    maxit);
               else if (have_sigma)
                 {
                   if (a_is_sparse)
-                    nconv = EigsRealNonSymmetricMatrixShift 
+                    nconv = EigsRealNonSymmetricMatrixShift
                       (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp, 
+                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
                   else
-                    nconv = EigsRealNonSymmetricMatrixShift 
+                    nconv = EigsRealNonSymmetricMatrixShift
                       (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
@@ -719,12 +719,12 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
               else
                 {
                   if (a_is_sparse)
-                    nconv = EigsRealNonSymmetricMatrix 
+                    nconv = EigsRealNonSymmetricMatrix
                       (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
                   else
-                    nconv = EigsRealNonSymmetricMatrix 
+                    nconv = EigsRealNonSymmetricMatrix
                       (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
                        resid, octave_stdout, tol, (nargout > 1), cholB, disp,
                        maxit);
@@ -744,7 +744,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
       if (nconv <= 0)
         warning ("eigs: None of the %d requested eigenvalues converged", k);
       else if (nconv < k)
-        warning ("eigs: Only %d of the %d requested eigenvalues converged", 
+        warning ("eigs: Only %d of the %d requested eigenvalues converged",
                  nconv, k);
     }
 

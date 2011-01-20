@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
-static inline bool 
+static inline bool
 is_imag_unit (int c)
 { return c == 'i' || c == 'j'; }
 
@@ -69,7 +69,7 @@ single_num (std::istringstream& is, double& num)
           num = octave_NA;
           is.peek (); // Sets eof bit.
         }
-      else 
+      else
         {
           char c2 = is.get ();
           if (c1 == 'a' && c2 == 'N')

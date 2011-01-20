@@ -96,7 +96,7 @@ Undocumented internal function.\n\
                   OCTAVE_QUIT;
                 }
 
-              *pdist++ = d0; 
+              *pdist++ = d0;
               pidx++;
               pxi += n;
             }

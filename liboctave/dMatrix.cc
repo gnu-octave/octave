@@ -117,7 +117,7 @@ extern "C"
   F77_RET_T
   F77_FUNC (dsyrk, DSYRK) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, 
+                           const octave_idx_type&, const octave_idx_type&,
                            const double&, const double*, const octave_idx_type&,
                            const double&, double*, const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL
@@ -144,8 +144,8 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dgecon, DGECON) (F77_CONST_CHAR_ARG_DECL,
-                             const octave_idx_type&, double*, 
-                             const octave_idx_type&, const double&, double&, 
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, const double&, double&,
                              double*, octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
@@ -182,33 +182,33 @@ extern "C"
   F77_RET_T
   F77_FUNC (dpotrs, DPOTRS) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, const octave_idx_type&,
-                             const double*, const octave_idx_type&, double*, 
+                             const double*, const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dtrtri, DTRTRI) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL, 
-                             const octave_idx_type&, const double*, 
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&, const double*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (dtrcon, DTRCON) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL, 
+                             F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, const double*,
                              const octave_idx_type&, double&,
-                             double*, octave_idx_type*, octave_idx_type& 
+                             double*, octave_idx_type*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (dtrtrs, DTRTRS) (F77_CONST_CHAR_ARG_DECL,
-                             F77_CONST_CHAR_ARG_DECL, 
+                             F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, const octave_idx_type&,
-                             const double*, const octave_idx_type&, double*, 
+                             const double*, const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL
@@ -234,7 +234,7 @@ extern "C"
                                const octave_idx_type&, const octave_idx_type&,
                                const double*, const octave_idx_type&,
                                double*, double&
-                               F77_CHAR_ARG_LEN_DECL); 
+                               F77_CHAR_ARG_LEN_DECL);
 }
 
 // Matrix class.
@@ -670,7 +670,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 }
 
 Matrix
-Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon, 
+Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
                   int force, int calc_cond) const
 {
   Matrix retval;
@@ -690,15 +690,15 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
       F77_XFCN (dtrtri, DTRTRI, (F77_CONST_CHAR_ARG2 (&uplo, 1),
                                  F77_CONST_CHAR_ARG2 (&udiag, 1),
-                                 nr, tmp_data, nr, info 
+                                 nr, tmp_data, nr, info
                                  F77_CHAR_ARG_LEN (1)
                                  F77_CHAR_ARG_LEN (1)));
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
-      if (info != 0) 
+      if (info != 0)
         info = -1;
-      else if (calc_cond) 
+      else if (calc_cond)
         {
           octave_idx_type dtrcon_info = 0;
           char job = '1';
@@ -709,13 +709,13 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
           F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                      F77_CONST_CHAR_ARG2 (&uplo, 1),
                                      F77_CONST_CHAR_ARG2 (&udiag, 1),
-                                     nr, tmp_data, nr, rcon, 
-                                     work, iwork, dtrcon_info 
+                                     nr, tmp_data, nr, rcon,
+                                     work, iwork, dtrcon_info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
 
-          if (dtrcon_info != 0) 
+          if (dtrcon_info != 0)
             info = -1;
         }
 
@@ -728,7 +728,7 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
 
 Matrix
-Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon, 
+Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
                   int force, int calc_cond) const
 {
   Matrix retval;
@@ -750,7 +750,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
       octave_idx_type lwork = -1;
 
       // Query the optimum work array size.
-      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt, 
+      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
                                  z.fortran_vec (), lwork, info));
 
       lwork = static_cast<octave_idx_type> (z(0));
@@ -762,16 +762,16 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
-      if (calc_cond) 
+      if (calc_cond)
         anorm = retval.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
       rcon = 0.0;
-      if (info != 0) 
+      if (info != 0)
         info = -1;
-      else if (calc_cond) 
+      else if (calc_cond)
         {
           octave_idx_type dgecon_info = 0;
 
@@ -780,11 +780,11 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
           Array<octave_idx_type> iz (dim_vector (nc, 1));
           octave_idx_type *piz = iz.fortran_vec ();
           F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nc, tmp_data, nr, anorm, 
+                                     nc, tmp_data, nr, anorm,
                                      rcon, pz, piz, dgecon_info
                                      F77_CHAR_ARG_LEN (1)));
 
-          if (dgecon_info != 0) 
+          if (dgecon_info != 0)
             info = -1;
         }
 
@@ -797,7 +797,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
           F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
                                      pz, lwork, dgetri_info));
 
-          if (dgetri_info != 0) 
+          if (dgetri_info != 0)
             info = -1;
         }
 
@@ -809,7 +809,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 }
 
 Matrix
-Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon, 
+Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
                  int force, int calc_cond) const
 {
   int typ = mattype.type (false);
@@ -910,7 +910,7 @@ Matrix::fourier (void) const
   const double *in (fortran_vec ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::fft (in, out, npts, nsamples); 
+  octave_fftw::fft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -940,7 +940,7 @@ Matrix::ifourier (void) const
   Complex *in (tmp.fortran_vec ());
   Complex *out (retval.fortran_vec ());
 
-  octave_fftw::ifft (in, out, npts, nsamples); 
+  octave_fftw::ifft (in, out, npts, nsamples);
 
   return retval;
 }
@@ -1259,7 +1259,7 @@ Matrix::determinant (MatrixType& mattype,
 
       if (typ == MatrixType::Lower || typ == MatrixType::Upper)
         {
-          for (octave_idx_type i = 0; i < nc; i++) 
+          for (octave_idx_type i = 0; i < nc; i++)
             retval *= elem (i,i);
         }
       else if (typ == MatrixType::Hermitian)
@@ -1273,17 +1273,17 @@ Matrix::determinant (MatrixType& mattype,
 
 
           char job = 'L';
-          F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+          F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
                                      F77_CHAR_ARG_LEN (1)));
 
-          if (info != 0) 
+          if (info != 0)
             {
               rcon = 0.0;
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
-          else 
+          else
             {
               Array<double> z (dim_vector (3 * nc, 1));
               double *pz = z.fortran_vec ();
@@ -1295,10 +1295,10 @@ Matrix::determinant (MatrixType& mattype,
                                          rcon, pz, piz, info
                                          F77_CHAR_ARG_LEN (1)));
 
-              if (info != 0) 
+              if (info != 0)
                 rcon = 0.0;
 
-              for (octave_idx_type i = 0; i < nc; i++) 
+              for (octave_idx_type i = 0; i < nc; i++)
                 retval *= atmp (i,i);
 
               retval = retval.square ();
@@ -1325,14 +1325,14 @@ Matrix::determinant (MatrixType& mattype,
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
-          if (info != 0) 
+          if (info != 0)
             {
               info = -1;
               retval = DET ();
-            } 
-          else 
+            }
+          else
             {
-              if (calc_cond) 
+              if (calc_cond)
                 {
                   // Now calc the condition number for non-singular matrix.
                   char job = '1';
@@ -1342,19 +1342,19 @@ Matrix::determinant (MatrixType& mattype,
                   octave_idx_type *piz = iz.fortran_vec ();
 
                   F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nc, tmp_data, nr, anorm, 
+                                             nc, tmp_data, nr, anorm,
                                              rcon, pz, piz, info
                                              F77_CHAR_ARG_LEN (1)));
                 }
 
-              if (info != 0) 
+              if (info != 0)
                 {
                   info = -1;
                   retval = DET ();
-                } 
-              else 
+                }
+              else
                 {
-                  for (octave_idx_type i = 0; i < nc; i++) 
+                  for (octave_idx_type i = 0; i < nc; i++)
                     {
                       double c = atmp(i,i);
                       retval *= (ipvt(i) != (i+1)) ? -c : c;
@@ -1406,16 +1406,16 @@ Matrix::rcond (MatrixType &mattype) const
           Array<octave_idx_type> iz (dim_vector (nc, 1));
           octave_idx_type *piz = iz.fortran_vec ();
 
-          F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
-                                     F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                     F77_CONST_CHAR_ARG2 (&dia, 1), 
+          F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
+                                     F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                     F77_CONST_CHAR_ARG2 (&dia, 1),
                                      nr, tmp_data, nr, rcon,
                                      pz, piz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
 
-          if (info != 0) 
+          if (info != 0)
             rcon = 0.0;
         }
       else if  (typ == MatrixType::Permuted_Upper)
@@ -1434,16 +1434,16 @@ Matrix::rcond (MatrixType &mattype) const
           Array<octave_idx_type> iz (dim_vector (nc, 1));
           octave_idx_type *piz = iz.fortran_vec ();
 
-          F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
-                                     F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                     F77_CONST_CHAR_ARG2 (&dia, 1), 
+          F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
+                                     F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                     F77_CONST_CHAR_ARG2 (&dia, 1),
                                      nr, tmp_data, nr, rcon,
                                      pz, piz, info
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)
                                      F77_CHAR_ARG_LEN (1)));
 
-          if (info != 0) 
+          if (info != 0)
             rcon = 0.0;
         }
       else if (typ == MatrixType::Permuted_Lower)
@@ -1462,17 +1462,17 @@ Matrix::rcond (MatrixType &mattype) const
               anorm = atmp.abs().sum().
                 row(static_cast<octave_idx_type>(0)).max();
 
-              F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+              F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
                                          F77_CHAR_ARG_LEN (1)));
 
-              if (info != 0) 
+              if (info != 0)
                 {
                   rcon = 0.0;
                   mattype.mark_as_unsymmetric ();
                   typ = MatrixType::Full;
                 }
-              else 
+              else
                 {
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
@@ -1484,7 +1484,7 @@ Matrix::rcond (MatrixType &mattype) const
                                              rcon, pz, piz, info
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     rcon = 0.0;
                 }
             }
@@ -1507,20 +1507,20 @@ Matrix::rcond (MatrixType &mattype) const
 
               F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
-              if (info != 0) 
+              if (info != 0)
                 {
                   rcon = 0.0;
                   mattype.mark_as_rectangular ();
                 }
-              else 
+              else
                 {
                   char job = '1';
                   F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nc, tmp_data, nr, anorm, 
+                                             nc, tmp_data, nr, anorm,
                                              rcon, pz, piz, info
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     rcon = 0.0;
                 }
             }
@@ -1578,16 +1578,16 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   Array<octave_idx_type> iz (dim_vector (nc, 1));
                   octave_idx_type *piz = iz.fortran_vec ();
 
-                  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
-                                             F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                             F77_CONST_CHAR_ARG2 (&dia, 1), 
+                  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
+                                             F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                             F77_CONST_CHAR_ARG2 (&dia, 1),
                                              nr, tmp_data, nr, rcon,
                                              pz, piz, info
                                              F77_CHAR_ARG_LEN (1)
                                              F77_CHAR_ARG_LEN (1)
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     info = -2;
 
                   volatile double rcond_plus_one = rcon + 1.0;
@@ -1614,9 +1614,9 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   char trans = get_blas_char (transt);
                   char dia = 'N';
 
-                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                             F77_CONST_CHAR_ARG2 (&trans, 1), 
-                                             F77_CONST_CHAR_ARG2 (&dia, 1), 
+                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                             F77_CONST_CHAR_ARG2 (&trans, 1),
+                                             F77_CONST_CHAR_ARG2 (&dia, 1),
                                              nr, b_nc, tmp_data, nr,
                                              result, nr, info
                                              F77_CHAR_ARG_LEN (1)
@@ -1678,16 +1678,16 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   Array<octave_idx_type> iz (dim_vector (nc, 1));
                   octave_idx_type *piz = iz.fortran_vec ();
 
-                  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
-                                             F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                             F77_CONST_CHAR_ARG2 (&dia, 1), 
+                  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1),
+                                             F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                             F77_CONST_CHAR_ARG2 (&dia, 1),
                                              nr, tmp_data, nr, rcon,
                                              pz, piz, info
                                              F77_CHAR_ARG_LEN (1)
                                              F77_CHAR_ARG_LEN (1)
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     info = -2;
 
                   volatile double rcond_plus_one = rcon + 1.0;
@@ -1714,9 +1714,9 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   char trans = get_blas_char (transt);
                   char dia = 'N';
 
-                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1), 
-                                             F77_CONST_CHAR_ARG2 (&trans, 1), 
-                                             F77_CONST_CHAR_ARG2 (&dia, 1), 
+                  F77_XFCN (dtrtrs, DTRTRS, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+                                             F77_CONST_CHAR_ARG2 (&trans, 1),
+                                             F77_CONST_CHAR_ARG2 (&dia, 1),
                                              nr, b_nc, tmp_data, nr,
                                              result, nr, info
                                              F77_CHAR_ARG_LEN (1)
@@ -1750,7 +1750,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   else
     {
       volatile int typ = mattype.type ();
- 
+
      // Calculate the norm of the matrix, for later use.
       double anorm = -1.;
 
@@ -1762,20 +1762,20 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           double *tmp_data = atmp.fortran_vec ();
           anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
-          F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+          F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
                                      F77_CHAR_ARG_LEN (1)));
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
-          if (info != 0) 
+          if (info != 0)
             {
               info = -2;
 
               mattype.mark_as_unsymmetric ();
               typ = MatrixType::Full;
             }
-          else 
+          else
             {
               if (calc_cond)
                 {
@@ -1789,7 +1789,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                                              rcon, pz, piz, info
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     info = -2;
 
                   volatile double rcond_plus_one = rcon + 1.0;
@@ -1823,7 +1823,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                 {
                   mattype.mark_as_unsymmetric ();
                   typ = MatrixType::Full;
-                }                   
+                }
             }
         }
 
@@ -1848,7 +1848,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           // Throw-away extra info LAPACK gives so as to not change output.
           rcon = 0.0;
-          if (info != 0) 
+          if (info != 0)
             {
               info = -2;
 
@@ -1860,19 +1860,19 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
               mattype.mark_as_rectangular ();
             }
-          else 
+          else
             {
               if (calc_cond)
                 {
-                  // Now calculate the condition number for 
+                  // Now calculate the condition number for
                   // non-singular matrix.
                   char job = '1';
                   F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                             nc, tmp_data, nr, anorm, 
+                                             nc, tmp_data, nr, anorm,
                                              rcon, pz, piz, info
                                              F77_CHAR_ARG_LEN (1)));
 
-                  if (info != 0) 
+                  if (info != 0)
                     info = -2;
 
                   volatile double rcond_plus_one = rcon + 1.0;
@@ -1930,7 +1930,7 @@ Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info) const
 }
 
 Matrix
-Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info, 
+Matrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
                double& rcon) const
 {
   return solve (typ, b, info, rcon, 0);
@@ -1981,7 +1981,7 @@ Matrix::solve (MatrixType &typ, const ComplexMatrix& b) const
 }
 
 ComplexMatrix
-Matrix::solve (MatrixType &typ, const ComplexMatrix& b, 
+Matrix::solve (MatrixType &typ, const ComplexMatrix& b,
   octave_idx_type& info) const
 {
   double rcon;
@@ -2040,7 +2040,7 @@ Matrix::solve (MatrixType &typ, const ColumnVector& b) const
 }
 
 ColumnVector
-Matrix::solve (MatrixType &typ, const ColumnVector& b, 
+Matrix::solve (MatrixType &typ, const ColumnVector& b,
                octave_idx_type& info) const
 {
   double rcon;
@@ -2071,7 +2071,7 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
@@ -2079,7 +2079,7 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                octave_idx_type& info, double& rcon) const
 {
   ComplexMatrix tmp (*this);
@@ -2087,7 +2087,7 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 }
 
 ComplexColumnVector
-Matrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
+Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                octave_idx_type& info, double& rcon,
                solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
@@ -2358,7 +2358,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
-                                 work.fortran_vec (), lwork, 
+                                 work.fortran_vec (), lwork,
                                  piwork, info));
 
       if (s.elem (0) == 0.0)
@@ -2392,7 +2392,7 @@ Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 }
 
 ComplexMatrix
-Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
                  octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
@@ -2401,7 +2401,7 @@ Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 }
 
 ComplexMatrix
-Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
                  octave_idx_type& rank, double& rcon) const
 {
   ComplexMatrix tmp (*this);
@@ -2454,7 +2454,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
       rcon = -1.0;
- 
+
       if (m != n)
         {
           retval = ColumnVector (maxmn, 0.0);
@@ -2512,7 +2512,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
-                                 work.fortran_vec (), lwork, 
+                                 work.fortran_vec (), lwork,
                                  piwork, info));
 
       if (rank < minmn)
@@ -2549,7 +2549,7 @@ Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
 }
 
 ComplexColumnVector
-Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, 
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
                  octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
@@ -2558,7 +2558,7 @@ Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 }
 
 ComplexColumnVector
-Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, 
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
                  octave_idx_type& rank, double &rcon) const
 {
   ComplexMatrix tmp (*this);
@@ -2633,7 +2633,7 @@ operator * (const ColumnVector& v, const RowVector& a)
 
       retval = Matrix (len, a_len);
       double *c = retval.fortran_vec ();
-          
+
       F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 ("N", 1),
                                len, a_len, 1, 1.0, v.data (), len,
@@ -3063,7 +3063,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   SCHUR as (a, "U");
   SCHUR bs (b, "U");
-  
+
   // Transform c to new coordinates.
 
   Matrix ua = as.unitary_matrix ();
@@ -3071,9 +3071,9 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   Matrix ub = bs.unitary_matrix ();
   Matrix sch_b = bs.schur_matrix ();
-  
+
   Matrix cx = ua.transpose () * c * ub;
-  
+
   // Solve the sylvester equation, back-transform, and return the
   // solution.
 
@@ -3096,7 +3096,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
 
   // FIXME -- check info?
-  
+
   retval = -ua*cx*ub.transpose ();
 
   return retval;
@@ -3130,8 +3130,8 @@ get_blas_trans_arg (bool trans)
 
 // the general GEMM operation
 
-Matrix 
-xgemm (const Matrix& a, const Matrix& b, 
+Matrix
+xgemm (const Matrix& a, const Matrix& b,
        blas_trans_type transa, blas_trans_type transb)
 {
   Matrix retval;
@@ -3362,8 +3362,8 @@ max (const Matrix& a, const Matrix& b)
   return result;
 }
 
-Matrix linspace (const ColumnVector& x1, 
-                 const ColumnVector& x2, 
+Matrix linspace (const ColumnVector& x1,
+                 const ColumnVector& x2,
                  octave_idx_type n)
 
 {
@@ -3381,7 +3381,7 @@ Matrix linspace (const ColumnVector& x1,
     retval(i, 0) = x1(i);
 
   // The last column is not needed while using delta.
-  double *delta = &retval(0, n-1); 
+  double *delta = &retval(0, n-1);
   for (octave_idx_type i = 0; i < m; i++)
     delta[i] = (x2(i) - x1(i)) / (n - 1);
 

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-lu.h"
 
 template <class lu_type>
-base_lu<lu_type>::base_lu (const lu_type& l, const lu_type& u, 
+base_lu<lu_type>::base_lu (const lu_type& l, const lu_type& u,
                            const PermMatrix& p)
   : a_fact (u), l_fact (l), ipvt (p.pvec ())
 {

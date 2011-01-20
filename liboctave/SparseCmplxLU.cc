@@ -42,7 +42,7 @@ template class sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, doubl
 
 #include "oct-sparse.h"
 
-SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a, 
+SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                                   const Matrix& piv_thres, bool scale)
 {
 #ifdef HAVE_UMFPACK
@@ -82,7 +82,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   if (!xisnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
-  // Turn-off UMFPACK scaling for LU 
+  // Turn-off UMFPACK scaling for LU
   if (scale)
     Control (UMFPACK_SCALE) = UMFPACK_SCALE_SUM;
   else
@@ -101,14 +101,14 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
+  int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai,
                                           reinterpret_cast<const double *> (Ax),
                                           0, 0,
                                           &Symbolic, control, info);
 
   if (status < 0)
     {
-      (*current_liboctave_error_handler) 
+      (*current_liboctave_error_handler)
             ("SparseComplexLU::SparseComplexLU symbolic factorization failed");
 
       UMFPACK_ZNAME (report_status) (control, status);
@@ -131,7 +131,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
       if (status < 0)
         {
-          (*current_liboctave_error_handler) 
+          (*current_liboctave_error_handler)
             ("SparseComplexLU::SparseComplexLU numeric factorization failed");
 
           UMFPACK_ZNAME (report_status) (control, status);
@@ -146,10 +146,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
           octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
           status = UMFPACK_ZNAME (get_lunz) (&lnz, &unz, &ignore1,
                                         &ignore2, &ignore3, Numeric) ;
-          
+
           if (status < 0)
             {
-              (*current_liboctave_error_handler) 
+              (*current_liboctave_error_handler)
                 ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
               UMFPACK_ZNAME (report_status) (control, status);
@@ -180,7 +180,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
               octave_idx_type *Up = Ufact.cidx ();
               octave_idx_type *Uj = Ufact.ridx ();
               Complex *Ux = Ufact.data ();
-              
+
               Rfact = SparseMatrix (nr, nr, nr);
               for (octave_idx_type i = 0; i < nr; i++)
                 {
@@ -208,7 +208,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
               if (status < 0)
                 {
-                  (*current_liboctave_error_handler) 
+                  (*current_liboctave_error_handler)
                     ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
                   UMFPACK_ZNAME (report_status) (control, status);
@@ -222,13 +222,13 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                       Rx[i] = 1.0 / Rx[i];
 
                   UMFPACK_ZNAME (report_matrix) (nr, n_inner,
-                                            Lfact.cidx (), Lfact.ridx (), 
-                                            reinterpret_cast<double *> (Lfact.data()), 
+                                            Lfact.cidx (), Lfact.ridx (),
+                                            reinterpret_cast<double *> (Lfact.data()),
                                             0, 1, control);
 
                   UMFPACK_ZNAME (report_matrix) (n_inner, nc,
-                                            Ufact.cidx (), Ufact.ridx (), 
-                                            reinterpret_cast<double *> (Ufact.data()), 
+                                            Ufact.cidx (), Ufact.ridx (),
+                                            reinterpret_cast<double *> (Ufact.data()),
                                             0, 1, control);
                   UMFPACK_ZNAME (report_perm) (nr, p, control);
                   UMFPACK_ZNAME (report_perm) (nc, q, control);
@@ -243,16 +243,16 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 #endif
 }
 
-SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a, 
-                                  const ColumnVector& Qinit, 
+SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
+                                  const ColumnVector& Qinit,
                                   const Matrix& piv_thres, bool scale,
-                                  bool FixedQ, double droptol, 
+                                  bool FixedQ, double droptol,
                                   bool milu, bool udiag)
 {
 #ifdef HAVE_UMFPACK
   if (milu)
-    (*current_liboctave_error_handler) 
-      ("Modified incomplete LU not implemented");   
+    (*current_liboctave_error_handler)
+      ("Modified incomplete LU not implemented");
   else
     {
       octave_idx_type nr = a.rows ();
@@ -299,7 +299,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
             Control (UMFPACK_FIXQ) = tmp;
         }
 
-      // Turn-off UMFPACK scaling for LU 
+      // Turn-off UMFPACK scaling for LU
       if (scale)
         Control (UMFPACK_SCALE) = UMFPACK_SCALE_SUM;
       else
@@ -311,7 +311,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
       const octave_idx_type *Ai = a.ridx ();
       const Complex *Ax = a.data ();
 
-      UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai, 
+      UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
                                 reinterpret_cast<const double *> (Ax), 0,
                                 1, control);
 
@@ -328,15 +328,15 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
         for (octave_idx_type i = 0; i < nc; i++)
           qinit [i] = static_cast<octave_idx_type> (Qinit (i));
 
-        status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
+        status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai,
                                        reinterpret_cast<const double *> (Ax),
-                                       0, qinit, &Symbolic, control, 
+                                       0, qinit, &Symbolic, control,
                                        info);
       } while (0);
 
       if (status < 0)
         {
-          (*current_liboctave_error_handler) 
+          (*current_liboctave_error_handler)
             ("SparseComplexLU::SparseComplexLU symbolic factorization failed");
 
           UMFPACK_ZNAME (report_status) (control, status);
@@ -349,7 +349,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
           UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
 
           void *Numeric;
-          status = UMFPACK_ZNAME (numeric) (Ap, Ai, 
+          status = UMFPACK_ZNAME (numeric) (Ap, Ai,
                                        reinterpret_cast<const double *> (Ax), 0,
                                        Symbolic, &Numeric, control, info) ;
           UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
@@ -358,7 +358,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
           if (status < 0)
             {
-              (*current_liboctave_error_handler) 
+              (*current_liboctave_error_handler)
                 ("SparseComplexLU::SparseComplexLU numeric factorization failed");
 
               UMFPACK_ZNAME (report_status) (control, status);
@@ -373,10 +373,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
               octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
               status = UMFPACK_ZNAME (get_lunz) (&lnz, &unz,
                                             &ignore1, &ignore2, &ignore3, Numeric);
-          
+
               if (status < 0)
                 {
-                  (*current_liboctave_error_handler) 
+                  (*current_liboctave_error_handler)
                     ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
                   UMFPACK_ZNAME (report_status) (control, status);
@@ -407,7 +407,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                   octave_idx_type *Up = Ufact.cidx ();
                   octave_idx_type *Uj = Ufact.ridx ();
                   Complex *Ux = Ufact.data ();
-              
+
                   Rfact = SparseMatrix (nr, nr, nr);
                   for (octave_idx_type i = 0; i < nr; i++)
                     {
@@ -424,19 +424,19 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                   octave_idx_type *q = Q.fortran_vec ();
 
                   octave_idx_type do_recip;
-                  status = 
-                    UMFPACK_ZNAME (get_numeric) (Ltp, Ltj, 
+                  status =
+                    UMFPACK_ZNAME (get_numeric) (Ltp, Ltj,
                                             reinterpret_cast<double *> (Ltx),
                                             0, Up, Uj,
-                                            reinterpret_cast<double *> (Ux), 
-                                            0, p, q, 0, 0, 
+                                            reinterpret_cast<double *> (Ux),
+                                            0, p, q, 0, 0,
                                             &do_recip, Rx, Numeric) ;
 
                   UMFPACK_ZNAME (free_numeric) (&Numeric) ;
 
                   if (status < 0)
                     {
-                      (*current_liboctave_error_handler) 
+                      (*current_liboctave_error_handler)
                         ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
                       UMFPACK_ZNAME (report_status) (control, status);
@@ -449,16 +449,16 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
-                      UMFPACK_ZNAME (report_matrix) (nr, n_inner, 
-                                                Lfact.cidx (), 
-                                                Lfact.ridx (), 
-                                                reinterpret_cast<double *> (Lfact.data()), 
+                      UMFPACK_ZNAME (report_matrix) (nr, n_inner,
+                                                Lfact.cidx (),
+                                                Lfact.ridx (),
+                                                reinterpret_cast<double *> (Lfact.data()),
                                                 0, 1, control);
 
-                      UMFPACK_ZNAME (report_matrix) (n_inner, nc, 
-                                                Ufact.cidx (), 
-                                                Ufact.ridx (), 
-                                                reinterpret_cast<double *> (Ufact.data()), 
+                      UMFPACK_ZNAME (report_matrix) (n_inner, nc,
+                                                Ufact.cidx (),
+                                                Ufact.ridx (),
+                                                reinterpret_cast<double *> (Ufact.data()),
                                                 0, 1, control);
                       UMFPACK_ZNAME (report_perm) (nr, p, control);
                       UMFPACK_ZNAME (report_perm) (nc, q, control);
@@ -470,8 +470,8 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
         }
 
       if (udiag)
-        (*current_liboctave_error_handler) 
-          ("Option udiag of incomplete LU not implemented");   
+        (*current_liboctave_error_handler)
+          ("Option udiag of incomplete LU not implemented");
     }
 #else
   (*current_liboctave_error_handler) ("UMFPACK not installed");

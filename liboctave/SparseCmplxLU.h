@@ -30,31 +30,31 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-SparseComplexLU 
+SparseComplexLU
   : public sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
 {
 public:
 
-  SparseComplexLU (void) 
+  SparseComplexLU (void)
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> () { }
 
-  SparseComplexLU (const SparseComplexMatrix& a, 
+  SparseComplexLU (const SparseComplexMatrix& a,
                    const Matrix& piv_thres = Matrix (),
                    bool scale = false);
 
   SparseComplexLU (const SparseComplexMatrix& a, const ColumnVector& Qinit,
-                   const Matrix& piv_thres = Matrix (), 
+                   const Matrix& piv_thres = Matrix (),
                    bool scale = false, bool FixedQ = false,
                    double droptol = -1., bool milu = false,
                    bool udiag = false);
 
-  SparseComplexLU (const SparseComplexLU& a) 
+  SparseComplexLU (const SparseComplexLU& a)
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a) { }
 
   SparseComplexLU& operator = (const SparseComplexLU& a)
     {
       if (this != &a)
-        sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> 
+        sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
           :: operator = (a);
 
       return *this;

@@ -25,7 +25,7 @@ code I ripped-off.
 As required in the Python license the short description of the changes
 made are
 
-* convert the sorting code in listobject.cc into a generic class, 
+* convert the sorting code in listobject.cc into a generic class,
   replacing PyObject* with the type of the class T.
 
 The Python license is
@@ -114,8 +114,8 @@ public:
   octave_sort (void);
 
   octave_sort (compare_fcn_type);
-  
-  ~octave_sort (void); 
+
+  ~octave_sort (void);
 
   void set_compare (compare_fcn_type comp) { compare = comp; }
 
@@ -136,7 +136,7 @@ public:
                   octave_idx_type rows, octave_idx_type cols);
 
   // Determine whether a matrix (as a contiguous block) is sorted by rows.
-  bool is_sorted_rows (const T *data, 
+  bool is_sorted_rows (const T *data,
                        octave_idx_type rows, octave_idx_type cols);
 
   // Do a binary lookup in a sorted array.
@@ -155,7 +155,7 @@ public:
                       octave_idx_type *idx, bool rev = false);
 
   // Rearranges the array so that the elements with indices
-  // lo..up-1 are in their correct place. 
+  // lo..up-1 are in their correct place.
   void nth_element (T *data, octave_idx_type nel,
                     octave_idx_type lo, octave_idx_type up = -1);
 
@@ -174,22 +174,22 @@ private:
   // DGB: This isn't needed with mergesort in a class, but it doesn't
   // slow things up, and it is likely to make my life easier for any
   // potential backporting of changes in the Python code.
-  
-  struct s_slice 
+
+  struct s_slice
   {
     octave_idx_type base, len;
   };
-  
-  struct MergeState 
+
+  struct MergeState
   {
     MergeState (void)
       : min_gallop (), a (0), ia (0), alloced (0), n (0)
       { reset (); }
-    
-    ~MergeState (void) 
+
+    ~MergeState (void)
       { delete [] a; delete [] ia; }
-    
-    void reset (void) 
+
+    void reset (void)
       { min_gallop = MIN_GALLOP; n = 0; }
 
     void getmem (octave_idx_type need);
@@ -207,7 +207,7 @@ private:
     T *a;               // may point to temparray below
     octave_idx_type *ia;
     octave_idx_type alloced;
-    
+
     // A stack of n pending runs yet to be merged.  Run #i starts at
     // address base[i] and extends for len[i] elements.  It's always
     // true (so long as the indices are in bounds) that
@@ -221,18 +221,18 @@ private:
   };
 
   compare_fcn_type compare;
-  
+
   MergeState *ms;
-  
-    
+
+
   template <class Comp>
-  void binarysort (T *data, octave_idx_type nel, 
+  void binarysort (T *data, octave_idx_type nel,
               octave_idx_type start, Comp comp);
-    
+
   template <class Comp>
-  void binarysort (T *data, octave_idx_type *idx, octave_idx_type nel, 
+  void binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
               octave_idx_type start, Comp comp);
-    
+
   template <class Comp>
   octave_idx_type count_run (T *lo, octave_idx_type n, bool& descending, Comp comp);
 
@@ -245,22 +245,22 @@ private:
                                 Comp comp);
 
   template <class Comp>
-  int merge_lo (T *pa, octave_idx_type na, 
+  int merge_lo (T *pa, octave_idx_type na,
                 T *pb, octave_idx_type nb,
                 Comp comp);
 
   template <class Comp>
-  int merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na, 
+  int merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
                 T *pb, octave_idx_type *ipb, octave_idx_type nb,
                 Comp comp);
 
   template <class Comp>
-  int merge_hi (T *pa, octave_idx_type na, 
+  int merge_hi (T *pa, octave_idx_type na,
                 T *pb, octave_idx_type nb,
                 Comp comp);
 
   template <class Comp>
-  int merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na, 
+  int merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
                 T *pb, octave_idx_type *ipb, octave_idx_type nb,
                 Comp comp);
 
@@ -301,7 +301,7 @@ private:
                   Comp comp);
 
   template <class Comp>
-  bool is_sorted_rows (const T *data, octave_idx_type rows, 
+  bool is_sorted_rows (const T *data, octave_idx_type rows,
                        octave_idx_type cols, Comp comp);
 
   template <class Comp>

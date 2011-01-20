@@ -312,7 +312,7 @@ parameters for @code{daspk}.\n\
                   daspk_fcn = extract_function
                     (c(0), "daspk", fcn_name, fname, "; endfunction");
                 }
-              
+
               if (daspk_fcn)
                 {
                   if (c(1).is_function_handle () || c(1).is_inline_function ())

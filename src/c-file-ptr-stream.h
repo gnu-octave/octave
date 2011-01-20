@@ -62,7 +62,7 @@ public:
 
   std::streampos seekoff (std::streamoff, std::ios::seekdir,
                           std::ios::openmode = std::ios::in | std::ios::out);
-  
+
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 
@@ -169,7 +169,7 @@ public:
 
   std::streampos seekoff (std::streamoff, std::ios::seekdir,
                           std::ios::openmode = std::ios::in | std::ios::out);
-  
+
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 

@@ -267,10 +267,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 }
 
 template <class MT>
-MatrixType 
+MatrixType
 octave_base_matrix<MT>::matrix_type (const MatrixType& _typ) const
-{ 
-  delete typ; 
+{
+  delete typ;
   typ = new MatrixType (_typ);
   return *typ;
 }
@@ -391,11 +391,11 @@ template <class MT>
 octave_value
 octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
 {
-  MT retval (matrix); 
+  MT retval (matrix);
   if (fill)
     retval.resize (dv, 0);
   else
-    retval.resize (dv); 
+    retval.resize (dv);
   return retval;
 }
 
@@ -461,7 +461,7 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 
 template <class MT>
 bool
-octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n, 
+octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
                                           const octave_value& x)
 {
   if (n < matrix.numel ())

@@ -83,7 +83,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
     retval = map.contents (p);
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
-  else 
+  else
     error ("structure has no member `%s'", nm.c_str ());
 
   return retval;
@@ -447,11 +447,11 @@ octave_struct::subsasgn (const std::string& type,
                         else
                           gripe_failed_assignment ();
                       }
-                    else 
+                    else
                       {
                         const octave_map& cmap = const_cast<const octave_map &> (map);
                         // cast map to const reference to avoid forced key insertion.
-                        if (idxf.all_scalars () 
+                        if (idxf.all_scalars ()
                             || cmap.contents (key).index (idxf, true).numel () == 1)
                           {
                             map.assign (idxf, key, Cell (t_rhs.storable_value ()));
@@ -493,7 +493,7 @@ octave_struct::subsasgn (const std::string& type,
                   }
                 else
                   {
-                    if (t_rhs.is_null_value()) 
+                    if (t_rhs.is_null_value())
                       {
                         map.delete_elements (idx.front());
 
@@ -677,8 +677,8 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
   return retval;
 }
 
-static bool 
-scalar (const dim_vector& dims) 
+static bool
+scalar (const dim_vector& dims)
 {
   return dims.length () == 2 && dims (0) == 1 && dims (1) == 1;
 }
@@ -693,7 +693,7 @@ scalar (const dim_vector& dims)
 %!assert(struct('a',{1,2},'b',3),x)
 %!assert(struct('a',{1,2},'b',{3}),x)
 %!assert(struct('b',3,'a',{1,2}),x)
-%!assert(struct('b',{3},'a',{1,2}),x) 
+%!assert(struct('b',{3},'a',{1,2}),x)
 %!test x=struct([]);
 %!assert(size(x),[0,0]);
 %!assert(isstruct(x));
@@ -731,7 +731,7 @@ octave_struct::save_ascii (std::ostream& os)
       octave_value val = map.contents (key);
 
       bool b = save_ascii_data (os, val, key, false, 0);
-      
+
       if (! b)
         return os;
     }
@@ -739,7 +739,7 @@ octave_struct::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_struct::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
@@ -800,7 +800,7 @@ octave_struct::load_ascii (std::istream& is)
               m.setfield (nm, tcell);
             }
 
-          if (is) 
+          if (is)
             map = m;
           else
             {
@@ -821,7 +821,7 @@ octave_struct::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 {
   octave_map m = map_value ();
@@ -840,7 +840,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
       di = d(i);
       os.write (reinterpret_cast<char *> (&di), 4);
     }
-  
+
   int32_t len = nf;
   os.write (reinterpret_cast<char *> (&len), 4);
 
@@ -855,7 +855,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
       octave_value val = map.contents (key);
 
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
-      
+
       if (! b)
         return os;
     }
@@ -863,7 +863,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_struct::load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt)
 {
@@ -910,14 +910,14 @@ octave_struct::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+          std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                              dummy, t2, doc);
 
           if (!is)
             break;
 
           Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
- 
+
           if (error_state)
             {
               error ("load: internal error loading struct elements");
@@ -927,7 +927,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
           m.setfield (nm, tcell);
         }
 
-      if (is) 
+      if (is)
         map = m;
       else
         {
@@ -972,7 +972,7 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 
       octave_value val = map.contents (key);
 
-      bool retval2 = add_hdf5_data (data_hid, val, key, "", false, 
+      bool retval2 = add_hdf5_data (data_hid, val, key, "", false,
                                     save_as_floats);
 
       if (! retval2)
@@ -984,7 +984,7 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_struct::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -1013,7 +1013,7 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
       octave_value t2 = dsub.tc;
 
       Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
- 
+
       if (error_state)
         {
           error ("load: internal error loading struct elements");
@@ -1029,7 +1029,7 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
       map = m;
       retval = true;
     }
-  
+
   return retval;
 }
 
@@ -1078,7 +1078,7 @@ octave_struct::fast_elem_extract (octave_idx_type n) const
 }
 
 bool
-octave_struct::fast_elem_insert (octave_idx_type n, 
+octave_struct::fast_elem_insert (octave_idx_type n,
                                  const octave_value& x)
 {
   bool retval = false;
@@ -1411,7 +1411,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
       octave_value val = map.contents (key);
 
       bool b = save_ascii_data (os, val, key, false, 0);
-      
+
       if (! b)
         return os;
     }
@@ -1452,7 +1452,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
               m.setfield (nm, t2);
             }
 
-          if (is) 
+          if (is)
             map = m;
           else
             {
@@ -1473,7 +1473,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
 {
   octave_map m = map_value ();
@@ -1494,7 +1494,7 @@ octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
       octave_value val = map.contents (key);
 
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
-      
+
       if (! b)
         return os;
     }
@@ -1502,7 +1502,7 @@ octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_scalar_struct::load_binary (std::istream& is, bool swap,
                                    oct_mach_info::float_format fmt)
 {
@@ -1526,7 +1526,7 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+          std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                              dummy, t2, doc);
 
           if (!is)
@@ -1541,7 +1541,7 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
           m.setfield (nm, t2);
         }
 
-      if (is) 
+      if (is)
         map = m;
       else
         {
@@ -1586,7 +1586,7 @@ octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_fl
 
       octave_value val = map.contents (key);
 
-      bool retval2 = add_hdf5_data (data_hid, val, key, "", false, 
+      bool retval2 = add_hdf5_data (data_hid, val, key, "", false,
                                     save_as_floats);
 
       if (! retval2)
@@ -1598,7 +1598,7 @@ octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_fl
   return true;
 }
 
-bool 
+bool
 octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -1641,7 +1641,7 @@ octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
       map = m;
       retval = true;
     }
-  
+
   return retval;
 }
 
@@ -1709,7 +1709,7 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
 %!assert(struct('a',{1,2},'b',3),x)
 %!assert(struct('a',{1,2},'b',{3}),x)
 %!assert(struct('b',3,'a',{1,2}),x)
-%!assert(struct('b',{3},'a',{1,2}),x) 
+%!assert(struct('b',{3},'a',{1,2}),x)
 %!test x=struct([]);
 %!assert(size(x),[0,0]);
 %!assert(isstruct(x));
@@ -1773,10 +1773,10 @@ If the argument is an object, return the underlying struct.\n\
 
       return retval;
     }
-    
+
   // Check for "field", VALUE pairs.
 
-  for (int i = 0; i < nargin; i += 2) 
+  for (int i = 0; i < nargin; i += 2)
     {
       if (! args(i).is_string () || i + 1 >= nargin)
         {
@@ -1791,9 +1791,9 @@ If the argument is an object, return the underlying struct.\n\
 
   int first_dimensioned_value = 0;
 
-  for (int i = 1; i < nargin; i += 2) 
+  for (int i = 1; i < nargin; i += 2)
     {
-      if (args(i).is_cell ()) 
+      if (args(i).is_cell ())
         {
           dim_vector argdims (args(i).dims ());
 
@@ -1818,7 +1818,7 @@ If the argument is an object, return the underlying struct.\n\
 
   octave_map map (dims);
 
-  for (int i = 0; i < nargin; i+= 2) 
+  for (int i = 0; i < nargin; i+= 2)
     {
       // Get key.
 
@@ -1835,23 +1835,23 @@ If the argument is an object, return the underlying struct.\n\
 
       // Value may be v, { v }, or { v1, v2, ... }
       // In the first two cases, we need to create a cell array of
-      // the appropriate dimensions filled with v.  In the last case, 
+      // the appropriate dimensions filled with v.  In the last case,
       // the cell array has already been determined to be of the
       // correct dimensions.
 
-      if (args(i+1).is_cell ()) 
+      if (args(i+1).is_cell ())
         {
           const Cell c (args(i+1).cell_value ());
 
           if (error_state)
             return retval;
 
-          if (scalar (c.dims ())) 
+          if (scalar (c.dims ()))
             map.setfield (key, Cell (dims, c(0)));
-          else 
+          else
             map.setfield (key, c);
         }
-      else 
+      else
         map.setfield (key, Cell (dims, args(i+1)));
 
       if (error_state)
@@ -2037,7 +2037,7 @@ A(1)\n\
 
   if (args.length () == 3)
     {
-      if (! args(0).is_cell ()) 
+      if (! args(0).is_cell ())
         error ("cell2struct: first argument must be a cell");
       else if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
         error ("cell2struct: second argument must be a cell array of strings or a character matrix");
@@ -2049,7 +2049,7 @@ A(1)\n\
           const Array<std::string> fields = args(1).cellstr_value ();
           int dim = args(2).int_value () - 1;
           octave_idx_type ext = 0;
-          
+
           if (dim < 0)
             error ("cell2struct: dim must be a valid dimension");
           else

@@ -32,14 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray-defs.h"
 
 template <class T>
-bool 
+bool
 MDiagArray2<T>::is_multiple_of_identity (T val) const
 {
   bool retval = this->rows () == this->cols ();
   if (retval)
     {
       octave_idx_type len = this->length (), i = 0;
-      for (;i < len; i++) 
+      for (;i < len; i++)
         if (DiagArray2<T>::elem (i, i) != val) break;
       retval = i == len;
     }
@@ -102,5 +102,5 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus), a.d1, a.d2); 
+  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus), a.d1, a.d2);
 }

@@ -51,7 +51,7 @@ OCTAVE_API
 idx_vector
 {
 public:
-  
+
   enum idx_class_type
     {
       class_invalid = -1,
@@ -157,15 +157,15 @@ private:
   {
   public:
     idx_range_rep (octave_idx_type _start, octave_idx_type _len,
-                   octave_idx_type _step, direct) 
+                   octave_idx_type _step, direct)
       : idx_base_rep (), start(_start), len(_len), step(_step) { }
 
-    idx_range_rep (void) 
+    idx_range_rep (void)
       : start(0), len(0), step(1) { }
 
     // Zero-based constructor.
     idx_range_rep (octave_idx_type _start, octave_idx_type _limit,
-                   octave_idx_type _step); 
+                   octave_idx_type _step);
 
     idx_range_rep (const Range&);
 
@@ -275,11 +275,11 @@ private:
   {
   public:
     // Direct constructor.
-    idx_vector_rep (octave_idx_type *_data, octave_idx_type _len, 
+    idx_vector_rep (octave_idx_type *_data, octave_idx_type _len,
                     octave_idx_type _ext, const dim_vector& od, direct)
       : data (_data), len (_len), ext (_ext), aowner (0), orig_dims (od) { }
 
-    idx_vector_rep (void) 
+    idx_vector_rep (void)
       : data (0), len (0), ext (0), aowner (0), orig_dims ()
       { }
 
@@ -324,7 +324,7 @@ private:
     Array<double> unconvert (void) const;
 
     Array<octave_idx_type> as_array (void);
-    
+
   private:
 
     DECLARE_OCTAVE_ALLOCATOR
@@ -343,7 +343,7 @@ private:
     // object that provides us the data.  Note that we need a pointer
     // because we deferred the Array<T> declaration and we do not want
     // it yet to be defined.
-    
+
     Array<octave_idx_type> *aowner;
 
     dim_vector orig_dims;
@@ -354,12 +354,12 @@ private:
   {
   public:
     // Direct constructor.
-    idx_mask_rep (bool *_data, octave_idx_type _len, 
+    idx_mask_rep (bool *_data, octave_idx_type _len,
                   octave_idx_type _ext, const dim_vector& od, direct)
       : data (_data), len (_len), ext (_ext), lsti (-1), lste (-1),
         aowner (0), orig_dims (od) { }
 
-    idx_mask_rep (void) 
+    idx_mask_rep (void)
       : data (0), len (0), ext (0), lsti (-1), lste (-1), aowner (0),
         orig_dims ()
       { }
@@ -381,7 +381,7 @@ private:
 
     idx_class_type idx_class (void) const { return class_mask; }
 
-    idx_base_rep *sort_uniq_clone (bool = false) 
+    idx_base_rep *sort_uniq_clone (bool = false)
       { count++; return this; }
 
     idx_base_rep *sort_idx (Array<octave_idx_type>&);
@@ -398,7 +398,7 @@ private:
     Array<bool> unconvert (void) const;
 
     Array<octave_idx_type> as_array (void);
-    
+
   private:
 
     DECLARE_OCTAVE_ALLOCATOR
@@ -422,7 +422,7 @@ private:
     // provides us the data.  Note that we need a pointer because we
     // deferred the Array<T> declaration and we do not want it yet to be
     // defined.
-    
+
     Array<bool> *aowner;
 
     dim_vector orig_dims;
@@ -465,27 +465,27 @@ public:
   idx_vector (void) : rep (nil_rep ()) { rep->count++; }
 
   // Zero-based constructors (for use from C++).
-  idx_vector (octave_idx_type i) : rep (new idx_scalar_rep (i)) 
+  idx_vector (octave_idx_type i) : rep (new idx_scalar_rep (i))
     { chkerr (); }
 
   idx_vector (octave_idx_type start, octave_idx_type limit,
               octave_idx_type step = 1)
-    : rep (new idx_range_rep (start, limit, step)) 
+    : rep (new idx_range_rep (start, limit, step))
     { chkerr (); }
 
-  static idx_vector 
+  static idx_vector
     make_range (octave_idx_type start, octave_idx_type step,
                 octave_idx_type len)
     {
       return idx_vector (new idx_range_rep (start, len, step, DIRECT));
     }
 
-  idx_vector (const Array<octave_idx_type>& inda) 
+  idx_vector (const Array<octave_idx_type>& inda)
     : rep (new idx_vector_rep (inda))
     { chkerr (); }
 
   // Directly pass extent, no checking.
-  idx_vector (const Array<octave_idx_type>& inda, octave_idx_type ext) 
+  idx_vector (const Array<octave_idx_type>& inda, octave_idx_type ext)
     : rep (new idx_vector_rep (inda, ext, DIRECT))
     { }
 
@@ -519,7 +519,7 @@ public:
 
   idx_vector (const Array<bool>& nda);
 
-  idx_vector (const Range& r) 
+  idx_vector (const Range& r)
     : rep (new idx_range_rep (r))
     { chkerr (); }
 
@@ -549,22 +549,22 @@ public:
 
   idx_class_type idx_class (void) const { return rep->idx_class (); }
 
-  octave_idx_type length (octave_idx_type n = 0) const 
+  octave_idx_type length (octave_idx_type n = 0) const
     { return rep->length (n); }
 
-  octave_idx_type extent (octave_idx_type n) const 
+  octave_idx_type extent (octave_idx_type n) const
     { return rep->extent (n); }
 
-  octave_idx_type xelem (octave_idx_type n) const 
+  octave_idx_type xelem (octave_idx_type n) const
     { return rep->xelem (n); }
 
-  octave_idx_type checkelem (octave_idx_type n) const 
+  octave_idx_type checkelem (octave_idx_type n) const
     { return rep->checkelem (n); }
 
-  octave_idx_type operator () (octave_idx_type n) const 
+  octave_idx_type operator () (octave_idx_type n) const
     {
 #if defined (BOUNDS_CHECKING)
-      return rep->checkelem (n); 
+      return rep->checkelem (n);
 #else
       return rep->xelem (n);
 #endif
@@ -573,10 +573,10 @@ public:
   operator bool (void) const
     { return ! rep->err; }
 
-  bool is_colon (void) const 
+  bool is_colon (void) const
     { return rep->idx_class () == class_colon; }
 
-  bool is_scalar (void) const 
+  bool is_scalar (void) const
     { return rep->idx_class () == class_scalar; }
 
   bool is_range (void) const
@@ -895,7 +895,7 @@ public:
   // for (octave_idx_type i = 0; i < idx->length (n); i++)
   //   if (body (idx(i))) break;
   // return i;
-  // 
+  //
 
   template <class Functor>
   octave_idx_type
@@ -973,7 +973,7 @@ public:
       return ret;
     }
 
-  // Rationale: 
+  // Rationale:
   // This method is the key to "smart indexing". When indexing cartesian
   // arrays, sometimes consecutive index vectors can be reduced into a
   // single index.  If rows (A) = k and i.maybe_reduce (j) gives k, then
@@ -1007,7 +1007,7 @@ public:
 
   // Unconverts the index to a scalar, Range, double array or a mask.
   void unconvert (idx_class_type& iclass,
-                  double& scalar, Range& range, 
+                  double& scalar, Range& range,
                   Array<double>& array, Array<bool>& mask) const;
 
   Array<octave_idx_type> as_array (void) const;
@@ -1017,11 +1017,11 @@ public:
   const octave_idx_type *raw (void);
 
   bool is_vector (void) const;
-    
+
   // FIXME -- these are here for compatibility.  They should be removed
   // when no longer in use.
 
-  octave_idx_type elem (octave_idx_type n) const 
+  octave_idx_type elem (octave_idx_type n) const
     { return (*this) (n); }
 
   bool is_colon_equiv (octave_idx_type n, int) const
@@ -1036,7 +1036,7 @@ public:
   octave_idx_type ones_count (void) const;
 
   octave_idx_type max (void) const { return extent (1) - 1; }
-  
+
 private:
 
   idx_base_rep *rep;

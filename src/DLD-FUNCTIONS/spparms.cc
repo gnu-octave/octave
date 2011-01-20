@@ -117,7 +117,7 @@ time.\n\
           retval (1) = octave_sparse_params::get_vals ();
         }
       else
-        error ("spparms: too many output arguments"); 
+        error ("spparms: too many output arguments");
     }
   else if (nargin == 1)
     {
@@ -158,7 +158,7 @@ time.\n\
       if (args(0).is_string ())
         {
           std::string str = args(0).string_value ();
-          
+
           double val = args(1).double_value ();
 
           if (error_state)

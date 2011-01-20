@@ -59,7 +59,7 @@ xround (double x)
   return gnulib::round (x);
 }
 
-double 
+double
 xroundb (double x)
 {
   double t = xround (x);
@@ -273,7 +273,7 @@ xround (float x)
   return gnulib::round (x);
 }
 
-float 
+float
 xroundb (float x)
 {
   float t = xround (x);

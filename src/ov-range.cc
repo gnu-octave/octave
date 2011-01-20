@@ -213,13 +213,13 @@ octave_range::char_array_value (bool) const
   charNDArray retval (dims ());
 
   octave_idx_type nel = numel ();
-  
+
   for (octave_idx_type i = 0; i < nel; i++)
     retval.elem (i) = static_cast<char>(matrix.elem (i));
 
   return retval;
 }
-  
+
 octave_value
 octave_range::all (int dim) const
 {
@@ -240,12 +240,12 @@ octave_range::any (int dim) const
   return m.any (dim);
 }
 
-octave_value 
+octave_value
 octave_range::diag (octave_idx_type k) const
-{ 
+{
   return (k == 0
           ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
-          : octave_value (range.diag (k))); 
+          : octave_value (range.diag (k)));
 }
 
 
@@ -323,15 +323,15 @@ octave_range::bool_array_value (bool warn) const
   return boolNDArray (m);
 }
 
-octave_value 
+octave_value
 octave_range::resize (const dim_vector& dv, bool fill) const
-{ 
-  NDArray retval = array_value (); 
+{
+  NDArray retval = array_value ();
   if (fill)
     retval.resize (dv, NDArray::resize_fill_value ());
   else
-    retval.resize (dv); 
-  return retval; 
+    retval.resize (dv);
+  return retval;
 }
 
 octave_value
@@ -373,7 +373,7 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
       newline (os);
       retval = true;
     }
-    
+
   return retval;
 }
 
@@ -394,7 +394,7 @@ skip_comments (std::istream& is)
   skip_until_newline (is, false);
 }
 
-bool 
+bool
 octave_range::save_ascii (std::ostream& os)
 {
   Range r = range_value ();
@@ -421,7 +421,7 @@ octave_range::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_range::load_ascii (std::istream& is)
 {
   // # base, limit, range comment added by save ().
@@ -444,7 +444,7 @@ octave_range::load_ascii (std::istream& is)
   return true;
 }
 
-bool 
+bool
 octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
   char tmp = LS_DOUBLE;
@@ -463,7 +463,7 @@ octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
   return true;
 }
 
-bool 
+bool
 octave_range::load_binary (std::istream& is, bool swap,
                            oct_mach_info::float_format /* fmt */)
 {
@@ -494,9 +494,9 @@ octave_range::load_binary (std::istream& is, bool swap,
 #if defined (HAVE_HDF5)
 
 // The following subroutines creates an HDF5 representation of the way
-// we will store Octave range types (triplets of floating-point numbers). 
-// NUM_TYPE is the HDF5 numeric type to use for storage (e.g. 
-// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary 
+// we will store Octave range types (triplets of floating-point numbers).
+// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
+// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary
 // conversions are handled automatically by HDF5.
 
 static hid_t
@@ -523,24 +523,24 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
-  if (type_hid < 0) 
+  if (type_hid < 0)
     {
       H5Sclose (space_hid);
       return false;
     }
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
       return false;
     }
-  
+
   Range r = range_value ();
   double range_vals[3];
   range_vals[0] = r.base ();
@@ -564,7 +564,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   return retval;
 }
 
-bool 
+bool
 octave_range::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -597,12 +597,12 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   double rangevals[3];
-  if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+  if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                rangevals) >= 0)
     {
       retval = true;
       octave_idx_type nel;
-      if (hdf5_get_scalar_attr (data_hid, H5T_NATIVE_IDX, 
+      if (hdf5_get_scalar_attr (data_hid, H5T_NATIVE_IDX,
                                 "OCTAVE_RANGE_NELEM", &nel))
         range = Range (rangevals[0], rangevals[2], nel);
       else
@@ -610,7 +610,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name)
           if (rangevals[2] != 0)
             range = Range (rangevals[0], rangevals[1], rangevals[2]);
           else
-            range = Range (rangevals[0], rangevals[2], 
+            range = Range (rangevals[0], rangevals[2],
                            static_cast<octave_idx_type> (rangevals[1]));
         }
     }

@@ -135,8 +135,8 @@ xdiv (const Matrix& a, const Matrix& b, MatrixType &typ)
   octave_idx_type info;
   double rcond = 0.0;
 
-  Matrix result 
-    = b.solve (typ, a.transpose (), info, rcond, 
+  Matrix result
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -153,7 +153,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ)
   double rcond = 0.0;
 
   ComplexMatrix result
-    = b.solve (typ, a.transpose (), info, rcond, 
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -170,7 +170,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ)
   double rcond = 0.0;
 
   ComplexMatrix result
-    = b.solve (typ, a.transpose (), info, rcond, 
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -187,7 +187,7 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ)
   double rcond = 0.0;
 
   ComplexMatrix result
-    = b.solve (typ, a.transpose (), info, rcond, 
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -433,8 +433,8 @@ xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ)
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatMatrix result 
-    = b.solve (typ, a.transpose (), info, rcond, 
+  FloatMatrix result
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -450,8 +450,8 @@ xdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result 
-    = b.solve (typ, a.transpose (), info, rcond, 
+  FloatComplexMatrix result
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -467,8 +467,8 @@ xdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ)
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result 
-    = b.solve (typ, a.transpose (), info, rcond, 
+  FloatComplexMatrix result
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();
@@ -484,8 +484,8 @@ xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ)
   octave_idx_type info;
   float rcond = 0.0;
 
-  FloatComplexMatrix result 
-    = b.solve (typ, a.transpose (), info, rcond, 
+  FloatComplexMatrix result
+    = b.solve (typ, a.transpose (), info, rcond,
                solve_singularity_warning, true, blas_trans);
 
   return result.transpose ();

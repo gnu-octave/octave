@@ -90,7 +90,7 @@ OCTINTERP_API
 octave_child
 {
 public:
-  
+
   // Do whatever to handle event for child with PID (might not
   // actually be dead, could just be stopped).  Return true if
   // the list element corresponding to PID should be removed from
@@ -105,7 +105,7 @@ public:
   octave_child (const octave_child& oc)
     : pid (oc.pid), handler (oc.handler),
       have_status (oc.have_status), status (oc.status) { }
- 
+
   octave_child& operator = (const octave_child& oc)
     {
       if (&oc != this)

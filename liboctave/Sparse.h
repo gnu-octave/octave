@@ -75,28 +75,28 @@ protected:
 
     SparseRep (octave_idx_type n) : d (0), r (0), c (new octave_idx_type [n+1]), nzmx (0), nrows (n),
       ncols (n), count (1)
-      { 
+      {
         for (octave_idx_type i = 0; i < n + 1; i++)
           c[i] = 0;
       }
 
-    SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nzmx (0), 
+    SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nzmx (0),
       nrows (nr), ncols (nc), count (1)
-      { 
+      {
         for (octave_idx_type i = 0; i < nc + 1; i++)
           c[i] = 0;
       }
 
-    SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz) : d (new T [nz]), 
-      r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr), 
+    SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz) : d (new T [nz]),
+      r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
       ncols (nc), count (1)
-      { 
+      {
         for (octave_idx_type i = 0; i < nc + 1; i++)
           c[i] = 0;
       }
 
     SparseRep (const SparseRep& a)
-      : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]), 
+      : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]), c (new octave_idx_type [a.ncols + 1]),
       nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
       {
         octave_idx_type nz = a.nnz ();
@@ -104,7 +104,7 @@ protected:
         copy_or_memcpy (nz, a.r, r);
         copy_or_memcpy (ncols + 1, a.c, c);
       }
- 
+
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
 
     octave_idx_type length (void) const { return nzmx; }
@@ -178,11 +178,11 @@ public:
     : rep (nil_rep ()), dimensions (dim_vector(0,0)) { }
 
   explicit Sparse (octave_idx_type n)
-    : rep (new typename Sparse<T>::SparseRep (n)), 
+    : rep (new typename Sparse<T>::SparseRep (n)),
       dimensions (dim_vector (n, n)) { }
 
   explicit Sparse (octave_idx_type nr, octave_idx_type nc)
-    : rep (new typename Sparse<T>::SparseRep (nr, nc)), 
+    : rep (new typename Sparse<T>::SparseRep (nr, nc)),
       dimensions (dim_vector (nr, nc)) { }
 
   explicit Sparse (octave_idx_type nr, octave_idx_type nc, T val);
@@ -196,11 +196,11 @@ public:
       dimensions (dim_vector (nr, nc)) { }
 
   // Type conversion case. Preserves capacity ().
-  template <class U> 
+  template <class U>
   Sparse (const Sparse<U>& a)
     : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols, a.rep->nzmx)),
-    dimensions (a.dimensions) 
-    { 
+    dimensions (a.dimensions)
+    {
       octave_idx_type nz = a.nnz ();
       std::copy (a.rep->d, a.rep->d + nz, rep->d);
       copy_or_memcpy (nz, a.rep->r, rep->r);
@@ -240,9 +240,9 @@ public:
 
   // Querying the number of elements (incl. zeros) may overflow the index type,
   // so don't do it unless you really need it.
-  octave_idx_type numel (void) const 
-    { 
-      return dimensions.safe_numel (); 
+  octave_idx_type numel (void) const
+    {
+      return dimensions.safe_numel ();
     }
 
   octave_idx_type nelem (void) const { return capacity (); }
@@ -264,16 +264,16 @@ public:
       return ret;
     }
 
-  size_t byte_size (void) const 
-    { 
+  size_t byte_size (void) const
+    {
       return (static_cast<size_t>(cols () + 1) * sizeof (octave_idx_type)
-              + static_cast<size_t> (capacity ()) * (sizeof (T) + sizeof (octave_idx_type))); 
+              + static_cast<size_t> (capacity ()) * (sizeof (T) + sizeof (octave_idx_type)));
     }
 
   dim_vector dims (void) const { return dimensions; }
 
   Sparse<T> squeeze (void) const { return *this; }
-  
+
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
 
   T range_error (const char *fcn, octave_idx_type n) const;
@@ -287,18 +287,18 @@ public:
 
   // No checking, even for multiple references, ever.
 
-  T& xelem (octave_idx_type n) 
-    { 
-      octave_idx_type i = n % rows (), j = n / rows(); 
-      return xelem (i, j); 
+  T& xelem (octave_idx_type n)
+    {
+      octave_idx_type i = n % rows (), j = n / rows();
+      return xelem (i, j);
     }
 
-  T xelem (octave_idx_type n) const 
-    { 
-      octave_idx_type i = n % rows (), j = n / rows(); 
-      return xelem (i, j); 
+  T xelem (octave_idx_type n) const
+    {
+      octave_idx_type i = n % rows (), j = n / rows();
+      return xelem (i, j);
     }
-  
+
   T& xelem (octave_idx_type i, octave_idx_type j) { return rep->elem (i, j); }
   T xelem (octave_idx_type i, octave_idx_type j) const { return rep->celem (i, j); }
 
@@ -350,10 +350,10 @@ public:
       return xelem (n);
     }
 
-  T& elem (octave_idx_type i, octave_idx_type j) 
-    { 
+  T& elem (octave_idx_type i, octave_idx_type j)
+    {
       make_unique ();
-      return xelem (i, j); 
+      return xelem (i, j);
     }
 
   T& elem (const Array<octave_idx_type>& ra_idx)
@@ -412,13 +412,13 @@ public:
   T operator () (const Array<octave_idx_type>& ra_idx) const { return elem (ra_idx); }
 #endif
 
-  Sparse<T> maybe_compress (bool remove_zeros = false) 
-    { 
+  Sparse<T> maybe_compress (bool remove_zeros = false)
+    {
       if (remove_zeros)
         make_unique (); // Needs to unshare because elements are removed.
 
-      rep->maybe_compress (remove_zeros); 
-      return (*this); 
+      rep->maybe_compress (remove_zeros);
+      return (*this);
     }
 
   Sparse<T> reshape (const dim_vector& new_dims) const;
@@ -434,11 +434,11 @@ public:
 
   void resize (const dim_vector& dv);
 
-  void change_capacity (octave_idx_type nz) 
-    { 
+  void change_capacity (octave_idx_type nz)
+    {
       if (nz < nnz ())
         make_unique (); // Unshare now because elements will be truncated.
-      rep->change_length (nz); 
+      rep->change_length (nz);
     }
 
   Sparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c);
@@ -526,7 +526,7 @@ public:
       {
         octave_idx_type nr = rows ();
         octave_idx_type nc = cols ();
-      
+
         result = Sparse<U> (nr, nc, f_zero);
 
         for (octave_idx_type j = 0; j < nc; j++)
@@ -601,7 +601,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
       octave_idx_type jold = 0;
       octave_idx_type ii = 0;
       T tmp;
-       
+
       a.cidx (0) = 0;
       for (octave_idx_type i = 0; i < nz; i++)
         {
@@ -654,7 +654,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
           jold = jtmp;
 
           tmp = read_fcn (is);
-          
+
           if (is)
             {
               a.data (ii) = tmp;
@@ -667,7 +667,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
       for (octave_idx_type j = jold; j < nc; j++)
         a.cidx(j+1) = ii;
     }
-  
+
  done:
 
   return is;

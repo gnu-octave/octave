@@ -42,7 +42,7 @@ public: // FIXME: make this class private?
   {
   public:
 
-    shlib_rep (void) 
+    shlib_rep (void)
       : count (1), file (), tm_loaded (time_t ()), fcn_names () { }
 
   protected:
@@ -89,7 +89,7 @@ public: // FIXME: make this class private?
 
   protected:
 
-    void fake_reload (void); 
+    void fake_reload (void);
 
     std::string file;
     octave_time tm_loaded;
@@ -145,20 +145,20 @@ public:
 
   operator bool () const { return rep->is_open (); }
 
-  void open (const std::string& f) 
+  void open (const std::string& f)
     { *this = octave_shlib (f); }
 
   void close (close_hook cl_hook = 0)
-    { 
+    {
       if (cl_hook)
         rep->do_close_hook (cl_hook);
 
-      *this = octave_shlib (); 
+      *this = octave_shlib ();
     }
 
   void *search (const std::string& nm, name_mangler mangler = 0) const
-    { 
-      void *f = rep->search (nm, mangler); 
+    {
+      void *f = rep->search (nm, mangler);
       if (f)
         rep->add_fcn_name (nm);
 

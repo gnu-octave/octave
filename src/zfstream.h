@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2011 Ludwig Schwardt, Kevin Ruland 
+Copyright (C) 2005-2011 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
@@ -177,7 +177,7 @@ protected:
    */
   virtual pos_type
   seekoff(off_type off, std::ios_base::seekdir way,
-          std::ios_base::openmode mode = 
+          std::ios_base::openmode mode =
           std::ios_base::in|std::ios_base::out);
 
   /**
@@ -186,7 +186,7 @@ protected:
    *  Each derived class provides its own appropriate behavior.
    */
   virtual pos_type
-  seekpos(pos_type sp, std::ios_base::openmode mode = 
+  seekpos(pos_type sp, std::ios_base::openmode mode =
           std::ios_base::in|std::ios_base::out);
 
   virtual int_type

@@ -208,7 +208,7 @@ public:
   void chop_all_singletons (void);
 
 private:
-  
+
   static octave_idx_type *nil_rep (void)
     {
       static dim_vector zv (0, 0);
@@ -367,7 +367,7 @@ public:
   // This corresponds to cat().
   bool concat (const dim_vector& dvb, int dim);
 
-  // This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1). 
+  // This corresponds to [,] (horzcat, dim = 0) and [;] (vertcat, dim = 1).
   // The rules are more relaxed here.
   bool hvcat (const dim_vector& dvb, int dim);
 
@@ -408,7 +408,7 @@ public:
             return i;
         }
 
-      return def;      
+      return def;
     }
 
   // Compute a linear index from an index tuple.

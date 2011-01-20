@@ -1,3 +1,8 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* misc/cquit.c, misc/f77-fcn.h, misc/quit.cc: Strip trailing
+	whitespace.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* Update copyright notices for 2011.

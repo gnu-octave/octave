@@ -85,7 +85,7 @@ octave_lvalue::value (void)
             {
               octave_value_list t = val->subsref (type, idx, 1);
               if (t.length () > 0)
-                retval = t(0);        
+                retval = t(0);
             }
         }
     }

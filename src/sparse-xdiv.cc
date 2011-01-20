@@ -143,7 +143,7 @@ xdiv (const Matrix& a, const SparseMatrix& b, MatrixType &typ)
 
   octave_idx_type info;
   double rcond = 0.0;
-  Matrix result = btmp.solve (btyp, atmp, info, rcond, 
+  Matrix result = btmp.solve (btyp, atmp, info, rcond,
                               solve_singularity_warning);
 
   typ = btyp.transpose ();
@@ -223,7 +223,7 @@ xdiv (const SparseMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
   octave_idx_type info;
   double rcond = 0.0;
-  SparseMatrix result = btmp.solve (btyp, atmp, info, rcond, 
+  SparseMatrix result = btmp.solve (btyp, atmp, info, rcond,
                                     solve_singularity_warning);
 
   typ = btyp.transpose ();
@@ -546,7 +546,7 @@ xleftdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 8 -*-
 SparseComplexMatrix
-xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, 
+xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
           MatrixType &typ)
 {
   if (! mx_leftdiv_conform (a, b))

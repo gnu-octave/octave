@@ -470,7 +470,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                     }
                 }
             }
-          
+
           if (! fs.is_dir ())
             {
               std::string tmode = mode;
@@ -866,7 +866,7 @@ If @var{fid} is omitted, the output is written to @code{stdout}.\n\
       octave_stream os;
       int fmt_n = 0;
 
-      if (args(0).is_string ()) 
+      if (args(0).is_string ())
         {
           os = octave_stream_list::lookup (1, who);
         }

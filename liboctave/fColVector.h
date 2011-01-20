@@ -39,7 +39,7 @@ public:
   explicit FloatColumnVector (octave_idx_type n)
     : MArray<float> (dim_vector (n, 1)) { }
 
-  explicit FloatColumnVector (const dim_vector& dv) 
+  explicit FloatColumnVector (const dim_vector& dv)
     : MArray<float> (dv.as_column ()) { }
 
   FloatColumnVector (octave_idx_type n, float val)

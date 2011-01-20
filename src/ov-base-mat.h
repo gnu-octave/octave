@@ -52,7 +52,7 @@ public:
     : octave_base_value (), matrix (), typ (), idx_cache () { }
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
-    : octave_base_value (), matrix (m), 
+    : octave_base_value (), matrix (m),
       typ (t.is_known () ? new MatrixType(t) : 0), idx_cache ()
   {
     if (matrix.ndims () == 0)
@@ -60,9 +60,9 @@ public:
   }
 
   octave_base_matrix (const octave_base_matrix& m)
-    : octave_base_value (), matrix (m.matrix), 
-      typ (m.typ ? new MatrixType (*m.typ) : 0), 
-      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0) 
+    : octave_base_value (), matrix (m.matrix),
+      typ (m.typ ? new MatrixType (*m.typ) : 0),
+      idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0)
     { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
@@ -183,7 +183,7 @@ protected:
     {
       delete typ; typ = 0;
       delete idx_cache; idx_cache = 0;
-    } 
+    }
 
   mutable MatrixType *typ;
   mutable idx_vector *idx_cache;

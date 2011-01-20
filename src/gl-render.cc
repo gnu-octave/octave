@@ -63,9 +63,9 @@ protected:
   class texture_rep
   {
   public:
-    texture_rep (void) 
+    texture_rep (void)
       : id (), w (), h (), tw (), th (), tx (), ty (),
-        valid (false), count (1) 
+        valid (false), count (1)
     { }
 
     texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
@@ -131,7 +131,7 @@ public:
 
   void tex_coord (double q, double r) const
     { rep->tex_coord (q, r); }
-  
+
   bool is_valid (void) const
     { return rep->valid; }
 };
@@ -305,20 +305,20 @@ protected:
 private:
   static void CALLBACK tess_begin (GLenum type, void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->begin (type); }
-  
+
   static void CALLBACK tess_end (void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->end (); }
-  
+
   static void CALLBACK tess_vertex (void *v, void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
-  
+
   static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
                                      void **out,  void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
-  
+
   static void CALLBACK tess_edge_flag (GLboolean flag, void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->edge_flag (flag); }
-  
+
   static void CALLBACK tess_error (GLenum err, void *t)
     { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
 
@@ -346,7 +346,7 @@ public:
     // reference counter
     int count;
 
-    vertex_data_rep (void) 
+    vertex_data_rep (void)
       : coords (), color (), normal (), alpha (),
         ambient (), diffuse (), specular (), specular_exp (),count (1) { }
 
@@ -442,7 +442,7 @@ protected:
       //printf("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
       // FIXME: why did I need to keep the first vertex of the face
-      // in JHandles? I think it's related to the fact that the 
+      // in JHandles? I think it's related to the fact that the
       // tessellation process might re-order the vertices, such that
       // the first one you get here might not be the first one of the face;
       // but I can't figure out the actual reason.
@@ -540,7 +540,7 @@ opengl_renderer::draw (const graphics_object& go)
 {
   if (! go.valid_object ())
     return;
-  
+
   const base_properties& props = go.get_properties ();
 
   if (go.isa ("figure"))
@@ -613,7 +613,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   Matrix x_zlim = props.get_transform_zlim ();
   Matrix x_mat1 = props.get_opengl_matrix_1 ();
   Matrix x_mat2 = props.get_opengl_matrix_2 ();
-  
+
   xZ1 = x_zlim(0)-(x_zlim(1)-x_zlim(0))/2;
   xZ2 = x_zlim(1)+(x_zlim(1)-x_zlim(0))/2;
 
@@ -640,13 +640,13 @@ opengl_renderer::draw_axes (const axes::properties& props)
   // store axes transformation data
 
   xform = props.get_transform ();
-  
+
   // draw axes object
 
   GLboolean antialias;
   glGetBooleanv (GL_LINE_SMOOTH, &antialias);
   glDisable (GL_LINE_SMOOTH);
-  
+
   Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
   Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
   Matrix zlim = xform.zscale (props.get_zlim ().matrix_value ());
@@ -1027,7 +1027,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   //        drawn after axes object, for correct rendering?
                   Matrix b = render_text (xticklabels(i),
                                         tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                        halign, valign); 
+                                        halign, valign);
 
                   wmax = std::max (wmax, static_cast<int> (b(2)));
                   hmax = std::max (hmax, static_cast<int> (b(3)));
@@ -1058,7 +1058,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
           glEnd ();
           set_linestyle ("-", true);
         }
-                        
+
       // minor tick marks
       if (do_xminortick)
         {
@@ -1170,7 +1170,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
     }
 
   // Y grid
-                
+
   if (ystate != AXE_DEPTH_DIR && visible)
     {
       bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
@@ -1277,7 +1277,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   //        drawn after axes object, for correct rendering?
                   Matrix b = render_text (yticklabels(i),
                                         tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                        halign, valign); 
+                                        halign, valign);
 
                   wmax = std::max (wmax, static_cast<int> (b(2)));
                   hmax = std::max (hmax, static_cast<int> (b(3)));
@@ -1418,7 +1418,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
     {
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
     }
-                
+
   // Z Grid
 
   if (zstate != AXE_DEPTH_DIR && visible)
@@ -1565,7 +1565,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   //        drawn after axes object, for correct rendering?
                   Matrix b = render_text (zticklabels(i),
                                         tickpos(i,0), tickpos(i,1), tickpos(i,2),
-                                        halign, valign); 
+                                        halign, valign);
 
                   wmax = std::max (wmax, static_cast<int> (b(2)));
                   hmax = std::max (hmax, static_cast<int> (b(3)));
@@ -1765,7 +1765,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   text::properties& title_props =
     reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_title ()).get_properties ());
-      
+
   if (! title_props.get_string ().empty () && title_props.positionmode_is("auto"))
     {
       ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
@@ -1921,7 +1921,7 @@ opengl_renderer::draw_line (const line::properties& props)
           if (flag)
             glEnd ();
         }
-          
+
       set_linewidth (0.5);
       set_linestyle ("-");
     }
@@ -1957,7 +1957,7 @@ opengl_renderer::draw_line (const line::properties& props)
 
       end_marker ();
     }
-  
+
   set_clipping (props.is_clipping ());
 }
 
@@ -2114,7 +2114,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] *= as;
                           glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-                          
+
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j-1, i-1, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
@@ -2143,7 +2143,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] *= as;
                           glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-                          
+
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j-1, i, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
@@ -2159,7 +2159,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                     }
 
                   glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
-                  
+
                   // Vertex 3
                   if (fc_mode == 3)
                     tex.tex_coord (double (i) / (zc-1), double (j) / (zr-1));
@@ -2174,7 +2174,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] *= as;
                           glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-                          
+
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j, i, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
@@ -2203,7 +2203,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           for (int k = 0; k < 3; k++)
                             cb[k] *= as;
                           glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-                          
+
                           for (int k = 0; k < 3; k++)
                             cb[k] = ds * c(j, i-1, k);
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
@@ -2396,7 +2396,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           glNormal3d (n(j,i-1,0)/d, n(j,i-1,1)/d, n(j,i-1,2)/d);
                         }
                       glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
-                      
+
                       // Vertex 2
                       if (ec_mode == 2)
                         {
@@ -2423,7 +2423,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           glNormal3d (n(j,i,0)/d, n(j,i,1)/d, n(j,i,2)/d);
                         }
                       glVertex3d (x(j2,i), y(j,i2), z(j,i));
-                      
+
                       glEnd ();
                     }
                 }
@@ -2479,7 +2479,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
         {
           if (y_mat)
             i1 = i;
-          
+
           for (int j = 0; j < zr; j++)
             {
               if (clip(j,i))
@@ -2526,14 +2526,14 @@ opengl_renderer::draw_patch (const patch::properties &props)
   bool has_facecolor = false;
   bool has_facealpha = false;
 
-  int fc_mode = ((props.facecolor_is("none") 
+  int fc_mode = ((props.facecolor_is("none")
                   || props.facecolor_is_rgb ()) ? 0 :
                  (props.facecolor_is("flat") ? 1 : 2));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
                  (props.facelighting_is ("flat") ? 1 : 2));
   int fa_mode = (props.facealpha_is_double () ? 0 :
                  (props.facealpha_is ("flat") ? 1 : 2));
-  int ec_mode = ((props.edgecolor_is("none") 
+  int ec_mode = ((props.edgecolor_is("none")
                   || props.edgecolor_is_rgb ()) ? 0 :
                  (props.edgecolor_is("flat") ? 1 : 2));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
@@ -2543,7 +2543,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
   Matrix fcolor = props.get_facecolor_rgb ();
   Matrix ecolor = props.get_edgecolor_rgb ();
-  
+
   float as = props.get_ambientstrength ();
   float ds = props.get_diffusestrength ();
   float ss = props.get_specularstrength ();
@@ -2580,7 +2580,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       if (c.rows () == 1)
         {
           // Single color specifications, we can simplify a little bit
-          
+
           if (fc_mode > 0)
             {
               fcolor = c;
@@ -2691,7 +2691,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
               for (int j = 0; j < count_f(i); j++)
                 {
                   vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-        
+
                   tess.add_vertex (vv->coords.fortran_vec (), vv);
                 }
 
@@ -2886,14 +2886,14 @@ opengl_renderer::draw_image (const image::properties& props)
   dim_vector dv (cdata.dims ());
   int h = dv(0), w = dv(1);
   bool ok = true;
-  
+
   Matrix x = props.get_xdata ().matrix_value ();
   Matrix y = props.get_ydata ().matrix_value ();
 
-  if (w > 1 && x(1) == x(0)) 
+  if (w > 1 && x(1) == x(0))
     x(1) = x(1) + (w-1);
 
-  if (h > 1 && y(1) == y(0)) 
+  if (h > 1 && y(1) == y(0))
     y(1) = y(1) + (h-1);
 
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
@@ -2904,7 +2904,7 @@ opengl_renderer::draw_image (const image::properties& props)
   // image pixel size in normalized units
   float nor_dx, nor_dy;
 
-  if (w > 1) 
+  if (w > 1)
     {
       pix_dx = (p1(0) - p0(0))/(w-1);
       nor_dx = (x(1) - x(0))/(w-1);
@@ -2957,10 +2957,10 @@ opengl_renderer::draw_image (const image::properties& props)
       GLfloat vp[4];
       glGetFloatv(GL_VIEWPORT, vp);
       // FIXME -- actually add the code to do it!
-      
+
     }
 
-  if (i0 >= i1 || j0 >= j1) 
+  if (i0 >= i1 || j0 >= j1)
     return;
 
   glPixelZoom (pix_dx, -pix_dy);
@@ -3034,7 +3034,7 @@ opengl_renderer::draw_image (const image::properties& props)
           warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
         }
     }
-  else 
+  else
     {
       ok = false;
       warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
@@ -3213,7 +3213,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
                               const Matrix& lc, const Matrix& fc)
 {
   ColumnVector tmp = xform.transform (x, y, z, false);
-  
+
   glLoadIdentity ();
   glTranslated (tmp(0), tmp(1), -tmp(2));
 
@@ -3357,7 +3357,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
         double ang;
         double r;
         double dr = 1.0 - sin(M_PI/10)/sin(3*M_PI/10)*1.02;
-  
+
         glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
         for (int i = 0; i < 2*5; i++)
           {
@@ -3373,7 +3373,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
         double ang;
         double r;
         double dr = 1.0 - 0.5/sin(M_PI/3)*1.02;
-  
+
         glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
         for (int i = 0; i < 2*6; i++)
           {

@@ -113,7 +113,7 @@ public:
         gripe_invalid_conversion (type_name (), "real scalar");
 
       return retval;
-      
+
     }
 
   float
@@ -132,7 +132,7 @@ public:
         gripe_invalid_conversion (type_name (), "real scalar");
 
       return retval;
-      
+
     }
 
   double scalar_value (bool = false) const { return double_value (); }
@@ -213,8 +213,8 @@ public:
 
   NDArray
   array_value (bool = false) const
-    { 
-      NDArray retval (matrix.dims ()); 
+    {
+      NDArray retval (matrix.dims ());
       double *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
@@ -224,8 +224,8 @@ public:
 
   FloatNDArray
   float_array_value (bool = false) const
-    { 
-      FloatNDArray retval (matrix.dims ()); 
+    {
+      FloatNDArray retval (matrix.dims ());
       float *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
@@ -235,8 +235,8 @@ public:
 
   ComplexNDArray
   complex_array_value (bool = false) const
-    { 
-      ComplexNDArray retval (matrix.dims ()); 
+    {
+      ComplexNDArray retval (matrix.dims ());
       Complex *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
@@ -246,8 +246,8 @@ public:
 
   FloatComplexNDArray
   float_complex_array_value (bool = false) const
-    { 
-      FloatComplexNDArray retval (matrix.dims ()); 
+    {
+      FloatComplexNDArray retval (matrix.dims ());
       FloatComplex *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
@@ -278,7 +278,7 @@ public:
     charNDArray retval (dims ());
 
     octave_idx_type nel = numel ();
-  
+
     char *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
       vec[i] = matrix(i).char_value ();
@@ -287,22 +287,22 @@ public:
   }
 
   // Use matrix_ref here to clear index cache.
-  void increment (void) 
-   { 
-     matrix_ref() += OCTAVE_INT_T (1); 
+  void increment (void)
+   {
+     matrix_ref() += OCTAVE_INT_T (1);
    }
 
   void decrement (void)
-   { 
-     matrix_ref() -= OCTAVE_INT_T (1); 
+   {
+     matrix_ref() -= OCTAVE_INT_T (1);
    }
 
   void changesign (void)
-   { 
-     matrix_ref ().changesign (); 
+   {
+     matrix_ref ().changesign ();
    }
 
-  idx_vector index_vector (void) const 
+  idx_vector index_vector (void) const
     { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   int write (octave_stream& os, int block_size,
@@ -354,7 +354,7 @@ public:
         case umap_finite:
           return boolNDArray (matrix.dims (), true);
 
-        default: 
+        default:
           {
             octave_matrix m (array_value ());
             return m.map (umap);
@@ -405,7 +405,7 @@ public:
 
       octave_value tmp
         (new OCTAVE_VALUE_INT_MATRIX_T
-         (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
+         (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ()));
 
       return tmp.do_index_op (idx, resize_ok);
     }
@@ -534,23 +534,23 @@ public:
 
   NDArray
   array_value (bool = false) const
-    { 
-      NDArray retval (dim_vector (1, 1)); 
+    {
+      NDArray retval (dim_vector (1, 1));
       retval(0) = scalar.double_value ();
       return retval;
     }
 
   FloatNDArray
   float_array_value (bool = false) const
-    { 
-      FloatNDArray retval (dim_vector (1, 1)); 
+    {
+      FloatNDArray retval (dim_vector (1, 1));
       retval(0) = scalar.float_value ();
       return retval;
     }
 
   ComplexNDArray
   complex_array_value (bool = false) const
-    { 
+    {
       ComplexNDArray retval (dim_vector (1, 1));
       retval(0) = FloatComplex (scalar.double_value ());
       return retval;
@@ -558,7 +558,7 @@ public:
 
   FloatComplexNDArray
   float_complex_array_value (bool = false) const
-    { 
+    {
       FloatComplexNDArray retval (dim_vector (1, 1));
       retval(0) = FloatComplex (scalar.float_value ());
       return retval;
@@ -585,14 +585,14 @@ public:
     return retval;
   }
 
-  void increment (void) 
-   { 
-     scalar += OCTAVE_INT_T (1); 
+  void increment (void)
+   {
+     scalar += OCTAVE_INT_T (1);
    }
 
   void decrement (void)
-   { 
-     scalar -= OCTAVE_INT_T (1); 
+   {
+     scalar -= OCTAVE_INT_T (1);
    }
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
@@ -644,7 +644,7 @@ public:
         case umap_finite:
           return true;
 
-        default: 
+        default:
           {
             octave_scalar m (scalar_value ());
             return m.map (umap);

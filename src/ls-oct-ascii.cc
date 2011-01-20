@@ -91,7 +91,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
       if (c == '%' || c == '#')
         {
           std::ostringstream buf;
-        
+
           while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
             ; // Skip whitespace and comment characters.
 
@@ -300,7 +300,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 // Save the data from TC along with the corresponding NAME, and global
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
 // above for load_ascii_data.  If NAME is empty, the name: line is not
-// generated.  PRECISION specifies the number of decimal digits to print. 
+// generated.  PRECISION specifies the number of decimal digits to print.
 //
 // Assumes ranges and strings cannot contain Inf or NaN values.
 //

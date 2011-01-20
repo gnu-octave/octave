@@ -43,7 +43,7 @@ extern "C"
   F77_FUNC (zgeqrf, ZGEQRF) (const octave_idx_type&, const octave_idx_type&,
                              Complex*, const octave_idx_type&, Complex*,
                              Complex*, const octave_idx_type&,
-                             octave_idx_type&); 
+                             octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zungqr, ZUNGQR) (const octave_idx_type&, const octave_idx_type&,
@@ -75,13 +75,13 @@ extern "C"
                              double*);
 
   F77_RET_T
-  F77_FUNC (zqrinr, ZQRINR) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (zqrinr, ZQRINR) (const octave_idx_type&, const octave_idx_type&,
                              Complex*, const octave_idx_type&, Complex*,
                              const octave_idx_type&, const octave_idx_type&,
                              const Complex*, double*);
 
   F77_RET_T
-  F77_FUNC (zqrder, ZQRDER) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (zqrder, ZQRDER) (const octave_idx_type&, const octave_idx_type&,
                              Complex*, const octave_idx_type&, Complex*,
                              const octave_idx_type&, const octave_idx_type&,
                              Complex*, double*);
@@ -132,7 +132,7 @@ ComplexQR::init (const ComplexMatrix& a, qr_type_t qr_type)
   form (n, afact, tau, qr_type);
 }
 
-void ComplexQR::form (octave_idx_type n, ComplexMatrix& afact, 
+void ComplexQR::form (octave_idx_type n, ComplexMatrix& afact,
                       Complex *tau, qr_type_t qr_type)
 {
   octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
@@ -252,7 +252,7 @@ ComplexQR::insert_col (const ComplexColumnVector& u, octave_idx_type j)
 
   if (u.length () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n) 
+  else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -269,7 +269,7 @@ ComplexQR::insert_col (const ComplexColumnVector& u, octave_idx_type j)
       ComplexColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, rw, k);
       F77_XFCN (zqrinc, ZQRINC, (m, n, k, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), j + 1, 
+                                 r.fortran_vec (), r.rows (), j + 1,
                                  utmp.data (), rw));
     }
 }
@@ -312,9 +312,9 @@ ComplexQR::insert_col (const ComplexMatrix& u, const Array<octave_idx_type>& j)
         {
           octave_idx_type ii = i;
           ComplexColumnVector utmp = u.column (jsi(i));
-          F77_XFCN (zqrinc, ZQRINC, (m, n + ii, std::min (kmax, k + ii), 
+          F77_XFCN (zqrinc, ZQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1, 
+                                     r.fortran_vec (), r.rows (), js(ii) + 1,
                                      utmp.data (), rw));
         }
     }
@@ -327,7 +327,7 @@ ComplexQR::delete_col (octave_idx_type j)
   octave_idx_type k = r.rows ();
   octave_idx_type n = r.columns ();
 
-  if (j < 0 || j > n-1) 
+  if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -371,7 +371,7 @@ ComplexQR::delete_col (const Array<octave_idx_type>& j)
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           octave_idx_type ii = i;
-          F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, k == m ? k : k - ii, 
+          F77_XFCN (zqrdec, ZQRDEC, (m, n - ii, k == m ? k : k - ii,
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, rw));
         }
@@ -397,7 +397,7 @@ ComplexQR::insert_row (const ComplexRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.length () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m) 
+  else if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -406,7 +406,7 @@ ComplexQR::insert_row (const ComplexRowVector& u, octave_idx_type j)
       ComplexRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (double, rw, k);
       F77_XFCN (zqrinr, ZQRINR, (m, n, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), 
+                                 r.fortran_vec (), r.rows (),
                                  j + 1, utmp.fortran_vec (), rw));
 
     }
@@ -420,7 +420,7 @@ ComplexQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1) 
+  else if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -442,13 +442,13 @@ ComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
   octave_idx_type k = r.rows ();
   octave_idx_type n = r.columns ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
   else
     {
       OCTAVE_LOCAL_BUFFER (Complex, w, k);
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      F77_XFCN (zqrshc, ZQRSHC, (m, n, k, 
+      F77_XFCN (zqrshc, ZQRSHC, (m, n, k,
                                  q.fortran_vec (), q.rows (),
                                  r.fortran_vec (), r.rows (),
                                  i + 1, j + 1, w, rw));
@@ -534,7 +534,7 @@ ComplexMatrix delete_row (const ComplexMatrix& a, octave_idx_type i)
 }
 
 static
-ComplexMatrix shift_cols (const ComplexMatrix& a, 
+ComplexMatrix shift_cols (const ComplexMatrix& a,
                           octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
@@ -564,7 +564,7 @@ ComplexQR::insert_col (const ComplexColumnVector& u, octave_idx_type j)
 
   if (u.length () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n) 
+  else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -610,7 +610,7 @@ ComplexQR::delete_col (octave_idx_type j)
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (j < 0 || j > n-1) 
+  if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -656,7 +656,7 @@ ComplexQR::insert_row (const ComplexRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.length () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m) 
+  else if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -674,7 +674,7 @@ ComplexQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1) 
+  else if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -690,7 +690,7 @@ ComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
   else
     {

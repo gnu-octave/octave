@@ -333,7 +333,7 @@ rc_lgamma (double x)
 
 #if defined (HAVE_LGAMMA_R)
   int sgngam;
-  result = lgamma_r (x, &sgngam);    
+  result = lgamma_r (x, &sgngam);
 #else
   double sgngam;
 
@@ -398,7 +398,7 @@ rc_lgamma (float x)
 
 #if defined (HAVE_LGAMMAF_R)
   int sgngam;
-  result = lgammaf_r (x, &sgngam);    
+  result = lgammaf_r (x, &sgngam);
 #else
   float sgngam;
 
@@ -431,7 +431,7 @@ expm1 (double x)
 
       // use Taylor series to calculate exp(x)-1.
       double t = ax;
-      double s = 0; 
+      double s = 0;
       for (int i = 2; i < 7; i++)
         s += (t *= ax/i);
       s += ax;
@@ -453,7 +453,7 @@ expm1 (double x)
 }
 #endif
 
-Complex 
+Complex
 expm1(const Complex& x)
 {
   Complex retval;
@@ -486,7 +486,7 @@ expm1f (float x)
 
       // use Taylor series to calculate exp(x)-1.
       float t = ax;
-      float s = 0; 
+      float s = 0;
       for (int i = 2; i < 7; i++)
         s += (t *= ax/i);
       s += ax;
@@ -508,7 +508,7 @@ expm1f (float x)
 }
 #endif
 
-FloatComplex 
+FloatComplex
 expm1(const FloatComplex& x)
 {
   FloatComplex retval;
@@ -551,7 +551,7 @@ log1p (double x)
 }
 #endif
 
-Complex 
+Complex
 log1p (const Complex& x)
 {
   Complex retval;
@@ -610,7 +610,7 @@ log1pf (float x)
 }
 #endif
 
-FloatComplex 
+FloatComplex
 log1p (const FloatComplex& x)
 {
   FloatComplex retval;
@@ -715,7 +715,7 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       if (kode != 2)
         {
-          double expz = exp (std::abs (zi)); 
+          double expz = exp (std::abs (zi));
           yr *= expz;
           yi *= expz;
         }
@@ -730,7 +730,7 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       Complex tmp = zbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha)) & 1) 
+      if ((static_cast <long> (alpha)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -800,7 +800,7 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       Complex tmp = zbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha - 0.5)) & 1) 
+      if ((static_cast <long> (alpha - 0.5)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -862,13 +862,13 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
         {
           Complex tmp2 = (2.0 / M_PI) * sin (M_PI * alpha)
             * zbesk (z, alpha, kode, ierr);
-        
-          if (kode == 2) 
+
+          if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
               tmp2 *= exp(-z - std::abs(z.real()));
             }
-          
+
           tmp += tmp2;
 
           retval = bessel_return_value (tmp, ierr);
@@ -1352,7 +1352,7 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       FloatComplex tmp = cbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha)) & 1) 
+      if ((static_cast <long> (alpha)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1415,7 +1415,7 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       FloatComplex tmp = cbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha - 0.5)) & 1) 
+      if ((static_cast <long> (alpha - 0.5)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1472,8 +1472,8 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
         {
           FloatComplex tmp2 = static_cast<float> (2.0 / M_PI) * sinf (static_cast<float> (M_PI) * alpha)
             * cbesk (z, alpha, kode, ierr);
-          
-          if (kode == 2) 
+
+          if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
               tmp2 *= exp(-z - std::abs(z.real()));
@@ -2259,7 +2259,7 @@ betainc (double x, const NDArray& a, const NDArray& b)
     }
   else
     gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
-  
+
   return retval;
 }
 
@@ -2388,7 +2388,7 @@ betainc (const NDArray& x, double a, const NDArray& b)
     }
   else
     gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
-  
+
   return retval;
 }
 
@@ -2409,7 +2409,7 @@ betainc (const NDArray& x, const NDArray& a, double b)
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
-  
+
   return retval;
 }
 
@@ -2542,7 +2542,7 @@ betainc (float x, const FloatNDArray& a, const FloatNDArray& b)
     }
   else
     gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
-  
+
   return retval;
 }
 
@@ -2671,7 +2671,7 @@ betainc (const FloatNDArray& x, float a, const FloatNDArray& b)
     }
   else
     gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
-  
+
   return retval;
 }
 
@@ -2692,7 +2692,7 @@ betainc (const FloatNDArray& x, const FloatNDArray& a, float b)
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
-  
+
   return retval;
 }
 
@@ -2902,7 +2902,7 @@ gammainc (const NDArray& x, const NDArray& a)
       for (octave_idx_type i = 0; i < nel; i++)
         {
           result (i) = gammainc (x(i), a(i), err);
-          
+
           if (err)
             goto done;
         }
@@ -3107,7 +3107,7 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
       for (octave_idx_type i = 0; i < nel; i++)
         {
           result (i) = gammainc (x(i), a(i), err);
-          
+
           if (err)
             goto done;
         }
@@ -3152,19 +3152,19 @@ FloatComplex rc_log1p (float x)
 static double do_erfinv (double x, bool refine)
 {
   // Coefficients of rational approximation.
-  static const double a[] = 
+  static const double a[] =
     { -2.806989788730439e+01,  1.562324844726888e+02,
       -1.951109208597547e+02,  9.783370457507161e+01,
       -2.168328665628878e+01,  1.772453852905383e+00 };
-  static const double b[] = 
+  static const double b[] =
     { -5.447609879822406e+01,  1.615858368580409e+02,
       -1.556989798598866e+02,  6.680131188771972e+01,
       -1.328068155288572e+01 };
-  static const double c[] = 
+  static const double c[] =
     { -5.504751339936943e-03, -2.279687217114118e-01,
       -1.697592457770869e+00, -1.802933168781950e+00,
        3.093354679843505e+00,  2.077595676404383e+00 };
-  static const double d[] = 
+  static const double d[] =
     {  7.784695709041462e-03,  3.224671290700398e-01,
        2.445134137142996e+00,  3.754408661907416e+00 };
 
@@ -3211,7 +3211,7 @@ double erfinv (double x)
 
 float erfinv (float x)
 {
-  return do_erfinv (x, false); 
+  return do_erfinv (x, false);
 }
 
 // Implementation based on the Fortran code by W.J.Cody
@@ -3222,34 +3222,34 @@ float erfinv (float x)
 static inline float erfc (float x) { return erfcf (x); }
 
 template <class T>
-static T 
+static T
 erfcx_impl (T x)
 {
-  static const T c[] = 
-    { 
+  static const T c[] =
+    {
       5.64188496988670089e-1,8.88314979438837594,
       6.61191906371416295e+1,2.98635138197400131e+2,
       8.81952221241769090e+2,1.71204761263407058e+3,
       2.05107837782607147e+3,1.23033935479799725e+3,
-      2.15311535474403846e-8 
+      2.15311535474403846e-8
     };
 
-  static const T d[] = 
-    { 
+  static const T d[] =
+    {
       1.57449261107098347e+1,1.17693950891312499e+2,
       5.37181101862009858e+2,1.62138957456669019e+3,
       3.29079923573345963e+3,4.36261909014324716e+3,
       3.43936767414372164e+3,1.23033935480374942e+3
     };
 
-  static const T p[] = 
+  static const T p[] =
     {
       3.05326634961232344e-1,3.60344899949804439e-1,
       1.25781726111229246e-1,1.60837851487422766e-2,
       6.58749161529837803e-4,1.63153871373020978e-2
     };
 
-  static const T q[] = 
+  static const T q[] =
     {
       2.56852019228982242,1.87295284992346047,
       5.27905102951428412e-1,6.05183413124413191e-2,

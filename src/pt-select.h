@@ -258,7 +258,7 @@ public:
       trail_comm (0) { }
 
   tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
-                       octave_comment_list *lc, octave_comment_list *tc, 
+                       octave_comment_list *lc, octave_comment_list *tc,
                        int l = -1, int c = -1)
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc) { }

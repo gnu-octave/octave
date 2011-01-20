@@ -43,7 +43,7 @@ public:
   charNDArray (const dim_vector& dv) : Array<char> (dv) { }
 
   charNDArray (const dim_vector& dv, char val) : Array<char> (dv, val) { }
-  
+
   charNDArray (const charNDArray& a) : Array<char> (a) { }
 
   charNDArray (const charMatrix& a) : Array<char> (a) { }
@@ -75,7 +75,7 @@ public:
 
   charNDArray& insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
   charNDArray& insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
-  
+
   charMatrix matrix_value (void) const;
 
   charNDArray squeeze (void) const { return Array<char>::squeeze (); }

@@ -234,7 +234,7 @@ x = @var{R} \\ @var{C}\n\
           if (have_b > 0 && args(have_b).is_complex_type ())
             is_cmplx = true;
         }
-        
+
       if (!error_state)
         {
           if (have_b && nargout < 2)
@@ -457,41 +457,41 @@ x = @var{R} \\ @var{C}\n\
 
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
-%! 
+%!
 %! [q, r] = qr (a);
-%! 
+%!
 %! [qe, re] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a, sqrt (eps));
 %! assert (qe * re, a, sqrt (eps));
 
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
-%! 
+%!
 %! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
-%! 
+%!
 %! [qe, re, pe] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
 
 %!test
 %! a = [0, 2; 2, 1; 1, 2];
-%! 
+%!
 %! [q, r] = qr (a);
-%! 
+%!
 %! [qe, re] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a, sqrt (eps));
 %! assert (qe * re, a, sqrt (eps));
 
 %!test
 %! a = [0, 2; 2, 1; 1, 2];
-%! 
+%!
 %! [q, r, p] = qr (a);
-%! 
+%!
 %! [qe, re, pe] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
 
@@ -517,48 +517,48 @@ x = @var{R} \\ @var{C}\n\
 %!    endif
 %!  endif
 %!test
-%! 
+%!
 %! t = ones (24, 1);
 %! j = 1;
-%! 
+%!
 %! if false # eliminate big matrix tests
 %!   a = rand(5000,20);
 %!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %!   a = a+1i*eps;
 %!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
 %! endif
-%! 
+%!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
 %! [q,r]=qr(a); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = a+1i*eps;
 %! [q,r]=qr(a); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
 %! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = a+1i*eps;
 %! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = [
 %! 611   196  -192   407    -8   -52   -49    29
 %! 196   899   113  -192   -71   -43    -8   -44
@@ -570,46 +570,46 @@ x = @var{R} \\ @var{C}\n\
 %! 29   -44    52   -23   208   208  -911    99
 %! ];
 %! [q,r] = qr(a);
-%! 
+%!
 %! assert(all (t) && norm(q*r-a) < 5000*eps);
 
 %!test
 %! a = single ([0, 2, 1; 2, 1, 2]);
-%! 
+%!
 %! [q, r] = qr (a);
-%! 
+%!
 %! [qe, re] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a, sqrt (eps ('single')));
 %! assert (qe * re, a, sqrt (eps ('single')));
 
 %!test
 %! a = single([0, 2, 1; 2, 1, 2]);
-%! 
+%!
 %! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
-%! 
+%!
 %! [qe, re, pe] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a * p, sqrt (eps('single')));
 %! assert (qe * re, a(:, pe), sqrt (eps('single')));
 
 %!test
 %! a = single([0, 2; 2, 1; 1, 2]);
-%! 
+%!
 %! [q, r] = qr (a);
-%! 
+%!
 %! [qe, re] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a, sqrt (eps('single')));
 %! assert (qe * re, a, sqrt (eps('single')));
 
 %!test
 %! a = single([0, 2; 2, 1; 1, 2]);
-%! 
+%!
 %! [q, r, p] = qr (a);
-%! 
+%!
 %! [qe, re, pe] = qr (a, 0);
-%! 
+%!
 %! assert (q * r, a * p, sqrt (eps('single')));
 %! assert (qe * re, a(:, pe), sqrt (eps('single')));
 
@@ -617,48 +617,48 @@ x = @var{R} \\ @var{C}\n\
 %!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
 
 %!test
-%! 
+%!
 %! t = ones (24, 1);
 %! j = 1;
-%! 
+%!
 %! if false # eliminate big matrix tests
 %!   a = rand(5000,20);
 %!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %!   a = a+1i*eps('single');
 %!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
 %! endif
-%! 
+%!
 %! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
 %! [q,r]=qr(a); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = a+1i*eps('single');
 %! [q,r]=qr(a); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
 %! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = a+1i*eps('single');
 %! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 %! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 %! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 %! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
-%! 
+%!
 %! a = [
 %! 611   196  -192   407    -8   -52   -49    29
 %! 196   899   113  -192   -71   -43    -8   -44
@@ -670,7 +670,7 @@ x = @var{R} \\ @var{C}\n\
 %! 29   -44    52   -23   208   208  -911    99
 %! ];
 %! [q,r] = qr(a);
-%! 
+%!
 %! assert(all (t) && norm(q*r-a) < 5000*eps('single'));
 
 %% The deactivated tests below can't be tested till rectangular back-subs is
@@ -759,10 +759,10 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
             && (m == k || (allow_ecf && k == n && k < m)));
 }
 
-static 
+static
 bool check_index (const octave_value& i, bool vector_allowed = false)
 {
-  return ((i.is_real_type () || i.is_integer_type ()) 
+  return ((i.is_real_type () || i.is_integer_type ())
           && (i.is_scalar_type () || vector_allowed));
 }
 
@@ -798,20 +798,20 @@ The QR@tie{}factorization supplied may be either full\n\
   octave_value argu = args(2);
   octave_value argv = args(3);
 
-  if (argq.is_numeric_type () && argr.is_numeric_type () 
+  if (argq.is_numeric_type () && argr.is_numeric_type ()
       && argu.is_numeric_type () && argv.is_numeric_type ())
     {
       if (check_qr_dims (argq, argr, true))
         {
-          if (argq.is_real_type () 
-              && argr.is_real_type () 
-              && argu.is_real_type () 
+          if (argq.is_real_type ()
+              && argr.is_real_type ()
+              && argu.is_real_type ()
               && argv.is_real_type ())
             {
               // all real case
-              if (argq.is_single_type () 
-                  || argr.is_single_type () 
-                  || argu.is_single_type () 
+              if (argq.is_single_type ()
+                  || argr.is_single_type ()
+                  || argu.is_single_type ()
                   || argv.is_single_type ())
                 {
                   FloatMatrix Q = argq.float_matrix_value ();
@@ -842,9 +842,9 @@ The QR@tie{}factorization supplied may be either full\n\
           else
             {
               // complex case
-              if (argq.is_single_type () 
-                  || argr.is_single_type () 
-                  || argu.is_single_type () 
+              if (argq.is_single_type ()
+                  || argr.is_single_type ()
+                  || argu.is_single_type ()
                   || argv.is_single_type ())
                 {
                   FloatComplexMatrix Q = argq.float_complex_matrix_value ();
@@ -854,7 +854,7 @@ The QR@tie{}factorization supplied may be either full\n\
 
                   FloatComplexQR fact (Q, R);
                   fact.update (u, v);
-              
+
                   retval(1) = get_qr_r (fact);
                   retval(0) = fact.Q ();
                 }
@@ -867,7 +867,7 @@ The QR@tie{}factorization supplied may be either full\n\
 
                   ComplexQR fact (Q, R);
                   fact.update (u, v);
-              
+
                   retval(1) = get_qr_r (fact);
                   retval(0) = fact.Q ();
                 }
@@ -889,10 +889,10 @@ The QR@tie{}factorization supplied may be either full\n\
 %!      0.265712  0.268003  0.238409;
 %!      0.669966  0.743851  0.445057 ];
 %!
-%! u = [0.85082;  
-%!      0.76426;  
-%!      0.42883;  
-%!      0.53010;  
+%! u = [0.85082;
+%!      0.76426;
+%!      0.42883;
+%!      0.53010;
 %!      0.80683 ];
 %!
 %! v = [0.98810;
@@ -922,7 +922,7 @@ The QR@tie{}factorization supplied may be either full\n\
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
-%! 
+%!
 %!test
 %! [Q,R] = qr(Ac);
 %! [Q,R] = qrupdate(Q,R,uc,vc);
@@ -936,7 +936,7 @@ The QR@tie{}factorization supplied may be either full\n\
 %! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - single(A) - single(u)*single(v)'),Inf) < norm(single(A))*1e1*eps('single'))
-%! 
+%!
 %!test
 %! [Q,R] = qr(single(Ac));
 %! [Q,R] = qrupdate(Q,R,single(uc),single(vc));
@@ -982,12 +982,12 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
       print_usage ();
       return retval;
     }
-  
+
   octave_value argq = args(0);
   octave_value argr = args(1);
   octave_value argj = args(2);
   octave_value argx = args(3);
-      
+
   if (argq.is_numeric_type () && argr.is_numeric_type ()
       && argx.is_numeric_type ()
       && (nargin < 5 || args(4).is_string ()))
@@ -997,7 +997,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
       bool col = orient == "col";
 
       if (col || orient == "row")
-        if (check_qr_dims (argq, argr, col) 
+        if (check_qr_dims (argq, argr, col)
             && (col || argx.rows () == 1))
           {
             if (check_index (argj, col))
@@ -1007,13 +1007,13 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                 octave_idx_type one = 1;
 
-                if (argq.is_real_type () 
-                    && argr.is_real_type () 
+                if (argq.is_real_type ()
+                    && argr.is_real_type ()
                     && argx.is_real_type ())
                   {
                     // real case
-                    if (argq.is_single_type () 
-                        || argr.is_single_type () 
+                    if (argq.is_single_type ()
+                        || argr.is_single_type ()
                         || argx.is_single_type ())
                       {
                         FloatMatrix Q = argq.float_matrix_value ();
@@ -1022,9 +1022,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         FloatQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.insert_col (x, j-one);
-                        else 
+                        else
                           fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1039,9 +1039,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         QR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.insert_col (x, j-one);
-                        else 
+                        else
                           fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1052,8 +1052,8 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
                 else
                   {
                     // complex case
-                    if (argq.is_single_type () 
-                        || argr.is_single_type () 
+                    if (argq.is_single_type ()
+                        || argr.is_single_type ()
                         || argx.is_single_type ())
                       {
                         FloatComplexMatrix Q = argq.float_complex_matrix_value ();
@@ -1062,9 +1062,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         FloatComplexQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.insert_col (x, j-one);
-                        else 
+                        else
                           fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1078,9 +1078,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         ComplexQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.insert_col (x, j-one);
-                        else 
+                        else
                           fact.insert_row (x.row (0), j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1235,9 +1235,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         FloatQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.delete_col (j-one);
-                        else 
+                        else
                           fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1250,9 +1250,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         QR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.delete_col (j-one);
-                        else 
+                        else
                           fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1270,9 +1270,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         FloatComplexQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.delete_col (j-one);
-                        else 
+                        else
                           fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1285,9 +1285,9 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
                         ComplexQR fact (Q, R);
 
-                        if (col) 
+                        if (col)
                           fact.delete_col (j-one);
-                        else 
+                        else
                           fact.delete_row (j(0)-one);
 
                         retval(1) = get_qr_r (fact);
@@ -1309,7 +1309,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
   return retval;
 }
- 
+
 /*
 %!test
 %! AA = [0.091364  0.613038  0.027504  0.999083;
@@ -1323,7 +1323,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 16*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
-%! 
+%!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
 %!       0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
@@ -1349,7 +1349,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps)
-%! 
+%!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
 %!       0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
@@ -1375,7 +1375,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps('single'))
-%! 
+%!
 %!test
 %! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
 %!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
@@ -1414,7 +1414,7 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
-%! 
+%!
 %!test
 %! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
 %!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
@@ -1466,11 +1466,11 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
               octave_idx_type i = argi.int_value ();
               octave_idx_type j = argj.int_value ();
 
-              if (argq.is_real_type () 
+              if (argq.is_real_type ()
                   && argr.is_real_type ())
                 {
                   // all real case
-                  if (argq.is_single_type () 
+                  if (argq.is_single_type ()
                       && argr.is_single_type ())
                     {
                       FloatMatrix Q = argq.float_matrix_value ();
@@ -1497,7 +1497,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
               else
                 {
                   // complex case
-                  if (argq.is_single_type () 
+                  if (argq.is_single_type ()
                       && argr.is_single_type ())
                     {
                       FloatComplexMatrix Q = argq.float_complex_matrix_value ();
@@ -1505,7 +1505,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 
                       FloatComplexQR fact (Q, R);
                       fact.shift_cols (i-1, j-1);
-                  
+
                       retval(1) = get_qr_r (fact);
                       retval(0) = fact.Q ();
                     }
@@ -1516,7 +1516,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 
                       ComplexQR fact (Q, R);
                       fact.shift_cols (i-1, j-1);
-                  
+
                       retval(1) = get_qr_r (fact);
                       retval(0) = fact.Q ();
                     }
@@ -1543,7 +1543,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
-%! 
+%!
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr(AA);
@@ -1551,7 +1551,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
-%! 
+%!
 %!test
 %! AA = Ac.';
 %! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
@@ -1561,7 +1561,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
-%! 
+%!
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr(AA);
@@ -1580,7 +1580,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
-%! 
+%!
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr(AA);
@@ -1588,7 +1588,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
-%! 
+%!
 %!test
 %! AA = single(Ac).';
 %! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
@@ -1598,7 +1598,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 %! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
-%! 
+%!
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr(AA);

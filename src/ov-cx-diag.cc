@@ -38,7 +38,7 @@ template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex_diag_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix, 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
                                      "complex diagonal matrix", "double");
 
 static octave_base_value *
@@ -159,7 +159,7 @@ octave_complex_diag_matrix::map (unary_mapper_t umap) const
     }
 }
 
-bool 
+bool
 octave_complex_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
 
@@ -192,7 +192,7 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -220,8 +220,8 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool 
-octave_complex_diag_matrix::chk_valid_scalar (const octave_value& val, 
+bool
+octave_complex_diag_matrix::chk_valid_scalar (const octave_value& val,
                                               Complex& x) const
 {
   bool retval = val.is_complex_scalar () || val.is_real_scalar ();

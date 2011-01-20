@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/* 
+/*
    A C-program for MT19937, with initialization improved 2002/2/10.
    Coded by Takuji Nishimura and Makoto Matsumoto.
    This is a faster version by taking Shawn Cokus's optimization,
@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
    are met:
-   
+
      1. Redistributions of source code must retain the above copyright
         notice, this list of conditions and the following disclaimer.
 
@@ -43,14 +43,14 @@ along with Octave; see the file COPYING.  If not, see
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
 
-     3. The names of its contributors may not be used to endorse or promote 
-        products derived from this software without specific prior written 
+     3. The names of its contributors may not be used to endorse or promote
+        products derived from this software without specific prior written
         permission.
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER 
+   A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER
    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -92,16 +92,16 @@ along with Octave; see the file COPYING.  If not, see
 /*
    === Build instructions ===
 
-   Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is 
+   Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is
    available.  This is not necessary if your architecture has
    /dev/urandom defined.
 
    Compile with -DALLBITS to disable 53-bit random numbers. This is about
    50% slower than using 32-bit random numbers.
 
-   Uses implicit -Di386 or explicit -DHAVE_X86_32 to determine if CPU=x86.  
-   You can force X86 behaviour with -DUSE_X86_32=1, or suppress it with 
-   -DUSE_X86_32=0. You should also consider -march=i686 or similar for 
+   Uses implicit -Di386 or explicit -DHAVE_X86_32 to determine if CPU=x86.
+   You can force X86 behaviour with -DUSE_X86_32=1, or suppress it with
+   -DUSE_X86_32=0. You should also consider -march=i686 or similar for
    extra performance. Check whether -DUSE_X86_32=0 is faster on 64-bit
    x86 architectures.
 
@@ -156,7 +156,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-math.h"
 #include "randmtzig.h"
-   
+
 /* FIXME may want to suppress X86 if sizeof(long)>4 */
 #if !defined(USE_X86_32)
 # if defined(i386) || defined(HAVE_X86_32)
@@ -166,7 +166,7 @@ along with Octave; see the file COPYING.  If not, see
 # endif
 #endif
 
-/* ===== Mersenne Twister 32-bit generator ===== */  
+/* ===== Mersenne Twister 32-bit generator ===== */
 
 #define MT_M 397
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -182,27 +182,27 @@ static int initf = 0;
 static int initt = 1;
 
 /* initializes state[MT_N] with a seed */
-void 
+void
 oct_init_by_int (uint32_t s)
 {
     int j;
     state[0] = s & 0xffffffffUL;
     for (j = 1; j < MT_N; j++) {
-        state[j] = (1812433253UL * (state[j-1] ^ (state[j-1] >> 30)) + j); 
+        state[j] = (1812433253UL * (state[j-1] ^ (state[j-1] >> 30)) + j);
         /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
         /* In the previous versions, MSBs of the seed affect   */
         /* only MSBs of the array state[].                        */
         /* 2002/01/09 modified by Makoto Matsumoto             */
         state[j] &= 0xffffffffUL;  /* for >32 bit machines */
     }
-    left = 1; 
+    left = 1;
     initf = 1;
 }
 
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void 
+void
 oct_init_by_array (uint32_t *init_key, int key_length)
 {
   int i, j, k;
@@ -243,7 +243,7 @@ oct_init_by_array (uint32_t *init_key, int key_length)
   initf = 1;
 }
 
-void 
+void
 oct_init_by_entropy (void)
 {
     uint32_t entropy[MT_N];
@@ -251,12 +251,12 @@ oct_init_by_entropy (void)
 
     /* Look for entropy in /dev/urandom */
     FILE* urandom =fopen("/dev/urandom", "rb");
-    if (urandom) 
+    if (urandom)
       {
-        while (n < MT_N) 
+        while (n < MT_N)
           {
             unsigned char word[4];
-            if (fread(word, 4, 1, urandom) != 1) 
+            if (fread(word, 4, 1, urandom) != 1)
               break;
             entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(word[3]<<24);
           }
@@ -264,12 +264,12 @@ oct_init_by_entropy (void)
       }
 
     /* If there isn't enough entropy, gather some from various sources */
-    if (n < MT_N) 
+    if (n < MT_N)
       entropy[n++] = time(NULL); /* Current time in seconds */
-    if (n < MT_N) 
+    if (n < MT_N)
       entropy[n++] = clock();    /* CPU time used (usec) */
 #ifdef HAVE_GETTIMEOFDAY
-    if (n < MT_N) 
+    if (n < MT_N)
       {
         struct timeval tv;
         if (gettimeofday(&tv, NULL) != -1)
@@ -280,26 +280,26 @@ oct_init_by_entropy (void)
     oct_init_by_array(entropy,n);
 }
 
-void 
+void
 oct_set_state (uint32_t *save)
 {
   int i;
-  for (i = 0; i < MT_N; i++) 
+  for (i = 0; i < MT_N; i++)
     state[i] = save[i];
   left = save[MT_N];
   next = state + (MT_N - left + 1);
 }
 
-void 
+void
 oct_get_state (uint32_t *save)
 {
   int i;
-  for (i = 0; i < MT_N; i++) 
+  for (i = 0; i < MT_N; i++)
     save[i] = state[i];
   save[MT_N] = left;
 }
 
-static void 
+static void
 next_state (void)
 {
   uint32_t *p = state;
@@ -309,16 +309,16 @@ next_state (void)
   /* a default initial seed is used         */
   /* if (initf==0) init_by_int(5489UL); */
   /* Or better yet, a random seed! */
-  if (initf == 0) 
+  if (initf == 0)
     oct_init_by_entropy();
 
   left = MT_N;
   next = state;
-    
-  for (j = MT_N - MT_M + 1; --j; p++) 
+
+  for (j = MT_N - MT_M + 1; --j; p++)
     *p = p[MT_M] ^ TWIST(p[0], p[1]);
 
-  for (j = MT_M; --j; p++) 
+  for (j = MT_M; --j; p++)
     *p = p[MT_M-MT_N] ^ TWIST(p[0], p[1]);
 
   *p = p[MT_M-MT_N] ^ TWIST(p[0], state[0]);
@@ -330,7 +330,7 @@ randmt (void)
 {
   register uint32_t y;
 
-  if (--left == 0) 
+  if (--left == 0)
     next_state();
   y = *next++;
 
@@ -346,7 +346,7 @@ randmt (void)
 /* Select which 32 bit generator to use */
 #define randi32 randmt
 
-static uint64_t 
+static uint64_t
 randi53 (void)
 {
   const uint32_t lo = randi32();
@@ -362,7 +362,7 @@ randi53 (void)
 #endif
 }
 
-static uint64_t 
+static uint64_t
 randi54 (void)
 {
   const uint32_t lo = randi32();
@@ -380,7 +380,7 @@ randi54 (void)
 
 #if 0
 // FIXME -- this doesn't seem to be used anywhere; should it be removed?
-static uint64_t 
+static uint64_t
 randi64 (void)
 {
   const uint32_t lo = randi32();
@@ -402,18 +402,18 @@ randi64 (void)
 static double
 randu32 (void)
 {
-  return ((double)randi32() + 0.5) * (1.0/4294967296.0); 
+  return ((double)randi32() + 0.5) * (1.0/4294967296.0);
   /* divided by 2^32 */
 }
 #else
 /* generates a random number on (0,1) with 53-bit resolution */
 static double
-randu53 (void) 
-{ 
+randu53 (void)
+{
   const uint32_t a=randi32()>>5;
-  const uint32_t b=randi32()>>6; 
+  const uint32_t b=randi32()>>6;
   return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
-} 
+}
 #endif
 
 /* Determine mantissa for uniform doubles */
@@ -439,7 +439,7 @@ oct_randu (void)
 # define ZIGINT uint64_t
 # define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
 # define ERANDI randi53() /* 53 bits for mantissa */
-# define NMANTISSA EMANTISSA  
+# define NMANTISSA EMANTISSA
 # define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
 # define RANDU randu53()
 #endif
@@ -463,16 +463,16 @@ static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
 This code is based on the paper Marsaglia and Tsang, "The ziggurat method
 for generating random variables", Journ. Statistical Software. Code was
 presented in this paper for a Ziggurat of 127 levels and using a 32 bit
-integer random number generator. This version of the code, uses the 
-Mersenne Twister as the integer generator and uses 256 levels in the 
+integer random number generator. This version of the code, uses the
+Mersenne Twister as the integer generator and uses 256 levels in the
 Ziggurat. This has several advantages.
 
-  1) As Marsaglia and Tsang themselves states, the more levels the few 
+  1) As Marsaglia and Tsang themselves states, the more levels the few
      times the expensive tail algorithm must be called
-  2) The cycle time of the generator is determined by the integer 
-     generator, thus the use of a Mersenne Twister for the core random 
+  2) The cycle time of the generator is determined by the integer
+     generator, thus the use of a Mersenne Twister for the core random
      generator makes this cycle extremely long.
-  3) The license on the original code was unclear, thus rewriting the code 
+  3) The license on the original code was unclear, thus rewriting the code
      from the article means we are free of copyright issues.
   4) Compile flag for full 53-bit random mantissa.
 
@@ -485,7 +485,7 @@ assumed that 0 <= x < Inf, and "unsigned long"s are used, thus resulting in
 terms like 2^32 in the code. As the normal distribution is defined between
 -Inf < x < Inf, we effectively only have 31 bit integers plus a sign. Thus
 in Marsaglia and Tsang, terms like 2^32 become 2^31. We use NMANTISSA for
-this term.  The exponential distribution is one sided so we use the 
+this term.  The exponential distribution is one sided so we use the
 full 32 bits.  We use EMANTISSA for this term.
 
 It appears that I'm slightly slower than the code in the article, this
@@ -497,21 +497,21 @@ reason is just the use of the Mersenne Twister and not the inlining,
 so I'm not going to try and optimize further.
 */
 
-static void 
+static void
 create_ziggurat_tables (void)
 {
   int i;
   double x, x1;
- 
+
   /* Ziggurat tables for the normal distribution */
   x1 = ZIGGURAT_NOR_R;
   wi[255] = x1 / NMANTISSA;
   fi[255] = exp (-0.5 * x1 * x1);
 
-  /* Index zero is special for tail strip, where Marsaglia and Tsang 
-   * defines this as 
+  /* Index zero is special for tail strip, where Marsaglia and Tsang
+   * defines this as
    * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
-   * where v is the area of each strip of the ziggurat. 
+   * where v is the area of each strip of the ziggurat.
    */
   ki[0] = (ZIGINT) (x1 * fi[255] / NOR_SECTION_AREA * NMANTISSA);
   wi[0] = NOR_SECTION_AREA / fi[255] / NMANTISSA;
@@ -536,10 +536,10 @@ create_ziggurat_tables (void)
   we[255] = x1 / EMANTISSA;
   fe[255] = exp (-x1);
 
-  /* Index zero is special for tail strip, where Marsaglia and Tsang 
-   * defines this as 
+  /* Index zero is special for tail strip, where Marsaglia and Tsang
+   * defines this as
    * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
-   * where v is the area of each strip of the ziggurat. 
+   * where v is the area of each strip of the ziggurat.
    */
   ke[0] = (ZIGINT) (x1 * fe[255] / EXP_SECTION_AREA * EMANTISSA);
   we[0] = EXP_SECTION_AREA / fe[255] / EMANTISSA;
@@ -579,7 +579,7 @@ create_ziggurat_tables (void)
 double
 oct_randn (void)
 {
-  if (initt) 
+  if (initt)
     create_ziggurat_tables();
 
   while (1)
@@ -627,10 +627,10 @@ oct_randn (void)
       else if (idx == 0)
         {
           /* As stated in Marsaglia and Tsang
-           * 
+           *
            * For the normal tail, the method of Marsaglia[5] provides:
            * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
-           * then return r+x. Except that r+x is always in the positive 
+           * then return r+x. Except that r+x is always in the positive
            * tail!!!! Any thing random might be used to determine the
            * sign, but as we already have r we might as well use it
            *
@@ -641,7 +641,7 @@ oct_randn (void)
             {
               xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
               yy = - log (RANDU);
-            } 
+            }
           while ( yy+yy <= xx*xx);
           return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
         }
@@ -653,7 +653,7 @@ oct_randn (void)
 double
 oct_rande (void)
 {
-  if (initt) 
+  if (initt)
     create_ziggurat_tables();
 
   while (1)
@@ -666,7 +666,7 @@ oct_rande (void)
       else if (idx == 0)
         {
           /* As stated in Marsaglia and Tsang
-           * 
+           *
            * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
            */
@@ -678,26 +678,26 @@ oct_rande (void)
 }
 
 /* Array generators */
-void 
+void
 oct_fill_randu (octave_idx_type n, double *p)
 {
   octave_idx_type i;
-  for (i = 0; i < n; i++) 
+  for (i = 0; i < n; i++)
     p[i] = oct_randu();
 }
 
-void 
+void
 oct_fill_randn (octave_idx_type n, double *p)
 {
   octave_idx_type i;
-  for (i = 0; i < n; i++) 
+  for (i = 0; i < n; i++)
     p[i] = oct_randn();
 }
 
-void 
+void
 oct_fill_rande (octave_idx_type n, double *p)
 {
   octave_idx_type i;
-  for (i = 0; i < n; i++) 
+  for (i = 0; i < n; i++)
     p[i] = oct_rande();
 }

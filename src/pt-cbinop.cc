@@ -35,12 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 // If a tree expression is a transpose or hermitian transpose, return
 // the argument and corresponding operator.
 
-static octave_value::unary_op 
+static octave_value::unary_op
 strip_trans_herm (tree_expression *&exp)
 {
   if (exp->is_unary_expression ())
     {
-      tree_unary_expression *uexp = 
+      tree_unary_expression *uexp =
         dynamic_cast<tree_unary_expression *> (exp);
 
       octave_value::unary_op op = uexp->op_type ();
@@ -57,12 +57,12 @@ strip_trans_herm (tree_expression *&exp)
     return octave_value::unknown_unary_op;
 }
 
-static octave_value::unary_op 
+static octave_value::unary_op
 strip_not (tree_expression *&exp)
 {
   if (exp->is_unary_expression ())
     {
-      tree_unary_expression *uexp = 
+      tree_unary_expression *uexp =
         dynamic_cast<tree_unary_expression *> (exp);
 
       octave_value::unary_op op = uexp->op_type ();

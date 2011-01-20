@@ -294,7 +294,7 @@ octave_shl_load_shlib::search (const std::string& name,
 
       if (mangler)
         sym_name = mangler (name);
-        
+
       int status = shl_findsym (&library, sym_name.c_str (),
                                 TYPE_UNDEFINED, &function);
     }
@@ -328,7 +328,7 @@ private:
 
   octave_w32_shlib& operator = (const octave_w32_shlib&);
 
-  HINSTANCE handle; 
+  HINSTANCE handle;
 };
 
 octave_w32_shlib::octave_w32_shlib (const std::string& f)
@@ -451,7 +451,7 @@ octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
             errstr = "unspecified error";
 
           (*current_liboctave_error_handler)
-            ("%s: %s", file.c_str (), errstr);  
+            ("%s: %s", file.c_str (), errstr);
         }
     }
   else

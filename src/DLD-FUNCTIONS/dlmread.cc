@@ -110,7 +110,7 @@ parse_range_spec (const octave_value& range_spec,
           if (stat)
             {
               ch = is.peek ();
-          
+
               if (ch == '.' || ch == ':')
                 {
                   ch = is.get ();
@@ -143,13 +143,13 @@ parse_range_spec (const octave_value& range_spec,
   else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
     {
       ColumnVector range(range_spec.vector_value ());
-      // double --> unsigned int     
+      // double --> unsigned int
       rlo = static_cast<octave_idx_type> (range(0));
       clo = static_cast<octave_idx_type> (range(1));
       rup = static_cast<octave_idx_type> (range(2));
       cup = static_cast<octave_idx_type> (range(3));
     }
-  else 
+  else
     stat = false;
 
   return stat;
@@ -190,7 +190,7 @@ fields.  The default is zero.\n\
 
   double empty_value = 0.0;
 
-  if (nargin > 2 && args(nargin-2).is_string () 
+  if (nargin > 2 && args(nargin-2).is_string ()
       && args(nargin-2).string_value () == "emptyvalue")
     {
       empty_value = args(nargin-1).double_value ();
@@ -199,7 +199,7 @@ fields.  The default is zero.\n\
       nargin -= 2;
     }
 
-  if (nargin < 1 || nargin > 4) 
+  if (nargin < 1 || nargin > 4)
     {
       print_usage ();
       return retval;
@@ -260,7 +260,7 @@ fields.  The default is zero.\n\
       if (error_state)
         return retval;
     }
-  
+
   // Take a subset if a range was given.
   octave_idx_type r0 = 0, c0 = 0, r1 = idx_max-1, c1 = idx_max-1;
   if (nargin > 2)
@@ -269,8 +269,8 @@ fields.  The default is zero.\n\
         {
           if (!parse_range_spec (args (2), r0, c0, r1, c1))
             error ("dlmread: error parsing RANGE");
-        } 
-      else if (nargin == 4) 
+        }
+      else if (nargin == 4)
         {
           r0 = args(2).idx_type_value ();
           c0 = args(3).idx_type_value ();
@@ -314,7 +314,7 @@ fields.  The default is zero.\n\
           // correspond to whitespace as delimter.
           if (!sep.length ())
             {
-              size_t n = line.find_first_of (",:; \t", 
+              size_t n = line.find_first_of (",:; \t",
                                              line.find_first_of ("0123456789"));
               if (n == std::string::npos)
                 {
@@ -390,7 +390,7 @@ fields.  The default is zero.\n\
 
               c = (c > j + 1 ? c : j + 1);
               if (r > rmax || c > cmax)
-                { 
+                {
                   // Use resize_and_fill for the case of not-equal
                   // length rows.
                   rmax = 2*r;
@@ -456,7 +456,7 @@ fields.  The default is zero.\n\
 
           i++;
         }
- 
+
       if (r1 >= r)
         r1 = r - 1;
       if (c1 >= c)
@@ -467,7 +467,7 @@ fields.  The default is zero.\n\
         cdata = cdata.extract (0, c0, r1, c1);
       else
         rdata = rdata.extract (0, c0, r1, c1);
-  
+
       if (iscmplx)
         retval(0) = cdata;
       else
@@ -480,7 +480,7 @@ fields.  The default is zero.\n\
 /*
 
 %!shared file
-%! file = tmpnam (); 
+%! file = tmpnam ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
@@ -499,7 +499,7 @@ fields.  The default is zero.\n\
 %! unlink (file);
 
 %!shared file
-%! file = tmpnam (); 
+%! file = tmpnam ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);

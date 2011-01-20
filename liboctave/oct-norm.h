@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
   extern OCTAVE_API RTYPE xnorm (const PREFIX##ColumnVector&, RTYPE p = 2); \
   extern OCTAVE_API RTYPE xnorm (const PREFIX##RowVector&, RTYPE p = 2); \
   extern OCTAVE_API RTYPE xnorm (const PREFIX##Matrix&, RTYPE p = 2); \
-  extern OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix&); 
+  extern OCTAVE_API RTYPE xfrobnorm (const PREFIX##Matrix&);
 
 DECLARE_XNORM_FUNCS(, double)
 DECLARE_XNORM_FUNCS(Complex, double)

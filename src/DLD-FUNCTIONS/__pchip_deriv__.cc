@@ -1,4 +1,4 @@
-/* 
+/*
 
 Copyright (C) 2002-2011 Kai Habel
 Copyright (C) 2008-2009 Jaroslav Hajek
@@ -88,7 +88,7 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (pchim, PCHIM) (nx, xvec.data (), 
+              F77_FUNC (pchim, PCHIM) (nx, xvec.data (),
                                        yvec, dvec, incfd, &ierr);
 
               yvec += inc;
@@ -128,7 +128,7 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (), 
+              F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (),
                                          yvec, dvec, incfd, &ierr);
 
               yvec += inc;

@@ -108,7 +108,7 @@ dim_vector::safe_numel (void) const
   return n;
 }
 
-dim_vector 
+dim_vector
 dim_vector::squeeze (void) const
 {
   dim_vector new_dims = *this;
@@ -226,12 +226,12 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 }
 
 // Rules for horzcat/vertcat are yet looser.
-// two arrays A, B can be concatenated 
+// two arrays A, B can be concatenated
 // horizontally (dim = 2) or vertically (dim = 1) if one of the
 // following holds, in this order:
-// 
+//
 // 1. cat(dim, A, B) works
-// 
+//
 // 2. A, B are 2D and one of them is an empty vector, in which
 // case the result is the other one except if both of them
 // are empty vectors, in which case the result is 0x0.

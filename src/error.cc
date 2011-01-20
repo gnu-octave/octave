@@ -66,7 +66,7 @@ static bool Vbacktrace_on_warning = false;
 // TRUE means that Octave will print a verbose warning.  Currently unused.
 static bool Vverbose_warning;
 
-// TRUE means that Octave will print no warnings, but lastwarn will be 
+// TRUE means that Octave will print no warnings, but lastwarn will be
 //updated
 static bool Vquiet_warning = false;
 
@@ -800,7 +800,7 @@ handle_message (error_fun f, const char *id, const char *msg,
             {
               tstr = arg.string_value ();
               msg = tstr.c_str ();
-              
+
               if (! msg)
                 return retval;
             }
@@ -920,7 +920,7 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: near line %d, column %d", 
+                                pr_where_1 ("error: near line %d, column %d",
                                             l, c);
                               else
                                 pr_where_1 ("error: near line %d", l);
@@ -931,7 +931,7 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: called from `%s' near line %d, column %d", 
+                                pr_where_1 ("error: called from `%s' near line %d, column %d",
                                             nm.c_str (), l, c);
                               else
                                 pr_where_1 ("error: called from `%d' near line %d", nm.c_str (), l);
@@ -945,7 +945,7 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: in file %s near line %d, column %d", 
+                                pr_where_1 ("error: in file %s near line %d, column %d",
                                             file.c_str (), l, c);
                               else
                                 pr_where_1 ("error: in file %s near line %d", file.c_str (), l);
@@ -956,7 +956,7 @@ location of the error.  Typically @var{err} is returned from\n\
                           if (l > 0)
                             {
                               if (c > 0)
-                                pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
+                                pr_where_1 ("error: called from `%s' in file %s near line %d, column %d",
                                             nm.c_str (), file.c_str (), l, c);
                               else
                                 pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
@@ -1315,7 +1315,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
                   octave_idx_type nel = ident.numel ();
 
                   bool found = false;
-                  
+
                   std::string val;
 
                   for (octave_idx_type i = 0; i < nel; i++)
@@ -1564,47 +1564,47 @@ their default values.\n\
 
               if (! error_state && new_err.contains ("message"))
                 {
-                  const std::string tmp = 
+                  const std::string tmp =
                     new_err.getfield("message").string_value ();
                   new_error_message = tmp;
                 }
 
               if (! error_state && new_err.contains ("identifier"))
                 {
-                  const std::string tmp = 
+                  const std::string tmp =
                     new_err.getfield("identifier").string_value ();
                   new_error_id = tmp;
                 }
 
               if (! error_state && new_err.contains ("stack"))
                 {
-                  octave_scalar_map new_err_stack = 
+                  octave_scalar_map new_err_stack =
                     new_err.getfield("identifier").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
                     {
-                      const std::string tmp = 
+                      const std::string tmp =
                         new_err_stack.getfield("file").string_value ();
                       new_error_file = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("name"))
                     {
-                      const std::string tmp = 
+                      const std::string tmp =
                         new_err_stack.getfield("name").string_value ();
                       new_error_name = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("line"))
                     {
-                      const int tmp = 
+                      const int tmp =
                         new_err_stack.getfield("line").nint_value ();
                       new_error_line = tmp;
                     }
-                  
+
                   if (! error_state && new_err_stack.contains ("column"))
                     {
-                      const int tmp = 
+                      const int tmp =
                         new_err_stack.getfield("column").nint_value ();
                       new_error_column = tmp;
                     }
@@ -1631,7 +1631,7 @@ their default values.\n\
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 DEFUN (lasterr, args, nargout,
@@ -1678,7 +1678,7 @@ also set the last message identifier.\n\
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 // For backward compatibility.
@@ -1725,7 +1725,7 @@ also set the last message identifier.\n\
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 DEFUN (usage, args, ,

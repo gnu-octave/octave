@@ -68,7 +68,7 @@ builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
     retval = x;
   else if (x <= btyp_float && y <= btyp_uint64)
     retval = y;
-  else if ((x >= btyp_int8 && x <= btyp_int64 
+  else if ((x >= btyp_int8 && x <= btyp_int64
             && y >= btyp_int8 && y <= btyp_int64)
            || (x >= btyp_uint8 && x <= btyp_uint64
                && y >= btyp_uint8 && y <= btyp_uint64))
@@ -77,7 +77,7 @@ builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
   return retval;
 }
 
-std::string btyp_class_name[btyp_num_types] = 
+std::string btyp_class_name[btyp_num_types] =
 {
   "double", "single", "double", "single",
   "int8", "int16", "int32", "int64",
@@ -329,14 +329,14 @@ octave_base_value::resize (const dim_vector&, bool) const
   return octave_value ();
 }
 
-MatrixType 
+MatrixType
 octave_base_value::matrix_type (void) const
 {
   gripe_wrong_type_arg ("octave_base_value::matrix_type ()", type_name ());
   return MatrixType ();
 }
 
-MatrixType 
+MatrixType
 octave_base_value::matrix_type (const MatrixType&) const
 {
   gripe_wrong_type_arg ("octave_base_value::matrix_type ()", type_name ());
@@ -417,7 +417,7 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
 
 void
 octave_base_value::print_with_name (std::ostream& output_buf,
-                                    const std::string& name, 
+                                    const std::string& name,
                                     bool print_padding)
 {
   bool pad_after = print_name_tag (output_buf, name);
@@ -1034,28 +1034,28 @@ octave_base_value::list_value (void) const
   return retval;
 }
 
-bool 
+bool
 octave_base_value::save_ascii (std::ostream&)
 {
   gripe_wrong_type_arg ("octave_base_value::save_ascii()", type_name ());
   return false;
 }
 
-bool 
+bool
 octave_base_value::load_ascii (std::istream&)
 {
   gripe_wrong_type_arg ("octave_base_value::load_ascii()", type_name ());
   return false;
 }
 
-bool 
+bool
 octave_base_value::save_binary (std::ostream&, bool&)
 {
   gripe_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
   return false;
 }
 
-bool 
+bool
 octave_base_value::load_binary (std::istream&, bool,
                                 oct_mach_info::float_format)
 {
@@ -1073,7 +1073,7 @@ octave_base_value::save_hdf5 (hid_t, const char *, bool)
   return false;
 }
 
-bool 
+bool
 octave_base_value::load_hdf5 (hid_t, const char *)
 {
   gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
@@ -1117,7 +1117,7 @@ octave_base_value::sort (octave_idx_type, sortmode) const
 }
 
 octave_value
-octave_base_value::sort (Array<octave_idx_type> &, 
+octave_base_value::sort (Array<octave_idx_type> &,
                          octave_idx_type, sortmode) const
 {
   gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());
@@ -1153,7 +1153,7 @@ octave_base_value::is_sorted_rows (sortmode) const
 const char *
 octave_base_value::get_umap_name (unary_mapper_t umap)
 {
-  static const char *names[num_unary_mappers] = 
+  static const char *names[num_unary_mappers] =
     {
       "abs",
       "acos",
@@ -1349,7 +1349,7 @@ octave_base_value::numeric_assign (const std::string& type,
           if (cf_rhs.type_id () >= 0
               && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
                                                            t_lhs, cf_rhs.type_id ())
-                  || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, 
+                  || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs,
                                                                      cf_rhs.type_id ()) >= 0))
             cf_this = 0;
           else if (cf_this.type_id () >= 0
@@ -1426,7 +1426,7 @@ void
 octave_base_value::indent (std::ostream& os) const
 {
   assert (curr_print_indent_level >= 0);
- 
+
   if (beginning_of_line)
     {
       // FIXME -- do we need this?
@@ -1471,7 +1471,7 @@ octave_base_value::fast_elem_insert (octave_idx_type, const octave_value&)
   return false;
 }
 
-bool 
+bool
 octave_base_value::fast_elem_insert_self (void *, builtin_type_t) const
 {
   return false;

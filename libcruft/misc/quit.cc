@@ -53,7 +53,7 @@ octave_throw_interrupt_exception (void)
 {
   if (octave_interrupt_hook)
     octave_interrupt_hook ();
-    
+
   throw octave_interrupt_exception ();
 }
 
@@ -63,7 +63,7 @@ octave_throw_execution_exception (void)
   // FIXME -- would a hook function be useful here?
 
   octave_exception_state = octave_exec_exception;
-    
+
   throw octave_execution_exception ();
 }
 
@@ -72,7 +72,7 @@ octave_throw_bad_alloc (void)
 {
   if (octave_bad_alloc_hook)
     octave_bad_alloc_hook ();
-    
+
   octave_exception_state = octave_alloc_exception;
 
   throw std::bad_alloc ();

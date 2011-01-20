@@ -55,7 +55,7 @@ extern "C"
   F77_FUNC (dpocon, DPOCON) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, double*,
                              const octave_idx_type&, const double&,
-                             double&, double*, octave_idx_type*, 
+                             double&, double*, octave_idx_type*,
                              octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
 #ifdef HAVE_QRUPDATE
@@ -113,7 +113,7 @@ CHOL::init (const Matrix& a, bool calc_cond)
 
   // Calculate the norm of the matrix, for later use.
   double anorm = 0;
-  if (calc_cond) 
+  if (calc_cond)
     anorm = xnorm (a, 1);
 
   F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
@@ -123,7 +123,7 @@ CHOL::init (const Matrix& a, bool calc_cond)
   xrcond = 0.0;
   if (info > 0)
     chol_mat.resize (info - 1, info - 1);
-  else if (calc_cond) 
+  else if (calc_cond)
     {
       octave_idx_type dpocon_info = 0;
 
@@ -136,7 +136,7 @@ CHOL::init (const Matrix& a, bool calc_cond)
                                  n, anorm, xrcond, pz, piz, dpocon_info
                                  F77_CHAR_ARG_LEN (1)));
 
-      if (dpocon_info != 0) 
+      if (dpocon_info != 0)
         info = -1;
     }
 
@@ -192,7 +192,7 @@ CHOL::inverse (void) const
 void
 CHOL::set (const Matrix& R)
 {
-  if (R.is_square ()) 
+  if (R.is_square ())
     chol_mat = R;
   else
     (*current_liboctave_error_handler) ("CHOL requires square matrix");
@@ -246,7 +246,7 @@ CHOL::insert_sym (const ColumnVector& u, octave_idx_type j)
   octave_idx_type info = -1;
 
   octave_idx_type n = chol_mat.rows ();
-  
+
   if (u.length () != n + 1)
     (*current_liboctave_error_handler) ("cholinsert: dimension mismatch");
   else if (j < 0 || j > n)
@@ -270,14 +270,14 @@ void
 CHOL::delete_sym (octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  
+
   if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("choldelete: index out of range");
   else
     {
       OCTAVE_LOCAL_BUFFER (double, w, n);
 
-      F77_XFCN (dchdex, DCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (), 
+      F77_XFCN (dchdex, DCHDEX, (n, chol_mat.fortran_vec (), chol_mat.rows (),
                                  j + 1, w));
 
       chol_mat.resize (n-1, n-1);
@@ -288,8 +288,8 @@ void
 CHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = chol_mat.rows ();
-  
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
     {
@@ -311,7 +311,7 @@ CHOL::update (const ColumnVector& u)
 
   if (u.length () == n)
     {
-      init (chol_mat.transpose () * chol_mat 
+      init (chol_mat.transpose () * chol_mat
             + Matrix (u) * Matrix (u).transpose (), false);
     }
   else
@@ -341,7 +341,7 @@ CHOL::downdate (const ColumnVector& u)
         info = 2;
       else
         {
-          info = init (chol_mat.transpose () * chol_mat 
+          info = init (chol_mat.transpose () * chol_mat
                 - Matrix (u) * Matrix (u).transpose (), false);
           if (info) info = 1;
         }
@@ -416,7 +416,7 @@ CHOL::shift_sym (octave_idx_type i, octave_idx_type j)
 
   octave_idx_type n = chol_mat.rows ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("cholshift: index out of range");
   else
     {

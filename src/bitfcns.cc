@@ -444,7 +444,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
   if (nargin == 2 || nargin == 3)
     {
       int nbits = 64;
-      
+
       NDArray n = args(1).array_value ();
 
       if (error_state)
@@ -460,7 +460,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
               else
                 {
                   nbits = args(2).int_value ();
-          
+
                   if (error_state)
                     error ("bitshift: expecting integer as third argument");
                   else if (nbits < 0)

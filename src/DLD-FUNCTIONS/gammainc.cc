@@ -115,7 +115,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
                       float a = a_arg.float_value ();
 
                       if (! error_state)
-                        retval = lower ? gammainc (x, a) 
+                        retval = lower ? gammainc (x, a)
                           : static_cast<float>(1) - gammainc (x, a);
                     }
                   else
@@ -123,7 +123,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
                       FloatNDArray a = a_arg.float_array_value ();
 
                       if (! error_state)
-                        retval = lower ? gammainc (x, a) 
+                        retval = lower ? gammainc (x, a)
                           : static_cast<float>(1) - gammainc (x, a);
                     }
                 }
@@ -139,7 +139,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
                       float a = a_arg.float_value ();
 
                       if (! error_state)
-                        retval = lower ? gammainc (x, a) 
+                        retval = lower ? gammainc (x, a)
                           : static_cast<float>(1) - gammainc (x, a);
                     }
                   else
@@ -147,7 +147,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
                       FloatNDArray a = a_arg.float_array_value ();
 
                       if (! error_state)
-                        retval = lower ? gammainc (x, a) 
+                        retval = lower ? gammainc (x, a)
                           : static_cast<float>(1) - gammainc (x, a);
                     }
                 }
@@ -216,7 +216,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 %! v3 = gammainc(x.*x,a);
 %! assert(v1, v3, sqrt(eps));
 
-%!assert (gammainc(0:4,0.5,"upper"), 1-gammainc(0:4,0.5),1e-10) 
+%!assert (gammainc(0:4,0.5,"upper"), 1-gammainc(0:4,0.5),1e-10)
 
 %!test
 %! a = single ([.5 .5 .5 .5 .5]);
@@ -225,6 +225,6 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 %! v3 = gammainc(x.*x,a);
 %! assert(v1, v3, sqrt(eps('single')));
 
-%!assert (gammainc(single(0:4),single(0.5),"upper"), single(1)-gammainc(single(0:4),single(0.5)),single(1e-7)) 
+%!assert (gammainc(single(0:4),single(0.5),"upper"), single(1)-gammainc(single(0:4),single(0.5)),single(1e-7))
 
 */

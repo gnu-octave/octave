@@ -133,10 +133,10 @@ public:
           (*it)->accept (*this);
         }
     }
-  
+
   virtual void visit (text_subscript_element& e)
     { visit (dynamic_cast<text_element_list&> (e)); }
-  
+
   virtual void visit (text_superscript_element& e)
     { visit (dynamic_cast<text_element_list&> (e)); }
 
@@ -145,7 +145,7 @@ public:
 protected:
   text_processor (void) { }
 
-  virtual ~text_processor (void) { } 
+  virtual ~text_processor (void) { }
 };
 
 #define TEXT_ELEMENT_ACCEPT(cls) \

@@ -41,7 +41,7 @@ public:
   FloatComplexLU (const FloatComplexLU& a)
     : base_lu <FloatComplexMatrix> (a) { }
 
-  FloatComplexLU (const FloatComplexMatrix& l, const FloatComplexMatrix& u, 
+  FloatComplexLU (const FloatComplexMatrix& l, const FloatComplexMatrix& u,
                   const PermMatrix& p)
     : base_lu <FloatComplexMatrix> (l, u, p) { }
 

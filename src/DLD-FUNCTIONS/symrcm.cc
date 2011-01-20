@@ -83,16 +83,16 @@ struct CMK_Node
 
 // Enqueue operation (adds a node "o" at the tail)
 
-inline static void 
+inline static void
 Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qt, const CMK_Node& o)
-{       
+{
   Q[qt] = o;
   qt = (qt + 1) % (N + 1);
 }
 
 // Dequeue operation (removes a node from the head)
 
-inline static CMK_Node 
+inline static CMK_Node
 Q_deq (CMK_Node * Q, octave_idx_type N, octave_idx_type& qh)
 {
   CMK_Node r = Q[qh];
@@ -115,7 +115,7 @@ Q_deq (CMK_Node * Q, octave_idx_type N, octave_idx_type& qh)
 // Builds a min-heap (the root contains the smallest element). A is an array
 // with the graph's nodes, i is a starting position, size is the length of A.
 
-static void 
+static void
 H_heapify_min (CMK_Node *A, octave_idx_type i, octave_idx_type size)
 {
   octave_idx_type j = i;
@@ -140,21 +140,21 @@ H_heapify_min (CMK_Node *A, octave_idx_type i, octave_idx_type size)
           A[smallest] = tmp;
           j = smallest;
         }
-      else 
+      else
         break;
     }
 }
 
 // Heap operation insert. Running time is O(log(n))
 
-static void 
+static void
 H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
 {
   octave_idx_type i = h++;
 
   H[i] = o;
 
-  if (i == 0) 
+  if (i == 0)
     return;
   do
     {
@@ -167,7 +167,7 @@ H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
 
           i = p;
         }
-      else 
+      else
         break;
     }
   while (i > 0);
@@ -176,12 +176,12 @@ H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
 // Heap operation remove-min. Removes the smalles element in O(1) and
 // reorganizes the heap optionally in O(log(n))
 
-inline static CMK_Node 
+inline static CMK_Node
 H_remove_min (CMK_Node *H, octave_idx_type& h, int reorg/*=1*/)
 {
   CMK_Node r = H[0];
   H[0] = H[--h];
-  if (reorg) 
+  if (reorg)
     H_heapify_min(H, 0, h);
   return r;
 }
@@ -192,10 +192,10 @@ H_remove_min (CMK_Node *H, octave_idx_type& h, int reorg/*=1*/)
 // Helper function for the Cuthill-McKee algorithm. Tries to determine a
 // pseudo-peripheral node of the graph as starting node.
 
-static octave_idx_type 
-find_starting_node (octave_idx_type N, const octave_idx_type *ridx, 
-                    const octave_idx_type *cidx, const octave_idx_type *ridx2, 
-                    const octave_idx_type *cidx2, octave_idx_type *D, 
+static octave_idx_type
+find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
+                    const octave_idx_type *cidx, const octave_idx_type *ridx2,
+                    const octave_idx_type *cidx2, octave_idx_type *D,
                     octave_idx_type start)
 {
   CMK_Node w;
@@ -327,16 +327,16 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
 }
 
 // Calculates the node's degrees. This means counting the non-zero elements
-// in the symmetric matrix' rows. This works for non-symmetric matrices 
+// in the symmetric matrix' rows. This works for non-symmetric matrices
 // as well.
 
-static octave_idx_type 
-calc_degrees (octave_idx_type N, const octave_idx_type *ridx, 
+static octave_idx_type
+calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
               const octave_idx_type *cidx, octave_idx_type *D)
 {
   octave_idx_type max_deg = 0;
 
-  for (octave_idx_type i = 0; i < N; i++) 
+  for (octave_idx_type i = 0; i < N; i++)
     D[i] = 0;
 
   for (octave_idx_type j = 0; j < N; j++)
@@ -347,7 +347,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
           octave_idx_type k = ridx[i];
           // there is a non-zero element (k,j)
           D[k]++;
-          if (D[k] > max_deg) 
+          if (D[k] > max_deg)
             max_deg = D[k];
           // if there is no element (j,k) there is one in
           // the symmetric matrix:
@@ -371,7 +371,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
                 {
                   // A(j,k) == 0
                   D[j]++;
-                  if (D[j] > max_deg) 
+                  if (D[j] > max_deg)
                     max_deg = D[j];
                 }
             }
@@ -383,8 +383,8 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
 // Transpose of the structure of a square sparse matrix
 
 static void
-transpose (octave_idx_type N, const octave_idx_type *ridx, 
-           const octave_idx_type *cidx, octave_idx_type *ridx2, 
+transpose (octave_idx_type N, const octave_idx_type *ridx,
+           const octave_idx_type *cidx, octave_idx_type *ridx2,
            octave_idx_type *cidx2)
 {
   octave_idx_type nz = cidx[N];
@@ -451,7 +451,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
   octave_value arg = args(0);
 
-  // the parameter of the matrix is converted into a sparse matrix 
+  // the parameter of the matrix is converted into a sparse matrix
   //(if necessary)
   octave_idx_type *cidx;
   octave_idx_type *ridx;
@@ -511,7 +511,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   // the return value corresponds to the identity permutation
   if (max_deg == 0)
     {
-      for (octave_idx_type i = 0; i < N; i++) 
+      for (octave_idx_type i = 0; i < N; i++)
         P(i) = i;
       return octave_value (P);
     }
@@ -535,7 +535,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
   // mark all nodes as unvisited; with the exception of the nodes
   // that have degree==0 and build a CC of the graph.
-        
+
   boolNDArray btmp (dim_vector (1, N), false);
   bool *visit = btmp.fortran_vec ();
 
@@ -544,12 +544,12 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       // locate an unvisited starting node of the graph
       octave_idx_type i;
       for (i = 0; i < N; i++)
-        if (! visit[i]) 
+        if (! visit[i])
           break;
 
       // locate a probably better starting node
       v.id = find_starting_node (N, ridx, cidx, ridx2, cidx2, D, i);
-                
+
       // mark the node as visited and enqueue it (a starting node
       // for the BFS). Since the node will be a root of a spanning
       // tree, its dist is 0.
@@ -567,7 +567,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       octave_idx_type level = 0;
       // the root is the first/only node on level 0
       octave_idx_type level_N = 1;
-        
+
       while (! Q_empty (Q, N, qh, qt))
         {
           v = Q_deq (Q, N, qh);
@@ -578,7 +578,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
           // for computing the inverse permutation P where
           // A(inv(P),inv(P)) or P'*A*P is banded
           //         P(i) = c;
-                        
+
           // for computing permutation P where
           // A(P(i),P(j)) or P*A*P' is banded
           P(c) = i;
@@ -657,7 +657,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
               // locate a neighbor of i with minimal degree in O(log(N))
               v = H_remove_min(S, s, 1);
-        
+
               // entered the BFS a new level?
               if (v.dist > level)
                 {
@@ -667,7 +667,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                   //  maximum number of nodes per level"
                   if (Bsub < level_N)
                     Bsub = level_N;
-        
+
                   level = v.dist;
                   // v is the first node on the new level
                   level_N = 1;
@@ -678,11 +678,11 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                   // this level:
                   level_N++;
                 }
-        
+
               // enqueue v in O(1)
               Q_enq (Q, N, qt, v);
             }
-        
+
           // synchronize the bandwidth with level_N once again:
           if (Bsub < level_N)
             Bsub = level_N;

@@ -725,7 +725,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %{
-// Superclass method identifiers. 
+// Superclass method identifiers.
 %}
 
 {IDENT}@{IDENT}{S}* |
@@ -741,15 +741,15 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
         COUNT_TOK_AND_RETURN (SUPERCLASSREF);
       }
   }
-  
+
 %{
 // Metaclass query
-%}  
-  
-\?{IDENT}{S}* | 
+%}
+
+\?{IDENT}{S}* |
 \?{IDENT}.{IDENT}{S}* {
     LEXER_DEBUG ("\?{IDENT}{S}* | \?{IDENT}.{IDENT}{S}*");
-    
+
     int id_tok = handle_meta_identifier ();
 
     if (id_tok >= 0)
@@ -758,7 +758,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
         COUNT_TOK_AND_RETURN (METAQUERY);
       }
-  }  
+  }
 
 %{
 // Function handles and superclass references
@@ -776,7 +776,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.at_beginning_of_statement = false;
 
     COUNT_TOK_AND_RETURN ('@');
-      
+
   }
 
 %{
@@ -810,7 +810,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %{
 // Single quote can either be the beginning of a string or a transpose
-// operator. 
+// operator.
 %}
 
 "'" {
@@ -846,7 +846,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %{
 // Gobble comments.
-%} 
+%}
 
 {CCHAR} {
     LEXER_DEBUG ("{CCHAR}");
@@ -1510,22 +1510,22 @@ is_keyword_token (const std::string& s)
           yylval.tok_val = new token (token::while_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
-          
+
         case endclassdef_kw:
           yylval.tok_val = new token (token::classdef_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
-          
+
         case endevents_kw:
           yylval.tok_val = new token (token::events_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
-          
+
         case endmethods_kw:
           yylval.tok_val = new token (token::methods_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
-          
+
         case endproperties_kw:
           yylval.tok_val = new token (token::properties_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
@@ -1555,7 +1555,7 @@ is_keyword_token (const std::string& s)
           break;
 
         case get_kw:
-        case set_kw:  
+        case set_kw:
           // 'get' and 'set' are keywords in classdef method
           // declarations.
           if (! lexer_flags.maybe_classdef_get_set_method)
@@ -1574,7 +1574,7 @@ is_keyword_token (const std::string& s)
         case classdef_kw:
           // 'classdef' is always a keyword.
           promptflag--;
-          break;          
+          break;
 
         case function_kw:
           promptflag--;
@@ -1807,7 +1807,7 @@ grab_comment_block (stream_reader& reader, bool at_bol,
               at_bol = false;
               begin_comment = false;
             }
-        }       
+        }
 
       if (in_comment)
         {
@@ -1879,7 +1879,7 @@ public:
 
   int getc (void) { return ::text_yyinput (); }
   int ungetc (int c) { ::xunput (c, buf); return 0; }
-  
+
 private:
   char *buf;
 };
@@ -2567,11 +2567,11 @@ handle_string (char delim)
               c = text_yyinput ();
               if (c == delim)
                 {
-                  buf << static_cast<char> (c);             
+                  buf << static_cast<char> (c);
                 }
               else
                 {
-                  std::string s;  
+                  std::string s;
                   xunput (c, yytext);
 
                   if (delim == '\'')
@@ -3074,19 +3074,19 @@ handle_superclass_identifier (void)
 {
   eat_continuation ();
 
-  std::string pkg;  
-  std::string meth = strip_trailing_whitespace (yytext); 
+  std::string pkg;
+  std::string meth = strip_trailing_whitespace (yytext);
   size_t pos = meth.find ("@");
   std::string cls = meth.substr (pos).substr (1);
-  meth = meth.substr (0, pos - 1);  
-  
+  meth = meth.substr (0, pos - 1);
+
   pos = cls.find (".");
   if (pos != std::string::npos)
-    {    
+    {
       pkg = cls.substr (pos).substr (1);
       cls = cls.substr (0, pos - 1);
     }
-    
+
   int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
                   || is_keyword_token (pkg));
   if (kw_token)
@@ -3094,17 +3094,17 @@ handle_superclass_identifier (void)
       error ("method, class and package names may not be keywords");
       return LEXICAL_ERROR;
     }
- 
+
   yylval.tok_val
     = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
                  cls.empty () ? 0 : &(symbol_table::insert (cls)),
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number, current_input_column);                                 
+                 input_line_number, current_input_column);
   token_stack.push (yylval.tok_val);
-  
+
   lexer_flags.convert_spaces_to_comma = true;
   current_input_column += yyleng;
-  
+
   return SUPERCLASSREF;
 }
 
@@ -3116,30 +3116,30 @@ handle_meta_identifier (void)
   std::string pkg;
   std::string cls = strip_trailing_whitespace (yytext).substr (1);
   size_t pos = cls.find (".");
-  
+
   if (pos != std::string::npos)
-    {    
+    {
       pkg = cls.substr (pos).substr (1);
       cls = cls.substr (0, pos - 1);
     }
-  
+
   int kw_token = is_keyword_token (cls) || is_keyword_token (pkg);
   if (kw_token)
     {
        error ("class and package names may not be keywords");
       return LEXICAL_ERROR;
     }
-  
+
   yylval.tok_val
     = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
                  pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
                  input_line_number, current_input_column);
 
   token_stack.push (yylval.tok_val);
-                   
+
   lexer_flags.convert_spaces_to_comma = true;
   current_input_column += yyleng;
-  
+
   return METAQUERY;
 }
 
@@ -3289,7 +3289,7 @@ handle_identifier (void)
   // transformation of the end keyword...
 
   if (tok == "end")
-    tok = "__end__";    
+    tok = "__end__";
 
   yylval.tok_val = new token (&(symbol_table::insert (tok)),
                               input_line_number, current_input_column);
@@ -3338,7 +3338,7 @@ lexical_feedback::init (void)
     parsed_function_name.pop ();
 
   parsing_class_method = false;
-  
+
   // Not initially defining a class with classdef.
   maybe_classdef_get_set_method = false;
   parsing_classdef = false;
@@ -3371,7 +3371,7 @@ lexical_feedback::init (void)
   at_beginning_of_statement = true;
 
   // No need to do comma insert or convert spaces to comma at
-  // beginning of input. 
+  // beginning of input.
   convert_spaces_to_comma = true;
   do_comma_insert = false;
 

@@ -49,7 +49,7 @@ DEFCATOP (b_sbm, bool, sparse_bool_matrix)
 {
   CAST_BINOP_ARGS (octave_bool&, const octave_sparse_bool_matrix&);
   SparseBoolMatrix tmp (1, 1, v1.bool_value ());
-  return octave_value (tmp. concat (v2.sparse_bool_matrix_value (), 
+  return octave_value (tmp. concat (v2.sparse_bool_matrix_value (),
                                     ra_idx));
 }
 
@@ -71,7 +71,7 @@ DEFCONV (sparse_bool_matrix_conv, bool, sparse_bool_matrix)
 {
   CAST_CONV_ARG (const octave_bool&);
 
-  return new octave_sparse_bool_matrix 
+  return new octave_sparse_bool_matrix
     (SparseBoolMatrix (1, 1, v.bool_value ()));
 }
 
@@ -88,7 +88,7 @@ install_b_sbm_ops (void)
   INSTALL_CATOP (octave_bool, octave_sparse_matrix, b_sm);
   INSTALL_CATOP (octave_scalar, octave_sparse_bool_matrix, s_sbm);
 
-  INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix, 
+  INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix,
                       octave_bool_matrix);
 
   INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix, sparse_bool_matrix_conv);

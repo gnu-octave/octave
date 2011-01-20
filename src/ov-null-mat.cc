@@ -44,7 +44,7 @@ default_null_matrix_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_matrix::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_matrix_numeric_conversion_function, 
+  return octave_base_value::type_conv_info (default_null_matrix_numeric_conversion_function,
                                             octave_matrix::static_type_id ());
 }
 
@@ -64,7 +64,7 @@ default_null_str_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_str::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_str_numeric_conversion_function, 
+  return octave_base_value::type_conv_info (default_null_str_numeric_conversion_function,
                                             octave_char_matrix_str::static_type_id ());
 }
 
@@ -84,7 +84,7 @@ default_null_sq_str_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_sq_str::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_sq_str_numeric_conversion_function, 
+  return octave_base_value::type_conv_info (default_null_sq_str_numeric_conversion_function,
                                             octave_char_matrix_sq_str::static_type_id ());
 }
 

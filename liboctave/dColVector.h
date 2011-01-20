@@ -39,7 +39,7 @@ public:
   explicit ColumnVector (octave_idx_type n)
     : MArray<double> (dim_vector (n, 1)) { }
 
-  explicit ColumnVector (const dim_vector& dv) 
+  explicit ColumnVector (const dim_vector& dv)
     : MArray<double> (dv.as_column ()) { }
 
   ColumnVector (octave_idx_type n, double val)

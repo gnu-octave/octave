@@ -109,7 +109,7 @@ read_mat_binary_data (std::istream& is, double *data, int precision,
 }
 
 int
-read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt, 
+read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
                       int32_t& nr, int32_t& nc,
                       int32_t& imag, int32_t& len,
                       int quiet)
@@ -358,7 +358,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
               data.xelem(i) = Complex (dtmp[i], ctmp[i]);
             read_mat_binary_data (is, ctmp, prec, 1, swap, flt_fmt);
 
-            SparseComplexMatrix smc = SparseComplexMatrix (data, r, c, 
+            SparseComplexMatrix smc = SparseComplexMatrix (data, r, c,
                                                            nr_new, nc_new);
 
             tc = order ? smc.transpose () : smc;
@@ -435,12 +435,12 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   return retval;
 }
 
-// Save the data from TC along with the corresponding NAME on stream OS 
+// Save the data from TC along with the corresponding NAME on stream OS
 // in the MatLab version 4 binary format.
 
 bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
-                      const std::string& name) 
+                      const std::string& name)
 {
   int32_t mopt = 0;
 
@@ -452,7 +452,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
   os.write (reinterpret_cast<char *> (&mopt), 4);
-  
+
   octave_idx_type len;
   int32_t nr = tc.rows ();
 
@@ -498,14 +498,14 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
       octave_idx_type nrow = chm.rows ();
       octave_idx_type ncol = chm.cols ();
-        
+
       OCTAVE_LOCAL_BUFFER (double, buf, ncol*nrow);
-        
+
       for (octave_idx_type i = 0; i < nrow; i++)
         {
           std::string tstr = chm.row_as_string (i);
           const char *s = tstr.data ();
-          
+
           for (octave_idx_type j = 0; j < ncol; j++)
             buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
         }

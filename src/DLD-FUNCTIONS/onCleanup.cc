@@ -43,11 +43,11 @@ public:
   octave_oncleanup (void) : fcn () { }
   octave_oncleanup (const octave_value& fcn);
 
-  octave_base_value *clone (void) const 
-    { 
+  octave_base_value *clone (void) const
+    {
       if (fcn.is_defined ())
         gripe_internal ();
-      return empty_clone (); 
+      return empty_clone ();
     }
 
   octave_base_value *empty_clone (void) const { return new octave_oncleanup (); }
@@ -71,7 +71,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
@@ -136,7 +136,7 @@ octave_oncleanup::~octave_oncleanup (void)
   // Disallow quit().
   frame.protect_var (quit_allowed);
   quit_allowed = false;
-  
+
   // Clear errors.
   frame.protect_var (error_state);
   error_state = 0;
@@ -172,7 +172,7 @@ octave_oncleanup::~octave_oncleanup (void)
     }
 }
 
-octave_scalar_map 
+octave_scalar_map
 octave_oncleanup::scalar_map_value (void) const
 {
   octave_scalar_map retval;
@@ -180,27 +180,27 @@ octave_oncleanup::scalar_map_value (void) const
   return retval;
 }
 
-static void 
+static void
 warn_save_load (void)
 {
   warning ("onCleanup: load and save not supported");
 }
 
-bool 
+bool
 octave_oncleanup::save_ascii (std::ostream& /* os */)
 {
   warn_save_load ();
   return true;
 }
 
-bool 
+bool
 octave_oncleanup::load_ascii (std::istream& /* is */)
 {
   warn_save_load ();
   return true;
 }
 
-bool 
+bool
 octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
 {
   warn_save_load ();
@@ -208,8 +208,8 @@ octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats *
 }
 
 
-bool 
-octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */, 
+bool
+octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */,
                                oct_mach_info::float_format /* fmt */)
 {
   warn_save_load ();
@@ -217,15 +217,15 @@ octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */,
 }
 
 #if defined (HAVE_HDF5)
-bool 
-octave_oncleanup::save_hdf5 (hid_t /* loc_id */, const char * /* name */, 
+bool
+octave_oncleanup::save_hdf5 (hid_t /* loc_id */, const char * /* name */,
                              bool /* save_as_floats */)
 {
   warn_save_load ();
   return true;
 }
 
-bool 
+bool
 octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
 {
   warn_save_load ();
@@ -233,14 +233,14 @@ octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
 }
 #endif
 
-void 
+void
 octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }
 
-void 
+void
 octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   os << "onCleanup (";

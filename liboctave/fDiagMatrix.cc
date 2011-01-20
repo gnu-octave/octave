@@ -184,7 +184,7 @@ FloatDiagMatrix::row (octave_idx_type i) const
   if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatRowVector (); 
+      return FloatRowVector ();
     }
 
   FloatRowVector retval (c, 0.0);
@@ -200,7 +200,7 @@ FloatDiagMatrix::row (char *s) const
   if (! s)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatRowVector (); 
+      return FloatRowVector ();
     }
 
   char c = *s;
@@ -211,7 +211,7 @@ FloatDiagMatrix::row (char *s) const
   else
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return FloatRowVector (); 
+      return FloatRowVector ();
     }
 }
 
@@ -223,7 +223,7 @@ FloatDiagMatrix::column (octave_idx_type i) const
   if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatColumnVector (); 
+      return FloatColumnVector ();
     }
 
   FloatColumnVector retval (r, 0.0);
@@ -239,7 +239,7 @@ FloatDiagMatrix::column (char *s) const
   if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatColumnVector (); 
+      return FloatColumnVector ();
     }
 
   char c = *s;
@@ -250,7 +250,7 @@ FloatDiagMatrix::column (char *s) const
   else
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return FloatColumnVector (); 
+      return FloatColumnVector ();
     }
 }
 

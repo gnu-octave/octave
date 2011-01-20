@@ -49,7 +49,7 @@ sqrtm_utri_inplace (Matrix& T)
 
   bool singular = false;
 
-  /* 
+  /*
    * the following code is equivalent to this triple loop:
    *
    *  n = rows (T);

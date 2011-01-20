@@ -46,7 +46,7 @@ public:
   octave_fcn_inline (void)
     : octave_fcn_handle (), iftext (), ifargs () { }
 
-  octave_fcn_inline (const std::string& f, const string_vector& a, 
+  octave_fcn_inline (const std::string& f, const string_vector& a,
                      const std::string& n = std::string ());
 
   octave_fcn_inline (const octave_fcn_inline& fi)
@@ -75,7 +75,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

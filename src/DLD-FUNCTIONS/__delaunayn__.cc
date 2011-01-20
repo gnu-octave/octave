@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
   6. June 2006: Changes by Alexander Barth <abarth@marine.usf.edu>
 
-  * triangulate non-simplicial facets 
+  * triangulate non-simplicial facets
   * allow options to be specified as cell array of strings
   * change the default options (for compatibility with matlab)
 */
@@ -99,12 +99,12 @@ Undocumented internal function.\n\
       {
         // keep default options
       }
-    else if (args(1).is_string ()) 
+    else if (args(1).is_string ())
       {
         // option string is directly provided
         options = args(1).string_value ();
       }
-    else if (args(1).is_cell ()) 
+    else if (args(1).is_cell ())
       {
         options = "";
 
@@ -112,7 +112,7 @@ Undocumented internal function.\n\
         for (octave_idx_type i = 0; i < c.numel (); i++)
           {
 
-            if (! c.elem(i).is_string ()) 
+            if (! c.elem(i).is_string ())
               {
                 error ("__delaunayn__: all options must be strings");
                 return retval;
@@ -121,16 +121,16 @@ Undocumented internal function.\n\
             options = options + c.elem(i).string_value () + " ";
           }
       }
-    else 
+    else
       {
         error ("__delaunayn__: OPT argument must be a string, cell array of strings, or empty");
         return retval;
       }
-    } 
+    }
 
   //octave_stdout << "options " << options << std::endl;
 
-  if (n > dim + 1) 
+  if (n > dim + 1)
     {
       p = p.transpose ();
       double *pt_array = p.fortran_vec ();
@@ -149,7 +149,7 @@ Undocumented internal function.\n\
       if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, outfile, errfile))
         {
           // triangulate non-simplicial facets
-          qh_triangulate (); 
+          qh_triangulate ();
 
           facetT *facet;
           vertexT *vertex, **vertexp;
@@ -161,7 +161,7 @@ Undocumented internal function.\n\
                 nf++;
 
               // Double check
-              if (! facet->simplicial) 
+              if (! facet->simplicial)
                 {
                   error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
                   break;
@@ -172,7 +172,7 @@ Undocumented internal function.\n\
 
           FORALLfacets
             {
-              if (! facet->upperdelaunay) 
+              if (! facet->upperdelaunay)
                 {
                   octave_idx_type j = 0;
 
@@ -209,12 +209,12 @@ Undocumented internal function.\n\
       else
         error ("__delaunayn__: qhull failed.");
     }
-  else if (n == dim + 1) 
+  else if (n == dim + 1)
     {
       // one should check if nx points span a simplex
       // I will look at this later.
       RowVector vec (n);
-      for (octave_idx_type i = 0; i < n; i++) 
+      for (octave_idx_type i = 0; i < n; i++)
         vec(i) = i + 1.0;
 
       retval(0) = vec;

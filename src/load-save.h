@@ -53,7 +53,7 @@ enum load_save_format_options
   LS_MAT_BINARY_V5 = 1,
   LS_MAT_BINARY_V7,
   // zero means no option.
-  LS_NO_OPTION = 0  
+  LS_NO_OPTION = 0
 };
 
 class load_save_format

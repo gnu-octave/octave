@@ -264,7 +264,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
           typx = LPX_DB;
           break;
         }
-      
+
       lpx_set_row_bnds (lp, i+1, typx, b[i], b[i]);
 
     }

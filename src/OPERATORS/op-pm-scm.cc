@@ -55,7 +55,7 @@ DEFBINOP (ldiv_pm_scm, perm_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_complex_matrix&);
 
-  return v1.perm_matrix_value ().inverse () * v2.sparse_complex_matrix_value (); 
+  return v1.perm_matrix_value ().inverse () * v2.sparse_complex_matrix_value ();
 }
 
 // sparse matrix by diagonal matrix ops

@@ -130,7 +130,7 @@ charMatrix::insert (const charMatrix& a, octave_idx_type r, octave_idx_type c)
 }
 
 std::string
-charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const 
+charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const
 {
   std::string retval;
 

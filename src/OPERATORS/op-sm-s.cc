@@ -123,7 +123,7 @@ DEFBINOP (el_ldiv, sparse_matrix, scalar)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
 
-  return octave_value 
+  return octave_value
     (x_el_div (v2.complex_value (), v1.sparse_matrix_value ()));
 }
 

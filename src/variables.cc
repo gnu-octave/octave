@@ -164,7 +164,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
           if (parse_status == 0)
             {
               retval = is_valid_function (fname, warn_for, 0);
-      
+
               if (! retval)
                 {
                   error ("%s: `%s' is not valid as a function",
@@ -971,7 +971,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
           if (param.command == 's' && param.modifier == 'c')
             {
               int a, b;
-             
+
               if (param.modifier == 'c')
                 {
                   a = param.first_parameter_length - param.balance;
@@ -1152,7 +1152,7 @@ private:
                 case 't':
                   os << varval.type_name ();
                   break;
-            
+
                 default:
                   error ("whos_line_format: command `%c' unknown",
                          param.command);
@@ -1539,11 +1539,11 @@ do_who (int argc, const string_vector& argv, bool return_list,
     {
       if (argv[i] == "-file")
         {
-          // FIXME. This is an inefficient manner to implement this as the 
+          // FIXME. This is an inefficient manner to implement this as the
           // variables are loaded in to a temporary context and then treated.
           // It would be better to refecat symbol_info_list to not store the
           // symbol records and then use it in load-save.cc (do_load) to
-          // implement this option there so that the variables are never 
+          // implement this option there so that the variables are never
           // stored at all.
           if (i == argc - 1)
             error ("whos: -file argument must be followed by a file name");
@@ -1569,7 +1569,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 
               if (! error_state)
                 {
-                  std::string newmsg = std::string ("Variables in the file ") + 
+                  std::string newmsg = std::string ("Variables in the file ") +
                     nm + ":\n\n";
 
                   retval =  do_who (i, argv, return_list, verbose, newmsg);
@@ -1602,7 +1602,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
       pats.resize (++npats);
       pats[0] = "*";
     }
-    
+
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
 
@@ -1885,7 +1885,7 @@ bind_internal_variable (const std::string& fname, const octave_value& val)
   feval (fname, args, 0);
 }
 
-void 
+void
 mlock (void)
 {
   octave_function *fcn = octave_call_stack::current ();
@@ -1896,7 +1896,7 @@ mlock (void)
     error ("mlock: invalid use outside a function");
 }
 
-void 
+void
 munlock (const std::string& nm)
 {
   octave_value val = symbol_table::find_function (nm);
@@ -2024,7 +2024,7 @@ then return true if the current function is locked.\n\
 // Deleting names from the symbol tables.
 
 static inline bool
-name_matches_any_pattern (const std::string& nm, const string_vector& argv, 
+name_matches_any_pattern (const std::string& nm, const string_vector& argv,
                           int argc, int idx, bool have_regexp = false)
 {
   bool retval = false;
@@ -2325,7 +2325,7 @@ without the dash as well.\n\
       if (argc == 1)
         {
           do_clear_globals (argv, argc, 1);
-          do_clear_variables (argv, argc, 1); 
+          do_clear_variables (argv, argc, 1);
         }
       else
         {

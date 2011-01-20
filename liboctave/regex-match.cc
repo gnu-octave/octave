@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 #include "oct-locbuf.h"
 
-regex_match& 
+regex_match&
 regex_match::operator = (const regex_match& gm)
 {
   if (this != &gm)
@@ -59,27 +59,27 @@ regex_match::~regex_match (void)
 }
 
 
-void 
-regex_match::set_pattern (const std::string& p) 
-{ 
+void
+regex_match::set_pattern (const std::string& p)
+{
 #if HAVE_REGEX
   for (int i = 0; i < pat.length (); i++)
     regfree (compiled +i);
   delete [] compiled;
 #endif
-  pat = p; 
+  pat = p;
   init ();
 }
 
-void 
-regex_match::set_pattern (const string_vector& p) 
-{ 
+void
+regex_match::set_pattern (const string_vector& p)
+{
 #if HAVE_REGEX
   for (int i = 0; i < pat.length (); i++)
     regfree (compiled +i);
   delete [] compiled;
 #endif
-  pat = p; 
+  pat = p;
   init ();
 }
 
@@ -95,27 +95,27 @@ regex_match::init (void)
 
   for (i = 0; i < npat; i++)
     {
-      err = regcomp (compiled + i, pat(i).c_str (), 
+      err = regcomp (compiled + i, pat(i).c_str (),
                      (REG_NOSUB | REG_EXTENDED |
                       (case_insen ? REG_ICASE : 0)));
       if (err)
         break;
     }
-  
+
   if (err)
     {
       int len = regerror (err, compiled + i, 0, 0);
       OCTAVE_LOCAL_BUFFER (char, errmsg, len);
       regerror(err, compiled + i, errmsg, len);
-      (*current_liboctave_error_handler) ("%s in pattern (%s)", errmsg, 
+      (*current_liboctave_error_handler) ("%s in pattern (%s)", errmsg,
                                           pat(i).c_str());
 
       for (int j = 0; j < i + 1; j++)
         regfree (compiled + j);
     }
 #else
-  (*current_liboctave_error_handler) 
-    ("regex not available in this version of Octave"); 
+  (*current_liboctave_error_handler)
+    ("regex not available in this version of Octave");
 #endif
 }
 
@@ -128,7 +128,7 @@ regex_match::match (const std::string& s)
   const char *str = s.c_str ();
 
   for (int i = 0; i < npat; i++)
-    if (regexec (compiled + i, str, 0, 0, 0) == 0) 
+    if (regexec (compiled + i, str, 0, 0, 0) == 0)
       return true;
 #endif
 

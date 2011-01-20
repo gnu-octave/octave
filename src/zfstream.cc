@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2011 Ludwig Schwardt, Kevin Ruland 
+Copyright (C) 2005-2011 Ludwig Schwardt, Kevin Ruland
 
 
 This file is part of Octave.
@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Internal buffer sizes (default and "unbuffered" versions)
 #define STASHED_CHARACTERS 16
-#define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS) 
+#define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS)
 #define SMALLBUFSIZE 1
 
 /*****************************************************************************/
@@ -216,7 +216,7 @@ gzfilebuf::showmanyc()
 
 // Puts back a character to the stream in two cases. Firstly, when there
 // is no putback position available, and secondly when the character putback
-// differs from the one in the file. We can only support the first case 
+// differs from the one in the file. We can only support the first case
 // with gzipped files.
 gzfilebuf::int_type
 gzfilebuf::pbackfail (gzfilebuf::int_type c)
@@ -225,7 +225,7 @@ gzfilebuf::pbackfail (gzfilebuf::int_type c)
     {
       if (gzseek (file, this->gptr() - this->egptr() - 1, SEEK_CUR) < 0)
         return traits_type::eof();
-  
+
       // Invalidates contents of the buffer
       enable_buffer ();
 
@@ -461,7 +461,7 @@ gzfilebuf::disable_buffer()
 
 // Seek functions
 gzfilebuf::pos_type
-gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way, 
+gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way,
                    std::ios_base::openmode)
 {
   pos_type ret = pos_type (off_type (-1));
@@ -480,7 +480,7 @@ gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way,
       else
         // Can't seek from end of a gzipped file, so this will give -1
         ret = pos_type (gzseek (file, computed_off, SEEK_END));
-  
+
       if (io_mode & std::ios_base::in)
         // Invalidates contents of the buffer
         enable_buffer ();

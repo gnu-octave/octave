@@ -257,7 +257,7 @@ qp (const Matrix& H, const ColumnVector& q,
             {
               info = 0;
 
-              // Computing the step pz. 
+              // Computing the step pz.
               if (dimZ > 0)
                 {
                   // Using the Cholesky factorization to invert rH

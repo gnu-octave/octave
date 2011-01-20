@@ -72,21 +72,21 @@ extern "C"
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (spotrf, SPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, float*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (cpotrf, CPOTRF) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (cpotrf, CPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, FloatComplex*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (sggev, SGGEV) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (sggev, SGGEV) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, float*,
                            const octave_idx_type&, float*,
@@ -109,7 +109,7 @@ extern "C"
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (cggev, CGGEV) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (cggev, CGGEV) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, FloatComplex*,
                            const octave_idx_type&, FloatComplex*,
@@ -123,7 +123,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (chegv, CHEGV) (const octave_idx_type&,
-                           F77_CONST_CHAR_ARG_DECL, 
+                           F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, FloatComplex*,
                            const octave_idx_type&, FloatComplex*,
@@ -246,7 +246,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_ev)
   return info;
 }
 
-octave_idx_type 
+octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_ev)
 {
   octave_idx_type n = a.rows ();
@@ -488,7 +488,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
   float *tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-                             n, tmp_data, n, 
+                             n, tmp_data, n,
                              info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -523,7 +523,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
 
   F77_XFCN (sggev, SGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n, 
+                           n, atmp_data, n, btmp_data, n,
                            par, pai, pbeta,
                            dummy, idummy, pvr, n,
                            &dummy_work, lwork, info
@@ -538,7 +538,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
 
       F77_XFCN (sggev, SGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                               n, atmp_data, n, btmp_data, n, 
+                               n, atmp_data, n, btmp_data, n,
                                par, pai, pbeta,
                                dummy, idummy, pvr, n,
                                pwork, lwork, info
@@ -576,9 +576,9 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = FloatComplex (ar.elem(j) / beta.elem (j), 
+              lambda.elem(j) = FloatComplex (ar.elem(j) / beta.elem (j),
                                              ai.elem(j) / beta.elem (j));
-              lambda.elem(j+1) = FloatComplex (ar.elem(j+1) / beta.elem (j+1), 
+              lambda.elem(j+1) = FloatComplex (ar.elem(j+1) / beta.elem (j+1),
                                                ai.elem(j+1) / beta.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
@@ -598,7 +598,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
   return info;
 }
 
-octave_idx_type 
+octave_idx_type
 FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
 {
   octave_idx_type n = a.rows ();
@@ -632,8 +632,8 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_
 
   F77_XFCN (ssygv, SSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n, 
-                           btmp_data, n, 
+                           n, atmp_data, n,
+                           btmp_data, n,
                            pwr, &dummy_work, lwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
@@ -646,8 +646,8 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_
 
       F77_XFCN (ssygv, SSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                                F77_CONST_CHAR_ARG2 ("U", 1),
-                               n, atmp_data, n, 
-                               btmp_data, n, 
+                               n, atmp_data, n,
+                               btmp_data, n,
                                pwr, pwork, lwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));
@@ -704,7 +704,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool c
   FloatComplex *tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-                             n, tmp_data, n, 
+                             n, tmp_data, n,
                              info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -740,7 +740,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool c
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n, 
+                           n, atmp_data, n, btmp_data, n,
                            palpha, pbeta, dummy, idummy,
                            pv, n, &dummy_work, lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
@@ -754,12 +754,12 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool c
 
       F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                               n, atmp_data, n, btmp_data, n, 
+                               n, atmp_data, n, btmp_data, n,
                                palpha, pbeta, dummy, idummy,
                                pv, n, pwork, lwork, prwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));
-      
+
       if (info < 0)
         {
           (*current_liboctave_error_handler) ("unrecoverable error in cggev");
@@ -823,7 +823,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix&
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n, 
+                           n, atmp_data, n,
                            btmp_data, n,
                            pwr, &dummy_work, lwork,
                            prwork, info
@@ -838,8 +838,8 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix&
 
       F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                                F77_CONST_CHAR_ARG2 ("U", 1),
-                               n, atmp_data, n, 
-                               btmp_data, n, 
+                               n, atmp_data, n,
+                               btmp_data, n,
                                pwr, pwork, lwork, prwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));

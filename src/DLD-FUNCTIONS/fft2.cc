@@ -57,7 +57,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
   octave_idx_type n_rows = -1;
-  
+
   if (nargin > 1)
     {
       double dval = args(1).double_value ();
@@ -214,10 +214,10 @@ of @var{A} is treated separately\n\
 %!test
 %! M=16;
 %! N=8;
-%! 
+%!
 %! m=5;
 %! n=3;
-%! 
+%!
 %! x = 2*pi*(0:1:M-1)/M;
 %! y = 2*pi*(0:1:N-1)/N;
 %! sx = cos(m*x);
@@ -233,20 +233,20 @@ of @var{A} is treated separately\n\
 %!test
 %! M=12;
 %! N=7;
-%! 
+%!
 %! m=3;
 %! n=2;
-%! 
+%!
 %! x = 2*pi*(0:1:M-1)/M;
 %! y = 2*pi*(0:1:N-1)/N;
-%! 
+%!
 %! sx = cos(m*x);
 %! sy = cos(n*y);
-%! 
+%!
 %! S = kron(fft(sx)',fft(sy));
 %! answer=kron(sx',sy);
 %! s = ifft2(S);
-%! 
+%!
 %! assert(s, answer, 30*eps);
 
 
@@ -256,10 +256,10 @@ of @var{A} is treated separately\n\
 %!test
 %! M=16;
 %! N=8;
-%! 
+%!
 %! m=5;
 %! n=3;
-%! 
+%!
 %! x = 2*pi*(0:1:M-1)/M;
 %! y = 2*pi*(0:1:N-1)/N;
 %! sx = single(cos(m*x));
@@ -275,20 +275,20 @@ of @var{A} is treated separately\n\
 %!test
 %! M=12;
 %! N=7;
-%! 
+%!
 %! m=3;
 %! n=2;
-%! 
+%!
 %! x = single(2*pi*(0:1:M-1)/M);
 %! y = single(2*pi*(0:1:N-1)/N);
-%! 
+%!
 %! sx = cos(m*x);
 %! sy = cos(n*y);
-%! 
+%!
 %! S = kron(fft(sx)',fft(sy));
 %! answer=kron(sx',sy);
 %! s = ifft2(S);
-%! 
+%!
 %! assert(s, answer, 30*eps('single'));
 
 */

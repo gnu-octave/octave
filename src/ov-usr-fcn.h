@@ -43,7 +43,7 @@ class tree_statement_list;
 class tree_va_return_list;
 class tree_walker;
 
-class 
+class
 octave_user_code : public octave_function
 {
 public:
@@ -290,7 +290,7 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args);
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args, 
+  do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
   tree_parameter_list *parameter_list (void) { return param_list; }

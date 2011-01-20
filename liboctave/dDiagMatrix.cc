@@ -184,7 +184,7 @@ DiagMatrix::row (octave_idx_type i) const
   if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector (); 
+      return RowVector ();
     }
 
   RowVector retval (c, 0.0);
@@ -200,7 +200,7 @@ DiagMatrix::row (char *s) const
   if (! s)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector (); 
+      return RowVector ();
     }
 
   char c = *s;
@@ -211,7 +211,7 @@ DiagMatrix::row (char *s) const
   else
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector (); 
+      return RowVector ();
     }
 }
 
@@ -223,7 +223,7 @@ DiagMatrix::column (octave_idx_type i) const
   if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ColumnVector ();
     }
 
   ColumnVector retval (r, 0.0);
@@ -239,7 +239,7 @@ DiagMatrix::column (char *s) const
   if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ColumnVector ();
     }
 
   char c = *s;
@@ -250,7 +250,7 @@ DiagMatrix::column (char *s) const
   else
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ColumnVector ();
     }
 }
 

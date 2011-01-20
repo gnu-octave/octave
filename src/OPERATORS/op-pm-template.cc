@@ -58,7 +58,7 @@ DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
   CAST_BINOP_ARGS (const OCTAVE_LMATRIX&, const OCTAVE_RMATRIX&);
 
-  return v1.perm_matrix_value ().inverse () * v2.RMATRIX_VALUE (); 
+  return v1.perm_matrix_value ().inverse () * v2.RMATRIX_VALUE ();
 }
 #else
 DEFBINOP (div, LMATRIX, RMATRIX)

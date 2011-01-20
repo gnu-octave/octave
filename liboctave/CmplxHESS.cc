@@ -36,13 +36,13 @@ extern "C"
                              const octave_idx_type&, octave_idx_type&,
                              octave_idx_type&, double*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
- 
+
   F77_RET_T
   F77_FUNC (zgehrd, ZGEHRD) (const octave_idx_type&, const octave_idx_type&,
                              const octave_idx_type&, Complex*,
                              const octave_idx_type&, Complex*, Complex*,
                              const octave_idx_type&, octave_idx_type&);
- 
+
   F77_RET_T
   F77_FUNC (zunghr, ZUNGHR) (const octave_idx_type&, const octave_idx_type&,
                              const octave_idx_type&, Complex*,

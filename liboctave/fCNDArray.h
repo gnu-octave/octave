@@ -44,7 +44,7 @@ public:
 
   FloatComplexNDArray (const dim_vector& dv, const FloatComplex& val)
     : MArray<FloatComplex> (dv, val) { }
-  
+
   FloatComplexNDArray (const FloatComplexNDArray& a) : MArray<FloatComplex> (a) { }
 
   FloatComplexNDArray (const FloatComplexMatrix& a) : MArray<FloatComplex> (a) { }
@@ -55,7 +55,7 @@ public:
   template <class U>
   FloatComplexNDArray (const Array<U>& a) : MArray<FloatComplex> (a) { }
 
-  FloatComplexNDArray (const charNDArray&); 
+  FloatComplexNDArray (const charNDArray&);
 
   FloatComplexNDArray& operator = (const FloatComplexNDArray& a)
     {
@@ -102,7 +102,7 @@ public:
   FloatComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   FloatComplexNDArray& insert (const FloatComplexNDArray& a, octave_idx_type r, octave_idx_type c);
   FloatComplexNDArray& insert (const FloatComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
-  
+
   FloatNDArray abs (void) const;
   boolNDArray isnan (void) const;
   boolNDArray isinf (void) const;
@@ -142,10 +142,10 @@ public:
 
   FloatComplexNDArray diag (octave_idx_type k = 0) const;
 
-  FloatComplexNDArray& changesign (void) 
-    { 
-      MArray<FloatComplex>::changesign (); 
-      return *this; 
+  FloatComplexNDArray& changesign (void)
+    {
+      MArray<FloatComplex>::changesign ();
+      return *this;
     }
 
 };

@@ -42,7 +42,7 @@ public:
   base_lu (const base_lu& a)
     : a_fact (a.a_fact), l_fact (a.l_fact), ipvt (a.ipvt) { }
 
-  base_lu (const lu_type& l, const lu_type& u, 
+  base_lu (const lu_type& l, const lu_type& u,
            const PermMatrix& p);
 
   base_lu& operator = (const base_lu& a)

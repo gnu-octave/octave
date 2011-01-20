@@ -966,7 +966,7 @@ do_keyboard (const octave_value_list& args)
   frame.protect_var (Vsaving_history);
   frame.protect_var (Vdebugging);
 
-  frame.add_fcn (octave_call_stack::restore_frame, 
+  frame.add_fcn (octave_call_stack::restore_frame,
                  octave_call_stack::current_frame ());
 
   // FIXME -- probably we just want to print one line, not the
@@ -1013,7 +1013,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
     {
       unwind_protect frame;
 
-      frame.add_fcn (octave_call_stack::restore_frame, 
+      frame.add_fcn (octave_call_stack::restore_frame,
                      octave_call_stack::current_frame ());
 
       // Skip the frame assigned to the keyboard function.

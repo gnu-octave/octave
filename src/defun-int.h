@@ -44,7 +44,7 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
-                      const octave_shlib& shl, const std::string& doc, 
+                      const octave_shlib& shl, const std::string& doc,
                       bool relative = false);
 
 extern OCTINTERP_API void

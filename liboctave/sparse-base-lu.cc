@@ -48,8 +48,8 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
         }
       if (j < rcmin)
         {
-          // Note the +1 skips the 1.0 on the diagonal 
-          for (octave_idx_type i = Lfact.cidx (j) + 1; 
+          // Note the +1 skips the 1.0 on the diagonal
+          for (octave_idx_type i = Lfact.cidx (j) + 1;
                i < Lfact.cidx(j +1); i++)
             {
               Yout.xridx (ii) = Lfact.ridx(i);

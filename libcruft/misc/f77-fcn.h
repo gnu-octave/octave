@@ -102,7 +102,7 @@ CRUFT_API extern int f77_exception_encountered;
    Fortran-style character strings.  */
 #define F77_CHAR_ARG_DEF(s, len) octave_cray_ftn_ch_dsc s
 #define F77_CONST_CHAR_ARG_DEF(s, len) octave_cray_ftn_ch_dsc s
-#define F77_CHAR_ARG_LEN_DEF(len) 
+#define F77_CHAR_ARG_LEN_DEF(len)
 #define F77_CHAR_ARG_USE(s) s.ptr
 #define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len>>3)
 
@@ -171,7 +171,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
    Fortran-style character strings.  */
 #define F77_CHAR_ARG_DEF(s, len) char *s, int len
 #define F77_CONST_CHAR_ARG_DEF(s, len) const char *s, int len
-#define F77_CHAR_ARG_LEN_DEF(len) 
+#define F77_CHAR_ARG_LEN_DEF(len)
 #define F77_CHAR_ARG_USE(s) s
 #define F77_CHAR_ARG_LEN_USE(s, len) len
 
@@ -209,13 +209,13 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 /* Build a C string local variable CS from the Fortran string parameter S
    declared as F77_CHAR_ARG_DEF(s, len) or F77_CONST_CHAR_ARG_DEF(s, len).
-   The string will be cleaned up at the end of the current block.  
+   The string will be cleaned up at the end of the current block.
    Needs to include <cstring> and <vector>.  */
 
 #define F77_CSTRING(s, len, cs) \
  OCTAVE_LOCAL_BUFFER (char, cs, F77_CHAR_ARG_LEN_USE (s, len) + 1); \
  memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len)); \
- cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0' 
+ cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0'
 
 
 extern CRUFT_API F77_RET_T

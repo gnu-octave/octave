@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename T>
 octave_value_list
-find_nonzero_elem_idx (const Array<T>& nda, int nargout, 
+find_nonzero_elem_idx (const Array<T>& nda, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
@@ -83,7 +83,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
 
 template <typename T>
 octave_value_list
-find_nonzero_elem_idx (const Sparse<T>& v, int nargout, 
+find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
@@ -97,7 +97,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
   octave_idx_type start_nc = -1;
   octave_idx_type end_nc = -1;
   octave_idx_type count;
- 
+
   // Search for the range to search
   if (n_to_find < 0)
     {
@@ -135,7 +135,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
         }
     }
 
-  count = (n_to_find > v.cidx(end_nc) - v.cidx(start_nc) ? 
+  count = (n_to_find > v.cidx(end_nc) - v.cidx(start_nc) ?
            v.cidx(end_nc) - v.cidx(start_nc) : n_to_find);
 
   // If the original argument was a row vector, force a row vector of
@@ -167,15 +167,15 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       // Search for elements to return.  Only search the region where
       // there are elements to be found using the count that we want
       // to find.
-      for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++) 
-        for (octave_idx_type i = v.cidx(j); i < v.cidx(j+1); i++ ) 
+      for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
+        for (octave_idx_type i = v.cidx(j); i < v.cidx(j+1); i++ )
           {
             OCTAVE_QUIT;
             if (direction < 0 && i < nz - count)
               continue;
             i_idx(cx) = static_cast<double> (v.ridx(i) + 1);
             j_idx(cx) = static_cast<double> (j + 1);
-            idx(cx) = j * nr + v.ridx(i) + 1; 
+            idx(cx) = j * nr + v.ridx(i) + 1;
             val(cx) = v.data(i);
             cx++;
             if (cx == count)
@@ -225,7 +225,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 }
 
 octave_value_list
-find_nonzero_elem_idx (const PermMatrix& v, int nargout, 
+find_nonzero_elem_idx (const PermMatrix& v, int nargout,
                        octave_idx_type n_to_find, int direction)
 {
   // There are far fewer special cases to handle for a PermMatrix.
@@ -233,7 +233,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
   octave_idx_type nc = v.cols();
   octave_idx_type start_nc, end_nc, count;
- 
+
   // Determine the range to search.
   if (n_to_find < 0 || n_to_find >= nc)
     {
@@ -268,7 +268,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
       const octave_idx_type* p = v.data ();
       if (v.is_col_perm ())
         {
-          for (octave_idx_type k = 0; k < count; k++) 
+          for (octave_idx_type k = 0; k < count; k++)
             {
               OCTAVE_QUIT;
               const octave_idx_type j = start_nc + k;
@@ -280,7 +280,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
         }
       else
         {
-          for (octave_idx_type k = 0; k < count; k++) 
+          for (octave_idx_type k = 0; k < count; k++)
             {
               OCTAVE_QUIT;
               const octave_idx_type i = start_nc + k;
@@ -455,13 +455,13 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
           SparseBoolMatrix v = arg.sparse_bool_matrix_value ();
 
           if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout, 
+            retval = find_nonzero_elem_idx (v, nargout,
                                             n_to_find, direction);
         }
       else if (nargout <= 1 && n_to_find == -1 && direction == 1)
         {
           // This case is equivalent to extracting indices from a logical
-          // matrix. Try to reuse the possibly cached index vector. 
+          // matrix. Try to reuse the possibly cached index vector.
           retval(0) = arg.index_vector ().unmask ();
         }
       else
@@ -469,7 +469,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
           boolNDArray v = arg.bool_array_value ();
 
           if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout, 
+            retval = find_nonzero_elem_idx (v, nargout,
                                             n_to_find, direction);
         }
     }
@@ -505,7 +505,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
           SparseMatrix v = arg.sparse_matrix_value ();
 
           if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout, 
+            retval = find_nonzero_elem_idx (v, nargout,
                                             n_to_find, direction);
         }
       else if (arg.is_complex_type ())
@@ -513,10 +513,10 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
           SparseComplexMatrix v = arg.sparse_complex_matrix_value ();
 
           if (! error_state)
-            retval = find_nonzero_elem_idx (v, nargout, 
+            retval = find_nonzero_elem_idx (v, nargout,
                                             n_to_find, direction);
         }
-      else 
+      else
         gripe_wrong_type_arg ("find", arg);
     }
   else if (arg.is_perm_matrix ())
@@ -580,7 +580,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
 %!test
 %! [i, j, v] = find ([0, 0, 2; 0, 3, 0; -1, 0, 0]);
-%! 
+%!
 %! assert(i, [3; 2; 1]);
 %! assert(j, [1; 2; 3]);
 %! assert(v, [-1; 3; 2]);
@@ -591,7 +591,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
 %!test
 %! [i, j, v] = find (single([0, 0, 2; 0, 3, 0; -1, 0, 0]));
-%! 
+%!
 %! assert(i, [3; 2; 1]);
 %! assert(j, [1; 2; 3]);
 %! assert(v, single([-1; 3; 2]));

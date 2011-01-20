@@ -231,7 +231,7 @@ and orientation.\n\
           bool a1_scalar = args(1).is_scalar_type ();
           if (a0_scalar && a1_scalar)
             retval = atan2 (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ()) 
+          else if ((a0_scalar || args(0).is_sparse_type ())
                    && (a1_scalar || args(1).is_sparse_type ()))
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
@@ -315,7 +315,7 @@ do_hypot (const octave_value& x, const octave_value& y)
           bool a1_scalar = arg1.is_scalar_type ();
           if (a0_scalar && a1_scalar)
             retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-          else if ((a0_scalar || arg0.is_sparse_type ()) 
+          else if ((a0_scalar || arg0.is_sparse_type ())
                    && (a1_scalar || arg1.is_sparse_type ()))
             {
               SparseMatrix m0 = arg0.sparse_matrix_value ();
@@ -384,7 +384,7 @@ the arguments are accumulated from left to right:\n\
 */
 
 template<typename T, typename ET>
-void 
+void
 map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 {
   f = Array<T>(x.dims ());
@@ -560,7 +560,7 @@ agree, or if either of the arguments is complex.\n\
                 }
             }
           else
-            error ("rem: cannot combine %s and %d", 
+            error ("rem: cannot combine %s and %d",
                    args(0).class_name ().c_str (), args(1).class_name ().c_str ());
         }
       else if (args(0).is_single_type () || args(1).is_single_type ())
@@ -580,7 +580,7 @@ agree, or if either of the arguments is complex.\n\
           bool a1_scalar = args(1).is_scalar_type ();
           if (a0_scalar && a1_scalar)
             retval = xrem (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ()) 
+          else if ((a0_scalar || args(0).is_sparse_type ())
                    && (a1_scalar || args(1).is_sparse_type ()))
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
@@ -693,7 +693,7 @@ either of the arguments is complex.\n\
                 }
             }
           else
-            error ("mod: cannot combine %s and %d", 
+            error ("mod: cannot combine %s and %d",
                    args(0).class_name ().c_str (), args(1).class_name ().c_str ());
         }
       else if (args(0).is_single_type () || args(1).is_single_type ())
@@ -713,7 +713,7 @@ either of the arguments is complex.\n\
           bool a1_scalar = args(1).is_scalar_type ();
           if (a0_scalar && a1_scalar)
             retval = xmod (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ()) 
+          else if ((a0_scalar || args(0).is_sparse_type ())
                    && (a1_scalar || args(1).is_sparse_type ()))
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
@@ -755,7 +755,7 @@ either of the arguments is complex.\n\
 %!assert (mod([-5, 5; 0, 3], [0, 0 ; 0, 0]), [-5, 5; 0, 3]);
 
 ## mixed scalar/matrix tests
-%!assert (mod([-5, 5; 0, 3], 0), [-5, 5; 0, 3]); 
+%!assert (mod([-5, 5; 0, 3], 0), [-5, 5; 0, 3]);
 %!assert (mod([-5, 5; 0, 3], 3), [1, 2; 0, 0]);
 %!assert (mod(-5,[0,0; 0,0]), [-5, -5; -5, -5]);
 %!assert (mod(-5,[3,0; 3,1]), [1, -5; 1, 0]);
@@ -1256,7 +1256,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       octave_idx_type k = args(1).int_value ();
 
       if (error_state)
-        error ("diag: invalid second argument");      
+        error ("diag: invalid second argument");
       else
         retval = args(0).diag(k);
     }
@@ -1386,7 +1386,7 @@ all_scalar_1x1 (const octave_value_list& args)
 }
 
 template <class TYPE, class T>
-static void 
+static void
 single_type_concat (Array<T>& result,
                     const octave_value_list& args,
                     int dim)
@@ -1430,7 +1430,7 @@ single_type_concat (Array<T>& result,
 }
 
 template <class TYPE, class T>
-static void 
+static void
 single_type_concat (Sparse<T>& result,
                     const octave_value_list& args,
                     int dim)
@@ -1451,7 +1451,7 @@ single_type_concat (Sparse<T>& result,
 
 // Dispatcher.
 template<class TYPE>
-static TYPE 
+static TYPE
 do_single_type_concat (const octave_value_list& args, int dim)
 {
   TYPE result;
@@ -1462,7 +1462,7 @@ do_single_type_concat (const octave_value_list& args, int dim)
 }
 
 template<class MAP>
-static void 
+static void
 single_type_concat_map (octave_map& result,
                         const octave_value_list& args,
                         int dim)
@@ -1499,7 +1499,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
 {
   octave_value retval;
 
-  int n_args = args.length (); 
+  int n_args = args.length ();
 
   if (n_args == 0)
     retval = Matrix ();
@@ -1517,7 +1517,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
 
       for (int i = 1; i < args.length (); i++)
         {
-          result_type = 
+          result_type =
             get_concat_class (result_type, args(i).class_name ());
 
           if (all_sq_strings_p && ! args(i).is_sq_string ())
@@ -1533,7 +1533,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
       if (result_type == "double")
         {
           if (any_sparse_p)
-            {           
+            {
               if (all_real_p)
                 retval = do_single_type_concat<SparseMatrix> (args, dim);
               else
@@ -1608,7 +1608,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
             {
               if (! (dv.*concat_rule) (args(i).dims (), dim))
                 {
-                  // Dimensions do not match. 
+                  // Dimensions do not match.
                   error ("cat: dimension mismatch");
                   return retval;
                 }
@@ -1618,12 +1618,12 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
           // of the first argument, resize it to be empty and then resize
           // it to be full. This is done since it means that there is no
           // recopying of data, as would happen if we used a single resize.
-          // It should be noted that resize operation is also significantly 
+          // It should be noted that resize operation is also significantly
           // slower than the do_cat_op function, so it makes sense to have
           // an empty matrix and copy all data.
           //
           // We might also start with a empty octave_value using
-          //   tmp = octave_value_typeinfo::lookup_type 
+          //   tmp = octave_value_typeinfo::lookup_type
           //                                (args(1).type_name());
           // and then directly resize. However, for some types there might
           // be some additional setup needed, and so this should be avoided.
@@ -1656,7 +1656,7 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
                   break;
                 }
               else
-                ra_idx (dim) += (dim < dv_tmp.length () ? 
+                ra_idx (dim) += (dim < dv_tmp.length () ?
                                  dv_tmp (dim) : 1);
             }
           retval = tmp;
@@ -1774,7 +1774,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %! assert (cat (2, cast (1, t1), cast ([2, 3], t2)), cast ([1, 2, 3], tr));
 %! assert (cat (2, cast ([1, 2], t1), cast (3, t2)), cast ([1, 2, 3], tr));
 %! assert (cat (2, cast ([1, 2], t1), cast ([3, 4], t2)), cast ([1, 2, 3, 4], tr));
-%! 
+%!
 %! assert ([cast(1, t1); cast(2, t2)], cast ([1; 2], tr));
 %! assert ([cast(1, t1); cast([2; 3], t2)], cast ([1; 2; 3], tr));
 %! assert ([cast([1; 2], t1); cast(3, t2)], cast ([1; 2; 3], tr));
@@ -1793,7 +1793,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!   assert (cat (2, cast (1i, t1), cast ([2, 3], t2)), cast ([1i, 2, 3], tr));
 %!   assert (cat (2, cast ([1i, 2], t1), cast (3, t2)), cast ([1i, 2, 3], tr));
 %!   assert (cat (2, cast ([1i, 2], t1), cast ([3, 4], t2)), cast ([1i, 2, 3, 4], tr));
-%! 
+%!
 %!   assert ([cast(1i, t1); cast(2, t2)], cast ([1i; 2], tr));
 %!   assert ([cast(1i, t1); cast([2; 3], t2)], cast ([1i; 2; 3], tr));
 %!   assert ([cast([1i; 2], t1); cast(3, t2)], cast ([1i; 2; 3], tr));
@@ -1811,7 +1811,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!   assert (cat (2, cast (1, t1), cast ([2i, 3], t2)), cast ([1, 2i, 3], tr));
 %!   assert (cat (2, cast ([1, 2], t1), cast (3i, t2)), cast ([1, 2, 3i], tr));
 %!   assert (cat (2, cast ([1, 2], t1), cast ([3i, 4], t2)), cast ([1, 2, 3i, 4], tr));
-%! 
+%!
 %!   assert ([cast(1, t1); cast(2i, t2)], cast ([1; 2i], tr));
 %!   assert ([cast(1, t1); cast([2i; 3], t2)], cast ([1; 2i; 3], tr));
 %!   assert ([cast([1; 2], t1); cast(3i, t2)], cast ([1; 2; 3i], tr));
@@ -1829,7 +1829,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!   assert (cat (2, cast (1i, t1), cast ([2i, 3], t2)), cast ([1i, 2i, 3], tr));
 %!   assert (cat (2, cast ([1i, 2], t1), cast (3i, t2)), cast ([1i, 2, 3i], tr));
 %!   assert (cat (2, cast ([1i, 2], t1), cast ([3i, 4], t2)), cast ([1i, 2, 3i, 4], tr));
-%! 
+%!
 %!   assert ([cast(1i, t1); cast(2i, t2)], cast ([1i; 2i], tr));
 %!   assert ([cast(1i, t1); cast([2i; 3], t2)], cast ([1i; 2i; 3], tr));
 %!   assert ([cast([1i; 2], t1); cast(3i, t2)], cast ([1i; 2; 3i], tr));
@@ -2113,7 +2113,7 @@ returns the number of columns in the given matrix.\n\
             {
               if (nd <= dv.length ())
                 retval(0) = dv(nd-1);
-              else 
+              else
                 retval(0) = 1;
             }
           else
@@ -2688,10 +2688,10 @@ complex ([1, 2], [3, 4])\n\
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
-                          for (octave_idx_type i = im_val.cidx(j); 
+                          for (octave_idx_type i = im_val.cidx(j);
                                i < im_val.cidx(j + 1); i++)
-                            result.data (im_val.ridx(i) + off) =  
-                              result.data (im_val.ridx(i) + off) + 
+                            result.data (im_val.ridx(i) + off) =
+                              result.data (im_val.ridx(i) + off) +
                               Complex (0, im_val.data (i));
                         }
                     }
@@ -2711,10 +2711,10 @@ complex ([1, 2], [3, 4])\n\
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
-                          for (octave_idx_type i = re_val.cidx(j); 
+                          for (octave_idx_type i = re_val.cidx(j);
                                i < re_val.cidx(j + 1); i++)
-                            result.data (re_val.ridx(i) + off) =  
-                              result.data (re_val.ridx(i) + off) + 
+                            result.data (re_val.ridx(i) + off) =
+                              result.data (re_val.ridx(i) + off) +
                               re_val.data (i);
                         }
                     }
@@ -2724,7 +2724,7 @@ complex ([1, 2], [3, 4])\n\
                 {
                   if (re_val.dims () == im_val.dims ())
                     {
-                      SparseComplexMatrix result = SparseComplexMatrix(re_val) 
+                      SparseComplexMatrix result = SparseComplexMatrix(re_val)
                         + Complex(0, 1) * SparseComplexMatrix (im_val);
                       retval = octave_value (new octave_sparse_complex_matrix (result));
                     }
@@ -3008,7 +3008,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
-  
+
   if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string nm = args(nargin-1).string_value ();
@@ -3124,7 +3124,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 }
 
 static octave_value
-fill_matrix (const octave_value_list& args, double val, float fval, 
+fill_matrix (const octave_value_list& args, double val, float fval,
              const char *fcn)
 {
   octave_value retval;
@@ -3134,7 +3134,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
-  
+
   if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string nm = args(nargin-1).string_value ();
@@ -3214,7 +3214,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
-  
+
   if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string nm = args(nargin-1).string_value ();
@@ -3295,7 +3295,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
   oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
   dim_vector dims (1, 1);
-  
+
   if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string nm = args(nargin-1).string_value ();
@@ -3373,7 +3373,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
   int nargin = args.length ();
 
   dim_vector dims (1, 1);
-  
+
   switch (nargin)
     {
     case 0:
@@ -3542,7 +3542,7 @@ either \"double\" or \"single\".\n\
 @seealso{isinf}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_inf_value (), 
+  return fill_matrix (args, lo_ieee_inf_value (),
                       lo_ieee_float_inf_value (), "Inf");
 }
 
@@ -3600,13 +3600,13 @@ either \"double\" or \"single\".\n\
 @seealso{isnan}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_nan_value (), 
+  return fill_matrix (args, lo_ieee_nan_value (),
                       lo_ieee_float_nan_value (), "NaN");
 }
 
 DEFALIAS (nan, NaN);
 
-/* 
+/*
 %!assert(NaN (3), [NaN, NaN, NaN; NaN, NaN, NaN; NaN, NaN, NaN]);
 %!assert(NaN (2, 3), [NaN, NaN, NaN; NaN, NaN, NaN]);
 %!assert(NaN (3, 2), [NaN, NaN; NaN, NaN; NaN, NaN]);
@@ -3702,19 +3702,19 @@ either \"double\" or \"single\".\n\
             {
               val  = ::fabsf(val);
               if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value ("single"), 
-                                      lo_ieee_nan_value (), 
+                retval = fill_matrix (octave_value ("single"),
+                                      lo_ieee_nan_value (),
                                       lo_ieee_float_nan_value (), "eps");
               else if (val < FLT_MIN)
-                retval = fill_matrix (octave_value ("single"), 0e0, 
+                retval = fill_matrix (octave_value ("single"), 0e0,
                                       powf (2.0, -149e0), "eps");
               else
                 {
                   int expon;
                   frexpf (val, &expon);
-                  val = std::pow (static_cast <float> (2.0), 
+                  val = std::pow (static_cast <float> (2.0),
                                   static_cast <float> (expon - 24));
-                  retval = fill_matrix (octave_value ("single"), DBL_EPSILON, 
+                  retval = fill_matrix (octave_value ("single"), DBL_EPSILON,
                                         val, "eps");
                 }
             }
@@ -3727,8 +3727,8 @@ either \"double\" or \"single\".\n\
             {
               val  = ::fabs(val);
               if (xisnan (val) || xisinf (val))
-                retval = fill_matrix (octave_value_list (), 
-                                      lo_ieee_nan_value (), 
+                retval = fill_matrix (octave_value_list (),
+                                      lo_ieee_nan_value (),
                                       lo_ieee_float_nan_value (), "eps");
               else if (val < DBL_MIN)
                 retval = fill_matrix (octave_value_list (),
@@ -3737,9 +3737,9 @@ either \"double\" or \"single\".\n\
                 {
                   int expon;
                   frexp (val, &expon);
-                  val = std::pow (static_cast <double> (2.0), 
+                  val = std::pow (static_cast <double> (2.0),
                                   static_cast <double> (expon - 53));
-                  retval = fill_matrix (octave_value_list (), val, 
+                  retval = fill_matrix (octave_value_list (), val,
                                         FLT_EPSILON, "eps");
                 }
             }
@@ -3939,7 +3939,7 @@ either \"double\" or \"single\".\n\
 @seealso{isna}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_na_value (), 
+  return fill_matrix (args, lo_ieee_na_value (),
                       lo_ieee_float_na_value (), "NA");
 }
 
@@ -4212,7 +4212,7 @@ with @sc{matlab}.\n\
  */
 
 template <class MT>
-static octave_value 
+static octave_value
 do_linspace (const octave_value& base, const octave_value& limit,
              octave_idx_type n)
 {
@@ -4299,7 +4299,7 @@ fewer than two values are requested.\n\
             retval = do_linspace<FloatComplexMatrix> (arg_1, arg_2, npoints);
           else
             retval = do_linspace<FloatMatrix> (arg_1, arg_2, npoints);
-            
+
         }
       else
         {
@@ -4480,7 +4480,7 @@ by an empty argument.\n\
     {
       new_dims = dim_vector::alloc (nargin-1);
       int empty_dim = -1;
-      
+
       for (int i = 1; i < nargin; i++)
         {
           if (args(i).is_empty ())
@@ -4520,7 +4520,7 @@ by an empty argument.\n\
             {
               octave_idx_type a_nel = args(0).numel ();
               octave_idx_type size_empty_dim = a_nel / nel;
-              
+
               if (a_nel != size_empty_dim * nel)
                 error ("reshape: size is not divisible by the product of known dimensions (= %d)", nel);
               else
@@ -4641,7 +4641,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
   if (args.length () == 1)
     retval = args(0).squeeze ();
   else
-    print_usage ();    
+    print_usage ();
 
   return retval;
 }
@@ -4659,7 +4659,7 @@ or a range.\n\
   if (args.length () == 1)
     retval = args(0).full_value ();
   else
-    print_usage ();    
+    print_usage ();
 
   return retval;
 }
@@ -5299,7 +5299,7 @@ coarse resolution.)\n\
     retval = static_cast<octave_uint64> (1e6 * tmp);
   else
     tic_toc_timestamp = tmp;
-      
+
   return retval;
 }
 
@@ -5333,7 +5333,7 @@ See tic.\n\
       else
         octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
     }
-    
+
   return retval;
 }
 
@@ -5670,7 +5670,7 @@ ordered lists.\n\
 %!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 2, "descend"), sparse ([NaN, Inf, 2, -1, 1i, 0, 0]))
 
 %!shared a
-%! a = randn (10, 10); 
+%! a = randn (10, 10);
 %! a (a < 0) = 0;
 %! a = 1i * a;
 %!assert (sort (sparse (a)), sparse (sort (a)))
@@ -5850,7 +5850,7 @@ This function does not support sparse matrices.\n\
       if (error_state)
         return retval;
     }
-    
+
   octave_value arg = args(0);
 
   if (by_rows)
@@ -5992,7 +5992,7 @@ it may be better to use @code{sort}.\n\
 }
 
 template <class NDT>
-static NDT 
+static NDT
 do_accumarray_sum (const idx_vector& idx, const NDT& vals,
                    octave_idx_type n = -1)
 {
@@ -6060,11 +6060,11 @@ Undocumented internal function.\n\
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 template <class NDT>
-static NDT 
+static NDT
 do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
                       octave_idx_type n, bool ismin,
                       const typename NDT::element_type& zero_val)
@@ -6078,7 +6078,7 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&) = 
+  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&) =
     ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
@@ -6154,7 +6154,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 DEFUN (__accumarray_min__, args, ,
@@ -6176,7 +6176,7 @@ Undocumented internal function.\n\
 }
 
 template <class NDT>
-static NDT 
+static NDT
 do_accumdim_sum (const idx_vector& idx, const NDT& vals,
                  int dim = -1, octave_idx_type n = -1)
 {
@@ -6244,7 +6244,7 @@ Undocumented internal function.\n\
   else
     print_usage ();
 
-  return retval;  
+  return retval;
 }
 
 template <class NDT>
@@ -6257,7 +6257,7 @@ do_merge (const Array<bool>& mask,
   NDT retval (dv);
 
   bool tscl = tval.numel () == 1, fscl = fval.numel () == 1;
-  
+
   if ((! tscl && tval.dims () != dv)
       || (! fscl && fval.dims () != dv))
     error ("merge: dimensions mismatch");
@@ -6398,7 +6398,7 @@ it is first converted to logical.\n\
           MAKE_INT_BRANCH (uint64)
 
           else
-            error ("merge: cannot merge %s with %s with array mask", 
+            error ("merge: cannot merge %s with %s with array mask",
                    tval.class_name ().c_str (),
                    fval.class_name ().c_str ());
         }
@@ -6620,7 +6620,7 @@ then an empty matrix is returned.\n\
 */
 
 template <class T>
-static Array<T> 
+static Array<T>
 do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 {
   Array<T> retval;

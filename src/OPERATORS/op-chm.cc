@@ -44,7 +44,7 @@ DEFUNOP (transpose, char_matrix)
   return octave_value (v.matrix_value().transpose ());
 }
 
-DEFNDCATOP_FN (chm_chm, char_matrix, char_matrix, char_array, char_array, 
+DEFNDCATOP_FN (chm_chm, char_matrix, char_matrix, char_array, char_array,
                concat)
 
 DEFCATOP (chm_s, char_matrix, scalar)

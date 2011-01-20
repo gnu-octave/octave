@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 // faster than using octave_qsort.
 
 bool
-octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i, 
+octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,
                           octave_sparse_sort_idxl* j)
 {
   octave_idx_type tmp = i->c - j->c;

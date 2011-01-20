@@ -132,7 +132,7 @@ DEFBINOP (el_and, float_complex, float_complex)
 {
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_complex&);
 
-  return (v1.float_complex_value () != static_cast<float>(0.0) && 
+  return (v1.float_complex_value () != static_cast<float>(0.0) &&
           v2.float_complex_value () != static_cast<float>(0.0));
 }
 
@@ -140,17 +140,17 @@ DEFBINOP (el_or, float_complex, float_complex)
 {
   CAST_BINOP_ARGS (const octave_float_complex&, const octave_float_complex&);
 
-  return (v1.float_complex_value () != static_cast<float>(0.0) || 
+  return (v1.float_complex_value () != static_cast<float>(0.0) ||
           v2.float_complex_value () != static_cast<float>(0.0));
 }
 
-DEFNDCATOP_FN (fcs_fcs, float_complex, float_complex, float_complex_array, 
+DEFNDCATOP_FN (fcs_fcs, float_complex, float_complex, float_complex_array,
                float_complex_array, concat)
 
-DEFNDCATOP_FN (cs_fcs, complex, float_complex, float_complex_array, 
+DEFNDCATOP_FN (cs_fcs, complex, float_complex, float_complex_array,
                float_complex_array, concat)
 
-DEFNDCATOP_FN (fcs_cs, float_complex, complex, float_complex_array, 
+DEFNDCATOP_FN (fcs_cs, float_complex, complex, float_complex_array,
                float_complex_array, concat)
 
 CONVDECL (float_complex_to_complex)
@@ -203,6 +203,6 @@ install_fcs_fcs_ops (void)
   INSTALL_ASSIGNCONV (octave_float_complex, octave_null_str, octave_float_complex_matrix);
   INSTALL_ASSIGNCONV (octave_float_complex, octave_null_sq_str, octave_float_complex_matrix);
 
-  INSTALL_CONVOP (octave_float_complex, octave_complex_matrix, 
+  INSTALL_CONVOP (octave_float_complex, octave_complex_matrix,
                   float_complex_to_complex);
 }

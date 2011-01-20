@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // This is the quick search algorithm, as described at
 // http://www-igm.univ-mlv.fr/~lecroq/string/node19.html
-static void 
+static void
 qs_preprocess (const Array<char>& needle,
                octave_idx_type table[TABSIZE])
 {
@@ -57,7 +57,7 @@ qs_preprocess (const Array<char>& needle,
 }
 
 
-static Array<octave_idx_type> 
+static Array<octave_idx_type>
 qs_search (const Array<char>& needle,
            const Array<char>& haystack,
            const octave_idx_type table[TABSIZE],
@@ -107,7 +107,7 @@ qs_search (const Array<char>& needle,
 
       if (overlaps)
         {
-          while (j < n - m) 
+          while (j < n - m)
             {
               if (std::equal (x, x + m, y + j))
                 accum.push_back (j);
@@ -116,7 +116,7 @@ qs_search (const Array<char>& needle,
         }
       else
         {
-          while (j < n - m) 
+          while (j < n - m)
             {
               if (std::equal (x, x + m, y + j))
                 {
@@ -136,7 +136,7 @@ qs_search (const Array<char>& needle,
   octave_idx_type one = 1;
   Array<octave_idx_type> result (dim_vector (std::min (one, nmatch), nmatch));
   octave_idx_type k = 0;
-  for (std::deque<octave_idx_type>::const_iterator iter = accum.begin (); 
+  for (std::deque<octave_idx_type>::const_iterator iter = accum.begin ();
        iter != accum.end (); iter++)
     {
       result.xelem (k++) = *iter;
@@ -207,8 +207,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
           qs_preprocess (needle, table);
 
           if (argstr.is_string ())
-            retval = octave_value (qs_search (needle, argstr.char_array_value (), 
-                                              table, overlaps), 
+            retval = octave_value (qs_search (needle, argstr.char_array_value (),
+                                              table, overlaps),
                                    true, true);
           else if (argstr.is_cell ())
             {
@@ -220,8 +220,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
                 {
                   octave_value argse = argsc(i);
                   if (argse.is_string ())
-                    retc(i) = octave_value (qs_search (needle, argse.char_array_value (), 
-                                                       table, overlaps), 
+                    retc(i) = octave_value (qs_search (needle, argse.char_array_value (),
+                                                       table, overlaps),
                                             true, true);
                   else
                     {
@@ -262,7 +262,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 
 static Array<char>
 qs_replace (const Array<char>& str, const Array<char>& pat,
-            const Array<char>& rep, 
+            const Array<char>& rep,
             const octave_idx_type table[TABSIZE],
             bool overlaps = true)
 {

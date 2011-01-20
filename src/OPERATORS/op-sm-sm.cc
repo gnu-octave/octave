@@ -84,9 +84,9 @@ DEFBINOP (div, sparse_matrix, sparse_matrix)
   else
     {
       MatrixType typ = v2.matrix_type ();
-      SparseMatrix ret = xdiv (v1.sparse_matrix_value (), 
+      SparseMatrix ret = xdiv (v1.sparse_matrix_value (),
                                v2.sparse_matrix_value (), typ);
-  
+
       v2.matrix_type (typ);
       return ret;
     }
@@ -115,7 +115,7 @@ DEFBINOP (ldiv, sparse_matrix, sparse_matrix)
     {
       MatrixType typ = v1.matrix_type ();
 
-      SparseMatrix ret = xleftdiv (v1.sparse_matrix_value (), 
+      SparseMatrix ret = xleftdiv (v1.sparse_matrix_value (),
                                    v2.sparse_matrix_value (), typ);
 
       v1.matrix_type (typ);
@@ -172,22 +172,22 @@ install_sm_sm_ops (void)
   INSTALL_BINOP (op_ge, octave_sparse_matrix, octave_sparse_matrix, ge);
   INSTALL_BINOP (op_gt, octave_sparse_matrix, octave_sparse_matrix, gt);
   INSTALL_BINOP (op_ne, octave_sparse_matrix, octave_sparse_matrix, ne);
-  INSTALL_BINOP (op_el_mul, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_mul, octave_sparse_matrix, octave_sparse_matrix,
                  el_mul);
-  INSTALL_BINOP (op_el_div, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_div, octave_sparse_matrix, octave_sparse_matrix,
                  el_div);
-  INSTALL_BINOP (op_el_pow, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_pow, octave_sparse_matrix, octave_sparse_matrix,
                  el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_ldiv, octave_sparse_matrix, octave_sparse_matrix,
                  el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_and, octave_sparse_matrix, octave_sparse_matrix,
                  el_and);
-  INSTALL_BINOP (op_el_or, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_BINOP (op_el_or, octave_sparse_matrix, octave_sparse_matrix,
                  el_or);
 
   INSTALL_CATOP (octave_sparse_matrix, octave_sparse_matrix, sm_sm);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_sparse_matrix, 
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_sparse_matrix,
                     assign);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_matrix, null_assign);

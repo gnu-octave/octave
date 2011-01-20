@@ -57,7 +57,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
       if (zero_based)
         for (octave_idx_type i = 0; i < a.numel (); i++)
           {
-            double val = static_cast<double> 
+            double val = static_cast<double>
               (pa[i] + static_cast<octave_idx_type> (1));
             if (val <= 0)
               ptmp[i] = nan_val;
@@ -78,7 +78,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
     {
       if (zero_based)
         for (octave_idx_type i = 0; i < a.numel (); i++)
-          ptmp[i] = static_cast<double> 
+          ptmp[i] = static_cast<double>
             (pa[i] + static_cast<octave_idx_type> (1));
       else
         for (octave_idx_type i = 0; i < a.numel (); i++)
@@ -121,7 +121,7 @@ NDArray::fourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::fft (in + k * stride * n, out + k * stride * n, 
+    octave_fftw::fft (in + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -151,7 +151,7 @@ NDArray::ifourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::ifft (out + k * stride * n, out + k * stride * n, 
+    octave_fftw::ifft (out + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -333,7 +333,7 @@ NDArray::ifourier (int dim) const
           F77_FUNC (zfftb, ZFFTB) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i] / 
+            retval ((i + k*npts)*stride + j*dist) = tmp[i] /
               static_cast<double> (npts);
         }
     }
@@ -360,7 +360,7 @@ NDArray::fourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -408,7 +408,7 @@ NDArray::ifourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -427,7 +427,7 @@ NDArray::ifourier2d (void) const
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] / 
+                retval ((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<double> (npts);
             }
         }
@@ -456,7 +456,7 @@ NDArray::fourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -503,7 +503,7 @@ NDArray::ifourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -923,5 +923,5 @@ BSXFUN_STDOP_DEFS_MXLOOP (NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (NDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, NDArray, mx_inline_pow)
-BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, ComplexNDArray, 
+BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, ComplexNDArray,
                        NDArray, mx_inline_pow)

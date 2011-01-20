@@ -54,7 +54,7 @@ public:
 
   CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
             octave_idx_type ir,
-                      double ll, double rr)  
+                      double ll, double rr)
     : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
 
@@ -62,7 +62,7 @@ public:
     : n (a.n), inc_left (a.inc_left), inc_right (a.inc_right),
       lb (a.lb), rb (a.rb), Alpha (a.Alpha), Beta (a.Beta),
       r (a.r), q (a.q), A (a.A), B (a.B),
-      initialized (a.initialized) { } 
+      initialized (a.initialized) { }
 
   CollocWt& operator = (const CollocWt& a)
     {

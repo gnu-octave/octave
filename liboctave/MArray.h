@@ -40,19 +40,19 @@ class
 MArray : public Array<T>
 {
 public:
-  
+
   MArray (void) : Array<T> () {}
-  
+
   explicit MArray (octave_idx_type n) GCC_ATTR_DEPRECATED
     : Array<T> (dim_vector (n, 1)) { }
 
   MArray (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
     : Array<T> (dim_vector (n, 1), val) { }
 
-  explicit MArray (const dim_vector& dv) 
+  explicit MArray (const dim_vector& dv)
     : Array<T> (dv) { }
-  
-  explicit MArray (const dim_vector& dv, const T& val) 
+
+  explicit MArray (const dim_vector& dv, const T& val)
     : Array<T> (dv, val) { }
 
   MArray (const MArray<T>& a) : Array<T> (a) { }
@@ -71,7 +71,7 @@ public:
   MArray<T> reshape (const dim_vector& new_dims) const
     { return Array<T>::reshape (new_dims); }
 
-  MArray<T> permute (const Array<octave_idx_type>& vec, 
+  MArray<T> permute (const Array<octave_idx_type>& vec,
                       bool inv = false) const
     { return Array<T>::permute (vec, inv); }
 

@@ -40,7 +40,7 @@ public:
     { }
 
   ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std,
-              SVD::driver svd_driver = SVD::GESVD) 
+              SVD::driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
     {
       init (a, svd_type, svd_driver);
@@ -48,7 +48,7 @@ public:
 
   ComplexSVD (const ComplexMatrix& a, octave_idx_type& info,
               SVD::type svd_type = SVD::std,
-              SVD::driver svd_driver = SVD::GESVD) 
+              SVD::driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
     {
       info = init (a, svd_type, svd_driver);
@@ -90,7 +90,7 @@ private:
   ComplexMatrix right_sm;
 
   octave_idx_type init (const ComplexMatrix& a,
-                        SVD::type svd_type = SVD::std, 
+                        SVD::type svd_type = SVD::std,
                         SVD::driver svd_driver = SVD::GESVD);
 };
 

@@ -240,7 +240,7 @@ scanf_format_list::~scanf_format_list (void)
     {
       scanf_format_elt *elt = list(i);
       delete elt;
-    }   
+    }
 }
 
 void
@@ -668,7 +668,7 @@ printf_format_list::~printf_format_list (void)
     {
       printf_format_elt *elt = list(i);
       delete elt;
-    }   
+    }
 }
 
 void
@@ -922,7 +922,7 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
-             
+
       return retval;
     }
 
@@ -1036,7 +1036,7 @@ octave_base_stream::skipl (long num, bool& err, const std::string& who)
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
-             
+
       return count;
     }
 
@@ -1174,7 +1174,7 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
   return is;
 }
 
-// Note that this specialization is only used for reading characters, not 
+// Note that this specialization is only used for reading characters, not
 // character strings. See BEGIN_S_CONVERSION for details.
 
 template<>
@@ -1389,7 +1389,7 @@ void
 do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                T valptr, Matrix& mval, double *data, octave_idx_type& idx,
                octave_idx_type& conversion_count, octave_idx_type nr, octave_idx_type max_size,
-               bool discard) 
+               bool discard)
 {
   OCTAVE_SCAN (is, fmt, valptr);
 
@@ -1671,7 +1671,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
     {
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
-             
+
       return retval;
     }
 
@@ -2614,7 +2614,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
               int nsa = (elt->fw < 0) + (elt->prec < 0);
 
               int sa_1 = 0;
-              int sa_2 = 0; 
+              int sa_2 = 0;
 
               if (nsa > 0)
                 {
@@ -2645,7 +2645,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                 {
                   os << elt->text;
                   retval += strlen (elt->text);
-                }             
+                }
               else if (elt->type == 's')
                 {
                   std::string val = val_cache.string_value ();
@@ -2735,7 +2735,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
           if (! elt || (val_cache.exhausted () && elt->args > 0))
             break;
-        }             
+        }
     }
   else
     invalid_operation (who, "writing");
@@ -3917,7 +3917,7 @@ octave_stream::puts (const octave_value& tc_s, const std::string& who)
 
   if (tc_s.is_string ())
     {
-      std::string s = tc_s.string_value ();      
+      std::string s = tc_s.string_value ();
       retval = puts (s, who);
     }
   else
@@ -3993,7 +3993,7 @@ octave_stream::mode_as_string (int mode)
 
   if (in_mode == std::ios::in)
     retval = "r";
-  else if (in_mode == std::ios::out 
+  else if (in_mode == std::ios::out
            || in_mode == (std::ios::out | std::ios::trunc))
     retval = "w";
   else if (in_mode == (std::ios::out | std::ios::app))
@@ -4013,7 +4013,7 @@ octave_stream::mode_as_string (int mode)
     retval = "ab";
   else if (in_mode == (std::ios::in | std::ios::out | std::ios::binary))
     retval = "r+b";
-  else if (in_mode == (std::ios::in | std::ios::out | std::ios::trunc 
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::trunc
                        | std::ios::binary))
     retval = "w+b";
   else if (in_mode == (std::ios::in | std::ios::out | std::ios::ate

@@ -127,7 +127,7 @@ tree_index_expression::has_magic_end (void) const
       if (elt && elt->has_magic_end ())
         return true;
     }
-  
+
   return false;
 }
 
@@ -361,7 +361,7 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
                   tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
                   tmpi = i;
                   idx.clear ();
-                  
+
                   if (tmp.is_cs_list ())
                     gripe_indexed_cs_list ();
 
@@ -498,7 +498,7 @@ tree_index_expression::lvalue (void)
                     else
                       tmp = Cell ();
                   }
-                else if (tmp.is_zero_by_zero () 
+                else if (tmp.is_zero_by_zero ()
                          && (tmp.is_matrix_type () || tmp.is_string ()))
                   {
                     tmp = Cell ();
@@ -521,7 +521,7 @@ tree_index_expression::lvalue (void)
                 if (error_state)
                   break;
 
-                bool autoconv = (tmp.is_zero_by_zero () 
+                bool autoconv = (tmp.is_zero_by_zero ()
                                  && (tmp.is_matrix_type () || tmp.is_string ()
                                      || tmp.is_cell ()));
 
@@ -638,7 +638,7 @@ tree_index_expression::dup (symbol_table::scope_id scope,
     }
 
   new_idx_expr->args = new_args;
-  
+
   new_idx_expr->type = type;
 
   new_idx_expr->arg_nm = arg_nm;
@@ -657,7 +657,7 @@ tree_index_expression::dup (symbol_table::scope_id scope,
   new_idx_expr->dyn_field = new_dyn_field;
 
   new_idx_expr->copy_base (*this);
-  
+
   return new_idx_expr;
 }
 

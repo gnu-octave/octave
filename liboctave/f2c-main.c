@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 
 
 /* Dummy Fortran main declaration, needed in order to link to some
-   Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation. 
+   Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation.
    This function should never be called. */
 
 #ifdef F77_DUMMY_MAIN

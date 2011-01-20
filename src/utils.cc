@@ -270,7 +270,7 @@ make_absolute (const string_vector& sv)
 
   for (octave_idx_type i = 0; i < len; i++)
     retval[i] = octave_env::make_absolute (sv[i]);
- 
+
   return retval;
 }
 
@@ -410,7 +410,7 @@ fcn_file_in_path (const std::string& name)
   std::string retval;
 
   int len = name.length ();
-  
+
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
@@ -446,7 +446,7 @@ contents_file_in_path (const std::string& dir)
 
   if (dir.length () > 0)
     {
-      std::string tcontents = file_ops::concat (load_path::find_dir (dir), 
+      std::string tcontents = file_ops::concat (load_path::find_dir (dir),
                                                 std::string ("Contents.m"));
 
       file_stat fs (tcontents);
@@ -467,7 +467,7 @@ oct_file_in_path (const std::string& name)
   std::string retval;
 
   int len = name.length ();
-  
+
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
@@ -496,7 +496,7 @@ mex_file_in_path (const std::string& name)
   std::string retval;
 
   int len = name.length ();
-  
+
   if (len > 0)
     {
       if (octave_env::absolute_pathname (name))
@@ -781,7 +781,7 @@ Return the full name of @var{file}, relative to the current directory.\n\
         retval = octave_env::make_absolute (nm);
       else
         error ("make_absolute_filename: expecting argument to be a file name");
-    }      
+    }
   else
     print_usage ();
 
@@ -1352,7 +1352,7 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 
 octave_value_list
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                   const char *fun_name, const octave_value_list& args, 
+                   const char *fun_name, const octave_value_list& args,
                    int nargout)
 {
   octave_value_list new_args = args, retval;
@@ -1375,7 +1375,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
           cells[i] = arg.cell_value ();
           octave_idx_type n = ccells[i].numel ();
           if (n == 1)
-            { 
+            {
               iscell[i] = false;
               new_args(i) = ccells[i](0);
             }
@@ -1383,7 +1383,7 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
             {
               numel = n;
               dims = ccells[i].dims ();
-            } 
+            }
           else if (dims != ccells[i].dims ())
             {
               error ("%s: cell arguments must have matching sizes", fun_name);

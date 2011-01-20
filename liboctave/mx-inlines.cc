@@ -114,9 +114,9 @@ DEFMXCMPOP (mx_inline_ne, !=)
 
 // Convert to logical value, for logical op purposes.
 template <class T> inline bool logical_value (T x) { return x; }
-template <class T> inline bool logical_value (const std::complex<T>& x) 
+template <class T> inline bool logical_value (const std::complex<T>& x)
 { return x.real () != 0 || x.imag () != 0; }
-template <class T> inline bool logical_value (const octave_int<T>& x) 
+template <class T> inline bool logical_value (const octave_int<T>& x)
 { return x.value (); }
 
 template <class X>
@@ -171,8 +171,8 @@ inline void F (size_t n, bool *r, const X *x) throw () \
 DEFMXBOOLOPEQ (mx_inline_and2, &=)
 DEFMXBOOLOPEQ (mx_inline_or2, |=)
 
-template <class T> 
-inline bool 
+template <class T>
+inline bool
 mx_inline_any_nan (size_t n, const T* x)  throw ()
 {
   for (size_t i = 0; i < n; i++)
@@ -197,9 +197,9 @@ mx_inline_all_finite (size_t n, const T* x)  throw ()
   return true;
 }
 
-template <class T> 
-inline bool 
-mx_inline_any_negative (size_t n, const T* x) throw () 
+template <class T>
+inline bool
+mx_inline_any_negative (size_t n, const T* x) throw ()
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -211,7 +211,7 @@ mx_inline_any_negative (size_t n, const T* x) throw ()
 }
 
 template<class T>
-inline bool 
+inline bool
 mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()
 {
   for (size_t i = 0; i < n; i++)
@@ -269,10 +269,10 @@ inline void F<T> (size_t n, T *r, T x, const T *y) throw () \
     for (size_t i = 0; i < n; i++) r[i] = (y[i] OP x) ? y[i] : x; \
 }
 
-DEFMINMAXSPEC (double, mx_inline_xmin, <=) 
-DEFMINMAXSPEC (double, mx_inline_xmax, >=) 
-DEFMINMAXSPEC (float, mx_inline_xmin, <=) 
-DEFMINMAXSPEC (float, mx_inline_xmax, >=) 
+DEFMINMAXSPEC (double, mx_inline_xmin, <=)
+DEFMINMAXSPEC (double, mx_inline_xmax, >=)
+DEFMINMAXSPEC (float, mx_inline_xmin, <=)
+DEFMINMAXSPEC (float, mx_inline_xmax, >=)
 
 // Pairwise power
 #define DEFMXMAPPER2X(F, FUN) \
@@ -302,7 +302,7 @@ inline void mx_inline_map (size_t n, R *r, const X *x) throw ()
 // a pointer, to allow the compiler reduce number of instances.
 
 template <class R, class X>
-inline Array<R> 
+inline Array<R>
 do_mx_unary_op (const Array<X>& x,
                 void (*op) (size_t, R *, const X *) throw ())
 {
@@ -314,14 +314,14 @@ do_mx_unary_op (const Array<X>& x,
 // Shortcuts for applying mx_inline_map.
 
 template <class R, class X, R fun (X)>
-inline Array<R> 
+inline Array<R>
 do_mx_unary_map (const Array<X>& x)
 {
   return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
 }
 
 template <class R, class X, R fun (const X&)>
-inline Array<R> 
+inline Array<R>
 do_mx_unary_map (const Array<X>& x)
 {
   return do_mx_unary_op<R, X> (x, mx_inline_map<R, X, fun>);
@@ -338,7 +338,7 @@ do_mx_inplace_op (Array<R>& r,
 
 
 template <class R, class X, class Y>
-inline Array<R> 
+inline Array<R>
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op) (size_t, R *, const X *, const Y *) throw (),
                  const char *opname)
@@ -358,7 +358,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
 }
 
 template <class R, class X, class Y>
-inline Array<R> 
+inline Array<R>
 do_ms_binary_op (const Array<X>& x, const Y& y,
                  void (*op) (size_t, R *, const X *, Y) throw ())
 {
@@ -368,7 +368,7 @@ do_ms_binary_op (const Array<X>& x, const Y& y,
 }
 
 template <class R, class X, class Y>
-inline Array<R> 
+inline Array<R>
 do_sm_binary_op (const X& x, const Array<Y>& y,
                  void (*op) (size_t, R *, X, const Y *) throw ())
 {
@@ -378,7 +378,7 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
 }
 
 template <class R, class X>
-inline Array<R>& 
+inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op) (size_t, R *, const X *) throw (),
                   const char *opname)
@@ -392,7 +392,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
 }
 
 template <class R, class X>
-inline Array<R>& 
+inline Array<R>&
 do_ms_inplace_op (Array<R>& r, const X& x,
                   void (*op) (size_t, R *, X) throw ())
 {
@@ -412,7 +412,7 @@ mx_inline_equal (size_t n, const T1 *x, const T2 *y) throw ()
 
 template <class T>
 inline bool
-do_mx_check (const Array<T>& a, 
+do_mx_check (const Array<T>& a,
              bool (*op) (size_t, const T *) throw ())
 {
   return op (a.numel (), a.data ());
@@ -421,7 +421,7 @@ do_mx_check (const Array<T>& a,
 // NOTE: we don't use std::norm because it typically does some heavyweight
 // magic to avoid underflows, which we don't need here.
 template <class T>
-inline T cabsq (const std::complex<T>& c) 
+inline T cabsq (const std::complex<T>& c)
 { return c.real () * c.real () + c.imag () * c.imag (); }
 
 // default. works for integers and bool.
@@ -1039,7 +1039,7 @@ void mx_inline_diff (const T *v, T *r, octave_idx_type n,
 }
 
 template <class T>
-void mx_inline_diff (const T *v, T *r, 
+void mx_inline_diff (const T *v, T *r,
                      octave_idx_type m, octave_idx_type n,
                      octave_idx_type order)
 {
@@ -1125,7 +1125,7 @@ get_extent_triplet (const dim_vector& dims, int& dim,
 
       // calculate extent triplet.
       l = 1, n = dims(dim), u = 1;
-      for (octave_idx_type i = 0; i < dim; i++) 
+      for (octave_idx_type i = 0; i < dim; i++)
         l *= dims (i);
       for (octave_idx_type i = dim + 1; i < ndims; i++)
         u *= dims (i);
@@ -1139,7 +1139,7 @@ get_extent_triplet (const dim_vector& dims, int& dim,
 template <class R, class T>
 inline Array<R>
 do_mx_red_op (const Array<T>& src, int dim,
-              void (*mx_red_op) (const T *, R *, octave_idx_type, 
+              void (*mx_red_op) (const T *, R *, octave_idx_type,
                                  octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1163,7 +1163,7 @@ do_mx_red_op (const Array<T>& src, int dim,
 template <class R, class T>
 inline Array<R>
 do_mx_cum_op (const Array<T>& src, int dim,
-              void (*mx_cum_op) (const T *, R *, octave_idx_type, 
+              void (*mx_cum_op) (const T *, R *, octave_idx_type,
                                  octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1180,7 +1180,7 @@ do_mx_cum_op (const Array<T>& src, int dim,
 template <class R>
 inline Array<R>
 do_mx_minmax_op (const Array<R>& src, int dim,
-                 void (*mx_minmax_op) (const R *, R *, octave_idx_type, 
+                 void (*mx_minmax_op) (const R *, R *, octave_idx_type,
                                        octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1223,7 +1223,7 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
 template <class R>
 inline Array<R>
 do_mx_cumminmax_op (const Array<R>& src, int dim,
-                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type, 
+                    void (*mx_cumminmax_op) (const R *, R *, octave_idx_type,
                                              octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
@@ -1294,7 +1294,7 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
 // SIAM J. Sci. Computing, Vol. 26, 2005
 
 template <class T>
-inline void twosum_accum (T& s, T& e, 
+inline void twosum_accum (T& s, T& e,
                           const T& x)
 {
   T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
@@ -1304,7 +1304,7 @@ inline void twosum_accum (T& s, T& e,
 
 template <class T>
 inline T
-mx_inline_xsum (const T *v, octave_idx_type n) 
+mx_inline_xsum (const T *v, octave_idx_type n)
 {
   T s = 0, e = 0;
   for (octave_idx_type i = 0; i < n; i++)
@@ -1315,7 +1315,7 @@ mx_inline_xsum (const T *v, octave_idx_type n)
 
 template <class T>
 inline void
-mx_inline_xsum (const T *v, T *r, 
+mx_inline_xsum (const T *v, T *r,
                 octave_idx_type m, octave_idx_type n)
 {
   OCTAVE_LOCAL_BUFFER (T, e, m);

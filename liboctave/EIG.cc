@@ -73,24 +73,24 @@ extern "C"
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL,
                              const octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL, 
-                             const octave_idx_type&, 
+  F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
                              Complex*, const octave_idx_type&,
                              octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dggev, DGGEV) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (dggev, DGGEV) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, 
+                           const octave_idx_type&,
                            double*, const octave_idx_type&,
                            double*, const octave_idx_type&,
                            double*, double*, double *, double*,
@@ -112,9 +112,9 @@ extern "C"
                            F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zggev, ZGGEV) (F77_CONST_CHAR_ARG_DECL, 
+  F77_FUNC (zggev, ZGGEV) (F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, 
+                           const octave_idx_type&,
                            Complex*, const octave_idx_type&,
                            Complex*, const octave_idx_type&,
                            Complex*, Complex*, Complex*,
@@ -126,7 +126,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (zhegv, ZHEGV) (const octave_idx_type&,
-                           F77_CONST_CHAR_ARG_DECL, 
+                           F77_CONST_CHAR_ARG_DECL,
                            F77_CONST_CHAR_ARG_DECL,
                            const octave_idx_type&, Complex*,
                            const octave_idx_type&, Complex*,
@@ -250,7 +250,7 @@ EIG::init (const Matrix& a, bool calc_ev)
   return info;
 }
 
-octave_idx_type 
+octave_idx_type
 EIG::symmetric_init (const Matrix& a, bool calc_ev)
 {
   octave_idx_type n = a.rows ();
@@ -492,7 +492,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   double *tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-                             n, tmp_data, n, 
+                             n, tmp_data, n,
                              info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -527,7 +527,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
 
   F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n, 
+                           n, atmp_data, n, btmp_data, n,
                            par, pai, pbeta,
                            dummy, idummy, pvr, n,
                            &dummy_work, lwork, info
@@ -542,7 +542,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
 
       F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                               n, atmp_data, n, btmp_data, n, 
+                               n, atmp_data, n, btmp_data, n,
                                par, pai, pbeta,
                                dummy, idummy, pvr, n,
                                pwork, lwork, info
@@ -581,9 +581,9 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = Complex (ar.elem(j) / beta.elem (j), 
+              lambda.elem(j) = Complex (ar.elem(j) / beta.elem (j),
                                         ai.elem(j) / beta.elem (j));
-              lambda.elem(j+1) = Complex (ar.elem(j+1) / beta.elem (j+1), 
+              lambda.elem(j+1) = Complex (ar.elem(j+1) / beta.elem (j+1),
                                           ai.elem(j+1) / beta.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
@@ -603,7 +603,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
   return info;
 }
 
-octave_idx_type 
+octave_idx_type
 EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_ev)
 {
   octave_idx_type n = a.rows ();
@@ -637,8 +637,8 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_ev)
 
   F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n, 
-                           btmp_data, n, 
+                           n, atmp_data, n,
+                           btmp_data, n,
                            pwr, &dummy_work, lwork, info
                            F77_CHAR_ARG_LEN (1)
                            F77_CHAR_ARG_LEN (1)));
@@ -651,8 +651,8 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_ev)
 
       F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                                F77_CONST_CHAR_ARG2 ("U", 1),
-                               n, atmp_data, n, 
-                               btmp_data, n, 
+                               n, atmp_data, n,
+                               btmp_data, n,
                                pwr, pwork, lwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));
@@ -709,7 +709,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   Complex*tmp_data = tmp.fortran_vec ();
 
   F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
-                             n, tmp_data, n, 
+                             n, tmp_data, n,
                              info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
@@ -745,7 +745,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                            F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                           n, atmp_data, n, btmp_data, n, 
+                           n, atmp_data, n, btmp_data, n,
                            palpha, pbeta, dummy, idummy,
                            pv, n, &dummy_work, lwork, prwork, info
                            F77_CHAR_ARG_LEN (1)
@@ -759,12 +759,12 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
 
       F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
-                               n, atmp_data, n, btmp_data, n, 
+                               n, atmp_data, n, btmp_data, n,
                                palpha, pbeta, dummy, idummy,
                                pv, n, pwork, lwork, prwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));
-      
+
       if (info < 0)
         {
           (*current_liboctave_error_handler) ("unrecoverable error in zggev");
@@ -828,7 +828,7 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_e
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
-                           n, atmp_data, n, 
+                           n, atmp_data, n,
                            btmp_data, n,
                            pwr, &dummy_work, lwork,
                            prwork, info
@@ -843,8 +843,8 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_e
 
       F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
                                F77_CONST_CHAR_ARG2 ("U", 1),
-                               n, atmp_data, n, 
-                               btmp_data, n, 
+                               n, atmp_data, n,
+                               btmp_data, n,
                                pwr, pwork, lwork, prwork, info
                                F77_CHAR_ARG_LEN (1)
                                F77_CHAR_ARG_LEN (1)));

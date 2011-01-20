@@ -86,7 +86,7 @@ private:
   Matrix bbox;
   uint8NDArray pixels;
   int xoffset;
-  int yoffset;  
+  int yoffset;
   int mode;
   uint8_t red, green, blue;
 };

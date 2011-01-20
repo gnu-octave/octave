@@ -637,10 +637,10 @@ superclass_identifier
                 : SUPERCLASSREF
                   { $$ = new tree_identifier ($1->line (), $1->column ()); }
                 ;
-            
+
 meta_identifier : METAQUERY
                   { $$ = new tree_identifier ($1->line (), $1->column ()); }
-                ;           
+                ;
 
 string          : DQ_STRING
                   { $$ = make_constant (DQ_STRING, $1); }
@@ -737,7 +737,7 @@ fcn_handle      : '@' FCN_HANDLE
 anon_fcn_handle : '@' param_list statement
                   { $$ = make_anon_fcn_handle ($2, $3); }
                 ;
-        
+
 primary_expr    : identifier
                   { $$ = $1; }
                 | constant
@@ -1108,7 +1108,7 @@ case_list       : // empty
                   {
                     $1->append ($2);
                     $$ = $1;
-                  }             
+                  }
                 ;
 
 case_list1      : switch_case
@@ -1355,8 +1355,8 @@ function_beg    : push_fcn_symtab FCN stash_comment
                   {
                     $$ = $3;
 
-                    if (reading_classdef_file || lexer_flags.parsing_classdef) 
-                      lexer_flags.maybe_classdef_get_set_method = true; 
+                    if (reading_classdef_file || lexer_flags.parsing_classdef)
+                      lexer_flags.maybe_classdef_get_set_method = true;
                   }
                 ;
 
@@ -1378,7 +1378,7 @@ fcn_name        : identifier
 
                     lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
-            
+
                     $$ = $1;
                   }
                 | GET '.' identifier
@@ -1587,7 +1587,7 @@ events_list     : class_event
 class_event     : identifier
                   { $$ = 0; }
                 ;
- 
+
 // =============
 // Miscellaneous
 // =============
@@ -1717,19 +1717,19 @@ end_error (const char *type, token::end_tok_type ettype, int l, int c)
       break;
 
     case token::switch_end:
-      error (fmt, type, "endswitch", l, c); 
+      error (fmt, type, "endswitch", l, c);
       break;
 
     case token::while_end:
-      error (fmt, type, "endwhile", l, c); 
+      error (fmt, type, "endwhile", l, c);
       break;
 
     case token::try_catch_end:
-      error (fmt, type, "end_try_catch", l, c); 
+      error (fmt, type, "end_try_catch", l, c);
       break;
 
     case token::unwind_protect_end:
-      error (fmt, type, "end_unwind_protect", l, c); 
+      error (fmt, type, "end_unwind_protect", l, c);
       break;
 
     default:
@@ -2920,7 +2920,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   if (reading_fcn_file && current_function_depth == 1
       && ! parsing_subfunctions)
     primary_fcn_ptr = fcn;
-  
+
   return fcn;
 }
 
@@ -3009,7 +3009,7 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
                        char type)
 {
   tree_index_expression *retval = 0;
-  
+
   if (args && args->has_magic_tilde ())
     {
       yyerror ("invalid use of empty argument (~) in index expression");
@@ -3277,7 +3277,7 @@ looks_like_copyright (const std::string& s)
   if (! s.empty ())
     {
       size_t offset = s.find_first_not_of (" \t");
-  
+
       retval = (s.substr (offset, 9) == "Copyright");
     }
 
@@ -3322,7 +3322,7 @@ public:
 
     return ::ungetc (c, f);
   }
-  
+
 private:
   FILE *f;
 };
@@ -3559,7 +3559,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           // Do this with an unwind-protect cleanup function so that
           // the forced variables will be unmarked in the event of an
-          // interrupt. 
+          // interrupt.
           symbol_table::scope_id scope = symbol_table::top_scope ();
           frame.add_fcn (symbol_table::unmark_forced_variables, scope);
 
@@ -3605,7 +3605,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   else if (require_file)
     error ("no such file, `%s'", ff.c_str ());
   else if (! warn_for.empty ())
-    error ("%s: unable to open file `%s'", warn_for.c_str (), ff.c_str ());    
+    error ("%s: unable to open file `%s'", warn_for.c_str (), ff.c_str ());
 
   return fcn_ptr;
 }
@@ -3671,7 +3671,7 @@ lookup_autoload (const std::string& nm)
   return retval;
 }
 
-string_vector 
+string_vector
 autoloaded_functions (void)
 {
   string_vector names (autoload_map.size());
@@ -3759,8 +3759,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = file.substr (0, len - 2);
 
-      octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2), 
-                                                dispatch_type, autoloading, 
+      octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
+                                                dispatch_type, autoloading,
                                                 false);
 
       retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
@@ -3978,7 +3978,7 @@ source_file (const std::string& file_name, const std::string& context,
 
       if (! error_state)
         frame.add_fcn (octave_call_stack::pop);
-    }      
+    }
 
   if (! error_state)
     {
@@ -4121,7 +4121,7 @@ be named @file{@var{file}.m}.\n\
 // Evaluate an Octave function (built-in or interpreted) and return
 // the list of result values.  NAME is the name of the function to
 // call.  ARGS are the arguments to the function.  NARGOUT is the
-// number of output arguments expected. 
+// number of output arguments expected.
 
 octave_value_list
 feval (const std::string& name, const octave_value_list& args, int nargout)
@@ -4244,14 +4244,14 @@ Call the base function @var{f} even if @var{f} is overloaded to\n\
 another function for the given type signature.\n\
 @end deftypefn")
 {
-  octave_value_list retval; 
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin > 0)
     {
       const std::string name (args(0).string_value ());
- 
+
       if (! error_state)
         {
           octave_value fcn = symbol_table::builtin_find (name);

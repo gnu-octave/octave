@@ -313,7 +313,7 @@ parameters for @code{dassl}.\n\
                   dassl_fcn = extract_function
                     (c(0), "dassl", fcn_name, fname, "; endfunction");
                 }
-              
+
               if (dassl_fcn)
                 {
                   if (c(1).is_function_handle () || c(1).is_inline_function ())
@@ -381,7 +381,7 @@ parameters for @code{dassl}.\n\
                             jname.append(jac_name);
                             jname.append (" (x, xdot, t, cj) jac = ");
                             dassl_jac = extract_function
-                              (tmp(1), "dassl", jac_name, jname, 
+                              (tmp(1), "dassl", jac_name, jname,
                                "; endfunction");
 
                             if (!dassl_jac)
@@ -503,18 +503,18 @@ parameters for @code{dassl}.\n\
 %!function res = f (x, xdot, t)
 %!  res = [xdot(1)+x(2); xdot(2)-x(1)];
 %!test
-%! 
+%!
 %! x0 = [1; 0];
 %! xdot0 = [0; 1];
 %! t = (0:1:10)';
-%! 
+%!
 %! tol = 100 * dassl_options ("relative tolerance");
-%! 
-%! 
+%!
+%!
 %! [x, xdot] = dassl ("f", x0, xdot0, t);
-%! 
+%!
 %! y = [cos(t), sin(t)];
-%! 
+%!
 %! assert(all (all (abs (x - y) < tol)));
 
 %% dassl-2.m
@@ -531,7 +531,7 @@ parameters for @code{dassl}.\n\
 %%
 %%   x1' + 10*x1 = 0,   x1(0) = 1
 %%   x1  + x2    = 1,   x2(0) = 0
-%% 
+%%
 %%
 %% Solution
 %%
@@ -540,18 +540,18 @@ parameters for @code{dassl}.\n\
 %!function res = f (x, xdot, t)
 %!  res = [xdot(1)+10*x(1); x(1)+x(2)-1];
 %!test
-%! 
+%!
 %! x0 = [1; 0];
 %! xdot0 = [-10; 10];
 %! t = (0:0.2:1)';
-%! 
+%!
 %! tol = 500 * dassl_options ("relative tolerance");
-%! 
-%! 
+%!
+%!
 %! [x, xdot] = dassl ("f", x0, xdot0, t);
-%! 
+%!
 %! y = [exp(-10*t), 1-exp(-10*t)];
-%! 
+%!
 %! assert(all (all (abs (x - y) < tol)));
 
 %!test

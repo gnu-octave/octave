@@ -36,10 +36,10 @@ protected:
 
 public:
 
-  base_aepbal (const base_aepbal& a) 
-    : balanced_mat (a.balanced_mat), scale (a.scale), 
+  base_aepbal (const base_aepbal& a)
+    : balanced_mat (a.balanced_mat), scale (a.scale),
       ilo(a.ilo), ihi(a.ihi), job(a.job)
-  { 
+  {
   }
 
   base_aepbal& operator = (const base_aepbal& a)
@@ -72,7 +72,7 @@ public:
           octave_idx_type j = scale(i) - 1;
           std::swap (pv(i), pv(j));
         }
-      
+
       return pv;
     }
 

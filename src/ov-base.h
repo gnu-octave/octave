@@ -79,11 +79,11 @@ enum builtin_type_t
   btyp_num_types = btyp_unknown
 };
 
-extern OCTINTERP_API std::string 
+extern OCTINTERP_API std::string
 btyp_class_name [btyp_num_types];
 
 extern OCTINTERP_API string_vector
-get_builtin_classes (void); 
+get_builtin_classes (void);
 
 inline bool btyp_isnumeric (builtin_type_t btyp)
 { return btyp <= btyp_uint64; }
@@ -192,7 +192,7 @@ public:
 
     operator type_conv_fcn (void) const { return _fcn; }
 
-    octave_base_value * operator () (const octave_base_value &v) const 
+    octave_base_value * operator () (const octave_base_value &v) const
       { return (*_fcn) (v); }
 
     int type_id (void) const { return _type_id; }
@@ -240,7 +240,7 @@ public:
 
   virtual void maybe_economize (void) { }
 
-  virtual Matrix size (void); 
+  virtual Matrix size (void);
 
   virtual octave_idx_type numel (const octave_value_list&);
 
@@ -505,11 +505,11 @@ public:
   virtual DiagMatrix diag_matrix_value (bool = false) const;
 
   virtual FloatDiagMatrix float_diag_matrix_value (bool = false) const;
-  
+
   virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
-  
+
   virtual FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
-  
+
   virtual PermMatrix perm_matrix_value (void) const;
 
   virtual octave_int8 int8_scalar_value (void) const;
@@ -602,7 +602,7 @@ public:
   print_name_tag (std::ostream& os, const std::string& name) const;
 
   virtual void
-  print_with_name (std::ostream& output_buf, const std::string& name, 
+  print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
@@ -613,7 +613,7 @@ public:
 
   virtual bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  virtual bool load_binary (std::istream& is, bool swap, 
+  virtual bool load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
@@ -639,9 +639,9 @@ public:
 
   virtual octave_value diag (octave_idx_type k = 0) const;
 
-  virtual octave_value sort (octave_idx_type dim = 0, 
+  virtual octave_value sort (octave_idx_type dim = 0,
                              sortmode mode = ASCENDING) const;
-  virtual octave_value sort (Array<octave_idx_type> &sidx, 
+  virtual octave_value sort (Array<octave_idx_type> &sidx,
                              octave_idx_type dim = 0,
                              sortmode mode = ASCENDING) const;
 

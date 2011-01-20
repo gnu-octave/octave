@@ -70,24 +70,24 @@ DEFBINOP (ldiv, float_complex, float_complex_matrix)
   return octave_value (v2.float_complex_array_value () / d);
 }
 
-DEFNDCMPLXCMPOP_FN (lt, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (lt, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_lt)
-DEFNDCMPLXCMPOP_FN (le, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (le, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_le)
-DEFNDCMPLXCMPOP_FN (eq, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (eq, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_eq)
-DEFNDCMPLXCMPOP_FN (ge, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (ge, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_ge)
-DEFNDCMPLXCMPOP_FN (gt, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (gt, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_gt)
-DEFNDCMPLXCMPOP_FN (ne, float_complex, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (ne, float_complex, float_complex_matrix, float_complex,
                float_complex_array, mx_el_ne)
 
-DEFNDBINOP_OP (el_mul, float_complex, float_complex_matrix, float_complex, 
+DEFNDBINOP_OP (el_mul, float_complex, float_complex_matrix, float_complex,
                float_complex_array, *)
-DEFNDBINOP_FN (el_div, float_complex, float_complex_matrix, float_complex, 
+DEFNDBINOP_FN (el_div, float_complex, float_complex_matrix, float_complex,
                float_complex_array, x_el_div)
-DEFNDBINOP_FN (el_pow, float_complex, float_complex_matrix, float_complex, 
+DEFNDBINOP_FN (el_pow, float_complex, float_complex_matrix, float_complex,
                float_complex_array, elem_xpow)
 
 DEFBINOP (el_ldiv, float_complex, float_complex_matrix)

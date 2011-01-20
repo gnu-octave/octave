@@ -120,7 +120,7 @@ charNDArray::increment_index (Array<octave_idx_type>& ra_idx,
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
-octave_idx_type 
+octave_idx_type
 charNDArray::compute_index (Array<octave_idx_type>& ra_idx,
                             const dim_vector& dimensions)
 {

@@ -40,17 +40,17 @@ along with Octave; see the file COPYING.  If not, see
 
 inline double max (double a, double b, double c)
 {
-  if (a < b) 
+  if (a < b)
     return (b < c ? c : b);
-  else 
+  else
     return (a < c ? c : a);
 }
 
 inline double min (double a, double b, double c)
 {
-  if (a > b) 
+  if (a > b)
     return (b > c ? c : b);
-  else 
+  else
     return (a > c ? c : a);
 }
 
@@ -58,8 +58,8 @@ inline double min (double a, double b, double c)
 
 // for large data set the algorithm is very slow
 // one should presort (how?) either the elements of the points of evaluation
-// to cut down the time needed to decide which triangle contains the 
-// given point 
+// to cut down the time needed to decide which triangle contains the
+// given point
 
 // e.g., build up a neighbouring triangle structure and use a simplex-like
 // method to traverse it
@@ -83,7 +83,7 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
       print_usage ();
       return retval;
     }
-  
+
   const ColumnVector x (args(0).vector_value ());
   const ColumnVector y (args(1).vector_value ());
   const Matrix elem (args(2).matrix_value ());
@@ -99,7 +99,7 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
   ColumnVector maxx (nelem);
   ColumnVector miny (nelem);
   ColumnVector maxy (nelem);
-  for (octave_idx_type k = 0; k < nelem; k++) 
+  for (octave_idx_type k = 0; k < nelem; k++)
     {
       minx(k) = min (REF (x, k, 0), REF (x, k, 1), REF (x, k, 2)) - eps;
       maxx(k) = max (REF (x, k, 0), REF (x, k, 1), REF (x, k, 2)) + eps;
@@ -114,28 +114,28 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
   double a11 = 0.0, a12 = 0.0, a21 = 0.0, a22 = 0.0, det = 0.0;
 
   octave_idx_type k = nelem; // k is a counter of elements
-  for (octave_idx_type kp = 0; kp < np; kp++) 
+  for (octave_idx_type kp = 0; kp < np; kp++)
     {
-      const double xt = xi(kp); 
+      const double xt = xi(kp);
       const double yt = yi(kp);
-    
+
       // check if last triangle contains the next point
-      if (k < nelem) 
-        { 
+      if (k < nelem)
+        {
           const double dx1 = xt - x0;
           const double dx2 = yt - y0;
           const double c1 = (a22 * dx1 - a21 * dx2) / det;
           const double c2 = (-a12 * dx1 + a11 * dx2) / det;
-          if (c1 >= -eps && c2 >= -eps && (c1 + c2) <= (1 + eps)) 
+          if (c1 >= -eps && c2 >= -eps && (c1 + c2) <= (1 + eps))
             {
               values(kp) = double(k+1);
               continue;
             }
         }
-    
+
       // it doesn't, so go through all elements
-      for (k = 0; k < nelem; k++) 
-        { 
+      for (k = 0; k < nelem; k++)
+        {
           OCTAVE_QUIT;
           if (xt >= minx(k) && xt <= maxx(k) && yt >= miny(k) && yt <= maxy(k))
             {
@@ -147,13 +147,13 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
               a21 = REF (x, k, 2) - x0;
               a22 = REF (y, k, 2) - y0;
               det = a11 * a22 - a21 * a12;
-        
+
               // solve the system
               const double dx1 = xt - x0;
               const double dx2 = yt - y0;
               const double c1 = (a22 * dx1 - a21 * dx2) / det;
               const double c2 = (-a12 * dx1 + a11 * dx2) / det;
-              if ((c1 >= -eps) && (c2 >= -eps) && ((c1 + c2) <= (1 + eps))) 
+              if ((c1 >= -eps) && (c2 >= -eps) && ((c1 + c2) <= (1 + eps)))
                 {
                   values(kp) = double(k+1);
                   break;
@@ -161,13 +161,13 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
             } //endif # examine this element closely
         } //endfor # each element
 
-      if (k == nelem) 
+      if (k == nelem)
         values(kp) = lo_ieee_nan_value ();
-    
+
     } //endfor # kp
-  
+
   retval(0) = values;
-  
+
   return retval;
 }
 

@@ -119,13 +119,13 @@ DEFBINOP (el_or, float_scalar, float_complex)
   return octave_value (v1.float_scalar_value () || (v2.float_complex_value () != static_cast<float>(0.0)));
 }
 
-DEFNDCATOP_FN (fs_fcs, float_scalar, float_complex, float_array, 
+DEFNDCATOP_FN (fs_fcs, float_scalar, float_complex, float_array,
                float_complex_array, concat)
 
-DEFNDCATOP_FN (s_fcs, scalar, float_complex, float_array, 
+DEFNDCATOP_FN (s_fcs, scalar, float_complex, float_array,
                float_complex_array, concat)
 
-DEFNDCATOP_FN (fs_cs, float_scalar, complex, float_array, 
+DEFNDCATOP_FN (fs_cs, float_scalar, complex, float_array,
                float_complex_array, concat)
 
 void
@@ -154,8 +154,8 @@ install_fs_fcs_ops (void)
   INSTALL_CATOP (octave_scalar, octave_float_complex, s_fcs);
   INSTALL_CATOP (octave_float_scalar, octave_complex, fs_cs);
 
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_complex, 
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_complex,
                       octave_float_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_scalar, octave_float_complex, 
+  INSTALL_ASSIGNCONV (octave_scalar, octave_float_complex,
                       octave_complex_matrix);
 }

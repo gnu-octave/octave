@@ -45,11 +45,11 @@ extern OCTINTERP_API void clear_mex_functions (void);
 
 extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = std::string (),
-                   bool warn = false); 
+                   bool warn = false);
 
 extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = std::string (),
-                   bool warn = false); 
+                   bool warn = false);
 
 extern OCTINTERP_API octave_function *
 extract_function (const octave_value& arg, const std::string& warn_for,

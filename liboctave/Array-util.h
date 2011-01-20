@@ -47,17 +47,17 @@ extern OCTAVE_API bool any_ones (const Array<octave_idx_type>& arr);
 
 // These four compute a linear index for given dimensions, throwing
 // exceptions on invalid indices.
-extern OCTAVE_API octave_idx_type 
+extern OCTAVE_API octave_idx_type
 compute_index (octave_idx_type n, const dim_vector& dims);
 
-extern OCTAVE_API octave_idx_type 
+extern OCTAVE_API octave_idx_type
 compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims);
 
-extern OCTAVE_API octave_idx_type 
+extern OCTAVE_API octave_idx_type
 compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
                const dim_vector& dims);
 
-extern OCTAVE_API octave_idx_type 
+extern OCTAVE_API octave_idx_type
 compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
 
 extern OCTAVE_API Array<octave_idx_type> conv_to_int_array (const Array<idx_vector>& a);

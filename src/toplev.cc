@@ -605,7 +605,7 @@ main_loop (void)
                   else
                     {
                       if (octave_completion_matches_called)
-                        octave_completion_matches_called = false;           
+                        octave_completion_matches_called = false;
                       else
                         command_editor::increment_current_command_number ();
                     }
@@ -801,7 +801,7 @@ run_command_and_return_output (const std::string& cmd_str)
                   cmd->clear ();
 
                   if (wait_for_input (fid) != 1)
-                    break;                      
+                    break;
                 }
               else
                 break;
@@ -939,7 +939,7 @@ command shell that is started to run the command.\n\
 #ifdef HAVE_FORK
               pid_t pid = fork ();
 
-              if (pid < 0) 
+              if (pid < 0)
                 error ("system: fork failed -- can't create child process");
               else if (pid == 0)
                 {

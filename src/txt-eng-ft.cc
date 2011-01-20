@@ -174,7 +174,7 @@ private:
 
       if (! file.empty () && FT_New_Face (library, file.c_str (), 0, &retval))
         ::warning ("ft_manager: unable to load font: %s", file.c_str ());
-      
+
       return retval;
     }
 

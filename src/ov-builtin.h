@@ -72,7 +72,7 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args);
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args, 
+  do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
   static const std::list<octave_lvalue> *curr_lvalue_list;

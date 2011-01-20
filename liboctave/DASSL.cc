@@ -194,7 +194,7 @@ DASSL::do_integrate (double tout)
         }
 
       info(4) = user_jac ? 1 : 0;
-  
+
       DAEFunc::reset = false;
 
       // DASSL_options
@@ -394,7 +394,7 @@ DASSL::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
 Matrix
 DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
-                  const ColumnVector& tcrit) 
+                  const ColumnVector& tcrit)
 {
   Matrix retval;
 

@@ -46,7 +46,7 @@ public:
 
   MSparse (octave_idx_type n, octave_idx_type m) : Sparse<T> (n, m) { }
 
-  MSparse (const dim_vector& dv, octave_idx_type nz = 0) : 
+  MSparse (const dim_vector& dv, octave_idx_type nz = 0) :
     Sparse<T> (dv, nz) { }
 
   MSparse (const MSparse<T>& a) : Sparse<T> (a) { }
@@ -59,7 +59,7 @@ public:
   MSparse (const Sparse<U>& a) : Sparse<T> (a) { }
 
   MSparse (const Array<T>& a, const idx_vector& r, const idx_vector& c,
-           octave_idx_type nr = -1, octave_idx_type nc = -1, 
+           octave_idx_type nr = -1, octave_idx_type nc = -1,
            bool sum_terms = true, octave_idx_type nzm = -1)
     : Sparse<T> (a, r, c, nr, nc, sum_terms, nzm) { }
 
@@ -93,7 +93,7 @@ public:
 
   MSparse<T> reshape (const dim_vector& new_dims) const
     { return Sparse<T>::reshape (new_dims); }
-     
+
   MSparse<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const
     { return Sparse<T>::permute (vec, inv); }
 

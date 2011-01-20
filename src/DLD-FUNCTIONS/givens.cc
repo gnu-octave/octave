@@ -92,7 +92,7 @@ givens (1, 1)\n\
                         case 1:
                           retval(0) = result;
                           break;
-   
+
                         case 2:
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
@@ -122,7 +122,7 @@ givens (1, 1)\n\
                         case 1:
                           retval(0) = result;
                           break;
-   
+
                         case 2:
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
@@ -155,7 +155,7 @@ givens (1, 1)\n\
                         case 1:
                           retval(0) = result;
                           break;
-   
+
                         case 2:
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
@@ -185,7 +185,7 @@ givens (1, 1)\n\
                         case 1:
                           retval(0) = result;
                           break;
-   
+
                         case 2:
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);

@@ -45,25 +45,25 @@ public:
 
   using Array<T>::element_type;
 
-  DiagArray2 (void) 
+  DiagArray2 (void)
     : Array<T> (), d1 (0), d2 (0) { }
 
-  DiagArray2 (octave_idx_type r, octave_idx_type c) 
+  DiagArray2 (octave_idx_type r, octave_idx_type c)
     : Array<T> (dim_vector (std::min (r, c), 1)), d1 (r), d2 (c) { }
 
-  DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) 
+  DiagArray2 (octave_idx_type r, octave_idx_type c, const T& val)
     : Array<T> (dim_vector (std::min (r, c), 1), val), d1 (r), d2 (c) { }
 
-  explicit DiagArray2 (const Array<T>& a) 
+  explicit DiagArray2 (const Array<T>& a)
     : Array<T> (a.as_column ()), d1 (a.numel ()), d2 (a.numel ()) { }
 
   DiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c);
 
-  DiagArray2 (const DiagArray2<T>& a) 
+  DiagArray2 (const DiagArray2<T>& a)
     : Array<T> (a), d1 (a.d1), d2 (a.d2) { }
 
   template <class U>
-  DiagArray2 (const DiagArray2<U>& a) 
+  DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.diag ()), d1 (a.dim1 ()), d2 (a.dim2 ()) { }
 
   ~DiagArray2 (void) { }
@@ -100,7 +100,7 @@ public:
   Array<T> diag (octave_idx_type k = 0) const;
 
   // Warning: the non-const two-index versions will silently ignore assignments
-  // to off-diagonal elements. 
+  // to off-diagonal elements.
 
   T elem (octave_idx_type r, octave_idx_type c) const
     {
@@ -116,7 +116,7 @@ public:
   T dgelem (octave_idx_type i) const
     { return Array<T>::elem (i); }
 
-  T& dgelem (octave_idx_type i) 
+  T& dgelem (octave_idx_type i)
     { return Array<T>::elem (i); }
 
   T checkelem (octave_idx_type r, octave_idx_type c) const;
@@ -143,7 +143,7 @@ public:
   T dgxelem (octave_idx_type i) const
     { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m, 
+  void resize (octave_idx_type n, octave_idx_type m,
                const T& rfv = Array<T>::resize_fill_value ());
 
   DiagArray2<T> transpose (void) const;

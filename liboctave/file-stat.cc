@@ -54,31 +54,31 @@ base_file_stat::is_chr (void) const
 
 bool
 base_file_stat::is_dir (void) const
-{ 
+{
   return exists () && is_dir (fs_mode);
 }
 
 bool
 base_file_stat::is_fifo (void) const
-{ 
+{
   return exists () && is_fifo (fs_mode);
 }
 
 bool
 base_file_stat::is_lnk (void) const
-{ 
+{
   return exists () && is_lnk (fs_mode);
 }
 
 bool
 base_file_stat::is_reg (void) const
-{ 
+{
   return exists () && is_reg (fs_mode);
 }
 
 bool
 base_file_stat::is_sock (void) const
-{ 
+{
   return exists () && is_sock (fs_mode);
 }
 
@@ -104,7 +104,7 @@ base_file_stat::is_chr (mode_t mode)
 
 bool
 base_file_stat::is_dir (mode_t mode)
-{ 
+{
 #ifdef S_ISDIR
   return S_ISDIR (mode);
 #else
@@ -114,7 +114,7 @@ base_file_stat::is_dir (mode_t mode)
 
 bool
 base_file_stat::is_fifo (mode_t mode)
-{ 
+{
 #ifdef S_ISFIFO
   return S_ISFIFO (mode);
 #else
@@ -124,7 +124,7 @@ base_file_stat::is_fifo (mode_t mode)
 
 bool
 base_file_stat::is_lnk (mode_t mode)
-{ 
+{
 #ifdef S_ISLNK
   return S_ISLNK (mode);
 #else
@@ -134,7 +134,7 @@ base_file_stat::is_lnk (mode_t mode)
 
 bool
 base_file_stat::is_reg (mode_t mode)
-{ 
+{
 #ifdef S_ISREG
   return S_ISREG (mode);
 #else
@@ -144,7 +144,7 @@ base_file_stat::is_reg (mode_t mode)
 
 bool
 base_file_stat::is_sock (mode_t mode)
-{ 
+{
 #ifdef S_ISSOCK
   return S_ISSOCK (mode);
 #else
@@ -182,7 +182,7 @@ file_stat::update_internal (bool force)
     {
       initialized = false;
       fail = false;
-      
+
       std::string full_file_name = file_ops::tilde_expand (file_name);
 
 #if defined (__WIN32__)

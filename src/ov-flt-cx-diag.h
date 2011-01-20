@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTINTERP_API
-octave_float_complex_diag_matrix 
+octave_float_complex_diag_matrix
   : public octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>
 {
 public:
@@ -75,14 +75,14 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
   octave_value map (unary_mapper_t umap) const;
 
 private:
 
-  bool chk_valid_scalar (const octave_value&, 
+  bool chk_valid_scalar (const octave_value&,
                          FloatComplex&) const;
 
   DECLARE_OCTAVE_ALLOCATOR

@@ -103,9 +103,9 @@ SparseBoolMatrix::operator ! (void) const
   octave_idx_type nc = cols ();
   octave_idx_type nz1 = nnz ();
   octave_idx_type nz2 = nr*nc - nz1;
-   
+
   SparseBoolMatrix r (nr, nc, nz2);
-   
+
   octave_idx_type ii = 0;
   octave_idx_type jj = 0;
   r.cidx (0) = 0;
@@ -259,13 +259,13 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
 
    // add one to the printed indices to go from
    //  zero-based to one-based arrays
-   for (octave_idx_type j = 0; j < nc; j++)  
+   for (octave_idx_type j = 0; j < nc; j++)
      {
        octave_quit ();
        for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
          os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
      }
-   
+
   return os;
 }
 
@@ -278,23 +278,23 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::squeeze (void) const 
-{ 
-  return Sparse<bool>::squeeze (); 
+SparseBoolMatrix::squeeze (void) const
+{
+  return Sparse<bool>::squeeze ();
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, bool resize_ok) const 
-{ 
-  return Sparse<bool>::index (i, resize_ok); 
+SparseBoolMatrix::index (const idx_vector& i, bool resize_ok) const
+{
+  return Sparse<bool>::index (i, resize_ok);
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const 
-{ 
-  return Sparse<bool>::index (i, j, resize_ok); 
+SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const
+{
+  return Sparse<bool>::index (i, j, resize_ok);
 }
-  
+
 SparseBoolMatrix
 SparseBoolMatrix::reshape (const dim_vector& new_dims) const
 {

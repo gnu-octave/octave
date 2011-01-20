@@ -219,7 +219,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
               else
                 result = EIG (tmp_a, tmp_b, nargout > 1);
             }
-          else 
+          else
             {
               ctmp_a = arg_a.complex_matrix_value ();
               ctmp_b = arg_b.complex_matrix_value ();

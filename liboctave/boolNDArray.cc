@@ -68,15 +68,15 @@ boolNDArray::any (int dim) const
   return do_mx_red_op<bool, bool> (*this, dim, mx_inline_any);
 }
 
-NDArray 
+NDArray
 boolNDArray::sum (int dim) const
 {
   // NOTE: going via octave_idx_type is typically faster even though it
-  // requires a conversion. 
+  // requires a conversion.
   return do_mx_red_op<octave_idx_type, bool> (*this, dim, mx_inline_count);
 }
 
-NDArray 
+NDArray
 boolNDArray::cumsum (int dim) const
 {
   // In this case, it's better to sum directly to doubles.
@@ -143,7 +143,7 @@ NDS_CMP_OPS (boolNDArray, bool)
 SND_BOOL_OPS (bool, boolNDArray)
 SND_CMP_OPS (bool, boolNDArray)
 
-boolNDArray& 
+boolNDArray&
 mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
 {
   if (a.is_shared ())
@@ -154,7 +154,7 @@ mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
   return a;
 }
 
-boolNDArray& 
+boolNDArray&
 mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
 {
   if (a.is_shared ())

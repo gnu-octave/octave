@@ -249,7 +249,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                     if (! error_state)
                       octave_rand::seed (d);
                   }
-                else if (args(idx+1).is_string () 
+                else if (args(idx+1).is_string ()
                          && args(idx+1).string_value() == "reset")
                   octave_rand::reset ();
                 else
@@ -262,7 +262,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   octave_rand::reset (fcn);
                 else
                   {
-                    ColumnVector s = 
+                    ColumnVector s =
                       ColumnVector (args(idx+1).vector_value(false, true));
 
                     if (! error_state)
@@ -468,7 +468,7 @@ using the \"reset\" keyword.\n\
 %!   assert(min(x)>0.); %*** Please report this!!! ***
 %!   assert(mean(x),0.5,0.0024);
 %!   assert(var(x),1/48,0.0632);
-%!   assert(skewness(x),0,0.012); 
+%!   assert(skewness(x),0,0.012);
 %!   assert(kurtosis(x),-6/5,0.0094);
 %! endif
 %!test
@@ -480,7 +480,7 @@ using the \"reset\" keyword.\n\
 %!   assert(min(x)>0.); %*** Please report this!!! ***
 %!   assert(mean(x),0.5,0.0024);
 %!   assert(var(x),1/48,0.0632);
-%!   assert(skewness(x),0,0.012); 
+%!   assert(skewness(x),0,0.012);
 %!   assert(kurtosis(x),-6/5,0.0094);
 %! endif
 */
@@ -1034,7 +1034,7 @@ All permutations are equally likely.\n\
   if (nargin == 1 || nargin == 2)
     {
       octave_idx_type n, m;
-      
+
       if (nargin == 2)
         m = args(1).idx_type_value (true);
       else
@@ -1085,7 +1085,7 @@ All permutations are equally likely.\n\
             rvec[i] = ivec[i] + 1;
 
           // Now create an array object with a cached idx_vector.
-          retval = new octave_matrix (r, idx_vector (idx)); 
+          retval = new octave_matrix (r, idx_vector (idx));
         }
     }
   else

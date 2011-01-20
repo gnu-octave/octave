@@ -219,13 +219,13 @@ FloatComplexRowVector::append (const FloatComplexRowVector& a) const
   return retval;
 }
 
-FloatComplexColumnVector 
+FloatComplexColumnVector
 FloatComplexRowVector::hermitian (void) const
 {
   return MArray<FloatComplex>::hermitian (std::conj);
 }
 
-FloatComplexColumnVector 
+FloatComplexColumnVector
 FloatComplexRowVector::transpose (void) const
 {
   return MArray<FloatComplex>::transpose ();

@@ -41,7 +41,7 @@ class
 MDiagArray2 : public DiagArray2<T>
 {
 public:
-  
+
   MDiagArray2 (void) : DiagArray2<T> () { }
 
   MDiagArray2 (octave_idx_type r, octave_idx_type c) : DiagArray2<T> (r, c) { }
@@ -57,7 +57,7 @@ public:
 
   explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
 
-  MDiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c) 
+  MDiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     : DiagArray2<T> (a, r, c) { }
 
   ~MDiagArray2 (void) { }

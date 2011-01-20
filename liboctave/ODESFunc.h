@@ -37,7 +37,7 @@ public:
     };
 
   typedef ColumnVector (*ODES_fsub) (const ColumnVector& x, double,
-                                     const ColumnVector& theta); 
+                                     const ColumnVector& theta);
 
   typedef ColumnVector (*ODES_bsub) (const ColumnVector& x, double,
                                      const ColumnVector& theta, int column);

@@ -43,7 +43,7 @@ public:
                      const std::string& balance_job)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
     {
-      init (a, b, balance_job); 
+      init (a, b, balance_job);
     }
 
   ComplexGEPBALANCE (const ComplexGEPBALANCE& a)
@@ -81,7 +81,7 @@ private:
   Matrix balancing_mat;
   Matrix balancing_mat2;
 
-  octave_idx_type init (const ComplexMatrix& a, const ComplexMatrix& b, 
+  octave_idx_type init (const ComplexMatrix& a, const ComplexMatrix& b,
                         const std::string& balance_job);
 };
 

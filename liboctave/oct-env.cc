@@ -34,7 +34,7 @@ Free Software Foundation, Inc.
   octave_env::do_polite_directory_format
   octave_env::pathname_backup
 
-*/ 
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -46,7 +46,7 @@ static void do_bool_partition (bool *data, octave_idx_type nel)
 }
 
 template<bool desc>
-static void do_bool_partition (bool *data, octave_idx_type *idx, 
+static void do_bool_partition (bool *data, octave_idx_type *idx,
                                octave_idx_type nel)
 {
   // FIXME: This is essentially a simple bucket sort.

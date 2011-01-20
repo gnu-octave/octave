@@ -44,7 +44,7 @@ public:
 
   ComplexNDArray (const dim_vector& dv, const Complex& val)
     : MArray<Complex> (dv, val) { }
-  
+
   ComplexNDArray (const ComplexNDArray& a) : MArray<Complex> (a) { }
 
   ComplexNDArray (const ComplexMatrix& a) : MArray<Complex> (a) { }
@@ -55,7 +55,7 @@ public:
   template <class U>
   ComplexNDArray (const Array<U>& a) : MArray<Complex> (a) { }
 
-  ComplexNDArray (const charNDArray&); 
+  ComplexNDArray (const charNDArray&);
 
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {
@@ -102,7 +102,7 @@ public:
   ComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
   ComplexNDArray& insert (const ComplexNDArray& a, octave_idx_type r, octave_idx_type c);
   ComplexNDArray& insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
-  
+
   NDArray abs (void) const;
   boolNDArray isnan (void) const;
   boolNDArray isinf (void) const;
@@ -142,10 +142,10 @@ public:
 
   ComplexNDArray diag (octave_idx_type k = 0) const;
 
-  ComplexNDArray& changesign (void) 
-    { 
-      MArray<Complex>::changesign (); 
-      return *this; 
+  ComplexNDArray& changesign (void)
+    {
+      MArray<Complex>::changesign ();
+      return *this;
     }
 
 };

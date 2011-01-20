@@ -148,7 +148,7 @@ octave_value_typeinfo::register_assignany_op (octave_value::assign_op op,
 
 bool
 octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
-                                                  int t_result) 
+                                                  int t_result)
 {
   return (instance_ok ())
     ? instance->do_register_pref_assign_conv (t_lhs, t_rhs, t_result) : false;
@@ -413,7 +413,7 @@ octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
 
 bool
 octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
-                                                     int t_result) 
+                                                     int t_result)
 {
   if (lookup_pref_assign_conv (t_lhs, t_rhs) >= 0)
     {

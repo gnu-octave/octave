@@ -45,14 +45,14 @@ DEFBINOP_OP (mul, perm_matrix, perm_matrix, *)
 DEFBINOP (div, perm_matrix, perm_matrix)
 {
   CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_perm_matrix&);
-  
+
   return (v1.perm_matrix_value () * v2.perm_matrix_value ().inverse ());
 }
 
 DEFBINOP (ldiv, perm_matrix, perm_matrix)
 {
   CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_perm_matrix&);
-  
+
   return (v1.perm_matrix_value ().inverse () * v2.perm_matrix_value ());
 }
 

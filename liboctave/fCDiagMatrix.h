@@ -49,7 +49,7 @@ public:
   explicit FloatComplexDiagMatrix (const Array<FloatComplex>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  FloatComplexDiagMatrix (const Array<FloatComplex>& a, octave_idx_type r, octave_idx_type c) 
+  FloatComplexDiagMatrix (const Array<FloatComplex>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<FloatComplex> (a, r, c) { }
 
   explicit FloatComplexDiagMatrix (const Array<float>& a)
@@ -64,7 +64,7 @@ public:
     : MDiagArray2<FloatComplex> (a) { }
 
   template <class U>
-  FloatComplexDiagMatrix (const DiagArray2<U>& a) 
+  FloatComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
   FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a)
@@ -91,7 +91,7 @@ public:
 
   FloatComplexDiagMatrix hermitian (void) const { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
   FloatComplexDiagMatrix transpose (void) const { return MDiagArray2<FloatComplex>::transpose(); }
-  FloatDiagMatrix abs (void) const; 
+  FloatDiagMatrix abs (void) const;
 
   friend OCTAVE_API FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);
 

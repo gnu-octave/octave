@@ -99,10 +99,10 @@ public:
     { return octave_value (scalar); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type,
                      sortmode) const
-    { 
-      sidx.resize (dim_vector (1, 1)); 
-      sidx(0) = 0; 
-      return octave_value (scalar); 
+    {
+      sidx.resize (dim_vector (1, 1));
+      sidx(0) = 0;
+      return octave_value (scalar);
     }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const

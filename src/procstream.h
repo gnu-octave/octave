@@ -104,7 +104,7 @@ oprocstream : public std::ostream, public procstreambase
 // oprocstream : public procstreambase, public std::ostream
 {
 public:
- 
+
   oprocstream (void) : std::ostream (0), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)

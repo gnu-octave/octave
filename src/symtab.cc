@@ -2,7 +2,7 @@
 
 Copyright (C) 1993-2011 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
-  
+
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it
@@ -111,7 +111,7 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
           if (rep->finfo)
             retval = rep->finfo->find (args);
           else
-            { 
+            {
               retval = symbol_table::find_function (name (), args);
 
               if (retval.is_defined ())
@@ -300,7 +300,7 @@ out_of_date_check (octave_value& function,
                       clear_breakpoints = true;
                     }
 
-                  // If the function has been replaced then clear any 
+                  // If the function has been replaced then clear any
                   // breakpoints associated with it
                   if (clear_breakpoints)
                     bp_table::remove_all_breakpoints_in_file (nm, true);
@@ -413,7 +413,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
             {
               retval = find_method (*it);
 
-              if (retval.is_defined ()) 
+              if (retval.is_defined ())
                 {
                   class_methods[dispatch_type] = retval;
                   break;
@@ -453,7 +453,7 @@ symbol_table::fcn_info::fcn_info_rep::print_dispatch (std::ostream& os) const
 
       for (dispatch_map_const_iterator p = dispatch_map.begin ();
            p != dispatch_map.end (); p++)
-        os << "  " << name << " (" << p->first << ", ...) -> " 
+        os << "  " << name << " (" << p->first << ", ...) -> "
            << p->second << " (" << p->first << ", ...)\n";
 
       os << std::endl;
@@ -490,10 +490,10 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
         builtin_type_t ityp = static_cast<builtin_type_t> (i);
         builtin_type_t jtyp = static_cast<builtin_type_t> (j);
         // FIXME: Is this really right?
-        bool use_j = 
+        bool use_j =
           (jtyp == btyp_func_handle || ityp == btyp_bool
-           || (btyp_isarray (ityp) 
-               && (! btyp_isarray (jtyp) 
+           || (btyp_isarray (ityp)
+               && (! btyp_isarray (jtyp)
                    || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
                    || ((ityp == btyp_double || ityp == btyp_complex || ityp == btyp_char)
                        && (jtyp == btyp_float || jtyp == btyp_float_complex)))));
@@ -505,7 +505,7 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
 }
 
 std::string
-get_dispatch_type (const octave_value_list& args, 
+get_dispatch_type (const octave_value_list& args,
                    builtin_type_t& builtin_type)
 {
   static builtin_type_t (*sup_table)[btyp_num_types] = build_sup_table ();
@@ -728,7 +728,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         return fcn;
     }
 
-  // Legacy dispatch.  
+  // Legacy dispatch.
 
   if (! args.empty () && ! dispatch_map.empty ())
     {
@@ -1133,8 +1133,8 @@ symbol_table::fcn_info::fcn_info_rep::dump
 }
 
 octave_value
-symbol_table::find (const std::string& name, 
-                    const octave_value_list& args, 
+symbol_table::find (const std::string& name,
+                    const octave_value_list& args,
                     bool skip_variables,
                     bool local_funcs)
 {
@@ -1163,11 +1163,11 @@ symbol_table::find_function (const std::string& name,
   if (! name.empty () && name[0] == '@')
     {
       // Look for a class specific function.
-      std::string dispatch_type = 
+      std::string dispatch_type =
         name.substr (1, name.find_first_of (file_ops::dir_sep_str ()) - 1);
 
-      std::string method = 
-        name.substr (name.find_last_of (file_ops::dir_sep_str ()) + 1, 
+      std::string method =
+        name.substr (name.find_last_of (file_ops::dir_sep_str ()) + 1,
                      std::string::npos);
 
       retval = find_method (method, dispatch_type);
@@ -1304,7 +1304,7 @@ symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
 }
 
 octave_value
-symbol_table::do_find (const std::string& name, 
+symbol_table::do_find (const std::string& name,
                        const octave_value_list& args,
                        bool skip_variables,
                        bool local_funcs)
@@ -1426,8 +1426,8 @@ void symbol_table::cleanup (void)
   // Clear global variables.
   global_table.clear ();
 
-  // Delete all possibly remaining scopes. 
-  for (all_instances_iterator iter = all_instances.begin (); 
+  // Delete all possibly remaining scopes.
+  for (all_instances_iterator iter = all_instances.begin ();
        iter != all_instances.end (); iter++)
     {
       scope_id scope = iter->first;

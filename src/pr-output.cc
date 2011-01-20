@@ -225,8 +225,8 @@ calc_scale_exp (const int& x)
    *
    * ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO, IEC. 2003 .
    * "the binary % operator yields the remainder from the division of the first
-   * expression by the second. .... If both operands are nonnegative then the 
-   * remainder is nonnegative; if not, the sign of the remainder is 
+   * expression by the second. .... If both operands are nonnegative then the
+   * remainder is nonnegative; if not, the sign of the remainder is
    * implementation-defined".  */
 }
 
@@ -241,7 +241,7 @@ engineering_exponent (const double& x)
       /* Avoid using modulo function with negative arguments for portability.
        * See extended comment at calc_scale_exp */
       if (logabsval < 0.0)
-        ex = logabsval - 2 + ((-logabsval + 2) % 3);  
+        ex = logabsval - 2 + ((-logabsval + 2) % 3);
       else
         ex = logabsval - (logabsval % 3);
     }
@@ -269,7 +269,7 @@ public:
   {
     return engineering_exponent (val);
   }
-    
+
   double mantissa (void) const
   {
     return val / std::pow (10.0, exponent ());
@@ -288,8 +288,8 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   if (pef.f.prec >= 0)
     os << std::setprecision (pef.f.prec);
 
-  std::ios::fmtflags oflags = 
-    os.flags (static_cast<std::ios::fmtflags> 
+  std::ios::fmtflags oflags =
+    os.flags (static_cast<std::ios::fmtflags>
               (pef.f.fmt | pef.f.up | pef.f.sp));
 
   os << pef.mantissa ();
@@ -303,7 +303,7 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pef.f.ex - 2) << std::setfill('0') << ex 
+  os << std::setw (pef.f.ex - 2) << std::setfill('0') << ex
      << std::setfill(' ');
 
   os.flags (oflags);
@@ -333,8 +333,8 @@ operator << (std::ostream& os, const pr_formatted_float& pff)
   if (pff.f.prec >= 0)
     os << std::setprecision (pff.f.prec);
 
-  std::ios::fmtflags oflags = 
-    os.flags (static_cast<std::ios::fmtflags> 
+  std::ios::fmtflags oflags =
+    os.flags (static_cast<std::ios::fmtflags>
               (pff.f.fmt | pff.f.up | pff.f.sp));
 
   os << pff.val;
@@ -374,7 +374,7 @@ rational_approx (double val, int len)
 
       std::ostringstream buf2;
       buf2.flags (std::ios::fixed);
-      buf2 << std::setprecision (0) << static_cast<int>(n); 
+      buf2 << std::setprecision (0) << static_cast<int>(n);
       s = buf2.str();
 
       while (1)
@@ -400,19 +400,19 @@ rational_approx (double val, int len)
 
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int>(n) 
+          buf << std::setprecision (0) << static_cast<int>(n)
               << "/" << static_cast<int>(d);
           m++;
 
           if (n < 0 && d < 0)
             {
               // Double negative, string can be two characters longer..
-              if (buf.str().length() > static_cast<unsigned int>(len + 2) && 
-                  m > 1) 
+              if (buf.str().length() > static_cast<unsigned int>(len + 2) &&
+                  m > 1)
                 break;
             }
-          else if (buf.str().length() > static_cast<unsigned int>(len) && 
-                   m > 1) 
+          else if (buf.str().length() > static_cast<unsigned int>(len) &&
+                   m > 1)
             break;
 
           s = buf.str();
@@ -425,7 +425,7 @@ rational_approx (double val, int len)
           lastn = - lastn;
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int>(lastn) 
+          buf << std::setprecision (0) << static_cast<int>(lastn)
                << "/" << static_cast<int>(lastd);
           s = buf.str();
         }
@@ -456,8 +456,8 @@ operator << (std::ostream& os, const pr_rational_float& prf)
   if (fw >= 0)
     os << std::setw (fw);
 
-  std::ios::fmtflags oflags = 
-    os.flags (static_cast<std::ios::fmtflags> 
+  std::ios::fmtflags oflags =
+    os.flags (static_cast<std::ios::fmtflags>
               (prf.f.fmt | prf.f.up | prf.f.sp));
 
   if (fw > 0 && s.length() > static_cast<unsigned int>(fw))
@@ -809,7 +809,7 @@ set_format (const Matrix& m, int& fw, double& scale)
 
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0
     : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
@@ -1227,7 +1227,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 
+  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0
     : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
@@ -1383,7 +1383,7 @@ set_format (const Range& r, int& fw, double& scale)
 
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
-  scale = (x_max == 0 || all_ints) ? 1.0 
+  scale = (x_max == 0 || all_ints) ? 1.0
     : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
@@ -1488,7 +1488,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
             }
 
           os.fill (ofill);
-          os.setf (oflags);       
+          os.setf (oflags);
         }
       else if (bit_format)
         {
@@ -1962,7 +1962,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           // kluge. Get the true width of a number.
           int zero_fw;
 
-            { 
+            {
               std::ostringstream tmp_oss;
               pr_float (tmp_oss, 0.0, fw, scale);
               zero_fw = tmp_oss.str ().length ();
@@ -2160,7 +2160,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
       double scale = 1.0;
       set_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
-      column_width += (rat_format || bank_format || hex_format 
+      column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = command_editor::terminal_cols ();
@@ -2258,7 +2258,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
                       pr_complex (os, cm(i,j), r_fw, i_fw, scale);
                     }
 
-                  if (i < nr - 1) 
+                  if (i < nr - 1)
                     os << "\n";
                 }
             }
@@ -2296,7 +2296,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
       double scale = 1.0;
       set_format (ComplexMatrix (cm.diag ()), r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
-      column_width += (rat_format || bank_format || hex_format 
+      column_width += (rat_format || bank_format || hex_format
                        || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = command_editor::terminal_cols ();
@@ -2373,7 +2373,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           // kluge. Get the true width of a number.
           int zero_fw;
 
-            { 
+            {
               std::ostringstream tmp_oss;
               pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
               zero_fw = tmp_oss.str ().length ();
@@ -2402,7 +2402,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
                         os << std::setw (zero_fw) << '0';
                     }
 
-                  if (i < nr - 1) 
+                  if (i < nr - 1)
                     os << "\n";
                 }
             }
@@ -2562,44 +2562,44 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 
 void
 octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
-{ 
-  octave_print_internal (os, double (d), pr_as_read_syntax); 
+{
+  octave_print_internal (os, double (d), pr_as_read_syntax);
 }
 
 // FIXME -- write single precision versions of the printing functions.
 
 void
 octave_print_internal (std::ostream& os, float d, bool pr_as_read_syntax)
-{ 
-  octave_print_internal (os, double (d), pr_as_read_syntax); 
+{
+  octave_print_internal (os, double (d), pr_as_read_syntax);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
-{ 
-  octave_print_internal (os, Matrix (m), pr_as_read_syntax, extra_indent); 
+{
+  octave_print_internal (os, Matrix (m), pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatDiagMatrix& m,
                        bool pr_as_read_syntax, int extra_indent)
-{ 
-  octave_print_internal (os, DiagMatrix (m), pr_as_read_syntax, extra_indent); 
+{
+  octave_print_internal (os, DiagMatrix (m), pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatNDArray& nda,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, NDArray (nda), pr_as_read_syntax, extra_indent); 
+  octave_print_internal (os, NDArray (nda), pr_as_read_syntax, extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplex& c,
                        bool pr_as_read_syntax)
 {
-  octave_print_internal (os, Complex (c), pr_as_read_syntax); 
+  octave_print_internal (os, Complex (c), pr_as_read_syntax);
 }
 
 void
@@ -2977,7 +2977,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
         }
 
       os.fill (ofill);
-      os.setf (oflags);   
+      os.setf (oflags);
     }
   else if (bit_format)
     {
@@ -3213,7 +3213,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
           for (octave_idx_type i = 0; i < dims.numel (); i++)
             {
-              int new_digits = static_cast<int> 
+              int new_digits = static_cast<int>
                 (gnulib::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
 
               if (new_digits > digits)
@@ -3304,7 +3304,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                   for (octave_idx_type ii = 0; ii < n_rows; ii++)
                     {
                       os << std::setw (extra_indent) << "";
-                      
+
                       for (octave_idx_type jj = col; jj < lim; jj++)
                         {
                           octave_quit ();
@@ -3518,7 +3518,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
   return retval;
 }
 
-/* 
+/*
 %!test
 %! format short
 %! fd = tmpfile ();
@@ -3528,7 +3528,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 %!   endfor
 %! endfor
 %! fclose (fd);
-*/                                 
+*/
 
 static void
 init_format_state (void)

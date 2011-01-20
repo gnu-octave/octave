@@ -256,11 +256,11 @@ get_concat_class (const std::string& c1, const std::string& c2)
         retval = c1;
     }
 
-  return retval;    
+  return retval;
 }
 
 static void
-eval_error (const char *msg, int l, int c, 
+eval_error (const char *msg, int l, int c,
             const dim_vector& x, const dim_vector& y)
 {
   if (l == -1 && c == -1)
@@ -269,7 +269,7 @@ eval_error (const char *msg, int l, int c,
     }
   else
     {
-      ::error ("%s (%s vs %s) near line %d, column %d", msg, 
+      ::error ("%s (%s vs %s) near line %d, column %d", msg,
                x.str ().c_str (), y.str ().c_str (), l, c);
     }
 }
@@ -545,7 +545,7 @@ tm_const::init (const tree_matrix& tm)
 
               dv = this_elt_dv;
             }
-          else if (all_str && dv.length () == 2 
+          else if (all_str && dv.length () == 2
                    && this_elt_dv.length () == 2)
             {
               // FIXME: this is Octave's specialty. Character matrices allow
@@ -556,7 +556,7 @@ tm_const::init (const tree_matrix& tm)
             }
           else if (! dv.hvcat (this_elt_dv, 0))
             {
-              eval_error ("vertical dimensions mismatch", -1, -1, 
+              eval_error ("vertical dimensions mismatch", -1, -1,
                           dv, this_elt_dv);
               return;
             }
@@ -630,7 +630,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 }
 
 template<class TYPE, class T>
-static void 
+static void
 single_type_concat (Array<T>& result,
                     tm_const& tmp)
 {
@@ -674,7 +674,7 @@ single_type_concat (Array<T>& result,
 }
 
 template<class TYPE, class T>
-static void 
+static void
 single_type_concat (Array<T>& result,
                     const dim_vector& dv,
                     tm_const& tmp)
@@ -728,7 +728,7 @@ single_type_concat (Array<T>& result,
 }
 
 template<class TYPE, class T>
-static void 
+static void
 single_type_concat (Sparse<T>& result,
                     const dim_vector& dv,
                     tm_const& tmp)
@@ -769,7 +769,7 @@ single_type_concat (Sparse<T>& result,
 }
 
 template<class MAP>
-static void 
+static void
 single_type_concat (octave_map& result,
                     const dim_vector& dv,
                     tm_const& tmp)
@@ -807,7 +807,7 @@ single_type_concat (octave_map& result,
 }
 
 template<class TYPE>
-static octave_value 
+static octave_value
 do_single_type_concat (const dim_vector& dv,
                        tm_const& tmp)
 {
@@ -819,7 +819,7 @@ do_single_type_concat (const dim_vector& dv,
 }
 
 template<>
-octave_value 
+octave_value
 do_single_type_concat<octave_map> (const dim_vector& dv,
                                    tm_const& tmp)
 {
@@ -885,18 +885,18 @@ tree_matrix::rvalue1 (int)
                   octave_value_list tmp1 (row.length (), octave_value ());
 
                   int i = 0;
-                  for (tm_row_const::iterator q = row.begin (); 
+                  for (tm_row_const::iterator q = row.begin ();
                        q != row.end (); q++)
                     tmp1 (i++) = *q;
 
                   octave_value_list tmp2;
-                  octave_value fcn = 
+                  octave_value fcn =
                     symbol_table::find_function ("horzcat", tmp1);
 
                   if (fcn.is_defined ())
                     {
                       tmp2 = fcn.do_multi_index_op (1, tmp1);
-                      
+
                       if (error_state)
                         goto done;
 
@@ -920,7 +920,7 @@ tree_matrix::rvalue1 (int)
               if (fcn.is_defined ())
                 {
                   tmp2 = fcn.do_multi_index_op (1, tmp3);
-                      
+
                   if (! error_state)
                     retval = tmp2 (0);
                 }
@@ -931,7 +931,7 @@ tree_matrix::rvalue1 (int)
       else if (result_type == "double")
         {
           if (any_sparse_p)
-            {       
+            {
               if (all_real_p)
                 retval = do_single_type_concat<SparseMatrix> (dv, tmp);
               else
@@ -1019,9 +1019,9 @@ tree_matrix::rvalue1 (int)
               // Start with sparse matrix to avoid issues memory issues
               // with things like [ones(1,4),sprandn(1e8,4,1e-4)]
               if (all_real_p)
-                ctmp = octave_sparse_matrix ().resize (dv); 
+                ctmp = octave_sparse_matrix ().resize (dv);
               else
-                ctmp = octave_sparse_complex_matrix ().resize (dv); 
+                ctmp = octave_sparse_complex_matrix ().resize (dv);
             }
           else
             {
@@ -1031,7 +1031,7 @@ tree_matrix::rvalue1 (int)
 
                   tm_row_const row = *p;
 
-                  for (tm_row_const::iterator q = row.begin (); 
+                  for (tm_row_const::iterator q = row.begin ();
                        q != row.end (); q++)
                     {
                       octave_quit ();

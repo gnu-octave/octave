@@ -71,7 +71,7 @@ public:
       }
 
   octave_range (const octave_range& r)
-    : octave_base_value (), range (r.range), 
+    : octave_base_value (), range (r.range),
       idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : 0)
     { }
 
@@ -107,7 +107,7 @@ public:
   idx_vector index_vector (void) const;
 
   dim_vector dims (void) const
-    { 
+    {
       octave_idx_type n = range.nelem ();
       return dim_vector (n > 0, n);
     }
@@ -190,7 +190,7 @@ public:
     { return FloatMatrix (range.matrix_value ()); }
 
   charNDArray char_array_value (bool = false) const;
-  
+
   // FIXME -- it would be better to have Range::intXNDArray_value
   // functions to avoid the intermediate conversion to a matrix
   // object.
@@ -259,7 +259,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
@@ -301,7 +301,7 @@ private:
   void clear_cached_info (void) const
     {
       delete idx_cache; idx_cache = 0;
-    } 
+    }
 
   mutable idx_vector *idx_cache;
 

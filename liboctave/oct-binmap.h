@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 // Sparse-Sparse
 // Sparse-scalar
 // scalar-Sparse
-// 
+//
 // If both operands are nonscalar, name must be supplied. It is used as the base for error message
 // when operands are nonconforming.
 //

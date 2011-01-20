@@ -33,48 +33,48 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddot3, DDOT3) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (ddot3, DDOT3) (const octave_idx_type&, const octave_idx_type&,
                            const octave_idx_type&, const double*,
                            const double*, double*);
 
   F77_RET_T
-  F77_FUNC (sdot3, SDOT3) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (sdot3, SDOT3) (const octave_idx_type&, const octave_idx_type&,
                            const octave_idx_type&, const float*,
                            const float*, float*);
 
   F77_RET_T
-  F77_FUNC (zdotc3, ZDOTC3) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (zdotc3, ZDOTC3) (const octave_idx_type&, const octave_idx_type&,
                              const octave_idx_type&, const Complex*,
                              const Complex*, Complex*);
 
   F77_RET_T
-  F77_FUNC (cdotc3, CDOTC3) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (cdotc3, CDOTC3) (const octave_idx_type&, const octave_idx_type&,
                              const octave_idx_type&, const FloatComplex*,
                              const FloatComplex*, FloatComplex*);
 
   F77_RET_T
-  F77_FUNC (dmatm3, DMATM3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (dmatm3, DMATM3) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&,
                              const double*, const double*, double*);
 
   F77_RET_T
-  F77_FUNC (smatm3, SMATM3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (smatm3, SMATM3) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&,
                              const float*, const float*, float*);
 
   F77_RET_T
-  F77_FUNC (zmatm3, ZMATM3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (zmatm3, ZMATM3) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&,
                              const Complex*, const Complex*, Complex*);
 
   F77_RET_T
-  F77_FUNC (cmatm3, CMATM3) (const octave_idx_type&, const octave_idx_type&, 
-                             const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (cmatm3, CMATM3) (const octave_idx_type&, const octave_idx_type&,
+                             const octave_idx_type&, const octave_idx_type&,
                              const FloatComplex*, const FloatComplex*,
                              FloatComplex*);
 }
 
-static void 
+static void
 get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
               dim_vector& z, octave_idx_type& m, octave_idx_type& n,
               octave_idx_type& k)
@@ -134,7 +134,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
     {
       dim_vector dimx = argx.dims (), dimy = argy.dims ();
       bool match = dimx == dimy;
-      if (! match && nargin == 2 
+      if (! match && nargin == 2
           && dimx.is_vector () && dimy.is_vector ())
         {
           // Change to column vectors.

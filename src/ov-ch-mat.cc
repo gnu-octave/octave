@@ -40,14 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<charNDArray>;
 
-idx_vector 
+idx_vector
 octave_char_matrix::index_vector (void) const
-{ 
+{
   const char *p = matrix.data ();
   if (numel () == 1 && *p == ':')
     return idx_vector (':');
   else
-    return idx_vector (array_value (true)); 
+    return idx_vector (array_value (true));
 }
 
 double
@@ -151,7 +151,7 @@ octave_char_matrix::as_mxArray (void) const
   return retval;
 }
 
-// The C++ standard guarantees cctype defines functions, not macros (and hence macros *CAN'T* 
+// The C++ standard guarantees cctype defines functions, not macros (and hence macros *CAN'T*
 // be defined if only cctype is included)
 // so there's no need to f*ck around. The exceptions are isascii and toascii,
 // which are not C++.
@@ -188,7 +188,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xtolower, std::tolower, char);
     STRING_MAPPER (xtoupper, std::toupper, char);
 
-    default: 
+    default:
       {
         octave_matrix m (array_value (true));
         return m.map (umap);

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1994-2011 John W. Eaton
-Copyright (C) 2008-2009 Jaroslav Hajek              
+Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -42,7 +42,7 @@ public:
 
   ComplexQR (const ComplexMatrix&, qr_type_t = qr_type_std);
 
-  ComplexQR (const ComplexMatrix& qx, const ComplexMatrix& rx) 
+  ComplexQR (const ComplexMatrix& qx, const ComplexMatrix& rx)
     : base_qr<ComplexMatrix> (qx, rx) { }
 
   ComplexQR (const ComplexQR& a) : base_qr<ComplexMatrix> (a) { }
@@ -69,7 +69,7 @@ public:
 
 protected:
 
-  void form (octave_idx_type n, ComplexMatrix& afact, 
+  void form (octave_idx_type n, ComplexMatrix& afact,
              Complex *tau, qr_type_t qr_type);
 };
 

@@ -72,7 +72,7 @@ public:
   // Try to find a definition for an identifier.  Here's how:
   //
   //   * If the identifier is already defined and is a function defined
-  //     in an function file that has been modified since the last time 
+  //     in an function file that has been modified since the last time
   //     we parsed it, parse it again.
   //
   //   * If the identifier is not defined, try to find a builtin

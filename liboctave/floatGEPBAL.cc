@@ -59,7 +59,7 @@ extern "C"
 }
 
 octave_idx_type
-FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b, 
+FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
                   const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
@@ -74,7 +74,7 @@ FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
     {
       gripe_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
       return -1;
-    } 
+    }
 
   octave_idx_type info;
   octave_idx_type ilo;
@@ -115,7 +115,7 @@ FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
                              n, p_balancing_mat, n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
-      
+
   // then right
   F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
                              F77_CONST_CHAR_ARG2 ("R", 1),

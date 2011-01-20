@@ -42,7 +42,7 @@ public:
   ComplexAEPBALANCE (const ComplexMatrix& a, bool noperm = false,
                      bool noscal = false);
 
-  ComplexAEPBALANCE (const ComplexAEPBALANCE& a) 
+  ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
     : base_aepbal<ComplexMatrix, ColumnVector> (a) { }
 
   ComplexMatrix balancing_matrix (void) const;

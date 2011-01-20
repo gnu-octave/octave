@@ -74,7 +74,7 @@ SparseQR::SparseQR_rep::~SparseQR_rep (void)
 #endif
 }
 
-SparseMatrix 
+SparseMatrix
 SparseQR::SparseQR_rep::V (void) const
 {
 #ifdef HAVE_CXSPARSE
@@ -104,7 +104,7 @@ SparseQR::SparseQR_rep::V (void) const
 #endif
 }
 
-ColumnVector 
+ColumnVector
 SparseQR::SparseQR_rep::Pinv (void) const
 {
 #ifdef HAVE_CXSPARSE
@@ -121,7 +121,7 @@ SparseQR::SparseQR_rep::Pinv (void) const
 #endif
 }
 
-ColumnVector 
+ColumnVector
 SparseQR::SparseQR_rep::P (void) const
 {
 #ifdef HAVE_CXSPARSE
@@ -138,7 +138,7 @@ SparseQR::SparseQR_rep::P (void) const
 #endif
 }
 
-SparseMatrix 
+SparseMatrix
 SparseQR::SparseQR_rep::R (const bool econ) const
 {
 #ifdef HAVE_CXSPARSE
@@ -290,12 +290,12 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
   else if (nr >= nc)
     {
       SparseQR q (a, 3);
-      if (! q.ok ()) 
+      if (! q.ok ())
         return Matrix();
       x.resize(nc, b_nc);
       double *vec = x.fortran_vec();
       OCTAVE_LOCAL_BUFFER (double, buf, q.S()->m2);
-      for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc; 
+      for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
            i++, idx+=nc, bidx+=b_nr)
         {
           octave_quit ();
@@ -336,7 +336,7 @@ qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
       double *vec = x.fortran_vec();
       volatile octave_idx_type nbuf = (nc > q.S()->m2 ? nc : q.S()->m2);
       OCTAVE_LOCAL_BUFFER (double, buf, nbuf);
-      for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc; 
+      for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
            i++, idx+=nc, bidx+=b_nr)
         {
           octave_quit ();
@@ -394,7 +394,7 @@ qrsolve(const SparseMatrix&a, const SparseMatrix &b, octave_idx_type &info)
   else if (nr >= nc)
     {
       SparseQR q (a, 3);
-      if (! q.ok ()) 
+      if (! q.ok ())
         return SparseMatrix();
       x = SparseMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
@@ -712,7 +712,7 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
   else if (nr >= nc)
     {
       SparseQR q (a, 3);
-      if (! q.ok ()) 
+      if (! q.ok ())
         return SparseComplexMatrix();
       x = SparseComplexMatrix (nc, b_nc, b.nnz());
       x.xcidx(0) = 0;
@@ -901,16 +901,16 @@ qrsolve(const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &inf
 #endif
 }
 
-Matrix 
-qrsolve(const SparseMatrix &a, const MArray<double> &b, 
+Matrix
+qrsolve(const SparseMatrix &a, const MArray<double> &b,
         octave_idx_type &info)
-{ 
-  return qrsolve (a, Matrix (b), info); 
+{
+  return qrsolve (a, Matrix (b), info);
 }
 
-ComplexMatrix 
-qrsolve(const SparseMatrix &a, const MArray<Complex> &b, 
+ComplexMatrix
+qrsolve(const SparseMatrix &a, const MArray<Complex> &b,
         octave_idx_type &info)
-{ 
+{
   return qrsolve (a, ComplexMatrix (b), info);
 }

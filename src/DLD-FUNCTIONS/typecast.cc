@@ -45,7 +45,7 @@ get_vec_dims (const dim_vector& old_dims, octave_idx_type n)
 }
 
 template <class ArrayType>
-static void 
+static void
 get_data_and_bytesize (const ArrayType& array,
                        const void *& data,
                        octave_idx_type& byte_size,

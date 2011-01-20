@@ -122,7 +122,7 @@ Polynomial Approximation}.\n\
       error ("colloc: the total number of roots must be positive");
       return retval;
     }
-  
+
   CollocWt wts (ncol, left, right);
 
   ColumnVector r = wts.roots ();

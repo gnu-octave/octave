@@ -61,15 +61,15 @@ DEFBINOP_OP (mul, complex_diag_matrix, complex_diag_matrix, *)
 DEFBINOP (div, complex_diag_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_complex_diag_matrix&);
-  
-  return xdiv (v1.complex_diag_matrix_value (), 
+
+  return xdiv (v1.complex_diag_matrix_value (),
                v2.complex_diag_matrix_value ());
 }
 
 DEFBINOP (ldiv, complex_diag_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_complex_diag_matrix&);
-  
+
   return xleftdiv (v1.complex_diag_matrix_value (),
                    v2.complex_diag_matrix_value ());
 }
@@ -103,7 +103,7 @@ install_cdm_cdm_ops (void)
   INSTALL_BINOP (op_ldiv, octave_complex_diag_matrix, octave_complex_diag_matrix, ldiv);
 
   INSTALL_CONVOP (octave_complex_diag_matrix, octave_complex_matrix, complex_diag_matrix_to_complex_matrix);
-  INSTALL_CONVOP (octave_complex_diag_matrix, octave_float_complex_diag_matrix, 
+  INSTALL_CONVOP (octave_complex_diag_matrix, octave_float_complex_diag_matrix,
                   complex_diag_matrix_to_float_complex_diag_matrix);
   INSTALL_ASSIGNCONV (octave_complex_diag_matrix, octave_complex_matrix, octave_complex_matrix);
   INSTALL_WIDENOP (octave_complex_diag_matrix, octave_complex_matrix, complex_diag_matrix_to_complex_matrix);

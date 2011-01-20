@@ -50,20 +50,20 @@ octave_class : public octave_base_value
 public:
 
   octave_class (void)
-    : octave_base_value (), map (), c_name (), 
-      parent_list (), obsolete_copies (0)  
+    : octave_base_value (), map (), c_name (),
+      parent_list (), obsolete_copies (0)
     { }
 
   octave_class (const octave_map& m, const std::string& id)
-    : octave_base_value (), map (m), c_name (id), 
-      parent_list (), obsolete_copies (0) 
+    : octave_base_value (), map (m), c_name (id),
+      parent_list (), obsolete_copies (0)
     { }
 
   octave_class (const octave_class& s)
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
 
-  octave_class (const octave_map& m, const std::string& id, 
+  octave_class (const octave_map& m, const std::string& id,
                 const octave_value_list& parents);
 
   ~octave_class (void) { }
@@ -81,7 +81,7 @@ public:
 
   Matrix size (void);
 
-  octave_idx_type numel (const octave_value_list&); 
+  octave_idx_type numel (const octave_value_list&);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -154,7 +154,7 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
-  void print_with_name (std::ostream& os, const std::string& name, 
+  void print_with_name (std::ostream& os, const std::string& name,
                         bool print_padding = true);
 
   bool reconstruct_exemplar (void);
@@ -169,7 +169,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

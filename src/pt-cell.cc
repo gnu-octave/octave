@@ -56,7 +56,7 @@ tree_cell::rvalue1 (int)
       tree_argument_list *elt = *p;
 
       octave_value_list row = elt->convert_to_const_vector ();
-      
+
       if (nr == 1)
         // Optimize the single row case.
         val = row.cell_value ();

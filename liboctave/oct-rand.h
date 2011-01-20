@@ -78,14 +78,14 @@ public:
     if (instance_ok ())
       instance->do_state (s, d);
   }
-  
+
   // Reset the current state/
   static void reset (const std::string& d)
   {
     if (instance_ok ())
       instance->do_reset (d);
   }
-  
+
   // Return the current distribution.
   static std::string distribution (void)
   {
@@ -194,10 +194,10 @@ private:
 
   // Set the current state/
   void do_state (const ColumnVector &s, const std::string& d);
-  
+
   // Reset the current state/
   void do_reset (const std::string& d);
-  
+
   // Return the current distribution.
   std::string do_distribution (void);
 

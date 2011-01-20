@@ -34,10 +34,10 @@ class octave_local_buffer
 {
 public:
   octave_local_buffer (size_t size)
-    : data (0) 
-    { 
-      if (size) 
-        data = new T[size]; 
+    : data (0)
+    {
+      if (size)
+        data = new T[size];
     }
   ~octave_local_buffer (void) { delete [] data; }
   operator T *() const { return data; }
@@ -174,7 +174,7 @@ public:
   octave_local_buffer<T> _buffer_ ## buf (size); \
   T *buf = _buffer_ ## buf
 
-#endif 
+#endif
 
 // Yeah overloading macros would be nice.
 // Note: we use weird variables in the for loop to avoid warnings about

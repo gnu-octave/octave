@@ -84,7 +84,7 @@ public:
   octave_base_value *try_narrowing_conversion (void);
 
   // FIXME Adapt idx_vector to allow sparse logical indexing!!
-  idx_vector index_vector (void) const 
+  idx_vector index_vector (void) const
     { return idx_vector (bool_array_value ()); }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
@@ -129,7 +129,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

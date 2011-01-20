@@ -1266,7 +1266,7 @@ system-dependent error message.\n\
           int status = octave_unlink (name, msg);
 
           retval(0) = status;
-          retval(1) = msg;          
+          retval(1) = msg;
         }
       else
         error ("unlink: file name must be a string");
@@ -1333,7 +1333,7 @@ information about the subprocess that exited.\n\
   if (nargin == 1 || nargin == 2)
     {
       pid_t pid = args(0).int_value (true);
-  
+
       if (! error_state)
         {
           int options = 0;

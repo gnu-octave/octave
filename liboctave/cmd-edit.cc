@@ -427,7 +427,7 @@ gnu_readline::do_set_user_accept_line_function (user_accept_line_fcn f)
   user_accept_line_function = f;
 
   if (f)
-    octave_rl_add_defun ("accept-line", gnu_readline::command_accept_line, 
+    octave_rl_add_defun ("accept-line", gnu_readline::command_accept_line,
                          ::octave_rl_ctrl ('M'));
   else
     octave_rl_add_defun ("accept-line", ::octave_rl_newline,
@@ -848,7 +848,7 @@ command_editor::make_command_editor (void)
 #endif
 }
 
-void 
+void
 command_editor::force_default_editor (void)
 {
   delete instance;
@@ -1253,8 +1253,8 @@ command_editor::filename_quoting_desired (bool arg)
 }
 
 // Return a string which will be printed as a prompt.  The string may
-// contain special characters which are decoded as follows: 
-//   
+// contain special characters which are decoded as follows:
+//
 //      \a      bell (ascii 07)
 //      \d      the date
 //      \e      escape (ascii 033)
@@ -1427,7 +1427,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
                 if (pos != std::string::npos)
                   temp.resize (pos);
-                
+
                 goto add_string;
               }
 

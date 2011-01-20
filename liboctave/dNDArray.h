@@ -45,12 +45,12 @@ public:
 
   NDArray (const dim_vector& dv, double val)
     : MArray<double> (dv, val) { }
-  
+
   NDArray (const NDArray& a) : MArray<double> (a) { }
 
   NDArray (const Matrix& a) : MArray<double> (a) { }
 
-  NDArray (const Array<octave_idx_type>& a, bool zero_based = false, 
+  NDArray (const Array<octave_idx_type>& a, bool zero_based = false,
            bool negative_to_nan = false);
 
   template <class U>
@@ -62,7 +62,7 @@ public:
   template <class U>
   explicit NDArray (const intNDArray<U>& a) : MArray<double> (a) { }
 
-  NDArray (const charNDArray&); 
+  NDArray (const charNDArray&);
 
   NDArray& operator = (const NDArray& a)
     {
@@ -92,8 +92,8 @@ public:
   NDArray cumprod (int dim = -1) const;
   NDArray cumsum (int dim = -1) const;
   NDArray prod (int dim = -1) const;
-  NDArray sum (int dim = -1) const;  
-  NDArray xsum (int dim = -1) const;  
+  NDArray sum (int dim = -1) const;
+  NDArray xsum (int dim = -1) const;
   NDArray sumsq (int dim = -1) const;
   NDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
   ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
@@ -103,7 +103,7 @@ public:
   NDArray max (Array<octave_idx_type>& index, int dim = -1) const;
   NDArray min (int dim = -1) const;
   NDArray min (Array<octave_idx_type>& index, int dim = -1) const;
-  
+
   NDArray cummax (int dim = -1) const;
   NDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
   NDArray cummin (int dim = -1) const;
@@ -153,10 +153,10 @@ public:
 
   NDArray diag (octave_idx_type k = 0) const;
 
-  NDArray& changesign (void) 
-    { 
-      MArray<double>::changesign (); 
-      return *this; 
+  NDArray& changesign (void)
+    {
+      MArray<double>::changesign ();
+      return *this;
     }
 
 };
@@ -183,7 +183,7 @@ BSXFUN_STDOP_DECLS (NDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (NDArray, OCTAVE_API)
 
 BSXFUN_OP_DECL (pow, NDArray, OCTAVE_API)
-BSXFUN_OP2_DECL (pow, ComplexNDArray, ComplexNDArray, 
+BSXFUN_OP2_DECL (pow, ComplexNDArray, ComplexNDArray,
                  NDArray, OCTAVE_API)
 
 #endif

@@ -69,7 +69,7 @@ PermMatrix::PermMatrix (octave_idx_type n)
   for (octave_idx_type i = 0; i < n; i++) xelem (i) = i;
 }
 
-octave_idx_type 
+octave_idx_type
 PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 {
   octave_idx_type len = Array<octave_idx_type>::length ();
@@ -83,7 +83,7 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 }
 
 
-PermMatrix 
+PermMatrix
 PermMatrix::transpose (void) const
 {
   PermMatrix retval (*this);
@@ -91,13 +91,13 @@ PermMatrix::transpose (void) const
   return retval;
 }
 
-PermMatrix 
+PermMatrix
 PermMatrix::inverse (void) const
 {
   return transpose ();
 }
 
-octave_idx_type 
+octave_idx_type
 PermMatrix::determinant (void) const
 {
   // Determine the sign of a permutation in linear time.
@@ -127,11 +127,11 @@ PermMatrix::determinant (void) const
           neg = ! neg;
         }
     }
-  
+
   return neg ? -1 : 1;
 }
 
-PermMatrix 
+PermMatrix
 PermMatrix::power (octave_idx_type m) const
 {
   octave_idx_type n = rows ();
@@ -188,7 +188,7 @@ PermMatrix::eye (octave_idx_type n)
   return PermMatrix (p, false, false);
 }
 
-PermMatrix 
+PermMatrix
 operator *(const PermMatrix& a, const PermMatrix& b)
 {
   const Array<octave_idx_type> ia = a.pvec (), ib = b.pvec ();
@@ -198,8 +198,8 @@ operator *(const PermMatrix& a, const PermMatrix& b)
     gripe_nonconformant ("operator *", n, n, b.rows (), b.rows ());
   else if (a._colp == b._colp)
     {
-      r = PermMatrix ((a._colp 
-                       ? ia.index (idx_vector (ib)) 
+      r = PermMatrix ((a._colp
+                       ? ia.index (idx_vector (ib))
                        : ib.index (idx_vector (ia))), a._colp, false);
     }
   else

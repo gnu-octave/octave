@@ -941,14 +941,14 @@ load_path::check_file_type (std::string& fname, int type, int possible_types,
     error ("%s: %s: invalid type code = %d", who, fcn.c_str (), type);
 
   return retval;
-} 
+}
 
 std::string
 load_path::do_find_fcn (const std::string& fcn, std::string& dir_name,
                         int type) const
 {
   std::string retval;
-  
+
   //  update ();
 
   if (fcn.length () > 0 && fcn[0] == '@')
@@ -1767,7 +1767,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
                       std::string fcn_path = file_ops::concat (dir_name, fname);
 
                       warning_with_id ("Octave:shadowed-function",
-                                       "function %s shadows a core library function", 
+                                       "function %s shadows a core library function",
                                        fcn_path.c_str ());
                     }
                 }
@@ -1775,7 +1775,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
                 {
                   std::string fcn_path = file_ops::concat (dir_name, fname);
                   warning_with_id ("Octave:shadowed-function",
-                                   "function %s shadows a built-in function", 
+                                   "function %s shadows a built-in function",
                                    fcn_path.c_str ());
                 }
 
@@ -1883,7 +1883,7 @@ genpath (const std::string& dirname, const string_vector& skip)
       retval = dirname;
 
       string_vector dirlist = dir.read ();
-      
+
       octave_idx_type len = dirlist.length ();
 
       for (octave_idx_type i = 0; i < len; i++)

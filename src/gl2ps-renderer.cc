@@ -34,12 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl2ps-renderer.h"
 #include "gl2ps.h"
 
-void 
-glps_renderer::draw (const graphics_object& go) 
+void
+glps_renderer::draw (const graphics_object& go)
 {
   static bool in_draw = false;
-  
-  if (!in_draw) 
+
+  if (!in_draw)
     {
       in_draw = true;
 
@@ -56,7 +56,7 @@ glps_renderer::draw (const graphics_object& go)
       else if (term.find ("ps") != std::string::npos) gl2ps_term = GL2PS_PS;
       else if (term.find ("pgf") != std::string::npos) gl2ps_term = GL2PS_PGF;
       else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
-      else 
+      else
         {
           error ("gl2ps-renderer:: Unknown terminal");
           return;
@@ -66,13 +66,13 @@ glps_renderer::draw (const graphics_object& go)
       if (term.find ("notxt") != std::string::npos) gl2ps_text = GL2PS_NO_TEXT;
 
       while (state == GL2PS_OVERFLOW)
-        { 
+        {
           buffsize += 1024*1024;
           gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
                           gl2ps_term, GL2PS_BSP_SORT,
                           (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-                           | GL2PS_BEST_ROOT | gl2ps_text), 
+                           | GL2PS_BEST_ROOT | gl2ps_text),
                           GL_RGBA, 0, NULL, 0, 0, 0,
                           buffsize, fp, "" );
 
@@ -85,7 +85,7 @@ glps_renderer::draw (const graphics_object& go)
       in_draw = 0;
     }
   else
-    opengl_renderer::draw (go); 
+    opengl_renderer::draw (go);
 }
 
 int
@@ -122,7 +122,7 @@ glps_renderer::alignment_to_mode (int ha, int va) const
   return gl2psa;
 }
 
-Matrix 
+Matrix
 glps_renderer::render_text (const std::string& txt,
                             double x, double y, double z,
                             int ha, int va, double rotation)
@@ -159,7 +159,7 @@ glps_renderer::set_font (const base_properties& props)
     fontname = "Symbol";
   else if (fn == "zapfdingbats")
     fontname = "ZapfDingbats";
-  else 
+  else
     fontname = "Helvetica";
 
   // FIXME -- add support for bold and italic
@@ -173,17 +173,17 @@ draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data)
 
   for (int i = 0; i < 3*w*h; i++)
     a[i] = data[i];
-    
+
   gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
 }
 
-void 
+void
 glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data)
 {
-  if (type == GL_UNSIGNED_SHORT) 
+  if (type == GL_UNSIGNED_SHORT)
     ::draw_pixels (w, h, format, static_cast<const GLushort *> (data));
-  else if (type == GL_UNSIGNED_BYTE) 
+  else if (type == GL_UNSIGNED_BYTE)
     ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data));
   else
     gl2psDrawPixels (w, h, 0, 0, format, type, data);
@@ -205,7 +205,7 @@ glps_renderer::draw_text (const text::properties& props)
     halign = 1;
   else if (props.horizontalalignment_is ("right"))
     halign = 2;
-  
+
   if (props.verticalalignment_is ("top"))
     valign = 2;
   else if (props.verticalalignment_is ("baseline"))

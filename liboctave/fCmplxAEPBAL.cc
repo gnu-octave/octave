@@ -39,7 +39,7 @@ extern "C"
                              const octave_idx_type&, octave_idx_type&,
                              octave_idx_type&, float*, octave_idx_type&
                              F77_CHAR_ARG_LEN_DECL);
- 
+
   F77_RET_T
   F77_FUNC (cgebak, CGEBAK) (F77_CONST_CHAR_ARG_DECL,
                              F77_CONST_CHAR_ARG_DECL,
@@ -51,7 +51,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 }
 
-FloatComplexAEPBALANCE::FloatComplexAEPBALANCE (const FloatComplexMatrix& a, 
+FloatComplexAEPBALANCE::FloatComplexAEPBALANCE (const FloatComplexMatrix& a,
                                                 bool noperm, bool noscal)
  : base_aepbal<FloatComplexMatrix, FloatColumnVector> ()
 {

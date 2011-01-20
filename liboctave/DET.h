@@ -35,14 +35,14 @@ public:
 
   base_det (T c = 1, int e = 0)
     : c2 (), e2 ()
-    { 
-      c2 = xlog2 (c, e2); 
-      e2 += e; 
+    {
+      c2 = xlog2 (c, e2);
+      e2 += e;
     }
 
-  base_det (T c, double e, double b) 
+  base_det (T c, double e, double b)
     : c2 (), e2 ()
-    { 
+    {
       e *= xlog2 (b);
       e2 = e;
       c *= xexp2 (e - e2);

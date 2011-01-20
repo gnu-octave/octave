@@ -205,10 +205,10 @@ octave_float_matrix::float_complex_array_value (bool) const
   return FloatComplexNDArray (matrix);
 }
 
-NDArray 
+NDArray
 octave_float_matrix::array_value (bool) const
-{ 
-  return NDArray (matrix); 
+{
+  return NDArray (matrix);
 }
 
 boolNDArray
@@ -221,27 +221,27 @@ octave_float_matrix::bool_array_value (bool warn) const
 
   return boolNDArray (matrix);
 }
-  
+
 charNDArray
 octave_float_matrix::char_array_value (bool) const
 {
   charNDArray retval (dims ());
 
   octave_idx_type nel = numel ();
-  
+
   for (octave_idx_type i = 0; i < nel; i++)
     retval.elem (i) = static_cast<char>(matrix.elem (i));
 
   return retval;
 }
-  
-SparseMatrix 
+
+SparseMatrix
 octave_float_matrix::sparse_matrix_value (bool) const
 {
   return SparseMatrix (matrix_value ());
 }
 
-SparseComplexMatrix 
+SparseComplexMatrix
 octave_float_matrix::sparse_complex_matrix_value (bool) const
 {
   // FIXME Need a SparseComplexMatrix (Matrix) constructor to make
@@ -254,7 +254,7 @@ octave_value
 octave_float_matrix::diag (octave_idx_type k) const
 {
   octave_value retval;
-  if (k == 0 && matrix.ndims () == 2 
+  if (k == 0 && matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     retval = FloatDiagMatrix (DiagArray2<float> (matrix));
   else
@@ -312,7 +312,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-bool 
+bool
 octave_float_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
@@ -330,7 +330,7 @@ octave_float_matrix::save_ascii (std::ostream& os)
     }
   else
     {
-      // Keep this case, rather than use generic code above for backward 
+      // Keep this case, rather than use generic code above for backward
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
@@ -341,7 +341,7 @@ octave_float_matrix::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_float_matrix::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -418,7 +418,7 @@ octave_float_matrix::load_ascii (std::istream& is)
               else
                 panic_impossible ();
             }
-          else 
+          else
             {
               error ("load: failed to extract number of rows and columns");
               success = false;
@@ -436,7 +436,7 @@ octave_float_matrix::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_float_matrix::save_binary (std::ostream& os, bool&)
 {
 
@@ -468,7 +468,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-bool 
+bool
 octave_float_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -557,7 +557,7 @@ octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
     hdims[i] = dv (rank-i-1);
- 
+
   space_hid = H5Screate_simple (rank, hdims, 0);
 
   if (space_hid < 0) return false;
@@ -576,10 +576,10 @@ octave_float_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
     }
 #endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -618,7 +618,7 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-  
+
   if (rank < 1)
     {
       H5Sclose (space_id);
@@ -647,8 +647,8 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   FloatNDArray m (dv);
   float *re = m.fortran_vec ();
-  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, 
-               H5P_DEFAULT, re) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
+               H5P_DEFAULT, re) >= 0)
     {
       retval = true;
       matrix = m;

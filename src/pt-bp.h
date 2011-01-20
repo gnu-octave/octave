@@ -62,7 +62,7 @@ tree_breakpoint : public tree_walker
 
   void visit_decl_elt (tree_decl_elt&);
 
-  void visit_decl_init_list (tree_decl_init_list&);  
+  void visit_decl_init_list (tree_decl_init_list&);
 
   void visit_while_command (tree_while_command&);
 
@@ -133,7 +133,7 @@ tree_breakpoint : public tree_walker
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   octave_value_list get_list (void) { return bp_list; }
-  
+
   int get_line (void) { return line; }
 
  private:

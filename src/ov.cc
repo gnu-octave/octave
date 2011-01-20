@@ -1177,7 +1177,7 @@ octave_value::maybe_mutate (void)
         delete rep;
 
       rep = tmp;
-    }    
+    }
 }
 
 octave_value
@@ -1215,7 +1215,7 @@ octave_value::subsref (const std::string& type,
 octave_value
 octave_value::next_subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip) 
+                            size_t skip)
 {
   if (! error_state && idx.size () > skip)
     {
@@ -1231,7 +1231,7 @@ octave_value::next_subsref (const std::string& type,
 octave_value_list
 octave_value::next_subsref (int nargout, const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip) 
+                            size_t skip)
 {
   if (! error_state && idx.size () > skip)
     {
@@ -1247,7 +1247,7 @@ octave_value::next_subsref (int nargout, const std::string& type,
 octave_value
 octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            size_t skip) 
+                            size_t skip)
 {
   if (! error_state && idx.size () > skip)
     {
@@ -1352,7 +1352,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
   else if (is_defined ())
     {
       octave_value_typeinfo::assign_op_fcn f = 0;
-      
+
       // Only attempt to operate in-place if this variable is unshared.
       if (rep->count == 1)
         {
@@ -1533,7 +1533,7 @@ ColumnVector
 octave_value::column_vector_value (bool force_string_conv,
                                    bool frc_vec_conv) const
 {
-  return ColumnVector (vector_value (force_string_conv, 
+  return ColumnVector (vector_value (force_string_conv,
                                      frc_vec_conv));
 }
 
@@ -1541,7 +1541,7 @@ ComplexColumnVector
 octave_value::complex_column_vector_value (bool force_string_conv,
                                            bool frc_vec_conv) const
 {
-  return ComplexColumnVector (complex_vector_value (force_string_conv, 
+  return ComplexColumnVector (complex_vector_value (force_string_conv,
                                                     frc_vec_conv));
 }
 
@@ -1549,7 +1549,7 @@ RowVector
 octave_value::row_vector_value (bool force_string_conv,
                                 bool frc_vec_conv) const
 {
-  return RowVector (vector_value (force_string_conv, 
+  return RowVector (vector_value (force_string_conv,
                                   frc_vec_conv));
 }
 
@@ -1557,7 +1557,7 @@ ComplexRowVector
 octave_value::complex_row_vector_value (bool force_string_conv,
                                         bool frc_vec_conv) const
 {
-  return ComplexRowVector (complex_vector_value (force_string_conv, 
+  return ComplexRowVector (complex_vector_value (force_string_conv,
                                                  frc_vec_conv));
 }
 
@@ -1615,7 +1615,7 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
       else
         retval = array_value (force_string_conv);
     }
-  else 
+  else
     {
       const NDArray a = array_value (force_string_conv);
       if (! error_state)
@@ -1691,7 +1691,7 @@ octave_value::octave_idx_type_vector_value (bool require_int,
       else
         retval = array_value (force_string_conv);
     }
-  else 
+  else
     {
       const NDArray a = array_value (force_string_conv);
       if (! error_state)
@@ -1744,7 +1744,7 @@ FloatColumnVector
 octave_value::float_column_vector_value (bool force_string_conv,
                                          bool frc_vec_conv) const
 {
-  return FloatColumnVector (float_vector_value (force_string_conv, 
+  return FloatColumnVector (float_vector_value (force_string_conv,
                                                 frc_vec_conv));
 }
 
@@ -1752,7 +1752,7 @@ FloatComplexColumnVector
 octave_value::float_complex_column_vector_value (bool force_string_conv,
                                                  bool frc_vec_conv) const
 {
-  return FloatComplexColumnVector (float_complex_vector_value (force_string_conv, 
+  return FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
                                                                frc_vec_conv));
 }
 
@@ -1760,7 +1760,7 @@ FloatRowVector
 octave_value::float_row_vector_value (bool force_string_conv,
                                       bool frc_vec_conv) const
 {
-  return FloatRowVector (float_vector_value (force_string_conv, 
+  return FloatRowVector (float_vector_value (force_string_conv,
                                              frc_vec_conv));
 }
 
@@ -1768,7 +1768,7 @@ FloatComplexRowVector
 octave_value::float_complex_row_vector_value (bool force_string_conv,
                                               bool frc_vec_conv) const
 {
-  return FloatComplexRowVector (float_complex_vector_value (force_string_conv, 
+  return FloatComplexRowVector (float_complex_vector_value (force_string_conv,
                                                            frc_vec_conv));
 }
 
@@ -1800,7 +1800,7 @@ octave_value::float_complex_vector_value (bool force_string_conv,
                                              type_name (), "complex vector"));
 }
 
-octave_value 
+octave_value
 octave_value::storable_value (void) const
 {
   octave_value retval = *this;
@@ -1812,8 +1812,8 @@ octave_value::storable_value (void) const
   return retval;
 }
 
-void 
-octave_value::make_storable_value (void) 
+void
+octave_value::make_storable_value (void)
 {
   if (is_null_value ())
     {
@@ -1873,7 +1873,7 @@ do_binary_op (octave_value::binary_op op,
             {
               gripe_library_execution_error ();
             }
-        }           
+        }
       else
         gripe_binary_op (octave_value::binary_op_as_string (op),
                          v1.class_name (), v2.class_name ());
@@ -2120,7 +2120,7 @@ do_binary_op (octave_value::compound_binary_op op,
             {
               gripe_library_execution_error ();
             }
-        }           
+        }
       else
         retval = decompose_binary_op (op, v1, v2);
     }
@@ -2161,7 +2161,7 @@ gripe_cat_op_conv (void)
 }
 
 octave_value
-do_cat_op (const octave_value& v1, const octave_value& v2, 
+do_cat_op (const octave_value& v1, const octave_value& v2,
            const Array<octave_idx_type>& ra_idx)
 {
   octave_value retval;
@@ -2364,7 +2364,7 @@ octave_value::do_non_const_unary_op (unary_op op)
       if (is_undefined ())
         {
           std::string op_str = unary_op_as_string (op);
-          error ("in x%s or %sx, x must be defined first", 
+          error ("in x%s or %sx, x must be defined first",
                  op_str.c_str (), op_str.c_str ());
           return *this;
         }
@@ -2515,7 +2515,7 @@ octave_value::unary_op_to_assign_op (unary_op op)
   return binop;
 }
 
-octave_value::binary_op 
+octave_value::binary_op
 octave_value::op_eq_to_binary_op (assign_op op)
 {
   binary_op binop = unknown_binary_op;

@@ -108,7 +108,7 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
       gripe_nonconformant ();
       return retval;
     }
-  
+
   // Dimensions look o.k., let's solve the problem.
   if (isfloat)
     {

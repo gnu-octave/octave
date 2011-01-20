@@ -158,7 +158,7 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
 {
   indent (os);
   os << name << " = ";
-  return false;    
+  return false;
 }
 
 template <class ST>

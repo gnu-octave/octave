@@ -132,7 +132,7 @@ enum blas_trans_type
   blas_conj_trans = 'C'
 };
 
-inline char 
+inline char
 get_blas_char (blas_trans_type transt)
 {
   return static_cast<char> (transt);

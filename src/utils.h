@@ -123,7 +123,7 @@ extern OCTINTERP_API void octave_sleep (double seconds);
 extern OCTINTERP_API
 octave_value_list
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
-                   const char *fun_name, const octave_value_list& args, 
+                   const char *fun_name, const octave_value_list& args,
                    int nargout);
 
 extern OCTINTERP_API

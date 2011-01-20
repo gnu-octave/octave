@@ -48,7 +48,7 @@ tree_constant::print (std::ostream& os, bool pr_as_read_syntax, bool pr_orig_tex
 
 void
 tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                          bool pr_orig_text) 
+                          bool pr_orig_text)
 {
   if (pr_orig_text && ! orig_text.empty ())
     os << orig_text;

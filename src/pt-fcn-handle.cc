@@ -44,7 +44,7 @@ tree_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax,
 
 void
 tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                            bool pr_orig_text) 
+                            bool pr_orig_text)
 {
   os << ((pr_as_read_syntax || pr_orig_text) ? "@" : "") << nm;
 }
@@ -122,7 +122,7 @@ tree_anon_fcn_handle::rvalue1 (int)
 
       if (parent_scope < 0)
         parent_scope = curr_fcn->scope ();
-        
+
       uf->stash_parent_fcn_scope (parent_scope);
     }
 

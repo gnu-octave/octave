@@ -142,13 +142,13 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
             {
               MatrixType mattyp;
 
-              if (args(0).is_complex_type ()) 
+              if (args(0).is_complex_type ())
                 {
                   mattyp = args(0).matrix_type ();
 
                   if (mattyp.is_unknown () && autocomp )
                     {
-                      SparseComplexMatrix m = 
+                      SparseComplexMatrix m =
                         args(0).sparse_complex_matrix_value ();
                       if (!error_state)
                         {
@@ -218,7 +218,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
               octave_idx_type nl = 0;
               octave_idx_type nu = 0;
-              
+
               if (error_state)
                 error ("matrix_type: TYPE must be a string");
               else
@@ -252,7 +252,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                 mattyp.mark_as_tridiagonal ();
                               else
                                 mattyp.mark_as_banded (nu, nl);
-                              
+
                               if (str_typ == "banded positive definite")
                                 mattyp.mark_as_symmetric ();
                             }
@@ -276,7 +276,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     {
                       if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
                         {
-                          const ColumnVector perm = 
+                          const ColumnVector perm =
                             ColumnVector (args (2).vector_value ());
 
                           if (error_state)
@@ -285,7 +285,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             {
                               octave_idx_type len = perm.length ();
                               dim_vector dv = args(0).dims ();
-                              
+
                               if (len != dv(0))
                                 error ("matrix_type: Invalid permutation vector PERM");
                               else
@@ -293,7 +293,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
                                   for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
+                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
 
                                   if (str_typ == "upper")
                                     mattyp.mark_as_permuted (len, p);
@@ -310,11 +310,11 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                         {
                           // Set the matrix type
                           if (args(0).is_complex_type ())
-                            retval = 
-                              octave_value (args(0).sparse_complex_matrix_value (), 
+                            retval =
+                              octave_value (args(0).sparse_complex_matrix_value (),
                                             mattyp);
                           else
-                            retval = octave_value (args(0).sparse_matrix_value (), 
+                            retval = octave_value (args(0).sparse_matrix_value (),
                                                    mattyp);
                         }
                     }
@@ -440,10 +440,10 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
                   if (! error_state)
                     {
-                      if (nargin == 3 && (str_typ == "upper" 
+                      if (nargin == 3 && (str_typ == "upper"
                                           || str_typ == "lower"))
                         {
-                          const ColumnVector perm = 
+                          const ColumnVector perm =
                             ColumnVector (args (2).vector_value ());
 
                           if (error_state)
@@ -452,7 +452,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             {
                               octave_idx_type len = perm.length ();
                               dim_vector dv = args(0).dims ();
-                              
+
                               if (len != dv(0))
                                 error ("matrix_type: Invalid permutation vector PERM");
                               else
@@ -460,7 +460,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
                                   for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1; 
+                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
 
                                   if (str_typ == "upper")
                                     mattyp.mark_as_permuted (len, p);
@@ -478,23 +478,23 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                           if (args(0).is_single_type ())
                             {
                               if (args(0).is_complex_type())
-                                retval = octave_value 
-                                  (args(0).float_complex_matrix_value (), 
+                                retval = octave_value
+                                  (args(0).float_complex_matrix_value (),
                                    mattyp);
                               else
-                                retval = octave_value 
-                                  (args(0).float_matrix_value (), 
+                                retval = octave_value
+                                  (args(0).float_matrix_value (),
                                    mattyp);
                             }
                           else
                             {
                               if (args(0).is_complex_type())
-                                retval = octave_value 
-                                  (args(0).complex_matrix_value (), 
+                                retval = octave_value
+                                  (args(0).complex_matrix_value (),
                                    mattyp);
                               else
-                                retval = octave_value 
-                                  (args(0).matrix_value (), 
+                                retval = octave_value
+                                  (args(0).matrix_value (),
                                    mattyp);
                             }
                         }
@@ -510,10 +510,10 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 /*
 
 ## FIXME
-## Disable tests for lower under-determined and upper over-determined 
+## Disable tests for lower under-determined and upper over-determined
 ## matrices as this detection is disabled in MatrixType due to issues
 ## of non minimum norm solution being found.
- 
+
 %!assert(matrix_type(speye(10,10)),"Diagonal");
 %!assert(matrix_type(speye(10,10)([2:10,1],:)),"Permuted Diagonal");
 %!assert(matrix_type([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]]),"Upper");
@@ -598,7 +598,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 %!assert(matrix_type(triu(ones(10,10),-1)),"Full");
 %!assert(matrix_type(tril(ones(10,10))),"Lower");
 %!assert(matrix_type(tril(ones(10,10),1)),"Full");
-%!assert(matrix_type(10*eye(10,10) + ones(10,10)), "Positive Definite"); 
+%!assert(matrix_type(10*eye(10,10) + ones(10,10)), "Positive Definite");
 %!assert(matrix_type(ones(11,10)),"Rectangular")
 %!test
 %! a = matrix_type(ones(10,10),"Singular");
@@ -608,7 +608,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 %!assert(matrix_type(triu(1i*ones(10,10),-1)),"Full");
 %!assert(matrix_type(tril(1i*ones(10,10))),"Lower");
 %!assert(matrix_type(tril(1i*ones(10,10),1)),"Full");
-%!assert(matrix_type(10*eye(10,10) + 1i*triu(ones(10,10),1) -1i*tril(ones(10,10),-1)), "Positive Definite"); 
+%!assert(matrix_type(10*eye(10,10) + 1i*triu(ones(10,10),1) -1i*tril(ones(10,10),-1)), "Positive Definite");
 %!assert(matrix_type(ones(11,10)),"Rectangular")
 %!test
 %! a = matrix_type(ones(10,10),"Singular");

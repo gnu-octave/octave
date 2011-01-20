@@ -52,10 +52,10 @@ along with Octave; see the file COPYING.  If not, see
 #define SYMAMD_NAME(name) symamd ## name
 #endif
 
-// The symmetric column elimination tree code take from the Davis LDL code. 
+// The symmetric column elimination tree code take from the Davis LDL code.
 // Copyright given elsewhere in this file.
 static void
-symetree (const octave_idx_type *ridx, const octave_idx_type *cidx, 
+symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
           octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Flag, n);
@@ -68,8 +68,8 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
   for (octave_idx_type k = 0 ; k < n ; k++)
     {
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
-      Parent [k] = n ;                // parent of k is not yet known 
-      Flag [k] = k ;                  // mark node k as visited 
+      Parent [k] = n ;                // parent of k is not yet known
+      Flag [k] = k ;                  // mark node k as visited
       octave_idx_type kk = (P) ? (P [k]) : (k) ;  // kth original, or permuted, column
       octave_idx_type p2 = cidx [kk+1] ;
       for (octave_idx_type p = cidx [kk] ; p < p2 ; p++)
@@ -78,7 +78,7 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
           octave_idx_type i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
           if (i < k)
             {
-              // follow path from i to root of etree, stop at flagged node 
+              // follow path from i to root of etree, stop at flagged node
               for ( ; Flag [i] != k ; i = Parent [i])
                 {
                   // find parent of i if not yet determined
@@ -110,7 +110,7 @@ static inline octave_idx_type
 find (octave_idx_type i, octave_idx_type *pp)
 {
   register octave_idx_type p, gp;
-    
+
   p = pp[i];
   gp = pp[p];
 
@@ -126,8 +126,8 @@ find (octave_idx_type i, octave_idx_type *pp)
 }
 
 static octave_idx_type
-etdfs (octave_idx_type v, octave_idx_type *first_kid, 
-       octave_idx_type *next_kid, octave_idx_type *post, 
+etdfs (octave_idx_type v, octave_idx_type *first_kid,
+       octave_idx_type *next_kid, octave_idx_type *post,
        octave_idx_type postnum)
 {
   for (octave_idx_type w = first_kid[v]; w != -1; w = next_kid[w])
@@ -150,7 +150,7 @@ tree_postorder (octave_idx_type n, octave_idx_type *parent,
   for (octave_idx_type v = 0; v <= n; first_kid[v++] = -1)
     /* do nothing */;
 
-  for (octave_idx_type v = n-1; v >= 0; v--) 
+  for (octave_idx_type v = n-1; v >= 0; v--)
     {
       octave_idx_type dad = parent[v];
       next_kid[v] = first_kid[dad];
@@ -163,7 +163,7 @@ tree_postorder (octave_idx_type n, octave_idx_type *parent,
 
 static void
 coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
-          octave_idx_type *colend, octave_idx_type *parent, 
+          octave_idx_type *colend, octave_idx_type *parent,
           octave_idx_type nr, octave_idx_type nc)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, root, nc);
@@ -174,8 +174,8 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
   for (octave_idx_type row = 0; row < nr; firstcol[row++] = nc)
     /* do nothing */;
 
-  for (octave_idx_type col = 0; col < nc; col++) 
-    for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
+  for (octave_idx_type col = 0; col < nc; col++)
+    for (octave_idx_type p = colbeg[col]; p < colend[col]; p++)
       {
         octave_idx_type row = ridx[p];
         if (firstcol[row] > col)
@@ -186,19 +186,19 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
   // except use (firstcol[r],c) in place of an edge (r,c) of A.
   // Thus each row clique in A'*A is replaced by a star
   // centered at its first vertex, which has the same fill.
-  for (octave_idx_type col = 0; col < nc; col++) 
+  for (octave_idx_type col = 0; col < nc; col++)
     {
       octave_idx_type cset = make_set (col, pp);
       root[cset] = col;
-      parent[col] = nc; 
-      for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
+      parent[col] = nc;
+      for (octave_idx_type p = colbeg[col]; p < colend[col]; p++)
         {
           octave_idx_type row = firstcol[ridx[p]];
-          if (row >= col) 
+          if (row >= col)
             continue;
           octave_idx_type rset = find (row, pp);
           octave_idx_type rroot = root[rset];
-          if (rroot != col) 
+          if (rroot != col)
             {
               parent[rroot] = col;
               cset = link (cset, rset, pp);
@@ -283,13 +283,13 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
   int nargin = args.length ();
   int spumoni = 0;
- 
+
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
   else
     {
       // Get knobs
-      OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);      
+      OCTAVE_LOCAL_BUFFER (double, knobs, COLAMD_KNOBS);
       COLAMD_NAME (_set_defaults) (knobs);
 
       // Check for user-passed knobs
@@ -297,12 +297,12 @@ Ng, Oak Ridge National Laboratory.  (see\n\
         {
           NDArray User_knobs = args(1).array_value ();
           int nel_User_knobs = User_knobs.length ();
-          
-          if (nel_User_knobs > 0) 
+
+          if (nel_User_knobs > 0)
             knobs [COLAMD_DENSE_ROW] = User_knobs (0);
-          if (nel_User_knobs > 1) 
+          if (nel_User_knobs > 1)
             knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
-          if (nel_User_knobs > 2) 
+          if (nel_User_knobs > 2)
             spumoni = static_cast<int> (User_knobs (2));
 
           // print knob settings if spumoni is set
@@ -313,7 +313,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
                             <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
 
               if (knobs [COLAMD_DENSE_ROW] >= 0)
-                octave_stdout << "knobs(1): " << User_knobs (0) 
+                octave_stdout << "knobs(1): " << User_knobs (0)
                               << ", rows with > max(16,"
                               << knobs [COLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
                               << " entries removed\n";
@@ -322,7 +322,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
                               << ", only completely dense rows removed\n";
 
               if (knobs [COLAMD_DENSE_COL] >= 0)
-                octave_stdout << "knobs(2): " << User_knobs (1) 
+                octave_stdout << "knobs(2): " << User_knobs (1)
                               << ", cols with > max(16,"
                               << knobs [COLAMD_DENSE_COL] << "*sqrt(size(A)))"
                               << " entries removed\n";
@@ -330,12 +330,12 @@ Ng, Oak Ridge National Laboratory.  (see\n\
                 octave_stdout << "knobs(2): " << User_knobs (1)
                               << ", only completely dense columns removed\n";
 
-              octave_stdout << "knobs(3): " << User_knobs (2) 
+              octave_stdout << "knobs(3): " << User_knobs (2)
                             << ", statistics and knobs printed\n";
 
             }
         }
-      
+
       octave_idx_type n_row, n_col, nnz;
       octave_idx_type *ridx, *cidx;
       SparseComplexMatrix scm;
@@ -431,11 +431,11 @@ Ng, Oak Ridge National Laboratory.  (see\n\
             out_stats (i) = stats [i] ;
           retval(1) = out_stats;
 
-          // fix stats (5) and (6), for 1-based information on 
-          // jumbled matrix.  note that this correction doesn't 
+          // fix stats (5) and (6), for 1-based information on
+          // jumbled matrix.  note that this correction doesn't
           // occur if symamd returns FALSE
-          out_stats (COLAMD_INFO1) ++ ; 
-          out_stats (COLAMD_INFO2) ++ ; 
+          out_stats (COLAMD_INFO1) ++ ;
+          out_stats (COLAMD_INFO2) ++ ;
         }
     }
 
@@ -518,7 +518,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
   int nargin = args.length ();
   int spumoni = 0;
- 
+
   if (nargout > 2 || nargin < 1 || nargin > 2)
     print_usage ();
   else
@@ -532,18 +532,18 @@ Ng, Oak Ridge National Laboratory.  (see\n\
         {
           NDArray User_knobs = args(1).array_value ();
           int nel_User_knobs = User_knobs.length ();
-          
-          if (nel_User_knobs > 0) 
+
+          if (nel_User_knobs > 0)
             knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
-          if (nel_User_knobs > 1) 
+          if (nel_User_knobs > 1)
             spumoni = static_cast<int> (User_knobs (1));
         }
 
       // print knob settings if spumoni is set
       if (spumoni > 0)
-        octave_stdout << "symamd: dense row/col fraction: " 
+        octave_stdout << "symamd: dense row/col fraction: "
                       << knobs [COLAMD_DENSE_ROW] << std::endl;
-      
+
       octave_idx_type n_row, n_col, nnz;
       octave_idx_type *ridx, *cidx;
       SparseMatrix sm;
@@ -576,7 +576,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
             sm = SparseMatrix (real (args(0).complex_matrix_value ()));
           else
             sm = SparseMatrix (args(0).matrix_value ());
-          
+
           n_row = sm.rows ();
           n_col = sm.cols ();
           nnz = sm.nnz ();
@@ -627,11 +627,11 @@ Ng, Oak Ridge National Laboratory.  (see\n\
             out_stats (i) = stats [i] ;
           retval(1) = out_stats;
 
-          // fix stats (5) and (6), for 1-based information on 
-          // jumbled matrix.  note that this correction doesn't 
+          // fix stats (5) and (6), for 1-based information on
+          // jumbled matrix.  note that this correction doesn't
           // occur if symamd returns FALSE
-          out_stats (COLAMD_INFO1) ++ ; 
-          out_stats (COLAMD_INFO2) ++ ; 
+          out_stats (COLAMD_INFO1) ++ ;
+          out_stats (COLAMD_INFO2) ++ ;
         }
     }
 

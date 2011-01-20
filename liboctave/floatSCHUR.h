@@ -43,7 +43,7 @@ public:
       init (a, ord, calc_unitary);
     }
 
-  FloatSCHUR (const FloatMatrix& a, const std::string& ord, int& info, 
+  FloatSCHUR (const FloatMatrix& a, const std::string& ord, int& info,
               bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
     {

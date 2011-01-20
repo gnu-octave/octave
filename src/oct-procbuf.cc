@@ -56,7 +56,7 @@ octave_procbuf::open (const char *command, int mode)
 {
 #if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
-  if (is_open ()) 
+  if (is_open ())
     return 0;
 
   f = octave_popen (command, (mode & std::ios::in) ? "r" : "w");
@@ -74,7 +74,7 @@ octave_procbuf::open (const char *command, int mode)
     ::setvbuf (f, 0, _IOLBF, BUFSIZ);
 
   return this;
-  
+
 #elif defined (HAVE_SYS_WAIT_H)
 
   int pipe_fds[2];
@@ -171,7 +171,7 @@ octave_procbuf::close (void)
   open_p = false;
 
   return this;
-  
+
 #elif defined (HAVE_SYS_WAIT_H)
 
   if (f)

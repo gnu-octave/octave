@@ -114,7 +114,7 @@ void
 install_ui64_ui64_ops (void)
 {
   OCTAVE_INSTALL_INT_OPS (uint64);
-  
+
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mi8, uint64_, int8_);
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mui8, uint64_, uint8_);
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mi16, uint64_, int16_);

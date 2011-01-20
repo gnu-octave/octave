@@ -104,7 +104,7 @@ public:
 
   octave_comment_buffer (void)
     : comment_list (new octave_comment_list ()) { }
-  
+
   static bool instance_ok (void);
 
   static void append

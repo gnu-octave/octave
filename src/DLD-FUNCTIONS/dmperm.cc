@@ -155,7 +155,7 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 {
   int nargin = args.length();
   octave_value_list retval;
-  
+
   if (nargin != 1)
     {
       print_usage ();
@@ -171,7 +171,7 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
   return retval;
 }
 
-/* 
+/*
 
 %!testif HAVE_CXSPARSE
 %! n=20;
@@ -204,7 +204,7 @@ numerical rank of the matrix @var{S} is bounded by\n\
 {
   int nargin = args.length();
   octave_value_list retval;
-  
+
   if (nargin != 1)
     {
       print_usage ();
@@ -220,7 +220,7 @@ numerical rank of the matrix @var{S} is bounded by\n\
   return retval;
 }
 
-/* 
+/*
 
 %!error(sprank(1,2));
 %!testif HAVE_CXSPARSE

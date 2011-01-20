@@ -72,7 +72,7 @@ extern FloatComplexNDArray x_el_div (float a, const FloatComplexNDArray& b);
 extern FloatComplexNDArray x_el_div (const FloatComplex a, const FloatNDArray& b);
 extern FloatComplexNDArray x_el_div (const FloatComplex a, const FloatComplexNDArray& b);
 
-extern FloatMatrix xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ, 
+extern FloatMatrix xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ,
                              blas_trans_type transt = blas_no_trans);
 extern FloatComplexMatrix xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b,
                                MatrixType &typ, blas_trans_type transt = blas_no_trans);
@@ -91,17 +91,17 @@ extern ComplexDiagMatrix xdiv (const ComplexDiagMatrix& a, const DiagMatrix& b);
 extern ComplexDiagMatrix xdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
 
 extern FloatMatrix xdiv (const FloatMatrix& a, const FloatDiagMatrix& b);
-extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, 
-                                const FloatDiagMatrix& b); 
-extern FloatComplexMatrix xdiv (const FloatMatrix& a, 
-                                const FloatComplexDiagMatrix& b); 
-extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, 
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a,
+                                const FloatDiagMatrix& b);
+extern FloatComplexMatrix xdiv (const FloatMatrix& a,
+                                const FloatComplexDiagMatrix& b);
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a,
                                 const FloatComplexDiagMatrix& b);
 
 extern FloatDiagMatrix xdiv (const FloatDiagMatrix& a, const FloatDiagMatrix& b);
-extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a, 
+extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a,
                                     const FloatDiagMatrix& b);
-extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a, 
+extern FloatComplexDiagMatrix xdiv (const FloatComplexDiagMatrix& a,
                                     const FloatComplexDiagMatrix& b);
 
 extern Matrix xleftdiv (const DiagMatrix& a, const Matrix& b);
@@ -112,18 +112,18 @@ extern DiagMatrix xleftdiv (const DiagMatrix& a, const DiagMatrix& b);
 extern ComplexDiagMatrix xleftdiv (const DiagMatrix& a, const ComplexDiagMatrix& b);
 extern ComplexDiagMatrix xleftdiv (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
 
-extern FloatMatrix xleftdiv (const FloatDiagMatrix& a, 
+extern FloatMatrix xleftdiv (const FloatDiagMatrix& a,
                              const FloatMatrix& b);
-extern FloatComplexMatrix xleftdiv (const FloatDiagMatrix& a, 
+extern FloatComplexMatrix xleftdiv (const FloatDiagMatrix& a,
                                     const FloatComplexMatrix& b);
-extern FloatComplexMatrix xleftdiv (const FloatComplexDiagMatrix& a, 
+extern FloatComplexMatrix xleftdiv (const FloatComplexDiagMatrix& a,
                                     const FloatComplexMatrix& b);
 
-extern FloatDiagMatrix xleftdiv (const FloatDiagMatrix& a, 
+extern FloatDiagMatrix xleftdiv (const FloatDiagMatrix& a,
                                  const FloatDiagMatrix& b);
-extern FloatComplexDiagMatrix xleftdiv (const FloatDiagMatrix& a, 
+extern FloatComplexDiagMatrix xleftdiv (const FloatDiagMatrix& a,
                                         const FloatComplexDiagMatrix& b);
-extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a, 
+extern FloatComplexDiagMatrix xleftdiv (const FloatComplexDiagMatrix& a,
                                         const FloatComplexDiagMatrix& b);
 
 #endif

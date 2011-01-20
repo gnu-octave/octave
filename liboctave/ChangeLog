@@ -1,5 +1,58 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* Array-b.cc, Array-d.cc, Array-f.cc, Array-util.cc,
+	Array-util.h, Array.cc, Array.h, Array3.h, CColVector.cc,
+	CColVector.h, CDiagMatrix.cc, CDiagMatrix.h, CMatrix.cc,
+	CMatrix.h, CNDArray.cc, CNDArray.h, CSparse.cc, CSparse.h,
+	CmplxAEPBAL.cc, CmplxAEPBAL.h, CmplxCHOL.cc, CmplxGEPBAL.cc,
+	CmplxGEPBAL.h, CmplxHESS.cc, CmplxLU.h, CmplxQR.cc, CmplxQR.h,
+	CmplxSCHUR.cc, CmplxSVD.h, CollocWt.cc, CollocWt.h, DASPK.cc,
+	DASPK.h, DASRT.cc, DASRT.h, DASSL.cc, DASSL.h, DET.h,
+	DiagArray2.h, EIG.cc, LSODE.cc, MArray.cc, MArray.h,
+	MDiagArray2.cc, MDiagArray2.h, MSparse.cc, MSparse.h,
+	MatrixType.cc, MatrixType.h, ODESFunc.h, PermMatrix.cc,
+	PermMatrix.h, Quad.cc, Range.cc, Sparse.cc, Sparse.h,
+	SparseCmplxCHOL.cc, SparseCmplxCHOL.h, SparseCmplxLU.cc,
+	SparseCmplxLU.h, SparseCmplxQR.cc, SparseCmplxQR.h, SparseQR.cc,
+	SparseQR.h, SparsedbleCHOL.cc, SparsedbleCHOL.h,
+	SparsedbleLU.cc, SparsedbleLU.h, base-aepbal.h, base-de.h,
+	base-lu.cc, base-lu.h, boolNDArray.cc, boolNDArray.h,
+	boolSparse.cc, boolSparse.h, bsxfun-defs.cc, chMatrix.cc,
+	chNDArray.cc, chNDArray.h, cmd-edit.cc, cmd-edit.h, cmd-hist.cc,
+	dColVector.h, dDiagMatrix.cc, dDiagMatrix.h, dMatrix.cc,
+	dMatrix.h, dNDArray.cc, dNDArray.h, dSparse.cc, dSparse.h,
+	dbleAEPBAL.h, dbleCHOL.cc, dbleCHOL.h, dbleGEPBAL.cc,
+	dbleGEPBAL.h, dbleQR.cc, dbleQR.h, dbleSCHUR.h, dbleSVD.h,
+	dim-vector.cc, dim-vector.h, dir-ops.cc, eigs-base.cc,
+	f2c-main.c, fCColVector.cc, fCColVector.h, fCDiagMatrix.cc,
+	fCDiagMatrix.h, fCMatrix.cc, fCMatrix.h, fCNDArray.cc,
+	fCNDArray.h, fCRowVector.cc, fCRowVector.h, fCmplxAEPBAL.cc,
+	fCmplxAEPBAL.h, fCmplxCHOL.cc, fCmplxGEPBAL.cc, fCmplxGEPBAL.h,
+	fCmplxHESS.cc, fCmplxLU.h, fCmplxQR.cc, fCmplxQR.h,
+	fCmplxQRP.cc, fCmplxSCHUR.cc, fCmplxSVD.h, fColVector.h,
+	fDiagMatrix.cc, fDiagMatrix.h, fEIG.cc, fMatrix.cc, fMatrix.h,
+	fNDArray.cc, fNDArray.h, file-ops.cc, file-stat.cc,
+	floatAEPBAL.cc, floatAEPBAL.h, floatCHOL.cc, floatCHOL.h,
+	floatGEPBAL.cc, floatGEPBAL.h, floatLU.h, floatQR.cc, floatQR.h,
+	floatQRP.cc, floatSCHUR.h, floatSVD.h, idx-vector.cc,
+	idx-vector.h, intNDArray.cc, intNDArray.h, kpse.cc,
+	lo-array-gripes.cc, lo-array-gripes.h, lo-cieee.c, lo-ieee.h,
+	lo-mappers.cc, lo-mappers.h, lo-specfun.cc, mx-defs.h,
+	mx-inlines.cc, oct-binmap.h, oct-convn.cc, oct-env.cc,
+	oct-fftw.cc, oct-fftw.h, oct-glob.cc, oct-group.h,
+	oct-inttypes.cc, oct-inttypes.h, oct-locbuf.cc, oct-locbuf.h,
+	oct-md5.cc, oct-mem.h, oct-norm.cc, oct-norm.h, oct-rand.cc,
+	oct-rand.h, oct-rl-hist.c, oct-shlib.cc, oct-shlib.h,
+	oct-sort.cc, oct-sort.h, oct-spparms.cc, oct-spparms.h,
+	oct-syscalls.cc, oct-time.cc, randgamma.c, randmtzig.c,
+	randmtzig.h, randpoisson.c, regex-match.cc, regex-match.h,
+	sparse-base-chol.cc, sparse-base-chol.h, sparse-base-lu.cc,
+	sparse-base-lu.h, sparse-dmsolve.cc, sparse-sort.cc,
+	sparse-sort.h, sparse-util.h, tempname.c:
+	Strip trailing whitespace.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* Array.h, Array.cc
 	(Array<T>::resize2 (octave_idx_type, octave_idx_type, const T&)):
 	New private function.

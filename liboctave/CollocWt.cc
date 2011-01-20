@@ -473,7 +473,7 @@ CollocWt::init (void)
   id = 2;
   for (octave_idx_type i = 0; i < nt; i++)
     {
-      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect); 
+      dfopr (n, inc_left, inc_right, i, id, pdif1, pdif2, pdif3, pr, pvect);
 
       for (octave_idx_type j = 0; j < nt; j++)
         B(i,j) = vect(j);

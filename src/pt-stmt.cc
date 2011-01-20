@@ -156,7 +156,7 @@ tree_statement_list::set_breakpoint (int line)
 {
   tree_breakpoint tbp (line, tree_breakpoint::set);
   accept (tbp);
-  
+
   return tbp.get_line ();
 }
 
@@ -177,7 +177,7 @@ tree_statement_list::delete_breakpoint (int line)
     }
   else
     {
-      tree_breakpoint tbp (line, tree_breakpoint::clear); 
+      tree_breakpoint tbp (line, tree_breakpoint::clear);
       accept (tbp);
     }
 }

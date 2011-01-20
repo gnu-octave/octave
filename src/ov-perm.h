@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "oct-obj.h"
 
-class 
+class
 OCTINTERP_API
 octave_perm_matrix : public octave_base_value
 {
@@ -147,14 +147,14 @@ public:
   FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;
-   
+
   FloatComplexNDArray float_complex_array_value (bool = false) const;
-   
+
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool = false) const;
-  
-  NDArray array_value (bool = false) const; 
+
+  NDArray array_value (bool = false) const;
 
   FloatNDArray float_array_value (bool = false) const;
 
@@ -196,7 +196,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
   int write (octave_stream& os, int block_size,
@@ -216,7 +216,7 @@ public:
 
 protected:
 
-  PermMatrix matrix;  
+  PermMatrix matrix;
 
   virtual octave_value to_dense (void) const;
 

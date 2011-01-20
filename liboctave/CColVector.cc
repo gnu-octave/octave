@@ -221,9 +221,9 @@ ComplexColumnVector::stack (const ComplexColumnVector& a) const
   return retval;
 }
 
-ComplexRowVector 
+ComplexRowVector
 ComplexColumnVector::hermitian (void) const
-{ 
+{
   return MArray<Complex>::hermitian (std::conj);
 }
 

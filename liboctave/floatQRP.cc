@@ -95,7 +95,7 @@ FloatQRP::init (const FloatMatrix& a, qr_type_t qr_type)
   form (n, afact, tau, qr_type);
 }
 
-FloatRowVector 
+FloatRowVector
 FloatQRP::Pvec (void) const
 {
   Array<float> pa (p.pvec ());

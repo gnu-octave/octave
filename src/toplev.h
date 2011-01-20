@@ -207,7 +207,7 @@ public:
   {
     return instance_ok () ? instance->do_element (n) : 0;
   }
-  
+
   // First user-defined function on the stack.
   static octave_user_code *caller_user_code (size_t nskip = 0)
   {
@@ -278,7 +278,7 @@ public:
     if (instance_ok ())
       instance->do_pop ();
   }
-  
+
   static void clear (void)
   {
     if (instance_ok ())
@@ -344,7 +344,7 @@ private:
     return retval;
   }
 
-  octave_user_code *do_caller_user_code (size_t nskip) const; 
+  octave_user_code *do_caller_user_code (size_t nskip) const;
 
   void do_push (octave_function *f, symbol_table::scope_id scope,
                 symbol_table::context_id context)

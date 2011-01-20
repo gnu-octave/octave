@@ -183,7 +183,7 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
 
       if (! buf || strlen (buf) != (int) len)
         return NULL;
-  
+
       if (streamptr != NULL)
         abort ();
       else if (exists (buf))

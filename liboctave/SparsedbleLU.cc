@@ -103,7 +103,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
   if (status < 0)
     {
-      (*current_liboctave_error_handler) 
+      (*current_liboctave_error_handler)
             ("SparseLU::SparseLU symbolic factorization failed");
 
       UMFPACK_DNAME (report_status) (control, status);
@@ -116,7 +116,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
       UMFPACK_DNAME (report_symbolic) (Symbolic, control);
 
       void *Numeric;
-      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic, 
+      status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
                                    &Numeric, control, info) ;
       UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
@@ -124,7 +124,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
       if (status < 0)
         {
-          (*current_liboctave_error_handler) 
+          (*current_liboctave_error_handler)
             ("SparseLU::SparseLU numeric factorization failed");
 
           UMFPACK_DNAME (report_status) (control, status);
@@ -139,10 +139,10 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
           octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
           status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1,
                                         &ignore2, &ignore3, Numeric) ;
-          
+
           if (status < 0)
             {
-              (*current_liboctave_error_handler) 
+              (*current_liboctave_error_handler)
                 ("SparseLU::SparseLU extracting LU factors failed");
 
               UMFPACK_DNAME (report_status) (control, status);
@@ -192,14 +192,14 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
               octave_idx_type do_recip;
               status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj, Ltx,
                                                Up, Uj, Ux, p, q, 0,
-                                               &do_recip, Rx, 
+                                               &do_recip, Rx,
                                                Numeric) ;
 
               UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
               if (status < 0)
                 {
-                  (*current_liboctave_error_handler) 
+                  (*current_liboctave_error_handler)
                     ("SparseLU::SparseLU extracting LU factors failed");
 
                   UMFPACK_DNAME (report_status) (control, status);
@@ -212,10 +212,10 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
                     for (octave_idx_type i = 0; i < nr; i++)
                       Rx[i] = 1.0 / Rx[i];
 
-                  UMFPACK_DNAME (report_matrix) (nr, n_inner, 
+                  UMFPACK_DNAME (report_matrix) (nr, n_inner,
                                             Lfact.cidx (), Lfact.ridx (),
                                             Lfact.data (), 1, control);
-                  UMFPACK_DNAME (report_matrix) (n_inner, nc, 
+                  UMFPACK_DNAME (report_matrix) (n_inner, nc,
                                             Ufact.cidx (), Ufact.ridx (),
                                             Ufact.data (), 1, control);
                   UMFPACK_DNAME (report_perm) (nr, p, control);
@@ -237,8 +237,8 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 {
 #ifdef HAVE_UMFPACK
   if (milu)
-    (*current_liboctave_error_handler) 
-      ("Modified incomplete LU not implemented");   
+    (*current_liboctave_error_handler)
+      ("Modified incomplete LU not implemented");
   else
     {
       octave_idx_type nr = a.rows ();
@@ -298,7 +298,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       const octave_idx_type *Ai = a.ridx ();
       const double *Ax = a.data ();
 
-      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1, 
+      UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1,
                                                      control);
 
       void *Symbolic;
@@ -313,13 +313,13 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
         for (octave_idx_type i = 0; i < nc; i++)
           qinit [i] = static_cast<octave_idx_type> (Qinit (i));
 
-        status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 
+        status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax,
                                        qinit, &Symbolic, control, info);
       } while (0);
 
       if (status < 0)
         {
-          (*current_liboctave_error_handler) 
+          (*current_liboctave_error_handler)
             ("SparseLU::SparseLU symbolic factorization failed");
 
           UMFPACK_DNAME (report_status) (control, status);
@@ -340,7 +340,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
           if (status < 0)
             {
-              (*current_liboctave_error_handler) 
+              (*current_liboctave_error_handler)
                 ("SparseLU::SparseLU numeric factorization failed");
 
               UMFPACK_DNAME (report_status) (control, status);
@@ -355,10 +355,10 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
               octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
               status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1, &ignore2,
                                                  &ignore3, Numeric) ;
-          
+
               if (status < 0)
                 {
-                  (*current_liboctave_error_handler) 
+                  (*current_liboctave_error_handler)
                     ("SparseLU::SparseLU extracting LU factors failed");
 
                   UMFPACK_DNAME (report_status) (control, status);
@@ -407,15 +407,15 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
                   octave_idx_type do_recip;
                   status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj,
-                                                   Ltx, Up, Uj, Ux, p, q, 
-                                                   0, &do_recip, 
+                                                   Ltx, Up, Uj, Ux, p, q,
+                                                   0, &do_recip,
                                                    Rx, Numeric) ;
 
                   UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
                   if (status < 0)
                     {
-                      (*current_liboctave_error_handler) 
+                      (*current_liboctave_error_handler)
                         ("SparseLU::SparseLU extracting LU factors failed");
 
                       UMFPACK_DNAME (report_status) (control, status);
@@ -428,14 +428,14 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
                         for (octave_idx_type i = 0; i < nr; i++)
                           Rx[i] = 1.0 / Rx[i];
 
-                      UMFPACK_DNAME (report_matrix) (nr, n_inner, 
-                                                Lfact.cidx (), 
-                                                Lfact.ridx (), 
+                      UMFPACK_DNAME (report_matrix) (nr, n_inner,
+                                                Lfact.cidx (),
+                                                Lfact.ridx (),
                                                 Lfact.data (),
                                                 1, control);
-                      UMFPACK_DNAME (report_matrix) (n_inner, nc, 
-                                                Ufact.cidx (), 
-                                                Ufact.ridx (), 
+                      UMFPACK_DNAME (report_matrix) (n_inner, nc,
+                                                Ufact.cidx (),
+                                                Ufact.ridx (),
                                                 Ufact.data (),
                                                 1, control);
                       UMFPACK_DNAME (report_perm) (nr, p, control);
@@ -448,8 +448,8 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
         }
 
       if (udiag)
-        (*current_liboctave_error_handler) 
-          ("Option udiag of incomplete LU not implemented");   
+        (*current_liboctave_error_handler)
+          ("Option udiag of incomplete LU not implemented");
     }
 #else
   (*current_liboctave_error_handler) ("UMFPACK not installed");

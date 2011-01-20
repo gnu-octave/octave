@@ -46,7 +46,7 @@ oct_md5_result_to_str (const unsigned char *buf)
 
   return std::string (tmp, 32);
 }
- 
+
 std::string
 oct_md5 (const std::string str)
 {
@@ -56,7 +56,7 @@ oct_md5 (const std::string str)
 
   return oct_md5_result_to_str (buf);
 }
-          
+
 std::string
 oct_md5_file (const std::string file)
 {

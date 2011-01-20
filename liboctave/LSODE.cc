@@ -62,7 +62,7 @@ static ColumnVector *tmp_x;
 
 static octave_idx_type
 lsode_f (const octave_idx_type& neq, const double& time, double *,
-         double *deriv, octave_idx_type& ierr) 
+         double *deriv, octave_idx_type& ierr)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -171,7 +171,7 @@ LSODE::do_integrate (double tout)
             {
               iwork(4) = maxord;
               iopt = 1;
-            }     
+            }
           else
             {
               (*current_liboctave_error_handler)
@@ -329,11 +329,11 @@ LSODE::error_message (void) const
     case 2:
       retval = "successful exit";
       break;
-          
+
     case 3:
       retval = "prior to continuation call with modified parameters";
       break;
-          
+
     case -1:
       retval = std::string ("excess work on this call (t = ")
         + t_curr + "; perhaps wrong integration method)";

@@ -598,7 +598,7 @@ command_history::read_range (int from, int to, bool must_exist)
 
 void
 command_history::read_range (const std::string& f, int from, int to,
-                             bool must_exist) 
+                             bool must_exist)
 {
   if (instance_ok ())
     instance->do_read_range (f, from, to, must_exist);

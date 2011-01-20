@@ -97,7 +97,7 @@ octave_sparse_complex_matrix::try_narrowing_conversion (void)
       if (matrix.all_elements_are_real ())
         retval = new octave_sparse_matrix (::real (matrix));
     }
-    
+
   return retval;
 }
 
@@ -167,7 +167,7 @@ octave_sparse_complex_matrix::complex_matrix_value (bool) const
   return matrix.matrix_value ();
 }
 
-ComplexNDArray 
+ComplexNDArray
 octave_sparse_complex_matrix::complex_array_value (bool) const
 {
   return ComplexNDArray (matrix.matrix_value ());
@@ -189,7 +189,7 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
-          retval(matrix.ridx(i) + nr * j) = 
+          retval(matrix.ridx(i) + nr * j) =
             static_cast<char>(std::real (matrix.data (i)));
     }
 
@@ -203,7 +203,7 @@ octave_sparse_complex_matrix::sparse_matrix_value (bool force_conversion) const
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
-                               "complex sparse matrix", 
+                               "complex sparse matrix",
                                "real sparse matrix");
 
   retval = ::real (matrix);
@@ -211,20 +211,20 @@ octave_sparse_complex_matrix::sparse_matrix_value (bool force_conversion) const
   return retval;
 }
 
-SparseBoolMatrix 
+SparseBoolMatrix
 octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
     gripe_nan_to_logical_conversion ();
-  else if (warn && (! matrix.all_elements_are_real () 
+  else if (warn && (! matrix.all_elements_are_real ()
                     || real (matrix).any_element_not_one_or_zero ()))
     gripe_logical_conversion ();
 
   return mx_el_ne (matrix, Complex (0.0));
 }
 
-bool 
-octave_sparse_complex_matrix::save_binary (std::ostream& os, 
+bool
+octave_sparse_complex_matrix::save_binary (std::ostream& os,
                                            bool&save_as_floats)
 {
   dim_vector d = this->dims ();
@@ -240,15 +240,15 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
-  itmp= -2;        
+  itmp= -2;
   os.write (reinterpret_cast<char *> (&itmp), 4);
-  
-  itmp= nr;    
+
+  itmp= nr;
   os.write (reinterpret_cast<char *> (&itmp), 4);
-  
+
   itmp= nc;
   os.write (reinterpret_cast<char *> (&itmp), 4);
-  
+
   itmp= nz;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
@@ -272,17 +272,17 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   // add one to the printed indices to go from
   // zero-based to one-based arrays
-   for (int i = 0; i < nc+1; i++)  
+   for (int i = 0; i < nc+1; i++)
      {
        octave_quit ();
        itmp = matrix.cidx(i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
-   for (int i = 0; i < nz; i++) 
+   for (int i = 0; i < nz; i++)
      {
        octave_quit ();
-       itmp = matrix.ridx(i); 
+       itmp = matrix.ridx(i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
@@ -327,7 +327,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
                          static_cast<octave_idx_type> (nc),
                          static_cast<octave_idx_type> (nz));
 
-  for (int i = 0; i < nc+1; i++) 
+  for (int i = 0; i < nc+1; i++)
     {
       octave_quit ();
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
@@ -337,7 +337,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
       m.cidx(i) = tmp;
     }
 
-  for (int i = 0; i < nz; i++) 
+  for (int i = 0; i < nz; i++)
     {
       octave_quit ();
       if (! is.read (reinterpret_cast<char *> (&tmp), 4))
@@ -349,7 +349,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 
   if (! is.read (reinterpret_cast<char *> (&ctmp), 1))
     return false;
-  
+
   read_doubles (is, reinterpret_cast<double *> (m.data ()),
                 static_cast<save_type> (ctmp), 2 * nz, swap, fmt);
 
@@ -367,7 +367,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 #if defined (HAVE_HDF5)
 
 bool
-octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, 
+octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
                                          bool save_as_floats)
 {
   dim_vector dv = dims ();
@@ -393,26 +393,26 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   hsize_t hdims[2];
 
   space_hid = H5Screate_simple (0, hdims, 0);
-  if (space_hid < 0) 
+  if (space_hid < 0)
     {
       H5Gclose (group_hid);
       return false;
     }
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nr", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
-  
+
   tmp = m.rows ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, &tmp) >= 0;
@@ -422,22 +422,22 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nc", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
-  
+
   tmp = m.cols ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, &tmp) >= 0;
@@ -447,22 +447,22 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nz", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
-  
+
   tmp = m.nnz ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, &tmp) >= 0;
@@ -481,26 +481,26 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   space_hid = H5Screate_simple (2, hdims, 0);
 
-  if (space_hid < 0) 
+  if (space_hid < 0)
     {
       H5Gclose (group_hid);
       return false;
     }
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "cidx", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
-  
+
   octave_idx_type * itmp = m.xcidx ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, itmp) >= 0;
@@ -510,7 +510,7 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
-    }    
+    }
 
   H5Sclose (space_hid);
 
@@ -519,26 +519,26 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   space_hid = H5Screate_simple (2, hdims, 0);
 
-  if (space_hid < 0) 
+  if (space_hid < 0)
     {
       H5Gclose (group_hid);
       return false;
     }
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (group_hid, "ridx", H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       H5Gclose (group_hid);
       return false;
     }
-  
+
   itmp = m.xridx ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) >= 0;
   H5Dclose (data_hid);
@@ -581,11 +581,11 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid, 
+  data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "data", type_hid, space_hid, H5P_DEFAULT);
-#endif  
+#endif
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
@@ -596,7 +596,7 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   hid_t complex_type_hid = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
   retval = false;
-  if (complex_type_hid >= 0) 
+  if (complex_type_hid >= 0)
     {
       Complex * ctmp = m.xdata ();
 
@@ -618,14 +618,14 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   octave_idx_type nr, nc, nz;
   hid_t group_hid, data_hid, space_hid;
   hsize_t rank;
-  
+
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
     matrix.resize(dv);
   if (empty)
     return (empty > 0);
-  
+
 #if HAVE_HDF5_18
   group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
 #else
@@ -642,14 +642,14 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   rank = H5Sget_simple_extent_ndims (space_hid);
 
   if (rank != 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
     }
 
   if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nr) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
@@ -666,14 +666,14 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   rank = H5Sget_simple_extent_ndims (space_hid);
 
   if (rank != 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
     }
 
   if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nc) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
@@ -690,14 +690,14 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   rank = H5Sget_simple_extent_ndims (space_hid);
 
   if (rank != 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
     }
 
   if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nz) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
@@ -740,7 +740,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -779,7 +779,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   itmp = m.xridx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

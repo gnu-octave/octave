@@ -63,7 +63,7 @@ public:
       return *this;
     }
 
-  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p) 
+  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p)
     { Array<T>::resize (dim_vector (r, c, p)); }
 
   void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)

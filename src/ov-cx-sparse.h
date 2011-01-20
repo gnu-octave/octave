@@ -64,18 +64,18 @@ public:
   octave_sparse_complex_matrix (const SparseComplexMatrix& m)
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
-  octave_sparse_complex_matrix (const SparseComplexMatrix& m, 
+  octave_sparse_complex_matrix (const SparseComplexMatrix& m,
                                 const MatrixType &t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
   octave_sparse_complex_matrix (const MSparse<Complex>& m)
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
-  octave_sparse_complex_matrix (const MSparse<Complex>& m, 
+  octave_sparse_complex_matrix (const MSparse<Complex>& m,
                                 const MatrixType &t)
     : octave_base_sparse<SparseComplexMatrix> (m, t) { }
 
-  octave_sparse_complex_matrix (const Sparse<Complex>& m, 
+  octave_sparse_complex_matrix (const Sparse<Complex>& m,
                                 const MatrixType &t)
     : octave_base_sparse<SparseComplexMatrix> (SparseComplexMatrix (m), t) { }
 
@@ -137,7 +137,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

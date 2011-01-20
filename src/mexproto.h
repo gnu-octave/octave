@@ -83,7 +83,7 @@ extern OCTINTERP_API void mexErrMsgIdAndTxt (const char *id, const char *s, ...)
 extern OCTINTERP_API void mexWarnMsgTxt (const char *s);
 extern OCTINTERP_API void mexWarnMsgIdAndTxt (const char *id, const char *s, ...);
 extern OCTINTERP_API int mexPrintf (const char *fmt, ...);
-  
+
 extern OCTINTERP_API mxArray *mexGetVariable (const char *space, const char *name);
 extern OCTINTERP_API const mxArray *mexGetVariablePtr (const char *space, const char *name);
 
@@ -109,13 +109,13 @@ extern OCTINTERP_API int mxIsNaN (double v);
 extern OCTINTERP_API double mxGetEps (void);
 extern OCTINTERP_API double mxGetInf (void);
 extern OCTINTERP_API double mxGetNaN (void);
-  
+
 /* Memory management.  */
 extern OCTINTERP_API void *mxCalloc (size_t n, size_t size);
 extern OCTINTERP_API void *mxMalloc (size_t n);
 extern OCTINTERP_API void *mxRealloc (void *ptr, size_t size);
 extern OCTINTERP_API void mxFree (void *ptr);
-  
+
 /* Constructors.  */
 extern OCTINTERP_API mxArray *mxCreateCellArray (mwSize ndims, const mwSize *dims);
 extern OCTINTERP_API mxArray *mxCreateCellMatrix (mwSize m, mwSize n);
@@ -184,7 +184,7 @@ extern OCTINTERP_API size_t mxGetNumberOfElements (const mxArray *ptr);
 extern OCTINTERP_API void mxSetM (mxArray *ptr, mwSize M);
 extern OCTINTERP_API void mxSetN (mxArray *ptr, mwSize N);
 extern OCTINTERP_API void mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims);
-  
+
 /* Data extractors.  */
 extern OCTINTERP_API double *mxGetPi (const mxArray *ptr);
 extern OCTINTERP_API double *mxGetPr (const mxArray *ptr);
@@ -238,7 +238,7 @@ extern OCTINTERP_API int mxGetFieldNumber (const mxArray *ptr, const char *key);
 
 extern OCTINTERP_API int mxGetString (const mxArray *ptr, char *buf, mwSize buflen);
 extern OCTINTERP_API char *mxArrayToString (const mxArray *ptr);
-  
+
 /* Miscellaneous.  */
 #ifdef NDEBUG
 #define mxAssert(expr, msg) \

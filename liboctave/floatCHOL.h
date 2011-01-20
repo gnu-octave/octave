@@ -44,7 +44,7 @@ public:
     }
 
   FloatCHOL (const FloatMatrix& a, octave_idx_type& info,
-             bool calc_cond = false) 
+             bool calc_cond = false)
     : chol_mat (), xrcond (0)
     {
       info = init (a, calc_cond);

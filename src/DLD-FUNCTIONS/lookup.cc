@@ -44,7 +44,7 @@ static
 bool
 contains_char (const std::string& str, char c)
 {
-  return (str.find (c) != std::string::npos 
+  return (str.find (c) != std::string::npos
           || str.find (std::toupper (c)) != std::string::npos);
 }
 
@@ -68,7 +68,7 @@ struct icmp_char_gt : public std::binary_function<char, char, bool>
 static bool
 stri_comp_lt (const std::string& a, const std::string& b)
 {
-  return std::lexicographical_compare (a.begin (), a.end (), 
+  return std::lexicographical_compare (a.begin (), a.end (),
                                        b.begin (), b.end (),
                                        icmp_char_lt());
 }
@@ -77,14 +77,14 @@ stri_comp_lt (const std::string& a, const std::string& b)
 static bool
 stri_comp_gt (const std::string& a, const std::string& b)
 {
-  return std::lexicographical_compare (a.begin (), a.end (), 
+  return std::lexicographical_compare (a.begin (), a.end (),
                                        b.begin (), b.end (),
                                        icmp_char_gt());
 }
 #endif
 
 template <class T>
-inline sortmode 
+inline sortmode
 get_sort_mode (const Array<T>& array,
                typename octave_sort<T>::compare_fcn_type desc_comp
                = octave_sort<T>::descending_compare)
@@ -97,7 +97,7 @@ get_sort_mode (const Array<T>& array,
 }
 
 // FIXME: perhaps there should be octave_value::lookup?
-// The question is, how should it behave w.r.t. the second argument's type. 
+// The question is, how should it behave w.r.t. the second argument's type.
 // We'd need a dispatch on two arguments. Hmmm...
 
 #define INT_ARRAY_LOOKUP(TYPE) \
@@ -108,7 +108,7 @@ get_sort_mode (const Array<T>& array,
                                 match_idx, match_bool);
 template <class ArrayT>
 static octave_value
-do_numeric_lookup (const ArrayT& array, const ArrayT& values, 
+do_numeric_lookup (const ArrayT& array, const ArrayT& values,
                    bool left_inf, bool right_inf,
                    bool match_idx, bool match_bool)
 {
@@ -141,7 +141,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
               ridx.xelem (i) = (j != 0 && values(i) == array(j-1)) ? j : 0;
             }
 
-          retval = ridx; 
+          retval = ridx;
         }
       else if (left_inf && right_inf)
         {
@@ -233,7 +233,7 @@ For numeric lookups\n\
 the rightmost subinterval shall be extended to infinity (i.e., all indices\n\
 at most n-1).\n\
 @end table\n\
-@end deftypefn") 
+@end deftypefn")
 {
   octave_value retval;
 
@@ -282,12 +282,12 @@ at most n-1).\n\
   if (error_state)
     return retval;
 
-  if (num_case) 
+  if (num_case)
     {
 
       // In the case of a complex array, absolute values will be used for compatibility
       // (though it's not too meaningful).
-      
+
       if (table.is_complex_type ())
         table = table.abs ();
 
@@ -347,7 +347,7 @@ at most n-1).\n\
 
           retval = match;
         }
-      else if (match_idx) 
+      else if (match_idx)
         {
           NDArray ridx (idx.dims ());
           if (match_idx)
@@ -369,7 +369,7 @@ at most n-1).\n\
 
   return retval;
 
-}  
+}
 
 /*
 %!assert (lookup(1:3, 0.5), 0)     # value before table

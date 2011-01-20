@@ -131,14 +131,14 @@ octave_fcn_handle::subsref (const std::string& type,
 }
 
 octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout, 
+octave_fcn_handle::do_multi_index_op (int nargout,
                                       const octave_value_list& args)
 {
   return do_multi_index_op (nargout, args, 0);
 }
 
 octave_value_list
-octave_fcn_handle::do_multi_index_op (int nargout, 
+octave_fcn_handle::do_multi_index_op (int nargout,
                                       const octave_value_list& args,
                                       const std::list<octave_lvalue>* lvalue_list)
 {
@@ -190,7 +190,7 @@ octave_fcn_handle::do_multi_index_op (int nargout,
   return retval;
 }
 
-bool 
+bool
 octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
 {
   bool retval = fcn.is_copy_of (h.fcn) && (has_overloads == h.has_overloads);
@@ -210,7 +210,7 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
 }
 
 bool
-octave_fcn_handle::set_fcn (const std::string &octaveroot, 
+octave_fcn_handle::set_fcn (const std::string &octaveroot,
                             const std::string& fpath)
 {
   bool success = true;
@@ -221,8 +221,8 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
       && OCTAVE_EXEC_PREFIX != octaveroot)
     {
       // First check if just replacing matlabroot is enough
-      std::string str = OCTAVE_EXEC_PREFIX + 
-        fpath.substr (octaveroot.length ());                
+      std::string str = OCTAVE_EXEC_PREFIX +
+        fpath.substr (octaveroot.length ());
       file_stat fs (str);
 
       if (fs.exists ())
@@ -445,12 +445,12 @@ octave_fcn_handle::load_ascii (std::istream& is)
       if (is && success)
         {
           int parse_status;
-          octave_value anon_fcn_handle = 
+          octave_value anon_fcn_handle =
             eval_string (buf, true, parse_status);
 
           if (parse_status == 0)
             {
-              octave_fcn_handle *fh = 
+              octave_fcn_handle *fh =
                 anon_fcn_handle.fcn_handle_value ();
 
               if (fh)
@@ -586,7 +586,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // defines the anonymous function.
 
       symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
-      frame.add_fcn (symbol_table::erase_scope, local_scope);         
+      frame.add_fcn (symbol_table::erase_scope, local_scope);
 
       symbol_table::set_scope (local_scope);
 
@@ -601,8 +601,8 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               bool dummy;
               std::string doc;
 
-              std::string name = 
-                read_binary_data (is, swap, fmt, std::string (), 
+              std::string name =
+                read_binary_data (is, swap, fmt, std::string (),
                                   dummy, t2, doc);
 
               if (!is)
@@ -618,7 +618,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       if (is && success)
         {
           int parse_status;
-          octave_value anon_fcn_handle = 
+          octave_value anon_fcn_handle =
             eval_string (ctmp2, true, parse_status);
 
           if (parse_status == 0)
@@ -657,7 +657,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
       success = set_fcn (octaveroot, fpath);
      }
- 
+
  return success;
 }
 
@@ -699,7 +699,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
@@ -762,7 +762,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
             {
 #if HAVE_HDF5_18
               hid_t a_id = H5Acreate (group_hid, "SYMBOL_TABLE",
-                                      H5T_NATIVE_IDX, as_id, 
+                                      H5T_NATIVE_IDX, as_id,
                                       H5P_DEFAULT, H5P_DEFAULT);
 
 #else
@@ -788,7 +788,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 #else
           data_hid = H5Gcreate (group_hid, "symbol table", 0);
 #endif
-          if (data_hid < 0) 
+          if (data_hid < 0)
             {
               H5Sclose (space_hid);
               H5Tclose (type_hid);
@@ -865,7 +865,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       H5Tset_size (type_hid, fpath.length () + 1);
 
 #if HAVE_HDF5_18
-      a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, 
+      a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT);
 #else
       a_id = H5Acreate (group_hid, "FILE", type_hid, space_hid, H5P_DEFAULT);
@@ -1092,9 +1092,9 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
         {
           hsize_t num_obj = 0;
 #if HAVE_HDF5_18
-          data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT); 
+          data_hid = H5Gopen (group_hid, "symbol table", H5P_DEFAULT);
 #else
-          data_hid = H5Gopen (group_hid, "symbol table"); 
+          data_hid = H5Gopen (group_hid, "symbol table");
 #endif
           H5Gget_num_objs (data_hid, &num_obj);
           H5Gclose (data_hid);
@@ -1127,7 +1127,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
       if (success)
         {
           int parse_status;
-          octave_value anon_fcn_handle = 
+          octave_value anon_fcn_handle =
             eval_string (fcn_tmp, true, parse_status);
 
           if (parse_status == 0)
@@ -1250,7 +1250,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 
 #endif
 
-/* 
+/*
 
 %!test
 %! a = 2;
@@ -1472,7 +1472,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
   // Here we are just looking to see if FCN is a method or constructor
   // for any class.
-  if (local_funcs && fptr 
+  if (local_funcs && fptr
       && (fptr->is_subfunction () || fptr->is_private_function ()
           || fptr->is_class_constructor ()))
     {
@@ -1600,7 +1600,7 @@ Return a struct containing information about the function handle\n\
                       Cell parentage (dim_vector (1, 2));
                       parentage.elem(0) = fh_nm;
                       parentage.elem(1) = fcn->parent_fcn_name ();
-                      m.setfield ("parentage", octave_value (parentage)); 
+                      m.setfield ("parentage", octave_value (parentage));
                     }
                   else if (fcn->is_private_function ())
                     m.setfield ("type", "private");
@@ -1736,10 +1736,10 @@ are ignored in the lookup.\n\
 %! assert (testrecursionfunc (@(x) x, 1), 8);
 */
 
-octave_fcn_binder::octave_fcn_binder (const octave_value& f, 
+octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       const octave_value& root,
-                                      const octave_value_list& templ, 
-                                      const std::vector<int>& mask, 
+                                      const octave_value_list& templ,
+                                      const std::vector<int>& mask,
                                       int exp_nargin)
 : octave_fcn_handle (f), root_handle (root), arg_template (templ),
   arg_mask (mask), expected_nargin (exp_nargin)
@@ -1753,15 +1753,15 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
   octave_user_function *usr_fcn = f.user_function_value (false);
   tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
-  
+
   // Verify that the body is a single expression (always true in theory).
-  
+
   tree_statement_list *cmd_list = usr_fcn ? usr_fcn->body () : 0;
-  tree_expression *body_expr = (cmd_list->length () == 1 
+  tree_expression *body_expr = (cmd_list->length () == 1
                                 ? cmd_list->front ()->expression () : 0);
 
 
-  if (body_expr && body_expr->is_index_expression () 
+  if (body_expr && body_expr->is_index_expression ()
       && ! (param_list && param_list->takes_varargs ()))
     {
       // It's an index expression.
@@ -1873,7 +1873,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                   assert (arg_names.size () == 1);
                   arg_template.stash_name_tags (arg_names.front ());
 
-                  retval = new octave_fcn_binder (f, root_val, arg_template, 
+                  retval = new octave_fcn_binder (f, root_val, arg_template,
                                                   arg_mask, npar);
                 }
             }
@@ -1887,14 +1887,14 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 }
 
 octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout, 
+octave_fcn_binder::do_multi_index_op (int nargout,
                                       const octave_value_list& args)
 {
   return do_multi_index_op (nargout, args, 0);
 }
 
 octave_value_list
-octave_fcn_binder::do_multi_index_op (int nargout, 
+octave_fcn_binder::do_multi_index_op (int nargout,
                                       const octave_value_list& args,
                                       const std::list<octave_lvalue>* lvalue_list)
 {

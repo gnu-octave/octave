@@ -337,7 +337,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 
       double f = 0.0;
 
-      // FIXME -- this assumes the system font is Helvetica 10pt 
+      // FIXME -- this assumes the system font is Helvetica 10pt
       //          (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
       f = 12.0 * res / 74.951;
 
@@ -666,7 +666,7 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
     {
       double e = double (data[i]);
 
-      // Don't need to test for NaN here as NaN>x and NaN<x is always false 
+      // Don't need to test for NaN here as NaN>x and NaN<x is always false
       if (! xisinf (e))
         {
           if (e < emin)
@@ -900,7 +900,7 @@ color_values::str2rgb (std::string str)
   else if (str.compare(0, len, "white", 0, len) == 0
            || str.compare(0, len, "w", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
-  else  
+  else
     retval = false;
 
   if (retval)
@@ -945,7 +945,7 @@ color_property::do_set (const octave_value& val)
               else
                 error ("invalid value for color property \"%s\" (value = %s)",
                        get_name ().c_str (), s.c_str ());
-            }   
+            }
         }
       else
         error ("invalid value for color property \"%s\"",
@@ -972,7 +972,7 @@ color_property::do_set (const octave_value& val)
         error ("invalid value for color property \"%s\"",
            get_name ().c_str ());
     }
-  else 
+  else
     error ("invalid value for color property \"%s\"",
            get_name ().c_str ());
 
@@ -1010,7 +1010,7 @@ double_radio_property::do_set (const octave_value& val)
           return true;
         }
     }
-  else 
+  else
     error ("invalid value for double_radio property \"%s\"",
            get_name ().c_str ());
 
@@ -1185,14 +1185,14 @@ handle_property::do_set (const octave_value& v)
   return false;
 }
 
-Matrix 
+Matrix
 children_property::do_get_children (bool return_hidden) const
 {
   Matrix retval (children_list.size (), 1);
   octave_idx_type k = 0;
 
   graphics_object go = gh_manager::get_object (0);
-          
+
   root_figure::properties& props =
     dynamic_cast<root_figure::properties&> (go.get_properties ());
 
@@ -1220,11 +1220,11 @@ children_property::do_get_children (bool return_hidden) const
            p != children_list.end (); p++)
         retval(k++) = *p;
     }
-      
+
   return retval;
 }
 
-void 
+void
 children_property::do_delete_children (bool clear)
 {
   for (children_list_iterator p = children_list.begin ();
@@ -1422,7 +1422,7 @@ property::create (const std::string& name, const graphics_handle& h,
         error ("addproperty: unsupported type for dynamic property (= %s)",
                type.c_str ());
     }
-  
+
   return retval;
 }
 
@@ -1603,7 +1603,7 @@ property_list::as_struct (const std::string& prefix_arg) const
         m.assign (prefix + q->first, q->second);
     }
 
-  return m;    
+  return m;
 }
 
 graphics_handle::graphics_handle (const octave_value& a)
@@ -1862,7 +1862,7 @@ gh_manager::do_free (const graphics_handle& h)
           if (p != handle_map.end ())
             {
               base_properties& bp = p->second.get_properties ();
-              
+
               bp.set_beingdeleted (true);
 
               bp.delete_children ();
@@ -1876,7 +1876,7 @@ gh_manager::do_free (const graphics_handle& h)
               if (toolkit)
                 toolkit.finalize (p->second);
 
-              // Note: this will be valid only for first explicitly 
+              // Note: this will be valid only for first explicitly
               // deleted object.  All its children will then have an
               // unknown graphics toolkit.
 
@@ -1941,7 +1941,7 @@ reparent (const octave_value& ov, const std::string& who,
       if (h.ok ())
         {
           graphics_object obj = gh_manager::get_object (h);
-          
+
           graphics_handle parent_h = obj.get_parent ();
 
           graphics_object parent_obj = gh_manager::get_object (parent_h);
@@ -2280,7 +2280,7 @@ base_properties::add_listener (const caseless_str& nm, const octave_value& v,
 }
 
 void
-base_properties::delete_listener (const caseless_str& nm, 
+base_properties::delete_listener (const caseless_str& nm,
                                   const octave_value& v, listener_mode mode)
 {
   property p = get_property (nm);
@@ -2477,7 +2477,7 @@ base_graphics_object::values_as_string (void)
   if (valid_object ())
     {
       octave_map m = get ().map_value ();
-  
+
       for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
         {
           if (pa->first != "children")
@@ -2486,7 +2486,7 @@ base_graphics_object::values_as_string (void)
 
               if (p.ok () && ! p.is_hidden ())
                 {
-                  retval += "\n\t" + std::string (pa->first) + ":  "; 
+                  retval += "\n\t" + std::string (pa->first) + ":  ";
                   if (p.is_radio ())
                     retval += p.values_as_string ();
                 }
@@ -2509,7 +2509,7 @@ base_graphics_object::values_as_struct (void)
   if (valid_object ())
     {
       octave_scalar_map m = get ().scalar_map_value ();
-  
+
       for (octave_scalar_map::const_iterator pa = m.begin ();
            pa != m.end (); pa++)
         {
@@ -2650,7 +2650,7 @@ root_figure::properties::remove_child (const graphics_handle& gh)
   graphics_handle cf = gh_manager::current_figure ();
 
   xset (0, "currentfigure", cf.value ());
-  
+
   base_properties::remove_child (gh);
 }
 
@@ -2667,7 +2667,7 @@ reset_default_properties (property_list& default_properties)
     {
       const property_list::pval_map_type pval_map = p->second;
       std::string prefix = p->first;
-      
+
       for (property_list::pval_map_const_iterator q = pval_map.begin ();
            q != pval_map.end ();
            q++)
@@ -2676,8 +2676,8 @@ reset_default_properties (property_list& default_properties)
 
           if (prefix == "axes" && (s == "position" || s == "units"))
             new_defaults.set (prefix + s, q->second);
-          else if (prefix == "figure" && (s == "position" || s == "units" 
-                                          || s == "windowstyle" 
+          else if (prefix == "figure" && (s == "position" || s == "units"
+                                          || s == "windowstyle"
                                           || s == "paperunits"))
             new_defaults.set (prefix + s, q->second);
         }
@@ -2853,14 +2853,14 @@ figure::properties::set_papertype (const octave_value& v)
 
 static Matrix
 papersize_from_type (const caseless_str punits, const caseless_str typ)
-{ 
+{
   Matrix ret (1, 2, 1.0);
 
   if (! punits.compare ("normalized"))
     {
       double in2units;
       double mm2units;
-      
+
       if (punits.compare ("inches"))
         {
           in2units = 1.0;
@@ -3003,7 +3003,7 @@ papersize_from_type (const caseless_str punits, const caseless_str typ)
           ret (1) = 43.0 * in2units;
         }
     }
- 
+
   return ret;
 }
 
@@ -3012,7 +3012,7 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
 {
   Matrix pos = get_paperposition ().matrix_value ();
   Matrix sz = get_papersize ().matrix_value ();
-  
+
   pos (0) = pos (0) / sz(0);
   pos (1) = pos (1) / sz(1);
   pos (2) = pos (2) / sz(0);
@@ -3063,7 +3063,7 @@ figure::properties::update_papertype (void)
   caseless_str typ = get_papertype ();
 
   if (! typ.compare ("<custom>"))
-    // Call papersize.set rather than set_papersize to avoid loops between 
+    // Call papersize.set rather than set_papersize to avoid loops between
     // update_papersize and update_papertype
     papersize.set (octave_value (papersize_from_type (get_paperunits (), typ)));
 }
@@ -3202,7 +3202,7 @@ axes::properties::init (void)
   xset (ylabel.handle_value (), "rotationmode", "auto");
 
   xset (zlabel.handle_value (), "visible", "off");
-  
+
   xset (xlabel.handle_value (), "clipping", "off");
   xset (ylabel.handle_value (), "clipping", "off");
   xset (zlabel.handle_value (), "clipping", "off");
@@ -3214,7 +3214,7 @@ axes::properties::init (void)
   adopt (title.handle_value ());
 }
 
-void 
+void
 axes::properties::sync_positions (void)
 {
 #if 0
@@ -3350,11 +3350,11 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xlim = tlim;
   ylim = tlim;
   zlim = tlim;
-  
+
   Matrix cl (1, 2, 0);
   cl(1) = 1;
   clim = cl;
-  
+
   xlimmode = "auto";
   ylimmode = "auto";
   zlimmode = "auto";
@@ -3471,7 +3471,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (ylabel.handle_value (), "rotationmode", "auto");
 
   xset (zlabel.handle_value (), "visible", "off");
-  
+
   xset (xlabel.handle_value (), "clipping", "off");
   xset (ylabel.handle_value (), "clipping", "off");
   xset (zlabel.handle_value (), "clipping", "off");
@@ -3687,9 +3687,9 @@ axes::properties::update_camera (void)
   double xo = xlimits(xd > 0 ? 0 : 1);
   double yo = ylimits(yd > 0 ? 0 : 1);
   double zo = zlimits(zd > 0 ? 0 : 1);
-  
+
   Matrix pb  = get_plotboxaspectratio ().matrix_value ();
-  
+
   bool autocam = (camerapositionmode_is ("auto")
                   && cameratargetmode_is ("auto")
                   && cameraupvectormode_is ("auto")
@@ -3700,7 +3700,7 @@ axes::properties::update_camera (void)
   ColumnVector c_eye (xform_vector ());
   ColumnVector c_center (xform_vector ());
   ColumnVector c_upv (xform_vector ());
-  
+
   if (cameratargetmode_is ("auto"))
     {
       c_center(0) = (xlimits(0)+xlimits(1))/2;
@@ -3711,7 +3711,7 @@ axes::properties::update_camera (void)
     }
   else
     c_center = cam2xform (get_cameratarget ().matrix_value ());
-  
+
   if (camerapositionmode_is ("auto"))
     {
       Matrix tview = get_view ().matrix_value ();
@@ -3762,7 +3762,7 @@ axes::properties::update_camera (void)
   Matrix x_viewport = xform_matrix ();
   Matrix x_normrender = xform_matrix ();
   Matrix x_pre = xform_matrix ();
-  
+
   x_render = xform_matrix ();
   x_render_inv = xform_matrix ();
 
@@ -3774,7 +3774,7 @@ axes::properties::update_camera (void)
 
   xform (c_eye, x_pre);
   xform (c_center, x_pre);
-  scale (c_upv, pb(0)/(xlimits(1)-xlimits(0)), pb(1)/(ylimits(1)-ylimits(0)), 
+  scale (c_upv, pb(0)/(xlimits(1)-xlimits(0)), pb(1)/(ylimits(1)-ylimits(0)),
          pb(2)/(zlimits(1)-zlimits(0)));
   translate (c_center, -c_eye(0), -c_eye(1), -c_eye(2));
 
@@ -4365,7 +4365,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
   return retval;
 }
 
-void 
+void
 axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& ticks,
                                        bool limmode_is_auto, bool is_logscale)
@@ -4378,7 +4378,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   double lo = (lims.get ().matrix_value ()) (0);
   double hi = (lims.get ().matrix_value ()) (1);
   // FIXME should this be checked for somewhere else? (i.e. set{x,y,z}lim)
-  if (hi < lo) 
+  if (hi < lo)
     {
       double tmp = hi;
       hi = lo;
@@ -4404,7 +4404,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
       tmp_lims(0) = tick_sep * i1;
       tmp_lims(1) = tick_sep * i2;
 
-      if (is_logscale) 
+      if (is_logscale)
         {
           tmp_lims(0) = std::pow (10.,tmp_lims(0));
           tmp_lims(1) = std::pow (10.,tmp_lims(1));
@@ -4419,9 +4419,9 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
       i1 = static_cast<int> (std::ceil (lo / tick_sep));
       i2 = static_cast<int> (gnulib::floor (hi / tick_sep));
     }
-      
+
   Matrix tmp_ticks (1, i2-i1+1);
-  for (int i = 0; i <= i2-i1; i++) 
+  for (int i = 0; i <= i2-i1; i++)
     {
       tmp_ticks (i) = tick_sep * (i+i1);
       if (is_logscale)
@@ -4484,7 +4484,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             }
         }
       break;
-    
+
     case 'z':
       for (octave_idx_type i = 0; i < n; i++)
         {
@@ -4498,7 +4498,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             }
         }
       break;
-    
+
     case 'c':
       for (octave_idx_type i = 0; i < n; i++)
         {
@@ -4512,7 +4512,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             }
         }
       break;
-    
+
     case 'a':
       for (octave_idx_type i = 0; i < n; i++)
         {
@@ -4542,7 +4542,7 @@ axes::update_axis_limits (const std::string& axis_type,
     return;
 
   Matrix kids = Matrix (1, 1, h.value ());
- 
+
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
@@ -4583,7 +4583,7 @@ axes::update_axis_limits (const std::string& axis_type,
           FIX_LIMITS ;
 
           get_children_limits (min_val, max_val, min_pos, kids, 'x');
-          
+
           limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
                                                 xproperties.xscale_is ("log"));
 
@@ -4749,7 +4749,7 @@ axes::update_axis_limits (const std::string& axis_type)
       if (xproperties.xlimmode_is ("auto"))
         {
           get_children_limits (min_val, max_val, min_pos, kids, 'x');
-          
+
           limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
                                                 xproperties.xscale_is ("log"));
 
@@ -4885,7 +4885,7 @@ double force_in_range (const double x, const double lower, const double upper)
   else if (x > upper)
     { return upper; }
   else
-    { return x; }  
+    { return x; }
 }
 
 void
@@ -4895,7 +4895,7 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   // FIXME: Do we need error checking here?
   Matrix xlims = get_xlim ().matrix_value ();
   Matrix ylims = get_ylim ().matrix_value ();
-              
+
   // Get children axes limits
   Matrix kids = get_children ();
   double minx = octave_Inf;
@@ -4907,13 +4907,13 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double maxy = -octave_Inf;
   double min_pos_y = octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, kids, 'y');
-              
+
   // Perform the zooming
   xlims (0) = x + factor * (xlims (0) - x);
   xlims (1) = x + factor * (xlims (1) - x);
   ylims (0) = y + factor * (ylims (0) - y);
   ylims (1) = y + factor * (ylims (1) - y);
-              
+
   zoom (xlims, ylims, push_to_zoom_stack);
 }
 
@@ -4927,7 +4927,7 @@ axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_st
       zoom_stack.push_front (ylimmode.get ());
       zoom_stack.push_front (ylim.get ());
     }
-  
+
   xlim = xl;
   xlimmode = "manual";
   ylim = yl;
@@ -4944,24 +4944,24 @@ axes::properties::translate_view (double delta_x, double delta_y)
   // FIXME: Do we need error checking here?
   Matrix xlims = get_xlim ().matrix_value ();
   Matrix ylims = get_ylim ().matrix_value ();
-              
+
   // Get children axes limits
   Matrix kids = get_children ();
   double minx = octave_Inf;
   double maxx = -octave_Inf;
   double min_pos_x = octave_Inf;
   get_children_limits (minx, maxx, min_pos_x, kids, 'x');
-        
+
   double miny = octave_Inf;
   double maxy = -octave_Inf;
   double min_pos_y = octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, kids, 'y');
-  
+
   xlims (0) += delta_x;
   xlims (1) += delta_x;
   ylims (0) += delta_y;
   ylims (1) += delta_y;
- 
+
   zoom (xlims, ylims, false);
 }
 
@@ -5091,7 +5091,7 @@ text::properties::update_text_extent (void)
     halign = 1;
   else if (horizontalalignment_is ("right"))
     halign = 2;
-  
+
   if (verticalalignment_is ("top"))
     valign = 2;
   else if (verticalalignment_is ("baseline"))
@@ -5256,7 +5256,7 @@ surface::properties::update_normals (void)
 
 // ---------------------------------------------------------------------
 
-void 
+void
 hggroup::properties::update_limits (void) const
 {
   graphics_object obj = gh_manager::get_object (__myhandle__);
@@ -5271,7 +5271,7 @@ hggroup::properties::update_limits (void) const
     }
 }
 
-void 
+void
 hggroup::properties::update_limits (const graphics_handle& h) const
 {
   graphics_object obj = gh_manager::get_object (__myhandle__);
@@ -5296,7 +5296,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
     return;
 
   Matrix kids = Matrix (1, 1, h.value ());
- 
+
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
@@ -5412,7 +5412,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
   if (axis_type == "xlim" || axis_type == "xliminclude")
     {
       get_children_limits (min_val, max_val, min_pos, kids, 'x');
-          
+
       update_type = 'x';
     }
   else if (axis_type == "ylim" || axis_type == "yliminclude")
@@ -5520,7 +5520,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
   base_graphics_object *go = 0;
 
   go = make_graphics_object_from_type (go_name, h, p);
-  
+
   if (go)
     {
       graphics_object obj (go);
@@ -5555,7 +5555,7 @@ gh_manager::do_make_figure_handle (double val)
   graphics_toolkit toolkit = go->get_toolkit ();
   if (toolkit)
     toolkit.initialize (obj);
-  
+
   return h;
 }
 
@@ -5731,7 +5731,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   if (true)
     {
       gh_manager::autolock guard;
-  
+
       callback_objects.push_front (get_object (h));
       xset_gcbo (h);
     }
@@ -5773,7 +5773,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
   if (fcn && ! error_state)
     feval (fcn, args);
-  
+
   END_INTERRUPT_WITH_EXCEPTIONS;
 }
 
@@ -5858,7 +5858,7 @@ gh_manager::do_process_events (bool force)
           if (callback_objects.empty () || force)
             {
               e = event_queue.front ();
-              
+
               event_queue.pop_front ();
             }
           else
@@ -5954,7 +5954,7 @@ are not reset.\n\
       if (! error_state)
         {
           // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.length (); n++) 
+          for (octave_idx_type n = 0; n < hcv.length (); n++)
             gh_manager::get_object (hcv(n)).reset_default_properties ();
         }
     }
@@ -6013,7 +6013,7 @@ the dimensions of @var{pv}.\n\
           bool request_drawnow = false;
 
           // loop over graphics objects
-          for (octave_idx_type n = 0; n < hcv.length (); n++) 
+          for (octave_idx_type n = 0; n < hcv.length (); n++)
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
 
@@ -6522,7 +6522,7 @@ Undocumented internal function.\n\
 
               if (! h.ok ())
                 {
-                  error ("delete: invalid graphics object (= %g)", 
+                  error ("delete: invalid graphics object (= %g)",
                          vals.elem (i));
                   break;
                 }
@@ -6543,17 +6543,17 @@ Undocumented internal function.\n\
                         {
                           graphics_handle parent_h = obj.get_parent ();
 
-                          graphics_object parent_obj = 
+                          graphics_object parent_obj =
                             gh_manager::get_object (parent_h);
 
                           // NOTE: free the handle before removing it from its
-                          //       parent's children, such that the object's 
+                          //       parent's children, such that the object's
                           //       state is correct when the deletefcn callback
                           //       is executed
 
                           gh_manager::free (h);
 
-                          // A callback function might have already deleted 
+                          // A callback function might have already deleted
                           // the parent
                           if (parent_obj.valid_object ())
                             parent_obj.remove_child (h);
@@ -6716,7 +6716,7 @@ Internal function: returns the pixel size of the image in normalized units.\n\
             {
               image::properties& ip =
                 dynamic_cast<image::properties&> (fobj.get_properties ());
-              
+
               Matrix dp =  Matrix (1, 2, 0);
               dp(0, 0) = ip.pixel_xsize ();
               dp(0, 1) = ip.pixel_ysize ();

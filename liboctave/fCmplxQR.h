@@ -43,7 +43,7 @@ public:
 
   FloatComplexQR (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
-  FloatComplexQR (const FloatComplexMatrix& qx, const FloatComplexMatrix& rx) 
+  FloatComplexQR (const FloatComplexMatrix& qx, const FloatComplexMatrix& rx)
     : base_qr<FloatComplexMatrix> (qx, rx) { }
 
   FloatComplexQR (const FloatComplexQR& a) : base_qr<FloatComplexMatrix> (a) { }
@@ -70,7 +70,7 @@ public:
 
 protected:
 
-  void form (octave_idx_type n, FloatComplexMatrix& afact, 
+  void form (octave_idx_type n, FloatComplexMatrix& afact,
              FloatComplex *tau, qr_type_t qr_type);
 };
 

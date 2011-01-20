@@ -242,7 +242,7 @@ $S$.\n\
 
   if (nargin == 2)
     {
-      ord = args(1).string_value (); 
+      ord = args(1).string_value ();
 
       if (error_state)
         {
@@ -309,7 +309,7 @@ $S$.\n\
 
           if (! error_state)
             {
- 
+
               if (nargout == 0 || nargout == 1)
                 {
                   FloatComplexSCHUR result (ctmp, ord, false);
@@ -351,7 +351,7 @@ $S$.\n\
 
           if (! error_state)
             {
- 
+
               if (nargout == 0 || nargout == 1)
                 {
                   ComplexSCHUR result (ctmp, ord, false);
@@ -366,8 +366,8 @@ $S$.\n\
             }
         }
     }
- 
-  return retval; 
+
+  return retval;
 }
 
 /*

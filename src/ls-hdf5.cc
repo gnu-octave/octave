@@ -97,7 +97,7 @@ make_valid_identifier (const std::string& nm)
 // integer and floating-point binary data:
 #define HAVE_HDF5_INT2FLOAT_CONVERSIONS 0
 
-// Given two compound types t1 and t2, determine whether they 
+// Given two compound types t1 and t2, determine whether they
 // are compatible for reading/writing.  This function only
 // works for non-nested types composed of simple elements (ints, floats...),
 // which is all we need it for
@@ -169,7 +169,7 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
 }
 
 bool
-hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id, 
+hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id,
                       const char *attr_name, void *buf)
 {
   bool retval = false;
@@ -219,8 +219,8 @@ hdf5_get_scalar_attr (hid_t loc_id, hid_t type_id,
 
 // The following subroutines creates an HDF5 representations of the way
 // we will store Octave complex types (pairs of floating-point numbers).
-// NUM_TYPE is the HDF5 numeric type to use for storage (e.g. 
-// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary 
+// NUM_TYPE is the HDF5 numeric type to use for storage (e.g.
+// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary
 // conversions are handled automatically by HDF5.
 
 hid_t
@@ -266,7 +266,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       vname = make_valid_identifier (vname);
 
       // check again (in case vname was null, empty, or some such thing):
-      ident_valid = valid_identifier (vname); 
+      ident_valid = valid_identifier (vname);
     }
 
   H5Gget_objinfo (group_id, name, 1, &info);
@@ -305,7 +305,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
           if (type_class_id != H5T_STRING)
             goto done;
-          
+
           space_id = H5Dget_space (data_id);
           hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
@@ -322,7 +322,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           hid_t st_id = H5Tcopy (H5T_C_S1);
           H5Tset_size (st_id, slen);
 
-          if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+          if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                        typ) < 0)
             goto done;
 
@@ -348,7 +348,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
             d->tc = octave_value_typeinfo::lookup_type ("list");
           else
             d->tc = octave_value_typeinfo::lookup_type ("struct");
-          
+
           // check for OCTAVE_GLOBAL attribute:
           d->global = hdf5_check_attr (subgroup_id, "OCTAVE_GLOBAL");
 
@@ -374,7 +374,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
         }
 
       type_id = H5Dget_type (data_id);
-      
+
       type_class_id = H5Tget_class (type_id);
 
       if (type_class_id == H5T_FLOAT)
@@ -382,7 +382,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           space_id = H5Dget_space (data_id);
 
           hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-          
+
           if (rank == 0)
             d->tc = octave_value_typeinfo::lookup_type ("scalar");
           else
@@ -395,15 +395,15 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           // What integer type do we really have..
           std::string int_typ;
 #ifdef HAVE_H5T_GET_NATIVE_TYPE
-          // FIXME test this code and activated with an autoconf 
+          // FIXME test this code and activated with an autoconf
           // test!! It is also incorrect for 64-bit indexing!!
-          
+
           switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))
             {
             case H5T_NATIVE_CHAR:
               int_typ = "int8 ";
               break;
- 
+
             case H5T_NATIVE_SHORT:
               int_typ = "int16 ";
               break;
@@ -433,7 +433,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
             case H5T_NATIVE_ULLONG:
               int_typ = "uint64 ";
               break;
-            }   
+            }
 #else
           hid_t int_sign = H5Tget_sign (type_id);
 
@@ -469,7 +469,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
                       break;
 
                     default:
-                      warning ("load: can't read `%s' (unknown datatype)", 
+                      warning ("load: can't read `%s' (unknown datatype)",
                                name);
                       int_typ = "";
                       break;
@@ -485,7 +485,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
               space_id = H5Dget_space (data_id);
 
               hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-              
+
               if (rank == 0)
                 int_typ.append ("scalar");
               else
@@ -506,7 +506,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
               // read complex matrix or scalar variable
               space_id = H5Dget_space (data_id);
               hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-                  
+
               if (rank == 0)
                 d->tc = octave_value_typeinfo::lookup_type ("complex scalar");
               else
@@ -526,7 +526,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           warning ("load: can't read `%s' (unknown datatype)", name);
           retval = 0; // unknown datatype; skip
         }
-      
+
       // check for OCTAVE_GLOBAL attribute:
       d->global = hdf5_check_attr (data_id, "OCTAVE_GLOBAL");
 
@@ -547,7 +547,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
  done:
   if (retval < 0)
     error ("load: error while reading hdf5 item %s", name);
-  
+
   if (retval > 0)
     {
       // get documentation string, if any:
@@ -579,7 +579,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 // the name of the variable, or NULL if none were found or there was
 // and error.
 std::string
-read_hdf5_data (std::istream& is, const std::string& /* filename */, 
+read_hdf5_data (std::istream& is, const std::string& /* filename */,
                 bool& global, octave_value& tc, std::string& doc)
 {
   std::string retval;
@@ -593,9 +593,9 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
   hsize_t num_obj = 0;
 #if HAVE_HDF5_18
-  hid_t group_id = H5Gopen (hs.file_id, "/", H5P_DEFAULT); 
+  hid_t group_id = H5Gopen (hs.file_id, "/", H5P_DEFAULT);
 #else
-  hid_t group_id = H5Gopen (hs.file_id, "/"); 
+  hid_t group_id = H5Gopen (hs.file_id, "/");
 #endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
@@ -634,7 +634,7 @@ hdf5_add_attr (hid_t loc_id, const char *attr_name)
   if (as_id >= 0)
     {
 #if HAVE_HDF5_18
-      hid_t a_id = H5Acreate (loc_id, attr_name, H5T_NATIVE_UCHAR, 
+      hid_t a_id = H5Acreate (loc_id, attr_name, H5T_NATIVE_UCHAR,
                               as_id, H5P_DEFAULT, H5P_DEFAULT);
 #else
       hid_t a_id = H5Acreate (loc_id, attr_name,
@@ -670,7 +670,7 @@ hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
   if (as_id >= 0)
     {
 #if HAVE_HDF5_18
-      hid_t a_id = H5Acreate (loc_id, attr_name, type_id, 
+      hid_t a_id = H5Acreate (loc_id, attr_name, type_id,
                               as_id, H5P_DEFAULT, H5P_DEFAULT);
 #else
       hid_t a_id = H5Acreate (loc_id, attr_name,
@@ -718,10 +718,10 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   space_hid = H5Screate_simple (1, &sz, 0);
   if (space_hid < 0) return space_hid;
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_IDX, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -729,7 +729,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
       H5Sclose (space_hid);
       return data_hid;
     }
-  
+
   retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                      H5P_DEFAULT, dims) >= 0;
 
@@ -738,7 +738,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
 
   if (retval >= 0)
     retval = hdf5_add_attr (loc_id, "OCTAVE_EMPTY_MATRIX");
-  
+
   return (retval == 0 ? 1 : retval);
 }
 
@@ -764,7 +764,7 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
 
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, hdims);
 
-  retval = H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, 
+  retval = H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
                     H5P_DEFAULT, dims);
   if (retval >= 0)
     {
@@ -836,7 +836,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   // FIXME: diagonal & permutation matrices currently don't know how to save
   // themselves, so we convert them first to normal matrices using A = A(:,:).
   // This is a temporary hack.
-  if (val.is_diag_matrix () || val.is_perm_matrix () 
+  if (val.is_diag_matrix () || val.is_perm_matrix ()
       || val.type_id () == octave_lazy_index::static_type_id ())
     val = val.full_value ();
 
@@ -864,7 +864,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 #else
   data_type_id = H5Dcreate (data_id, "type",  type_id, space_id, H5P_DEFAULT);
 #endif
-  if (data_type_id < 0 || H5Dwrite (data_type_id, type_id, H5S_ALL, H5S_ALL, 
+  if (data_type_id < 0 || H5Dwrite (data_type_id, type_id, H5S_ALL, H5S_ALL,
                                     H5P_DEFAULT, t.c_str ()) < 0)
     goto error_cleanup;
 

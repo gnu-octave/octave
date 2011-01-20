@@ -46,14 +46,14 @@ DEFUN (issparse, args, ,
 @deftypefn {Loadable Function} {} issparse (@var{x})\n\
 Return true if @var{x} is a sparse matrix.\n\
 @seealso{ismatrix}\n\
-@end deftypefn") 
+@end deftypefn")
 {
-   if (args.length() != 1) 
+   if (args.length() != 1)
      {
        print_usage ();
        return octave_value ();
      }
-   else 
+   else
      return octave_value (args(0).is_sparse_type ());
 }
 

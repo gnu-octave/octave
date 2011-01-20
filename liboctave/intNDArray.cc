@@ -95,7 +95,7 @@ intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
 }
 
 template <class T>
-octave_idx_type 
+octave_idx_type
 intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
                               const dim_vector& dimensions)
 {

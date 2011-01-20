@@ -139,7 +139,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
 #define LSODE_ABORT() \
   return retval
- 
+
 #define LSODE_ABORT1(msg) \
   do \
     { \
@@ -313,7 +313,7 @@ parameters for @code{lsode}.\n\
                   lsode_fcn = extract_function
                     (c(0), "lsode", fcn_name, fname, "; endfunction");
                 }
-              
+
               if (lsode_fcn)
                 {
                   if (c(1).is_function_handle () || c(1).is_inline_function ())
@@ -495,46 +495,46 @@ parameters for @code{lsode}.\n\
 %!function xdot = f (x, t)
 %!  xdot = [-x(2); x(1)];
 %!test
-%! 
+%!
 %! x0 = [1; 0];
 %! xdot0 = [0; 1];
 %! t = (0:1:10)';
-%! 
+%!
 %! tol = 500 * lsode_options ("relative tolerance");
-%! 
-%! 
+%!
+%!
 %! x = lsode ("f", x0, t);
-%! 
+%!
 %! y = [cos(t), sin(t)];
-%! 
+%!
 %! assert(all (all (abs (x - y) < tol)));
 
 %!function xdotdot = f (x, t)
 %!  xdotdot = [x(2); -x(1)];
 %!test
-%! 
+%!
 %! x0 = [1; 0];
 %! t = [0; 2*pi];
 %! tol = 100 * dassl_options ("relative tolerance");
-%! 
+%!
 %! x = lsode ("f", x0, t);
-%! 
+%!
 %! y = [1, 0; 1, 0];
-%! 
+%!
 %! assert(all (all (abs (x - y) < tol)));
 
 %!function xdot = f (x, t)
 %!  xdot = x;
 %!test
-%! 
+%!
 %! x0 = 1;
 %! t = [0; 1];
 %! tol = 100 * dassl_options ("relative tolerance");
-%! 
+%!
 %! x = lsode ("f", x0, t);
-%! 
+%!
 %! y = [1; e];
-%! 
+%!
 %! assert(all (all (abs (x - y) < tol)));
 
 %!test

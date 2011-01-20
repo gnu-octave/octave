@@ -61,7 +61,7 @@ enum bsxfun_builtin_op
   bsxfun_num_builtin_ops = bsxfun_builtin_unknown
 };
 
-const char *bsxfun_builtin_names[] = 
+const char *bsxfun_builtin_names[] =
 {
   "plus",
   "minus",
@@ -80,7 +80,7 @@ const char *bsxfun_builtin_names[] =
   "power"
 };
 
-static bsxfun_builtin_op 
+static bsxfun_builtin_op
 bsxfun_builtin_lookup (const std::string& name)
 {
   for (int i = 0; i < bsxfun_num_builtin_ops; i++)
@@ -94,8 +94,8 @@ typedef octave_value (*bsxfun_handler) (const octave_value&, const octave_value&
 // Static table of handlers.
 bsxfun_handler bsxfun_handler_table[bsxfun_num_builtin_ops][btyp_num_types];
 
-template <class NDA, NDA (bsxfun_op) (const NDA&, const NDA&)> 
-static octave_value 
+template <class NDA, NDA (bsxfun_op) (const NDA&, const NDA&)>
+static octave_value
 bsxfun_forward_op (const octave_value& x, const octave_value& y)
 {
   NDA xa = octave_value_extract<NDA> (x);
@@ -103,8 +103,8 @@ bsxfun_forward_op (const octave_value& x, const octave_value& y)
   return octave_value (bsxfun_op (xa, ya));
 }
 
-template <class NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)> 
-static octave_value 
+template <class NDA, boolNDArray (bsxfun_rel) (const NDA&, const NDA&)>
+static octave_value
 bsxfun_forward_rel (const octave_value& x, const octave_value& y)
 {
   NDA xa = octave_value_extract<NDA> (x);
@@ -167,9 +167,9 @@ static void maybe_fill_table (void)
   REGISTER_OP_HANDLER (bsxfun_builtin_or, btyp_bool, boolNDArray, bsxfun_or);
 
   // Register power handlers.
-  bsxfun_handler_table[bsxfun_builtin_power][btyp_double] = 
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_double] =
     do_bsxfun_real_pow<NDArray, ComplexNDArray>;
-  bsxfun_handler_table[bsxfun_builtin_power][btyp_float] = 
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_float] =
     do_bsxfun_real_pow<FloatNDArray, FloatComplexNDArray>;
 
   REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray, bsxfun_pow);
@@ -221,7 +221,7 @@ maybe_optimized_builtin (const std::string& name,
 }
 
 static bool
-maybe_update_column (octave_value& Ac, const octave_value& A, 
+maybe_update_column (octave_value& Ac, const octave_value& A,
                      const dim_vector& dva, const dim_vector& dvc,
                      octave_idx_type i, octave_value_list &idx)
 {
@@ -345,7 +345,7 @@ dimensionality as the other matrix.\n\
       const octave_value A = args (1);
       const octave_value B = args (2);
 
-      if (func.is_builtin_function () 
+      if (func.is_builtin_function ()
           || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
         {
           // This may break if the default behavior is overriden. But if you override
@@ -368,7 +368,7 @@ dimensionality as the other matrix.\n\
           dim_vector dvb = B.dims ();
           octave_idx_type ndb = dvb.length ();
           octave_idx_type nd = nda;
-      
+
           if (nda > ndb)
               dvb.resize (nda, 1);
           else if (nda < ndb)
@@ -389,7 +389,7 @@ dimensionality as the other matrix.\n\
               // Find the size of the output
               dim_vector dvc;
               dvc.resize (nd);
-          
+
               for (octave_idx_type i = 0; i < nd; i++)
                 dvc (i) = (dva (i) < 1  ? dva (i) : (dvb (i) < 1 ? dvb (i) :
                       (dva (i) > dvb (i) ? dva (i) : dvb (i))));
@@ -399,14 +399,14 @@ dimensionality as the other matrix.\n\
                   octave_value_list inputs;
                   inputs (0) = A;
                   inputs (1) = B;
-                  retval = func.do_multi_index_op (1, inputs);  
+                  retval = func.do_multi_index_op (1, inputs);
                 }
               else if (dvc.numel () < 1)
                 {
                   octave_value_list inputs;
                   inputs (0) = A.resize (dvc);
                   inputs (1) = B.resize (dvc);
-                  retval = func.do_multi_index_op (1, inputs);  
+                  retval = func.do_multi_index_op (1, inputs);
                 }
               else
                 {
@@ -448,8 +448,8 @@ dimensionality as the other matrix.\n\
 
                       if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                         inputs (1) = Bc;
-                        
-                      octave_value_list tmp = func.do_multi_index_op (1, inputs);  
+
+                      octave_value_list tmp = func.do_multi_index_op (1, inputs);
 
                       if (error_state)
                         break;
@@ -479,7 +479,7 @@ dimensionality as the other matrix.\n\
                                   else
                                     {
                                       have_ComplexNDArray = true;
-                                      result_ComplexNDArray = 
+                                      result_ComplexNDArray =
                                         tmp(0).complex_array_value ();
                                       result_ComplexNDArray.resize (dvc);
                                     }
@@ -495,7 +495,7 @@ dimensionality as the other matrix.\n\
                                   else
                                     {
                                       have_ComplexNDArray = true;
-                                      result_ComplexNDArray = 
+                                      result_ComplexNDArray =
                                         tmp(0).complex_array_value ();
                                       result_ComplexNDArray.resize (dvc);
                                     }
@@ -519,7 +519,7 @@ dimensionality as the other matrix.\n\
                       else
                         {
                           update_index (ra_idx, dvc, i);
-                          
+
                           if (have_FloatNDArray ||
                               have_FloatComplexNDArray)
                             {
@@ -539,34 +539,34 @@ dimensionality as the other matrix.\n\
                                 }
                               else if (tmp(0).is_double_type ())
                                 {
-                                  if (tmp(0).is_complex_type () && 
+                                  if (tmp(0).is_complex_type () &&
                                       have_FloatNDArray)
                                     {
-                                      result_ComplexNDArray = 
+                                      result_ComplexNDArray =
                                         ComplexNDArray (result_FloatNDArray);
-                                      result_ComplexNDArray.insert 
+                                      result_ComplexNDArray.insert
                                         (tmp(0).complex_array_value(), ra_idx);
                                       have_FloatComplexNDArray = false;
                                       have_ComplexNDArray = true;
                                     }
                                   else
                                     {
-                                      result_NDArray = 
+                                      result_NDArray =
                                         NDArray (result_FloatNDArray);
-                                      result_NDArray.insert 
+                                      result_NDArray.insert
                                         (tmp(0).array_value(), ra_idx);
                                       have_FloatNDArray = false;
                                       have_NDArray = true;
                                     }
                                 }
                               else if (tmp(0).is_real_type ())
-                                result_FloatNDArray.insert 
+                                result_FloatNDArray.insert
                                   (tmp(0).float_array_value(), ra_idx);
                               else
                                 {
-                                  result_FloatComplexNDArray = 
+                                  result_FloatComplexNDArray =
                                     FloatComplexNDArray (result_FloatNDArray);
-                                  result_FloatComplexNDArray.insert 
+                                  result_FloatComplexNDArray.insert
                                     (tmp(0).float_complex_array_value(), ra_idx);
                                   have_FloatNDArray = false;
                                   have_FloatComplexNDArray = true;
@@ -581,13 +581,13 @@ dimensionality as the other matrix.\n\
                                   C = do_cat_op (C, tmp(0), ra_idx);
                                 }
                               else if (tmp(0).is_real_type ())
-                                result_NDArray.insert (tmp(0).array_value(), 
+                                result_NDArray.insert (tmp(0).array_value(),
                                                        ra_idx);
                               else
                                 {
-                                  result_ComplexNDArray = 
+                                  result_ComplexNDArray =
                                     ComplexNDArray (result_NDArray);
-                                  result_ComplexNDArray.insert 
+                                  result_ComplexNDArray.insert
                                     (tmp(0).complex_array_value(), ra_idx);
                                   have_NDArray = false;
                                   have_ComplexNDArray = true;
@@ -646,7 +646,7 @@ dimensionality as the other matrix.\n\
                 }
             }
         }
-    }   
+    }
 
   return retval;
 }

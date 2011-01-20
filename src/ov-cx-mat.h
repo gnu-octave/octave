@@ -128,7 +128,7 @@ public:
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool frc_str_conv = false) const;
-  
+
   SparseMatrix sparse_matrix_value (bool = false) const;
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
@@ -147,7 +147,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

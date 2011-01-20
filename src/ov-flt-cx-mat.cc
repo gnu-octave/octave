@@ -215,13 +215,13 @@ octave_float_complex_matrix::bool_array_value (bool warn) const
 {
   if (matrix.any_element_is_nan ())
     gripe_nan_to_logical_conversion ();
-  else if (warn && (! matrix.all_elements_are_real () 
+  else if (warn && (! matrix.all_elements_are_real ()
                     || real (matrix).any_element_not_one_or_zero ()))
     gripe_logical_conversion ();
 
   return mx_el_ne (matrix, FloatComplex (0.0));
 }
-  
+
 charNDArray
 octave_float_complex_matrix::char_array_value (bool frc_str_conv) const
 {
@@ -234,17 +234,17 @@ octave_float_complex_matrix::char_array_value (bool frc_str_conv) const
     {
       retval = charNDArray (dims ());
       octave_idx_type nel = numel ();
-  
+
       for (octave_idx_type i = 0; i < nel; i++)
         retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
     }
 
   return retval;
-}  
+}
 
-FloatComplexNDArray 
-octave_float_complex_matrix::float_complex_array_value (bool) const 
-{ 
+FloatComplexNDArray
+octave_float_complex_matrix::float_complex_array_value (bool) const
+{
   return FloatComplexNDArray (matrix);
 }
 
@@ -272,7 +272,7 @@ octave_value
 octave_float_complex_matrix::diag (octave_idx_type k) const
 {
   octave_value retval;
-  if (k == 0 && matrix.ndims () == 2 
+  if (k == 0 && matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     retval = FloatComplexDiagMatrix (DiagArray2<FloatComplex> (matrix));
   else
@@ -281,7 +281,7 @@ octave_float_complex_matrix::diag (octave_idx_type k) const
   return retval;
 }
 
-bool 
+bool
 octave_float_complex_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
@@ -298,7 +298,7 @@ octave_float_complex_matrix::save_ascii (std::ostream& os)
     }
   else
     {
-      // Keep this case, rather than use generic code above for backward 
+      // Keep this case, rather than use generic code above for backward
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
@@ -309,7 +309,7 @@ octave_float_complex_matrix::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_float_complex_matrix::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -404,7 +404,7 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_float_complex_matrix::save_binary (std::ostream& os, bool&)
 {
   dim_vector d = dims ();
@@ -435,7 +435,7 @@ octave_float_complex_matrix::save_binary (std::ostream& os, bool&)
   return true;
 }
 
-bool 
+bool
 octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -526,7 +526,7 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
     hdims[i] = dv (rank-i-1);
- 
+
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
 
@@ -537,7 +537,7 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   else
     {
       float max_val, min_val;
-      
+
       if (m.all_integers (max_val, min_val))
         save_type_hid
           = save_type_to_hdf5 (get_save_type (max_val, min_val));
@@ -551,7 +551,7 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
       return false;
     }
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
@@ -585,7 +585,7 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   return retval;
 }
 
-bool 
+bool
 octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -616,7 +616,7 @@ octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-  
+
   if (rank < 1)
     {
       H5Tclose (complex_type);
@@ -647,7 +647,7 @@ octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   FloatComplexNDArray m (dv);
   FloatComplex *reim = m.fortran_vec ();
   if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-               reim) >= 0) 
+               reim) >= 0)
     {
       retval = true;
       matrix = m;

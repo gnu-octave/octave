@@ -58,7 +58,7 @@ extern "C"
                              octave_idx_type*, const double*,
                              const double*, octave_idx_type&, double*,
                              const octave_idx_type&, octave_idx_type*,
-                             const octave_idx_type&, double*, 
+                             const octave_idx_type&, double*,
                              octave_idx_type*, dasrt_jac_ptr,
                              dasrt_constr_ptr, const octave_idx_type&,
                              octave_idx_type*);
@@ -130,7 +130,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
 static octave_idx_type
 ddasrt_g (const octave_idx_type& neq, const double& t, const double *state,
-          const octave_idx_type& ng, double *gout, double *, octave_idx_type *) 
+          const octave_idx_type& ng, double *gout, double *, octave_idx_type *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -444,7 +444,7 @@ DASRT::integrate (const ColumnVector& tout)
 }
 
 DASRT_result
-DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit) 
+DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   DASRT_result retval;
 

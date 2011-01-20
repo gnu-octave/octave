@@ -200,7 +200,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
 
   OCTAVE_LOCAL_BUFFER (const T *, x, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, scale, n);
-  
+
   const T *v = V.data ();
   T *vi = Vi.fortran_vec ();
   octave_idx_type Ni = Vi.numel ();
@@ -319,7 +319,7 @@ Undocumented internal function.\n\
 
       retval = lin_interpn<float, FloatNDArray> (n, X, V, Y);
     }
-  else  
+  else
     {
       OCTAVE_LOCAL_BUFFER (NDArray, X, n);
       OCTAVE_LOCAL_BUFFER (NDArray, Y, n);
@@ -349,7 +349,7 @@ Undocumented internal function.\n\
               return retval;
             }
         }
-      
+
       retval = lin_interpn<double, NDArray> (n, X, V, Y);
     }
 

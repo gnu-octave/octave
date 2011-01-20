@@ -194,7 +194,7 @@ octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 }
 
 template <class T>
-bool 
+bool
 octave_base_int_matrix<T>::load_ascii (std::istream& is)
 {
   int mdims = 0;
@@ -214,7 +214,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
 
           is >> tmp;
 
-          if (!is) 
+          if (!is)
             {
               error ("load: failed to load matrix constant");
               success = false;
@@ -235,7 +235,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
 }
 
 template <class T>
-bool 
+bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 {
   dim_vector d = this->dims ();
@@ -304,7 +304,7 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
     {
       int nel = dv.numel ();
       int bytes = nel / m.byte_size();
-      for (int i = 0; i < nel; i++) 
+      for (int i = 0; i < nel; i++)
         switch (bytes)
           {
           case 8:
@@ -346,15 +346,15 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
     hdims[i] = dv (rank-i-1);
- 
+
   space_hid = H5Screate_simple (rank, hdims, 0);
 
   if (space_hid < 0) return false;
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -393,7 +393,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-  
+
   if (rank < 1)
     {
       H5Sclose (space_id);
@@ -421,8 +421,8 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   T m (dv);
-  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL, 
-               H5P_DEFAULT, m.fortran_vec()) >= 0) 
+  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
+               H5P_DEFAULT, m.fortran_vec()) >= 0)
     {
       retval = true;
       this->matrix = m;
@@ -485,7 +485,7 @@ octave_base_int_scalar<T>::save_ascii (std::ostream& os)
 }
 
 template <class T>
-bool 
+bool
 octave_base_int_scalar<T>::load_ascii (std::istream& is)
 {
   is >> this->scalar;
@@ -498,7 +498,7 @@ octave_base_int_scalar<T>::load_ascii (std::istream& is)
 }
 
 template <class T>
-bool 
+bool
 octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 {
   os.write (reinterpret_cast<char *> (&(this->scalar)), this->byte_size());
@@ -506,7 +506,7 @@ octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 }
 
 template <class T>
-bool 
+bool
 octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
                                         oct_mach_info::float_format)
 {
@@ -549,13 +549,13 @@ octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   if (space_hid < 0) return false;
 
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       return false;
@@ -585,15 +585,15 @@ octave_base_int_scalar<T>::load_hdf5 (hid_t loc_id, const char *name)
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
   if (rank != 0)
-    { 
+    {
       H5Dclose (data_hid);
       return false;
     }
 
   T tmp;
-  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL, 
+  if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
                H5P_DEFAULT, &tmp) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       return false;
     }

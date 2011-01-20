@@ -46,7 +46,7 @@ public:
 
   boolNDArray (const dim_vector& dv, const bool& val)
     : Array<bool> (dv, val) { }
-  
+
   boolNDArray (const boolNDArray& a) : Array<bool> (a) { }
 
   boolNDArray (const boolMatrix& a) : Array<bool> (a) { }
@@ -63,7 +63,7 @@ public:
 
   boolNDArray operator ! (void) const;
 
-  boolNDArray& invert (void); 
+  boolNDArray& invert (void);
 
   bool any_element_is_nan (void) const { return false; }
 
@@ -114,9 +114,9 @@ NDS_CMP_OP_DECLS (boolNDArray, bool, OCTAVE_API)
 SND_BOOL_OP_DECLS (bool, boolNDArray, OCTAVE_API)
 SND_CMP_OP_DECLS (bool, boolNDArray, OCTAVE_API)
 
-extern OCTAVE_API boolNDArray& 
+extern OCTAVE_API boolNDArray&
 mx_el_and_assign (boolNDArray& m, const boolNDArray& a);
-extern OCTAVE_API boolNDArray& 
+extern OCTAVE_API boolNDArray&
 mx_el_or_assign (boolNDArray& m, const boolNDArray& a);
 
 BSXFUN_OP_DECL (and, boolNDArray, OCTAVE_API);

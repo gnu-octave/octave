@@ -42,7 +42,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   : ot_unix_time (), ot_usec ()
 {
   struct tm t;
-  
+
   t.tm_sec = tm.sec ();
   t.tm_min = tm.min ();
   t.tm_hour = tm.hour ();
@@ -152,7 +152,7 @@ octave_base_tm::strftime (const std::string& fmt) const
   if (! fmt.empty ())
     {
       struct tm t;
-  
+
       t.tm_sec = tm_sec;
       t.tm_min = tm_min;
       t.tm_hour = tm_hour;
@@ -204,7 +204,7 @@ octave_base_tm::init (void *p)
     return;
 
   struct tm *t = static_cast<struct tm*> (p);
-  
+
   tm_sec = t->tm_sec;
   tm_min = t->tm_min;
   tm_hour = t->tm_hour;

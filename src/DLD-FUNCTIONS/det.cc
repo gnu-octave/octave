@@ -75,7 +75,7 @@ For that, use any of the condition number functions: @code{cond},\n\
     }
 
   octave_value arg = args(0);
-    
+
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 

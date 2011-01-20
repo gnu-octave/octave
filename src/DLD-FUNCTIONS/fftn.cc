@@ -55,7 +55,7 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
   octave_value arg = args(0);
   dim_vector dims = arg.dims ();
-  
+
   for (int i = 0; i < dims.length (); i++)
     if (dims(i) < 0)
       return retval;

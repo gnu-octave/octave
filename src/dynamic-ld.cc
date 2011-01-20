@@ -386,7 +386,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
         ::error ("%s is not a valid shared library",
                  file_name.c_str ());
     }
-  
+
   return retval;
 }
 

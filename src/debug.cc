@@ -185,7 +185,7 @@ get_user_code (const std::string& fname = std::string ())
 }
 
 static void
-parse_dbfunction_params (const char *who, const octave_value_list& args, 
+parse_dbfunction_params (const char *who, const octave_value_list& args,
                          std::string& symbol_name, bp_table::intmap& lines)
 {
   int nargin = args.length ();
@@ -232,10 +232,10 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       else
         {
           const NDArray arg = args(i).array_value ();
-          
+
           if (error_state)
             break;
-          
+
           for (octave_idx_type j = 0; j < arg.nelem (); j++)
             {
               int line = static_cast<int> (arg.elem (j));
@@ -243,15 +243,15 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
                 break;
               lines[list_idx++] = line;
             }
-          
+
           if (error_state)
             break;
         }
-    } 
+    }
 }
 
 bp_table::intmap
-bp_table::do_add_breakpoint (const std::string& fname, 
+bp_table::do_add_breakpoint (const std::string& fname,
                              const bp_table::intmap& line)
 {
   intmap retval;
@@ -293,8 +293,8 @@ bp_table::do_add_breakpoint (const std::string& fname,
 }
 
 
-int 
-bp_table::do_remove_breakpoint (const std::string& fname, 
+int
+bp_table::do_remove_breakpoint (const std::string& fname,
                                 const bp_table::intmap& line)
 {
   int retval = 0;
@@ -350,13 +350,13 @@ bp_table::do_remove_breakpoint (const std::string& fname,
 
 
 bp_table::intmap
-bp_table::do_remove_all_breakpoints_in_file (const std::string& fname, 
+bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
                                              bool silent)
 {
   intmap retval;
 
   octave_user_code *dbg_fcn = get_user_code (fname);
-  
+
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
@@ -387,7 +387,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
   return retval;
 }
 
-void 
+void
 bp_table::do_remove_all_breakpoints (void)
 {
   for (const_bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
@@ -397,8 +397,8 @@ bp_table::do_remove_all_breakpoints (void)
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 }
 
-std::string 
-do_find_bkpt_list (octave_value_list slist, 
+std::string
+do_find_bkpt_list (octave_value_list slist,
                    std::string match)
 {
   std::string retval;
@@ -435,15 +435,15 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
               if (cmds)
                 {
                   octave_value_list bkpts = cmds->list_breakpoints ();
-                  octave_idx_type len = bkpts.length (); 
+                  octave_idx_type len = bkpts.length ();
 
                   if (len > 0)
                     {
                       bp_table::intmap bkpts_vec;
-                      
+
                       for (int i = 0; i < len; i++)
                         bkpts_vec[i] = bkpts (i).double_value ();
-                      
+
                       std::string symbol_name = f->name ();
 
                       retval[symbol_name] = bkpts_vec;
@@ -457,7 +457,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
 }
 
 static octave_value
-intmap_to_ov (const bp_table::intmap& line) 
+intmap_to_ov (const bp_table::intmap& line)
 {
   int idx = 0;
 
@@ -535,7 +535,7 @@ a breakpoint.  If you get the wrong line nothing will happen.\n\
   bp_table::intmap lines;
 
   parse_dbfunction_params ("dbclear", args, symbol_name, lines);
-      
+
   if (! error_state)
     bp_table::remove_breakpoint (symbol_name, lines);
 
@@ -596,7 +596,7 @@ mode this should be left out.\n\
 
       for (bp_table::fname_line_map_iterator it = bp_list.begin ();
            it != bp_list.end (); it++)
-        {         
+        {
           octave_stdout << "breakpoint in " << it->first << " at line(s) ";
 
           bp_table::intmap m = it->second;
@@ -701,10 +701,10 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
         {
           char ch;
           int line = 1;
-        
+
           if (line >= start && line <= end)
             os << line << "\t";
-        
+
           while (fs.get (ch))
             {
               if (line >= start && line <= end)
@@ -777,7 +777,7 @@ List script file with line numbers.\n\
 
                       int start = atoi (start_str.c_str ());
                       int end = atoi (end_str.c_str ());
-                
+
                       if (std::min (start, end) <= 0)
                         error ("dbtype: start and end lines must be >= 1\n");
 
@@ -809,7 +809,7 @@ List script file with line numbers.\n\
 
                   start = atoi (start_str.c_str ());
                   end = atoi (end_str.c_str ());
-                  
+
                 }
               else
                 {
@@ -819,7 +819,7 @@ List script file with line numbers.\n\
 
               if (std::min (start, end) <= 0)
                 error ("dbtype: start and end lines must be >= 1\n");
-              
+
               if (start <= end)
                 do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
               else
@@ -1010,7 +1010,7 @@ execution to continue until the current function returns.\n\
   if (Vdebugging)
     {
       int nargin = args.length ();
-      
+
       if (nargin > 1)
         print_usage ();
       else if (nargin == 1)

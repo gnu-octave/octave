@@ -76,7 +76,7 @@ octave_value_list::prepend (const octave_value& val)
     }
 
   elem (0) = val;
-  
+
   return *this;
 }
 
@@ -124,7 +124,7 @@ octave_value_list::reverse (void)
 octave_value_list
 octave_value_list::splice (octave_idx_type offset, octave_idx_type rep_length,
                            const octave_value_list& lst) const
-{ 
+{
   octave_value_list retval;
 
   octave_idx_type len = length ();
@@ -187,7 +187,7 @@ octave_value_list::all_scalars (void) const
       if (! dv.all_ones ())
         return false;
     }
-  
+
   return true;
 }
 

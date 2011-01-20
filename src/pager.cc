@@ -407,7 +407,7 @@ open_diary_file (void)
 
   // If there is pending output in the pager buf, it should not go
   // into the diary file.
- 
+
   octave_stdout.set_diary_skip ();
 
   external_diary_file.open (diary_file.c_str (), std::ios::app);
@@ -464,7 +464,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
           {
             write_to_diary_file = true;
             open_diary_file ();
-          }     
+          }
         else if (arg == "off")
           {
             close_diary_file ();

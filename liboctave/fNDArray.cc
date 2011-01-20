@@ -79,7 +79,7 @@ FloatNDArray::fourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::fft (in + k * stride * n, out + k * stride * n, 
+    octave_fftw::fft (in + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -109,7 +109,7 @@ FloatNDArray::ifourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::ifft (out + k * stride * n, out + k * stride * n, 
+    octave_fftw::ifft (out + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -293,7 +293,7 @@ FloatNDArray::ifourier (int dim) const
           F77_FUNC (cfftb, CFFTB) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i] / 
+            retval ((i + k*npts)*stride + j*dist) = tmp[i] /
               static_cast<float> (npts);
         }
     }
@@ -320,7 +320,7 @@ FloatNDArray::fourier2d (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -368,7 +368,7 @@ FloatNDArray::ifourier2d (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -387,7 +387,7 @@ FloatNDArray::ifourier2d (void) const
               F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] / 
+                retval ((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<float> (npts);
             }
         }
@@ -416,7 +416,7 @@ FloatNDArray::fourierNd (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -463,7 +463,7 @@ FloatNDArray::ifourierNd (void) const
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -883,5 +883,5 @@ BSXFUN_STDOP_DEFS_MXLOOP (FloatNDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (FloatNDArray)
 
 BSXFUN_OP_DEF_MXLOOP (pow, FloatNDArray, mx_inline_pow)
-BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatComplexNDArray, 
+BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatComplexNDArray,
                        FloatNDArray, mx_inline_pow)

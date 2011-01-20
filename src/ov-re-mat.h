@@ -80,7 +80,7 @@ public:
   octave_matrix (const octave_matrix& m)
     : octave_base_matrix<NDArray> (m) { }
 
-  octave_matrix (const Array<octave_idx_type>& idx, 
+  octave_matrix (const Array<octave_idx_type>& idx,
                  bool zero_based = false, bool cache_index = false)
     : octave_base_matrix<NDArray> (NDArray (idx, zero_based))
     {
@@ -90,8 +90,8 @@ public:
     }
 
   octave_matrix (const NDArray& nda, const idx_vector& cache)
-    : octave_base_matrix<NDArray> (nda) 
-    { 
+    : octave_base_matrix<NDArray> (nda)
+    {
       set_idx_cache (cache);
     }
 
@@ -161,13 +161,13 @@ public:
   FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;
-   
+
   FloatComplexNDArray float_complex_array_value (bool = false) const;
-   
+
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool = false) const;
-  
+
   NDArray array_value (bool = false) const { return matrix; }
 
   FloatNDArray float_array_value (bool = false) const { return matrix; }
@@ -209,7 +209,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

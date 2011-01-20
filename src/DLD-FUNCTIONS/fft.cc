@@ -56,7 +56,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
   dim_vector dims = arg.dims ();
   octave_idx_type n_points = -1;
   int dim = -1;
-  
+
   if (nargin > 1)
     {
       if (! args(1).is_empty ())
@@ -264,11 +264,11 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! t = 2*pi*(0:1:N-1)/N;
 %! s = cos(n*t);
 %! S = fft(s);
-%! 
+%!
 %! answer = zeros (size(t));
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
-%! 
+%!
 %! assert(S, answer, 4*N*eps);
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
@@ -279,11 +279,11 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! n=7;
 %! t = 2*pi*(0:1:N-1)/N;
 %! s = cos(n*t);
-%! 
+%!
 %! S = zeros (size(t));
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
-%! 
+%!
 %! assert(ifft(S), s, 4*N*eps);
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
@@ -295,11 +295,11 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! t = single (2*pi*(0:1:N-1)/N);
 %! s = cos(n*t);
 %! S = fft(s);
-%! 
+%!
 %! answer = zeros (size(t),'single');
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
-%! 
+%!
 %! assert(S, answer, 4*N*eps('single'));
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
@@ -310,11 +310,11 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! n=7;
 %! t = 2*pi*(0:1:N-1)/N;
 %! s = cos(n*t);
-%! 
+%!
 %! S = zeros (size(t),'single');
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
-%! 
+%!
 %! assert(ifft(S), s, 4*N*eps('single'));
 
 */

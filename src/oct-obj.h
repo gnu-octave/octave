@@ -111,8 +111,8 @@ public:
 
   bool empty (void) const { return length () == 0; }
 
-  void resize (octave_idx_type n, const octave_value& rfv 
-               = Array<octave_value>::resize_fill_value ()) 
+  void resize (octave_idx_type n, const octave_value& rfv
+               = Array<octave_value>::resize_fill_value ())
   {
     data.resize (dim_vector (1, n), rfv);
   }
@@ -127,7 +127,7 @@ public:
 
   octave_value_list
   slice (octave_idx_type offset, octave_idx_type len, bool tags = false) const
-    { 
+    {
       octave_value_list retval (data.linear_slice (offset, offset + len));
       if (tags && len > 0 && names.length () > 0)
         retval.names = names.linear_slice (offset, std::min (len, names.length ()));

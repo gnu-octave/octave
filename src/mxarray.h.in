@@ -80,7 +80,7 @@ typedef unsigned char mxLogical;
 /* typedef Uint16 mxChar; */
 typedef char mxChar;
 
-/* 
+/*
  * FIXME? Mathworks says these should be size_t on 64-bit system and when
  * mex is used with the -largearraydims flag, but why do that? Its better
  * to conform to the same indexing as the rest of Octave

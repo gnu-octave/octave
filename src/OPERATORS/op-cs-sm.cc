@@ -131,7 +131,7 @@ DEFCONV (sparse_matrix_conv, complex, sparse_matrix)
 {
   CAST_CONV_ARG (const octave_complex&);
 
-  return new octave_sparse_matrix 
+  return new octave_sparse_matrix
     (SparseMatrix (v.matrix_value ()));
 }
 
@@ -159,7 +159,7 @@ install_cs_sm_ops (void)
 
   INSTALL_CATOP (octave_complex, octave_sparse_matrix, cs_sm);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_sparse_matrix, 
+  INSTALL_ASSIGNCONV (octave_complex, octave_sparse_matrix,
                       octave_complex_matrix);
 
   INSTALL_WIDENOP (octave_complex, octave_sparse_matrix, sparse_matrix_conv);

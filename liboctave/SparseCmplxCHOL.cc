@@ -60,7 +60,7 @@ chol2inv (const SparseComplexMatrix& r)
           retval = rinv.transpose() * rinv;
         }
       else
-        (*current_liboctave_error_handler) 
+        (*current_liboctave_error_handler)
           ("spchol2inv requires triangular matrix");
     }
   else

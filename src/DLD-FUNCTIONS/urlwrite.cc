@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <curl/types.h>
 #include <curl/easy.h>
 
-static int 
+static int
 write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
 {
   std::ostream& stream = *(static_cast<std::ostream*> (streamp));
@@ -74,7 +74,7 @@ read_data (void *buffer, size_t size, size_t nmemb, void *streamp)
     return (stream.fail () ? 0 : size * nmemb);
 }
 
-static size_t 
+static size_t
 throw_away (void *, size_t size, size_t nmemb, void *)
 {
   return static_cast<size_t>(size * nmemb);
@@ -153,7 +153,7 @@ private:
     // No copying!
 
     curl_handle_rep (const curl_handle_rep& ov);
-    
+
     curl_handle_rep& operator = (const curl_handle_rep&);
   };
 
@@ -169,12 +169,12 @@ public:
       error ("%s", curl_easy_strerror (res)); \
   }
 
-  curl_handle (void) : rep (new curl_handle_rep ()) 
-    { 
+  curl_handle (void) : rep (new curl_handle_rep ())
+    {
       rep->valid = false;
     }
 
-  curl_handle (const std::string& _host, const std::string& user, 
+  curl_handle (const std::string& _host, const std::string& user,
                const std::string& passwd) :
     rep (new curl_handle_rep ())
     {
@@ -189,7 +189,7 @@ public:
         perform ();
     }
 
-  curl_handle (const std::string& url, const std::string& method, 
+  curl_handle (const std::string& url, const std::string& method,
                const Cell& param, std::ostream& os, bool& retval) :
     rep (new curl_handle_rep ())
     {
@@ -200,7 +200,7 @@ public:
       setopt (CURLOPT_NOBODY, 0);
 
       // Don't need to store the parameters here as we can't change
-      // the URL after the handle is created 
+      // the URL after the handle is created
       std::string query_string = form_query_string (param);
 
       if (method == "get")
@@ -254,7 +254,7 @@ public:
       CURLcode errnum;
 
       curl_easy_getinfo (rep->handle(), CURLINFO_OS_ERRNO, &errnum);
-      
+
       return std::string (curl_easy_strerror (errnum));
     }
 
@@ -272,13 +272,13 @@ public:
     {
       setopt (CURLOPT_TRANSFERTEXT, 1);
       rep->ascii = true;
-    } 
+    }
 
   void binary (void) const
     {
       setopt (CURLOPT_TRANSFERTEXT, 0);
       rep->ascii = false;
-    } 
+    }
 
   bool is_ascii (void) const
     {
@@ -438,14 +438,14 @@ public:
       return retval;
     }
 
-  void get_fileinfo (const std::string& filename, double& filesize, 
+  void get_fileinfo (const std::string& filename, double& filesize,
                      time_t& filetime, bool& fileisdir) const
     {
       std::string path = pwd();
 
       std::string url = "ftp://" + rep->host + "/" + path + "/" + filename;
       setopt (CURLOPT_URL, url.c_str());
-      setopt (CURLOPT_FILETIME, 1); 
+      setopt (CURLOPT_FILETIME, 1);
       setopt (CURLOPT_HEADERFUNCTION, throw_away);
       setopt (CURLOPT_WRITEFUNCTION, throw_away);
 
@@ -468,7 +468,7 @@ public:
               curl_easy_getinfo(rep->handle (), CURLINFO_FILETIME, &ft);
               filetime = ft;
               double fs;
-              curl_easy_getinfo(rep->handle (), 
+              curl_easy_getinfo(rep->handle (),
                                 CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
               filesize = fs;
             }
@@ -476,7 +476,7 @@ public:
 
       setopt (CURLOPT_WRITEFUNCTION, write_data);
       setopt (CURLOPT_HEADERFUNCTION, 0);
-      setopt (CURLOPT_FILETIME, 0); 
+      setopt (CURLOPT_FILETIME, 0);
       url = "ftp://" + rep->host;
       setopt (CURLOPT_URL, url.c_str());
 
@@ -534,9 +534,9 @@ private:
           std::string text = param(i+1).string_value ();
 
           // Encode strings.
-          char *enc_name = curl_easy_escape (rep->handle(), name.c_str (), 
+          char *enc_name = curl_easy_escape (rep->handle(), name.c_str (),
                                              name.length ());
-          char *enc_text = curl_easy_escape (rep->handle(), text.c_str (), 
+          char *enc_text = curl_easy_escape (rep->handle(), text.c_str (),
                                              text.length ());
 
           query << enc_name << "=" << enc_text;
@@ -553,8 +553,8 @@ private:
       return query.str ();
     }
 
-  void init (const std::string& user, const std::string& passwd, 
-             std::istream& is, std::ostream& os) 
+  void init (const std::string& user, const std::string& passwd,
+             std::istream& is, std::ostream& os)
     {
       // No data transfer by default
       setopt (CURLOPT_NOBODY, 1);
@@ -608,8 +608,8 @@ public:
    {
      curl_global_init(CURL_GLOBAL_DEFAULT);
    }
-  
-  ~curl_handles (void) 
+
+  ~curl_handles (void)
     {
       // Remove the elements of the map explicitly as they should
       // be deleted before the call to curl_global_cleanup
@@ -629,7 +629,7 @@ public:
 
   std::string key (const_iterator p) const { return p->first; }
 
-  curl_handle& contents (const std::string& k) 
+  curl_handle& contents (const std::string& k)
     {
       return map[k];
     }
@@ -984,17 +984,17 @@ Undocumented internal function\n\
     {
       handle = args(0).string_value ();
       host = args(1).string_value ();
-  
+
       if (nargin > 1)
         user = args(2).string_value ();
 
       if (nargin > 2)
         passwd = args(3).string_value ();
-  
+
       if (!error_state)
         {
           handles.contents (handle) = curl_handle (host, user, passwd);
-          
+
           if (error_state)
             handles.del (handle);
         }
@@ -1111,7 +1111,7 @@ Undocumented internal function\n\
                       flds(2) = "bytes";
                       flds(3) = "isdir";
                       flds(4) = "datenum";
-                      retval = octave_map (flds); 
+                      retval = octave_map (flds);
                     }
                   else
                     {
@@ -1120,7 +1120,7 @@ Undocumented internal function\n\
                       Cell filesize (dim_vector (n, 1));
                       Cell fileisdir (dim_vector (n, 1));
                       Cell filedatenum (dim_vector (n, 1));
-                    
+
                       st.assign ("name", Cell (sv));
 
                       for (octave_idx_type i = 0; i < n; i++)
@@ -1128,7 +1128,7 @@ Undocumented internal function\n\
                           time_t ftime;
                           bool fisdir;
                           double fsize;
-                      
+
                           curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
                           fileisdir (i) = fisdir;
@@ -1420,7 +1420,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
   if (! curl.mkdir (dir, false))
     warning ("__ftp_mput__: can not create the remote directory ""%s""",
-             (base.length() == 0 ? dir : base + 
+             (base.length() == 0 ? dir : base +
               file_ops::dir_sep_str () + dir).c_str ());
 
   curl.cwd (dir);
@@ -1431,7 +1431,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
       frame.add_fcn (reset_path, curl);
 
-      std::string realdir = base.length() == 0 ? dir : base + 
+      std::string realdir = base.length() == 0 ? dir : base +
                          file_ops::dir_sep_str () + dir;
 
       dir_entry dirlist (realdir);
@@ -1452,7 +1452,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
               if (! fs.exists ())
                 {
-                  error ("__ftp__mput: file ""%s"" does not exist", 
+                  error ("__ftp__mput: file ""%s"" does not exist",
                          realfile.c_str ());
                   break;
                 }
@@ -1467,12 +1467,12 @@ mput_directory (const curl_handle& curl, const std::string& base,
               else
                 {
                   // FIXME Does ascii mode need to be flagged here?
-                  std::ifstream ifile (realfile.c_str(), std::ios::in | 
+                  std::ifstream ifile (realfile.c_str(), std::ios::in |
                                        std::ios::binary);
 
                   if (! ifile.is_open ())
                     {
-                      error ("__ftp_mput__: unable to open file ""%s""", 
+                      error ("__ftp_mput__: unable to open file ""%s""",
                              realfile.c_str ());
                       break;
                     }
@@ -1489,7 +1489,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
             }
         }
       else
-        error ("__ftp_mput__: can not read the directory ""%s""", 
+        error ("__ftp_mput__: can not read the directory ""%s""",
                realdir.c_str());
     }
 
@@ -1545,7 +1545,7 @@ Undocumented internal function\n\
                   else
                     {
                       // FIXME Does ascii mode need to be flagged here?
-                      std::ifstream ifile (file.c_str(), std::ios::in | 
+                      std::ifstream ifile (file.c_str(), std::ios::in |
                                            std::ios::binary);
 
                       if (! ifile.is_open ())
@@ -1578,19 +1578,19 @@ Undocumented internal function\n\
 
 #ifdef HAVE_CURL
 static void
-getallfiles (const curl_handle& curl, const std::string& dir, 
+getallfiles (const curl_handle& curl, const std::string& dir,
              const std::string& target)
 {
   std::string sep = file_ops::dir_sep_str ();
   file_stat fs (dir);
 
   if (!fs || !fs.is_dir ())
-    { 
+    {
       std::string msg;
       int status = octave_mkdir (dir, 0777, msg);
 
       if (status < 0)
-        error ("__ftp_mget__: can't create directory %s%s%s. %s", 
+        error ("__ftp_mget__: can't create directory %s%s%s. %s",
                target.c_str(), sep.c_str(), dir.c_str(), msg.c_str());
     }
 
@@ -1611,7 +1611,7 @@ getallfiles (const curl_handle& curl, const std::string& dir,
               time_t ftime;
               bool fisdir;
               double fsize;
-                      
+
               curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
               if (fisdir)
@@ -1619,8 +1619,8 @@ getallfiles (const curl_handle& curl, const std::string& dir,
               else
                 {
                   std::string realfile = target + dir + sep + sv(i);
-                  std::ofstream ofile (realfile.c_str(), 
-                                       std::ios::out | 
+                  std::ofstream ofile (realfile.c_str(),
+                                       std::ios::out |
                                        std::ios::binary);
 
                   if (! ofile.is_open ())
@@ -1690,7 +1690,7 @@ Undocumented internal function\n\
                       time_t ftime;
                       bool fisdir;
                       double fsize;
-                      
+
                       curl.get_fileinfo (sv(i), fsize, ftime, fisdir);
 
                       if (fisdir)
@@ -1698,7 +1698,7 @@ Undocumented internal function\n\
                       else
                         {
                           std::ofstream ofile ((target + sv(i)).c_str(),
-                                               std::ios::out | 
+                                               std::ios::out |
                                                std::ios::binary);
 
                           if (! ofile.is_open ())

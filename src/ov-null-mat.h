@@ -56,7 +56,7 @@ private:
 
 // The special "" value
 
-class 
+class
 OCTINTERP_API
 octave_null_str : public octave_char_matrix_str
 {
@@ -78,7 +78,7 @@ private:
 
 // The special '' value
 
-class 
+class
 OCTINTERP_API
 octave_null_sq_str : public octave_char_matrix_sq_str
 {

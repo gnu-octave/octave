@@ -40,25 +40,25 @@ public:
 
   SparseBoolMatrix (octave_idx_type r, octave_idx_type c) : Sparse<bool> (r, c) { }
 
-  explicit SparseBoolMatrix (octave_idx_type r, octave_idx_type c, bool val) 
+  explicit SparseBoolMatrix (octave_idx_type r, octave_idx_type c, bool val)
     : Sparse<bool> (r, c, val) { }
 
-  SparseBoolMatrix (const dim_vector& dv, octave_idx_type nz = 0) : 
+  SparseBoolMatrix (const dim_vector& dv, octave_idx_type nz = 0) :
     Sparse<bool> (dv, nz) { }
 
   SparseBoolMatrix (const Sparse<bool>& a) : Sparse<bool> (a) { }
 
   SparseBoolMatrix (const SparseBoolMatrix& a) : Sparse<bool> (a) { }
 
-  SparseBoolMatrix (const SparseBoolMatrix& a, const dim_vector& dv) 
+  SparseBoolMatrix (const SparseBoolMatrix& a, const dim_vector& dv)
     : Sparse<bool> (a, dv) { }
 
   explicit SparseBoolMatrix (const boolMatrix& a) : Sparse<bool> (a) { }
 
   explicit SparseBoolMatrix (const boolNDArray& a) : Sparse<bool> (a) { }
 
-  SparseBoolMatrix (const Array<bool>& a, const idx_vector& r, 
-                    const idx_vector& c, octave_idx_type nr = -1, 
+  SparseBoolMatrix (const Array<bool>& a, const idx_vector& r,
+                    const idx_vector& c, octave_idx_type nr = -1,
                     octave_idx_type nc = -1, bool sum_terms = true,
                     octave_idx_type nzm = -1)
     : Sparse<bool> (a, r, c, nr, nc, sum_terms, nzm) { }
@@ -74,7 +74,7 @@ public:
   bool operator == (const SparseBoolMatrix& a) const;
   bool operator != (const SparseBoolMatrix& a) const;
 
-  SparseBoolMatrix transpose (void) const 
+  SparseBoolMatrix transpose (void) const
     { return Sparse<bool>::transpose (); }
 
   // destructive insert/delete/reorder operations
@@ -83,7 +83,7 @@ public:
 
   SparseBoolMatrix& insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx);
 
-  SparseBoolMatrix concat (const SparseBoolMatrix& rb, 
+  SparseBoolMatrix concat (const SparseBoolMatrix& rb,
                            const Array<octave_idx_type>& ra_idx);
 
   SparseBoolMatrix diag (octave_idx_type k = 0) const;

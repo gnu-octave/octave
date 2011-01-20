@@ -149,7 +149,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
             {
               beg = buf.find_first_not_of (", \t", end);
 
-              if (beg == std::string::npos || (buf[beg] == '\r' && 
+              if (beg == std::string::npos || (buf[beg] == '\r' &&
                                   beg == buf.length () - 1))
                 {
                   // We had a line with trailing spaces and
@@ -360,7 +360,7 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
               for (octave_idx_type j = 0; j < m.cols (); j++)
                 {
                   // Omit leading tabs.
-                  if (j != 0) os << '\t'; 
+                  if (j != 0) os << '\t';
                   octave_write_double (os, m (i, j));
                 }
               os << "\n";

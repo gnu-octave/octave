@@ -50,7 +50,7 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL);
 }
 
-FloatAEPBALANCE::FloatAEPBALANCE (const FloatMatrix& a, 
+FloatAEPBALANCE::FloatAEPBALANCE (const FloatMatrix& a,
                                   bool noperm, bool noscal)
   : base_aepbal<FloatMatrix, FloatColumnVector> ()
 {

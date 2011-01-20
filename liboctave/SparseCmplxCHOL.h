@@ -30,24 +30,24 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-SparseComplexCHOL : 
+SparseComplexCHOL :
   public sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix>
 {
 public:
 
-  SparseComplexCHOL (void) : 
+  SparseComplexCHOL (void) :
     sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> () { }
 
-  SparseComplexCHOL (const SparseComplexMatrix& a, bool natural = true) : 
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> 
+  SparseComplexCHOL (const SparseComplexMatrix& a, bool natural = true) :
+    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
   (a, natural) { }
 
-  SparseComplexCHOL (const SparseComplexMatrix& a, octave_idx_type& info, 
+  SparseComplexCHOL (const SparseComplexMatrix& a, octave_idx_type& info,
                      bool natural = true) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> 
+    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
   (a, info, natural) { }
 
-  SparseComplexCHOL (const SparseComplexCHOL& a) : 
+  SparseComplexCHOL (const SparseComplexCHOL& a) :
     sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a) { }
 
   ~SparseComplexCHOL (void) { }
@@ -63,33 +63,33 @@ public:
 
   SparseComplexMatrix chol_matrix (void) const { return R(); }
 
-  SparseComplexMatrix L (void) const 
-    { return sparse_base_chol<SparseComplexMatrix, Complex, 
+  SparseComplexMatrix L (void) const
+    { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: L (); }
 
-  SparseComplexMatrix R (void) const 
+  SparseComplexMatrix R (void) const
     { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: R (); }
 
-  octave_idx_type P (void) const 
-   { return sparse_base_chol<SparseComplexMatrix, Complex, 
+  octave_idx_type P (void) const
+   { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: P (); }
 
-  ColumnVector perm (void) const 
-    { return sparse_base_chol<SparseComplexMatrix, Complex, 
+  ColumnVector perm (void) const
+    { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: perm (); }
 
-  SparseMatrix Q (void) const 
-    { return sparse_base_chol<SparseComplexMatrix, Complex, 
+  SparseMatrix Q (void) const
+    { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: Q (); }
 
   double rcond (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex, 
+    { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: rcond (); }
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   SparseComplexMatrix inverse (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex, 
+    { return sparse_base_chol<SparseComplexMatrix, Complex,
         SparseMatrix>:: inverse (); }
 };
 

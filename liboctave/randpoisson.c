@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 /* Original version written by Paul Kienzle distributed as free
    software in the in the public domain.  */
 
-/* Needs the following defines: 
+/* Needs the following defines:
  * NAN: value to return for Not-A-Number
  * RUNI: uniform generator on (0,1)
  * RNOR: normal generator
@@ -77,7 +77,7 @@ xlgamma (double x)
 /* ---- pprsc.c from Stadloeber's winrand --- */
 
 /* flogfak(k) = ln(k!) */
-static double 
+static double
 flogfak (double k)
 {
 #define       C0      9.18938533204672742e-01
@@ -98,10 +98,10 @@ flogfak (double k)
     54.78472939811231919,  58.00360522298051994,  61.26170176100200198,
     64.55753862700633106,  67.88974313718153498,  71.25703896716800901
   };
-  
+
   double  r, rr;
-  
-  if (k >= 30.0) 
+
+  if (k >= 30.0)
     {
       r  = 1.0 / k;
       rr = r * r;
@@ -143,13 +143,13 @@ flogfak (double k)
  *                                                                *
  ******************************************************************/
 
-static double 
+static double
 f (double k, double l_nu, double c_pm)
 {
   return exp(k * l_nu - flogfak(k) - c_pm);
 }
 
-static double 
+static double
 pprsc (double my)
 {
   static double        my_last = -1.0;
@@ -158,13 +158,13 @@ pprsc (double my)
     f1, f2, f4, f5, p1, p2, p3, p4, p5, p6;
   double               Dk, X, Y;
   double               Ds, U, V, W;
-  
+
   if (my != my_last)
     {                               /* set-up           */
       my_last = my;
       /* approximate deviation of reflection points k2, k4 from my - 1/2 */
       Ds = sqrt(my + 0.25);
-      
+
       /* mode m, reflection points k2 and k4, and points k1 and k5,      */
       /* which delimit the centre region of h(x)                         */
       m  = floor(my);
@@ -172,11 +172,11 @@ pprsc (double my)
       k4 = floor(my - 0.5 + Ds);
       k1 = k2 + k2 - m + 1L;
       k5 = k4 + k4 - m;
-      
+
       /* range width of the critical left and right centre region        */
       dl = (k2 - k1);
       dr = (k5 - k4);
-      
+
       /* recurrence constants r(k)=p(k)/p(k-1) at k = k1, k2, k4+1, k5+1 */
       r1 = my / k1;
       r2 = my / k2;
@@ -186,17 +186,17 @@ pprsc (double my)
       /* reciprocal values of the scale parameters of exp. tail envelope */
       ll =  log(r1);                                 /* expon. tail left */
       lr = -log(r5);                                 /* expon. tail right*/
-      
+
       /* Poisson constants, necessary for computing function values f(k) */
       l_my = log(my);
       c_pm = m * l_my - flogfak(m);
-      
+
       /* function values f(k) = p(k)/p(m) at k = k2, k4, k1, k5          */
       f2 = f(k2, l_my, c_pm);
       f4 = f(k4, l_my, c_pm);
       f1 = f(k1, l_my, c_pm);
       f5 = f(k5, l_my, c_pm);
-      
+
       /* area of the two centre and the two exponential tail regions     */
       /* area of the two immediate acceptance regions between k2, k4     */
       p1 = f2 * (dl + 1.0);                            /* immed. left    */
@@ -206,21 +206,21 @@ pprsc (double my)
       p5 = f1 / ll         + p4;                       /* exp. tail left */
       p6 = f5 / lr         + p5;                       /* exp. tail right*/
     }
-  
+
   for (;;)
     {
       /* generate uniform number U -- U(0, p6)                           */
       /* case distinction corresponding to U                             */
       if ((U = RUNI * p6) < p2)
         {                                            /* centre left      */
-          
-          /* immediate acceptance region 
+
+          /* immediate acceptance region
              R2 = [k2, m) *[0, f2),  X = k2, ... m -1 */
           if ((V = U - p1) < 0.0)  return(k2 + floor(U/f2));
-          /* immediate acceptance region 
+          /* immediate acceptance region
              R1 = [k1, k2)*[0, f1),  X = k1, ... k2-1 */
           if ((W = V / dl) < f1 )  return(k1 + floor(V/f1));
-          
+
           /* computation of candidate X < k2, and its counterpart Y > k2 */
           /* either squeeze-acceptance of X or acceptance-rejection of Y */
           Dk = floor(dl * RUNI) + 1.0;
@@ -241,13 +241,13 @@ pprsc (double my)
         }
       else if (U < p4)
         {                                            /* centre right     */
-          /*  immediate acceptance region 
+          /*  immediate acceptance region
               R3 = [m, k4+1)*[0, f4), X = m, ... k4    */
           if ((V = U - p3) < 0.0)  return(k4 - floor((U - p2)/f4));
-          /* immediate acceptance region 
+          /* immediate acceptance region
              R4 = [k4+1, k5+1)*[0, f5)                */
           if ((W = V / dr) < f5 )  return(k5 - floor(V/f5));
-          
+
           /* computation of candidate X > k4, and its counterpart Y < k4 */
           /* either squeeze-acceptance of X or acceptance-rejection of Y */
           Dk = floor(dr * RUNI) + 1.0;
@@ -274,7 +274,7 @@ pprsc (double my)
               Dk = floor(1.0 - log(W)/ll);
               if ((X = k1 - Dk) < 0L)  continue;     /* 0 <= X <= k1 - 1 */
               W *= (U - p4) * ll;                    /* W -- U(0, h(x))  */
-              if (W <= f1 - Dk * (f1 - f1/r1))  
+              if (W <= f1 - Dk * (f1 - f1/r1))
                 return(X);                           /* quick accept of X*/
             }
           else
@@ -282,11 +282,11 @@ pprsc (double my)
               Dk = floor(1.0 - log(W)/lr);
               X  = k5 + Dk;                          /* X >= k5 + 1      */
               W *= (U - p5) * lr;                    /* W -- U(0, h(x))  */
-              if (W <= f5 - Dk * (f5 - f5*r5))  
+              if (W <= f5 - Dk * (f5 - f5*r5))
                 return(X);                           /* quick accept of X*/
             }
         }
-      
+
       /* acceptance-rejection test of candidate X from the original area */
       /* test, whether  W <= f(k),    with  W = U*h(x)  and  U -- U(0, 1)*/
       /* log f(X) = (X - m)*log(my) - log X! + log m!                    */
@@ -299,7 +299,7 @@ pprsc (double my)
 /* The remainder of the file is by Paul Kienzle */
 
 /* Given uniform u, find x such that CDF(L,x)==u.  Return x. */
-static void 
+static void
 poisson_cdf_lookup(double lambda, double *p, size_t n)
 {
   /* Table size is predicated on the maximum value of lambda
@@ -308,19 +308,19 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
    * With lambda==10 and u_max = 1 - 1/(2^32+1), we
    * have poisson_pdf(lambda,36) < 1-u_max.  If instead our
    * generator uses more bits of mantissa or returns a value
-   * in the range [0,1], then for lambda==10 we need a table 
-   * size of 46 instead.  For long doubles, the table size 
+   * in the range [0,1], then for lambda==10 we need a table
+   * size of 46 instead.  For long doubles, the table size
    * will need to be longer still.  */
 #define TABLESIZE 46
   double t[TABLESIZE];
-  
+
   /* Precompute the table for the u up to and including 0.458.
    * We will almost certainly need it. */
   int intlambda = (int)floor(lambda);
   double P;
   int tableidx;
   size_t i = n;
-  
+
   t[0] = P = exp(-lambda);
   for (tableidx = 1; tableidx <= intlambda; tableidx++) {
     P = P*lambda/(double)tableidx;
@@ -329,7 +329,7 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
 
   while (i-- > 0) {
     double u = RUNI;
-    
+
     /* If u > 0.458 we know we can jump to floor(lambda) before
      * comparing (this observation is based on Stadlober's winrand
      * code). For lambda >= 1, this will be a win.  Lambda < 1
@@ -339,7 +339,7 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
 
     /* We aren't using a for loop here because when we find the
      * right k we want to jump to the next iteration of the
-     * outer loop, and the continue statement will only work for 
+     * outer loop, and the continue statement will only work for
      * the inner loop. */
   nextk:
     if ( u <= t[k] ) {
@@ -347,8 +347,8 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
       continue;
     }
     if (++k < tableidx) goto nextk;
-    
-    /* We only need high values of the table very rarely so we 
+
+    /* We only need high values of the table very rarely so we
      * don't automatically compute the entire table. */
     while (tableidx < TABLESIZE) {
       P = P*lambda/(double)tableidx;
@@ -359,7 +359,7 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
       tableidx++;
       if (u <= t[tableidx-1]) break;
     }
-    
+
     /* We are assuming that the table size is big enough here.
      * This should be true even if RUNI is returning values in
      * the range [0,1] rather than [0,1).
@@ -376,8 +376,8 @@ poisson_rejection (double lambda, double *p, size_t n)
   double alxm = log(lambda);
   double g = lambda*alxm - LGAMMA(lambda+1.0);
   size_t i;
-  
-  for (i = 0; i < n; i++) 
+
+  for (i = 0; i < n; i++)
     {
       double y, em, t;
       do {
@@ -392,7 +392,7 @@ poisson_rejection (double lambda, double *p, size_t n)
     }
 }
 
-/* The cutoff of L <= 1e8 in the following two functions before using 
+/* The cutoff of L <= 1e8 in the following two functions before using
  * the normal approximation is based on:
  *   > L=1e8; x=floor(linspace(0,2*L,1000));
  *   > max(abs(normal_pdf(x,L,L)-poisson_pdf(x,L)))
@@ -402,39 +402,39 @@ poisson_rejection (double lambda, double *p, size_t n)
  * of a large sample, so 1e8 is both small enough and large enough. */
 
 /* Generate a set of poisson numbers with the same distribution */
-void 
+void
 oct_fill_randp (double L, octave_idx_type n, double *p)
 {
   octave_idx_type i;
-  if (L < 0.0 || INFINITE(L)) 
+  if (L < 0.0 || INFINITE(L))
     {
-      for (i=0; i<n; i++) 
+      for (i=0; i<n; i++)
         p[i] = NAN;
-    } 
-  else if (L <= 10.0) 
+    }
+  else if (L <= 10.0)
     {
       poisson_cdf_lookup(L, p, n);
-    } 
-  else if (L <= 1e8) 
+    }
+  else if (L <= 1e8)
     {
-      for (i=0; i<n; i++) 
+      for (i=0; i<n; i++)
         p[i] = pprsc(L);
-    } 
-  else 
+    }
+  else
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
       const double sqrtL = sqrt(L);
-      for (i = 0; i < n; i++) 
+      for (i = 0; i < n; i++)
         {
           p[i] = floor(RNOR*sqrtL + L + 0.5);
-          if (p[i] < 0.0) 
+          if (p[i] < 0.0)
             p[i] = 0.0; /* will probably never happen */
         }
     }
 }
 
 /* Generate one poisson variate */
-double 
+double
 oct_randp (double L)
 {
   double ret;

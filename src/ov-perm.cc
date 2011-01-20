@@ -78,7 +78,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
 
   // This hack is to allow constructing permutation matrices using
   // eye(n)(p,:), eye(n)(:,q) && eye(n)(p,q) where p & q are permutation
-  // vectors. 
+  // vectors.
   // Note that, for better consistency, eye(n)(:,:) still converts to a full
   // matrix.
   if (! error_state && nidx == 2)
@@ -248,7 +248,7 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force, char type) co
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
 
-bool 
+bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
   typedef octave_int<octave_idx_type> idx_int_type;
@@ -265,7 +265,7 @@ octave_perm_matrix::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_perm_matrix::load_ascii (std::istream& is)
 {
   typedef octave_int<octave_idx_type> idx_int_type;
@@ -279,7 +279,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
       bool colp = orient == 'c';
       ColumnVector tmp (n);
       is >> tmp;
-      if (!is) 
+      if (!is)
         {
           error ("load: failed to load permutation matrix constant");
           success = false;
@@ -303,7 +303,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_perm_matrix::save_binary (std::ostream& os, bool&)
 {
 
@@ -334,7 +334,7 @@ octave_perm_matrix::load_binary (std::istream& is, bool swap,
   if (swap)
     {
       int nel = m.numel ();
-      for (int i = 0; i < nel; i++) 
+      for (int i = 0; i < nel; i++)
         switch (sizeof (octave_idx_type))
           {
           case 8:
@@ -389,8 +389,8 @@ int
 octave_perm_matrix::write (octave_stream& os, int block_size,
                                 oct_data_conv::data_type output_type, int skip,
                                 oct_mach_info::float_format flt_fmt) const
-{ 
-  return to_dense ().write (os, block_size, output_type, skip, flt_fmt); 
+{
+  return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }
 
 void
@@ -412,7 +412,7 @@ octave_perm_matrix::to_dense (void) const
 
 DEFINE_OCTAVE_ALLOCATOR (octave_perm_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix, 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix,
                                      "permutation matrix", "double");
 
 static octave_base_value *

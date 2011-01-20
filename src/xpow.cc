@@ -694,7 +694,7 @@ elem_xpow (double a, const ComplexMatrix& b)
   return result;
 }
 
-static inline bool 
+static inline bool
 same_sign (double a, double b)
 {
   return (a >= 0 && b >= 0) || (a <= 0 && b <= 0);
@@ -731,7 +731,7 @@ elem_xpow (double a, const Range& r)
         }
 
       retval = result;
-    }  
+    }
   else
     retval = elem_xpow (a, r.matrix_value ());
 
@@ -754,8 +754,8 @@ elem_xpow (const Matrix& a, double b)
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
-            octave_quit (); 
-      
+            octave_quit ();
+
             Complex atmp (a (i, j));
 
             result (i, j) = std::pow (atmp, b);
@@ -967,7 +967,7 @@ elem_xpow (const Complex& a, const Range& r)
         }
 
       retval = result;
-    }  
+    }
   else
     retval = elem_xpow (a, r.matrix_value ());
 
@@ -2113,8 +2113,8 @@ elem_xpow (const FloatMatrix& a, float b)
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
           {
-            octave_quit (); 
-      
+            octave_quit ();
+
             FloatComplex atmp (a (i, j));
 
             result (i, j) = std::pow (atmp, b);

@@ -42,7 +42,7 @@ public:
   AEPBALANCE (const Matrix& a, bool noperm = false,
               bool noscal = false);
 
-  AEPBALANCE (const AEPBALANCE& a) 
+  AEPBALANCE (const AEPBALANCE& a)
     : base_aepbal<Matrix, ColumnVector> (a) { }
 
   Matrix balancing_matrix (void) const;

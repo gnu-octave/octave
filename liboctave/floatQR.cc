@@ -42,7 +42,7 @@ extern "C"
   F77_RET_T
   F77_FUNC (sgeqrf, SGEQRF) (const octave_idx_type&, const octave_idx_type&,
                              float*, const octave_idx_type&, float*, float*,
-                             const octave_idx_type&, octave_idx_type&); 
+                             const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (sorgqr, SORGQR) (const octave_idx_type&, const octave_idx_type&,
@@ -73,13 +73,13 @@ extern "C"
                              const octave_idx_type&, float*);
 
   F77_RET_T
-  F77_FUNC (sqrinr, SQRINR) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (sqrinr, SQRINR) (const octave_idx_type&, const octave_idx_type&,
                              float*, const octave_idx_type&,
                              float*, const octave_idx_type&,
                              const octave_idx_type&, const float*, float*);
 
   F77_RET_T
-  F77_FUNC (sqrder, SQRDER) (const octave_idx_type&, const octave_idx_type&, 
+  F77_FUNC (sqrder, SQRDER) (const octave_idx_type&, const octave_idx_type&,
                              float*, const octave_idx_type&,
                              float*, const octave_idx_type&,
                              const octave_idx_type&, float*);
@@ -131,7 +131,7 @@ FloatQR::init (const FloatMatrix& a, qr_type_t qr_type)
   form (n, afact, tau, qr_type);
 }
 
-void FloatQR::form (octave_idx_type n, FloatMatrix& afact, 
+void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
                     float *tau, qr_type_t qr_type)
 {
   octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
@@ -249,7 +249,7 @@ FloatQR::insert_col (const FloatColumnVector& u, octave_idx_type j)
 
   if (u.length () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n) 
+  else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -266,7 +266,7 @@ FloatQR::insert_col (const FloatColumnVector& u, octave_idx_type j)
       FloatColumnVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, w, k);
       F77_XFCN (sqrinc, SQRINC, (m, n, k, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), j + 1, 
+                                 r.fortran_vec (), r.rows (), j + 1,
                                  utmp.data (), w));
     }
 }
@@ -309,9 +309,9 @@ FloatQR::insert_col (const FloatMatrix& u, const Array<octave_idx_type>& j)
         {
           octave_idx_type ii = i;
           FloatColumnVector utmp = u.column (jsi(i));
-          F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii), 
+          F77_XFCN (sqrinc, SQRINC, (m, n + ii, std::min (kmax, k + ii),
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1, 
+                                     r.fortran_vec (), r.rows (), js(ii) + 1,
                                      utmp.data (), w));
         }
     }
@@ -324,7 +324,7 @@ FloatQR::delete_col (octave_idx_type j)
   octave_idx_type k = r.rows ();
   octave_idx_type n = r.columns ();
 
-  if (j < 0 || j > n-1) 
+  if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -368,7 +368,7 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
       for (volatile octave_idx_type i = 0; i < js.length (); i++)
         {
           octave_idx_type ii = i;
-          F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii, 
+          F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii,
                                      q.fortran_vec (), q.rows (),
                                      r.fortran_vec (), r.rows (), js(ii) + 1, w));
         }
@@ -394,7 +394,7 @@ FloatQR::insert_row (const FloatRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.length () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m) 
+  else if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -403,7 +403,7 @@ FloatQR::insert_row (const FloatRowVector& u, octave_idx_type j)
       FloatRowVector utmp = u;
       OCTAVE_LOCAL_BUFFER (float, w, k);
       F77_XFCN (sqrinr, SQRINR, (m, n, q.fortran_vec (), q.rows (),
-                                 r.fortran_vec (), r.rows (), 
+                                 r.fortran_vec (), r.rows (),
                                  j + 1, utmp.fortran_vec (), w));
 
     }
@@ -417,7 +417,7 @@ FloatQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1) 
+  else if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -438,12 +438,12 @@ FloatQR::shift_cols (octave_idx_type i, octave_idx_type j)
   octave_idx_type k = r.rows ();
   octave_idx_type n = r.columns ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
   else
     {
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
-      F77_XFCN (sqrshc, SQRSHC, (m, n, k, 
+      F77_XFCN (sqrshc, SQRSHC, (m, n, k,
                                  q.fortran_vec (), q.rows (),
                                  r.fortran_vec (), r.rows (),
                                  i + 1, j + 1, w));
@@ -529,7 +529,7 @@ FloatMatrix delete_row (const FloatMatrix& a, octave_idx_type i)
 }
 
 static
-FloatMatrix shift_cols (const FloatMatrix& a, 
+FloatMatrix shift_cols (const FloatMatrix& a,
                         octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
@@ -559,7 +559,7 @@ FloatQR::insert_col (const FloatColumnVector& u, octave_idx_type j)
 
   if (u.length () != m)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > n) 
+  else if (j < 0 || j > n)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -605,7 +605,7 @@ FloatQR::delete_col (octave_idx_type j)
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (j < 0 || j > n-1) 
+  if (j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -651,7 +651,7 @@ FloatQR::insert_row (const FloatRowVector& u, octave_idx_type j)
 
   if (! q.is_square () || u.length () != n)
     (*current_liboctave_error_handler) ("qrinsert: dimensions mismatch");
-  else if (j < 0 || j > m) 
+  else if (j < 0 || j > m)
     (*current_liboctave_error_handler) ("qrinsert: index out of range");
   else
     {
@@ -669,7 +669,7 @@ FloatQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("qrdelete: dimensions mismatch");
-  else if (j < 0 || j > m-1) 
+  else if (j < 0 || j > m-1)
     (*current_liboctave_error_handler) ("qrdelete: index out of range");
   else
     {
@@ -685,7 +685,7 @@ FloatQR::shift_cols (octave_idx_type i, octave_idx_type j)
   octave_idx_type m = q.rows ();
   octave_idx_type n = r.columns ();
 
-  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+  if (i < 0 || i > n-1 || j < 0 || j > n-1)
     (*current_liboctave_error_handler) ("qrshift: index out of range");
   else
     {

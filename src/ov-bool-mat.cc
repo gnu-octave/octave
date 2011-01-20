@@ -182,7 +182,7 @@ octave_bool_matrix::print_raw (std::ostream& os,
                          current_print_indent_level ());
 }
 
-bool 
+bool
 octave_bool_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
@@ -198,7 +198,7 @@ octave_bool_matrix::save_ascii (std::ostream& os)
     }
   else
     {
-      // Keep this case, rather than use generic code above for backward 
+      // Keep this case, rather than use generic code above for backward
       // compatiability. Makes load_ascii much more complex!!
       os << "# rows: " << rows () << "\n"
          << "# columns: " << columns () << "\n";
@@ -211,7 +211,7 @@ octave_bool_matrix::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_bool_matrix::load_ascii (std::istream& is)
 {
   bool success = true;
@@ -286,7 +286,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
                 {
                   Matrix tmp (nr, nc);
                   is >> tmp;
-                  if (is) 
+                  if (is)
                     {
                       boolMatrix btmp (nr, nc);
                       for (octave_idx_type j = 0; j < nc; j++)
@@ -324,7 +324,7 @@ octave_bool_matrix::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
 
@@ -354,7 +354,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool& /* save_as_floats */)
   return true;
 }
 
-bool 
+bool
 octave_bool_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format /* fmt */)
 {
@@ -382,7 +382,7 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
         swap_bytes<4> (&di);
       dv(i) = di;
     }
-  
+
   // Convert an array with a single dimension to be a row vector.
   // Octave should never write files like this, other software
   // might.
@@ -433,10 +433,10 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid,
                         H5P_DEFAULT);
 #endif
   if (data_hid < 0)
@@ -448,7 +448,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
   octave_idx_type nel = m.nelem ();
   bool *mtmp = m.fortran_vec ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  
+
   for (octave_idx_type i = 0; i < nel; i++)
     htmp[i] = mtmp[i];
 
@@ -481,7 +481,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
   hid_t space_id = H5Dget_space (data_hid);
 
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
-  
+
   if (rank < 1)
     {
       H5Dclose (data_hid);
@@ -509,7 +509,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0)
     {
       retval = true;
 

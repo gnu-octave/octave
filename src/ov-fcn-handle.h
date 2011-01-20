@@ -91,7 +91,7 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args);
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args, 
+  do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
   bool is_defined (void) const { return true; }
@@ -140,7 +140,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)
@@ -194,7 +194,7 @@ octave_fcn_binder : public octave_fcn_handle
 private:
   // Private ctor.
   octave_fcn_binder (const octave_value& f, const octave_value& root,
-                     const octave_value_list& templ, 
+                     const octave_value_list& templ,
                      const std::vector<int>& mask, int exp_nargin);
 
 public:
@@ -206,7 +206,7 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& args);
 
   octave_value_list
-  do_multi_index_op (int nargout, const octave_value_list& args, 
+  do_multi_index_op (int nargout, const octave_value_list& args,
                      const std::list<octave_lvalue>* lvalue_list);
 
 protected:

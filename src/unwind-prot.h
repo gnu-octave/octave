@@ -50,7 +50,7 @@ public:
   };
 
   // An element that merely runs a void (*)(void) function.
-  
+
   class fcn_elem : public elem
   {
   public:
@@ -206,13 +206,13 @@ public:
       add (new restore_var_elem<T> (var, val));
     }
 
-  operator bool (void) const 
-    { 
-      return head != 0; 
+  operator bool (void) const
+    {
+      return head != 0;
     }
 
-  void run_top (void) 
-    { 
+  void run_top (void)
+    {
       if (head)
         {
           // No leak on exception!
@@ -222,8 +222,8 @@ public:
         }
     }
 
-  void run_top (int num) 
-    { 
+  void run_top (int num)
+    {
       while (num-- > 0)
         run_top ();
     }
@@ -238,8 +238,8 @@ public:
         }
     }
 
-  void discard_top (int num) 
-    { 
+  void discard_top (int num)
+    {
       while (num-- > 0)
         discard_top ();
     }

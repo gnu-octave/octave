@@ -143,7 +143,7 @@ octave_sparse_params::do_tight (void)
   params(11) = 1;     // umfpack
   params(12) = 0.001; // sym_tol
 }
-  
+
 void
 octave_sparse_params::init_keys (void)
 {

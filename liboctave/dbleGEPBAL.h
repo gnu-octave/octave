@@ -41,7 +41,7 @@ public:
   GEPBALANCE (const Matrix& a, const Matrix& b, const std::string& balance_job)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
     {
-      init (a, b, balance_job); 
+      init (a, b, balance_job);
     }
 
   GEPBALANCE (const GEPBALANCE& a)
@@ -80,7 +80,7 @@ private:
   Matrix balancing_mat;
   Matrix balancing_mat2;
 
-  octave_idx_type init (const Matrix& a, const Matrix& b, 
+  octave_idx_type init (const Matrix& a, const Matrix& b,
                         const std::string& balance_job);
 };
 

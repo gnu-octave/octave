@@ -42,7 +42,7 @@ public:
       init (a, ord, calc_unitary);
     }
 
-  SCHUR (const Matrix& a, const std::string& ord, int& info, 
+  SCHUR (const Matrix& a, const std::string& ord, int& info,
          bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
     {

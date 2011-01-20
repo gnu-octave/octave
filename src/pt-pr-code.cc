@@ -570,7 +570,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
             os << ")";
           }
           break;
-            
+
         case '{':
           {
             char nc = nesting.top ();
@@ -590,7 +590,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
             os << "}";
           }
           break;
-            
+
         case '.':
           {
             string_vector nm = *p_arg_names;

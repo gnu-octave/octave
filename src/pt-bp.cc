@@ -237,7 +237,7 @@ tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
         take_action (*t);
 
       if (! found)
-        {      
+        {
           tree_statement_list *stmt_lst = t->commands ();
 
           if (stmt_lst)

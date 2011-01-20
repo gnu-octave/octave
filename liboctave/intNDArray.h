@@ -34,16 +34,16 @@ intNDArray : public MArray<T>
 public:
 
   using MArray<T>::element_type;
-  
+
   intNDArray (void) : MArray<T> () { }
 
   intNDArray (T val) : MArray<T> (dim_vector (1, 1), val) { }
 
   intNDArray (const dim_vector& dv) : MArray<T> (dv) { }
-  
+
   intNDArray (const dim_vector& dv, T val)
     : MArray<T> (dv, val) { }
-  
+
   template <class U>
   intNDArray (const Array<U>& a) : MArray<T> (a) { }
 
@@ -66,10 +66,10 @@ public:
 
   intNDArray diag (octave_idx_type k = 0) const;
 
-  intNDArray& changesign (void) 
-    { 
-      MArray<T>::changesign (); 
-      return *this; 
+  intNDArray& changesign (void)
+    {
+      MArray<T>::changesign ();
+      return *this;
     }
 
   // FIXME -- this is not quite the right thing.
@@ -81,12 +81,12 @@ public:
   intNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
   intNDArray min (int dim = -1) const;
   intNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
-  
+
   intNDArray cummax (int dim = -1) const;
   intNDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
   intNDArray cummin (int dim = -1) const;
   intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
-  
+
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;

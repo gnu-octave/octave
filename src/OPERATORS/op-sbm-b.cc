@@ -46,8 +46,8 @@ DEFBINOP_FN (el_or, sparse_bool_matrix, bool, mx_el_or)
 
 DEFCATOP (sbm_b, sparse_bool_matrix, bool)
 {
-  CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_bool&); 
-                   
+  CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_bool&);
+
   SparseBoolMatrix tmp (1, 1, v2.bool_value ());
   return octave_value (v1.sparse_bool_matrix_value (). concat (tmp, ra_idx));
 }
@@ -55,15 +55,15 @@ DEFCATOP (sbm_b, sparse_bool_matrix, bool)
 DEFCATOP (sm_b, sparse_matrix, bool)
 {
   CAST_BINOP_ARGS (octave_sparse_matrix&, const octave_bool&);
-                   
+
   SparseMatrix tmp (1, 1, v2.scalar_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }
 
 DEFCATOP (sbm_s, sparse_bool_matrix, scalar)
 {
-  CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_scalar&); 
-                   
+  CAST_BINOP_ARGS (octave_sparse_bool_matrix&, const octave_scalar&);
+
   SparseMatrix tmp (1, 1, v2.scalar_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
 }

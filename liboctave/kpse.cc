@@ -10,7 +10,7 @@ Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
 License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version. 
+version 2 of the License, or (at your option) any later version.
 
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -66,7 +66,7 @@ extern "C" {
 #ifndef KPATHSEA
 #define KPATHSEA 32
 #endif
- 
+
 /* System dependencies that are figured out by `configure'.  If we are
    compiling standalone, we get our c-auto.h.  Otherwise, the package
    containing us must provide this (unless it can somehow generate ours
@@ -112,10 +112,10 @@ extern "C" {
 #define IS_DIR_SEP(ch) ((ch) == DIR_SEP)
 #endif
 #ifndef IS_DEVICE_SEP /* No `devices' on, e.g., Unix.  */
-#define IS_DEVICE_SEP(ch) 0 
+#define IS_DEVICE_SEP(ch) 0
 #endif
 #ifndef NAME_BEGINS_WITH_DEVICE
-#define NAME_BEGINS_WITH_DEVICE(name) 0 
+#define NAME_BEGINS_WITH_DEVICE(name) 0
 #endif
 
 #include "lo-error.h"
@@ -916,19 +916,19 @@ search (const std::string& path, const std::string& original_name,
 /* Call `kpse_expand' on NAME.  If the result is an absolute or
    explicitly relative filename, check whether it is a readable
    (regular) file.
-   
+
    Otherwise, look in each of the directories specified in PATH (also do
    tilde and variable expansion on elements in PATH), using a prebuilt
    db (see db.h) if it's relevant for a given path element.
-   
+
    If the prebuilt db doesn't exist, or if MUST_EXIST is true and NAME
    isn't found in the prebuilt db, look on the filesystem.  (I.e., if
    MUST_EXIST is false, and NAME isn't found in the db, do *not* look on
    the filesystem.)
-   
+
    The caller must expand PATH. This is because it makes more sense to
    do this once, in advance, instead of for every search using it.
-   
+
    In any case, return the complete filename if found, otherwise NULL.  */
 
 static std::string
@@ -2387,7 +2387,7 @@ expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
    of the corresponding (existing) directory or directories, with
    trailing slashes, or NULL.  If ELT is the empty string, check the
    current working directory.
-   
+
    It's up to the caller to expand ELT.  This is because this routine is
    most likely only useful to be called from `kpse_path_search', which
    has already assumed expansion has been done.  */

@@ -529,14 +529,14 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
 }
 
 // If both args are arrays, dimensions may be significant.
-static bool 
+static bool
 strcmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
 {
   return (s1.dims () == s2.dims ()
           && std::equal (s1.data (), s1.data () + s1.numel (), s2.data ()));
 }
 
-// Otherwise, just use strings. 
+// Otherwise, just use strings.
 static bool
 strcmp_str_op (const std::string& s1, const std::string& s2,
                octave_idx_type)
@@ -618,12 +618,12 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
 */
 
-// Apparently, Matlab ignores the dims with strncmp. It also 
-static bool 
+// Apparently, Matlab ignores the dims with strncmp. It also
+static bool
 strncmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
 {
   octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2 
+  return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
 
@@ -634,7 +634,7 @@ static bool
 strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 {
   octave_idx_type l1 = s1.length (), l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2 
+  return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
 
@@ -713,7 +713,7 @@ struct icmp_char_eq : public std::binary_function<char, char, bool>
 };
 
 // strcmpi is equivalent to strcmp in that it checks all dims.
-static bool 
+static bool
 strcmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
 {
   return (s1.dims () == s2.dims ()
@@ -769,11 +769,11 @@ This is just the opposite of the corresponding C library function.\n\
 */
 
 // Like strncmp.
-static bool 
+static bool
 strncmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
 {
   octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
-  return (n > 0 && n <= l1 && n <= l2 
+  return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
 }
@@ -783,7 +783,7 @@ static bool
 strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 {
   octave_idx_type l1 = s1.length (), l2 = s2.length ();
-  return (n > 0 && n <= l1 && n <= l2 
+  return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
 }

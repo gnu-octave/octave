@@ -192,7 +192,7 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
 
       if (!error_state)
         {
-          if (args(0).type_name () == "sparse matrix") 
+          if (args(0).type_name () == "sparse matrix")
             {
               SparseMatrix sm = args(0).sparse_matrix_value ();
               octave_idx_type sm_nr = sm.rows ();
@@ -219,8 +219,8 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                             SparseMatrix L = P.transpose () * fact.L ();
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType 
-                                                      (MatrixType::Permuted_Lower, 
+                            retval(0) = octave_value (L, MatrixType
+                                                      (MatrixType::Permuted_Lower,
                                                        sm_nr, fact.row_perm ()));
                           }
                       }
@@ -273,9 +273,9 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                     }
                 }
             }
-          else if (args(0).type_name () == "sparse complex matrix") 
+          else if (args(0).type_name () == "sparse complex matrix")
             {
-              SparseComplexMatrix sm = 
+              SparseComplexMatrix sm =
                 args(0).sparse_complex_matrix_value ();
               octave_idx_type sm_nr = sm.rows ();
               octave_idx_type sm_nc = sm.cols ();
@@ -292,7 +292,7 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                     case 1:
                     case 2:
                       {
-                        SparseComplexLU fact (sm, Qinit, thresh, false, true, 
+                        SparseComplexLU fact (sm, Qinit, thresh, false, true,
                                               droptol, milu, udiag);
 
 
@@ -302,8 +302,8 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                             SparseComplexMatrix L = P.transpose () * fact.L ();
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType 
-                                                      (MatrixType::Permuted_Lower, 
+                            retval(0) = octave_value (L, MatrixType
+                                                      (MatrixType::Permuted_Lower,
                                                        sm_nr, fact.row_perm ()));
                           }
                       }

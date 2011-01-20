@@ -80,7 +80,7 @@ along with Octave; see the file COPYING.  If not, see
 //   ------               ----            -----
 //   magic number         string             10
 //
-//   float format         integer             1  
+//   float format         integer             1
 //
 //
 // Data (one set for each item):
@@ -252,7 +252,7 @@ read_binary_data (std::istream& is, bool swap,
       goto data_read_error;
       break;
     }
-  
+
   if (!tc.load_binary (is, swap, fmt))
     {
     data_read_error:
@@ -269,7 +269,7 @@ read_binary_data (std::istream& is, bool swap,
 bool
 save_binary_data (std::ostream& os, const octave_value& tc,
                   const std::string& name, const std::string& doc,
-                  bool mark_as_global, bool save_as_floats) 
+                  bool mark_as_global, bool save_as_floats)
 {
   int32_t name_len = name.length ();
 
@@ -296,7 +296,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   os.write (reinterpret_cast<char *> (&len), 4);
   const char *btmp = typ.data ();
   os.write (btmp, len);
-      
+
   // The octave_value of tc is const. Make a copy...
   octave_value val = tc;
 

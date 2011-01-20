@@ -868,7 +868,7 @@ void
 tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 {
   unwind_protect frame;
-  
+
   frame.protect_var (buffer_error_messages);
   frame.protect_var (Vdebug_on_error);
   frame.protect_var (Vdebug_on_warning);
@@ -925,7 +925,7 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
 
   // We want to preserve the last statement indicator for possible
   // backtracking.
-  frame.add_fcn (octave_call_stack::set_statement, 
+  frame.add_fcn (octave_call_stack::set_statement,
                  octave_call_stack::current_statement ());
 
   // Similarly, if we have seen a return or break statement, allow all

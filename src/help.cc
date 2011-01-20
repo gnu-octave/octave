@@ -295,14 +295,14 @@ Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
 @deftypefn {Keyword} {} end_try_catch\n\
 Mark the end of an @code{try-catch} block.\n\
 @seealso{try, catch}\n\
-@end deftypefn"), 
+@end deftypefn"),
 
   pair_type ("end_unwind_protect",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} end_unwind_protect\n\
 Mark the end of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deftypefn"), 
+@end deftypefn"),
 
   pair_type ("endfor",
     "-*- texinfo -*-\n\
@@ -474,7 +474,7 @@ execution will proceed after the catch block (though it is often\n\
 recommended to use the lasterr function to re-throw the error after cleanup\n\
 is completed).\n\
 @seealso{catch,unwind_protect}\n\
-@end deftypefn"), 
+@end deftypefn"),
 
   pair_type ("until",
     "-*- texinfo -*-\n\
@@ -495,14 +495,14 @@ unwind_protect_cleanup block is still executed (in other words, the\n\
 unwind_protect_cleanup will be run with or without an error in the\n\
 unwind_protect block).\n\
 @seealso{unwind_protect_cleanup,try}\n\
-@end deftypefn"), 
+@end deftypefn"),
 
   pair_type ("unwind_protect_cleanup",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} unwind_protect_cleanup\n\
 Begin the cleanup section of an unwind_protect block.\n\
 @seealso{unwind_protect}\n\
-@end deftypefn"), 
+@end deftypefn"),
 
   pair_type ("varargin",
     "-*- texinfo -*-\n\
@@ -592,7 +592,7 @@ looks_like_html (const std::string& msg)
   const size_t p1 = msg.find ('\n');
   std::string t = msg.substr (0, p1);
   const size_t p2 = t.find ("<html"); // FIXME: this comparison should be case-insensitive
-  
+
    return (p2 != std::string::npos);
 }
 
@@ -612,7 +612,7 @@ looks_like_texinfo (const std::string& msg, size_t& p1)
 }
 
 static bool
-raw_help_from_symbol_table (const std::string& nm, std::string& h, 
+raw_help_from_symbol_table (const std::string& nm, std::string& h,
                             std::string& w, bool& symbol_found)
 {
   bool retval = false;
@@ -643,7 +643,7 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 }
 
 static bool
-raw_help_from_file (const std::string& nm, std::string& h, 
+raw_help_from_file (const std::string& nm, std::string& h,
                     std::string& file, bool& symbol_found)
 {
   bool retval = false;
@@ -662,7 +662,7 @@ raw_help_from_file (const std::string& nm, std::string& h,
 }
 
 static bool
-raw_help_from_map (const std::string& nm, std::string& h, 
+raw_help_from_map (const std::string& nm, std::string& h,
                    const map_type& map, bool& symbol_found)
 {
   map_iter idx = map.find (nm);
@@ -692,7 +692,7 @@ do_get_help_text (const std::string& name, std::string& text,
 {
   bool symbol_found = false;
   text = raw_help (name, symbol_found);
-  
+
   format = "Not found";
   if (symbol_found)
     {
@@ -743,7 +743,7 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
           std::string format;
 
           do_get_help_text (name, text, format);
-  
+
           retval(1) = format;
           retval(0) = text;
         }
@@ -817,7 +817,7 @@ To convert the help text to other formats, use the @code{makeinfo} function.\n\
           std::string format;
 
           do_get_help_text_from_file (fname, text, format);
-  
+
           retval(1) = format;
           retval(0) = text;
         }
@@ -990,12 +990,12 @@ file_is_in_dir (const std::string filename, const std::string dir)
       const int dir_len = dir.size ();
       const int filename_len = filename.size ();
       const int max_allowed_seps = file_ops::is_dir_sep (dir [dir_len-1]) ? 0 : 1;
-      
+
       int num_seps = 0;
       for (int i = dir_len; i < filename_len; i++)
         if (file_ops::is_dir_sep (filename [i]))
           num_seps ++;
-      
+
       return (num_seps <= max_allowed_seps);
     }
   else
@@ -1018,7 +1018,7 @@ Undocumented internal function.\n\
   // Get list of functions
   string_vector ffl = load_path::fcn_names ();
   string_vector afl = autoloaded_functions ();
-  
+
   if (args.length () == 0)
     retval = Cell (ffl.append (afl));
   else
@@ -1041,7 +1041,7 @@ Undocumented internal function.\n\
         }
       else
         error ("__list_functions__: input must be a string");
-    }  
+    }
 
   return retval;
 }

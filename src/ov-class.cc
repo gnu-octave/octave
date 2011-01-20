@@ -66,7 +66,7 @@ octave_class::register_type (void)
     (octave_class::t_name, "<unknown>", octave_value (new octave_class ()));
 }
 
-octave_class::octave_class (const octave_map& m, const std::string& id, 
+octave_class::octave_class (const octave_map& m, const std::string& id,
                             const octave_value_list& parents)
   : octave_base_value (), map (m), c_name (id), obsolete_copies (0)
 {
@@ -99,7 +99,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
 octave_base_value *
 octave_class::unique_clone (void)
-{ 
+{
   if (count == obsolete_copies)
     {
       // All remaining copies are obsolete. We don't actually need to clone.
@@ -107,12 +107,12 @@ octave_class::unique_clone (void)
       return this;
     }
   else
-    { 
+    {
       // In theory, this shouldn't be happening, but it's here just in case.
       if (count < obsolete_copies)
         obsolete_copies = 0;
 
-      return clone (); 
+      return clone ();
     }
 }
 
@@ -465,7 +465,7 @@ octave_class::subsref (const std::string& type,
 
           // Since we're handling subsref, return the list in the first value
           // if it has more than one element, to be able to pass through
-          // rvalue1 calls. 
+          // rvalue1 calls.
           if (retval.length () > 1)
             retval = octave_value (retval, true);
         }
@@ -766,7 +766,7 @@ octave_class::subsasgn (const std::string& type,
 
         case '.':
           {
-            // Find the class in which this method resides before 
+            // Find the class in which this method resides before
             // attempting to access the requested field.
 
             std::string method_class = get_current_method_class ();
@@ -834,11 +834,11 @@ octave_class::index_vector (void) const
           if (tmp(0).is_object())
             error ("subsindex function must return a valid index vector");
           else
-            // Index vector returned by subsindex is zero based 
+            // Index vector returned by subsindex is zero based
             // (why this inconsistency Mathworks?), and so we must
             // add one to the value returned as the index_vector method
             // expects it to be one based.
-            retval = do_binary_op (octave_value::op_add, tmp (0), 
+            retval = do_binary_op (octave_value::op_add, tmp (0),
                                    octave_value (1.0)).index_vector ();
         }
     }
@@ -975,7 +975,7 @@ octave_class::print_name_tag (std::ostream& os, const std::string& name) const
 }
 
 void
-octave_class::print_with_name (std::ostream& os, const std::string& name, 
+octave_class::print_with_name (std::ostream& os, const std::string& name,
                                bool)
 {
   octave_value fcn = symbol_table::find_method ("display", class_name ());
@@ -986,7 +986,7 @@ octave_class::print_with_name (std::ostream& os, const std::string& name,
 
       count++;
       args(0) = octave_value (this);
-      
+
       string_vector arg_names (1);
 
       arg_names[0] = name;
@@ -1004,7 +1004,7 @@ octave_class::print_with_name (std::ostream& os, const std::string& name,
 }
 
 // Loading a class properly requires an exemplar map entry for success.
-// If we don't have one, we attempt to create one by calling the constructor 
+// If we don't have one, we attempt to create one by calling the constructor
 // with no arguments.
 bool
 octave_class::reconstruct_exemplar (void)
@@ -1071,7 +1071,7 @@ octave_class::reconstruct_parents (void)
             }
         }
     }
-  
+
   if (might_have_inheritance)
     {
       octave_class::exemplar_const_iterator it
@@ -1126,7 +1126,7 @@ octave_class::save_ascii (std::ostream& os)
       octave_value val = map.contents (i);
 
       bool b = save_ascii_data (os, val, m.key (i), false, 0);
-      
+
       if (! b)
         return os;
 
@@ -1136,7 +1136,7 @@ octave_class::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_class::load_ascii (std::istream& is)
 {
   octave_idx_type len = 0;
@@ -1174,13 +1174,13 @@ octave_class::load_ascii (std::istream& is)
                   m.assign (nm, tcell);
                 }
 
-              if (is) 
+              if (is)
                 {
                   c_name = classname;
                   reconstruct_exemplar ();
 
                   map = m;
-                  
+
                   if (! reconstruct_parents ())
                     warning ("load: unable to reconstruct object inheritance");
                   else
@@ -1212,7 +1212,7 @@ octave_class::load_ascii (std::istream& is)
           else
             panic_impossible ();
         }
-      else 
+      else
         {
           error ("load: failed to extract number of elements in class");
           success = false;
@@ -1227,7 +1227,7 @@ octave_class::load_ascii (std::istream& is)
   return success;
 }
 
-bool 
+bool
 octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 {
   int32_t classname_len = class_name().length ();
@@ -1250,14 +1250,14 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 
   int32_t len = m.nfields();
   os.write (reinterpret_cast<char *> (&len), 4);
-  
+
   octave_map::iterator i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
 
       bool b = save_binary_data (os, val, m.key (i), "", 0, save_as_floats);
-      
+
       if (! b)
         return os;
 
@@ -1267,7 +1267,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_class::load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt)
 {
@@ -1307,14 +1307,14 @@ octave_class::load_binary (std::istream& is, bool swap,
           std::string doc;
 
           // recurse to read cell elements
-          std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+          std::string nm = read_binary_data (is, swap, fmt, std::string (),
                                              dummy, t2, doc);
 
           if (! is)
             break;
 
           Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
- 
+
           if (error_state)
             {
               error ("load: internal error loading class elements");
@@ -1324,7 +1324,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           m.assign (nm, tcell);
         }
 
-      if (is) 
+      if (is)
         {
           map = m;
 
@@ -1396,7 +1396,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   class_hid = H5Dcreate (group_hid, "classname",  type_hid, space_hid,
                          H5P_DEFAULT);
 #endif
-  if (class_hid < 0 || H5Dwrite (class_hid, type_hid, H5S_ALL, H5S_ALL, 
+  if (class_hid < 0 || H5Dwrite (class_hid, type_hid, H5S_ALL, H5S_ALL,
                                     H5P_DEFAULT, c_name.c_str ()) < 0)
     goto error_cleanup;
 
@@ -1426,7 +1426,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     {
       octave_value val = map.contents (i);
 
-      bool retval2 = add_hdf5_data (data_hid, val, m.key (i), "", false, 
+      bool retval2 = add_hdf5_data (data_hid, val, m.key (i), "", false,
                                     save_as_floats);
 
       if (! retval2)
@@ -1455,7 +1455,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   return true;
 }
 
-bool 
+bool
 octave_class::load_hdf5 (hid_t loc_id, const char *name)
 {
   bool retval = false;
@@ -1465,7 +1465,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
   hid_t type_hid = -1;
   hid_t type_class_hid = -1;
   hid_t space_hid = -1;
-  hid_t subgroup_hid = -1; 
+  hid_t subgroup_hid = -1;
   hid_t st_id = -1;
 
   hdf5_callback_data dsub;
@@ -1500,7 +1500,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
 
   if (type_class_hid != H5T_STRING)
     goto error_cleanup;
-          
+
   space_hid = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_hid);
 
@@ -1520,7 +1520,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
       st_id = H5Tcopy (H5T_C_S1);
       H5Tset_size (st_id, slen);
 
-      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
                    classname) < 0)
         {
           H5Tclose (st_id);
@@ -1528,7 +1528,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
           H5Gclose (group_hid);
           return false;
         }
-     
+
       H5Tclose (st_id);
       H5Dclose (data_hid);
       data_hid = -1;
@@ -1539,9 +1539,9 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
   reconstruct_exemplar ();
 
 #if HAVE_HDF5_18
-  subgroup_hid = H5Gopen (group_hid, name, H5P_DEFAULT); 
+  subgroup_hid = H5Gopen (group_hid, name, H5P_DEFAULT);
 #else
-  subgroup_hid = H5Gopen (group_hid, name); 
+  subgroup_hid = H5Gopen (group_hid, name);
 #endif
   H5Gget_num_objs (subgroup_hid, &num_obj);
   H5Gclose (subgroup_hid);
@@ -1553,7 +1553,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
       octave_value t2 = dsub.tc;
 
       Cell tcell = t2.is_cell () ? t2.cell_value () : Cell (t2);
- 
+
       if (error_state)
         {
           error ("load: internal error loading class elements");
@@ -1589,7 +1589,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
             retval = true;
         }
     }
-  
+
  error_cleanup:
   if (data_hid > 0)
     H5Dclose (data_hid);
@@ -1922,7 +1922,7 @@ object @var{x} or the named class.\n\
             }
           else
             retval = Cell (sv);
-        }         
+        }
     }
   else
     print_usage ();

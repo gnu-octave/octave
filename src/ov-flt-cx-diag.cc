@@ -37,7 +37,7 @@ template class octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_float_complex_diag_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_diag_matrix, 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_diag_matrix,
                                      "float complex diagonal matrix", "single");
 
 static octave_base_value *
@@ -144,8 +144,8 @@ octave_float_complex_diag_matrix::map (unary_mapper_t umap) const
 }
 
 
-bool 
-octave_float_complex_diag_matrix::save_binary (std::ostream& os, 
+bool
+octave_float_complex_diag_matrix::save_binary (std::ostream& os,
                                                bool& /* save_as_floats */)
 {
 
@@ -168,7 +168,7 @@ octave_float_complex_diag_matrix::save_binary (std::ostream& os,
   return true;
 }
 
-bool 
+bool
 octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -187,7 +187,7 @@ octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   FloatComplexDiagMatrix m (r, c);
   FloatComplex *re = m.fortran_vec ();
   octave_idx_type len = m.length ();
-  read_floats (is, reinterpret_cast<float *> (re), 
+  read_floats (is, reinterpret_cast<float *> (re),
                static_cast<save_type> (tmp), 2 * len, swap, fmt);
   if (error_state || ! is)
     return false;
@@ -196,8 +196,8 @@ octave_float_complex_diag_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool 
-octave_float_complex_diag_matrix::chk_valid_scalar (const octave_value& val, 
+bool
+octave_float_complex_diag_matrix::chk_valid_scalar (const octave_value& val,
                                                     FloatComplex& x) const
 {
   bool retval = val.is_complex_scalar () || val.is_real_scalar ();

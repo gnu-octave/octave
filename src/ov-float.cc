@@ -74,7 +74,7 @@ octave_float_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
   return tmp.do_index_op (idx, resize_ok);
 }
 
-octave_value 
+octave_value
 octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 {
   if (fill)
@@ -123,7 +123,7 @@ octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-bool 
+bool
 octave_float_scalar::save_ascii (std::ostream& os)
 {
   float d = float_value ();
@@ -135,7 +135,7 @@ octave_float_scalar::save_ascii (std::ostream& os)
   return true;
 }
 
-bool 
+bool
 octave_float_scalar::load_ascii (std::istream& is)
 {
   scalar = octave_read_value<float> (is);
@@ -148,7 +148,7 @@ octave_float_scalar::load_ascii (std::istream& is)
   return true;
 }
 
-bool 
+bool
 octave_float_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
 {
   char tmp = LS_FLOAT;
@@ -159,7 +159,7 @@ octave_float_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
   return true;
 }
 
-bool 
+bool
 octave_float_scalar::load_binary (std::istream& is, bool swap,
                             oct_mach_info::float_format fmt)
 {
@@ -189,13 +189,13 @@ octave_float_scalar::save_hdf5 (hid_t loc_id, const char *name,
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
-  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid, 
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_FLOAT, space_hid,
                         H5P_DEFAULT);
 #endif
-  if (data_hid < 0) 
+  if (data_hid < 0)
     {
       H5Sclose (space_hid);
       return false;
@@ -224,15 +224,15 @@ octave_float_scalar::load_hdf5 (hid_t loc_id, const char *name)
   hsize_t rank = H5Sget_simple_extent_ndims (space_id);
 
   if (rank != 0)
-    { 
+    {
       H5Dclose (data_hid);
       return false;
     }
 
   float dtmp;
-  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, 
+  if (H5Dread (data_hid, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL,
                H5P_DEFAULT, &dtmp) < 0)
-    { 
+    {
       H5Dclose (data_hid);
       return false;
     }

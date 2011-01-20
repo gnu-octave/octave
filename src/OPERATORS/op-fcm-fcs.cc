@@ -38,16 +38,16 @@ along with Octave; see the file COPYING.  If not, see
 
 // complex matrix by complex scalar ops.
 
-DEFNDBINOP_OP (add, float_complex_matrix, float_complex, 
+DEFNDBINOP_OP (add, float_complex_matrix, float_complex,
                float_complex_array, float_complex, +)
-DEFNDBINOP_OP (sub, float_complex_matrix, float_complex, 
+DEFNDBINOP_OP (sub, float_complex_matrix, float_complex,
                float_complex_array, float_complex, -)
-DEFNDBINOP_OP (mul, float_complex_matrix, float_complex, 
+DEFNDBINOP_OP (mul, float_complex_matrix, float_complex,
                float_complex_array, float_complex, *)
 
 DEFBINOP (div, float_complex_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_complex_matrix&, 
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&,
                    const octave_float_complex&);
 
   FloatComplex d = v2.float_complex_value ();
@@ -62,7 +62,7 @@ DEFBINOP_FN (pow, float_complex_matrix, float_complex, xpow)
 
 DEFBINOP (ldiv, float_complex_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_complex_matrix&, 
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&,
                    const octave_float_complex&);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
@@ -74,25 +74,25 @@ DEFBINOP (ldiv, float_complex_matrix, float_complex)
   return ret;
 }
 
-DEFNDCMPLXCMPOP_FN (lt, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (lt, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_lt)
-DEFNDCMPLXCMPOP_FN (le, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (le, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_le)
-DEFNDCMPLXCMPOP_FN (eq, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (eq, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_eq)
-DEFNDCMPLXCMPOP_FN (ge, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (ge, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_ge)
-DEFNDCMPLXCMPOP_FN (gt, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (gt, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_gt)
-DEFNDCMPLXCMPOP_FN (ne, float_complex_matrix, float_complex, 
+DEFNDCMPLXCMPOP_FN (ne, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_ne)
 
-DEFNDBINOP_OP (el_mul, float_complex_matrix, float_complex, 
+DEFNDBINOP_OP (el_mul, float_complex_matrix, float_complex,
                float_complex_array, float_complex, *)
 
 DEFBINOP (el_div, float_complex_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_complex_matrix&, 
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&,
                    const octave_float_complex&);
 
   FloatComplex d = v2.float_complex_value ();
@@ -103,34 +103,34 @@ DEFBINOP (el_div, float_complex_matrix, float_complex)
   return octave_value (v1.float_complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (el_pow, float_complex_matrix, float_complex, 
+DEFNDBINOP_FN (el_pow, float_complex_matrix, float_complex,
                float_complex_array, float_complex, elem_xpow)
 
 DEFBINOP (el_ldiv, float_complex_matrix, float_complex)
 {
-  CAST_BINOP_ARGS (const octave_float_complex_matrix&, 
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&,
                    const octave_float_complex&);
 
   return x_el_div (v2.float_complex_value (), v1.float_complex_array_value ());
 }
 
-DEFNDBINOP_FN (el_and, float_complex_matrix, float_complex, 
+DEFNDBINOP_FN (el_and, float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_and)
-DEFNDBINOP_FN (el_or,  float_complex_matrix, float_complex, 
+DEFNDBINOP_FN (el_or,  float_complex_matrix, float_complex,
                float_complex_array, float_complex, mx_el_or)
 
-DEFNDCATOP_FN (fcm_fcs, float_complex_matrix, float_complex, 
+DEFNDCATOP_FN (fcm_fcs, float_complex_matrix, float_complex,
                float_complex_array, float_complex_array, concat)
 
-DEFNDCATOP_FN (cm_fcs, complex_matrix, float_complex, 
+DEFNDCATOP_FN (cm_fcs, complex_matrix, float_complex,
                float_complex_array, float_complex_array, concat)
 
-DEFNDCATOP_FN (fcm_cs, float_complex_matrix, complex, 
+DEFNDCATOP_FN (fcm_cs, float_complex_matrix, complex,
                float_complex_array, float_complex_array, concat)
 
-DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex, 
+DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex,
                   float_complex, assign)
-DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex, 
+DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex,
                   complex, assign)
 
 DEFNDASSIGNOP_OP (assign_add, float_complex_matrix, float_complex_scalar,
@@ -145,17 +145,17 @@ DEFNDASSIGNOP_OP (assign_div, float_complex_matrix, float_complex_scalar,
 void
 install_fcm_fcs_ops (void)
 {
-  INSTALL_BINOP (op_add, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_add, octave_float_complex_matrix,
                  octave_float_complex, add);
-  INSTALL_BINOP (op_sub, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_sub, octave_float_complex_matrix,
                  octave_float_complex, sub);
-  INSTALL_BINOP (op_mul, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_mul, octave_float_complex_matrix,
                  octave_float_complex, mul);
-  INSTALL_BINOP (op_div, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_div, octave_float_complex_matrix,
                  octave_float_complex, div);
-  INSTALL_BINOP (op_pow, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_pow, octave_float_complex_matrix,
                  octave_float_complex, pow);
-  INSTALL_BINOP (op_ldiv, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_ldiv, octave_float_complex_matrix,
                  octave_float_complex, ldiv);
   INSTALL_BINOP (op_lt, octave_float_complex_matrix, octave_float_complex, lt);
   INSTALL_BINOP (op_le, octave_float_complex_matrix, octave_float_complex, le);
@@ -163,26 +163,26 @@ install_fcm_fcs_ops (void)
   INSTALL_BINOP (op_ge, octave_float_complex_matrix, octave_float_complex, ge);
   INSTALL_BINOP (op_gt, octave_float_complex_matrix, octave_float_complex, gt);
   INSTALL_BINOP (op_ne, octave_float_complex_matrix, octave_float_complex, ne);
-  INSTALL_BINOP (op_el_mul, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_mul, octave_float_complex_matrix,
                  octave_float_complex, el_mul);
-  INSTALL_BINOP (op_el_div, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_div, octave_float_complex_matrix,
                  octave_float_complex, el_div);
-  INSTALL_BINOP (op_el_pow, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_pow, octave_float_complex_matrix,
                  octave_float_complex, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_ldiv, octave_float_complex_matrix,
                  octave_float_complex, el_ldiv);
-  INSTALL_BINOP (op_el_and, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_and, octave_float_complex_matrix,
                  octave_float_complex, el_and);
-  INSTALL_BINOP (op_el_or, octave_float_complex_matrix, 
+  INSTALL_BINOP (op_el_or, octave_float_complex_matrix,
                  octave_float_complex, el_or);
 
   INSTALL_CATOP (octave_float_complex_matrix, octave_float_complex, fcm_fcs);
   INSTALL_CATOP (octave_complex_matrix, octave_float_complex, cm_fcs);
   INSTALL_CATOP (octave_float_complex_matrix, octave_complex, fcm_cs);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, 
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix,
                     octave_float_complex, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, 
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix,
                     octave_float_complex, dbl_assign);
 
   INSTALL_ASSIGNOP (op_add_eq, octave_float_complex_matrix,

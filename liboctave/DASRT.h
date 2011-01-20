@@ -96,7 +96,7 @@ public:
   DASRT_result integrate (const ColumnVector& tout);
 
   DASRT_result integrate (const ColumnVector& tout,
-                          const ColumnVector& tcrit); 
+                          const ColumnVector& tcrit);
 
   std::string error_message (void) const;
 
@@ -104,7 +104,7 @@ private:
 
   bool initialized;
 
-  octave_idx_type liw;  
+  octave_idx_type liw;
   octave_idx_type lrw;
 
   octave_idx_type ng;

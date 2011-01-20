@@ -103,7 +103,7 @@ octave_add_history (const char *line, int history_control)
 
       if (history_control & HC_ERASEDUPS)
         hc_erasedups (line);
-        
+
       add_history (line);
 
       return 1;

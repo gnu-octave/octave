@@ -191,7 +191,7 @@ read_binary_file_header (std::istream& is, bool& swap,
         error ("load: unable to read read binary file");
       return -1;
     }
-        
+
   char tmp = 0;
   is.read (&tmp, 1);
 
@@ -216,13 +216,13 @@ check_gzip_magic (const std::string& fname)
   std::ifstream file (fname.c_str ());
   OCTAVE_LOCAL_BUFFER (unsigned char, magic, 2);
 
-  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f && 
+  if (file.read (reinterpret_cast<char *> (magic), 2) && magic[0] == 0x1f &&
       magic[1] == 0x8b)
     retval = true;
 
   file.close ();
   return retval;
-} 
+}
 #endif
 
 static load_save_format
@@ -277,7 +277,7 @@ get_file_format (std::istream& file, const std::string& filename)
 }
 
 static load_save_format
-get_file_format (const std::string& fname, const std::string& orig_fname, 
+get_file_format (const std::string& fname, const std::string& orig_fname,
                  bool &use_zlib)
 {
   load_save_format retval = LS_UNKNOWN;
@@ -290,14 +290,14 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
   std::ifstream file (fname.c_str ());
   use_zlib = false;
-      
+
   if (file)
     {
       retval = get_file_format (file, orig_fname);
       file.close ();
 
 #ifdef HAVE_ZLIB
-      if (retval == LS_UNKNOWN && check_gzip_magic (fname))     
+      if (retval == LS_UNKNOWN && check_gzip_magic (fname))
         {
           gzifstream gzfile (fname.c_str ());
           use_zlib = true;
@@ -511,7 +511,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 
   size_t dot_pos = fname.rfind (".");
   size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars ());
-    
+
   if (dot_pos == std::string::npos
       || (sep_pos != std::string::npos && dot_pos < sep_pos))
     {
@@ -526,7 +526,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   else
     {
       file_stat fs (fname);
-  
+
       if (! (fs.exists () && fs.is_reg ()))
         {
           fname = "";
@@ -819,7 +819,7 @@ Force Octave to assume the file is in Octave's text format.\n\
                           return retval;
                         }
                     }
-                  else if (format == LS_MAT5_BINARY 
+                  else if (format == LS_MAT5_BINARY
                            || format == LS_MAT7_BINARY)
                     {
                       if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
@@ -853,7 +853,7 @@ Force Octave to assume the file is in Octave's text format.\n\
                           return retval;
                         }
                     }
-                  else if (format == LS_MAT5_BINARY 
+                  else if (format == LS_MAT5_BINARY
                            || format == LS_MAT7_BINARY)
                     {
                       if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
@@ -875,7 +875,7 @@ Force Octave to assume the file is in Octave's text format.\n\
             }
         }
     }
-    
+
   return retval;
 }
 
@@ -935,7 +935,7 @@ do_save (std::ostream& os, const octave_value& tc,
       break;
 
     case LS_MAT_ASCII:
-      if (! save_mat_ascii_data (os, tc, fmt.opts & LS_MAT_ASCII_LONG ? 16 : 8, 
+      if (! save_mat_ascii_data (os, tc, fmt.opts & LS_MAT_ASCII_LONG ? 16 : 8,
                                  fmt.opts & LS_MAT_ASCII_TABS))
         warning ("save: unable to save %s in ASCII format", name.c_str ());
       break;
@@ -991,7 +991,7 @@ save_fields (std::ostream& os, const octave_scalar_map& m,
              load_save_format fmt, bool save_as_floats)
 {
   glob_match pat (pattern);
-  
+
   size_t saved = 0;
 
   for (octave_scalar_map::const_iterator p = m.begin (); p != m.end (); p++)
@@ -1080,14 +1080,14 @@ parse_save_options (const string_vector &argv,
           error ("save: octave executable was not linked with HDF5 library");
 #endif /* ! HAVE_HDF5 */
         }
-      else if (argv[i] == "-mat-binary" || argv[i] == "-mat" 
+      else if (argv[i] == "-mat-binary" || argv[i] == "-mat"
                || argv[i] == "-m" || argv[i] == "-6" || argv[i] == "-v6"
                || argv[i] == "-V6")
         {
           format = LS_MAT5_BINARY;
         }
 #ifdef HAVE_ZLIB
-      else if (argv[i] == "-mat7-binary" || argv[i] == "-7" 
+      else if (argv[i] == "-mat7-binary" || argv[i] == "-7"
                || argv[i] == "-v7" || argv[i] == "-V7")
         {
           format = LS_MAT7_BINARY;
@@ -1142,21 +1142,21 @@ parse_save_options (const string_vector &argv,
 }
 
 static string_vector
-parse_save_options (const std::string &arg, load_save_format &format, 
-                    bool &append, bool &save_as_floats, 
+parse_save_options (const std::string &arg, load_save_format &format,
+                    bool &append, bool &save_as_floats,
                     bool &use_zlib)
 {
   std::istringstream is (arg);
   std::string str;
   string_vector argv;
-  
+
   while (! is.eof ())
     {
       is >> str;
       argv.append (str);
     }
 
-  return parse_save_options (argv, format, append, save_as_floats, 
+  return parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
 }
 
@@ -1256,7 +1256,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
     }
   else if (argv[argv_idx] == "-struct")
     {
-      if (++argv_idx >= argc) 
+      if (++argv_idx >= argc)
         {
           error ("save: missing struct name");
           return;
@@ -1272,7 +1272,7 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       octave_value struct_var = symbol_table::varref (struct_name);
 
-      if (! struct_var.is_map () || struct_var.numel () != 1) 
+      if (! struct_var.is_map () || struct_var.numel () != 1)
         {
           error ("save: `%s' is not a scalar structure",
                  struct_name.c_str ());
@@ -1282,14 +1282,14 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 
       ++argv_idx;
 
-      if (argv_idx < argc) 
+      if (argv_idx < argc)
         {
           for (int i = argv_idx; i < argc; i++)
             {
               if (! save_fields (os, struct_var_map, argv[i], fmt,
                                  save_as_floats))
                 {
-                  warning ("save: no such field `%s.%s'", 
+                  warning ("save: no such field `%s.%s'",
                            struct_name.c_str (), argv[i].c_str ());
                 }
             }
@@ -1369,9 +1369,9 @@ dump_octave_core (void)
 
       bool use_zlib = false;
 
-      parse_save_options (Voctave_core_file_options, format, append, 
+      parse_save_options (Voctave_core_file_options, format, append,
                           save_as_floats, use_zlib);
-  
+
       std::ios::openmode mode = std::ios::out;
 
       // Matlab v7 files are always compressed
@@ -1426,7 +1426,7 @@ dump_octave_core (void)
 #endif
             {
               std::ofstream file (fname, mode);
-          
+
               if (file)
                 {
                   dump_octave_core (file, fname, format, save_as_floats);
@@ -1595,11 +1595,11 @@ the file @file{data} in Octave's binary format.\n\
   bool use_zlib = false;
 
   // get default options
-  parse_save_options (Vdefault_save_options, format, append, save_as_floats, 
+  parse_save_options (Vdefault_save_options, format, append, save_as_floats,
                       use_zlib);
 
   // override from command line
-  argv = parse_save_options (argv, format, append, save_as_floats, 
+  argv = parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
   argc = argv.length ();
   int i = 0;
@@ -1636,7 +1636,7 @@ the file @file{data} in Octave's binary format.\n\
 
           // FIXME -- should things intended for the screen end up
           // in a octave_value (string)?
-          
+
           save_vars (argv, i, argc, octave_stdout, format,
                      save_as_floats, true);
         }
@@ -1681,7 +1681,7 @@ the file @file{data} in Octave's binary format.\n\
               return retval;
             }
 
-          bool write_header_info = ! (append && 
+          bool write_header_info = ! (append &&
                                       H5Fis_hdf5 (fname.c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
@@ -1728,7 +1728,7 @@ the file @file{data} in Octave's binary format.\n\
 #endif
             {
               std::ofstream file (fname.c_str (), mode);
-          
+
               if (file)
                 {
                   bool write_header_info = ! file.tellp ();

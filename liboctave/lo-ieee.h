@@ -68,7 +68,7 @@ typedef union
 #define LO_IEEE_NA_HW 0x7FF840F4
 #define LO_IEEE_NA_LW 0x40000000
 #define LO_IEEE_NA_FLOAT   0x7FC207A2
- 
+
 extern OCTAVE_API void octave_ieee_init (void);
 
 extern OCTAVE_API int __lo_ieee_isnan (double x);

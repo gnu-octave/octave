@@ -43,7 +43,7 @@ skip_until_newline (std::istream& is, bool keep_newline)
 {
   if (! is)
     return;
-  
+
   while (is)
     {
       char c = is.peek ();
@@ -56,7 +56,7 @@ skip_until_newline (std::istream& is, bool keep_newline)
               // Eat the CR or LF character.
               char d;
               is.get (d);
-              
+
               // Make sure that for binary-mode opened ascii files
               // containing CRLF line endings we skip the LF after CR.
               if (c == '\r' && is.peek () == '\n')
@@ -65,7 +65,7 @@ skip_until_newline (std::istream& is, bool keep_newline)
                   is.get (d);
                 }
             }
-          
+
           // Newline was found, and read from stream if
           // keep_newline == true, so exit loop.
           break;
@@ -90,7 +90,7 @@ skip_preceeding_newline (std::istream& is)
 {
   if (! is)
     return;
-  
+
   // Check whether IS currently points to newline character.
   char c = is.peek ();
 
@@ -102,7 +102,7 @@ skip_preceeding_newline (std::istream& is)
           // Eat the CR or LF character.
           char d;
           is.get (d);
-          
+
           // Make sure that for binary-mode opened ascii files
           // containing CRLF line endings we skip the LF after CR.
           if (c == '\r' && is.peek () == '\n')
@@ -110,7 +110,7 @@ skip_preceeding_newline (std::istream& is)
               // Yes, LF following CR, eat it.
               is.get (d);
           }
-          
+
           // Peek into next character.
           c = is.peek ();
 
@@ -130,9 +130,9 @@ read_until_newline (std::istream& is, bool keep_newline)
 {
   if (! is)
     return std::string ();
-  
+
   std::ostringstream buf;
-  
+
   while (is)
     {
       char c = is.peek ();
@@ -145,7 +145,7 @@ read_until_newline (std::istream& is, bool keep_newline)
               // Eat the CR or LF character.
               char d;
               is.get (d);
-              
+
               // Make sure that for binary-mode opened ascii files
               // containing CRLF line endings we skip the LF after
               // CR.
@@ -156,7 +156,7 @@ read_until_newline (std::istream& is, bool keep_newline)
                   is.get (d);
                 }
             }
-          
+
           // Newline was found, and read from stream if
           // keep_newline == true, so exit loop.
           break;
@@ -170,6 +170,6 @@ read_until_newline (std::istream& is, bool keep_newline)
           buf << d;
         }
     }
-  
+
   return buf.str ();
 }

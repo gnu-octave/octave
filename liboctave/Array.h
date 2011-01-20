@@ -61,16 +61,16 @@ protected:
     octave_idx_type len;
     int count;
 
-    ArrayRep (T *d, octave_idx_type l) 
-      : data (no_ctor_new<T> (l)), len (l), count (1) 
-        { 
+    ArrayRep (T *d, octave_idx_type l)
+      : data (no_ctor_new<T> (l)), len (l), count (1)
+        {
           copy_or_memcpy (l, d, data);
         }
 
     template <class U>
-    ArrayRep (U *d, octave_idx_type l) 
-      : data (no_ctor_new<T> (l)), len (l), count (1) 
-        { 
+    ArrayRep (U *d, octave_idx_type l)
+      : data (no_ctor_new<T> (l)), len (l), count (1)
+        {
           std::copy (d, d+l, data);
         }
 
@@ -89,7 +89,7 @@ protected:
       {
         copy_or_memcpy (a.len, a.data, data);
       }
- 
+
     ~ArrayRep (void) { no_ctor_delete<T> (data); }
 
     octave_idx_type length (void) const { return len; }
@@ -164,8 +164,8 @@ public:
   Array (void)
     : dimensions (), rep (nil_rep ()), slice_data (rep->data),
       slice_len (rep->len)
-    { 
-      rep->count++; 
+    {
+      rep->count++;
     }
 
   // Obsolete 1D ctor (there are no 1D arrays).
@@ -187,7 +187,7 @@ public:
     : dimensions (dv),
       rep (new typename Array<T>::ArrayRep (dv.safe_numel ())),
       slice_data (rep->data), slice_len (rep->len)
-    { 
+    {
       dimensions.chop_trailing_singletons ();
     }
 
@@ -246,7 +246,7 @@ public:
       return *this;
     }
 
-  void fill (const T& val); 
+  void fill (const T& val);
 
   void clear (void);
   void clear (const dim_vector& dv);
@@ -304,10 +304,10 @@ public:
   const dim_vector& dims (void) const { return dimensions; }
 
   Array<T> squeeze (void) const;
-  
+
   void chop_trailing_singletons (void) GCC_ATTR_DEPRECATED
   { dimensions.chop_trailing_singletons (); }
-  
+
   octave_idx_type compute_index (octave_idx_type i, octave_idx_type j) const;
   octave_idx_type compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k) const;
   octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx) const;
@@ -323,9 +323,9 @@ public:
   T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1()*j+i); }
   crefT xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1()*j+i); }
 
-  T& xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) 
+  T& xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
     { return xelem (i, dim2()*k+j); }
-  crefT xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const 
+  crefT xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
     { return xelem (i, dim2()*k+j); }
 
   T& xelem (const Array<octave_idx_type>& ra_idx)
@@ -443,7 +443,7 @@ public:
 
   Array<T> index (const Array<idx_vector>& ia) const;
 
-  static const T& resize_fill_value (); 
+  static const T& resize_fill_value ();
 
   // Resizing (with fill).
 
@@ -467,7 +467,7 @@ public:
   Array<T> index (const idx_vector& i, bool resize_ok,
                   const T& rfv = resize_fill_value ()) const;
 
-  Array<T> index (const idx_vector& i, const idx_vector& j, 
+  Array<T> index (const idx_vector& i, const idx_vector& j,
                   bool resize_ok, const T& rfv = resize_fill_value ()) const;
 
   Array<T> index (const Array<idx_vector>& ia,
@@ -475,7 +475,7 @@ public:
 
   // Indexed assignment (always with resize & fill).
 
-  void assign (const idx_vector& i, const Array<T>& rhs, 
+  void assign (const idx_vector& i, const Array<T>& rhs,
                const T& rfv = resize_fill_value ());
 
   void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
@@ -615,7 +615,7 @@ public:
       {
         octave_quit ();
 
-        if (fcn (m[i]) != zero 
+        if (fcn (m[i]) != zero
             || fcn (m[i+1]) != zero
             || fcn (m[i+2]) != zero
             || fcn (m[i+3]) != zero)
@@ -663,7 +663,7 @@ public:
 
 private:
 
-  void resize2 (octave_idx_type nr, octave_idx_type nc, 
+  void resize2 (octave_idx_type nr, octave_idx_type nc,
                 const T& rfv = resize_fill_value ());
 
   static void instantiation_guard ();

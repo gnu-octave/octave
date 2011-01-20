@@ -54,7 +54,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int
 
 template <class T>
 MArray<T>
-filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si, 
+filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
         int dim = 0)
 {
   MArray<T> y;
@@ -105,10 +105,10 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
     {
       if (i == dim)
         continue;
-     
+
       if (x_dims(i) == 1)
         continue;
- 
+
       if (si_dims(++si_dim) != x_dims(i))
         {
           error ("filter: dimensionality of SI and X must agree");
@@ -221,7 +221,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
             }
         }
     }
-  
+
   return y;
 }
 
@@ -254,7 +254,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
       // Find first non-singleton dimension
       while (dim < x_dims.length () && x_dims(dim) <= 1)
         dim++;
-  
+
       // All dimensions singleton, pick first dimension
       if (dim == x_dims.length ())
         dim = 0;
@@ -274,7 +274,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   for (int i = dim; i > 0; i--)
     si_dims(i) = si_dims(i-1);
   si_dims(0) = si_len;
-  
+
   MArray<T> si (si_dims, T (0.0));
 
   return filter (b, a, x, si, dim);
@@ -409,7 +409,7 @@ $$\n\
       dim = 0;
       while (dim < x_dims.length () && x_dims(dim) <= 1)
         dim++;
-  
+
       // All dimensions singleton, pick first dimension
       if (dim == x_dims.length ())
         dim = 0;
@@ -419,7 +419,7 @@ $$\n\
                   || args(1).is_single_type ()
                   || args(2).is_single_type ()
                   || (nargin >= 4 && args(3).is_single_type ()));
-    
+
   if (args(0).is_complex_type ()
       || args(1).is_complex_type ()
       || args(2).is_complex_type ()

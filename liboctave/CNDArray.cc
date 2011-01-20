@@ -79,7 +79,7 @@ ComplexNDArray::fourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::fft (in + k * stride * n, out + k * stride * n, 
+    octave_fftw::fft (in + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -110,7 +110,7 @@ ComplexNDArray::ifourier (int dim) const
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
-    octave_fftw::ifft (in + k * stride * n, out + k * stride * n, 
+    octave_fftw::ifft (in + k * stride * n, out + k * stride * n,
                       n, howmany, stride, dist);
 
   return retval;
@@ -319,7 +319,7 @@ ComplexNDArray::fourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -367,7 +367,7 @@ ComplexNDArray::ifourier2d (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -415,7 +415,7 @@ ComplexNDArray::fourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -462,7 +462,7 @@ ComplexNDArray::ifourierNd (void) const
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany : 
+      howmany = (stride == 1 ? howmany :
                  (howmany > stride ? stride : howmany));
       octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
       octave_idx_type dist = (stride == 1 ? npts : 1);
@@ -529,7 +529,7 @@ ComplexNDArray::all_elements_are_real (void) const
 
 // Return nonzero if any element of CM has a non-integer real or
 // imaginary part.  Also extract the largest and smallest (real or
-// imaginary) values and return them in MAX_VAL and MIN_VAL. 
+// imaginary) values and return them in MAX_VAL and MIN_VAL.
 
 bool
 ComplexNDArray::all_integers (double& max_val, double& min_val) const
@@ -542,7 +542,7 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
 
       double r_val = std::real (val);
       double i_val = std::imag (val);
-      
+
       max_val = r_val;
       min_val = r_val;
 
@@ -767,16 +767,16 @@ ComplexNDArray&
 ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 {
   dim_vector a_dv = a.dims ();
-  
+
   int n = a_dv.length ();
-  
+
   if (n == dimensions.length ())
     {
       Array<octave_idx_type> a_ra_idx (dim_vector (a_dv.length (), 1), 0);
-      
+
       a_ra_idx.elem (0) = r;
       a_ra_idx.elem (1) = c;
-      
+
       for (int i = 0; i < n; i++)
         {
           if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
@@ -786,21 +786,21 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
               return *this;
             }
         }
-      
+
       a_ra_idx.elem (0) = 0;
       a_ra_idx.elem (1) = 0;
-      
+
       octave_idx_type n_elt = a.numel ();
-      
+
       // IS make_unique () NECCESSARY HERE??
 
       for (octave_idx_type i = 0; i < n_elt; i++)
         {
           Array<octave_idx_type> ra_idx = a_ra_idx;
-          
+
           ra_idx.elem (0) = a_ra_idx (0) + r;
           ra_idx.elem (1) = a_ra_idx (1) + c;
-          
+
           elem (ra_idx) = a.elem (a_ra_idx);
 
           increment_index (a_ra_idx, a_dv);
@@ -849,7 +849,7 @@ ComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
-octave_idx_type 
+octave_idx_type
 ComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions)
 {

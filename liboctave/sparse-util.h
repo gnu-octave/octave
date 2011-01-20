@@ -25,9 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_sparse_util_h 1
 
 // FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
-extern OCTAVE_API void SparseCholError (int status, char *file, 
+extern OCTAVE_API void SparseCholError (int status, char *file,
                                         int line, char *message);
-extern OCTAVE_API void SparseCholError (int status, const char *file, 
+extern OCTAVE_API void SparseCholError (int status, const char *file,
                                         int line, const char *message);
 extern OCTAVE_API int SparseCholPrint (const char *fmt, ...);
 

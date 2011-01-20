@@ -271,7 +271,7 @@ factorization as determined by @var{typ}.\n\
           octave_idx_type lnz = 0 ;
           for (octave_idx_type j = 0 ; j < n ; j++)
             lnz += ColCount [j] ;
-        
+
 
           // allocate the output matrix L (pattern-only)
           SparseBoolMatrix L (n, n, lnz);
@@ -292,7 +292,7 @@ factorization as determined by @var{typ}.\n\
             W [j] = L.xcidx(j);
 
           // get workspace for computing one row of L
-          cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true, 
+          cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true,
                                                        0, CHOLMOD_PATTERN, cm);
           octave_idx_type *Rp = static_cast<octave_idx_type *>(R->p);
           octave_idx_type *Ri = static_cast<octave_idx_type *>(R->i);

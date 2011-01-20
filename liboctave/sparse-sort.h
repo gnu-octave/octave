@@ -32,7 +32,7 @@ octave_sparse_sort_idxl
 public:
   octave_idx_type r;
   octave_idx_type c;
-  octave_idx_type idx; 
+  octave_idx_type idx;
 };
 
 bool octave_sparse_sidxl_comp (octave_sparse_sort_idxl* i,

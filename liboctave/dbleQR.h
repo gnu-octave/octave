@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1994-2011 John W. Eaton
-Copyright (C) 2008-2009 Jaroslav Hajek              
+Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -48,7 +48,7 @@ public:
 
   QR (const Matrix&, qr_type_t = qr_type_std);
 
-  QR (const Matrix& qx, const Matrix& rx) 
+  QR (const Matrix& qx, const Matrix& rx)
     : base_qr<Matrix> (qx, rx) { }
 
   QR (const QR& a) : base_qr<Matrix> (a) { }
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-  void form (octave_idx_type n, Matrix& afact, 
+  void form (octave_idx_type n, Matrix& afact,
              double *tau, qr_type_t qr_type);
 };
 

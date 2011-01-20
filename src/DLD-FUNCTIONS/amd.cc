@@ -122,7 +122,7 @@ The author of the code itself is Timothy A. Davis\n\
             sm = SparseMatrix (real (args(0).complex_matrix_value ()));
           else
             sm = SparseMatrix (args(0).matrix_value ());
-          
+
           n_row = sm.rows ();
           n_col = sm.cols ();
           ridx = sm.xridx ();
@@ -139,7 +139,7 @@ The author of the code itself is Timothy A. Davis\n\
           if (nargin > 1)
             {
               octave_scalar_map arg1 = args(1).scalar_map_value ();
-          
+
               if (!error_state)
                 {
                   octave_value tmp;
@@ -163,7 +163,7 @@ The author of the code itself is Timothy A. Davis\n\
               double *Info = xinfo.fortran_vec ();
 
               // FIXME -- how can we manage the memory allocation of
-              // amd in a cleaner manner? 
+              // amd in a cleaner manner?
               amd_malloc = malloc;
               amd_free = free;
               amd_calloc = calloc;

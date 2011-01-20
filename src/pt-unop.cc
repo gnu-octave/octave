@@ -84,7 +84,7 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
-              // Attempt to do the operation in-place if it is unshared 
+              // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
               if (val.get_count () == 1)
                 retval = val.do_non_const_unary_op (etype);

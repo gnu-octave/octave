@@ -35,7 +35,7 @@ public:
 
   base_diff_eqn (void)
     : x (), t (0.0), stop_time (0.0), stop_time_set (false),
-      restart (true), integration_error (false), istate (0) { } 
+      restart (true), integration_error (false), istate (0) { }
 
   base_diff_eqn (const ColumnVector& xx, double tt)
     : x (xx), t (tt), stop_time (0.0), stop_time_set (false),

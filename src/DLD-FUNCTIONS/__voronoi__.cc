@@ -67,7 +67,7 @@ Undocumented internal function.\n\
   retval(0) = 0.0;
 
   int nargin = args.length ();
-  if (nargin < 1 || nargin > 2) 
+  if (nargin < 1 || nargin > 2)
     {
       print_usage ();
       return retval;
@@ -75,9 +75,9 @@ Undocumented internal function.\n\
 
   const char *options;
 
-  if (nargin == 2) 
+  if (nargin == 2)
     {
-      if (! args (1).is_string ()) 
+      if (! args (1).is_string ())
         {
           error ("__voronoi__: OPTIONS argument must be a string");
           return retval;
@@ -97,7 +97,7 @@ Undocumented internal function.\n\
   double *pt_array = p.fortran_vec ();
 
   //double  pt_array[dim * np];
-  //for (int i = 0; i < np; i++) 
+  //for (int i = 0; i < np; i++)
   //  {
   //    for (int j = 0; j < dim; j++)
   //      {
@@ -118,27 +118,27 @@ Undocumented internal function.\n\
   FILE *outfile = 0;
   FILE *errfile = stderr;
 
-  if (! qh_new_qhull (dim, np, pt_array, ismalloc, flags, outfile, errfile)) 
+  if (! qh_new_qhull (dim, np, pt_array, ismalloc, flags, outfile, errfile))
     {
       facetT *facet;
       vertexT *vertex;
 
       octave_idx_type i = 0, n = 1, k = 0, m = 0, fidx = 0, j = 0, r = 0;
       OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, np);
-      
-      for (i = 0; i < np; i++) 
+
+      for (i = 0; i < np; i++)
         ni[i] = 0;
       qh_setvoronoi_all ();
       bool infinity_seen = false;
       facetT *neighbor, **neighborp;
       coordT *voronoi_vertex;
 
-      FORALLfacets 
+      FORALLfacets
         {
           facet->seen = false;
         }
 
-      FORALLvertices 
+      FORALLvertices
         {
           if (qh hull_dim == 3)
             qh_order_vertexneighbors (vertex);
@@ -169,13 +169,13 @@ Undocumented internal function.\n\
         v(0,d) = octave_Inf;
 
       boolMatrix AtInf (np, 1);
-      for (i = 0; i < np; i++) 
+      for (i = 0; i < np; i++)
         AtInf(i) = false;
       octave_value_list F (np, octave_value ());
       k = 0;
       i = 0;
 
-      FORALLfacets 
+      FORALLfacets
         {
           facet->seen = false;
         }
@@ -198,8 +198,8 @@ Undocumented internal function.\n\
                       facet_list(m++) = 1;
                       AtInf(j) = true;
                     }
-                } 
-              else 
+                }
+              else
                 {
                   if (! neighbor->seen)
                     {

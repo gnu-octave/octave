@@ -310,7 +310,7 @@ private:
       : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
         is_relative (di.is_relative),
         dir_mtime (di.dir_mtime),
-        dir_time_last_checked (di.dir_time_last_checked), 
+        dir_time_last_checked (di.dir_time_last_checked),
         all_files (di.all_files), fcn_files (di.fcn_files),
         private_file_map (di.private_file_map),
         method_file_map (di.method_file_map) { }

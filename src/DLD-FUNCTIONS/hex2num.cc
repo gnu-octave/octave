@@ -167,7 +167,7 @@ num2hex ([-1, 1, e, Inf, NaN, NA]);\n\
 
               for (octave_idx_type j = 0; j < 16; j++)
                 {
-                  unsigned char ch = 
+                  unsigned char ch =
                     static_cast<char> (num.ival >> ((15 - j) * 4) & 0xF);
                   if (ch >= 10)
                     ch += 'a' - 10;

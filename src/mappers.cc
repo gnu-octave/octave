@@ -412,7 +412,7 @@ ceil ([-2.7, 2.7])\n\
 %% double precision
 %!assert(ceil ([2, 1.1, -1.1, -1]), [2, 2, -1, -1]);
 
-%% compelx double precison 
+%% compelx double precison
 %!assert(ceil ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 2+2i, -1-i, -1-i]);
 
 %% single precision
@@ -1806,7 +1806,7 @@ tolower (\"MiXeD cAsE 123\")\n\
 DEFALIAS (lower, tolower);
 
 /*
- 
+
 %!error <Invalid call to tolower.*> tolower();
 %!error <Invalid call to tolower.*> lower();
 %!assert(tolower("OCTAVE"), "octave");
@@ -1852,7 +1852,7 @@ toupper (\"MiXeD cAsE 123\")\n\
 DEFALIAS (upper, toupper);
 
 /*
- 
+
 %!error <Invalid call to toupper.*> toupper();
 %!error <Invalid call to toupper.*> upper();
 %!assert(toupper("octave"), "OCTAVE");

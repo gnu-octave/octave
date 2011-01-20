@@ -167,7 +167,7 @@ private:
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
                         octave_idx_type& num_elts,
-                        const std::string& char_class = std::string ()); 
+                        const std::string& char_class = std::string ());
 
   void process_conversion (const std::string& s, size_t& i, size_t n,
                            int& width, bool& discard, char& type,
@@ -215,7 +215,7 @@ public:
     }
 
   ~printf_format_elt (void) { delete [] text; }
- 
+
   // The C-style format string.
   const char *text;
 
@@ -302,12 +302,12 @@ private:
   void add_elt_to_list (int args, const std::string& flags, int fw,
                         int prec, char type, char modifier,
                         octave_idx_type& num_elts);
- 
+
   void process_conversion (const std::string& s, size_t& i, size_t n,
                            int& args, std::string& flags, int& fw,
                            int& prec, char& modifier, char& type,
-                           octave_idx_type& num_elts); 
- 
+                           octave_idx_type& num_elts);
+
   void finish_conversion (const std::string& s, size_t& i, int args,
                           const std::string& flags, int fw, int prec,
                           char modifier, char& type,

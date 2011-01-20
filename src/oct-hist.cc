@@ -153,7 +153,7 @@ bool Vsaving_history = true;
 //
 // Arg of -w FILENAME means write file, arg of -r FILENAME
 // means read file, arg of -q means don't number lines.  Arg of N
-// means only display that many items. 
+// means only display that many items.
 
 static void
 do_history (int argc, const string_vector& argv)
@@ -328,7 +328,7 @@ edit_history_add_hist (const std::string& line)
       std::string tmp = line;
 
       int len = tmp.length ();
-        
+
       if (len > 0 && tmp[len-1] == '\n')
         tmp.resize (len - 1);
 
@@ -339,7 +339,7 @@ edit_history_add_hist (const std::string& line)
 
 static std::string
 mk_tmp_hist_file (int argc, const string_vector& argv,
-                  int insert_curr, const char *warn_for) 
+                  int insert_curr, const char *warn_for)
 {
   std::string retval;
 

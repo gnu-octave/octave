@@ -57,7 +57,7 @@ string @var{str}.\n\
 
       if (nargin == 2)
         have_str = args(1).bool_value();
-        
+
       if (!error_state)
         {
           if (have_str)

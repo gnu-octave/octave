@@ -87,7 +87,7 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const 
+  idx_vector index_vector (void) const
     { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_float; }
@@ -147,15 +147,15 @@ public:
   FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;
-   
+
   FloatComplexNDArray float_complex_array_value (bool = false) const;
 
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool = false) const;
-  
+
   NDArray array_value (bool = false) const;
-  
+
   FloatNDArray float_array_value (bool = false) const { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const;
@@ -181,7 +181,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
 #if defined (HAVE_HDF5)

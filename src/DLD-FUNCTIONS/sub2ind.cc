@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 
-static dim_vector 
+static dim_vector
 get_dim_vector (const octave_value& val, const char *name)
 {
   RowVector dimsv = val.row_vector_value (false, true);
@@ -203,7 +203,7 @@ moving from one column to next, filling up all rows in each column.\n\
           if (nargout > dv.length ())
             dv = dv.redim (nargout);
 
-          Array<idx_vector> idxa = ind2sub (dv, idx); 
+          Array<idx_vector> idxa = ind2sub (dv, idx);
           retval = Array<octave_value> (idxa);
         }
     }

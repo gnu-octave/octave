@@ -49,15 +49,15 @@ public:
 
   SVD (void) : type_computed (), sigma (), left_sm (), right_sm () { }
 
-  SVD (const Matrix& a, 
-       type svd_type = SVD::std, driver svd_driver = SVD::GESVD) 
+  SVD (const Matrix& a,
+       type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
     {
       init (a, svd_type, svd_driver);
     }
 
-  SVD (const Matrix& a, octave_idx_type& info, 
-       type svd_type = SVD::std, driver svd_driver = SVD::GESVD) 
+  SVD (const Matrix& a, octave_idx_type& info,
+       type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
     {
       info = init (a, svd_type, svd_driver);
@@ -99,7 +99,7 @@ private:
   Matrix left_sm;
   Matrix right_sm;
 
-  octave_idx_type init (const Matrix& a, 
+  octave_idx_type init (const Matrix& a,
                         type svd_type = std, driver svd_driver = GESVD);
 };
 

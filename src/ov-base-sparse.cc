@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class T>
 octave_value
-octave_base_sparse<T>::do_index_op (const octave_value_list& idx, 
+octave_base_sparse<T>::do_index_op (const octave_value_list& idx,
                                     bool resize_ok)
 {
   octave_value retval;
@@ -116,7 +116,7 @@ octave_base_sparse<T>::subsref (const std::string& type,
 }
 
 template <class T>
-octave_value 
+octave_value
 octave_base_sparse<T>::subsasgn (const std::string& type,
                                  const std::list<octave_value_list>& idx,
                                  const octave_value& rhs)
@@ -163,7 +163,7 @@ octave_base_sparse<T>::subsasgn (const std::string& type,
 }
 
 template <class T>
-void 
+void
 octave_base_sparse<T>::assign (const octave_value_list& idx, const T& rhs)
 {
 
@@ -247,16 +247,16 @@ octave_base_sparse<MT>::delete_elements (const octave_value_list& idx)
 }
 
 template <class T>
-octave_value 
+octave_value
 octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
-{ 
-  T retval (matrix); 
-  retval.resize (dv); 
-  return retval; 
+{
+  T retval (matrix);
+  retval.resize (dv);
+  return retval;
 }
 
 template <class T>
-bool 
+bool
 octave_base_sparse<T>::is_true (void) const
 {
   bool retval = false;
@@ -277,7 +277,7 @@ octave_base_sparse<T>::is_true (void) const
 }
 
 template <class T>
-bool 
+bool
 octave_base_sparse<T>::print_as_scalar (void) const
 {
   dim_vector dv = dims ();
@@ -286,7 +286,7 @@ octave_base_sparse<T>::print_as_scalar (void) const
 }
 
 template <class T>
-void 
+void
 octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
@@ -294,8 +294,8 @@ octave_base_sparse<T>::print (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 template <class T>
-void 
-octave_base_sparse<T>::print_info (std::ostream& os, 
+void
+octave_base_sparse<T>::print_info (std::ostream& os,
                                    const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
@@ -395,7 +395,7 @@ octave_base_sparse<T>::save_ascii (std::ostream& os)
 }
 
 template <class T>
-bool 
+bool
 octave_base_sparse<T>::load_ascii (std::istream& is)
 {
   octave_idx_type nz = 0;
@@ -411,7 +411,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 
       is >> tmp;
 
-      if (!is) 
+      if (!is)
         {
           error ("load: failed to load matrix constant");
           success = false;

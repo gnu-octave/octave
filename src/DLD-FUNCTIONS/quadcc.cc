@@ -1477,7 +1477,7 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 /* The actual integration routine.
     */
 
-DEFUN_DLD (quadcc, args, nargout, 
+DEFUN_DLD (quadcc, args, nargout,
 "-*- texinfo -*-\n\
 @deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
 @deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
@@ -2038,8 +2038,8 @@ well-behaved integrand than other methods such as\n\
 
           /* Compute the local integral. */
           ivl->igral = h * w * ivl->c[0];
-          
-          
+
+
           /* Generate the interval on the right */
           ivr = &(ivals[heap[nivals++]]);
           ivr->a = m;
@@ -2136,8 +2136,8 @@ well-behaved integrand than other methods such as\n\
 
           /* Compute the local integral. */
           ivr->igral = h * w * ivr->c[0];
-          
-          
+
+
           /* Fix-up the heap: we now have one interval on top
              that we don't need any more and two new, unsorted
              ones at the bottom. */

@@ -217,7 +217,7 @@ protected:
 
   virtual std::string do_decode_prompt_string (const std::string&);
 
-  virtual std::string newline_chars (void) { return "\n"; } 
+  virtual std::string newline_chars (void) { return "\n"; }
 
   virtual void do_restore_terminal_state (void) { }
 

@@ -69,17 +69,17 @@ DEFBINOP (ldiv, float_matrix, float)
   return ret;
 }
 
-DEFNDBINOP_FN (lt, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (lt, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_lt)
-DEFNDBINOP_FN (le, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (le, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_le)
-DEFNDBINOP_FN (eq, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (eq, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_eq)
-DEFNDBINOP_FN (ge, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (ge, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_ge)
-DEFNDBINOP_FN (gt, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (gt, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_gt)
-DEFNDBINOP_FN (ne, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (ne, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_matrix, float_scalar, float_array, float_scalar, *)
@@ -96,7 +96,7 @@ DEFBINOP (el_div, float_matrix, float)
   return octave_value (v1.float_array_value () / d);
 }
 
-DEFNDBINOP_FN (el_pow, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (el_pow, float_matrix, float_scalar, float_array,
                float_scalar, elem_xpow)
 
 DEFBINOP (el_ldiv, float_matrix, float)
@@ -106,12 +106,12 @@ DEFBINOP (el_ldiv, float_matrix, float)
   return x_el_div (v2.float_value (), v1.float_array_value ());
 }
 
-DEFNDBINOP_FN (el_and, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (el_and, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_and)
-DEFNDBINOP_FN (el_or, float_matrix, float_scalar, float_array, 
+DEFNDBINOP_FN (el_or, float_matrix, float_scalar, float_array,
                float_scalar, mx_el_or)
 
-DEFNDCATOP_FN (fm_fs, float_matrix, float_scalar, float_array, 
+DEFNDCATOP_FN (fm_fs, float_matrix, float_scalar, float_array,
                float_array, concat)
 
 DEFNDCATOP_FN (m_fs, matrix, float_scalar, float_array, float_array, concat)

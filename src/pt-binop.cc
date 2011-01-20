@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 static bool Vdo_braindead_shortcircuit_evaluation;
 
 // Binary expressions.
- 
+
 octave_value_list
 tree_binary_expression::rvalue (int nargout)
 {
@@ -158,7 +158,7 @@ tree_binary_expression::accept (tree_walker& tw)
 }
 
 // Boolean expressions.
- 
+
 octave_value_list
 tree_boolean_expression::rvalue (int nargout)
 {

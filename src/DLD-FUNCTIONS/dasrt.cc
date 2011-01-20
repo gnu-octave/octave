@@ -443,11 +443,11 @@ parameters for @code{dasrt}.\n\
               dasrt_f = extract_function
                 (f_arg, "dasrt", fcn_name, fname, "; endfunction");
               break;
-      
+
             case 2:
               {
                 string_vector tmp = args(0).all_strings ();
-        
+
                 if (! error_state)
                   {
                     fcn_name = unique_symbol_name ("__dasrt_fcn__");
@@ -456,7 +456,7 @@ parameters for @code{dasrt}.\n\
                     fname.append (" (x, xdot, t) y = ");
                     dasrt_f = extract_function
                       (tmp(0), "dasrt", fcn_name, fname, "; endfunction");
-            
+
                     if (dasrt_f)
                       {
                         jac_name = unique_symbol_name ("__dasrt_jac__");
@@ -472,21 +472,21 @@ parameters for @code{dasrt}.\n\
                   }
               }
               break;
-      
+
             default:
               DASRT_ABORT1
                 ("first arg should be a string or 2-element string array");
             }
         }
     }
-  
+
   if (error_state || (! dasrt_f))
     DASRT_ABORT;
-  
+
   DAERTFunc func (dasrt_user_f);
-  
+
   argp++;
-  
+
   if (args(1).is_function_handle() || args(1).is_inline_function())
     {
       dasrt_cf = args(1).function_value();
@@ -517,7 +517,7 @@ parameters for @code{dasrt}.\n\
   ColumnVector stateprime (args(argp++).vector_value ());
 
   if (error_state)
-    DASRT_ABORT2 
+    DASRT_ABORT2
        ("expecting time derivative of state vector as argument %d", argp);
 
   ColumnVector out_times (args(argp++).vector_value ());

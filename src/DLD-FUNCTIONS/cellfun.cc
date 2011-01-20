@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 
-static octave_value_list 
+static octave_value_list
 get_output_list (octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
                  octave_value& func,
@@ -227,7 +227,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
       return retval;
     }
-  
+
   if (func.is_string ())
     {
       const Cell f_args = args(1).cell_value ();
@@ -237,7 +237,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       std::string name = func.string_value ();
 
       if (name == "isempty")
-        {      
+        {
           boolNDArray result (f_args.dims ());
           for (octave_idx_type count = 0; count < k ; count++)
             result(count) = f_args.elem(count).is_empty ();
@@ -327,7 +327,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
               std::string fname = "function y = ";
               fname.append (fcn_name);
               fname.append ("(x) y = ");
-              octave_function *ptr_func = extract_function (args(0), "cellfun", 
+              octave_function *ptr_func = extract_function (args(0), "cellfun",
                                                             fcn_name, fname, "; endfunction");
               if (ptr_func && ! error_state)
                 func = octave_value (ptr_func, true);
@@ -357,14 +357,14 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
         {
           std::string arg = args(nargin-2).string_value();
 
-          std::transform (arg.begin (), arg.end (), 
+          std::transform (arg.begin (), arg.end (),
                           arg.begin (), tolower);
 
           if (arg == "uniformoutput")
             uniform_output = args(nargin-1).bool_value();
           else if (arg == "errorhandler")
             {
-              if (args(nargin-1).is_function_handle () || 
+              if (args(nargin-1).is_function_handle () ||
                   args(nargin-1).is_inline_function ())
                 {
                   error_handler = args(nargin-1);
@@ -387,7 +387,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             }
           else
             {
-              error ("cellfun: unrecognized parameter %s", 
+              error ("cellfun: unrecognized parameter %s",
                      arg.c_str());
               break;
             }
@@ -978,7 +978,7 @@ num2cell([1,2;3,4],1)\n\
 @end example\n\
 \n\
 @seealso{mat2cell}\n\
-@end deftypefn") 
+@end deftypefn")
 {
   int nargin =  args.length();
   octave_value retval;
@@ -1053,7 +1053,7 @@ num2cell([1,2;3,4],1)\n\
 
 */
 
-static bool 
+static bool
 mat2cell_mismatch (const dim_vector& dv,
                    const Array<octave_idx_type> *d, int nd)
 {
@@ -1077,7 +1077,7 @@ mat2cell_mismatch (const dim_vector& dv,
 }
 
 template<class container>
-static void 
+static void
 prepare_idx (container *idx, int idim, int nd,
              const Array<octave_idx_type>* d)
 {
@@ -1252,7 +1252,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  octave_value_list ra_idx (std::max (nd, a.ndims ()), 
+  octave_value_list ra_idx (std::max (nd, a.ndims ()),
                             octave_value::magic_colon_t);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
@@ -1409,16 +1409,16 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
 
 // FIXME: it would be nice to allow ranges being handled without a conversion.
 template <class NDA>
-static Cell 
-do_cellslices_nda (const NDA& array, 
-                   const Array<octave_idx_type>& lb, 
+static Cell
+do_cellslices_nda (const NDA& array,
+                   const Array<octave_idx_type>& lb,
                    const Array<octave_idx_type>& ub,
                    int dim = -1)
 {
   octave_idx_type n = lb.length ();
   Cell retval (1, n);
-  if (array.is_vector () && (dim == -1 
-                             || (dim == 0 && array.columns () == 1) 
+  if (array.is_vector () && (dim == -1
+                             || (dim == 0 && array.columns () == 1)
                              || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n && ! error_state; i++)

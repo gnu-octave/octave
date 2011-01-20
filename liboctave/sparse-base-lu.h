@@ -37,7 +37,7 @@ public:
   sparse_base_lu (void)
     : Lfact (), Ufact (), Rfact (), cond (0), P (), Q () { }
 
-  sparse_base_lu (const sparse_base_lu& a) 
+  sparse_base_lu (const sparse_base_lu& a)
     : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
     P (a.P), Q (a.Q)
     { }

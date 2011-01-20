@@ -216,7 +216,7 @@ of a sparse matrix if possible.\n\
       volatile double xrcond = rcond;
       xrcond += 1.0;
       if (nargout < 2 && (info == -1 || xrcond == 1.0))
-        warning ("inverse: matrix singular to machine precision, rcond = %g", 
+        warning ("inverse: matrix singular to machine precision, rcond = %g",
                  rcond);
     }
 

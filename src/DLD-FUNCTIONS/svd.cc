@@ -206,7 +206,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
                 {
                   if (tmp.any_element_is_inf_or_nan ())
                     {
-                      error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+                      error ("svd: cannot take SVD of matrix containing Inf or NaN values");
                       return retval;
                     }
 
@@ -234,7 +234,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
                 {
                   if (ctmp.any_element_is_inf_or_nan ())
                     {
-                      error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+                      error ("svd: cannot take SVD of matrix containing Inf or NaN values");
                       return retval;
                     }
 
@@ -265,7 +265,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
                 {
                   if (tmp.any_element_is_inf_or_nan ())
                     {
-                      error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+                      error ("svd: cannot take SVD of matrix containing Inf or NaN values");
                       return retval;
                     }
 
@@ -293,7 +293,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
                 {
                   if (ctmp.any_element_is_inf_or_nan ())
                     {
-                      error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+                      error ("svd: cannot take SVD of matrix containing Inf or NaN values");
                       return retval;
                     }
 

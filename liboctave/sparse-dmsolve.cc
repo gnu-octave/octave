@@ -36,9 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class T>
 static MSparse<T>
-dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv, 
-                const octave_idx_type *Q, octave_idx_type rst, 
-                octave_idx_type rend, octave_idx_type cst, 
+dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
+                const octave_idx_type *Q, octave_idx_type rst,
+                octave_idx_type rend, octave_idx_type cst,
                 octave_idx_type cend, octave_idx_type maxnz = -1,
                 bool lazy = false)
 {
@@ -46,8 +46,8 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
   maxnz = (maxnz < 0 ? A.nnz () : maxnz);
   MSparse<T> B (rend - rst, cend - cst, (nz < maxnz ? nz : maxnz));
   // Some sparse functions can support lazy indexing (where elements
-  // in the row are in no particular order), even though octave in 
-  // general can't. For those functions that can using it is a big 
+  // in the row are in no particular order), even though octave in
+  // general can't. For those functions that can using it is a big
   // win here in terms of speed.
   if (lazy)
     {
@@ -91,7 +91,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
             }
           sort.sort (ri + B.xcidx (j - cst), nz - B.xcidx (j - cst));
           for (octave_idx_type p = B.cidx (j - cst); p < nz; p++)
-            B.xdata (p) = X [B.xridx (p)]; 
+            B.xdata (p) = X [B.xridx (p)];
         }
       B.xcidx (cend - cst) = nz ;
     }
@@ -101,25 +101,25 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static MSparse<double>
-dmsolve_extract (const MSparse<double> &A, const octave_idx_type *Pinv, 
-                const octave_idx_type *Q, octave_idx_type rst, 
-                octave_idx_type rend, octave_idx_type cst, 
+dmsolve_extract (const MSparse<double> &A, const octave_idx_type *Pinv,
+                const octave_idx_type *Q, octave_idx_type rst,
+                octave_idx_type rend, octave_idx_type cst,
                 octave_idx_type cend, octave_idx_type maxnz,
                 bool lazy);
 
 static MSparse<Complex>
-dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv, 
-                const octave_idx_type *Q, octave_idx_type rst, 
-                octave_idx_type rend, octave_idx_type cst, 
+dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv,
+                const octave_idx_type *Q, octave_idx_type rst,
+                octave_idx_type rend, octave_idx_type cst,
                 octave_idx_type cend, octave_idx_type maxnz,
                 bool lazy);
 #endif
 
 template <class T>
 static MArray<T>
-dmsolve_extract (const MArray<T> &m, const octave_idx_type *, 
-                 const octave_idx_type *, octave_idx_type r1, 
-                 octave_idx_type r2, octave_idx_type c1, 
+dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
+                 const octave_idx_type *, octave_idx_type r1,
+                 octave_idx_type r2, octave_idx_type c1,
                  octave_idx_type c2)
 {
   r2 -= 1;
@@ -141,15 +141,15 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static MArray<double>
-dmsolve_extract (const MArray<double> &m, const octave_idx_type *, 
-                 const octave_idx_type *, octave_idx_type r1, 
-                 octave_idx_type r2, octave_idx_type c1, 
+dmsolve_extract (const MArray<double> &m, const octave_idx_type *,
+                 const octave_idx_type *, octave_idx_type r1,
+                 octave_idx_type r2, octave_idx_type c1,
                  octave_idx_type c2)
 
 static MArray<Complex>
-dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *, 
-                 const octave_idx_type *, octave_idx_type r1, 
-                 octave_idx_type r2, octave_idx_type c1, 
+dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *,
+                 const octave_idx_type *, octave_idx_type r1,
+                 octave_idx_type r2, octave_idx_type c1,
                  octave_idx_type c2)
 #endif
 
@@ -177,7 +177,7 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
-dmsolve_insert (MArray<double> &a, const MArray<double> &b, 
+dmsolve_insert (MArray<double> &a, const MArray<double> &b,
                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 
 static void
@@ -247,7 +247,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 
       sort.sort (ri + a.xcidx (i), ii - a.xcidx (i));
       for (octave_idx_type p = a.xcidx (i); p < ii; p++)
-        a.xdata (p) = X [a.xridx (p)]; 
+        a.xdata (p) = X [a.xridx (p)];
       a.xcidx(i+1) = ii;
     }
 
@@ -264,7 +264,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
-dmsolve_insert (MSparse<double> &a, const SparseMatrix &b, 
+dmsolve_insert (MSparse<double> &a, const SparseMatrix &b,
                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 
 static void
@@ -332,7 +332,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
       for (octave_idx_type i = a.cidx (j); i < nz; i++)
         {
           octave_quit ();
-          a.xdata (i) = X [a.xridx (i)]; 
+          a.xdata (i) = X [a.xridx (i)];
         }
       a.xcidx(j+1) = nz;
     }
@@ -340,7 +340,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
-dmsolve_permute (MSparse<double> &a, const MSparse<double>& b, 
+dmsolve_permute (MSparse<double> &a, const MSparse<double>& b,
                  const octave_idx_type *p);
 
 static void
@@ -409,37 +409,37 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       // Leading over-determined block
       if (dm->rr [2] < nr && dm->cc [3] < nc)
         {
-          ST m = dmsolve_extract (a, pinv, q, dm->rr [2], nr, dm->cc [3], nc, 
+          ST m = dmsolve_extract (a, pinv, q, dm->rr [2], nr, dm->cc [3], nc,
                                   nnz_remaining, true);
           nnz_remaining -= m.nnz();
-          RT mtmp = 
+          RT mtmp =
             qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2], b_nr, 0,
                                          b_nc), info);
           dmsolve_insert (retval, mtmp, q, dm->cc [3], 0);
           if (dm->rr [2] > 0 && !info)
             {
-              m = dmsolve_extract (a, pinv, q, 0, dm->rr [2], 
+              m = dmsolve_extract (a, pinv, q, 0, dm->rr [2],
                                    dm->cc [3], nc, nnz_remaining, true);
               nnz_remaining -= m.nnz();
-              RT ctmp = dmsolve_extract (btmp, 0, 0, 0, 
+              RT ctmp = dmsolve_extract (btmp, 0, 0, 0,
                                          dm->rr[2], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
             }
         }
-      
+
       // Structurally non-singular blocks
       // FIXME Should use fine Dulmange-Mendelsohn decomposition here.
       if (dm->rr [1] < dm->rr [2] && dm->cc [2] < dm->cc [3] && !info)
         {
-          ST m = dmsolve_extract (a, pinv, q, dm->rr [1], dm->rr [2], 
+          ST m = dmsolve_extract (a, pinv, q, dm->rr [1], dm->rr [2],
                                   dm->cc [2], dm->cc [3], nnz_remaining, false);
           nnz_remaining -= m.nnz();
-          RT btmp2 = dmsolve_extract (btmp, 0, 0, dm->rr [1], dm->rr [2], 
+          RT btmp2 = dmsolve_extract (btmp, 0, 0, dm->rr [1], dm->rr [2],
                                       0, b_nc);
           double rcond = 0.0;
           MatrixType mtyp (MatrixType::Full);
-          RT mtmp = m.solve (mtyp, btmp2, info, rcond, 
-                             solve_singularity_warning, false); 
+          RT mtmp = m.solve (mtyp, btmp2, info, rcond,
+                             solve_singularity_warning, false);
           if (info != 0)
             {
               info = 0;
@@ -461,10 +461,10 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
       // Trailing under-determined block
       if (dm->rr [1] > 0 && dm->cc [2] > 0 && !info)
         {
-          ST m = dmsolve_extract (a, pinv, q, 0, dm->rr [1], 0, 
+          ST m = dmsolve_extract (a, pinv, q, 0, dm->rr [1], 0,
                                   dm->cc [2], nnz_remaining, true);
-          RT mtmp = 
-            qrsolve (m, dmsolve_extract(btmp, 0, 0, 0, dm->rr [1] , 0, 
+          RT mtmp =
+            qrsolve (m, dmsolve_extract(btmp, 0, 0, 0, dm->rr [1] , 0,
                                         b_nc), info);
           dmsolve_insert (retval, mtmp, q, 0, 0);
         }
@@ -479,34 +479,34 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern Matrix
-dmsolve (const SparseMatrix &a, const Matrix &b, 
+dmsolve (const SparseMatrix &a, const Matrix &b,
          octave_idx_type &info);
 
 extern ComplexMatrix
-dmsolve (const SparseMatrix &a, const ComplexMatrix &b, 
+dmsolve (const SparseMatrix &a, const ComplexMatrix &b,
          octave_idx_type &info);
 
 extern ComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const Matrix &b, 
+dmsolve (const SparseComplexMatrix &a, const Matrix &b,
          octave_idx_type &info);
 
 extern ComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const ComplexMatrix &b, 
+dmsolve (const SparseComplexMatrix &a, const ComplexMatrix &b,
          octave_idx_type &info);
 
 extern SparseMatrix
-dmsolve (const SparseMatrix &a, const SparseMatrix &b, 
+dmsolve (const SparseMatrix &a, const SparseMatrix &b,
          octave_idx_type &info);
 
 extern SparseComplexMatrix
-dmsolve (const SparseMatrix &a, const SparseComplexMatrix &b, 
+dmsolve (const SparseMatrix &a, const SparseComplexMatrix &b,
          octave_idx_type &info);
 
 extern SparseComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const SparseMatrix &b, 
+dmsolve (const SparseComplexMatrix &a, const SparseMatrix &b,
          octave_idx_type &info);
 
 extern SparseComplexMatrix
-dmsolve (const SparseComplexMatrix &a, const SparseComplexMatrix &b, 
+dmsolve (const SparseComplexMatrix &a, const SparseComplexMatrix &b,
          octave_idx_type &info);
 #endif

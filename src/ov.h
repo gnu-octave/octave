@@ -110,9 +110,9 @@ public:
   enum compound_binary_op
   {
     // ** compound operations **
-    op_trans_mul,      
+    op_trans_mul,
     op_mul_trans,
-    op_herm_mul,      
+    op_herm_mul,
     op_mul_herm,
     op_trans_ldiv,
     op_herm_ldiv,
@@ -240,10 +240,10 @@ public:
                 char type = '\'') GCC_ATTR_DEPRECATED;
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
-  octave_value (const SparseComplexMatrix& m, 
+  octave_value (const SparseComplexMatrix& m,
                 const MatrixType& t = MatrixType ());
   octave_value (const Sparse<Complex>& m, const MatrixType& t = MatrixType ());
-  octave_value (const SparseBoolMatrix& bm, 
+  octave_value (const SparseBoolMatrix& bm,
                 const MatrixType& t = MatrixType ());
   octave_value (const Sparse<bool>& m, const MatrixType& t = MatrixType ());
   octave_value (const octave_int8& i);
@@ -270,7 +270,7 @@ public:
   octave_value (const Array<octave_uint32>& inda);
   octave_value (const uint64NDArray& inda);
   octave_value (const Array<octave_uint64>& inda);
-  octave_value (const Array<octave_idx_type>& inda, 
+  octave_value (const Array<octave_idx_type>& inda,
                 bool zero_based = false, bool cache_index = false);
   octave_value (const Array<std::string>& cellstr);
   octave_value (const idx_vector& idx, bool lazy = true);
@@ -636,7 +636,7 @@ public:
     { return rep->is_true (); }
 
   // Do two constants match (in a switch statement)?
-  
+
   bool is_equal (const octave_value&) const;
 
   // Are the dimensions of this constant zero by zero?
@@ -779,19 +779,19 @@ public:
 
   DiagMatrix diag_matrix_value (bool force = false) const
     { return rep->diag_matrix_value (force); }
-  
+
   FloatDiagMatrix float_diag_matrix_value (bool force = false) const
     { return rep->float_diag_matrix_value (force); }
-  
+
   ComplexDiagMatrix complex_diag_matrix_value (bool force = false) const
     { return rep->complex_diag_matrix_value (force); }
-  
+
   FloatComplexDiagMatrix float_complex_diag_matrix_value (bool force = false) const
     { return rep->float_complex_diag_matrix_value (force); }
 
   PermMatrix perm_matrix_value (void) const
     { return rep->perm_matrix_value (); }
-  
+
   octave_int8 int8_scalar_value (void) const
     { return rep->int8_scalar_value (); }
 
@@ -946,7 +946,7 @@ public:
 
   // The following two hook conversions are called on any octave_value prior to
   // storing it to a "permanent" location, like a named variable, a cell or a
-  // struct component, or a return value of a function. 
+  // struct component, or a return value of a function.
 
   octave_value storable_value (void) const;
 
@@ -1061,10 +1061,10 @@ public:
     { return rep->diag (k); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return rep->sort (dim, mode); } 
+    { return rep->sort (dim, mode); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                  sortmode mode = ASCENDING) const
-    { return rep->sort (sidx, dim, mode); } 
+    { return rep->sort (sidx, dim, mode); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
     { return rep->is_sorted (mode); }

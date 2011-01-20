@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // 2d convolution with a matrix kernel.
 template <class T, class R>
-static void 
+static void
 convolve_2d (const T *a, octave_idx_type ma, octave_idx_type na,
              const R *b, octave_idx_type mb, octave_idx_type nb,
              T *c, bool inner);
@@ -101,7 +101,7 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
     }
 }
 
-// Arbitrary convolutor. 
+// Arbitrary convolutor.
 // The 2nd array is assumed to be the smaller one.
 template <class T, class R>
 static MArray<T>

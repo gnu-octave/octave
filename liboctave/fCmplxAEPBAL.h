@@ -42,7 +42,7 @@ public:
   FloatComplexAEPBALANCE (const FloatComplexMatrix& a, bool noperm = false,
                           bool noscal = false);
 
-  FloatComplexAEPBALANCE (const FloatComplexAEPBALANCE& a) 
+  FloatComplexAEPBALANCE (const FloatComplexAEPBALANCE& a)
     : base_aepbal<FloatComplexMatrix, FloatColumnVector> (a) { }
 
   FloatComplexMatrix balancing_matrix (void) const;

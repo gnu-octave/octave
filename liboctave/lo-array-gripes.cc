@@ -144,11 +144,11 @@ void
 gripe_invalid_resize (void)
 {
   (*current_liboctave_error_with_id_handler)
-    ("Octave:invalid-resize", 
+    ("Octave:invalid-resize",
      "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
 }
 
-void 
+void
 gripe_invalid_assignment_size (void)
 {
   (*current_liboctave_error_handler)

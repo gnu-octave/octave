@@ -113,7 +113,7 @@ static bool traditional = false;
 static bool verbose_flag = false;
 
 // Usage message
-static const char *usage_string = 
+static const char *usage_string =
   "octave [-HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing]\n\
@@ -484,7 +484,7 @@ execute_command_line_file (const std::string& fname)
   octave_program_invocation_name = curr_fcn_file_name;
 
   size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars ());
-  
+
   std::string tmp = (pos != std::string::npos)
     ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
 

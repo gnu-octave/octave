@@ -43,7 +43,7 @@ protected:
 
   octave_sparse_params (void)
     : params (OCTAVE_SPARSE_CONTROLS_SIZE),
-      keys (OCTAVE_SPARSE_CONTROLS_SIZE) 
+      keys (OCTAVE_SPARSE_CONTROLS_SIZE)
   {
     init_keys ();
     do_defaults ();
@@ -61,7 +61,7 @@ public:
         params = a.params;
         keys = a.keys;
       }
-    
+
     return *this;
   }
 
@@ -72,7 +72,7 @@ public:
   static void defaults (void);
 
   static void tight (void);
-  
+
   static string_vector get_keys (void);
 
   static ColumnVector get_vals (void);
@@ -98,7 +98,7 @@ private:
   void do_defaults (void);
 
   void do_tight (void);
-  
+
   string_vector do_get_keys (void) const { return keys; }
 
   ColumnVector do_get_vals (void) const { return params; }
@@ -112,7 +112,7 @@ private:
   double do_get_bandden (void);
 
   void do_print_info (std::ostream& os, const std::string& prefix) const;
-  
+
   void init_keys (void);
 };
 

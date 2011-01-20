@@ -73,15 +73,15 @@ calculated.\n\n\
   std::string options;
 
   int nargin = args.length ();
-  if (nargin < 1 || nargin > 2) 
+  if (nargin < 1 || nargin > 2)
     {
       print_usage ();
       return retval;
     }
 
-  if (nargin == 2) 
+  if (nargin == 2)
     {
-      if (args (1).is_string ()) 
+      if (args (1).is_string ())
         options = args(1).string_value ();
       else if (args(1).is_cell ())
         {
@@ -133,7 +133,7 @@ calculated.\n\n\
 
   strcpy (flags, buf_string.c_str ());
 
-  if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, 0, stderr)) 
+  if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, 0, stderr))
     {
       // If you want some debugging information replace the NULL
       // pointer with stdout
@@ -146,28 +146,28 @@ calculated.\n\n\
       Matrix idx (nf, dim);
 
       octave_idx_type j, i = 0;
-      FORALLfacets 
+      FORALLfacets
         {
           j = 0;
           if (! facet->simplicial)
             // should never happen with QJ
             error ("convhulln: non-simplicial facet");
 
-          if (dim == 3) 
+          if (dim == 3)
             {
               vertices = qh_facet3vertex (facet);
               FOREACHvertex_ (vertices)
                 idx(i, j++) = 1 + qh_pointid(vertex->point);
               qh_settempfree (&vertices);
-            } 
-          else 
+            }
+          else
             {
-              if (facet->toporient ^ qh_ORIENTclock) 
+              if (facet->toporient ^ qh_ORIENTclock)
                 {
                   FOREACHvertex_ (facet->vertices)
                     idx(i, j++) = 1 + qh_pointid(vertex->point);
-                } 
-              else 
+                }
+              else
                 {
                   FOREACHvertexreverse12_ (facet->vertices)
                     idx(i, j++) = 1 + qh_pointid(vertex->point);
@@ -223,7 +223,7 @@ calculated.\n\n\
   int curlong, totlong;
   qh_memfreeshort (&curlong, &totlong);
 
-  if (curlong || totlong) 
+  if (curlong || totlong)
     warning ("convhulln: did not free %d bytes of long memory (%d pieces)",
             totlong, curlong);
 #else

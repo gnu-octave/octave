@@ -64,10 +64,10 @@ public:
       looking_at_return_list (false), looking_at_parameter_list (false),
       looking_at_decl_list (false), looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false), looking_at_object_index (),
-      looking_for_object_index (false), do_comma_insert (false), 
-      looking_at_indirect_ref (false), parsed_function_name (), 
-      parsing_class_method (false), maybe_classdef_get_set_method (false), 
-      parsing_classdef (false), quote_is_transpose (false), 
+      looking_for_object_index (false), do_comma_insert (false),
+      looking_at_indirect_ref (false), parsed_function_name (),
+      parsing_class_method (false), maybe_classdef_get_set_method (false),
+      parsing_classdef (false), quote_is_transpose (false),
       pending_local_variables ()
 
     {

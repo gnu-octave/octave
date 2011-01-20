@@ -112,7 +112,7 @@ tree_colon_expression::make_range (const octave_value& ov_base,
 {
   octave_value retval;
 
-  if (ov_base.is_object () || ov_limit.is_object () || 
+  if (ov_base.is_object () || ov_limit.is_object () ||
       ov_increment.is_object ())
     {
       octave_value_list tmp1;
@@ -125,7 +125,7 @@ tree_colon_expression::make_range (const octave_value& ov_base,
       if (fcn.is_defined ())
         {
           octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-                      
+
           if (! error_state)
             retval = tmp2 (0);
         }
@@ -211,7 +211,7 @@ tree_colon_expression::rvalue1 (int)
               if (fcn.is_defined ())
                 {
                   octave_value_list tmp2 = fcn.do_multi_index_op (1, tmp1);
-                      
+
                   if (! error_state)
                     retval = tmp2 (0);
                 }

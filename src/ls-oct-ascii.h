@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 extern OCTINTERP_API std::string
-extract_keyword (std::istream& is, const char *keyword, 
+extract_keyword (std::istream& is, const char *keyword,
                  const bool next_only = false);
 
 extern OCTINTERP_API std::string
@@ -70,7 +70,7 @@ save_three_d (std::ostream& os, const octave_value& t,
 
 template <class T>
 bool
-extract_keyword (std::istream& is, const char *keyword, T& value, 
+extract_keyword (std::istream& is, const char *keyword, T& value,
                  const bool next_only = false)
 {
   bool status = false;
@@ -117,7 +117,7 @@ extract_keyword (std::istream& is, const char *keyword, T& value,
 
 template <class T>
 bool
-extract_keyword (std::istream& is, const std::string& kw, T& value, 
+extract_keyword (std::istream& is, const std::string& kw, T& value,
                  const bool next_only = false)
 {
   return extract_keyword (is, kw.c_str (), value, next_only);

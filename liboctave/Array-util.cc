@@ -88,9 +88,9 @@ get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims)
       retval = idx(--n);
 
       while (--n >= 0)
-        {               
+        {
           retval *= dims (n);
-        
+
           retval += idx(n);
         }
     }
@@ -129,7 +129,7 @@ is_scalar (const dim_vector& dim)
           if (dim (i) != 1)
             {
               retval = false;
-        
+
               break;
             }
         }
@@ -167,14 +167,14 @@ any_ones (const Array<octave_idx_type>& arr)
       if (arr (i) == 1)
         {
           retval = true;
-        
+
           break;
         }
     }
   return retval;
 }
 
-octave_idx_type 
+octave_idx_type
 compute_index (octave_idx_type n, const dim_vector& dims)
 {
   if (n < 0)
@@ -185,7 +185,7 @@ compute_index (octave_idx_type n, const dim_vector& dims)
   return n;
 }
 
-octave_idx_type 
+octave_idx_type
 compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims)
 {
   if (i < 0 || j < 0)
@@ -198,7 +198,7 @@ compute_index (octave_idx_type i, octave_idx_type j, const dim_vector& dims)
   return j*dims(0) + i;
 }
 
-octave_idx_type 
+octave_idx_type
 compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
                const dim_vector& dims)
 {
@@ -214,7 +214,7 @@ compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
   return (k*dims(1) + j)*dims(0) + i;
 }
 
-octave_idx_type 
+octave_idx_type
 compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims)
 {
   int nd = ra_idx.length ();
@@ -428,7 +428,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
   dim_vector rdv = dim_vector::alloc (ial);
   bool *scalar = new bool[ial], *colon = new bool[ial];
   // Mark scalars and colons, count non-scalar indices.
-  int nonsc = 0; 
+  int nonsc = 0;
   bool all_colons = true;
   for (int i = 0; i < ial; i++)
     {

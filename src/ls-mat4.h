@@ -30,7 +30,7 @@ extern int
 float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt);
 
 extern int
-read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt, 
+read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
                       int32_t& nr, int32_t& nc, int32_t& imag,
                       int32_t& len, int quiet = 0);
 

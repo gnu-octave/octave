@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "gl2ps.h"
 
-class 
+class
 OCTINTERP_API
 glps_renderer : public opengl_renderer
 {
 public:
-  glps_renderer (const int _fid, const std::string& _term) 
-    : opengl_renderer () , fid (_fid), term (_term), 
+  glps_renderer (const int _fid, const std::string& _term)
+    : opengl_renderer () , fid (_fid), term (_term),
     fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
@@ -49,7 +49,7 @@ protected:
   virtual void set_font (const base_properties& props);
 
   virtual void draw_text (const text::properties& props);
-  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format, 
+  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data);
 
   virtual void set_linestyle (const std::string& s, bool use_stipple)

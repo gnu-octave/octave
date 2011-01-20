@@ -82,7 +82,7 @@ F77_RET_T
                              octave_idx_type& IHI, double* LSCALE,
                              double* RSCALE, double* WORK,
                              octave_idx_type& INFO
-                             F77_CHAR_ARG_LEN_DECL);    
+                             F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
@@ -162,8 +162,8 @@ F77_RET_T
                              Complex* A, const octave_idx_type& LDA,
                              Complex* B, const octave_idx_type& LDB,
                              Complex* ALPHA, Complex* BETA, Complex* CQ,
-                             const octave_idx_type& LDQ, 
-                             Complex* CZ, const octave_idx_type& LDZ, 
+                             const octave_idx_type& LDQ,
+                             Complex* CZ, const octave_idx_type& LDZ,
                              Complex* WORK, const octave_idx_type& LWORK,
                              double* RWORK, octave_idx_type& INFO
                              F77_CHAR_ARG_LEN_DECL
@@ -624,7 +624,7 @@ compatibility with @sc{matlab}.\n\
 #endif
 
   static char qz_job;
-  qz_job = (nargout < 2 ? 'E' : 'S');   
+  qz_job = (nargout < 2 ? 'E' : 'S');
 
   if (complex_case)
     {
@@ -647,24 +647,24 @@ compatibility with @sc{matlab}.\n\
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
-      ComplexRowVector cwork (1 * nn); 
+      ComplexRowVector cwork (1 * nn);
 
       F77_XFCN (zhgeqz, ZHGEQZ,
                 (F77_CONST_CHAR_ARG2 (&qz_job, 1),
                  F77_CONST_CHAR_ARG2 (&compq, 1),
                  F77_CONST_CHAR_ARG2 (&compz, 1),
-                 nn, ilo, ihi, 
-                 caa.fortran_vec (), nn, 
-                 cbb.fortran_vec (),nn, 
-                 xalpha.fortran_vec (), xbeta.fortran_vec (), 
+                 nn, ilo, ihi,
+                 caa.fortran_vec (), nn,
+                 cbb.fortran_vec (),nn,
+                 xalpha.fortran_vec (), xbeta.fortran_vec (),
                  CQ.fortran_vec (), nn,
-                 CZ.fortran_vec (), nn, 
+                 CZ.fortran_vec (), nn,
                  cwork.fortran_vec (), nn, rwork.fortran_vec (), info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
-                 F77_CHAR_ARG_LEN (1))); 
+                 F77_CHAR_ARG_LEN (1)));
 
-      if (compq == 'V') 
+      if (compq == 'V')
         {
           // Left eigenvector.
           F77_XFCN (zggbak, ZGGBAK,
@@ -674,7 +674,7 @@ compatibility with @sc{matlab}.\n\
                      nn, CQ.fortran_vec (), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
-        }        
+        }
 
       // Right eigenvector.
       if (compz == 'V')
@@ -686,7 +686,7 @@ compatibility with @sc{matlab}.\n\
                      nn, CZ.fortran_vec (), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
-        } 
+        }
 
     }
   else
@@ -1072,7 +1072,7 @@ compatibility with @sc{matlab}.\n\
                      nn, CVL.fortran_vec (), nn, CVR.fortran_vec (), nn, nn,
                      m, cwork2.fortran_vec (), rwork2.fortran_vec (), info
                      F77_CHAR_ARG_LEN (1)
-                     F77_CHAR_ARG_LEN (1)));     
+                     F77_CHAR_ARG_LEN (1)));
         }
       else
         {
@@ -1197,7 +1197,7 @@ compatibility with @sc{matlab}.\n\
             std::cout << std::endl << "qz: retval(0) = caa = " <<std::endl;
             octave_print_internal (std::cout, caa, 0);
             std::cout << std::endl;
-#endif  
+#endif
             retval(1) = cbb;
             retval(0) = caa;
           }
@@ -1213,7 +1213,7 @@ compatibility with @sc{matlab}.\n\
           retval(1) = bb;
           retval(0) = aa;
         }
-      }      
+      }
       break;
 
 

@@ -36,7 +36,7 @@ template class octave_base_diag<FloatDiagMatrix, FloatMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_float_diag_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix, 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
                                      "float diagonal matrix", "single");
 
 static octave_base_value *
@@ -113,7 +113,7 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
     }
 }
 
-bool 
+bool
 octave_float_diag_matrix::save_binary (std::ostream& os,
                                        bool& /* save_as_floats*/)
 {
@@ -137,7 +137,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
   return true;
 }
 
-bool 
+bool
 octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
                                  oct_mach_info::float_format fmt)
 {
@@ -164,8 +164,8 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool 
-octave_float_diag_matrix::chk_valid_scalar (const octave_value& val, 
+bool
+octave_float_diag_matrix::chk_valid_scalar (const octave_value& val,
                                             float& x) const
 {
   bool retval = val.is_real_scalar ();

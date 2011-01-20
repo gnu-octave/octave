@@ -55,15 +55,15 @@ DEFBINOP_OP (mul, diag_matrix, diag_matrix, *)
 DEFBINOP (div, diag_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
-  
-  return xdiv (v1.diag_matrix_value (), 
+
+  return xdiv (v1.diag_matrix_value (),
                v2.diag_matrix_value ());
 }
 
 DEFBINOP (ldiv, diag_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_diag_matrix&);
-  
+
   return xleftdiv (v1.diag_matrix_value (),
                    v2.diag_matrix_value ());
 }

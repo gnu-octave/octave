@@ -52,11 +52,11 @@ gripe_nonconformant (const char *op, const dim_vector& op1_dims,
                      const dim_vector& op2_dims);
 
 extern void OCTAVE_API
-gripe_index_out_of_range (int nd, int dim, 
+gripe_index_out_of_range (int nd, int dim,
                           octave_idx_type iext, octave_idx_type ext);
 
 extern void OCTAVE_API
-gripe_del_index_out_of_range (bool is1d, octave_idx_type iext, 
+gripe_del_index_out_of_range (bool is1d, octave_idx_type iext,
                               octave_idx_type ext);
 
 extern void OCTAVE_API

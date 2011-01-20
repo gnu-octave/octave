@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // The bulk of the work.
 template <class T>
-static Array<T> 
+static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows (), nc = a.columns ();
@@ -48,7 +48,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 
   if (pack)
     {
-      octave_idx_type j1 = std::min (std::max (zero, k), nc); 
+      octave_idx_type j1 = std::min (std::max (zero, k), nc);
       octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
       octave_idx_type n = j1 * nr + ((j2 - j1) * (nr-(j1-k) + nr-(j2-1-k))) / 2;
       Array<T> r (dim_vector (n, 1));
@@ -80,7 +80,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 }
 
 template <class T>
-static Array<T> 
+static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
   octave_idx_type nr = a.rows (), nc = a.columns ();
@@ -89,7 +89,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 
   if (pack)
     {
-      octave_idx_type j1 = std::min (std::max (zero, k), nc); 
+      octave_idx_type j1 = std::min (std::max (zero, k), nc);
       octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
       octave_idx_type n = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
       Array<T> r (dim_vector (n, 1));
@@ -124,7 +124,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 // FIXME: optimizations possible. "pack" support missing.
 
 template <class T>
-static Sparse<T> 
+static Sparse<T>
 do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
@@ -146,7 +146,7 @@ do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
 }
 
 template <class T>
-static Sparse<T> 
+static Sparse<T>
 do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
 {
   if (pack) // FIXME
@@ -201,7 +201,7 @@ do_trilu (const std::string& name,
   if (nargin == 2)
     {
       k = args(1).int_value (true);
-      
+
       if (error_state)
         return retval;
     }
@@ -262,7 +262,7 @@ do_trilu (const std::string& name,
 
                 if (pack) // FIXME
                   {
-                    error ("%s: \"pack\" not implemented for class %s", 
+                    error ("%s: \"pack\" not implemented for class %s",
                            name.c_str (), arg.class_name ().c_str ());
                     return octave_value ();
                   }
@@ -277,7 +277,7 @@ do_trilu (const std::string& name,
                 // matrix size. This would not be necessary if the
                 // octave_value resize function allowed a fill_value.
                 // It also allows odd attributes in some user types
-                // to be handled. With a fill_value ot should be replaced 
+                // to be handled. With a fill_value ot should be replaced
                 // with
                 //
                 // octave_value_list ov_idx;
@@ -410,7 +410,7 @@ DEFUN_DLD (triu, args, ,
 
 %!test
 %! a = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
-%! 
+%!
 %! l0 = [1, 0, 0; 4, 5, 0; 7, 8, 9; 10, 11, 12];
 %! l1 = [1, 2, 0; 4, 5, 6; 7, 8, 9; 10, 11, 12];
 %! l2 = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
@@ -418,7 +418,7 @@ DEFUN_DLD (triu, args, ,
 %! lm2 = [0, 0, 0; 0, 0, 0; 7, 0, 0; 10, 11, 0];
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
-%! 
+%!
 %! assert((tril (a, -4) == lm4 && tril (a, -3) == lm3
 %! && tril (a, -2) == lm2 && tril (a, -1) == lm1
 %! && tril (a) == l0 && tril (a, 1) == l1 && tril (a, 2) == l2));

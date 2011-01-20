@@ -157,7 +157,7 @@ protected:
 
   // If this object is a class method or constructor, or a private
   // function inside a class directory, this is the name of the class
-  // to which the method belongs. 
+  // to which the method belongs.
   std::string xdispatch_class;
 
   // The name of this function.

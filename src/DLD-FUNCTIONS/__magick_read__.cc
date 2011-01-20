@@ -428,7 +428,7 @@ function.  Instead use @code{imread}.\n\
 
   if (args.length () == 2 && args(1).is_real_type ())
     frameidx = args(1).int_vector_value();
-  else if (args.length () == 3 && args(1).is_string () 
+  else if (args.length () == 3 && args(1).is_string ()
            && args(1).string_value() == "frames")
     {
       if (args(2).is_string () && args(2).string_value() == "all")
@@ -499,7 +499,7 @@ function.  Instead use @code{imread}.\n\
             i++;
           depth = 1 << i;
         }
-      
+
       switch (depth)
         {
         case 1:
@@ -1023,8 +1023,8 @@ not be using this function.  Instead use @code{imfinfo}.\n\
       // Read the file.
       std::vector<Magick::Image> imvec;
       Magick::readImages (&imvec, args(0).string_value ());
-      int nframes = imvec.size (); 
-      
+      int nframes = imvec.size ();
+
       // Create the right size for the output.
 
       static const char *fields[] =
@@ -1082,11 +1082,11 @@ not be using this function.  Instead use @code{imfinfo}.\n\
       for (int frame = 0; frame < nframes; frame++)
         {
           Magick::Image im = imvec[frame];
-      
+
           // Add file name and timestamp.
           info.contents ("Filename")(frame,0) = filename;
           info.contents ("FileModDate")(frame,0) = filetime;
-          
+
           // Annoying CamelCase naming is for Matlab compatibility.
           GET_PARAM (fileSize, "FileSize")
           GET_PARAM (rows, "Height")

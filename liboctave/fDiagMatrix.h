@@ -55,7 +55,7 @@ public:
 
   explicit FloatDiagMatrix (const Array<double>& a) : MDiagArray2<float> (a) { }
 
-  FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c) 
+  FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (a, r, c) { }
 
   FloatDiagMatrix& operator = (const FloatDiagMatrix& a)
@@ -75,7 +75,7 @@ public:
   FloatDiagMatrix& fill (const FloatRowVector& a, octave_idx_type beg);
 
   FloatDiagMatrix transpose (void) const { return MDiagArray2<float>::transpose(); }
-  FloatDiagMatrix abs (void) const; 
+  FloatDiagMatrix abs (void) const;
 
   friend OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);
   friend OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);

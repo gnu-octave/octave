@@ -59,7 +59,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
           else if (iscomplex)
             retval = xnorm (x.complex_column_vector_value (),
                             p.double_value ());
-          else 
+          else
             retval = xnorm (x.column_vector_value (),
                             p.double_value ());
         }
@@ -68,7 +68,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
           if (iscomplex)
             retval = xnorm (x.sparse_complex_matrix_value (),
                             p.double_value ());
-          else 
+          else
             retval = xnorm (x.sparse_matrix_value (),
                             p.double_value ());
         }
@@ -83,7 +83,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
           else if (iscomplex)
             retval = xnorm (x.complex_matrix_value (),
                             p.double_value ());
-          else 
+          else
             retval = xnorm (x.matrix_value (),
                             p.double_value ());
         }
@@ -109,7 +109,7 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
           if (iscomplex)
             retval = xcolnorms (x.sparse_complex_matrix_value (),
                                 p.double_value ());
-          else 
+          else
             retval = xcolnorms (x.sparse_matrix_value (),
                                 p.double_value ());
         }
@@ -124,7 +124,7 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
           else if (iscomplex)
             retval = xcolnorms (x.complex_matrix_value (),
                                 p.double_value ());
-          else 
+          else
             retval = xcolnorms (x.matrix_value (),
                                 p.double_value ());
         }
@@ -150,7 +150,7 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
           if (iscomplex)
             retval = xrownorms (x.sparse_complex_matrix_value (),
                                 p.double_value ());
-          else 
+          else
             retval = xrownorms (x.sparse_matrix_value (),
                                 p.double_value ());
         }
@@ -165,7 +165,7 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
           else if (iscomplex)
             retval = xrownorms (x.complex_matrix_value (),
                                 p.double_value ());
-          else 
+          else
             retval = xrownorms (x.matrix_value (),
                                 p.double_value ());
         }
@@ -190,7 +190,7 @@ octave_value xfrobnorm (const octave_value& x)
         {
           if (iscomplex)
             retval = xfrobnorm (x.sparse_complex_matrix_value ());
-          else 
+          else
             retval = xfrobnorm (x.sparse_matrix_value ());
         }
       else
@@ -201,7 +201,7 @@ octave_value xfrobnorm (const octave_value& x)
             retval = xfrobnorm (x.float_matrix_value ());
           else if (iscomplex)
             retval = xfrobnorm (x.complex_matrix_value ());
-          else 
+          else
             retval = xfrobnorm (x.matrix_value ());
         }
     }

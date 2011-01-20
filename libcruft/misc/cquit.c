@@ -98,10 +98,10 @@ w32_reset_context (LPVOID v)
   DEBUGs ("enter w32_set_context");
   SuspendThread (w32_main_thread);
   DEBUGs ("main suspended");
-  if (! SetThreadContext (w32_main_thread, context)) 
+  if (! SetThreadContext (w32_main_thread, context))
     {
       fprintf (stderr, "%lx: context failed: ctrl-c won't work\n",
-               GetCurrentThreadId ()); 
+               GetCurrentThreadId ());
       fflush (stderr);
     }
   DEBUGs ("context captured (or not)");
@@ -112,7 +112,7 @@ w32_reset_context (LPVOID v)
   return 0;
 }
 
-static void 
+static void
 w32_raise_in_main (void)
 {
   DWORD threadid;
@@ -127,16 +127,16 @@ w32_raise_in_main (void)
     CloseHandle (w32_restore_thread);
   w32_restore_thread = CreateThread (NULL, 10000, w32_reset_context,
                                      &w32_signal_context, 0, &threadid);
-  if (w32_restore_thread == NULL) 
+  if (w32_restore_thread == NULL)
     {
-      fprintf (stderr, "w32_raise_in_main couldn't create thread\n"); 
+      fprintf (stderr, "w32_raise_in_main couldn't create thread\n");
       fflush (stderr);
-    } 
-  else 
+    }
+  else
     {
       DEBUGs ("waiting to restore raise context");
       WaitForSingleObject (w32_restore_thread, INFINITE);
-      fprintf (stderr, "w32_raise_in_main couldn't restore context\n"); 
+      fprintf (stderr, "w32_raise_in_main couldn't restore context\n");
       fflush (stderr);
     }
 }
@@ -157,14 +157,14 @@ w32_raise (int sig)
 {
   int ret;
 
-  if (w32_in_main_thread ()) 
+  if (w32_in_main_thread ())
     {
       /* Called from main thread -- a simple raise () should work.  */
       DEBUGd ("raising signal %d within main", signal);
       raise (sig);
       DEBUGd ("returning from signal %d within main", signal);
-    } 
-  else 
+    }
+  else
     {
       /* Called from alternate thread -- call w32_raise_in_main in the
          main thread with w32_signal_to_raise set to the signal */
@@ -174,7 +174,7 @@ w32_raise (int sig)
       /* Suspend main and remember the context.  */
       SuspendThread (w32_main_thread);
       /* X86 code */
-      w32_signal_context.ContextFlags 
+      w32_signal_context.ContextFlags
         = CONTEXT_FULL|CONTEXT_FLOATING_POINT|CONTEXT_DEBUG_REGISTERS;
       GetThreadContext (w32_main_thread, &w32_signal_context);
 

@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 
 Range::Range (double b, double i, octave_idx_type n)
-  : rng_base (b), rng_limit (b + n * i), rng_inc (i), 
+  : rng_base (b), rng_limit (b + n * i), rng_inc (i),
   rng_nelem (n), cache ()
 {
   if (! xfinite (b) || ! xfinite (i))
@@ -93,13 +93,13 @@ Range::checkelem (octave_idx_type i) const
 struct _rangeidx_helper
 {
   double *array, base, inc;
-  _rangeidx_helper (double *a, double b, double i) 
+  _rangeidx_helper (double *a, double b, double i)
     : array (a), base (b), inc (i) { }
   void operator () (octave_idx_type i)
     { *array++ = base + i * inc; }
 };
 
-Array<double> 
+Array<double>
 Range::index (const idx_vector& i) const
 {
   Array<double> retval;
@@ -235,7 +235,7 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
 }
 
-Matrix 
+Matrix
 Range::diag (octave_idx_type k) const
 {
   return matrix_value ().diag (k);

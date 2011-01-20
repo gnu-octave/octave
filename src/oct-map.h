@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 class string_vector;
 
 // A class holding a map field->index. Supports reference-counting.
-class OCTINTERP_API 
+class OCTINTERP_API
 octave_fields
 {
   class fields_rep : public std::map<std::string, octave_idx_type>
@@ -80,7 +80,7 @@ public:
 
   octave_fields (const octave_fields& o) : rep (o.rep) { rep->count++; }
 
-  octave_fields& 
+  octave_fields&
   operator = (const octave_fields& o)
     {
       o.rep->count++;
@@ -102,7 +102,7 @@ public:
   std::string key (const_iterator p) const { return p->first; }
   octave_idx_type index (const_iterator p) const { return p->second; }
 
-  const_iterator seek (const std::string& k) const 
+  const_iterator seek (const std::string& k) const
     { return rep->find (k); }
 
   // high-level methods.
@@ -180,12 +180,12 @@ public:
 
   const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 
-  std::string key (const_iterator p) const 
+  std::string key (const_iterator p) const
     { return xkeys.key (p); }
   octave_idx_type index (const_iterator p) const
     { return xkeys.index (p); }
 
-  const octave_value& contents (const_iterator p) const 
+  const octave_value& contents (const_iterator p) const
     { return xvals[xkeys.index (p)]; }
 
   octave_value& contents (iterator p)
@@ -201,10 +201,10 @@ public:
   octave_idx_type nfields (void) const { return xkeys.nfields (); }
 
   // check whether a field exists.
-  bool isfield (const std::string& name) const 
+  bool isfield (const std::string& name) const
     { return xkeys.isfield (name); }
 
-  bool contains (const std::string& name) const 
+  bool contains (const std::string& name) const
     { return isfield (name); }
 
   string_vector fieldnames (void) const
@@ -303,12 +303,12 @@ public:
 
   const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 
-  std::string key (const_iterator p) const 
+  std::string key (const_iterator p) const
     { return xkeys.key (p); }
   octave_idx_type index (const_iterator p) const
     { return xkeys.index (p); }
 
-  const Cell& contents (const_iterator p) const 
+  const Cell& contents (const_iterator p) const
     { return xvals[xkeys.index (p)]; }
 
   Cell& contents (iterator p)
@@ -324,10 +324,10 @@ public:
   octave_idx_type nfields (void) const { return xkeys.nfields (); }
 
   // check whether a field exists.
-  bool isfield (const std::string& name) const 
+  bool isfield (const std::string& name) const
     { return xkeys.isfield (name); }
 
-  bool contains (const std::string& name) const 
+  bool contains (const std::string& name) const
     { return isfield (name); }
 
   string_vector fieldnames (void) const
@@ -343,7 +343,7 @@ public:
   // correct dimensions.
   void setfield (const std::string& key, const Cell& val);
   void assign (const std::string& k, const Cell& val)
-    { setfield (k, val); } 
+    { setfield (k, val); }
 
   // remove a given field. do nothing if not exist.
   void rmfield (const std::string& key);
@@ -390,9 +390,9 @@ public:
   operator () (const Array<octave_idx_type>& ra_idx) const
     { return checkelem (ra_idx); }
 
-  octave_map squeeze (void) const; 
+  octave_map squeeze (void) const;
 
-  octave_map permute (const Array<int>& vec, bool inv = false) const; 
+  octave_map permute (const Array<int>& vec, bool inv = false) const;
 
   dim_vector dims (void) const { return dimensions; }
 
@@ -419,7 +419,7 @@ public:
                     bool resize_ok = false) const;
 
   octave_map index (const octave_value_list&, bool resize_ok = false) const;
-  
+
   octave_map column (octave_idx_type k) const;
   octave_map page (octave_idx_type k) const;
 
@@ -430,7 +430,7 @@ public:
   void assign (const Array<idx_vector>& ia, const octave_map& rhs);
 
   void assign (const octave_value_list&, const octave_map& rhs);
-  
+
   void assign (const octave_value_list& idx, const std::string& k,
                const Cell& rhs);
 
@@ -457,11 +457,11 @@ private:
   dim_vector dimensions;
 
   void optimize_dimensions (void);
-  void extract_scalar (octave_scalar_map& dest, 
+  void extract_scalar (octave_scalar_map& dest,
                        octave_idx_type index) const;
-  static void do_cat (int dim, octave_idx_type n, 
+  static void do_cat (int dim, octave_idx_type n,
                       const octave_scalar_map *map_list, octave_map& retval);
-  static void do_cat (int dim, octave_idx_type n, 
+  static void do_cat (int dim, octave_idx_type n,
                       const octave_map *map_list, octave_map& retval);
 };
 
@@ -541,9 +541,9 @@ Octave_map
 
   ~Octave_map (void) { }
 
-  Octave_map squeeze (void) const; 
+  Octave_map squeeze (void) const;
 
-  Octave_map permute (const Array<int>& vec, bool inv = false) const; 
+  Octave_map permute (const Array<int>& vec, bool inv = false) const;
 
   // This is the number of keys.
   octave_idx_type nfields (void) const { return map.size (); }
@@ -630,7 +630,7 @@ Octave_map
 
   Octave_map& assign (const std::string& k, const Cell& rhs);
 
-  Octave_map index (const octave_value_list& idx, 
+  Octave_map index (const octave_value_list& idx,
                     bool resize_ok = false) const;
 
 private:

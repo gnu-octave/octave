@@ -95,7 +95,7 @@ octave_fields::rmfield (const std::string& field)
     }
 }
 
-void 
+void
 octave_fields::orderfields (Array<octave_idx_type>& perm)
 {
   octave_idx_type n = rep->size ();
@@ -111,7 +111,7 @@ octave_fields::orderfields (Array<octave_idx_type>& perm)
     }
 }
 
-bool 
+bool
 octave_fields::equal_up_to_order (const octave_fields& other,
                                   octave_idx_type* perm) const
 {
@@ -134,7 +134,7 @@ octave_fields::equal_up_to_order (const octave_fields& other,
   return retval;
 }
 
-bool 
+bool
 octave_fields::equal_up_to_order (const octave_fields& other,
                                   Array<octave_idx_type>& perm) const
 {
@@ -182,7 +182,7 @@ octave_scalar_map::rmfield (const std::string& k)
     xvals.erase (xvals.begin () + idx);
 }
 
-octave_scalar_map 
+octave_scalar_map
 octave_scalar_map::orderfields (void) const
 {
   Array<octave_idx_type> perm;
@@ -230,7 +230,7 @@ octave_scalar_map::contents (const std::string& k) const
   return getfield (k);
 }
 
-octave_value& 
+octave_value&
 octave_scalar_map::contents (const std::string& k)
 {
   octave_idx_type idx = xkeys.getfield (k);
@@ -293,7 +293,7 @@ octave_map::rmfield (const std::string& k)
     xvals.erase (xvals.begin () + idx);
 }
 
-octave_map 
+octave_map
 octave_map::orderfields (void) const
 {
   Array<octave_idx_type> perm;
@@ -341,7 +341,7 @@ octave_map::contents (const std::string& k) const
   return getfield (k);
 }
 
-Cell& 
+Cell&
 octave_map::contents (const std::string& k)
 {
   octave_idx_type idx = xkeys.getfield (k);
@@ -350,8 +350,8 @@ octave_map::contents (const std::string& k)
   return xvals[idx];
 }
 
-void 
-octave_map::extract_scalar (octave_scalar_map& dest, 
+void
+octave_map::extract_scalar (octave_scalar_map& dest,
                             octave_idx_type idx) const
 {
   octave_idx_type nf = nfields ();
@@ -403,7 +403,7 @@ octave_map::fast_elem_extract (octave_idx_type n) const
 }
 
 bool
-octave_map::fast_elem_insert (octave_idx_type n, 
+octave_map::fast_elem_insert (octave_idx_type n,
                               const octave_scalar_map& rhs)
 {
   bool retval = false;
@@ -438,7 +438,7 @@ octave_map::squeeze (void) const
   octave_idx_type nf = nfields ();
 
   retval.dimensions = dimensions.squeeze ();
-  
+
   for (octave_idx_type i = 0; i < nf; i++)
     retval.xvals[i] = xvals[i].squeeze ();
 
@@ -635,7 +635,7 @@ void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
 template <class map>
 static void
 permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
-                          octave_idx_type idx, const map *map_list, 
+                          octave_idx_type idx, const map *map_list,
                           map *new_map_list)
 {
   new_map_list[idx] = map_list[idx];
@@ -832,7 +832,7 @@ octave_map::index (const idx_vector& i, const idx_vector& j,
   return retval;
 }
 
-octave_map 
+octave_map
 octave_map::index (const Array<idx_vector>& ia, bool resize_ok) const
 {
   octave_map retval (xkeys);
@@ -856,7 +856,7 @@ octave_map::index (const Array<idx_vector>& ia, bool resize_ok) const
   return retval;
 }
 
-octave_map 
+octave_map
 octave_map::index (const octave_value_list& idx, bool resize_ok) const
 {
   octave_idx_type n_idx = idx.length ();
@@ -908,13 +908,13 @@ octave_map::index (const octave_value_list& idx, bool resize_ok) const
 }
 
 // Perhaps one day these will be optimized. Right now, they just call index.
-octave_map 
+octave_map
 octave_map::column (octave_idx_type k) const
 {
   return index (idx_vector::colon, k);
 }
 
-octave_map 
+octave_map
 octave_map::page (octave_idx_type k) const
 {
   static Array<idx_vector> ia (dim_vector (3, 1), idx_vector::colon);
@@ -1111,7 +1111,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
     ref = Cell (dimensions);
 
   ref.assign (idx, rhs);
-    
+
   if (! error_state && ref.dims () != dimensions)
     {
       dimensions = ref.dims ();
@@ -1230,7 +1230,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
               error ("field name mismatch in structure concatenation");
               break;
             }
-        
+
           contents(pa).insert (rb.contents(pb), ra_idx);
         }
     }
@@ -1470,7 +1470,7 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
               error ("field name mismatch in structure concatenation");
               break;
             }
-        
+
           retval.assign (key(pa),
                          contents(pa).insert (rb.contents(pb), ra_idx));
         }

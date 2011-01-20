@@ -41,7 +41,7 @@ int quad_integration_error = 0;
 
 typedef octave_idx_type (*quad_fcn_ptr) (double*, int&, double*);
 typedef octave_idx_type (*quad_float_fcn_ptr) (float*, int&, float*);
-                              
+
 extern "C"
 {
   F77_RET_T
@@ -58,7 +58,7 @@ extern "C"
                            const double&, double&, double&,
                            octave_idx_type&, octave_idx_type&,
                            const octave_idx_type&, const octave_idx_type&,
-                           octave_idx_type&, octave_idx_type*, double*); 
+                           octave_idx_type&, octave_idx_type*, double*);
 
   F77_RET_T
   F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const float&, const float&,
@@ -74,7 +74,7 @@ extern "C"
                          const float&, float&, float&, octave_idx_type&,
                          octave_idx_type&, const octave_idx_type&,
                          const octave_idx_type&, octave_idx_type&,
-                         octave_idx_type*, float*); 
+                         octave_idx_type*, float*);
 }
 
 static octave_idx_type

@@ -35,14 +35,14 @@ public:
 
   SparseCHOL (void) : sparse_base_chol<SparseMatrix, double, SparseMatrix> () { }
 
-  SparseCHOL (const SparseMatrix& a, bool natural = true) : 
+  SparseCHOL (const SparseMatrix& a, bool natural = true) :
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, natural) { }
 
-  SparseCHOL (const SparseMatrix& a, octave_idx_type& info, 
-              bool natural = true) : 
+  SparseCHOL (const SparseMatrix& a, octave_idx_type& info,
+              bool natural = true) :
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a, info, natural) { }
 
-  SparseCHOL (const SparseCHOL& a) : 
+  SparseCHOL (const SparseCHOL& a) :
     sparse_base_chol<SparseMatrix, double, SparseMatrix> (a) { }
 
   ~SparseCHOL (void) { }
@@ -57,19 +57,19 @@ public:
 
   SparseMatrix chol_matrix (void) const { return R(); }
 
-  SparseMatrix L (void) const 
+  SparseMatrix L (void) const
   { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: L (); }
 
-  SparseMatrix R (void) const 
+  SparseMatrix R (void) const
     { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: R (); }
 
-  octave_idx_type P (void) const 
+  octave_idx_type P (void) const
     { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: P (); }
 
-  ColumnVector perm (void) const 
+  ColumnVector perm (void) const
     { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: perm (); }
 
-  SparseMatrix Q (void) const 
+  SparseMatrix Q (void) const
     { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: Q (); }
 
   double rcond (void) const
@@ -77,7 +77,7 @@ public:
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   SparseMatrix inverse (void) const
-   { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: 
+   { return sparse_base_chol<SparseMatrix, double, SparseMatrix>::
        inverse (); }
 };
 

@@ -149,14 +149,14 @@ public:
   FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;
-   
+
   FloatComplexNDArray float_complex_array_value (bool = false) const;
-   
+
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool = false) const;
-  
-  NDArray array_value (bool = false) const; 
+
+  NDArray array_value (bool = false) const;
 
   FloatNDArray float_array_value (bool = false) const;
 
@@ -214,7 +214,7 @@ protected:
 
   octave_value to_dense (void) const;
 
-  virtual bool chk_valid_scalar (const octave_value&, 
+  virtual bool chk_valid_scalar (const octave_value&,
                                  typename DMT::element_type&) const = 0;
 
 private:

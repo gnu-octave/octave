@@ -104,7 +104,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
                   if (parent_scope < 0)
                     parent_scope = curr_fcn->scope ();
-        
+
                   uf->stash_parent_fcn_scope (parent_scope);
                 }
             }
@@ -364,7 +364,7 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 #if HAVE_HDF5_18
-  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, 
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid,
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
@@ -673,7 +673,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
               bool in_string = false;
               std::string tmp_arg;
               size_t i = 0;
-              
+
               while (i < fun.length ())
                 {
                   bool terminate_arg = false;
@@ -700,7 +700,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                         // Before we do anything remove trailing whitespaces.
                         while (i < fun.length () && isspace (c))
                           c = fun[i++];
-                        
+
                         // Do we have a variable or a function?
                         if (c != '(')
                           terminate_arg = true;
@@ -719,17 +719,17 @@ If the second argument is an integer @var{n}, the arguments are\n\
                   if (terminate_arg || (i == fun.length () && is_arg))
                     {
                       bool have_arg = false;
-                      
+
                       for (int j = 0; j < fargs.length (); j++)
                         if (tmp_arg == fargs (j))
                           {
                             have_arg = true;
                             break;
                           }
-                          
+
                       if (! have_arg && tmp_arg != "i" && tmp_arg != "j" &&
-                          tmp_arg != "NaN" && tmp_arg != "nan" && 
-                          tmp_arg != "Inf" && tmp_arg != "inf" && 
+                          tmp_arg != "NaN" && tmp_arg != "nan" &&
+                          tmp_arg != "Inf" && tmp_arg != "inf" &&
                           tmp_arg != "NA" && tmp_arg != "pi" &&
                           tmp_arg != "eps")
                         fargs.append (tmp_arg);
@@ -933,7 +933,7 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
           if (func_is_string)
             retval = octave_value (new_func);
           else
-            retval = octave_value (new octave_fcn_inline 
+            retval = octave_value (new octave_fcn_inline
                                    (new_func, old->fcn_arg_names ()));
         }
     }

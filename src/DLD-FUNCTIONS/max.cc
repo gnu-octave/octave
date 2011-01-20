@@ -257,7 +257,7 @@ do_minmax_body (const octave_value_list& args,
         {
         case btyp_double:
           {
-            if ((argx.is_sparse_type () 
+            if ((argx.is_sparse_type ()
                  && (argy.is_sparse_type () || argy.is_scalar_type ()))
                 || (argy.is_sparse_type () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseMatrix> (argx, argy, ismin);
@@ -267,7 +267,7 @@ do_minmax_body (const octave_value_list& args,
           }
         case btyp_complex:
           {
-            if ((argx.is_sparse_type () 
+            if ((argx.is_sparse_type ()
                  && (argy.is_sparse_type () || argy.is_scalar_type ()))
                 || (argy.is_sparse_type () && argx.is_scalar_type ()))
               retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy, ismin);
@@ -432,12 +432,12 @@ maximum value(s).  Thus,\n\
   return do_minmax_body (args, nargout, false);
 }
 
-/* 
+/*
 
 %% test/octave.test/arith/max-1.m
 %!assert (max ([1, 4, 2, 3]) == 4);
 %!assert (max ([1; -10; 5; -2]) == 5);
- 
+
 %% test/octave.test/arith/max-2.m
 %!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
 

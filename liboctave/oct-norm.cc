@@ -70,7 +70,7 @@ public:
   norm_accumulator_p () {} // we need this one for Array
   norm_accumulator_p (R pp) : p(pp), scl(0), sum(1) {}
 
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
       octave_quit ();
@@ -98,7 +98,7 @@ public:
   norm_accumulator_mp () {} // we need this one for Array
   norm_accumulator_mp (R pp) : p(pp), scl(0), sum(1) {}
 
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
       octave_quit ();
@@ -157,10 +157,10 @@ class norm_accumulator_1
   R sum;
 public:
   norm_accumulator_1 () : sum (0) {}
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
-      sum += std::abs (val); 
+      sum += std::abs (val);
     }
   operator R () { return sum; }
 };
@@ -172,7 +172,7 @@ class norm_accumulator_inf
   R max;
 public:
   norm_accumulator_inf () : max (0) {}
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
       max = std::max (max, std::abs (val));
@@ -187,7 +187,7 @@ class norm_accumulator_minf
   R min;
 public:
   norm_accumulator_minf () : min (octave_Inf) {}
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
       min = std::min (min, std::abs (val));
@@ -202,7 +202,7 @@ class norm_accumulator_0
   unsigned int num;
 public:
   norm_accumulator_0 () : num (0) {}
-  template<class U> 
+  template<class U>
   void accum (U val)
     {
       if (val != static_cast<U> (0)) ++num;
@@ -241,7 +241,7 @@ template <class T, class R, class ACC>
 void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
-  std::vector<ACC> acci (m.rows (), acc); 
+  std::vector<ACC> acci (m.rows (), acc);
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       for (octave_idx_type i = 0; i < m.rows (); i++)
@@ -271,7 +271,7 @@ template <class T, class R, class ACC>
 void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
-  std::vector<ACC> acci (m.rows (), acc); 
+  std::vector<ACC> acci (m.rows (), acc);
   for (octave_idx_type j = 0; j < m.columns (); j++)
     {
       for (octave_idx_type k = m.cidx (j); k < m.cidx (j+1); k++)
@@ -318,8 +318,8 @@ DEFINE_DISPATCHER (row_norms, MSparse<T>, MArray<R>)
 // norm ([lambda, mu], p) == 1 and norm (y*lambda + col*mu, p) is maximized.
 // Real version. As in Higham's paper.
 template <class ColVectorT, class R>
-static void 
-higham_subp (const ColVectorT& y, const ColVectorT& col, 
+static void
+higham_subp (const ColVectorT& y, const ColVectorT& col,
              octave_idx_type nsamp, R p, R& lambda, R& mu)
 {
   R nrm = 0;
@@ -327,7 +327,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     {
       octave_quit ();
       R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
-      R lmnr = std::pow (std::pow (std::abs (lambda1), p) + 
+      R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
       R nrm1 = vector_norm (lambda1 * y + mu1 * col, p);
@@ -344,9 +344,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
 // extension. First, guess the magnitudes as in real version, then try to rotate lambda
 // to improve further.
 template <class ColVectorT, class R>
-static void 
-higham_subp (const ColVectorT& y, const ColVectorT& col, 
-             octave_idx_type nsamp, R p, 
+static void
+higham_subp (const ColVectorT& y, const ColVectorT& col,
+             octave_idx_type nsamp, R p,
              std::complex<R>& lambda, std::complex<R>& mu)
 {
   typedef std::complex<R> CR;
@@ -358,7 +358,7 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     {
       octave_quit ();
       R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
-      R lmnr = std::pow (std::pow (std::abs (lambda1), p) + 
+      R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
       R nrm1 = vector_norm (lambda1 * lamcu * y + mu1 * col, p);
@@ -426,7 +426,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
       x(k) = mu;
       y = lambda * y + mu * col;
     }
-  
+
   // the PM part
   x = x / vector_norm (x, p);
   R q = p/(p-1);
@@ -455,7 +455,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   return gamma;
 }
 
-// derive column vector and SVD types 
+// derive column vector and SVD types
 
 static const char *p_less1_gripe = "xnorm: p must be at least 1";
 
@@ -484,7 +484,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT, SVDT)
       res = higham (m, p, sqrteps, max_norm_iter, x);
     }
   else
-    (*current_liboctave_error_handler) (p_less1_gripe); 
+    (*current_liboctave_error_handler) (p_less1_gripe);
 
   return res;
 }
@@ -505,7 +505,7 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
       res = higham (m, p, sqrteps, max_norm_iter, x);
     }
   else
-    (*current_liboctave_error_handler) (p_less1_gripe); 
+    (*current_liboctave_error_handler) (p_less1_gripe);
 
   return res;
 }

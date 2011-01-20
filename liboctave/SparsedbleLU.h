@@ -33,24 +33,24 @@ SparseLU : public sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
 {
 public:
 
-  SparseLU (void) 
+  SparseLU (void)
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> () { }
 
   SparseLU (const SparseMatrix& a, const Matrix& piv_thres = Matrix(),
             bool scale = false);
 
-  SparseLU (const SparseMatrix& a, const ColumnVector& Qinit, 
-            const Matrix& piv_thres = Matrix(), bool scale = false, 
-            bool FixedQ = false, double droptol = -1., 
+  SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
+            const Matrix& piv_thres = Matrix(), bool scale = false,
+            bool FixedQ = false, double droptol = -1.,
             bool milu = false, bool udiag = false);
 
-  SparseLU (const SparseLU& a) 
+  SparseLU (const SparseLU& a)
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> (a) { }
 
   SparseLU& operator = (const SparseLU& a)
     {
       if (this != &a)
-        sparse_base_lu <SparseMatrix, double, SparseMatrix, double> 
+        sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
           :: operator = (a);
 
       return *this;

@@ -67,12 +67,12 @@ public:
         ::error ("unable to create breakpoint table!");
         retval = false;
       }
-    
+
     return retval;
   }
 
   // Add a breakpoint at the nearest executable line.
-  static intmap add_breakpoint (const std::string& fname = "", 
+  static intmap add_breakpoint (const std::string& fname = "",
                                 const intmap& lines = intmap ())
   {
     return instance_ok ()
@@ -80,7 +80,7 @@ public:
   }
 
   // Remove a breakpoint from a line in file.
-  static int remove_breakpoint (const std::string& fname = "", 
+  static int remove_breakpoint (const std::string& fname = "",
                                 const intmap& lines = intmap ())
   {
     return instance_ok ()
@@ -94,14 +94,14 @@ public:
     return instance_ok ()
       ? instance->do_remove_all_breakpoints_in_file (fname, silent) : intmap ();
   }
-  
+
   // Remove all the breakpoints registered with octave.
   static void remove_all_breakpoints (void)
   {
     if (instance_ok ())
       instance->do_remove_all_breakpoints ();
   }
-  
+
   // Return all breakpoints.  Each element of the map is a vector
   // containing the breakpoints corresponding to a given function name.
   static fname_line_map
@@ -131,7 +131,7 @@ private:
 
   int do_remove_breakpoint (const std::string&, const intmap& lines);
 
-  intmap do_remove_all_breakpoints_in_file (const std::string& fname, 
+  intmap do_remove_all_breakpoints_in_file (const std::string& fname,
                                             bool silent);
 
   void do_remove_all_breakpoints (void);

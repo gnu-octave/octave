@@ -119,7 +119,7 @@ private:
   std::string
   get_struct_index
     (std::list<string_vector>::const_iterator p_arg_nm,
-     std::list<tree_expression *>::const_iterator p_dyn_field) const; 
+     std::list<tree_expression *>::const_iterator p_dyn_field) const;
 
   // No copying!
 

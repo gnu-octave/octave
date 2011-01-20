@@ -106,7 +106,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 }
 
 template <class DMT, class MT>
-octave_value 
+octave_value
 octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                                      const std::list<octave_value_list>& idx,
                                      const octave_value& rhs)
@@ -126,11 +126,11 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
               {
                 typename DMT::element_type val;
                 idx_vector i0 = jdx(0).index_vector (), i1 = jdx(1).index_vector ();
-                if (! error_state  && i0(0) == i1(0) 
+                if (! error_state  && i0(0) == i1(0)
                     && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
                     && chk_valid_scalar (rhs, val))
                   {
-                    matrix.dgelem (i0(0)) = val;                    
+                    matrix.dgelem (i0(0)) = val;
                     retval = this;
                     this->count++;
                     // invalidate cache
@@ -354,25 +354,25 @@ template <class DMT, class MT>
 boolNDArray
 octave_base_diag<DMT, MT>::bool_array_value (bool warn) const
 {
-  return to_dense ().bool_array_value (warn); 
+  return to_dense ().bool_array_value (warn);
 }
-  
+
 template <class DMT, class MT>
 charNDArray
 octave_base_diag<DMT, MT>::char_array_value (bool warn) const
 {
-  return to_dense ().char_array_value (warn); 
+  return to_dense ().char_array_value (warn);
 }
-  
+
 template <class DMT, class MT>
-SparseMatrix 
+SparseMatrix
 octave_base_diag<DMT, MT>::sparse_matrix_value (bool) const
 {
   return SparseMatrix (diag_matrix_value ());
 }
 
 template <class DMT, class MT>
-SparseComplexMatrix 
+SparseComplexMatrix
 octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 {
   return SparseComplexMatrix (complex_diag_matrix_value ());
@@ -393,7 +393,7 @@ octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force, char t
 }
 
 template <class DMT, class MT>
-bool 
+bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
   os << "# rows: " << matrix.rows () << "\n"
@@ -405,7 +405,7 @@ octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 }
 
 template <class DMT, class MT>
-bool 
+bool
 octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
   octave_idx_type r = 0, c = 0;
@@ -418,7 +418,7 @@ octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
       MT tmp (l, 1);
       is >> tmp;
 
-      if (!is) 
+      if (!is)
         {
           error ("load: failed to load diagonal matrix constant");
           success = false;
@@ -482,8 +482,8 @@ int
 octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
                                   oct_data_conv::data_type output_type, int skip,
                                   oct_mach_info::float_format flt_fmt) const
-{ 
-  return to_dense ().write (os, block_size, output_type, skip, flt_fmt); 
+{
+  return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }
 
 template <class DMT, class MT>

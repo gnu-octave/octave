@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 /*
 
-double randg(a) 
+double randg(a)
 void fill_randg(a,n,x)
 
 Generate a series of standard gamma distributions.
@@ -33,7 +33,7 @@ Generate a series of standard gamma distributions.
 See: Marsaglia G and Tsang W (2000), "A simple method for generating
 gamma variables", ACM Transactions on Mathematical Software 26(3) 363-372
 
-Needs the following defines: 
+Needs the following defines:
 * NAN: value to return for Not-A-Number
 * RUNI: uniform generator on (0,1)
 * RNOR: normal generator
@@ -95,7 +95,7 @@ Dirichlet(a1,...,ak) for ai > 0
 #define RNOR oct_randn()
 #define REXP oct_rande()
 
-void 
+void
 oct_fill_randg (double a, octave_idx_type n, double *r)
 {
   octave_idx_type i;
@@ -104,21 +104,21 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
   const double c = 1./sqrt(9.*d);
 
   /* Handle invalid cases */
-  if (a <= 0 || INFINITE(a)) 
+  if (a <= 0 || INFINITE(a))
     {
-      for (i=0; i < n; i++) 
+      for (i=0; i < n; i++)
         r[i] = NAN;
       return;
     }
 
-  for (i=0; i < n; i++) 
+  for (i=0; i < n; i++)
     {
       double x, xsq, v, u;
     restart:
       x = RNOR;
       v = (1+c*x);
       v *= v*v;
-      if (v <= 0) 
+      if (v <= 0)
         goto restart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
@@ -126,15 +126,15 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
         goto restart;
       r[i] = d*v;
     }
-  if (a < 1) 
+  if (a < 1)
     { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
-      for (i = 0; i < n; i++) 
+      for (i = 0; i < n; i++)
         r[i] *= exp(-REXP/a);
     }
 }
 
-double 
+double
 oct_randg (double a)
 {
   double ret;

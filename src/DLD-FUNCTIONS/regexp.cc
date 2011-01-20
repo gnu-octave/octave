@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <regex.h>
 #endif
 
-// Define the maximum number of retries for a pattern that 
+// Define the maximum number of retries for a pattern that
 // possibly results in an infinite recursion.
 #define PCRE_MATCHLIMIT_MAX 10
 
@@ -64,12 +64,12 @@ along with Octave; see the file COPYING.  If not, see
 class regexp_elem
 {
 public:
-  regexp_elem (const string_vector& _named_token, const Cell& _t, 
-               const std::string& _m, const Matrix& _te, double _s, 
+  regexp_elem (const string_vector& _named_token, const Cell& _t,
+               const std::string& _m, const Matrix& _te, double _s,
                double _e) :
     named_token (_named_token), t (_t), m (_m), te (_te), s (_s), e (_e) { }
 
-  regexp_elem (const regexp_elem &a) : named_token (a.named_token), t (a.t), 
+  regexp_elem (const regexp_elem &a) : named_token (a.named_token), t (a.t),
                                        m (a.m), te (a.te), s (a.s), e (a.e)
                                        { }
 
@@ -87,12 +87,12 @@ typedef std::list<regexp_elem>::const_iterator const_iterator;
 static bool lookbehind_warned = false;
 
 static int
-octregexp_list (const octave_value_list &args, const std::string &nm, 
-                bool case_insensitive, std::list<regexp_elem> &lst, 
+octregexp_list (const octave_value_list &args, const std::string &nm,
+                bool case_insensitive, std::list<regexp_elem> &lst,
                 string_vector &named, int &nopts, bool &once)
 {
   int sz = 0;
-#if defined (HAVE_REGEX) || defined (HAVE_PCRE) 
+#if defined (HAVE_REGEX) || defined (HAVE_PCRE)
   int nargin = args.length();
   bool lineanchors = false;
   bool dotexceptnewline = false;
@@ -102,7 +102,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
   once = false;
 
   std::string buffer = args(0).string_value ();
-  size_t max_length = (buffer.length () > MAXLOOKBEHIND ? 
+  size_t max_length = (buffer.length () > MAXLOOKBEHIND ?
                        MAXLOOKBEHIND: buffer.length ());
 
   if (error_state)
@@ -199,7 +199,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
       // named tokens "(?<name>...)" are only treated with PCRE not regex.
 #if HAVE_PCRE
-      
+
       size_t pos = 0;
       size_t new_pos;
       int nnames = 0;
@@ -209,14 +209,14 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
       while ((new_pos = pattern.find ("(?",pos)) != std::string::npos)
         {
-          if (pattern.at (new_pos + 2) == '<' &&  
+          if (pattern.at (new_pos + 2) == '<' &&
               !(pattern.at (new_pos + 3) == '=' ||
                 pattern.at (new_pos + 3) == '!'))
             {
               // The syntax of named tokens in pcre is "(?P<name>...)" while
-              // we need a syntax "(?<name>...)", so fix that here. Also an 
-              // expression like 
-              // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)" 
+              // we need a syntax "(?<name>...)", so fix that here. Also an
+              // expression like
+              // "(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)"
               // should be perfectly legal, while pcre does not allow the same
               // named token name on both sides of the alternative. Also fix
               // that here by replacing name tokens by dummy names, and dealing
@@ -230,7 +230,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                   break;
                 }
 
-              std::string tmp_name = 
+              std::string tmp_name =
                 pattern.substr(new_pos+3,tmp_pos-new_pos-3);
               bool found = false;
 
@@ -262,10 +262,10 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
             }
           else if (pattern.at (new_pos + 2) == '<')
             {
-              // Find lookbehind operators of arbitrary length (ie like 
-              // "(?<=[a-z]*)") and replace with a maximum length operator 
-              // as PCRE can not yet handle arbitrary length lookahead 
-              // operators. Use the string length as the maximum length to 
+              // Find lookbehind operators of arbitrary length (ie like
+              // "(?<=[a-z]*)") and replace with a maximum length operator
+              // as PCRE can not yet handle arbitrary length lookahead
+              // operators. Use the string length as the maximum length to
               // avoid issues.
 
               int brackets = 1;
@@ -314,7 +314,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                         {
                           buf << pattern.substr(new_pos, tmp_pos3 - new_pos)
                               << "{" << i << "}";
-                          buf << pattern.substr(tmp_pos3 + 1, 
+                          buf << pattern.substr(tmp_pos3 + 1,
                                                 tmp_pos1 - tmp_pos3 - 1);
                           if (i != max_length)
                             buf << "|";
@@ -350,10 +350,10 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                          (lineanchors ? PCRE_MULTILINE : 0) |
                          (freespacing ? PCRE_EXTENDED : 0),
                          &err, &erroffset, 0);
-    
+
       if (re == 0)
         {
-          error("%s: %s at position %d of expression", nm.c_str(), 
+          error("%s: %s at position %d of expression", nm.c_str(),
                 err, erroffset);
           return 0;
         }
@@ -384,8 +384,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
         {
           OCTAVE_QUIT;
 
-          int matches = pcre_exec(re, 0, buffer.c_str(), 
-                                  buffer.length(), idx, 
+          int matches = pcre_exec(re, 0, buffer.c_str(),
+                                  buffer.length(), idx,
                                   (idx ? PCRE_NOTBOL : 0),
                                   ovector, (subpatterns+1)*3);
 
@@ -404,8 +404,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                   OCTAVE_QUIT;
 
                   pe.match_limit *= 10;
-                  matches = pcre_exec(re, &pe, buffer.c_str(), 
-                                      buffer.length(), idx, 
+                  matches = pcre_exec(re, &pe, buffer.c_str(),
+                                      buffer.length(), idx,
                                       (idx ? PCRE_NOTBOL : 0),
                                       ovector, (subpatterns+1)*3);
                 }
@@ -445,7 +445,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               e = double (ovector[1]);
 
               const char **listptr;
-              int status = pcre_get_substring_list(buffer.c_str(), ovector, 
+              int status = pcre_get_substring_list(buffer.c_str(), ovector,
                                                    matches, &listptr);
 
               if (status == PCRE_ERROR_NOMEMORY)
@@ -467,9 +467,9 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                         || ovector[2*i-1] != ovector[2*i+1])
                       {
                         if (namecount > 0)
-                          named_tokens(named_idx(i-pos_offset-1)) = 
-                            std::string(*(listptr+nidx[i-pos_offset-1]));    
-                        cell_t(pos_match++) = 
+                          named_tokens(named_idx(i-pos_offset-1)) =
+                            std::string(*(listptr+nidx[i-pos_offset-1]));
+                        cell_t(pos_match++) =
                           std::string(*(listptr+i));
                       }
                     else
@@ -495,14 +495,14 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
       pcre_free(re);
 #else
       regex_t compiled;
-      int err=regcomp(&compiled, pattern.c_str(), REG_EXTENDED | 
+      int err=regcomp(&compiled, pattern.c_str(), REG_EXTENDED |
                       (case_insensitive ? REG_ICASE : 0));
       if (err)
         {
           int len = regerror(err, &compiled, 0, 0);
           OCTAVE_LOCAL_BUFFER (char, errmsg, len);
           regerror(err, &compiled, errmsg, len);
-          error("%s: %s in pattern (%s)", nm.c_str(), errmsg, 
+          error("%s: %s in pattern (%s)", nm.c_str(), errmsg,
                 pattern.c_str());
           regfree(&compiled);
           return 0;
@@ -516,14 +516,14 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
       while(true)
         {
-          OCTAVE_QUIT; 
+          OCTAVE_QUIT;
 
-          if (regexec(&compiled, buffer.c_str() + idx, subexpr, 
-                      match, (idx ? REG_NOTBOL : 0)) == 0) 
+          if (regexec(&compiled, buffer.c_str() + idx, subexpr,
+                      match, (idx ? REG_NOTBOL : 0)) == 0)
             {
               // Count actual matches
               int matches = 0;
-              while (matches < subexpr && match[matches].rm_so >= 0) 
+              while (matches < subexpr && match[matches].rm_so >= 0)
                 matches++;
 
               if (matches == 0 || match[0].rm_eo == 0)
@@ -538,12 +538,12 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                   te(i-1,1) = double (match[i].rm_eo+idx);
                 }
 
-              m =  buffer.substr (match[0].rm_so+idx, 
+              m =  buffer.substr (match[0].rm_so+idx,
                                          match[0].rm_eo-match[0].rm_so);
 
               Cell cell_t (dim_vector(1,matches-1));
               for (int i = 1; i < matches; i++)
-                cell_t(i-1) = buffer.substr (match[i].rm_so+idx, 
+                cell_t(i-1) = buffer.substr (match[i].rm_so+idx,
                                              match[i].rm_eo-match[i].rm_so);
               t = cell_t;
 
@@ -686,7 +686,7 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
           OCTAVE_LOCAL_BUFFER (int, arg_used, 6);
           for (int j = 0; j < 6; j++)
             arg_used[j] = false;
-          
+
           for (int j = 2; j < nargin; j++)
             {
               int k = 0;
@@ -765,7 +765,7 @@ octcellregexp (const octave_value_list &args, int nargout, const std::string &nm
               for (octave_idx_type i = 0; i < cellstr.numel (); i++)
                 {
                   new_args(0) = cellstr(i);
-                  octave_value_list tmp = octregexp (new_args, nargout, nm, 
+                  octave_value_list tmp = octregexp (new_args, nargout, nm,
                                                      case_insensitive);
 
                   if (error_state)
@@ -785,7 +785,7 @@ octcellregexp (const octave_value_list &args, int nargout, const std::string &nm
               for (octave_idx_type i = 0; i < cellpat.numel (); i++)
                 {
                   new_args(1) = cellpat(i);
-                  octave_value_list tmp = octregexp (new_args, nargout, nm, 
+                  octave_value_list tmp = octregexp (new_args, nargout, nm,
                                                      case_insensitive);
 
                   if (error_state)
@@ -810,7 +810,7 @@ octcellregexp (const octave_value_list &args, int nargout, const std::string &nm
                       new_args(0) = cellstr(i);
                       new_args(1) = cellpat(i);
 
-                      octave_value_list tmp = octregexp (new_args, nargout, nm, 
+                      octave_value_list tmp = octregexp (new_args, nargout, nm,
                                                          case_insensitive);
 
                       if (error_state)
@@ -1436,41 +1436,41 @@ octregexprep (const octave_value_list &args, const std::string &nm)
   if (error_state) return retval;
   const std::string replacement = args(2).string_value ();
   if (error_state) return retval;
-  
+
   // Pack options excluding 'tokenize' and various output
   // reordering strings into regexp arg list
   octave_value_list regexpargs(nargin-1,octave_value());
   regexpargs(0) = args(0);
   regexpargs(1) = args(1);
   int len=2;
-  for (int i = 3; i < nargin; i++) 
+  for (int i = 3; i < nargin; i++)
     {
       const std::string opt = args(i).string_value();
       if (opt != "tokenize" && opt != "start" && opt != "end"
           && opt != "tokenextents" && opt != "match" && opt != "tokens"
-          && opt != "names"  && opt != "warnings") 
+          && opt != "names"  && opt != "warnings")
         {
           regexpargs(len++) = args(i);
         }
     }
   regexpargs.resize(len);
-  
+
   // Identify replacement tokens; build a vector of group numbers in
-  // the replacement string so that we can quickly calculate the size 
+  // the replacement string so that we can quickly calculate the size
   // of the replacement.
   int tokens = 0;
-  for (size_t i=1; i < replacement.size(); i++) 
+  for (size_t i=1; i < replacement.size(); i++)
     {
-      if (replacement[i-1]=='$' && isdigit(replacement[i])) 
+      if (replacement[i-1]=='$' && isdigit(replacement[i]))
         {
           tokens++, i++;
         }
     }
   std::vector<int> token(tokens);
   int kk = 0;
-  for (size_t i = 1; i < replacement.size(); i++) 
+  for (size_t i = 1; i < replacement.size(); i++)
     {
-      if (replacement[i-1]=='$' && isdigit(replacement[i])) 
+      if (replacement[i-1]=='$' && isdigit(replacement[i]))
         {
           token[kk++] = replacement[i]-'0';
           i++;
@@ -1479,7 +1479,7 @@ octregexprep (const octave_value_list &args, const std::string &nm)
 
   // Perform replacement
   std::string rep;
-  if (tokens > 0) 
+  if (tokens > 0)
     {
       std::list<regexp_elem> lst;
       string_vector named;
@@ -1499,65 +1499,65 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       const size_t replen = replacement.size() - 2*tokens;
       int delta = 0;
       const_iterator p = lst.begin();
-      for (int i = 0; i < sz; i++) 
+      for (int i = 0; i < sz; i++)
         {
           OCTAVE_QUIT;
 
           const Matrix pairs(p->te);
           size_t pairlen = 0;
-          for (int j = 0; j < tokens; j++) 
+          for (int j = 0; j < tokens; j++)
             {
-              if (token[j] == 0) 
+              if (token[j] == 0)
                 pairlen += static_cast<size_t>(p->e - p->s) + 1;
-              else if (token[j] <= pairs.rows()) 
-                pairlen += static_cast<size_t>(pairs(token[j]-1,1) - 
+              else if (token[j] <= pairs.rows())
+                pairlen += static_cast<size_t>(pairs(token[j]-1,1) -
                                                pairs(token[j]-1,0)) + 1;
             }
-          delta += static_cast<int>(replen + pairlen) - 
+          delta += static_cast<int>(replen + pairlen) -
             static_cast<int>(p->e - p->s + 1);
           p++;
         }
-      
+
       // Build replacement string
       rep.reserve(buffer.size()+delta);
       size_t from = 0;
       p = lst.begin();
-      for (int i=0; i < sz; i++) 
+      for (int i=0; i < sz; i++)
         {
           OCTAVE_QUIT;
 
           const Matrix pairs(p->te);
           rep.append(&buffer[from], static_cast<size_t>(p->s - 1) - from);
           from = static_cast<size_t>(p->e - 1) + 1;
-          for (size_t j = 1; j < replacement.size(); j++) 
+          for (size_t j = 1; j < replacement.size(); j++)
             {
-              if (replacement[j-1]=='$' && isdigit(replacement[j])) 
+              if (replacement[j-1]=='$' && isdigit(replacement[j]))
                 {
                   int k = replacement[j]-'0';
-                  if (k == 0) 
-                    { 
+                  if (k == 0)
+                    {
                       // replace with entire match
                       rep.append(&buffer[static_cast<size_t>(p->e - 1)],
                                  static_cast<size_t>(p->e - p->s) + 1);
-                    } 
-                  else if (k <= pairs.rows()) 
+                    }
+                  else if (k <= pairs.rows())
                     {
                       // replace with group capture
                       rep.append(&buffer[static_cast<size_t>(pairs(k-1,0)-1)],
-                                 static_cast<size_t>(pairs(k-1,1) - 
+                                 static_cast<size_t>(pairs(k-1,1) -
                                                      pairs(k-1,0))+1);
                     }
-                  else 
+                  else
                     {
                       // replace with nothing
                     }
                   j++;
-                } 
-              else 
+                }
+              else
                 {
                   rep.append(1,replacement[j-1]);
                 }
-              if (j+1 == replacement.size()) 
+              if (j+1 == replacement.size())
                 {
                   rep.append(1,replacement[j]);
                 }
@@ -1565,8 +1565,8 @@ octregexprep (const octave_value_list &args, const std::string &nm)
           p++;
         }
       rep.append(&buffer[from],buffer.size()-from);
-    } 
-  else 
+    }
+  else
     {
       std::list<regexp_elem> lst;
       string_vector named;
@@ -1586,10 +1586,10 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       const size_t replen = replacement.size();
       int delta = 0;
       const_iterator p = lst.begin();
-      for (int i = 0; i < sz; i++) 
+      for (int i = 0; i < sz; i++)
         {
           OCTAVE_QUIT;
-          delta += static_cast<int>(replen) - 
+          delta += static_cast<int>(replen) -
             static_cast<int>(p->e - p->s + 1);
           p++;
         }
@@ -1598,7 +1598,7 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       rep.reserve(buffer.size()+delta);
       size_t from = 0;
       p = lst.begin();
-      for (int i=0; i < sz; i++) 
+      for (int i=0; i < sz; i++)
         {
           OCTAVE_QUIT;
           rep.append(&buffer[from], static_cast<size_t>(p->s - 1) - from);
@@ -1608,7 +1608,7 @@ octregexprep (const octave_value_list &args, const std::string &nm)
         }
       rep.append(&buffer[from],buffer.size()-from);
     }
-  
+
   retval = rep;
   return retval;
 }

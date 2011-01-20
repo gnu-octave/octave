@@ -384,7 +384,7 @@ public:
 
   mwSize get_m (void) const { return val.rows (); }
 
-  mwSize get_n (void) const 
+  mwSize get_n (void) const
   {
     mwSize n = 1;
 
@@ -670,7 +670,7 @@ public:
       case mxUINT64_CLASS: return 8;
       case mxFUNCTION_CLASS: return 0;
       default: return 0;
-      }    
+      }
   }
 
   bool mutation_needed (void) const { return mutate_flag; }
@@ -1050,7 +1050,7 @@ public:
       case mxUINT64_CLASS: return 8;
       case mxFUNCTION_CLASS: return 0;
       default: return 0;
-      }    
+      }
   }
 
 protected:
@@ -1156,7 +1156,7 @@ public:
       pi (0)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
-    
+
     mwSize *dv = get_dimensions ();
 
     mwSize nc = dv[1];
@@ -1172,7 +1172,7 @@ public:
 
         for (size_t i = tmp_len; i < nc; i++)
           cpr[m*i+j] = static_cast<mxChar> (' ');
-      } 
+      }
   }
 
   mxArray_number *dup (void) const { return new mxArray_number (*this); }
@@ -1453,7 +1453,7 @@ protected:
 
       default:
         panic_impossible ();
-      }    
+      }
 
     return retval;
   }
@@ -2172,17 +2172,17 @@ public:
     if (ptr)
       {
         v = gnulib::realloc (ptr, n);
-        
+
         std::set<void *>::iterator p = memlist.find (ptr);
-        
+
         if (v && p != memlist.end ())
           {
             memlist.erase (p);
             memlist.insert (v);
           }
-        
+
         p = global_memlist.find (ptr);
-        
+
         if (v && p != global_memlist.end ())
           {
             global_memlist.erase (p);
@@ -2511,7 +2511,7 @@ maybe_mark_array (mxArray *ptr)
 {
   return mex_context ? mex_context->mark_array (ptr) : ptr;
 }
-  
+
 // Constructors.
 mxArray *
 mxCreateCellArray (mwSize ndims, const mwSize *dims)
@@ -2821,7 +2821,7 @@ mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
                          maybe_unmark (const_cast<mwSize *> (dims))),
                        ndims);
 }
-  
+
 // Data extractors.
 double *
 mxGetPr (const mxArray *ptr)
@@ -3027,7 +3027,7 @@ mxArrayToString (const mxArray *ptr)
 {
   return ptr->array_to_string ();
 }
-  
+
 mwIndex
 mxCalcSingleSubscript (const mxArray *ptr, mwSize nsubs, mwIndex *subs)
 {
@@ -3460,7 +3460,7 @@ mexLock (void)
 int
 mexSet (double handle, const char *property, mxArray *val)
 {
-  bool ret = 
+  bool ret =
     set_property_in_handle (handle, property, mxArray::as_octave_value (val),
                             "mexSet");
   return (ret ? 0 : 1);

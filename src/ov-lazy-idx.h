@@ -38,10 +38,10 @@ public:
     : octave_base_value (), index (), value () { }
 
   octave_lazy_index (const idx_vector& idx)
-    : octave_base_value (), index (idx), value () { } 
+    : octave_base_value (), index (idx), value () { }
 
   octave_lazy_index (const octave_lazy_index& i)
-    : octave_base_value (), index (i.index), value (i.value) { } 
+    : octave_base_value (), index (i.index), value (i.value) { }
 
   ~octave_lazy_index (void) { }
 
@@ -170,13 +170,13 @@ public:
   FORWARD_VALUE_QUERY1 (FloatComplexMatrix, float_complex_matrix_value)
 
   FORWARD_VALUE_QUERY1 (ComplexNDArray, complex_array_value)
-   
+
   FORWARD_VALUE_QUERY1 (FloatComplexNDArray, float_complex_array_value)
-   
+
   FORWARD_VALUE_QUERY1 (boolNDArray, bool_array_value)
 
   FORWARD_VALUE_QUERY1 (charNDArray, char_array_value)
-  
+
   FORWARD_VALUE_QUERY1 (NDArray, array_value)
 
   FORWARD_VALUE_QUERY1 (FloatNDArray, float_array_value)
@@ -200,7 +200,7 @@ public:
 
   bool save_binary (std::ostream& os, bool& save_as_floats);
 
-  bool load_binary (std::istream& is, bool swap, 
+  bool load_binary (std::istream& is, bool swap,
                     oct_mach_info::float_format fmt);
 
   // HDF5 functions not defined.
@@ -212,7 +212,7 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void *mex_get_data (void) const 
+  void *mex_get_data (void) const
     { return make_value ().mex_get_data (); }
 
   mxArray *as_mxArray (void) const

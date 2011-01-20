@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <termio.h>
 #elif defined (HAVE_SGTTY_H)
 #include <sgtty.h>
-#endif 
+#endif
 
 #if defined (HAVE_CONIO_H)
 #include <conio.h>
@@ -171,7 +171,7 @@ static void
 MSVC_init (void)
 {
   w32_set_octave_home ();
-  
+
   // Init mutex to protect setjmp/longjmp and get main thread context
   w32_sigint_init ();
 
@@ -189,11 +189,11 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
   bool retval = false;
 
-  // Windows native code 
+  // Windows native code
   // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
 
   HANDLE hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
+                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
   if (hfile1 != INVALID_HANDLE_VALUE)
     {
@@ -201,13 +201,13 @@ same_file_internal (const std::string& file1, const std::string& file2)
                                   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
       if (hfile2 != INVALID_HANDLE_VALUE)
-        {  
+        {
           BY_HANDLE_FILE_INFORMATION hfi1;
           BY_HANDLE_FILE_INFORMATION hfi2;
-  
+
           if (GetFileInformationByHandle (hfile1, &hfi1)
               && GetFileInformationByHandle (hfile2, &hfi2))
-  
+
             retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
                       && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
                       && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
@@ -255,9 +255,9 @@ sysdep_cleanup (void)
 // Set terminal in raw mode.  From less-177.
 //
 // Change terminal to "raw mode", or restore to "normal" mode.
-// "Raw mode" means 
+// "Raw mode" means
 //      1. An outstanding read will complete on receipt of a single keystroke.
-//      2. Input is not echoed.  
+//      2. Input is not echoed.
 //      3. On output, \n is mapped to \r\n.
 //      4. \t is NOT expanded into spaces.
 //      5. Signal-causing characters such as ctrl-C (interrupt),
@@ -313,7 +313,7 @@ raw_mode (bool on, bool wait)
 #endif
         s.c_cc[VMIN] = wait ? 1 : 0;
         s.c_cc[VTIME] = 0;
-      }      
+      }
     else
       {
         // Restore saved modes.
@@ -355,7 +355,7 @@ raw_mode (bool on, bool wait)
         s.c_oflag &= ~(ONLRET);
 #endif
         s.c_cc[VMIN] = wait ? 1 : 0;
-      }      
+      }
     else
       {
         // Restore saved modes.
@@ -387,7 +387,7 @@ raw_mode (bool on, bool wait)
 
         s.sg_flags |= CBREAK;
         s.sg_flags &= ~(ECHO);
-      } 
+      }
     else
       {
         // Restore saved modes.
@@ -457,7 +457,7 @@ octave_kbhit (bool wait)
   octave_set_interrupt_handler (saved_interrupt_handler, false);
 
   int c = std::cin.get ();
- 
+
   if (std::cin.fail () || std::cin.eof ())
     std::cin.clear ();
 
@@ -527,12 +527,12 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   if (nargin == 2 || nargin == 1)
     {
-      std::string var = args(0).string_value (); 
+      std::string var = args(0).string_value ();
 
       if (! error_state)
         {
           std::string val = (nargin == 2
-                             ? args(1).string_value () : std::string ()); 
+                             ? args(1).string_value () : std::string ());
 
           if (! error_state)
             octave_env::putenv (var, val);

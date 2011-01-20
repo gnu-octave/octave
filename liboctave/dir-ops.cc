@@ -50,7 +50,7 @@ dir_entry::open (const std::string& n)
   if (! name.empty ())
     {
       close ();
-      
+
       std::string fullname = file_ops::tilde_expand (name);
 
       dir = static_cast<void *> (gnulib::opendir (fullname.c_str ()));

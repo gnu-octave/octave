@@ -116,7 +116,7 @@ Array<float>::is_sorted (sortmode mode) const
         r = el[j++];
       while (xisnan (r) && j < n);
 
-      // Orient the test so that NaN will not pass through. 
+      // Orient the test so that NaN will not pass through.
       for (; j < n; j++)
         {
           if (r >= el[j])
@@ -137,7 +137,7 @@ Array<float>::is_sorted (sortmode mode) const
 
       if (n > 0)
         {
-          // Orient the test so that NaN will not pass through. 
+          // Orient the test so that NaN will not pass through.
           float r = el[0];
           for (octave_idx_type j = 1; j < n; j++)
             {

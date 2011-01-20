@@ -45,7 +45,7 @@ public:
 
   FloatNDArray (const dim_vector& dv, float val)
     : MArray<float> (dv, val) { }
-  
+
   FloatNDArray (const FloatNDArray& a) : MArray<float> (a) { }
 
   FloatNDArray (const FloatMatrix& a) : MArray<float> (a) { }
@@ -59,7 +59,7 @@ public:
   template <class U>
   explicit FloatNDArray (const intNDArray<U>& a) : MArray<float> (a) { }
 
-  FloatNDArray (const charNDArray&); 
+  FloatNDArray (const charNDArray&);
 
   FloatNDArray& operator = (const FloatNDArray& a)
     {
@@ -89,8 +89,8 @@ public:
   FloatNDArray cumprod (int dim = -1) const;
   FloatNDArray cumsum (int dim = -1) const;
   FloatNDArray prod (int dim = -1) const;
-  FloatNDArray sum (int dim = -1) const;  
-       NDArray dsum (int dim = -1) const;  
+  FloatNDArray sum (int dim = -1) const;
+       NDArray dsum (int dim = -1) const;
   FloatNDArray sumsq (int dim = -1) const;
   FloatNDArray concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
   FloatComplexNDArray concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
@@ -100,7 +100,7 @@ public:
   FloatNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
   FloatNDArray min (int dim = -1) const;
   FloatNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
-  
+
   FloatNDArray cummax (int dim = -1) const;
   FloatNDArray cummax (Array<octave_idx_type>& index, int dim = -1) const;
   FloatNDArray cummin (int dim = -1) const;
@@ -150,10 +150,10 @@ public:
 
   FloatNDArray diag (octave_idx_type k = 0) const;
 
-  FloatNDArray& changesign (void) 
-    { 
-      MArray<float>::changesign (); 
-      return *this; 
+  FloatNDArray& changesign (void)
+    {
+      MArray<float>::changesign ();
+      return *this;
     }
 
 };
@@ -180,7 +180,7 @@ BSXFUN_STDOP_DECLS (FloatNDArray, OCTAVE_API)
 BSXFUN_STDREL_DECLS (FloatNDArray, OCTAVE_API)
 
 BSXFUN_OP_DECL (pow, FloatNDArray, OCTAVE_API)
-BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatComplexNDArray, 
+BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatComplexNDArray,
                  FloatNDArray, OCTAVE_API)
 
 #endif

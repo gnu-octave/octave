@@ -95,7 +95,7 @@ tree_decl_init_list::dup (symbol_table::scope_id scope,
 
       new_dil->append (elt ? elt->dup (scope, context) : 0);
     }
-  
+
   return new_dil;
 }
 

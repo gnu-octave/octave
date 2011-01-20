@@ -144,7 +144,7 @@ information.\n\
   bool issparse = (nargin > 0 && args(0).is_sparse_type ());
   bool scale = (nargout  == 5);
 
-  if (nargin < 1 || (issparse && (nargin > 3 || nargout > 5)) 
+  if (nargin < 1 || (issparse && (nargin > 3 || nargout > 5))
       || (!issparse && (nargin > 2 || nargout > 3)))
     {
       print_usage ();
@@ -231,11 +231,11 @@ information.\n\
                   {
                     PermMatrix P = fact.Pr_mat ();
                     SparseMatrix L = P.transpose () * fact.L ();
-                    retval(1) = octave_value (fact.U (), 
+                    retval(1) = octave_value (fact.U (),
                                               MatrixType (MatrixType::Upper));
 
-                    retval(0) = octave_value (L, 
-                        MatrixType (MatrixType::Permuted_Lower, 
+                    retval(0) = octave_value (L,
+                        MatrixType (MatrixType::Permuted_Lower,
                                     nr, fact.row_perm ()));
                   }
               }
@@ -250,9 +250,9 @@ information.\n\
                 else
                   retval(2) = fact.Pr_mat ();
 
-                retval(1) = octave_value (fact.U (), 
+                retval(1) = octave_value (fact.U (),
                                           MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (), 
+                retval(0) = octave_value (fact.L (),
                                           MatrixType (MatrixType::Lower));
               }
               break;
@@ -275,9 +275,9 @@ information.\n\
                     retval(3) = fact.Pc_mat ();
                     retval(2) = fact.Pr_mat ();
                   }
-                retval(1) = octave_value (fact.U (), 
+                retval(1) = octave_value (fact.U (),
                                           MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (), 
+                retval(0) = octave_value (fact.L (),
                                           MatrixType (MatrixType::Lower));
               }
               break;
@@ -301,11 +301,11 @@ information.\n\
                   {
                     PermMatrix P = fact.Pr_mat ();
                     SparseComplexMatrix L = P.transpose () * fact.L ();
-                    retval(1) = octave_value (fact.U (), 
+                    retval(1) = octave_value (fact.U (),
                                               MatrixType (MatrixType::Upper));
 
-                    retval(0) = octave_value (L, 
-                        MatrixType (MatrixType::Permuted_Lower, 
+                    retval(0) = octave_value (L,
+                        MatrixType (MatrixType::Permuted_Lower,
                                     nr, fact.row_perm ()));
                   }
               }
@@ -320,9 +320,9 @@ information.\n\
                 else
                   retval(2) = fact.Pr_mat ();
 
-                retval(1) = octave_value (fact.U (), 
+                retval(1) = octave_value (fact.U (),
                                           MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (), 
+                retval(0) = octave_value (fact.L (),
                                           MatrixType (MatrixType::Lower));
               }
               break;
@@ -345,9 +345,9 @@ information.\n\
                     retval(3) = fact.Pc_mat ();
                     retval(2) = fact.Pr_mat ();
                   }
-                retval(1) = octave_value (fact.U (), 
+                retval(1) = octave_value (fact.U (),
                                           MatrixType (MatrixType::Upper));
-                retval(0) = octave_value (fact.L (), 
+                retval(0) = octave_value (fact.L (),
                                           MatrixType (MatrixType::Lower));
               }
               break;
@@ -657,25 +657,25 @@ recompute the factorization from scratch.\n\
   octave_value argx = args(2 + pivoted);
   octave_value argy = args(3 + pivoted);
 
-  if (argl.is_numeric_type () && argu.is_numeric_type () 
+  if (argl.is_numeric_type () && argu.is_numeric_type ()
       && argx.is_numeric_type () && argy.is_numeric_type ()
       && (! pivoted || argp.is_perm_matrix ()))
     {
       if (check_lu_dims (argl, argu, argp))
         {
-          PermMatrix P = (pivoted 
-                          ? argp.perm_matrix_value () 
+          PermMatrix P = (pivoted
+                          ? argp.perm_matrix_value ()
                           : PermMatrix::eye (argl.rows ()));
 
-          if (argl.is_real_type () 
-              && argu.is_real_type () 
-              && argx.is_real_type () 
+          if (argl.is_real_type ()
+              && argu.is_real_type ()
+              && argx.is_real_type ()
               && argy.is_real_type ())
             {
               // all real case
-              if (argl.is_single_type () 
-                  || argu.is_single_type () 
-                  || argx.is_single_type () 
+              if (argl.is_single_type ()
+                  || argu.is_single_type ()
+                  || argx.is_single_type ()
                   || argy.is_single_type ())
                 {
                   FloatMatrix L = argl.float_matrix_value ();
@@ -716,9 +716,9 @@ recompute the factorization from scratch.\n\
           else
             {
               // complex case
-              if (argl.is_single_type () 
-                  || argu.is_single_type () 
-                  || argx.is_single_type () 
+              if (argl.is_single_type ()
+                  || argu.is_single_type ()
+                  || argx.is_single_type ()
                   || argy.is_single_type ())
                 {
                   FloatComplexMatrix L = argl.float_complex_matrix_value ();
@@ -731,7 +731,7 @@ recompute the factorization from scratch.\n\
                     fact.update_piv (x, y);
                   else
                     fact.update (x, y);
-              
+
                   if (pivoted)
                     retval(2) = fact.P ();
                   retval(1) = get_lu_u (fact);
@@ -749,7 +749,7 @@ recompute the factorization from scratch.\n\
                     fact.update_piv (x, y);
                   else
                     fact.update (x, y);
-              
+
                   if (pivoted)
                     retval(2) = fact.P ();
                   retval(1) = get_lu_u (fact);
@@ -774,10 +774,10 @@ recompute the factorization from scratch.\n\
 %!      0.265712  0.268003  0.238409;
 %!      0.669966  0.743851  0.445057 ];
 %!
-%! u = [0.85082;  
-%!      0.76426;  
-%!      0.42883;  
-%!      0.53010;  
+%! u = [0.85082;
+%!      0.76426;
+%!      0.42883;
+%!      0.53010;
 %!      0.80683 ];
 %!
 %! v = [0.98810;
@@ -807,7 +807,7 @@ recompute the factorization from scratch.\n\
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
-%! 
+%!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(Ac);
 %! [L,U] = luupdate(L,U,P*uc,vc);
@@ -821,7 +821,7 @@ recompute the factorization from scratch.\n\
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
-%! 
+%!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(Ac));
 %! [L,U] = luupdate(L,U,P*single(uc),single(vc));
@@ -835,7 +835,7 @@ recompute the factorization from scratch.\n\
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
-%! 
+%!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(Ac);
 %! [L,U,P] = luupdate(L,U,P,uc,vc);
@@ -849,7 +849,7 @@ recompute the factorization from scratch.\n\
 %! assert(norm(vec(tril(L)-L),Inf) == 0)
 %! assert(norm(vec(triu(U)-U),Inf) == 0)
 %! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
-%! 
+%!
 %!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu(single(Ac));
 %! [L,U,P] = luupdate(L,U,P,single(uc),single(vc));

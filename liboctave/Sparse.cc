@@ -350,13 +350,13 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           else
             {
               // Pick the last one.
-              for (octave_idx_type i = 1; i < n; i++)
+              for (octave_idx_type i = 0; i < n; i++)
                 {
                   if (rd[i] != l)
                     {
                       l = rd[i];
-                      rrd[++k] = a0;
-                      rri[k] = rd[i];
+                      rri[++k] = rd[i];
+                      rrd[k] = a0;
                     }
                 }
             }
@@ -384,7 +384,10 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
           // Bucket sort.
           OCTAVE_LOCAL_BUFFER (octave_idx_type, sidx, n);
           for (octave_idx_type i = 0; i < n; i++)
-            sidx[ci[cd[i]+1]++] = rd[i];
+            if (rl == 1)
+              sidx[ci[cd[i]+1]++] = rd[0];
+            else
+              sidx[ci[cd[i]+1]++] = rd[i];
 
           // Subsorts. We don't need a stable sort, all values are equal.
           xcidx(0) = 0;
@@ -525,7 +528,10 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx_pair& p = spairs[ci[cd[i]+1]++];
-          p.first = rd[i];
+          if (rl == 1)
+            p.first = rd[0];
+          else
+            p.first = rd[i];
           p.second = i;
         }
 

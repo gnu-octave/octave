@@ -1,3 +1,13 @@
+2011-01-20  David Bateman  <dbateman@free.fr>
+
+	* Sparce.cc (template <class T> Sparse<T>::Sparse (const Array<T>&,
+	const idx_vector&, const idx_vector&, octave_idx_type,
+	octave_idx_type, bool, octave_idx_type): Fix off by one error in the
+	construction of sparse column vectors. Fix indexing issue in
+	construction of sparse row vectors.
+	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::any (int) const):
+	Fully initialize cidx for any called on the first dimension.
+
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
 	* Array.h (explicit Array (octave_idx_type, const T&)):

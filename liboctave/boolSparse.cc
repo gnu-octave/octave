@@ -150,7 +150,8 @@ SparseBoolMatrix::any (int dim) const
     {
       // Result is a row vector.
       retval = Sparse<bool> (1, nc);
-      for(octave_idx_type i = 0; i < nc; i++)
+      retval.xcidx(0) = 0;
+      for (octave_idx_type i = 0; i < nc; i++)
         retval.xcidx(i+1) = retval.xcidx(i) + (cidx(i+1) > cidx(i));
       octave_idx_type new_nz = retval.xcidx(nc);
       retval.change_capacity (new_nz);

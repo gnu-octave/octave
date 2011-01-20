@@ -1969,7 +1969,7 @@ DEFUN_DLD (fltk_gui_mode, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{mode} =} fltk_gui_mode ()\n\
 @deftypefnx {Built-in Function} {} fltk_gui_mode (@var{mode})\n\
-Query or set the GUI mode for the fltk grahpics toolkit.\n\
+Query or set the GUI mode for the fltk graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
 @table @asis\n\
 @item '2d'\n\

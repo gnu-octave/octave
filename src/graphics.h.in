@@ -1809,7 +1809,7 @@ public:
     }
 
   // Callback function executed when the given graphics object
-  // changes.  This allows the grahpics toolkit to act on property
+  // changes.  This allows the graphics toolkit to act on property
   // changes if needed.
   virtual void update (const graphics_object&, int)
     { gripe_invalid ("base_graphics_toolkit::update"); }

@@ -14600,7 +14600,7 @@
 
 2008-01-13  Michael Goffioul  <michael.goffioul@gmail.com>
 
-	* grahpics.h.in: Sprinkle with OCTINTERP_API as needed.
+	* graphics.h.in: Sprinkle with OCTINTERP_API as needed.
 	(axes::properties::xaxislocation): Allow value of zero.
 	(axes::properties::yaxislocation): Likewise.
 

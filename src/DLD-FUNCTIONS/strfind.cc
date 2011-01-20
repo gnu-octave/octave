@@ -175,7 +175,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
         @}\n\
 @end group\n\
 @end example\n\
-@seealso{findstr,strmatch,regexp,regexpi,find}\n\
+@seealso{findstr, strmatch, regexp, regexpi, find}\n\
 @end deftypefn")
 {
   octave_value retval;

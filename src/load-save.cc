@@ -554,7 +554,7 @@ not linked with the HDF5 library."
 
 DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} load file\n\
+@deftypefn  {Command} {} load file\n\
 @deftypefnx {Command} {} load options file\n\
 @deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
 @deftypefnx {Command} {} S = load(\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
@@ -1450,7 +1450,7 @@ the zlib library."
 
 DEFUN (save, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} save file\n\
+@deftypefn  {Command} {} save file\n\
 @deftypefnx {Command} {} save options file\n\
 @deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
 @deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\

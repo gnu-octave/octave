@@ -3816,6 +3816,7 @@ is in the same directory as the PKG_ADD script then\n\
 autoload (\"foo\", \"bar.oct\");\n\
 @end example\n\
 \n\
+@noindent\n\
 will load the function @code{foo} from the file @code{bar.oct}.  The above\n\
 when @code{bar.oct} is not in the same directory or uses like\n\
 \n\
@@ -4013,7 +4014,7 @@ source_file (const std::string& file_name, const std::string& context,
 
 DEFUN (mfilename, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mfilename ()\n\
+@deftypefn  {Built-in Function} {} mfilename ()\n\
 @deftypefnx {Built-in Function} {} mfilename (@code{\"fullpath\"})\n\
 @deftypefnx {Built-in Function} {} mfilename (@code{\"fullpathext\"})\n\
 Return the name of the currently executing file.  At the top-level,\n\
@@ -4207,8 +4208,10 @@ Evaluate the function named @var{name}.  Any arguments after the first\n\
 are passed on to the named function.  For example,\n\
 \n\
 @example\n\
+@group\n\
 feval (\"acos\", -1)\n\
      @result{} 3.1416\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -4442,10 +4445,12 @@ If an error occurs during the evaluation of @var{try} the @var{catch}\n\
 string is evaluated, as the following example shows:\n\
 \n\
 @example\n\
+@group\n\
 eval ('error (\"This is a bad example\");',\n\
       'printf (\"This error occurred:\\n%s\\n\", lasterr ());');\n\
      @print{} This error occurred:\n\
         This is a bad example\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {

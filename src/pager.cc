@@ -489,7 +489,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
 DEFUN (more, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} more\n\
+@deftypefn  {Command} {} more\n\
 @deftypefnx {Command} {} more on\n\
 @deftypefnx {Command} {} more off\n\
 Turn output pagination on or off.  Without an argument, @code{more}\n\

@@ -1077,7 +1077,7 @@ Only available when Octave is compiled with PCRE.\n\
 Alternatively, use (?x) in the pattern when PCRE is available.\n\
 \n\
 @end table\n\
-@seealso{regexpi,strfind,regexprep}\n\
+@seealso{regexpi, strfind, regexprep}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1643,7 +1643,7 @@ Replace only the first occurrence of @var{pat} in the result.\n\
 This option is present for compatibility but is ignored.\n\
 \n\
 @end table\n\
-@seealso{regexp,regexpi,strrep}\n\
+@seealso{regexp, regexpi, strrep}\n\
 @end deftypefn")
 {
   octave_value_list retval;

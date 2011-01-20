@@ -1817,7 +1817,7 @@ synchronous I/O.\n\
 #if defined (O_TRUNC)
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Variable} O_TRUNC ()\n\
+@deftypefn {Built-in Function} O_TRUNC ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that if file exists, it should\n\
 be truncated when writing.\n\

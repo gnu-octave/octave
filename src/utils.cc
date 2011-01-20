@@ -685,7 +685,7 @@ undo_string_escapes (const std::string& s)
 DEFUN (undo_string_escapes, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
-Converts special characters in strings back to their escaped forms.  For\n\
+Convert special characters in strings back to their escaped forms.  For\n\
 example, the expression\n\
 \n\
 @example\n\

@@ -1379,12 +1379,13 @@ backslashes are required to enter a backslash into a double-quoted\n\
 character string.  @xref{Strings}.\n\
 \n\
 You can also use ANSI escape sequences if your terminal supports them.\n\
-This can be useful for colouring the prompt. For example,\n\
+This can be useful for colouring the prompt.  For example,\n\
 \n\
 @example\n\
 PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
 @end example\n\
 \n\
+@noindent\n\
 will give the default Octave prompt a red colouring.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
@@ -1506,7 +1507,7 @@ Undocumented internal function.\n\
 DEFUN (filemarker, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} filemarker ()\n\
-Returns or sets the character used to separate filename from the\n\
+Query or set the character used to separate filename from the\n\
 the subfunction names contained within the file.  This can be used in\n\
 a generic manner to interact with subfunctions.  For example,\n\
 \n\

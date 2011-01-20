@@ -839,7 +839,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 DEFUN (rethrow, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rethrow (@var{err})\n\
-Reissues a previous error as defined by @var{err}.  @var{err} is a structure\n\
+Reissue a previous error as defined by @var{err}.  @var{err} is a structure\n\
 that must contain at least the 'message' and 'identifier' fields.  @var{err}\n\
 can also contain a field 'stack' that gives information on the assumed\n\
 location of the error.  Typically @var{err} is returned from\n\
@@ -1477,9 +1477,10 @@ initialize_default_warning_state (void)
 
 DEFUN (lasterror, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{err} =} lasterror (@var{err})\n\
+@deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
+@deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Returns or sets the last error message.  Called without any arguments\n\
+Query or set the last error message.  Called without any arguments\n\
 returns a structure containing the last error message, as well as other\n\
 information related to this error.  The elements of this structure are:\n\
 \n\

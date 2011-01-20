@@ -3732,7 +3732,7 @@ set_format_style (int argc, const string_vector& argv)
 
 DEFUN (format, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} format\n\
+@deftypefn  {Command} {} format\n\
 @deftypefnx {Command} {} format options\n\
 Reset or specify the format of the output produced by @code{disp} and\n\
 Octave's normal echoing mechanism.  This command only affects the display\n\

@@ -209,7 +209,7 @@ to have a common size.\n\
 DEFUN (spalloc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
-Creates a @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\
+Create an @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\
 most @var{nz} nonzero elements.  This is useful for building the matrix\n\
 incrementally by a sequence of indexed assignments.  Subsequent indexed\n\
 assignments will reuse the pre-allocated memory, provided they are of one of\n\

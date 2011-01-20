@@ -210,7 +210,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 DEFUN (fclose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fclose (@var{fid})\n\
-Closes the specified file.  If successful, @code{fclose} returns 0,\n\
+Close the specified file.  If successful, @code{fclose} returns 0,\n\
 otherwise, it returns -1.\n\
 @seealso{fopen, fseek, ftell}\n\
 @end deftypefn")
@@ -394,7 +394,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 DEFUN (fskipl, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fskipl (@var{fid}, @var{count})\n\
-Skips a given number of lines, i.e., discards characters until an end-of-line\n\
+Skip a given number of lines, i.e., discards characters until an end-of-line\n\
 is met exactly @var{count}-times, or end-of-file occurs.\n\
 Returns the number of lines skipped (end-of-line sequences encountered).\n\
 If @var{count} is omitted, it defaults to 1. @var{count} may also be\n\

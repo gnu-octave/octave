@@ -540,7 +540,7 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 DEFUN (erf, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
-Computes the error function,\n\
+Compute the error function,\n\
 @tex\n\
 $$\n\
  {\\rm erf} (z) = {2 \\over \\sqrt{\\pi}}\\int_0^z e^{-t^2} dt\n\
@@ -604,7 +604,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 DEFUN (erfinv, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfinv (@var{x})\n\
-Computes the inverse error function, i.e., @var{y} such that\n\
+Compute the inverse error function, i.e., @var{y} such that\n\
 \n\
 @example\n\
   erf(@var{y}) == @var{x}\n\
@@ -639,7 +639,7 @@ Computes the inverse error function, i.e., @var{y} such that\n\
 DEFUN (erfc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
-Computes the complementary error function,\n\
+Compute the complementary error function,\n\
 @tex\n\
 $1 - {\\rm erf} (z)$.\n\
 @end tex\n\
@@ -669,7 +669,7 @@ $1 - {\\rm erf} (z)$.\n\
 DEFUN (erfcx, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfcx (@var{z})\n\
-Computes the scaled complementary error function,\n\
+Compute the scaled complementary error function,\n\
 @tex\n\
 $z^2 (1 - {\\rm erf} (z))$.\n\
 @end tex\n\
@@ -869,7 +869,7 @@ floor ([-2.7, 2.7])\n\
 DEFUN (gamma, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gamma (@var{z})\n\
-Computes the Gamma function,\n\
+Compute the Gamma function,\n\
 @tex\n\
 $$\n\
  \\Gamma (z) = \\int_0^\\infty t^{z-1} e^{-t} dt.\n\

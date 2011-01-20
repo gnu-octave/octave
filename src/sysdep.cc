@@ -751,7 +751,7 @@ Return the native floating point format as a string\n\
 DEFUN (tilde_expand, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
-Performs tilde expansion on @var{string}.  If @var{string} begins with a\n\
+Perform tilde expansion on @var{string}.  If @var{string} begins with a\n\
 tilde character, (@samp{~}), all of the characters preceding the first\n\
 slash (or all characters, if there is no slash) are treated as a\n\
 possible user name, and the tilde and the following characters up to the\n\

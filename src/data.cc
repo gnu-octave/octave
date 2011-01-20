@@ -2163,7 +2163,7 @@ Called with a single or no argument, size_equal returns true.\n\
 DEFUN (nnz, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})\n\
-Returns the number of non zero elements in @var{a}.\n\
+Return the number of non zero elements in @var{a}.\n\
 @seealso{sparse}\n\
 @end deftypefn")
 {
@@ -6315,7 +6315,7 @@ DEFUN (merge, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
-Merges elements of @var{true_val} and @var{false_val}, depending on the\n\
+Merge elements of @var{true_val} and @var{false_val}, depending on the\n\
 value of @var{mask}.  If @var{mask} is a logical scalar, the other two\n\
 arguments can be arbitrary values.  Otherwise, @var{mask} must be a logical\n\
 array, and @var{tval}, @var{fval} should be arrays of matching class, or\n\

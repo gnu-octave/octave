@@ -53,7 +53,7 @@ systems of equations (@var{A}*@math{x} = @math{b}) with\n\
 If called with a sparse matrix, then in general @var{x} will be a full\n\
 matrix requiring significantly more storage.  Avoid forming the inverse\n\
 of a sparse matrix if possible.\n\
-@seealso{ldivide,rdivide}\n\
+@seealso{ldivide, rdivide}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -637,7 +637,7 @@ stable.\n\
 The matrix case is done as a sequence of rank-1 updates;\n\
 thus, for large enough k, it will be both faster and more accurate to\n\
 recompute the factorization from scratch.\n\
-@seealso{lu,qrupdate,cholupdate}\n\
+@seealso{lu, qrupdate, cholupdate}\n\
 @end deftypefn")
 {
   octave_idx_type nargin = args.length ();

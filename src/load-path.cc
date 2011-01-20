@@ -1931,11 +1931,11 @@ execute_pkg_del (const std::string& dir)
 
 DEFUN (genpath, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} genpath (@var{dir})\n\
+@deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
 If additional string parameters are given, the resulting path will \n\
-exclude directories with those names.\
+exclude directories with those names.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2106,7 +2106,7 @@ or 1, append the directory name to the current path.\n\
 Directories added to the path must exist.\n\
 \n\
 In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example,\n\
+directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
 addpath (\"dir1:/dir2:~/dir3\");\n\
@@ -2217,7 +2217,7 @@ DEFUN (rmpath, args, nargout,
 Remove @var{dir1}, @dots{} from the current function search path.\n\
 \n\
 In addition to accepting individual directory arguments, lists of\n\
-directory names separated by @code{pathsep} are also accepted.  For example,\n\
+directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
 rmpath (\"dir1:/dir2:~/dir3\");\n\

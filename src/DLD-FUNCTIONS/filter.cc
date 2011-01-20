@@ -376,7 +376,7 @@ $$\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{filter2,fftfilt,freqz}\n\
+@seealso{filter2, fftfilt, freqz}\n\
 @end deftypefn")
 {
   octave_value_list retval;

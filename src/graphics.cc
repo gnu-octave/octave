@@ -5936,7 +5936,7 @@ graphics handles and false where they are not.\n\
 DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
-Removes any defaults set for the handle @var{h}.  The default figure\n\
+Remove any defaults set for the handle @var{h}.  The default figure\n\
 properties \"position\", \"units\", \"windowstyle\" and\n\
 \"paperunits\" and the default axes properties \"position\" and \"units\"\n\
 are not reset.\n\
@@ -6398,7 +6398,7 @@ calc_dimensions (const graphics_object& go)
 DEFUN (__calc_dimensions__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __calc_dimensions__ (@var{axes})\n\
-Internal function. Determine the number of dimensions in a graphics\n\
+Internal function.  Determine the number of dimensions in a graphics\n\
 object, whether 2 or 3.\n\
 @end deftypefn")
 {
@@ -6697,7 +6697,7 @@ Undocumented internal function.\n\
 
 DEFUN (__image_pixel_size__, args, ,
    "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{px},@var{py}} __image_pixel_size__ (@var{h})\n\
+@deftypefn {Built-in Function} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})\n\
 Internal function: returns the pixel size of the image in normalized units.\n\
 @end deftypefn")
 {
@@ -7049,7 +7049,8 @@ dellistener (gcf, \"position\", c);\n\
 
 DEFUN (addproperty, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, [@var{arg}, @dots{}])\n\
+@deftypefn  {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type})\n\
+@deftypefnx {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
 @var{type} determines the type of the property to create.  @var{args}\n\
 usually contains the default value of the property, but additional\n\

@@ -678,8 +678,8 @@ but may be overridden by the environment variable\n\
 @w{@env{OCTAVE_HISTCONTROL}}.\n\
 \n\
 The value of @code{history_control} is a colon-separated list of values\n\
-controlling how commands are saved on the history list.   If the list\n\
-of values includes @code{ignorespace},  lines which begin with a space\n\
+controlling how commands are saved on the history list.  If the list\n\
+of values includes @code{ignorespace}, lines which begin with a space\n\
 character are not saved in the history list.  A value of @code{ignoredups}\n\
 causes lines matching the previous history entry to not be saved.\n\
 A value of @code{ignoreboth} is shorthand for @code{ignorespace} and\n\

@@ -734,7 +734,7 @@ strcmpi_str_op (const std::string& s1, const std::string& s2,
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
-Returns 1 if the character strings @var{s1} and @var{s2} are the same,\n\
+Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\
 If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
@@ -791,7 +791,7 @@ strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
-Returns 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
+Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
 same, disregarding case of alphabetic characters, and 0 otherwise.\n\
 \n\
 If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\

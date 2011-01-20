@@ -1543,7 +1543,7 @@ and as such may be less efficient for smooth or otherwise\n\
 well-behaved integrand than other methods such as\n\
 @code{quadgk} or @code{trapz}.\n\
 \n\
-@seealso{quad,quadv,quadl,quadgk,trapz,dblquad,triplequad}\n\
+@seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
 

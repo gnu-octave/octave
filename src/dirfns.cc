@@ -89,7 +89,7 @@ octave_change_to_directory (const std::string& newdir)
 
 DEFUN (cd, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Command} {} cd dir\n\
+@deftypefn  {Command} {} cd dir\n\
 @deftypefnx {Command} {} chdir dir\n\
 Change the current working directory to @var{dir}.  If @var{dir} is\n\
 omitted, the current directory is changed to the user's home\n\

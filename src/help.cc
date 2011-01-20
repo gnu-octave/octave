@@ -719,7 +719,7 @@ do_get_help_text (const std::string& name, std::string& text,
 
 DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
-Returns the help text of a given function.\n\
+Return the help text of a given function.\n\
 \n\
 This function returns the raw help text @var{text} and an indication of\n\
 its format for the function @var{name}.  The format indication @var{format}\n\
@@ -793,7 +793,7 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 DEFUN (get_help_text_from_file, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
-Returns the help text from the given file.\n\
+Return the help text from the given file.\n\
 \n\
 This function returns the raw help text @var{text} and an indication of\n\
 its format for the function @var{name}.  The format indication @var{format}\n\

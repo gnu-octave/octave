@@ -181,7 +181,7 @@ latter case, the file is read until end of file is reached.\n\
 \n\
 The \"emptyvalue\" option may be used to specify the value used to fill empty\n\
 fields.  The default is zero.\n\
-@seealso{csvread,textscan,textread,dlmwrite}\n\
+@seealso{csvread, textscan, textread, dlmwrite}\n\
 @end deftypefn")
 {
   octave_value_list retval;

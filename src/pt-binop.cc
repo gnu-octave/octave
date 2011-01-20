@@ -265,12 +265,12 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
-@deftypefnx  {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave will\n\
 do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
 conditions of if or while statements.\n\
 \n\
-This feature is only provided for compatibility with Matlab and should\n\
+This feature is only provided for compatibility with @sc{matlab} and should\n\
 not be used unless you are porting old code that relies on this feature.\n\
 \n\
 To obtain short-circuit behavior for logical expressions in new programs,\n\

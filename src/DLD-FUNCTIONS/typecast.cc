@@ -299,7 +299,7 @@ The number of elements of @var{x} should be divisible by the bit length of\n\
 increasing order of significance, i.e., @code{x(1)} is bit 0, @code{x(2)} is\n\
 bit 1, etc.  The result is a row vector if @var{x} is a row vector, otherwise\n\
 it is a column vector.\n\
-@seealso{bitunpack,typecast}\n\
+@seealso{bitunpack, typecast}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -404,7 +404,7 @@ Return an array @var{y} corresponding to the raw bit patterns of\n\
 \n\
 The result is a row vector if @var{x} is a row vector; otherwise, it is a\n\
 column vector.\n\
-@seealso{bitpack,typecast}\n\
+@seealso{bitpack, typecast}\n\
 @end deftypefn")
 {
   octave_value retval;

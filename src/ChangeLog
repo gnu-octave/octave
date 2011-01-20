@@ -1,3 +1,15 @@
+2011-01-19  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/dlmread.cc, DLD-FUNCTIONS/filter.cc,
+	DLD-FUNCTIONS/inv.cc, DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/quad.cc,
+	DLD-FUNCTIONS/quadcc.cc, DLD-FUNCTIONS/rcond.cc,
+	DLD-FUNCTIONS/regexp.cc, DLD-FUNCTIONS/strfind.cc,
+	DLD-FUNCTIONS/typecast.cc, data.cc, dirfns.cc, error.cc, file-io.cc,
+	graphics.cc, help.cc, input.cc, load-path.cc, load-save.cc, mappers.cc,
+	oct-hist.cc, oct-parse.yy, pager.cc, pr-output.cc, pt-binop.cc,
+	sparse.cc, strfns.cc, syscalls.cc, sysdep.cc, utils.cc: grammarcheck
+	files in src directory.	
+
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-obj.cc (octave_value_list::all_scalars): Check for scalar

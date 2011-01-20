@@ -139,7 +139,7 @@ function opts = __fltk_print__ (opts)
     endif
   otherwise
     error (sprintf ("print:no%soutput", opts.devopt),
-           "print.m: %s output is not available for GL2PS output.",
+           "print.m: %s output is not available for GL2PS output",
            upper (opts.devopt))
   endswitch
 
@@ -151,7 +151,7 @@ function opts = __fltk_print__ (opts)
     endif
     pid = popen (pipeline{n}, "w");
     if (pid < 0)
-      error ("print:popenfailed", "print.m: failed to open pipe.");
+      error ("print:popenfailed", "print.m: failed to open pipe");
     endif
     unwind_protect
       drawnow (gl2ps_device{n} , sprintf ("%d" , pid));

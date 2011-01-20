@@ -55,9 +55,9 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     [x, y] = meshgrid (x, y);
   elseif (! all (size (x) == size (y) & size (x) == size (z)))
     if (isvector (z))
-      error ("griddata: X, Y, and Z, be vectors of same length.");
+      error ("griddata: X, Y, and Z, be vectors of same length");
     else
-      error ("griddata: lengths of X, Y must match the columns and rows of Z.");
+      error ("griddata: lengths of X, Y must match the columns and rows of Z");
     endif
   endif
 

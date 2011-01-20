@@ -333,7 +333,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
         ## fprintf (stderr, "pcg condest: %g\n", eigest(2)/eigest(1));
       else
         eigest = [NaN, NaN];
-        warning ("pcg: eigenvalue estimate failed: iteration converged too fast.");
+        warning ("pcg: eigenvalue estimate failed: iteration converged too fast");
       endif
     else
       eigest = [NaN, NaN];

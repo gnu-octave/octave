@@ -79,7 +79,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     cfile = canonicalize_file_name (file);
 
     if (isempty (cfile))
-      error ("unpack: file \"%s\" not found.", file);
+      error ("unpack: file \"%s\" not found", file);
     else
       file = cfile;
     endif

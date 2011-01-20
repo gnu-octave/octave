@@ -27,7 +27,7 @@
 function res = isappdata (h, name)
 
   if (! (all (ishandle (h)) && ischar (name)))
-    error ("isappdata: invalid input.")
+    error ("isappdata: invalid input")
   endif
 
   for nh = 1:numel(h)

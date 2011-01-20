@@ -160,7 +160,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     idx = find (w == max (w));
     if (numel (idx) > 1)
       warning ("lsqnonneg:nonunique",
-               "A non-unique solution may be returned due to equal gradients.");
+               "a non-unique solution may be returned due to equal gradients");
       idx = idx(1);
     endif
     ## move the index from Z to P. Keep P sorted.

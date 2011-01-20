@@ -41,7 +41,7 @@ function [idxvec,errmsg]  = cellidx (listvar, strlist)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "cellidx is obsolete and will be removed from a future version of Octave; use ismember instead.");
+             "cellidx is obsolete and will be removed from a future version of Octave; use ismember instead");
   endif
 
   if (nargin != 2)

@@ -153,7 +153,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))
     [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
   else
-    error ("uigetfile: fltk graphics toolkit required.");
+    error ("uigetfile: fltk graphics toolkit required");
   endif
 
 endfunction

@@ -114,13 +114,13 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     unwind_protect
       fid = fopen (offsetfile, "w");
       if (fid == -1)
-        error ("print:fopenfailed", "__ghostscript__.m: fopen() failed.");
+        error ("print:fopenfailed", "__ghostscript__.m: fopen() failed");
       endif
       fprintf (fid, "%s\n", offset_ps{:})
     unwind_protect_cleanup
       status = fclose (fid);
       if (status == -1)
-        error ("print:fclosefailed", "__ghostscript__.m: fclose() failed.");
+        error ("print:fclosefailed", "__ghostscript__.m: fclose() failed");
       endif
     end_unwind_protect
     if (opts.debug)

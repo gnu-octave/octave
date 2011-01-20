@@ -27,7 +27,7 @@
 function setappdata (h, varargin)
 
   if (! (all (ishandle (h)) && mod (numel (varargin), 2) == 0))
-    error ("setappdata: invalid input.")
+    error ("setappdata: invalid input")
   endif
 
   for nh = 1:numel(h)
@@ -44,7 +44,7 @@ function setappdata (h, varargin)
       elseif (ischar (varargin{narg}))
         appdata.(varargin{narg}) = varargin{narg+1};
       else
-        error ("setappdata: invalid input.")
+        error ("setappdata: invalid input")
       endif
     endfor
     set (h(nh), "__appdata__", appdata);

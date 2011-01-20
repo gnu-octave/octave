@@ -140,7 +140,7 @@ function dlmwrite (file, M, varargin)
       elseif (strcmpi (varargin{i}, "off"))
         opentype = "wt";
       else
-        error ("dlmwrite: append must be \"on\" or \"off\".");
+        error ("dlmwrite: append must be \"on\" or \"off\"");
       endif
     else
       if (i == 1)

@@ -85,7 +85,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     endif
 
   else
-    error ("uiputfile: number of input arguments must be less than four.");
+    error ("uiputfile: number of input arguments must be less than four");
   endif
 
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))

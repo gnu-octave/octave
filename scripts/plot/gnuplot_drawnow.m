@@ -51,7 +51,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
           __go_draw_figure__ (h, fid, enhanced, mono);
         endif
       else
-        error ("gnuplot_drawnow: the gnuplot terminal, \"%s\", is not available.",
+        error ("gnuplot_drawnow: the gnuplot terminal, \"%s\", is not available",
                gnuplot_trim_term (term))
       endif
     unwind_protect_cleanup

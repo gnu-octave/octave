@@ -1886,7 +1886,7 @@ function write_index (desc, dir, index_file, global_install)
   ## Write INDEX.
   fid = fopen (index_file, "w");
   if (fid == -1)
-    error ("couldn't open %s for writing.", index_file);
+    error ("couldn't open %s for writing", index_file);
   endif
   fprintf (fid, "%s >> %s\n", desc.name, desc.title);
   fprintf (fid, "%s\n", categories{1});

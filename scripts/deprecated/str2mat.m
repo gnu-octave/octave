@@ -37,7 +37,7 @@ function retval = str2mat (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "str2mat is obsolete and will be removed from a future version of Octave; please use char instead.");
+             "str2mat is obsolete and will be removed from a future version of Octave; please use char instead");
   endif
 
   retval = char (varargin{:});

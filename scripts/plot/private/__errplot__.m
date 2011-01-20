@@ -146,7 +146,7 @@ function h = __errplot__ (fstr, p, varargin)
           error ("errorbar: error plot with 6 columns only valid for boxxy and xyerr");
         endif
       otherwise
-        error ("errorbar: error plot requires 2, 3, 4 or 6 arguments.");
+        error ("errorbar: error plot requires 2, 3, 4 or 6 arguments");
     endswitch
 
     addproperty ("xdata", hg, "data", xdata(:))
@@ -257,7 +257,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ydata = [y1; y2];
     return
   else
-      error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr.")
+      error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr")
   endif
   xdata = xdata.'(:);
   ydata = ydata.'(:);

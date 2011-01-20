@@ -1,5 +1,23 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/cellidx.m, deprecated/dmult.m,
+	deprecated/intwarning.m, deprecated/str2mat.m, general/curl.m,
+	general/divergence.m, general/gradient.m, geometry/griddata.m,
+	help/gen_doc_cache.m, io/dlmwrite.m, miscellaneous/getappdata.m,
+	miscellaneous/isappdata.m, miscellaneous/rmappdata.m,
+	miscellaneous/setappdata.m, miscellaneous/unpack.m,
+	optimization/lsqnonneg.m, optimization/pqpnonneg.m,
+	pkg/get_forge_pkg.m, pkg/pkg.m, plot/__fltk_print__.m,
+	plot/__gnuplot_get_var__.m, plot/__gnuplot_open_stream__.m,
+	plot/__gnuplot_print__.m, plot/daspect.m,
+	plot/gnuplot_drawnow.m, plot/pbaspect.m,
+	plot/private/__errplot__.m, plot/private/__fltk_file_filter__.m,
+	plot/private/__ghostscript__.m, plot/uigetfile.m,
+	plot/uiputfile.m, polynomial/polyaffine.m, sparse/pcg.m:
+	Style fixes for error and warning messages.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* @ftp/dir.m, @ftp/mget.m, @ftp/mput.m, ChangeLog,
 	audio/lin2mu.m, audio/setaudio.m, audio/wavread.m,
 	audio/wavwrite.m, deprecated/autocor.m, deprecated/autocov.m,

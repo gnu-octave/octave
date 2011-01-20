@@ -56,7 +56,7 @@ function varargout = daspect (varargin)
             varargout{1} = get (hax, "dataaspectratiomode");
             return
           else
-            error ("daspect: only one output is allowed.")
+            error ("daspect: only one output is allowed")
           endif
         case "manual"
           set (hax, "dataaspectratiomode", "manual");
@@ -68,10 +68,10 @@ function varargout = daspect (varargin)
       elseif (isreal (varargin{1}) && numel (varargin{1}) == 3)
         set (hax, "dataaspectratio", varargin{1})
       else
-        error ("daspect: invalid input.")
+        error ("daspect: invalid input")
       endif
     elseif (numel (varargin) > 1)
-      error ("daspect: too many inputs.")
+      error ("daspect: too many inputs")
     endif
   elseif (nargout == 0)
     print_usage ();
@@ -80,7 +80,7 @@ function varargout = daspect (varargin)
   if (nargout == 1)
     varargout{1} = get (hax, "dataaspectratio");
   elseif (nargout > 1)
-    error ("daspect: only one output is allowed.")
+    error ("daspect: only one output is allowed")
   endif
 
 endfunction

@@ -90,7 +90,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt)
         [gpin, err] = fopen (gpin_name, "r");
       endif
       if (err != 0)
-        error ("__gnuplot_get_var__: Can not open fifo.");
+        error ("__gnuplot_get_var__: can not open fifo");
       endif
       gp_cmd = sprintf ("\nif (exists(\"%s\")) print %s; else print NaN\n",
                         gp_var_name(1:n), gp_var_name);

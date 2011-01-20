@@ -93,7 +93,7 @@ function opts = __gnuplot_print__ (opts)
       local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
     else
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: '%s' output is not available for Gnuplot-%s.",
+             "print.m: '%s' output is not available for gnuplot-%s",
              upper (opts.devopt), __gnuplot_version__ ())
     endif
   case "svg"
@@ -105,7 +105,7 @@ function opts = __gnuplot_print__ (opts)
       local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
     else
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: '%s' output is not available for Gnuplot-%s.",
+             "print.m: '%s' output is not available for gnuplot-%s",
              upper (opts.devopt), __gnuplot_version__ ())
     endif
   case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
@@ -155,7 +155,7 @@ function opts = __gnuplot_print__ (opts)
                "---------- output begin ----------",
                output,
                "----------- output end -----------");
-      error ("gnuplot:failedpipe", "print: Failed to print.")
+      error ("gnuplot:failedpipe", "print: failed to print")
     endif
   endfor
 

@@ -70,7 +70,7 @@ function y = intwarning (x)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "intwarning is obsolete and will be removed from a future version of Octave. Integer math no longer produces warnings. Supply your own checks if you need those.");
+             "intwarning is obsolete and will be removed from a future version of Octave; integer math no longer produces warnings -- supply your own checks if you need those");
   endif
 
   return;

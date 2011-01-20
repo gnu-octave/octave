@@ -46,7 +46,7 @@ function [ver, url] = get_forge_pkg (name)
     pat = "<tdclass=""package_table"">PackageVersion:</td><td>([0-9.]*)</td>";
     t = regexp (html, pat, "tokens");
     if (isempty (t) || isempty(t{1}))
-      error ("get_forge_pkg: could not read version number from package's page.");
+      error ("get_forge_pkg: could not read version number from package's page");
     else
       ver = t{1}{1};
       if (nargout > 1)
@@ -55,7 +55,7 @@ function [ver, url] = get_forge_pkg (name)
         url = sprintf (urlbase, name, ver);
         ## Verify that the string exists on the page.
         if (isempty (strfind (html, url)))
-          warning ("get_forge_pkg: download URL not verified.");
+          warning ("get_forge_pkg: download URL not verified");
         endif
       endif
     endif

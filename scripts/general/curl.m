@@ -76,9 +76,9 @@ function varargout = curl (varargin)
 
   if ((nargin == 4) || (nargin == 2))
     if (!size_equal (varargin{fidx}, varargin{fidx + 1}))
-      error ("curl: size of X and Y must match.");
+      error ("curl: size of X and Y must match");
     elseif (ndims (varargin{fidx}) != 2)
-      error ("curl: expected two-dimensional matrices X and Y.");
+      error ("curl: expected two-dimensional matrices X and Y");
     elseif ((length (dx) != columns (varargin{fidx}))
          || (length (dy) != rows (varargin{fidx})))
       error ("curl: size of dx and dy must match the respective dimension of X and Y");
@@ -96,18 +96,18 @@ function varargout = curl (varargin)
       varargout{1} = rot_z;
       varargout{2} = av;
     else
-      error ("curl: number of output arguments must be 1 or 2.")
+      error ("curl: number of output arguments must be 1 or 2")
     endif
 
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx}, varargin{fidx + 1}, varargin{fidx + 2}))
       error ("curl: size of X, Y, and Z must match")
     elseif (ndims (varargin{fidx}) != 3)
-      error ("curl: expected two-dimensional matrices X, Y, and Z.");
+      error ("curl: expected two-dimensional matrices X, Y, and Z");
     elseif ((length (dx) != size (varargin{fidx}, 2))
          || (length (dy) != size (varargin{fidx}, 1))
          || (length (dz) != size (varargin{fidx}, 3)))
-      error ("curl: size of dx, dy, and dz must match the respective dimesion of X, Y, and Z.");
+      error ("curl: size of dx, dy, and dz must match the respective dimesion of X, Y, and Z");
     endif
 
     [~, dFx_dy, dFx_dz] = gradient (varargin{fidx}, dx, dy, dz);

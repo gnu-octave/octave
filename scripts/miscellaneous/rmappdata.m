@@ -26,7 +26,7 @@
 function rmappdata (h, varargin)
 
   if (! (all (ishandle (h)) && iscellstr (varargin)))
-    error ("rmappdata: invalid input.")
+    error ("rmappdata: invalid input")
   endif
 
   for nh = 1:numel(h)

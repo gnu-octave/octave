@@ -74,7 +74,7 @@ function [text, first_sentence, status] = handle_function (f, text, format)
 
   ## Did we get the help text?
   if (status != 0 || isempty (text))
-    warning ("gen_doc_cache: unusable help text in '%s'. Ignoring function.", f);
+    warning ("gen_doc_cache: unusable help text found in file '%s'", f);
     return;
   endif
 

@@ -38,11 +38,11 @@ function g = polyaffine (f, mu)
    endif
 
    if (! isvector (f))
-      error ("polyaffine: F must be a vector.");
+      error ("polyaffine: F must be a vector");
    endif
 
    if (! isvector (mu) || length (mu) != 2)
-      error ("polyaffine: MU must be a two-element vector.");
+      error ("polyaffine: MU must be a two-element vector");
    endif
 
    lf = length (f);

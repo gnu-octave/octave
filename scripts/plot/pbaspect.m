@@ -56,7 +56,7 @@ function varargout = pbaspect (varargin)
             varargout{1} = get (hax, "plotboxaspectratiomode");
             return
           else
-            error ("pbaspect: only one output is allowed.")
+            error ("pbaspect: only one output is allowed")
           endif
         case "manual"
           set (hax, "plotboxaspectratiomode", "manual");
@@ -68,10 +68,10 @@ function varargout = pbaspect (varargin)
       elseif (isreal (varargin{1}) && numel (varargin{1}) == 3)
         set (hax, "plotboxaspectratio", varargin{1})
       else
-        error ("pbaspect: invalid input.")
+        error ("pbaspect: invalid input")
       endif
     elseif (numel (varargin) > 1)
-      error ("pbaspect: too many inputs.")
+      error ("pbaspect: too many inputs")
     endif
   elseif (nargout == 0)
     print_usage ();
@@ -80,7 +80,7 @@ function varargout = pbaspect (varargin)
   if (nargout == 1)
     varargout{1} = get (hax, "plotboxaspectratio");
   elseif (nargout > 1)
-    error ("pbaspect: only one output is allowed.")
+    error ("pbaspect: only one output is allowed")
   endif
 
 endfunction

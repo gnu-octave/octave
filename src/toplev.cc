@@ -691,7 +691,7 @@ Octave's exit status.  The default value is zero.\n\
   octave_value_list retval;
 
   if (! quit_allowed)
-    error ("quit: not supported in embedded mode.");
+    error ("quit: not supported in embedded mode");
   else
     {
       if (args.length () > 0)

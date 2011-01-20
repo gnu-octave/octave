@@ -1451,10 +1451,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       }
 
                     if (found_big_char)
-                      {
-                        warning ("load: can not read non-ASCII portions of UTF characters.");
-                        warning ("      Replacing unreadable characters with '?'.");
-                      }
+                      warning ("load: can not read non-ASCII portions of UTF characters; replacing unreadable characters with '?'");
                   }
                 else if (type == miUTF8)
                   {
@@ -1471,8 +1468,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     if (utf8_multi_byte)
                       {
-                        warning ("load: can not read multi-byte encoded UTF8 characters.");
-                        warning ("      Replacing unreadable characters with '?'.");
+                        warning ("load: can not read multi-byte encoded UTF8 characters; replacing unreadable characters with '?'");
                         for (octave_idx_type i = 0; i < n; i++)
                           {
                             unsigned char a = static_cast<unsigned char> (re(i));

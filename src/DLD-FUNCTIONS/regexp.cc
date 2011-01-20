@@ -392,7 +392,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
           if (matches == PCRE_ERROR_MATCHLIMIT)
             {
               // try harder; start with default value for MATCH_LIMIT and increase it
-              warning("Your pattern caused PCRE to hit its MATCH_LIMIT.\nTrying harder now, but this will be slow.");
+              warning ("your pattern caused PCRE to hit its MATCH_LIMIT; trying harder now, but this will be slow");
               pcre_extra pe;
               pcre_config(PCRE_CONFIG_MATCH_LIMIT, static_cast <void *> (&pe.match_limit));
               pe.flags = PCRE_EXTRA_MATCH_LIMIT;
@@ -413,7 +413,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
           if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
             {
-              error ("%s: internal error calling pcre_exec\nError code from pcre_exec is %i", nm.c_str(), matches);
+              error ("%s: internal error calling pcre_exec; error code from pcre_exec is %i",
+                     nm.c_str(), matches);
               pcre_free(re);
               return 0;
             }

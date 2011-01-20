@@ -172,8 +172,8 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                   return retval;
                 }
 
-              warning ("%s: passing function body as a string is obsolete."
-                       " Please use anonymous functions.", warn_for.c_str ());
+              warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
+                       warn_for.c_str ());
             }
           else
             error ("%s: `%s' is not valid as a function",

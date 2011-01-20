@@ -1584,24 +1584,23 @@ well-behaved integrand than other methods such as\n\
   if (nargin < 1)
     {
       error
-        ("quadcc: first argument (integrand) of type function handle required.");
+        ("quadcc: first argument (integrand) of type function handle required");
       return octave_value_list ();
     }
   else
     {
       if (args (0).is_function_handle () || args (0).is_inline_function ())
         fcn = args (0).function_value ();
-      else {
-        error
-          ("quadcc: first argument (integrand) must be a function handle or an inline function.");
-        return octave_value_list();
+      else
+        {
+          error ("quadcc: first argument (integrand) must be a function handle or an inline function");
+          return octave_value_list();
         }
     }
 
   if (nargin < 2 || !args (1).is_real_scalar ())
     {
-      error
-        ("quadcc: second argument (left interval edge) must be a single real scalar.");
+      error ("quadcc: second argument (left interval edge) must be a single real scalar");
       return octave_value_list ();
     }
   else
@@ -1609,8 +1608,7 @@ well-behaved integrand than other methods such as\n\
 
   if (nargin < 3 || !args (2).is_real_scalar ())
     {
-      error
-        ("quadcc: third argument (right interval edge) must be a single real scalar.");
+      error ("quadcc: third argument (right interval edge) must be a single real scalar");
       return octave_value_list ();
     }
   else
@@ -1620,8 +1618,7 @@ well-behaved integrand than other methods such as\n\
     tol = 1.0e-6;
   else if (!args (3).is_real_scalar ())
     {
-      error
-        ("quadcc: fourth argument (tolerance) must be a single real scalar.");
+      error ("quadcc: fourth argument (tolerance) must be a single real scalar");
       return octave_value_list ();
     }
   else
@@ -1635,15 +1632,15 @@ well-behaved integrand than other methods such as\n\
     }
   else if (!(args (4).is_real_scalar () || args (4).is_real_matrix ()))
     {
-      error
-        ("quadcc: fifth argument (singularities) must be a vector of real values.");
+      error ("quadcc: fifth argument (singularities) must be a vector of real values");
       return octave_value_list ();
     }
   else
     {
       nivals = 1 + args (4).length ();
       if ( nivals > cquad_heapsize ) {
-        error("quadcc: maximum number of singular points is limited to %i.",cquad_heapsize-1);
+        error ("quadcc: maximum number of singular points is limited to %i",
+               cquad_heapsize-1);
         return octave_value_list();
         }
       sing = args (4).array_value ().fortran_vec ();
@@ -1697,14 +1694,13 @@ well-behaved integrand than other methods such as\n\
       if (retval.length () != 1 || !retval (0).is_real_matrix ())
         {
           error
-            ("quadcc: integrand must return a single, real-valued vector.");
+            ("quadcc: integrand must return a single, real-valued vector");
           return octave_value_list ();
         }
       Matrix effex = retval (0).matrix_value ();
       if (effex.length () != ex.length ())
         {
-          error
-            ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
+          error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
           return octave_value_list ();
         }
       for (i = 0; i <= n[3]; i++)
@@ -1818,15 +1814,13 @@ well-behaved integrand than other methods such as\n\
             retval = feval (fcn, fargs, 1);
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector.");
+                error ("quadcc: integrand must return a single, real-valued vector");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
+                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -1968,15 +1962,13 @@ well-behaved integrand than other methods such as\n\
             retval = feval (fcn, fargs, 1);
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector.");
+                error ("quadcc: integrand must return a single, real-valued vector");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
+                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -2032,7 +2024,7 @@ well-behaved integrand than other methods such as\n\
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
               igral = copysign (octave_Inf, igral);
-              warning ("quadcc: divergent integral detected.");
+              warning ("quadcc: divergent integral detected");
               break;
             }
 
@@ -2066,15 +2058,13 @@ well-behaved integrand than other methods such as\n\
             retval = feval (fcn, fargs, 1);
             if (retval.length () != 1 || !retval (0).is_real_matrix ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector.");
+                error ("quadcc: integrand must return a single, real-valued vector");
                 return octave_value_list ();
               }
             Matrix effex = retval (0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error
-                  ("quadcc: integrand must return a single, real-valued vector of the same size as the input.");
+                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
                 return octave_value_list ();
               }
             neval += effex.length ();
@@ -2130,7 +2120,7 @@ well-behaved integrand than other methods such as\n\
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
               igral = copysign (octave_Inf, igral);
-              warning ("quadcc: divergent integral detected.");
+              warning ("quadcc: divergent integral detected");
               break;
             }
 

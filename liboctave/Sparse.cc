@@ -1262,7 +1262,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
     }
   else
     (*current_liboctave_error_handler)
-      ("A null assignment can only have one non-colon index.");
+      ("a null assignment can only have one non-colon index");
 }
 
 template <class T>

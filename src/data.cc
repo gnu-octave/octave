@@ -6702,7 +6702,7 @@ endfor\n\
               octave_idx_type rx = rm(i);
               if (static_cast<double> (rx) != rm(i))
                 {
-                  error ("repelems: a matrix of integers is expected.");
+                  error ("repelems: a matrix of integers is expected");
                   return retval;
                 }
 

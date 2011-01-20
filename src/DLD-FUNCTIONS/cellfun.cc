@@ -436,7 +436,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
-                      error ("cellfun: Dimensions mismatch.");
+                      error ("cellfun: dimensions mismatch");
                       return octave_value_list ();
                     }
                 }

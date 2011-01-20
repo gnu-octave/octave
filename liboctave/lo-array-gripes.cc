@@ -130,7 +130,7 @@ gripe_invalid_index (void)
   const char *err_id = error_id_invalid_index;
 
   (*current_liboctave_error_with_id_handler)
-    (err_id, "subscript indices must be either positive integers or logicals.");
+    (err_id, "subscript indices must be either positive integers or logicals");
 }
 
 // FIXME -- the following is a common error message to resize,
@@ -145,7 +145,7 @@ gripe_invalid_resize (void)
 {
   (*current_liboctave_error_with_id_handler)
     ("Octave:invalid-resize",
-     "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element.");
+     "Invalid resizing operation or ambiguous assignment to an out-of-bounds array element");
 }
 
 void

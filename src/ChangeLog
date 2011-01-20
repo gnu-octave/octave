@@ -1,5 +1,19 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__delaunayn__.cc,
+	DLD-FUNCTIONS/__init_fltk__.cc,
+	DLD-FUNCTIONS/__magick_read__.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/quadcc.cc, DLD-FUNCTIONS/regexp.cc, data.cc,
+	gripes.cc, ls-mat5.cc, toplev.cc, variables.cc:
+	Style fixes for error and warning messages.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc, Sparse.cc, base-lu.cc, idx-vector.cc,
+	lo-array-gripes.cc: Style fixes for error and warning messages.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__contourc__.cc, DLD-FUNCTIONS/__delaunayn__.cc,
 	DLD-FUNCTIONS/__dsearchn__.cc, DLD-FUNCTIONS/__glpk__.cc,
 	DLD-FUNCTIONS/__init_fltk__.cc,

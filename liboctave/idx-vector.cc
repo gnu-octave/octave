@@ -45,21 +45,21 @@ static void
 gripe_invalid_range (void)
 {
   (*current_liboctave_error_handler)
-    ("invalid range used as index.");
+    ("invalid range used as index");
 }
 
 static void
 gripe_index_out_of_range (void)
 {
   (*current_liboctave_error_handler)
-    ("internal error: idx_vector index out of range.");
+    ("internal error: idx_vector index out of range");
 }
 
 Array<octave_idx_type>
 idx_vector::idx_base_rep::as_array (void)
 {
   (*current_liboctave_error_handler)
-    ("internal error: as_array not allowed for this index class.");
+    ("internal error: as_array not allowed for this index class");
 
   return Array<octave_idx_type> ();
 }
@@ -71,7 +71,7 @@ idx_vector::idx_colon_rep::idx_colon_rep (char c)
   if (c != ':')
     {
       (*current_liboctave_error_handler)
-        ("internal error: invalid character converted to idx_vector. Must be ':'.");
+        ("internal error: invalid character converted to idx_vector; must be ':'");
       err = true;
     }
 }

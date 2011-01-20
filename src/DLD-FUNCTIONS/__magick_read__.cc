@@ -524,8 +524,7 @@ function.  Instead use @code{imread}.\n\
     }
 #else
 
-  error ("imread: image reading ave does not support reading images."
-         " Image reading capabilities were disabled when this installation was compiled.");
+  error ("imread: image reading capabilities were disabled when Octave was compiled");
 
 #endif
 
@@ -579,7 +578,7 @@ jpg_settings (std::vector<Magick::Image>& imvec,
   // Other settings go here
 
   if (! something_set)
-    warning ("__magick_write__ warning: All write parameters ignored.");
+    warning ("__magick_write__ warning: all write parameters ignored");
 }
 
 static void

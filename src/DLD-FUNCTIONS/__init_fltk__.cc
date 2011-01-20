@@ -59,6 +59,7 @@ To initialize:
 
 #include "defun-dld.h"
 #include "error.h"
+#include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
 #include "graphics.h"
@@ -2015,13 +2016,12 @@ Mouse inputs have no effect.\n\
     }
 
   if (failed)
-    error ("MODE must be one of the strings: ""2D"", ""3D"", or ""None"".");
+    error ("MODE must be one of the strings: \"2D\", \"3D\", or \"None\"");
 
 
   return octave_value(mode_str);
 }
 
-#include "file-ops.h"
 DEFUN_DLD (__fltk_uigetfile__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __fltk_uigetfile__ (@dots{})\n\

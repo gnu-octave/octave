@@ -207,7 +207,7 @@ Undocumented internal function.\n\
                      totlong, curlong);
         }
       else
-        error ("__delaunayn__: qhull failed.");
+        error ("__delaunayn__: qhull failed");
     }
   else if (n == dim + 1)
     {

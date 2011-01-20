@@ -1461,7 +1461,7 @@ Array<T>::delete_elements (const Array<idx_vector>& ia)
       else
         {
           (*current_liboctave_error_handler)
-            ("A null assignment can only have one non-colon index.");
+            ("a null assignment can only have one non-colon index");
         }
     }
 

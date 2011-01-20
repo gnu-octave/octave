@@ -1,5 +1,9 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap: Update from gnulib sources.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac, NEWS: Update for backend -> graphics_toolkit change.
 
 2010-01-17  Rik  <octave@nomad.inbox5.com>

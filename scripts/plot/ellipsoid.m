@@ -31,7 +31,7 @@
 
 function [xx, yy, zz] = ellipsoid (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "ellipsoid", 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "ellipsoid",
                                                 varargin{:});
 
   if (nargin != 6 && nargin != 7)

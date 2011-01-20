@@ -64,7 +64,7 @@ function val = pathdef ()
 endfunction
 
 ## Extact the path information from the script/function @var{file},
-## created by @file{savepath.m}.  If @var{file} is omitted, 
+## created by @file{savepath.m}.  If @var{file} is omitted,
 ## @file{~/.octaverc} is used.  If successful, @code{__extractpath__}
 ## returns the path specified in @var{file}.
 
@@ -133,4 +133,4 @@ function specifiedpath = __extractpath__ (savefile)
     specifiedpath = "";
   endif
 
-endfunction  
+endfunction

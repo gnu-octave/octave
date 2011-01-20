@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
-## @var{A} as each element.  If @var{n} is not specified, form an 
+## @var{A} as each element.  If @var{n} is not specified, form an
 ## @var{m} by @var{m} block matrix.
 ## @seealso{repelems}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function x = repmat (A, m, n)
       error ("repmat: with 3 arguments M and N must be scalar");
     endif
     idx = [m, n];
-  else 
+  else
     if (isscalar (m))
       idx = [m, m];
       n = m;
@@ -52,7 +52,7 @@ function x = repmat (A, m, n)
       error ("repmat: invalid dimensional argument");
     endif
   endif
-  
+
   if (all (idx < 0))
     error ("repmat: invalid dimensions");
   else

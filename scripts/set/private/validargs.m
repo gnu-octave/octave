@@ -32,14 +32,14 @@ function [x, y] = validargs (caller, x, y, byrows_arg)
         error ("%s: cell array of strings cannot be combined with a nonstring value", caller);
       endif
     elseif (! (ismatrix (x) && ismatrix (y)))
-      error ("%s: input arguments must be arrays or cell arrays of strings", caller); 
+      error ("%s: input arguments must be arrays or cell arrays of strings", caller);
     endif
   elseif (nargin == 4)
     if (strcmpi (byrows_arg, "rows"))
       if (iscell (x) || iscell (y))
         error ("%s: cells not supported with ""rows""");
       elseif (! (ismatrix (x) && ismatrix (y)))
-        error ("%s: input arguments must be arrays or cell arrays of strings", caller); 
+        error ("%s: input arguments must be arrays or cell arrays of strings", caller);
       else
         if (ndims (x) > 2 || ndims (y) > 2)
           error ("%s: need 2-dimensional matrices for ""rows""", caller);

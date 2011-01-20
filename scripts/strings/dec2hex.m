@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2hex (@var{d}, @var{len})
-## Return the hexadecimal string corresponding to the non-negative 
+## Return the hexadecimal string corresponding to the non-negative
 ## integer @var{d}.  For example:
 ##
 ## @example

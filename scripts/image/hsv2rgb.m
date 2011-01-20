@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{rgb_map} =} hsv2rgb (@var{hsv_map})
-## Transform a colormap or image from the HSV space to the RGB space. 
+## Transform a colormap or image from the HSV space to the RGB space.
 ## @seealso{rgb2hsv}
 ## @end deftypefn
 
@@ -64,7 +64,7 @@ function rgb_map = hsv2rgb (hsv_map)
   rgb_map = kron ([1, 1, 1], hsv_map(:,3) .* (1 - hsv_map(:,2)));
 
   ## red(hue-2/3)=green(hue)=blue(hue-1/3)
-  ## apply modulo 1 for red and blue 
+  ## apply modulo 1 for red and blue
   t = hsv_map(:,1);
   tp = t';
   hue = [(tp - 2/3 - floor (t - 2/3)');

@@ -31,7 +31,7 @@
 ## @code{@var{rr} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
 ## one-sided alternative @code{@var{rr} * @var{b} > @var{r}} is used.
 ## Similarly for @var{"<"}, the one-sided alternative @code{@var{rr} *
-## @var{b} < @var{r}} is used.  The default is the two-sided case. 
+## @var{b} < @var{r}} is used.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

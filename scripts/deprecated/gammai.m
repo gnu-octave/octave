@@ -21,7 +21,7 @@
 ## This function is provided for compatibility with older versions of
 ## Octave.  New programs should use @code{gammainc} instead.
 ##
-## @code{gammai (@var{a}, @var{x})} is the same as 
+## @code{gammai (@var{a}, @var{x})} is the same as
 ## @code{gammainc (@var{x}, @var{a})}.
 ## @end deftypefn
 

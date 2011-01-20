@@ -35,12 +35,12 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
 
   ## Figure handles are integers, but object handles are non integer,
   ## therefore ignore integer scalars.
-  if (nargin > 1 && length (varargin) > 0 && isnumeric (varargin{1}) 
-      && numel (varargin{1}) == 1 && ishandle (varargin{1}(1)) 
+  if (nargin > 1 && length (varargin) > 0 && isnumeric (varargin{1})
+      && numel (varargin{1}) == 1 && ishandle (varargin{1}(1))
       && varargin{1}(1) != 0 && ! isfigure (varargin{1}(1)))
     tmp = varargin{1};
     obj = get (tmp);
-    if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend")) 
+    if ((strcmp (obj.type, "axes") && ! strcmp (obj.tag, "legend"))
         || strcmp (obj.type, "hggroup"))
       h = ancestor (tmp, "axes");
       varargin(1) = [];

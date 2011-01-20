@@ -24,11 +24,11 @@
 ## @deftypefnx {Function File} {} surface (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} surface (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} surface (@dots{})
-## Plot a surface graphic object given matrices @var{x}, and @var{y} from 
-## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and 
+## Plot a surface graphic object given matrices @var{x}, and @var{y} from
+## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
 ## @var{y} coordinates of the surface.  If @var{x} and @var{y} are vectors,
-## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, 
-## columns of @var{z} correspond to different @var{x} values and rows of 
+## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus,
+## columns of @var{z} correspond to different @var{x} values and rows of
 ## @var{z} correspond to different @var{y} values.  If @var{x} and @var{y}
 ## are missing, they are constructed from size of the matrix @var{z}.
 ##
@@ -116,7 +116,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     else
       error ("surface: X and Y must be vectors and Z must be a matrix");
     endif
-  elseif (firststring == 3)    
+  elseif (firststring == 3)
     z = varargin{1};
     c = varargin{2};
     if (ismatrix (z) && !isvector (z) && !isscalar (z))
@@ -126,7 +126,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     else
       error ("surface: Z argument must be a matrix");
     endif
-  elseif (firststring == 2)    
+  elseif (firststring == 2)
     z = varargin{1};
     c = z;
     if (ismatrix (z) && !isvector (z) && !isscalar (z))

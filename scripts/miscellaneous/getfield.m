@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{}) 
+## @deftypefn {Function File} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{})
 ## Extract a field from a structure (or a nested structure).  For example:
 ##
 ## @example
@@ -37,7 +37,7 @@
 ## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4= "b";
 ## ss(i1@{:@}).(i2)(i3@{:@}).(i4)
 ##      @result{} ans = 5
-## 
+##
 ## @end group
 ## @end example
 ## @seealso{setfield, rmfield, isfield, isstruct, fieldnames, struct}

@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}, @var{output}, @var{lambda}] =} lsqnonneg (@dots{})
-## Minimize @code{norm (@var{c}*@var{x} - d)} subject to 
+## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
 ## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
 ## optional initial guess for @var{x}.
 ##
@@ -116,7 +116,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
       endif
       idx = find (xtmp < 0);
 
-      if (isempty (idx)) 
+      if (isempty (idx))
         ## LH7: tmp solution found, iterate.
         x(:) = 0;
         x(p) = xtmp;
@@ -140,7 +140,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
         endif
       endif
     endwhile
-      
+
     ## compute the gradient.
     w = c'*(d - c*x);
     w(p) = [];

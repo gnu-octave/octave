@@ -115,7 +115,7 @@
 ##     XFig.  For the Gnuplot graphics toolkit, the additional options
 ##     @option{-textspecial} or @option{-textnormal} can be used to control
 ##     whether the special flag should be set for the text in
-##     the figure (default is @option{-textnormal}). 
+##     the figure (default is @option{-textnormal}).
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -151,10 +151,10 @@
 ## Some examples are;
 ##
 ##   @table @code
-##   @item ljet2p 
+##   @item ljet2p
 ##     HP LaserJet IIP
 ##
-##   @item ljet3 
+##   @item ljet3
 ##     HP LaserJet III
 ##
 ##   @item deskjet
@@ -180,16 +180,16 @@
 ## and devices are available.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined
-## by the figure's "papersize" property.  When the output 
+## by the figure's "papersize" property.  When the output
 ## is sent to a file the size is determined by the plot box defined by
 ## the figure's "paperposition" property.
 ##
 ## @itemx -append
-##   Appends the PS, or PDF output to a pre-existing file of the 
+##   Appends the PS, or PDF output to a pre-existing file of the
 ## same type.
 ##
 ## @itemx -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.  For both metafiles and 
+##   Resolution of bitmaps in pixels per inch.  For both metafiles and
 ## SVG the default is the screen resolution, for other it is 150 dpi.
 ## To specify screen resolution, use "-r0".
 ##

@@ -22,22 +22,22 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Compress the list of files and/or directories specified in @var{files} 
-## with the external compression command @var{commandname}. The template 
+## Compress the list of files and/or directories specified in @var{files}
+## with the external compression command @var{commandname}. The template
 ## @var{commandtemplate} is used to actually start the command. Each file
-## is compressed separately and a new file with the extension @var{extension} 
-## is created and placed into the directory @var{outdir}. The original files 
-## are not touched. Existing compressed files are silently overwritten. 
+## is compressed separately and a new file with the extension @var{extension}
+## is created and placed into the directory @var{outdir}. The original files
+## are not touched. Existing compressed files are silently overwritten.
 ## This is an internal function. Do not use directly.
 
-function entries = __xzip__ (commandname, extension, 
+function entries = __xzip__ (commandname, extension,
                              commandtemplate, files, outdir)
 
   if (nargin == 4 || nargin == 5)
     if (! ischar (extension) || length (extension) == 0)
       error ("__xzip__: EXTENSION has to be a string with finite length");
     endif
-    
+
     if (nargin == 5 && ! exist (outdir, "dir"))
       error ("__xzip__: output directory does not exist");
     endif
@@ -58,8 +58,8 @@ function entries = __xzip__ (commandname, extension,
       files = glob (files);
 
       ## Ignore any file with the compress extension
-      files (cellfun (@(x) length(x) > length(extension) 
-        && strcmp (x((end - length(extension) + 1):end), extension), 
+      files (cellfun (@(x) length(x) > length(extension)
+        && strcmp (x((end - length(extension) + 1):end), extension),
         files)) = [];
 
       copyfile (files, outdir);
@@ -75,14 +75,14 @@ function entries = __xzip__ (commandname, extension,
 
         if (nargin == 5)
           compressed_files = cellfun(
-              @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)), 
+              @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)),
               f, "uniformoutput", false);
         else
-          movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f, 
+          movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f,
                             "uniformoutput", false), cwd);
           ## FIXME this does not work when you try to compress directories
 
-          compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension), 
+          compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension),
                                       files, "uniformoutput", false);
         endif
 
@@ -114,7 +114,7 @@ endfunction
 function [d, f] = myfileparts (files)
   [d, f, ext] = cellfun (@(x) fileparts (x), files, "uniformoutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
-               "uniformoutput", false); 
+               "uniformoutput", false);
   idx = cellfun (@isdir, files);
   d(idx) = "";
   f(idx) = files(idx);
@@ -123,7 +123,7 @@ endfunction
 ## FIXME -- reinstate these tests if we invent a way to test private
 ## functions directly.
 ##
-## %!error <extension has to be a string with finite length> 
+## %!error <extension has to be a string with finite length>
 ## %!  __xzip__("gzip", "", "gzip -r %s", "bla");
 ## %!error <no files to move>
 ## %!  __xzip__("gzip", ".gz", "gzip -r %s", tmpnam);
@@ -135,7 +135,7 @@ endfunction
 ## %!    save(filename, "dummy");
 ## %!    dirname  = tmpnam;
 ## %!    mkdir(dirname);
-## %!    entry = __xzip__("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null", 
+## %!    entry = __xzip__("gzip", ".gz", "xxxzipxxx -r %s 2>/dev/null",
 ## %!                     filename, dirname);
 ## %!  unwind_protect_cleanup
 ## %!    delete(filename);

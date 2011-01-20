@@ -75,9 +75,9 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
-## 
+##
 ## This program was originally granted to the public domain
-## 
+##
 ## 2002-03-08 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 ## 2005-11-27 Bill Denney <bill@givebillmoney.com>

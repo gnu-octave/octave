@@ -34,7 +34,7 @@
 ##
 ## @example
 ## @group
-##          1    
+##          1
 ## tau = -------   SUM sign (q(i) - q(j)) * sign (r(i) - r(j))
 ##       n (n-1)   i,j
 ## @end group
@@ -59,7 +59,7 @@
 ## @ifnottex
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
 ## @end ifnottex
-## 
+##
 ## @code{kendall (@var{x})} is equivalent to @code{kendall (@var{x},
 ## @var{x})}.
 ## @seealso{ranks, spearman}

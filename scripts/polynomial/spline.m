@@ -21,11 +21,11 @@
 ## @deftypefn  {Function File} {@var{pp} =} spline (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ##
-## Return the cubic spline interpolant of @var{y} at points @var{x}. 
+## Return the cubic spline interpolant of @var{y} at points @var{x}.
 ## If called with two arguments, @code{spline} returns the piecewise
 ## polynomial @var{pp} that may later be used with @code{ppval} to
 ## evaluate the polynomial at specific points.
-## If called with a third input argument, @code{spline} evaluates the 
+## If called with a third input argument, @code{spline} evaluates the
 ## spline at the points @var{xi}.  There is an equivalence
 ## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
 ## @code{spline (@var{x}, @var{y}, @var{xi})}.
@@ -53,7 +53,7 @@
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
 ## @end ifnottex
 ## The array is then reshaped internally to a matrix where the leading
-## dimension is given by 
+## dimension is given by
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
 ## @end tex
@@ -77,7 +77,7 @@ function ret = spline (x, y, xi)
   x = x(:);
   n = length (x);
   if (n < 3)
-    error ("spline: requires at least 3 points"); 
+    error ("spline: requires at least 3 points");
   endif
 
   ## Check the size and shape of y
@@ -93,12 +93,12 @@ function ret = spline (x, y, xi)
   else
     a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
   endif
-  
-  for k = (1:columns (a))(any (isnan (a))) 
-    ok = ! isnan (a(:,k)); 
-    a(!ok,k) = spline (x(ok), a(ok,k), x(!ok)); 
-  endfor 
-  
+
+  for k = (1:columns (a))(any (isnan (a)))
+    ok = ! isnan (a(:,k));
+    a(!ok,k) = spline (x(ok), a(ok,k), x(!ok));
+  endfor
+
   complete = false;
   if (size (a, 1) == n + 2)
     complete = true;

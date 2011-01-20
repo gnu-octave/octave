@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{b} =} unwrap (@var{x})
 ## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol})
 ## @deftypefnx {Function File} {@var{b} =} unwrap (@var{x}, @var{tol}, @var{dim})
-## 
+##
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to
 ## remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
 ##
@@ -31,7 +31,7 @@
 ## Author: Bill Lash <lash@tellabs.com>
 
 function retval = unwrap (x, tol, dim)
-        
+
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
@@ -67,9 +67,9 @@ function retval = unwrap (x, tol, dim)
 
   ## Handle case where we are trying to unwrap a scalar, or only have
   ## one sample in the specified dimension.
-  if (m == 1)       
-    retval = x;     
-    return;         
+  if (m == 1)
+    retval = x;
+    return;
   endif
 
   ## Take first order difference to see so that wraps will show up
@@ -112,26 +112,26 @@ endfunction
 %!  endif
 %!
 %!test
-%! 
+%!
 %! i = 0;
 %! t = [];
-%! 
+%!
 %! r = [0:100];                        # original vector
 %! w = r - 2*pi*floor((r+pi)/(2*pi));  # wrapped into [-pi,pi]
 %! tol = 1e3*eps;                      # maximum expected deviation
-%! 
+%!
 %! t(++i) = xassert(r, unwrap(w), tol);               #unwrap single row
 %! t(++i) = xassert(r', unwrap(w'), tol);             #unwrap single column
 %! t(++i) = xassert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
 %! t(++i) = xassert([r;r], unwrap([w;w],[],2), tol);  #verify that dim works
 %! t(++i) = xassert(r+10, unwrap(10+w), tol);         #verify that r(1)>pi works
-%! 
+%!
 %! t(++i) = xassert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
 %! t(++i) = xassert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
 %! t(++i) = xassert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
-%! 
+%!
 %! ## verify that setting tolerance too low will cause bad results.
 %! t(++i) = xassert(any(abs(r - unwrap(w,0.8)) > 100));
-%! 
+%!
 %! assert(all(t));
 

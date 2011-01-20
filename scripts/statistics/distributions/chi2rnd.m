@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} chi2rnd (@var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} chi2rnd (@var{n}, @var{sz})
-## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
-## random samples from the chisquare distribution with @var{n} degrees 
+## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of
+## random samples from the chisquare distribution with @var{n} degrees
 ## of freedom.  @var{n} must be a scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is

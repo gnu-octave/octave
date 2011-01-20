@@ -190,7 +190,7 @@ function [q, err] = quadgk (f, a, b, varargin)
     elseif (isinf (a) && isinf(b))
       ## Standard Infinite to finite integral transformation.
       ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
-      ## where 
+      ## where
       ##   g(t)  = t / (1 - t^2)
       ##   g'(t) =  (1 + t^2) / (1 - t^2) ^ 2
       ## waypoint transform is then
@@ -199,7 +199,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @(x) (2 * x) ./ (1 + sqrt(1 + 4 * x .^ 2));
         subs = [-1; trans(waypoints); 1];
       else
-        subs = linspace (-1, 1, 11)'; 
+        subs = linspace (-1, 1, 11)';
       endif
       h = 2;
       h0 = b - a;
@@ -209,12 +209,12 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
       ## a finite interval. The singularity weakening transform is
-      ##   \int_{-\infinity}^b f(x) dx = 
+      ##   \int_{-\infinity}^b f(x) dx =
       ##               - \int_{-\infinity}^0 f (b - t^2) 2 t dt
       ## (note minus sign) and the finite interval transform is
-      ##   \int_{-\infinity}^0 f(b - t^2)  2 t dt = 
+      ##   \int_{-\infinity}^0 f(b - t^2)  2 t dt =
       ##                  \int_{-1}^0 f (b - g(s) ^ 2) 2 g(s) g'(s) ds
-      ## where 
+      ## where
       ##   g(s)  = s / (1 + s)
       ##   g'(s) = 1 / (1 + s) ^ 2
       ## waypoint transform is then
@@ -225,7 +225,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @(x)  - x ./ (x + 1);
         subs = [0; trans(tmp); 1];
       else
-        subs = linspace (0, 1, 11)'; 
+        subs = linspace (0, 1, 11)';
       endif
       h = 1;
       h0 = b - a;
@@ -237,9 +237,9 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## a finite interval. The singularity weakening transform is
       ##   \int_a^\infinity f(x) dx = \int_0^\infinity f (a + t^2) 2 t dt
       ## and the finite interval transform is
-      ##  \int_0^\infinity f(a + t^2)  2 t dt = 
+      ##  \int_0^\infinity f(a + t^2)  2 t dt =
       ##           \int_0^1 f (a + g(s) ^ 2) 2 g(s) g'(s) ds
-      ## where 
+      ## where
       ##   g(s)  = s / (1 - s)
       ##   g'(s) = 1 / (1 - s) ^ 2
       ## waypoint transform is then
@@ -250,7 +250,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @(x) x ./ (x + 1);
         subs = [0; trans(tmp); 1];
       else
-        subs = linspace (0, 1, 11)'; 
+        subs = linspace (0, 1, 11)';
       endif
       h = 1;
       h0 = b - a;
@@ -272,7 +272,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @__quadgk_finite_waypoint__;
         subs = [-1; trans(waypoints, a, b); 1];
       else
-        subs = linspace(-1, 1, 11)'; 
+        subs = linspace(-1, 1, 11)';
       endif
       h = 2;
       h0 = b - a;
@@ -298,7 +298,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       [q_subs, q_errs] = __quadgk_eval__ (f, subs);
       q0 = sum (q_subs);
       err0 = sum (q_errs);
-    
+
       if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
         myeps = eps ("single");
       else
@@ -318,7 +318,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
         ## Quit if any evaluations are not finite (Inf or NaN)
         if (any (! isfinite (q_subs)))
-          warning ("quadgk: non finite integrand encountered"); 
+          warning ("quadgk: non finite integrand encountered");
           q = q0;
           err = err0;
           break;
@@ -377,7 +377,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         warning ("quadgk: Error tolerance not met. Estimated error %g", err);
       endif
     unwind_protect_cleanup
-      if (strcmp (warn_state.state, "on")) 
+      if (strcmp (warn_state.state, "on"))
         warning ("on", "Octave:divide-by-zero");
       endif
     end_unwind_protect

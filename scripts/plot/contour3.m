@@ -43,7 +43,7 @@
 ## in a similar manner to the line styles used with the @code{plot} command.
 ## Any markers defined by @var{style} are ignored.
 ##
-## The optional input and output argument @var{h} allows an axis handle to 
+## The optional input and output argument @var{h} allows an axis handle to
 ## be passed to @code{contour} and the handles to the contour objects to be
 ## returned.
 ## @seealso{contourc, patch, plot}

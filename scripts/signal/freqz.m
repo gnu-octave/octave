@@ -55,7 +55,7 @@
 ##
 ## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
 ## Return frequencies in Hz instead of radians assuming a sampling rate
-## @var{Fs}.  If you are evaluating the response at specific frequencies 
+## @var{Fs}.  If you are evaluating the response at specific frequencies
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
 ##
 ## @deftypefnx {Function File} {} freqz (@dots{})
@@ -80,7 +80,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
   elseif (nargin == 4)
     Fs = [];
     if (! ischar (region) && ! isempty (region))
-      Fs = region; 
+      Fs = region;
       region = [];
     endif
   endif
@@ -88,11 +88,11 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
   if (isempty (b))
     b = 1;
   endif
-  if (isempty (a)) 
-    a = 1; 
+  if (isempty (a))
+    a = 1;
   endif
   if (isempty (n))
-    n = 512; 
+    n = 512;
   endif
   if (isempty (region))
     if (isreal (b) && isreal (a))
@@ -101,11 +101,11 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
       region = "whole";
     endif
   endif
-  if (isempty (Fs)) 
-    if (nargout == 0) 
-      Fs = 2; 
-    else 
-      Fs = 2*pi; 
+  if (isempty (Fs))
+    if (nargout == 0)
+      Fs = 2;
+    else
+      Fs = 2*pi;
     endif
   endif
 

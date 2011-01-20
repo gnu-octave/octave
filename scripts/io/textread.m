@@ -40,7 +40,7 @@ function varargout = textread (filename, format = "%f", varargin)
   if (nargin < 1)
     print_usage ();
   endif
-  
+
   if (!ischar (filename) || !ischar (format))
     error ("textread: first and second input arguments must be strings");
   endif
@@ -57,10 +57,10 @@ function varargout = textread (filename, format = "%f", varargin)
     fskipl (fid, headerlines);
     varargin(headerlines:headerlines+1) = [];
   endif
-  
+
   str = fread (fid, "char=>char").';
   fclose (fid);
-  
+
   ## Call strread to make it do the real work
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
 

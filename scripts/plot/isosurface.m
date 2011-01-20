@@ -31,7 +31,7 @@
 ## isovalue as a scalar value then return a structure array @var{fv}
 ## that contains the fields @var{Faces} and @var{Vertices} at computed
 ## points @command{[x, y, z] = meshgrid (1:l, 1:m, 1:n)}.  The output
-## argument @var{fv} can directly be taken as an input argument for the 
+## argument @var{fv} can directly be taken as an input argument for the
 ## @command{patch} function.
 ##
 ## If called with further input arguments @var{x}, @var{y} and @var{z}
@@ -76,10 +76,10 @@
 ## iso = .4;  ## Change isovalue to .1 to display a sphere
 ## lin = linspace (0, 2, N);
 ## [x, y, z] = meshgrid (lin, lin, lin);
-## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2); 
+## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 ## figure (); ## Open another figure window
 ##
-## subplot (2, 2, 1); view (-38, 20); 
+## subplot (2, 2, 1); view (-38, 20);
 ## [f, v] = isosurface (x, y, z, c, iso);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
 ## set (gca, "PlotBoxAspectRatioMode","manual", "PlotBoxAspectRatio", [1 1 1]);
@@ -152,7 +152,7 @@ function varargout = isosurface(varargin)
   else
     [fvc.faces, fvc.vertices] = __marching_cube__ (x, y, z, val, iso);
   endif
-  
+
   if (isempty (fvc.vertices) || isempty (fvc.faces))
     warning ( "The resulting triangulation is empty" );
   endif
@@ -163,10 +163,10 @@ function varargout = isosurface(varargin)
       newplot ();
       if (calc_colors)
         pa = patch ("Faces", fvc.faces, "Vertices", fvc.vertices,
-                    "FaceVertexCData", fvc.facevertexcdata, 
+                    "FaceVertexCData", fvc.facevertexcdata,
                     "FaceColor", "flat", "EdgeColor", "none");
       else
-        pa = patch ("Faces", fvc.faces, "Vertices", fvc.vertices, 
+        pa = patch ("Faces", fvc.faces, "Vertices", fvc.vertices,
                     "FaceColor", "g", "EdgeColor", "k");
       endif
       if (! ishold ())
@@ -218,4 +218,4 @@ endfunction
 %! clf
 %! [x,y,z] = meshgrid(-2:0.5:2, -2:0.5:2, -2:0.5:2);
 %! v = x.^2 + y.^2 + z.^2;
-%! isosurface (x, y, z, v, 1) 
+%! isosurface (x, y, z, v, 1)

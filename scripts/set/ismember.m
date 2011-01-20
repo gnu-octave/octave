@@ -18,13 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{s}) 
-## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{s}) 
+## @deftypefn  {Function File} {@var{tf} =} ismember (@var{A}, @var{s})
+## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{s})
 ## @deftypefnx {Function File} {[@var{tf}, @var{S_idx}] =} ismember (@var{A}, @var{s}, "rows")
-## Return a logical matrix @var{tf} with the same shape as @var{A} which is 
+## Return a logical matrix @var{tf} with the same shape as @var{A} which is
 ## true (1) if @code{A(i,j)} is in @var{s} and false (0) if it is not.  If a
 ## second output argument is requested, the index into @var{s} of each of the
-## matching elements is also returned. 
+## matching elements is also returned.
 ##
 ## @example
 ## @group
@@ -48,7 +48,7 @@
 ## @end group
 ## @end example
 ##
-## With the optional third argument @code{"rows"}, and matrices 
+## With the optional third argument @code{"rows"}, and matrices
 ## @var{A} and @var{s} with the same number of columns, compare rows in
 ## @var{A} with the rows in @var{s}.
 ##
@@ -71,7 +71,7 @@
 ## Adapted-by: jwe
 ## Reimplemented using lookup & unique: Jaroslav Hajek <highegg@gmail.com>
 
-function [tf, a_idx] = ismember (A, s, varargin) 
+function [tf, a_idx] = ismember (A, s, varargin)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -92,7 +92,7 @@ function [tf, a_idx] = ismember (A, s, varargin)
     if (isreal (s) && ! isempty (s) && isnan (s(end)))
         s = s(1:end - sum (isnan (s)));
     endif
-    
+
     if (nargout > 1)
       a_idx = lookup (s, A, "m");
       tf = logical (a_idx);

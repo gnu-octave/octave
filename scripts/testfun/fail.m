@@ -28,7 +28,7 @@
 ## is a string and if @var{code} runs successfully, the error produced is:
 ##
 ## @example
-##           expected error but got none  
+##           expected error but got none
 ## @end example
 ##
 ## If the code fails with a different error, the message produced is:
@@ -42,8 +42,8 @@
 ##
 ## The angle brackets are not part of the output.
 ##
-## Called with three arguments, the behavior is similar to 
-## @code{fail(@var{code}, @var{pattern})}, but produces an error if no 
+## Called with three arguments, the behavior is similar to
+## @code{fail(@var{code}, @var{pattern})}, but produces an error if no
 ## warning is given during code execution or if the code fails.
 ##
 ## @end deftypefn
@@ -72,7 +72,7 @@ function ret = fail (code, pattern, warning_pattern)
   ## allow assert(fail())
   if (nargout)
     ret = 1;
-  endif  
+  endif
 
   if (test_warning)
     ## Perform the warning test.
@@ -89,7 +89,7 @@ function ret = fail (code, pattern, warning_pattern)
       err = lastwarn ();
       warning (state.state, "quiet");
       if (isempty (err))
-        msg = sprintf ("expected warning <%s> but got none", pattern); 
+        msg = sprintf ("expected warning <%s> but got none", pattern);
       else
         ## Transform "warning: ...\n" to "...".
         err([1:9, end]) = [];
@@ -105,7 +105,7 @@ function ret = fail (code, pattern, warning_pattern)
       err([1:7, end]) = [];
       msg = sprintf ("expected warning <%s> but got error <%s>", pattern, err);
     end_try_catch
-      
+
   else
     ## Perform the error test.
     try

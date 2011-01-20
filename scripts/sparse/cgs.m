@@ -131,7 +131,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
   endfor;
 
   if (nargout < 1)
-    if ( flag == 0 ) 
+    if ( flag == 0 )
       printf (["cgs converged at iteration %i ",
       "to a solution with relative residual %e\n"],iter,relres);
     elseif (flag == 3)

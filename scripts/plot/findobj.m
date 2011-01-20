@@ -31,10 +31,10 @@
 ## @end example
 ##
 ## @noindent
-## which returns all of the handles to the objects with the name 
+## which returns all of the handles to the objects with the name
 ## @var{prop_name} and the name @var{prop_Value}.  The search can be limited
-## to a particular object or set of objects and their descendants by 
-## passing a handle or set of handles @var{h} as the first argument to 
+## to a particular object or set of objects and their descendants by
+## passing a handle or set of handles @var{h} as the first argument to
 ## @code{findobj}.
 ##
 ## The depth of hierarchy of objects to which to search to can be limited
@@ -47,15 +47,15 @@
 ##
 ## Specifying a depth @var{d} of 0, limits the search to the set of object
 ## passed in @var{h}.  A depth @var{d} of 0 is equivalent to the '-flat'
-## argument. 
+## argument.
 ##
 ## A specified logical operator may be applied to the pairs of @var{prop_Name}
-## and @var{prop_Value}.  The supported logical operators are '-and', '-or', 
+## and @var{prop_Value}.  The supported logical operators are '-and', '-or',
 ## '-xor', '-not'.
 ##
-## The objects may also be matched by comparing a regular expression to the 
-## property values, where property values that match @code{regexp 
-## (@var{prop_Value}, @var{pattern})} are returned.  Finally, objects may be 
+## The objects may also be matched by comparing a regular expression to the
+## property values, where property values that match @code{regexp
+## (@var{prop_Value}, @var{pattern})} are returned.  Finally, objects may be
 ## matched by property name only, using the '-property' option.
 ## @seealso{get, set}
 ## @end deftypefn
@@ -185,7 +185,7 @@ function h = findobj (varargin)
   endwhile
 
   numpairs = np - 1;
-  
+
   ## Load all objects which qualify for being searched.
   idepth = 0;
   h = handles;
@@ -193,7 +193,7 @@ function h = findobj (varargin)
     children = [];
     for n = 1 : numel (handles)
       children = union (children, get(handles(n), "children"));
-    endfor 
+    endfor
     handles = children;
     h = union (h, children);
     idepth = idepth + 1;

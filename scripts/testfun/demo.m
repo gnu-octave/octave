@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} demo ('@var{name}', @var{n})
 ##
-## Runs any examples associated with the function '@var{name}'.  
-## Examples are stored in the script file, or in a file with the same 
-## name but no extension somewhere on your path.  To keep them separate 
+## Runs any examples associated with the function '@var{name}'.
+## Examples are stored in the script file, or in a file with the same
+## name but no extension somewhere on your path.  To keep them separate
 ## from the usual script code, all lines are prefixed by @code{%!}.  Each
 ## example is introduced by the keyword 'demo' flush left to the prefix,
-## with no intervening spaces.  The remainder of the example can contain 
+## with no intervening spaces.  The remainder of the example can contain
 ## arbitrary Octave code.  For example:
 ##
 ## @example

@@ -22,7 +22,7 @@
 ## Create an uimenu object and return a handle to it.  If @var{h} is ommited
 ## then a top level menu entry for the current figure is created.  If @var{h}
 ## is given then a submenu relative to @var{h} is created.
-## 
+##
 ## Uimenu objects have the following specific properties:
 ##
 ## @table @code
@@ -31,7 +31,7 @@
 ## menu entry (e.g., "x" for CTRL+x).
 ##
 ## @item "callback"
-## Is the function called when this menu entry is executed.  It can be either a 
+## Is the function called when this menu entry is executed.  It can be either a
 ## function string (e.g., "myfun"), a function handle (e.g., @@myfun) or a cell
 ## array containing the function handle and arguments for the callback
 ## function (e.g., @{@@myfun, arg1, arg2@}).
@@ -42,7 +42,7 @@
 ## @item "enable"
 ## Can be set "on" or "off".  If disabled the menu entry cannot be selected
 ## and it is grayed out.
-## 
+##
 ## @item "foregroundcolor"
 ## A color value setting the text color for this menu entry.
 ##

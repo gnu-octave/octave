@@ -39,10 +39,10 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
     orig_ginput_keypressfcn = get (f, "keypressfcn");
     set (f, "keypressfcn", @ginput_keypressfcn);
-    
+
     while (true)
       __fltk_redraw__ ();
-      
+
       ## release CPU
       sleep (0.01);
 
@@ -51,7 +51,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
         break;
       endif
     endwhile
-    
+
     ## FIXME -- got to get the buttons somehow
     button = ones (size (x));
   unwind_protect_cleanup

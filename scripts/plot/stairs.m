@@ -150,7 +150,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
         break;
       endif
     endif
-  endfor 
+  endfor
 
   if (doplot)
     h = [];
@@ -188,12 +188,12 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
                      get (tmp, "markersize"));
 
         addlistener (hg, "color", @update_props);
-        addlistener (hg, "linewidth", @update_props); 
-        addlistener (hg, "linestyle", @update_props); 
-        addlistener (hg, "marker", @update_props); 
-        addlistener (hg, "markerfacecolor", @update_props); 
-        addlistener (hg, "markeredgecolor", @update_props); 
-        addlistener (hg, "markersize", @update_props); 
+        addlistener (hg, "linewidth", @update_props);
+        addlistener (hg, "linestyle", @update_props);
+        addlistener (hg, "marker", @update_props);
+        addlistener (hg, "markerfacecolor", @update_props);
+        addlistener (hg, "markeredgecolor", @update_props);
+        addlistener (hg, "markersize", @update_props);
 
         if (! isempty (args))
           set (hg, args{:});
@@ -231,7 +231,7 @@ endfunction
 
 
 function update_props (h, d)
-  set (get (h, "children"), "color", get (h, "color"), 
+  set (get (h, "children"), "color", get (h, "color"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"),
        "marker", get (h, "marker"),

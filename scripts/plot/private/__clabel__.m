@@ -41,7 +41,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     while (i1 < length (c))
       clev = c(1,i1);
       clen = c(2,i1);
-      p = c(:, i1+1:i1+clen)      
+      p = c(:, i1+1:i1+clen)
 
       xmin = min (c(1,:));
       xmax = max (c(1,:));
@@ -83,7 +83,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     tlabel = sprintf ("%g", clev);
     for i = 1 : ntag
       tagpos = pos(i);
-      
+
       while (j1 < clen && cumd(j1) < tagpos)
         j1++;
       endwhile
@@ -95,11 +95,11 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
                                  diff (c(1,i1+j1-1:i1+j1)));
 
         if (ischar (z))
-          ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot, 
+          ht = text (tpos(1), tpos(2), clev, tlabel, "rotation", trot,
                      "parent", hparent, "horizontalalignment", "center",
                      "userdata", clev, varargin{:});
         elseif (!isempty (z))
-          ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot, 
+          ht = text (tpos(1), tpos(2), z, tlabel, "rotation", trot,
                      "parent", hparent, "horizontalalignment", "center",
                      "userdata", clev, varargin{:});
         else
@@ -112,4 +112,4 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     endfor
     i1 += clen+1;
   endwhile
-endfunction 
+endfunction

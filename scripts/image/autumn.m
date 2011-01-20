@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} autumn (@var{n})
 ## Create color colormap.  This colormap ranges from red through orange
 ## to yellow.
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function map = autumn (n)
   endif
 
   if (n == 1)
-    map = [1, 0, 0];  
+    map = [1, 0, 0];
   elseif (n > 1)
     r = ones (n, 1);
     g = (0:n - 1)' ./ (n - 1);

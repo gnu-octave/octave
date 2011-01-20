@@ -27,21 +27,21 @@
 ## @deftypefnx {Function File} {} scatter (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
 ##
-## Plot a scatter plot of the data.  A marker is plotted at each point 
+## Plot a scatter plot of the data.  A marker is plotted at each point
 ## defined by the points in the vectors @var{x} and @var{y}.  The size of
-## the markers used is determined by the @var{s}, which can be a scalar, 
-## a vector of the same length of @var{x} and @var{y}.  If @var{s} is not 
+## the markers used is determined by the @var{s}, which can be a scalar,
+## a vector of the same length of @var{x} and @var{y}.  If @var{s} is not
 ## given or is an empty matrix, then the default value of 8 points is used.
 ##
 ## The color of the markers is determined by @var{c}, which can be a string
-## defining a fixed color; a 3-element vector giving the red, green,and blue 
+## defining a fixed color; a 3-element vector giving the red, green,and blue
 ## components of the color; a vector of the same length as @var{x} that gives
 ## a scaled index into the current colormap; or a @var{n}-by-3 matrix defining
 ## the colors of each of the markers individually.
 ##
-## The marker to use can be changed with the @var{style} argument, that is a 
-## string defining a marker in the same manner as the @code{plot} command. 
-## If the argument 'filled' is given then the markers as filled.  All 
+## The marker to use can be changed with the @var{style} argument, that is a
+## string defining a marker in the same manner as the @code{plot} command.
+## If the argument 'filled' is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
 ## The optional return value @var{h} provides a handle to the patch object
@@ -100,7 +100,7 @@ endfunction
 %! h = scatter (x, y, s, s, "s", "filled");
 
 %!demo
-%! rand_10x1_data3 = [0.42262, 0.51623, 0.65992, 0.14999, 0.68385, 0.55929, 0.52251, 0.92204, 0.19762, 0.93726]; 
+%! rand_10x1_data3 = [0.42262, 0.51623, 0.65992, 0.14999, 0.68385, 0.55929, 0.52251, 0.92204, 0.19762, 0.93726];
 %! rand_10x1_data4 = [0.020207, 0.527193, 0.443472, 0.061683, 0.370277, 0.947349, 0.249591, 0.666304, 0.134247, 0.920356];
 %! x = rand_10x1_data3;
 %! y = rand_10x1_data4;

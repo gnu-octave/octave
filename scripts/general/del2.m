@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ##       1    / d^2            d^2         \
-## D  = --- * | ---  M(x,y) +  ---  M(x,y) | 
+## D  = --- * | ---  M(x,y) +  ---  M(x,y) |
 ##       4    \ dx^2           dy^2        /
 ## @end group
 ## @end example
@@ -48,9 +48,9 @@
 ## derivatives over the additional higher dimensions.
 ##
 ## The spacing between evaluation points may be defined by @var{h}, which is a
-## scalar defining the equidistant spacing in all dimensions.  Alternatively, 
+## scalar defining the equidistant spacing in all dimensions.  Alternatively,
 ## the spacing in each dimension may be defined separately by @var{dx},
-## @var{dy}, etc.  A scalar spacing argument defines equidistant spacing, 
+## @var{dy}, etc.  A scalar spacing argument defines equidistant spacing,
 ## whereas a vector argument can be used to specify variable spacing.  The
 ## length of the spacing vectors must match the respective dimension of
 ## @var{M}.  The default spacing value is 1.
@@ -64,7 +64,7 @@
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
 function D = del2 (M, varargin)
-  
+
   if (nargin < 1)
     print_usage ();
   endif

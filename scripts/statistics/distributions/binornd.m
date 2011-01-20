@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{sz})
-## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
+## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of
 ## random samples from the binomial distribution with parameters @var{n}
 ## and @var{p}.  Both @var{n} and @var{p} must be scalar or of size
 ## @var{r} by @var{c}.
@@ -34,7 +34,7 @@
 function rnd = binornd (n, p, r, c)
 
   if (nargin > 1)
-    if (!isscalar(n) || !isscalar(p)) 
+    if (!isscalar(n) || !isscalar(p))
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
         error ("binornd: N and P must be of common size or scalar");

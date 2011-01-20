@@ -57,7 +57,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
   if (nargin <= 2)
     ## bicubic (z) or bicubic (z, 2)
-    if (nargin == 1) 
+    if (nargin == 1)
       n = 1;
     else
       n = y;
@@ -76,7 +76,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     z = x;
     [rz, cz] = size (z);
   elseif (nargin == 5 || nargin == 6)
-    [rz, cz] = size (z) ; 
+    [rz, cz] = size (z) ;
     if (isvector (x) && isvector (y))
       if (rz != length (y) || cz != length (x))
         error ("bicubic: length of X and Y must match the size of Z");
@@ -87,10 +87,10 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     else
       error ("bicubic: X, Y and Z must be equal size matrices of same size");
     endif
-    
+
     ## Mark values outside the lookup table.
     xfirst_ind = find (xi < x(1));
-    xlast_ind  = find (xi > x(cz));    
+    xlast_ind  = find (xi > x(cz));
     yfirst_ind = find (yi < y(1));
     ylast_ind  = find (yi > y(rz));
     ## Set value outside the table preliminary to min max index.
@@ -102,31 +102,31 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
     x = reshape (x, 1, cz);
     x(cz) *= 1 + sign (x(cz))*myeps;
-    if (x(cz) == 0) 
+    if (x(cz) == 0)
       x(cz) = myeps;
-    endif; 
+    endif;
     xi = reshape (xi, 1, length (xi));
     [m, i] = sort ([x, xi]);
     o = cumsum (i <= cz);
     xidx = o(find (i > cz));
-    
+
     y = reshape (y, rz, 1);
     y(rz) *= 1 + sign (y(rz))*myeps;
-    if (y(rz) == 0) 
+    if (y(rz) == 0)
       y(rz) = myeps;
-    endif; 
+    endif;
     yi = reshape (yi, length (yi), 1);
     [m, i] = sort ([y; yi]);
     o = cumsum (i <= rz);
     yidx = o([find(i > rz)]);
-    
+
     ## Set s and t used follow codes.
     s = xidx + ((xi .- x(xidx))./(x(xidx+1) .- x(xidx)));
     t = yidx + ((yi - y(yidx))./(y(yidx+1) - y(yidx)));
   else
     print_usage ();
   endif
-  
+
   if (rz < 3 || cz < 3)
     error ("bicubic: Z at least a 3 by 3 matrices");
   endif
@@ -136,7 +136,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
   s = s - floor (s);
   inds(d) = cz-1;
   s(d) = 1.0;
-  
+
   d = [];
   indt = floor (t);
   d = find (t == rz);
@@ -179,7 +179,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
   lent = length (ct0);
   lens = columns (cs0);
   zi = zeros (lent, lens);
-  
+
   for i = 1:lent
     it = indt(i);
     int = [it, it+1, it+2, it+3];

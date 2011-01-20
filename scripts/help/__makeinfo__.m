@@ -63,15 +63,15 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
   if (nargin == 0)
     print_usage ();
   endif
-  
+
   if (!ischar (text))
     error ("__makeinfo__: first input argument must be a string");
   endif
-  
+
   if (!ischar (output_type))
     error ("__makeinfo__: second input argument must be a string");
   endif
-  
+
   ## Define the function which expands @seealso macro
   if (isempty (see_also))
     if (strcmpi (output_type, "plain text"))
@@ -80,15 +80,15 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
       see_also = @simple_see_also_with_refs;
     endif
   endif
-  
+
   if (!isa (see_also, "function_handle"))
     error ("__makeinfo__: third input argument must be the empty matrix, or a function handle");
   endif
-  
-  ## It seems like makeinfo sometimes gets angry if the first character 
+
+  ## It seems like makeinfo sometimes gets angry if the first character
   ## on a line is a space, so we remove these.
   text = strrep (text, "\n ", "\n");
-  
+
   ## Handle @seealso macro
   SEE_ALSO = "@seealso";
   starts = strfind (text, SEE_ALSO);
@@ -144,10 +144,10 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
     retval = text;
     return;
   endif
-  
+
   ## Create the final TeXinfo input string
   text = sprintf ("\\input texinfo\n\n%s\n\n@bye\n", text);
-  
+
   unwind_protect
     ## Write Texinfo to tmp file
     template = "octave-help-XXXXXX";
@@ -169,7 +169,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
       otherwise
         error ("__makeinfo__: unsupported output type: '%s'", output_type);
     endswitch
-  
+
     ## Call makeinfo
     [status, retval] = system (cmd);
 

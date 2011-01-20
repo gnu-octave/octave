@@ -37,7 +37,7 @@
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
 ## @end ifnottex
 ## The array is then reshaped internally to a matrix where the leading
-## dimension is given by 
+## dimension is given by
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
 ## @end tex
@@ -48,7 +48,7 @@
 ## is exactly the opposite treatment than @code{interp1} and is done
 ## for compatibility.
 ##
-## Called with a third input argument, @code{pchip} evaluates the 
+## Called with a third input argument, @code{pchip} evaluates the
 ## piecewise polynomial at the points @var{xi}.  There is an equivalence
 ## between @code{ppval (pchip (@var{x}, @var{y}), @var{xi})} and
 ## @code{pchip (@var{x}, @var{y}, @var{xi})}.
@@ -105,7 +105,7 @@ function ret = pchip (x, y, xi)
   d1 = d(:,1:n-1);
   d2 = d(:,2:n);
 
-  ## This is taken from SLATEC. 
+  ## This is taken from SLATEC.
   h = diag (h);
 
   delta = diff (y, 1, 2) / h;
@@ -127,9 +127,9 @@ function ret = pchip (x, y, xi)
 endfunction
 
 %!demo
-%! x = 0:8; 
+%! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
-%! xi = 0:0.01:8; 
+%! xi = 0:0.01:8;
 %! yspline = spline(x,y,xi);
 %! ypchip = pchip(x,y,xi);
 %! title("pchip and spline fit to discontinuous function");
@@ -139,7 +139,7 @@ endfunction
 %! % confirm that pchip agreed better to discontinuous data than spline
 
 %!shared x,y
-%! x = 0:8; 
+%! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
 %!assert (pchip(x,y,x), y);
 %!assert (pchip(x,y,x'), y');

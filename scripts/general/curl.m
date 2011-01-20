@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} curl (@var{fx}, @var{fy})
 ## @deftypefnx {Function File} {@var{v} =} curl (@dots{})
 ## Calculate curl of vector field given by the arrays @var{fx}, @var{fy}, and
-## @var{fz} or @var{fx}, @var{fy} respectively. 
+## @var{fz} or @var{fx}, @var{fy} respectively.
 ## @tex
 ## $$ curl F(x,y,z) = \left( {\partial{d} \over \partial{y}} F_z - {\partial{d} \over \partial{z}} F_y, {\partial{d} \over \partial{z}} F_x - {\partial{d} \over \partial{x}} F_z, {\partial{d} \over \partial{x}} F_y - {\partial{d} \over \partial{y}} F_x \right)$$
 ## @end tex
@@ -73,7 +73,7 @@ function varargout = curl (varargin)
   else
     print_usage();
   endif
-    
+
   if ((nargin == 4) || (nargin == 2))
     if (!size_equal (varargin{fidx}, varargin{fidx + 1}))
       error ("curl: size of X and Y must match.");

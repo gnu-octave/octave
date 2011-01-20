@@ -31,7 +31,7 @@
 function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation)
   if (nargin < 1 || nargin > 2 || nargout > 4)
     print_usage ();
-  elseif (! isvector (tree) || rows (tree) != 1 || ! isnumeric (tree) 
+  elseif (! isvector (tree) || rows (tree) != 1 || ! isnumeric (tree)
           ||  any (tree > length (tree)) || any (tree < 0))
     error ("treelayout: the first input argument must be a vector of predecessors");
   else
@@ -98,7 +98,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 
     if (nargin == 1)
       for i = 1:num_nodes
-        vec_of_child(xhelp(tree(i)+1)) = i;  
+        vec_of_child(xhelp(tree(i)+1)) = i;
         xhelp(tree(i)+1) = xhelp(tree(i)+1) + 1;
       endfor
     else
@@ -150,7 +150,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
       ## If there is not any descendant of "parent node":
       if (stk(end,2) != par_number)
        left_most++;
-       x_coordinate_r(par_number) = left_most;           
+       x_coordinate_r(par_number) = left_most;
        max_ht = min (max_ht, level);
        if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
            && stk(end,2) != stk(end-1,2))
@@ -171,7 +171,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 
           x_coordinate_r(par_number_vec) = left_most;
           stk(position:end,:) = [];
-        endif   
+        endif
 
         ## Remove the next node from "searched branch".
 
@@ -180,7 +180,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
         par_number = stk(end,1);
         ## If there is another branch start to search it.
         if (par_number != -1)
-          y_coordinate(par_number) = level;     
+          y_coordinate(par_number) = level;
           x_coordinate_l(par_number) = left_most + 1;
         endif
       else
@@ -189,7 +189,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
         ## them and go on through it.
         level--;
         par_number = stk(end,1);
-        y_coordinate(par_number) = level;     
+        y_coordinate(par_number) = level;
         x_coordinate_l(par_number) = left_most + 1;
       endif
     endwhile
@@ -203,9 +203,9 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 endfunction
 
 %!demo
-%! % Compute a simple tree layout 
+%! % Compute a simple tree layout
 %! [x,y,h,s]=treelayout([0 1 2 2])
 
 %!demo
 %! % Compute a simple tree layout with defined postorder permutation
-%! [x,y,h,s]=treelayout([0 1 2 2],[1 2 3 4]) 
+%! [x,y,h,s]=treelayout([0 1 2 2],[1 2 3 4])

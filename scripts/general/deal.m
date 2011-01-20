@@ -1,5 +1,5 @@
 ## Copyright (C) 1998-2011 Ariel Tankus
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it

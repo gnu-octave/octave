@@ -32,23 +32,23 @@
 ## @var{A} should be symmetric and positive definite; if @code{pcg}
 ## finds @var{A} to not be positive definite, you will get a warning
 ## message and the @var{flag} output parameter will be set.
-## 
+##
 ## @item
 ## @var{b} is the right hand side vector.
-## 
+##
 ## @item
 ## @var{tol} is the required relative tolerance for the residual error,
 ## @code{@var{b} - @var{A} * @var{x}}.  The iteration stops if
-## @code{norm (@var{b} - @var{A} * @var{x}) <= 
+## @code{norm (@var{b} - @var{A} * @var{x}) <=
 ##       @var{tol} * norm (@var{b} - @var{A} * @var{x0})}.
 ## If @var{tol} is empty or is omitted, the function sets
 ## @code{@var{tol} = 1e-6} by default.
-## 
+##
 ## @item
 ## @var{maxit} is the maximum allowable number of iterations; if
 ## @code{[]} is supplied for @code{maxit}, or @code{pcg} has less
 ## arguments, a default value equal to 20 is used.
-## 
+##
 ## @item
 ## @var{m} = @var{m1} * @var{m2} is the (left) preconditioning matrix, so that
 ## the iteration is (theoretically) equivalent to solving by @code{pcg}
@@ -56,18 +56,18 @@
 ## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{A}}.
 ## Note that a proper choice of the preconditioner may dramatically
 ## improve the overall performance of the method.  Instead of matrices
-## @var{m1} and @var{m2}, the user may pass two functions which return 
-## the results of applying the inverse of @var{m1} and @var{m2} to 
-## a vector (usually this is the preferred way of using the preconditioner). 
-## If @code{[]} is supplied for @var{m1}, or @var{m1} is omitted, no 
+## @var{m1} and @var{m2}, the user may pass two functions which return
+## the results of applying the inverse of @var{m1} and @var{m2} to
+## a vector (usually this is the preferred way of using the preconditioner).
+## If @code{[]} is supplied for @var{m1}, or @var{m1} is omitted, no
 ## preconditioning is applied.  If @var{m2} is omitted, @var{m} = @var{m1}
 ## will be used as preconditioner.
-## 
+##
 ## @item
-## @var{x0} is the initial guess.  If @var{x0} is empty or omitted, the 
+## @var{x0} is the initial guess.  If @var{x0} is empty or omitted, the
 ## function sets @var{x0} to a zero vector by default.
 ## @end itemize
-## 
+##
 ## The arguments which follow @var{x0} are treated as parameters, and
 ## passed in a proper way to any of the functions (@var{A} or @var{m})
 ## which are passed to @code{pcg}.  See the examples below for further
@@ -77,22 +77,22 @@
 ## @item
 ## @var{x} is the computed approximation to the solution of
 ## @code{@var{A} * @var{x} = @var{b}}.
-## 
+##
 ## @item
 ## @var{flag} reports on the convergence.  @code{@var{flag} = 0} means
 ## the solution converged and the tolerance criterion given by @var{tol}
 ## is satisfied.  @code{@var{flag} = 1} means that the @var{maxit} limit
 ## for the iteration count was reached.  @code{@var{flag} = 3} reports that
 ## the (preconditioned) matrix was found not positive definite.
-## 
+##
 ## @item
 ## @var{relres} is the ratio of the final residual to its initial value,
 ## measured in the Euclidean norm.
-## 
+##
 ## @item
 ## @var{iter} is the actual number of iterations performed.
 ##
-## @item 
+## @item
 ## @var{resvec} describes the convergence history of the method.
 ## @code{@var{resvec} (i,1)} is the Euclidean norm of the residual, and
 ## @code{@var{resvec} (i,2)} is the preconditioned residual norm,
@@ -103,47 +103,47 @@
 ## @code{@var{r} = @var{b} - @var{A} * @var{x}}, see also the
 ## description of @var{m}.  If @var{eigest} is not required, only
 ## @code{@var{resvec} (:,1)} is returned.
-## 
+##
 ## @item
 ## @var{eigest} returns the estimate for the smallest @code{@var{eigest}
 ## (1)} and largest @code{@var{eigest} (2)} eigenvalues of the
-## preconditioned matrix @code{@var{P} = @var{m} \ @var{A}}.  In 
+## preconditioned matrix @code{@var{P} = @var{m} \ @var{A}}.  In
 ## particular, if no preconditioning is used, the estimates for the
 ## extreme eigenvalues of @var{A} are returned.  @code{@var{eigest} (1)}
-## is an overestimate and @code{@var{eigest} (2)} is an underestimate, 
+## is an overestimate and @code{@var{eigest} (2)} is an underestimate,
 ## so that @code{@var{eigest} (2) / @var{eigest} (1)} is a lower bound
 ## for @code{cond (@var{P}, 2)}, which nevertheless in the limit should
-## theoretically be equal to the actual value of the condition number. 
+## theoretically be equal to the actual value of the condition number.
 ## The method which computes @var{eigest} works only for symmetric positive
 ## definite @var{A} and @var{m}, and the user is responsible for
-## verifying this assumption. 
+## verifying this assumption.
 ## @end itemize
-## 
+##
 ## Let us consider a trivial problem with a diagonal matrix (we exploit the
-## sparsity of A) 
-## 
+## sparsity of A)
+##
 ## @example
 ## @group
-##      n = 10; 
+##      n = 10;
 ##      A = diag (sparse (1:n));
 ##      b = rand (n, 1);
 ##      [l, u, p, q] = luinc (A, 1.e-3);
 ## @end group
 ## @end example
-## 
+##
 ## @sc{Example 1:} Simplest use of @code{pcg}
-## 
+##
 ## @example
 ##   x = pcg(A,b)
 ## @end example
-## 
+##
 ## @sc{Example 2:} @code{pcg} with a function which computes
 ## @code{@var{A} * @var{x}}
-## 
+##
 ## @example
 ## @group
 ##   function y = apply_a (x)
-##     y = [1:N]'.*x; 
+##     y = [1:N]'.*x;
 ##   endfunction
 ##
 ##   x = pcg ("apply_a", b)
@@ -157,7 +157,7 @@
 ## @end example
 ##
 ## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
-## Faster than @sc{Example 3} since lower and upper triangular matrices 
+## Faster than @sc{Example 3} since lower and upper triangular matrices
 ## are easier to invert
 ##
 ## @example
@@ -167,7 +167,7 @@
 ## @sc{Example 5:} Preconditioned iteration, with full diagnostics.  The
 ## preconditioner (quite strange, because even the original matrix
 ## @var{A} is trivial) is defined as a function
-## 
+##
 ## @example
 ## @group
 ##   function y = apply_m (x)
@@ -175,36 +175,36 @@
 ##     y = x;
 ##     y(1:k) = x(1:k)./[1:k]';
 ##   endfunction
-## 
+##
 ##   [x, flag, relres, iter, resvec, eigest] = ...
 ##                      pcg (A, b, [], [], "apply_m");
 ##   semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example
-## 
+##
 ## @sc{Example 6:} Finally, a preconditioner which depends on a
 ## parameter @var{k}.
-## 
+##
 ## @example
 ## @group
 ##   function y = apply_M (x, varargin)
-##   K = varargin@{1@}; 
+##   K = varargin@{1@};
 ##   y = x;
 ##   y(1:K) = x(1:K)./[1:K]';
 ##   endfunction
-## 
+##
 ##   [x, flag, relres, iter, resvec, eigest] = ...
 ##        pcg (A, b, [], [], "apply_m", [], [], 3)
 ## @end group
 ## @end example
-## 
+##
 ## References:
-## 
+##
 ## @enumerate
 ## @item
 ## C.T. Kelley, @cite{Iterative Methods for Linear and Nonlinear Equations},
 ## SIAM, 1995. (the base PCG algorithm)
-##      
+##
 ## @item
 ## Y. Saad, @cite{Iterative Methods for Sparse Linear Systems}, PWS 1996.
 ## (condition number estimate from PCG) Revised version of this book is
@@ -261,10 +261,10 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
   matrix_positive_definite = true;
 
   p = zeros (size (b));
-  oldtau = 1; 
+  oldtau = 1;
   if (isnumeric (A))
     ## A is a matrix.
-    r = b - A*x; 
+    r = b - A*x;
   else
     ## A should be a function.
     r = b - feval (A, x, varargin{:});
@@ -293,7 +293,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
     else
       z = y;
     endif
-    tau = z' * r; 
+    tau = z' * r;
     resvec (iter-1,2) = sqrt (tau);
     beta = tau / oldtau;
     oldtau = tau;
@@ -393,20 +393,20 @@ endfunction
 %!
 %!      # Simplest usage of pcg (see also 'help pcg')
 %!
-%!      N = 10; 
+%!      N = 10;
 %!      A = diag ([1:N]); b = rand (N, 1); y =  A \ b; #y is the true solution
 %!      x = pcg (A, b);
 %!      printf('The solution relative error is %g\n', norm (x - y) / norm (y));
 %!
 %!      # You shouldn't be afraid if pcg issues some warning messages in this
-%!      # example: watch out in the second example, why it takes N iterations 
+%!      # example: watch out in the second example, why it takes N iterations
 %!      # of pcg to converge to (a very accurate, by the way) solution
 %!demo
 %!
 %!      # Full output from pcg, except for the eigenvalue estimates
-%!      # We use this output to plot the convergence history  
+%!      # We use this output to plot the convergence history
 %!
-%!      N = 10; 
+%!      N = 10;
 %!      A = diag ([1:N]); b = rand (N, 1); X =  A \ b; #X is the true solution
 %!      [x, flag, relres, iter, resvec] = pcg (A, b);
 %!      printf('The solution relative error is %g\n', norm (x - X) / norm (X));
@@ -418,7 +418,7 @@ endfunction
 %!      # Full output from pcg, including the eigenvalue estimates
 %!      # Hilbert matrix is extremely ill conditioned, so pcg WILL have problems
 %!
-%!      N = 10; 
+%!      N = 10;
 %!      A = hilb (N); b = rand (N, 1); X = A \ b; #X is the true solution
 %!      [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], 200);
 %!      printf('The solution relative error is %g\n', norm (x - X) / norm (X));
@@ -432,10 +432,10 @@ endfunction
 %!      # Full output from pcg, including the eigenvalue estimates
 %!      # We use the 1-D Laplacian matrix for A, and cond(A) = O(N^2)
 %!      # and that's the reasone we need some preconditioner; here we take
-%!      # a very simple and not powerful Jacobi preconditioner, 
+%!      # a very simple and not powerful Jacobi preconditioner,
 %!      # which is the diagonal of A
 %!
-%!      N = 100; 
+%!      N = 100;
 %!      A = zeros (N, N);
 %!      for i=1 : N - 1 # form 1-D Laplacian matrix
 %!              A (i:i+1, i:i+1) = [2 -1; -1 2];
@@ -480,7 +480,7 @@ endfunction
 %!
 %!      #solve small diagonal system
 %!
-%!      N = 10; 
+%!      N = 10;
 %!      A = diag ([1:N]); b = rand (N, 1); X = A \ b; #X is the true solution
 %!      [x, flag] = pcg (A, b, [], N+1);
 %!      assert(norm (x - X) / norm (X), 0, 1e-10);
@@ -492,7 +492,7 @@ endfunction
 %!      #despite A is indefinite, the iteration continues and converges
 %!      #indefiniteness of A is detected
 %!
-%!      N = 10; 
+%!      N = 10;
 %!      A = diag([1:N] .* (-ones(1, N) .^ 2)); b = rand (N, 1); X = A \ b; #X is the true solution
 %!      [x, flag] = pcg (A, b, [], N+1);
 %!      assert(norm (x - X) / norm (X), 0, 1e-10);
@@ -502,7 +502,7 @@ endfunction
 %!
 %!      #solve tridiagonal system, do not converge in default 20 iterations
 %!
-%!      N = 100; 
+%!      N = 100;
 %!      A = zeros (N, N);
 %!      for i = 1 : N - 1 # form 1-D Laplacian matrix
 %!              A (i:i+1, i:i+1) = [2 -1; -1 2];
@@ -519,7 +519,7 @@ endfunction
 %!      #converges in one iteration, so the eigest does not work
 %!      #and issues a warning
 %!
-%!      N = 100; 
+%!      N = 100;
 %!      A = zeros (N, N);
 %!      for i = 1 : N - 1 # form 1-D Laplacian matrix
 %!              A (i:i+1, i:i+1) = [2 -1; -1 2];

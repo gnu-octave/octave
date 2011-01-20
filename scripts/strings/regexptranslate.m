@@ -26,7 +26,7 @@
 ## @table @asis
 ## @item "wildcard"
 ## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
-## with wildcards that are appropriate for a regular expression. 
+## with wildcards that are appropriate for a regular expression.
 ## For example:
 ##
 ## @example
@@ -35,7 +35,7 @@
 ##      @result{} ".*\.m"
 ## @end group
 ## @end example
-## 
+##
 ## @item "escape"
 ## The characters @code{$.?[]}, that have special meaning for regular
 ## expressions are escaped so that they are treated literally.  For example:
@@ -52,11 +52,11 @@
 ## @end deftypefn
 
 function y = regexptranslate (op, s)
-  
+
   if nargin != 2
     print_usage ();
-  endif 
-  
+  endif
+
   if (ischar (op))
     op = tolower (op);
     if (strcmp ("wildcard", op))

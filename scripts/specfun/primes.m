@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} primes (@var{n})
 ##
-## Return all primes up to @var{n}.  
+## Return all primes up to @var{n}.
 ##
 ## The algorithm used is the Sieve of Eratosthenes.
 ##

@@ -20,9 +20,9 @@
 ## @deftypefn  {Function File} {} trisurf (@var{tri}, @var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
 ## Plot a triangular surface in 3D@.  The variable @var{tri} is the triangular
-## meshing of the points @code{(@var{x}, @var{y})} which is returned 
-## from @code{delaunay}.  The variable @var{z} is value at the point 
-## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic 
+## meshing of the points @code{(@var{x}, @var{y})} which is returned
+## from @code{delaunay}.  The variable @var{z} is value at the point
+## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
 ## handle to the plot.
 ## @seealso{triplot, delaunay3}
 ## @end deftypefn
@@ -47,13 +47,13 @@ function h = trisurf (tri, x, y, z, varargin)
 
     newplot ();
     if (nargout > 0)
-      h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
-             "FaceVertexCData", reshape (c, numel (c), 1), 
+      h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+             "FaceVertexCData", reshape (c, numel (c), 1),
              "FaceColor", "flat", "EdgeColor", "none",
              varargin{:});
     else
-      patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],  
-             "FaceVertexCData", reshape (c, numel (c), 1), 
+      patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+             "FaceVertexCData", reshape (c, numel (c), 1),
              "FaceColor", "flat", "EdgeColor", "none",
              varargin{:});
     endif

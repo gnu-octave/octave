@@ -96,11 +96,11 @@ function [c, hg] = __contour__ (varargin)
     vnauto = false;
   else
     vnauto = true;
-    vn = 10; 
+    vn = 10;
   endif
 
   if (isscalar (vn))
-    lvl = linspace (min (z1(!isinf(z1))), max (z1(!isinf(z1))), 
+    lvl = linspace (min (z1(!isinf(z1))), max (z1(!isinf(z1))),
                     vn + 2)(1:end-1);
   else
     lvl = vn;
@@ -140,8 +140,8 @@ function [c, hg] = __contour__ (varargin)
   addproperty ("fill", hg, "radio", "on|{off}", filled);
 
   ## The properties zlevel and zlevelmode don't exist in matlab, but
-  ## allow the use of contourgroups with the contour3, meshc and surfc 
-  ## functions. 
+  ## allow the use of contourgroups with the contour3, meshc and surfc
+  ## functions.
   if (isnumeric (zlevel))
     addproperty ("zlevelmode", hg, "radio", "{none}|auto|manual", "manual");
     addproperty ("zlevel", hg, "data", zlevel);
@@ -319,11 +319,11 @@ function add_patch_children (hg)
       else
         ## Special case unclosed contours
       endif
-      h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:), 
+      h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:),
                            "vertices", ctmp.', "faces", 1:(cont_len(idx)-1),
                            "facevertexcdata", cont_lev(idx),
                            "facecolor", "flat", "cdata", cont_lev(idx),
-                           "edgecolor", lc, "linestyle", ls, 
+                           "edgecolor", lc, "linestyle", ls,
                            "linewidth", lw, "parent", hg)];
     endfor
 
@@ -349,25 +349,25 @@ function add_patch_children (hg)
       switch (zmode)
         case "none"
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
-                               "zdata", [], "facecolor", "none", 
+                               "zdata", [], "facecolor", "none",
                                "vertices", p, "faces", 1:rows(p),
                                "facevertexcdata", clev,
                                "edgecolor", lc, "linestyle", ls,
                                "linewidth", lw,
-                               "cdata", clev, "parent", hg)]; 
+                               "cdata", clev, "parent", hg)];
         case "auto"
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
                                "zdata", clev * ones(rows(p),1),
-                               "vertices", [p, clev * ones(rows(p),1)], 
+                               "vertices", [p, clev * ones(rows(p),1)],
                                "faces", 1:rows(p),
                                "facevertexcdata", clev,
-                               "facecolor", "none", "edgecolor", lc, 
+                               "facecolor", "none", "edgecolor", lc,
                                "linestyle", ls, "linewidth", lw,
                                "cdata", clev, "parent", hg)];
         otherwise
           h = [h; __go_patch__(ca, "xdata", p(:,1), "ydata", p(:,2),
                                "zdata", zlev * ones (rows(p), 1),
-                               "vertices", [p, zlev * ones(rows(p),1)], 
+                               "vertices", [p, zlev * ones(rows(p),1)],
                                "faces", 1:rows(p),
                                "facevertexcdata", clev,
                                "facecolor", "none", "edgecolor", lc,
@@ -390,7 +390,7 @@ function update_zlevel (h, d)
       set (kids, "zdata", []);
     case "auto"
       for i = 1 : length (kids)
-        set (kids(i), "zdata", get (kids (i), "cdata") .* 
+        set (kids(i), "zdata", get (kids (i), "cdata") .*
              ones (size (get (kids (i), "xdata"))));
       endfor
     otherwise
@@ -460,8 +460,8 @@ function update_data (h, d)
       Z0(2:nr+1, 2:nc+1) = Z;
       [c, lev] = contourc (X0, Y0, Z0, lvl);
     else
-      [c, lev] = contourc (get (h, "xdata"), get (h, "ydata"), 
-                           get (h, "zdata"), lvl); 
+      [c, lev] = contourc (get (h, "xdata"), get (h, "ydata"),
+                           get (h, "zdata"), lvl);
     endif
     set (h, "contourmatrix", c);
 
@@ -510,7 +510,7 @@ function update_text (h, d)
     if (strcmpi (get (h, "showtext"), "on"))
       switch (get (h, "zlevelmode"))
         case "manual"
-          __clabel__ (get (h, "contourmatrix"), lvl, h, 
+          __clabel__ (get (h, "contourmatrix"), lvl, h,
                       get (h, "labelspacing"), get (h, "zlevel"));
         case "auto"
           __clabel__ (get (h, "contourmatrix"), lvl, h,
@@ -533,7 +533,7 @@ function lvl_eps = get_lvl_eps (lev)
     lvl_eps = abs (lev) * sqrt (eps);
   else
     tmp = min (abs (diff (lev)));
-    if (tmp < 10*eps) 
+    if (tmp < 10*eps)
       lvl_eps = sqrt (eps);
     else
       lvl_eps = tmp / 1000.0;

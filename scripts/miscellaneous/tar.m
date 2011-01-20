@@ -1,5 +1,5 @@
 ## Copyright (C) 2005-2011 Søren Hauberg
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ function entries = tar (tarfile, files, root)
       else
         error ("tar: tar exited with status = %d", status);
       endif
-    
+
     else
       error ("tar: expecting all arguments to be character strings");
     endif

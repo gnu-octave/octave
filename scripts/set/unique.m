@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@dots{})
 ## Return the unique elements of @var{x}, sorted in ascending order.
 ## If the input @var{x} is a vector then the output is also a vector with the
-## same orientation (row or column) as the input.  For a matrix input the 
+## same orientation (row or column) as the input.  For a matrix input the
 ## output is always a column vector.  @var{x} may also be a cell array of
 ## strings.
 ##
@@ -36,7 +36,7 @@
 ## @code{x(i)==y} and @code{y(j)==x}.
 ##
 ## Additionally, if @var{i} is a requested output then one of @code{"first"} or
-## @code{"last"} may be given as an input.  If @code{"last"} is specified, 
+## @code{"last"} may be given as an input.  If @code{"last"} is specified,
 ## return the highest possible indices in @var{i}, otherwise, if @code{"first"}
 ## is specified, return the lowest.  The default is @code{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
@@ -83,7 +83,7 @@ function [y, i, j] = unique (x, varargin)
   ## sparse array as long as we are not operating on rows.
 
   if (issparse (x) && ! optrows && nargout <= 1)
-    if (nnz (x) < numel (x)) 
+    if (nnz (x) < numel (x))
       y = unique ([0; (full (nonzeros (x)))], varargin{:});
     else
       ## Corner case where sparse matrix is actually full

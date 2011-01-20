@@ -23,7 +23,7 @@
 ## @var{y} is a matrix with the channels represented as columns.
 ##
 ## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bits}] =} wavread (@var{filename})
-## Additionally return the sample rate (@var{fs}) in Hz and the number of bits 
+## Additionally return the sample rate (@var{fs}) in Hz and the number of bits
 ## per sample (@var{bits}).
 ##
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
@@ -80,7 +80,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     error ("wavread: file contains no WAVE signature");
   endif
   riff_pos = riff_pos + 4;
-  riff_size = riff_size - 4; 
+  riff_size = riff_size - 4;
 
   ## Find format chunk inside the RIFF chunk.
   fseek (fid, riff_pos, "bof");
@@ -90,7 +90,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     fclose (fid);
     error ("wavread: file contains no format chunk");
   endif
- 
+
   ## Find data chunk inside the RIFF chunk.
   ## We don't assume that it comes after the format chunk.
   fseek (fid, riff_pos, "bof");
@@ -100,10 +100,10 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     fclose (fid);
     error ("wavread: file contains no data chunk");
   endif
-  
+
   ### Read format chunk.
   fseek (fid, fmt_pos, "bof");
- 
+
   ## Sample format code.
   format_tag = fread (fid, 1, "uint16", 0, BYTEORDER);
   if (format_tag != FORMAT_PCM && format_tag != FORMAT_IEEE_FLOAT)
@@ -123,17 +123,17 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
 
   ### Read data chunk.
   fseek (fid, data_pos, "bof");
-  
+
   ## Determine sample data type.
   if (format_tag == FORMAT_PCM)
     switch (bits_per_sample)
       case 8
         format = "uint8";
-      case 16 
+      case 16
         format = "int16";
       case 24
         format = "uint8";
-      case 32 
+      case 32
         format = "int32";
       otherwise
         fclose (fid);
@@ -142,9 +142,9 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     endswitch
   else
     switch (bits_per_sample)
-      case 32 
+      case 32
         format = "float32";
-      case 64 
+      case 64
         format = "float64";
       otherwise
         fclose (fid);
@@ -152,7 +152,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
                bits_per_sample);
     endswitch
   endif
-  
+
   ## Parse arguments.
   if (nargin == 1)
     length = 8 * data_size / bits_per_sample;
@@ -210,11 +210,11 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
         yi /= 2147483647;
     endswitch
   endif
-  
+
   ## Deinterleave.
   nr = numel (yi) / channels;
   y = reshape (yi, channels, nr)';
-  
+
 endfunction
 
 ## Given a chunk_id, scan through chunks from the current file position
@@ -232,7 +232,7 @@ function chunk_size = find_chunk (fid, chunk_id, size)
     id = char (fread (fid, 4))';
     chunk_size = fread (fid, 1, "uint32", 0, "ieee-le");
     ## Chunk sizes must be word-aligned (2 byte)
-    chunk_size += rem (chunk_size, 2);  
+    chunk_size += rem (chunk_size, 2);
     offset = offset + 8 + chunk_size;
   endwhile
   if (! strcmp (id, chunk_id))

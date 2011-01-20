@@ -28,9 +28,9 @@
 ## @end example
 ##
 ## @noindent
-## This is related to the least squares solution of 
+## This is related to the least squares solution of
 ## @code{@var{A} \\ @var{b}}, by
-## 
+##
 ## @example
 ## @group
 ## @var{s} * [ @var{r} / @var{c}; x] = [@var{b}, zeros(@var{n},
@@ -49,7 +49,7 @@
 ## with @code{lu}, and the minimum norm solution can therefore be found
 ## without the need for a @code{qr} factorization.  As the residual
 ## error will be @code{zeros (@var{m}, @var{m})} for under determined
-## problems, and example can be 
+## problems, and example can be
 ##
 ## @example
 ## @group

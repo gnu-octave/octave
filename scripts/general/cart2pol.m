@@ -28,10 +28,10 @@
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis @w{(0, 0, z)}.
 ## @var{x}, @var{y} (and @var{z}) must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{c} 
+## If called with a single matrix argument then each row of @var{c}
 ## represents the Cartesian coordinate (@var{x}, @var{y} (, @var{z})).
 ##
-## If only a single return argument is requested then return a matrix 
+## If only a single return argument is requested then return a matrix
 ## @var{p} where each row represents one polar/(cylindrical) coordinate
 ## (@var{theta}, @var{phi} (, @var{z})).
 ## @seealso{pol2cart, cart2sph, sph2cart}
@@ -54,7 +54,7 @@ function [theta, r, z] = cart2pol (x, y, z)
         z = [];
       endif
       y = x(:,2);
-      x = x(:,1);    
+      x = x(:,1);
     else
       error ("cart2pol: matrix input must have 2 or 3 columns [X, Y (, Z)]");
     endif

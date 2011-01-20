@@ -236,7 +236,7 @@ function retval = datestr (date, f, p)
       df = strrep (df, "HH", "%H");
     else
       df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
-    endif  
+    endif
 
     df = regexprep (df, '[Yy][Yy][Yy][Yy]', "%Y");
 

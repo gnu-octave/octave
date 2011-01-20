@@ -1,5 +1,5 @@
 ## Copyright (C) 2005-2011 Søren Hauberg
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -65,7 +65,7 @@ function retval = doc (fname)
       info_dir = fileparts (ffile);
     endif
 
-    ## Determine if a file called doc.info exist in the same 
+    ## Determine if a file called doc.info exist in the same
     ## directory as the function.
 
     info_file_name = fullfile (info_dir, "doc.info");

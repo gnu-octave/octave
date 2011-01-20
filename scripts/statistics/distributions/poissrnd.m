@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} poissrnd (@var{lambda}, @var{r}, @var{c})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## Poisson distribution with parameter @var{lambda}, which must be a 
+## Poisson distribution with parameter @var{lambda}, which must be a
 ## scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is

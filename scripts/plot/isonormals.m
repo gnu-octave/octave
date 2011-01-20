@@ -118,7 +118,7 @@ function varargout = isonormals(varargin)
       z = varargin{3};
       c = varargin{4};
       vp = varargin{5};
-    otherwise 
+    otherwise
       print_usage ();
   endswitch
   if (ismatrix (vp) && size (vp,2) == 3)
@@ -149,13 +149,13 @@ endfunction
 
 %!test
 %!  [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2); 
+%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 %!  [f, v, cdat] = isosurface (x, y, z, c, .4, y);
 %!  n = isonormals (x, y, z, c, v);
 %!  assert (size (v), size (n));
 %!test
 %!  [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2); 
+%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 %!  [f, v, cdat] = isosurface (x, y, z, c, .4, y);
 %!  np = isonormals (x, y, z, c, v);
 %!  nn = isonormals (x, y, z, c, v, "negate");

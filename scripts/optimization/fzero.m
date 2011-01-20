@@ -22,9 +22,9 @@
 ## @deftypefn  {Function File} {} fzero (@var{fun}, @var{x0})
 ## @deftypefnx {Function File} {} fzero (@var{fun}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
-## Find a zero of a univariate function.  
+## Find a zero of a univariate function.
 ##
-## @var{fun} should be a function handle or name.  @var{x0} should be a 
+## @var{fun} should be a function handle or name.  @var{x0} should be a
 ## two-element vector specifying two points which bracket a zero.  In
 ## other words, there must be a change in sign of the function between
 ## @var{x0}(1) and @var{x0}(2).  More mathematically, the following must hold
@@ -36,12 +36,12 @@
 ## If @var{x0} is a single scalar then several nearby and distant
 ## values are probed in an attempt to obtain a valid bracketing.  If this
 ## is not successful, the function fails.
-## @var{options} is a structure specifying additional options. 
+## @var{options} is a structure specifying additional options.
 ## Currently, @code{fzero}
 ## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
-## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}. 
+## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}.
 ## For a description of these options, see @ref{doc-optimset,,optimset}.
-## 
+##
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.
 ## @var{info} is an exit flag that can have these values:
@@ -59,7 +59,7 @@
 ## @item -5
 ## The algorithm may have converged to a singular point.
 ## @end itemize
-## 
+##
 ## @var{output} is a structure containing runtime information about the
 ## @code{fzero} algorithm.  Fields in the structure are:
 ##
@@ -76,7 +76,7 @@
 ## @item brackety
 ##  A two-element vector with the final bracketing of the zero along the y-axis.
 ## @end itemize
-## @seealso{optimset, fsolve} 
+## @seealso{optimset, fsolve}
 ## @end deftypefn
 
 ## This is essentially the ACM algorithm 748: Enclosing Zeros of
@@ -135,7 +135,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Prepare...
   a = x0(1);
-  fa = fun (a); 
+  fa = fun (a);
   nfev = 1;
   if (length (x0) > 1)
     b = x0(2);
@@ -160,7 +160,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     u = a;
     a = b;
     b = u;
- 
+
     fu = fa;
     fa = fb;
     fb = fu;
@@ -244,7 +244,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
           endfor
         endif
       endif
-      itype += 1; 
+      itype += 1;
     case 4
       ## Double secant step.
       c = u - 2*(b - a)/(fb - fa)*fu;
@@ -269,13 +269,13 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
     ## Calculate new point.
     x = c;
-    fval = fc = fun (c); 
+    fval = fc = fun (c);
     niter ++; nfev ++;
 
     ## Modification 2: skip inverse cubic interpolation if
     ## nonmonotonicity is detected.
     if (sign (fc - fa) * sign (fc - fb) >= 0)
-      ## The new point broke monotonicity. 
+      ## The new point broke monotonicity.
       ## Disable inverse cubic.
       fe = fc;
     else
@@ -348,9 +348,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fzero:notreal", "fzero: non-real value encountered"); 
+    error ("fzero:notreal", "fzero: non-real value encountered");
   elseif (isnan (fx))
-    error ("fzero:isnan", "fzero: NaN value encountered"); 
+    error ("fzero:isnan", "fzero: NaN value encountered");
   endif
 endfunction
 

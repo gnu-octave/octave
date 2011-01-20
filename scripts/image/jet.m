@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {@var{map} =} jet ()
 ## @deftypefnx {Function File} {@var{map} =} jet (@var{n})
 ## Create color colormap.  This colormap ranges from dark blue through blue,
-## cyan, green, yellow, red, to dark red. 
-## The argument @var{n} must be a scalar.  
+## cyan, green, yellow, red, to dark red.
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function map = jet (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0.5];  
+    map = [0, 0, 0.5];
   elseif (n > 1)
     x = linspace(0, 1, n)';
     r = (x >= 3/8 & x < 5/8) .* (4 * x - 3/2)\

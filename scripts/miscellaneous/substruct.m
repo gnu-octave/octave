@@ -37,7 +37,7 @@
 ##        @}
 ## x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
 ## subsref(x, idx)
-##      @result{} ans = 
+##      @result{} ans =
 ##         7  8  9
 ## @end group
 ## @end example

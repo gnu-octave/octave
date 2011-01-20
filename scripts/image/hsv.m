@@ -18,14 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hsv (@var{n})
-## Create color colormap.  This colormap begins with red, changes through 
-## yellow, green, cyan, blue, and magenta, before returning to red.  
+## Create color colormap.  This colormap begins with red, changes through
+## yellow, green, cyan, blue, and magenta, before returning to red.
 ## It is useful for displaying periodic functions.  It is obtained by linearly
 ## varying the hue through all possible values while keeping constant maximum
 ## saturation and value and is equivalent to
 ## @code{hsv2rgb ([linspace(0,1,N)', ones(N,2)])}.
 ##
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -45,7 +45,7 @@ function map = hsv (n)
   endif
 
   if (n == 1)
-    map = [1, 0, 0];  
+    map = [1, 0, 0];
   elseif (n > 1)
     h = linspace (0, 1, n)';
     map = hsv2rgb ([h, ones(n, 1), ones(n, 1)]);

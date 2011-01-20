@@ -46,18 +46,18 @@ function [retval, status] = get_first_help_sentence (name, max_len = 80)
   if (nargin == 0)
     error ("get_first_help_sentence: not enough input arguments");
   endif
-  
+
   if (!ischar (name))
     error ("get_first_help_sentence: first input must be a string");
   endif
-  
+
   if (!isnumeric (max_len) || max_len <= 0 || max_len != round (max_len))
     error ("get_first_help_sentence: second input must be positive integer");
   endif
 
   ## First, we get the raw help text
   [help_text, format] = get_help_text (name);
-  
+
   ## Then, we take action depending on the format
   switch (lower (format))
     case "plain text"
@@ -95,7 +95,7 @@ function [retval, status] = first_sentence_texinfo (help_text, max_len)
   ## Lines ending with "@\n" are continuation lines, so they should be concatenated
   ## with the following line.
   help_text = strrep (help_text, "@\n", " ");
-  
+
   ## Find, and remove, lines that start with @def. This should remove things
   ## such as @deftypefn, @deftypefnx, @defvar, etc.
   keep = true (size (help_text));
@@ -110,7 +110,7 @@ function [retval, status] = first_sentence_texinfo (help_text, max_len)
         keep (def_idx (k):endl) = false;
       endif
     endfor
-  
+
     ## Remove the @end ... that corresponds to the @def we removed above
     def1 = def_idx (1);
     space_idx = find (help_text == " ");
@@ -133,13 +133,13 @@ function [retval, status] = first_sentence_texinfo (help_text, max_len)
     else
       keep (end_idx:endl) = false;
     endif
-    
+
     help_text = help_text (keep);
   endif
-  
+
   ## Run makeinfo to generate plain text
   [help_text, status] = __makeinfo__ (help_text, "plain text");
-  
+
   ## Extract first line with plain text method.
   retval = first_sentence_plain_text (help_text, max_len);
 endfunction
@@ -149,7 +149,7 @@ endfunction
 function [retval, status] = first_sentence_html (help_text, max_len)
   ## Strip tags
   [help_text, status] = strip_html_tags (help_text);
-  
+
   ## Extract first line with plain text method.
   retval = first_sentence_plain_text (help_text, max_len);
 endfunction

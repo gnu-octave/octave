@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{map} =} winter ()
 ## @deftypefnx {Function File} {@var{map} =} winter (@var{n})
 ## Create color colormap.  This colormap varies from blue to green.
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -40,7 +40,7 @@ function map = winter (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 1];  
+    map = [0, 0, 1];
   elseif (n > 1)
     r = zeros (n, 1);
     g = (0:n - 1)' ./ (n - 1);

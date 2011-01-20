@@ -21,22 +21,22 @@
 ## @deftypefnx {Command} {} lookfor -all @var{str}
 ## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor (@var{str})
 ## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor ('-all', @var{str})
-## Search for the string @var{str} in all functions found in the current 
+## Search for the string @var{str} in all functions found in the current
 ## function search path.  By default, @code{lookfor} searches for @var{str}
 ## in the first sentence of the help string of each function found.  The entire
-## help text of each function can be searched if the '-all' argument is 
+## help text of each function can be searched if the '-all' argument is
 ## supplied.  All searches are case insensitive.
-## 
-## Called with no output arguments, @code{lookfor} prints the list of 
-## matching functions to the terminal.  Otherwise, the output arguments 
-## @var{func} and @var{helpstring} define the matching functions and the 
+##
+## Called with no output arguments, @code{lookfor} prints the list of
+## matching functions to the terminal.  Otherwise, the output arguments
+## @var{func} and @var{helpstring} define the matching functions and the
 ## first sentence of each of their help strings.
-## 
+##
 ## The ability of @code{lookfor} to correctly identify the first
 ## sentence of the help text is dependent on the format of the
 ## function's help.  All Octave core functions are correctly
 ## formatted, but the same can not be guaranteed for external packages and
-## user-supplied functions.  Therefore, the use of the '-all' argument may 
+## user-supplied functions.  Therefore, the use of the '-all' argument may
 ## be necessary to find related functions that are not a part of Octave.
 ## @seealso{help, doc, which}
 ## @end deftypefn
@@ -63,7 +63,7 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
     fun = help_text = {};
     had_core_cache = false;
   endif
-  
+
   ## Search functions in new path dirs.
   orig_path = strsplit (__pathorig__ (), pathsep ());
 
@@ -88,12 +88,12 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
       funs_in_f = __list_functions__ (elt);
       for m = 1:length (funs_in_f)
         fn = funs_in_f {m};
-      
+
         ## Skip files that start with __
         if (length (fn) > 2 && strcmp (fn (1:2), "__"))
           continue;
         endif
-      
+
         ## Extract first sentence
         try
           warn_state = warning ();
@@ -121,7 +121,7 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
           catch
             status = 1;
           end_try_catch
-  
+
           ## Take action depending on help text fmt
           switch (lower (fmt))
             case "plain text"
@@ -137,7 +137,7 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
         elseif (status == 0) # only search the first sentence of the help text
           text = first_sentence;
         endif
-      
+
         ## Search the help text, if we can
         if (status == 0 && !isempty (strfind (text, str)))
           fun (end+1) = fn;
@@ -146,7 +146,7 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
       endfor
     endif
   endfor
-  
+
   if (nargout == 0)
     ## Print the results (FIXME: improve this to make it look better.
     indent = 20;

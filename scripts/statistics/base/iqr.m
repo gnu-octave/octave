@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} iqr (@var{x}, @var{dim})
 ## Return the interquartile range, i.e., the difference between the upper
 ## and lower quartile of the input data.  If @var{x} is a matrix, do the
-## above for first non-singleton dimension of @var{x}.  
+## above for first non-singleton dimension of @var{x}.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
@@ -59,7 +59,7 @@ function y = iqr (x, dim)
     endif
   endif
 
-  ## This code is a bit heavy, but is needed until empirical_inv 
+  ## This code is a bit heavy, but is needed until empirical_inv
   ## takes other than vector arguments.
   c = sz(dim);
   sz(dim) = 1;

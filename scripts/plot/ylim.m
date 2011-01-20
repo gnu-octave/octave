@@ -28,8 +28,8 @@
 ## to this value.
 ##
 ## The current mode for calculation of the y-axis can be returned with a
-## call @code{ylim ('mode')}, and can be either 'auto' or 'manual'.  The 
-## current plotting mode can be set by passing either 'auto' or 'manual' 
+## call @code{ylim ('mode')}, and can be either 'auto' or 'manual'.  The
+## current plotting mode can be set by passing either 'auto' or 'manual'
 ## as the argument.
 ##
 ## If passed a handle as the first argument, then operate on this handle

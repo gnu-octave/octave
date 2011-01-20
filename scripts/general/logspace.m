@@ -53,7 +53,7 @@
 ## function.
 ## If @var{n} is unspecified it defaults to 50.
 ##
-## Also for compatibility with @sc{matlab}, return the second argument if 
+## Also for compatibility with @sc{matlab}, return the second argument if
 ## fewer than two values are requested.
 ## @seealso{linspace}
 ## @end deftypefn

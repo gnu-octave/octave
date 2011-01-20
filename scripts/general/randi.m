@@ -22,12 +22,12 @@
 ## @deftypefnx {Function File} {} randi (@var{imax}, @var{m}, @var{n}, @dots{})
 ## @deftypefnx {Function File} {} randi ([@var{imin}, @var{imax}], @dots{})
 ## @deftypefnx {Function File} {} randi (@dots{}, "@var{class}")
-## Return random integers in the range 1:@var{imax}.  
+## Return random integers in the range 1:@var{imax}.
 ##
 ## Additional arguments determine the shape of the return matrix.  When no
 ## arguments are specified a single random integer is returned.  If one
 ## argument @var{n} is specified then a square matrix @w{(@var{n} x @var{n})} is
-## returned.  Two or more arguments will return a multi-dimensional 
+## returned.  Two or more arguments will return a multi-dimensional
 ## matrix @w{(@var{m} x @var{n} x @dots{})}.
 ##
 ## The integer range may optionally be described by a two element matrix
@@ -45,7 +45,7 @@
 ##
 ## Implementation Note: @code{randi} relies internally on @code{rand} which
 ## uses class "double" to represent numbers.  This limits the maximum
-## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value 
+## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
 ## returned by the @code{bitmax} function.  For IEEE floating point numbers
 ## this value is @w{@code{2^53 - 1}}.
 ##
@@ -69,15 +69,15 @@ function ri = randi (bounds, varargin)
     imax = fix (bounds);
     if (imax < 1)
       error ("randi: require IMAX >= 1");
-    endif  
+    endif
   else
     imin = fix (bounds(1));
     imax = fix (bounds(2));
     if (imax < imin)
       error ("randi: require IMIN <= IMAX");
-    endif 
+    endif
   endif
-  
+
   if (nargin > 1 && ischar (varargin{end}))
     rclass = varargin{end};
     varargin(end) = [];
@@ -95,7 +95,7 @@ function ri = randi (bounds, varargin)
     endif
   endif
   ## Limit set by use of class double in rand()
-  if (imax > bitmax) 
+  if (imax > bitmax)
     error ("randi: maximum integer IMAX must be smaller than bitmax ()");
   endif
   if ((imax - imin) > bitmax)

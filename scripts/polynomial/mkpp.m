@@ -19,13 +19,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{pp} =} mkpp (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{x}, @var{p}, @var{d})
-## 
+##
 ## Construct a piecewise polynomial structure from sample points
 ## @var{x} and coefficients @var{p}.  The i-th row of @var{p},
 ## @code{@var{p} (@var{i},:)}, contains the coefficients for the polynomial
-## over the @var{i}-th interval, ordered from highest to 
-## lowest.  There must be one row for each interval in @var{x}, so 
-## @code{rows (@var{p}) == length (@var{x}) - 1}.  
+## over the @var{i}-th interval, ordered from highest to
+## lowest.  There must be one row for each interval in @var{x}, so
+## @code{rows (@var{p}) == length (@var{x}) - 1}.
 ##
 ## @var{p} may also be a multi-dimensional array, specifying a vector-valued
 ## or array-valued polynomial.  The shape is determined by @var{d}.  If @var{d}
@@ -64,9 +64,9 @@ function pp = mkpp (x, P, d)
 endfunction
 
 %!demo # linear interpolation
-%! x=linspace(0,pi,5)'; 
+%! x=linspace(0,pi,5)';
 %! t=[sin(x),cos(x)];
-%! m=diff(t)./(x(2)-x(1)); 
+%! m=diff(t)./(x(2)-x(1));
 %! b=t(1:4,:);
 %! pp = mkpp(x, [m(:),b(:)]);
 %! xi=linspace(0,pi,50);

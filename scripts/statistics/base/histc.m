@@ -85,7 +85,7 @@ function [n, idx] = histc (x, edges, dim)
 
   nsz = sz;
   nsz(dim) = num_edges;
-  
+
   ## the splitting point is 3 bins
 
   if (num_edges <= 3)
@@ -99,7 +99,7 @@ function [n, idx] = histc (x, edges, dim)
     if (nargout > 1)
       idx = zeros (sz);
     endif
-    
+
     ## Prepare indices
     idx1 = cell (1, dim-1);
     for k = 1:length (idx1)
@@ -109,7 +109,7 @@ function [n, idx] = histc (x, edges, dim)
     for k = 1:length (idx2)
       idx2 {k} = 1:sz(k+dim);
     endfor
-    
+
     ## Compute the histograms
     for k = 1:num_edges-1
       b = (edges (k) <= x & x < edges (k+1));
@@ -130,7 +130,7 @@ function [n, idx] = histc (x, edges, dim)
 
     ## Look-up indices.
     idx = lookup (edges, x);
-    ## Zero invalid ones (including NaNs). x < edges(1) are already zero. 
+    ## Zero invalid ones (including NaNs). x < edges(1) are already zero.
     idx(! (x <= edges(end))) = 0;
 
     iidx = idx;

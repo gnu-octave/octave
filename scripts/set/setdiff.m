@@ -87,9 +87,9 @@ function [c, i] = setdiff (a, b, varargin)
       endif
     endif
   endif
-  
+
 endfunction
-  
+
 %!assert(setdiff(["bb";"zz";"bb";"zz"],["bb";"cc";"bb"],"rows"), "zz")
 %!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"],"rows"), "z")
 %!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"]), "z")

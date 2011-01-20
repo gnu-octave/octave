@@ -36,9 +36,9 @@
 ## If @var{x} is a matrix, return the kurtosis over the
 ## first non-singleton dimension of the matrix.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
-## 
+##
 ## Note: The definition of kurtosis above yields a kurtosis of zero for the
-## stdnormal distribution and is sometimes referred to as "excess kurtosis".  
+## stdnormal distribution and is sometimes referred to as "excess kurtosis".
 ## To calculate kurtosis without the normalization factor of @math{-3} use
 ## @code{moment (@var{x}, 4, 'c') / std (@var{x})^4}.
 ## @seealso{var,skewness,moment}
@@ -72,7 +72,7 @@ function retval = kurtosis (x, dim)
       error ("kurtosis: DIM must be an integer and a valid dimension");
     endif
   endif
-  
+
   c = sz(dim);
   sz(dim) = 1;
   idx = ones (1, nd);

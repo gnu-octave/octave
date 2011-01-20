@@ -36,12 +36,12 @@
 ## arguments are passed to the @code{error} function.
 ##
 ## @item assert (@var{observed}, @var{expected})
-## Produce an error if observed is not the same as expected.  Note that 
-## observed and expected can be strings, scalars, vectors, matrices, 
+## Produce an error if observed is not the same as expected.  Note that
+## observed and expected can be strings, scalars, vectors, matrices,
 ## lists or structures.
 ##
 ## @item assert(@var{observed}, @var{expected}, @var{tol})
-## Accept a tolerance when comparing numbers. 
+## Accept a tolerance when comparing numbers.
 ## If @var{tol} is positive use it as an absolute tolerance, will produce an
 ## error if
 ## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
@@ -75,7 +75,7 @@ function assert (cond, varargin)
       else
         error (varargin{:});
       endif
-    endif  
+    endif
   else
     if (nargin < 2 || nargin > 3)
       print_usage ();
@@ -197,7 +197,7 @@ function assert (cond, varargin)
           elseif (tol >= 0)
             err = max (abs (A - B));
             errtype = "maximum absolute error %g exceeds tolerance %g";
-          else 
+          else
             abserr = max (abs (A(B == 0)));
             A = A(B != 0);
             B = B(B != 0);
@@ -285,9 +285,9 @@ endfunction
 %!error assert(3, 3+2*eps, eps);
 
 ## must give a little space for floating point errors on relative
-%!assert(100+100*eps, 100, -2*eps); 
+%!assert(100+100*eps, 100, -2*eps);
 %!assert(100, 100+100*eps, -2*eps);
-%!error assert(100+300*eps, 100, -2*eps); 
+%!error assert(100+300*eps, 100, -2*eps);
 %!error assert(100, 100+300*eps, -2*eps);
 %!error assert(3, [3,3]);
 %!error assert(3,4);

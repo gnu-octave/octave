@@ -21,10 +21,10 @@
 ## @deftypefnx {Function File} {} caxis (@var{h}, @dots{})
 ## Set color axis limits for plots.
 ##
-## The argument @var{limits} should be a 2-element vector specifying the 
+## The argument @var{limits} should be a 2-element vector specifying the
 ## lower and upper limits to assign to the first and last value in the
 ## colormap.  Values outside this range are clamped to the first and last
-## colormap entries. 
+## colormap entries.
 ##
 ## If @var{limits} is 'auto', then automatic colormap scaling is applied,
 ## whereas if @var{limits} is 'manual' the colormap scaling is set to manual.
@@ -85,4 +85,4 @@ function [cmin, cmax] = __caxis__ (ca, ax, varargin)
   endif
 
 endfunction
-      
+

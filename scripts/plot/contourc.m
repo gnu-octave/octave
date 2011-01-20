@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{c}, @var{lev}] =} contourc (@var{x}, @var{y}, @var{z}, @var{vn})
-## Compute isolines (contour lines) of the matrix @var{z}. 
+## Compute isolines (contour lines) of the matrix @var{z}.
 ## Parameters @var{x}, @var{y} and @var{vn} are optional.
 ##
 ## The return value @var{lev} is a vector of the contour levels.
@@ -27,7 +27,7 @@
 ##
 ## @example
 ## @group
-## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, ... 
+## @var{c} = [lev1, x1, x2, @dots{}, levn, x1, x2, ...
 ##      len1, y1, y2, @dots{}, lenn, y1, y2, @dots{}]
 ## @end group
 ## @end example
@@ -35,10 +35,10 @@
 ## @noindent
 ## in which contour line @var{n} has a level (height) of @var{levn} and
 ## length of @var{lenn}.
-## 
-## If @var{x} and @var{y} are omitted they are taken as the row/column 
-## index of @var{z}.  @var{vn} is either a scalar denoting the number of lines 
-## to compute or a vector containing the values of the lines.  If only one 
+##
+## If @var{x} and @var{y} are omitted they are taken as the row/column
+## index of @var{z}.  @var{vn} is either a scalar denoting the number of lines
+## to compute or a vector containing the values of the lines.  If only one
 ## value is wanted, set @code{@var{vn} = [val, val]};
 ## If @var{vn} is omitted it defaults to 10.
 ##
@@ -101,19 +101,19 @@ function [cout, lev] = contourc (varargin)
   if (isvector (x) && isvector (y))
     c = __contourc__ (x(:)', y(:)', z, vv);
   else
-    ## Indexes x,y for the purpose of __contourc__.    
+    ## Indexes x,y for the purpose of __contourc__.
     ii = 1:size (z,2);
     jj = 1:size (z,1);
-  
+
     ## Now call __contourc__ for the real work...
     c = __contourc__ (ii, jj, z, vv);
-  
-    ## Map the contour lines from index space (i,j) back 
+
+    ## Map the contour lines from index space (i,j) back
     ## to the original grid (x,y)
     i = 1;
 
     while (i < size (c,2))
-      clen = c(2, i);      
+      clen = c(2, i);
       ind = i + [1 : clen];
 
       ci = c(1, ind);
@@ -121,19 +121,19 @@ function [cout, lev] = contourc (varargin)
 
       ## due to rounding errors some elements of ci and cj
       ## can fall out of the range of ii and jj and interp2 would
-      ## return NA for those values. 
-      ## The permitted range is enforced here: 
-        
+      ## return NA for those values.
+      ## The permitted range is enforced here:
+
       ci = max (ci, 1); ci = min (ci, size (z, 2));
       cj = max (cj, 1); cj = min (cj, size (z, 1));
-        
+
       c(1, ind) = interp2 (ii, jj, x, ci, cj);
       c(2, ind) = interp2 (ii, jj, y, ci, cj);
-      
+
       i = i + clen + 1;
     endwhile
   endif
-    
+
   if (nargout > 0)
     cout = c;
     lev = vv;

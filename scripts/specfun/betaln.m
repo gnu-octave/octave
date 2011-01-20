@@ -29,7 +29,7 @@
 ## @example
 ## betaln (a, b) = gammaln (a) + gammaln (b) - gammaln (a + b)
 ## @end example
-## 
+##
 ## @end ifnottex
 ## @seealso{beta, betainc, gammaln}
 ## @end deftypefn

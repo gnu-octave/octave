@@ -36,7 +36,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
   if (!ischar(init_path) || !ischar(dialog_name))
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif
-  
+
   if (any (strcmp (available_graphics_toolkits (), "fltk")))
       if (!isdir (init_path))
         init_path = fileparts (init_path);

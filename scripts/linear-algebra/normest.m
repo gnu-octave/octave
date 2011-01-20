@@ -39,11 +39,11 @@ function [n, c] = normest (A, tol = 1e-6)
 
   if (! (isnumeric (A) && ndims (A) == 2))
     error ("normest: A must be a numeric 2-D matrix");
-  endif 
+  endif
 
   if (! (isscalar (tol) && isreal (tol)))
     error ("normest: TOL must be a real scalar");
-  endif 
+  endif
 
   if (! isfloat (A))
     A = double (A);

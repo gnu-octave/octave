@@ -29,7 +29,7 @@
 ## @end group
 ## @end example
 ##
-## Due to the difficulty of defining which axis about which to flip the 
+## Due to the difficulty of defining which axis about which to flip the
 ## matrix @code{flipud} only work with 2-d arrays.  To flip N-d arrays
 ## use @code{flipdim} instead.
 ## @seealso{fliplr, flipdim, rot90, rotdim}

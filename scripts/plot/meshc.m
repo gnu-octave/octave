@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} meshc (@var{x}, @var{y}, @var{z})
-## Plot a mesh and contour given matrices @var{x}, and @var{y} from 
-## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and 
-## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors, 
-## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, 
-## columns of @var{z} correspond to different @var{x} values and rows of 
+## Plot a mesh and contour given matrices @var{x}, and @var{y} from
+## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
+## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors,
+## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus,
+## columns of @var{z} correspond to different @var{x} values and rows of
 ## @var{z} correspond to different @var{y} values.
 ## @seealso{meshgrid, mesh, contour}
 ## @end deftypefn

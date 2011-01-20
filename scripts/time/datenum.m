@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} datenum (@code{"date"})
 ## @deftypefnx {Function File} {} datenum (@code{"date"}, @var{p})
 ## Returns the specified local time as a day number, with Jan 1, 0000
-## being day 1.  By this reckoning, Jan 1, 1970 is day number 719529.  
+## being day 1.  By this reckoning, Jan 1, 1970 is day number 719529.
 ## The fractional portion, @var{p}, corresponds to the portion of the
 ## specified day.
 ##
@@ -53,8 +53,8 @@
 ## @strong{Warning:} this function does not attempt to handle Julian
 ## calendars so dates before Octave 15, 1582 are wrong by as much
 ## as eleven days.  Also be aware that only Roman Catholic countries
-## adopted the calendar in 1582.  It took until 1924 for it to be 
-## adopted everywhere.  See the Wikipedia entry on the Gregorian 
+## adopted the calendar in 1582.  It took until 1924 for it to be
+## adopted everywhere.  See the Wikipedia entry on the Gregorian
 ## calendar for more details.
 ##
 ## @strong{Warning:} leap seconds are ignored.  A table of leap seconds
@@ -94,7 +94,7 @@ function [days, secs] = datenum (year, month, day, hour, minute, second)
       day = year(:,3);
       month = year(:,2);
       year = year(:,1);
-    endif 
+    endif
   endif
 
   month(month<1) = 1; ## For compatibility.  Otherwise allow negative months.

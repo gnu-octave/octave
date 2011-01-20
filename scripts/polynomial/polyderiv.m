@@ -23,8 +23,8 @@
 ## Return the coefficients of the derivative of the polynomial whose
 ## coefficients are given by the vector @var{p}.  If a pair of polynomials
 ## is given, return the derivative of the product @math{@var{a}*@var{b}}.
-## If two inputs and two outputs are given, return the derivative of the 
-## polynomial quotient @math{@var{b}/@var{a}}.  The quotient numerator is 
+## If two inputs and two outputs are given, return the derivative of the
+## polynomial quotient @math{@var{b}/@var{a}}.  The quotient numerator is
 ## in @var{q} and the denominator in @var{d}.
 ## @seealso{poly, polyint, polyreduce, roots, conv, deconv, residue,
 ## filter, polygcd, polyval, polyvalm}
@@ -44,7 +44,7 @@ function [q, d] = polyderiv (p, a)
       if (! isvector (a))
         error ("polyderiv: argument must be a vector");
       endif
-      if (nargout == 1) 
+      if (nargout == 1)
         ## derivative of p*a returns a single polynomial
         q = polyderiv (conv (p, a));
       else

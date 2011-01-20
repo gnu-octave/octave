@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {@var{map} =} pink ()
 ## @deftypefnx {Function File} {@var{map} =} pink (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
-## shades of gray-pink.  It gives a sepia tone when used on grayscale images. 
-## The argument @var{n} must be a scalar.  
+## shades of gray-pink.  It gives a sepia tone when used on grayscale images.
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function map = pink (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];  
+    map = [0, 0, 0];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 3/8) .* (14/9 * x) + (x >= 3/8) .* (2/3 * x + 1/3);

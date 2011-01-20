@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {[@var{u}, @var{s}, @var{v}, @var{flag}] =} svds (@dots{})
 ##
 ## Find a few singular values of the matrix @var{A}.  The singular values
-## are calculated using 
+## are calculated using
 ##
 ## @example
 ## @group
@@ -35,33 +35,33 @@
 ## @end group
 ## @end example
 ##
-## The eigenvalues returned by @code{eigs} correspond to the singular values 
+## The eigenvalues returned by @code{eigs} correspond to the singular values
 ## of @var{A}.  The number of singular values to calculate is given by @var{k}
 ## and defaults to 6.
-## 
-## The argument @var{sigma} specifies which singular values to find.  When 
-## @var{sigma} is the string 'L', the default, the largest singular values of 
-## @var{A} are found.  Otherwise, @var{sigma} must be a real scalar and the 
-## singular values closest to @var{sigma} are found.  As a corollary, 
-## @code{@var{sigma} = 0} finds the smallest singular values.  Note that for 
+##
+## The argument @var{sigma} specifies which singular values to find.  When
+## @var{sigma} is the string 'L', the default, the largest singular values of
+## @var{A} are found.  Otherwise, @var{sigma} must be a real scalar and the
+## singular values closest to @var{sigma} are found.  As a corollary,
+## @code{@var{sigma} = 0} finds the smallest singular values.  Note that for
 ## relatively small values of @var{sigma}, there is a chance that the requested
-## number of singular values will not be found.  In that case @var{sigma} 
+## number of singular values will not be found.  In that case @var{sigma}
 ## should be increased.
 ##
 ## @var{opts} is a structure defining options that @code{svds} will pass
-## to @code{eigs}.  The possible fields of this structure are documented in 
+## to @code{eigs}.  The possible fields of this structure are documented in
 ## @code{eigs}.  By default, @code{svds} sets the following three fields:
 ##
 ## @table @code
 ## @item tol
-## The required convergence tolerance for the singular values.  The default 
+## The required convergence tolerance for the singular values.  The default
 ## value is 1e-10.  @code{eigs} is passed @code{@var{tol} / sqrt(2)}.
 ##
 ## @item maxit
 ## The maximum number of iterations.  The default is 300.
 ##
 ## @item disp
-## The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then 
+## The level of diagnostic printout (0|1|2).  If @code{disp} is 0 then
 ## diagnostics are disabled.  The default value is 0.
 ## @end table
 ##
@@ -74,8 +74,8 @@
 ##
 ## @noindent
 ## where @var{A}_approx is a matrix of size @var{A} but only rank @var{k}.
-## 
-## @var{flag} returns 0 if the algorithm has succesfully converged, and 1 
+##
+## @var{flag} returns 0 if the algorithm has succesfully converged, and 1
 ## otherwise.  The test for convergence is
 ##
 ## @example
@@ -158,14 +158,14 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
 
     if (b_sigma == 0)
       ## Find the smallest eigenvalues
-      ## The eigenvalues returns by eigs for sigma=0 are symmetric about 0. 
+      ## The eigenvalues returns by eigs for sigma=0 are symmetric about 0.
       ## As we are only interested in the positive eigenvalues, we have to
-      ## double k and then throw out the k negative eigenvalues. 
-      ## Separately, if sigma is non-zero, but smaller than the smallest 
-      ## singular value, ARPACK may not return k eigenvalues. However, as 
-      ## computation scales with k we'd like to avoid doubling k for all 
+      ## double k and then throw out the k negative eigenvalues.
+      ## Separately, if sigma is non-zero, but smaller than the smallest
+      ## singular value, ARPACK may not return k eigenvalues. However, as
+      ## computation scales with k we'd like to avoid doubling k for all
       ## scalar values of sigma.
-      b_k = 2 * k; 
+      b_k = 2 * k;
     else
       b_k = k;  # Normal case, find just the k largest eigenvalues
     endif
@@ -184,9 +184,9 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       norma = normest (A);
     endif
     ## We wish to exclude all eigenvalues that are less than zero as these
-    ## are artifacts of the way the matrix passed to eigs is formed. There 
-    ## is also the possibility that the value of sigma chosen is exactly 
-    ## a singular value, and in that case we're dead!! So have to rely on 
+    ## are artifacts of the way the matrix passed to eigs is formed. There
+    ## is also the possibility that the value of sigma chosen is exactly
+    ## a singular value, and in that case we're dead!! So have to rely on
     ## the warning from eigs. We exclude the singular values which are
     ## less than or equal to zero to within some tolerance scaled by the
     ## norm since if we don't we might end up with too many singular
@@ -194,7 +194,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     tol = norma * opts.tol;
     ind = find(s > tol);
     if (length (ind) < k)
-      ## Too few eigenvalues returned.  Add in any zero eigenvalues of B, 
+      ## Too few eigenvalues returned.  Add in any zero eigenvalues of B,
       ## including the nominally negative ones.
       zind = find (abs (s) <= tol);
       p = min (length (zind), k - length (ind));
@@ -251,26 +251,26 @@ endfunction
 %! v = v(:,idx);
 %! randn('state',42);      % Initialize to make normest function reproducible
 %! rand('state',42)
-%! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector 
+%! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(A,k);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s2, s(end:-1:end-k+1), 1e-10); 
+%! assert(s2, s(end:-1:end-k+1), 1e-10);
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(A,k,0,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s2, s(k:-1:1), 1e-10); 
+%! assert(s2, s(k:-1:1), 1e-10);
 %!testif HAVE_ARPACK
 %! idx = floor(n/2);
-%! % Don't put sigma right on a singular value or there are convergence issues 
-%! sigma = 0.99*s(idx) + 0.01*s(idx+1); 
+%! % Don't put sigma right on a singular value or there are convergence issues
+%! sigma = 0.99*s(idx) + 0.01*s(idx+1);
 %! [u2,s2,v2,flag] = svds(A,k,sigma,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
-%! assert(s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10); 
+%! assert(s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10);
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds(zeros (10), k);
 %! assert (isequal(u2, eye (10, k)) && isequal (s2, zeros(k)) && isequal (v2, eye(10, 7)))

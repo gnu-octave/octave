@@ -151,7 +151,7 @@ function __datetick__ (varargin)
     N = 3;
     if (xmax - xmin < N)
       ## Day scale or less
-      if (xmax - xmin < N / 24 / 60 / 60) 
+      if (xmax - xmin < N / 24 / 60 / 60)
         scl = 1 / 24 / 60 / 60;
       elseif (xmax - xmin < N / 24 / 6)
         scl = 1 / 24 / 60;
@@ -167,10 +167,10 @@ function __datetick__ (varargin)
     else
       [ymin, mmin, dmin] = datevec (xmin);
       [ymax, mmax, dmax] = datevec (xmax);
-      minyear = ymin + (mmin - 1) / 12 + (dmin - 1) / 12 / 30;    
-      maxyear = ymax + (mmax - 1) / 12 + (dmax - 1) / 12 / 30;    
-      minmonth = mmin + (dmin - 1) / 30;    
-      maxmonth = (ymax  - ymin) * 12 + mmax + (dmax - 1) / 30;    
+      minyear = ymin + (mmin - 1) / 12 + (dmin - 1) / 12 / 30;
+      maxyear = ymax + (mmax - 1) / 12 + (dmax - 1) / 12 / 30;
+      minmonth = mmin + (dmin - 1) / 30;
+      maxmonth = (ymax  - ymin) * 12 + mmax + (dmax - 1) / 30;
 
       if (maxmonth - minmonth < N)
         sep = __calc_tick_sep__ (xmin, xmax);
@@ -223,7 +223,7 @@ function __datetick__ (varargin)
       sticks = strvcat (datestr (ticks(1:end-1) - ticks(1) + startdate, form),
       datestr (ticks(end) - ticks(1) + startdate, form));
     else
-      sticks = strvcat (datestr (ticks(1:end-1), form), 
+      sticks = strvcat (datestr (ticks(1:end-1), form),
       datestr (ticks(end), form));
     endif
   else
@@ -240,7 +240,7 @@ function __datetick__ (varargin)
     if (keeplimits)
       set (gca(), strcat (ax, "ticklabel"), sticks);
     else
-      set (gca(), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"), 
+      set (gca(), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"),
       [min(ticks), max(ticks)]);
     endif
   else

@@ -26,29 +26,29 @@
 ## @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
-## In other words, this function attempts to determine a vector @var{x} such 
+## In other words, this function attempts to determine a vector @var{x} such
 ## that @code{@var{fcn} (@var{x})} is a local minimum.
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
+## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
 ## @code{"GradObj"}, @code{"FinDiffType"},
 ## @code{"TypicalX"}, @code{"AutoScaling"}.
 ##
 ## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
 ## of right-hand sides at the requested point.  @code{"TolX"} specifies
-## the termination tolerance in the unknown variables, while 
+## the termination tolerance in the unknown variables, while
 ## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
 ## for both @code{"TolX"} and @code{"TolFun"}.
-## 
+##
 ## For description of the other options, see @code{optimset}.
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
 ## evaluated at @var{x}, and @var{info} may be one of the following values:
-## 
+##
 ## @table @asis
 ## @item 1
 ## Converged to a solution point.  Relative gradient error is less than
@@ -59,20 +59,20 @@
 ## Last relative step size was less that TolX.
 ##
 ## @item 3
-## Last relative decrease in func value was less than TolF. 
+## Last relative decrease in func value was less than TolF.
 ##
 ## @item 0
 ## Iteration limit exceeded.
 ##
 ## @item -3
-## The trust region radius became excessively small. 
+## The trust region radius became excessively small.
 ## @end table
 ##
 ## Optionally, fminunc can also yield a structure with convergence statistics
 ## (@var{output}), the output gradient (@var{grad}) and approximate Hessian
 ## (@var{hess}).
 ##
-## Note: If you only have a single nonlinear equation of one variable, using 
+## Note: If you only have a single nonlinear equation of one variable, using
 ## @code{fminbnd} is usually a much better idea.
 ## @seealso{fminbnd, optimset}
 ## @end deftypefn
@@ -93,7 +93,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   if (nargin < 2 || nargin > 3 || ! ismatrix (x0))
     print_usage ();
-  endif    
+  endif
 
   if (ischar (fcn))
     fcn = str2func (fcn, "global");
@@ -182,7 +182,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endif
 
     if (niter == 1)
-      ## Initialize by identity matrix. 
+      ## Initialize by identity matrix.
       hesr = eye (n);
     else
       ## Use the damped BFGS formula.
@@ -304,7 +304,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
       ## Tests for termination conditions. A mysterious place, anything
       ## can happen if you change something here...
-      
+
       ## The rule of thumb (which I'm not sure M*b is quite following)
       ## is that for a tolerance that depends on scaling, only 0 makes
       ## sense as a default value. But 0 usually means uselessly long
@@ -350,11 +350,11 @@ function [fx, gx] = guarded_eval (fun, x)
   endif
 
   if (! (isreal (fx) && isreal (jx)))
-    error ("fminunc:notreal", "fminunc: non-real value encountered"); 
+    error ("fminunc:notreal", "fminunc: non-real value encountered");
   elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
     error ("fminunc:notnum", "fminunc: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fminunc:isnan", "fminunc: NaN value encountered"); 
+    error ("fminunc:isnan", "fminunc: NaN value encountered");
   endif
 endfunction
 

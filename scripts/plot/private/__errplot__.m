@@ -57,7 +57,7 @@ function h = __errplot__ (fstr, p, varargin)
 
     hg = hggroup ("parent", p);
     h = [h; hg];
-    args = __add_datasource__ ("__errplot__", hg, 
+    args = __add_datasource__ ("__errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
 
     if (isempty (fmt.color))
@@ -144,7 +144,7 @@ function h = __errplot__ (fstr, p, varargin)
           udata = varargin{6}(:,i);
         else
           error ("errorbar: error plot with 6 columns only valid for boxxy and xyerr");
-        endif        
+        endif
       otherwise
         error ("errorbar: error plot requires 2, 3, 4 or 6 arguments.");
     endswitch
@@ -161,19 +161,19 @@ function h = __errplot__ (fstr, p, varargin)
     addproperty ("linewidth", hg, "linelinewidth", get (hl(1), "linewidth"))
     addproperty ("linestyle", hg, "linelinestyle", get (hl(1), "linestyle"))
     addproperty ("marker", hg, "linemarker", get (hl(1), "marker"))
-    addproperty ("markerfacecolor", hg, "linemarkerfacecolor", 
+    addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
                  get (hl(1), "markerfacecolor"))
-    addproperty ("markeredgecolor", hg, "linemarkerfacecolor", 
+    addproperty ("markeredgecolor", hg, "linemarkerfacecolor",
                  get (hl(1), "markeredgecolor"))
-    addproperty ("markersize", hg, "linemarkersize", 
+    addproperty ("markersize", hg, "linemarkersize",
                  get (hl(1), "markersize"))
 
     fcn = {@update_props, hl};
     addlistener (hg, "color", fcn);
-    addlistener (hg, "linewidth", fcn); 
-    addlistener (hg, "linestyle", fcn); 
-    addlistener (hg, "marker", fcn); 
-    addlistener (hg, "markerfacecolor", fcn); 
+    addlistener (hg, "linewidth", fcn);
+    addlistener (hg, "linestyle", fcn);
+    addlistener (hg, "marker", fcn);
+    addlistener (hg, "markerfacecolor", fcn);
     addlistener (hg, "markersize", fcn);
 
     fcn = {@update_data, hl};
@@ -195,7 +195,7 @@ function h = __errplot__ (fstr, p, varargin)
 
 endfunction
 
-function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata, 
+function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
                                          xldata, xudata, ifmt,
                                          xscale, yscale)
   if (strcmp (xscale, "linear"))
@@ -249,9 +249,9 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ydata = [ydata-ldata, ydata-ldata, ydata+udata, ydata+udata, ...
              ydata-ldata, nans];
   elseif (strcmp (ifmt, "xyerr"))
-    [x1, y1] = errorbar_data (xdata, ydata, ldata, udata, 
+    [x1, y1] = errorbar_data (xdata, ydata, ldata, udata,
                               xldata, xudata, "xerr", xscale, yscale);
-    [x2, y2] = errorbar_data (xdata, ydata, ldata, udata, 
+    [x2, y2] = errorbar_data (xdata, ydata, ldata, udata,
                               xldata, xudata, "yerr", xscale, yscale);
     xdata = [x1; x2];
     ydata = [y1; y2];
@@ -264,9 +264,9 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
 endfunction
 
 function update_props (hg, dummy, hl)
-  set (hl, "color", get (hg, "color"), 
+  set (hl, "color", get (hg, "color"),
            "linewidth", get (hg, "linewidth"));,
-  set (hl(1), "linestyle", get (hg, "linestyle"), 
+  set (hl(1), "linestyle", get (hg, "linestyle"),
               "marker", get (hg, "marker"),
               "markersize", get (hg, "markersize"),
               "markerfacecolor", get (hg, "markerfacecolor"),

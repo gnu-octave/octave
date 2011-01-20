@@ -196,7 +196,7 @@ function [r, p, k, e] = residue (b, a, varargin)
   p = p (indx);
 
   ## For each group of pole multiplicity, set the value of each
-  ## pole to the average of the group. This reduces the error in 
+  ## pole to the average of the group. This reduces the error in
   ## the resulting poles.
 
   p_group = cumsum (e == 1);
@@ -284,7 +284,7 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   if (nargin < 3)
     k = [];
   endif
- 
+
   if numel (e)
     indx = 1:numel(p);
   else

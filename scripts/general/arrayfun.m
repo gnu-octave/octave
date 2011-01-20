@@ -35,7 +35,7 @@
 ## array, a structure array or a cell array.  By a call of the function
 ## @command{arrayfun} all elements of @var{A} are passed on to the named
 ## function @var{func} individually.
-## 
+##
 ## The named function can also take more than two input arguments, with
 ## the input arguments given as third input argument @var{b}, fourth
 ## input argument @var{c}, @dots{}  If given more than one array input

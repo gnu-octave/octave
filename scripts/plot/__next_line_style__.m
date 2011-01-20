@@ -44,10 +44,10 @@ function [linestyle, marker] = __next_line_style__ (reset)
         style_index = 1;
       endif
     elseif (! isempty (style_rotation))
-      options = __pltopt__ ("__next_line_style__", 
+      options = __pltopt__ ("__next_line_style__",
                             style_rotation (style_index));
       linestyle = options.linestyle;
-      marker = options.marker;   
+      marker = options.marker;
     else
       error ("__next_line_style__: style_rotation not initialized");
     endif

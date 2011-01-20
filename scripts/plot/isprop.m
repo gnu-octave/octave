@@ -29,7 +29,7 @@ function res = isprop (h, prop)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
- 
+
   if (! ishandle (h))
     error ("isprop: first input argument must be a handle");
   elseif (! ischar (prop))

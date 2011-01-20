@@ -51,7 +51,7 @@ function yiq = rgb2ntsc (rgb)
   if (! ismatrix (rgb) || columns (rgb) != 3)
     error ("rgb2ntsc: argument must be a matrix of size Nx3 or NxMx3");
   endif
-  
+
   ## Convert data
   trans = [ 0.299,  0.596,  0.211;
             0.587, -0.274, -0.523;

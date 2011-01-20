@@ -118,7 +118,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
   elseif (isa (fun, "function_handle"))
     fstr = func2str (fun);
     if (length (findstr (fstr, ")")) != 0)
-      args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3), 
+      args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3),
                      '(\w+)', 'tokens');
     fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
     else
@@ -176,7 +176,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       parametric = true;
       fstry = func2str (funy);
       if (length (findstr (fstry, ")")) != 0)
-        args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3), 
+        args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3),
                        '(\w+)', 'tokens');
         fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
       else
@@ -216,7 +216,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
         fstrz = formula (funz);
       elseif (isa (funz, "function_handle"))
         fstrz = func2str (funz);
-        args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3), 
+        args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3),
                        '(\w+)', 'tokens');
         if (length (args) != nargs)
           error ("%s: excepting a function of %d arguments", func, nargs);
@@ -229,7 +229,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
   endif
 
   if (isplot && nargs != 2)
-    n = 500; 
+    n = 500;
   else
     n = 60;
   endif
@@ -276,7 +276,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       return;
     endif
     if (parametric)
-      error ("%s: can not have both circular domain and parametric function", 
+      error ("%s: can not have both circular domain and parametric function",
              func);
     endif
     cent = [domain(1) + domain(2), domain(3) + domain(4)] / 2;
@@ -330,14 +330,14 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       Z = __eliminate_sing__ (Z);
     endif
 
-    fstrx = regexprep (regexprep (regexprep (fstrx,'\s*\.?\^\s*','^'), 
+    fstrx = regexprep (regexprep (regexprep (fstrx,'\s*\.?\^\s*','^'),
                       '\./', '/'), '\.?\*', '');
-    fstry = regexprep (regexprep (regexprep (fstry,'\s*\.?\^\s*','^'), 
+    fstry = regexprep (regexprep (regexprep (fstry,'\s*\.?\^\s*','^'),
                       '\./', '/'), '\.?\*', '');
     if (isplot)
       fstr = cstrcat ("x = ",fstrx,", y = ",fstry);
     else
-      fstrz = regexprep (regexprep (regexprep (fstrz,'\s*\.?\^\s*','^'), 
+      fstrz = regexprep (regexprep (regexprep (fstrz,'\s*\.?\^\s*','^'),
                                     '\./', '/'), '\.?\*', '');
       fstr = cstrcat ("x = ",fstrx,",y = ",fstry,", z = ",fstrz);
     endif
@@ -347,7 +347,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       return;
     endif
 
-    fstr = regexprep (regexprep (regexprep (fstr,'\s*\.?\^\s*','^'), '\./', '/'), 
+    fstr = regexprep (regexprep (regexprep (fstr,'\s*\.?\^\s*','^'), '\./', '/'),
                       '\.?\*', '');
     if (isplot && nargs == 2)
       if (strcmp (typeinfo (fun), "inline function")
@@ -359,7 +359,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
 
       Z = feval (fun, X, Y);
 
-      ## Matlab returns line objects for this case and so can't call 
+      ## Matlab returns line objects for this case and so can't call
       ## contour directly as it returns patch objects to allow colormaps
       ## to work with contours. Therefore recreate the lines from the
       ## output for contourc, and store in cell arrays.
@@ -375,7 +375,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
         YY = [YY, {c(2, i1+1:i1+clen)}];
         i1 += clen+1;
       endwhile
-    else  
+    else
       if (ispolar)
         Z = feval (fun, X);
       elseif (isplot)
@@ -396,7 +396,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
         idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
                  ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange (2) / 2)));
         if (any(idx))
-          Z(idx) = NaN; 
+          Z(idx) = NaN;
         endif
       else
         Z = feval (fun, X, Y);
@@ -407,7 +407,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
   endif
 
-  oldax = gca (); 
+  oldax = gca ();
   unwind_protect
     axes (ax);
     if (iscontour)

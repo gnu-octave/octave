@@ -44,10 +44,10 @@
 ## The values of the polynomial for each value of @var{x}.
 ## @end table
 ##
-## The second output may be used by @code{polyval} to calculate the 
+## The second output may be used by @code{polyval} to calculate the
 ## statistical error limits of the predicted values.
 ##
-## When the third output, @var{mu}, is present the 
+## When the third output, @var{mu}, is present the
 ## coefficients, @var{p}, are associated with a polynomial in
 ## @var{xhat} = (@var{x}-@var{mu}(1))/@var{mu}(2).
 ## Where @var{mu}(1) = mean (@var{x}), and @var{mu}(2) = std (@var{x}).

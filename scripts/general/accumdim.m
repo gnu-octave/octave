@@ -19,18 +19,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} accumdim (@var{subs}, @var{vals}, @var{dim}, @var{n}, @var{func}, @var{fillval})
 ## Create an array by accumulating the slices of an array into the
-## positions defined by their subscripts along a specified dimension. 
+## positions defined by their subscripts along a specified dimension.
 ## The subscripts are defined by the index vector @var{subs}.
 ## The dimension is specified by @var{dim}.  If not given, it defaults
 ## to the first non-singleton dimension.
 ##
-## The extent of the result matrix in the working dimension will be determined 
+## The extent of the result matrix in the working dimension will be determined
 ## by the subscripts themselves.
 ## However, if @var{n} is defined it determines this extent.
 ##
 ## The default action of @code{accumdim} is to sum the subarrays with the
 ## same subscripts.  This behavior can be modified by defining the @var{func}
-## function.  This should be a function or function handle that accepts an 
+## function.  This should be a function or function handle that accepts an
 ## array and a dimension, and reduces the array along this dimension.
 ## As a special exception, the built-in @code{min} and @code{max} functions
 ## can be used directly, and @code{accumdim} accounts for the middle empty
@@ -85,11 +85,11 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
     sz(end+1:dim) = 1;
   endif
   sz(dim) = n;
- 
+
   if (isempty (func) || func == @sum)
     ## Fast summation case.
     A = __accumdim_sum__ (subs, vals, dim, n);
-    
+
     ## Fill in nonzero fill value
     if (fillval != 0)
       mask = true (n, 1);

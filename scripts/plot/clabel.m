@@ -107,7 +107,7 @@ function retval = clabel (c, varargin)
   if (have_hg)
     if (! isempty (v))
       if (have_labelspacing)
-        set (hg, "textlistmode", "manual", "textlist", v, 
+        set (hg, "textlistmode", "manual", "textlist", v,
              "labelspacing", label_spacing, "showtext", "on");
       else
         set (hg, "textlistmode", "manual", "textlist", v, "showtext", "on");

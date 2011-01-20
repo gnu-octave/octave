@@ -33,14 +33,14 @@
 
 ## todo:  Add moments for centroid, etc.
 ##
-## bugs and limitations:  
+## bugs and limitations:
 ##        Probably ought to be an optional check to make sure that
-##        traversing the vertices doesn't make any sides cross 
-##        (Is simple closed curve the technical definition of this?). 
+##        traversing the vertices doesn't make any sides cross
+##        (Is simple closed curve the technical definition of this?).
 
 ## Author: David M. Doolin <doolin@ce.berkeley.edu>
 ## Date: 1999-04-14
-## Modified-by: 
+## Modified-by:
 ##    2000-01-15 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ##    * use matlab compatible interface
 ##    * return absolute value of area so traversal order doesn't matter

@@ -26,13 +26,13 @@
 ##
 ## Produce histogram counts or plots.
 ##
-## With one vector input argument, @var{y}, plot a histogram of the values 
-## with 10 bins.  The range of the histogram bins is determined by the 
+## With one vector input argument, @var{y}, plot a histogram of the values
+## with 10 bins.  The range of the histogram bins is determined by the
 ## range of the data.  With one matrix input argument, @var{y}, plot a
 ## histogram where each bin contains a bar per input column.
 ##
 ## Given a second vector argument, @var{x}, use that as the centers of
-## the bins, with the width of the bins determined from the adjacent 
+## the bins, with the width of the bins determined from the adjacent
 ## values in the vector.
 ##
 ## If scalar, the second argument, @var{nbins}, defines the number of bins.
@@ -46,7 +46,7 @@
 ## that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
 ##
 ## The histogram's appearance may be modified by specifying property/value
-## pairs, @var{prop} and @var{val} pairs.  For example the face and edge 
+## pairs, @var{prop} and @var{val} pairs.  For example the face and edge
 ## color may be modified.
 ##
 ## @example

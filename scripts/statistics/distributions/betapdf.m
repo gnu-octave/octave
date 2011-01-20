@@ -31,7 +31,7 @@ function pdf = betapdf (x, a, b)
   if (nargin != 3)
     print_usage ();
   endif
-  
+
   if (!isscalar (a) || !isscalar(b))
     [retval, x, a, b] = common_size (x, a, b);
     if (retval > 0)
@@ -51,11 +51,11 @@ function pdf = betapdf (x, a, b)
   if (any (k))
     if (isscalar(a) && isscalar(b))
       pdf(k) = exp ((a - 1) .* log (x(k))
-		            + (b - 1) .* log (1 - x(k))
+                            + (b - 1) .* log (1 - x(k))
                     + lgamma(a + b) - lgamma(a) - lgamma(b));
     else
       pdf(k) = exp ((a(k) - 1) .* log (x(k))
-		            + (b(k) - 1) .* log (1 - x(k))
+                            + (b(k) - 1) .* log (1 - x(k))
                     + lgamma(a(k) + b(k)) - lgamma(a(k)) - lgamma(b(k)));
     endif
   endif

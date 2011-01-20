@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} orient (@var{orientation})
 ## Set the default print orientation.  Valid values for
-## @var{orientation} include @code{"landscape"}, @code{"portrait"}, 
+## @var{orientation} include @code{"landscape"}, @code{"portrait"},
 ## and @code{"tall"}.
 ##
 ## The @code{"tall"} option sets the orientation to portait and fills

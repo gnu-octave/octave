@@ -44,7 +44,7 @@ function print_usage (name)
   else
     fullname = name;
   endif
-  
+
   ## Determine if we're called from top level.
   at_toplev = length (x) < 2 || (length (x) == 2 && strcmp (x(2).name, name));
 
@@ -65,7 +65,7 @@ function print_usage (name)
     otherwise
       error ("print_usage: internal error: unsupported help text format: '%s'\n", format);
   endswitch
-  
+
   ## Raise the final error
   if (status != 0)
     warning ("print_usage: Texinfo formatting filter exited abnormally");
@@ -100,7 +100,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
   ## Lines ending with "@\n" are continuation lines, so they should be
   ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
-  
+
   ## Find, and keep, lines that start with @def or @end def. This should include things
   ## such as @deftypefn, @deftypefnx, @defvar, etc. and their corresponding @end's
   def_idx = strfind (help_text, "@def");
@@ -115,7 +115,7 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
         buffer = strcat (buffer, help_text (def_idx (k):endl));
       endif
     endfor
-    
+
     end_def_idx = strfind (help_text, "@end def");
     if (!isempty (end_def_idx))
       buffer = strcat (buffer, help_text (end_def_idx:end));
@@ -131,7 +131,7 @@ endfunction
 function [retval, status] = get_usage_html (help_text, max_len)
   ## Strip tags
   [help_text, status] = strip_html_tags (help_text);
-  
+
   ## Extract first line with plain text method.
   retval = get_usage_plain_text (help_text, max_len);
 endfunction

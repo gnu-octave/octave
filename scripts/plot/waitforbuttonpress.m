@@ -37,9 +37,9 @@ function a = waitforbuttonpress ()
   [x, y, k] = ginput (1);
 
   if (nargout == 1)
-    if (k <= 5) 
+    if (k <= 5)
       a = 0;
-    else 
+    else
       a = 1;
     endif
   endif

@@ -50,7 +50,7 @@
 ## to improve numerical behavior.  The default value is 0.
 ##
 ## Reference: A. Hodel, P. Misra, @cite{Partial Pivoting in the Computation of
-## Krylov Subspaces of Large Sparse Systems}, Proceedings of the 42nd IEEE 
+## Krylov Subspaces of Large Sparse Systems}, Proceedings of the 42nd IEEE
 ## Conference on Decision and Control, December 2003.
 ## @end deftypefn
 

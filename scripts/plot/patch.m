@@ -33,7 +33,7 @@
 ## example, "r" or "red").
 ##
 ## If passed a structure @var{fv} contain the fields "vertices", "faces"
-## and optionally "facevertexcdata", create the patch based on these 
+## and optionally "facevertexcdata", create the patch based on these
 ## properties.
 ## @end deftypefn
 

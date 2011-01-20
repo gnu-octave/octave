@@ -37,7 +37,7 @@
 ## Liberally based on the version by Kai Habel from octave-forge
 
 function C = bitcmp (A, k)
-  
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

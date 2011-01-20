@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t}) 
+## @deftypefn  {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
 ## Apply Higham and Tisseur's randomized block 1-norm estimator to
 ## matrix @var{A} using @var{t} test vectors.  If @var{t} exceeds 5, then
 ## only 5 test vectors are used.
 ##
-## If the matrix is not explicit, e.g., when estimating the norm of 
-## @code{inv (@var{A})} given an LU factorization, @code{onenormest} applies 
-## @var{A} and its conjugate transpose through a pair of functions 
-## @var{apply} and @var{apply_t}, respectively, to a dense matrix of size 
-## @var{n} by @var{t}.  The implicit version requires an explicit dimension 
+## If the matrix is not explicit, e.g., when estimating the norm of
+## @code{inv (@var{A})} given an LU factorization, @code{onenormest} applies
+## @var{A} and its conjugate transpose through a pair of functions
+## @var{apply} and @var{apply_t}, respectively, to a dense matrix of size
+## @var{n} by @var{t}.  The implicit version requires an explicit dimension
 ## @var{n}.
 ##
 ## Returns the norm estimate @var{est}, two vectors @var{v} and
@@ -37,7 +37,7 @@
 ## and the number of iterations @var{iter}.  The number of
 ## iterations is limited to 10 and is at least 2.
 ##
-## References: 
+## References:
 ## @itemize
 ## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
@@ -198,7 +198,7 @@ function [est, v, w, iter] = onenormest (varargin)
       replacements = 2*(rand (n,numpar) < 0.5) - 1;
       S(:,partest) = replacements;
     endif
-    
+
     Z = feval (apply_t, S);
 
     ## Now find the largest non-previously-visted index per

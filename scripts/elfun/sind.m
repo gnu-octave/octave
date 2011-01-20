@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sind (@var{x})
-## Compute the sine for each element of @var{x} in degrees.  Returns zero 
+## Compute the sine for each element of @var{x} in degrees.  Returns zero
 ## for elements where @code{@var{x}/180} is an integer.
 ## @seealso{asind, sin}
 ## @end deftypefn

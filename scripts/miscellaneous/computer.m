@@ -68,7 +68,7 @@ function [c, maxsize, endian] = computer ()
       endian = "L";
     else
       endian = "?";
-    endif      
+    endif
   endif
 
 endfunction

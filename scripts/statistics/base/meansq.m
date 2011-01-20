@@ -37,7 +37,7 @@
 ##
 ## @end ifnottex
 ## For matrix arguments, return a row vector containing the mean square
-## of each column. 
+## of each column.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{var,std,moment}
@@ -57,7 +57,7 @@ function y = meansq (x, dim)
   endif
 
   nd = ndims (x);
-  sz = size (x); 
+  sz = size (x);
   if (nargin < 2)
     ## Find the first non-singleton dimension.
     dim = find (sz > 1, 1);

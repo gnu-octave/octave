@@ -65,7 +65,7 @@ function refreshdata (h, workspace)
     if (nargin < 2)
       workspace = "base";
     else
-      if (   !ischar (workspace) 
+      if (   !ischar (workspace)
           || !(strcmpi (workspace, "base")
           || strcmpi (workspace, "caller")))
         error ("refreshdata: expecting WORKSPACE to be \"base\" or ""caller\"");

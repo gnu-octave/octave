@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{})
 ## @deftypefnx {Function File} {@var{h} =} slice (@dots{}, @var{method})
-## Plot slices of 3-D data/scalar fields.  Each element of the 3-dimensional 
+## Plot slices of 3-D data/scalar fields.  Each element of the 3-dimensional
 ## array @var{v} represents a scalar value at a location given by the
 ## parameters @var{x}, @var{y}, and @var{z}.  The parameters @var{x},
 ## @var{x}, and @var{z} are either 3-dimensional arrays of the same size
@@ -33,9 +33,9 @@
 ## interpolated using interp3.  The vectors @var{sx}, @var{sy}, and
 ## @var{sz} contain points of orthogonal slices of the respective axes.
 ##
-## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be 
+## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be
 ## @code{x = 1:size (@var{v}, 2)}, @code{y = 1:size (@var{v}, 1)} and
-## @code{z = 1:size (@var{v}, 3)}. 
+## @code{z = 1:size (@var{v}, 3)}.
 ##
 ## @var{Method} is one of:
 ##

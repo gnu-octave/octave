@@ -27,14 +27,14 @@
 ## of @var{th} produces a separate histogram.
 ##
 ## If @var{r} is given and is a scalar, then the histogram is produced with
-## @var{r} bins.  If @var{r} is a vector, then the center of each bin are 
+## @var{r} bins.  If @var{r} is a vector, then the center of each bin are
 ## defined by the values of @var{r}.
 ##
-## The optional return value @var{h} provides a list of handles to the 
+## The optional return value @var{h} provides a list of handles to the
 ## the parts of the vector field (body, arrow and marker).
 ##
-## If two output arguments are requested, then rather than plotting the 
-## histogram, the polar vectors necessary to plot the histogram are 
+## If two output arguments are requested, then rather than plotting the
+## histogram, the polar vectors necessary to plot the histogram are
 ## returned.
 ##
 ## @example
@@ -50,7 +50,7 @@
 
 function [thout, rout] = rose (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 1), "rose", 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 1), "rose",
                                                 varargin{:});
 
   if (nargin < 1)
@@ -64,7 +64,7 @@ function [thout, rout] = rose (varargin)
   if (nargin > 1)
     x = varargin {2};
     if (isscalar (x))
-      x = [0.5/x : 1/x : 1] * 2 * pi; 
+      x = [0.5/x : 1/x : 1] * 2 * pi;
     else
       ## Force theta to [0,2*pi] range
       x = atan2  (sin (x), cos (x)) + pi;

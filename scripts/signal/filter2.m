@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{y} =} filter2 (@var{b}, @var{x}, @var{shape})
 ## Apply the 2-D FIR filter @var{b} to @var{x}.  If the argument
 ## @var{shape} is specified, return an array of the desired shape.
-## Possible values are: 
+## Possible values are:
 ##
 ## @table @asis
 ## @item 'full'
@@ -40,7 +40,7 @@
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
-## 2001-02-08 
+## 2001-02-08
 ##    * initial release
 
 function y = filter2 (b, x, shape)

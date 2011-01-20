@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')
 ##
 ## One-dimensional interpolation.  Interpolate @var{y}, defined at the
-## points @var{x}, at the points @var{xi}.  The sample points @var{x} 
+## points @var{x}, at the points @var{xi}.  The sample points @var{x}
 ## must be monotonic.  If not specified, @var{x} is taken to be the
 ## indices of @var{y}.  If @var{y} is an array, treat the columns
 ## of @var{y} separately.
@@ -151,7 +151,7 @@ function yi = interp1 (x, y, varargin)
   if (isvector (y))
     y = y(:);
   elseif (isvector (xi))
-    szx = length (xi);    
+    szx = length (xi);
   endif
   szy = size (y);
   y = y(:,:);
@@ -249,7 +249,7 @@ function yi = interp1 (x, y, varargin)
       yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
     endif
   case {"pchip", "*pchip"}
-    if (nx == 2 || starmethod) 
+    if (nx == 2 || starmethod)
       x = linspace (x(1), x(nx), ny);
     endif
     ## Note that pchip's arguments are transposed relative to interp1
@@ -267,7 +267,7 @@ function yi = interp1 (x, y, varargin)
 
     ## FIXME Is there a better way to treat pp return and *cubic
     if (starmethod && ! pp)
-      ## From: Miloje Makivic 
+      ## From: Miloje Makivic
       ## http://www.npac.syr.edu/projects/nasa/MILOJE/final/node36.html
       t = (xi - x(1))/dx + 1;
       idx = max (min (floor (t), ny-2), 2);
@@ -284,7 +284,7 @@ function yi = interp1 (x, y, varargin)
       + c(:,J) .* y(idx-1,:) + d(:,J) .* y(idx+2,:);
     else
       if (starmethod)
-        x = linspace (x(1), x(nx), ny).'; 
+        x = linspace (x(1), x(nx), ny).';
         nx = ny;
       endif
 
@@ -306,8 +306,8 @@ function yi = interp1 (x, y, varargin)
 
       if (pp)
         xs = [x(1);x(3:nx-2)];
-        yi = mkpp ([x(1);x(3:nx-2);x(nx)], 
-                   [a(:), (b(:) + 3.*xs(:,J).*a(:)), ... 
+        yi = mkpp ([x(1);x(3:nx-2);x(nx)],
+                   [a(:), (b(:) + 3.*xs(:,J).*a(:)), ...
                     (c(:) + 2.*xs(:,J).*b(:) + 3.*xs(:,J)(:).^2.*a(:)), ...
                     (d(:) + xs(:,J).*c(:) + xs(:,J).^2.*b(:) + ...
                      xs(:,J).^3.*a(:))], szy(2:end));
@@ -317,8 +317,8 @@ function yi = interp1 (x, y, varargin)
       endif
     endif
   case {"spline", "*spline"}
-    if (nx == 2 || starmethod) 
-      x = linspace(x(1), x(nx), ny); 
+    if (nx == 2 || starmethod)
+      x = linspace(x(1), x(nx), ny);
     endif
     ## Note that spline's arguments are transposed relative to interp1
     if (pp)
@@ -401,7 +401,7 @@ endfunction
 ## confirm they are the correct values.
 
 %!shared xp, yp, xi, style
-%! xp=0:2:10;      yp = sin(2*pi*xp/5);  
+%! xp=0:2:10;      yp = sin(2*pi*xp/5);
 %! xi = [-1, 0, 2.2, 4, 6.6, 10, 11];
 
 
@@ -410,7 +410,7 @@ endfunction
 ## The test for ppval of cubic has looser tolerance, but otherwise
 ## the tests are identical.
 ## Note that the block checks style and *style; if you add more tests
-## before to add them to both sections of each block.  One test, 
+## before to add them to both sections of each block.  One test,
 ## style vs. *style, occurs only in the first section.
 ## There is an ENDBLOCKTEST after the final block
 %!test style = "nearest";

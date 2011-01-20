@@ -38,11 +38,11 @@
 ## @end ifnottex
 ## If @var{x} is a matrix, compute the variance for each column
 ## and return them in a row vector.
-## 
+##
 ## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are
 ##
-## @table @asis 
+## @table @asis
 ## @item 0:
 ##   normalize with @math{N-1}, provides the best unbiased estimator of the
 ## variance [default]

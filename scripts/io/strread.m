@@ -104,7 +104,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (nargin < 1)
     print_usage ();
   endif
- 
+
   if (!ischar (str) || !ischar (format))
     error ("strread: STR and FORMAT arguments must be strings");
   endif
@@ -138,7 +138,7 @@ function varargout = strread (str, format = "%f", varargin)
         ## XXX: We could synthesize this, but that just seems weird...
         warning ("strread: property \"bufsize\" is not implemented");
       case "whitespace"
-        white_spaces = varargin {n+1}; 
+        white_spaces = varargin {n+1};
       case "expchars"
         warning ("strread: property \"expchars\" is not implemented");
       otherwise
@@ -201,12 +201,12 @@ function varargout = strread (str, format = "%f", varargin)
       endif
     endif
   endfor
- 
+
   ## Split 'str' into words
   words = split_by (str, delimiter_str);
   num_words = numel (words);
   num_lines = ceil (num_words / num_words_per_line);
- 
+
   ## For each specifier
   k = 1;
   for m = 1:num_words_per_line

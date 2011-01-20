@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
 ## @deftypefnx {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
 ## Calculate specular reflection strength of a surface defined by the normal
-## vector elements @var{sx}, @var{sy}, @var{sz} using Phong's approximation. 
+## vector elements @var{sx}, @var{sy}, @var{sz} using Phong's approximation.
 ## The light and view vectors can be specified using parameter @var{lv} and
 ## @var{vv} respectively.
 ## Both can be given as 2-element vectors [azimuth, elevation] in degrees or as
@@ -51,7 +51,7 @@ function retval = specular (sx, sy, sz, lv, vv, se)
   if (!size_equal (sx, sy, sz))
     error ("specular: SX, SY, and SZ must have same size");
   endif
-  
+
   ## Check for light vector (lv) argument.
   if (length (lv) < 2 || length (lv) > 3)
     error ("specular: light vector LV must be a 2- or 3-element vector");
@@ -81,12 +81,12 @@ function retval = specular (sx, sy, sz, lv, vv, se)
 
   ## Calculate specular reflection using Phong's approximation.
   retval = 2 * l_dot_n .* v_dot_n - dot (lv, vv);
-  
+
   ## Set zero if light is on the other side.
   retval(l_dot_n < 0) = 0;
 
   ## Allow postive values only.
   retval(retval < 0) = 0;
   retval = retval .^ se;
-  
+
 endfunction

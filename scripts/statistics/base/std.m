@@ -38,20 +38,20 @@
 ## @noindent
 ## where @math{N} is the number of elements.
 ## @end ifnottex
-## 
+##
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ##
-## The argument @var{opt} determines the type of normalization to use.  
+## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are
 ##
 ## @table @asis
 ## @item 0:
-##   normalize with @math{N-1}, provides the square root of the best unbiased 
+##   normalize with @math{N-1}, provides the square root of the best unbiased
 ## estimator of the variance [default]
 ##
 ## @item 1:
-##   normalize with @math{N}, this provides the square root of the second 
+##   normalize with @math{N}, this provides the square root of the second
 ## moment around the mean
 ## @end table
 ##

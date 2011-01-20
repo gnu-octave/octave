@@ -34,7 +34,7 @@
 function rnd = wblrnd (scale, shape, r, c)
 
   if (nargin > 1)
-    if (!isscalar(scale) || !isscalar(shape)) 
+    if (!isscalar(scale) || !isscalar(shape))
       [retval, scale, shape] = common_size (scale, shape);
       if (retval > 0)
         error ("wblrnd: SCALE and SHAPE must be of common size or scalar");

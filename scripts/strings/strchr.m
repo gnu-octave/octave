@@ -56,7 +56,7 @@ function varargout = strchr (str, chars, varargin)
   varargout = cell (1, nargout);
   varargout{1} = [];
   [varargout{:}] = find (mask, varargin{:});
-endfunction 
+endfunction
 
 %!assert(strchr("Octave is the best software",""),zeros(1,0))
 %!assert(strchr("Octave is the best software","best"),[3, 6, 9, 11, 13, 15, 16, 17, 18, 20, 23, 27])

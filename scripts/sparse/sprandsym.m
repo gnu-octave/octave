@@ -24,7 +24,7 @@
 ## @var{d} should be between 0 and 1. Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
-## Note: sometimes the actual density may be a bit smaller than @var{d}. 
+## Note: sometimes the actual density may be a bit smaller than @var{d}.
 ## This is unlikely to happen for large really sparse matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
@@ -44,7 +44,7 @@ function S = sprandsym (n, d)
     n1 = m1 + rem (n, 2);
     mn1 = m1*n1;
     k1 = round (d*mn1);
-    idx1 = unique (fix (rand (min (k1*1.01, k1+10), 1) * mn1)) + 1; 
+    idx1 = unique (fix (rand (min (k1*1.01, k1+10), 1) * mn1)) + 1;
     ## idx contains random numbers in [1,mn] generate 1% or 10 more
     ## random values than necessary in order to reduce the probability
     ## that there are less than k distinct values; maybe a better
@@ -58,7 +58,7 @@ function S = sprandsym (n, d)
     n2 = ceil (n/2);
     nn2 = n2*n2;
     k2 = round (d*nn2);
-    idx2 = unique (fix (rand (min (k2*1.01, k1+10), 1) * nn2)) + 1; 
+    idx2 = unique (fix (rand (min (k2*1.01, k1+10), 1) * nn2)) + 1;
     k2 = min (length (idx2), k2);
     j2 = floor ((idx2(1:k2)-1)/n2);
     i2 = idx2(1:k2) - j2*n2;

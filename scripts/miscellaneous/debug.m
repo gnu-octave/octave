@@ -64,7 +64,7 @@
 ##
 ## @item debug_on_interrupt
 ## Flag whether to enter debug mode in case Octave encounters an interupt.
-## 
+##
 ## @end table
 ##
 ## @noindent

@@ -23,7 +23,7 @@
 ## the elements of @var{x}.
 ##
 ## If @var{x} is a matrix, do the same for each column of @var{x}.
-## If the optional @var{dim} argument is given, operate along this 
+## If the optional @var{dim} argument is given, operate along this
 ## dimension.
 ## @end deftypefn
 
@@ -82,10 +82,10 @@ endfunction
 %! a = [1, 2, 3];
 %! b = [4, 5, 6];
 %! c = [7, 8, 9];
-%! 
+%!
 %! r = [a, b, c];
 %! m = [a; b; c];
-%! 
+%!
 %! assert((shift (r, 3) == [c, a, b]
 %! && shift (r, -6) == [c, a, b]
 %! && shift (r, -3) == [b, c, a]

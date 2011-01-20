@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} fcdf (@var{x}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the CDF at @var{x} of the F
 ## distribution with @var{m} and @var{n} degrees of freedom, i.e.,
-## PROB (F (@var{m}, @var{n}) @leq{} @var{x}). 
+## PROB (F (@var{m}, @var{n}) @leq{} @var{x}).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -57,7 +57,7 @@ function cdf = fcdf (x, m, n)
     if (isscalar (m) && isscalar (n))
       cdf(k) = 1 - betainc (1 ./ (1 + m .* x(k) ./ n), n / 2, m / 2);
     else
-      cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2, 
+      cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2,
                             m(k) / 2);
     endif
   endif

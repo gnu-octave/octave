@@ -25,7 +25,7 @@
 ## list of possible values.
 
 function names = __all_opts__ (varargin)
-  
+
   persistent saved_names = {};
 
   ## do not clear this function

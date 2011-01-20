@@ -27,7 +27,7 @@
 ## If defined, @var{fig} is the handle to the figure to be inverted.  In
 ## this case only this figure has its color properties changed
 ##
-## The background colors of the figure and its children can be set 
+## The background colors of the figure and its children can be set
 ## specifically if @var{color} is defined.  @var{color} must be a valid
 ## color set as a string or an RGB triplet, or the value "none".
 ##
@@ -94,7 +94,7 @@ function whitebg (varargin)
       children = [];
       for n = 1 : numel (handles)
         children = union (children, get(handles(n), "children"));
-      endfor 
+      endfor
       handles = children;
       h = union (h, children);
     endwhile
@@ -134,7 +134,7 @@ function whitebg (varargin)
     set (findall (fig, "type", "axes"), "color", color);
     if (isroot)
       defs = get (0, "defaults");
-      if (isfield (defs, "defaultaxescolor") 
+      if (isfield (defs, "defaultaxescolor")
           && strcmp (defs.defaultaxescolor, "none"))
         set (0, "defaultaxescolor", color);
       endif

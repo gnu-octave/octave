@@ -27,7 +27,7 @@
 ## @var{d} should be between 0 and 1. Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
-## Note: sometimes the actual density may be a bit smaller than @var{d}. 
+## Note: sometimes the actual density may be a bit smaller than @var{d}.
 ## This is unlikely to happen for large really sparse matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
@@ -45,7 +45,7 @@ function S = sprandn (m, n, d)
   elseif (nargin == 3)
     mn = m*n;
     k = round (d*mn);
-    idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1; 
+    idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1;
     ## idx contains random numbers in [1,mn]
     ## generate 1% or 10 more random values than necessary in order to
     ## reduce the probability that there are less than k distinct

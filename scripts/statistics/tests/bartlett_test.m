@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} bartlett_test (@var{x1}, @dots{}) 
+## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} bartlett_test (@var{x1}, @dots{})
 ## Perform a Bartlett test for the homogeneity of variances in the data
 ## vectors @var{x1}, @var{x2}, @dots{}, @var{xk}, where @var{k} > 1.
 ##

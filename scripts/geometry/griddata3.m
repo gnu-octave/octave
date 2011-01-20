@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v} @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
-## 
+##
 ## Generate a regular mesh from irregular data using interpolation.
 ## The function is defined by @code{@var{y} = f (@var{x},@var{y},@var{z})}.
-## The interpolation points are all @var{xi}.  
+## The interpolation points are all @var{xi}.
 ##
 ## The interpolation method can be @code{"nearest"} or @code{"linear"}.
 ## If method is omitted it defaults to @code{"linear"}.
@@ -31,7 +31,7 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
-        
+
   if (nargin < 7)
     print_usage ();
   endif
@@ -41,7 +41,7 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
   endif
 
   ## meshgrid xi, yi and zi if they are vectors unless they
-  ## are vectors of the same length 
+  ## are vectors of the same length
   if (isvector (xi) && isvector (yi) && isvector (zi)
       && (numel (xi) != numel (yi) || numel (xi) != numel (zi)))
     [xi, yi, zi] = meshgrid (xi, yi, zi);

@@ -24,22 +24,22 @@
 ##
 ## If @code{edit} is called with the name of a file or function as
 ## its argument it will be opened in a text editor.
-## 
+##
 ## @itemize @bullet
 ## @item
 ## If the function @var{name} is available in a file on your path and
-## that file is modifiable, then it will be edited in place.  If it 
+## that file is modifiable, then it will be edited in place.  If it
 ## is a system function, then it will first be copied to the directory
-## @env{HOME} (see further down) and then edited.  
-## If no file is found, then the m-file 
+## @env{HOME} (see further down) and then edited.
+## If no file is found, then the m-file
 ## variant, ending with ".m", will be considered.  If still no file
 ## is found, then variants with a leading "@@" and then with both a
 ## leading "@@" and trailing ".m" will be considered.
 ##
 ## @item
-## If @var{name} is the name of a function defined in the interpreter but 
+## If @var{name} is the name of a function defined in the interpreter but
 ## not in an m-file, then an m-file will be created in @env{HOME}
-## to contain that function along with its current definition.  
+## to contain that function along with its current definition.
 ##
 ## @item
 ## If @code{name.cc} is specified, then it will search for @code{name.cc}
@@ -63,7 +63,7 @@
 ## the value of the control field @var{field} will be @var{value}.
 ## If an output argument is requested and the first argument is @code{get}
 ## then @code{edit} will return the value of the control field @var{field}.
-## If the control field does not exist, edit will return a structure 
+## If the control field does not exist, edit will return a structure
 ## containing all fields and values.  Thus, @code{edit get all} returns
 ## a complete control structure.
 ## The following control fields are used:
@@ -71,22 +71,22 @@
 ## @table @samp
 ## @item editor
 ## This is the editor to use to modify the functions.  By default it uses
-## Octave's @env{EDITOR} built-in function, which comes from 
+## Octave's @env{EDITOR} built-in function, which comes from
 ## @code{getenv("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
 ## In place of the function name.  For example,
 ## @table @samp
 ## @item [EDITOR, " %s"]
 ## Use the editor which Octave uses for @code{bug_report}.
 ##
-## @item "xedit %s &"           
+## @item "xedit %s &"
 ## pop up simple X11 editor in a separate window
 ##
-## @item "gnudoit -q \"(find-file \\\"%s\\\")\""   
+## @item "gnudoit -q \"(find-file \\\"%s\\\")\""
 ## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
 ## @end table
 ##
 ## See also field 'mode', which controls how the editor is run by Octave.
-## 
+##
 ## On Cygwin, you will need to convert the Cygwin path to a Windows
 ## path if you are using a native Windows editor.  For example:
 ## @c Set example in small font to prevent overfull line in TeX
@@ -102,7 +102,7 @@
 ## @item author
 ## This is the name to put after the "## Author:" field of new functions.
 ## By default it guesses from the @code{gecos} field of password database.
-## 
+##
 ## @item email
 ## This is the e-mail address to list after the name in the author field.
 ## By default it guesses @code{<$LOGNAME@@$HOSTNAME>}, and if @code{$HOSTNAME}
@@ -123,10 +123,10 @@
 ## @item "text"
 ## Your own default copyright and license.
 ## @end table
-## 
-## Unless you specify @samp{pd}, edit will prepend the copyright statement 
+##
+## Unless you specify @samp{pd}, edit will prepend the copyright statement
 ## with "Copyright (C) yyyy Function Author".
-## 
+##
 ## @item mode
 ## This value determines whether the editor should be started in async mode
 ## (editor is started in the background and Octave continues) or sync mode
@@ -134,7 +134,7 @@
 ## in async mode.  The default is "sync" (see also "system").
 ##
 ## @item editinplace
-## Determines whether files should be edited in place, without regard to 
+## Determines whether files should be edited in place, without regard to
 ## whether they are modifiable or not.  The default is @code{false}.
 ## @end table
 ## @end deftypefn
@@ -235,7 +235,7 @@ function ret = edit (file, state)
   ## This functionality is needed for other functions as well (at least
   ## help and type; there may be more).  So the place to fix that is in
   ## file_in_loadpath, possibly with some help from the load_path class.
-  
+
   ## The code below includes a portion that serves as a place-holder for
   ## the changes suggested above.
 

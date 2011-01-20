@@ -128,11 +128,11 @@ endfunction
 %!assert(isempty (roots ([])));
 
 %!error roots ([1, 2; 3, 4]);
- 
+
 %!assert(isempty (roots (1)));
 
 %!error roots ([1, 2; 3, 4]);
- 
+
 %!error roots ([1 Inf 1]);
 
 %!error roots ([1 NaN 1]);

@@ -80,7 +80,7 @@ function retval = skewness (x, dim)
   ind = find (s > 0);
   x = sum (x .^ 3, dim);
   retval(ind) = x(ind) ./ (c * s(ind) .^ 3);
-  
+
 endfunction
 
 %!assert(skewness ([-1,0,1]), 0);

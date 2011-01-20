@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
 ## be @samp{"left"}, @samp{"center"}, or @samp{"right"}.  If @var{pos}
-## is omitted, @samp{"right"} is assumed. 
+## is omitted, @samp{"right"} is assumed.
 ##
 ## Null characters are replaced by spaces.  All other character
 ## data are treated as non-white space.
@@ -88,7 +88,7 @@ function y = strjust (s, pos)
       mins(flipud (idx(:))) = flipud (jdx(:));
       maxs = nc * ones (nr, 1);
       maxs(idx) = jdx;
-      shift = floor ((nc + 1 - maxs - mins) / 2); 
+      shift = floor ((nc + 1 - maxs - mins) / 2);
     endif
 
     ## Adjust the column indices.

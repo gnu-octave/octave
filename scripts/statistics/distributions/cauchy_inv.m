@@ -21,7 +21,7 @@
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the Cauchy distribution with location parameter
 ## @var{location} and scale parameter @var{scale}.  Default values are
-## @var{location} = 0, @var{scale} = 1. 
+## @var{location} = 0, @var{scale} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -38,7 +38,7 @@ function inv = cauchy_inv (x, location, scale)
     scale = 1;
   endif
 
-  if (!isscalar (location) || !isscalar (scale)) 
+  if (!isscalar (location) || !isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_inv: X, LOCATION and SCALE must be of common size or scalar");
@@ -58,7 +58,7 @@ function inv = cauchy_inv (x, location, scale)
 
   k = find ((x > 0) & (x < 1) & ok);
   if (any (k))
-    if (isscalar (location) && isscalar (scale)) 
+    if (isscalar (location) && isscalar (scale))
       inv(k) = location - scale .* cot (pi * x(k));
     else
       inv(k) = location(k) - scale(k) .* cot (pi * x(k));

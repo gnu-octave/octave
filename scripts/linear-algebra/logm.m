@@ -35,12 +35,12 @@
 ##
 ## @end deftypefn
 
-## Reference: N. J. Higham, Functions of Matrices: Theory and Computation 
+## Reference: N. J. Higham, Functions of Matrices: Theory and Computation
 ##            (SIAM, 2008.)
 ##
 
 function [s, iters] = logm (A, opt_iters = 100)
- 
+
   if (nargin == 0 || nargin > 2)
     print_usage ();
   endif
@@ -108,8 +108,8 @@ endfunction
 
 ################## ANCILLARY FUNCTIONS ################################
 ######  Taken from the mfttoolbox (GPL 3) by D. Higham.
-######  Reference: 
-######      D. Higham, Functions of Matrices: Theory and Computation 
+######  Reference:
+######      D. Higham, Functions of Matrices: Theory and Computation
 ######      (SIAM, 2008.).
 #######################################################################
 

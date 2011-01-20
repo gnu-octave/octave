@@ -25,7 +25,7 @@
 ## strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing whitespace is ignored.
-## Results are returned as a column vector. 
+## Results are returned as a column vector.
 ## For example:
 ##
 ## @example
@@ -55,7 +55,7 @@ function idx = strmatch (s, A, exact)
   if (! ischar (s))
     error ("strmatch: S must be a string");
   endif
-  
+
   ## Truncate trailing whitespace.
   s = strtrimr (s);
 
@@ -89,8 +89,8 @@ function idx = strmatch (s, A, exact)
   else
     error ("strmatch: A must be a string or cell array of strings");
   endif
-    
-endfunction 
+
+endfunction
 
 ## Removes nuls and blanks from the end of the array
 function s = strtrimr (s)

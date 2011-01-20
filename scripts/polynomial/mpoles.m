@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{multp}, @var{indx}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
 ## Identify unique poles in @var{p} and associates their multiplicity,
 ## ordering them from largest to smallest.
-## 
+##
 ## If the relative difference of the poles is less than @var{tol}, then
 ## they are considered to be multiples.  The default value for @var{tol}
 ## is 0.001.

@@ -26,24 +26,24 @@
 ## If @var{fmt} is not supplied, the file extension of @var{filename} is used
 ## to determine the format.
 ##
-## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional. 
+## The parameter-value pairs (@var{p1}, @var{v1}, @dots{}) are optional.
 ## Currently the following options are supported for @t{JPEG} images:
 ##
 ## @table @samp
 ## @item Quality
 ## Set the quality of the compression.  The value should be an
-## integer between 0 and 100, with larger values indicating higher visual 
+## integer between 0 and 100, with larger values indicating higher visual
 ## quality and lower compression.
 ## @end table
 ##
-## @strong{Supported Formats} 
+## @strong{Supported Formats}
 ## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format 
-## @item bmp @tab Windows Bitmap 
-## @item gif @tab Graphics Interchange Format 
+## @headitem Extension @tab Format
+## @item bmp @tab Windows Bitmap
+## @item gif @tab Graphics Interchange Format
 ## @item jpg and jpeg @tab Joint Photographic Experts Group
 ## @item pbm @tab Portable Bitmap
-## @item pcx @tab 
+## @item pcx @tab
 ## @item pgm @tab Portable Graymap
 ## @item png @tab Portable Network Graphics
 ## @item pnm @tab Portable Anymap
@@ -53,9 +53,9 @@
 ## @item xwd @tab X11 Dump
 ## @end multitable
 ##
-## @strong{Unsupported Formats} 
+## @strong{Unsupported Formats}
 ## @multitable @columnfractions .33 .66
-## @headitem Extension @tab Format 
+## @headitem Extension @tab Format
 ## @item hdf @tab Hierarchical Data Format V4
 ## @item jp2 and jpx @tab Joint Photographic Experts Group 2000
 ## @end multitable
@@ -64,13 +64,13 @@
 ## @end deftypefn
 
 function imwrite (img, varargin)
-  
+
   persistent imwrite_possible_formats = {
     "bmp"; "gif"; "jp2"; "jpg"; "jpx"; "jpeg"; "hdf"; "pbm"; "pcx";
     "pgm"; "png"; "pnm"; "ppm"; "ras"; "tif"; "tiff"; "xwd" };
 
   persistent accepted_formats = __magick_format_list__ (imwrite_possible_formats);
-  
+
   if (nargin < 2 || ! (isnumeric (img) || islogical (img)))
     print_usage ();
   endif

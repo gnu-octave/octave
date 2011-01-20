@@ -24,19 +24,19 @@
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{vi} =} interpn (@dots{}, @var{method}, @var{extrapval})
 ##
-## Perform @var{n}-dimensional interpolation, where @var{n} is at least two. 
-## Each element of the @var{n}-dimensional array @var{v} represents a value 
-## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}. 
-## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either 
-## @var{n}-dimensional arrays of the same size as the array @var{v} in 
-## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc. respect a 
+## Perform @var{n}-dimensional interpolation, where @var{n} is at least two.
+## Each element of the @var{n}-dimensional array @var{v} represents a value
+## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
+## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
+## @var{n}-dimensional arrays of the same size as the array @var{v} in
+## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc. respect a
 ## similar format to @var{x1}, etc., and they represent the points at which
 ## the array @var{vi} is interpolated.
 ##
-## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be 
+## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be
 ## @code{x1 = 1 : size (@var{v}, 1)}, etc.  If @var{m} is specified, then
-## the interpolation adds a point half way between each of the interpolation 
-## points.  This process is performed @var{m} times.  If only @var{v} is 
+## the interpolation adds a point half way between each of the interpolation
+## points.  This process is performed @var{m} times.  If only @var{v} is
 ## specified, then @var{m} is assumed to be @code{1}.
 ##
 ## Method is one of:
@@ -112,7 +112,7 @@ function vi = interpn (varargin)
     for i = 1 : nd;
       x{i} = 1 : sz(i);
     endfor
-  elseif (rem (nargs, 2) == 1 && nargs ==  
+  elseif (rem (nargs, 2) == 1 && nargs ==
           (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     nv = ceil (nargs / 2);
     v = varargin{nv};
@@ -167,7 +167,7 @@ function vi = interpn (varargin)
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
     endfor
     vi(idx) = extrapval;
-    vi = reshape (vi, yshape); 
+    vi = reshape (vi, yshape);
   elseif (strcmp (method, "spline"))
     if (any (! cellfun (@isvector, y)))
       for i = 2 : nd
@@ -196,7 +196,7 @@ function vi = interpn (varargin)
       vi = vi (cellfun (@(x) sub2ind (size(vi), x{:}), idx));
       vi = reshape (vi, size(y{1}));
     endif
-  elseif (strcmp (method, "cubic")) 
+  elseif (strcmp (method, "cubic"))
     error ("interpn: cubic interpolation not yet implemented");
   else
     error ("interpn: unrecognized interpolation METHOD");
@@ -210,7 +210,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"linear").');
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -219,7 +219,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"nearest").');
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!#demo
@@ -228,7 +228,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"cubic").');
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -237,7 +237,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"spline").');
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 

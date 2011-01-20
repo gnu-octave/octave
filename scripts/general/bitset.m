@@ -43,7 +43,7 @@ function C = bitset (A, n, val)
   if (nargin == 2)
     val = 1;
   endif
-  
+
   if (isa (A, "double"))
     Bmax = bitmax;
     Amax = log2 (Bmax) + 1;

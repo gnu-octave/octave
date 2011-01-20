@@ -25,16 +25,16 @@
 ## @deftypefnx {Function File} {} area (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} area (@dots{})
 ## Area plot of cumulative sum of the columns of @var{y}.  This shows the
-## contributions of a value to a sum, and is functionally similar to 
-## @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the area under 
+## contributions of a value to a sum, and is functionally similar to
+## @code{plot (@var{x}, cumsum (@var{y}, 2))}, except that the area under
 ## the curve is shaded.
 ##
 ## If the @var{x} argument is omitted it is assumed to be given by
 ## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
 ## where the base level of the shading under the curve should be defined.
 ##
-## Additional arguments to the @code{area} function are passed to the 
-## @code{patch}.  The optional return value @var{h} provides a handle to 
+## Additional arguments to the @code{area} function are passed to the
+## @code{patch}.  The optional return value @var{h} provides a handle to
 ## area series object representing the patches of the areas.
 ## @seealso{plot, patch}
 ## @end deftypefn
@@ -130,7 +130,7 @@ function retval = __area__ (ax, x, y, bv, varargin)
     y0 = y1;
 
     addproperty ("basevalue", hg, "data", bv);
-    addlistener (hg, "basevalue", @move_baseline); 
+    addlistener (hg, "basevalue", @move_baseline);
 
     addproperty ("edgecolor", hg, "patchedgecolor", get (h, "edgecolor"));
     addproperty ("linewidth", hg, "patchlinewidth", get (h, "linewidth"));
@@ -138,9 +138,9 @@ function retval = __area__ (ax, x, y, bv, varargin)
     addproperty ("facecolor", hg, "patchfacecolor", get (h, "facecolor"));
 
     addlistener (hg, "edgecolor", @update_props);
-    addlistener (hg, "linewidth", @update_props); 
-    addlistener (hg, "linestyle", @update_props); 
-    addlistener (hg, "facecolor", @update_props); 
+    addlistener (hg, "linewidth", @update_props);
+    addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "facecolor", @update_props);
 
     addproperty ("areagroup", hg, "data");
     set (retval, "areagroup", retval);
@@ -154,7 +154,7 @@ endfunction
 
 function update_props (h, d)
   kids = get (h, "children");
-  set (kids, "edgecolor", get (h, "edgecolor"), 
+  set (kids, "edgecolor", get (h, "edgecolor"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"),
        "facecolor", get (h, "facecolor"));
@@ -199,7 +199,7 @@ function update_data (h, d)
     else
       y1 = y0 + y1;
       set (get (hh, "children"), "ydata", [y0(1); y1; flipud(y0)]);
-    endif      
+    endif
 
     y0 = y1;
   endfor

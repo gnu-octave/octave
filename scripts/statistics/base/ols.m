@@ -56,7 +56,7 @@
 ## @var{beta} is calculated directly via @code{inv (x'*x) * x' * y} if the
 ## matrix @code{x'*x} is of full rank.
 ## @end ifnottex
-## Otherwise, @code{@var{beta} = pinv (@var{x}) * @var{y}} where 
+## Otherwise, @code{@var{beta} = pinv (@var{x}) * @var{y}} where
 ## @code{pinv (@var{x})} denotes the pseudoinverse of @var{x}.
 ##
 ## @item sigma

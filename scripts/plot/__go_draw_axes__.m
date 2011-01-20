@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced, mono, 
+function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                            bg_is_set, fg_is_set, hlgnd)
 
   if (nargin >= 4 && nargin <= 7)
@@ -48,7 +48,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
     nd = __calc_dimensions__ (h);
 
-    if (strcmp (axis_obj.dataaspectratiomode, "manual") 
+    if (strcmp (axis_obj.dataaspectratiomode, "manual")
         && strcmp (axis_obj.xlimmode, "manual")
         && strcmp (axis_obj.ylimmode, "manual"))
       ## All can't be "manual"
@@ -106,9 +106,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           pos(3:4) = pos(3:4) * 1.4;
           pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
         endif
-  
+
         fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-  
+
         if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
           sz_str = sprintf ("set size ratio %.15g", -dr);
         else
@@ -525,7 +525,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                                             rows(xdat), xaxisloc_using, yaxisloc_using);
           endif
 
-          style = do_linestyle_command (obj, obj.color, data_idx, mono, 
+          style = do_linestyle_command (obj, obj.color, data_idx, mono,
                                         plot_stream, errbars);
 
           withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -533,7 +533,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
           if (length (style) > 1)
             data_idx++;
-            is_image_data(data_idx) = is_image_data(data_idx - 1); 
+            is_image_data(data_idx) = is_image_data(data_idx - 1);
             parametric(data_idx) = parametric(data_idx - 1);
             have_cdata(data_idx) = have_cdata(data_idx - 1);
             have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -545,7 +545,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           endif
           if (length (style) > 2)
             data_idx++;
-            is_image_data(data_idx) = is_image_data(data_idx - 1); 
+            is_image_data(data_idx) = is_image_data(data_idx - 1);
             parametric(data_idx) = parametric(data_idx - 1);
             have_cdata(data_idx) = have_cdata(data_idx - 1);
             have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -583,7 +583,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
            if (! isnan (xcol) && ! isnan (ycol))
              ## Is the patch closed or not
-             if (strncmp (obj.facecolor, "none", 4)) 
+             if (strncmp (obj.facecolor, "none", 4))
                hidden_removal = false;
              else
 
@@ -596,7 +596,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  else
                    if (isnan (data_3d_idx))
                      data_idx++;
-                     data_3d_idx = data_idx; 
+                     data_3d_idx = data_idx;
                      is_image_data(data_idx) = false;
                      parametric(data_idx) = false;
                      have_cdata(data_idx) = true;
@@ -657,7 +657,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      if (nd == 3 && numel (xcol) == 3)
                        ccdat = ccol;
                        if (! isvector (ccdat))
-                         tmp = rows(cmap) + rows(addedcmap) + ... 
+                         tmp = rows(cmap) + rows(addedcmap) + ...
                               [1 : rows(ccdat)];
                          addedcmap = [addedcmap; ccdat];
                          ccdat = tmp(:);
@@ -711,7 +711,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
            ## patch outline
            if (!(strncmp (obj.edgecolor, "none", 4)
-                  && (strncmp (obj.marker, "none", 4) 
+                  && (strncmp (obj.marker, "none", 4)
                       || (strncmp (obj.markeredgecolor, "none", 4)
                           && strncmp (obj.markerfacecolor, "none", 4)))))
 
@@ -846,11 +846,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              tmpwith = {};
 
              facesame = true;
-             if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
+             if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
                  && !strncmp (obj.markerfacecolor, "none", 4))
                if (strncmp (obj.markerfacecolor, "auto", 4)
-                   || ! isnumeric (obj.markerfacecolor) 
-                   || (isnumeric (obj.markerfacecolor) 
+                   || ! isnumeric (obj.markerfacecolor)
+                   || (isnumeric (obj.markerfacecolor)
                        && isequal (color, obj.markerfacecolor)))
                  style = strcat (style, "points");
                  if (isfield (obj, "markersize"))
@@ -865,13 +865,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  endif
 
                  tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                          style, lw, pt2, lt, ps, 
+                                          style, lw, pt2, lt, ps,
                                           colorspec);
                else
                  facesame = false;
-                 if (! isempty (style)) 
+                 if (! isempty (style))
                    tmpwith{sidx} = sprintf ("with %s %s %s %s",
-                                            style, lw, lt, 
+                                            style, lw, lt,
                                             colorspec);
                    sidx ++;
                  endif
@@ -891,20 +891,20 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                    ps = "";
                  endif
                  tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                          style, lw, pt2, lt, ps, 
+                                          style, lw, pt2, lt, ps,
                                           colorspec);
                endif
              endif
 
-             if (isfield (obj, "markeredgecolor") 
+             if (isfield (obj, "markeredgecolor")
                  && !strncmp (obj.markeredgecolor, "none", 4))
-               if (facesame && !isempty (pt) 
+               if (facesame && !isempty (pt)
                    && (strncmp (obj.markeredgecolor, "auto", 4)
-                       || ! isnumeric (obj.markeredgecolor) 
-                       || (isnumeric (obj.markeredgecolor) 
+                       || ! isnumeric (obj.markeredgecolor)
+                       || (isnumeric (obj.markeredgecolor)
                            && isequal (color, obj.markeredgecolor))))
-                 if (sidx == 1 && ((length (style) == 5 
-                          && strncmp (style, "lines", 5)) 
+                 if (sidx == 1 && ((length (style) == 5
+                          && strncmp (style, "lines", 5))
                          || isempty (style)))
                    style = strcat (style, "points");
                    if (isfield (obj, "markersize"))
@@ -918,20 +918,20 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      ps = "";
                    endif
                    tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                            style, lw, pt, lt, ps, 
+                                            style, lw, pt, lt, ps,
                                             colorspec);
                  endif
                else
-                 if (!isempty (style))  
+                 if (!isempty (style))
                    if (length(tmpwith) < sidx || isempty (tmpwith{sidx}))
                      tmpwith{sidx} = sprintf ("with %s %s %s %s",
-                                              style, lw, lt, 
+                                              style, lw, lt,
                                               colorspec);
                    endif
                    sidx ++;
                  endif
 
-                 if (!isempty (pt)) 
+                 if (!isempty (pt))
                    if (! mono)
                      if (strncmp (obj.markeredgecolor, "auto", 4))
                        colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
@@ -953,7 +953,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      ps = "";
                    endif
                    tmpwith{sidx} = sprintf ("with %s %s %s %s %s %s",
-                                            style, lw, pt, lt, ps, 
+                                            style, lw, pt, lt, ps,
                                             colorspec);
                  endif
                endif
@@ -961,7 +961,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
              if (isempty (tmpwith))
                withclause{data_idx} = sprintf ("with %s %s %s %s %s",
-                                               style, lw, pt, lt, 
+                                               style, lw, pt, lt,
                                                colorspec);
              else
                withclause{data_idx} = tmpwith{1};
@@ -1005,7 +1005,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
              if (length (tmpwith) > 1)
                data_idx++;
-               is_image_data(data_idx) = is_image_data(data_idx - 1); 
+               is_image_data(data_idx) = is_image_data(data_idx - 1);
                parametric(data_idx) = parametric(data_idx - 1);
                have_cdata(data_idx) = have_cdata(data_idx - 1);
                have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -1016,7 +1016,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              endif
              if (length (tmpwith) > 2)
                data_idx++;
-               is_image_data(data_idx) = is_image_data(data_idx - 1); 
+               is_image_data(data_idx) = is_image_data(data_idx - 1);
                parametric(data_idx) = parametric(data_idx - 1);
                have_cdata(data_idx) = have_cdata(data_idx - 1);
                have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -1038,7 +1038,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             have_cdata(data_idx) = true;
             have_3d_patch(data_idx) = false;
             style = do_linestyle_command (obj, obj.edgecolor,
-                                          data_idx, mono, 
+                                          data_idx, mono,
                                           plot_stream);
 
             if (isempty (obj.displayname))
@@ -1127,7 +1127,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               fputs(plot_stream,"unset pm3d;\n");
               fputs(plot_stream,"set style increment user;\n");
               withpm3d = false;
-              withclause{data_idx} = sprintf("with %s linestyle %d", 
+              withclause{data_idx} = sprintf("with %s linestyle %d",
                                              style{1}, data_idx);
               fputs (plot_stream, "unset pm3d\n");
             endif
@@ -1140,23 +1140,23 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             endif
 
             if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
-              fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n", 
+              fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n",
                        interp_str, dord);
             elseif (!facecolor_none_or_white)
               if (strncmp (obj.edgecolor, "none", 4))
-                if (__gnuplot_has_feature__ ("transparent_surface") 
+                if (__gnuplot_has_feature__ ("transparent_surface")
                     && isscalar (obj.facealpha))
                   fprintf (plot_stream,
                            "set style fill transparent solid %f;\n",
                            obj.facealpha);
                 endif
-                fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n", 
+                fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n",
                          interp_str, dord);
               else
-                fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n", 
+                fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
                          data_idx, interp_str, dord);
 
-                if (__gnuplot_has_feature__ ("transparent_surface") 
+                if (__gnuplot_has_feature__ ("transparent_surface")
                     && isscalar (obj.facealpha))
                   fprintf (plot_stream,
                            "set style fill transparent solid %f;\n",
@@ -1164,7 +1164,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                 endif
               endif
             endif
-            
+
             zz = [];
             if (length (style) > 1)
               len = 3 * xlen;
@@ -1179,7 +1179,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               zz = zz.';
 
               data_idx++;
-              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              is_image_data(data_idx) = is_image_data(data_idx - 1);
               parametric(data_idx) = parametric(data_idx - 1);
               have_cdata(data_idx) = false;
               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -1192,7 +1192,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             endif
             if (length (style) > 2)
               data_idx++;
-              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              is_image_data(data_idx) = is_image_data(data_idx - 1);
               parametric(data_idx) = parametric(data_idx - 1);
               have_cdata(data_idx) = false;
               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -1216,7 +1216,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                 zz = zz.';
               endif
               data_idx++;
-              is_image_data(data_idx) = is_image_data(data_idx - 1); 
+              is_image_data(data_idx) = is_image_data(data_idx - 1);
               parametric(data_idx) = parametric(data_idx - 1);
               have_cdata(data_idx) = false;
               have_3d_patch(data_idx) = have_3d_patch(data_idx - 1);
@@ -1245,7 +1245,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           else
             units = "";
           endif
-          
+
           if (isnumeric (color))
             colorspec = get_text_colorspec (color, mono);
           endif
@@ -1354,7 +1354,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
 
-    cmap = parent_figure_obj.colormap;    
+    cmap = parent_figure_obj.colormap;
     cmap_sz = rows(cmap);
     if (! any (isinf (clim)))
       if (truecolor || ! cdatadirect)
@@ -1364,13 +1364,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
              endif
           endfor
-          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) * 
+          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) *
                    (cmap_sz + rows(addedcmap)) / cmap_sz);
         else
           fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
         endif
       else
-        fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz + 
+        fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz +
                  rows (addedcmap));
       endif
     endif
@@ -1463,7 +1463,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           pos = "right bottom";
         case "southwest"
           pos = "left bottom";
-        case "best" 
+        case "best"
           pos = "";
           warning ("legend: 'Best' not yet implemented for location specifier.\n");
           ## Least conflict with data in plot.
@@ -1477,7 +1477,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         fontspec = "";
       endif
-      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s;\n", 
+      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s;\n",
                inout, pos, box, reverse, horzvert, fontspec);
     else
       fputs (plot_stream, "unset key;\n");
@@ -1534,7 +1534,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         elseif (is_image_data (i))
           if (! is_image_data (i-1))
             fputs (plot_stream, "; ");
-            if (bg_is_set)      
+            if (bg_is_set)
               fputs (plot_stream, "unset obj 1; \\\n");
               bg_is_set = false;
             endif
@@ -1546,7 +1546,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                    usingclause{i}, titlespec{i}, withclause{i});
         elseif (is_image_data (i-1))
-          if (bg_is_set)      
+          if (bg_is_set)
             fputs (plot_stream, "unset obj 1; \\\n");
             bg_is_set = false;
           endif
@@ -1564,7 +1564,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fputs (plot_stream, ";\n");
       for i = 1:data_idx
         if (have_3d_patch (i))
-          ## Can't write 3d patch data as binary as can't plot more than 
+          ## Can't write 3d patch data as binary as can't plot more than
           ## a single patch at a time and have to plot all patches together
           ## so that the gnuplot depth ordering is done correctly
           for j = 1 : 4 : columns(data{i})
@@ -1580,7 +1580,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         elseif (is_image_data(i))
           fwrite (plot_stream, data{i}, "float32");
         else
-          __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i), 
+          __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i),
                                   have_cdata(i));
         endif
       endfor
@@ -1592,8 +1592,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     if (view_map)
       fputs (plot_stream, "unset view;\n");
     endif
-    
-    if (bg_is_set)      
+
+    if (bg_is_set)
       fputs (plot_stream, "unset obj 1;\n");
       bg_is_set = false;
     endif
@@ -1679,11 +1679,11 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
     endif
 
     facesame = true;
-    if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor") 
+    if (! isequal (pt, pt2) && isfield (obj, "markerfacecolor")
         && !strncmp (obj.markerfacecolor, "none", 4))
       if (strncmp (obj.markerfacecolor, "auto", 4)
-          || ! isnumeric (obj.markerfacecolor) 
-          || (isnumeric (obj.markerfacecolor) 
+          || ! isnumeric (obj.markerfacecolor)
+          || (isnumeric (obj.markerfacecolor)
               && isequal (color, obj.markerfacecolor)))
         if (! isempty (pt2))
           fprintf (plot_stream, " pointtype %s", pt2);
@@ -1698,7 +1698,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (! isempty (style {sidx}))   
+        if (! isempty (style {sidx}))
           sidx ++;
           idx ++;
         else
@@ -1719,14 +1719,14 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
         endif
       endif
     endif
-    if (isfield (obj, "markeredgecolor") 
+    if (isfield (obj, "markeredgecolor")
         && !strncmp (obj.markeredgecolor, "none", 4))
       if (facesame && !isempty (pt)
           && (strncmp (obj.markeredgecolor, "auto", 4)
-              || ! isnumeric (obj.markeredgecolor) 
-              || (isnumeric (obj.markeredgecolor) 
+              || ! isnumeric (obj.markeredgecolor)
+              || (isnumeric (obj.markeredgecolor)
                   && isequal (color, obj.markeredgecolor))))
-        if (sidx == 1 && ((length (style {sidx}) == 5 
+        if (sidx == 1 && ((length (style {sidx}) == 5
             && strncmp (style {sidx}, "lines", 5)) || isempty (style {sidx})))
           if (! isempty (pt))
             style {sidx} = strcat (style{sidx}, "points");
@@ -1741,7 +1741,7 @@ function style = do_linestyle_command (obj, linecolor, idx, mono,
           fputs (plot_stream, " default");
         endif
         fputs (plot_stream, ";\n");
-        if (!isempty (style {sidx}))    
+        if (!isempty (style {sidx}))
           sidx ++;
           idx ++;
         else
@@ -1842,7 +1842,7 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
-  
+
   ## DATA is already transposed.
 
   ## FIXME -- this may need to be converted to C++ for speed.
@@ -1994,13 +1994,13 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
         nlabels = numel (labels);
         fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
         if (mirror)
-          fprintf (plot_stream, "set %stics %s %s %s mirror (", ax, 
+          fprintf (plot_stream, "set %stics %s %s %s mirror (", ax,
                    tickdir, ticklength, axispos);
         else
           fprintf (plot_stream, "set %stics %s %s %s nomirror (", ax,
                    tickdir, ticklength, axispos);
         endif
- 
+
         labels = regexprep(labels, '%', "%%");
         for i = 1:ntics
           fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
@@ -2040,10 +2040,10 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   else
     fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
     if (mirror)
-      fprintf (plot_stream, "set %stics %s %s %s mirror %s %s;\n", ax, 
+      fprintf (plot_stream, "set %stics %s %s %s mirror %s %s;\n", ax,
                axispos, tickdir, ticklength, colorspec, fontspec);
     else
-      fprintf (plot_stream, "set %stics %s %s %s nomirror %s %s;\n", ax, 
+      fprintf (plot_stream, "set %stics %s %s %s nomirror %s %s;\n", ax,
                tickdir, ticklength, axispos, colorspec, fontspec);
     endif
     if (strcmp (mtics, "on"))
@@ -2174,19 +2174,19 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
       elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
         it = true;
         if (bld)
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
+          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ',
                         str(s(i) + 3:end));
         else
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-italic ', 
+          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-italic ',
                         str(s(i) + 3:end));
         endif
       elseif (strncmp (f, "bf", 2))
         bld = true;
         if (it)
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
+          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ',
                         str(2(i) + 3:end));
         else
-          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bold ', 
+          str = cstrcat (str(1:s(i) - 1), '/', fnt, '-bold ',
                         str(s(i) + 3:end));
         endif
       elseif (strcmpi (f, "color"))
@@ -2203,7 +2203,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (isempty(b1) || isempty(b2))
           warning ('syntax error in \fontname argument');
         else
-          str = cstrcat (str(1:s(i) - 1), '/', 
+          str = cstrcat (str(1:s(i) - 1), '/',
                         str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
                         str(e(i) + b2(1) + 1:end));
         endif
@@ -2213,7 +2213,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         if (isempty(b1) || isempty(b2))
           warning ('syntax error in \fontname argument');
         else
-          str = cstrcat (str(1:s(i) - 1), '/=', 
+          str = cstrcat (str(1:s(i) - 1), '/=',
                         str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
                         str(e(i) + b2(1) + 1:end));
         endif
@@ -2233,7 +2233,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
             ##elseif (it)
             ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
             ##endif
-            str = cstrcat (str(1:s(i) - 1), g, 
+            str = cstrcat (str(1:s(i) - 1), g,
                           str(s(i) + length (flds{j}) + 1:end));
             break;
           endif

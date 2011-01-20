@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ver ()
 ## Display a header containing the current Octave version
-## number, license string and operating system, followed by 
+## number, license string and operating system, followed by
 ## the installed package names, versions, and installation
 ## directories.
 ## @deftypefnx {Function File} {v =} ver ()

@@ -37,7 +37,7 @@ function inv = binoinv (x, n, p)
       error ("binoinv: X, N and P must be of common size or scalars");
     endif
   endif
-  
+
   sz = size (x);
   inv = zeros (sz);
 
@@ -61,7 +61,7 @@ function inv = binoinv (x, n, p)
           break;
         endif
       endwhile
-    else 
+    else
       cdf = binopdf (0, n(k), p(k));
       while (any (inv(k) < n(k)))
         m = find (cdf < x(k));

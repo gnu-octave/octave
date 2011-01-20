@@ -24,7 +24,7 @@
 ##
 ## The number of failures in a Bernoulli experiment with success
 ## probability @var{p} before the @var{n}-th success follows this
-## distribution. 
+## distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -36,7 +36,7 @@ function pdf = nbinpdf (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar(n) || !isscalar(p)) 
+  if (!isscalar(n) || !isscalar(p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("nbinpdf: X, N and P must be of common size or scalar");

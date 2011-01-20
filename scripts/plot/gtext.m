@@ -44,7 +44,7 @@ function gtext (s, varargin)
       endif
     else
       error ("gtext: expecting a string or cell array of strings");
-    endif 
+    endif
   else
     print_usage ();
   endif

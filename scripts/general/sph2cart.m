@@ -26,9 +26,9 @@
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ## @var{theta}, @var{phi}, and @var{r} must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{s} 
+## If called with a single matrix argument then each row of @var{s}
 ## represents the spherical coordinate (@var{theta}, @var{phi}, @var{r}).
-## 
+##
 ## If only a single return argument is requested then return a matrix
 ## @var{C} where each row represents one Cartesian coordinate
 ## (@var{x}, @var{y}, @var{z}).
@@ -46,9 +46,9 @@ function [x, y, z] = sph2cart (theta, phi, r)
 
   if (nargin == 1)
     if (ismatrix (theta) && columns (theta) == 3)
-      r = theta(:,3);    
-      phi = theta(:,2);    
-      theta = theta(:,1);    
+      r = theta(:,3);
+      phi = theta(:,2);
+      theta = theta(:,1);
     else
       error ("sph2cart: matrix input must have 3 columns [THETA, PHI, R]");
     endif

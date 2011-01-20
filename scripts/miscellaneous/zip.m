@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files})
 ## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
-## Compress the list of files and/or directories specified in @var{files} 
-## into the archive @var{zipfiles} in the same directory.  If @var{rootdir} 
-## is defined the @var{files} is located relative to @var{rootdir} rather 
+## Compress the list of files and/or directories specified in @var{files}
+## into the archive @var{zipfiles} in the same directory.  If @var{rootdir}
+## is defined the @var{files} is located relative to @var{rootdir} rather
 ## than the current directory
 ## @seealso{unzip,tar}
 ## @end deftypefn
@@ -64,7 +64,7 @@ function entries = zip (zipfile, files, rootdir)
       else
         error ("zip: zip failed with exit status = %d", status);
       endif
-    
+
     else
       error ("zip: expecting all arguments to be character strings");
     endif

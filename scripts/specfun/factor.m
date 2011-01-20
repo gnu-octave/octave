@@ -20,9 +20,9 @@
 ## @deftypefn  {Function File} {@var{p} =} factor (@var{q})
 ## @deftypefnx {Function File} {[@var{p}, @var{n}] =} factor (@var{q})
 ##
-## Return prime factorization of @var{q}.  That is, 
+## Return prime factorization of @var{q}.  That is,
 ## @code{prod (@var{p}) == @var{q}} and every element of @var{p} is a prime
-## number.  If @code{@var{q} == 1}, return 1. 
+## number.  If @code{@var{q} == 1}, return 1.
 ##
 ## With two output arguments, return the unique primes @var{p} and
 ## their multiplicities.  That is, @code{prod (@var{p} .^ @var{n}) ==
@@ -52,7 +52,7 @@ function [x, n] = factor (q)
     x = q;
     n = 1;
     return;
-  endif 
+  endif
 
   x = [];
   ## There is at most one prime greater than sqrt(q), and if it exists,

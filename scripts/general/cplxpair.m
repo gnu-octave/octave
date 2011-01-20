@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} cplxpair (@var{z})
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol})
 ## @deftypefnx {Function File} {} cplxpair (@var{z}, @var{tol}, @var{dim})
-## Sort the numbers @var{z} into complex conjugate pairs ordered by 
+## Sort the numbers @var{z} into complex conjugate pairs ordered by
 ## increasing real part.  Place the negative imaginary complex number
 ## first within each pair.  Place all the real numbers (those with
 ## @code{abs (imag (@var{z}) / @var{z}) < @var{tol})}) after the
@@ -58,14 +58,14 @@ function y = cplxpair (z, tol, dim)
 
   if (length (z) == 0)
     y = zeros (size (z));
-    return; 
+    return;
   endif
 
   if (nargin < 2 || isempty (tol))
     if (isa (z, "single"))
       tol = 100 * eps("single");
     else
-      tol = 100*eps; 
+      tol = 100*eps;
     endif
   endif
 
@@ -148,7 +148,7 @@ endfunction
 %!assert (cplxpair([1+1i, 1+1i, 1, 1-1i, 1-1i, 2]), \
 %!        [1-1i, 1+1i, 1-1i, 1+1i, 1, 2])
 %!assert (cplxpair([1+1i; 1+1i; 1; 1-1i; 1-1i; 2]), \
-%!        [1-1i; 1+1i; 1-1i; 1+1i; 1; 2]) 
+%!        [1-1i; 1+1i; 1-1i; 1+1i; 1; 2])
 %!assert (cplxpair([0, 1, 2]), [0, 1, 2]);
 
 %!shared z

@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} rainbow ()
 ## @deftypefnx {Function File} {@var{map} =} rainbow (@var{n})
-## Create color colormap.  This colormap ranges from red through orange, 
-## yellow, green, blue, to violet.  
-## The argument @var{n} must be a scalar.  
+## Create color colormap.  This colormap ranges from red through orange,
+## yellow, green, blue, to violet.
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -44,7 +44,7 @@ function map = rainbow (n)
   endif
 
   if (n == 1)
-    map = [1, 0, 0];  
+    map = [1, 0, 0];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 2/5) + (x >= 2/5 & x < 3/5) .* (-5 * x + 3)\

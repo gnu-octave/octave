@@ -51,9 +51,9 @@
 ## @end table
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
-## If @var{default_file} is given it is selected in the GUI dialog. 
+## If @var{default_file} is given it is selected in the GUI dialog.
 ## If in addtion a path is given it is also used as current path.
-## 
+##
 ## The screen position of the GUI dialog can be set using the "Position" key
 ## and a 2-element vector containing the pixel coordinates.
 ## Two or more files can be selected when setting the "Multiselect" key to "on".
@@ -109,7 +109,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         outargs{3} = file_filter;
       endif
     endif
-    
+
     if (len > 1)
       outargs{2} = args{2};
     endif
@@ -158,5 +158,5 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
 endfunction
 
-%!demo 
+%!demo
 %! uigetfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})

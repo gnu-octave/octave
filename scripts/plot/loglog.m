@@ -36,7 +36,7 @@ function retval = loglog (varargin)
   [h, varargin, nargs] = __plt_get_axis_arg__ ("loglog", varargin{:});
 
   if (nargs < 1)
-    print_usage(); 
+    print_usage();
   endif
 
   oldh = gca ();

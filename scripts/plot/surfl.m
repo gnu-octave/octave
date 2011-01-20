@@ -37,7 +37,7 @@
 ##
 ## The material properties of the surface can specified using a 4-element vector
 ## @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
-## @var{p} = [0.55 0.6 0.4 10]. 
+## @var{p} = [0.55 0.6 0.4 10].
 ## @table @code
 ## @item "AM" strength of ambient light
 ##
@@ -47,7 +47,7 @@
 ##
 ## @item "EXP" specular exponent
 ## @end table
-## 
+##
 ## The default lighting mode "cdata", changes the cdata property to give the
 ## impression
 ## of a lighted surface.  Please note: the alternative "light" mode, which
@@ -98,7 +98,7 @@ function retval = surfl (varargin)
     ## r = [ambient light strength,
     ##      diffuse reflection strength,
     ##      specular reflection strength,
-    ##      specular shine] 
+    ##      specular shine]
     if (length (varargin{end}) == 4 && isnumeric (varargin{end}))
       r = varargin{end};
       varargin(end) = [];
@@ -122,7 +122,7 @@ function retval = surfl (varargin)
         have_lv = true;
       endif
     endif
-    
+
     tmp = surface (varargin{:});
     if (! ishold ())
       set (h, "view", [-37.5, 30],
@@ -160,7 +160,7 @@ function retval = surfl (varargin)
              + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
 
     set (tmp, "cdata", cdata ./ sum (r(1:3)));
-    
+
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

@@ -81,7 +81,7 @@ function retval = dec2base (d, base, len)
   elseif (base < 2 || base > length (symbols))
     error ("dec2base: BASE must be between 2 and 36, or a string of symbols");
   endif
-  
+
   ## determine number of digits required to handle all numbers, can overflow
   ## by 1 digit
   max_len = round (log (max (max (d), 1)) ./ log (base)) + 1;
@@ -89,7 +89,7 @@ function retval = dec2base (d, base, len)
   if (nargin == 3)
     max_len = max (max_len, len);
   endif
-  
+
   ## determine digits for each number
   digits = zeros (length (d), max_len);
   for k = max_len:-1:1

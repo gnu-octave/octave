@@ -43,9 +43,9 @@ function p = polyreduce (c)
     index = find (c != 0);
 
     if (isempty (index))
-      
+
       p = 0;
-    
+
     else
 
       p = c(index (1):length (c));

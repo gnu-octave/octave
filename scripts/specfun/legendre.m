@@ -20,11 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{l} =} legendre (@var{n}, @var{x})
 ## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
-## Compute the Legendre function of degree @var{n} and order 
-## @var{m} = 0 @dots{} N@.  The optional argument, @var{normalization}, 
+## Compute the Legendre function of degree @var{n} and order
+## @var{m} = 0 @dots{} N@.  The optional argument, @var{normalization},
 ## may be one of @code{"unnorm"}, @code{"sch"}, or @code{"norm"}.
-## The default is @code{"unnorm"}.  The value of @var{n} must be a 
-## non-negative scalar integer.  
+## The default is @code{"unnorm"}.  The value of @var{n} must be a
+## non-negative scalar integer.
 ##
 ## If the optional argument @var{normalization} is missing or is
 ## @code{"unnorm"}, compute the Legendre function of degree @var{n} and
@@ -80,11 +80,11 @@
 ## m=0 | -1.00000 | -0.47250 | -0.08000
 ## m=1 |  0.00000 | -1.99420 | -1.98000
 ## m=2 |  0.00000 | -2.56500 | -4.32000
-## m=3 |  0.00000 | -1.24229 | -3.24000 
+## m=3 |  0.00000 | -1.24229 | -3.24000
 ## @end group
 ## @end example
 ##
-## If the optional argument @code{normalization} is @code{"sch"}, 
+## If the optional argument @code{normalization} is @code{"sch"},
 ## compute the Schmidt semi-normalized associated Legendre function.
 ## The Schmidt semi-normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
@@ -127,7 +127,7 @@
 ##
 ## @end ifnottex
 ##
-## If the optional argument @var{normalization} is @code{"norm"}, 
+## If the optional argument @var{normalization} is @code{"norm"},
 ## compute the fully normalized associated Legendre function.
 ## The fully normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
@@ -145,7 +145,7 @@
 ## @group
 ##   m       m          m    (n+0.5)(n-m)! 0.5
 ## NP (x) = P (x) * (-1)  * [-------------]
-##   n       n                   (n+m)!    
+##   n       n                   (n+m)!
 ## @end group
 ## @end example
 ##
@@ -201,7 +201,7 @@ function retval = legendre (n, x, normalization)
   overflow = false;
   for m = 1:n
     lpm1 = scale;
-    lpm2 = (2*m-1) .* x .* scale;      
+    lpm2 = (2*m-1) .* x .* scale;
     lpm3 = lpm2;
     for k = m+1:n
       lpm3a = (2*k-1) .* x .* lpm2;

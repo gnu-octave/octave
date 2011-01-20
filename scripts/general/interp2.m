@@ -27,29 +27,29 @@
 ## Two-dimensional interpolation.  @var{x}, @var{y} and @var{z} describe a
 ## surface function.  If @var{x} and @var{y} are vectors their length
 ## must correspondent to the size of @var{z}.  @var{x} and @var{y} must be
-## monotonic.  If they are matrices they must have the @code{meshgrid} 
-## format. 
+## monotonic.  If they are matrices they must have the @code{meshgrid}
+## format.
 ##
 ## @table @code
-## @item interp2 (@var{x}, @var{y}, @var{Z}, @var{xi}, @var{yi}, @dots{}) 
+## @item interp2 (@var{x}, @var{y}, @var{Z}, @var{xi}, @var{yi}, @dots{})
 ## Returns a matrix corresponding to the points described by the
-## matrices @var{xi}, @var{yi}.  
+## matrices @var{xi}, @var{yi}.
 ##
 ## If the last argument is a string, the interpolation method can
 ## be specified.  The method can be 'linear', 'nearest' or 'cubic'.
 ## If it is omitted 'linear' interpolation is assumed.
 ##
 ## @item interp2 (@var{z}, @var{xi}, @var{yi})
-## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} = 
+## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} =
 ## 1:columns (@var{z})}
-## 
-## @item interp2 (@var{z}, @var{n}) 
+##
+## @item interp2 (@var{z}, @var{n})
 ## Interleaves the matrix @var{z} n-times.  If @var{n} is omitted a value
 ## of @code{@var{n} = 1} is assumed.
 ## @end table
 ##
 ## The variable @var{method} defines the method to use for the
-## interpolation.  It can take one of the following values 
+## interpolation.  It can take one of the following values
 ##
 ## @table @asis
 ## @item 'nearest'
@@ -70,15 +70,15 @@
 ## @end table
 ##
 ## If a scalar value @var{extrapval} is defined as the final value, then
-## values outside the mesh as set to this value.  Note that in this case 
+## values outside the mesh as set to this value.  Note that in this case
 ## @var{method} must be defined as well.  If @var{extrapval} is not
-## defined then NA is assumed. 
+## defined then NA is assumed.
 ##
 ## @seealso{interp1}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
-## 2005-03-02 Thomas Weber <weber@num.uni-sb.de> 
+## 2005-03-02 Thomas Weber <weber@num.uni-sb.de>
 ##     * Add test cases
 ## 2005-03-02 Paul Kienzle <pkienzle@users.sf.net>
 ##     * Simplify
@@ -125,7 +125,7 @@ function ZI = interp2 (varargin)
       else
         [X, Y, Z, XI, YI] = deal (varargin{:});
       endif
-    case 6 
+    case 6
         [X, Y, Z, XI, YI, method] = deal (varargin{:});
     case 7
         [X, Y, Z, XI, YI, method, extrapval] = deal (varargin{:});
@@ -135,13 +135,13 @@ function ZI = interp2 (varargin)
 
   ## Type checking.
   if (!ismatrix (Z))
-    error ("interp2: Z must be a matrix"); 
+    error ("interp2: Z must be a matrix");
   endif
   if (!isempty (n) && !isscalar (n))
-    error ("interp2: N must be a scalar"); 
+    error ("interp2: N must be a scalar");
   endif
   if (!ischar (method))
-    error ("interp2: METHOD must be a string"); 
+    error ("interp2: METHOD must be a string");
   endif
   if (ischar (extrapval) || strcmp (extrapval, "extrap"))
     extrapval = [];
@@ -152,19 +152,19 @@ function ZI = interp2 (varargin)
   ## Define X, Y, XI, YI if needed
   [zr, zc] = size (Z);
   if (isempty (X))
-    X = 1:zc; 
+    X = 1:zc;
     Y = 1:zr;
   endif
   if (! isnumeric (X) || ! isnumeric (Y))
-    error ("interp2: X, Y must be numeric matrices"); 
+    error ("interp2: X, Y must be numeric matrices");
   endif
   if (! isempty (n))
-    p = 2^n; 
-    XI = (p:p*zc)/p; 
-    YI = (p:p*zr)'/p; 
+    p = 2^n;
+    XI = (p:p*zc)/p;
+    YI = (p:p*zr)'/p;
   endif
   if (! isnumeric (XI) || ! isnumeric (YI))
-    error ("interp2: XI, YI must be numeric"); 
+    error ("interp2: XI, YI must be numeric");
   endif
 
 
@@ -251,7 +251,7 @@ function ZI = interp2 (varargin)
       DY = __pchip_deriv__ (Y, Z, 1);
       ## Compute mixed derivatives row-wise and column-wise, use the average.
       DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1))/2;
-      
+
       ## do the bicubic interpolation
       hx = diff (X); hx = hx(xidx);
       hy = diff (Y); hy = hy(yidx);
@@ -352,14 +352,14 @@ function ZI = interp2 (varargin)
       elseif (isgriddata (X) && isgriddata (Y'))
         ## Allocate output
         ZI = zeros (size (X));
-  
+
         ## Find inliers
         inside = !(XI < X (1) | XI > X (end) | YI < Y (1) | YI > Y (end));
-  
+
         ## Scale XI and YI to match indices of Z
         XI = (columns (Z) - 1) * (XI - X (1)) / (X (end) - X (1)) + 1;
         YI = (rows (Z) - 1) * (YI - Y (1)) / (Y (end) - Y (1)) + 1;
-  
+
         ## Start the real work
         K = floor (XI);
         L = floor (YI);
@@ -393,14 +393,14 @@ function ZI = interp2 (varargin)
            + AY1  .* AX0  .* Z (sym_sub2ind (sz, L-1, K))   ...
            + AY1  .* AX1  .* Z (sym_sub2ind (sz, L-1, K-1));
         ZI (!inside) = extrapval;
-      
+
       else
         error ("interp2: input data must have `meshgrid' format");
       endif
 
     elseif (strcmp (method, "spline"))
       if (isgriddata (XI) && isgriddata (YI'))
-        ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval, 
+        ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval,
                         "spline");
       else
         error ("interp2: input data must have `meshgrid' format");
@@ -449,7 +449,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -458,7 +458,7 @@ endfunction
 %! xi=linspace(min(x),max(x),41);
 %! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -467,7 +467,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -476,7 +476,7 @@ endfunction
 %! xi=linspace(min(x),max(x),41);
 %! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -485,7 +485,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -494,7 +494,7 @@ endfunction
 %! xi=linspace(min(x),max(x),41);
 %! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -503,7 +503,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -512,7 +512,7 @@ endfunction
 %! xi=linspace(min(x),max(x),41);
 %! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -521,7 +521,7 @@ endfunction
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -530,7 +530,7 @@ endfunction
 %! xi=linspace(min(x),max(x),41);
 %! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y); 
+%! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!test % simple test
@@ -557,7 +557,7 @@ endfunction
 %!  xi = [1:0.25:3]; yi = [4:0.25:7]';
 %!  Expected = interp2(x,y,Orig, xi, yi);
 %!  Result = interp2(Orig,2);
-%!  
+%!
 %!  assert(Result, Expected, 10*eps);
 
 %!test % matrix slice
@@ -580,7 +580,7 @@ endfunction
 
 %!test % for values at boundaries
 %!  A=[1,2;3,4];
-%!  x=[0,1]; 
+%!  x=[0,1];
 %!  y=[2,3]';
 %!  assert(interp2(x,y,A,x,y,'linear'), A);
 %!  assert(interp2(x,y,A,x,y,'nearest'), A);

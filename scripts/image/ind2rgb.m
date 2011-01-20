@@ -43,7 +43,7 @@ function [R, G, B] = ind2rgb (x, map)
   if (ndims (x) != 2 || any (x(:) != round (x(:))) || min (x(:)) < 1)
     error ("ind2rgb: X must be an indexed image");
   endif
-  
+
   ## Check the color map.
   if (ndims (map) != 2 || columns (map) != 3)
     error ("ind2rgb: MAP must be a valid colormap");
@@ -57,7 +57,7 @@ function [R, G, B] = ind2rgb (x, map)
     pad = repmat (map(end,:), maxidx-rm, 1);
     map(end+1:maxidx, :) = pad;
   endif
-  
+
   ## Compute result
   [hi, wi] = size (x);
   R = reshape (map (x(:), 1), hi, wi);

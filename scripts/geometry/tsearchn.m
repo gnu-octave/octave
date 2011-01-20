@@ -44,7 +44,7 @@ function [idx, p] = tsearchn (x, t, xi)
     b = cart2bary (x (t (i, :), :), xi(ni,:));
 
     ## Our points xi are in the current triangle if
-    ## (all(b >= 0) && all (b <= 1)). However as we impose that 
+    ## (all(b >= 0) && all (b <= 1)). However as we impose that
     ## sum(b,2) == 1 we only need to test all(b>=0). Note need to add
     ## a small margin for rounding errors
     intri = all (b >= -1e-12, 2);

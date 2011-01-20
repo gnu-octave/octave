@@ -21,19 +21,19 @@
 ## Recursively display the contents of a cell array.  By default the values
 ## are displayed with the name of the variable @var{c}.  However, this name
 ## can be replaced with the variable @var{name}.  For example:
-## 
+##
 ## @example
 ## @group
 ## c = @{1, 2, @{31, 32@}@};
 ## celldisp(c, "b")
 ##      @result{}
-##         b@{1@} = 
+##         b@{1@} =
 ##          1
-##         b@{2@} = 
+##         b@{2@} =
 ##          2
-##         b@{3@}@{1@} = 
+##         b@{3@}@{1@} =
 ##          31
-##         b@{3@}@{2@} = 
+##         b@{3@}@{2@} =
 ##          32
 ## @end group
 ## @end example
@@ -80,4 +80,4 @@ endfunction
 
 %!demo
 %! c = {1, 2, {31, 32}};
-%! celldisp(c, "b") 
+%! celldisp(c, "b")

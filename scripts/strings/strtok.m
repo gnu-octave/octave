@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
-## 
+##
 ## Find all characters up to but not including the first character which
 ## is in the string delim.  If @var{rem} is requested, it contains the
 ## remainder of the string, starting at the first delimiter.  Leading
 ## delimiters are ignored.  If @var{delim} is not specified, space is
-## assumed.  For example: 
+## assumed.  For example:
 ##
 ## @example
 ## @group
@@ -48,7 +48,7 @@ function [tok, rem] = strtok (str, delim)
   endif
 
   if (nargin < 2 || isempty (delim))
-    delim = "\t\n\v\f\r "; 
+    delim = "\t\n\v\f\r ";
   endif
 
   if (isempty (str))
@@ -58,14 +58,14 @@ function [tok, rem] = strtok (str, delim)
     len = length (str);
     while (start <= len)
       if (all (str(start) != delim))
-        break; 
+        break;
       endif
       start++;
     endwhile
     stop = start;
     while (stop <= len)
       if (any (str(stop) == delim))
-        break; 
+        break;
       endif
       stop++;
     endwhile
@@ -112,7 +112,7 @@ endfunction
 %! printf("\n");
 %! % ----------------------------------------------------
 %! % Demonstrates processing of an entire string split on
-%! % a variety of delimiters. Tokens and delimiters are 
+%! % a variety of delimiters. Tokens and delimiters are
 %! % printed one after another in angle brackets.  The
 %! % string is:
 
@@ -138,7 +138,7 @@ endfunction
 %!assert(strtok("this is", "i "), "th");
 %!assert(strtok("this is", "ij "), "th");
 
-%!# test all cases for 4 delimiters since a different 
+%!# test all cases for 4 delimiters since a different
 %!# algorithm is used when more than 3 delimiters
 %!assert(strtok("","jkl "), "");
 %!assert(strtok("this","jkl "), "this");

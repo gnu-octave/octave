@@ -23,16 +23,16 @@
 ## @deftypefnx {Function File} {} ezplot3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot3 (@dots{})
 ##
-## Plots in three-dimensions the curve defined parametrically. 
+## Plots in three-dimensions the curve defined parametrically.
 ## @var{fx}, @var{fy}, and @var{fz} are strings, inline functions
-## or function handles with one arguments defining the function.  By 
-## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi}  
-## with 60 points. 
+## or function handles with one arguments defining the function.  By
+## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi}
+## with 60 points.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
 ## value of @var{t}.  @var{n} is a scalar defining the number of points to use.
 ##
-## The optional return value @var{h} provides a list of handles to the 
+## The optional return value @var{h} provides a list of handles to the
 ## the parts of the vector field (body, arrow and marker).
 ##
 ## @example

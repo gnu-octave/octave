@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {[@var{code}, @var{idx}] =} test ('@var{name}', 'grabdemo')
 ##
 ## Perform tests from the first file in the loadpath matching @var{name}.
-## @code{test} can be called as a command or as a function.  Called with 
+## @code{test} can be called as a command or as a function.  Called with
 ## a single argument @var{name}, the tests are run interactively and stop
 ## after the first error is encountered.
 ##
@@ -38,7 +38,7 @@
 ##  Don't report all the tests as they happen, just the errors.
 ##
 ## @item 'normal'
-## Report all tests as they happen, but don't do tests which require 
+## Report all tests as they happen, but don't do tests which require
 ## user interaction.
 ##
 ## @item 'verbose'
@@ -46,11 +46,11 @@
 ## @end table
 ##
 ## The argument @var{fid} can be used to allow batch processing.  Errors
-## can be written to the already open file defined by @var{fid}, and 
+## can be written to the already open file defined by @var{fid}, and
 ## hopefully when Octave crashes this file will tell you what was happening
 ## when it did.  You can use @code{stdout} if you want to see the results as
 ## they happen.  You can also give a file name rather than an @var{fid}, in
-## which case the contents of the file will be replaced with the log from 
+## which case the contents of the file will be replaced with the log from
 ## the current test.
 ##
 ## Called with a single output argument @var{success}, @code{test} returns
@@ -88,7 +88,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     __flag = "quiet";
   endif
   if (nargin < 3)
-    __fid = []; 
+    __fid = [];
   endif
   if (nargin < 1 || nargin > 3
       || (! ischar (__name) && ! isempty (__name)) || ! ischar (__flag))
@@ -206,9 +206,9 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   else
     ## Add a dummy comment block to the end for ease of indexing.
     if (__body (length(__body)) == "\n")
-      __body = sprintf ("\n%s#", __body); 
+      __body = sprintf ("\n%s#", __body);
     else
-      __body = sprintf ("\n%s\n#", __body); 
+      __body = sprintf ("\n%s\n#", __body);
     endif
   endif
 
@@ -289,7 +289,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       endif
       ## Code already processed.
       __code = "";
-      
+
 ### SHARED
 
     elseif (strcmp (__type, "shared"))
@@ -304,13 +304,13 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __vars = __code (1:__idx(1)-1);
         __code = __code (__idx(1):length(__code));
       endif
-      
+
       ## Strip comments off the variables.
       __idx = find (__vars == "%" | __vars == "#");
       if (! isempty (__idx))
         __vars = __vars(1:__idx(1)-1);
       endif
-      
+
       ## Assign default values to variables.
       try
         __vars = deblank (__vars);
@@ -333,9 +333,9 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       ## Clear shared function definitions.
       eval (__clear, "");
       __clear = "";
-      
+
       ## Initialization code will be evaluated below.
-    
+
 ### FUNCTION
 
     elseif (strcmp (__type, "function"))
@@ -359,7 +359,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         end_try_catch
       endif
       __code = "";
-      
+
 ### ASSERT/FAIL
 
     elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
@@ -367,7 +367,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       ## Put the keyword back on the code.
       __code = __block;
       ## The code will be evaluated below as a test block.
-      
+
 ### ERROR/WARNING
 
     elseif (strcmp (__type, "error") || strcmp(__type, "warning"))
@@ -387,7 +387,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __msg = sprintf ("%stest failed: syntax error\n%s",
                          __signal_fail, __error_text__);
       end_try_catch
-      
+
       if (__success)
         __success = 0;
         __warnstate = warning ("query", "quiet");
@@ -440,7 +440,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       endif
       ## Code already processed.
       __code = "";
-      
+
 ### TESTIF
 
     elseif (strcmp (__type, "testif"))
@@ -491,12 +491,12 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
            __success = 0;
         endif
         if (isempty (__error_text__))
-          error ("empty error text, probably Ctrl-C --- aborting"); 
+          error ("empty error text, probably Ctrl-C --- aborting");
         endif
       end_try_catch
       clear __test__;
     endif
-    
+
     ## All done.  Remember if we were successful and print any messages.
     if (! isempty (__msg))
       ## Make sure the user knows what caused the error.
@@ -511,7 +511,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
           && ! all (__shared == " "))
         fputs (__fid, "shared variables ");
-        eval (sprintf ("fdisp(__fid,bundle(%s));", __shared)); 
+        eval (sprintf ("fdisp(__fid,bundle(%s));", __shared));
         fflush (__fid);
       endif
     endif
@@ -551,7 +551,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     __ret1 = __demo_code;
     __ret2 = __demo_idx;
   elseif (nargout == 1)
-    __ret1 = __all_success; 
+    __ret1 = __all_success;
   else
     __ret1 = __successes;
     __ret2 = __tests;
@@ -595,7 +595,7 @@ endfunction
 function [pattern, id, rest] = getpattern (str)
   pattern = ".";
   id = [];
-  rest = str; 
+  rest = str;
   str = trimleft (str);
   if (! isempty (str) && str(1) == "<")
     close = index (str, ">");
@@ -685,14 +685,14 @@ endfunction
 %!test assert (isempty (kron ([], [])))
 %!shared A, B
 %!test
-%! A = [1, 2, 3; 4, 5, 6]; 
+%! A = [1, 2, 3; 4, 5, 6];
 %! B = [1, -1; 2, -2];
 %!assert (size (kron (zeros (3, 0), A)), [ 3*rows(A), 0 ])
 %!assert (size (kron (zeros (0, 3), A)), [ 0, 3*columns(A) ])
 %!assert (size (kron (A, zeros (3, 0))), [ 3*rows(A), 0 ])
 %!assert (size (kron (A, zeros (0, 3))), [ 0, 3*columns(A) ])
 %!assert (kron (pi, e), pi*e)
-%!assert (kron (pi, A), pi*A) 
+%!assert (kron (pi, A), pi*A)
 %!assert (kron (A, e), e*A)
 %!assert (kron ([1, 2, 3], A), [ A, 2*A, 3*A ])
 %!assert (kron ([1; 2; 3], A), [ A; 2*A; 3*A ])
@@ -702,7 +702,7 @@ endfunction
 %! assert (kron (A, B), res)
 
 ### an extended demo from specgram
-%!#demo 
+%!#demo
 %! ## Speech spectrogram
 %! [x, Fs] = auload(file_in_loadpath("sample.wav")); # audio file
 %! step = fix(5*Fs/1000);     # one spectral slice every 5 ms
@@ -740,7 +740,7 @@ endfunction
 %!## test of shared variables
 %!shared a                # create a shared variable
 %!test   a=3;             # assign to a shared variable
-%!test   assert(a,3)      # variable should equal 3    
+%!test   assert(a,3)      # variable should equal 3
 %!shared b,c              # replace shared variables
 %!test assert (!exist("a"));   # a no longer exists
 %!test assert (isempty(b));    # variables start off empty
@@ -769,7 +769,7 @@ endfunction
 %! z = 3*y;
 %!test                   # Test a test function with multiple returns
 %! [x,z] = __test_a(3);
-%! assert(x,6); 
+%! assert(x,6);
 %! assert(z,9);
 
 %!## test of assert block
@@ -801,12 +801,12 @@ endfunction
 % !error  "succeeds.";       # error test fails if code succeeds
 % !error <wrong pattern> error("message")  # error pattern must match
 % !demo   with syntax error  # syntax errors in demo fail properly
-% !shared a,b,c              
+% !shared a,b,c
 % !demo                      # shared variables not available in demo
 % ! assert(exist("a"))
-% !error  
+% !error
 % ! test('/etc/passwd');
 % ! test("nonexistent file");
-% ! ## These don't signal an error, so the test for an error fails. Note 
+% ! ## These don't signal an error, so the test for an error fails. Note
 % ! ## that the call doesn't reference the current fid (it is unavailable),
 % ! ## so of course the informational message is not printed in the log.

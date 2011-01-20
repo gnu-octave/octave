@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{sz})
-## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
-## random samples from the uniform distribution on [@var{a}, @var{b}]. 
+## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of
+## random samples from the uniform distribution on [@var{a}, @var{b}].
 ## Both @var{a} and @var{b} must be scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
@@ -33,7 +33,7 @@
 function rnd = unifrnd (a, b, r, c)
 
   if (nargin > 1)
-    if (!isscalar(a) || !isscalar(b)) 
+    if (!isscalar(a) || !isscalar(b))
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
         error ("unifrnd: A and B must be of common size or scalar");

@@ -58,7 +58,7 @@
 ## @example
 ## plot3 (@var{x1}, @var{y1}, @var{z1}, @var{x2}, @var{y2}, @var{z2}, @dots{})
 ## @end example
-## 
+##
 ## @noindent
 ## in which each set of three arguments is treated as a separate line or
 ## set of lines in three dimensions.

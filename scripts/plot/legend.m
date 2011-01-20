@@ -28,7 +28,7 @@
 ## @deftypefnx {Function File} {} legend ("@var{option}")
 ##
 ## Display a legend for the axes with handle @var{hax}, or the current axes,
-## using the specified strings as labels.  Legend entries may be specified 
+## using the specified strings as labels.  Legend entries may be specified
 ## as individual character string arguments, a character array, or a cell
 ## array of character strings.  If the handles, @var{hobjs}, are not specified
 ## then the legend's strings will be associated with the axes' descendants.
@@ -64,7 +64,7 @@
 ## @item @tab southwest @tab
 ##   left bottom
 ##
-## @item 
+## @item
 ##
 ## @item @tab outside @tab
 ##   can be appended to any location string
@@ -118,7 +118,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     plty = get(ca (strcmp (get (ca, "tag"), "plotyy")), "userdata");
     if (isscalar (plty))
       ca = [ca, plty];
-    else 
+    else
       ca = [ca, plty{:}];
     endif
   endif
@@ -156,7 +156,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       endif
     endif
   endif
-  
+
   while (nargs > 1)
     pos = varargin{nargs-1};
     str = varargin{nargs};
@@ -171,7 +171,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     endif
   endwhile
 
-  ## Validate the orientation 
+  ## Validate the orientation
   switch (orientation)
     case {"vertical", "horizontal","default"}
     otherwise
@@ -201,7 +201,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   hlegend = [];
   fkids = get (fig, "children");
   for i = 1 : numel(fkids)
-    if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes") 
+    if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes")
         && (strcmp (get (fkids (i), "tag"), "legend")))
       udata = get (fkids (i), "userdata");
       if (! isempty (intersect (udata.handle, ca)))
@@ -360,7 +360,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             hgkids = get (kids(k), "children");
             for j = 1 : length (hgkids)
               hgobj = get (hgkids (j));
-              if (isfield (hgobj, "displayname") 
+              if (isfield (hgobj, "displayname")
                   && ! isempty (hgobj.displayname))
                 hplots = [hplots, hgkids(j)];
                 text_strings = {text_strings{:}, hbobj.displayname};
@@ -422,8 +422,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
         box = "off";
       endif
-      
-      ## Get axis size and fontsize in points.  
+
+      ## Get axis size and fontsize in points.
       ## Rely on listener to handle coversion.
       units = get (ca(1), "units");
       fontunits = get (ca(1), "fontunits");
@@ -458,7 +458,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           hlegend = axes ("tag", "legend", "userdata", struct ("handle", ud),
                           "box", box, "outerposition", [0, 0, 0, 0],
                           "xtick", [], "ytick", [], "xticklabel", "",
-                          "yticklabel", "", "zticklabel", "", 
+                          "yticklabel", "", "zticklabel", "",
                           "xlim", [0, 1], "ylim", [0, 1], "visible", "off",
                           "activepositionproperty", "position");
         else
@@ -474,7 +474,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         maxheight = 0;
         for k = 1 : nentries
           if (strcmp (textpos, "right"))
-            texthandle = [texthandle, text(0, 0, text_strings {k}, 
+            texthandle = [texthandle, text(0, 0, text_strings {k},
                                            "horizontalalignment", "left",
                                            "userdata", hplots(k))];
           else
@@ -612,7 +612,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             endif
           case "southeast"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_outpos(2), 
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_outpos(2),
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2) + lpos(4), ...
                          ca_pos(3) - lpos(3), ca_pos(4) - lpos(4)];
@@ -653,7 +653,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             style = get (hplots(k), "linestyle");
             if (! strcmp (style, "none"))
               l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
-                         "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), 
+                         "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
                          "color", color, "linestyle", style, "marker", "none",
                          "userdata", hplots (k));
               hobjects = [hobjects, l1];
@@ -661,7 +661,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             marker = get (hplots(k), "marker");
             if (! strcmp (marker, "none"))
               l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                         "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), 
+                         "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
                          "color", color, "linestyle", "none", "marker", marker,
                          "markeredgecolor", get (hplots (k), "markeredgecolor"),
                          "markerfacecolor", get (hplots (k), "markerfacecolor"),
@@ -699,14 +699,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
         ## Add an invisible text object to original axis
         ## that when it is destroyed will remove the legend
-        t1 = text (0, 0, "", "parent", ca(1), "tag", "legend", 
+        t1 = text (0, 0, "", "parent", ca(1), "tag", "legend",
                    "handlevisibility", "off", "visible", "off",
                    "xliminclude", "off", "yliminclude", "off");
         set (t1, "deletefcn", {@deletelegend1, hlegend});
 
         ## Resize the axis the legend is attached to if the
-        ## legend is "outside" the plot and create listener to 
-        ## resize axis to original size if the legend is deleted, 
+        ## legend is "outside" the plot and create listener to
+        ## resize axis to original size if the legend is deleted,
         ## hidden or shown
         if (outside)
           for i = 1 : numel (ca)
@@ -732,7 +732,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           addproperty ("edgecolor", hlegend, "color", [0, 0, 0]);
           addproperty ("textcolor", hlegend, "color", [0, 0, 0]);
           addproperty ("location", hlegend, "radio", "north|south|east|west|{northeast}|southeast|northwest|southwest|northoutside|southoutside|eastoutside|westoutside|northeastoutside|southeastoutside|northwestoutside|southwestoutside");
-          addproperty ("orientation", hlegend, "radio", 
+          addproperty ("orientation", hlegend, "radio",
                        "{vertical}|horizontal");
           addproperty ("string", hlegend, "any", text_strings);
           addproperty ("textposition", hlegend, "radio", "{left}|right");
@@ -741,7 +741,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
 
         if (outside)
-          set (hlegend, "location", strcat (position, "outside"), 
+          set (hlegend, "location", strcat (position, "outside"),
                "orientation", orientation, "textposition", textpos);
         else
           set (hlegend, "location", position, "orientation", orientation,
@@ -876,7 +876,7 @@ function updateline (h, d, hlegend, linelength)
   ll = [];
   kids = get (hlegend, "children");
   for i = 1 : numel (kids)
-    if (get (kids (i), "userdata") == h 
+    if (get (kids (i), "userdata") == h
         && strcmp (get (kids(i), "type"), "line"))
       if (strcmp (get (kids (i), "marker"), "none"))
         ll = kids (i);
@@ -890,7 +890,7 @@ function updateline (h, d, hlegend, linelength)
   marker = get (h, "marker");
   displayname = get (h, "displayname");
 
-  if ((isempty (displayname) 
+  if ((isempty (displayname)
        || (strcmp (marker, "none") && strcmp (linestyle, "none")))
        && (! isempty (lm) || isempty (ll)))
     ## An element was removed from the legend. Need to recall the
@@ -904,7 +904,7 @@ function updateline (h, d, hlegend, linelength)
       endif
     endfor
     legend (hplots, text_strings);
-  elseif ((!isempty (displayname) 
+  elseif ((!isempty (displayname)
            && (! strcmp (marker, "none") || ! strcmp (linestyle, "none")))
           && isempty (lm) && isempty (ll))
     ## An element was added to the legend. Need to recall the
@@ -931,12 +931,12 @@ function updateline (h, d, hlegend, linelength)
       delete (lm);
     endif
     if (! strcmp (linestyle, "none"))
-      line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"), 
+      line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
             "linestyle", get (h, "linestyle"), "marker", "none",
             "userdata", h, "parent", hlegend);
     endif
     if (! strcmp (marker, "none"))
-      line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"), 
+      line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
             "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
             "markerfacecolor", get (h, "markerfacecolor"),
             "markersize", get (h, "markersize"), "linestyle", "none",
@@ -966,7 +966,7 @@ function [hplots, text_strings] = getlegenddata (hlegend)
         hgkids = get (kids(k), "children");
         for j = 1 : length (hgkids)
           hgobj = get (hgkids (j));
-          if (isfield (hgobj, "displayname") 
+          if (isfield (hgobj, "displayname")
               && ! isempty (hgobj.displayname))
             hplots = [hplots, hgkids(j)];
             text_strings = {text_strings{:}, hbobj.displayname};

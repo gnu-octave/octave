@@ -46,7 +46,7 @@
 ##
 ## @noindent
 ## plots 10 stems with heights from 2 to 20 in red;
-## 
+##
 ## The return value of @code{stem} is a vector of "stem series" graphics
 ## handles, with one handle per column of the variable @var{y}.  This
 ## handle regroups the elements of the stem graph together as the

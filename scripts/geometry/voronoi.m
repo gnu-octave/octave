@@ -71,7 +71,7 @@ function [vvx, vvy] = voronoi (varargin)
       error ("voronoi: expecting first argument to be an axes object");
     endif
   else
-    if (nargout < 2)    
+    if (nargout < 2)
       handl = gca ();
     endif
   endif
@@ -82,9 +82,9 @@ function [vvx, vvy] = voronoi (varargin)
 
   x = varargin{narg++};
   y = varargin{narg++};
-  
+
   opts = {};
-  if (narg <= nargin) 
+  if (narg <= nargin)
     if (iscell (varargin{narg}))
       opts = varargin(narg++);
     elseif (ismatrix (varargin{narg}))
@@ -94,7 +94,7 @@ function [vvx, vvy] = voronoi (varargin)
   endif
 
   linespec = {"b"};
-  if (narg <= nargin) 
+  if (narg <= nargin)
     if (ischar (varargin{narg}))
       linespec = varargin(narg);
     endif
@@ -130,7 +130,7 @@ function [vvx, vvy] = voronoi (varargin)
   ll = length (idx);
   c = c(idx).';
   k = sum (cellfun ('length', c));
-  edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c, 
+  edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
                             "uniformoutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
@@ -150,7 +150,7 @@ function [vvx, vvy] = voronoi (varargin)
   vx = reshape (p (edges, 1), size(edges));
   vy = reshape (p (edges, 2), size(edges));
 
-  if (nargout < 2)    
+  if (nargout < 2)
     lim = [xmin, xmax, ymin, ymax];
     h = plot (handl, vx, vy, linespec{:}, x, y, '+');
     axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...

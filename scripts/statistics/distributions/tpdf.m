@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} tpdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the @var{t} (Student) distribution with @var{n}
-## degrees of freedom. 
+## degrees of freedom.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

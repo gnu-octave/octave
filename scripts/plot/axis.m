@@ -32,7 +32,7 @@
 ## x-axis.  The third and fourth specify the limits for the y-axis, and the
 ## fifth and sixth specify the limits for the z-axis.
 ##
-## Without any arguments, @code{axis} turns autoscaling on.  
+## Without any arguments, @code{axis} turns autoscaling on.
 ##
 ## With one output argument, @code{x = axis} returns the current axes.
 ##
@@ -73,11 +73,11 @@
 ## The following options control the way axis limits are interpreted.
 ##
 ## @table @asis
-## @item "auto" 
+## @item "auto"
 ## Set the specified axes to have nice limits around the data
 ## or all if no axes are specified.
 ##
-## @item "manual" 
+## @item "manual"
 ## Fix the current axes limits.
 ##
 ## @item "tight"
@@ -92,7 +92,7 @@
 ## The following options affect the appearance of tic marks.
 ##
 ## @table @asis
-## @item "on" 
+## @item "on"
 ## Turn tic marks and labels on for all axes.
 ##
 ## @item "off"
@@ -103,7 +103,7 @@
 ## specified axes and off for the remainder.
 ##
 ## @item "label[xyz]"
-## Turn tic labels on for all axes, or turn them on for the 
+## Turn tic labels on for all axes, or turn them on for the
 ## specified axes and off for the remainder.
 ##
 ## @item "nolabel"
@@ -119,10 +119,10 @@
 ## @item "ij"
 ## Reverse y-axis, so lower values are nearer the top.
 ##
-## @item "xy" 
-## Restore y-axis, so higher values are nearer the top. 
+## @item "xy"
+## Restore y-axis, so higher values are nearer the top.
 ## @end table
-## 
+##
 ## If an axes handle is passed as the first argument, then operate on
 ## this axes rather than the current axes.
 ## @end deftypefn
@@ -184,7 +184,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
       if (strcmp (get (get (ca, "parent"), "__graphics_toolkit__"), "gnuplot"))
         ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
-        ## The following line is a trick used to trigger the recalculation of 
+        ## The following line is a trick used to trigger the recalculation of
         ## aspect related magnitudes even if the aspect ratio is the same
         ## (useful with the x11 gnuplot terminal after a window resize)
         set (ca, "dataaspectratiomode", "auto");
@@ -325,9 +325,9 @@ function lims = __get_tight_lims__ (ca, ax)
     if (iscell (data))
       data = data (find (! cellfun (@isempty, data)));
       if (! isempty (data))
-        lims_min = min (cellfun (@min, cellfun (@min, data, 'uniformoutput', false)(:))); 
-        lims_max = max (cellfun (@max, cellfun (@max, data, 'uniformoutput', false)(:))); 
-        lims = [lims_min, lims_max]; 
+        lims_min = min (cellfun (@min, cellfun (@min, data, 'uniformoutput', false)(:)));
+        lims_max = max (cellfun (@max, cellfun (@max, data, 'uniformoutput', false)(:)));
+        lims = [lims_min, lims_max];
       else
         lims = [0, 1];
       endif
@@ -365,7 +365,7 @@ endfunction
 %! plot(t, x);
 %! title("equal plot");
 %! axis("equal");
-%! 
+%!
 %! subplot(224);
 %! plot(t, x);
 %! title("normal plot again");

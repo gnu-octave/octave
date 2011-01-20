@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {} saveas (@var{h}, @var{filename})
 ## @deftypefnx {Function File} {} saveas (@var{h}, @var{filename}, @var{fmt})
 ## Save graphic object @var{h} to the file @var{filename} in graphic
-## format @var{fmt}. 
-## 
+## format @var{fmt}.
+##
 ## @var{fmt} should be one of the following formats:
 ##
 ## @table @code
@@ -77,7 +77,7 @@ function  saveas (h, filename, fmt = "pdf")
   else
     error ("saveas: first argument H must be a graphics handle");
   endif
-  
+
   if (!ischar (filename))
     error ("saveas: FILENAME must be a string");
   endif
@@ -102,7 +102,7 @@ function  saveas (h, filename, fmt = "pdf")
   endif
 
   prt_opt = strcat ("-d", tolower (fmt));
-  
+
   print (filename, prt_opt);
 
 endfunction

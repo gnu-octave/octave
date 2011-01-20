@@ -73,7 +73,7 @@ function b = bincoeff (n, k)
 
   ind = (! (k >= 0) | (k != real (round (k))) | isnan (n));
   b(ind) = NaN;
-  
+
   ind = (k == 0);
   b(ind) = 1;
 

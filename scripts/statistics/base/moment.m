@@ -156,7 +156,7 @@ function m = moment (x, p, opt1, opt2)
       dim = 1;
     endif
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || 
+    if (!(isscalar (dim) && dim == fix (dim)) ||
         !(1 <= dim && dim <= nd))
       error ("moment: DIM must be an integer and a valid dimension");
     endif

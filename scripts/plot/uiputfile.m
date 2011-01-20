@@ -26,14 +26,14 @@
 ##
 ## @table @code
 ## @item "/path/to/filename.ext"
-## If a filename is given the file extension is 
+## If a filename is given the file extension is
 ## extracted and used as filter.
 ## In addtion the path is selected as current path and the filname is selected
 ## as default file.
 ## Example: uiputfile("myfun.m");
 ##
 ## @item "*.ext"
-## A single file extension. 
+## A single file extension.
 ## Example: uiputfile("*.ext");
 ##
 ## @item @{"*.ext","My Description"@}
@@ -41,13 +41,13 @@
 ## a brief description in the 2nd column.
 ## Example: uiputfile(@{"*.ext","My Description";"*.xyz","XYZ-Format"@});
 ## @end table
-## 
+##
 ## The filter string can also contain a semicolon separated list of filter
 ## extensions.
 ## Example: uiputfile(@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@});
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
-## If @var{default_file} is given it is preselected in the GUI dialog. 
+## If @var{default_file} is given it is preselected in the GUI dialog.
 ## If in addtion a path is given it is also used as current path.
 ## @end deftypefn
 

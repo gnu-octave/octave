@@ -70,7 +70,7 @@ function retval = help (name)
 
     ## Get help text
     [text, format] = get_help_text (name);
-    
+
     ## Take action depending on help text format
     switch (lower (format))
       case "plain text"
@@ -87,7 +87,7 @@ function retval = help (name)
       otherwise
         error ("help: internal error: unsupported help text format: '%s'\n", format);
     endswitch
-    
+
     ## Print text
     if (status != 0)
       warning ("help: Texinfo formatting filter exited abnormally; raw Texinfo source of help text follows...\n");

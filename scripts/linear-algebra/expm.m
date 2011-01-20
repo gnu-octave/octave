@@ -26,30 +26,30 @@
 ## $$
 ## @end tex
 ## @ifnottex
-## 
+##
 ## @example
 ## expm(A) = I + A + A^2/2! + A^3/3! + @dots{}
 ## @end example
-## 
+##
 ## @end ifnottex
 ## The Taylor series is @emph{not} the way to compute the matrix
 ## exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
 ## Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
-## uses Ward's diagonal Pad@'e approximation method with three step 
+## uses Ward's diagonal Pad@'e approximation method with three step
 ## preconditioning (SIAM Journal on Numerical Analysis, 1977).  Diagonal
 ## Pad@'e approximations are rational polynomials of matrices
 ## @tex
 ## $D_q(A)^{-1}N_q(A)$
 ## @end tex
 ## @ifnottex
-## 
+##
 ## @example
 ## @group
 ##      -1
 ## D (A)   N (A)
 ## @end group
 ## @end example
-## 
+##
 ## @end ifnottex
 ## whose Taylor series matches the first
 ## @tex

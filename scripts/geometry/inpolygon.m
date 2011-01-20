@@ -53,12 +53,12 @@ function [in, on] = inpolygon (x, y, xv, yv)
 
   npol = length (xv);
   do_boundary = (nargout >= 2);
-  
+
   in = zeros (size(x), "logical");
-  if (do_boundary) 
-    on = zeros (size(x), "logical"); 
+  if (do_boundary)
+    on = zeros (size(x), "logical");
   endif
-  
+
   j = npol;
   for i = 1 : npol
     delta_xv = xv(j) - xv(i);
@@ -95,7 +95,7 @@ endfunction
 %! ya=[0:0.1:1.4];
 %! [x,y]=meshgrid(xa,ya);
 %! [in,on]=inpolygon(x,y,xv,yv);
-%! 
+%!
 %! inside=in & !on;
 %! plot(xv,yv)
 %! hold on
@@ -119,7 +119,7 @@ endfunction
 %! ya=[0:0.1:1.4];
 %! [x,y]=meshgrid(xa,ya);
 %! [in,on]=inpolygon(x,y,xv,yv);
-%! 
+%!
 %! inside=in & ~ on;
 %! plot(xv,yv)
 %! hold on

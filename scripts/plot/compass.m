@@ -24,14 +24,14 @@
 ## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
 ##
 ## Plot the @code{(@var{u}, @var{v})} components of a vector field emanating
-## from the origin of a polar plot.  If a single complex argument @var{z} is 
-## given, then @code{@var{u} = real (@var{z})} and @code{@var{v} = imag 
+## from the origin of a polar plot.  If a single complex argument @var{z} is
+## given, then @code{@var{u} = real (@var{z})} and @code{@var{v} = imag
 ## (@var{z})}.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ##
-## The optional return value @var{h} provides a list of handles to the 
+## The optional return value @var{h} provides a list of handles to the
 ## the parts of the vector field (body, arrow and marker).
 ##
 ## @example
@@ -81,8 +81,8 @@ function retval = compass (varargin)
     endif
   endwhile
 
-  ## Matlab draws compass plots, with the arrow head as one continous 
-  ## line, and each arrow separately. This is completely different than 
+  ## Matlab draws compass plots, with the arrow head as one continous
+  ## line, and each arrow separately. This is completely different than
   ## quiver and quite ugly.
   n = length (u);
   xend = u;

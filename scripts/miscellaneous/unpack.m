@@ -1,5 +1,5 @@
 ## Copyright (C) 2006-2011 Bill Denney
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -140,7 +140,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   nodotext = ext(! ismember (ext, "."));
-  
+
   origdir = pwd ();
 
   if (isfield (commandlist, nodotext))

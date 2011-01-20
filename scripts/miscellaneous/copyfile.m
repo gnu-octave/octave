@@ -74,7 +74,7 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     if (length(f1) > 1 && ! isdir)
       error ("copyfile: when copying multiple files, second argument must be a directory");
     endif
-    
+
     ## Protect the file name(s).
     f1 = glob (f1);
     if (isempty (f1))
@@ -88,11 +88,11 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
       while (! isempty(f1))
         p1 = sprintf ("\"%s\" ", f1{1});
         f1(1) = [];
-        while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 < 
+        while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 <
                                  max_cmd_line))
           p1 = sprintf ("%s\"%s\" ", p1, f1{1});
           f1(1) = [];
-        endwhile 
+        endwhile
 
         if (ispc () && ! isunix ()
             && ! isempty (file_in_path (getenv ("PATH"), "cp.exe")))

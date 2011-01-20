@@ -26,11 +26,11 @@
 ## @var{phi} is the angle relative to the xy-plane.
 ## @var{r} is the distance to the origin @w{(0, 0, 0)}.
 ## @var{x}, @var{y}, and @var{z} must be the same shape, or scalar.
-## If called with a single matrix argument then each row of @var{c} 
+## If called with a single matrix argument then each row of @var{c}
 ## represents the Cartesian coordinate (@var{x}, @var{y}, @var{z}).
-## 
-## If only a single return argument is requested then return a matrix 
-## @var{s} where each row represents one spherical coordinate 
+##
+## If only a single return argument is requested then return a matrix
+## @var{s} where each row represents one spherical coordinate
 ## (@var{theta}, @var{phi}, @var{r}).
 ## @seealso{sph2cart, cart2pol, pol2cart}
 ## @end deftypefn
@@ -46,9 +46,9 @@ function [theta, phi, r] = cart2sph (x, y, z)
 
   if (nargin == 1)
     if (ismatrix (x) && columns (x) == 3)
-      z = x(:,3);    
-      y = x(:,2);    
-      x = x(:,1);    
+      z = x(:,3);
+      y = x(:,2);
+      x = x(:,1);
     else
       error ("cart2sph: matrix input must have 3 columns [X, Y, Z]");
     endif

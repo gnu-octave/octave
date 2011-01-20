@@ -123,9 +123,9 @@ function h = colorbar (varargin)
         __position_colorbox__ (loc, obj, ancestor (ax, "figure"));
     set (ax, "position", pos);
 
-    cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar", 
-                       "handlevisibility", "on", 
-                       "activepositionproperty", "position", 
+    cax = __go_axes__ (get (ax, "parent"), "tag", "colorbar",
+                       "handlevisibility", "on",
+                       "activepositionproperty", "position",
                        "position", cpos);
     addproperty ("location", cax, "radio",
                  "eastoutside|east|westoutside|west|northoutside|north|southoutside|south",
@@ -156,8 +156,8 @@ function h = colorbar (varargin)
       endif
     endif
 
-    ctext = text (0, 0, "", "tag", "colorbar","visible", "off", 
-                  "handlevisibility", "off", "xliminclude", "off",  
+    ctext = text (0, 0, "", "tag", "colorbar","visible", "off",
+                  "handlevisibility", "off", "xliminclude", "off",
                   "yliminclude", "off", "zliminclude", "off",
                   "deletefcn", {@deletecolorbar, cax, obj});
 
@@ -363,25 +363,25 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! imagesc(x)
 %! colorbar();
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! imagesc(x)
 %! colorbar("westoutside");
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! imagesc(x)
 %! colorbar("peer", gca (), "northoutside");
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! imagesc(x)
 %! colorbar("southoutside");
 
@@ -407,7 +407,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(2,2,1)
 %! imagesc(x)
 %! colorbar();
@@ -423,7 +423,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(1,2,1)
 %! imagesc(x)
 %! axis square;
@@ -435,7 +435,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(1,2,1)
 %! imagesc(x)
 %! axis square;
@@ -447,7 +447,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(2,1,1)
 %! imagesc(x)
 %! axis square;
@@ -459,7 +459,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(2,1,1)
 %! imagesc(x)
 %! axis square;
@@ -471,7 +471,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(1,2,1)
 %! imagesc(x)
 %! colorbar();
@@ -481,7 +481,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(1,2,1)
 %! imagesc(x)
 %! colorbar("northoutside");
@@ -491,7 +491,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(2,1,1)
 %! imagesc(x)
 %! colorbar();
@@ -501,7 +501,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(2,1,1)
 %! imagesc(x)
 %! colorbar("northoutside");
@@ -511,7 +511,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! subplot(1,2,1)
 %! contour(x)
 %! axis square;
@@ -526,7 +526,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! contour (x)
 %! xlim ([1, 64])
 %! ylim ([1, 64])
@@ -535,7 +535,7 @@ endfunction
 
 %!demo
 %! clf
-%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.');
 %! contour (x)
 %! xlim ([1, 64])
 %! ylim ([1, 64])
@@ -557,17 +557,17 @@ endfunction
 
 %!demo
 %! clf
-%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
-%! imagesc(1./hilb(n)); axis equal; colorbar 
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n);
+%! imagesc(1./hilb(n)); axis equal; colorbar
 
 %!demo
 %! clf
-%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
-%! imagesc(x,y,1./hilb(n)); axis equal; colorbar 
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n);
+%! imagesc(x,y,1./hilb(n)); axis equal; colorbar
 
 %!demo
 %! clf
-%! n=5;x=linspace(0,5,n);y=linspace(0,1,n); 
+%! n=5;x=linspace(0,5,n);y=linspace(0,1,n);
 %! imagesc(y,x,1./hilb(n)); axis equal; colorbar
 ## This requires that the axes position be properly determined for "axes equal"
 

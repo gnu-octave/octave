@@ -52,7 +52,7 @@ endfunction
 %!test # builtin function replacement
 %! dispatch('sin','length','string')
 %! assert(sin("abc"),3)
-%! assert(sin(0),0,10*eps); 
+%! assert(sin(0),0,10*eps);
 
 %!test # 'any' function
 %! dispatch('sin','exp','any')

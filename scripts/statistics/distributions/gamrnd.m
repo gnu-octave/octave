@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{sz})
-## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
+## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of
 ## random samples from the Gamma distribution with parameters @var{a}
-## and @var{b}.  Both @var{a} and @var{b} must be scalar or of size 
+## and @var{b}.  Both @var{a} and @var{b} must be scalar or of size
 ## @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
@@ -35,7 +35,7 @@
 function rnd = gamrnd (a, b, r, c)
 
   if (nargin > 1)
-    if (!isscalar(a) || !isscalar(b)) 
+    if (!isscalar(a) || !isscalar(b))
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
         error ("gamrnd: A and B must be of common size or scalar");
@@ -83,7 +83,7 @@ function rnd = gamrnd (a, b, r, c)
     else
       rnd = b .* randg(a, sz);
     endif
-  else 
+  else
     k = find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf));
     if (any (k))
       rnd(k) = NaN;

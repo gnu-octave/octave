@@ -26,7 +26,7 @@
 ## Deprecated in version 3.4
 
 function replot ()
-  
+
   persistent warned = false;
   if (! warned)
     warned = true;

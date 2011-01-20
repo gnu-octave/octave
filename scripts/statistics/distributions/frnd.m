@@ -22,7 +22,7 @@
 ## Return an @var{r} by @var{c} matrix of random samples from the F
 ## distribution with @var{m} and @var{n} degrees of freedom.  Both
 ## @var{m} and @var{n} must be scalar or of size @var{r} by @var{c}.
-## If @var{sz} is a vector the random samples are in a matrix of 
+## If @var{sz} is a vector the random samples are in a matrix of
 ## size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
@@ -35,7 +35,7 @@
 function rnd = frnd (m, n, r, c)
 
   if (nargin > 1)
-    if (!isscalar(m) || !isscalar(n)) 
+    if (!isscalar(m) || !isscalar(n))
       [retval, m, n] = common_size (m, n);
       if (retval > 0)
         error ("frnd: M and N must be of common size or scalar");
@@ -85,7 +85,7 @@ function rnd = frnd (m, n, r, c)
         rnd = 2 ./ m .* randg(m / 2, sz);
       endif
       if (! isinf (n))
-        rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz); 
+        rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz);
       endif
     elseif ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
       rnd = n ./ m .* randg (m / 2, sz) ./ randg (n / 2, sz);

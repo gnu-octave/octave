@@ -35,17 +35,17 @@
 function varargout = ndgrid (varargin)
 
   if (nargin == 1)
-    n = max ([nargout, 2]);  
+    n = max ([nargout, 2]);
     ## If only one input argument is given, repeat it n-times
     varargin(1:n) = varargin(1);
   elseif (nargin >= nargout)
-    n = max ([nargin, 2]);  
+    n = max ([nargin, 2]);
   else
     error ("ndgrid: wrong number of input arguments");
   endif
 
   ## Determine the size of the output arguments
-  
+
   shape = zeros (1, n);
 
   for i = 1:n

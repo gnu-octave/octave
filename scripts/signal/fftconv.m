@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} fftconv (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} fftconv (@var{x}, @var{y}, @var{n})
 ## Convolve two vectors using the FFT for computation.
-## 
+##
 ## @code{c = fftconv (@var{x}, @var{y})} returns a vector of length equal to
 ## @code{length (@var{x}) + length (@var{y}) - 1}.
 ## If @var{x} and @var{y} are the coefficient vectors of two polynomials, the
@@ -103,4 +103,4 @@ endfunction
 %!error fftconv (1,2,3,4);
 %!error fftconv ([1, 2; 3, 4], 3);
 %!error fftconv (2, []);
-%!error fftconv ([1,1], [2,2] , [3, 4]); 
+%!error fftconv ([1,1], [2,2] , [3, 4]);

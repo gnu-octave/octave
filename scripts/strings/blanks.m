@@ -26,7 +26,7 @@
 ## whos ans;
 ##      @result{}
 ##       Attr Name        Size                     Bytes  Class
-##       ==== ====        ====                     =====  ===== 
+##       ==== ====        ====                     =====  =====
 ##            ans         1x10                        10  char
 ## @end group
 ## @end example

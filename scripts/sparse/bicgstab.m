@@ -131,7 +131,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
 
     shat = precon (s);
 
-    t = A * shat; 
+    t = A * shat;
     omega = (t' * s) / (t' * t);
     x = x + alpha * phat + omega * shat;
     res = s - omega * t;
@@ -144,7 +144,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
       ## We reach tolerance tol within maxit iterations.
       flag = 0;
       break;
-    elseif (resvec (end) == resvec (end - 1)) 
+    elseif (resvec (end) == resvec (end - 1))
       ## The method stagnates.
       flag = 3;
       break;
@@ -152,7 +152,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2, x
   endfor
 
   if (nargout < 2)
-    if (flag == 0) 
+    if (flag == 0)
       printf (["bicgstab converged at iteration %i ",
       "to a solution with relative residual %e\n"],iter,relres);
     elseif (flag == 3)

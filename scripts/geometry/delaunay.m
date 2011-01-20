@@ -25,7 +25,7 @@
 ## No other data point is in the circum-circle of the defining triangle.
 ##
 ## A third optional argument, which must be a string, contains extra options
-## passed to the underlying qhull command.  See the documentation for the 
+## passed to the underlying qhull command.  See the documentation for the
 ## Qhull library for details.
 ##
 ## @example
@@ -49,7 +49,7 @@ function ret = delaunay (x, y, opt)
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
-  
+
   if ((isvector (x) && isvector (y) && length (x) == length (y))
       || size_equal (x, y))
     if (nargin == 2)

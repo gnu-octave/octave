@@ -34,7 +34,7 @@ function [x, map] = rgb2ind (R, G, B)
   if (nargin != 1 && nargin != 3)
     print_usage ();
   endif
-  
+
   if (nargin == 1)
     rgb = R;
     if (length (size (rgb)) == 3 && size (rgb, 3) == 3)

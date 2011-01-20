@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} condest (@var{A}) 
-## @deftypefnx {Function File} {} condest (@var{A}, @var{t}) 
-## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@dots{}) 
+## @deftypefn  {Function File} {} condest (@var{A})
+## @deftypefnx {Function File} {} condest (@var{A}, @var{t})
+## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@dots{})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{A}, @var{solve}, @var{solve_t}, @var{t})
 ## @deftypefnx {Function File} {[@var{est}, @var{v}] =} condest (@var{apply}, @var{apply_t}, @var{solve}, @var{solve_t}, @var{n}, @var{t})
 ##
@@ -27,8 +27,8 @@
 ## using @var{t} test vectors using a randomized 1-norm estimator.
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
-## If the matrix is not explicit, e.g., when estimating the condition 
-## number of @var{A} given an LU factorization, @code{condest} uses the 
+## If the matrix is not explicit, e.g., when estimating the condition
+## number of @var{A} given an LU factorization, @code{condest} uses the
 ## following functions:
 ##
 ## @table @var
@@ -55,15 +55,15 @@
 ## (@var{v}, 1) / @var{est}}.  When @var{est} is large, @var{v} is an
 ## approximate null vector.
 ##
-## References: 
+## References:
 ## @itemize
-## @item 
+## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. SIMAX vol 21, no 4, pp 1185-1201.
 ## @url{http://dx.doi.org/10.1137/S0895479899356080}
 ##
-## @item 
+## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
 ## for Matrix 1-Norm Estimation, with an Application to 1-Norm
 ## Pseudospectra}. @url{http://citeseer.ist.psu.edu/223007.html}

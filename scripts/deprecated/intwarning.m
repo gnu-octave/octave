@@ -38,7 +38,7 @@
 ## The state of warning "Octave:int-convert-overflow" is "off"
 ## The state of warning "Octave:int-math-overflow" is "off"
 ## @end group
-## @end smallexample 
+## @end smallexample
 ##
 ## @item "on"
 ## @itemx "off"
@@ -101,8 +101,8 @@ function y = intwarning (x)
       elseif (strcmpi (x, "off"))
         warning ("off", "Octave:int-convert-nan");
         warning ("off", "Octave:int-convert-non-int-val");
-        warning ("off", "Octave:int-convert-overflow");    
-        warning ("off", "Octave:int-math-overflow");    
+        warning ("off", "Octave:int-convert-overflow");
+        warning ("off", "Octave:int-math-overflow");
       else
         error ("intwarning: unrecognized argument");
       endif
@@ -128,6 +128,6 @@ function y = intwarning (x)
 endfunction
 
 function __print_int_warn_state__ (s)
-  fprintf ("The state of warning \"%s\" is \"%s\"\n", 
+  fprintf ("The state of warning \"%s\" is \"%s\"\n",
            s, warning ("query", s).state);
 endfunction

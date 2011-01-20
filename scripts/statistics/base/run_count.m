@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {} run_count (@var{x}, @var{n})
 ## @deftypefnx {Function File} {} run_count (@var{x}, @var{n}, @var{dim})
 ## Count the upward runs along the first non-singleton dimension of
-## @var{x} of length 1, 2, @dots{}, @var{n}-1 and greater than or equal 
-## to @var{n}.  
+## @var{x} of length 1, 2, @dots{}, @var{n}-1 and greater than or equal
+## to @var{n}.
 ##
 ## If the optional argument @var{dim} is given then operate
 ## along this dimension.
@@ -43,7 +43,7 @@ function retval = run_count (x, n, dim)
   if (!(isscalar (n) && n == fix (n) && n > 0))
     error ("run_count: N must be a positive integer");
   endif
-  
+
   nd = ndims (x);
   sz = size (x);
   if (nargin != 3)
@@ -71,7 +71,7 @@ function retval = run_count (x, n, dim)
   for i = 1 : nd
     idx{i} = 1 : sz(i);
   endfor
-  c = sz(1); 
+  c = sz(1);
   tmp = zeros ([c + 1, sz(2 : end)]);
   infvec = Inf ([1, sz(2 : end)]);
 

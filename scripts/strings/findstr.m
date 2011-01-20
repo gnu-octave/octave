@@ -60,22 +60,22 @@ function v = findstr (s, t, overlap)
     s = t;
     t = tmp;
   endif
-  
+
   l_s = length (s);
   l_t = length (t);
-  
+
   if (l_t == 0)
     ## zero length target: return empty set
     v = [];
-    
+
   elseif (l_t == 1)
     ## length one target: simple find
     v = find (s == t);
-    
+
   elseif (l_t == 2)
     ## length two target: find first at i and second at i+1
     v = find (s(1:l_s-1) == t(1) & s(2:l_s) == t(2));
-    
+
   else
     ## length three or more: match the first three by find then go through
     ## the much smaller list to determine which of them are real matches
@@ -96,7 +96,7 @@ function v = findstr (s, t, overlap)
     if (all (size (s) != size (t)))
       t = t.';
     endif
-    
+
     ## determine which ones to keep
     keep = zeros (size (v));
     ind = 0:l_t-1;
@@ -127,7 +127,7 @@ function v = findstr (s, t, overlap)
   endif
 
   ## Always return a column vector, because that's what the old one did.
-  if (rows (v) > 1) 
+  if (rows (v) > 1)
     v = v.';
   endif
 

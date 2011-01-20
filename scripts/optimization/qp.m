@@ -87,7 +87,7 @@
 ##
 ## @item info
 ## An integer indicating the status of the solution.
-## 
+##
 ## @table @asis
 ## @item 0
 ## The problem is feasible and convex.  Global solution found.
@@ -223,7 +223,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
           bin = [bin; -ub];
         endif
       endif
-      
+
       if (! isempty (lb) && ! isempty (ub))
         rtol = sqrt (eps);
         for i = 1:n
@@ -267,7 +267,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
             bin = [bin; -A_ub];
           endif
         endif
-        
+
         if (! isempty (A_lb) && ! isempty (A_ub))
           rtol = sqrt (eps);
           for i = 1:dimA_in

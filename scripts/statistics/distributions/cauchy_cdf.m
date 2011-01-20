@@ -21,7 +21,7 @@
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the Cauchy distribution with location
 ## parameter @var{location} and scale parameter @var{scale}.  Default
-## values are @var{location} = 0, @var{scale} = 1. 
+## values are @var{location} = 0, @var{scale} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -38,7 +38,7 @@ function cdf = cauchy_cdf (x, location, scale)
     scale = 1;
   endif
 
-  if (!isscalar (location) || !isscalar (scale)) 
+  if (!isscalar (location) || !isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_cdf: X, LOCATION and SCALE must be of common size or scalar");
@@ -51,7 +51,7 @@ function cdf = cauchy_cdf (x, location, scale)
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));
   if (any (k))
-    if (isscalar (location) && isscalar (scale)) 
+    if (isscalar (location) && isscalar (scale))
       cdf(k) = 0.5 + atan ((x(k) - location) ./ scale) / pi;
     else
       cdf(k) = 0.5 + atan ((x(k) - location(k)) ./ scale(k)) / pi;

@@ -47,7 +47,7 @@ function [x, y] = gplot (A, xy, line_style)
   ycoord = [xy(i,2), xy(j,2), NaN(length(i),1) ]'(:);
 
   if (nargout == 0)
-    plot (xcoord, ycoord, line_style); 
+    plot (xcoord, ycoord, line_style);
   else
     x = xcoord;
     y = ycoord;

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {@var{m} =} cell2mat (@var{c})
 ## Convert the cell array @var{c} into a matrix by concatenating all
 ## elements of @var{c} into a hyperrectangle.  Elements of @var{c} must
-## be numeric, logical or char matrices, or cell arrays, and @code{cat} 
+## be numeric, logical or char matrices, or cell arrays, and @code{cat}
 ## must be able to concatenate them together.
 ## @seealso{mat2cell, num2cell}
 ## @end deftypefn
@@ -35,7 +35,7 @@ function m = cell2mat (c)
   if (! iscell (c))
     error ("cell2mat: C is not a cell array");
   endif
-  
+
   nb = numel (c);
 
   if (nb == 0)
@@ -60,7 +60,7 @@ function m = cell2mat (c)
     ## n / (d1 * d2)
     ## n / (d1 * d2 * d3)
     ## etc.
-    ## This is minimized if d1 >= d2 >= d3... 
+    ## This is minimized if d1 >= d2 >= d3...
 
     sc = size (c);
     nd = ndims (c);

@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{fx}, @var{fy})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy})
 ## Calculate divergence of a vector field given by the arrays @var{fx},
-## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively. 
+## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively.
 ## @tex
 ## $$
 ## div F(x,y,z) = \partial_x{F} + \partial_y{F} + \partial_z{F}
@@ -40,7 +40,7 @@
 ##
 ## @end ifnottex
 ## The coordinates of the vector field can be given by the arguments @var{x},
-## @var{y}, @var{z} or @var{x}, @var{y} respectively. 
+## @var{y}, @var{z} or @var{x}, @var{y} respectively.
 ##
 ## @seealso{curl, gradient, del2, cross, dot}
 ## @end deftypefn
@@ -71,7 +71,7 @@ function retval = divergence (varargin)
   else
     print_usage();
   endif
-    
+
   if ((nargin == 4) || (nargin == 2))
     if (!size_equal (varargin{fidx},varargin{fidx + 1}))
       error ("divergence: size of X and Y must match.");
@@ -83,7 +83,7 @@ function retval = divergence (varargin)
 
     retval = gradient(varargin{fidx}, dx, dy);
     retval += gradient(varargin{fidx + 1}.', dy, dx).';
-    
+
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
       error ("divergence: size of X, Y, and Z must match")

@@ -58,7 +58,7 @@ function hg = __quiver__ (varargin)
       z = varargin{ioff++};
     endif
     u = varargin{ioff++};
-    v = varargin{ioff++}; 
+    v = varargin{ioff++};
     if (is3d)
       w = varargin{ioff++};
       if (isvector (x) && isvector (y) && isvector (z)
@@ -118,7 +118,7 @@ function hg = __quiver__ (varargin)
       dz = 0;
     endif
     if (len > 0)
-      s = 2 * autoscale / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len; 
+      s = 2 * autoscale / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len;
       uu = s * u;
       vv = s * v;
       if (is3d)
@@ -137,10 +137,10 @@ function hg = __quiver__ (varargin)
   unwind_protect
     hg = hggroup ();
     if (is3d)
-      args = __add_datasource__ ("quiver3", hg, 
+      args = __add_datasource__ ("quiver3", hg,
                                  {"x", "y", "z", "u", "v", "w"}, args{:});
     else
-      args = __add_datasource__ ("quiver", hg, 
+      args = __add_datasource__ ("quiver", hg,
                                  {"x", "y", "z", "u", "v", "w"}, args{:});
     endif
     hold on;
@@ -179,12 +179,12 @@ function hg = __quiver__ (varargin)
         h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
                     [y.'; yend.'; NaN(1, length (y))](:),
                     [z.'; zend.'; NaN(1, length (z))](:),
-                    "linestyle", linespec.linestyle, 
+                    "linestyle", linespec.linestyle,
                     "color", linespec.color, "parent", hg);
       else
         h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
                    [y.'; yend.'; NaN(1, length (y))](:),
-                   "linestyle", linespec.linestyle, 
+                   "linestyle", linespec.linestyle,
                     "color", linespec.color, "parent", hg);
       endif
     else
@@ -252,7 +252,7 @@ function hg = __quiver__ (varargin)
         || (isfield (linespec, "marker")
             && strncmp (linespec.marker, "none", 4)))
       if (is3d)
-        h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none", 
+        h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none",
                     "parent", hg);
       else
         h3 = plot (x, y, "linestyle", "none", "marker", "none", "parent", hg);
@@ -269,7 +269,7 @@ function hg = __quiver__ (varargin)
     endif
     if (have_filled)
       ## FIXME gnuplot doesn't respect the markerfacecolor field
-      set (h3, "markerfacecolor", get (h1, "color")); 
+      set (h3, "markerfacecolor", get (h1, "color"));
     endif
 
     ## Set up the hggroup properties and listeners
@@ -298,10 +298,10 @@ function hg = __quiver__ (varargin)
     addproperty ("markersize", hg, "linemarkersize", get (h3, "markersize"));
 
     addlistener (hg, "color", @update_props);
-    addlistener (hg, "linewidth", @update_props); 
-    addlistener (hg, "linestyle", @update_props); 
-    addlistener (hg, "marker", @update_props); 
-    addlistener (hg, "markerfacecolor", @update_props); 
+    addlistener (hg, "linewidth", @update_props);
+    addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "marker", @update_props);
+    addlistener (hg, "markerfacecolor", @update_props);
     addlistener (hg, "markersize", @update_props);
 
     if (! isempty (args))
@@ -346,7 +346,7 @@ function update_data (h, d)
       dz = 0;
     endif
     if (len > 0)
-      s = 2 * s / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len; 
+      s = 2 * s / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len;
       u = s * u;
       v = s * v;
       if (is3d)
@@ -403,10 +403,10 @@ endfunction
 function update_props (h, d)
   kids = get (h, "children");
 
-  set (kids(3), "color", get (h, "color"), 
+  set (kids(3), "color", get (h, "color"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
-  set (kids(2), "color", get (h, "color"), 
+  set (kids(2), "color", get (h, "color"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
   if (strcmpi (get (h, "showarrowhead"), "on"))
@@ -414,7 +414,7 @@ function update_props (h, d)
   else
     set (kids (2), "visible", "off");
   endif
-  set (kids(1), "color", get (h, "color"), 
+  set (kids(1), "color", get (h, "color"),
        "marker", get (h, "marker"),
        "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));

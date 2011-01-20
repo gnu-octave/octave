@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} ls options
 ## List directory contents.  For example:
-## 
+##
 ## @example
 ## @group
 ## ls -l
@@ -28,7 +28,7 @@
 ##      @print{} -rw-r--r--   1 jwe  users  1315 Aug 17 23:14 bar.m
 ## @end group
 ## @end example
-## 
+##
 ## The @code{dir} and @code{ls} commands are implemented by calling your
 ## system's directory listing command, so the available options may vary
 ## from system to system.
@@ -72,7 +72,7 @@ function retval = ls (varargin)
       ## we won't have to buffer all the output.
       system (cmd);
     endif
-    
+
   else
     error ("ls: expecting all arguments to be character strings");
   endif

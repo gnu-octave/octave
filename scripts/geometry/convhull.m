@@ -23,7 +23,7 @@
 ## data points are defined by the x and y vectors.
 ##
 ## A third optional argument, which must be a string, contains extra options
-## passed to the underlying qhull command.  See the documentation for the 
+## passed to the underlying qhull command.  See the documentation for the
 ## Qhull library for details.
 ##
 ## @seealso{delaunay, convhulln}

@@ -38,7 +38,7 @@ function inv = betainv (x, a, b)
       error ("betainv: X, A and B must be of common size or scalars");
     endif
   endif
-  
+
   sz = size (x);
   inv = zeros (sz);
 

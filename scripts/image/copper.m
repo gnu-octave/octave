@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} copper (@var{n})
 ## Create color colormap.  This colormap varies from black to
 ## a light copper tone.
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function map = copper (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];  
+    map = [0, 0, 0];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 4/5) .* (5/4 * x) + (x >= 4/5);

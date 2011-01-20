@@ -23,13 +23,13 @@
 ## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
 ## @deftypefnx {Function File} {[@var{q}, @var{fcnt}] =} quadv (@dots{})
 ##
-## Numerically evaluate the integral of @var{f} from @var{a} to @var{b} 
+## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
 ## using adaptive Simpson's rule.
 ## @var{f} is either a function handle, inline function or string
-## containing the name of the function to evaluate. 
+## containing the name of the function to evaluate.
 ## The function defined by @var{f} may be a scalar, vector or array-valued.
 ##
-## If a value for @var{tol} is given, it defines the tolerance used to stop 
+## If a value for @var{tol} is given, it defines the tolerance used to stop
 ## the adaptation procedure, otherwise the default value of 1e-6 is used.
 ##
 ## The algorithm used by @code{quadv}, involves recursively subdividing the
@@ -51,10 +51,10 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
     print_usage ();
   endif
   if (nargin < 4)
-    tol = []; 
+    tol = [];
   endif
   if (nargin < 5)
-    trace = []; 
+    trace = [];
   endif
   if (isa (a, "single") || isa (b, "single"))
     myeps = eps ("single");
@@ -62,10 +62,10 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
     myeps = eps;
   endif
   if (isempty (tol))
-    tol = 1e-6; 
+    tol = 1e-6;
   endif
   if (isempty (trace))
-    trace = 0; 
+    trace = 0;
   endif
 
   ## Split the interval into 3 abscissa, and apply a 3 point Simpson's rule
@@ -86,8 +86,8 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
 
   h = (b - a);
   q = (b - a) / 6 * (fa + 4 * fc + fb);
- 
-  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (h), 
+
+  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (h),
                                 tol, trace, varargin{:});
 
   if (fcnt > 10000)
@@ -99,7 +99,7 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   endif
 endfunction
 
-function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0, 
+function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
                                        fcnt, hmin, tol, trace, varargin)
   if (fcnt > 10000)
     q = q0;

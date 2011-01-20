@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} cond (@var{A}, @var{p})
 ## Compute the @var{p}-norm condition number of a matrix.  @code{cond
 ## (@var{A})} is
-## defined as 
+## defined as
 ## @tex
 ## $ {\parallel A \parallel_p * \parallel A^{-1} \parallel_p .} $
 ## @end tex
@@ -30,7 +30,7 @@
 ## @end ifnottex
 ##
 ## By default @code{@var{p} = 2} is used which implies a (relatively slow)
-## singular value decomposition.  Other possible selections are 
+## singular value decomposition.  Other possible selections are
 ## @code{@var{p} = 1, Inf, "fro"} which are generally faster.  See
 ## @code{norm} for a full discussion of possible @var{p} values.
 ## @seealso{condest, rcond, norm, svd}
@@ -66,7 +66,7 @@ function retval = cond (A, p)
         endif
       endif
     else
-      retval = norm (A, p) * norm (inv (A), p);  
+      retval = norm (A, p) * norm (inv (A), p);
     endif
   else
     print_usage ();

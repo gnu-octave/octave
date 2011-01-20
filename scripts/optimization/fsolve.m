@@ -25,21 +25,21 @@
 ## @var{fcn} should accept a vector (array) defining the unknown variables,
 ## and return a vector of left-hand sides of the equations.  Right-hand sides
 ## are defined to be zeros.
-## In other words, this function attempts to determine a vector @var{x} such 
+## In other words, this function attempts to determine a vector @var{x} such
 ## that @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fsolve} recognizes these options:
 ## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"}, 
+## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
 ## @code{"Jacobian"}, @code{"Updating"}, @code{"ComplexEqn"}
 ## @code{"TypicalX"}, @code{"AutoScaling"} and @code{"FinDiffType"}.
 ##
 ## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
 ## of right-hand sides at the requested point.  @code{"TolX"} specifies
-## the termination tolerance in the unknown variables, while 
+## the termination tolerance in the unknown variables, while
 ## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
 ## for both @code{"TolX"} and @code{"TolFun"}.
 ##
@@ -47,17 +47,17 @@
 ## according to the column norms of the (estimated) Jacobian.  As a result,
 ## TolF becomes scaling-independent.  By default, this option is off, because
 ## it may sometimes deliver unexpected (though mathematically correct) results.
-## 
+##
 ## If @code{"Updating"} is "on", the function will attempt to use Broyden
 ## updates to update the Jacobian, in order to reduce the amount of Jacobian
 ## calculations.
 ## If your user function always calculates the Jacobian (regardless of number
 ## of output arguments), this option provides no advantage and should be set to
 ## false.
-## 
+##
 ## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess a
-## complex derivative (i.e., are holomorphic).  If this is not what you want, 
+## complex derivative (i.e., are holomorphic).  If this is not what you want,
 ## should unpack the real and imaginary parts of the system to get a real
 ## system.
 ##
@@ -65,7 +65,7 @@
 ##
 ## On return, @var{fval} contains the value of the function @var{fcn}
 ## evaluated at @var{x}, and @var{info} may be one of the following values:
-## 
+##
 ## @table @asis
 ## @item 1
 ## Converged to a solution point.  Relative residual error is less than
@@ -75,16 +75,16 @@
 ## Last relative step size was less that TolX.
 ##
 ## @item 3
-## Last relative decrease in residual was less than TolF. 
+## Last relative decrease in residual was less than TolF.
 ##
 ## @item 0
 ## Iteration limit exceeded.
 ##
 ## @item -3
-## The trust region radius became excessively small. 
+## The trust region radius became excessively small.
 ## @end table
-## 
-## Note: If you only have a single nonlinear equation of one variable, using 
+##
+## Note: If you only have a single nonlinear equation of one variable, using
 ## @code{fzero} is usually a much better idea.
 ## @seealso{fzero, optimset}
 ##
@@ -122,7 +122,7 @@
 ## endfunction
 ##
 ## ## @dots{}.
-## 
+##
 ## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
 ## @end example
 ## @end deftypefn
@@ -143,7 +143,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   if (nargin < 2 || nargin > 3 || ! ismatrix (x0))
     print_usage ();
-  endif    
+  endif
 
   if (ischar (fcn))
     fcn = str2func (fcn, "global");
@@ -375,7 +375,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       ## Tests for termination conditions. A mysterious place, anything
       ## can happen if you change something here...
-      
+
       ## The rule of thumb (which I'm not sure M*b is quite following)
       ## is that for a tolerance that depends on scaling, only 0 makes
       ## sense as a default value. But 0 usually means uselessly long
@@ -408,7 +408,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       ## Compute the scaled Broyden update.
       if (useqr)
-        u = (fvec1 - q*w) / sn; 
+        u = (fvec1 - q*w) / sn;
         v = dg .* ((dg .* s) / sn);
 
         ## Update the QR factorization.
@@ -444,11 +444,11 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
   endif
 
   if (! complexeqn && ! (isreal (fx) && isreal (jx)))
-    error ("fsolve:notreal", "fsolve: non-real value encountered"); 
+    error ("fsolve:notreal", "fsolve: non-real value encountered");
   elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fsolve:isnan", "fsolve: NaN value encountered"); 
+    error ("fsolve:isnan", "fsolve: NaN value encountered");
   endif
 endfunction
 
@@ -459,7 +459,7 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
   endif
 endfunction
 
-%!function retval = f (p) 
+%!function retval = f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -495,7 +495,7 @@ endfunction
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
-%!function retval = f (p) 
+%!function retval = f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -514,7 +514,7 @@ endfunction
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
-%!function retval = f (p) 
+%!function retval = f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -541,7 +541,7 @@ endfunction
 %! y = exp (-a0*x) + b0 + noise;
 %! c_opt = [a0, b0];
 %! tol = 1e-5;
-%! 
+%!
 %! [c, fval, info, output] =  fsolve (@(c) (exp(-c(1)*x) + c(2) - y), [0, 0]);
 %! assert (info > 0);
 %! assert (norm (c - c_opt, Inf) < tol);
@@ -556,7 +556,7 @@ endfunction
 %!test
 %! x_opt = [-1+i, 1-i, 2+i];
 %! x = [i, 1, 1+i];
-%! 
+%!
 %! [x, f, info] = fsolve (@cfun, x, optimset ("ComplexEqn", "on"));
 %! tol = 1e-5;
 %! assert (norm (f) < tol);

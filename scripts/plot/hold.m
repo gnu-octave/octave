@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
 ## Toggle or set the 'hold' state of the plotting engine which determines
 ## whether new graphic objects are added to the plot or replace the existing
-## objects.  
-## 
+## objects.
+##
 ## @table @code
 ## @item hold on
 ## Retain plot data and settings so that subsequent plot commands are displayed
@@ -41,7 +41,7 @@
 ## @item hold
 ## Toggle the current 'hold' state.
 ## @end table
-## 
+##
 ## When given the additional argument @var{hax}, the hold state is modified
 ## only for the given axis handle.
 ##

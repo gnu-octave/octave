@@ -44,7 +44,7 @@
 ## If called with one argument, compute @code{cov (@var{x}, @var{x})}, the
 ## covariance between the columns of @var{x}.
 ##
-## The argument @var{opt} determines the type of normalization to use.  
+## The argument @var{opt} determines the type of normalization to use.
 ## Valid values are
 ##
 ## @table @asis
@@ -92,7 +92,7 @@ function c = cov (x, y = [], opt = 0)
     x = x';
   endif
   n = rows (x);
-  
+
   if (nargin == 1 || isscalar(y))
     x = center (x, 1);
     c = conj (x' * x / (n - 1 + opt));

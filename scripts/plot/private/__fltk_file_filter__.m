@@ -34,7 +34,7 @@ function retval = __fltk_file_filter__ (file_filter)
     fltk_str = "";
     for idx = 1 : r
 
-      curr_ext = file_filter{idx, 1};                    
+      curr_ext = file_filter{idx, 1};
       curr_ext = strsplit (curr_ext, ";");
 
       if (length (curr_ext) > 1)
@@ -68,5 +68,5 @@ function retval = __fltk_file_filter__ (file_filter)
         retval = strcat ("*", fext, "\t*");
       endif
     endif
-  endif  
+  endif
 endfunction

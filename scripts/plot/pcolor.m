@@ -33,7 +33,7 @@
 ## parent axis.
 ##
 ## The face color of each cell of the mesh is determined by interpolating
-## the values of @var{c} for the cell's vertices.  Contrast this with 
+## the values of @var{c} for the cell's vertices.  Contrast this with
 ## @code{imagesc} which renders one cell for each element of @var{c}.
 ##
 ## @code{shading} modifies an attribute determining the manner by which the
@@ -70,7 +70,7 @@ function h = pcolor (x, y, c)
 
   set (tmp, "facecolor", "flat");
   set (ax, "box", "on");
-  
+
   if (! ishold ())
     set (ax, "view", [0, 90]);
   endif

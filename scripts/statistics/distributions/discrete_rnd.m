@@ -73,5 +73,5 @@ function rnd = discrete_rnd (v, p, r, c)
     error ("discrete_rnd: P must be a nonzero, nonnegative vector");
   endif
 
-  rnd = v (lookup (cumsum (p (1 : end-1)) / sum(p), rand (sz)) + 1); 
+  rnd = v (lookup (cumsum (p (1 : end-1)) / sum(p), rand (sz)) + 1);
 endfunction

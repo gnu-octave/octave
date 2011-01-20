@@ -204,8 +204,8 @@ function varargout = savepath (file)
   if (nargout == 1)
     varargout{1} = retval;
   endif
-  
-endfunction  
+
+endfunction
 
 function path_elements = parsepath (p)
   pat = sprintf ('([^%s]+[%s$])', pathsep, pathsep);

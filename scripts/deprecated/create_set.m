@@ -60,7 +60,7 @@ function y = create_set (x, rows_opt)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  
+
   if (nargin == 1)
     y = unique (x)(:)';
   elseif (strcmpi (rows_opt, "rows"))

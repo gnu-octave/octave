@@ -44,7 +44,7 @@
 ## @end group
 ## @end example
 ##
-## Due to the difficulty of defining an axis about which to rotate the 
+## Due to the difficulty of defining an axis about which to rotate the
 ## matrix @code{rot90} only work with 2-D arrays.  To rotate N-d arrays
 ## use @code{rotdim} instead.
 ## @seealso{rotdim, flipud, fliplr, flipdim}
@@ -95,7 +95,7 @@ endfunction
 %! x2 = [2, 4; 1, 3];
 %! x3 = [4, 3; 2, 1];
 %! x4 = [3, 1; 4, 2];
-%! 
+%!
 %! assert(rot90 (x1) == x2);
 %! assert(rot90 (x1, 2) == x3);
 %! assert(rot90 (x1, 3) == x4);

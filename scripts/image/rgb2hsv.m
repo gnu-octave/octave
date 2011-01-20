@@ -24,7 +24,7 @@
 ##
 ## In the HSV space each color is represented by their hue, saturation
 ## and value (brightness).  Value gives the amount of light in the color.
-## Hue describes the dominant wavelength. 
+## Hue describes the dominant wavelength.
 ## Saturation is the amount of hue mixed into the color.
 ## @seealso{hsv2rgb}
 ## @end deftypefn
@@ -65,7 +65,7 @@ function hsv_map = rgb2hsv (rgb)
   ## set hue to zero for undefined values (gray has no hue)
   h = zeros (size (v));
   notgray = (s != v);
-    
+
   ## blue hue
   idx = (v == rgb(:,3) & notgray);
   if (any (idx))
@@ -93,7 +93,7 @@ function hsv_map = rgb2hsv (rgb)
   s(notgray) = 1 - s(notgray) ./ v(notgray);
 
   hsv_map = [h, s, v];
-  
+
   ## If input was an image, convert it back into one.
   if (is_image)
     hsv_map = reshape (hsv_map, Sz);

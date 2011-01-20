@@ -25,7 +25,7 @@
 ## digits (@var{precision}) to be used in the output or a format
 ## template string (@var{format}) as in @code{sprintf} (@pxref{Formatted
 ## Output}).  @code{num2str} can also handle complex numbers.  For
-## example: 
+## example:
 ##
 ## @example
 ## @group
@@ -42,7 +42,7 @@
 ## whos s
 ##      @result{}
 ##       Attr Name        Size                     Bytes  Class
-##       ==== ====        ====                     =====  ===== 
+##       ==== ====        ====                     =====  =====
 ##            s           2x8                         16  char
 ##
 ## num2str (1.234 + 27.3i)
@@ -51,10 +51,10 @@
 ## @end example
 ##
 ## The @code{num2str} function is not very flexible.  For better control
-## over the results, use @code{sprintf} (@pxref{Formatted Output}). 
+## over the results, use @code{sprintf} (@pxref{Formatted Output}).
 ## Note that for complex @var{x}, the format string may only contain one
 ## output conversion specification and nothing else.  Otherwise, you
-## will get unpredictable results.  
+## will get unpredictable results.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
@@ -91,7 +91,7 @@ function retval = num2str (x, arg)
                                    max (abs (imag (x(:))))))) + 2;
         endif
         dgt2 = dgt1 - (min (real (x(:))) >= 0);
-        
+
         if (length (abs (x) == x) > 0)
           fmt = sprintf("%%%dg%%+-%dgi  ", dgt2, dgt1);
         else

@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} cylinder (@var{ax}, @dots{})
 ## Generates three matrices in @code{meshgrid} format, such that
 ## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit cylinder.
-## The matrices are of size @code{@var{n}+1}-by-@code{@var{n}+1}. 
+## The matrices are of size @code{@var{n}+1}-by-@code{@var{n}+1}.
 ## @var{r} is a vector containing the radius along the z-axis.
 ## If @var{n} or @var{r} are omitted then default values of 20 or [1 1]
 ## are assumed.
@@ -48,7 +48,7 @@
 
 function [xx, yy, zz] = cylinder (varargin)
 
-  [ax, args, nargs] = __plt_get_axis_arg__ ((nargout > 0), "cylinder", 
+  [ax, args, nargs] = __plt_get_axis_arg__ ((nargout > 0), "cylinder",
                                             varargin{:});
 
   if (nargs == 0)

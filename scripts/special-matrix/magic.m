@@ -71,7 +71,7 @@ function A = magic(n)
     A([I,I+m],1) = A([I+m,I],1);
     I = k + 1;
     A([I,I+m],I) = A([I+m,I],I);
-  
+
   endif
 
 endfunction

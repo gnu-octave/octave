@@ -113,7 +113,7 @@ function y = mean (x, opt1, opt2)
 
   if (dim > nd)
     n = 1;
-  else 
+  else
     n = sz(dim);
   endif
 

@@ -67,13 +67,13 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     if (ischar (f1))
       f1 = cellstr (f1);
     endif
-    
+
     ## If f1 has more than 1 element f2 must be a directory
     isdir = (exist (f2, "dir") != 0);
     if (length(f1) > 1 && ! isdir)
       error ("movefile: when moving multiple files, second argument must be a directory");
     endif
-    
+
     ## Protect the file name(s).
     f1 = glob (f1);
     if (isempty (f1))
@@ -87,11 +87,11 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       while (! isempty(f1))
         p1 = sprintf ("\"%s\" ", f1{1});
         f1(1) = [];
-        while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 < 
+        while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 <
                                  max_cmd_line))
           p1 = sprintf ("%s\"%s\" ", p1, f1{1});
           f1(1) = [];
-        endwhile 
+        endwhile
 
         if (ispc () && ! isunix ()
             && ! isempty (file_in_path (getenv ("PATH"), "cp.exe")))

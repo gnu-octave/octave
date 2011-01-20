@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} gen_doc_cache (@var{out_file}, @var{directory})
 ## Generate documentation caches for all functions in a given directory.
 ##
-## A documentation cache is generated for all functions in @var{directory}. 
+## A documentation cache is generated for all functions in @var{directory}.
 ## The
 ## resulting cache is saved in the file @var{out_file}.
 ## The cache is used to speed up @code{lookfor}.
@@ -36,7 +36,7 @@ function gen_doc_cache (out_file = "doc-cache", directory = [])
   if (!ischar (out_file))
     print_usage ();
   endif
-  
+
   ## Generate cache
   if (isempty (directory))
     cache = gen_builtin_cache ();
@@ -45,7 +45,7 @@ function gen_doc_cache (out_file = "doc-cache", directory = [])
   else
     error ("gen_doc_cache: second input argument must be a string");
   endif
-  
+
   ## Save cache
   if (! isempty (cache))
     save ("-text", out_file, "cache");
@@ -71,7 +71,7 @@ function [text, first_sentence, status] = handle_function (f, text, format)
     otherwise
       status = 1;
   endswitch
-    
+
   ## Did we get the help text?
   if (status != 0 || isempty (text))
     warning ("gen_doc_cache: unusable help text in '%s'. Ignoring function.", f);
@@ -84,21 +84,21 @@ endfunction
 
 function cache = create_cache (list)
   cache = {};
-  
+
   ## For each function:
   for n = 1:length (list)
     f = list {n};
-    
+
     ## Get help text
     [text, format] = get_help_text (f);
-    
+
     [text, first_sentence, status] = handle_function (f, text, format);
 
     ## Did we get the help text?
     if (status != 0)
       continue;
     endif
-    
+
     ## Store the help text
     cache (1, end+1) = f;
     cache (2, end) = text;
@@ -120,7 +120,7 @@ function cache = gen_doc_cache_in_dir (directory)
     endif
     prev_idx = idx (n) + 1;
   endfor
-  
+
   if (!dir_in_path)
     addpath (directory);
   endif
@@ -128,7 +128,7 @@ function cache = gen_doc_cache_in_dir (directory)
   ## Get list of functions in directory and create cache
   list = __list_functions__ (directory);
   cache = create_cache (list);
-  
+
   if (!dir_in_path)
     rmpath (directory);
   endif

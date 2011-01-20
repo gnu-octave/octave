@@ -31,7 +31,7 @@
 ## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
 ## @code{b(ib)} are
 ## disjoint sets whose union is @var{c}.
-## 
+##
 ## @seealso{unique, union, intersect, setdiff, ismember}
 ## @end deftypefn
 
@@ -72,7 +72,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
       [c, i] = sort ([a(:); b(:)]);
       n = length (c);
       if (iscell (c))
-        idx = find (strcmp (c(1:n-1), c(2:n)));   
+        idx = find (strcmp (c(1:n-1), c(2:n)));
       else
         idx = find (c(1:n-1) == c(2:n));
       endif

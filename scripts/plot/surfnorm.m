@@ -21,26 +21,26 @@
 ## @deftypefnx {Function File} {} surfnorm (@var{z})
 ## @deftypefnx {Function File} {[@var{nx}, @var{ny}, @var{nz}] =} surfnorm (@dots{})
 ## @deftypefnx {Function File} {} surfnorm (@var{h}, @dots{})
-## Find the vectors normal to a meshgridded surface.  The meshed gridded 
-## surface is defined by @var{x}, @var{y}, and @var{z}.  If @var{x} and 
+## Find the vectors normal to a meshgridded surface.  The meshed gridded
+## surface is defined by @var{x}, @var{y}, and @var{z}.  If @var{x} and
 ## @var{y} are not defined, then it is assumed that they are given by
 ##
 ## @example
 ## @group
-## [@var{x}, @var{y}] = meshgrid (1:size(@var{z}, 1), 
+## [@var{x}, @var{y}] = meshgrid (1:size(@var{z}, 1),
 ##                      1:size(@var{z}, 2));
 ## @end group
 ## @end example
 ##
-## If no return arguments are requested, a surface plot with the normal 
+## If no return arguments are requested, a surface plot with the normal
 ## vectors to the surface is plotted.  Otherwise the components of the normal
 ## vectors at the mesh gridded points are returned in @var{nx}, @var{ny},
 ## and @var{nz}.
 ##
-## The normal vectors are calculated by taking the cross product of the 
-## diagonals of each of the quadrilaterals in the meshgrid to find the 
+## The normal vectors are calculated by taking the cross product of the
+## diagonals of each of the quadrilaterals in the meshgrid to find the
 ## normal vectors of the centers of these quadrilaterals.  The four nearest
-## normal vectors to the meshgrid points are then averaged to obtain the 
+## normal vectors to the meshgrid points are then averaged to obtain the
 ## normal to the surface at the meshgridded points.
 ##
 ## An example of the use of @code{surfnorm} is
@@ -53,7 +53,7 @@
 
 function [Nx, Ny, Nz] = surfnorm (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout != 0), "surfnorm", 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout != 0), "surfnorm",
                                                 varargin{:});
 
   if (nargin != 1 && nargin != 3)
@@ -76,7 +76,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
   endif
   if (! size_equal (x, y, z))
     error ("surfnorm: X, Y, and Z must have the same dimensions");
-  endif 
+  endif
 
   ## Make life easier, and avoid having to do the extrapolation later, do
   ## a simpler linear extrapolation here. This is approximative, and works
@@ -102,11 +102,11 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
   ## Create normal vectors as mesh vectices from normals at mesh centers
   nx = (w.x(1:end-1,1:end-1) + w.x(1:end-1,2:end) +
-        w.x(2:end,1:end-1) + w.x(2:end,2:end)) ./ 4; 
+        w.x(2:end,1:end-1) + w.x(2:end,2:end)) ./ 4;
   ny = (w.y(1:end-1,1:end-1) + w.y(1:end-1,2:end) +
-        w.y(2:end,1:end-1) + w.y(2:end,2:end)) ./ 4; 
+        w.y(2:end,1:end-1) + w.y(2:end,2:end)) ./ 4;
   nz = (w.z(1:end-1,1:end-1) + w.z(1:end-1,2:end) +
-        w.z(2:end,1:end-1) + w.z(2:end,2:end)) ./ 4; 
+        w.z(2:end,1:end-1) + w.z(2:end,2:end)) ./ 4;
 
   ## Normalize the normal vectors
   len = sqrt (nx.^2 + ny.^2 + nz.^2);
@@ -125,7 +125,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
         set (h, "nextplot", "add");
         plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
                [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-               [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
+               [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:),
                varargin{ioff:end});
       unwind_protect_cleanup
         set (h, "nextplot", old_hold_state);

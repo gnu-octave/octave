@@ -21,7 +21,7 @@
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the Cauchy distribution with location parameter
 ## @var{location} and scale parameter @var{scale} > 0.  Default values are
-## @var{location} = 0, @var{scale} = 1. 
+## @var{location} = 0, @var{scale} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -38,7 +38,7 @@ function pdf = cauchy_pdf (x, location, scale)
     scale = 1;
   endif
 
-  if (!isscalar (location) || !isscalar (scale)) 
+  if (!isscalar (location) || !isscalar (scale))
     [retval, x, location, scale] = common_size (x, location, scale);
     if (retval > 0)
       error ("cauchy_pdf: X, LOCATION and SCALE must be of common size or scalar");
@@ -51,7 +51,7 @@ function pdf = cauchy_pdf (x, location, scale)
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));
   if (any (k))
-    if (isscalar (location) && isscalar (scale)) 
+    if (isscalar (location) && isscalar (scale))
       pdf(k) = ((1 ./ (1 + ((x(k) - location) ./ scale) .^ 2))
                 / pi ./ scale);
     else

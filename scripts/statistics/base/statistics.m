@@ -23,7 +23,7 @@
 ## maximum, mean, standard deviation, skewness, and kurtosis of the elements of
 ## the vector @var{x}.
 ##
-## If @var{x} is a matrix, calculate statistics over the first 
+## If @var{x} is a matrix, calculate statistics over the first
 ## non-singleton dimension.
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{min,max,median,mean,std,skewness,kurtosis}
@@ -56,10 +56,10 @@ function stats = statistics (x, dim)
       error ("statistics: DIM must be an integer and a valid dimension");
     endif
   endif
-  
+
   if (sz(dim) < 2)
     error ("statistics: dimension of X is too small (<2)");
-  endif    
+  endif
 
   emp_inv = quantile (x, [0.25; 0.5; 0.75], dim, 7);
 

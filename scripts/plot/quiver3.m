@@ -25,16 +25,16 @@
 ## @deftypefnx {Function File} {} quiver3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver3 (@dots{})
 ##
-## Plot the @code{(@var{u}, @var{v}, @var{w})} components of a vector field in 
-## an @code{(@var{x}, @var{y}), @var{z}} meshgrid.  If the grid is uniform, you 
+## Plot the @code{(@var{u}, @var{v}, @var{w})} components of a vector field in
+## an @code{(@var{x}, @var{y}), @var{z}} meshgrid.  If the grid is uniform, you
 ## can specify @var{x}, @var{y} @var{z} as vectors.
 ##
 ## If @var{x}, @var{y} and @var{z} are undefined they are assumed to be
-## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where @code{[@var{m}, @var{n}] = 
+## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where @code{[@var{m}, @var{n}] =
 ## size(@var{u})} and @code{@var{p} = max (size (@var{w}))}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
-##  the arrows of the field relative to the mesh spacing.  A value of 0 
+##  the arrows of the field relative to the mesh spacing.  A value of 0
 ## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
@@ -87,12 +87,12 @@ endfunction
 %!demo
 %! clf
 %! colormap (jet (64))
-%! [x,y]=meshgrid (-1:0.1:1); 
-%! z=sin(2*pi*sqrt(x.^2+y.^2)); 
+%! [x,y]=meshgrid (-1:0.1:1);
+%! z=sin(2*pi*sqrt(x.^2+y.^2));
 %! theta=2*pi*sqrt(x.^2+y.^2)+pi/2;
 %! quiver3(x,y,z,sin(theta),cos(theta),ones(size(z)));
-%! hold on; 
-%! mesh(x,y,z); 
+%! hold on;
+%! mesh(x,y,z);
 %! hold off;
 
 %!demo

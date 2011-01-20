@@ -24,7 +24,7 @@
 ## Both @var{n} and @var{p} must be scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{n} and @var{p}.  Or if @var{sz} is a vector, 
+## the common size of @var{n} and @var{p}.  Or if @var{sz} is a vector,
 ## create a matrix of size @var{sz}.
 ## @end deftypefn
 
@@ -34,7 +34,7 @@
 function rnd = nbinrnd (n, p, r, c)
 
   if (nargin > 1)
-    if (!isscalar(n) || !isscalar(p)) 
+    if (!isscalar(n) || !isscalar(p))
       [retval, n, p] = common_size (n, p);
       if (retval > 0)
         error ("nbinrnd: N and P must be of common size or scalar");

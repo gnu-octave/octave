@@ -83,7 +83,7 @@
 ## Author: Martin Helm <martin@mhelm.de>
 
 function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
-  
+
   persistent edge_table=[];
   persistent tri_table=[];
 
@@ -93,24 +93,24 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   if (isempty (tri_table) || isempty (edge_table))
     [edge_table, tri_table] = init_mc ();
   endif
-   
+
   if ((nargin != 5 && nargin != 6) || (nargout != 2 && nargout != 3))
     print_usage ();
   endif
-  
+
   if (!ismatrix (xx) || !ismatrix (yy) || !ismatrix (zz) || !ismatrix (c) || ...
     ndims (xx) != 3 || ndims (yy) != 3 || ndims (zz) != 3 || ndims (c) != 3)
     error ("__marching_cube__: XX, YY, ZZ, C must be matrices of dim 3");
   endif
-  
+
   if (!size_equal (xx, yy, zz, c))
     error ("__marching_cube__: XX, YY, ZZ, C must be of equal size");
   endif
-  
+
   if (any (size (xx) < [2 2 2]))
     error ("__marching_cube__: grid size must be at least 2x2x2");
   endif
-  
+
   if (!isscalar (iso))
     error ("__marching_cube__: ISO must be scalar value");
   endif
@@ -122,14 +122,14 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     calc_cols = true;
     lindex = 5;
   endif
-  
+
   n = size (c) - 1;
-  
+
   ## phase I: assign information to each voxel which edges are intersected by
   ## the isosurface
   cc = zeros (n(1), n(2), n(3), "uint16");
   cedge = zeros (size (cc), "uint16");
-  
+
   vertex_idx = {1:n(1), 1:n(2), 1:n(3); ...
     2:n(1)+1, 1:n(2), 1:n(3); ...
     2:n(1)+1, 2:n(2)+1, 1:n(3); ...
@@ -138,20 +138,20 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     2:n(1)+1, 1:n(2), 2:n(3)+1; ...
     2:n(1)+1, 2:n(2)+1, 2:n(3)+1; ...
     1:n(1), 2:n(2)+1, 2:n(3)+1 };
-  
+
   ## calculate which vertices have values higher than iso
   for ii=1:8
     idx = c(vertex_idx{ii, :}) > iso;
     cc(idx) = bitset (cc(idx), ii);
-  endfor 
-  
+  endfor
+
   cedge = edge_table(cc+1); # assign the info about intersected edges
   id =  find (cedge); # select only voxels which are intersected
   if (isempty (id))
     T = p = col = [];
     return
   endif
-  
+
   ## phase II: calculate the list of intersection points
   xyz_off = [1, 1, 1; 2, 1, 1; 2, 2, 1; 1, 2, 1; 1, 1, 2;  2, 1, 2; 2, 2, 2; 1, 2, 2];
   edges = [1 2; 2 3; 3 4; 4 1; 5 6; 6 7; 7 8; 8 5; 1 5; 2 6; 3 7; 4 8];
@@ -177,8 +177,8 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     endif
     ix_offset += size (id_, 1);
   endfor
-  
-  ## phase III: calculate the triangulation from the point list 
+
+  ## phase III: calculate the triangulation from the point list
   T = [];
   tri = tri_table(cc(id)+1, :);
   for jj=1:3:15
@@ -191,7 +191,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
       T = [T; pp(p1), pp(p2), pp(p3)];
     endif
   endfor
-  
+
   p = [];
   col = [];
   for jj = 1:12
@@ -207,12 +207,12 @@ endfunction
 
 function p = vertex_interp(isolevel,p1x, p1y, p1z,...
   p2x, p2y, p2z,valp1,valp2, col1, col2)
-  
+
   if (nargin == 9)
     p = zeros (length (p1x), 3);
   elseif (nargin == 11)
     p = zeros (length (p1x), 4);
-  else 
+  else
     error ("__marching_cube__: wrong number of arguments");
   endif
   mu = zeros (length (p1x), 1);
@@ -269,8 +269,8 @@ function [edge_table, tri_table] = init_mc()
   0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x99 , 0x190, ...
   0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c, ...
   0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   ];
-  
-  tri_table =[ 
+
+  tri_table =[
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;
   0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1;

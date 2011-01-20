@@ -60,7 +60,7 @@
 
 ## PKG_ADD: __all_opts__ ("pqpnonneg");
 
-## This is analogical to the lsqnonneg implementation, which is 
+## This is analogical to the lsqnonneg implementation, which is
 ## implemented from Lawson and Hanson's 1973 algorithm on page
 ## 161 of Solving Least Squares Problems.
 ## It shares the convergence guarantees.
@@ -115,7 +115,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
       endif
       idx = find (xtmp < 0);
 
-      if (isempty (idx)) 
+      if (isempty (idx))
         ## LH7: tmp solution found, iterate.
         x(:) = 0;
         x(p) = xtmp;
@@ -139,7 +139,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
         endif
       endif
     endwhile
-      
+
     ## compute the gradient.
     w = -(d + c*x);
     w(p) = [];

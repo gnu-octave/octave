@@ -1,5 +1,5 @@
 ## Copyright (C) 2010-2011 Ben Abbott
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} daspect (@var{data_aspect_ratio})
 ## Set the data aspect ratio of the current axes.  The aspect ratio is
-## a normalized 3-element vector representing the span of the x, y, and 
+## a normalized 3-element vector representing the span of the x, y, and
 ## z-axes limits.
 ## @deftypefnx {Function File} {@var{data_aspect_ratio} =} daspect ( )
 ## Return the data aspect ratio of the current axes.

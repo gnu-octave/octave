@@ -31,16 +31,16 @@ function treeplot (tree, node_s, edge_s)
   if (nargin < 1 || nargin > 3 || nargout > 0)
     print_usage ();
   else
-    if (! ismatrix (tree) || rows (tree) != 1 || ! isnumeric (tree) 
+    if (! ismatrix (tree) || rows (tree) != 1 || ! isnumeric (tree)
         || ! isvector (tree) || any (tree > length (tree)))
       error ("treeplot: the first input argument must be a vector of predecessors");
     else
       ## The initialization of node end edge style.
       node_style = "k*";
-      edge_style = "r";      
+      edge_style = "r";
       if (nargin > 2)
         edge_style = edge_s;
-        if (nargin > 1) 
+        if (nargin > 1)
           if (length (findstr (node_s, "*")) == 0
               && length (findstr (node_s, "+")) == 0
               && length (findstr (node_s, "x")) == 0)
@@ -59,7 +59,7 @@ function treeplot (tree, node_s, edge_s)
 
       ## The number of children.
       num_children = zeros (1, num_nodes+1);
-      
+
       for i = 1:num_nodes
         ## VEC_OF_CHILD is helping vector which is used to speed up the
         ## choose of descendant nodes.
@@ -76,8 +76,8 @@ function treeplot (tree, node_s, edge_s)
         pos += num_children(i);
         stop(i) = pos;
       endfor
-      for i = 1:num_nodes        
-        vec_of_child(xhelp(tree(i)+1)) = i;  
+      for i = 1:num_nodes
+        vec_of_child(xhelp(tree(i)+1)) = i;
         xhelp(tree(i)+1) = xhelp(tree(i)+1)+1;
       endfor
 
@@ -121,7 +121,7 @@ function treeplot (tree, node_s, edge_s)
         ## If there is not any descendant of "parent node":
         if (stk(end,2) != par_number)
           left_most++;
-          x_coordinate_r(par_number) = left_most;           
+          x_coordinate_r(par_number) = left_most;
           max_ht = min (max_ht, level);
           if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
               && stk(end,2) != stk(end-1,2))
@@ -138,7 +138,7 @@ function treeplot (tree, node_s, edge_s)
             ## The level have to be decreased.
             x_coordinate_r(par_number_vec) = left_most;
             stk(position:end,:) = [];
-          endif 
+          endif
           ## Remove the next node from "searched branch".
           stk(end,:) = [];
           ## Choose new "parent node".
@@ -146,7 +146,7 @@ function treeplot (tree, node_s, edge_s)
           ## If there is another branch start to search it.
           if (par_number != -1)
             skelet = [skelet; stk(end,2); par_number];
-            y_coordinate(par_number) = level;   
+            y_coordinate(par_number) = level;
             x_coordinate_l(par_number) = left_most + 1;
           endif
         else
@@ -154,7 +154,7 @@ function treeplot (tree, node_s, edge_s)
           ## them and go on through it.
           level--;
           par_number = stk(end,1);
-          y_coordinate(par_number) = level;     
+          y_coordinate(par_number) = level;
           x_coordinate_l(par_number) = left_most + 1;
         endif
       endwhile
@@ -186,7 +186,7 @@ function treeplot (tree, node_s, edge_s)
           istart = idx(i-1) + 1;
           ## Tree component end.
           istop = idx(i) - 1;
-          if (istop - istart < 1)                          
+          if (istop - istart < 1)
             continue;
           endif
           plot (x_coordinate(skelet(istart:istop)),
@@ -201,15 +201,15 @@ function treeplot (tree, node_s, edge_s)
           hold ("off");
         endif
       end_unwind_protect
-      
+
     endif
   endif
 endfunction
 
 %!demo
-%! % Plot a simple tree plot 
+%! % Plot a simple tree plot
 %! treeplot([2 4 2 0 6 4 6])
 
 %!demo
 %! % Plot a simple tree plot defining the edge and node styles
-%! treeplot([2 4 2 0 6 4 6], "b+", "g") 
+%! treeplot([2 4 2 0 6 4 6], "b+", "g")

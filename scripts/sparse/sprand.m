@@ -27,7 +27,7 @@
 ## @var{d} should be between 0 and 1.  Values will be uniformly
 ## distributed between 0 and 1.
 ##
-## Note: sometimes the actual density may be a bit smaller than @var{d}. 
+## Note: sometimes the actual density may be a bit smaller than @var{d}.
 ## This is unlikely to happen for large, truly sparse, matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
@@ -42,8 +42,8 @@
 ## Piotr Krzyzanowski <przykry2004@users.sf.net>
 ##      2004-09-27      use Paul's hint to allow larger random matrices
 ##                      at the price of sometimes lower density than desired
-## David Bateman 
-##      2004-10-20      Texinfo help and copyright message 
+## David Bateman
+##      2004-10-20      Texinfo help and copyright message
 
 function S = sprand (m, n, d)
 
@@ -73,7 +73,7 @@ function S = sprand (m, n, d)
   mn = m*n;
   ## how many entries in S would be satisfactory?
   k = round (d*mn);
-  idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1; 
+  idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1;
   ## idx contains random numbers in [1,mn]
   ## generate 1% or 10 more random values than necessary in order to
   ## reduce the probability that there are less than k distinct

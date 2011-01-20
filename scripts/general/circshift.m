@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} circshift (@var{x}, @var{n})
 ## Circularly shifts the values of the array @var{x}.  @var{n} must be
-## a vector of integers no longer than the number of dimensions in 
+## a vector of integers no longer than the number of dimensions in
 ## @var{x}.  The values of @var{n} can be either positive or negative,
 ## which determines the direction in which the values or @var{x} are
 ## shifted.  If an element of @var{n} is zero, then the corresponding
@@ -57,7 +57,7 @@ function y = circshift (x, n)
       if (! isvector (n) && length (n) > nd)
         error ("circshift: N must be a vector, no longer than the number of dimension in X");
       endif
-    
+
       if (any (n != floor (n)))
         error ("circshift: all values of N must be integers");
       endif

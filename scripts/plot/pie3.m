@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} pie3 (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie3 (@var{h}, @dots{});
 ## @deftypefnx {Function File} {@var{h} =} pie3 (@dots{});
-## Draw a a 3-D pie chart. 
+## Draw a a 3-D pie chart.
 ##
 ## Called with a single vector argument, produces a 3-D pie chart of the
 ## elements in @var{x}, with the size of the slice determined by percentage
@@ -33,7 +33,7 @@
 ## if non zero 'explodes' the slice from the pie chart.
 ##
 ## If given @var{labels} is a cell array of strings of the same length as
-## @var{x}, giving the labels of each of the slices of the pie chart. 
+## @var{x}, giving the labels of each of the slices of the pie chart.
 ##
 ## The optional return value @var{h} provides a handle list to patch, surface
 ## and text objects generating this plot.

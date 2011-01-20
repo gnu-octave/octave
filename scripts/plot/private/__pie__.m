@@ -64,7 +64,7 @@ function hlist = __pie__ (caller, varargin)
   normalize = true;
   if (sum (x(:)) < 1)
     normalize = false;
-  endif 
+  endif
 
   if (! have_labels)
     if (normalize)
@@ -86,7 +86,7 @@ function hlist = __pie__ (caller, varargin)
     xphi = cumsum (x * 360);
   endif
 
-  for i = 1:len 
+  for i = 1:len
     if (i == 1)
       xn = 0 : 360 / refinement : xphi(i);
     else
@@ -107,7 +107,7 @@ function hlist = __pie__ (caller, varargin)
     endif
     xt = - 1.2 * sind (xn2);
     yt = 1.2 * cosd (xn2);
-  
+
     if (len == 1)
       set (h, "clim", [1, 2]);
     else
@@ -123,7 +123,7 @@ function hlist = __pie__ (caller, varargin)
       sc = i * ones (size (sz));
 
       hlist = [hlist;
-        patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);      
+        patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
         surface(sx, sy, sz, sc);
         patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
         text(xt, yt, zlvl, labels{i})];
@@ -145,7 +145,7 @@ function hlist = __pie__ (caller, varargin)
 
   addlistener(gca, "view", {@update_text_pos, hlist});
 
-  if (strncmp (caller, "pie3", 4))    
+  if (strncmp (caller, "pie3", 4))
     axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off")
     view (-37.5, 30);
   elseif (strncmp (caller, "pie", 3))

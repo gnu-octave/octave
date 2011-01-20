@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} semilogyerr (@var{args})
 ## Produce two-dimensional plots using a logarithmic scale for the @var{y}
-## axis and errorbars at each data point.  Many different combinations of 
+## axis and errorbars at each data point.  Many different combinations of
 ## arguments are possible.  The most used form is
 ##
 ## @example
@@ -29,7 +29,7 @@
 ## @noindent
 ## which produces a semi-logarithmic plot of @var{y} versus @var{x}
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}.  See @code{errorbar} for available formats and 
+## format defined by @var{fmt}.  See @code{errorbar} for available formats and
 ## additional information.
 ## @seealso{errorbar, loglogerr semilogxerr}
 ## @end deftypefn

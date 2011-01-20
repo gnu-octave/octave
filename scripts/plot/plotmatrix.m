@@ -30,7 +30,7 @@
 ## plot (@var{x} (:, i), @var{y} (:, j)
 ## @end example
 ##
-## Given a single argument @var{x}, then this is equivalent to 
+## Given a single argument @var{x}, then this is equivalent to
 ##
 ## @example
 ## plotmatrix (@var{x}, @var{x})
@@ -40,7 +40,7 @@
 ## except that the diagonal of the set of axes will be replaced with the
 ## histogram @code{hist (@var{x} (:, i))}.
 ##
-## The marker to use can be changed with the @var{style} argument, that is a 
+## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot}
 ## command.  If a leading axes handle @var{h} is passed to
 ## @code{plotmatrix}, then this axis will be used for the plot.
@@ -48,7 +48,7 @@
 ## The optional return value @var{h} provides handles to the individual
 ## graphics objects in the scatter plots, whereas @var{ax} returns the
 ## handles to the scatter plot axis objects.  @var{bigax} is a hidden
-## axis object that surrounds the other axes, such that the commands 
+## axis object that surrounds the other axes, such that the commands
 ## @code{xlabel}, @code{title}, etc., will be associated with this hidden
 ## axis.  Finally @var{p} returns the graphics objects associated with
 ## the histogram and @var{pax} the corresponding axes objects.
@@ -84,8 +84,8 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
         pax = pax2;
       endif
       axes (bigax2);
-      ctext = text (0, 0, "", "visible", "off", 
-                    "handlevisibility", "off", "xliminclude", "off",  
+      ctext = text (0, 0, "", "visible", "off",
+                    "handlevisibility", "off", "xliminclude", "off",
                     "yliminclude", "off", "zliminclude", "off",
                     "deletefcn", {@plotmatrixdelete, [ax2; pax2]});
       set (bigax2, "visible", "off");
@@ -122,7 +122,7 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
     if (ischar (arg) || iscell (arg))
       [linespec, valid] = __pltopt__ ("plotmatrix", varargin{i}, false);
       if (valid)
-        have_line_spec = true;      
+        have_line_spec = true;
         linespec = varargin(i);
         varargin(i) = [];
         nargin = nargin - 1;

@@ -26,7 +26,7 @@
 ## The limits of the plot are given by @var{limits} of the form
 ## @code{[@var{xlo}, @var{xhi}]} or @code{[@var{xlo}, @var{xhi},
 ## @var{ylo}, @var{yhi}]}.  @var{tol} is the default tolerance to use for the
-## plot, and if @var{tol} is an integer it is assumed that it defines the 
+## plot, and if @var{tol} is an integer it is assumed that it defines the
 ## number points to use in the plot.  The @var{fmt} argument is passed
 ## to the plot command.
 ##
@@ -50,12 +50,12 @@ function fplot (fn, limits, n, fmt)
     error ("fplot: second input argument must be a real vector with 2 or 4 elements");
   endif
 
-  if (nargin < 3) 
-    n = 0.002; 
+  if (nargin < 3)
+    n = 0.002;
   endif
 
   have_linespec = true;
-  if (nargin < 4) 
+  if (nargin < 4)
     have_linespec = false;
   endif
 
@@ -100,7 +100,7 @@ function fplot (fn, limits, n, fmt)
       n = 2 * (n - 1) + 1;
       x = linspace (limits(1), limits(2), n)';
       y = feval (fn, x);
-    endwhile 
+    endwhile
   else
     x = linspace (limits(1), limits(2), n)';
     y = feval (fn, x);
@@ -112,7 +112,7 @@ function fplot (fn, limits, n, fmt)
     plot (x, y);
   endif
 
-  if (length (limits) > 2) 
+  if (length (limits) > 2)
     axis (limits);
   endif
 

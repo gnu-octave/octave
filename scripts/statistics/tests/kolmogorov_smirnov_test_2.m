@@ -80,7 +80,7 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
     elems = [find(ds); n_x+n_y];
     z = z(elems);
   endif
-  
+
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     d    = max (abs (z));
     ks   = sqrt (n) * d;

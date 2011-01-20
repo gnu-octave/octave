@@ -18,15 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} meshz (@var{x}, @var{y}, @var{z})
-## Plot a curtain mesh given matrices @var{x}, and @var{y} from 
-## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and 
-## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors, 
-## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, 
-## columns of @var{z} correspond to different @var{x} values and rows of 
+## Plot a curtain mesh given matrices @var{x}, and @var{y} from
+## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
+## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors,
+## then a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus,
+## columns of @var{z} correspond to different @var{x} values and rows of
 ## @var{z} correspond to different @var{y} values.
 ## @seealso{meshgrid, mesh, contour}
 ## @end deftypefn
- 
+
 function retval = meshz (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
@@ -62,15 +62,15 @@ function retval = meshz (varargin)
   else
     x = [x(1, 1), x(1, :), x(1, end);
          x(:, 1), x, x(:, end);
-         x(end, 1), x(end, :), x(end, end)]; 
+         x(end, 1), x(end, :), x(end, end)];
     y = [y(1, 1), y(1, :), y(1, end);
          y(:, 1), y, y(:, end);
-         y(end, 1), y(end, :), y(end, end)]; 
+         y(end, 1), y(end, :), y(end, end)];
   endif
 
   zref = min(z(isfinite(z)));
   z = [zref .* ones(1, size(z, 2) + 2);
-       zref .* ones(size(z, 1), 1), z, zref .* ones(size(z, 1), 1); 
+       zref .* ones(size(z, 1), 1), z, zref .* ones(size(z, 1), 1);
        zref.* ones(1, size(z, 2) + 2)];
 
   oldh = gca ();

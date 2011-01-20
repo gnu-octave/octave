@@ -28,7 +28,7 @@ function y = realsqrt (x)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
     error ("realsqrt: produced complex result");
-  else    
+  else
     y = sqrt (x);
   endif
 endfunction

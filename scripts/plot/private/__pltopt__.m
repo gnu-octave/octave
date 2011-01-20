@@ -150,7 +150,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
       n = 3;
     elseif (strncmp (opt, "#~", 2) || strncmp (opt, "~>", 2))
       n = 2;
-    elseif (strncmp (opt, "~", 1) || strncmp (opt, ">", 1) 
+    elseif (strncmp (opt, "~", 1) || strncmp (opt, ">", 1)
             || strncmp (opt, "#", 1))
       n = 1;
     else

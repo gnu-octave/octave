@@ -23,7 +23,7 @@
 ## to @code{eps * max (size (@var{A})) * norm (@var{A}, inf)}.
 ##
 ## Called with two return arguments, @var{k} returns the vector of
-## "bound variables", which are those columns on which elimination 
+## "bound variables", which are those columns on which elimination
 ## has been performed.
 ##
 ## @end deftypefn

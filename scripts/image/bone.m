@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} bone (@var{n})
 ## Create color colormap.  This colormap varies from black to white with
 ## gray-blue shades.
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -41,7 +41,7 @@ function map = bone (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];  
+    map = [0, 0, 0];
   elseif (n > 1)
     x = linspace (0, 1, n)';
 

@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{map} =} gray (@var{n})
 ## Create gray colormap.  This colormap varies from black to white with
 ## shades of gray.
-## The argument @var{n} must be a scalar.  
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @end deftypefn
 

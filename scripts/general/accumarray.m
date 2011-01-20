@@ -32,7 +32,7 @@
 ##
 ## The default action of @code{accumarray} is to sum the elements with the
 ## same subscripts.  This behavior can be modified by defining the @var{func}
-## function.  This should be a function or function handle that accepts a 
+## function.  This should be a function or function handle that accepts a
 ## column vector and returns a scalar.  The result of the function should not
 ## depend on the order of the subscripts.
 ##
@@ -58,13 +58,13 @@
 ## subscripts and M is the maximum subscript (linearized in multi-dimensional
 ## case).
 ## If @var{func} is one of @code{@@sum} (default), @code{@@max}, @code{@@min}
-## or @code{@@(x) @{x@}}, an optimized code path is used. 
+## or @code{@@(x) @{x@}}, an optimized code path is used.
 ## Note that for general reduction function the interpreter overhead can play a
 ## major part and it may be more efficient to do multiple accumarray calls and
 ## compute the results in a vectorized manner.
 ## @end deftypefn
 
-function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])  
+function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])
 
   if (nargin < 2 || nargin > 6)
     print_usage ();
@@ -118,7 +118,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
       ## Reduce values. This is not needed if we're about to sum them, because
       ## "sparse" can do that.
-      
+
       ## Sort indices.
       [subs, idx] = sortrows (subs);
       n = rows (subs);
@@ -237,14 +237,14 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
     else
 
-      ## The general case. Reduce values. 
+      ## The general case. Reduce values.
       n = rows (subs);
       if (numel (vals) == 1)
         vals = vals(ones (1, n), 1);
       else
         vals = vals(:);
       endif
-      
+
       ## Sort indices.
       [subs, idx] = sort (subs);
       ## Identify runs.

@@ -19,10 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} diffuse (@var{sx}, @var{sy}, @var{sz}, @var{lv})
 ## Calculate diffuse reflection strength of a surface defined by the normal
-## vector elements @var{sx}, @var{sy}, @var{sz}. 
+## vector elements @var{sx}, @var{sy}, @var{sz}.
 ## The light vector can be specified using parameter @var{lv}.  It can be
 ## given as 2-element vector [azimuth, elevation] in degrees or as 3-element
-## vector [lx, ly, lz]. 
+## vector [lx, ly, lz].
 ## @seealso{specular, surfl}
 ## @end deftypefn
 
@@ -38,7 +38,7 @@ function retval = diffuse (sx, sy, sz, lv)
   if (!size_equal (sx, sy, sz))
     error ("diffuse: SX, SY, and SZ must have same size");
   endif
-  
+
   ## check for light vector (lv) argument
   if (length (lv) < 2 || length (lv) > 3)
     error ("diffuse: light vector LV must be a 2- or 3-element vector");
@@ -54,5 +54,5 @@ function retval = diffuse (sx, sy, sz, lv)
   ns = sqrt (sx.^2 + sy.^2 + sz.^2);
   retval = (sx * lv(1) + sy * lv(2) + sz * lv(3)) ./ ns;
   retval(retval < 0) = 0;
-  
+
 endfunction

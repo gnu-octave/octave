@@ -22,7 +22,7 @@
 ## If @var{h} is omitted, all autocovariances are computed.
 ## If @var{x} is a matrix, the autocovariances of each column are
 ## computed.
-## The particular algorithm used is from the field of statistics and 
+## The particular algorithm used is from the field of statistics and
 ## differs from the definition used in signal processing.
 ## @end deftypefn
 

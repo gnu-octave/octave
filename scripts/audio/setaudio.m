@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} setaudio ()
 ## @deftypefnx {Function File} {} setaudio (@var{w_type})
 ## @deftypefnx {Function File} {} setaudio (@var{w_type}, @var{value})
-## Execute the shell command @samp{mixer}, possibly with optional 
+## Execute the shell command @samp{mixer}, possibly with optional
 ## arguments @var{w_type} and @var{value}.
 ## @end deftypefn
 

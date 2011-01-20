@@ -78,33 +78,33 @@ function wavwrite (y, varargin)
 
   ## determine sample format
   switch (bits_per_sample)
-    case 8  
+    case 8
       format = "uint8";
-    case 16 
+    case 16
       format = "int16";
-    case 32 
+    case 32
       format = "int32";
     otherwise
       error ("wavwrite: sample resolution not supported");
   endswitch
-  
+
   ## calculate filesize
   [n, channels] = size(y);
 
   ## size of data chunk
   ck_size = n*channels*(bits_per_sample/8);
-  
+
   ## open file for writing binary
 
   if (! ischar (filename))
     error ("wavwrite: expecting FILENAME to be a character string");
   endif
-    
+
   [fid, msg] = fopen (filename, "wb");
   if (fid < 0)
     error ("wavwrite: %s", msg);
   endif
-  
+
   ## write RIFF/WAVE header
   c = 0;
   c += fwrite (fid, "RIFF", "uchar");
@@ -132,18 +132,18 @@ function wavwrite (y, varargin)
   ## block align
   c += fwrite (fid, channels*bits_per_sample/8, "uint16", 0, BYTEORDER);
 
-  c += fwrite (fid, bits_per_sample, "uint16", 0, BYTEORDER);   
+  c += fwrite (fid, bits_per_sample, "uint16", 0, BYTEORDER);
   c += fwrite (fid, "data", "uchar");
   c += fwrite (fid, ck_size, "uint32", 0, BYTEORDER);
-  
+
   if (c < 25)
     fclose (fid);
     error ("wavwrite: writing to file failed");
   endif
-  
+
   ## interleave samples
   yi = reshape (y', n*channels, 1);
-  
+
   ## scale samples
   switch (bits_per_sample)
     case 8
@@ -153,12 +153,12 @@ function wavwrite (y, varargin)
     case 32
       yi = round (yi*2147483647);
   endswitch
-  
+
   ## write to file
   c = fwrite (fid, yi, format, 0, BYTEORDER);
-  
+
   fclose (fid);
-  
+
 endfunction
 
 %!test

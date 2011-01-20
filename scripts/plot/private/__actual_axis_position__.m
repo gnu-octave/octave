@@ -50,7 +50,7 @@ function pos = __actual_axis_position__ (h)
   else
     pos_in_pixels = axis_obj.position .* fig_position([3, 4, 3, 4]);
   endif
-    
+
   nd = __calc_dimensions__ (h);
 
   if (strcmp (axis_obj.plotboxaspectratiomode, "manual")

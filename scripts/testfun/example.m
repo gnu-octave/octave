@@ -20,12 +20,12 @@
 ## @deftypefn  {Function File} {} example ('@var{name}', @var{n})
 ## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}', @var{n})
 ##
-##  Display the code for example @var{n} associated with the function 
-## '@var{name}', but do not run it.  If @var{n} is not given, all examples 
+##  Display the code for example @var{n} associated with the function
+## '@var{name}', but do not run it.  If @var{n} is not given, all examples
 ## are displayed.
 ##
 ## Called with output arguments, the examples are returned in the form of
-## a string @var{x}, with @var{idx} indicating the ending position of the 
+## a string @var{x}, with @var{idx} indicating the ending position of the
 ## various examples.
 ##
 ## See @code{demo} for a complete explanation.
@@ -86,7 +86,7 @@ endfunction
 %!assert (example('example',1), "\n example('example');");
 %!test
 %! [code, idx] = example('example');
-%! assert (code, ... 
+%! assert (code, ...
 %!         "\n example('example');\n t=0:0.01:2*pi; x=sin(t);\n plot(t,x)")
 %! assert (idx, [1, 22, 59]);
 

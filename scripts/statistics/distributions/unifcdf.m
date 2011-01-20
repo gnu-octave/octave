@@ -57,7 +57,7 @@ function cdf = unifcdf (x, a, b)
   if (any (k))
     cdf(k) = 1;
   endif
-  
+
   k = find ((x > a) & (x < b));
   if (any (k))
     if (isscalar (a) && isscalar(b))

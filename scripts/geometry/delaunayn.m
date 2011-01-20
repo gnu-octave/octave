@@ -28,24 +28,24 @@
 ## size @code{[m, dim+1]}.  It contains for each row a set of indices to
 ## the points, which describes a simplex of dimension dim.  For example,
 ## a 2-D simplex is a triangle and 3-D simplex is a tetrahedron.
-## 
+##
 ## Extra options for the underlying Qhull command can be specified by the
 ## second argument.  This argument is a cell array of strings.  The default
-## options depend on the dimension of the input: 
-## 
-## @itemize 
+## options depend on the dimension of the input:
+##
+## @itemize
 ## @item 2D and 3D: @var{opt} = @code{@{"Qt", "Qbb", "Qc"@}}
 ##
-## @item 4D and higher: @var{opt} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}} 
+## @item 4D and higher: @var{opt} = @code{@{"Qt", "Qbb", "Qc", "Qz"@}}
 ## @end itemize
-## 
+##
 ## If @var{opt} is [], then the default arguments are used.  If @var{opt}
-## is @code{@{"@w{}"@}}, then none of the default arguments are used by Qhull. 
-## See the Qhull documentation for the available options. 
-## 
+## is @code{@{"@w{}"@}}, then none of the default arguments are used by Qhull.
+## See the Qhull documentation for the available options.
+##
 ## All options can also be specified as single string, for example
 ## @code{"Qt Qbb Qc Qz"}.
-## 
+##
 ## @end deftypefn
 
 function t = delaunayn (p, varargin)
@@ -62,13 +62,13 @@ function t = delaunayn (p, varargin)
   endif
 
   ## Try to remove the zero volume simplices. The volume of the i-th simplex is
-  ## given by abs(det(p(t(i,1:end-1),:)-p(t(i,2:end),:)))/prod(1:n) 
-  ## (reference http://en.wikipedia.org/wiki/Simplex). Any simplex with a 
-  ## relative volume less than some arbitrary criteria is rejected. The 
-  ## criteria we use is the volume of the simplex corresponding to an 
-  ## orthogonal simplex is equal edge length all equal to the edge length of 
+  ## given by abs(det(p(t(i,1:end-1),:)-p(t(i,2:end),:)))/prod(1:n)
+  ## (reference http://en.wikipedia.org/wiki/Simplex). Any simplex with a
+  ## relative volume less than some arbitrary criteria is rejected. The
+  ## criteria we use is the volume of the simplex corresponding to an
+  ## orthogonal simplex is equal edge length all equal to the edge length of
   ## the original simplex. If the relative volume is 1e3*eps then the simplex
-  ## is rejected. Note division of the two volumes means that the factor 
+  ## is rejected. Note division of the two volumes means that the factor
   ## prod(1:n) is dropped.
   idx = [];
   [nt, n] = size (t);

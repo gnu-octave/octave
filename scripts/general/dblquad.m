@@ -22,7 +22,7 @@
 ## integrate is defined by @code{@var{f}}, and the interval for the
 ## integration is defined by @code{[@var{xa}, @var{xb}, @var{ya},
 ## @var{yb}]}.  The function @var{f} must accept a vector @var{x} and a
-## scalar @var{y}, and return a vector of the same length as @var{x}. 
+## scalar @var{y}, and return a vector of the same length as @var{x}.
 ##
 ## If defined, @var{tol} defines the absolute tolerance to which to
 ## which to integrate each sub-integral.
@@ -32,15 +32,15 @@
 ## @seealso{triplequad,quad,quadv,quadl,quadgk,quadcc,trapz}
 ## @end deftypefn
 
-function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin) 
+function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin)
   if (nargin < 5)
     print_usage ();
   endif
   if (nargin < 6 || isempty (tol))
-    tol = 1e-6; 
+    tol = 1e-6;
   endif
   if (nargin < 7 || isempty (quadf))
-    quadf = @quadgk; 
+    quadf = @quadgk;
   endif
 
   inner = @__dblquad_inner__;

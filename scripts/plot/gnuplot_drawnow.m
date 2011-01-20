@@ -123,11 +123,11 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   else
     ## Get the one word terminal id and save the remaining as options to
     ## be passed on to gnuplot.  The terminal may respect the graphics
-    ## toolkit. 
+    ## toolkit.
     [term, opts_str] = gnuplot_trim_term (term);
     term = lower (term);
     if (strcmpi (term, "lua"))
-      ## Replace "lau tikz" with 
+      ## Replace "lau tikz" with
       term = "tikz";
       opts_str = strrep (opts_str, "tikz", "");
     endif
@@ -169,7 +169,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         endif
         if (strcmp (term, "aqua"))
           ## Adjust axes-label and tick-label spacing.
-          opts_str = sprintf ("%s font \"%s,%d\"", opts_str, 
+          opts_str = sprintf ("%s font \"%s,%d\"", opts_str,
                               get (0, "defaultaxesfontname"),
                               get (0, "defaultaxesfontsize") / 1.5);
         endif
@@ -177,7 +177,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         title_str = "";
       endif
 
-      if (! (any (strfind (opts_str, " size ") > 0) 
+      if (! (any (strfind (opts_str, " size ") > 0)
           || any (strfind (opts_str, "size ") == 1)))
         ## Get figure size in pixels.  Rely on listener to handle coversion.
         units = get (h, "units");
@@ -245,7 +245,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               ## gnuplot position is UL, Octave's is LL (same for screen/window)
               gnuplot_pos(2) = screen_size(2) - gnuplot_pos(2) - gnuplot_size(2);
               gnuplot_pos = max (gnuplot_pos, 1);
-              size_str = sprintf ("%s position %d,%d", size_str, 
+              size_str = sprintf ("%s position %d,%d", size_str,
                                   gnuplot_pos(1), gnuplot_pos(2));
             endif
           endif

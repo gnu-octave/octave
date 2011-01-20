@@ -60,7 +60,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   continue;
                 else
                   ca = lh(1);
-                  ## Rely upon listener to convert axes position 
+                  ## Rely upon listener to convert axes position
                   ## to "normalized" units.
                   legend_axes_units = get (kids(i), "units");
                   legend_axes_position = get (kids(i), "position");
@@ -72,11 +72,11 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
 
                   unwind_protect
                     set (ca, "units", "normalized");
-                    set (kids(i), "units", "normalized", "box", "off", 
+                    set (kids(i), "units", "normalized", "box", "off",
                          "ylim", [-2, -1], "position", get (ca(1), "position"),
                          "outerposition", get (ca(1), "outerposition"));
 
-                    ## Create a new set of lines with the appropriate 
+                    ## Create a new set of lines with the appropriate
                     ## displaynames, etc
                     toberm = [];
                     hobj = get (kids(i), "children");
@@ -91,7 +91,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                         if (! strcmp (get (hobj(k), "type"), "line"))
                           continue;
                         endif
-                        if (get (hobj(j), "userdata") 
+                        if (get (hobj(j), "userdata")
                             != get (hobj(k), "userdata"))
                           continue;
                         endif
@@ -122,9 +122,9 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                     ## Return axes "units" and "position" back to
                     ## their original values.
                     set (ca, "units", orig_axes_units);
-                    set (kids(i), "units", legend_axes_units, 
-                         "box", legend_axes_box, 
-                         "ylim", legend_axes_ylim, 
+                    set (kids(i), "units", legend_axes_units,
+                         "box", legend_axes_box,
+                         "ylim", legend_axes_ylim,
                          "position", legend_axes_position,
                          "outerposition", legend_axes_outerposition);
                     delete (toberm);
@@ -132,7 +132,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   end_unwind_protect
                 endif
               else
-                ## Rely upon listener to convert axes position 
+                ## Rely upon listener to convert axes position
                 ## to "normalized" units.
                 orig_axes_units = get (kids(i), "units");
                 orig_axes_position = get (kids(i), "position");
@@ -153,11 +153,11 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   hlegend = [];
                   fkids = get (h, "children");
                   for j = 1 : numel(fkids)
-                    if (ishandle (fkids (j)) 
-                        && strcmp (get (fkids (j), "type"), "axes") 
+                    if (ishandle (fkids (j))
+                        && strcmp (get (fkids (j), "type"), "axes")
                         && (strcmp (get (fkids (j), "tag"), "legend")))
                       udata = get (fkids (j), "userdata");
-                      if (isscalar(udata.handle) 
+                      if (isscalar(udata.handle)
                           && ! isempty (intersect (udata.handle, kids (i))))
                         hlegend = get (fkids (j));
                         break;
@@ -192,7 +192,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
     endif
   else
     print_usage ();
-  endif    
+  endif
 
 endfunction
 

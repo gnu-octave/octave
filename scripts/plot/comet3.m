@@ -1,5 +1,5 @@
 ## Copyright (C) 2010-2011 Ben Abbott and John W. Eaton
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} comet3 (@var{z})
 ## @deftypefnx {Function File} {} comet3 (@var{x}, @var{y}, @var{z}, @var{p})
 ## @deftypefnx {Function File} {} comet3 (@var{ax}, @dots{})
-## Produce a simple comet style animation along the trajectory provided by 
+## Produce a simple comet style animation along the trajectory provided by
 ## the input coordinate vectors (@var{x}, @var{y}), where @var{x} will default
 ## to the indices of @var{y}.
 ##
@@ -56,7 +56,7 @@ function comet3 (varargin)
     z = varargin{3};
     p = varargin{4};
   endif
-  
+
   oldh = gca ();
   unwind_protect
     axes (h);

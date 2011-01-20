@@ -36,7 +36,7 @@ function inv = nbininv (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar(n) || !isscalar(p)) 
+  if (!isscalar(n) || !isscalar(p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("nbininv: X, N and P must be of common size or scalar");

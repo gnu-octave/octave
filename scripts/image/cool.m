@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} cool ()
 ## @deftypefnx {Function File} {@var{map} =} cool (@var{n})
-## Create color colormap.  The colormap varies from cyan to magenta.  
-## The argument @var{n} must be a scalar.  
+## Create color colormap.  The colormap varies from cyan to magenta.
+## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
 ## @seealso{colormap}
 ## @end deftypefn
@@ -40,7 +40,7 @@ function map = cool (n)
   endif
 
   if (n == 1)
-    map = [0, 1, 1];  
+    map = [0, 1, 1];
   elseif (n > 1)
     r = (0:n - 1)' ./ (n - 1);
     g = 1 - r;

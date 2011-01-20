@@ -23,8 +23,8 @@
 ## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
 ## @deftypefnx {Function File} {} plot (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} plot (@dots{})
-## Produce two-dimensional plots. 
-## 
+## Produce two-dimensional plots.
+##
 ## Many different combinations of arguments are possible.  The simplest
 ## form is
 ##
@@ -170,9 +170,9 @@
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the key.
 ##
-## If the first argument is an axis handle, then plot into these axes, 
-## rather than the current axis handle returned by @code{gca}. 
-## 
+## If the first argument is an axis handle, then plot into these axes,
+## rather than the current axis handle returned by @code{gca}.
+##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, bar,
 ## stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn
@@ -184,7 +184,7 @@ function retval = plot (varargin)
   [h, varargin, nargs] = __plt_get_axis_arg__ ("plot", varargin{:});
 
   if (nargs < 1)
-    print_usage(); 
+    print_usage();
   endif
 
   oldh = gca ();

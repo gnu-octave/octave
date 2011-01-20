@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} reallog (@var{x})
-## Return the real-valued natural logarithm of each element of @var{x}.  Report 
+## Return the real-valued natural logarithm of each element of @var{x}.  Report
 ## an error if any element results in a complex return value.
 ## @seealso{log, realpow, realsqrt}
 ## @end deftypefn
@@ -28,7 +28,7 @@ function y = reallog (x)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
     error ("reallog: produced complex result");
-  else    
+  else
     y = log (x);
   endif
 endfunction

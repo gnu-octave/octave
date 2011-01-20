@@ -20,23 +20,23 @@
 ## @deftypefn  {Function File} {@var{z} =} cumtrapz (@var{y})
 ## @deftypefnx {Function File} {@var{z} =} cumtrapz (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{z} =} cumtrapz (@dots{}, @var{dim})
-## 
+##
 ## Cumulative numerical integration using trapezoidal method.
-## @code{cumtrapz (@var{y})} computes the cumulative integral of the 
-## @var{y} along the first non-singleton dimension.  If the argument 
-## @var{x} is omitted an equally spaced vector is assumed.  @code{cumtrapz 
-## (@var{x}, @var{y})} evaluates the cumulative integral with respect 
+## @code{cumtrapz (@var{y})} computes the cumulative integral of the
+## @var{y} along the first non-singleton dimension.  If the argument
+## @var{x} is omitted an equally spaced vector is assumed.  @code{cumtrapz
+## (@var{x}, @var{y})} evaluates the cumulative integral with respect
 ## to @var{x}.
-##  
+##
 ## @seealso{trapz,cumsum}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
 ##
-## also: June 2000 Paul Kienzle (fixes,suggestions) 
+## also: June 2000 Paul Kienzle (fixes,suggestions)
 ## 2006-05-12 David Bateman - Modified for NDArrays
 
-function z = cumtrapz (x, y, dim)       
+function z = cumtrapz (x, y, dim)
 
   if (nargin < 1) || (nargin > 3)
     print_usage ();
@@ -78,7 +78,7 @@ function z = cumtrapz (x, y, dim)
     idx1{i} = 1:sz(i);
   endfor
   idx2 = idx1;
-  idx1{dim} = 2 : n;    
+  idx1{dim} = 2 : n;
   idx2{dim} = 1 : (n - 1);
 
   if (! have_x)
@@ -87,7 +87,7 @@ function z = cumtrapz (x, y, dim)
     if (! size_equal (x, y))
       error ("cumtrapz: X and Y must have the same shape");
     endif
-    z = 0.5 * cumsum ((x(idx1{:}) - x(idx2{:})) .* 
+    z = 0.5 * cumsum ((x(idx1{:}) - x(idx2{:})) .*
                       (y(idx1{:}) + y(idx2{:})), dim);
   endif
 

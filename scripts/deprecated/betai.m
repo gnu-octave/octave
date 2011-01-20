@@ -21,8 +21,8 @@
 ## This function is provided for compatibility with older versions of
 ## Octave.  New programs should use betainc instead.
 ##
-## @code{betai (@var{a}, @var{b}, @var{x})} is the same as 
-## @code{betainc (@var{x}, @var{a}, @var{b})}. 
+## @code{betai (@var{a}, @var{b}, @var{x})} is the same as
+## @code{betainc (@var{x}, @var{a}, @var{b})}.
 ## @end deftypefn
 
 ## Author: jwe

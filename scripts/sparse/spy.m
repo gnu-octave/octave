@@ -27,7 +27,7 @@
 ## @seealso{plot}
 ## @end deftypefn
 
-function spy (x, varargin) 
+function spy (x, varargin)
 
   if (nargin < 1)
     print_usage ();

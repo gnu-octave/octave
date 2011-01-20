@@ -1,5 +1,5 @@
 ## Copyright (C) 1994-2011 John W. Eaton
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -138,7 +138,7 @@ function h = imshow (im, varargin)
     warning ("imshow: only showing real part of complex image");
     im = real (im);
   endif
-  
+
   nans = isnan (im(:));
   if (any (nans))
     warning ("Octave:imshow-NaN",

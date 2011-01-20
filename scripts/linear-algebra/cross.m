@@ -29,8 +29,8 @@
 ## @end group
 ## @end example
 ##
-## If @var{x} and @var{y} are matrices, the cross product is applied 
-## along the first dimension with 3 elements.  The optional argument 
+## If @var{x} and @var{y} are matrices, the cross product is applied
+## along the first dimension with 3 elements.  The optional argument
 ## @var{dim} forces the cross product to be calculated along
 ## the specified dimension.
 ## @seealso{dot}
@@ -41,7 +41,7 @@
 ## Adapted-By: jwe
 
 function z = cross (x, y, dim)
-        
+
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
@@ -61,7 +61,7 @@ function z = cross (x, y, dim)
 
   if (nargin == 2)
      dim = find (size (x) == 3, 1);
-     if (isempty (dim)) 
+     if (isempty (dim))
        error ("cross: must have at least one dimension with 3 elements");
      endif
    else

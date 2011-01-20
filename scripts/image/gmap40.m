@@ -22,7 +22,7 @@
 ## Create color colormap.  The colormap consists of red, green, blue, yellow,
 ## magenta and cyan.  This colormap is specifically designed for users of
 ## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
-## The argument @var{n} must be a scalar. 
+## The argument @var{n} must be a scalar.
 ## If unspecified, a length of 6 is assumed.  Larger values
 ## of @var{n} result in a repetition of the above colors.
 ## @seealso{colormap}

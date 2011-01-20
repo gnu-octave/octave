@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {} normrnd (@var{m}, @var{s}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} normrnd (@var{m}, @var{s}, @var{sz})
 ## Return an @var{r} by @var{c}  or @code{size (@var{sz})} matrix of
-## random samples from the normal distribution with parameters mean @var{m} 
-## and standard deviation @var{s}.  Both @var{m} and @var{s} must be scalar 
+## random samples from the normal distribution with parameters mean @var{m}
+## and standard deviation @var{s}.  Both @var{m} and @var{s} must be scalar
 ## or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
@@ -34,7 +34,7 @@
 function rnd = normrnd (m, s, r, c)
 
   if (nargin > 1)
-    if (!isscalar (m) || !isscalar (s)) 
+    if (!isscalar (m) || !isscalar (s))
       [retval, m, s] = common_size (m, s);
       if (retval > 0)
         error ("normrnd: M and S must be of common size or scalar");

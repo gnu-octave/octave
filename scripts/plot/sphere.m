@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
 ## @deftypefnx {Function File} {} sphere (@var{h}, @dots{})
-## Generates three matrices in @code{meshgrid} format, such that 
-## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit sphere. 
-## The matrices of @code{@var{n}+1}-by-@code{@var{n}+1}.  If @var{n} is 
+## Generates three matrices in @code{meshgrid} format, such that
+## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit sphere.
+## The matrices of @code{@var{n}+1}-by-@code{@var{n}+1}.  If @var{n} is
 ## omitted then a default value of 20 is assumed.
 ##
-## Called with no return arguments, @code{sphere} call directly 
+## Called with no return arguments, @code{sphere} call directly
 ## @code{surf (@var{x}, @var{y}, @var{z})}.  If an axes handle is passed
 ## as the first argument, the surface is plotted to this set of axes.
 ## @seealso{peaks}
@@ -32,7 +32,7 @@
 
 function [xx, yy, zz] = sphere (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "sphere", 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "sphere",
                                                 varargin{:});
   if (nargin > 1)
     print_usage ();

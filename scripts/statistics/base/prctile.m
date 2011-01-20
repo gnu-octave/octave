@@ -22,15 +22,15 @@
 ## For a sample @var{x}, compute the quantiles, @var{y}, corresponding
 ## to the cumulative probability values, @var{p}, in percent.  All non-numeric
 ## values (NaNs) of @var{x} are ignored.
-## 
+##
 ## If @var{x} is a matrix, compute the percentiles for each column and
-## return them in a matrix, such that the i-th row of @var{y} contains the 
+## return them in a matrix, such that the i-th row of @var{y} contains the
 ## @var{p}(i)th percentiles of each column of @var{x}.
-## 
+##
 ## The optional argument @var{dim} determines the dimension along which
 ## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
 ## a vector or matrix, it defaults to 1 (column-wise quantiles).  When
-## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton 
+## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton
 ## dimension.
 ## @seealso{quantile}
 ## @end deftypefn
@@ -60,7 +60,7 @@ function q = prctile (x, p, dim)
     if (nd == 2)
       ## If a matrix or vector, use the 1st dimension.
       dim = 1;
-    else 
+    else
       ## If an N-d array, find the first non-singleton dimension.
       dim = find (size(v) > 1, 1);
       if (isempty (dim))
@@ -68,7 +68,7 @@ function q = prctile (x, p, dim)
       endif
     endif
   else
-    if (!(isscalar (dim) && dim == fix (dim)) || 
+    if (!(isscalar (dim) && dim == fix (dim)) ||
         !(1 <= dim && dim <= nd))
       error ("prctile: DIM must be an integer and a valid dimension");
     endif

@@ -28,7 +28,7 @@ function varargout = __bar__ (vertical, func, varargin)
   [h, varargin] = __plt_get_axis_arg__ ((nargout > 1), func, varargin{:});
 
   ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
-  width = 0.8 - 10 * eps; 
+  width = 0.8 - 10 * eps;
   group = true;
   bv = 0;
 
@@ -66,7 +66,7 @@ function varargout = __bar__ (vertical, func, varargin)
     x = [1:size(y,1)]';
     idx = 2;
   endif
-      
+
   newargs = {};
   have_line_spec = false;
   while (idx <= nargin - 2)
@@ -186,7 +186,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     hg = hggroup ();
     tmp = [tmp; hg];
     args = __add_datasource__ ("bar", hg, {"x", "y"}, varargin{:});
-    
+
     if (vertical)
       if (! have_color_spec)
         if (ycols == 1)
@@ -194,7 +194,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
+        h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
                   "cdata", lev, "parent", hg);
       else
         h = patch(xb(:,:,i), yb(:,:,i), "parent", hg);
@@ -206,7 +206,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
+        h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
                   "cdata", lev, "parent", hg);
       else
         h = patch(yb(:,:,i), xb(:,:,i), "parent", hg);
@@ -229,7 +229,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     addproperty ("baseline", hg, "data", h_baseline);
 
     addlistener (hg, "showbaseline", @show_baseline);
-    addlistener (hg, "basevalue", @move_baseline); 
+    addlistener (hg, "basevalue", @move_baseline);
 
     addproperty ("barwidth", hg, "data", width);
     if (group)
@@ -253,9 +253,9 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     addproperty ("facecolor", hg, "patchfacecolor", get (h, "facecolor"));
 
     addlistener (hg, "edgecolor", @update_props);
-    addlistener (hg, "linewidth", @update_props); 
-    addlistener (hg, "linestyle", @update_props); 
-    addlistener (hg, "facecolor", @update_props); 
+    addlistener (hg, "linewidth", @update_props);
+    addlistener (hg, "linestyle", @update_props);
+    addlistener (hg, "facecolor", @update_props);
 
     if (isvector (x))
       addproperty ("xdata", hg, "data", x);
@@ -263,7 +263,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
       addproperty ("xdata", hg, "data", x(:, i));
     endif
     addproperty ("ydata", hg, "data", y(:, i));
- 
+
     addlistener (hg, "xdata", @update_data);
     addlistener (hg, "ydata", @update_data);
 
@@ -301,7 +301,7 @@ function update_baseline (h, d)
   kids = get (get (h, "parent"), "children");
   for i = 1 : length (kids)
     obj = get (kids (i));
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline")
         && obj.baseline == h)
       ## Only alter if changed to avoid recursion of the listener functions
       if (! strcmpi (get (kids(i), "showbaseline"), visible))
@@ -350,7 +350,7 @@ endfunction
 
 function update_props (h, d)
   kids = get (h, "children");
-  set (kids, "edgecolor", get (h, "edgecolor"), 
+  set (kids, "edgecolor", get (h, "edgecolor"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"),
        "facecolor", get (h, "facecolor"));

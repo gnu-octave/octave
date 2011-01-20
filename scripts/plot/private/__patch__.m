@@ -208,7 +208,7 @@ function args = setdata (args)
   if (any (t1(:)))
     t2 = find (t1 != t1([2:end,end],:));
     idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
-                mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)), 
+                mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)),
                                            "uniformoutput", false))));
   endif
   x = reshape (vert(:,1)(idx), size (idx));
@@ -288,7 +288,7 @@ function args = setvertexdata (args)
   else
     fvc = c(:).';
   endif
- 
+
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};
 endfunction
 

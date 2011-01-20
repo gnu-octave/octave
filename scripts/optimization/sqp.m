@@ -114,14 +114,14 @@
 ##
 ## @noindent
 ## in which @var{x} is a vector and @var{r} is a vector.
-## 
+##
 ## The third and fourth arguments may also be 2-element cell arrays of
 ## function handles.  The first element should point to the constraint
 ## function and the second should point to a function that computes the
 ## gradient of the constraint function:
 ## @tex
 ## $$
-##  \Bigg( {\partial f(x) \over \partial x_1}, 
+##  \Bigg( {\partial f(x) \over \partial x_1},
 ##         {\partial f(x) \over \partial x_2}, \ldots,
 ##         {\partial f(x) \over \partial x_N} \Bigg)^T
 ## $$
@@ -142,7 +142,7 @@
 ## constraints @var{g} and @var{h}.  If the arguments are vectors then
 ## @var{x}(i) is bound by @var{lb}(i) and @var{ub}(i).  A bound can also
 ## be a scalar in which case all elements of @var{x} will share the same
-## bound.  If only one bound (lb, ub) is specified then the other will 
+## bound.  If only one bound (lb, ub) is specified then the other will
 ## default to (-@var{realmax}, +@var{realmax}).
 ##
 ## The seventh argument specifies the maximum number of iterations.
@@ -155,7 +155,7 @@
 ##
 ## @table @asis
 ## @item 101
-## The algorithm terminated normally.  
+## The algorithm terminated normally.
 ## Either all constraints meet the requested tolerance, or the stepsize,
 ## @tex
 ## $\Delta x,$
@@ -164,12 +164,12 @@
 ## delta @var{x},
 ## @end ifnottex
 ## is less than @code{tol * norm (x)}.
-## 
+##
 ## @item 102
 ## The BFGS update failed.
-## 
+##
 ## @item 103
-## The maximum number of iterations was reached. 
+## The maximum number of iterations was reached.
 ## @end table
 ##
 ## An example of calling @code{sqp}:
@@ -177,7 +177,7 @@
 ## @example
 ## function r = g (x)
 ##   r = [ sumsq(x)-10;
-##         x(2)*x(3)-5*x(4)*x(5); 
+##         x(2)*x(3)-5*x(4)*x(5);
 ##         x(1)^3+x(2)^3+1 ];
 ## endfunction
 ##
@@ -190,19 +190,19 @@
 ## [x, obj, info, iter, nf, lambda] = sqp (x0, @@phi, @@g, [])
 ##
 ## x =
-##     
+##
 ##   -1.71714
 ##    1.59571
 ##    1.82725
 ##   -0.76364
 ##   -0.76364
-##      
+##
 ## obj = 0.053950
 ## info = 101
 ## iter = 8
 ## nf = 10
 ## lambda =
-##     
+##
 ##   -0.0401627
 ##    0.0379578
 ##   -0.0052227
@@ -378,7 +378,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
   ## ce_fun    -- equality constraint functions
   ## ci_fun    -- inequality constraint functions
   ## A == [grad_{x_1} cx_fun, grad_{x_2} cx_fun, ..., grad_{x_n} cx_fun]^T
-  x = x0; 
+  x = x0;
 
   obj = feval (obj_fun, x0);
   __sqp_nfun__ = 1;
@@ -728,7 +728,7 @@ function res = cigrad_ub_lb (x, bgrad)
   if (iscell (__sqp_cif__) && length (__sqp_cif__) > 1)
     cigradfcn = __sqp_cif__{2};
   endif
-        
+
   if (isempty (cigradfcn))
     res = bgrad;
   else

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
-## 
+##
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the
 ## compiled code can be called within Octave or can be used as a stand-alone
@@ -39,12 +39,12 @@
 ##
 ## @item -l LIB
 ## Add the library LIB to the link command.
-##          
+##
 ## @item -L DIR
 ## Add the library directory DIR to the link command.
 ##
 ## @item -M
-## @itemx --depend 
+## @itemx --depend
 ## Generate dependency files (.d) for C and C++ source files.
 ##
 ## @item -R DIR
@@ -65,35 +65,35 @@
 ## Enable debugging options for compilers.
 ##
 ## @item -o FILE
-## @itemx --output FILE  
+## @itemx --output FILE
 ## Output file name.  Default extension is .oct
 ## (or .mex if --mex is specified) unless linking
 ## a stand-alone executable.
 ##
 ## @item -p VAR
 ## @itemx --print VAR
-## Print the configuration variable VAR@.  Recognized variables are: 
+## Print the configuration variable VAR@.  Recognized variables are:
 ##
-## @example             
-##    ALL_CFLAGS                FFTW_LIBS     
-##    ALL_CXXFLAGS              FLIBS       
-##    ALL_FFLAGS                FPICFLAG      
-##    ALL_LDFLAGS               INCFLAGS      
-##    BLAS_LIBS                 LDFLAGS             
-##    CC                        LD_CXX              
+## @example
+##    ALL_CFLAGS                FFTW_LIBS
+##    ALL_CXXFLAGS              FLIBS
+##    ALL_FFLAGS                FPICFLAG
+##    ALL_LDFLAGS               INCFLAGS
+##    BLAS_LIBS                 LDFLAGS
+##    CC                        LD_CXX
 ##    CFLAGS                    LD_STATIC_FLAG
-##    CPICFLAG                  LFLAGS              
-##    CPPFLAGS                  LIBCRUFT      
-##    CXX                       LIBOCTAVE     
-##    CXXFLAGS                  LIBOCTINTERP  
-##    CXXPICFLAG                LIBREADLINE   
-##    DEPEND_EXTRA_SED_PATTERN  LIBS        
-##    DEPEND_FLAGS              OCTAVE_LIBS   
-##    DL_LD                     RDYNAMIC_FLAG 
-##    DL_LDFLAGS                RLD_FLAG      
-##    F2C                       SED         
-##    F2CFLAGS                  XTRA_CFLAGS   
-##    F77                       XTRA_CXXFLAGS 
+##    CPICFLAG                  LFLAGS
+##    CPPFLAGS                  LIBCRUFT
+##    CXX                       LIBOCTAVE
+##    CXXFLAGS                  LIBOCTINTERP
+##    CXXPICFLAG                LIBREADLINE
+##    DEPEND_EXTRA_SED_PATTERN  LIBS
+##    DEPEND_FLAGS              OCTAVE_LIBS
+##    DL_LD                     RDYNAMIC_FLAG
+##    DL_LDFLAGS                RLD_FLAG
+##    F2C                       SED
+##    F2CFLAGS                  XTRA_CFLAGS
+##    F77                       XTRA_CXXFLAGS
 ##    FFLAGS
 ## @end example
 ##
@@ -101,7 +101,7 @@
 ## Link a stand-alone executable file.
 ##
 ## @item --mex
-## Assume we are creating a MEX file.  Set the default output extension 
+## Assume we are creating a MEX file.  Set the default output extension
 ## to ".mex".
 ##
 ## @item -s
@@ -143,7 +143,7 @@ function mkoctfile (varargin)
   for i = 1:nargin
     cmd = cstrcat (cmd, " \"", varargin{i}, "\"");
   endfor
-  
+
   status = system (cmd);
 
   if (status == 127)

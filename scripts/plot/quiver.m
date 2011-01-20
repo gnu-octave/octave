@@ -25,16 +25,16 @@
 ## @deftypefnx {Function File} {} quiver (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
 ##
-## Plot the @code{(@var{u}, @var{v})} components of a vector field in 
-## an @code{(@var{x}, @var{y})} meshgrid.  If the grid is uniform, you can 
+## Plot the @code{(@var{u}, @var{v})} components of a vector field in
+## an @code{(@var{x}, @var{y})} meshgrid.  If the grid is uniform, you can
 ## specify @var{x} and @var{y} as vectors.
 ##
 ## If @var{x} and @var{y} are undefined they are assumed to be
-## @code{(1:@var{m}, 1:@var{n})} where @code{[@var{m}, @var{n}] = 
+## @code{(1:@var{m}, 1:@var{n})} where @code{[@var{m}, @var{n}] =
 ## size(@var{u})}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
-##  the arrows of the field relative to the mesh spacing.  A value of 0 
+##  the arrows of the field relative to the mesh spacing.  A value of 0
 ## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}

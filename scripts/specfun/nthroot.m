@@ -22,8 +22,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nthroot (@var{x}, @var{n})
-## 
-## Compute the n-th root of @var{x}, returning real results for real 
+##
+## Compute the n-th root of @var{x}, returning real results for real
 ## components of @var{x}.  For example:
 ##
 ## @example
@@ -34,7 +34,7 @@
 ## @result{} 0.50000 - 0.86603i
 ## @end group
 ## @end example
-## 
+##
 ## @var{n} must be a scalar.  If @var{n} is not an even integer and @var{X} has
 ## negative entries, an error is produced.
 ## @seealso{realsqrt, sqrt, cbrt}

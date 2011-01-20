@@ -23,10 +23,10 @@
 ## @deftypefnx {Function File} {} ezcontourf (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezcontourf (@dots{})
 ##
-## Plots the filled contour lines of a function.  @var{f} is a string, inline 
-## function or function handle with two arguments defining the function.  By 
-## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and 
-## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension. 
+## Plots the filled contour lines of a function.  @var{f} is a string, inline
+## function or function handle with two arguments defining the function.  By
+## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
+## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
 ## value of both @var{x} and @var{y}.  If @var{dom} is a four element vector,
@@ -35,7 +35,7 @@
 ##
 ## @var{n} is a scalar defining the number of points to use in each dimension.
 ##
-## The optional return value @var{h} provides a list of handles to the 
+## The optional return value @var{h} provides a list of handles to the
 ## the parts of the vector field (body, arrow and marker).
 ##
 ## @example

@@ -27,7 +27,7 @@
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
 ##
-## Implementation Note: The origin (0, 0) for images is located in the 
+## Implementation Note: The origin (0, 0) for images is located in the
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the

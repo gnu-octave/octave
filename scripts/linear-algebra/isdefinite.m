@@ -22,7 +22,7 @@
 ## Return 1 if @var{x} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
-## is omitted, use a tolerance of 
+## is omitted, use a tolerance of
 ## @code{100 * eps * norm (@var{x}, "fro")}
 ## @seealso{issymmetric, ishermitian}
 ## @end deftypefn

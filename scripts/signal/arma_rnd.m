@@ -35,7 +35,7 @@
 ## The optional parameter @var{n} gives the number of dummy
 ## @var{x}(@var{i}) used for initialization, i.e., a sequence of length
 ## @var{t}+@var{n} is generated and @var{x}(@var{n}+1:@var{t}+@var{n})
-## is returned.  If @var{n} is omitted, @var{n} = 100 is used. 
+## is returned.  If @var{n} is omitted, @var{n} = 100 is used.
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>

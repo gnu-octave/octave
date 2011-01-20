@@ -30,7 +30,7 @@
 ##
 ## If the data contains ties (some value appears more than once)
 ## @var{k} is divided by
-## 
+##
 ## 1 - @var{sum_ties} / (@var{n}^3 - @var{n})
 ##
 ## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group

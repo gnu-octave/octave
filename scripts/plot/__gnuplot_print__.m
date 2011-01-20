@@ -115,7 +115,7 @@ function opts = __gnuplot_print__ (opts)
     opts.ghostscript.output = opts.name;
     opts.ghostscript.source = strcat (tmpnam (), ".eps");
     eps_drawnow (opts, opts.ghostscript.source, gp_opts);
-    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript); 
+    [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
     if (opts.send_to_printer || isempty (opts.name))
       cmd_lpr = opts.lpr_cmd (opts);
       cmd = sprintf ("%s | %s", cmd_gs, cmd_lpr);
@@ -151,7 +151,7 @@ function opts = __gnuplot_print__ (opts)
     endif
     [status, output] = system (pipeline{n});
     if (status)
-      fprintf ("%s\n%s\n%s\n", 
+      fprintf ("%s\n%s\n%s\n",
                "---------- output begin ----------",
                output,
                "----------- output end -----------");
@@ -204,7 +204,7 @@ function f = font_spec (opts, varargin)
       f = sprintf ("%d", opts.fontsize);
     endif
   case {"eps", "eps2", "epsc", "epsc2"}
-    ## Gnuplot renders fonts as half their specification, which 
+    ## Gnuplot renders fonts as half their specification, which
     ## results in a tight spacing for the axes-labels and tick-labels.
     ## Compensate for the half scale. This will produce the proper
     ## spacing for the requested fontsize.

@@ -28,20 +28,20 @@
 ##      @result{} "123"
 ##
 ## s = int2str ([1, 2, 3; 4, 5, 6])
-##      @result{} s = 
+##      @result{} s =
 ##         1  2  3
 ##         4  5  6
-## 
+##
 ## whos s
-##      @result{} s = 
+##      @result{} s =
 ##       Attr Name        Size                     Bytes  Class
-##       ==== ====        ====                     =====  ===== 
+##       ==== ====        ====                     =====  =====
 ##            s           2x7                         14  char
 ## @end group
 ## @end example
 ##
 ## This function is not very flexible.  For better control over the
-## results, use @code{sprintf} (@pxref{Formatted Output}). 
+## results, use @code{sprintf} (@pxref{Formatted Output}).
 ## @seealso{sprintf, num2str, mat2str}
 ## @end deftypefn
 

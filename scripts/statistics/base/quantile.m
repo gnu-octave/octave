@@ -1,5 +1,5 @@
 ## Copyright (C) 2008-2011 Ben Abbott and Jaroslav Hajek
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -27,18 +27,18 @@
 ## If @var{x} is a matrix, compute the quantiles for each column and
 ## return them in a matrix, such that the i-th row of @var{q} contains
 ## the @var{p}(i)th quantiles of each column of @var{x}.
-## 
-## The optional argument @var{dim} determines the dimension along which 
+##
+## The optional argument @var{dim} determines the dimension along which
 ## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column-wise quantiles).  If 
-## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton 
+## a vector or matrix, it defaults to 1 (column-wise quantiles).  If
+## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton
 ## dimension.
-## 
+##
 ## The methods available to calculate sample quantiles are the nine methods
 ## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
-## 
+##
 ## Discontinuous sample quantile methods 1, 2, and 3
-## 
+##
 ## @enumerate 1
 ## @item Method 1: Inverse of empirical distribution function.
 ##
@@ -46,37 +46,37 @@
 ##
 ## @item Method 3: SAS definition: nearest even order statistic.
 ## @end enumerate
-## 
+##
 ## Continuous sample quantile methods 4 through 9, where p(k) is the linear
 ## interpolation function respecting each methods' representative cdf.
-## 
+##
 ## @enumerate 4
 ## @item Method 4: p(k) = k / n. That is, linear interpolation of the
 ## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function 
-## where the knots are the values midway through the steps of the empirical 
-## cdf. 
+## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function
+## where the knots are the values midway through the steps of the empirical
+## cdf.
 ##
 ## @item Method 6: p(k) = k / (n + 1).
 ##
 ## @item Method 7: p(k) = (k - 1) / (n - 1).
 ##
-## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile 
-## estimates are approximately median-unbiased regardless of the distribution 
+## @item Method 8: p(k) = (k - 1/3) / (n + 1/3).  The resulting quantile
+## estimates are approximately median-unbiased regardless of the distribution
 ## of @var{x}.
 ##
-## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile 
-## estimates are approximately unbiased for the expected order statistics if 
+## @item Method 9: p(k) = (k - 3/8) / (n + 1/4).  The resulting quantile
+## estimates are approximately unbiased for the expected order statistics if
 ## @var{x} is normally distributed.
 ## @end enumerate
-## 
+##
 ## Hyndman and Fan (1996) recommend method 8.  Maxima, S, and R
 ## (versions prior to 2.0.0) use 7 as their default.  Minitab and SPSS
 ## use method 6.  @sc{matlab} uses method 5.
-## 
+##
 ## References:
-## 
+##
 ## @itemize @bullet
 ## @item Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) The New
 ## S Language.  Wadsworth & Brooks/Cole.
@@ -103,7 +103,7 @@ function q = quantile (x, p, dim = 1, method = 5)
     p = [0.00 0.25, 0.50, 0.75, 1.00];
   endif
 
-  if (!(isscalar (dim) && dim == fix (dim)) || 
+  if (!(isscalar (dim) && dim == fix (dim)) ||
       !(1 <= dim && dim <= ndims (x)))
     error ("quantile: DIM must be an integer and a valid dimension");
   endif
@@ -276,11 +276,11 @@ endfunction
 %!error quantile (1, 1, 0)
 %!error quantile (1, 1, 3)
 
-## For the cumulative probability values in @var{p}, compute the 
+## For the cumulative probability values in @var{p}, compute the
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/). The default is @var{method} = 7. For more 
+## (http://www.r-project.org/). The default is @var{method} = 7. For more
 ## detail, see `help quantile'.
 ## @seealso{prctile, quantile, statistics}
 

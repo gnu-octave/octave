@@ -26,7 +26,7 @@
 ##
 ## Called with a single argument a square matrix of size @var{m} by
 ## @var{m} is created.  Otherwise a matrix of @var{m} by @var{n} is
-## created.  If called with a single vector argument, this argument 
+## created.  If called with a single vector argument, this argument
 ## is taken to be the size of the matrix to create.
 ## @end deftypefn
 

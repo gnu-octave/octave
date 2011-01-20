@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} betarnd (@var{a}, @var{b}, @var{sz})
-## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of 
+## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of
 ## random samples from the Beta distribution with parameters @var{a} and
 ## @var{b}.  Both @var{a} and @var{b} must be scalar or of size @var{r}
 ##  by @var{c}.
@@ -34,7 +34,7 @@
 function rnd = betarnd (a, b, r, c)
 
   if (nargin > 1)
-    if (!isscalar(a) || !isscalar(b)) 
+    if (!isscalar(a) || !isscalar(b))
       [retval, a, b] = common_size (a, b);
       if (retval > 0)
         error ("betarnd: A and B must be of common size or scalar");
@@ -78,7 +78,7 @@ function rnd = betarnd (a, b, r, c)
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
       rnd = NaN (sz);
     else
-      r1 = randg(a,sz); 
+      r1 = randg(a,sz);
       rnd = r1 ./ (r1 + randg(b,sz));
     endif
   else
@@ -91,7 +91,7 @@ function rnd = betarnd (a, b, r, c)
 
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
     if (any (k))
-      r1 = randg(a(k),size(k)); 
+      r1 = randg(a(k),size(k));
       rnd(k) = r1 ./ (r1 + randg(b(k),size(k)));
     endif
   endif

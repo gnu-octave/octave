@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} stdnormal_rnd (@var{r}, @var{c})
 ## @deftypefnx {Function File} {} stdnormal_rnd (@var{sz})
-## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of 
+## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of
 ## random numbers from the standard normal distribution.
 ## @end deftypefn
 

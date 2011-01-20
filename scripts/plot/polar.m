@@ -35,7 +35,7 @@ function retval = polar (varargin)
   [h, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});
 
   if (nargs < 1)
-    print_usage(); 
+    print_usage();
   endif
 
   oldh = gca ();
@@ -76,7 +76,7 @@ function retval = polar (varargin)
 
     set (h, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
          "xaxislocation", "zero", "yaxislocation", "zero",
-         "plotboxaspectratio", [1, 1, 1]); 
+         "plotboxaspectratio", [1, 1, 1]);
 
     if (nargout > 0)
       retval = tmp;

@@ -39,7 +39,7 @@
 ## @group
 ## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
 ## t1 = orderfields(s)
-##      @result{} t1 = 
+##      @result{} t1 =
 ##         @{
 ##           a =  1
 ##           b =  2

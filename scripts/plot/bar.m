@@ -28,7 +28,7 @@
 ## If only one argument is given, @var{y}, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
 ##
-## The default width of 0.8 for the bars can be changed using @var{w}. 
+## The default width of 0.8 for the bars can be changed using @var{w}.
 ##
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph.  By default the columns
@@ -84,7 +84,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{barh, plot} 
+## @seealso{barh, plot}
 ## @end deftypefn
 
 ## Author: jwe

@@ -22,7 +22,7 @@
 ## @end deftypefn
 
 function retval = ishghandle (h)
-  ## This function is just included for compatibility as Octave has 
+  ## This function is just included for compatibility as Octave has
   ## no simulink equivalent.
   retval = ishandle (h);
 endfunction

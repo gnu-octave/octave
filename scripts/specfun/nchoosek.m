@@ -44,8 +44,8 @@
 ## @end ifnottex
 ##
 ## If @var{n} is a vector generate all combinations of the elements
-## of @var{n}, taken @var{k} at a time, one row per combination.  The 
-## resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
+## of @var{n}, taken @var{k} at a time, one row per combination.  The
+## resulting @var{c} has size @code{[nchoosek (length (@var{n}),
 ## @var{k}), @var{k}]}.
 ##
 ## @code{nchoosek} works only for non-negative integer arguments; use

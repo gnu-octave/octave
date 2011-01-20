@@ -63,7 +63,7 @@ function h = __stem__ (have_z, varargin)
       hg  = hggroup ();
       h = [h; hg];
       args = __add_datasource__ (caller, hg, {"x", "y", "z"}, varargin{:});
-      
+
       if (i == 1)
         set (ax, "nextplot", "add");
       endif
@@ -87,7 +87,7 @@ function h = __stem__ (have_z, varargin)
       endif
 
       if (have_z)
-        h_stems = plot3 (xt, yt, zt, "color", lc, "linestyle", ls, 
+        h_stems = plot3 (xt, yt, zt, "color", lc, "linestyle", ls,
                          "parent", hg, x, y, z, "color", mc,
                          "marker",  ms, "linestyle", "none",
                          "markerfacecolor", fc, "parent", hg);
@@ -97,7 +97,7 @@ function h = __stem__ (have_z, varargin)
         h_stems = plot (xt, yt, "color", lc, "linestyle", ls,
                         "parent", hg, x(:,i), y(:, i), "color", mc, "marker",
                         ms, "linestyle", "none", "markerfacecolor",
-                        fc, "parent", hg); 
+                        fc, "parent", hg);
 
         x_axis_range = get (ax, "xlim");
         h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
@@ -115,7 +115,7 @@ function h = __stem__ (have_z, varargin)
 
       if (!have_z)
         addlistener (hg, "showbaseline", @show_baseline);
-        addlistener (hg, "basevalue", @move_baseline); 
+        addlistener (hg, "basevalue", @move_baseline);
       endif
 
       addproperty ("color", hg, "linecolor", lc);
@@ -126,10 +126,10 @@ function h = __stem__ (have_z, varargin)
       addproperty ("markersize", hg, "linemarkersize", 6);
 
       addlistener (hg, "color", @update_props);
-      addlistener (hg, "linewidth", @update_props); 
-      addlistener (hg, "linestyle", @update_props); 
-      addlistener (hg, "marker", @update_props); 
-      addlistener (hg, "markerfacecolor", @update_props); 
+      addlistener (hg, "linewidth", @update_props);
+      addlistener (hg, "linestyle", @update_props);
+      addlistener (hg, "marker", @update_props);
+      addlistener (hg, "markerfacecolor", @update_props);
       addlistener (hg, "markersize", @update_props);
 
       addproperty ("xdata", hg, "data", x(:, i));
@@ -205,7 +205,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
         x = 1:length (y);
       elseif (ismatrix (y))
         x = 1:rows (y);
-      else 
+      else
         error ("stem: Y must be a matrix");
       endif # in each case, x & y will be defined
     endif
@@ -482,7 +482,7 @@ function update_baseline (h, d)
   kids = get (get (h, "parent"), "children");
   for i = 1 : length (kids)
     obj = get (kids (i));
-    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline") 
+    if (strcmp (obj.type, "hggroup") && isfield (obj, "baseline")
         && obj.baseline == h)
       ## Only alter if changed to avoid recursion of the listener functions
       if (! strcmpi (get (kids(i), "showbaseline"), visible))
@@ -516,10 +516,10 @@ endfunction
 
 function update_props (h, d)
   kids = get (h, "children");
-  set (kids(2), "color", get (h, "color"), 
+  set (kids(2), "color", get (h, "color"),
        "linewidth", get (h, "linewidth"),
        "linestyle", get (h, "linestyle"));
-  set (kids(1), "color", get (h, "color"), 
+  set (kids(1), "color", get (h, "color"),
        "marker", get (h, "marker"),
        "markerfacecolor", get (h, "markerfacecolor"),
        "markersize", get (h, "markersize"));

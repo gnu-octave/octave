@@ -51,10 +51,10 @@ function s = strsplit (p, sep, strip_empty = false)
       sizes = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
     endif
     ## Remove separators.
-    p(idx) = []; 
+    p(idx) = [];
     if (strip_empty)
       ## Omit zero lengths.
-      sizes = sizes (sizes != 0); 
+      sizes = sizes (sizes != 0);
     endif
     ## Convert!
     s = mat2cell (p, 1, sizes);

@@ -34,7 +34,7 @@
 function rnd = lognrnd (mu, sigma, r, c)
 
   if (nargin > 1)
-    if (!isscalar(mu) || !isscalar(sigma)) 
+    if (!isscalar(mu) || !isscalar(sigma))
       [retval, mu, sigma] = common_size (mu, sigma);
       if (retval > 0)
         error ("lognrnd: MU and SIGMA must be of common size or scalar");
@@ -79,7 +79,7 @@ function rnd = lognrnd (mu, sigma, r, c)
     if  (!(sigma > 0) || !(sigma < Inf))
       rnd = NaN (sz);
     else
-      rnd = exp(mu + sigma .* randn (sz)); 
+      rnd = exp(mu + sigma .* randn (sz));
     endif
   else
     rnd = exp (mu + sigma .* randn (sz));

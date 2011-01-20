@@ -82,10 +82,10 @@ function [q, s] = qqplot (x, dist, varargin)
     q = feval (f, t, varargin{:});
     if (nargin > 3)
       tmp = sprintf (", %g", varargin{2:end});
-    else 
+    else
       tmp = "";
     endif
-    q_label = sprintf ("%s with parameter(s) %g%s", 
+    q_label = sprintf ("%s with parameter(s) %g%s",
                         func2str (f),        varargin{1}, tmp);
   endif
 

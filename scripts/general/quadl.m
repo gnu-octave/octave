@@ -31,14 +31,14 @@
 ##
 ## If defined, @var{tol} defines the relative tolerance to which to
 ## which to integrate @code{@var{f}(@var{x})}.  While if @var{trace} is
-## defined, displays the left end point of the current interval, the 
+## defined, displays the left end point of the current interval, the
 ## interval length, and the partial integral.
 ##
 ## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
 ## To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices.
 ##
-## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature - 
+## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature -
 ## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
 ## @url{http://www.inf.ethz.ch/personal/gander/}
 ## @seealso{quad,quadv,quadgk,quadcc,trapz,dblquad,triplequad}
@@ -58,10 +58,10 @@
 function Q = quadl (f, a, b, tol, trace, varargin)
   need_warning (1);
   if (nargin < 4)
-    tol = []; 
+    tol = [];
   endif
   if (nargin < 5)
-    trace = []; 
+    trace = [];
   endif
   if (isa (a, "single") || isa (b, "single"))
     myeps = eps ("single");
@@ -69,21 +69,21 @@ function Q = quadl (f, a, b, tol, trace, varargin)
     myeps = eps;
   endif
   if (isempty (tol))
-    tol = myeps; 
+    tol = myeps;
   endif
   if (isempty (trace))
-    trace = 0; 
+    trace = 0;
   endif
   if (tol < myeps)
     tol = myeps;
   endif
 
-  m = (a+b)/2; 
+  m = (a+b)/2;
   h = (b-a)/2;
-  alpha = sqrt(2/3); 
+  alpha = sqrt(2/3);
   beta = 1/sqrt(5);
 
-  x1 = .942882415695480; 
+  x1 = .942882415695480;
   x2 = .641853342345781;
   x3 = .236383199662150;
 
@@ -92,7 +92,7 @@ function Q = quadl (f, a, b, tol, trace, varargin)
 
   y = feval (f, x, varargin{:});
 
-  fa = y(1); 
+  fa = y(1);
   fb = y(13);
 
   i2 = (h/6)*(y(1) + y(13) + 5*(y(5)+y(9)));
@@ -110,19 +110,19 @@ function Q = quadl (f, a, b, tol, trace, varargin)
           + .224926465333340*(y(6)+y(8))
           + .242611071901408*y(7));
 
-  s = sign(is); 
+  s = sign(is);
 
   if (s == 0)
     s = 1;
   endif
   erri1 = abs(i1-is);
   erri2 = abs(i2-is);
-  R = 1; 
+  R = 1;
   if (erri2 != 0)
-    R = erri1/erri2; 
+    R = erri1/erri2;
   endif
   if (R > 0 && R < 1)
-    tol = tol/R; 
+    tol = tol/R;
   endif
   is = s*abs(is)*tol/myeps;
   if (is == 0)
@@ -142,20 +142,20 @@ endfunction
 ##   Walter Gautschi, 08/03/98
 
 function Q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
-  h = (b-a)/2; 
+  h = (b-a)/2;
   m = (a+b)/2;
-  alpha = sqrt(2/3); 
+  alpha = sqrt(2/3);
   beta = 1/sqrt(5);
-  mll = m-alpha*h; 
-  ml = m-beta*h; 
-  mr = m+beta*h; 
+  mll = m-alpha*h;
+  ml = m-beta*h;
+  mr = m+beta*h;
   mrr = m+alpha*h;
   x = [mll, ml, m, mr, mrr];
   y = feval(f, x, varargin{:});
-  fmll = y(1); 
-  fml = y(2); 
-  fm = y(3); 
-  fmr = y(4); 
+  fmll = y(1);
+  fml = y(2);
+  fm = y(3);
+  fmr = y(4);
   fmrr = y(5);
   i2 = (h/6)*(fa + fb + 5*(fml+fmr));
   i1 = (h/1470)*(77*(fa+fb) + 432*(fmll+fmrr) + 625*(fml+fmr) + 672*fm);
@@ -183,7 +183,7 @@ function r = need_warning (v)
   persistent w = [];
   if (nargin == 0)
     r = w;
-  else 
-    w = v; 
+  else
+    w = v;
   endif
 endfunction

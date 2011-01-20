@@ -26,7 +26,7 @@
 ## @result{} [1, 1, 1, 0, 0, 0]
 ## @end group
 ## @end example
-## 
+##
 ## If @var{str} is a cell array, @code{isstrpop} is applied recursively
 ## to each element of the cell array.
 ##
@@ -47,7 +47,7 @@
 ##
 ## @item "upper"
 ## True for upper-case letters.
-## 
+##
 ## @item "digit"
 ## True for decimal digits (0-9).
 ##
@@ -58,7 +58,7 @@
 ## @itemx "wspace"
 ## True for whitespace characters (space, formfeed, newline, carriage
 ## return, tab, vertical tab).
-## 
+##
 ## @item "punct"
 ## True for punctuation characters (printing characters except space
 ## or letter or digit).
@@ -75,7 +75,7 @@
 ##
 ## @item "ascii"
 ## True for characters that are in the range of ASCII encoding.
-## 
+##
 ## @end table
 ##
 ## @seealso{isalpha, isalnum, islower, isupper, isdigit, isxdigit,

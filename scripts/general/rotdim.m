@@ -52,7 +52,7 @@
 ## @end deftypefn
 
 function y = rotdim (x, n, plane)
-  
+
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif

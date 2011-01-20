@@ -1,5 +1,5 @@
 ## Copyright (C) 2008-2011 Ben Abbott
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it

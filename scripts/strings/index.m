@@ -82,7 +82,7 @@ endfunction
 %!assert(index("astringbstringcstring", "st"), 2)
 %!assert(index("astringbstringcstring", "str"), 2)
 %!assert(index("astringbstringcstring", "string"), 2)
-%!assert(index("abc---", "abc+++"), 0) 
+%!assert(index("abc---", "abc+++"), 0)
 
 ## test everything out in reverse
 %!assert(index("astringbstringcstring", "s", "last"), 16)

@@ -38,10 +38,10 @@ function Q = triplequad(f, xa, xb, ya, yb, za, zb, tol, quadf, varargin)
     print_usage ();
   endif
   if (nargin < 8 || isempty (tol))
-    tol = 1e-6; 
+    tol = 1e-6;
   endif
   if (nargin < 9 || isempty (quadf))
-    quadf = @quadgk; 
+    quadf = @quadgk;
   endif
 
   inner = @__triplequad_inner__;

@@ -606,6 +606,23 @@ load_path::do_prepend (const std::string& dir, bool warn)
     do_add (dir, false, warn);
 }
 
+// Strip trailing directory separators.
+
+static std::string
+strip_trailing_separators (const std::string& dir_arg)
+{
+  std::string dir = dir_arg;
+
+  octave_idx_type k = dir.length ();
+  while (k > 1 && file_ops::is_dir_sep (dir[k-1]))
+    k--;
+
+  if (k < dir.length ())
+    dir.resize (k);
+
+  return dir;
+}
+
 void
 load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 {
@@ -616,6 +633,8 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
                      "trailing `//' is no longer special in search path elements");
 
   std::string dir = file_ops::tilde_expand (dir_arg);
+
+  dir = strip_trailing_separators (dir);
 
   dir_info_list_iterator i = find_dir_info (dir);
 
@@ -773,6 +792,8 @@ load_path::do_remove (const std::string& dir_arg)
       else
         {
           std::string dir = file_ops::tilde_expand (dir_arg);
+
+          dir = strip_trailing_separators (dir);
 
           dir_info_list_iterator i = find_dir_info (dir);
 

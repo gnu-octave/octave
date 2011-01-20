@@ -1,5 +1,10 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (strip_trailing_separators): New static function.
+	(load_path::do_add, load_path::do_remove): Call it on directory arg.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* gl-render.h, graphics.cc, gl-render.cc, graphics.h.in:
 	Update for backend -> graphics_toolkit change.
 

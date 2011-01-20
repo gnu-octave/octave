@@ -50,10 +50,14 @@ octave_class : public octave_base_value
 public:
 
   octave_class (void)
-    : octave_base_value (), obsolete_copies (0)  { }
+    : octave_base_value (), map (), c_name (), 
+      parent_list (), obsolete_copies (0)  
+    { }
 
   octave_class (const octave_map& m, const std::string& id)
-    : octave_base_value (), map (m), c_name (id), obsolete_copies (0) { }
+    : octave_base_value (), map (m), c_name (id), 
+      parent_list (), obsolete_copies (0) 
+    { }
 
   octave_class (const octave_class& s)
     : octave_base_value (s), map (s.map), c_name (s.c_name),

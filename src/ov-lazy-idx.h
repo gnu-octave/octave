@@ -35,10 +35,10 @@ octave_lazy_index : public octave_base_value
 public:
 
   octave_lazy_index (void)
-    : octave_base_value () { }
+    : octave_base_value (), index (), value () { }
 
   octave_lazy_index (const idx_vector& idx)
-    : octave_base_value (), index (idx) { } 
+    : octave_base_value (), index (idx), value () { } 
 
   octave_lazy_index (const octave_lazy_index& i)
     : octave_base_value (), index (i.index), value (i.value) { } 

@@ -64,7 +64,7 @@ public:
 
 private:
 
-  octave_shlib_list (void) { }
+  octave_shlib_list (void) : lib_list () { }
 
   ~octave_shlib_list (void) { }
 
@@ -203,7 +203,7 @@ public:
 
 private:
 
-  octave_mex_file_list (void) { }
+  octave_mex_file_list (void) : file_list () { }
 
   ~octave_mex_file_list (void) { }
 

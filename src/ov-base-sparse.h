@@ -49,7 +49,9 @@ octave_base_sparse : public octave_base_value
 {
  public:
  
-  octave_base_sparse (void) : octave_base_value (), typ (MatrixType ()) { }
+  octave_base_sparse (void)
+    : octave_base_value (), matrix (), typ (MatrixType ()) 
+  { }
 
   octave_base_sparse (const T& a) : octave_base_value (), matrix (a),
                                     typ (MatrixType ())

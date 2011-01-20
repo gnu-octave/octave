@@ -50,16 +50,16 @@ public:
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : fcn (), nm (), has_overloads (false) { }
+    : fcn (), nm (), has_overloads (false), overloads () { }
 
   octave_fcn_handle (const std::string& n)
-    : fcn (), nm (n), has_overloads (false) { }
+    : fcn (), nm (n), has_overloads (false), overloads () { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n = anonymous);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm),
-    has_overloads (fh.has_overloads)
+    has_overloads (fh.has_overloads), overloads ()
    {
      for (int i = 0; i < btyp_num_types; i++)
        builtin_overloads[i] = fh.builtin_overloads[i];

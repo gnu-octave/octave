@@ -529,9 +529,9 @@ public:
 
       fcn_info_rep (const std::string& nm)
         : name (nm), subfunctions (), private_functions (),
-          class_constructors (), class_methods (), cmdline_function (),
-          autoload_function (), function_on_path (), built_in_function (),
-          count (1) { }
+          class_constructors (), class_methods (), dispatch_map (),
+          cmdline_function (), autoload_function (), function_on_path (), 
+          built_in_function (), count (1) { }
 
       octave_value load_private_function (const std::string& dir_name);
 
@@ -1947,7 +1947,7 @@ private:
   static context_id xcurrent_context;
 
   symbol_table (void)
-    : table_name (), table (), curr_fcn (0) { }
+    : table_name (), table (), curr_fcn (0), persistent_table () { }
 
   ~symbol_table (void) { }
 

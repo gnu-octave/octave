@@ -1,3 +1,13 @@
+2011-01-20  Pascal Dupuis <Pascal.Dupuis@worldonline.be>.
+
+	* debug.h, dynamic-ld.cc, gl-render.cc, gl-render.h,
+	gl2ps-renderer.h, lex.h, ls-hdf5.h, oct-stream.h, oct-strstrm.h,
+	ov-base-diag.h, ov-base-mat.h, ov-base-scalar.h, ov-base-sparse.h,
+	ov-cell.h, ov-class.h, ov-dld-fcn.h, ov-fcn-handle.h,
+	ov-lazy-idx.h, ov-perm.h, ov-range.h, ov-struct.h, procstream.h,
+	pt-assign.h, symtab.h, unwind-prot.h: Initialize
+	all data members in initialization list.
+
 2011-01-20  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (__fltk_uigetfile__): Append file

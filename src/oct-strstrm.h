@@ -135,7 +135,7 @@ public:
   octave_ostrstream (std::ios::openmode arg_md = std::ios::out,
                      oct_mach_info::float_format ff
                        = oct_mach_info::native_float_format ())
-    : octave_base_strstream (arg_md, ff) { }
+    : octave_base_strstream (arg_md, ff), os () { }
 
   static octave_stream
   create (std::ios::openmode arg_md = std::ios::out,

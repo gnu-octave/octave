@@ -46,8 +46,8 @@ public:
 
   tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
                           octave_value::assign_op t = octave_value::op_asn_eq)
-    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), etype (t),
-      first_execution (true) { }
+    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), ans_ass (),
+      etype (t), first_execution (true) { }
 
   tree_simple_assignment (tree_expression *le, tree_expression *re,
                           bool plhs = false, int l = -1, int c = -1,

@@ -48,7 +48,14 @@ OCTINTERP_API
 opengl_renderer
 {
 public:
-  opengl_renderer (void) { }
+  opengl_renderer (void)
+    : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
+    zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
+    camera_pos (), camera_dir () 
+#if HAVE_FREETYPE
+    , text_renderer ()
+#endif 
+  { }
 
   virtual ~opengl_renderer (void) { }
 
@@ -111,7 +118,14 @@ protected:
                             GLenum type, const GLvoid *data);
 
 private:
-  opengl_renderer (const opengl_renderer&) { }
+  opengl_renderer (const opengl_renderer&) 
+    : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
+    zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
+    camera_pos (), camera_dir () 
+#if HAVE_FREETYPE
+    , text_renderer ()
+#endif
+    { }
 
   opengl_renderer& operator = (const opengl_renderer&)
     { return *this; }

@@ -44,7 +44,9 @@ octave_dld_function : public octave_builtin
 {
 public:
 
-  octave_dld_function (void) { }
+  octave_dld_function (void) 
+    : sh_lib (), t_checked (), system_fcn_file () 
+  { }
 
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
                        const std::string& nm = std::string (),

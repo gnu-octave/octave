@@ -32,7 +32,8 @@ glps_renderer : public opengl_renderer
 {
 public:
   glps_renderer (const int _fid, const std::string& _term) 
-    : opengl_renderer () , fid (_fid), term (_term) { }
+    : opengl_renderer () , fid (_fid), term (_term), 
+    fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
 

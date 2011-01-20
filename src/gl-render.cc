@@ -63,7 +63,10 @@ protected:
   class texture_rep
   {
   public:
-    texture_rep (void) : valid (false), count (1) { }
+    texture_rep (void) 
+      : id (), w (), h (), tw (), th (), tx (), ty (),
+        valid (false), count (1) 
+    { }
 
     texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
         : id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
@@ -239,7 +242,7 @@ public:
 
 public:
 
-  opengl_tesselator (void) : glu_tess (0) { init (); }
+  opengl_tesselator (void) : glu_tess (0), fill() { init (); }
 
   virtual ~opengl_tesselator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
@@ -343,7 +346,9 @@ public:
     // reference counter
     int count;
 
-    vertex_data_rep (void) : count (1) { }
+    vertex_data_rep (void) 
+      : coords (), color (), normal (), alpha (),
+        ambient (), diffuse (), specular (), specular_exp (),count (1) { }
 
     vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
                      double a, float as, float ds, float ss, float se)

@@ -54,7 +54,7 @@ octave_range : public octave_base_value
 public:
 
   octave_range (void)
-    : octave_base_value (), idx_cache () { }
+    : octave_base_value (), range (), idx_cache () { }
 
   octave_range (double base, double limit, double inc)
     : octave_base_value (), range (base, limit, inc), idx_cache ()

@@ -39,7 +39,7 @@ bp_table
 {
 private:
 
-  bp_table (void) { }
+  bp_table (void) : bp_set () { }
 
   ~bp_table (void) { }
 

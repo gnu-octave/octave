@@ -35,9 +35,9 @@ OCTINTERP_API
 octave_perm_matrix : public octave_base_value
 {
 public:
-  octave_perm_matrix (void) : matrix () { }
+  octave_perm_matrix (void) : matrix (), dense_cache () { }
 
-  octave_perm_matrix (const PermMatrix& p) : matrix (p) { }
+  octave_perm_matrix (const PermMatrix& p) : matrix (p), dense_cache () { }
 
   octave_base_value *clone (void) const { return new octave_perm_matrix (*this); }
   octave_base_value *empty_clone (void) const { return new octave_perm_matrix (); }

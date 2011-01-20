@@ -49,7 +49,7 @@ octave_base_matrix : public octave_base_value
 public:
 
   octave_base_matrix (void)
-    : octave_base_value (), typ (), idx_cache () { }
+    : octave_base_value (), matrix (), typ (), idx_cache () { }
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
     : octave_base_value (), matrix (m), 

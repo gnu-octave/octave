@@ -36,7 +36,7 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) { pb_init (); }
+  procstreambase (void) : pb () { pb_init (); }
 
   procstreambase (const std::string& name, int mode);
 

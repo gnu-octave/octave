@@ -49,7 +49,7 @@ octave_struct : public octave_base_value
 public:
 
   octave_struct (void)
-    : octave_base_value () { }
+    : octave_base_value (), map () { }
 
   octave_struct (const octave_map& m)
     : octave_base_value (), map (m) { }
@@ -173,7 +173,7 @@ octave_scalar_struct : public octave_base_value
 public:
 
   octave_scalar_struct (void)
-    : octave_base_value () { }
+    : octave_base_value (), map () { }
 
   octave_scalar_struct (const octave_scalar_map& m)
     : octave_base_value (), map (m) { }

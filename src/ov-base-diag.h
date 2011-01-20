@@ -47,14 +47,14 @@ octave_base_diag : public octave_base_value
 public:
 
   octave_base_diag (void)
-    : octave_base_value () { }
+    : octave_base_value (), matrix (), dense_cache () { }
 
   octave_base_diag (const DMT& m)
-    : octave_base_value (), matrix (m)
+    : octave_base_value (), matrix (m), dense_cache ()
   { }
 
   octave_base_diag (const octave_base_diag& m)
-    : octave_base_value (), matrix (m.matrix) { }
+    : octave_base_value (), matrix (m.matrix), dense_cache () { }
 
   ~octave_base_diag (void) { }
 

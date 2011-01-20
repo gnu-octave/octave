@@ -1,5 +1,8 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* ls-mat5.cc (read_mat5_binary_element):
+	Improve diagnositc if uncompress fails.
+
 	* load-path.cc (strip_trailing_separators): New static function.
 	(load_path::do_add, load_path::do_remove): Call it on directory arg.
 

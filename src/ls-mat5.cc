@@ -547,7 +547,46 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                                 element_length);
 
           if (err != Z_OK)
-            error ("load: error uncompressing data element");
+            {
+              std::string msg;
+              switch (err)
+                {
+                case Z_STREAM_END:
+                  msg = "stream end";
+                  break;
+
+                case Z_NEED_DICT:
+                  msg = "need dict";
+                  break;
+
+                case Z_ERRNO:
+                  msg = "errno case";
+                  break;
+
+                case Z_STREAM_ERROR:
+                  msg = "stream error";
+                  break;
+
+                case Z_DATA_ERROR:
+                  msg = "data error";
+                  break;
+
+                case Z_MEM_ERROR:
+                  msg = "mem error";
+                  break;
+
+                case Z_BUF_ERROR:
+                  msg = "buf error";
+                  break;
+
+                case Z_VERSION_ERROR:
+                  msg = "version error";
+                  break;
+                }
+
+              error ("load: error uncompressing data element (%s from zlib)",
+                     msg.c_str ());
+            }
           else
             {
               std::istringstream gz_is (outbuf);

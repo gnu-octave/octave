@@ -1,3 +1,10 @@
+2010-01-20  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* plot/uigetdir.m: Use correct variable name for argument check.
+	Remove unneeded white spaces.
+	* plot/uigetfile.m, plot/uiputfile.m: Remove unneeded white spaces.
+	Bug #32190.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* plot/ginput.m, plot/gnuplot_drawnow.m, plot/uiputfile.m,

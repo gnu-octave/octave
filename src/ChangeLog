@@ -1,3 +1,9 @@
+2011-01-20  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/__init_fltk__.cc (__fltk_uigetfile__): Append file
+	seperator to 2nd return value (file path).
+	Bug #32190.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* oct-obj.h (octave_value_list::octave_value_list): Initialize

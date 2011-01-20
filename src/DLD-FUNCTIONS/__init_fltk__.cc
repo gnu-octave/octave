@@ -2113,7 +2113,7 @@ Undocumented internal function.\n\
         retval(0) = std::string(fc->value ());
       else
         {
-          retval(1) = std::string(fc->directory ());
+          retval(1) = std::string(fc->directory ()) + sep;
           retval(2) = fc->filter_value();
         }
     }

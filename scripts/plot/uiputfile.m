@@ -55,7 +55,6 @@
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-
   if (nargin <= 3)
 
     defaultvals = {"All Files(*)", #FLTK File Filter
@@ -76,7 +75,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
         outargs{3} = file_filter;
       endif
     endif
-    
+
     if (nargin > 1)
       outargs{2} = varargin{2};
     endif
@@ -90,12 +89,12 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
   endif
 
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))
-    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});  
+    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
   else
     error ("uiputfile: fltk graphics toolkit required");
   endif
 
 endfunction
 
-%!demo 
+%!demo
 %! uiputfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})

@@ -43,7 +43,7 @@
 ## in the second column.
 ## Example: @code{uigetfile (@{"*.ext", "My Description";"*.xyz",
 ## "XYZ-Format"@})}
-## 
+##
 ## The filter string can also contain a semicolon separated list of filter
 ## extensions.
 ## Example: @code{uigetfile (@{"*.gif;*.png;*.jpg", "Supported Picture
@@ -57,7 +57,7 @@
 ## The screen position of the GUI dialog can be set using the "Position" key
 ## and a 2-element vector containing the pixel coordinates.
 ## Two or more files can be selected when setting the "Multiselect" key to "on".
-## In that case @var{fname} is a cell array containing the files. 
+## In that case @var{fname} is a cell array containing the files.
 ## @end deftypefn
 
 ## Author: Kai Habel
@@ -129,7 +129,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       for i = stridx : 2 : nargin
         prop = varargin{i};
         val = varargin{i + 1};
-        if (strncmp (tolower (prop), "position", 8)) 
+        if (strncmp (tolower (prop), "position", 8))
           if (ismatrix (val) && length(val) == 2)
             outargs{4} = val;
           else
@@ -151,12 +151,11 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   endif
 
   if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))
-    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});  
+    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
   else
     error ("uigetfile: fltk graphics toolkit required.");
   endif
 
-         
 endfunction
 
 %!demo 

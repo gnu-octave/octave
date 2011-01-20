@@ -37,6 +37,6 @@ function refresh (h)
     h = gcf ();
   endif
 
-  set(h,"__modified__", "on")
+  set(h,"__modified__", "on");
   drawnow ();
 endfunction

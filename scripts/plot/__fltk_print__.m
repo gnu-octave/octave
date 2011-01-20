@@ -25,8 +25,8 @@ function opts = __fltk_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());
 
-  figure (opts.figure)
-  drawnow ("expose")
+  figure (opts.figure);
+  drawnow ("expose");
   __fltk_redraw__ ();
 
   if (! isempty (opts.fig2dev_binary))
@@ -111,7 +111,7 @@ function opts = __fltk_print__ (opts)
   case {"corel", "gif"}
     error ("print:unsupporteddevice",
            "print.m: %s output is not available for the FLTK graphics toolkit",
-           upper (opts.devopt))
+           upper (opts.devopt));
   case opts.ghostscript.device
     opts.ghostscript.source = "-";
     opts.ghostscript.output = opts.name;
@@ -140,14 +140,14 @@ function opts = __fltk_print__ (opts)
   otherwise
     error (sprintf ("print:no%soutput", opts.devopt),
            "print.m: %s output is not available for GL2PS output",
-           upper (opts.devopt))
+           upper (opts.devopt));
   endswitch
 
   opts.pipeline = pipeline;
 
   for n = 1:numel(pipeline)
     if (opts.debug)
-      fprintf ("fltk-pipeline: '%s'\n", pipeline{n})
+      fprintf ("fltk-pipeline: '%s'\n", pipeline{n});
     endif
     pid = popen (pipeline{n}, "w");
     if (pid < 0)

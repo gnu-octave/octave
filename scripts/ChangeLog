@@ -1,5 +1,36 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* @ftp/loadobj.m, @ftp/saveobj.m, audio/record.m,
+	general/accumarray.m, general/accumdim.m, general/arrayfun.m,
+	general/bicubic.m, general/curl.m, general/divergence.m,
+	general/gradient.m, general/interp2.m, general/rat.m,
+	image/imagesc.m, io/strread.m, io/textscan.m,
+	linear-algebra/krylov.m, miscellaneous/getappdata.m,
+	miscellaneous/isappdata.m, miscellaneous/rmappdata.m,
+	miscellaneous/setappdata.m, miscellaneous/what.m,
+	optimization/qp.m, path/savepath.m, pkg/pkg.m,
+	plot/__fltk_print__.m, plot/__gnuplot_print__.m,
+	plot/__go_draw_axes__.m, plot/__print_parse_opts__.m,
+	plot/axis.m, plot/caxis.m, plot/cla.m, plot/clabel.m,
+	plot/clf.m, plot/colorbar.m, plot/cylinder.m, plot/daspect.m,
+	plot/gnuplot_drawnow.m, plot/meshc.m, plot/newplot.m,
+	plot/orient.m, plot/pbaspect.m, plot/plotyy.m, plot/print.m,
+	plot/private/__actual_axis_position__.m,
+	plot/private/__axis_label__.m, plot/private/__bar__.m,
+	plot/private/__clabel__.m, plot/private/__errplot__.m,
+	plot/private/__ezplot__.m, plot/private/__ghostscript__.m,
+	plot/private/__patch__.m, plot/private/__pie__.m,
+	plot/private/__quiver__.m, plot/private/__scatter__.m,
+	plot/private/__stem__.m, plot/private/__tight_eps_bbox__.m,
+	plot/refresh.m, plot/spinmap.m, plot/subplot.m, plot/surfc.m,
+	plot/uigetfile.m, polynomial/polyout.m, sparse/spaugment.m,
+	sparse/svds.m, sparse/treeplot.m, statistics/base/histc.m,
+	statistics/distributions/hygecdf.m,
+	statistics/distributions/hygeinv.m, statistics/tests/manova.m,
+	strings/deblank.m, testfun/runtests.m: Add missing semicolons.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* deprecated/cellidx.m, deprecated/dmult.m,
 	deprecated/intwarning.m, deprecated/str2mat.m, general/curl.m,
 	general/divergence.m, general/gradient.m, geometry/griddata.m,

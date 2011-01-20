@@ -139,7 +139,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     elseif (length (sz) == 2)
       A = sparse (subs(:,1), subs(:,2), vals, sz(1), sz(2), mode);
     else
-      error ("accumarray: dimensions mismatch")
+      error ("accumarray: dimensions mismatch");
     endif
 
   else
@@ -153,7 +153,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
           sz = max (subs, [], 1);
         endif
       elseif (ndims != length (sz))
-        error ("accumarray: dimensions mismatch")
+        error ("accumarray: dimensions mismatch");
       endif
 
       ## Convert multidimensional subscripts.

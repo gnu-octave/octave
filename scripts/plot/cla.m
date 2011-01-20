@@ -82,7 +82,7 @@ function cla (varargin)
   ## approximation.
 
   axes (hax);
-  axis auto
+  axis ("auto");
 
   ## Set the current axis back to where it was upon entry.
   axes (oldhax);

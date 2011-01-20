@@ -86,7 +86,7 @@ function retval = divergence (varargin)
 
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
-      error ("divergence: size of X, Y, and Z must match")
+      error ("divergence: size of X, Y, and Z must match");
     elseif (ndims (varargin{fidx}) != 3)
       error ("divergence: expected two-dimensional matrices X, Y, and Z");
     elseif ((length (dx) != size (varargin{fidx}, 2))

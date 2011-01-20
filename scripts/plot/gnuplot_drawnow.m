@@ -52,7 +52,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
         endif
       else
         error ("gnuplot_drawnow: the gnuplot terminal, \"%s\", is not available",
-               gnuplot_trim_term (term))
+               gnuplot_trim_term (term));
       endif
     unwind_protect_cleanup
       set (h, "__plot_stream__", default_plot_stream);
@@ -251,7 +251,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           endif
         else
           size_str = "";
-          warning ("gnuplot_set_term: size is zero")
+          warning ("gnuplot_set_term: size is zero");
         endif
       else
         ## A specified size take priority over the figure properies.
@@ -259,9 +259,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       endif
     else
       if isempty (h)
-        disp ("gnuplot_set_term: figure handle is empty")
+        disp ("gnuplot_set_term: figure handle is empty");
       elseif !isfigure(h)
-        disp ("gnuplot_set_term: not a figure handle")
+        disp ("gnuplot_set_term: not a figure handle");
       endif
       title_str = "";
       size_str = "";

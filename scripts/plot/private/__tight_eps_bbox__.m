@@ -35,7 +35,7 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
     orig_bbox_line = get_bbox (output);
   else
     error ("print:noboundingbox",
-           "print.m: no bounding box found in '%s'", eps_file_name)
+           "print.m: no bounding box found in '%s'", eps_file_name);
   endif
 
   ghostscript_options = "-q -dBATCH -dSAFER -dNOPAUSE -dTextAlphaBits=4 -sDEVICE=bbox";
@@ -48,7 +48,7 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
   else
     warning ("print:nogsboundingbox",
              "print.m: ghostscript failed to determine the bounding for '%s'",
-             eps_file_name)
+             eps_file_name);
   endif
 
   ## Attempt to fix the bbox in place.
@@ -96,7 +96,7 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
       n = n(1);
     elseif (isempty (n))
       error ("print:noboundingbox", ...
-             "print.m: no bounding box found in '%s'.", eps_file_name)
+             "print.m: no bounding box found in '%s'.", eps_file_name);
     endif
     m = numel (orig_bbox_line);
     data = horzcat (data(1:(n-1)), tight_bbox_line, data((n+m):end));

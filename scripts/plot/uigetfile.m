@@ -133,13 +133,13 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
           if (ismatrix (val) && length(val) == 2)
             outargs{4} = val;
           else
-            error ("uigetfile: expecting 2-element vector for position argument")
+            error ("uigetfile: expecting 2-element vector for position argument");
           endif
         elseif (strncmp (tolower (prop), "multiselect", 11))
           if (ischar (val))
             outargs{5} = tolower (val);
           else
-            error ("uigetfile: expecting string argument (on/off) for multiselect")
+            error ("uigetfile: expecting string argument (on/off) for multiselect");
           endif
         else
           error ("uigetfile: unknown argument");

@@ -26,7 +26,7 @@
 function val = getappdata (h, name)
 
   if (! (all (ishandle (h)) && ischar (name)))
-    error ("getappdata: invalid input")
+    error ("getappdata: invalid input");
   endif
 
   appdata(numel(h)) = struct();

@@ -34,7 +34,7 @@ function newplot ()
       case "new"
       case "add"
       case "replacechildren"
-        delete (get (cf, "children"))
+        delete (get (cf, "children"));
       case "replace"
       otherwise
         error ("newplot: unrecognized nextplot property for current figure");
@@ -52,7 +52,7 @@ function newplot ()
       case "new"
       case "add"
       case "replacechildren"
-        delete (get (ca, "children"))
+        delete (get (ca, "children"));
       case "replace"
         __go_axes_init__ (ca, "replace");
         __request_drawnow__ ();

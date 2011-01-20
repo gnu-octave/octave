@@ -96,12 +96,12 @@ function varargout = curl (varargin)
       varargout{1} = rot_z;
       varargout{2} = av;
     else
-      error ("curl: number of output arguments must be 1 or 2")
+      error ("curl: number of output arguments must be 1 or 2");
     endif
 
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx}, varargin{fidx + 1}, varargin{fidx + 2}))
-      error ("curl: size of X, Y, and Z must match")
+      error ("curl: size of X, Y, and Z must match");
     elseif (ndims (varargin{fidx}) != 3)
       error ("curl: expected two-dimensional matrices X, Y, and Z");
     elseif ((length (dx) != size (varargin{fidx}, 2))

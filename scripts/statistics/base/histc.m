@@ -54,7 +54,7 @@ function [n, idx] = histc (x, edges, dim)
 
   num_edges = numel (edges);
   if (num_edges == 0)
-    error ("histc: EDGES must not be empty")
+    error ("histc: EDGES must not be empty");
   endif
 
   if (!isreal (edges))

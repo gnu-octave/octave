@@ -65,7 +65,7 @@ function clf (varargin)
   if (do_reset)
     ## Select all the children, including the one with hidden handles.
     hc = allchild (hfig);
-    reset (hfig)
+    reset (hfig);
   else
     ## Select only the chilren with visible handles.
     hc = get (hfig, "children");

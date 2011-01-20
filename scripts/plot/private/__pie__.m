@@ -146,7 +146,7 @@ function hlist = __pie__ (caller, varargin)
   addlistener(gca, "view", {@update_text_pos, hlist});
 
   if (strncmp (caller, "pie3", 4))
-    axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off")
+    axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off");
     view (-37.5, 30);
   elseif (strncmp (caller, "pie", 3))
     axis ([-1.5, 1.5, -1.5, 1.5], "square", "off");
@@ -184,16 +184,16 @@ function update_text_pos (all_handles)
     for i = 1 : length (tobj)
       if (is_pie3)
         if (ud_mask(i))
-          set (tobj(i), "position", [pos(i,1), pos(i,2), -0.05])
+          set (tobj(i), "position", [pos(i,1), pos(i,2), -0.05]);
         else
-          set (tobj(i), "position", [pos(i,1), pos(i,2), 0.40])
+          set (tobj(i), "position", [pos(i,1), pos(i,2), 0.40]);
         endif
       endif
 
       if (lr_mask(i))
-        set (tobj(i), "horizontalalignment", "right")
+        set (tobj(i), "horizontalalignment", "right");
       else
-        set (tobj(i), "horizontalalignment", "left")
+        set (tobj(i), "horizontalalignment", "left");
       endif
     endfor
   endif

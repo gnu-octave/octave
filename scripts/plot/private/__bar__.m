@@ -202,7 +202,7 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
     else
       if (! have_color_spec)
         if (ycols == 1)
-          lev = clim(1)
+          lev = clim(1);
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
@@ -238,9 +238,9 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
       addproperty ("barlayout", hg, "radio", "{stacked}|grouped", "stacked");
     endif
     if (vertical)
-      addproperty ("horizontal", hg, "radio", "on|{off}", "off")
+      addproperty ("horizontal", hg, "radio", "on|{off}", "off");
     else
-      addproperty ("horizontal", hg, "radio", "{on}|off", "on")
+      addproperty ("horizontal", hg, "radio", "{on}|off", "on");
     endif
 
     addlistener (hg, "barwidth", @update_group);

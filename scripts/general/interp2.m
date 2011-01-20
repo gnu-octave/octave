@@ -229,7 +229,7 @@ function ZI = interp2 (varargin)
       ## Get 2D index.
       idx = sub2ind (size (a), yidx, xidx);
       ## We can dispose of the 1D indices at this point to save memory.
-      clear xidx yidx
+      clear xidx yidx;
 
       ## apply plane equation
       ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
@@ -243,7 +243,7 @@ function ZI = interp2 (varargin)
     elseif (strcmp (method, "pchip"))
 
       if (length (X) < 2 || length (Y) < 2)
-        error ("interp2: pchip2 requires at least 2 points in each dimension")
+        error ("interp2: pchip2 requires at least 2 points in each dimension");
       endif
 
       ## first order derivatives

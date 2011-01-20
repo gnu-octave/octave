@@ -94,19 +94,19 @@ function manova (x, g)
 
   Lambda = prod (1 ./ (1 + l));
 
-  delta = n_w + n_b - (p + n_b + 1) / 2
-  df_num = p * n_b
+  delta = n_w + n_b - (p + n_b + 1) / 2;
+  df_num = p * n_b;
   W_pval_1 = 1 - chi2cdf (- delta * log (Lambda), df_num);
 
   if (p < 3)
     eta = p;
   else
-    eta = sqrt ((p^2 * n_b^2 - 4) / (p^2 + n_b^2 - 5))
+    eta = sqrt ((p^2 * n_b^2 - 4) / (p^2 + n_b^2 - 5));
   endif
 
-  df_den = delta * eta - df_num / 2 + 1
+  df_den = delta * eta - df_num / 2 + 1;
 
-  WT = exp (- log (Lambda) / eta) - 1
+  WT = exp (- log (Lambda) / eta) - 1;
   W_pval_2 = 1 - f_cdf (WT * df_den / df_num, df_num, df_den);
 
   if (0)

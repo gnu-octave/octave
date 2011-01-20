@@ -113,7 +113,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     endif
   end_unwind_protect
 
-  set (ax, "activepositionproperty", "position")
+  set (ax, "activepositionproperty", "position");
 
   if (nargout > 0)
     Ax = ax;
@@ -192,7 +192,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   ## Tag the plotyy axes, so we can use that information
   ## not to mirror the y axis tick marks
-  set (ax, "tag", "plotyy")
+  set (ax, "tag", "plotyy");
 
   ## Cross-reference one axis to the other in the userdata
   set (ax(1), "userdata", ax(2));
@@ -265,7 +265,7 @@ function update_position (h, d, ax2)
       oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
       oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
       if (! (isequal (position, oldposition) && isequal (view, oldview)))
-        set (ax2, "position", position, "view", view)
+        set (ax2, "position", position, "view", view);
       endif
       if (! (isequal (plotboxaspectratio, oldplotboxaspectratio)
              && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))

@@ -59,7 +59,7 @@
 function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
   if (isa (A, "single") || isa (V, "single"))
-    defeps = 1e-6
+    defeps = 1e-6;
   else
     defeps = 1e-12;
   endif
@@ -88,7 +88,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   [m, kb] = size (V);
   if (m != na)
     error ("krylov: A(%d x %d), V(%d x %d): argument dimensions do not match",
-          na, na, m, kb)
+          na, na, m, kb);
   endif
 
   if (! isscalar (k))
@@ -181,9 +181,9 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
       ## Trim to size.
       V = V(:,1:na);
     elseif (columns(V) > na)
-      krylov_V = V
-      krylov_na = na
-      krylov_length_alpha = length (alpha)
+      krylov_V = V;
+      krylov_na = na;
+      krylov_length_alpha = length (alpha);
       error ("krylov: this case should never happen; submit a bug report");
     endif
 

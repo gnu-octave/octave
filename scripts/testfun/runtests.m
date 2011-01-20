@@ -62,7 +62,7 @@ function run_all_tests (directory)
       if (has_tests (ff))
         print_test_file_name (f);
         [p, n, xf, sk] = test (ff, "quiet");
-        print_pass_fail (n, p)
+        print_pass_fail (n, p);
         fflush (stdout);
       else
         no_tests{end+1} = f;

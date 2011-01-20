@@ -418,10 +418,10 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       for i = 1 : length (XX)
         h = [h; plot(XX{i}, YY{i})];
         if (i == 1)
-          set (ax, "nextplot", "add")
+          set (ax, "nextplot", "add");
         endif
       endfor
-      set (ax, "nextplot", hold_state)
+      set (ax, "nextplot", hold_state);
     elseif (ispolar || isplot)
       h = feval (pfunc, X, Z);
       if (isplot && !parametric)

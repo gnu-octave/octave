@@ -81,7 +81,7 @@ function [cmin, cmax] = __caxis__ (ca, ax, varargin)
   endif
 
   if (nargin > 2)
-    __caxis__ (ca, varargin{:})'
+    __caxis__ (ca, varargin{:})';
   endif
 
 endfunction

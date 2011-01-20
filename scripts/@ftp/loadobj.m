@@ -27,7 +27,7 @@ function b = loadobj (a)
     if (! isempty (b.dir))
       __ftp_cwd__ (b.curlhandle, b.dir);
     endif
-    b = rmfield (b, "dir")
+    b = rmfield (b, "dir");
   elseif (isfield (b, "remotePwd"))
     ## FIXME: Can we read matlab java stringBuffer objects?
     warning ("can not change remote directory in loqded FTP object");

@@ -42,7 +42,7 @@ function hg = __quiver__ (varargin)
     u = varargin{ioff++};
     v = varargin{ioff++};
     if (is3d)
-      w = varargin{ioff++}
+      w = varargin{ioff++};
       [x, y, z] = meshgrid (1:size(u,2), 1:size(u,1), 1:max(size(w)));
     else
       [x, y] = meshgrid (1:size(u,2), 1:size(u,1));
@@ -275,15 +275,15 @@ function hg = __quiver__ (varargin)
     ## Set up the hggroup properties and listeners
     if (autoscale)
       addproperty ("autoscale", hg, "radio", "{on}|off", "on");
-      addproperty ("autoscalefactor", hg, "data", autoscale)
+      addproperty ("autoscalefactor", hg, "data", autoscale);
     else
       addproperty ("autoscale", hg, "radio", "{on}|off", "off");
-      addproperty ("autoscalefactor", hg, "data", 1.0)
+      addproperty ("autoscalefactor", hg, "data", 1.0);
     endif
-    addlistener (hg, "autoscale", @update_data)
-    addlistener (hg, "autoscalefactor", @update_data)
+    addlistener (hg, "autoscale", @update_data);
+    addlistener (hg, "autoscalefactor", @update_data);
 
-    addproperty ("maxheadsize", hg, "data", arrowsize)
+    addproperty ("maxheadsize", hg, "data", arrowsize);
     addlistener (hg, "maxheadsize", @update_data);
 
     addproperty ("showarrowhead", hg, "radio", "{on}|off", "on");

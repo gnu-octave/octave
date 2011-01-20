@@ -18,6 +18,6 @@
 
 function b = saveobj (a)
   b = a;
-  b = rmfield (b, "curlhandle")
+  b = rmfield (b, "curlhandle");
   b.dir = __ftp_pwd (a.curlhandle);
 endfunction

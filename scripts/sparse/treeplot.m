@@ -190,7 +190,7 @@ function treeplot (tree, node_s, edge_s)
             continue;
           endif
           plot (x_coordinate(skelet(istart:istop)),
-                y_coordinate(skelet(istart:istop)), edge_style)
+                y_coordinate(skelet(istart:istop)), edge_style);
         endfor
 
         ## Set axis and graph size.

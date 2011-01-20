@@ -67,7 +67,7 @@
 function varargout = gradient (m, varargin)
 
   if (nargin < 1)
-    print_usage ()
+    print_usage ();
   endif
 
   nargout_with_ans = max(1,nargout);
@@ -98,7 +98,7 @@ function varargout = matrix_gradient (m, varargin)
   endif
 
   if (nargin > 2 && nargin != nd + 1)
-    print_usage ()
+    print_usage ();
   endif
 
   ## cell d stores a spacing vector for each dimension

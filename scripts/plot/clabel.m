@@ -61,7 +61,7 @@ function retval = clabel (c, varargin)
   have_labelspacing = false;
 
   if (nargin < 1)
-    print_usage()
+    print_usage ();
   elseif (nargin == 1)
     hparent = gca ();
   else

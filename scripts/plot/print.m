@@ -266,11 +266,11 @@ function print (varargin)
   opts.epstool_cmd = @epstool;
 
   if (! isfigure (opts.figure))
-    error ("print: no figure to print")
+    error ("print: no figure to print");
   endif
 
   orig_figure = get (0, "currentfigure");
-  figure (opts.figure)
+  figure (opts.figure);
 
   if (opts.append_to_file)
     [~, ~, ext] = fileparts (opts.ghostscript.output);
@@ -289,7 +289,7 @@ function print (varargin)
     props(1).name = "position";
     props(1).value = {fpos};
     fpos(3:4) = opts.canvas_size;
-    set (opts.figure, "position", fpos)
+    set (opts.figure, "position", fpos);
 
     ## Set figure background to none. This is done both for
     ## consistency with Matlab and to elliminate the visible
@@ -312,7 +312,7 @@ function print (varargin)
       else
         linestyle = "--";
       endif
-      set (h, "linestyle", linestyle)
+      set (h, "linestyle", linestyle);
     endif
 
     if (opts.use_color < 0
@@ -335,7 +335,7 @@ function print (varargin)
               ## convert RGB color to RGB gray scale
               xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
               ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
-              set (h(n), color_props{c}, ggg)
+              set (h(n), color_props{c}, ggg);
             endif
           endif
         endfor
@@ -362,7 +362,7 @@ function print (varargin)
         endif
       endfor
       if (! isempty (opts.font))
-        set (h(ishandle(h)), "fontname", opts.font)
+        set (h(ishandle(h)), "fontname", opts.font);
       endif
       if (! isempty (opts.fontsize))
         if (ischar (opts.fontsize))
@@ -370,7 +370,7 @@ function print (varargin)
         else
           fontsize = opts.fontsize;
         endif
-        set (h(ishandle(h)), "fontsize", fontsize)
+        set (h(ishandle(h)), "fontsize", fontsize);
       endif
     endif
 
@@ -387,7 +387,7 @@ function print (varargin)
     if (isstruct (props))
       for n = 1:numel(props)
         if (ishandle (props(n).h))
-          set (props(n).h, props(n).name, props(n).value{1})
+          set (props(n).h, props(n).name, props(n).value{1});
         endif
       endfor
     endif
@@ -396,7 +396,7 @@ function print (varargin)
     for n = 1:numel(opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
-        warning ("print.m: %s, '%s'", output, opts.unlink{n})
+        warning ("print.m: %s, '%s'", output, opts.unlink{n});
       endif
     endfor
   end_unwind_protect
@@ -454,7 +454,7 @@ function cmd = epstool (opts, filein, fileout)
 
   if (! isempty (opts.preview) && opts.tight_flag)
     warning ("print:previewandtight",
-             "print.m: eps preview may not be combined with -tight")
+             "print.m: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight_flag)
     if (! isempty (opts.epstool_binary))
@@ -491,7 +491,7 @@ function cmd = epstool (opts, filein, fileout)
           gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
                                     "device", "epswrite",
                                     "source", "-",
-                                    "output", filein)
+                                    "output", filein);
           cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
         else
           cmd = sprintf ("cat > %s ; %s", filein, cmd);
@@ -507,7 +507,7 @@ function cmd = epstool (opts, filein, fileout)
       if (! isempty (cleanup))
         if (pipeout && dos_shell)
           error ("print:epstoolpipe",
-                 "print.m: cannot pipe output of 'epstool' for DOS shell")
+                 "print.m: cannot pipe output of 'epstool' for DOS shell");
         elseif (pipeout)
           cmd = sprintf ("( %s %s )", cmd, cleanup);
         else
@@ -515,7 +515,7 @@ function cmd = epstool (opts, filein, fileout)
         endif
       endif
     elseif (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print.m: 'epstool' not found in PATH")
+      error ("print:noepstool", "print.m: 'epstool' not found in PATH");
     endif
   else
     if (pipein && pipeout)
@@ -553,7 +553,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
   endif
   if (opts.debug)
-    fprintf ("epstool command: '%s'\n", cmd)
+    fprintf ("epstool command: '%s'\n", cmd);
   endif
 endfunction
 
@@ -570,10 +570,10 @@ function cmd = fig2dev (opts, devopt)
       cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
     endif
   elseif (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print.m: 'fig2dev' not found in PATH")
+    error ("print:nofig2dev", "print.m: 'fig2dev' not found in PATH");
   endif
   if (opts.debug)
-    fprintf ("fig2dev command: '%s'\n", cmd)
+    fprintf ("fig2dev command: '%s'\n", cmd);
   endif
 endfunction
 
@@ -589,11 +589,11 @@ function latex_standalone (latexfile)
     status = fclose (fid);
     if (status != 0)
       error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile)
+             "print.m: error closing file '%s'", latexfile);
     endif
   else
     error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile)
+           "print.m: error opening file '%s'", latexfile);
   endif
   fid = fopen (latexfile, "w");
   if (fid >= 0)
@@ -603,11 +603,11 @@ function latex_standalone (latexfile)
     status = fclose (fid);
     if (status != 0)
       error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile)
+             "print.m: error closing file '%s'", latexfile);
     endif
   else
     error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile)
+           "print.m: error opening file '%s'", latexfile);
   endif
 endfunction
 
@@ -624,10 +624,10 @@ function cmd = lpr (opts)
       cmd = sprintf ("%s -P %s", cmd, opts.printer);
     endif
   elseif (isempty (opts.lpr_binary))
-    error ("print:nolpr", "print.m: 'lpr' not found in PATH")
+    error ("print:nolpr", "print.m: 'lpr' not found in PATH");
   endif
   if (opts.debug)
-    fprintf ("lpr command: '%s'\n", cmd)
+    fprintf ("lpr command: '%s'\n", cmd);
   endif
 endfunction
 
@@ -644,10 +644,10 @@ function cmd = pstoedit (opts, devopt)
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
     endif
   elseif (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", "print.m: 'pstoedit' not found in PATH")
+    error ("print:nopstoedit", "print.m: 'pstoedit' not found in PATH");
   endif
   if (opts.debug)
-    fprintf ("pstoedit command: '%s'\n", cmd)
+    fprintf ("pstoedit command: '%s'\n", cmd);
   endif
 endfunction
 

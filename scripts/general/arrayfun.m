@@ -162,7 +162,7 @@ function varargout = arrayfun (func, varargin)
 endfunction
 
 function arg_class_error (S, X)
-  error ("arrayfun: invalid argument of class %s", class (X))
+  error ("arrayfun: invalid argument of class %s", class (X));
 endfunction
 
 %% Test function to check the "Errorhandler" option

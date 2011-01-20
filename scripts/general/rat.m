@@ -141,7 +141,7 @@ function [n,d] = rat(x,tol)
       n_nc = columns (n);
       s_nc = columns (s);
       if (n_nc > s_nc)
-        s(:,s_nc+1:n_nc) = " "
+        s(:,s_nc+1:n_nc) = " ";
       elseif (s_nc > n_nc)
         n(:,n_nc+1:s_nc) = " ";
       endif

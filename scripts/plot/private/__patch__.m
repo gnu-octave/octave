@@ -106,7 +106,7 @@ function [h, failed] = __patch__ (p, varargin)
         else
           ## Color Vectors
           if (rows (c) != rows (x) || rows (c) != length (y))
-            error ("patch: size of x, y, and c must be equal")
+            error ("patch: size of x, y, and c must be equal");
           else
             args{7} = "facecolor";
             args{8} = "interp";

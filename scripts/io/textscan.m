@@ -77,7 +77,7 @@ function [C, p] = textscan (fid, format, varargin)
     if (ischar (format))
       if (ischar (fid))
         if (nargout == 2)
-          error ("textscan: cannot provide position information for character input")
+          error ("textscan: cannot provide position information for character input");
         endif
         str = fid;
       else

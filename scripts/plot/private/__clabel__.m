@@ -41,7 +41,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     while (i1 < length (c))
       clev = c(1,i1);
       clen = c(2,i1);
-      p = c(:, i1+1:i1+clen)
+      p = c(:, i1+1:i1+clen);
 
       xmin = min (c(1,:));
       xmax = max (c(1,:));

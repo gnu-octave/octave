@@ -44,7 +44,7 @@ function X = record (sec, sampling_rate)
     input ("Please hit ENTER and speak afterwards!\n", 1);
 
     cmd = sprintf ("dd if=/dev/dsp of=\"%s\" bs=%d count=%d",
-                   file, sampling_rate, sec)
+                   file, sampling_rate, sec);
 
     system (cmd);
 

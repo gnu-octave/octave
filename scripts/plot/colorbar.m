@@ -96,13 +96,13 @@ function h = colorbar (varargin)
 
   showhiddenhandles = get (0, "showhiddenhandles");
   unwind_protect
-    set (0, "showhiddenhandles", "on")
+    set (0, "showhiddenhandles", "on");
     cax = findobj (get (ax, "parent"), "tag", "colorbar", "type", "axes", "axes", ax);
     if (! isempty (cax))
       delete (cax);
     endif
   unwind_protect_cleanup
-    set (0, "showhiddenhandles", showhiddenhandles)
+    set (0, "showhiddenhandles", showhiddenhandles);
   end_unwind_protect
 
   if (! deleting)
@@ -163,12 +163,12 @@ function h = colorbar (varargin)
 
     set (cax, "deletefcn", {@resetaxis, obj});
 
-    addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical})
-    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj})
-    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj})
-    addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax, obj})
-    addlistener (ax, "dataaspectratiomode", {@update_colorbar_axis, cax, obj})
-    addlistener (ax, "position", {@update_colorbar_axis, cax, obj})
+    addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical});
+    addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "plotboxaspectratiomode", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "dataaspectratio", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "dataaspectratiomode", {@update_colorbar_axis, cax, obj});
+    addlistener (ax, "position", {@update_colorbar_axis, cax, obj});
 
   endif
 

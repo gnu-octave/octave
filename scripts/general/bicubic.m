@@ -39,7 +39,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
   endif
 
   if (nargin == 7 && isscalar(spline_alpha))
-    a = spline_alpha
+    a = spline_alpha;
   else
     a = 0.5;
   endif

@@ -79,7 +79,7 @@ function y = polyout (c, x)
   endif
 
   if(nargout == 0)
-    disp (tmp)
+    disp (tmp);
   else
     y = tmp;
   endif

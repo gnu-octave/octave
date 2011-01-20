@@ -551,7 +551,7 @@ function update_data (h, d)
     endif
 
     kids = get (h, "children");
-    set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt)
-    set (kids(1), "xdata", x, "ydata", y, "zdata", z)
+    set (kids(2), "xdata", xt, "ydata", yt, "zdata", zt);
+    set (kids(1), "xdata", x, "ydata", y, "zdata", z);
   endif
 endfunction

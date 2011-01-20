@@ -43,7 +43,7 @@ function h = meshc (varargin)
          "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
-  drawnow
+  drawnow ();
   zmin = get (ax, "zlim")(1);
 
   [c, tmp2] = __contour__ (ax, zmin, varargin{:});

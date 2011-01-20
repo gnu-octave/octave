@@ -149,24 +149,24 @@ function h = __errplot__ (fstr, p, varargin)
         error ("errorbar: error plot requires 2, 3, 4 or 6 arguments");
     endswitch
 
-    addproperty ("xdata", hg, "data", xdata(:))
-    addproperty ("ydata", hg, "data", ydata(:))
-    addproperty ("ldata", hg, "data", ldata(:))
-    addproperty ("udata", hg, "data", udata(:))
-    addproperty ("xldata", hg, "data", xldata(:))
-    addproperty ("xudata", hg, "data", xudata(:))
+    addproperty ("xdata", hg, "data", xdata(:));
+    addproperty ("ydata", hg, "data", ydata(:));
+    addproperty ("ldata", hg, "data", ldata(:));
+    addproperty ("udata", hg, "data", udata(:));
+    addproperty ("xldata", hg, "data", xldata(:));
+    addproperty ("xudata", hg, "data", xudata(:));
     addproperty ("format", hg, "string", ifmt);
 
-    addproperty ("color", hg, "linecolor", get (hl(1), "color"))
-    addproperty ("linewidth", hg, "linelinewidth", get (hl(1), "linewidth"))
-    addproperty ("linestyle", hg, "linelinestyle", get (hl(1), "linestyle"))
-    addproperty ("marker", hg, "linemarker", get (hl(1), "marker"))
+    addproperty ("color", hg, "linecolor", get (hl(1), "color"));
+    addproperty ("linewidth", hg, "linelinewidth", get (hl(1), "linewidth"));
+    addproperty ("linestyle", hg, "linelinestyle", get (hl(1), "linestyle"));
+    addproperty ("marker", hg, "linemarker", get (hl(1), "marker"));
     addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
-                 get (hl(1), "markerfacecolor"))
+                 get (hl(1), "markerfacecolor"));
     addproperty ("markeredgecolor", hg, "linemarkerfacecolor",
-                 get (hl(1), "markeredgecolor"))
+                 get (hl(1), "markeredgecolor"));
     addproperty ("markersize", hg, "linemarkersize",
-                 get (hl(1), "markersize"))
+                 get (hl(1), "markersize"));
 
     fcn = {@update_props, hl};
     addlistener (hg, "color", fcn);
@@ -189,7 +189,7 @@ function h = __errplot__ (fstr, p, varargin)
     addlistener (hax, "xscale", fcn);
     addlistener (hax, "yscale", fcn);
 
-    update_data (hg, [], hl)
+    update_data (hg, [], hl);
 
   endfor
 
@@ -257,7 +257,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     ydata = [y1; y2];
     return
   else
-      error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr")
+    error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr");
   endif
   xdata = xdata.'(:);
   ydata = ydata.'(:);

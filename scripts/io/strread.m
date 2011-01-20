@@ -232,7 +232,7 @@ function varargout = strread (str, format = "%f", varargin)
         ## Ensure descriptive content is consistent
         if (numel (unique (data)) > 1
             || ! strcmpi (unique (data), fmt_words{m}))
-          error ("strread: FORMAT does not match data")
+          error ("strread: FORMAT does not match data");
         endif
     endswitch
   endfor

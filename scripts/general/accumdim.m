@@ -71,7 +71,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
     if (n == 0)
       n = m;
     elseif (n < m)
-      error ("accumdim: N index out of range")
+      error ("accumdim: N index out of range");
     endif
   endif
 

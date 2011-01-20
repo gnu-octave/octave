@@ -108,7 +108,7 @@ function ret = __imagesc__ (ax, x, y, A, limits, DEPRECATEDZOOM)
   endif
 
   ret = image (ax, x, y, A);
-  set (ret, "cdatamapping", "scaled")
+  set (ret, "cdatamapping", "scaled");
 
   ## use given limits or guess them from the matrix
   if (length (limits) == 2 && limits(2) >= limits(1))

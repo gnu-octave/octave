@@ -95,7 +95,7 @@ function h = subplot (rows, cols, index, varargin)
   elseif (! (isscalar (cols) && isscalar (rows)))
     error ("subplot: COLS, and ROWS must be scalars");
   elseif (any (index < 1) || any (index > rows*cols))
-    error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS")
+    error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS");
   endif
 
   cols = round (cols);
@@ -112,7 +112,7 @@ function h = subplot (rows, cols, index, varargin)
 
   units = get (0, "defaultaxesunits");
   unwind_protect
-    set (0, "defaultaxesunits", "normalized")
+    set (0, "defaultaxesunits", "normalized");
     pos = subplot_position (rows, cols, index, "position", units);
 
     cf = gcf ();

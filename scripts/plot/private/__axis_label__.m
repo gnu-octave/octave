@@ -37,7 +37,8 @@ function retval = __axis_label__ (caller, txt, varargin)
          "fontweight", get (ca, "fontweight"),
          "string", txt,
          varargin{:});
-    __fltk_redraw__()
+
+    __fltk_redraw__();
 
     if (nargout > 0)
       retval = h;

@@ -176,7 +176,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
 
       ## aspect ratio
     elseif (strcmpi (ax, "image"))
-      __axis__ (ca, "equal")
+      __axis__ (ca, "equal");
       __do_tight_option__ (ca);
     elseif (strcmpi (ax, "square"))
       set (ca, "plotboxaspectratio", [1, 1, 1]);
@@ -189,9 +189,9 @@ function curr_axis = __axis__ (ca, ax, varargin)
         ## (useful with the x11 gnuplot terminal after a window resize)
         set (ca, "dataaspectratiomode", "auto");
       endif
-      set (ca, "dataaspectratio", [1, 1, 1])
+      set (ca, "dataaspectratio", [1, 1, 1]);
     elseif (strcmpi (ax, "normal"))
-      set (ca, "plotboxaspectratio", [1, 1, 1])
+      set (ca, "plotboxaspectratio", [1, 1, 1]);
       set (ca, "plotboxaspectratiomode", "auto");
 
       ## axis limits

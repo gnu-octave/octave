@@ -87,14 +87,14 @@ function opts = __gnuplot_print__ (opts)
       suffix = "eps";
     endif
     local_drawnow (sprintf ("%s %s", term, gp_opts),
-                   strcat (name, ".", suffix), opts)
+                   strcat (name, ".", suffix), opts);
   case "tikz"
     if (__gnuplot_has_terminal__ ("tikz"))
       local_drawnow (sprintf ("lua tikz %s", gp_opts), opts.name, opts);
     else
       error (sprintf ("print:no%soutput", opts.devopt),
              "print.m: '%s' output is not available for gnuplot-%s",
-             upper (opts.devopt), __gnuplot_version__ ())
+             upper (opts.devopt), __gnuplot_version__ ());
     endif
   case "svg"
     local_drawnow (sprintf ("svg dynamic %s", gp_opts), opts.name, opts);
@@ -106,10 +106,10 @@ function opts = __gnuplot_print__ (opts)
     else
       error (sprintf ("print:no%soutput", opts.devopt),
              "print.m: '%s' output is not available for gnuplot-%s",
-             upper (opts.devopt), __gnuplot_version__ ())
+             upper (opts.devopt), __gnuplot_version__ ());
     endif
   case {"canvas", "dxf", "hpgl", "mf", "gif", "pstricks", "texdraw"}
-    local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts)
+    local_drawnow (sprintf ("%s %s", opts.devopt, gp_opts), opts.name, opts);
   case opts.ghostscript.device
     gp_opts = font_spec (opts, "devopt", "eps");
     opts.ghostscript.output = opts.name;
@@ -139,7 +139,7 @@ function opts = __gnuplot_print__ (opts)
   otherwise
     error (sprintf ("print:no%soutput", opts.devopt),
            "print.m: %s output is not available for the Gnuplot graphics toolkit",
-           upper (opts.devopt))
+           upper (opts.devopt));
   endswitch
 
 
@@ -147,7 +147,7 @@ function opts = __gnuplot_print__ (opts)
 
   for n = 1:numel(pipeline)
     if (opts.debug)
-      fprintf ("gnuplot-pipeline: '%s'\n", pipeline{n})
+      fprintf ("gnuplot-pipeline: '%s'\n", pipeline{n});
     endif
     [status, output] = system (pipeline{n});
     if (status)
@@ -155,7 +155,7 @@ function opts = __gnuplot_print__ (opts)
                "---------- output begin ----------",
                output,
                "----------- output end -----------");
-      error ("gnuplot:failedpipe", "print: failed to print")
+      error ("gnuplot:failedpipe", "print: failed to print");
     endif
   endfor
 
@@ -181,7 +181,7 @@ function local_drawnow (term, file, opts)
   else
     mono = false;
   endif
-  figure (opts.figure)
+  figure (opts.figure);
   if (isempty (opts.debug_file) || ! opts.debug)
     drawnow (term, file, mono);
   else

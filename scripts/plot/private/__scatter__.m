@@ -242,7 +242,7 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "markeredgecolor", @update_props);
 
   if (! isempty (newargs))
-    set (hg, newargs{:})
+    set (hg, newargs{:});
   endif
 
 endfunction
@@ -330,7 +330,7 @@ function update_props (h, d)
 
   for i = 1 : numel (kids)
     set (kids (i), "linewidth", lw, "marker", m, "markerfacecolor", fc,
-         "edgecolor", ec)
+         "edgecolor", ec);
   endfor
 endfunction
 

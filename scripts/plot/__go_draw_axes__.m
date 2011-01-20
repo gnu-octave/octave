@@ -117,11 +117,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         sz_str = sprintf ("%s %.15g, %.15g;\n", sz_str, pos(3), pos(4));
       endif
     else ## activepositionproperty == outerposition
-      fprintf (plot_stream, "unset tmargin;\n")
-      fprintf (plot_stream, "unset bmargin;\n")
-      fprintf (plot_stream, "unset lmargin;\n")
-      fprintf (plot_stream, "unset rmargin;\n")
-      fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2))
+      fprintf (plot_stream, "unset tmargin;\n");
+      fprintf (plot_stream, "unset bmargin;\n");
+      fprintf (plot_stream, "unset lmargin;\n");
+      fprintf (plot_stream, "unset rmargin;\n");
+      fprintf (plot_stream, "set origin %g, %g;\n", pos(1:2));
       sz_str = "";
       if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
         sz_str = sprintf ("ratio %g", -dr);
@@ -396,10 +396,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       if (isfield (obj, "units"))
         units = obj.units;
         unwind_protect
-          set (kids(end), "units", "data")
+          set (kids(end), "units", "data");
           obj = get (kids(end));
         unwind_protect_cleanup
-          set (kids(end), "units", units)
+          set (kids(end), "units", units);
         end_unwind_protect
       endif
       kids = kids(1:(end-1));

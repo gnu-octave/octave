@@ -41,7 +41,7 @@ function s = deblank (s)
       if (char_arg)
         k = find (! isspace (s) & s != "\0");
       else
-        warning ("deblank: expecting character string argument")
+        warning ("deblank: expecting character string argument");
         k = find (s != 0);
       endif
 

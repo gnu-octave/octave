@@ -669,7 +669,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         endif
 
         if (length (dirlist) > 3)
-          error ("bundles of packages are not allowed")
+          error ("bundles of packages are not allowed");
         endif
       endif
 
@@ -2243,7 +2243,7 @@ function [status, output] = shell (cmd)
     if (have_sh)
       [status, output] = system (cstrcat ("sh.exe -c \"", cmd, "\""));
     else
-      error ("Can not find the command shell")
+      error ("Can not find the command shell");
     endif
   else
     [status, output] = system (cmd);

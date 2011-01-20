@@ -108,7 +108,7 @@ function varargout = savepath (file)
   endif
   unwind_protect
     for i = 1:length (pre)
-      fprintf (fid, "%s\n", pre{i})
+      fprintf (fid, "%s\n", pre{i});
     endfor
 
     ## Remove the portion of the path defined via the command line
@@ -174,18 +174,18 @@ function varargout = savepath (file)
     ## Use single quotes for PATH argument to avoid string escape
     ## processing.  Since we are using single quotes around the arg,
     ## double any single quote characters found in the string.
-    fprintf (fid, "%s\n", beginstring)
+    fprintf (fid, "%s\n", beginstring);
     if (! isempty (path_to_save_begin))
       n = find (path_to_save_begin != pathsep, 1, "last");
       fprintf (fid, "  addpath ('%s', '-begin');\n",
-               strrep (path_to_save_begin(1:n), "'", "''"))
+               strrep (path_to_save_begin(1:n), "'", "''"));
     endif
     if (! isempty (path_to_save_end))
       n = find (path_to_save_end != pathsep, 1, "last");
       fprintf (fid, "  addpath ('%s', '-end');\n",
-               strrep (path_to_save_end(1:n), "'", "''"))
+               strrep (path_to_save_end(1:n), "'", "''"));
     endif
-    fprintf (fid, "%s\n", endstring)
+    fprintf (fid, "%s\n", endstring);
 
     for i = 1:length (post)
       fprintf (fid, "%s\n", post{i});

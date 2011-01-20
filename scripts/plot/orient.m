@@ -53,12 +53,12 @@ function retval = orient (varargin)
         ##         the papersize and paperpostion here.
         papersize = get (cf, "papersize");
         paperposition = get (cf, "paperposition");
-        set (cf, "paperorientation", orientation)
+        set (cf, "paperorientation", orientation);
         set (cf, "papersize", papersize([2, 1]));
         set (cf, "paperposition", paperposition([2, 1, 4, 3]));
       endif
     elseif (strcmpi (varargin{1}, 'tall'))
-      orient ("portrait")
+      orient ("portrait");
       papersize = get (cf, "papersize");
       set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);
     else

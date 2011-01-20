@@ -321,7 +321,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       ## constraints.
       if (eq_infeasible)
         if (rank (A) < n_eq)
-          error ("qp: equality constraint matrix must be full row rank")
+          error ("qp: equality constraint matrix must be full row rank");
         endif
         xbar = pinv (A) * b;
       else

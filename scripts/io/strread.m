@@ -68,7 +68,7 @@
 ## [@var{a}, @var{b}, @var{c}] = strread (@var{str}, "%s %s %f");
 ## @end example
 ##
-## The behaviour of @code{strread} can be changed via property-value
+## The behavior of @code{strread} can be changed via property-value
 ## pairs.  The following properties are recognized:
 ##
 ## @table @code

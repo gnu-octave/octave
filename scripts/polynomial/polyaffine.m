@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyaffine (@var{f}, @var{mu})
 ## Return the coefficients of the polynomial vector @var{f} after an affine
-## tranformation.  If @var{f} is the vector representing the polynomial f(x),
+## transformation.  If @var{f} is the vector representing the polynomial f(x),
 ## then @code{@var{g} = polyaffine (@var{f}, @var{mu})} is the vector
 ## representing:
 ##

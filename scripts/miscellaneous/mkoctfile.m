@@ -48,7 +48,7 @@
 ## Generate dependency files (.d) for C and C++ source files.
 ##
 ## @item -R DIR
-## Add the runtime path to the link command.
+## Add the run-time path to the link command.
 ##
 ## @item -Wl,@dots{}
 ## Pass flags though the linker like "-Wl,-rpath=@dots{}".

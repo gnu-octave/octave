@@ -5023,7 +5023,7 @@ DEFUN (mtimes, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
-Return the matrix multiplicaton product of inputs.\n\
+Return the matrix multiplication product of inputs.\n\
 This function is equivalent to @w{@code{x * y}}.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
@@ -5032,7 +5032,7 @@ cumulatively from left to right:\n\
   (@dots{}((x1 * x2) * x3) * @dots{})\n\
 @end example\n\
 \n\
-At least one argument is requred.\n\
+At least one argument is required.\n\
 @seealso{times}\n\
 @end deftypefn")
 {

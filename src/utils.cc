@@ -1301,7 +1301,7 @@ DEFUN (isindex, args, ,
 @deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
 @deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
 Return true if @var{ind} is a valid index.  Valid indices are\n\
-either positive integers (although possibly of real datatype), or logical\n\
+either positive integers (although possibly of real data type), or logical\n\
 arrays.  If present, @var{n} specifies the maximum extent of the dimension\n\
 to be indexed.  When possible the internal result is cached so that\n\
 subsequent indexing using @var{ind} will not perform the check again.\n\

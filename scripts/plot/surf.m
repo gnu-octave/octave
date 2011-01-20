@@ -29,7 +29,7 @@
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
 ##
-## The color of the surface is derirved from the @code{colormap} and
+## The color of the surface is derived from the @code{colormap} and
 ## the value of @var{z}.  Optionally the color of the surface can be
 ## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
 ## @seealso{colormap, contour, meshgrid, mesh}

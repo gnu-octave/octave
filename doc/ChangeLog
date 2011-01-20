@@ -1,5 +1,10 @@
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/aspell-octave.en.pws: Add new words to Octave
+	private dictionary.
+
+2011-01-19  Rik  <octave@nomad.inbox5.com>
+
 	* doc/interpreter/diagperm.txi, doc/interpreter/dynamic.txi,
 	doc/interpreter/func.txi, doc/interpreter/install.txi,
 	doc/interpreter/intro.txi, doc/interpreter/numbers.txi,

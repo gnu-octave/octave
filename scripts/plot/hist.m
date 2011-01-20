@@ -35,9 +35,9 @@
 ## the bins, with the width of the bins determined from the adjacent 
 ## values in the vector.
 ##
-## If scaler, the second argument, @var{nbins}, defines the number of bins.
+## If scalar, the second argument, @var{nbins}, defines the number of bins.
 ##
-## If third argument is provided, the histogram is normalized such that
+## If a third argument is provided, the histogram is normalized such that
 ## the sum of the bars is equal to @var{norm}.
 ##
 ## Extreme values are lumped in the first and last bins.

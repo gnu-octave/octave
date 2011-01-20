@@ -54,7 +54,7 @@
 ##
 ## The optional input handle @var{h} allows an axis handle to be passed.
 ##
-## The bargraph's appearance may be modified by specifying property/value
+## The bar graph's appearance may be modified by specifying property/value
 ## pairs.  The following example modifies the face and edge colors.
 ##
 ## @example

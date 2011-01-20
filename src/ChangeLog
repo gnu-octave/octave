@@ -1,5 +1,9 @@
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
+	* src/data.cc, src/input.cc, src/utils.cc: spellcheck docstrings.
+
+2011-01-19  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/dlmread.cc, DLD-FUNCTIONS/filter.cc,
 	DLD-FUNCTIONS/inv.cc, DLD-FUNCTIONS/lu.cc, DLD-FUNCTIONS/quad.cc,
 	DLD-FUNCTIONS/quadcc.cc, DLD-FUNCTIONS/rcond.cc,

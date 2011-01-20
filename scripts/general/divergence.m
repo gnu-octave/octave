@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{x}, @var{y}, @var{fx}, @var{fy})
 ## @deftypefnx {Function File} {@var{div} =} divergence (@var{fx}, @var{fy})
-## Calculate divegence of vector field given by the arrays @var{fx},
+## Calculate divergence of a vector field given by the arrays @var{fx},
 ## @var{fy}, and @var{fz} or @var{fx}, @var{fy} respectively. 
 ## @tex
 ## $$
@@ -42,7 +42,7 @@
 ## The coordinates of the vector field can be given by the arguments @var{x},
 ## @var{y}, @var{z} or @var{x}, @var{y} respectively. 
 ##
-## @seealso{curl, gradient, del2}
+## @seealso{curl, gradient, del2, cross, dot}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

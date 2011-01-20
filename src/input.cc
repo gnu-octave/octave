@@ -1379,14 +1379,14 @@ backslashes are required to enter a backslash into a double-quoted\n\
 character string.  @xref{Strings}.\n\
 \n\
 You can also use ANSI escape sequences if your terminal supports them.\n\
-This can be useful for colouring the prompt.  For example,\n\
+This can be useful for coloring the prompt.  For example,\n\
 \n\
 @example\n\
 PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
 @end example\n\
 \n\
 @noindent\n\
-will give the default Octave prompt a red colouring.\n\
+will give the default Octave prompt a red coloring.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
 {

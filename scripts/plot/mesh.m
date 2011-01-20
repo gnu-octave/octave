@@ -29,7 +29,7 @@
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
 ##
-## The color of the mesh is derirved from the @code{colormap}
+## The color of the mesh is derived from the @code{colormap}
 ## and the value of @var{z}.  Optionally the color of the mesh can be
 ## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
 ## @seealso{colormap, contour, meshgrid, surf}

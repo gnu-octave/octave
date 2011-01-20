@@ -1,3 +1,11 @@
+2011-01-19  Rik  <octave@nomad.inbox5.com>
+
+
+	* general/curl.m, general/divergence.m, io/strread.m,
+	miscellaneous/mkoctfile.m, plot/bar.m, plot/errorbar.m, plot/hist.m,
+	plot/mesh.m, plot/surf.m, polynomial/polyaffine.m: Correct spelling
+	in docstrings.
+
 2011-01-19  John W. Eaton  <jwe@octave.org>
 
 	* help/help.m: New option --list.  Bug #31905.

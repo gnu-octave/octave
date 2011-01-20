@@ -421,7 +421,7 @@ declare subsasgn methods with different output and input arguments, like this:
 @node Function Overloading
 @subsection Function Overloading
 
-Any Octave function can be overloaded, and allows a object specific
+Any Octave function can be overloaded, and allows an object specific
 version of this function to be called as needed.  A pertinent example
 for our polynomial class might be to overload the @code{polyval} function
 like

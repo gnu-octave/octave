@@ -394,13 +394,14 @@ This allows you to write a constant like @samp{1 : 10000} without using
 80,000 bytes of storage on a typical 32-bit workstation.
 
 A common example of when it does become necessary to convert ranges into
-vectors occurs when they appear within a vector (i.e. inside square
-brackets). For instance, whereas
+vectors occurs when they appear within a vector (i.e., inside square
+brackets).  For instance, whereas
 
 @example
 x = 0 : 0.1 : 1;
 @end example
 
+@noindent
 defines @var{x} to be a variable of type @code{range} and occupies 24
 bytes of memory, the expression
 
@@ -408,6 +409,7 @@ bytes of memory, the expression
 y = [ 0 : 0.1 : 1];
 @end example
 
+@noindent
 defines @var{y} to be of type @code{matrix} and occupies 88 bytes of
 memory.
 

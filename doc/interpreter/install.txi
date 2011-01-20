@@ -335,10 +335,10 @@ All libraries and header files will be installed in subdirectories of
 
 @itemize @bullet
 @item
-BLAS and LAPACK (@url{http://www.netlib.org/lapack})
+@sc{blas} and @sc{lapack} (@url{http://www.netlib.org/lapack})
 
 Reference versions for both libraries are included in the reference
-LAPACK 3.2.1 distribution from @url{netlib.org}.
+@sc{lapack} 3.2.1 distribution from @url{netlib.org}.
 
 @itemize @minus
 @item
@@ -349,11 +349,11 @@ CPU) have to be added to the variable @code{OPTS} and @code{NOOPT}.
 @item
 Once you have compiled this library make sure that you use it for
 compiling Suite Sparse and Octave.  In the following we assume that
-you installed the LAPACK library as $prefix64/lib/liblapack.a.
+you installed the @sc{lapack} library as $prefix64/lib/liblapack.a.
 @end itemize
 
 @item
-ARPACK (@url{http://www.caam.rice.edu/software/ARPACK})
+@sc{arpack} (@url{http://www.caam.rice.edu/software/ARPACK})
 
 @itemize @minus
 @item
@@ -361,7 +361,7 @@ In @file{ARmake.inc} set the following variables:
 
 @example
 @group
-home=path to directory ARPACK
+home=path to directory @sc{arpack}
 FC=gfortran 
 FFLAGS=-fPIC -fdefault-integer-8
 MAKE=/usr/bin/make 
@@ -410,14 +410,14 @@ In the @file{Makeconf} file:
 
 @itemize @minus
 @item
-Add @option{-fdefault-integer-8} to @code{FFLAGS}.
+Add @option{-fdefault-integer-8} to @env{FFLAGS}.
 
 @item
-Adjust the BLAS and LAPACK variables as needed if your 64-bit aware BLAS
-and LAPACK libraries are in a non-standard location.
+Adjust the @sc{blas} and @sc{lapack} variables as needed if your 64-bit aware
+@sc{blas} and @sc{lapack} libraries are in a non-standard location.
 
 @item
-Set @code{PREFIX} to the top-level directory of your install tree.
+Set @env{PREFIX} to the top-level directory of your install tree.
 
 @item
 Run @code{make solib} to make a shared library.
@@ -432,7 +432,7 @@ SuiteSparse (@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse})
 @itemize @minus
 @item
 In @file{UFconfig/UFconfig.mk} use the following options for
-@code{CFLAGS} and @code{F77FLAGS}:
+@env{CFLAGS} and @env{F77FLAGS}:
 
 @example
 @group
@@ -519,17 +519,18 @@ for f in *.a; do
 done
 @end group
 @end example
+
 @end itemize
 
 @item
-ATLAS instead of reference BLAS and LAPACK
+ATLAS instead of reference @sc{blas} and @sc{lapack}
 
 Suggestions on how to compile ATLAS, will be most welcome.
 
 @item
-GLPK
+@sc{glpk}
 
-Suggestions on how to compile GLPK will be most welcome.
+Suggestions on how to compile @sc{glpk} will be most welcome.
 
 @item
 QHULL (@url{http://www.qhull.org})
@@ -555,7 +556,7 @@ You must ensure that all Fortran sources except those in the
 automatically set the Makefile variable @code{F77_INTEGER_8_FLAG} to 
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
-@code{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be
+@env{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be
 miscompiled.
 
 @item
@@ -567,14 +568,23 @@ please submit a bug report.
 
 @itemize @minus
 @item pcre or regex
+
 @item zlib
+
 @item hdf5
+
 @item fftw3
+
 @item cURL
+
 @item GraphicsMagick++
+
 @item OpenGL
+
 @item freetype
+
 @item fontconfig
+
 @item fltk
 @end itemize
 

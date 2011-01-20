@@ -781,7 +781,7 @@ continue, else goto 3b.
 @item If the matrix is upper or lower triangular perform a sparse forward
 or backward substitution, and goto 8
 
-@item If the matrix is a upper triangular matrix with column permutations
+@item If the matrix is an upper triangular matrix with column permutations
 or lower triangular matrix with row permutations, perform a sparse forward 
 or backward substitution, and goto 8
 
@@ -933,7 +933,7 @@ Omega
 @end ifnottex
 into simplexes (triangles in 2D, pyramids in 3D).
 @ifset htmltex
-We take as an 3D example a cylindrical liquid filled tank with a small 
+We take as a 3-D example a cylindrical liquid filled tank with a small 
 non-conductive ball from the EIDORS project@footnote{EIDORS - Electrical 
 Impedance Tomography and Diffuse optical Tomography Reconstruction Software 
 @url{http://eidors3d.sourceforge.net}}.  This is model is designed to reflect
@@ -943,7 +943,7 @@ distribution.  In order to describe the FEM geometry, we have a matrix of
 vertices @code{nodes} and simplices @code{elems}.
 @end ifset
 
-The following example creates a simple rectangular 2D electrically
+The following example creates a simple rectangular 2-D electrically
 conductive medium with 10 V and 20 V imposed on opposite sides 
 (Dirichlet boundary conditions).  All other edges are electrically
 isolated.

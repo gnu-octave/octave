@@ -921,8 +921,8 @@ allowed properties are wanted they may be displayed by:
 @code{get (h, "")}.
 
 Thus, for example,
+
 @smallexample
-@group
 h = figure ();
 get (h, "type")
 ans = figure
@@ -947,7 +947,6 @@ createfcn              name                   selected               xvisual
 currentpoint           nextplot               selectionhighlight     xvisualmode
 currentaxes            numbertitle            selectiontype
 currentcharacter       paperorientation       tag
-@end group
 @end smallexample
 
 The root figure has index 0.  Its properties may be displayed by:

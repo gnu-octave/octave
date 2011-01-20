@@ -633,7 +633,7 @@ functions that may be called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
 @code{cd} command:
 
-@deftypefn {Command} {} cd dir
+@deftypefn  {Command} {} cd dir
 @deftypefnx {Command} {} chdir dir
 Change the current working directory to @var{dir}.  For example,
 @kbd{cd ~/octave} changes the current working directory to

@@ -1219,6 +1219,7 @@ which translates directly to
 
 Any regular function can be used as a command if it accepts string input
 arguments.  For example:
+
 @example
 @group
 toupper lower_case_arg

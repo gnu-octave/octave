@@ -1,3 +1,16 @@
+2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-refcount.h: New source.
+	* Makefile.am: Add it here.
+
+	* Array.h: Use octave_refcount for refcounting.
+	* Sparse.h: Ditto.
+	* SparseCmplxQR.h: Ditto.
+	* SparseQR.h: Ditto.
+	* idx-vector.h: Ditto.
+	* oct-shlib.h: Ditto.
+	* sparse-base-chol.h: Ditto.
+
 2011-01-21  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
 
 	* oct-fftw.h (class octave_fftw_planner): Disallow copying

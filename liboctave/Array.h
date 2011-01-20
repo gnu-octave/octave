@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.h"
 #include "quit.h"
 #include "oct-mem.h"
+#include "oct-refcount.h"
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -59,7 +60,7 @@ protected:
 
     T *data;
     octave_idx_type len;
-    int count;
+    octave_refcount<int> count;
 
     ArrayRep (T *d, octave_idx_type l)
       : data (no_ctor_new<T> (l)), len (l), count (1)

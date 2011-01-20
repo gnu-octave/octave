@@ -81,7 +81,7 @@ private:
 
     ~tm_row_const_rep (void) { }
 
-    int count;
+    octave_refcount<int> count;
 
     dim_vector dv;
 

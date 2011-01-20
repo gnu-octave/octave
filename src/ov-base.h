@@ -776,7 +776,7 @@ protected:
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
   // it is well possible to have more than MAX_INT copies of a single value
   // (think of an empty cell array with >2G elements).
-  octave_idx_type count;
+  octave_refcount<octave_idx_type> count;
 
 private:
 

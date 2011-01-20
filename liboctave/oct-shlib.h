@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 
 #include "oct-time.h"
+#include "oct-refcount.h"
 
 class
 OCTAVE_API
@@ -85,7 +86,7 @@ public: // FIXME: make this class private?
 
   public:
 
-    int count;
+    octave_refcount<int> count;
 
   protected:
 

@@ -65,7 +65,7 @@ protected:
 
     Matrix Q (void) const;
 
-    int count;
+    octave_refcount<int> count;
 
     octave_idx_type nrows;
 #ifdef HAVE_CXSPARSE

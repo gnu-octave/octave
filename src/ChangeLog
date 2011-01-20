@@ -1,3 +1,10 @@
+2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* gl-render.cc: Use octave_refcount for refcounting.
+	* oct-map.h: Ditto.
+	* ov-base.h: Ditto.
+	* pt-mat.cc: Ditto.
+
 2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
 
 	* ov-mex-fcn.h, txt-eng-ft.cc, mex.cc:

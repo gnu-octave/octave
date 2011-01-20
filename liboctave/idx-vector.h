@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-inttypes.h"
 #include "oct-alloc.h"
 #include "oct-mem.h"
+#include "oct-refcount.h"
 
 template<class T> class Array;
 template<class T> class Sparse;
@@ -102,7 +103,7 @@ private:
 
     virtual Array<octave_idx_type> as_array (void);
 
-    int count;
+    octave_refcount<int> count;
 
     bool err;
 

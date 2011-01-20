@@ -228,6 +228,7 @@ INCS = \
   oct-openmp.h \
   oct-passwd.h \
   oct-rand.h \
+  oct-refcount.h \
   oct-rl-edit.h \
   oct-rl-hist.h \
   oct-shlib.h \

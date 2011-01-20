@@ -90,7 +90,7 @@ protected:
     int tw, th;
     double tx, ty;
     bool valid;
-    int count;
+    octave_refcount<int> count;
   };
 
   texture_rep *rep;
@@ -351,7 +351,7 @@ public:
     float specular_exp;
 
     // reference counter
-    int count;
+    octave_refcount<int> count;
 
     vertex_data_rep (void)
       : coords (), color (), normal (), alpha (),

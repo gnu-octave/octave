@@ -78,7 +78,7 @@ protected:
 
     double rcond (void) const { return cond; }
 
-    int count;
+    octave_refcount<int> count;
 
   private:
     cholmod_sparse *Lsparse;
@@ -132,7 +132,7 @@ protected:
 
     double rcond (void) const { return cond; }
 
-    int count;
+    octave_refcount<int> count;
 
   private:
     bool is_pd;

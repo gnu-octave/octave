@@ -161,7 +161,7 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type, SVD::driver svd_driver
                                  F77_CHAR_ARG_LEN (1)));
 
       lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (sgesvd, SGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -183,7 +183,7 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type, SVD::driver svd_driver
                                  F77_CHAR_ARG_LEN (1)));
 
       lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (sgesdd, SGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
                                  m, n, tmp_data, m1, s_vec, u, m1, vt,

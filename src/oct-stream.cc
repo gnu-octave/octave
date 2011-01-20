@@ -227,7 +227,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
   if (have_more)
     add_elt_to_list (width, discard, type, modifier, num_elts);
 
-  list.resize (num_elts, 1);
+  list.resize (dim_vector (num_elts, 1));
 
   delete buf;
 }
@@ -259,7 +259,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
                                     modifier, char_class);
 
           if (num_elts == list.length ())
-            list.resize (2 * num_elts, 1);
+            list.resize (dim_vector (2 * num_elts, 1));
 
           list(num_elts++) = elt;
         }
@@ -599,7 +599,7 @@ printf_format_list::printf_format_list (const std::string& s)
 
       list(num_elts++) = elt;
 
-      list.resize (num_elts, 1);
+      list.resize (dim_vector (num_elts, 1));
     }
   else
     {
@@ -654,7 +654,7 @@ printf_format_list::printf_format_list (const std::string& s)
       if (have_more)
         add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
 
-      list.resize (num_elts, 1);
+      list.resize (dim_vector (num_elts, 1));
 
       delete buf;
     }
@@ -687,7 +687,7 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
                                      type, modifier);
 
           if (num_elts == list.length ())
-            list.resize (2 * num_elts, 1);
+            list.resize (dim_vector (2 * num_elts, 1));
 
           list(num_elts++) = elt;
         }

@@ -93,8 +93,11 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatRowVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatRowVector& a);
 
-  void resize (octave_idx_type n, const float& rfv = Array<float>::resize_fill_value ())
-    { Array<float>::resize (1, n, rfv); }
+  void resize (octave_idx_type n,
+               const float& rfv = Array<float>::resize_fill_value ())
+  {
+    Array<float>::resize (dim_vector (1, n), rfv);
+  }
 
   void clear (octave_idx_type n)
     { Array<float>::clear (1, n); }

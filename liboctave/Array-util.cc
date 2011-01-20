@@ -393,7 +393,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 
   int n_dims = dims.length ();
 
-  retval.resize (n_dims, 1);
+  retval.resize (dim_vector (n_dims, 1));
 
   for (int i = 0; i < n_dims; i++)
     retval(i) = 0;

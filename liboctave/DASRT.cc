@@ -166,7 +166,7 @@ DASRT::integrate (double tout)
 
       initialized = true;
 
-      info.resize (15, 1);
+      info.resize (dim_vector (15, 1));
 
       for (octave_idx_type i = 0; i < 15; i++)
         info(i) = 0;
@@ -207,8 +207,8 @@ DASRT::integrate (double tout)
       liw = 21 + n;
       lrw = 50 + 9*n + n*n + 3*ng;
 
-      iwork.resize (liw, 1);
-      rwork.resize (lrw, 1);
+      iwork.resize (dim_vector (liw, 1));
+      rwork.resize (dim_vector (lrw, 1));
 
       info(0) = 0;
 
@@ -255,7 +255,7 @@ DASRT::integrate (double tout)
 
       DAEFunc::reset = false;
 
-      jroot.resize (ng, 1, 1);
+      jroot.resize (dim_vector (ng, 1), 1);
 
       DAERTFunc::reset = false;
 

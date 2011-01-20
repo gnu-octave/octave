@@ -113,7 +113,9 @@ public:
 
   void resize (octave_idx_type n, const octave_value& rfv 
                = Array<octave_value>::resize_fill_value ()) 
-    { data.resize (1, n, rfv); }
+  {
+    data.resize (dim_vector (1, n), rfv);
+  }
 
   octave_value_list& prepend (const octave_value& val);
 

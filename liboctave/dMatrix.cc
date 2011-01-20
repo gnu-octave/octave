@@ -755,7 +755,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
 
       lwork = static_cast<octave_idx_type> (z(0));
       lwork = (lwork < 2 *nc ? 2*nc : lwork);
-      z.resize (lwork, 1);
+      z.resize (dim_vector (lwork, 1));
       double *pz = z.fortran_vec ();
 
       info = 0;
@@ -1116,7 +1116,7 @@ Matrix::fourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn, 1);
+  wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
   Array<Complex> tmp (dim_vector (npts, 1));
@@ -1185,7 +1185,7 @@ Matrix::ifourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn, 1);
+  wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
   Array<Complex> tmp (dim_vector (npts, 1));
@@ -2354,7 +2354,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
         }
 
       lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -2508,7 +2508,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
                                  lwork, piwork, info));
 
       lwork = static_cast<octave_idx_type> (work(0));
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -2792,7 +2792,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr, 1);
+      idx_arg.resize (dim_vector (nr, 1));
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -2847,7 +2847,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr, 1);
+      idx_arg.resize (dim_vector (nr, 1));
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -2902,7 +2902,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (1, nc);
+      idx_arg.resize (dim_vector (1, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -2957,7 +2957,7 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (1, nc);
+      idx_arg.resize (dim_vector (1, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         {

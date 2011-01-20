@@ -86,6 +86,12 @@ public:
 
   charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
+  void resize (octave_idx_type nr, octave_idx_type nc,
+               char rfv = resize_fill_value ())
+  {
+    Array<char>::resize (dim_vector (nr, nc), rfv);
+  }
+
   charMatrix diag (octave_idx_type k = 0) const;
 
   boolMatrix all (int dim = -1) const;

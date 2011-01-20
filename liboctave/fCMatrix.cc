@@ -1083,7 +1083,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
       lwork = static_cast<octave_idx_type> (std::real(z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
-      z.resize (lwork, 1);
+      z.resize (dim_vector (lwork, 1));
       FloatComplex *pz = z.fortran_vec ();
 
       info = 0;
@@ -1444,7 +1444,7 @@ FloatComplexMatrix::fourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn, 1);
+  wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
   Array<FloatComplex> tmp (dim_vector (npts, 1));
@@ -1513,7 +1513,7 @@ FloatComplexMatrix::ifourier2d (void) const
   nsamples = nr;
   nn = 4*npts+15;
 
-  wsave.resize (nn, 1);
+  wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
   Array<FloatComplex> tmp (dim_vector (npts, 1));
@@ -2705,7 +2705,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
         }
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -2864,9 +2864,9 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b, octave_idx_type&
                                  lwork, prwork, piwork, info));
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
-      work.resize (lwork, 1);
-      rwork.resize (static_cast<octave_idx_type> (rwork(0)), 1);
-      iwork.resize (iwork(0), 1);
+      work.resize (dim_vector (lwork, 1));
+      rwork.resize (dim_vector (static_cast<octave_idx_type> (rwork(0)), 1));
+      iwork.resize (dim_vector (iwork(0), 1));
 
       F77_XFCN (cgelsd, CGELSD, (m, n, nrhs, tmp_data, m, pretval,
                                  maxmn, ps, rcon, rank,
@@ -3289,7 +3289,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr, 1);
+      idx_arg.resize (dim_vector (nr, 1));
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -3363,7 +3363,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      idx_arg.resize (nr, 1);
+      idx_arg.resize (dim_vector (nr, 1));
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
@@ -3437,7 +3437,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (1, nc);
+      idx_arg.resize (dim_vector (1, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -3511,7 +3511,7 @@ FloatComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      idx_arg.resize (1, nc);
+      idx_arg.resize (dim_vector (1, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         {

@@ -137,7 +137,7 @@ DASSL::do_integrate (double tout)
 
       initialized = true;
 
-      info.resize (15, 1);
+      info.resize (dim_vector (15, 1));
 
       for (octave_idx_type i = 0; i < 15; i++)
         info(i) = 0;
@@ -149,8 +149,8 @@ DASSL::do_integrate (double tout)
 
       nn = n;
 
-      iwork.resize (liw, 1);
-      rwork.resize (lrw, 1);
+      iwork.resize (dim_vector (liw, 1));
+      rwork.resize (dim_vector (lrw, 1));
 
       info(0) = 0;
 

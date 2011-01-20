@@ -37,12 +37,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 
 template <class T>
-DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
+DiagArray2<T>::DiagArray2 (const Array<T>& a, octave_idx_type r,
+                           octave_idx_type c)
   : Array<T> (a.as_column ()), d1 (r), d2 (c)
 {
   octave_idx_type rcmin = std::min (r, c);
   if (rcmin != a.length ())
-      Array<T>::resize (rcmin, 1);
+    Array<T>::resize (dim_vector (rcmin, 1));
 }
 
 template <class T>
@@ -106,7 +107,7 @@ DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
 
   if (r != dim1 () || c != dim2 ())
     {
-      Array<T>::resize (std::min (r, c), 1, rfv);
+      Array<T>::resize (dim_vector (std::min (r, c), 1), rfv);
       d1 = r; d2 = c;
     }
 }

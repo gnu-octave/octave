@@ -132,8 +132,11 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
 
-  void resize (octave_idx_type n, const Complex& rfv = Array<Complex>::resize_fill_value ())
-    { Array<Complex>::resize (n, 1, rfv); }
+  void resize (octave_idx_type n,
+               const Complex& rfv = Array<Complex>::resize_fill_value ())
+  {
+    Array<Complex>::resize (dim_vector (n, 1), rfv);
+  }
 
   void clear (octave_idx_type n)
     { Array<Complex>::clear (n, 1); }

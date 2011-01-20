@@ -64,9 +64,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
-  b.resize (ab_len, 1, 0.0);
+  b.resize (dim_vector (ab_len, 1), 0.0);
   if (a_len > 1)
-    a.resize (ab_len, 1, 0.0);
+    a.resize (dim_vector (ab_len, 1), 0.0);
 
   T norm = a (0);
 

@@ -89,7 +89,9 @@ public:
   }
 
   void resize (octave_idx_type n, const std::string& rfv = resize_fill_value ())
-    { Array<std::string>::resize (n, 1, rfv); }
+  {
+    Array<std::string>::resize (dim_vector (n, 1), rfv);
+  }
 
   std::string& operator[] (octave_idx_type i) { return Array<std::string>::elem (i); }
 

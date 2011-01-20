@@ -1049,7 +1049,7 @@ do_bessel (dptr f, const char *, double alpha, const ComplexMatrix& x,
 
   ComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1067,7 +1067,7 @@ do_bessel (dptr f, const char *, const Matrix& alpha, const Complex& x,
 
   ComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1095,7 +1095,7 @@ do_bessel (dptr f, const char *fn, const Matrix& alpha,
 
       retval.resize (nr, nc);
 
-      ierr.resize (nr, nc);
+      ierr.resize (dim_vector (nr, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
@@ -1173,7 +1173,7 @@ do_bessel (dptr f, const char *, const RowVector& alpha,
 
   ComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1646,7 +1646,7 @@ do_bessel (fptr f, const char *, float alpha, const FloatComplexMatrix& x,
 
   FloatComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1664,7 +1664,7 @@ do_bessel (fptr f, const char *, const FloatMatrix& alpha, const FloatComplex& x
 
   FloatComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1692,7 +1692,7 @@ do_bessel (fptr f, const char *fn, const FloatMatrix& alpha,
 
       retval.resize (nr, nc);
 
-      ierr.resize (nr, nc);
+      ierr.resize (dim_vector (nr, nc));
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = 0; i < nr; i++)
@@ -1770,7 +1770,7 @@ do_bessel (fptr f, const char *, const FloatRowVector& alpha,
 
   FloatComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1943,7 +1943,7 @@ airy (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& i
 
   ComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -1960,7 +1960,7 @@ biry (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& i
 
   ComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -2073,7 +2073,7 @@ airy (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_typ
 
   FloatComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
@@ -2090,7 +2090,7 @@ biry (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_typ
 
   FloatComplexMatrix retval (nr, nc);
 
-  ierr.resize (nr, nc);
+  ierr.resize (dim_vector (nr, nc));
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)

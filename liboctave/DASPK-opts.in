@@ -31,13 +31,13 @@ tolerance must also be a vector of the same length.
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (1, 1);
+    $OPTVAR.resize (dim_vector (1, 1));
     $OPTVAR(0) = ::sqrt (DBL_EPSILON);
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
-        $OPTVAR.resize (1, 1);
+        $OPTVAR.resize (dim_vector (1, 1));
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
         reset = true;
       }
@@ -67,13 +67,13 @@ The local error test applied at each integration step is
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (1, 1);
+    $OPTVAR.resize (dim_vector (1, 1));
     $OPTVAR(0) = ::sqrt (DBL_EPSILON);
   END_INIT_BODY
   SET_CODE
     void set_$OPT (double val)
       {
-        $OPTVAR.resize (1, 1);
+        $OPTVAR.resize (dim_vector (1, 1));
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
         reset = true;
       }
@@ -167,7 +167,7 @@ time steps.  The default is @code{EPINIT} = 0.01.
   TYPE = "Array<double>"
   SET_ARG_TYPE = "const $TYPE&"
   INIT_BODY
-    $OPTVAR.resize (6, 1);
+    $OPTVAR.resize (dim_vector (6, 1));
     $OPTVAR(0) = 5.0;
     $OPTVAR(1) = 6.0;
     $OPTVAR(2) = 5.0;
@@ -219,13 +219,13 @@ This option is required by the
   TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
   INIT_BODY
-    $OPTVAR.resize (1, 1);
+    $OPTVAR.resize (dim_vector (1, 1));
     $OPTVAR(0) = 0;
   END_INIT_BODY
   SET_CODE
     void set_$OPT (int val)
       {
-        $OPTVAR.resize (1, 1);
+        $OPTVAR.resize (dim_vector (1, 1));
         $OPTVAR(0) = val;
         reset = true;
       }
@@ -288,13 +288,13 @@ This option only has an effect if the
   TYPE = "Array<octave_idx_type>"
   SET_ARG_TYPE = const $TYPE&
   INIT_BODY
-    $OPTVAR.resize (1, 1);
+    $OPTVAR.resize (dim_vector (1, 1));
     $OPTVAR(0) = 0;
   END_INIT_BODY
   SET_CODE
     void set_$OPT (octave_idx_type val)
       {
-        $OPTVAR.resize (1, 1);
+        $OPTVAR.resize (dim_vector (1, 1));
         $OPTVAR(0) = val;
         reset = true;
       }

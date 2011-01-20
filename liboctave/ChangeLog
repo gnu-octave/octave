@@ -1,3 +1,21 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* Array.h, Array.cc
+	(Array<T>::resize2 (octave_idx_type, octave_idx_type, const T&)):
+	New private function.
+	(Array<T>::resize (octave_idx_type, octave_idx_type, const T&)):
+	Deprecate.  Call resize2 to do the work.  Remove all uses from
+	Octave.
+
+	* CMatrix.h (ComplexMatrix::resize (octave_idx_type,
+	octave_idx_type, const Complex&)): New function.
+	* dMatrix.h (Matrix::resize (octave_idx_type,
+	octave_idx_type, double)): New function.
+	* fCMatrix.h (FloatComplexMatrix::resize (octave_idx_type,
+	octave_idx_type, const FloatComplex&)): New function.
+	* fMatrix.h (FloatMatrix::resize (octave_idx_type,
+	octave_idx_type, const float)): New function.
+
 2011-01-20  David Bateman  <dbateman@free.fr>
 
 	* Sparce.cc (template <class T> Sparse<T>::Sparse (const Array<T>&,

@@ -190,10 +190,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
               Rfact.xcidx (nr) = nr;
               double *Rx = Rfact.data ();
 
-              P.resize (nr, 1);
+              P.resize (dim_vector (nr, 1));
               octave_idx_type *p = P.fortran_vec ();
 
-              Q.resize (nc, 1);
+              Q.resize (dim_vector (nc, 1));
               octave_idx_type *q = Q.fortran_vec ();
 
               octave_idx_type do_recip;
@@ -417,10 +417,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                   Rfact.xcidx (nr) = nr;
                   double *Rx = Rfact.data ();
 
-                  P.resize (nr, 1);
+                  P.resize (dim_vector (nr, 1));
                   octave_idx_type *p = P.fortran_vec ();
 
-                  Q.resize (nc, 1);
+                  Q.resize (dim_vector (nc, 1));
                   octave_idx_type *q = Q.fortran_vec ();
 
                   octave_idx_type do_recip;

@@ -948,7 +948,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
 
 template <class T>
 void
-Array<T>::resize (octave_idx_type r, octave_idx_type c, const T& rfv)
+Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
 {
   if (r >= 0 && c >= 0 && ndims () == 2)
     {
@@ -994,7 +994,7 @@ Array<T>::resize (const dim_vector& dv, const T& rfv)
 {
   int dvl = dv.length ();
   if (dvl == 2)
-    resize (dv(0), dv(1), rfv);
+    resize2 (dv(0), dv(1), rfv);
   else if (dimensions != dv)
     {
       if (dimensions.length () <= dvl && ! dv.any_neg ())
@@ -1051,7 +1051,7 @@ Array<T>::index (const idx_vector& i, const idx_vector& j,
           if (i.is_scalar () && j.is_scalar ())
             return Array<T> (dim_vector (1, 1), rfv);
           else
-            tmp.resize (rx, cx, rfv);
+            tmp.resize2 (rx, cx, rfv);
         }
 
       if (tmp.rows () != rx || tmp.columns () != cx)
@@ -2173,7 +2173,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
                 break;
             }
           if (k < n)
-            retval.resize (k, 1);
+            retval.resize2 (k, 1);
           octave_idx_type *rdata = retval.fortran_vec ();
           std::reverse (rdata, rdata + k);
         }
@@ -2190,7 +2190,7 @@ Array<T>::find (octave_idx_type n, bool backward) const
                 break;
             }
           if (k < n)
-            retval.resize (k, 1);
+            retval.resize2 (k, 1);
         }
     }
 

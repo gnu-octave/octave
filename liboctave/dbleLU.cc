@@ -69,7 +69,7 @@ LU::LU (const Matrix& a)
   octave_idx_type a_nc = a.cols ();
   octave_idx_type mn = (a_nr < a_nc ? a_nr : a_nc);
 
-  ipvt.resize (mn, 1);
+  ipvt.resize (dim_vector (mn, 1));
   octave_idx_type *pipvt = ipvt.fortran_vec ();
 
   a_fact = a;

@@ -452,8 +452,11 @@ public:
   void resize (octave_idx_type n) GCC_ATTR_DEPRECATED
     { resize1 (n); }
 
-  void resize (octave_idx_type nr, octave_idx_type nc, 
-               const T& rfv = resize_fill_value ());
+  void resize (octave_idx_type nr, octave_idx_type nc,
+               const T& rfv = resize_fill_value ()) GCC_ATTR_DEPRECATED
+  {
+    resize2 (nr, nc, rfv);
+  }
 
   void resize (const dim_vector& dv, const T& rfv = resize_fill_value ());
 
@@ -659,6 +662,10 @@ public:
   bool optimize_dimensions (const dim_vector& dv);
 
 private:
+
+  void resize2 (octave_idx_type nr, octave_idx_type nc, 
+                const T& rfv = resize_fill_value ());
+
   static void instantiation_guard ();
 };
 

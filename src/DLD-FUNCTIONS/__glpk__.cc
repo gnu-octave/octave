@@ -520,8 +520,8 @@ Undocumented internal function.\n\
       mrowsA = A.rows ();
       octave_idx_type Anc = A.cols ();
       octave_idx_type Anz = A.nnz ();
-      rn.resize (Anz+1, 1);
-      cn.resize (Anz+1, 1);
+      rn.resize (dim_vector (Anz+1, 1));
+      cn.resize (dim_vector (Anz+1, 1));
       a.resize (Anz+1, 0.0);
 
       if (Anc != mrowsc)
@@ -550,8 +550,8 @@ Undocumented internal function.\n\
         }
 
       mrowsA = A.rows ();
-      rn.resize (mrowsA*mrowsc+1, 1);
-      cn.resize (mrowsA*mrowsc+1, 1);
+      rn.resize (dim_vector (mrowsA*mrowsc+1, 1));
+      cn.resize (dim_vector (mrowsA*mrowsc+1, 1));
       a.resize (mrowsA*mrowsc+1, 0.0);
 
       for (int i = 0; i < mrowsA; i++)

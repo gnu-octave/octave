@@ -155,12 +155,12 @@ LSODE::do_integrate (double tout)
 
       maxord = maximum_order ();
 
-      iwork.resize (liw, 1);
+      iwork.resize (dim_vector (liw, 1));
 
       for (octave_idx_type i = 4; i < 9; i++)
         iwork(i) = 0;
 
-      rwork.resize (lrw, 1);
+      rwork.resize (dim_vector (lrw, 1));
 
       for (octave_idx_type i = 4; i < 9; i++)
         rwork(i) = 0;

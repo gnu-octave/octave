@@ -156,6 +156,12 @@ public:
 
   FloatComplexColumnVector column (octave_idx_type i) const;
 
+  void resize (octave_idx_type nr, octave_idx_type nc,
+               const FloatComplex& rfv = resize_fill_value ())
+  {
+    MArray<FloatComplex>::resize (dim_vector (nr, nc), rfv);
+  }
+
 private:
   FloatComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
                           float& rcon, int force, int calc_cond) const;

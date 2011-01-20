@@ -168,7 +168,7 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
                                  F77_CHAR_ARG_LEN (1)));
 
       lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (cgesvd, CGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
                                  F77_CONST_CHAR_ARG2 (&jobv, 1),
@@ -191,7 +191,7 @@ FloatComplexSVD::init (const FloatComplexMatrix& a, SVD::type svd_type,
                                  F77_CHAR_ARG_LEN (1)));
 
       lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (lwork, 1);
+      work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (cgesdd, CGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
                                  m, n, tmp_data, m1, s_vec, u, m1, vt,

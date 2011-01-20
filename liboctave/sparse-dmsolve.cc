@@ -279,7 +279,7 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
   const T *Bx = b.fortran_vec();
-  a.resize(b_nr, b_nc);
+  a.resize (dim_vector (b_nr, b_nc));
   RT *Btx = a.fortran_vec();
   for (octave_idx_type j = 0; j < b_nc; j++)
     {

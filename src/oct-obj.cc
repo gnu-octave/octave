@@ -46,7 +46,7 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
     data = lst.front ().data;
   else if (nel > 0)
     {
-      data.resize (1, nel);
+      data.resize (dim_vector (1, nel));
       octave_idx_type k = 0;
       for (std::list<octave_value_list>::const_iterator p = lst.begin ();
            p != lst.end (); p++)

@@ -116,8 +116,11 @@ public:
   friend std::ostream& operator << (std::ostream& os, const FloatComplexRowVector& a);
   friend std::istream& operator >> (std::istream& is, FloatComplexRowVector& a);
 
-  void resize (octave_idx_type n, const FloatComplex& rfv = Array<FloatComplex>::resize_fill_value ())
-    { Array<FloatComplex>::resize (1, n, rfv); }
+  void resize (octave_idx_type n,
+               const FloatComplex& rfv = Array<FloatComplex>::resize_fill_value ())
+  {
+    Array<FloatComplex>::resize (dim_vector (1, n), rfv);
+  }
 
   void clear (octave_idx_type n)
     { Array<FloatComplex>::clear (1, n); }

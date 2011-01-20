@@ -1,5 +1,11 @@
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
+	* oct-obj.h (octave_value_list::octave_value_list): Initialize
+	all data members in initialization list.  From Pascal Dupuis
+	<Pascal.Dupuis@worldonline.be>.
+
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
 	* ls-mat5.cc (read_mat5_binary_element):
 	Improve diagnositc if uncompress fails.
 

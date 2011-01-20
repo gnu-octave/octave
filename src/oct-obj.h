@@ -41,22 +41,22 @@ octave_value_list
 public:
 
   octave_value_list (void)
-    : data () { }
+    : data (), names () { }
 
   explicit octave_value_list (octave_idx_type n)
-    : data (dim_vector (1, n)) { }
+    : data (dim_vector (1, n)), names () { }
 
   octave_value_list (octave_idx_type n, const octave_value& val)
-    : data (dim_vector (1, n), val) { }
+    : data (dim_vector (1, n), val), names () { }
 
   octave_value_list (const octave_value& tc)
-    : data (dim_vector (1, 1), tc) { }
+    : data (dim_vector (1, 1), tc), names () { }
 
   octave_value_list (const Array<octave_value>& d)
-    : data (d.as_row ()) { }
+    : data (d.as_row ()), names () { }
 
   octave_value_list (const Cell& tc)
-    : data (tc.as_row ()) { }
+    : data (tc.as_row ()), names () { }
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }

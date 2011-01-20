@@ -1571,11 +1571,11 @@ private:
     wm_iterator win;
     if ((win = windows.find (fig_idx)) != windows.end ())
       {
-	if (menubar_is_figure)
+        if (menubar_is_figure)
           win->second->show_menubar ();
         else
           win->second->hide_menubar ();
-	
+        
         win->second->redraw ();
       }
   }
@@ -1805,10 +1805,10 @@ public:
                   figure_manager::toggle_window_visibility (ov.string_value (), fp.is_visible ());
                   break;
                 case figure::properties::ID_MENUBAR:
-		  figure_manager::toggle_menubar_visibility (ov.string_value (), fp.menubar_is("figure"));
+                  figure_manager::toggle_menubar_visibility (ov.string_value (), fp.menubar_is("figure"));
                   break;
                 case figure::properties::ID_NAME:
-		case figure::properties::ID_CURRENTAXES:
+                case figure::properties::ID_CURRENTAXES:
                   figure_manager::update_canvas (go.get_handle (), fp.get_currentaxes ());
                   break;
                 case figure::properties::ID_NUMBERTITLE:

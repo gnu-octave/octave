@@ -1155,12 +1155,12 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   p = xform.untransform (p(0), p(1), p(2), true);
                   xlabel_props.set_position (p.extract_n (0, 3).transpose ());
                   xlabel_props.set_positionmode ("auto");
-	        }
+                }
               if (xlabel_props.rotationmode_is("auto"))
                 {
                   xlabel_props.set_rotation (angle);
                   xlabel_props.set_rotationmode ("auto");
-	        }
+                }
             }
         }
     }
@@ -1405,12 +1405,12 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   p = xform.untransform (p(0), p(1), p(2), true);
                   ylabel_props.set_position (p.extract_n (0, 3).transpose ());
                   ylabel_props.set_positionmode ("auto");
-	        }
+                }
               if (ylabel_props.rotationmode_is("auto"))
                 {
                   ylabel_props.set_rotation (angle);
                   ylabel_props.set_rotationmode ("auto");
-	        }
+                }
             }
         }
     }
@@ -1745,12 +1745,12 @@ opengl_renderer::draw_axes (const axes::properties& props)
                   p = xform.untransform (p(0), p(1), p(2), true);
                   zlabel_props.set_position (p.extract_n (0, 3).transpose ());
                   zlabel_props.set_positionmode ("auto");
-	        }
+                }
               if (zlabel_props.rotationmode_is("auto"))
                 {
                   zlabel_props.set_rotation (angle);
                   zlabel_props.set_rotationmode ("auto");
-	        }
+                }
             }
         }
     }

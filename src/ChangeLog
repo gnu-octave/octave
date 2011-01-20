@@ -1,3 +1,8 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* gl-render.cc, DLD-FUNCTIONS/__init_fltk__.cc,
+	DLD-FUNCTIONS/__magick_read__.cc: Untabify.
+
 2011-01-20  Pascal Dupuis <Pascal.Dupuis@worldonline.be>.
 
 	* debug.h, dynamic-ld.cc, gl-render.cc, gl-render.h,

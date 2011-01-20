@@ -524,8 +524,8 @@ function.  Instead use @code{imread}.\n\
     }
 #else
 
-  error ("imread: this installation of Octave does not support reading images."
-	 " Image reading capabilities were disabled when this installation was compiled.");
+  error ("imread: image reading ave does not support reading images."
+         " Image reading capabilities were disabled when this installation was compiled.");
 
 #endif
 

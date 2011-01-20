@@ -765,15 +765,15 @@ base_property::set (const octave_value& v, bool do_run )
   if (do_set (v))
     {
 
-      // notify backend
+      // Notify graphics toolkit.
       if (id >= 0)
         {
           graphics_object go = gh_manager::get_object (parent);
           if (go)
             {
-              graphics_backend backend = go.get_backend();
-              if (backend)
-                backend.update (go, id);
+              graphics_toolkit toolkit = go.get_toolkit ();
+              if (toolkit)
+                toolkit.update (go, id);
             }
         }
 
@@ -1871,14 +1871,14 @@ gh_manager::do_free (const graphics_handle& h)
 
               bp.execute_deletefcn ();
 
-              // notify backend
-              graphics_backend backend = p->second.get_backend ();
-              if (backend)
-                backend.finalize (p->second);
+              // Notify graphics toolkit.
+              graphics_toolkit toolkit = p->second.get_toolkit ();
+              if (toolkit)
+                toolkit.finalize (p->second);
 
               // Note: this will be valid only for first explicitly 
               // deleted object.  All its children will then have an
-              // unknown backend.
+              // unknown graphics toolkit.
 
               // Graphics handles for non-figure objects are negative
               // integers plus some random fractional part.  To avoid
@@ -2051,7 +2051,7 @@ xcreatefcn (const graphics_handle& h)
 // ---------------------------------------------------------------------
 
 void
-base_graphics_backend::update (const graphics_handle& h, int id)
+base_graphics_toolkit::update (const graphics_handle& h, int id)
 {
   graphics_object go = gh_manager::get_object (h);
 
@@ -2059,7 +2059,7 @@ base_graphics_backend::update (const graphics_handle& h, int id)
 }
 
 void
-base_graphics_backend::initialize (const graphics_handle& h)
+base_graphics_toolkit::initialize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
 
@@ -2067,7 +2067,7 @@ base_graphics_backend::initialize (const graphics_handle& h)
 }
 
 void
-base_graphics_backend::finalize (const graphics_handle& h)
+base_graphics_toolkit::finalize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
 
@@ -2244,15 +2244,15 @@ base_properties::update_axis_limits (const std::string& axis_type,
     obj.update_axis_limits (axis_type, h);
 }
 
-graphics_backend
-base_properties::get_backend (void) const
+graphics_toolkit
+base_properties::get_toolkit (void) const
 {
   graphics_object go = gh_manager::get_object (get_parent ());
 
   if (go)
-    return go.get_backend ();
+    return go.get_toolkit ();
   else
-    return graphics_backend ();
+    return graphics_toolkit ();
 }
 
 void
@@ -2291,13 +2291,13 @@ base_properties::delete_listener (const caseless_str& nm,
 
 // ---------------------------------------------------------------------
 
-class gnuplot_backend : public base_graphics_backend
+class gnuplot_toolkit : public base_graphics_toolkit
 {
 public:
-  gnuplot_backend (void)
-      : base_graphics_backend ("gnuplot") { }
+  gnuplot_toolkit (void)
+      : base_graphics_toolkit ("gnuplot") { }
 
-  ~gnuplot_backend (void) { }
+  ~gnuplot_toolkit (void) { }
 
   bool is_valid (void) const { return true; }
 
@@ -2402,16 +2402,16 @@ private:
     }
 };
 
-graphics_backend
-graphics_backend::default_backend (void)
+graphics_toolkit
+graphics_toolkit::default_toolkit (void)
 {
-  if (available_backends.size () == 0)
-    register_backend (new gnuplot_backend ());
+  if (available_toolkits.size () == 0)
+    register_toolkit (new gnuplot_toolkit ());
 
-  return available_backends["gnuplot"];
+  return available_toolkits["gnuplot"];
 }
 
-std::map<std::string, graphics_backend> graphics_backend::available_backends;
+std::map<std::string, graphics_toolkit> graphics_toolkit::available_toolkits;
 
 // ---------------------------------------------------------------------
 
@@ -3816,7 +3816,7 @@ axes::properties::update_camera (void)
 
       // FIXME -- was this really needed?  When compared to Matlab, it
       // does not seem to be required. Need investigation with concrete
-      // backend to see results visually.
+      // graphics toolkit to see results visually.
       if (false && dowarp)
         af = 1.0 / (xM > yM ? xM : yM);
       else
@@ -5507,8 +5507,8 @@ gh_manager::gh_manager (void)
 {
   handle_map[0] = graphics_object (new root_figure ());
 
-  // Make sure the default backend is registered.
-  graphics_backend::default_backend ();
+  // Make sure the default graphics toolkit is registered.
+  graphics_toolkit::default_toolkit ();
 }
 
 graphics_handle
@@ -5529,10 +5529,10 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
       if (do_createfcn)
         go->get_properties ().execute_createfcn ();
 
-      // notify backend
-      graphics_backend backend = go->get_backend ();
-      if (backend)
-        backend.initialize (obj);
+      // Notify graphics toolkit.
+      graphics_toolkit toolkit = go->get_toolkit ();
+      if (toolkit)
+        toolkit.initialize (obj);
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
@@ -5551,10 +5551,10 @@ gh_manager::do_make_figure_handle (double val)
 
   handle_map[h] = obj;
 
-  // notify backend
-  graphics_backend backend = go->get_backend ();
-  if (backend)
-    backend.initialize (obj);
+  // Notify graphics toolkit.
+  graphics_toolkit toolkit = go->get_toolkit ();
+  if (toolkit)
+    toolkit.initialize (obj);
   
   return h;
 }
@@ -6734,15 +6734,15 @@ Internal function: returns the pixel size of the image in normalized units.\n\
   return retval;
 }
 
-DEFUN (available_backends, , ,
+DEFUN (available_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} available_backends ()\n\
-Return a cell array of registered graphics backends.\n\
+@deftypefn {Built-in Function} {} available_graphiscs_toolkits ()\n\
+Return a cell array of registered graphics toolkits.\n\
 @end deftypefn")
 {
   gh_manager::autolock guard;
 
-  return octave_value (graphics_backend::available_backends_list ());
+  return octave_value (graphics_toolkit::available_toolkits_list ());
 }
 
 DEFUN (drawnow, args, ,
@@ -6798,7 +6798,7 @@ undocumented.\n\
                         {
                           gh_manager::unlock ();
 
-                          fprops.get_backend ().redraw_figure (go);
+                          fprops.get_toolkit ().redraw_figure (go);
 
                           gh_manager::lock ();
                         }
@@ -6879,7 +6879,7 @@ undocumented.\n\
 
                               gh_manager::unlock ();
 
-                              go.get_backend ()
+                              go.get_toolkit ()
                                 .print_figure (go, term, file, mono, debug_file);
 
                               gh_manager::lock ();

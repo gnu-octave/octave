@@ -564,7 +564,7 @@ opengl_renderer::draw (const graphics_object& go)
 void
 opengl_renderer::draw_figure (const figure::properties& props)
 {
-  backend = props.get_backend ();
+  toolkit = props.get_toolkit ();
 
   // Initialize OpenGL context
 
@@ -3245,7 +3245,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
     return 0;
 
   unsigned int ID = glGenLists (1);
-  double sz = size * backend.get_screen_resolution () / 72.0;
+  double sz = size * toolkit.get_screen_resolution () / 72.0;
 
   // constants for the * marker
   const double sqrt2d4 = 0.35355339059327;

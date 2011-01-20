@@ -2393,7 +2393,7 @@ if test -n "$warn_gnuplot"; then
   if $native_graphics; then
     AC_MSG_WARN([])
     AC_MSG_WARN([I didn't find gnuplot.  Plotting commands will use the])
-    AC_MSG_WARN([native graphics backend.])
+    AC_MSG_WARN([native graphics toolkit.])
   else
     AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
     AC_MSG_WARN([installed, but you won't be able to use any of Octave's])

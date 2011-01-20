@@ -69,15 +69,15 @@
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     Postscript (level 1 and 2, mono and color).  The FLTK backend
-## generates Postscript level 3.0.
+##     Postscript (level 1 and 2, mono and color).  The FLTK graphics
+##     toolkit generates Postscript level 3.0.
 ##
 ##   @item eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated postscript (level 1 and 2, mono and color).  The FLTK
-## backend generates Postscript level 3.0.
+## graphic toolkit generates Postscript level 3.0.
 ##
 ##   @item tex
 ##   @itemx epslatex
@@ -90,7 +90,7 @@
 ## processed directly by @LaTeX{}.  The other formats are intended to
 ## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
 ## is the same as the @code{epslatex} device.  The @code{pdflatex} device
-## is only available for the FLTK backend.
+## is only available for the FLTK graphics toolkit.
 ##
 ##   @item tikz
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK the result is
@@ -112,7 +112,7 @@
 ##     Microsoft Enhanced Metafile
 ##
 ##   @item fig
-##     XFig.  For the Gnuplot backend, the additional options
+##     XFig.  For the Gnuplot graphics toolkit, the additional options
 ##     @option{-textspecial} or @option{-textnormal} can be used to control
 ##     whether the special flag should be set for the text in
 ##     the figure (default is @option{-textnormal}). 
@@ -131,7 +131,7 @@
 ##     JPEG image
 ##
 ##   @item gif
-##     GIF image (only available for the Gnuplot backend)
+##     GIF image (only available for the Gnuplot graphics toolkit)
 ##
 ##   @item pbm
 ##     PBMplus
@@ -283,7 +283,7 @@ function print (varargin)
     ## Modify properties as specified by options
     props = [];
 
-    ## backend tranlates figure position to eps bbox in points
+    ## graphics toolkit tranlates figure position to eps bbox in points
     fpos = get (opts.figure, "position");
     props(1).h = opts.figure;
     props(1).name = "position";
@@ -316,7 +316,7 @@ function print (varargin)
     endif
 
     if (opts.use_color < 0
-        && ! strcmp (get (opts.figure, "__backend__"), "gnuplot"))
+        && ! strcmp (get (opts.figure, "__graphics_toolkit__"), "gnuplot"))
       color_props = {"color", "facecolor", "edgecolor", "colormap"};
       for c = 1:numel(color_props)
         h = findall (opts.figure, "-property", color_props{c});
@@ -374,8 +374,8 @@ function print (varargin)
       endif
     endif
 
-    ## call the backend print script
-    switch (get (opts.figure, "__backend__"))
+    ## call the graphcis toolkit print script
+    switch (get (opts.figure, "__graphics_toolkit__"))
     case "gnuplot"
       opts = __gnuplot_print__ (opts);
     otherwise

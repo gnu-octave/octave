@@ -110,7 +110,7 @@ function opts = __fltk_print__ (opts)
     pipeline = {sprintf("%s > %s", cmd, opts.name)};
   case {"corel", "gif"}
     error ("print:unsupporteddevice",
-           "print.m: %s output is not available for the FLTK backend.",
+           "print.m: %s output is not available for the FLTK graphics toolkit",
            upper (opts.devopt))
   case opts.ghostscript.device
     opts.ghostscript.source = "-";

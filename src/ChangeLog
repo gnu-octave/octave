@@ -1,3 +1,12 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* gl-render.h, graphics.cc, gl-render.cc, graphics.h.in:
+	Update for backend -> graphics_toolkit change.
+
+	* DLD-FUNCTIONS/__init_fltk__.cc: Rename from fltk_backend.cc
+	Update for backend -> graphics_toolkit change.
+	* DLD-FUNCTIONS/module-files, Makefile.am: Update for renamed file.
+
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
 	* src/data.cc, src/input.cc, src/utils.cc: spellcheck docstrings.

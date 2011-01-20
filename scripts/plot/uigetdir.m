@@ -38,13 +38,13 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
   endif
   
 
-  if (any (strcmp (available_backends(), "fltk")))
+  if (any (strcmp (available_graphics_toolkits (), "fltk")))
       if (!isdir (init_path))
         init_path = fileparts (init_path);
       endif
       dirname = __fltk_uigetfile__ ("", dialog_name, init_path, [240, 120], "dir");
   else
-    error ("uigetdir: fltk backend required.");
+    error ("uigetdir: fltk graphics toolkit required");
   endif
 
 endfunction

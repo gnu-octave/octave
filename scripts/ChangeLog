@@ -1,3 +1,15 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* plot/ginput.m, plot/gnuplot_drawnow.m, plot/uiputfile.m,
+	plot/subplot.m, plot/axis.m, plot/colorbar.m,
+	plot/__print_parse_opts__.m, plot/uigetdir.m,
+	plot/__fltk_print__.m, plot/print.m, plot/__gnuplot_print__.m,
+	plot/uigetfile.m, plot/private/__actual_axis_position__.m:
+	Update for backend -> graphics_toolkit change.
+
+	* plot/graphics_toolkit.m: Rename from backend.m.
+	* plot/module.mk (plot_FCN_FILES): Update list.
+
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
 

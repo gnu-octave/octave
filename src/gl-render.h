@@ -137,8 +137,8 @@ private:
                                  bool filled) const;
 
 private:
-  // the backend associated with the figure being rendered
-  graphics_backend backend;
+  // The graphics toolkit associated with the figure being rendered.
+  graphics_toolkit toolkit;
 
   // axes transformation data
   graphics_xform xform;

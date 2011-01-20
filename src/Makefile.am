@@ -618,7 +618,7 @@ all-local: $(OCT_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
 lex.lo lex.o oct-parse.lo oct-parse.o: \
   AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
-fltk_backend.lo fltk_backend.o: \
+__init_fltk__.lo __init_fltk__.o: \
   AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
 # XERBLA = ../libcruft/blas-xtra/xerbla.o
@@ -818,9 +818,9 @@ DLD-FUNCTIONS/__glpk__.df: CPPFLAGS += $(GLPK_CPPFLAGS)
 DLD_FUNCTIONS___glpk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GLPK_CPPFLAGS)
 DLD_FUNCTIONS___glpk___la_LIBADD += $(GLPK_LDFLAGS) $(GLPK_LIBS)
 
-DLD-FUNCTIONS/fltk_backend.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS_fltk_backend_la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS_fltk_backend_la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
+DLD-FUNCTIONS/__init_fltk__.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
+DLD_FUNCTIONS___init_fltk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
+DLD_FUNCTIONS___init_fltk___la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
 
 DLD-FUNCTIONS/amd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
 DLD_FUNCTIONS_amd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)

@@ -542,7 +542,7 @@ Advanced Plotting
 * Marker Styles::               
 * Callbacks::                   
 * Object Groups::               
-* Graphics Backends::           
+* Graphics Toolkits::           
 
 Object Groups
 
@@ -558,7 +558,7 @@ Object Groups
 * Stem Series::                 
 * Surface Group::               
 
-Graphics Backends
+Graphics Toolkits
 
 * Interaction with gnuplot::    
 

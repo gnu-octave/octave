@@ -117,12 +117,13 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
   ## Generate the gnuplot "set terminal <term> ..." command.
   ## When "term" originates from print.m, it may include other options.
   if (nargin < 4)
-    ## This supports the gnuplot backend.
+    ## This supports the gnuplot graphics toolkit.
     term = gnuplot_default_term ();
     opts_str = "";
   else
     ## Get the one word terminal id and save the remaining as options to
-    ## be passed on to gnuplot.  The terminal may respect the backend.
+    ## be passed on to gnuplot.  The terminal may respect the graphics
+    ## toolkit. 
     [term, opts_str] = gnuplot_trim_term (term);
     term = lower (term);
     if (strcmpi (term, "lua"))
@@ -149,7 +150,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
 
     if (! isempty (h) && isfigure (h))
 
-      ## Generate gnuplot title string for backend plot windows.
+      ## Generate gnuplot title string for plot windows.
       if (output_to_screen (term) && ~strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = get (h, "name");

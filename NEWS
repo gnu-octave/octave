@@ -437,28 +437,28 @@ Summary of important user-visible changes for version 3.2:
 
  ** New graphics functions:
 
-      addlistener         ezcontour   gcbo         refresh  
-      addproperty         ezcontourf  ginput       refreshdata
-      allchild            ezmesh      gtext        specular
-      available_backends  ezmeshc     intwarning   surfl
-      backend             ezplot      ishghandle   trisurf
-      cla                 ezplot3     isocolors    waitforbuttonpress
-      clabel              ezpolar     isonormals
-      comet               ezsurf      isosurface  
-      dellistener         findall     linkprop   
-      diffuse             gcbf        plotmatrix
+      addlistener                  ezcontour   gcbo         refresh  
+      addproperty                  ezcontourf  ginput       refreshdata
+      allchild                     ezmesh      gtext        specular
+      available_graphics_toolkits  ezmeshc     intwarning   surfl
+      graphics_toolkit             ezplot      ishghandle   trisurf
+      cla                          ezplot3     isocolors    waitforbuttonpress
+      clabel                       ezpolar     isonormals
+      comet                        ezsurf      isosurface  
+      dellistener                  findall     linkprop   
+      diffuse                      gcbf        plotmatrix
 
  ** New experimental OpenGL/FLTK based plotting system.
 
     An experimental plotting system based on OpenGL and the FLTK
-    toolkit is now part of Octave.  This backend is disabled by
+    toolkit is now part of Octave.  This graphics toolkit is disabled by
     default.  You can switch to using it with the command
 
-        backend ("fltk")
+        graphics_toolkit ("fltk")
 
     for all future figures or for a particular figure with the command
 
-        backend (h, "fltk")
+        graphics_toolkit (h, "fltk")
 
     where "h" is a valid figure handle.
 

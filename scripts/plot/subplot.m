@@ -168,7 +168,7 @@ function h = subplot (rows, cols, index, varargin)
                   "activepositionproperty", "outerposition");
     endif
 
-    if (align_axes && strcmp (get (cf, "__backend__"), "gnuplot"))
+    if (align_axes && strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
       set (tmp, "activepositionproperty", "position");
     endif
 

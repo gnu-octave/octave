@@ -1,3 +1,13 @@
+2011-01-20  John W. Eaton  <jwe@octave.org>
+
+	* faq/OctaveFAQ.texi, interpreter/doccheck/aspell-octave.en.pws,
+	interpreter/octave.texi, interpreter/plot.txi: Update for
+	backend -> graphics_toolkit change.
+
+	* interpreter/interpimages.m, interpreter/geometryimages.m,
+	interpreter/sparseimages.m, interpreter/plotimages.m:
+	Call graphics_toolkit, not backend. 
+
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/aspell-octave.en.pws: Add new words to Octave

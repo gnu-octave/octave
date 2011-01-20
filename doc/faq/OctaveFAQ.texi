@@ -304,9 +304,9 @@ The 3.1.N series is the current development release and will become a
 3.2.N release in the future. This series brings the new features
 
 @itemize
-@item OpenGL backend
+@item OpenGL graphics toolkit
 
-An experimental OpenGL graphics backend to replace the gnuplot
+An experimental OpenGL graphics toolkit to replace the gnuplot.
 
 @item Object Orient Programming
 

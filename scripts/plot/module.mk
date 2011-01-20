@@ -52,7 +52,7 @@ plot_FCN_FILES = \
   plot/area.m \
   plot/axes.m \
   plot/axis.m \
-  plot/backend.m \
+  plot/graphics_toolkit.m \
   plot/bar.m \
   plot/barh.m \
   plot/box.m \

@@ -348,7 +348,7 @@ public:
 
   void set_id (int d) { id = d; }
 
-  // Sets property value, notifies backend.
+  // Sets property value, notifies graphics toolkit.
   // If do_run is true, runs associated listeners.
   bool set (const octave_value& v, bool do_run = true);
   
@@ -1764,19 +1764,19 @@ private:
 
 // ---------------------------------------------------------------------
 
-class graphics_backend;
+class graphics_toolkit;
 class graphics_object;
 
-class base_graphics_backend
+class base_graphics_toolkit
 {
 public:
-  friend class graphics_backend;
+  friend class graphics_toolkit;
 
 public:
-  base_graphics_backend (const std::string& nm)
+  base_graphics_toolkit (const std::string& nm)
       : name (nm), count (0) { }
 
-  virtual ~base_graphics_backend (void) { }
+  virtual ~base_graphics_toolkit (void) { }
 
   std::string get_name (void) const { return name; }
 
@@ -1809,26 +1809,26 @@ public:
     }
 
   // Callback function executed when the given graphics object
-  // changes.  This allows the grahpics backend to act on property
+  // changes.  This allows the grahpics toolkit to act on property
   // changes if needed.
   virtual void update (const graphics_object&, int)
-    { gripe_invalid ("base_graphics_backend::update"); }
+    { gripe_invalid ("base_graphics_toolkit::update"); }
 
   void update (const graphics_handle&, int);
   
   // Callback function executed when the given graphics object is
-  // created.  This allows the graphics backend to do backend-specific
+  // created.  This allows the graphics toolkit to do toolkit-specific
   // initializations for a newly created object.
   virtual void initialize (const graphics_object&)
-    { gripe_invalid ("base_graphics_backend::initialize"); }
+    { gripe_invalid ("base_graphics_toolkit::initialize"); }
 
   void initialize (const graphics_handle&);
 
   // Callback function executed just prior to deleting the given
-  // graphics object.  This allows the graphics backend to perform
-  // backend-specific cleanup operations before an object is deleted.
+  // graphics object.  This allows the graphics toolkit to perform
+  // toolkit-specific cleanup operations before an object is deleted.
   virtual void finalize (const graphics_object&)
-    { gripe_invalid ("base_graphics_backend::finalize"); }
+    { gripe_invalid ("base_graphics_toolkit::finalize"); }
 
   void finalize (const graphics_handle&);
 
@@ -1840,38 +1840,38 @@ private:
   void gripe_invalid (const std::string& fname) const
     {
       if (! is_valid ())
-        error ("%s: invalid graphics backend", fname.c_str ());
+        error ("%s: invalid graphics toolkit", fname.c_str ());
     }
 };
 
-class graphics_backend
+class graphics_toolkit
 {
 public:
-  graphics_backend (void)
-      : rep (new base_graphics_backend ("unknown"))
+  graphics_toolkit (void)
+      : rep (new base_graphics_toolkit ("unknown"))
     {
       rep->count++;
     }
 
-  graphics_backend (base_graphics_backend* b)
+  graphics_toolkit (base_graphics_toolkit* b)
       : rep (b)
     {
       rep->count++;
     }
 
-  graphics_backend (const graphics_backend& b)
+  graphics_toolkit (const graphics_toolkit& b)
       : rep (b.rep)
     {
       rep->count++;
     }
 
-  ~graphics_backend (void)
+  ~graphics_toolkit (void)
     {
       if (--rep->count == 0)
         delete rep;
     }
 
-  graphics_backend& operator = (const graphics_backend& b)
+  graphics_toolkit& operator = (const graphics_toolkit& b)
     {
       if (rep != b.rep)
         {
@@ -1906,66 +1906,71 @@ public:
   Matrix get_screen_size (void) const
     { return rep->get_screen_size (); }
 
-  // Notifies backend that object't property has changed.
+  // Notifies graphics toolkit that object't property has changed.
   void update (const graphics_object& go, int id)
     { rep->update (go, id); }
   
   void update (const graphics_handle& h, int id)
     { rep->update (h, id); }
 
-  // Notifies backend that new object was created.
+  // Notifies graphics toolkit that new object was created.
   void initialize (const graphics_object& go)
     { rep->initialize (go); }
   
   void initialize (const graphics_handle& h)
     { rep->initialize (h); }
   
-  // Notifies backend that object was destroyed.
+  // Notifies graphics toolkit that object was destroyed.
   // This is called only for explicitly deleted object. Children are
-  // deleted implicitly and backend isn't notified.
+  // deleted implicitly and graphics toolkit isn't notified.
   void finalize (const graphics_object& go)
     { rep->finalize (go); }
   
   void finalize (const graphics_handle& h)
     { rep->finalize (h); }
   
-  OCTINTERP_API static graphics_backend default_backend (void);
+  OCTINTERP_API static graphics_toolkit default_toolkit (void);
 
-  static void register_backend (const graphics_backend& b)
-    { available_backends[b.get_name ()] = b; }
+  static void register_toolkit (const graphics_toolkit& b)
+    { available_toolkits[b.get_name ()] = b; }
 
-  static void unregister_backend (const std::string& name)
-    { available_backends.erase (name); }
+  static void unregister_toolkit (const std::string& name)
+    { available_toolkits.erase (name); }
 
-  static graphics_backend find_backend (const std::string& name)
+  static graphics_toolkit find_toolkit (const std::string& name)
   {
-    const_available_backends_iterator p = available_backends.find (name);
+    const_available_toolkits_iterator p = available_toolkits.find (name);
 
-    if (p != available_backends.end ())
+    if (p != available_toolkits.end ())
       return p->second;
     else
-      return default_backend ();
+      return default_toolkit ();
   }
 
-  static Cell available_backends_list (void)
+  static Cell available_toolkits_list (void)
   {
-    Cell m (1 , available_backends.size ());
-    const_available_backends_iterator p;
+    Cell m (1 , available_toolkits.size ());
+    const_available_toolkits_iterator p;
     int i;
     
-    for (i = 0,p = available_backends.begin (); p !=  available_backends.end (); p++,i++)
+    for (i = 0, p = available_toolkits.begin ();
+         p !=  available_toolkits.end (); p++, i++)
       m(i) = p->first;
 
     return m;
   }
 
 private:
-  base_graphics_backend *rep;
+  base_graphics_toolkit *rep;
 
-  static OCTINTERP_API std::map<std::string, graphics_backend> available_backends;
+  static OCTINTERP_API std::map<std::string, graphics_toolkit>
+    available_toolkits;
 
-  typedef std::map<std::string, graphics_backend>::iterator available_backends_iterator;
-  typedef std::map<std::string, graphics_backend>::const_iterator const_available_backends_iterator;
+  typedef std::map<std::string, graphics_toolkit>::iterator
+    available_toolkits_iterator;
+
+  typedef std::map<std::string, graphics_toolkit>::const_iterator
+    const_available_toolkits_iterator;
 };
 
 // ---------------------------------------------------------------------
@@ -2037,7 +2042,7 @@ public:
     mark_modified ();
   }
 
-  virtual graphics_backend get_backend (void) const;
+  virtual graphics_toolkit get_toolkit (void) const;
 
   virtual Matrix get_boundingbox (bool /*internal*/ = false) const
     { return Matrix (1, 4, 0.0); }
@@ -2355,14 +2360,14 @@ public:
     return type () == go_name;
   }
 
-  virtual graphics_backend get_backend (void) const
+  virtual graphics_toolkit get_toolkit (void) const
   {
     if (valid_object ())
-      return get_properties ().get_backend ();
+      return get_properties ().get_toolkit ();
     else
       {
-        error ("base_graphics_object::get_backend: invalid graphics object");
-        return graphics_backend ();
+        error ("base_graphics_object::get_toolkit: invalid graphics object");
+        return graphics_toolkit ();
       }
   }
 
@@ -2579,7 +2584,7 @@ public:
   bool is_handle_visible (void) const
   { return get_properties ().is_handle_visible (); }
   
-  graphics_backend get_backend (void) const { return rep->get_backend (); }
+  graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
 
   void add_property_listener (const std::string& nm, const octave_value& v,
                               listener_mode mode = POSTSET)
@@ -2753,44 +2758,44 @@ public:
 
     void set_visible (const octave_value& val);
 
-    graphics_backend get_backend (void) const
+    graphics_toolkit get_toolkit (void) const
       {
-        if (! backend)
-          backend = graphics_backend::default_backend ();
+        if (! toolkit)
+          toolkit = graphics_toolkit::default_toolkit ();
 
-        return backend;
+        return toolkit;
       }
 
-    void set_backend (const graphics_backend& b) 
+    void set_toolkit (const graphics_toolkit& b) 
     { 
-      if (backend)
-        backend.finalize (__myhandle__);
-      backend = b; 
-      __backend__ = b.get_name ();
+      if (toolkit)
+        toolkit.finalize (__myhandle__);
+      toolkit = b; 
+      __graphics_toolkit__ = b.get_name ();
       __plot_stream__ = Matrix ();
       mark_modified ();
     }
 
-    void set___backend__ (const octave_value& val)
+    void set___graphics_toolkit__ (const octave_value& val)
     {
       if (! error_state)
         {
           if (val.is_string ())
             {
               std::string nm = val.string_value ();
-              graphics_backend b = graphics_backend::find_backend (nm);
+              graphics_toolkit b = graphics_toolkit::find_toolkit (nm);
               if (b.get_name () != nm)
                 {
-                  error ("set___backend__: invalid backend");
+                  error ("set___graphics_toolkit__: invalid graphics toolkit");
                 }
               else
                 {
-                  set_backend (b);
+                  set_toolkit (b);
                   mark_modified ();
                 }
             }
           else
-            error ("set___backend__ must be a string");
+            error ("set___graphics_toolkit__ must be a string");
         }
     }
 
@@ -2858,7 +2863,7 @@ public:
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
       callback_property buttondownfcn , Matrix ()
-      string_property __backend__ s , "gnuplot"
+      string_property __graphics_toolkit__ s , "gnuplot"
     END_PROPERTIES
     
   protected:
@@ -2873,7 +2878,7 @@ public:
       }
 
   private:
-    mutable graphics_backend backend;
+    mutable graphics_toolkit toolkit;
   };
 
 private:
@@ -4453,13 +4458,13 @@ private:
   // created.
   std::list<graphics_handle> figure_list;
 
-  // The lock for accessing the graphics sytsem
+  // The lock for accessing the graphics sytsem.
   octave_mutex graphics_lock;
 
-  // The list of event queued by backends
+  // The list of events queued by graphics toolkits.
   std::list<graphics_event> event_queue;
 
-  // The stack of callback objects
+  // The stack of callback objects.
   std::list<graphics_object> callback_objects;
 
   graphics_handle get_handle (const std::string& go_name);

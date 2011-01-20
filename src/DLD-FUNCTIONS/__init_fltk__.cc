@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 
 To initialize:
 
-  backend ("fltk");
+  graphics_toolkit ("fltk");
   plot (randn (1e3, 1));
 
 */
@@ -66,7 +66,7 @@ To initialize:
 #include "toplev.h"
 #include "variables.h"
 
-#define FLTK_BACKEND_NAME "fltk"
+#define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 
 // Give FLTK no more than 0.01 sec to do its stuff.
 static double fltk_maxtime = 1e-2;
@@ -1661,7 +1661,7 @@ private:
         if (istr >> ind)
           return ind;
       }
-    error ("fltk_backend: could not recognize fltk index");
+    error ("figure_manager: could not recognize fltk index");
     return -1;
   }
 
@@ -1674,7 +1674,7 @@ private:
 
   static int figprops2idx (const figure::properties& fp)
   {
-    if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+    if (fp.get___graphics_toolkit__ () == FLTK_GRAPHICS_TOOLKIT_NAME)
       {
         octave_value ps = fp.get___plot_stream__ ();
         if (ps.is_string ())
@@ -1682,7 +1682,7 @@ private:
         else
           return 0;
       }
-    error ("fltk_backend:: figure is not fltk");
+    error ("figure_manager: figure is not fltk");
     return -1;
   }
 
@@ -1695,7 +1695,7 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
-    error ("fltk_backend:: H is not a figure");
+    error ("figure_manager: H is not a figure");
     return -1;
   }
 
@@ -1710,14 +1710,14 @@ figure_manager *figure_manager::instance = 0;
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
-static bool backend_registered = false;
+static bool toolkit_registered = false;
 
 static int
 __fltk_redraw__ (void)
 {
-  if (backend_registered)
+  if (toolkit_registered)
     {
-      // we scan all figures and add those which use FLTK as a backend
+      // We scan all figures and add those which use FLTK.
       graphics_object obj = gh_manager::get_object (0);
       if (obj && obj.isa ("root"))
         {
@@ -1731,7 +1731,8 @@ __fltk_redraw__ (void)
                 {
                   figure::properties& fp =
                       dynamic_cast<figure::properties&> (fobj.get_properties ());
-                  if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+                  if (fp.get___graphics_toolkit__ ()
+                      == FLTK_GRAPHICS_TOOLKIT_NAME)
                     figure_manager::new_window (fp);
                 }
             }
@@ -1745,13 +1746,13 @@ __fltk_redraw__ (void)
   return 0;
 }
 
-class fltk_backend : public base_graphics_backend
+class fltk_graphics_toolkit : public base_graphics_toolkit
 {
 public:
-  fltk_backend (void)
-    : base_graphics_backend (FLTK_BACKEND_NAME) { }
+  fltk_graphics_toolkit (void)
+    : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME) { }
 
-  ~fltk_backend (void) { }
+  ~fltk_graphics_toolkit (void) { }
 
   bool is_valid (void) const { return true; }
 
@@ -1846,7 +1847,7 @@ public:
         redraw_figure (go);
       }
     else
-      error ("fltk_backend: filename should be fid");
+      error ("fltk_graphics_toolkit: filename should be fid");
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
@@ -1869,25 +1870,18 @@ public:
   }
 };
 
-DEFUN_DLD (__fltk_redraw__, , , "")
-{
-  __fltk_redraw__ ();
-
-  return octave_value ();
-}
-
-// Initialize the fltk backend.
+// Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
   static bool remove_fltk_registered = false;
 
-  if (! backend_registered)
+  if (! toolkit_registered)
     {
       mlock ();
 
-      graphics_backend::register_backend (new fltk_backend);
-      backend_registered = true;
+      graphics_toolkit::register_toolkit (new fltk_graphics_toolkit);
+      toolkit_registered = true;
       
       octave_value_list args;
       args(0) = "__fltk_redraw__";
@@ -1905,18 +1899,24 @@ DEFUN_DLD (__init_fltk__, , , "")
   return retval;
 }
 
+DEFUN_DLD (__fltk_redraw__, , , "")
+{
+  __fltk_redraw__ ();
 
-// Delete the fltk backend.
+  return octave_value ();
+}
+
+// Delete the fltk graphics toolkit.
 
 DEFUN_DLD (__remove_fltk__, , , "")
 {
-  if (backend_registered)
+  if (toolkit_registered)
     {
       munlock ("__init_fltk__");
 
       figure_manager::close_all ();
-      graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
-      backend_registered = false;
+      graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
+      toolkit_registered = false;
 
       octave_value_list args;
       args(0) = "__fltk_redraw__";
@@ -1949,7 +1949,7 @@ DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{speed} =} fltk_mouse_wheel_zoom ()\n\
 @deftypefnx {Built-in Function} {} fltk_mouse_wheel_zoom (@var{speed})\n\
-Query or set the mouse wheel zoom factor in the fltk backend.\n\
+Query or set the mouse wheel zoom factor in the fltk graphics toolkit.\n\
 @end deftypefn")
 {
   octave_value retval = wheel_zoom_speed;
@@ -1969,7 +1969,7 @@ DEFUN_DLD (fltk_gui_mode, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{mode} =} fltk_gui_mode ()\n\
 @deftypefnx {Built-in Function} {} fltk_gui_mode (@var{mode})\n\
-Query or set the GUI mode for the fltk backend.\n\
+Query or set the GUI mode for the fltk grahpics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
 @table @asis\n\
 @item '2d'\n\

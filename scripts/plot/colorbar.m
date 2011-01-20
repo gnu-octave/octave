@@ -107,8 +107,8 @@ function h = colorbar (varargin)
 
   if (! deleting)
     ## FIXME - Matlab does not require the "position" property to be active.
-    ##         Is there a way to determine the plotbox position for the gnuplot
-    ##         backend with the outerposition is active?
+    ##         Is there a way to determine the plotbox position for the
+    ##         gnuplot graphics toolkit with the outerposition is active?
     set (ax, "activepositionproperty", "position");
     obj = get (ax);
     obj.__my_handle__ = ax;
@@ -274,7 +274,7 @@ function [pos, cpos, vertical, mirr] = __position_colorbox__ (cbox, obj, cf)
     else
       scale = [scale, 1];
     endif
-    if (strcmp (get (cf, "__backend__"), "gnuplot")
+    if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot")
         && strcmp (obj.activepositionproperty, "outerposition"))
       obj.outerposition = obj.outerposition .* [1, 1, scale];
       off = 0.5 * (obj.outerposition (3:4) - __actual_axis_position__ (obj)(3:4));

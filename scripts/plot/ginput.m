@@ -32,13 +32,13 @@ function varargout = ginput (n)
 
   f = gcf ();
   drawnow ();
-  backend = (get (f, "__backend__"));
+  toolkit = (get (f, "__graphics_toolkit__"));
 
   varargout = cell (1, nargout);
   if (nargin == 0)
-    [varargout{:}] = feval (strcat ("__", backend, "_ginput__"), f);
+    [varargout{:}] = feval (strcat ("__", toolkit, "_ginput__"), f);
   else
-    [varargout{:}] = feval (strcat ("__", backend, "_ginput__"), f, n);
+    [varargout{:}] = feval (strcat ("__", toolkit, "_ginput__"), f, n);
   endif
 
 endfunction

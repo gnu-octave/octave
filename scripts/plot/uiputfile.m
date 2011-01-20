@@ -89,10 +89,10 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     error ("uiputfile: number of input arguments must be less than four.");
   endif
 
-  if (any (cellfun(@(x)strcmp (x, "fltk"), available_backends)))
+  if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))
     [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});  
   else
-    error ("uiputfile: fltk backend required.");
+    error ("uiputfile: fltk graphics toolkit required");
   endif
 
 endfunction

@@ -34,14 +34,14 @@
 Earlier versions of Octave provided plotting through the use of
 gnuplot.  This capability is still available.  But, a newer plotting
 capability is provided by access to OpenGL@.  Which plotting system
-is used is controlled by the @code{backend} function.  (See @ref{Graphics
-Backends}.)
+is used is controlled by the @code{graphics_toolkit} function.  (See
+@ref{Graphics Toolkits}.)
 
-The function call @code{backend ("fltk")} selects the fltk/OpenGL system, and
-@code{backend ("gnuplot")} selects the gnuplot system.
-The two systems may be used selectively through the use of the @code{backend}
-property of the graphics handle for each figure.  This is
-explained in @ref{Graphics Data Structures}.
+The function call @code{graphics_toolkit ("fltk")} selects the
+fltk/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
+gnuplot system.  The two systems may be used selectively through the use
+of the @code{graphics_toolkit} property of the graphics handle for each
+figure.  This is explained in @ref{Graphics Data Structures}.
 
 @node High-Level Plotting
 @section High-Level Plotting
@@ -929,24 +929,30 @@ ans = figure
 get (h, "");
 error: get: ambiguous figure property name ; possible matches:
 
-__backend__            currentobject          paperposition          toolbar
-__enhanced__           deletefcn              paperpositionmode      type
-__modified__           dockcontrols           papersize              uicontextmenu
-__myhandle__           doublebuffer           papertype              units
-__plot_stream__        filename               paperunits             userdata
-alphamap               handlevisibility       parent                 visible
-beingdeleted           hittest                pointer                windowbuttondownfcn
-busyaction             integerhandle          pointershapecdata      windowbuttonmotionfcn
-buttondownfcn          interruptible          pointershapehotspot    windowbuttonupfcn
-children               inverthardcopy         position               windowbuttonwheelfcn
-clipping               keypressfcn            renderer               windowstyle
-closerequestfcn        keyreleasefcn          renderermode           wvisual
-color                  menubar                resize                 wvisualmode
-colormap               mincolormap            resizefcn              xdisplay
-createfcn              name                   selected               xvisual
-currentpoint           nextplot               selectionhighlight     xvisualmode
-currentaxes            numbertitle            selectiontype
-currentcharacter       paperorientation       tag
+__graphics_toolkit__  hittest              resize
+__enhanced__          integerhandle        resizefcn
+__modified__          interruptible        selected
+__myhandle__          inverthardcopy       selectionhighlight
+__plot_stream__       keypressfcn          selectiontype
+alphamap              keyreleasefcn        tag
+beingdeleted          menubar              toolbar
+busyaction            mincolormap          type
+buttondownfcn         name                 uicontextmenu
+children              nextplot             units
+clipping              numbertitle          userdata
+closerequestfcn       paperorientation     visible
+color                 paperposition        windowbuttondownfcn
+colormap              paperpositionmode    windowbuttonmotionfcn
+createfcn             papersize            windowbuttonupfcn
+currentaxes           papertype            windowbuttonwheelfcn
+currentcharacter      paperunits           windowstyle
+currentobject         parent               wvisual
+currentpoint          pointer              wvisualmode
+deletefcn             pointershapecdata    xdisplay
+dockcontrols          pointershapehotspot  xvisual
+doublebuffer          position             xvisualmode
+filename              renderer
+handlevisibility      renderermode
 @end smallexample
 
 The root figure has index 0.  Its properties may be displayed by:
@@ -1200,8 +1206,8 @@ The @code{root figure} properties are:
 
 The @code{figure} properties are:
 @table @code
-@item __backend__  
---- The backend currently in use.
+@item __graphics_toolkit__  
+--- The graphics toolkit currently in use.
 
 @item __enhanced__
 
@@ -2442,7 +2448,7 @@ returns a list of factory defaults.
 * Marker Styles::               
 * Callbacks::                   
 * Object Groups::               
-* Graphics Backends::           
+* Graphics Toolkits::           
 @end menu
 
 
@@ -3204,14 +3210,14 @@ The original x, y, z and c data.
 Data source variables.
 @end table
 
-@node Graphics Backends
-@subsection Graphics Backends
-@cindex graphics backends
-@cindex backends, graphics
+@node Graphics Toolkits
+@subsection Graphics Toolkits
+@cindex graphics toolkits
+@cindex toolkits, graphics
 
-@DOCSTRING(backend)
+@DOCSTRING(graphics_toolkit)
 
-@DOCSTRING(available_backends)
+@DOCSTRING(available_graphics_toolkits)
 
 @menu
 * Interaction with gnuplot::    

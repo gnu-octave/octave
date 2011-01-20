@@ -181,7 +181,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
     elseif (strcmpi (ax, "square"))
       set (ca, "plotboxaspectratio", [1, 1, 1]);
     elseif  (strcmp (ax, "equal"))
-      if (strcmp (get (get (ca, "parent"), "__backend__"), "gnuplot"))
+      if (strcmp (get (get (ca, "parent"), "__grahpics_toolkit__"), "gnuplot"))
         ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
         ## The following line is a trick used to trigger the recalculation of 

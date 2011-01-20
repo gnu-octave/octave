@@ -147,10 +147,10 @@ file path).  Example:
 
 @example
 @group
-2008-04-02  David Bateman  <dbateman@@free.fr>
+2010-04-13  David Bateman  <dbateman@@free.fr>
 
-        * graphics.cc (void gnuplot_backend::close_figure (const
-        octave_value&) const): Allow for an input and output stream.
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Handle repeated matches
+	in the list of matches returned by pcre.
 @end group
 @end example
 

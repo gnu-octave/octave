@@ -138,7 +138,7 @@ function opts = __gnuplot_print__ (opts)
     endif
   otherwise
     error (sprintf ("print:no%soutput", opts.devopt),
-           "print.m: %s output is not available for the Gnuplot backend.",
+           "print.m: %s output is not available for the Gnuplot graphics toolkit",
            upper (opts.devopt))
   endswitch
 

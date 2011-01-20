@@ -1,11 +1,11 @@
 See the file README.Cygwin for information about installing the binary
 package of Octave for Cygwin.
 
-See the file README.MSVC for instructions for compiling Octave with
-the MSVC compiler.
+See the file README.MinGW for information about installing the binary
+package of Octave for MinGW.
 
 
 John W. Eaton
 jwe@octave.org
 
-Last updated: Wed, 31 Oct 2007 16:34:12 EDT
+Last updated: Thu Jan 20 10:35:23 PST 2011

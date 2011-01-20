@@ -1,7 +1,6 @@
 This directory contains the source for Octave, a high-level interactive
-language for solving numerical problems.  See the files README.octave
-and Announce for more general information, and the file NEWS for a
-list of recent changes.
+language for solving numerical problems.  See the file README for more general
+information, and the file NEWS for a list of recent changes.
 
 Binary distributions:
 --------------------
@@ -9,10 +8,13 @@ Binary distributions:
 Octave binaries are not distributed from this site.
 
 Packaged versions of Octave for various GNU/Linux systems are available
-with the major GNU/Linux distributions (Debian, Red Hat, SuSE, etc.).
+with the major GNU/Linux distributions (Debian, Ubuntu, Red Hat, SUSE, etc.).
 
-Binary distributions of Octave for Mac OS X are available as part of
-the fink project: http://fink.sourceforge.net
+Binary distributions of Octave for Mac OS X are available from both Fink
+and MacPorts.
+
+  http://www.finkproject.com
+  http://www.macports.org/
 
 The file README.Windows provides instructions for installing Octave on
 Windows systems.
@@ -32,4 +34,5 @@ or gzipped tar format (for those who already have a prior version of
 gzip and want faster data transmission).  It works on virtually every
 unix system, MSDOS, OS/2, and VMS.
 
-Last updated: Wed, 07 Apr 2010 15:15:04 EDT
+
+Last updated: Thu Jan 20 10:14:49 PST 2011

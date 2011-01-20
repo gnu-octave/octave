@@ -1,3 +1,10 @@
+2010-01-20  Rik  <octave@nomad.inbox5.com>
+
+	* README.Cygwin, README.MacOS, README.Windows, README.ftp: Update
+	documentation files for 3.4 release.
+
+	* README.MinGW: Create placeholder for new README file.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* bootstrap: Update from gnulib sources.

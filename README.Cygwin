@@ -25,10 +25,10 @@ Without it, one of the quadgk test will fail as
 "a=a" could be false due to truncation problems with 
 complex numbers. 
 
- 
 "lt_cv_deplibs_check_method=pass_all"  is needed to bypass
 incorrect libtool detection of system capabilities and
 to allow shared libs building.
+
 
 Octave-3.2.4 was built using:
 
@@ -39,8 +39,6 @@ configure --enable-shared \
           CFLAGS="-Dtimezone=_timezone"
 
 
-
- 
 Current Cygwin package maintainer for Octave:
 
   Marco Atzeri
@@ -50,4 +48,4 @@ Marco Atzeri
 marco_atzeri@yahoo.it
 Italy
 
-Mon Jan  3 18:53:41 WEST 2011
+Last updated: Mon Jan  3 18:53:41 WEST 2011

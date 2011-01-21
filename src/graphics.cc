@@ -3299,6 +3299,7 @@ axes::properties::set_xlabel (const octave_value& v)
   xset (xlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (xlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (xlabel.handle_value (), "clipping", "off");
+  xset (xlabel.handle_value (), "color", get_xcolor ());
 }
 
 void
@@ -3310,6 +3311,7 @@ axes::properties::set_ylabel (const octave_value& v)
   xset (ylabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (ylabel.handle_value (), "verticalalignmentmode", "auto");
   xset (ylabel.handle_value (), "clipping", "off");
+  xset (ylabel.handle_value (), "color", get_ycolor ());
 }
 
 void
@@ -3321,6 +3323,7 @@ axes::properties::set_zlabel (const octave_value& v)
   xset (zlabel.handle_value (), "horizontalalignmentmode", "auto");
   xset (zlabel.handle_value (), "verticalalignmentmode", "auto");
   xset (zlabel.handle_value (), "clipping", "off");
+  xset (zlabel.handle_value (), "color", get_zcolor ());
 }
 
 void

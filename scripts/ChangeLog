@@ -1,3 +1,8 @@
+2011-01-21  Konstantinos Poulios  <logari81@gmail.com>
+
+	* plot/xlabel.m, plot/ylabel.m, plot/zlabel.m: Setting axis label
+	color from axis color.
+
 2011-01-20  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* image/imshow.m: Fix handling of clim and display_range so that

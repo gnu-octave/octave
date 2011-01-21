@@ -57,7 +57,7 @@ EOF
 	  s/^\s+\@/\@/ unless $in_example;
 	  s/^\s+\@group/\@group/;
 	  s/^\s+\@end\s+group/\@end group/;
-	  s|\@c $re_srcdir|\@c scripts/|o;
+	  s|\@c $fcn $re_srcdir|\@c $fcn scripts/|o;
 	  $in_example = (/\s*\@example\b/ .. /\s*\@end\s+example\b/);
 	  print;
 	}' "$prefix" "$arg"

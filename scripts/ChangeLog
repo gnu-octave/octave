@@ -1,5 +1,10 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* mkdoc: Mark all scripts as coming from 'scripts/' directory
+	in Texinfo '@c func location' comments.
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* scripts/linear-algebra/condest.m, 
 	scripts/linear-algebra/onenormest.m, scripts/linear-algebra/qzhess.m,
 	scripts/polynomial/polyfit.m, scripts/special-matrix/pascal.m: Use 

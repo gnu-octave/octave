@@ -106,7 +106,7 @@
 ## An array of characters containing the sense of each constraint in the
 ## constraint matrix.  Each element of the array may be one of the
 ## following values
-## @table @code
+## @table @asis
 ## @item "F"
 ## A free (unbounded) constraint (the constraint is ignored).
 ##
@@ -126,7 +126,7 @@
 ##
 ## @item vartype
 ## A column array containing the types of the variables.
-## @table @code
+## @table @asis
 ## @item "C"
 ## A continuous variable.
 ##

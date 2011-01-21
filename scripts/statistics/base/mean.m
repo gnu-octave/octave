@@ -38,7 +38,7 @@
 ## The optional argument @var{opt} selects the type of mean to compute.
 ## The following options are recognized:
 ##
-## @table @code
+## @table @asis
 ## @item "a"
 ## Compute the (ordinary) arithmetic mean.  [default]
 ##

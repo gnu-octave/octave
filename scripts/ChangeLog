@@ -1,5 +1,16 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* scripts/image/imshow.m, scripts/image/saveimage.m,
+	scripts/io/dlmwrite.m, scripts/io/strread.m,
+	scripts/miscellaneous/license.m, scripts/optimization/glpk.m,
+	scripts/plot/refreshdata.m, scripts/plot/shading.m,
+	scripts/plot/slice.m, scripts/plot/surfl.m, scripts/plot/uimenu.m,
+	scripts/statistics/base/mean.m, scripts/statistics/base/moment.m,
+	scripts/strings/isstrprop.m: Prevent doubled quotes around @table
+	items in Info.
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* mkdoc: Mark all scripts as coming from 'scripts/' directory
 	in Texinfo '@c func location' comments.
 

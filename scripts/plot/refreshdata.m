@@ -25,7 +25,7 @@
 ## arguments @var{h} is a scalar or array of figure handles to refresh.  The
 ## optional second argument @var{workspace} can take the following values.
 ##
-## @table @code
+## @table @asis
 ## @item "base"
 ## Evaluate the datasource properties in the base workspace.  (default).
 ##

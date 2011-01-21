@@ -39,7 +39,7 @@
 ##
 ## @var{Method} is one of:
 ##
-## @table @code
+## @table @asis
 ## @item "nearest"
 ## Return the nearest neighbor.
 ##

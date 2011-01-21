@@ -71,7 +71,7 @@
 ## The behavior of @code{strread} can be changed via property-value
 ## pairs.  The following properties are recognized:
 ##
-## @table @code
+## @table @asis
 ## @item "commentstyle"
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.

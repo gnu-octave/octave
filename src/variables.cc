@@ -533,7 +533,7 @@ other types of files, you should use some combination of the functions\n\
 If the optional argument @var{type} is supplied, check only for\n\
 symbols of the specified type.  Valid types are\n\
 \n\
-@table @samp\n\
+@table @asis\n\
 @item \"var\"\n\
 Check only for variables.\n\
 \n\

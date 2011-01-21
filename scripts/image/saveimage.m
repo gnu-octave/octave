@@ -22,7 +22,7 @@
 ## Save the matrix @var{img} to file @var{fname} in image format @var{fmt}.
 ## Valid values for @var{fmt} are
 ##
-## @table @code
+## @table @asis
 ## @item "img"
 ## Octave's image format.  The current colormap is also saved in the file.
 ##

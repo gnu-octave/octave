@@ -39,7 +39,7 @@
 ##
 ## In addition, the following keyword value pairs may appear at the end
 ## of the argument list:
-## @table @code
+## @table @asis
 ## @item "append"
 ## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
 ##

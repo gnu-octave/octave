@@ -34,7 +34,7 @@
 ##
 ## The second argument @var{prop} must be one of
 ##
-## @table @code
+## @table @asis
 ## @item "alpha"
 ## True for characters that are alphabetic (letters).
 ##

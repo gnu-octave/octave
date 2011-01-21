@@ -38,7 +38,7 @@
 ## The material properties of the surface can specified using a 4-element vector
 ## @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
 ## @var{p} = [0.55 0.6 0.4 10].
-## @table @code
+## @table @asis
 ## @item "AM" strength of ambient light
 ##
 ## @item "D" strength of diffuse reflection

@@ -1381,7 +1381,7 @@ If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
 The optional argument @var{precision} is a string specifying the type of\n\
 data to read and may be one of\n\
 \n\
-@table @code\n\
+@table @asis\n\
 @item \"schar\"\n\
 @itemx \"signed char\"\n\
 Signed character.\n\

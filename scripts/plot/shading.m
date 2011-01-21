@@ -22,7 +22,7 @@
 ## Set the shading of surface or patch graphic objects.  Valid arguments
 ## for @var{type} are
 ##
-## @table @code
+## @table @asis
 ## @item "flat"
 ## Single colored patches with invisible edges.
 ##

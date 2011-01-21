@@ -43,7 +43,7 @@
 ##
 ## The optional string @var{type} specifies the type of moment to be computed.
 ## Valid options are:
-## @table @code
+## @table @asis
 ## @item "c"
 ##   Central Moment.  The moment about the mean defined as
 ## @tex

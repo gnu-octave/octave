@@ -1,5 +1,10 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* src/file-io.cc, src/variables.cc: Prevent doubled quotes around @table
+	items in Info.
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* src/DLD-FUNCTIONS/chol.cc, src/DLD-FUNCTIONS/luinc.cc,
 	src/DLD-FUNCTIONS/qz.cc: Use non-breaking spaces between certain
 	adjectives and their linked nouns in docstrings

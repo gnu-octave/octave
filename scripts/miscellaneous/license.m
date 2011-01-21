@@ -35,7 +35,7 @@
 ## Enable or disable license testing for @var{feature}, depending on
 ## @var{toggle}, which may be one of:
 ##
-## @table @samp
+## @table @asis
 ## @item "enable"
 ## Future tests for the specified license of @var{feature} are conducted
 ## as usual.

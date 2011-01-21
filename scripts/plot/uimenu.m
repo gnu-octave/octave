@@ -25,7 +25,7 @@
 ##
 ## Uimenu objects have the following specific properties:
 ##
-## @table @code
+## @table @asis
 ## @item "accelerator"
 ## A string containg the key combination together with CTRL to execute this
 ## menu entry (e.g., "x" for CTRL+x).

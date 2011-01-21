@@ -1,3 +1,8 @@
+2011-01-20  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* image/imshow.m: Fix handling of clim and display_range so that
+	images are more faithfully reproduced.
+
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
 	* scripts/image/imshow.m, scripts/image/saveimage.m,

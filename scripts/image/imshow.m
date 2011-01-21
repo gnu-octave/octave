@@ -124,10 +124,7 @@ function h = imshow (im, varargin)
       case {"double", "single", "logical"}
         display_range = [0, 1];
       case {"int8", "int16", "int32", "uint8", "uint16", "uint32"}
-        ## For compatibility, uint8 data should not be handled as
-        ## double.  Doing so is a quick fix to allow the images to be
-        ## displayed correctly.
-        display_range = double ([intmin(t), intmax(t)]);
+        display_range = [intmin(t), intmax(t)];
       otherwise
         error ("imshow: invalid data type for image");
     endswitch
@@ -151,13 +148,12 @@ function h = imshow (im, varargin)
     im = double (im);
   endif
 
-  ## Scale the image to the interval [0, 1] according to display_range.
+  ## Clamp the image to the range boundaries
   if (! (true_color || indexed || islogical (im)))
     low = display_range(1);
     high = display_range(2);
-    im = (im-low)/(high-low);
-    im(im < 0) = 0;
-    im(im > 1) = 1;
+    im(im < low) = low;
+    im(im > high) = high;
   endif
 
   if (true_color || indexed)
@@ -165,6 +161,8 @@ function h = imshow (im, varargin)
   else
     tmp = image (im);
     set (tmp, "cdatamapping", "scaled");
+    ## The backend is responsible for scaling to clim if necessary.
+    set (gca (), "clim", display_range);
   endif
   set (gca (), "visible", "off", "ydir", "reverse");
   axis ("image");

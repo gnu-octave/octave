@@ -37,6 +37,9 @@ autoregression
 autoregressions
 autoscaled
 AWK
+backend
+Backends
+backends
 bartlett
 Bateman
 BDF
@@ -196,7 +199,6 @@ Durbin
 dx
 dy
 EastOutside
-eE
 EIDORS
 eigenpairs
 eigenvector
@@ -238,7 +240,6 @@ expinv
 exppdf
 exprnd
 extendedtext
-fA
 facecolor
 facevertexcdata
 fcdf
@@ -259,6 +260,7 @@ finv
 FIRfilter
 FIXME
 FlashPix
+FLTK
 fltk
 fontconfig
 fontname
@@ -397,11 +399,9 @@ iy
 Jacobian
 Jacobians
 ji
-jp
 jpeg
 JPEG
 jpg
-jpx
 keybindings
 keypress
 Kolmogorov
@@ -527,8 +527,6 @@ multi
 multibyte
 multiline
 mxArray
-MxN
-MxNx
 myclass
 nabla
 NaN
@@ -574,7 +572,6 @@ oct
 octaverc
 ODEPACK
 OLS
-onesided
 online
 OpenGL
 oplus
@@ -596,6 +593,7 @@ PCG
 pchip
 pcr
 pcre
+PCRE
 PCX
 pcx
 PDF
@@ -818,6 +816,7 @@ Tcv
 terminal's
 tex
 Texinfo
+texinfo
 th
 ths
 tif
@@ -831,6 +830,8 @@ tokenExtents
 TolF
 TolFun
 TolX
+toolkits
+Toolkits
 tp
 tpdf
 traceback
@@ -841,7 +842,6 @@ triplot
 trnd
 Tsang
 tuples
-twosided
 Tx
 txi
 typedefs
@@ -936,7 +936,6 @@ xGETRF
 xGTSV
 xl
 xmin
-xN
 xPBTRF
 xPOTRF
 xPTSV

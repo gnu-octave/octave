@@ -48,7 +48,10 @@ vi arith.texi
 vi misspellings
 ....
   Review misspellings and identify where to correct the source (.m, .cc, .txi)
-  The original source file is marked with a comment: '@c SRC_DIR/SRC_FILE'
+  The original source file is marked with a comment: 
+
+  @c FUNCTION_NAME SRC_DIR/SRC_FILE
+
   When there is no source file comment, the source file is the .txi source.
   Make corrections to source files, *not* arith.texi which is derived.
 ....
@@ -79,11 +82,13 @@ GRAMMAR:
 
 To be added
 
-UNDOCUMENTED:
+UNDOCUMENTED FUNCTIONS:
 
-From the doc/interpreter/ directory, type 'doccheck/mk_undocumented_list'.
-This will produce a list of undocumented functions on stdout.  
+From the doc/interpreter/ directory, type 'make undocumented_list'.
+This will produce the undocumented_list file with the undocumented functions.  
 
 Functions which don't require an @DOCSTRING reference can be added to the list
-of exceptions at the bottom of the mk_undocumented_list script.
+of exceptions at the bottom of the mk_undocumented_list script.  This is often
+necessary where a single DOCSTRING, such as besselj, is used to document
+multiple functions.
 

@@ -34,7 +34,7 @@
 ##
 ## @itemize
 ## @item x: data; if real-valued a one-sided spectrum is estimated,
-## if complex-valued or range indicates "twosided", the full spectrum is estimated.
+## if complex-valued or range indicates "@nospell{twosided}", the full spectrum is estimated.
 ##
 ## @item win: weight data with window, x.*win is used for further computation,
 ## if window is empty, a rectangular window is used.
@@ -43,8 +43,8 @@
 ##
 ## @item Fs: sampling rate, default 1.
 ##
-## @item range: "onesided" computes spectrum from [0..nfft/2+1].
-## "twosided" computes spectrum from [0..nfft-1]. These strings can appear at any
+## @item range: "@nospell{onesided}" computes spectrum from [0..nfft/2+1].
+## "@nospell{twosided}" computes spectrum from [0..nfft-1]. These strings can appear at any
 ##  position in the list input arguments after window.
 ##
 ## @item Pxx: one-, or two-sided power spectrum.

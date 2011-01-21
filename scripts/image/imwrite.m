@@ -57,7 +57,7 @@
 ## @multitable @columnfractions .33 .66
 ## @headitem Extension @tab Format
 ## @item hdf @tab Hierarchical Data Format V4
-## @item jp2 and jpx @tab Joint Photographic Experts Group 2000
+## @item @nospell{jp2} and jpx @tab Joint Photographic Experts Group 2000
 ## @end multitable
 ##
 ## @seealso{imread, imfinfo}

@@ -1283,7 +1283,7 @@ DEFUNX ("isxdigit", Fisxdigit, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
-hexadecimal digits (0-9 and a-fA-F).\n\
+hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 @seealso{isdigit}\n\
 @end deftypefn")
 {

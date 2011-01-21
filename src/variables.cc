@@ -1811,8 +1811,8 @@ Persistent variable.\n\
 The name of the variable.\n\
 \n\
 @item Size\n\
-The logical size of the variable.  A scalar is 1x1, a vector is 1xN or Nx1,\n\
-a 2-D matrix is MxN.\n\
+The logical size of the variable.  A scalar is 1x1, a vector is\n\
+@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.\n\
 \n\
 @item Bytes\n\
 The amount of memory currently used to store the variable.\n\

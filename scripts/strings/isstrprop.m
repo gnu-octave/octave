@@ -52,7 +52,7 @@
 ## True for decimal digits (0-9).
 ##
 ## @item "xdigit"
-## True for hexadecimal digits (a-fA-F0-9).
+## True for hexadecimal digits (@nospell{a-fA-F0-9}).
 ##
 ## @item "space"
 ## @itemx "wspace"

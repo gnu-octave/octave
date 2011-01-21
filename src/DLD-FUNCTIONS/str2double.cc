@@ -234,8 +234,8 @@ a and b are real numbers and the complex unit is 'i' or 'j':\n\
 @item i*b + a\n\
 @end itemize\n\
 \n\
-If present, a and/or b are of the form [+-]d[,.]d[[eE][+-]d] where the\n\
-brackets indicate optional arguments and 'd' indicates zero or more\n\
+If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where\n\
+the brackets indicate optional arguments and 'd' indicates zero or more\n\
 digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA} are\n\
 also accepted.\n\
 \n\

@@ -38,7 +38,7 @@ is used is controlled by the @code{graphics_toolkit} function.  (See
 @ref{Graphics Toolkits}.)
 
 The function call @code{graphics_toolkit ("fltk")} selects the
-fltk/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
+FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
 gnuplot system.  The two systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
 figure.  This is explained in @ref{Graphics Data Structures}.

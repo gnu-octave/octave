@@ -2952,9 +2952,9 @@ DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
 Return true if @var{a} is a numeric, logical, or character matrix.\n\
-Scalars (1x1 matrices) and vectors (1xN or Nx1 matrices) are subsets\n\
-of the more general N-dimensional matrix and @code{ismatrix} will return\n\
-true for these objects as well.\n\
+Scalars (1x1 matrices) and vectors (@nospell{1xN} or @nospell{Nx1} matrices)\n\
+are subsets of the more general N-dimensional matrix and @code{ismatrix}\n\
+will return true for these objects as well.\n\
 @seealso{isscalar, isvector, iscell, isstruct, issparse}\n\
 @end deftypefn")
 {

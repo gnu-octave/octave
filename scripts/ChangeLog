@@ -1,3 +1,8 @@
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
+	* image/imread.m, image/imwrite.m, signal/periodogram.m,
+	strings/isstrprop.m: Use @nospell macro on certain words in docstring.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* @ftp/loadobj.m, @ftp/saveobj.m, audio/record.m,
@@ -255,7 +260,6 @@
 	* plot/module.mk (plot_FCN_FILES): Update list.
 
 2011-01-19  Rik  <octave@nomad.inbox5.com>
-
 
 	* general/curl.m, general/divergence.m, io/strread.m,
 	miscellaneous/mkoctfile.m, plot/bar.m, plot/errorbar.m, plot/hist.m,

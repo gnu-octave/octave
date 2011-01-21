@@ -1,3 +1,8 @@
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
+	* src/DLD-FUNCTIONS/str2double.cc, src/data.cc, src/mappers.cc,
+	src/variables.cc: Use @nospell macro on certain words in docstring.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__delaunayn__.cc,

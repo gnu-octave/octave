@@ -43,7 +43,7 @@ DEFUN_DLD (luinc, args, nargout,
 @deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
 @deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
 @cindex LU decomposition\n\
-Produce the incomplete LU factorization of the sparse matrix @var{A}.\n\
+Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.\n\
 Two types of incomplete factorization are possible, and the type\n\
 is determined by the second argument to @code{luinc}.\n\
 \n\

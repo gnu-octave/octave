@@ -68,7 +68,7 @@ DEFUN_DLD (chol, args, nargout,
 @deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, 'vector')\n\
 @deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, 'lower')\n\
 @cindex Cholesky factorization\n\
-Compute the Cholesky factor, @var{R}, of the symmetric positive definite\n\
+Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
 matrix @var{A}, where\n\
 @tex\n\
 $ R^T R = A $.\n\

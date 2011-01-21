@@ -28,7 +28,7 @@
 ## If @var{t} exceeds 5, then only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the condition
-## number of @var{A} given an LU factorization, @code{condest} uses the
+## number of @var{A} given an LU@tie{}factorization, @code{condest} uses the
 ## following functions:
 ##
 ## @table @var

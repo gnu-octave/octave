@@ -291,8 +291,8 @@ DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
 @deftypefnx {Loadable Function} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
-QZ decomposition of the generalized eigenvalue problem (@math{A x = s B x}).\n\
-There are three ways to call this function:\n\
+QZ@tie{}decomposition of the generalized eigenvalue problem\n\
+(@math{A x = s B x}).  There are three ways to call this function:\n\
 @enumerate\n\
 @item @code{@var{lambda} = qz (@var{A}, @var{B})}\n\
 \n\
@@ -307,7 +307,7 @@ of @math{(A - s B)}.\n\
 \n\
 @item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
 \n\
-Computes QZ decomposition, generalized eigenvectors, and \n\
+Computes QZ@tie{}decomposition, generalized eigenvectors, and \n\
 generalized eigenvalues of @math{(A - s B)}\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\

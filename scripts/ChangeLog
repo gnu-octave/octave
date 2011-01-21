@@ -1,5 +1,13 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* scripts/linear-algebra/condest.m, 
+	scripts/linear-algebra/onenormest.m, scripts/linear-algebra/qzhess.m,
+	scripts/polynomial/polyfit.m, scripts/special-matrix/pascal.m: Use 
+	non-breaking spaces between certain adjectives and their linked nouns
+	in docstrings
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* image/imread.m, image/imwrite.m, signal/periodogram.m,
 	strings/isstrprop.m: Use @nospell macro on certain words in docstring.
 

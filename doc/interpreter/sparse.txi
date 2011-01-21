@@ -420,9 +420,9 @@ the nodes are given in the n-by-2 matrix @code{xy}.
 @end float
 @end ifset
 
-The dependencies between the nodes of a Cholesky factorization can be
+The dependencies between the nodes of a Cholesky@tie{}factorization can be
 calculated in linear time without explicitly needing to calculate the
-Cholesky factorization by the @code{etree} command.  This command
+Cholesky@tie{}factorization by the @code{etree} command.  This command
 returns the elimination tree of the matrix and can be displayed
 graphically by the command @code{treeplot(etree(A))} if @code{A} is
 symmetric or @code{treeplot(etree(A+A'))} otherwise.
@@ -654,7 +654,7 @@ positive definite matrix.
 @caption{Structure of simple sparse matrix.}
 @end float
 
-The standard Cholesky factorization of this matrix can be
+The standard Cholesky@tie{}factorization of this matrix can be
 obtained by the same command that would be used for a full
 matrix.  This can be visualized with the command 
 @code{r = chol(A); spy(r);}.
@@ -668,7 +668,7 @@ The original matrix had
 @ifset htmltex
 598
 @end ifset
-non-zero terms, while this Cholesky factorization has
+non-zero terms, while this Cholesky@tie{}factorization has
 @ifinfo
 @ifnothtml
 71,
@@ -696,19 +696,19 @@ r = chol(A(q,q)); spy(r)}.  This gives
 @end ifset
 non-zero terms which is a significant improvement.
 
-The Cholesky factorization itself can be used to determine the
+The Cholesky@tie{}factorization itself can be used to determine the
 appropriate sparsity preserving reordering of the matrix during the
 factorization, In that case this might be obtained with three return
 arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
-@caption{Structure of the un-permuted Cholesky factorization of the above matrix.}
+@caption{Structure of the un-permuted Cholesky@tie{}factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm
 @center @image{spcholperm,4in}
-@caption{Structure of the permuted Cholesky factorization of the above matrix.}
+@caption{Structure of the permuted Cholesky@tie{}factorization of the above matrix.}
 @end float
 
 In the case of an asymmetric matrix, the appropriate sparsity
@@ -763,7 +763,7 @@ continue, else goto 3b.
 
 @enumerate
 @item If the matrix is Hermitian, with a positive real diagonal, attempt
-      Cholesky factorization using @sc{lapack} xPTSV.
+      Cholesky@tie{}factorization using @sc{lapack} xPTSV.
 
 @item If the above failed or the matrix is not Hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
@@ -771,7 +771,7 @@ continue, else goto 3b.
 @end enumerate
 
 @item If the matrix is Hermitian with a positive real diagonal, attempt
-      Cholesky factorization using @sc{lapack} xPBTRF.
+      Cholesky@tie{}factorization using @sc{lapack} xPBTRF.
 
 @item if the above failed or the matrix is not Hermitian with a positive
       real diagonal use Gaussian elimination with pivoting using 
@@ -786,9 +786,9 @@ or lower triangular matrix with row permutations, perform a sparse forward
 or backward substitution, and goto 8
 
 @item If the matrix is square, Hermitian with a real positive diagonal, attempt
-sparse Cholesky factorization using @sc{cholmod}.
+sparse Cholesky@tie{}factorization using @sc{cholmod}.
 
-@item If the sparse Cholesky factorization failed or the matrix is not
+@item If the sparse Cholesky@tie{}factorization failed or the matrix is not
 Hermitian with a real positive diagonal, and the matrix is square, factorize 
 using @sc{umfpack}.
 
@@ -804,11 +804,11 @@ divided by the number of non-zero values in the matrix.  The banded matrix
 solvers can be entirely disabled by using @dfn{spparms} to set @code{bandden}
 to 1 (i.e., @code{spparms ("bandden", 1)}).
 
-The QR solver factorizes the problem with a Dulmage-Mendelsohn, to
+The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn, to
 separate the problem into blocks that can be treated as over-determined,
 multiple well determined blocks, and a final over-determined block.  For
 matrices with blocks of strongly connected nodes this is a big win as
-LU decomposition can be used for many blocks.  It also significantly
+LU@tie{}decomposition can be used for many blocks.  It also significantly
 improves the chance of finding a solution to over-determined problems
 rather than just returning a vector of @dfn{NaN}'s.
 

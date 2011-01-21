@@ -1,5 +1,11 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* doc/interpreter/diagperm.txi, doc/interpreter/linalg.txi,
+	doc/interpreter/sparse.txi: Use non-breaking spaces between certain
+	adjectives and their linked nouns in docstrings.
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* doc/interpreter/doccheck/README: Update documentation for
 	documentation scripts.
 

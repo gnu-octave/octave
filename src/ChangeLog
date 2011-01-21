@@ -1,5 +1,11 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* src/DLD-FUNCTIONS/chol.cc, src/DLD-FUNCTIONS/luinc.cc,
+	src/DLD-FUNCTIONS/qz.cc: Use non-breaking spaces between certain
+	adjectives and their linked nouns in docstrings
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* src/DLD-FUNCTIONS/str2double.cc, src/data.cc, src/mappers.cc,
 	src/variables.cc: Use @nospell macro on certain words in docstring.
 

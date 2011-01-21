@@ -29,7 +29,7 @@
 ##
 ## @table @samp
 ## @item R
-## Triangular factor R from the QR decomposition.
+## Triangular factor R from the QR@tie{}decomposition.
 ##
 ## @item X
 ## The Vandermonde matrix used to compute the polynomial coefficients.

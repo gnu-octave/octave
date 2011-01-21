@@ -416,7 +416,7 @@ making it possible to conveniently obtain the permutation indices.
 @section Some Examples of Usage
 
 The following can be used to solve a linear system @code{A*x = b}
-using the pivoted LU factorization:
+using the pivoted LU@tie{}factorization:
 
 @example
 @group

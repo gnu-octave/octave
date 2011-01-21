@@ -35,7 +35,7 @@
 ## @end example
 ##
 ## The Hessenberg-triangular decomposition is the first step in
-## Moler and Stewart's QZ decomposition algorithm.
+## Moler and Stewart's QZ@tie{}decomposition algorithm.
 ##
 ## Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
 ## edition}.

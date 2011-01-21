@@ -21,7 +21,7 @@
 ## @deftypefn  {Function File} {} pascal (@var{n})
 ## @deftypefnx {Function File} {} pascal (@var{n}, @var{t})
 ## Return the Pascal matrix of order @var{n} if @code{@var{t} = 0}.
-## @var{t} defaults to 0.  Return lower triangular Cholesky factor of
+## @var{t} defaults to 0.  Return lower triangular Cholesky@tie{}factor of
 ## the Pascal matrix if @code{@var{t} = 1}.  This matrix is its own
 ## inverse, that is @code{pascal (@var{n}, 1) ^ 2 == eye (@var{n})}.
 ## If @code{@var{t} = -1}, return its absolute value.  This is the

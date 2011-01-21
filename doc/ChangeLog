@@ -1,5 +1,10 @@
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
+	* doc/interpreter/doccheck/README: Update documentation for
+	documentation scripts.
+
+2011-01-20  Rik  <octave@nomad.inbox5.com>
+
 	* doc/interpreter/doccheck/aspell-octave.en.pws,
 	doc/interpreter/plot.txi: Use @nospell macro on certain words in
 	docstring.

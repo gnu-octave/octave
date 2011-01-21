@@ -3754,7 +3754,12 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
         {
           octave_idx_type lda = a.rows ();
 
-          retval = ComplexMatrix (a_nr, b_nc);
+          // FIXME -- looking at the reference BLAS, it appears that it
+          // should not be necessary to initialize the output matrix if
+          // BETA is 0 in the call to ZHERK, but ATLAS appears to
+          // use the result matrix before zeroing the elements.
+
+          retval = ComplexMatrix (a_nr, b_nc, 0.0);
           Complex *c = retval.fortran_vec ();
 
           const char ctra = get_blas_trans_arg (tra, cja);

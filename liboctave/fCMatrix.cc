@@ -3750,7 +3750,12 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
         {
           octave_idx_type lda = a.rows ();
 
-          retval = FloatComplexMatrix (a_nr, b_nc);
+          // FIXME -- looking at the reference BLAS, it appears that it
+          // should not be necessary to initialize the output matrix if
+          // BETA is 0 in the call to CHERK, but ATLAS appears to
+          // use the result matrix before zeroing the elements.
+
+          retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
           FloatComplex *c = retval.fortran_vec ();
 
           const char ctra = get_blas_trans_arg (tra, cja);

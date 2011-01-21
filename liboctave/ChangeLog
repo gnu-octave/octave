@@ -1,3 +1,8 @@
+2011-01-21  John W. Eaton  <jwe@octave.org>
+
+	* CMatrix.cc (xgemm): Initialize output matrix for call to ZHERK.
+	* fCMatrix.cc (xgemm): Initialize output matrix for call to CHERK.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* Array-b.cc, Array-d.cc, Array-f.cc, Array-util.cc,

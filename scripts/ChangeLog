@@ -1,5 +1,6 @@
 2011-01-22  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/subplot.m: Set "box" to "on" by default (same as Matlab).
 	* plot/cylinder.m: Remove console output from demo.
 
 2011-01-22  Konstantinos Poulios  <logari81@googlemail.com>

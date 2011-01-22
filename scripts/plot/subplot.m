@@ -165,7 +165,8 @@ function h = subplot (rows, cols, index, varargin)
       pos = subplot_position (rows, cols, index, "outerposition", units);
       pos2 = subplot_position (rows, cols, index, "position", units);
       tmp = axes ("outerposition", pos, "position", pos2,
-                  "activepositionproperty", "outerposition");
+                  "activepositionproperty", "outerposition",
+                  "box", "off");
     endif
 
     if (align_axes && strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))

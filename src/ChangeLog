@@ -1,3 +1,8 @@
+2011-01-22  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_table::parent_classes):
+	Also add parents of parents to the list.  Bug #32210.
+
 2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::subsasgn): Find appropriate unique base

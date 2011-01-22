@@ -1866,6 +1866,19 @@ public:
     if (it != parent_map.end ())
       retval = it->second;
 
+    for (std::list<std::string>::const_iterator lit = retval.begin ();
+         lit != retval.end (); lit++)
+      {
+        // Search for parents of parents and append them to the list.
+
+        // FIXME -- should we worry about a circular inheritance graph?
+
+        std::list<std::string> parents = parent_classes (*lit);
+
+        if (! parents.empty ())
+          retval.insert (retval.end (), parents.begin (), parents.end ());
+      }
+
     return retval;
   }
 

@@ -168,6 +168,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   set (ax(2), "position", get (ax(1), "position"));
   set (ax(2), "xlim", xlim);
   set (ax(2), "color", "none");
+  set (ax(2), "box", "off");
 
   ## Add invisible text objects that when destroyed,
   ## also remove the other axis

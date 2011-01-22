@@ -1,3 +1,8 @@
+2011-01-22  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* plot/plotyy.m: Set box property to off to allow both y-axes colors
+	to be visible for OpenGL backends.
+
 2011-01-22  John W. Eaton  <jwe@octave.org>
 
 	* plot/private/__scatter__.m: Don't accept "filled" as a color.

@@ -1,3 +1,19 @@
+2011-01-22  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.h.in, graphics.cc (xmtick, ymtick, zmtick):
+	New properties holding minor ticks positions.
+	(axes::properties::calc_ticks_and_lims): Calculation of minor ticks
+	positions.
+	* gl-render.h, gl-render.cc
+	(opengl_renderer::render_grid,	opengl_renderer::render_tickmarks,
+	opengl_renderer::render_ticktexts): New functions.
+	(opengl_renderer::draw_axes): Make use of new rendering functions
+	and minor ticks positions.
+	Correct axis label positioning for x axis at top and y axis at right
+	position. Bug #31800.
+	Change axis positioning policy for 3D plots, keeping x and y axis
+	always at bottom.
+
 2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* gl-render.cc: Use octave_refcount for refcounting.

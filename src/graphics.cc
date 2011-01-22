@@ -4371,6 +4371,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 void
 axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& ticks,
+                                       array_property& mticks,
                                        bool limmode_is_auto, bool is_logscale)
 {
   // FIXME -- add log ticks and lims
@@ -4432,6 +4433,19 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     }
 
   ticks = tmp_ticks;
+
+  int n = is_logscale ? 9 : 4;
+  Matrix tmp_mticks (1, n * tmp_ticks.numel ());
+
+  for (int i = 0; i < tmp_ticks.numel ()-1; i++)
+    {
+      double d = (tmp_ticks (i+1) - tmp_ticks (i)) / (n+1);
+      for (int j = 0; j < n; j++)
+        {
+          tmp_mticks (n*i+j) = tmp_ticks (i) + d * (j+1);
+        }
+    }
+  mticks = tmp_mticks;
 }
 
 void

@@ -117,6 +117,22 @@ protected:
   virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data);
 
+  virtual void render_grid (std::string& gridstyle, Matrix& ticks,
+                            double lim1, double lim2,
+                            double p1, double p1N, double p2, double p2N,
+                            int xyz, bool is_3D);
+
+  virtual void render_tickmarks(Matrix& ticks, double lim1, double lim2,
+                                double p1, double p1N, double p2, double p2N,
+                                double dx, double dy, double dz,
+                                int xyz, bool doubleside);
+
+  virtual void render_ticktexts(Matrix& ticks, string_vector& ticklabels,
+                                double lim1, double lim2,
+                                double p1, double p2,
+                                int xyz, int ha, int va,
+                                int& wmax, int& hmax);
+
 private:
   opengl_renderer (const opengl_renderer&)
     : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),

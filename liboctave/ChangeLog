@@ -11,7 +11,7 @@
 	* oct-shlib.h: Ditto.
 	* sparse-base-chol.h: Ditto.
 
-2011-01-21  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+2011-01-21  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* oct-fftw.h (class octave_fftw_planner): Disallow copying
 	(class octave_float_fftw_planner): Likewise.
@@ -169,7 +169,7 @@
 	* dMatrix.cc (get_blas_trans_arg): Likewise.
 	* fCMatrix.cc (get_blas_trans_arg): Likewise.
 	* fMatrix.cc (get_blas_trans_arg): Likewise.
-	Suggested by Pascal Dupuis  <Pascal.Dupuis@worldonline.be>.
+	Suggested by Pascal Dupuis <Pascal.Dupuis@worldonline.be>.
 
 2011-01-13  John W. Eaton  <jwe@octave.org>
 

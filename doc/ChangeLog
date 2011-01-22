@@ -23,7 +23,7 @@
 
 	* interpreter/interpimages.m, interpreter/geometryimages.m,
 	interpreter/sparseimages.m, interpreter/plotimages.m:
-	Call graphics_toolkit, not backend. 
+	Call graphics_toolkit, not backend.
 
 2011-01-19  Rik  <octave@nomad.inbox5.com>
 
@@ -67,7 +67,7 @@
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/octave.texi, interpreter/poly.txi: Add undocumented 
+	* interpreter/octave.texi, interpreter/poly.txi: Add undocumented
 	polyaffine to documentation.
 
 2011-01-14  Rik  <octave@nomad.inbox5.com>
@@ -144,7 +144,7 @@
 
 2011-01-03  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/octave.texi: Add new menu item "Correlation and 
+	* interpreter/octave.texi: Add new menu item "Correlation and
 	Regression Analysis"
 	* interpreter/stats.txi: Update documentation chapter on
 	basic statistics.

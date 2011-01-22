@@ -6,7 +6,7 @@
 2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* ov-class.cc (octave_class::subsasgn): Find appropriate unique base
-	before trying any indexed assignment.
+	before trying any indexed assignment.  Bug #32182.
 
 2011-01-22  Konstantinos Poulios  <logari81@googlemail.com>
 
@@ -31,12 +31,12 @@
 	* ov-base.h: Ditto.
 	* pt-mat.cc: Ditto.
 
-2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+2011-01-22  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* ov-mex-fcn.h, txt-eng-ft.cc, mex.cc:
 	Initialize all data members in initialization list.
 
-2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+2011-01-22  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (fltk_uimenu): Disallow copying.
 	(class plot_window): Likewise.

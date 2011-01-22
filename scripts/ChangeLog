@@ -41,9 +41,9 @@
 
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
-	* scripts/linear-algebra/condest.m, 
+	* scripts/linear-algebra/condest.m,
 	scripts/linear-algebra/onenormest.m, scripts/linear-algebra/qzhess.m,
-	scripts/polynomial/polyfit.m, scripts/special-matrix/pascal.m: Use 
+	scripts/polynomial/polyfit.m, scripts/special-matrix/pascal.m: Use
 	non-breaking spaces between certain adjectives and their linked nouns
 	in docstrings
 
@@ -413,7 +413,7 @@
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* specfun/nthroot.m: Add Seealso references to docstring.
-	
+
 2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/module.mk: Remove texas_lotto.m from build system.

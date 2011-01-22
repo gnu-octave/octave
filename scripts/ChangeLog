@@ -1,5 +1,7 @@
 2011-01-22  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/meshc.m: Add note: gnuplot does not support filled 3D patches,
+	or mixing non-filled contours with filled surfaces.
 	* plot/subplot.m: Set "box" to "on" by default (same as Matlab).
 	* plot/cylinder.m: Remove console output from demo.
 

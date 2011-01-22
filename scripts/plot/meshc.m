@@ -37,6 +37,10 @@ function h = meshc (varargin)
 
   set (tmp, "facecolor", "w");
   set (tmp, "edgecolor", "flat");
+  ## FIXME - gnuplot does not support a filled surface and a
+  ## non-filled contour. 3D filled patches are also not supported.
+  ## Thus, the facecolor will be transparent for the gnuplot
+  ## backend.
 
   if (! ishold ())
     set (ax, "view", [-37.5, 30],

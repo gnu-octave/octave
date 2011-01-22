@@ -1,5 +1,10 @@
 2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
 
+	* ov-mex-fcn.h, txt-eng-ft.cc, mex.cc:
+	Initialize all data members in initialization list.
+
+2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+
 	* DLD-FUNCTIONS/__init_fltk__.cc (fltk_uimenu): Disallow copying.
 	(class plot_window): Likewise.
 	* c-file-ptr-stream.h (class c_file_ptr_buf): Likewise.

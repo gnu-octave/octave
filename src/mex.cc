@@ -1501,13 +1501,12 @@ public:
 
   mxArray_sparse (mxClassID id_arg, int m, int n, int nzmax_arg,
                   mxComplexity flag = mxREAL)
-    : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg)
-  {
-    pr = (calloc (nzmax, get_element_size ()));
-    pi = (flag == mxCOMPLEX ? calloc (nzmax, get_element_size ()) : 0);
-    ir = static_cast<mwIndex *> (calloc (nzmax, sizeof (mwIndex)));
-    jc = static_cast<mwIndex *> (calloc (n + 1, sizeof (mwIndex)));
-  }
+    : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
+      pr (calloc (nzmax, get_element_size ())),
+      pi (flag == mxCOMPLEX ? calloc (nzmax, get_element_size ()) : 0),
+      ir (static_cast<mwIndex *> (calloc (nzmax, sizeof (mwIndex)))),
+      jc (static_cast<mwIndex *> (calloc (n + 1, sizeof (mwIndex))))
+    { }
 
   mxArray_sparse *dup (void) const { return new mxArray_sparse (*this); }
 

@@ -43,7 +43,9 @@ octave_mex_function : public octave_function
 {
 public:
 
-  octave_mex_function (void) { }
+  octave_mex_function (void)
+    : mex_fcn_ptr (), exit_fcn_ptr (), have_fmex (), sh_lib (), 
+      t_checked (), system_fcn_file () { }
 
   octave_mex_function (void *fptr, bool fmex, const octave_shlib& shl,
                        const std::string& nm = std::string ());

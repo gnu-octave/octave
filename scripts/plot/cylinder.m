@@ -38,9 +38,9 @@
 ##
 ## @example
 ## @group
-## disp ("plotting a cone")
 ## [x, y, z] = cylinder (10:-1:0,50);
 ## surf (x, y, z);
+## title ("a cone")
 ## @end group
 ## @end example
 ## @seealso{sphere}
@@ -86,6 +86,6 @@ function [xx, yy, zz] = cylinder (varargin)
 endfunction
 
 %!demo
-%! disp ("plotting a cone")
 %! [x, y, z] = cylinder (10:-1:0,50);
 %! surf (x, y, z);
+%! title ("a cone")

@@ -59,6 +59,13 @@ private:
   tree_expression *op_lhs;
   tree_expression *op_rhs;
   octave_value::compound_binary_op etype;
+
+  // No copying!
+
+  tree_compound_binary_expression (const tree_compound_binary_expression&);
+
+  tree_compound_binary_expression& operator =
+    (const tree_compound_binary_expression&);
 };
 
 // a "virtual constructor"

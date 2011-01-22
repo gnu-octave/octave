@@ -608,6 +608,13 @@ public:
     }
 
 private:
+
+  // No copying!
+
+  fltk_uimenu (const fltk_uimenu&);
+
+  fltk_uimenu operator = (const fltk_uimenu&);
+
   Fl_Menu_Bar* menubar;
 };
 
@@ -870,6 +877,13 @@ public:
   }
 
 private:
+
+  // No copying!
+
+  plot_window (const plot_window&);
+
+  plot_window& operator = (const plot_window&);
+
   // window name -- this must exists for the duration of the window's
   // life
   std::string window_label;

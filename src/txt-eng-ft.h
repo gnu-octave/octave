@@ -81,6 +81,12 @@ public:
 private:
   int rotation_to_mode (double rotation) const;
 
+  // No copying!
+
+  ft_render (const ft_render&);
+
+  ft_render& operator = (const ft_render&);
+
 private:
   FT_Face face;
   Matrix bbox;

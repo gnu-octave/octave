@@ -1881,6 +1881,13 @@ public:
   int ungetc (int c) { ::xunput (c, buf); return 0; }
 
 private:
+
+  // No copying!
+
+  flex_stream_reader (const flex_stream_reader&);
+
+  flex_stream_reader& operator = (const flex_stream_reader&);	
+
   char *buf;
 };
 

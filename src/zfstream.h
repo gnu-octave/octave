@@ -199,6 +199,13 @@ protected:
 //  virtual int_type pbackfail(int_type c = traits_type::eof());
 
 private:
+
+  // No copying!
+
+  gzfilebuf (const gzfilebuf&);
+
+  gzfilebuf& operator = (const gzfilebuf&);
+
   /**
    *  @brief  Allocate internal buffer.
    *

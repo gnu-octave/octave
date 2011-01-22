@@ -64,6 +64,14 @@ protected:
   pid_t proc_pid;
 
   octave_procbuf *next;
+
+private:
+
+  // No copying!
+
+  octave_procbuf (const octave_procbuf&);
+
+  octave_procbuf& operator = (const octave_procbuf&);
 };
 
 extern void symbols_of_oct_procbuf (void);

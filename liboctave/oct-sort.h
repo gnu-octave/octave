@@ -218,6 +218,12 @@ private:
     // and keeping all the info explicit simplifies the code.
     octave_idx_type n;
     struct s_slice pending[MAX_MERGE_PENDING];
+
+    // No copying!
+
+    MergeState (const MergeState&);
+
+    MergeState& operator = (const MergeState&);
   };
 
   compare_fcn_type compare;
@@ -322,6 +328,12 @@ private:
   void nth_element (T *data, octave_idx_type nel,
                     octave_idx_type lo, octave_idx_type up,
                     Comp comp);
+
+  // No copying!
+
+  octave_sort (const octave_sort&);
+
+  octave_sort& operator = (const octave_sort&);
 };
 
 template <class T>

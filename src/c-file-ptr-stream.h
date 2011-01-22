@@ -92,6 +92,12 @@ protected:
 private:
 
   int_type underflow_common (bool);
+
+  // No copying!
+
+  c_file_ptr_buf (const c_file_ptr_buf&);
+
+  c_file_ptr_buf& operator = (const c_file_ptr_buf&);
 };
 
 // FIXME -- the following three classes could probably share
@@ -122,6 +128,12 @@ public:
 private:
 
   BUF_T *buf;
+
+  // No copying!
+
+  c_file_ptr_stream (const c_file_ptr_stream&);
+
+  c_file_ptr_stream& operator = (const c_file_ptr_stream&);
 };
 
 typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf> i_c_file_ptr_stream;
@@ -199,6 +211,12 @@ protected:
 private:
 
   int_type underflow_common (bool);
+
+  // No copying!
+
+  c_zfile_ptr_buf (const c_zfile_ptr_buf&);
+
+  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&);
 };
 
 typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf> i_c_zfile_ptr_stream;

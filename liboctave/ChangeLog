@@ -1,3 +1,14 @@
+2011-01-21  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+
+	* oct-fftw.h (class octave_fftw_planner): Disallow copying
+	(class octave_float_fftw_planner): Likewise.
+	* oct-sort.h (class octave_sort): Likewise.
+	(struct oct_sort::MergeState): Likewise.
+	* SparseCmplxQR.h (class SparseComplexQR::SparseComplexQR_rep):
+	Likewise.
+	* sparse-base-chol.h (class sparse_base_cho::sparse_base_chol_rep):
+	Likewise.
+
 2011-01-21  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (xgemm): Initialize output matrix for call to ZHERK.

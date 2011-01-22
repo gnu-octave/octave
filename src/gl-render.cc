@@ -323,6 +323,13 @@ private:
     { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
 
 private:
+
+  // No copying!
+
+  opengl_tesselator (const opengl_tesselator&);  
+
+  opengl_tesselator operator = (const opengl_tesselator&);  
+
   GLUtesselator *glu_tess;
   bool fill;
 };
@@ -527,6 +534,13 @@ protected:
     }
 
 private:
+
+  // No copying!
+
+  patch_tesselator (const patch_tesselator&);
+
+  patch_tesselator& operator = (const patch_tesselator&);
+
   opengl_renderer *renderer;
   int color_mode;       // 0: uni,  1: flat, 2: interp
   int light_mode;       // 0: none, 1: flat, 2: gouraud

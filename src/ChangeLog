@@ -1,3 +1,38 @@
+2011-01-22  Pascal Dupuis <Pascal.Dupuis@worldonline.be>
+
+	* DLD-FUNCTIONS/__init_fltk__.cc (fltk_uimenu): Disallow copying.
+	(class plot_window): Likewise.
+	* c-file-ptr-stream.h (class c_file_ptr_buf): Likewise.
+	(class c_file_ptr_stream): Likewise.
+	(class c_zfile_ptr_buf): Likewise.
+	* gl-render.cc (class opengl_tesselator): Likewise.
+	(class patch_tesselator): Likewise.
+	* lex.ll (class flex_stream_reader): Likewise.
+	* mex.cc (class mex): Likewise.
+	* oct-procbuf.h (class octave_procbuf): Likewise.
+	* pt-cbinop.h (class tree_compound_binary_expression): Likewise.
+	* symtab.h (class scope_id_cache): Likewise.
+	(class symbol_table): Likewise.
+	* txt-eng-ft.h (class ft_manager): Likewise.
+	(class ft_render): Likewise.
+	* unwind-prot.h (class unwind_protect::elem): Likewise.
+	(class unwind_protect::fcn_arg_elem): Likewise.
+	(class unwind_protect::method_elem): Likewise.
+	(class unwind_protect::restore_var_elem): Likewise.
+	(class unwind_protect::delete_ptr_elem): Likewise.
+	(class unwind_protect): Likewise.
+	* zfstream.h (class gzfilebuf): Likewise.
+
+	* mex.cc (class mxArray_octave_value): Disallow assignment.
+	(class mxArray_matlab): Likewise.
+	(class mxArray_number): Likewise.
+	(class mxArray_sparse): Likewise.
+	(class mxArray_struct): Likewise.
+	(class mxArray_cell): Likewise.
+
+	* unwind-prot.h (unwind_protect::elem::elem):
+	Provide default constructor.
+
 2011-01-21  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* src/graphics.cc (axes::properties::set_xlabel,

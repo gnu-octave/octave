@@ -715,6 +715,11 @@ private:
   mutable char *class_name;
   mutable mwSize ndims;
   mutable mwSize *dims;
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_octave_value& operator = (const mxArray_octave_value&);
 };
 
 // The base class for the Matlab-style representation, used to handle
@@ -1093,6 +1098,11 @@ private:
   {
     error ("invalid type for operation");
   }
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_matlab& operator = (const mxArray_matlab&);
 };
 
 // Matlab-style numeric, character, and logical data.
@@ -1476,6 +1486,11 @@ private:
 
   void *pr;
   void *pi;
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_number& operator = (const mxArray_number&);
 };
 
 // Matlab-style sparse arrays.
@@ -1641,6 +1656,11 @@ private:
     if (jc)
       memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
   }
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_sparse& operator = (const mxArray_sparse&);
 };
 
 // Matlab-style struct arrays.
@@ -1881,6 +1901,11 @@ private:
         data[i] = ptr ? ptr->dup () : 0;
       }
   }
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_struct& operator = (const mxArray_struct& val);
 };
 
 // Matlab-style cell arrays.
@@ -1958,6 +1983,11 @@ private:
         data[i] = ptr ? ptr->dup () : 0;
       }
   }
+
+  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // do have a copy constructor.
+
+  mxArray_cell& operator = (const mxArray_cell&);
 };
 
 // ------------------------------------------------------------------
@@ -2375,6 +2405,12 @@ private:
 #endif
 
   }
+
+  // No copying!
+
+  mex (const mex&);
+
+  mex& operator = (const mex&);
 };
 
 // List of memory resources we allocated.

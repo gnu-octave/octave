@@ -100,6 +100,12 @@ public:
 
 private:
 
+  // No copying!
+
+  octave_fftw_planner (const octave_fftw_planner&);
+
+  octave_fftw_planner& operator = (const octave_fftw_planner&);
+
   static octave_fftw_planner *instance;
 
   fftw_plan
@@ -228,6 +234,12 @@ public:
   }
 
 private:
+
+  // No copying!
+
+  octave_float_fftw_planner (const octave_float_fftw_planner&);
+
+  octave_float_fftw_planner& operator = (const octave_float_fftw_planner&);
 
   static octave_float_fftw_planner *instance;
 

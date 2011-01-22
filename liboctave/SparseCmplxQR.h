@@ -73,6 +73,14 @@ protected:
 
     CXSPARSE_ZNAME (n) *N;
 #endif
+  private:
+
+    // No copying!
+
+    SparseComplexQR_rep (const SparseComplexQR_rep&);
+
+    SparseComplexQR_rep operator = (const SparseComplexQR_rep&);
+
   };
 private:
   SparseComplexQR_rep *rep;

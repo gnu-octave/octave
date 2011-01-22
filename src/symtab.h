@@ -100,6 +100,12 @@ public:
 
   private:
 
+    // No copying!
+
+    scope_id_cache (const scope_id_cache&);
+
+    scope_id_cache& operator = (const scope_id_cache&);
+
     static scope_id_cache *instance;
 
     // The next available scope not in the free list.
@@ -1884,6 +1890,12 @@ public:
   static void cleanup (void);
 
 private:
+
+  // No copying!
+
+  symbol_table (const symbol_table&);
+
+  symbol_table& operator = (const symbol_table&);
 
   typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;
   typedef std::map<std::string, symbol_record>::iterator table_iterator;

@@ -64,9 +64,17 @@ public:
               : 0); }
 
 private:
+
   static ft_manager *instance;
 
 private:
+
+  // No copying!
+
+  ft_manager (const ft_manager&);
+
+  ft_manager& operator = (const ft_manager&);
+
   ft_manager (void)
     {
       if (FT_Init_FreeType (&library))

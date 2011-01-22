@@ -43,10 +43,21 @@ public:
     elem *next;
 
   public:
+    elem (void) : next (0) { }
+
     virtual void run (void) { }
+
     virtual ~elem (void) { }
 
     friend class unwind_protect;
+
+  private:
+
+    // No copying!
+
+    elem (const elem&);
+
+    elem& operator = (const elem&);
   };
 
   // An element that merely runs a void (*)(void) function.
@@ -76,6 +87,13 @@ public:
     void run (void) { e_fcn (e_arg); }
 
   private:
+
+    // No copying!
+
+    fcn_arg_elem (const fcn_arg_elem&);
+
+    fcn_arg_elem& operator = (const fcn_arg_elem&);
+
     void (*e_fcn) (T);
     T e_arg;
   };
@@ -109,6 +127,12 @@ public:
     void run (void) { (e_obj->*e_method) (); }
 
   private:
+    // No copying! XXX
+
+    method_elem (const method_elem&);
+
+    method_elem operator = (const method_elem&);
+
     T *e_obj;
     void (T::*e_method) (void);
   };
@@ -125,6 +149,13 @@ public:
     void run (void) { *e_ptr = e_val; }
 
   private:
+
+    // No copying!
+
+    restore_var_elem (const restore_var_elem&);
+
+    restore_var_elem& operator = (const restore_var_elem&);
+
     T *e_ptr, e_val;
   };
 
@@ -140,7 +171,14 @@ public:
     void run (void) { delete e_ptr; }
 
   private:
+
     T *e_ptr;
+
+    // No copying!
+
+    delete_ptr_elem (const delete_ptr_elem&);
+
+    delete_ptr_elem operator = (const delete_ptr_elem&);
   };
 
   unwind_protect (void) : head () { }
@@ -267,6 +305,12 @@ public:
 private:
 
   elem *head;
+
+  // No copying!
+
+  unwind_protect (const unwind_protect&);
+
+  unwind_protect& operator = (const unwind_protect&);
 };
 
 // Like unwind_protect, but this one will guard against the possibility of seeing

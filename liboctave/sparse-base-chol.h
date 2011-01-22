@@ -97,8 +97,11 @@ protected:
 
     void drop_zeros (const cholmod_sparse* S);
 
-    // No assignment
-    sparse_base_chol_rep& operator = (const sparse_base_chol_rep& a);
+    // No copying!
+
+    sparse_base_chol_rep (const sparse_base_chol_rep&);
+
+    sparse_base_chol_rep& operator = (const sparse_base_chol_rep&);
   };
 #else
   class sparse_base_chol_rep
@@ -142,8 +145,11 @@ protected:
 
     octave_idx_type init (const chol_type& a, bool natural = true);
 
-    // No assignment
-    sparse_base_chol_rep& operator = (const sparse_base_chol_rep& a);
+    // No copying!
+
+    sparse_base_chol_rep (const sparse_base_chol_rep&);
+
+    sparse_base_chol_rep& operator = (const sparse_base_chol_rep&);
   };
 #endif
 

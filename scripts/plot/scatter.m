@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c})
-## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c}, 'filled')
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c}, @var{style})
 ## @deftypefnx {Function File} {} scatter (@var{x}, @var{y}, @var{s}, @var{c}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} scatter (@dots{}, "filled")
 ## @deftypefnx {Function File} {} scatter (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} scatter (@dots{})
 ##
@@ -41,7 +41,7 @@
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot} command.
-## If the argument 'filled' is given then the markers as filled.  All
+## If the argument @code{"filled"} is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
 ## The optional return value @var{h} provides a handle to the patch object

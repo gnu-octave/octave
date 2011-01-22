@@ -71,7 +71,8 @@ function hg = __scatter__ (varargin)
         c = c(:);
       endif
     endif
-  elseif (firstnonnumeric == istart && ischar (varargin{istart}))
+  elseif (firstnonnumeric == istart && ischar (varargin{istart})
+          && ! strcmpi (varargin{istart}, "filled"))
     c = varargin{istart};
     firstnonnumeric++;
   else

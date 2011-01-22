@@ -573,6 +573,32 @@ octave_class::subsasgn (const std::string& type,
         }
     }
 
+  // Find the class in which this method resides before
+  // attempting to do the indexed assignment.
+
+  std::string method_class = get_current_method_class ();
+
+  octave_base_value *obvp = unique_parent_class (method_class);
+  if (obvp != this)
+    {
+
+      if (obvp)
+        {
+          obvp->subsasgn (type, idx, rhs);
+          if (! error_state)
+            {
+              count++;
+              retval = octave_value (this);
+            }
+          else
+            gripe_failed_assignment ();
+        }
+      else
+        error ("malformed class");
+
+      return retval;
+    }
+
   // FIXME -- this block of code is the same as the body of
   // octave_struct::subsasgn.  Maybe it could be shared instead of
   // duplicated.
@@ -766,38 +792,39 @@ octave_class::subsasgn (const std::string& type,
 
         case '.':
           {
-            // Find the class in which this method resides before
-            // attempting to access the requested field.
+            octave_value_list key_idx = idx.front ();
 
-            std::string method_class = get_current_method_class ();
+            assert (key_idx.length () == 1);
 
-            octave_base_value *obvp = unique_parent_class (method_class);
+            std::string key = key_idx(0).string_value ();
 
-            if (obvp)
+            if (t_rhs.is_cs_list ())
               {
-                octave_value_list key_idx = idx.front ();
+                Cell tmp_cell = Cell (t_rhs.list_value ());
 
-                assert (key_idx.length () == 1);
+                // The shape of the RHS is irrelevant, we just want
+                // the number of elements to agree and to preserve the
+                // shape of the left hand side of the assignment.
 
-                std::string key = key_idx(0).string_value ();
+                if (numel () == tmp_cell.numel ())
+                  tmp_cell = tmp_cell.reshape (dims ());
 
-                if (! error_state)
-                  {
-                    obvp->assign (key, t_rhs);
-
-                    if (! error_state)
-                      {
-                        count++;
-                        retval = octave_value (this);
-                      }
-                    else
-                      gripe_failed_assignment ();
-                  }
-                else
-                  gripe_failed_assignment ();
+                map.setfield (key, tmp_cell);
               }
             else
-              error ("malformed class");
+              {
+                Cell tmp_cell(1, 1);
+                tmp_cell(0) = t_rhs.storable_value ();
+                map.setfield (key, tmp_cell);
+              }
+
+            if (! error_state)
+              {
+                count++;
+                retval = octave_value (this);
+              }
+            else
+              gripe_failed_assignment ();
           }
           break;
 

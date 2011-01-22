@@ -1,3 +1,8 @@
+2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
+
+	* ov-class.cc (octave_class::subsasgn): Find appropriate unique base
+	before trying any indexed assignment.
+
 2011-01-22  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in, graphics.cc (xmtick, ymtick, zmtick):

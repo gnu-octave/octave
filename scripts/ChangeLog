@@ -1,3 +1,8 @@
+2011-01-22  Rik  <octave@nomad.inbox5.com>
+
+	* miscellaneous/info.m: Use reference to bug tracker rather than
+	octave-dev mailing list.
+
 2011-01-22  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/meshc.m: Add note: gnuplot does not support filled 3D patches,

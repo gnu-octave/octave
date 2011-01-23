@@ -1,5 +1,10 @@
 2010-01-22  Rik  <octave@nomad.inbox5.com>
 
+	* HACKING: Revise and incorporate all of file ROADMAP.
+	* ROADMAP: Deleted.
+
+2010-01-22  Rik  <octave@nomad.inbox5.com>
+
 	* README.Windows: Reference README.MinGW
 	* README.MinGW: Replace placeholder with actual instructions
 

@@ -42,7 +42,7 @@ Obviously, if you are reading these notes, you did manage to check out
 this package from the repository.  For the record, you will find all the
 relevant information on downloading sources at:
 
-  http://savannah.gnu.org/hg/?group=octave
+  http://www.gnu.org/software/octave/download.html
 
 After checking out Octave, you will need to run the autogen.sh script:
 
@@ -91,16 +91,90 @@ and the master copy:
 
 should output no difference.
 
-Additional information about coding style 
+** Coding style
 
-This file will eventually be extended to explain more about updating
-Octave, preparing patches, and making releases.
+The most important advice is to follow any conventions you detect in the
+file being edited.  In addition, Octave maintainers have written a lot
+on the subject.  See "Appendix C: Tips and Standards" and
+"Appendix D: Contributing Guidelines" in the PDF documentation.
 
-Enjoy!
+* Bugs and patches
 
------
+See the file BUGS in this directory for more guidance on reporting bugs
+and preparing patches.
 
-Copyright (C) 2009 John W. Eaton
+* Code layout
+
+An overview of the directory layout of Octave's source files:
+
+  doc           -- Texinfo documentation for Octave
+
+  examples      -- some example files
+
+  libcruft      -- various numerical libraries (mostly Fortran)
+    amos           * bessel functions
+    blas-xtra      * wrappers for blas functions used in Octave
+    daspk          * large scale differential algebraic equation solver
+    dasrt          * differential algebraic equation solver with root finding
+    dassl          * differential-algebraic system solver
+    fftpack        * subroutines for fast fourier transforms
+    lapack-xtra    * wrappers for lapack functions used in Octave
+    misc           * miscellaneous utilities
+    odepack        * odinary differential equation solver
+    ordered-qz     * code for ordering eigenvalues for QZ factorization
+    quadpack       * subroutines for numerical integration
+    ranlib         * random number generators
+    slatec-err     * slatec error handling library
+    slatec-fn      * various special function subroutines
+
+  liboctave     -- the C++ interfaces to the numerical libraries and
+                   various OS facilities
+
+  scripts       -- functions written in the Octave language
+    audio          * play and record sound files (system dependent)
+    deprecated     * older deprecated functions
+    elfun          * elementary mathematical functions
+    @ftp           * ftp object class
+    general        * utility functions
+    geometry       * geometry algorithms
+    image          * image processing
+    help           * help subsystem functions
+    io             * input/output functions
+    linear-algebra * linear algebra stuff
+    miscellaneous  * stuff that doesn't fit anywhere else
+    optimization   * zero finders and minimizers
+    path           * functions for path manipulation
+    pkg            * the package manager
+    plot           * plotting functions
+    polynomial     * polynomial manipulation
+    set            * set manipulation
+    signal         * signal processing
+    sparse         * sparse matrix support
+    specfun        * special mathematical functions
+    special-matrix * functions for generating special types of matrices
+    startup        * initialization functions
+    statistics     * statistical functions, distributions, and tests
+    strings        * character string manipulation
+    testfun        * unit testing
+    time           * time and date functions
+
+  src           -- the interpreter itself
+
+  test          -- tests for the interpreter
+    test_*.m       * fixed tests for the interpreter
+    fntests.m      * script to run function tests embedded in C++ and .m files
+
+
+----
+John W. Eaton
+jwe@octave.org
+
+
+Last updated: Sat Jan 22 22:00:25 PST 2011
+
+################################################################################
+
+Copyright (C) 2009,2011 John W. Eaton
 
 This file is part of Octave.
 

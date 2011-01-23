@@ -7,39 +7,76 @@ Development releases are provided for people who want to help test,
 debug, and improve Octave.  Very little testing is done before making
 the development releases and they may even be made when Octave is in
 an inconsistent state.  It is possible that you will encounter a
-very obvious bug, such as failure to compile on *any* machine.  It is
+very obvious bug, such as a failure to compile on *any* machine.  It is
 likely that such bugs will be fixed by the next development release,
 so it really isn't necessary to report them unless they persist over
 more than one release.
 
 Please DO report other bugs in the development releases as soon as you
-find them by sending a message to octave-maintainers@octave.org (but
-first read the bug reporting guidelines provided at
-http://www.gnu.org/software/octave/bugs.html).
+find them.  Bugs should be reported to the bug tracker at
+'http://bugs.octave.org'.  Please read read the bug reporting
+guidelines (http://www.gnu.org/software/octave/bugs.html) before
+submitting an item.
 
 If you have a fix for a bug, or an enhancement to submit, send your
-patch to octave-maintainers@octave.org.  Here are some simple
-guidelines for submitting patches:
+patch to octave-maintainers@octave.org or submit it to the patch
+tracker at 'http://savannah.gnu.org/patch/?group=octave'. 
 
-  o Use "context diffs" for patches.  A typical command for generating
-    context diffs is "diff -rc octave-old octave-new".  If you are
-    using the Mercurial sources a patch generated with "hg export" is
-    preferred.
+By adhering to the following guidelines you can minimize the work that
+Octave maintainers need to do to apply your patch.  Maintaining Octave
+is a lot of work in the best of circumstances, and we can't keep up
+unless you do your best to help.
 
-  o Use the "minimalist approach" for patches.  That is, each patch
-    should address only one particular bug, new feature, etc.  Do not
-    save up many unrelated changes and submit them all in one big
-    patch, since in general, the larger the patch the more difficult
-    it is for me to decide if the patch is either correct or
-    desirable.
+   * Send an explanation with your changes of what problem they fix or
+     what improvement they bring about.  For a bug fix, just include a
+     copy of the bug report, and explain why the change fixes the bug.
 
-  o Submit a sample ChangeLog entry with your patch.  See the
-    existing Octave ChangeLog for examples of what a ChangeLog entry
-    should look like.
+   * Always include a proper bug report for the problem you think you
+     have fixed.  We need to convince ourselves that the change is
+     right before installing it.  Even if it is right, we might have
+     trouble judging it if we don't have a way to reproduce the problem.
+
+   * Include all the comments that are appropriate to help people
+     reading the source in the future understand why this change was
+     needed.
+
+   * Don't mix together changes made for different reasons.  Send them
+     _individually_.
+
+     If you make two changes for separate reasons, then we might not
+     want to install them both.  We might want to install just one.
+
+   * Use `diff -c' to make your diffs.  Diffs without context are hard
+     for us to install reliably.  More than that, they make it hard for
+     us to study the diffs to decide whether we want to install them.
+     Unified diff format is better than contextless diffs, but not as
+     easy to read as `-c' format.
+
+     If you have GNU diff, use `diff -cp', which shows the name of the
+     function that each change occurs in.
+
+   * Write the change log entries for your changes.
+
+     Read the `ChangeLog' file to see what sorts of information to put
+     in, and to learn the style that we use.  The purpose of the
+     change log is to show people where to find what was changed.  So
+     you need to be specific about what functions you changed; in
+     large functions, it's often helpful to indicate where within the
+     function the change was made.
+
+     On the other hand, once you have shown people where to find the
+     change, you need not explain its purpose.  Thus, if you add a new
+     function, all you need to say about it is that it is new.  If you
+     feel that the purpose needs explaining, it probably does--but the
+     explanation will be much more useful if you put it in comments in
+     the code.
+
+     If you would like your name to appear in the header line for who
+     made the change, send us the header line.
 
 If you would like to be on the very sharpest part of the bleeding
 edge, you can now use Mercurial to access Octave's current development
 sources.  Instructions for checking out a copy are available on the
 web at http://www.gnu.org/software/octave/download.html.
 
-Last updated: Wed, 07 Apr 2010 15:14:50 EDT
+Last updated: Sat Jan 22 21:26:18 PST 2011

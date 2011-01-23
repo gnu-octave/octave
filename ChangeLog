@@ -1,5 +1,9 @@
 2010-01-22  Rik  <octave@nomad.inbox5.com>
 
+	* README.devel: Update for 3.4 release.
+
+2010-01-22  Rik  <octave@nomad.inbox5.com>
+
 	* HACKING: Revise and incorporate all of file ROADMAP.
 	* ROADMAP: Deleted.
 

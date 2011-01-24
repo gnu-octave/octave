@@ -1,3 +1,9 @@
+2011-01-23  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/install.txi: Redo build instructions for release 3.4.
+	* interpreter/doccheck/aspell-octave.en.pws: Add new words to
+	Octave private dictionary from install.txi
+
 2011-01-20  Rik  <octave@nomad.inbox5.com>
 
 	* doc/interpreter/diagperm.txi, doc/interpreter/linalg.txi,

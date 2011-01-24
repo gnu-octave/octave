@@ -1337,20 +1337,18 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
         {
           std::string key = key_list[i];
 
-          Cell val = map.contents (key);
-
-          octave_value tmp = val(0);
+          octave_value val = map.contents (key);
 
           if (print_fieldnames_only)
             {
               indent (os);
               os << key;
-              dim_vector dv = tmp.dims ();
-              os << ": " << dv.str () << " " << tmp.type_name ();
+              dim_vector dv = val.dims ();
+              os << ": " << dv.str () << " " << val.type_name ();
               newline (os);
             }
           else
-            tmp.print_with_name (os, key);
+            val.print_with_name (os, key);
         }
 
       decrement_indent_level ();

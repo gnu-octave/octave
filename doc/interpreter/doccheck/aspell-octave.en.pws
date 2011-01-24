@@ -84,6 +84,7 @@ BZ
 bzip
 CallbackObject
 callee's
+camd
 cauchy
 caxis
 ccolamd
@@ -371,6 +372,7 @@ IIP
 ij
 Im
 imag
+ImageMagick
 Imenu
 Indices
 indices
@@ -646,6 +648,7 @@ qhull
 QP
 QQ
 QRUPDATE
+qrupdate
 quadpack
 Quantile
 quantile

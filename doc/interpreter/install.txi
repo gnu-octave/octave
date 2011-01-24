@@ -43,8 +43,8 @@ derived file.
 
 @cindex installing Octave
 
-Here is the procedure for installing Octave from scratch on a Unix
-system.
+The procedure for installing Octave from source on a Unix-like system is
+described below.  Building on other platforms will follow similar steps.
 
 @itemize @bullet
 @item
@@ -56,6 +56,9 @@ Here is a summary of the configure options that are most frequently used
 when building Octave:
 
 @table @code
+@item --help
+Print a summary of the options recognized by the configure script.
+
 @item --prefix=@var{prefix}
 Install Octave in subdirectories below @var{prefix}.  The default value
 of @var{prefix} is @file{/usr/local}.
@@ -63,18 +66,31 @@ of @var{prefix} is @file{/usr/local}.
 @item --srcdir=@var{dir}
 Look for Octave sources in the directory @var{dir}.
 
-@item --enable-bounds-check
-Enable bounds checking for indexing operators in the internal array
-classes.  This option is primarily used for debugging Octave.  Building
-Octave with this option has a negative impact on performance and is not
-recommended for general use.
-
 @item --enable-64
 This is an @strong{experimental} option to enable Octave to use 64-bit
 integers for array dimensions and indexing on 64-bit platforms.  You
 probably don't want to use this option unless you know what you are
 doing.  @xref{Compiling Octave with 64-bit Indexing}, for more details
 about building Octave with this option.
+
+@item --enable-bounds-check
+Enable bounds checking for indexing operators in the internal array
+classes.  This option is primarily used for debugging Octave.  Building
+Octave with this option has a negative impact on performance and is not
+recommended for general use.
+
+@item --disable-docs
+Disable building all forms of the documentation (Info, PDF, HTML).  The
+default is to build documentation, but your system will need functioning
+Texinfo and Tex installs for this to succeed.
+
+@item --enable-float-truncate
+This option allows for truncation of intermediate floating point results
+in calculations.  It is only necessary for certain platforms.
+
+@item --enable-readline
+Use the readline library to provide for editing of the command line in
+terminal environments.  This option is on by default.
 
 @item --enable-shared
 Create shared libraries (this is the default).  If you are planning to
@@ -89,118 +105,153 @@ system doesn't already have one.
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
 linking externally compiled functions (this is the default if
-@option{--enable-shared} is specified).  This option only works on systems
-that actually have these functions.  If you plan on using this feature, you
-should probably also use @option{--enable-shared} to reduce the size of
-your @file{.oct} files.
+@option{--enable-shared} is specified).  This option only works on
+systems that actually have these functions.  If you plan on using this
+feature, you should probably also use @option{--enable-shared} to reduce
+the size of your @file{.oct} files.
 
-@item --without-blas
-Compile and use the generic @sc{blas} and @sc{lapack} versions included with
-Octave.  By default, configure first looks for @sc{blas} and @sc{lapack} matrix
-libraries on your system, including optimized @sc{blas} implementations such
-as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
-an optimized @sc{blas} will generally result in several-times faster matrix
-operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
-libraries that cause problems for some reason.  You can also use
-@option{--with-blas=lib} to specify a particular @sc{blas} library
- that configure doesn't check for automatically.
+@item --with-blas=<lib>
+By default, configure looks for the best @sc{blas} matrix libraries on
+your system, including optimized implementations such as the free ATLAS
+3.0, as well as vendor-tuned libraries.  (The use of an optimized
+@sc{blas} will generally result in several-times faster matrix
+operations.)  Use this option to specify a particular @sc{blas} library
+that Octave should use.
 
-@item --without-ccolamd
-Don't use @sc{ccolamd}, disable some sparse matrix functionality.
+@item --with-lapack=<lib>
+By default, configure looks for the best @sc{lapack} matrix libraries on
+your system, including optimized implementations such as the free ATLAS
+3.0, as well as vendor-tuned libraries.  (The use of an optimized
+@sc{lapack} will generally result in several-times faster matrix
+operations.)  Use this option to specify a particular @sc{lapack}
+library that Octave should use.
+
+@item --with-magick=<lib>
+Select the library to use for image I/O.  The two possible values are
+"GraphicsMagick" (default) or "ImageMagick".
+
+@item --with-sepchar=<char>
+Use <char> as the path separation character.  This option can help when
+running Octave on non-Unix systems.
+
+@item --without-amd
+Don't use @sc{amd}, disable some sparse matrix functionality.
+
+@item --without-camd
+Don't use @sc{camd}, disable some sparse matrix functionality.
+
+@item --without-arpack
+Don't use @sc{arpack}, disable @code{eigs} function.
 
 @item --without-colamd
 Don't use @sc{colamd}, disable some sparse matrix functionality.
 
+@item --without-ccolamd
+Don't use @sc{ccolamd}, disable some sparse matrix functionality.
+
+@item --without-cholmod
+Don't use @sc{cholmod}, disable some sparse matrix functionality.
+
 @item --without-curl
-Don't use the cURL, disable the ftp objects, @code{urlread} and @code{urlwrite}
-functions.
+Don't use the cURL library, disable the ftp objects, @code{urlread} and
+@code{urlwrite} functions.
 
 @item --without-cxsparse
 Don't use @sc{cxsparse}, disable some sparse matrix functionality.
 
-@item --without-umfpack
-Don't use @sc{umfpack}, disable some sparse matrix functionality.
+@item --without-fftw3
+Use the included @sc{fftpack} library for computing Fast Fourier
+Transforms instead of the @sc{fftw3} library.
 
-@item --without-fftw
-Use the included @sc{fftpack} library instead of the @sc{fftw} library.
+@item --without-fftw3f
+Use the included @sc{fftpack} library for computing Fast Fourier
+Transforms instead of the @sc{fftw3} library when operating on single
+precision (float) values.
 
 @item --without-glpk
 Don't use the @sc{glpk} library for linear programming.
 
 @item --without-hdf5
-Don't use the @sc{hdf5} library for reading and writing @sc{hdf5} files.
+Don't use the @sc{hdf5} library, disable reading and writing of
+@sc{hdf5} files.
+
+@item --without-opengl
+Don't use OpenGL, disable native graphics toolkit for plotting.  You
+will need @code{gnuplot} installed in order to make plots.
+
+@item --without-qhull
+Don't use Qhull, disable @code{delaunay}, @code{convhull}, and
+related functions.
+
+@item --without-qrupdate
+Don't use @sc{qrupdate}, disable QR and Cholesky update functions.
+
+@item --without-umfpack
+Don't use @sc{umfpack}, disable some sparse matrix functionality.
 
 @item --without-zlib
 Don't use the zlib library, disable data file compression and support
 for recent MAT file formats.
 
-@item --without-lapack
-Compile and use the generic @sc{blas} and @sc{lapack} versions included with
-Octave.  By default, configure first looks for @sc{blas} and @sc{lapack} matrix
-libraries on your system, including optimized @sc{blas} implementations such
-as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
-an optimized @sc{blas} will generally result in several-times faster matrix
-operations.)  Only use this option if your system has @sc{blas}/@sc{lapack}
-libraries that cause problems for some reason.  You can also use
-@option{--with-blas=lib} to specify a particular @sc{blas} library
- that configure doesn't check for automatically.
-
 @item --without-framework-carbon
-Don't use framework Carbon headers, libraries and specific source code
-for compilation even if the configure test succeeds (the default value
-is @option{--with-framework-carbon}).  This is a platform specific configure
-option for Mac systems.
+Don't use framework Carbon headers, libraries, or specific source code
+even if the configure test succeeds (the default is to use Carbon
+framework if available).  This is a platform specific configure option
+for Mac systems.
 
 @item --without-framework-opengl
-Don't use framework OpenGL headers, libraries and specific source code
-for compilation even if the configure test succeeds.  If this option is
-given then OpenGL headers and libraries in standard system locations are
-tested (the default value is @option{--with-framework-opengl}).  This is a
+Don't use framework OpenGL headers, libraries, or specific source code
+even if the configure test succeeds.  If this option is given then
+OpenGL headers and libraries in standard system locations are tested
+(the default value is @option{--with-framework-opengl}).  This is a
 platform specific configure option for Mac systems.
 
-@item --help
-Print a summary of the options recognized by the configure script.
 @end table
 
 See the file @file{INSTALL} for more general information about the 
 command line options used by configure.  That file also contains 
-instructions for compiling in a directory other than where the source 
-is located.
+instructions for compiling in a directory other than the one where
+the source is located.
 
 @item
 Run make.
 
-You will need a recent version of GNU Make.  Modifying Octave's
-makefiles to work with other make programs is probably not worth
-your time.  We recommend you get and compile GNU Make instead.
+You will need a recent version of GNU Make as Octave relies on certain
+features not generally available in all versions of make.  Modifying
+Octave's makefiles to work with other make programs is probably not
+worth your time; instead, we simply recommend installing GNU Make.
 
-For plotting, you will need to have gnuplot installed on your system.
-Gnuplot is a command-driven interactive function plotting program.
-Gnuplot is copyrighted, but freely distributable.  The `gnu' in gnuplot
-is a coincidence---it is not related to the GNU project or the FSF in
-any but the most peripheral sense.
+There are currently two options for plotting in Octave: (1) the external
+program gnuplot, or (2) the internal graphics engine using OpenGL and
+FLTK.  Gnuplot is a command-driven interactive function plotting
+program.  Gnuplot is copyrighted, but freely distributable.  As of
+Octave release 3.4, gnuplot is the default option for plotting.  But,
+the internal graphics engine is nearly 100% compatibile, certainly for
+most ordinary plots, and users are encouraged to test it.  It is
+anticipated that the internal engine will become the default option at
+the next major release of Octave.
 
-To compile Octave, you will need a recent version of GNU Make.  You will
-also need a recent version of @code{g++} or other ANSI C++ compiler.  You
-will also need a Fortran 77 compiler or @code{f2c}.  If you use
-@code{f2c}, you will need a script like @code{fort77} that works like a
-normal Fortran compiler by combining @code{f2c} with your C compiler in
-a single script.
+To compile Octave, you will need a recent version of @code{g++} or other
+ANSI C++ compiler.  In addition, you will need a Fortran 77 compiler or
+@code{f2c}.  If you use @code{f2c}, you will need a script like
+@code{fort77} that works like a normal Fortran compiler by combining
+@code{f2c} with your C compiler in a single script.
 
 If you plan to modify the parser you will also need GNU @code{bison} and
 @code{flex}.  If you modify the documentation, you will need GNU
 Texinfo.
 
-GNU Make, @code{gcc}, and @code{libstdc++}, @code{gnuplot},
+GNU Make, @code{gcc} (and @code{libstdc++}), @code{gnuplot},
 @code{bison}, @code{flex}, and Texinfo are all available from many
 anonymous ftp archives.  The primary site is @url{ftp.gnu.org}, but it
 is often very busy.  A list of sites that mirror the software on
 @url{ftp.gnu.org} is available by anonymous ftp from
 @url{ftp://ftp.gnu.org/pub/gnu/GNUinfo/FTP}.
 
-You will need about 1 gigabyte of disk storage to work with when
-building Octave from source (considerably less if you don't compile with
-debugging symbols).  To do that, use the command
+Octave requires approximately 1.4 GB of disk storage to unpack and
+compile from source (significantly less, 400 MB, if you don't compile
+with debugging symbols).  To compile without debugging symbols try the
+command
 
 @example
 make CFLAGS=-O CXXFLAGS=-O LDFLAGS=
@@ -235,19 +286,19 @@ Octave is installed (for example, @samp{i586-unknown-gnu}).
 @item @var{prefix}/bin
 Octave and other binaries that people will want to run directly.
 
-@item @var{prefix}/lib
+@item @var{prefix}/lib/octave-@var{version}
 Libraries like libcruft.a and liboctave.a.
+
+@item @var{prefix}/octave-@var{version}/include/octave
+Include files distributed with Octave.
 
 @item @var{prefix}/share
 Architecture-independent data files.
 
-@item @var{prefix}/include/octave
-Include files distributed with Octave.
-
-@item @var{prefix}/man/man1
+@item @var{prefix}/share/man/man1
 Unix-style man pages describing Octave.
 
-@item @var{prefix}/info
+@item @var{prefix}/share/info
 Info files describing Octave.
 
 @item @var{prefix}/share/octave/@var{version}/m
@@ -255,7 +306,7 @@ Function files distributed with Octave.  This includes the Octave
 version, so that multiple versions of Octave may be installed at the
 same time.
 
-@item @var{prefix}/lib/octave/@var{version}/exec/@var{arch}
+@item @var{prefix}/libexec/octave/@var{version}/exec/@var{arch}
 Executables to be run by Octave rather than the user.
 
 @item @var{prefix}/lib/octave/@var{version}/oct/@var{arch}
@@ -274,9 +325,9 @@ Image files that are distributed with Octave.
 @node Compiling Octave with 64-bit Indexing  
 @appendixsec Compiling Octave with 64-bit Indexing
 
-Note: the following only applies to systems that have 64-bit
-pointers.  Configuring Octave with @option{--enable-64} cannot magically
-make a 32-bit system have a 64-bit address space.
+Note: the following only applies to systems that have 64-bit pointers.
+Configuring Octave with @option{--enable-64} cannot magically make a
+32-bit system have a 64-bit address space.
 
 On 64-bit systems, Octave is limited to (approximately) the following
 array sizes when using the default 32-bit indexing mode:
@@ -292,7 +343,7 @@ uint8, int8:     2GB
 @end group
 @end example
 
-In each case, the limit is really (approximately) @math{2^31} elements
+In each case, the limit is really (approximately) @math{2^{31}} elements
 because of the default type of the value used for indexing arrays
 (signed 32-bit integer, corresponding to the size of a Fortran INTEGER
 value).
@@ -313,29 +364,28 @@ You will obtain this error even if your system has enough memory to
 create this array (4 GB in the above case).
 
 To use arrays larger than 2 GB, Octave has to be configured with the
-option @option{--enable-64}.  This option is experimental and you are (as
-always) encouraged to submit bug reports if you find a problem.  With
-this option, Octave will use 64-bit integers internally for array
-dimensions and indexing.  However, all numerical libraries used by
-Octave will also need to use 64-bit integers for array dimensions and
-indexing.  In most cases, this means they will need to be compiled
-from source since most (all?) distributions which package these
-libraries compile them with the default Fortran integer size, which is
-normally 32-bits wide.
+option @option{--enable-64}.  This option is experimental and you are
+encouraged to submit bug reports if you find a problem.  With this
+option, Octave will use 64-bit integers internally for array dimensions
+and indexing.  However, all numerical libraries used by Octave will
+@strong{also} need to use 64-bit integers for array dimensions and
+indexing.  In most cases, this means they will need to be compiled from
+source since most (all?) distributions which package these libraries
+compile them with the default Fortran integer size, which is normally
+32-bits wide.
 
 The following instructions were tested with the development version of
 Octave and GCC 4.3.4 on an x86_64 Debian system.
 
 The versions listed below are the versions used for testing.  If newer
 versions of these packages are available, you should try to use them,
-though there may be some differences.
+although there may be some differences.
 
 All libraries and header files will be installed in subdirectories of
 @code{$prefix64} (you must choose the location of this directory).
 
 @itemize @bullet
-@item
-@sc{blas} and @sc{lapack} (@url{http://www.netlib.org/lapack})
+@item @sc{blas} and @sc{lapack} (@url{http://www.netlib.org/lapack})
 
 Reference versions for both libraries are included in the reference
 @sc{lapack} 3.2.1 distribution from @url{netlib.org}.
@@ -352,8 +402,7 @@ compiling Suite Sparse and Octave.  In the following we assume that
 you installed the @sc{lapack} library as $prefix64/lib/liblapack.a.
 @end itemize
 
-@item
-@sc{arpack} (@url{http://www.caam.rice.edu/software/ARPACK})
+@item @sc{arpack} (@url{http://www.caam.rice.edu/software/ARPACK})
 
 @itemize @minus
 @item
@@ -403,8 +452,7 @@ rm -rf tmp
 Copy the library @file{libarpack.so} to @file{$prefix64/lib/libarpack.a}.
 @end itemize
 
-@item
-QRUPDATE (@url{http://sourceforge.net/projects/qrupdate})
+@item QRUPDATE (@url{http://sourceforge.net/projects/qrupdate})
 
 In the @file{Makeconf} file:
 
@@ -413,8 +461,9 @@ In the @file{Makeconf} file:
 Add @option{-fdefault-integer-8} to @env{FFLAGS}.
 
 @item
-Adjust the @sc{blas} and @sc{lapack} variables as needed if your 64-bit aware
-@sc{blas} and @sc{lapack} libraries are in a non-standard location.
+Adjust the @sc{blas} and @sc{lapack} variables as needed if your 64-bit
+aware @sc{blas} and @sc{lapack} libraries are in a non-standard
+location.
 
 @item
 Set @env{PREFIX} to the top-level directory of your install tree.
@@ -458,7 +507,8 @@ METIS =
 @end example
 
 @item
-Disable the @code{DI} versions of the @code{CHOLMOD} library files by setting
+Disable the @code{DI} versions of the @code{CHOLMOD} library files by
+setting
 
 @example
 OBJ = $(DL)
@@ -522,22 +572,20 @@ done
 
 @end itemize
 
-@item
-ATLAS instead of reference @sc{blas} and @sc{lapack}
+@item ATLAS instead of reference @sc{blas} and @sc{lapack}
 
-Suggestions on how to compile ATLAS, will be most welcome.
+Suggestions on how to compile ATLAS would be most welcome.
 
-@item
-@sc{glpk}
+@item @sc{glpk}
 
-Suggestions on how to compile @sc{glpk} will be most welcome.
+Suggestions on how to compile @sc{glpk} would be most welcome.
 
-@item
-QHULL (@url{http://www.qhull.org})
+@item Qhull (@url{http://www.qhull.org})
 
-Suggestions on how to compile QHULL will be most welcome.
+Suggestions on how to compile Qhull would be most welcome.
 
 @item Octave
+
 Octave's 64-bit index support is activated with the configure option
 @option{--enable-64}.
 
@@ -559,8 +607,7 @@ must set this variable yourself.  You should NOT set this flag in
 @env{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be
 miscompiled.
 
-@item
-Other dependencies
+@item Other dependencies
 
 Probably nothing special needs to be done for the following
 dependencies.  If you discover that something does need to be done,
@@ -600,8 +647,9 @@ installation of Octave.
 @itemize @bullet
 @item
 On some SCO systems, @code{info} fails to compile if
-@w{@code{HAVE_TERMIOS_H}} is defined in @file{config.h}.  Simply removing
-the definition from @file{info/config.h} should allow it to compile.
+@w{@code{HAVE_TERMIOS_H}} is defined in @file{config.h}.  Simply
+removing the definition from @file{info/config.h} should allow it to
+compile.
 
 @item
 If @code{configure} finds @code{dlopen}, @code{dlsym}, @code{dlclose},
@@ -620,9 +668,9 @@ on the HP-PA architecture.  You can find the patch at
 @url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item
-On some alpha systems there may be a problem with the @code{libdxml}
-library, resulting in floating point errors and/or segmentation faults in
-the linear algebra routines called by Octave.  If you encounter such
+On some DEC alpha systems there may be a problem with the @code{libdxml}
+library, resulting in floating point errors and/or segmentation faults
+in the linear algebra routines called by Octave.  If you encounter such
 problems, then you should modify the configure script so that
 @w{@code{SPECIAL_MATH_LIB}} is not set to @code{-ldxml}.
 
@@ -668,13 +716,13 @@ warning: ANSI C++ prohibits conversion from `(int)'
 
 @noindent
 while compiling @file{sighandlers.cc}, you may need to edit some files
-in the @code{gcc} include subdirectory to add proper prototypes for functions
-there.  For example, Ultrix 4.2 needs proper declarations for the
-@code{signal} function and the @w{@code{SIG_IGN}} macro in the file
+in the @code{gcc} include subdirectory to add proper prototypes for
+functions there.  For example, Ultrix 4.2 needs proper declarations for
+the @code{signal} function and the @w{@code{SIG_IGN}} macro in the file
 @file{signal.h}.
 
-On some systems the @w{@code{SIG_IGN}} macro is defined to be something like
-this:
+On some systems the @w{@code{SIG_IGN}} macro is defined to be something
+like this:
 
 @example
 #define  SIG_IGN  (void (*)())1
@@ -689,9 +737,9 @@ when it should really be something like:
 
 @noindent
 to match the prototype declaration for the @code{signal} function.  This
-change should also be made for the @w{@code{SIG_DFL}} and @w{@code{SIG_ERR}}
-symbols.  It may be necessary to change the definitions in
-@file{sys/signal.h} as well.
+change should also be made for the @w{@code{SIG_DFL}} and
+@w{@code{SIG_ERR}} symbols.  It may be necessary to change the
+definitions in @file{sys/signal.h} as well.
 
 The @code{gcc} @code{fixincludes} and @code{fixproto} scripts should
 probably fix these problems when @code{gcc} installs its modified set of
@@ -705,8 +753,8 @@ gcc -print-libgcc-file-name
 @end example
 
 @noindent
-The directory of @code{gcc} include files normally begins in the same directory
-that contains the file @file{libgcc.a}.
+The directory of @code{gcc} include files normally begins in the same
+directory that contains the file @file{libgcc.a}.
 
 @item
 Some of the Fortran subroutines may fail to compile with older versions
@@ -803,7 +851,8 @@ infinity and NaN variables.
 If your system does not support IEEE arithmetic but Octave's configure
 script incorrectly determined that it does, you can work around the
 problem by editing the file @file{config.h} to not define
-@w{@code{HAVE_ISINF}}, @w{@code{HAVE_FINITE}}, and @w{@code{HAVE_ISNAN}}.
+@w{@code{HAVE_ISINF}}, @w{@code{HAVE_FINITE}}, and
+@w{@code{HAVE_ISNAN}}.
 
 In any case, please report this as a bug since it might be possible to
 modify Octave's configuration script to automatically determine the
@@ -815,10 +864,10 @@ location that is not normally searched by the compiler, you can add the
 directory to the include search path by specifying (for example)
 @code{CPPFLAGS=-I/some/nonstandard/directory} as an argument to
 @code{configure}.  Other variables that can be specified this way are
-@env{CFLAGS}, @env{CXXFLAGS}, @env{FFLAGS}, and @env{LDFLAGS}.
-Passing them as options to the configure script also records them in the
-@file{config.status} file.  By default, @env{CPPFLAGS} and
-@env{LDFLAGS} are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to
-@code{"-g -O"} and @env{FFLAGS} is set to @code{"-O"}.
+@env{CFLAGS}, @env{CXXFLAGS}, @env{FFLAGS}, and @env{LDFLAGS}.  Passing
+them as options to the configure script also records them in the
+@file{config.status} file.  By default, @env{CPPFLAGS} and @env{LDFLAGS}
+are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @code{"-g -O"} and
+@env{FFLAGS} is set to @code{"-O"}.
 
 @end itemize

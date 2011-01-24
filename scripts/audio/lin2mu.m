@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} lin2mu (@var{x})
-## @deftypefnx {Function File} {} lin2mu (@var{x}, @var{n})
+## @deftypefn {Function File} {} lin2mu (@var{x}, @var{n})
 ## Convert audio data from linear to mu-law.  Mu-law values use 8-bit
 ## unsigned integers.  Linear values use @var{n}-bit signed integers or
 ## floating point values in the range -1 @leq{} @var{x} @leq{} 1 if
 ## @var{n} is 0.
+##
 ## If @var{n} is not specified it defaults to 0, 8, or 16 depending on
 ## the range of values in @var{x}.
 ## @seealso{mu2lin, loadaudio, saveaudio}

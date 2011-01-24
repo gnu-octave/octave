@@ -305,6 +305,10 @@ private:
 
   mutable idx_vector *idx_cache;
 
+  // No assignment.
+
+  octave_range& operator = (const octave_range&);
+
   DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

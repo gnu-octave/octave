@@ -753,6 +753,12 @@ private:
   FILE *input_stream;
 
   FILE *output_stream;
+
+  // No copying!
+
+  default_command_editor (const default_command_editor&);
+
+  default_command_editor& operator = (const default_command_editor&);
 };
 
 std::string

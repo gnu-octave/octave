@@ -127,14 +127,15 @@ public:
     void run (void) { (e_obj->*e_method) (); }
 
   private:
-    // No copying! XXX
+
+    T *e_obj;
+    void (T::*e_method) (void);
+
+    // No copying!
 
     method_elem (const method_elem&);
 
     method_elem operator = (const method_elem&);
-
-    T *e_obj;
-    void (T::*e_method) (void);
   };
 
   // An element that stores arbitrary variable, and restores it.

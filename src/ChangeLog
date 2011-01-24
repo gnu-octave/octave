@@ -1,3 +1,8 @@
+2011-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+
+	* ov-base-mat.h (class octave_base_matrix): Disallow assignment.
+	* ov-range.h (class octave_range): Likewise.
+
 2011-01-23  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_scalar_struct::print_raw):

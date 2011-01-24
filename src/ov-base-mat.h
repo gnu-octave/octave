@@ -187,6 +187,12 @@ protected:
 
   mutable MatrixType *typ;
   mutable idx_vector *idx_cache;
+
+private:
+
+  // No assignment.
+
+  octave_base_matrix& operator = (const octave_base_matrix&);
 };
 
 #endif

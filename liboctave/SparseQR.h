@@ -73,11 +73,22 @@ protected:
 
     CXSPARSE_DNAME (n) *N;
 #endif
+
+  private:
+
+    // No copying!
+
+    SparseQR_rep (const SparseQR_rep&);
+
+    SparseQR_rep& operator = (const SparseQR_rep&);
   };
+
 private:
+
   SparseQR_rep *rep;
 
 public:
+
   SparseQR (void) : rep (new SparseQR_rep (SparseMatrix(), 0)) { }
 
   SparseQR (const SparseMatrix& a, int order = 0) :

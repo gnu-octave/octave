@@ -383,6 +383,7 @@ public:
 
       return dest + nr*nc;
     }
+
 private:
 
   // Recursive N-d generalized transpose
@@ -417,11 +418,16 @@ private:
       return dest;
     }
 
+  // No copying!
+
+  rec_permute_helper (const rec_permute_helper&);
+
+  rec_permute_helper& operator = (const rec_permute_helper&);
+
 public:
 
   template <class T>
   void permute (const T *src, T *dest) const { do_permute (src, dest, top); }
-
 };
 
 
@@ -599,6 +605,12 @@ private:
         }
     }
 
+  // No copying!
+
+  rec_index_helper (const rec_index_helper&);
+
+  rec_index_helper& operator = (const rec_index_helper&);
+
 public:
 
   template <class T>
@@ -655,6 +667,7 @@ public:
   ~rec_resize_helper (void) { delete [] cext; }
 
 private:
+
   // recursive resizing
   template <class T>
   void do_resize_fill (const T* src, T *dest, const T& rfv, int lev) const
@@ -673,11 +686,18 @@ private:
           fill_or_memset (dext[lev] - k * dd, rfv, dest + k * dd);
         }
     }
+
+  // No copying!
+
+  rec_resize_helper (const rec_resize_helper&);
+
+  rec_resize_helper& operator = (const rec_resize_helper&);
+
 public:
+
   template <class T>
   void resize_fill (const T* src, T *dest, const T& rfv) const
     { do_resize_fill (src, dest, rfv, n-1); }
-
 };
 
 template <class T>

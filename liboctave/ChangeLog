@@ -1,3 +1,10 @@
+2011-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+
+	* SparseQR.h (class SparseQR::SparseQR_reps): Disallow copying.
+	* Array.cc (class rec_permute_helper, class rec_index_helper,
+	class  rec_resize_helper): Likewise.
+	* cmd-edit.cc (class default_command_editor): Likewise.
+
 2011-01-22  Jaroslav Hajek  <highegg@gmail.com>
 
 	* oct-refcount.h: New source.

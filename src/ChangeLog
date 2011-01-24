@@ -1,3 +1,8 @@
+2011-01-23  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_scalar_struct::print_raw):
+	Avoid unnecessary conversion of map value to Cell.
+
 2011-01-22  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h (symbol_table::parent_classes):

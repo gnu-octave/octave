@@ -1,3 +1,10 @@
+2011-01-24  John W. Eaton  <jwe@octave.org>
+
+	* audio/lin2mu: Doc fix.
+
+	* audio/mu2lin.m: Doc fix.
+	For compatibility with Matlab, change default for N to be 8.
+
 2011-01-22  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/info.m: Use reference to bug tracker rather than

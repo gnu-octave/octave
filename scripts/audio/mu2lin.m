@@ -20,8 +20,10 @@
 ## @deftypefn {Function File} {} mu2lin (@var{x}, @var{n})
 ## Convert audio data from mu-law to linear.  Mu-law values are 8-bit
 ## unsigned integers.  Linear values use @var{n}-bit signed integers
-## or floating point values in the range -1@leq{}y@leq{}1 if @var{n} is 0.  If
-## @var{n} is not specified it defaults to 8.
+## or floating point values in the range -1@leq{}y@leq{}1 if @var{n}
+## is 0.
+##
+## If @var{n} is not specified it defaults to 0.
 ## @seealso{lin2mu, loadaudio, saveaudio}
 ## @end deftypefn
 
@@ -29,16 +31,13 @@
 ## Created: 18 October 1994
 ## Adapted-By: jwe
 
-function y = mu2lin (x, n)
+function y = mu2lin (x, n = 0)
 
-  if (nargin == 1)
-    ## COMPATIBILITY -- n defaults to 8 for Octave, 0 for Matlab
-    n = 8;
-  elseif (nargin == 2)
+  if (nargin == 2)
     if (n != 0 && n != 8 && n != 16)
       error ("mu2lin: N must be either 0, 8, or 16");
     endif
-  else
+  elseif (nargin != 1)
     print_usage ();
   endif
 

@@ -413,6 +413,9 @@ Summary of important user-visible changes for version 3.4:
       autocov  dispatch  is_global  values
       betai    fstat     krylovb
 
+  * For compatibility with Matlab, mu2lin (x) is now equivalent to
+    mu2lin (x, 0).
+
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
 

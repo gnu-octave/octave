@@ -1,3 +1,8 @@
+2010-01-24  Rik  <octave@nomad.inbox5.com>
+
+	* AUTHORS: Remove.  File now auto-generated from contributors.texi.
+	* Makefile.am: Add rule for AUTHORS file.
+
 2011-01-24  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: Note change in audio/mu2lin.

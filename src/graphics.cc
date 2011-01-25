@@ -5122,8 +5122,6 @@ text::properties::update_text_extent (void)
                            halign, valign, get_rotation ());
 
   set_extent (bbox);
-#else
-  warning ("update_text_extent: cannot render text, Freetype library not available");
 #endif
 }
 

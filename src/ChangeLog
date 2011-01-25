@@ -1,5 +1,10 @@
 2011-01-25  Konstantinos Poulios  <logari81@googlemail.com>
 
+	* src/graphics.cc (text::properties::update_text_extent):
+	Disable warning about missing freetype library.
+
+2011-01-25  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* src/graphics.cc (axes::properties::calc_ticks_and_lims):
 	Fixing wrong dimensions of minor ticks vector.
 

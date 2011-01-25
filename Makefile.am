@@ -46,7 +46,6 @@ EXTRA_DIST = \
   README.MacOS \
   README.Windows \
   README.kpathsea \
-  ROADMAP \
   autogen.sh \
   bootstrap \
   bootstrap.conf \

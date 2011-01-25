@@ -4435,7 +4435,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   ticks = tmp_ticks;
 
   int n = is_logscale ? 9 : 4;
-  Matrix tmp_mticks (1, n * tmp_ticks.numel ());
+  Matrix tmp_mticks (1, n * (tmp_ticks.numel () - 1));
 
   for (int i = 0; i < tmp_ticks.numel ()-1; i++)
     {

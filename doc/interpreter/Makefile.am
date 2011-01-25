@@ -209,6 +209,12 @@ contributors.texi: contributors.in
 	  --no-validate --no-headers --no-split --output BUGS $<
 	mv BUGS ../../BUGS
 
+../../AUTHORS: preface.texi contributors.texi
+	rm -f AUTHORS
+	-$(MAKEINFO) -D AUTHORSONLY \
+	  --no-validate --no-headers --no-split --output AUTHORS $<
+	mv AUTHORS ../../AUTHORS
+
 undocumented_list:
 	rm -f $@
 	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@

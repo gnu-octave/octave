@@ -1,3 +1,8 @@
+2011-01-24  Rik  <octave@nomad.inbox5.com>
+
+	* Makefile.am, interpreter/Makefile.am: Add rule to build AUTHORS file.
+	* interpreter/preface.txi: Add @ifclear rule to build AUTHORS file.
+
 2011-01-23  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/install.txi: Redo build instructions for release 3.4.

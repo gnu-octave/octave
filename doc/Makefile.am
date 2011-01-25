@@ -32,7 +32,3 @@ EXTRA_DIST = \
 
 SUBDIRS = faq interpreter liboctave refcard
 
-../AUTHORS ../BUGS ../INSTALL.OCTAVE:
-	$(MAKE) -C interpreter ../$@
-.PHONY: ../AUTHORS ../BUGS ../INSTALL.OCTAVE
-

@@ -1,3 +1,8 @@
+2010-01-25  Rik  <octave@nomad.inbox5.com>
+
+	* Makefile.am: Directly run makefile rules in doc/interpreter directory
+	for AUTHORS, BUGS, INSTALL.OCTAVE files.
+
 2011-01-25  John W. Eaton  <jwe@octave.org>
 
 	* autogen.sh (AUTOMAKE): Add --foreign to the automake command.

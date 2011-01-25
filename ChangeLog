@@ -1,5 +1,10 @@
 2011-01-25  John W. Eaton  <jwe@octave.org>
 
+	* autogen.sh (AUTOMAKE): Add --foreign to the automake command.
+	Check for required GNU files here instead of having automake do it.
+
+2011-01-25  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (EXTRA_DIST): Remove ROADMAP from the list.
 
 2010-01-24  Rik  <octave@nomad.inbox5.com>

@@ -203,9 +203,10 @@ DEFUN_DLD (fft, args, ,
 @deftypefn  {Loadable Function} {} fft (@var{x})\n\
 @deftypefnx {Loadable Function} {} fft (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {} fft (@var{x}, @var{n}, @var{dim})\n\
-Compute the FFT of @var{x} using subroutines from\n"
-FFTSRC
-".  The FFT is calculated along the first non-singleton dimension of the\n\
+Compute the discrete Fourier transform of @var{A} using\n\
+a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The FFT is calculated along the first non-singleton dimension of the\n\
 array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes the\n\
 FFT for each column of @var{x}.\n\
 \n\
@@ -231,9 +232,10 @@ DEFUN_DLD (ifft, args, ,
 @deftypefn  {Loadable Function} {} ifft (@var{x})\n\
 @deftypefnx {Loadable Function} {} ifft (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {} ifft (@var{x}, @var{n}, @var{dim})\n\
-Compute the inverse FFT of @var{x} using subroutines from\n"
-FFTSRC
-".  The inverse FFT is calculated along the first non-singleton dimension\n\
+Compute the inverse discrete Fourier transform of @var{A}\n\
+using a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The inverse FFT is calculated along the first non-singleton dimension\n\
 of the array.  Thus if @var{x} is a matrix, @code{fft (@var{x})} computes\n\
 the inverse FFT for each column of @var{x}.\n\
 \n\

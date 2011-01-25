@@ -1,3 +1,8 @@
+2011-01-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.h (octave_map::octave_map (const string_vector&)):
+	Initialize xvals elements to 1x1 Cells.  Bug #32222.
+
 2011-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* ov-base-mat.h (class octave_base_matrix): Disallow assignment.

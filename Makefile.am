@@ -149,7 +149,7 @@ run-octave: run-octave.in Makefile
 	fi
 
 AUTHORS BUGS INSTALL.OCTAVE:
-	$(MAKE) -C doc ../$@
+	$(MAKE) -C doc/interpreter ../../$@
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
 octetc_DATA = NEWS

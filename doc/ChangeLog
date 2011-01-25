@@ -1,3 +1,8 @@
+2011-01-25  Rik  <octave@nomad.inbox5.com>
+
+	* Makefile.am: Remove pass-through rules for AUTHORS, BUGS, and
+	INSTALL.OCTAVE which are no longer required.
+
 2011-01-24  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am, interpreter/Makefile.am: Add rule to build AUTHORS file.

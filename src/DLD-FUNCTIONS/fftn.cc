@@ -153,13 +153,14 @@ DEFUN_DLD (fftn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} fftn (@var{A})\n\
 @deftypefnx {Loadable Function} {} fftn (@var{A}, @var{size})\n\
-Compute the N-dimensional FFT of @var{A} using subroutines from\n"
-FFTSRC
-".  The optional vector argument @var{size} may be used specify the\n\
+Compute the N-dimensional discrete Fourier transform of @var{A} using\n\
+a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
-smaller than the corresponding dimension, then the dimension is\n\
-truncated prior to performing the FFT@.  Otherwise if an element\n\
-of @var{size} is larger than the corresponding dimension @var{A}\n\
+smaller than the corresponding dimension of @var{A}, then the dimension of\n\
+@var{A} is truncated prior to performing the FFT@.  Otherwise, if an element\n\
+of @var{size} is larger than the corresponding dimension then @var{A}\n\
 is resized and padded with zeros.\n\
 @seealso{ifftn, fft, fft2, fftw}\n\
 @end deftypefn")
@@ -171,13 +172,14 @@ DEFUN_DLD (ifftn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} ifftn (@var{A})\n\
 @deftypefnx {Loadable Function} {} ifftn (@var{A}, @var{size})\n\
-Compute the inverse N-dimensional FFT of @var{A} using subroutines from\n"
-FFTSRC
-".  The optional vector argument @var{size} may be used specify the\n\
+Compute the inverse N-dimensional discrete Fourier transform of @var{A}\n\
+using a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used.  If an element of @var{size} is\n\
-smaller than the corresponding dimension, then the dimension is\n\
-truncated prior to performing the inverse FFT@.  Otherwise if an element\n\
-of @var{size} is larger than the corresponding dimension @var{A}\n\
+smaller than the corresponding dimension of @var{A}, then the dimension of\n\
+@var{A} is truncated prior to performing the inverse FFT@.  Otherwise, if an\n\
+element of @var{size} is larger than the corresponding dimension then @var{A}\n\
 is resized and padded with zeros.\n\
 @seealso{fftn, ifft, ifft2, fftw}\n\
 @end deftypefn")

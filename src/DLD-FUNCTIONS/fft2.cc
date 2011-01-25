@@ -171,15 +171,16 @@ DEFUN_DLD (fft2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} fft2 (@var{A})\n\
 @deftypefnx {Loadable Function} {} fft2 (@var{A}, @var{m}, @var{n})\n\
-Compute the two-dimensional FFT of @var{A} using subroutines from\n"
-FFTSRC
-".  The optional arguments @var{m} and @var{n} may be used specify the\n\
+Compute the two-dimensional discrete Fourier transform of @var{A} using\n\
+a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The optional arguments @var{m} and @var{n} may be used specify the\n\
 number of rows and columns of @var{A} to use.  If either of these is\n\
 larger than the size of @var{A}, @var{A} is resized and padded with\n\
 zeros.\n\
 \n\
 If @var{A} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
-of @var{A} is treated separately\n\
+of @var{A} is treated separately.\n\
 @seealso {ifft2, fft, fftn, fftw}\n\
 @end deftypefn")
 {
@@ -191,9 +192,10 @@ DEFUN_DLD (ifft2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} ifft2 (@var{A})\n\
 @deftypefnx {Loadable Function} {} ifft2 (@var{A}, @var{m}, @var{n})\n\
-Compute the inverse two-dimensional FFT of @var{A} using subroutines from\n"
-FFTSRC
-".  The optional arguments @var{m} and @var{n} may be used specify the\n\
+Compute the inverse two-dimensional discrete Fourier transform of @var{A}\n\
+using a Fast Fourier Transform (FFT) algorithm.\n\
+\n\
+The optional arguments @var{m} and @var{n} may be used specify the\n\
 number of rows and columns of @var{A} to use.  If either of these is\n\
 larger than the size of @var{A}, @var{A} is resized and padded with\n\
 zeros.\n\

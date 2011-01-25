@@ -539,19 +539,6 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 }
 
 
-// HDF5 load/save documentation is included in the Octave manual
-// regardless, but if HDF5 is not linked in we also include a
-// sentence noting this, so the user understands that the features
-// aren't available.  Define a macro for this sentence:
-
-#ifdef HAVE_HDF5
-#define HAVE_HDF5_HELP_STRING ""
-#else /* ! HAVE_HDF5 */
-#define HAVE_HDF5_HELP_STRING "\n\
-HDF5 load and save are not available, as this Octave executable was\n\
-not linked with the HDF5 library."
-#endif /* ! HAVE HDF5 */
-
 DEFUN (load, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} load file\n\
@@ -613,14 +600,12 @@ Force Octave to assume the file is in Octave's binary format.\n\
 \n\
 @item -hdf5\n\
 Force Octave to assume the file is in @sc{hdf5} format.\n\
-(HDF5 is a free, portable binary format developed by the National\n\
+(@sc{hdf5} is a free, portable binary format developed by the National\n\
 Center for Supercomputing Applications at the University of Illinois.)\n\
 Note that Octave can read @sc{hdf5} files not created by itself, but may\n\
-skip some datasets in formats that it cannot support.\n"
-
-HAVE_HDF5_HELP_STRING
-
-"\n\
+skip some datasets in formats that it cannot support.  This format is\n\
+only available if Octave was built with a link to the @sc{hdf5} libraries.\n\
+\n\
 @item -import\n\
 This option is accepted for backward compatibility but is ignored.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
@@ -1440,13 +1425,6 @@ dump_octave_core (void)
     }
 }
 
-#ifdef HAVE_ZLIB
-#define HAVE_ZLIB_HELP_STRING ""
-#else /* ! HAVE_ZLIB */
-#define HAVE_ZLIB_HELP_STRING "\n\
-This option is not available, as this Octave executable was not linked with\n\
-the zlib library."
-#endif /* ! HAVE ZLIB */
 
 DEFUN (save, args, ,
   "-*- texinfo -*-\n\
@@ -1491,11 +1469,10 @@ values to be saved can be represented in single precision.\n\
 @item -hdf5\n\
 Save the data in @sc{hdf5} format.\n\
 (HDF5 is a free, portable binary format developed by the National\n\
-Center for Supercomputing Applications at the University of Illinois.)\n"
-
-HAVE_HDF5_HELP_STRING
-
-"\n\
+Center for Supercomputing Applications at the University of Illinois.)\n\
+This format is only available if Octave was built with a link to the\n\
+@sc{hdf5} libraries.\n\
+\n\
 @item -float-hdf5\n\
 Save the data in @sc{hdf5} format but only using single precision.\n\
 Only use this format if you know that all the\n\
@@ -1505,11 +1482,8 @@ values to be saved can be represented in single precision.\n\
 @itemx -v7\n\
 @itemx -7\n\
 @itemx -mat7-binary\n\
-Save the data in @sc{matlab}'s v7 binary data format.\n"
-
-HAVE_ZLIB_HELP_STRING
-
-"\n\
+Save the data in @sc{matlab}'s v7 binary data format.\n\
+\n\
 @item -V6\n\
 @itemx -v6\n\
 @itemx -6\n\
@@ -1530,11 +1504,10 @@ Save the data in Octave's text data format.  (default).\n\
 @itemx -z\n\
 Use the gzip algorithm to compress the file.  This works equally on files\n\
 that are compressed with gzip outside of octave, and gzip can equally be\n\
-used to convert the files for backward compatibility.\n"
-
-HAVE_ZLIB_HELP_STRING
-
-"@end table\n\
+used to convert the files for backward compatibility.\n\
+This option is only available if Octave was built with a link to the zlib\n\
+libraries.\n\
+@end table\n\
 \n\
 The list of variables to save may use wildcard patterns containing\n\
 the following special characters:\n\

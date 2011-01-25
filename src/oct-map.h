@@ -272,7 +272,7 @@ public:
   octave_map (const dim_vector& dv) : xkeys (), xvals (), dimensions (dv) { }
 
   octave_map (const string_vector& k)
-    : xkeys (k), xvals (k.length ()), dimensions (1, 1) { }
+    : xkeys (k), xvals (k.length (), Cell (1, 1)), dimensions (1, 1) { }
 
   octave_map (const dim_vector& dv, const string_vector& k)
     : xkeys (k), xvals (k.length (), Cell (dv)), dimensions (dv) { }

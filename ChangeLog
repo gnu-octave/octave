@@ -1,3 +1,8 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+	* acinclude.m4 (OPENGL_LIBS): Don't add -L/usr/X11R6/LIB to
+	LDFLAGS in test.  Bug #32160.
+
 2010-01-25  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Directly run makefile rules in doc/interpreter directory

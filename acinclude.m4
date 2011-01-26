@@ -970,7 +970,13 @@ return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
   fi
 ])
 dnl
-dnl Check for OpenGL. If found, define OPENGL_LIBS
+dnl Check for OpenGL.  If found, define OPENGL_LIBS
+dnl
+dnl FIXME -- the following tests should probably check for the
+dnl libraries separately.
+dnl
+dnl FIXME -- should we allow a way to specify a directory for OpenGL
+dnl libraries and header files?
 dnl
 AC_DEFUN([OCTAVE_OPENGL], [
 OPENGL_LIBS=
@@ -1031,10 +1037,7 @@ else
         fi
         ;;
       *)
-        save_LDFLAGS="$LDFLAGS"
-        LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
-        AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL -lGLU")
-        LDFLAGS="$save_LDFLAGS"
+        AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-lGL -lGLU")
         ;;
     esac
   fi

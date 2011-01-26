@@ -803,6 +803,7 @@ base_property::run_listeners (listener_mode mode)
 }
 
 radio_values::radio_values (const std::string& opt_string)
+  : default_val (), possible_vals ()
 {
   size_t beg = 0;
   size_t len = opt_string.length ();
@@ -5518,7 +5519,8 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
 // scalar values for the first argument.
 gh_manager::gh_manager (void)
   : handle_map (), handle_free_list (),
-    next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0))
+    next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
+    figure_list (), graphics_lock (), event_queue (), callback_objects ()
 {
   handle_map[0] = graphics_object (new root_figure ());
 
@@ -5613,7 +5615,9 @@ public:
 
 private:
   callback_event (void)
-      : base_graphics_event () { }
+    : base_graphics_event (), handle (), 
+      callback_name (), callback_data ()
+  { }
 
 private:
   graphics_handle handle;
@@ -5635,12 +5639,19 @@ public:
     }
 
 private:
-  function_event (void)
-      : base_graphics_event () { }
-
-private:
+  
   graphics_event::event_fcn function;
+
   void* function_data;
+
+  // function_event objects must be created with at least a function.
+  function_event (void);
+
+  // No copying!
+
+  function_event (const function_event &);
+
+  function_event & operator = (const function_event &);
 };
 
 class
@@ -5661,7 +5672,10 @@ public:
 
 private:
   set_event (void)
-      : base_graphics_event () { }
+    : base_graphics_event (), 
+      // FIXME: it it private in order not to be used ? 
+      handle (), property_name (), property_value ()
+  { }
 
 private:
   graphics_handle handle;

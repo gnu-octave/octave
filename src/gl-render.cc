@@ -416,7 +416,8 @@ public:
   patch_tesselator (opengl_renderer *r, int cmode, int lmode, int idx = 0)
       : opengl_tesselator (), renderer (r),
         color_mode (cmode), light_mode (lmode), index (idx),
-        first (true) { }
+        first (true), tmp_vdata ()
+  { }
 
 protected:
   void begin (GLenum type)

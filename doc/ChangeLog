@@ -1,3 +1,8 @@
+2011-01-26  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/octave-bug.1: Delete obsolete man page
+	* interpreter/Makefile.am: Stop distributing octave-bug.1 man page.
+
 2011-01-26  Olaf Till <olaf.till@uni-jena.de>
 
 	* interpreter/package.txi: Document variables MKOCTFILE,

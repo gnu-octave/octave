@@ -4,6 +4,15 @@
 	load-save.cc: Make docstrings static by removing documentation
 	depending on #ifdef configuration variables.
 
+2011-01-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (OCT_STAMP_FILES): New variable.
+	(DISTCLEANFILES): Add $(OCT_STAMP_FILES) to the list.
+	(all-local): Depend on $(OCT_STAMP_FILES) instead of $(OCT_FILES).
+
+	* DLD-FUNCTIONS/config-module.awk: Create stamp files when
+	creating .oct file links.
+
 2011-01-25  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* src/graphics.cc (text::properties::update_text_extent):

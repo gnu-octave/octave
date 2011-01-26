@@ -10,31 +10,38 @@ BEGIN {
 } {
   files[++nfiles] = $1;
 } END {
-  sep = " \\\n";
-  print "DLD_FUNCTIONS_LIBS = \\";
+  print "DLD_FUNCTIONS_SRC = \\";
   for (i = 1; i <= nfiles; i++) {
-    basename = files[i];
-    sub (/\.cc$/, "", basename);
     if (i == nfiles)
       sep = "\n";
-    printf ("  DLD-FUNCTIONS/%s.la%s", basename, sep);
+    printf ("  DLD-FUNCTIONS/%s%s", files[i], sep);
   }
-  print ""
+  print "";
+
+  sep = " \\\n";
+  print "DLD_FUNCTIONS_LIBS = $(DLD_FUNCTIONS_SRC:.cc=.la)";
+  print "";
   print "octlib_LTLIBRARIES += $(DLD_FUNCTIONS_LIBS)";
-  print ""
+  print "";
   print "if AMCOND_ENABLE_DYNAMIC_LINKING";
+  print "";
+  print "## Use stamp files to avoid problems with checking timestamps";
+  print "## of symbolic links";
+  print "";
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];
     sub (/\.cc$/, "", basename);
-    printf ("DLD-FUNCTIONS/%s.oct: DLD-FUNCTIONS/%s.la\n", basename, basename);
-    print "\trm -f $@";
-    print "\tla=`echo $< | $(SED) 's,DLD-FUNCTIONS/,,'` && \\";
-    print "\t  of=`echo $@ | $(SED) 's,DLD-FUNCTIONS/,,'` && \\";
+    printf ("DLD-FUNCTIONS/.%s.oct-stamp: DLD-FUNCTIONS/%s.la\n", basename, basename);
+    print "\trm -f $(<:.la=.oct)";
+    print "\tla=$(<F) && \\";
+    print "\t  of=$(<F:.la=.oct) && \\";
     print "\t  cd DLD-FUNCTIONS && \\";
-    print "\t  $(LN_S) .libs/`$(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $$la` $$of";
+    print "\t  $(LN_S) .libs/`$(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $$la` $$of && \\";
+    print "\t  touch $(@F)";
+    print "";
   }
   print "endif";
-  print ""
+  print "";
 
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];
@@ -45,12 +52,6 @@ BEGIN {
 	    basename);
     printf ("DLD_FUNCTIONS_%s_la_LIBADD = $(OCT_LINK_DEPS)\n", basename);
   }
+  print "";
 
-  sep = " \\\n";
-  print "DLD_FUNCTIONS_SRC = \\";
-  for (i = 1; i <= nfiles; i++) {
-    if (i == nfiles)
-      sep = "\n";
-    printf ("  DLD-FUNCTIONS/%s%s", files[i], sep);
-  }
 }

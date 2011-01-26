@@ -83,30 +83,32 @@ public:
     return ok () ? octave_value (val) : octave_value (Matrix ());
   }
 
-  graphics_handle operator ++ (void)
+  // Prefix increment/decrement operators.
+  graphics_handle& operator ++ (void)
   {
     ++val;
     return *this;
   }
 
-  graphics_handle operator ++ (int)
-  {
-    graphics_handle h = *this;
-    ++val;
-    return h;
-  }
-
-  graphics_handle operator -- (void)
+  graphics_handle& operator -- (void)
   {
     --val;
     return *this;
   }
 
-  graphics_handle operator -- (int)
+  // Postfix increment/decrement operators.
+  const graphics_handle operator ++ (int)
   {
-    graphics_handle h = *this;
-    --val;
-    return h;
+    graphics_handle old_value = *this;
+    ++(*this);
+    return old_value;
+  }
+
+  const graphics_handle operator -- (int)
+  {
+    graphics_handle old_value = *this;
+    --(*this);
+    return old_value;
   }
 
   bool ok (void) const { return ! xisnan (val); }
@@ -254,6 +256,12 @@ public:
 
   scaler (const scaler& s) : rep (s.rep->clone()) { }
 
+  scaler (const std::string& s)
+    : rep (s == "log"
+           ? new log_scaler ()
+           : (s == "linear" ? new lin_scaler () : new base_scaler ()))
+    { }
+
   ~scaler (void) { delete rep; }
 
   Matrix scale (const Matrix& m) const
@@ -318,13 +326,18 @@ public:
   friend class property;
 
 public:
-  base_property (void) : id (-1), count (1) { }
+  base_property (void) 
+    : id (-1), count (1), name (), parent (), hidden (), listeners () 
+    { }
 
   base_property (const std::string& s, const graphics_handle& h)
-    : id (-1), count (1), name (s), parent (h), hidden (false) { }
+    : id (-1), count (1), name (s), parent (h), hidden (false), listeners () 
+    { }
 
   base_property (const base_property& p)
-    : id (-1), count (1), name (p.name), parent (p.parent), hidden (p.hidden) { }
+    : id (-1), count (1), name (p.name), parent (p.parent), 
+      hidden (p.hidden), listeners () 
+    { }
 
   virtual ~base_property (void) { }
 
@@ -498,7 +511,7 @@ public:
   string_array_property (const std::string& s, const graphics_handle& h,
                   const std::string& val = "", const char& sep = '|',
                   const desired_enum& typ = string_t)
-    : base_property (s, h), desired_type (typ), separator (sep)
+    : base_property (s, h), desired_type (typ), separator (sep), str ()
     {
       size_t pos = 0;
 
@@ -521,7 +534,7 @@ public:
   string_array_property (const std::string& s, const graphics_handle& h,
                   const Cell& c, const char& sep = '|',
                   const desired_enum& typ = string_t)
-    : base_property (s, h), desired_type (typ), separator (sep)
+    : base_property (s, h), desired_type (typ), separator (sep), str ()
     {
       if (c.is_cellstr ())
         {
@@ -1081,14 +1094,17 @@ class array_property : public base_property
 {
 public:
   array_property (void)
-      : base_property ("", graphics_handle ()), data (Matrix ())
+    : base_property ("", graphics_handle ()), data (Matrix ()),
+      xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
     {
       get_data_limits ();
     }
 
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
-      : base_property (nm, h), data (m)
+    : base_property (nm, h), data (m),
+    xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
+    
     {
       get_data_limits ();
     }
@@ -1098,7 +1114,9 @@ public:
   // copy constraints.
   array_property (const array_property& p)
     : base_property (p), data (p.data),
-      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp) { }
+      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp),
+      type_constraints (), size_constraints ()
+    { }
 
   octave_value get (void) const { return data; }
 
@@ -1373,20 +1391,20 @@ class children_property : public base_property
 {
 public:
   children_property (void)
-    : base_property ("", graphics_handle ())
+    : base_property ("", graphics_handle ()), children_list ()
     {
       do_init_children (Matrix ());
     }
 
   children_property (const std::string& nm, const graphics_handle& h,
                      const Matrix &val)
-    : base_property (nm, h)
+    : base_property (nm, h), children_list ()
     {
       do_init_children (val);
     }
 
   children_property (const children_property& p)
-    : base_property (p)
+    : base_property (p), children_list ()
     {
       do_init_children (p.children_list);
     }
@@ -1604,9 +1622,8 @@ public:
   property (base_property *bp, bool persist = false) : rep (bp)
     { if (persist) rep->count++; }
 
-  property (const property& p)
+  property (const property& p) : rep (p.rep)
     {
-      rep = p.rep;
       rep->count++;
     }
 
@@ -2188,8 +2205,6 @@ public:
 
   base_graphics_object (void) : count (1) { }
 
-  base_graphics_object (const base_graphics_object&) { }
-
   virtual ~base_graphics_object (void) { }
 
   virtual void mark_modified (void)
@@ -2403,6 +2418,12 @@ public:
 protected:
   // A reference count.
   int count;
+
+  // No copying!
+
+  base_graphics_object (const base_graphics_object&);
+
+  base_graphics_object& operator = (const base_graphics_object&);
 };
 
 class OCTINTERP_API graphics_object
@@ -2413,9 +2434,8 @@ public:
   graphics_object (base_graphics_object *new_rep)
     : rep (new_rep) { }
 
-  graphics_object (const graphics_object& obj)
+  graphics_object (const graphics_object& obj) : rep (obj.rep)
   {
-    rep = obj.rep;
     rep->count++;
   }
 
@@ -2958,9 +2978,9 @@ class OCTINTERP_API graphics_xform
 {
 public:
   graphics_xform (void)
-      : xform (xform_eye ()), xform_inv (xform_eye ()), zlim (1, 2, 0.0)
+    : xform (xform_eye ()), xform_inv (xform_eye ()), 
+      sx ("linear"), sy ("linear"), sz ("linear"),  zlim (1, 2, 0.0)
     {
-      sx = sy = sz = "linear";
       zlim(1) = 1.0;
     }
 
@@ -4204,9 +4224,8 @@ public:
 
   graphics_event (void) : rep (0) { }
 
-  graphics_event (const graphics_event& e)
+  graphics_event (const graphics_event& e) : rep (e.rep)
     {
-      rep = e.rep;
       rep->count++;
     }
 

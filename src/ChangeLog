@@ -1,3 +1,24 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+2011-01-26  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+	    John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (scaler::scaler (const std::string&)): New constructor.
+	(graphics_handle::operator++, graphics_hanlde::operator--):
+	Implement as recommended by Effective C++.
+
+	* graphics.h.in (class base_property, class array_property,
+	class children_property, class property, class graphics_xform,
+	class graphics_event): Explicitelly iniatialize
+	all data members in constructor initialisation list.
+	* gl-render.cc (class patch_tesselator): Likewise
+	* graphics.cc (class radio_values, class gh_manager),
+	(class callback_event, class set_event): Likewise.
+
+	* graphics.h.in (class base_graphics_property): Disallow copying.
+	* graphics.cc (class function_event): Likewise.
+	(function_event::function_event (void)): Delete implementation.
+
 2011-01-25  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/config-module.awk: Use automake variable for 

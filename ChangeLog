@@ -1,5 +1,9 @@
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
+	* bootstrap: Update from gnulib sources.
+
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac (INSTALL_SCRIPT): Update commend about UGLY_DEFS.
 
 2011-01-26  John W. Eaton  <jwe@octave.org>

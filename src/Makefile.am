@@ -467,7 +467,7 @@ if AMCOND_ENABLE_DYNAMIC_LINKING
   DLD_DYNAMIC_SRC = $(DLD_FUNCTIONS_SRC)
   DLD_STATIC_SRC =
   OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)
-  OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/., $(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
+  OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/$(am__leading_dot),$(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
 else
   DLD_DYNAMIC_SRC =
   DLD_STATIC_SRC = $(DLD_FUNCTIONS_SRC)
@@ -720,8 +720,8 @@ install-oct:
 	done
 
 uninstall-oct:
-	for f in $(OCT_FILES); do \
-	  rm -f $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,.*/,,'`; \
+	for f in $(notdir $(OCT_FILES)); do \
+	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
 	done
 	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
 endif

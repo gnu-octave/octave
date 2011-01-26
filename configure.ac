@@ -1814,8 +1814,10 @@ OCTAVE_PROG_TEXI2DVI
 OCTAVE_PROG_TEXI2PDF
 
 ### Even though we include config.h, we need to have the preprocessor
-### defines available in a variable for the octave-bug script.  Use
-### UGLY_DEFS for that.
+### defines available in a variable for the testif feature of the
+### scripts/testfun/test.m function.  Use UGLY_DEFS to hold all the -D
+### options.  These are ultimately placed in the DEFS field of the
+### struct returned by octave_config_info, which is used by test.m.
 
 AC_OUTPUT_MAKE_DEFS
 

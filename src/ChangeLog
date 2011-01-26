@@ -1,5 +1,11 @@
 2011-01-25  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/config-module.awk: Use automake variable for 
+	portability.
+	* Makefile.am (uninstall-oct): Use GNU Make features for portability
+
+2011-01-25  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/fft.cc, DLD-FUNCTIONS/fft2.cc, DLD-FUNCTIONS/fftn.cc,
 	load-save.cc: Make docstrings static by removing documentation
 	depending on #ifdef configuration variables.

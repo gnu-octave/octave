@@ -10,6 +10,7 @@ BEGIN {
 } {
   files[++nfiles] = $1;
 } END {
+  sep = " \\\n";
   print "DLD_FUNCTIONS_SRC = \\";
   for (i = 1; i <= nfiles; i++) {
     if (i == nfiles)
@@ -31,7 +32,7 @@ BEGIN {
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];
     sub (/\.cc$/, "", basename);
-    printf ("DLD-FUNCTIONS/.%s.oct-stamp: DLD-FUNCTIONS/%s.la\n", basename, basename);
+    printf ("DLD-FUNCTIONS/$(am__leading_dot)%s.oct-stamp: DLD-FUNCTIONS/%s.la\n", basename, basename);
     print "\trm -f $(<:.la=.oct)";
     print "\tla=$(<F) && \\";
     print "\t  of=$(<F:.la=.oct) && \\";

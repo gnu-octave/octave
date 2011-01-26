@@ -1,5 +1,9 @@
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac (INSTALL_SCRIPT): Update commend about UGLY_DEFS.
+
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
 	* acinclude.m4 (OPENGL_LIBS): Don't add -L/usr/X11R6/LIB to
 	LDFLAGS in test.  Bug #32160.
 

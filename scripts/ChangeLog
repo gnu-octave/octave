@@ -1,3 +1,8 @@
+2011-01-26  Olaf Till  <olaf.till@uni-jena.de>
+
+	* pkg/pkg.m: Export environment variables MKOCTFILE and
+	OCTAVE_CONFIG for configure and make, to configure also OCTAVE.
+
 2011-01-24  John W. Eaton  <jwe@octave.org>
 
 	* audio/lin2mu: Doc fix.

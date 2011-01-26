@@ -1287,6 +1287,16 @@ function configure_make (desc, packdir, verbose)
   ## Perform ./configure, make, make install in "src".
   if (exist (fullfile (packdir, "src"), "dir"))
     src = fullfile (packdir, "src");
+    octave_bindir = octave_config_info ("bindir");
+    ver = version ();
+    mkoctfile = fullfile (octave_bindir, sprintf ("mkoctfile-%s", ver));
+    octave_config = fullfile (octave_bindir, sprintf ("octave-config-%s", ver));
+    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s", ver));
+    cenv = {"MKOCTFILE"; mkoctfile;
+            "OCTAVE_CONFIG"; octave_config;
+            "OCTAVE"; octave_binary;
+            "INSTALLDIR"; desc.dir};
+    scenv = sprintf ("%s=\"%s\" ", cenv{:});
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";
@@ -1302,8 +1312,9 @@ function configure_make (desc, packdir, verbose)
       if (isempty (getenv ("RANLIB")))
         flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
       endif
-      [status, output] = shell (strcat ("cd '", src, "'; ./configure --prefix=\"",
-                                        desc.dir, "\"", flags));
+      [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
+					 "./configure --prefix=\"",
+                                         desc.dir, "\"", flags));
       if (status != 0)
         rm_rf (desc.dir);
         error ("the configure script returned the following error: %s", output);
@@ -1315,8 +1326,7 @@ function configure_make (desc, packdir, verbose)
 
     ## Make.
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (cstrcat ("export INSTALLDIR=\"", desc.dir,
-                                         "\"; make -C '", src, "'"));
+      [status, output] = shell (cstrcat (scenv, "make -C '", src, "'"));
       if (status != 0)
         rm_rf (desc.dir);
         error ("'make' returned the following error: %s", output);

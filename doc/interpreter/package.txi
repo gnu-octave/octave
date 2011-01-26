@@ -259,11 +259,15 @@ An optional directory containing code that must be built prior to the
 packages installation.  The Octave package manager will execute
 @file{./configure} in this directory if this script exists, and will
 then call @code{make} if a file @file{Makefile} exists in this
-directory.  @code{make install} will however not be called.  If a file
-called @code{FILES} exists all files listed there will be copied to the
-@code{inst} directory, so they also will be installed.  If the
-@code{FILES} file doesn't exist, @file{src/*.m} and @file{src/*.oct}
-will be copied to the @code{inst} directory.
+directory.  @code{make install} will however not be called.  The
+environment variables @env{MKOCTFILE}, @w{@env{OCTAVE_CONFIG}}, and
+@env{OCTAVE} will be set to the full paths of the programs
+@code{mkoctfile}, @code{octave-config}, and @code{octave}, respectively,
+of the correct version when @code{configure} and @code{make} are
+called.  If a file called @code{FILES} exists all files listed there
+will be copied to the @code{inst} directory, so they also will be
+installed.  If the @code{FILES} file doesn't exist, @file{src/*.m} and
+@file{src/*.oct} will be copied to the @code{inst} directory.
 
 @item package/doc
 An optional directory containing documentation for the package.  The

@@ -1,3 +1,8 @@
+2011-01-26  Olaf Till <olaf.till@uni-jena.de>
+
+	* interpreter/package.txi: Document variables MKOCTFILE,
+	OCTAVE_CONFIG, and OCTAVE exported by pkg for configure and make.
+
 2011-01-25  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Remove pass-through rules for AUTHORS, BUGS, and

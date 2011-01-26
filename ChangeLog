@@ -7,6 +7,7 @@
 
 	* autogen.sh (AUTOMAKE): Add --foreign to the automake command.
 	Check for required GNU files here instead of having automake do it.
+	Export AUTOMAKE so our options are actually used.
 
 2011-01-25  John W. Eaton  <jwe@octave.org>
 

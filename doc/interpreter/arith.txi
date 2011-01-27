@@ -39,6 +39,7 @@ sin ([1, 2; 3, 4])
 * Sums and Products::           
 * Utility Functions::           
 * Special Functions::           
+* Rational Approximations::
 * Coordinate Transformations::
 * Mathematical Constants::      
 @end menu
@@ -278,6 +279,13 @@ cos (pi/2)
 
 @anchor{doc-gammaln}
 @DOCSTRING(lgamma)
+
+@node Rational Approximations
+@section Rational Approximations
+
+@DOCSTRING(rat)
+
+@DOCSTRING(rats)
 
 @node Coordinate Transformations
 @section Coordinate Transformations

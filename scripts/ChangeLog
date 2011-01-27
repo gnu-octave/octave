@@ -1,3 +1,7 @@
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
+	* general/rat.m: Move @seealso inside @deftypefn in docstring.
+
 2011-01-27  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/uigetfile.m, plot/uiputfile.m, plot/uigetdir.m: Check

@@ -33,8 +33,8 @@
 ##
 ## Called with two arguments returns the numerator and denominator separately
 ## as two matrices.
-## @end deftypefn
 ## @seealso{rats}
+## @end deftypefn
 
 function [n,d] = rat(x,tol)
 

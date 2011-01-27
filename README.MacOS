@@ -245,7 +245,7 @@ ${config_opts}.
 
 Now uninstall the Octave port.
 
-    sudo port uninstall octave-devel
+    sudo port deactivate octave-devel
 
 This will remove Octave and leave its dependencies in place. Now Octave may be
 built from the local mercurial archive by typing the commands below, where the

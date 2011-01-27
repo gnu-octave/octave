@@ -342,8 +342,9 @@ fields.  The default is zero.\n\
 
           if (cmax == 0)
             {
-              // Try to estimate the number of columns.
-              size_t pos1 = 0;
+              // Try to estimate the number of columns.  Skip leading
+              // whitespace.
+              size_t pos1 = line.find_first_not_of (" \t");
               do
                 {
                   size_t pos2 = line.find_first_of (sep, pos1);
@@ -376,7 +377,8 @@ fields.  The default is zero.\n\
 
           r = (r > i + 1 ? r : i + 1);
           j = 0;
-          size_t pos1 = 0;
+          // Skip leading whitespace.
+          size_t pos1 = line.find_first_not_of (" \t");
           do
             {
               octave_quit ();

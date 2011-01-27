@@ -1,5 +1,10 @@
 2011-01-27  John W. Eaton  <jwe@octave.org>
 
+	* input.cc (input_event_hook): Fix incorrect use of iterator.
+	Reported by Pascal Dupuis <Pascal.Dupuis@worldonline.be>.
+
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
 	* ov-class.cc (octave_class::reconstruct_exemplar):
 	Call constructor with do_multi_index_op instead of feval.
 	Verify that symbol_table::find_method did return a class

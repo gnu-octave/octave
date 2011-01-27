@@ -1,6 +1,6 @@
 #include <octave/oct.h>
 
-DEFUN_DLD (paramdemo, args, nargout, 
+DEFUN_DLD (paramdemo, args, nargout,
            "Parameter Check Demo.")
 {
   int nargin = args.length ();
@@ -21,13 +21,13 @@ DEFUN_DLD (paramdemo, args, nargout,
       if (m.any_element_is_inf_or_nan())
         octave_stdout << "  includes Inf or NaN values\n";
       if (m.any_element_not_one_or_zero())
-        octave_stdout << 
+        octave_stdout <<
           "  includes other values than 1 and 0\n";
       if (m.all_elements_are_int_or_inf_or_nan())
-        octave_stdout << 
+        octave_stdout <<
           "  includes only int, Inf or NaN values\n";
       if (m.all_integers (min_val, max_val))
-        octave_stdout << 
+        octave_stdout <<
           "  includes only integers in [-10,10]\n";
     }
   return retval;

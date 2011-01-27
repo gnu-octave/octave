@@ -1,3 +1,9 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/mk_doc_cache.m, interpreter/mkoctfile.1,
+	interpreter/munge-texi.cc, interpreter/doccheck/mk_undocumented_list:
+	Strip trailing whitespace.
+
 2011-01-26  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave-bug.1: Delete obsolete man page

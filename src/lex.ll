@@ -1886,7 +1886,7 @@ private:
 
   flex_stream_reader (const flex_stream_reader&);
 
-  flex_stream_reader& operator = (const flex_stream_reader&);	
+  flex_stream_reader& operator = (const flex_stream_reader&);
 
   char *buf;
 };

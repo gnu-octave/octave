@@ -326,17 +326,17 @@ public:
   friend class property;
 
 public:
-  base_property (void) 
-    : id (-1), count (1), name (), parent (), hidden (), listeners () 
+  base_property (void)
+    : id (-1), count (1), name (), parent (), hidden (), listeners ()
     { }
 
   base_property (const std::string& s, const graphics_handle& h)
-    : id (-1), count (1), name (s), parent (h), hidden (false), listeners () 
+    : id (-1), count (1), name (s), parent (h), hidden (false), listeners ()
     { }
 
   base_property (const base_property& p)
-    : id (-1), count (1), name (p.name), parent (p.parent), 
-      hidden (p.hidden), listeners () 
+    : id (-1), count (1), name (p.name), parent (p.parent),
+      hidden (p.hidden), listeners ()
     { }
 
   virtual ~base_property (void) { }
@@ -1103,8 +1103,7 @@ public:
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
     : base_property (nm, h), data (m),
-    xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
-    
+      xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
     {
       get_data_limits ();
     }
@@ -2978,7 +2977,7 @@ class OCTINTERP_API graphics_xform
 {
 public:
   graphics_xform (void)
-    : xform (xform_eye ()), xform_inv (xform_eye ()), 
+    : xform (xform_eye ()), xform_inv (xform_eye ()),
       sx ("linear"), sy ("linear"), sz ("linear"),  zlim (1, 2, 0.0)
     {
       zlim(1) = 1.0;

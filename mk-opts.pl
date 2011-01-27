@@ -3,17 +3,17 @@
 # Copyright (C) 2002-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -24,7 +24,7 @@
 # FIXME:
 #
 # * Improve default documentation and/or individual documentation
-#   in data files. 
+#   in data files.
 #
 # * Fix print/show code to display/return something more informative
 #   for special values (for example, -1 ==> infinite in some cases).
@@ -111,7 +111,7 @@ sub parse_input
       elsif (/^\s*INCLUDE\s*=\s*"(\S+)"\s*$/)
         {
           $include = "${include}#include <$1>\n";
-	}
+        }
       elsif (/^\s*DOC_STRING\s*$/)
         {
           die "duplicate DOC_STRING" if ($have_doc_string);
@@ -120,8 +120,8 @@ sub parse_input
         }
       else
         {
-	  die "mk-opts.pl: unknown command: $_\n"
-	}
+          die "mk-opts.pl: unknown command: $_\n"
+        }
     }
 }
 
@@ -213,7 +213,7 @@ sub process_data
   &get_min_match_len_info ($max_tokens);
 
   $fcn_name = lc ($CLASS) if ($fcn_name eq "");
-    
+
   $opt_fcn_name = "${fcn_name}_options" if ($opt_fcn_name eq "");
 
   $static_object_name = "${fcn_name}_opts";
@@ -238,14 +238,14 @@ sub get_min_match_len_info
     {
       for ($j = 0; $j < $max_tokens; $j++)
         {
-	  $min_tok_len_to_match[$i][$j] = 0;
+          $min_tok_len_to_match[$i][$j] = 0;
         }
 
       $min_toks_to_match[$i] = 1;
 
     L1: for ($k = 0; $k < $opt_num; $k++)
         {
-	  local ($duplicate) = 1;
+          local ($duplicate) = 1;
 
           if ($i != $k)
             {
@@ -264,12 +264,12 @@ sub get_min_match_len_info
                         }
                       else
                         {
-			  $duplicate = 0;
+                          $duplicate = 0;
 
-			  if ($min_tok_len_to_match[$i][$j] == 0)
-			    {
-			      $min_tok_len_to_match[$i][$j] = 1;
-			    }
+                          if ($min_tok_len_to_match[$i][$j] == 0)
+                            {
+                              $min_tok_len_to_match[$i][$j] = 1;
+                            }
 
                           local (@s) = split (//, $kw_tok[$i][$j]);
                           local (@t) = split (//, $kw_tok[$k][$j]);
@@ -282,10 +282,10 @@ sub get_min_match_len_info
                             {
                               if ("$s[$ii]" eq "$t[$ii]")
                                 {
-				  if ($ii + 2 > $min_tok_len_to_match[$i][$j])
-				    {
-				      $min_tok_len_to_match[$i][$j]++;
-				    }
+                                  if ($ii + 2 > $min_tok_len_to_match[$i][$j])
+                                    {
+                                      $min_tok_len_to_match[$i][$j]++;
+                                    }
                                 }
                               else
                                 {
@@ -296,10 +296,10 @@ sub get_min_match_len_info
                           last L1;
                         }
                     }
-		  else
-		    {
-		      die "ambiguous options \"$name[$i]\" and \"$name[$k]\"" if ($duplicate);
-		    }
+                  else
+                    {
+                      die "ambiguous options \"$name[$i]\" and \"$name[$k]\"" if ($duplicate);
+                    }
                 }
             }
         }
@@ -618,9 +618,9 @@ sub emit_struct_def
       &emit_option_table_entry ($i, 0);
 
       if ($i < $opt_num - 1)
-	{
-	  print "\n";
-	}
+        {
+          print "\n";
+        }
     }
 
   print "};\n\n";
@@ -720,7 +720,7 @@ print_${class_name} (std::ostream& os)
         }
       elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
-	  if ($type[$i] eq "Array<int>")
+          if ($type[$i] eq "Array<int>")
             {
               $elt_type = "int";
             }
@@ -736,10 +736,10 @@ print_${class_name} (std::ostream& os)
     else
       {
         os << \"\\n\\n\";
-	octave_idx_type len = val.length ();
-	Matrix tmp (len, 1);
-	for (octave_idx_type i = 0; i < len; i++)
-	  tmp(i,0) = val(i);
+        octave_idx_type len = val.length ();
+        Matrix tmp (len, 1);
+        for (octave_idx_type i = 0; i < len; i++)
+          tmp(i,0) = val(i);
         octave_print_internal (os, tmp, false, 2);
         os << \"\\n\\n\";
       }\n";
@@ -901,7 +901,7 @@ show_${class_name} (const std::string& keyword)
         }
       elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
-	  if ($type[$i] eq "Array<int>")
+          if ($type[$i] eq "Array<int>")
             {
               $elt_type = "int";
             }
@@ -916,10 +916,10 @@ show_${class_name} (const std::string& keyword)
         }
       else
         {
-	  octave_idx_type len = val.length ();
-	  ColumnVector tmp (len);
-	  for (octave_idx_type i = 0; i < len; i++)
-	    tmp(i) = val(i);
+          octave_idx_type len = val.length ();
+          ColumnVector tmp (len);
+          for (octave_idx_type i = 0; i < len; i++)
+            tmp(i) = val(i);
           retval = tmp;
         }\n";
         }
@@ -977,9 +977,9 @@ Options include\\n\\
     {
       print "\@item \\\"$name[$i]\\\"\\n\\\n";
       if ($doc_item[$i] ne "")
-	{
-	  print "$doc_item[$i]";
-	}
+        {
+          print "$doc_item[$i]";
+        }
     }
 
   print "\@end table\\n\\\n\@end deftypefn\")
@@ -1010,7 +1010,7 @@ Options include\\n\\
     print_usage ();
 
   return retval;
-}\n";  
+}\n";
 }
 
 sub emit_options_debug

@@ -1,3 +1,7 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+	* oct-refcount.h: Strip trailing whitespace.
+
 2011-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* SparseQR.h (class SparseQR::SparseQR_reps): Disallow copying.

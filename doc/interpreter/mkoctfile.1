@@ -22,15 +22,15 @@
 .SH NAME
 mkoctfile \- Compile dynamic-load modules for GNU Octave
 .SH SYNOPSIS
-.BR mkoctfile\  [\-IDIR]\ [\-DDEF]\ [\-lLIB]\ [\-LDIR]\ [\-M|\-\-depend]\ 
-[\-c]\ [\-o FILE|\-\-output FILE]\ [\-p VAR|\-\-print VAR]\ [\-s|\-\-strip]\ 
-[\-v|\-\-verbose]\ [\-h|\-?|\-\-help]\ \fIfile\fP .\|.\|.  
+.BR mkoctfile\  [\-IDIR]\ [\-DDEF]\ [\-lLIB]\ [\-LDIR]\ [\-M|\-\-depend]
+\ [\-c]\ [\-o FILE|\-\-output FILE]\ [\-p VAR|\-\-print VAR]\ [\-s|\-\-strip]
+\ [\-v|\-\-verbose]\ [\-h|\-?|\-\-help]\ \fIfile\fP .\|.\|.
 .SH DESCRIPTION
 .PP
 \fImkoctfile\fP is used to compile source C, C++ or Fortran source code in
-dynamically loadable 
+dynamically loadable
 .I .oct
-file for 
+file for
 .BR octave (1).
 .SH OPTIONS
 \fImkoctfile\fP accepts the following options:
@@ -60,25 +60,25 @@ specified) unless linking a stand-alone executable.
 .B \-p VAR|\-\-print VAR
 Print configuration variable VAR.  Recognized variables are:
 .RS
-    ALL_CFLAGS                FFTW_LIBS     
-    ALL_CXXFLAGS              FLIBS       
-    ALL_FFLAGS                FPICFLAG      
-    ALL_LDFLAGS               INCFLAGS      
-    BLAS_LIBS                 LDFLAGS             
-    CC                        LD_CXX              
+    ALL_CFLAGS                FFTW_LIBS
+    ALL_CXXFLAGS              FLIBS
+    ALL_FFLAGS                FPICFLAG
+    ALL_LDFLAGS               INCFLAGS
+    BLAS_LIBS                 LDFLAGS
+    CC                        LD_CXX
     CFLAGS                    LD_STATIC_FLAG
-    CPICFLAG                  LFLAGS              
-    CPPFLAGS                  LIBCRUFT      
-    CXX                       LIBOCTAVE     
-    CXXFLAGS                  LIBOCTINTERP  
-    CXXPICFLAG                LIBREADLINE   
-    DEPEND_EXTRA_SED_PATTERN  LIBS        
-    DEPEND_FLAGS              OCTAVE_LIBS   
-    DL_LD                     RDYNAMIC_FLAG 
-    DL_LDFLAGS                RLD_FLAG      
-    F2C                       SED         
-    F2CFLAGS                  XTRA_CFLAGS   
-    F77                       XTRA_CXXFLAGS 
+    CPICFLAG                  LFLAGS
+    CPPFLAGS                  LIBCRUFT
+    CXX                       LIBOCTAVE
+    CXXFLAGS                  LIBOCTINTERP
+    CXXPICFLAG                LIBREADLINE
+    DEPEND_EXTRA_SED_PATTERN  LIBS
+    DEPEND_FLAGS              OCTAVE_LIBS
+    DL_LD                     RDYNAMIC_FLAG
+    DL_LDFLAGS                RLD_FLAG
+    F2C                       SED
+    F2CFLAGS                  XTRA_CFLAGS
+    F77                       XTRA_CXXFLAGS
     FFLAGS
 .RE
 .TP 8
@@ -96,7 +96,7 @@ Strip the output file.
 Echo commands as they are executed.
 .TP 8
 .B file
-Compile or link file. Recognised file types are 
+Compile or link file. Recognised file types are
 .RS
     .c    C source
     .cc   C++ source
@@ -113,5 +113,5 @@ Compile or link file. Recognised file types are
 John W. Eaton <jwe@octave.org>
 
 This manual page was contributed by Dirk Eddelbuettel
-<edd@debian.org> for the Debian GNU/Linux distribution but 
+<edd@debian.org> for the Debian GNU/Linux distribution but
 may be used by others.

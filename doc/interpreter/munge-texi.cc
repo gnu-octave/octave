@@ -75,8 +75,8 @@ extract_docstring (std::istream& is)
           char buf[16];
           int i = 0;
           buf[i++] = static_cast<char> (c);
-          
-          if ((   buf[i++] = static_cast<char> (is.get ())) == 's'  
+
+          if ((   buf[i++] = static_cast<char> (is.get ())) == 's'
               && (buf[i++] = static_cast<char> (is.get ())) == 'e'
               && (buf[i++] = static_cast<char> (is.get ())) == 'e'
               && (buf[i++] = static_cast<char> (is.get ())) == 'a'
@@ -86,16 +86,16 @@ extract_docstring (std::istream& is)
               && (buf[i++] = static_cast<char> (is.get ())) == '{')
             {
               doc += "@seealso{";
-              
+
               bool first = true;
-              
+
               // process @seealso parameters
               while ((c = is.get ()) != EOF
                      && c != doc_delim
-                     && c != '}') 
+                     && c != '}')
                 {
                   // ignore whitespace and delimiters
-                  while (   c == ' ' 
+                  while (   c == ' '
                          || c == '\t'
                          || c == '\r'
                          || c == '\n'
@@ -103,14 +103,14 @@ extract_docstring (std::istream& is)
                     {
                       c = is.get ();
                     }
-                    
+
                   // test for end of @seealso
-                  if (c == '}') 
+                  if (c == '}')
                     break;
-                  
+
                   // get function name
                   std::string function_name;
-                  do 
+                  do
                     function_name += static_cast<char> (c);
                   while ((c = is.get ()) != EOF
                           && c != doc_delim
@@ -132,7 +132,7 @@ extract_docstring (std::istream& is)
                     + function_name + "}";
 
                   // test for end of @seealso
-                  if (c == '}') 
+                  if (c == '}')
                     break;
                 }
               if (c == '}')

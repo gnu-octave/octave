@@ -5615,7 +5615,7 @@ public:
 
 private:
   callback_event (void)
-    : base_graphics_event (), handle (), 
+    : base_graphics_event (), handle (),
       callback_name (), callback_data ()
   { }
 
@@ -5639,7 +5639,7 @@ public:
     }
 
 private:
-  
+
   graphics_event::event_fcn function;
 
   void* function_data;
@@ -5672,9 +5672,7 @@ public:
 
 private:
   set_event (void)
-    : base_graphics_event (), 
-      // FIXME: it it private in order not to be used ? 
-      handle (), property_name (), property_value ()
+    : base_graphics_event (), handle (), property_name (), property_value ()
   { }
 
 private:

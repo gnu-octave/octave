@@ -1858,12 +1858,39 @@ Sparse<T>::assign (const idx_vector& idx_i,
   octave_idx_type n = rhs.rows ();
   octave_idx_type m = rhs.columns ();
 
-  if (idx_i.length (nr) == n && idx_j.length (nc) == m)
-    {
-      if (n == 0 || m == 0)
-        return;
+  // FIXME -- this should probably be written more like the
+  // Array<T>::assign function...
 
-      octave_idx_type nrx = idx_i.extent (nr), ncx = idx_j.extent (nc);
+  bool orig_zero_by_zero = (nr == 0 && nc == 0);
+
+  if (orig_zero_by_zero || (idx_i.length (nr) == n && idx_j.length (nc) == m))
+    {
+      octave_idx_type nrx;
+      octave_idx_type ncx;
+
+      if (orig_zero_by_zero)
+        {
+          if (idx_i.is_colon ())
+            {
+              nrx = n;
+
+              if (idx_j.is_colon ())
+                ncx = n;
+              else
+                ncx = idx_j.extent (nc);
+            }
+          else if (idx_j.is_colon ())
+            {
+              nrx = idx_i.extent (nr);
+              ncx = m;
+            }
+        }
+      else
+        {
+          nrx = idx_i.extent (nr);
+          ncx = idx_j.extent (nc);
+        }
+
       // Try to resize first if necessary.
       if (nrx != nr || ncx != nc)
         {
@@ -1872,6 +1899,9 @@ Sparse<T>::assign (const idx_vector& idx_i,
           nc = cols ();
           // nz is preserved.
         }
+
+      if (n == 0 || m == 0)
+        return;
 
       if (idx_i.is_colon ())
         {
@@ -2599,8 +2629,8 @@ Sparse<T>::array_value () const
 %!test test_sparse_slice([2 0], 21, 1);
 %!test test_sparse_slice([2 0], 21, 2);
 %!test test_sparse_slice([2 0], 21, [2,2]);
-%!assert(set_slice(sparse(ones([2 0])), 21, 3), sparse(2,0));  # sparse different from full
-%!assert(set_slice(sparse(ones([2 0])), 21, 4), sparse(2,0));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 21, 3), sparse(3,0));
+%!assert(set_slice(sparse(ones([2 0])), 21, 4), sparse(4,0));
 %!test test_sparse_slice([2 0], 22, []);
 %!test test_sparse_slice([2 0], 22, 1);
 %!test test_sparse_slice([2 0], 22, 2);
@@ -2619,8 +2649,8 @@ Sparse<T>::array_value () const
 %!test test_sparse_slice([0 2], 22, 1);
 %!test test_sparse_slice([0 2], 22, 2);
 %!test test_sparse_slice([0 2], 22, [2,2]);
-%!assert(set_slice(sparse(ones([0 2])), 22, 3), sparse(0,2));  # sparse different from full
-%!assert(set_slice(sparse(ones([0 2])), 22, 4), sparse(0,2));  # sparse different from full
+%!assert(set_slice(sparse(ones([0 2])), 22, 3), sparse(0,3));
+%!assert(set_slice(sparse(ones([0 2])), 22, 4), sparse(0,4));
 
 ## size = [2 1]
 %!test test_sparse_slice([2 1], 21, []);

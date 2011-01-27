@@ -1,5 +1,12 @@
 2011-01-27  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.cc (octave_struct::subsasgn,
+	octave_scalar_struct::subsasgn): Call undef_subsasgn on object
+	returned by octave_value::empty_conv if LHS is initially undefined.
+	Bug #32242.
+
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
 	* input.cc (input_event_hook): Fix incorrect use of iterator.
 	Reported by Pascal Dupuis <Pascal.Dupuis@worldonline.be>.
 
@@ -23,7 +30,7 @@
 	* ov-class.h, ov-class.cc (octave_class::undef_subsasgn,
 	octave_class::subsasgn_common): New functions.
 	* ov-base.h, ov-base.cc (octave_base_value::subsasgn): If
-	undefined, undef_subsasgn on object returned by
+	undefined, call undef_subsasgn on object returned by
 	octave_value::empty_conv.
 	(octave_base_value::undef_subsasgn): New virtual function.
 	(octave_base_value::subsasgn): Only handle case of undefined

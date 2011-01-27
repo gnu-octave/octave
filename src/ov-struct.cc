@@ -328,7 +328,9 @@ octave_struct::subsasgn (const std::string& type,
                       {
                         octave_value& tmp = tmpc(0);
 
-                        if (! tmp.is_defined () || tmp.is_zero_by_zero ())
+                        bool orig_undefined = tmp.is_undefined ();
+
+                        if (orig_undefined || tmp.is_zero_by_zero ())
                           {
                             tmp = octave_value::empty_conv (next_type, rhs);
                             tmp.make_unique (); // probably a no-op.
@@ -338,7 +340,9 @@ octave_struct::subsasgn (const std::string& type,
                           tmp.make_unique (1);
 
                         if (! error_state)
-                          t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                          t_rhs = (orig_undefined
+                                   ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                                   : tmp.subsasgn (next_type, next_idx, rhs));
                       }
                     else
                       gripe_indexed_cs_list ();
@@ -378,7 +382,9 @@ octave_struct::subsasgn (const std::string& type,
                   {
                     octave_value& tmp = tmpc(0);
 
-                    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
+                    bool orig_undefined = tmp.is_undefined ();
+
+                    if (orig_undefined || tmp.is_zero_by_zero ())
                       {
                         tmp = octave_value::empty_conv (next_type, rhs);
                         tmp.make_unique (); // probably a no-op.
@@ -388,7 +394,9 @@ octave_struct::subsasgn (const std::string& type,
                       tmp.make_unique (1);
 
                     if (! error_state)
-                      t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                      t_rhs = (orig_undefined
+                               ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                               : tmp.subsasgn (next_type, next_idx, rhs));
                   }
                 else
                   gripe_indexed_cs_list ();
@@ -1244,7 +1252,9 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
           if (! error_state)
             {
-              if (! tmp.is_defined () || tmp.is_zero_by_zero ())
+              bool orig_undefined = tmp.is_undefined ();
+
+              if (orig_undefined || tmp.is_zero_by_zero ())
                 {
                   tmp = octave_value::empty_conv (next_type, rhs);
                   tmp.make_unique (); // probably a no-op.
@@ -1254,7 +1264,9 @@ octave_scalar_struct::subsasgn (const std::string& type,
                 tmp.make_unique (1);
 
               if (! error_state)
-                t_rhs = tmp.subsasgn (next_type, next_idx, rhs);
+                t_rhs = (orig_undefined
+                         ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                         : tmp.subsasgn (next_type, next_idx, rhs));
             }
         }
 

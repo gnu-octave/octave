@@ -222,25 +222,25 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-			    ALL_CFLAGS                FLIBS
-			    ALL_CXXFLAGS              FPICFLAG
-			    ALL_FFLAGS                INCFLAGS
-			    ALL_LDFLAGS               LAPACK_LIBS
-			    BLAS_LIBS                 LDFLAGS
-			    CC                        LD_CXX
-			    CFLAGS                    LD_STATIC_FLAG
-			    CPICFLAG                  LFLAGS
-			    CPPFLAGS                  LIBCRUFT
-			    CXX                       LIBOCTAVE
-			    CXXFLAGS                  LIBOCTINTERP
-			    CXXPICFLAG                LIBS
-			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
-			    DEPEND_FLAGS              RDYNAMIC_FLAG
-			    DL_LD                     READLINE_LIBS
-			    DL_LDFLAGS                RLD_FLAG
-			    F77                       SED
-			    FFLAGS                    XTRA_CFLAGS
-			    FFTW_LIBS                 XTRA_CXXFLAGS
+                            ALL_CFLAGS                FLIBS
+                            ALL_CXXFLAGS              FPICFLAG
+                            ALL_FFLAGS                INCFLAGS
+                            ALL_LDFLAGS               LAPACK_LIBS
+                            BLAS_LIBS                 LDFLAGS
+                            CC                        LD_CXX
+                            CFLAGS                    LD_STATIC_FLAG
+                            CPICFLAG                  LFLAGS
+                            CPPFLAGS                  LIBCRUFT
+                            CXX                       LIBOCTAVE
+                            CXXFLAGS                  LIBOCTINTERP
+                            CXXPICFLAG                LIBS
+                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+                            DEPEND_FLAGS              RDYNAMIC_FLAG
+                            DL_LD                     READLINE_LIBS
+                            DL_LDFLAGS                RLD_FLAG
+                            F77                       SED
+                            FFLAGS                    XTRA_CFLAGS
+                            FFTW_LIBS                 XTRA_CXXFLAGS
 
   --link-stand-alone      Link a stand-alone executable file.
 
@@ -430,11 +430,11 @@ if [ -n "$f77files" ]; then
     esac
     if [ -n "$F77" ]; then
       if [ -n "$outputfile" ]; then
-	if $link; then
-	  o=$b.o
-	else
-	  o=$outputfile
-	fi
+        if $link; then
+          o=$b.o
+        else
+          o=$outputfile
+        fi
       else
         o=$b.o
       fi
@@ -453,13 +453,13 @@ if [ -n "$cfiles" ]; then
     if [ -n  "$CC" ]; then
       b=`echo $f | $SED 's,.*/,,; s,\.c$,,'`
       if [ -n "$outputfile" ]; then
-	if $link; then
-	  o=$b.o
-	else
-	  o=$outputfile
-	fi
+        if $link; then
+          o=$b.o
+        else
+          o=$outputfile
+        fi
       else
-	o=$b.o
+        o=$b.o
       fi
       objfiles="$objfiles $o"
       cmd="$CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $pass_on_options $incflags $defs $f -o $o"
@@ -475,24 +475,24 @@ if [ -n "$ccfiles" ]; then
   for f in $ccfiles; do
     if [ -n "$CXX" ]; then
       case $f in
-	*.cc)
-	  b=`echo $f | $SED 's,.*/,,; s,\.cc$,,'`
-	;;
-	*.C)
-	  b=`echo $f | $SED 's,.*/,,; s,\.C$,,'`
-	;;
-	*.cpp)
-	  b=`echo $f | $SED 's,.*/,,; s,\.cpp$,,'`
-	;;
+        *.cc)
+          b=`echo $f | $SED 's,.*/,,; s,\.cc$,,'`
+        ;;
+        *.C)
+          b=`echo $f | $SED 's,.*/,,; s,\.C$,,'`
+        ;;
+        *.cpp)
+          b=`echo $f | $SED 's,.*/,,; s,\.cpp$,,'`
+        ;;
       esac
       if [ -n "$outputfile" ]; then
-	if $link; then
-	  o=$b.o
-	else
-	  o=$outputfile
-	fi
+        if $link; then
+          o=$b.o
+        else
+          o=$outputfile
+        fi
       else
-	o=$b.o
+        o=$b.o
       fi
       objfiles="$objfiles $o"
       cmd="$CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $pass_on_options $incflags $defs $f -o $o"

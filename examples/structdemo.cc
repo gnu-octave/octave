@@ -39,6 +39,6 @@ DEFUN_DLD (structdemo, args, , "Struct demo.")
   else
     print_usage ();
 
-  return retval; 
+  return retval;
 }
 

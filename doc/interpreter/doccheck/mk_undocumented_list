@@ -6,7 +6,7 @@
 ../../run-octave --norc --silent --no-history --eval '\
  funclist  = vertcat (__list_functions__ , __builtins__) \
  disp("#!-separator-!#") \
- where = cellfun (\@which, funclist, \"UniformOutput\", 0)' 
+ where = cellfun (\@which, funclist, \"UniformOutput\", 0)'
 _END_OCT_SCRIPT_
 
 die "Unable to invoke 'run-octave'.  Exiting\n" unless (@octave_output);
@@ -32,10 +32,10 @@ FUNC: foreach $idx (0 .. $#where)
    next FUNC if ($where[$idx] =~ /interpreter/i);
    next FUNC if ($where[$idx] =~ m#test/#i);
 
-   push (@functions, $all_functions[$idx]); 
+   push (@functions, $all_functions[$idx]);
 }
 
-# Remove internal functions from the list of features requiring a DOCSTRING  
+# Remove internal functions from the list of features requiring a DOCSTRING
 @functions = grep (! /^__/, @functions);
 
 # Load list of function exceptions not requiring a DOCSTRING

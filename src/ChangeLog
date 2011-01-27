@@ -1,5 +1,10 @@
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
+	* lex.ll, graphics.cc, gl-render.cc, ov-mex-fcn.h, graphics.h.in:
+	Delete trailing whitespace.
+
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
 	Bug #32242.
 
 	* ov.h, ov.cc (octave_value::undef_subsasgn): New function.

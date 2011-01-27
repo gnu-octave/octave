@@ -87,7 +87,7 @@ for i = 2:n
 
   doc = regexprep (doc, "^[\r\n]+", '');
 
-  ## Skip internal functions that start with __ as these aren't 
+  ## Skip internal functions that start with __ as these aren't
   ## indexed by lookfor.
   if (length (symbol) > 2 && regexp (symbol, '^__.+__$'))
     continue;

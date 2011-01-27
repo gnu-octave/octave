@@ -62,7 +62,7 @@
 
 // Note that the third parameter (nargout) is not used, so it is
 // omitted from the list of arguments to DEFUN_DLD in order to avoid
-// the warning from gcc about an unused function parameter. 
+// the warning from gcc about an unused function parameter.
 
 DEFUN_DLD (hello, args, ,
   "[...] = hello (...)\n\

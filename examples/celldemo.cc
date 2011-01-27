@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 #include <octave/Cell.h>
 
-DEFUN_DLD (celldemo, args, , "Cell Demo") 
+DEFUN_DLD (celldemo, args, , "Cell Demo")
 {
   octave_value_list retval;
   int nargin = args.length ();

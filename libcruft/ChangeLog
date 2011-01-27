@@ -1,3 +1,7 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+	* mkf77def.in: Strip trailing whitespace.
+
 2011-01-20  John W. Eaton  <jwe@octave.org>
 
 	* misc/cquit.c, misc/f77-fcn.h, misc/quit.cc: Strip trailing

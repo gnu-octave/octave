@@ -33,24 +33,24 @@ public:
   octave_refcount(count_type initial_count) : count(initial_count) {}
 
   // Increment/Decrement. int is postfix.
-  count_type operator++(void) 
-    { 
-      return ++count; 
+  count_type operator++(void)
+    {
+      return ++count;
     }
 
-  count_type operator++(int) 
-    { 
-      return count++; 
+  count_type operator++(int)
+    {
+      return count++;
     }
 
   count_type operator--(void)
-    { 
-      return --count; 
+    {
+      return --count;
     }
 
   count_type operator--(int)
-    { 
-      return count--; 
+    {
+      return count--;
     }
 
   operator count_type (void) const { return count; }

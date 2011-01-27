@@ -326,9 +326,9 @@ private:
 
   // No copying!
 
-  opengl_tesselator (const opengl_tesselator&);  
+  opengl_tesselator (const opengl_tesselator&);
 
-  opengl_tesselator operator = (const opengl_tesselator&);  
+  opengl_tesselator operator = (const opengl_tesselator&);
 
   GLUtesselator *glu_tess;
   bool fill;
@@ -734,15 +734,15 @@ opengl_renderer::render_ticktexts(Matrix& ticks, string_vector& ticklabels,
           //        drawn after axes object, for correct rendering?
           if (xyz == 0) // X
             {
-              b = render_text (ticklabels(i), val, p1, p2, ha, va); 
+              b = render_text (ticklabels(i), val, p1, p2, ha, va);
             }
           else if (xyz == 1) // Y
             {
-              b = render_text (ticklabels(i), p1, val, p2, ha, va); 
+              b = render_text (ticklabels(i), p1, val, p2, ha, va);
             }
           else if (xyz == 2) // Z
             {
-              b = render_text (ticklabels(i), p1, p2, val, ha, va); 
+              b = render_text (ticklabels(i), p1, p2, val, ha, va);
             }
 
           wmax = std::max (wmax, static_cast<int> (b(2)));
@@ -970,7 +970,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   }
 
   Matrix view = props.get_view ().matrix_value ();
-  bool nearhoriz = std::abs(view(1)) <= 5; 
+  bool nearhoriz = std::abs(view(1)) <= 5;
 
   Matrix axe_color = props.get_color_rgb ();
   bool visible = props.is_visible ();
@@ -1143,7 +1143,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
         render_grid (minorgridstyle, xmticks, x_min, x_max,
             yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
             0, (zstate != AXE_DEPTH_DIR));
-                        
+
       // minor tick marks
       if (do_xminortick)
         {

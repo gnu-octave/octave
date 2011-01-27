@@ -1,5 +1,11 @@
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
+	* mkdoc: Untabify.
+
+	* mkdoc, gethelp.cc: Strip trailing whitespace.
+
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
 	* general/curl.m: Simplify processing of outptut values.
 
 2011-01-26  Olaf Till  <olaf.till@uni-jena.de>

@@ -1,3 +1,12 @@
+2011-01-26  John W. Eaton  <jwe@octave.org>
+
+	* mk-opts.pl, mkoctfile.cc.in, mkoctfile.in: Untabify.
+
+	* mkf77def.in, mk-opts.pl, mkoctfile.cc.in, structdemo.cc,
+	unwinddemo.cc, fortdemo.cc, paramdemo.cc,
+	celldemo.cc,stringdemo.cc, hello.cc, embedded.cc, helloworld.cc:
+	Strip trailing whitespace.
+
 2011-01-26  Ben Abbott  <bpabbott@mac.com>
 
 	* README.MacOS: Modify organization, and update for MacPorts.

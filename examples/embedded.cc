@@ -18,7 +18,7 @@ main (void)
   std::cout << "GCD of [";
   for (octave_idx_type i = 0; i < n; i++)
     {
-      a_matrix (i) = 5 * (i + 1); 
+      a_matrix (i) = 5 * (i + 1);
       if (i != 0)
         std::cout << ", " << 5 * (i + 2);
       else

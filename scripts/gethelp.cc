@@ -117,7 +117,7 @@ extract_help_text (void)
 
   if (! help_txt.empty ())
     {
-      if (looks_like_octave_copyright (help_txt)) 
+      if (looks_like_octave_copyright (help_txt))
         help_txt.resize (0);
 
       if (help_txt.empty ())
@@ -144,7 +144,7 @@ main (int argc, char **argv)
       file_name = argv[2];
     }
 
-  std::string help_text = extract_help_text ();  
+  std::string help_text = extract_help_text ();
 
   if (! help_text.empty ())
     {

@@ -1,3 +1,11 @@
+2011-01-26  Rik  <octave@nomad.inbox5.com>
+
+	* scripts/general/interp1.m, scripts/general/interp2.m,
+	scripts/general/interp3.m, scripts/general/interpn.m: Use em-dash
+	rather than en-dash.
+	* scripts/miscellaneous/mkoctfile.m: Use @code to prevent option
+	turning to en-dash.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* mkdoc: Untabify.

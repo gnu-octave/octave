@@ -67,7 +67,7 @@
 ## @item -o FILE
 ## @itemx --output FILE
 ## Output file name.  Default extension is .oct
-## (or .mex if --mex is specified) unless linking
+## (or .mex if @samp{--mex} is specified) unless linking
 ## a stand-alone executable.
 ##
 ## @item -p VAR

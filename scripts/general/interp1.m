@@ -46,7 +46,7 @@
 ## Cubic interpolation from four nearest neighbors
 ##
 ## @item 'spline'
-## Cubic spline interpolation--smooth first and second derivatives
+## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve
 ## @end table
 ##

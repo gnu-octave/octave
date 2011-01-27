@@ -66,9 +66,12 @@ x.c = "string";
 @end group
 @end example
 
+@opindex .
 @noindent
-create a structure with three elements.  To print the value of the
-structure, you can type its name, just as for any other variable:
+create a structure with three elements.  The @samp{.} character separates
+the structure name from the field name and indicates to Octave that this
+variable is a structure.  To print the value of the
+structure you can type its name, just as for any other variable:
 
 @example
 @group
@@ -494,7 +497,8 @@ and @samp{@}} as allocation and indexing operators.
 
 @node Basic Usage of Cell Arrays
 @subsection Basic Usage of Cell Arrays
-
+@opindex @{
+@opindex @}
 As an example, the following code creates a cell array containing a
 string and a 2-by-2 random matrix
 

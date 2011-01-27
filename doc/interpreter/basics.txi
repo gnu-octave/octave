@@ -674,7 +674,7 @@ is saved.
 
 @node Customizing readline
 @subsection Customizing @code{readline}
-@cindex @file{~/.inputrc}
+@cindex @code{~/.inputrc}
 @cindex customizing @code{readline}
 @cindex @code{readline} customization
 

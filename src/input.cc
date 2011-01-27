@@ -1255,7 +1255,7 @@ input_event_hook (void)
           std::string hook_fcn = p->first;
           octave_value user_data = p->second;
 
-          p++;
+          hook_fcn_map_type::iterator q = p++;
 
           if (is_valid_function (hook_fcn))
             {
@@ -1265,7 +1265,7 @@ input_event_hook (void)
                 feval (hook_fcn, octave_value_list (), 0);
             }
           else
-            hook_fcn_map.erase (p);
+            hook_fcn_map.erase (q);
         }
 
       if (hook_fcn_map.empty ())

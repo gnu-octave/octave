@@ -504,6 +504,28 @@ octave_class::subsasgn (const std::string& type,
                         const std::list<octave_value_list>& idx,
                         const octave_value& rhs)
 {
+  count++;
+  return subsasgn_common (octave_value (this), type, idx, rhs);
+}
+
+octave_value
+octave_class::undef_subsasgn (const std::string& type,
+                              const std::list<octave_value_list>& idx,
+                              const octave_value& rhs)
+{
+  // For compatibility with Matlab, pass [] as the first argument to the
+  // the subsasgn function when the LHS of an indexed assignment is
+  // undefined.
+
+  return subsasgn_common (Matrix (), type, idx, rhs);
+}
+
+octave_value
+octave_class::subsasgn_common (const octave_value& obj,
+                               const std::string& type,
+                               const std::list<octave_value_list>& idx,
+                               const octave_value& rhs)
+{
   octave_value retval;
 
   if (! (in_class_method () || called_from_builtin ()))
@@ -529,8 +551,7 @@ octave_class::subsasgn (const std::string& type,
           if (error_state)
             return octave_value_list ();
 
-          count++;
-          args(0) = octave_value (this);
+          args(0) = obj;
 
           // Now comes the magic. Count copies with me:
           // 1. myself (obsolete)

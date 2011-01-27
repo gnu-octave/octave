@@ -281,6 +281,11 @@ public:
             const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
+  virtual octave_value
+  undef_subsasgn (const std::string& type,
+                  const std::list<octave_value_list>& idx,
+                  const octave_value& rhs);
+
   virtual idx_vector index_vector (void) const;
 
   virtual dim_vector dims (void) const { return dim_vector (); }

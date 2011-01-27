@@ -423,6 +423,10 @@ public:
                                  const std::list<octave_value_list>& idx,
                                  const octave_value& rhs);
 
+  octave_value undef_subsasgn (const std::string& type,
+                               const std::list<octave_value_list>& idx,
+                               const octave_value& rhs);
+
   octave_value& assign (assign_op op, const std::string& type,
                        const std::list<octave_value_list>& idx,
                        const octave_value& rhs);

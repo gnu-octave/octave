@@ -88,9 +88,7 @@ function varargout = curl (varargin)
     dFy_dx = gradient (varargin{fidx + 1}, dx, dy);
     rot_z = dFy_dx - dFx_dy;
     av = rot_z / 2;
-    if (nargout == 0)
-      av
-    elseif (nargout == 1)
+    if (nargout == 0 || nargout == 1)
       varargout{1} = av;
     elseif (nargout == 2)
       varargout{1} = rot_z;
@@ -121,18 +119,9 @@ function varargout = curl (varargin)
           rot_y .* varargin{fidx + 1} +
           rot_z .* varargin{fidx + 2}) ./ (2 * l);
 
-    if (nargout == 0)
+    if (nargout == 0 || nargout == 1)
       varargout{1} = av;
-    elseif (nargout == 1)
-      varargout{1} = av;
-    elseif (nargout == 2)
-      varargout{1} = rot_x;
-      varargout{2} = rot_y;
-    elseif (nargout == 3)
-      varargout{1} = rot_x;
-      varargout{2} = rot_y;
-      varargout{3} = rot_z;
-    elseif (nargout == 4)
+    else
       varargout{1} = rot_x;
       varargout{2} = rot_y;
       varargout{3} = rot_z;

@@ -1,3 +1,7 @@
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.am (check-missing-semicolon): New rule.
+
 2011-01-26  Rik  <octave@nomad.inbox5.com>
 
 	* scripts/general/interp1.m, scripts/general/interp2.m,

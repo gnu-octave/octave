@@ -352,6 +352,14 @@ check-m-sources:
 	fi
 .PHONY: check-m-sources
 
+check-missing-semicolon:
+	@echo "checking for missing semicolons in .m files..."
+	( echo "warning on Octave:missing-semicolon;"; \
+	  for m in $(addprefix $(srcdir)/, $(FCN_FILES)) $(GEN_FCN_FILES); do \
+	    echo "source ('$$m');"; \
+	  done ) | ../run-octave -qf
+.PHONY: check-missing-semicolon
+
 install-data-local: install-startup-files install-pkg-add
 
 uninstall-local: uninstall-startup-files uninstall-pkg-add

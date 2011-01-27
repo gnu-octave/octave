@@ -6,6 +6,13 @@
 
 2011-01-26  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/basics.txi: Use @code to eliminate extra single quotes
+	in index.
+	* interpreter/container.txi: Add @opindex citations for '.', '{' and
+	'}'.
+
+2011-01-26  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave-bug.1: Delete obsolete man page
 	* interpreter/Makefile.am: Stop distributing octave-bug.1 man page.
 

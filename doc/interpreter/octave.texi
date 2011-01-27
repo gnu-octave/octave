@@ -578,6 +578,7 @@ Arithmetic
 * Sums and Products::           
 * Utility Functions::           
 * Special Functions::           
+* Rational Approximations::
 * Coordinate Transformations::
 * Mathematical Constants::      
 

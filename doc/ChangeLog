@@ -1,3 +1,11 @@
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/arith.txi (Rational Approximations): Move here.
+	Update menu.
+	* interpreter/io.txi: From here.
+	Update menu.
+	* interpreter/octave.texi (Top): Update detailed menu.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/mk_doc_cache.m, interpreter/mkoctfile.1,

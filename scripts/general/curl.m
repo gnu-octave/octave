@@ -90,11 +90,9 @@ function varargout = curl (varargin)
     av = rot_z / 2;
     if (nargout == 0 || nargout == 1)
       varargout{1} = av;
-    elseif (nargout == 2)
+    else
       varargout{1} = rot_z;
       varargout{2} = av;
-    else
-      error ("curl: number of output arguments must be 1 or 2");
     endif
 
   elseif ((nargin == 6) || (nargin == 3))
@@ -126,8 +124,6 @@ function varargout = curl (varargin)
       varargout{2} = rot_y;
       varargout{3} = rot_z;
       varargout{4} = av;
-    else
-      error ("curl: number of output arguments must be smaller than 5");
     endif
   endif
 

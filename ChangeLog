@@ -1,3 +1,8 @@
+2011-01-27  Ben Abbott  <bpabbott@mac.com>
+
+	* README.MacOS: Modify instructions for MacPorts to "deactivate"
+	rather than "uninstall" octave.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl, mkoctfile.cc.in, mkoctfile.in: Untabify.

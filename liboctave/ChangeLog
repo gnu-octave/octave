@@ -1,3 +1,9 @@
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::assign (const idx_vector&, const idx_vector&,
+	const Sparse<T>&)): Allow 0x0 LHS with colon dimensions to
+	inherit dimensions from RHS.  Fix tests.  Bug #32263.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-refcount.h: Strip trailing whitespace.

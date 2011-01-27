@@ -1,3 +1,10 @@
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (octave_class::reconstruct_exemplar):
+	Call constructor with do_multi_index_op instead of feval.
+	Verify that symbol_table::find_method did return a class
+	constructor for the correct type.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* lex.ll, graphics.cc, gl-render.cc, ov-mex-fcn.h, graphics.h.in:

@@ -1068,9 +1068,25 @@ octave_class::reconstruct_exemplar (void)
     {
       octave_value ctor = symbol_table::find_method (c_name, c_name);
 
-      if (ctor.is_defined ())
+      bool have_ctor = false;
+
+      if (ctor.is_defined () && ctor.is_function ())
         {
-          octave_value_list result = feval (ctor, 1);
+          octave_function *fcn = ctor.function_value ();
+
+          if (fcn && fcn->is_class_constructor (c_name))
+            have_ctor = true;
+
+          // Something has gone terribly wrong if
+          // symbol_table::find_method (c_name, c_name) does not return
+          // a class constructor for the class c_name...
+          assert (have_ctor);
+        }
+
+      if (have_ctor)
+        {
+          octave_value_list result
+            = ctor.do_multi_index_op (1, octave_value_list ());
 
           if (result.length () == 1)
             retval = true;

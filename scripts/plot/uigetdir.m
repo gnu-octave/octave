@@ -33,11 +33,11 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
     print_usage ();
   endif
 
-  if (!ischar(init_path) || !ischar(dialog_name))
+  if (!ischar (init_path) || !ischar (dialog_name))
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif
 
-  if (any (strcmp (available_graphics_toolkits (), "fltk")))
+  if (exist ("__fltk_uigetfile__") == 3)
       if (!isdir (init_path))
         init_path = fileparts (init_path);
       endif

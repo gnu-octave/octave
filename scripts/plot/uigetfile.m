@@ -150,7 +150,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
 
-  if (any (cellfun(@(x)strcmp (x, "fltk"), available_graphics_toolkits ())))
+  if (exist("__fltk_uigetfile__") == 3)
     [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
   else
     error ("uigetfile: fltk graphics toolkit required");

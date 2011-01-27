@@ -104,6 +104,10 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
+  octave_value undef_subsasgn (const std::string& type,
+                               const std::list<octave_value_list>& idx,
+                               const octave_value& rhs);
+
   idx_vector index_vector (void) const;
 
   dim_vector dims (void) const { return map.dims (); }
@@ -205,6 +209,11 @@ private:
 
   bool in_class_method (void);
   std::string get_current_method_class (void);
+
+  octave_value subsasgn_common (const octave_value& obj,
+                                const std::string& type,
+                                const std::list<octave_value_list>& idx,
+                                const octave_value& rhs);
 
   int obsolete_copies;
 

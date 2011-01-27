@@ -1,5 +1,17 @@
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
+	Bug #32242.
+
+	* ov.h, ov.cc (octave_value::undef_subsasgn): New function.
+	* ov-class.h, ov-class.cc (octave_class::undef_subsasgn,
+	octave_class::subsasgn_common): New functions.
+	* ov-base.h, ov-base.cc (octave_base_value::subsasgn): If
+	undefined, undef_subsasgn on object returned by
+	octave_value::empty_conv.
+	(octave_base_value::undef_subsasgn): New virtual function.
+	(octave_base_value::subsasgn): Only handle case of undefined
+	values here.
+
 2011-01-26  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 	    John W. Eaton  <jwe@octave.org>
 

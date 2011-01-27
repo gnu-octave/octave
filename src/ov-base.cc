@@ -278,14 +278,25 @@ octave_base_value::subsasgn (const std::string& type,
   else
     {
       // Create new object of appropriate type for given index and rhs
-      // types and then call subsasgn again for that object.
+      // types and then call undef_subsasgn for that object.
 
       octave_value tmp = octave_value::empty_conv (type, rhs);
 
-      retval = tmp.subsasgn (type, idx, rhs);
+      retval = tmp.undef_subsasgn (type, idx, rhs);
     }
 
   return retval;
+}
+
+octave_value
+octave_base_value::undef_subsasgn (const std::string& type,
+                                   const std::list<octave_value_list>& idx,
+                                   const octave_value& rhs)
+{
+  // In most cases, undef_subsasgn is handled the sams as subsasgn.  One
+  // exception is octave_class objects.
+
+  return subsasgn (type, idx, rhs);
 }
 
 octave_idx_type

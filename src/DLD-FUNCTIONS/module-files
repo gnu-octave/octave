@@ -2,6 +2,7 @@ __contourc__.cc
 __delaunayn__.cc
 __dispatch__.cc
 __dsearchn__.cc
+__fltk_uigetfile__.cc
 __glpk__.cc
 __init_fltk__.cc
 __lin_interpn__.cc

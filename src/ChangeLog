@@ -1,5 +1,10 @@
 2011-01-27  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Skip leading whitespace
+	on each line.
+
+2011-01-27  John W. Eaton  <jwe@octave.org>
+
 	* ov-struct.cc (octave_struct::subsasgn,
 	octave_scalar_struct::subsasgn): Call undef_subsasgn on object
 	returned by octave_value::empty_conv if LHS is initially undefined.

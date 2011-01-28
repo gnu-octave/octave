@@ -1,5 +1,11 @@
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
+	* eigs-base.cc (EigsRealNonSymmetricFunc,
+	EigsRealNonSymmetricMatrix, EigsRealNonSymmetricMatrixShift):
+	Initialize eig_vec2 to 0 before calling dneupd.
+
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
 	* eigs-base.cc: Assume we have ARPACK.
 
 2011-01-27  John W. Eaton  <jwe@octave.org>

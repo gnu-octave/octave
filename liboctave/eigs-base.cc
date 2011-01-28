@@ -1924,7 +1924,14 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  Matrix eig_vec2 (n, k + 1);
+  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // the assignment to elements of Z that represent imaginary parts.
+  // Found with valgrind and
+  //
+  //   A = [1,0,0,-1;0,1,0,0;0,0,1,0;0,0,2,1];
+  //   [vecs, vals, f] = eigs (A, 1)
+
+  Matrix eig_vec2 (n, k + 1, 0.0);
   double *z = eig_vec2.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);
@@ -2303,7 +2310,14 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  Matrix eig_vec2 (n, k + 1);
+  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // the assignment to elements of Z that represent imaginary parts.
+  // Found with valgrind and
+  //
+  //   A = [1,0,0,-1;0,1,0,0;0,0,1,0;0,0,2,1];
+  //   [vecs, vals, f] = eigs (A, 1)
+
+  Matrix eig_vec2 (n, k + 1, 0.0);
   double *z = eig_vec2.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);
@@ -2608,7 +2622,14 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  Matrix eig_vec2 (n, k + 1);
+  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // the assignment to elements of Z that represent imaginary parts.
+  // Found with valgrind and
+  //
+  //   A = [1,0,0,-1;0,1,0,0;0,0,1,0;0,0,2,1];
+  //   [vecs, vals, f] = eigs (A, 1)
+
+  Matrix eig_vec2 (n, k + 1, 0.0);
   double *z = eig_vec2.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);

@@ -5964,8 +5964,8 @@ DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
 Remove any defaults set for the handle @var{h}.  The default figure\n\
-properties \"position\", \"units\", \"windowstyle\" and\n\
-\"paperunits\" and the default axes properties \"position\" and \"units\"\n\
+properties of \"position\", \"units\", \"windowstyle\" and\n\
+\"paperunits\" and the default axes properties of \"position\" and \"units\"\n\
 are not reset.\n\
 @end deftypefn")
 {

@@ -4014,7 +4014,7 @@ of a numeric output field.\n\
 @seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, INT_MAX);
+  return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_max_field_width, 0, INT_MAX);
 }
 
 DEFUN (output_precision, args, nargout,

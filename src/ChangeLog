@@ -1,5 +1,10 @@
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (Foutput_max_field_width): Set internal variable
+	output_max_field_width, not output_precision.
+
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
 	* pr-output.cc (Fformat, Ffixed_point_format, Foutput_precision,
 	Foutput_max_field_width, Fsplit_long_rows, Fprint_empty_dimensions):
 	Update @seealso lists.

@@ -1,3 +1,7 @@
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
+	* eigs-base.cc: Assume we have ARPACK.
+
 2011-01-27  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::assign (const idx_vector&, const idx_vector&,

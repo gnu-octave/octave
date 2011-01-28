@@ -253,17 +253,17 @@ endfunction
 %! rand('state',42)
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
-%!testif HAVE_ARPACK
+%!test
 %! [u2,s2,v2,flag] = svds(A,k);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s2, s(end:-1:end-k+1), 1e-10);
-%!testif HAVE_ARPACK
+%!test
 %! [u2,s2,v2,flag] = svds(A,k,0,opts);
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s2, s(k:-1:1), 1e-10);
-%!testif HAVE_ARPACK
+%!test
 %! idx = floor(n/2);
 %! % Don't put sigma right on a singular value or there are convergence issues
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1);
@@ -271,6 +271,6 @@ endfunction
 %! s2 = diag(s2);
 %! assert(flag,!1);
 %! assert(s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10);
-%!testif HAVE_ARPACK
+%!test
 %! [u2,s2,v2,flag] = svds(zeros (10), k);
 %! assert (isequal(u2, eye (10, k)) && isequal (s2, zeros(k)) && isequal (v2, eye(10, 7)))

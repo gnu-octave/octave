@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleLU.h"
 #include "CmplxLU.h"
 
-#ifdef HAVE_ARPACK
 typedef ColumnVector (*EigsFunc) (const ColumnVector &x, int &eigs_error);
 typedef ComplexColumnVector (*EigsComplexFunc)
   (const ComplexColumnVector &x, int &eigs_error);
@@ -201,8 +200,6 @@ utsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
 
 static Matrix
 utsolve (const Matrix&, const ColumnVector&, const Matrix&);
-
-#endif
 
 template <class M, class SM>
 static octave_idx_type

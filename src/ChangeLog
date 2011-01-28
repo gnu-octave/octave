@@ -1,3 +1,13 @@
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/eigs.cc (Feigs): Assume we have ARPACK.
+	Use "test" instead of "testif HAVE_ARPACK".
+	* toplev.cc (octave_config_info): Remove ARPACK_CPPFLAGS,
+	ARPACK_LDFLAGS, ARPACK_LIBS from the struct.
+	* oct-conf.h.in (OCTAVE_CONF_ARPACK_CPPFLAGS,
+	OCTAVE_CONF_ARPACK_LDFLAGS, OCTAVE_CONF_ARPACK_LIBS):
+	Delete #defines.
+
 2011-01-28  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: File filter value is 1-based

@@ -3897,6 +3897,7 @@ output with more data per page.\n\
 Insert blank lines above and below column number labels to produce a more\n\
 readable output with less data per page.  (default).\n\
 @end table\n\
+@seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, rats}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -3941,6 +3942,7 @@ ans =\n\
 Notice that first value appears to be zero when it is actually 1.  For\n\
 this reason, you should be careful when setting\n\
 @code{fixed_point_format} to a nonzero value.\n\
+@seealso{format, output_max_field_width, output_precision}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (fixed_point_format);
@@ -3964,6 +3966,7 @@ will print\n\
 @example\n\
 ans = [](3x0)\n\
 @end example\n\
+@seealso{format}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_empty_dimensions);
@@ -3996,6 +3999,7 @@ ans =\n\
   0.44672  0.94303  0.56564  0.82150\n\
 @end group\n\
 @end example\n\
+@seealso{format}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);
@@ -4007,7 +4011,7 @@ DEFUN (output_max_field_width, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
 Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
-@seealso{format, output_precision}\n\
+@seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, 0, INT_MAX);
@@ -4019,7 +4023,7 @@ DEFUN (output_precision, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
 Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
-@seealso{format, output_max_field_width}\n\
+@seealso{format, fixed_point_format, output_max_field_width}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (output_precision, -1, INT_MAX);

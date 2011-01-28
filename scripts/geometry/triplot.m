@@ -24,8 +24,8 @@
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned from
 ## @code{delaunay}.  If given, the @var{linespec} determines the properties
 ## to use for the lines.  The output argument @var{h} is the graphic handle
-## to the plot.
-## @seealso{plot, trimesh, delaunay}
+## of the plot.
+## @seealso{plot, trimesh, trisurf, delaunay}
 ## @end deftypefn
 
 function h = triplot (tri, x, y, varargin)

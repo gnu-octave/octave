@@ -94,17 +94,19 @@ The result of which can be seen in @ref{fig:delaunay}.
 @node Plotting the Triangulation
 @subsection Plotting the Triangulation
 
-Octave has the functions @code{triplot} and @code{trimesh} to plot the
-Delaunay triangulation of a 2-dimensional set of points.
+Octave has the functions @code{triplot}, @code{trimesh}, and @code{trisurf}
+to plot the Delaunay triangulation of a 2-dimensional set of points.
 
 @DOCSTRING(triplot)
 
 @DOCSTRING(trimesh)
 
-The difference between @code{triplot} and @code{trimesh} is that the
-former only plots the 2-dimensional triangulation itself, whereas the
-second plots the value of some function @code{f (@var{x}, @var{y})}.
-An example of the use of the @code{triplot} function is
+@DOCSTRING(trisurf)
+
+The difference between @code{triplot}, and @code{trimesh} or @code{triplot},
+is that the former only plots the 2-dimensional triangulation itself, whereas
+the second two plot the value of a function @code{f (@var{x}, @var{y})}.  An
+example of the use of the @code{triplot} function is
 
 @example
 @group
@@ -117,7 +119,7 @@ triplot (tri, x, y);
 @end example
 
 @noindent
-that plot the Delaunay triangulation of a set of random points in
+which plots the Delaunay triangulation of a set of random points in
 2-dimensions.
 @ifnotinfo
 The output of the above can be seen in @ref{fig:triplot}.

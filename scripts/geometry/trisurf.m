@@ -23,8 +23,8 @@
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned
 ## from @code{delaunay}.  The variable @var{z} is value at the point
 ## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
-## handle to the plot.
-## @seealso{triplot, delaunay3}
+## handle of the plot.
+## @seealso{triplot, trimesh, delaunay3}
 ## @end deftypefn
 
 function h = trisurf (tri, x, y, z, varargin)

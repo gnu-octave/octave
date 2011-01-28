@@ -57,6 +57,7 @@ octinclude_HEADERS =
 EXTRA_DIST =
 
 include amos/module.mk
+include arpack/module.mk
 include blas-xtra/module.mk
 include daspk/module.mk
 include dasrt/module.mk

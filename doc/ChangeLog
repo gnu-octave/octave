@@ -1,5 +1,9 @@
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/linalg.txi: Add rsf2csf to documentation.
+
+2011-01-27  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/geometry.txi: Add trisurf to documentation.
 
 2011-01-27  John W. Eaton  <jwe@octave.org>

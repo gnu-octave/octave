@@ -155,6 +155,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(schur)
 
+@DOCSTRING(rsf2csf)
+
 @DOCSTRING(subspace)
 
 @DOCSTRING(svd)

@@ -1,3 +1,7 @@
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
+	* sparse/svds.m: Use "test" instead of "testif HAVE_ARPACK".
+
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
 	* plot/whitebg.m: Improve docstring.

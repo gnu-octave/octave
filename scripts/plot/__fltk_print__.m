@@ -65,10 +65,11 @@ function opts = __fltk_print__ (opts)
     gl2ps_device = {sprintf("%snotxt", lower (suffix))};
     gl2ps_device{2} = "tex";
     if (dos_shell)
-      pipeline = {sprintf("copy con %s.%s", name, suffix)};
-      pipeline{2} = sprintf ("copy con %s.tex", name);
+      ## FIXME - this will only work on MinGW with the MSYS shell
+      pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
+      pipeline{2} = sprintf ("cat > %s.tex", name);
     else
-      pipeline = {sprintf("cat > %s.%s", name, suffix)};
+      pipeline = {sprintf("cat > %s-inc.%s", name, suffix)};
       pipeline{2} = sprintf ("cat > %s.tex", name);
     endif
   case "tikz"
@@ -160,6 +161,10 @@ function opts = __fltk_print__ (opts)
       pclose (pid);
     end_unwind_protect
   endfor
+
+  if (! isempty (strfind (opts.devopt, "standalone")))
+    opts.latex_standalone (opts);
+  endif
 
 endfunction
 

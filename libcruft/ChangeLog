@@ -1,5 +1,9 @@
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
+	* arpack/util/second.f (ARSCND): Declare ETIME INTRINSIC, not EXTERNAL.
+
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
 	* arpack: New directory.
 	* Makefile.am: Include arpack/module.mk.
 

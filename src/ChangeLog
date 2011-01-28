@@ -1,3 +1,9 @@
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (Fformat, Ffixed_point_format, Foutput_precision,
+	Foutput_max_field_width, Fsplit_long_rows, Fprint_empty_dimensions):
+	Update @seealso lists.
+
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
 	* graphics.cc: Improve reset docstring.

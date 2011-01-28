@@ -69,7 +69,61 @@ as well. However, care must be taken.
 2.2 Manual Package Management
 -----------------------------
 
-  TODO - add instructions.
+Instructions for building Ocave are available on the web at the link below.
+
+    http://wiki.octave.org/wiki.pl?BuildFromSource
+
+In additionn, those wishing to build on MacOS X (10.6.x) should read section
+2.1 above.
+
+2.2.1 Critical Dependencies
+---------------------------
+
+The minimal dependencies needed to build Octave's snap-shots are listed below.
+
+  * Xcode
+
+  * gfortran: Available from http://r.reseach.att.com/tools
+
+  * gnu sed: Availabel from http://www.gnu.org/software/sed/
+
+      ./configure --prefix=/usr
+      make
+      make install
+
+  * fftw3: Available from http://www.fftw.org/download.html
+
+      export CFLAGS="-arch i686 -arch x86_64"
+      export FFLAGS="$CFLAGS"
+      export LDLAGS="$CFLAGS"
+      ./configure --disable-dependency-tracking
+      make
+      make install
+
+A fully functional Octave requires additional dependencies. See the link below
+for the details.
+
+    http://wiki.octave.org/wiki.pl?BuildFromSource
+
+2.2.2 Building Octave as a 32bit Application
+--------------------------------------------
+
+The commands below are sufficient to build a 32bit Octave.
+
+  export CFLAGS="-m32"
+  export FFLAGS="-m32 -ff2c"
+  export CPPFLAGS="-m32 -D_REENTRANT"
+  export LDFLAGS="-m32"
+  ./configure --disable-readline --disable-docs
+  make
+
+Octave provides an interegrated tests suite.
+
+  make check
+
+Octave may be run withou installing the application using the utility below.
+
+  ./run-octave
 
 
 2.3 Building With Dependencies Satisfied by Fink

@@ -1,3 +1,8 @@
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
+	* arpack: New directory.
+	* Makefile.am: Include arpack/module.mk.
+
 2011-01-26  John W. Eaton  <jwe@octave.org>
 
 	* mkf77def.in: Strip trailing whitespace.

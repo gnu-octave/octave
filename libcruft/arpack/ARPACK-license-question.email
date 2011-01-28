@@ -1,0 +1,102 @@
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+Received: from zuk35exm65.ds.mot.com ([10.178.1.44]) by zuk35exm62.ds.mot.com with Microsoft SMTPSVC(6.0.3790.2709);
+	 Tue, 13 Feb 2007 19:53:15 +0000
+Received: from az33exr02.mot.com ([10.64.251.232]) by zuk35exm65.ds.mot.com with Microsoft SMTPSVC(6.0.3790.2709);
+	 Tue, 13 Feb 2007 19:53:14 +0000
+Received: from motgate3.mot.com (motgate3.mot.com [144.189.100.103])
+	by az33exr02.mot.com (8.13.1/8.13.0) with ESMTP id l1DJrDDS020683
+	for <David.Bateman@motorola.com>; Tue, 13 Feb 2007 13:53:13 -0600 (CST)
+Received: from mail128.messagelabs.com (mail128.messagelabs.com [216.82.250.131])
+	by motgate3.mot.com (8.12.11/Motorola) with SMTP id l1DJr8gl023906
+	for <David.Bateman@motorola.com>; Tue, 13 Feb 2007 12:53:11 -0700 (MST)
+X-VirusChecked: Checked
+X-Env-Sender: sorensen@rice.edu
+X-Msg-Ref: server-6.tower-128.messagelabs.com!1171396385!13383447!1
+X-StarScan-Version: 5.5.10.7.1; banners=-,-,-
+X-Originating-IP: [128.42.17.10]
+X-SpamReason: No, hits=0.0 required=7.0 tests=
+Received: (qmail 3872 invoked from network); 13 Feb 2007 19:53:05 -0000
+Received: from caam.rice.edu (HELO caam.rice.edu) (128.42.17.10)
+  by server-6.tower-128.messagelabs.com with SMTP; 13 Feb 2007 19:53:05 -0000
+Received: from localhost (localhost [127.0.0.1])
+	by caam.rice.edu (Postfix) with ESMTP id 64341153A7
+	for <David.Bateman@motorola.com>; Tue, 13 Feb 2007 13:53:04 -0600 (CST)
+Received: from caam.rice.edu ([127.0.0.1])
+ by localhost (caam.rice.edu [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+ id 23777-01-16 for <David.Bateman@motorola.com>;
+ Tue, 13 Feb 2007 13:52:59 -0600 (CST)
+Received: from [128.42.21.177] (sorensenl400.caam.rice.edu [128.42.21.177])
+	by caam.rice.edu (Postfix) with ESMTP id 494E81539F
+	for <David.Bateman@motorola.com>; Tue, 13 Feb 2007 13:52:59 -0600 (CST)
+Message-ID: <45D2171B.8030109@rice.edu>
+Date: Tue, 13 Feb 2007 13:52:59 -0600
+From: Dan Sorensen<sorensen@rice.edu>
+User-Agent: Thunderbird 1.5.0.9 (Windows/20061207)
+MIME-Version: 1.0
+To: David Bateman<David.Bateman@motorola.com>
+Subject: Re: ARPACK License Question
+References: <457EE5B3.70402@ieee.org> <20070105114426.GI4860@neu.nirvana> <45B8CB2F.9030904@motorola.com>
+In-Reply-To: <45B8CB2F.9030904@motorola.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: by amavis-2.2.1 at caam.rice.edu
+Return-Path: sorensen@rice.edu
+X-OriginalArrivalTime: 13 Feb 2007 19:53:14.0831 (UTC) FILETIME=[994B7DF0:01C74FA8]
+
+Dear Mr. Bateman
+
+I apologize for not responding to this previously.
+
+The clarification we discussed is the following
+
+
+The clause in the license statement  that states
+
+>>Written notification is provided to the developers of intent to use this 
+>> software. Also, we ask that use of ARPACK is properly cited in any 
+>> resulting publications or software documentation.
+
+has the following intension in your case.
+
+We are asking for acknowledgment in FEDORA that ARPACK is
+the software that underlies what corresponds to the  "eigs" command.   
+There is no intention to pass on a requirement of notification of use
+from users of FEDORA.   
+
+This is the understanding we have with MATLAB for example.
+
+If the above note or a slight modification of it is not acceptable
+for the purposes of using ARPACK in FEDORA, I will have to refer
+you to the tech transfer department of Rice University as I explained
+during our phone conversation.
+
+Once again my apologies for the delay and I thank you for your
+interest in ARPACK.
+
+Best Regards
+Dan Sorensen
+
+
+
+ 
+
+
+
+David Bateman wrote:
+> Dear Professor Sorensen,
+>
+> Perhaps you have not yet seen the e-mail below, and so I draw it to your
+> attention. Can you please examine the request to modify the license of
+> ARPACK in this mail belong to allow its inclusion in FEDORA and other
+> similar open source linux distributions?
+>
+> As the author of the eigs function for Octave (www.octave.org) that uses
+> ARPACK for its functionality, I'd hate to see my work not included in
+> Octave due to this question not being resolved.
+>
+> Best Regards
+> David
+>
+>   
+

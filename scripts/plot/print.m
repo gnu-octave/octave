@@ -577,9 +577,28 @@ function cmd = fig2dev (opts, devopt)
   endif
 endfunction
 
-function latex_standalone (latexfile)
+function latex_standalone (opts)
+  n = find (opts.name == ".", 1, "last");
+  if (! isempty (n))
+    opts.name = opts.name(1:n-1);
+  endif
+  latexfile = strcat (opts.name, ".tex");
+  switch opts.devopt
+  case {"pdflatexstandalone"}
+    packages = "\\usepackage{graphicx,color}";
+    graphicsfile = strcat (opts.name, "-inc.pdf");
+  case {"pslatexstandalone"}
+    packages = "\\usepackage{epsfig,color}";
+    graphicsfile = strcat (opts.name, "-inc.ps");
+  otherwise
+    packages = "\\usepackage{epsfig,color}";
+    graphicsfile = strcat (opts.name, "-inc.eps");
+  endswitch
+  papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
+                       opts.canvas_size, opts.canvas_size);
   prepend = {"\\documentclass{minimal}";
-             "\\usepackage{epsfig,color}";
+             packages;
+             papersize;
              "\\begin{document}";
              "\\centering"};
   postpend = {"\\end{document}"};
@@ -591,6 +610,9 @@ function latex_standalone (latexfile)
       error ("print:errorclosingfile",
              "print.m: error closing file '%s'", latexfile);
     endif
+    ## TODO - should this be fixed in GL2PS?
+    latex = strrep (latex, "\\includegraphics{}", 
+                    sprintf ("\\includegraphics{%s}", graphicsfile));
   else
     error ("print:erroropeningfile",
            "print.m: error opening file '%s'", latexfile);

@@ -1,3 +1,8 @@
+2011-01-28  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__fltk_print__.m, plot/print.m: Fix {eps,ps,pdf}latexstandalone
+	printing for fltk, bug 32262.
+
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
 	* sparse/svds.m: Use "test" instead of "testif HAVE_ARPACK".

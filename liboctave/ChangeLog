@@ -1,5 +1,10 @@
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
+	* eigs-base.cc: Remove #endif corresponding to "#ifdef HAVE_ARPACK",
+	not the one that matched "#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)".
+
+2011-01-28  John W. Eaton  <jwe@octave.org>
+
 	* eigs-base.cc (EigsRealNonSymmetricFunc,
 	EigsRealNonSymmetricMatrix, EigsRealNonSymmetricMatrixShift):
 	Initialize eig_vec2 to 0 before calling dneupd.

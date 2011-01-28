@@ -201,6 +201,8 @@ utsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
 static Matrix
 utsolve (const Matrix&, const ColumnVector&, const Matrix&);
 
+#endif
+
 template <class M, class SM>
 static octave_idx_type
 lusolve (const SM& L, const SM& U, M& m)
@@ -3827,7 +3829,6 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              ComplexColumnVector &resid, std::ostream& os,
                              double tol = DBL_EPSILON, bool rvec = false,
                              bool cholB = 0, int disp = 0, int maxit = 300);
-#endif
 
 #ifndef _MSC_VER
 template static octave_idx_type

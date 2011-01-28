@@ -1,3 +1,11 @@
+2011-01-28  David Bateman  <dbateman@free.fr>
+
+	* arpack/src/cneupd.f (cneupd): Restore value of nconv if ctrsen
+	returns a smaller value.
+	* arpack/src/dneupd.f (dneupd): Likewise, for dtrsen.
+	* arpack/src/sneupd.f (sneupd): Likewise, for strsen.
+	* arpack/src/zneupd.f (zneupd): Likewise, for ztrsen.
+
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
 	* arpack/util/second.f (ARSCND): Declare ETIME INTRINSIC, not EXTERNAL.

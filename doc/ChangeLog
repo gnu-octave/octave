@@ -1,5 +1,11 @@
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/numbers.txi: Add sizemax function to documentation.
+	* interpreter/doccheck/mk_undocumented_list: Add ifelse to functions
+	not requiring documentation.
+
+2011-01-27  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/image.txi: Add whitebg function to documentation.
 	* interpreter/plot.txi: Add reset function to documentation. 
 

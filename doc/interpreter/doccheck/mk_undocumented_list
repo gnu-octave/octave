@@ -92,6 +92,7 @@ F_SETFL
 gammaln
 home
 i
+ifelse
 inf
 inverse
 isbool

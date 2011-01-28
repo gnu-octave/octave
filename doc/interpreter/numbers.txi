@@ -268,6 +268,13 @@ because not doing so would cause trouble when parsing the valid expression
 For clarity, it is probably best to always use commas and semicolons to
 separate matrix elements and rows.
 
+The maximum number of elements in a matrix is fixed when Octave is compiled.
+The allowable number can be queried with the function @code{sizemax}.  Note
+that other factors, such as the amount of memory available on your machine,
+may limit the maximum size of matrices to something smaller.
+
+@DOCSTRING(sizemax)
+
 When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned
 rows and columns.  If the rows of the matrix are too large to fit on the

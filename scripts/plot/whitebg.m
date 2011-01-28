@@ -19,19 +19,21 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} whitebg ()
 ## @deftypefnx {Function File} {} whitebg (@var{color})
+## @deftypefnx {Function File} {} whitebg ("none")
 ## @deftypefnx {Function File} {} whitebg (@var{fig})
 ## @deftypefnx {Function File} {} whitebg (@var{fig}, @var{color})
+## @deftypefnx {Function File} {} whitebg (@var{fig}, "none")
 ## Invert the colors in the current color scheme.  The root properties are
 ## also inverted such that all subsequent plot use the new color scheme.
 ##
 ## If defined, @var{fig} is the handle to the figure to be inverted.  In
-## this case only this figure has its color properties changed
+## this case only the specified figure has its color properties changed.
 ##
-## The background colors of the figure and its children can be set
-## specifically if @var{color} is defined.  @var{color} must be a valid
-## color set as a string or an RGB triplet, or the value "none".
-##
-## @seealso{reset, colordef}
+## If the optional argument @var{color} is present then the background color
+## is set to @var{color} rather than inverted.  @var{color} may be a string
+## representing one of the eight known colors or an RGB triplet.  The special
+## string argument "none" restores the plot to the default colors.
+## @seealso{reset}
 ## @end deftypefn
 
 function whitebg (varargin)
@@ -133,7 +135,7 @@ function whitebg (varargin)
     ## Is this the right thing to do in this case?
     set (findall (fig, "type", "axes"), "color", color);
     if (isroot)
-      defs = get (0, "defaults");
+      defs = get (0, "default");
       if (isfield (defs, "defaultaxescolor")
           && strcmp (defs.defaultaxescolor, "none"))
         set (0, "defaultaxescolor", color);

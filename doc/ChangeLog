@@ -1,5 +1,10 @@
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/image.txi: Add whitebg function to documentation.
+	* interpreter/plot.txi: Add reset function to documentation. 
+
+2011-01-27  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/linalg.txi: Add rsf2csf to documentation.
 
 2011-01-27  Rik  <octave@nomad.inbox5.com>

@@ -2415,7 +2415,10 @@ set (gca (), "defaultlinecolor", "remove");
 
 @noindent
 removes the user-defined default line color setting from the current axes
-object.
+object.  To quickly remove all user-defined defaults use the @code{reset}
+function.
+
+@DOCSTRING(reset)
 
 Getting the @code{"default"} property of an object returns a list of
 user-defined defaults set for the object.  For example,
@@ -2437,7 +2440,6 @@ get (0, "factory");
 
 @noindent
 returns a list of factory defaults.
-
 
 @node Advanced Plotting
 @section Advanced Plotting

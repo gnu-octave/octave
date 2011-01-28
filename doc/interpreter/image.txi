@@ -127,8 +127,6 @@ between 0 and 1.
 
 @DOCSTRING(colormap)
 
-@DOCSTRING(brighten)
-
 @DOCSTRING(autumn)
 
 @DOCSTRING(bone)
@@ -174,10 +172,14 @@ of line or patch objects to be set, and so @code{gmap40} is useful for gnuplot
 
 @DOCSTRING(gmap40)
 
-You may use the @code{spinmap} function to cycle through the colors in
-the current colormap, displaying the changes for the current figure.
+The following three functions modify the existing colormap rather than
+replace it.   
+
+@DOCSTRING(brighten)
 
 @DOCSTRING(spinmap)
+
+@DOCSTRING(whitebg)
 
 @node Plotting on top of Images
 @section Plotting on top of Images

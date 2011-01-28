@@ -1,5 +1,9 @@
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
+	* plot/whitebg.m: Improve docstring.
+
+2011-01-27  Rik  <octave@nomad.inbox5.com>
+
 	* geometry/trimesh.m, geometry/triplot.m, geometry/trisurf.m: Add
 	undocumented function trisurf to documentation.  Update seealso
 	strings.

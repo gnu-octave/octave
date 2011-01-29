@@ -40,7 +40,7 @@ instructions document the procedure for MacOS 10.6.X.
 2.1 Developer's Tools
 ---------------------
 
-Apple's Xcode Developer's Tools must be installed to build Ocave on MacOS X.
+Apple's Xcode Developer's Tools must be installed to build Octave on MacOS X.
 
 A fortran compilar is also required to build Octave.
 
@@ -69,7 +69,7 @@ as well. However, care must be taken.
 2.2 Manual Package Management
 -----------------------------
 
-Instructions for building Ocave are available on the web at the link below.
+Instructions for building Octave are available on the web at the link below.
 
     http://wiki.octave.org/wiki.pl?BuildFromSource
 

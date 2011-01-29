@@ -153,9 +153,8 @@ function ret = edit (file, state)
                                 "AUTHOR", default_user(1),
                                 "EMAIL",  [],
                                 "LICENSE",  "GPL",
-                                "MODE", "sync",
+                                "MODE", "async",
                                 "EDITINPLACE", false);
-
   ## Make sure the state variables survive "clear functions".
   mlock;
 

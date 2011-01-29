@@ -1,3 +1,8 @@
+2011-01-29  Ben Abbott  <bpabbott@mac.com>
+
+	* miscellaneous/edit.m: As most editors open their own window, change
+	mode to "async".
+
 2011-01-28  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__fltk_print__.m, plot/print.m: Fix {eps,ps,pdf}latexstandalone

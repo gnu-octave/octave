@@ -93,12 +93,17 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
 
   * fftw3: Available from http://www.fftw.org/download.html
 
+      export F77="/usr/bin/gfortran"
       export CFLAGS="-arch i686 -arch x86_64"
       export FFLAGS="$CFLAGS"
       export LDLAGS="$CFLAGS"
       ./configure --disable-dependency-tracking
       make
-      make install
+      sudo make install
+      make clean
+      ./configure --enable-float --disable-dependency-tracking
+      make
+      sudo make install
 
 A fully functional Octave requires additional dependencies. See the link below
 for the details.

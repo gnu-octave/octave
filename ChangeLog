@@ -1,5 +1,6 @@
 2011-01-28  Ben Abbott  <bpabbott@mac.com>
 
+	* README.MacOS: Additional modifications for building Octave manually.
 	* README.MacOS: Modify instructions for building Octave manually.
 
 2011-01-28  John W. Eaton  <jwe@octave.org>

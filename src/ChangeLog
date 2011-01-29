@@ -1,5 +1,11 @@
 2011-01-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__init_fltk__.cc: Undefine Complex after
+	including FLTK headers.
+	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: Likewise.
+
+2011-01-29  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (__fltk_uigetfile__): Use the same compiler flags
 	as for __init_fltk__.
 

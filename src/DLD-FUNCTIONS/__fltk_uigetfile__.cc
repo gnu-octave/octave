@@ -28,6 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <FL/Fl.H>
 #include <Fl/Fl_File_Chooser.H>
+
+// FLTK headers may include X11/X.h which defines Complex, and that
+// conflicts with Octave's Complex typedef.  We don't need the X11
+// Complex definition in this file, so remove it before including Octave
+// headers which may require Octave's Complex typedef.
+#undef Complex
+
 #include "defun-dld.h"
 #include "file-ops.h"
 

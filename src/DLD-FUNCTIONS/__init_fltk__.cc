@@ -54,6 +54,12 @@ To initialize:
 #include <FL/fl_draw.H>
 #include <FL/gl.h>
 
+// FLTK headers may include X11/X.h which defines Complex, and that
+// conflicts with Octave's Complex typedef.  We don't need the X11
+// Complex definition in this file, so remove it before including Octave
+// headers which may require Octave's Complex typedef.
+#undef Complex
+
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 

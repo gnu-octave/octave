@@ -1,5 +1,12 @@
 2011-01-29  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__fltk_uigetfile__.cc (__fltk_uigetfile__):
+	Don't allocate Fl_File_Chooser object with new.  Delete unused
+	variable fargs.  Allocate default retval values in initial
+	declaration.
+
+2011-01-29  John W. Eaton  <jwe@octave.org>
+
 	* DLD-FUNCTIONS/__init_fltk__.cc: Undefine Complex after
 	including FLTK headers.
 	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: Likewise.

@@ -410,8 +410,8 @@ Summary of important user-visible changes for version 3.4:
     release after 3.4):
 
       autocor  cellidx   gammai     replot
-      autocov  dispatch  is_global  values
-      betai    fstat     krylovb
+      autocov  dispatch  is_global  saveimage 
+      betai    fstat     krylovb    values
 
   * For compatibility with Matlab, mu2lin (x) is now equivalent to
     mu2lin (x, 0).

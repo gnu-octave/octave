@@ -76,6 +76,13 @@
 
 function saveimage (fname, img, fmt, map)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "saveimage is obsolete and will be removed from a future version of Octave; please use imwrite instead");
+  endif
+
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif

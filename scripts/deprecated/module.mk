@@ -23,6 +23,7 @@ deprecated_FCN_FILES = \
   deprecated/mark_as_command.m \
   deprecated/mark_as_rawcommand.m \
   deprecated/replot.m \
+  deprecated/saveimage.m \
   deprecated/setstr.m \
   deprecated/spatan2.m \
   deprecated/spchol2inv.m \

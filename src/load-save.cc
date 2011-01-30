@@ -544,7 +544,7 @@ DEFUN (load, args, nargout,
 @deftypefn  {Command} {} load file\n\
 @deftypefnx {Command} {} load options file\n\
 @deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
-@deftypefnx {Command} {} S = load(\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
+@deftypefnx {Command} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.  If no variables are specified then all variables found in the\n\
 file will be loaded.  As with @code{save}, the list of variables to extract\n\

@@ -1,3 +1,7 @@
+2011-01-30  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc (Fload): Doc fix.
+
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (fltk_gui_mode, fltk_mouse_wheel_zoom):

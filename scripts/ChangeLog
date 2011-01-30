@@ -1,3 +1,9 @@
+2011-01-30  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* plot/__fltk_ginput__.m (ginput_aggregator): New arg, button.
+	Change all uses.
+	(ginput_keypressfcn): Save keypress info.
+
 2010-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* plot/gnuplot_binary.in: Improve docstring

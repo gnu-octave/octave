@@ -574,7 +574,7 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
   if test -z "$GHOSTSCRIPT"; then
     GHOSTSCRIPT='$(top_srcdir)/missing gs'
-    warn_ghostscript="I didn't find ghostscript, but it's only a problem if you need to reconstruct figures for the manual"
+    warn_ghostscript="I didn't find ghostscript, so reconstructing figures for the manual will fail, and saving graphics in some output formats will fail when using Octave"
     AC_MSG_WARN([$warn_ghostscript])
   fi
   AC_SUBST(GHOSTSCRIPT)

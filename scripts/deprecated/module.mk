@@ -12,6 +12,7 @@ deprecated_FCN_FILES = \
   deprecated/dmult.m \
   deprecated/fstat.m \
   deprecated/gammai.m \
+  deprecated/glpkmex.m \
   deprecated/intwarning.m \
   deprecated/iscommand.m \
   deprecated/is_global.m \

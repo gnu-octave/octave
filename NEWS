@@ -409,9 +409,9 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      autocor  cellidx   gammai     replot
-      autocov  dispatch  is_global  saveimage 
-      betai    fstat     krylovb    values
+      autocor  cellidx   gammai     krylovb    values
+      autocov  dispatch  glpkmex    replot
+      betai    fstat     is_global  saveimage
 
   * For compatibility with Matlab, mu2lin (x) is now equivalent to
     mu2lin (x, 0).

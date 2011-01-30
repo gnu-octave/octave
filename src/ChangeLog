@@ -54,8 +54,8 @@
 
 2011-01-28  Kai Habel  <kai.habel@gmx.de>
 
-	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: File filter value is 1-based
-now.
+	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: File filter value is
+	1-based now.
 
 2011-01-28  John W. Eaton  <jwe@octave.org>
 

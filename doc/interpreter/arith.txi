@@ -191,6 +191,8 @@ cos (pi/2)
 
 @DOCSTRING(accumarray)
 
+@DOCSTRING(accumdim)
+
 @node Utility Functions
 @section Utility Functions
 

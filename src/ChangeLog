@@ -1,5 +1,9 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* syscalls.cc (S_ISSOCK, S_ISCHR): Improve docstrings
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* dirfns.cc (readdir, filesep, pathsep): Improve docstrings
 	* file-io.cc (tmpnam): Improve docstring
 	* input.cc (filemarker): Improve docstring

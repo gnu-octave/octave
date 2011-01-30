@@ -1,5 +1,9 @@
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
+	* acinclude.m4 (OCTAVE_PROG_GHOSTSCRIPT): Update warning message.
+
+2011-01-30  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac: Remove code to print warning for missing ARPACK.
 	* README.MacOS: Remove arpack from list of prerequisite software.
 

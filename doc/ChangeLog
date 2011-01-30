@@ -1,5 +1,9 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/system.txi: Add S_ISSOCK function to documentation.
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/system.txi: Add S_ISBLK and related functions to
 	documentation.
 

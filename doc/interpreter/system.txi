@@ -191,6 +191,8 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(S_ISREG)
 
+@DOCSTRING(S_ISSOCK)
+
 @DOCSTRING(fileattrib)
 
 @DOCSTRING(isdir)

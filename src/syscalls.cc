@@ -1058,7 +1058,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISCHR (@var{mode})\n\
-Return true if @var{mode} corresponds to a character devicey.  The value\n\
+Return true if @var{mode} corresponds to a character device.  The value\n\
 of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
@@ -1158,6 +1158,8 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISSOCK (@var{mode})\n\
+Return true if @var{mode} corresponds to a socket.  The value\n\
+of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 @seealso{stat, lstat}\n\
 @end deftypefn")
 {

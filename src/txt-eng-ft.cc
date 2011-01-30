@@ -75,7 +75,10 @@ private:
 
   ft_manager& operator = (const ft_manager&);
 
-  ft_manager (void) : library (), fc_init_done (false)
+  ft_manager (void) : library ()
+#if HAVE_FONTCONFIG
+    , fc_init_done (false)
+#endif
     {
       if (FT_Init_FreeType (&library))
         {

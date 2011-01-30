@@ -1,3 +1,7 @@
+2011-01-30  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+
+	* oct-parse.yy (class stdio_stream_reader): Disallow copying.
+
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (gnuplot_toolkit::redraw): Call __gnuplot_drawnow__,

@@ -6763,7 +6763,7 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
 DEFUN (available_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} available_graphiscs_toolkits ()\n\
+@deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
 Return a cell array of registered graphics toolkits.\n\
 @end deftypefn")
 {

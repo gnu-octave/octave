@@ -1,5 +1,12 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/__init_fltk__.cc (fltk_gui_mode, fltk_mouse_wheel_zoom):
+	Improve docstrings.
+
+	* graphics.cc (available_graphics_toolkits): Fix typo in docstring.
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* syscalls.cc (S_ISSOCK, S_ISCHR): Improve docstrings
 
 2011-01-29  Rik  <octave@nomad.inbox5.com>

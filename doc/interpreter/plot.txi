@@ -3223,6 +3223,7 @@ Data source variables.
 
 @menu
 * Interaction with gnuplot::    
+* Interaction with FLTK::    
 @end menu
 
 @node Interaction with gnuplot
@@ -3230,3 +3231,11 @@ Data source variables.
 @cindex gnuplot interaction
 
 @DOCSTRING(gnuplot_binary)
+
+@node Interaction with FLTK
+@subsubsection Interaction with FLTK
+
+@DOCSTRING(fltk_gui_mode)
+
+@DOCSTRING(fltk_mouse_wheel_zoom)
+

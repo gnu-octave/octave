@@ -1,5 +1,11 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/octave.texi: Add new subsection on FLTK interaction.
+	* interpreter/plot.txi: Add fltk_gui_mode, fltk_mouse_wheel_zoom
+	functions to documentation.
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/arith.txi: Add accumdim function to documentation.
 
 2011-01-29  Rik  <octave@nomad.inbox5.com>

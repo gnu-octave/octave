@@ -561,6 +561,7 @@ Object Groups
 Graphics Toolkits
 
 * Interaction with gnuplot::    
+* Interaction with FLTK::    
 
 Matrix Manipulation
 

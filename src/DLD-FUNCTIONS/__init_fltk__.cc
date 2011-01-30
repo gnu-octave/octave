@@ -1970,7 +1970,8 @@ DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{speed} =} fltk_mouse_wheel_zoom ()\n\
 @deftypefnx {Built-in Function} {} fltk_mouse_wheel_zoom (@var{speed})\n\
-Query or set the mouse wheel zoom factor in the fltk graphics toolkit.\n\
+Query or set the mouse wheel zoom factor in the FLTK graphics toolkit.\n\
+@seealso{fltk_gui_mode}\n\
 @end deftypefn")
 {
   octave_value retval = wheel_zoom_speed;
@@ -2002,6 +2003,7 @@ Allows rotating and zooming of current axes.\n\
 @item 'none'\n\
 Mouse inputs have no effect.\n\
 @end table\n\
+@seealso{fltk_mouse_wheel_zoom}\n\
 @end deftypefn")
 {
   caseless_str mode_str;
@@ -2036,7 +2038,7 @@ Mouse inputs have no effect.\n\
     }
 
   if (failed)
-    error ("MODE must be one of the strings: \"2D\", \"3D\", or \"None\"");
+    error ("MODE must be one of the strings: \"2D\", \"3D\", or \"none\"");
 
 
   return octave_value(mode_str);

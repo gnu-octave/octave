@@ -1,5 +1,9 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* optimization/glpkmex.m: Add seealso reference to glpk.
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/compare_versions.m: Allow only "==" equality operator.
 	Add input validation tests.  Improve docstring.
 

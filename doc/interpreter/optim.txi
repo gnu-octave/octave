@@ -70,6 +70,8 @@ The @code{glpk} function also supports variations of this problem.
 
 @DOCSTRING(glpk)
 
+@DOCSTRING(glpkmex)
+
 @node Quadratic Programming
 @section Quadratic Programming
 

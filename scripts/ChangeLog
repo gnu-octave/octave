@@ -1,3 +1,8 @@
+2010-01-30  Rik  <octave@nomad.inbox5.com>
+
+	* deprecated/module.mk, optimization/module.mk: Deprecate glpkmex
+	function.
+
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
 	* plot/__gnuplot_drawnow__.m: Rename from gnuplot_drawnow.m

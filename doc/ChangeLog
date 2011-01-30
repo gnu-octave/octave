@@ -1,3 +1,8 @@
+2011-01-30  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/optim.txi: Deprecate glpkmex function and remove
+	from documentation.
+
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/install.txi (Compiling Octave with 64-bit	Indexing):

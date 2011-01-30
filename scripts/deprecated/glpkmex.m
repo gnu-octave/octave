@@ -26,6 +26,13 @@
 
 function [xopt, fopt, status, extra] = glpkmex (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "glpkmex is obsolete and will be removed from a future version of Octave; please use glpk instead");
+  endif
+  
   ## If there is no input output the version and syntax
   if (nargin < 4 || nargin > 11)
     print_usage ();

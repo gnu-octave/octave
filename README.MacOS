@@ -152,7 +152,6 @@ TODO - when a Fink package is developed for Octave 3.4.x, modify these
 To build Octave's sources the list of Fink packages below need to be installed.
 
   aquaterm
-  arpack
   autoconf (>= 2.6.0)
   automake (>= 1.11)
   fftw3 (>= 3.1.1)

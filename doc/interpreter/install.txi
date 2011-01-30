@@ -140,9 +140,6 @@ Don't use @sc{amd}, disable some sparse matrix functionality.
 @item --without-camd
 Don't use @sc{camd}, disable some sparse matrix functionality.
 
-@item --without-arpack
-Don't use @sc{arpack}, disable @code{eigs} function.
-
 @item --without-colamd
 Don't use @sc{colamd}, disable some sparse matrix functionality.
 
@@ -400,56 +397,6 @@ CPU) have to be added to the variable @code{OPTS} and @code{NOOPT}.
 Once you have compiled this library make sure that you use it for
 compiling Suite Sparse and Octave.  In the following we assume that
 you installed the @sc{lapack} library as $prefix64/lib/liblapack.a.
-@end itemize
-
-@item @sc{arpack} (@url{http://www.caam.rice.edu/software/ARPACK})
-
-@itemize @minus
-@item
-In @file{ARmake.inc} set the following variables:
-
-@example
-@group
-home=path to directory @sc{arpack}
-FC=gfortran 
-FFLAGS=-fPIC -fdefault-integer-8
-MAKE=/usr/bin/make 
-ARPACKLIB=$(home)/libarpack.a
-DIRS=$(UTILdir) $(SRCdir)
-@end group
-@end example
-
-@item
-Edit the file @file{UTIL/second.f} and change the line
-
-@example
-EXTERNAL           ETIME
-@end example
-
-@noindent
-to
-
-@example
-INTRINSIC          ETIME
-@end example
-
-@item
-After building the @file{.a} library, you can make a shared version with
-
-@example
-@group
-mkdir tmp
-cd tmp
-ar x ../libarpack.a
-gcc -shared -o ../libarpack.so *.o -L$prefix64/lib \
-    -llapack -lblas 
-cd ..
-rm -rf tmp
-@end group
-@end example
-
-@noindent
-Copy the library @file{libarpack.so} to @file{$prefix64/lib/libarpack.a}.
 @end itemize
 
 @item QRUPDATE (@url{http://sourceforge.net/projects/qrupdate})

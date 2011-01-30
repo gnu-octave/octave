@@ -1,5 +1,15 @@
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.am (OCTAVE_LIBS): Remove $(ARPACK_LDFLAGS) and
+	$(ARPACK_LIBS) from the list.
+	(DLD-FUNCTIONS/eigs.df): Don't add $(ARPACK_CPPFLAGS) to CPPFLAGS.
+	(DLD_FUNCTIONS_eigs_la_CPPFLAGS): Remove $(ARPACK_CPPFLAGS) from
+	the list.
+	(DLD_FUNCTIONS_eigs_la_LIBADD): Remove $(ARPACK_LDFLAGS) and
+	$(ARPACK_LIBS) from the list.
+
+2011-01-30  John W. Eaton  <jwe@octave.org>
+
 	* load-save.cc (Fload): Doc fix.
 
 2011-01-29  Rik  <octave@nomad.inbox5.com>

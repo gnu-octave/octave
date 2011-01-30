@@ -1853,7 +1853,9 @@ use @code{fclose} for the same purpose.\n\
 
 DEFUNX ("tmpnam", Ftmpnam, args, ,
  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
+@deftypefn  {Built-in Function} {} tmpnam ()\n\
+@deftypefnx {Built-in Function} {} tmpnam (@var{dir})\n\
+@deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @code{\"oct-\"} is used.\n\

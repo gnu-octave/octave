@@ -1,5 +1,10 @@
 2010-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/copyfile.m, miscellaneous/movefile.m,
+	miscellaneous/tempname.m: Improve docstrings
+
+2010-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* deprecated/module.mk, image/module.mk: Deprecate saveimage.m.
 
 2011-01-29  Rik  <octave@nomad.inbox5.com>

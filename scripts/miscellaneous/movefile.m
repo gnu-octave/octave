@@ -17,16 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} movefile (@var{f1}, @var{f2})
+## @deftypefn  {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} movefile (@var{f1}, @var{f2})
+## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} movefile (@var{f1}, @var{f2}, 'f')
 ## Move the file @var{f1} to the new name @var{f2}.  The name @var{f1}
 ## may contain globbing patterns.  If @var{f1} expands to multiple file
-## names, @var{f2} must be a directory.
+## names, @var{f2} must be a directory.  If the force flag 'f' is given
+## then any existing files will be overwritten without prompting.
 ##
-## If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
-## character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-## system-dependent error message, and @var{msgid} contains a unique\n\
-## message identifier.\n\
-## @seealso{glob}
+## If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty
+## character strings.  Otherwise, @var{status} is 0, @var{msg} contains a
+## system-dependent error message, and @var{msgid} contains a unique
+## message identifier.
+## @seealso{rename, copyfile}
 ## @end deftypefn
 
 function [status, msg, msgid] = movefile (f1, f2, force)

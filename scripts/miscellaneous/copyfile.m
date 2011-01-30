@@ -17,17 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, @var{force})
+## @deftypefn  {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2})
+## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, 'f')
 ## Copy the file @var{f1} to the new name @var{f2}.  The name @var{f1}
 ## may contain globbing patterns.  If @var{f1} expands to multiple file
-## names, @var{f2} must be a directory.  If @var{force} is given and equals
-## the string "f" the copy operation will be forced.
+## names, @var{f2} must be a directory.  If the force flag 'f' is given then
+## existing destination files will be overwritten without prompting.
 ##
-## If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
-## character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
-## system-dependent error message, and @var{msgid} contains a unique\n\
-## message identifier.\n\
-## @seealso{glob, movefile}
+## If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty
+## character strings.  Otherwise, @var{status} is 0, @var{msg} contains a
+## system-dependent error message, and @var{msgid} contains a unique
+## message identifier.
+## @seealso{movefile}
 ## @end deftypefn
 
 function [status, msg, msgid] = copyfile (f1, f2, force)

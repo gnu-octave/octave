@@ -149,21 +149,22 @@ useful.
 @node Filesystem Utilities
 @section Filesystem Utilities
 
-Octave includes the following functions for renaming and deleting files,
-creating, deleting, and reading directories, and for getting information
-about the status of files.
+Octave includes many utility functions for copying, moving, renaming, and deleting files; for creating, reading, and deleting directories; for retrieving
+status information on files; and for manipulating file and path names.
+
+@DOCSTRING(movefile)
 
 @DOCSTRING(rename)
+
+@DOCSTRING(copyfile)
+
+@DOCSTRING(unlink)
 
 @DOCSTRING(link)
 
 @DOCSTRING(symlink)
 
 @DOCSTRING(readlink)
-
-@DOCSTRING(unlink)
-
-@DOCSTRING(readdir)
 
 @DOCSTRING(mkdir)
 
@@ -178,9 +179,23 @@ about the status of files.
 @anchor{doc-lstat}
 @DOCSTRING(stat)
 
+@DOCSTRING(S_ISBLK)
+
+@DOCSTRING(S_ISCHR)
+
+@DOCSTRING(S_ISDIR)
+
+@DOCSTRING(S_ISFIFO)
+
+@DOCSTRING(S_ISLNK)
+
+@DOCSTRING(S_ISREG)
+
 @DOCSTRING(fileattrib)
 
 @DOCSTRING(isdir)
+
+@DOCSTRING(readdir)
 
 @DOCSTRING(glob)
 
@@ -188,33 +203,29 @@ about the status of files.
 
 @DOCSTRING(file_in_path)
 
-@DOCSTRING(tilde_expand)
-
-@DOCSTRING(canonicalize_file_name)
-
-@DOCSTRING(movefile)
-
-@DOCSTRING(copyfile)
-
-@DOCSTRING(fileparts)
-
 @DOCSTRING(filesep)
 
 @DOCSTRING(filemarker)
 
+@DOCSTRING(fileparts)
+
 @DOCSTRING(fullfile)
 
-@DOCSTRING(tempdir)
+@DOCSTRING(tilde_expand)
 
-@DOCSTRING(tempname)
+@DOCSTRING(canonicalize_file_name)
 
-@DOCSTRING(P_tmpdir)
+@DOCSTRING(make_absolute_filename)
 
 @DOCSTRING(is_absolute_filename)
 
 @DOCSTRING(is_rooted_relative_filename)
 
-@DOCSTRING(make_absolute_filename)
+@DOCSTRING(P_tmpdir)
+
+@DOCSTRING(tempdir)
+
+@DOCSTRING(tempname)
 
 @node File Archiving Utilities
 @section File Archiving Utilities

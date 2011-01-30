@@ -157,7 +157,7 @@ strings.  If an error occurs, return an empty cell array in @var{files}.\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{dir, glob}\n\
+@seealso{ls, dir, glob}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -584,7 +584,7 @@ glob (\"file[12]\")\n\
           [2,1] = file2\n\
         @}\n\
 @end example\n\
-@seealso{dir, ls, stat, readdir, regexp}\n\
+@seealso{ls, dir, readdir}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -684,11 +684,11 @@ DEFUN (filesep, args, ,
 @deftypefnx {Built-in Function} {} filesep ('all')\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
-If 'all' is given, the function return all valid file separators in\n\
+If 'all' is given, the function returns all valid file separators in\n\
 the form of a string.  The list of file separators is system-dependent.\n\
-It is / (forward slash) under UNIX or Mac OS X, / and \\ (forward and\n\
-backward slashes) under Windows.\n\
-@seealso{pathsep, dir, ls}\n\
+It is @samp{/} (forward slash) under UNIX or Mac OS X, @samp{/} and @samp{\\}\n\
+(forward and backward slashes) under Windows.\n\
+@seealso{pathsep}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -719,9 +719,8 @@ DEFUN (pathsep, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} pathsep ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
-Query or set the character used to separate directories in\n\
-a path.\n\
-@seealso{filesep, dir, ls}\n\
+Query or set the character used to separate directories in a path.\n\
+@seealso{filesep}\n\
 @end deftypefn")
 {
   octave_value retval;

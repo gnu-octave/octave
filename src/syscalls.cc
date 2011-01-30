@@ -743,8 +743,11 @@ Return 0 if successful, otherwise return -1.\n\
 
 DEFUNX ("lstat", Flstat, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
-See stat.\n\
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{symlink})\n\
+Return a structure @var{info} containing information about the symbolic link\n\
+@var{symlink}.  The function outputs are described in the documentation for\n\
+@code{stat}.\n\
+@seealso{stat}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -880,7 +883,7 @@ DEFUNX ("stat", Fstat, args, ,
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{fid})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{fid})\n\
-Return a structure @var{s} containing the following information about\n\
+Return a structure @var{info} containing the following information about\n\
 @var{file} or file identifier @var{fid}.\n\
 \n\
 @table @code\n\

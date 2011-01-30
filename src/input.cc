@@ -1506,7 +1506,8 @@ Undocumented internal function.\n\
 
 DEFUN (filemarker, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} filemarker ()\n\
+@deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
+@deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
 Query or set the character used to separate filename from the\n\
 the subfunction names contained within the file.  This can be used in\n\
 a generic manner to interact with subfunctions.  For example,\n\

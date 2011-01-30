@@ -1,5 +1,12 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* dirfns.cc (readdir, filesep, pathsep): Improve docstrings
+	* file-io.cc (tmpnam): Improve docstring
+	* input.cc (filemarker): Improve docstring
+	* syscalls.cc (stat, lstat): Improve docstring
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/getrusage.cc, toplev.cc: Improve docstring
 
 2011-01-29  John W. Eaton  <jwe@octave.org>

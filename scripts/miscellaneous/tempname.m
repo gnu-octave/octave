@@ -17,8 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {filename =} tempname ()
+## @deftypefn  {Function File} {} tempname ()
+## @deftypefnx {Function File} {} tempname (@var{dir})
+## @deftypefnx {Function File} {} tempname (@var{dir}, @var{prefix})
 ## This function is an alias for @code{tmpnam}.
+## @seealso{tmpnam}
 ## @end deftypefn
 
 function filename = tempname (varargin)

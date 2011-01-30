@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} powerset (@var{a})
 ## @deftypefnx {Function File} {} powerset (@var{a}, "rows")
 ##
-## Return the cell array of all subsets of the set @var{a}.
+## Return a cell array containing all subsets of the set @var{a}.
 ##
 ## @end deftypefn
 ## @seealso{unique, union, setxor, setdiff, ismember}

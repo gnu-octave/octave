@@ -1,5 +1,9 @@
 2011-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/arith.txi: Add accumdim function to documentation.
+
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/set.txi: Add powerset function to documentation.
 
 2011-01-29  Rik  <octave@nomad.inbox5.com>

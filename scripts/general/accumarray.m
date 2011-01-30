@@ -62,6 +62,7 @@
 ## Note that for general reduction function the interpreter overhead can play a
 ## major part and it may be more efficient to do multiple accumarray calls and
 ## compute the results in a vectorized manner.
+## @seealso{accumdim}
 ## @end deftypefn
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])

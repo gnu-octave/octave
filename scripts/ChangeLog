@@ -1,5 +1,9 @@
 2010-01-29  Rik  <octave@nomad.inbox5.com>
 
+	* general/accumarray.m: Add seealso reference to accumdim.
+
+2010-01-29  Rik  <octave@nomad.inbox5.com>
+
 	* set/powerset.m: Improve docstring.
 
 2010-01-29  Rik  <octave@nomad.inbox5.com>

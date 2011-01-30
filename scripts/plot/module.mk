@@ -35,10 +35,13 @@ plot_PRIVATE_FCN_FILES = \
 
 plot_FCN_FILES = \
   plot/__fltk_ginput__.m \
+  plot/__fltk_print__.m \
+  plot/__gnuplot_drawnow__.m \
   plot/__gnuplot_get_var__.m \
   plot/__gnuplot_ginput__.m \
   plot/__gnuplot_has_feature__.m \
   plot/__gnuplot_open_stream__.m \
+  plot/__gnuplot_print__.m \
   plot/__gnuplot_version__.m \
   plot/__go_close_all__.m \
   plot/__go_draw_axes__.m \
@@ -47,12 +50,12 @@ plot_FCN_FILES = \
   plot/__next_line_color__.m \
   plot/__next_line_style__.m \
   plot/__plt_get_axis_arg__.m \
+  plot/__print_parse_opts__.m \
   plot/allchild.m \
   plot/ancestor.m \
   plot/area.m \
   plot/axes.m \
   plot/axis.m \
-  plot/graphics_toolkit.m \
   plot/bar.m \
   plot/barh.m \
   plot/box.m \
@@ -95,7 +98,7 @@ plot_FCN_FILES = \
   plot/gcbo.m \
   plot/gcf.m \
   plot/ginput.m \
-  plot/gnuplot_drawnow.m \
+  plot/graphics_toolkit.m \
   plot/grid.m \
   plot/gtext.m \
   plot/hggroup.m \
@@ -134,9 +137,6 @@ plot_FCN_FILES = \
   plot/plotyy.m \
   plot/polar.m \
   plot/print.m \
-  plot/__gnuplot_print__.m \
-  plot/__fltk_print__.m \
-  plot/__print_parse_opts__.m \
   plot/quiver.m \
   plot/quiver3.m \
   plot/refresh.m \
@@ -170,8 +170,8 @@ plot_FCN_FILES = \
   plot/title.m \
   plot/uigetdir.m \
   plot/uigetfile.m \
-  plot/uiputfile.m \
   plot/uimenu.m \
+  plot/uiputfile.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
   plot/whitebg.m \

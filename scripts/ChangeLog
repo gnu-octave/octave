@@ -1,3 +1,9 @@
+2011-01-30  John W. Eaton  <jwe@octave.org>
+
+	* plot/__gnuplot_drawnow__.m: Rename from gnuplot_drawnow.m
+	Update doc string and error message with new name.
+	* plot/module.mk (plot_FCN_FILES): Update list.
+
 2011-01-30  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* plot/__fltk_ginput__.m (ginput_aggregator): New arg, button.

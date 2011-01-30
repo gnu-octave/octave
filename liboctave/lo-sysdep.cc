@@ -172,7 +172,10 @@ opendir (const char *name)
   d->current = buffer;
   d->hnd = FindFirstFile (buffer, &(d->fd));
   if (d->hnd == INVALID_HANDLE_VALUE)
-    return 0;
+    {
+      free (d);
+      return 0;
+    }
   d->dirty = 1;
   return d;
 }

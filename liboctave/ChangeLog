@@ -1,3 +1,8 @@
+2011-01-30  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+
+	* lo-sysdep.cc (opendir): On error, free allocated DIR object
+	before returning.
+
 2011-01-28  John W. Eaton  <jwe@octave.org>
 
 	* eigs-base.cc: Remove #endif corresponding to "#ifdef HAVE_ARPACK",

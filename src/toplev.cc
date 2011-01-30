@@ -1168,11 +1168,12 @@ multiple times.\n\
 
 DEFUN (octave_config_info, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} octave_config_info (@var{option})\n\
+@deftypefn  {Built-in Function} {} octave_config_info ()\n\
+@deftypefnx {Built-in Function} {} octave_config_info (@var{option})\n\
 Return a structure containing configuration and installation\n\
 information for Octave.\n\
 \n\
-if @var{option} is a string, return the configuration information for the\n\
+If @var{option} is a string, return the configuration information for the\n\
 specified option.\n\
 \n\
 @end deftypefn")

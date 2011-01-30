@@ -65,9 +65,8 @@ DEFUN_DLD (getrusage, , ,
 Return a structure containing a number of statistics about the current\n\
 Octave process.  Not all fields are available on all systems.  If it is\n\
 not possible to get CPU time statistics, the CPU time slots are set to\n\
-zero.  Other missing data are replaced by NaN@.  Here is a list of all\n\
-the possible fields that can be present in the structure returned by\n\
-@code{getrusage}:\n\
+zero.  Other missing data are replaced by NaN@.  The list of possible\n\
+fields is:\n\
 \n\
 @table @code\n\
 @item idrss\n\

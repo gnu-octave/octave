@@ -1,3 +1,11 @@
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
+	* miscellaneous/compare_versions.m: Allow only "==" equality operator.
+	Add input validation tests.  Improve docstring.
+
+	* miscellaneous/ver.m, miscellaneous/version.m, path/matlabroot.m:
+	Improve docstring.
+
 2011-01-29  Ben Abbott  <bpabbott@mac.com>
 
 	* miscellaneous/edit.m: As most editors open their own window, change

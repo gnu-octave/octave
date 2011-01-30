@@ -66,13 +66,11 @@
 ## Note that version "1.1-test2" will compare as greater than
 ## "1.1-test10".  Also, since the numeric part is compared first, "a"
 ## compares less than "1a" because the second string starts with a
-## numeric part even though double("a") is greater than double("1").
+## numeric part even though @code{double("a")} is greater than 
+## @code{double("1").}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
-
-## FIXME?: This allows a single equal sign "=" to indicate equality, do
-## we want to require a double equal since that is the boolean operator?
 
 function out = compare_versions (v1, v2, operator)
 
@@ -83,7 +81,7 @@ function out = compare_versions (v1, v2, operator)
   ## Make sure that the version numbers are valid.
   if (! (ischar (v1) && ischar (v2)))
     error ("compare_versions: both version numbers must be strings");
-  elseif (size (v1, 1) != 1 || size (v2, 1) != 1)
+  elseif (rows (v1) != 1 || rows (v2) != 1)
     error ("compare_versions: version numbers must be a single row");
   endif
 
@@ -91,7 +89,7 @@ function out = compare_versions (v1, v2, operator)
   if (! ischar (operator))
     error ("compare_versions: OPERATOR must be a character string");
   elseif (numel (operator) > 2)
-    error("compare_versions: OPERATOR cannot be more than 2 characters long");
+    error("compare_versions: OPERATOR must be 1 or 2 characters long");
   endif
 
   ## trim off any character data that is not part of a normal version
@@ -169,6 +167,10 @@ function out = compare_versions (v1, v2, operator)
     error ("compare_versions: OPERATOR cannot contain both greater and less than symbols");
   elseif ((gt_op || lt_op) && not_op)
     error ("compare_versions: OPERATOR cannot contain not and greater than or less than symbols");
+  elseif (strcmp (operator, "="))
+    error ("compare_versions: equality OPERATOR is \"==\", not \"=\"");
+  elseif (! (equal_op || not_op || lt_op || gt_op))
+    error ("compare_versions: No valid OPERATOR specified");
   endif
 
   ## Compare the versions (making sure that they're the same shape)
@@ -187,19 +189,19 @@ function out = compare_versions (v1, v2, operator)
     ## They're correctly less than or greater than.
     out = (vcmp(firstdiff) > 0);
   else
-    ## They're not correctly less than or greater than, and they're not
-    ## equal.
+    ## They're not correctly less than or greater than, and they're not equal.
     out = false;
   endif
 
   ## Reverse the output if not is given.
-  out = xor (not_op, out);
+  if (not_op)
+    out = !out;
+  endif
 
 endfunction
 
 ## tests
 ## test both equality symbols
-%!assert(compare_versions("1", "1", "="), true)
 ## test arbitrarily long equality
 %!assert(compare_versions("1.1.0.0.0", "1.1", "=="), true)
 %!assert(compare_versions("1", "1.1", "<"), true)
@@ -224,7 +226,7 @@ endfunction
 %!assert(compare_versions("1.1.0test", "1.1.0test", "=="), true)
 
 ## make sure that it won't just give true output
-%!assert(compare_versions("1", "0", "="), false)
+%!assert(compare_versions("1", "0", "=="), false)
 ## test arbitrarily long equality
 %!assert(compare_versions("1.1.1.0.0", "1.1", "=="), false)
 %!assert(compare_versions("1.1", "1", "<"), false)
@@ -238,5 +240,14 @@ endfunction
 %!assert(compare_versions("0.1", "0.1", "!="), false)
 %!assert(compare_versions("0.1", "0.1", "~="), false)
 
-## FIXME: how do we check to make sure that it gives errors when it
-## should
+%% Test input validation
+%!error(compare_versions(0.1, "0.1", "=="))
+%!error(compare_versions("0.1", 0.1, "=="))
+%!error(compare_versions(["0";".";"1"], "0.1", "=="))
+%!error(compare_versions("0.1", ["0";".";"1"], "=="))
+%!error(compare_versions("0.1", "0.1", "<>"))
+%!error(compare_versions("0.1", "0.1", "!>"))
+%!error(compare_versions("0.1", "0.1", "="))
+%!error(compare_versions("0.1", "0.1", "aa"))
+
+

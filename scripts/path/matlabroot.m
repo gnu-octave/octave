@@ -17,8 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{val} =} matlabroot ()
-## Return the location of Octave's home directory.
+## @deftypefn {Function File} {} matlabroot ()
+## Return the name of the top-level Octave installation directory.
+##
+## This is an alias for the function @code{OCTAVE_HOME} provided
+## for compatability.
 ## @seealso{OCTAVE_HOME}
 ## @end deftypefn
 

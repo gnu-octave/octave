@@ -1,5 +1,13 @@
 2011-01-30  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/octave.texi: Add new section
+	"Customizing Toolkit Behavior"
+
+	* interpreter/plot.txi: Add functions gnuplot_binary, mouse_wheel_zoom,
+	and gui_mode to new section.
+
+2011-01-30  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/optim.txi: Deprecate glpkmex function and remove
 	from documentation.
 

@@ -1966,12 +1966,22 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
   return retval;
 }
 
-DEFUN_DLD (fltk_mouse_wheel_zoom, args, ,
+/* FIXME: This function should be abstracted and made potentially available
+          to all graphics toolkits.  This suggests putting it in graphics.cc
+          as is done for drawnow() and having the master mouse_wheel_zoom
+          function call fltk_mouse_wheel_zoom.  The same should be done for
+          gui_mode and fltk_gui_mode.  For now (2011.01.30), just
+          changing function names and docstrings.
+*/
+
+DEFUN_DLD (mouse_wheel_zoom, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{speed} =} fltk_mouse_wheel_zoom ()\n\
-@deftypefnx {Built-in Function} {} fltk_mouse_wheel_zoom (@var{speed})\n\
-Query or set the mouse wheel zoom factor in the FLTK graphics toolkit.\n\
-@seealso{fltk_gui_mode}\n\
+@deftypefn  {Built-in Function} {@var{speed} =} mouse_wheel_zoom ()\n\
+@deftypefnx {Built-in Function} {} mouse_wheel_zoom (@var{speed})\n\
+Query or set the mouse wheel zoom factor.\n\
+\n\
+This function is currently implemented only for the FLTK graphics toolkit.\n\
+@seealso{gui_mode}\n\
 @end deftypefn")
 {
   octave_value retval = wheel_zoom_speed;
@@ -1981,17 +1991,17 @@ Query or set the mouse wheel zoom factor in the FLTK graphics toolkit.\n\
       if (args(0).is_real_scalar ())
         wheel_zoom_speed = args(0).double_value ();
       else
-        error ("fltk_mouse_wheel_zoom: SPEED must be a real scalar");
+        error ("mouse_wheel_zoom: SPEED must be a real scalar");
     }
 
   return retval;
 }
 
-DEFUN_DLD (fltk_gui_mode, args, ,
+DEFUN_DLD (gui_mode, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{mode} =} fltk_gui_mode ()\n\
-@deftypefnx {Built-in Function} {} fltk_gui_mode (@var{mode})\n\
-Query or set the GUI mode for the fltk graphics toolkit.\n\
+@deftypefn  {Built-in Function} {@var{mode} =} gui_mode ()\n\
+@deftypefnx {Built-in Function} {} gui_mode (@var{mode})\n\
+Query or set the GUI mode for the current graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
 @table @asis\n\
 @item '2d'\n\
@@ -2003,7 +2013,9 @@ Allows rotating and zooming of current axes.\n\
 @item 'none'\n\
 Mouse inputs have no effect.\n\
 @end table\n\
-@seealso{fltk_mouse_wheel_zoom}\n\
+\n\
+This function is currently implemented only for the FLTK graphics toolkit.\n\
+@seealso{mouse_wheel_zoom}\n\
 @end deftypefn")
 {
   caseless_str mode_str;

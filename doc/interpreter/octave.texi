@@ -560,8 +560,7 @@ Object Groups
 
 Graphics Toolkits
 
-* Interaction with gnuplot::    
-* Interaction with FLTK::    
+* Customizing Toolkit Behavior::
 
 Matrix Manipulation
 

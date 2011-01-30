@@ -3222,20 +3222,19 @@ Data source variables.
 @DOCSTRING(available_graphics_toolkits)
 
 @menu
-* Interaction with gnuplot::    
-* Interaction with FLTK::    
+* Customizing Toolkit Behavior::    
 @end menu
 
-@node Interaction with gnuplot
-@subsubsection Interaction with @code{gnuplot}
-@cindex gnuplot interaction
+@node Customizing Toolkit Behavior
+@subsubsection Customizing Toolkit Behavior
+@cindex toolkit customization
+
+The specific behavior of the backend toolkit may be modified using the
+following utility functions.  Note: Not all functions apply to every
+graphics toolkit.
 
 @DOCSTRING(gnuplot_binary)
 
-@node Interaction with FLTK
-@subsubsection Interaction with FLTK
+@DOCSTRING(gui_mode)
 
-@DOCSTRING(fltk_gui_mode)
-
-@DOCSTRING(fltk_mouse_wheel_zoom)
-
+@DOCSTRING(mouse_wheel_zoom)

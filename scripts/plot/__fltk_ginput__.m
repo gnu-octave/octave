@@ -23,6 +23,9 @@
 
 ## This is ginput.m implementation for fltk.
 
+## FIXME -- Key presses cannot toggle menu items nor hotkey functionality
+## (grid, autoscale) during ginput!
+
 function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
   if (isempty (get (f, "currentaxes")))
@@ -30,7 +33,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
   endif
 
   x = y = button = [];
-  ginput_aggregator (0, 0, 0);
+  ginput_aggregator (0, 0, 0, 0);
 
   unwind_protect
 
@@ -43,10 +46,10 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
     while (true)
       __fltk_redraw__ ();
 
-      ## release CPU
+      ## Release CPU.
       sleep (0.01);
 
-      [x, y, n0] = ginput_aggregator (-1, 0, 0);
+      [x, y, n0, button] = ginput_aggregator (-1, 0, 0, 0);
       if (n0 == n || n0 < 0)
         break;
       endif
@@ -61,30 +64,44 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
 endfunction
 
-function [x, y, n] = ginput_aggregator (mode , xn, yn)
-  persistent x y n;
+function [x, y, n, button] = ginput_aggregator (mode, xn, yn, btn)
+  persistent x y n button;
 
   if (mode == 0)
+    ## Initialize.
     x = [];
     y = [];
+    button = [];
     n = 0;
   elseif (mode == 1)
+    ## Accept mouse button or key press.
     x = [x; xn];
     y = [y; yn];
+    button = [button; btn];
     n += 1;
   elseif (mode == 2)
+    ## The end due to Enter.
     n = -1;
-  endif
+ endif
 endfunction
 
 function ginput_windowbuttondownfcn (src, data)
   point = get (get (src,"currentaxes"), "currentpoint");
-  ginput_aggregator (1, point(1,1), point(2,1));
+  ## FIXME -- How to get the actual mouse button pressed (1,2,3) into
+  ## "button"?
+  button = 1;
+  ginput_aggregator (1, point(1,1), point(2,1), button);
 endfunction
 
 function ginput_keypressfcn (src, evt)
-  if (evt.Key == 10)    # linefeed character
-    ginput_aggregator (2, 0, 0);
+  point = get (get (src, "currentaxes"), "currentpoint");
+  ## FIXME -- use evt.Key or evt.Character?
+  key = evt.Key;
+  if (key == 10)
+    ## Enter key.
+    ginput_aggregator (2, point(1,1), point(2,1), key);
+  else
+    ginput_aggregator (1, point(1,1), point(2,1), key);
   endif
 endfunction
 

@@ -1,3 +1,7 @@
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/getrusage.cc, toplev.cc: Improve docstring
+
 2011-01-29  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__fltk_uigetfile__.cc (__fltk_uigetfile__):

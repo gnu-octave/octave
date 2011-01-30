@@ -1,3 +1,8 @@
+2011-01-29  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/system.txi: Add compare_versions function to 
+	documentation.
+
 2011-01-27  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/numbers.txi: Add sizemax function to documentation.

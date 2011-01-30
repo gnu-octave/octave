@@ -465,17 +465,19 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isieee)
 
-@DOCSTRING(matlabroot)
-
 @DOCSTRING(OCTAVE_HOME)
 
-@DOCSTRING(OCTAVE_VERSION)
+@DOCSTRING(matlabroot)
 
-@DOCSTRING(license)
+@DOCSTRING(OCTAVE_VERSION)
 
 @DOCSTRING(version)
 
 @DOCSTRING(ver)
+
+@DOCSTRING(compare_versions)
+
+@DOCSTRING(license)
 
 @DOCSTRING(octave_config_info)
 

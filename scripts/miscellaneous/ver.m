@@ -18,32 +18,35 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ver ()
-## Display a header containing the current Octave version
-## number, license string and operating system, followed by
-## the installed package names, versions, and installation
-## directories.
+## Display a header containing the current Octave version number, license
+## string and operating system, followed by the installed package names,
+## versions, and installation directories.
+##
 ## @deftypefnx {Function File} {v =} ver ()
 ## Return a vector of structures, respecting Octave and each installed package.
 ## The structure includes the following fields.
 ##
 ## @table @code
-##   @item Name
-##   Package name.
+## @item Name
+## Package name.
 ##
-##   @item Version
-##   Version of the package.
+## @item Version
+## Version of the package.
 ##
-##   @item Revision
-##   Revision of the package.
+## @item Revision
+## Revision of the package.
 ##
-##   @item Date
-##   Date respecting the version/revision.
+## @item Date
+## Date respecting the version/revision.
 ## @end table
+##
 ## @deftypefnx {Function File} {v =} ver (@code{"Octave"})
 ## Return version information for Octave only.
+## 
 ## @deftypefnx {Function File} {v =} ver (@var{package})
 ## Return version information for @var{package}.
-## @seealso{license, version}
+##
+## @seealso{version, octave_config_info}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>

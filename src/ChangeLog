@@ -1,5 +1,11 @@
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (gnuplot_toolkit::redraw): Call __gnuplot_drawnow__,
+	not gnuplot_drawnow.
+	(gnuplot_toolkit::print_figure): Likewise.
+
+2011-01-30  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.am (OCTAVE_LIBS): Remove $(ARPACK_LDFLAGS) and
 	$(ARPACK_LIBS) from the list.
 	(DLD-FUNCTIONS/eigs.df): Don't add $(ARPACK_CPPFLAGS) to CPPFLAGS.

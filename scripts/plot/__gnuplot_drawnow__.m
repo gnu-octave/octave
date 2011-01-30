@@ -17,17 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} drawnow ()
-## Update and display the current graphics.
-##
-## Octave automatically calls drawnow just before printing a prompt,
-## when @code{sleep} or @code{pause} is called, or while waiting for
-## command-line input.
+## @deftypefn {Function File} {} __gnuplot_drawnow__ (@var{h}, @var{term}, @var{file}, @var{mono}, @var{debug_file})
+## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function gnuplot_drawnow (h, term, file, mono, debug_file)
+function __gnuplot_drawnow__ (h, term, file, mono, debug_file)
 
   if (nargin < 4)
     mono = false;
@@ -51,7 +47,7 @@ function gnuplot_drawnow (h, term, file, mono, debug_file)
           __go_draw_figure__ (h, fid, enhanced, mono);
         endif
       else
-        error ("gnuplot_drawnow: the gnuplot terminal, \"%s\", is not available",
+        error ("__gnuplot_drawnow__: the gnuplot terminal, \"%s\", is not available",
                gnuplot_trim_term (term));
       endif
     unwind_protect_cleanup

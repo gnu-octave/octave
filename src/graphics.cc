@@ -2340,7 +2340,7 @@ public:
     {
       octave_value_list args;
       args(0) = go.get_handle ().as_octave_value ();
-      feval ("gnuplot_drawnow", args);
+      feval ("__gnuplot_drawnow__", args);
     }
 
   void print_figure (const graphics_object& go, const std::string& term,
@@ -2354,7 +2354,7 @@ public:
       args(2) = file;
       args(1) = term;
       args(0) = go.get_handle ().as_octave_value ();
-      feval ("gnuplot_drawnow", args);
+      feval ("__gnuplot_drawnow__", args);
     }
 
   Matrix get_canvas_size (const graphics_handle&) const

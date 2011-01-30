@@ -2233,11 +2233,6 @@ if test -n "$warn_cxsparse"; then
   warn_msg_printed=true
 fi
 
-if test -n "$warn_arpack"; then
-  AC_MSG_WARN([$warn_arpack])
-  warn_msg_printed=true
-fi
-
 if test -n "$warn_curl"; then
   AC_MSG_WARN([$warn_curl])
   warn_msg_printed=true

@@ -3325,6 +3325,12 @@ public:
 
 private:
   FILE *f;
+
+  // No copying!
+
+  stdio_stream_reader (const  stdio_stream_reader&);
+
+  stdio_stream_reader & operator = (const  stdio_stream_reader&);
 };
 
 static bool

@@ -1,17 +1,16 @@
 EXTRA_DIST += \
   arpack/LICENSE \
   arpack/README \
+  arpack/docs/README \
   arpack/docs/debug.doc \
   arpack/docs/ex-complex.doc \
   arpack/docs/ex-nonsym.doc \
   arpack/docs/ex-sym.doc \
-  arpack/docs/README \
   arpack/docs/stat.doc \
-  arpack/src/module.mk \
+  arpack/module.mk \
   arpack/src/debug.h \
   arpack/src/stat.h \
-  arpack/src/version.h \
-  arpack/util/module.mk
+  arpack/src/version.h
 
 libcruft_la_SOURCES += \
   arpack/src/cgetv0.f \

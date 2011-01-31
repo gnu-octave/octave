@@ -35,7 +35,7 @@ function gnuplot_supports_term = __gnuplot_has_terminal__ (term, plot_stream)
       plot_stream = __gnuplot_open_stream__ (2);
     endif
     available_terminals = __gnuplot_get_var__ (plot_stream, "GPVAL_TERMINALS");
-    available_terminals = regexp (available_terminals, '\b\w+\b', "match");
+    available_terminals = regexp (available_terminals, '\w+', "match");
     if (nargin < 2 && ! isempty (plot_stream))
       pclose (plot_stream(1));
       if (numel (plot_stream) > 1)

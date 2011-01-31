@@ -1,3 +1,8 @@
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
+	* plot/__fltk_ginput__.m: Remove line that should have been
+	removed in previous change.
+
 2010-01-31  Rik  <octave@nomad.inbox5.com>
 
 	* plot/private/__gnuplot_has_terminal__.m: Simplify regular expression

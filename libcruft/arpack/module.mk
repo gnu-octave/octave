@@ -1,13 +1,12 @@
 EXTRA_DIST += \
-  arpack/ARPACK-license-question.email \
+  arpack/LICENSE \
   arpack/README \
-  arpack/RiceBSD.txt \
-  docs/debug.doc \
-  docs/ex-complex.doc \
-  docs/ex-nonsym.doc \
-  docs/ex-sym.doc \
-  docs/README \
-  docs/stat.doc \
+  arpack/docs/debug.doc \
+  arpack/docs/ex-complex.doc \
+  arpack/docs/ex-nonsym.doc \
+  arpack/docs/ex-sym.doc \
+  arpack/docs/README \
+  arpack/docs/stat.doc \
   arpack/src/module.mk \
   arpack/src/debug.h \
   arpack/src/stat.h \

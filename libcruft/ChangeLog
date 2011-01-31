@@ -1,3 +1,13 @@
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
+	* arpack/LICENSE: Update to current version from
+	http://www.caam.rice.edu/software/ARPACK.
+	* arpack/ARPACK-license-question.email: Delete as it no longer
+	applies to the current license terms.
+	* arpack/RiceBSD.txt: Delete.
+	* arpack/module.mk: Update for license changes.
+	Add arpack/ prefix to doc files in list.
+
 2011-01-28  David Bateman  <dbateman@free.fr>
 
 	* arpack/src/cneupd.f (cneupd): Restore value of nconv if ctrsen

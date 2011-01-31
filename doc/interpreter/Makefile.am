@@ -39,12 +39,13 @@ dist_man1_MANS = \
   octave-config.1 \
   octave.1
 
-## The following example files are listed for dependencies.
-## They should not be distributed from this directory.
+## The following files are included in the manual via the @EXAMPLEFILE macro.
+## They are dependencies for the documentation.
+## They must not be distributed from this directory.
 EXAMPLE_FILES = \
-  $(top_srcdir)/examples/@FIRfilter/display.m \
-  $(top_srcdir)/examples/@FIRfilter/FIRfilter_aggregation.m \
   $(top_srcdir)/examples/@FIRfilter/FIRfilter.m \
+  $(top_srcdir)/examples/@FIRfilter/FIRfilter_aggregation.m \
+  $(top_srcdir)/examples/@FIRfilter/display.m \
   $(top_srcdir)/examples/@FIRfilter/subsasgn.m \
   $(top_srcdir)/examples/@FIRfilter/subsref.m \
   $(top_srcdir)/examples/@polynomial/display.m \
@@ -79,7 +80,6 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/stringdemo.cc \
   $(top_srcdir)/examples/structdemo.cc \
   $(top_srcdir)/examples/unwinddemo.cc
-
 
 
 include images.mk
@@ -187,7 +187,7 @@ munge_texi_SOURCES = munge-texi.cc
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
 
-.txi.texi:
+%.texi: %.txi
 	@$(MAKE) $(AM_MAKEFLAGS) munge-texi$(BUILD_EXEEXT)
 	./munge-texi $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t
 	mv $@-t $@
@@ -196,11 +196,11 @@ contributors.texi: contributors.in
 	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
 	mv $@-t $@
 
-../../INSTALL.OCTAVE: install.texi
-	rm -f INSTALL
-	-$(MAKEINFO) -D INSTALLONLY \
-	  --no-validate --no-headers --no-split --output INSTALL $<
-	mv INSTALL ../../INSTALL.OCTAVE
+../../AUTHORS: preface.texi contributors.texi
+	rm -f AUTHORS
+	-$(MAKEINFO) -D AUTHORSONLY \
+	  --no-validate --no-headers --no-split --output AUTHORS $<
+	mv AUTHORS ../../AUTHORS
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
@@ -208,11 +208,11 @@ contributors.texi: contributors.in
 	  --no-validate --no-headers --no-split --output BUGS $<
 	mv BUGS ../../BUGS
 
-../../AUTHORS: preface.texi contributors.texi
-	rm -f AUTHORS
-	-$(MAKEINFO) -D AUTHORSONLY \
-	  --no-validate --no-headers --no-split --output AUTHORS $<
-	mv AUTHORS ../../AUTHORS
+../../INSTALL.OCTAVE: install.texi
+	rm -f INSTALL
+	-$(MAKEINFO) -D INSTALLONLY \
+	  --no-validate --no-headers --no-split --output INSTALL $<
+	mv INSTALL ../../INSTALL.OCTAVE
 
 undocumented_list:
 	rm -f $@

@@ -1,5 +1,10 @@
 2011-01-30  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/Makefile.am: Use pattern-style rules to make .texi files
+	rather than older suffix-style rules.
+
+2011-01-30  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave.texi: Add new section
 	"Customizing Toolkit Behavior"
 

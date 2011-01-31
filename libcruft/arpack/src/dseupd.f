@@ -609,9 +609,9 @@ c
 c
             if (leftptr .lt. rghtptr) go to 20
 c
- 30      end if
+         end if
 c
-         if (msglvl .gt. 2) then
+ 30      if (msglvl .gt. 2) then
              call dvout  (logfil, ncv, workl(ihd), ndigit,
      &       '_seupd: The eigenvalues of H--reordered')
          end if

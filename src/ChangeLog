@@ -1,3 +1,9 @@
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.cc (get_P_tmpdir): New function.
+	* file-io.cc (FP_tmpdir): Use it.
+	Bug #32158.
+
 2011-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (mouse_wheel_zoom, gui_mode): Rename

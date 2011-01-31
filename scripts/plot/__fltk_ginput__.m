@@ -55,8 +55,6 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
       endif
     endwhile
 
-    ## FIXME -- got to get the buttons somehow
-    button = ones (size (x));
   unwind_protect_cleanup
     set (f, "windowbuttondownfcn", orig_windowbuttondownfcn);
     set (f, "keypressfcn", orig_ginput_keypressfcn);

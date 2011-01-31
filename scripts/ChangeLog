@@ -1,3 +1,8 @@
+2010-01-31  Rik  <octave@nomad.inbox5.com>
+
+	* plot/private/__gnuplot_has_terminal__.m: Simplify regular expression
+	to eliminate word-boundary assertion.
+
 2010-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, optimization/module.mk: Deprecate glpkmex

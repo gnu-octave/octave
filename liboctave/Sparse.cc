@@ -1875,7 +1875,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
               nrx = n;
 
               if (idx_j.is_colon ())
-                ncx = n;
+                ncx = m;
               else
                 ncx = idx_j.extent (nc);
             }
@@ -1883,6 +1883,11 @@ Sparse<T>::assign (const idx_vector& idx_i,
             {
               nrx = idx_i.extent (nr);
               ncx = m;
+            }
+          else
+            {
+              nrx = idx_i.extent (nr);
+              ncx = idx_j.extent (nc);
             }
         }
       else

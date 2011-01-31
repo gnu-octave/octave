@@ -1,3 +1,9 @@
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::assign (const idx_vector&, const idx_vector&,
+	const Sparse<T>&)): Handle case of LHS originally empty, and
+	with non-colon indices.  Fix typo in previous change.  Bug #32263.
+
 2011-01-30  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* lo-sysdep.cc (opendir): On error, free allocated DIR object

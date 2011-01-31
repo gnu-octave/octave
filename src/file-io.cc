@@ -2125,10 +2125,6 @@ const_value (const char *, const octave_value_list& args, int val)
   return retval;
 }
 
-#if ! defined (P_tmpdir)
-#define P_tmpdir "/tmp"
-#endif
-
 DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} P_tmpdir ()\n\
@@ -2141,7 +2137,7 @@ this system.  The name of this directory is system dependent.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = P_tmpdir;
+    retval = get_P_tmpdir ();
   else
     print_usage ();
 

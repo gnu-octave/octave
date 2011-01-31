@@ -41,6 +41,8 @@ extern OCTINTERP_API int octave_pclose (FILE *f);
 
 extern OCTINTERP_API int octave_kbhit (bool wait = true);
 
+extern OCTINTERP_API std::string get_P_tmpdir (void);
+
 extern void w32_set_quiet_shutdown (void);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)

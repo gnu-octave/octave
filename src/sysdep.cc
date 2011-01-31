@@ -470,6 +470,45 @@ octave_kbhit (bool wait)
   return c;
 }
 
+std::string
+get_P_tmpdir (void)
+{
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+  std::string retval;
+
+#if defined (P_tmpdir)
+  retval = P_tmpdir;
+#endif
+
+  // Apparently some versions of MinGW and MSVC either don't define
+  // P_tmpdir, or they define it to a single backslash, neither of which
+  // is particularly helpful.
+
+  if (retval.empty () || retval == "\\")
+    {
+      retval = octave_env::getenv ("TEMP");
+
+      if (retval.empty ())
+        retval = octave_env::getenv ("TMP");
+
+      if (retval.empty ())
+        retval = "c:\\temp";
+    }
+
+  return retval;
+
+#elif defined (P_tmpdir)
+
+  return P_tmpdir;
+
+#else
+
+  return "/tmp";
+
+#endif
+}
+
 DEFUN (clc, , ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} clc ()\n\

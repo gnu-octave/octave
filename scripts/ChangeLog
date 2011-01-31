@@ -1,5 +1,9 @@
 2011-01-31  John W. Eaton  <jwe@octave.org>
 
+	* plot/private/__axis_label__.m: Don't call __fltk_redraw__.
+
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
 	* plot/__fltk_ginput__.m: Remove line that should have been
 	removed in previous change.
 

@@ -37,7 +37,12 @@ function res = __gnuplot_has_feature__ (feature)
               "key_has_font_properties"};
 
   if (isempty (has_features))
-    gnuplot_version = __gnuplot_version__ ();
+    try
+      gnuplot_version = __gnuplot_version__ ();
+    catch
+      ## Don't throw an error if gnuplot isn't installed
+      gnuplot_version = "0.0.0";
+    end_try_catch
     versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4"};
     operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
     have_features = logical (zeros (size (features)));

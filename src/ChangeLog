@@ -1,3 +1,8 @@
+2011-02-01  Michael Godfrey  <godfrey@isl.stanford.edu>
+
+	* gl2ps-renderer.cc (glps_renderer::draw):
+	Return immediately if fdopen fails.
+
 2011-02-01  John W. Eaton  <jwe@octave.org>
 
 	* gl-render.cc:	(opengl_renderer::setup_opengl_transformation,

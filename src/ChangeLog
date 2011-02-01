@@ -1,3 +1,18 @@
+2011-02-01  John W. Eaton  <jwe@octave.org>
+
+	* gl-render.cc:	(opengl_renderer::setup_opengl_transformation,
+	opengl_renderer::draw_axes_planes,
+	opengl_renderer::draw_axes_boxes,
+	opengl_renderer::draw_axes_x_grid,
+	opengl_renderer::draw_axes_y_grid,
+	opengl_renderer::draw_axes_z_grid,
+	opengl_renderer::draw_axes_title,
+	opengl_renderer::draw_axes_children):
+	New private functions, extracted from opengl_renderer::draw_axes.
+	(opengl_renderer::draw_axes): Call subfunctions to do most of
+	the work.
+	* gl-render.h: Provide decls.
+
 2011-01-31  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc (get_P_tmpdir): New function.

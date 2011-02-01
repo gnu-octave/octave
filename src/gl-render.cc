@@ -621,8 +621,8 @@ opengl_renderer::draw_figure (const figure::properties& props)
 }
 
 void
-opengl_renderer::render_grid (std::string& gridstyle, Matrix& ticks,
-                              double lim1, double lim2,
+opengl_renderer::render_grid (const std::string& gridstyle,
+                              const Matrix& ticks, double lim1, double lim2,
                               double p1, double p1N, double p2, double p2N,
                               int xyz, bool is_3D)
 {
@@ -667,12 +667,15 @@ opengl_renderer::render_grid (std::string& gridstyle, Matrix& ticks,
 }
 
 void
-opengl_renderer::render_tickmarks(Matrix& ticks, double lim1, double lim2,
-                                  double p1, double p1N, double p2, double p2N,
-                                  double dx, double dy, double dz,
-                                  int xyz, bool doubleside)
+opengl_renderer::render_tickmarks (const Matrix& ticks,
+                                   double lim1, double lim2,
+                                   double p1, double p1N,
+                                   double p2, double p2N,
+                                   double dx, double dy, double dz,
+                                   int xyz, bool doubleside)
 {
   glBegin (GL_LINES);
+
   for (int i = 0; i < ticks.numel (); i++)
     {
       double val = ticks(i);
@@ -711,15 +714,17 @@ opengl_renderer::render_tickmarks(Matrix& ticks, double lim1, double lim2,
             }
         }
     }
+
   glEnd ();
 }
 
 void
-opengl_renderer::render_ticktexts(Matrix& ticks, string_vector& ticklabels,
-                                  double lim1, double lim2,
-                                  double p1, double p2,
-                                  int xyz, int ha, int va,
-                                  int& wmax, int& hmax)
+opengl_renderer::render_ticktexts (const Matrix& ticks,
+                                   const string_vector& ticklabels,
+                                   double lim1, double lim2,
+                                   double p1, double p2,
+                                   int xyz, int ha, int va,
+                                   int& wmax, int& hmax)
 {
   int n = std::min (ticklabels.numel (), ticks.numel ());
 
@@ -752,16 +757,17 @@ opengl_renderer::render_ticktexts(Matrix& ticks, string_vector& ticklabels,
 }
 
 void
-opengl_renderer::draw_axes (const axes::properties& props)
+opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 {
   // setup OpenGL transformation
 
   Matrix x_zlim = props.get_transform_zlim ();
-  Matrix x_mat1 = props.get_opengl_matrix_1 ();
-  Matrix x_mat2 = props.get_opengl_matrix_2 ();
 
   xZ1 = x_zlim(0)-(x_zlim(1)-x_zlim(0))/2;
   xZ2 = x_zlim(1)+(x_zlim(1)-x_zlim(0))/2;
+
+  Matrix x_mat1 = props.get_opengl_matrix_1 ();
+  Matrix x_mat2 = props.get_opengl_matrix_2 ();
 
 #if defined (HAVE_FRAMEWORK_OPENGL)
   GLint vw[4];
@@ -786,23 +792,695 @@ opengl_renderer::draw_axes (const axes::properties& props)
   // store axes transformation data
 
   xform = props.get_transform ();
+}
 
-  // draw axes object
+void
+opengl_renderer::draw_axes_planes (bool visible, const Matrix& axe_color,
+                                   const Matrix& xlim, const Matrix& ylim,
+                                   const Matrix& zlim, double x_plane,
+                                   double y_plane, double z_plane)
+{
+  // Axes planes
 
-  GLboolean antialias;
-  glGetBooleanv (GL_LINE_SMOOTH, &antialias);
-  glDisable (GL_LINE_SMOOTH);
+  if (axe_color.numel () > 0 && visible)
+    {
+      set_color (axe_color);
+      set_polygon_offset (true, 2.5);
 
-  Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
-  Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
-  Matrix zlim = xform.zscale (props.get_zlim ().matrix_value ());
-  double x_min = xlim(0), x_max = xlim(1);
-  double y_min = ylim(0), y_max = ylim(1);
-  double z_min = zlim(0), z_max = zlim(1);
+      glBegin (GL_QUADS);
 
-  double xd = (props.xdir_is ("normal") ? 1 : -1);
-  double yd = (props.ydir_is ("normal") ? 1 : -1);
-  double zd = (props.zdir_is ("normal") ? 1 : -1);
+      double x_min = xlim(0);
+      double x_max = xlim(1);
+
+      double y_min = ylim(0);
+      double y_max = ylim(1);
+
+      double z_min = zlim(0);
+      double z_max = zlim(1);
+
+      // X plane
+      glVertex3d (x_plane, y_min, z_min);
+      glVertex3d (x_plane, y_max, z_min);
+      glVertex3d (x_plane, y_max, z_max);
+      glVertex3d (x_plane, y_min, z_max);
+
+      // Y plane
+      glVertex3d (x_min, y_plane, z_min);
+      glVertex3d (x_max, y_plane, z_min);
+      glVertex3d (x_max, y_plane, z_max);
+      glVertex3d (x_min, y_plane, z_max);
+
+      // Z plane
+      glVertex3d (x_min, y_min, z_plane);
+      glVertex3d (x_max, y_min, z_plane);
+      glVertex3d (x_max, y_max, z_plane);
+      glVertex3d (x_min, y_max, z_plane);
+
+      glEnd ();
+
+      set_polygon_offset (false);
+    }
+}
+
+void
+opengl_renderer::draw_axes_boxes (const axes::properties& props,
+                                  bool visible, bool box, bool xySym,
+                                  double xPlane, double yPlane, double zPlane,
+                                  double xPlaneN, double yPlaneN, double zPlaneN,
+                                  double xpTick, double ypTick, double zpTick,
+                                  double xpTickN, double ypTickN, double zpTickN)
+{
+  // Axes box
+
+  set_linestyle ("-", true);
+  set_linewidth (props.get_linewidth ());
+
+  if (visible)
+    {
+      glBegin (GL_LINES);
+
+      // X box
+      set_color (props.get_xcolor_rgb ());
+      glVertex3d (xPlaneN, ypTick, zpTick);
+      glVertex3d (xPlane, ypTick, zpTick);
+
+      if (box)
+        {
+          glVertex3d (xPlaneN, ypTickN, zpTick);
+          glVertex3d (xPlane, ypTickN, zpTick);
+          glVertex3d (xPlaneN, ypTickN, zpTickN);
+          glVertex3d (xPlane, ypTickN, zpTickN);
+          glVertex3d (xPlaneN, ypTick, zpTickN);
+          glVertex3d (xPlane, ypTick, zpTickN);
+        }
+
+      // Y box
+      set_color (props.get_ycolor_rgb ());
+      glVertex3d (xpTick, yPlaneN, zpTick);
+      glVertex3d (xpTick, yPlane, zpTick);
+
+      if (box)
+        {
+          glVertex3d (xpTickN, yPlaneN, zpTick);
+          glVertex3d (xpTickN, yPlane, zpTick);
+          glVertex3d (xpTickN, yPlaneN, zpTickN);
+          glVertex3d (xpTickN, yPlane, zpTickN);
+          glVertex3d (xpTick, yPlaneN, zpTickN);
+          glVertex3d (xpTick, yPlane, zpTickN);
+        }
+
+      // Z box
+      set_color (props.get_zcolor_rgb ());
+
+      if (xySym)
+        {
+          glVertex3d (xPlaneN, yPlane, zPlaneN);
+          glVertex3d (xPlaneN, yPlane, zPlane);
+        }
+      else
+        {
+          glVertex3d (xPlane, yPlaneN, zPlaneN);
+          glVertex3d (xPlane, yPlaneN, zPlane);
+        }
+
+      if (box)
+        {
+          glVertex3d (xPlane, yPlane, zPlaneN);
+          glVertex3d (xPlane, yPlane, zPlane);
+
+          if (xySym)
+            {
+              glVertex3d (xPlane, yPlaneN, zPlaneN);
+              glVertex3d (xPlane, yPlaneN, zPlane);
+            }
+          else
+            {
+              glVertex3d (xPlaneN, yPlane, zPlaneN);
+              glVertex3d (xPlaneN, yPlane, zPlane);
+            }
+
+          glVertex3d (xPlaneN, yPlaneN, zPlaneN);
+          glVertex3d (xPlaneN, yPlaneN, zPlane);
+        }
+
+      glEnd ();
+    }
+}
+
+void
+opengl_renderer::draw_axes_x_grid (const axes::properties& props,
+                                   bool visible, bool box,
+                                   const std::string& gridstyle,
+                                   const std::string& minorgridstyle,
+                                   bool nearhoriz, double tickdir,
+                                   bool xyzSym, bool layer2Dtop,
+                                   bool x2Dtop, int xstate,
+                                   double x_min, double x_max,
+                                   double xticklen, double xtickoffset,
+                                   double fy, double yPlane, double yPlaneN,
+                                   double ypTick, double ypTickN,
+                                   double fz, int zstate, double zPlane,
+                                   double zPlaneN, double zpTick,
+                                   double zpTickN)
+{
+  // X grid
+
+  if (visible && xstate != AXE_DEPTH_DIR)
+    {
+      bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
+      bool do_xminorgrid = (props.is_xminorgrid () && (minorgridstyle != "none"));
+      bool do_xminortick = props.is_xminortick ();
+      Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
+      Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
+      string_vector xticklabels = props.get_xticklabel ().all_strings ();
+      int wmax = 0, hmax = 0;
+      bool tick_along_z = nearhoriz || xisinf (fy);
+
+      set_color (props.get_xcolor_rgb ());
+
+      // grid lines
+      if (do_xgrid)
+        render_grid (gridstyle, xticks, x_min, x_max,
+                     yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                     zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
+
+      // tick marks
+      if (tick_along_z)
+        {
+          render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
+                            zpTick, zpTickN, 0., 0.,
+                            signum(zpTick-zpTickN)*fz*xticklen*tickdir,
+                            0, (box && xstate != AXE_ANY_DIR));
+        }
+      else
+        {
+          render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
+                            zpTick, zpTick, 0.,
+                            signum(ypTick-ypTickN)*fy*xticklen*tickdir,
+                            0., 0, (box && xstate != AXE_ANY_DIR));
+        }
+
+      // tick texts
+      if (xticklabels.numel () > 0)
+        {
+          int halign = (xstate == AXE_HORZ_DIR ? 1 : (xyzSym ? 0 : 2));
+          int valign = (xstate == AXE_VERT_DIR ? 1 : (x2Dtop ? 0 : 2));
+
+          if (tick_along_z)
+            render_ticktexts (xticks, xticklabels, x_min, x_max, ypTick,
+                              zpTick+signum(zpTick-zpTickN)*fz*xtickoffset,
+                              0, halign, valign, wmax, hmax);
+          else
+            render_ticktexts (xticks, xticklabels, x_min, x_max,
+                              ypTick+signum(ypTick-ypTickN)*fy*xtickoffset,
+                              zpTick, 0, halign, valign, wmax, hmax);
+        }
+
+      // minor grid lines
+      if (do_xminorgrid)
+        render_grid (minorgridstyle, xmticks, x_min, x_max,
+                     yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                     zPlaneN, 0, (zstate != AXE_DEPTH_DIR));
+
+      // minor tick marks
+      if (do_xminortick)
+        {
+          if (tick_along_z)
+            render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
+                              zpTick, zpTickN, 0., 0.,
+                              signum(zpTick-zpTickN)*fz*xticklen/2*tickdir,
+                              0, (box && xstate != AXE_ANY_DIR));
+          else
+            render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
+                              zpTick, zpTick, 0.,
+                              signum(ypTick-ypTickN)*fy*xticklen/2*tickdir,
+                              0., 0, (box && xstate != AXE_ANY_DIR));
+        }
+
+      text::properties& xlabel_props =
+        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_xlabel ()).get_properties ());
+
+      xlabel_props.set_visible ("on");
+
+      if (! xlabel_props.get_string ().empty ())
+        {
+          if (xlabel_props.horizontalalignmentmode_is ("auto"))
+            {
+              xlabel_props.set_horizontalalignment
+                (xstate > AXE_DEPTH_DIR
+                 ? "center" : (xyzSym ? "left" : "right"));
+
+              xlabel_props.set_horizontalalignmentmode ("auto");
+            }
+
+          if (xlabel_props.verticalalignmentmode_is ("auto"))
+            {
+              xlabel_props.set_verticalalignment
+                (xstate == AXE_VERT_DIR || x2Dtop ? "bottom" : "top");
+
+              xlabel_props.set_verticalalignmentmode ("auto");
+            }
+
+          if (xlabel_props.positionmode_is ("auto")
+              || xlabel_props.rotationmode_is ("auto"))
+            {
+              double angle = 0;
+              ColumnVector p
+                = graphics_xform::xform_vector ((x_min+x_max)/2,
+                                                ypTick, zpTick);
+
+              if (tick_along_z)
+                p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
+              else
+                p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
+
+              p = xform.transform (p(0), p(1), p(2), false);
+
+              switch (xstate)
+                {
+                  case AXE_ANY_DIR:
+                    p(0) += (xyzSym ? wmax : -wmax);
+                    p(1) += hmax;
+                    break;
+
+                  case AXE_VERT_DIR:
+                    p(0) -= wmax;
+                    angle = 90;
+                    break;
+
+                  case AXE_HORZ_DIR:
+                    p(1) += (x2Dtop ? -hmax : hmax);
+                    break;
+                }
+
+              if (xlabel_props.positionmode_is ("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  xlabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  xlabel_props.set_positionmode ("auto");
+                }
+
+              if (xlabel_props.rotationmode_is ("auto"))
+                {
+                  xlabel_props.set_rotation (angle);
+                  xlabel_props.set_rotationmode ("auto");
+                }
+            }
+        }
+    }
+  else
+    gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
+}
+
+void
+opengl_renderer::draw_axes_y_grid (const axes::properties& props,
+                                   bool visible, bool box,
+                                   const std::string& gridstyle,
+                                   const std::string& minorgridstyle,
+                                   bool nearhoriz, double tickdir,
+                                   bool xyzSym, bool layer2Dtop,
+                                   bool y2Dright, int ystate,
+                                   double y_min, double y_max,
+                                   double yticklen, double ytickoffset,
+                                   double fx, double xPlane, double xPlaneN,
+                                   double xpTick, double xpTickN,
+                                   double fz, int zstate, double zPlane,
+                                   double zPlaneN, double zpTick,
+                                   double zpTickN)
+{
+  // Y grid
+
+  if (ystate != AXE_DEPTH_DIR && visible)
+    {
+      bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
+      bool do_yminorgrid = (props.is_yminorgrid () && (minorgridstyle != "none"));
+      bool do_yminortick = props.is_yminortick ();
+      Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
+      Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
+      string_vector yticklabels = props.get_yticklabel ().all_strings ();
+      int wmax = 0, hmax = 0;
+      bool tick_along_z = nearhoriz || xisinf (fx);
+
+      set_color (props.get_ycolor_rgb ());
+
+      // grid lines
+      if (do_ygrid)
+        render_grid (gridstyle, yticks, y_min, y_max,
+                     xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                     zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
+
+      // tick marks
+      if (tick_along_z)
+        render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
+                          zpTick, zpTickN, 0., 0.,
+                          signum(zpTick-zpTickN)*fz*yticklen*tickdir,
+                          1, (box && ystate != AXE_ANY_DIR));
+      else
+        render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
+                          zpTick, zpTick,
+                          signum(xPlaneN-xPlane)*fx*yticklen*tickdir,
+                          0., 0., 1, (box && ystate != AXE_ANY_DIR));
+
+      // tick texts
+      if (yticklabels.numel () > 0)
+        {
+          int halign = (ystate == AXE_HORZ_DIR
+                        ? 1 : (!xyzSym || y2Dright ? 0 : 2));
+          int valign = (ystate == AXE_VERT_DIR ? 1 : 2);
+
+          if (tick_along_z)
+            render_ticktexts (yticks, yticklabels, y_min, y_max, xpTick,
+                              zpTick+signum(zpTick-zpTickN)*fz*ytickoffset,
+                              1, halign, valign, wmax, hmax);
+          else
+            render_ticktexts (yticks, yticklabels, y_min, y_max,
+                              xpTick+signum(xpTick-xpTickN)*fx*ytickoffset,
+                              zpTick, 1, halign, valign, wmax, hmax);
+        }
+
+      // minor grid lines
+      if (do_yminorgrid)
+        render_grid (minorgridstyle, ymticks, y_min, y_max,
+                     xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane,
+                     zPlaneN, 1, (zstate != AXE_DEPTH_DIR));
+
+      // minor tick marks
+      if (do_yminortick)
+        {
+          if (tick_along_z)
+            render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
+                              zpTick, zpTickN, 0., 0.,
+                              signum(zpTick-zpTickN)*fz*yticklen/2*tickdir,
+                              1, (box && ystate != AXE_ANY_DIR));
+          else
+            render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
+                              zpTick, zpTick,
+                              signum(xpTick-xpTickN)*fx*yticklen/2*tickdir,
+                              0., 0., 1, (box && ystate != AXE_ANY_DIR));
+        }
+
+      text::properties& ylabel_props =
+        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_ylabel ()).get_properties ());
+
+      ylabel_props.set_visible ("on");
+
+      if (! ylabel_props.get_string ().empty ())
+        {
+          if (ylabel_props.horizontalalignmentmode_is ("auto"))
+            {
+              ylabel_props.set_horizontalalignment
+                (ystate > AXE_DEPTH_DIR
+                 ? "center" : (!xyzSym ? "left" : "right"));
+
+              ylabel_props.set_horizontalalignmentmode ("auto");
+            }
+
+          if (ylabel_props.verticalalignmentmode_is ("auto"))
+            {
+              ylabel_props.set_verticalalignment
+                (ystate == AXE_VERT_DIR && !y2Dright ? "bottom" : "top");
+
+              ylabel_props.set_verticalalignmentmode ("auto");
+            }
+
+          if (ylabel_props.positionmode_is ("auto")
+              || ylabel_props.rotationmode_is ("auto"))
+            {
+              double angle = 0;
+              ColumnVector p = graphics_xform::xform_vector (xpTick, (y_min+y_max)/2, zpTick);
+
+              if (tick_along_z)
+                p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
+              else
+                p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
+
+              p = xform.transform (p(0), p(1), p(2), false);
+
+              switch (ystate)
+                {
+                  case AXE_ANY_DIR:
+                    p(0) += (!xyzSym ? wmax : -wmax);
+                    p(1) += hmax;
+                    break;
+
+                  case AXE_VERT_DIR:
+                    p(0) += (y2Dright ? wmax : -wmax);
+                    angle = 90;
+                    break;
+
+                  case AXE_HORZ_DIR:
+                    p(1) += hmax;
+                    break;
+                }
+
+              if (ylabel_props.positionmode_is ("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  ylabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  ylabel_props.set_positionmode ("auto");
+                }
+
+              if (ylabel_props.rotationmode_is ("auto"))
+                {
+                  ylabel_props.set_rotation (angle);
+                  ylabel_props.set_rotationmode ("auto");
+                }
+            }
+        }
+    }
+  else
+    gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
+}
+
+void
+opengl_renderer::draw_axes_z_grid (const axes::properties& props,
+                                   bool visible, bool box,
+                                   const std::string& gridstyle,
+                                   const std::string& minorgridstyle,
+                                   double tickdir, bool xySym, bool zSign,
+                                   int zstate, double z_min, double z_max,
+                                   double zticklen, double ztickoffset,
+                                   double fx, double xPlane, double xPlaneN,
+                                   double fy, double yPlane, double yPlaneN)
+{
+  // Z Grid
+
+  if (zstate != AXE_DEPTH_DIR && visible)
+    {
+      bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
+      bool do_zminorgrid = (props.is_zminorgrid () && (minorgridstyle != "none"));
+      bool do_zminortick = props.is_zminortick ();
+      Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
+      Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
+      string_vector zticklabels = props.get_zticklabel ().all_strings ();
+      int wmax = 0, hmax = 0;
+
+      set_color (props.get_zcolor_rgb ());
+
+      // grid lines
+      if (do_zgrid)
+        render_grid (gridstyle, zticks, z_min, z_max,
+                     xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
+
+      // tick marks
+      if (xySym)
+        {
+          if (xisinf (fy))
+            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                              yPlane, yPlane,
+                              signum(xPlaneN-xPlane)*fx*zticklen*tickdir,
+                              0., 0., 2, (box && zstate != AXE_ANY_DIR));
+          else
+            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
+                              yPlane, yPlane, 0.,
+                              signum(yPlane-yPlaneN)*fy*zticklen*tickdir,
+                              0., 2, false);
+        }
+      else
+        {
+          if (xisinf (fx))
+            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                              yPlaneN, yPlane, 0.,
+                              signum(yPlaneN-yPlane)*fy*zticklen*tickdir,
+                              0., 2, (box && zstate != AXE_ANY_DIR));
+          else
+            render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
+                              yPlaneN, yPlane,
+                              signum(xPlane-xPlaneN)*fx*zticklen*tickdir,
+                              0., 0., 2, false);
+        }
+
+      // FIXME: tick texts
+      if (zticklabels.numel () > 0)
+        {
+          int halign = 2;
+          int valign = (zstate == AXE_VERT_DIR ? 1 : (zSign ? 3 : 2));
+
+          if (xySym)
+            {
+              if (xisinf (fy))
+                render_ticktexts (zticks, zticklabels, z_min, z_max,
+                                  xPlaneN+signum(xPlaneN-xPlane)*fx*ztickoffset,
+                                  yPlane, 2, halign, valign, wmax, hmax);
+              else
+                render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
+                                  yPlane+signum(yPlane-yPlaneN)*fy*ztickoffset,
+                                  2, halign, valign, wmax, hmax);
+            }
+          else
+            {
+              if (xisinf (fx))
+                render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
+                                  yPlaneN+signum(yPlaneN-yPlane)*fy*ztickoffset,
+                                  2, halign, valign, wmax, hmax);
+              else
+                render_ticktexts (zticks, zticklabels, z_min, z_max,
+                                  xPlane+signum(xPlane-xPlaneN)*fx*ztickoffset,
+                                  yPlaneN, 2, halign, valign, wmax, hmax);
+            }
+        }
+
+      // minor grid lines
+      if (do_zminorgrid)
+        render_grid (minorgridstyle, zmticks, z_min, z_max,
+                     xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
+
+      // minor tick marks
+      if (do_zminortick)
+        {
+          if (xySym)
+            {
+              if (xisinf (fy))
+                render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
+                                  yPlane, yPlane,
+                                  signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir,
+                                  0., 0., 2, (box && zstate != AXE_ANY_DIR));
+              else
+                render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
+                                  yPlane, yPlane, 0.,
+                                  signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir,
+                                  0., 2, false);
+            }
+          else
+            {
+              if (xisinf (fx))
+                render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
+                                  yPlaneN, yPlane, 0.,
+                                  signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir,
+                                  0., 2, (box && zstate != AXE_ANY_DIR));
+              else
+                render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
+                                  yPlaneN, yPlaneN,
+                                  signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir,
+                                  0., 0., 2, false);
+            }            
+        }
+
+      text::properties& zlabel_props =
+        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_zlabel ()).get_properties ());
+
+      zlabel_props.set_visible ("on");
+
+      if (! zlabel_props.get_string ().empty ())
+        {
+          bool camAuto = props.cameraupvectormode_is ("auto");
+
+          if (zlabel_props.horizontalalignmentmode_is ("auto"))
+            {
+              zlabel_props.set_horizontalalignment
+                ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
+
+              zlabel_props.set_horizontalalignmentmode ("auto");
+            }
+
+          if (zlabel_props.verticalalignmentmode_is ("auto"))
+            {
+              zlabel_props.set_verticalalignment
+                (zstate == AXE_VERT_DIR
+                 ? "bottom" : ((zSign || camAuto) ? "bottom" : "top"));
+
+              zlabel_props.set_verticalalignmentmode ("auto");
+            }
+
+          if (zlabel_props.positionmode_is ("auto")
+              || zlabel_props.rotationmode_is ("auto"))
+            {
+              double angle = 0;
+              ColumnVector p;
+
+              if (xySym)
+                {
+                  p = graphics_xform::xform_vector (xPlaneN, yPlane,
+                                                    (z_min+z_max)/2);
+                  if (xisinf (fy))
+                    p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
+                  else
+                    p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
+                }
+              else
+                {
+                  p = graphics_xform::xform_vector (xPlane, yPlaneN,
+                                                    (z_min+z_max)/2);
+                  if (xisinf (fx))
+                    p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
+                  else
+                    p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
+                }
+
+              p = xform.transform (p(0), p(1), p(2), false);
+
+              switch (zstate)
+                {
+                  case AXE_ANY_DIR:
+                    if (camAuto)
+                      {
+                        p(0) -= wmax;
+                        angle = 90;
+                      }
+
+                    // FIXME -- what's the correct offset?
+                    //
+                    //   p[0] += (!xySym ? wmax : -wmax);
+                    //   p[1] += (zSign ? hmax : -hmax);
+
+                    break;
+
+                  case AXE_VERT_DIR:
+                    p(0) -= wmax;
+                    angle = 90;
+                    break;
+
+                  case AXE_HORZ_DIR:
+                    p(1) += hmax;
+                    break;
+                }
+
+              if (zlabel_props.positionmode_is ("auto"))
+                {
+                  p = xform.untransform (p(0), p(1), p(2), true);
+                  zlabel_props.set_position (p.extract_n (0, 3).transpose ());
+                  zlabel_props.set_positionmode ("auto");
+                }
+
+              if (zlabel_props.rotationmode_is ("auto"))
+                {
+                  zlabel_props.set_rotation (angle);
+                  zlabel_props.set_rotationmode ("auto");
+                }
+            }
+        }
+    }
+  else
+    gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
+}
+
+void
+opengl_renderer::draw_axes_title (const axes::properties& props,
+                                  double x_min, double x_max,
+                                  double y_min, double y_max,
+                                  double z_min, double z_max)
+{
+  // Title
 
   ColumnVector bbox(4);
   bbox(0) = octave_Inf;
@@ -813,15 +1491,129 @@ opengl_renderer::draw_axes (const axes::properties& props)
     for (int j = 0; j <= 1; j++)
       for (int k = 0; k <= 1; k++)
         {
-          ColumnVector p = xform.transform (i ? x_max : x_min, j ? y_max : y_min,
+          ColumnVector p = xform.transform (i ? x_max : x_min,
+                                            j ? y_max : y_min,
                                             k ? z_max : z_min, false);
           bbox(0) = std::min (bbox(0), p(0));
           bbox(1) = std::min (bbox(1), p(1));
           bbox(2) = std::max (bbox(2), p(0));
           bbox(3) = std::max (bbox(3), p(1));
         }
+
   bbox(2) = bbox(2)-bbox(0);
   bbox(3) = bbox(3)-bbox(1);
+
+  Matrix x_zlim = props.get_transform_zlim ();
+
+  text::properties& title_props =
+    reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_title ()).get_properties ());
+
+  if (! title_props.get_string ().empty ()
+      && title_props.positionmode_is ("auto"))
+    {
+      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
+                                          (x_zlim(0)+x_zlim(1))/2, true);
+
+      title_props.set_position (p.extract_n(0, 3).transpose ());
+      title_props.set_positionmode ("auto");
+    }
+
+  set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
+}
+
+void
+opengl_renderer::draw_axes_children (const axes::properties& props)
+{
+  // Children
+
+  GLboolean antialias;
+  glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+
+  if (antialias == GL_TRUE)
+    glEnable (GL_LINE_SMOOTH);
+  else
+    glDisable (GL_LINE_SMOOTH);
+
+  Matrix children = props.get_all_children ();
+  std::list<graphics_object> obj_list;
+  std::list<graphics_object>::iterator it;
+
+  // 1st pass: draw light objects
+
+  // Start with the last element of the array of child objects to
+  // display them in the oder they were added to the array.
+
+  for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
+    {
+      graphics_object go = gh_manager::get_object (children (i));
+
+      if (go.get_properties ().is_visible ())
+        {
+          if (go.isa ("light"))
+            draw (go);
+          else
+            obj_list.push_back (go);
+        }
+    }
+
+  // 2nd pass: draw other objects (with units set to "data")
+
+  it = obj_list.begin ();
+  while (it != obj_list.end ())
+    {
+      graphics_object go = (*it);
+
+      // FIXME: check whether object has "units" property and it is set
+      // to "data"
+      if (! go.isa ("text") || go.get ("units").string_value () == "data")
+        {
+          set_clipping (go.get_properties ().is_clipping ());
+          draw (go);
+
+          it = obj_list.erase (it);
+        }
+      else
+        it++;
+    }
+
+  // 3rd pass: draw remaining objects
+
+  glDisable (GL_DEPTH_TEST);
+
+  for (it = obj_list.begin (); it != obj_list.end (); it++)
+    {
+      graphics_object go = (*it);
+
+      set_clipping (go.get_properties ().is_clipping ());
+      draw (go);
+    }
+
+  glEnable (GL_DEPTH_TEST);
+
+  set_clipping (false);
+
+  // FIXME: finalize rendering (transparency processing)
+  // FIXME: draw zoom box, if needed
+}
+
+void
+opengl_renderer::draw_axes (const axes::properties& props)
+{
+  setup_opengl_transformation (props);
+
+  // draw axes object
+
+  const Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
+  const Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
+  const Matrix zlim = xform.zscale (props.get_zlim ().matrix_value ());
+
+  double x_min = xlim(0), x_max = xlim(1);
+  double y_min = ylim(0), y_max = ylim(1);
+  double z_min = zlim(0), z_max = zlim(1);
+
+  double xd = (props.xdir_is ("normal") ? 1 : -1);
+  double yd = (props.ydir_is ("normal") ? 1 : -1);
+  double zd = (props.zdir_is ("normal") ? 1 : -1);
 
   ColumnVector p1, p2, xv (3), yv (3), zv (3);
   int xstate, ystate, zstate;
@@ -976,680 +1768,42 @@ opengl_renderer::draw_axes (const axes::properties& props)
   bool visible = props.is_visible ();
   bool box = props.is_box ();
 
-  // Axes planes
+  draw_axes_planes (visible, axe_color, xlim, ylim, zlim,
+                    xPlane, yPlane, zPlane);
 
-  if (axe_color.numel () > 0 && visible)
-    {
-      set_color (axe_color);
-      set_polygon_offset (true, 2.5);
+  draw_axes_boxes (props, visible, box, xySym, xPlane, yPlane, zPlane,
+                   xPlaneN, yPlaneN, zPlaneN, xpTick, ypTick, zpTick,
+                   xpTickN, ypTickN, zpTickN);
 
-      glBegin (GL_QUADS);
-
-      // X plane
-      glVertex3d (xPlane, y_min, z_min);
-      glVertex3d (xPlane, y_max, z_min);
-      glVertex3d (xPlane, y_max, z_max);
-      glVertex3d (xPlane, y_min, z_max);
-
-      // Y plane
-      glVertex3d (x_min, yPlane, z_min);
-      glVertex3d (x_max, yPlane, z_min);
-      glVertex3d (x_max, yPlane, z_max);
-      glVertex3d (x_min, yPlane, z_max);
-
-      // Z plane
-      glVertex3d (x_min, y_min, zPlane);
-      glVertex3d (x_max, y_min, zPlane);
-      glVertex3d (x_max, y_max, zPlane);
-      glVertex3d (x_min, y_max, zPlane);
-
-      glEnd ();
-
-      set_polygon_offset (false);
-    }
-
-  // Axes box
-
-  set_linestyle ("-", true);
-  set_linewidth (props.get_linewidth ());
-
-  if (visible)
-    {
-      glBegin (GL_LINES);
-
-      // X box
-      set_color (props.get_xcolor_rgb ());
-      glVertex3d (xPlaneN, ypTick, zpTick);
-      glVertex3d (xPlane, ypTick, zpTick);
-      if (box)
-        {
-          glVertex3d (xPlaneN, ypTickN, zpTick);
-          glVertex3d (xPlane, ypTickN, zpTick);
-          glVertex3d (xPlaneN, ypTickN, zpTickN);
-          glVertex3d (xPlane, ypTickN, zpTickN);
-          glVertex3d (xPlaneN, ypTick, zpTickN);
-          glVertex3d (xPlane, ypTick, zpTickN);
-        }
-
-      // Y box
-      set_color (props.get_ycolor_rgb ());
-      glVertex3d (xpTick, yPlaneN, zpTick);
-      glVertex3d (xpTick, yPlane, zpTick);
-      if (box)
-        {
-          glVertex3d (xpTickN, yPlaneN, zpTick);
-          glVertex3d (xpTickN, yPlane, zpTick);
-          glVertex3d (xpTickN, yPlaneN, zpTickN);
-          glVertex3d (xpTickN, yPlane, zpTickN);
-          glVertex3d (xpTick, yPlaneN, zpTickN);
-          glVertex3d (xpTick, yPlane, zpTickN);
-        }
-
-      // Z box
-      set_color (props.get_zcolor_rgb ());
-      if (xySym)
-        {
-          glVertex3d (xPlaneN, yPlane, zPlaneN);
-          glVertex3d (xPlaneN, yPlane, zPlane);
-        }
-      else
-        {
-          glVertex3d (xPlane, yPlaneN, zPlaneN);
-          glVertex3d (xPlane, yPlaneN, zPlane);
-        }
-      if (box)
-        {
-          glVertex3d (xPlane, yPlane, zPlaneN);
-          glVertex3d (xPlane, yPlane, zPlane);
-          if (xySym)
-            {
-              glVertex3d (xPlane, yPlaneN, zPlaneN);
-              glVertex3d (xPlane, yPlaneN, zPlane);
-            }
-          else
-            {
-              glVertex3d (xPlaneN, yPlane, zPlaneN);
-              glVertex3d (xPlaneN, yPlane, zPlane);
-            }
-          glVertex3d (xPlaneN, yPlaneN, zPlaneN);
-          glVertex3d (xPlaneN, yPlaneN, zPlane);
-        }
-
-      glEnd ();
-    }
 
   std::string gridstyle = props.get_gridlinestyle ();
   std::string minorgridstyle = props.get_minorgridlinestyle ();
 
   set_font (props);
 
-  // X grid
+  draw_axes_x_grid (props, visible, box, gridstyle, minorgridstyle,
+                    nearhoriz, tickdir, xyzSym, layer2Dtop, x2Dtop,
+                    xstate, xlim(0), xlim(1), xticklen, xtickoffset,
+                    fy, yPlane, yPlaneN, ypTick, ypTickN,
+                    fz, zstate, zPlane, zPlaneN, zpTick, zpTickN);
 
-  if (visible && xstate != AXE_DEPTH_DIR)
-    {
-      bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
-      bool do_xminorgrid = (props.is_xminorgrid () && (minorgridstyle != "none"));
-      bool do_xminortick = props.is_xminortick ();
-      Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
-      Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
-      string_vector xticklabels = props.get_xticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
-      bool tick_along_z = nearhoriz || xisinf (fy);
+  draw_axes_y_grid (props, visible, box, gridstyle, minorgridstyle,
+                    nearhoriz, tickdir, xyzSym, layer2Dtop, y2Dright,
+                    ystate, ylim(0), ylim(1), yticklen, ytickoffset,
+                    fx, xPlane, xPlaneN, xpTick, xpTickN,
+                    fz, zstate, zPlane, zPlaneN, zpTick, zpTickN);
 
-      set_color (props.get_xcolor_rgb ());
-
-      // grid lines
-      if (do_xgrid)
-        render_grid (gridstyle, xticks, x_min, x_max,
-            yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
-            0, (zstate != AXE_DEPTH_DIR));
-
-      // tick marks
-      if (tick_along_z)
-        {
-          render_tickmarks (xticks, x_min, x_max, ypTick, ypTick, zpTick, zpTickN,
-                            0., 0., signum(zpTick-zpTickN)*fz*xticklen*tickdir,
-                            0, (box && xstate != AXE_ANY_DIR));
-        }
-      else
-        {
-          render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN, zpTick, zpTick,
-                            0., signum(ypTick-ypTickN)*fy*xticklen*tickdir, 0.,
-                            0, (box && xstate != AXE_ANY_DIR));
-        }
-
-      // tick texts
-      if (xticklabels.numel () > 0)
-        {
-          int halign = (xstate == AXE_HORZ_DIR ? 1 : (xyzSym ? 0 : 2));
-          int valign = (xstate == AXE_VERT_DIR ? 1 : (x2Dtop ? 0 : 2));
-
-          if (tick_along_z)
-            {
-              render_ticktexts (xticks, xticklabels, x_min, x_max,
-                                ypTick, zpTick+signum(zpTick-zpTickN)*fz*xtickoffset,
-                                0, halign, valign, wmax, hmax);
-            }
-          else
-            {
-              render_ticktexts (xticks, xticklabels, x_min, x_max,
-                                ypTick+signum(ypTick-ypTickN)*fy*xtickoffset, zpTick,
-                                0, halign, valign, wmax, hmax);
-            }
-        }
-
-      // minor grid lines
-      if (do_xminorgrid)
-        render_grid (minorgridstyle, xmticks, x_min, x_max,
-            yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
-            0, (zstate != AXE_DEPTH_DIR));
-
-      // minor tick marks
-      if (do_xminortick)
-        {
-          if (tick_along_z)
-            {
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick, zpTick, zpTickN,
-                                0., 0., signum(zpTick-zpTickN)*fz*xticklen/2*tickdir,
-                                0, (box && xstate != AXE_ANY_DIR));
-            }
-          else
-            {
-              render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN, zpTick, zpTick,
-                                0., signum(ypTick-ypTickN)*fy*xticklen/2*tickdir, 0.,
-                                0, (box && xstate != AXE_ANY_DIR));
-            }
-        }
-
-      text::properties& xlabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_xlabel ()).get_properties ());
-
-      xlabel_props.set_visible ("on");
-
-      if (! xlabel_props.get_string ().empty ())
-        {
-          if (xlabel_props.horizontalalignmentmode_is("auto"))
-            {
-              xlabel_props.set_horizontalalignment (xstate > AXE_DEPTH_DIR ? "center" : (xyzSym ? "left" : "right"));
-              xlabel_props.set_horizontalalignmentmode("auto");
-            }
-          if (xlabel_props.verticalalignmentmode_is("auto"))
-            {
-              xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR || x2Dtop ? "bottom" : "top");
-              xlabel_props.set_verticalalignmentmode("auto");
-            }
-
-          if (xlabel_props.positionmode_is("auto") || xlabel_props.rotationmode_is("auto"))
-            {
-              double angle = 0;
-              ColumnVector p = graphics_xform::xform_vector ((x_min+x_max)/2, ypTick, zpTick);
-
-              if (tick_along_z)
-                p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
-              else
-                p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
-              p = xform.transform (p(0), p(1), p(2), false);
-              switch (xstate)
-                {
-                  case AXE_ANY_DIR:
-                    p(0) += (xyzSym ? wmax : -wmax);
-                    p(1) += hmax;
-                    break;
-                  case AXE_VERT_DIR:
-                    p(0) -= wmax;
-                    angle = 90;
-                    break;
-                  case AXE_HORZ_DIR:
-                    p(1) += (x2Dtop ? -hmax : hmax);
-                    break;
-                }
-              if (xlabel_props.positionmode_is("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  xlabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  xlabel_props.set_positionmode ("auto");
-                }
-              if (xlabel_props.rotationmode_is("auto"))
-                {
-                  xlabel_props.set_rotation (angle);
-                  xlabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
-    }
-  else
-    {
-      gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
-    }
-
-  // Y grid
-
-  if (ystate != AXE_DEPTH_DIR && visible)
-    {
-      bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
-      bool do_yminorgrid = (props.is_yminorgrid () && (minorgridstyle != "none"));
-      bool do_yminortick = props.is_yminortick ();
-      Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
-      Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
-      string_vector yticklabels = props.get_yticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
-      bool tick_along_z = nearhoriz || xisinf (fx);
-
-      set_color (props.get_ycolor_rgb ());
-
-      // grid lines
-      if (do_ygrid)
-        render_grid (gridstyle, yticks, y_min, y_max,
-            xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
-            1, (zstate != AXE_DEPTH_DIR));
-
-      // tick marks
-      if (tick_along_z)
-        {
-          render_tickmarks (yticks, y_min, y_max, xpTick, xpTick, zpTick, zpTickN,
-                            0., 0., signum(zpTick-zpTickN)*fz*yticklen*tickdir,
-                            1, (box && ystate != AXE_ANY_DIR));
-        }
-      else
-        {
-          render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN, zpTick, zpTick,
-                            signum(xPlaneN-xPlane)*fx*yticklen*tickdir, 0., 0.,
-                            1, (box && ystate != AXE_ANY_DIR));
-        }
-
-      // tick texts
-      if (yticklabels.numel () > 0)
-        {
-          int halign = (ystate == AXE_HORZ_DIR ? 1 : (!xyzSym || y2Dright ? 0 : 2));
-          int valign = (ystate == AXE_VERT_DIR ? 1 : 2);
-
-          if (tick_along_z)
-            {
-              render_ticktexts (yticks, yticklabels, y_min, y_max,
-                                xpTick, zpTick+signum(zpTick-zpTickN)*fz*ytickoffset,
-                                1, halign, valign, wmax, hmax);
-            }
-          else
-            {
-              render_ticktexts (yticks, yticklabels, y_min, y_max,
-                                xpTick+signum(xpTick-xpTickN)*fx*ytickoffset, zpTick,
-                                1, halign, valign, wmax, hmax);
-            }
-        }
-
-      // minor grid lines
-      if (do_yminorgrid)
-        render_grid (minorgridstyle, ymticks, y_min, y_max,
-            xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
-            1, (zstate != AXE_DEPTH_DIR));
-
-      // minor tick marks
-      if (do_yminortick)
-        {
-          if (tick_along_z)
-            {
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick, zpTick, zpTickN,
-                                0., 0., signum(zpTick-zpTickN)*fz*yticklen/2*tickdir,
-                                1, (box && ystate != AXE_ANY_DIR));
-            }
-          else
-            {
-              render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN, zpTick, zpTick,
-                                signum(xpTick-xpTickN)*fx*yticklen/2*tickdir, 0., 0.,
-                                1, (box && ystate != AXE_ANY_DIR));
-            }
-        }
-
-      text::properties& ylabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_ylabel ()).get_properties ());
-
-      ylabel_props.set_visible ("on");
-
-      if (! ylabel_props.get_string ().empty ())
-        {
-          if (ylabel_props.horizontalalignmentmode_is("auto"))
-            {
-              ylabel_props.set_horizontalalignment (ystate > AXE_DEPTH_DIR ? "center" : (!xyzSym ? "left" : "right"));
-              ylabel_props.set_horizontalalignmentmode("auto");
-            }
-          if (ylabel_props.verticalalignmentmode_is("auto"))
-            {
-              ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR && !y2Dright ? "bottom" : "top");
-              ylabel_props.set_verticalalignmentmode("auto");
-            }
-
-          if (ylabel_props.positionmode_is("auto") || ylabel_props.rotationmode_is("auto"))
-            {
-              double angle = 0;
-              ColumnVector p = graphics_xform::xform_vector (xpTick, (y_min+y_max)/2, zpTick);
-
-              if (tick_along_z)
-                p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
-              else
-                p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
-              p = xform.transform (p(0), p(1), p(2), false);
-              switch (ystate)
-                {
-                  case AXE_ANY_DIR:
-                    p(0) += (!xyzSym ? wmax : -wmax);
-                    p(1) += hmax;
-                    break;
-                  case AXE_VERT_DIR:
-                    p(0) += (y2Dright ? wmax : -wmax);
-                    angle = 90;
-                    break;
-                  case AXE_HORZ_DIR:
-                    p(1) += hmax;
-                    break;
-                }
-              if (ylabel_props.positionmode_is("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  ylabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  ylabel_props.set_positionmode ("auto");
-                }
-              if (ylabel_props.rotationmode_is("auto"))
-                {
-                  ylabel_props.set_rotation (angle);
-                  ylabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
-    }
-  else
-    {
-      gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
-    }
-
-  // Z Grid
-
-  if (zstate != AXE_DEPTH_DIR && visible)
-    {
-      bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
-      bool do_zminorgrid = (props.is_zminorgrid () && (minorgridstyle != "none"));
-      bool do_zminortick = props.is_zminortick ();
-      Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
-      Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
-      string_vector zticklabels = props.get_zticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
-
-      set_color (props.get_zcolor_rgb ());
-
-      // grid lines
-      if (do_zgrid)
-        render_grid (gridstyle, zticks, z_min, z_max,
-            xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
-
-      // tick marks
-      if (xySym)
-        {
-          if (xisinf (fy))
-            {
-              render_tickmarks( zticks, z_min, z_max, xPlaneN, xPlane, yPlane, yPlane,
-                                signum(xPlaneN-xPlane)*fx*zticklen*tickdir, 0., 0.,
-                                2, (box && zstate != AXE_ANY_DIR));
-            }
-          else
-            {
-              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN, yPlane, yPlane,
-                                0., signum(yPlane-yPlaneN)*fy*zticklen*tickdir, 0.,
-                                2, false);
-            }
-        }
-      else
-        {
-          if (xisinf (fx))
-            {
-              render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane, yPlaneN, yPlane,
-                                0., signum(yPlaneN-yPlane)*fy*zticklen*tickdir, 0.,
-                                2, (box && zstate != AXE_ANY_DIR));
-            }
-          else
-            {
-              render_tickmarks (zticks, z_min, z_max, xPlane, xPlane, yPlaneN, yPlane,
-                                signum(xPlane-xPlaneN)*fx*zticklen*tickdir, 0., 0.,
-                                2, false);
-            }
-        }
-
-      // FIXME: tick texts
-      if (zticklabels.numel () > 0)
-        {
-          int halign = 2;
-          int valign = (zstate == AXE_VERT_DIR ? 1 : (zSign ? 3 : 2));
-
-          if (xySym)
-            {
-              if (xisinf (fy))
-                {
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlaneN+signum(xPlaneN-xPlane)*fx*ztickoffset, yPlane,
-                                    2, halign, valign, wmax, hmax);
-                }
-              else
-                {
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlaneN, yPlane+signum(yPlane-yPlaneN)*fy*ztickoffset,
-                                    2, halign, valign, wmax, hmax);
-                }
-            }
-          else
-            {
-              if (xisinf (fx))
-                {
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlane, yPlaneN+signum(yPlaneN-yPlane)*fy*ztickoffset,
-                                    2, halign, valign, wmax, hmax);
-                }
-              else
-                {
-                  render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                    xPlane+signum(xPlane-xPlaneN)*fx*ztickoffset, yPlaneN,
-                                    2, halign, valign, wmax, hmax);
-                }
-            }
-        }
-
-      // minor grid lines
-      if (do_zminorgrid)
-        render_grid (minorgridstyle, zmticks, z_min, z_max,
-            xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
-
-      // minor tick marks
-      if (do_zminortick)
-        {
-          if (xySym)
-            {
-              if (xisinf (fy))
-                {
-                  render_tickmarks( zmticks, z_min, z_max, xPlaneN, xPlane, yPlane, yPlane,
-                                    signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir, 0., 0.,
-                                    2, (box && zstate != AXE_ANY_DIR));
-                }
-              else
-                {
-                  render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN, yPlane, yPlane,
-                                    0., signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir, 0.,
-                                    2, false);
-                }
-            }
-          else
-            {
-              if (xisinf (fx))
-                {
-                  render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane, yPlaneN, yPlane,
-                                    0., signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir, 0.,
-                                    2, (box && zstate != AXE_ANY_DIR));
-                }
-              else
-                {
-                  render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane, yPlaneN, yPlaneN,
-                                    signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir, 0., 0.,
-                                    2, false);
-                }
-            }
-        }
-
-      text::properties& zlabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_zlabel ()).get_properties ());
-
-      zlabel_props.set_visible ("on");
-
-      if (! zlabel_props.get_string ().empty ())
-        {
-          bool camAuto = props.cameraupvectormode_is ("auto");
-
-          if (zlabel_props.horizontalalignmentmode_is("auto"))
-            {
-              zlabel_props.set_horizontalalignment ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
-              zlabel_props.set_horizontalalignmentmode("auto");
-            }
-          if (zlabel_props.verticalalignmentmode_is("auto"))
-            {
-              zlabel_props.set_verticalalignment(zstate == AXE_VERT_DIR ? "bottom" : ((zSign || camAuto) ? "bottom" : "top"));
-              zlabel_props.set_verticalalignmentmode("auto");
-            }
-
-          if (zlabel_props.positionmode_is("auto") || zlabel_props.rotationmode_is("auto"))
-            {
-              double angle = 0;
-              ColumnVector p;
-
-              if (xySym)
-                {
-                  p = graphics_xform::xform_vector (xPlaneN, yPlane, (z_min+z_max)/2);
-                  if (xisinf (fy))
-                    p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
-                  else
-                    p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
-                }
-              else
-                {
-                  p = graphics_xform::xform_vector (xPlane, yPlaneN, (z_min+z_max)/2);
-                  if (xisinf (fx))
-                    p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
-                  else
-                    p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
-                }
-              p = xform.transform (p(0), p(1), p(2), false);
-              switch (zstate)
-                {
-                  case AXE_ANY_DIR:
-                    if (camAuto)
-                      {
-                        p(0) -= wmax;
-                        angle = 90;
-                      }
-                    /* FIXME: what's the correct offset?
-                       p[0] += (!xySym ? wmax : -wmax);
-                       p[1] += (zSign ? hmax : -hmax);
-                       */
-                    break;
-                  case AXE_VERT_DIR:
-                    p(0) -= wmax;
-                    angle = 90;
-                    break;
-                  case AXE_HORZ_DIR:
-                    p(1) += hmax;
-                    break;
-                }
-              if (zlabel_props.positionmode_is("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  zlabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  zlabel_props.set_positionmode ("auto");
-                }
-              if (zlabel_props.rotationmode_is("auto"))
-                {
-                  zlabel_props.set_rotation (angle);
-                  zlabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
-    }
-  else
-    {
-      gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
-    }
+  draw_axes_z_grid (props, visible, box, gridstyle, minorgridstyle,
+                    tickdir, xySym, zSign, zstate, zlim(0), zlim(1),
+                    zticklen, ztickoffset, fx, xPlane, xPlaneN,
+                    fy, yPlane, yPlaneN);
 
   set_linestyle ("-");
 
-  // Title
+  draw_axes_title (props, xlim(0), xlim(1), ylim(0), ylim(1),
+                   zlim(0), zlim(1));
 
-  text::properties& title_props =
-    reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_title ()).get_properties ());
-
-  if (! title_props.get_string ().empty () && title_props.positionmode_is("auto"))
-    {
-      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
-          (x_zlim(0)+x_zlim(1))/2, true);
-      title_props.set_position (p.extract_n(0, 3).transpose ());
-      title_props.set_positionmode ("auto");
-    }
-
-  set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
-
-  // Children
-
-  if (antialias == GL_TRUE)
-    glEnable (GL_LINE_SMOOTH);
-
-  Matrix children = props.get_all_children ();
-  std::list<graphics_object> obj_list;
-  std::list<graphics_object>::iterator it;
-
-  // 1st pass: draw light objects
-
-  // Start with the last element of the array of child objects to
-  // display them in the oder they were added to the array.
-
-  for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
-    {
-      graphics_object go = gh_manager::get_object (children (i));
-
-      if (go.get_properties ().is_visible ())
-        {
-          if (go.isa ("light"))
-            draw (go);
-          else
-            obj_list.push_back (go);
-        }
-    }
-
-  // 2nd pass: draw other objects (with units set to "data")
-
-  it = obj_list.begin ();
-  while (it != obj_list.end ())
-    {
-      graphics_object go = (*it);
-
-      // FIXME: check whether object has "units" property and it is set to "data"
-      if (! go.isa ("text") || go.get ("units").string_value () == "data")
-        {
-          set_clipping (go.get_properties ().is_clipping ());
-          draw (go);
-
-          it = obj_list.erase (it);
-        }
-      else
-        it++;
-    }
-
-  // 3rd pass: draw remaining objects
-
-  glDisable (GL_DEPTH_TEST);
-  for (it = obj_list.begin (); it != obj_list.end (); it++)
-    {
-      graphics_object go = (*it);
-
-      set_clipping (go.get_properties ().is_clipping ());
-      draw (go);
-    }
-  glEnable (GL_DEPTH_TEST);
-
-  set_clipping (false);
-  // FIXME: finalize rendering (transparency processing)
-  // FIXME: draw zoom box, if needed
+  draw_axes_children (props);
 }
 
 void

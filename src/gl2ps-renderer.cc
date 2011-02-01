@@ -44,6 +44,13 @@ glps_renderer::draw (const graphics_object& go)
       in_draw = true;
 
       FILE *fp = fdopen (fid, "wb");
+
+      if (! fp)
+        {
+          error ("gl2ps-renderer: fdopen failed");
+          return;
+        }
+
       GLint buffsize = 0, state = GL2PS_OVERFLOW;
       GLint viewport[4];
 

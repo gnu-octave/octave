@@ -157,13 +157,13 @@ private:
       {
         glps_renderer rend (print_fid, print_term);
 
-        rend.draw (gh_manager::lookup (number));
+        rend.draw (gh_manager::get_object (number));
 
         print_fid = -1;
       }
     else
       {
-        renderer.draw (gh_manager::lookup (number));
+        renderer.draw (gh_manager::get_object (number));
 
         if (zoom ())
           overlay ();

@@ -59,9 +59,6 @@ public:
 
   virtual ~opengl_renderer (void) { }
 
-  virtual void draw (const graphics_handle& h)
-    { draw (gh_manager::get_object (h)); }
-
   virtual void draw (const graphics_object& go);
 
   virtual void draw (const Matrix& hlist)
@@ -70,10 +67,10 @@ public:
 
       for (int i = len-1; i >= 0; i--)
         {
-          graphics_handle h = gh_manager::lookup (hlist(i));
+          graphics_object obj = gh_manager::get_object (hlist(i));
 
-          if (h.ok ())
-            draw (h);
+          if (obj)
+            draw (obj);
         }
     }
 

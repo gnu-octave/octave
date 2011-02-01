@@ -37,11 +37,6 @@ public:
 
   ~glps_renderer (void) { }
 
-  void draw (const graphics_handle& h)
-  {
-    draw (gh_manager::get_object (h));
-  }
-
   void draw (const graphics_object& go);
 
 protected:

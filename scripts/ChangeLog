@@ -1,3 +1,8 @@
+2011-02-01  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__gnuplot_has_feature__.m: Don't throw an error if gnuplot
+	isn't installed.
+
 2011-02-01  John W. Eaton  <jwe@octave.org>
 
 	* plot/scatter3.m: Pass h to set, not ax.

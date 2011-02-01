@@ -37,22 +37,27 @@ public:
 
   ~glps_renderer (void) { }
 
-  virtual void draw (const graphics_object& go);
+  void draw (const graphics_handle& h)
+  {
+    draw (gh_manager::get_object (h));
+  }
+
+  void draw (const graphics_object& go);
 
 protected:
 
-  virtual Matrix render_text (const std::string& txt,
-                              double x, double y, double z,
-                              int halign, int valign, double rotation = 0.0);
+  Matrix render_text (const std::string& txt,
+                      double x, double y, double z,
+                      int halign, int valign, double rotation = 0.0);
 
 
-  virtual void set_font (const base_properties& props);
+  void set_font (const base_properties& props);
 
-  virtual void draw_text (const text::properties& props);
-  virtual void draw_pixels (GLsizei w, GLsizei h, GLenum format,
-                            GLenum type, const GLvoid *data);
+  void draw_text (const text::properties& props);
+  void draw_pixels (GLsizei w, GLsizei h, GLenum format,
+                    GLenum type, const GLvoid *data);
 
-  virtual void set_linestyle (const std::string& s, bool use_stipple)
+  void set_linestyle (const std::string& s, bool use_stipple)
   {
     opengl_renderer::set_linestyle (s, use_stipple);
     if (use_stipple)
@@ -61,7 +66,7 @@ protected:
       gl2psDisable (GL2PS_LINE_STIPPLE);
   }
 
-  virtual void set_polygon_offset (bool on, double offset = 0.0)
+  void set_polygon_offset (bool on, double offset = 0.0)
   {
     opengl_renderer::set_polygon_offset (on, offset);
     if (on)
@@ -70,7 +75,7 @@ protected:
       gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
   }
 
-  virtual void set_linewidth (float w)
+  void set_linewidth (float w)
   {
     gl2psLineWidth (w);
   }

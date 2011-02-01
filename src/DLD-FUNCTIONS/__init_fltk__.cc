@@ -153,12 +153,13 @@ private:
         setup_viewport (w (), h ());
       }
 
-    if ( print_fid > 0 )
+    if (print_fid > 0)
       {
-        opengl_renderer *rend = new glps_renderer (print_fid, print_term);
-        rend->draw (gh_manager::lookup (number));
+        glps_renderer rend (print_fid, print_term);
+
+        rend.draw (gh_manager::lookup (number));
+
         print_fid = -1;
-        delete rend;
       }
     else
       {

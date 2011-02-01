@@ -1,3 +1,10 @@
+2011-02-01  John W. Eaton  <jwe@octave.org>
+
+	* gl2ps-renderer.h: Remove virtual tag for derived virtual functions.
+	(opengl_renderer (const graphics_handle&)): New function.
+	* DLD-FUNCTIONS/__init_fltk__.cc (OpenGL_fltk::Fl_Gl_Window):
+	Don't use new to create temporary glps_renderer object.
+
 2011-02-01  Michael Godfrey  <godfrey@isl.stanford.edu>
 
 	* gl2ps-renderer.cc (glps_renderer::draw):

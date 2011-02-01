@@ -1,5 +1,16 @@
 2011-02-01  John W. Eaton  <jwe@octave.org>
 
+	* gl-render.h (opengl_renderer::draw (const Matrix& hlist)):
+	Use get_object instead of lookup.
+	* DLD-FUNCTIONS/__init_fltk__.cc (Fl_Gl_Window::draw): Likewise.
+	* graphics.h.in (gh_manager::get_object (double)): New function.
+	* gl-renderer.h (opengl_renderer::draw (const graphics_handle&)):
+	Delete.
+	* gl2ps-renderer.h (glps_renderer::draw (const graphics_handle&)):
+	Delete.
+
+2011-02-01  John W. Eaton  <jwe@octave.org>
+
 	* gl2ps-renderer.h: Remove virtual tag for derived virtual functions.
 	(opengl_renderer (const graphics_handle&)): New function.
 	* DLD-FUNCTIONS/__init_fltk__.cc (OpenGL_fltk::Fl_Gl_Window):

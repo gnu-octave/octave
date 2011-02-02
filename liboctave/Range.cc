@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 
 Range::Range (double b, double i, octave_idx_type n)
-  : rng_base (b), rng_limit (b + n * i), rng_inc (i),
-  rng_nelem (n), cache ()
+  : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
+    rng_nelem (n), cache ()
 {
   if (! xfinite (b) || ! xfinite (i))
     rng_nelem = -2;

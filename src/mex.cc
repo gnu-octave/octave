@@ -327,7 +327,13 @@ public:
     : mxArray_base (), val (ov), mutate_flag (false),
       id (mxUNKNOWN_CLASS), class_name (0), ndims (-1), dims (0) { }
 
-  mxArray *dup (void) const { return val.as_mxArray (); }
+  mxArray *dup (void) const
+  {
+    mxArray *retval = val.as_mxArray ();
+
+    if (! retval)
+      retval = new mxArray_octave_value (*this);
+  }
 
   ~mxArray_octave_value (void)
   {

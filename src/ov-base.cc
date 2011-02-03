@@ -1106,8 +1106,6 @@ octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
 mxArray *
 octave_base_value::as_mxArray (void) const
 {
-  gripe_wrong_type_arg ("octave_base_value::as_mxArray ()", type_name ());
-
   return 0;
 }
 

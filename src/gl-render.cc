@@ -43,13 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #define CALLBACK
 #endif
 
-enum {
-  AXE_ANY_DIR   = 0,
-  AXE_DEPTH_DIR = 1,
-  AXE_HORZ_DIR  = 2,
-  AXE_VERT_DIR  = 3
-};
-
 static octave_idx_type
 xmin (octave_idx_type x, octave_idx_type y)
 {
@@ -789,52 +782,49 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 
   glClear (GL_DEPTH_BUFFER_BIT);
 
+  glDisable (GL_LINE_SMOOTH);
+
   // store axes transformation data
 
   xform = props.get_transform ();
 }
 
 void
-opengl_renderer::draw_axes_planes (bool visible, const Matrix& axe_color,
-                                   const Matrix& xlim, const Matrix& ylim,
-                                   const Matrix& zlim, double x_plane,
-                                   double y_plane, double z_plane)
+opengl_renderer::draw_axes_planes (const axes::properties& props)
 {
-  // Axes planes
+  double xPlane = props.get_xPlane ();
+  double yPlane = props.get_yPlane ();
+  double zPlane = props.get_zPlane ();
+  double xPlaneN = props.get_xPlaneN ();
+  double yPlaneN = props.get_yPlaneN ();
+  double zPlaneN = props.get_zPlaneN ();
 
-  if (axe_color.numel () > 0 && visible)
+  // Axes planes
+  Matrix axe_color = props.get_color_rgb ();
+  if (axe_color.numel () > 0 && props.is_visible ())
     {
       set_color (axe_color);
       set_polygon_offset (true, 2.5);
 
       glBegin (GL_QUADS);
 
-      double x_min = xlim(0);
-      double x_max = xlim(1);
-
-      double y_min = ylim(0);
-      double y_max = ylim(1);
-
-      double z_min = zlim(0);
-      double z_max = zlim(1);
-
       // X plane
-      glVertex3d (x_plane, y_min, z_min);
-      glVertex3d (x_plane, y_max, z_min);
-      glVertex3d (x_plane, y_max, z_max);
-      glVertex3d (x_plane, y_min, z_max);
+      glVertex3d (xPlane, yPlaneN, zPlaneN);
+      glVertex3d (xPlane, yPlane, zPlaneN);
+      glVertex3d (xPlane, yPlane, zPlane);
+      glVertex3d (xPlane, yPlaneN, zPlane);
 
       // Y plane
-      glVertex3d (x_min, y_plane, z_min);
-      glVertex3d (x_max, y_plane, z_min);
-      glVertex3d (x_max, y_plane, z_max);
-      glVertex3d (x_min, y_plane, z_max);
+      glVertex3d (xPlaneN, yPlane, zPlaneN);
+      glVertex3d (xPlane, yPlane, zPlaneN);
+      glVertex3d (xPlane, yPlane, zPlane);
+      glVertex3d (xPlaneN, yPlane, zPlane);
 
       // Z plane
-      glVertex3d (x_min, y_min, z_plane);
-      glVertex3d (x_max, y_min, z_plane);
-      glVertex3d (x_max, y_max, z_plane);
-      glVertex3d (x_min, y_max, z_plane);
+      glVertex3d (xPlaneN, yPlaneN, zPlane);
+      glVertex3d (xPlane, yPlaneN, zPlane);
+      glVertex3d (xPlane, yPlane, zPlane);
+      glVertex3d (xPlaneN, yPlane, zPlane);
 
       glEnd ();
 
@@ -843,19 +833,28 @@ opengl_renderer::draw_axes_planes (bool visible, const Matrix& axe_color,
 }
 
 void
-opengl_renderer::draw_axes_boxes (const axes::properties& props,
-                                  bool visible, bool box, bool xySym,
-                                  double xPlane, double yPlane, double zPlane,
-                                  double xPlaneN, double yPlaneN, double zPlaneN,
-                                  double xpTick, double ypTick, double zpTick,
-                                  double xpTickN, double ypTickN, double zpTickN)
+opengl_renderer::draw_axes_boxes (const axes::properties& props)
 {
+  bool xySym = props.get_xySym ();
+  double xPlane = props.get_xPlane ();
+  double yPlane = props.get_yPlane ();
+  double zPlane = props.get_zPlane ();
+  double xPlaneN = props.get_xPlaneN ();
+  double yPlaneN = props.get_yPlaneN ();
+  double zPlaneN = props.get_zPlaneN ();
+  double xpTick = props.get_xpTick ();
+  double ypTick = props.get_ypTick ();
+  double zpTick = props.get_zpTick ();
+  double xpTickN = props.get_xpTickN ();
+  double ypTickN = props.get_ypTickN ();
+  double zpTickN = props.get_zpTickN ();
+
   // Axes box
 
   set_linestyle ("-", true);
   set_linewidth (props.get_linewidth ());
 
-  if (visible)
+  if (props.is_visible ())
     {
       glBegin (GL_LINES);
 
@@ -864,7 +863,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props,
       glVertex3d (xPlaneN, ypTick, zpTick);
       glVertex3d (xPlane, ypTick, zpTick);
 
-      if (box)
+      if (props.is_box ())
         {
           glVertex3d (xPlaneN, ypTickN, zpTick);
           glVertex3d (xPlane, ypTickN, zpTick);
@@ -879,7 +878,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props,
       glVertex3d (xpTick, yPlaneN, zpTick);
       glVertex3d (xpTick, yPlane, zpTick);
 
-      if (box)
+      if (props.is_box ())
         {
           glVertex3d (xpTickN, yPlaneN, zpTick);
           glVertex3d (xpTickN, yPlane, zpTick);
@@ -903,7 +902,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props,
           glVertex3d (xPlane, yPlaneN, zPlane);
         }
 
-      if (box)
+      if (props.is_box ())
         {
           glVertex3d (xPlane, yPlane, zPlaneN);
           glVertex3d (xPlane, yPlane, zPlane);
@@ -928,25 +927,35 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props,
 }
 
 void
-opengl_renderer::draw_axes_x_grid (const axes::properties& props,
-                                   bool visible, bool box,
-                                   const std::string& gridstyle,
-                                   const std::string& minorgridstyle,
-                                   bool nearhoriz, double tickdir,
-                                   bool xyzSym, bool layer2Dtop,
-                                   bool x2Dtop, int xstate,
-                                   double x_min, double x_max,
-                                   double xticklen, double xtickoffset,
-                                   double fy, double yPlane, double yPlaneN,
-                                   double ypTick, double ypTickN,
-                                   double fz, int zstate, double zPlane,
-                                   double zPlaneN, double zpTick,
-                                   double zpTickN)
+opengl_renderer::draw_axes_x_grid (const axes::properties& props)
 {
+  int xstate = props.get_xstate ();
+  int zstate = props.get_zstate ();
+  bool x2Dtop = props.get_x2Dtop ();
+  bool layer2Dtop = props.get_layer2Dtop ();
+  bool xyzSym = props.get_xyzSym ();
+  bool nearhoriz = props.get_nearhoriz ();
+  double xticklen = props.get_xticklen ();
+  double xtickoffset = props.get_xtickoffset ();
+  double fy = props.get_fy ();
+  double fz = props.get_fz ();
+  double x_min = props.get_x_min ();
+  double x_max = props.get_x_max ();
+  double yPlane = props.get_yPlane ();
+  double yPlaneN = props.get_yPlaneN ();
+  double ypTick = props.get_ypTick ();
+  double ypTickN = props.get_ypTickN ();
+  double zPlane = props.get_zPlane ();
+  double zPlaneN = props.get_zPlaneN ();
+  double zpTick = props.get_zpTick ();
+  double zpTickN = props.get_zpTickN ();
+
   // X grid
 
-  if (visible && xstate != AXE_DEPTH_DIR)
+  if (props.is_visible () && xstate != AXE_DEPTH_DIR)
     {
+      std::string gridstyle = props.get_gridlinestyle ();
+      std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
       bool do_xminorgrid = (props.is_xminorgrid () && (minorgridstyle != "none"));
       bool do_xminortick = props.is_xminortick ();
@@ -955,6 +964,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props,
       string_vector xticklabels = props.get_xticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fy);
+      bool box = props.is_box ();
 
       set_color (props.get_xcolor_rgb ());
 
@@ -969,14 +979,14 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props,
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
-                            signum(zpTick-zpTickN)*fz*xticklen*tickdir,
+                            signum(zpTick-zpTickN)*fz*xticklen,
                             0, (box && xstate != AXE_ANY_DIR));
         }
       else
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
                             zpTick, zpTick, 0.,
-                            signum(ypTick-ypTickN)*fy*xticklen*tickdir,
+                            signum(ypTick-ypTickN)*fy*xticklen,
                             0., 0, (box && xstate != AXE_ANY_DIR));
         }
 
@@ -1008,12 +1018,12 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props,
           if (tick_along_z)
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum(zpTick-zpTickN)*fz*xticklen/2*tickdir,
+                              signum(zpTick-zpTickN)*fz*xticklen/2,
                               0, (box && xstate != AXE_ANY_DIR));
           else
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
                               zpTick, zpTick, 0.,
-                              signum(ypTick-ypTickN)*fy*xticklen/2*tickdir,
+                              signum(ypTick-ypTickN)*fy*xticklen/2,
                               0., 0, (box && xstate != AXE_ANY_DIR));
         }
 
@@ -1093,25 +1103,35 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props,
 }
 
 void
-opengl_renderer::draw_axes_y_grid (const axes::properties& props,
-                                   bool visible, bool box,
-                                   const std::string& gridstyle,
-                                   const std::string& minorgridstyle,
-                                   bool nearhoriz, double tickdir,
-                                   bool xyzSym, bool layer2Dtop,
-                                   bool y2Dright, int ystate,
-                                   double y_min, double y_max,
-                                   double yticklen, double ytickoffset,
-                                   double fx, double xPlane, double xPlaneN,
-                                   double xpTick, double xpTickN,
-                                   double fz, int zstate, double zPlane,
-                                   double zPlaneN, double zpTick,
-                                   double zpTickN)
+opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 {
+  int ystate = props.get_ystate ();
+  int zstate = props.get_zstate ();
+  bool y2Dright = props.get_y2Dright ();
+  bool layer2Dtop = props.get_layer2Dtop ();
+  bool xyzSym = props.get_xyzSym ();
+  bool nearhoriz = props.get_nearhoriz ();
+  double yticklen = props.get_yticklen ();
+  double ytickoffset = props.get_ytickoffset ();
+  double fx = props.get_fx ();
+  double fz = props.get_fz ();
+  double xPlane = props.get_xPlane ();
+  double xPlaneN = props.get_xPlaneN ();
+  double xpTick = props.get_xpTick ();
+  double xpTickN = props.get_xpTickN ();
+  double y_min = props.get_y_min ();
+  double y_max = props.get_y_max ();
+  double zPlane = props.get_zPlane ();
+  double zPlaneN = props.get_zPlaneN ();
+  double zpTick = props.get_zpTick ();
+  double zpTickN = props.get_zpTickN ();
+
   // Y grid
 
-  if (ystate != AXE_DEPTH_DIR && visible)
+  if (ystate != AXE_DEPTH_DIR && props.is_visible ())
     {
+      std::string gridstyle = props.get_gridlinestyle ();
+      std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
       bool do_yminorgrid = (props.is_yminorgrid () && (minorgridstyle != "none"));
       bool do_yminortick = props.is_yminortick ();
@@ -1120,6 +1140,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props,
       string_vector yticklabels = props.get_yticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
+      bool box = props.is_box ();
 
       set_color (props.get_ycolor_rgb ());
 
@@ -1133,12 +1154,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props,
       if (tick_along_z)
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
                           zpTick, zpTickN, 0., 0.,
-                          signum(zpTick-zpTickN)*fz*yticklen*tickdir,
+                          signum(zpTick-zpTickN)*fz*yticklen,
                           1, (box && ystate != AXE_ANY_DIR));
       else
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
                           zpTick, zpTick,
-                          signum(xPlaneN-xPlane)*fx*yticklen*tickdir,
+                          signum(xPlaneN-xPlane)*fx*yticklen,
                           0., 0., 1, (box && ystate != AXE_ANY_DIR));
 
       // tick texts
@@ -1170,12 +1191,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props,
           if (tick_along_z)
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum(zpTick-zpTickN)*fz*yticklen/2*tickdir,
+                              signum(zpTick-zpTickN)*fz*yticklen/2,
                               1, (box && ystate != AXE_ANY_DIR));
           else
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
                               zpTick, zpTick,
-                              signum(xpTick-xpTickN)*fx*yticklen/2*tickdir,
+                              signum(xpTick-xpTickN)*fx*yticklen/2,
                               0., 0., 1, (box && ystate != AXE_ANY_DIR));
         }
 
@@ -1253,20 +1274,28 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props,
 }
 
 void
-opengl_renderer::draw_axes_z_grid (const axes::properties& props,
-                                   bool visible, bool box,
-                                   const std::string& gridstyle,
-                                   const std::string& minorgridstyle,
-                                   double tickdir, bool xySym, bool zSign,
-                                   int zstate, double z_min, double z_max,
-                                   double zticklen, double ztickoffset,
-                                   double fx, double xPlane, double xPlaneN,
-                                   double fy, double yPlane, double yPlaneN)
+opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 {
+  int zstate = props.get_zstate ();
+  bool xySym = props.get_xySym ();
+  bool zSign = props.get_zSign ();
+  double zticklen = props.get_zticklen ();
+  double ztickoffset = props.get_ztickoffset ();
+  double fx = props.get_fx ();
+  double fy = props.get_fy ();
+  double xPlane = props.get_xPlane ();
+  double xPlaneN = props.get_xPlaneN ();
+  double yPlane = props.get_yPlane ();
+  double yPlaneN = props.get_yPlaneN ();
+  double z_min = props.get_z_min ();
+  double z_max = props.get_z_max ();
+
   // Z Grid
 
-  if (zstate != AXE_DEPTH_DIR && visible)
+  if (zstate != AXE_DEPTH_DIR && props.is_visible ())
     {
+      std::string gridstyle = props.get_gridlinestyle ();
+      std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
       bool do_zminorgrid = (props.is_zminorgrid () && (minorgridstyle != "none"));
       bool do_zminortick = props.is_zminortick ();
@@ -1274,6 +1303,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
       string_vector zticklabels = props.get_zticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
+      bool box = props.is_box ();
 
       set_color (props.get_zcolor_rgb ());
 
@@ -1288,12 +1318,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
           if (xisinf (fy))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlane, yPlane,
-                              signum(xPlaneN-xPlane)*fx*zticklen*tickdir,
+                              signum(xPlaneN-xPlane)*fx*zticklen,
                               0., 0., 2, (box && zstate != AXE_ANY_DIR));
           else
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                               yPlane, yPlane, 0.,
-                              signum(yPlane-yPlaneN)*fy*zticklen*tickdir,
+                              signum(yPlane-yPlaneN)*fy*zticklen,
                               0., 2, false);
         }
       else
@@ -1301,12 +1331,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
           if (xisinf (fx))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlaneN, yPlane, 0.,
-                              signum(yPlaneN-yPlane)*fy*zticklen*tickdir,
+                              signum(yPlaneN-yPlane)*fy*zticklen,
                               0., 2, (box && zstate != AXE_ANY_DIR));
           else
             render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                               yPlaneN, yPlane,
-                              signum(xPlane-xPlaneN)*fx*zticklen*tickdir,
+                              signum(xPlane-xPlaneN)*fx*zticklen,
                               0., 0., 2, false);
         }
 
@@ -1353,12 +1383,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
               if (xisinf (fy))
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                   yPlane, yPlane,
-                                  signum(xPlaneN-xPlane)*fx*zticklen/2*tickdir,
+                                  signum(xPlaneN-xPlane)*fx*zticklen/2,
                                   0., 0., 2, (box && zstate != AXE_ANY_DIR));
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                   yPlane, yPlane, 0.,
-                                  signum(yPlane-yPlaneN)*fy*zticklen/2*tickdir,
+                                  signum(yPlane-yPlaneN)*fy*zticklen/2,
                                   0., 2, false);
             }
           else
@@ -1366,12 +1396,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
               if (xisinf (fx))
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlane, 0.,
-                                  signum(yPlaneN-yPlane)*fy*zticklen/2*tickdir,
+                                  signum(yPlaneN-yPlane)*fy*zticklen/2,
                                   0., 2, (box && zstate != AXE_ANY_DIR));
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlaneN,
-                                  signum(xPlane-xPlaneN)*fx*zticklen/2*tickdir,
+                                  signum(xPlane-xPlaneN)*fx*zticklen/2,
                                   0., 0., 2, false);
             }            
         }
@@ -1475,13 +1505,18 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props,
 }
 
 void
-opengl_renderer::draw_axes_title (const axes::properties& props,
-                                  double x_min, double x_max,
-                                  double y_min, double y_max,
-                                  double z_min, double z_max)
+opengl_renderer::draw_axes_title (const axes::properties& props)
 {
+  double x_min = props.get_x_min ();
+  double x_max = props.get_x_max ();
+  double y_min = props.get_y_min ();
+  double y_max = props.get_y_max ();
+  double z_min = props.get_z_min ();
+  double z_max = props.get_z_max ();
+
   // Title
 
+  // FIXME: bbox has to be moved to axes::properties
   ColumnVector bbox(4);
   bbox(0) = octave_Inf;
   bbox(1) = octave_Inf;
@@ -1531,8 +1566,6 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 
   if (antialias == GL_TRUE)
     glEnable (GL_LINE_SMOOTH);
-  else
-    glDisable (GL_LINE_SMOOTH);
 
   Matrix children = props.get_all_children ();
   std::list<graphics_object> obj_list;
@@ -1603,205 +1636,18 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   // draw axes object
 
-  const Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
-  const Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
-  const Matrix zlim = xform.zscale (props.get_zlim ().matrix_value ());
-
-  double x_min = xlim(0), x_max = xlim(1);
-  double y_min = ylim(0), y_max = ylim(1);
-  double z_min = zlim(0), z_max = zlim(1);
-
-  double xd = (props.xdir_is ("normal") ? 1 : -1);
-  double yd = (props.ydir_is ("normal") ? 1 : -1);
-  double zd = (props.zdir_is ("normal") ? 1 : -1);
-
-  ColumnVector p1, p2, xv (3), yv (3), zv (3);
-  int xstate, ystate, zstate;
-
-  xstate = ystate = zstate = AXE_ANY_DIR;
-
-  p1 = xform.transform (x_min, (y_min+y_max)/2, (z_min+z_max)/2, false);
-  p2 = xform.transform (x_max, (y_min+y_max)/2, (z_min+z_max)/2, false);
-  xv(0) = xround (p2(0)-p1(0));
-  xv(1) = xround (p2(1)-p1(1));
-  xv(2) = (p2(2)-p1(2));
-  if (xv(0) == 0 && xv(1) == 0)
-    xstate = AXE_DEPTH_DIR;
-  else if (xv(2) == 0)
-    {
-      if (xv(0) == 0)
-        xstate = AXE_VERT_DIR;
-      else if (xv(1) == 0)
-        xstate = AXE_HORZ_DIR;
-    }
-  double xPlane;
-  if (xv(2) == 0)
-    if (xv(1) == 0)
-      xPlane = (xv(0) > 0 ? x_max : x_min);
-    else
-      xPlane = (xv(1) < 0 ? x_max : x_min);
-  else
-    xPlane = (xv(2) < 0 ? x_min : x_max);
-  double xPlaneN = (xPlane == x_min ? x_max : x_min);
-  double fx = (x_max-x_min)/sqrt(xv(0)*xv(0)+xv(1)*xv(1));
-
-  p1 = xform.transform ((x_min+x_max)/2, y_min, (z_min+z_max)/2, false);
-  p2 = xform.transform ((x_min+x_max)/2, y_max, (z_min+z_max)/2, false);
-  yv(0) = xround (p2(0)-p1(0));
-  yv(1) = xround (p2(1)-p1(1));
-  yv(2) = (p2(2)-p1(2));
-  if (yv(0) == 0 && yv(1) == 0)
-    ystate = AXE_DEPTH_DIR;
-  else if (yv(2) == 0)
-    {
-      if (yv(0) == 0)
-        ystate = AXE_VERT_DIR;
-      else if (yv(1) == 0)
-        ystate = AXE_HORZ_DIR;
-    }
-  double yPlane;
-  if (yv(2) == 0)
-    if (yv(1) == 0)
-      yPlane = (yv(0) > 0 ? y_max : y_min);
-    else
-      yPlane = (yv(1) < 0 ? y_max : y_min);
-  else
-    yPlane = (yv(2) < 0 ? y_min : y_max);
-  double yPlaneN = (yPlane == y_min ? y_max : y_min);
-  double fy = (y_max-y_min)/sqrt(yv(0)*yv(0)+yv(1)*yv(1));
-
-  p1 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
-  p2 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
-  zv(0) = xround(p2(0)-p1(0));
-  zv(1) = xround (p2(1)-p1(1));
-  zv(2) = (p2(2)-p1(2));
-  if (zv(0) == 0 && zv(1) == 0)
-    zstate = AXE_DEPTH_DIR;
-  else if (zv(2) == 0)
-  {
-    if (zv(0) == 0)
-      zstate = AXE_VERT_DIR;
-    else if (zv(1) == 0)
-      zstate = AXE_HORZ_DIR;
-  }
-  double zPlane;
-  if (zv(2) == 0)
-    if (zv(1) == 0)
-      zPlane = (zv(0) > 0 ? z_min : z_max);
-    else
-      zPlane = (zv(1) < 0 ? z_min : z_max);
-  else
-    zPlane = (zv(2) < 0 ? z_min : z_max);
-  double zPlaneN = (zPlane == z_min ? z_max : z_min);
-  double fz = (z_max-z_min)/sqrt(zv(0)*zv(0)+zv(1)*zv(1));
-
-  bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
-        (ystate > AXE_DEPTH_DIR ? 1 : 0) +
-        (zstate > AXE_DEPTH_DIR ? 1 : 0)) == 2);
-  if (props.tickdirmode_is ("auto"))
-  {
-    // FIXME: tickdir should be updated (code below comes
-    //        from JHandles)
-    //autoMode++;
-    //TickDir.set(mode2d ? "in" : "out", true);
-    //autoMode--;
-  }
-
-  // FIXME: use ticklength property
-  double xticklen = 7, yticklen = 7, zticklen = 7;
-
-  //double tickdir = (props.tickdir_is ("in") ? -1 : 1);
-  double tickdir = (props.tickdirmode_is ("auto") ?
-                    (mode2d ? -1 : 1) :
-                    (props.tickdir_is ("in") ? -1 : 1));
-  double xtickoffset = (mode2d && tickdir < 0 ? 0 : xticklen) + 5;
-  double ytickoffset = (mode2d && tickdir < 0 ? 0 : yticklen) + 5;
-  double ztickoffset = (mode2d && tickdir < 0 ? 0 : zticklen) + 5;
-
-  bool xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
-  bool x2Dtop = false;
-  bool y2Dright = false;
-  bool layer2Dtop = false;
-  bool zSign = (zd*(zPlane-zPlaneN) <= 0);
-  bool xyzSym = zSign ? xySym : !xySym;
-  double xpTick = (zSign ? xPlaneN : xPlane);
-  double ypTick = (zSign ? yPlaneN : yPlane);
-  double zpTick = (zSign ? zPlane : zPlaneN);
-  double xpTickN = (zSign ? xPlane : xPlaneN);
-  double ypTickN = (zSign ? yPlane : yPlaneN);
-  double zpTickN = (zSign ? zPlaneN : zPlane);
-
-  /* 2D mode */
-  if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
-  {
-    if (props.xaxislocation_is ("top"))
-    {
-      double tmp = yPlane;
-      yPlane = yPlaneN;
-      yPlaneN = tmp;
-      x2Dtop = true;
-    }
-    ypTick = yPlaneN;
-    ypTickN = yPlane;
-    if (props.yaxislocation_is ("right"))
-    {
-      double tmp = xPlane;
-      xPlane = xPlaneN;
-      xPlaneN = tmp;
-      y2Dright = true;
-    }
-    xpTick = xPlaneN;
-    xpTickN = xPlane;
-    if (props.layer_is ("top"))
-      {
-        zpTick = zPlaneN;
-        layer2Dtop = true;
-      }
-    else
-      zpTick = zPlane;
-  }
-
-  Matrix view = props.get_view ().matrix_value ();
-  bool nearhoriz = std::abs(view(1)) <= 5;
-
-  Matrix axe_color = props.get_color_rgb ();
-  bool visible = props.is_visible ();
-  bool box = props.is_box ();
-
-  draw_axes_planes (visible, axe_color, xlim, ylim, zlim,
-                    xPlane, yPlane, zPlane);
-
-  draw_axes_boxes (props, visible, box, xySym, xPlane, yPlane, zPlane,
-                   xPlaneN, yPlaneN, zPlaneN, xpTick, ypTick, zpTick,
-                   xpTickN, ypTickN, zpTickN);
-
-
-  std::string gridstyle = props.get_gridlinestyle ();
-  std::string minorgridstyle = props.get_minorgridlinestyle ();
+  draw_axes_planes (props);
+  draw_axes_boxes (props);
 
   set_font (props);
 
-  draw_axes_x_grid (props, visible, box, gridstyle, minorgridstyle,
-                    nearhoriz, tickdir, xyzSym, layer2Dtop, x2Dtop,
-                    xstate, xlim(0), xlim(1), xticklen, xtickoffset,
-                    fy, yPlane, yPlaneN, ypTick, ypTickN,
-                    fz, zstate, zPlane, zPlaneN, zpTick, zpTickN);
-
-  draw_axes_y_grid (props, visible, box, gridstyle, minorgridstyle,
-                    nearhoriz, tickdir, xyzSym, layer2Dtop, y2Dright,
-                    ystate, ylim(0), ylim(1), yticklen, ytickoffset,
-                    fx, xPlane, xPlaneN, xpTick, xpTickN,
-                    fz, zstate, zPlane, zPlaneN, zpTick, zpTickN);
-
-  draw_axes_z_grid (props, visible, box, gridstyle, minorgridstyle,
-                    tickdir, xySym, zSign, zstate, zlim(0), zlim(1),
-                    zticklen, ztickoffset, fx, xPlane, xPlaneN,
-                    fy, yPlane, yPlaneN);
+  draw_axes_x_grid (props);
+  draw_axes_y_grid (props);
+  draw_axes_z_grid (props);
 
   set_linestyle ("-");
 
-  draw_axes_title (props, xlim(0), xlim(1), ylim(0), ylim(1),
-                   zlim(0), zlim(1));
+  draw_axes_title (props);
 
   draw_axes_children (props);
 }

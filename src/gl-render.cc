@@ -3214,8 +3214,10 @@ opengl_renderer::text_to_pixels (const std::string& txt,
                                  Matrix& bbox,
                                  int halign, int valign, double rotation)
 {
+#if HAVE_FREETYPE
   text_renderer.text_to_pixels (txt, pixels, bbox,
                                 halign, valign, rotation);
+#endif
 }
 
 Matrix

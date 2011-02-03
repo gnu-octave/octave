@@ -1018,7 +1018,7 @@ cat >>$TESTS <<EOF
 %! assert (sparse(a * x), b, feps);
 %! b = sprandn(sz(1),sz(2),0.2)+1i*sprandn(sz(1),sz(2),0.2); x = a \b; 
 %! assert (sparse(a * x), b, feps);
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! a = alpha*sprandn(10,11,0.2)+speye(10,11); f(a,[10,2],1e-10);
 %! ## Test this by forcing matrix_type, as can't get a certain 
 %! ## result for over-determined systems.
@@ -1068,17 +1068,17 @@ cat >>$TESTS <<EOF
 %!testif HAVE_CXSPARSE
 %! [c,r] = qr (us, xf);
 %! assert(us\xf,r\c,100*eps)
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (us, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(us\xs,r\c,100*eps)
 %!test
 %! pus = us(:,[1:8,10,9]);
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (pus, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xf,r\c,100*eps)
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (pus, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xs,r\c,100*eps)
@@ -1096,20 +1096,20 @@ cat >>$TESTS <<EOF
 %! ls = alpha*[speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]];
 %! xf = beta * ones(12,2);
 %! xs = speye(12,12);
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (ls, xf);
 %! assert(ls\xf,r\c,100*eps)
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (ls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(ls\xs,r\c,100*eps)
 %!testif HAVE_CXSPARSE
 %! pls = ls(:,[1:8,10,9]);
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (pls, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xf,r\c,100*eps)
-%!testif HAVE_CXSPARSE
+%!testif HAVE_UMFPACK
 %! [c,r] = qr (pls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xs,r\c,100*eps)

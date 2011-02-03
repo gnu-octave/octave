@@ -682,7 +682,7 @@ x = @var{R} \\ @var{C}\n\
 %! r = qr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!testif HAVE_CXSPARSE
+%!testif HAVE_COLAMD
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n,d)+speye(n,n);
 %! q = symamd(a);
@@ -717,7 +717,7 @@ x = @var{R} \\ @var{C}\n\
 %! r = qr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!testif HAVE_CXSPARSE
+%!testif HAVE_COLAMD
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n,d)+speye(n,n);
 %! q = symamd(a);

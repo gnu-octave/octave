@@ -1,3 +1,8 @@
+2010-02-02  Rik  <octave@nomad.inbox5.com>
+
+	* build_sparse_tests.sh: Use testif to only run some sparse tests when
+	necessary libraries are installed.
+
 2011-01-14  John W. Eaton  <jwe@octave.org>
 
 	* Update copyright notices for 2011.

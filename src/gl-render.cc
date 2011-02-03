@@ -1027,76 +1027,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
                               0., 0, (box && xstate != AXE_ANY_DIR));
         }
 
-      text::properties& xlabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_xlabel ()).get_properties ());
-
-      xlabel_props.set_visible ("on");
-
-      if (! xlabel_props.get_string ().empty ())
-        {
-          if (xlabel_props.horizontalalignmentmode_is ("auto"))
-            {
-              xlabel_props.set_horizontalalignment
-                (xstate > AXE_DEPTH_DIR
-                 ? "center" : (xyzSym ? "left" : "right"));
-
-              xlabel_props.set_horizontalalignmentmode ("auto");
-            }
-
-          if (xlabel_props.verticalalignmentmode_is ("auto"))
-            {
-              xlabel_props.set_verticalalignment
-                (xstate == AXE_VERT_DIR || x2Dtop ? "bottom" : "top");
-
-              xlabel_props.set_verticalalignmentmode ("auto");
-            }
-
-          if (xlabel_props.positionmode_is ("auto")
-              || xlabel_props.rotationmode_is ("auto"))
-            {
-              double angle = 0;
-              ColumnVector p
-                = graphics_xform::xform_vector ((x_min+x_max)/2,
-                                                ypTick, zpTick);
-
-              if (tick_along_z)
-                p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
-              else
-                p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
-
-              p = xform.transform (p(0), p(1), p(2), false);
-
-              switch (xstate)
-                {
-                  case AXE_ANY_DIR:
-                    p(0) += (xyzSym ? wmax : -wmax);
-                    p(1) += hmax;
-                    break;
-
-                  case AXE_VERT_DIR:
-                    p(0) -= wmax;
-                    angle = 90;
-                    break;
-
-                  case AXE_HORZ_DIR:
-                    p(1) += (x2Dtop ? -hmax : hmax);
-                    break;
-                }
-
-              if (xlabel_props.positionmode_is ("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  xlabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  xlabel_props.set_positionmode ("auto");
-                }
-
-              if (xlabel_props.rotationmode_is ("auto"))
-                {
-                  xlabel_props.set_rotation (angle);
-                  xlabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
+      gh_manager::get_object (props.get_xlabel ()).set ("visible", "on");
     }
   else
     gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
@@ -1200,74 +1131,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
                               0., 0., 1, (box && ystate != AXE_ANY_DIR));
         }
 
-      text::properties& ylabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_ylabel ()).get_properties ());
-
-      ylabel_props.set_visible ("on");
-
-      if (! ylabel_props.get_string ().empty ())
-        {
-          if (ylabel_props.horizontalalignmentmode_is ("auto"))
-            {
-              ylabel_props.set_horizontalalignment
-                (ystate > AXE_DEPTH_DIR
-                 ? "center" : (!xyzSym ? "left" : "right"));
-
-              ylabel_props.set_horizontalalignmentmode ("auto");
-            }
-
-          if (ylabel_props.verticalalignmentmode_is ("auto"))
-            {
-              ylabel_props.set_verticalalignment
-                (ystate == AXE_VERT_DIR && !y2Dright ? "bottom" : "top");
-
-              ylabel_props.set_verticalalignmentmode ("auto");
-            }
-
-          if (ylabel_props.positionmode_is ("auto")
-              || ylabel_props.rotationmode_is ("auto"))
-            {
-              double angle = 0;
-              ColumnVector p = graphics_xform::xform_vector (xpTick, (y_min+y_max)/2, zpTick);
-
-              if (tick_along_z)
-                p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
-              else
-                p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
-
-              p = xform.transform (p(0), p(1), p(2), false);
-
-              switch (ystate)
-                {
-                  case AXE_ANY_DIR:
-                    p(0) += (!xyzSym ? wmax : -wmax);
-                    p(1) += hmax;
-                    break;
-
-                  case AXE_VERT_DIR:
-                    p(0) += (y2Dright ? wmax : -wmax);
-                    angle = 90;
-                    break;
-
-                  case AXE_HORZ_DIR:
-                    p(1) += hmax;
-                    break;
-                }
-
-              if (ylabel_props.positionmode_is ("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  ylabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  ylabel_props.set_positionmode ("auto");
-                }
-
-              if (ylabel_props.rotationmode_is ("auto"))
-                {
-                  ylabel_props.set_rotation (angle);
-                  ylabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
+      gh_manager::get_object (props.get_ylabel ()).set ("visible", "on");
     }
   else
     gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
@@ -1406,154 +1270,10 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             }            
         }
 
-      text::properties& zlabel_props =
-        reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_zlabel ()).get_properties ());
-
-      zlabel_props.set_visible ("on");
-
-      if (! zlabel_props.get_string ().empty ())
-        {
-          bool camAuto = props.cameraupvectormode_is ("auto");
-
-          if (zlabel_props.horizontalalignmentmode_is ("auto"))
-            {
-              zlabel_props.set_horizontalalignment
-                ((zstate > AXE_DEPTH_DIR || camAuto) ? "center" : "right");
-
-              zlabel_props.set_horizontalalignmentmode ("auto");
-            }
-
-          if (zlabel_props.verticalalignmentmode_is ("auto"))
-            {
-              zlabel_props.set_verticalalignment
-                (zstate == AXE_VERT_DIR
-                 ? "bottom" : ((zSign || camAuto) ? "bottom" : "top"));
-
-              zlabel_props.set_verticalalignmentmode ("auto");
-            }
-
-          if (zlabel_props.positionmode_is ("auto")
-              || zlabel_props.rotationmode_is ("auto"))
-            {
-              double angle = 0;
-              ColumnVector p;
-
-              if (xySym)
-                {
-                  p = graphics_xform::xform_vector (xPlaneN, yPlane,
-                                                    (z_min+z_max)/2);
-                  if (xisinf (fy))
-                    p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
-                  else
-                    p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
-                }
-              else
-                {
-                  p = graphics_xform::xform_vector (xPlane, yPlaneN,
-                                                    (z_min+z_max)/2);
-                  if (xisinf (fx))
-                    p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
-                  else
-                    p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
-                }
-
-              p = xform.transform (p(0), p(1), p(2), false);
-
-              switch (zstate)
-                {
-                  case AXE_ANY_DIR:
-                    if (camAuto)
-                      {
-                        p(0) -= wmax;
-                        angle = 90;
-                      }
-
-                    // FIXME -- what's the correct offset?
-                    //
-                    //   p[0] += (!xySym ? wmax : -wmax);
-                    //   p[1] += (zSign ? hmax : -hmax);
-
-                    break;
-
-                  case AXE_VERT_DIR:
-                    p(0) -= wmax;
-                    angle = 90;
-                    break;
-
-                  case AXE_HORZ_DIR:
-                    p(1) += hmax;
-                    break;
-                }
-
-              if (zlabel_props.positionmode_is ("auto"))
-                {
-                  p = xform.untransform (p(0), p(1), p(2), true);
-                  zlabel_props.set_position (p.extract_n (0, 3).transpose ());
-                  zlabel_props.set_positionmode ("auto");
-                }
-
-              if (zlabel_props.rotationmode_is ("auto"))
-                {
-                  zlabel_props.set_rotation (angle);
-                  zlabel_props.set_rotationmode ("auto");
-                }
-            }
-        }
+      gh_manager::get_object (props.get_zlabel ()).set ("visible", "on");
     }
   else
     gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
-}
-
-void
-opengl_renderer::draw_axes_title (const axes::properties& props)
-{
-  double x_min = props.get_x_min ();
-  double x_max = props.get_x_max ();
-  double y_min = props.get_y_min ();
-  double y_max = props.get_y_max ();
-  double z_min = props.get_z_min ();
-  double z_max = props.get_z_max ();
-
-  // Title
-
-  // FIXME: bbox has to be moved to axes::properties
-  ColumnVector bbox(4);
-  bbox(0) = octave_Inf;
-  bbox(1) = octave_Inf;
-  bbox(2) = -octave_Inf;
-  bbox(3) = -octave_Inf;
-  for (int i = 0; i <= 1; i++)
-    for (int j = 0; j <= 1; j++)
-      for (int k = 0; k <= 1; k++)
-        {
-          ColumnVector p = xform.transform (i ? x_max : x_min,
-                                            j ? y_max : y_min,
-                                            k ? z_max : z_min, false);
-          bbox(0) = std::min (bbox(0), p(0));
-          bbox(1) = std::min (bbox(1), p(1));
-          bbox(2) = std::max (bbox(2), p(0));
-          bbox(3) = std::max (bbox(3), p(1));
-        }
-
-  bbox(2) = bbox(2)-bbox(0);
-  bbox(3) = bbox(3)-bbox(1);
-
-  Matrix x_zlim = props.get_transform_zlim ();
-
-  text::properties& title_props =
-    reinterpret_cast<text::properties&> (gh_manager::get_object (props.get_title ()).get_properties ());
-
-  if (! title_props.get_string ().empty ()
-      && title_props.positionmode_is ("auto"))
-    {
-      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
-                                          (x_zlim(0)+x_zlim(1))/2, true);
-
-      title_props.set_position (p.extract_n(0, 3).transpose ());
-      title_props.set_positionmode ("auto");
-    }
-
-  set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 }
 
 void
@@ -1632,6 +1352,13 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 void
 opengl_renderer::draw_axes (const axes::properties& props)
 {
+  double x_min = props.get_x_min ();
+  double x_max = props.get_x_max ();
+  double y_min = props.get_y_min ();
+  double y_max = props.get_y_max ();
+  double z_min = props.get_z_min ();
+  double z_max = props.get_z_max ();
+
   setup_opengl_transformation (props);
 
   // draw axes object
@@ -1647,7 +1374,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   set_linestyle ("-");
 
-  draw_axes_title (props);
+  set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
   draw_axes_children (props);
 }

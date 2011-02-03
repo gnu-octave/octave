@@ -173,7 +173,6 @@ private:
   void draw_axes_y_grid (const axes::properties& props);
   void draw_axes_z_grid (const axes::properties& props);
 
-  void draw_axes_title (const axes::properties& props);
   void draw_axes_children (const axes::properties& props);
 
 private:

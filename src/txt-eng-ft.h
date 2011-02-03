@@ -66,6 +66,7 @@ public:
                        int rotation = ROTATION_0);
 
   Matrix get_extent (text_element *elt, double rotation = 0.0);
+  Matrix get_extent (const std::string& txt, double rotation = 0.0);
 
   void set_font (const std::string& name, const std::string& weight,
                  const std::string& angle, double size);

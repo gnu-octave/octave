@@ -1,3 +1,13 @@
+2011-02-03  John W. Eaton  <jwe@octave.org>
+
+	* cmd-hist.cc (gnu_history::do_process_histcontrol):
+	Rename from command_history::do_process_histcontrol.
+	(gnu_history::do_histcontrol): Rename from
+	command_history::do_histcontrol.
+	* cmd-hist.h (command_history::do_histcontrol): Provide dummy version.
+	* cmd-hist.cc (command_history::do_process_histcontrol): Likewise.
+	Bug #32325.
+
 2011-02-02  John W. Eaton  <jwe@octave.org>
 
 	* Range.cc (Range::Range (double, double, octave_idx_type)):

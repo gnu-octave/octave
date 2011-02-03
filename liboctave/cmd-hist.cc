@@ -60,6 +60,10 @@ public:
 
   ~gnu_history (void) { }
 
+  void do_process_histcontrol (const std::string&);
+
+  std::string do_histcontrol (void) const;
+
   void do_add (const std::string&);
 
   void do_remove (int);
@@ -106,6 +110,76 @@ private:
 
   int mark;
 };
+
+void
+gnu_history::do_process_histcontrol (const std::string& control_arg)
+{
+  history_control = 0;
+
+  size_t len = control_arg.length ();
+  size_t beg = 0;
+
+  while (beg < len)
+    {
+      if (control_arg[beg] == ':')
+        beg++;
+      else
+        {
+          size_t end = control_arg.find (":", beg);
+
+          if (end == std::string::npos)
+            end = len;
+
+          std::string tmp = control_arg.substr (beg, end-beg);
+
+          if (tmp == "erasedups")
+            history_control |= HC_ERASEDUPS;
+          else if (tmp == "ignoreboth")
+            history_control |= HC_IGNDUPS|HC_IGNSPACE;
+          else if (tmp == "ignoredups")
+            history_control |= HC_IGNDUPS;
+          else if (tmp == "ignorespace")
+            history_control |= HC_IGNSPACE;
+          else
+            (*current_liboctave_warning_handler)
+              ("unknown histcontrol directive %s", tmp.c_str ());
+
+          if (end != std::string::npos)
+            beg = end + 1;
+        }
+    }
+}
+
+std::string
+gnu_history::do_histcontrol (void) const
+{
+  // FIXME -- instead of reconstructing this value, should we just save
+  // the string we were given when constructing the command_history
+  // object?
+
+  std::string retval;
+
+  if (history_control & HC_IGNSPACE)
+    retval.append ("ignorespace");
+
+  if (history_control & HC_IGNDUPS)
+    {
+      if (retval.length() > 0)
+        retval.append (":");
+
+      retval.append ("ignoredups");
+    }
+
+  if (history_control & HC_ERASEDUPS)
+    {
+      if (retval.length() > 0)
+        retval.append (":");
+
+      retval.append ("erasedups");
+    }
+
+  return retval;
+}
 
 void
 gnu_history::do_add (const std::string& s)
@@ -654,6 +728,13 @@ command_history::clean_up_and_save (const std::string& f, int n)
 }
 
 void
+command_history::do_process_histcontrol (const std::string&)
+{
+  (*current_liboctave_warning_handler)
+    ("readline is not linked, so history control is not available");
+}
+
+void
 command_history::do_initialize (bool read_history_file,
                                 const std::string& f_arg, int sz,
                                 const std::string & control_arg)
@@ -679,77 +760,6 @@ command_history::do_set_file (const std::string& f)
 {
   xfile = f;
 }
-
-void
-command_history::do_process_histcontrol (const std::string& control_arg)
-{
-  history_control = 0;
-
-  size_t len = control_arg.length ();
-  size_t beg = 0;
-
-  while (beg < len)
-    {
-      if (control_arg[beg] == ':')
-        beg++;
-      else
-        {
-          size_t end = control_arg.find (":", beg);
-
-          if (end == std::string::npos)
-            end = len;
-
-          std::string tmp = control_arg.substr (beg, end-beg);
-
-          if (tmp == "erasedups")
-            history_control |= HC_ERASEDUPS;
-          else if (tmp == "ignoreboth")
-            history_control |= HC_IGNDUPS|HC_IGNSPACE;
-          else if (tmp == "ignoredups")
-            history_control |= HC_IGNDUPS;
-          else if (tmp == "ignorespace")
-            history_control |= HC_IGNSPACE;
-          else
-            (*current_liboctave_warning_handler)
-              ("unknown histcontrol directive %s", tmp.c_str ());
-
-          if (end != std::string::npos)
-            beg = end + 1;
-        }
-    }
-}
-
-std::string
-command_history::do_histcontrol (void) const
-{
-  // FIXME -- instead of reconstructing this value, should we just save
-  // the string we were given when constructing the command_history
-  // object?
-
-  std::string retval;
-
-  if (history_control & HC_IGNSPACE)
-    retval.append ("ignorespace");
-
-  if (history_control & HC_IGNDUPS)
-    {
-      if (retval.length() > 0)
-        retval.append (":");
-
-      retval.append ("ignoredups");
-    }
-
-  if (history_control & HC_ERASEDUPS)
-    {
-      if (retval.length() > 0)
-        retval.append (":");
-
-      retval.append ("erasedups");
-    }
-
-  return retval;
-}
-
 
 std::string
 command_history::do_file (void)

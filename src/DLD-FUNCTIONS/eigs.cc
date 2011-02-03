@@ -777,7 +777,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %!test
 %! d1 = eigs (A, k, 'lm');
 %! assert (d1, d0(end:-1:(end-k+1)), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (d1, d0(k:-1:1), 1e-11);
 %!test
@@ -792,15 +792,15 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %!test
 %! d1 = eigs (A, k+1, 'be');
 %! assert (d1, d2([1:floor((k+1)/2), (end - ceil((k+1)/2) + 1):end]), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 4.1);
 %! [~,idx0] = sort (abs(d0 - 4.1));
 %! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (d1(idx1), d0(idx0(1:k)), 1e-11);
-%!test
+%!testif HAVE_CHOLMOD
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-11);
 %!test
 %! opts.cholB=true;
@@ -812,17 +812,17 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (eigs(A,k,4.1), eigs(A,speye(n),k,4.1), 1e-11);
 %!test
 %! fn = @(x) A * x;
@@ -834,7 +834,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (d1, d0(k:-1:1), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 1; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
@@ -850,7 +850,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-11)
 %! endfor
-%!test
+%!testif HAVE_UMFPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -897,7 +897,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %!test
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!test
@@ -920,13 +920,13 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 4.1);
 %! [~,idx0] = sort (abs(d0 - 4.1));
 %! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
-%!test
+%!testif HAVE_CHOLMOD
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
 %!test
@@ -939,19 +939,19 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(d1), eigs(A,k,4.1), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-11);
 %!test
 %! fn = @(x) A * x;
@@ -963,7 +963,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 1;
 %! d1 = eigs (fn, n, k, 4.1, opts);
@@ -974,7 +974,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-11)
 %! endfor
-%!test
+%!testif HAVE_UMFPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k
@@ -1027,7 +1027,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %!test
 %! d1 = eigs (A, k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 'sm');
 %! assert (abs(d1), abs(d0(1:k)), 1e-11);
 %!test
@@ -1050,13 +1050,13 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! [~, idx] = sort (imag(abs(d0)));
 %! d2 = d0(idx);
 %! assert (sort(imag(d1)), sort(imag(d2(1:k))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! d1 = eigs (A, k, 4.1);
 %! [~,idx0] = sort (abs(d0 - 4.1));
 %! [~,idx1] = sort (abs(d1 - 4.1));
 %! assert (abs(d1(idx1)), abs(d0(idx0(1:k))), 1e-11);
 %! assert (sort(imag(d1(idx1))), sort(imag(d0(idx0(1:k)))), 1e-11);
-%!test
+%!testif HAVE_CHOLMOD
 %! d1 = eigs(A, speye(n), k, 'lm');
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
 %!test
@@ -1069,21 +1069,21 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 'lm', opts);
 %! assert (abs(d1), abs(d0(end:-1:(end-k+1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! d1 = eigs(A, speye(n), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-11);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! opts.cholB=true;
 %! q = [2:n,1];
 %! opts.permB=q;
 %! d1 = eigs(A, speye(n)(q,q), k, 4.1, opts);
 %! assert (abs(abs(d1)), abs(eigs(A,k,4.1)), 1e-11);
 %! assert (sort(imag(abs(d1))), sort(imag(eigs(A,k,4.1))), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (abs(eigs(A,k,4.1)), abs(eigs(A,speye(n),k,4.1)), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! assert (sort(imag(eigs(A,k,4.1))), sort(imag(eigs(A,speye(n),k,4.1))), 1e-11);
 %!test
 %! fn = @(x) A * x;
@@ -1095,7 +1095,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 'sm', opts);
 %! assert (abs(d1), d0(1:k), 1e-11);
-%!test
+%!testif HAVE_UMFPACK
 %! fn = @(x) (A - 4.1 * eye(n)) \ x;
 %! opts.issym = 0; opts.isreal = 0;
 %! d1 = eigs (fn, n, k, 4.1, opts);
@@ -1106,7 +1106,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
 %! for i=1:k
 %!  assert(max(abs((A - d1(i)*speye(n))*v1(:,i))),0.,1e-11)
 %! endfor
-%!test
+%!testif HAVE_UMFPACK
 %! [v1,d1] = eigs(A, k, 'sm');
 %! d1 = diag(d1);
 %! for i=1:k

@@ -1,3 +1,10 @@
+2011-02-03  John W. Eaton  <jwe@octave.org>
+
+	* ov-base.cc (octave_base_value::as_mxArray): Return 0 silently.
+	* mex.cc (mxArray_octave_value::dup): If value can't be
+	converted to mxArray object, then simply create a clone of the
+	mxArray_octave_value container.
+
 2010-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qr.cc: Use testif to only run

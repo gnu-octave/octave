@@ -1,3 +1,8 @@
+2011-02-03  Kai Habel  <kai.habel@gmx.de>
+
+	* src/gl-render.cc(text_to_pixels): Use text_renderer object only
+	when freetype is available
+
 2011-02-03  John W. Eaton  <jwe@octave.org>
 
 	* ov-base.cc (octave_base_value::as_mxArray): Return 0 silently.

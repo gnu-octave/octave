@@ -1,3 +1,30 @@
+2011-02-03  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (axes::properties::update_axes_layout):
+	New function calculating axes layout.
+	(axes::properties::update_ticklengths): New function calculating
+	tick lengths and offsets.
+	* graphics.h.in (class axes::properties):: New private data
+	describing axes layout and corresponding "get" methods. Provide
+	declaration and call dependencies for "update_axes_layout".
+	Tag layer, yaxislocation, xaxislocation, tickdir, tickdirmode,
+	with "u" qualifier.
+	(axes::properties::update_layer,
+	axes::properties::update_yaxislocation,
+	axes::properties::update_xaxislocation,
+	axes::properties::update_ticklengths,
+	axes::properties::update_tickdir,
+	axes::properties::update_tickdirmode): New functions
+	* gl-render.cc:	(opengl_renderer::draw_axes_planes,
+	opengl_renderer::draw_axes_boxes,
+	opengl_renderer::draw_axes_x_grid,
+	opengl_renderer::draw_axes_y_grid,
+	opengl_renderer::draw_axes_z_grid,
+	opengl_renderer::draw_axes_title): Simplify arguments list.
+	(opengl_renderer::draw_axes): Remove calculation of axes layout.
+	(opengl_renderer::setup_opengl_transformation): Disable antializing.
+	* gl-render.h: Adapt functions prototypes.
+
 2011-02-01  John W. Eaton  <jwe@octave.org>
 
 	* gl-render.h (opengl_renderer::draw (const Matrix& hlist)):

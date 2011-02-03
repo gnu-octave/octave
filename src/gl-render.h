@@ -166,63 +166,14 @@ private:
 
   void setup_opengl_transformation (const axes::properties& props);
 
-  void draw_axes_planes (bool visible, const Matrix& axe_color,
-                         const Matrix& xlim, const Matrix& ylim,
-                         const Matrix& zlim, double x_plane,
-                         double y_plane, double z_plane);
+  void draw_axes_planes (const axes::properties& props);
+  void draw_axes_boxes (const axes::properties& props);
 
-  void draw_axes_boxes (const axes::properties& props,
-                        bool visible, bool box, bool xySym,
-                        double xPlane, double yPlane, double zPlane,
-                        double xPlaneN, double yPlaneN, double zPlaneN,
-                        double xpTick, double ypTick, double zpTick,
-                        double xpTickN, double ypTickN, double zpTickN);
+  void draw_axes_x_grid (const axes::properties& props);
+  void draw_axes_y_grid (const axes::properties& props);
+  void draw_axes_z_grid (const axes::properties& props);
 
-  void draw_axes_x_grid (const axes::properties& props,
-                         bool visible, bool box,
-                         const std::string& gridstyle,
-                         const std::string& minorgridstyle,
-                         bool nearhoriz, double tickdir,
-                         bool xyzSym, bool layer2Dtop,
-                         bool x2Dtop, int xstate,
-                         double x_min, double x_max,
-                         double xticklen, double xtickoffset,
-                         double fy, double yPlane, double yPlaneN,
-                         double ypTick, double ypTickN,
-                         double fz, int zstate, double zPlane,
-                         double zPlaneN, double zpTick,
-                         double zpTickN);
-
-  void draw_axes_y_grid (const axes::properties& props,
-                         bool visible, bool box,
-                         const std::string& gridstyle,
-                         const std::string& minorgridstyle,
-                         bool nearhoriz, double tickdir,
-                         bool xyzSym, bool layer2Dtop,
-                         bool y2Dright, int ystate,
-                         double y_min, double y_max,
-                         double yticklen, double ytickoffset,
-                         double fx, double xPlane, double xPlaneN,
-                         double xpTick, double xpTickN,
-                         double fz, int zstate, double zPlane,
-                         double zPlaneN, double zpTick,
-                         double zpTickN);
-
-  void draw_axes_z_grid (const axes::properties& props,
-                         bool visible, bool box,
-                         const std::string& gridstyle,
-                         const std::string& minorgridstyle,
-                         double tickdir, bool xySym, bool zSign,
-                         int zstate, double z_min, double z_max,
-                         double zticklen, double ztickoffset,
-                         double fx, double xPlane, double xPlaneN,
-                         double fy, double yPlane, double yPlaneN);
-
-  void draw_axes_title (const axes::properties& props,
-                        double x_min, double x_max,
-                        double y_min, double y_max,
-                        double z_min, double z_max);
-
+  void draw_axes_title (const axes::properties& props);
   void draw_axes_children (const axes::properties& props);
 
 private:

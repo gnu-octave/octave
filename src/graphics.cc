@@ -3895,6 +3895,176 @@ axes::properties::update_camera (void)
   x_gl_mat2 = x_viewport * x_projection;
 }
 
+void
+axes::properties::update_axes_layout (void)
+{
+  graphics_xform xform = get_transform ();
+
+  double xd = (xdir_is ("normal") ? 1 : -1);
+  double yd = (ydir_is ("normal") ? 1 : -1);
+  double zd = (zdir_is ("normal") ? 1 : -1);
+
+  const Matrix xlims = xform.xscale (get_xlim ().matrix_value ());
+  const Matrix ylims = xform.yscale (get_ylim ().matrix_value ());
+  const Matrix zlims = xform.zscale (get_zlim ().matrix_value ());
+  double x_min = xlims(0), x_max = xlims(1);
+  double y_min = ylims(0), y_max = ylims(1);
+  double z_min = zlims(0), z_max = zlims(1);
+
+  ColumnVector p1, p2, dir (3);
+
+  xstate = ystate = zstate = AXE_ANY_DIR;
+
+  p1 = xform.transform (x_min, (y_min+y_max)/2, (z_min+z_max)/2, false);
+  p2 = xform.transform (x_max, (y_min+y_max)/2, (z_min+z_max)/2, false);
+  dir(0) = xround (p2(0)-p1(0));
+  dir(1) = xround (p2(1)-p1(1));
+  dir(2) = (p2(2)-p1(2));
+  if (dir(0) == 0 && dir(1) == 0)
+    xstate = AXE_DEPTH_DIR;
+  else if (dir(2) == 0)
+    {
+      if (dir(0) == 0)
+        xstate = AXE_VERT_DIR;
+      else if (dir(1) == 0)
+        xstate = AXE_HORZ_DIR;
+    }
+  if (dir(2) == 0)
+    if (dir(1) == 0)
+      xPlane = (dir(0) > 0 ? x_max : x_min);
+    else
+      xPlane = (dir(1) < 0 ? x_max : x_min);
+  else
+    xPlane = (dir(2) < 0 ? x_min : x_max);
+  xPlaneN = (xPlane == x_min ? x_max : x_min);
+  fx = (x_max-x_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+
+  p1 = xform.transform ((x_min+x_max)/2, y_min, (z_min+z_max)/2, false);
+  p2 = xform.transform ((x_min+x_max)/2, y_max, (z_min+z_max)/2, false);
+  dir(0) = xround (p2(0)-p1(0));
+  dir(1) = xround (p2(1)-p1(1));
+  dir(2) = (p2(2)-p1(2));
+  if (dir(0) == 0 && dir(1) == 0)
+    ystate = AXE_DEPTH_DIR;
+  else if (dir(2) == 0)
+    {
+      if (dir(0) == 0)
+        ystate = AXE_VERT_DIR;
+      else if (dir(1) == 0)
+        ystate = AXE_HORZ_DIR;
+    }
+  if (dir(2) == 0)
+    if (dir(1) == 0)
+      yPlane = (dir(0) > 0 ? y_max : y_min);
+    else
+      yPlane = (dir(1) < 0 ? y_max : y_min);
+  else
+    yPlane = (dir(2) < 0 ? y_min : y_max);
+  yPlaneN = (yPlane == y_min ? y_max : y_min);
+  fy = (y_max-y_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+
+  p1 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
+  p2 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
+  dir(0) = xround(p2(0)-p1(0));
+  dir(1) = xround (p2(1)-p1(1));
+  dir(2) = (p2(2)-p1(2));
+  if (dir(0) == 0 && dir(1) == 0)
+    zstate = AXE_DEPTH_DIR;
+  else if (dir(2) == 0)
+  {
+    if (dir(0) == 0)
+      zstate = AXE_VERT_DIR;
+    else if (dir(1) == 0)
+      zstate = AXE_HORZ_DIR;
+  }
+  if (dir(2) == 0)
+    if (dir(1) == 0)
+      zPlane = (dir(0) > 0 ? z_min : z_max);
+    else
+      zPlane = (dir(1) < 0 ? z_min : z_max);
+  else
+    zPlane = (dir(2) < 0 ? z_min : z_max);
+  zPlaneN = (zPlane == z_min ? z_max : z_min);
+  fz = (z_max-z_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+
+  update_ticklengths ();
+
+  xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
+  zSign = (zd*(zPlane-zPlaneN) <= 0);
+  xyzSym = zSign ? xySym : !xySym;
+  xpTick = (zSign ? xPlaneN : xPlane);
+  ypTick = (zSign ? yPlaneN : yPlane);
+  zpTick = (zSign ? zPlane : zPlaneN);
+  xpTickN = (zSign ? xPlane : xPlaneN);
+  ypTickN = (zSign ? yPlane : yPlaneN);
+  zpTickN = (zSign ? zPlaneN : zPlane);
+
+  /* 2D mode */
+  x2Dtop = false;
+  y2Dright = false;
+  layer2Dtop = false;
+  if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
+  {
+    if (xaxislocation_is ("top"))
+    {
+      double tmp = yPlane;
+      yPlane = yPlaneN;
+      yPlaneN = tmp;
+      x2Dtop = true;
+    }
+    ypTick = yPlaneN;
+    ypTickN = yPlane;
+    if (yaxislocation_is ("right"))
+    {
+      double tmp = xPlane;
+      xPlane = xPlaneN;
+      xPlaneN = tmp;
+      y2Dright = true;
+    }
+    xpTick = xPlaneN;
+    xpTickN = xPlane;
+    if (layer_is ("top"))
+      {
+        zpTick = zPlaneN;
+        layer2Dtop = true;
+      }
+    else
+      zpTick = zPlane;
+  }
+
+  Matrix viewmat = get_view ().matrix_value ();
+  nearhoriz = std::abs(viewmat(1)) <= 5;
+}
+
+void
+axes::properties::update_ticklengths (void)
+{
+  bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
+                  (ystate > AXE_DEPTH_DIR ? 1 : 0) +
+                  (zstate > AXE_DEPTH_DIR ? 1 : 0)) == 2);
+  if (tickdirmode_is ("auto"))
+  {
+    // FIXME: tickdir should be updated (code below comes
+    //        from JHandles)
+    //autoMode++;
+    //TickDir.set(mode2d ? "in" : "out", true);
+    //autoMode--;
+  }
+
+  //double ticksign = (tickdir_is ("in") ? -1 : 1);
+  double ticksign = (tickdirmode_is ("auto") ?
+                     (mode2d ? -1 : 1) :
+                     (tickdir_is ("in") ? -1 : 1));
+  // FIXME: use ticklength property
+  xticklen = ticksign*7;
+  yticklen = ticksign*7;
+  zticklen = ticksign*7;
+
+  xtickoffset = (mode2d ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
+  ytickoffset = (mode2d ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
+  ztickoffset = (mode2d ? std::max (0., zticklen) : std::abs (zticklen)) + 5;
+}
+
 static void
 normalized_aspectratios (Matrix& aspectratios, const Matrix& scalefactors,
                          double xlength, double ylength, double zlength)

@@ -3053,6 +3053,13 @@ private:
   Matrix zlim;
 };
 
+enum {
+  AXE_ANY_DIR   = 0,
+  AXE_DEPTH_DIR = 1,
+  AXE_HORZ_DIR  = 2,
+  AXE_VERT_DIR  = 3
+};
+
 class OCTINTERP_API axes : public base_graphics_object
 {
 public:
@@ -3079,11 +3086,13 @@ public:
       }
 
     void update_camera (void);
+    void update_axes_layout (void);
     void update_aspectratios (void);
     void update_transform (void)
       {
         update_aspectratios ();
         update_camera ();
+        update_axes_layout ();
       }
 
     graphics_xform get_transform (void) const
@@ -3094,6 +3103,44 @@ public:
     Matrix get_opengl_matrix_1 (void) const { return x_gl_mat1; }
     Matrix get_opengl_matrix_2 (void) const { return x_gl_mat2; }
     Matrix get_transform_zlim (void) const { return x_zlim; }
+
+    int get_xstate (void) const { return xstate; }
+    int get_ystate (void) const { return ystate; }
+    int get_zstate (void) const { return zstate; }
+    double get_xPlane (void) const { return xPlane; }
+    double get_xPlaneN (void) const { return xPlaneN; }
+    double get_yPlane (void) const { return yPlane; }
+    double get_yPlaneN (void) const { return yPlaneN; }
+    double get_zPlane (void) const { return zPlane; }
+    double get_zPlaneN (void) const { return zPlaneN; }
+    double get_xpTick (void) const { return xpTick; }
+    double get_xpTickN (void) const { return xpTickN; }
+    double get_ypTick (void) const { return ypTick; }
+    double get_ypTickN (void) const { return ypTickN; }
+    double get_zpTick (void) const { return zpTick; }
+    double get_zpTickN (void) const { return zpTickN; }
+    double get_x_min (void) const { return std::min (xPlane, xPlaneN); }
+    double get_x_max (void) const { return std::max (xPlane, xPlaneN); }
+    double get_y_min (void) const { return std::min (yPlane, yPlaneN); }
+    double get_y_max (void) const { return std::max (yPlane, yPlaneN); }
+    double get_z_min (void) const { return std::min (zPlane, zPlaneN); }
+    double get_z_max (void) const { return std::max (zPlane, zPlaneN); }
+    double get_fx (void) const { return fx; }
+    double get_fy (void) const { return fy; }
+    double get_fz (void) const { return fz; }
+    double get_xticklen (void) const { return xticklen; }
+    double get_yticklen (void) const { return yticklen; }
+    double get_zticklen (void) const { return zticklen; }
+    double get_xtickoffset (void) const { return xtickoffset; }
+    double get_ytickoffset (void) const { return ytickoffset; }
+    double get_ztickoffset (void) const { return ztickoffset; }
+    bool get_x2Dtop (void) const { return x2Dtop; }
+    bool get_y2Dright (void) const { return y2Dright; }
+    bool get_layer2Dtop (void) const { return layer2Dtop; }
+    bool get_xySym (void) const { return xySym; }
+    bool get_xyzSym (void) const { return xyzSym; }
+    bool get_zSign (void) const { return zSign; }
+    bool get_nearhoriz (void) const { return nearhoriz; }
 
     ColumnVector pixel2coord (double px, double py) const
     { return get_transform ().untransform (px, py, (x_zlim(0)+x_zlim(1))/2); }
@@ -3120,6 +3167,16 @@ public:
     Matrix x_zlim;
     std::list<octave_value> zoom_stack;
 
+    // Axes layout data
+    int xstate, ystate, zstate;
+    double xPlane, xPlaneN, yPlane, yPlaneN, zPlane, zPlaneN;
+    double xpTick, xpTickN, ypTick, ypTickN, zpTick, zpTickN;
+    double fx, fy, fz;
+    double xticklen, yticklen, zticklen;
+    double xtickoffset, ytickoffset, ztickoffset;
+    bool x2Dtop, y2Dright, layer2Dtop;
+    bool xySym, xyzSym, zSign, nearhoriz;
+
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
 
@@ -3136,7 +3193,7 @@ public:
       array_property colororder , default_colororder ()
       array_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
-      radio_property layer , "{bottom}|top"
+      radio_property layer u , "{bottom}|top"
       row_vector_property xlim mu , default_lim ()
       row_vector_property ylim mu , default_lim ()
       row_vector_property zlim mu , default_lim ()
@@ -3184,8 +3241,8 @@ public:
       radio_property xdir u , "{normal}|reverse"
       radio_property ydir u , "{normal}|reverse"
       radio_property zdir u , "{normal}|reverse"
-      radio_property yaxislocation , "{left}|right|zero"
-      radio_property xaxislocation , "{bottom}|top|zero"
+      radio_property yaxislocation u , "{left}|right|zero"
+      radio_property xaxislocation u , "{bottom}|top|zero"
       array_property view u , Matrix ()
       bool_property __hold_all__ h , "off"
       radio_property nextplot , "new|add|replacechildren|{replace}"
@@ -3214,8 +3271,8 @@ public:
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       radio_property projection , "{orthographic}|perpective"
-      radio_property tickdir m , "{in}|out"
-      radio_property tickdirmode , "{auto}|manual"
+      radio_property tickdir mu , "{in}|out"
+      radio_property tickdirmode u , "{auto}|manual"
       array_property ticklength , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       // FIXME -- uicontextmenu should be moved here.
@@ -3240,15 +3297,23 @@ public:
     void update_yscale (void) { sy = get_yscale (); }
     void update_zscale (void) { sz = get_zscale (); }
 
-    void update_view (void) { update_camera (); }
+    void update_view (void) { update_camera (); update_axes_layout (); }
     void update_dataaspectratio (void) { update_transform (); }
     void update_dataaspectratiomode (void) { update_transform (); }
     void update_plotboxaspectratio (void) { update_transform (); }
     void update_plotboxaspectratiomode (void) { update_transform (); }
 
-    void update_xdir (void) { update_camera (); }
-    void update_ydir (void) { update_camera (); }
-    void update_zdir (void) { update_camera (); }
+    void update_layer (void) { update_axes_layout (); }
+    void update_yaxislocation (void) { update_axes_layout (); }
+    void update_xaxislocation (void) { update_axes_layout (); }
+
+    void update_xdir (void) { update_camera (); update_axes_layout (); }
+    void update_ydir (void) { update_camera (); update_axes_layout (); }
+    void update_zdir (void) { update_camera (); update_axes_layout (); }
+
+    void update_ticklengths (void);
+    void update_tickdir (void) { update_ticklengths (); }
+    void update_tickdirmode (void) { update_ticklengths (); }
 
     void update_xtick (void)
       {
@@ -3349,6 +3414,8 @@ public:
 
       if (do_clr_zoom)
         zoom_stack.clear ();
+
+      update_axes_layout ();
     }
 
     void update_ylim (bool do_clr_zoom = true)
@@ -3362,6 +3429,8 @@ public:
 
       if (do_clr_zoom)
         zoom_stack.clear ();
+
+      update_axes_layout ();
     }
 
     void update_zlim (void)
@@ -3374,6 +3443,8 @@ public:
       fix_limits (zlim);
 
       zoom_stack.clear ();
+
+      update_axes_layout ();
     }
 
   };

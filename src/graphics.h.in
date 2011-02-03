@@ -3311,6 +3311,11 @@ public:
     void update_ydir (void) { update_camera (); update_axes_layout (); }
     void update_zdir (void) { update_camera (); update_axes_layout (); }
 
+    void update_xlabel_position (void);
+    void update_ylabel_position (void);
+    void update_zlabel_position (void);
+    void update_title_position (void);
+
     void update_ticklengths (void);
     void update_tickdir (void) { update_ticklengths (); }
     void update_tickdirmode (void) { update_ticklengths (); }
@@ -3380,6 +3385,10 @@ public:
     void calc_ticks_and_lims (array_property& lims, array_property& ticks, array_property& mticks,
                               bool limmode_is_auto, bool is_logscale);
     void calc_ticklabels (const array_property& ticks, any_property& labels, bool is_logscale);
+    Matrix get_ticklabel_extents (const Matrix& ticks,
+                                  const string_vector& ticklabels,
+                                  const Matrix& limits);
+
     void fix_limits (array_property& lims)
     {
       if (lims.get ().is_empty ())

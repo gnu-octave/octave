@@ -1,3 +1,21 @@
+2011-02-03  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* gl-render.h: (opengl_renderer::draw_axes_titles): Remove prototype.
+	* gl-render.cc: (opengl_renderer::draw_axes_titles): Remove function.
+	(opengl_renderer::draw_axes_x_grid,
+	opengl_renderer::draw_axes_y_grid,
+	opengl_renderer::draw_axes_z_grid): Remove calculation of axis label
+	positions.
+	* graphics.cc: (axes::properties::update_xlabel_position,
+	axes::properties::update_ylabel_position
+	axes::properties::update_zlabel_position
+	axes::properties::update_title_position): New functions calculating
+	label and title positions.
+	(axes::properties::get_ticklabel_extents): New function.
+	* graphics.h.in: Provide functions prototypes.
+	* txt-eng-ft.cc (ft_render::get_extent): New function version.
+	* txt-eng-ft.h (ft_render::get_extent): Provide function prototype.
+
 2011-02-03  Kai Habel  <kai.habel@gmx.de>
 
 	* src/gl-render.cc(text_to_pixels): Use text_renderer object only

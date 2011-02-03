@@ -474,6 +474,16 @@ ft_render::get_extent (text_element *elt, double rotation)
   return extent;
 }
 
+Matrix
+ft_render::get_extent (const std::string& txt, double rotation)
+{
+  text_element *elt = text_parser_none ().parse (txt);
+  Matrix extent = get_extent (elt, rotation);
+  delete elt;
+  
+  return extent;
+}
+
 int
 ft_render::rotation_to_mode (double rotation) const
 {

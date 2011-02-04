@@ -1,3 +1,7 @@
+2010-02-04  Rik  <octave@nomad.inbox5.com>
+
+	* Makefile.am: Undo accidental checkin
+
 2011-02-03  John W. Eaton  <jwe@octave.org>
 
 	* cmd-hist.cc (gnu_history::do_process_histcontrol):

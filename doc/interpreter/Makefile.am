@@ -94,6 +94,10 @@ IMAGES = \
   $(IMAGES_TXT) \
   $(HTMLDIR_IMAGES)
 
+LOGOS = \
+  octave_logo.eps \
+  octave_logo.pdf
+
 MUNGED_TEXI_SRC = \
   arith.texi \
   audio.texi \
@@ -157,11 +161,11 @@ octave.info octave.dvi octave.html octave.pdf: $(srcdir)/version.texi $(octave_T
 
 octave.info: $(IMAGES_TXT)
 
-octave.dvi octave.ps: $(IMAGES_EPS)
+octave.dvi octave.ps: $(IMAGES_EPS) octave_logo.eps
 
 octave.html: $(IMAGES_PNG)
 
-octave.pdf: $(IMAGES_PDF)
+octave.pdf: $(IMAGES_PDF) octave_logo.pdf
 
 all-local: dvi html pdf ps doc-cache $(HTMLDIR_IMAGES)
 
@@ -235,6 +239,7 @@ EXTRA_DIST = \
   octave.ps \
   $(IMAGES) \
   $(IMAGES_SRC) \
+  $(LOGOS) \
   $(TXI_SRC)
 
 DISTCLEANFILES = $(octave_TEXINFOS) doc-cache

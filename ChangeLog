@@ -8,6 +8,12 @@
 	(OCTAVE_API_VERSION_NUMBER): Now 45.
 	(OCTAVE_RELEASE_DATE): Now 2011-01-31.
 
+2010-02-04  Rik  <octave@nomad.inbox5.com>
+
+	* configure.ac: Add new doc/icons/Makefile to list of Makefiles to build
+	* examples/Makefile.am: Move building of .desktop files and distribution
+	of icons to doc/icons directory.
+
 2010-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate glpkmex function.

@@ -1,8 +1,12 @@
 2010-02-04  Rik  <octave@nomad.inbox5.com>
 
+	* icons/octave-logo.ico: Add logo format left out of last changeset.
+
+2010-02-04  Rik  <octave@nomad.inbox5.com>
+
 	* icons/: New directory for icons and .desktop files.
-	* icons/octave-logo.ico, icons/octave-logo.png, icons/octave-logo.svg:
-	Add new Octave O logo to Mercurial.
+	* icons/octave-logo.png, icons/octave-logo.svg: Add new Octave O logo
+	to Mercurial.
 	* Makefile.am: New Makefile to build .desktop file and distribute logos.
 	* octave.desktop.in, octave-sombrero.png: Moved from examples directory.
 	* octave_branding_samples.svg: Original logos and branding material for

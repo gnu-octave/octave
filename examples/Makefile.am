@@ -20,9 +20,6 @@
 
 include $(top_srcdir)/common.mk
 
-IMAGE_FILES = octave-sombrero.png
-image_DATA = $(IMAGE_FILES)
-
 EXTRA_DIST = 
 
 FCN_FILE_DIRS =
@@ -32,29 +29,8 @@ FCN_FILES =
 include @polynomial/module.mk
 include @FIRfilter/module.mk
 
-all-local: octave.desktop
-
-octave.desktop: octave.desktop.in Makefile
-	@echo "making $@ from $<"
-	$(SED) < $< > $@-t \
-	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
-	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
-	mv $@-t $@
-
-install-data-local:
-	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor www.octave.org octave.desktop; \
-	fi
-
-uninstall-local:
-	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
-	fi
-
 EXTRA_DIST += \
   $(FCN_FILES) \
-  $(IMAGE_FILES) \
   addtwomatrices.cc \
   celldemo.cc \
   embedded.cc \
@@ -77,7 +53,6 @@ EXTRA_DIST += \
   mysparse.c \
   mystring.c \
   mystruct.c \
-  octave.desktop.in \
   oregonator.cc \
   oregonator.m \
   paramdemo.cc \
@@ -85,6 +60,4 @@ EXTRA_DIST += \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc
-
-CLEANFILES = octave.desktop
 

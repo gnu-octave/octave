@@ -111,7 +111,17 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 3 for Octave version @value{VERSION}
-@subtitle July 2007
+@subtitle February 2011
+@sp 2
+@multitable @columnfractions 0.4 0.025 0.65
+@item
+@flushright @image{octave_logo,2.1in} @end flushright
+@tab
+@c this is a spacer column
+@tab
+@sp 8
+@titlefont{Free Your Numbers} 
+@end multitable 
 @author John W. Eaton
 @author David Bateman
 @author S@o{}ren Hauberg

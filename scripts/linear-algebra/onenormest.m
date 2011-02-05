@@ -25,8 +25,8 @@
 ## only 5 test vectors are used.
 ##
 ## If the matrix is not explicit, e.g., when estimating the norm of
-## @code{inv (@var{A})} given an LU@tie{}factorization, @code{onenormest} applies
-## @var{A} and its conjugate transpose through a pair of functions
+## @code{inv (@var{A})} given an LU@tie{}factorization, @code{onenormest}
+## applies @var{A} and its conjugate transpose through a pair of functions
 ## @var{apply} and @var{apply_t}, respectively, to a dense matrix of size
 ## @var{n} by @var{t}.  The implicit version requires an explicit dimension
 ## @var{n}.

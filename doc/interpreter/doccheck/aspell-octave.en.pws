@@ -12,6 +12,8 @@ AIX
 al
 Alamos
 aleph
+alnum
+alphanum
 amd
 anova
 ANOVA
@@ -20,6 +22,7 @@ API
 approximant
 ARMA
 arpack
+ascii
 Ashok
 async
 atan
@@ -119,13 +122,16 @@ clubsuit
 CMatrix
 cmd
 cmember
+cntrl
 cof
+coffset
 colamd
 colorbar
 colormap
 colperm
 Comint
 Commandline
+commentstyle
 cond
 condest
 conformant
@@ -180,6 +186,7 @@ diag
 diamondsuit
 dir
 disp
+displayrange
 dMatrix
 dmperm
 DMS
@@ -586,6 +593,7 @@ outputfcn
 paperorientation
 paperposition
 papersize
+paperunits
 parseparams
 pbm
 PBM
@@ -640,6 +648,7 @@ pseudonorm
 pseudorandom
 Pseudospectra
 ptrace
+punct
 PWS
 Pxx
 Qci
@@ -692,6 +701,7 @@ rightarrow
 rline
 RMS
 rnd
+roffset
 Rosser
 Rossum
 rpath
@@ -703,6 +713,7 @@ Sandia
 SAS
 sB
 Schafer
+schar
 Schur
 SCO
 screenful
@@ -850,8 +861,10 @@ txi
 typedefs
 ub
 UB
+uchar
 UID
 uint
+ulong
 Ultrix
 umfpack
 uminus
@@ -885,6 +898,7 @@ Uparrow
 uplus
 userdata
 Username
+ushort
 Vandermonde
 variable's
 varphi
@@ -924,12 +938,15 @@ wildcard
 Wildcards
 wildcards
 Wilks
+windowstyle
 WinRand
 WIPO
 Wl
 wp
+wspace
 xb
 xcorr
+xdigit
 xerrorbar
 xerrorbars
 XFig

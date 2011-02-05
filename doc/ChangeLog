@@ -1,5 +1,10 @@
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/aspell-octave.en.pws: Add new spelling
+	exceptions to Octave private dictionary.
+
+2010-02-05  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave.texi: Update copyright on manual to 2011.
 
 2010-02-05  Rik  <octave@nomad.inbox5.com>

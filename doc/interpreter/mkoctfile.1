@@ -17,98 +17,130 @@
 .\" <http://www.gnu.org/licenses/>.
 .\"
 .\" This page was contributed by Dirk Eddelbuettel <edd@debian.org>
-.\"
-.TH MKOCTFILE 1 "1 November 2002" "GNU Octave"
+.\" This page was completely re-written by Rik <octave@nomad.inbox5.com>
+.\" --------------------------------------------------------------------
+.de Vb \" (V)erbatim (b)egin.  Use fixed width font and no justification
+.ft CW
+.nf
+..
+.de Ve \" (V)erbatim (e)nd.  Return to regular font and justification
+.ft R
+.fi
+..
+.\" --------------------------------------------------------------------
+.TH MKOCTFILE 1 "4 February 2011" "GNU Octave"
 .SH NAME
 mkoctfile \- Compile dynamic-load modules for GNU Octave
 .SH SYNOPSIS
-.BR mkoctfile\  [\-IDIR]\ [\-DDEF]\ [\-lLIB]\ [\-LDIR]\ [\-M|\-\-depend]
-\ [\-c]\ [\-o FILE|\-\-output FILE]\ [\-p VAR|\-\-print VAR]\ [\-s|\-\-strip]
-\ [\-v|\-\-verbose]\ [\-h|\-?|\-\-help]\ \fIfile\fP .\|.\|.
+\fBmkoctfile\fP [\fIOPTION\fP]... file...
 .SH DESCRIPTION
-.PP
-\fImkoctfile\fP is used to compile source C, C++ or Fortran source code in
-dynamically loadable
-.I .oct
-file for
+\fBmkoctfile\fP is used to compile C, C++, or Fortran source code in
+to a dynamically loadable \fI.oct\fP file for
 .BR octave (1).
 .SH OPTIONS
-\fImkoctfile\fP accepts the following options:
 .TP 8
-.B \-IDIR
-Add include directory DIR to compile commands.
-.TP 8
-.B \-DDEF
-Add definition DEF to compiler call.
-.TP 8
-.B \-lLIB
-Add library LIB to link command.
-.TP 8
-.B \-LDIR
-Add library directory DIR to link command.
-.TP 8
-.B \-M|\-\-depend
+\fB\-h\fP, \fB\-?\fP, \fB\-\-help\fP
+Print help message.
+.TP
+.B \-I\fIdir\fP
+Add include directory \fIdir\fP to compile commands.
+.TP
+.B \-idirafter\fIdir\fP
+Add include directory to second include search path after '\fB\-I\fP'.
+.TP
+.B \-D\fIdef\fP
+Add definition \fIdef\fP to compiler command.
+.TP
+.B \-l\fIlib\fP
+Add library \fIlib\fP to link command.
+.TP
+.B \-L\fIdir\fP
+Add library directory \fIdir\fP to link command.
+.TP
+.B \-R\fIdir\fP
+Pass \fB\-R\fP\fIdir\fP to link command.
+.TP
+.B \-g
+Enable debugging option for all compilers.
+.TP
+.B \-pthread
+Add \fB\-pthread\fP to link command.
+.TP
+.B \-W...
+Pass flags to the compiler such as \fB\-Wa,\fP\fIOPTION\fP.
+.TP
+.B \-Wl,...
+Pass flags to the linker such as \fB\-Wl,-rpath=...\fP
+.TP
+.B \-M\fR,\fB \-\-depend
 Generate dependency files (.d) for C and C++ source files.
-.TP 8
+.TP
 .B \-c
 Compile but do not link.
-.TP 8
-.B \-o FILE|\-\-output FILE
-Output file name; default extension is .oct (or .mex if \-\-mex is
-specified) unless linking a stand-alone executable.
 .TP
-.B \-p VAR|\-\-print VAR
-Print configuration variable VAR.  Recognized variables are:
-.RS
-    ALL_CFLAGS                FFTW_LIBS
-    ALL_CXXFLAGS              FLIBS
-    ALL_FFLAGS                FPICFLAG
-    ALL_LDFLAGS               INCFLAGS
-    BLAS_LIBS                 LDFLAGS
-    CC                        LD_CXX
-    CFLAGS                    LD_STATIC_FLAG
-    CPICFLAG                  LFLAGS
-    CPPFLAGS                  LIBCRUFT
-    CXX                       LIBOCTAVE
-    CXXFLAGS                  LIBOCTINTERP
-    CXXPICFLAG                LIBREADLINE
-    DEPEND_EXTRA_SED_PATTERN  LIBS
-    DEPEND_FLAGS              OCTAVE_LIBS
-    DL_LD                     RDYNAMIC_FLAG
-    DL_LDFLAGS                RLD_FLAG
-    F2C                       SED
-    F2CFLAGS                  XTRA_CFLAGS
-    F77                       XTRA_CXXFLAGS
-    FFLAGS
-.RE
-.TP 8
 .B \-\-link-stand-alone
 Link a stand-alone executable file.
-.TP 8
-.B \-\-mex
-Assume we are creating a MEX file.  Set the default output extension
-to .mex.
-.TP 8
-.B \-s|--strip
+.TP
+.B \-s\fR,\fB --strip
 Strip the output file.
-.TP 8
-.B \-v|--verbose
-Echo commands as they are executed.
-.TP 8
-.B file
-Compile or link file. Recognised file types are
+.TP
+.B \-\-mex
+Create a MEX file.  Set the default output extension to \fB.mex\fP.
+.TP
+.B \-o \fIfile\fP\fR,\fB \-\-output \fIfile\fP
+Output file name.  Default extension is \fB.oct\fP (or \fB.mex\fP if \-\-mex is
+specified) unless linking a stand-alone executable.
+.TP
+.B \-p \fIVAR\fP\fR,\fB \-\-print \fIVAR\fP
+Print configuration variable \fIVAR\fP.  Recognized variables are:
 .RS
-    .c    C source
-    .cc   C++ source
-    .C    C++ source
-    .cpp  C++ source
-    .f    Fortran source
-    .F    Fortran source
-    .o    object file
-    .a    library file
-.SH SEE ALSO
-.BR octave (1).
+.Vb
+   ALL_CFLAGS                FFTW3F_LDFLAGS
+   ALL_CXXFLAGS              FFTW3F_LIBS
+   ALL_FFLAGS                FLIBS
+   ALL_LDFLAGS               FPICFLAG
+   BLAS_LIBS                 INCFLAGS
+   CC                        LAPACK_LIBS
+   CFLAGS                    LDFLAGS
+   CPICFLAG                  LD_CXX
+   CPPFLAGS                  LD_STATIC_FLAG
+   CXX                       LFLAGS
+   CXXFLAGS                  LIBCRUFT
+   CXXPICFLAG                LIBOCTAVE
+   DEPEND_EXTRA_SED_PATTERN  LIBOCTINTERP
+   DEPEND_FLAGS              LIBS
+   DL_LD                     OCTAVE_LIBS
+   DL_LDFLAGS                RDYNAMIC_FLAG
+   EXEEXT                    READLINE_LIBS
+   F77                       RLD_FLAG
+   F77_INTEGER_8_FLAG        SED
+   FFLAGS                    XTRA_CFLAGS
+   FFTW3_LDFLAGS             XTRA_CXXFLAGS
+   FFTW3_LIBS
+.Ve
 .RE
+.TP
+.B \-v\fR,\fB --verbose
+Echo commands as they are executed.
+.TP
+.B file
+Compile or link file.  Recognized file types are
+.RS
+.Vb
+   .c    C source
+   .cc   C++ source
+   .C    C++ source
+   .cpp  C++ source
+   .f    Fortran source (fixed form)
+   .F    Fortran source (fixed form)
+   .f90  Fortran source (free form)
+   .F90  Fortran source (free form)
+   .o    object file
+   .a    library file
+.Ve
+.RE
+.SH "SEE ALSO"
+octave (1).
 .SH AUTHOR
 John W. Eaton <jwe@octave.org>
 

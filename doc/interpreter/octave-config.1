@@ -17,62 +17,65 @@
 .\" <http://www.gnu.org/licenses/>.
 .\"
 .\" This page was contributed by Dirk Eddelbuettel <edd@debian.org>.
-.\" 
-.TH OCTAVE-CONFIG 1 "19 February 2003" "GNU Octave"
+.\" This page was completely re-written by Rik <octave@nomad.inbox5.com>
+.\" --------------------------------------------------------------------
+.de Vb \" (V)erbatim (b)egin.  Use fixed width font and no justification
+.ft CW
+.nf
+..
+.de Ve \" (V)erbatim (e)nd.  Return to regular font and justification
+.ft R
+.fi
+..
+.\" --------------------------------------------------------------------
+.TH OCTAVE-CONFIG 1 "4 February 2011" "GNU Octave"
 .SH NAME
 octave-config - GNU Octave component and library information retrieval
 .SH SYNOPSIS
-.B octave-config
-.RI [ options ]
+\fBoctave-config\fP [\fIOPTION\fP]...
 .SH DESCRIPTION
-.PP
 .B octave-config
-is a tool to obtain directory information for 
-.I .oct
-and 
-.I .m
-files for
+is a tool to obtain directory information for \fB.oct\fP and \fB.m\fP files for
 .BR octave (1).
 .SH OPTIONS
-.B octave-config
-accepts the following options:
 .TP 8
-.B \--m-site-dir
-Display the main directory for local, or site-specific, .m script files.
-.TP 8
-.B \--oct-site-dir
-Display the main directory for local, or site-specific, .oct dynamic-link libraries.
-.TP 8
-.B \-p|\-\-print VAR
-Print the default value of the Octave configuration variable VAR.
+.B \-\-m-site-dir
+Display the main directory for local, or site-specific, \fB.m\fP script files.
+.TP
+.B \-\-oct-site-dir
+Display the main directory for local, or site-specific, \fB.oct\fP dynamic-link libraries.
+.TP
+.B \-p \fIVAR\fP\fR,\fB \-\-print \fIVAR\fP
+Print the default value of the Octave configuration variable \fIVAR\fP.
 Recognized variables are:
 .RS
-    CANONICAL_HOST_TYPE    LOCALFCNFILEDIR    
-    DEFAULT_PAGER          LOCALFCNFILEPATH
-    ARCHLIBDIR             LOCALOCTFILEDIR
-    BINDIR                 LOCALOCTFILEPATH
-    DATADIR                LOCALSTARTUPFILEDIR
-    EXEC_PREFIX            LOCALVERARCHLIBDIR
-    FCNFILEDIR             LOCALVERFCNFILEDIR
-    FCNFILEPATH            LOCALVEROCTFILEDIR
-    IMAGEDIR               MAN1DIR
-    IMAGE_PATH             MAN1EXT
-    INCLUDEDIR             MANDIR
-    INFODIR                OCTFILEDIR
-    INFOFILE               OCTINCLUDEDIR
-    LIBDIR                 OCTLIBDIR
-    LIBEXECDIR             PREFIX
-    LIBEXECDIR             STARTUPFILEDIR
-    LOCALARCHLIBDIR        VERSION
+.Vb
+   API_VERSION             LOCALAPIOCTFILEDIR
+   ARCHLIBDIR              LOCALARCHLIBDIR
+   BINDIR                  LOCALFCNFILEDIR
+   CANONICAL_HOST_TYPE     LOCALOCTFILEDIR
+   DATADIR                 LOCALSTARTUPFILEDIR
+   DATAROOTDIR             LOCALVERARCHLIBDIR
+   DEFAULT_PAGER           LOCALVERFCNFILEDIR
+   EXEC_PREFIX             LOCALVEROCTFILEDIR
+   FCNFILEDIR              MAN1DIR
+   IMAGEDIR                MAN1EXT
+   INCLUDEDIR              MANDIR
+   INFODIR                 OCTFILEDIR
+   INFOFILE                OCTINCLUDEDIR
+   LIBDIR                  OCTLIBDIR
+   LIBEXECDIR              PREFIX
+   LOCALAPIARCHLIBDIR      STARTUPFILEDIR
+   LOCALAPIFCNFILEDIR      VERSION
+.Ve
 .RE
-.TP 8
-.B \-v|\-\-version
+.TP
+.B \-v\fR,\fB \-\-version
 Display the version number of 
 .BR octave (1).
-.TP 8
-.B \-h|-?|--help
-Display a help page about
-.B octave-config
+.TP
+\fB\-h\fP, \fB\-?\fP, \fB\-\-help\fP
+Print help message.
 .SH AUTHOR
 John W. Eaton <jwe@octave.org>
 

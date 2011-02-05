@@ -198,56 +198,61 @@ Options:
 
   -DDEF                   Add -DDEF to compile commands.
 
-  -lLIB                   Add library LIB to link command.
+  -lLIB                   Add -lLIB to link command.
 
   -LDIR                   Add -LDIR to link command.
+
+  -RDIR                   Add -RDIR to link command.
+
+  -g                      Enable debugging option for all compilers.
+
+  -pthread                Add -pthread to link command.
+
+  -W...                   Pass flags to the compiler such as -Wa,OPTION.
+
+  -Wl,...                 Pass flags to the linker such as -Wl,-rpath=...
 
   -M, --depend            Generate dependency files (.d) for C and C++
                           source files.
 
-  -RDIR                   Add -RDIR to link command.
-
-  -Wl,...                 Pass flags though the linker like -Wl,-rpath=...
-
-  -W...                   Pass flags though the compiler like -Wa,OPTION.
-
   -c, --compile           Compile, but do not link.
+
+  --link-stand-alone      Link a stand-alone executable file.
+
+  -s, --strip             Strip output file.
+
+  --mex                   Create a MEX file.  
+                          Set the default output extension to ".mex".
 
   -o FILE, --output FILE  Output file name.  Default extension is .oct
                           (or .mex if --mex is specified) unless linking
                           a stand-alone executable.
 
-  -g                      Enable debugging options for compilers.
-
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-                            ALL_CFLAGS                FLIBS
-                            ALL_CXXFLAGS              FPICFLAG
-                            ALL_FFLAGS                INCFLAGS
-                            ALL_LDFLAGS               LAPACK_LIBS
-                            BLAS_LIBS                 LDFLAGS
-                            CC                        LD_CXX
-                            CFLAGS                    LD_STATIC_FLAG
-                            CPICFLAG                  LFLAGS
-                            CPPFLAGS                  LIBCRUFT
-                            CXX                       LIBOCTAVE
-                            CXXFLAGS                  LIBOCTINTERP
-                            CXXPICFLAG                LIBS
-                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
-                            DEPEND_FLAGS              RDYNAMIC_FLAG
-                            DL_LD                     READLINE_LIBS
-                            DL_LDFLAGS                RLD_FLAG
-                            F77                       SED
+                            ALL_CFLAGS                FFTW3F_LDFLAGS
+                            ALL_CXXFLAGS              FFTW3F_LIBS
+                            ALL_FFLAGS                FLIBS
+                            ALL_LDFLAGS               FPICFLAG
+                            BLAS_LIBS                 INCFLAGS
+                            CC                        LAPACK_LIBS
+                            CFLAGS                    LDFLAGS
+                            CPICFLAG                  LD_CXX
+                            CPPFLAGS                  LD_STATIC_FLAG
+                            CXX                       LFLAGS
+                            CXXFLAGS                  LIBCRUFT
+                            CXXPICFLAG                LIBOCTAVE
+                            DEPEND_EXTRA_SED_PATTERN  LIBOCTINTERP
+                            DEPEND_FLAGS              LIBS
+                            DL_LD                     OCTAVE_LIBS
+                            DL_LDFLAGS                RDYNAMIC_FLAG
+                            EXEEXT                    READLINE_LIBS
+                            F77                       RLD_FLAG
+                            F77_INTEGER_8_FLAG        SED
                             FFLAGS                    XTRA_CFLAGS
-                            FFTW_LIBS                 XTRA_CXXFLAGS
-
-  --link-stand-alone      Link a stand-alone executable file.
-
-  --mex                   Assume we are creating a MEX file.  Set the
-                          default output extension to ".mex".
-
-  -s, --strip             Strip output file.
+                            FFTW3_LDFLAGS             XTRA_CXXFLAGS
+                            FFTW3_LIBS
 
   -v, --verbose           Echo commands as they are executed.
 

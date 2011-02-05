@@ -118,23 +118,23 @@ Options:
   -p VAR, --print VAR   Print the value of the given configuration
 		        variable VAR.  Recognized variables are:
 
-			  API_VERSION	         LOCALAPIARCHLIBDIR
-			  CANONICAL_HOST_TYPE	 LOCALAPIFCNFILEDIR
-			  DEFAULT_PAGER	         LOCALAPIOCTFILEDIR
-			  ARCHLIBDIR	         LOCALARCHLIBDIR
-			  BINDIR	         LOCALFCNFILEDIR
-			  DATADIR	         LOCALOCTFILEDIR
-			  EXEC_PREFIX	         LOCALSTARTUPFILEDIR
-			  FCNFILEDIR	         LOCALVERARCHLIBDIR
-			  LOCALVEROCTFILEDIR	 LOCALVERFCNFILEDIR
-			  IMAGEDIR	         MAN1DIR
-			  MAN1EXT	         MANDIR
-			  INCLUDEDIR	         OCTFILEDIR
-			  INFODIR	         OCTINCLUDEDIR
-			  INFOFILE	         OCTLIBDIR
-			  LIBDIR	         PREFIX
-			  LIBEXECDIR	         STARTUPFILEDIR
-			  LIBEXECDIR		 VERSION
+                          API_VERSION             LOCALAPIOCTFILEDIR
+                          ARCHLIBDIR              LOCALARCHLIBDIR
+                          BINDIR                  LOCALFCNFILEDIR
+                          CANONICAL_HOST_TYPE     LOCALOCTFILEDIR
+                          DATADIR                 LOCALSTARTUPFILEDIR
+                          DATAROOTDIR             LOCALVERARCHLIBDIR
+                          DEFAULT_PAGER           LOCALVERFCNFILEDIR
+                          EXEC_PREFIX             LOCALVEROCTFILEDIR
+                          FCNFILEDIR              MAN1DIR
+                          IMAGEDIR                MAN1EXT
+                          INCLUDEDIR              MANDIR
+                          INFODIR                 OCTFILEDIR
+                          INFOFILE                OCTINCLUDEDIR
+                          LIBDIR                  OCTLIBDIR
+                          LIBEXECDIR              PREFIX
+                          LOCALAPIARCHLIBDIR      STARTUPFILEDIR
+                          LOCALAPIFCNFILEDIR      VERSION
 
   -v, --version         Print the Octave version number.
 

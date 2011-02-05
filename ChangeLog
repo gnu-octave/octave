@@ -8,6 +8,10 @@
 	(OCTAVE_API_VERSION_NUMBER): Now 45.
 	(OCTAVE_RELEASE_DATE): Now 2011-01-31.
 
+2010-02-05  Rik  <octave@nomad.inbox5.com>
+
+	* mkoctfile.in, octave-config.in: Update usage strings.
+
 2010-02-04  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: Add new doc/icons/Makefile to list of Makefiles to build

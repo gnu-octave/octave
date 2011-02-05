@@ -10,6 +10,10 @@
 
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
+	* PROJECTS: Point to maintained list on Octave Wiki.
+
+2010-02-05  Rik  <octave@nomad.inbox5.com>
+
 	* mkoctfile.in, octave-config.in: Update usage strings.
 
 2010-02-04  Rik  <octave@nomad.inbox5.com>

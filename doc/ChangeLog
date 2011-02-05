@@ -1,5 +1,10 @@
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/mk_undocumented_list: Add dbnext, alias for
+	dbstep, to functions not requiring a docstring.
+
+2010-02-05  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/doccheck/aspell-octave.en.pws: Add new spelling
 	exceptions to Octave private dictionary.
 

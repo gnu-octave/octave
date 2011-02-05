@@ -11,6 +11,20 @@
 	* help/help.m, linear-algebra/onenormest.m, plot/graphics_toolkit.m,
 	plot/pie3.m, plot/view.m, signal/periodogram.m: Grammarcheck docstrings.
 
+2011-02-05  David Bateman  <dbateman@free.fr>
+
+	Bug #32022 and #32343.
+
+	* plot/legend.m (updatelegend): Don't flip plots when resetting the
+	legend. Use unwind_protect to ensure that the resursive flag is reset
+	in case of an error.
+	(getlegenddata): Remove this function and replace its use with the
+	function __getlegenddata__.
+	* plot/privata/__getlegenddata__.m: New function
+	* plot/module.mk (plot_PRIVATE_FCN_FILES): Add it here.
+	* plot/private/__plt__.m: Set initial values of hlgnd and tlgnd
+	if a legend exists already.
+
 2010-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* sparse/svds.m: Use testif to only run some sparse tests when

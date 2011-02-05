@@ -1,5 +1,9 @@
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/octave.texi: Update copyright on manual to 2011.
+
+2010-02-05  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/mkoctfile.1, interpreter/octave-config.1,
 	interpreter/octave.1: Overhaul man pages for release 3.4.
 

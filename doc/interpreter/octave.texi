@@ -84,7 +84,7 @@ END-INFO-DIR-ENTRY
 @ifnottex
 
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007 John W. Eaton.
+2007, 2011 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -128,7 +128,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007 John W. Eaton.
+2007, 2011 John W. Eaton.
 
 This is the third edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} graphics_toolkit (@var{name})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Change the default graphics graphics toolkit to @var{name}.  If the
+## Change the default graphics toolkit to @var{name}.  If the
 ## toolkit is not already loaded, it is first initialized by calling the
 ## function @code{__init_@var{name}__}.
 ##

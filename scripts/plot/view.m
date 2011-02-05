@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} view ([@var{x}, @var{y}, @var{z}])
 ## @deftypefnx {Function File} {} view (@var{dims})
 ## @deftypefnx {Function File} {} view (@var{ax}, @dots{})
-## Query or set set the viewpoint for the current axes.  The parameters
+## Query or set the viewpoint for the current axes.  The parameters
 ## @var{azimuth} and @var{elevation} can be given as two arguments or as
 ## 2-element vector.
 ## The viewpoint can also be given with Cartesian coordinates @var{x},

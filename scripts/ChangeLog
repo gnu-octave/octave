@@ -1,3 +1,7 @@
+2011-02-05  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/legend.m: Add demo for inline keys created by two plot commands.
+
 2011-02-05  David Bateman  <dbateman@free.fr>
 
 	Bug #32022 and #32343.

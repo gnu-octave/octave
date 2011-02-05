@@ -36,8 +36,26 @@ function retval = __plt__ (caller, h, varargin)
     property_set = false;
     properties = {};
 
-    hlgnd = [];
-    tlgnd = {};
+    hlegend = [];
+    fkids = get (gcf(), "children");
+    for i = 1 : numel(fkids)
+      if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes")
+          && (strcmp (get (fkids (i), "tag"), "legend")))
+        udata = get (fkids (i), "userdata");
+        if (! isempty (intersect (udata.handle, gca ())))
+          hlegend = fkids (i);
+          break;
+        endif
+      endif
+    endfor
+
+    setlgnd = false;
+    if (isempty (hlegend))
+      hlgnd = [];
+      tlgnd = {};
+    else
+      [hlgnd, tlgnd] = __getlegenddata__ (hlegend);
+    endif
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
@@ -79,12 +97,12 @@ function retval = __plt__ (caller, h, varargin)
           endif
           if (y_set)
             tmp = __plt2__ (h, x, y, options, properties);
-            [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
+            [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
             retval = [retval; tmp];
           else
             tmp = __plt1__ (h, x, options, properties);
-            [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
+            [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
             retval = [retval; tmp];
           endif
@@ -97,7 +115,7 @@ function retval = __plt__ (caller, h, varargin)
         if (y_set)
           options = __pltopt__ (caller, {""});
           tmp = __plt2__ (h, x, y, options, properties);
-          [hlgnd, tlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd);
+          [hlgnd, tlgnd, setlgnd] = __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
           retval = [retval; tmp];
           x = next_arg;
           y_set = false;
@@ -113,7 +131,7 @@ function retval = __plt__ (caller, h, varargin)
 
     endwhile
 
-    if (!isempty (hlgnd))
+    if (setlgnd)
       legend (gca(), hlgnd, tlgnd);
     endif
   else
@@ -122,7 +140,7 @@ function retval = __plt__ (caller, h, varargin)
 
 endfunction
 
-function [hlgnd, tlgnd] = __plt_key__ (h, options, hlgnd, tlgnd)
+function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options, hlgnd, tlgnd, setlgnd)
   n = numel (h);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);
@@ -133,6 +151,7 @@ function [hlgnd, tlgnd] = __plt_key__ (h, options, hlgnd, tlgnd)
     if (! isempty (key))
       hlgnd = [hlgnd(:); h(i)];
       tlgnd = {tlgnd{:}, key};
+      setlgnd = true;
     endif
   endfor
 endfunction

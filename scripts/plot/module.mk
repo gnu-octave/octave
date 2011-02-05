@@ -21,6 +21,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__ezplot__.m \
   plot/private/__fltk_file_filter__.m \
   plot/private/__ghostscript__.m \
+  plot/private/__getlegenddata__.m \
   plot/private/__gnuplot_has_terminal__.m\
   plot/private/__interp_cube__.m \
   plot/private/__line__.m \

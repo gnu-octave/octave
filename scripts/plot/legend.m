@@ -775,10 +775,13 @@ function updatelegend (h, d)
   persistent recursive = false;
   if (! recursive)
     recursive = true;
-    hax = getfield (get (h, "userdata"), "handle");
-    [hplots, text_strings] = getlegenddata (h);
-    h = legend (hax, flipud (hplots), get (h, "string"));
-    recursive = false;
+    unwind_protect
+      hax = getfield (get (h, "userdata"), "handle");
+      [hplots, text_strings] = __getlegenddata__ (h);
+      h = legend (hax, hplots, get (h, "string"));
+    unwind_protect_cleanup
+      recursive = false;
+    end_unwind_protect
   endif
 endfunction
 
@@ -895,7 +898,7 @@ function updateline (h, d, hlegend, linelength)
        && (! isempty (lm) || isempty (ll)))
     ## An element was removed from the legend. Need to recall the
     ## legend function to recreate a new legend
-    [hplots, text_strings] = getlegenddata (hlegend);
+    [hplots, text_strings] = __getlegenddata__ (hlegend);
     for i = 1 : numel (hplots)
       if (hplots (i) == h)
         hplots(i) = [];
@@ -909,7 +912,7 @@ function updateline (h, d, hlegend, linelength)
           && isempty (lm) && isempty (ll))
     ## An element was added to the legend. Need to recall the
     ## legend function to recreate a new legend
-    [hplots, text_strings] = getlegenddata (hlegend);
+    [hplots, text_strings] = __getlegenddata__ (hlegend);
     hplots = [hplots, h];
     text_strings = {text_strings{:}, displayname};
     legend (hplots, text_strings);
@@ -943,47 +946,6 @@ function updateline (h, d, hlegend, linelength)
             "userdata", h, "parent", hlegend);
     endif
   endif
-endfunction
-
-function [hplots, text_strings] = getlegenddata (hlegend)
-  hplots = [];
-  text_strings = {};
-  ca = getfield (get (hlegend, "userdata"), "handle");
-  kids = [];
-  for i = 1  : numel (ca)
-    kids = [kids; get(ca (i), "children")];
-  endfor
-  k = numel (kids);
-  while (k > 0)
-    typ = get (kids(k), "type");
-    while (k > 0
-           && ! (strcmp (typ, "line") || strcmp (typ, "surface")
-                 || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
-      typ = get (kids(--k), "type");
-    endwhile
-    if (k > 0)
-      if (strcmp (get (kids(k), "type"), "hggroup"))
-        hgkids = get (kids(k), "children");
-        for j = 1 : length (hgkids)
-          hgobj = get (hgkids (j));
-          if (isfield (hgobj, "displayname")
-              && ! isempty (hgobj.displayname))
-            hplots = [hplots, hgkids(j)];
-            text_strings = {text_strings{:}, hbobj.displayname};
-            break;
-          endif
-        endfor
-      else
-        if (! isempty (get (kids (k), "displayname")))
-          hplots = [hplots, kids(k)];
-          text_strings = {text_strings{:}, get(kids (k), "displayname")};
-        endif
-      endif
-      if (--k == 0)
-        break;
-      endif
-    endif
-  endwhile
 endfunction
 
 %!demo

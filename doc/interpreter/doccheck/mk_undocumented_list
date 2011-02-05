@@ -81,6 +81,7 @@ bug_report
 chdir
 comma
 debug
+dbnext
 exit
 F_DUPFD
 F_GETFD

@@ -1,5 +1,34 @@
 2011-02-06  Konstantinos Poulios  <logari81@googlemail.com>
 
+	* graphics.h.in (class axes::properties): Tag positionmode,
+	rotationmode, horizontalalignmentmode, verticalalignmentmode
+	with "u" qualifier.	New hidden property autopos_tag.
+	(axes::properties::request_autopos,
+	axes::properties::update_positionmode,
+	axes::properties::update_rotationmode,
+	axes::properties::update_horizontalalignmentmode,
+	axes::properties::update_verticalalignmentmode): New functions
+	(base_properties::update_autopos): New virtual function.
+	(axes::properties::update_xlabel_position,
+	axes::properties::update_ylabel_position,
+	axes::properties::update_zlabel_position,
+	axes::properties::update_title_position): Made public.
+	* graphics.cc (base_properties::update_autopos,
+	axes::properties::update_autopos,
+	text::properties::request_autopos): New functions.
+	(axes::properties::init, axes::properties::set_defaults,
+	axes::properties::set_xlabel, axes::properties::set_ylabel,
+	axes::properties::set_zlabel, axes::properties::set_title):
+	Set autopos_tag for {x,y,z}label and title.
+	(axes::properties::update_xlabel_position,
+	axes::properties::update_ylabel_position,
+	axes::properties::update_zlabel_position,
+	axes::properties::update_title_position): Run only for non-empty
+	strings. Set autopos_tag temporarily to none in order to prevent
+	race conditions.
+
+2011-02-06  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* graphics.cc: Untabify and improve indentation.
 
 2011-02-06  Konstantinos Poulios  <logari81@googlemail.com>

@@ -1079,3 +1079,13 @@ endfunction
 %! plot (x, cos(x), ";cos(x);")
 %! hold off
 
+%!demo
+%! clf
+%! x = 0:0.1:10;
+%! plot (x, sin(x), ";sin(x);")
+%! hold all
+%! plot (x, cos(x), ";cos(x);")
+%! hold off
+%! legend ({"sin(x)", "cos(x)"}, "location", "northeastoutside")
+
+

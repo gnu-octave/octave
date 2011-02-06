@@ -8,6 +8,11 @@
 	(OCTAVE_API_VERSION_NUMBER): Now 45.
 	(OCTAVE_RELEASE_DATE): Now 2011-01-31.
 
+2011-02-06  John W. Eaton  <jwe@octave.org>
+
+	* PROJECTS, README.devel: Use maintainers@octave.org instead of
+	octave-maintainers@octave.org.
+
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* PROJECTS: Point to maintained list on Octave Wiki.

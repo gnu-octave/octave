@@ -1,5 +1,11 @@
 2011-01-31  John W. Eaton  <jwe@octave.org>
 
+	* configure.ac (AC_INIT): Version is now 3.3.92.
+	(OCTAVE_API_VERSION_NUMBER): Now 46.
+	(OCTAVE_RELEASE_DATE): Now 2011-02-06.
+
+2011-01-31  John W. Eaton  <jwe@octave.org>
+
 	* configure.ac (AC_INIT): Version is now 3.3.91+.
 
 2011-01-31  John W. Eaton  <jwe@octave.org>

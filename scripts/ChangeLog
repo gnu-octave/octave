@@ -1,5 +1,6 @@
 2011-02-06  Ben Abbott  <bpabbott@mac.com>
 
+	* plot/legend.m: Align legends to plot box, add demo. Bug 32373.
 	* plot/legend.m: "legend off" should delete the legend object.
 
 2011-02-06  David Bateman  <dbateman@free.fr>

@@ -19,7 +19,7 @@ guidelines (http://www.gnu.org/software/octave/bugs.html) before
 submitting an item.
 
 If you have a fix for a bug, or an enhancement to submit, send your
-patch to octave-maintainers@octave.org or submit it to the patch
+patch to maintainers@octave.org or submit it to the patch
 tracker at 'http://savannah.gnu.org/patch/?group=octave'. 
 
 By adhering to the following guidelines you can minimize the work that

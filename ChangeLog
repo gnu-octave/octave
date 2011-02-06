@@ -1,3 +1,8 @@
+2011-02-06  John W. Eaton  <jwe@octave.org>
+
+	* PROJECTS, README.devel: Use maintainers@octave.org instead of
+	octave-maintainers@octave.org.
+
 2010-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* PROJECTS: Point to maintained list on Octave Wiki.

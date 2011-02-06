@@ -525,6 +525,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       OCTAVE_LOCAL_BUFFER (char, inbuf, element_length);
       is.read (inbuf, element_length);
 
+      std::cerr << "len: " << element_length << "\n";
+
       // We uncompress the first 8 bytes of the header to get the buffer length
       // This will fail with an error Z_MEM_ERROR
       uLongf destLen = 8;
@@ -537,61 +539,75 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           if (swap)
             swap_bytes<4> (tmp, 2);
 
-          destLen = tmp[1] + 8;
+          destLen = tmp[1] + 32;
           std::string outbuf (destLen, ' ');
 
-          // FIXME -- find a way to avoid casting away const here!
-
-          int err = uncompress (reinterpret_cast<Bytef *> (const_cast<char *> (outbuf.c_str ())),
-                                &destLen, reinterpret_cast<Bytef *> (inbuf),
-                                element_length);
-
-          if (err != Z_OK)
+          // Try reading the compressed file with 8 different lengthes
+          // to account for the zero padding that are added to matlab
+          // files
+          for (int k = 0; k < 8; k++)
             {
-              std::string msg;
-              switch (err)
+              // FIXME -- find a way to avoid casting away const here!
+              int err = uncompress (reinterpret_cast<Bytef *> 
+                                    (const_cast<char *> (outbuf.c_str ())),
+                                    &destLen, reinterpret_cast<Bytef *> (inbuf),
+                                    element_length - k);
+
+              if (err != Z_OK)
                 {
-                case Z_STREAM_END:
-                  msg = "stream end";
-                  break;
+                  std::string msg;
+                  switch (err)
+                    {
+                    case Z_STREAM_END:
+                      msg = "stream end";
+                      break;
 
-                case Z_NEED_DICT:
-                  msg = "need dict";
-                  break;
+                    case Z_NEED_DICT:
+                      msg = "need dict";
+                      break;
 
-                case Z_ERRNO:
-                  msg = "errno case";
-                  break;
+                    case Z_ERRNO:
+                      msg = "errno case";
+                      break;
 
-                case Z_STREAM_ERROR:
-                  msg = "stream error";
-                  break;
+                    case Z_STREAM_ERROR:
+                      msg = "stream error";
+                      break;
 
-                case Z_DATA_ERROR:
-                  msg = "data error";
-                  break;
+                    case Z_DATA_ERROR:
+                      if (k != 7)
+                        {
+                          std::cerr << "k = " << k << "\n";
+                          continue;
+                        }
+                      else
+                        msg = "data error";
+                      break;
 
-                case Z_MEM_ERROR:
-                  msg = "mem error";
-                  break;
+                    case Z_MEM_ERROR:
+                      msg = "mem error";
+                      break;
 
-                case Z_BUF_ERROR:
-                  msg = "buf error";
-                  break;
+                    case Z_BUF_ERROR:
+                      msg = "buf error";
+                      break;
 
-                case Z_VERSION_ERROR:
-                  msg = "version error";
+                    case Z_VERSION_ERROR:
+                      msg = "version error";
+                      break;
+                    }
+
+                  error ("load: error uncompressing data element (%s from zlib)",
+                         msg.c_str ());
                   break;
                 }
-
-              error ("load: error uncompressing data element (%s from zlib)",
-                     msg.c_str ());
-            }
-          else
-            {
-              std::istringstream gz_is (outbuf);
-              retval = read_mat5_binary_element (gz_is, filename,
+              else
+                {
+                  std::istringstream gz_is (outbuf);
+                  retval = read_mat5_binary_element (gz_is, filename,
                                                  swap, global, tc);
+                  break;
+                }
             }
         }
       else

@@ -206,9 +206,9 @@ operator *(const PermMatrix& a, const PermMatrix& b)
     {
       Array<octave_idx_type> ra (dim_vector (n, 1));
       if (a._colp)
-        ra.assign (idx_vector (ib), ia);
-      else
         ra.assign (idx_vector (ia), ib);
+      else
+        ra.assign (idx_vector (ib), ia);
       r = PermMatrix (ra, a._colp, false);
     }
 

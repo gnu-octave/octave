@@ -94,3 +94,6 @@ endfunction
 %!assert (circshift (x, -2), [7, 8, 9; 1, 2, 3; 4, 5, 6])
 %!assert (circshift (x, [0, 1]), [3, 1, 2; 6, 4, 5; 9, 7, 8]);
 %!assert (circshift ([],1), [])
+
+%!assert (full (circshift (eye (3), 1)), circshift (full (eye (3)), 1))
+%!assert (full (circshift (eye (3), 1)), [0,0,1;1,0,0;0,1,0])

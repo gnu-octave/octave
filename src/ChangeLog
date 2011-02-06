@@ -1,3 +1,9 @@
+2011-02-06  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (updating_axes_layout): New file-scope variable.
+	(axes::properties::update_axes_layout):	Return immediately if
+	updating_axes_layout is true.
+
 2011-02-03  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc: Include <sys/types.h> and <unistd.h> for isatty.

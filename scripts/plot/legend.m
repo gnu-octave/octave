@@ -81,8 +81,10 @@
 ##   Show legend on the plot
 ##
 ## @item "hide"
-## @itemx "off"
 ##   Hide legend on the plot
+##
+## @itemx "toggle"
+##   Toggles between "hide" and "show"
 ##
 ## @item "boxon"
 ##   Show a box around legend
@@ -95,6 +97,9 @@
 ##
 ## @item "right"
 ##   Place text to the right of the keys
+##
+## @itemx "off"
+##   Delete the legend object
 ## @end table
 ## @end deftypefn
 
@@ -217,7 +222,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       if (rows (arg) == 1)
         str = tolower (deblank (arg));
         switch (str)
-          case {"off", "hide"}
+          case {"off"}
+            delete (hlegend);
+            return
+          case {"hide"}
             show = "off";
             nargs--;
           case "show"
@@ -1091,4 +1099,14 @@ endfunction
 %! hold off
 %! legend ({"sin(x)", "cos(x)"}, "location", "northeastoutside")
 
+%!demo
+%! clf
+%! x = 0:10;
+%! plot (x, rand (11));
+%! xlabel ("Indices")
+%! ylabel ("Random Values")
+%! title ("Legend ""off"" should delete the legend")
+%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
+%! legend off
+%! axis ([0, 10, 0 1])
 

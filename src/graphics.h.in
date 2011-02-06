@@ -2065,6 +2065,8 @@ public:
 
   virtual void update_boundingbox (void);
 
+  virtual void update_autopos (const std::string& elem_type);
+
   virtual void add_listener (const caseless_str&, const octave_value&,
                              listener_mode = POSTSET);
 
@@ -3095,6 +3097,12 @@ public:
         update_axes_layout ();
       }
 
+    void update_autopos (const std::string& elem_type);
+    void update_xlabel_position (void);
+    void update_ylabel_position (void);
+    void update_zlabel_position (void);
+    void update_title_position (void);
+
     graphics_xform get_transform (void) const
       { return graphics_xform (x_render, x_render_inv, sx, sy, sz, x_zlim); }
 
@@ -3310,11 +3318,6 @@ public:
     void update_xdir (void) { update_camera (); update_axes_layout (); }
     void update_ydir (void) { update_camera (); update_axes_layout (); }
     void update_zdir (void) { update_camera (); update_axes_layout (); }
-
-    void update_xlabel_position (void);
-    void update_ylabel_position (void);
-    void update_zlabel_position (void);
-    void update_title_position (void);
 
     void update_ticklengths (void);
     void update_tickdir (void) { update_ticklengths (); }
@@ -3654,10 +3657,11 @@ public:
       bool_property yliminclude hl , "off"
       bool_property zliminclude hl , "off"
       // hidden properties for auto-positioning
-      radio_property positionmode h , "{auto}|manual"
-      radio_property rotationmode h , "{auto}|manual"
-      radio_property horizontalalignmentmode h , "{auto}|manual"
-      radio_property verticalalignmentmode h , "{auto}|manual"
+      radio_property positionmode hu , "{auto}|manual"
+      radio_property rotationmode hu , "{auto}|manual"
+      radio_property horizontalalignmentmode hu , "{auto}|manual"
+      radio_property verticalalignmentmode hu , "{auto}|manual"
+      radio_property autopos_tag h , "{none}|xlabel|ylabel|zlabel|title"
     END_PROPERTIES
 
     Matrix get_data_position (void) const;
@@ -3703,7 +3707,13 @@ public:
 
     void update_text_extent (void);
 
-    void update_string (void) { update_text_extent (); }
+    void request_autopos (void);
+    void update_positionmode (void) { request_autopos (); }
+    void update_rotationmode (void) { request_autopos (); }
+    void update_horizontalalignmentmode (void) { request_autopos (); }
+    void update_verticalalignmentmode (void) { request_autopos (); }
+
+    void update_string (void) { update_text_extent ();  request_autopos ();}
     void update_rotation (void) { update_text_extent (); }
     void update_fontname (void) { update_text_extent (); }
     void update_fontsize (void) { update_text_extent (); }

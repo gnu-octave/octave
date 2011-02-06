@@ -1,3 +1,7 @@
+2011-02-06  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/legend.m: "legend off" should delete the legend object.
+
 2011-02-06  David Bateman  <dbateman@free.fr>
 	* plot/legend.m : Delete old legend before probing the position and
 	outerposition. Reshape lpos correct if the legend locqtion is

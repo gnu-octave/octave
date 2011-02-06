@@ -600,33 +600,32 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           case "northeast"
             if (outside)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ...
-                      ca_outpos(2) + ca_outpos(4) - lpos(4), lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ...
-                         ca_pos(4) - lpos(4)];
+                      ca_pos(2) + ca_pos(4) - lpos(4), lpos(3), lpos(4)];
+              new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
               new_outpos = [ca_outpos(1), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4) - lpos(4)];
+                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
             endif
           case "northwest"
             if (outside)
-              lpos = [ca_outpos(1), ca_outpos(2) + ca_outpos(4) - lpos(4), ...
+              lpos = [ca_outpos(1), ca_pos(2) + ca_pos(4) - lpos(4), ...
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
-                         ca_pos(3) - lpos(3), ca_pos(4) - lpos(4)];
+                         ca_pos(3) - lpos(3), ca_pos(4)];
               new_outpos = [ca_outpos(1) + lpos(3), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4) - lpos(4)];
+                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
             endif
           case "southeast"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_outpos(2), ...
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_pos(2), ...
                       lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), ca_pos(2) + lpos(4), ...
-                         ca_pos(3) - lpos(3), ca_pos(4) - lpos(4)];
+              new_pos = [ca_pos(1), ca_pos(2), ...
+                         ca_pos(3) - lpos(3), ca_pos(4)];
               new_outpos = [ca_outpos(1), ca_outpos(2) + lpos(4), ...
                             ca_outpos(3) - lpos(3), ca_outpos(4) - lpos(4)];
             else
@@ -635,9 +634,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             endif
           case "southwest"
             if (outside)
-              lpos = [ca_outpos(1), ca_outpos(2), 0, lpos(3), lpos(4)];
-              new_pos = [ca_pos(1) +lpos(3), ca_pos(2) + lpos(4), ...
-                         ca_pos(3) - lpos(3), ca_pos(4) - lpos(4)];
+              lpos = [ca_outpos(1), ca_pos(2), lpos(3), lpos(4)];
+              new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
+                         ca_pos(3) - lpos(3), ca_pos(4)];
               new_outpos = [ca_outpos(1) + lpos(3), ca_outpos(2) + lpos(4), ...
                             ca_outpos(3) - lpos(3), ca_outpos(4) - lpos(4)];
             else
@@ -1109,4 +1108,24 @@ endfunction
 %! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
 %! legend off
 %! axis ([0, 10, 0 1])
+
+%!demo
+%! clf
+%! x = 0:4;
+%! subplot (2, 2, 1)
+%! plot (x, rand (numel (x)));
+%! legend (cellstr (num2str ((1:10)')), "location", "northwestoutside")
+%! legend boxon
+%! subplot (2, 2, 2)
+%! plot (x, rand (numel (x)));
+%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
+%! legend boxon
+%! subplot (2, 2, 3);
+%! plot (x, rand (numel (x)));
+%! legend (cellstr (num2str ((1:10)')), "location", "southwestoutside")
+%! legend boxon
+%! subplot (2, 2, 4)
+%! plot (x, rand (numel (x)));
+%! legend (cellstr (num2str ((1:10)')), "location", "southeastoutside")
+%! legend boxon
 

@@ -3899,9 +3899,14 @@ axes::properties::update_camera (void)
   x_gl_mat2 = x_viewport * x_projection;
 }
 
+static bool updating_axes_layout = false;
+
 void
 axes::properties::update_axes_layout (void)
 {
+  if (updating_axes_layout)
+    return;
+
   graphics_xform xform = get_transform ();
 
   double xd = (xdir_is ("normal") ? 1 : -1);
@@ -3990,6 +3995,10 @@ axes::properties::update_axes_layout (void)
     zPlane = (dir(2) < 0 ? z_min : z_max);
   zPlaneN = (zPlane == z_min ? z_max : z_min);
   fz = (z_max-z_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+
+  unwind_protect frame;
+  frame.protect_var (updating_axes_layout);
+  updating_axes_layout = true;
 
   update_ticklengths ();
 

@@ -1,5 +1,7 @@
 2011-02-05  David Bateman  <dbateman@free.fr>
 
+	* plot/legend.m: Allow the location and orientation to be set without
+	modifiying the legend keys.
 	* plot/legend.m: Add padding to legend positions. Fix for outerposition
 	for southeastoutside and southwestoutside.
 

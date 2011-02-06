@@ -410,6 +410,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
         box = get (hlegend, "box");
         fkids = get (fig, "children");
+
+        delete (hlegend);
+        hlegend = [];
       else
         if (strcmp (textpos, "default"))
           textpos = "left";
@@ -612,7 +615,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             endif
           case "southeast"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_outpos(2),
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3), ca_outpos(2), ...
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2) + lpos(4), ...
                          ca_pos(3) - lpos(3), ca_pos(4) - lpos(4)];

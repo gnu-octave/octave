@@ -190,4 +190,32 @@ public:
     }
 };
 
+class
+OCTINTERP_API
+text_parser_tex : public text_parser
+{
+public:
+  text_parser_tex (void) : text_parser () { }
+
+  ~text_parser_tex (void) { }
+
+  // FIXME: is it possible to use reference counting to manage the
+  // memory for the object returned by the text parser?  That would be
+  // preferable to having to know when and where to delete the object it
+  // creates...
+
+  text_element* parse (const std::string& s);
+
+ private:
+  text_element_list lst;
+  mutable size_t anchor;
+  
+  std::string getargument(const std::string& s, size_t start) const;
+  
+  size_t matchbrace(const std::string& s, size_t start) const;
+  
+
+
+};
+
 #endif

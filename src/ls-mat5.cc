@@ -541,10 +541,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           std::string outbuf (destLen, ' ');
 
           // FIXME -- find a way to avoid casting away const here!
-          int err = uncompress (reinterpret_cast<Bytef *> 
-                                (const_cast<char *> (outbuf.c_str ())),
+
+          int err = uncompress (reinterpret_cast<Bytef *> (const_cast<char *> (outbuf.c_str ())),
                                 &destLen, reinterpret_cast<Bytef *> (inbuf),
                                 element_length);
+
           if (err != Z_OK)
             {
               std::string msg;
@@ -585,7 +586,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
               error ("load: error uncompressing data element (%s from zlib)",
                      msg.c_str ());
-              break;
             }
           else
             {

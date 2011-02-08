@@ -1,3 +1,8 @@
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: New section for 3.6.  List deprecated functions that
+	have been removed for 3.6.
+
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 
 	* README.MacOS: Add detail.

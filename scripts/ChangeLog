@@ -1,3 +1,22 @@
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/complement.m, deprecated/create_set.m,
+	deprecated/dmult.m, deprecated/iscommand.m,
+	deprecated/israwcommand.m, deprecated/lchol.m,
+	deprecated/loadimage.m, deprecated/mark_as_command.m,
+	deprecated/mark_as_rawcommand.m, deprecated/spatan2.m,
+	deprecated/spchol2inv.m, deprecated/spcholinv.m,
+	deprecated/spchol.m, deprecated/spcumprod.m,
+	deprecated/spcumsum.m, deprecated/spdet.m, deprecated/spdiag.m,
+	deprecated/spfind.m, deprecated/spinv.m, deprecated/spkron.m,
+	deprecated/splchol.m, deprecated/split.m, deprecated/splu.m,
+	deprecated/spmax.m, deprecated/spmin.m, deprecated/spprod.m,
+	deprecated/spqr.m, deprecated/spsum.m, deprecated/spsumsq.m,
+	deprecated/str2mat.m, deprecated/unmark_command.m,
+	deprecated/unmark_rawcommand.m:
+	Remove functions deprecated in version 3.2.
+	* module.mk (deprecated_FCN_FILES): Remove them from the list.
+
 2011-02-05  David Bateman  <dbateman@free.fr>
 
 	* plot/legend.m: Allow the location and orientation to be set without

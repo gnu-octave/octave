@@ -1,3 +1,23 @@
+Summary of important user-visible changes for version 3.6:
+---------------------------------------------------------
+
+ ** Deprecated functions.
+
+    The following functions were deprecated in Octave 3.2 and have been
+    removed from Octave 3.6.
+                                           
+      create_set          spcholinv    splu   
+      dmult               spcumprod    spmax
+      iscommand           spcumsum     spmin
+      israwcommand        spdet        spprod
+      lchol               spdiag       spqr
+      loadimage           spfind       spsum
+      mark_as_command     sphcat       spsumsq
+      mark_as_rawcommand  spinv        spvcat 
+      spatan2             spkron       str2mat
+      spchol              splchol      unmark_command
+      spchol2inv          split        unmark_rawcommand
+
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
 

@@ -493,9 +493,6 @@ symmetric positive definite matrix @var{A}.\n\
 %!testif HAVE_CHOLMOD
 %! Ainv3 = cholinv(sparse(A));
 %! assert (norm(Ainv-Ainv3),0,1e-10)
-%!testif HAVE_CHOLMOD
-%! Ainv4 = spcholinv(sparse(A));
-%! assert (norm(Ainv-Ainv4),0,1e-10)
 
 */
 

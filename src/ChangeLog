@@ -1,5 +1,9 @@
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/chol.cc: Delete obsolete test of spcholinv.
+
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
 	* oct-parse.yy (parse_fcn_file): Don't warn about coercing
 	nested functions to subfunctions if yyparse failed.
 

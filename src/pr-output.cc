@@ -3024,7 +3024,7 @@ abs (T x)
 }
 
 #define INSTANTIATE_ABS(T) \
-  template /* static */ inline T abs (T)
+  template /* static */ T abs (T)
 
 INSTANTIATE_ABS(signed char);
 INSTANTIATE_ABS(short);

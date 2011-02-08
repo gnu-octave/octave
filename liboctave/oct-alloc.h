@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_oct_alloc_h)
 #define octave_oct_alloc_h 1
 
+#include <cstddef>
+
 class
 OCTAVE_API
 octave_allocator

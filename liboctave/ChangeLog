@@ -1,3 +1,8 @@
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-alloc.h: Include <cstddef>.
+	From Orion Poplawski <orion@cora.nwra.com>.
+
 2011-02-06  John W. Eaton  <jwe@octave.org>
 
 	* PermMatrix.cc (operator*): Fix mixed row/column permutation

@@ -1,3 +1,7 @@
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: Add note about subfunctions.
+
 2011-02-06  John W. Eaton  <jwe@octave.org>
 
 	* PROJECTS, README.devel: Use maintainers@octave.org instead of

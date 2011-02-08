@@ -2,6 +2,10 @@
 
 	* NEWS: Add note about subfunctions.
 
+2011-02-08  Ben Abbott  <bpabbott@mac.com>
+
+	* README.MacOS: Add detail.
+
 2011-02-06  John W. Eaton  <jwe@octave.org>
 
 	* PROJECTS, README.devel: Use maintainers@octave.org instead of

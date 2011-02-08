@@ -53,8 +53,8 @@ Alternatively, the Fink and MacPorts package managers provide more recent
 versions of gcc which include gfortan. Those may be used to build the sources
 as well. However, care must be taken.
 
-  * The same compiler must be used to build all the dependencies. This is
-    necessary to to avoid conflicts between the compiler libraries such as
+  * The same compiler must be used to build all all of Octave's sources. This
+    is necessary to to avoid conflicts between the compiler libraries such as
     libstdc++. For a successful build the first file in LDFLAGS must refer to
     this library. For example, if building with gcc-4.5 obtained from MacPorts
     LDFLAGS would begin as,
@@ -63,7 +63,13 @@ as well. However, care must be taken.
 
   * As of MacOS 10.6.6, the 64bit BLAS routines that are part of Apple's vecLib
     (framework accelerate) are not functioning correctly.  As a work around, an
-    alternative BLAS/LAPACK library, such as ATLAS, must be used.
+    alternative BLAS/LAPACK library, such as ATLAS, must be used. A bug report 
+    has been filed with Apple.
+
+      http://bugreport.apple.com
+      Title: "64 bit ABI issue with libBLAS.dylib"
+      Problem ID: 7850167
+      Date: April 11, 2010 at 12:04 AM
 
 
 2.2 Manual Package Management
@@ -85,7 +91,7 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
 
   * gfortran: Available from http://r.reseach.att.com/tools
 
-  * gnu sed: Availabel from http://www.gnu.org/software/sed/
+  * gnu sed: Available from http://www.gnu.org/software/sed/
 
       ./configure --prefix=/usr
       make
@@ -94,9 +100,9 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
   * fftw3: Available from http://www.fftw.org/download.html
 
       export F77="/usr/bin/gfortran"
-      export CFLAGS="-arch i686 -arch x86_64"
+      export CFLAGS="-m32"
       export FFLAGS="$CFLAGS"
-      export LDLAGS="$CFLAGS"
+      export LDFLAGS="$CFLAGS"
       ./configure --disable-dependency-tracking
       make
       sudo make install
@@ -105,20 +111,57 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
       make
       sudo make install
 
+    For a 64bit build, the CFLAGS must be modified.
+
+      export CFLAGS="-arch i686 -arch x86_64"
+
+  * blas/lapack
+
+    - For 64 bit, a non-Xcode 64 bit Atlas may be used. Alternatively,
+      a wrapper for Apple's vecLib framework may be used.
+
+      https://mailman.cae.wisc.edu/pipermail/octave-maintainers/2011-January/022541.html
+
 A fully functional Octave requires additional dependencies. See the link below
 for the details.
 
     http://wiki.octave.org/wiki.pl?BuildFromSource
+
+TODO - Modify the configure script to test for 64 bit vecLib bug. When the bug
+       is present, apply the wrapper solution.
+
 
 2.2.2 Building Octave as a 32bit Application
 --------------------------------------------
 
 The commands below are sufficient to build a 32bit Octave.
 
+  export FC="/usr/bin/gfortran"
   export CFLAGS="-m32"
-  export FFLAGS="-m32 -ff2c"
-  export CPPFLAGS="-m32 -D_REENTRANT"
-  export LDFLAGS="-m32"
+  export FFLAGS="$CFLAGS -ff2c"
+  export CPPFLAGS="$CFLAGS -D_REENTRANT -D__LISTS__"
+  export LDFLAGS="$CFLAGS"
+  ./configure --disable-readline --disable-docs
+  make
+
+Octave provides an interegrated tests suite.
+
+  make check
+
+Octave may be run withou installing the application using the utility below.
+
+  ./run-octave
+
+2.2.3 Building Octave as a 64bit Application
+--------------------------------------------
+
+The commands below are sufficient to build a 64bit Octave.
+
+  export FC="/usr/bin/gfortran"
+  export CFLAGS="-arch x86_64"
+  export FFLAGS="$CFLAGS"
+  export CPPFLAGS="$CFLAGS -D_REENTRANT -D__LISTS__"
+  export LDFLAGS="$CFLAGS"
   ./configure --disable-readline --disable-docs
   make
 
@@ -142,7 +185,7 @@ Currently, Fink does not have a package available for Octave versions above
 3.0.x. These instructions will allow the developers sources to be build and
 run, but will not permit Octave to be installed in the usual Fink way.
 
-TODO - when a Fink package is developed for Octave 3.4.x, modify these 
+TODO - When a Fink package is developed for Octave 3.4.x, modify these 
        instructions to model the MacPorts secion.
 
 
@@ -152,6 +195,7 @@ TODO - when a Fink package is developed for Octave 3.4.x, modify these
 To build Octave's sources the list of Fink packages below need to be installed.
 
   aquaterm
+  arpack
   autoconf (>= 2.6.0)
   automake (>= 1.11)
   fftw3 (>= 3.1.1)
@@ -208,7 +252,7 @@ archive, ./autogen.sh must be run prior to ./configure.
   export LDFLAGS="-L$FINK_PREFIX/lib -L/usr/lib -m32"
   export CFLAGS="-I$FINK_PREFIX/include $OPTFLAGS -m32"
   export CXXFLAGS=$CFLAGS
-  export CPPFLAGS=$CXXFLAGS 
+  export CPPFLAGS="$CXXFLAGS -D__LISTS__"
   export ACLOCAL_FLAGS="-I$FINK_PREFIX/share/aclocal"
   export PKG_CONFIG_PATH="$FINK_PREFIX/lib/pkgconfig"
   export PATH="$FINK_PREFIX/var/lib/fink/path-prefix-10.6/:$PATH"
@@ -234,7 +278,7 @@ archive, ./autogen.sh must be run prior to ./configure.
 
 Note: This approach to building Octave does not support "make install".
 
-TODO - develop a Fink package for Octave 3.4.x.
+TODO - Develop a Fink package for Octave 3.4.x.
 
 
 2.4 Building With Dependencies Satisfied by MacPorts

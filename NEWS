@@ -575,6 +575,18 @@ Summary of important user-visible changes for version 3.2:
 
     the lines "s *= y;" and "t = y + x" will not be executed.
 
+ ** If any subfunction in a file ends with "end" or "endfunction", then
+    they all must end that way.  Previously, Octave accepted
+
+      function main ()
+        ...
+      # no endfunction here.
+      function sub ()
+        ...
+      endfunction
+
+    but this is no longer allowed.
+
  ** Special treatment in the parser of expressions like "a' * b".
 
     In these cases the transpose is no longer explicitly formed and

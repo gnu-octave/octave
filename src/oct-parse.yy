@@ -3589,14 +3589,14 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           fcn_ptr = primary_fcn_ptr;
 
-          if (reading_fcn_file && endfunction_found && max_function_depth > 1)
-            warning_with_id ("Octave:nested-functions-coerced",
-                             "nested functions are coerced into subfunctions "
-                             "in file %s", ff.c_str ());
-
           if (status != 0)
             error ("parse error while reading %s file %s",
                    file_type.c_str(), ff.c_str ());
+          else if (reading_fcn_file && endfunction_found
+                   && max_function_depth > 1)
+            warning_with_id ("Octave:nested-functions-coerced",
+                             "nested functions are coerced into subfunctions "
+                             "in file %s", ff.c_str ());
         }
       else
         {

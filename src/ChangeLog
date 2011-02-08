@@ -1,3 +1,8 @@
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-parse.yy (parse_fcn_file): Don't warn about coercing
+	nested functions to subfunctions if yyparse failed.
+
 2011-02-06  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (class axes::properties): Tag positionmode,

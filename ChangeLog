@@ -1,10 +1,10 @@
-2011-02-08  John W. Eaton  <jwe@octave.org>
-
-	* NEWS: Add note about subfunctions.
-
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 
 	* README.MacOS: Add detail.
+
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: Add note about subfunctions.
 
 2011-02-06  John W. Eaton  <jwe@octave.org>
 
@@ -28,7 +28,7 @@
 2010-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate glpkmex function.
-	
+
 2011-01-30  John W. Eaton  <jwe@octave.org>
 
 	* acinclude.m4 (OCTAVE_PROG_GHOSTSCRIPT): Update warning message.

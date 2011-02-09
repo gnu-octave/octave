@@ -100,7 +100,7 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
   * fftw3: Available from http://www.fftw.org/download.html
 
       export F77="/usr/bin/gfortran"
-      export CFLAGS="-m32"
+      export CFLAGS="-arch i686 -arch x86_64"
       export FFLAGS="$CFLAGS"
       export LDFLAGS="$CFLAGS"
       ./configure --disable-dependency-tracking
@@ -110,10 +110,6 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
       ./configure --enable-float --disable-dependency-tracking
       make
       sudo make install
-
-    For a 64bit build, the CFLAGS must be modified.
-
-      export CFLAGS="-arch i686 -arch x86_64"
 
   * blas/lapack
 

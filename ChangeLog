@@ -1,3 +1,7 @@
+2011-02-08  Ben Abbott  <bpabbott@mac.com>
+
+	* README.MacOS: Fix FFTW CCFLAGS.
+
 2010-02-08  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Use indentation of 2 spaces rather than 3 in code examples.

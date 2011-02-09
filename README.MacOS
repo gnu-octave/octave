@@ -42,7 +42,7 @@ instructions document the procedure for MacOS 10.6.X.
 
 Apple's Xcode Developer's Tools must be installed to build Octave on MacOS X.
 
-A fortran compilar is also required to build Octave.
+A fortran compiler is also required to build Octave.
 
 AT&T Research provides versions of gfortran which have been patched to work
 with gcc tool set bundled with Xcode.
@@ -54,7 +54,7 @@ versions of gcc which include gfortan. Those may be used to build the sources
 as well. However, care must be taken.
 
   * The same compiler must be used to build all all of Octave's sources. This
-    is necessary to to avoid conflicts between the compiler libraries such as
+    is necessary to avoid conflicts between the compiler libraries such as
     libstdc++. For a successful build the first file in LDFLAGS must refer to
     this library. For example, if building with gcc-4.5 obtained from MacPorts
     LDFLAGS would begin as,
@@ -79,7 +79,7 @@ Instructions for building Octave are available on the web at the link below.
 
     http://wiki.octave.org/wiki.pl?BuildFromSource
 
-In additionn, those wishing to build on MacOS X (10.6.x) should read section
+In addition, those wishing to build on MacOS X (10.6.x) should read section
 2.1 above.
 
 2.2.1 Critical Dependencies
@@ -140,11 +140,11 @@ The commands below are sufficient to build a 32bit Octave.
   ./configure --disable-readline --disable-docs
   make
 
-Octave provides an interegrated tests suite.
+Octave provides an integrated tests suite.
 
   make check
 
-Octave may be run withou installing the application using the utility below.
+Octave may be run without installing the application using the utility below.
 
   ./run-octave
 
@@ -161,11 +161,11 @@ The commands below are sufficient to build a 64bit Octave.
   ./configure --disable-readline --disable-docs
   make
 
-Octave provides an interegrated tests suite.
+Octave provides an integrated tests suite.
 
   make check
 
-Octave may be run withou installing the application using the utility below.
+Octave may be run without installing the application using the utility below.
 
   ./run-octave
 
@@ -182,7 +182,7 @@ Currently, Fink does not have a package available for Octave versions above
 run, but will not permit Octave to be installed in the usual Fink way.
 
 TODO - When a Fink package is developed for Octave 3.4.x, modify these 
-       instructions to model the MacPorts secion.
+       instructions to model the MacPorts section.
 
 
 2.3.1 Dependencies
@@ -286,12 +286,12 @@ To install and setup the MacPorts package manager see the online documentation
 
 Using MacPorts, two approaches are described. The first describes how to build
 and locally install Octave from a formal snapshot of the developer's sources or
-from the developer's sources themselves. This is intended to the causual Octave
+from the developer's sources themselves. This is intended to the casual Octave
 developer, or for users who want to live on the bleeding edge.
 
 The second describes an approach for building Octave which is intended for
 active developers. In this case, MacPorts is used to satisfy Octave's
-dependencies, but MacPorts does not build Octave. Futher a direct install of
+dependencies, but MacPorts does not build Octave. Further a direct install of
 Octave is not possible (i.e. cannot "make install").
 
 
@@ -316,7 +316,7 @@ file is accessible from the web at the link below.
 
     http://trac.macports.org/browser/trunk/dports/math/octave-devel/Portfile
 
-It is also available locally at the location below. The parametere ${prefix} is
+It is also available locally at the location below. The parameter ${prefix} is
 corresponds to where MacPorts is install, which by default is "/opt/local".
 
     ${prefix}/var/macports/sources/rsync.macports.org/release/ports/math/octave-devel/Portfile
@@ -354,7 +354,7 @@ ${config_opts}. If the sources being built are from the mercurial archive, then
     ./configure ${config_opts}
     make
 
-Octave's intergrated tests may be run.
+Octave's integrated tests may be run.
 
     make check
 

@@ -1,3 +1,7 @@
+2011-02-08  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__go_draw_axes__.m: Properly set fontspec for legends.
+
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/complement.m, deprecated/create_set.m,

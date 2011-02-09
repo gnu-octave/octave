@@ -4121,8 +4121,6 @@ axes::properties::update_ticklengths (void)
 void
 axes::properties::update_xlabel_position (void)
 {
-  graphics_xform xform = get_transform ();
-
   text::properties& xlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_xlabel ()).get_properties ());
 
@@ -4150,6 +4148,8 @@ axes::properties::update_xlabel_position (void)
       if (xlabel_props.positionmode_is ("auto")
           || xlabel_props.rotationmode_is ("auto"))
         {
+          graphics_xform xform = get_transform ();
+
           Matrix ext (1, 2, 0.0);
           ext = get_ticklabel_extents (get_xtick ().matrix_value (),
                                        get_xticklabel ().all_strings (),
@@ -4205,8 +4205,6 @@ axes::properties::update_xlabel_position (void)
 void
 axes::properties::update_ylabel_position (void)
 {
-  graphics_xform xform = get_transform ();
-
   text::properties& ylabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_ylabel ()).get_properties ());
 
@@ -4234,6 +4232,8 @@ axes::properties::update_ylabel_position (void)
       if (ylabel_props.positionmode_is ("auto")
           || ylabel_props.rotationmode_is ("auto"))
         {
+          graphics_xform xform = get_transform ();
+
           Matrix ext (1, 2, 0.0);
           ext = get_ticklabel_extents (get_ytick ().matrix_value (),
                                        get_yticklabel ().all_strings (),
@@ -4289,8 +4289,6 @@ axes::properties::update_ylabel_position (void)
 void
 axes::properties::update_zlabel_position (void)
 {
-  graphics_xform xform = get_transform ();
-
   text::properties& zlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_zlabel ()).get_properties ());
 
@@ -4320,6 +4318,8 @@ axes::properties::update_zlabel_position (void)
       if (zlabel_props.positionmode_is ("auto")
           || zlabel_props.rotationmode_is ("auto"))
         {
+          graphics_xform xform = get_transform ();
+
           Matrix ext (1, 2, 0.0);
           ext = get_ticklabel_extents (get_ztick ().matrix_value (),
                                        get_zticklabel ().all_strings (),
@@ -4396,8 +4396,6 @@ axes::properties::update_zlabel_position (void)
 void
 axes::properties::update_title_position (void)
 {
-  graphics_xform xform = get_transform ();
-
   text::properties& title_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_title ()).get_properties ());
 
@@ -4407,6 +4405,8 @@ axes::properties::update_title_position (void)
 
       if (title_props.positionmode_is ("auto"))
         {
+          graphics_xform xform = get_transform ();
+
           // FIXME: bbox should be stored in axes::properties
           ColumnVector bbox(4);
           bbox(0) = octave_Inf;
@@ -5731,12 +5731,7 @@ text::properties::request_autopos (void)
 {
   if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel") ||
       autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
-    {
-      const std::string text_type = get_autopos_tag ();
-      set_autopos_tag ("none");
-      update_autopos (text_type);
-      set_autopos_tag (text_type);
-    }
+    update_autopos (get_autopos_tag ());
 }
 
 void

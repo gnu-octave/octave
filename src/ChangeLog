@@ -1,3 +1,13 @@
+2011-02-09  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (axes::properties::update_xlabel_position,
+	axes::properties::update_ylabel_position,
+	axes::properties::update_zlabel_position,
+	axes::properties::update_title_position): Use get_transform only
+	when it is required.
+	(text::properties::request_autopos): Remove redundant temporary
+	settting of autopos_tag to none.
+
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (INSTANTIATE_ABS): Omit inline keyword from

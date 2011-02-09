@@ -34,16 +34,26 @@ SM octinternal_do_mul_colpm_sm (const octave_idx_type *pcol, const SM& a)
   const octave_idx_type nent = a.nnz ();
   SM r (nr, nc, nent);
 
-  for (octave_idx_type k = 0; k < nent; ++k)
-    {
-      octave_quit ();
-      r.xridx (k) = pcol[a.ridx (k)];
-      r.xdata (k) = a.data (k);
-    }
+  octave_sort<octave_idx_type> sort;
+
   for (octave_idx_type j = 0; j <= nc; ++j)
     r.xcidx (j) = a.cidx (j);
 
-  r.maybe_compress (false);
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_quit ();
+      
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, sidx, r.xcidx(j+1) - r.xcidx(j));
+      for (octave_idx_type i = r.xcidx(j), ii = 0; i < r.xcidx(j+1); i++)
+        {
+          sidx[ii++]=i;
+          r.xridx (i) = pcol[a.ridx (i)];
+        }
+      sort.sort (r.xridx() + r.xcidx(j), sidx, r.xcidx(j+1) - r.xcidx(j)); 
+      for (octave_idx_type i = r.xcidx(j), ii = 0; i < r.xcidx(j+1); i++)
+        r.xdata(i) = a.data (sidx[ii++]);
+    }
+
   return r;
 }
 
@@ -105,7 +115,6 @@ SM octinternal_do_mul_sm_rowpm (const SM& a, const octave_idx_type *prow)
     }
   assert (k_src == nent);
 
-  r.maybe_compress (false);
   return r;
 }
 
@@ -141,7 +150,6 @@ SM octinternal_do_mul_sm_colpm (const SM& a, const octave_idx_type *pcol)
     }
   assert (k == nent);
 
-  r.maybe_compress (false);
   return r;
 }
 

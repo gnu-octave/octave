@@ -378,6 +378,20 @@ Summary of important user-visible changes for version 3.4:
     appended, and the anonymous function call does not occur on the
     call stack.
 
+ ** For compatibility with Matlab, mu2lin (x) is now equivalent to
+    mu2lin (x, 0).
+
+ ** The new function `history_control' may be used to control the way
+    command lines are added to the history list when Octave is using
+    readline for command-line editing.  For example
+
+      history_control ("ignoredups")
+
+    tells Octave to avoid adding duplicate lines to the history list.
+
+ ** Octave now uses the gnulib library for improved portability and to
+    avoid bugs in operating system functions.
+
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.0 and have been
@@ -436,9 +450,6 @@ Summary of important user-visible changes for version 3.4:
       autocor  cellidx   gammai     krylovb    values
       autocov  dispatch  glpkmex    replot
       betai    fstat     is_global  saveimage
-
- ** For compatibility with Matlab, mu2lin (x) is now equivalent to
-    mu2lin (x, 0).
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

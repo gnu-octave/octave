@@ -1,3 +1,7 @@
+2010-02-08  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Use indentation of 2 spaces rather than 3 in code examples.
+
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: New section for 3.6.  List deprecated functions that

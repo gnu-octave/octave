@@ -24,6 +24,10 @@ Summary of important user-visible changes for version 3.4:
  ** BLAS and LAPACK libraries are now required to build Octave.  The
     subset of the reference BLAS and LAPACK libraries has been removed
     from the Octave sources.
+  
+ ** The ARPACK library is now distributed with Octave so it no longer
+    needs to be available as an external dependency when building
+    Octave.
 
  ** The `lookup' function was extended to be more useful for
     general-purpose binary searching.  Using this improvement, the
@@ -172,9 +176,9 @@ Summary of important user-visible changes for version 3.4:
  ** More efficient matrix division handling.  Octave is now able to
     handle the expressions
     
-       M' \ V
-       M.' \ V
-       V / M 
+      M' \ V
+      M.' \ V
+      V / M 
 
     (M is a matrix and V is a vector) more efficiently in certain cases.
     In particular, if M is triangular, all three expressions will be
@@ -311,68 +315,68 @@ Summary of important user-visible changes for version 3.4:
     
     can be used to list all available packages.
 
-  ** The internal data representation of structs has been completely
-     rewritten to make certain optimizations feasible.  The field data
-     can now be shared between structs with equal keys but different
-     dimensions or values, making operations that preserve the fields
-     faster.  Economized storage is now used for scalar structs (just
-     like most other scalars), making their usage more
-     memory-efficient.  Certain array-like operations on structs
-     (concatenation, uniform cellfun, num2cell) have gained a
-     significant speed-up.  Additionally, the octave_scalar_map class
-     now provides a simpler interface to work with scalar structs within
-     a C++ DLD function.
+ ** The internal data representation of structs has been completely
+    rewritten to make certain optimizations feasible.  The field data
+    can now be shared between structs with equal keys but different
+    dimensions or values, making operations that preserve the fields
+    faster.  Economized storage is now used for scalar structs (just
+    like most other scalars), making their usage more
+    memory-efficient.  Certain array-like operations on structs
+    (concatenation, uniform cellfun, num2cell) have gained a
+    significant speed-up.  Additionally, the octave_scalar_map class
+    now provides a simpler interface to work with scalar structs within
+    a C++ DLD function.
 
-  ** Two new formats are available for displaying numbers:
+ ** Two new formats are available for displaying numbers:
 
-       format short eng
-       format long eng
+      format short eng
+      format long eng
 
-     Both display numbers in engineering notation, i.e., mantissa +
-     exponent where the exponent is a multiple of 3.
+    Both display numbers in engineering notation, i.e., mantissa +
+    exponent where the exponent is a multiple of 3.
 
-  ** The following functions are new in Octave 3.4:
+ ** The following functions are new in Octave 3.4:
 
-       accumdim    erfcx        nfields      pqpnonneg  uigetdir 
-       bitpack     fileread     nth_element  quadcc     uigetfile  
-       bitunpack   fminbnd      onCleanup    randi      uiputfile    
-       blkmm       fskipl       pbaspect     repelems   uimenu  
-       cbrt        ifelse       pie3         reset      whitebg
-       curl        ishermitian  powerset     rsf2csf    
-       chop        isindex      ppder        saveas          
-       daspect     luupdate     ppint        strread          
-       divergence  merge        ppjumps      textread 
+      accumdim    erfcx        nfields      pqpnonneg  uigetdir 
+      bitpack     fileread     nth_element  quadcc     uigetfile  
+      bitunpack   fminbnd      onCleanup    randi      uiputfile    
+      blkmm       fskipl       pbaspect     repelems   uimenu  
+      cbrt        ifelse       pie3         reset      whitebg
+      curl        ishermitian  powerset     rsf2csf    
+      chop        isindex      ppder        saveas          
+      daspect     luupdate     ppint        strread          
+      divergence  merge        ppjumps      textread 
 
-  ** Using the image function to view images with external programs such
-     as display, xv, and xloadimage is no longer supported.  The
-     image_viewer function has also been removed.
+ ** Using the image function to view images with external programs such
+    as display, xv, and xloadimage is no longer supported.  The
+    image_viewer function has also been removed.
 
-  ** The behavior of struct assignments to non-struct values has been
-     changed.  Previously, it was possible to overwrite an arbitrary
-     value:
-      
-        a = 1;
-        a.x = 2;
+ ** The behavior of struct assignments to non-struct values has been
+    changed.  Previously, it was possible to overwrite an arbitrary
+    value:
 
-     This is no longer possible unless a is an empty matrix or cell
-     array.
-  
-  ** The dlmread function has been extended to allow specifying a custom
-     value for empty fields.
+      a = 1;
+      a.x = 2;
 
-  ** The dlmread and dlmwrite functions have been modified to accept
-     file IDs (as returned by fopen) in addition to file names.
+    This is no longer possible unless a is an empty matrix or cell
+    array.
+ 
+ ** The dlmread function has been extended to allow specifying a custom
+    value for empty fields.
 
-  ** Octave can now optimize away the interpreter overhead of an
-     anonymous function handle, if the function simply calls another
-     function or handle with some of its parameters bound to certain
-     values.  Example:
-     
-       f = @(x) sum (x, 1);
+ ** The dlmread and dlmwrite functions have been modified to accept
+    file IDs (as returned by fopen) in addition to file names.
 
-     When f is called, the call is forwarded to @sum with the constant 1
-     appended, and the anonymous function call does not occur on the
-     call stack.
+ ** Octave can now optimize away the interpreter overhead of an
+    anonymous function handle, if the function simply calls another
+    function or handle with some of its parameters bound to certain
+    values.  Example:
+    
+      f = @(x) sum (x, 1);
+
+    When f is called, the call is forwarded to @sum with the constant 1
+    appended, and the anonymous function call does not occur on the
+    call stack.
 
  ** Deprecated functions.
 
@@ -433,12 +437,8 @@ Summary of important user-visible changes for version 3.4:
       autocov  dispatch  glpkmex    replot
       betai    fstat     is_global  saveimage
 
-  * For compatibility with Matlab, mu2lin (x) is now equivalent to
+ ** For compatibility with Matlab, mu2lin (x) is now equivalent to
     mu2lin (x, 0).
-
-  * The ARPACK library is now distributed with Octave so it no longer
-    needs to be available as an external dependency when building
-    Octave.
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

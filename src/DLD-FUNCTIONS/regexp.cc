@@ -237,14 +237,14 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
               for (int i = 0; i < nnames; i++)
                 if (named(i) == tmp_name)
                   {
-                    named_idx.resize(inames+1, 1);
+                    named_idx.resize (dim_vector (inames+1, 1));
                     named_idx(inames) = i;
                     found = true;
                     break;
                   }
               if (! found)
                 {
-                  named_idx.resize(inames+1, 1);
+                  named_idx.resize (dim_vector (inames+1, 1));
                   named_idx(inames) = nnames;
                   named.append(tmp_name);
                   nnames++;

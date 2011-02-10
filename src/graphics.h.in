@@ -3737,6 +3737,7 @@ public:
   text (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p)
   {
+    xproperties.set_clipping ("off");
     xproperties.override_defaults (*this);
   }
 

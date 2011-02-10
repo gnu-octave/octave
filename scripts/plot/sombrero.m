@@ -39,7 +39,8 @@ function [x, y, z] = sombrero (n)
 
   if (nargin < 2)
     if (n > 1)
-      tx = ty = linspace (-8, 8, n)';
+      tx = linspace (-8, 8, n)';
+      ty = tx;
       [xx, yy] = meshgrid (tx, ty);
       r = sqrt (xx .^ 2 + yy .^ 2) + eps;
       tz = sin (r) ./ r;

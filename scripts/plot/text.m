@@ -108,21 +108,21 @@ endfunction
 %! clf
 %! ha = {"left", "center", "right"};
 %! va = {"bottom", "middle", "top"};
+%! x = [0.25 0.5 0.75];
+%! y = [0.25 0.5 0.75];
 %! for t = 0:30:359;
 %!   for nh = 1:numel(ha)
-%!     x = [0.25 0.5 0.75](nh);
 %!     for nv = 1:numel(va)
-%!       y = [0.25 0.5 0.75](nv);
-%!       text (x, y, "Hello World",
-%!                   "rotation", t,
-%!                   "horizontalalignment", ha{nh},
-%!                   "verticalalignment", va{nv})
+%!       text (x(nh), y(nv), "Hello World", ...
+%!             "rotation", t, ...
+%!             "horizontalalignment", ha{nh}, ...
+%!             "verticalalignment", va{nv})
 %!     endfor
 %!   endfor
 %! endfor
-%! set (gca, "xtick", [0.25, 0.5, 0.75],
-%!           "xticklabel", ha,
-%!           "ytick", [0.25, 0.5, 0.75],
+%! set (gca, "xtick", [0.25, 0.5, 0.75], ...
+%!           "xticklabel", ha, ...
+%!           "ytick", [0.25, 0.5, 0.75], ...
 %!           "yticklabel", va)
 %! axis ([0 1 0 1])
 %! xlabel ("horizontal alignment")
@@ -131,13 +131,13 @@ endfunction
 
 %!demo
 %! clf
-%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1],
-%!                  "facecolor", "none",
+%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
+%!                  "facecolor", "none", ...
 %!                  "facealpha", 0);
 %! for t = 0:45:359;
-%!   text (25, 25, 0, "Vertical Alignment = Bottom",
-%!                    "rotation", t,
-%!                    "horizontalalignment", "left",
+%!   text (25, 25, 0, "Vertical Alignment = Bottom", ...
+%!                    "rotation", t, ...
+%!                    "horizontalalignment", "left", ...
 %!                    "verticalalignment", "bottom")
 %! endfor
 %! caxis ([-100 100])

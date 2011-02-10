@@ -222,10 +222,10 @@ endfunction
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
 %! axes (ax(1))
-%! text (0.5, 0.5, "Left Axis",
+%! text (0.5, 0.5, "Left Axis", ...
 %!       "color", [0 0 1], "horizontalalignment", "center")
 %! axes (ax(2))
-%! text (4.5, 80, "Right Axis",
+%! text (4.5, 80, "Right Axis", ...
 %!       "color", [0 0.5 0], "horizontalalignment", "center")
 
 %!demo

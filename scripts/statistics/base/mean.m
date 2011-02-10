@@ -65,7 +65,7 @@ function y = mean (x, opt1, opt2)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("mean: X must be a numeric vector or matrix");
   endif
 

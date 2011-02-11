@@ -613,7 +613,8 @@ strip_trailing_separators (const std::string& dir_arg)
 {
   std::string dir = dir_arg;
 
-  octave_idx_type k = dir.length ();
+  size_t k = dir.length ();
+
   while (k > 1 && file_ops::is_dir_sep (dir[k-1]))
     k--;
 

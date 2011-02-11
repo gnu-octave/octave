@@ -1,3 +1,8 @@
+2011-02-11  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (strip_trailing_separators): Declare K as size_t
+	rather than octave_idx_type.
+
 2011-02-10  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Avoid deprecated

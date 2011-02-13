@@ -3279,35 +3279,52 @@ axes::properties::sync_positions (void)
 
       double thrshldx = 0.005*outpos(2);
       double thrshldy = 0.005*outpos(3);
+      double minsizex = 0.2*outpos(2);
+      double minsizey = 0.2*outpos(3);
+      bool updatex = true, updatey = true; 
       for (int i = 0; i < 10; i++)
         {
           double dt;
           bool modified = false;
           dt = outpos(0)+outpos(2)-tightpos(0)-tightpos(2);
-          if (dt < -thrshldx)
+          if (dt < -thrshldx && updatex)
             {
               pos(2) += dt;
               modified = true;
             }
           dt = outpos(1)+outpos(3)-tightpos(1)-tightpos(3);
-          if (dt < -thrshldy)
+          if (dt < -thrshldy && updatey)
             {
               pos(3) += dt;
               modified = true;
             }
           dt = outpos(0)-tightpos(0);
-          if (dt > thrshldx)
+          if (dt > thrshldx && updatex)
             {
               pos(0) += dt;
               pos(2) -= dt;
               modified = true;
             }
           dt = outpos(1)-tightpos(1);
-          if (dt > thrshldy)
+          if (dt > thrshldy && updatey)
             {
               pos(1) += dt;
               pos(3) -= dt;
               modified = true;
+            }
+
+          // Note: checking limit for minimum axes size
+          if (pos(2) < minsizex)
+            {
+              pos(0) -= 0.5*(minsizex-pos(2));
+              pos(2) = minsizex;
+              updatex = false;
+            }
+          if (pos(3) < minsizey)
+            {
+              pos(1) -= 0.5*(minsizey-pos(3));
+              pos(3) = minsizey;
+              updatey = false;
             }
 
           if (modified)

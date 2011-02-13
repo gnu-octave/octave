@@ -3083,7 +3083,7 @@ public:
       {
         if (units_is ("normalized"))
           {
-            update_transform ();
+            sync_positions ();
             base_properties::update_boundingbox ();
           }
       }
@@ -3307,10 +3307,10 @@ public:
     void update_zscale (void) { sz = get_zscale (); }
 
     void update_view (void) { sync_positions (); }
-    void update_dataaspectratio (void) { update_transform (); }
-    void update_dataaspectratiomode (void) { update_transform (); }
-    void update_plotboxaspectratio (void) { update_transform (); }
-    void update_plotboxaspectratiomode (void) { update_transform (); }
+    void update_dataaspectratio (void) { sync_positions (); }
+    void update_dataaspectratiomode (void) { sync_positions (); }
+    void update_plotboxaspectratio (void) { sync_positions (); }
+    void update_plotboxaspectratiomode (void) { sync_positions (); }
 
     void update_layer (void) { update_axes_layout (); }
     void update_yaxislocation (void) { update_axes_layout (); }

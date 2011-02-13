@@ -849,6 +849,8 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   double ypTickN = props.get_ypTickN ();
   double zpTickN = props.get_zpTickN ();
 
+  bool plotyy = (props.get_tag () == "plotyy");
+
   // Axes box
 
   set_linestyle ("-", true);
@@ -878,7 +880,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
       glVertex3d (xpTick, yPlaneN, zpTick);
       glVertex3d (xpTick, yPlane, zpTick);
 
-      if (props.is_box ())
+      if (props.is_box () && ! plotyy)
         {
           glVertex3d (xpTickN, yPlaneN, zpTick);
           glVertex3d (xpTickN, yPlane, zpTick);
@@ -2397,9 +2399,6 @@ opengl_renderer::draw_text (const text::properties& props)
 {
   if (props.get_string ().empty ())
     return;
-
-  set_font (props);
-  set_color (props.get_color_rgb ());
 
   const Matrix pos = xform.scale (props.get_data_position ());
   const Matrix bbox = props.get_extent_matrix ();

@@ -1,5 +1,17 @@
 2011-02-13  Konstantinos Poulios  <logari81@googlemail.com>
 
+	Bugs #31800, #32211.
+
+	* gl-render.cc (opengl_renderer::draw_axes_boxes): Draw only one
+	y-axis line when plotyy tag is present.
+	(opengl_renderer::draw_text): Remove superfluous calls of set_font
+	and set_color.
+	* graphics.h.in (class text::properties): Tag color with "u"
+	qualifier.
+	(text::properties::update_color): New function.
+
+2011-02-13  Konstantinos Poulios  <logari81@googlemail.com>
+
 	* graphics.h.in (axes::properties::update_boundingbox,
 	axes::properties::update_dataaspectratio,
 	axes::properties::update_dataaspectratiomode,

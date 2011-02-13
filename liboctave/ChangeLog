@@ -1,3 +1,9 @@
+2011-02-13  David Bateman  <dbateman@free.fr>
+
+	* Sparse-perm-op-defs.h (template <typename SM>
+	SM octinternal_do_mul_colpm_sm (const octave_idx_type *,
+	const SM&)): Ensure that the row indices are sorted.
+
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-alloc.h: Include <cstddef>.

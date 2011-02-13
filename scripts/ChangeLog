@@ -1,3 +1,7 @@
+2011-02-13  Konstantinos Poulios  <logari81@gmail.com>
+
+	* plot/legend.m: Ignore outerposition.
+
 2011-02-10  Ben Abbott <bpabbott@mac.com>
 
 	* plot/legend.m, plot/plotyy.m, plot/sombrero.m, plot/shading.m, 

@@ -3229,38 +3229,109 @@ axes::properties::init (void)
   adopt (title.handle_value ());
 }
 
+Matrix
+axes::properties::calc_tightbox (const Matrix& init_pos)
+{
+  Matrix pos = init_pos;
+  graphics_object obj = gh_manager::get_object (get_parent ());
+  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
+  Matrix ext = get_extent (true);
+  ext(1) = parent_bb(3) - ext(1) - ext(3);
+  ext(0)++;
+  ext(1)++;
+  ext = convert_position (ext, "pixels", get_units (),
+                          parent_bb.extract_n (0, 2, 1, 2));
+  if (ext(0) < pos(0))
+    {
+      pos(2) += pos(0)-ext(0);
+      pos(0) = ext(0);
+    }
+  if (ext(0)+ext(2) > pos(0)+pos(2))
+    pos(2) = ext(0)+ext(2)-pos(0);
+
+  if (ext(1) < pos(1))
+    {
+      pos(3) += pos(1)-ext(1);
+      pos(1) = ext(1);
+    }
+  if (ext(1)+ext(3) > pos(1)+pos(3))
+    pos(3) = ext(1)+ext(3)-pos(1);
+  return pos;
+}
+
 void
 axes::properties::sync_positions (void)
 {
-#if 0
-  // FIXME -- this should take font metrics into consideration,
-  // and also the fact that the colorbox leaves the outerposition
-  // alone but alters the position. For now just don't adjust the
-  // positions relative to each other.
+  Matrix defpos = default_axes_position ();
 
   if (activepositionproperty.is ("outerposition"))
     {
       Matrix outpos = outerposition.get ().matrix_value ();
-      Matrix defpos = default_axes_position ();
       Matrix pos(outpos);
       pos(0) = outpos(0) + defpos(0) * outpos(2);
       pos(1) = outpos(1) + defpos(1) * outpos(3);
       pos(2) = outpos(2) * defpos(2);
       pos(3) = outpos(3) * defpos(3);
+
       position = pos;
+      update_transform ();
+      Matrix tightpos = calc_tightbox (pos);
+
+      double thrshldx = 0.005*outpos(2);
+      double thrshldy = 0.005*outpos(3);
+      for (int i = 0; i < 10; i++)
+        {
+          double dt;
+          bool modified = false;
+          dt = outpos(0)+outpos(2)-tightpos(0)-tightpos(2);
+          if (dt < -thrshldx)
+            {
+              pos(2) += dt;
+              modified = true;
+            }
+          dt = outpos(1)+outpos(3)-tightpos(1)-tightpos(3);
+          if (dt < -thrshldy)
+            {
+              pos(3) += dt;
+              modified = true;
+            }
+          dt = outpos(0)-tightpos(0);
+          if (dt > thrshldx)
+            {
+              pos(0) += dt;
+              pos(2) -= dt;
+              modified = true;
+            }
+          dt = outpos(1)-tightpos(1);
+          if (dt > thrshldy)
+            {
+              pos(1) += dt;
+              pos(3) -= dt;
+              modified = true;
+            }
+
+          if (modified)
+            {
+              position = pos;
+              update_transform ();
+              tightpos = calc_tightbox (pos);
+            }
+          else
+            break;
+        }
     }
   else
     {
-      Matrix pos = position.get ().matrix_value ();
-      pos(0) -= pos(2)*0.05;
-      pos(1) -= pos(3)*0.05;
-      pos(2) *= 1.1;
-      pos(3) *= 1.1;
-      outerposition = pos;
-    }
-#endif
+      update_transform ();
 
-  update_transform ();
+      Matrix pos = position.get ().matrix_value ();
+      pos(0) -= pos(2)*defpos(0)/defpos(2);
+      pos(1) -= pos(3)*defpos(1)/defpos(3);
+      pos(2) /= defpos(2);
+      pos(3) /= defpos(3);
+
+      outerposition = calc_tightbox (pos);
+    }
 }
 
 void
@@ -4408,27 +4479,7 @@ axes::properties::update_title_position (void)
           graphics_xform xform = get_transform ();
 
           // FIXME: bbox should be stored in axes::properties
-          ColumnVector bbox(4);
-          bbox(0) = octave_Inf;
-          bbox(1) = octave_Inf;
-          bbox(2) = -octave_Inf;
-          bbox(3) = -octave_Inf;
-          for (int i = 0; i <= 1; i++)
-            for (int j = 0; j <= 1; j++)
-              for (int k = 0; k <= 1; k++)
-                {
-                  ColumnVector p = xform.transform (i ? xPlaneN : xPlane,
-                                                    j ? yPlaneN : yPlane,
-                                                    k ? zPlaneN : zPlane, false);
-                  bbox(0) = std::min (bbox(0), p(0));
-                  bbox(1) = std::min (bbox(1), p(1));
-                  bbox(2) = std::max (bbox(2), p(0));
-                  bbox(3) = std::max (bbox(3), p(1));
-                }
-
-          bbox(2) = bbox(2)-bbox(0);
-          bbox(3) = bbox(3)-bbox(1);
-
+          Matrix bbox = get_extent (false);
           ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
                                               (x_zlim(0)+x_zlim(1))/2, true);
 
@@ -4451,6 +4502,8 @@ axes::properties::update_autopos (const std::string& elem_type)
     update_zlabel_position ();
   else if (elem_type == "title")
     update_title_position ();
+  else if (elem_type == "sync")
+    sync_positions ();
 }
 
 static void
@@ -4615,7 +4668,6 @@ axes::properties::get_boundingbox (bool internal) const
                   get_position ().matrix_value ()
                   : get_outerposition ().matrix_value ());
 
-
   pos = convert_position (pos, get_units (), "pixels",
                           parent_bb.extract_n (0, 2, 1, 2));
 
@@ -4624,6 +4676,66 @@ axes::properties::get_boundingbox (bool internal) const
   pos(1) = parent_bb(3) - pos(1) - pos(3);
 
   return pos;
+}
+
+Matrix
+axes::properties::get_extent (bool with_text) const
+{
+  graphics_xform xform = get_transform ();
+
+  Matrix ext (1, 4, 0.0);
+  ext(0) = octave_Inf;
+  ext(1) = octave_Inf;
+  ext(2) = -octave_Inf;
+  ext(3) = -octave_Inf;
+  for (int i = 0; i <= 1; i++)
+    for (int j = 0; j <= 1; j++)
+      for (int k = 0; k <= 1; k++)
+        {
+          ColumnVector p = xform.transform (i ? xPlaneN : xPlane,
+                                            j ? yPlaneN : yPlane,
+                                            k ? zPlaneN : zPlane, false);
+          ext(0) = std::min (ext(0), p(0));
+          ext(1) = std::min (ext(1), p(1));
+          ext(2) = std::max (ext(2), p(0));
+          ext(3) = std::max (ext(3), p(1));
+        }
+
+  if (with_text)
+    {
+      for (int i = 0; i < 4; i++)
+        {
+          graphics_handle text_handle;
+          if (i == 0)
+            text_handle = get_title ();
+          else if (i == 1)
+            text_handle = get_xlabel ();
+          else if (i == 2)
+            text_handle = get_ylabel ();
+          else if (i == 3)
+            text_handle = get_zlabel ();
+
+          text::properties& text_props = reinterpret_cast<text::properties&>
+            (gh_manager::get_object (text_handle).get_properties ());
+
+          if (! text_props.get_string ().empty ())
+            {
+              Matrix text_ext = text_props.get_extent_matrix ();
+              Matrix text_pos = text_props.get_position ().matrix_value ();
+              text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
+
+              ext(0) = std::min (ext(0), text_pos(0)+text_ext(0));
+              ext(1) = std::min (ext(1), text_pos(1)-text_ext(1)-text_ext(3));
+              ext(2) = std::max (ext(2), text_pos(0)+text_ext(0)+text_ext(2));
+              ext(3) = std::max (ext(3), text_pos(1)-text_ext(1));
+            }
+        }
+    }
+
+  ext(2) = ext(2)-ext(0);
+  ext(3) = ext(3)-ext(1);
+  
+  return ext;
 }
 
 void
@@ -4646,9 +4758,9 @@ axes::properties::update_units (const caseless_str& old_units)
   graphics_object obj = gh_manager::get_object (get_parent ());
   Matrix parent_bb = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
   caseless_str new_units = get_units ();
-  set_position (octave_value (convert_position (get_position().matrix_value(), old_units, new_units, parent_bb)));
-  set_outerposition (octave_value (convert_position (get_outerposition().matrix_value(), old_units, new_units, parent_bb)));
-  set_tightinset (octave_value (convert_position (get_tightinset().matrix_value(), old_units, new_units, parent_bb)));
+  position.set (octave_value (convert_position (get_position().matrix_value(), old_units, new_units, parent_bb)), false);
+  outerposition.set (octave_value (convert_position (get_outerposition().matrix_value(), old_units, new_units, parent_bb)), false);
+  tightinset.set (octave_value (convert_position (get_tightinset().matrix_value(), old_units, new_units, parent_bb)), false);
 }
 
 void
@@ -5724,6 +5836,10 @@ text::properties::update_text_extent (void)
 
   set_extent (bbox);
 #endif
+
+  if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel") ||
+      autopos_tag_is ("zlabel") || autopos_tag_is ("title"))
+    update_autopos ("sync");
 }
 
 void

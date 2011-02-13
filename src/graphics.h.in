@@ -3077,6 +3077,7 @@ public:
     const scaler& get_z_scaler (void) const { return sz; }
 
     Matrix get_boundingbox (bool internal = false) const;
+    Matrix get_extent (bool with_text = false) const;
 
     void update_boundingbox (void)
       {
@@ -3305,7 +3306,7 @@ public:
     void update_yscale (void) { sy = get_yscale (); }
     void update_zscale (void) { sz = get_zscale (); }
 
-    void update_view (void) { update_camera (); update_axes_layout (); }
+    void update_view (void) { sync_positions (); }
     void update_dataaspectratio (void) { update_transform (); }
     void update_dataaspectratiomode (void) { update_transform (); }
     void update_plotboxaspectratio (void) { update_transform (); }
@@ -3381,8 +3382,17 @@ public:
       }
 
     void sync_positions (void);
-    void update_outerposition (void) { sync_positions ();}
-    void update_position (void) { sync_positions (); }
+    void update_outerposition (void)
+    {
+      set_activepositionproperty ("outerposition");
+      sync_positions ();
+    }
+
+    void update_position (void)
+    {
+      set_activepositionproperty ("position");
+      sync_positions ();
+    }
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks, array_property& mticks,
@@ -3411,6 +3421,8 @@ public:
           lims = l;
         }
     }
+
+    Matrix calc_tightbox (const Matrix& init_pos);
 
   public:
     Matrix get_axis_limits (double xmin, double xmax, double min_pos, bool logscale);
@@ -3713,7 +3725,7 @@ public:
     void update_horizontalalignmentmode (void) { request_autopos (); }
     void update_verticalalignmentmode (void) { request_autopos (); }
 
-    void update_string (void) { update_text_extent ();  request_autopos ();}
+    void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
     void update_fontname (void) { update_text_extent (); }
     void update_fontsize (void) { update_text_extent (); }

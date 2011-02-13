@@ -1,3 +1,30 @@
+2011-02-13  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.h.in (axes::properties::get_extent,
+	axes::properties::calc_tightbox): New functions prototypes.
+	(axes::properties::update_view): Hook sync_positions.
+	(axes::properties::update_outerposition,
+	axes::properties::update_position): Set activepositionproperty
+	appropriately.
+	(text::properties::update_string): Call	update_text_extent after
+	request_autopos.
+	* graphics.cc (axes::properties::sync_positions): Enable
+	synchronization of position and outer position. Take label and
+	title extents in the calculation of outerposition into account.
+	Do iterative calculation of position when activepositionproperty
+	is set to outerposition.
+	(axes::properties::update_title_position): Use new function
+	get_extent.
+	(axes::properties::update_autopos): Handle new tag "sync".
+	(axes::properties::get_extent): New function calculating the
+	tight box which contains all axes labels and axes title.
+	(axes::properties::calc_tightbox): New function calculating axes
+	tight box.
+	(axes::properties::update_units): Don't call any hooks and listeners
+	for position, outerposition and tightset.
+	(text::properties::update_text_extent): Request axes positions
+	synchronization when axes labels or title extents change.
+
 2011-02-11  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (strip_trailing_separators): Declare K as size_t

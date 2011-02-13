@@ -120,7 +120,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   endif
 
   if (strcmp (get (ca, "tag"), "plotyy"))
-    plty = get(ca (strcmp (get (ca, "tag"), "plotyy")), "userdata");
+    plty = get(ca, "userdata");
     if (isscalar (plty))
       ca = [ca, plty];
     else
@@ -492,7 +492,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (isempty (hlegend))
           addprops = true;
           hlegend = axes ("tag", "legend", "userdata", struct ("handle", ud),
-                          "box", box, "outerposition", [0, 0, 0, 0],
+                          "box", box,
                           "xtick", [], "ytick", [], "xticklabel", "",
                           "yticklabel", "", "zticklabel", "",
                           "xlim", [0, 1], "ylim", [0, 1], "visible", "off",
@@ -582,8 +582,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       lpos(4)];
 
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3), ca_pos(4) - lpos(4)];
-              new_outpos = [ca_outpos(1), ca_outpos(2), ca_outpos(3), ...
-                            ca_outpos(4) - lpos(4)];
             else
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
@@ -594,8 +592,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       ca_outpos(2) + ypad, lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2) + lpos(4), ca_pos(3), ...
                          ca_pos(4) - lpos(4)];
-              new_outpos = [ca_outpos(1), ca_outpos(2) + lpos(4), ...
-                            ca_outpos(3), ca_outpos(4) - lpos(4)];
             else
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
                       ca_pos(2) + ypad, lpos(3), lpos(4)];
@@ -605,8 +601,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
@@ -618,8 +612,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1) + lpos(3), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) +  ypad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
@@ -629,8 +621,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
@@ -641,8 +631,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1) + lpos(3), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ypad, ...
                       ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
@@ -653,8 +641,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                       ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
                       ca_pos(2) + ypad, lpos(3), lpos(4)];
@@ -664,8 +650,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               lpos = [ca_outpos(1) + ypad, ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1) + lpos(3), ca_pos(2), ...
                          ca_pos(3) - lpos(3), ca_pos(4)];
-              new_outpos = [ca_outpos(1) + lpos(3), ca_outpos(2), ...
-                            ca_outpos(3) - lpos(3), ca_outpos(4)];
             else
               lpos = [ca_pos(1) + ypad, ca_pos(2) + ypad, lpos(3), lpos(4)];
             endif
@@ -674,7 +658,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         units = get (hlegend, "units");
         unwind_protect
           set (hlegend, "units", "points");
-          set (hlegend, "position", lpos, "outerposition", lpos);
+          set (hlegend, "position", lpos);
         unwind_protect_cleanup
           set (hlegend, "units", units);
         end_unwind_protect
@@ -750,7 +734,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             units = get (ca(i), "units");
             unwind_protect
               set (ca(i), "units", "points");
-              set (ca (i), "position", new_pos, "outerposition", new_outpos);
+              set (ca (i), "position", new_pos);
             unwind_protect_cleanup
               set (ca(i), "units", units);
             end_unwind_protect
@@ -759,8 +743,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           set (hlegend, "deletefcn", {@deletelegend2, ca, ...
                                       ca_pos, ca_outpos, t1, hplots});
           addlistener (hlegend, "visible", {@hideshowlegend, ca, ...
-                                            ca_pos, new_pos, ...
-                                            ca_outpos, new_outpos});
+                                            ca_pos, new_pos});
         else
           set (hlegend, "deletefcn", {@deletelegend2, ca, [], [], t1, hplots});
         endif
@@ -841,7 +824,7 @@ function updatelegendtext (h, d)
   endwhile
 endfunction
 
-function hideshowlegend (h, d, ca, pos1, pos2, outpos1, outpos2)
+function hideshowlegend (h, d, ca, pos1, pos2)
   isvisible = strcmp (get (h, "visible"), "off");
   if (! isvisible)
     kids = get (h, "children");
@@ -861,9 +844,9 @@ function hideshowlegend (h, d, ca, pos1, pos2, outpos1, outpos2)
       unwind_protect
         set (ca(i), "units", "points");
         if (isvisible)
-          set (ca(i), "position", pos2, "outerposition", outpos2);
+          set (ca(i), "position", pos2);
         else
-          set (ca(i), "position", pos1, "outerposition", outpos1);
+          set (ca(i), "position", pos1);
         endif
       unwind_protect_cleanup
         set (ca(i), "units", units);
@@ -889,7 +872,7 @@ function deletelegend2 (h, d, ca, pos, outpos, t1, hplots)
         units = get (ca(i), "units");
         unwind_protect
           set (ca(i), "units", "points");
-          set (ca(i), "position", pos, "outerposition", outpos, "deletefcn", "");
+          set (ca(i), "position", pos, "deletefcn", "");
         unwind_protect_cleanup
           set (ca(i), "units", units);
         end_unwind_protect

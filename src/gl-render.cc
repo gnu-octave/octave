@@ -2349,19 +2349,35 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
       Matrix mecolor = props.get_markeredgecolor_rgb ();
       Matrix mfcolor = props.get_markerfacecolor_rgb ();
-      Matrix cc (1, 3, 0.0);
 
-      if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
+      bool has_markerfacecolor = false;
+
+      if ((mecolor.numel () == 0 && ! props.markeredgecolor_is ("none"))
+          || (mfcolor.numel () == 0 && ! props.markerfacecolor_is ("none")))
         {
-          mecolor = props.get_edgecolor_rgb ();
-          do_edge = ! props.edgecolor_is ("none");
+          Matrix mc = props.get_color_data ().matrix_value ();
+
+          if (mc.rows () == 1)
+            {
+              // Single color specifications, we can simplify a little bit
+
+              if (mfcolor.numel () == 0
+                   && ! props.markerfacecolor_is ("none"))
+                mfcolor = mc;
+
+              if (mecolor.numel () == 0
+                   && ! props.markeredgecolor_is ("none"))
+                mecolor = mc;
+            }
+          else
+            {
+              if (c.numel () == 0)
+                c = props.get_color_data ().matrix_value ();
+              has_markerfacecolor = ((c.numel () > 0) 
+                                    && (c.rows () == f.rows ()));
+            }
         }
 
-      if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
-        {
-          mfcolor = props.get_facecolor_rgb ();
-          do_face = ! props.facecolor_is ("none");
-        }
 
       init_marker (props.get_marker (), props.get_markersize (),
                    props.get_linewidth ());
@@ -2374,11 +2390,19 @@ opengl_renderer::draw_patch (const patch::properties &props)
             if (clip(idx))
               continue;
 
-            Matrix lc = (do_edge ? (mecolor.numel () == 0 ?
-                                    vdata[i+j*fr].get_rep ()->color : mecolor)
+            Matrix cc;
+            if (c.numel () > 0)
+              {
+                cc.resize (1, 3);
+                if (has_markerfacecolor)
+                  cc(0) = c(i,0), cc(1) = c(i,1), cc(2) = c(i,2);
+                else
+                  cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
+              }
+
+            Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor)
                          : Matrix ());
-            Matrix fc = (do_face ? (mfcolor.numel () == 0 ?
-                                    vdata[i+j*fr].get_rep ()->color : mfcolor)
+            Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor)
                          : Matrix ());
 
             draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);

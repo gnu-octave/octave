@@ -1,3 +1,8 @@
+2011-02-14  David Bateman  <dbateman@free.fr>
+
+	* plot/private/__scatter__.m: Correctly set the facevertexcdata and
+	faces properties in the patch objects.
+
 2011-02-14  Marco Caliari <marco.caliari@univr.it>
 
 	* polynomial/spline.m: Allow length(x) == 2 and unsorted x values.

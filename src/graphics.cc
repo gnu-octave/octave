@@ -3263,11 +3263,11 @@ void
 axes::properties::sync_positions (void)
 {
   Matrix defpos = default_axes_position ();
-
+  Matrix pos = position.get ().matrix_value ();
+  Matrix outpos = outerposition.get ().matrix_value ();
   if (activepositionproperty.is ("outerposition"))
     {
-      Matrix outpos = outerposition.get ().matrix_value ();
-      Matrix pos(outpos);
+      pos = outpos;
       pos(0) = outpos(0) + defpos(0) * outpos(2);
       pos(1) = outpos(1) + defpos(1) * outpos(3);
       pos(2) = outpos(2) * defpos(2);
@@ -3341,14 +3341,21 @@ axes::properties::sync_positions (void)
     {
       update_transform ();
 
-      Matrix pos = position.get ().matrix_value ();
-      pos(0) -= pos(2)*defpos(0)/defpos(2);
-      pos(1) -= pos(3)*defpos(1)/defpos(3);
-      pos(2) /= defpos(2);
-      pos(3) /= defpos(3);
+      outpos(0) = pos(0)-pos(2)*defpos(0)/defpos(2);
+      outpos(1) = pos(1)-pos(3)*defpos(1)/defpos(3);
+      outpos(2) = pos(2)/defpos(2);
+      outpos(3) = pos(3)/defpos(3);
 
       outerposition = calc_tightbox (pos);
     }
+
+  Matrix inset (1, 4, 1.0);
+  inset(0) = pos(0)-outpos(0);
+  inset(1) = pos(1)-outpos(1);
+  inset(2) = outpos(0)+outpos(2)-pos(0)-pos(2);
+  inset(3) = outpos(1)+outpos(3)-pos(1)-pos(3);
+  
+  tightinset = inset;
 }
 
 void

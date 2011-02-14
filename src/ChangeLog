@@ -1,3 +1,8 @@
+2011-02-14  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (axes::properties::sync_positions): Calculation of
+	tightinset property.
+
 2011-02-13  Konstantinos Poulios  <logari81@googlemail.com>
 
 	Bugs #31800, #32211.

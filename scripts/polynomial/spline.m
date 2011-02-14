@@ -76,8 +76,8 @@ function ret = spline (x, y, xi)
 
   x = x(:);
   n = length (x);
-  if (n < 3)
-    error ("spline: requires at least 3 points");
+  if (n < 2)
+    error ("spline: requires at least 2 points");
   endif
 
   ## Check the size and shape of y
@@ -107,44 +107,74 @@ function ret = spline (x, y, xi)
     a = a(2:end-1,:);
   endif
 
+  if (~issorted (x))
+    [x, idx] = sort(x);
+    a = a(idx,:);
+  endif
+
   b = c = zeros (size (a));
   h = diff (x);
   idx = ones (columns (a), 1);
 
   if (complete)
 
-    if (n == 3)
-      dg = 1.5 * h(1) - 0.5 * h(2);
-      c(2:n-1,:) = 1/dg(1);
+    if (n == 2)
+      d = (dfs + dfe) / (x(2) - x(1)) ^ 2 + ...
+	2 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 3;
+      c = (-2 * dfs - dfe) / (x(2) - x(1)) - ...
+	3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
+      b = dfs;
+      a = a(1,:);
+
+      d = d(1:n-1,:);
+      c = c(1:n-1,:);
+      b = b(1:n-1,:);
+      a = a(1:n-1,:);
     else
-      dg = 2 * (h(1:n-2) .+ h(2:n-1));
-      dg(1) = dg(1) - 0.5 * h(1);
-      dg(n-2) = dg(n-2) - 0.5 * h(n-1);
+      if (n == 3)
+	dg = 1.5 * h(1) - 0.5 * h(2);
+        c(2:n-1,:) = 1/dg(1);
+      else
+        dg = 2 * (h(1:n-2) .+ h(2:n-1));
+        dg(1) = dg(1) - 0.5 * h(1);
+        dg(n-2) = dg(n-2) - 0.5 * h(n-1);
 
-      e = h(2:n-2);
+        e = h(2:n-2);
 
-      g = 3 * diff (a(2:n,:)) ./ h(2:n-1,idx) ...
+        g = 3 * diff (a(2:n,:)) ./ h(2:n-1,idx) ...
           - 3 * diff (a(1:n-1,:)) ./ h(1:n-2,idx);
-      g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) ...
+        g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) ...
           - 3 / 2 * (3 * (a(2,:) - a(1,:)) / h(1) - dfs);
-      g(n-2,:) = 3 / 2 * (3 * (a(n,:) - a(n-1,:)) / h(n-1) - dfe) ...
+        g(n-2,:) = 3 / 2 * (3 * (a(n,:) - a(n-1,:)) / h(n-1) - dfe) ...
           - 3 * (a(n-1,:) - a(n-2,:)) / h(n-2);
 
-      c(2:n-1,:) = spdiags ([[e(:); 0], dg, [0; e(:)]],
+        c(2:n-1,:) = spdiags ([[e(:); 0], dg, [0; e(:)]],
                               [-1, 0, 1], n-2, n-2) \ g;
-    endif
+      endif
 
-    c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * dfs
-              - c(2,:) * h(1)) / (2 * h(1));
-    c(n,:) = - (3 / h(n-1) * (a(n,:) - a(n-1,:)) - 3 * dfe
-                + c(n-1,:) * h(n-1)) / (2 * h(n-1));
-    b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
+      c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * dfs
+		- c(2,:) * h(1)) / (2 * h(1));
+      c(n,:) = - (3 / h(n-1) * (a(n,:) - a(n-1,:)) - 3 * dfe
+		  + c(n-1,:) * h(n-1)) / (2 * h(n-1));
+      b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
         - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
-    d = diff (c) ./ (3 * h(1:n-1, idx));
+      d = diff (c) ./ (3 * h(1:n-1, idx));
 
+      d = d(1:n-1,:);
+      c = c(1:n-1,:);
+      b = b(1:n-1,:);
+      a = a(1:n-1,:);
+    endif
   else
 
-    if (n == 3)
+    if (n == 2)
+      b = (a(2,:) - a(1,:)) / (x(2) - x(1));
+      a = a(1,:);
+      d = [];
+      c = [];
+      b = b(1:n-1,:);
+      a = a(1:n-1,:);
+    elseif (n == 3)
 
       n = 2;
       c = (a(1,:) - a(3,:)) / ((x(3) - x(1)) * (x(2) - x(3))) ...
@@ -154,9 +184,12 @@ function ret = spline (x, y, xi)
           + (a(1,:) - a(3,:)) * (x(2) - x(1)) ...
           / ((x(3) - x(1)) * (x(3) - x(2)));
       a = a(1,:);
-      d = zeros (size (a));
+      d = [];
       x = [min(x), max(x)];
 
+      c = c(1:n-1,:);
+      b = b(1:n-1,:);
+      a = a(1:n-1,:);
     else
 
       g = zeros (n-2, columns (a));
@@ -196,14 +229,13 @@ function ret = spline (x, y, xi)
           - h(1:n-1, idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
 
+      d = d(1:n-1,:);
+      c = c(1:n-1,:);
+      b = b(1:n-1,:);
+      a = a(1:n-1,:);
     endif
 
   endif
-
-  d = d(1:n-1,:);
-  c = c(1:n-1,:);
-  b = b(1:n-1,:);
-  a = a(1:n-1,:);
   coeffs = cat (3, d.', c.', b.', a.');
   ret = mkpp (x, coeffs, szy(1:end-1));
 
@@ -249,3 +281,23 @@ endfunction
 %!test
 %! ok = ! isnan (y);
 %! assert (! isnan (spline (x, y, x(!ok))));
+%!test
+%! x = [1,2];
+%! y = [1,4];
+%! assert (spline (x,y,x), [1,4], abserr);
+%!test
+%! x = [2,1];
+%! y = [1,4];
+%! assert (spline (x,y,x), [1,4], abserr);
+%!test
+%! x = [1,2];
+%! y = [1,2,3,4];
+%! pp = spline (x,y);
+%! [x,P] = unmkpp (pp);
+%! assert (norm (P-[3,-3,1,2]), 0, abserr);
+%!test
+%! x = [2,1];
+%! y = [1,2,3,4];
+%! pp = spline (x,y);
+%! [x,P] = unmkpp (pp);
+%! assert (norm (P-[7,-9,1,3]), 0, abserr);

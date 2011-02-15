@@ -12,10 +12,12 @@
 2011-02-14  David Bateman  <dbateman@free.fr>
 
 	* testfun/test.m: More explicit error message when source of a
-	dynamically linked function is not found.
+	dynamically linked function is not found.  Bug #30341.
+
+2011-02-14  David Bateman  <dbateman@free.fr>
 
 	* plot/private/__scatter__.m: Correctly set the facevertexcdata and
-	faces properties in the patch objects.
+	faces properties in the patch objects.  Bug #31801.
 
 2011-02-14  Marco Caliari <marco.caliari@univr.it>
 
@@ -27,7 +29,7 @@
 
 2011-02-10  Ben Abbott <bpabbott@mac.com>
 
-	* plot/legend.m, plot/plotyy.m, plot/sombrero.m, plot/shading.m, 
+	* plot/legend.m, plot/plotyy.m, plot/sombrero.m, plot/shading.m,
 	plot/text.m: Modify demo scripts to allow conventient conversion
 	to Matlab compatible syntax.
 
@@ -60,10 +62,11 @@
 
 2011-02-05  David Bateman  <dbateman@free.fr>
 
-	* plot/legend.m: Allow the location and orientation to be set without
-	modifiying the legend keys.
-	* plot/legend.m: Add padding to legend positions. Fix for outerposition
-	for southeastoutside and southwestoutside.
+	* plot/legend.m: Allow the location and orientation to be set
+	without modifiying the legend keys.
+	* plot/legend.m: Add padding to legend positions. Fix for
+	outerposition for southeastoutside and southwestoutside.
+	Bug #32374.
 
 2011-02-06  Ben Abbott  <bpabbott@mac.com>
 
@@ -71,9 +74,10 @@
 	* plot/legend.m: "legend off" should delete the legend object.
 
 2011-02-06  David Bateman  <dbateman@free.fr>
+
 	* plot/legend.m : Delete old legend before probing the position and
 	outerposition. Reshape lpos correct if the legend locqtion is
-	"southeast".
+	"southeast".  Bug #32343.
 
 2011-02-06  Ben Abbott  <bpabbott@mac.com>
 

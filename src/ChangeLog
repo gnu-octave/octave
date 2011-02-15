@@ -20,7 +20,7 @@
 	* gl-render.cc (void opengl_renderer::draw_patch (
 	const patch::properties &)): Obtain the marker color directly
 	from the cdata rather that the facecolor, as the facecolor might
-	not have been set.
+	not have been set.  Bug #31801.
 
 2011-02-14  Konstantinos Poulios  <logari81@googlemail.com>
 

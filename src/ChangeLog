@@ -1,5 +1,7 @@
 2011-02-15  Konstantinos Poulios  <logari81@googlemail.com>
 
+	Bug #32319.
+
 	* __init_fltk__.cc: Include sysdep.h.
 	(class OpenGL_fltk): Replace integer print_fid member with
 	boolean print_mode. New class member print_cmd of type string.

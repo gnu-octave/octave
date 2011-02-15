@@ -1,7 +1,7 @@
 2011-02-15  Konstantinos Poulios  <logari81@gmail.com>
 
 	* plot/__fltk_print__.m: Forward pipeline to drawnow instead of
-	invoking a process here.
+	invoking a process here.  Bug #32319.
 
 2010-02-14  Rik  <octave@nomad.inbox5.com>
 
@@ -30,6 +30,10 @@
 	* plot/legend.m, plot/plotyy.m, plot/sombrero.m, plot/shading.m, 
 	plot/text.m: Modify demo scripts to allow conventient conversion
 	to Matlab compatible syntax.
+
+2011-02-10  John W. Eaton  <jwe@octave.org>
+
+	* statistics/base/mean.m: Also accept logical values.
 
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 

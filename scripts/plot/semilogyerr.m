@@ -31,7 +31,7 @@
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
 ## format defined by @var{fmt}.  See @code{errorbar} for available formats and
 ## additional information.
-## @seealso{errorbar, loglogerr semilogxerr}
+## @seealso{errorbar, loglogerr, semilogxerr}
 ## @end deftypefn
 
 ## Created: 20.2.2001

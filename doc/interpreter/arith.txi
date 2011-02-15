@@ -214,8 +214,6 @@ cos (pi/2)
 
 @DOCSTRING(floor)
 
-@DOCSTRING(fmod)
-
 @DOCSTRING(gcd)
 
 @DOCSTRING(gradient)

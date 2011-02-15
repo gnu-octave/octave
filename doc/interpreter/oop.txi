@@ -299,11 +299,8 @@ usually by forwarding it again to @code{subsref} or @code{subsasgn}.
 
 If you wish to use the @code{end} keyword in subscripted expressions
 of an object, then the user needs to define the @code{end} method for 
-the class.
-
-@DOCSTRING(end)
-
-For example the @code{end} method for our polynomial class might look like
+the class.  For example, the @code{end} method for our polynomial class might
+look like
 
 @example
 @group
@@ -313,8 +310,8 @@ For example the @code{end} method for our polynomial class might look like
 
 @noindent
 which is a fairly generic @code{end} method that has a behavior similar to
-the @code{end} keyword for Octave Array classes.  It can then be used for
-example like
+the @code{end} keyword for Octave Array classes.  It can then be used as 
+follows:
 
 @example
 @group

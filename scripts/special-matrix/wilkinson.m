@@ -22,8 +22,8 @@
 ## symmetric and tridiagonal with pairs of nearly, but not exactly, equal
 ## eigenvalues.
 ##
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
-##           hadamard, rosser, compan, pascal}
+## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz,
+##          hadamard, rosser, compan, pascal}
 ## @end deftypefn
 
 ## Author: Peter Ekberg

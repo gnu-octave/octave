@@ -997,8 +997,6 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpnam)
 
-@DOCSTRING(octave_tmp_file_name)
-
 @node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
 @subsection End of File and Errors
 

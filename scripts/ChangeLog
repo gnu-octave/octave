@@ -1,3 +1,9 @@
+2010-02-14  Rik  <octave@nomad.inbox5.com>
+
+	* plot/semilogxerr.m, plot/semilogyerr.m, special-matrix/pascal.m,
+	special-matrix/rosser.m, special-matrix/wilkinson.m: Add missing
+	commas in @seealso macro.
+
 2011-02-14  David Bateman  <dbateman@free.fr>
 
 	* testfun/test.m: More explicit error message when source of a

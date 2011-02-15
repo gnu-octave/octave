@@ -30,7 +30,7 @@
 ## @code{pascal (@var{n}, 1)}, which is the cube-root of the identity
 ## matrix.  That is @code{pascal (@var{n}, 2) ^ 3 == eye (@var{n})}.
 ##
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz
+## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz,
 ##          hadamard, wilkinson, compan, rosser}
 ## @end deftypefn
 

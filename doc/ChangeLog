@@ -1,3 +1,8 @@
+2010-02-14  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/arith.txi, interpreter/io.txi, interpreter/oop.txi:
+	Remove functions which have no DOCSTRING entries.
+
 2011-02-06  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/contributors.in: Add Fotios Kasolis to the list.

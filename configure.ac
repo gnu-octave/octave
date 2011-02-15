@@ -97,7 +97,7 @@ case $with_sepchar in
   yes | "")
     case "$canonical_host_type" in
       *-*-mingw* | *-*-msdosmsvc)
-	sepchar=';'
+        sepchar=';'
         ;;
       esac
     ;;
@@ -296,7 +296,7 @@ else
     ;;
     *-*-mingw*)
       if test "$have_msvc" = "no"; then
-	INCLUDE_DEPS=false
+        INCLUDE_DEPS=false
       fi
     ;;
     *)
@@ -357,7 +357,7 @@ AC_ARG_ENABLE(float-truncate,
   ac_float_truncate=)
 
 AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, $ac_float_truncate, 
-	  [Define to volatile if you need truncating intermediate FP results])
+          [Define to volatile if you need truncating intermediate FP results])
 
 ### On Intel systems with gcc, we may need to compile with -mieee-fp
 ### and -ffloat-store to get full support for IEEE floating point.
@@ -382,9 +382,9 @@ case "$canonical_host_type" in
     fi
     if test "$GXX" = yes; then
       OCTAVE_CXX_FLAG(-mieee-fp, [
-	ieee_fp_flag=-mieee-fp
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
-	AC_MSG_NOTICE([adding -mieee-fp to XTRA_CXXFLAGS])])
+        ieee_fp_flag=-mieee-fp
+        XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
+        AC_MSG_NOTICE([adding -mieee-fp to XTRA_CXXFLAGS])])
 
 ###      OCTAVE_CXX_FLAG(-ffloat-store, [
 ###        float_store_flag=-ffloat-store
@@ -395,25 +395,25 @@ case "$canonical_host_type" in
   alpha*-*-*)
     if test "$GCC" = yes; then
       OCTAVE_CC_FLAG(-mieee, [
-	ieee_fp_flag=-mieee
-	XTRA_CFLAGS="$XTRA_CFLAGS -mieee"
-	AC_MSG_NOTICE([adding -mieee to XTRA_CFLAGS])])
+        ieee_fp_flag=-mieee
+        XTRA_CFLAGS="$XTRA_CFLAGS -mieee"
+        AC_MSG_NOTICE([adding -mieee to XTRA_CFLAGS])])
     else
       OCTAVE_CC_FLAG(-ieee, [
-	ieee_fp_flag=-ieee
-	XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
-	AC_MSG_NOTICE([adding -ieee to XTRA_CFLAGS])])
+        ieee_fp_flag=-ieee
+        XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
+        AC_MSG_NOTICE([adding -ieee to XTRA_CFLAGS])])
     fi
     if test "$GXX" = yes; then
       OCTAVE_CXX_FLAG(-mieee, [
-	ieee_fp_flag=-mieee
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
-	AC_MSG_NOTICE([adding -mieee to XTRA_CXXFLAGS])])
+        ieee_fp_flag=-mieee
+        XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
+        AC_MSG_NOTICE([adding -mieee to XTRA_CXXFLAGS])])
     else
       OCTAVE_CXX_FLAG(-ieee, [
-	ieee_fp_flag=-ieee
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
-	AC_MSG_NOTICE([adding -ieee to XTRA_CXXFLAGS])])
+        ieee_fp_flag=-ieee
+        XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
+        AC_MSG_NOTICE([adding -ieee to XTRA_CXXFLAGS])])
     fi
   ;;
   *ibm-aix4*)
@@ -487,8 +487,8 @@ else
     sparc-sun-solaris2*)
       if test "$GCC" != yes; then
         ## The Sun C++ compiler never seems to complete compiling
-	## gendoc.cc unless we reduce the optimization level...
-	BUILD_CXXFLAGS="-g -O1"
+        ## gendoc.cc unless we reduce the optimization level...
+        BUILD_CXXFLAGS="-g -O1"
       fi
     ;;
   esac
@@ -592,7 +592,7 @@ if test "x$octave_cv_fortran_integer_size" = xno; then
               *)
                 AC_MSG_NOTICE([adding -fdefault-integer-8 to F77_INTEGER_8_FLAG])
                 F77_INTEGER_8_FLAG="-fdefault-integer-8"
-	        ## Invalidate the cache and try again.
+                ## Invalidate the cache and try again.
                 $as_unset octave_cv_fortran_integer_size
               ;;
             esac
@@ -1206,7 +1206,7 @@ case "$canonical_host_type" in
     SHLLIB_VER='$(version).$(SHLLIB)'
     NO_OCT_FILE_STRIP=true
     SONAME_FLAGS='-install_name $(octlibdir)/$@'
-    library_path_var=DYLD_LIBRARY_PATH	
+    library_path_var=DYLD_LIBRARY_PATH  
   ;;
   *-*-cygwin*)
     CPICFLAG=
@@ -1609,14 +1609,14 @@ case "$canonical_host_type" in
 #error "Wrong version"
 #endif]], []),
       AC_MSG_RESULT([none]), [
-	AC_DEFINE(_WIN32_WINNT, 0x0403, [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount])
-	AC_MSG_RESULT([0x0403])])
+        AC_DEFINE(_WIN32_WINNT, 0x0403, [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount])
+        AC_MSG_RESULT([0x0403])])
     AC_MSG_CHECKING([whether _USE_MATH_DEFINES needs to be defined])
     AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[#include <math.h>]],
 [[int x = M_LN2;]]),
       AC_MSG_RESULT([no]), [
-	AC_DEFINE(_USE_MATH_DEFINES, 1, [Define if your system needs it to define math constants like M_LN2])
-	AC_MSG_RESULT([yes])])
+        AC_DEFINE(_USE_MATH_DEFINES, 1, [Define if your system needs it to define math constants like M_LN2])
+        AC_MSG_RESULT([yes])])
   ;;
 esac
 

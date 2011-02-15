@@ -1,3 +1,8 @@
+2011-02-15  Benjamin Lindner  <lindnerb@users.sourceforge.net>
+
+	* configure.ac: Use AC_COMPILE_IFELSE to check for OpenGL
+	support in FLTK.
+
 2011-02-09  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: Update.

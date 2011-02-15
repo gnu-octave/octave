@@ -914,21 +914,23 @@ if test -n "$OPENGL_LIBS"; then
     esac
 
     AC_MSG_CHECKING([for OpenGL support in FLTK])
-    cat > conftest.cc <<EOF
-    #include <FL/gl.h>
-    int nothing=0;
-EOF
-    $CXX $CXXFLAGS $FLTK_CFLAGS -c conftest.cc || \
-      warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
-
+    save_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $FLTK_CFLAGS"
+    AC_COMPILE_IFELSE(
+      AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]]),
+        [
+         AC_MSG_RESULT([no])
+         warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
+        ],[
+         AC_DEFINE(HAVE_FLTK, 1, [Define if FLTK is available])
+         AC_MSG_RESULT([yes])
+        ])
+         
     if test -z "$warn_fltk_opengl"; then
-      AC_MSG_RESULT(yes)
-      AC_DEFINE(HAVE_FLTK, 1, [Define if FLTK is available])
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
       GRAPHICS_LIBS="$FLTK_LDFLAGS"
-    else
-      AC_MSG_RESULT(no)
     fi
+    CFLAGS="$save_CFLAGS"
   fi
 fi
 

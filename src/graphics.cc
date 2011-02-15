@@ -7620,20 +7620,26 @@ undocumented.\n\
 
               if (! error_state)
                 {
-                  size_t pos = file.find_last_of (file_ops::dir_sep_chars ());
-
-                  if (pos != std::string::npos)
+                  size_t pos = file.find_first_not_of ("|");
+                  if (pos > 0)
+                    file = file.substr (pos);
+                  else
                     {
-                      std::string dirname = file.substr (0, pos+1);
+                      pos = file.find_last_of (file_ops::dir_sep_chars ());
 
-                      file_stat fs (dirname);
-
-                      if (! (fs && fs.is_dir ()))
+                      if (pos != std::string::npos)
                         {
-                          error ("drawnow: nonexistent directory `%s'",
-                                 dirname.c_str ());
+                          std::string dirname = file.substr (0, pos+1);
 
-                          return retval;
+                          file_stat fs (dirname);
+
+                          if (! (fs && fs.is_dir ()))
+                            {
+                              error ("drawnow: nonexistent directory `%s'",
+                                     dirname.c_str ());
+
+                              return retval;
+                            }
                         }
                     }
 

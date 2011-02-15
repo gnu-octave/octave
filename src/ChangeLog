@@ -1,3 +1,18 @@
+2011-02-15  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* __init_fltk__.cc: Include sysdep.h.
+	(class OpenGL_fltk): Replace integer print_fid member with
+	boolean print_mode. New class member print_cmd of type string.
+	(OpenGL_fltk::print): Accept command string argument instead of
+	file id.
+	(OpenGL_fltk::draw): Invoke and terminate an octave process for
+	the printing job.
+	(plot_window::print, figure_manager::print,
+	figure_manager::do_print): Replace file id with command string.
+	(fltk_graphics_toolkit::print_figure): Remove parsing of file id.
+	* graphics.cc (drawnow): Recognize strings beginning with "|" as
+	pipelines instead of filenames.
+
 2011-02-14  David Bateman  <dbateman@free.fr>
 
 	* gl-render.cc (void opengl_renderer::draw_patch (

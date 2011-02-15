@@ -70,6 +70,7 @@ To initialize:
 #include "gl2ps-renderer.h"
 #include "graphics.h"
 #include "parse.h"
+#include "sysdep.h"
 #include "toplev.h"
 #include "variables.h"
 
@@ -97,7 +98,7 @@ class OpenGL_fltk : public Fl_Gl_Window
 public:
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
     : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), renderer (),
-      in_zoom (false), zoom_box (),  print_fid (-1)
+      in_zoom (false), zoom_box (),  print_mode (false)
   {
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE);
@@ -115,9 +116,10 @@ public:
   bool zoom (void) { return in_zoom; }
   void set_zoom_box (const Matrix& zb) { zoom_box = zb; }
 
-  void print (const int fid, const std::string& term)
+  void print (const std::string& cmd, const std::string& term)
   {
-    print_fid  = fid;
+    print_mode  = true;
+    print_cmd = cmd;
     print_term  = term;
   }
 
@@ -135,7 +137,8 @@ private:
   // (x1,y1,x2,y2)
   Matrix zoom_box;
 
-  int print_fid;
+  bool print_mode;
+  std::string print_cmd;
   std::string print_term;
 
   void setup_viewport (int ww, int hh)
@@ -153,13 +156,15 @@ private:
         setup_viewport (w (), h ());
       }
 
-    if (print_fid > 0)
+    if (print_mode)
       {
-        glps_renderer rend (print_fid, print_term);
+        FILE *fp = octave_popen (print_cmd.c_str (), "w");
+        glps_renderer rend (fileno (fp), print_term);
 
         rend.draw (gh_manager::get_object (number));
 
-        print_fid = -1;
+        octave_pclose (fp);
+        print_mode = false;
       }
     else
       {
@@ -759,9 +764,9 @@ public:
   // FIXME -- this could change.
   double number (void) { return fp.get___myhandle__ ().value (); }
 
-  void print (const int fid, const std::string& term)
+  void print (const std::string& cmd, const std::string& term)
   {
-    canvas->print (fid, term);
+    canvas->print (cmd, term);
 
     // Print immediately so the output file will exist when the drawnow
     // command is done.
@@ -1495,10 +1500,10 @@ public:
     return get_size (hnd2idx (gh));
   }
 
-  static void print (const graphics_handle& gh , const int fid,  const std::string& term)
+  static void print (const graphics_handle& gh , const std::string& cmd, const std::string& term)
   {
     if (instance_ok ())
-      instance->do_print (hnd2idx(gh), fid, term);
+      instance->do_print (hnd2idx(gh), cmd, term);
   }
 
   static void uimenu_update (const graphics_handle& figh, const graphics_handle& uimenuh, const int id)
@@ -1634,12 +1639,12 @@ private:
     return sz;
   }
 
-  void do_print (int idx, const int fid,  const std::string& term)
+  void do_print (int idx, const std::string& cmd, const std::string& term)
   {
     wm_iterator win;
     if ((win = windows.find (idx)) != windows.end ())
       {
-        win->second->print (fid, term);
+        win->second->print (cmd, term);
       }
   }
 
@@ -1858,18 +1863,11 @@ public:
 
   void print_figure (const graphics_object& go,
                      const std::string& term,
-                     const std::string& file, bool /*mono*/,
+                     const std::string& file_cmd, bool /*mono*/,
                      const std::string& /*debug_file*/) const
   {
-    int fid;
-    std::istringstream istr (file);
-    if (istr >> fid)
-      {
-        figure_manager::print (go.get_handle (), fid, term);
-        redraw_figure (go);
-      }
-    else
-      error ("fltk_graphics_toolkit: filename should be fid");
+    figure_manager::print (go.get_handle (), file_cmd, term);
+    redraw_figure (go);
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const

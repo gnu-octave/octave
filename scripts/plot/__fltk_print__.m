@@ -150,16 +150,7 @@ function opts = __fltk_print__ (opts)
     if (opts.debug)
       fprintf ("fltk-pipeline: '%s'\n", pipeline{n});
     endif
-    pid = popen (pipeline{n}, "w");
-    if (pid < 0)
-      error ("print:popenfailed", "print.m: failed to open pipe");
-    endif
-    unwind_protect
-      drawnow (gl2ps_device{n} , sprintf ("%d" , pid));
-      waitpid (pid);
-    unwind_protect_cleanup
-      pclose (pid);
-    end_unwind_protect
+    drawnow (gl2ps_device{n}, strcat('|',pipeline{n}));
   endfor
 
   if (! isempty (strfind (opts.devopt, "standalone")))

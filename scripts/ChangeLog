@@ -1,5 +1,8 @@
 2011-02-14  David Bateman  <dbateman@free.fr>
 
+	* testfun/test.m: More explicit error message when source of a
+	dynamically linked function is not found.
+
 	* plot/private/__scatter__.m: Correctly set the facevertexcdata and
 	faces properties in the patch objects.
 

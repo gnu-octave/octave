@@ -173,7 +173,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       __ret1 = "";
       __ret2 = [];
     else
-      fprintf (__fid, "%s%s does not exist in path\n", __signal_empty, __name);
+      if (exist (__name) == 3)
+        fprintf (__fid, "%s%s source code with tests for dynamically linked function not found\n", __signal_empty, __name);
+      else
+        fprintf (__fid, "%s%s does not exist in path\n", __signal_empty, __name);
+      endif
       fflush (__fid);
       if (nargout > 0)
         __ret1 = __ret2 = 0;

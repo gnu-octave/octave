@@ -139,12 +139,12 @@ endfunction
 
 %!assert(mean ([2 8], 'g'), 4);
 %!assert(mean ([4 4 2], 'h'), 3);
+%!assert(mean (logical ([1 0 1 1])), 0.75);
 
 %% Test input validation
 %!error mean ();
 %!error mean (1, 2, 3, 4);
 %!error mean ({1:5});
-%!error mean (true(1, 5));
 %!error mean (1, 2, 3);
 %!error mean (1, ones(2,2));
 %!error mean (1, 1.5);

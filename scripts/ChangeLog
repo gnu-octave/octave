@@ -1,3 +1,7 @@
+2011-02-16  Thorsten Meyer  <thorsten.meyier@gmx.de>
+
+	* statistics/base/mean.m: Fix tests according to changeset 0f21f258aa17.
+
 2011-02-15  Konstantinos Poulios  <logari81@gmail.com>
 
 	* plot/__fltk_print__.m: Forward pipeline to drawnow instead of

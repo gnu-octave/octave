@@ -111,11 +111,12 @@ function h = subplot (rows, cols, index, varargin)
   endif
 
   units = get (0, "defaultaxesunits");
+  cf = gcf ();
+  figunits = get (cf, "units");
   unwind_protect
     set (0, "defaultaxesunits", "normalized");
+    set (cf, "units", "pixels");
     pos = subplot_position (rows, cols, index, "position", units);
-
-    cf = gcf ();
 
     set (cf, "nextplot", "add");
 
@@ -162,9 +163,10 @@ function h = subplot (rows, cols, index, varargin)
     if (found)
       set (cf, "currentaxes", tmp);
     else
-      pos = subplot_position (rows, cols, index, "outerposition", units);
-      pos2 = subplot_position (rows, cols, index, "position", units);
-      tmp = axes ("outerposition", pos, "position", pos2,
+      outerposition = subplot_position (rows, cols, index,
+                                        "outerposition", units);
+      position = subplot_position (rows, cols, index, "position", units);
+      tmp = axes ("position", position, "outerposition", outerposition,
                   "activepositionproperty", "outerposition",
                   "box", "off");
     endif
@@ -175,6 +177,7 @@ function h = subplot (rows, cols, index, varargin)
 
   unwind_protect_cleanup
     set (0, "defaultaxesunits", units);
+    set (cf, "units", figunits);
   end_unwind_protect
 
   if (nargout > 0)
@@ -185,48 +188,57 @@ endfunction
 
 function pos = subplot_position (rows, cols, index, position_property, units)
 
-  ## For 1 row and 1 column return the usual default.
+  defaultaxesposition = get (0, "defaultaxesposition");
+  defaultaxesouterposition = get (0, "defaultaxesouterposition");
+
   if (rows == 1 && cols == 1)
+    ## Trivial result for subplot (1,1,1)
     if (strcmpi (position_property, "position"))
-      pos = get (0, "defaultaxesposition");
+      pos = defaultaxesposition;
     else
-      pos = get (0, "defaultaxesouterposition");
+      pos = defaultaxesouterposition;
     endif
     return
   endif
 
-  ## This produces compatible behavior for the "position" property.
-  margins.left   = 0.130;
-  margins.right  = 0.095;
-  margins.top    = 0.075;
-  margins.bottom = 0.110;
+  ## The outer margins surrounding all subplot "positions" are independent of
+  ## the number of rows and/or columns
+  margins.left   = defaultaxesposition(1);
+  margins.bottom = defaultaxesposition(2);
+  margins.right  = 1.0 - margins.left - defaultaxesposition(3);
+  margins.top    = 1.0 - margins.bottom - defaultaxesposition(4);
+
+  ## Fit from Matlab experiments
   pc = 1 ./ [0.1860, (margins.left + margins.right - 1)];
   margins.column = 1 ./ polyval (pc , cols);
   pr = 1 ./ [0.2282, (margins.top + margins.bottom - 1)];
   margins.row    = 1 ./ polyval (pr , rows);
 
-  ## Calculate the width/height of the subplot axes.
+  ## Calculate the width/height of the subplot axes "position".
+  ## This is also consistent with Matlab
   width = 1 - margins.left - margins.right - (cols-1)*margins.column;
   width = width / cols;
   height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
   height = height / rows;
 
   if (strcmp (position_property, "outerposition") )
-    ## Calculate the outerposition/position inset
+    ## Calculate the inset of the position relative to the outerposition
+    ## The outerpositions are assumed to be tiled. Matlab's implementation
+    ## has outerposition overlap.
     if (rows > 1)
-      inset.top    = 8/420;
-      inset.bottom = max (polyval ([0.1382,-0.0026], height), 16/420);
+      ## Title on top and xlabel & xticks on bottom
+      inset.top = margins.row / 3;
+      inset.bottom = margins.row * (2/3);
+      ## Matlab behavior is approximately ...
+      % inset.bottom = margins.row;
     else
       inset.bottom = margins.bottom;
       inset.top = margins.top;
     endif
     if (cols > 1)
-      if (strcmpi (units, "normalized"))
-        inset.right = max (polyval ([0.1200,-0.0014], width), 5/560);
-      else
-        inset.right = max (polyval ([0.1252,-0.0023], width), 5/560);
-      endif
-      inset.left   = 22/560;
+      ## ylabel & yticks on left and some overhang for xticks on right
+      inset.right = 0.1 * margins.column;
+      inset.left = 0.9 * margins.column;
     else
       inset.left  = margins.left;
       inset.right = margins.right;
@@ -238,25 +250,30 @@ function pos = subplot_position (rows, cols, index, position_property, units)
     height = height + inset.top + inset.bottom;
   endif
 
-  yp = fix ((index(:)-1)/cols);
-  xp = index(:) - yp*cols - 1;
-  yp = (rows - 1) - yp;
+  ## Index offsets from the lower left subplot
+  yi = fix ((index(:)-1)/cols);
+  xi = index(:) - yi*cols - 1;
+  yi = (rows - 1) - yi;
 
-  x0 = xp .* (width + margins.column) + margins.left;
-  y0 = yp .* (height + margins.row) + margins.bottom;
+  ## Lower left corner of the subplot, i.e. position(1:2)
+  x0 = xi .* (width + margins.column) + margins.left;
+  y0 = yi .* (height + margins.row) + margins.bottom;
 
   if (strcmp (position_property, "outerposition") )
+    ## Shift from position(1:2) to outerposition(1:2)
     x0 = x0 - inset.left;
     y0 = y0 - inset.bottom;
   endif
 
   if (numel(x0) > 1)
-    x1 = max (x0) + width;
-    y1 = max (y0) + height;
-    x0 = min (x0);
-    y0 = min (y0);
+    ## subplot (row, col, m:n)
+    x1 = max (x0(:)) + width;
+    y1 = max (y0(:)) + height;
+    x0 = min (x0(:));
+    y0 = min (y0(:));
     pos = [x0, y0, x1-x0, y1-y0];
   else
+    ## subplot (row, col, num)
     pos = [x0, y0, width, height];
   endif
 

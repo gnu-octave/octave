@@ -1,3 +1,8 @@
+2011-02-16  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/subplot.m: Decrease spacing between subplots rows / columns.
+	Clean up and add comments.
+
 2011-02-16  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* statistics/base/mean.m: Fix tests according to changeset 0f21f258aa17.

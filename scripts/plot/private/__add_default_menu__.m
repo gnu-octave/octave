@@ -100,10 +100,10 @@ endfunction
 function guimode_cb (h, e)
   lbl = get(h, "label");
   if (strncmp(lbl, "Pan+Zoom", 8))
-    fltk_gui_mode("2D");
+    gui_mode("2D");
   elseif (strncmp(lbl, "Rotate+Zoom", 11))
-    fltk_gui_mode("3D");
+    gui_mode("3D");
   elseif (strncmp(lbl, "None", 4))
-    fltk_gui_mode("None");
+    gui_mode("None");
   endif
 endfunction

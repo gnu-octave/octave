@@ -1,3 +1,8 @@
+2011-02-17  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/private/__add_default_menu__.m: Rename fltk_gui_mode here
+	as well.
+
 2011-02-16  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/subplot.m: Decrease spacing between subplots rows / columns.

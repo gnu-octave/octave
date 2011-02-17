@@ -1,3 +1,8 @@
+2011-02-16  Richard Campbell  <rlcamp.pdx@gmail.com>
+
+	* README.MacOS: Updated Readme.MacOS section 2.2.1 with results of test
+	compilation on vanilla machine.
+
 2011-02-15  Benjamin Lindner  <lindnerb@users.sourceforge.net>
 
 	* configure.ac: Use AC_COMPILE_IFELSE to check for OpenGL

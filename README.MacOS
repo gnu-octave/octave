@@ -89,13 +89,43 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
 
   * Xcode
 
-  * gfortran: Available from http://r.reseach.att.com/tools
+  * Xcode-compatible gfortran: Available from http://r.reseach.att.com/tools
 
   * gnu sed: Available from http://www.gnu.org/software/sed/
 
       ./configure --prefix=/usr
       make
-      make install
+      sudo make install
+
+  * gnu pcre: Available from ftp://ftp.gnu.org/
+      The following build instructions will produce a universal binary,
+      allowing both 32- and 64-bit code to link to pcre. Whenever replacing
+      libraries which came with the OS, it is necessary to compile them as
+      universal binaries (even if you are only going to use one architecture)
+      to avoid disrupting unrelated code which might also link to the library.
+
+      export CFLAGS="-arch i686 -arch x86_64"
+      export LDFLAGS="-arch i686 -arch x86_64"
+      ./configure --prefix=/usr --disable-dependency-tracking
+      make
+      sudo make install
+
+  * flex: Available from http://flex.sourceforge.net/
+
+      ./configure --prefix=/usr
+      make
+      sudo make install
+
+  * blas/lapack
+
+    - The Apple/Intel-provided BLAS works out of the box in 32-bit as long as
+      the -ff2c flag is used. Alternatively, a wrapper for Apple's vecLib
+      framework may be used, enabling 64-bit.
+
+      https://mailman.cae.wisc.edu/pipermail/octave-maintainers/2011-January/022541.html
+
+A fully functional Octave requires additional dependencies. Here is an example
+ of how to compile one of them as a universal binary:
 
   * fftw3: Available from http://www.fftw.org/download.html
 
@@ -111,15 +141,7 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
       make
       sudo make install
 
-  * blas/lapack
-
-    - For 64 bit, a non-Xcode 64 bit Atlas may be used. Alternatively,
-      a wrapper for Apple's vecLib framework may be used.
-
-      https://mailman.cae.wisc.edu/pipermail/octave-maintainers/2011-January/022541.html
-
-A fully functional Octave requires additional dependencies. See the link below
-for the details.
+See the link below for additional details about optional dependencies.
 
     http://wiki.octave.org/wiki.pl?BuildFromSource
 

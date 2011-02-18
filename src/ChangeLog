@@ -1,3 +1,8 @@
+2011-02-18  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (axes::properties::sync_positions): Fix a small
+	bug introduced with changes from 2011-02-14.
+
 2011-02-15  Konstantinos Poulios  <logari81@googlemail.com>
 
 	Bug #32319.

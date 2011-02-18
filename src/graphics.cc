@@ -3346,7 +3346,7 @@ axes::properties::sync_positions (void)
       outpos(2) = pos(2)/defpos(2);
       outpos(3) = pos(3)/defpos(3);
 
-      outerposition = calc_tightbox (pos);
+      outerposition = calc_tightbox (outpos);
     }
 
   Matrix inset (1, 4, 1.0);

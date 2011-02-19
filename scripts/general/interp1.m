@@ -597,7 +597,7 @@ endfunction
 %!assert (interp1(1:2,1:2,1.4,"linear"),1.4);
 %!error interp1(1:3,1:3,1, "cubic");
 %!assert (interp1(1:4,1:4,1.4,"cubic"),1.4);
-%!error interp1(1:2,1:2,1, "spline");
+%!assert (interp1(1:2,1:2,1.1, "spline"), 1.1);
 %!assert (interp1(1:3,1:3,1.4,"spline"),1.4);
 
 %!error interp1(1,1,1, "*nearest");
@@ -606,7 +606,7 @@ endfunction
 %!assert (interp1(1:2:4,1:2:4,[0,1,1.4,3,4],"*linear"),[NA,1,1.4,3,NA]);
 %!error interp1(1:3,1:3,1, "*cubic");
 %!assert (interp1(1:2:8,1:2:8,1.4,"*cubic"),1.4);
-%!error interp1(1:2,1:2,1, "*spline");
+%!assert (interp1(1:2,1:2,1.3, "*spline"), 1.3);
 %!assert (interp1(1:2:6,1:2:6,1.4,"*spline"),1.4);
 
 %!assert (interp1([3,2,1],[3,2,2],2.5),2.5)

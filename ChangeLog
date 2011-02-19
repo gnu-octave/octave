@@ -1,3 +1,8 @@
+2011-02-19  Rik  <octave@nomad.inbox5.com>
+
+	* README.MacOS: Keep line length below 80, use 2 spaces to start
+	sentences.
+
 2011-02-16  Richard Campbell  <rlcamp.pdx@gmail.com>
 
 	* README.MacOS: Updated Readme.MacOS section 2.2.1 with results of test

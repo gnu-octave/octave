@@ -50,20 +50,20 @@ with gcc tool set bundled with Xcode.
   http://r.research.att.com/tools/
 
 Alternatively, the Fink and MacPorts package managers provide more recent
-versions of gcc which include gfortan. Those may be used to build the sources
-as well. However, care must be taken.
+versions of gcc which include gfortan.  Those may be used to build the sources
+as well.  However, care must be taken.
 
-  * The same compiler must be used to build all all of Octave's sources. This
+  * The same compiler must be used to build all all of Octave's sources.  This
     is necessary to avoid conflicts between the compiler libraries such as
-    libstdc++. For a successful build the first file in LDFLAGS must refer to
-    this library. For example, if building with gcc-4.5 obtained from MacPorts
+    libstdc++.  For a successful build the first file in LDFLAGS must refer to
+    this library.  For example, if building with gcc-4.5 obtained from MacPorts
     LDFLAGS would begin as,
 
       export LDFLAGS="/opt/local/lib/gcc45/libstdc++.6.dylib [...]"
 
-  * As of MacOS 10.6.6, the 64bit BLAS routines that are part of Apple's vecLib
+  * As of MacOS 10.6.6, the 64-bit BLAS routines that are part of Apple's vecLib
     (framework accelerate) are not functioning correctly.  As a work around, an
-    alternative BLAS/LAPACK library, such as ATLAS, must be used. A bug report 
+    alternative BLAS/LAPACK library, such as ATLAS, must be used.  A bug report 
     has been filed with Apple.
 
       http://bugreport.apple.com
@@ -99,7 +99,7 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
 
   * gnu pcre: Available from ftp://ftp.gnu.org/
       The following build instructions will produce a universal binary,
-      allowing both 32- and 64-bit code to link to pcre. Whenever replacing
+      allowing both 32- and 64-bit code to link to pcre.  Whenever replacing
       libraries which came with the OS, it is necessary to compile them as
       universal binaries (even if you are only going to use one architecture)
       to avoid disrupting unrelated code which might also link to the library.
@@ -119,12 +119,12 @@ The minimal dependencies needed to build Octave's snap-shots are listed below.
   * blas/lapack
 
     - The Apple/Intel-provided BLAS works out of the box in 32-bit as long as
-      the -ff2c flag is used. Alternatively, a wrapper for Apple's vecLib
+      the -ff2c flag is used.  Alternatively, a wrapper for Apple's vecLib
       framework may be used, enabling 64-bit.
 
       https://mailman.cae.wisc.edu/pipermail/octave-maintainers/2011-January/022541.html
 
-A fully functional Octave requires additional dependencies. Here is an example
+A fully functional Octave requires additional dependencies.  Here is an example
  of how to compile one of them as a universal binary:
 
   * fftw3: Available from http://www.fftw.org/download.html
@@ -145,14 +145,14 @@ See the link below for additional details about optional dependencies.
 
     http://wiki.octave.org/wiki.pl?BuildFromSource
 
-TODO - Modify the configure script to test for 64 bit vecLib bug. When the bug
+TODO - Modify the configure script to test for 64 bit vecLib bug.  When the bug
        is present, apply the wrapper solution.
 
 
-2.2.2 Building Octave as a 32bit Application
+2.2.2 Building Octave as a 32-bit Application
 --------------------------------------------
 
-The commands below are sufficient to build a 32bit Octave.
+The commands below are sufficient to build a 32-bit Octave.
 
   export FC="/usr/bin/gfortran"
   export CFLAGS="-m32"
@@ -170,10 +170,10 @@ Octave may be run without installing the application using the utility below.
 
   ./run-octave
 
-2.2.3 Building Octave as a 64bit Application
+2.2.3 Building Octave as a 64-bit Application
 --------------------------------------------
 
-The commands below are sufficient to build a 64bit Octave.
+The commands below are sufficient to build a 64-bit Octave.
 
   export FC="/usr/bin/gfortran"
   export CFLAGS="-arch x86_64"
@@ -200,7 +200,7 @@ To install and setup the Fink package manager see the on line documentation.
   http://www.finkproject.org/
 
 Currently, Fink does not have a package available for Octave versions above
-3.0.x. These instructions will allow the developers sources to be build and
+3.0.x.  These instructions will allow the developers sources to be build and
 run, but will not permit Octave to be installed in the usual Fink way.
 
 TODO - When a Fink package is developed for Octave 3.4.x, modify these 
@@ -242,7 +242,7 @@ To build Octave's sources the list of Fink packages below need to be installed.
   sed
   suitesparse (= 3.1.0-1 )
 
-Some of Octave's dependencies are among the default packages for Fink. These
+Some of Octave's dependencies are among the default packages for Fink.  These
 include the list below, and possibly others as well.
 
   tetex
@@ -260,7 +260,7 @@ include the list below, and possibly others as well.
 After installing each of the dependencies, the sources are compiled by
 setting the proper environment variables and then following the standard build
 sequence.  The following is an example set of variables to for a 32-bit build
-using gcc-4.2. When building from the sources obtained from the mercurial
+using gcc-4.2.  When building from the sources obtained from the mercurial
 archive, ./autogen.sh must be run prior to ./configure.
 
   export FINK_PREFIX="/sw"
@@ -306,39 +306,39 @@ To install and setup the MacPorts package manager see the online documentation
 
     http://guide.macports.org/
 
-Using MacPorts, two approaches are described. The first describes how to build
+Using MacPorts, two approaches are described.  The first describes how to build
 and locally install Octave from a formal snapshot of the developer's sources or
-from the developer's sources themselves. This is intended to the casual Octave
+from the developer's sources themselves.  This is intended to the casual Octave
 developer, or for users who want to live on the bleeding edge.
 
 The second describes an approach for building Octave which is intended for
-active developers. In this case, MacPorts is used to satisfy Octave's
-dependencies, but MacPorts does not build Octave. Further a direct install of
-Octave is not possible (i.e. cannot "make install").
+active developers.  In this case, MacPorts is used to satisfy Octave's
+dependencies, but MacPorts does not build Octave.  Further a direct install of
+Octave is not possible (i.e., cannot "make install").
 
 
 2.4.1 Building and Installing Octave
 ------------------------------------
 
-With MacPorts building the developer's sources is convenient. MacPorts includes
-a port file for octave-devel. To build and run the most recent development
-snapshots, enter the commands below.
+With MacPorts building the developer's sources is convenient.  MacPorts
+includes a port file for octave-devel.  To build and run the most recent
+development snapshots, enter the commands below.
 
     sudo port selfupdate
     sudo port install octave-devel
 
 To build the developers sources in one's own way, or if MacPorts' version is
-outdated, a custom port file can be added. This requires setting up a local
+outdated, a custom port file can be added.  This requires setting up a local
 port file repository (link below).
 
     http://guide.macports.org/#development.local-repositories
 
-The octave-devel port file may be used as an initial starting point. The port
+The octave-devel port file may be used as an initial starting point.  The port
 file is accessible from the web at the link below.
 
     http://trac.macports.org/browser/trunk/dports/math/octave-devel/Portfile
 
-It is also available locally at the location below. The parameter ${prefix} is
+It is also available locally at the location below.  The parameter ${prefix} is
 corresponds to where MacPorts is install, which by default is "/opt/local".
 
     ${prefix}/var/macports/sources/rsync.macports.org/release/ports/math/octave-devel/Portfile
@@ -357,9 +357,9 @@ To satisfy Octave's dependencies, first install the octave-devel port.
     sudo port selfupdate
     sudo port install octave-devel
 
-Next run octave to determine the configure options needed to build Octave using
-MacPorts.  At Octave's prompt type the command below and make note of the result,
-${config_opts}.
+Next run octave to determine the configure options needed to build Octave
+using MacPorts.  At Octave's prompt type the command below and make note of
+the result, ${config_opts}.
 
     octave:1> octave_config_info.config_opts
 
@@ -367,11 +367,11 @@ Now uninstall the Octave port.
 
     sudo port deactivate octave-devel
 
-This will remove Octave and leave its dependencies in place. Now Octave may be
-built from the local mercurial archive by typing the commands below, where the
-configure options mentioned above are substituted for the parameter
-${config_opts}. If the sources being built are from the mercurial archive, then
-./autogen.sh must be run prior to ./configure.
+This will remove Octave and leave its dependencies in place.  Now Octave may
+be built from the local mercurial archive by typing the commands below, where
+the configure options mentioned above are substituted for the parameter
+${config_opts}.  If the sources being built are from the mercurial archive,
+then ./autogen.sh must be run prior to ./configure.
 
     ./configure ${config_opts}
     make
@@ -381,7 +381,7 @@ Octave's integrated tests may be run.
     make check
 
 However, "make install" should not be run as it may damage or corrupt the
-MacPorts installation. To run Octave, type the command below from the root of
+MacPorts installation.  To run Octave, type the command below from the root of
 the mercurial archive.
 
     ./run-octave
@@ -393,4 +393,4 @@ jwe@octave.org
 Ben Abbott
 bpabbott@mac.com
 
-Last updated: Sat, 28 Oct 2010 16:06:00 EDT
+Last updated: Sat Feb 19 14:15:04 PST 2011

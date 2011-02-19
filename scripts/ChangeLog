@@ -1,3 +1,8 @@
+2011-02-19  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/__print_parse_opts__.m, plot/private/__ghostscript__.m: Improve
+	warnings when shell utilties are missing.
+
 2011-02-19  Thorsten Meyer  <thorsten.meyier@gmx.de>
 
 	* general/interp1.m: Fix tests according to spline update of

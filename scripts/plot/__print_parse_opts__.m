@@ -344,16 +344,17 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_binary)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("print:missinggs", "print.m: Ghostscript binary is not available");
-    endif
-    if (isempty (arg_st.epstool_binary))
-      warning ("print:missinggs", "print.m: epstool binary is not available");
-    endif
-    if (isempty (arg_st.fig2dev_binary))
-      warning ("print:missinggs", "print.m: fig2dev binary is not available");
-    endif
-    if (isempty (arg_st.pstoedit_binary))
-      warning ("print:missinggs", "print.m: pstoedit binary is not available");
+      warning ("print:missing_gs", "print.m: Ghostscript binary is not available.\nOnly eps output is available.");
+    else
+      if (isempty (arg_st.epstool_binary))
+        warning ("print:missing_epstool", "print.m: epstool binary is not available.\nSome output formats are not available.");
+      endif
+      if (isempty (arg_st.fig2dev_binary))
+        warning ("print:missing_fig2dev", "print.m: fig2dev binary is not available.\nSome output formats are not available.");
+      endif
+      if (isempty (arg_st.pstoedit_binary))
+        warning ("print:missing_pstoedit", "print.m: pstoedit binary is not available.\nSome output formats are not available.");
+      endif
     endif
     warn_on_missing_binary = false;
   endif

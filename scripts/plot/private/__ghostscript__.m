@@ -130,7 +130,9 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     endif
   endif
 
-  if (isempty (opts.output))
+  if (isempty (opts.binary))
+    error ("print:no_ghostscript", "__ghostscript__.m: ghostscript is required.");
+  elseif (isempty (opts.output))
     cmd = sprintf ("%s %s", opts.binary, gs_opts);
   else
     cmd = sprintf ("%s %s -sOutputFile=%s", opts.binary, gs_opts, opts.output);

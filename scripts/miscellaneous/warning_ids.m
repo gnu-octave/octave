@@ -109,6 +109,15 @@
 ## compatibility.  By default, the @code{Octave:associativity-change}
 ## warning is enabled.
 ##
+## @item Octave:autoload-relative-file-name
+## If the @code{Octave:autoload-relative-file-name} is enabled,
+## Octave will warn when parsing autoload() function calls with relative
+## paths to function files. This usually happens when using autoload()
+## calls in PKG_ADD files, when the PKG_ADD file is not in the same
+## directory as the .oct file referred to by the autoload() command.
+## By default, the @code{Octave:autoload-relative-file-name}
+## warning is enabled.
+##
 ## @item Octave:divide-by-zero
 ## If the @code{Octave:divide-by-zero} warning is enabled, a
 ## warning is issued when Octave encounters a division by zero.  By

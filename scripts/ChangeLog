@@ -55,6 +55,11 @@
 
 	* pkg/get_forge_pkg.m: Fix typo in new PCRE style regular expression.
 
+2011-02-20  Thomas Weber <tweber@debian.org>
+
+	* miscellaneous/warning_ids.m: Document
+	Octave::autoload-relative-file-name warning.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* io/dlmwrite.m, pkg/get_forge_pkg.m, plot/__gnuplot_ginput__.m,

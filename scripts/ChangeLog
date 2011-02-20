@@ -1,3 +1,9 @@
+2010-02-19  Rik  <octave@nomad.inbox5.com>
+
+	* io/dlmwrite.m, pkg/get_forge_pkg.m, plot/__gnuplot_ginput__.m,
+	plot/__go_draw_axes__.m, testfun/runtests.m: Use PCRE regular
+	expressions to simplify scripts.
+
 2011-02-19  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__print_parse_opts__.m, plot/private/__ghostscript__.m: Improve

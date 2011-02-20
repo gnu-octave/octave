@@ -1,3 +1,7 @@
+2010-02-19  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/install.txi: Remove reference to POSIX regex library.
+
 2010-02-14  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/io.txi, interpreter/oop.txi:

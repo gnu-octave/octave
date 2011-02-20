@@ -80,9 +80,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    ## Avoid PCRE 'lineanchors' by searching for newline followed by PTN.
-    ## Equivalent to regexp ('^PTN','lineanchors')
-    retval = ! isempty (regexp (str, "[\r\n]\\s*%!(test|assert|error|warning)", "once"));
+    retval = ! isempty (regexp (str, "^%!(test|assert|error|warning)", "lineanchors"));
   else
     error ("runtests: fopen failed: %s", f);
   endif

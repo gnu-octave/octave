@@ -561,7 +561,7 @@ dependencies.  If you discover that something does need to be done,
 please submit a bug report.
 
 @itemize @minus
-@item pcre or regex
+@item pcre
 
 @item zlib
 

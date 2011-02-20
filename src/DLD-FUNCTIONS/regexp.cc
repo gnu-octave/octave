@@ -885,9 +885,7 @@ DEFUN_DLD (regexp, args, nargout,
 @deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
 return the positions and substrings of any matches, or empty values if there\n\
-are none.  Note, some features and extended options are only available when\n\
-Octave is compiled with support for Perl Compatible Regular Expressions\n\
-(PCRE).\n\
+are none.\n\
 \n\
 The matched pattern @var{pat} can include any of the standard regex\n\
 operators, including:\n\
@@ -924,11 +922,9 @@ List operators.  The pattern will match any character listed between \"[\"\n\
 and \"]\".  If the first character is \"^\" then the pattern is inverted and\n\
 any character except those listed between brackets will match.\n\
 \n\
-With PCRE support, escape sequences defined below can be used inside list\n\
+Escape sequences defined below can also be used inside list\n\
 operators.  For example, a template for a floating point number might be\n\
-@code{[-+.\\d]+}.  POSIX regular expressions do not use escape sequences\n\
-and any backslash @samp{\\} will be interpreted literally as one\n\
-of the list of characters to match.\n\
+@code{[-+.\\d]+}.\n\
 \n\
 @item ()\n\
 Grouping operator\n\
@@ -975,14 +971,8 @@ Match any non-whitespace character\n\
 @item \\d\n\
 Match any digit\n\
 \n\
-This sequence is only available with PCRE support.  For POSIX regular\n\
-expressions use the following list operator @code{[0-9]}.\n\
-\n\
 @item \\D\n\
 Match any non-digit\n\
-\n\
-This sequence is only available with PCRE support.  For POSIX regular\n\
-expressions use the following list operator @code{[^0-9]}.\n\
 @end table\n\
 \n\
 The outputs of @code{regexp} default to the order given below\n\
@@ -1007,7 +997,7 @@ A cell array of the text of each token matched\n\
 @item nm\n\
 A structure containing the text of each matched named token, with the name\n\
 being used as the fieldname.  A named token is denoted by\n\
-@code{(?<name>@dots{})} and is only available with PCRE support.\n\
+@code{(?<name>@dots{})}.\n\
 @end table\n\
 \n\
 Particular output arguments, or the order of the output arguments, can be\n\
@@ -1033,49 +1023,46 @@ Return only the first occurrence of the pattern.\n\
 @item matchcase\n\
 Make the matching case sensitive.  (default)\n\
 \n\
-Alternatively, use (?-i) in the pattern when PCRE is available.\n\
+Alternatively, use (?-i) in the pattern.\n\
 \n\
 @item ignorecase\n\
 Ignore case when matching the pattern to the string.\n\
 \n\
-Alternatively, use (?i) in the pattern when PCRE is available.\n\
+Alternatively, use (?i) in the pattern.\n\
 \n\
 @item stringanchors\n\
 Match the anchor characters at the beginning and end of the string.  \n\
 (default)\n\
 \n\
-Alternatively, use (?-m) in the pattern when PCRE is available.\n\
+Alternatively, use (?-m) in the pattern.\n\
 \n\
 @item lineanchors\n\
 Match the anchor characters at the beginning and end of the line.\n\
-Only available when Octave is compiled with PCRE.\n\
 \n\
-Alternatively, use (?m) in the pattern when PCRE is available.\n\
+Alternatively, use (?m) in the pattern.\n\
 \n\
 @item dotall\n\
 The pattern @code{.} matches all characters including the newline character.\n\
  (default)\n\
 \n\
-Alternatively, use (?s) in the pattern when PCRE is available.\n\
+Alternatively, use (?s) in the pattern.\n\
 \n\
 @item dotexceptnewline\n\
 The pattern @code{.} matches all characters except the newline character.\n\
-Only available when Octave is compiled with PCRE.\n\
 \n\
-Alternatively, use (?-s) in the pattern when PCRE is available.\n\
+Alternatively, use (?-s) in the pattern.\n\
 \n\
 @item literalspacing\n\
 All characters in the pattern, including whitespace, are significant and are\n\
 used in pattern matching.  (default)\n\
 \n\
-Alternatively, use (?-x) in the pattern when PCRE is available.\n\
+Alternatively, use (?-x) in the pattern.\n\
 \n\
 @item freespacing\n\
 The pattern may include arbitrary whitespace and also comments beginning with\n\
 the character @samp{#}.\n\
-Only available when Octave is compiled with PCRE.\n\
 \n\
-Alternatively, use (?x) in the pattern when PCRE is available.\n\
+Alternatively, use (?x) in the pattern.\n\
 \n\
 @end table\n\
 @seealso{regexpi, strfind, regexprep}\n\
@@ -1168,7 +1155,7 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (m,'short')
 %! assert (isempty(t))
 
-%!testif HAVE_PCRE
+%!test
 %! [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %! assert (s,1)
 %! assert (e,10)
@@ -1184,7 +1171,7 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (nm.word1,'short')
 %! assert (nm.word2,'test')
 
-%!testif HAVE_PCRE
+%!test
 %! [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,10)
@@ -1200,7 +1187,7 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (nm.word1,'short')
 %! assert (nm.word2,'test')
 
-%!testif HAVE_PCRE
+%!test
 %! [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
 %! assert (size(t), [1,2]);
 %! assert (t{1}{1},'John');
@@ -1213,13 +1200,13 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %! assert (nm.last{1},'Davis');
 %! assert (nm.last{2},'Rogers');
 
-%!testif HAVE_PCRE
+%!test
 %! # Parenthesis in named token (ie (int)) causes a problem
 %! assert (regexp('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
 %!assert(regexp("abc\nabc",'.'),[1:7])
 %!assert(regexp("abc\nabc",'.','dotall'),[1:7])
-%!testif HAVE_PCRE
+%!test
 %! assert(regexp("abc\nabc",'(?s).'),[1:7])
 %! assert(regexp("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
 %! assert(regexp("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
@@ -1227,20 +1214,20 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %!assert(regexp("caseCaSe",'case'),1)
 %!assert(regexp("caseCaSe",'case',"matchcase"),1)
 %!assert(regexp("caseCaSe",'case',"ignorecase"),[1,5])
-%!testif HAVE_PCRE
+%!test
 %! assert(regexp("caseCaSe",'(?-i)case'),1)
 %! assert(regexp("caseCaSe",'(?i)case'),[1,5])
 
 %!assert (regexp("abc\nabc",'c$'),7)
 %!assert (regexp("abc\nabc",'c$',"stringanchors"),7)
-%!testif HAVE_PCRE
+%!test
 %! assert (regexp("abc\nabc",'(?-m)c$'),7)
 %! assert (regexp("abc\nabc",'c$',"lineanchors"),[3,7])
 %! assert (regexp("abc\nabc",'(?m)c$'),[3,7])
 
 %!assert (regexp("this word",'s w'),4)
 %!assert (regexp("this word",'s w','literalspacing'),4)
-%!testif HAVE_PCRE
+%!test
 %! assert (regexp("this word",'(?-x)s w','literalspacing'),4)
 %! assert (regexp("this word",'s w','freespacing'),zeros(1,0))
 %! assert (regexp("this word",'(?x)s w'),zeros(1,0))
@@ -1254,7 +1241,7 @@ Alternatively, use (?x) in the pattern when PCRE is available.\n\
 %!assert(regexp('Strings',{'t','s'}),{2,7})
 
 ## Test case for lookaround operators
-%!testif HAVE_PCRE
+%!test
 %! assert(regexp('Iraq','q(?!u)'),4)
 %! assert(regexp('quit','q(?!u)'), zeros(1,0))
 %! assert(regexp('quit','q(?=u)','match'), {'q'})
@@ -1353,7 +1340,7 @@ syntax of the search pattern.\n\
 %! assert (m,'ShoRt')
 %! assert (isempty(t))
 
-%!testif HAVE_PCRE
+%!test
 %! [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
 %! assert (s,1)
 %! assert (e,10)
@@ -1369,7 +1356,7 @@ syntax of the search pattern.\n\
 %! assert (nm.word1,'ShoRt')
 %! assert (nm.word2,'Test')
 
-%!testif HAVE_PCRE
+%!test
 %! [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,10)
@@ -1387,7 +1374,7 @@ syntax of the search pattern.\n\
 
 %!assert(regexpi("abc\nabc",'.'),[1:7])
 %!assert(regexpi("abc\nabc",'.','dotall'),[1:7])
-%!testif HAVE_PCRE
+%!test
 %! assert(regexpi("abc\nabc",'(?s).'),[1:7])
 %! assert(regexpi("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
 %! assert(regexpi("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
@@ -1395,20 +1382,20 @@ syntax of the search pattern.\n\
 %!assert(regexpi("caseCaSe",'case'),[1,5])
 %!assert(regexpi("caseCaSe",'case',"matchcase"),1)
 %!assert(regexpi("caseCaSe",'case',"ignorecase"),[1,5])
-%!testif HAVE_PCRE
+%!test
 %! assert(regexpi("caseCaSe",'(?-i)case'),1)
 %! assert(regexpi("caseCaSe",'(?i)case'),[1,5])
 
 %!assert (regexpi("abc\nabc",'C$'),7)
 %!assert (regexpi("abc\nabc",'C$',"stringanchors"),7)
-%!testif HAVE_PCRE
+%!test
 %! assert (regexpi("abc\nabc",'(?-m)C$'),7)
 %! assert (regexpi("abc\nabc",'C$',"lineanchors"),[3,7])
 %! assert (regexpi("abc\nabc",'(?m)C$'),[3,7])
 
 %!assert (regexpi("this word",'S w'),4)
 %!assert (regexpi("this word",'S w','literalspacing'),4)
-%!testif HAVE_PCRE
+%!test
 %! assert (regexpi("this word",'(?-x)S w','literalspacing'),4)
 %! assert (regexpi("this word",'S w','freespacing'),zeros(1,0))
 %! assert (regexpi("this word",'(?x)S w'),zeros(1,0))
@@ -1746,7 +1733,7 @@ This option is present for compatibility but is ignored.\n\
 %! assert(t,' <tag v="hello">some stuff</tag>')
 
 ## Test capture replacement
-%!testif HAVE_PCRE
+%!test
 %! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
 %! result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
 %! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
@@ -1781,7 +1768,7 @@ This option is present for compatibility but is ignored.\n\
 %!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
 
 # Nasty lookbehind expression
-%!testif HAVE_PCRE
+%!test
 %! assert(regexprep('x^(-1)+y(-1)+z(-1)=0','(?<=[a-z]+)\(\-[1-9]*\)','_minus1'),'x^(-1)+y_minus1+z_minus1=0')
 
 */

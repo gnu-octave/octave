@@ -75,7 +75,7 @@ function retval = has_functions (f)
     if (fid >= 0)
       str = fread (fid, "*char")';
       fclose (fid);
-      retval = ! isempty (regexp (str,"[\r\n](DEFUN|DEFUN_DLD)\\b", "once"));
+      retval = ! isempty (regexp (str,'^(DEFUN|DEFUN_DLD)\b', 'lineanchors'));
     else
       error ("fopen failed: %s", f);
     endif
@@ -91,9 +91,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    ## Avoid PCRE 'lineanchors' by searching for newline followed by PTN.
-    ## Equivalent to regexp ('^PTN','lineanchors')
-    retval = ! isempty (regexp (str, "[\r\n]\\s*%!(test|assert|error|warning)", "once"));
+    retval = ! isempty (regexp (str, "^%!(test|assert|error|warning)", "lineanchors"));
   else
     error ("fopen failed: %s", f);
   endif

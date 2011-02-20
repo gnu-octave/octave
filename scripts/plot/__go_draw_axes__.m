@@ -2326,7 +2326,7 @@ endfunction
 
 function l = length_string (s)
   l = length (s) - length (strfind(s,'{')) - length (strfind(s,'}'));
-  m = regexp (s, '/([a-zA-Z0-9_-]+|[a-zA-Z0-9_-]+=[0-9]+)', 'matches');
+  m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
   if (!isempty (m))
     l = l - sum (cellfun (@length, m));
   endif

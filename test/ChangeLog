@@ -1,3 +1,7 @@
+2010-02-19  Rik  <octave@nomad.inbox5.com>
+
+	* fntests.m: Use PCRE regular expressions to simplify script.
+
 2010-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* build_sparse_tests.sh: Use testif to only run some sparse tests when

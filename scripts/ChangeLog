@@ -1,3 +1,7 @@
+2010-02-20  Karsten Trulsen  <karstent@math.uio.no>
+
+	* signal/fftshift.m: Fix broken function.  Bug 32442.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* io/dlmwrite.m, pkg/get_forge_pkg.m, plot/__gnuplot_ginput__.m,

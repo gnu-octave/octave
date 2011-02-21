@@ -65,9 +65,9 @@ function retval = fftshift (x, dim)
     retval = x(idx{:});
   else
     if (isvector (x))
-      x = length (x);
-      xx = ceil (x/2);
-      retval = x([xx+1:x, 1:xx]);
+      xl = length (x);
+      xx = ceil (xl/2);
+      retval = x([xx+1:xl, 1:xx]);
     elseif (ismatrix (x))
       nd = ndims (x);
       sz = size (x);

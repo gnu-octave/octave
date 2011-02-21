@@ -92,7 +92,9 @@ Undocumented internal function.\n\
     {
       int file_count = fc.count ();
       std::string fname;
-      std::string sep = file_ops::dir_sep_str ();
+
+      //fltk uses forward slash even for windows
+      std::string sep = "/";
       std::size_t idx;
 
       if (file_count == 1 && multi_type != Fl_File_Chooser::DIRECTORY)

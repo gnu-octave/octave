@@ -1,3 +1,7 @@
+2011-02-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/regexp.cc: Assume we have PCRE.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* src/DLD-FUNCTIONS/regexp.cc: Use PCRE regular expressions everywhere

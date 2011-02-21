@@ -1,3 +1,9 @@
+2011-02-21  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: Note that PCRE is now required to build Octave.
+	* configure.ac: Improve check for PCRE, which is now required.
+	Don't check for -lregex.
+
 2011-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* README.MacOS: Keep line length below 80, use 2 spaces to start

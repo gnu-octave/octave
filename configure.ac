@@ -637,60 +637,42 @@ OCTAVE_CHECK_LIBRARY(qhull, QHull,
      AC_DEFINE(HAVE_QHULL, 1, [Define if QHull is available.])], [
      warn_qhull="Qhull library found, but seems not to work properly -- this will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
-### Check for pcre/regex library.
+### Check for pcre regex library.
 
-## check for pcre-config, and if so, set XTRA_CXXFLAGS appropriately
-AC_CHECK_PROG(WITH_PCRE_CONFIG, pcre-config, yes, no)
-if test $WITH_PCRE_CONFIG = yes ; then
-  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $(pcre-config --cflags)"
-fi
+REGEX_LIBS=
 
-## NB: no need to do separate check for pcre.h header -- checking macros is good enough
-AC_CACHE_CHECK([whether pcre.h defines the macros we need], [ac_cv_pcre_h_macros_present], [
-  AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
+
+## NB: no need to do separate check for pcre.h header -- checking
+## macros is good enough
+AC_CACHE_CHECK([whether pcre.h defines the macros we need],
+  [ac_cv_pcre_h_macros_present],
+  [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
 #include <pcre.h>
 #if defined (PCRE_INFO_NAMECOUNT) \
   && defined (PCRE_INFO_NAMEENTRYSIZE) \
   && defined (PCRE_INFO_NAMETABLE)
 PCRE_HAS_MACROS_WE_NEED
 #endif], ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
-WITH_PCRE="$ac_cv_pcre_h_macros_present"
 
-REGEX_LIBS=
-
-using_pcre=no
-using_regex=no
-
-if test "$WITH_PCRE" = yes; then
-  if test "$WITH_PCRE_CONFIG" = yes; then
-    REGEX_LIBS=$(pcre-config --libs)
+if test $ac_cv_pcre_h_macros_present = yes; then
+  ## check for pcre-config, and if so, set XTRA_CXXFLAGS appropriately
+  AC_CHECK_PROG(HAVE_PCRE_CONFIG, pcre-config, [yes], [no])
+  if test $HAVE_PCRE_CONFIG = yes; then
+    XTRA_CXXFLAGS="$XTRA_CXXFLAGS `pcre-config --cflags`"
+    REGEX_LIBS="`pcre-config --libs`"
   else
-    REGEX_LIBS=-lpcre
+    REGEX_LIBS="-lpcre"
   fi
   save_LIBS="$LIBS"
   LIBS="$REGEX_LIBS $LIBS"
-  AC_CHECK_FUNCS(pcre_compile, [using_pcre=yes
-    AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE library is available.])], [
-      REGEX_LIBS=
-      warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
-      AC_MSG_WARN([$warn_pcre])])
+  AC_CHECK_FUNCS(pcre_compile,
+    [AC_SUBST(REGEX_LIBS)],
+    [AC_MSG_ERROR([$pcre_fail_msg])])
   LIBS="$save_LIBS"
 else
-  warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
-  AC_MSG_WARN([$warn_pcre])
+  AC_MSG_ERROR([$pcre_fail_msg])
 fi
-
-AC_CHECK_FUNCS(regexec, [using_regex=yes], [
-  AC_CHECK_LIB(regex, regexec, [using_regex=yes
-    REGEX_LIBS="-lregex $REGEX_LIBS"], [
-      warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
-      AC_MSG_WARN([$warn_regex])])])
-
-if test "$using_regex" = yes; then
-  AC_DEFINE(HAVE_REGEX, 1, [Define if regex library is available.])
-fi
-
-AC_SUBST(REGEX_LIBS)
 
 ### Check for ZLIB library.
 

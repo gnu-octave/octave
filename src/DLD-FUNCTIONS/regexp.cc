@@ -41,15 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "oct-locbuf.h"
 
-#if defined (HAVE_PCRE)
 #include <pcre.h>
-#elif defined (HAVE_REGEX)
-#if defined (__MINGW32__)
-#define __restrict
-#endif
-#include <sys/types.h>
-#include <regex.h>
-#endif
 
 // Define the maximum number of retries for a pattern that
 // possibly results in an infinite recursion.
@@ -92,7 +84,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                 string_vector &named, int &nopts, bool &once)
 {
   int sz = 0;
-#if defined (HAVE_REGEX) || defined (HAVE_PCRE)
+
   int nargin = args.length();
   bool lineanchors = false;
   bool dotexceptnewline = false;
@@ -157,7 +149,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
           freespacing = false;
           nopts--;
         }
-#if HAVE_PCRE
+
       // Only accept these options with pcre
       else if (str.find("dotexceptnewline", 0) == 0)
         {
@@ -178,17 +170,6 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
                str.find("tokenextents", 0) && str.find("match", 0) &&
                str.find("tokens", 0) && str.find("names", 0))
         error ("%s: unrecognized option", nm.c_str());
-#else
-      else if (str.find("names", 0) == 0 ||
-               str.find("dotexceptnewline", 0) == 0 ||
-               str.find("lineanchors", 0) == 0 ||
-               str.find("freespacing", 0) == 0)
-       error ("%s: %s not implemented in this version", str.c_str(), nm.c_str());
-      else if (str.find("start", 0) && str.find("end", 0) &&
-               str.find("tokenextents", 0) && str.find("match", 0) &&
-               str.find("tokens", 0))
-        error ("%s: unrecognized option", nm.c_str());
-#endif
     }
 
   if (!error_state)
@@ -198,7 +179,6 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
       double s, e;
 
       // named tokens "(?<name>...)" are only treated with PCRE not regex.
-#if HAVE_PCRE
 
       size_t pos = 0;
       size_t new_pos;
@@ -494,79 +474,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
         }
 
       pcre_free(re);
-#else
-      regex_t compiled;
-      int err=regcomp(&compiled, pattern.c_str(), REG_EXTENDED |
-                      (case_insensitive ? REG_ICASE : 0));
-      if (err)
-        {
-          int len = regerror(err, &compiled, 0, 0);
-          OCTAVE_LOCAL_BUFFER (char, errmsg, len);
-          regerror(err, &compiled, errmsg, len);
-          error("%s: %s in pattern (%s)", nm.c_str(), errmsg,
-                pattern.c_str());
-          regfree(&compiled);
-          return 0;
-        }
-
-      int subexpr = 1;
-      int idx = 0;
-      for (unsigned int i=0; i < pattern.length(); i++)
-          subexpr += ( pattern[i] == '(' ? 1 : 0 );
-      OCTAVE_LOCAL_BUFFER (regmatch_t, match, subexpr );
-
-      while(true)
-        {
-          OCTAVE_QUIT;
-
-          if (regexec(&compiled, buffer.c_str() + idx, subexpr,
-                      match, (idx ? REG_NOTBOL : 0)) == 0)
-            {
-              // Count actual matches
-              int matches = 0;
-              while (matches < subexpr && match[matches].rm_so >= 0)
-                matches++;
-
-              if (matches == 0 || match[0].rm_eo == 0)
-                break;
-
-              s = double (match[0].rm_so+1+idx);
-              e = double (match[0].rm_eo+idx);
-              Matrix te(matches-1,2);
-              for (int i = 1; i < matches; i++)
-                {
-                  te(i-1,0) = double (match[i].rm_so+1+idx);
-                  te(i-1,1) = double (match[i].rm_eo+idx);
-                }
-
-              m =  buffer.substr (match[0].rm_so+idx,
-                                         match[0].rm_eo-match[0].rm_so);
-
-              Cell cell_t (dim_vector(1,matches-1));
-              for (int i = 1; i < matches; i++)
-                cell_t(i-1) = buffer.substr (match[i].rm_so+idx,
-                                             match[i].rm_eo-match[i].rm_so);
-              t = cell_t;
-
-              idx += match[0].rm_eo;
-
-              string_vector sv;
-              regexp_elem new_elem (sv, t, m, te, s, e);
-              lst.push_back (new_elem);
-              sz++;
-
-              if (once)
-                break;
-            }
-          else
-            break;
-        }
-      regfree(&compiled);
-#endif
     }
-#else
-  error ("%s: not available in this version of Octave", nm.c_str());
-#endif
+
   return sz;
 }
 
@@ -587,8 +496,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       // Converted the linked list in the correct form for the return values
 
       octave_idx_type i = 0;
-#ifdef HAVE_PCRE
       octave_scalar_map nmap;
+
       if (sz == 1)
         {
           for (int j = 0; j < named.length(); j++)
@@ -607,9 +516,6 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
             }
           retval(5) = nmap;
         }
-#else
-      retval(5) = octave_scalar_map ();
-#endif
 
       if (once)
         retval(4) = sz ? lst.front ().t : Cell();

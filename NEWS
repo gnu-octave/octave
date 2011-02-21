@@ -18,6 +18,8 @@ Summary of important user-visible changes for version 3.6:
       spchol              splchol      unmark_command
       spchol2inv          split        unmark_rawcommand
 
+  ** The PCRE library is now required to build Octave.
+
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
 

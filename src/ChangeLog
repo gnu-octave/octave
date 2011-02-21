@@ -1,3 +1,8 @@
+2011-02-21  Kai Habel  <kai.habel@gmx.de>
+
+	* src/DLD-FUNCTIONS/__init_fltk__.cc(plot_window::plot_window):
+	Call size_range early to allow window resizing for MacOS and MinGW.
+
 2011-02-21  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/regexp.cc: Assume we have PCRE.

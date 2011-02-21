@@ -640,6 +640,7 @@ public:
       panzoom (0), rotate (0), help (0), status (0)
   {
     callback (window_close, static_cast<void*> (this));
+    size_range (4*status_h, 2*status_h);
 
     begin ();
     {
@@ -741,7 +742,6 @@ public:
 
     set_name ();
     resizable (canvas);
-    size_range (4*status_h, 2*status_h);
     gui_mode = (ndim == 3 ? rotate_zoom : pan_zoom);
     uimenu->add_to_menu (fp);
     if (uimenu->items_to_show ())

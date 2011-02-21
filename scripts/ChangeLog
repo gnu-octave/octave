@@ -2,6 +2,10 @@
 
 	* signal/fftshift.m: Fix broken function.  Bug 32442.
 
+2010-02-21  Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* pkg/get_forge_pkg.m: Fix typo in new PCRE style regular expression.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* io/dlmwrite.m, pkg/get_forge_pkg.m, plot/__gnuplot_ginput__.m,

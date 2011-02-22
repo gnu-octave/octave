@@ -3176,6 +3176,7 @@ axes::properties::init (void)
   currentpoint.add_constraint (dim_vector (2, 3));
   ticklength.add_constraint (dim_vector (1, 2));
   tightinset.add_constraint (dim_vector (1, 4));
+  looseinset.add_constraint (dim_vector (1, 4));
 
   x_zlim.resize (1, 2);
 
@@ -3227,6 +3228,11 @@ axes::properties::init (void)
   adopt (ylabel.handle_value ());
   adopt (zlabel.handle_value ());
   adopt (title.handle_value ());
+
+  Matrix tlooseinset = default_axes_position ();
+  tlooseinset(2) = 1-tlooseinset(0)-tlooseinset(2);
+  tlooseinset(3) = 1-tlooseinset(1)-tlooseinset(3);
+  looseinset = tlooseinset;
 }
 
 Matrix
@@ -3262,16 +3268,20 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
 void
 axes::properties::sync_positions (void)
 {
-  Matrix defpos = default_axes_position ();
   Matrix pos = position.get ().matrix_value ();
   Matrix outpos = outerposition.get ().matrix_value ();
+  Matrix lins = looseinset.get ().matrix_value ();
+  double lratio = lins(0);
+  double bratio = lins(1);
+  double wratio = 1-lins(0)-lins(2);
+  double hratio = 1-lins(1)-lins(3);
   if (activepositionproperty.is ("outerposition"))
     {
       pos = outpos;
-      pos(0) = outpos(0) + defpos(0) * outpos(2);
-      pos(1) = outpos(1) + defpos(1) * outpos(3);
-      pos(2) = outpos(2) * defpos(2);
-      pos(3) = outpos(3) * defpos(3);
+      pos(0) = outpos(0)+lratio*outpos(2);
+      pos(1) = outpos(1)+bratio*outpos(3);
+      pos(2) = wratio*outpos(2);
+      pos(3) = hratio*outpos(3);
 
       position = pos;
       update_transform ();
@@ -3341,10 +3351,10 @@ axes::properties::sync_positions (void)
     {
       update_transform ();
 
-      outpos(0) = pos(0)-pos(2)*defpos(0)/defpos(2);
-      outpos(1) = pos(1)-pos(3)*defpos(1)/defpos(3);
-      outpos(2) = pos(2)/defpos(2);
-      outpos(3) = pos(3)/defpos(3);
+      outpos(0) = pos(0)-pos(2)*lratio/wratio;
+      outpos(1) = pos(1)-pos(3)*bratio/hratio;
+      outpos(2) = pos(2)/wratio;
+      outpos(3) = pos(3)/hratio;
 
       outerposition = calc_tightbox (outpos);
     }
@@ -3556,6 +3566,11 @@ axes::properties::set_defaults (base_graphics_object& obj,
       outerposition = touterposition;
 
       position = default_axes_position ();
+
+      Matrix tlooseinset = default_axes_position ();
+      tlooseinset(2) = 1-tlooseinset(0)-tlooseinset(2);
+      tlooseinset(3) = 1-tlooseinset(1)-tlooseinset(3);
+      looseinset = tlooseinset;
 
       activepositionproperty = "outerposition";
     }

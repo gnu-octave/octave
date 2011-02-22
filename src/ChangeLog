@@ -1,3 +1,13 @@
+2011-02-22  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.h.in (class axes::properties): New hidden property
+	looseinset.
+	(axes::properties::update_looseinset): New function.
+	* graphics.cc (axes::properties::init): Initialize looseinset.
+	(axes::properties::sync_positions): Take looseinset into account
+	instead of default_axes_position.
+	(axes::properties::set_defaults): Default values for looseinset.
+
 2011-02-21  Kai Habel  <kai.habel@gmx.de>
 
 	* src/DLD-FUNCTIONS/__fltk_uigetfile__cc:

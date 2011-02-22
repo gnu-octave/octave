@@ -3296,6 +3296,8 @@ public:
       row_vector_property xmtick h , Matrix ()
       row_vector_property ymtick h , Matrix ()
       row_vector_property zmtick h , Matrix ()
+      // hidden properties for inset
+      array_property looseinset hu , Matrix (1, 4, 0.0)
    END_PROPERTIES
 
   protected:
@@ -3393,6 +3395,8 @@ public:
       set_activepositionproperty ("position");
       sync_positions ();
     }
+
+    void update_looseinset (void) { sync_positions (); }
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks, array_property& mticks,

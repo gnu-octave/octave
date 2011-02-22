@@ -1,3 +1,7 @@
+2010-02-22  Rik  <octave@nomad.inbox5.com>
+
+	* fntests.m: Use single quotes around regexp patterns.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* fntests.m: Use PCRE regular expressions to simplify script.

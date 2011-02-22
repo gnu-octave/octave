@@ -80,7 +80,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    retval = ! isempty (regexp (str, "^%!(test|assert|error|warning)", "lineanchors"));
+    retval = ! isempty (regexp (str, '^%!(test|assert|error|warning)', "lineanchors"));
   else
     error ("runtests: fopen failed: %s", f);
   endif

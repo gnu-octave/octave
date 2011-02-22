@@ -60,8 +60,8 @@ function y = regexptranslate (op, s)
   if (ischar (op))
     op = tolower (op);
     if (strcmp ("wildcard", op))
-      y = regexprep (regexprep (regexprep (s, "\\.", "\\."), "\\*",
-                                ".*"), "\\?", ".");
+      y = regexprep (regexprep (regexprep (s, '\.', '\.'), '\*',
+                                '.*'), '\?', '.');
     elseif (strcmp ("escape", op))
       ch = {'\$', '\.', '\?', '\[', '\]'};
       y = s;

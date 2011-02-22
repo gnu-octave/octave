@@ -188,7 +188,7 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Determine the number of words per line
   format = strrep (format, "%", " %");
-  [~, ~, ~, fmt_words] = regexp (format, "[^ ]+");
+  [~, ~, ~, fmt_words] = regexp (format, '[^ ]+');
 
   num_words_per_line = numel (fmt_words);
   for m = 1:numel(fmt_words)
@@ -240,7 +240,7 @@ endfunction
 
 function out = split_by (text, sep)
   sep = union (sep, "\n");
-  pat = sprintf ("[^%s]+", sep);
+  pat = sprintf ('[^%s]+', sep);
   [~, ~, ~, out] = regexp (text, pat);
   out(cellfun (@isempty, out)) = {""};
   out = strtrim (out);

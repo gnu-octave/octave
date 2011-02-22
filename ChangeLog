@@ -1,3 +1,7 @@
+2011-02-22  Rik  <octave@nomad.inbox5.com>
+
+	* Makefile.am: New explicit 'make check' target.
+
 2011-02-21  John W. Eaton  <jwe@octave.org>
 
 	* NEWS: Note that PCRE is now required to build Octave.

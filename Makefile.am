@@ -122,6 +122,9 @@ all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbin
 	@echo "   make install    - to install (PREFIX=$(prefix))"
 	@echo ""
 
+check: all
+	$(MAKE) -C test check
+
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile
 	@$(do_subst_default_vals)

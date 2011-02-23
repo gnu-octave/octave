@@ -1,3 +1,7 @@
+2011-02-23  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_base::dup): Return retval.
+
 2011-02-22  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (class axes::properties): New hidden property

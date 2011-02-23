@@ -333,6 +333,8 @@ public:
 
     if (! retval)
       retval = new mxArray_octave_value (*this);
+
+    return retval;
   }
 
   ~mxArray_octave_value (void)

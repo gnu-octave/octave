@@ -1,3 +1,8 @@
+2011-02-23  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* .hgignore: Cleanup and more files to be ignore that get added
+	to the source during build time.
+
 2011-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: New explicit 'make check' target.

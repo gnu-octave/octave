@@ -1,8 +1,39 @@
-(^|/)CVS($|/)
-(^|/)\.hg($|/)
-(^|/)\.hgtags($|/)
+syntax: regexp
+# The recurrent (^|/) idiom in the regexps below should be understood
+# to mean "at any directory" while the ^ idiom means "from the
+# project's top-level directory".
 
+# This one gets created by gnulib during the build, contains no Octave
+# files.
+^gnulib/
+
+# These directories mostly contain cruft during build time, but they
+# do contain some Octave code.
+^libgnu/
+^m4/
+
+# Emacs tools create these
+(^|/)TAGS$
+(^|/)semantic.cache$
+
+(/|^)Makefile\.in$
+^INSTALL$
+
+^aclocal\.m4
 ^build-.*($|/)
-(^|/)configure$
-(^|/)autom4te.cache($|/)
+^configure$
+^autom4te\.cache($|/)
 ^config\.h\.in$
+
+# e.g. doc/faq/OctaveFAQ.info
+#      doc/interpreter/octave.info-4
+^doc/.*\.info(-\d)?$
+
+^doc/\w*/stamp-vti$
+^doc/\w*/version\.texi$
+^doc/interpreter/images\.mk$
+
+# e.g. liboctave/smx-op-inc.mk
+^liboctave/[\w-]*\.mk$
+
+^src/DLD-FUNCTIONS/module\.mk$

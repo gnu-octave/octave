@@ -83,15 +83,15 @@ function ret = spline (x, y, xi)
   ## Check the size and shape of y
   ndy = ndims (y);
   szy = size (y);
-  if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
-    if (szy(1) == 1)
+  if (ndy == 2 && (szy(1) == n || szy(2) == n))
+    if (szy(2) == n)
       a = y.';
     else
       a = y;
       szy = fliplr (szy);
     endif
   else
-    a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
+    a = shiftdim (reshape (y, [prod(szy(1:end-1)), szy(end)]), 1);
   endif
 
   for k = (1:columns (a))(any (isnan (a)))
@@ -120,9 +120,9 @@ function ret = spline (x, y, xi)
 
     if (n == 2)
       d = (dfs + dfe) / (x(2) - x(1)) ^ 2 + ...
-	2 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 3;
+          2 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 3;
       c = (-2 * dfs - dfe) / (x(2) - x(1)) - ...
-	3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
+          3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
       b = dfs;
       a = a(1,:);
 
@@ -132,7 +132,7 @@ function ret = spline (x, y, xi)
       a = a(1:n-1,:);
     else
       if (n == 3)
-	dg = 1.5 * h(1) - 0.5 * h(2);
+        dg = 1.5 * h(1) - 0.5 * h(2);
         c(2:n-1,:) = 1/dg(1);
       else
         dg = 2 * (h(1:n-2) .+ h(2:n-1));
@@ -153,9 +153,9 @@ function ret = spline (x, y, xi)
       endif
 
       c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * dfs
-		- c(2,:) * h(1)) / (2 * h(1));
+             - c(2,:) * h(1)) / (2 * h(1));
       c(n,:) = - (3 / h(n-1) * (a(n,:) - a(n-1,:)) - 3 * dfe
-		  + c(n-1,:) * h(n-1)) / (2 * h(n-1));
+             + c(n-1,:) * h(n-1)) / (2 * h(n-1));
       b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
         - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
@@ -229,15 +229,14 @@ function ret = spline (x, y, xi)
           - h(1:n-1, idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
 
-      d = d(1:n-1,:);
-      c = c(1:n-1,:);
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
+      d = d(1:n-1,:);d = d.'(:);
+      c = c(1:n-1,:);c = c.'(:);
+      b = b(1:n-1,:);b = b.'(:);
+      a = a(1:n-1,:);a = a.'(:);
     endif
 
   endif
-  coeffs = cat (3, d.', c.', b.', a.');
-  ret = mkpp (x, coeffs, szy(1:end-1));
+  ret = mkpp (x, cat (2, d, c, b, a), szy(1:end-1));
 
   if (nargin == 3)
     ret = ppval (ret, xi);
@@ -263,6 +262,9 @@ endfunction
 %!assert (isempty(spline(x',y',[])));
 %!assert (isempty(spline(x,y,[])));
 %!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x,[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x',[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x',[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
 %! y = cos(x) + i*sin(x);
 %!assert (spline(x,y,x), y, abserr)
 %!assert (real(spline(x,y,x)), real(y), abserr);

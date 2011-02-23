@@ -50,15 +50,13 @@ function [x, P, n, k, d] = unmkpp (pp)
   if (nargin == 0)
     print_usage ();
   endif
-  if (! isstruct (pp))
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("unmkpp: expecting piecewise polynomial structure");
   endif
-  x = pp.x;
-  P = pp.P;
-  n = size (P, 2);
-  k = size (P, 3);
-  d = pp.d;
-  if (d == 1)
-    P = reshape (P, n, k);
-  endif
+  x = pp.breaks;
+  P = pp.coefs;
+  n = pp.pieces;
+  k = pp.order;
+  d = pp.dim;
+
 endfunction

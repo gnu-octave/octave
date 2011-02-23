@@ -43,7 +43,7 @@
 ## Piecewise cubic Hermite interpolating polynomial
 ##
 ## @item 'cubic'
-## Cubic interpolation from four nearest neighbors
+## Cubic interpolation (same as @code{pchip})
 ##
 ## @item 'spline'
 ## Cubic spline interpolation---smooth first and second derivatives
@@ -112,7 +112,7 @@ function yi = interp1 (x, y, varargin)
   method = "linear";
   extrap = NA;
   xi = [];
-  pp = false;
+  ispp = false;
   firstnumeric = true;
 
   if (nargin > 2)
@@ -123,7 +123,7 @@ function yi = interp1 (x, y, varargin)
         if (strcmp ("extrap", arg))
           extrap = "extrap";
         elseif (strcmp ("pp", arg))
-          pp = true;
+          ispp = true;
         else
           method = arg;
         endif
@@ -138,7 +138,7 @@ function yi = interp1 (x, y, varargin)
     endfor
   endif
 
-  if (isempty (xi) && firstnumeric && ! pp)
+  if (isempty (xi) && firstnumeric && ! ispp)
     xi = y;
     y = x;
     x = 1:numel(y);
@@ -150,9 +150,8 @@ function yi = interp1 (x, y, varargin)
   szx = size (xi);
   if (isvector (y))
     y = y(:);
-  elseif (isvector (xi))
-    szx = length (xi);
   endif
+  
   szy = size (y);
   y = y(:,:);
   [ny, nc] = size (y);
@@ -191,147 +190,85 @@ function yi = interp1 (x, y, varargin)
 
   switch (method)
   case "nearest"
-    if (pp)
-      yi = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], y, szy(2:end));
+    pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], shiftdim (y, 1), szy(2:end));
+    pp.orient = "first";
+    
+    if (ispp)
+      yi = pp;
     else
-      idx = lookup (0.5*(x(1:nx-1)+x(2:nx)), xi) + 1;
-      yi = y(idx,:);
+      yi = ppval (pp, reshape (xi, szx));
     endif
   case "*nearest"
-    if (pp)
-      yi = mkpp ([x(1); x(1)+[0.5:(nx-1)]'*dx; x(nx)], y, szy(2:end));
+    pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)], shiftdim (y, 1), szy(2:end));
+    pp.orient = "first";
+    if (ispp)
+      yi = pp;
     else
-      idx = max (1, min (ny, floor((xi-x(1))/dx+1.5)));
-      yi = y(idx,:);
+      yi = ppval(pp, reshape (xi, szx));
     endif
   case "linear"
     dy = diff (y);
-    dx = diff (x);
-    if (pp)
-      coefs = [dy./dx, y(1:nx-1)];
-      xx = x;
-      if (have_jumps)
-        ## Omit zero-size intervals.
-        coefs(jumps) = [];
-        xx(jumps) = [];
-      endif
-      yi = mkpp (xx, coefs, szy(2:end));
-    else
-      ## find the interval containing the test point
-      idx = lookup (x, xi, "lr");
-      ## use the endpoints of the interval to define a line
-      s = (xi - x(idx))./dx(idx);
-      yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
-      if (have_jumps)
-        ## Fix the corner cases of discontinuities at boundaries.
-        ## Internal discontinuities already handled correctly.
-        if (jumps (1))
-          mask = xi < x(1);
-          yi(mask,:) = y(1*ones (1, sum (mask)),:);
-        endif
-        if (jumps(nx-1))
-          mask = xi >= x(nx);
-          yi(mask,:) = y(nx*ones (1, sum (mask)),:);
-        endif
-      endif
+    dx = diff (x);    
+    dx = repmat (dx, [1 size(dy)(2:end)]);
+    coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
+    xx = x;
+
+    if (have_jumps)
+      ## Omit zero-size intervals.
+      coefs(jumps, :) = [];
+      xx(jumps) = [];
     endif
+
+    pp = mkpp (xx, coefs, szy(2:end));
+    pp.orient = "first";
+
+    if (ispp)
+      yi = pp;
+    else
+      yi = ppval(pp, reshape (xi, szx));
+    endif
+
   case "*linear"
     dy = diff (y);
-    if (pp)
-      yi = mkpp (x(1) + [0:ny-1]*dx, [dy./dx, y(1:end-1)], szy(2:end));
-    else
-      ## find the interval containing the test point
-      t = (xi - x(1))/dx + 1;
-      idx = max (1, min (ny - 1, floor (t)));
+    coefs = [(dy/dx).'(:), y(1:nx-1, :).'(:)];
+    pp = mkpp (x, coefs, szy(2:end));
+    pp.orient = "first";
 
-      ## use the endpoints of the interval to define a line
-      s = t - idx;
-      yi = bsxfun (@times, s, dy(idx,:)) + y(idx,:);
+    if (ispp)
+      yi = pp;
+    else
+      yi = ppval(pp, reshape (xi, szx));
     endif
-  case {"pchip", "*pchip"}
+
+  case {"pchip", "*pchip", "cubic", "*cubic"}
     if (nx == 2 || starmethod)
       x = linspace (x(1), x(nx), ny);
     endif
-    ## Note that pchip's arguments are transposed relative to interp1
-    if (pp)
-      yi = pchip (x.', y.');
-      yi.d = szy(2:end);
+    
+    if (ispp)
+      y = shiftdim (reshape (y, szy), 1);
+      yi = pchip (x, y);
     else
-      yi = pchip (x.', y.', xi.').';
-    endif
-
-  case {"cubic", "*cubic"}
-    if (nx < 4 || ny < 4)
-      error ("interp1: table too short");
-    endif
-
-    ## FIXME Is there a better way to treat pp return and *cubic
-    if (starmethod && ! pp)
-      ## From: Miloje Makivic
-      ## http://www.npac.syr.edu/projects/nasa/MILOJE/final/node36.html
-      t = (xi - x(1))/dx + 1;
-      idx = max (min (floor (t), ny-2), 2);
-      t = t - idx;
-      t2 = t.*t;
-      tp = 1 - 0.5*t;
-      a = (1 - t2).*tp;
-      b = (t2 + t).*tp;
-      c = (t2 - t).*tp/3;
-      d = (t2 - 1).*t/6;
-      J = ones (1, nc);
-
-      yi = a(:,J) .* y(idx,:) + b(:,J) .* y(idx+1,:) ...
-      + c(:,J) .* y(idx-1,:) + d(:,J) .* y(idx+2,:);
-    else
-      if (starmethod)
-        x = linspace (x(1), x(nx), ny).';
-        nx = ny;
-      endif
-
-      idx = lookup (x(2:nx-1), xi, "lr");
-
-      ## Construct cubic equations for each interval using divided
-      ## differences (computation of c and d don't use divided differences
-      ## but instead solve 2 equations for 2 unknowns). Perhaps
-      ## reformulating this as a lagrange polynomial would be more efficient.
-      i = 1:nx-3;
-      J = ones (1, nc);
-      dx = diff (x);
-      dx2 = x(i+1).^2 - x(i).^2;
-      dx3 = x(i+1).^3 - x(i).^3;
-      a = diff (y, 3)./dx(i,J).^3/6;
-      b = (diff (y(1:nx-1,:), 2)./dx(i,J).^2 - 6*a.*x(i+1,J))/2;
-      c = (diff (y(1:nx-2,:), 1) - a.*dx3(:,J) - b.*dx2(:,J))./dx(i,J);
-      d = y(i,:) - ((a.*x(i,J) + b).*x(i,J) + c).*x(i,J);
-
-      if (pp)
-        xs = [x(1);x(3:nx-2)];
-        yi = mkpp ([x(1);x(3:nx-2);x(nx)],
-                   [a(:), (b(:) + 3.*xs(:,J).*a(:)), ...
-                    (c(:) + 2.*xs(:,J).*b(:) + 3.*xs(:,J)(:).^2.*a(:)), ...
-                    (d(:) + xs(:,J).*c(:) + xs(:,J).^2.*b(:) + ...
-                     xs(:,J).^3.*a(:))], szy(2:end));
-      else
-        yi = ((a(idx,:).*xi(:,J) + b(idx,:)).*xi(:,J) ...
-              + c(idx,:)).*xi(:,J) + d(idx,:);
-      endif
+      y = shiftdim (y, 1);
+      yi = pchip (x, y, reshape (xi, szx));
     endif
   case {"spline", "*spline"}
     if (nx == 2 || starmethod)
       x = linspace(x(1), x(nx), ny);
     endif
-    ## Note that spline's arguments are transposed relative to interp1
-    if (pp)
-      yi = spline (x.', y.');
-      yi.d = szy(2:end);
+    
+    if (ispp)
+      y = shiftdim (reshape (y, szy), 1);
+      yi = spline (x, y);
     else
-      yi = spline (x.', y.', xi.').';
+      y = shiftdim (y, 1);
+      yi = spline (x, y, reshape (xi, szx));
     endif
   otherwise
     error ("interp1: invalid method '%s'", method);
   endswitch
 
-  if (! pp)
+  if (! ispp)
     if (! ischar (extrap))
       ## determine which values are out of range and set them to extrap,
       ## unless extrap == "extrap".
@@ -339,10 +276,24 @@ function yi = interp1 (x, y, varargin)
       maxx = max (x(1), x(nx));
 
       outliers = xi < minx | ! (xi <= maxx); # this catches even NaNs
-      yi(outliers, :) = extrap;
+      if (size_equal (outliers, yi))
+        yi(outliers) = extrap;
+        yi = reshape (yi, szx);
+      elseif (!isvector (yi))
+        if (strcmp (method, "pchip") || strcmp (method, "*pchip")
+          ||strcmp (method, "cubic") || strcmp (method, "*cubic")
+          ||strcmp (method, "spline") || strcmp (method, "*spline"))
+          yi(:, outliers) = extrap;
+          yi = shiftdim(yi, 1);
+        else
+          yi(outliers, :) = extrap;
+        endif
+      else
+        yi(outliers.') = extrap;
+      endif
     endif
-
-    yi = reshape (yi, [szx, szy(2:end)]);
+  else
+    yi.orient = "first";
   endif
 
 endfunction
@@ -394,6 +345,7 @@ endfunction
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
+##FIXME: add test for n-d arguments here
 
 ## For each type of interpolated test, confirm that the interpolated
 ## value at the knots match the values at the knots.  Points away
@@ -595,7 +547,6 @@ endfunction
 %!assert (interp1(1:2,1:2,1.4,"nearest"),1);
 %!error interp1(1,1,1, "linear");
 %!assert (interp1(1:2,1:2,1.4,"linear"),1.4);
-%!error interp1(1:3,1:3,1, "cubic");
 %!assert (interp1(1:4,1:4,1.4,"cubic"),1.4);
 %!assert (interp1(1:2,1:2,1.1, "spline"), 1.1);
 %!assert (interp1(1:3,1:3,1.4,"spline"),1.4);
@@ -604,7 +555,6 @@ endfunction
 %!assert (interp1(1:2:4,1:2:4,1.4,"*nearest"),1);
 %!error interp1(1,1,1, "*linear");
 %!assert (interp1(1:2:4,1:2:4,[0,1,1.4,3,4],"*linear"),[NA,1,1.4,3,NA]);
-%!error interp1(1:3,1:3,1, "*cubic");
 %!assert (interp1(1:2:8,1:2:8,1.4,"*cubic"),1.4);
 %!assert (interp1(1:2,1:2,1.3, "*spline"), 1.3);
 %!assert (interp1(1:2:6,1:2:6,1.4,"*spline"),1.4);
@@ -612,5 +562,5 @@ endfunction
 %!assert (interp1([3,2,1],[3,2,2],2.5),2.5)
 
 %!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap"), [-2,0.5,4,3,1.5])
-%!assert (interp1 ([4,4,3,2,0],[0,1,4,2,1],[1.5,4,4.5], "linear"), [0,1,NA])
+%!assert (interp1 ([4,4,3,2,0],[0,1,4,2,1],[1.5,4,4.5], "linear"), [1.75,1,NA])
 %!assert (interp1 (0:4, 2.5), 1.5)

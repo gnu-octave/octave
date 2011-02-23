@@ -28,7 +28,7 @@ function ppi = ppint (pp, c)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  if (! isstruct (pp))
+  if (! isstruct (pp) && strcmp (pp.form, "pp"))
     error ("ppint: PP must be a structure");
   endif
 
@@ -39,17 +39,20 @@ function ppi = ppint (pp, c)
   pi = p / diag (k:-1:1);
   k += 1;
   if (nargin == 1)
-    pi(:,k) = 0;
+    pi(:, k) = 0;
   else
-    pi(:,k) = repmat (c(:), n, 1);
+    pi(:, k) = repmat (c(:), n, 1);
   endif
 
   ppi = mkpp (x, pi, d);
 
-  ## Adjust constants so the the result is continuous.
-
-  jumps = reshape (ppjumps (ppi), prod (d), n-1);
-  ppi.P(:,2:n,k) -= cumsum (jumps, 2);
-
+  tmp = -cumsum (ppjumps (ppi), length (d) + 1);
+  ppi.coefs(prod(d)+1:end, k) = tmp(:);
+  
 endfunction
 
+%!shared x,y,pp,ppi
+%! x=0:8;y=[ones(size(x));x+1];pp=spline(x,y);
+%! ppi=ppint(pp);
+%!assert(ppval(ppi,x),[x;0.5*x.^2+x],1e-14)
+%!assert(ppi.order,5)

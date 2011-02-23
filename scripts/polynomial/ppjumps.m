@@ -28,29 +28,31 @@ function jumps = ppjumps (pp)
   if (nargin != 1)
     print_usage ();
   endif
-  if (! isstruct (pp))
+  
+  if (! isstruct (pp) && strcmp (pp.form, "pp"))
     error ("ppjumps: PP must be a structure");
   endif
 
   ## Extract info.
-  x = pp.x;
-  P = pp.P;
-  d = pp.d;
-  [nd, n, k] = size (P);
+  [x, P, n, k, d] = unmkpp(pp);
+  nd = length (d) + 1;
 
   ## Offsets.
-  dx = diff (x(1:n)).';
-  dx = dx(ones (1, nd), :); # spread (do nothing in 1D)
+  dx = diff(x(1:n));
+  dx = repmat (dx, [prod(d), 1]);
+  dx = reshape (dx, [d, n-1]);
+  dx = shiftdim (dx, nd - 1);
 
-  ## Use Horner scheme to get limits from the left.
-  llim = P(:,1:n-1,1);
-  for i = 2:k;
+  ## Use Horner scheme.
+  if (k>1)
+    llim = shiftdim (reshape (P(1:(n-1) * prod(d), 1), [d, n-1]), nd - 1);
+  endif
+
+  for i = 2 : k;
     llim .*= dx;
-    llim += P(:,1:n-1,i);
+    llim += shiftdim (reshape (P(1:(n-1) * prod (d), i), [d, n-1]), nd - 1);
   endfor
-
-  rlim = P(:,2:n,k); # limits from the right
-  jumps = reshape (rlim - llim, [d, n-1]);
-
+  
+  rlim = shiftdim (ppval (pp, x(2:end-1)), nd - 1);
+  jumps = shiftdim (rlim - llim, 1);
 endfunction
-

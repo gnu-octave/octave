@@ -27,8 +27,8 @@
 ##
 ## The variable @var{x} must be a strictly monotonic vector (either
 ## increasing or decreasing).  While @var{y} can be either a vector or
-## array.  In the case where @var{y} is a vector, it must have a length
-## of @var{n}.  If @var{y} is an array, then the size of @var{y} must
+## an array.  In the case where @var{y} is a vector, it must have the
+## length @var{n}.  If @var{y} is an array, then the size of @var{y} must
 ## have the form
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n]$$
@@ -73,15 +73,22 @@ function ret = pchip (x, y, xi)
     print_usage ();
   endif
 
+  ## make row vector
   x = x(:).';
   n = length (x);
 
   ## Check the size and shape of y
   if (isvector (y))
-    y = y(:).';
+    y = y(:).'; ##row vector
     szy = size (y);
+    if !(size_equal (x, y))
+      error ("pchip: length of X and Y must match")
+    endif
   else
     szy = size (y);
+    if (n != szy(end))
+      error ("pchip: length of X and last dimension of Y must match")
+    endif
     y = reshape (y, [prod(szy(1:end-1)), szy(end)]);
   endif
 
@@ -94,16 +101,12 @@ function ret = pchip (x, y, xi)
     error("pchip: X must be strictly monotonic");
   endif
 
-  if (columns (y) != n)
-    error("pchip: size of X and Y must match");
-  endif
-
-  f1 = y(:,1:n-1);
+  f1 = y(:, 1:n-1);
 
   ## Compute derivatives.
   d = __pchip_deriv__ (x, y, 2);
-  d1 = d(:,1:n-1);
-  d2 = d(:,2:n);
+  d1 = d(:, 1:n-1);
+  d2 = d(:, 2:n);
 
   ## This is taken from SLATEC.
   h = diag (h);
@@ -114,14 +117,12 @@ function ret = pchip (x, y, xi)
   c3 = del1 + del2;
   c2 = -c3 - del1;
   c3 = c3 / h;
-
   coeffs = cat (3, c3, c2, d1, f1);
-  pp = mkpp (x, coeffs, szy(1:end-1));
 
-  if (nargin == 2)
-    ret = pp;
-  else
-    ret = ppval (pp, xi);
+  ret = mkpp (x, coeffs, szy(1:end-1));
+
+  if (nargin == 3)
+    ret = ppval (ret, xi);
   endif
 
 endfunction
@@ -138,7 +139,7 @@ endfunction
 %! %-------------------------------------------------------------------
 %! % confirm that pchip agreed better to discontinuous data than spline
 
-%!shared x,y
+%!shared x,y,y2,pp,yi1,yi2,yi3
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
 %!assert (pchip(x,y,x), y);
@@ -148,3 +149,23 @@ endfunction
 %!assert (isempty(pchip(x',y',[])));
 %!assert (isempty(pchip(x,y,[])));
 %!assert (pchip(x,[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip(x,[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip(x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip(x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!test
+%! x=(0:8)*pi/4;y=[sin(x);cos(x)];
+%! y2(:,:,1)=y;y2(:,:,2)=y+1;y2(:,:,3)=y-1;
+%! pp=pchip(x,shiftdim(y2,2));
+%! yi1=ppval(pp,(1:4)*pi/4);
+%! yi2=ppval(pp,repmat((1:4)*pi/4,[5,1]));
+%! yi3=ppval(pp,[pi/2,pi]);
+%!assert(size(pp.coefs),[48,4]);
+%!assert(pp.pieces,8);
+%!assert(pp.order,4);
+%!assert(pp.dim,[3,2]);
+%!assert(ppval(pp,pi),[0,-1;1,0;-1,-2],1e-14);
+%!assert(yi3(:,:,2),ppval(pp,pi),1e-14);
+%!assert(yi3(:,:,1),[1,0;2,1;0,-1],1e-14);
+%!assert(squeeze(yi1(1,2,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);
+%!assert(size(yi2),[3,2,5,4]);
+%!assert(squeeze(yi2(1,2,3,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);

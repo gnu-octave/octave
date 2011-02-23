@@ -1,3 +1,12 @@
+2011-04-15  Kai Habel  <kai.habel@gmx.de>
+
+	* general/interp1.m, polynomial/mkpp.m, polynomial/pchip.m,
+	polynomial/ppder.m, polynomial/ppint.m, polynomial/ppjumps.m,
+	polynomial/ppval.m, polynomial/spline.m, polynomial/unmkpp.m:
+	Make functions more compatible with respect to handling of
+	picewise polynoms (pp). Rename pp-struct elements.
+	Handle nD-arguments correctly. Tests added.
+
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
 	* help/__makeinfo__.m: Simplify function by using regular expressions.
@@ -413,11 +422,6 @@
 2011-02-10  John W. Eaton  <jwe@octave.org>
 
 	* statistics/base/mean.m: Also accept logical values.
-
-2011-02-10 Carlo de Falco  <kingcrimson@tiscali.it>
-
-	* linear-algebra/gmres.m: New file implementing the GMRES
-	iterative method for solving linear systems.
 
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 

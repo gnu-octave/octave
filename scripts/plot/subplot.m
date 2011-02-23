@@ -110,13 +110,14 @@ function h = subplot (rows, cols, index, varargin)
     error ("subplot: COLS,ROWS,INDEX must be be positive");
   endif
 
-  units = get (0, "defaultaxesunits");
+  axesunits = get (0, "defaultaxesunits");
   cf = gcf ();
-  figunits = get (cf, "units");
+  figureunits = get (cf, "units");
   unwind_protect
-    set (0, "defaultaxesunits", "normalized");
+    units = "normalized";
+    set (0, "defaultaxesunits", units);
     set (cf, "units", "pixels");
-    pos = subplot_position (rows, cols, index, "position", units);
+    pos = subplot_position (rows, cols, index, "position");
 
     set (cf, "nextplot", "add");
 
@@ -162,13 +163,14 @@ function h = subplot (rows, cols, index, varargin)
 
     if (found)
       set (cf, "currentaxes", tmp);
+      position = get (tmp, "position");
+      outerposition = get (tmp, "outerposition");
     else
-      outerposition = subplot_position (rows, cols, index,
-                                        "outerposition", units);
-      position = subplot_position (rows, cols, index, "position", units);
-      tmp = axes ("position", position, "outerposition", outerposition,
-                  "activepositionproperty", "outerposition",
-                  "box", "off");
+      outerposition = subplot_position (rows, cols, index, "outerposition");
+      position = subplot_position (rows, cols, index, "position");
+      tmp = axes ("looseinset", [0 0 0 0], "box", "off",
+                  "outerposition", outerposition,
+                  "position", position);
     endif
 
     if (align_axes && strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
@@ -176,8 +178,8 @@ function h = subplot (rows, cols, index, varargin)
     endif
 
   unwind_protect_cleanup
-    set (0, "defaultaxesunits", units);
-    set (cf, "units", figunits);
+    set (0, "defaultaxesunits", axesunits);
+    set (cf, "units", figureunits);
   end_unwind_protect
 
   if (nargout > 0)
@@ -186,7 +188,7 @@ function h = subplot (rows, cols, index, varargin)
 
 endfunction
 
-function pos = subplot_position (rows, cols, index, position_property, units)
+function pos = subplot_position (rows, cols, index, position_property)
 
   defaultaxesposition = get (0, "defaultaxesposition");
   defaultaxesouterposition = get (0, "defaultaxesouterposition");
@@ -227,7 +229,7 @@ function pos = subplot_position (rows, cols, index, position_property, units)
     ## has outerposition overlap.
     if (rows > 1)
       ## Title on top and xlabel & xticks on bottom
-      inset.top = margins.row / 3;
+      inset.top = margins.row * (1/3);
       inset.bottom = margins.row * (2/3);
       ## Matlab behavior is approximately ...
       % inset.bottom = margins.row;
@@ -237,8 +239,9 @@ function pos = subplot_position (rows, cols, index, position_property, units)
     endif
     if (cols > 1)
       ## ylabel & yticks on left and some overhang for xticks on right
-      inset.right = 0.1 * margins.column;
-      inset.left = 0.9 * margins.column;
+      x = 0.1;
+      inset.right = x * margins.column;
+      inset.left = (1 - x) * margins.column;
     else
       inset.left  = margins.left;
       inset.right = margins.right;
@@ -311,7 +314,7 @@ endfunction
 %! endfor
 %! subplot (1, 2, 1, "align")
 %! plot (x, x)
-%! xlabel (sprintf ("xlabel (1,2,%d)", n))
-%! ylabel (sprintf ("ylabel (1,2,%d)", n))
-%! title (sprintf ("title (1,2,%d)", n))
+%! xlabel ("xlabel (1,2,1)")
+%! ylabel ("ylabel (1,2,1)")
+%! title ("title (1,2,1)")
 

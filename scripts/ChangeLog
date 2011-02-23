@@ -1,3 +1,9 @@
+2011-02-22  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/subplot.m: Use new looseinset property introduced by changeset
+	12467. Decrease spacing between subplots rows / columns. Clean up and
+	add comments.
+
 2010-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* io/strread.m, plot/whitebg.m, strings/regexptranslate.m,

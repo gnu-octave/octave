@@ -46,7 +46,7 @@ function varargout = strchr (str, chars, varargin)
     ## Index the str into a mask of valid values.  This is slower than
     ## it could be because of the +1 issue.
     f = false (1, 256);
-    f(chars + 1) = true;
+    f(uint8(chars)+1) = true;
     ## Default goes via double -- unnecessarily long.
     si = uint32 (str);
     ## in-place

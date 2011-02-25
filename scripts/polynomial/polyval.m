@@ -69,7 +69,7 @@ function [y, dy] = polyval (p, x, s, mu)
 
   n = length (p) - 1;
   x = (x - mu(1)) / mu(2);
-  y = p(1);
+  y = p(1) * ones (size (x(:)));
   for i = 2:n+1
     y = y .* x(:) + p(i);
   endfor
@@ -127,4 +127,20 @@ endfunction
 %! assert (x, polyval(p,x), eps)
 %! x = reshape(x, [1, 1, 5, 2]);
 %! assert (x, polyval(p,x), eps)
+
+%!test
+%! p = [1];
+%! x = 1:10;
+%! y = ones(size(x));
+%! assert (y, polyval(p,x), eps)
+%! x = x(:);
+%! y = ones(size(x));
+%! assert (y, polyval(p,x), eps)
+%! x = reshape(x, [2, 5]);
+%! y = ones(size(x));
+%! assert (y, polyval(p,x), eps)
+%! x = reshape(x, [5, 2]);
+%! y = ones(size(x));
+%! assert (y, polyval(p,x), eps)
+%! x = reshape(x, [1, 1, 5, 2]);
 

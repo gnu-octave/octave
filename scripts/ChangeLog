@@ -1,3 +1,7 @@
+2011-02-24  Robert T. Short  <rtshort@ieee.org> 
+
+	* polynomial/polyval.m: Properly evaluate constant polynomials.
+
 2011-02-24  John W. Eaton  <jwe@octave.org>
 
 	* strings/strchr.m: Avoid implicit string to number conversion.

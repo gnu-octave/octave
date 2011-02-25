@@ -1,3 +1,7 @@
+2011-02-24  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/subplot.m: Document using INDEX as a vector.
+
 2011-02-24  Robert T. Short  <rtshort@ieee.org> 
 
 	* polynomial/polyval.m: Properly evaluate constant polynomials.

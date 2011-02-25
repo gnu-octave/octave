@@ -64,7 +64,7 @@ you should first check to see if the topic is covered in the manual.
 * Installation::  
 * Common problems::             
 * How do I ...?::  
-* MATLAB compatibility:: 
+* @sc{Matlab} compatibility:: 
 * Index::                       
 @end menu
 
@@ -194,7 +194,7 @@ as a .oct file) necessarily links with Octave internals and is
 considered a derivative work of Octave and therefore must be
 released under terms that are compatible with the GPL.
 
-Code written using Octave's implementation of the Matlab MEX
+Code written using Octave's implementation of the @sc{Matlab} MEX
 interface may be released under the terms of whatever license you
 choose, provided that the following conditions are met:
 
@@ -204,7 +204,7 @@ The plugin should not use any bindings that are specific to Octave.  In
 other words, the MEX file must use the MEX interface only, and not also
 call on other Octave internals.  It should be possible in principle to
 use the MEX file with other programs that implement the MEX interface
-(e.g., Matlab).
+(e.g., @sc{Matlab}).
 
 @item
 The MEX file should not be distributed together with Octave in such a
@@ -227,7 +227,7 @@ released under terms that are compatible with the GPL.
 No.  The original reason for implementing the MEX interface for Octave
 was to allow Octave to run free software that uses MEX files (the
 particular goal was to run SundialsTB in Octave).  The intent was to
-liberate that software from Matlab and increase the amount of free
+liberate that software from @sc{Matlab} and increase the amount of free
 software available to Octave users, not to enable people to write
 proprietary code for Octave.  For the good of the community, we strongly
 encourage users of Octave to release the code they write for Octave
@@ -280,7 +280,7 @@ number change. The 3.0.N series brings
 
 @item 64-bit compilation support
 
-@item gzipped files and stream and consequently support of matlab v7 files
+@item gzipped files and stream and consequently support of @sc{Matlab} v7 files
 
 @item better support for both msvc and mingw
 
@@ -346,7 +346,7 @@ rewritten and so the indexing of arrays is now significantly faster.
 * Built-in ODE and DAE solvers::
 @end menu
 
-This section refers to Matlab R2008b and Octave 2.1.51.
+This section refers to @sc{Matlab} R2008b and Octave 2.1.51.
 
 @node Functions defined on the command-line
 @section Functions defined on the command-line
@@ -382,7 +382,7 @@ treated as an octave script and be executed by octave.
 The double quote, @samp{"}, may be used to delimit strings, in addition to
 the single quote @samp{'}.  See the previous example.  Also, double-quoted
 strings include backslash interpretation (like C++, C, and Perl) while
-single quoted are uninterpreted (like Matlab and Perl).
+single quoted are uninterpreted (like @sc{Matlab} and Perl).
  
 @node Line continuation by backslash 
 @section Line continuation by backslash 
@@ -395,7 +395,7 @@ points @samp{@dots{}}.  See the previous example.
 
 You may close @code{function}, @code{for}, @code{while}, @code{if},
 @dots{} blocks with @code{endfunction}, @code{endfor}, @code{endwhile},
-@dots{} keywords in addition to using @code{end}.  As with Matlab, the
+@dots{} keywords in addition to using @code{end}.  As with @sc{Matlab}, the
 @code{end} (or @code{endfunction}) keyword that marks the end of a
 function defined in a @file{.m} file is optional.
 
@@ -485,7 +485,7 @@ guaranteed to be executed regardless of how control exits @var{body}.
 The @code{unwind_protect} statement is often used to reliably restore
 the values of global variables that need to be temporarily changed.
 
-Matlab can be made to do something similar with their @code{OnCleanUp}
+@sc{Matlab} can be made to do something similar with their @code{OnCleanUp}
 function that was introduced in 2008a.
 
 @node Built-in ODE and DAE solvers
@@ -769,7 +769,7 @@ pi = 3.1416
 @end group
 @end example
 
-@node MATLAB compatibility
+@node @sc{Matlab} compatibility
 @chapter Porting programs from @sc{Matlab} to Octave
 
 @cindex @sc{Matlab} compatibility
@@ -794,8 +794,8 @@ between Octave behavior and @sc{Matlab}, then you should send a
 description of this difference (with code illustrating the difference,
 if possible) to @email{bug@@octave.org}.
 
-Furthermore, Octave adds a few syntactical extensions to Matlab that
-might cause some issues when exchanging files between Matlab and Octave
+Furthermore, Octave adds a few syntactical extensions to @sc{Matlab} that
+might cause some issues when exchanging files between @sc{Matlab} and Octave
 users. As both Octave and @sc{Matlab} are under constant development the
 information in this section is subject to change at anytime.
 
@@ -845,7 +845,7 @@ are treated as sub-functions with the same scoping rules as
 sub-functions.  
 
 The authors of Octave consider the nested function scoping rules of
-Matlab to be more problems than they are worth as they introduce
+@sc{Matlab} to be more problems than they are worth as they introduce
 diffiult to find bugs as inadvertantly modifying a variable in a
 nested function that is also used in the parent is particularly easy.
 
@@ -909,7 +909,7 @@ There are no @sc{Matlab} compatible GUI functions.  There are a number of
 bindings from Octave to Tcl/Tk, Vtk and zenity included in the
 Octave Forge project (@url{http://octave.sourceforge.net}) for example
 that can be used for a GUI, but these are not @sc{Matlab}
-compatible. Work on a matlab compatible GUI is in an alpha stage in the
+compatible. Work on a @sc{Matlab} compatible GUI is in an alpha stage in the
 JHandles package (@url{http://octave.sourceforge.net/jhandles/index.html}).
 This might be an issue if you intend to exchange Octave code with 
 @sc{Matlab} users.
@@ -923,7 +923,7 @@ simulink for the Octave and R projects available at
 @url{http://www.scicraft.org/}
 
 @item Mex-Files
-Octave includes an API to the matlab MEX interface. However, as MEX is
+Octave includes an API to the @sc{Matlab} MEX interface. However, as MEX is
 an API to the internals of @sc{Matlab} and the internals of Octave
 differ from @sc{Matlab}, there is necessarily a manipulation of the data
 to convert from a MEX interface to the Octave equivalent. This is
@@ -943,7 +943,7 @@ comments are not supported within [] or @{@}.
 There are some differences in the mat v5 file format accepted by
 Octave. @sc{Matlab} recently introduced the "-V7.3" save option which is
 an HDF5 format which is particularly useful for 64-bit platforms where
-the standard matlab format can not correctly save variables.. Octave
+the standard @sc{Matlab} format can not correctly save variables.. Octave
 accepts HDF5 files, but is not yet compatible with the "-v7.3" versions
 produced by @sc{Matlab}. 
 
@@ -967,7 +967,7 @@ Octave is a community project and so the toolboxes that exist are
 donated by those interested in them through the Octave Forge website
 (@url{http://octave.sourceforge.net}). These might be lacking in certain
 functionality relative to the @sc{Matlab} toolboxes, and might not
-exactly duplicate the matlab functionality or interface.
+exactly duplicate the @sc{Matlab} functionality or interface.
 
 @item Short-circuit & and | operators
 The @code{&} and @code{|} operators in @sc{Matlab} short-circuit when
@@ -1059,16 +1059,16 @@ statements containing empty matrices.
 
 @item Solvers for singular, under- and over-determined matrices
 
-Matlab's solvers as used by the operators mldivide (\) and mrdivide (/),
+@sc{Matlab}'s solvers as used by the operators mldivide (\) and mrdivide (/),
 use a different approach than Octave's in the case of singular, under-, 
-or over-determined matrices. In the case of a singular matrix, Matlab
+or over-determined matrices. In the case of a singular matrix, @sc{Matlab}
 returns the result given by the LU decomposition, even though the underlying
 solver has flagged the result as erroneous. Octave has made the choice
 of falling back to a minimum norm solution of matrices that have been
 flagged as singular which arguably is a better result for these cases.
 
 In the case of under- or over-determined matrices, Octave continues to
-use a minimum norm solution, whereas Matlab uses an approach that is
+use a minimum norm solution, whereas @sc{Matlab} uses an approach that is
 equivalent to
 
 @example
@@ -1100,7 +1100,7 @@ norm(A \ b)
 @end example
 
 @noindent
-while Octave's minimum-norm values are around 3e-2, Matlab's results
+while Octave's minimum-norm values are around 3e-2, @sc{Matlab}'s results
 are 50-times larger. For another issue, try this code:
 
 @example
@@ -1119,7 +1119,7 @@ norm(x(p)-y)
 @end example
 
 @noindent
-It shows that unlike in Octave, mldivide in Matlab is not invariant
+It shows that unlike in Octave, mldivide in @sc{Matlab} is not invariant
 with respect to column permutations. If there are multiple columns of
 the same norm, permuting columns of the matrix gets you different
 result than permuting the solution vector. This will surprise many
@@ -1129,7 +1129,7 @@ Since the mldivide (\) and mrdivide (/) operators are often part of a more
 complex expression, where there is no room to react to warnings or flags, it 
 should prefer intelligence (robustness) to speed, and so the Octave developers
 are firmly of the opinion that Octave's approach for singular, under- and
-over-determined matrices is a better choice that Matlab's
+over-determined matrices is a better choice that @sc{Matlab}'s
 
 @item Octave extensions
 The extensions in Octave over @sc{Matlab} syntax are

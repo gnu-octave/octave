@@ -1,3 +1,8 @@
+2011-02-25  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* faq/OctaveFAQ.texi: Uniformise all mentions of Matlab to be
+	typeset in the @sc{Matlab} style.
+
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/install.txi: Remove reference to POSIX regex library.

@@ -1,7 +1,9 @@
 2011-02-25  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* faq/OctaveFAQ.texi: Uniformise all mentions of Matlab to be
-	typeset in the @sc{Matlab} style.
+	typeset in the @sc{Matlab} style. Also do some minor
+	proofreading like removing trailing spaces and some minor
+	spellchecking.
 
 2010-02-19  Rik  <octave@nomad.inbox5.com>
 

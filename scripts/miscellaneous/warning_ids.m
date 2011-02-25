@@ -188,6 +188,27 @@
 ## elicits a warning if the @code{Octave:num-to-str} warning is
 ## enabled.  By default, the @code{Octave:num-to-str} warning is enabled.
 ##
+## @item Octave:possible-matlab-short-circuit-operator
+## If the @code{Octave:possible-matlab-short-circuit-operator} warning
+## is enabled, Octave will warn about using the not short circuiting
+## operators @code{&} and @code{|} inside @code{if} or @code{while}
+## conditions. They normally never short circuit, but @sc{Matlab} always
+## short circuits if any logical operators are used in a condition. You
+## can turn on the option
+##
+## @example
+## @group
+## do_braindead_shortcircuit_evaluation(1)
+## @end group
+## @end example
+##
+## @noindent
+## if you would like to enable this short-circuit evaluation in
+## Octave. Note that the @code{&&} and @code{||} operators always short
+## circuit in both Octave and @sc{Matlab}, so it's only necessary to
+## enable @sc{Matlab}-style short-circuiting it's too arduous to modify
+## existing code that relies on this behaviour.
+##
 ## @item Octave:precedence-change
 ## If the @code{Octave:precedence-change} warning is enabled, Octave
 ## will warn about possible changes in the meaning of some code due to

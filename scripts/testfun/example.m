@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} example ('@var{name}', @var{n})
+## @deftypefn  {Command} {} example @var{name} @var{n}
+## @deftypefnx {Function File} {} example ('@var{name}', @var{n})
 ## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}', @var{n})
 ##
 ##  Display the code for example @var{n} associated with the function
@@ -37,9 +38,12 @@ function [code_r, idx_r] = example (name, n)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
   if (nargin < 2)
     n = 0;
-  endif
+  elseif (strcmp ("char", class (n)))
+    n = str2double (n);
+  endif 
 
   [code, idx] = test (name, "grabdemo");
   if (nargout > 0)

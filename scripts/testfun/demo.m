@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} demo ('@var{name}', @var{n})
+## @deftypefn  {Command} {} demo @var{name} @var{n}
+## @deftypefnx {Function File} {} demo ('@var{name}', @var{n})
 ##
 ## Runs any examples associated with the function '@var{name}'.
 ## Examples are stored in the script file, or in a file with the same
@@ -87,7 +88,9 @@ function demo (name, n)
 
   if (nargin < 2)
     n = 0;
-  endif
+  elseif (strcmp ("char", class (n)))
+    n = str2double (n);
+  endif 
 
   [code, idx] = test (name, "grabdemo");
   if (length (idx) == 0)

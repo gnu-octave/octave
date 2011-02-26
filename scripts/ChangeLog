@@ -61,6 +61,11 @@
 	* special-matrix/pascal.m: Fix incorrect statement in documentation
 	for pascal.m.  Bug #32523.
 
+2011-02-26  Andy Buckle  <andybuckle@gmail.com>
+
+	* testfun/demo.m, testfun/example.m: Allow command forms of example
+	and demo.
+
 2011-02-26  Robert T. Short  <octave@phaselockedsystems.com>
 
 	* polynomial/polyval.m: Compute offset/normalization only when needed.

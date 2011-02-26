@@ -53,8 +53,8 @@ function [y, dy] = polyval (p, x, s, mu)
     error ("polyval: first argument must be a vector");
   endif
 
-  if (nargin < 4)
-    mu = [0, 1];
+  if (nargin > 3)
+    x = (x - mu(1)) / mu(2);
   endif
 
   if (isempty (x))
@@ -68,7 +68,6 @@ function [y, dy] = polyval (p, x, s, mu)
   endif
 
   n = length (p) - 1;
-  x = (x - mu(1)) / mu(2);
   y = p(1) * ones (size (x));
   for i = 2:n+1
     y = y .* x + p(i);

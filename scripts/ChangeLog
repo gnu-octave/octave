@@ -1,3 +1,7 @@
+2011-02-26  Robert T. Short  <octave@phaselockedsystems.com>
+
+	* polynomial/polyval.m: Compute offset/normalization only when needed.
+
 2011-02-26  Robert T. Short <octave@phaselockedsystems.com>
 
 	* polynomial/polyval.m: Minor simplification in polynomial evaluation.

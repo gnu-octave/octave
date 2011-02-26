@@ -69,11 +69,10 @@ function [y, dy] = polyval (p, x, s, mu)
 
   n = length (p) - 1;
   x = (x - mu(1)) / mu(2);
-  y = p(1) * ones (size (x(:)));
+  y = p(1) * ones (size (x));
   for i = 2:n+1
-    y = y .* x(:) + p(i);
+    y = y .* x + p(i);
   endfor
-  y = reshape (y, size (x));
 
   if (nargout == 2)
     ## Note: the F-Distribution is generally considered to be single-sided.

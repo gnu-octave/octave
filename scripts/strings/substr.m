@@ -64,7 +64,7 @@ function t = substr (s, offset, len)
         error ("substr: length = %d out of range", len);
       endif
     else
-      error ("substr: offset = %d out of range", offset);
+      error ("substr: OFFSET = %d out of range", offset);
     endif
   else
     error ("substr: expecting string argument");

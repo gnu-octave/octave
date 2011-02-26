@@ -1,3 +1,10 @@
+2010-02-22  Rik  <octave@nomad.inbox5.com>
+
+	* general/bitcmp.m, general/bitget.m, general/bitset.m,
+	miscellaneous/license.m, special-matrix/pascal.m,
+	statistics/base/quantile.m, statistics/tests/cor_test.m,
+	strings/substr.m: Uppercase variables in error strings.
+
 2011-02-25  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* miscellaneous/warnings_ids.m: Add a warning description for

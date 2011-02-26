@@ -77,7 +77,7 @@ function C = bitcmp (A, k)
   else
     m = double (k);
     if (any (m < 1) || any (m > amax))
-      error ("bitcmp: k must be in the range [1,%d]", amax);
+      error ("bitcmp: K must be in the range [1,%d]", amax);
     endif
     mask = bitshift (bmax, k - amax);
     C = bitxor (bitand (A, mask), mask);

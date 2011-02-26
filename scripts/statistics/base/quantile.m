@@ -373,7 +373,7 @@ function inv = __quantile__ (x, p, method = 5)
             p = kron (p, m+0.25) + 0.375;
 
           otherwise
-            error ("quantile: Unknown method, '%d'", method);
+            error ("quantile: Unknown METHOD, '%d'", method);
         endswitch
 
         ## Duplicate single values.

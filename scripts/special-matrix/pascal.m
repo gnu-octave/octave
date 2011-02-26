@@ -52,7 +52,7 @@ function retval = pascal (n, t)
   endif
 
   if (t < -1 || t > 2)
-    error ("pascal: expecting t to be -1, 0, 1, or 2, found %d", t);
+    error ("pascal: expecting T to be -1, 0, 1, or 2, found %d", t);
   endif
 
   retval = zeros (n);

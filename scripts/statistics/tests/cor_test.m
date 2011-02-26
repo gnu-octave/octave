@@ -113,7 +113,7 @@ function t = cor_test (x, y, alt, method)
     t.dist = "stdnormal";
     cdf = stdnormal_cdf (t.stat);
   else
-    error ("cor_test: method `%s' not recognized", method);
+    error ("cor_test: METHOD `%s' not recognized", method);
   endif
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

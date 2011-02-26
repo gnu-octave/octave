@@ -159,7 +159,7 @@ function retval = license (varargin)
             error ("TOGGLE must be either `enable' of `disable'");
           endif
         else
-          error ("feature `%s' not found", feature);
+          error ("FEATURE `%s' not found", feature);
         endif
       endif
 

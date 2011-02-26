@@ -73,7 +73,7 @@ function C = bitget (A, n)
 
   m = double (n(:));
   if (any (m < 1) || any (m > Amax))
-    error ("bitget: n must be in the range [1,%d]", Amax);
+    error ("bitget: N must be in the range [1,%d]", Amax);
   endif
 
   C = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);

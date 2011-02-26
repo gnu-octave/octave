@@ -81,7 +81,7 @@ function C = bitset (A, n, val)
 
   m = double (n(:));
   if (any (m < 1) || any (m > Amax))
-    error ("bitset: n must be in the range [1,%d]", Amax);
+    error ("bitset: N must be in the range [1,%d]", Amax);
   endif
 
   mask = bitshift (_conv (1), uint8 (n) - uint8 (1));

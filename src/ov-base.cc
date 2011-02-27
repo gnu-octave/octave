@@ -931,7 +931,7 @@ octave_base_value::scalar_map_value (void) const
   else
     {
       if (! error_state)
-        error ("invalid conversion of multidimensional struct to scalar struct");
+        error ("invalid conversion of multi-dimensional struct to scalar struct");
 
       return octave_scalar_map ();
     }

@@ -40,7 +40,7 @@ get_dim_vector (const octave_value& val, const char *name)
   octave_idx_type n = dimsv.length ();
 
   if (n < 1)
-    error ("%s: dimension vector must not be empty", name);
+    error ("%s: dimension vector DIMS must not be empty", name);
   else
     {
       dv.resize (std::max (n, static_cast<octave_idx_type> (2)));
@@ -52,7 +52,7 @@ get_dim_vector (const octave_value& val, const char *name)
             dv(i) = ii;
           else
             {
-              error ("%s: dimension vector must contain integers", name);
+              error ("%s: dimension vector DIMS must contain integers", name);
               break;
             }
         }

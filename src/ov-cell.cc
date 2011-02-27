@@ -538,7 +538,7 @@ octave_cell::is_sorted (sortmode mode) const
       retval = tmp.is_sorted (mode);
     }
   else
-    error ("issorted: not a cell array of strings");
+    error ("issorted: A is not a cell array of strings");
 
   return retval;
 }
@@ -573,7 +573,7 @@ octave_cell::is_sorted_rows (sortmode mode) const
       retval = tmp.is_sorted_rows (mode);
     }
   else
-    error ("issorted: not a cell array of strings");
+    error ("issorted: A is not a cell array of strings");
 
   return retval;
 }
@@ -1375,7 +1375,7 @@ array @var{string}.\n\
                       ? Cell (octave_value (std::string ()))
                       : Cell (s, true));
           else
-            error ("cellstr: expecting argument to be a 2-d character array");
+            error ("cellstr: argument STRING must be a 2-D character array");
         }
     }
   else
@@ -1460,7 +1460,7 @@ cell array will have a dimension vector corresponding to\n\
           retval = c;
         }
       else
-        error ("struct2cell: expecting argument to be a cell array");
+        error ("struct2cell: argument S must be a structure");
     }
   else
     print_usage ();

@@ -245,7 +245,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                           nu = args(3).nint_value ();
 
                           if (error_state)
-                            error ("matrix_type: band size must be integer");
+                            error ("matrix_type: band size NL, NU must be integers");
                           else
                             {
                               if (nl == 1 && nu == 1)

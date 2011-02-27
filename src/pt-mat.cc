@@ -904,7 +904,7 @@ tree_matrix::rvalue1 (int)
                     }
                   else
                     {
-                      ::error ("cat not find overloaded horzcat function");
+                      ::error ("cannot find overloaded horzcat function");
                       goto done;
                     }
                 }
@@ -925,7 +925,7 @@ tree_matrix::rvalue1 (int)
                     retval = tmp2 (0);
                 }
               else
-                ::error ("cat not find overloaded vertcat function");
+                ::error ("cannot find overloaded vertcat function");
             }
         }
       else if (result_type == "double")

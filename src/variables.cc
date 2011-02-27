@@ -344,7 +344,7 @@ do_isglobal (const octave_value_list& args)
 
   if (error_state)
     {
-      error ("isglobal: expecting std::string argument");
+      error ("isglobal: NAME must be a string");
       return retval;
     }
 
@@ -564,10 +564,10 @@ Check only for directories.\n\
           if (! error_state)
             retval = symbol_exist (name, type);
           else
-            error ("exist: expecting second argument to be a string");
+            error ("exist: TYPE must be a string");
         }
       else
-        error ("exist: expecting first argument to be a string");
+        error ("exist: NAME must be a string");
     }
   else
     print_usage ();
@@ -1969,7 +1969,7 @@ then unlock the current function.\n\
       if (! error_state)
         munlock (name);
       else
-        error ("munlock: expecting argument to be a function name");
+        error ("munlock: FCN must be a string");
     }
   else if (args.length () == 0)
     {
@@ -2004,7 +2004,7 @@ then return true if the current function is locked.\n\
       if (! error_state)
         retval = mislocked (name);
       else
-        error ("mislocked: expecting argument to be a function name");
+        error ("mislocked: FCN must be a string");
     }
   else if (args.length () == 0)
     {

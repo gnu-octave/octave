@@ -966,7 +966,7 @@ location of the error.  Typically @var{err} is returned from\n\
                 }
             }
           else
-            error ("rethrow: structure must contain the fields 'message and 'identifier'");
+            error ("rethrow: ERR structure must contain the fields 'message and 'identifier'");
         }
     }
   return retval;

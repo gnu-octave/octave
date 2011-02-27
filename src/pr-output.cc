@@ -3422,7 +3422,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
               retval = string_vector (lst);
             }
           else
-            error ("rats: expecting numeric input");
+            error ("rats: X must be numeric");
         }
     }
 
@@ -3509,7 +3509,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
           if (osp)
             args(1).print (*osp);
           else
-            error ("fdisp: stream not open for writing");
+            error ("fdisp: stream FID not open for writing");
         }
     }
   else

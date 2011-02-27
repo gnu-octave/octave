@@ -214,7 +214,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
   if (nargin < 2)
     {
-      error ("cellfun: you must supply at least 2 arguments");
+      error ("cellfun: function requires at least 2 arguments");
       print_usage ();
       return retval;
     }

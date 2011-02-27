@@ -317,7 +317,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
             }
         }
       else
-        error ("file_in_loadpath: expecting string as first argument");
+        error ("file_in_loadpath: FILE argument must be a string");
     }
   else
     print_usage ();
@@ -379,10 +379,10 @@ name in the path.  If no files are found, return an empty cell array.\n\
                 }
             }
           else
-            error ("file_in_path: expecting string as second argument");
+            error ("file_in_path: all arguments must be strings");
         }
       else
-        error ("file_in_path: expecting string as first argument");
+        error ("file_in_path: PATH must be a string");
     }
   else
     print_usage ();
@@ -615,7 +615,7 @@ Convert special characters in @var{string} to their escaped forms.\n\
       if (args(0).is_string ())
         retval = do_string_escapes (args(0).string_value ());
       else
-        error ("do_string_escapes: argument must be a string");
+        error ("do_string_escapes: STRING argument must be of type string");
     }
   else
     print_usage ();
@@ -721,7 +721,7 @@ representation.\n\
       if (args(0).is_string ())
         retval = undo_string_escapes (args(0).string_value ());
       else
-        error ("undo_string_escapes: argument must be a string");
+        error ("undo_string_escapes: S argument must be a string");
     }
   else
     print_usage ();
@@ -780,7 +780,7 @@ Return the full name of @var{file}, relative to the current directory.\n\
       if (! error_state)
         retval = octave_env::make_absolute (nm);
       else
-        error ("make_absolute_filename: expecting argument to be a file name");
+        error ("make_absolute_filename: FILE argument must be a file name");
     }
   else
     print_usage ();
@@ -819,7 +819,7 @@ containing all the directory names that match.\n\
             retval = Cell (load_path::find_matching_dirs (dir));
         }
       else
-        error ("find_dir_in_path: expecting argument to be a directory name");
+        error ("find_dir_in_path: DIR must be a directory name");
     }
   else
     print_usage ();

@@ -1256,7 +1256,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       octave_idx_type k = args(1).int_value ();
 
       if (error_state)
-        error ("diag: invalid second argument");
+        error ("diag: invalid argument K");
       else
         retval = args(0).diag(k);
     }
@@ -1272,7 +1272,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
             error ("diag: invalid dimensions");
         }
       else
-        error ("diag: first argument must be a vector");
+        error ("diag: V must be a vector");
     }
   else
     print_usage ();
@@ -1750,10 +1750,10 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
           if (dim >= 0)
             retval = do_cat (args.slice (1, args.length () - 1), dim, "cat");
           else
-            error ("cat: invalid dimension specified");
+            error ("cat: DIM must be a valid dimension");
         }
       else
-        error ("cat: expecting first argument to be a integer");
+        error ("cat: DIM must be an integer");
     }
   else
     print_usage ();
@@ -2104,7 +2104,7 @@ returns the number of columns in the given matrix.\n\
       octave_idx_type nd = args(1).int_value (true);
 
       if (error_state)
-        error ("size: expecting scalar as second argument");
+        error ("size: DIM must be a scalar");
       else
         {
           const dim_vector dv = args(0).dims ();
@@ -2117,7 +2117,7 @@ returns the number of columns in the given matrix.\n\
                 retval(0) = 1;
             }
           else
-            error ("size: requested dimension (= %d) out of range", nd);
+            error ("size: requested dimension DIM (= %d) out of range", nd);
         }
     }
   else
@@ -2303,7 +2303,7 @@ than straightforward summation is to be used.  For single precision inputs,\n\
         {
           dim = args(1).int_value () - 1;
           if (dim < 0)
-            error ("sum: invalid dimension argument = %d", dim + 1);
+            error ("sum: invalid dimension DIM = %d", dim + 1);
         }
 
       if (! error_state)
@@ -4310,7 +4310,7 @@ fewer than two values are requested.\n\
         }
     }
   else
-    error ("linspace: expecting third argument to be an integer");
+    error ("linspace: N must be an integer");
 
   return retval;
 }
@@ -4469,7 +4469,7 @@ by an empty argument.\n\
         {
           if (new_size(i) < 0)
             {
-              error ("reshape: size must be nonnegative");
+              error ("reshape: SIZE must be non-negative");
               break;
             }
           else
@@ -4504,7 +4504,7 @@ by an empty argument.\n\
                 break;
               else if (new_dims(i-1) < 0)
                 {
-                  error ("reshape: size must be nonnegative");
+                  error ("reshape: SIZE must be non-negative");
                   break;
                 }
             }
@@ -4522,7 +4522,7 @@ by an empty argument.\n\
               octave_idx_type size_empty_dim = a_nel / nel;
 
               if (a_nel != size_empty_dim * nel)
-                error ("reshape: size is not divisible by the product of known dimensions (= %d)", nel);
+                error ("reshape: SIZE is not divisible by the product of known dimensions (= %d)", nel);
               else
                 new_dims(empty_dim-1) = size_empty_dim;
             }
@@ -4585,7 +4585,7 @@ This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
       dim = args(1).idx_type_value ();
 
       if (dim < 1)
-        error ("vec: dim must greater than zero");
+        error ("vec: DIM must be greater than zero");
     }
 
   if (! error_state)
@@ -5482,7 +5482,7 @@ ordered lists.\n\
             smode = DESCENDING;
           else
             {
-              error ("sort: mode must be either \"ascend\" or \"descend\"");
+              error ("sort: MODE must be either \"ascend\" or \"descend\"");
               return retval;
             }
         }
@@ -5500,7 +5500,7 @@ ordered lists.\n\
 
       if (! args(2).is_string ())
         {
-          error ("sort: mode must be a string");
+          error ("sort: MODE must be a string");
           return retval;
         }
       std::string mode = args(2).string_value();
@@ -5510,7 +5510,7 @@ ordered lists.\n\
         smode = DESCENDING;
       else
         {
-          error ("sort: mode must be either \"ascend\" or \"descend\"");
+          error ("sort: MODE must be either \"ascend\" or \"descend\"");
           return retval;
         }
     }
@@ -5525,7 +5525,7 @@ ordered lists.\n\
     {
       if (dim < 0)
         {
-          error ("sort: dim must be a valid dimension");
+          error ("sort: DIM must be a valid dimension");
           return retval;
         }
     }
@@ -5752,7 +5752,7 @@ Undocumented internal function.\n\
         smode = DESCENDING;
       else
         {
-          error ("__sort_rows_idx__: mode must be either \"ascend\" or \"descend\"");
+          error ("__sort_rows_idx__: MODE must be either \"ascend\" or \"descend\"");
           return retval;
         }
     }
@@ -5792,7 +5792,7 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   else if (mode == "either")
     smode = UNSORTED;
   else
-    error ("issorted: expecting MODE to be \"ascending\", \"descending\", or \"either\"");
+    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
 
   return smode;
 }
@@ -5860,7 +5860,7 @@ This function does not support sparse matrices.\n\
       if (arg.ndims () == 2)
         retval = arg.is_sorted_rows (smode) != UNSORTED;
       else
-        error ("issorted: needs a 2-dimensional object");
+        error ("issorted: A must be a 2-dimensional object");
     }
   else
     {
@@ -5940,7 +5940,7 @@ it may be better to use @code{sort}.\n\
         {
           dim = args(2).int_value (true) - 1;
           if (dim < 0)
-            error ("nth_element: dim must be a valid dimension");
+            error ("nth_element: DIM must be a valid dimension");
         }
       if (dim < 0)
         dim = argx.dims ().first_non_singleton ();
@@ -6260,7 +6260,7 @@ do_merge (const Array<bool>& mask,
 
   if ((! tscl && tval.dims () != dv)
       || (! fscl && fval.dims () != dv))
-    error ("merge: dimensions mismatch");
+    error ("merge: MASK, TVAL, and FVAL dimensions must match");
   else
     {
       T *rv = retval.fortran_vec ();
@@ -6580,16 +6580,16 @@ then an empty matrix is returned.\n\
           if (args(1).is_scalar_type ())
             order = args(1).idx_type_value (true, false);
           else if (! args(1).is_zero_by_zero ())
-            error ("order must be a scalar or []");
+            error ("order K must be a scalar or []");
           if (! error_state && order < 0)
-            error ("order must be non-negative");
+            error ("order K must be non-negative");
         }
 
       if (nargin > 2)
         {
           dim = args(2).int_value (true, false);
           if (! error_state && (dim < 1 || dim > args(0).ndims ()))
-            error ("needs a valid dimension");
+            error ("DIM must be a valid dimension");
           else
             dim -= 1;
         }
@@ -6633,7 +6633,7 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
       octave_idx_type k = rep(1, i);
       if (k < 0)
         {
-          error ("repelems: second row must contain nonnegative numbers");
+          error ("repelems: second row must contain non-negative numbers");
           return retval;
         }
 
@@ -6690,7 +6690,7 @@ endfor\n\
         return retval;
       else if (rm.rows () != 2 || rm.ndims () != 2)
         {
-          error ("repelems: second argument must be a matrix with two rows");
+          error ("repelems: R must be a matrix with two rows");
           return retval;
         }
       else
@@ -6702,7 +6702,7 @@ endfor\n\
               octave_idx_type rx = rm(i);
               if (static_cast<double> (rx) != rm(i))
                 {
-                  error ("repelems: a matrix of integers is expected");
+                  error ("repelems: R must be a matrix of integers");
                   return retval;
                 }
 

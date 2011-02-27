@@ -76,7 +76,7 @@ along with Octave; see the file COPYING.  If not, see
               retval = result; \
           } \
         else \
-          error ("%s: size of x and y must match, or one operand must be a scalar", FNAME); \
+          error ("%s: size of X and Y must match, or one operand must be a scalar", FNAME); \
       }
 
 #define BITOP(OP, FNAME) \
@@ -373,7 +373,7 @@ bitshift (float a, int n, int64_t mask)
             error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
         } \
       else \
-        error ("bitshift: expecting second argument to be integer"); \
+        error ("bitshift: expecting integer as second argument"); \
     }
 
 #define DO_UBITSHIFT(T, N) \
@@ -456,15 +456,15 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
               // FIXME -- for compatibility, we should accept an array
               // or a scalar as the third argument.
               if (args(2).numel () > 1)
-                error ("bitshift: expecting scalar integer as third argument");
+                error ("bitshift: N must be a scalar integer");
               else
                 {
                   nbits = args(2).int_value ();
 
                   if (error_state)
-                    error ("bitshift: expecting integer as third argument");
+                    error ("bitshift: N must be an integer");
                   else if (nbits < 0)
-                    error ("bitshift: number of bits to mask must be positive");
+                    error ("bitshift: N must be positive");
                 }
             }
         }

@@ -229,7 +229,7 @@ error message.\n\
             }
         }
       else
-        error ("exec: first argument must be a string");
+        error ("exec: FILE must be a string");
     }
   else
     print_usage ();
@@ -359,7 +359,7 @@ exit status, it will linger until Octave exits.\n\
             error ("popen2: arguments must be character strings");
         }
       else
-        error ("popen2: first argument must be a string");
+        error ("popen2: COMMAND argument must be a string");
     }
   else
     print_usage ();
@@ -502,7 +502,7 @@ system-dependent error message.\n\
             }
         }
       else
-        error ("fcntl: file id, request, and argument must be integers");
+        error ("fcntl: FID, REQUEST, and ARG must be integers");
     }
   else
     print_usage ();
@@ -814,7 +814,7 @@ system-dependent error message.\n\
             error ("mkfifo: MODE must be an integer");
         }
       else
-        error ("mkfifo: file name must be a string");
+        error ("mkfifo: FILE must be a string");
     }
   else
     print_usage ();
@@ -1022,7 +1022,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_reg (static_cast<mode_t> (mode));
       else
-        error ("S_ISREG: invalid mode value");
+        error ("S_ISREG: invalid MODE value");
     }
   else
     print_usage ();
@@ -1047,7 +1047,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_dir (static_cast<mode_t> (mode));
       else
-        error ("S_ISDIR: invalid mode value");
+        error ("S_ISDIR: invalid MODE value");
     }
   else
     print_usage ();
@@ -1072,7 +1072,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_chr (static_cast<mode_t> (mode));
       else
-        error ("S_ISCHR: invalid mode value");
+        error ("S_ISCHR: invalid MODE value");
     }
   else
     print_usage ();
@@ -1097,7 +1097,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_blk (static_cast<mode_t> (mode));
       else
-        error ("S_ISBLK: invalid mode value");
+        error ("S_ISBLK: invalid MODE value");
     }
   else
     print_usage ();
@@ -1122,7 +1122,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_fifo (static_cast<mode_t> (mode));
       else
-        error ("S_ISFIFO: invalid mode value");
+        error ("S_ISFIFO: invalid MODE value");
     }
   else
     print_usage ();
@@ -1147,7 +1147,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_lnk (static_cast<mode_t> (mode));
       else
-        error ("S_ISLNK: invalid mode value");
+        error ("S_ISLNK: invalid MODE value");
     }
   else
     print_usage ();
@@ -1172,7 +1172,7 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
       if (! error_state)
         retval = file_stat::is_sock (static_cast<mode_t> (mode));
       else
-        error ("S_ISSOCK: invalid mode value");
+        error ("S_ISSOCK: invalid MODE value");
     }
   else
     print_usage ();
@@ -1274,7 +1274,7 @@ system-dependent error message.\n\
           retval(1) = msg;
         }
       else
-        error ("unlink: file name must be a string");
+        error ("unlink: FILE must be a string");
     }
   else
     print_usage ();
@@ -1388,7 +1388,7 @@ child terminated normally.\n\
       if (! error_state)
         retval = WIFEXITED (status);
       else
-        error ("WIFEXITED: expecting integer argument");
+        error ("WIFEXITED: STATUS must be an integer");
     }
 #else
   warning ("WIFEXITED always returns false in this version of Octave");
@@ -1416,7 +1416,7 @@ status of the child.  This function should only be employed if\n\
       if (! error_state)
         retval = WEXITSTATUS (status);
       else
-        error ("WEXITSTATUS: expecting integer argument");
+        error ("WEXITSTATUS: STATUS must be an integer");
     }
 #else
   warning ("WEXITSTATUS always returns false in this version of Octave");
@@ -1443,7 +1443,7 @@ child process was terminated by a signal.\n\
       if (! error_state)
         retval = WIFSIGNALED (status);
       else
-        error ("WIFSIGNALED: expecting integer argument");
+        error ("WIFSIGNALED: STATUS must be an integer");
     }
 #else
   warning ("WIFSIGNALED always returns false in this version of Octave");
@@ -1471,7 +1471,7 @@ should only be employed if @code{WIFSIGNALED} returned true.\n\
       if (! error_state)
         retval = WTERMSIG (status);
       else
-        error ("WTERMSIG: expecting integer argument");
+        error ("WTERMSIG: STATUS must be an integer");
     }
 #else
   warning ("WTERMSIG always returns false in this version of Octave");
@@ -1501,7 +1501,7 @@ Unix implementations (e.g., AIX, SunOS).\n\
       if (! error_state)
         retval = WCOREDUMP (status);
       else
-        error ("WCOREDUMP: expecting integer argument");
+        error ("WCOREDUMP: STATUS must be an integer");
     }
 #else
   warning ("WCOREDUMP always returns false in this version of Octave");
@@ -1530,7 +1530,7 @@ is being traced (see ptrace(2)).\n\
       if (! error_state)
         retval = WIFSTOPPED (status);
       else
-        error ("WIFSTOPPED: expecting integer argument");
+        error ("WIFSTOPPED: STATUS must be an integer");
     }
 #else
   warning ("WIFSTOPPED always returns false in this version of Octave");
@@ -1558,7 +1558,7 @@ be employed if @code{WIFSTOPPED} returned true.\n\
       if (! error_state)
         retval = WSTOPSIG (status);
       else
-        error ("WSTOPSIG: expecting integer argument");
+        error ("WSTOPSIG: STATUS must be an integer");
     }
 #else
   warning ("WSTOPSIG always returns false in this version of Octave");
@@ -1585,7 +1585,7 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
       if (! error_state)
         retval = WIFCONTINUED (status);
       else
-        error ("WIFCONTINUED: expecting integer argument");
+        error ("WIFCONTINUED: STATUS must be an integer");
     }
 #else
   warning ("WIFCONTINUED always returns false in this version of Octave");
@@ -1617,7 +1617,7 @@ Return the canonical name of file @var{name}.\n\
           retval(0) = result;
         }
       else
-        error ("canonicalize_file_name: argument must be a character string");
+        error ("canonicalize_file_name: NAME must be a character string");
     }
   else
     print_usage ();

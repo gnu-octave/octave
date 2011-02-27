@@ -763,13 +763,13 @@ If the second argument is an integer @var{n}, the arguments are\n\
                     }
                   else
                     {
-                      error ("inline: numeric argument must be nonnegative");
+                      error ("inline: N must be positive or zero");
                       return retval;
                     }
                 }
               else
                 {
-                  error ("inline: expecting second argument to be an integer");
+                  error ("inline: N must be an integer");
                   return retval;
                 }
             }
@@ -794,7 +794,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
           retval = octave_value (new octave_fcn_inline (fun, fargs));
         }
       else
-        error ("inline: first argument must be a string");
+        error ("inline: STR argument must be a string");
     }
   else
     print_usage ();
@@ -829,7 +829,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
       if (fn)
         retval = octave_value (fn->fcn_text ());
       else
-        error ("formula: must be an inline function");
+        error ("formula: FUN must be an inline function");
     }
   else
     print_usage ();
@@ -865,7 +865,7 @@ the arguments of the inline function @var{fun}.\n\
           retval = t2;
         }
       else
-        error ("argnames: argument must be an inline function");
+        error ("argnames: FUN must be an inline function");
     }
   else
     print_usage ();

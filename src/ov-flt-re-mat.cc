@@ -823,7 +823,7 @@ Convert @var{x} to single precision type.\n\
         }
       else if (args(0).is_sparse_type ())
         {
-          error ("single: sparse type do not support single precision");
+          error ("single: sparse type does not support single precision");
         }
       else if (args(0).is_complex_type ())
         {

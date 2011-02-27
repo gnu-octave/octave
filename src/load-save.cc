@@ -855,7 +855,7 @@ Force Octave to assume the file is in Octave's text format.\n\
                   file.close ();
                 }
               else
-                error ("load: unable open input file `%s'",
+                error ("load: unable to open input file `%s'",
                        orig_fname.c_str ());
             }
         }

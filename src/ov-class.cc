@@ -1697,7 +1697,7 @@ octave_class::exemplar_info::exemplar_info (const octave_value& obj)
       parent_class_names = obj.parent_class_name_list ();
     }
   else
-    error ("invalid call to exmplar_info constructor");
+    error ("invalid call to exemplar_info constructor");
 }
 
 
@@ -1826,7 +1826,7 @@ derived.\n\
                         }
                     }
                   else
-                    error ("class: expecting structure as first argument");
+                    error ("class: expecting structure S as first argument");
                 }
               else
                 error ("class: `%s' is invalid as a class name in this context",
@@ -1836,7 +1836,7 @@ derived.\n\
             error ("class: invalid call from outside class constructor or method");
         }
       else
-        error ("class: expecting character string as second argument");
+        error ("class: ID (class name) must be a character string");
     }
 
   return retval;

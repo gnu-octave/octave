@@ -1971,7 +1971,7 @@ exclude directories with those names.\n\
       if (! error_state)
         retval = genpath (dirname);
       else
-        error ("genpath: expecting argument to be a character string");
+        error ("genpath: DIR must be a character string");
     }
   else if (nargin > 1)
     {
@@ -1990,7 +1990,7 @@ exclude directories with those names.\n\
       if (! error_state)
         retval = genpath (dirname, skip);
       else
-        error ("genpath: expecting all arguments to be character strings");
+        error ("genpath: all arguments must be character strings");
     }
   else
     print_usage ();
@@ -2221,7 +2221,7 @@ addpath (\"dir1:/dir2:~/dir3\");\n\
                 }
             }
           else
-            error ("addpath: expecting all args to be character strings");
+            error ("addpath: all arguments must be character strings");
         }
 
       if (need_to_update)
@@ -2285,7 +2285,7 @@ rmpath (\"dir1:/dir2:~/dir3\");\n\
                 }
             }
           else
-            error ("addpath: expecting all args to be character strings");
+            error ("addpath: all arguments must be character strings");
         }
 
       if (need_to_update)

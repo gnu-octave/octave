@@ -932,7 +932,7 @@ RET and can edit it until it has been confirmed.\n\
 
           if (error_state)
             {
-              error ("yes_or_no: expecting argument to be character string");
+              error ("yes_or_no: PROMPT must be a character string");
               return retval;
             }
         }

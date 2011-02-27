@@ -4269,7 +4269,7 @@ another function for the given type signature.\n\
             error ("builtin: lookup for symbol `%s' failed", name.c_str ());
         }
       else
-        error ("builtin: expecting function name as first argument");
+        error ("builtin: function name (F) must be a string");
     }
   else
     print_usage ();
@@ -4609,7 +4609,7 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
           else if (context == "base")
             octave_call_stack::goto_base_frame ();
           else
-            error ("assignin: context must be \"caller\" or \"base\"");
+            error ("assignin: CONTEXT must be \"caller\" or \"base\"");
 
           if (! error_state)
             {
@@ -4622,14 +4622,14 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
                   if (valid_identifier (nm))
                     symbol_table::varref (nm) = args(2);
                   else
-                    error ("assignin: invalid variable name");
+                    error ("assignin: invalid variable name in argument VARNAME");
                 }
               else
-                error ("assignin: expecting variable name as second argument");
+                error ("assignin: VARNAME must be a string");
             }
         }
       else
-        error ("assignin: expecting string as first argument");
+        error ("assignin: CONTEXT must be a string");
     }
   else
     print_usage ();
@@ -4662,7 +4662,7 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
           else if (context == "base")
             octave_call_stack::goto_base_frame ();
           else
-            error ("evalin: context must be \"caller\" or \"base\"");
+            error ("evalin: CONTEXT must be \"caller\" or \"base\"");
 
           if (! error_state)
             {
@@ -4699,7 +4699,7 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
             }
         }
       else
-        error ("evalin: expecting string as first argument");
+        error ("evalin: CONTEXT must be a string");
     }
   else
     print_usage ();

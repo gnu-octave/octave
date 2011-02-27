@@ -7684,16 +7684,16 @@ undocumented.\n\
                             error ("drawnow: nothing to draw");
                         }
                       else
-                        error ("drawnow: invalid debug_file, expected a string value");
+                        error ("drawnow: invalid DEBUG_FILE, expected a string value");
                     }
                   else
-                    error ("drawnow: invalid colormode, expected a boolean value");
+                    error ("drawnow: invalid colormode MONO, expected a boolean value");
                 }
               else
-                error ("drawnow: invalid file, expected a string value");
+                error ("drawnow: invalid FILE, expected a string value");
             }
           else
-            error ("drawnow: invalid terminal, expected a string value");
+            error ("drawnow: invalid terminal TERM, expected a string value");
         }
       else
         print_usage ();
@@ -7950,7 +7950,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
                                name.c_str ());
                     }
                   else
-                    error ("addproperty: invalid property type, expected a string value");
+                    error ("addproperty: invalid property TYPE, expected a string value");
                 }
               else
                 error ("addproperty: invalid graphics object (= %g)", h);
@@ -7959,7 +7959,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
             error ("addproperty: invalid handle value");
         }
       else
-        error ("addproperty: invalid property name, expected a string value");
+        error ("addproperty: invalid property NAME, expected a string value");
     }
   else
     print_usage ();

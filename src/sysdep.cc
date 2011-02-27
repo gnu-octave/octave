@@ -576,10 +576,10 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
           if (! error_state)
             octave_env::putenv (var, val);
           else
-            error ("putenv: second argument should be a string");
+            error ("putenv: VALUE must be a string");
         }
       else
-        error ("putenv: first argument should be a string");
+        error ("putenv: VAR must be a string");
     }
   else
     print_usage ();

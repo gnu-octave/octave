@@ -639,7 +639,7 @@ function accepts a variable number of arguments.\n\
             error ("nargin: invalid function");
         }
       else
-        error ("nargin: expecting string as first argument");
+        error ("nargin: FCN_NAME must be a string");
     }
   else if (nargin == 0)
     {
@@ -713,7 +713,7 @@ At the top level, @code{nargout} is undefined.\n\
             error ("nargout: invalid function");
         }
       else
-        error ("nargout: expecting string as first argument");
+        error ("nargout: FCN_NAME must be a string");
     }
   else if (nargin == 0)
     {
@@ -758,7 +758,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
   if (k != xround (k) || k <= 0)
     {
-      error ("isargout: argument must be a positive integer");
+      error ("isargout: K must be a positive integer");
       return false;
     }
   else

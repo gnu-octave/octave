@@ -393,12 +393,12 @@ done for each element and a cell array is returned.\n\
               retval = retc;
             }
           else
-            error ("strrep: first argument must be a string or cell array of strings");
+            error ("strrep: S must be a string or cell array of strings");
         }
       else if (argpat.is_cell () || argrep.is_cell ())
         retval = do_simple_cellfun (Fstrrep, "strrep", args);
       else
-        error ("strrep: X and Y arguments must be strings or cell arrays of strings");
+        error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");
     }
   else
     print_usage ();

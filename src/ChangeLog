@@ -1,3 +1,15 @@
+2010-02-26  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/cellfun.cc,
+	DLD-FUNCTIONS/filter.cc, DLD-FUNCTIONS/matrix_type.cc,
+	DLD-FUNCTIONS/strfind.cc, DLD-FUNCTIONS/sub2ind.cc, bitfcns.cc,
+	data.cc, error.cc, file-io.cc, graphics.cc, help.cc, input.cc,
+	load-path.cc, load-save.cc, oct-parse.yy, ov-base.cc, ov-cell.cc,
+	ov-class.cc, ov-fcn-handle.cc, ov-fcn-inline.cc, ov-flt-re-mat.cc,
+	ov-struct.cc, ov-usr-fcn.cc, pr-output.cc, pt-mat.cc, sparse.cc,
+	strfns.cc, syscalls.cc, sysdep.cc, toplev.cc, utils.cc, variables.cc:
+	Rewrite error strings to use variables named in documentation.
+
 2011-02-23  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_base::dup): Return retval.

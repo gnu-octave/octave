@@ -130,14 +130,14 @@ to have a common size.\n\
            n = args(1).idx_type_value ();
          }
        else
-         error ("sparse: expecting scalar dimensions");
+         error ("sparse: dimensions M,N must be scalar");
 
        if (! error_state)
          {
            if (m >= 0 && n >= 0)
              retval = SparseMatrix (m, n);
            else
-             error ("sparse: dimensions must be nonnegative");
+             error ("sparse: dimensions M,N must be positive or zero");
          }
      }
    else if (nargin >= 3)
@@ -258,7 +258,7 @@ the function @code{nzmax}.\n\
        else if (m >= 0 && n >= 0 && nz >= 0)
          retval = SparseMatrix (dim_vector (m, n), nz);
        else
-         error ("spalloc: m,n,nz must be non-negative");
+         error ("spalloc: M,N,NZ must be non-negative");
      }
    else
      print_usage ();

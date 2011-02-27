@@ -79,7 +79,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   dim_vector x_dims = x.dims ();
   if (dim < 0 || dim > x_dims.length ())
     {
-      error ("filter: filtering over invalid dimension");
+      error ("filter: DIM must be a valid dimension");
       return y;
     }
 
@@ -262,7 +262,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
   else
     if (dim < 0 || dim > x_dims.length ())
       {
-        error ("filter: filtering over invalid dimension");
+        error ("filter: DIM must be a valid dimension");
         return MArray<T> ();
       }
 
@@ -399,7 +399,7 @@ $$\n\
       dim = args(4).nint_value() - 1;
       if (dim < 0 || dim >= x_dims.length ())
         {
-          error ("filter: filtering over invalid dimension");
+          error ("filter: DIM must be a valid dimension");
           return retval;
         }
     }

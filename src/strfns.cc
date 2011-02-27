@@ -889,7 +889,7 @@ whos ans\n\
               if (! error_state)
                 s.list_in_columns (buf, width);
               else
-                error ("list_in_columns: expecting width to be an integer");
+                error ("list_in_columns: WIDTH must be an integer");
             }
 
           retval = buf.str ();

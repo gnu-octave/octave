@@ -1040,7 +1040,7 @@ Undocumented internal function.\n\
             }
         }
       else
-        error ("__list_functions__: input must be a string");
+        error ("__list_functions__: DIRECTORY argument must be a string");
     }
 
   return retval;

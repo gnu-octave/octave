@@ -895,13 +895,13 @@ command shell that is started to run the command.\n\
                 type = et_async;
               else
                 {
-                  error ("system: third arg must be \"sync\" or \"async\"");
+                  error ("system: TYPE must be \"sync\" or \"async\"");
                   return retval;
                 }
             }
           else
             {
-              error ("system: third argument must be a character string");
+              error ("system: TYPE must be a character string");
               return retval;
             }
         }
@@ -912,7 +912,7 @@ command shell that is started to run the command.\n\
 
           if (error_state)
             {
-              error ("system: expecting second argument to be true or false");
+              error ("system: RETURN_OUTPUT must be boolean value true or false");
               return retval;
             }
         }
@@ -991,7 +991,7 @@ command shell that is started to run the command.\n\
             }
         }
       else
-        error ("system: expecting std::string as first argument");
+        error ("system: expecting string as first argument");
     }
   else
     print_usage ();
@@ -1141,7 +1141,7 @@ multiple times.\n\
               add_mode = args(1).bool_value ();
 
               if (error_state)
-                error ("atexit: second argument must be a logical value");
+                error ("atexit: FLAG argument must be a logical value");
             }
 
           if (! error_state)
@@ -1158,7 +1158,7 @@ multiple times.\n\
             }
         }
       else
-        error ("atexit: argument must be a string");
+        error ("atexit: FCN argument must be a string");
     }
   else
     print_usage ();

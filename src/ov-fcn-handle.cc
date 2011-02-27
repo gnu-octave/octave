@@ -1646,10 +1646,10 @@ Return a struct containing information about the function handle\n\
               retval = m;
             }
           else
-            error ("functions: invalid function handle object");
+            error ("functions: FCN_HANDLE is not a valid function handle object");
         }
       else
-        error ("functions: argument must be a function handle object");
+        error ("functions: FCN_HANDLE argument must be a function handle object");
     }
   else
     print_usage ();
@@ -1686,7 +1686,7 @@ the function handle @var{fcn_handle}.\n\
             retval = fh_nm;
         }
       else
-        error ("func2str: expecting valid function handle as first argument");
+        error ("func2str: FCN_HANDLE must be a valid function handle");
     }
   else
     print_usage ();
@@ -1713,7 +1713,7 @@ are ignored in the lookup.\n\
       if (! error_state)
         retval = make_fcn_handle (nm, nargin != 2);
       else
-        error ("str2func: expecting string as first argument");
+        error ("str2func: FCN_NAME must be a string");
     }
   else
     print_usage ();

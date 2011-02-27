@@ -893,7 +893,7 @@ If @var{fid} is omitted, the output is written to @code{stdout}.\n\
               result = os.printf (args(fmt_n), tmp_args, who);
             }
           else
-            ::error ("%s: format must be a string", who.c_str ());
+            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
     }
   else
@@ -944,7 +944,7 @@ complete description of the syntax of the template string.\n\
           result = stdout_stream.printf (args(0), tmp_args, who);
         }
       else
-        ::error ("%s: format must be a string", who.c_str ());
+        ::error ("%s: format TEMPLATE must be a string", who.c_str ());
     }
   else
     print_usage ();
@@ -1052,7 +1052,7 @@ converted.\n\
                                         fmt_arg.is_sq_string () ? '\'' : '"');
             }
           else
-            ::error ("%s: format must be a string", who.c_str ());
+            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
       else
         ::error ("%s: unable to create output buffer", who.c_str ());
@@ -1127,7 +1127,7 @@ complete description of the syntax of the template string.\n\
           if (args(1).is_string ())
             retval = os.oscanf (args(1), who);
           else
-            ::error ("%s: format must be a string", who.c_str ());
+            ::error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
     }
   else
@@ -1200,14 +1200,14 @@ string is treated as an end-of-file condition.\n\
               if (args(1).is_string ())
                 retval = os.oscanf (args(1), who);
               else
-                ::error ("%s: format must be a string", who.c_str ());
+                ::error ("%s: format TEMPLATE must be a string", who.c_str ());
             }
           else
             ::error ("%s: unable to create temporary input buffer",
                      who.c_str ());
         }
       else
-        ::error ("%s: first argument must be a string", who.c_str ());
+        ::error ("%s: argument STRING must be a string", who.c_str ());
     }
   else
     {
@@ -1251,14 +1251,14 @@ string is treated as an end-of-file condition.\n\
                         }
                     }
                   else
-                    ::error ("%s: format must be a string", who.c_str ());
+                    ::error ("%s: format TEMPLATE must be a string", who.c_str ());
                 }
               else
                 ::error ("%s: unable to create temporary input buffer",
                          who.c_str  ());
             }
           else
-            ::error ("%s: first argument must be a string", who.c_str ());
+            ::error ("%s: argument STRING must be a string", who.c_str ());
         }
       else
         print_usage ();
@@ -1331,19 +1331,19 @@ do_fread (octave_stream& os, const octave_value& size_arg,
                                           output_type, skip, flt_fmt, count);
                     }
                   else
-                    ::error ("fread: architecture type must be a string");
+                    ::error ("fread: ARCH architecture type must be a string");
                 }
               else
-                ::error ("fread: skip must be an integer");
+                ::error ("fread: SKIP must be an integer");
             }
           else
-            ::error ("fread: invalid data type specified");
+            ::error ("fread: invalid PRECISION specified");
         }
       else
-        ::error ("fread: precision must be a string");
+        ::error ("fread: PRECISION must be a string");
     }
   else
-    ::error ("fread: invalid size specified");
+    ::error ("fread: invalid SIZE specified");
 
   return retval;
 }
@@ -1608,16 +1608,16 @@ do_fwrite (octave_stream& os, const octave_value& data,
                                        skip, flt_fmt);
                 }
               else
-                ::error ("fwrite: architecture type must be a string");
+                ::error ("fwrite: ARCH architecture type must be a string");
             }
           else
-            ::error ("fwrite: skip must be an integer");
+            ::error ("fwrite: SKIP must be an integer");
         }
       else
-        ::error ("fwrite: invalid precision specified");
+        ::error ("fwrite: invalid PRECISION specified");
     }
   else
-    ::error ("fwrite: precision must be a string");
+    ::error ("fwrite: PRECISION must be a string");
 
   return retval;
 }
@@ -1818,13 +1818,13 @@ endwhile\n\
                   retval = octave_stream_list::insert (ops);
                 }
               else
-                ::error ("popen: invalid mode specified");
+                ::error ("popen: invalid MODE specified");
             }
           else
-            ::error ("popen: mode must be a string");
+            ::error ("popen: MODE must be a string");
         }
       else
-        ::error ("popen: name must be a string");
+        ::error ("popen: COMMAND must be a string");
     }
   else
     print_usage ();
@@ -1883,10 +1883,10 @@ that it will not be available by the time your program attempts to open it.\n\
           if (! error_state)
             retval = octave_tempnam (dir, pfx);
           else
-            ::error ("expecting second argument to be a string");
+            ::error ("PREFIX must be a string");
         }
       else
-        ::error ("expecting first argument to be a string");
+        ::error ("DIR argument must be a string");
     }
   else
     print_usage ();
@@ -2026,7 +2026,7 @@ error message.\n\
             }
         }
       else
-        error ("mkstemp: expecting string as first argument");
+        error ("mkstemp: TEMPLATE argument must be a string");
     }
   else
     print_usage ();
@@ -2098,7 +2098,7 @@ interpreted as an octal number); otherwise an error message is printed.\n\
       else
         {
           status = -1;
-          ::error ("umask: expecting integer argument");
+          ::error ("umask: MASK must be an integer");
         }
     }
   else

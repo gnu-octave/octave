@@ -589,7 +589,7 @@ return @code{NaN}.\n\
                 error ("airy: expecting K = 0, 1, 2, or 3");
             }
           else
-            error ("airy: expecting integer value for K");
+            error ("airy: K must be an integer value");
         }
 
       if (! error_state)
@@ -616,7 +616,7 @@ return @code{NaN}.\n\
                   retval(0) = result;
                 }
               else
-                error ("airy: expecting complex matrix for Z");
+                error ("airy: Z must be a complex matrix");
             }
           else
             {
@@ -638,7 +638,7 @@ return @code{NaN}.\n\
                   retval(0) = result;
                 }
               else
-                error ("airy: expecting complex matrix for Z");
+                error ("airy: Z must be a complex matrix");
             }
         }
     }

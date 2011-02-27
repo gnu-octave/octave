@@ -707,8 +707,8 @@ scalar (const dim_vector& dims)
 %!assert(isstruct(x));
 %!assert(isempty(fieldnames(x)));
 %!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
-%!fail("struct(1,2,3,4)","struct expects alternating \"field\", VALUE pairs");
-%!fail("struct('1',2,'3')","struct expects alternating \"field\", VALUE pairs");
+%!fail("struct(1,2,3,4)","struct: expecting alternating \"field\", VALUE pairs");
+%!fail("struct('1',2,'3')","struct: expecting alternating \"field\", VALUE pairs");
 */
 
 bool
@@ -1725,8 +1725,8 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
 %!assert(isstruct(x));
 %!assert(isempty(fieldnames(x)));
 %!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
-%!fail("struct(1,2,3,4)","struct expects alternating \"field\", VALUE pairs");
-%!fail("struct('1',2,'3')","struct expects alternating \"field\", VALUE pairs");
+%!fail("struct(1,2,3,4)","struct: expecting alternating \"field\", VALUE pairs");
+%!fail("struct('1',2,'3')","struct: expecting alternating \"field\", VALUE pairs");
 */
 
 DEFUN (struct, args, ,
@@ -1790,7 +1790,7 @@ If the argument is an object, return the underlying struct.\n\
     {
       if (! args(i).is_string () || i + 1 >= nargin)
         {
-          error ("struct expects alternating \"field\", VALUE pairs");
+          error ("struct: expecting alternating \"field\", VALUE pairs");
           return retval;
         }
     }
@@ -2048,11 +2048,11 @@ A(1)\n\
   if (args.length () == 3)
     {
       if (! args(0).is_cell ())
-        error ("cell2struct: first argument must be a cell");
+        error ("cell2struct: argument CELL must be of type cell");
       else if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
-        error ("cell2struct: second argument must be a cell array of strings or a character matrix");
+        error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
       else if (! args(2).is_real_scalar ())
-        error ("cell2struct: third argument must be a real scalar");
+        error ("cell2struct: DIM must be a real scalar");
       else
         {
           const Cell vals = args(0).cell_value ();
@@ -2061,12 +2061,12 @@ A(1)\n\
           octave_idx_type ext = 0;
 
           if (dim < 0)
-            error ("cell2struct: dim must be a valid dimension");
+            error ("cell2struct: DIM must be a valid dimension");
           else
             {
               ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
               if (ext != fields.numel ())
-                error ("cell2struct: number of fields doesn't match dimension");
+                error ("cell2struct: number of FIELDS does not match dimension");
             }
 
 

@@ -720,17 +720,6 @@ public:
       status->textfont (FL_COURIER);
       status->textsize (10);
       status->box (FL_ENGRAVED_BOX);
-
-      // This allows us to have a valid OpenGL context right away.
-      canvas->mode (FL_DEPTH | FL_DOUBLE );
-      if (fp.is_visible ())
-        {
-          show ();
-          if (fp.get_currentaxes ().ok())
-            show_canvas ();
-          else
-            hide_canvas ();
-        }
     }
     end ();
 
@@ -748,6 +737,21 @@ public:
       show_menubar ();
     else
       hide_menubar ();
+
+    begin ();
+    {
+      // This allows us to have a valid OpenGL context right away.
+      canvas->mode (FL_DEPTH | FL_DOUBLE );
+      if (fp.is_visible ())
+        {
+          show ();
+          if (fp.get_currentaxes ().ok())
+            show_canvas ();
+          else
+            hide_canvas ();
+        }
+    }
+    end ();
   }
 
   ~plot_window (void)
@@ -776,28 +780,28 @@ public:
 
   void show_menubar (void)
   {
-    int dm = menu_h;
-    if (uimenu->is_visible ())
-      dm = 0;
-    canvas->resize (canvas->x (),
-                    canvas->y () + dm,
-                    canvas->w (),
-                    canvas->h () - dm);
-    uimenu->show ();
-    mark_modified ();
+    if (!uimenu->is_visible ())
+      {
+        canvas->resize (canvas->x (),
+                        canvas->y () + menu_h,
+                        canvas->w (),
+                        canvas->h () - menu_h);
+        uimenu->show ();
+        mark_modified ();
+      }
   }
 
   void hide_menubar (void)
   {
-    int dm = menu_h;
-    if (!uimenu->is_visible ())
-      dm = 0;
-    canvas->resize (canvas->x (),
-                    canvas->y () - dm,
-                    canvas->w (),
-                    canvas->h () + dm);
-    uimenu->hide ();
-    mark_modified ();
+    if (uimenu->is_visible ())
+      {
+        canvas->resize (canvas->x (),
+                        canvas->y () - menu_h,
+                        canvas->w (),
+                        canvas->h () + menu_h);
+        uimenu->hide ();
+        mark_modified ();
+      }
   }
 
   void uimenu_update(graphics_handle gh, int id)

@@ -1,4 +1,11 @@
-2010-02-26  Rik  <octave@nomad.inbox5.com>
+2011-02-26  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* DLD-FUNCTIONS/__init_fltk__.cc (plot_window::plot_window):
+	Move canvas allocation after the configuration of the menubar.
+	(plot_window::show_menubar, plot_window::hide_menubar):
+	Simplify source code.
+
+2011-02-26  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/cellfun.cc,
 	DLD-FUNCTIONS/filter.cc, DLD-FUNCTIONS/matrix_type.cc,

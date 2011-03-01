@@ -1,3 +1,7 @@
+2010-02-28  Rik  <octave@nomad.inbox5.com>
+
+	* sparse/treeplot.m: Use 'o' plot style as default for nodes
+
 2010-02-27  Rik  <octave@nomad.inbox5.com>
 
 	* special-matrix/pascal.m: Fix incorrect statement in documentation

@@ -6,12 +6,12 @@
 % under the terms of the GNU General Public License as published by the
 % Free Software Foundation; either version 3 of the License, or (at
 % your option) any later version.
-% 
+%
 % Octave is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 % for more details.
-% 
+%
 % You should have received a copy of the GNU General Public License
 % along with Octave; see the file COPYING.  If not, see
 % <http://www.gnu.org/licenses/>.
@@ -44,10 +44,10 @@
 This is a list of frequently asked questions (FAQ) for Octave users.
 
 We are always looking for new questions (@emph{with} answers), better
-answers, or both.  Please send suggestions to @email{bug@@octave.org}.
-If you have general questions about Octave, or need help for something
-that is not covered by the Octave manual or the FAQ, please use the
-@email{help@@octave.org} mailing list.
+answers, or both. Please send suggestions to
+@url{http://bugs.octave.org}. If you have general questions about
+Octave, or need help for something that is not covered by the Octave
+manual or the FAQ, please use the @email{help@@octave.org} mailing list.
 
 This FAQ is intended to supplement, not replace, the Octave manual.
 Before posting a question to the @email{help@@octave.org} mailing list,
@@ -57,7 +57,7 @@ you should first check to see if the topic is covered in the manual.
 * What is Octave?::
 * Licensing Issues::
 * How can I cite Octave?::
-* Series 3.0.N::
+* Series 3.4.N::
 * Octave Features::
 * Learning more about Octave::
 * Getting Octave::
@@ -88,7 +88,7 @@ editing interface is also available.  At the end of each session, the
 command history is saved, so that commands entered during previous
 sessions are not lost.
 
-The Octave distribution includes a 590+ page Texinfo manual. Access to
+The Octave distribution includes a 650+ page Texinfo manual. Access to
 the complete text of the manual is available via the @code{doc} command
 at the Octave prompt.
 
@@ -140,7 +140,7 @@ For more information about the GNU project, see @url{www.gnu.org}.
 
 In general, you will find the latest version on
 @url{http://www.octave.org/download.html}. It is recommended to use the
-``testing'' version of octave for general use, and the ``development''
+``stable'' version of octave for general use, and the ``development''
 version if you want the latest features.
 
 A list of user-visible changes since the last release is available in
@@ -154,7 +154,10 @@ last release.
 Octave runs on various Unices---at least Linux and Solaris, Mac OS X,
 Windows and anything you can compile it on.  Binary distributions exist
 at least for Debian, Suse, Fedora and RedHat Linuxes (Intel and AMD
-CPUs, at least), for Mac Os X and Windows' 98, 2000 and XP.
+@c Does Vista work? I get the feeling that even Windows users are trying
+@c to forget Vista like a bad nightmare. Tatsuro only confirmed XP and
+@c 7. I am tentatively assuming that Vista also works.
+CPUs, at least), for Mac OS X and Windows' 98, 2000, XP, Vista, and 7.
 
 Two and three dimensional plotting is fully supported using gnuplot and
 an experimental OpenGL backend.
@@ -262,11 +265,53 @@ reference, then you can cite the Octave manual:
 @end group
 @end example
 
-@node Series 3.0.N
-@chapter What's new in version series 3.0.N and 3.1.N of Octave
+@node Series 3.4.N
+@chapter What's new in version series 3.4.N and 3.5.N of Octave
 
-The 3.0.N series has enough new features to justify a major version
-number change. The 3.0.N series brings
+The 3.4.N series has enough new features to justify a minor version
+number change. The full details are in the @file{NEWS} file, but in
+brief 3.4.N series brings:
+
+@c This list is distilled from the NEWS file. Does it have enough
+@c things? Does it have too many?
+@itemize @bullet
+
+@item ARPACK now distributed with Octave
+
+@item Indexing optimisations
+
+@item FTP object using @file{libcurl}
+
+@item Better consistency with ismatrix, issquare, and issymetric
+
+@item Function handles aware of overloaded functions
+
+@item More efficient matrix division by making a single LAPACK call
+
+@item Other optimisations in matrix operations
+
+@item @code{bsxfun} optimised for basic arithmetic functions
+
+@item @sc{Matlab}-style ignoring of output arguments using @samp{~}
+
+@item Many optimisations of the @code{accumarray} function
+
+@item Sparse matrix indexing has been rewritten for speed
+
+@item Configuration pseudo-variables like @code{page_screen_output}
+accept a ``local'' option argument to limit their scope to function
+scope
+
+@item The @code{pkg} command now accepts a @code{-forge} option to pull
+packages directly from Octave-forge
+
+@item Several @code{dlmread} improvements
+
+@item Octave now uses gnulib for better cross-platform compatibility
+
+@end itemize
+
+Here are some features that have been around since 3.2.N
 
 @itemize @bullet
 
@@ -288,23 +333,6 @@ number change. The 3.0.N series brings
 
 @item many many other minor features and compatibility changes
 
-@end itemize
-
-Here are some features that have been around since 2.1.N:
-
-@itemize @bullet
-
-@item NDarrays
-
-@item cells
-
-@end itemize
-
-The 3.1.N series is the current development release and will become a
-3.2.N release in the future. This series brings the following new
-features:
-
-@itemize
 @item OpenGL graphics toolkit
 
 An experimental OpenGL graphics toolkit to replace gnuplot.
@@ -328,6 +356,25 @@ underlying LAPACK code.
 @item Improved array indexing
 The underlying code used for indexing of arrays has been completely
 rewritten and so the indexing of arrays is now significantly faster.
+
+@end itemize
+
+Here are some older features that have been around since 2.1.N:
+
+@itemize @bullet
+
+@item NDarrays
+
+@item cells
+
+@end itemize
+
+The 3.5.N series is the current development release and will become a
+3.6.N release in the future. This series brings the following new
+features:
+
+@itemize
+@item Perl-compatible regular expressions are now part of Octave
 @end itemize
 
 
@@ -347,14 +394,13 @@ rewritten and so the indexing of arrays is now significantly faster.
 * Built-in ODE and DAE solvers::
 @end menu
 
-This section refers to @sc{Matlab} R2008b and Octave 2.1.51.
+This section refers to @sc{Matlab} R2010b and Octave 3.4.0.
 
 @node Functions defined on the command-line
 @section Functions defined on the command-line
 
-Functions can be defined by entering code on the command line, a
-feature not supported by the other leading brand.  For example, you may
-type:
+Functions can be defined by entering code on the command line, a feature
+not supported by @sc{Matlab}. For example, you may type:
 
 @example
 @group
@@ -372,18 +418,18 @@ ans = Hello Moon
 @node Comments with #
 @section Comments with #
 
-The pound character, @samp{#}, may be used to start comments, in addition
-to @samp{%}.  See the previous example.  The major advantage of this is
-that as @samp{#} is also a comment character for unix script files, any
-file that starts with a string like @samp{#! /usr/bin/octave -q} will be
-treated as an octave script and be executed by octave.
+The pound character, @samp{#}, may be used to start comments, in
+addition to @samp{%}. See the previous example. The major advantage of
+this is that as @samp{#} is also a comment character for unix script
+files, any file that starts with a string like @samp{#! /usr/bin/octave
+-q} will be treated as an octave script and be executed by octave.
 
 @node Strings delimitted by double quotes "
 @section Strings delimitted by double quotes "
-The double quote, @samp{"}, may be used to delimit strings, in addition to
-the single quote @samp{'}.  See the previous example.  Also, double-quoted
-strings include backslash interpretation (like C++, C, and Perl) while
-single quoted are uninterpreted (like @sc{Matlab} and Perl).
+The double quote, @samp{"}, may be used to delimit strings, in addition
+to the single quote @samp{'}. See the previous example. Also,
+double-quoted strings include backslash interpretation (like C++, C, and
+Perl) while single quoted are uninterpreted (like @sc{Matlab} and Perl).
 
 @node Line continuation by backslash
 @section Line continuation by backslash
@@ -416,8 +462,8 @@ ans = 0.70711
 @node Exclamation mark as not operator
 @section Exclamation mark as not operator
 
-The exclamation mark '!' (aka ``Bang!'') is a negation operator, just
-like the tilde '~':
+The exclamation mark @samp{!} (aka ``Bang!'') is a negation operator, just
+like the tilde @samp{~}:
 
 @example
 @group
@@ -429,6 +475,10 @@ octave:1> if ! strcmp (program_name, "octave"),
 ans = It works!
 @end group
 @end example
+
+@noindent
+Note however that @sc{Matlab} uses the @samp{!} operator for shell
+escapes, for which Octave requires using the @code{system} command.
 
 @node Increment and decrement operators
 @section Increment and decrement operators
@@ -485,8 +535,8 @@ guaranteed to be executed regardless of how control exits @var{body}.
 The @code{unwind_protect} statement is often used to reliably restore
 the values of global variables that need to be temporarily changed.
 
-@sc{Matlab} can be made to do something similar with their @code{OnCleanUp}
-function that was introduced in 2008a.
+@sc{Matlab} can be made to do something similar with their
+@code{OnCleanUp} function that was introduced in 2008a.
 
 @node Built-in ODE and DAE solvers
 @section Built-in ODE and DAE solvers
@@ -513,7 +563,7 @@ built in to the interpreter.
 
 @cindex Octave, documentation
 
-The Octave distribution includes a 590+ page manual that is also
+The Octave distribution includes a 650+ page manual that is also
 distributed under the terms of the GNU GPL.
 It is available on the web at
 @url{http://www.octave.org/docs.html} and you will also
@@ -521,7 +571,7 @@ find there instructions on how to order a paper version.
 
 The complete text of the Octave manual is also available using the GNU
 Info system via the GNU Emacs, info, or xinfo programs, or by using
-the @samp{help -i} command to start the GNU info browser directly from
+the @samp{doc} command to start the GNU info browser directly from
 the Octave prompt.
 
 If you have problems using this documentation, or find that some topic
@@ -542,8 +592,8 @@ answered by the Octave manual or by this document.
 @node User community
 @section User community
 
-To subscribe to the list, go to @url{www.octave.org/archive.html} and
-follow the link to the subscription page for the list.
+To subscribe to the list, go to @url{http://www.octave.org/archive.html}
+and follow the link to the subscription page for the list.
 
 @strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.
@@ -568,25 +618,9 @@ and who should I tell?''
 First, see the section on bugs and bug reports in the Octave manual.
 When you report a bug, make sure to describe the type of computer you
 are using, the version of the operating system it is running, and the
-version of Octave that you are using.  Also provide enough code so that
-the Octave maintainers can duplicate your bug.
-
-If you have Octave working at all, the easiest way to do this is to use
-the Octave function @code{bug_report}.  When you execute this function,
-Octave will prompt you for a subject and then invoke the editor on a
-file that already contains all the configuration information.  When you
-exit the editor, Octave will mail the bug report for you (in a unix-like
-operating system).
-
-@cindex Octave bug report
-@cindex Mailing lists, bug-octave
-
-If for some reason you cannot use Octave's @code{bug_report} function,
-mail your bug report to @email{bug@@octave.org}.  Your message needs to
-include enough information to allow the maintainers of Octave to fix the
-bug.  Please read the section on bugs and bug reports in the Octave
-manual for a list of things that should be included in every bug report.
-
+version of Octave that you are using. Also provide enough code and
+configuration details of your operating system so that the Octave
+maintainers can duplicate your bug.
 
 @node Getting Octave
 @chapter Getting Octave
@@ -610,8 +644,7 @@ sure to get the latest version.
 @end itemize
 
 Since Octave is distrubted under the terms of the GPL, you can get
-Octave from a friend who has a copy, by anonymous FTP, or by ordering
-a tape or CD-ROM from the Free Software Foundation (FSF).
+Octave from a friend who has a copy, or from the Octave website.
 
 @node Pre-compiled binary packages
 @section Pre-compiled binary packages
@@ -626,8 +659,9 @@ projects do.  For an up-to-date listing of packagers, see:
 @item @url{http://wiki.octave.org/wiki.pl?CategoryInstall}
 @end itemize
 
-As of today, Octave binaries are available at least on Debian, RedHat,
-Suse and Fedora Linuxes, Mac OS X, Windows' 98, 2000 and XP.
+As of today, Octave binaries are available at least on Debian, Ubuntu,
+RedHat, Suse and Fedora GNU/Linuxen, Mac OS X, Windows' 98, 2000 and XP,
+Vista, and 7.
 
 @node Octave for other platforms
 @section How do I get a copy of Octave for (some other platform)?
@@ -659,11 +693,11 @@ If you are interested in porting Octave to other systems, please contact
 
 @cindex Octave, building
 
-Octave 3.2 require approximately 800MB of disk storage to unpack
-and compile from source (considerably less if you don't compile with
-debugging symbols).  Once installed, Octave requires approximately 200MB
+Octave 3.4 require approximately 1.3 GB of disk storage to unpack and
+compile from source (considerably less if you don't compile with
+debugging symbols). Once installed, Octave requires approximately 355 MB
 of disk space (again, considerably less if you don't compile with
-debugging symbols).
+debugging symbols, approximately 50 MB).
 
 @menu
 * What else do I need?::
@@ -681,7 +715,7 @@ debugging symbols).
 @cindex GNU Bison
 
 To compile Octave, you will need a recent version of GNU Make.  You
-will also need GCC 3.3 or later, although GCC 4.1 or later is
+will also need GCC 4.3  or later, although GCC 4.4 or later is
 recommended.
 
 @strong{You must have GNU Make to compile octave}.  Octave's Makefiles
@@ -692,10 +726,10 @@ GNU Make is very portable and easy to install.
 @section Can I compile Octave with another C++ compiler?
 
 Yes, but development is done primarily with GCC, so you may hit some
-incompatibilities.  Octave is intended to be portable to any standard
-conforming compiler.  If you have difficulties that you think are bugs,
-please report them to the @email{bug@@octave.org} mailing list, or ask
-for help on the @email{help@@octave.org} mailing list.
+incompatibilities. Octave is intended to be portable to any standard
+conforming compiler. If you have difficulties that you think are bugs,
+please report them to the @url{http://bugs.octave.org} bug tracker, or
+ask for help on the @email{help@@octave.org} mailing list.
 
 @node Common problems
 @chapter Common problems
@@ -713,19 +747,19 @@ of directories with the @code{path} command. If the path list is very
 long check your use of the @code{genpath} function.
 
 @item
-When plotting Octave occasionally gives me errors like @samp{gnuplot> 9 0.735604
-line 26317: invalid command}.
+When plotting Octave occasionally gives me errors like @samp{gnuplot> 9
+0.735604 line 26317: invalid command}.
 
 There is a known bug in gnuplot 4.2 that can cause an off by one error
-while piping data to gnuplot. The relevant gnuplot bug report can be
-found at @url{http://sourceforge.net/tracker/index.php?func=detail&aid=1716556&group_id=2055&atid=102055}
+while piping data to gnuplot. It has been fixed in gnuplot 4.4.
 
 If you have obtained your copy of Octave from a distribution please file
 a bug report requesting that the fix reported in the above bug report be
 included.
 
 @item
-I cannot install a package. Octave complains about a missing @code{mkoctfile}.
+I cannot install a package. Octave complains about a missing
+@code{mkoctfile}.
 
 Most distributions split Octave into several packages. The script
 @code{mkoctfile} is then part of a separate package:
@@ -733,7 +767,9 @@ Most distributions split Octave into several packages. The script
 @item
 Debian/Ubuntu
 
-@code{aptitude install octave3.0-headers}
+@c This will work once we upload the Octave packages without a version
+@c in their name to Debian.
+@code{aptitude install octave-headers}
 
 @item
 Fedora
@@ -798,10 +834,11 @@ between Octave behavior and @sc{Matlab}, then you should send a
 description of this difference (with code illustrating the difference,
 if possible) to @url{http://bugs.octave.org}.
 
-Furthermore, Octave adds a few syntactical extensions to @sc{Matlab} that
-might cause some issues when exchanging files between @sc{Matlab} and Octave
-users. As both Octave and @sc{Matlab} are under constant development the
-information in this section is subject to change at anytime.
+Furthermore, Octave adds a few syntactical extensions to @sc{Matlab}
+that might cause some issues when exchanging files between @sc{Matlab}
+and Octave users. As both Octave and @sc{Matlab} are under constant
+development the information in this section is subject to change at
+anytime.
 
 You should also look at the page
 @url{http://octave.sourceforge.net/packages.html} and
@@ -810,12 +847,12 @@ that is up to date. You can use this function reference to see the
 number of octave function that are available and their @sc{Matlab}
 compatibility.
 
-The major differences between Octave 3.2.N and  @sc{Matlab} R2008a are:
+The major differences between Octave 3.4.N and  @sc{Matlab} R2010b are:
 
 @itemize @bullet
 @item Nested Functions
 
-Octave doesn't yet have nested functions. That is
+Octave has limited support for nested functions. That is
 
 @example
 @group
@@ -828,9 +865,7 @@ end
 @end group
 @end example
 
-There was discussion in Octave of having these even prior to @sc{Matlab},
-and the decision was made not to have these in Octave at the time for
-compatibility.  The above written with sub-functions functions would be
+is equivalent to
 
 @example
 @group
@@ -843,10 +878,10 @@ end
 @end group
 @end example
 
-Now that @sc{Matlab} has recently introduced nested functions, Octave will
-probably have them soon as well.  Until then nested functions in Octave
-are treated as sub-functions with the same scoping rules as
-sub-functions.
+The main difference with @sc{Matlab} is a matter of scope. While nested
+functions have access to the parent function's scope in @sc{Matlab}, no
+such thing is available in Octave, due to how Octave essentially
+``un-nests'' nested functions.
 
 The authors of Octave consider the nested function scoping rules of
 @sc{Matlab} to be more problems than they are worth as they introduce
@@ -868,8 +903,8 @@ Some limitations of variable argument lists on the LHS of an expression,
 though the most common types are accepted.
 
 @item
-@sc{Matlab} classdef object oriented programming is not yet supportted,
-though work is underway and when development more on to Octave 3.3 this
+@sc{Matlab} classdef object oriented programming is not yet supported,
+though work is underway and when development more on to Octave 3.5 this
 will be included in the development tree.
 @end itemize
 
@@ -877,49 +912,53 @@ will be included in the development tree.
 A large number of the @sc{Matlab} core functions (ie those that are in
 the core and not a toolbox) are implemented, and certainly all of the
 commonly used ones. There are a few functions that aren't implemented,
-@c this is no longer true, condest is now implemented in Octave
-for example @code{condest} or to do with specific missing Octave functionality
-(gui, dll, java, activex, dde, web, and serial functions). Some of the
-core functions have limitations that aren't in the @sc{Matlab}
-version.  For example the @code{sprandn} function can not force a
-particular condition number for the matrix like @sc{Matlab} can.
+usually to do with specific missing Octave functionality (GUI, DLL,
+Java, ActiveX, DDE, web, and serial functions). Some of the core
+functions have limitations that aren't in the @sc{Matlab} version. For
+example the @code{sprandn} function can not force a particular condition
+number for the matrix like @sc{Matlab} can.
 
 @item Just-In-Time compiler
 @sc{Matlab} includes a "Just-In-Time" compiler. This compiler allows the
-acceleration of for-loops in @sc{Matlab} to almost native performance with
-certain restrictions. The JIT must know the return type of all functions
-called in the loops and so you can't include user functions in the loop
-of JIT optimized loops.  Octave doesn't have a JIT and so to some might
-seem slower than @sc{Matlab}.  For this reason you must vectorize your code as
-much as possible.  The MathWorks themselves have a good document
-discussing vectorization at
-@c it would be nice if we had our own guide for this instead of relying
+acceleration of for-loops in @sc{Matlab} to almost native performance
+with certain restrictions. The JIT must know the return type of all
+functions called in the loops and so you can't include user functions in
+the loop of JIT optimized loops. Octave doesn't have a JIT and so to
+some might seem slower than @sc{Matlab}. For this reason you must
+vectorize your code as much as possible. The MathWorks themselves have a
+good document discussing vectorization at
+@c It would be nice if we had our own guide for this instead of relying
 @c on Matlab documentation.
 @url{http://www.mathworks.com/support/tech-notes/1100/1109.html}.
 
 @item Compiler
 On a related point, there is no Octave compiler, and so you can't
 convert your Octave code into a binary for additional speed or
-distribution.  There is an example of how to do this at
-@url{http://www.stud.tu-ilmenau.de/~rueckn/}, but this is a very early
-example code and would need lots of work to complete it.
+distribution. There have been several aborted attempts at creating an
+Octave compiler. Should the JIT compiler above ever be implemented, an
+Octave compiler should be more feasible.
+@c Should we mention here any of the efforts to create a compiler? There
+@c used to be a dead link here to http://www.stud.tu-ilmenau.de/~rueckn/
 
 @item Graphic Handles
 Up to Octave 2.9.9 there was no support for graphic handles in Octave
-itself.  In the 3.2.N versions of Octave the support for graphics
-handles is converging towards full compatibility. The @code{patch}
-function is currently limited to 2-D patches, due to an underlying
-limitation in gnuplot.
+itself. In the 3.2.N versions of Octave and beyond the support for
+graphics handles is converging towards full compatibility. The
+@code{patch} function is currently limited to 2-D patches, due to an
+underlying limitation in gnuplot, but the experimental OpenGL backend is
+starting to see an implementation of 3-D patches.
 
 @item GUI
-There are no @sc{Matlab} compatible GUI functions.  There are a number of
-bindings from Octave to Tcl/Tk, Vtk and zenity included in the
-Octave Forge project (@url{http://octave.sourceforge.net}) for example
-that can be used for a GUI, but these are not @sc{Matlab}
-compatible. Work on a @sc{Matlab} compatible GUI is in an alpha stage in the
-JHandles package (@url{http://octave.sourceforge.net/jhandles/index.html}).
-This might be an issue if you intend to exchange Octave code with
-@sc{Matlab} users.
+There are no @sc{Matlab} compatible GUI functions. There are a number of
+bindings from Octave to Tcl/Tk, VTK and Zenity included in the Octave
+@c Is it too early to mention here the nascent fltk UI buttons?
+Forge project (@url{http://octave.sourceforge.net}) for example that can
+be used for a GUI, but these are not @sc{Matlab} compatible. Work on a
+@sc{Matlab} compatible GUI is in an alpha stage in the JHandles package
+@c Is Jhandles still usable? I thought Michael Goffioul had more or less
+@c already disowned it.
+(@url{http://octave.sourceforge.net/jhandles/index.html}). This might be
+an issue if you intend to exchange Octave code with @sc{Matlab} users.
 
 @item Simulink
 Octave itself includes no Simulink support. Typically the simulink
@@ -931,13 +970,13 @@ simulink for the Octave and R projects available at
 @url{http://www.scicraft.org/}
 
 @item Mex-Files
-Octave includes an API to the @sc{Matlab} MEX interface. However, as MEX is
-an API to the internals of @sc{Matlab} and the internals of Octave
+Octave includes an API to the @sc{Matlab} MEX interface. However, as MEX
+is an API to the internals of @sc{Matlab} and the internals of Octave
 differ from @sc{Matlab}, there is necessarily a manipulation of the data
 to convert from a MEX interface to the Octave equivalent. This is
 notable for all complex matrices, where @sc{Matlab} stores complex
 arrays as real and imaginary parts, whereas Octave respects the C99/C++
-standards of co-locating the real/imag parts in memory.  Also due to the
+standards of co-locating the real/imag parts in memory. Also due to the
 way @sc{Matlab} allows access to the arrays passed through a pointer,
 the MEX interface might require copies of arrays (even non complex
 ones).
@@ -948,27 +987,29 @@ Octave with some limitations. The major limitation is that block
 comments are not supported within [] or @{@}.
 
 @item Mat-File format
-There are some differences in the mat v5 file format accepted by
-Octave. @sc{Matlab} recently introduced the "-V7.3" save option which is
-an HDF5 format which is particularly useful for 64-bit platforms where
-the standard @sc{Matlab} format can not correctly save variables.. Octave
+@c How much of this is still true?
+There are some differences in the mat v5 file format accepted by Octave.
+@sc{Matlab} recently introduced the "-V7.3" save option which is an HDF5
+format which is particularly useful for 64-bit platforms where the
+standard @sc{Matlab} format can not correctly save variables. Octave
 accepts HDF5 files, but is not yet compatible with the "-v7.3" versions
 produced by @sc{Matlab}.
 
-Although Octave can load inline abd function handles saved by
-@sc{Matlab}, it can not yet save them.
+Although Octave can load inline function handles saved by @sc{Matlab},
+it can not yet save them.
 
-Finally, Some multi-byte unicode characters aren't yet treated in
+Finally, Some multi-byte Unicode characters aren't yet treated in
 mat-files.
 
 @item Profiler
 Octave doesn't have a profiler. Though there is a patch for a flat
-profiler, that might become a real profiler sometime in the future. see
+profiler, that might become a real profiler sometime in the future. See
 the thread
 
-@url{http://www.cae.wisc.edu/pipermail/octave-maintainers/2007-January/001685.html}
+@c Did this idea go anywhere? Should it be mentioned?
+@url{http://octave.1599824.n4.nabble.com/Octave-profiler-td1641945.html#a1641947}
 
-for more details
+for more details.
 
 @item Toolboxes
 Octave is a community project and so the toolboxes that exist are
@@ -977,7 +1018,6 @@ donated by those interested in them through the Octave Forge website
 functionality relative to the @sc{Matlab} toolboxes, and might not
 exactly duplicate the @sc{Matlab} functionality or interface.
 
-@c TODO: Update this to mention how it's now enabled in Octave
 @item Short-circuit & and | operators
 The @code{&} and @code{|} operators in @sc{Matlab} short-circuit when
 included in an if statemant and not otherwise.  In Octave only the
@@ -992,7 +1032,7 @@ included in an if statemant and not otherwise.  In Octave only the
 @end example
 
 and
-  
+
 @example
 @group
   t = a | b;
@@ -1004,13 +1044,22 @@ and
 
 @noindent
 are different in @sc{Matlab}. This is really a @sc{Matlab} bug, but
-there is too much code out there that relies on this behavior to change
-it. Prefer the || and && operators in if statements if possible.
+there is too much code out there that relies on this behaviour to change
+it. Prefer the || and && operators in if statements if possible. If you
+need to use code written for @sc{Matlab} that depends on this buggy
+behaviour, you can enable it since Octave 3.4.0 with the following
+command:
 
-Note that the difference is also significant when either argument is a
-function with side effects or if the first argument is a scalar and the
-second argument is an empty matrix.  For example, note the difference
-between
+@example
+@group
+  do_braindead_shortcircuit_evaluation(1)
+@end group
+@end example
+
+Note that the difference with @sc{Matlab} is also significant when
+either argument is a function with side effects or if the first argument
+is a scalar and the second argument is an empty matrix. For example,
+note the difference between
 
 @example
 @group
@@ -1034,8 +1083,8 @@ Another case that is documented in the @sc{Matlab} manuals is that
 @end group
 @end example
 
-Also @sc{Matlab} requires the operands of && and || to be scalar values but
-Octave does not (it just applies the rule that for an operand to be
+Also @sc{Matlab} requires the operands of && and || to be scalar values
+but Octave does not (it just applies the rule that for an operand to be
 considered true, every element of the object must be nonzero or
 logically true).
 
@@ -1056,29 +1105,31 @@ However,
   if ([]) != if (all ([]))
 @end example
 
-because @code{samp ([]) == 1} (because, despite the name, it is really
+because @code{samp ([]) == 1} because, despite the name, it is really
 returning true if none of the elements of the matrix are zero, and since
-there are no elements, well, none of them are zero).  But, somewhere
-along the line, someone decided that if @code{([])} should be false.
-Mathworks probably thought it just looks wrong to have @code{[]} be true
-in this context even if you can use logical gymnastics to convince
-yourself that "all" the elements of a matrix that doesn't actually have
-any elements are nonzero. Octave however duplicates this behavior for if
-statements containing empty matrices.
+there are no elements, well, none of them are zero. This is an example
+of vacuous truth. But, somewhere along the line, someone decided that if
+@code{([])} should be false. Mathworks probably thought it just looks
+wrong to have @code{[]} be true in this context even if you can use
+logical gymnastics to convince yourself that "all" the elements of a
+matrix that doesn't actually have any elements are nonzero. Octave
+however duplicates this behavior for if statements containing empty
+matrices.
 
 @item Solvers for singular, under- and over-determined matrices
 
-@sc{Matlab}'s solvers as used by the operators mldivide (\) and mrdivide (/),
-use a different approach than Octave's in the case of singular, under-, 
-or over-determined matrices. In the case of a singular matrix, @sc{Matlab}
-returns the result given by the LU decomposition, even though the underlying
-solver has flagged the result as erroneous. Octave has made the choice
-of falling back to a minimum norm solution of matrices that have been
-flagged as singular which arguably is a better result for these cases.
+@sc{Matlab}'s solvers as used by the operators mldivide (\) and mrdivide
+(/), use a different approach than Octave's in the case of singular,
+under-, or over-determined matrices. In the case of a singular matrix,
+@sc{Matlab} returns the result given by the LU decomposition, even
+though the underlying solver has flagged the result as erroneous. Octave
+has made the choice of falling back to a minimum norm solution of
+matrices that have been flagged as singular which arguably is a better
+result for these cases.
 
 In the case of under- or over-determined matrices, Octave continues to
-use a minimum norm solution, whereas @sc{Matlab} uses an approach that is
-equivalent to
+use a minimum norm solution, whereas @sc{Matlab} uses an approach that
+is equivalent to
 
 @example
 @group
@@ -1094,9 +1145,9 @@ While this approach is certainly faster and uses less memory than
 Octave's minimum norm approach, this approach seems to be inferior in
 other ways.
 
-A numerical question arises: how big can the null space component become,
-relative to the minimum-norm solution? Can it be nicely bounded, or can it be
-arbitrarily big? Consider this example:
+A numerical question arises: how big can the null space component
+become, relative to the minimum-norm solution? Can it be nicely bounded,
+or can it be arbitrarily big? Consider this example:
 
 @example
 @group
@@ -1109,8 +1160,8 @@ norm(A \ b)
 @end example
 
 @noindent
-while Octave's minimum-norm values are around 3e-2, @sc{Matlab}'s results
-are 50-times larger. For another issue, try this code:
+while Octave's minimum-norm values are around 3e-2, @sc{Matlab}'s
+results are 50-times larger. For another issue, try this code:
 
 @example
 @group
@@ -1134,11 +1185,12 @@ the same norm, permuting columns of the matrix gets you different
 result than permuting the solution vector. This will surprise many
 users.
 
-Since the mldivide (\) and mrdivide (/) operators are often part of a more
-complex expression, where there is no room to react to warnings or flags, it
-should prefer intelligence (robustness) to speed, and so the Octave developers
-are firmly of the opinion that Octave's approach for singular, under- and
-over-determined matrices is a better choice that @sc{Matlab}'s
+Since the mldivide (\) and mrdivide (/) operators are often part of a
+more complex expression, where there is no room to react to warnings or
+flags, it should prefer intelligence (robustness) to speed, and so the
+Octave developers are firmly of the opinion that Octave's approach for
+singular, under- and over-determined matrices is a better choice that
+@sc{Matlab}'s
 
 @item Octave extensions
 The extensions in Octave over @sc{Matlab} syntax are
@@ -1149,21 +1201,24 @@ with @sc{Matlab} are
 @itemize @bullet
 @item
 Comments in octave can be marked with @samp{#}. This allows POSIX
-systems to have the first line as @samp{#! octave -q} and mark the script
-itself executable. @sc{Matlab} doesn't have this feature due to the
-absence of comments starting with @samp{#}".
+systems to have the first line as @samp{#! octave -q} and mark the
+script itself executable. @sc{Matlab} doesn't have this feature due to
+the absence of comments starting with @samp{#}".
 
 @item
-Code blocks like if, for, while, etc can be terminated with block
-specific terminations like "endif". @sc{Matlab} doesn't have this and
-all blocks must be terminated with "end"
+Code blocks like @code{if}, @code{for}, @code{while}, etc can be
+terminated with block specific terminations like @code{endif}.
+@sc{Matlab} doesn't have this and all blocks must be terminated with
+@code{end}.
 
 @item
-Octave has a lisp like unwind_protect block that allows blocks of
-code that terminate in an error to ensure that the variables that
-are touched are restored. You can do something similar with
+Octave has a lisp like @code{unwind_protect} block that allows blocks of
+code that terminate in an error to ensure that the variables that are
+touched are restored. You can do something similar with
 @code{try}/@code{catch} combined with @samp{rethrow (lasterror ())} in
-@sc{Matlab}, however rethrow and lasterror are only available in Octave 2.9.10 and later.
+@sc{Matlab}, however rethrow and lasterror are only available in Octave
+2.9.10 and later. @sc{Matlab} 2008a also introduced @code{OnCleanUp}
+that is similar to @code{unwind_protect}.
 
 Note that using @code{try}/@code{catch} combined with @samp{rethrow
 (lasterror ())} can not guarantee that global variables will be

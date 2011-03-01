@@ -4,6 +4,22 @@
 	a C++ source file and refer to the section where other languages
 	are discussed.
 
+	* faq/OctaveFAQ.texi: Major update to FAQ. Whitespace changes.
+	Update comments to version 3.4 of Octave. Summarise important
+	points of the NEWS file. We no longer have
+	stable/testing/unstable, only stable and development. Mention
+	newer versions of Windows. Update references to Matlab's latest
+	version. Mention that `!' can't be used for shell escapes.
+	Update other numbers like number of pages in manual, version
+	numbers, dates when things happened, file sizes. Clean out dead
+	links. Remove mentions of bugs@octave.org email address. Don't
+	say you can get Octave tapes from the FSF. Mention Ubuntu as
+	another distribution with Octave packages. Change package names
+	in anticipation for the forthcoming 3.4 binary packages. Explain
+	nested functions. Hint that classdef might happen in 3.5.
+	Mention 3D patches in the OpenGL backend. Clarify Matlab-style
+	short-circuiting.
+
 2010-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/numbers.txi: Add isrow, iscolumn functions to manual.

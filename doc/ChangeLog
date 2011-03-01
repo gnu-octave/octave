@@ -1,3 +1,9 @@
+2011-03-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* interpreter/dynamic.txi: Make it clear that <octave/oct.h> is
+	a C++ source file and refer to the section where other languages
+	are discussed.
+
 2010-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/numbers.txi: Add isrow, iscolumn functions to manual.

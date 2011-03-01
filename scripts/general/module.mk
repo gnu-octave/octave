@@ -44,9 +44,11 @@ general_FCN_FILES = \
   general/interpft.m \
   general/is_duplicate_entry.m \
   general/isa.m \
+  general/iscolumn.m \
   general/isdir.m \
   general/isequal.m \
   general/isequalwithequalnans.m \
+  general/isrow.m \
   general/isscalar.m \
   general/issquare.m \
   general/isvector.m \

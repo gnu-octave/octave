@@ -1,3 +1,7 @@
+2011-02-28  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Mention new functions isrow, iscolumn.
+
 2011-02-23  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* .hgignore: Cleanup and more files to be ignore that get added

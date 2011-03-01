@@ -1,3 +1,7 @@
+2010-02-28  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/numbers.txi: Add isrow, iscolumn functions to manual.
+
 2011-02-25  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* faq/OctaveFAQ.texi: Uniformise all mentions of Matlab to be

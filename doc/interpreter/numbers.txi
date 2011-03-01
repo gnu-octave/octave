@@ -819,6 +819,10 @@ variable.
 
 @DOCSTRING(isvector)
 
+@DOCSTRING(isrow)
+
+@DOCSTRING(iscolumn)
+
 @DOCSTRING(isscalar)
 
 @DOCSTRING(issquare)

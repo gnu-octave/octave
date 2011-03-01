@@ -536,7 +536,8 @@ The @code{unwind_protect} statement is often used to reliably restore
 the values of global variables that need to be temporarily changed.
 
 @sc{Matlab} can be made to do something similar with their
-@code{OnCleanUp} function that was introduced in 2008a.
+@code{OnCleanUp} function that was introduced in 2008a. Octave also has
+@code{onCleanup} since version 3.4.0.
 
 @node Built-in ODE and DAE solvers
 @section Built-in ODE and DAE solvers
@@ -987,7 +988,6 @@ Octave with some limitations. The major limitation is that block
 comments are not supported within [] or @{@}.
 
 @item Mat-File format
-@c How much of this is still true?
 There are some differences in the mat v5 file format accepted by Octave.
 @sc{Matlab} recently introduced the "-V7.3" save option which is an HDF5
 format which is particularly useful for 64-bit platforms where the
@@ -1218,7 +1218,9 @@ touched are restored. You can do something similar with
 @code{try}/@code{catch} combined with @samp{rethrow (lasterror ())} in
 @sc{Matlab}, however rethrow and lasterror are only available in Octave
 2.9.10 and later. @sc{Matlab} 2008a also introduced @code{OnCleanUp}
-that is similar to @code{unwind_protect}.
+that is similar to @code{unwind_protect}, except that the object created
+by this function has to be explicitly cleared in order for the cleanup
+code to run.
 
 Note that using @code{try}/@code{catch} combined with @samp{rethrow
 (lasterror ())} can not guarantee that global variables will be
@@ -1264,7 +1266,7 @@ compared to
 Typing Ctrl-C in the first case returns the user directly to the
 prompt, and the variable "a" is not reset to the saved value. In the
 second case the variable "a" is reset correctly.  Therefore @sc{Matlab}
-gives no save way of temporarily changing global variables.
+gives no safe way of temporarily changing global variables.
 
 @item
 Indexing can be applied to all objects in Octave and not just

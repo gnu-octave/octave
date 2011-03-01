@@ -18,7 +18,7 @@
 	in anticipation for the forthcoming 3.4 binary packages. Explain
 	nested functions. Hint that classdef might happen in 3.5.
 	Mention 3D patches in the OpenGL backend. Clarify Matlab-style
-	short-circuiting.
+	short-circuiting. Specify that Octave also onCleanup.
 
 2010-02-28  Rik  <octave@nomad.inbox5.com>
 

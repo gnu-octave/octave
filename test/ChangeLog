@@ -1,3 +1,8 @@
+2010-03-01  Rik  <octave@nomad.inbox5.com>
+
+	* test/test_index-wfi-t.m: Use modern warning function
+	rather than deprecated built-in variable to set warning state.
+
 2010-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* fntests.m: Use single quotes around regexp patterns.

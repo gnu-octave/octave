@@ -35,26 +35,22 @@ function retval = isscalar (x)
 endfunction
 
 %!assert(isscalar (1));
-
 %!assert(!(isscalar ([1, 2])));
-
 %!assert(!(isscalar ([])));
-
 %!assert(!(isscalar ([1, 2; 3, 4])));
 
 %!test
-%! warn_str_to_num = 0;
+%! warning ("off", "Octave:str-to-num");
 %! assert((isscalar ("t")));
 
 %!assert(!(isscalar ("test")));
-
 %!assert(!(isscalar (["test"; "ing"])));
 
 %!test
 %! s.a = 1;
 %! assert((isscalar (s)));
 
+%% Test input validation
 %!error isscalar ();
-
 %!error isscalar (1, 2);
 

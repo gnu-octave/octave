@@ -40,19 +40,16 @@ function retval = isvector (x)
 endfunction
 
 %!assert(isvector (1));
-
 %!assert(isvector ([1; 2; 3]));
-
 %!assert(!(isvector ([])));
-
 %!assert(!(isvector ([1, 2; 3, 4])));
 
 %!test
-%! warn_str_to_num = 0;
+%! warning ("off", "Octave:str-to-num");
 %! assert((isvector ("t")));
 
 %!test
-%! warn_str_to_num = 0;
+%! warning ("off", "Octave:str-to-num");
 %! assert((isvector ("test")));
 
 %!assert(!(isvector (["test"; "ing"])));
@@ -61,7 +58,7 @@ endfunction
 %! s.a = 1;
 %! assert((isvector (s)));
 
+%% Test input validation
 %!error isvector ();
-
 %!error isvector ([1, 2], 2);
 

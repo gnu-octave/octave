@@ -1,3 +1,8 @@
+2010-03-01  Rik  <octave@nomad.inbox5.com>
+
+	* general/isscalar.m, general/isvector.m: Use modern warning function
+	rather than deprecated built-in variable to set warning state.
+
 2010-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* general/iscolumn.m, general/isrow.m: Add 2 new utility functions

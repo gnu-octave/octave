@@ -170,17 +170,13 @@ function h = subplot (rows, cols, index, varargin)
 
     if (found)
       set (cf, "currentaxes", tmp);
-      position = get (tmp, "position");
-      outerposition = get (tmp, "outerposition");
     else
-      outerposition = subplot_position (rows, cols, index, "outerposition");
-      position = subplot_position (rows, cols, index, "position");
+      outpos = subplot_position (rows, cols, index, "outerposition");
       tmp = axes ("looseinset", [0 0 0 0], "box", "off",
-                  "outerposition", outerposition,
-                  "position", position);
+                  "outerposition", outpos, "position", pos);
     endif
 
-    if (align_axes && strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
+    if (align_axes || strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
       set (tmp, "activepositionproperty", "position");
     endif
 

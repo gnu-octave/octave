@@ -1,3 +1,8 @@
+2011-03-02  Konstantinos Poulios  <logari81@gmail.com>
+
+	* plot/subplot.m: Remove redundant calls.
+	For gnuplot set "activepositionproperty" to "position" always.
+
 2010-03-01  Rik  <octave@nomad.inbox5.com>
 
 	* general/isscalar.m, general/isvector.m: Use modern warning function

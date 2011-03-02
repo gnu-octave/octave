@@ -236,7 +236,7 @@ To build Octave's sources the list of Fink packages below need to be installed.
   pcre
   pcre-shlibs
   qhull
-  qrupdate (**)
+  qrupdate [1]
   readline5
   readline5-shlibs 
   sed
@@ -248,10 +248,20 @@ include the list below, and possibly others as well.
   tetex
   texinfo
 
-(**) Fink does not yet have a package for qrupdate.  However, one is
-       available in the tracker at the link below.
+For fully functional printing (graphics output), the following packages must
+be installed.
 
-  http://sourceforge.net/tracker/index.php?func=detail&aid=2861045&group_id=17203&atid=414256
+  epstool
+  ghostscript
+  pstoedit
+  transfig [2]
+
+[1] Fink does not yet have a package for qrupdate.  However, one is available
+    in the tracker at the link below.
+
+    http://sourceforge.net/tracker/index.php?func=detail&aid=2861045&group_id=17203&atid=414256
+
+[2] Optionally the "xfig" package may be installed.
 
 
 2.3.2 Building With Dependencies Satisfied by Fink

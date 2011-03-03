@@ -19,8 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unidpdf (@var{x}, @var{v})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) at @var{x} of a univariate discrete distribution which assumes
+## (PDF) at @var{x} of a discrete uniform distribution which assumes
 ## the values in @var{v} with equal probability.
+## If @var{v} is a scalar then @code{1/@var{v}} is the probability of a
+## single element.
 ## @end deftypefn
 
 function pdf = unidpdf (x, v)

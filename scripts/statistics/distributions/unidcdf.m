@@ -19,8 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unidcdf (@var{x}, @var{v})
 ## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of a univariate discrete distribution which
-## assumes the values in @var{v} with equal probability.
+## function (CDF) at @var{x} of a discrete uniform distribution which
+## assumes the values in @var{v} with equal probability.  
+## If @var{v} is a scalar then @code{1/@var{v}} is the probability of a
+## single element.
 ## @end deftypefn
 
 function cdf = unidcdf (x, v)
@@ -36,4 +38,5 @@ function cdf = unidcdf (x, v)
   endif
 
   cdf = discrete_cdf (x, v, ones(size(v)));
+
 endfunction

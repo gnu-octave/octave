@@ -205,18 +205,18 @@ alphabetical order).
 &F            && fpdf           && fcdf          && finv&\cr
 &Gamma        && gampdf         && gamcdf        && gaminv&\cr
 &Geometric    && geopdf         && geocdf        && geoinv&\cr
-&Hypergeometric            && hygepdf      && hygecdf       && hygeinv&\cr
+&Hypergeometric  && hygepdf     && hygecdf       && hygeinv&\cr
 &Kolmogorov Smirnov && {\it Not Available} && kolmogorov\_&& {\it Not Available}&\cr
 &             &&                && smirnov\_cdf &&&\cr
-&Laplace      && laplace\_pdf    && laplace\_cdf   && laplace\_inv&\cr
-&Logistic     && logistic\_pdf   && logistic\_cdf  && logistic\_inv&\cr
+&Laplace      && laplace\_pdf   && laplace\_cdf  && laplace\_inv&\cr
+&Logistic     && logistic\_pdf  && logistic\_cdf && logistic\_inv&\cr
 &Log-Normal   && lognpdf        && logncdf       && logninv&\cr
 &Univariate Normal && normpdf   && normcdf       && norminv&\cr
 &Pascal       && nbinpdf        && nbincdf       && nbininv&\cr
 &Poisson      && poisspdf       && poisscdf      && poissinv&\cr
 &Standard Normal && stdnormal\_pdf  && stdnormal\_cdf && stdnormal\_inv&\cr
 &t (Student)  && tpdf           && tcdf          && tinv&\cr
-&Univariate Discrete && unidpdf && unidcdf       && unidinv&\cr
+&Uniform Discrete && unidpdf    && unidcdf       && unidinv&\cr
 &Uniform      && unifpdf        && unifcdf       && unifinv&\cr
 &Weibull      && wblpdf         && wblcdf        && wblinv&\cr
 \noalign{\hrule height 0.6pt}

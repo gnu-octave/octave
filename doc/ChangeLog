@@ -1,3 +1,8 @@
+2010-03-02  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/stats.txi: Correctly refer to discrete uniform 
+	distribution in documentation. 
+
 2011-03-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* interpreter/dynamic.txi: Make it clear that <octave/oct.h> is

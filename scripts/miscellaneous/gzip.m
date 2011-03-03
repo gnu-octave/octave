@@ -28,21 +28,22 @@
 ## @end deftypefn
 
 function entries = gzip (varargin)
-  if (nargin == 1 || nargin == 2) && (nargout <= 1)
-    if nargout == 0
-      __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
-    else
-      entries = __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
-    endif
-  else
+  if (nargin != 1 && nargin != 2) || (nargout > 1)
     print_usage ();
   endif
+     
+  if (nargout == 0)
+    __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
+  else
+    entries = __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
+  endif
+
 endfunction
 
 %!error <Invalid call to gzip.  Correct usage is> gzip("1", "2", "3");
 %!error <Invalid call to gzip.  Correct usage is> gzip();
 %!error <output directory does not exist> gzip("1", tmpnam);
-%!error <expecting FILES to be a character array> gzip(1);
+%!error <FILES must be a character array or cellstr> gzip(1);
 %!xtest
 %!  # test gzip together with gunzip
 %!  unwind_protect

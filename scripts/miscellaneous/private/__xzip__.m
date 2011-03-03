@@ -33,81 +33,79 @@
 function entries = __xzip__ (commandname, extension,
                              commandtemplate, files, outdir)
 
-  if (nargin == 4 || nargin == 5)
-    if (! ischar (extension) || length (extension) == 0)
-      error ("__xzip__: EXTENSION has to be a string with finite length");
-    endif
-
-    if (nargin == 5 && ! exist (outdir, "dir"))
-      error ("__xzip__: output directory does not exist");
-    endif
-
-    if (ischar (files))
-      files = cellstr (files);
-    else
-      error ("__xzip__: expecting FILES to be a character array");
-    endif
-
-    if (nargin == 4)
-      outdir = tmpnam ();
-      mkdir (outdir);
-    endif
-
-    cwd = pwd();
-    unwind_protect
-      files = glob (files);
-
-      ## Ignore any file with the compress extension
-      files (cellfun (@(x) length(x) > length(extension)
-        && strcmp (x((end - length(extension) + 1):end), extension),
-        files)) = [];
-
-      copyfile (files, outdir);
-
-      [d, f] = myfileparts(files);
-
-      cd (outdir);
-
-      cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
-
-      [status, output] = system (cmd);
-      if (status == 0)
-
-        if (nargin == 5)
-          compressed_files = cellfun(
-              @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)),
-              f, "uniformoutput", false);
-        else
-          movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f,
-                            "uniformoutput", false), cwd);
-          ## FIXME this does not work when you try to compress directories
-
-          compressed_files  = cellfun(@(x) sprintf ("%s.%s", x, extension),
-                                      files, "uniformoutput", false);
-        endif
-
-        if (nargout > 0)
-          entries = compressed_files;
-        endif
-      else
-        error ("__xzip__: %s command failed with exit status = %d",
-               commandname, status);
-      endif
-    unwind_protect_cleanup
-      cd(cwd);
-      if (nargin == 4)
-        crr = confirm_recursive_rmdir ();
-        unwind_protect
-          confirm_recursive_rmdir (false);
-          rmdir (outdir, "s");
-        unwind_protect_cleanup
-          confirm_recursive_rmdir (crr);
-        end_unwind_protect
-      endif
-    end_unwind_protect
-  else
+  if (nargin != 4 && nargin != 5)
     print_usage ();
   endif
+  
+  if (! ischar (extension) || length (extension) == 0)
+    error ("__xzip__: EXTENSION must be a string with finite length");
+  endif
+
+  if (nargin == 5 && ! exist (outdir, "dir"))
+    error ("__xzip__: OUTDIR output directory does not exist");
+  endif
+
+  if (ischar (files))
+    files = cellstr (files);
+  endif
+  if (! iscellstr (files))
+    error ("__xzip__: FILES must be a character array or cellstr");
+  endif
+
+  if (nargin == 4)
+    outdir = tmpnam ();
+    mkdir (outdir);
+  endif
+
+  cwd = pwd ();
+  unwind_protect
+    files = glob (files);
+
+    ## Ignore any file with the compress extension
+    files(cellfun (@(x) length(x) > length(extension)
+      && strcmp (x((end - length(extension) + 1):end), extension),
+      files)) = [];
+
+    copyfile (files, outdir);
+
+    [d, f] = myfileparts(files);
+
+    cd (outdir);
+
+    cmd = sprintf (commandtemplate, sprintf (" %s", f{:}));
+
+    [status, output] = system (cmd);
+    if (status)
+      error ("__xzip__: %s command failed with exit status = %d",
+             commandname, status);
+    endif
+
+    if (nargout > 0)
+      if (nargin == 5)
+        entries = cellfun(
+            @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)),
+            f, "uniformoutput", false);
+      else
+        movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f,
+                          "uniformoutput", false), cwd);
+        ## FIXME this does not work when you try to compress directories
+        entries  = cellfun(@(x) sprintf ("%s.%s", x, extension),
+                           files, "uniformoutput", false);
+      endif
+    endif
+
+  unwind_protect_cleanup
+    cd (cwd);
+    if (nargin == 4)
+      crr = confirm_recursive_rmdir ();
+      unwind_protect
+        confirm_recursive_rmdir (false);
+        rmdir (outdir, "s");
+      unwind_protect_cleanup
+        confirm_recursive_rmdir (crr);
+      end_unwind_protect
+    endif
+  end_unwind_protect
 
 endfunction
 

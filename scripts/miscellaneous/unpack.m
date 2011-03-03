@@ -39,52 +39,17 @@ function filelist = unpack (file, dir = ".", filetype = "")
     print_usage ();
   endif
 
-  if (ischar (file))
-    if (isdir (file))
-      if (isempty (filetype))
-        error ("unpack: FILETYPE must be given for a directory");
-      elseif (! any (strcmpi (filetype, "gunzip")))
-        error ("unpack: FILETYPE must be gunzip for a directory");
-      endif
-    else
-      [pathstr, name, ext] = fileparts (file);
+  if (! ischar (file) && ! iscellstr (file)) 
+    error ("unpack: invalid input file class, %s", class(file));
+  endif
 
-      ## Check to see if it's .tar.gz, .tar.Z, etc.
-      if (any (strcmpi ({".gz" ".Z" ".bz2" ".bz"}, ext)))
-        [tmppathstr, tmpname, tmpext] = fileparts (name);
-        if (strcmpi (tmpext, ".tar"))
-          name = tmpname;
-          ext = cstrcat (tmpext, ext);
-        endif
-      endif
+  ## character arrays of more than one string must be treated as cell strings
+  if (ischar (file) && ! isvector (file)) 
+    file = cellstr (file);
+  endif
 
-      ## If the file is a URL, download it and then work with that
-      ## file.
-      if (! isempty (strfind (file, "://")))
-        ## FIXME -- the above is not a perfect test for a URL
-        urlfile = file;
-        ## FIXME -- should we name the file that we download with the
-        ## same file name as the URL requests?
-        tmpfile = cstrcat (tmpnam (), ext);
-        [file, success, msg] = urlwrite (urlfile, tmpfile);
-        if (! success)
-          error ("unpack: could not get \"%s\": %s", urlfile, msg);
-        endif
-      endif
-
-    endif
-
-    ## canonicalize_file_name returns empty if the file isn't found, so
-    ## use that to check for existence.
-    cfile = canonicalize_file_name (file);
-
-    if (isempty (cfile))
-      error ("unpack: file \"%s\" not found", file);
-    else
-      file = cfile;
-    endif
-
-  elseif (iscellstr (file))
+  ## Recursively unpack cellstr arrays one file at a time
+  if (iscellstr (file))
     files = {};
     for i = 1:numel (file)
       tmpfiles = unpack (file{i}, dir);
@@ -96,9 +61,51 @@ function filelist = unpack (file, dir = ".", filetype = "")
       filelist = files;
     endif
 
-    return
+    return;
+  endif
+
+  if (isdir (file))
+    if (isempty (filetype))
+      error ("unpack: FILETYPE must be given for a directory");
+    elseif (! any (strcmpi (filetype, "gunzip")))
+      error ("unpack: FILETYPE must be gunzip for a directory");
+    endif
+    ext = ".gz";
   else
-    error ("unpack: invalid input file class, %s", class(file));
+    [pathstr, name, ext] = fileparts (file);
+
+    ## Check to see if it's .tar.gz, .tar.Z, etc.
+    if (any (strcmpi ({".gz" ".Z" ".bz2" ".bz"}, ext)))
+      [tmppathstr, tmpname, tmpext] = fileparts (name);
+      if (strcmpi (tmpext, ".tar"))
+        name = tmpname;
+        ext = cstrcat (tmpext, ext);
+      endif
+    endif
+
+    ## If the file is a URL, download it and then work with that file.
+    if (! isempty (strfind (file, "://")))
+      ## FIXME -- the above is not a perfect test for a URL
+      urlfile = file;
+      ## FIXME -- should we name the file that we download with the
+      ## same file name as the URL requests?
+      tmpfile = cstrcat (tmpnam (), ext);
+      [file, success, msg] = urlwrite (urlfile, tmpfile);
+      if (! success)
+        error ("unpack: could not get \"%s\": %s", urlfile, msg);
+      endif
+    endif
+
+  endif
+
+  ## canonicalize_file_name returns empty if the file isn't found, so
+  ## use that to check for existence.
+  cfile = canonicalize_file_name (file);
+
+  if (isempty (cfile))
+    error ("unpack: file \"%s\" not found", file);
+  else
+    file = cfile;
   endif
 
   ## Instructions on what to do for any extension.
@@ -154,7 +161,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
       command = commandq;
     endif
   else
-    warning ("unpack:filetype", "unrecognised file type, %s", ext);
+    warning ("unpack:filetype", "unrecognized file type, %s", ext);
     files = file;
     return;
   endif
@@ -215,6 +222,8 @@ endfunction
 function files = __parse_zip__ (output)
   ## Parse the output from zip and unzip.
 
+  ## Skip first line which is Archive header
+  output(1) = []; 
   for i = 1:length (output)
     files{i} = output{i}(14:length(output{i}));
   endfor

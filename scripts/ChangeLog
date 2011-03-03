@@ -1,5 +1,15 @@
 2010-03-03  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/gzip.m: Use same functional form as bzip, zip, etc.
+	* miscellaneous/private/__xzip__.m: Allow use of character arrays of
+	filenames.
+	* miscellaneous/unpack.m: Allow use of character arrays of filenames.
+	Add capability for gunzip to work recursively on a directory.
+	Fix bug where unzip returned the archive name in addition to the list
+	of files unzipped.
+
+2010-03-03  Rik  <octave@nomad.inbox5.com>
+
 	* deprecated/module.mk, general/module.mk: Deprecate is_duplicate_entry.
 
 2010-03-03  Rik  <octave@nomad.inbox5.com>

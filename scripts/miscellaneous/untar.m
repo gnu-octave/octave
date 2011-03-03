@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} untar (@var{tarfile}, @var{dir})
+## @deftypefn  {Function File} {} untar (@var{tarfile})
+## @deftypefnx {Function File} {} untar (@var{tarfile}, @var{dir})
 ## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
 ## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{unpack, bunzip2, tar, gzip, gunzip, zip, unzip}
+## @seealso{tar, unpack, bunzip2, gunzip, unzip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>

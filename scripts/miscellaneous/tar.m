@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
+## @deftypefn  {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files})
+## @deftypefnx {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
 ## Pack @var{files} @var{files} into the TAR archive @var{tarfile}.  The
 ## list of files must be a string or a cell array of strings.
 ##
@@ -26,49 +27,40 @@
 ##
 ## If an output argument is requested the entries in the archive are
 ## returned in a cell array.
-## @seealso{untar, gzip, gunzip, zip, unzip}
+## @seealso{untar, bzip2, gzip, zip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
 
-function entries = tar (tarfile, files, root)
+function entries = tar (tarfile, files, root = ".")
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  endif
 
-    if (nargin == 2)
-      root = ".";
+  if (ischar (files))
+    files = cellstr (files);
+  endif
+
+  if (ischar (tarfile) && iscellstr (files) && ischar (root))
+    error ("tar: all arguments must be character strings");
+  endif
+
+  cmd = sprintf ("tar cvf %s -C %s %s", tarfile, root,
+                 sprintf (" %s", files{:}));
+
+  [status, output] = system (cmd);
+
+  if (status)
+    error ("tar: tar exited with status = %d", status);
+  endif
+
+  if (nargout > 0)
+    if (output(end) == "\n")
+      output(end) = [];
     endif
-
-    ## Test type of input
-    if (ischar (files))
-      files = cellstr (files);
-    endif
-
-    if (ischar (tarfile) && iscellstr (files) && ischar (root))
-
-      cmd = sprintf ("tar cvf %s -C %s %s", tarfile, root,
-                     sprintf (" %s", files{:}));
-
-      [status, output] = system (cmd);
-
-      if (status == 0)
-        if (nargout > 0)
-          if (output(end) == "\n")
-            output(end) = [];
-          endif
-          entries = strsplit (output, "\n");
-          entries = entries';
-        endif
-      else
-        error ("tar: tar exited with status = %d", status);
-      endif
-
-    else
-      error ("tar: expecting all arguments to be character strings");
-    endif
-
-  else
-    print_usage("tar");
+    entries = strsplit (output, "\n");
+    entries = entries';
   endif
 
 endfunction

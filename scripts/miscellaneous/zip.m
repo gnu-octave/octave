@@ -20,57 +20,49 @@
 ## @deftypefn  {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files})
 ## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
 ## Compress the list of files and/or directories specified in @var{files}
-## into the archive @var{zipfiles} in the same directory.  If @var{rootdir}
-## is defined the @var{files} is located relative to @var{rootdir} rather
-## than the current directory
-## @seealso{unzip,tar}
+## into the archive @var{zipfile} in the same directory.  If @var{rootdir}
+## is defined the @var{files} are located relative to @var{rootdir} rather
+## than the current directory.
+## @seealso{unzip, bzip2, gzip, tar}
 ## @end deftypefn
 
 ## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 
-function entries = zip (zipfile, files, rootdir)
+function entries = zip (zipfile, files, rootdir = ".")
 
-  if (nargin != 3)
-    rootdir = "./";
+  if (nargin != 2 && nargin != 3)
+    print_usage ();
   endif
 
-  if (nargin == 2 || nargin == 3)
-    rootdir = tilde_expand (rootdir);
+  rootdir = tilde_expand (rootdir);
 
-    if (ischar (files))
-      files = cellstr (files);
+  if (ischar (files))
+    files = cellstr (files);
+  endif
+
+  if (! ischar (zipfile) && ! iscellstr (files))
+    error ("zip: expecting all arguments to be character strings");
+  endif
+
+  cmd = sprintf ("cd %s; zip -r %s/%s %s", rootdir, pwd (), zipfile,
+                 sprintf (" %s", files{:}));
+
+  [status, output] = system (cmd);
+
+  if (status)
+    error ("zip: zip failed with exit status = %d", status);
+  endif
+
+  if (nargout > 0)
+    cmd = sprintf ("unzip -Z -1 %s", zipfile);
+    [status, entries] = system (cmd);
+    if (status)
+      error ("zip: zipinfo failed with exit status = %d", status);
     endif
-
-    if (ischar (zipfile) && iscellstr (files))
-
-      cmd = sprintf ("cd %s; zip -r %s/%s %s", rootdir, pwd (), zipfile,
-                     sprintf (" %s", files{:}));
-
-      [status, output] = system (cmd);
-
-      if (status == 0)
-        if (nargout > 0)
-          cmd = sprintf ("unzip -Z -1 %s", zipfile);
-          [status, entries] = system (cmd);
-          if (status == 0)
-            if (entries(end) == "\n")
-              entries(end) = [];
-            endif
-            entries = strsplit (entries, "\n");
-          else
-            error ("zip: zipinfo failed with exit status = %d", status);
-          endif
-        endif
-      else
-        error ("zip: zip failed with exit status = %d", status);
-      endif
-
-    else
-      error ("zip: expecting all arguments to be character strings");
+    if (entries(end) == "\n")
+      entries(end) = [];
     endif
-
-  else
-    print_usage ();
+    entries = strsplit (entries, "\n");
   endif
 
 endfunction

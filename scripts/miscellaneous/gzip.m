@@ -21,9 +21,9 @@
 ## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
 ## Compress the list of files and/or directories specified in @var{files}.
 ## Each file is compressed separately and a new file with a '.gz' extension
-## is created.  The original files are not touched.  Existing compressed
+## is created.  The original files are not modified.  Existing compressed
 ## files are silently overwritten.  If @var{outdir} is defined the compressed
-## versions of the files are placed in this directory.
+## files are placed in this directory.
 ## @seealso{gunzip, bzip2, zip, tar}
 ## @end deftypefn
 

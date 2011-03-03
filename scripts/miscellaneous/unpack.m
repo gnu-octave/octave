@@ -21,14 +21,13 @@
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
 ## Unpack the archive @var{file} based on its extension to the directory
-## @var{dir}.  If @var{file} is a cellstr, then all files will be
-## handled individually.  If @var{dir} is not specified, it defaults to
-## the current directory.  It returns a list of @var{files}
-## unpacked.  If a directory is in the file list, then the
-## @var{filetype} to unpack must also be specified.
+## @var{dir}.  If @var{file} is a list of strings, then each file is 
+## unpacked individually.  If @var{dir} is not specified, it defaults to
+## the current directory.  If a directory is in the file list, then the
+## @var{filetype} must also be specified.
 ##
-## The @var{files} includes the entire path to the output files.
-## @seealso{bunzip2, tar, untar, gzip, gunzip, zip, unzip}
+## The optional return value is a list of @var{files} unpacked.  
+## @seealso{bzip2, gzip, zip, tar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

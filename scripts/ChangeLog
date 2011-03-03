@@ -1,5 +1,14 @@
 2010-03-03  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/bunzip2.m, miscellaneous/bzip2.m,
+	miscellaneous/gunzip.m, miscellaneous/gzip.m, miscellaneous/unpack.m,
+	miscellaneous/untar.m, miscellaneous/unzip.m: Improve docstrings
+
+	* miscellaneous/tar.m, miscellaneous/zip.m: Check for invalid arguments
+	at the top, rather than bottom, of code.
+
+2010-03-03  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/gzip.m: Use same functional form as bzip, zip, etc.
 	* miscellaneous/private/__xzip__.m: Allow use of character arrays of
 	filenames.

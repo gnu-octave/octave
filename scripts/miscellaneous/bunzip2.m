@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bunzip2 (@var{bzfile}, @var{dir})
+## @deftypefn  {Function File} {} bunzip2 (@var{bzfile})
+## @deftypefnx {Function File} {} bunzip2 (@var{bzfile}, @var{dir})
 ## Unpack the bzip2 archive @var{bzfile} to the directory @var{dir}.  If
 ## @var{dir} is not specified, it defaults to the current directory.
-## @seealso{unpack, bzip2, tar, untar, gzip, gunzip, zip, unzip}
+## @seealso{bzip2, unpack, gunzip, unzip, untar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

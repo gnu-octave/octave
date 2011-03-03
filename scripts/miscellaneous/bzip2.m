@@ -22,9 +22,9 @@
 ## @deftypefnx {Function File} {@var{entries} =} bzip2 (@var{files}, @var{outdir})
 ## Compress the list of files specified in @var{files}.
 ## Each file is compressed separately and a new file with a '.bz2' extension
-## is created.  The original files are not touched.  Existing compressed files
-## are silently overwritten.If @var{outdir} is defined the compressed versions
-## of the files are placed in this directory.
+## is created.  The original files are not modified.  Existing compressed files
+## are silently overwritten.  If @var{outdir} is defined the compressed 
+## files are placed in this directory.
 ## @seealso{bunzip2, gzip, zip, tar}
 ## @end deftypefn
 
